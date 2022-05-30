@@ -53,13 +53,14 @@ export async function getInitialState(): Promise<{
 }
 
 ConfigProvider.config({
+  // prefixCls: 'custom',
   theme: {
     primaryColor: '#2B39D4',
   },
 });
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
-export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
+export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
@@ -75,7 +76,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
-    childrenRender: (children, props) => {
+    /* eslint-disable @typescript-eslint/no-var-requires */
+    childrenRender: (children) => {
       // if (initialState?.loading) return <PageLoading />;
       return (
         <>

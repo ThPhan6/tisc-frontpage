@@ -1,0 +1,163 @@
+@import (reference) '~antd/es/style/themes/index';
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  &:hover {
+    font-weight: 500;
+  }
+}
+
+.customButton
+  (@color, @bg-color, @h-color, @h-bg-color, @border-color:transparent, @h-border-color:transparent) {
+  color: @color;
+  background-color: @bg-color;
+  border: 0.5px solid @border-color;
+  &:hover {
+    color: @h-color;
+    background-color: @h-bg-color;
+    border-color: @h-border-color;
+    svg path {
+      fill: @h-color;
+    }
+  }
+  svg path {
+    fill: @color;
+  }
+}
+
+.primaryStandard {
+  .customButton(#fff, @primary-color, #fff, @primary-color-dark);
+}
+.primaryWarning {
+  .customButton(#fff, @secondary-color, #fff, @tertiary-color);
+}
+
+.secondaryStandard {
+  .customButton(@primary-color-dark, transparent, #fff, @primary-color-dark, @primary-color-dark);
+}
+.secondaryWarning {
+  .customButton(@secondary-color, transparent, #fff, @tertiary-color, @secondary-color);
+}
+
+.dashedStandard {
+  .customButton(@primary-color-dark, transparent, @primary-color-dark, @primary-color-light, @primary-color-dark, @primary-color-dark);
+
+  border-style: dashed;
+}
+.dashedWarning {
+  .customButton(@secondary-color, transparent, @tertiary-color, @tertiary-color-light, @secondary-color, @tertiary-color);
+
+  border-style: dashed;
+}
+
+.linkStandard {
+  .customButton(@primary-color, transparent, @primary-color-dark, transparent);
+}
+.linkWarning {
+  .customButton(@secondary-color, transparent, @tertiary-color, transparent);
+}
+
+.textStandard {
+  .customButton(@mono-color, transparent, @mono-color, transparent);
+}
+.textWarning {
+  .customButton(@mono-color, transparent, @mono-color, transparent);
+}
+
+//
+
+.circle {
+  border-radius: 100%;
+}
+
+// disabled
+.disabled {
+  color: @mono-color-dark;
+  background-color: @mono-color-light;
+  border: 0.5px solid @mono-color-dark;
+  cursor: default;
+  svg path {
+    fill: @mono-color-dark;
+  }
+  &:hover {
+    color: @mono-color-dark;
+    font-weight: 300;
+    background-color: @mono-color-light;
+    border: 0.5px solid @mono-color-dark;
+    svg path {
+      fill: @mono-color-dark;
+    }
+  }
+}
+
+.dashedDisabled {
+  .disabled;
+
+  border-style: dashed;
+  &:hover {
+    border-style: dashed;
+  }
+}
+
+.linkDisabled {
+  color: @mono-color-medium !important;
+  cursor: default;
+  &:hover {
+    font-weight: 300;
+    svg path {
+      fill: @mono-color-medium;
+    }
+  }
+  svg path {
+    fill: @mono-color-medium;
+  }
+}
+
+// size
+.size(@height, @min-width, @svg-width, @svg-height, @mr:8px) {
+  min-width: @min-width;
+  height: @height;
+  svg {
+    width: @svg-width;
+    height: @svg-height;
+    margin-right: @mr;
+  }
+}
+
+.font-size-custom(@font-size: 14px, @line-heigh: 22px) {
+  font-size: @font-size;
+  line-height: @line-heigh;
+}
+
+.largeSize {
+  .font-size-custom(16px, 24px);
+  .size(40px, 98px, 16px, 16px);
+}
+.mediumSize {
+  .font-size-custom();
+  .size(32px, 83px, 14px, 14px);
+}
+.smallSize {
+  .font-size-custom(12px, 20px);
+  .size(24px, 69px, 12px, 12px);
+}
+
+.largeShapeSize {
+  .font-size-custom(16px, 24px);
+  .size(40px, 40px, 20px, 20px, 0px);
+}
+.mediumShapeSize {
+  .font-size-custom();
+  .size(32px, 33px, 16px, 16px, 0px);
+}
+.smallShapeSize {
+  .font-size-custom(12px, 20px);
+  .size(24px, 24px, 12px, 12px, 0px);
+}

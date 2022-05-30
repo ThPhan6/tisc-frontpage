@@ -1,0 +1,56 @@
+.horizontalLayout {
+  display: flex;
+  flex-flow: row wrap;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.verticalLayout {
+  margin-bottom: 8px;
+}
+
+.children-wrapper {
+  flex: 1;
+}
+
+// label
+.label {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  .optional {
+    margin-left: 4px;
+    color: @mono-color-dark;
+  }
+  .required {
+    margin-left: 4px;
+    color: @tertiary-color;
+  }
+  .question-icon {
+    margin-left: 4px;
+    cursor: help;
+  }
+  .colon {
+    margin-left: 4px;
+  }
+}
+
+.label-margin {
+  margin: 0 8px 0 0;
+}
+
+// message
+.message {
+  display: flex;
+  align-items: center;
+  min-height: 24px;
+  .normal {
+    color: @mono-color;
+  }
+  .error {
+    color: @tertiary-color;
+  }
+  .warning {
+    color: @secondary-color;
+  }
+}

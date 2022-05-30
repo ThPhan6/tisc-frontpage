@@ -4,6 +4,8 @@ html,
 body,
 #root {
   height: 100%;
+  font-weight: 300;
+  font-family: 'Roboto', 'Cormorant-Garamond';
 }
 
 .colorWeak {
@@ -32,6 +34,14 @@ ol {
   list-style: none;
 }
 
+.icon-mono-dark path {
+  fill: @mono-color-dark;
+}
+
+.icon-mono-medium path {
+  fill: @mono-color-medium;
+}
+
 @media (max-width: @screen-xs) {
   .ant-table {
     width: 100%;
@@ -54,4 +64,8 @@ ol {
   body .ant-design-pro > .ant-layout {
     min-height: 100vh;
   }
+}
+
+button {
+  border: none;
 }

@@ -40,7 +40,20 @@ export default defineConfig({
   theme: {
     // https://ant.design/docs/react/customize-theme-variable-cn
     // 'root-entry-name': 'variable',
+    'primary-color': '#1A227F',
+    'primary-color-dark': '#2B39D4',
     'primary-color-medium': '#8088E5',
+    'primary-color-light': '#D5D7F6',
+    'secondary-color': '#E65000',
+    'secondary-color-medium': '#EF8B4D',
+    'secondary-color-light': '#FFCDB3',
+    'tertiary-color': '#EB008D',
+    'tertiary-color-medium': '#FF52BA',
+    'tertiary-color-light': '#FFB8E2',
+    'mono-color': '#000000',
+    'mono-color-dark': '#808080',
+    'mono-color-medium': '#BFBFBF',
+    'mono-color-light': '#E6E6E6',
   },
   // esbuild is father build tools
   // https://umijs.org/plugins/plugin-esbuild
