@@ -12,7 +12,7 @@ import store, { persistor } from './reducers';
 import { PersistGate } from 'redux-persist/integration/react';
 import { ConfigProvider } from 'antd';
 
-const loginPath = '/user/login';
+const loginPath = '/landing-page';
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
@@ -61,12 +61,15 @@ ConfigProvider.config({
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
+  console.log('initialState', initialState);
+
   return {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;
+
       // 如果没有登录，重定向到 login
       if (!initialState?.currentUser && location.pathname !== loginPath) {
         history.push(loginPath);

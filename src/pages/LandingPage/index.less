@@ -1,0 +1,104 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  max-width: 1440px;
+  height: 100vh;
+  margin: auto;
+  //   background: @layout-body-background;
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    padding: 0 64px;
+    .login-button {
+      border-radius: 16px;
+    }
+  }
+  .main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    .content {
+      padding: 60px 64px 32px 64px;
+      .summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 32px;
+        .message {
+          padding: 32px 0;
+          .title {
+            padding-bottom: 32px;
+            color: @primary-color;
+            font-size: 40px;
+          }
+          .description {
+            color: @primary-color;
+          }
+        }
+      }
+      .user-group {
+        display: flex;
+        justify-content: space-between;
+        .brands,
+        .designer {
+          max-width: 630px;
+          padding: 32px;
+          border: 0.75px solid @mono-color;
+          .group-name {
+            padding: 24px 0;
+          }
+          .feature {
+            padding: 24px 0;
+            .item {
+              display: flex;
+              align-items: center;
+              height: 32px;
+              .icon {
+                margin-right: 16px;
+              }
+            }
+          }
+          .button-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            .action-button {
+              border-radius: 20px;
+            }
+          }
+        }
+      }
+    }
+    .footer {
+      display: flex;
+      align-items: center;
+      height: 48px;
+      padding: 0 64px;
+      background-color: @mono-color;
+      p {
+        color: white;
+      }
+      .menu-wrapper {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: space-between;
+        margin-left: 16px;
+        .menu {
+          display: flex;
+          align-items: center;
+          .item {
+            padding: 5px 16px;
+            color: @mono-color-medium;
+            cursor: pointer;
+          }
+        }
+        .tisc-login {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
