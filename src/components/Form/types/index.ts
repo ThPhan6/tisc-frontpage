@@ -16,7 +16,7 @@ export interface CustomInputProps extends InputProps {
   containerClass?: string;
   focusColor?: 'primary' | 'secondary' | 'tertiary';
   theme?: 'dark' | 'default';
-  borderBottomColor?: 'mono' | 'mono-medium';
+  borderBottomColor?: 'mono' | 'mono-medium' | 'white';
 }
 
 export interface CustomTextAreaProps extends TextAreaProps {

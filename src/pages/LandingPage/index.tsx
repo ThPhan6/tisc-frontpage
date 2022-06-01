@@ -10,13 +10,22 @@ import { ReactComponent as TargetMoneyIcon } from '../../assets/icons/target-mon
 import { ReactComponent as GraphicTabletIcon } from '../../assets/icons/graphic-tablet-icon.svg';
 import graphic from '../../assets/graphic.png';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
+import { LoginModal } from './components/LoginModal';
+import { useBoolean } from '@/helper/hook';
 
 const LandingPage = () => {
+  const openLogin = useBoolean();
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <LogoBeta />
-        <CustomButton icon={<SingleRight />} width="104px" buttonClass={styles['login-button']}>
+        <CustomButton
+          onClick={() => openLogin.setValue(true)}
+          icon={<SingleRight />}
+          width="104px"
+          buttonClass={styles['login-button']}
+        >
           Log in
         </CustomButton>
       </div>
@@ -126,6 +135,7 @@ const LandingPage = () => {
           </div>
         </div>
       </div>
+      <LoginModal visible={openLogin} />
     </div>
   );
 };
