@@ -1,12 +1,17 @@
 ﻿export default [
   {
+    path: '/landing-page',
+    component: './LandingPage',
+    layout: false,
+  },
+  {
     path: '/user',
     layout: false,
     routes: [
       {
         name: 'login',
         path: '/user/login',
-        component: './user/Login',
+        component: './LandingPage',
       },
       {
         component: './404',
