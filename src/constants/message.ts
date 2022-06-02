@@ -3,3 +3,8 @@ export const ERROR_MESSAGE = {
   PASSWORD: 'Password error',
   CONFIRM_PASSWORD: 'Passwords do not match',
 };
+
+export const MESSENGER_NOTIFICATION = {
+  LOGIN_SUCCESS: 'Login successfully',
+  LOGIN_ERROR: 'Login error',
+};

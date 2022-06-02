@@ -11,25 +11,40 @@ import { ReactComponent as GraphicTabletIcon } from '../../assets/icons/graphic-
 import graphic from '../../assets/graphic.png';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { LoginModal } from './components/LoginModal';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useFetchUserInfo } from '@/helper/hook';
+import { loginMiddleware } from './services/api';
+import { message } from 'antd';
+import { history } from 'umi';
+import { MESSENGER_NOTIFICATION } from '@/constants/message';
 
 const LandingPage = () => {
-  const openLogin = useBoolean();
+  const openTiscLogin = useBoolean();
+  const { fetchUserInfo } = useFetchUserInfo();
+
+  const handleSubmitLogin = async (data: { email: string; password: string }) => {
+    loginMiddleware(data, async (dataRes) => {
+      if (dataRes.message === 'SUCCESS') {
+        message.success(MESSENGER_NOTIFICATION.LOGIN_SUCCESS);
+        localStorage.setItem('access_token', dataRes.token);
+        await fetchUserInfo();
+        if (!history) return;
+        const { query } = history.location;
+        const { redirect } = query as { redirect: string };
+        history.push(redirect || '/');
+        return;
+      }
+    });
+  };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <LogoBeta />
-        <CustomButton
-          onClick={() => openLogin.setValue(true)}
-          icon={<SingleRight />}
-          width="104px"
-          buttonClass={styles['login-button']}
-        >
-          Log in
-        </CustomButton>
-      </div>
-      <div className={styles.main}>
+    <div className={styles.login}>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <LogoBeta />
+          <CustomButton icon={<SingleRight />} width="104px" buttonClass={styles['login-button']}>
+            Log in
+          </CustomButton>
+        </div>
         <div className={styles.content}>
           <div className={styles.summary}>
             <div className={styles.message}>
@@ -117,6 +132,8 @@ const LandingPage = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div className={styles['footer-container']}>
         <div className={styles.footer}>
           <BodyText level={5} fontFamily="Roboto">
             © TISC 2022
@@ -129,13 +146,21 @@ const LandingPage = () => {
                 </BodyText>
               ))}
             </div>
-            <BodyText level={5} fontFamily="Roboto" customClass={styles['tisc-login']}>
+
+            <BodyText
+              level={5}
+              fontFamily="Roboto"
+              customClass={styles['tisc-login']}
+              onClick={() => {
+                openTiscLogin.setValue(true);
+              }}
+            >
               TISC Log in
             </BodyText>
           </div>
         </div>
       </div>
-      <LoginModal visible={openLogin} />
+      <LoginModal visible={openTiscLogin} theme="dark" handleSubmitLogin={handleSubmitLogin} />
     </div>
   );
 };

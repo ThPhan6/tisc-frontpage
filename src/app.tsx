@@ -1,22 +1,41 @@
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { PageLoading } from '@ant-design/pro-layout';
-import type { RunTimeLayoutConfig } from 'umi';
+import { RequestConfig, RunTimeLayoutConfig } from 'umi';
 import { history } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 import defaultSettings from '../config/defaultSettings';
 import React from 'react';
 import { Provider } from 'react-redux';
 import store, { persistor } from './reducers';
 import { PersistGate } from 'redux-persist/integration/react';
 import { ConfigProvider } from 'antd';
+import { getInfoUserMiddleware } from './pages/LandingPage/services/api';
+import { PATH } from './constants/path';
 
-const loginPath = '/landing-page';
+const errorHandler = function (error: any) {
+  throw error;
+};
 
-/** 获取用户信息比较慢的时候会展示一个 loading */
-export const initialStateConfig = {
-  loading: <PageLoading />,
+const authHeaderInterceptor = (url: string, options: any) => {
+  const token = localStorage.getItem('access_token') || '';
+  const authHeader = { Authorization: `Bearer ${token}` };
+  if (token) {
+    return {
+      url: `${url}`,
+      options: { ...options, interceptors: true, headers: authHeader },
+    };
+  }
+  return {
+    url: `${url}`,
+    options: { ...options, interceptors: true },
+  };
+};
+
+export const request: RequestConfig = {
+  prefix: API_URL,
+  errorHandler,
+  requestInterceptors: [authHeaderInterceptor],
 };
 
 /**
@@ -30,15 +49,15 @@ export async function getInitialState(): Promise<{
 }> {
   const fetchUserInfo = async () => {
     try {
-      const msg = await queryCurrentUser();
-      return msg.data;
+      const msg = await getInfoUserMiddleware();
+      return msg;
     } catch (error) {
-      history.push(loginPath);
+      localStorage.clear();
+      history.push(PATH.landingPage);
     }
     return undefined;
   };
-  // 如果不是登录页面，执行
-  if (history.location.pathname !== loginPath) {
+  if (history.location.pathname !== PATH.landingPage) {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
@@ -62,44 +81,25 @@ ConfigProvider.config({
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   console.log('initialState', initialState);
-
   return {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;
-
-      // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
-        history.push(loginPath);
+      const token = localStorage.getItem('access_token') || '';
+      if (token && location.pathname === PATH.landingPage) {
+        history.push(PATH.homePage);
+      }
+      if (!token && location.pathname !== PATH.landingPage) {
+        history.push(PATH.landingPage);
       }
     },
     menuHeaderRender: undefined,
-    // 自定义 403 页面
-    // unAccessible: <div>unAccessible</div>,
-    // 增加一个 loading 的状态
     /* eslint-disable @typescript-eslint/no-var-requires */
     childrenRender: (children) => {
-      // if (initialState?.loading) return <PageLoading />;
-      return (
-        <>
-          {children}
-          {/* {!props.location?.pathname?.includes('/login') && (
-            <SettingDrawer
-              disableUrlParams
-              enableDarkTheme
-              settings={initialState?.settings}
-              onSettingChange={(settings) => {
-                setInitialState((preInitialState) => ({
-                  ...preInitialState,
-                  settings,
-                }));
-              }}
-            />
-          )} */}
-        </>
-      );
+      if (initialState?.loading) return <PageLoading />;
+      return <>{children}</>;
     },
     ...initialState?.settings,
   };
