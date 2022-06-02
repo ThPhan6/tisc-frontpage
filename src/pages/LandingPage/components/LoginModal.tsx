@@ -18,6 +18,7 @@ export const LoginModal: FC<LoginModalProps> = ({
   theme = 'default',
   visible,
   handleSubmitLogin,
+  handleForgotPassword,
 }) => {
   const [inputValue, setInputValue] = useState<InputValueProp>({
     email: '',
@@ -73,6 +74,7 @@ export const LoginModal: FC<LoginModalProps> = ({
 
   const handleSubmit = () => {
     if (showForgotPassword.value) {
+      handleForgotPassword(verifyEmail.value);
       return;
     }
     handleSubmitLogin({
