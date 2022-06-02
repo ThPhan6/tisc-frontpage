@@ -11,28 +11,45 @@ import { ReactComponent as GraphicTabletIcon } from '../../assets/icons/graphic-
 import graphic from '../../assets/graphic.png';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { LoginModal } from './components/LoginModal';
-import { useBoolean, useFetchUserInfo } from '@/helper/hook';
-import { loginMiddleware } from './services/api';
+import { useBoolean, useCustomInitialState } from '@/helper/hook';
+import { loginMiddleware, resendEmailMiddleware } from './services/api';
 import { message } from 'antd';
 import { history } from 'umi';
 import { MESSENGER_NOTIFICATION } from '@/constants/message';
+import { STATUS_RESPONSE } from '@/constants/util';
+import LoadingPageCustomize from '@/components/LoadingPage';
 
 const LandingPage = () => {
   const openTiscLogin = useBoolean();
-  const { fetchUserInfo } = useFetchUserInfo();
+  const { fetchUserInfo } = useCustomInitialState();
+  const isLoading = useBoolean();
 
-  const handleSubmitLogin = async (data: { email: string; password: string }) => {
-    loginMiddleware(data, async (dataRes) => {
-      if (dataRes.message === 'SUCCESS') {
+  const handleSubmitLogin = (data: { email: string; password: string }) => {
+    isLoading.setValue(true);
+    loginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
+      if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSENGER_NOTIFICATION.LOGIN_SUCCESS);
-        localStorage.setItem('access_token', dataRes.token);
         await fetchUserInfo();
         if (!history) return;
         const { query } = history.location;
         const { redirect } = query as { redirect: string };
         history.push(redirect || '/');
-        return;
+      } else {
+        message.error(msg);
       }
+      isLoading.setValue(false);
+    });
+  };
+
+  const handleForgotPassword = (email: string) => {
+    isLoading.setValue(true);
+    resendEmailMiddleware('forgot_password', email, async (type: STATUS_RESPONSE, msg?: string) => {
+      if (type === STATUS_RESPONSE.SUCCESS) {
+        openTiscLogin.setValue(false);
+      } else {
+        message.error(msg);
+      }
+      isLoading.setValue(false);
     });
   };
 
@@ -160,7 +177,13 @@ const LandingPage = () => {
           </div>
         </div>
       </div>
-      <LoginModal visible={openTiscLogin} theme="dark" handleSubmitLogin={handleSubmitLogin} />
+      <LoginModal
+        visible={openTiscLogin}
+        theme="dark"
+        handleSubmitLogin={handleSubmitLogin}
+        handleForgotPassword={handleForgotPassword}
+      />
+      {isLoading.value && <LoadingPageCustomize />}
     </div>
   );
 };

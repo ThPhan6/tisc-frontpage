@@ -10,9 +10,10 @@ import { Provider } from 'react-redux';
 import store, { persistor } from './reducers';
 import { PersistGate } from 'redux-persist/integration/react';
 import { ConfigProvider } from 'antd';
-import { getInfoUserMiddleware } from './pages/LandingPage/services/api';
+import { getUserInfoMiddleware } from './pages/LandingPage/services/api';
 import { PATH } from './constants/path';
 
+// config request umi
 const errorHandler = function (error: any) {
   throw error;
 };
@@ -49,7 +50,7 @@ export async function getInitialState(): Promise<{
 }> {
   const fetchUserInfo = async () => {
     try {
-      const msg = await getInfoUserMiddleware();
+      const msg = await getUserInfoMiddleware();
       return msg;
     } catch (error) {
       localStorage.clear();

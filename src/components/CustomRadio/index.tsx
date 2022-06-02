@@ -75,7 +75,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
                 <div className={style['input-wrapper']}>
                   Other{' '}
                   <CustomInput
-                    containerClass={style['other-inpdsadsasdsdsadsasdsut']}
+                    containerClass={style['other-input']}
                     placeholder={inputPlaceholder}
                     value={inputValue}
                     onChange={onChangeInputValue}

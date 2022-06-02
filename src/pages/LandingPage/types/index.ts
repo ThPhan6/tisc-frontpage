@@ -1,3 +1,5 @@
+import { STATUS_RESPONSE } from '@/constants/util';
+
 export interface LoginModalProps {
   theme?: 'default' | 'dark';
   visible: {
@@ -5,6 +7,7 @@ export interface LoginModalProps {
     setValue: (value: boolean) => void;
   };
   handleSubmitLogin: (data: { email: string; password: string }) => void;
+  handleForgotPassword: (email: string) => void;
 }
 
 export type InputValueProp = {
@@ -18,7 +21,7 @@ export type LoginBodyProp = {
 };
 
 export type LoginResponseProp = {
-  message: 'SUCCESS';
+  message: STATUS_RESPONSE;
   statusCode: number;
   token: string;
 };

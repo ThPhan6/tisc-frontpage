@@ -18,8 +18,8 @@ export function useString(defaultValue = '') {
   return useDefault(defaultValue);
 }
 
-export const useFetchUserInfo = () => {
-  const { initialState, setInitialState } = useModel('@@initialState');
+export const useCustomInitialState = () => {
+  const { initialState, setInitialState, loading } = useModel('@@initialState');
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
@@ -31,6 +31,7 @@ export const useFetchUserInfo = () => {
     }
   };
   return {
+    loading,
     initialState,
     setInitialState,
     fetchUserInfo,
