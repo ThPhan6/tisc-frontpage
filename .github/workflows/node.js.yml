@@ -24,6 +24,7 @@ jobs:
     #- run: npm test
   deploy-dev-server:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' # run this job only for the develop branch
     steps:
     # DigitalOcean Droplet already have deploy files
     - uses: actions/checkout@v3
