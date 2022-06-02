@@ -5,12 +5,12 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, develop ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, develop ]
 
 jobs:
-  build:
+  quality-control:
     runs-on: ubuntu-latest
     steps:
     - uses: sonarsource/sonarqube-scan-action@master
