@@ -25,7 +25,7 @@ jobs:
     steps:
     # DigitalOcean Droplet already have deploy files
     - uses: actions/checkout@v3
-    - name: Deploy TISC API to DigitalOcean Droplet
+    - name: Deploy TISC Webapp to DigitalOcean Droplet
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.DEV_SERVER_IP }}
