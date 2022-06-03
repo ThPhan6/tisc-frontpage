@@ -45,13 +45,15 @@ export async function resetPasswordMiddleware(
     });
 }
 
-export async function resendEmailMiddleware(
-  type: 'forgot_password' | 'verification',
-  email: string,
+export async function forgotPasswordMiddleware(
+  data: {
+    email: string;
+  },
   callback: (type: STATUS_RESPONSE, message?: string) => void,
 ) {
-  request(`/api/auth/resend-email/${type}/${email}`, {
+  request(`/api/auth/forgot-password`, {
     method: 'POST',
+    data,
   })
     .then(() => {
       callback(STATUS_RESPONSE.SUCCESS);
