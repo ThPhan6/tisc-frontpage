@@ -1,8 +1,8 @@
 import { Modal } from 'antd';
-import { FC } from 'react';
+import type { FC } from 'react';
 import styles from './styles/index.less';
 import { ReactComponent as CloseIcon } from '../../assets/icons/close-icon.svg';
-import { CustomModalProps } from './types';
+import type { CustomModalProps } from './types';
 import classNames from 'classnames';
 
 export const CustomModal: FC<CustomModalProps> = ({

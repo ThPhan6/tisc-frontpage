@@ -1,6 +1,11 @@
 ﻿export default [
   {
-    path: '/landing-page',
+    path: '/',
+    component: './LandingPage',
+    layout: false,
+  },
+  {
+    path: '/reset-password',
     component: './LandingPage',
     layout: false,
   },
@@ -33,10 +38,10 @@
     path: '/list',
     component: './TableList',
   },
-  {
-    path: '/',
-    redirect: '/welcome',
-  },
+  // {
+  //   path: '/',
+  //   redirect: '/welcome',
+  // },
   {
     component: './404',
   },

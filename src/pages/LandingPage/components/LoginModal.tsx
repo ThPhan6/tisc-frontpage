@@ -1,7 +1,8 @@
 import styles from './LoginModal.less';
 import { CustomModal } from '@/components/Modal';
-import { FC, useEffect, useState } from 'react';
-import { InputValueProp, LoginModalProps } from '../types';
+import type { FC } from 'react';
+import { useEffect, useState } from 'react';
+import type { InputValueProp, LoginModalProps } from '../types';
 import { BodyText, MainTitle } from '@/components/Typography';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';

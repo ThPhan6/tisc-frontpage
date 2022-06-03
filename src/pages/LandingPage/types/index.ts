@@ -1,4 +1,4 @@
-import { STATUS_RESPONSE } from '@/constants/util';
+import type { STATUS_RESPONSE } from '@/constants/util';
 
 export interface LoginModalProps {
   theme?: 'default' | 'dark';
@@ -39,4 +39,27 @@ export type UserInfoDataProp = {
   backup_email: string;
   personal_mobile: string;
   linkedin: string;
+};
+
+export interface ResetPasswordModalProps {
+  resetData: {
+    email: string;
+    token: string;
+  };
+  visible: {
+    value: boolean;
+    setValue: (value: boolean) => void;
+  };
+  handleSubmit: (data: ResetPasswordBodyProp) => void;
+}
+
+export type ResetInputValueProp = {
+  password: string;
+  confirmPassword: string;
+};
+
+export type ResetPasswordBodyProp = {
+  password: string;
+  confirmed_password: string;
+  reset_password_token: string;
 };

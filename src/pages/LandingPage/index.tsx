@@ -11,29 +11,45 @@ import { ReactComponent as GraphicTabletIcon } from '../../assets/icons/graphic-
 import graphic from '../../assets/graphic.png';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { LoginModal } from './components/LoginModal';
-import { useBoolean, useCustomInitialState } from '@/helper/hook';
-import { loginMiddleware, resendEmailMiddleware } from './services/api';
+import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
+import { loginMiddleware, resendEmailMiddleware, resetPasswordMiddleware } from './services/api';
 import { message } from 'antd';
 import { history } from 'umi';
 import { MESSENGER_NOTIFICATION } from '@/constants/message';
 import { STATUS_RESPONSE } from '@/constants/util';
 import LoadingPageCustomize from '@/components/LoadingPage';
+import { PATH } from '@/constants/path';
+import { useEffect } from 'react';
+import { ResetPasswordModal } from './components/ResetPasswordModal';
+import type { LoginBodyProp, ResetPasswordBodyProp } from './types';
+import { redirectAfterLogin } from '@/helper/utils';
 
 const LandingPage = () => {
-  const openTiscLogin = useBoolean();
+  const emailResetPwd = useQuery().get('email');
+  const tokenResetPwd = useQuery().get('token');
+
   const { fetchUserInfo } = useCustomInitialState();
+  const openTiscLogin = useBoolean();
+  const openResetPwd = useBoolean();
   const isLoading = useBoolean();
 
-  const handleSubmitLogin = (data: { email: string; password: string }) => {
+  useEffect(() => {
+    if ((!emailResetPwd || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
+      history.push(PATH.landingPage);
+      return;
+    } else {
+      openResetPwd.setValue(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [emailResetPwd]);
+
+  const handleSubmitLogin = (data: LoginBodyProp) => {
     isLoading.setValue(true);
     loginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSENGER_NOTIFICATION.LOGIN_SUCCESS);
         await fetchUserInfo();
-        if (!history) return;
-        const { query } = history.location;
-        const { redirect } = query as { redirect: string };
-        history.push(redirect || '/');
+        redirectAfterLogin();
       } else {
         message.error(msg);
       }
@@ -46,6 +62,21 @@ const LandingPage = () => {
     resendEmailMiddleware('forgot_password', email, async (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         openTiscLogin.setValue(false);
+        message.success(MESSENGER_NOTIFICATION.RESET_PASSWORD);
+      } else {
+        message.error(msg);
+      }
+      isLoading.setValue(false);
+    });
+  };
+
+  const handleResetPassword = (data: ResetPasswordBodyProp) => {
+    isLoading.setValue(true);
+    resetPasswordMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
+      if (type === STATUS_RESPONSE.SUCCESS) {
+        message.success(MESSENGER_NOTIFICATION.RESET_PASSWORD_SUCCESS);
+        await fetchUserInfo();
+        redirectAfterLogin();
       } else {
         message.error(msg);
       }
@@ -183,6 +214,16 @@ const LandingPage = () => {
         handleSubmitLogin={handleSubmitLogin}
         handleForgotPassword={handleForgotPassword}
       />
+      {emailResetPwd && (
+        <ResetPasswordModal
+          visible={openResetPwd}
+          handleSubmit={handleResetPassword}
+          resetData={{
+            email: emailResetPwd,
+            token: tokenResetPwd || '',
+          }}
+        />
+      )}
       {isLoading.value && <LoadingPageCustomize />}
     </div>
   );

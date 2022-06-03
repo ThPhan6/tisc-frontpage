@@ -1,5 +1,5 @@
 import React from 'react';
-import { useModel } from 'umi';
+import { useLocation, useModel } from 'umi';
 
 export function useDefault(defaultValue: any) {
   const [value, setValue] = React.useState(defaultValue);
@@ -36,4 +36,8 @@ export const useCustomInitialState = () => {
     setInitialState,
     fetchUserInfo,
   };
+};
+
+export const useQuery = () => {
+  return new URLSearchParams(useLocation().search);
 };

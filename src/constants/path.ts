@@ -1,4 +1,5 @@
 export const PATH = {
-  homePage: '/',
-  landingPage: '/landing-page',
+  homePage: '/welcome',
+  landingPage: '/',
+  resetPassword: '/reset-password',
 };

@@ -1,6 +1,6 @@
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { PageLoading } from '@ant-design/pro-layout';
-import { RequestConfig, RunTimeLayoutConfig } from 'umi';
+import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
 import { history } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
@@ -12,6 +12,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { ConfigProvider } from 'antd';
 import { getUserInfoMiddleware } from './pages/LandingPage/services/api';
 import { PATH } from './constants/path';
+import type { UserInfoDataProp } from './pages/LandingPage/types';
 
 // config request umi
 const errorHandler = function (error: any) {
@@ -44,7 +45,7 @@ export const request: RequestConfig = {
  * */
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
-  currentUser?: API.CurrentUser;
+  currentUser?: UserInfoDataProp;
   loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
@@ -54,11 +55,10 @@ export async function getInitialState(): Promise<{
       return msg;
     } catch (error) {
       localStorage.clear();
-      history.push(PATH.landingPage);
     }
     return undefined;
   };
-  if (history.location.pathname !== PATH.landingPage) {
+  if (![PATH.landingPage, PATH.resetPassword].includes(history.location.pathname)) {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
@@ -83,16 +83,22 @@ ConfigProvider.config({
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   console.log('initialState', initialState);
   return {
+    title: 'TISC',
+    logo: false,
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;
       const token = localStorage.getItem('access_token') || '';
-      if (token && location.pathname === PATH.landingPage) {
+      if (token && [PATH.landingPage, PATH.resetPassword].includes(location.pathname)) {
         history.push(PATH.homePage);
       }
-      if (!token && location.pathname !== PATH.landingPage) {
+      if (!token) {
+        if ([PATH.landingPage, PATH.resetPassword].includes(location.pathname)) {
+          history.push(`${location.pathname}${location.search}`);
+          return;
+        }
         history.push(PATH.landingPage);
       }
     },
