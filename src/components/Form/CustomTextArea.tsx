@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input } from 'antd';
-import { FC } from 'react';
-import { CustomTextAreaProps } from './types';
+import type { FC } from 'react';
+import type { CustomTextAreaProps } from './types';
 import style from './styles/TextArea.less';
 import classNames from 'classnames';
 

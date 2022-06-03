@@ -1,5 +1,5 @@
-import { InputProps } from 'antd';
-import { TextAreaProps } from 'antd/lib/input';
+import type { InputProps } from 'antd';
+import type { TextAreaProps } from 'antd/lib/input';
 
 export interface FormGroupProps {
   layout?: 'horizontal' | 'vertical';

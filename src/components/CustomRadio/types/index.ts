@@ -1,4 +1,4 @@
-import { CheckboxOptionType } from 'antd';
+import type { CheckboxOptionType } from 'antd';
 
 export type RadioValue = {
   value: string;

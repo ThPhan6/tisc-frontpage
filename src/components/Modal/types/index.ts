@@ -1,4 +1,4 @@
-import { ModalProps } from 'antd';
+import type { ModalProps } from 'antd';
 
 export interface CustomModalProps extends ModalProps {
   containerClass?: string;
