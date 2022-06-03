@@ -10,6 +10,7 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import { UserOutlined } from '@ant-design/icons';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { CustomRadio } from '@/components/CustomRadio';
+import { CustomInputEditor } from '@/components/Form/InputEditor';
 
 const Welcome: React.FC = () => {
   const optionsRadio = [
@@ -19,6 +20,11 @@ const Welcome: React.FC = () => {
   return (
     <PageContainer>
       <Card>
+        {/* Input Editor */}
+        <div className={styles.card}>
+          <CustomInputEditor />
+        </div>
+
         {/* radio */}
         <FormGroup label="Test Radio horizontal" tooltip="How are you">
           <CustomRadio options={optionsRadio} defaultValue={optionsRadio[0]} />
