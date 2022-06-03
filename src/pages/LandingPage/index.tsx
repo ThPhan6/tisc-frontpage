@@ -12,7 +12,7 @@ import graphic from '../../assets/graphic.png';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { LoginModal } from './components/LoginModal';
 import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
-import { loginMiddleware, resendEmailMiddleware, resetPasswordMiddleware } from './services/api';
+import { loginMiddleware, forgotPasswordMiddleware, resetPasswordMiddleware } from './services/api';
 import { message } from 'antd';
 import { history } from 'umi';
 import { MESSENGER_NOTIFICATION } from '@/constants/message';
@@ -59,7 +59,7 @@ const LandingPage = () => {
 
   const handleForgotPassword = (email: string) => {
     isLoading.setValue(true);
-    resendEmailMiddleware('forgot_password', email, async (type: STATUS_RESPONSE, msg?: string) => {
+    forgotPasswordMiddleware({ email: email }, async (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         openTiscLogin.setValue(false);
         message.success(MESSENGER_NOTIFICATION.RESET_PASSWORD);
