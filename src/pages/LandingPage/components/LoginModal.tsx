@@ -1,7 +1,8 @@
 import styles from './LoginModal.less';
 import { CustomModal } from '@/components/Modal';
-import { FC, useEffect, useState } from 'react';
-import { InputValueProp, LoginModalProps } from './types';
+import type { FC } from 'react';
+import { useEffect, useState } from 'react';
+import type { InputValueProp, LoginModalProps } from '../types';
 import { BodyText, MainTitle } from '@/components/Typography';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';
@@ -11,10 +12,15 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-ico
 import { useBoolean, useString } from '@/helper/hook';
 import classNames from 'classnames';
 import CustomButton from '@/components/Button';
-import { ERROR_MESSAGE } from '@/constant/message';
+import { ERROR_MESSAGE } from '@/constants/message';
 import { validateEmail } from '@/helper/utils';
 
-export const LoginModal: FC<LoginModalProps> = ({ theme = 'default', visible }) => {
+export const LoginModal: FC<LoginModalProps> = ({
+  theme = 'default',
+  visible,
+  handleSubmitLogin,
+  handleForgotPassword,
+}) => {
   const [inputValue, setInputValue] = useState<InputValueProp>({
     email: '',
     password: '',
@@ -67,6 +73,27 @@ export const LoginModal: FC<LoginModalProps> = ({ theme = 'default', visible }) 
     });
   };
 
+  const handleSubmit = () => {
+    if (showForgotPassword.value) {
+      handleForgotPassword(verifyEmail.value);
+      return;
+    }
+    handleSubmitLogin({
+      email: inputValue.email,
+      password: inputValue.password,
+    });
+  };
+
+  const onKeyPress = (event: React.KeyboardEvent<HTMLDivElement>): void => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (handleDisableButton()) {
+        return;
+      }
+      handleSubmit();
+    }
+  };
+
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
 
   return (
@@ -101,6 +128,7 @@ export const LoginModal: FC<LoginModalProps> = ({ theme = 'default', visible }) 
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
             disabled={showForgotPassword.value}
             onChange={handleOnChange}
+            onPressEnter={onKeyPress}
             name="email"
           />
           <CustomInput
@@ -117,6 +145,7 @@ export const LoginModal: FC<LoginModalProps> = ({ theme = 'default', visible }) 
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
             disabled={showForgotPassword.value}
             onChange={handleOnChange}
+            onPressEnter={onKeyPress}
             name="password"
           />
           <div className={styles['forgot-password']}>
@@ -143,6 +172,7 @@ export const LoginModal: FC<LoginModalProps> = ({ theme = 'default', visible }) 
                 borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
                 value={verifyEmail.value}
                 onChange={(e) => verifyEmail.setValue(e.target.value)}
+                onPressEnter={onKeyPress}
               />
             )}
           </div>
@@ -162,6 +192,7 @@ export const LoginModal: FC<LoginModalProps> = ({ theme = 'default', visible }) 
             disabled={handleDisableButton()}
             buttonClass={styles.submit}
             width={showForgotPassword.value ? '212px' : theme === 'dark' ? '117px' : '112px'}
+            onClick={handleSubmit}
           >
             {showForgotPassword.value
               ? 'Submit & Check your email'

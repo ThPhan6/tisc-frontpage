@@ -1,7 +1,7 @@
 import { Input } from 'antd';
-import { FC } from 'react';
+import type { FC } from 'react';
 import style from './styles/Input.less';
-import { CustomInputProps } from './types';
+import type { CustomInputProps } from './types';
 import classNames from 'classnames';
 
 export const CustomInput: FC<CustomInputProps> = ({
@@ -9,6 +9,7 @@ export const CustomInput: FC<CustomInputProps> = ({
   focusColor,
   borderBottomColor,
   containerClass,
+  type,
   ...props
 }) => {
   const setDisabled = () => {
@@ -42,7 +43,11 @@ export const CustomInput: FC<CustomInputProps> = ({
 
   return (
     <div className={classNames(classNameInput, containerClass)}>
-      <Input {...props} />
+      {type === 'password' ? (
+        <Input.Password type={type} {...props} />
+      ) : (
+        <Input type={type} {...props} />
+      )}
     </div>
   );
 };

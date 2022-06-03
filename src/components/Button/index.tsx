@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './styles/index.less';
-import { CustomButtonProps } from './types';
+import type { CustomButtonProps } from './types';
 
 const CustomButton: React.FC<CustomButtonProps> = ({
   properties = 'standard',

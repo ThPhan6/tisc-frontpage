@@ -11,25 +11,88 @@ import { ReactComponent as GraphicTabletIcon } from '../../assets/icons/graphic-
 import graphic from '../../assets/graphic.png';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { LoginModal } from './components/LoginModal';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
+import { loginMiddleware, forgotPasswordMiddleware, resetPasswordMiddleware } from './services/api';
+import { message } from 'antd';
+import { history } from 'umi';
+import { MESSENGER_NOTIFICATION } from '@/constants/message';
+import { STATUS_RESPONSE } from '@/constants/util';
+import LoadingPageCustomize from '@/components/LoadingPage';
+import { PATH } from '@/constants/path';
+import { useEffect } from 'react';
+import { ResetPasswordModal } from './components/ResetPasswordModal';
+import type { LoginBodyProp, ResetPasswordBodyProp } from './types';
+import { redirectAfterLogin } from '@/helper/utils';
 
 const LandingPage = () => {
-  const openLogin = useBoolean();
+  const emailResetPwd = useQuery().get('email');
+  const tokenResetPwd = useQuery().get('token');
+
+  const { fetchUserInfo } = useCustomInitialState();
+  const openTiscLogin = useBoolean();
+  const openResetPwd = useBoolean();
+  const isLoading = useBoolean();
+
+  useEffect(() => {
+    if ((!emailResetPwd || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
+      history.push(PATH.landingPage);
+      return;
+    } else {
+      openResetPwd.setValue(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [emailResetPwd]);
+
+  const handleSubmitLogin = (data: LoginBodyProp) => {
+    isLoading.setValue(true);
+    loginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
+      if (type === STATUS_RESPONSE.SUCCESS) {
+        message.success(MESSENGER_NOTIFICATION.LOGIN_SUCCESS);
+        await fetchUserInfo();
+        redirectAfterLogin();
+      } else {
+        message.error(msg);
+      }
+      isLoading.setValue(false);
+    });
+  };
+
+  const handleForgotPassword = (email: string) => {
+    isLoading.setValue(true);
+    forgotPasswordMiddleware({ email: email }, async (type: STATUS_RESPONSE, msg?: string) => {
+      if (type === STATUS_RESPONSE.SUCCESS) {
+        openTiscLogin.setValue(false);
+        message.success(MESSENGER_NOTIFICATION.RESET_PASSWORD);
+      } else {
+        message.error(msg);
+      }
+      isLoading.setValue(false);
+    });
+  };
+
+  const handleResetPassword = (data: ResetPasswordBodyProp) => {
+    isLoading.setValue(true);
+    resetPasswordMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
+      if (type === STATUS_RESPONSE.SUCCESS) {
+        message.success(MESSENGER_NOTIFICATION.RESET_PASSWORD_SUCCESS);
+        await fetchUserInfo();
+        redirectAfterLogin();
+      } else {
+        message.error(msg);
+      }
+      isLoading.setValue(false);
+    });
+  };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <LogoBeta />
-        <CustomButton
-          onClick={() => openLogin.setValue(true)}
-          icon={<SingleRight />}
-          width="104px"
-          buttonClass={styles['login-button']}
-        >
-          Log in
-        </CustomButton>
-      </div>
-      <div className={styles.main}>
+    <div className={styles.login}>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <LogoBeta />
+          <CustomButton icon={<SingleRight />} width="104px" buttonClass={styles['login-button']}>
+            Log in
+          </CustomButton>
+        </div>
         <div className={styles.content}>
           <div className={styles.summary}>
             <div className={styles.message}>
@@ -117,6 +180,8 @@ const LandingPage = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div className={styles['footer-container']}>
         <div className={styles.footer}>
           <BodyText level={5} fontFamily="Roboto">
             © TISC 2022
@@ -129,13 +194,37 @@ const LandingPage = () => {
                 </BodyText>
               ))}
             </div>
-            <BodyText level={5} fontFamily="Roboto" customClass={styles['tisc-login']}>
+
+            <BodyText
+              level={5}
+              fontFamily="Roboto"
+              customClass={styles['tisc-login']}
+              onClick={() => {
+                openTiscLogin.setValue(true);
+              }}
+            >
               TISC Log in
             </BodyText>
           </div>
         </div>
       </div>
-      <LoginModal visible={openLogin} />
+      <LoginModal
+        visible={openTiscLogin}
+        theme="dark"
+        handleSubmitLogin={handleSubmitLogin}
+        handleForgotPassword={handleForgotPassword}
+      />
+      {emailResetPwd && (
+        <ResetPasswordModal
+          visible={openResetPwd}
+          handleSubmit={handleResetPassword}
+          resetData={{
+            email: emailResetPwd,
+            token: tokenResetPwd || '',
+          }}
+        />
+      )}
+      {isLoading.value && <LoadingPageCustomize />}
     </div>
   );
 };

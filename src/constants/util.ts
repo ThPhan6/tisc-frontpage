@@ -1,0 +1,9 @@
+export enum STATUS_RESPONSE {
+  SUCCESS = 'SUCCESS',
+  ERROR = 'ERROR',
+}
+
+export enum STATUS_RESPONSE_CODE {
+  ERROR = 400,
+  SUCCESS = 200,
+}

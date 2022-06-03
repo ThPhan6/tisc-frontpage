@@ -1,22 +1,13 @@
 ﻿export default [
   {
-    path: '/landing-page',
+    path: '/',
     component: './LandingPage',
     layout: false,
   },
   {
-    path: '/user',
+    path: '/reset-password',
+    component: './LandingPage',
     layout: false,
-    routes: [
-      {
-        name: 'login',
-        path: '/user/login',
-        component: './LandingPage',
-      },
-      {
-        component: './404',
-      },
-    ],
   },
   {
     path: '/welcome',
@@ -47,10 +38,10 @@
     path: '/list',
     component: './TableList',
   },
-  {
-    path: '/',
-    redirect: '/welcome',
-  },
+  // {
+  //   path: '/',
+  //   redirect: '/welcome',
+  // },
   {
     component: './404',
   },

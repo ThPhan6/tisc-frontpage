@@ -1,6 +1,7 @@
 import { Radio, Space } from 'antd';
-import { FC, useState } from 'react';
-import { CustomRadioProps } from './types';
+import type { FC } from 'react';
+import { useState } from 'react';
+import type { CustomRadioProps } from './types';
 import style from './styles/index.less';
 import classNames from 'classnames';
 import { CustomInput } from '../Form/CustomInput';

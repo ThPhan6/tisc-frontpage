@@ -1,7 +1,7 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { BodyText } from '../Typography';
 import style from './styles/Form.less';
-import { FormGroupProps } from './types';
+import type { FormGroupProps } from './types';
 import { ReactComponent as QuestionIcon } from '../../assets/icons/question-icon.svg';
 import { Tooltip } from 'antd';
 
@@ -44,7 +44,7 @@ export const FormGroup: FC<FormGroupProps> = ({
       <div className={style['children-wrapper']}>
         {children}
         {message && (
-          <div className={style['message']}>
+          <div className={style.message}>
             <BodyText fontFamily="Roboto" level={6} customClass={style[`${messageType}`]}>
               {message}
             </BodyText>

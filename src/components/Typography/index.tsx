@@ -1,5 +1,5 @@
-import { FC } from 'react';
-import { BodyTextProps, CustomTypography, MainTitleProps } from './types';
+import type { FC } from 'react';
+import type { BodyTextProps, CustomTypography, MainTitleProps } from './types';
 import Style from './styles/index.less';
 
 export const Title: FC<CustomTypography> = ({
