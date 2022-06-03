@@ -21,9 +21,7 @@ const Welcome: React.FC = () => {
     <PageContainer>
       <Card>
         {/* Input Editor */}
-        <div className={styles.card}>
-          <CustomInputEditor />
-        </div>
+        <CustomInputEditor />
 
         {/* radio */}
         <FormGroup label="Test Radio horizontal" tooltip="How are you">

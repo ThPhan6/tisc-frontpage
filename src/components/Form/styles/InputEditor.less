@@ -4,12 +4,18 @@
   }
 
   :global(.ql-editor) {
+    padding: 15px 0;
     word-break: break-word;
   }
 
   :global(.ql-container.ql-snow) {
     border: none;
     border-bottom: 0.5px solid #ccc;
+  }
+
+  :global(.ql-editor.ql-blank::before) {
+    right: 0;
+    left: 0;
   }
 }
 
