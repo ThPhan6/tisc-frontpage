@@ -7,8 +7,6 @@ import { CustomInput } from '../Form/CustomInput';
 
 export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   direction,
-  checked,
-  defaultChecked,
   otherInput,
   inputPlaceholder = 'type here',
   options,
@@ -17,8 +15,23 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
+  const [checkboxValue, setChecboxValue] = useState({ value: '', label: '', checked: false });
+  const isChecked = false;
   const onChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setChecboxValue({
+      value: 'other',
+      label: e.target.value,
+      checked: e.target.checked,
+    });
     setInputValue(e.target.value);
+  };
+  const onChangeValue = (e: any) => {
+    const newValue = {
+      value: e.target.value,
+      label: e.target.value === 'other' ? inputValue : e.target?.label || 'label ' + e.target.value,
+      checked: e.target.checked,
+    };
+    setChecboxValue({ ...newValue });
   };
   return (
     <div
@@ -35,16 +48,18 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
             {isCheckboxList ? (
               <div className={style['item-wrapper']}>
                 <span>{option.label}</span>
-                <Checkbox {...option} />
+                <Checkbox {...option} checked={checkboxValue.checked} onChange={onChangeValue} />
               </div>
             ) : (
-              <Checkbox {...option}>{option.label}</Checkbox>
+              <Checkbox {...option} onChange={onChangeValue}>
+                {option.label}
+              </Checkbox>
             )}
           </div>
         ))}
         {otherInput && (
           <div className={isCheckboxList && style['other-field-checkbox-list']}>
-            <Checkbox value={'other'}>
+            <Checkbox value={'other'} onChange={onChangeValue}>
               <div className={style['input-wrapper']}>
                 Other
                 <CustomInput
@@ -52,6 +67,13 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   placeholder={inputPlaceholder}
                   value={inputValue}
                   onChange={onChangeInputValue}
+                  onClick={() =>
+                    setChecboxValue({
+                      value: 'other',
+                      label: inputValue,
+                      checked: !isChecked,
+                    })
+                  }
                 />
               </div>
             </Checkbox>
