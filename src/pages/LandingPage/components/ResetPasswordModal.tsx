@@ -10,8 +10,8 @@ import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';
 import { ReactComponent as LockedIcon } from '@/assets/icons/circle-pass-icon.svg';
 import CustomButton from '@/components/Button';
 import { validatePassword } from '@/helper/utils';
-import { ERROR_MESSAGE } from '@/constants/message';
-import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
+import { MESSAGE_ERROR } from '@/constants/message';
+import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
 
@@ -27,13 +27,13 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
 
   const setErrorMessage = () => {
     if (resetInputValue.password && !validatePassword(resetInputValue.password)) {
-      return ERROR_MESSAGE.PASSWORD;
+      return MESSAGE_ERROR.PASSWORD;
     }
     if (
       resetInputValue.confirmPassword &&
       resetInputValue.confirmPassword !== resetInputValue.password
     ) {
-      return ERROR_MESSAGE.CONFIRM_PASSWORD;
+      return MESSAGE_ERROR.CONFIRM_PASSWORD;
     }
   };
 

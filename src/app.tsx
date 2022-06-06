@@ -1,8 +1,7 @@
-import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { PageLoading } from '@ant-design/pro-layout';
 import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
 import { history } from 'umi';
-import Footer from '@/components/Footer';
 import defaultSettings from '../config/defaultSettings';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -88,7 +87,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     logo: false,
     disableContentMargin: false,
     headerRender: () => <Header />,
-    footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;
       const token = localStorage.getItem('access_token') || '';

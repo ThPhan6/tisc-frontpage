@@ -1,4 +1,4 @@
-import { MESSENGER_NOTIFICATION } from '@/constants/message';
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { request } from 'umi';
 import type {
@@ -21,7 +21,7 @@ export async function loginMiddleware(
       callback(STATUS_RESPONSE.SUCCESS);
     })
     .catch((error) => {
-      callback(STATUS_RESPONSE.ERROR, error?.data?.message || MESSENGER_NOTIFICATION.LOGIN_ERROR);
+      callback(STATUS_RESPONSE.ERROR, error?.data?.message || MESSAGE_NOTIFICATION.LOGIN_ERROR);
     });
 }
 
@@ -40,7 +40,7 @@ export async function resetPasswordMiddleware(
     .catch((error) => {
       callback(
         STATUS_RESPONSE.ERROR,
-        error?.data?.message || MESSENGER_NOTIFICATION.RESET_PASSWORD_SUCCESS,
+        error?.data?.message || MESSAGE_NOTIFICATION.RESET_PASSWORD_SUCCESS,
       );
     });
 }

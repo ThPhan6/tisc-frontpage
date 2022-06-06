@@ -20,3 +20,18 @@ export const redirectAfterLogin = async () => {
   const { redirect } = query as { redirect: string };
   pushTo(redirect || PATH.homePage);
 };
+
+export const getBase64 = (file: any): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
+
+export const isShowErrorEmail = (email: string) => {
+  if (!email) {
+    return true;
+  }
+  return validateEmail(email);
+};

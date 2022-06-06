@@ -6,6 +6,9 @@ export const PATH = {
   // private path
   profiles: '/profiles',
   homePage: '/welcome',
+
+  // Tisc
+  //
 };
 
 export const PUBLIC_PATH = [PATH.landingPage, PATH.resetPassword];
