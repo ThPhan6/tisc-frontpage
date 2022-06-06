@@ -1,5 +1,6 @@
-import { history } from 'umi';
 import { PATH } from '@/constants/path';
+import { history } from 'umi';
+import { pushTo } from './history';
 
 export const REGEX_PASSWORD =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_#^()+=~`{}|/:;'"<>[,.-])[A-Za-z\d@$!%*?&_#^()+=~`{}|/:;'"<>[,.-]{8,}$/;
@@ -17,5 +18,5 @@ export const redirectAfterLogin = async () => {
   if (!history) return;
   const { query } = history.location;
   const { redirect } = query as { redirect: string };
-  history.push(redirect || PATH.homePage);
+  pushTo(redirect || PATH.homePage);
 };

@@ -10,6 +10,10 @@
     layout: false,
   },
   {
+    path: '/profiles',
+    component: './ProfilesPage',
+  },
+  {
     path: '/welcome',
     name: 'welcome',
     icon: 'smile',

@@ -13,7 +13,7 @@ import { validatePassword } from '@/helper/utils';
 import { ERROR_MESSAGE } from '@/constants/message';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 import { PATH } from '@/constants/path';
-import { history } from '@/.umi/core/history';
+import { pushTo } from '@/helper/history';
 
 export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
   visible,
@@ -78,7 +78,7 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
       onOk={() => visible.setValue(false)}
       onCancel={() => {
         visible.setValue(false);
-        history.push(PATH.landingPage);
+        pushTo(PATH.landingPage);
       }}
       footer={false}
     >
