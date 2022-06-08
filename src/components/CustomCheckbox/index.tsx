@@ -12,27 +12,39 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   options,
   onChange,
   isCheckboxList,
+  defaultValue,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
-  const [checkboxValue, setChecboxValue] = useState({ value: '', label: '', checked: false });
-  const isChecked = false;
+  const [checkboxValue, setChecboxValue] = useState(defaultValue ? [defaultValue] : []);
+
+  const onChangeValue = (checkedValues: any) => {
+    const checkbox_value = checkedValues.map((value: string) =>
+      checkbox_value === 'other'
+        ? { value: 'other', label: inputValue, checked: true }
+        : options.filter((item) => item.value === value)[0],
+    );
+    setChecboxValue(checkbox_value);
+    if (onChange) {
+      onChange({ ...checkbox_value });
+    }
+  };
+
+  const handleClickInput = () => {
+    const checkOtherInput =
+      checkboxValue.filter((checkbox) => checkbox.value === 'other').length === 0;
+    if (checkOtherInput) {
+      setChecboxValue([...checkboxValue, { value: 'other', label: inputValue, checked: true }]);
+    }
+  };
+
   const onChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setChecboxValue({
-      value: 'other',
-      label: e.target.value,
-      checked: e.target.checked,
-    });
     setInputValue(e.target.value);
+    if (onChange) {
+      onChange({ value: 'other', label: e.target.value });
+    }
   };
-  const onChangeValue = (e: any) => {
-    const newValue = {
-      value: e.target.value,
-      label: e.target.value === 'other' ? inputValue : e.target?.label || 'label ' + e.target.value,
-      checked: e.target.checked,
-    };
-    setChecboxValue({ ...newValue });
-  };
+
   return (
     <div
       className={classNames(
@@ -42,24 +54,26 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
         style['color-checkbox-checked'],
       )}
     >
-      <Checkbox.Group {...props}>
+      <Checkbox.Group
+        {...props}
+        value={checkboxValue.map((checkbox) => checkbox.value)}
+        onChange={onChangeValue}
+      >
         {options.map((option, index) => (
           <div key={index}>
             {isCheckboxList ? (
               <div className={style['item-wrapper']}>
                 <span>{option.label}</span>
-                <Checkbox {...option} checked={checkboxValue.checked} onChange={onChangeValue} />
+                <Checkbox {...option} />
               </div>
             ) : (
-              <Checkbox {...option} onChange={onChangeValue}>
-                {option.label}
-              </Checkbox>
+              <Checkbox {...option}>{option.label}</Checkbox>
             )}
           </div>
         ))}
         {otherInput && (
           <div className={isCheckboxList && style['other-field-checkbox-list']}>
-            <Checkbox value={'other'} onChange={onChangeValue}>
+            <Checkbox value={'other'}>
               <div className={style['input-wrapper']}>
                 Other
                 <CustomInput
@@ -67,13 +81,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   placeholder={inputPlaceholder}
                   value={inputValue}
                   onChange={onChangeInputValue}
-                  onClick={() =>
-                    setChecboxValue({
-                      value: 'other',
-                      label: inputValue,
-                      checked: !isChecked,
-                    })
-                  }
+                  onClick={handleClickInput}
                 />
               </div>
             </Checkbox>

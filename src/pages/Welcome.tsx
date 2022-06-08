@@ -19,36 +19,51 @@ const Welcome: React.FC = () => {
   ];
 
   const optionsCheckbox = [
-    { label: 'checkbox 1', value: '1' },
-    { label: 'checkbox 2', value: '2' },
+    { label: 'checkbox 1', value: '1', checked: true },
+    { label: 'checkbox 2', value: '2', checked: true },
   ];
+
   return (
     <PageContainer>
       <Card>
         {/* checkbox */}
         <FormGroup label="Test Checkbox horizontal">
-          <CustomCheckbox options={optionsCheckbox} direction="horizontal" />
+          <CustomCheckbox
+            options={optionsCheckbox}
+            direction="horizontal"
+            defaultValue={optionsCheckbox[0]}
+          />
         </FormGroup>
-        {/* <FormGroup label="Test Checkbox horizontal" tooltip="How are you">
-          <CustomCheckbox options={optionsCheckbox} direction="horizontal" />
-        </FormGroup>
-        <FormGroup label="Test Checkbox horizontal" tooltip="How are you" required>
-          <CustomCheckbox options={optionsCheckbox} direction="horizontal" />
-        </FormGroup>
-        <FormGroup label="Test Checkbox horizontal" required>
-          <CustomCheckbox options={optionsCheckbox} direction="horizontal" />
-        </FormGroup> */}
         <FormGroup label="Checkbox horizontal - other input" tooltip="How are you">
-          <CustomCheckbox direction="horizontal" otherInput options={optionsCheckbox} />
+          <CustomCheckbox
+            direction="horizontal"
+            otherInput
+            options={optionsCheckbox}
+            defaultValue={optionsCheckbox[0]}
+          />
         </FormGroup>
         <FormGroup label="Checkbox vertical" tooltip="How are you" layout="vertical">
-          <CustomCheckbox direction="vertical" options={optionsCheckbox} />
+          <CustomCheckbox
+            direction="vertical"
+            options={optionsCheckbox}
+            defaultValue={optionsCheckbox[0]}
+          />
         </FormGroup>
         <FormGroup label="Checkbox vertical - other input" tooltip="How are you" layout="vertical">
-          <CustomCheckbox direction="vertical" otherInput options={optionsCheckbox} />
+          <CustomCheckbox
+            direction="vertical"
+            otherInput
+            options={optionsCheckbox}
+            defaultValue={optionsCheckbox[0]}
+          />
         </FormGroup>
         <FormGroup label="Checkbox list" tooltip="How are you" layout="vertical">
-          <CustomCheckbox direction="vertical" isCheckboxList options={optionsCheckbox} />
+          <CustomCheckbox
+            direction="vertical"
+            isCheckboxList
+            options={optionsCheckbox}
+            defaultValue={optionsCheckbox[0]}
+          />
         </FormGroup>
         <FormGroup label="Checkbox list - other input" tooltip="How are you" layout="vertical">
           <CustomCheckbox
@@ -56,6 +71,7 @@ const Welcome: React.FC = () => {
             otherInput
             isCheckboxList
             options={optionsCheckbox}
+            defaultValue={optionsCheckbox[0]}
           />
         </FormGroup>
 
