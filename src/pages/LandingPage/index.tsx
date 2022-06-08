@@ -15,7 +15,7 @@ import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
 import { loginMiddleware, forgotPasswordMiddleware, resetPasswordMiddleware } from './services/api';
 import { message } from 'antd';
 import { history } from 'umi';
-import { MESSENGER_NOTIFICATION } from '@/constants/message';
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { STATUS_RESPONSE } from '@/constants/util';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { PATH } from '@/constants/path';
@@ -47,7 +47,7 @@ const LandingPage = () => {
     isLoading.setValue(true);
     loginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
-        message.success(MESSENGER_NOTIFICATION.LOGIN_SUCCESS);
+        message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
         await fetchUserInfo();
         redirectAfterLogin();
       } else {
@@ -62,7 +62,7 @@ const LandingPage = () => {
     forgotPasswordMiddleware({ email: email }, async (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         openTiscLogin.setValue(false);
-        message.success(MESSENGER_NOTIFICATION.RESET_PASSWORD);
+        message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD);
       } else {
         message.error(msg);
       }
@@ -74,7 +74,7 @@ const LandingPage = () => {
     isLoading.setValue(true);
     resetPasswordMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
-        message.success(MESSENGER_NOTIFICATION.RESET_PASSWORD_SUCCESS);
+        message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD_SUCCESS);
         await fetchUserInfo();
         redirectAfterLogin();
       } else {

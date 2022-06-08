@@ -10,10 +10,48 @@
     layout: false,
   },
   {
+    path: '/profiles',
+    component: './ProfilesPage',
+  },
+  {
     path: '/welcome',
     name: 'welcome',
     icon: 'smile',
     component: './Welcome',
+  },
+  {
+    path: '/products',
+    name: 'PRODUCTS',
+    icon: 'smile',
+    routes: [
+      {
+        path: '/products/categories',
+        name: 'Categories',
+        icon: 'smile',
+        component: './Welcome',
+      },
+      {
+        path: '/products/basis',
+        name: 'Basis',
+        icon: 'smile',
+        component: './Welcome',
+      },
+      {
+        path: '/products/attributes',
+        name: 'Attributes',
+        icon: 'smile',
+        component: './Welcome',
+      },
+      {
+        path: '/products/configurations',
+        name: 'Configurations',
+        icon: 'smile',
+        component: './Welcome',
+      },
+      {
+        component: './404',
+      },
+    ],
   },
   {
     path: '/admin',
