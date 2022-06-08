@@ -18,9 +18,10 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   const [inputValue, setInputValue] = useState('');
   const [checkboxValue, setChecboxValue] = useState(defaultValue ? [defaultValue] : []);
 
+  console.log('checkboxValue', checkboxValue);
   const onChangeValue = (checkedValues: any) => {
     const checkbox_value = checkedValues.map((value: string) =>
-      checkbox_value === 'other'
+      value === 'other'
         ? { value: 'other', label: inputValue, checked: true }
         : options.filter((item) => item.value === value)[0],
     );
