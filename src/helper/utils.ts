@@ -1,4 +1,4 @@
-import { history } from '@/.umi/core/history';
+import { history } from 'umi';
 import { PATH } from '@/constants/path';
 
 export const REGEX_PASSWORD =
