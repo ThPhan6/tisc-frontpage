@@ -24,12 +24,22 @@ export interface CustomTextAreaProps extends TextAreaProps {
   borderBottomColor?: 'mono' | 'mono-medium';
 }
 
-export interface CustomInputEditorProps extends TextAreaProps {
-  placeholder?: 'Type text...';
+export interface CustomInputEditorProps {
   layout?: 'horizontal' | 'vertical';
-  containerClass?: string;
+  placeholder?: string;
+  tooltip?: string;
+  optional?: boolean;
+  required?: boolean;
+  label: string;
+  handleOnChange?: (value: { text: string; html: string }) => void;
+  customClass?: string;
 }
 
-export interface CustomToolbarProps extends TextAreaProps {
+export interface CustomToolbarProps {
   toolbarId: string;
+}
+
+export interface EditorServiceProps {
+  getText: (index?: number, length?: number) => string;
+  getHTML: () => string;
 }

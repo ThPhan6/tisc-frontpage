@@ -8,6 +8,7 @@ import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { UserOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Card } from 'antd';
+import classNames from 'classnames';
 import React from 'react';
 import { ReactComponent as SingleRightIcon } from '../assets/icons/single-right.svg';
 import styles from './Welcome.less';
@@ -17,16 +18,53 @@ const Welcome: React.FC = () => {
     { label: 'radio button 1', value: '1' },
     { label: 'radio button 2', value: '2' },
   ];
+
   return (
     <PageContainer>
       <Card>
         {/* Input Editor */}
-
         <div className={styles.mb}>
-          <CustomInputEditor placeholder="Type text..." layout="horizontal" />
+          <CustomInputEditor
+            label="Field Name"
+            tooltip="How are you"
+            placeholder="Type text..."
+            layout="horizontal"
+          />
         </div>
         <div className={styles.mb}>
-          <CustomInputEditor placeholder="Type text..." layout="vertical" />
+          <CustomInputEditor
+            label="Field Name"
+            tooltip="How are you"
+            placeholder="type text..."
+            layout="vertical"
+          />
+        </div>
+        <div className={styles.mb}>
+          <CustomInputEditor
+            label="Field Name"
+            tooltip="How are you"
+            optional={true}
+            placeholder="Type text..."
+            layout="vertical"
+          />
+        </div>
+        <div className={styles.mb}>
+          <CustomInputEditor
+            label="Document"
+            required={true}
+            placeholder="type text..."
+            layout="vertical"
+            customClass={classNames(styles['rile-0'], styles['px-0'], styles['resize-none'])}
+          />
+        </div>
+        <div className={styles.mb}>
+          <CustomInputEditor
+            label="Message"
+            required={true}
+            placeholder="type text here"
+            layout="vertical"
+            customClass={classNames(styles['resize-none'])}
+          />
         </div>
 
         {/* radio */}
