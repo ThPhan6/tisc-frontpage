@@ -10,6 +10,8 @@ export const CustomInput: FC<CustomInputProps> = ({
   borderBottomColor,
   containerClass,
   type,
+  status,
+  fromLandingPage,
   ...props
 }) => {
   const setDisabled = () => {
@@ -25,8 +27,10 @@ export const CustomInput: FC<CustomInputProps> = ({
 
   const classNameInputDefault = classNames(
     style.input,
-    focusColor && style[`${focusColor}-focus`],
     borderBottomColor && style[`${borderBottomColor}-border-bottom-color`],
+    fromLandingPage && style[`${theme}-focus-normal`],
+    status &&
+      style[`${fromLandingPage ? (status === 'error' ? 'warning' : 'error') : status}-status`],
     style[`${theme}-theme`],
     setDisabled(),
   );
@@ -34,7 +38,11 @@ export const CustomInput: FC<CustomInputProps> = ({
   const classNameInputAffix = classNames(
     style['input-affix'],
     borderBottomColor && style[`${borderBottomColor}-border-bottom-color-affix`],
-    focusColor && style[`${focusColor}-focus-affix`],
+    fromLandingPage && style[`${theme}-focus-normal-affix`],
+    status &&
+      style[
+        `${fromLandingPage ? (status === 'error' ? 'warning' : 'error') : status}-status-affix`
+      ],
     style[`${theme}-theme-affix`],
     setDisabled(),
   );

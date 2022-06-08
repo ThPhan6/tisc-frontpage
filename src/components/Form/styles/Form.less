@@ -10,6 +10,7 @@
 }
 
 .children-wrapper {
+  position: relative;
   flex: 1;
 }
 
@@ -17,7 +18,7 @@
 .label {
   display: flex;
   align-items: center;
-  height: 32px;
+  height: 24px;
   .optional {
     margin-left: 4px;
     color: @mono-color-dark;
@@ -36,11 +37,13 @@
 }
 
 .label-margin {
+  height: 32px;
   margin: 0 8px 0 0;
 }
 
 // message
 .message {
+  position: absolute;
   display: flex;
   align-items: center;
   min-height: 24px;

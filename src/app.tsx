@@ -1,9 +1,7 @@
-import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { PageLoading } from '@ant-design/pro-layout';
 import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
 import { history } from 'umi';
-import RightContent from '@/components/RightContent';
-import Footer from '@/components/Footer';
 import defaultSettings from '../config/defaultSettings';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -11,8 +9,9 @@ import store, { persistor } from './reducers';
 import { PersistGate } from 'redux-persist/integration/react';
 import { ConfigProvider } from 'antd';
 import { getUserInfoMiddleware } from './pages/LandingPage/services/api';
-import { PATH } from './constants/path';
+import { PATH, PUBLIC_PATH } from './constants/path';
 import type { UserInfoDataProp } from './pages/LandingPage/types';
+import Header from '@/components/Header';
 
 // config request umi
 const errorHandler = function (error: any) {
@@ -49,6 +48,7 @@ export async function getInitialState(): Promise<{
   loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
+  const token = localStorage.getItem('access_token') || '';
   const fetchUserInfo = async () => {
     try {
       const msg = await getUserInfoMiddleware();
@@ -58,7 +58,7 @@ export async function getInitialState(): Promise<{
     }
     return undefined;
   };
-  if (![PATH.landingPage, PATH.resetPassword].includes(history.location.pathname)) {
+  if (token) {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
@@ -85,20 +85,20 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
     title: 'TISC',
     logo: false,
-    rightContentRender: () => <RightContent />,
     disableContentMargin: false,
-    footerRender: () => <Footer />,
+    headerRender: () => <Header />,
     onPageChange: () => {
       const { location } = history;
       const token = localStorage.getItem('access_token') || '';
-      if (token && [PATH.landingPage, PATH.resetPassword].includes(location.pathname)) {
-        history.push(PATH.homePage);
+      if (PUBLIC_PATH.includes(location.pathname)) {
+        if (token) {
+          history.push(PATH.homePage);
+        } else {
+          history.push(`${location.pathname}${location.search}`);
+        }
+        return;
       }
       if (!token) {
-        if ([PATH.landingPage, PATH.resetPassword].includes(location.pathname)) {
-          history.push(`${location.pathname}${location.search}`);
-          return;
-        }
         history.push(PATH.landingPage);
       }
     },

@@ -8,12 +8,12 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';
 import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
 import { ReactComponent as LockedForgotIcon } from '@/assets/icons/lock-forgot-icon.svg';
-import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
+import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 import { useBoolean, useString } from '@/helper/hook';
 import classNames from 'classnames';
 import CustomButton from '@/components/Button';
-import { ERROR_MESSAGE } from '@/constants/message';
-import { validateEmail } from '@/helper/utils';
+import { MESSAGE_ERROR } from '@/constants/message';
+import { isShowErrorMessage, validateEmail } from '@/helper/utils';
 
 export const LoginModal: FC<LoginModalProps> = ({
   theme = 'default',
@@ -55,14 +55,14 @@ export const LoginModal: FC<LoginModalProps> = ({
   const setErrorMessage = () => {
     if (!showForgotPassword.value) {
       if (inputValue.email && !validateEmail(inputValue.email)) {
-        return ERROR_MESSAGE.EMAIL;
+        return MESSAGE_ERROR.EMAIL;
       }
       if (inputValue.password && inputValue.password.length < 8) {
-        return ERROR_MESSAGE.PASSWORD;
+        return MESSAGE_ERROR.PASSWORD;
       }
     }
     if (verifyEmail.value && !validateEmail(verifyEmail.value)) {
-      return ERROR_MESSAGE.EMAIL;
+      return MESSAGE_ERROR.EMAIL;
     }
   };
 
@@ -119,6 +119,8 @@ export const LoginModal: FC<LoginModalProps> = ({
         </div>
         <div className={styles.form}>
           <CustomInput
+            fromLandingPage
+            status={isShowErrorMessage('email', inputValue.email) ? '' : 'error'}
             theme={theme}
             size="large"
             containerClass={classNames(styles.email, showForgotPassword.value && styles.disabled)}
@@ -132,6 +134,8 @@ export const LoginModal: FC<LoginModalProps> = ({
             name="email"
           />
           <CustomInput
+            fromLandingPage
+            status={inputValue.password ? (inputValue.password.length < 8 ? 'error' : '') : ''}
             theme={theme}
             type={'password'}
             containerClass={classNames(
@@ -164,6 +168,8 @@ export const LoginModal: FC<LoginModalProps> = ({
             </div>
             {showForgotPassword.value && (
               <CustomInput
+                fromLandingPage
+                status={isShowErrorMessage('email', verifyEmail.value) ? '' : 'error'}
                 theme={theme}
                 size="large"
                 containerClass={styles[`forgot-input${themeStyle()}`]}
@@ -191,7 +197,7 @@ export const LoginModal: FC<LoginModalProps> = ({
           <CustomButton
             disabled={handleDisableButton()}
             buttonClass={styles.submit}
-            width={showForgotPassword.value ? '212px' : theme === 'dark' ? '117px' : '112px'}
+            width={showForgotPassword.value ? '216px' : theme === 'dark' ? '120px' : '112px'}
             onClick={handleSubmit}
           >
             {showForgotPassword.value

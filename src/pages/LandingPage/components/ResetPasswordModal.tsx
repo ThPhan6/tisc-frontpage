@@ -9,11 +9,11 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';
 import { ReactComponent as LockedIcon } from '@/assets/icons/circle-pass-icon.svg';
 import CustomButton from '@/components/Button';
-import { validatePassword } from '@/helper/utils';
-import { ERROR_MESSAGE } from '@/constants/message';
-import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
+import { isShowErrorMessage, validatePassword } from '@/helper/utils';
+import { MESSAGE_ERROR } from '@/constants/message';
+import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 import { PATH } from '@/constants/path';
-import { history } from '@/.umi/core/history';
+import { pushTo } from '@/helper/history';
 
 export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
   visible,
@@ -27,13 +27,13 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
 
   const setErrorMessage = () => {
     if (resetInputValue.password && !validatePassword(resetInputValue.password)) {
-      return ERROR_MESSAGE.PASSWORD;
+      return MESSAGE_ERROR.PASSWORD;
     }
     if (
       resetInputValue.confirmPassword &&
       resetInputValue.confirmPassword !== resetInputValue.password
     ) {
-      return ERROR_MESSAGE.CONFIRM_PASSWORD;
+      return MESSAGE_ERROR.CONFIRM_PASSWORD;
     }
   };
 
@@ -78,7 +78,7 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
       onOk={() => visible.setValue(false)}
       onCancel={() => {
         visible.setValue(false);
-        history.push(PATH.landingPage);
+        pushTo(PATH.landingPage);
       }}
       footer={false}
     >
@@ -99,9 +99,11 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
             prefix={<EmailIcon />}
             name="email"
             borderBottomColor="mono"
+            readOnly
             value={resetData.email}
           />
           <CustomInput
+            fromLandingPage
             containerClass={classNames(styles.password)}
             type={'password'}
             size="large"
@@ -112,8 +114,10 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
             borderBottomColor="mono"
             onChange={handleOnChange}
             onPressEnter={onKeyPress}
+            status={isShowErrorMessage('password', resetInputValue.password) ? '' : 'error'}
           />
           <CustomInput
+            fromLandingPage
             type={'password'}
             size="large"
             placeholder="Confirm password"
@@ -123,6 +127,12 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
             borderBottomColor="mono"
             onChange={handleOnChange}
             onPressEnter={onKeyPress}
+            status={
+              resetInputValue.confirmPassword &&
+              resetInputValue.confirmPassword !== resetInputValue.password
+                ? 'error'
+                : ''
+            }
           />
         </div>
         <div className={styles.action}>
@@ -139,7 +149,7 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
           <CustomButton
             disabled={handleDisableButton()}
             buttonClass={styles.submit}
-            width={'123px'}
+            width={'128px'}
             onClick={handleOnSubmit}
           >
             Save / Log in

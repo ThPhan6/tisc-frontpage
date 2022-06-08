@@ -17,6 +17,8 @@ export interface CustomInputProps extends InputProps {
   focusColor?: 'primary' | 'secondary' | 'tertiary';
   theme?: 'dark' | 'default';
   borderBottomColor?: 'mono' | 'mono-medium' | 'white';
+  status?: 'error' | 'warning' | '';
+  fromLandingPage?: boolean;
 }
 
 export interface CustomTextAreaProps extends TextAreaProps {
