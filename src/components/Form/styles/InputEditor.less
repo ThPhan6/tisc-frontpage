@@ -1,16 +1,26 @@
-.input {
+.quill-editor {
   :global(.ql-editor strong) {
     font-weight: bold;
   }
 
   :global(.ql-editor) {
     padding: 15px 0;
+    overflow: hidden;
     word-break: break-word;
+    resize: vertical;
+  }
+
+  :global(.ql-editor::before) {
+    font-weight: 300;
+    font-size: 14px;
+    font-family: 'Roboto';
+    font-style: normal;
+    line-height: 22px;
   }
 
   :global(.ql-container.ql-snow) {
     border: none;
-    border-bottom: 0.5px solid #ccc;
+    border-bottom: 0.5px solid @mono-color;
   }
 
   :global(.ql-editor.ql-blank::before) {
@@ -19,14 +29,34 @@
   }
 }
 
-.text-editor {
+.toolbar-editor {
   :global(.ql-toolbar.ql-snow) {
-    border: 0.5px solid #000;
+    padding: 3px;
+    border: 0.5px solid @mono-color;
+    border-width: 1px;
   }
 
-  :global(.d-flex-items-between) {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  :global(.ql-active svg path) {
+    stroke: @mono-color;
+    stroke-width: 0.5px;
   }
+
+  :global(.ql-snow.ql-toolbar button) {
+    margin: 0 8px;
+  }
+
+  :global(.ql-snow.ql-toolbar button svg) {
+    height: auto;
+  }
+}
+
+.d-flex-content-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.align-center {
+  display: flex;
+  align-items: center;
 }

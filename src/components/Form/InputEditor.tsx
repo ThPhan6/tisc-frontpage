@@ -1,20 +1,13 @@
+import { FormGroup } from '@/components/Form';
 import classNames from 'classnames';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-// Icons toolbar
 import { Icons } from './icons';
 import style from './styles/InputEditor.less';
+import type { CustomInputEditorProps, CustomToolbarProps } from './types';
 
-export const CustomInputEditor: FC = () => {
-  const modules = {
-    toolbar: {
-      container: '#toolbars',
-    },
-  };
-
-  const formats = ['bold', 'italic', 'underline', 'link', 'indent'];
-
+export const CustomToolbar: FC<CustomToolbarProps> = ({ toolbarId }) => {
   const icons = Quill.import('ui/icons');
   icons.bold = Icons.bold;
   icons.italic = Icons.italic;
@@ -23,35 +16,67 @@ export const CustomInputEditor: FC = () => {
   icons.indent = Icons.indentLeft;
   icons.outdent = Icons.indentRight;
 
-  const CustomToolbar = () => {
-    return (
-      <div className="toolbar-editor" id="toolbars">
-        <div className="d-flex-items-between">
+  return (
+    <div className={classNames(style['toolbar-editor'])}>
+      <div id={toolbarId}>
+        <div className={style['d-flex-content-between']}>
           <div>
             <button className="ql-bold" />
             <button className="ql-italic" />
             <button className="ql-underline" />
             <button className="ql-link" />
           </div>
-
           <div>
-            <button className="ql-indent " value="+1" />
+            <button className="ql-indent" value="+1" />
             <button className="ql-indent ql-outdent" value="-1" />
           </div>
         </div>
       </div>
-    );
+    </div>
+  );
+};
+
+export const CustomInputEditor: FC<CustomInputEditorProps> = ({ placeholder, layout }) => {
+  const [inputValue, setInputValue] = useState<string>('');
+  const [toolbarId] = useState<string>(
+    `quill-toolbar-${Math.floor(Math.random() * 100000000000000)}`,
+  );
+
+  const onchangeValue = { html: '' };
+
+  const handleChangeGetHTML = (content: string, delta: any, source: any, editor: any) => {
+    onchangeValue.html = editor.getHTML();
   };
 
-  return (
-    <div>
-      <div className={classNames(style['text-editor'])}>
-        <CustomToolbar />
+  const onChange = (content: string, delta: any, source: any, editor: any) => {
+    handleChangeGetHTML(content, delta, source, editor);
 
-        <div className={classNames(style['input'])}>
-          <ReactQuill theme="snow" modules={modules} formats={formats} placeholder="Type text..." />
-        </div>
-      </div>
+    const deltaData = editor.getContents().push(onchangeValue);
+
+    setInputValue(deltaData);
+  };
+
+  const modules = {
+    toolbar: {
+      container: `#` + toolbarId,
+    },
+  };
+
+  const formats = ['bold', 'italic', 'underline', 'link', 'indent'];
+
+  return (
+    <div className={classNames(style['quill-editor'])}>
+      <FormGroup label="Field Name" tooltip="How are you" layout={layout}>
+        <CustomToolbar toolbarId={toolbarId} />
+      </FormGroup>
+      <ReactQuill
+        theme="snow"
+        modules={modules}
+        formats={formats}
+        placeholder={placeholder}
+        defaultValue={inputValue}
+        onChange={onChange}
+      />
     </div>
   );
 };

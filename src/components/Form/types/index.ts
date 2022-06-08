@@ -22,3 +22,13 @@ export interface CustomInputProps extends InputProps {
 export interface CustomTextAreaProps extends TextAreaProps {
   borderBottomColor?: 'mono' | 'mono-medium';
 }
+
+export interface CustomInputEditorProps extends TextAreaProps {
+  placeholder?: 'Type text...';
+  layout?: 'horizontal' | 'vertical';
+  containerClass?: string;
+}
+
+export interface CustomToolbarProps extends TextAreaProps {
+  toolbarId: string;
+}
