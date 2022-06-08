@@ -168,12 +168,13 @@ export const LoginModal: FC<LoginModalProps> = ({
             </div>
             {showForgotPassword.value && (
               <CustomInput
+                required
                 fromLandingPage
                 status={isShowErrorMessage('email', verifyEmail.value) ? '' : 'error'}
                 theme={theme}
                 size="large"
                 containerClass={styles[`forgot-input${themeStyle()}`]}
-                placeholder="* type your work email to verify"
+                placeholder="type your work email to verify"
                 focusColor="secondary"
                 borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
                 value={verifyEmail.value}

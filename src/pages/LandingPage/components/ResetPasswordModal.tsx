@@ -103,6 +103,7 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
             value={resetData.email}
           />
           <CustomInput
+            required
             fromLandingPage
             containerClass={classNames(styles.password)}
             type={'password'}
@@ -117,6 +118,7 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
             status={isShowErrorMessage('password', resetInputValue.password) ? '' : 'error'}
           />
           <CustomInput
+            required
             fromLandingPage
             type={'password'}
             size="large"
