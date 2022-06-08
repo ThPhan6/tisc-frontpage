@@ -2,8 +2,7 @@ import { PATH } from '@/constants/path';
 import { history } from 'umi';
 import { pushTo } from './history';
 
-export const REGEX_PASSWORD =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_#^()+=~`{}|/:;'"<>[,.-])[A-Za-z\d@$!%*?&_#^()+=~`{}|/:;'"<>[,.-]{8,}$/;
+export const REGEX_PASSWORD = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 export const REGEX_EMAIL = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export const validateEmail = (email: string) => {
@@ -29,9 +28,12 @@ export const getBase64 = (file: any): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
-export const isShowErrorEmail = (email: string) => {
-  if (!email) {
+export const isShowErrorMessage = (type: 'email' | 'password', value: string) => {
+  if (!value) {
     return true;
   }
-  return validateEmail(email);
+  if (type === 'email') {
+    return validateEmail(value);
+  }
+  return validatePassword(value);
 };

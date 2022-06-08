@@ -169,7 +169,7 @@ const LandingPage = () => {
               </div>
               <div className={styles['button-wrapper']}>
                 <CustomButton
-                  width="140px"
+                  width="144px"
                   properties="warning"
                   size="large"
                   buttonClass={styles['action-button']}

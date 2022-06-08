@@ -10,7 +10,7 @@ import { MESSAGE_ERROR, MESSAGE_TOOLTIP } from '@/constants/message';
 import avatarImg from '@/assets/img-avatar.png';
 import type { RcFile } from 'antd/es/upload/interface';
 import { useEffect, useState } from 'react';
-import { isShowErrorEmail, validateEmail } from '@/helper/utils';
+import { isShowErrorMessage, validateEmail } from '@/helper/utils';
 import { useCustomInitialState } from '@/helper/hook';
 import classNames from 'classnames';
 
@@ -93,7 +93,7 @@ export const PersonalProfile = () => {
             </div>
           </FormGroup>
           <FormGroup
-            message={isShowErrorEmail(inputValue.backupEmail) ? '' : MESSAGE_ERROR.EMAIL}
+            message={isShowErrorMessage('email', inputValue.backupEmail) ? '' : MESSAGE_ERROR.EMAIL}
             messageType="error"
             label="Backup email"
             layout="vertical"
@@ -101,7 +101,7 @@ export const PersonalProfile = () => {
           >
             <CustomInput
               name="backupEmail"
-              status={isShowErrorEmail(inputValue.backupEmail) ? '' : 'error'}
+              status={isShowErrorMessage('email', inputValue.backupEmail) ? '' : 'error'}
               borderBottomColor="mono-medium"
               placeholder="personal email"
               value={inputValue.backupEmail}
