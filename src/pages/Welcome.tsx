@@ -19,8 +19,8 @@ const Welcome: React.FC = () => {
   ];
 
   const optionsCheckbox = [
-    { label: 'checkbox 1', value: '1', checked: true },
-    { label: 'checkbox 2', value: '2', checked: true },
+    { label: 'checkbox 1', value: '1' },
+    { label: 'checkbox 2', value: '2' },
   ];
 
   return (

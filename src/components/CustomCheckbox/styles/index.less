@@ -4,7 +4,7 @@
   margin-left: 16px;
   :global(.ant-checkbox-group) {
     display: inline-flex;
-    gap: 30px;
+    gap: 8px;
     align-items: center;
   }
 }
@@ -21,9 +21,21 @@
   :global(.ant-checkbox-inner) {
     border-color: @mono-color;
   }
+  :global(.ant-checkbox + span) {
+    padding-right: 16px;
+    padding-left: 12px;
+  }
   .item-wrapper {
     display: flex;
+    align-items: center;
     justify-content: space-between;
+    height: 32px;
+    color: @mono-color;
+  }
+  .item-checkbox {
+    display: flex;
+    align-items: center;
+    height: 32px;
     color: @mono-color;
   }
 }
@@ -39,7 +51,6 @@
   margin-left: 16px;
   :global(.ant-checkbox-wrapper) {
     display: flex;
-    height: 32px;
   }
 }
 

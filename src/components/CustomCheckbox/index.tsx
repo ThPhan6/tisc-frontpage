@@ -4,6 +4,7 @@ import { CustomCheckboxProps } from './types';
 import style from './styles/index.less';
 import classNames from 'classnames';
 import { CustomInput } from '../Form/CustomInput';
+import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 
 export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   direction,
@@ -16,18 +17,17 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
-  const [checkboxValue, setChecboxValue] = useState(defaultValue ? [defaultValue] : []);
+  const [checkboxValue, setCheckboxValue] = useState(defaultValue ? [defaultValue] : []);
 
-  console.log('checkboxValue', checkboxValue);
-  const onChangeValue = (checkedValues: any) => {
-    const checkbox_value = checkedValues.map((value: string) =>
+  const onChangeValue = (checkedValues: CheckboxValueType[]) => {
+    const newCheckboxValue = checkedValues.map((value) =>
       value === 'other'
-        ? { value: 'other', label: inputValue, checked: true }
+        ? { label: inputValue, value: 'other' }
         : options.filter((item) => item.value === value)[0],
     );
-    setChecboxValue(checkbox_value);
+    setCheckboxValue(newCheckboxValue);
     if (onChange) {
-      onChange({ ...checkbox_value });
+      onChange(newCheckboxValue);
     }
   };
 
@@ -35,15 +35,22 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     const checkOtherInput =
       checkboxValue.filter((checkbox) => checkbox.value === 'other').length === 0;
     if (checkOtherInput) {
-      setChecboxValue([...checkboxValue, { value: 'other', label: inputValue, checked: true }]);
+      setCheckboxValue([...checkboxValue, { label: inputValue, value: 'other' }]);
     }
   };
 
   const onChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
     if (onChange) {
-      onChange({ value: 'other', label: e.target.value });
+      onChange([...checkboxValue, { label: e.target.value, value: 'other' }]);
     }
+    const newData = checkboxValue.map((itemCheckbox) => {
+      if (itemCheckbox.value === 'other') {
+        return { ...itemCheckbox, label: e.target.value };
+      }
+      return itemCheckbox;
+    });
+    setCheckboxValue(newData);
   };
 
   return (
@@ -68,7 +75,9 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                 <Checkbox {...option} />
               </div>
             ) : (
-              <Checkbox {...option}>{option.label}</Checkbox>
+              <div className={style['item-checkbox']}>
+                <Checkbox {...option}>{option.label}</Checkbox>
+              </div>
             )}
           </div>
         ))}
