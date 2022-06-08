@@ -40,21 +40,24 @@
 
 .primary-focus {
   :global(.ant-input) {
-    &:focus {
+    border: 1px solid @primary-color-dark;
+    &:hover {
       border: 1px solid @primary-color-dark;
     }
   }
 }
-.secondary-focus {
+.warning-status {
   :global(.ant-input) {
-    &:focus {
+    border: 1px solid @secondary-color;
+    &:hover {
       border: 1px solid @secondary-color;
     }
   }
 }
-.tertiary-focus {
+.error-status {
   :global(.ant-input) {
-    &:focus {
+    border: 1px solid @tertiary-color;
+    &:hover {
       border: 1px solid @tertiary-color;
     }
   }

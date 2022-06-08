@@ -8,11 +8,11 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';
 import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
 import { ReactComponent as LockedForgotIcon } from '@/assets/icons/lock-forgot-icon.svg';
-import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
+import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 import { useBoolean, useString } from '@/helper/hook';
 import classNames from 'classnames';
 import CustomButton from '@/components/Button';
-import { ERROR_MESSAGE } from '@/constants/message';
+import { MESSAGE_ERROR } from '@/constants/message';
 import { validateEmail } from '@/helper/utils';
 
 export const LoginModal: FC<LoginModalProps> = ({
@@ -55,14 +55,14 @@ export const LoginModal: FC<LoginModalProps> = ({
   const setErrorMessage = () => {
     if (!showForgotPassword.value) {
       if (inputValue.email && !validateEmail(inputValue.email)) {
-        return ERROR_MESSAGE.EMAIL;
+        return MESSAGE_ERROR.EMAIL;
       }
       if (inputValue.password && inputValue.password.length < 8) {
-        return ERROR_MESSAGE.PASSWORD;
+        return MESSAGE_ERROR.PASSWORD;
       }
     }
     if (verifyEmail.value && !validateEmail(verifyEmail.value)) {
-      return ERROR_MESSAGE.EMAIL;
+      return MESSAGE_ERROR.EMAIL;
     }
   };
 

@@ -10,6 +10,7 @@ export const CustomInput: FC<CustomInputProps> = ({
   borderBottomColor,
   containerClass,
   type,
+  status,
   ...props
 }) => {
   const setDisabled = () => {
@@ -25,7 +26,7 @@ export const CustomInput: FC<CustomInputProps> = ({
 
   const classNameInputDefault = classNames(
     style.input,
-    focusColor && style[`${focusColor}-focus`],
+    status && style[`${status}-status`],
     borderBottomColor && style[`${borderBottomColor}-border-bottom-color`],
     style[`${theme}-theme`],
     setDisabled(),
@@ -34,7 +35,7 @@ export const CustomInput: FC<CustomInputProps> = ({
   const classNameInputAffix = classNames(
     style['input-affix'],
     borderBottomColor && style[`${borderBottomColor}-border-bottom-color-affix`],
-    focusColor && style[`${focusColor}-focus-affix`],
+    status && style[`${status}-status`],
     style[`${theme}-theme-affix`],
     setDisabled(),
   );
