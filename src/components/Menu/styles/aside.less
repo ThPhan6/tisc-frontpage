@@ -24,19 +24,28 @@
   :global(.ant-layout-sider-children) {
     margin-top: 8px;
   }
-}
-
-:global(.ant-menu-item) {
-  :global(.anticon) + span {
-    margin-left: 12px !important;
+  :global(.ant-menu-item) {
+    :global(.anticon) + span {
+      margin-left: 12px !important;
+    }
+    :global(.anticon) {
+      min-width: 20px !important;
+    }
   }
-  :global(.anticon) {
-    min-width: 20px !important;
+  :global(.ant-menu-submenu-title) {
+    :global(.anticon) {
+      min-width: 20px !important;
+    }
   }
-}
-:global(.ant-menu-submenu-title) {
-  :global(.anticon) {
-    min-width: 20px !important;
+  :global(.ant-menu-inline-collapsed) {
+    :global(.ant-menu-item) {
+      padding: 0 22px 0 18px !important;
+    }
+    :global(.ant-menu-submenu) {
+      :global(.ant-menu-submenu-title) {
+        padding: 0 22px 0 18px !important;
+      }
+    }
   }
 }
 
