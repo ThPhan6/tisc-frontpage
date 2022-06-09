@@ -33,7 +33,9 @@ export interface CustomInputEditorProps {
   required?: boolean;
   label: string;
   handleOnChange?: (value: { text: string; html: string }) => void;
-  customClass?: string;
+  containerClass?: string;
+  formClass?: string;
+  inputClass?: string;
 }
 
 export interface CustomToolbarProps {

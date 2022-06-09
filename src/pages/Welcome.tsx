@@ -8,7 +8,6 @@ import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { UserOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Card } from 'antd';
-import classNames from 'classnames';
 import React from 'react';
 import { ReactComponent as SingleRightIcon } from '../assets/icons/single-right.svg';
 import styles from './Welcome.less';
@@ -54,7 +53,7 @@ const Welcome: React.FC = () => {
             required={true}
             placeholder="type text..."
             layout="vertical"
-            customClass={classNames(styles['rile-0'], styles['px-0'], styles['resize-none'])}
+            containerClass={styles['input-editor-0']}
           />
         </div>
         <div className={styles.mb}>
@@ -63,7 +62,8 @@ const Welcome: React.FC = () => {
             required={true}
             placeholder="type text here"
             layout="vertical"
-            customClass={classNames(styles['resize-none'])}
+            formClass={styles['label-editor']}
+            inputClass={styles['input-editor']}
           />
         </div>
 

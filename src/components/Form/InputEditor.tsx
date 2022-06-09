@@ -64,7 +64,9 @@ export const CustomInputEditor: FC<CustomInputEditorProps> = ({
   optional,
   required,
   handleOnChange,
-  customClass,
+  containerClass,
+  formClass,
+  inputClass,
 }) => {
   const [inputEditorValue, setInputEditorValue] = useState<{
     text: string;
@@ -101,13 +103,14 @@ export const CustomInputEditor: FC<CustomInputEditorProps> = ({
   };
 
   return (
-    <div className={classNames(style['quill-editor'], customClass)}>
+    <div className={classNames(style['quill-editor'], containerClass)}>
       <FormGroup
         label={label}
         tooltip={tooltip}
         required={required}
         optional={optional}
         layout={layout}
+        formClass={formClass}
       >
         <CustomToolbar toolbarId={toolbarId} />
       </FormGroup>
@@ -118,6 +121,7 @@ export const CustomInputEditor: FC<CustomInputEditorProps> = ({
         placeholder={placeholder}
         defaultValue={inputEditorValue.text}
         onChange={onChangeValue}
+        className={inputClass}
       />
     </div>
   );
