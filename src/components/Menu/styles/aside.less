@@ -1,0 +1,147 @@
+@import (reference) '~antd/es/style/themes/index';
+
+.customAsideSider {
+  :global(.ant-menu) {
+    color: @mono-color;
+  }
+  &:global(.ant-layout-sider) {
+    padding-bottom: 0;
+    background: #fff;
+  }
+  :global(.ant-layout-sider-trigger) {
+    left: -1px;
+    height: 40px;
+    padding-left: 24px;
+    color: rgb(0, 0, 0);
+    line-height: 40px;
+    text-align: left;
+    background-color: #fff;
+    box-shadow: inset 0 0.5px 0 rgba(0, 0, 0, 0.3);
+    svg {
+      display: none;
+    }
+  }
+  :global(.ant-layout-sider-children) {
+    margin-top: 8px;
+  }
+  :global(.ant-menu-item) {
+    :global(.anticon) + span {
+      margin-left: 12px !important;
+    }
+    :global(.anticon) {
+      min-width: 20px !important;
+    }
+  }
+  :global(.ant-menu-submenu-title) {
+    :global(.anticon) {
+      min-width: 20px !important;
+    }
+  }
+  :global(.ant-menu-inline-collapsed) {
+    :global(.ant-menu-item) {
+      padding: 0 22px 0 18px !important;
+    }
+    :global(.ant-menu-submenu) {
+      :global(.ant-menu-submenu-title) {
+        padding: 0 22px 0 18px !important;
+      }
+    }
+  }
+}
+
+.customAsideMenu {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+
+  :global(.ant-pro-menu-item) {
+    display: flex;
+    align-items: center;
+    color: @mono-color;
+  }
+  // padding-left: 18px !important;
+  &:global(.ant-menu-item-selected) {
+    background-color: transparent !important;
+    &::after {
+      display: none;
+    }
+    a {
+      color: @primary-color-dark;
+    }
+    span {
+      color: @primary-color-dark;
+    }
+  }
+  &:global(.ant-menu-item-active) {
+    background-color: transparent !important;
+    &::after {
+      display: none;
+    }
+    a {
+      color: @primary-color-dark;
+    }
+    span {
+      color: @primary-color-dark;
+    }
+  }
+  :global(.ant-menu-submenu-title) {
+    // padding-left: 18px;
+    &:active {
+      background-color: transparent !important;
+    }
+    &:focus-visible {
+      outline: none;
+      box-shadow: none !important;
+    }
+    :global(.ant-menu-title-content) {
+      &:active {
+        background-color: transparent !important;
+      }
+      &:focus-visible {
+        outline: none;
+        box-shadow: none !important;
+      }
+    }
+  }
+}
+.customAsideSubMenu {
+  :global(.ant-pro-menu-item) {
+    color: @mono-color;
+  }
+  :global(.ant-menu-sub) {
+    background-color: #fff;
+  }
+  :global(.ant-menu-item-icon) {
+    color: @mono-color;
+  }
+  &:global(.ant-menu-submenu-open) {
+    color: @mono-color;
+  }
+  &:global(.ant-menu-submenu-selected) {
+    color: @mono-color;
+  }
+  :global(.ant-menu-submenu-title) {
+    display: flex;
+    align-items: center;
+    // padding-left: 18px !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-right: 16px !important;
+    &:hover {
+      color: @primary-color-dark;
+      :global(.ant-menu-item-icon) {
+        color: @primary-color-dark;
+      }
+    }
+  }
+  :global(.ant-menu-title-content) {
+    margin-right: 12px !important;
+    margin-left: 12px !important;
+  }
+}
+.siderCollapseIcon {
+  position: fixed;
+  bottom: 10px;
+  left: 18px;
+  z-index: 2;
+  pointer-events: none;
+}

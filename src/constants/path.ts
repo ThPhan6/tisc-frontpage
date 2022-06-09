@@ -5,7 +5,7 @@ export const PATH = {
 
   // private path
   profiles: '/profiles',
-  homePage: '/welcome',
+  homePage: '/tisc/dashboard',
 
   // Tisc
   //
