@@ -34,6 +34,9 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   const handleClickInput = () => {
     const checkOtherInput =
       checkboxValue.filter((checkbox) => checkbox.value === 'other').length === 0;
+    if (onChange && checkOtherInput) {
+      onChange([...checkboxValue, { label: inputValue, value: 'other' }]);
+    }
     if (checkOtherInput) {
       setCheckboxValue([...checkboxValue, { label: inputValue, value: 'other' }]);
     }
@@ -41,15 +44,15 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
 
   const onChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
-    if (onChange) {
-      onChange(checkboxValue);
-    }
     const newData = checkboxValue.map((itemCheckbox) => {
       if (itemCheckbox.value === 'other') {
         return { ...itemCheckbox, label: e.target.value };
       }
       return itemCheckbox;
     });
+    if (onChange) {
+      onChange(newData);
+    }
     setCheckboxValue(newData);
   };
 
