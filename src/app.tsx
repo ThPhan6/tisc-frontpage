@@ -1,4 +1,4 @@
-import { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { PageLoading } from '@ant-design/pro-layout';
 import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
 import { history } from 'umi';
@@ -12,6 +12,7 @@ import { getUserInfoMiddleware } from './pages/LandingPage/services/api';
 import { PATH, PUBLIC_PATH } from './constants/path';
 import type { UserInfoDataProp } from './pages/LandingPage/types';
 import Header from '@/components/Header';
+import AsideMenu from './components/Menu/AsideMenu';
 
 // config request umi
 const errorHandler = function (error: any) {
@@ -103,6 +104,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       }
     },
     menuHeaderRender: undefined,
+    menuRender: (props) => <AsideMenu {...props} />,
     /* eslint-disable @typescript-eslint/no-var-requires */
     childrenRender: (children) => {
       if (initialState?.loading) return <PageLoading />;
