@@ -2,14 +2,30 @@
   :global(.ant-input) {
     color: @mono-color;
     font-weight: 300;
-    border: 1px solid transparent;
+    border: 0.5px solid transparent;
     border-radius: 0;
     &:hover {
-      border: 1px solid transparent;
+      border: 0.5px solid transparent;
     }
     &:focus {
       box-shadow: none;
     }
+  }
+}
+
+.required-input {
+  position: relative;
+  :global(.ant-input) {
+    padding-left: 22px;
+  }
+  &::before {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    z-index: 2;
+    width: 8px;
+    color: #eb008d;
+    content: '*';
   }
 }
 
@@ -38,27 +54,35 @@
   }
 }
 
-.primary-focus {
+.dark-focus-normal {
   :global(.ant-input) {
-    border: 1px solid @primary-color-dark;
-    &:hover {
-      border: 1px solid @primary-color-dark;
+    &:focus {
+      border: 0.5px solid #fff !important;
     }
   }
 }
+
+.default-focus-normal {
+  :global(.ant-input) {
+    &:focus {
+      border: 0.5px solid @mono-color !important;
+    }
+  }
+}
+
 .warning-status {
   :global(.ant-input) {
-    border: 1px solid @secondary-color;
+    border: 0.5px solid @secondary-color;
     &:hover {
-      border: 1px solid @secondary-color;
+      border: 0.5px solid @secondary-color;
     }
   }
 }
 .error-status {
   :global(.ant-input) {
-    border: 1px solid @tertiary-color;
+    border: 0.5px solid @tertiary-color;
     &:hover {
-      border: 1px solid @tertiary-color;
+      border: 0.5px solid @tertiary-color;
     }
   }
 }
@@ -98,10 +122,10 @@
       margin-right: 12px;
     }
 
-    border: 1px solid transparent;
+    border: 0.5px solid transparent;
     border-radius: 0;
     &:hover {
-      border: 1px solid transparent;
+      border: 0.5px solid transparent;
     }
     &:focus {
       box-shadow: none;
@@ -109,6 +133,22 @@
   }
   :global(.ant-input-affix-wrapper-focused) {
     box-shadow: none;
+  }
+}
+
+.required-input-affix {
+  position: relative;
+  :global(.ant-input) {
+    padding-left: 12px !important;
+  }
+  &::before {
+    position: absolute;
+    top: 8px;
+    left: 44px;
+    z-index: 2;
+    width: 8px;
+    color: #eb008d;
+    content: '*';
   }
 }
 
@@ -137,19 +177,26 @@
   }
 }
 
-.secondary-focus-affix {
+.dark-focus-normal-affix {
   :global(.ant-input-affix-wrapper-focused) {
-    border: 1px solid @secondary-color !important;
+    border: 0.5px solid #fff !important;
   }
 }
-.primary-focus-affix {
+
+.default-focus-normal-affix {
   :global(.ant-input-affix-wrapper-focused) {
-    border: 1px solid @primary-color-dark !important;
+    border: 0.5px solid @mono-color !important;
   }
 }
-.tertiary-focus-affix {
-  :global(.ant-input-affix-wrapper-focused) {
-    border: 1px solid @tertiary-color !important;
+
+.warning-status-affix {
+  :global(.ant-input-affix-wrapper) {
+    border: 0.5px solid @secondary-color !important;
+  }
+}
+.error-status-affix {
+  :global(.ant-input-affix-wrapper) {
+    border: 0.5px solid @tertiary-color !important;
   }
 }
 
