@@ -42,7 +42,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   const onChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
     if (onChange) {
-      onChange([...checkboxValue, { label: e.target.value, value: 'other' }]);
+      onChange(checkboxValue);
     }
     const newData = checkboxValue.map((itemCheckbox) => {
       if (itemCheckbox.value === 'other') {
