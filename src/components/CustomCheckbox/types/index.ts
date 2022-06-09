@@ -12,4 +12,5 @@ export interface CustomCheckboxProps {
   onChange?: (value: CheckboxValue[]) => void;
   isCheckboxList?: boolean;
   defaultValue?: CheckboxValue;
+  checkboxClass?: string;
 }

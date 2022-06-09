@@ -32,6 +32,7 @@ const Welcome: React.FC = () => {
             options={optionsCheckbox}
             direction="horizontal"
             defaultValue={optionsCheckbox[0]}
+            checkboxClass={styles.checkbox}
           />
         </FormGroup>
         <FormGroup label="Checkbox horizontal - other input" tooltip="How are you">
@@ -40,6 +41,7 @@ const Welcome: React.FC = () => {
             otherInput
             options={optionsCheckbox}
             defaultValue={optionsCheckbox[0]}
+            checkboxClass={styles.checkbox}
           />
         </FormGroup>
         <FormGroup label="Checkbox vertical" tooltip="How are you" layout="vertical">
@@ -47,6 +49,7 @@ const Welcome: React.FC = () => {
             direction="vertical"
             options={optionsCheckbox}
             defaultValue={optionsCheckbox[0]}
+            checkboxClass={styles.checkbox}
           />
         </FormGroup>
         <FormGroup label="Checkbox vertical - other input" tooltip="How are you" layout="vertical">
@@ -55,6 +58,7 @@ const Welcome: React.FC = () => {
             otherInput
             options={optionsCheckbox}
             defaultValue={optionsCheckbox[0]}
+            checkboxClass={styles.checkbox}
           />
         </FormGroup>
         <FormGroup label="Checkbox list" tooltip="How are you" layout="vertical">
@@ -63,6 +67,7 @@ const Welcome: React.FC = () => {
             isCheckboxList
             options={optionsCheckbox}
             defaultValue={optionsCheckbox[0]}
+            checkboxClass={styles.checkbox}
           />
         </FormGroup>
         <FormGroup label="Checkbox list - other input" tooltip="How are you" layout="vertical">
@@ -72,6 +77,7 @@ const Welcome: React.FC = () => {
             isCheckboxList
             options={optionsCheckbox}
             defaultValue={optionsCheckbox[0]}
+            checkboxClass={styles.checkbox}
           />
         </FormGroup>
 

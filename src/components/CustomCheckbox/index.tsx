@@ -14,6 +14,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   onChange,
   isCheckboxList,
   defaultValue,
+  checkboxClass,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -63,6 +64,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
         style['checkbox-list'],
         isCheckboxList && style['item-list-checkbox'],
         style['color-checkbox-checked'],
+        checkboxClass,
       )}
     >
       <Checkbox.Group
@@ -73,12 +75,12 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
         {options.map((option, index) => (
           <div key={index}>
             {isCheckboxList ? (
-              <div className={style['item-wrapper']}>
+              <div className={classNames(style['item-wrapper'], 'item-wrapper-custom')}>
                 <span>{option.label}</span>
                 <Checkbox {...option} />
               </div>
             ) : (
-              <div className={style['item-checkbox']}>
+              <div className={classNames(style['item-checkbox'], 'item-wrapper-checkbox')}>
                 <Checkbox {...option}>{option.label}</Checkbox>
               </div>
             )}
