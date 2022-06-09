@@ -13,4 +13,5 @@ export interface CustomCheckboxProps {
   isCheckboxList?: boolean;
   defaultValue?: CheckboxValue;
   checkboxClass?: string;
+  heightItem?: string;
 }

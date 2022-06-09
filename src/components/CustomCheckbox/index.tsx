@@ -15,6 +15,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   isCheckboxList,
   defaultValue,
   checkboxClass,
+  heightItem = '32px',
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -75,12 +76,18 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
         {options.map((option, index) => (
           <div key={index}>
             {isCheckboxList ? (
-              <div className={classNames(style['item-wrapper'], 'item-wrapper-custom')}>
+              <div
+                className={classNames(style['item-wrapper'], 'item-wrapper-custom')}
+                style={{ height: heightItem }}
+              >
                 <span>{option.label}</span>
                 <Checkbox {...option} />
               </div>
             ) : (
-              <div className={classNames(style['item-checkbox'], 'item-wrapper-checkbox')}>
+              <div
+                className={classNames(style['item-checkbox'], 'item-wrapper-checkbox')}
+                style={{ height: heightItem }}
+              >
                 <Checkbox {...option}>{option.label}</Checkbox>
               </div>
             )}
@@ -89,7 +96,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
         {otherInput && (
           <div className={isCheckboxList && style['other-field-checkbox-list']}>
             <Checkbox value={'other'}>
-              <div className={style['input-wrapper']}>
+              <div className={style['input-wrapper']} style={{ height: heightItem }}>
                 Other
                 <CustomInput
                   containerClass={style['other-input']}
