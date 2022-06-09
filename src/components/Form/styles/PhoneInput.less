@@ -1,0 +1,35 @@
+.phone-input-container {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 16px;
+  border-bottom: 0.5px solid @mono-color-medium;
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    margin: 0;
+    -webkit-appearance: none;
+  }
+  :global(.ant-input) {
+    padding: 0;
+    color: @mono-color;
+    font-weight: 300;
+    // font-weight: 300px;
+    font-size: 14px;
+    border: none;
+    outline: none;
+    &:focus {
+      box-shadow: none;
+    }
+  }
+  .wrapper-code-input {
+    display: flex;
+    align-items: center;
+    margin-right: 12px;
+    .code-input {
+      width: 16px;
+    }
+  }
+  .phone-input {
+    flex: 1;
+  }
+}
