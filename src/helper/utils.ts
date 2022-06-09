@@ -37,3 +37,7 @@ export const isShowErrorMessage = (type: 'email' | 'password', value: string) =>
   }
   return validatePassword(value);
 };
+
+export function showImageUrl(url: string) {
+  return `${STORE_URL}${url}`;
+}

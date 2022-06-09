@@ -10,6 +10,8 @@ export const MESSAGE_NOTIFICATION = {
   LOGIN_SUCCESS: 'Login successfully',
   LOGIN_ERROR: 'Login error',
   RESET_PASSWORD: 'Please check your mail to reset password',
+  UPDATE_AVATAR_SUCCESS: 'Update avatar successfully',
+  UPDATE_AVATAR_ERROR: 'Update avatar error',
 };
 
 export const MESSAGE_TOOLTIP = {

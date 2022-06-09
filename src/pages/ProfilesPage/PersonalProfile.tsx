@@ -2,65 +2,105 @@ import CustomButton from '@/components/Button';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText, Title } from '@/components/Typography';
-import { Tooltip, Upload, UploadProps } from 'antd';
+import { message, Tooltip, Upload, UploadProps } from 'antd';
 import styles from './styles/PersonalProfile.less';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
-import { MESSAGE_ERROR, MESSAGE_TOOLTIP } from '@/constants/message';
+import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constants/message';
 import avatarImg from '@/assets/img-avatar.png';
-import type { RcFile } from 'antd/es/upload/interface';
-import { useEffect, useState } from 'react';
-import { isShowErrorMessage, validateEmail } from '@/helper/utils';
+import { FC, useEffect, useState } from 'react';
+import { isShowErrorMessage, showImageUrl, validateEmail } from '@/helper/utils';
 import { useCustomInitialState } from '@/helper/hook';
 import classNames from 'classnames';
+import { PhoneInput } from '@/components/Form/PhoneInput';
+import { updateAvatarTeamProfile, updateTeamProfile } from './services/api';
+import { STATUS_RESPONSE } from '@/constants/util';
+import { PersonalProfileProps } from './types';
+import { PhoneInputValueProp } from '@/components/Form/types';
 
-export const PersonalProfile = () => {
-  const [fileList, setFileList] = useState<any>([]);
-  const { initialState } = useCustomInitialState();
+export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
+  const [fileInput, setFileInput] = useState<any>();
+  const { initialState, fetchUserInfo } = useCustomInitialState();
 
   const [inputValue, setInputValue] = useState({
     backupEmail: '',
-    mobile: '',
+    mobile: {
+      zoneCode: '',
+      phoneNumber: '',
+    },
     linkedin: '',
   });
 
   useEffect(() => {
     setInputValue({
       backupEmail: initialState?.currentUser?.backup_email || '',
-      mobile: initialState?.currentUser?.mobile || '',
+      mobile: {
+        zoneCode: '',
+        phoneNumber: initialState?.currentUser?.personal_mobile || '',
+      },
       linkedin: initialState?.currentUser?.linkedin || '',
     });
   }, []);
 
-  const setPreviewAvatar = () => {
-    if (fileList.length > 0) {
-      return URL.createObjectURL(fileList[0]);
+  const handleUpdateAvatar = () => {
+    const formData = new FormData();
+    formData.append('avatar', fileInput);
+    isLoading.setValue(true);
+    updateAvatarTeamProfile(formData, (type: STATUS_RESPONSE, msg?: string) => {
+      if (type === STATUS_RESPONSE.SUCCESS) {
+        message.success(MESSAGE_NOTIFICATION.UPDATE_AVATAR_SUCCESS);
+        fetchUserInfo();
+      } else {
+        message.error(msg || MESSAGE_NOTIFICATION.UPDATE_AVATAR_ERROR);
+      }
+      isLoading.setValue(false);
+    });
+  };
+
+  useEffect(() => {
+    if (fileInput) {
+      handleUpdateAvatar();
     }
+  }, [fileInput]);
+
+  const setPreviewAvatar = () => {
+    // if (fileInput) {
+    //   return URL.createObjectURL(fileInput);
+    // }
     if (initialState?.currentUser?.avatar) {
-      return initialState?.currentUser?.avatar;
+      return showImageUrl(initialState?.currentUser?.avatar);
     }
     return avatarImg;
   };
 
   const props: UploadProps = {
     beforeUpload: (file) => {
-      setFileList([file]);
+      setFileInput(file);
       return false;
     },
-    fileList,
   };
 
   const handleSubmit = () => {
-    const formData = new FormData();
-    fileList.forEach((file: any) => {
-      formData.append('files[]', file.originFileObj as RcFile);
-    });
+    const bodyData = {
+      backup_email: inputValue.backupEmail,
+      personal_mobile: inputValue.mobile.phoneNumber,
+      linkedin: inputValue.linkedin,
+      zone_code: inputValue.mobile.zoneCode,
+    };
+    updateTeamProfile(bodyData, () => {});
   };
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue({
       ...inputValue,
       [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleOnChangePhoneInput = (value: PhoneInputValueProp) => {
+    setInputValue({
+      ...inputValue,
+      mobile: value,
     });
   };
 
@@ -81,13 +121,7 @@ export const PersonalProfile = () => {
           </div>
           <FormGroup label="Avatar" formClass={classNames(styles['form-upload'], styles.form)}>
             <div className={styles['wrapper-upload']}>
-              <Upload
-                maxCount={1}
-                showUploadList={false}
-                // beforeUpload={beforeUpload}
-                {...props}
-                accept="image/*"
-              >
+              <Upload maxCount={1} showUploadList={false} {...props} accept=".png">
                 <UploadIcon className={styles.icon} />
               </Upload>
             </div>
@@ -109,7 +143,7 @@ export const PersonalProfile = () => {
             />
           </FormGroup>
           <FormGroup label="Mobile" layout="vertical" formClass={styles.form}>
-            <CustomInput borderBottomColor="mono-medium" value={inputValue.mobile} />
+            <PhoneInput phonePlaceholder="personal mobile" onChange={handleOnChangePhoneInput} />
           </FormGroup>
           <FormGroup label="Linkedin" layout="vertical" formClass={styles.form}>
             <CustomInput
@@ -128,7 +162,9 @@ export const PersonalProfile = () => {
             width="64px"
             onClick={handleSubmit}
             disabled={
-              !validateEmail(inputValue.backupEmail) && !inputValue.linkedin && !inputValue.mobile
+              !validateEmail(inputValue.backupEmail) &&
+              !inputValue.linkedin &&
+              !(inputValue.mobile.phoneNumber && inputValue.mobile.zoneCode)
             }
           >
             <BodyText level={6} fontFamily="Roboto">

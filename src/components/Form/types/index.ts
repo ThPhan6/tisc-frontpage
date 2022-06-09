@@ -24,3 +24,16 @@ export interface CustomInputProps extends InputProps {
 export interface CustomTextAreaProps extends TextAreaProps {
   borderBottomColor?: 'mono' | 'mono-medium';
 }
+
+export interface PhoneInputProps {
+  codePlaceholder?: string;
+  phonePlaceholder?: string;
+  defaultValue?: PhoneInputValueProp;
+  onChange?: (value: PhoneInputValueProp) => void;
+  codeReadOnly?: boolean;
+  phoneNumberReadOnly?: boolean;
+}
+export type PhoneInputValueProp = {
+  zoneCode: string;
+  phoneNumber: string;
+};
