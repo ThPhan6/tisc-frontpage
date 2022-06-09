@@ -6,6 +6,8 @@ import { MenuDataItem } from '@ant-design/pro-layout';
 import styles from './styles/aside.less';
 import { ReactComponent as DropdownIcon } from '../../assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '../../assets/icons/drop-up-icon.svg';
+import { ReactComponent as AlignLeftIcon } from '../../assets/icons/align-left-icon.svg';
+import { ReactComponent as AlignRightIcon } from '../../assets/icons/align-right-icon.svg';
 import { renderIconByName } from './Icon/index';
 
 const renderMenuItem = (menu: MenuDataItem) => {
@@ -106,6 +108,7 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
         onClick={onClick}
         inlineIndent={18}
         expandIcon={customExpandIcon}
+        triggerSubMenuAction={'click'}
       >
         {menuData.map((menu) => {
           if (menu.children) {
@@ -115,6 +118,11 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
           }
         })}
       </Menu>
+      {collapsed ? (
+        <AlignRightIcon className={styles.siderCollapseIcon} />
+      ) : (
+        <AlignLeftIcon className={styles.siderCollapseIcon} />
+      )}
     </Layout.Sider>
   );
 };
