@@ -21,12 +21,9 @@
   :global(.ant-checkbox-inner) {
     border-color: @mono-color;
   }
-  :global(.ant-checkbox) {
-    padding-right: 12px;
-  }
   :global(.ant-checkbox + span) {
     padding-right: 16px;
-    padding-left: 0;
+    padding-left: 12px;
   }
   .item-wrapper {
     display: flex;
@@ -71,6 +68,10 @@
   }
   :global(.ant-checkbox-wrapper) {
     width: 100%;
+  }
+  :global(.ant-checkbox + span) {
+    padding-right: 16px;
+    padding-left: 0;
   }
   span {
     width: 100%;
