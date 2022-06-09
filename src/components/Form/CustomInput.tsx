@@ -1,6 +1,6 @@
 import { Input } from 'antd';
 import type { FC } from 'react';
-import style from './styles/Input.less';
+import styles from './styles/Input.less';
 import type { CustomInputProps } from './types';
 import classNames from 'classnames';
 
@@ -11,32 +11,43 @@ export const CustomInput: FC<CustomInputProps> = ({
   containerClass,
   type,
   status,
+  fromLandingPage,
+  required = false,
   ...props
 }) => {
+  console.log('required', required);
+
   const setDisabled = () => {
     if (props.disabled) {
       switch (theme) {
         case 'dark':
-          return style[`disabled-dark-theme${props.prefix || props.suffix ? '-affix' : ''}`];
+          return styles[`disabled-dark-theme${props.prefix || props.suffix ? '-affix' : ''}`];
         default:
-          return style[`disabled-default-theme${props.prefix || props.suffix ? '-affix' : ''}`];
+          return styles[`disabled-default-theme${props.prefix || props.suffix ? '-affix' : ''}`];
       }
     }
   };
 
   const classNameInputDefault = classNames(
-    style.input,
-    status && style[`${status}-status`],
-    borderBottomColor && style[`${borderBottomColor}-border-bottom-color`],
-    style[`${theme}-theme`],
+    styles.input,
+    borderBottomColor && styles[`${borderBottomColor}-border-bottom-color`],
+    fromLandingPage && styles[`${theme}-focus-normal`],
+    status &&
+      styles[`${fromLandingPage ? (status === 'error' ? 'warning' : 'error') : status}-status`],
+    styles[`${theme}-theme`],
     setDisabled(),
   );
 
   const classNameInputAffix = classNames(
-    style['input-affix'],
-    borderBottomColor && style[`${borderBottomColor}-border-bottom-color-affix`],
-    status && style[`${status}-status`],
-    style[`${theme}-theme-affix`],
+    styles['input-affix'],
+    required && styles['required-input-affix'],
+    borderBottomColor && styles[`${borderBottomColor}-border-bottom-color-affix`],
+    fromLandingPage && styles[`${theme}-focus-normal-affix`],
+    status &&
+      styles[
+        `${fromLandingPage ? (status === 'error' ? 'warning' : 'error') : status}-status-affix`
+      ],
+    styles[`${theme}-theme-affix`],
     setDisabled(),
   );
 
@@ -45,9 +56,13 @@ export const CustomInput: FC<CustomInputProps> = ({
   return (
     <div className={classNames(classNameInput, containerClass)}>
       {type === 'password' ? (
-        <Input.Password type={type} {...props} />
+        <div className={required && !(props.prefix || props.suffix) && styles['required-input']}>
+          <Input.Password type={type} {...props} />
+        </div>
       ) : (
-        <Input type={type} {...props} />
+        <div className={required && !(props.prefix || props.suffix) && styles['required-input']}>
+          <Input type={type} {...props} />
+        </div>
       )}
     </div>
   );

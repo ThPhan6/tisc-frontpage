@@ -13,7 +13,7 @@ import { useBoolean, useString } from '@/helper/hook';
 import classNames from 'classnames';
 import CustomButton from '@/components/Button';
 import { MESSAGE_ERROR } from '@/constants/message';
-import { validateEmail } from '@/helper/utils';
+import { isShowErrorMessage, validateEmail } from '@/helper/utils';
 
 export const LoginModal: FC<LoginModalProps> = ({
   theme = 'default',
@@ -119,6 +119,8 @@ export const LoginModal: FC<LoginModalProps> = ({
         </div>
         <div className={styles.form}>
           <CustomInput
+            fromLandingPage
+            status={isShowErrorMessage('email', inputValue.email) ? '' : 'error'}
             theme={theme}
             size="large"
             containerClass={classNames(styles.email, showForgotPassword.value && styles.disabled)}
@@ -132,6 +134,8 @@ export const LoginModal: FC<LoginModalProps> = ({
             name="email"
           />
           <CustomInput
+            fromLandingPage
+            status={inputValue.password ? (inputValue.password.length < 8 ? 'error' : '') : ''}
             theme={theme}
             type={'password'}
             containerClass={classNames(
@@ -164,10 +168,13 @@ export const LoginModal: FC<LoginModalProps> = ({
             </div>
             {showForgotPassword.value && (
               <CustomInput
+                required
+                fromLandingPage
+                status={isShowErrorMessage('email', verifyEmail.value) ? '' : 'error'}
                 theme={theme}
                 size="large"
                 containerClass={styles[`forgot-input${themeStyle()}`]}
-                placeholder="* type your work email to verify"
+                placeholder="type your work email to verify"
                 focusColor="secondary"
                 borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
                 value={verifyEmail.value}
@@ -191,7 +198,7 @@ export const LoginModal: FC<LoginModalProps> = ({
           <CustomButton
             disabled={handleDisableButton()}
             buttonClass={styles.submit}
-            width={showForgotPassword.value ? '212px' : theme === 'dark' ? '117px' : '112px'}
+            width={showForgotPassword.value ? '216px' : theme === 'dark' ? '120px' : '112px'}
             onClick={handleSubmit}
           >
             {showForgotPassword.value

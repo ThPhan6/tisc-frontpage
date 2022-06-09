@@ -74,13 +74,19 @@
       }
       .forgot-input {
         input {
-          padding-left: 40px;
+          padding-left: 42px;
         }
       }
       .forgot-input-dark {
-        input {
-          padding-left: 40px;
-          color: #fff;
+        color: #fff;
+        div {
+          &::before {
+            left: 32px;
+          }
+          input {
+            padding-left: 44px;
+            color: #fff;
+          }
         }
       }
     }
