@@ -1,16 +1,17 @@
-import React from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
-import styles from './Welcome.less';
 import CustomButton from '@/components/Button';
-import { ReactComponent as SingleRightIcon } from '../assets/icons/single-right.svg';
-import { BodyText, MainTitle, Title } from '@/components/Typography';
-import { Card } from 'antd';
+import { CustomRadio } from '@/components/CustomRadio';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
-import { UserOutlined } from '@ant-design/icons';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
-import { CustomRadio } from '@/components/CustomRadio';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
+import { CustomInputEditor } from '@/components/Form/InputEditor';
+import { BodyText, MainTitle, Title } from '@/components/Typography';
+import { UserOutlined } from '@ant-design/icons';
+import { PageContainer } from '@ant-design/pro-layout';
+import { Card } from 'antd';
+import React from 'react';
+import { ReactComponent as SingleRightIcon } from '../assets/icons/single-right.svg';
+import styles from './Welcome.less';
 
 const Welcome: React.FC = () => {
   const optionsRadio = [
@@ -80,6 +81,51 @@ const Welcome: React.FC = () => {
             checkboxClass={styles.checkbox}
           />
         </FormGroup>
+        {/* Input Editor */}
+        <div className={styles.mb}>
+          <CustomInputEditor
+            label="Field Name"
+            tooltip="How are you"
+            placeholder="Type text..."
+            layout="horizontal"
+          />
+        </div>
+        <div className={styles.mb}>
+          <CustomInputEditor
+            label="Field Name"
+            tooltip="How are you"
+            placeholder="type text..."
+            layout="vertical"
+          />
+        </div>
+        <div className={styles.mb}>
+          <CustomInputEditor
+            label="Field Name"
+            tooltip="How are you"
+            optional={true}
+            placeholder="Type text..."
+            layout="vertical"
+          />
+        </div>
+        <div className={styles.mb}>
+          <CustomInputEditor
+            label="Document"
+            required={true}
+            placeholder="type text..."
+            layout="vertical"
+            containerClass={styles['input-editor-0']}
+          />
+        </div>
+        <div className={styles.mb}>
+          <CustomInputEditor
+            label="Message"
+            required={true}
+            placeholder="type text here"
+            layout="vertical"
+            formClass={styles['label-editor']}
+            inputClass={styles['input-editor']}
+          />
+        </div>
 
         {/* radio */}
         <FormGroup label="Test Radio horizontal" tooltip="How are you">

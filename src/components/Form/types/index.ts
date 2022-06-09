@@ -24,3 +24,25 @@ export interface CustomInputProps extends InputProps {
 export interface CustomTextAreaProps extends TextAreaProps {
   borderBottomColor?: 'mono' | 'mono-medium';
 }
+
+export interface CustomInputEditorProps {
+  layout?: 'horizontal' | 'vertical';
+  placeholder?: string;
+  tooltip?: string;
+  optional?: boolean;
+  required?: boolean;
+  label: string;
+  handleOnChange?: (value: { text: string; html: string }) => void;
+  containerClass?: string;
+  formClass?: string;
+  inputClass?: string;
+}
+
+export interface CustomToolbarProps {
+  toolbarId: string;
+}
+
+export interface EditorServiceProps {
+  getText: (index?: number, length?: number) => string;
+  getHTML: () => string;
+}
