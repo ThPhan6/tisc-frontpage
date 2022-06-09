@@ -9,7 +9,7 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';
 import { ReactComponent as LockedIcon } from '@/assets/icons/circle-pass-icon.svg';
 import CustomButton from '@/components/Button';
-import { validatePassword } from '@/helper/utils';
+import { isShowErrorMessage, validatePassword } from '@/helper/utils';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 import { PATH } from '@/constants/path';
@@ -99,9 +99,12 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
             prefix={<EmailIcon />}
             name="email"
             borderBottomColor="mono"
+            readOnly
             value={resetData.email}
           />
           <CustomInput
+            required
+            fromLandingPage
             containerClass={classNames(styles.password)}
             type={'password'}
             size="large"
@@ -112,8 +115,11 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
             borderBottomColor="mono"
             onChange={handleOnChange}
             onPressEnter={onKeyPress}
+            status={isShowErrorMessage('password', resetInputValue.password) ? '' : 'error'}
           />
           <CustomInput
+            required
+            fromLandingPage
             type={'password'}
             size="large"
             placeholder="Confirm password"
@@ -123,6 +129,12 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
             borderBottomColor="mono"
             onChange={handleOnChange}
             onPressEnter={onKeyPress}
+            status={
+              resetInputValue.confirmPassword &&
+              resetInputValue.confirmPassword !== resetInputValue.password
+                ? 'error'
+                : ''
+            }
           />
         </div>
         <div className={styles.action}>
@@ -139,7 +151,7 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
           <CustomButton
             disabled={handleDisableButton()}
             buttonClass={styles.submit}
-            width={'123px'}
+            width={'128px'}
             onClick={handleOnSubmit}
           >
             Save / Log in
