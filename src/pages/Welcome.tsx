@@ -4,6 +4,7 @@ import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { CustomInputEditor } from '@/components/Form/InputEditor';
+import { MenuSummary } from '@/components/MenuSummary';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { UserOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -21,6 +22,11 @@ const Welcome: React.FC = () => {
   return (
     <PageContainer>
       <Card>
+        {/* Menu Summary */}
+        <div className={styles.mb}>
+          <MenuSummary />
+        </div>
+
         {/* Input Editor */}
         <div className={styles.mb}>
           <CustomInputEditor
