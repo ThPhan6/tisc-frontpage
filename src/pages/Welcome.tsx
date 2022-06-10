@@ -3,6 +3,7 @@ import { CustomRadio } from '@/components/CustomRadio';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { CustomInputEditor } from '@/components/Form/InputEditor';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { UserOutlined } from '@ant-design/icons';
@@ -18,9 +19,62 @@ const Welcome: React.FC = () => {
     { label: 'radio button 2', value: '2' },
   ];
 
+  const optionsCheckbox = [
+    { label: 'checkbox 1', value: '1' },
+    { label: 'checkbox 2', value: '2' },
+  ];
+
   return (
     <PageContainer>
       <Card>
+        {/* checkbox */}
+        <FormGroup label="Test Checkbox horizontal">
+          <CustomCheckbox
+            options={optionsCheckbox}
+            direction="horizontal"
+            defaultValue={optionsCheckbox[0]}
+          />
+        </FormGroup>
+        <FormGroup label="Checkbox horizontal - other input" tooltip="How are you">
+          <CustomCheckbox
+            direction="horizontal"
+            otherInput
+            options={optionsCheckbox}
+            defaultValue={optionsCheckbox[0]}
+          />
+        </FormGroup>
+        <FormGroup label="Checkbox vertical" tooltip="How are you" layout="vertical">
+          <CustomCheckbox
+            direction="vertical"
+            options={optionsCheckbox}
+            defaultValue={optionsCheckbox[0]}
+          />
+        </FormGroup>
+        <FormGroup label="Checkbox vertical - other input" tooltip="How are you" layout="vertical">
+          <CustomCheckbox
+            direction="vertical"
+            otherInput
+            options={optionsCheckbox}
+            defaultValue={optionsCheckbox[0]}
+          />
+        </FormGroup>
+        <FormGroup label="Checkbox list" tooltip="How are you" layout="vertical">
+          <CustomCheckbox
+            direction="vertical"
+            isCheckboxList
+            options={optionsCheckbox}
+            defaultValue={optionsCheckbox[0]}
+          />
+        </FormGroup>
+        <FormGroup label="Checkbox list - other input" tooltip="How are you" layout="vertical">
+          <CustomCheckbox
+            direction="vertical"
+            otherInput
+            isCheckboxList
+            options={optionsCheckbox}
+            defaultValue={optionsCheckbox[0]}
+          />
+        </FormGroup>
         {/* Input Editor */}
         <div className={styles.mb}>
           <CustomInputEditor
