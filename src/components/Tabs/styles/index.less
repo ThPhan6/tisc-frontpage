@@ -1,0 +1,69 @@
+.tab-list {
+  :global(.ant-tabs-tab) {
+    display: block;
+    padding: 0;
+    color: @mono-color;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 22px;
+    text-transform: uppercase;
+  }
+  :global(.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn) {
+    width: 100%;
+    color: #fff;
+    font-weight: 500;
+    background: @primary-color;
+  }
+}
+
+.tabs-horizontal {
+  :global(.ant-tabs-tab-btn) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 9px;
+    padding-bottom: 9px;
+  }
+  :global(.ant-tabs-tab + .ant-tabs-tab) {
+    margin: 0;
+  }
+  :global(.ant-pro-card-body) {
+    padding: 0;
+  }
+}
+
+.tabs-vertical {
+  :global(.ant-tabs-tab-btn) {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    padding-top: 9px;
+    padding-right: 12px;
+    padding-bottom: 9px;
+    padding-left: 34px;
+  }
+  :global(.ant-tabs-left > .ant-tabs-nav .ant-tabs-tab + .ant-tabs-tab, ) {
+    margin: 0;
+  }
+  :global(.ant-tabs-left > .ant-tabs-nav .ant-tabs-tab) {
+    padding: 0;
+  }
+}
+
+// .tabs-content-space-between {
+//   :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap) {
+//     justify-content: space-between;
+//   }
+// }
+
+.tabs-content-flex-start {
+  :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap) {
+    justify-content: flex-start;
+  }
+  :global(.ant-tabs-tab-btn) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 22px;
+  }
+}

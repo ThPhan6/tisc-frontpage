@@ -5,6 +5,7 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { CustomInputEditor } from '@/components/Form/InputEditor';
+import { CustomTabs } from '@/components/Tabs';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { UserOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -24,9 +25,36 @@ const Welcome: React.FC = () => {
     { label: 'checkbox 2', value: '2' },
   ];
 
+  const optionsTab = [
+    { tab: '1st tab', key: '1' },
+    { tab: '2nd tab', key: '2' },
+    { tab: '3rd tab', key: '3' },
+    { tab: '4th tab', key: '4' },
+  ];
+
   return (
     <PageContainer>
       <Card>
+        {/*Tabs*/}
+        <div>
+          <CustomTabs
+            options={optionsTab}
+            direction="horizontal"
+            classCustomTab={styles.customDisplayTabs}
+            defaultActiveKey={optionsTab[0]}
+          />
+        </div>
+        <div>
+          <CustomTabs options={optionsTab} direction="vertical" />
+        </div>
+        <br />
+        <div>
+          <CustomTabs
+            options={optionsTab}
+            direction="horizontal"
+            tabsContent="content-flex-start"
+          />
+        </div>
         {/* checkbox */}
         <FormGroup label="Test Checkbox horizontal">
           <CustomCheckbox
