@@ -9,36 +9,41 @@ import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constants/message';
 import avatarImg from '@/assets/img-avatar.png';
 import { FC, useEffect, useState } from 'react';
-import { isShowErrorMessage, showImageUrl, validateEmail } from '@/helper/utils';
+import {
+  getPersonalPhone,
+  isShowErrorMessage,
+  showImageUrl,
+  validateEmail,
+  validatePhoneInput,
+} from '@/helper/utils';
 import { useCustomInitialState } from '@/helper/hook';
 import classNames from 'classnames';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { updateAvatarTeamProfile, updateTeamProfile } from './services/api';
 import { STATUS_RESPONSE } from '@/constants/util';
-import { PersonalProfileProps } from './types';
+import {
+  defaultPersonalProfileValue,
+  PersonalProfileProps,
+  PersonalProfileValueProp,
+} from './types';
 import { PhoneInputValueProp } from '@/components/Form/types';
 
 export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
   const [fileInput, setFileInput] = useState<any>();
-  const { initialState, fetchUserInfo } = useCustomInitialState();
+  const { fetchUserInfo, currentUser } = useCustomInitialState();
 
-  const [inputValue, setInputValue] = useState({
-    backupEmail: '',
-    mobile: {
-      zoneCode: '',
-      phoneNumber: '',
-    },
-    linkedin: '',
-  });
+  const [inputValue, setInputValue] = useState<PersonalProfileValueProp>(
+    defaultPersonalProfileValue,
+  );
 
   useEffect(() => {
     setInputValue({
-      backupEmail: initialState?.currentUser?.backup_email || '',
-      mobile: {
+      backupEmail: currentUser?.backup_email || '',
+      mobile: getPersonalPhone(currentUser?.personal_mobile) || {
         zoneCode: '',
-        phoneNumber: initialState?.currentUser?.personal_mobile || '',
+        phoneNumber: '',
       },
-      linkedin: initialState?.currentUser?.linkedin || '',
+      linkedin: currentUser?.linkedin || '',
     });
   }, []);
 
@@ -67,12 +72,11 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
     // if (fileInput) {
     //   return URL.createObjectURL(fileInput);
     // }
-    if (initialState?.currentUser?.avatar) {
-      return showImageUrl(initialState?.currentUser?.avatar);
+    if (currentUser?.avatar) {
+      return showImageUrl(currentUser?.avatar);
     }
     return avatarImg;
   };
-
   const props: UploadProps = {
     beforeUpload: (file) => {
       setFileInput(file);
@@ -87,7 +91,16 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
       linkedin: inputValue.linkedin,
       zone_code: inputValue.mobile.zoneCode,
     };
-    updateTeamProfile(bodyData, () => {});
+    isLoading.setValue(true);
+    updateTeamProfile(bodyData, (type: STATUS_RESPONSE, msg?: string) => {
+      if (type === STATUS_RESPONSE.SUCCESS) {
+        message.success(MESSAGE_NOTIFICATION.UPDATE_PERSONAL_PROFILE_SUCCESS);
+        fetchUserInfo();
+      } else {
+        message.error(msg || MESSAGE_NOTIFICATION.UPDATE_PERSONAL_PROFILE_ERROR);
+      }
+      isLoading.setValue(false);
+    });
   };
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,11 +110,26 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
     });
   };
 
-  const handleOnChangePhoneInput = (value: PhoneInputValueProp) => {
+  const handleOnChangePhoneInput = (phoneValue: PhoneInputValueProp) => {
     setInputValue({
       ...inputValue,
-      mobile: value,
+      mobile: phoneValue,
     });
+  };
+
+  const handleDisabled = () => {
+    const phone = getPersonalPhone(currentUser?.personal_mobile);
+    if (
+      (inputValue.backupEmail === currentUser?.backup_email &&
+        inputValue.linkedin === currentUser?.linkedin &&
+        inputValue.mobile.zoneCode === phone?.zoneCode &&
+        inputValue.mobile.phoneNumber === phone?.phoneNumber) ||
+      !validateEmail(inputValue.backupEmail) ||
+      !validatePhoneInput(inputValue.mobile)
+    ) {
+      return true;
+    }
+    return false;
   };
 
   return (
@@ -142,8 +170,21 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
               onChange={handleOnChange}
             />
           </FormGroup>
-          <FormGroup label="Mobile" layout="vertical" formClass={styles.form}>
-            <PhoneInput phonePlaceholder="personal mobile" onChange={handleOnChangePhoneInput} />
+          <FormGroup
+            label="Mobile"
+            layout="vertical"
+            formClass={styles.form}
+            messageType="error"
+            message={
+              isShowErrorMessage('phone-input', inputValue.mobile) ? '' : MESSAGE_ERROR.PHONE_INPUT
+            }
+          >
+            <PhoneInput
+              status={isShowErrorMessage('phone-input', inputValue.mobile) ? '' : 'error'}
+              phonePlaceholder="personal mobile"
+              onChange={handleOnChangePhoneInput}
+              value={inputValue.mobile}
+            />
           </FormGroup>
           <FormGroup label="Linkedin" layout="vertical" formClass={styles.form}>
             <CustomInput
@@ -161,11 +202,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
             size="small"
             width="64px"
             onClick={handleSubmit}
-            disabled={
-              !validateEmail(inputValue.backupEmail) &&
-              !inputValue.linkedin &&
-              !(inputValue.mobile.phoneNumber && inputValue.mobile.zoneCode)
-            }
+            disabled={handleDisabled()}
           >
             <BodyText level={6} fontFamily="Roboto">
               Save

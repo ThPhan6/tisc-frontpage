@@ -11,3 +11,21 @@ export interface PersonalProfileProps {
     setValue: (value: boolean) => void;
   };
 }
+
+export type PersonalProfileValueProp = {
+  backupEmail: string;
+  mobile: {
+    zoneCode: string;
+    phoneNumber: string;
+  };
+  linkedin: string;
+};
+
+export const defaultPersonalProfileValue = {
+  backupEmail: '',
+  mobile: {
+    zoneCode: '',
+    phoneNumber: '',
+  },
+  linkedin: '',
+};

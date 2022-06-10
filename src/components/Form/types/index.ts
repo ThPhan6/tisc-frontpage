@@ -54,6 +54,8 @@ export interface PhoneInputProps {
   onChange?: (value: PhoneInputValueProp) => void;
   codeReadOnly?: boolean;
   phoneNumberReadOnly?: boolean;
+  value?: PhoneInputValueProp;
+  status?: 'error' | 'warning' | '';
 }
 export type PhoneInputValueProp = {
   zoneCode: string;
