@@ -1,28 +1,26 @@
 import TabPane from '@ant-design/pro-card/lib/components/TabPane';
 import { Tabs } from 'antd';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { CustomTabsProps } from './types';
 import style from './styles/index.less';
 import classNames from 'classnames';
 
 export const CustomTabs: FC<CustomTabsProps> = ({
-  options,
+  listTab,
   direction,
   tabsContent = 'content-space-between',
   classCustomTab,
   onChange,
-  defaultActiveKey,
+  activeTab,
   ...props
 }) => {
-  const [tabValue, setTabValue] = useState(defaultActiveKey);
   const handleChangeValue = (key: string) => {
-    const value = options.filter((item) => item.key === key)[0];
-    setTabValue(value);
+    const value = listTab.filter((item) => item.key === key)[0];
     if (onChange) {
       onChange(value);
     }
   };
-  console.log(tabValue);
+
   return (
     <div
       className={classNames(
@@ -36,10 +34,18 @@ export const CustomTabs: FC<CustomTabsProps> = ({
         {...props}
         tabPosition={direction === 'horizontal' ? 'top' : 'left'}
         onChange={handleChangeValue}
-        defaultActiveKey={defaultActiveKey?.key}
+        activeKey={activeTab.key}
       >
-        {options.map((option) => (
-          <TabPane {...option} />
+        {listTab.map((tab) => (
+          <TabPane
+            tab={
+              <span style={{ display: 'inline-flex' }}>
+                {tab.icon}
+                <span style={{ marginLeft: '10px' }}>{tab.tab}</span>
+              </span>
+            }
+            key={tab.key}
+          />
         ))}
       </Tabs>
     </div>

@@ -1,5 +1,7 @@
 .input {
   :global(.ant-input) {
+    padding-right: 16px;
+    padding-left: 16px;
     color: @mono-color;
     font-weight: 300;
     border: 0.5px solid transparent;
@@ -118,12 +120,14 @@
     font-weight: 300;
   }
   :global(.ant-input-affix-wrapper) {
+    padding-right: 16px;
+    padding-left: 16px;
+    border: 0.5px solid transparent;
+    border-radius: 0;
+
     :global(.ant-input-prefix) {
       margin-right: 12px;
     }
-
-    border: 0.5px solid transparent;
-    border-radius: 0;
     &:hover {
       border: 0.5px solid transparent;
     }

@@ -14,6 +14,9 @@
     font-weight: 500;
     background: @primary-color;
   }
+  :global(.ant-tabs-ink-bar) {
+    background: none;
+  }
 }
 
 .tabs-horizontal {
@@ -30,17 +33,18 @@
   :global(.ant-pro-card-body) {
     padding: 0;
   }
+  :global(.ant-tabs-top > .ant-tabs-nav .ant-tabs-ink-bar-animated) {
+    transition: none;
+  }
 }
 
 .tabs-vertical {
+  display: flex;
   :global(.ant-tabs-tab-btn) {
     display: flex;
     align-items: center;
     justify-content: right;
-    padding-top: 9px;
-    padding-right: 12px;
-    padding-bottom: 9px;
-    padding-left: 34px;
+    padding: 9px 12px 9px 34px;
   }
   :global(.ant-tabs-left > .ant-tabs-nav .ant-tabs-tab + .ant-tabs-tab, ) {
     margin: 0;
@@ -48,13 +52,13 @@
   :global(.ant-tabs-left > .ant-tabs-nav .ant-tabs-tab) {
     padding: 0;
   }
+  :global(.ant-pro-card-body) {
+    padding: 24px 0;
+  }
+  :global(.ant-tabs-left > .ant-tabs-nav .ant-tabs-ink-bar-animated) {
+    transition: none;
+  }
 }
-
-// .tabs-content-space-between {
-//   :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap) {
-//     justify-content: space-between;
-//   }
-// }
 
 .tabs-content-flex-start {
   :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap) {
@@ -64,6 +68,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 9px 22px;
+    padding: 9px 49px;
   }
 }

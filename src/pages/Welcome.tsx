@@ -3,6 +3,7 @@ import { CustomRadio } from '@/components/CustomRadio';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import { PhoneInput } from '@/components/Form/PhoneInput';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { CustomInputEditor } from '@/components/Form/InputEditor';
 import { CustomTabs } from '@/components/Tabs';
@@ -10,9 +11,10 @@ import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { UserOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Card } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { ReactComponent as SingleRightIcon } from '../assets/icons/single-right.svg';
 import styles from './Welcome.less';
+import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
 
 const Welcome: React.FC = () => {
   const optionsRadio = [
@@ -25,12 +27,32 @@ const Welcome: React.FC = () => {
     { label: 'checkbox 2', value: '2' },
   ];
 
-  const optionsTab = [
-    { tab: '1st tab', key: '1' },
+  const listTab = [
+    { tab: '1st tab', key: '1', icon: <ProductIcon /> },
     { tab: '2nd tab', key: '2' },
     { tab: '3rd tab', key: '3' },
     { tab: '4th tab', key: '4' },
   ];
+
+  const [activeTab, setActiveTab] = useState({
+    tab: '1st tab',
+    key: '1',
+  });
+
+  const renderTabContent = () => {
+    switch (activeTab.key) {
+      case '1':
+        return <div>tab 1</div>;
+      case '2':
+        return <div>tab 2</div>;
+      case '3':
+        return <div>tab 3</div>;
+      case '4':
+        return <div>tab 4</div>;
+      default:
+        break;
+    }
+  };
 
   return (
     <PageContainer>
@@ -38,23 +60,29 @@ const Welcome: React.FC = () => {
         {/*Tabs*/}
         <div>
           <CustomTabs
-            options={optionsTab}
+            listTab={listTab}
             direction="horizontal"
             classCustomTab={styles.customDisplayTabs}
-            defaultActiveKey={optionsTab[0]}
+            onChange={setActiveTab}
+            activeTab={activeTab}
           />
         </div>
-        <div>
-          <CustomTabs options={optionsTab} direction="vertical" />
-        </div>
+        {renderTabContent()}
         <br />
         <div>
+          <CustomTabs listTab={listTab} direction="vertical" activeTab={activeTab} />
+          <br />
+        </div>
+        <div>
           <CustomTabs
-            options={optionsTab}
+            listTab={listTab}
             direction="horizontal"
             tabsContent="content-flex-start"
+            activeTab={activeTab}
           />
+          <br />
         </div>
+        <PhoneInput phonePlaceholder="personal mobile" />
         {/* checkbox */}
         <FormGroup label="Test Checkbox horizontal">
           <CustomCheckbox

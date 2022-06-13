@@ -15,8 +15,6 @@ export const CustomInput: FC<CustomInputProps> = ({
   required = false,
   ...props
 }) => {
-  console.log('required', required);
-
   const setDisabled = () => {
     if (props.disabled) {
       switch (theme) {

@@ -1,3 +1,4 @@
+import { PhoneInputValueProp } from '@/components/Form/types';
 import { PATH } from '@/constants/path';
 import { history } from 'umi';
 import { pushTo } from './history';
@@ -11,6 +12,10 @@ export const validateEmail = (email: string) => {
 
 export const validatePassword = (password: string) => {
   return REGEX_PASSWORD.test(password);
+};
+
+export const validatePhoneInput = (value: PhoneInputValueProp) => {
+  return value.phoneNumber && value.zoneCode;
 };
 
 export const redirectAfterLogin = async () => {
@@ -28,12 +33,37 @@ export const getBase64 = (file: any): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
-export const isShowErrorMessage = (type: 'email' | 'password', value: string) => {
-  if (!value) {
-    return true;
+export const isShowErrorMessage = (
+  type: 'email' | 'password' | 'phone-input',
+  value: string | PhoneInputValueProp,
+) => {
+  if (typeof value === 'string' && type !== 'phone-input') {
+    if (!value) {
+      return true;
+    }
+    if (type === 'email') {
+      return validateEmail(value);
+    }
+    return validatePassword(value);
   }
-  if (type === 'email') {
-    return validateEmail(value);
+  if (type === 'phone-input' && typeof value !== 'string') {
+    if (!value.phoneNumber && !value.zoneCode) {
+      return true;
+    }
+    return validatePhoneInput(value);
   }
-  return validatePassword(value);
+};
+
+export function showImageUrl(url: string) {
+  return `${STORE_URL}${url}`;
+}
+
+export const getPersonalPhone = (phone: string | undefined) => {
+  if (phone) {
+    const phoneArray = phone.split(' ');
+    return {
+      zoneCode: phoneArray[0],
+      phoneNumber: phoneArray[1],
+    };
+  }
 };
