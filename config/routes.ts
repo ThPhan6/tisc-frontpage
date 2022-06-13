@@ -64,7 +64,13 @@
         path: '/tisc/products/categories',
         name: 'category',
         icon: 'category-icon.svg',
-        component: './Welcome',
+        routes: [
+          {
+            path: '/tisc/products/categories/create',
+            name: 'Create',
+            component: './CategoryPage/CreateCategory',
+          },
+        ],
       },
       {
         path: '/tisc/products/basis',
