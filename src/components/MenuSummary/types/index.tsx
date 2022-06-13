@@ -1,4 +1,6 @@
-export interface MenuSummaryProps {}
+export interface MenuSummaryProps {
+  containerClass?: string;
+}
 
 export interface ElementSummaryProps {
   data: {
@@ -8,12 +10,9 @@ export interface ElementSummaryProps {
     brands: { id: string; quantity: number; brandName: string }[];
   };
   idElement: string;
-  toggle?: boolean;
   onClick: (id: string) => void;
-  customClass?: string;
 }
 
 export interface ItemSummaryProps {
   brand?: { id: string; quantity: number; brandName: string };
-  customClass?: string;
 }

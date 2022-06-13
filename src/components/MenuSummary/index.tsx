@@ -5,6 +5,75 @@ import style from './index.less';
 import classNames from 'classnames';
 import { ElementSummaryProps, ItemSummaryProps, MenuSummaryProps } from './types';
 
+const dataBrands = [
+  {
+    id: '1',
+    quantity: 4,
+    brandName: 'BRAND COMPANIES',
+    brands: [
+      {
+        id: '11',
+        quantity: 8,
+        brandName: 'Locations',
+      },
+      {
+        id: '18',
+        quantity: 4,
+        brandName: 'Teams',
+      },
+    ],
+  },
+  {
+    id: '2',
+    quantity: 3,
+    brandName: 'COUNTRIES',
+    brands: [
+      {
+        id: '21',
+        quantity: 0,
+        brandName: 'Asia',
+      },
+      {
+        id: '22',
+        quantity: 0,
+        brandName: 'Africa',
+      },
+      {
+        id: '23',
+        quantity: 1,
+        brandName: 'Africa',
+      },
+      {
+        id: '34',
+        quantity: 1,
+        brandName: 'Africa',
+      },
+    ],
+  },
+  {
+    id: '3',
+    quantity: 1123,
+    brandName: 'PRODUCTS',
+    brands: [
+      {
+        id: '31',
+        quantity: 5,
+        brandName: 'Categorys',
+      },
+      {
+        id: '32',
+        quantity: 19,
+        brandName: 'Collections',
+      },
+      {
+        id: '33',
+        quantity: 192,
+        brandName: 'Cards',
+      },
+    ],
+  },
+];
+
 const ItemSummary: FC<ItemSummaryProps> = ({ brand }) => {
   return (
     <div className={classNames(style['d-flex'], style['item'])} key={brand?.id}>
@@ -52,76 +121,7 @@ const ElementSummary: FC<ElementSummaryProps> = ({ data, onClick, idElement }) =
   );
 };
 
-export const MenuSummary: FC<MenuSummaryProps> = () => {
-  const dataBrands = [
-    {
-      id: '1',
-      quantity: 4,
-      brandName: 'BRAND COMPANIES',
-      brands: [
-        {
-          id: '11',
-          quantity: 8,
-          brandName: 'Locations',
-        },
-        {
-          id: '18',
-          quantity: 4,
-          brandName: 'Teams',
-        },
-      ],
-    },
-    {
-      id: '2',
-      quantity: 3,
-      brandName: 'COUNTRIES',
-      brands: [
-        {
-          id: '21',
-          quantity: 0,
-          brandName: 'Asia',
-        },
-        {
-          id: '22',
-          quantity: 0,
-          brandName: 'Africa',
-        },
-        {
-          id: '23',
-          quantity: 1,
-          brandName: 'Africa',
-        },
-        {
-          id: '34',
-          quantity: 1,
-          brandName: 'Africa',
-        },
-      ],
-    },
-    {
-      id: '3',
-      quantity: 1123,
-      brandName: 'PRODUCTS',
-      brands: [
-        {
-          id: '31',
-          quantity: 5,
-          brandName: 'Categorys',
-        },
-        {
-          id: '32',
-          quantity: 19,
-          brandName: 'Collections',
-        },
-        {
-          id: '33',
-          quantity: 192,
-          brandName: 'Cards',
-        },
-      ],
-    },
-  ];
-
+export const MenuSummary: FC<MenuSummaryProps> = ({ containerClass }) => {
   const [idElement, setIdElement] = useState<string>('');
 
   const handleActivetab = (id: string) => {
@@ -133,7 +133,7 @@ export const MenuSummary: FC<MenuSummaryProps> = () => {
   };
 
   return (
-    <div className={classNames(style['menu'], style['d-flex'])}>
+    <div className={classNames(style['menu'], style['d-flex'], containerClass)}>
       <div className={style['d-flex']}>
         {dataBrands.map((data) => {
           return (

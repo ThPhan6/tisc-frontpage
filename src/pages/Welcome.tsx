@@ -31,7 +31,7 @@ const Welcome: React.FC = () => {
       <Card>
         {/* Menu Summary */}
         <div className={styles.mb}>
-          <MenuSummary />
+          <MenuSummary containerClass={styles['menu-summary']} />
         </div>
 
         <PhoneInput phonePlaceholder="personal mobile" />

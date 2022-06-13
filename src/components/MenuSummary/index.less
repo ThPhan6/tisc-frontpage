@@ -72,10 +72,6 @@
 .unactive {
   color: @mono-color;
 
-  .item {
-    animation: slide-out 0.5s forwards;
-  }
-
   svg {
     animation: rotateToRight 0.4s ease forwards;
   }
@@ -109,18 +105,5 @@
   100% {
     transform: translateX(0);
     opacity: 1;
-  }
-}
-@keyframes slideToLeft {
-  0% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  99% {
-    transform: translateX(-5%);
-    opacity: 0.5;
-  }
-  100% {
-    transform: translateX(0);
   }
 }
