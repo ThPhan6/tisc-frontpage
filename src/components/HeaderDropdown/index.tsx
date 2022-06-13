@@ -31,6 +31,7 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   ...restProps
 }) => (
   <Dropdown
+    getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}
     overlayClassName={classNames(
       styles.container,
       arrowPositionCenter && styles[`arrow-center`],

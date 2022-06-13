@@ -6,6 +6,7 @@ import { message, Tooltip, Upload, UploadProps } from 'antd';
 import styles from './styles/PersonalProfile.less';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
+import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
 import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constants/message';
 import avatarImg from '@/assets/img-avatar.png';
 import { FC, useEffect, useState } from 'react';
@@ -16,7 +17,7 @@ import {
   validateEmail,
   validatePhoneInput,
 } from '@/helper/utils';
-import { useCustomInitialState } from '@/helper/hook';
+import { useBoolean, useCustomInitialState } from '@/helper/hook';
 import classNames from 'classnames';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { updateAvatarTeamProfile, updateTeamProfile } from './services/api';
@@ -31,6 +32,7 @@ import { PhoneInputValueProp } from '@/components/Form/types';
 export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
   const [fileInput, setFileInput] = useState<any>();
   const { fetchUserInfo, currentUser } = useCustomInitialState();
+  const submitButtonStatus = useBoolean();
 
   const [inputValue, setInputValue] = useState<PersonalProfileValueProp>(
     defaultPersonalProfileValue,
@@ -96,6 +98,10 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.UPDATE_PERSONAL_PROFILE_SUCCESS);
         fetchUserInfo();
+        submitButtonStatus.setValue(true);
+        setTimeout(() => {
+          submitButtonStatus.setValue(false);
+        }, 3000);
       } else {
         message.error(msg || MESSAGE_NOTIFICATION.UPDATE_PERSONAL_PROFILE_ERROR);
       }
@@ -212,17 +218,26 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
           </FormGroup>
         </div>
         <div className={styles['wrapper-submit']}>
-          <CustomButton
-            buttonClass={styles.submit}
-            size="small"
-            width="64px"
-            onClick={handleSubmit}
-            disabled={handleDisabled()}
-          >
-            <BodyText level={6} fontFamily="Roboto">
-              Save
-            </BodyText>
-          </CustomButton>
+          {submitButtonStatus.value ? (
+            <CustomButton
+              buttonClass={styles['submit-success']}
+              size="small"
+              width="64px"
+              icon={<CheckSuccessIcon />}
+            />
+          ) : (
+            <CustomButton
+              buttonClass={styles.submit}
+              size="small"
+              width="64px"
+              onClick={handleSubmit}
+              disabled={handleDisabled()}
+            >
+              <BodyText level={6} fontFamily="Roboto">
+                Save
+              </BodyText>
+            </CustomButton>
+          )}
         </div>
       </div>
     </div>
