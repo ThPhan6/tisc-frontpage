@@ -101,7 +101,7 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
       <Menu
         theme={props.theme}
         selectedKeys={[props.location.pathname]}
-        defaultOpenKeys={openKeys}
+        openKeys={openKeys}
         onOpenChange={onOpenChange}
         style={{ height: '100%' }}
         mode={'inline'}
