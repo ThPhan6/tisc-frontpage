@@ -2,7 +2,7 @@ import type { HeaderViewProps } from '@ant-design/pro-layout/lib/Header';
 import { Link } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import React, { useState } from 'react';
-import { MenuDataItem } from '@ant-design/pro-layout';
+import type { MenuDataItem } from '@ant-design/pro-layout';
 import styles from './styles/aside.less';
 import { ReactComponent as DropdownIcon } from '../../assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '../../assets/icons/drop-up-icon.svg';
