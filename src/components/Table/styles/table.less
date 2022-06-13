@@ -136,16 +136,17 @@
   }
 }
 .customPaginator {
-  position: absolute;
-  bottom: -24px;
-  left: -24px;
+  position: fixed;
+  bottom: 0;
+  left: 240px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: calc(100% + 48px);
+  width: calc(100% - 240px);
   height: 40px;
   color: black;
-  box-shadow: inset 0 0.5px 0 rgb(0 0 0 / 30%);
+  background-color: @mono-color-light;
+  box-shadow: inset 0 0.5px 0 #0000004d;
   svg {
     margin: 0 8px;
     cursor: pointer;
