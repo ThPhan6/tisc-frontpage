@@ -3,6 +3,7 @@ import { CustomRadio } from '@/components/CustomRadio';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import { PhoneInput } from '@/components/Form/PhoneInput';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { CustomInputEditor } from '@/components/Form/InputEditor';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
@@ -27,6 +28,7 @@ const Welcome: React.FC = () => {
   return (
     <PageContainer>
       <Card>
+        <PhoneInput phonePlaceholder="personal mobile" />
         {/* checkbox */}
         <FormGroup label="Test Checkbox horizontal">
           <CustomCheckbox

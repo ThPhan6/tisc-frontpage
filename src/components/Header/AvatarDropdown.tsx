@@ -9,6 +9,7 @@ import { BodyText } from '../Typography';
 import { ReactComponent as LogOutIcon } from '@/assets/icons/outside-icon.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon.svg';
 import { MenuHeaderDropdown } from '@/components/HeaderDropdown';
+import { showImageUrl } from '@/helper/utils';
 
 export const AvatarDropdown = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
@@ -66,7 +67,7 @@ export const AvatarDropdown = () => {
         <Avatar
           size="small"
           className={styles.avatar}
-          src={currentUser?.avatar || AvatarIcon}
+          src={currentUser?.avatar ? showImageUrl(currentUser.avatar) : AvatarIcon}
           alt="avatar"
         />
         <BodyText fontFamily="Roboto" level={4} customClass={styles['user-name']}>

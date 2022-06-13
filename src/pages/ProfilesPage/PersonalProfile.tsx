@@ -2,58 +2,104 @@ import CustomButton from '@/components/Button';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText, Title } from '@/components/Typography';
-import { Tooltip, Upload, UploadProps } from 'antd';
+import { message, Tooltip, Upload, UploadProps } from 'antd';
 import styles from './styles/PersonalProfile.less';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
-import { MESSAGE_ERROR, MESSAGE_TOOLTIP } from '@/constants/message';
+import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constants/message';
 import avatarImg from '@/assets/img-avatar.png';
-import type { RcFile } from 'antd/es/upload/interface';
-import { useEffect, useState } from 'react';
-import { isShowErrorMessage, validateEmail } from '@/helper/utils';
+import { FC, useEffect, useState } from 'react';
+import {
+  getPersonalPhone,
+  isShowErrorMessage,
+  showImageUrl,
+  validateEmail,
+  validatePhoneInput,
+} from '@/helper/utils';
 import { useCustomInitialState } from '@/helper/hook';
 import classNames from 'classnames';
+import { PhoneInput } from '@/components/Form/PhoneInput';
+import { updateAvatarTeamProfile, updateTeamProfile } from './services/api';
+import { STATUS_RESPONSE } from '@/constants/util';
+import {
+  defaultPersonalProfileValue,
+  PersonalProfileProps,
+  PersonalProfileValueProp,
+} from './types';
+import { PhoneInputValueProp } from '@/components/Form/types';
 
-export const PersonalProfile = () => {
-  const [fileList, setFileList] = useState<any>([]);
-  const { initialState } = useCustomInitialState();
+export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
+  const [fileInput, setFileInput] = useState<any>();
+  const { fetchUserInfo, currentUser } = useCustomInitialState();
 
-  const [inputValue, setInputValue] = useState({
-    backupEmail: '',
-    mobile: '',
-    linkedin: '',
-  });
+  const [inputValue, setInputValue] = useState<PersonalProfileValueProp>(
+    defaultPersonalProfileValue,
+  );
 
   useEffect(() => {
     setInputValue({
-      backupEmail: initialState?.currentUser?.backup_email || '',
-      mobile: initialState?.currentUser?.mobile || '',
-      linkedin: initialState?.currentUser?.linkedin || '',
+      backupEmail: currentUser?.backup_email || '',
+      mobile: getPersonalPhone(currentUser?.personal_mobile) || {
+        zoneCode: '',
+        phoneNumber: '',
+      },
+      linkedin: currentUser?.linkedin || '',
     });
   }, []);
 
-  const setPreviewAvatar = () => {
-    if (fileList.length > 0) {
-      return URL.createObjectURL(fileList[0]);
+  const handleUpdateAvatar = () => {
+    const formData = new FormData();
+    formData.append('avatar', fileInput);
+    isLoading.setValue(true);
+    updateAvatarTeamProfile(formData, (type: STATUS_RESPONSE, msg?: string) => {
+      if (type === STATUS_RESPONSE.SUCCESS) {
+        message.success(MESSAGE_NOTIFICATION.UPDATE_AVATAR_SUCCESS);
+        fetchUserInfo();
+      } else {
+        message.error(msg || MESSAGE_NOTIFICATION.UPDATE_AVATAR_ERROR);
+      }
+      isLoading.setValue(false);
+    });
+  };
+
+  useEffect(() => {
+    if (fileInput) {
+      handleUpdateAvatar();
     }
-    if (initialState?.currentUser?.avatar) {
-      return initialState?.currentUser?.avatar;
+  }, [fileInput]);
+
+  const setPreviewAvatar = () => {
+    // if (fileInput) {
+    //   return URL.createObjectURL(fileInput);
+    // }
+    if (currentUser?.avatar) {
+      return showImageUrl(currentUser?.avatar);
     }
     return avatarImg;
   };
-
   const props: UploadProps = {
     beforeUpload: (file) => {
-      setFileList([file]);
+      setFileInput(file);
       return false;
     },
-    fileList,
   };
 
   const handleSubmit = () => {
-    const formData = new FormData();
-    fileList.forEach((file: any) => {
-      formData.append('files[]', file.originFileObj as RcFile);
+    const bodyData = {
+      backup_email: inputValue.backupEmail,
+      personal_mobile: inputValue.mobile.phoneNumber,
+      linkedin: inputValue.linkedin,
+      zone_code: inputValue.mobile.zoneCode,
+    };
+    isLoading.setValue(true);
+    updateTeamProfile(bodyData, (type: STATUS_RESPONSE, msg?: string) => {
+      if (type === STATUS_RESPONSE.SUCCESS) {
+        message.success(MESSAGE_NOTIFICATION.UPDATE_PERSONAL_PROFILE_SUCCESS);
+        fetchUserInfo();
+      } else {
+        message.error(msg || MESSAGE_NOTIFICATION.UPDATE_PERSONAL_PROFILE_ERROR);
+      }
+      isLoading.setValue(false);
     });
   };
 
@@ -62,6 +108,28 @@ export const PersonalProfile = () => {
       ...inputValue,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleOnChangePhoneInput = (phoneValue: PhoneInputValueProp) => {
+    setInputValue({
+      ...inputValue,
+      mobile: phoneValue,
+    });
+  };
+
+  const handleDisabled = () => {
+    const phone = getPersonalPhone(currentUser?.personal_mobile);
+    if (
+      (inputValue.backupEmail === currentUser?.backup_email &&
+        inputValue.linkedin === currentUser?.linkedin &&
+        inputValue.mobile.zoneCode === phone?.zoneCode &&
+        inputValue.mobile.phoneNumber === phone?.phoneNumber) ||
+      !validateEmail(inputValue.backupEmail) ||
+      !validatePhoneInput(inputValue.mobile)
+    ) {
+      return true;
+    }
+    return false;
   };
 
   return (
@@ -81,13 +149,7 @@ export const PersonalProfile = () => {
           </div>
           <FormGroup label="Avatar" formClass={classNames(styles['form-upload'], styles.form)}>
             <div className={styles['wrapper-upload']}>
-              <Upload
-                maxCount={1}
-                showUploadList={false}
-                // beforeUpload={beforeUpload}
-                {...props}
-                accept="image/*"
-              >
+              <Upload maxCount={1} showUploadList={false} {...props} accept=".png">
                 <UploadIcon className={styles.icon} />
               </Upload>
             </div>
@@ -108,8 +170,21 @@ export const PersonalProfile = () => {
               onChange={handleOnChange}
             />
           </FormGroup>
-          <FormGroup label="Mobile" layout="vertical" formClass={styles.form}>
-            <CustomInput borderBottomColor="mono-medium" value={inputValue.mobile} />
+          <FormGroup
+            label="Mobile"
+            layout="vertical"
+            formClass={styles.form}
+            messageType="error"
+            message={
+              isShowErrorMessage('phone-input', inputValue.mobile) ? '' : MESSAGE_ERROR.PHONE_INPUT
+            }
+          >
+            <PhoneInput
+              status={isShowErrorMessage('phone-input', inputValue.mobile) ? '' : 'error'}
+              phonePlaceholder="personal mobile"
+              onChange={handleOnChangePhoneInput}
+              value={inputValue.mobile}
+            />
           </FormGroup>
           <FormGroup label="Linkedin" layout="vertical" formClass={styles.form}>
             <CustomInput
@@ -127,9 +202,7 @@ export const PersonalProfile = () => {
             size="small"
             width="64px"
             onClick={handleSubmit}
-            disabled={
-              !validateEmail(inputValue.backupEmail) && !inputValue.linkedin && !inputValue.mobile
-            }
+            disabled={handleDisabled()}
           >
             <BodyText level={6} fontFamily="Roboto">
               Save
