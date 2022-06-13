@@ -138,7 +138,22 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
         <Title level={7} customClass={styles.title}>
           PERSONAL PROFILE
         </Title>
-        <Tooltip placement="bottomLeft" title={MESSAGE_TOOLTIP.PERSONAL_PROFILE}>
+        <Tooltip
+          placement="bottomLeft"
+          title={MESSAGE_TOOLTIP.PERSONAL_PROFILE}
+          align={{
+            offset: [-13, -9],
+          }}
+          overlayInnerStyle={{
+            width: '240px',
+            height: '96px',
+            padding: '8px 19.5px',
+            fontWeight: '300',
+            fontSize: '12px',
+            lineHeight: '20px',
+            letterSpacing: '0.24px',
+          }}
+        >
           <WarningIcon className={styles['warning-icon']} />
         </Tooltip>
       </div>
