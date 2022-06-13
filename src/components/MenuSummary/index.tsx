@@ -5,85 +5,49 @@ import style from './index.less';
 import classNames from 'classnames';
 import { ElementSummaryProps, ItemSummaryProps, MenuSummaryProps } from './types';
 
-const ItemSummary: FC<ItemSummaryProps> = ({ brand, active }) => {
-  console.log(active);
-
+const ItemSummary: FC<ItemSummaryProps> = ({ brand }) => {
   return (
-    <div
-      className={classNames(
-        style['d-flex'],
-        style['item'],
-        active
-          ? classNames(style['display'] && style['active'])
-          : classNames(style['display-none']),
-      )}
-      key={brand.id}
-    >
-      <div className={classNames(style['flex-column'], style['px'])}>
-        <label>{brand.quantity}</label>
-        <span>{brand.brandName}</span>
+    <div className={classNames(style['d-flex'], style['item'])} key={brand?.id}>
+      <div className={style['flex-column']}>
+        <label>{brand?.quantity}</label>
+        <label>{brand?.brandName}</label>
       </div>
     </div>
   );
 };
 
-const ElementSummary: FC<ElementSummaryProps> = ({ data /* idElement */ }) => {
-  const [toggle, setToggle] = useState(false);
-  // const [idElement, setIdElement] = useState<string>();
+const ElementSummary: FC<ElementSummaryProps> = ({ data, onClick, idElement }) => {
+  const toggle: boolean = idElement === data.id;
 
-  const onClick = (event: React.MouseEvent<Element>) => {
-    const currentTarget = event.currentTarget.id;
-    // setIdElement(currentTarget);
-
-    console.log(currentTarget, data.id);
-    // console.log(idElement);
-
-    if (currentTarget == data.id) {
-      setToggle(true);
-
-      if (toggle) {
-        setToggle(false);
-      }
-    }
-  };
-
-  return toggle == true ? (
-    <div className={classNames(style['d-flex'], style['element'])} key={data.id}>
-      <div
-        className={classNames(
-          style['cursor-pointer'],
-          toggle ? style['active'] : style['unactive'],
-        )}
-        id={data.id}
-        onClick={onClick}
-      >
-        <label>{data.quantity}</label>
-        <div className={style['d-flex']}>
-          <span className={style['mr']}>{data.brandName}</span>
-          {toggle ? <ActionLeftIcon /> : <ActionRightIcon />}
-        </div>
-      </div>
-      {data.brands &&
-        data.brands.map((brand: any) => {
-          return <ItemSummary brand={brand} active={toggle} />;
-        })}
-    </div>
-  ) : (
+  return (
     <div
-      className={classNames(style['d-flex'], style['element'], style['border-lef'])}
+      className={classNames(
+        style['d-flex'],
+        style['element'],
+        toggle ? style['active'] : style['unactive'],
+      )}
       key={data.id}
     >
       <div
-        className={classNames(style['cursor-pointer'], style['unactive'])}
-        id={data.id}
-        onClick={onClick}
+        className={classNames(style['cursor-pointer'])}
+        onClick={() => {
+          onClick(data.id);
+        }}
       >
-        <label>{data.quantity}</label>
+        <span>{data.quantity}</span>
         <div className={style['d-flex']}>
-          <span className={style['mr']}>{data.brandName}</span>
-          <ActionRightIcon />
+          <span className={style['mr-8']}>{data.brandName}</span>
+          {toggle ? <ActionLeftIcon /> : <ActionRightIcon />}
         </div>
       </div>
+      {toggle && (
+        <div className={classNames(style['d-flex'])}>
+          {data.brands &&
+            data.brands.map((brand: { id: string; quantity: number; brandName: string }) => {
+              return <ItemSummary brand={brand} />;
+            })}
+        </div>
+      )}
     </div>
   );
 };
@@ -118,7 +82,17 @@ export const MenuSummary: FC<MenuSummaryProps> = () => {
           brandName: 'Asia',
         },
         {
-          id: '28',
+          id: '22',
+          quantity: 0,
+          brandName: 'Africa',
+        },
+        {
+          id: '23',
+          quantity: 1,
+          brandName: 'Africa',
+        },
+        {
+          id: '34',
           quantity: 1,
           brandName: 'Africa',
         },
@@ -148,29 +122,23 @@ export const MenuSummary: FC<MenuSummaryProps> = () => {
     },
   ];
 
-  // const [toggle, setToggle] = useState(false);
-  // const [idElement, setIdElement] = useState<string>();
+  const [idElement, setIdElement] = useState<string>('');
 
-  // const handleId = (event: React.MouseEvent<Element>) => {
-  //   setIdElement(event.currentTarget.id);
-  // };
+  const handleActivetab = (id: string) => {
+    if (id === idElement) {
+      setIdElement('');
+      return;
+    }
+    setIdElement(id);
+  };
 
   return (
-    <div className={classNames(style['wrap'], style['d-flex'])}>
+    <div className={classNames(style['menu'], style['d-flex'])}>
       <div className={style['d-flex']}>
         {dataBrands.map((data) => {
           return (
-            <div
-              className={classNames(style['px'], style['border-left'])}
-              key={data.id}
-              // onClick={handleId}
-            >
-              <ElementSummary
-                data={data}
-                // idElement={idElement}
-                // onClick={handleId}
-                // toggle={toggle}
-              />
+            <div className={classNames(style['border-left'], style['px-12'])} key={data.id}>
+              <ElementSummary data={data} idElement={idElement} onClick={handleActivetab} />
             </div>
           );
         })}
