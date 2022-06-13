@@ -46,3 +46,18 @@ export interface EditorServiceProps {
   getText: (index?: number, length?: number) => string;
   getHTML: () => string;
 }
+
+export interface PhoneInputProps {
+  codePlaceholder?: string;
+  phonePlaceholder?: string;
+  defaultValue?: PhoneInputValueProp;
+  onChange?: (value: PhoneInputValueProp) => void;
+  codeReadOnly?: boolean;
+  phoneNumberReadOnly?: boolean;
+  value?: PhoneInputValueProp;
+  status?: 'error' | 'warning' | '';
+}
+export type PhoneInputValueProp = {
+  zoneCode: string;
+  phoneNumber: string;
+};

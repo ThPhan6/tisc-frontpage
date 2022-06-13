@@ -1,0 +1,75 @@
+import { Input } from 'antd';
+import classNames from 'classnames';
+import { FC, useEffect, useState } from 'react';
+import { BodyText } from '../Typography';
+import styles from './styles/PhoneInput.less';
+import { PhoneInputProps } from './types';
+
+export const PhoneInput: FC<PhoneInputProps> = ({
+  codePlaceholder,
+  phonePlaceholder,
+  onChange,
+  defaultValue,
+  value,
+  codeReadOnly,
+  phoneNumberReadOnly,
+  status,
+}) => {
+  const [phoneInputValue, setPhoneInputValue] = useState({
+    zoneCode: '',
+    phoneNumber: '',
+  });
+
+  useEffect(() => {
+    if (
+      value &&
+      (value.phoneNumber !== phoneInputValue.phoneNumber ||
+        value.zoneCode !== phoneInputValue.zoneCode)
+    ) {
+      setPhoneInputValue({ ...value });
+    }
+  }, [value]);
+
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPhoneInputValue = {
+      ...phoneInputValue,
+      [e.target.name]: e.target.value,
+    };
+    setPhoneInputValue({ ...newPhoneInputValue });
+    if (onChange) {
+      onChange({ ...newPhoneInputValue });
+    }
+  };
+
+  return (
+    <div
+      className={classNames(styles['phone-input-container'], status && styles[`${status}-status`])}
+    >
+      <div className={styles['wrapper-code-input']}>
+        <BodyText level={5} fontFamily="Roboto">
+          +
+        </BodyText>
+        <Input
+          readOnly={codeReadOnly}
+          className={styles['code-input']}
+          placeholder={codePlaceholder || '00'}
+          value={value?.zoneCode || phoneInputValue.zoneCode}
+          type="number"
+          onChange={handleOnChange}
+          name="zoneCode"
+          defaultValue={defaultValue?.zoneCode || ''}
+        />
+      </div>
+      <Input
+        defaultValue={defaultValue?.phoneNumber || ''}
+        readOnly={phoneNumberReadOnly}
+        placeholder={phonePlaceholder}
+        value={value?.phoneNumber || phoneInputValue.phoneNumber}
+        className={styles['phone-input']}
+        type="number"
+        onChange={handleOnChange}
+        name="phoneNumber"
+      />
+    </div>
+  );
+};
