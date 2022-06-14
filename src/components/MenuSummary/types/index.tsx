@@ -2,17 +2,23 @@ export interface MenuSummaryProps {
   containerClass?: string;
 }
 
+export interface BrandsProps {
+  id: string;
+  quantity?: number;
+  brandName?: string;
+}
+
 export interface ElementSummaryProps {
   data: {
     id: string;
-    quantity: number;
-    brandName: string;
-    brands: { id: string; quantity: number; brandName: string }[];
+    quantity?: number;
+    brandName?: string;
+    brands?: BrandsProps[];
   };
-  idElement: string;
-  onClick: (id: string) => void;
+  activeId: string;
+  handleActiveTab: (id: string) => void;
 }
 
 export interface ItemSummaryProps {
-  brand?: { id: string; quantity: number; brandName: string };
+  brand: BrandsProps;
 }

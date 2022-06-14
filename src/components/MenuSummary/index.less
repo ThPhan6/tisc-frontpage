@@ -6,10 +6,19 @@
   line-height: @lh;
   text-transform: @txttran;
 }
-.element {
+
+.d-flex {
+  display: flex;
+  align-items: center;
+}
+
+.element-container {
+  cursor: pointer;
+  .d-flex();
+
   @fw: 500;
   @txttran: uppercase;
-  label,
+
   span {
     .form(@fw, @txttran);
   }
@@ -17,15 +26,14 @@
   .mr-8 {
     margin-right: 8px;
   }
-
-  .cursor-pointer {
-    cursor: pointer;
-  }
 }
-.item {
+
+.item-container {
+  cursor: default;
+
   @fw: 300;
   @txttran: capitalize;
-  label,
+
   span {
     .form(@fw, @txttran);
   }
@@ -36,8 +44,11 @@
   }
 }
 
-.menu {
+.menu-container {
   padding: 7px 12px;
+  @active-color: @tertiary-color;
+  @unactive-color: @mono-color;
+  .d-flex();
 
   .border-left:not(:first-of-type) {
     box-shadow: inset 0.5px 0 0 rgba(0, 0, 0, 0.3);
@@ -47,36 +58,32 @@
     padding-right: 24px;
     padding-left: 12px;
   }
-}
 
-.d-flex {
-  display: flex;
-  align-items: center;
-}
+  .active {
+    color: @active-color;
 
-.active {
-  color: @tertiary-color;
+    .item-container {
+      padding-left: 36px;
+      animation: slideToRight 0.4s ease-out forwards;
+    }
 
-  .item {
-    padding-left: 36px;
-    animation: slideToRight 0.4s ease-out forwards;
+    svg {
+      animation: rotateToLeft 0.4s ease forwards;
+    }
+    svg path {
+      fill: @active-color;
+    }
   }
 
-  svg {
-    animation: rotateToLeft 0.4s ease forwards;
-  }
-  svg path {
-    fill: @tertiary-color;
-  }
-}
-.unactive {
-  color: @mono-color;
+  .unactive {
+    color: @unactive-color;
 
-  svg {
-    animation: rotateToRight 0.4s ease forwards;
-  }
-  svg path {
-    fill: @mono-color;
+    svg {
+      animation: rotateToRight 0.4s ease forwards;
+    }
+    svg path {
+      fill: @unactive-color;
+    }
   }
 }
 

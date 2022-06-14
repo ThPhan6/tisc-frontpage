@@ -74,47 +74,48 @@ const dataBrands = [
   },
 ];
 
+const checkBrandProps = (prop: string | number | undefined) => {
+  return prop === undefined ? 'N/A' : prop;
+};
+
 const ItemSummary: FC<ItemSummaryProps> = ({ brand }) => {
   return (
-    <div className={classNames(style['d-flex'], style['item'])} key={brand?.id}>
+    <div className={classNames(style['item-container'])}>
       <div className={style['flex-column']}>
-        <label>{brand?.quantity}</label>
-        <label>{brand?.brandName}</label>
+        <span>{checkBrandProps(brand?.quantity)}</span>
+        <span>{checkBrandProps(brand?.brandName)}</span>
       </div>
     </div>
   );
 };
 
-const ElementSummary: FC<ElementSummaryProps> = ({ data, onClick, idElement }) => {
-  const toggle: boolean = idElement === data.id;
+const ElementSummary: FC<ElementSummaryProps> = ({ data, handleActiveTab, activeId }) => {
+  const toggle: boolean = activeId === data.id;
 
   return (
     <div
       className={classNames(
-        style['d-flex'],
-        style['element'],
+        style['element-container'],
         toggle ? style['active'] : style['unactive'],
       )}
       key={data.id}
     >
       <div
-        className={classNames(style['cursor-pointer'])}
         onClick={() => {
-          onClick(data.id);
+          handleActiveTab(data.id);
         }}
       >
-        <span>{data.quantity}</span>
+        <span>{checkBrandProps(data?.quantity)}</span>
         <div className={style['d-flex']}>
-          <span className={style['mr-8']}>{data.brandName}</span>
+          <span className={style['mr-8']}> {checkBrandProps(data?.brandName)}</span>
           {toggle ? <ActionLeftIcon /> : <ActionRightIcon />}
         </div>
       </div>
       {toggle && (
         <div className={classNames(style['d-flex'])}>
-          {data.brands &&
-            data.brands.map((brand: { id: string; quantity: number; brandName: string }) => {
-              return <ItemSummary brand={brand} />;
-            })}
+          {data?.brands?.map((brand) => {
+            return <ItemSummary brand={brand} key={brand?.id} />;
+          })}
         </div>
       )}
     </div>
@@ -122,23 +123,23 @@ const ElementSummary: FC<ElementSummaryProps> = ({ data, onClick, idElement }) =
 };
 
 export const MenuSummary: FC<MenuSummaryProps> = ({ containerClass }) => {
-  const [idElement, setIdElement] = useState<string>('');
+  const [activeId, setActiveId] = useState<string>('');
 
   const handleActivetab = (id: string) => {
-    if (id === idElement) {
-      setIdElement('');
+    if (id === activeId) {
+      setActiveId('');
       return;
     }
-    setIdElement(id);
+    setActiveId(id);
   };
 
   return (
-    <div className={classNames(style['menu'], style['d-flex'], containerClass)}>
-      <div className={style['d-flex']}>
-        {dataBrands.map((data) => {
+    <div className={containerClass}>
+      <div className={classNames(style['menu-container'])}>
+        {dataBrands?.map((data) => {
           return (
             <div className={classNames(style['border-left'], style['px-12'])} key={data.id}>
-              <ElementSummary data={data} idElement={idElement} onClick={handleActivetab} />
+              <ElementSummary data={data} activeId={activeId} handleActiveTab={handleActivetab} />
             </div>
           );
         })}
