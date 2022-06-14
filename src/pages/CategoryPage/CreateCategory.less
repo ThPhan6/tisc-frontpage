@@ -1,6 +1,64 @@
 @import (reference) '~antd/es/style/themes/index';
-
+.header_page {
+  display: flex;
+  flex: none;
+  flex-direction: row;
+  flex-grow: 0;
+  gap: 24px;
+  align-items: center;
+  align-self: stretch;
+  justify-content: space-between;
+  order: 0;
+  border: 0;
+  box-shadow: inset 0 -0.5px 0 @mono-color;
+  :global(.ant-card-body) {
+    display: flex;
+    flex: none;
+    flex-direction: row;
+    align-items: center;
+    align-self: stretch;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0;
+  }
+  .header_content {
+    display: flex;
+    flex: none;
+    flex-direction: row;
+    flex-grow: 0;
+    gap: 8px;
+    align-items: center;
+    align-self: stretch;
+    order: 0;
+    width: 100%;
+    padding: 12px 16px;
+    .header_title {
+      display: flex;
+      flex: 1 1;
+      flex-grow: 1;
+      align-items: center;
+      order: 0;
+      padding: 0;
+      color: @mono-color;
+      font-weight: 500;
+      font-size: 16px;
+      font-family: 'Roboto';
+      font-style: normal;
+      line-height: 24px;
+      letter-spacing: 0.02em;
+    }
+    .btn_add {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+      padding: 0;
+      border: 0.5px solid @mono-color-dark;
+      border-radius: 50%;
+    }
+  }
+}
 .create_category_form {
+  margin-top: 8px;
   .form_card {
     display: flex;
     flex-direction: column;

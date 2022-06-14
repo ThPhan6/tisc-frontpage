@@ -1,13 +1,13 @@
 import CustomButton from '@/components/Button';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
-import { PageContainer } from '@ant-design/pro-layout';
 import { Card, Col, Collapse, Row } from 'antd';
 import React, { useState } from 'react';
 import { ReactComponent as CirclePlusIcon } from '../../assets/icons/circle-plus.svg';
 import { ReactComponent as CloseIcon } from '../../assets/icons/close-icon.svg';
 import { ReactComponent as DropdownIcon } from '../../assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '../../assets/icons/drop-up-icon.svg';
+import { ReactComponent as PlusIcon } from '../../assets/icons/plus.svg';
 import { ReactComponent as RemoveIcon } from '../../assets/icons/remove-gray-icon.svg';
 import { ReactComponent as SquarePlusIcon } from '../../assets/icons/square-plus.svg';
 import styles from './CreateCategory.less';
@@ -95,7 +95,15 @@ const CreateCategory: React.FC = () => {
   };
 
   return (
-    <PageContainer>
+    <div>
+      <Card className={styles.header_page} bodyStyle={{ padding: 0, width: '100%' }}>
+        <div className={styles.header_content}>
+          <div className={styles.header_title}>CATEGORIES</div>
+          <a className={styles.btn_add}>
+            <PlusIcon width="24px" height="24px" />
+          </a>
+        </div>
+      </Card>
       <div className={styles.create_category_form}>
         <Row>
           <Col span={12}>
@@ -234,7 +242,7 @@ const CreateCategory: React.FC = () => {
           </Col>
         </Row>
       </div>
-    </PageContainer>
+    </div>
   );
 };
 
