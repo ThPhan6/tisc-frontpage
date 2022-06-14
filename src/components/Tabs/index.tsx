@@ -42,7 +42,7 @@ export const CustomTabs: FC<CustomTabsProps> = ({
               <div
                 style={{
                   height: heightItem,
-                  width: tabDisplay === 'start' ? widthItem : '',
+                  width: tabDisplay !== 'space' ? widthItem : '',
                 }}
                 className={classNames(style['item-tab'], tab.disable && style['custom-color'])}
               >
