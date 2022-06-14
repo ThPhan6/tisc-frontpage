@@ -1,17 +1,22 @@
-export interface MenuSummaryProps {
-  containerClass?: string;
-  dataBrands: ElementSummaryProps['data'][];
-  height?: string;
-}
-
 export interface BrandsProps {
   id: string;
   quantity: number;
   brandName: string;
 }
 
+export interface MenuSummaryProps {
+  containerClass?: string;
+  dataBrands: ElementSummaryProps['dataBrands'][];
+  typeMenu: 'brand' | 'subscription' | 'project' | 'services';
+  height?: string;
+}
+
+export interface DataSubscriptionProps extends BrandsProps {
+  dataProduct: {};
+}
+
 export interface ElementSummaryProps {
-  data: {
+  dataBrands: {
     id: string;
     quantity: number;
     brandName: string;

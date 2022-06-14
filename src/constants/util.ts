@@ -76,3 +76,22 @@ export const dataBrands = [
     ],
   },
 ];
+
+export const dataTotalSq = [
+  {
+    id: '1',
+    price: '$127,300',
+    label: 'Total.sq.m.',
+  },
+  {
+    id: '2',
+    price: '$1,370,246',
+    label: 'Total.sq.ft.',
+  },
+];
+
+export const dataGrandTotal = {
+  id: '1',
+  price: '$2321',
+  label: 'Grand Total',
+};
