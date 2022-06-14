@@ -61,8 +61,8 @@ const Welcome: React.FC = () => {
         <div>
           <CustomTabs
             listTab={listTab}
-            direction="horizontal"
-            classCustomTab={styles.customDisplayTabs}
+            tabPositon="top"
+            classCustomDisplayTab={styles.customDisplayTabs}
             onChange={setActiveTab}
             activeTab={activeTab}
           />
@@ -70,15 +70,21 @@ const Welcome: React.FC = () => {
         {renderTabContent()}
         <br />
         <div>
-          <CustomTabs listTab={listTab} direction="vertical" activeTab={activeTab} />
+          <CustomTabs
+            listTab={listTab}
+            tabPositon="left"
+            activeTab={activeTab}
+            classCustomSizeTab={styles.customSizeTab}
+          />
           <br />
         </div>
         <div>
           <CustomTabs
             listTab={listTab}
-            direction="horizontal"
-            tabsContent="content-flex-start"
+            tabPositon="top"
+            tabsDisplay="flex-start"
             activeTab={activeTab}
+            classCustomSizeTab={styles.customSizeTab}
           />
           <br />
         </div>

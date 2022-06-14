@@ -7,11 +7,12 @@ import classNames from 'classnames';
 
 export const CustomTabs: FC<CustomTabsProps> = ({
   listTab,
-  direction,
-  tabsContent = 'content-space-between',
-  classCustomTab,
+  tabsDisplay,
+  classCustomDisplayTab,
   onChange,
   activeTab,
+  classCustomSizeTab,
+  tabPositon,
   ...props
 }) => {
   const handleChangeValue = (key: string) => {
@@ -24,24 +25,25 @@ export const CustomTabs: FC<CustomTabsProps> = ({
   return (
     <div
       className={classNames(
-        style[`tabs-${direction}`],
+        style[`tabs-${tabPositon}`],
         style['tab-list'],
-        style[`tabs-${tabsContent}`],
-        classCustomTab,
+        style[`tabs-${tabsDisplay}`],
+        classCustomDisplayTab,
+        classCustomSizeTab,
       )}
     >
       <Tabs
         {...props}
-        tabPosition={direction === 'horizontal' ? 'top' : 'left'}
+        tabPosition={tabPositon}
         onChange={handleChangeValue}
         activeKey={activeTab.key}
       >
         {listTab.map((tab) => (
           <TabPane
             tab={
-              <span style={{ display: 'inline-flex' }}>
-                {tab.icon}
-                <span style={{ marginLeft: '10px' }}>{tab.tab}</span>
+              <span className={style['flex-item-tab']}>
+                {tab.icon && <span className={style['custom-icon']}>{tab.icon}</span>}
+                {tab.tab}
               </span>
             }
             key={tab.key}
