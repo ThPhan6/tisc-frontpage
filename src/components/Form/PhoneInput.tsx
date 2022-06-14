@@ -41,6 +41,17 @@ export const PhoneInput: FC<PhoneInputProps> = ({
     }
   };
 
+  const getWidthZoneCode = () => {
+    const zoneCodeLength = phoneInputValue.zoneCode.length;
+    if (zoneCodeLength <= 2) {
+      return '16px';
+    }
+    if (zoneCodeLength >= 10) {
+      return '80px';
+    }
+    return zoneCodeLength * 8 + 'px';
+  };
+
   return (
     <div
       className={classNames(styles['phone-input-container'], status && styles[`${status}-status`])}
@@ -58,6 +69,9 @@ export const PhoneInput: FC<PhoneInputProps> = ({
           onChange={handleOnChange}
           name="zoneCode"
           defaultValue={defaultValue?.zoneCode || ''}
+          style={{
+            width: getWidthZoneCode(),
+          }}
         />
       </div>
       <Input

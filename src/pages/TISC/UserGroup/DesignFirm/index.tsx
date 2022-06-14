@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
-import CustomTable from '@/components/Table';
+import CustomTable, { ICustomTableColumnType } from '@/components/Table';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
-import type { ColumnsType } from 'antd/lib/table';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { getDesignFirmPagination } from './services/api';
@@ -16,7 +15,7 @@ const DesignFirmList: React.FC = () => {
     alert('Coming Soon!');
   };
 
-  const TableColumns: ColumnsType<IDesignFirmListResponse> = [
+  const TableColumns: ICustomTableColumnType<IDesignFirmListResponse>[] = [
     {
       title: '',
       dataIndex: 'logo',

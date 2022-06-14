@@ -5,6 +5,19 @@
   box-shadow: @shadow-1-down;
 }
 
+.container {
+  :global(.ant-dropdown-arrow) {
+    top: 11.5px;
+  }
+}
+
+.arrow-center {
+  :global(.ant-dropdown-arrow) {
+    left: 50%;
+    transform: translateX(-50%) rotate(-135deg) translateY(-0.5px);
+  }
+}
+
 .menu-header {
   box-shadow: 1px 1px 3px 0 #00000080;
   .border {

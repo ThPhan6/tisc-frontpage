@@ -6,8 +6,8 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as PaginationLeftIcon } from '@/assets/icons/pagination-left.svg';
 import { ReactComponent as PaginationRightIcon } from '@/assets/icons/pagination-right.svg';
-import type { ColumnsType, TablePaginationConfig, ColumnType } from 'antd/lib/table';
-import type { SorterResult, ExpandableConfig } from 'antd/lib/table/interface';
+import type { TablePaginationConfig, ColumnType } from 'antd/lib/table';
+import type { SorterResult, ExpandableConfig, FilterValue } from 'antd/lib/table/interface';
 import styles from './styles/table.less';
 
 export interface Params {
@@ -23,15 +23,15 @@ export interface IDataTableResponse {
   pagination: TablePaginationConfig;
 }
 
-export interface ICustomTableColumnsType extends ColumnsType {
+export interface ICustomTableColumnType<T> extends ColumnType<T> {
   isExpandable?: boolean;
   noBoxShadow?: boolean;
   lightHeading?: boolean;
 }
 
 export interface ICustomTable {
-  columns: ICustomTableColumnsType;
-  expandable?: ExpandableConfig;
+  columns: ICustomTableColumnType<any>[];
+  expandable?: ExpandableConfig<any>;
   rightAction?: React.ReactNode;
   fetchDataFunc: (
     params: TablePaginationConfig,
@@ -41,9 +41,9 @@ export interface ICustomTable {
 }
 
 export interface IExpandableTable {
-  columns: ICustomTableColumnsType;
+  columns: ICustomTableColumnType<any>[];
   childrenColumnName: string;
-  expandable?: ExpandableConfig;
+  expandable?: ExpandableConfig<any>;
   level?: number;
 }
 
@@ -53,10 +53,12 @@ interface ICustomPaginator {
   dataLength: number;
 }
 
-const useCustomTable = (columns: ICustomTableColumnsType) => {
-  const [expended, setExpended] = useState<number | undefined | string>();
+type IExpended = number | undefined | string;
 
-  const expend = (index) => {
+const useCustomTable = (columns: ICustomTableColumnType<any>[]) => {
+  const [expended, setExpended] = useState<IExpended>();
+
+  const expend = (index: IExpended) => {
     if (expended === index) setExpended(undefined);
     else setExpended(index);
   };
@@ -71,7 +73,7 @@ const useCustomTable = (columns: ICustomTableColumnsType) => {
       </div>
     );
   };
-  const formatTitleColumn = (column: ColumnType) => {
+  const formatTitleColumn = (column: ICustomTableColumnType<any>) => {
     return () => {
       return (
         <div className={styles.titleTable}>
@@ -88,7 +90,7 @@ const useCustomTable = (columns: ICustomTableColumnsType) => {
     };
   };
 
-  const formatColumns = () => {
+  const formatColumns = (): ColumnType<any>[] => {
     return columns.map((column) => {
       const noBoxShadow = column.noBoxShadow ? 'no-box-shadow' : '';
       const cellClassName = {
@@ -104,7 +106,7 @@ const useCustomTable = (columns: ICustomTableColumnsType) => {
           render: column.render
             ? column.render
             : /* eslint-disable @typescript-eslint/no-unused-vars */
-              (value, _record, index) => {
+              (value: any, _record: any) => {
                 return {
                   ...cellClassName,
                   children: value,
@@ -115,7 +117,7 @@ const useCustomTable = (columns: ICustomTableColumnsType) => {
       return {
         ...column,
         /* eslint-disable @typescript-eslint/no-unused-vars */
-        render: (value, _record, index) => {
+        render: (value: any, _record: any, index: any) => {
           return {
             ...cellClassName,
             children: column.render ? column.render : renderExpandedColumn(value, index),
@@ -134,20 +136,23 @@ const useCustomTable = (columns: ICustomTableColumnsType) => {
 
 const CustomPaginator = (props: ICustomPaginator) => {
   const { fetchData, pagination, dataLength } = props;
-  const firstRecord = dataLength ? (pagination.current - 1) * pagination.pageSize + 1 : 0;
-  const lastRecord = (pagination.current - 1) * pagination.pageSize + dataLength;
+  const currentPage = pagination.current ?? 1;
+  const currentPageSize = pagination.pageSize ?? 1;
+  const currentTotal = pagination.total ?? 0;
+  const firstRecord = dataLength ? (currentPage - 1) * currentPageSize + 1 : 0;
+  const lastRecord = (currentPage - 1) * currentPageSize + dataLength;
 
   const renderLeftPaginator = () => {
     return (
       <PaginationLeftIcon
-        className={pagination.current === 1 ? 'disabled' : ''}
+        className={currentPage === 1 ? 'disabled' : ''}
         onClick={() => {
-          if (pagination.current === 1) {
+          if (currentPage === 1) {
             return;
           }
           fetchData({
-            page: pagination.current - 1,
-            pageSize: pagination.pageSize,
+            page: currentPage - 1,
+            pageSize: currentPageSize,
           });
         }}
       />
@@ -157,14 +162,14 @@ const CustomPaginator = (props: ICustomPaginator) => {
   const renderRightPaginator = () => {
     return (
       <PaginationRightIcon
-        className={pagination.total === lastRecord ? 'disabled' : ''}
+        className={currentTotal === lastRecord ? 'disabled' : ''}
         onClick={() => {
-          if (pagination.total === lastRecord) {
+          if (currentTotal === lastRecord) {
             return;
           }
           fetchData({
-            page: pagination.current + 1,
-            pageSize: pagination.pageSize,
+            page: currentPage + 1,
+            pageSize: currentPageSize,
           });
         }}
       />
@@ -214,13 +219,12 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
 
   const handleTableChange = (
     newPagination: TablePaginationConfig,
-    filters: Record<string, FilterValue>,
-    sorter: SorterResult<DataType>,
+    filters: Record<string, FilterValue | null>,
+    // sorter: SorterResult<any> | SorterResult<any>[],
   ) => {
-    console.log('newPagination', newPagination);
     fetchData({
-      sortField: sorter.field as string,
-      sortOrder: sorter.order as string,
+      // sortField: sorter.field as string,
+      // sortOrder: sorter.order as string,
       page: newPagination.current,
       pageSize: newPagination.pageSize,
       ...filters,
@@ -248,10 +252,10 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
 
       <Table
         columns={columns}
-        rowKey={(_record, index) => index}
-        rowClassName={(_record, index) => {
+        rowKey={(_record, index) => `${index}`}
+        rowClassName={(_record, index: IExpended) => {
           if (index === expended) {
-            return 'custom-expanded';
+            return 'custom-expanded' as any;
           }
         }}
         dataSource={data}
@@ -291,9 +295,7 @@ export const ExpandableTable = (props: IExpandableTable) => {
         showHeader={false}
         pagination={false}
         columns={columns}
-        rowKey={(_expandableRecord, index) => {
-          return index;
-        }}
+        rowKey={(_expandableRecord, index) => `${index}`}
         rowClassName={level === 2 ? 'custom-expanded-level-2' : ''}
         tableLayout="fixed"
         expandable={expandable}
