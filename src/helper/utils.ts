@@ -1,5 +1,6 @@
 import { PhoneInputValueProp } from '@/components/Form/types';
 import { PATH } from '@/constants/path';
+import { isUndefined } from 'lodash';
 import { history } from 'umi';
 import { pushTo } from './history';
 
@@ -66,4 +67,8 @@ export const getPersonalPhone = (phone: string | undefined) => {
       phoneNumber: phoneArray[1],
     };
   }
+};
+
+export const checkUndefined = (value: string | number | undefined) => {
+  return isUndefined(value) ? 'N/A' : value;
 };
