@@ -1,0 +1,18 @@
+.form_container {
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &__title {
+      text-transform: uppercase;
+    }
+    &__icon {
+      cursor: pointer;
+    }
+  }
+  .input {
+    :global(.ant-input) {
+      color: @primary-color-dark;
+    }
+  }
+}
