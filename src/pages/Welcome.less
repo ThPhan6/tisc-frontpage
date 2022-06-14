@@ -51,25 +51,3 @@
   @resize-none: none;
   .editor-form(@text-padding, @resize-none);
 }
-
-.customDisplayTabs {
-  @numbertab: 4;
-  @height: 40px;
-  :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
-    display: grid;
-    grid-template-columns: repeat(@numbertab, 100% / @numbertab);
-    width: 100%;
-  }
-  :global(.ant-tabs-tab-btn) {
-    height: @height;
-  }
-}
-
-.customSizeTab {
-  @height: 40px;
-  @width: 125px;
-  :global(.ant-tabs-tab-btn) {
-    width: @width;
-    height: @height;
-  }
-}

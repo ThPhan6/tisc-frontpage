@@ -7,12 +7,12 @@ import classNames from 'classnames';
 
 export const CustomTabs: FC<CustomTabsProps> = ({
   listTab,
-  tabsDisplay,
-  classCustomDisplayTab,
+  tabDisplay = 'start',
   onChange,
   activeTab,
-  classCustomSizeTab,
-  tabPositon,
+  tabPosition = 'top',
+  heightItem = '40px',
+  widthItem = '125px',
   ...props
 }) => {
   const handleChangeValue = (key: string) => {
@@ -25,28 +25,33 @@ export const CustomTabs: FC<CustomTabsProps> = ({
   return (
     <div
       className={classNames(
-        style[`tabs-${tabPositon}`],
+        style[`tabs-${tabPosition}`],
         style['tab-list'],
-        style[`tabs-${tabsDisplay}`],
-        classCustomDisplayTab,
-        classCustomSizeTab,
+        style[`tabs-${tabDisplay}`],
       )}
     >
       <Tabs
         {...props}
-        tabPosition={tabPositon}
+        tabPosition={tabPosition}
         onChange={handleChangeValue}
         activeKey={activeTab.key}
       >
         {listTab.map((tab) => (
           <TabPane
             tab={
-              <span className={style['flex-item-tab']}>
+              <div
+                style={{
+                  height: heightItem,
+                  width: tabDisplay === 'start' ? widthItem : '',
+                }}
+                className={classNames(style['item-tab'], tab.disable && style['custom-color'])}
+              >
                 {tab.icon && <span className={style['custom-icon']}>{tab.icon}</span>}
                 {tab.tab}
-              </span>
+              </div>
             }
             key={tab.key}
+            disabled={tab.disable}
           />
         ))}
       </Tabs>

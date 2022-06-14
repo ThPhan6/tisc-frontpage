@@ -32,7 +32,7 @@ const Welcome: React.FC = () => {
   const listTab = [
     { tab: '1st tab', key: '1', icon: <ProductIcon /> },
     { tab: '2nd tab', key: '2' },
-    { tab: '3rd tab', key: '3' },
+    { tab: '3rd tab', key: '3', disable: true },
     { tab: '4th tab', key: '4' },
   ];
 
@@ -63,8 +63,8 @@ const Welcome: React.FC = () => {
         <div>
           <CustomTabs
             listTab={listTab}
-            tabPositon="top"
-            classCustomDisplayTab={styles.customDisplayTabs}
+            tabPosition="top"
+            tabDisplay="space"
             onChange={setActiveTab}
             activeTab={activeTab}
           />
@@ -72,21 +72,15 @@ const Welcome: React.FC = () => {
         {renderTabContent()}
         <br />
         <div>
-          <CustomTabs
-            listTab={listTab}
-            tabPositon="left"
-            activeTab={activeTab}
-            classCustomSizeTab={styles.customSizeTab}
-          />
+          <CustomTabs listTab={listTab} tabPosition="left" activeTab={activeTab} />
           <br />
         </div>
         <div>
           <CustomTabs
             listTab={listTab}
-            tabPositon="top"
-            tabsDisplay="flex-start"
+            tabPosition="top"
+            tabDisplay="start"
             activeTab={activeTab}
-            classCustomSizeTab={styles.customSizeTab}
           />
           <br />
         </div>

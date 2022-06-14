@@ -39,12 +39,10 @@
 }
 
 .tabs-left {
-  display: flex;
   :global(.ant-tabs-tab-btn) {
     display: flex;
     align-items: center;
     justify-content: right;
-    padding-right: 12px;
   }
   :global(.ant-tabs-left > .ant-tabs-nav .ant-tabs-tab + .ant-tabs-tab, ) {
     margin: 0;
@@ -53,7 +51,7 @@
     padding: 0;
   }
   :global(.ant-pro-card-body) {
-    padding: 24px 0;
+    padding: 0;
   }
   :global(.ant-tabs-left > .ant-tabs-nav .ant-tabs-ink-bar-animated) {
     transition: none;
@@ -61,9 +59,24 @@
   :global(.ant-tabs-left > .ant-tabs-content-holder, ) {
     border-left: none;
   }
+  .item-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: right;
+    padding-right: 12px;
+  }
 }
 
-.tabs-flex-start {
+.tabs-space {
+  @numbertab: 4;
+  :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
+    display: grid;
+    grid-template-columns: repeat(@numbertab, 100% / @numbertab);
+    width: 100%;
+  }
+}
+
+.tabs-start {
   :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap) {
     justify-content: flex-start;
   }
@@ -74,12 +87,27 @@
   }
 }
 
-.flex-item-tab {
+.tabs-end {
+  :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap) {
+    justify-content: flex-end;
+  }
+  :global(.ant-tabs-tab-btn) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+.item-tab {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
 }
 
 .custom-icon {
   padding-top: 5px;
   padding-right: 10px;
+}
+
+.custom-color {
+  color: @mono-color-medium;
 }
