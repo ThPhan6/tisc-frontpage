@@ -35,7 +35,7 @@ const IconList = {
   'user-group-icon.svg': <UserGroupIcon className="anticon" />,
   'workspace-icon.svg': <WorkspaceIcon className="anticon" />,
 };
-export const renderIconByName = (key: string) => {
+export const renderIconByName = (key: any): React.ReactNode => {
   if (key && IconList[key]) {
     return IconList[key];
   }
