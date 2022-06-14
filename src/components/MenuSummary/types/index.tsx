@@ -1,6 +1,7 @@
 export interface MenuSummaryProps {
   containerClass?: string;
   dataBrands: ElementSummaryProps['data'][];
+  height?: string;
 }
 
 export interface BrandsProps {

@@ -27,6 +27,7 @@ const ElementSummary: FC<ElementSummaryProps> = ({ data, handleActiveTab, active
       key={data.id}
     >
       <div
+        className={style['element']}
         onClick={() => {
           handleActiveTab(data.id);
         }}
@@ -41,7 +42,11 @@ const ElementSummary: FC<ElementSummaryProps> = ({ data, handleActiveTab, active
         <div className={classNames(style['item-wrapper'])}>
           {data?.brands &&
             data?.brands.map((brand) => {
-              return <ItemSummary brand={brand} key={brand?.id} />;
+              return (
+                <div className={style['item']} key={brand?.id}>
+                  <ItemSummary brand={brand} />
+                </div>
+              );
             })}
         </div>
       )}
@@ -49,7 +54,11 @@ const ElementSummary: FC<ElementSummaryProps> = ({ data, handleActiveTab, active
   );
 };
 
-export const MenuSummary: FC<MenuSummaryProps> = ({ containerClass, dataBrands }) => {
+export const MenuSummary: FC<MenuSummaryProps> = ({
+  containerClass,
+  dataBrands,
+  height = '56px',
+}) => {
   const [activeId, setActiveId] = useState<string>('');
 
   const handleActivetab = (id: string) => {
@@ -61,7 +70,7 @@ export const MenuSummary: FC<MenuSummaryProps> = ({ containerClass, dataBrands }
   };
 
   return (
-    <div className={classNames(style['menu-container'], containerClass)}>
+    <div className={classNames(style['menu-container'], containerClass)} style={{ height: height }}>
       {dataBrands?.map((data) => {
         return (
           <div className={classNames(style['wrapper'])} key={data.id}>
