@@ -11,7 +11,7 @@ export async function getBrandPagination(
     method: 'GET',
     params,
   })
-    .then((response: IBrandListResponse) => {
+    .then((response: { data: IBrandListResponse }) => {
       callback({
         data: response.data,
         pagination: {

@@ -11,7 +11,7 @@ export async function getDesignFirmPagination(
     method: 'GET',
     params,
   })
-    .then((response: IDesignFirmListResponse) => {
+    .then((response: { data: IDesignFirmListResponse }) => {
       callback({
         data: response.data,
         pagination: {
