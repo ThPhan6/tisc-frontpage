@@ -7,6 +7,7 @@ import { PhoneInput } from '@/components/Form/PhoneInput';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { CustomInputEditor } from '@/components/Form/InputEditor';
 import { CustomTabs } from '@/components/Tabs';
+import { MenuSummary } from '@/components/MenuSummary';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { UserOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -15,6 +16,7 @@ import React, { useState } from 'react';
 import { ReactComponent as SingleRightIcon } from '../assets/icons/single-right.svg';
 import styles from './Welcome.less';
 import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
+import { dataBrands } from '@/constants/util';
 
 const Welcome: React.FC = () => {
   const optionsRadio = [
@@ -88,6 +90,11 @@ const Welcome: React.FC = () => {
           />
           <br />
         </div>
+        {/* Menu Summary */}
+        <div className={styles.mb}>
+          <MenuSummary containerClass={styles['menu-summary']} dataBrands={dataBrands} />
+        </div>
+
         <PhoneInput phonePlaceholder="personal mobile" />
         {/* checkbox */}
         <FormGroup label="Test Checkbox horizontal">
