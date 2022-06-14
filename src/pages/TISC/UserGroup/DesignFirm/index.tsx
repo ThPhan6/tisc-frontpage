@@ -7,6 +7,9 @@ import { getDesignFirmPagination } from './services/api';
 import { showImageUrl } from '@/helper/utils';
 import type { IDesignFirmListResponse } from './types';
 import styles from './styles/index.less';
+import { PageContainer } from '@ant-design/pro-layout';
+import { MenuSummary } from '@/components/MenuSummary';
+import { dataBrands } from '@/constants/util';
 
 const DesignFirmList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -49,10 +52,10 @@ const DesignFirmList: React.FC = () => {
       render: () => {
         return (
           <HeaderDropdown
-            className={styles.customAction}
-            arrow={{
-              pointAtCenter: true,
-            }}
+            containerClass={styles.customAction}
+            arrow
+            align={{ offset: [13, -10] }}
+            placement="bottomRight"
             overlay={
               <MenuHeaderDropdown
                 items={[
@@ -74,14 +77,18 @@ const DesignFirmList: React.FC = () => {
   ];
 
   return (
-    <>
+    <PageContainer
+      pageHeaderRender={() => (
+        <MenuSummary containerClass={styles.customMenuSummary} dataBrands={dataBrands} />
+      )}
+    >
       <CustomTable
         title="DESIGN FIRMS"
         columns={TableColumns}
         ref={tableRef}
         fetchDataFunc={getDesignFirmPagination}
       />
-    </>
+    </PageContainer>
   );
 };
 

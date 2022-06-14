@@ -66,6 +66,7 @@ const Header = () => {
             align={{ offset: [0, 11] }}
             placement="topRight"
             trigger={['click']}
+            getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}
           >
             <QuestionWhiteIcon className={styles.icon} />
           </HeaderDropdown>
@@ -78,6 +79,7 @@ const Header = () => {
             align={{ offset: [0, 11] }}
             placement="topRight"
             trigger={['click']}
+            getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}
           >
             <LanguageWhiteIcon className={styles.icon} />
           </HeaderDropdown>
