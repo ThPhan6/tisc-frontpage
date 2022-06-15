@@ -4,45 +4,73 @@ import type { ICustomTableColumnType } from '@/components/Table';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
-import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
-import { getProductCategoryPagination } from './services/api';
-import type { ICategoryListResponse } from './types';
+import { getProductBasisOptionPagination } from './services/api';
+import { showImageUrl } from '@/helper/utils';
+import type { IBasisOptionListResponse, ISubBasisOption } from './types';
 import styles from './styles/index.less';
 
-const CategoryList: React.FC = () => {
+const BasisOptionList: React.FC = () => {
   const tableRef = useRef<any>();
 
   const comingSoon = () => {
     alert('Coming Soon!');
   };
 
-  const MainColumns: ICustomTableColumnType<ICategoryListResponse>[] = [
+  const SameColumn: ICustomTableColumnType<any>[] = [
     {
-      title: 'Main Category',
+      title: 'Image',
+      dataIndex: 'image',
+      width: '5%',
+      render: (value) => {
+        if (value) {
+          return <img src={showImageUrl(value)} style={{ width: 18 }} />;
+        }
+        return null;
+      },
+    },
+    {
+      title: '1st Value',
+      dataIndex: 'value_1',
+      width: '5%',
+    },
+    {
+      title: 'Unit',
+      dataIndex: 'unit_1',
+      width: '5%',
+      lightHeading: true,
+    },
+    {
+      title: '2nd Value',
+      dataIndex: 'value_2',
+      width: '5%',
+    },
+    {
+      title: 'Unit',
+      dataIndex: 'unit_2',
+      lightHeading: true,
+    },
+    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
+  ];
+
+  const MainColumns: ICustomTableColumnType<IBasisOptionListResponse>[] = [
+    {
+      title: 'Option Group',
       dataIndex: 'name',
       sorter: {
         multiple: 1,
       },
-      width: '40%',
+      width: 300,
       isExpandable: true,
     },
     {
-      title: 'Subcategory',
-      dataIndex: 'subcategory',
-      width: '30%',
+      title: 'Option Name',
+      dataIndex: 'option_name',
+      width: 150,
       sorter: {
         multiple: 2,
       },
     },
-    {
-      title: 'Category',
-      dataIndex: 'category',
-      width: '20%',
-      sorter: {
-        multiple: 3,
-      },
-    },
-    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
+    ...SameColumn,
     {
       title: 'Action',
       dataIndex: 'action',
@@ -63,11 +91,6 @@ const CategoryList: React.FC = () => {
                     icon: <ViewIcon />,
                     label: 'Edit',
                   },
-                  {
-                    onClick: comingSoon,
-                    icon: <EmailInviteIcon />,
-                    label: 'Delete',
-                  },
                 ]}
               />
             }
@@ -79,58 +102,46 @@ const CategoryList: React.FC = () => {
       },
     },
   ];
-  const SubColumns: ICustomTableColumnType<ICategoryListResponse>[] = [
+
+  const SubColumns: ICustomTableColumnType<ISubBasisOption>[] = [
     {
-      title: 'Main Category',
-      dataIndex: 'maincategory',
-      width: '40%',
-      sorter: true,
+      title: 'Option Group',
+      dataIndex: 'option_group',
+      width: 300,
       noBoxShadow: true,
     },
     {
-      title: 'Subcategory',
+      title: 'Option Name',
       dataIndex: 'name',
-      width: '30%',
-      sorter: true,
+      width: 150,
       isExpandable: true,
     },
-    {
-      title: 'Category',
-      dataIndex: 'Category',
-      sorter: true,
-      width: '20%',
-    },
-    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
+    ...SameColumn,
     {
       title: 'Action',
-      dataIndex: 'action2',
+      dataIndex: 'action',
+      align: 'center',
       width: '5%',
     },
   ];
-  const ChildColumns: ICustomTableColumnType<ICategoryListResponse>[] = [
+
+  const ChildColumns: ICustomTableColumnType<IBasisOptionListResponse>[] = [
     {
-      title: 'Main Category',
-      dataIndex: 'maincategory',
-      width: '40%',
-      sorter: true,
+      title: 'Option Group',
+      dataIndex: 'option_group',
+      width: 300,
       noBoxShadow: true,
     },
     {
-      title: 'Subcategory',
-      dataIndex: 'Subcategory',
-      width: '30%',
-      sorter: true,
+      title: 'Option Name',
+      dataIndex: 'option_name',
+      width: 150,
     },
-    {
-      title: 'Category',
-      dataIndex: 'name',
-      width: '20%',
-      sorter: true,
-    },
-    { title: 'Count', dataIndex: 'count', width: '5%' },
+    ...SameColumn,
     {
       title: 'Action',
-      dataIndex: 'action2',
+      dataIndex: 'action',
+      align: 'center',
       width: '5%',
     },
   ];
@@ -138,14 +149,13 @@ const CategoryList: React.FC = () => {
   return (
     <>
       <CustomTable
-        title="CATEGORIES"
+        title="PRESET"
         columns={MainColumns}
         ref={tableRef}
-        fetchDataFunc={getProductCategoryPagination}
+        fetchDataFunc={getProductBasisOptionPagination}
         multiSort={{
-          name: 'main_category_order',
-          subcategory: 'sub_category_order',
-          category: 'category_order',
+          name: 'group_order',
+          option_name: 'option_order',
         }}
         expandable={GetExpandableTableConfig({
           columns: SubColumns,
@@ -161,4 +171,4 @@ const CategoryList: React.FC = () => {
   );
 };
 
-export default CategoryList;
+export default BasisOptionList;

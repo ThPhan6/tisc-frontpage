@@ -1,10 +1,10 @@
 import { request } from 'umi';
 import { message } from 'antd';
 import type { IDesignFirmListResponse } from '../types';
-import type { IDataTableResponse } from '@/components/Table/index';
+import type { IDataTableResponse, IPaginationRequest } from '@/components/Table/index';
 
 export async function getDesignFirmPagination(
-  params: any,
+  params: IPaginationRequest,
   callback: (data: IDataTableResponse) => void,
 ) {
   request(`/api/design/get-list`, {

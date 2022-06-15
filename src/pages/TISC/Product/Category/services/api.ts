@@ -1,7 +1,7 @@
 import { request } from 'umi';
 import { message } from 'antd';
 import type { ICategoryListResponse } from '../types';
-import type { IDataTableResponse } from '@/components/Table/index';
+import type { IDataTableResponse, IPaginationRequest } from '@/components/Table/index';
 
 interface ICategoryPaginationResponse {
   data: {
@@ -11,8 +11,8 @@ interface ICategoryPaginationResponse {
     sub_category_count: number;
   };
 }
-export async function getBrandPagination(
-  params: any,
+export async function getProductCategoryPagination(
+  params: IPaginationRequest,
   callback: (data: IDataTableResponse) => void,
 ) {
   request(`/api/category/get-list`, {
