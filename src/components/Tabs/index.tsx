@@ -12,7 +12,7 @@ export const CustomTabs: FC<CustomTabsProps> = ({
   activeTab,
   tabPosition = 'top',
   heightItem = '40px',
-  widthItem = '125px',
+  widthItem = '128px',
   ...props
 }) => {
   const handleChangeValue = (key: string) => {
@@ -44,14 +44,14 @@ export const CustomTabs: FC<CustomTabsProps> = ({
                   height: heightItem,
                   width: tabDisplay !== 'space' ? widthItem : '',
                 }}
-                className={classNames(style['item-tab'], tab.disable && style['custom-color'])}
+                className={classNames(style['item-tab'], tab?.disable && style['custom-color'])}
               >
-                {tab.icon && <span className={style['custom-icon']}>{tab.icon}</span>}
+                {tab?.icon && <span className={style['custom-icon']}>{tab.icon}</span>}
                 {tab.tab}
               </div>
             }
             key={tab.key}
-            disabled={tab.disable}
+            disabled={tab?.disable}
           />
         ))}
       </Tabs>
