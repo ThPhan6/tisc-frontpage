@@ -74,17 +74,17 @@
           {
             path: '/tisc/products/basis/conversions',
             name: 'conversion',
-            component: './Welcome',
+            component: './TISC/Product/Basis/Conversion',
           },
           {
             path: '/tisc/products/basis/presets',
             name: 'preset',
-            component: './Welcome',
+            component: './TISC/Product/Basis/Preset',
           },
           {
             path: '/tisc/products/basis/options',
             name: 'option',
-            component: './Welcome',
+            component: './TISC/Product/Basis/Option',
           },
         ],
       },
