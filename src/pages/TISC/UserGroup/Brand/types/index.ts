@@ -1,4 +1,4 @@
-export interface IBrandListResponse {
+export interface IBrand {
   id: string;
   assign_team: any[];
   cards: number;

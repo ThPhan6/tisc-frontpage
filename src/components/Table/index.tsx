@@ -9,68 +9,16 @@ import { ReactComponent as PaginationLeftIcon } from '@/assets/icons/pagination-
 import { ReactComponent as PaginationRightIcon } from '@/assets/icons/pagination-right.svg';
 import type { TablePaginationConfig, ColumnType } from 'antd/lib/table';
 import type { SorterResult, ExpandableConfig, FilterValue } from 'antd/lib/table/interface';
+import type {
+  IPaginationParams,
+  IPaginationRequest,
+  ICustomTableColumnType,
+  ICustomTable,
+  IExpandableTable,
+  ICustomPaginator,
+  IExpended,
+} from './types';
 import styles from './styles/table.less';
-
-export interface IPaginationParams {
-  pagination: TablePaginationConfig;
-  sorter?: SorterResult<any> | SorterResult<any>[];
-  filter?: {
-    [key: string]: any;
-  };
-}
-
-export interface IPaginationRequest {
-  page: number;
-  pageSize: number;
-  filter?: {
-    [key: string]: any;
-  };
-  sort_name?: string;
-  sort_order?: string;
-  [key: string]: any;
-}
-
-export interface IDataTableResponse {
-  data: any;
-  pagination: TablePaginationConfig;
-}
-
-export interface ICustomTableColumnType<T> extends ColumnType<T> {
-  isExpandable?: boolean;
-  noBoxShadow?: boolean;
-  lightHeading?: boolean;
-}
-
-export interface ICustomTable {
-  columns: ICustomTableColumnType<any>[];
-  expandable?: ExpandableConfig<any>;
-  rightAction?: React.ReactNode;
-  fetchDataFunc: (params: IPaginationRequest, callback: (data: IDataTableResponse) => void) => void;
-  title: string;
-  multiSort?: {
-    [key: string]: any;
-  };
-  hasPagination?: boolean;
-  extraParams?: {
-    [key: string]: any;
-  };
-}
-
-export interface IExpandableTable {
-  columns: ICustomTableColumnType<any>[];
-  childrenColumnName: string;
-  expandable?: ExpandableConfig<any>;
-  level?: number;
-}
-
-interface ICustomPaginator {
-  fetchData: (params: IPaginationParams) => void;
-  pagination: TablePaginationConfig;
-  dataLength: number;
-  sorter: SorterResult<any> | SorterResult<any>[];
-}
-
-type IExpended = number | undefined | string;
 
 const useCustomTable = (columns: ICustomTableColumnType<any>[]) => {
   const [expended, setExpended] = useState<IExpended>();

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import type { ICustomTableColumnType } from '@/components/Table';
+import type { ICustomTableColumnType } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
@@ -22,13 +22,13 @@ const CategoryList: React.FC = () => {
       sorter: {
         multiple: 1,
       },
-      width: '40%',
+      width: 300,
       isExpandable: true,
     },
     {
       title: 'Subcategory',
       dataIndex: 'subcategory',
-      width: '30%',
+      width: 200,
       sorter: {
         multiple: 2,
       },
@@ -36,7 +36,6 @@ const CategoryList: React.FC = () => {
     {
       title: 'Category',
       dataIndex: 'category',
-      width: '20%',
       sorter: {
         multiple: 3,
       },
@@ -79,14 +78,14 @@ const CategoryList: React.FC = () => {
     {
       title: 'Main Category',
       dataIndex: 'maincategory',
-      width: '40%',
+      width: 300,
       sorter: true,
       noBoxShadow: true,
     },
     {
       title: 'Subcategory',
       dataIndex: 'name',
-      width: '30%',
+      width: 200,
       sorter: true,
       isExpandable: true,
     },
@@ -94,7 +93,6 @@ const CategoryList: React.FC = () => {
       title: 'Category',
       dataIndex: 'Category',
       sorter: true,
-      width: '20%',
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
@@ -107,20 +105,20 @@ const CategoryList: React.FC = () => {
     {
       title: 'Main Category',
       dataIndex: 'maincategory',
-      width: '40%',
+      width: 300,
       sorter: true,
       noBoxShadow: true,
     },
     {
       title: 'Subcategory',
       dataIndex: 'Subcategory',
-      width: '30%',
+      width: 200,
       sorter: true,
     },
     {
       title: 'Category',
       dataIndex: 'name',
-      width: '20%',
+
       sorter: true,
     },
     { title: 'Count', dataIndex: 'count', width: '5%' },
