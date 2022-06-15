@@ -96,17 +96,17 @@
           {
             path: '/tisc/products/attributes/general',
             name: 'general',
-            component: './Welcome',
+            component: './TISC/Product/Attribute',
           },
           {
             path: '/tisc/products/attributes/feature',
             name: 'feature',
-            component: './Welcome',
+            component: './TISC/Product/Attribute',
           },
           {
             path: '/tisc/products/attributes/specification',
             name: 'specification',
-            component: './Welcome',
+            component: './TISC/Product/Attribute',
           },
         ],
       },
