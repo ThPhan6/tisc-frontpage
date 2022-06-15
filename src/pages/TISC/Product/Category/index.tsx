@@ -7,7 +7,6 @@ import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
 import { getProductCategoryPagination } from './services/api';
 import type { ICategoryListResponse } from './types';
-import styles from './styles/index.less';
 
 const CategoryList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -51,7 +50,6 @@ const CategoryList: React.FC = () => {
       render: () => {
         return (
           <HeaderDropdown
-            className={styles.customAction}
             arrow
             overlay={
               <MenuHeaderDropdown

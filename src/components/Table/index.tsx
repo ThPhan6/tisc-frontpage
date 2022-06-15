@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
 import { Table } from 'antd';
 import { Title, BodyText } from '@/components/Typography';
-import { forEach, isArray } from 'lodash';
+import { forEach, isArray, isEmpty } from 'lodash';
 import { ReactComponent as SortIcon } from '@/assets/icons/sort-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
@@ -51,6 +51,9 @@ export interface ICustomTable {
     [key: string]: any;
   };
   hasPagination?: boolean;
+  extraParams?: {
+    [key: string]: any;
+  };
 }
 
 export interface IExpandableTable {
@@ -68,9 +71,6 @@ interface ICustomPaginator {
 }
 
 type IExpended = number | undefined | string;
-
-const DEFAULT_PAGESIZE = 10;
-const DEFAULT_PAGE_NUMBER = 1;
 
 const useCustomTable = (columns: ICustomTableColumnType<any>[]) => {
   const [expended, setExpended] = useState<IExpended>();
@@ -214,33 +214,40 @@ const CustomPaginator = (props: ICustomPaginator) => {
 };
 
 const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
-  const { expandable, fetchDataFunc, title, rightAction, multiSort, hasPagination } = props;
+  const { expandable, fetchDataFunc, title, rightAction, multiSort, hasPagination, extraParams } =
+    props;
+
+  const DEFAULT_PAGE_NUMBER = 1;
+  const DEFAULT_PAGESIZE = hasPagination ? 10 : 999999999999;
+
   const { columns, expended } = useCustomTable(props.columns);
   const [data, setData] = useState<any>([]);
   const [currentSorter, setCurrentSorter] = useState<SorterResult<any> | SorterResult<any>[]>([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: DEFAULT_PAGE_NUMBER,
-    pageSize: hasPagination ? DEFAULT_PAGESIZE : 999999999999,
+    pageSize: DEFAULT_PAGESIZE,
     total: 0,
   });
 
   const formatPaginationParams = (params: IPaginationParams) => {
     const { sorter, filter } = params;
     const paginationParams: IPaginationRequest = {
-      page: data.pagination.current ?? DEFAULT_PAGE_NUMBER,
-      pageSize: data.pagination.pageSize ?? DEFAULT_PAGESIZE,
+      page: data.pagination?.current ?? DEFAULT_PAGE_NUMBER,
+      pageSize: data.pagination?.pageSize ?? DEFAULT_PAGESIZE,
+      ...extraParams,
     };
     /// if enable filter
     if (filter) {
       paginationParams.filter = filter;
     }
-    if (sorter) {
+    if (sorter && !isEmpty(sorter)) {
       // if enable sorter
       let sortName: any = '';
       let sortOrder: any = '';
       ///
       if (!isArray(sorter)) {
+        console.log('go here');
         sortName = sorter.field;
         sortOrder = sorter.order === 'descend' ? 'DESC' : 'ASC';
       }

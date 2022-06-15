@@ -4,60 +4,49 @@ import type { ICustomTableColumnType } from '@/components/Table';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
-import { getProductBasisPresetPagination } from './services/api';
-import type { IBasisPresetListResponse, ISubBasisPreset } from './types';
+import { getProductAttributePagination } from './services/api';
+import { useLocation } from 'umi';
+import { ATTRIBUTE_PATH_TO_TYPE } from './utils';
 
-const BasisPresetList: React.FC = () => {
+import type { IAttributeListResponse, ISubAttribute } from './types';
+
+const AttributeList: React.FC = () => {
   const tableRef = useRef<any>();
-
+  const location = useLocation();
   const comingSoon = () => {
     alert('Coming Soon!');
   };
-
-  const SameColumns: ICustomTableColumnType<any>[] = [
+  const MainColumns: ICustomTableColumnType<IAttributeListResponse>[] = [
     {
-      title: '1st Value',
-      dataIndex: 'value_1',
-      width: '5%',
-    },
-    {
-      title: 'Unit',
-      dataIndex: 'unit_1',
-      width: '5%',
-      lightHeading: true,
-    },
-    {
-      title: '2nd Value',
-      dataIndex: 'value_2',
-      width: '5%',
-    },
-    {
-      title: 'Unit',
-      dataIndex: 'unit_2',
-      lightHeading: true,
-    },
-    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
-  ];
-
-  const MainColumns: ICustomTableColumnType<IBasisPresetListResponse>[] = [
-    {
-      title: 'Preset Group',
+      title: 'Attribute Group',
       dataIndex: 'name',
       sorter: {
         multiple: 1,
       },
-      width: 250,
+      width: 200,
       isExpandable: true,
     },
     {
-      title: 'Preset Name',
-      dataIndex: 'preset_name',
+      title: 'Attribute Name',
+      dataIndex: 'attribute_name',
       width: 150,
       sorter: {
         multiple: 2,
       },
     },
-    ...SameColumns,
+    {
+      title: 'Content Type',
+      dataIndex: 'content_type',
+      width: 150,
+      sorter: {
+        multiple: 3,
+      },
+    },
+    {
+      title: 'Description',
+      dataIndex: 'second_formula',
+    },
+    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Action',
       dataIndex: 'action',
@@ -86,73 +75,68 @@ const BasisPresetList: React.FC = () => {
       },
     },
   ];
-
-  const SubColumns: ICustomTableColumnType<ISubBasisPreset>[] = [
+  const SubColumns: ICustomTableColumnType<ISubAttribute>[] = [
     {
-      title: 'Preset Group',
-      dataIndex: 'preset_group',
-      width: 250,
+      title: 'Attribute Group',
+      dataIndex: 'attribute_group',
+      width: 200,
       noBoxShadow: true,
     },
     {
-      title: 'Preset Name',
+      title: 'Attribute Name',
       dataIndex: 'name',
       width: 150,
       isExpandable: true,
-    },
-    ...SameColumns,
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      align: 'center',
-      width: '5%',
-    },
-  ];
-
-  const ChildColumns: ICustomTableColumnType<IBasisPresetListResponse>[] = [
-    {
-      title: 'Preset Group',
-      dataIndex: 'preset_group',
-      width: 250,
       noBoxShadow: true,
     },
     {
-      title: 'Preset Name',
-      dataIndex: 'preset_name',
+      title: 'Content Type',
+      dataIndex: 'content_type',
       width: 150,
+      noBoxShadow: true,
     },
-    ...SameColumns,
+    {
+      title: 'Description',
+      dataIndex: 'second_formula',
+      noBoxShadow: true,
+    },
+    {
+      title: 'Count',
+      dataIndex: 'count',
+      width: '5%',
+      align: 'center',
+      noBoxShadow: true,
+    },
     {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
       width: '5%',
+      noBoxShadow: true,
     },
   ];
-
   return (
     <>
       <CustomTable
-        title="PRESET"
+        title={ATTRIBUTE_PATH_TO_TYPE[location.pathname].name}
         columns={MainColumns}
         ref={tableRef}
-        fetchDataFunc={getProductBasisPresetPagination}
+        fetchDataFunc={getProductAttributePagination}
+        extraParams={{
+          type: ATTRIBUTE_PATH_TO_TYPE[location.pathname].type,
+        }}
         multiSort={{
           name: 'group_order',
-          preset_name: 'preset_order',
+          attribute_name: 'attribute_order',
+          content_type: 'content_type_order',
         }}
         expandable={GetExpandableTableConfig({
           columns: SubColumns,
           childrenColumnName: 'subs',
-          level: 2,
-          expandable: GetExpandableTableConfig({
-            columns: ChildColumns,
-            childrenColumnName: 'subs',
-          }),
         })}
       />
     </>
   );
 };
 
-export default BasisPresetList;
+export default AttributeList;
