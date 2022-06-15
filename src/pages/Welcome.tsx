@@ -18,6 +18,7 @@ import styles from './Welcome.less';
 import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
 import { dataBrands } from '@/constants/util';
 import { ConversionsEntryForm } from './TISC/Product/Conversions/ConversionsEntryForm';
+import { ConversionsBasisOption } from './TISC/Product/Options/ConversionsEntryForm';
 
 const Welcome: React.FC = () => {
   const optionsRadio = [
@@ -61,6 +62,10 @@ const Welcome: React.FC = () => {
     <PageContainer>
       <Card>
         <ConversionsEntryForm />
+
+        {/* basis options */}
+        <ConversionsBasisOption />
+
         {/*Tabs*/}
         <div>
           <CustomTabs
