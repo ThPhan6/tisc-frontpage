@@ -6,6 +6,7 @@ import styles from './index.less';
 import { BodyText } from '../Typography';
 
 export type HeaderDropdownProps = {
+  arrow?: boolean;
   arrowPositionCenter?: boolean;
   containerClass?: string;
   overlayClassName?: string;
@@ -28,16 +29,17 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   overlayClassName: cls,
   containerClass,
   arrowPositionCenter,
+  arrow,
   ...restProps
 }) => (
   <Dropdown
-    getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}
     overlayClassName={classNames(
       styles.container,
       arrowPositionCenter && styles[`arrow-center`],
       cls,
       containerClass,
     )}
+    arrow={arrow}
     {...restProps}
   />
 );

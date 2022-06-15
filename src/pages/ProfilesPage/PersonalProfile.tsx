@@ -148,7 +148,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
           placement="bottomLeft"
           title={MESSAGE_TOOLTIP.PERSONAL_PROFILE}
           align={{
-            offset: [-13, -9],
+            offset: [-14, -9],
           }}
           overlayInnerStyle={{
             width: '240px',

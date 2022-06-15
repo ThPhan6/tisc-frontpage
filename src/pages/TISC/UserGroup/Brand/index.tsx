@@ -10,6 +10,9 @@ import { getBrandPagination } from './services/api';
 import { showImageUrl } from '@/helper/utils';
 import type { IBrandListResponse } from './types';
 import styles from './styles/index.less';
+import { PageContainer } from '@ant-design/pro-layout';
+import { MenuSummary } from '@/components/MenuSummary';
+import { dataBrands } from '@/constants/util';
 
 const BrandList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -73,10 +76,10 @@ const BrandList: React.FC = () => {
       render: () => {
         return (
           <HeaderDropdown
-            className={styles.customAction}
-            arrow={{
-              pointAtCenter: true,
-            }}
+            containerClass={styles.customAction}
+            arrow
+            align={{ offset: [13, -10] }}
+            placement="bottomRight"
             overlay={
               <MenuHeaderDropdown
                 items={[
@@ -103,14 +106,18 @@ const BrandList: React.FC = () => {
   ];
 
   return (
-    <>
+    <PageContainer
+      pageHeaderRender={() => (
+        <MenuSummary containerClass={styles.customMenuSummary} dataBrands={dataBrands} />
+      )}
+    >
       <CustomTable
         title="BRANDS"
         columns={TableColumns}
         ref={tableRef}
         fetchDataFunc={getBrandPagination}
       />
-    </>
+    </PageContainer>
   );
 };
 
