@@ -1,23 +1,27 @@
 import { request } from 'umi';
 import { message } from 'antd';
-import type { IBrandListResponse } from '../types';
+import type { IBasisOptionListResponse } from '../types';
 import type { IDataTableResponse, IPaginationRequest } from '@/components/Table/index';
 
-export async function getBrandPagination(
+interface ICategoryPaginationResponse {
+  data: {
+    basis_options: IBasisOptionListResponse[];
+  };
+}
+export async function getProductBasisOptionPagination(
   params: IPaginationRequest,
   callback: (data: IDataTableResponse) => void,
 ) {
-  request(`/api/brand/get-list`, {
+  request(`/api/basis-option/get-list`, {
     method: 'GET',
     params,
   })
-    .then((response: { data: IBrandListResponse }) => {
+    .then((response: ICategoryPaginationResponse) => {
       callback({
-        data: response.data,
+        data: response.data.basis_options,
         pagination: {
           current: params.page,
           pageSize: params.pageSize,
-          total: 10,
         },
       });
     })
