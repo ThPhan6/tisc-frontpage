@@ -20,8 +20,16 @@ export const ConversionsEntryForm = () => {
     setConversions(newConversions);
   };
 
+  const handleSubmit = () => {
+    alert('Coming soon ');
+  };
+
+  const handleCancel = () => {
+    alert('Coming soon ');
+  };
+
   return (
-    <EntryFormWrapper>
+    <EntryFormWrapper handleSubmit={handleSubmit} handleCancel={handleCancel}>
       <FormNameInput
         placeholder="type group name"
         title="Conversion Group"
