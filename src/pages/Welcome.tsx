@@ -15,6 +15,7 @@ import React from 'react';
 import { ReactComponent as SingleRightIcon } from '../assets/icons/single-right.svg';
 import styles from './Welcome.less';
 import { dataBrands } from '@/constants/util';
+import { ConversionsEntryForm } from './TISC/Product/Conversions/ConversionsEntryForm';
 
 const Welcome: React.FC = () => {
   const optionsRadio = [
@@ -30,6 +31,7 @@ const Welcome: React.FC = () => {
   return (
     <PageContainer>
       <Card>
+        <ConversionsEntryForm />
         {/* Menu Summary */}
         <div className={styles.mb}>
           <MenuSummary containerClass={styles['menu-summary']} dataBrands={dataBrands} />
