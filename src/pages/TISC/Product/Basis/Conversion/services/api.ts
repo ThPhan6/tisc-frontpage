@@ -1,7 +1,7 @@
 import { request } from 'umi';
 import { message } from 'antd';
 import type { IBasisConversionListResponse } from '../types';
-import type { IDataTableResponse, IPaginationRequest } from '@/components/Table/index';
+import type { IDataTableResponse, IPaginationRequest } from '@/components/Table/types';
 
 interface ICategoryPaginationResponse {
   data: {

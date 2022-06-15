@@ -1,7 +1,16 @@
 import { request } from 'umi';
 import { message } from 'antd';
-import type { IDesignFirmListResponse } from '../types';
-import type { IDataTableResponse, IPaginationRequest } from '@/components/Table/index';
+import type { IDesignFirm } from '../types';
+import type {
+  IDataTableResponse,
+  IPaginationRequest,
+  IPaginationResponse,
+} from '@/components/Table/types';
+
+interface IDesignFirmListResponse {
+  designers: IDesignFirm;
+  pagination: IPaginationResponse;
+}
 
 export async function getDesignFirmPagination(
   params: IPaginationRequest,
@@ -12,12 +21,13 @@ export async function getDesignFirmPagination(
     params,
   })
     .then((response: { data: IDesignFirmListResponse }) => {
+      const { designers, pagination } = response.data;
       callback({
-        data: response.data,
+        data: designers,
         pagination: {
-          current: params.page,
-          pageSize: params.pageSize,
-          total: 10,
+          current: pagination.page,
+          pageSize: pagination.page_size,
+          total: pagination.total,
         },
       });
     })
