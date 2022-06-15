@@ -6,14 +6,16 @@ import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { CustomInputEditor } from '@/components/Form/InputEditor';
+import { CustomTabs } from '@/components/Tabs';
 import { MenuSummary } from '@/components/MenuSummary';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { UserOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Card } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { ReactComponent as SingleRightIcon } from '../assets/icons/single-right.svg';
 import styles from './Welcome.less';
+import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
 import { dataBrands } from '@/constants/util';
 
 const Welcome: React.FC = () => {
@@ -27,9 +29,61 @@ const Welcome: React.FC = () => {
     { label: 'checkbox 2', value: '2' },
   ];
 
+  const listTab = [
+    { tab: '1st tab', key: '1', icon: <ProductIcon /> },
+    { tab: '2nd tab', key: '2' },
+    { tab: '3rd tab', key: '3', disable: true },
+    { tab: '4th tab', key: '4' },
+  ];
+
+  const [activeTab, setActiveTab] = useState({
+    tab: '1st tab',
+    key: '1',
+  });
+
+  const renderTabContent = () => {
+    switch (activeTab.key) {
+      case '1':
+        return <div>tab 1</div>;
+      case '2':
+        return <div>tab 2</div>;
+      case '3':
+        return <div>tab 3</div>;
+      case '4':
+        return <div>tab 4</div>;
+      default:
+        break;
+    }
+  };
+
   return (
     <PageContainer>
       <Card>
+        {/*Tabs*/}
+        <div>
+          <CustomTabs
+            listTab={listTab}
+            tabPosition="top"
+            tabDisplay="space"
+            onChange={setActiveTab}
+            activeTab={activeTab}
+          />
+        </div>
+        {renderTabContent()}
+        <br />
+        <div>
+          <CustomTabs listTab={listTab} tabPosition="left" activeTab={activeTab} />
+          <br />
+        </div>
+        <div>
+          <CustomTabs
+            listTab={listTab}
+            tabPosition="top"
+            tabDisplay="start"
+            activeTab={activeTab}
+          />
+          <br />
+        </div>
         {/* Menu Summary */}
         <div className={styles.mb}>
           <MenuSummary containerClass={styles['menu-summary']} dataBrands={dataBrands} />
