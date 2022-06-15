@@ -1,0 +1,113 @@
+.tab-list {
+  :global(.ant-tabs-tab) {
+    display: block;
+    padding: 0;
+    color: @mono-color;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 22px;
+    text-transform: uppercase;
+  }
+  :global(.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn) {
+    color: #fff;
+    font-weight: 500;
+    background: @primary-color;
+  }
+  :global(.ant-tabs-ink-bar) {
+    background: none;
+  }
+  :global(.ant-tabs-top > .ant-tabs-nav::before) {
+    border-bottom: 1px solid @mono-color;
+  }
+}
+
+.tabs-top {
+  :global(.ant-tabs-tab-btn) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  :global(.ant-tabs-tab + .ant-tabs-tab) {
+    margin: 0;
+  }
+  :global(.ant-pro-card-body) {
+    padding: 0;
+  }
+  :global(.ant-tabs-top > .ant-tabs-nav .ant-tabs-ink-bar-animated) {
+    transition: none;
+  }
+}
+
+.tabs-left {
+  :global(.ant-tabs-tab-btn) {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+  }
+  :global(.ant-tabs-left > .ant-tabs-nav .ant-tabs-tab + .ant-tabs-tab, ) {
+    margin: 0;
+  }
+  :global(.ant-tabs-left > .ant-tabs-nav .ant-tabs-tab) {
+    padding: 0;
+  }
+  :global(.ant-pro-card-body) {
+    padding: 0;
+  }
+  :global(.ant-tabs-left > .ant-tabs-nav .ant-tabs-ink-bar-animated) {
+    transition: none;
+  }
+  :global(.ant-tabs-left > .ant-tabs-content-holder, ) {
+    border-left: none;
+  }
+  .item-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: right;
+    padding-right: 12px;
+  }
+}
+
+.tabs-space {
+  @numbertab: 4;
+  :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
+    display: grid;
+    grid-template-columns: repeat(@numbertab, 100% / @numbertab);
+    width: 100%;
+  }
+}
+
+.tabs-start {
+  :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap) {
+    justify-content: flex-start;
+  }
+  :global(.ant-tabs-tab-btn) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.tabs-end {
+  :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap) {
+    justify-content: flex-end;
+  }
+  :global(.ant-tabs-tab-btn) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+.item-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-icon {
+  padding-top: 5px;
+  padding-right: 10px;
+}
+
+.custom-color {
+  color: @mono-color-medium;
+}

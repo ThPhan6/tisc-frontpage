@@ -32,13 +32,13 @@
         path: '/tisc/user-groups/brands',
         name: 'brand',
         icon: 'brand-icon.svg',
-        component: './Welcome',
+        component: './TISC/UserGroup/Brand',
       },
       {
         path: '/tisc/user-groups/design-firms',
         name: 'designfirm',
         icon: 'design-firm-icon.svg',
-        component: './Welcome',
+        component: './TISC/UserGroup/DesignFirm',
       },
     ],
   },
@@ -65,6 +65,11 @@
         name: 'category',
         icon: 'category-icon.svg',
         routes: [
+          {
+            path: '/tisc/products/categories',
+            name: 'Create',
+            component: './TISC/Product/Category',
+          },
           {
             path: '/tisc/products/categories/create',
             name: 'Create',
@@ -200,11 +205,6 @@
   //   path: '/list',
   //   component: './TableList',
   // },
-  // {
-  //   path: '/',
-  //   redirect: '/welcome',
-  // },
-
   // GENERAL PAGE
   {
     component: './404',

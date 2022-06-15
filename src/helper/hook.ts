@@ -30,11 +30,15 @@ export const useCustomInitialState = () => {
       }));
     }
   };
+
+  const currentUser = initialState?.currentUser;
+
   return {
     loading,
     initialState,
     setInitialState,
     fetchUserInfo,
+    currentUser,
   };
 };
 

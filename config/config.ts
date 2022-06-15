@@ -67,5 +67,6 @@ export default defineConfig({
   exportStatic: {},
   define: {
     API_URL: process.env.REACT_APP_API_URL || '',
+    STORE_URL: process.env.TISC_FILE_STORE_URL || '',
   },
 });

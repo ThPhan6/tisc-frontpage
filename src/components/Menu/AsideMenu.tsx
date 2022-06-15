@@ -2,8 +2,9 @@ import type { HeaderViewProps } from '@ant-design/pro-layout/lib/Header';
 import { Link } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import React, { useState } from 'react';
-import { MenuDataItem } from '@ant-design/pro-layout';
+import type { MenuDataItem } from '@ant-design/pro-layout';
 import styles from './styles/aside.less';
+import { useLocation } from 'umi';
 import { ReactComponent as DropdownIcon } from '../../assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '../../assets/icons/drop-up-icon.svg';
 import { ReactComponent as AlignLeftIcon } from '../../assets/icons/align-left-icon.svg';
@@ -31,7 +32,7 @@ const renderSubMenu = (menu: MenuDataItem) => {
       icon={renderIconByName(menu.icon)}
       className={styles.customAsideSubMenu}
     >
-      {menu.children.map((child) => {
+      {menu.children?.map((child) => {
         if (child.children) {
           return renderSubMenu(child);
         }
@@ -42,18 +43,21 @@ const renderSubMenu = (menu: MenuDataItem) => {
 };
 
 const AsideMenu: React.FC = (props: HeaderViewProps) => {
-  const rootKeys = [];
-  const defaultOpenKeys = [];
+  const location = useLocation();
+  const rootKeys: string[] = [];
+  const defaultOpenKeys: string[] = [];
+  const appProps: any = props.children;
   //
   const [openKeys, setOpenKeys] = useState<string[]>([
-    props.children.props.currentPathConfig.path,
-    ...props.children.props.currentPathConfig.pro_layout_parentKeys,
+    appProps.props.currentPathConfig.path,
+    ...appProps.props.currentPathConfig.pro_layout_parentKeys,
   ]);
+
   const [collapsed, setCollapsed] = useState(false);
 
   /// get menu data
-  const menuData = props.menuData.filter((menu) => {
-    if (menu.children) {
+  const menuData = props.menuData?.filter((menu) => {
+    if (menu.children && menu.key) {
       rootKeys.push(menu.key);
     }
     return (
@@ -64,7 +68,7 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
 
   // Open only one submenu at a time
   const onOpenChange = (items: any) => {
-    const latestOpenKey = items.find((key) => openKeys.indexOf(key) === -1);
+    const latestOpenKey = items.find((key: any) => openKeys.indexOf(key) === -1);
     if (rootKeys.indexOf(latestOpenKey) === -1) {
       setOpenKeys(items);
     } else {
@@ -91,6 +95,7 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
       breakpoint={'md'}
       style={{
         paddingTop: 48,
+        overflow: 'auto',
       }}
       collapsible
       collapsedWidth={60}
@@ -98,31 +103,33 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
       onCollapse={(value) => setCollapsed(value)}
       className={styles.customAsideSider}
     >
-      <Menu
-        theme={props.theme}
-        selectedKeys={[props.location.pathname]}
-        openKeys={openKeys}
-        onOpenChange={onOpenChange}
-        style={{ height: '100%' }}
-        mode={'inline'}
-        onClick={onClick}
-        inlineIndent={18}
-        expandIcon={customExpandIcon}
-        triggerSubMenuAction={'click'}
-      >
-        {menuData.map((menu) => {
-          if (menu.children) {
-            return renderSubMenu(menu);
-          } else {
-            return renderMenuItem(menu);
-          }
-        })}
-      </Menu>
-      {collapsed ? (
-        <AlignRightIcon className={styles.siderCollapseIcon} />
-      ) : (
-        <AlignLeftIcon className={styles.siderCollapseIcon} />
-      )}
+      <div className="menu-sider-wrapper">
+        <Menu
+          theme={props.headerTheme}
+          selectedKeys={[location.pathname]}
+          openKeys={openKeys}
+          onOpenChange={onOpenChange}
+          style={{ height: '100%' }}
+          mode={'inline'}
+          onClick={onClick}
+          inlineIndent={18}
+          expandIcon={customExpandIcon}
+          triggerSubMenuAction={'click'}
+        >
+          {menuData?.map((menu) => {
+            if (menu.children) {
+              return renderSubMenu(menu);
+            } else {
+              return renderMenuItem(menu);
+            }
+          })}
+        </Menu>
+        {collapsed ? (
+          <AlignRightIcon className={styles.siderCollapseIcon} />
+        ) : (
+          <AlignLeftIcon className={styles.siderCollapseIcon} />
+        )}
+      </div>
     </Layout.Sider>
   );
 };

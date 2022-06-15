@@ -9,9 +9,12 @@ import { BodyText } from '../Typography';
 import { ReactComponent as LogOutIcon } from '@/assets/icons/outside-icon.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon.svg';
 import { MenuHeaderDropdown } from '@/components/HeaderDropdown';
+import { showImageUrl } from '@/helper/utils';
+import { useBoolean } from '@/helper/hook';
 
 export const AvatarDropdown = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
+  const showHeaderDropdown = useBoolean();
 
   const loginOut = async () => {
     setInitialState((s) => ({ ...s, currentUser: undefined }));
@@ -43,6 +46,7 @@ export const AvatarDropdown = () => {
         {
           onClick: () => {
             pushTo(PATH.profiles);
+            showHeaderDropdown.setValue(false);
           },
           icon: <UserIcon />,
           label: 'User profiles',
@@ -60,13 +64,20 @@ export const AvatarDropdown = () => {
     <HeaderDropdown
       containerClass={styles.dropdown}
       overlay={menuHeaderDropdown}
+      arrow
+      arrowPositionCenter
+      visible={showHeaderDropdown.value}
+      onVisibleChange={showHeaderDropdown.setValue}
+      align={{ offset: [0, 11] }}
+      placement="topLeft"
       trigger={['click']}
+      getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}
     >
       <span className={`${styles.container}`}>
         <Avatar
           size="small"
           className={styles.avatar}
-          src={currentUser?.avatar || AvatarIcon}
+          src={currentUser?.avatar ? showImageUrl(currentUser.avatar) : AvatarIcon}
           alt="avatar"
         />
         <BodyText fontFamily="Roboto" level={4} customClass={styles['user-name']}>

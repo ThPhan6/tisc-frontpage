@@ -1,0 +1,194 @@
+@import (reference) '~antd/es/style/themes/index';
+
+.customTable {
+  :global(.ant-table) {
+    color: black;
+  }
+  :global(.ant-table-ping-right) {
+    :global(.ant-table-container) {
+      &::after {
+        box-shadow: none;
+      }
+      &::before {
+        box-shadow: none;
+      }
+    }
+  }
+  :global(.ant-table-ping-left) {
+    :global(.ant-table-container) {
+      &::after {
+        box-shadow: none;
+      }
+      &::before {
+        box-shadow: none;
+      }
+    }
+  }
+  :global(.ant-pagination) {
+    display: none;
+  }
+  .tableHeader {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+    padding: 12px 16px;
+    background-color: #fff;
+    box-shadow: inset 0 -0.5px 0 #000;
+  }
+  // :global(.ant-table) {
+  //   table {
+  //     border-collapse: collapse;
+  //   }
+  // }
+  :global(.ant-table-column-sorter) {
+    display: none;
+  }
+  .titleTable {
+    display: flex;
+    align-items: center;
+    svg {
+      margin-left: 8px;
+    }
+  }
+  :global(.ant-table-thead) {
+    :global(.ant-table-cell) {
+      height: 36px;
+      padding: 8px 12px;
+      color: black;
+      background-color: #fff;
+      border-bottom: 0;
+    }
+  }
+  :global(.ant-table-tbody) {
+    :global(.custom-expanded) + tr {
+      :global(.ant-table-cell) {
+        box-shadow: none;
+      }
+    }
+    :global(.ant-table-expanded-row) {
+      > td:global(.ant-table-cell) {
+        &(:first-child) {
+          border-bottom: 1px solid #d8d8d8;
+          :global(.ant-table-expanded-row) {
+            > td:global(.ant-table-cell) {
+              border-bottom: 0;
+            }
+          }
+        }
+      }
+    }
+    tr {
+      :global(.ant-table-cell) {
+        height: 36px;
+        padding: 8px 12px;
+        color: black;
+        white-space: nowrap;
+        background-color: #fff;
+        border-top: 8px solid @mono-color-light;
+        border-bottom: 0;
+        box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
+      }
+      &:global(.custom-expanded-level-2) {
+        &(:nth-child(2)) {
+          :global(.ant-table-cell) {
+            box-shadow: none;
+          }
+        }
+      }
+      &:global(.ant-table-expanded-row) {
+        :global(.ant-table-cell) {
+          padding: 0;
+          border-top: 0;
+          box-shadow: inset 0 0.5px 0 rgba(0, 0, 0, 0.3);
+          &:global(.no-box-shadow) {
+            // &:not(:last-child) {
+            box-shadow: none;
+            // }
+          }
+          :global(.ant-table) {
+            margin: 0;
+            :global(.ant-table-thead) {
+              height: 0;
+              overflow: hidden;
+              visibility: hidden;
+              pointer-events: none;
+              th {
+                height: 0;
+                padding: 0 12px !important;
+                div {
+                  height: 0;
+                  p {
+                    height: 0;
+                  }
+                  svg {
+                    height: 0;
+                    font-size: 0;
+                  }
+                }
+              }
+            }
+            :global(.ant-table-cell) {
+              padding: 8px 12px;
+            }
+            :global(.ant-table-expanded-row) {
+              :global(.ant-table-cell) {
+                padding: 0;
+                border-top: 0;
+                box-shadow: none;
+                &:global(.no-box-shadow) {
+                  &:not(:last-child) {
+                    box-shadow: none;
+                  }
+                }
+                :global(.ant-table) {
+                  margin: 0;
+                  :global(.ant-table-cell) {
+                    padding: 8px 12px;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.customPaginator {
+  position: fixed;
+  bottom: 0;
+  left: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 240px);
+  height: 40px;
+  color: black;
+  background-color: @mono-color-light;
+  box-shadow: inset 0 0.5px 0 #0000004d;
+  svg {
+    margin: 0 8px;
+    cursor: pointer;
+    &:global(.disabled) {
+      cursor: not-allowed;
+    }
+  }
+  :global(.divider) {
+    width: 12px;
+    text-align: center;
+  }
+}
+
+.expandedCell {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  svg {
+    margin-left: 8px;
+  }
+}
+.expandedColumn {
+  font-weight: 500;
+}

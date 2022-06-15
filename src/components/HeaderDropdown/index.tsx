@@ -6,6 +6,8 @@ import styles from './index.less';
 import { BodyText } from '../Typography';
 
 export type HeaderDropdownProps = {
+  arrow?: boolean;
+  arrowPositionCenter?: boolean;
   containerClass?: string;
   overlayClassName?: string;
   overlay: React.ReactNode | (() => React.ReactNode) | any;
@@ -15,7 +17,7 @@ export type HeaderDropdownProps = {
 type MenuIconProp = {
   containerClass?: string;
   label: string;
-  icon: JSX.Element;
+  icon?: JSX.Element;
   onClick: () => void;
 };
 
@@ -26,15 +28,26 @@ type MenuHeaderDropdownProp = {
 export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   overlayClassName: cls,
   containerClass,
+  arrowPositionCenter,
+  arrow,
   ...restProps
 }) => (
-  <Dropdown overlayClassName={classNames(styles.container, cls, containerClass)} {...restProps} />
+  <Dropdown
+    overlayClassName={classNames(
+      styles.container,
+      arrowPositionCenter && styles[`arrow-center`],
+      cls,
+      containerClass,
+    )}
+    arrow={arrow}
+    {...restProps}
+  />
 );
 
 export const MenuHeaderDropdown: FC<MenuHeaderDropdownProp> = ({ items }) => {
   const MenuItem = ({ label, icon, onClick, containerClass }: MenuIconProp) => (
     <div onClick={() => onClick()} className={classNames(styles.item, containerClass)}>
-      <div className={styles.icon}>{icon}</div>
+      {icon && <div className={styles.icon}>{icon}</div>}
       <BodyText fontFamily="Roboto" level={6}>
         {label}
       </BodyText>
