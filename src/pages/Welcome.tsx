@@ -14,7 +14,7 @@ import { Card } from 'antd';
 import React from 'react';
 import { ReactComponent as SingleRightIcon } from '../assets/icons/single-right.svg';
 import styles from './Welcome.less';
-import { dataBrands, dataProject, dataSubscription } from '@/constants/util';
+import { dataMenuSummary } from '@/constants/util';
 
 const Welcome: React.FC = () => {
   const optionsRadio = [
@@ -32,13 +32,21 @@ const Welcome: React.FC = () => {
       <Card>
         {/* Menu Summary */}
         <div className={styles.mb}>
-          <MenuSummary dataBrands={dataBrands} typeMenu="brand" />
+          <MenuSummary menuSummaryData={dataMenuSummary.leftData} typeMenu="brand" />
         </div>
         <div className={styles.mb}>
-          <MenuSummary dataBrands={dataSubscription} typeMenu="subscription" />
+          <MenuSummary
+            menuSummaryData={dataMenuSummary.leftData}
+            typeMenuData={dataMenuSummary.subscriptionData}
+            typeMenu="subscription"
+          />
         </div>
         <div className={styles.mb}>
-          <MenuSummary dataBrands={dataProject} typeMenu="project" />
+          <MenuSummary
+            menuSummaryData={dataMenuSummary.leftData}
+            typeMenuData={dataMenuSummary.projectData}
+            typeMenu="project"
+          />
         </div>
 
         <PhoneInput phonePlaceholder="personal mobile" />

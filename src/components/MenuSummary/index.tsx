@@ -10,7 +10,7 @@ const ItemSummary: FC<ItemSummaryProps> = ({ brand }) => {
   return (
     <div className={classNames(style['item-container'])}>
       <span>{checkUndefined(brand?.quantity)}</span>
-      <span>{checkUndefined(brand?.brandName)}</span>
+      <span>{checkUndefined(brand?.label)}</span>
     </div>
   );
 };
@@ -34,14 +34,14 @@ const ElementSummary: FC<ElementSummaryProps> = ({ dataBrands, handleActiveTab, 
       >
         <span>{checkUndefined(dataBrands?.quantity)}</span>
         <div className={style['button-wrapper']}>
-          <span className={style['brandName']}> {checkUndefined(dataBrands?.brandName)}</span>
+          <span className={style['label']}> {checkUndefined(dataBrands?.label)}</span>
           {toggle ? <ActionLeftIcon /> : <ActionRightIcon />}
         </div>
       </div>
       {toggle && (
         <div className={classNames(style['item-wrapper'])}>
           {dataBrands?.brands &&
-            dataBrands?.brands.map((brand) => {
+            dataBrands.brands.map((brand) => {
               return (
                 <div className={style['item']} key={brand?.id}>
                   <ItemSummary brand={brand} />
@@ -56,9 +56,10 @@ const ElementSummary: FC<ElementSummaryProps> = ({ dataBrands, handleActiveTab, 
 
 export const MenuSummary: FC<MenuSummaryProps> = ({
   containerClass,
-  dataBrands,
+  menuSummaryData,
   height = '56px',
   typeMenu = 'brand',
+  typeMenuData,
 }) => {
   const [activeId, setActiveId] = useState<string>('');
 
@@ -75,24 +76,28 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
       case 'subscription':
         return (
           <div className={style[`${type}-container`]}>
-            <div className={style['element-right']}>
-              <span className={style['price']}>$99</span>
-              <span>Grand Total</span>
-            </div>
+            {typeMenuData?.map((data) => {
+              return (
+                <div className={style[`element-right`]}>
+                  <span className={style['price']}>{data.quantity}</span>
+                  <span>{data.label}</span>
+                </div>
+              );
+            })}
           </div>
         );
 
       case 'project':
         return (
           <div className={style[`${type}-container`]}>
-            <div className={style[`element-right`]}>
-              <span className={style['price']}>$199</span>
-              <span>Grand Total</span>
-            </div>
-            <div className={style[`element-right`]}>
-              <span className={style['price']}>$199</span>
-              <span>Grand Total</span>
-            </div>
+            {typeMenuData?.map((data) => {
+              return (
+                <div className={style[`element-right`]}>
+                  <span className={style['price']}>{data.quantity}</span>
+                  <span>{data.label}</span>
+                </div>
+              );
+            })}
           </div>
         );
 
@@ -104,7 +109,7 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
   return (
     <div className={classNames(style['header-summary'], containerClass)} style={{ height: height }}>
       <div className={classNames(style['brand-container'])}>
-        {dataBrands?.map((data: any) => {
+        {menuSummaryData.map((data) => {
           return (
             <div className={classNames(style['wrapper'])} key={data.id}>
               <ElementSummary
