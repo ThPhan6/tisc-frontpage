@@ -54,9 +54,7 @@ const CategoryList: React.FC = () => {
         return (
           <HeaderDropdown
             className={styles.customAction}
-            arrow={{
-              pointAtCenter: true,
-            }}
+            arrow
             overlay={
               <MenuHeaderDropdown
                 items={[

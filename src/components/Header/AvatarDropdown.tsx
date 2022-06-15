@@ -71,6 +71,7 @@ export const AvatarDropdown = () => {
       align={{ offset: [0, 11] }}
       placement="topLeft"
       trigger={['click']}
+      getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}
     >
       <span className={`${styles.container}`}>
         <Avatar
