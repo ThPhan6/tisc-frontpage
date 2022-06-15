@@ -4,17 +4,6 @@ export interface BrandsProps {
   brandName: string;
 }
 
-export interface MenuSummaryProps {
-  containerClass?: string;
-  dataBrands: ElementSummaryProps['dataBrands'][];
-  typeMenu: 'brand' | 'subscription' | 'project' | 'services';
-  height?: string;
-}
-
-export interface DataSubscriptionProps extends BrandsProps {
-  dataProduct: {};
-}
-
 export interface ElementSummaryProps {
   dataBrands: {
     id: string;
@@ -28,4 +17,19 @@ export interface ElementSummaryProps {
 
 export interface ItemSummaryProps {
   brand: BrandsProps;
+}
+
+export interface MenuSummaryProps {
+  containerClass?: string;
+  dataBrands: ElementSummaryProps['dataBrands'][] | DataSubscriptionProps | DataProjectProps;
+  typeMenu: 'brand' | 'subscription' | 'project' | 'services';
+  height?: string;
+}
+
+export interface DataSubscriptionProps {
+  dataSubscription: [ElementSummaryProps['dataBrands'][], BrandsProps[]];
+}
+
+export interface DataProjectProps {
+  dataProduct: [ElementSummaryProps['dataBrands'][], BrandsProps[]];
 }

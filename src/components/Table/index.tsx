@@ -62,14 +62,15 @@ const useCustomTable = (columns: ICustomTableColumnType<any>[]) => {
     if (expended === index) setExpended(undefined);
     else setExpended(index);
   };
-  const renderExpandedColumn = (value: any, index: number) => {
+  const renderExpandedColumn = (value: any, record: any, index: any) => {
     if (!value) {
       return null;
     }
+    const expendedKey = `${record.id}-${index}`;
     return (
-      <div onClick={() => expend(index)} className={styles.expandedCell}>
-        <span>{value}</span>
-        {index === expended ? <DropupIcon /> : <DropdownIcon />}
+      <div onClick={() => expend(expendedKey)} className={styles.expandedCell}>
+        <span className={expendedKey === expended ? styles.expandedColumn : ''}>{value}</span>
+        {expendedKey === expended ? <DropupIcon /> : <DropdownIcon />}
       </div>
     );
   };
@@ -117,10 +118,10 @@ const useCustomTable = (columns: ICustomTableColumnType<any>[]) => {
       return {
         ...column,
         /* eslint-disable @typescript-eslint/no-unused-vars */
-        render: (value: any, _record: any, index: any) => {
+        render: (value: any, record: any, index) => {
           return {
             ...cellClassName,
-            children: column.render ? column.render : renderExpandedColumn(value, index),
+            children: column.render ? column.render : renderExpandedColumn(value, record, index),
           };
         },
         title: formatTitleColumn(column),
@@ -252,9 +253,9 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
 
       <Table
         columns={columns}
-        rowKey={(_record, index) => `${index}`}
-        rowClassName={(_record, index: IExpended) => {
-          if (index === expended) {
+        rowKey={(record, index) => `${record.id}-${index}`}
+        rowClassName={(record) => {
+          if (record.id === expended) {
             return 'custom-expanded' as any;
           }
         }}
@@ -267,7 +268,10 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
         scroll={{
           x: 'max-content',
         }}
-        expandable={expandable}
+        expandable={{
+          ...expandable,
+          expandedRowKeys: expended ? [expended] : undefined,
+        }}
       />
       {pagination ? (
         <CustomPaginator
@@ -282,25 +286,32 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
 
 // start expandable table
 
-export const ExpandableTable = (props: IExpandableTable) => {
+export const GetExpandableTableConfig = (props: IExpandableTable): ExpandableConfig<any> => {
   const { expandable, childrenColumnName, level } = props;
-  const { columns } = useCustomTable(props.columns);
+  const { columns, expended } = useCustomTable(props.columns);
 
   return {
-    expandRowByClick: true,
+    expandRowByClick: false,
     showExpandColumn: false,
-    childrenColumnName: 'subs',
+    childrenColumnName: childrenColumnName,
     expandedRowRender: (record: any) => {
-      <Table
-        showHeader={false}
-        pagination={false}
-        columns={columns}
-        rowKey={(_expandableRecord, index) => `${index}`}
-        rowClassName={level === 2 ? 'custom-expanded-level-2' : ''}
-        tableLayout="fixed"
-        expandable={expandable}
-        dataSource={record[childrenColumnName]}
-      />;
+      return (
+        <Table
+          pagination={false}
+          columns={columns}
+          scroll={{
+            x: 'max-content',
+          }}
+          rowKey={(expandableRecord, index) => `${expandableRecord.id}-${index}`}
+          rowClassName={level === 2 ? 'custom-expanded-level-2' : ''}
+          tableLayout="fixed"
+          expandable={{
+            ...expandable,
+            expandedRowKeys: expended ? [expended] : undefined,
+          }}
+          dataSource={record[childrenColumnName]}
+        />
+      );
     },
   };
 };

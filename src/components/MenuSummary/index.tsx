@@ -75,7 +75,7 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
       case 'subscription':
         return (
           <div className={style[`${type}-container`]}>
-            <div className={style['element-left']}>
+            <div className={style['element-right']}>
               <span className={style['price']}>$99</span>
               <span>Grand Total</span>
             </div>
@@ -85,11 +85,11 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
       case 'project':
         return (
           <div className={style[`${type}-container`]}>
-            <div className={style[`element-left`]}>
+            <div className={style[`element-right`]}>
               <span className={style['price']}>$199</span>
               <span>Grand Total</span>
             </div>
-            <div className={style[`element-left`]}>
+            <div className={style[`element-right`]}>
               <span className={style['price']}>$199</span>
               <span>Grand Total</span>
             </div>
@@ -104,7 +104,7 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
   return (
     <div className={classNames(style['header-summary'], containerClass)} style={{ height: height }}>
       <div className={classNames(style['brand-container'])}>
-        {dataBrands?.map((data) => {
+        {dataBrands?.map((data: any) => {
           return (
             <div className={classNames(style['wrapper'])} key={data.id}>
               <ElementSummary

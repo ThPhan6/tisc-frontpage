@@ -130,27 +130,27 @@
   }
 }
 
-.element-left {
-  cursor: default;
-  .flex-column;
-  .px-12;
-  @fw: 500;
-  @fs: 14px;
-  @txttran: capitalize;
-
-  span {
-    .form(@fw, @txttran);
-  }
-
-  .price {
-    font-size: @fs;
-  }
-}
-
 .header-summary {
   justify-content: space-between;
   padding: 0 24px;
   .d-flex;
+
+  .element-right {
+    cursor: default;
+    .flex-column;
+    .px-12;
+    @fw: 500;
+    @fs: 14px;
+    @txttran: capitalize;
+
+    span {
+      .form(@fw, @txttran);
+    }
+
+    .price {
+      font-size: @fs;
+    }
+  }
 
   .subscription-container {
     .element-left {
