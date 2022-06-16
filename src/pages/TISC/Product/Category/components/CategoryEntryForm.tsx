@@ -1,33 +1,38 @@
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import { useState } from 'react';
+import { FC } from 'react';
 import styles from '../styles/CategoryEntryForm.less';
-import { subcategoryValueDefault, SubcategoryValueProp } from '../types';
+import { CategoryEntryFormProps, subcategoryValueDefault, SubcategoryValueProp } from '../types';
 import { SubcategoryItem } from './SubcategoryItem';
 
-export const CategoryEntryForm = () => {
-  const [categoryValue, setCategoryValue] = useState<SubcategoryValueProp[]>([]);
-
-  console.log('categoryValue', categoryValue);
-
+export const CategoryEntryForm: FC<CategoryEntryFormProps> = ({
+  onCancel,
+  onSubmit,
+  categoryValue,
+  setCategoryValue,
+}) => {
   const handleSubmit = () => {
-    alert('Coming soon ');
+    if (onSubmit) {
+      onSubmit(categoryValue);
+    }
   };
 
   const handleCancel = () => {
-    alert('Coming soon ');
+    if (onCancel) {
+      onCancel();
+    }
   };
 
   const handleOnChange = (value: SubcategoryValueProp, index: number) => {
-    const newCategoryValue = [...categoryValue];
-    newCategoryValue[index] = value;
-    setCategoryValue(newCategoryValue);
+    const newSubcategory = [...categoryValue.subs];
+    newSubcategory[index] = value;
+    setCategoryValue({ ...categoryValue, subs: newSubcategory });
   };
 
   const handleOnClickDeleteSubcategory = (index: number) => {
-    const newCategoryValue = [...categoryValue];
-    newCategoryValue.splice(index, 1);
-    setCategoryValue(newCategoryValue);
+    const newSubcategory = [...categoryValue.subs];
+    newSubcategory.splice(index, 1);
+    setCategoryValue({ ...categoryValue, subs: newSubcategory });
   };
 
   return (
@@ -38,10 +43,17 @@ export const CategoryEntryForm = () => {
     >
       <FormNameInput
         HandleOnClickAddIcon={() => {
-          setCategoryValue([...categoryValue, subcategoryValueDefault]);
+          setCategoryValue({
+            ...categoryValue,
+            subs: [...categoryValue.subs, subcategoryValueDefault],
+          });
         }}
         placeholder="type main category name"
         title="main category"
+        onChangeInput={(e) => {
+          setCategoryValue({ ...categoryValue, name: e.target.value });
+        }}
+        inputValue={categoryValue.name}
       />
       <div
         className={styles.container__item_wrapper}
@@ -49,7 +61,7 @@ export const CategoryEntryForm = () => {
           padding: '0px 16px',
         }}
       >
-        {categoryValue.map((category, index) => (
+        {categoryValue.subs.map((category, index) => (
           <SubcategoryItem
             onChange={(value) => handleOnChange(value, index)}
             key={index}
