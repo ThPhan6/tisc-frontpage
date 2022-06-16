@@ -18,6 +18,7 @@ import styles from './Welcome.less';
 import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
 import { dataBrands } from '@/constants/util';
 import { ConversionsEntryForm } from './TISC/Product/Conversions/ConversionsEntryForm';
+import { PresetsEntryForm } from './TISC/Product/Presets/components/PresetsEntryForm';
 
 const Welcome: React.FC = () => {
   const optionsRadio = [
@@ -60,6 +61,7 @@ const Welcome: React.FC = () => {
   return (
     <PageContainer>
       <Card>
+        <PresetsEntryForm />
         <ConversionsEntryForm />
         {/*Tabs*/}
         <div>
