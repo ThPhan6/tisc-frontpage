@@ -1,12 +1,13 @@
 import React, { useRef } from 'react';
-import CustomTable, { ICustomTableColumnType, GetExpandableTableConfig } from '@/components/Table';
+import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
+import type { ICustomTableColumnType } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
-import { getBrandPagination } from './services/api';
+import { getProductCategoryPagination } from './services/api';
 import type { ICategoryListResponse } from './types';
-import styles from './styles/index.less';
+// import styles from './styles/index.less';
 import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
@@ -23,31 +24,27 @@ const CategoryList: React.FC = () => {
       title: 'Main Category',
       dataIndex: 'name',
       sorter: {
-        compare: (a: any, b: any) => a.name - b.name,
         multiple: 1,
       },
-      width: '40%',
+      width: 350,
       isExpandable: true,
     },
     {
       title: 'Subcategory',
       dataIndex: 'subcategory',
-      width: '30%',
+      width: 250,
       sorter: {
-        compare: (a: any, b: any) => a.name - b.name,
         multiple: 2,
       },
     },
     {
       title: 'Category',
       dataIndex: 'category',
-      width: '20%',
       sorter: {
-        compare: (a: any, b: any) => a.name - b.name,
         multiple: 3,
       },
     },
-    { title: 'Count', dataIndex: 'count', width: '5%' },
+    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Action',
       dataIndex: 'action',
@@ -56,7 +53,6 @@ const CategoryList: React.FC = () => {
       render: () => {
         return (
           <HeaderDropdown
-            className={styles.customAction}
             arrow
             overlay={
               <MenuHeaderDropdown
@@ -86,14 +82,14 @@ const CategoryList: React.FC = () => {
     {
       title: 'Main Category',
       dataIndex: 'maincategory',
-      width: '40%',
+      width: 350,
       sorter: true,
       noBoxShadow: true,
     },
     {
       title: 'Subcategory',
       dataIndex: 'name',
-      width: '30%',
+      width: 250,
       sorter: true,
       isExpandable: true,
     },
@@ -101,9 +97,8 @@ const CategoryList: React.FC = () => {
       title: 'Category',
       dataIndex: 'Category',
       sorter: true,
-      width: '20%',
     },
-    { title: 'Count', dataIndex: 'count', width: '5%' },
+    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Action',
       dataIndex: 'action2',
@@ -114,20 +109,20 @@ const CategoryList: React.FC = () => {
     {
       title: 'Main Category',
       dataIndex: 'maincategory',
-      width: '40%',
+      width: 350,
       sorter: true,
       noBoxShadow: true,
     },
     {
       title: 'Subcategory',
       dataIndex: 'Subcategory',
-      width: '30%',
+      width: 250,
       sorter: true,
     },
     {
       title: 'Category',
       dataIndex: 'name',
-      width: '20%',
+
       sorter: true,
     },
     { title: 'Count', dataIndex: 'count', width: '5%' },
@@ -141,11 +136,20 @@ const CategoryList: React.FC = () => {
   return (
     <>
       <CustomTable
-        rightAction={<PlusIcon onClick={() => pushTo(PATH.createCategories)} />}
+        rightAction={
+          <div style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createCategories)}>
+            <PlusIcon />
+          </div>
+        }
         title="CATEGORIES"
         columns={MainColumns}
         ref={tableRef}
-        fetchDataFunc={getBrandPagination}
+        fetchDataFunc={getProductCategoryPagination}
+        multiSort={{
+          name: 'main_category_order',
+          subcategory: 'sub_category_order',
+          category: 'category_order',
+        }}
         expandable={GetExpandableTableConfig({
           columns: SubColumns,
           childrenColumnName: 'subs',

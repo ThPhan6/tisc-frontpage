@@ -1,10 +1,19 @@
 import { request } from 'umi';
 import { message } from 'antd';
-import type { IBrandListResponse } from '../types';
-import type { IDataTableResponse } from '@/components/Table/index';
+import type { IBrand } from '../types';
+import type {
+  IDataTableResponse,
+  IPaginationRequest,
+  IPaginationResponse,
+} from '@/components/Table/types';
+
+interface IBrandListResponse {
+  brands: IBrand;
+  pagination: IPaginationResponse;
+}
 
 export async function getBrandPagination(
-  params: any,
+  params: IPaginationRequest,
   callback: (data: IDataTableResponse) => void,
 ) {
   request(`/api/brand/get-list`, {
@@ -12,12 +21,13 @@ export async function getBrandPagination(
     params,
   })
     .then((response: { data: IBrandListResponse }) => {
+      const { brands, pagination } = response.data;
       callback({
-        data: response.data,
+        data: brands,
         pagination: {
-          current: params.page,
-          pageSize: params.pageSize,
-          total: 10,
+          current: pagination.page,
+          pageSize: pagination.page_size,
+          total: pagination.total,
         },
       });
     })

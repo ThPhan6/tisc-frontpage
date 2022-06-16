@@ -85,17 +85,22 @@
           {
             path: '/tisc/products/basis/conversions',
             name: 'conversion',
-            component: './Welcome',
+            component: './TISC/Product/Basis/Conversion',
+          },
+          {
+            path: '/tisc/products/basis/conversions/create',
+            hideInMenu: true,
+            component: './TISC/Product/Basis/Conversion/CreateConversionPage',
           },
           {
             path: '/tisc/products/basis/presets',
             name: 'preset',
-            component: './Welcome',
+            component: './TISC/Product/Basis/Preset',
           },
           {
             path: '/tisc/products/basis/options',
             name: 'option',
-            component: './Welcome',
+            component: './TISC/Product/Basis/Option',
           },
         ],
       },
@@ -107,17 +112,17 @@
           {
             path: '/tisc/products/attributes/general',
             name: 'general',
-            component: './Welcome',
+            component: './TISC/Product/Attribute',
           },
           {
             path: '/tisc/products/attributes/feature',
             name: 'feature',
-            component: './Welcome',
+            component: './TISC/Product/Attribute',
           },
           {
             path: '/tisc/products/attributes/specification',
             name: 'specification',
-            component: './Welcome',
+            component: './TISC/Product/Attribute',
           },
         ],
       },

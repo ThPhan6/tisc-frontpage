@@ -1,6 +1,6 @@
 import { request } from 'umi';
 import { message } from 'antd';
-import type { ICategoryListResponse } from '../types';
+import type { IBasisOptionListResponse } from '../types';
 import type {
   IDataTableResponse,
   IPaginationRequest,
@@ -10,23 +10,23 @@ import type {
 
 interface ICategoryPaginationResponse {
   data: {
-    categories: ICategoryListResponse[];
+    basis_options: IBasisOptionListResponse[];
     pagination: IPaginationResponse;
     summary: ISummaryResponse[];
   };
 }
-export async function getProductCategoryPagination(
+export async function getProductBasisOptionPagination(
   params: IPaginationRequest,
   callback: (data: IDataTableResponse) => void,
 ) {
-  request(`/api/category/get-list`, {
+  request(`/api/basis-option/get-list`, {
     method: 'GET',
     params,
   })
     .then((response: ICategoryPaginationResponse) => {
-      const { categories, pagination, summary } = response.data;
+      const { basis_options, pagination, summary } = response.data;
       callback({
-        data: categories,
+        data: basis_options,
         pagination: {
           current: pagination.page,
           pageSize: pagination.page_size,

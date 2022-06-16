@@ -118,7 +118,7 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
           style={{ height: '100%' }}
           mode={'inline'}
           onClick={onClick}
-          inlineIndent={18}
+          inlineIndent={16}
           expandIcon={customExpandIcon}
           triggerSubMenuAction={'click'}
         >

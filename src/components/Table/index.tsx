@@ -1,234 +1,106 @@
-import React, { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
+import { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
 import { Table } from 'antd';
-import { Title, BodyText } from '@/components/Typography';
-import { ReactComponent as SortIcon } from '@/assets/icons/sort-icon.svg';
-import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
-import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
-import { ReactComponent as PaginationLeftIcon } from '@/assets/icons/pagination-left.svg';
-import { ReactComponent as PaginationRightIcon } from '@/assets/icons/pagination-right.svg';
-import type { TablePaginationConfig, ColumnType } from 'antd/lib/table';
+// import { Title } from '@/components/Typography';
+import { useCustomTable } from './hooks';
+import { forEach, isArray, isEmpty } from 'lodash';
+import CustomPaginator from './components/CustomPaginator';
+import TableSummary from './components/TableSummary';
+import type { TablePaginationConfig } from 'antd/lib/table';
 import type { SorterResult, ExpandableConfig, FilterValue } from 'antd/lib/table/interface';
+import type {
+  IPaginationParams,
+  IPaginationRequest,
+  ICustomTable,
+  IExpandableTable,
+  ISummaryResponse,
+} from './types';
 import styles from './styles/table.less';
 import { TableHeader } from './TableHeader';
 
-export interface Params {
-  pagination?: TablePaginationConfig;
-  sorter?: SorterResult<any> | SorterResult<any>[];
-  total?: number;
-  sortField?: string;
-  sortOrder?: string;
-}
-
-export interface IDataTableResponse {
-  data: any;
-  pagination: TablePaginationConfig;
-}
-
-export interface ICustomTableColumnType<T> extends ColumnType<T> {
-  isExpandable?: boolean;
-  noBoxShadow?: boolean;
-  lightHeading?: boolean;
-}
-
-export interface ICustomTable {
-  columns: ICustomTableColumnType<any>[];
-  expandable?: ExpandableConfig<any>;
-  rightAction?: React.ReactNode;
-  fetchDataFunc: (
-    params: TablePaginationConfig,
-    callback: (data: IDataTableResponse) => void,
-  ) => void;
-  title: string;
-}
-
-export interface IExpandableTable {
-  columns: ICustomTableColumnType<any>[];
-  childrenColumnName: string;
-  expandable?: ExpandableConfig<any>;
-  level?: number;
-}
-
-interface ICustomPaginator {
-  fetchData: (params: any) => void;
-  pagination: TablePaginationConfig;
-  dataLength: number;
-}
-
-type IExpended = number | undefined | string;
-
-const useCustomTable = (columns: ICustomTableColumnType<any>[]) => {
-  const [expended, setExpended] = useState<IExpended>();
-
-  const expend = (index: IExpended) => {
-    if (expended === index) setExpended(undefined);
-    else setExpended(index);
-  };
-  const renderExpandedColumn = (value: any, record: any, index: any) => {
-    if (!value) {
-      return null;
-    }
-    const expendedKey = `${record.id}-${index}`;
-    return (
-      <div onClick={() => expend(expendedKey)} className={styles.expandedCell}>
-        <span className={expendedKey === expended ? styles.expandedColumn : ''}>{value}</span>
-        {expendedKey === expended ? <DropupIcon /> : <DropdownIcon />}
-      </div>
-    );
-  };
-  const formatTitleColumn = (column: ICustomTableColumnType<any>) => {
-    return () => {
-      return (
-        <div className={styles.titleTable}>
-          {column.lightHeading ? (
-            <BodyText fontFamily="Roboto" level={5}>
-              {column.title}
-            </BodyText>
-          ) : (
-            <Title level={8}>{column.title}</Title>
-          )}
-          {column.sorter ? <SortIcon /> : null}
-        </div>
-      );
-    };
-  };
-
-  const formatColumns = (): ColumnType<any>[] => {
-    return columns.map((column) => {
-      const noBoxShadow = column.noBoxShadow ? 'no-box-shadow' : '';
-      const cellClassName = {
-        props: {
-          className: `${noBoxShadow}`,
-        },
-      };
-
-      if (column.isExpandable === undefined || column.isExpandable !== true) {
-        return {
-          ...column,
-          title: formatTitleColumn(column),
-          render: column.render
-            ? column.render
-            : /* eslint-disable @typescript-eslint/no-unused-vars */
-              (value: any, _record: any) => {
-                return {
-                  ...cellClassName,
-                  children: value,
-                };
-              },
-        };
-      }
-      return {
-        ...column,
-        /* eslint-disable @typescript-eslint/no-unused-vars */
-        render: (value: any, record: any, index) => {
-          return {
-            ...cellClassName,
-            children: column.render ? column.render : renderExpandedColumn(value, record, index),
-          };
-        },
-        title: formatTitleColumn(column),
-      };
-    });
-  };
-
-  return {
-    expended,
-    columns: formatColumns(),
-  };
-};
-
-const CustomPaginator = (props: ICustomPaginator) => {
-  const { fetchData, pagination, dataLength } = props;
-  const currentPage = pagination.current ?? 1;
-  const currentPageSize = pagination.pageSize ?? 1;
-  const currentTotal = pagination.total ?? 0;
-  const firstRecord = dataLength ? (currentPage - 1) * currentPageSize + 1 : 0;
-  const lastRecord = (currentPage - 1) * currentPageSize + dataLength;
-
-  const renderLeftPaginator = () => {
-    return (
-      <PaginationLeftIcon
-        className={currentPage === 1 ? 'disabled' : ''}
-        onClick={() => {
-          if (currentPage === 1) {
-            return;
-          }
-          fetchData({
-            page: currentPage - 1,
-            pageSize: currentPageSize,
-          });
-        }}
-      />
-    );
-  };
-
-  const renderRightPaginator = () => {
-    return (
-      <PaginationRightIcon
-        className={currentTotal === lastRecord ? 'disabled' : ''}
-        onClick={() => {
-          if (currentTotal === lastRecord) {
-            return;
-          }
-          fetchData({
-            page: currentPage + 1,
-            pageSize: currentPageSize,
-          });
-        }}
-      />
-    );
-  };
-
-  return (
-    <div className={styles.customPaginator}>
-      {renderLeftPaginator()}
-      <span>
-        {firstRecord}-{lastRecord}
-      </span>
-      <span className="divider">/</span>
-      <span>{pagination.total}</span>
-      {renderRightPaginator()}
-    </div>
-  );
-};
-
 const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
-  const { expandable, fetchDataFunc, title, rightAction } = props;
+  const { expandable, fetchDataFunc, title, rightAction, multiSort, hasPagination, extraParams } =
+    props;
+
+  const DEFAULT_PAGE_NUMBER = 1;
+  const DEFAULT_PAGESIZE = hasPagination ? 10 : 999999999999;
+
   const { columns, expended } = useCustomTable(props.columns);
   const [data, setData] = useState<any>([]);
+  const [summary, setSummary] = useState<ISummaryResponse[]>([]);
+  const [currentSorter, setCurrentSorter] = useState<SorterResult<any> | SorterResult<any>[]>([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
-    current: 1,
-    pageSize: 10,
+    current: DEFAULT_PAGE_NUMBER,
+    pageSize: DEFAULT_PAGESIZE,
     total: 0,
   });
 
-  const fetchData = (params: any) => {
+  const formatPaginationParams = (params: IPaginationParams) => {
+    const { sorter, filter } = params;
+    const paginationParams: IPaginationRequest = {
+      page: data.pagination?.current ?? DEFAULT_PAGE_NUMBER,
+      pageSize: data.pagination?.pageSize ?? DEFAULT_PAGESIZE,
+      ...extraParams,
+    };
+    /// if enable filter
+    if (filter) {
+      paginationParams.filter = filter;
+    }
+    if (sorter && !isEmpty(sorter)) {
+      // if enable sorter
+      let sortName: any = '';
+      let sortOrder: any = '';
+      ///
+      if (!isArray(sorter)) {
+        console.log('go here');
+        sortName = sorter.field;
+        sortOrder = sorter.order === 'descend' ? 'DESC' : 'ASC';
+      }
+      ///
+      if (multiSort) {
+        // if enable multiple sorter
+        if (!isArray(sorter)) {
+          paginationParams[multiSort[sortName]] = sortOrder;
+        } else {
+          forEach(sorter, (item: any) => {
+            paginationParams[multiSort[item['field']]] =
+              item['order'] === 'descend' ? 'DESC' : 'ASC';
+          });
+        }
+        return paginationParams;
+      }
+      /// normal case
+      paginationParams.sort_name = sortName;
+      paginationParams.sort_order = sortOrder;
+      return paginationParams;
+    }
+    return paginationParams;
+  };
+
+  const fetchData = (params: IPaginationParams) => {
     setLoading(true);
-    fetchDataFunc(params, (response) => {
-      setData(response.data);
+    fetchDataFunc(formatPaginationParams(params), (response) => {
+      setData(response.data ?? []);
+      setSummary(response.summary ?? []);
       setLoading(false);
       setPagination(response.pagination);
     });
   };
 
   useEffect(() => {
-    fetchData({
-      page: pagination.current,
-      pageSize: pagination.pageSize,
-    });
+    fetchData({ pagination, sorter: currentSorter });
     // react-hooks/exhaustive-deps
   }, []);
 
   const handleTableChange = (
     newPagination: TablePaginationConfig,
     filters: Record<string, FilterValue | null>,
-    // sorter: SorterResult<any> | SorterResult<any>[],
+    sorter: SorterResult<any> | SorterResult<any>[],
   ) => {
+    setCurrentSorter(sorter);
     fetchData({
-      // sortField: sorter.field as string,
-      // sortOrder: sorter.order as string,
-      page: newPagination.current,
-      pageSize: newPagination.pageSize,
+      pagination: newPagination,
+      sorter,
       ...filters,
     });
   };
@@ -238,30 +110,27 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
   // as the second argument
   useImperativeHandle(ref, () => ({
     reload() {
-      fetchData({
-        page: pagination.current,
-        pageSize: pagination.pageSize,
-      });
+      fetchData({ pagination, sorter: currentSorter });
     },
   }));
-
   return (
     <div className={styles.customTable}>
       <TableHeader title={title} rightAction={rightAction} />
 
       <Table
         columns={columns}
-        rowKey={(record, index) => `${record.id}-${index}`}
+        rowKey="id"
         rowClassName={(record) => {
           if (record.id === expended) {
             return 'custom-expanded' as any;
           }
         }}
         dataSource={data}
-        pagination={pagination}
+        pagination={hasPagination ? pagination : undefined}
         loading={loading}
         onChange={handleTableChange}
         showSorterTooltip={false}
+        sortDirections={['ascend', 'descend', 'ascend']}
         tableLayout="fixed"
         scroll={{
           x: 'max-content',
@@ -271,19 +140,21 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
           expandedRowKeys: expended ? [expended] : undefined,
         }}
       />
-      {pagination ? (
+      {hasPagination && pagination ? (
         <CustomPaginator
           fetchData={fetchData}
           pagination={pagination}
+          sorter={currentSorter}
           dataLength={data.length ?? 0}
         />
+      ) : !isEmpty(summary) ? (
+        <TableSummary summary={summary} />
       ) : null}
     </div>
   );
 });
 
 // start expandable table
-
 export const GetExpandableTableConfig = (props: IExpandableTable): ExpandableConfig<any> => {
   const { expandable, childrenColumnName, level } = props;
   const { columns, expended } = useCustomTable(props.columns);
@@ -291,7 +162,6 @@ export const GetExpandableTableConfig = (props: IExpandableTable): ExpandableCon
   return {
     expandRowByClick: false,
     showExpandColumn: false,
-    childrenColumnName: childrenColumnName,
     expandedRowRender: (record: any) => {
       return (
         <Table
@@ -300,7 +170,7 @@ export const GetExpandableTableConfig = (props: IExpandableTable): ExpandableCon
           scroll={{
             x: 'max-content',
           }}
-          rowKey={(expandableRecord, index) => `${expandableRecord.id}-${index}`}
+          rowKey="id"
           rowClassName={level === 2 ? 'custom-expanded-level-2' : ''}
           tableLayout="fixed"
           expandable={{

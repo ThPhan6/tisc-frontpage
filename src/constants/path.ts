@@ -10,6 +10,8 @@ export const PATH = {
   // Tisc
   categories: '/tisc/products/categories',
   createCategories: '/tisc/products/categories/create',
+
+  createConversions: '/tisc/products/basis/conversions/create',
   //
 };
 
