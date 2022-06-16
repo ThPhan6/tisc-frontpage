@@ -151,10 +151,22 @@
         color: @primary-color-dark;
       }
     }
+    :global(.anticon) + span {
+      margin-left: 12px !important;
+    }
   }
-  :global(.ant-menu-title-content) {
-    margin-right: 12px !important;
-    margin-left: 12px !important;
+  li {
+    &:global(.ant-menu-submenu) {
+      ul {
+        li {
+          span {
+            &:global(.ant-menu-title-content) {
+              margin-left: 12px;
+            }
+          }
+        }
+      }
+    }
   }
 }
 .siderCollapseIcon {

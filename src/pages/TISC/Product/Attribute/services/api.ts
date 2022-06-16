@@ -1,11 +1,18 @@
 import { request } from 'umi';
 import { message } from 'antd';
 import type { IAttributeListResponse } from '../types';
-import type { IDataTableResponse, IPaginationRequest } from '@/components/Table/types';
+import type {
+  IDataTableResponse,
+  IPaginationRequest,
+  IPaginationResponse,
+  ISummaryResponse,
+} from '@/components/Table/types';
 
 interface ICategoryPaginationResponse {
   data: {
     attributes: IAttributeListResponse[];
+    pagination: IPaginationResponse;
+    summary: ISummaryResponse[];
   };
 }
 export async function getProductAttributePagination(
@@ -17,13 +24,15 @@ export async function getProductAttributePagination(
     params,
   })
     .then((response: ICategoryPaginationResponse) => {
+      const { attributes, pagination, summary } = response.data;
       callback({
-        data: response.data.attributes,
+        data: attributes,
         pagination: {
-          current: params.page,
-          pageSize: params.pageSize,
-          total: 10,
+          current: pagination.page,
+          pageSize: pagination.page_size,
+          total: pagination.total,
         },
+        summary,
       });
     })
     .catch((error) => {

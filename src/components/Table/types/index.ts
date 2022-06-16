@@ -20,11 +20,6 @@ export interface IPaginationRequest {
   [key: string]: any;
 }
 
-export interface IDataTableResponse {
-  data: any;
-  pagination: TablePaginationConfig;
-}
-
 export interface ICustomTableColumnType<T> extends ColumnType<T> {
   isExpandable?: boolean;
   noBoxShadow?: boolean;
@@ -65,6 +60,17 @@ export interface IPaginationResponse {
   page_count: number;
   page_size: number;
   total: number;
+}
+
+export interface ISummaryResponse {
+  name: string;
+  value: string | number;
+}
+
+export interface IDataTableResponse {
+  data: any;
+  pagination: TablePaginationConfig;
+  summary?: ISummaryResponse[];
 }
 
 export type IExpended = number | undefined | string;
