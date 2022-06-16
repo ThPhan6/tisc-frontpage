@@ -67,13 +67,13 @@
         routes: [
           {
             path: '/tisc/products/categories',
-            name: 'Create',
             component: './TISC/Product/Category',
+            hideInMenu: true,
           },
           {
             path: '/tisc/products/categories/create',
-            name: 'Create',
-            component: './CategoryPage/CreateCategory',
+            hideInMenu: true,
+            component: './TISC/Product/Category/CreateCategoryPage',
           },
         ],
       },

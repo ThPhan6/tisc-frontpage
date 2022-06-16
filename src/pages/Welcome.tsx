@@ -17,7 +17,7 @@ import { ReactComponent as SingleRightIcon } from '../assets/icons/single-right.
 import styles from './Welcome.less';
 import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
 import { dataBrands } from '@/constants/util';
-import { ConversionsEntryForm } from './TISC/Product/Conversions/ConversionsEntryForm';
+import { ConversionsEntryForm } from './TISC/Product/Conversions/components/ConversionsEntryForm';
 
 const Welcome: React.FC = () => {
   const optionsRadio = [

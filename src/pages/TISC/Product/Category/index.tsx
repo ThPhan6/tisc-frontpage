@@ -7,6 +7,9 @@ import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-i
 import { getBrandPagination } from './services/api';
 import type { ICategoryListResponse } from './types';
 import styles from './styles/index.less';
+import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
+import { pushTo } from '@/helper/history';
+import { PATH } from '@/constants/path';
 
 const CategoryList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -138,6 +141,7 @@ const CategoryList: React.FC = () => {
   return (
     <>
       <CustomTable
+        rightAction={<PlusIcon onClick={() => pushTo(PATH.createCategories)} />}
         title="CATEGORIES"
         columns={MainColumns}
         ref={tableRef}

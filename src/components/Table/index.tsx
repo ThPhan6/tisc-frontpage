@@ -9,6 +9,7 @@ import { ReactComponent as PaginationRightIcon } from '@/assets/icons/pagination
 import type { TablePaginationConfig, ColumnType } from 'antd/lib/table';
 import type { SorterResult, ExpandableConfig, FilterValue } from 'antd/lib/table/interface';
 import styles from './styles/table.less';
+import { TableHeader } from './TableHeader';
 
 export interface Params {
   pagination?: TablePaginationConfig;
@@ -246,10 +247,7 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
 
   return (
     <div className={styles.customTable}>
-      <div className={styles.tableHeader}>
-        <Title level={7}>{title}</Title>
-        <div>{rightAction}</div>
-      </div>
+      <TableHeader title={title} rightAction={rightAction} />
 
       <Table
         columns={columns}
