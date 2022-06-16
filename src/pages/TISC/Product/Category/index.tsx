@@ -7,6 +7,10 @@ import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
 import { getProductCategoryPagination } from './services/api';
 import type { ICategoryListResponse } from './types';
+// import styles from './styles/index.less';
+import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
+import { pushTo } from '@/helper/history';
+import { PATH } from '@/constants/path';
 
 const CategoryList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -132,6 +136,11 @@ const CategoryList: React.FC = () => {
   return (
     <>
       <CustomTable
+        rightAction={
+          <div style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createCategories)}>
+            <PlusIcon />
+          </div>
+        }
         title="CATEGORIES"
         columns={MainColumns}
         ref={tableRef}
