@@ -22,13 +22,13 @@ const CategoryList: React.FC = () => {
       sorter: {
         multiple: 1,
       },
-      width: 300,
+      width: 350,
       isExpandable: true,
     },
     {
       title: 'Subcategory',
       dataIndex: 'subcategory',
-      width: 200,
+      width: 250,
       sorter: {
         multiple: 2,
       },
@@ -78,14 +78,14 @@ const CategoryList: React.FC = () => {
     {
       title: 'Main Category',
       dataIndex: 'maincategory',
-      width: 300,
+      width: 350,
       sorter: true,
       noBoxShadow: true,
     },
     {
       title: 'Subcategory',
       dataIndex: 'name',
-      width: 200,
+      width: 250,
       sorter: true,
       isExpandable: true,
     },
@@ -105,14 +105,14 @@ const CategoryList: React.FC = () => {
     {
       title: 'Main Category',
       dataIndex: 'maincategory',
-      width: 300,
+      width: 350,
       sorter: true,
       noBoxShadow: true,
     },
     {
       title: 'Subcategory',
       dataIndex: 'Subcategory',
-      width: 200,
+      width: 250,
       sorter: true,
     },
     {

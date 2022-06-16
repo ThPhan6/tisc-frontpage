@@ -1,11 +1,18 @@
 import { request } from 'umi';
 import { message } from 'antd';
 import type { IBasisPresetListResponse } from '../types';
-import type { IDataTableResponse, IPaginationRequest } from '@/components/Table/types';
+import type {
+  IDataTableResponse,
+  IPaginationRequest,
+  IPaginationResponse,
+  ISummaryResponse,
+} from '@/components/Table/types';
 
 interface ICategoryPaginationResponse {
   data: {
     basis_presets: IBasisPresetListResponse[];
+    pagination: IPaginationResponse;
+    summary: ISummaryResponse[];
   };
 }
 export async function getProductBasisPresetPagination(
@@ -17,12 +24,15 @@ export async function getProductBasisPresetPagination(
     params,
   })
     .then((response: ICategoryPaginationResponse) => {
+      const { basis_presets, pagination, summary } = response.data;
       callback({
-        data: response.data.basis_presets,
+        data: basis_presets,
         pagination: {
-          current: params.page,
-          pageSize: params.pageSize,
+          current: pagination.page,
+          pageSize: pagination.page_size,
+          total: pagination.total,
         },
+        summary,
       });
     })
     .catch((error) => {
