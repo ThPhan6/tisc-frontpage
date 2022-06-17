@@ -15,8 +15,8 @@ import { Card } from 'antd';
 import React, { useState } from 'react';
 import { ReactComponent as SingleRightIcon } from '../assets/icons/single-right.svg';
 import styles from './Welcome.less';
+import { dataMenuSummary } from '@/constants/util';
 import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
-import { dataBrands } from '@/constants/util';
 import { PresetsEntryForm } from './TISC/Product/Presets/components/PresetsEntryForm';
 
 const Welcome: React.FC = () => {
@@ -88,7 +88,21 @@ const Welcome: React.FC = () => {
         </div>
         {/* Menu Summary */}
         <div className={styles.mb}>
-          <MenuSummary containerClass={styles['menu-summary']} dataBrands={dataBrands} />
+          <MenuSummary menuSummaryData={dataMenuSummary.leftData} typeMenu="brand" />
+        </div>
+        <div className={styles.mb}>
+          <MenuSummary
+            menuSummaryData={dataMenuSummary.leftData}
+            typeMenuData={dataMenuSummary.subscriptionData}
+            typeMenu="subscription"
+          />
+        </div>
+        <div className={styles.mb}>
+          <MenuSummary
+            menuSummaryData={dataMenuSummary.leftData}
+            typeMenuData={dataMenuSummary.projectData}
+            typeMenu="project"
+          />
         </div>
 
         <PhoneInput phonePlaceholder="personal mobile" />
