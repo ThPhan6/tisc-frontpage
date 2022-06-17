@@ -1,12 +1,60 @@
+.set-checked-color( @color ) {
+  :global(.ant-radio-inner) {
+    border-color: @mono-color;
+  }
+  :global(.ant-radio-checked) {
+    :global(.ant-radio-inner) {
+      border-color: @color;
+      box-shadow: none;
+    }
+    :global(.ant-radio-inner::after) {
+      background-color: @color;
+    }
+  }
+}
+
 .conversion_container {
   margin-bottom: 16px;
   .field {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    .header__icon {
+      cursor: pointer;
+    }
     &__name {
       display: flex;
       align-items: center;
+      &_title,
+      &_image {
+        display: flex;
+        align-items: center;
+
+        :first-child {
+          margin-right: 8px;
+        }
+      }
+      &_title {
+        margin-right: 24px;
+      }
+      &_image {
+        @color: #bfbfbf;
+        p {
+          color: @color;
+          font-weight: 300;
+          font-size: 12px;
+          font-family: 'Roboto';
+          font-style: normal;
+          cursor: default;
+        }
+        svg {
+          cursor: pointer;
+          path {
+            fill: #bfbfbf;
+          }
+        }
+        .set-checked-color(@color);
+      }
       &_input {
         :global(.ant-input) {
           width: 48px;

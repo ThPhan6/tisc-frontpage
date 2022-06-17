@@ -1,5 +1,6 @@
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
-import { ReactComponent as AddIcon } from '@/assets/icons/square-plus-icon.svg';
+import { ReactComponent as AddElementIcon } from '@/assets/icons/circle-plus.svg';
+import { ReactComponent as ActionDownUpIcon } from '@/assets/icons/action-down-up.svg';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
@@ -14,6 +15,7 @@ import {
   ElementInputProp,
   ElementInputValueProp,
 } from './types';
+import { Radio } from 'antd';
 
 const ElementInput: FC<ElementInputProp> = ({ order, onChange }) => {
   return (
@@ -81,9 +83,16 @@ export const ConversionItem: FC<ConversionItemProps> = ({
     <div className={styles.conversion_container}>
       <div className={styles.field}>
         <div className={styles.field__name}>
-          <BodyText level={3}>Option Name</BodyText>
+          <div className={styles.field__name_title}>
+            <BodyText level={3}>Option Name</BodyText>
+            <ActionDownUpIcon className={styles.header__icon} />
+          </div>
+          <div className={styles.field__name_image}>
+            <BodyText level={7}>Image</BodyText>
+            <Radio />
+          </div>
         </div>
-        <AddIcon className={styles.header__icon} onClick={handleOnClickAddElementInput} />
+        <AddElementIcon className={styles.header__icon} onClick={handleOnClickAddElementInput} />
       </div>
       <div className={styles.field}>
         <div className={styles.field__name}>
