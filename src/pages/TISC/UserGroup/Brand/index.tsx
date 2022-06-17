@@ -109,7 +109,12 @@ const BrandList: React.FC = () => {
   return (
     <PageContainer
       pageHeaderRender={() => (
-        <MenuSummary containerClass={styles.customMenuSummary} dataBrands={dataMenuSummary} />
+        <MenuSummary
+          containerClass={styles.customMenuSummary}
+          menuSummaryData={dataMenuSummary.leftData}
+          typeMenuData={dataMenuSummary.projectData}
+          typeMenu="project"
+        />
       )}
     >
       <CustomTable

@@ -7,7 +7,6 @@ import { PhoneInput } from '@/components/Form/PhoneInput';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { CustomInputEditor } from '@/components/Form/InputEditor';
 import { CustomTabs } from '@/components/Tabs';
-// import { MenuSummary } from '@/components/MenuSummary';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { UserOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -15,10 +14,10 @@ import { Card } from 'antd';
 import React, { useState } from 'react';
 import { ReactComponent as SingleRightIcon } from '../assets/icons/single-right.svg';
 import styles from './Welcome.less';
+import { dataMenuSummary } from '@/constants/util';
 import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
-// import { dataBrands } from '@/constants/util';
-// import { ConversionsEntryForm } from './TISC/Product/Basis/Conversion/components/ConversionsEntryForm';
 import { ConversionsBasisOption } from './TISC/Product/Basis/Option/components/OptionsEntryForm';
+import { MenuSummary } from '@/components/MenuSummary';
 
 const Welcome: React.FC = () => {
   const optionsRadio = [
@@ -90,9 +89,23 @@ const Welcome: React.FC = () => {
           <br />
         </div>
         {/* Menu Summary */}
-        {/* <div className={styles.mb}>
-          <MenuSummary containerClass={styles['menu-summary']} dataBrands={dataBrands} />
-        </div> */}
+        <div className={styles.mb}>
+          <MenuSummary menuSummaryData={dataMenuSummary.leftData} typeMenu="brand" />
+        </div>
+        <div className={styles.mb}>
+          <MenuSummary
+            menuSummaryData={dataMenuSummary.leftData}
+            typeMenuData={dataMenuSummary.subscriptionData}
+            typeMenu="subscription"
+          />
+        </div>
+        <div className={styles.mb}>
+          <MenuSummary
+            menuSummaryData={dataMenuSummary.leftData}
+            typeMenuData={dataMenuSummary.projectData}
+            typeMenu="project"
+          />
+        </div>
 
         <PhoneInput phonePlaceholder="personal mobile" />
         {/* checkbox */}

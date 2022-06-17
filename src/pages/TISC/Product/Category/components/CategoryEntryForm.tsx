@@ -10,6 +10,7 @@ export const CategoryEntryForm: FC<CategoryEntryFormProps> = ({
   onSubmit,
   categoryValue,
   setCategoryValue,
+  submitButtonStatus,
 }) => {
   const handleSubmit = () => {
     if (onSubmit) {
@@ -40,6 +41,7 @@ export const CategoryEntryForm: FC<CategoryEntryFormProps> = ({
       handleSubmit={handleSubmit}
       handleCancel={handleCancel}
       contentClass={styles.container}
+      submitButtonStatus={submitButtonStatus}
     >
       <FormNameInput
         HandleOnClickAddIcon={() => {
