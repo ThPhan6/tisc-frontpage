@@ -5,14 +5,32 @@ import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown'
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
-import { getProductCategoryPagination } from './services/api';
+import { deleteCategoryMiddleware, getProductCategoryPagination } from './services/api';
 import type { ICategoryListResponse } from './types';
+// import styles from './styles/index.less';
+import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
+import { pushTo } from '@/helper/history';
+import { PATH } from '@/constants/path';
+import { STATUS_RESPONSE } from '@/constants/util';
+import { message } from 'antd';
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
 
 const CategoryList: React.FC = () => {
   const tableRef = useRef<any>();
 
-  const comingSoon = () => {
-    alert('Coming Soon!');
+  const handleActionCategory = (actionType: 'edit' | 'delete', id: string) => {
+    if (actionType === 'edit') {
+      pushTo(PATH.updateCategories.replace(':id', id));
+      return;
+    }
+    deleteCategoryMiddleware(id, (type: STATUS_RESPONSE, msg?: string) => {
+      if (type === STATUS_RESPONSE.SUCCESS) {
+        message.success(MESSAGE_NOTIFICATION.DELETE_CATEGORY_SUCCESS);
+        tableRef.current.reload();
+      } else {
+        message.error(msg);
+      }
+    });
   };
 
   const MainColumns: ICustomTableColumnType<ICategoryListResponse>[] = [
@@ -46,20 +64,22 @@ const CategoryList: React.FC = () => {
       dataIndex: 'action',
       align: 'center',
       width: '5%',
-      render: () => {
+      render: (_value, record) => {
         return (
           <HeaderDropdown
             arrow
+            align={{ offset: [13, -10] }}
+            placement="bottomRight"
             overlay={
               <MenuHeaderDropdown
                 items={[
                   {
-                    onClick: comingSoon,
+                    onClick: () => handleActionCategory('edit', record.id),
                     icon: <ViewIcon />,
                     label: 'Edit',
                   },
                   {
-                    onClick: comingSoon,
+                    onClick: () => handleActionCategory('delete', record.id),
                     icon: <EmailInviteIcon />,
                     label: 'Delete',
                   },
@@ -132,6 +152,11 @@ const CategoryList: React.FC = () => {
   return (
     <>
       <CustomTable
+        rightAction={
+          <div style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createCategories)}>
+            <PlusIcon />
+          </div>
+        }
         title="CATEGORIES"
         columns={MainColumns}
         ref={tableRef}

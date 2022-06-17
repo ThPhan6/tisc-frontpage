@@ -1,6 +1,6 @@
 import { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
 import { Table } from 'antd';
-import { Title } from '@/components/Typography';
+// import { Title } from '@/components/Typography';
 import { useCustomTable } from './hooks';
 import { forEach, isArray, isEmpty } from 'lodash';
 import CustomPaginator from './components/CustomPaginator';
@@ -15,6 +15,7 @@ import type {
   ISummaryResponse,
 } from './types';
 import styles from './styles/table.less';
+import { TableHeader } from './TableHeader';
 
 const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
   const { expandable, fetchDataFunc, title, rightAction, multiSort, hasPagination, extraParams } =
@@ -112,13 +113,9 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
       fetchData({ pagination, sorter: currentSorter });
     },
   }));
-
   return (
     <div className={styles.customTable}>
-      <div className={styles.tableHeader}>
-        <Title level={7}>{title}</Title>
-        <div>{rightAction}</div>
-      </div>
+      <TableHeader title={title} rightAction={rightAction} />
 
       <Table
         columns={columns}

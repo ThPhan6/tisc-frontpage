@@ -2,8 +2,8 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { useState } from 'react';
 import { ConversionItem } from './ConversionItem';
-import { conversionValueDefault, ConversionValueProp } from './types';
-import styles from './styles/ConversionsEntryForm.less';
+import { conversionValueDefault, ConversionValueProp } from '../types';
+import styles from '../styles/ConversionsEntryForm.less';
 
 export const ConversionsEntryForm = () => {
   const [conversions, setConversions] = useState<ConversionValueProp[]>([]);
@@ -29,7 +29,11 @@ export const ConversionsEntryForm = () => {
   };
 
   return (
-    <EntryFormWrapper handleSubmit={handleSubmit} handleCancel={handleCancel}>
+    <EntryFormWrapper
+      handleSubmit={handleSubmit}
+      handleCancel={handleCancel}
+      contentClass={styles.container}
+    >
       <FormNameInput
         placeholder="type group name"
         title="Conversion Group"
@@ -37,7 +41,7 @@ export const ConversionsEntryForm = () => {
           setConversions([...conversions, conversionValueDefault]);
         }}
       />
-      <div className={styles.conversions_wrapper}>
+      <div className={styles.container__item_wrapper}>
         {conversions.map((conversion, index) => (
           <ConversionItem
             key={index}
