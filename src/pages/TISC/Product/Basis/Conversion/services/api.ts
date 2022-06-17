@@ -1,12 +1,14 @@
 import { request } from 'umi';
 import { message } from 'antd';
-import type { IBasisConversionListResponse } from '../types';
+import type { ConversionBodyProp, IBasisConversionListResponse } from '../types';
 import type {
   IDataTableResponse,
   IPaginationRequest,
   IPaginationResponse,
   ISummaryResponse,
 } from '@/components/Table/types';
+import { STATUS_RESPONSE } from '@/constants/util';
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
 
 interface ICategoryPaginationResponse {
   data: {
@@ -38,5 +40,24 @@ export async function getProductBasisConversionPagination(
     .catch((error) => {
       console.log('error', error);
       message.error(error.message);
+    });
+}
+
+export async function createConversionMiddleware(
+  data: ConversionBodyProp,
+  callback: (type: STATUS_RESPONSE, message?: string) => void,
+) {
+  request(`/api/basis-conversion/create`, {
+    method: 'POST',
+    data,
+  })
+    .then(() => {
+      callback(STATUS_RESPONSE.SUCCESS);
+    })
+    .catch((error) => {
+      callback(
+        STATUS_RESPONSE.ERROR,
+        error?.data?.message || MESSAGE_NOTIFICATION.CREATE_CONVERSION_ERROR,
+      );
     });
 }

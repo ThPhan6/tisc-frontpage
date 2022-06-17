@@ -12,7 +12,12 @@ export const PATH = {
   createCategories: '/tisc/products/categories/create',
   updateCategories: '/tisc/products/categories/update/:id',
 
+  // basic
+  // conversion
+  conversions: '/tisc/products/basis/conversions',
   createConversions: '/tisc/products/basis/conversions/create',
+  updateConversions: '/tisc/products/basis/conversions/update/:id',
+
   //
 };
 

@@ -9,12 +9,24 @@ import type { IBasisConversionListResponse, ISubBasisConversion } from './types'
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
+import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
 
 const BasisConversionList: React.FC = () => {
   const tableRef = useRef<any>();
 
-  const comingSoon = () => {
-    alert('Coming Soon!');
+  const handleAction = (actionType: 'edit' | 'delete', id: string) => {
+    if (actionType === 'edit') {
+      pushTo(PATH.updateConversions.replace(':id', id));
+      return;
+    }
+    // deleteCategoryMiddleware(id, (type: STATUS_RESPONSE, msg?: string) => {
+    //   if (type === STATUS_RESPONSE.SUCCESS) {
+    //     message.success(MESSAGE_NOTIFICATION.DELETE_CATEGORY_SUCCESS);
+    //     tableRef.current.reload();
+    //   } else {
+    //     message.error(msg);
+    //   }
+    // });
   };
 
   const MainColumns: ICustomTableColumnType<IBasisConversionListResponse>[] = [
@@ -50,17 +62,24 @@ const BasisConversionList: React.FC = () => {
       dataIndex: 'action',
       align: 'center',
       width: '5%',
-      render: () => {
+      render: (_value, record) => {
         return (
           <HeaderDropdown
-            arrow={true}
+            arrow
+            align={{ offset: [13, -10] }}
+            placement="bottomRight"
             overlay={
               <MenuHeaderDropdown
                 items={[
                   {
-                    onClick: comingSoon,
+                    onClick: () => handleAction('edit', record.id),
                     icon: <ViewIcon />,
                     label: 'Edit',
+                  },
+                  {
+                    onClick: () => handleAction('delete', record.id),
+                    icon: <EmailInviteIcon />,
+                    label: 'Delete',
                   },
                 ]}
               />

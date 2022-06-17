@@ -23,6 +23,14 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_CATEGORY_ERROR: 'Delete the category error',
   UPDATE_CATEGORY_SUCCESS: 'Update the category successfully',
   UPDATE_CATEGORY_ERROR: 'Update the category error',
+
+  // Conversion
+  CREATE_CONVERSION_SUCCESS: 'Create the conversion successfully',
+  CREATE_CONVERSION_ERROR: 'Create the conversion error',
+  DELETE_CONVERSION_SUCCESS: 'Delete the conversion successfully',
+  DELETE_CONVERSION_ERROR: 'Delete the conversion error',
+  UPDATE_CONVERSION_SUCCESS: 'Update the conversion successfully',
+  UPDATE_CONVERSION_ERROR: 'Update the conversion error',
 };
 
 export const MESSAGE_TOOLTIP = {

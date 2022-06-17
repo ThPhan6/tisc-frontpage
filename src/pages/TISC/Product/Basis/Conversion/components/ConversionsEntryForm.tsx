@@ -1,31 +1,58 @@
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import { useState } from 'react';
+import { FC } from 'react';
 import { ConversionItem } from './ConversionItem';
-import { conversionValueDefault, ConversionValueProp } from '../types';
+import { ConversionsEntryFormProps, conversionValueDefault, ConversionValueProp } from '../types';
 import styles from '../styles/ConversionsEntryForm.less';
 
-export const ConversionsEntryForm = () => {
-  const [conversions, setConversions] = useState<ConversionValueProp[]>([]);
-
-  const handleOnChangeValue = (value: ConversionValueProp, index: number) => {
-    const newConversions = [...conversions];
-    newConversions[index] = value;
-    setConversions(newConversions);
+export const ConversionsEntryForm: FC<ConversionsEntryFormProps> = ({
+  conversionValue,
+  setConversionValue,
+  onCancel,
+  onSubmit,
+}) => {
+  const handleOnChangeValue = (value: ConversionValueProp['subs'][0], index: number) => {
+    const newSub = [...conversionValue.subs];
+    newSub[index] = value;
+    setConversionValue({
+      ...conversionValue,
+      subs: newSub,
+    });
   };
 
   const handleOnClickDelete = (index: number) => {
-    const newConversions = [...conversions];
-    newConversions.splice(index, 1);
-    setConversions(newConversions);
+    const newSub = [...conversionValue.subs];
+    newSub.splice(index, 1);
+    setConversionValue({
+      ...conversionValue,
+      subs: newSub,
+    });
   };
 
   const handleSubmit = () => {
-    alert('Coming soon ');
+    if (onSubmit) {
+      onSubmit(conversionValue);
+    }
   };
 
   const handleCancel = () => {
-    alert('Coming soon ');
+    if (onCancel) {
+      onCancel();
+    }
+  };
+
+  const handleOnChangeConversionGroupName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setConversionValue({
+      ...conversionValue,
+      name: e.target.value,
+    });
+  };
+
+  const HandleOnClickAddIcon = () => {
+    setConversionValue({
+      ...conversionValue,
+      subs: [...conversionValue.subs, conversionValueDefault],
+    });
   };
 
   return (
@@ -37,12 +64,11 @@ export const ConversionsEntryForm = () => {
       <FormNameInput
         placeholder="type group name"
         title="Conversion Group"
-        HandleOnClickAddIcon={() => {
-          setConversions([...conversions, conversionValueDefault]);
-        }}
+        onChangeInput={handleOnChangeConversionGroupName}
+        HandleOnClickAddIcon={HandleOnClickAddIcon}
       />
       <div className={styles.container__item_wrapper}>
-        {conversions.map((conversion, index) => (
+        {conversionValue.subs.map((conversion, index) => (
           <ConversionItem
             key={index}
             value={conversion}
