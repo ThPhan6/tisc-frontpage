@@ -61,3 +61,15 @@ export async function createConversionMiddleware(
       );
     });
 }
+
+export async function deleteConversionMiddleware(id: string, callback: () => void) {
+  request(`/api/basis-conversion/delete/${id}`, {
+    method: 'DELETE',
+  })
+    .then(() => {
+      callback();
+    })
+    .catch((error) => {
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.DELETE_CONVERSION_ERROR);
+    });
+}
