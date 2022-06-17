@@ -36,4 +36,5 @@ export interface CategoryEntryFormProps {
   onSubmit?: (data: CategoryBodyProp) => void;
   categoryValue: CategoryBodyProp;
   setCategoryValue: (value: CategoryBodyProp) => void;
+  submitButtonStatus?: boolean;
 }

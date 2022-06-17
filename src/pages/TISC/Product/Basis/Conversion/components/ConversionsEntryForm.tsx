@@ -10,6 +10,7 @@ export const ConversionsEntryForm: FC<ConversionsEntryFormProps> = ({
   setConversionValue,
   onCancel,
   onSubmit,
+  submitButtonStatus,
 }) => {
   const handleOnChangeValue = (value: ConversionValueProp['subs'][0], index: number) => {
     const newSub = [...conversionValue.subs];
@@ -60,6 +61,7 @@ export const ConversionsEntryForm: FC<ConversionsEntryFormProps> = ({
       handleSubmit={handleSubmit}
       handleCancel={handleCancel}
       contentClass={styles.container}
+      submitButtonStatus={submitButtonStatus}
     >
       <FormNameInput
         placeholder="type group name"

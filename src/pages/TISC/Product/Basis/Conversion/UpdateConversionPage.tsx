@@ -25,6 +25,8 @@ const UpdateConversionPage = () => {
   }>();
   const idConversion = params?.id || '';
 
+  const submitButtonStatus = useBoolean(false);
+
   useEffect(() => {
     if (idConversion) {
       isLoading.setValue(true);
@@ -53,7 +55,10 @@ const UpdateConversionPage = () => {
     updateConversionMiddleware(idConversion, data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.UPDATE_CONVERSION_SUCCESS);
-        pushTo(PATH.conversions);
+        submitButtonStatus.setValue(true);
+        setTimeout(() => {
+          submitButtonStatus.setValue(false);
+        }, 2000);
       } else {
         message.error(msg);
       }
@@ -78,6 +83,7 @@ const UpdateConversionPage = () => {
           setConversionValue={setConversionValue}
           onSubmit={handleUpdateConversion}
           onCancel={handleCancel}
+          submitButtonStatus={submitButtonStatus.value}
         />
       </div>
       {isLoading.value && <LoadingPageCustomize />}
