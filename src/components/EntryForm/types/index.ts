@@ -4,6 +4,9 @@ export interface EntryFormWrapperProps {
   customClass?: string;
   contentClass?: string;
   title?: string;
+  handleDisabledCancel?: boolean;
+  handleDisabledSubmit?: boolean;
+  submitButtonStatus?: boolean;
 }
 
 export interface FormNameInputProp {
