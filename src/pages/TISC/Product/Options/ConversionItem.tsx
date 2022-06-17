@@ -1,9 +1,8 @@
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
+import { ReactComponent as AddIcon } from '@/assets/icons/square-plus-icon.svg';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
-import { ReactComponent as AddIcon } from '@/assets/icons/square-plus-icon.svg';
-import { ReactComponent as ActionRadioIcon } from '@/assets/icons/action-radio-button.svg';
-import { Collapse } from 'antd';
+
 import classNames from 'classnames';
 import { isEqual } from 'lodash';
 import { FC, useEffect, useState } from 'react';
@@ -13,6 +12,7 @@ import {
   conversionValueDefault,
   ConversionValueProp,
   ElementInputProp,
+  ElementInputValueProp,
 } from './types';
 
 const ElementInput: FC<ElementInputProp> = ({ order, onChange }) => {
@@ -21,7 +21,7 @@ const ElementInput: FC<ElementInputProp> = ({ order, onChange }) => {
       <BodyText level={3}>O{order}:</BodyText>
       <CustomInput
         placeholder="value"
-        name={`formula_${order}`}
+        name={`value_${order}`}
         size="small"
         containerClass={styles.element__input_formula}
         onChange={onChange}
@@ -41,9 +41,10 @@ export const ConversionItem: FC<ConversionItemProps> = ({
   value,
   onChangeValue,
   handleOnClickDelete,
-  HandleOnClickAddIcon,
 }) => {
   const [inputValue, setInputValue] = useState<ConversionValueProp>(conversionValueDefault);
+
+  const [elementInputs, setElementInputs] = useState<ElementInputValueProp[]>([]);
 
   useEffect(() => {
     if (value) {
@@ -62,25 +63,33 @@ export const ConversionItem: FC<ConversionItemProps> = ({
     }
   };
 
+  const idElementInput = Math.random();
+  const handleOnClickAddElementInput = () => {
+    setElementInputs([
+      ...elementInputs,
+      { id: idElementInput.toString(), value_1: '', value_2: '', unit_1: '', unit_2: '' },
+    ]);
+  };
+
+  const handleOnClickDeleteElement = (index: number) => {
+    const newElementInputs = [...elementInputs];
+    newElementInputs.splice(index, 1);
+    setElementInputs(newElementInputs);
+  };
+
   return (
     <div className={styles.conversion_container}>
       <div className={styles.field}>
         <div className={styles.field__name}>
-          <div className={styles.field__name}>
-            <BodyText level={3}>Option Name</BodyText>
-            <Collapse defaultActiveKey={['1']} />
-          </div>
-          <div className={styles.field__name}>
-            <span>Image</span>
-            <ActionRadioIcon />
-          </div>
+          <BodyText level={3}>Option Name</BodyText>
         </div>
-        <AddIcon className={styles.header__icon} onClick={HandleOnClickAddIcon} />
+        <AddIcon className={styles.header__icon} onClick={handleOnClickAddElementInput} />
       </div>
       <div className={styles.field}>
         <div className={styles.field__name}>
           <CustomInput
             placeholder="type option name"
+            name="input"
             size="small"
             containerClass={styles.element__input_formula}
             onChange={handleOnChange}
@@ -88,10 +97,20 @@ export const ConversionItem: FC<ConversionItemProps> = ({
         </div>
         <ActionDeleteIcon className={styles.field__delete_icon} onClick={handleOnClickDelete} />
       </div>
-      <div className={styles.form}>
-        <ElementInput order={1} onChange={handleOnChange} />
-        <ElementInput order={2} onChange={handleOnChange} />
-      </div>
+      {elementInputs.map((elementInput, index) => (
+        <div key={elementInput.id} className={styles.element_input}>
+          <div className={styles.form}>
+            <ElementInput order={1} onChange={handleOnChange} />
+            <ElementInput order={2} onChange={handleOnChange} />
+          </div>
+          <div>
+            <ActionDeleteIcon
+              className={styles.field__delete_icon}
+              onClick={() => handleOnClickDeleteElement(index)}
+            />
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

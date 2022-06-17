@@ -2,7 +2,7 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { useState } from 'react';
 import { ConversionItem } from './ConversionItem';
-import { conversionValueDefault, ConversionValueProp } from './types';
+import { ConversionValueProp } from './types';
 import styles from './styles/ConversionsEntryForm.less';
 
 export const ConversionsBasisOption = () => {
@@ -28,27 +28,31 @@ export const ConversionsBasisOption = () => {
     alert('Coming soon ');
   };
 
+  const idConversion = Math.random();
+
+  const handleClickAddConversion = () => {
+    setConversions([
+      ...conversions,
+      { id: idConversion.toString(), input: '', value_1: '', value_2: '', unit_1: '', unit_2: '' },
+    ]);
+  };
+
   return (
     <EntryFormWrapper handleSubmit={handleSubmit} handleCancel={handleCancel}>
       <FormNameInput
         placeholder="type group name"
         title="Option Group"
-        HandleOnClickAddIcon={() => {
-          setConversions([...conversions, conversionValueDefault]);
-        }}
+        HandleOnClickAddIcon={handleClickAddConversion}
       />
       <div className={styles.conversions_wrapper}>
         {conversions.map((conversion, index) => (
           <ConversionItem
-            key={index}
+            key={conversion.id}
             value={conversion}
             onChangeValue={(value) => {
               handleOnChangeValue(value, index);
             }}
             handleOnClickDelete={() => handleOnClickDelete(index)}
-            HandleOnClickAddIcon={() => {
-              setConversions([...conversions, conversionValueDefault]);
-            }}
           />
         ))}
       </div>
