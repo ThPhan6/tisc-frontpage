@@ -7,7 +7,7 @@ export interface MenuSummaryProps {
 }
 
 export interface ElementSummaryProps {
-  dataBrands: DataBrandProp;
+  dataElementSummary: DataBrandProp;
   activeId: string;
   handleActiveTab: (id: string) => void;
 }

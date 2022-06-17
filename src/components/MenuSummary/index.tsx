@@ -15,8 +15,12 @@ const ItemSummary: FC<ItemSummaryProps> = ({ brand }) => {
   );
 };
 
-const ElementSummary: FC<ElementSummaryProps> = ({ dataBrands, handleActiveTab, activeId }) => {
-  const toggle: boolean = activeId === dataBrands.id;
+const ElementSummary: FC<ElementSummaryProps> = ({
+  dataElementSummary,
+  handleActiveTab,
+  activeId,
+}) => {
+  const toggle: boolean = activeId === dataElementSummary.id;
 
   return (
     <div
@@ -24,24 +28,24 @@ const ElementSummary: FC<ElementSummaryProps> = ({ dataBrands, handleActiveTab, 
         style['element-container'],
         toggle ? style['menuActive'] : style['menuUnactive'],
       )}
-      key={dataBrands.id}
+      key={dataElementSummary.id}
     >
       <div
         className={style['element']}
         onClick={() => {
-          handleActiveTab(dataBrands.id);
+          handleActiveTab(dataElementSummary.id);
         }}
       >
-        <span>{checkUndefined(dataBrands?.quantity)}</span>
+        <span>{checkUndefined(dataElementSummary?.quantity)}</span>
         <div className={style['button-wrapper']}>
-          <label> {checkUndefined(dataBrands?.label)}</label>
+          <label> {checkUndefined(dataElementSummary?.label)}</label>
           {toggle ? <ActionLeftIcon /> : <ActionRightIcon />}
         </div>
       </div>
       {toggle && (
         <div className={classNames(style['item-wrapper'])}>
-          {dataBrands?.brands &&
-            dataBrands.brands.map((brand) => {
+          {dataElementSummary?.brands &&
+            dataElementSummary.brands.map((brand) => {
               return (
                 <div className={style['item']} key={brand?.id}>
                   <ItemSummary brand={brand} />
@@ -113,7 +117,7 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
           return (
             <div className={classNames(style['wrapper'])} key={data.id}>
               <ElementSummary
-                dataBrands={data}
+                dataElementSummary={data}
                 activeId={activeId}
                 handleActiveTab={handleActivetab}
               />
