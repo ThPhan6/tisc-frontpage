@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import CustomTable from '@/components/Table';
-import type { ICustomTableColumnType } from '@/components/Table';
+import type { ICustomTableColumnType } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
@@ -9,7 +9,7 @@ import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
 import { getBrandPagination } from './services/api';
 import { showImageUrl } from '@/helper/utils';
-import type { IBrandListResponse } from './types';
+import type { IBrand } from './types';
 import styles from './styles/index.less';
 import { PageContainer } from '@ant-design/pro-layout';
 import { MenuSummary } from '@/components/MenuSummary';
@@ -22,7 +22,7 @@ const BrandList: React.FC = () => {
     alert('Coming Soon!');
   };
 
-  const TableColumns: ICustomTableColumnType<IBrandListResponse>[] = [
+  const TableColumns: ICustomTableColumnType<IBrand>[] = [
     {
       title: '',
       dataIndex: 'logo',

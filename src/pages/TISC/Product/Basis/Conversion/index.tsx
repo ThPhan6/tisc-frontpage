@@ -1,12 +1,14 @@
 import React, { useRef } from 'react';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import type { ICustomTableColumnType } from '@/components/Table';
+import type { ICustomTableColumnType } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { getProductBasisConversionPagination } from './services/api';
 import type { IBasisConversionListResponse, ISubBasisConversion } from './types';
-import styles from './styles/index.less';
+import { pushTo } from '@/helper/history';
+import { PATH } from '@/constants/path';
+import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
 
 const BasisConversionList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -51,10 +53,7 @@ const BasisConversionList: React.FC = () => {
       render: () => {
         return (
           <HeaderDropdown
-            className={styles.customAction}
-            arrow={{
-              pointAtCenter: true,
-            }}
+            arrow={true}
             overlay={
               <MenuHeaderDropdown
                 items={[
@@ -117,6 +116,11 @@ const BasisConversionList: React.FC = () => {
   return (
     <>
       <CustomTable
+        rightAction={
+          <div style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createConversions)}>
+            <PlusIcon />
+          </div>
+        }
         title="CONVERSIONS"
         columns={MainColumns}
         ref={tableRef}

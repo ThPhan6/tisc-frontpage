@@ -33,6 +33,7 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   ...restProps
 }) => (
   <Dropdown
+    className={styles.dropdownWrapper}
     overlayClassName={classNames(
       styles.container,
       arrowPositionCenter && styles[`arrow-center`],

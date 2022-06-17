@@ -1,14 +1,18 @@
 import { request } from 'umi';
 import { message } from 'antd';
 import type { ICategoryListResponse } from '../types';
-import type { IDataTableResponse, IPaginationRequest } from '@/components/Table/index';
+import type {
+  IDataTableResponse,
+  IPaginationRequest,
+  IPaginationResponse,
+  ISummaryResponse,
+} from '@/components/Table/types';
 
 interface ICategoryPaginationResponse {
   data: {
     categories: ICategoryListResponse[];
-    category_count: number;
-    main_category_count: number;
-    sub_category_count: number;
+    pagination: IPaginationResponse;
+    summary: ISummaryResponse[];
   };
 }
 export async function getProductCategoryPagination(
@@ -20,13 +24,15 @@ export async function getProductCategoryPagination(
     params,
   })
     .then((response: ICategoryPaginationResponse) => {
+      const { categories, pagination, summary } = response.data;
       callback({
-        data: response.data.categories,
+        data: categories,
         pagination: {
-          current: params.page,
-          pageSize: params.pageSize,
-          total: 10,
+          current: pagination.page,
+          pageSize: pagination.page_size,
+          total: pagination.total,
         },
+        summary,
       });
     })
     .catch((error) => {

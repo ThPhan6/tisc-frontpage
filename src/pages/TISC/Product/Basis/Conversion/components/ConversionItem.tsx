@@ -2,14 +2,14 @@ import { BodyText } from '@/components/Typography';
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 import { CustomInput } from '@/components/Form/CustomInput';
-import styles from './styles/ConversionItem.less';
+import styles from '../styles/ConversionItem.less';
 import { FC, useEffect, useState } from 'react';
 import {
   ConversionItemProps,
   conversionValueDefault,
   ConversionValueProp,
   ElementInputProp,
-} from './types';
+} from '../types';
 import classNames from 'classnames';
 import { isEqual } from 'lodash';
 

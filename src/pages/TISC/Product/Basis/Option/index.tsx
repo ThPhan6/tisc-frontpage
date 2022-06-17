@@ -1,13 +1,12 @@
 import React, { useRef } from 'react';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import type { ICustomTableColumnType } from '@/components/Table';
+import type { ICustomTableColumnType } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { getProductBasisOptionPagination } from './services/api';
 import { showImageUrl } from '@/helper/utils';
 import type { IBasisOptionListResponse, ISubBasisOption } from './types';
-import styles from './styles/index.less';
 
 const BasisOptionList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -79,10 +78,7 @@ const BasisOptionList: React.FC = () => {
       render: () => {
         return (
           <HeaderDropdown
-            className={styles.customAction}
-            arrow={{
-              pointAtCenter: true,
-            }}
+            arrow={true}
             overlay={
               <MenuHeaderDropdown
                 items={[
