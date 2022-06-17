@@ -37,5 +37,26 @@
     &__cancel_bt {
       margin-right: 16px;
     }
+    &__wrapper_submit {
+      &_normal {
+        min-width: 64px;
+        border-radius: 12px;
+        p {
+          color: #fff;
+        }
+      }
+      &_success {
+        min-width: 64px;
+        background-color: @primary-color-dark;
+        border-radius: 12px;
+        cursor: default;
+        animation: fadeIn 2s;
+        svg {
+          width: 16px;
+          height: 16px;
+          margin-right: 0;
+        }
+      }
+    }
   }
 }

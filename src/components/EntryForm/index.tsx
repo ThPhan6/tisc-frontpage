@@ -1,11 +1,12 @@
+import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
+import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 import { Col, Row } from 'antd';
+import classNames from 'classnames';
 import { FC } from 'react';
 import CustomButton from '../Button';
-import { MainTitle } from '../Typography';
+import { BodyText, MainTitle } from '../Typography';
 import styles from './styles/index.less';
 import { EntryFormWrapperProps } from './types';
-import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
-import classNames from 'classnames';
 
 export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   handleSubmit,
@@ -14,6 +15,9 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   contentClass,
   children,
   title = 'ENTRY FORM',
+  handleDisabledCancel = false,
+  handleDisabledSubmit = false,
+  submitButtonStatus = false,
 }) => {
   return (
     <Row style={{ height: '100%' }}>
@@ -31,19 +35,47 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
               size="small"
               buttonClass={styles.footer__cancel_bt}
               onClick={handleCancel}
+              disabled={handleDisabledCancel}
             >
               Cancel
             </CustomButton>
-            <CustomButton
-              size="small"
-              buttonClass={styles.footer__submit_bt}
-              onClick={handleSubmit}
-            >
-              Save
-            </CustomButton>
+
+            <div className={styles.footer__wrapper_submit}>
+              {submitButtonStatus ? (
+                <CustomButton
+                  buttonClass={styles.footer__wrapper_submit_success}
+                  size="small"
+                  width="64px"
+                  icon={<CheckSuccessIcon />}
+                />
+              ) : (
+                <CustomButton
+                  buttonClass={styles.footer__wrapper_submit_normal}
+                  size="small"
+                  width="64px"
+                  onClick={handleSubmit}
+                  disabled={handleDisabledSubmit}
+                >
+                  <BodyText level={6} fontFamily="Roboto">
+                    Save
+                  </BodyText>
+                </CustomButton>
+              )}
+            </div>
           </div>
         </div>
       </Col>
     </Row>
   );
 };
+
+{
+  /* <CustomButton
+size="small"
+buttonClass={styles.footer__submit_bt}
+onClick={handleSubmit}
+disabled={handleDisabledCancel}
+>
+Save
+</CustomButton> */
+}

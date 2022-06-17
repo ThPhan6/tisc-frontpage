@@ -58,6 +58,7 @@ export interface ConversionsEntryFormProps {
   onSubmit?: (data: ConversionValueProp) => void;
   conversionValue: ConversionValueProp;
   setConversionValue: (value: ConversionValueProp) => void;
+  submitButtonStatus?: boolean;
 }
 
 export interface ConversionBodyProp extends ConversionValueProp {}

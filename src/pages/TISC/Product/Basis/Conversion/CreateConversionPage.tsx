@@ -20,21 +20,27 @@ const CreateConversionPage = () => {
   });
   const isLoading = useBoolean();
 
-  const handleCancel = () => {
-    pushTo(PATH.conversions);
-  };
+  const submitButtonStatus = useBoolean(false);
 
   const handleCreateConversion = (data: ConversionValueProp) => {
     isLoading.setValue(true);
     createConversionMiddleware(data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.CREATE_CONVERSION_SUCCESS);
-        pushTo(PATH.conversions);
+        submitButtonStatus.setValue(true);
+        setTimeout(() => {
+          pushTo(PATH.conversions);
+          submitButtonStatus.setValue(false);
+        }, 1000);
       } else {
         message.error(msg);
       }
       isLoading.setValue(false);
     });
+  };
+
+  const handleCancel = () => {
+    pushTo(PATH.conversions);
   };
 
   return (
@@ -46,6 +52,7 @@ const CreateConversionPage = () => {
       />
       <div className={styles.container__content}>
         <ConversionsEntryForm
+          submitButtonStatus={submitButtonStatus.value}
           conversionValue={conversionValue}
           setConversionValue={setConversionValue}
           onSubmit={handleCreateConversion}
