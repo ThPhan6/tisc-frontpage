@@ -75,6 +75,11 @@
             hideInMenu: true,
             component: './TISC/Product/Category/CreateCategoryPage',
           },
+          {
+            path: '/tisc/products/categories/update/:id',
+            hideInMenu: true,
+            component: './TISC/Product/Category/UpdateCategoryPage',
+          },
         ],
       },
       {

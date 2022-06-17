@@ -1,26 +1,26 @@
 export interface MenuSummaryProps {
   containerClass?: string;
   typeMenu: 'brand' | 'subscription' | 'project';
-  menuSummaryData: DataBrandProp[];
+  menuSummaryData: DataMenuSummaryProps[];
   height?: string;
-  typeMenuData?: BrandsProps[];
+  typeMenuData?: SummaryProps[];
 }
 
 export interface ElementSummaryProps {
-  dataElementSummary: DataBrandProp;
+  dataElementSummary: DataMenuSummaryProps;
   activeId: string;
   handleActiveTab: (id: string) => void;
 }
 
-export interface DataBrandProp extends BrandsProps {
-  brands: BrandsProps[];
+export interface DataMenuSummaryProps extends SummaryProps {
+  brands: SummaryProps[];
 }
 
 export interface ItemSummaryProps {
-  brand: BrandsProps;
+  brand: SummaryProps;
 }
 
-export interface BrandsProps {
+export interface SummaryProps {
   id: string;
   quantity: number | string;
   label: string;
