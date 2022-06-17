@@ -19,23 +19,29 @@ export interface IBasisConversionListResponse {
 }
 
 export interface ElementInputProp {
+  value: ConversionValueProp['subs'][0];
   order: number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface ConversionItemProps {
-  value: ConversionValueProp;
-  onChangeValue: (value: ConversionValueProp) => void;
+  value: ConversionValueProp['subs'][0];
+  onChangeValue: (value: ConversionValueProp['subs'][0]) => void;
   handleOnClickDelete: () => void;
 }
 
 export type ConversionValueProp = {
-  name_1: string;
-  name_2: string;
-  formula_1: string;
-  formula_2: string;
-  unit_1: string;
-  unit_2: string;
+  id?: string;
+  name: string;
+  subs: {
+    id?: string;
+    name_1: string;
+    name_2: string;
+    formula_1: string;
+    formula_2: string;
+    unit_1: string;
+    unit_2: string;
+  }[];
 };
 
 export const conversionValueDefault = {
@@ -46,3 +52,12 @@ export const conversionValueDefault = {
   unit_1: '',
   unit_2: '',
 };
+
+export interface ConversionsEntryFormProps {
+  onCancel?: () => void;
+  onSubmit?: (data: ConversionValueProp) => void;
+  conversionValue: ConversionValueProp;
+  setConversionValue: (value: ConversionValueProp) => void;
+}
+
+export interface ConversionBodyProp extends ConversionValueProp {}

@@ -4,17 +4,27 @@ import type { ICustomTableColumnType } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
-import { getProductBasisConversionPagination } from './services/api';
+import { deleteConversionMiddleware, getProductBasisConversionPagination } from './services/api';
 import type { IBasisConversionListResponse, ISubBasisConversion } from './types';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
+import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
+import { message } from 'antd';
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
 
 const BasisConversionList: React.FC = () => {
   const tableRef = useRef<any>();
 
-  const comingSoon = () => {
-    alert('Coming Soon!');
+  const handleAction = (actionType: 'edit' | 'delete', id: string) => {
+    if (actionType === 'edit') {
+      pushTo(PATH.updateConversions.replace(':id', id));
+      return;
+    }
+    deleteConversionMiddleware(id, () => {
+      tableRef.current.reload();
+      message.success(MESSAGE_NOTIFICATION.DELETE_CONVERSION_SUCCESS);
+    });
   };
 
   const MainColumns: ICustomTableColumnType<IBasisConversionListResponse>[] = [
@@ -50,17 +60,24 @@ const BasisConversionList: React.FC = () => {
       dataIndex: 'action',
       align: 'center',
       width: '5%',
-      render: () => {
+      render: (_value, record) => {
         return (
           <HeaderDropdown
-            arrow={true}
+            arrow
+            align={{ offset: [13, -10] }}
+            placement="bottomRight"
             overlay={
               <MenuHeaderDropdown
                 items={[
                   {
-                    onClick: comingSoon,
+                    onClick: () => handleAction('edit', record.id),
                     icon: <ViewIcon />,
                     label: 'Edit',
+                  },
+                  {
+                    onClick: () => handleAction('delete', record.id),
+                    icon: <EmailInviteIcon />,
+                    label: 'Delete',
                   },
                 ]}
               />

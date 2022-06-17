@@ -1,19 +1,13 @@
-import { BodyText } from '@/components/Typography';
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 import { CustomInput } from '@/components/Form/CustomInput';
-import styles from '../styles/ConversionItem.less';
-import { FC, useEffect, useState } from 'react';
-import {
-  ConversionItemProps,
-  conversionValueDefault,
-  ConversionValueProp,
-  ElementInputProp,
-} from '../types';
+import { BodyText } from '@/components/Typography';
 import classNames from 'classnames';
-import { isEqual } from 'lodash';
+import { FC } from 'react';
+import styles from '../styles/ConversionItem.less';
+import { ConversionItemProps, ElementInputProp } from '../types';
 
-const ElementInput: FC<ElementInputProp> = ({ order, onChange }) => {
+const ElementInput: FC<ElementInputProp> = ({ order, onChange, value }) => {
   return (
     <div className={styles.element}>
       <BodyText level={3}>C:{order}</BodyText>
@@ -23,6 +17,7 @@ const ElementInput: FC<ElementInputProp> = ({ order, onChange }) => {
         size="small"
         containerClass={styles.element__input_formula}
         onChange={onChange}
+        value={value[`formula_${order}`]}
       />
       <CustomInput
         placeholder="unit"
@@ -30,6 +25,7 @@ const ElementInput: FC<ElementInputProp> = ({ order, onChange }) => {
         size="small"
         containerClass={classNames(styles.element__input_unit)}
         onChange={onChange}
+        value={value[`unit_${order}`]}
       />
     </div>
   );
@@ -40,22 +36,13 @@ export const ConversionItem: FC<ConversionItemProps> = ({
   onChangeValue,
   handleOnClickDelete,
 }) => {
-  const [inputValue, setInputValue] = useState<ConversionValueProp>(conversionValueDefault);
-
-  useEffect(() => {
-    if (value) {
-      setInputValue({ ...value });
-    }
-  }, [!isEqual(value, inputValue)]);
-
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newInputValue = {
-      ...inputValue,
+      ...value,
       [e.target.name]: e.target.value,
     };
-    setInputValue(newInputValue);
     if (onChangeValue) {
-      onChangeValue({ ...newInputValue });
+      onChangeValue(newInputValue);
     }
   };
 
@@ -70,6 +57,7 @@ export const ConversionItem: FC<ConversionItemProps> = ({
             name="name_1"
             size="small"
             containerClass={styles.field__name_input}
+            value={value.name_1}
           />
           <SwapIcon />
           <CustomInput
@@ -78,13 +66,14 @@ export const ConversionItem: FC<ConversionItemProps> = ({
             name="name_2"
             size="small"
             containerClass={styles.field__name_input}
+            value={value.name_2}
           />
         </div>
         <ActionDeleteIcon className={styles.field__delete_icon} onClick={handleOnClickDelete} />
       </div>
       <div className={styles.form}>
-        <ElementInput order={1} onChange={handleOnChange} />
-        <ElementInput order={2} onChange={handleOnChange} />
+        <ElementInput order={1} onChange={handleOnChange} value={value} />
+        <ElementInput order={2} onChange={handleOnChange} value={value} />
       </div>
     </div>
   );
