@@ -90,13 +90,25 @@
           {
             path: '/tisc/products/basis/conversions',
             name: 'conversion',
-            component: './TISC/Product/Basis/Conversion',
+            routes: [
+              {
+                path: '/tisc/products/basis/conversions',
+                component: './TISC/Product/Basis/Conversion',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/products/basis/conversions/create',
+                hideInMenu: true,
+                component: './TISC/Product/Basis/Conversion/CreateConversionPage',
+              },
+              {
+                path: '/tisc/products/basis/conversions/update/:id',
+                hideInMenu: true,
+                component: './TISC/Product/Basis/Conversion/UpdateConversionPage',
+              },
+            ],
           },
-          {
-            path: '/tisc/products/basis/conversions/create',
-            hideInMenu: true,
-            component: './TISC/Product/Basis/Conversion/CreateConversionPage',
-          },
+
           {
             path: '/tisc/products/basis/presets',
             name: 'preset',

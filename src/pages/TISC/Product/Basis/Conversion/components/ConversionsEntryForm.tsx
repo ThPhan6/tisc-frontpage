@@ -66,6 +66,7 @@ export const ConversionsEntryForm: FC<ConversionsEntryFormProps> = ({
         title="Conversion Group"
         onChangeInput={handleOnChangeConversionGroupName}
         HandleOnClickAddIcon={HandleOnClickAddIcon}
+        inputValue={conversionValue.name}
       />
       <div className={styles.container__item_wrapper}>
         {conversionValue.subs.map((conversion, index) => (

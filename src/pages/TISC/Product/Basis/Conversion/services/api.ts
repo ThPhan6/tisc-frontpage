@@ -43,6 +43,22 @@ export async function getProductBasisConversionPagination(
     });
 }
 
+export async function getOneConversionMiddleware(
+  id: string,
+  callbackSuccess: (dataRes: ConversionBodyProp) => void,
+  callbackError: (message?: string) => void,
+) {
+  request(`/api/basis-conversion/get-one/${id}`, {
+    method: 'get',
+  })
+    .then((response: { data: ConversionBodyProp }) => {
+      callbackSuccess(response?.data);
+    })
+    .catch((error) => {
+      callbackError(error?.data?.message || MESSAGE_NOTIFICATION.DELETE_CATEGORY_ERROR);
+    });
+}
+
 export async function createConversionMiddleware(
   data: ConversionBodyProp,
   callback: (type: STATUS_RESPONSE, message?: string) => void,
@@ -58,6 +74,26 @@ export async function createConversionMiddleware(
       callback(
         STATUS_RESPONSE.ERROR,
         error?.data?.message || MESSAGE_NOTIFICATION.CREATE_CONVERSION_ERROR,
+      );
+    });
+}
+
+export async function updateConversionMiddleware(
+  id: string,
+  data: ConversionBodyProp,
+  callback: (type: STATUS_RESPONSE, message?: string) => void,
+) {
+  request(`/api/basis-conversion/update/${id}`, {
+    method: 'PUT',
+    data,
+  })
+    .then(() => {
+      callback(STATUS_RESPONSE.SUCCESS);
+    })
+    .catch((error) => {
+      callback(
+        STATUS_RESPONSE.ERROR,
+        error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_CATEGORY_ERROR,
       );
     });
 }
