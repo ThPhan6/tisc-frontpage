@@ -15,13 +15,13 @@ import {
 
 const PresetElementInput: FC<PresetElementInputProp> = ({ order, onChange, value }) => {
   return (
-    <div className={styles.element}>
+    <div className={styles.presetElement}>
       <BodyText level={3}>P{order}:</BodyText>
       <CustomInput
         placeholder={'value'}
         name={`value_${order}`}
         size="small"
-        containerClass={styles.element__input_value}
+        containerClass={styles.presetElement__input_value}
         onChange={onChange}
         value={value[`value_${order}`]}
       />
@@ -29,7 +29,7 @@ const PresetElementInput: FC<PresetElementInputProp> = ({ order, onChange, value
         placeholder="unit"
         name={`unit_${order}`}
         size="small"
-        containerClass={classNames(styles.element__input_unit)}
+        containerClass={classNames(styles.presetElement__input_unit)}
         onChange={onChange}
         value={value[`unit_${order}`]}
       />
@@ -92,16 +92,18 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
       <div>
         {presetItem.subs.map((preset, index) => (
           <div className={styles.form} key={index}>
-            <PresetElementInput
-              order={1}
-              onChange={(e) => handleOnChange(e, index)}
-              value={preset}
-            />
-            <PresetElementInput
-              order={2}
-              onChange={(e) => handleOnChange(e, index)}
-              value={preset}
-            />
+            <div className={styles.form__element}>
+              <PresetElementInput
+                order={1}
+                onChange={(e) => handleOnChange(e, index)}
+                value={preset}
+              />
+              <PresetElementInput
+                order={2}
+                onChange={(e) => handleOnChange(e, index)}
+                value={preset}
+              />
+            </div>
             <ActionDeleteIcon
               className={styles.field__delete_icon}
               onClick={() => handleOnClickDeleteItem(index)}

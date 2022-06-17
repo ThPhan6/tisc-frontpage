@@ -1,5 +1,6 @@
 .preset {
   margin-top: 16px;
+  padding-bottom: 8px;
   border-bottom: 0.5px solid rgb(191, 191, 191);
   .field {
     display: flex;
@@ -33,24 +34,30 @@
   }
   .form {
     display: flex;
+    gap: 10px;
     align-items: center;
     justify-content: space-between;
     height: 32px;
-    padding: 0 16px;
-    .element {
+    &__element {
       display: flex;
-      align-items: center;
-      margin-right: 8px;
-      &__input_value,
-      &__input_unit {
-        :global(.ant-input) {
-          padding: 0;
-          color: @primary-color-dark;
+      flex: 1;
+      gap: 24px;
+      justify-content: space-between;
+      .presetElement {
+        display: flex;
+        align-items: center;
+        margin-left: 16px;
+        &__input_value,
+        &__input_unit {
+          :global(.ant-input) {
+            padding: 0;
+            color: @primary-color-dark;
+          }
         }
-      }
-      &__input_value {
-        width: 80px;
-        margin: 0 8px;
+        &__input_value {
+          width: 80px;
+          margin: 0 8px;
+        }
       }
     }
   }

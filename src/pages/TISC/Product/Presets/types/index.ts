@@ -27,12 +27,7 @@ export type PresetItemValueProp = {
 
 export const presetsValueDefault: PresetsValueProp = {
   name: '',
-  subs: [
-    {
-      name: '',
-      subs: [],
-    },
-  ],
+  subs: [],
 };
 
 export const presetItemValueDefault: PresetItemValueProp = {
