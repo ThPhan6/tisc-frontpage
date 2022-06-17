@@ -30,6 +30,8 @@ const UpdateCategoryPage = () => {
   }>();
   const idCategory = params?.id || '';
 
+  const submitButtonStatus = useBoolean(false);
+
   useEffect(() => {
     if (idCategory) {
       isLoading.setValue(true);
@@ -56,12 +58,19 @@ const UpdateCategoryPage = () => {
     updateCategoryMiddleware(idCategory, data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.UPDATE_CATEGORY_SUCCESS);
-        pushTo(PATH.categories);
+        submitButtonStatus.setValue(true);
+        setTimeout(() => {
+          submitButtonStatus.setValue(false);
+        }, 1000);
       } else {
         message.error(msg);
       }
       isLoading.setValue(false);
     });
+  };
+
+  const handleCancel = () => {
+    pushTo(PATH.categories);
   };
 
   return (
@@ -73,9 +82,11 @@ const UpdateCategoryPage = () => {
       />
       <div className={styles.container__content}>
         <CategoryEntryForm
+          submitButtonStatus={submitButtonStatus.value}
           onSubmit={handleUpdateCategory}
           categoryValue={categoryValue}
           setCategoryValue={setCategoryValue}
+          onCancel={handleCancel}
         />
       </div>
       {isLoading.value && <LoadingPageCustomize />}

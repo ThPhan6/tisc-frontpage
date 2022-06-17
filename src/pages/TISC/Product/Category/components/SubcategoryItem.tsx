@@ -73,7 +73,7 @@ export const SubcategoryItem: FC<SubcategoryItemProps> = ({
 
   const handleOnChangeElementInput = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const newSubs = [...subcategoryValue.subs];
-    newSubs[index] = { name: e.target.value };
+    newSubs[index] = { ...newSubs[index], name: e.target.value };
     setSubcategoryValue({ ...subcategoryValue, subs: newSubs });
     onChange({ ...subcategoryValue, subs: newSubs });
   };

@@ -28,6 +28,7 @@ import {
   PersonalProfileValueProp,
 } from './types';
 import { PhoneInputValueProp } from '@/components/Form/types';
+import { isEqual } from 'lodash';
 
 export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
   const [fileInput, setFileInput] = useState<any>();
@@ -125,13 +126,19 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
 
   const handleDisabled = () => {
     const phone = getPersonalPhone(currentUser?.personal_mobile);
+    const currentUserData = {
+      backupEmail: currentUser?.backup_email,
+      linkedin: currentUser?.linkedin,
+      mobile: {
+        phoneNumber: phone?.phoneNumber,
+        zoneCode: phone?.zoneCode,
+      },
+    };
     if (
-      (inputValue.backupEmail === currentUser?.backup_email &&
-        inputValue.linkedin === currentUser?.linkedin &&
-        inputValue.mobile.zoneCode === phone?.zoneCode &&
-        inputValue.mobile.phoneNumber === phone?.phoneNumber) ||
-      !validateEmail(inputValue.backupEmail) ||
-      !validatePhoneInput(inputValue.mobile)
+      isEqual(currentUserData, inputValue) ||
+      (inputValue.backupEmail && !validateEmail(inputValue.backupEmail)) ||
+      (!validatePhoneInput(inputValue.mobile) &&
+        (inputValue.mobile.zoneCode || inputValue.mobile.phoneNumber))
     ) {
       return true;
     }

@@ -24,12 +24,18 @@ const CreateCategoryPage = () => {
   });
   const isLoading = useBoolean();
 
+  const submitButtonStatus = useBoolean(false);
+
   const handleCreateCategory = (data: CategoryBodyProp) => {
     isLoading.setValue(true);
     createCategoryMiddleware(data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.CREATE_CATEGORY_SUCCESS);
-        pushTo(PATH.categories);
+        submitButtonStatus.setValue(true);
+        setTimeout(() => {
+          pushTo(PATH.categories);
+          submitButtonStatus.setValue(false);
+        }, 1000);
       } else {
         message.error(msg);
       }
@@ -50,6 +56,7 @@ const CreateCategoryPage = () => {
       />
       <div className={styles.container__content}>
         <CategoryEntryForm
+          submitButtonStatus={submitButtonStatus.value}
           categoryValue={categoryValue}
           setCategoryValue={setCategoryValue}
           onSubmit={handleCreateCategory}
