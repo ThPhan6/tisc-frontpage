@@ -1,18 +1,17 @@
-import { BodyText } from '@/components/Typography';
-import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as AddIconCircle } from '@/assets/icons/circle-plus-icon.svg';
+import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { CustomInput } from '@/components/Form/CustomInput';
+import { BodyText } from '@/components/Typography';
+import classNames from 'classnames';
+import { FC, useState } from 'react';
 import styles from '../styles/PresetItem.less';
-import { FC, useEffect, useState } from 'react';
 import {
   PresetElementInputProp,
   PresetItemProps,
   PresetItemValueProp,
   subPresetDefaultValue,
 } from '../types';
-import classNames from 'classnames';
-import { isEqual } from 'lodash';
 
 const PresetElementInput: FC<PresetElementInputProp> = ({ order, onChange, value }) => {
   return (
@@ -38,19 +37,11 @@ const PresetElementInput: FC<PresetElementInputProp> = ({ order, onChange, value
   );
 };
 
-export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeValue, value }) => {
+export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeValue }) => {
   const [presetItem, setPresetItem] = useState<PresetItemValueProp>({
     name: '',
     subs: [],
   });
-
-  console.log('presetItem', presetItem);
-
-  useEffect(() => {
-    if (value) {
-      setPresetItem({ ...value });
-    }
-  }, [!isEqual(value, presetItem)]);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const newSubs = [...presetItem.subs];
@@ -71,12 +62,9 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
     const newSubs = [...presetItem.subs, subPresetDefaultValue];
     setPresetItem({ ...presetItem, subs: newSubs });
   };
-
+  console.log('presetItem', presetItem);
   const handleOnChangePresetName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPresetItem({
-      ...presetItem,
-      name: e.target.value,
-    });
+    setPresetItem({ ...presetItem, name: e.target.value });
     if (onChangeValue) {
       onChangeValue({ ...presetItem, name: e.target.value });
     }
@@ -97,6 +85,7 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
           name="Preset_item_input_value"
           value={presetItem.name}
           onChange={handleOnChangePresetName}
+          containerClass={styles.input}
         />
         <ActionDeleteIcon className={styles.field__delete_icon} onClick={handleOnClickDelete} />
       </div>

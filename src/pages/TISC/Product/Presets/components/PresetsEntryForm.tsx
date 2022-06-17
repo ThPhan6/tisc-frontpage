@@ -1,8 +1,14 @@
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { useState } from 'react';
-import { presetItemValueDefault, presetsValueDefault, PresetsValueProp } from '../types';
+import {
+  presetItemValueDefault,
+  PresetItemValueProp,
+  presetsValueDefault,
+  PresetsValueProp,
+} from '../types';
 import { PresetItem } from './PresetItem';
+import styles from '../styles/PresetsEntryForm.less';
 
 export const PresetsEntryForm = () => {
   const [presetsValue, setPresetsValue] = useState<PresetsValueProp>(presetsValueDefault);
@@ -22,7 +28,7 @@ export const PresetsEntryForm = () => {
     setPresetsValue({ ...presetsValue, subs: newSubs });
   };
 
-  const handleOnChangeValue = (value: PresetsValueProp['subs'][0], index: number) => {
+  const handleOnChangeValue = (value: PresetItemValueProp, index: number) => {
     const newSubs = [...presetsValue['subs']];
     newSubs[index] = value;
     setPresetsValue({ ...presetsValue, subs: newSubs });
@@ -35,7 +41,6 @@ export const PresetsEntryForm = () => {
   const handleCancel = () => {
     alert('Coming soon ');
   };
-  console.log('presetsValue', presetsValue);
 
   return (
     <EntryFormWrapper handleSubmit={handleSubmit} handleCancel={handleCancel}>
@@ -45,7 +50,7 @@ export const PresetsEntryForm = () => {
         onChangeInput={handleOnChangePresetGroupName}
         HandleOnClickAddIcon={HandleOnClickAddIcon}
       />
-      <div>
+      <div className={styles.itemPreset}>
         {presetsValue.subs.map((presetItem, index) => (
           <PresetItem
             key={index}
