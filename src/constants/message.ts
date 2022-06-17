@@ -15,6 +15,14 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_AVATAR_ERROR: 'Update avatar error',
   UPDATE_PERSONAL_PROFILE_SUCCESS: 'Update personal profile successfully',
   UPDATE_PERSONAL_PROFILE_ERROR: 'Update personal profile error',
+
+  // Category
+  CREATE_CATEGORY_SUCCESS: 'Create the category successfully',
+  CREATE_CATEGORY_ERROR: 'Create the category error',
+  DELETE_CATEGORY_SUCCESS: 'Delete the category successfully',
+  DELETE_CATEGORY_ERROR: 'Delete the category error',
+  UPDATE_CATEGORY_SUCCESS: 'Update the category successfully',
+  UPDATE_CATEGORY_ERROR: 'Update the category error',
 };
 
 export const MESSAGE_TOOLTIP = {

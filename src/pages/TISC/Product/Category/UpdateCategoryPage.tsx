@@ -3,7 +3,7 @@ import styles from './styles/CreateCategoryPage.less';
 import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-disabled-icon.svg';
 import { CategoryEntryForm } from './components/CategoryEntryForm';
 import { CategoryBodyProp, SubcategoryValueProp } from './types';
-import { createCategoryMiddleware } from './services/api';
+import { getOneCategoryMiddleware, updateCategoryMiddleware } from './services/api';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
@@ -11,9 +11,10 @@ import { useBoolean } from '@/helper/hook';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
-import { useState } from 'react';
+import { useParams } from 'umi';
+import { useEffect, useState } from 'react';
 
-const CreateCategoryPage = () => {
+const UpdateCategoryPage = () => {
   const [categoryValue, setCategoryValue] = useState<{
     id?: string;
     name: string;
@@ -22,23 +23,45 @@ const CreateCategoryPage = () => {
     name: '',
     subs: [],
   });
-  const isLoading = useBoolean();
 
-  const handleCreateCategory = (data: CategoryBodyProp) => {
+  const isLoading = useBoolean();
+  const params = useParams<{
+    id: string;
+  }>();
+  const idCategory = params?.id || '';
+
+  useEffect(() => {
+    if (idCategory) {
+      isLoading.setValue(true);
+      getOneCategoryMiddleware(
+        idCategory,
+        (dataRes: CategoryBodyProp) => {
+          setCategoryValue(dataRes);
+          isLoading.setValue(false);
+        },
+        () => {
+          isLoading.setValue(false);
+        },
+      );
+      return;
+    }
+    pushTo(PATH.categories);
+  }, []);
+
+  const handleUpdateCategory = (data: CategoryBodyProp) => {
+    if (!idCategory) {
+      pushTo(PATH.categories);
+    }
     isLoading.setValue(true);
-    createCategoryMiddleware(data, (type: STATUS_RESPONSE, msg?: string) => {
+    updateCategoryMiddleware(idCategory, data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
-        message.success(MESSAGE_NOTIFICATION.CREATE_CATEGORY_SUCCESS);
+        message.success(MESSAGE_NOTIFICATION.UPDATE_CATEGORY_SUCCESS);
         pushTo(PATH.categories);
       } else {
         message.error(msg);
       }
       isLoading.setValue(false);
     });
-  };
-
-  const handleCancel = () => {
-    pushTo(PATH.categories);
   };
 
   return (
@@ -50,10 +73,9 @@ const CreateCategoryPage = () => {
       />
       <div className={styles.container__content}>
         <CategoryEntryForm
+          onSubmit={handleUpdateCategory}
           categoryValue={categoryValue}
           setCategoryValue={setCategoryValue}
-          onSubmit={handleCreateCategory}
-          onCancel={handleCancel}
         />
       </div>
       {isLoading.value && <LoadingPageCustomize />}
@@ -61,4 +83,4 @@ const CreateCategoryPage = () => {
   );
 };
 
-export default CreateCategoryPage;
+export default UpdateCategoryPage;
