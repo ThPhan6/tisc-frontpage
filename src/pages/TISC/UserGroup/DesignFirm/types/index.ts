@@ -1,4 +1,4 @@
-export interface IDesignFirmListResponse {
+export interface IDesignFirm {
   id: string;
   name: string;
   logo: string;

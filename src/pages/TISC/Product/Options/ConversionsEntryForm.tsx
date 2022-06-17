@@ -1,23 +1,30 @@
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { useState } from 'react';
-import { ConversionItem } from './ConversionItem';
-import { ConversionValueProp } from './types';
+import { OptionItem } from './ConversionItem';
+import { elementInputValueDefault, ElementInputValueProp } from './types';
 import styles from './styles/ConversionsEntryForm.less';
 
 export const ConversionsBasisOption = () => {
-  const [conversions, setConversions] = useState<ConversionValueProp[]>([]);
+  const [options, setOptions] = useState<{
+    id?: string;
+    name: string;
+    subs: ElementInputValueProp[];
+  }>({
+    name: '',
+    subs: [],
+  });
 
-  const handleOnChangeValue = (value: ConversionValueProp, index: number) => {
-    const newConversions = [...conversions];
-    newConversions[index] = value;
-    setConversions(newConversions);
+  const handleOnChangeValue = (value: ElementInputValueProp, index: number) => {
+    const newOptions = [...options.subs];
+    newOptions[index] = value;
+    setOptions({ ...options, subs: newOptions });
   };
 
   const handleOnClickDelete = (index: number) => {
-    const newConversions = [...conversions];
+    const newConversions = [...options.subs];
     newConversions.splice(index, 1);
-    setConversions(newConversions);
+    setOptions({ ...options, subs: newConversions });
   };
 
   const handleSubmit = () => {
@@ -28,13 +35,8 @@ export const ConversionsBasisOption = () => {
     alert('Coming soon ');
   };
 
-  const idConversion = Math.random();
-
-  const handleClickAddConversion = () => {
-    setConversions([
-      ...conversions,
-      { id: idConversion.toString(), input: '', value_1: '', value_2: '', unit_1: '', unit_2: '' },
-    ]);
+  const handleClickAddOption = () => {
+    setOptions({ ...options, subs: [...options.subs, elementInputValueDefault] });
   };
 
   return (
@@ -42,13 +44,13 @@ export const ConversionsBasisOption = () => {
       <FormNameInput
         placeholder="type group name"
         title="Option Group"
-        HandleOnClickAddIcon={handleClickAddConversion}
+        HandleOnClickAddIcon={handleClickAddOption}
       />
       <div className={styles.conversions_wrapper}>
-        {conversions.map((conversion, index) => (
-          <ConversionItem
-            key={conversion.id}
-            value={conversion}
+        {options.subs.map((option, index) => (
+          <OptionItem
+            key={index}
+            value={option}
             onChangeValue={(value) => {
               handleOnChangeValue(value, index);
             }}

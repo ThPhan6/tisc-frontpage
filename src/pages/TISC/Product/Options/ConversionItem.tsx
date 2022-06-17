@@ -9,9 +9,8 @@ import { isEqual } from 'lodash';
 import { FC, useEffect, useState } from 'react';
 import styles from './styles/ConversionItem.less';
 import {
-  ConversionItemProps,
-  conversionValueDefault,
-  ConversionValueProp,
+  OptionItemProps,
+  elementInputValueDefault,
   ElementInputProp,
   ElementInputValueProp,
 } from './types';
@@ -39,14 +38,11 @@ const ElementInput: FC<ElementInputProp> = ({ order, onChange }) => {
   );
 };
 
-export const ConversionItem: FC<ConversionItemProps> = ({
-  value,
-  onChangeValue,
-  handleOnClickDelete,
-}) => {
-  const [inputValue, setInputValue] = useState<ConversionValueProp>(conversionValueDefault);
+export const OptionItem: FC<OptionItemProps> = ({ value, onChangeValue, handleOnClickDelete }) => {
+  const [inputValue, setInputValue] = useState<ElementInputValueProp>(elementInputValueDefault);
 
-  const [elementInputs, setElementInputs] = useState<ElementInputValueProp[]>([]);
+  const [elementInputs, setElementInputs] =
+    useState<ElementInputValueProp>(elementInputValueDefault);
 
   useEffect(() => {
     if (value) {
@@ -65,18 +61,18 @@ export const ConversionItem: FC<ConversionItemProps> = ({
     }
   };
 
-  const idElementInput = Math.random();
   const handleOnClickAddElementInput = () => {
-    setElementInputs([
-      ...elementInputs,
-      { id: idElementInput.toString(), value_1: '', value_2: '', unit_1: '', unit_2: '' },
-    ]);
+    // const newElementInputs = {
+    //   ...elementInputs,
+    //   subs: [...elementInputs.subs, { name: '' }],
+    // };
+    // setElementInputs(newElementInputs);
   };
 
   const handleOnClickDeleteElement = (index: number) => {
-    const newElementInputs = [...elementInputs];
+    const newElementInputs = [...elementInputs.subs];
     newElementInputs.splice(index, 1);
-    setElementInputs(newElementInputs);
+    setElementInputs({ ...elementInputs, subs: newElementInputs });
   };
 
   return (
@@ -98,7 +94,7 @@ export const ConversionItem: FC<ConversionItemProps> = ({
         <div className={styles.field__name}>
           <CustomInput
             placeholder="type option name"
-            name="input"
+            name="name"
             size="small"
             containerClass={styles.element__input_formula}
             onChange={handleOnChange}
@@ -106,8 +102,8 @@ export const ConversionItem: FC<ConversionItemProps> = ({
         </div>
         <ActionDeleteIcon className={styles.field__delete_icon} onClick={handleOnClickDelete} />
       </div>
-      {elementInputs.map((elementInput, index) => (
-        <div key={elementInput.id} className={styles.element_input}>
+      {elementInputs.subs.map((elementInput, index) => (
+        <div key={index} className={styles.element_input}>
           <div className={styles.form}>
             <ElementInput order={1} onChange={handleOnChange} />
             <ElementInput order={2} onChange={handleOnChange} />

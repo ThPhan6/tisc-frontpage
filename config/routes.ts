@@ -64,7 +64,23 @@
         path: '/tisc/products/categories',
         name: 'category',
         icon: 'category-icon.svg',
-        component: './TISC/Product/Category',
+        routes: [
+          {
+            path: '/tisc/products/categories',
+            component: './TISC/Product/Category',
+            hideInMenu: true,
+          },
+          {
+            path: '/tisc/products/categories/create',
+            hideInMenu: true,
+            component: './TISC/Product/Category/CreateCategoryPage',
+          },
+          {
+            path: '/tisc/products/categories/update/:id',
+            hideInMenu: true,
+            component: './TISC/Product/Category/UpdateCategoryPage',
+          },
+        ],
       },
       {
         path: '/tisc/products/basis',
@@ -74,17 +90,22 @@
           {
             path: '/tisc/products/basis/conversions',
             name: 'conversion',
-            component: './Welcome',
+            component: './TISC/Product/Basis/Conversion',
+          },
+          {
+            path: '/tisc/products/basis/conversions/create',
+            hideInMenu: true,
+            component: './TISC/Product/Basis/Conversion/CreateConversionPage',
           },
           {
             path: '/tisc/products/basis/presets',
             name: 'preset',
-            component: './Welcome',
+            component: './TISC/Product/Basis/Preset',
           },
           {
             path: '/tisc/products/basis/options',
             name: 'option',
-            component: './Welcome',
+            component: './TISC/Product/Basis/Option',
           },
         ],
       },
@@ -96,17 +117,17 @@
           {
             path: '/tisc/products/attributes/general',
             name: 'general',
-            component: './Welcome',
+            component: './TISC/Product/Attribute',
           },
           {
             path: '/tisc/products/attributes/feature',
             name: 'feature',
-            component: './Welcome',
+            component: './TISC/Product/Attribute',
           },
           {
             path: '/tisc/products/attributes/specification',
             name: 'specification',
-            component: './Welcome',
+            component: './TISC/Product/Attribute',
           },
         ],
       },

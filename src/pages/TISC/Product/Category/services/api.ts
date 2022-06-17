@@ -1,18 +1,24 @@
 import { request } from 'umi';
 import { message } from 'antd';
-import type { ICategoryListResponse } from '../types';
-import type { IDataTableResponse } from '@/components/Table/index';
+import type { CategoryBodyProp, ICategoryListResponse } from '../types';
+import type {
+  IDataTableResponse,
+  IPaginationRequest,
+  IPaginationResponse,
+  ISummaryResponse,
+} from '@/components/Table/types';
+import { STATUS_RESPONSE } from '@/constants/util';
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
 
 interface ICategoryPaginationResponse {
   data: {
     categories: ICategoryListResponse[];
-    category_count: number;
-    main_category_count: number;
-    sub_category_count: number;
+    pagination: IPaginationResponse;
+    summary: ISummaryResponse[];
   };
 }
-export async function getBrandPagination(
-  params: any,
+export async function getProductCategoryPagination(
+  params: IPaginationRequest,
   callback: (data: IDataTableResponse) => void,
 ) {
   request(`/api/category/get-list`, {
@@ -20,17 +26,92 @@ export async function getBrandPagination(
     params,
   })
     .then((response: ICategoryPaginationResponse) => {
+      const { categories, pagination, summary } = response.data;
       callback({
-        data: response.data.categories,
+        data: categories,
         pagination: {
-          current: params.page,
-          pageSize: params.pageSize,
-          total: 10,
+          current: pagination.page,
+          pageSize: pagination.page_size,
+          total: pagination.total,
         },
+        summary,
       });
     })
     .catch((error) => {
       console.log('error', error);
       message.error(error.message);
+    });
+}
+
+export async function createCategoryMiddleware(
+  data: CategoryBodyProp,
+  callback: (type: STATUS_RESPONSE, message?: string) => void,
+) {
+  request(`/api/category/create`, {
+    method: 'POST',
+    data,
+  })
+    .then(() => {
+      callback(STATUS_RESPONSE.SUCCESS);
+    })
+    .catch((error) => {
+      callback(
+        STATUS_RESPONSE.ERROR,
+        error?.data?.message || MESSAGE_NOTIFICATION.CREATE_CATEGORY_ERROR,
+      );
+    });
+}
+
+export async function updateCategoryMiddleware(
+  id: string,
+  data: CategoryBodyProp,
+  callback: (type: STATUS_RESPONSE, message?: string) => void,
+) {
+  request(`/api/category/update/${id}`, {
+    method: 'PUT',
+    data,
+  })
+    .then(() => {
+      callback(STATUS_RESPONSE.SUCCESS);
+    })
+    .catch((error) => {
+      callback(
+        STATUS_RESPONSE.ERROR,
+        error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_CATEGORY_ERROR,
+      );
+    });
+}
+
+export async function deleteCategoryMiddleware(
+  id: string,
+  callback: (type: STATUS_RESPONSE, message?: string) => void,
+) {
+  request(`/api/category/delete/${id}`, {
+    method: 'DELETE',
+  })
+    .then(() => {
+      callback(STATUS_RESPONSE.SUCCESS);
+    })
+    .catch((error) => {
+      callback(
+        STATUS_RESPONSE.ERROR,
+        error?.data?.message || MESSAGE_NOTIFICATION.DELETE_CATEGORY_ERROR,
+      );
+    });
+}
+
+export async function getOneCategoryMiddleware(
+  id: string,
+  callbackSuccess: (dataRes: CategoryBodyProp) => void,
+  callbackError: (message?: string) => void,
+) {
+  request(`/api/category/get-one/${id}`, {
+    method: 'get',
+  })
+    .then((response: { data: CategoryBodyProp }) => {
+      callbackSuccess(response?.data);
+    })
+    .catch((error) => {
+      callbackError(error?.data?.message || MESSAGE_NOTIFICATION.DELETE_CATEGORY_ERROR);
     });
 }

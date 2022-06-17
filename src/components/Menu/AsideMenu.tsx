@@ -4,12 +4,12 @@ import { Layout, Menu } from 'antd';
 import React, { useState } from 'react';
 import type { MenuDataItem } from '@ant-design/pro-layout';
 import styles from './styles/aside.less';
-import { useLocation } from 'umi';
 import { ReactComponent as DropdownIcon } from '../../assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '../../assets/icons/drop-up-icon.svg';
 import { ReactComponent as AlignLeftIcon } from '../../assets/icons/align-left-icon.svg';
 import { ReactComponent as AlignRightIcon } from '../../assets/icons/align-right-icon.svg';
 import { renderIconByName } from './Icon/index';
+import { isEmpty } from 'lodash';
 
 const renderMenuItem = (menu: MenuDataItem) => {
   return (
@@ -25,6 +25,10 @@ const renderMenuItem = (menu: MenuDataItem) => {
 };
 
 const renderSubMenu = (menu: MenuDataItem) => {
+  const children = menu.children && menu.children.filter((item) => !item.hideInMenu);
+  if (isEmpty(children)) {
+    return renderMenuItem(menu);
+  }
   return (
     <Menu.SubMenu
       title={menu.name}
@@ -32,8 +36,10 @@ const renderSubMenu = (menu: MenuDataItem) => {
       icon={renderIconByName(menu.icon)}
       className={styles.customAsideSubMenu}
     >
-      {menu.children?.map((child) => {
-        if (child.children) {
+      {children?.map((child) => {
+        const childrenLevel2 = child.children && child.children.filter((item) => !item.hideInMenu);
+
+        if (childrenLevel2) {
           return renderSubMenu(child);
         }
         return renderMenuItem(child);
@@ -43,7 +49,7 @@ const renderSubMenu = (menu: MenuDataItem) => {
 };
 
 const AsideMenu: React.FC = (props: HeaderViewProps) => {
-  const location = useLocation();
+  // const location = useLocation();
   const rootKeys: string[] = [];
   const defaultOpenKeys: string[] = [];
   const appProps: any = props.children;
@@ -106,18 +112,19 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
       <div className="menu-sider-wrapper">
         <Menu
           theme={props.headerTheme}
-          selectedKeys={[location.pathname]}
+          selectedKeys={openKeys}
           openKeys={openKeys}
           onOpenChange={onOpenChange}
           style={{ height: '100%' }}
           mode={'inline'}
           onClick={onClick}
-          inlineIndent={18}
+          inlineIndent={16}
           expandIcon={customExpandIcon}
           triggerSubMenuAction={'click'}
         >
           {menuData?.map((menu) => {
-            if (menu.children) {
+            const children = menu.children && menu.children.filter((item) => !item.hideInMenu);
+            if (children) {
               return renderSubMenu(menu);
             } else {
               return renderMenuItem(menu);

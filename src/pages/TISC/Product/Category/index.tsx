@@ -1,18 +1,36 @@
 import React, { useRef } from 'react';
-import CustomTable, { ICustomTableColumnType, GetExpandableTableConfig } from '@/components/Table';
+import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
+import type { ICustomTableColumnType } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
-import { getBrandPagination } from './services/api';
+import { deleteCategoryMiddleware, getProductCategoryPagination } from './services/api';
 import type { ICategoryListResponse } from './types';
-import styles from './styles/index.less';
+// import styles from './styles/index.less';
+import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
+import { pushTo } from '@/helper/history';
+import { PATH } from '@/constants/path';
+import { STATUS_RESPONSE } from '@/constants/util';
+import { message } from 'antd';
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
 
 const CategoryList: React.FC = () => {
   const tableRef = useRef<any>();
 
-  const comingSoon = () => {
-    alert('Coming Soon!');
+  const handleActionCategory = (actionType: 'edit' | 'delete', id: string) => {
+    if (actionType === 'edit') {
+      pushTo(PATH.updateCategories.replace(':id', id));
+      return;
+    }
+    deleteCategoryMiddleware(id, (type: STATUS_RESPONSE, msg?: string) => {
+      if (type === STATUS_RESPONSE.SUCCESS) {
+        message.success(MESSAGE_NOTIFICATION.DELETE_CATEGORY_SUCCESS);
+        tableRef.current.reload();
+      } else {
+        message.error(msg);
+      }
+    });
   };
 
   const MainColumns: ICustomTableColumnType<ICategoryListResponse>[] = [
@@ -20,51 +38,48 @@ const CategoryList: React.FC = () => {
       title: 'Main Category',
       dataIndex: 'name',
       sorter: {
-        compare: (a: any, b: any) => a.name - b.name,
         multiple: 1,
       },
-      width: '40%',
+      width: 350,
       isExpandable: true,
     },
     {
       title: 'Subcategory',
       dataIndex: 'subcategory',
-      width: '30%',
+      width: 250,
       sorter: {
-        compare: (a: any, b: any) => a.name - b.name,
         multiple: 2,
       },
     },
     {
       title: 'Category',
       dataIndex: 'category',
-      width: '20%',
       sorter: {
-        compare: (a: any, b: any) => a.name - b.name,
         multiple: 3,
       },
     },
-    { title: 'Count', dataIndex: 'count', width: '5%' },
+    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
       width: '5%',
-      render: () => {
+      render: (_value, record) => {
         return (
           <HeaderDropdown
-            className={styles.customAction}
             arrow
+            align={{ offset: [13, -10] }}
+            placement="bottomRight"
             overlay={
               <MenuHeaderDropdown
                 items={[
                   {
-                    onClick: comingSoon,
+                    onClick: () => handleActionCategory('edit', record.id),
                     icon: <ViewIcon />,
                     label: 'Edit',
                   },
                   {
-                    onClick: comingSoon,
+                    onClick: () => handleActionCategory('delete', record.id),
                     icon: <EmailInviteIcon />,
                     label: 'Delete',
                   },
@@ -83,14 +98,14 @@ const CategoryList: React.FC = () => {
     {
       title: 'Main Category',
       dataIndex: 'maincategory',
-      width: '40%',
+      width: 350,
       sorter: true,
       noBoxShadow: true,
     },
     {
       title: 'Subcategory',
       dataIndex: 'name',
-      width: '30%',
+      width: 250,
       sorter: true,
       isExpandable: true,
     },
@@ -98,9 +113,8 @@ const CategoryList: React.FC = () => {
       title: 'Category',
       dataIndex: 'Category',
       sorter: true,
-      width: '20%',
     },
-    { title: 'Count', dataIndex: 'count', width: '5%' },
+    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Action',
       dataIndex: 'action2',
@@ -111,20 +125,20 @@ const CategoryList: React.FC = () => {
     {
       title: 'Main Category',
       dataIndex: 'maincategory',
-      width: '40%',
+      width: 350,
       sorter: true,
       noBoxShadow: true,
     },
     {
       title: 'Subcategory',
       dataIndex: 'Subcategory',
-      width: '30%',
+      width: 250,
       sorter: true,
     },
     {
       title: 'Category',
       dataIndex: 'name',
-      width: '20%',
+
       sorter: true,
     },
     { title: 'Count', dataIndex: 'count', width: '5%' },
@@ -138,10 +152,20 @@ const CategoryList: React.FC = () => {
   return (
     <>
       <CustomTable
+        rightAction={
+          <div style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createCategories)}>
+            <PlusIcon />
+          </div>
+        }
         title="CATEGORIES"
         columns={MainColumns}
         ref={tableRef}
-        fetchDataFunc={getBrandPagination}
+        fetchDataFunc={getProductCategoryPagination}
+        multiSort={{
+          name: 'main_category_order',
+          subcategory: 'sub_category_order',
+          category: 'category_order',
+        }}
         expandable={GetExpandableTableConfig({
           columns: SubColumns,
           childrenColumnName: 'subs',
