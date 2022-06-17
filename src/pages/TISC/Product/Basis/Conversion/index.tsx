@@ -134,9 +134,7 @@ const BasisConversionList: React.FC = () => {
     <>
       <CustomTable
         rightAction={
-          <div style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createConversions)}>
-            <PlusIcon />
-          </div>
+          <PlusIcon style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createConversions)} />
         }
         title="CONVERSIONS"
         columns={MainColumns}

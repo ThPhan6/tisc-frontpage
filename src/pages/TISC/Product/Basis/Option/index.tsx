@@ -7,6 +7,9 @@ import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { getProductBasisOptionPagination } from './services/api';
 import { showImageUrl } from '@/helper/utils';
 import type { IBasisOptionListResponse, ISubBasisOption } from './types';
+import { pushTo } from '@/helper/history';
+import { PATH } from '@/constants/path';
+import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
 
 const BasisOptionList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -145,6 +148,9 @@ const BasisOptionList: React.FC = () => {
   return (
     <>
       <CustomTable
+        rightAction={
+          <PlusIcon style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createConversions)} />
+        }
         title="PRESET"
         columns={MainColumns}
         ref={tableRef}

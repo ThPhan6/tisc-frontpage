@@ -153,9 +153,7 @@ const CategoryList: React.FC = () => {
     <>
       <CustomTable
         rightAction={
-          <div style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createCategories)}>
-            <PlusIcon />
-          </div>
+          <PlusIcon style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createCategories)} />
         }
         title="CATEGORIES"
         columns={MainColumns}

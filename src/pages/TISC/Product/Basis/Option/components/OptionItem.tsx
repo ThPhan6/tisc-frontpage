@@ -3,17 +3,16 @@ import { ReactComponent as AddElementIcon } from '@/assets/icons/circle-plus.svg
 import { ReactComponent as ActionDownUpIcon } from '@/assets/icons/action-down-up.svg';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
-
 import classNames from 'classnames';
 import { isEqual } from 'lodash';
 import { FC, useEffect, useState } from 'react';
-import styles from './styles/ConversionItem.less';
+import styles from '../styles/OptionItem.less';
 import {
   OptionItemProps,
   elementInputValueDefault,
   ElementInputProp,
   ElementInputValueProp,
-} from './types';
+} from '../types';
 import { Radio } from 'antd';
 
 const ElementInput: FC<ElementInputProp> = ({ order, onChange }) => {
@@ -62,11 +61,11 @@ export const OptionItem: FC<OptionItemProps> = ({ value, onChangeValue, handleOn
   };
 
   const handleOnClickAddElementInput = () => {
-    // const newElementInputs = {
-    //   ...elementInputs,
-    //   subs: [...elementInputs.subs, { name: '' }],
-    // };
-    // setElementInputs(newElementInputs);
+    const newElementInputs = {
+      ...elementInputs,
+      subs: [...elementInputs.subs, { name: '' }],
+    };
+    setElementInputs(newElementInputs);
   };
 
   const handleOnClickDeleteElement = (index: number) => {

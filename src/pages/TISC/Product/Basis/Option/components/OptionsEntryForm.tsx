@@ -1,9 +1,9 @@
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { useState } from 'react';
-import { OptionItem } from './ConversionItem';
-import { elementInputValueDefault, ElementInputValueProp } from './types';
-import styles from './styles/ConversionsEntryForm.less';
+import { OptionItem } from './OptionItem';
+import { elementInputValueDefault, ElementInputValueProp } from '../types';
+import styles from '../styles/OptionsEntryForm.less';
 
 export const ConversionsBasisOption = () => {
   const [options, setOptions] = useState<{
@@ -22,9 +22,9 @@ export const ConversionsBasisOption = () => {
   };
 
   const handleOnClickDelete = (index: number) => {
-    const newConversions = [...options.subs];
-    newConversions.splice(index, 1);
-    setOptions({ ...options, subs: newConversions });
+    const newOptions = [...options.subs];
+    newOptions.splice(index, 1);
+    setOptions({ ...options, subs: newOptions });
   };
 
   const handleSubmit = () => {
@@ -45,6 +45,10 @@ export const ConversionsBasisOption = () => {
         placeholder="type group name"
         title="Option Group"
         HandleOnClickAddIcon={handleClickAddOption}
+        onChangeInput={(e) => {
+          setOptions({ ...options, name: e.target.value });
+        }}
+        inputValue={options.name}
       />
       <div className={styles.conversions_wrapper}>
         {options.subs.map((option, index) => (
@@ -52,6 +56,8 @@ export const ConversionsBasisOption = () => {
             key={index}
             value={option}
             onChangeValue={(value) => {
+              console.log(value);
+
               handleOnChangeValue(value, index);
             }}
             handleOnClickDelete={() => handleOnClickDelete(index)}
