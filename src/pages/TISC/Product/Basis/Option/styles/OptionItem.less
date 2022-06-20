@@ -1,4 +1,18 @@
 .collapse_container {
+  margin-bottom: 16px;
+
+  .active_collapse_panel,
+  .unactive_collapse_panel {
+    padding-bottom: 8px;
+    border-radius: 0;
+  }
+  .active_collapse_panel {
+    border-bottom: 0.5px solid @mono-color-medium;
+  }
+  .unactive_collapse_panel {
+    border-bottom: 0.5px solid @mono-color;
+  }
+
   :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
     padding: 0;
   }
@@ -11,8 +25,6 @@
       > .ant-collapse-content-box) {
     padding: 0;
   }
-
-  margin-bottom: 16px;
 }
 
 .panel_header {
@@ -123,6 +135,13 @@
   }
 }
 
+.font_weight_300 {
+  font-weight: 300;
+}
+.font_weight_600 {
+  font-weight: 600;
+}
+
 .set-unchecked-color,
 .set-checked-color {
   :global(.ant-radio-checked) {
@@ -133,7 +152,7 @@
 }
 
 .set-unchecked-color {
-  @unactive-color: #bfbfbf;
+  @unactive-color: @mono-color-medium;
 
   p {
     color: @unactive-color;
@@ -155,7 +174,7 @@
 }
 
 .set-checked-color {
-  @active-color: #2b39d4;
+  @active-color: @primary-color-dark;
 
   p {
     color: @active-color;

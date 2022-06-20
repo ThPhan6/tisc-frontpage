@@ -42,7 +42,14 @@ export type SubOptionValueProps = {
 export interface SubOptionProps {
   value: SubOptionValueProps;
   onChangeValue: (value: SubOptionValueProps) => void;
-  handleOnClickDelete?: () => void;
+
+  handleOnClickDeleteSubOption: () => void;
+
+  handleOnChangeOptionNameInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
+
+  subOptions: SubOptionValueProps;
+  // setSubOptions: () => void;
+  handleChange: (sub: ElementInputItemProps) => void;
 }
 
 export interface OptionGroupProps {
@@ -57,16 +64,3 @@ export interface OptionEntryFormProps {
   optionValue: OptionGroupProps;
   setOptionValue: (value: OptionGroupProps) => void;
 }
-
-export const subOptionValueDefault = {
-  name: '',
-  subs: [],
-};
-
-export const elementInputValueDefault = {
-  image: '',
-  value_1: '',
-  value_2: '',
-  unit_2: '',
-  unit_1: '',
-};
