@@ -1,6 +1,7 @@
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
 import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
+import image from '@/assets/icons/image.png';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
@@ -44,6 +45,7 @@ const ElementInput: FC<ElementInputProp> = ({ order, valueElementInput, onChange
 export const OptionItem: FC<SubOptionProps> = ({ value, onChangeValue, handleOnClickDelete }) => {
   const [subOptions, setSubOptions] = useState<SubOptionValueProps>(subOptionValueDefault);
   const [activeKey, setActiveKey] = useState<string[]>([]);
+  const [activeImage, setActiveImage] = useState<boolean>(false);
 
   useEffect(() => {
     if (value) {
@@ -86,6 +88,14 @@ export const OptionItem: FC<SubOptionProps> = ({ value, onChangeValue, handleOnC
     onChangeValue({ ...subOptions, subs: newSubOptions });
   };
 
+  const handleOnClickAddImage = () => {
+    if (activeImage) {
+      setActiveImage(false);
+    } else {
+      setActiveImage(true);
+    }
+  };
+
   const renderPanelHeader = () => {
     return (
       <div className={styles.panel_header}>
@@ -110,7 +120,13 @@ export const OptionItem: FC<SubOptionProps> = ({ value, onChangeValue, handleOnC
                 }}
               />
             </div>
-            <div className={styles.panel_header__field_image}>
+            <div
+              className={classNames(
+                styles.panel_header__field_image,
+                activeImage ? styles['set-checked-color'] : styles['set-unchecked-color'],
+              )}
+              onClick={handleOnClickAddImage}
+            >
               <BodyText level={7}>Image</BodyText>
               <Radio />
             </div>
@@ -154,6 +170,13 @@ export const OptionItem: FC<SubOptionProps> = ({ value, onChangeValue, handleOnC
           <div className={styles.sub_wrapper}>
             {subOptions.subs.map((elementInput, index) => (
               <div key={index} className={styles.element_input}>
+                {console.log(activeImage)}
+
+                {activeImage && (
+                  <div className={styles.image}>
+                    <img src={image} alt="image" />
+                  </div>
+                )}
                 <div className={styles.form}>
                   <ElementInput
                     order={1}

@@ -1,25 +1,3 @@
-.set-unchecked-color {
-  :global(.ant-radio-checked) {
-    :global(.ant-radio-inner) {
-      box-shadow: none;
-    }
-  }
-}
-
-.set-checked-color(@color) {
-  :global(.ant-radio-inner) {
-    border-color: @color;
-  }
-  :global(.ant-radio-checked) {
-    :global(.ant-radio-inner) {
-      box-shadow: none;
-    }
-  }
-  // :global(.ant-radio-inner::after) {
-  //   background-color: @color;
-  // }
-}
-
 .collapse_container {
   :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
     padding: 0;
@@ -44,6 +22,7 @@
     align-items: center;
     justify-content: space-between;
     cursor: default;
+    @padding-right: 8px;
 
     svg {
       cursor: pointer;
@@ -51,31 +30,31 @@
 
     &_right {
       display: flex;
-      gap: 24px;
       align-items: center;
       justify-content: space-between;
     }
+
+    &_title,
     &_image {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      cursor: pointer;
-      @color: #bfbfbf;
-
       p {
-        color: @color;
+        padding-right: @padding-right;
       }
-
-      .set-checked-color(@color);
     }
+
     &_title {
       display: flex;
-      gap: 8px;
       align-items: center;
+      margin-right: 24px;
       cursor: pointer;
       &_icon {
         transition: all 0.3s;
       }
+    }
+
+    &_image {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
     }
   }
   &__input {
@@ -114,6 +93,11 @@
     flex: 1;
     align-items: center;
     justify-content: space-between;
+    margin-top: 8px;
+
+    .image img {
+      margin-right: 12px;
+    }
 
     .form {
       display: flex;
@@ -136,5 +120,59 @@
         }
       }
     }
+  }
+}
+
+.set-unchecked-color,
+.set-checked-color {
+  :global(.ant-radio-checked) {
+    :global(.ant-radio-inner) {
+      box-shadow: none;
+    }
+  }
+}
+
+.set-unchecked-color {
+  @unactive-color: #bfbfbf;
+
+  p {
+    color: @unactive-color;
+  }
+
+  :global(.ant-radio-inner),
+  :global(.ant-radio-wrapper:hover .ant-radio),
+  :global(.ant-radio:hover .ant-radio-inner),
+  :global(.ant-radio-input:focus + .ant-radio-inner),
+  :global(.ant-radio-checked::after),
+  :global(.ant-radio-checked.ant-radio-inner) {
+    border-color: @unactive-color;
+  }
+  :global(.ant-radio-inner::after) {
+    background-color: @unactive-color;
+    opacity: 0;
+    transition: none;
+  }
+}
+
+.set-checked-color {
+  @active-color: #2b39d4;
+
+  p {
+    color: @active-color;
+  }
+
+  :global(.ant-radio-inner),
+  :global(.ant-radio-wrapper:hover .ant-radio),
+  :global(.ant-radio:hover .ant-radio-inner),
+  :global(.ant-radio-input:focus + .ant-radio-inner),
+  :global(.ant-radio-checked::after),
+  :global(.ant-radio-checked.ant-radio-inner) {
+    border-color: @active-color;
+  }
+  :global(.ant-radio-inner::after) {
+    background-color: @active-color;
+    transform: scale(0.5);
+    opacity: 1;
+    transition: none;
   }
 }
