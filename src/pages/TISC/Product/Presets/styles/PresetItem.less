@@ -1,0 +1,117 @@
+.preset {
+  margin-top: 16px;
+  :global(.ant-collapse-header-text) {
+    width: 100%;
+  }
+  :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
+    padding: 0;
+  }
+  :global(.ant-collapse-content > .ant-collapse-content-box) {
+    padding: 0;
+  }
+  :global(.ant-collapse-ghost
+      > .ant-collapse-item
+      > .ant-collapse-content
+      > .ant-collapse-content-box) {
+    padding: 0;
+  }
+  .customPadding {
+    padding-bottom: 8px;
+  }
+  .bottomMedium {
+    border-bottom: 0.5px solid @mono-color-medium;
+  }
+  .bottomBlack {
+    border-bottom: 0.5px solid @mono-color;
+  }
+  .form {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 32px;
+    &__element {
+      display: flex;
+      flex: 1;
+      gap: 24px;
+      justify-content: space-between;
+      .presetElement {
+        display: flex;
+        align-items: center;
+        margin-left: 16px;
+        &__input_value,
+        &__input_unit {
+          :global(.ant-input) {
+            padding: 0;
+            color: @primary-color-dark;
+          }
+        }
+        &__input_value {
+          width: 80px;
+          margin: 0 8px;
+        }
+      }
+    }
+    &__delete_icon {
+      cursor: pointer;
+      path {
+        transition: fill 1s;
+        fill: @mono-color-medium;
+      }
+      &:hover {
+        path {
+          fill: @primary-color-dark;
+        }
+      }
+    }
+  }
+}
+
+.panel_header {
+  width: 100%;
+  &__field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &_title {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      &_icon {
+        transition: all 0.3s;
+      }
+    }
+  }
+  &__input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 32px;
+    &_value {
+      flex: 1;
+      :global(.ant-input) {
+        color: @primary-color-dark;
+      }
+    }
+    &_delete_icon {
+      cursor: pointer;
+      path {
+        transition: fill 1s;
+        fill: @mono-color-medium;
+      }
+      &:hover {
+        path {
+          fill: @primary-color-dark;
+        }
+      }
+    }
+  }
+}
+
+.font_weight_600 {
+  font-weight: 600;
+}
+
+.font_weight_300 {
+  font-weight: 300;
+}
