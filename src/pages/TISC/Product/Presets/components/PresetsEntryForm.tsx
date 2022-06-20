@@ -37,7 +37,6 @@ export const PresetsEntryForm = () => {
     alert('Coming soon ');
   };
 
-  console.log('presetsValue', presetsValue);
   return (
     <EntryFormWrapper handleSubmit={handleSubmit} handleCancel={handleCancel}>
       <FormNameInput
