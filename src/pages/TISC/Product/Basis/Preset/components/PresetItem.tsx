@@ -11,7 +11,7 @@ import {
   PresetItemValueProp,
   presetsValueDefault,
   subPresetDefaultValue,
-} from '../types';
+} from '../../../Presets/types';
 import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
 import { Collapse } from 'antd';

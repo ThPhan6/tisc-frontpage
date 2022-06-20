@@ -1,11 +1,17 @@
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import { useState } from 'react';
-import { PresetItemValueProp, presetsValueDefault, PresetsValueProp } from '../types';
+import { FC, useState } from 'react';
+import { PresetItemValueProp, presetsValueDefault, PresetsValueProp } from '../../../Presets/types';
 import { PresetItem } from './PresetItem';
 import styles from '../styles/PresetsEntryForm.less';
+import { PresetsEntryFormProps } from '../types';
 
-export const PresetsEntryForm = () => {
+export const PresetsEntryForm: FC<PresetsEntryFormProps> = ({
+  onCancel,
+  onSubmit,
+  // presetsValue,
+  // setPresetsValue
+}) => {
   const [presetsValue, setPresetsValue] = useState<PresetsValueProp>(presetsValueDefault);
 
   const handleOnChangePresetGroupName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,11 +36,15 @@ export const PresetsEntryForm = () => {
   };
 
   const handleSubmit = () => {
-    alert('Coming soon ');
+    if (onSubmit) {
+      onSubmit(presetsValue);
+    }
   };
 
   const handleCancel = () => {
-    alert('Coming soon ');
+    if (onCancel) {
+      onCancel();
+    }
   };
 
   return (

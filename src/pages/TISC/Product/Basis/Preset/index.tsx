@@ -4,14 +4,29 @@ import type { ICustomTableColumnType } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
-import { getProductBasisPresetPagination } from './services/api';
+import { deletePresetMiddleware, getProductBasisPresetPagination } from './services/api';
 import type { IBasisPresetListResponse, ISubBasisPreset } from './types';
+import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
+import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
+import { pushTo } from '@/helper/history';
+import { PATH } from '@/constants/path';
+import { message } from 'antd';
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
 
 const BasisPresetList: React.FC = () => {
   const tableRef = useRef<any>();
 
-  const comingSoon = () => {
-    alert('Coming Soon!');
+  const handleAction = (actionType: 'edit' | 'delete', id: string) => {
+    if (actionType === 'edit') {
+      //redirect update page and get id of preset
+      pushTo(PATH.updatePresets.replace(':id', id));
+      return;
+    }
+    deletePresetMiddleware(id, () => {
+      // after delete success -> update data in table and send mess
+      tableRef.current.reload();
+      message.success(MESSAGE_NOTIFICATION.DELETE_CONVERSION_SUCCESS);
+    });
   };
 
   const SameColumns: ICustomTableColumnType<any>[] = [
@@ -63,7 +78,7 @@ const BasisPresetList: React.FC = () => {
       dataIndex: 'action',
       align: 'center',
       width: '5%',
-      render: () => {
+      render: (_value, record) => {
         return (
           <HeaderDropdown
             arrow={true}
@@ -71,9 +86,14 @@ const BasisPresetList: React.FC = () => {
               <MenuHeaderDropdown
                 items={[
                   {
-                    onClick: comingSoon,
+                    onClick: () => handleAction('edit', record.id),
                     icon: <ViewIcon />,
                     label: 'Edit',
+                  },
+                  {
+                    onClick: () => handleAction('delete', record.id),
+                    icon: <EmailInviteIcon />,
+                    label: 'Delete',
                   },
                 ]}
               />
@@ -133,6 +153,11 @@ const BasisPresetList: React.FC = () => {
   return (
     <>
       <CustomTable
+        rightAction={
+          <div style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createPresets)}>
+            <PlusIcon />
+          </div>
+        }
         title="PRESET"
         columns={MainColumns}
         ref={tableRef}
