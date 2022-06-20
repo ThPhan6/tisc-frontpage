@@ -1,5 +1,6 @@
 export interface ISubBasisOption {
-  id: string;
+  id?: string;
+  image?: string;
   value_1: string;
   value_2: string;
   unit_1: string;
@@ -18,49 +19,14 @@ export interface IBasisOptionListResponse {
   created_at: string;
 }
 
-export interface ElementInputItemProps {
-  id?: string;
-  image: string;
-  value_1: string;
-  value_2: string;
-  unit_1: string;
-  unit_2: string;
-}
-
-export interface ElementInputProp {
-  order: number;
-  valueElementInput: ElementInputItemProps;
-  onChangeElementInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
-export type SubOptionValueProps = {
+export interface IBasisOptionSubForm {
   id?: string;
   name: string;
-  subs: ElementInputItemProps[];
-};
-
-export interface SubOptionProps {
-  value: SubOptionValueProps;
-  onChangeValue: (value: SubOptionValueProps) => void;
-
-  handleOnClickDeleteSubOption: () => void;
-
-  handleOnChangeOptionNameInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
-
-  subOptions: SubOptionValueProps;
-  // setSubOptions: () => void;
-  handleChange: (sub: ElementInputItemProps) => void;
+  subs: ISubBasisOption[];
 }
 
-export interface OptionGroupProps {
+export interface IBasisOptionForm {
   id?: string;
   name: string;
-  subs: SubOptionValueProps[];
-}
-
-export interface OptionEntryFormProps {
-  onCancel?: () => void;
-  onSubmit?: (data: OptionGroupProps) => void;
-  optionValue: OptionGroupProps;
-  setOptionValue: (value: OptionGroupProps) => void;
+  subs: IBasisOptionSubForm[];
 }
