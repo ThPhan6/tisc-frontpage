@@ -1,4 +1,4 @@
-.set-checked-color( @color ) {
+.set-unchecked-color {
   :global(.ant-radio-checked) {
     :global(.ant-radio-inner) {
       box-shadow: none;
@@ -6,9 +6,7 @@
   }
 }
 
-.set-checked-color {
-  @color: #bfbfbf;
-
+.set-checked-color(@color) {
   :global(.ant-radio-inner) {
     border-color: @color;
   }
@@ -17,56 +15,81 @@
       box-shadow: none;
     }
   }
-  :global(.ant-radio-inner::after) {
-    background-color: @color;
-  }
+  // :global(.ant-radio-inner::after) {
+  //   background-color: @color;
+  // }
 }
 
-.conversion_container {
-  padding: 16px;
-  .field {
+.collapse_container {
+  :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
+    padding: 0;
+  }
+  :global(.ant-collapse-content > .ant-collapse-content-box) {
+    padding: 0;
+  }
+  :global(.ant-collapse-ghost
+      > .ant-collapse-item
+      > .ant-collapse-content
+      > .ant-collapse-content-box) {
+    padding: 0;
+  }
+
+  margin-bottom: 16px;
+}
+
+.panel_header {
+  width: 100%;
+  &__field {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    .header__icon {
+    cursor: default;
+
+    svg {
       cursor: pointer;
     }
-    &__name {
+
+    &_right {
       display: flex;
+      gap: 24px;
       align-items: center;
-      &_title,
-      &_image {
-        display: flex;
-        align-items: center;
+      justify-content: space-between;
+    }
+    &_image {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      cursor: pointer;
+      @color: #bfbfbf;
 
-        :first-child {
-          margin-right: 8px;
-        }
+      p {
+        color: @color;
       }
-      &_title {
-        margin-right: 24px;
-      }
-      &_image {
-        @color: #bfbfbf;
-        p {
-          color: @color;
-        }
-        svg path {
-          fill: @color;
-        }
 
-        .set-checked-color(@color);
-      }
-      &_input {
-        :global(.ant-input) {
-          width: 48px;
-          margin: 0 8px;
-          padding: 0;
-          color: @primary-color-dark;
-        }
+      .set-checked-color(@color);
+    }
+    &_title {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      cursor: pointer;
+      &_icon {
+        transition: all 0.3s;
       }
     }
-    &__delete_icon {
+  }
+  &__input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 32px;
+    &_value {
+      flex: 1;
+      :global(.ant-input) {
+        color: @primary-color-dark;
+      }
+    }
+    &_delete_icon {
       cursor: pointer;
       path {
         transition: fill 1s;
@@ -79,28 +102,38 @@
       }
     }
   }
+}
+
+.sub_wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-left: 16px;
   .element_input {
     display: flex;
+    flex: 1;
     align-items: center;
-  }
-  .form {
-    display: flex;
-    height: 32px;
-    .element {
+    justify-content: space-between;
+
+    .form {
       display: flex;
-      align-items: center;
-      margin-right: 8px;
-      &__input_formula,
-      &__input_unit {
-        // flex: 1;
-        :global(.ant-input) {
-          padding: 0;
-          color: @primary-color-dark;
+      height: 32px;
+      .element {
+        display: flex;
+        align-items: center;
+        margin-right: 8px;
+        &__input_formula,
+        &__input_unit {
+          // flex: 1;
+          :global(.ant-input) {
+            padding: 0;
+            color: @primary-color-dark;
+          }
         }
-      }
-      &__input_formula {
-        width: 80px;
-        margin: 0 8px;
+        &__input_formula {
+          width: 80px;
+          margin: 0 8px;
+        }
       }
     }
   }

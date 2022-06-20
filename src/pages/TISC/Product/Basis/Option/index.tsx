@@ -149,9 +149,9 @@ const BasisOptionList: React.FC = () => {
     <>
       <CustomTable
         rightAction={
-          <PlusIcon style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createConversions)} />
+          <PlusIcon style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createOptions)} />
         }
-        title="PRESET"
+        title="OPTION"
         columns={MainColumns}
         ref={tableRef}
         fetchDataFunc={getProductBasisOptionPagination}

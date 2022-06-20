@@ -1,21 +1,23 @@
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
-import { ReactComponent as AddElementIcon } from '@/assets/icons/circle-plus.svg';
-import { ReactComponent as ActionDownUpIcon } from '@/assets/icons/action-down-up.svg';
+import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
+import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
+
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 import classNames from 'classnames';
-import { isEqual } from 'lodash';
-import { FC, useEffect, useState } from 'react';
+import { isEmpty, isEqual } from 'lodash';
+import React, { FC, useEffect, useState } from 'react';
 import styles from '../styles/OptionItem.less';
 import {
-  OptionItemProps,
-  elementInputValueDefault,
   ElementInputProp,
-  ElementInputValueProp,
+  elementInputValueDefault,
+  SubOptionProps,
+  subOptionValueDefault,
+  SubOptionValueProps,
 } from '../types';
-import { Radio } from 'antd';
+import { Collapse, Radio } from 'antd';
 
-const ElementInput: FC<ElementInputProp> = ({ order, onChange }) => {
+const ElementInput: FC<ElementInputProp> = ({ order, valueElementInput, onChangeElementInput }) => {
   return (
     <div className={styles.element}>
       <BodyText level={3}>O{order}:</BodyText>
@@ -24,97 +26,157 @@ const ElementInput: FC<ElementInputProp> = ({ order, onChange }) => {
         name={`value_${order}`}
         size="small"
         containerClass={styles.element__input_formula}
-        onChange={onChange}
+        onChange={onChangeElementInput}
+        value={valueElementInput[`value_${order}`]}
       />
       <CustomInput
         placeholder="unit"
         name={`unit_${order}`}
         size="small"
         containerClass={classNames(styles.element__input_unit)}
-        onChange={onChange}
+        onChange={onChangeElementInput}
+        value={valueElementInput[`unit_${order}`]}
       />
     </div>
   );
 };
 
-export const OptionItem: FC<OptionItemProps> = ({ value, onChangeValue, handleOnClickDelete }) => {
-  const [inputValue, setInputValue] = useState<ElementInputValueProp>(elementInputValueDefault);
-
-  const [elementInputs, setElementInputs] =
-    useState<ElementInputValueProp>(elementInputValueDefault);
+export const OptionItem: FC<SubOptionProps> = ({ value, onChangeValue, handleOnClickDelete }) => {
+  const [subOptions, setSubOptions] = useState<SubOptionValueProps>(subOptionValueDefault);
+  const [activeKey, setActiveKey] = useState<string[]>([]);
 
   useEffect(() => {
     if (value) {
-      setInputValue({ ...value });
+      setSubOptions({ ...value });
     }
-  }, [!isEqual(value, inputValue)]);
+  }, [!isEqual(value, subOptions)]);
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newInputValue = {
-      ...inputValue,
-      [e.target.name]: e.target.value,
+  const handleOnChangeOptionNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newSubOptions = {
+      ...subOptions,
+      name: e.target.value,
     };
-    setInputValue(newInputValue);
+    setSubOptions(newSubOptions);
     if (onChangeValue) {
-      onChangeValue({ ...newInputValue });
+      onChangeValue({ ...newSubOptions });
     }
+  };
+
+  const handleOnChangeElementInput = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const newSubOptions = [...subOptions.subs];
+    newSubOptions[index] = { ...newSubOptions[index], [e.target.name]: e.target.value };
+    setSubOptions({ ...subOptions, subs: newSubOptions });
+    onChangeValue({ ...subOptions, subs: newSubOptions });
   };
 
   const handleOnClickAddElementInput = () => {
-    const newElementInputs = {
-      ...elementInputs,
-      subs: [...elementInputs.subs, { name: '' }],
+    const newSubOptions = {
+      ...subOptions,
+      subs: [...subOptions.subs, elementInputValueDefault],
     };
-    setElementInputs(newElementInputs);
+    setActiveKey(['1']);
+    setSubOptions(newSubOptions);
+    onChangeValue({ ...newSubOptions });
   };
 
   const handleOnClickDeleteElement = (index: number) => {
-    const newElementInputs = [...elementInputs.subs];
-    newElementInputs.splice(index, 1);
-    setElementInputs({ ...elementInputs, subs: newElementInputs });
+    const newSubOptions = [...subOptions.subs];
+    newSubOptions.splice(index, 1);
+    setSubOptions({ ...subOptions, subs: newSubOptions });
+    onChangeValue({ ...subOptions, subs: newSubOptions });
   };
 
-  return (
-    <div className={styles.conversion_container}>
-      <div className={styles.field}>
-        <div className={styles.field__name}>
-          <div className={styles.field__name_title}>
-            <BodyText level={3}>Option Name</BodyText>
-            <ActionDownUpIcon className={styles.header__icon} />
+  const renderPanelHeader = () => {
+    return (
+      <div className={styles.panel_header}>
+        <div className={styles.panel_header__field}>
+          <div className={styles.panel_header__field_right}>
+            <div
+              className={styles.panel_header__field_title}
+              onClick={() => {
+                setActiveKey(isEmpty(activeKey) ? ['1'] : []);
+              }}
+            >
+              <BodyText
+                level={3}
+                customClass={isEmpty(activeKey) ? styles.font_weight_300 : styles.font_weight_600}
+              >
+                Option Name
+              </BodyText>
+              <ArrowIcon
+                className={styles.panel_header__field_title_icon}
+                style={{
+                  transform: `rotate(${isEmpty(activeKey) ? '0' : '180'}deg)`,
+                }}
+              />
+            </div>
+            <div className={styles.panel_header__field_image}>
+              <BodyText level={7}>Image</BodyText>
+              <Radio />
+            </div>
           </div>
-          <div className={styles.field__name_image}>
-            <BodyText level={7}>Image</BodyText>
-            <Radio />
-          </div>
+          <CirclePlusIcon
+            className={styles.panel_header__field_add}
+            onClick={handleOnClickAddElementInput}
+          />
         </div>
-        <AddElementIcon className={styles.header__icon} onClick={handleOnClickAddElementInput} />
-      </div>
-      <div className={styles.field}>
-        <div className={styles.field__name}>
+        <div className={styles.panel_header__input}>
           <CustomInput
             placeholder="type option name"
             name="name"
             size="small"
-            containerClass={styles.element__input_formula}
-            onChange={handleOnChange}
+            containerClass={styles.panel_header__input_value}
+            onChange={handleOnChangeOptionNameInput}
+            value={subOptions.name}
+          />
+          <ActionDeleteIcon
+            className={styles.panel_header__input_delete_icon}
+            onClick={handleOnClickDelete}
           />
         </div>
-        <ActionDeleteIcon className={styles.field__delete_icon} onClick={handleOnClickDelete} />
       </div>
-      {elementInputs.subs.map((elementInput, index) => (
-        <div key={index} className={styles.element_input}>
-          <div className={styles.form}>
-            <ElementInput order={1} onChange={handleOnChange} />
-            <ElementInput order={2} onChange={handleOnChange} />
+    );
+  };
+
+  return (
+    <div className={styles.collapse_container}>
+      <Collapse ghost activeKey={activeKey}>
+        <Collapse.Panel
+          style={{
+            borderBottom: `0.5px solid ${isEmpty(activeKey) ? '#BFBFBF' : '#000'}`,
+            paddingBottom: '8px',
+            borderRadius: '0px',
+          }}
+          header={renderPanelHeader()}
+          key="1"
+          showArrow={false}
+        >
+          <div className={styles.sub_wrapper}>
+            {subOptions.subs.map((elementInput, index) => (
+              <div key={index} className={styles.element_input}>
+                <div className={styles.form}>
+                  <ElementInput
+                    order={1}
+                    valueElementInput={elementInput}
+                    onChangeElementInput={(e) => handleOnChangeElementInput(e, index)}
+                  />
+                  <ElementInput
+                    order={2}
+                    valueElementInput={elementInput}
+                    onChangeElementInput={(e) => handleOnChangeElementInput(e, index)}
+                  />
+                </div>
+                <div className={styles.delete_icon}>
+                  <ActionDeleteIcon
+                    className={styles.panel_header__input_delete_icon}
+                    onClick={() => handleOnClickDeleteElement(index)}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
-          <div>
-            <ActionDeleteIcon
-              className={styles.field__delete_icon}
-              onClick={() => handleOnClickDeleteElement(index)}
-            />
-          </div>
-        </div>
-      ))}
+        </Collapse.Panel>
+      </Collapse>
     </div>
   );
 };

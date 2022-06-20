@@ -117,7 +117,18 @@
           {
             path: '/tisc/products/basis/options',
             name: 'option',
-            component: './TISC/Product/Basis/Option',
+            routes: [
+              {
+                path: '/tisc/products/basis/options',
+                component: './TISC/Product/Basis/Option',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/products/basis/options/create',
+                hideInMenu: true,
+                component: './TISC/Product/Basis/Option/CreateOptionPage',
+              },
+            ],
           },
         ],
       },

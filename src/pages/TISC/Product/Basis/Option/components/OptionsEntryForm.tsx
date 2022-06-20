@@ -1,30 +1,25 @@
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import { useState } from 'react';
+import { FC } from 'react';
 import { OptionItem } from './OptionItem';
-import { elementInputValueDefault, ElementInputValueProp } from '../types';
+import { OptionEntryFormProps, SubOptionValueProps, subOptionValueDefault } from '../types';
 import styles from '../styles/OptionsEntryForm.less';
 
-export const ConversionsBasisOption = () => {
-  const [options, setOptions] = useState<{
-    id?: string;
-    name: string;
-    subs: ElementInputValueProp[];
-  }>({
-    name: '',
-    subs: [],
-  });
-
-  const handleOnChangeValue = (value: ElementInputValueProp, index: number) => {
-    const newOptions = [...options.subs];
+export const OptionEntryForm: FC<OptionEntryFormProps> = ({ optionValue, setOptionValue }) => {
+  const handleOnChangeValue = (value: SubOptionValueProps, index: number) => {
+    const newOptions = [...optionValue.subs];
     newOptions[index] = value;
-    setOptions({ ...options, subs: newOptions });
+    setOptionValue({ ...optionValue, subs: newOptions });
   };
 
-  const handleOnClickDelete = (index: number) => {
-    const newOptions = [...options.subs];
+  const handleOnClickDeleteSubOption = (index: number) => {
+    const newOptions = [...optionValue.subs];
     newOptions.splice(index, 1);
-    setOptions({ ...options, subs: newOptions });
+    setOptionValue({ ...optionValue, subs: newOptions });
+  };
+
+  const handleClickAddOption = () => {
+    setOptionValue({ ...optionValue, subs: [...optionValue.subs, subOptionValueDefault] });
   };
 
   const handleSubmit = () => {
@@ -35,32 +30,37 @@ export const ConversionsBasisOption = () => {
     alert('Coming soon ');
   };
 
-  const handleClickAddOption = () => {
-    setOptions({ ...options, subs: [...options.subs, elementInputValueDefault] });
-  };
-
   return (
-    <EntryFormWrapper handleSubmit={handleSubmit} handleCancel={handleCancel}>
+    <EntryFormWrapper
+      handleSubmit={handleSubmit}
+      handleCancel={handleCancel}
+      contentClass={styles.container}
+    >
       <FormNameInput
         placeholder="type group name"
         title="Option Group"
         HandleOnClickAddIcon={handleClickAddOption}
         onChangeInput={(e) => {
-          setOptions({ ...options, name: e.target.value });
+          setOptionValue({ ...optionValue, name: e.target.value });
         }}
-        inputValue={options.name}
+        inputValue={optionValue.name}
       />
-      <div className={styles.conversions_wrapper}>
-        {options.subs.map((option, index) => (
+      <div
+        className={styles.container__item_wrapper}
+        style={{
+          padding: '0px 16px',
+        }}
+      >
+        {optionValue.subs.map((option, index) => (
           <OptionItem
             key={index}
             value={option}
             onChangeValue={(value) => {
-              console.log(value);
-
               handleOnChangeValue(value, index);
             }}
-            handleOnClickDelete={() => handleOnClickDelete(index)}
+            handleOnClickDelete={() => {
+              handleOnClickDeleteSubOption(index);
+            }}
           />
         ))}
       </div>

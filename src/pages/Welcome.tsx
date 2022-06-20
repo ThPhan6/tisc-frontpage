@@ -16,7 +16,6 @@ import { ReactComponent as SingleRightIcon } from '../assets/icons/single-right.
 import styles from './Welcome.less';
 import { dataMenuSummary } from '@/constants/util';
 import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
-import { ConversionsBasisOption } from './TISC/Product/Basis/Option/components/OptionsEntryForm';
 import { MenuSummary } from '@/components/MenuSummary';
 
 const Welcome: React.FC = () => {
@@ -60,9 +59,6 @@ const Welcome: React.FC = () => {
   return (
     <PageContainer>
       <Card>
-        {/* basis options */}
-        <ConversionsBasisOption />
-
         {/*Tabs*/}
         <div>
           <CustomTabs

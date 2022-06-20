@@ -18,7 +18,10 @@ export const PATH = {
   createConversions: '/tisc/products/basis/conversions/create',
   updateConversions: '/tisc/products/basis/conversions/update/:id',
 
-  //
+  // option
+  options: '/tisc/products/basis/options',
+  createOptions: '/tisc/products/basis/options/create',
+  updateOptions: '/tisc/products/basis/options/update/:id',
 };
 
 export const PUBLIC_PATH = [PATH.landingPage, PATH.resetPassword];
