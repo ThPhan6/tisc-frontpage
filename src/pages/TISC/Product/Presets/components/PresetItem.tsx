@@ -8,8 +8,8 @@ import styles from '../styles/PresetItem.less';
 import {
   PresetElementInputProp,
   PresetItemProps,
-  presetItemValueDefault,
   PresetItemValueProp,
+  presetsValueDefault,
   subPresetDefaultValue,
 } from '../types';
 import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
@@ -41,7 +41,7 @@ const PresetElementInput: FC<PresetElementInputProp> = ({ order, onChange, value
 };
 
 export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeValue, value }) => {
-  const [presetItem, setPresetItem] = useState<PresetItemValueProp>(presetItemValueDefault);
+  const [presetItem, setPresetItem] = useState<PresetItemValueProp>(presetsValueDefault);
   const [activeKey, setActiveKey] = useState<string[]>([]);
 
   useEffect(() => {
@@ -124,11 +124,10 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
     <div className={styles.preset}>
       <Collapse ghost activeKey={activeKey}>
         <Collapse.Panel
-          style={{
-            borderBottom: `0.5px solid ${isEmpty(activeKey) ? '#BFBFBF' : '#000'}`,
-            paddingBottom: '8px',
-            borderRadius: '0px',
-          }}
+          className={classNames(
+            styles['customPadding'],
+            isEmpty(activeKey) ? styles['bottomMedium'] : styles['bottomBlack'],
+          )}
           header={renderPanelHeader()}
           key="1"
           showArrow={false}

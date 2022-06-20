@@ -12,30 +12,27 @@ export interface PresetItemProps {
 export interface PresetElementInputProp {
   order: number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  value: PresetItemValueProp['subs'][0];
+  value: SubPresetValueProp;
 }
 
 export type PresetItemValueProp = {
   name: string;
-  subs: {
-    value_1: string;
-    value_2: string;
-    unit_1: string;
-    unit_2: string;
-  }[];
+  subs: SubPresetValueProp[];
 };
 
-export const presetsValueDefault: PresetsValueProp = {
+export type SubPresetValueProp = {
+  value_1: string;
+  value_2: string;
+  unit_1: string;
+  unit_2: string;
+};
+
+export const presetsValueDefault = {
   name: '',
   subs: [],
 };
 
-export const presetItemValueDefault: PresetItemValueProp = {
-  name: '',
-  subs: [],
-};
-
-export const subPresetDefaultValue: PresetItemValueProp['subs'][0] = {
+export const subPresetDefaultValue = {
   value_1: '',
   value_2: '',
   unit_1: '',
