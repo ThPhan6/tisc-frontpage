@@ -100,7 +100,6 @@ export const OptionItem: FC<IOptionItem> = (props) => {
           ...newSubItems[index],
           image: base64Image,
         };
-        /// update sub option item after added new image
         handleChangeSubItem({
           ...subOption,
           subs: newSubItems,
@@ -174,7 +173,7 @@ export const OptionItem: FC<IOptionItem> = (props) => {
               onClick={handleOnClickAddImage}
             >
               <BodyText level={7}>Image</BodyText>
-              <Radio value={activeImage} />
+              <Radio />
             </div>
           </div>
           <CirclePlusIcon
