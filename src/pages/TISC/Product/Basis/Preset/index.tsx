@@ -3,11 +3,11 @@ import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import type { ICustomTableColumnType } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
+import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { deletePresetMiddleware, getProductBasisPresetPagination } from './services/api';
 import type { IBasisPresetListResponse, ISubBasisPreset } from './types';
 import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
-import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
+import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import { message } from 'antd';
@@ -87,12 +87,12 @@ const BasisPresetList: React.FC = () => {
                 items={[
                   {
                     onClick: () => handleAction('edit', record.id),
-                    icon: <ViewIcon />,
+                    icon: <EditIcon />,
                     label: 'Edit',
                   },
                   {
                     onClick: () => handleAction('delete', record.id),
-                    icon: <EmailInviteIcon />,
+                    icon: <DeleteIcon />,
                     label: 'Delete',
                   },
                 ]}
