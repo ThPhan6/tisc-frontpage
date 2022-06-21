@@ -14,7 +14,6 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 
 const CreatePresetPage = () => {
   const isLoading = useBoolean();
-  const submitButtonStatus = useBoolean(false);
 
   const handleCancel = () => {
     pushTo(PATH.presets);
@@ -25,10 +24,8 @@ const CreatePresetPage = () => {
     createPresetMiddleware(data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.CREATE_PRESET_SUCCESS);
-        submitButtonStatus.setValue(true);
         setTimeout(() => {
           pushTo(PATH.presets);
-          submitButtonStatus.setValue(false);
         }, 1000);
       } else {
         message.error(msg);
@@ -45,11 +42,7 @@ const CreatePresetPage = () => {
         rightAction={<PlusIcon />}
       />
       <div className={styles.container__content}>
-        <PresetsEntryForm
-          onSubmit={handleCreatePreset}
-          onCancel={handleCancel}
-          submitButtonStatus={submitButtonStatus.value}
-        />
+        <PresetsEntryForm onSubmit={handleCreatePreset} onCancel={handleCancel} />
       </div>
       {isLoading.value && <LoadingPageCustomize />}
     </div>

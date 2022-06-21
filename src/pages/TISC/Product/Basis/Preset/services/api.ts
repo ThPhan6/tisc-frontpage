@@ -77,14 +77,14 @@ export async function updatePresetMiddleware(
   data: PresetsValueProp,
   callback: (type: STATUS_RESPONSE, message?: string) => void,
 ) {
-  request(`/api/basis-preset/upadate/${id}`, { method: 'PUT', data })
+  request(`/api/basis-preset/update/${id}`, { method: 'PUT', data })
     .then(() => {
       callback(STATUS_RESPONSE.SUCCESS);
     })
     .catch((error) => {
       callback(
         STATUS_RESPONSE.ERROR,
-        error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_AVATAR_ERROR,
+        error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_PRESET_ERROR,
       );
     });
 }

@@ -62,7 +62,5 @@ export const subPresetDefaultValue = {
 export interface PresetsEntryFormProps {
   onCancel?: () => void;
   onSubmit?: (data: PresetsValueProp) => void;
-  submitButtonStatus?: boolean;
-  presetsValue?: PresetsValueProp;
-  setPresetsValue?: (value: PresetsValueProp) => void;
+  presetValue?: PresetsValueProp;
 }

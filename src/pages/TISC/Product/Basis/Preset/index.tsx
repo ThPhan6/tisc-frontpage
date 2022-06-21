@@ -25,7 +25,7 @@ const BasisPresetList: React.FC = () => {
     deletePresetMiddleware(id, () => {
       // after delete success -> update data in table and send mess
       tableRef.current.reload();
-      message.success(MESSAGE_NOTIFICATION.DELETE_CONVERSION_SUCCESS);
+      message.success(MESSAGE_NOTIFICATION.DELETE_PRESET_SUCCESS);
     });
   };
 
@@ -158,7 +158,7 @@ const BasisPresetList: React.FC = () => {
             <PlusIcon />
           </div>
         }
-        title="PRESET"
+        title="PRESETS"
         columns={MainColumns}
         ref={tableRef}
         fetchDataFunc={getProductBasisPresetPagination}

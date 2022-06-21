@@ -1,6 +1,6 @@
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { PresetItemValueProp, presetsValueDefault, PresetsValueProp } from '../../../Presets/types';
 import { PresetItem } from './PresetItem';
 import styles from '../styles/PresetsEntryForm.less';
@@ -9,10 +9,15 @@ import { PresetsEntryFormProps } from '../types';
 export const PresetsEntryForm: FC<PresetsEntryFormProps> = ({
   onCancel,
   onSubmit,
-  // presetsValue,
-  // setPresetsValue
+  presetValue,
 }) => {
   const [presetsValue, setPresetsValue] = useState<PresetsValueProp>(presetsValueDefault);
+
+  useEffect(() => {
+    if (presetValue) {
+      setPresetsValue({ ...presetValue });
+    }
+  }, [presetValue]);
 
   const handleOnChangePresetGroupName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPresetsValue({ ...presetsValue, name: e.target.value });
@@ -54,6 +59,7 @@ export const PresetsEntryForm: FC<PresetsEntryFormProps> = ({
         title="Preset group"
         onChangeInput={handleOnChangePresetGroupName}
         HandleOnClickAddIcon={HandleOnClickAddIcon}
+        inputValue={presetsValue.name}
       />
       <div className={styles.itemPreset}>
         {presetsValue.subs.map((presetItem, index) => (

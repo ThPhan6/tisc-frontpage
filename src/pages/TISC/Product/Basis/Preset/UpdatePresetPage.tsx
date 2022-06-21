@@ -9,19 +9,20 @@ import { PATH } from '@/constants/path';
 import { presetsValueDefault, PresetsValueProp } from './types';
 import { useParams } from 'umi';
 import { useEffect, useState } from 'react';
-import { getOnePresetMiddleware } from './services/api';
+import { getOnePresetMiddleware, updatePresetMiddleware } from './services/api';
+import { STATUS_RESPONSE } from '@/constants/util';
+import { message } from 'antd';
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
 
 const UpdatePresetPage = () => {
   const [presetValue, setPresetValue] = useState<PresetsValueProp>(presetsValueDefault);
   const isLoading = useBoolean();
-  const submitButtonStatus = useBoolean(false);
-  const params = useParams<{
-    id: string;
-  }>();
+  const params = useParams<{ id: string }>();
   const idPreset = params?.id || '';
 
   useEffect(() => {
     if (idPreset) {
+      //get data of preset
       isLoading.setValue(true);
       getOnePresetMiddleware(
         idPreset,
@@ -45,7 +46,18 @@ const UpdatePresetPage = () => {
   };
 
   const handleUpdatePreset = (data: PresetsValueProp) => {
-    console.log(data);
+    if (!idPreset) {
+      pushTo(PATH.presets);
+    }
+    isLoading.setValue(true);
+    updatePresetMiddleware(idPreset, data, (type: STATUS_RESPONSE, msg?: string) => {
+      if (type === STATUS_RESPONSE.SUCCESS) {
+        message.success(MESSAGE_NOTIFICATION.UPDATE_PRESET_SUCCESS);
+      } else {
+        message.error(msg);
+      }
+      isLoading.setValue(false);
+    });
   };
 
   return (
@@ -59,8 +71,7 @@ const UpdatePresetPage = () => {
         <PresetsEntryForm
           onSubmit={handleUpdatePreset}
           onCancel={handleCancel}
-          submitButtonStatus={submitButtonStatus.value}
-          presetsValue={presetValue}
+          presetValue={presetValue}
         />
       </div>
       {isLoading.value && <LoadingPageCustomize />}
