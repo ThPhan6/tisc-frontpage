@@ -31,6 +31,24 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_CONVERSION_ERROR: 'Delete the conversion error',
   UPDATE_CONVERSION_SUCCESS: 'Update the conversion successfully',
   UPDATE_CONVERSION_ERROR: 'Update the conversion error',
+
+  // option
+  CREATE_OPTION_SUCCESS: 'Create the option successfully',
+  CREATE_OPTION_ERROR: 'Create the option error',
+  DELETE_OPTION_SUCCESS: 'Delete the option successfully',
+  DELETE_OPTION_ERROR: 'Delete the option error',
+  UPDATE_OPTION_SUCCESS: 'Update the option successfully',
+  UPDATE_OPTION_ERROR: 'Update the option error',
+  GET_ONE_OPTION_ERROR: 'Get one the option error',
+
+  //preset
+  CREATE_PRESET_SUCCESS: 'Create the preset successfully',
+  CREATE_PRESET_ERROR: 'Create the preset error',
+  DELETE_PRESET_SUCCESS: 'Delete the preset successfully',
+  DELETE_PRESET_ERROR: 'Delete the preset error',
+  UPDATE_PRESET_SUCCESS: 'Update the preset successfully',
+  UPDATE_PRESET_ERROR: 'Update the preset error',
+  GET_ONE_PRESET_ERROR: 'Get one the preset error',
 };
 
 export const MESSAGE_TOOLTIP = {

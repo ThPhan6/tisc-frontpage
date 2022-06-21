@@ -13,6 +13,11 @@ export const PATH = {
   updateCategories: '/tisc/products/categories/update/:id',
 
   // basic
+  //preset
+  presets: '/tisc/products/basis/presets',
+  createPresets: '/tisc/products/basis/presets/create',
+  updatePresets: '/tisc/products/basis/presets/:id',
+
   // conversion
   conversions: '/tisc/products/basis/conversions',
   createConversions: '/tisc/products/basis/conversions/create',

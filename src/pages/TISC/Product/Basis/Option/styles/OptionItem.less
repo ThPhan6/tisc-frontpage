@@ -25,6 +25,11 @@
       > .ant-collapse-content-box) {
     padding: 0;
   }
+
+  :global(.ant-radio-input) {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .panel_header {
@@ -101,14 +106,35 @@
   width: 100%;
   padding-left: 16px;
   .element_input {
+    position: relative;
     display: flex;
     flex: 1;
     align-items: center;
     justify-content: space-between;
-    margin-top: 8px;
 
-    .image img {
+    .image_upload {
       margin-right: 12px;
+      padding: 6px;
+      cursor: pointer;
+
+      .image {
+        width: 36px;
+        padding-top: 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        cursor: pointer;
+      }
+
+      &__file_input {
+        input {
+          position: absolute;
+          z-index: 999;
+          // top: 222px;
+          font-weight: 300;
+          font-size: 9px;
+        }
+      }
     }
 
     .form {
