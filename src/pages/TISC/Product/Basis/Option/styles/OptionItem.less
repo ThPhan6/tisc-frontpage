@@ -101,14 +101,32 @@
   width: 100%;
   padding-left: 16px;
   .element_input {
+    position: relative;
     display: flex;
     flex: 1;
     align-items: center;
     justify-content: space-between;
-    margin-top: 8px;
 
-    .image img {
+    .image_upload {
+      position: relative;
       margin-right: 12px;
+      padding: 6px;
+      cursor: pointer;
+
+      img {
+        height: 36px;
+        cursor: pointer;
+      }
+
+      &__file_input {
+        input {
+          position: absolute;
+          z-index: 999;
+          // top: 222px;
+          font-weight: 300;
+          font-size: 9px;
+        }
+      }
     }
 
     .form {

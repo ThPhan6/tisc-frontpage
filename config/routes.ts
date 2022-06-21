@@ -112,7 +112,23 @@
           {
             path: '/tisc/products/basis/presets',
             name: 'preset',
-            component: './TISC/Product/Basis/Preset',
+            routes: [
+              {
+                path: '/tisc/products/basis/presets',
+                component: './TISC/Product/Basis/Preset',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/products/basis/presets/create',
+                hideInMenu: true,
+                component: './TISC/Product/Basis/Preset/CreatePresetPage',
+              },
+              {
+                path: '/tisc/products/basis/presets/:id',
+                hideInMenu: true,
+                component: './TISC/Product/Basis/Preset/UpdatePresetPage',
+              },
+            ],
           },
           {
             path: '/tisc/products/basis/options',

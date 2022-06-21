@@ -17,7 +17,7 @@ import styles from './Welcome.less';
 import { dataMenuSummary } from '@/constants/util';
 import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
 import { MenuSummary } from '@/components/MenuSummary';
-import { PresetsEntryForm } from './TISC/Product/Presets/components/PresetsEntryForm';
+import { PresetsEntryForm } from './TISC/Product/Basis/Preset/components/PresetsEntryForm';
 
 const Welcome: React.FC = () => {
   const optionsRadio = [

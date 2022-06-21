@@ -1,7 +1,7 @@
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
 import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
-import image from '@/assets/icons/image.png';
+import defaultImage from '@/assets/icons/photo.png';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
@@ -77,6 +77,41 @@ export const OptionItem: FC<IOptionItem> = (props) => {
     } else {
       setActiveImage(true);
     }
+  };
+
+  const getBase64 = (file: Blob): Promise<string> => {
+    return new Promise((resolve) => {
+      /// Make new FileReader
+      const reader = new FileReader();
+      /// Convert the file to base64 text
+      reader.readAsDataURL(file);
+      /// a file has been read successfully.
+      reader.onload = () => {
+        /// get base64
+        const baseURL = reader.result as string;
+        resolve(baseURL);
+      };
+    });
+  };
+
+  const handleChangeFileImage = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const file = e.target.files![0];
+    getBase64(file)
+      .then((base64Image) => {
+        const newSubItems = [...subOption.subs];
+        /// set base64 for sub option item
+        newSubItems[index] = {
+          ...newSubItems[index],
+          image: base64Image,
+        };
+        handleChangeSubItem({
+          ...subOption,
+          subs: newSubItems,
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   const addNewSubOptionItem = () => {
@@ -183,8 +218,23 @@ export const OptionItem: FC<IOptionItem> = (props) => {
             {subOption.subs.map((subItemOption, index) => (
               <div key={index} className={styles.element_input}>
                 {activeImage && (
-                  <div className={styles.image}>
-                    <img src={image} alt="image" />
+                  <div className={styles.image_upload}>
+                    <label htmlFor={`option_image_${index}`}>
+                      <img src={subItemOption.image || defaultImage} alt="image" />
+                      {/* <div
+                        style={{ backgroundImage: `url(${subItemOption.image || defaultImage})` }}
+                      ></div> */}
+                    </label>
+
+                    <div className={styles.image__file_input}>
+                      <input
+                        id={`option_image_${index}`}
+                        type="file"
+                        accept=".jpg, .jpeg, .png, .webp"
+                        style={{ display: 'none' }}
+                        onChange={(e) => handleChangeFileImage(e, index)}
+                      />
+                    </div>
                   </div>
                 )}
                 <div className={styles.form}>
