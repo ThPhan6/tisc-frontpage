@@ -10,22 +10,36 @@ import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg'
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
-import { message } from 'antd';
+import { message, Modal } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 const BasisPresetList: React.FC = () => {
   const tableRef = useRef<any>();
+  const { confirm } = Modal;
 
   const handleAction = (actionType: 'edit' | 'delete', id: string) => {
     if (actionType === 'edit') {
-      //redirect update page and get id of preset
       pushTo(PATH.updatePresets.replace(':id', id));
       return;
     }
-    deletePresetMiddleware(id, () => {
-      // after delete success -> update data in table and send mess
-      tableRef.current.reload();
-      message.success(MESSAGE_NOTIFICATION.DELETE_PRESET_SUCCESS);
+    confirm({
+      title: 'Are you sure delete this preset?',
+      icon: <ExclamationCircleOutlined />,
+      content: '',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        deletePresetMiddleware(id, () => {
+          tableRef.current.reload();
+          message.success(MESSAGE_NOTIFICATION.DELETE_PRESET_SUCCESS);
+        });
+      },
+      onCancel() {
+        pushTo(PATH.presets);
+      },
+      style: { top: '40%' },
     });
   };
 

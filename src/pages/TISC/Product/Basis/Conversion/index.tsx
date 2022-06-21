@@ -3,27 +3,43 @@ import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import type { ICustomTableColumnType } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
+import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { deleteConversionMiddleware, getProductBasisConversionPagination } from './services/api';
 import type { IBasisConversionListResponse, ISubBasisConversion } from './types';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
-import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
-import { message } from 'antd';
+import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
+import { message, Modal } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 const BasisConversionList: React.FC = () => {
   const tableRef = useRef<any>();
+  const { confirm } = Modal;
 
   const handleAction = (actionType: 'edit' | 'delete', id: string) => {
     if (actionType === 'edit') {
       pushTo(PATH.updateConversions.replace(':id', id));
       return;
     }
-    deleteConversionMiddleware(id, () => {
-      tableRef.current.reload();
-      message.success(MESSAGE_NOTIFICATION.DELETE_CONVERSION_SUCCESS);
+    confirm({
+      title: 'Are you sure delete this conversion?',
+      icon: <ExclamationCircleOutlined />,
+      content: '',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        deleteConversionMiddleware(id, () => {
+          tableRef.current.reload();
+          message.success(MESSAGE_NOTIFICATION.DELETE_CONVERSION_SUCCESS);
+        });
+      },
+      onCancel() {
+        pushTo(PATH.conversions);
+      },
+      style: { top: '40%' },
     });
   };
 
@@ -71,12 +87,12 @@ const BasisConversionList: React.FC = () => {
                 items={[
                   {
                     onClick: () => handleAction('edit', record.id),
-                    icon: <ViewIcon />,
+                    icon: <EditIcon />,
                     label: 'Edit',
                   },
                   {
                     onClick: () => handleAction('delete', record.id),
-                    icon: <EmailInviteIcon />,
+                    icon: <DeleteIcon />,
                     label: 'Delete',
                   },
                 ]}

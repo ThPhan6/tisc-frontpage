@@ -3,8 +3,8 @@ import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import type { ICustomTableColumnType } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
-import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
+import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
+import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { deleteCategoryMiddleware, getProductCategoryPagination } from './services/api';
 import type { ICategoryListResponse } from './types';
 // import styles from './styles/index.less';
@@ -12,24 +12,40 @@ import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg'
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import { STATUS_RESPONSE } from '@/constants/util';
-import { message } from 'antd';
+import { message, Modal } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 const CategoryList: React.FC = () => {
   const tableRef = useRef<any>();
+  const { confirm } = Modal;
 
   const handleActionCategory = (actionType: 'edit' | 'delete', id: string) => {
     if (actionType === 'edit') {
       pushTo(PATH.updateCategories.replace(':id', id));
       return;
     }
-    deleteCategoryMiddleware(id, (type: STATUS_RESPONSE, msg?: string) => {
-      if (type === STATUS_RESPONSE.SUCCESS) {
-        message.success(MESSAGE_NOTIFICATION.DELETE_CATEGORY_SUCCESS);
-        tableRef.current.reload();
-      } else {
-        message.error(msg);
-      }
+    confirm({
+      title: 'Are you sure delete this category?',
+      icon: <ExclamationCircleOutlined />,
+      content: '',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        deleteCategoryMiddleware(id, (type: STATUS_RESPONSE, msg?: string) => {
+          if (type === STATUS_RESPONSE.SUCCESS) {
+            message.success(MESSAGE_NOTIFICATION.DELETE_CATEGORY_SUCCESS);
+            tableRef.current.reload();
+          } else {
+            message.error(msg);
+          }
+        });
+      },
+      onCancel() {
+        pushTo(PATH.categories);
+      },
+      style: { top: '40%' },
     });
   };
 
@@ -75,12 +91,12 @@ const CategoryList: React.FC = () => {
                 items={[
                   {
                     onClick: () => handleActionCategory('edit', record.id),
-                    icon: <ViewIcon />,
+                    icon: <EditIcon />,
                     label: 'Edit',
                   },
                   {
                     onClick: () => handleActionCategory('delete', record.id),
-                    icon: <EmailInviteIcon />,
+                    icon: <DeleteIcon />,
                     label: 'Delete',
                   },
                 ]}

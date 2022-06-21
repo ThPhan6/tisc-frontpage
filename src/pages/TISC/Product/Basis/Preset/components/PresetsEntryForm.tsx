@@ -1,10 +1,14 @@
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { FC, useEffect, useState } from 'react';
-import { PresetItemValueProp, presetsValueDefault, PresetsValueProp } from '../../../Presets/types';
 import { PresetItem } from './PresetItem';
 import styles from '../styles/PresetsEntryForm.less';
-import { PresetsEntryFormProps } from '../types';
+import {
+  PresetItemValueProp,
+  PresetsEntryFormProps,
+  presetsValueDefault,
+  PresetsValueProp,
+} from '../types';
 
 export const PresetsEntryForm: FC<PresetsEntryFormProps> = ({
   onCancel,
@@ -66,7 +70,7 @@ export const PresetsEntryForm: FC<PresetsEntryFormProps> = ({
           <PresetItem
             key={index}
             handleOnClickDelete={() => handleOnClickDelete(index)}
-            onChangeValue={(value) => {
+            onChangeValue={(value: PresetItemValueProp) => {
               handleOnChangeValue(value, index);
             }}
             value={presetItem}
