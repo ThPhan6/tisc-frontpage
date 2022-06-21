@@ -100,7 +100,6 @@ export const OptionItem: FC<IOptionItem> = (props) => {
           ...newSubItems[index],
           image: base64Image,
         };
-        /// update sub option item after added new image
         handleChangeSubItem({
           ...subOption,
           subs: newSubItems,
