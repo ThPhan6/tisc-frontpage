@@ -13,7 +13,7 @@ import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg'
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { confirmDelete } from '@/helper/common';
-import CustomButton from '@/components/Button';
+import styles from '@/components/Table/styles/TableHeader.less';
 
 const BasisConversionList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -145,13 +145,8 @@ const BasisConversionList: React.FC = () => {
     <>
       <CustomTable
         rightAction={
-          <div style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createConversions)}>
-            <CustomButton
-              properties="circle"
-              size="small"
-              icon={<PlusIcon />}
-              variant="primaryDark"
-            />
+          <div className={styles.customButton} onClick={() => pushTo(PATH.createConversions)}>
+            <PlusIcon />
           </div>
         }
         title="CONVERSIONS"
