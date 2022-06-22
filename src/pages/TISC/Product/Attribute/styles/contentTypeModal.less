@@ -1,0 +1,80 @@
+@import (reference) '~antd/es/style/themes/index';
+
+.contentTypeModalWrapper {
+  .contentTypeFooter {
+    display: flex;
+    justify-content: right;
+    .contentTypeSubmitBtn {
+      border-radius: 12px;
+    }
+  }
+  :global(.ant-modal-body) {
+    padding: 0;
+  }
+  :global(.ant-modal-footer) {
+    height: 48px;
+    padding: 12px 16px;
+    border: 0;
+    box-shadow: inset 0 0.5px 0 #000;
+  }
+  :global(.ant-modal-header) {
+    height: 48px;
+    padding: 14px 24px;
+    border-bottom: 0;
+    box-shadow: inset 0 -0.5px 0 #000;
+  }
+  :global(.ant-tabs-nav) {
+    &::before {
+      height: 1px;
+      border-bottom: 0 !important;
+      box-shadow: inset 0 -0.5px 0 #000;
+    }
+  }
+  .contentTypeOption {
+    height: 600px;
+    max-height: calc(100vh - 200px);
+    overflow: hidden auto;
+  }
+  .contentTypeCollapse {
+    background-color: #fff;
+    :global(.ant-collapse-header) {
+      display: flex;
+      align-items: center;
+      padding: 9px 16px !important;
+      font-weight: 300;
+      font-size: 14px;
+      font-family: 'Roboto';
+      font-style: normal;
+      line-height: 22px;
+      letter-spacing: 0.02em;
+    }
+    :global(.basis-preset-option-group) {
+      display: flex;
+      align-items: center;
+      font-weight: 300;
+      font-size: 14px;
+      font-family: 'Roboto';
+      font-style: normal;
+      line-height: 22px;
+      letter-spacing: 0.02em;
+      :global(.count-number) {
+        margin-left: 12px;
+      }
+    }
+    :global(.count-number) {
+      margin-left: 8px;
+      font-weight: 300;
+    }
+    :global(.activated) {
+      font-weight: 500;
+    }
+    :global(.basis-conversion-group) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      svg {
+        margin: 0 12px;
+      }
+    }
+  }
+}

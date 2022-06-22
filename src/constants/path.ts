@@ -23,6 +23,10 @@ export const PATH = {
   createConversions: '/tisc/products/basis/conversions/create',
   updateConversions: '/tisc/products/basis/conversions/update/:id',
 
+  // attribute general
+  attributeGeneral: '/tisc/products/attributes/general',
+  attributeGeneralCreate: '/tisc/products/attributes/general/create',
+  attributeGeneralUpdate: '/tisc/products/attributes/general/:id',
   //
 };
 
