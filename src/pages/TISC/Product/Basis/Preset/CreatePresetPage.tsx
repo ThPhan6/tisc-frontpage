@@ -1,7 +1,7 @@
 import { TableHeader } from '@/components/Table/TableHeader';
 import { PresetsEntryForm } from './components/PresetsEntryForm';
 import styles from './styles/CreatePresetPage.less';
-import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-disabled-icon.svg';
+import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon.svg';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { useBoolean } from '@/helper/hook';
 import { pushTo } from '@/helper/history';
@@ -11,9 +11,11 @@ import { createPresetMiddleware } from './services/api';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import CustomButton from '@/components/Button';
 
 const CreatePresetPage = () => {
   const isLoading = useBoolean();
+  const submitButtonStatus = useBoolean(false);
 
   const handleCancel = () => {
     pushTo(PATH.presets);
@@ -24,8 +26,10 @@ const CreatePresetPage = () => {
     createPresetMiddleware(data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.CREATE_PRESET_SUCCESS);
+        submitButtonStatus.setValue(true);
         setTimeout(() => {
           pushTo(PATH.presets);
+          submitButtonStatus.setValue(false);
         }, 1000);
       } else {
         message.error(msg);
@@ -39,10 +43,14 @@ const CreatePresetPage = () => {
       <TableHeader
         customClass={styles.container__header}
         title={'PRESETS'}
-        rightAction={<PlusIcon />}
+        rightAction={<CustomButton disabled properties="circle" icon={<PlusIcon />} size="small" />}
       />
       <div className={styles.container__content}>
-        <PresetsEntryForm onSubmit={handleCreatePreset} onCancel={handleCancel} />
+        <PresetsEntryForm
+          onSubmit={handleCreatePreset}
+          onCancel={handleCancel}
+          submitButtonStatus={submitButtonStatus.value}
+        />
       </div>
       {isLoading.value && <LoadingPageCustomize />}
     </div>

@@ -1,4 +1,5 @@
-import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-disabled-icon.svg';
+import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon.svg';
+import CustomButton from '@/components/Button';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
@@ -75,7 +76,7 @@ const UpdateConversionPage = () => {
       <TableHeader
         customClass={styles.container__header}
         title={'CONVERSIONS'}
-        rightAction={<PlusIcon />}
+        rightAction={<CustomButton disabled properties="circle" icon={<PlusIcon />} size="small" />}
       />
       <div className={styles.container__content}>
         <ConversionsEntryForm
