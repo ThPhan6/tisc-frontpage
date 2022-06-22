@@ -1,6 +1,6 @@
 import { TableHeader } from '@/components/Table/TableHeader';
 import styles from './styles/CreateCategoryPage.less';
-import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon.svg';
+import { ReactComponent as PlusIcon } from '@/assets/icons/plus-dark-icon.svg';
 import { CategoryEntryForm } from './components/CategoryEntryForm';
 import { CategoryBodyProp, SubcategoryValueProp } from './types';
 import { createCategoryMiddleware } from './services/api';
@@ -12,7 +12,6 @@ import LoadingPageCustomize from '@/components/LoadingPage';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import { useState } from 'react';
-import CustomButton from '@/components/Button';
 
 const CreateCategoryPage = () => {
   const [categoryValue, setCategoryValue] = useState<{
@@ -53,7 +52,11 @@ const CreateCategoryPage = () => {
       <TableHeader
         customClass={styles.container__header}
         title={'CATEGORIES'}
-        rightAction={<CustomButton disabled properties="circle" icon={<PlusIcon />} size="small" />}
+        rightAction={
+          <div className={styles.customButtonDisable}>
+            <PlusIcon />
+          </div>
+        }
       />
       <div className={styles.container__content}>
         <CategoryEntryForm

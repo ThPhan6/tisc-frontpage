@@ -13,7 +13,7 @@ import { PATH } from '@/constants/path';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { confirmDelete } from '@/helper/common';
-import CustomButton from '@/components/Button';
+import styles from '@/components/Table/styles/TableHeader.less';
 
 const BasisPresetList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -163,13 +163,8 @@ const BasisPresetList: React.FC = () => {
     <>
       <CustomTable
         rightAction={
-          <div style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createPresets)}>
-            <CustomButton
-              properties="circle"
-              size="small"
-              icon={<PlusIcon />}
-              variant="primaryDark"
-            />
+          <div className={styles.customButton} onClick={() => pushTo(PATH.createPresets)}>
+            <PlusIcon />
           </div>
         }
         title="PRESETS"
