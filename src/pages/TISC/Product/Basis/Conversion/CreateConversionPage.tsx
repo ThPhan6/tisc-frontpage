@@ -49,7 +49,7 @@ const CreateConversionPage = () => {
         customClass={styles.container__header}
         title={'CONVERSIONS'}
         rightAction={
-          <div className={styles.customButtonDisable} onClick={() => pushTo(PATH.createPresets)}>
+          <div className={styles.customButtonDisable}>
             <PlusIcon />
           </div>
         }

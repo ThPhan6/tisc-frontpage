@@ -43,7 +43,7 @@ const CreatePresetPage = () => {
         customClass={styles.container__header}
         title={'PRESETS'}
         rightAction={
-          <div className={styles.customButtonDisable} onClick={() => pushTo(PATH.createPresets)}>
+          <div className={styles.customButtonDisable}>
             <PlusIcon />
           </div>
         }

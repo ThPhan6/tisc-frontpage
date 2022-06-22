@@ -79,7 +79,7 @@ const UpdateCategoryPage = () => {
         customClass={styles.container__header}
         title={'CATEGORIES'}
         rightAction={
-          <div className={styles.customButtonDisable} onClick={() => pushTo(PATH.createPresets)}>
+          <div className={styles.customButtonDisable}>
             <PlusIcon />
           </div>
         }
