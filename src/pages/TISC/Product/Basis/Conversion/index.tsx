@@ -8,11 +8,12 @@ import { deleteConversionMiddleware, getProductBasisConversionPagination } from 
 import type { IBasisConversionListResponse, ISubBasisConversion } from './types';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
-import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
+import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { confirmDelete } from '@/helper/common';
+import CustomButton from '@/components/Button';
 
 const BasisConversionList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -145,7 +146,12 @@ const BasisConversionList: React.FC = () => {
       <CustomTable
         rightAction={
           <div style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createConversions)}>
-            <PlusIcon />
+            <CustomButton
+              properties="circle"
+              size="small"
+              icon={<PlusIcon />}
+              variant="primaryDark"
+            />
           </div>
         }
         title="CONVERSIONS"

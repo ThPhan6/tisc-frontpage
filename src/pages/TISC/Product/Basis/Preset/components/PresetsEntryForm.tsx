@@ -14,6 +14,7 @@ export const PresetsEntryForm: FC<PresetsEntryFormProps> = ({
   onCancel,
   onSubmit,
   presetValue,
+  submitButtonStatus,
 }) => {
   const [presetsValue, setPresetsValue] = useState<PresetsValueProp>(presetsValueDefault);
 
@@ -57,7 +58,11 @@ export const PresetsEntryForm: FC<PresetsEntryFormProps> = ({
   };
 
   return (
-    <EntryFormWrapper handleSubmit={handleSubmit} handleCancel={handleCancel}>
+    <EntryFormWrapper
+      handleSubmit={handleSubmit}
+      handleCancel={handleCancel}
+      submitButtonStatus={submitButtonStatus}
+    >
       <FormNameInput
         placeholder="type group name"
         title="Preset group"

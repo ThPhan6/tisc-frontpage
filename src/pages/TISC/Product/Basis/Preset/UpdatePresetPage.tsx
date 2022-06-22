@@ -1,7 +1,7 @@
 import { TableHeader } from '@/components/Table/TableHeader';
 import { PresetsEntryForm } from './components/PresetsEntryForm';
 import styles from './styles/CreatePresetPage.less';
-import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-disabled-icon.svg';
+import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon.svg';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { useBoolean } from '@/helper/hook';
 import { pushTo } from '@/helper/history';
@@ -13,12 +13,14 @@ import { getOnePresetMiddleware, updatePresetMiddleware } from './services/api';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import CustomButton from '@/components/Button';
 
 const UpdatePresetPage = () => {
   const [presetValue, setPresetValue] = useState<PresetsValueProp>(presetsValueDefault);
   const isLoading = useBoolean();
   const params = useParams<{ id: string }>();
   const idPreset = params?.id || '';
+  const submitButtonStatus = useBoolean(false);
 
   useEffect(() => {
     if (idPreset) {
@@ -53,6 +55,10 @@ const UpdatePresetPage = () => {
     updatePresetMiddleware(idPreset, data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.UPDATE_PRESET_SUCCESS);
+        submitButtonStatus.setValue(true);
+        setTimeout(() => {
+          submitButtonStatus.setValue(false);
+        }, 2000);
       } else {
         message.error(msg);
       }
@@ -65,13 +71,14 @@ const UpdatePresetPage = () => {
       <TableHeader
         customClass={styles.container__header}
         title={'PRESETS'}
-        rightAction={<PlusIcon />}
+        rightAction={<CustomButton disabled properties="circle" icon={<PlusIcon />} size="small" />}
       />
       <div className={styles.container__content}>
         <PresetsEntryForm
           onSubmit={handleUpdatePreset}
           onCancel={handleCancel}
           presetValue={presetValue}
+          submitButtonStatus={submitButtonStatus.value}
         />
       </div>
       {isLoading.value && <LoadingPageCustomize />}

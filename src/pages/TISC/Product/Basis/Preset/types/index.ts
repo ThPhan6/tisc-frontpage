@@ -63,4 +63,5 @@ export interface PresetsEntryFormProps {
   onCancel?: () => void;
   onSubmit?: (data: PresetsValueProp) => void;
   presetValue?: PresetsValueProp;
+  submitButtonStatus?: boolean;
 }

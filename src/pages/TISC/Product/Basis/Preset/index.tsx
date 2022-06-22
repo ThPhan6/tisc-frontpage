@@ -6,13 +6,14 @@ import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { deletePresetMiddleware, getProductBasisPresetPagination } from './services/api';
 import type { IBasisPresetListResponse, ISubBasisPreset } from './types';
-import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
+import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { confirmDelete } from '@/helper/common';
+import CustomButton from '@/components/Button';
 
 const BasisPresetList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -163,7 +164,12 @@ const BasisPresetList: React.FC = () => {
       <CustomTable
         rightAction={
           <div style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createPresets)}>
-            <PlusIcon />
+            <CustomButton
+              properties="circle"
+              size="small"
+              icon={<PlusIcon />}
+              variant="primaryDark"
+            />
           </div>
         }
         title="PRESETS"
