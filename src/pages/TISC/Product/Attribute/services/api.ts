@@ -1,6 +1,10 @@
 import { request } from 'umi';
 import { message } from 'antd';
-import type { IAttributeListResponse } from '../types';
+import type {
+  IAttributeListResponse,
+  IAttributeContentType,
+  // IAttributeForm,
+} from '../types';
 import type {
   IDataTableResponse,
   IPaginationRequest,
@@ -40,3 +44,27 @@ export async function getProductAttributePagination(
       message.error(error.message);
     });
 }
+
+export async function getProductAttributeContentType() {
+  return request<{ data: IAttributeContentType }>(`/api/attribute/content-type/get-list`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error.message);
+    });
+}
+
+// export async function createAttribute(params: IAttributeForm) {
+//   return request(`/api/attribute/content-type/get-list`, {
+//     method: 'GET',
+//   })
+//   .then((response) => {
+//     message.success(error.message);
+//   })
+//   .catch((error) => {
+//     message.error(error.message);
+//   });
+// }

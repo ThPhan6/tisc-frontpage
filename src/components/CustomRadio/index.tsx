@@ -15,9 +15,9 @@ export const CustomRadio: FC<CustomRadioProps> = ({
   onChange,
   inputPlaceholder = 'type here',
   containerClass,
+  value,
   ...props
 }) => {
-  const [radioValue, setRadioValue] = useState(defaultValue);
   const [inputValue, setInputValue] = useState('');
 
   const onChangeValue = (e: any) => {
@@ -28,17 +28,12 @@ export const CustomRadio: FC<CustomRadioProps> = ({
     if (onChange) {
       onChange({ ...newValue });
     }
-    setRadioValue({ ...newValue });
   };
 
   const onChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
       onChange({ value: 'other', label: e.target.value });
     }
-    setRadioValue({
-      value: 'other',
-      label: e.target.value,
-    });
     setInputValue(e.target.value);
   };
 
@@ -47,14 +42,14 @@ export const CustomRadio: FC<CustomRadioProps> = ({
       className={classNames(
         style['radio-container'],
         style[`radio-${isRadioList ? 'vertical' : direction}`],
-        isRadioList && style['radio-list'],
+        isRadioList ? style['radio-list'] : '',
         containerClass,
       )}
     >
       <Radio.Group
         {...props}
         onChange={onChangeValue}
-        value={radioValue?.value}
+        value={value}
         defaultValue={defaultValue?.value}
       >
         <Space direction={isRadioList ? 'vertical' : direction}>
@@ -71,7 +66,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
             </div>
           ))}
           {otherInput && (
-            <div className={isRadioList && style['other-field-radio-list']}>
+            <div className={isRadioList ? style['other-field-radio-list'] : ''}>
               <Radio value={'other'}>
                 <div className={style['input-wrapper']}>
                   Other{' '}
@@ -80,12 +75,11 @@ export const CustomRadio: FC<CustomRadioProps> = ({
                     placeholder={inputPlaceholder}
                     value={inputValue}
                     onChange={onChangeInputValue}
-                    onClick={() =>
-                      setRadioValue({
-                        value: 'other',
-                        label: inputValue,
-                      })
-                    }
+                    onClick={() => {
+                      if (onChange) {
+                        onChange({ value: 'other', label: inputValue });
+                      }
+                    }}
                   />
                 </div>
               </Radio>

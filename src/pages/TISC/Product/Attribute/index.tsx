@@ -6,7 +6,10 @@ import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { getProductAttributePagination } from './services/api';
 import { useLocation } from 'umi';
+import { pushTo } from '@/helper/history';
+import { PATH } from '@/constants/path';
 import { ATTRIBUTE_PATH_TO_TYPE } from './utils';
+import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
 
 import type { IAttributeListResponse, ISubAttribute } from './types';
 
@@ -118,12 +121,17 @@ const AttributeList: React.FC = () => {
   return (
     <>
       <CustomTable
-        title={ATTRIBUTE_PATH_TO_TYPE[location.pathname].name}
+        rightAction={
+          <div style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.attributeGeneralCreate)}>
+            <PlusIcon />
+          </div>
+        }
+        title={ATTRIBUTE_PATH_TO_TYPE[location.pathname].NAME}
         columns={MainColumns}
         ref={tableRef}
         fetchDataFunc={getProductAttributePagination}
         extraParams={{
-          type: ATTRIBUTE_PATH_TO_TYPE[location.pathname].type,
+          type: ATTRIBUTE_PATH_TO_TYPE[location.pathname].TYPE,
         }}
         multiSort={{
           name: 'group_order',
