@@ -1,12 +1,28 @@
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import { useState } from 'react';
-import { PresetItemValueProp, presetsValueDefault, PresetsValueProp } from '../types';
+import { FC, useEffect, useState } from 'react';
 import { PresetItem } from './PresetItem';
 import styles from '../styles/PresetsEntryForm.less';
+import {
+  PresetItemValueProp,
+  PresetsEntryFormProps,
+  presetsValueDefault,
+  PresetsValueProp,
+} from '../types';
 
-export const PresetsEntryForm = () => {
+export const PresetsEntryForm: FC<PresetsEntryFormProps> = ({
+  onCancel,
+  onSubmit,
+  presetValue,
+  submitButtonStatus,
+}) => {
   const [presetsValue, setPresetsValue] = useState<PresetsValueProp>(presetsValueDefault);
+
+  useEffect(() => {
+    if (presetValue) {
+      setPresetsValue({ ...presetValue });
+    }
+  }, [presetValue]);
 
   const handleOnChangePresetGroupName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPresetsValue({ ...presetsValue, name: e.target.value });
@@ -30,27 +46,36 @@ export const PresetsEntryForm = () => {
   };
 
   const handleSubmit = () => {
-    alert('Coming soon ');
+    if (onSubmit) {
+      onSubmit(presetsValue);
+    }
   };
 
   const handleCancel = () => {
-    alert('Coming soon ');
+    if (onCancel) {
+      onCancel();
+    }
   };
 
   return (
-    <EntryFormWrapper handleSubmit={handleSubmit} handleCancel={handleCancel}>
+    <EntryFormWrapper
+      handleSubmit={handleSubmit}
+      handleCancel={handleCancel}
+      submitButtonStatus={submitButtonStatus}
+    >
       <FormNameInput
         placeholder="type group name"
         title="Preset group"
         onChangeInput={handleOnChangePresetGroupName}
         HandleOnClickAddIcon={HandleOnClickAddIcon}
+        inputValue={presetsValue.name}
       />
       <div className={styles.itemPreset}>
         {presetsValue.subs.map((presetItem, index) => (
           <PresetItem
             key={index}
             handleOnClickDelete={() => handleOnClickDelete(index)}
-            onChangeValue={(value) => {
+            onChangeValue={(value: PresetItemValueProp) => {
               handleOnChangeValue(value, index);
             }}
             value={presetItem}

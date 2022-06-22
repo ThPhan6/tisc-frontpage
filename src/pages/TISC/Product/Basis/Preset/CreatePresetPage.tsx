@@ -1,36 +1,34 @@
 import { TableHeader } from '@/components/Table/TableHeader';
-import styles from './styles/CreateConversionPage.less';
+import { PresetsEntryForm } from './components/PresetsEntryForm';
+import styles from './styles/CreatePresetPage.less';
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon.svg';
-import { ConversionsEntryForm } from './components/ConversionsEntryForm';
-import { PATH } from '@/constants/path';
-import { pushTo } from '@/helper/history';
-import { useState } from 'react';
-import { ConversionValueProp } from './types';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { useBoolean } from '@/helper/hook';
+import { pushTo } from '@/helper/history';
+import { PATH } from '@/constants/path';
+import { PresetsValueProp } from './types';
+import { createPresetMiddleware } from './services/api';
 import { STATUS_RESPONSE } from '@/constants/util';
-import { createConversionMiddleware } from './services/api';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import CustomButton from '@/components/Button';
 
-const CreateConversionPage = () => {
-  const [conversionValue, setConversionValue] = useState<ConversionValueProp>({
-    name: '',
-    subs: [],
-  });
+const CreatePresetPage = () => {
   const isLoading = useBoolean();
-
   const submitButtonStatus = useBoolean(false);
 
-  const handleCreateConversion = (data: ConversionValueProp) => {
+  const handleCancel = () => {
+    pushTo(PATH.presets);
+  };
+
+  const handleCreatePreset = (data: PresetsValueProp) => {
     isLoading.setValue(true);
-    createConversionMiddleware(data, (type: STATUS_RESPONSE, msg?: string) => {
+    createPresetMiddleware(data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
-        message.success(MESSAGE_NOTIFICATION.CREATE_CONVERSION_SUCCESS);
+        message.success(MESSAGE_NOTIFICATION.CREATE_PRESET_SUCCESS);
         submitButtonStatus.setValue(true);
         setTimeout(() => {
-          pushTo(PATH.conversions);
+          pushTo(PATH.presets);
           submitButtonStatus.setValue(false);
         }, 1000);
       } else {
@@ -40,24 +38,18 @@ const CreateConversionPage = () => {
     });
   };
 
-  const handleCancel = () => {
-    pushTo(PATH.conversions);
-  };
-
   return (
     <div className={styles.container}>
       <TableHeader
         customClass={styles.container__header}
-        title={'CONVERSIONS'}
+        title={'PRESETS'}
         rightAction={<CustomButton disabled properties="circle" icon={<PlusIcon />} size="small" />}
       />
       <div className={styles.container__content}>
-        <ConversionsEntryForm
-          submitButtonStatus={submitButtonStatus.value}
-          conversionValue={conversionValue}
-          setConversionValue={setConversionValue}
-          onSubmit={handleCreateConversion}
+        <PresetsEntryForm
+          onSubmit={handleCreatePreset}
           onCancel={handleCancel}
+          submitButtonStatus={submitButtonStatus.value}
         />
       </div>
       {isLoading.value && <LoadingPageCustomize />}
@@ -65,4 +57,4 @@ const CreateConversionPage = () => {
   );
 };
 
-export default CreateConversionPage;
+export default CreatePresetPage;

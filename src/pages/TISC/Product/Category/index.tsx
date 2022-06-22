@@ -3,17 +3,19 @@ import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import type { ICustomTableColumnType } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
-import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
+import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
+import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { deleteCategoryMiddleware, getProductCategoryPagination } from './services/api';
 import type { ICategoryListResponse } from './types';
 // import styles from './styles/index.less';
-import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
+import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon.svg';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { confirmDelete } from '@/helper/common';
+import CustomButton from '@/components/Button';
 
 const CategoryList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -23,14 +25,23 @@ const CategoryList: React.FC = () => {
       pushTo(PATH.updateCategories.replace(':id', id));
       return;
     }
-    deleteCategoryMiddleware(id, (type: STATUS_RESPONSE, msg?: string) => {
-      if (type === STATUS_RESPONSE.SUCCESS) {
-        message.success(MESSAGE_NOTIFICATION.DELETE_CATEGORY_SUCCESS);
-        tableRef.current.reload();
-      } else {
-        message.error(msg);
-      }
-    });
+
+    const onOk = () => {
+      deleteCategoryMiddleware(id, (type: STATUS_RESPONSE, msg?: string) => {
+        if (type === STATUS_RESPONSE.SUCCESS) {
+          message.success(MESSAGE_NOTIFICATION.DELETE_CATEGORY_SUCCESS);
+          tableRef.current.reload();
+        } else {
+          message.error(msg);
+        }
+      });
+    };
+
+    const onCancel = () => {
+      pushTo(PATH.categories);
+    };
+
+    confirmDelete(onOk, onCancel);
   };
 
   const MainColumns: ICustomTableColumnType<ICategoryListResponse>[] = [
@@ -75,12 +86,12 @@ const CategoryList: React.FC = () => {
                 items={[
                   {
                     onClick: () => handleActionCategory('edit', record.id),
-                    icon: <ViewIcon />,
+                    icon: <EditIcon />,
                     label: 'Edit',
                   },
                   {
                     onClick: () => handleActionCategory('delete', record.id),
-                    icon: <EmailInviteIcon />,
+                    icon: <DeleteIcon />,
                     label: 'Delete',
                   },
                 ]}
@@ -154,7 +165,12 @@ const CategoryList: React.FC = () => {
       <CustomTable
         rightAction={
           <div style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createCategories)}>
-            <PlusIcon />
+            <CustomButton
+              properties="circle"
+              size="small"
+              icon={<PlusIcon />}
+              variant="primaryDark"
+            />
           </div>
         }
         title="CATEGORIES"
