@@ -10,37 +10,31 @@ import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg'
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
-import { message, Modal } from 'antd';
+import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { confirmDelete } from '@/helper/common';
 
 const BasisPresetList: React.FC = () => {
   const tableRef = useRef<any>();
-  const { confirm } = Modal;
 
   const handleAction = (actionType: 'edit' | 'delete', id: string) => {
     if (actionType === 'edit') {
       pushTo(PATH.updatePresets.replace(':id', id));
       return;
     }
-    confirm({
-      title: 'Are you sure delete this preset?',
-      icon: <ExclamationCircleOutlined />,
-      content: '',
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
-      onOk() {
-        deletePresetMiddleware(id, () => {
-          tableRef.current.reload();
-          message.success(MESSAGE_NOTIFICATION.DELETE_PRESET_SUCCESS);
-        });
-      },
-      onCancel() {
-        pushTo(PATH.presets);
-      },
-      style: { top: '40%' },
-    });
+
+    const onOk = () => {
+      deletePresetMiddleware(id, () => {
+        tableRef.current.reload();
+        message.success(MESSAGE_NOTIFICATION.DELETE_PRESET_SUCCESS);
+      });
+    };
+
+    const onCancel = () => {
+      pushTo(PATH.presets);
+    };
+
+    confirmDelete(onOk, onCancel);
   };
 
   const SameColumns: ICustomTableColumnType<any>[] = [

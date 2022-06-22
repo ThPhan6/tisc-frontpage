@@ -12,41 +12,35 @@ import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg'
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import { STATUS_RESPONSE } from '@/constants/util';
-import { message, Modal } from 'antd';
+import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { confirmDelete } from '@/helper/common';
 
 const CategoryList: React.FC = () => {
   const tableRef = useRef<any>();
-  const { confirm } = Modal;
 
   const handleActionCategory = (actionType: 'edit' | 'delete', id: string) => {
     if (actionType === 'edit') {
       pushTo(PATH.updateCategories.replace(':id', id));
       return;
     }
-    confirm({
-      title: 'Are you sure delete this category?',
-      icon: <ExclamationCircleOutlined />,
-      content: '',
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
-      onOk() {
-        deleteCategoryMiddleware(id, (type: STATUS_RESPONSE, msg?: string) => {
-          if (type === STATUS_RESPONSE.SUCCESS) {
-            message.success(MESSAGE_NOTIFICATION.DELETE_CATEGORY_SUCCESS);
-            tableRef.current.reload();
-          } else {
-            message.error(msg);
-          }
-        });
-      },
-      onCancel() {
-        pushTo(PATH.categories);
-      },
-      style: { top: '40%' },
-    });
+
+    const onOk = () => {
+      deleteCategoryMiddleware(id, (type: STATUS_RESPONSE, msg?: string) => {
+        if (type === STATUS_RESPONSE.SUCCESS) {
+          message.success(MESSAGE_NOTIFICATION.DELETE_CATEGORY_SUCCESS);
+          tableRef.current.reload();
+        } else {
+          message.error(msg);
+        }
+      });
+    };
+
+    const onCancel = () => {
+      pushTo(PATH.categories);
+    };
+
+    confirmDelete(onOk, onCancel);
   };
 
   const MainColumns: ICustomTableColumnType<ICategoryListResponse>[] = [
