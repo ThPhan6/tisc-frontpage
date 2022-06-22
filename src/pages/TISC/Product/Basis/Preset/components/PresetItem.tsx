@@ -5,16 +5,16 @@ import classNames from 'classnames';
 import { isEmpty, isEqual } from 'lodash';
 import { FC, useEffect, useState } from 'react';
 import styles from '../styles/PresetItem.less';
+import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
+import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
+import { Collapse } from 'antd';
 import {
   PresetElementInputProp,
   PresetItemProps,
   PresetItemValueProp,
   presetsValueDefault,
   subPresetDefaultValue,
-} from '../../../Presets/types';
-import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
-import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
-import { Collapse } from 'antd';
+} from '../types';
 
 const PresetElementInput: FC<PresetElementInputProp> = ({ order, onChange, value }) => {
   return (

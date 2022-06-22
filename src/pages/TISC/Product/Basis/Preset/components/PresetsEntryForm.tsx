@@ -1,15 +1,20 @@
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { FC, useEffect, useState } from 'react';
-import { PresetItemValueProp, presetsValueDefault, PresetsValueProp } from '../../../Presets/types';
 import { PresetItem } from './PresetItem';
 import styles from '../styles/PresetsEntryForm.less';
-import { PresetsEntryFormProps } from '../types';
+import {
+  PresetItemValueProp,
+  PresetsEntryFormProps,
+  presetsValueDefault,
+  PresetsValueProp,
+} from '../types';
 
 export const PresetsEntryForm: FC<PresetsEntryFormProps> = ({
   onCancel,
   onSubmit,
   presetValue,
+  submitButtonStatus,
 }) => {
   const [presetsValue, setPresetsValue] = useState<PresetsValueProp>(presetsValueDefault);
 
@@ -53,7 +58,11 @@ export const PresetsEntryForm: FC<PresetsEntryFormProps> = ({
   };
 
   return (
-    <EntryFormWrapper handleSubmit={handleSubmit} handleCancel={handleCancel}>
+    <EntryFormWrapper
+      handleSubmit={handleSubmit}
+      handleCancel={handleCancel}
+      submitButtonStatus={submitButtonStatus}
+    >
       <FormNameInput
         placeholder="type group name"
         title="Preset group"
@@ -66,7 +75,7 @@ export const PresetsEntryForm: FC<PresetsEntryFormProps> = ({
           <PresetItem
             key={index}
             handleOnClickDelete={() => handleOnClickDelete(index)}
-            onChangeValue={(value) => {
+            onChangeValue={(value: PresetItemValueProp) => {
               handleOnChangeValue(value, index);
             }}
             value={presetItem}

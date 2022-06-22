@@ -24,6 +24,15 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_CATEGORY_SUCCESS: 'Update the category successfully',
   UPDATE_CATEGORY_ERROR: 'Update the category error',
 
+  // ATTRIBUTE
+  CREATE_ATTRIBUTE_SUCCESS: 'Create attribute successfully',
+  UPDATE_ATTRIBUTE_SUCCESS: 'Update attribute successfully',
+  DELETE_ATTRIBUTE_SUCCESS: 'DELETE attribute successfully',
+  CREATE_ATTRIBUTE_ERROR: 'Error when create attribute',
+  UPDATE_ATTRIBUTE_ERROR: 'Error when create attribute',
+  DELETE_ATTRIBUTE_ERROR: 'Error when create attribute',
+  GET_ONE_ATTRIBUTE_ERROR: 'Error when get attribute data',
+
   // Conversion
   CREATE_CONVERSION_SUCCESS: 'Create the conversion successfully',
   CREATE_CONVERSION_ERROR: 'Create the conversion error',

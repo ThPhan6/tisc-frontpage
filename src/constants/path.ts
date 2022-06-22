@@ -27,6 +27,11 @@ export const PATH = {
   options: '/tisc/products/basis/options',
   createOptions: '/tisc/products/basis/options/create',
   updateOptions: '/tisc/products/basis/options/update/:id',
+  // attribute general
+  attributeGeneral: '/tisc/products/attributes/general',
+  attributeGeneralCreate: '/tisc/products/attributes/general/create',
+  attributeGeneralUpdate: '/tisc/products/attributes/general/:id',
+  //
 };
 
 export const PUBLIC_PATH = [PATH.landingPage, PATH.resetPassword];

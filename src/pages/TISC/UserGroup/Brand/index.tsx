@@ -54,8 +54,8 @@ const BrandList: React.FC = () => {
     { title: 'Coverages', dataIndex: 'coverages' },
     { title: 'Categories', dataIndex: 'categories' },
     { title: 'Collections', dataIndex: 'collections' },
-    { title: 'Collections', dataIndex: 'cards' },
-    { title: 'Collections', dataIndex: 'products' },
+    { title: 'Cards', dataIndex: 'cards' },
+    { title: 'Products', dataIndex: 'products' },
     {
       title: 'Assign Team',
       dataIndex: 'assign_team',
@@ -112,7 +112,6 @@ const BrandList: React.FC = () => {
         <MenuSummary
           containerClass={styles.customMenuSummary}
           menuSummaryData={dataMenuSummary.leftData}
-          typeMenuData={dataMenuSummary.projectData}
           typeMenu="project"
         />
       )}

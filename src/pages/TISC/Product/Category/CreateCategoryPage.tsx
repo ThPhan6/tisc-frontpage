@@ -1,6 +1,6 @@
 import { TableHeader } from '@/components/Table/TableHeader';
 import styles from './styles/CreateCategoryPage.less';
-import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-disabled-icon.svg';
+import { ReactComponent as PlusIcon } from '@/assets/icons/plus-dark-icon.svg';
 import { CategoryEntryForm } from './components/CategoryEntryForm';
 import { CategoryBodyProp, SubcategoryValueProp } from './types';
 import { createCategoryMiddleware } from './services/api';
@@ -52,7 +52,11 @@ const CreateCategoryPage = () => {
       <TableHeader
         customClass={styles.container__header}
         title={'CATEGORIES'}
-        rightAction={<PlusIcon />}
+        rightAction={
+          <div className={styles.customButtonDisable}>
+            <PlusIcon />
+          </div>
+        }
       />
       <div className={styles.container__content}>
         <CategoryEntryForm

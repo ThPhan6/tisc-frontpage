@@ -1,6 +1,6 @@
 import { TableHeader } from '@/components/Table/TableHeader';
 import styles from './styles/CreateConversionPage.less';
-import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-disabled-icon.svg';
+import { ReactComponent as PlusIcon } from '@/assets/icons/plus-dark-icon.svg';
 import { ConversionsEntryForm } from './components/ConversionsEntryForm';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
@@ -48,7 +48,11 @@ const CreateConversionPage = () => {
       <TableHeader
         customClass={styles.container__header}
         title={'CONVERSIONS'}
-        rightAction={<PlusIcon />}
+        rightAction={
+          <div className={styles.customButtonDisable}>
+            <PlusIcon />
+          </div>
+        }
       />
       <div className={styles.container__content}>
         <ConversionsEntryForm

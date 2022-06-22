@@ -102,7 +102,7 @@
                 component: './TISC/Product/Basis/Conversion/CreateConversionPage',
               },
               {
-                path: '/tisc/products/basis/conversions/update/:id',
+                path: '/tisc/products/basis/conversions/:id',
                 hideInMenu: true,
                 component: './TISC/Product/Basis/Conversion/UpdateConversionPage',
               },
@@ -156,17 +156,65 @@
           {
             path: '/tisc/products/attributes/general',
             name: 'general',
-            component: './TISC/Product/Attribute',
+            routes: [
+              {
+                path: '/tisc/products/attributes/general',
+                component: './TISC/Product/Attribute',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/products/attributes/general/create',
+                hideInMenu: true,
+                component: './TISC/Product/Attribute/CreatePage',
+              },
+              {
+                path: '/tisc/products/attributes/general/:id',
+                hideInMenu: true,
+                component: './TISC/Product/Attribute/UpdatePage',
+              },
+            ],
           },
           {
             path: '/tisc/products/attributes/feature',
             name: 'feature',
-            component: './TISC/Product/Attribute',
+            routes: [
+              {
+                path: '/tisc/products/attributes/feature',
+                component: './TISC/Product/Attribute',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/products/attributes/feature/create',
+                hideInMenu: true,
+                component: './TISC/Product/Attribute/CreatePage',
+              },
+              {
+                path: '/tisc/products/attributes/feature/:id',
+                hideInMenu: true,
+                component: './TISC/Product/Attribute/UpdatePage',
+              },
+            ],
           },
           {
             path: '/tisc/products/attributes/specification',
             name: 'specification',
-            component: './TISC/Product/Attribute',
+            routes: [
+              {
+                path: '/tisc/products/attributes/specification',
+                component: './TISC/Product/Attribute',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/products/attributes/specification/create',
+                hideInMenu: true,
+                component: './TISC/Product/Attribute/CreatePage',
+              },
+              {
+                path: '/tisc/products/attributes/specification/:id',
+                hideInMenu: true,
+                component: './TISC/Product/Attribute/UpdatePage',
+              },
+            ],
           },
         ],
       },

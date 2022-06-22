@@ -10,8 +10,8 @@ interface ITableSummary {
 const TableSummary = ({ summary }: ITableSummary) => {
   return (
     <div className={classnames(styles.customPaginator, styles.tableSummary)}>
-      {summary.map((item) => (
-        <div className="item">
+      {summary.map((item, index) => (
+        <div className="item" key={index}>
           <BodyText level={6} customClass="name" fontFamily="Roboto">
             {item.name}
           </BodyText>
