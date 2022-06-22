@@ -15,7 +15,7 @@ import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { confirmDelete } from '@/helper/common';
-import CustomButton from '@/components/Button';
+import styles from '@/components/Table/styles/TableHeader.less';
 
 const CategoryList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -164,13 +164,8 @@ const CategoryList: React.FC = () => {
     <>
       <CustomTable
         rightAction={
-          <div style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createCategories)}>
-            <CustomButton
-              properties="circle"
-              size="small"
-              icon={<PlusIcon />}
-              variant="primaryDark"
-            />
+          <div className={styles.customButton} onClick={() => pushTo(PATH.createCategories)}>
+            <PlusIcon />
           </div>
         }
         title="CATEGORIES"
