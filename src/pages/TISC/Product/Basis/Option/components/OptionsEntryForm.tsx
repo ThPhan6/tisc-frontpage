@@ -18,6 +18,7 @@ const DEFAULT_OPTION: IBasisOptionForm = {
 
 const DEFAULT_SUB_OPTION: IBasisOptionSubForm = {
   name: '',
+  isUsingImage: false,
   subs: [],
 };
 
@@ -79,9 +80,11 @@ const OptionEntryForm: FC<IOptionEntryForm> = (props) => {
         {option.subs.map((subOption, index) => (
           <OptionItem
             key={index}
+            optionIndex={index}
             subOption={subOption}
             handleChangeSubItem={(changedSubs) => handleChangeSubItem(changedSubs, index)}
             handleDeleteSubOption={() => handleDeleteSubOption(index)}
+            isUsingImage={subOption.isUsingImage!}
           />
         ))}
       </div>
