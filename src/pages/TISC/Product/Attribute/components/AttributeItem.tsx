@@ -3,8 +3,7 @@ import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-rig
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { MainTitle, BodyText } from '@/components/Typography';
-// import { BodyText, MainTitle, Title } from '@/components/Typography';
-// import classNames from 'classnames';
+import { lowerCase } from 'lodash';
 import type { FC } from 'react';
 import styles from '../styles/attributeItem.less';
 import type { IAttributeSubForm } from '../types';
@@ -51,11 +50,11 @@ export const AttributeItem: FC<IAttributeItem> = ({
           <div className="group-content-type">
             <BodyText level={4}>Description :</BodyText>
             <BodyText level={5} fontFamily="Roboto" customClass="group-type-placeholder">
-              {item.content_type == 'conversions' ? (
+              {lowerCase(item.content_type!).indexOf('conversion') >= 0 ? (
                 <span className="basis-conversion-group">
                   {item.description_1}
                   <SwapIcon />
-                  {item.description_1}
+                  {item.description_2}
                 </span>
               ) : (
                 <span className="basis-conversion-group">{item.description}</span>

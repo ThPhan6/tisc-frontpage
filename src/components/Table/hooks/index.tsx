@@ -51,29 +51,27 @@ export const useCustomTable = (columns: ICustomTableColumnType<any>[]) => {
           className: `${noBoxShadow}`,
         },
       };
-
       if (column.isExpandable === undefined || column.isExpandable !== true) {
         return {
           ...column,
           title: formatTitleColumn(column),
-          render: column.render
-            ? column.render
-            : /* eslint-disable @typescript-eslint/no-unused-vars */
-              (value: any, _record: any) => {
-                return {
-                  ...cellClassName,
-                  children: value,
-                };
-              },
+          render: (value: any, record: any, index: any) => {
+            return {
+              ...cellClassName,
+              children: column.render ? column.render(value, record, index) : value,
+            };
+          },
         };
       }
       return {
         ...column,
         /* eslint-disable @typescript-eslint/no-unused-vars */
-        render: (value: any, record: any) => {
+        render: (value: any, record: any, index: any) => {
           return {
             ...cellClassName,
-            children: column.render ? column.render : renderExpandedColumn(value, record),
+            children: column.render
+              ? column.render(value, record, index)
+              : renderExpandedColumn(value, record),
           };
         },
         title: formatTitleColumn(column),

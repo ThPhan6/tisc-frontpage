@@ -3,22 +3,34 @@ import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import type { ICustomTableColumnType } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
-import { getProductAttributePagination } from './services/api';
-import { useLocation } from 'umi';
+import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
+import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
+import { getProductAttributePagination, deleteAttribute } from './services/api';
 import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
-import { ATTRIBUTE_PATH_TO_TYPE } from './utils';
+import { useAttributeLocation } from './hooks/location';
+import { confirmDelete } from '@/helper/common';
 import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
+import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 
 import type { IAttributeListResponse, ISubAttribute } from './types';
 
 const AttributeList: React.FC = () => {
   const tableRef = useRef<any>();
-  const location = useLocation();
-  const comingSoon = () => {
-    alert('Coming Soon!');
+  const { activePath, attributeLocation } = useAttributeLocation();
+
+  const handleUpdateAttribute = (id: string) => {
+    pushTo(`${activePath}/${id}`);
   };
+  const handleDeleteAttribute = (id: string) => {
+    confirmDelete(() => {
+      deleteAttribute(id).then((isSuccess) => {
+        if (isSuccess) {
+          tableRef.current.reload();
+        }
+      });
+    });
+  };
+
   const MainColumns: ICustomTableColumnType<IAttributeListResponse>[] = [
     {
       title: 'Attribute Group',
@@ -47,7 +59,7 @@ const AttributeList: React.FC = () => {
     },
     {
       title: 'Description',
-      dataIndex: 'second_formula',
+      dataIndex: 'description',
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
@@ -55,7 +67,7 @@ const AttributeList: React.FC = () => {
       dataIndex: 'action',
       align: 'center',
       width: '5%',
-      render: () => {
+      render: (_value, record) => {
         return (
           <HeaderDropdown
             arrow={true}
@@ -63,9 +75,14 @@ const AttributeList: React.FC = () => {
               <MenuHeaderDropdown
                 items={[
                   {
-                    onClick: comingSoon,
-                    icon: <ViewIcon />,
+                    onClick: () => handleUpdateAttribute(record.id),
+                    icon: <EditIcon />,
                     label: 'Edit',
+                  },
+                  {
+                    onClick: () => handleDeleteAttribute(record.id),
+                    icon: <DeleteIcon />,
+                    label: 'Delete',
                   },
                 ]}
               />
@@ -89,7 +106,6 @@ const AttributeList: React.FC = () => {
       title: 'Attribute Name',
       dataIndex: 'name',
       width: 150,
-      isExpandable: true,
       noBoxShadow: true,
     },
     {
@@ -100,8 +116,20 @@ const AttributeList: React.FC = () => {
     },
     {
       title: 'Description',
-      dataIndex: 'second_formula',
+      dataIndex: 'description',
       noBoxShadow: true,
+      render: (value, record) => {
+        if (record.description_1) {
+          return (
+            <span className="basis-conversion-group">
+              {record.description_1}
+              <SwapIcon />
+              {record.description_2}
+            </span>
+          );
+        }
+        return value;
+      },
     },
     {
       title: 'Count',
@@ -122,16 +150,16 @@ const AttributeList: React.FC = () => {
     <>
       <CustomTable
         rightAction={
-          <div style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.attributeGeneralCreate)}>
+          <div style={{ cursor: 'pointer' }} onClick={() => pushTo(`${activePath}/create`)}>
             <PlusIcon />
           </div>
         }
-        title={ATTRIBUTE_PATH_TO_TYPE[location.pathname].NAME}
+        title={attributeLocation.NAME}
         columns={MainColumns}
         ref={tableRef}
         fetchDataFunc={getProductAttributePagination}
         extraParams={{
-          type: ATTRIBUTE_PATH_TO_TYPE[location.pathname].TYPE,
+          type: attributeLocation.TYPE,
         }}
         multiSort={{
           name: 'group_order',

@@ -6,7 +6,7 @@ import CustomButton from '@/components/Button';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
-import { snakeCase, isEmpty } from 'lodash';
+import { snakeCase, isEmpty, isUndefined, lowerCase } from 'lodash';
 import { SPECIFICATION_TYPE } from '../utils';
 
 import type { RadioValue } from '@/components/CustomRadio/types';
@@ -43,9 +43,33 @@ interface IContentTypeOption {
 const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
   const { data, type, selectedOption, setSelectedOption } = props;
   /// default open content type dropdown
-  const [activeKey, setActiveKey] = useState<string | string[]>(
-    selectedOption.activeKey ? [selectedOption.activeKey] : [],
-  );
+  let selectedKeys: string | string[] = [];
+  /// active key for conversions
+  if (type == 'conversions') {
+    const conversions = [...data] as IBasisConvention[];
+    conversions.forEach((conversion) => {
+      const selected = conversion.subs.find((sub) => {
+        return sub.id === selectedOption.basis_id;
+      });
+      if (selected) {
+        selectedKeys = [snakeCase(conversion.name)];
+      }
+    });
+  }
+  /// active key for presets and options
+  if (type === 'presets' || type === 'options') {
+    const presetOptions = [...data] as IBasisConvention[];
+    presetOptions.forEach((presetOption) => {
+      const selected = presetOption.subs.find((sub) => {
+        return sub.id === selectedOption.basis_id;
+      });
+      if (selected) {
+        selectedKeys = [snakeCase(presetOption.name)];
+      }
+    });
+  }
+
+  const [activeKey, setActiveKey] = useState<string | string[]>(selectedKeys);
 
   const formatConventionGroup = (items: IBasisConventionOption[]): RadioValue[] => {
     return items.map((item) => {
@@ -85,7 +109,7 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
     });
   };
   //
-  const onChangeConversion = (basisId: string, selectedKey: string) => {
+  const onChangeConversion = (basisId: string) => {
     const conversions = [...data] as IBasisConvention[];
     conversions.forEach((conversion) => {
       const selected = conversion.subs.find((sub) => {
@@ -97,12 +121,11 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
           content_type: type,
           description_1: selected.name_1,
           description_2: selected.name_2,
-          activeKey: snakeCase(selectedKey),
         });
       }
     });
   };
-  const onChangePresetOption = (basisId: string, selectedKey: string) => {
+  const onChangePresetOption = (basisId: string) => {
     const presetOptions = [...data] as IBasisPresetOption[];
     presetOptions.forEach((presetOption) => {
       const selected = presetOption.subs?.find((sub) => {
@@ -113,7 +136,6 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
           basis_id: basisId,
           content_type: type,
           description: selected.name,
-          activeKey: snakeCase(selectedKey),
         });
       }
     });
@@ -178,9 +200,9 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
               value={selectedOption.basis_id}
               onChange={(radioValue) => {
                 if (type === 'conversions') {
-                  return onChangeConversion(radioValue.value, option.name);
+                  return onChangeConversion(radioValue.value);
                 }
-                return onChangePresetOption(radioValue.value, option.name);
+                return onChangePresetOption(radioValue.value);
               }}
               isRadioList
             />
@@ -215,13 +237,13 @@ const ContentTypeModal: React.FC<IContentTypeModal> = (props) => {
   /// default selected option
   const [selectedOption, setSelectedOption] = useState<Omit<IAttributeSubForm, 'id' | 'name'>>({
     basis_id: subAttribute.basis_id,
-    activeKey: subAttribute.activeKey,
   });
   /// set active tab
   let selectedTab = listTab[0];
-  if (subAttribute.content_type) {
+  console.log('subAttribute', subAttribute);
+  if (!isUndefined(subAttribute.content_type)) {
     const selected = listTab.find((tab) => {
-      return tab.key === subAttribute.content_type;
+      return tab.key.indexOf(lowerCase(subAttribute.content_type!)) >= 0;
     });
     if (selected) {
       selectedTab = selected;

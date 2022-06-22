@@ -53,6 +53,7 @@ export interface IAttributeSubForm {
 }
 export interface IAttributeForm {
   id?: string;
+  type?: number;
   name: string;
   subs: IAttributeSubForm[];
 }

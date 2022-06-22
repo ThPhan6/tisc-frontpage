@@ -1,6 +1,7 @@
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import type { FC, useState, useEffect } from 'react';
+import type { FC } from 'react';
+import { useState, useEffect } from 'react';
 import { AttributeItem } from './AttributeItem';
 import ContentTypeModal from './ContentTypeModal';
 import { getProductAttributeContentType } from '../services/api';
@@ -8,21 +9,18 @@ import type { IAttributeForm, IAttributeSubForm, IAttributeContentType } from '.
 import styles from '../styles/attributeEntryForm.less';
 
 interface IAttributeEntryForm {
-  attribute?: IAttributeForm;
   type: number;
   submitButtonStatus: any;
   onSubmit: (data: IAttributeForm) => void;
   onCancel: () => void;
+  data: IAttributeForm;
+  setData: (data: IAttributeForm) => void;
 }
 export interface ISelectedItem {
   subAttribute: IAttributeSubForm;
   index: number;
 }
 
-const DEFAULT_ATTRIBUTE: IAttributeForm = {
-  name: '',
-  subs: [],
-};
 const DEFAULT_SUB_ATTRIBUTE: IAttributeSubForm = {
   name: '',
   basis_id: '',
@@ -38,8 +36,7 @@ const DEFAULT_SELECTED_ATTRIBUTE: ISelectedItem = {
 // submitButtonStatus,
 
 const AttributeEntryForm: FC<IAttributeEntryForm> = (props) => {
-  const { attribute, type, submitButtonStatus, onSubmit, onCancel } = props;
-  const [data, setData] = useState<IAttributeForm>(attribute ?? DEFAULT_ATTRIBUTE);
+  const { type, submitButtonStatus, onSubmit, onCancel, data, setData } = props;
   // for content type modal
   const [visible, setVisible] = useState(false);
   // for content type data
@@ -136,6 +133,7 @@ const AttributeEntryForm: FC<IAttributeEntryForm> = (props) => {
     });
     onSubmit({
       ...data,
+      type: type,
       subs: newSubs,
     });
   };
