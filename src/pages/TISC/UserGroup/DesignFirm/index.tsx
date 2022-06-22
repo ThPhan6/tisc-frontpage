@@ -10,7 +10,7 @@ import type { IDesignFirmListResponse } from './types';
 import styles from './styles/index.less';
 import { PageContainer } from '@ant-design/pro-layout';
 import { MenuSummary } from '@/components/MenuSummary';
-import { dataMenuSummary } from '@/constants/util';
+import { dataMenuFirm } from '@/constants/util';
 
 const DesignFirmList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -82,8 +82,7 @@ const DesignFirmList: React.FC = () => {
       pageHeaderRender={() => (
         <MenuSummary
           containerClass={styles.customMenuSummary}
-          menuSummaryData={dataMenuSummary.leftData}
-          typeMenuData={dataMenuSummary.subscriptionData}
+          menuSummaryData={dataMenuFirm.leftData}
           typeMenu="subscription"
         />
       )}
