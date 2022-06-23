@@ -14,6 +14,12 @@
 }
 .radio-container {
   .set-checked-color(@primary-color-dark);
+
+  .panel_radio {
+    width: 100%;
+    cursor: pointer;
+  }
+
   :global(.ant-radio-wrapper) {
     color: @mono-color;
     line-height: 22px;
@@ -31,12 +37,14 @@
       }
     }
   }
-
   :global(.ant-space-item) {
     display: flex;
     align-items: center;
     height: 32px;
     margin-left: 16px;
+  }
+  :global(input[type='radio']) {
+    display: none;
   }
 }
 
