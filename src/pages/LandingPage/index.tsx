@@ -26,6 +26,7 @@ import { redirectAfterLogin } from '@/helper/utils';
 import { AboutModal } from './components/AboutModal';
 import { ContactModal } from './components/ContactModal';
 import { NoticeModal } from './components/NoticeModal';
+import { PoliciesModal } from './components/PoliciesModal';
 
 const LandingPage = () => {
   const emailResetPwd = useQuery().get('email');
@@ -38,6 +39,7 @@ const LandingPage = () => {
   const openTiscAbout = useBoolean();
   const openTiscContact = useBoolean();
   const openTiscNotice = useBoolean();
+  const openTiscPolicies = useBoolean();
 
   useEffect(() => {
     if ((!emailResetPwd || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
@@ -96,18 +98,25 @@ const LandingPage = () => {
         openTiscAbout.setValue(true);
         openTiscContact.setValue(false);
         openTiscNotice.setValue(false);
+        openTiscPolicies.setValue(false);
         break;
       case 'Policies':
+        openTiscAbout.setValue(false);
+        openTiscContact.setValue(false);
+        openTiscNotice.setValue(false);
+        openTiscPolicies.setValue(true);
         break;
       case 'Contact':
         openTiscContact.setValue(true);
         openTiscAbout.setValue(false);
         openTiscNotice.setValue(false);
+        openTiscPolicies.setValue(false);
         break;
       case 'Browser Compatibility':
         openTiscAbout.setValue(false);
         openTiscNotice.setValue(true);
         openTiscContact.setValue(false);
+        openTiscPolicies.setValue(false);
       default:
         break;
     }
@@ -251,6 +260,7 @@ const LandingPage = () => {
       <AboutModal visible={openTiscAbout} theme="dark" />
       <ContactModal visible={openTiscContact} theme="dark" />
       <NoticeModal visible={openTiscNotice} theme="dark" />
+      <PoliciesModal visible={openTiscPolicies} theme="dark" />
       {emailResetPwd && (
         <ResetPasswordModal
           visible={openResetPwd}

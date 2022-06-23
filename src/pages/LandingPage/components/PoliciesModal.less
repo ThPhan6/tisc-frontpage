@@ -1,0 +1,41 @@
+.closeIcon {
+  path {
+    fill: #fff;
+  }
+}
+.content {
+  .header {
+    padding: 16px 0;
+    .customTab {
+      :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
+        display: grid;
+        grid-template-columns: repeat(3, 100%/3);
+        width: 100%;
+        border-bottom: 1px solid @mono-color-medium;
+      }
+      :global(.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn) {
+        color: #fff;
+        font-weight: 500;
+        font-size: 14px;
+        font-family: 'Roboto';
+        font-style: normal;
+        line-height: 22px;
+        letter-spacing: 0.02em;
+        background: @mono-color;
+        border-bottom: 1px solid #fff;
+      }
+      :global(.ant-tabs-tab-btn) {
+        color: #fff;
+        font-weight: 300;
+        font-size: 14px;
+        font-family: 'Roboto';
+        font-style: normal;
+        line-height: 22px;
+        letter-spacing: 0.02em;
+      }
+    }
+  }
+  .body {
+    padding: 24px 0;
+  }
+}
