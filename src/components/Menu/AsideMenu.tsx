@@ -1,7 +1,7 @@
 import type { HeaderViewProps } from '@ant-design/pro-layout/lib/Header';
 import { Link } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { MenuDataItem } from '@ant-design/pro-layout';
 import styles from './styles/aside.less';
 import { ReactComponent as DropdownIcon } from '../../assets/icons/drop-down-icon.svg';
@@ -10,7 +10,6 @@ import { ReactComponent as AlignLeftIcon } from '../../assets/icons/align-left-i
 import { ReactComponent as AlignRightIcon } from '../../assets/icons/align-right-icon.svg';
 import { renderIconByName } from './Icon/index';
 import { isEmpty } from 'lodash';
-// import umi, { useLocation, useRouteMatch } from 'umi';
 
 const renderMenuItem = (menu: MenuDataItem) => {
   return (
@@ -50,7 +49,6 @@ const renderSubMenu = (menu: MenuDataItem) => {
 };
 
 const AsideMenu: React.FC = (props: HeaderViewProps) => {
-  // const location = useLocation();
   const rootKeys: string[] = [];
   const defaultOpenKeys: string[] = [];
   const appProps: any = props.children;
@@ -73,12 +71,12 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
     );
   });
 
-  // useEffect(() => {
-  //   // console.log('changed location', location);
-  //   // console.log('openKeys', openKeys);
-  //   // console.log('routerMatch', routerMatch);
-  //   // console.log('umi', umi);
-  // }, [location]);
+  useEffect(() => {
+    setOpenKeys([
+      appProps.props.currentPathConfig.path,
+      ...appProps.props.currentPathConfig.pro_layout_parentKeys,
+    ]);
+  }, [appProps]);
 
   // Open only one submenu at a time
   const onOpenChange = (items: any) => {
