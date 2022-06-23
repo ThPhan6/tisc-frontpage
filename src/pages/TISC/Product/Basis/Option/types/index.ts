@@ -1,9 +1,11 @@
 export interface ISubBasisOption {
-  id: string;
+  id?: string;
+  image?: string;
   value_1: string;
   value_2: string;
   unit_1: string;
   unit_2: string;
+  isBase64?: boolean;
 }
 export interface IBasisOptionListResponse {
   id: string;
@@ -16,4 +18,17 @@ export interface IBasisOptionListResponse {
     subs: ISubBasisOption[];
   }[];
   created_at: string;
+}
+
+export interface IBasisOptionSubForm {
+  id?: string;
+  name: string;
+  is_have_image: boolean;
+  subs: ISubBasisOption[];
+}
+
+export interface IBasisOptionForm {
+  id?: string;
+  name: string;
+  subs: IBasisOptionSubForm[];
 }

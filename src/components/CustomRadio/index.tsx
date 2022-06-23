@@ -54,16 +54,20 @@ export const CustomRadio: FC<CustomRadioProps> = ({
       >
         <Space direction={isRadioList ? 'vertical' : direction}>
           {options.map((option, index) => (
-            <div key={index} style={{ width: '100%' }}>
-              {isRadioList ? (
-                <div className={style['item-wrapper']}>
-                  <span>{option.label}</span>
-                  <Radio {...option} />
-                </div>
-              ) : (
-                <Radio {...option}>{option.label}</Radio>
-              )}
-            </div>
+            <label className={style.panel_radio} htmlFor={`${option.value}_${index}`}>
+              <div key={index} style={{ width: '100%' }}>
+                {isRadioList ? (
+                  <div className={style['item-wrapper']}>
+                    <span>{option.label}</span>
+                    <Radio id={`${option.value}_${index}`} {...option} />
+                  </div>
+                ) : (
+                  <Radio id={`${option.value}_${index}`} {...option}>
+                    {option.label}
+                  </Radio>
+                )}
+              </div>
+            </label>
           ))}
           {otherInput && (
             <div className={isRadioList ? style['other-field-radio-list'] : ''}>

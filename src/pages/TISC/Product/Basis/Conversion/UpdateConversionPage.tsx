@@ -1,4 +1,3 @@
-import { ReactComponent as PlusIcon } from '@/assets/icons/plus-dark-icon.svg';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
@@ -11,8 +10,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'umi';
 import { ConversionsEntryForm } from './components/ConversionsEntryForm';
 import { getOneConversionMiddleware, updateConversionMiddleware } from './services/api';
-import styles from './styles/CreateConversionPage.less';
 import { ConversionValueProp } from './types';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const UpdateConversionPage = () => {
   const [conversionValue, setConversionValue] = useState<ConversionValueProp>({
@@ -71,17 +70,9 @@ const UpdateConversionPage = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <TableHeader
-        customClass={styles.container__header}
-        title={'CONVERSIONS'}
-        rightAction={
-          <div className={styles.customButtonDisable}>
-            <PlusIcon />
-          </div>
-        }
-      />
-      <div className={styles.container__content}>
+    <div>
+      <TableHeader title={'CONVERSIONS'} rightAction={<CustomPlusButton disabled />} />
+      <div>
         <ConversionsEntryForm
           conversionValue={conversionValue}
           setConversionValue={setConversionValue}

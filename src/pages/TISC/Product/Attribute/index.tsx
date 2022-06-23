@@ -9,9 +9,8 @@ import { getProductAttributePagination, deleteAttribute } from './services/api';
 import { pushTo } from '@/helper/history';
 import { useAttributeLocation } from './hooks/location';
 import { confirmDelete } from '@/helper/common';
-import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon.svg';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
-import styles from '@/components/Table/styles/TableHeader.less';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import type { IAttributeListResponse, ISubAttribute } from './types';
 
 const AttributeList: React.FC = () => {
@@ -149,11 +148,7 @@ const AttributeList: React.FC = () => {
   return (
     <>
       <CustomTable
-        rightAction={
-          <div className={styles.customButton} onClick={() => pushTo(`${activePath}/create`)}>
-            <PlusIcon />
-          </div>
-        }
+        rightAction={<CustomPlusButton onClick={() => pushTo(`${activePath}/create`)} />}
         title={attributeLocation.NAME}
         columns={MainColumns}
         ref={tableRef}

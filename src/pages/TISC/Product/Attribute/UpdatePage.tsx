@@ -1,5 +1,4 @@
 import { TableHeader } from '@/components/Table/TableHeader';
-import styles from './styles/CreateConversionPage.less';
 import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-disabled-icon.svg';
 import AttributeEntryForm from './components/AttributeEntryForm';
 import { useParams } from 'umi';
@@ -42,6 +41,10 @@ const UpdateAttributePage = () => {
     isLoading.setValue(true);
     updateAttribute(idAttribute, submitData).then((isSuccess) => {
       isLoading.setValue(false);
+      submitButtonStatus.setValue(true);
+      setTimeout(() => {
+        submitButtonStatus.setValue(false);
+      }, 2000);
       if (isSuccess) {
         return getAttributeData();
       }
@@ -53,13 +56,9 @@ const UpdateAttributePage = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <TableHeader
-        customClass={styles.container__header}
-        title={attributeLocation.NAME}
-        rightAction={<PlusIcon />}
-      />
-      <div className={styles.container__content}>
+    <div>
+      <TableHeader title={attributeLocation.NAME} rightAction={<PlusIcon />} />
+      <div>
         <AttributeEntryForm
           data={data}
           setData={setData}

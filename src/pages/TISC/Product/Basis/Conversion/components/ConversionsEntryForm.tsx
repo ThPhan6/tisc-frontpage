@@ -3,7 +3,6 @@ import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { FC } from 'react';
 import { ConversionItem } from './ConversionItem';
 import { ConversionsEntryFormProps, conversionValueDefault, ConversionValueProp } from '../types';
-import styles from '../styles/ConversionsEntryForm.less';
 
 export const ConversionsEntryForm: FC<ConversionsEntryFormProps> = ({
   conversionValue,
@@ -60,7 +59,6 @@ export const ConversionsEntryForm: FC<ConversionsEntryFormProps> = ({
     <EntryFormWrapper
       handleSubmit={handleSubmit}
       handleCancel={handleCancel}
-      contentClass={styles.container}
       submitButtonStatus={submitButtonStatus}
     >
       <FormNameInput
@@ -70,7 +68,7 @@ export const ConversionsEntryForm: FC<ConversionsEntryFormProps> = ({
         HandleOnClickAddIcon={HandleOnClickAddIcon}
         inputValue={conversionValue.name}
       />
-      <div className={styles.container__item_wrapper}>
+      <div>
         {conversionValue.subs.map((conversion, index) => (
           <ConversionItem
             key={index}

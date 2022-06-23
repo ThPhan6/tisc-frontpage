@@ -20,8 +20,8 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   submitButtonStatus = false,
 }) => {
   return (
-    <Row style={{ height: '100%' }}>
-      <Col span={12} style={{ height: '100%' }}>
+    <Row>
+      <Col className={styles.entry_form_wrapper}>
         <div className={classNames(styles.entry_form_container, customClass)}>
           <div className={styles.header}>
             <MainTitle level={3} customClass={styles.header__title}>

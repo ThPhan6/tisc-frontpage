@@ -1,7 +1,7 @@
 import type { HeaderViewProps } from '@ant-design/pro-layout/lib/Header';
 import { Link } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { MenuDataItem } from '@ant-design/pro-layout';
 import styles from './styles/aside.less';
 import { ReactComponent as DropdownIcon } from '../../assets/icons/drop-down-icon.svg';
@@ -49,7 +49,6 @@ const renderSubMenu = (menu: MenuDataItem) => {
 };
 
 const AsideMenu: React.FC = (props: HeaderViewProps) => {
-  // const location = useLocation();
   const rootKeys: string[] = [];
   const defaultOpenKeys: string[] = [];
   const appProps: any = props.children;
@@ -71,6 +70,13 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
       menu.name !== undefined
     );
   });
+
+  useEffect(() => {
+    setOpenKeys([
+      appProps.props.currentPathConfig.path,
+      ...appProps.props.currentPathConfig.pro_layout_parentKeys,
+    ]);
+  }, [appProps]);
 
   // Open only one submenu at a time
   const onOpenChange = (items: any) => {
