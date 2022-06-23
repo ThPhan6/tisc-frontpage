@@ -63,3 +63,19 @@ export type ResetPasswordBodyProp = {
   confirmed_password: string;
   reset_password_token: string;
 };
+
+export interface AboutModalProps {
+  theme?: 'default' | 'dark';
+  visible: {
+    value: boolean;
+    setValue: (value: boolean) => void;
+  };
+}
+
+export interface ContactModalProps {
+  theme?: 'default' | 'dark';
+  visible: {
+    value: boolean;
+    setValue: (value: boolean) => void;
+  };
+}

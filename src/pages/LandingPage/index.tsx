@@ -23,6 +23,9 @@ import { useEffect } from 'react';
 import { ResetPasswordModal } from './components/ResetPasswordModal';
 import type { LoginBodyProp, ResetPasswordBodyProp } from './types';
 import { redirectAfterLogin } from '@/helper/utils';
+import { AboutModal } from './components/AboutModal';
+import { ContactModal } from './components/ContactModal';
+import { NoticeModal } from './components/NoticeModal';
 
 const LandingPage = () => {
   const emailResetPwd = useQuery().get('email');
@@ -32,6 +35,9 @@ const LandingPage = () => {
   const openTiscLogin = useBoolean();
   const openResetPwd = useBoolean();
   const isLoading = useBoolean();
+  const openTiscAbout = useBoolean();
+  const openTiscContact = useBoolean();
+  const openTiscNotice = useBoolean();
 
   useEffect(() => {
     if ((!emailResetPwd || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
@@ -84,6 +90,28 @@ const LandingPage = () => {
     });
   };
 
+  const handleOnClick = (item: string) => {
+    switch (item) {
+      case 'About':
+        openTiscAbout.setValue(true);
+        openTiscContact.setValue(false);
+        openTiscNotice.setValue(false);
+        break;
+      case 'Policies':
+        break;
+      case 'Contact':
+        openTiscContact.setValue(true);
+        openTiscAbout.setValue(false);
+        openTiscNotice.setValue(false);
+        break;
+      case 'Browser Compatibility':
+        openTiscAbout.setValue(false);
+        openTiscNotice.setValue(true);
+        openTiscContact.setValue(false);
+      default:
+        break;
+    }
+  };
   return (
     <div className={styles.login}>
       <div className={styles.container}>
@@ -188,8 +216,14 @@ const LandingPage = () => {
           </BodyText>
           <div className={styles['menu-wrapper']}>
             <div className={styles.menu}>
-              {['About', 'Policies', 'Contact'].map((item, index) => (
-                <BodyText key={index} level={5} fontFamily="Roboto" customClass={styles.item}>
+              {['About', 'Policies', 'Contact', 'Browser Compatibility'].map((item, index) => (
+                <BodyText
+                  key={index}
+                  level={5}
+                  fontFamily="Roboto"
+                  customClass={styles.item}
+                  onClick={() => handleOnClick(item)}
+                >
                   {item}
                 </BodyText>
               ))}
@@ -214,6 +248,9 @@ const LandingPage = () => {
         handleSubmitLogin={handleSubmitLogin}
         handleForgotPassword={handleForgotPassword}
       />
+      <AboutModal visible={openTiscAbout} theme="dark" />
+      <ContactModal visible={openTiscContact} theme="dark" />
+      <NoticeModal visible={openTiscNotice} theme="dark" />
       {emailResetPwd && (
         <ResetPasswordModal
           visible={openResetPwd}
