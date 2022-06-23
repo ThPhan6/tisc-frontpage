@@ -36,7 +36,7 @@ const BasisOptionList: React.FC = () => {
       width: '5%',
       render: (value) => {
         if (value) {
-          return <img src={showImageUrl(value)} style={{ width: 18 }} />;
+          return <img src={showImageUrl(value)} style={{ width: 30 }} />;
         }
         return null;
       },

@@ -21,7 +21,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
 }) => {
   return (
     <Row>
-      <Col span={12}>
+      <Col className={styles.entry_form_wrapper}>
         <div className={classNames(styles.entry_form_container, customClass)}>
           <div className={styles.header}>
             <MainTitle level={3} customClass={styles.header__title}>

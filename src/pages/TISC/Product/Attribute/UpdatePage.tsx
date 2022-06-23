@@ -41,6 +41,10 @@ const UpdateAttributePage = () => {
     isLoading.setValue(true);
     updateAttribute(idAttribute, submitData).then((isSuccess) => {
       isLoading.setValue(false);
+      submitButtonStatus.setValue(true);
+      setTimeout(() => {
+        submitButtonStatus.setValue(false);
+      }, 2000);
       if (isSuccess) {
         return getAttributeData();
       }

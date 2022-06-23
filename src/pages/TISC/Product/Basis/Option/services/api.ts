@@ -66,7 +66,7 @@ export async function getOneBasisOption(id: string) {
         });
         return {
           ...subOption,
-          isUsingImage: isUsingImage ? true : false,
+          is_have_image: isUsingImage ? true : false,
         };
       });
       return {
@@ -76,7 +76,6 @@ export async function getOneBasisOption(id: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_OPTION_SUCCESS);
-      return false;
     });
 }
 
