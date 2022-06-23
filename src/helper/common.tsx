@@ -1,16 +1,17 @@
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { WarningOutlined } from '@ant-design/icons';
 import { Modal } from 'antd';
+import styles from './common.less';
 
 export const confirmDelete = (onOk: () => void, onCancel?: () => void) => {
   Modal.confirm({
-    title: 'Are you sure delete this record?',
-    icon: <ExclamationCircleOutlined />,
-    content: '',
+    title: 'Are you sure to delete this item?',
+    icon: <WarningOutlined />,
+    content: 'You might lose the relevant content, data and connections.',
     okText: 'Yes',
-    okType: 'danger',
     cancelText: 'No',
     onOk: onOk,
     onCancel: onCancel,
     style: { top: '40%' },
+    className: styles.customModal,
   });
 };
