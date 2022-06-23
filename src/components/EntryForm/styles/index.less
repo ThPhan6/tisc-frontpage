@@ -1,7 +1,11 @@
+.entry_form_wrapper {
+  width: 572px;
+}
 .entry_form_container {
   display: flex;
   flex-direction: column;
   height: 100%;
+  margin-top: 8px;
   background-color: #fff;
   .header {
     display: flex;
@@ -19,8 +23,9 @@
     }
   }
   .content {
-    flex: 1;
-    padding: 16px 0;
+    height: calc(100vh - 250px);
+    padding: 16px;
+    overflow: hidden auto;
   }
   .footer {
     display: flex;

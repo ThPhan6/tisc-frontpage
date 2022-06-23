@@ -7,16 +7,13 @@ import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { deleteCategoryMiddleware, getProductCategoryPagination } from './services/api';
 import type { ICategoryListResponse } from './types';
-// import styles from './styles/index.less';
-import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon.svg';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { confirmDelete } from '@/helper/common';
-import styles from '@/components/Table/styles/TableHeader.less';
-
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 const CategoryList: React.FC = () => {
   const tableRef = useRef<any>();
 
@@ -163,11 +160,7 @@ const CategoryList: React.FC = () => {
   return (
     <>
       <CustomTable
-        rightAction={
-          <div className={styles.customButton} onClick={() => pushTo(PATH.createCategories)}>
-            <PlusIcon />
-          </div>
-        }
+        rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createCategories)} />}
         title="CATEGORIES"
         columns={MainColumns}
         ref={tableRef}

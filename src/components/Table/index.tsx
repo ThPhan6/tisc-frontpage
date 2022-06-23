@@ -126,7 +126,7 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
           }
         }}
         dataSource={data}
-        pagination={hasPagination ? pagination : undefined}
+        pagination={pagination}
         loading={loading}
         onChange={handleTableChange}
         showSorterTooltip={false}

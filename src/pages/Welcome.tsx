@@ -7,7 +7,6 @@ import { PhoneInput } from '@/components/Form/PhoneInput';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { CustomInputEditor } from '@/components/Form/InputEditor';
 import { CustomTabs } from '@/components/Tabs';
-import { MenuSummary } from '@/components/MenuSummary';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { UserOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -17,6 +16,7 @@ import { ReactComponent as SingleRightIcon } from '../assets/icons/single-right.
 import styles from './Welcome.less';
 import { dataMenuSummary } from '@/constants/util';
 import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
+import { MenuSummary } from '@/components/MenuSummary';
 import { PresetsEntryForm } from './TISC/Product/Basis/Preset/components/PresetsEntryForm';
 
 const Welcome: React.FC = () => {

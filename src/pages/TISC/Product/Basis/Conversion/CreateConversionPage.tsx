@@ -1,6 +1,4 @@
 import { TableHeader } from '@/components/Table/TableHeader';
-import styles from './styles/CreateConversionPage.less';
-import { ReactComponent as PlusIcon } from '@/assets/icons/plus-dark-icon.svg';
 import { ConversionsEntryForm } from './components/ConversionsEntryForm';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
@@ -12,6 +10,7 @@ import { STATUS_RESPONSE } from '@/constants/util';
 import { createConversionMiddleware } from './services/api';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const CreateConversionPage = () => {
   const [conversionValue, setConversionValue] = useState<ConversionValueProp>({
@@ -44,17 +43,9 @@ const CreateConversionPage = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <TableHeader
-        customClass={styles.container__header}
-        title={'CONVERSIONS'}
-        rightAction={
-          <div className={styles.customButtonDisable}>
-            <PlusIcon />
-          </div>
-        }
-      />
-      <div className={styles.container__content}>
+    <div>
+      <TableHeader title={'CONVERSIONS'} rightAction={<CustomPlusButton disabled />} />
+      <div>
         <ConversionsEntryForm
           submitButtonStatus={submitButtonStatus.value}
           conversionValue={conversionValue}
