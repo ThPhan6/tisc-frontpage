@@ -1,7 +1,6 @@
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { FC } from 'react';
-import styles from '../styles/CategoryEntryForm.less';
 import { CategoryEntryFormProps, subcategoryValueDefault, SubcategoryValueProp } from '../types';
 import { SubcategoryItem } from './SubcategoryItem';
 
@@ -40,7 +39,6 @@ export const CategoryEntryForm: FC<CategoryEntryFormProps> = ({
     <EntryFormWrapper
       handleSubmit={handleSubmit}
       handleCancel={handleCancel}
-      contentClass={styles.container}
       submitButtonStatus={submitButtonStatus}
     >
       <FormNameInput
@@ -57,12 +55,7 @@ export const CategoryEntryForm: FC<CategoryEntryFormProps> = ({
         }}
         inputValue={categoryValue.name}
       />
-      <div
-        className={styles.container__item_wrapper}
-        style={{
-          padding: '0px 16px',
-        }}
-      >
+      <div>
         {categoryValue.subs.map((category, index) => (
           <SubcategoryItem
             onChange={(value) => handleOnChange(value, index)}

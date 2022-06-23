@@ -1,20 +1,17 @@
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import { FC, useState } from 'react';
+import type { FC } from 'react';
 import { OptionItem } from './OptionItem';
-import { IBasisOptionForm, IBasisOptionSubForm } from '../types';
-import styles from '../styles/OptionsEntryForm.less';
+import type { IBasisOptionForm, IBasisOptionSubForm, ISubBasisOption } from '../types';
+import { merge } from 'lodash';
 
 interface IOptionEntryForm {
-  option?: IBasisOptionForm;
+  option: IBasisOptionForm;
+  setOption: (data: IBasisOptionForm) => void;
   onCancel: () => void;
   onSubmit: (data: IBasisOptionForm) => void;
+  submitButtonStatus: any;
 }
-
-const DEFAULT_OPTION: IBasisOptionForm = {
-  name: '',
-  subs: [],
-};
 
 const DEFAULT_SUB_OPTION: IBasisOptionSubForm = {
   name: '',
@@ -23,9 +20,7 @@ const DEFAULT_SUB_OPTION: IBasisOptionSubForm = {
 };
 
 const OptionEntryForm: FC<IOptionEntryForm> = (props) => {
-  const { onCancel, onSubmit } = props;
-  // if option was not defined => use default option
-  const [option, setOption] = useState<IBasisOptionForm>(props.option ?? DEFAULT_OPTION);
+  const { onCancel, onSubmit, option, setOption, submitButtonStatus } = props;
 
   /// handle change name
   const handleChangeGroupName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,11 +53,46 @@ const OptionEntryForm: FC<IOptionEntryForm> = (props) => {
     });
   };
 
+  const handleSubmit = () => {
+    const newSubs: IBasisOptionSubForm[] = option.subs.map((subOption) => {
+      const itemOptions: ISubBasisOption[] = subOption.subs.map((optionItem) => {
+        let requiredValue = {
+          value_1: optionItem.value_1,
+          value_2: optionItem.value_2,
+          unit_1: optionItem.unit_1,
+          unit_2: optionItem.unit_2,
+        };
+        /// if it has ID, include ID
+        if (optionItem.id) {
+          requiredValue = merge(requiredValue, { id: optionItem.id });
+        }
+        /// send image data if using image otherwise remove it
+        if (subOption.isUsingImage && optionItem.image) {
+          const imageData = optionItem.isBase64 ? optionItem.image.split(',')[1] : optionItem.image;
+          requiredValue = merge(requiredValue, { image: imageData });
+        }
+        return requiredValue;
+      });
+      let newSubOption = {
+        name: subOption.name,
+        subs: itemOptions,
+      };
+      if (subOption.id) {
+        newSubOption = merge(newSubOption, { id: subOption.id });
+      }
+      return newSubOption;
+    });
+    return onSubmit({
+      ...option,
+      subs: newSubs,
+    });
+  };
+
   return (
     <EntryFormWrapper
-      handleSubmit={() => onSubmit(option)}
+      handleSubmit={handleSubmit}
       handleCancel={onCancel}
-      contentClass={styles.container}
+      submitButtonStatus={submitButtonStatus}
     >
       <FormNameInput
         placeholder="type group name"
@@ -71,12 +101,7 @@ const OptionEntryForm: FC<IOptionEntryForm> = (props) => {
         onChangeInput={handleChangeGroupName}
         inputValue={option.name}
       />
-      <div
-        className={styles.container__item_wrapper}
-        style={{
-          padding: '0px 16px',
-        }}
-      >
+      <div>
         {option.subs.map((subOption, index) => (
           <OptionItem
             key={index}
@@ -84,7 +109,6 @@ const OptionEntryForm: FC<IOptionEntryForm> = (props) => {
             subOption={subOption}
             handleChangeSubItem={(changedSubs) => handleChangeSubItem(changedSubs, index)}
             handleDeleteSubOption={() => handleDeleteSubOption(index)}
-            isUsingImage={subOption.isUsingImage!}
           />
         ))}
       </div>

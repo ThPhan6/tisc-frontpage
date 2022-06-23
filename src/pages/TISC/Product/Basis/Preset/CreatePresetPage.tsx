@@ -1,7 +1,5 @@
 import { TableHeader } from '@/components/Table/TableHeader';
 import { PresetsEntryForm } from './components/PresetsEntryForm';
-import styles from './styles/CreatePresetPage.less';
-import { ReactComponent as PlusIcon } from '@/assets/icons/plus-dark-icon.svg';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { useBoolean } from '@/helper/hook';
 import { pushTo } from '@/helper/history';
@@ -11,6 +9,7 @@ import { createPresetMiddleware } from './services/api';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const CreatePresetPage = () => {
   const isLoading = useBoolean();
@@ -38,17 +37,9 @@ const CreatePresetPage = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <TableHeader
-        customClass={styles.container__header}
-        title={'PRESETS'}
-        rightAction={
-          <div className={styles.customButtonDisable}>
-            <PlusIcon />
-          </div>
-        }
-      />
-      <div className={styles.container__content}>
+    <div>
+      <TableHeader title={'PRESETS'} rightAction={<CustomPlusButton disabled />} />
+      <div>
         <PresetsEntryForm
           onSubmit={handleCreatePreset}
           onCancel={handleCancel}

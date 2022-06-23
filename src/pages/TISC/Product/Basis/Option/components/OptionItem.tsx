@@ -1,7 +1,7 @@
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
 import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
-import defaultImage from '@/assets/icons/photo.png';
+import defaultImage from '@/assets/icons/option-default-icon.png';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 import classNames from 'classnames';
@@ -16,10 +16,9 @@ interface IOptionItem {
   handleChangeSubItem: (changedSubs: IBasisOptionSubForm) => void;
   handleDeleteSubOption: () => void;
   optionIndex: number;
-  isUsingImage: boolean;
 }
 interface ISubItemOption {
-  isUsingImage: boolean;
+  isUsingImage?: boolean;
   subItemOption: ISubBasisOption;
   onChange: (subItemOption: ISubBasisOption) => void;
   index: number;
@@ -27,7 +26,6 @@ interface ISubItemOption {
 }
 
 const DEFAULT_SUB_OPTION_ITEM: ISubBasisOption = {
-  image: '',
   value_1: '',
   value_2: '',
   unit_2: '',
@@ -66,7 +64,11 @@ const SubItemOption: FC<ISubItemOption> = ({
     const file = e.target.files![0];
     getBase64(file)
       .then((base64Image) => {
-        onChange({ ...subItemOption, image: isUsingImage ? base64Image : '' });
+        onChange({
+          ...subItemOption,
+          image: base64Image,
+          isBase64: true,
+        });
       })
       .catch((err) => {
         console.error(err);
@@ -78,10 +80,7 @@ const SubItemOption: FC<ISubItemOption> = ({
       {isUsingImage && (
         <div className={styles.image_upload}>
           <label htmlFor={`input_${optionIndex}_${index}`}>
-            <div
-              className={styles.image}
-              style={{ backgroundImage: `url(${subItemOption.image || defaultImage})` }}
-            ></div>
+            <img className={styles.image} src={subItemOption.image ?? defaultImage} />
           </label>
 
           <div className={styles.image__file_input}>
@@ -97,7 +96,7 @@ const SubItemOption: FC<ISubItemOption> = ({
       )}
 
       {[1, 2].map((order) => (
-        <div className={styles.form_input}>
+        <div className={styles.form_input} key={order}>
           <BodyText level={3}>O{order}:</BodyText>
           <CustomInput
             placeholder="value"
@@ -122,8 +121,7 @@ const SubItemOption: FC<ISubItemOption> = ({
 };
 
 export const OptionItem: FC<IOptionItem> = (props) => {
-  const { subOption, handleChangeSubItem, handleDeleteSubOption, optionIndex, isUsingImage } =
-    props;
+  const { subOption, handleChangeSubItem, handleDeleteSubOption, optionIndex } = props;
   const [activeKey, setActiveKey] = useState<string[]>([]);
 
   const handleActiveKeyToCollapse = () => {
@@ -133,7 +131,7 @@ export const OptionItem: FC<IOptionItem> = (props) => {
   const handleOnClickUsingImage = () => {
     handleChangeSubItem({
       ...subOption,
-      isUsingImage: isUsingImage ? false : true,
+      isUsingImage: subOption.isUsingImage ? false : true,
     });
   };
 
@@ -204,7 +202,9 @@ export const OptionItem: FC<IOptionItem> = (props) => {
             <div
               className={classNames(
                 styles.panel_header__field_image,
-                isUsingImage ? styles['set-checked-color'] : styles['set-unchecked-color'],
+                subOption.isUsingImage
+                  ? styles['set-checked-color']
+                  : styles['set-unchecked-color'],
               )}
               onClick={handleOnClickUsingImage}
             >
@@ -249,16 +249,12 @@ export const OptionItem: FC<IOptionItem> = (props) => {
           <div className={styles.sub_wrapper}>
             {subOption.subs.map((subItemOption, index) => (
               <div key={index} className={classNames(styles.element_input)}>
-                <div
-                  className={
-                    subItemOption.image ? styles['padding-none'] : styles['padding-top-bottom-6']
-                  }
-                >
+                <div className={styles.optionItemGroup}>
                   <div className={styles.form}>
                     <SubItemOption
                       index={index}
                       optionIndex={optionIndex}
-                      isUsingImage={isUsingImage}
+                      isUsingImage={subOption.isUsingImage}
                       subItemOption={subItemOption}
                       onChange={(changedOptionItem) =>
                         handleChangeSubOptionItem(changedOptionItem, index)

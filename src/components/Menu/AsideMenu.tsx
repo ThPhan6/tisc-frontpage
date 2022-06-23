@@ -10,6 +10,7 @@ import { ReactComponent as AlignLeftIcon } from '../../assets/icons/align-left-i
 import { ReactComponent as AlignRightIcon } from '../../assets/icons/align-right-icon.svg';
 import { renderIconByName } from './Icon/index';
 import { isEmpty } from 'lodash';
+// import umi, { useLocation, useRouteMatch } from 'umi';
 
 const renderMenuItem = (menu: MenuDataItem) => {
   return (
@@ -71,6 +72,13 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
       menu.name !== undefined
     );
   });
+
+  // useEffect(() => {
+  //   // console.log('changed location', location);
+  //   // console.log('openKeys', openKeys);
+  //   // console.log('routerMatch', routerMatch);
+  //   // console.log('umi', umi);
+  // }, [location]);
 
   // Open only one submenu at a time
   const onOpenChange = (items: any) => {

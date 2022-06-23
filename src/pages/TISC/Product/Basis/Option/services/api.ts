@@ -1,4 +1,3 @@
-import { STATUS_RESPONSE } from '@/constants/util';
 import { request } from 'umi';
 import { message } from 'antd';
 import type { IBasisOptionForm, IBasisOptionListResponse } from '../types';
@@ -38,26 +37,74 @@ export async function getProductBasisOptionPagination(
       });
     })
     .catch((error) => {
-      console.log('error', error);
-      message.error(error.message);
+      message.error(error.data?.message ?? MESSAGE_NOTIFICATION.GETLIST_OPTION_ERROR);
     });
 }
 
-export async function createOptionMiddleWare(
-  data: IBasisOptionForm,
-  callback: (type: STATUS_RESPONSE, message?: string) => void,
-) {
-  request(`/api/basis-option/create`, {
+export async function createOptionMiddleWare(data: IBasisOptionForm) {
+  return request<boolean>(`/api/basis-option/create`, {
     method: 'POST',
     data,
   })
     .then(() => {
-      callback(STATUS_RESPONSE.SUCCESS);
+      message.success(MESSAGE_NOTIFICATION.CREATE_OPTION_SUCCESS);
+      return true;
     })
     .catch((error) => {
-      callback(
-        STATUS_RESPONSE.ERROR,
-        error?.data?.message || MESSAGE_NOTIFICATION.CREATE_OPTION_ERROR,
-      );
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.CREATE_OPTION_ERROR);
+      return false;
+    });
+}
+export async function getOneBasisOption(id: string) {
+  return request<{ data: IBasisOptionForm }>(`/api/basis-option/get-one/${id}`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      const newSubs = response.data.subs.map((subOption) => {
+        const isUsingImage = subOption.subs.find((optionItem) => {
+          return optionItem.image !== null;
+        });
+        return {
+          ...subOption,
+          isUsingImage: isUsingImage ? true : false,
+        };
+      });
+      return {
+        ...response.data,
+        subs: newSubs,
+      };
+    })
+    .catch((error) => {
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_OPTION_SUCCESS);
+      return false;
+    });
+}
+
+export async function updateBasisOption(id: string, data: IBasisOptionForm) {
+  return request<boolean>(`/api/basis-option/update/${id}`, {
+    method: 'PUT',
+    data,
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.UPDATE_OPTION_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_OPTION_SUCCESS);
+      return false;
+    });
+}
+
+export async function deleteBasisOption(id: string) {
+  return request<boolean>(`/api/basis-option/delete/${id}`, {
+    method: 'DELETE',
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.DELETE_OPTION_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.DELETE_OPTION_ERROR);
+      return false;
     });
 }

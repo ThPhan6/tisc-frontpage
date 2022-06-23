@@ -6,7 +6,6 @@ import { AttributeItem } from './AttributeItem';
 import ContentTypeModal from './ContentTypeModal';
 import { getProductAttributeContentType } from '../services/api';
 import type { IAttributeForm, IAttributeSubForm, IAttributeContentType } from '../types';
-import styles from '../styles/attributeEntryForm.less';
 
 interface IAttributeEntryForm {
   type: number;
@@ -142,7 +141,6 @@ const AttributeEntryForm: FC<IAttributeEntryForm> = (props) => {
     <EntryFormWrapper
       handleSubmit={handleSubmit}
       handleCancel={onCancel}
-      contentClass={styles.container}
       submitButtonStatus={submitButtonStatus}
     >
       <FormNameInput
@@ -152,7 +150,7 @@ const AttributeEntryForm: FC<IAttributeEntryForm> = (props) => {
         HandleOnClickAddIcon={addSubAttribute}
         inputValue={data.name}
       />
-      <div className={styles.container__item_wrapper}>
+      <div>
         {data.subs.map((subAttribute, index) => (
           <AttributeItem
             key={index}

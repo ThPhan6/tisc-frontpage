@@ -3,19 +3,30 @@ import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import type { ICustomTableColumnType } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
-import { getProductBasisOptionPagination } from './services/api';
+import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
+import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
+import { getProductBasisOptionPagination, deleteBasisOption } from './services/api';
 import { showImageUrl } from '@/helper/utils';
 import type { IBasisOptionListResponse, ISubBasisOption } from './types';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
-import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-icon.svg';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { confirmDelete } from '@/helper/common';
 
 const BasisOptionList: React.FC = () => {
   const tableRef = useRef<any>();
 
-  const comingSoon = () => {
-    alert('Coming Soon!');
+  const handleUpdateBasisOption = (id: string) => {
+    pushTo(PATH.updateOptions.replace(':id', id));
+  };
+  const handleDeleteBasisOption = (id: string) => {
+    confirmDelete(() => {
+      deleteBasisOption(id).then((isSuccess) => {
+        if (isSuccess) {
+          tableRef.current.reload();
+        }
+      });
+    });
   };
 
   const SameColumn: ICustomTableColumnType<any>[] = [
@@ -78,7 +89,7 @@ const BasisOptionList: React.FC = () => {
       dataIndex: 'action',
       align: 'center',
       width: '5%',
-      render: () => {
+      render: (_value: any, record: any) => {
         return (
           <HeaderDropdown
             arrow={true}
@@ -86,9 +97,14 @@ const BasisOptionList: React.FC = () => {
               <MenuHeaderDropdown
                 items={[
                   {
-                    onClick: comingSoon,
-                    icon: <ViewIcon />,
+                    onClick: () => handleUpdateBasisOption(record.id),
+                    icon: <EditIcon />,
                     label: 'Edit',
+                  },
+                  {
+                    onClick: () => handleDeleteBasisOption(record.id),
+                    icon: <DeleteIcon />,
+                    label: 'Delete',
                   },
                 ]}
               />
@@ -148,9 +164,7 @@ const BasisOptionList: React.FC = () => {
   return (
     <>
       <CustomTable
-        rightAction={
-          <PlusIcon style={{ cursor: 'pointer' }} onClick={() => pushTo(PATH.createOptions)} />
-        }
+        rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createOptions)} />}
         title="OPTION"
         columns={MainColumns}
         ref={tableRef}

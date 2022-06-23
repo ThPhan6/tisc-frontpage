@@ -34,30 +34,31 @@ export const MESSAGE_NOTIFICATION = {
   GET_ONE_ATTRIBUTE_ERROR: 'Error when get attribute data',
 
   // Conversion
-  CREATE_CONVERSION_SUCCESS: 'Create the conversion successfully',
-  CREATE_CONVERSION_ERROR: 'Create the conversion error',
-  DELETE_CONVERSION_SUCCESS: 'Delete the conversion successfully',
-  DELETE_CONVERSION_ERROR: 'Delete the conversion error',
-  UPDATE_CONVERSION_SUCCESS: 'Update the conversion successfully',
-  UPDATE_CONVERSION_ERROR: 'Update the conversion error',
+  CREATE_CONVERSION_SUCCESS: 'Create conversion successfully',
+  CREATE_CONVERSION_ERROR: 'Create conversion error',
+  DELETE_CONVERSION_SUCCESS: 'Delete conversion successfully',
+  DELETE_CONVERSION_ERROR: 'Delete conversion error',
+  UPDATE_CONVERSION_SUCCESS: 'Update conversion successfully',
+  UPDATE_CONVERSION_ERROR: 'Update conversion error',
 
   // option
-  CREATE_OPTION_SUCCESS: 'Create the option successfully',
-  CREATE_OPTION_ERROR: 'Create the option error',
-  DELETE_OPTION_SUCCESS: 'Delete the option successfully',
-  DELETE_OPTION_ERROR: 'Delete the option error',
-  UPDATE_OPTION_SUCCESS: 'Update the option successfully',
-  UPDATE_OPTION_ERROR: 'Update the option error',
-  GET_ONE_OPTION_ERROR: 'Get one the option error',
+  GETLIST_OPTION_ERROR: 'Error when get basis option data',
+  CREATE_OPTION_SUCCESS: 'Create option successfully',
+  CREATE_OPTION_ERROR: 'Create option error',
+  DELETE_OPTION_SUCCESS: 'Delete option successfully',
+  DELETE_OPTION_ERROR: 'Delete option error',
+  UPDATE_OPTION_SUCCESS: 'Update option successfully',
+  UPDATE_OPTION_ERROR: 'Update option error',
+  GET_ONE_OPTION_ERROR: 'Get one option error',
 
   //preset
-  CREATE_PRESET_SUCCESS: 'Create the preset successfully',
-  CREATE_PRESET_ERROR: 'Create the preset error',
-  DELETE_PRESET_SUCCESS: 'Delete the preset successfully',
-  DELETE_PRESET_ERROR: 'Delete the preset error',
-  UPDATE_PRESET_SUCCESS: 'Update the preset successfully',
-  UPDATE_PRESET_ERROR: 'Update the preset error',
-  GET_ONE_PRESET_ERROR: 'Get one the preset error',
+  CREATE_PRESET_SUCCESS: 'Create preset successfully',
+  CREATE_PRESET_ERROR: 'Create preset error',
+  DELETE_PRESET_SUCCESS: 'Delete preset successfully',
+  DELETE_PRESET_ERROR: 'Delete preset error',
+  UPDATE_PRESET_SUCCESS: 'Update preset successfully',
+  UPDATE_PRESET_ERROR: 'Update preset error',
+  GET_ONE_PRESET_ERROR: 'Get one preset error',
 };
 
 export const MESSAGE_TOOLTIP = {

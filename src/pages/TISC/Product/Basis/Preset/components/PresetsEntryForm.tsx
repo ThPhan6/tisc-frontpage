@@ -2,7 +2,6 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { FC, useEffect, useState } from 'react';
 import { PresetItem } from './PresetItem';
-import styles from '../styles/PresetsEntryForm.less';
 import {
   PresetItemValueProp,
   PresetsEntryFormProps,
@@ -70,7 +69,7 @@ export const PresetsEntryForm: FC<PresetsEntryFormProps> = ({
         HandleOnClickAddIcon={HandleOnClickAddIcon}
         inputValue={presetsValue.name}
       />
-      <div className={styles.itemPreset}>
+      <div>
         {presetsValue.subs.map((presetItem, index) => (
           <PresetItem
             key={index}

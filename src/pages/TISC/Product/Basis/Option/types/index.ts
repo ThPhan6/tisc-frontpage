@@ -5,6 +5,7 @@ export interface ISubBasisOption {
   value_2: string;
   unit_1: string;
   unit_2: string;
+  isBase64?: boolean;
 }
 export interface IBasisOptionListResponse {
   id: string;

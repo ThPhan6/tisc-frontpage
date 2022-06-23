@@ -21,12 +21,12 @@ export const PATH = {
   // conversion
   conversions: '/tisc/products/basis/conversions',
   createConversions: '/tisc/products/basis/conversions/create',
-  updateConversions: '/tisc/products/basis/conversions/update/:id',
+  updateConversions: '/tisc/products/basis/conversions/:id',
 
   // option
   options: '/tisc/products/basis/options',
   createOptions: '/tisc/products/basis/options/create',
-  updateOptions: '/tisc/products/basis/options/update/:id',
+  updateOptions: '/tisc/products/basis/options/:id',
   // attribute general
   attributeGeneral: '/tisc/products/attributes/general',
   attributeGeneralCreate: '/tisc/products/attributes/general/create',
