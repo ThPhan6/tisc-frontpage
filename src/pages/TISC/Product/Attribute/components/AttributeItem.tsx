@@ -3,6 +3,7 @@ import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-rig
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { MainTitle, BodyText } from '@/components/Typography';
+import classNames from 'classnames';
 import { lowerCase } from 'lodash';
 import type { FC } from 'react';
 import styles from '../styles/attributeItem.less';
@@ -33,7 +34,10 @@ export const AttributeItem: FC<IAttributeItem> = ({
           />
           <ActionDeleteIcon onClick={handleOnClickDelete} />
         </div>
-        <div className={styles.form_input__element}>
+        <div
+          className={classNames(styles.form_input__element, styles.form_input__cursor)}
+          onClick={handleSelectContentType}
+        >
           <div className="group-content-type">
             <BodyText level={4}>Content Type :</BodyText>
             <BodyText level={5} fontFamily="Roboto" customClass="group-type-placeholder">
@@ -44,7 +48,7 @@ export const AttributeItem: FC<IAttributeItem> = ({
               )}
             </BodyText>
           </div>
-          <SingleRightFormIcon onClick={handleSelectContentType} />
+          <SingleRightFormIcon />
         </div>
         <div className={styles.form_input__element}>
           <div className="group-content-type">
