@@ -1,7 +1,7 @@
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
 import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
-import defaultImage from '@/assets/icons/option-default-icon.png';
+import defaultImage from '@/assets/icons/image.png';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 import classNames from 'classnames';
@@ -80,7 +80,10 @@ const SubItemOption: FC<ISubItemOption> = ({
       {isUsingImage && (
         <div className={styles.image_upload}>
           <label htmlFor={`input_${optionIndex}_${index}`}>
-            <img className={styles.image} src={subItemOption.image ?? defaultImage} />
+            <div
+              className={styles.image}
+              style={{ backgroundImage: `url(${subItemOption.image || defaultImage})` }}
+            ></div>
           </label>
 
           <div className={styles.image__file_input}>
@@ -95,27 +98,29 @@ const SubItemOption: FC<ISubItemOption> = ({
         </div>
       )}
 
-      {[1, 2].map((order) => (
-        <div className={styles.form_input} key={order}>
-          <BodyText level={3}>O{order}:</BodyText>
-          <CustomInput
-            placeholder="value"
-            name={`value_${order}`}
-            size="small"
-            containerClass={styles.form_input__formula}
-            onChange={handleChangeInput}
-            value={subItemOption[`value_${order}`]}
-          />
-          <CustomInput
-            placeholder="unit"
-            name={`unit_${order}`}
-            size="small"
-            containerClass={classNames(styles.form_input__unit)}
-            onChange={handleChangeInput}
-            value={subItemOption[`unit_${order}`]}
-          />
-        </div>
-      ))}
+      <div className={styles.form_sub__input}>
+        {[1, 2].map((order) => (
+          <div className={styles.form_input} key={order}>
+            <BodyText level={3}>O{order}:</BodyText>
+            <CustomInput
+              placeholder="value"
+              name={`value_${order}`}
+              size="small"
+              containerClass={styles.form_input__formula}
+              onChange={handleChangeInput}
+              value={subItemOption[`value_${order}`]}
+            />
+            <CustomInput
+              placeholder="unit"
+              name={`unit_${order}`}
+              size="small"
+              containerClass={classNames(styles.form_input__unit)}
+              onChange={handleChangeInput}
+              value={subItemOption[`unit_${order}`]}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
@@ -222,7 +227,6 @@ export const OptionItem: FC<IOptionItem> = (props) => {
             placeholder="type option name"
             name="name"
             size="small"
-            containerClass={styles.panel_header__input_value}
             onChange={handleChangeSubOptionName}
             value={subOption.name}
           />

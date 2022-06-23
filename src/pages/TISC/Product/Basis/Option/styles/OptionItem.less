@@ -6,11 +6,11 @@
   }
   .active_collapse_panel {
     border-radius: 0 !important;
-    box-shadow: inset 0 -0.5px 0 #000;
+    box-shadow: inset 0 -0.5px 0 @mono-color-medium;
   }
   .unactive_collapse_panel {
     border-radius: 0 !important;
-    box-shadow: inset 0 -0.5px 0 #000;
+    box-shadow: inset 0 -0.5px 0 @mono-color;
   }
 
   :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
@@ -123,6 +123,10 @@
 
       .image {
         width: 48px;
+        padding-top: 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
         cursor: pointer;
       }
     }
@@ -133,20 +137,25 @@
         display: flex;
         align-items: center;
         margin-right: 8px;
-        .form_input {
+        .form_sub__input {
           display: flex;
           align-items: center;
-          &__formula,
-          &__unit {
-            // flex: 1;
-            :global(.ant-input) {
-              padding: 0;
-              color: @primary-color-dark;
+          .form_input {
+            display: flex;
+            align-items: center;
+            padding: 4px 0;
+            &__formula,
+            &__unit {
+              // flex: 1;
+              :global(.ant-input) {
+                padding: 0;
+                color: @primary-color-dark;
+              }
             }
-          }
-          &__formula {
-            width: 80px;
-            margin: 0 8px;
+            &__formula {
+              width: 80px;
+              margin: 0 8px;
+            }
           }
         }
       }
@@ -163,6 +172,13 @@
 }
 .font_weight_600 {
   font-weight: 600;
+}
+
+.padding-none {
+  padding: 0;
+}
+.padding-top-bottom-6 {
+  padding: 6px 0;
 }
 
 .set-unchecked-color,
@@ -201,6 +217,12 @@
 
   p {
     color: @active-color;
+  }
+
+  .form_sub__input {
+    .form_input {
+      height: 32px;
+    }
   }
 
   :global(.ant-radio-inner),
