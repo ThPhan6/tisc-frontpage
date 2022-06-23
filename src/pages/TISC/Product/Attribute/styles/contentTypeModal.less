@@ -35,6 +35,18 @@
     max-height: calc(100vh - 200px);
     overflow: hidden auto;
   }
+  .cursor-radio {
+    cursor: pointer;
+
+    label,
+    svg {
+      cursor: pointer;
+    }
+
+    :global(.ant-space-item) {
+      cursor: default;
+    }
+  }
   .contentTypeCollapse {
     background-color: #fff;
     :global(.ant-collapse-header) {
