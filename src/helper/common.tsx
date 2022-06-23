@@ -13,5 +13,6 @@ export const confirmDelete = (onOk: () => void, onCancel?: () => void) => {
     onCancel: onCancel,
     centered: true,
     className: styles.customModal,
+    maskClosable: true,
   });
 };
