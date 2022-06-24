@@ -33,44 +33,37 @@ export const NoticeModal: FC<AboutModalProps> = ({ visible, theme = 'default' })
           </BodyText>
           <div className={styles.content}>
             <div className={styles.leftItem}>
-              <BodyText level={5} fontFamily="Roboto" customClass={styles[`body${themeStyle()}`]}>
-                Chrome
-              </BodyText>
-              <BodyText level={5} fontFamily="Roboto" customClass={styles[`body${themeStyle()}`]}>
-                Safari
-              </BodyText>
-              <BodyText level={5} fontFamily="Roboto" customClass={styles[`body${themeStyle()}`]}>
-                Edge
-              </BodyText>
-              <BodyText level={5} fontFamily="Roboto" customClass={styles[`body${themeStyle()}`]}>
-                Firefox
-              </BodyText>
-              <BodyText level={5} fontFamily="Roboto" customClass={styles[`body${themeStyle()}`]}>
-                Samsung Internet
-              </BodyText>
-              <BodyText level={5} fontFamily="Roboto" customClass={styles[`body${themeStyle()}`]}>
-                Opera
-              </BodyText>
+              {['Chrome', 'Safari', 'Edge', 'Firefox', 'Samsung Internet', 'Opera'].map(
+                (item, index) => (
+                  <BodyText
+                    level={5}
+                    fontFamily="Roboto"
+                    customClass={styles[`body${themeStyle()}`]}
+                    key={index}
+                  >
+                    {item}
+                  </BodyText>
+                ),
+              )}
             </div>
             <div className={styles.rigthItem}>
-              <BodyText level={5} fontFamily="Roboto" customClass={styles[`body${themeStyle()}`]}>
-                version 32 or later
-              </BodyText>
-              <BodyText level={5} fontFamily="Roboto" customClass={styles[`body${themeStyle()}`]}>
-                version 14 or later
-              </BodyText>
-              <BodyText level={5} fontFamily="Roboto" customClass={styles[`body${themeStyle()}`]}>
-                version 18 or later
-              </BodyText>
-              <BodyText level={5} fontFamily="Roboto" customClass={styles[`body${themeStyle()}`]}>
-                version 65 or later
-              </BodyText>
-              <BodyText level={5} fontFamily="Roboto" customClass={styles[`body${themeStyle()}`]}>
-                version 4 or later
-              </BodyText>
-              <BodyText level={5} fontFamily="Roboto" customClass={styles[`body${themeStyle()}`]}>
-                version 19 or later
-              </BodyText>
+              {[
+                'version 32 or later',
+                'version 14 or later',
+                'version 18 or later',
+                'version 65 or later',
+                'version 4 or later',
+                'version 19 or later',
+              ].map((item, index) => (
+                <BodyText
+                  level={5}
+                  fontFamily="Roboto"
+                  customClass={styles[`body${themeStyle()}`]}
+                  key={index}
+                >
+                  {item}
+                </BodyText>
+              ))}
             </div>
           </div>
           <BodyText level={5} fontFamily="Roboto" customClass={styles[`body${themeStyle()}`]}>
