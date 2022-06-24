@@ -15,14 +15,17 @@
       > .ant-collapse-content-box) {
     padding: 0;
   }
+  :global(.ant-collapse > .ant-collapse-item:last-child) {
+    border-radius: 0;
+  }
   .customPadding {
     padding-bottom: 8px;
   }
   .bottomMedium {
-    border-bottom: 0.5px solid @mono-color-medium;
+    box-shadow: inset 0 -0.5px 0 @mono-color-medium;
   }
   .bottomBlack {
-    border-bottom: 0.5px solid @mono-color;
+    box-shadow: inset 0 -0.5px 0 @mono-color;
   }
   .form {
     display: flex;
