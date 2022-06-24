@@ -1,6 +1,6 @@
 import type { DropDownProps } from 'antd/es/dropdown';
 import { Dropdown } from 'antd';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
 import { BodyText } from '../Typography';
@@ -10,7 +10,8 @@ export type HeaderDropdownProps = {
   arrowPositionCenter?: boolean;
   containerClass?: string;
   overlayClassName?: string;
-  overlay: React.ReactNode | (() => React.ReactNode) | any;
+  overlay?: React.ReactNode | (() => React.ReactNode) | any;
+  items?: MenuIconProp[];
   placement?: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topCenter' | 'topRight' | 'bottomCenter';
 } & Omit<DropDownProps, 'overlay'>;
 
@@ -23,31 +24,20 @@ type MenuIconProp = {
 
 type MenuHeaderDropdownProp = {
   items: MenuIconProp[];
+  onParentClick?: () => void;
 };
 
-export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
-  overlayClassName: cls,
-  containerClass,
-  arrowPositionCenter,
-  arrow,
-  ...restProps
-}) => (
-  <Dropdown
-    className={styles.dropdownWrapper}
-    overlayClassName={classNames(
-      styles.container,
-      arrowPositionCenter && styles[`arrow-center`],
-      cls,
-      containerClass,
-    )}
-    arrow={arrow}
-    {...restProps}
-  />
-);
-
-export const MenuHeaderDropdown: FC<MenuHeaderDropdownProp> = ({ items }) => {
+export const MenuHeaderDropdown: FC<MenuHeaderDropdownProp> = ({ items, onParentClick }) => {
   const MenuItem = ({ label, icon, onClick, containerClass }: MenuIconProp) => (
-    <div onClick={() => onClick()} className={classNames(styles.item, containerClass)}>
+    <div
+      onClick={() => {
+        if (onParentClick) {
+          onParentClick();
+        }
+        onClick();
+      }}
+      className={classNames(styles.item, containerClass)}
+    >
       {icon && <div className={styles.icon}>{icon}</div>}
       <BodyText fontFamily="Roboto" level={6}>
         {label}
@@ -67,5 +57,40 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProp> = ({ items }) => {
         />
       ))}
     </div>
+  );
+};
+
+export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
+  overlayClassName: cls,
+  containerClass,
+  arrowPositionCenter,
+  arrow,
+  items,
+  overlay,
+  ...restProps
+}) => {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <Dropdown
+      className={styles.dropdownWrapper}
+      overlayClassName={classNames(
+        styles.container,
+        arrowPositionCenter && styles[`arrow-center`],
+        cls,
+        containerClass,
+      )}
+      arrow={arrow}
+      visible={visible}
+      onVisibleChange={(value) => setVisible(value)}
+      overlay={
+        overlay ? (
+          overlay
+        ) : items ? (
+          <MenuHeaderDropdown items={items} onParentClick={() => setVisible(false)} />
+        ) : null
+      }
+      {...restProps}
+    />
   );
 };
