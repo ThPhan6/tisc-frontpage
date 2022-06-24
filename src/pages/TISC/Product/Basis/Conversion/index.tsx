@@ -44,13 +44,13 @@ const BasisConversionList: React.FC = () => {
       sorter: {
         multiple: 1,
       },
-      width: 200,
+      width: 250,
       isExpandable: true,
     },
     {
       title: 'Conversion Between',
       dataIndex: 'conversion_between',
-      width: 200,
+      width: 250,
       sorter: {
         multiple: 2,
       },
@@ -58,7 +58,7 @@ const BasisConversionList: React.FC = () => {
     {
       title: '1st Formula',
       dataIndex: 'first_formula',
-      width: 200,
+      width: 250,
     },
     {
       title: '2nd Formula',
@@ -104,19 +104,19 @@ const BasisConversionList: React.FC = () => {
     {
       title: 'Conversion Group',
       dataIndex: 'name',
-      width: 200,
+      width: 250,
       noBoxShadow: true,
     },
     {
       title: 'Conversion Between',
       dataIndex: 'conversion_between',
-      width: 200,
+      width: 250,
       noBoxShadow: true,
     },
     {
       title: '1st Formula',
       dataIndex: 'first_formula',
-      width: 200,
+      width: 250,
       noBoxShadow: true,
     },
     {

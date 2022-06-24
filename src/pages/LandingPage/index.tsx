@@ -12,7 +12,12 @@ import graphic from '../../assets/graphic.png';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { LoginModal } from './components/LoginModal';
 import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
-import { loginMiddleware, forgotPasswordMiddleware, resetPasswordMiddleware } from './services/api';
+import {
+  loginMiddleware,
+  forgotPasswordMiddleware,
+  resetPasswordMiddleware,
+  validateResetToken,
+} from './services/api';
 import { message } from 'antd';
 import { history } from 'umi';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
@@ -38,7 +43,12 @@ const LandingPage = () => {
       history.push(PATH.landingPage);
       return;
     } else {
-      openResetPwd.setValue(true);
+      validateResetToken(tokenResetPwd).then((res) => {
+        if (res) {
+          return openResetPwd.setValue(res);
+        }
+        history.push(PATH.landingPage);
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [emailResetPwd]);

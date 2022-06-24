@@ -35,6 +35,7 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
     ) {
       return MESSAGE_ERROR.CONFIRM_PASSWORD;
     }
+    return '';
   };
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -64,7 +64,7 @@ export async function createAttribute(data: IAttributeForm) {
       return true;
     })
     .catch((error) => {
-      message.error(error?.data?.error ?? MESSAGE_NOTIFICATION.CREATE_ATTRIBUTE_ERROR);
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_ATTRIBUTE_ERROR);
       return false;
     });
 }
@@ -76,7 +76,7 @@ export async function getOneAttribute(id: string) {
       return response.data;
     })
     .catch((error) => {
-      message.error(error?.data?.error ?? MESSAGE_NOTIFICATION.GET_ONE_ATTRIBUTE_ERROR);
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_ATTRIBUTE_ERROR);
     });
 }
 export async function updateAttribute(id: string, data: IAttributeForm) {
@@ -89,7 +89,7 @@ export async function updateAttribute(id: string, data: IAttributeForm) {
       return true;
     })
     .catch((error) => {
-      message.error(error?.data?.error ?? MESSAGE_NOTIFICATION.UPDATE_ATTRIBUTE_ERROR);
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_ATTRIBUTE_ERROR);
       return false;
     });
 }
@@ -102,7 +102,7 @@ export async function deleteAttribute(id: string) {
       return true;
     })
     .catch((error) => {
-      message.error(error?.data?.error ?? MESSAGE_NOTIFICATION.DELETE_ATTRIBUTE_ERROR);
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.DELETE_ATTRIBUTE_ERROR);
       return false;
     });
 }

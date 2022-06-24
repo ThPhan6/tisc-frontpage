@@ -83,7 +83,13 @@ const SubItemOption: FC<ISubItemOption> = ({
           <label htmlFor={`input_${optionIndex}_${index}`}>
             <img
               className={styles.image}
-              src={subItemOption.image ? showImageUrl(subItemOption.image) : defaultImage}
+              src={
+                subItemOption.image
+                  ? subItemOption.isBase64
+                    ? subItemOption.image
+                    : showImageUrl(subItemOption.image)
+                  : defaultImage
+              }
             />
           </label>
 

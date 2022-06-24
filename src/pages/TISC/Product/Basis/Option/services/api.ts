@@ -75,7 +75,8 @@ export async function getOneBasisOption(id: string) {
       };
     })
     .catch((error) => {
-      message.error(error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_OPTION_SUCCESS);
+      console.log(error);
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.GET_ONE_OPTION_ERROR);
     });
 }
 

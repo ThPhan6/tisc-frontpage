@@ -39,9 +39,7 @@ const CreateOptionPage = () => {
         setTimeout(() => {
           submitButtonStatus.setValue(false);
         }, 2000);
-        setTimeout(() => {
-          pushTo(PATH.options);
-        }, 1000);
+        getBasisOptionData();
       }
       isLoading.setValue(false);
     });
