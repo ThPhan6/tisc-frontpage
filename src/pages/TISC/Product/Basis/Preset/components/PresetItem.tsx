@@ -7,7 +7,7 @@ import { FC, useEffect, useState } from 'react';
 import styles from '../styles/PresetItem.less';
 import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
-import { Collapse } from 'antd';
+import { Collapse, Col, Row } from 'antd';
 import {
   PresetElementInputProp,
   PresetItemProps,
@@ -24,6 +24,8 @@ const PresetElementInput: FC<PresetElementInputProp> = ({ order, onChange, value
         placeholder={'value'}
         name={`value_${order}`}
         size="small"
+        autoWidth
+        defaultWidth={40}
         containerClass={styles.presetElement__input_value}
         onChange={onChange}
         value={value[`value_${order}`]}
@@ -32,6 +34,8 @@ const PresetElementInput: FC<PresetElementInputProp> = ({ order, onChange, value
         placeholder="unit"
         name={`unit_${order}`}
         size="small"
+        autoWidth
+        defaultWidth={30}
         containerClass={classNames(styles.presetElement__input_unit)}
         onChange={onChange}
         value={value[`unit_${order}`]}
@@ -106,6 +110,7 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
         <div className={styles.panel_header__input}>
           <CustomInput
             placeholder="type preset name"
+            size="small"
             containerClass={styles.panel_header__input_value}
             onChange={handleOnChangePresetName}
             value={presetItem.name}
@@ -135,18 +140,22 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
           <div>
             {presetItem.subs.map((preset, index) => (
               <div className={styles.form} key={index}>
-                <div className={styles.form__element}>
-                  <PresetElementInput
-                    order={1}
-                    onChange={(e) => handleOnChange(e, index)}
-                    value={preset}
-                  />
-                  <PresetElementInput
-                    order={2}
-                    onChange={(e) => handleOnChange(e, index)}
-                    value={preset}
-                  />
-                </div>
+                <Row className={styles.form__element}>
+                  <Col span={12}>
+                    <PresetElementInput
+                      order={1}
+                      onChange={(e) => handleOnChange(e, index)}
+                      value={preset}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <PresetElementInput
+                      order={2}
+                      onChange={(e) => handleOnChange(e, index)}
+                      value={preset}
+                    />
+                  </Col>
+                </Row>
                 <ActionDeleteIcon
                   className={styles.form__delete_icon}
                   onClick={() => handleOnClickDeleteItem(index)}

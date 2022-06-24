@@ -1,7 +1,7 @@
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
 import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
-import defaultImage from '@/assets/icons/option-default-icon.png';
+import DefaultImage from '@/assets/icons/default-option-icon.png';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 import classNames from 'classnames';
@@ -9,7 +9,7 @@ import { isEmpty } from 'lodash';
 import React, { FC, useState } from 'react';
 import styles from '../styles/OptionItem.less';
 import { ISubBasisOption, IBasisOptionSubForm } from '../types';
-import { Collapse, Radio } from 'antd';
+import { Collapse, Radio, Row, Col } from 'antd';
 import { showImageUrl } from '@/helper/utils';
 
 interface IOptionItem {
@@ -88,7 +88,7 @@ const SubItemOption: FC<ISubItemOption> = ({
                   ? subItemOption.isBase64
                     ? subItemOption.image
                     : showImageUrl(subItemOption.image)
-                  : defaultImage
+                  : DefaultImage
               }
             />
           </label>
@@ -105,27 +105,33 @@ const SubItemOption: FC<ISubItemOption> = ({
         </div>
       )}
 
-      {[1, 2].map((order) => (
-        <div className={styles.form_input} key={order}>
-          <BodyText level={3}>O{order}:</BodyText>
-          <CustomInput
-            placeholder="value"
-            name={`value_${order}`}
-            size="small"
-            containerClass={styles.form_input__formula}
-            onChange={handleChangeInput}
-            value={subItemOption[`value_${order}`]}
-          />
-          <CustomInput
-            placeholder="unit"
-            name={`unit_${order}`}
-            size="small"
-            containerClass={classNames(styles.form_input__unit)}
-            onChange={handleChangeInput}
-            value={subItemOption[`unit_${order}`]}
-          />
-        </div>
-      ))}
+      <Row className={styles.form_sub__input}>
+        {[1, 2].map((order) => (
+          <Col className={styles.form_input} key={order} span={12}>
+            <BodyText level={3}>O{order}:</BodyText>
+            <CustomInput
+              placeholder="value"
+              name={`value_${order}`}
+              size="small"
+              autoWidth
+              defaultWidth={40}
+              containerClass={styles.form_input__formula}
+              onChange={handleChangeInput}
+              value={subItemOption[`value_${order}`]}
+            />
+            <CustomInput
+              placeholder="unit"
+              name={`unit_${order}`}
+              size="small"
+              autoWidth
+              defaultWidth={30}
+              containerClass={classNames(styles.form_input__unit)}
+              onChange={handleChangeInput}
+              value={subItemOption[`unit_${order}`]}
+            />
+          </Col>
+        ))}
+      </Row>
     </div>
   );
 };
@@ -171,13 +177,15 @@ export const OptionItem: FC<IOptionItem> = (props) => {
       subs: newSubItems,
     });
 
-    /// unactive image if have none sub
     if (newSubItems.length < 1) {
+      /// unactive image if have none sub
       handleChangeSubItem({
         ...subOption,
         subs: newSubItems,
         is_have_image: false,
       });
+      /// disable collapse
+      setActiveKey([]);
     }
   };
 
@@ -232,7 +240,6 @@ export const OptionItem: FC<IOptionItem> = (props) => {
             placeholder="type option name"
             name="name"
             size="small"
-            containerClass={styles.panel_header__input_value}
             onChange={handleChangeSubOptionName}
             value={subOption.name}
           />

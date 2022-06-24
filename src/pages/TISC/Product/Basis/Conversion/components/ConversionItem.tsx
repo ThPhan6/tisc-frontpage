@@ -3,18 +3,21 @@ import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 import classNames from 'classnames';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { Row, Col } from 'antd';
 import styles from '../styles/ConversionItem.less';
 import { ConversionItemProps, ElementInputProp } from '../types';
 
 const ElementInput: FC<ElementInputProp> = ({ order, onChange, value }) => {
   return (
-    <div className={styles.element}>
+    <Col className={styles.element} span={12}>
       <BodyText level={3}>C:{order}</BodyText>
       <CustomInput
         placeholder={`formula ${order}`}
         name={`formula_${order}`}
         size="small"
+        autoWidth
+        defaultWidth={60}
         containerClass={styles.element__input_formula}
         onChange={onChange}
         value={value[`formula_${order}`]}
@@ -23,11 +26,13 @@ const ElementInput: FC<ElementInputProp> = ({ order, onChange, value }) => {
         placeholder="unit"
         name={`unit_${order}`}
         size="small"
+        autoWidth
+        defaultWidth={30}
         containerClass={classNames(styles.element__input_unit)}
         onChange={onChange}
         value={value[`unit_${order}`]}
       />
-    </div>
+    </Col>
   );
 };
 
@@ -56,25 +61,32 @@ export const ConversionItem: FC<ConversionItemProps> = ({
             placeholder="name 1"
             name="name_1"
             size="small"
+            autoWidth
+            defaultWidth={48}
             containerClass={styles.field__name_input}
             value={value.name_1}
           />
-          <SwapIcon />
+          <div className={styles.swapIcon}>
+            <SwapIcon />
+          </div>
           <CustomInput
             onChange={handleOnChange}
             placeholder="name 2"
             name="name_2"
             size="small"
+            autoWidth
+            defaultWidth={48}
             containerClass={styles.field__name_input}
             value={value.name_2}
           />
         </div>
         <ActionDeleteIcon className={styles.field__delete_icon} onClick={handleOnClickDelete} />
       </div>
-      <div className={styles.form}>
+
+      <Row className={styles.form}>
         <ElementInput order={1} onChange={handleOnChange} value={value} />
         <ElementInput order={2} onChange={handleOnChange} value={value} />
-      </div>
+      </Row>
     </div>
   );
 };
