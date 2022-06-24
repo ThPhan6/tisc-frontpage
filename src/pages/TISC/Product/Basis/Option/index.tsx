@@ -44,7 +44,7 @@ const BasisOptionList: React.FC = () => {
     {
       title: '1st Value',
       dataIndex: 'value_1',
-      width: '5%',
+      width: '10%',
     },
     {
       title: 'Unit',
@@ -55,7 +55,7 @@ const BasisOptionList: React.FC = () => {
     {
       title: '2nd Value',
       dataIndex: 'value_2',
-      width: '5%',
+      width: '10%',
     },
     {
       title: 'Unit',
@@ -78,7 +78,7 @@ const BasisOptionList: React.FC = () => {
     {
       title: 'Option Name',
       dataIndex: 'option_name',
-      width: 150,
+      width: 250,
       sorter: {
         multiple: 2,
       },
@@ -128,7 +128,7 @@ const BasisOptionList: React.FC = () => {
     {
       title: 'Option Name',
       dataIndex: 'name',
-      width: 150,
+      width: 250,
       isExpandable: true,
     },
     ...SameColumn,
@@ -150,7 +150,7 @@ const BasisOptionList: React.FC = () => {
     {
       title: 'Option Name',
       dataIndex: 'option_name',
-      width: 150,
+      width: 250,
     },
     ...SameColumn,
     {

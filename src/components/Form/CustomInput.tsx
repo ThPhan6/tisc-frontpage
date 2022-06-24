@@ -53,15 +53,17 @@ export const CustomInput: FC<CustomInputProps> = ({
   const classNameInput = props.prefix || props.suffix ? classNameInputAffix : classNameInputDefault;
 
   return (
-    <div className={classNames(classNameInput, containerClass)}>
+    <div className={classNames(classNameInput, containerClass)} style={{ width: '100%' }}>
       {type === 'password' ? (
         <div
+          style={{ width: '100%' }}
           className={required && !(props.prefix || props.suffix) ? styles['required-input'] : ''}
         >
           <Input.Password type={type} {...props} />
         </div>
       ) : (
         <div
+          style={{ width: '100%' }}
           className={required && !(props.prefix || props.suffix) ? styles['required-input'] : ''}
         >
           <Input type={type} {...props} />
