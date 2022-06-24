@@ -8,6 +8,7 @@ export interface LoginModalProps {
   };
   handleSubmitLogin: (data: { email: string; password: string }) => void;
   handleForgotPassword: (email: string) => void;
+  type?: string;
 }
 
 export type InputValueProp = {
@@ -78,4 +79,5 @@ export interface ContactModalProps {
     value: boolean;
     setValue: (value: boolean) => void;
   };
+  type?: string;
 }

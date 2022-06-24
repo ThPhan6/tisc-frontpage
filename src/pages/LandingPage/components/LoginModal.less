@@ -42,6 +42,9 @@
     .email {
       margin-bottom: 8px;
     }
+    :global(.ant-input-affix-wrapper-focused) {
+      border: 1px solid @secondary-color !important;
+    }
     .disabled {
       :global(.ant-input-affix-wrapper-disabled) {
         background-color: transparent;
@@ -60,7 +63,7 @@
         display: flex;
         align-items: center;
         height: 40px;
-        padding-left: 12px;
+        padding-left: 16px;
         .setForgotWrapper(@primary-color-dark);
       }
       .wrapper-dark {
@@ -73,8 +76,14 @@
         .setForgotWrapper(#fff);
       }
       .forgot-input {
-        input {
-          padding-left: 42px;
+        div {
+          &::before {
+            left: 32px;
+          }
+          input {
+            padding-left: 44px;
+            color: @mono-color;
+          }
         }
       }
       .forgot-input-dark {

@@ -24,7 +24,7 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { STATUS_RESPONSE } from '@/constants/util';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { PATH } from '@/constants/path';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ResetPasswordModal } from './components/ResetPasswordModal';
 import type { LoginBodyProp, ResetPasswordBodyProp } from './types';
 import { redirectAfterLogin } from '@/helper/utils';
@@ -32,6 +32,7 @@ import { AboutModal } from './components/AboutModal';
 import { ContactModal } from './components/ContactModal';
 import { NoticeModal } from './components/NoticeModal';
 import { PoliciesModal } from './components/PoliciesModal';
+import { SignupModal } from './components/SignupModal';
 
 const LandingPage = () => {
   const emailResetPwd = useQuery().get('email');
@@ -45,6 +46,18 @@ const LandingPage = () => {
   const openTiscContact = useBoolean();
   const openTiscNotice = useBoolean();
   const openTiscPolicies = useBoolean();
+  const openSignup = useBoolean();
+  const [value, setValue] = useState('');
+
+  const handleOnClickChooseFeature = (valueClick: string) => {
+    setValue(valueClick);
+    openSignup.setValue(true);
+  };
+
+  const handleClickLogin = (valueClick: string) => {
+    setValue(valueClick);
+    openTiscLogin.setValue(true);
+  };
 
   useEffect(() => {
     if ((!emailResetPwd || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
@@ -136,7 +149,12 @@ const LandingPage = () => {
       <div className={styles.container}>
         <div className={styles.header}>
           <LogoBeta />
-          <CustomButton icon={<SingleRight />} width="104px" buttonClass={styles['login-button']}>
+          <CustomButton
+            icon={<SingleRight />}
+            width="104px"
+            buttonClass={styles['login-button']}
+            onClick={() => handleClickLogin('login')}
+          >
             Log in
           </CustomButton>
         </div>
@@ -184,6 +202,7 @@ const LandingPage = () => {
                   properties="warning"
                   size="large"
                   buttonClass={styles['action-button']}
+                  onClick={() => handleOnClickChooseFeature('interested')}
                 >
                   INTERESTED
                 </CustomButton>
@@ -194,7 +213,7 @@ const LandingPage = () => {
                 For
               </BodyText>
               <Title level={3} customClass={styles['group-name']}>
-                Designer
+                Designers
               </Title>
               <BodyText level={3} fontFamily="Roboto">
                 An always up-to-date material library that helps the team search, select and specify
@@ -220,8 +239,9 @@ const LandingPage = () => {
                   properties="warning"
                   size="large"
                   buttonClass={styles['action-button']}
+                  onClick={() => handleOnClickChooseFeature('signup')}
                 >
-                  INTERESTED
+                  SIGN ME UP
                 </CustomButton>
               </div>
             </div>
@@ -252,9 +272,7 @@ const LandingPage = () => {
               level={5}
               fontFamily="Roboto"
               customClass={styles['tisc-login']}
-              onClick={() => {
-                openTiscLogin.setValue(true);
-              }}
+              onClick={() => handleClickLogin('tisc-login')}
             >
               TISC Log in
             </BodyText>
@@ -263,14 +281,16 @@ const LandingPage = () => {
       </div>
       <LoginModal
         visible={openTiscLogin}
-        theme="dark"
+        theme={value === 'tisc-login' ? 'dark' : 'default'}
         handleSubmitLogin={handleSubmitLogin}
         handleForgotPassword={handleForgotPassword}
+        type={value}
       />
       <AboutModal visible={openTiscAbout} theme="dark" />
       <ContactModal visible={openTiscContact} theme="dark" />
       <NoticeModal visible={openTiscNotice} theme="dark" />
       <PoliciesModal visible={openTiscPolicies} theme="dark" />
+      <SignupModal visible={openSignup} theme="default" type={value} />
       {emailResetPwd && (
         <ResetPasswordModal
           visible={openResetPwd}

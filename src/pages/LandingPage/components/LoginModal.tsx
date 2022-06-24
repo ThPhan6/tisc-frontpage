@@ -20,6 +20,7 @@ export const LoginModal: FC<LoginModalProps> = ({
   visible,
   handleSubmitLogin,
   handleForgotPassword,
+  type,
 }) => {
   const [inputValue, setInputValue] = useState<InputValueProp>({
     email: '',
@@ -111,10 +112,12 @@ export const LoginModal: FC<LoginModalProps> = ({
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={2} customClass={styles[`body${themeStyle()}`]}>
-            “Do or do not. There is no try.”
+            {type === 'tisc-login'
+              ? 'Your most unhappy customers are your greatest source of learning.'
+              : 'Do or do not. There is no try.'}
           </MainTitle>
           <BodyText level={2} customClass={styles[`title${themeStyle()}`]}>
-            Yoda, Jedi Master
+            {type === 'tisc-login' ? 'Bill Gate, Microsoft co-founder' : 'Yoda, Jedi Master'}
           </BodyText>
         </div>
         <div className={styles.form}>
@@ -173,7 +176,9 @@ export const LoginModal: FC<LoginModalProps> = ({
                 status={isShowErrorMessage('email', verifyEmail.value) ? '' : 'error'}
                 theme={theme}
                 size="large"
-                containerClass={styles[`forgot-input${themeStyle()}`]}
+                containerClass={
+                  type === 'tisc-login' ? styles['forgot-input-dark'] : styles['forgot-input']
+                }
                 placeholder="type your work email to verify"
                 focusColor="secondary"
                 borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
