@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import type { ICustomTableColumnType } from '@/components/Table/types';
-import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
+import { HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
@@ -93,22 +93,18 @@ const BasisOptionList: React.FC = () => {
         return (
           <HeaderDropdown
             arrow={true}
-            overlay={
-              <MenuHeaderDropdown
-                items={[
-                  {
-                    onClick: () => handleUpdateBasisOption(record.id),
-                    icon: <EditIcon />,
-                    label: 'Edit',
-                  },
-                  {
-                    onClick: () => handleDeleteBasisOption(record.id),
-                    icon: <DeleteIcon />,
-                    label: 'Delete',
-                  },
-                ]}
-              />
-            }
+            items={[
+              {
+                onClick: () => handleUpdateBasisOption(record.id),
+                icon: <EditIcon />,
+                label: 'Edit',
+              },
+              {
+                onClick: () => handleDeleteBasisOption(record.id),
+                icon: <DeleteIcon />,
+                label: 'Delete',
+              },
+            ]}
             trigger={['click']}
           >
             <ActionIcon />
@@ -165,7 +161,7 @@ const BasisOptionList: React.FC = () => {
     <>
       <CustomTable
         rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createOptions)} />}
-        title="OPTION"
+        title="OPTIONS"
         columns={MainColumns}
         ref={tableRef}
         fetchDataFunc={getProductBasisOptionPagination}
