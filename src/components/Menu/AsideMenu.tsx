@@ -54,8 +54,8 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
   const appProps: any = props.children;
   //
   const [openKeys, setOpenKeys] = useState<string[]>([
-    appProps.props.currentPathConfig.path,
-    ...appProps.props.currentPathConfig.pro_layout_parentKeys,
+    appProps.props.currentPathConfig?.path ?? location.pathname,
+    ...(appProps.props.currentPathConfig?.pro_layout_parentKeys ?? []),
   ]);
 
   const [collapsed, setCollapsed] = useState(false);
@@ -73,8 +73,8 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
 
   useEffect(() => {
     setOpenKeys([
-      appProps.props.currentPathConfig.path,
-      ...appProps.props.currentPathConfig.pro_layout_parentKeys,
+      appProps.props.currentPathConfig?.path ?? location.pathname,
+      ...(appProps.props.currentPathConfig?.pro_layout_parentKeys ?? []),
     ]);
   }, [appProps]);
 
