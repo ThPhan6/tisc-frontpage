@@ -177,7 +177,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
           </div>
           <FormGroup label="Avatar" formClass={classNames(styles['form-upload'], styles.form)}>
             <div className={styles['wrapper-upload']}>
-              <Upload maxCount={1} showUploadList={false} {...props} accept=".png">
+              <Upload maxCount={1} showUploadList={false} {...props} accept=".png,.jpg,.jpeg,.webp">
                 <UploadIcon className={styles.icon} />
               </Upload>
             </div>
