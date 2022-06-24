@@ -1,5 +1,5 @@
 import { TableHeader } from '@/components/Table/TableHeader';
-import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-disabled-icon.svg';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import AttributeEntryForm from './components/AttributeEntryForm';
 import { useParams } from 'umi';
 import { useAttributeLocation } from './hooks/location';
@@ -57,7 +57,7 @@ const UpdateAttributePage = () => {
 
   return (
     <div>
-      <TableHeader title={attributeLocation.NAME} rightAction={<PlusIcon />} />
+      <TableHeader title={attributeLocation.NAME} rightAction={<CustomPlusButton disabled />} />
       <div>
         <AttributeEntryForm
           data={data}
