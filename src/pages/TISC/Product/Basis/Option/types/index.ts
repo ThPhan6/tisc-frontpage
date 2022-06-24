@@ -23,7 +23,7 @@ export interface IBasisOptionListResponse {
 export interface IBasisOptionSubForm {
   id?: string;
   name: string;
-  isUsingImage?: boolean;
+  is_have_image: boolean;
   subs: ISubBasisOption[];
 }
 

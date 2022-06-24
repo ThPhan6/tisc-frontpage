@@ -4,7 +4,8 @@ import { isUndefined } from 'lodash';
 import { history } from 'umi';
 import { pushTo } from './history';
 
-export const REGEX_PASSWORD = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+export const REGEX_PASSWORD =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d][\w~@#$%^&*+=`|{}:;!.?\"()\[\]-]{7,}$/;
 export const REGEX_EMAIL = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export const validateEmail = (email: string) => {
@@ -53,6 +54,7 @@ export const isShowErrorMessage = (
     }
     return validatePhoneInput(value);
   }
+  return false;
 };
 
 export function showImageUrl(url: string) {

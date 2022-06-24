@@ -37,13 +37,13 @@ const AttributeList: React.FC = () => {
       sorter: {
         multiple: 1,
       },
-      width: 200,
+      width: 300,
       isExpandable: true,
     },
     {
       title: 'Attribute Name',
       dataIndex: 'attribute_name',
-      width: 150,
+      width: 250,
       sorter: {
         multiple: 2,
       },
@@ -51,7 +51,7 @@ const AttributeList: React.FC = () => {
     {
       title: 'Content Type',
       dataIndex: 'content_type',
-      width: 150,
+      width: 250,
       sorter: {
         multiple: 3,
       },
@@ -98,19 +98,19 @@ const AttributeList: React.FC = () => {
     {
       title: 'Attribute Group',
       dataIndex: 'attribute_group',
-      width: 200,
+      width: 300,
       noBoxShadow: true,
     },
     {
       title: 'Attribute Name',
       dataIndex: 'name',
-      width: 150,
+      width: 250,
       noBoxShadow: true,
     },
     {
       title: 'Content Type',
       dataIndex: 'content_type',
-      width: 150,
+      width: 250,
       noBoxShadow: true,
     },
     {

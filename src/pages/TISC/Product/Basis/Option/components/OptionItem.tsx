@@ -10,6 +10,7 @@ import React, { FC, useState } from 'react';
 import styles from '../styles/OptionItem.less';
 import { ISubBasisOption, IBasisOptionSubForm } from '../types';
 import { Collapse, Radio } from 'antd';
+import { showImageUrl } from '@/helper/utils';
 
 interface IOptionItem {
   subOption: IBasisOptionSubForm;
@@ -18,7 +19,7 @@ interface IOptionItem {
   optionIndex: number;
 }
 interface ISubItemOption {
-  isUsingImage?: boolean;
+  is_have_image?: boolean;
   subItemOption: ISubBasisOption;
   onChange: (subItemOption: ISubBasisOption) => void;
   index: number;
@@ -33,7 +34,7 @@ const DEFAULT_SUB_OPTION_ITEM: ISubBasisOption = {
 };
 
 const SubItemOption: FC<ISubItemOption> = ({
-  isUsingImage,
+  is_have_image,
   subItemOption,
   onChange,
   index,
@@ -77,13 +78,19 @@ const SubItemOption: FC<ISubItemOption> = ({
 
   return (
     <div className={styles.element}>
-      {isUsingImage && (
+      {is_have_image && (
         <div className={styles.image_upload}>
           <label htmlFor={`input_${optionIndex}_${index}`}>
-            <div
+            <img
               className={styles.image}
-              style={{ backgroundImage: `url(${subItemOption.image || defaultImage})` }}
-            ></div>
+              src={
+                subItemOption.image
+                  ? subItemOption.isBase64
+                    ? subItemOption.image
+                    : showImageUrl(subItemOption.image)
+                  : defaultImage
+              }
+            />
           </label>
 
           <div className={styles.image__file_input}>
@@ -136,7 +143,7 @@ export const OptionItem: FC<IOptionItem> = (props) => {
   const handleOnClickUsingImage = () => {
     handleChangeSubItem({
       ...subOption,
-      isUsingImage: subOption.isUsingImage ? false : true,
+      is_have_image: subOption.is_have_image ? false : true,
     });
   };
 
@@ -171,7 +178,7 @@ export const OptionItem: FC<IOptionItem> = (props) => {
       handleChangeSubItem({
         ...subOption,
         subs: newSubItems,
-        isUsingImage: false,
+        is_have_image: false,
       });
       /// disable collapse
       setActiveKey([]);
@@ -209,7 +216,7 @@ export const OptionItem: FC<IOptionItem> = (props) => {
             <div
               className={classNames(
                 styles.panel_header__field_image,
-                subOption.isUsingImage
+                subOption.is_have_image
                   ? styles['set-checked-color']
                   : styles['set-unchecked-color'],
               )}
@@ -260,7 +267,7 @@ export const OptionItem: FC<IOptionItem> = (props) => {
                     <SubItemOption
                       index={index}
                       optionIndex={optionIndex}
-                      isUsingImage={subOption.isUsingImage}
+                      is_have_image={subOption.is_have_image}
                       subItemOption={subItemOption}
                       onChange={(changedOptionItem) =>
                         handleChangeSubOptionItem(changedOptionItem, index)

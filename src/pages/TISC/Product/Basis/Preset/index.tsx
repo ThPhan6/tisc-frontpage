@@ -40,7 +40,7 @@ const BasisPresetList: React.FC = () => {
     {
       title: '1st Value',
       dataIndex: 'value_1',
-      width: '5%',
+      width: 100,
     },
     {
       title: 'Unit',
@@ -51,7 +51,7 @@ const BasisPresetList: React.FC = () => {
     {
       title: '2nd Value',
       dataIndex: 'value_2',
-      width: '5%',
+      width: 100,
     },
     {
       title: 'Unit',
@@ -68,13 +68,13 @@ const BasisPresetList: React.FC = () => {
       sorter: {
         multiple: 1,
       },
-      width: 250,
+      width: 300,
       isExpandable: true,
     },
     {
       title: 'Preset Name',
       dataIndex: 'preset_name',
-      width: 150,
+      width: 250,
       sorter: {
         multiple: 2,
       },
@@ -118,13 +118,13 @@ const BasisPresetList: React.FC = () => {
     {
       title: 'Preset Group',
       dataIndex: 'preset_group',
-      width: 250,
+      width: 300,
       noBoxShadow: true,
     },
     {
       title: 'Preset Name',
       dataIndex: 'name',
-      width: 150,
+      width: 250,
       isExpandable: true,
     },
     ...SameColumns,
@@ -140,13 +140,13 @@ const BasisPresetList: React.FC = () => {
     {
       title: 'Preset Group',
       dataIndex: 'preset_group',
-      width: 250,
+      width: 300,
       noBoxShadow: true,
     },
     {
       title: 'Preset Name',
       dataIndex: 'preset_name',
-      width: 150,
+      width: 250,
     },
     ...SameColumns,
     {

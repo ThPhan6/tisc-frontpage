@@ -144,6 +144,11 @@
                 hideInMenu: true,
                 component: './TISC/Product/Basis/Option/CreateOptionPage',
               },
+              {
+                path: '/tisc/products/basis/options/:id',
+                hideInMenu: true,
+                component: './TISC/Product/Basis/Option/UpdateOptionPage',
+              },
             ],
           },
         ],

@@ -15,7 +15,7 @@ interface IOptionEntryForm {
 
 const DEFAULT_SUB_OPTION: IBasisOptionSubForm = {
   name: '',
-  isUsingImage: false,
+  is_have_image: false,
   subs: [],
 };
 
@@ -67,7 +67,7 @@ const OptionEntryForm: FC<IOptionEntryForm> = (props) => {
           requiredValue = merge(requiredValue, { id: optionItem.id });
         }
         /// send image data if using image otherwise remove it
-        if (subOption.isUsingImage && optionItem.image) {
+        if (subOption.is_have_image && optionItem.image) {
           const imageData = optionItem.isBase64 ? optionItem.image.split(',')[1] : optionItem.image;
           requiredValue = merge(requiredValue, { image: imageData });
         }
@@ -76,6 +76,7 @@ const OptionEntryForm: FC<IOptionEntryForm> = (props) => {
       let newSubOption = {
         name: subOption.name,
         subs: itemOptions,
+        is_have_image: subOption.is_have_image ? true : false,
       };
       if (subOption.id) {
         newSubOption = merge(newSubOption, { id: subOption.id });
