@@ -1,5 +1,4 @@
 import { TableHeader } from '@/components/Table/TableHeader';
-import { ReactComponent as PlusIcon } from '@/assets/icons/button-plus-disabled-icon.svg';
 import AttributeEntryForm from './components/AttributeEntryForm';
 import { useAttributeLocation } from './hooks/location';
 import { useBoolean } from '@/helper/hook';
@@ -8,6 +7,7 @@ import LoadingPageCustomize from '@/components/LoadingPage';
 import { pushTo } from '@/helper/history';
 import type { IAttributeForm } from './types';
 import { createAttribute } from './services/api';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 const DEFAULT_ATTRIBUTE: IAttributeForm = {
   name: '',
   subs: [],
@@ -39,7 +39,7 @@ const CreateAttributePage = () => {
 
   return (
     <div>
-      <TableHeader title={attributeLocation.NAME} rightAction={<PlusIcon />} />
+      <TableHeader title={attributeLocation.NAME} rightAction={<CustomPlusButton disabled />} />
       <div>
         <AttributeEntryForm
           data={data}
