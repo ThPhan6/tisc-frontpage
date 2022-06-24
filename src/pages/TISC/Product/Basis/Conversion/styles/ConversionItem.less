@@ -4,6 +4,11 @@
   &:last-child {
     box-shadow: none;
   }
+  .swapIcon {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
   .field {
     display: flex;
     align-items: center;
@@ -39,7 +44,6 @@
     .element {
       display: flex;
       align-items: center;
-      margin-right: 8px;
       &__input_formula,
       &__input_unit {
         // flex: 1;
@@ -49,7 +53,7 @@
         }
       }
       &__input_formula {
-        width: 80px;
+        width: auto !important;
         margin: 0 8px;
       }
     }

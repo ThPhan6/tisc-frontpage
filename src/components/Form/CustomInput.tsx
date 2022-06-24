@@ -1,8 +1,10 @@
 import { Input } from 'antd';
 import type { FC } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styles from './styles/Input.less';
 import type { CustomInputProps } from './types';
 import classNames from 'classnames';
+import { isUndefined } from 'lodash';
 
 export const CustomInput: FC<CustomInputProps> = ({
   theme = 'default',
@@ -13,8 +15,22 @@ export const CustomInput: FC<CustomInputProps> = ({
   status,
   fromLandingPage,
   required = false,
+  autoWidth,
+  defaultWidth,
   ...props
 }) => {
+  const [width, setWidth] = useState(defaultWidth);
+  const span: any = useRef();
+  useEffect(() => {
+    if (autoWidth && defaultWidth) {
+      let textWidth = span.current.offsetWidth;
+      if (textWidth < defaultWidth) {
+        textWidth = defaultWidth;
+      }
+      setWidth(textWidth + 4);
+    }
+  }, [props.value]);
+
   const setDisabled = () => {
     if (props.disabled) {
       switch (theme) {
@@ -66,7 +82,22 @@ export const CustomInput: FC<CustomInputProps> = ({
           style={{ width: '100%' }}
           className={required && !(props.prefix || props.suffix) ? styles['required-input'] : ''}
         >
-          <Input type={type} {...props} />
+          {autoWidth ? (
+            <span className={styles.hiddenSpan} ref={span}>
+              {props.value}
+            </span>
+          ) : null}
+          <Input
+            type={type}
+            {...props}
+            style={
+              autoWidth
+                ? {
+                    width: isUndefined(width) ? '100%' : width,
+                  }
+                : undefined
+            }
+          />
         </div>
       )}
     </div>
