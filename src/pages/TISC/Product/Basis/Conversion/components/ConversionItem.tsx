@@ -11,7 +11,7 @@ import { ConversionItemProps, ElementInputProp } from '../types';
 const ElementInput: FC<ElementInputProp> = ({ order, onChange, value }) => {
   return (
     <Col className={styles.element} span={12}>
-      <BodyText level={3}>C:{order}</BodyText>
+      <BodyText level={3}>C{order}:</BodyText>
       <CustomInput
         placeholder={`formula ${order}`}
         name={`formula_${order}`}

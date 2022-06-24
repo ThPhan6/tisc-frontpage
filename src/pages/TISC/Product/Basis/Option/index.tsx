@@ -165,7 +165,7 @@ const BasisOptionList: React.FC = () => {
     <>
       <CustomTable
         rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createOptions)} />}
-        title="OPTION"
+        title="OPTIONS"
         columns={MainColumns}
         ref={tableRef}
         fetchDataFunc={getProductBasisOptionPagination}

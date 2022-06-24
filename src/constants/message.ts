@@ -27,7 +27,7 @@ export const MESSAGE_NOTIFICATION = {
   // ATTRIBUTE
   CREATE_ATTRIBUTE_SUCCESS: 'Create attribute successfully',
   UPDATE_ATTRIBUTE_SUCCESS: 'Update attribute successfully',
-  DELETE_ATTRIBUTE_SUCCESS: 'DELETE attribute successfully',
+  DELETE_ATTRIBUTE_SUCCESS: 'Delete attribute successfully',
   CREATE_ATTRIBUTE_ERROR: 'Error when create attribute',
   UPDATE_ATTRIBUTE_ERROR: 'Error when create attribute',
   DELETE_ATTRIBUTE_ERROR: 'Error when create attribute',
