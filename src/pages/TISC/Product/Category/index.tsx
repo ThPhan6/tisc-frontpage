@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import type { ICustomTableColumnType } from '@/components/Table/types';
-import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
+import { HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
@@ -78,22 +78,18 @@ const CategoryList: React.FC = () => {
             arrow
             align={{ offset: [13, -10] }}
             placement="bottomRight"
-            overlay={
-              <MenuHeaderDropdown
-                items={[
-                  {
-                    onClick: () => handleActionCategory('edit', record.id),
-                    icon: <EditIcon />,
-                    label: 'Edit',
-                  },
-                  {
-                    onClick: () => handleActionCategory('delete', record.id),
-                    icon: <DeleteIcon />,
-                    label: 'Delete',
-                  },
-                ]}
-              />
-            }
+            items={[
+              {
+                onClick: () => handleActionCategory('edit', record.id),
+                icon: <EditIcon />,
+                label: 'Edit',
+              },
+              {
+                onClick: () => handleActionCategory('delete', record.id),
+                icon: <DeleteIcon />,
+                label: 'Delete',
+              },
+            ]}
             trigger={['click']}
           >
             <ActionIcon />

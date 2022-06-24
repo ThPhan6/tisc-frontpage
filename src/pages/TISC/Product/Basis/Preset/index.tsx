@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import type { ICustomTableColumnType } from '@/components/Table/types';
-import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
+import { HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { deletePresetMiddleware, getProductBasisPresetPagination } from './services/api';
@@ -89,22 +89,18 @@ const BasisPresetList: React.FC = () => {
         return (
           <HeaderDropdown
             arrow={true}
-            overlay={
-              <MenuHeaderDropdown
-                items={[
-                  {
-                    onClick: () => handleAction('edit', record.id),
-                    icon: <EditIcon />,
-                    label: 'Edit',
-                  },
-                  {
-                    onClick: () => handleAction('delete', record.id),
-                    icon: <DeleteIcon />,
-                    label: 'Delete',
-                  },
-                ]}
-              />
-            }
+            items={[
+              {
+                onClick: () => handleAction('edit', record.id),
+                icon: <EditIcon />,
+                label: 'Edit',
+              },
+              {
+                onClick: () => handleAction('delete', record.id),
+                icon: <DeleteIcon />,
+                label: 'Delete',
+              },
+            ]}
             trigger={['click']}
           >
             <ActionIcon />
