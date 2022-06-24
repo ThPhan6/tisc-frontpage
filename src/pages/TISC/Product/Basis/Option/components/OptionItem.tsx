@@ -166,13 +166,15 @@ export const OptionItem: FC<IOptionItem> = (props) => {
       subs: newSubItems,
     });
 
-    /// unactive image if have none sub
     if (newSubItems.length < 1) {
+      /// unactive image if have none sub
       handleChangeSubItem({
         ...subOption,
         subs: newSubItems,
         isUsingImage: false,
       });
+      /// disable collapse
+      setActiveKey([]);
     }
   };
 
