@@ -19,6 +19,8 @@ export interface CustomInputProps extends InputProps {
   borderBottomColor?: 'mono' | 'mono-medium' | 'white';
   status?: 'error' | 'warning' | '';
   fromLandingPage?: boolean;
+  autoWidth?: boolean;
+  defaultWidth?: string | number;
 }
 
 export interface CustomTextAreaProps extends TextAreaProps {

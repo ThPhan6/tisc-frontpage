@@ -1,7 +1,7 @@
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
 import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
-import defaultImage from '@/assets/icons/image.png';
+import DefaultImage from '@/assets/icons/default-option-icon.png';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 import classNames from 'classnames';
@@ -9,7 +9,7 @@ import { isEmpty } from 'lodash';
 import React, { FC, useState } from 'react';
 import styles from '../styles/OptionItem.less';
 import { ISubBasisOption, IBasisOptionSubForm } from '../types';
-import { Collapse, Radio } from 'antd';
+import { Collapse, Radio, Row, Col } from 'antd';
 import { showImageUrl } from '@/helper/utils';
 
 interface IOptionItem {
@@ -88,7 +88,7 @@ const SubItemOption: FC<ISubItemOption> = ({
                   ? subItemOption.isBase64
                     ? subItemOption.image
                     : showImageUrl(subItemOption.image)
-                  : defaultImage
+                  : DefaultImage
               }
             />
           </label>
@@ -105,14 +105,16 @@ const SubItemOption: FC<ISubItemOption> = ({
         </div>
       )}
 
-      <div className={styles.form_sub__input}>
+      <Row className={styles.form_sub__input}>
         {[1, 2].map((order) => (
-          <div className={styles.form_input} key={order}>
+          <Col className={styles.form_input} key={order} span={12}>
             <BodyText level={3}>O{order}:</BodyText>
             <CustomInput
               placeholder="value"
               name={`value_${order}`}
               size="small"
+              autoWidth
+              defaultWidth={40}
               containerClass={styles.form_input__formula}
               onChange={handleChangeInput}
               value={subItemOption[`value_${order}`]}
@@ -121,13 +123,15 @@ const SubItemOption: FC<ISubItemOption> = ({
               placeholder="unit"
               name={`unit_${order}`}
               size="small"
+              autoWidth
+              defaultWidth={30}
               containerClass={classNames(styles.form_input__unit)}
               onChange={handleChangeInput}
               value={subItemOption[`unit_${order}`]}
             />
-          </div>
+          </Col>
         ))}
-      </div>
+      </Row>
     </div>
   );
 };

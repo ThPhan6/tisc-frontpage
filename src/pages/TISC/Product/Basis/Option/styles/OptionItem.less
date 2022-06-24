@@ -79,15 +79,14 @@
     align-items: center;
     justify-content: space-between;
     height: 32px;
-    margin-bottom: 8px;
+    :global(.ant-input) {
+      color: @primary-color-dark;
+    }
     &_value {
       display: flex;
       align-items: center;
       width: 100%;
       height: 100%;
-      :global(.ant-input) {
-        color: @primary-color-dark;
-      }
     }
     &_delete_icon {
       cursor: pointer;
@@ -110,10 +109,14 @@
   width: 100%;
   padding-left: 16px;
   .element_input {
-    margin-bottom: 8px;
+    margin-top: 8px;
+    &:last-child {
+      margin-bottom: 8px;
+    }
     .optionItemGroup {
       display: flex;
       align-items: center;
+      width: 100%;
     }
 
     .image_upload {
@@ -128,13 +131,16 @@
 
     .form {
       display: flex;
+      width: 100%;
       .element {
         display: flex;
         align-items: center;
-        margin-right: 8px;
+        width: 100%;
+        // margin-right: 8px;
         .form_sub__input {
           display: flex;
           align-items: center;
+          width: 100%;
           .form_input {
             display: flex;
             align-items: center;
@@ -148,7 +154,7 @@
               }
             }
             &__formula {
-              width: 80px;
+              width: auto !important;
               margin: 0 8px;
             }
           }
