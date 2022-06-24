@@ -105,7 +105,7 @@ const SubItemOption: FC<ISubItemOption> = ({
         </div>
       )}
 
-      <Row className={styles.form_sub__input}>
+      <Row className={styles.form_sub__input} gutter={16}>
         {[1, 2].map((order) => (
           <Col className={styles.form_input} key={order} span={12}>
             <BodyText level={3}>O{order}:</BodyText>

@@ -140,7 +140,7 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
           <div>
             {presetItem.subs.map((preset, index) => (
               <div className={styles.form} key={index}>
-                <Row className={styles.form__element}>
+                <Row className={styles.form__element} gutter={16}>
                   <Col span={12}>
                     <PresetElementInput
                       order={1}
