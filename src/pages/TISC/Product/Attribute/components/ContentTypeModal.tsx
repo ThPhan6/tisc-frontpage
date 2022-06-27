@@ -8,6 +8,7 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 import { snakeCase, isEmpty, isUndefined, lowerCase } from 'lodash';
 import { SPECIFICATION_TYPE } from '../utils';
+import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 
 import type { RadioValue } from '@/components/CustomRadio/types';
 import type { TabProp } from '@/components/Tabs/types';
@@ -258,6 +259,7 @@ const ContentTypeModal: React.FC<IContentTypeModal> = (props) => {
         visible={true}
         onCancel={() => setVisible(false)}
         width={576}
+        closeIcon={<CloseIcon />}
         footer={
           <div className={styles.contentTypeFooter}>
             <CustomButton
