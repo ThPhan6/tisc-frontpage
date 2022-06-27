@@ -70,6 +70,9 @@ const BasisPresetList: React.FC = () => {
       },
       width: 300,
       isExpandable: true,
+      render: (value) => {
+        return <span className="text-uppercase">{value}</span>;
+      },
     },
     {
       title: 'Preset Name',
@@ -122,6 +125,9 @@ const BasisPresetList: React.FC = () => {
       dataIndex: 'name',
       width: 250,
       isExpandable: true,
+      render: (value) => {
+        return <span className="text-capitalize">{value}</span>;
+      },
     },
     ...SameColumns,
     {
