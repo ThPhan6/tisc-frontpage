@@ -50,9 +50,6 @@ const AttributeList: React.FC = () => {
       sorter: {
         multiple: 2,
       },
-      render: (value) => {
-        return <span className="text-capitalize">{value}</span>;
-      },
     },
     {
       title: 'Content Type',
@@ -108,6 +105,9 @@ const AttributeList: React.FC = () => {
       dataIndex: 'name',
       width: 250,
       noBoxShadow: true,
+      render: (value) => {
+        return <span className="text-capitalize">{value}</span>;
+      },
     },
     {
       title: 'Content Type',
