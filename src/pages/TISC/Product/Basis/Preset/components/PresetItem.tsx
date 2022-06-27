@@ -77,21 +77,18 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
     onChangeValue({ ...presetItem, name: e.target.value });
   };
 
+  const handleActiveKeyToCollapse = () => {
+    onChangeValue({
+      ...presetItem,
+      is_collapse: presetItem.is_collapse ? '' : '1',
+    });
+  };
+
   const renderPanelHeader = () => {
     return (
       <div className={styles.panel_header}>
         <div className={styles.panel_header__field}>
-          <div
-            className={styles.panel_header__field_title}
-            onClick={() => {
-              const newSubs = [...presetItem.subs, subPresetDefaultValue];
-              onChangeValue({
-                ...presetItem,
-                is_collapse: presetItem.is_collapse ? '' : '1',
-                subs: newSubs,
-              });
-            }}
-          >
+          <div className={styles.panel_header__field_title} onClick={handleActiveKeyToCollapse}>
             <BodyText
               level={3}
               customClass={
