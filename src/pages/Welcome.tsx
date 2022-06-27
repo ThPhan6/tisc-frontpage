@@ -65,9 +65,10 @@ const Welcome: React.FC = () => {
         <div className={styles.profile_icon}>
           <ProfileIcon name="Adele" />
           <ProfileIcon name="Black Panther" />
+          <ProfileIcon name="Black Panther" />
+          <ProfileIcon name="Black Adam" />
           <ProfileIcon name="Tony Start" />
           <ProfileIcon name="Thor" />
-          <ProfileIcon name="Black Adam" />
         </div>
 
         <PresetsEntryForm />
