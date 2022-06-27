@@ -36,7 +36,12 @@ const BasisOptionList: React.FC = () => {
       width: '5%',
       render: (value) => {
         if (value) {
-          return <img src={showImageUrl(value)} style={{ width: 30 }} />;
+          return (
+            <img
+              src={showImageUrl(value)}
+              style={{ width: 18, height: 18, objectFit: 'contain' }}
+            />
+          );
         }
         return null;
       },
@@ -72,13 +77,16 @@ const BasisOptionList: React.FC = () => {
       sorter: {
         multiple: 1,
       },
-      width: 300,
+      width: 400,
       isExpandable: true,
+      render: (value) => {
+        return <span className="text-uppercase">{value}</span>;
+      },
     },
     {
       title: 'Option Name',
       dataIndex: 'option_name',
-      width: 250,
+      width: 300,
       sorter: {
         multiple: 2,
       },
@@ -118,14 +126,17 @@ const BasisOptionList: React.FC = () => {
     {
       title: 'Option Group',
       dataIndex: 'option_group',
-      width: 300,
+      width: 400,
       noBoxShadow: true,
     },
     {
       title: 'Option Name',
       dataIndex: 'name',
-      width: 250,
+      width: 300,
       isExpandable: true,
+      render: (value) => {
+        return <span className="text-capitalize">{value}</span>;
+      },
     },
     ...SameColumn,
     {
@@ -140,13 +151,13 @@ const BasisOptionList: React.FC = () => {
     {
       title: 'Option Group',
       dataIndex: 'option_group',
-      width: 300,
+      width: 400,
       noBoxShadow: true,
     },
     {
       title: 'Option Name',
       dataIndex: 'option_name',
-      width: 250,
+      width: 300,
     },
     ...SameColumn,
     {

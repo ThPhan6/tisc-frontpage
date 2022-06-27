@@ -39,6 +39,9 @@ const AttributeList: React.FC = () => {
       },
       width: 300,
       isExpandable: true,
+      render: (value) => {
+        return <span className="text-uppercase">{value}</span>;
+      },
     },
     {
       title: 'Attribute Name',
@@ -102,6 +105,9 @@ const AttributeList: React.FC = () => {
       dataIndex: 'name',
       width: 250,
       noBoxShadow: true,
+      render: (value) => {
+        return <span className="text-capitalize">{value}</span>;
+      },
     },
     {
       title: 'Content Type',

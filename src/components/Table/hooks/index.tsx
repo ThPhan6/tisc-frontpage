@@ -70,7 +70,7 @@ export const useCustomTable = (columns: ICustomTableColumnType<any>[]) => {
           return {
             ...cellClassName,
             children: column.render
-              ? column.render(value, record, index)
+              ? renderExpandedColumn(column.render(value, record, index), record)
               : renderExpandedColumn(value, record),
           };
         },
