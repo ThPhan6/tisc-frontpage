@@ -97,8 +97,7 @@ const LandingPage = () => {
   return (
     <div className={styles.login}>
       <div className={styles.container}>
-        <Row>
-          <Col span={1}></Col>
+        <Row justify="center">
           <Col span={22}>
             <div className={styles.header}>
               <LogoBeta />
@@ -201,12 +200,10 @@ const LandingPage = () => {
               </div>
             </div>
           </Col>
-          <Col span={1}></Col>
         </Row>
       </div>
       <div className={styles['footer-container']}>
-        <Row>
-          <Col span={1}></Col>
+        <Row justify="center">
           <Col span={22}>
             <div className={styles.footer}>
               <BodyText level={5} fontFamily="Roboto">
@@ -234,7 +231,6 @@ const LandingPage = () => {
               </div>
             </div>
           </Col>
-          <Col span={1}></Col>
         </Row>
       </div>
       <LoginModal
