@@ -1,0 +1,96 @@
+@import (reference) '~antd/es/style/themes/index';
+
+.attribute_container {
+  margin-top: 16px;
+  box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
+  &:last-child {
+    box-shadow: none;
+  }
+  .field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &__name {
+      display: flex;
+      align-items: center;
+      &_input {
+        :global(.ant-input) {
+          width: 48px;
+          margin: 0 8px;
+          padding: 0;
+          color: @primary-color-dark;
+        }
+      }
+    }
+    &__delete_icon {
+      cursor: pointer;
+      path {
+        transition: fill 1s;
+        fill: @mono-color-medium;
+      }
+      &:hover {
+        path {
+          fill: @primary-color-dark;
+        }
+      }
+    }
+  }
+  .form {
+    display: flex;
+    height: 32px;
+    .element {
+      display: flex;
+      align-items: center;
+      margin-right: 8px;
+      &__input_formula,
+      &__input_unit {
+        // flex: 1;
+        :global(.ant-input) {
+          padding: 0;
+          color: @primary-color-dark;
+        }
+      }
+      &__input_formula {
+        width: 80px;
+        margin: 0 8px;
+      }
+    }
+  }
+  svg {
+    cursor: pointer;
+  }
+}
+.form_input__cursor {
+  cursor: pointer;
+}
+.form_input__element {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  :global(.group-content-type) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 16px;
+    :global(.group-type-placeholder) {
+      margin-left: 12px;
+      color: @mono-color-medium;
+      :global(.basis-conversion-group) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #000;
+        text-transform: capitalize;
+        svg {
+          margin: 0 12px;
+          cursor: default;
+        }
+      }
+    }
+  }
+  :global(.attribute-input) {
+    color: @primary-color-dark;
+    text-transform: capitalize;
+  }
+}

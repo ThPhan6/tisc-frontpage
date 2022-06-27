@@ -1,0 +1,122 @@
+.preset {
+  margin-top: 16px;
+  :global(.ant-collapse-header-text) {
+    width: 100%;
+  }
+  :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
+    padding: 0;
+  }
+  :global(.ant-collapse-content > .ant-collapse-content-box) {
+    padding: 0;
+  }
+  :global(.ant-collapse-ghost
+      > .ant-collapse-item
+      > .ant-collapse-content
+      > .ant-collapse-content-box) {
+    padding: 0;
+  }
+  :global(.ant-collapse > .ant-collapse-item:last-child) {
+    border-radius: 0;
+  }
+  .bottomMedium {
+    box-shadow: inset 0 -0.5px 0 @mono-color-medium;
+  }
+  .bottomBlack {
+    padding-bottom: 8px;
+    box-shadow: inset 0 -0.5px 0 @mono-color;
+  }
+  .form {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 36px;
+    margin-left: 16px;
+    &__element {
+      width: 100%;
+      .presetElement {
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        &__input_value,
+        &__input_unit {
+          :global(.ant-input) {
+            padding: 0;
+            color: @primary-color-dark;
+          }
+        }
+        &__input_value {
+          width: auto !important;
+          margin: 0 8px;
+        }
+      }
+    }
+    &__delete_icon {
+      cursor: pointer;
+      path {
+        transition: fill 1s;
+        fill: @mono-color-medium;
+      }
+      &:hover {
+        path {
+          fill: @primary-color-dark;
+        }
+      }
+    }
+  }
+}
+
+.panel_header {
+  width: 100%;
+  cursor: default;
+  &__field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    svg {
+      cursor: pointer;
+    }
+
+    &_title {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      cursor: pointer;
+      &_icon {
+        transition: all 0.3s;
+      }
+    }
+  }
+  &__input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 32px;
+    &_value {
+      :global(.ant-input) {
+        color: @primary-color-dark;
+        text-transform: capitalize;
+      }
+    }
+    &_delete_icon {
+      cursor: pointer;
+      path {
+        transition: fill 1s;
+        fill: @mono-color-medium;
+      }
+      &:hover {
+        path {
+          fill: @primary-color-dark;
+        }
+      }
+    }
+  }
+}
+
+.font_weight_600 {
+  font-weight: 600;
+}
+
+.font_weight_300 {
+  font-weight: 300;
+}

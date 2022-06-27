@@ -1,0 +1,48 @@
+.customModal {
+  :global(.ant-btn-primary) {
+    padding: 0 20px;
+    color: @primary-color-dark;
+    font-weight: 300;
+    font-size: 14px;
+    font-family: 'Roboto';
+    font-style: normal;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    text-align: center;
+    background: #fff;
+    border: 0.5px solid @primary-color-dark;
+    transition: all 0.2s;
+    &:hover {
+      color: #fff;
+      font-weight: 500;
+      background: @primary-color-dark;
+      border: 0.5px solid transparent;
+    }
+  }
+  :global(.ant-btn-default) {
+    padding: 0 20px;
+    color: #fff;
+    font-weight: 500;
+    font-size: 14px;
+    font-family: 'Roboto';
+    font-style: normal;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    text-align: center;
+    background: @primary-color-dark;
+    border: 0.5px solid transparent;
+  }
+  :global(.ant-modal-body) {
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  }
+  :global(.ant-modal-confirm-body) {
+    padding-left: 40px;
+  }
+}
+.deleteModalIcon {
+  position: absolute;
+  top: 0;
+  left: 30px;
+  height: 100%;
+  padding-bottom: 40px;
+}

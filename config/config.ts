@@ -1,12 +1,7 @@
 // https://umijs.org/config/
 import { defineConfig } from 'umi';
-import { join } from 'path';
-
 import defaultSettings from './defaultSettings';
-import proxy from './proxy';
 import routes from './routes';
-
-const { REACT_APP_ENV } = process.env;
 
 export default defineConfig({
   hash: true,
@@ -17,7 +12,7 @@ export default defineConfig({
   layout: {
     // https://umijs.org/zh-CN/plugins/plugin-layout
     locale: true,
-    siderWidth: 208,
+    siderWidth: 240,
     ...defaultSettings,
   },
   // https://umijs.org/zh-CN/plugins/plugin-locale
@@ -28,7 +23,7 @@ export default defineConfig({
     baseNavigator: true,
   },
   dynamicImport: {
-    loading: '@ant-design/pro-layout/es/PageLoading',
+    loading: '@/components/LoadingPage',
   },
   targets: {
     ie: 11,
@@ -40,7 +35,20 @@ export default defineConfig({
   theme: {
     // https://ant.design/docs/react/customize-theme-variable-cn
     // 'root-entry-name': 'variable',
+    'primary-color': '#1A227F',
+    'primary-color-dark': '#2B39D4',
     'primary-color-medium': '#8088E5',
+    'primary-color-light': '#D5D7F6',
+    'secondary-color': '#E65000',
+    'secondary-color-medium': '#EF8B4D',
+    'secondary-color-light': '#FFCDB3',
+    'tertiary-color': '#EB008D',
+    'tertiary-color-medium': '#FF52BA',
+    'tertiary-color-light': '#FFB8E2',
+    'mono-color': '#000000',
+    'mono-color-dark': '#808080',
+    'mono-color-medium': '#BFBFBF',
+    'mono-color-light': '#E6E6E6',
   },
   // esbuild is father build tools
   // https://umijs.org/plugins/plugin-esbuild
@@ -57,4 +65,8 @@ export default defineConfig({
   mfsu: {},
   webpack5: {},
   exportStatic: {},
+  define: {
+    API_URL: process.env.REACT_APP_API_URL || '',
+    STORE_URL: process.env.TISC_FILE_STORE_URL || '',
+  },
 });

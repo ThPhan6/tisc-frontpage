@@ -1,0 +1,114 @@
+.setForgotWrapper(@color, @margin-left:12px, @stocker:none) {
+  .text {
+    margin-left: @margin-left;
+    color: @color;
+  }
+  .icon path {
+    fill: @color;
+    stroke: @stocker;
+  }
+}
+
+.closeIcon {
+  path {
+    fill: #fff;
+  }
+}
+
+.content {
+  padding-bottom: 32px;
+  .intro {
+    padding: 32px 0 48px 0;
+    p {
+      text-align: center;
+    }
+    .body {
+      padding-bottom: 16px;
+    }
+    .body-dark {
+      padding-bottom: 16px;
+      color: #fff;
+    }
+    .title {
+      line-height: 30px;
+    }
+    .title-dark {
+      color: #fff;
+      line-height: 30px;
+    }
+  }
+  .form {
+    height: 290px;
+    .email {
+      margin-bottom: 8px;
+    }
+    .disabled {
+      :global(.ant-input-affix-wrapper-disabled) {
+        background-color: transparent;
+      }
+      :global(.ant-input) {
+        color: @mono-color-medium;
+      }
+      svg path {
+        fill: @mono-color-medium;
+      }
+    }
+    .forgot-password {
+      margin: 8px 0;
+      cursor: pointer;
+      .wrapper {
+        display: flex;
+        align-items: center;
+        height: 40px;
+        padding-left: 12px;
+        .setForgotWrapper(@primary-color-dark);
+      }
+      .wrapper-dark {
+        .setForgotWrapper(@primary-color-medium);
+      }
+      .wrapper-active {
+        .setForgotWrapper(@mono-color);
+      }
+      .wrapper-active-dark {
+        .setForgotWrapper(#fff);
+      }
+      .forgot-input {
+        input {
+          padding-left: 42px;
+        }
+      }
+      .forgot-input-dark {
+        color: #fff;
+        div {
+          &::before {
+            left: 32px;
+          }
+          input {
+            padding-left: 44px;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+  .action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .warning {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 32px;
+      padding: 0 16px;
+      background-color: @secondary-color;
+      p {
+        margin-left: 12px;
+        color: #fff;
+      }
+    }
+    .submit {
+      border-radius: 16px;
+    }
+  }
+}

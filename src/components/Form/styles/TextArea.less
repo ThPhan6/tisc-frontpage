@@ -1,0 +1,33 @@
+.textarea-container {
+  :global(.ant-input) {
+    color: @mono-color;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 22px;
+    border: 1px solid transparent;
+    border-radius: 0;
+    &:hover {
+      border: 1px solid transparent;
+    }
+    &:focus {
+      box-shadow: none;
+    }
+  }
+}
+
+.mono-border-bottom-color {
+  :global(.ant-input) {
+    border-bottom-color: @mono-color;
+    &:hover {
+      border-bottom-color: @mono-color;
+    }
+  }
+}
+.mono-medium-border-bottom-color {
+  :global(.ant-input) {
+    border-bottom-color: @mono-color-medium;
+    &:hover {
+      border-bottom-color: @mono-color-medium;
+    }
+  }
+}

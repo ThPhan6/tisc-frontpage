@@ -1,0 +1,63 @@
+.entry_form_container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+  background-color: #fff;
+  .header {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 16px;
+    border-bottom: 0.5px inset @mono-color;
+    &__title {
+      flex: 1;
+      margin-right: 8px;
+      text-align: center;
+    }
+    &__icon {
+      cursor: pointer;
+    }
+  }
+  .content {
+    height: calc(100vh - 250px);
+    padding: 16px;
+    overflow: hidden auto;
+  }
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 48px;
+    padding: 0 16px;
+    border-top: 0.5px inset @mono-color;
+    &__cancel_bt,
+    &__submit_bt {
+      min-width: 64px;
+      border-radius: 12px;
+    }
+    &__cancel_bt {
+      margin-right: 16px;
+    }
+    &__wrapper_submit {
+      &_normal {
+        min-width: 64px;
+        border-radius: 12px;
+        p {
+          color: #fff;
+        }
+      }
+      &_success {
+        min-width: 64px;
+        background-color: @primary-color-dark;
+        border-radius: 12px;
+        cursor: default;
+        animation: fadeIn 2s;
+        svg {
+          width: 16px;
+          height: 16px;
+          margin-right: 0;
+        }
+      }
+    }
+  }
+}
