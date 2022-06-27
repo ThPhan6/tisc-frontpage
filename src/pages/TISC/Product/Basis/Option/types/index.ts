@@ -24,6 +24,7 @@ export interface IBasisOptionSubForm {
   id?: string;
   name: string;
   is_have_image: boolean;
+  is_collapse: string;
   subs: ISubBasisOption[];
 }
 
