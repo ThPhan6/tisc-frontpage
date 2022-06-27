@@ -3,7 +3,7 @@ import { CustomModal } from '@/components/Modal';
 import { MainTitle } from '@/components/Typography';
 import { CustomInput } from '@/components/Form/CustomInput';
 import CustomButton from '@/components/Button';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { ContactModalProps } from '../types';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
@@ -18,7 +18,6 @@ import { PoliciesModal } from './PoliciesModal';
 export const SignupModal: FC<ContactModalProps> = ({ visible, theme = 'default', type }) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
   const openTiscPolicies = useBoolean();
-  const [border, setBorder] = useState(false);
 
   return (
     <CustomModal
@@ -90,9 +89,7 @@ export const SignupModal: FC<ContactModalProps> = ({ visible, theme = 'default',
             name="email"
             required={true}
           />
-          <Checkbox onClick={() => setBorder(!border)} className={border && styles.customBorder}>
-            By clicking and continuing, we agree TISC’s
-          </Checkbox>
+          <Checkbox>By clicking and continuing, we agree TISC’s</Checkbox>
           <div className={styles.customLink}>
             <span onClick={() => openTiscPolicies.setValue(true)}>
               Terms of Services, Privacy Policy and Cookie Policy
