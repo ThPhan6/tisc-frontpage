@@ -92,6 +92,7 @@ const BasisPresetList: React.FC = () => {
         return (
           <HeaderDropdown
             arrow={true}
+            align={{ offset: [-14, -10] }}
             items={[
               {
                 onClick: () => handleAction('edit', record.id),
