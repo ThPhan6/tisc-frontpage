@@ -46,7 +46,6 @@ const PresetElementInput: FC<PresetElementInputProp> = ({ order, onChange, value
 
 export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeValue, value }) => {
   const [presetItem, setPresetItem] = useState<PresetItemValueProp>(presetsValueDefault);
-  const [activeKey, setActiveKey] = useState<string[]>([]);
 
   useEffect(() => {
     if (value) {
@@ -65,14 +64,15 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
     newSubs.splice(index, 1);
     onChangeValue({ ...presetItem, subs: newSubs });
     if (newSubs.length === 0) {
-      setActiveKey([]);
+      // setActiveKey([]);
+      onChangeValue({ ...presetItem, is_collapse: '', subs: newSubs });
     }
   };
 
   const handleOnClickAddItem = () => {
     const newSubs = [...presetItem.subs, subPresetDefaultValue];
-    setActiveKey(['1']);
-    onChangeValue({ ...presetItem, subs: newSubs });
+    // setActiveKey(['1']);
+    onChangeValue({ ...presetItem, is_collapse: '1', subs: newSubs });
   };
 
   const handleOnChangePresetName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,19 +86,27 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
           <div
             className={styles.panel_header__field_title}
             onClick={() => {
-              setActiveKey(isEmpty(activeKey) ? ['1'] : []);
+              // setActiveKey(isEmpty(activeKey) ? ['1'] : []);
+              const newSubs = [...presetItem.subs, subPresetDefaultValue];
+              onChangeValue({
+                ...presetItem,
+                is_collapse: presetItem.is_collapse ? '1' : '',
+                subs: newSubs,
+              });
             }}
           >
             <BodyText
               level={3}
-              customClass={isEmpty(activeKey) ? styles.font_weight_300 : styles.font_weight_600}
+              customClass={
+                isEmpty(presetItem.is_collapse) ? styles.font_weight_300 : styles.font_weight_600
+              }
             >
               Preset Name
             </BodyText>
             <ArrowIcon
               className={styles.panel_header__field_title_icon}
               style={{
-                transform: `rotate(${isEmpty(activeKey) ? '0' : '180'}deg)`,
+                transform: `rotate(${isEmpty(presetItem.is_collapse) ? '0' : '180'}deg)`,
               }}
             />
           </div>
@@ -127,14 +135,14 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
 
   return (
     <div className={styles.preset}>
-      <Collapse ghost activeKey={activeKey}>
+      <Collapse ghost activeKey={presetItem.is_collapse}>
         <Collapse.Panel
           className={classNames(
             styles['customPadding'],
-            isEmpty(activeKey) ? styles['bottomMedium'] : styles['bottomBlack'],
+            isEmpty(presetItem.is_collapse) ? styles['bottomMedium'] : styles['bottomBlack'],
           )}
           header={renderPanelHeader()}
-          key="1"
+          key={presetItem.is_collapse}
           showArrow={false}
         >
           <div>

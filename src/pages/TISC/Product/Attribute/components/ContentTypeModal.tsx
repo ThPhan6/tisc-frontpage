@@ -240,7 +240,6 @@ const ContentTypeModal: React.FC<IContentTypeModal> = (props) => {
   });
   /// set active tab
   let selectedTab = listTab[0];
-  console.log('subAttribute', subAttribute);
   if (!isUndefined(subAttribute.content_type)) {
     const selected = listTab.find((tab) => {
       return tab.key.indexOf(lowerCase(subAttribute.content_type!)) >= 0;
