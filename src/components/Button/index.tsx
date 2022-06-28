@@ -37,6 +37,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
           return `${styles.disabled}`;
       }
     }
+    return '';
   };
 
   const setSize = () => {
