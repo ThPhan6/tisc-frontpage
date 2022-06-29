@@ -46,6 +46,9 @@ const BasisConversionList: React.FC = () => {
       },
       width: 250,
       isExpandable: true,
+      render: (value) => {
+        return <span className="text-uppercase">{value}</span>;
+      },
     },
     {
       title: 'Conversion Between',
@@ -108,6 +111,9 @@ const BasisConversionList: React.FC = () => {
       dataIndex: 'conversion_between',
       width: 250,
       noBoxShadow: true,
+      render: (value) => {
+        return <span className="text-capitalize">{value}</span>;
+      },
     },
     {
       title: '1st Formula',
