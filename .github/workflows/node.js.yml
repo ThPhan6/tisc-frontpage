@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ master, develop ]
+    branches: [ master, develop, staging ]
   pull_request:
-    branches: [ master, develop ]
+    branches: [ master, develop, staging ]
 
 jobs:
   quality-control:
@@ -35,4 +35,18 @@ jobs:
         username: ${{ secrets.DEV_SERVER_USERNAME }}
         key: ${{ secrets.DEV_SERVER_SSH_PRIVATE_KEY }}
         port: ${{ secrets.DEV_SERVER_PORT }}
-        script: /var/www/cd_frontpage.sh develop
+        script: /var/www/dev/cd_frontpage.sh develop
+  deploy-staging-server:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/staging' # run this job only for the develop branch
+    steps:
+    # DigitalOcean Droplet already have deploy files
+    - uses: actions/checkout@v3
+    - name: Deploy TISC Webapp to DigitalOcean Droplet
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.DEV_SERVER_IP }}
+        username: ${{ secrets.DEV_SERVER_USERNAME }}
+        key: ${{ secrets.DEV_SERVER_SSH_PRIVATE_KEY }}
+        port: ${{ secrets.DEV_SERVER_PORT }}
+        script: /var/www/cd_frontpage.sh staging

@@ -39,6 +39,9 @@ const AttributeList: React.FC = () => {
       },
       width: 300,
       isExpandable: true,
+      render: (value) => {
+        return <span className="text-uppercase">{value}</span>;
+      },
     },
     {
       title: 'Attribute Name',
@@ -70,6 +73,7 @@ const AttributeList: React.FC = () => {
         return (
           <HeaderDropdown
             arrow={true}
+            align={{ offset: [-14, -10] }}
             items={[
               {
                 onClick: () => handleUpdateAttribute(record.id),
@@ -102,6 +106,9 @@ const AttributeList: React.FC = () => {
       dataIndex: 'name',
       width: 250,
       noBoxShadow: true,
+      render: (value) => {
+        return <span className="text-capitalize">{value}</span>;
+      },
     },
     {
       title: 'Content Type',

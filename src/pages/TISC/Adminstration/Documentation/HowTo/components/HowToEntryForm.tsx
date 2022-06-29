@@ -154,8 +154,6 @@ export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
     updatedOnChange(value);
   };
 
-  console.log(value.data);
-
   return (
     <Row>
       <Col span={12}>
