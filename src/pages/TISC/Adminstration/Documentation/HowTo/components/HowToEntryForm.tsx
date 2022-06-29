@@ -58,6 +58,8 @@ const QuestionAndAnswerField: FC<IFAQField> = ({
             name="question"
             value={value.question}
             onChange={handleOnChangeInput}
+            maxHeight={80}
+            defaultHeight={32}
           />
           <ActionDeleteIcon className={styles.question_delete_icon} onClick={handleDeleteFAQItem} />
         </div>
@@ -67,6 +69,8 @@ const QuestionAndAnswerField: FC<IFAQField> = ({
             name="answer"
             value={value.answer}
             onChange={handleOnChangeInput}
+            maxHeight={80}
+            defaultHeight={32}
           />
           {!isEmpty(value.answer) && (
             <ActionRemoveIcon
@@ -154,6 +158,10 @@ export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
     updatedOnChange(value);
   };
 
+  const onSubmit = () => {
+    alert('comming soon');
+  };
+
   return (
     <Row>
       <Col span={12}>
@@ -186,6 +194,9 @@ export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
                           name="description"
                           value={panel.description}
                           onChange={(e) => handleOnChangeDescription(e, panelIndex)}
+                          className={styles.description}
+                          maxHeight={80}
+                          defaultHeight={32}
                         />
                       </FormGroup>
                       <div className={styles.add_content}>
@@ -213,7 +224,7 @@ export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
               })}
             </div>
             <div className={styles.footer}>
-              <CustomButton size="small" buttonClass={styles.submitBtn}>
+              <CustomButton onClick={onSubmit} size="small" buttonClass={styles.submitBtn}>
                 Save
               </CustomButton>
             </div>
