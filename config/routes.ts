@@ -249,7 +249,7 @@
           {
             path: '/tisc/adminstration/documentation/how-to',
             name: 'how.to',
-            component: './Welcome',
+            component: './TISC/Adminstration/Documentation/HowTo',
           },
         ],
       },

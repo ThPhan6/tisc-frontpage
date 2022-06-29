@@ -243,7 +243,7 @@ export const OptionItem: FC<IOptionItem> = (props) => {
 
   return (
     <div className={styles.collapse_container}>
-      <Collapse ghost activeKey={subOption.is_collapse}>
+      <Collapse ghost activeKey={subOption.is_collapse!}>
         <Collapse.Panel
           className={
             isEmpty(subOption.is_collapse)
@@ -251,7 +251,7 @@ export const OptionItem: FC<IOptionItem> = (props) => {
               : styles.unactive_collapse_panel
           }
           header={renderPanelHeader()}
-          key={subOption.is_collapse}
+          key={subOption.is_collapse!}
           showArrow={false}
         >
           <div className={styles.sub_wrapper}>
