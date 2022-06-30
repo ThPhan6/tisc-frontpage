@@ -21,7 +21,6 @@ interface IPanelHeader {
   value: IHowToValueProps;
   panel: IHowToSubProps;
   handleActiveKeyToCollapse: (title: string) => void;
-  index: number;
 }
 
 interface IFAQField {
@@ -84,14 +83,9 @@ const QuestionAndAnswerField: FC<IFAQField> = ({
   );
 };
 
-const RenderPanelHeader: FC<IPanelHeader> = ({
-  value,
-  panel,
-  handleActiveKeyToCollapse,
-  index,
-}) => {
+const RenderPanelHeader: FC<IPanelHeader> = ({ value, panel, handleActiveKeyToCollapse }) => {
   return (
-    <div key={index} className={styles.panel}>
+    <div className={styles.panel}>
       <div className={styles.panel_header} onClick={() => handleActiveKeyToCollapse(panel.title)}>
         <div className={styles.panel_header__info}>
           {panel.icon && panel.icon}
@@ -140,9 +134,9 @@ export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
     updatedOnChange(value);
   };
 
-  const handleAddFAQContent = (index: number) => {
+  const handleAddFAQContent = (panelIndex: number) => {
     const newItem = [...value.data];
-    newItem[index].FAQ = [...newItem[index].FAQ, DEFAULT_FAQ_FIELD];
+    newItem[panelIndex].FAQ = [...newItem[panelIndex].FAQ, DEFAULT_FAQ_FIELD];
     updatedOnChange(value);
   };
 
@@ -166,45 +160,48 @@ export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
     <Row>
       <Col span={12}>
         <div className={styles.main_container}>
-          <div className={styles.content_container}>
-            <div className={styles.collapse_container}>
-              {value.data.map((panel, panelIndex) => {
-                return (
-                  <Collapse key={panelIndex} ghost activeKey={value.activeKey}>
-                    <Collapse.Panel
-                      className={
-                        value.activeKey !== panel.title
-                          ? styles.active_collapse_panel
-                          : styles.unactive_collapse_panel
-                      }
-                      header={
-                        <RenderPanelHeader
-                          value={value}
-                          panel={panel}
-                          handleActiveKeyToCollapse={handleActiveKeyToCollapse}
-                          index={panelIndex}
-                        />
-                      }
-                      key={panel.title}
-                      showArrow={false}
-                    >
-                      <FormGroup label="Description" required={true} layout="vertical">
-                        <CustomTextArea
-                          placeholder="type text here"
-                          name="description"
-                          value={panel.description}
-                          onChange={(e) => handleOnChangeDescription(e, panelIndex)}
-                          className={styles.description}
-                          maxHeight={80}
-                          defaultHeight={32}
-                        />
-                      </FormGroup>
-                      <div className={styles.add_content}>
-                        <BodyText level={3} customClass={styles.text}>
-                          Add Content
-                        </BodyText>
-                        <CustomPlusButton onClick={() => handleAddFAQContent(panelIndex)} />
-                      </div>
+          <div className={styles.collapse_container}>
+            {value.data.map((panel, panelIndex) => {
+              return (
+                <Collapse key={panelIndex} ghost activeKey={value.activeKey}>
+                  <Collapse.Panel
+                    className={
+                      value.activeKey !== panel.title
+                        ? styles.active_collapse_panel
+                        : styles.unactive_collapse_panel
+                    }
+                    header={
+                      <RenderPanelHeader
+                        key={panelIndex}
+                        value={value}
+                        panel={panel}
+                        handleActiveKeyToCollapse={handleActiveKeyToCollapse}
+                      />
+                    }
+                    key={panel.title}
+                    showArrow={false}
+                  >
+                    <FormGroup label="Description" required={true} layout="vertical">
+                      <CustomTextArea
+                        placeholder="type text here"
+                        name="description"
+                        value={panel.description}
+                        onChange={(e) => handleOnChangeDescription(e, panelIndex)}
+                        className={styles.description}
+                        maxHeight={80}
+                        defaultHeight={32}
+                      />
+                    </FormGroup>
+                    <div className={styles.add_content}>
+                      <BodyText level={3} customClass={styles.text}>
+                        Add Content
+                      </BodyText>
+                      <CustomPlusButton
+                        onClick={() => handleAddFAQContent(panelIndex)}
+                        containerClass={styles.add_content__button}
+                      />
+                    </div>
+                    <div className={styles.fAQ}>
                       {panel.FAQ.map((faqItem, faqIndex) => {
                         return (
                           <QuestionAndAnswerField
@@ -218,16 +215,16 @@ export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
                           />
                         );
                       })}
-                    </Collapse.Panel>
-                  </Collapse>
-                );
-              })}
-            </div>
-            <div className={styles.footer}>
-              <CustomButton onClick={onSubmit} size="small" buttonClass={styles.submitBtn}>
-                Save
-              </CustomButton>
-            </div>
+                    </div>
+                  </Collapse.Panel>
+                </Collapse>
+              );
+            })}
+          </div>
+          <div className={styles.footer}>
+            <CustomButton onClick={onSubmit} size="small" buttonClass={styles.submitBtn}>
+              Save
+            </CustomButton>
           </div>
         </div>
       </Col>
