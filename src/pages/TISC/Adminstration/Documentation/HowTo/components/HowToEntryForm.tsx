@@ -124,9 +124,12 @@ export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
     onChange({ ...dataHowTo, data: dataHowTo.data });
   };
 
-  const handleOnChangeDescription = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
+  const handleOnChangeDescription = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+    panelIndex: number,
+  ) => {
     const newItem = [...value.data];
-    newItem[index].description = e.target.value;
+    newItem[panelIndex].description = e.target.value;
     updatedOnChange(value);
   };
 
