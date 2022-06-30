@@ -41,6 +41,7 @@ const QuestionAndAnswerField: FC<IFAQField> = ({
   handleDeleteFAQItem,
   handleDeleteAnswerFieldItem,
 }) => {
+  /// handle change FAQ field
   const handleOnChangeInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange({
       ...value,
@@ -120,10 +121,12 @@ export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
     });
   };
 
+  /// overwrite data
   const updatedOnChange = (dataHowTo: IHowToValueProps) => {
     onChange({ ...dataHowTo, data: dataHowTo.data });
   };
 
+  /// handle change description
   const handleOnChangeDescription = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
     panelIndex: number,
@@ -141,6 +144,7 @@ export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
 
   const handleAddFAQContent = (panelIndex: number) => {
     const newItem = [...value.data];
+    /// keep existed FAQ content and add new FAQ item
     newItem[panelIndex].FAQ = [...newItem[panelIndex].FAQ, DEFAULT_FAQ_FIELD];
     updatedOnChange(value);
   };
