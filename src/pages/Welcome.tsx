@@ -18,7 +18,6 @@ import { dataMenuSummary } from '@/constants/util';
 import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
 import { MenuSummary } from '@/components/MenuSummary';
 import { PresetsEntryForm } from './TISC/Product/Basis/Preset/components/PresetsEntryForm';
-import HowToPage from './TISC/Adminstration/Documentation/HowTo';
 
 const Welcome: React.FC = () => {
   const optionsRadio = [
@@ -61,7 +60,6 @@ const Welcome: React.FC = () => {
   return (
     <PageContainer>
       <Card>
-        <HowToPage />
         <PresetsEntryForm />
         {/*Tabs*/}
         <div>
