@@ -1,161 +1,166 @@
 .main_container {
   margin-top: 8px;
-
-  .content_container {
+  .collapse_container {
     height: calc(100vh - 240px);
+    padding: 16px;
+    overflow: hidden auto;
     background: #fff;
 
-    .collapse_container {
-      height: 100%;
-      padding: 16px;
-      overflow: hidden auto;
-
-      .active_collapse_panel {
-        box-shadow: inset 0 -0.5px 0 @mono-color-medium;
-      }
-      .unactive_collapse_panel {
-        box-shadow: inset 0 -0.5px 0 @mono-color;
-      }
-
-      :global(.ant-collapse > .ant-collapse-item:last-child) {
-        border-radius: 0;
-      }
-
-      :global(.ant-input) {
-        width: 100%;
-        padding-left: 16px;
-        overflow: hidden;
-        color: @primary-color-dark;
-        resize: none;
-      }
-
-      :global(.ant-collapse > .ant-collapse-item.ant-collapse-no-arrow > .ant-collapse-header),
-      :global(.ant-collapse-ghost
-          > .ant-collapse-item
-          > .ant-collapse-content
-          > .ant-collapse-content-box) {
-        padding: 0;
-      }
-
-      :global(.ant-collapse-ghost
-          > .ant-collapse-item
-          > .ant-collapse-content
-          > .ant-collapse-content-box) {
-        margin-top: 8px;
-      }
+    .active_collapse_panel {
+      box-shadow: inset 0 -0.5px 0 @mono-color-medium;
+    }
+    .unactive_collapse_panel {
+      box-shadow: inset 0 -0.5px 0 @mono-color;
     }
 
-    .panel {
+    :global(.ant-collapse > .ant-collapse-item:last-child) {
+      border-radius: 0;
+    }
+
+    :global(.ant-input) {
       width: 100%;
-
-      .panel_header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 40px;
-        margin-top: 8px;
-
-        &__info {
-          display: flex;
-          align-items: center;
-          svg {
-            margin-right: 12px;
-          }
-        }
-      }
+      padding-left: 16px;
+      overflow: hidden;
+      color: @primary-color-dark;
+      resize: none;
     }
-
-    .description {
+    :global(.ant-input:hover) {
       border-bottom-color: @mono-color-medium;
     }
 
-    .add_content {
+    :global(.ant-collapse > .ant-collapse-item.ant-collapse-no-arrow > .ant-collapse-header),
+    :global(.ant-collapse-ghost
+        > .ant-collapse-item
+        > .ant-collapse-content
+        > .ant-collapse-content-box) {
+      padding: 0;
+    }
+
+    :global(.ant-collapse-ghost
+        > .ant-collapse-item
+        > .ant-collapse-content
+        > .ant-collapse-content-box) {
+      margin-top: 8px;
+      padding-bottom: 8px;
+    }
+
+    :global(.ant-collapse-ghost) {
+      margin-bottom: 8px;
+    }
+  }
+
+  .panel {
+    width: 100%;
+
+    .panel_header {
       display: flex;
       align-items: center;
-      justify-content: right;
+      justify-content: space-between;
       height: 40px;
+
+      &__info {
+        display: flex;
+        align-items: center;
+        svg {
+          margin-right: 12px;
+        }
+      }
+    }
+  }
+
+  .description {
+    border-bottom-color: @mono-color-medium;
+  }
+
+  .add_content {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    height: 40px;
+    margin-bottom: 8px;
+
+    &__button {
+      width: 20px;
+      height: 20px;
+    }
+
+    .text {
+      margin-right: 12px;
+    }
+  }
+
+  .box-shadow(@color) {
+    box-shadow: 0 0.5px 0 @color;
+  }
+
+  .FAQ_field {
+    :global(.ant-input) {
+      border-bottom-color: transparent;
+    }
+    :global(.ant-input:hover) {
+      border-bottom-color: transparent;
+    }
+
+    &__input {
+      display: flex;
+      flex-direction: column;
       margin-bottom: 8px;
 
-      :global(.customButton) {
-        width: 20px;
-        height: 20px;
-      }
-
-      .text {
-        margin-right: 12px;
-      }
-    }
-
-    .box-shadow(@color) {
-      box-shadow: 0 0.5px 0 @color;
-    }
-
-    .FAQ_field {
-      :global(.ant-input) {
-        border-bottom-color: transparent;
-      }
-
-      &__input {
+      &_question,
+      &_answer {
         display: flex;
-        flex-direction: column;
-        padding-bottom: 8px;
+        align-items: center;
 
-        &_question,
-        &_answer {
-          display: flex;
-          align-items: center;
+        :global(.ant-input-sm) {
+          padding: 0;
+        }
 
-          :global(.ant-input-sm) {
-            padding: 0;
+        svg {
+          cursor: pointer;
+          path {
+            transition: fill 1s;
+            fill: @mono-color-medium;
           }
-
-          svg {
-            cursor: pointer;
+          &:hover {
             path {
-              transition: fill 1s;
-              fill: @mono-color-medium;
-            }
-            &:hover {
-              path {
-                fill: @primary-color-dark;
-              }
+              fill: @primary-color-dark;
             }
           }
+        }
 
-          :first-child {
-            width: 100%;
-          }
-        }
-        &_question {
-          :global(.ant-input) {
-            padding-left: 0;
-          }
-        }
-        &_answer {
-          .box-shadow(@mono-color-dark);
+        :first-child {
+          width: 100%;
         }
       }
-    }
-
-    .footer {
-      z-index: 9;
-      display: flex;
-      align-items: center;
-      justify-content: right;
-      height: 48px;
-      padding-right: 16px;
-      background: #fff;
-      box-shadow: 0 -0.5px 0 @mono-color;
-      .submitBtn {
-        border-radius: 12px;
+      &_question {
+        :global(.ant-input) {
+          padding-left: 0;
+        }
+      }
+      &_answer {
+        .box-shadow(@mono-color-dark);
       }
     }
+  }
 
-    .font_weight_300 {
-      font-weight: 300;
+  .footer {
+    z-index: 9;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    height: 48px;
+    padding-right: 16px;
+    background: #fff;
+    box-shadow: 0 -0.5px 0 @mono-color;
+    .submitBtn {
+      border-radius: 12px;
     }
-    .font_weight_500 {
-      font-weight: 500;
-    }
+  }
+
+  .font_weight_300 {
+    font-weight: 300;
+  }
+  .font_weight_500 {
+    font-weight: 500;
   }
 }

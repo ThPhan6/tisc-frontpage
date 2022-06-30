@@ -2,7 +2,7 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabs } from '@/components/Tabs';
 import styles from './styles/index.less';
 import { TabProp } from '@/components/Tabs/types';
-import { useState } from 'react';
+import { FC, useState } from 'react';
 import { HowToEntryForm } from './components/HowToEntryForm';
 import classNames from 'classnames';
 import { IHowToForm } from './types';
@@ -129,7 +129,11 @@ const dataPanelHowTo: IHowToForm = {
   },
 };
 
-const HowToPage = () => {
+interface IHowToPage {
+  containerClass?: string;
+}
+
+const HowToPage: FC<IHowToPage> = ({ containerClass }) => {
   const listTab: TabProp[] = [
     { tab: 'TISC', key: 'tisc' },
     { tab: 'BRANDS', key: 'brands' },
@@ -141,7 +145,7 @@ const HowToPage = () => {
   const [howTo, setHowTo] = useState<IHowToForm>(dataPanelHowTo);
 
   return (
-    <div className={classNames(styles.howto_container)}>
+    <div className={classNames(styles.howto_container, containerClass)}>
       <TableHeader title={'HOW TO'} />
       <div className={styles.tabs}>
         <CustomTabs

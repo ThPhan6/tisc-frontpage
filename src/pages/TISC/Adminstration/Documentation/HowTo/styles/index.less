@@ -1,4 +1,6 @@
 .howto_container {
+  @numberTab: 3;
+
   :global(.ant-tabs-nav-list) {
     background: #fff;
   }
@@ -9,5 +11,11 @@
 
   :global(.tab-list .ant-tabs-top > .ant-tabs-nav::before) {
     border-bottom: none;
+  }
+
+  :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
+    display: grid;
+    grid-template-columns: repeat(@numberTab, 40% / @numberTab);
+    width: 100%;
   }
 }
