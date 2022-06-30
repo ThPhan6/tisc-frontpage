@@ -39,7 +39,9 @@ export const ItemQA: FC<ItemQAProp> = ({ item, activeKey, handleActiveCollapse }
           }
         >
           <div className={styles.textAnswer}>
-            <BodyText level={5}>{item.answer}</BodyText>
+            <BodyText level={5} fontFamily="Roboto">
+              {item.answer}
+            </BodyText>
           </div>
         </Collapse.Panel>
       </Collapse>
