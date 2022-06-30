@@ -59,6 +59,7 @@ const QuestionAndAnswerField: FC<IFAQField> = ({
             onChange={handleOnChangeInput}
             maxHeight={80}
             defaultHeight={32}
+            maxLength={300}
           />
           <ActionDeleteIcon className={styles.question_delete_icon} onClick={handleDeleteFAQItem} />
         </div>
@@ -70,6 +71,7 @@ const QuestionAndAnswerField: FC<IFAQField> = ({
             onChange={handleOnChangeInput}
             maxHeight={80}
             defaultHeight={32}
+            maxLength={500}
           />
           {!isEmpty(value.answer) && (
             <ActionRemoveIcon
@@ -190,6 +192,7 @@ export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
                         className={styles.description}
                         maxHeight={80}
                         defaultHeight={32}
+                        maxLength={500}
                       />
                     </FormGroup>
                     <div className={styles.add_content}>
