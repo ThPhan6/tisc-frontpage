@@ -7,20 +7,24 @@ import styles from './index.less';
 import { Col, Row } from 'antd';
 import { Title } from '@/components/Typography';
 import { ItemHowTo } from './components/ItemHowTo';
+import { useState } from 'react';
 
 const HowTo = () => {
   const data = [
     {
+      id: '1',
       title: 'Onboarding Guide',
       document:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ac vitae aliquam dolor odio tristique ut tellus. Tellus arcu in lectus massa massa. Varius sed et sed vel cursus ut dolor. Amet ullamcorper ultrices proin feugiat vestibulum volutpat',
       question_and_answer: [
         {
+          id: '2',
           question: 'How to view product specification?',
           answer:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ac vitae  dolor odio tristique ut tellus. Tellus arcu in lectus massa massa. Varius sed et sed vel cursus ut dolor. Amet ullamcorper ultrices proin feugiat vestibulum volutpat. Ac vitae aliquam dolor odio tristique ut tellus.',
         },
         {
+          id: '3',
           question: 'How to share product specification?',
           answer:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ac vitae aliquam dolor odio tristique ut tellus. Tellus arcu in lectus massa massa. Varius sed et sed vel cursus ut dolor. Amet ullamcorper ultrices proin feugiat vestibulum volutpat. Ac vitae aliquam dolor odio tristique ut tellus.',
@@ -28,17 +32,20 @@ const HowTo = () => {
       ],
     },
     {
+      id: '4',
       icon: <WorkspaceIcon />,
       title: 'My Workspace',
       document:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ac vitae aliquam dolor odio tristique ut tellus. Tellus arcu in lectus massa massa. Varius sed et sed vel cursus ut dolor. Amet ullamcorper ultrices proin feugiat vestibulum volutpat',
       question_and_answer: [
         {
+          id: '5',
           question: 'How to view product specification?',
           answer:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ac vitae  dolor odio tristique ut tellus. Tellus arcu in lectus massa massa. Varius sed et sed vel cursus ut dolor. Amet ullamcorper ultrices proin feugiat vestibulum volutpat. Ac vitae aliquam dolor odio tristique ut tellus.',
         },
         {
+          id: '6',
           question: 'How to share product specification?',
           answer:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ac vitae aliquam dolor odio tristique ut tellus. Tellus arcu in lectus massa massa. Varius sed et sed vel cursus ut dolor. Amet ullamcorper ultrices proin feugiat vestibulum volutpat. Ac vitae aliquam dolor odio tristique ut tellus.',
@@ -46,17 +53,20 @@ const HowTo = () => {
       ],
     },
     {
+      id: '7',
       icon: <UserGroup />,
       title: 'User Group',
       document:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ac vitae aliquam dolor odio tristique ut tellus. Tellus arcu in lectus massa massa. Varius sed et sed vel cursus ut dolor. Amet ullamcorper ultrices proin feugiat vestibulum volutpat',
       question_and_answer: [
         {
+          id: '8',
           question: 'How to view product specification?',
           answer:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ac vitae  dolor odio tristique ut tellus. Tellus arcu in lectus massa massa. Varius sed et sed vel cursus ut dolor. Amet ullamcorper ultrices proin feugiat vestibulum volutpat. Ac vitae aliquam dolor odio tristique ut tellus.',
         },
         {
+          id: '9',
           question: 'How to share product specification?',
           answer:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ac vitae aliquam dolor odio tristique ut tellus. Tellus arcu in lectus massa massa. Varius sed et sed vel cursus ut dolor. Amet ullamcorper ultrices proin feugiat vestibulum volutpat. Ac vitae aliquam dolor odio tristique ut tellus.',
@@ -64,19 +74,27 @@ const HowTo = () => {
       ],
     },
     {
+      id: '10',
       icon: <ProjectIcon />,
       title: 'Project Tracking',
       document:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ac vitae aliquam dolor odio tristique ut tellus. Tellus arcu in lectus massa massa. Varius sed et sed vel cursus ut dolor. Amet ullamcorper ultrices proin feugiat vestibulum volutpat',
     },
     {
+      id: '11',
       icon: <ProductIcon />,
       title: 'Products',
       document:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ac vitae aliquam dolor odio tristique ut tellus. Tellus arcu in lectus massa massa. Varius sed et sed vel cursus ut dolor. Amet ullamcorper ultrices proin feugiat vestibulum volutpat',
     },
-    { icon: <AdminstrationIcon />, title: 'Adminstration' },
+    { id: '12', icon: <AdminstrationIcon />, title: 'Adminstration' },
   ];
+
+  const [activeKey, setActiveKey] = useState<string>('');
+
+  const handleActiveCollapse = (id: string) => () => {
+    setActiveKey(activeKey === id ? '' : id);
+  };
 
   return (
     <div className={styles.content}>
@@ -88,7 +106,12 @@ const HowTo = () => {
             </div>
             <div className={styles.list}>
               {data.map((item, index) => (
-                <ItemHowTo value={item} key={index} />
+                <ItemHowTo
+                  value={item}
+                  key={index}
+                  activeKey={activeKey}
+                  handleActiveCollapse={handleActiveCollapse(item.id)}
+                />
               ))}
             </div>
           </div>

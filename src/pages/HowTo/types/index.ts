@@ -1,35 +1,31 @@
-export interface HowToProp {
-  howToValue?: howToValueProp;
+export interface ICollapseProps {
+  activeKey?: string;
+  handleActiveCollapse: (id: string) => void;
 }
 
-export interface ItemHowToProp {
-  value: howToValueProp;
+export interface ItemHowToProp extends ICollapseProps {
+  value: HowToValueProp;
 }
-export type howToValueProp = {
+
+export interface ItemQAProp extends ICollapseProps {
+  item: QAValueProp;
+}
+
+export interface QuestionProp extends ICollapseProps {
+  id: string;
+  question: string;
+}
+
+export type HowToValueProp = {
+  id: string;
   icon?: JSX.Element;
   title: string;
-  is_collapse?: string;
   document?: string;
   question_and_answer?: QAValueProp[];
 };
 
-export const howToValueDefault = {
-  icon: '',
-  title: '',
-  is_collapse: '',
-  document: '',
-  question_and_answer: [],
-};
-
-export interface ItemQAProp {
-  value: QAValueProp;
-}
 export type QAValueProp = {
+  id: string;
   question: string;
   answer: string;
-};
-
-export const QAValueDefault = {
-  question: '',
-  answer: '',
 };
