@@ -17,17 +17,19 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
   ...props
 }) => {
   const textarea: any = useRef();
-  const [height, setHeight] = useState(defaultHeight);
+  const [height, setHeight] = useState<string | number | undefined>(defaultHeight);
+  const [checkedOverflow, setCheckedOverflow] = useState<string>('hidden');
 
   useEffect(() => {
     let contentHeight = textarea.current.resizableTextArea.textArea.scrollHeight;
-
     if (maxHeight && defaultHeight) {
       if (props.value !== '') {
         if (contentHeight < maxHeight) {
           contentHeight = contentHeight;
+          setCheckedOverflow('hidden');
         } else {
           contentHeight = maxHeight;
+          setCheckedOverflow('hidden auto');
         }
       } else {
         contentHeight = defaultHeight;
@@ -45,7 +47,7 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
     >
       <Input.TextArea
         ref={textarea}
-        style={{ height: height, overflow: 'hidden auto' }}
+        style={{ height: height, overflow: checkedOverflow }}
         maxLength={maxLength ? maxLength : 100}
         {...props}
       />
