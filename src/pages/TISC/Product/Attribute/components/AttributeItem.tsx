@@ -32,7 +32,7 @@ export const AttributeItem: FC<IAttributeItem> = ({
             className="attribute-input"
             onChange={onChangeItemName}
           />
-          <ActionDeleteIcon onClick={handleOnClickDelete} />
+          <ActionDeleteIcon className={styles.delete_icon} onClick={handleOnClickDelete} />
         </div>
         <div
           className={classNames(styles.form_input__element, styles.form_input__cursor)}
