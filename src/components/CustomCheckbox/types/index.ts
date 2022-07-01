@@ -11,7 +11,7 @@ export interface CustomCheckboxProps {
   inputPlaceholder?: string;
   onChange?: (value: CheckboxValue[]) => void;
   isCheckboxList?: boolean;
-  defaultValue?: CheckboxValue;
+  selected?: CheckboxValue[];
   checkboxClass?: string;
   heightItem?: string;
 }

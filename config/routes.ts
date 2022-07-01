@@ -227,7 +227,23 @@
         path: '/tisc/products/configuration',
         name: 'configuration',
         icon: 'configuration-icon.svg',
-        component: './Welcome',
+        routes: [
+          {
+            path: '/tisc/products/configuration',
+            component: './TISC/Product/Configuration',
+            hideInMenu: true,
+          },
+          {
+            path: '/tisc/products/configuration/create',
+            component: './TISC/Product/Configuration/Create',
+            hideInMenu: true,
+          },
+          {
+            path: '/tisc/products/configuration/:id',
+            component: './TISC/Product/Configuration/Update',
+            hideInMenu: true,
+          },
+        ],
       },
     ],
   },

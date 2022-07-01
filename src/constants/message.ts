@@ -59,6 +59,10 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PRESET_SUCCESS: 'Update preset successfully',
   UPDATE_PRESET_ERROR: 'Update preset error',
   GET_ONE_PRESET_ERROR: 'Get one preset error',
+
+  // configuration
+  GET_BRAND_DATA_ERROR: 'Failed to get Brand data',
+  GET_BRAND_SUMMARY_DATA_ERROR: 'Failed to get Brand summary data',
 };
 
 export const MESSAGE_TOOLTIP = {

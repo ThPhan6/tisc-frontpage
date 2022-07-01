@@ -1,0 +1,141 @@
+.productContent {
+  margin-top: 8px;
+  .productImageWrapper {
+    padding: 16px 16px 0;
+    background-color: #fff;
+  }
+}
+
+.uploadZone {
+  position: relative;
+  height: 0 !important;
+  padding-top: 100%;
+  background: @mono-color-medium !important;
+  border: 0.3px solid #000 !important;
+  cursor: default !important;
+  .uploadZoneContent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 32px 16px;
+    cursor: default;
+    p {
+      color: #fff;
+      font-weight: 600;
+    }
+    .primaryPhoto {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .dropzoneNote {
+      position: initial;
+      width: 100%;
+      height: 100%;
+      .placeholderPhoto {
+        position: absolute;
+        top: 25%;
+        left: 25%;
+        width: 50%;
+      }
+    }
+    .primaryAction {
+      position: absolute;
+      bottom: 32px;
+      left: 0;
+      z-index: 2;
+      width: 100%;
+      .actionIcon {
+        margin: 0 12px;
+        color: @primary-color-dark;
+        background-color: #fff;
+      }
+    }
+  }
+}
+.photoList {
+  margin-top: 8px;
+  .listWrapper {
+    flex-flow: nowrap;
+    padding-bottom: 4px;
+    overflow: auto;
+  }
+  .addMoreSubPhotos {
+    position: relative;
+    display: inline-flex;
+    width: 100%;
+    padding-top: 100%;
+    cursor: pointer;
+    .addMorePhotocontent {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      height: 100%;
+      padding: 12px 0;
+      overflow: hidden;
+      text-align: center;
+      border: 0.6px dashed @primary-color-dark;
+      p {
+        color: @primary-color-dark;
+      }
+    }
+  }
+  .fileItem {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    .filePreview {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: @mono-color-medium;
+      border: 0.3px solid #000;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .subPhotoAction {
+        position: absolute;
+        bottom: 15px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        button {
+          color: @primary-color-dark;
+          background-color: #fff;
+        }
+      }
+    }
+  }
+}
+.photoKeyword {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  div {
+    width: auto !important;
+    span {
+      font-size: 12px;
+    }
+    input {
+      margin-left: 8px;
+      padding: 0 0 4px 0 !important;
+      font-size: 12px;
+    }
+  }
+}
