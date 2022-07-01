@@ -278,7 +278,8 @@
           {
             path: '/tisc/adminstration/messages/inspirational-quotations',
             name: 'quotation',
-            component: './Welcome',
+            component:
+              './TISC/Product/Adminstration/Messages/InspirationalQuotations/CreateInspirationalQuotationsPage',
           },
         ],
       },
