@@ -10,6 +10,7 @@ export interface FormGroupProps {
   label: string;
   message?: string;
   messageType?: 'normal' | 'error' | 'warning';
+  type?: string;
 }
 
 export interface CustomInputProps extends InputProps {
