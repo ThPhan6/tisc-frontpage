@@ -24,20 +24,11 @@ export const InspirationalQuotationEntryForm: FC<InspirationalQuotationEntryForm
     });
   };
 
-  const handleRemoveInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.closest('div')?.id;
-
-    if (name === 'author-input') {
-      onChange({
-        ...value,
-        author: '',
-      });
-    } else if (name === 'identity-input') {
-      onChange({
-        ...value,
-        identity: '',
-      });
-    }
+  const handleRemoveInput = (key: 'author' | 'identity') => {
+    onChange({
+      ...value,
+      [key]: '',
+    });
   };
 
   return (
@@ -53,7 +44,10 @@ export const InspirationalQuotationEntryForm: FC<InspirationalQuotationEntryForm
               onChange={handleOnChangeInput}
             />
             {value.author && (
-              <ActionRemoveIcon className={styles.remove_icon} onClick={handleRemoveInput} />
+              <ActionRemoveIcon
+                className={styles.remove_icon}
+                onClick={() => handleRemoveInput('author')}
+              />
             )}
           </div>
         </FormGroup>
@@ -67,7 +61,10 @@ export const InspirationalQuotationEntryForm: FC<InspirationalQuotationEntryForm
               onChange={handleOnChangeInput}
             />
             {value.identity && (
-              <ActionRemoveIcon className={styles.remove_icon} onClick={handleRemoveInput} />
+              <ActionRemoveIcon
+                className={styles.remove_icon}
+                onClick={() => handleRemoveInput('identity')}
+              />
             )}
           </div>
         </FormGroup>
