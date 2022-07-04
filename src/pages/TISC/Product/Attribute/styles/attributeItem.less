@@ -22,18 +22,6 @@
         }
       }
     }
-    &__delete_icon {
-      cursor: pointer;
-      path {
-        transition: fill 1s;
-        fill: @mono-color-medium;
-      }
-      &:hover {
-        path {
-          fill: @primary-color-dark;
-        }
-      }
-    }
   }
   .form {
     display: flex;
@@ -68,6 +56,18 @@
   align-items: center;
   justify-content: space-between;
   height: 32px;
+
+  .delete_icon {
+    path {
+      transition: fill 1s;
+    }
+    &:hover {
+      path {
+        fill: @primary-color-dark;
+      }
+    }
+  }
+
   :global(.group-content-type) {
     display: flex;
     align-items: center;
@@ -91,5 +91,6 @@
   }
   :global(.attribute-input) {
     color: @primary-color-dark;
+    text-transform: capitalize;
   }
 }

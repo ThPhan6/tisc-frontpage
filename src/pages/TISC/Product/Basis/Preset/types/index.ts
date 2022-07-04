@@ -37,6 +37,7 @@ export interface PresetElementInputProp {
 
 export type PresetItemValueProp = {
   name: string;
+  is_collapse: string;
   subs: SubPresetValueProp[];
 };
 
@@ -49,6 +50,7 @@ export type SubPresetValueProp = {
 
 export const presetsValueDefault = {
   name: '',
+  is_collapse: '',
   subs: [],
 };
 

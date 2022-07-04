@@ -13,6 +13,9 @@
     &:focus {
       box-shadow: none;
     }
+    &::placeholder {
+      text-transform: none;
+    }
   }
 }
 .required-input {
@@ -225,5 +228,6 @@
 .hiddenSpan {
   position: absolute;
   z-index: 0;
+  text-transform: uppercase;
   opacity: 0;
 }

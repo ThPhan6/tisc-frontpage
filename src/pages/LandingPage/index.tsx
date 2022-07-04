@@ -18,7 +18,7 @@ import {
   resetPasswordMiddleware,
   validateResetToken,
 } from './services/api';
-import { message } from 'antd';
+import { Col, message, Row } from 'antd';
 import { history } from 'umi';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { STATUS_RESPONSE } from '@/constants/util';
@@ -147,137 +147,148 @@ const LandingPage = () => {
   return (
     <div className={styles.login}>
       <div className={styles.container}>
-        <div className={styles.header}>
-          <LogoBeta />
-          <CustomButton
-            icon={<SingleRight />}
-            width="104px"
-            buttonClass={styles['login-button']}
-            onClick={() => handleClickLogin('login')}
-          >
-            Log in
-          </CustomButton>
-        </div>
-        <div className={styles.content}>
-          <div className={styles.summary}>
-            <div className={styles.message}>
-              <MainTitle customClass={styles.title}>SEARCH, SELECT & SPECIFY</MainTitle>
-              <BodyText customClass={styles.description}>
-                TISC is a free product information and specification platform for the design and
-                construction industry that serves all manufacturer BRANDS and professional
-                DESIGNERS.
-              </BodyText>
+        <Row justify="center">
+          <Col span={22}>
+            <div className={styles.header}>
+              <LogoBeta />
+              <CustomButton
+                icon={<SingleRight />}
+                width="104px"
+                buttonClass={styles['login-button']}
+                onClick={() => handleClickLogin('login')}
+              >
+                Log in
+              </CustomButton>
             </div>
-            <img src={graphic} />
-          </div>
-          <div className={styles['user-group']}>
-            <div className={styles.brands}>
-              <BodyText level={3} fontFamily="Roboto">
-                For
-              </BodyText>
-              <Title level={3} customClass={styles['group-name']}>
-                Brands
-              </Title>
-              <BodyText level={3} fontFamily="Roboto">
-                A dedicated platform assists the company in managing the product lines, monetizing
-                the projects, generating intelligence, and growing your business.
-              </BodyText>
-              <div className={styles.feature}>
-                {[
-                  { icon: BinocularsIcon, content: 'Obtain project visibility & updates' },
-                  { icon: TargetMoneyIcon, content: 'Generate potential sales leads' },
-                  { icon: PiggyBankIcon, content: 'Save operational cost & resources' },
-                ].map((feature, index) => (
-                  <div className={styles.item} key={index}>
-                    <feature.icon className={styles.icon} />
-                    <BodyText level={4} fontFamily="Roboto">
-                      {feature.content}
-                    </BodyText>
+            <div className={styles.content}>
+              <div className={styles.summary}>
+                <div className={styles.message}>
+                  <MainTitle customClass={styles.title}>SEARCH, SELECT & SPECIFY</MainTitle>
+                  <BodyText customClass={styles.description}>
+                    TISC is a free product information and specification platform for the design and
+                    construction industry that serves all manufacturer BRANDS and professional
+                    DESIGNERS.
+                  </BodyText>
+                </div>
+                <img src={graphic} />
+              </div>
+              <div className={styles['user-group']}>
+                <div className={styles.brands}>
+                  <BodyText level={3} fontFamily="Roboto">
+                    For
+                  </BodyText>
+                  <Title level={3} customClass={styles['group-name']}>
+                    Brands
+                  </Title>
+                  <BodyText level={3} fontFamily="Roboto">
+                    A dedicated platform assists the company in managing the product lines,
+                    monetizing the projects, generating intelligence, and growing your business.
+                  </BodyText>
+                  <div className={styles.feature}>
+                    {[
+                      { icon: BinocularsIcon, content: 'Obtain project visibility & updates' },
+                      { icon: TargetMoneyIcon, content: 'Generate potential sales leads' },
+                      { icon: PiggyBankIcon, content: 'Save operational cost & resources' },
+                    ].map((feature, index) => (
+                      <div className={styles.item} key={index}>
+                        <feature.icon className={styles.icon} />
+                        <BodyText level={4} fontFamily="Roboto">
+                          {feature.content}
+                        </BodyText>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-              <div className={styles['button-wrapper']}>
-                <CustomButton
-                  width="144px"
-                  properties="warning"
-                  size="large"
-                  buttonClass={styles['action-button']}
-                  onClick={() => handleOnClickChooseFeature('interested')}
-                >
-                  INTERESTED
-                </CustomButton>
-              </div>
-            </div>
-            <div className={styles.designer}>
-              <BodyText level={3} fontFamily="Roboto">
-                For
-              </BodyText>
-              <Title level={3} customClass={styles['group-name']}>
-                Designers
-              </Title>
-              <BodyText level={3} fontFamily="Roboto">
-                An always up-to-date material library that helps the team search, select and specify
-                the products for their next project while automating the workflow.
-              </BodyText>
-              <div className={styles.feature}>
-                {[
-                  { icon: GraphicTabletIcon, content: 'Convenience to specify & easy to track' },
-                  { icon: CheckAllIcon, content: 'Product accuracy & completeness' },
-                  { icon: TimeMoney, content: 'Increase team productivity at no cost' },
-                ].map((feature, index) => (
-                  <div className={styles.item} key={index}>
-                    <feature.icon className={styles.icon} />
-                    <BodyText level={4} fontFamily="Roboto">
-                      {feature.content}
-                    </BodyText>
+                  <div className={styles['button-wrapper']}>
+                    <CustomButton
+                      width="144px"
+                      properties="warning"
+                      size="large"
+                      buttonClass={styles['action-button']}
+                      onClick={() => handleOnClickChooseFeature('interested')}
+                    >
+                      INTERESTED
+                    </CustomButton>
                   </div>
-                ))}
-              </div>
-              <div className={styles['button-wrapper']}>
-                <CustomButton
-                  width="144px"
-                  properties="warning"
-                  size="large"
-                  buttonClass={styles['action-button']}
-                  onClick={() => handleOnClickChooseFeature('signup')}
-                >
-                  SIGN ME UP
-                </CustomButton>
+                </div>
+                <div className={styles.designer}>
+                  <BodyText level={3} fontFamily="Roboto">
+                    For
+                  </BodyText>
+                  <Title level={3} customClass={styles['group-name']}>
+                    Designer
+                  </Title>
+                  <BodyText level={3} fontFamily="Roboto">
+                    An always up-to-date material library that helps the team search, select and
+                    specify the products for their next project while automating the workflow.
+                  </BodyText>
+                  <div className={styles.feature}>
+                    {[
+                      {
+                        icon: GraphicTabletIcon,
+                        content: 'Convenience to specify & easy to track',
+                      },
+                      { icon: CheckAllIcon, content: 'Product accuracy & completeness' },
+                      { icon: TimeMoney, content: 'Increase team productivity at no cost' },
+                    ].map((feature, index) => (
+                      <div className={styles.item} key={index}>
+                        <feature.icon className={styles.icon} />
+                        <BodyText level={4} fontFamily="Roboto">
+                          {feature.content}
+                        </BodyText>
+                      </div>
+                    ))}
+                  </div>
+                  <div className={styles['button-wrapper']}>
+                    <CustomButton
+                      width="144px"
+                      properties="warning"
+                      size="large"
+                      buttonClass={styles['action-button']}
+                      onClick={() => handleOnClickChooseFeature('signup')}
+                    >
+                      SIGN ME UP
+                    </CustomButton>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          </Col>
+        </Row>
       </div>
       <div className={styles['footer-container']}>
-        <div className={styles.footer}>
-          <BodyText level={5} fontFamily="Roboto">
-            © TISC 2022
-          </BodyText>
-          <div className={styles['menu-wrapper']}>
-            <div className={styles.menu}>
-              {['About', 'Policies', 'Contact', 'Browser Compatibility'].map((item, index) => (
+        <Row justify="center">
+          <Col span={22}>
+            <div className={styles.footer}>
+              <BodyText level={5} fontFamily="Roboto">
+                © TISC 2022
+              </BodyText>
+              <div className={styles['menu-wrapper']}>
+                <div className={styles.menu}>
+                  {['About', 'Policies', 'Contact', 'Browser Compatibility'].map((item, index) => (
+                    <BodyText
+                      key={index}
+                      level={5}
+                      fontFamily="Roboto"
+                      customClass={styles.item}
+                      onClick={() => handleOnClick(item)}
+                    >
+                      {item}
+                    </BodyText>
+                  ))}
+                </div>
+
                 <BodyText
-                  key={index}
                   level={5}
                   fontFamily="Roboto"
-                  customClass={styles.item}
-                  onClick={() => handleOnClick(item)}
+                  customClass={styles['tisc-login']}
+                  onClick={() => handleClickLogin('tisc-login')}
                 >
-                  {item}
+                  TISC Log in
                 </BodyText>
-              ))}
+              </div>
             </div>
-
-            <BodyText
-              level={5}
-              fontFamily="Roboto"
-              customClass={styles['tisc-login']}
-              onClick={() => handleClickLogin('tisc-login')}
-            >
-              TISC Log in
-            </BodyText>
-          </div>
-        </div>
+          </Col>
+        </Row>
       </div>
       <LoginModal
         visible={openTiscLogin}

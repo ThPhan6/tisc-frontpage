@@ -51,10 +51,10 @@
       }
     }
     &__delete_icon {
+      z-index: 9;
       cursor: pointer;
       path {
         transition: fill 1s;
-        fill: @mono-color-medium;
       }
       &:hover {
         path {
@@ -95,13 +95,13 @@
     &_value {
       :global(.ant-input) {
         color: @primary-color-dark;
+        text-transform: capitalize;
       }
     }
     &_delete_icon {
       cursor: pointer;
       path {
         transition: fill 1s;
-        fill: @mono-color-medium;
       }
       &:hover {
         path {

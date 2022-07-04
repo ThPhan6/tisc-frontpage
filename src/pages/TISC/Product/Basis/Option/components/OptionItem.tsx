@@ -6,11 +6,11 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 import classNames from 'classnames';
 import { isEmpty } from 'lodash';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import styles from '../styles/OptionItem.less';
 import { ISubBasisOption, IBasisOptionSubForm } from '../types';
 import { Collapse, Radio, Row, Col } from 'antd';
-import { showImageUrl } from '@/helper/utils';
+import { getBase64, showImageUrl } from '@/helper/utils';
 
 interface IOptionItem {
   subOption: IBasisOptionSubForm;
@@ -47,20 +47,6 @@ const SubItemOption: FC<ISubItemOption> = ({
     });
   };
 
-  const getBase64 = (file: Blob): Promise<string> => {
-    return new Promise((resolve) => {
-      /// Make new FileReader
-      const reader = new FileReader();
-      /// Convert the file to base64 text
-      reader.readAsDataURL(file);
-      /// a file has been read successfully.
-      reader.onload = () => {
-        /// get base64
-        const baseURL = reader.result as string;
-        resolve(baseURL);
-      };
-    });
-  };
   const handleChangeFileImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files![0];
     getBase64(file)
@@ -138,10 +124,12 @@ const SubItemOption: FC<ISubItemOption> = ({
 
 export const OptionItem: FC<IOptionItem> = (props) => {
   const { subOption, handleChangeSubItem, handleDeleteSubOption, optionIndex } = props;
-  const [activeKey, setActiveKey] = useState<string[]>([]);
 
   const handleActiveKeyToCollapse = () => {
-    setActiveKey(isEmpty(activeKey) ? ['1'] : []);
+    handleChangeSubItem({
+      ...subOption,
+      is_collapse: subOption.is_collapse ? '' : '1',
+    });
   };
 
   const handleOnClickUsingImage = () => {
@@ -153,10 +141,10 @@ export const OptionItem: FC<IOptionItem> = (props) => {
 
   const addNewSubOptionItem = () => {
     /// default open option item list when add new
-    setActiveKey(['1']);
     /// add new sub option item
     handleChangeSubItem({
       ...subOption,
+      is_collapse: '1',
       subs: [...subOption.subs, DEFAULT_SUB_OPTION_ITEM],
     });
   };
@@ -183,9 +171,8 @@ export const OptionItem: FC<IOptionItem> = (props) => {
         ...subOption,
         subs: newSubItems,
         is_have_image: false,
+        is_collapse: '',
       });
-      /// disable collapse
-      setActiveKey([]);
     }
   };
 
@@ -206,14 +193,16 @@ export const OptionItem: FC<IOptionItem> = (props) => {
             <div className={styles.panel_header__field_title} onClick={handleActiveKeyToCollapse}>
               <BodyText
                 level={3}
-                customClass={isEmpty(activeKey) ? styles.font_weight_300 : styles.font_weight_600}
+                customClass={
+                  isEmpty(subOption.is_collapse) ? styles.font_weight_300 : styles.font_weight_600
+                }
               >
                 Option Name
               </BodyText>
               <ArrowIcon
                 className={styles.panel_header__field_title_icon}
                 style={{
-                  transform: `rotate(${isEmpty(activeKey) ? '0' : '180'}deg)`,
+                  transform: `rotate(${isEmpty(subOption.is_collapse) ? '0' : '180'}deg)`,
                 }}
               />
             </div>
@@ -254,13 +243,15 @@ export const OptionItem: FC<IOptionItem> = (props) => {
 
   return (
     <div className={styles.collapse_container}>
-      <Collapse ghost activeKey={activeKey}>
+      <Collapse ghost activeKey={subOption.is_collapse}>
         <Collapse.Panel
           className={
-            isEmpty(activeKey) ? styles.active_collapse_panel : styles.unactive_collapse_panel
+            isEmpty(subOption.is_collapse)
+              ? styles.active_collapse_panel
+              : styles.unactive_collapse_panel
           }
           header={renderPanelHeader()}
-          key="1"
+          key={subOption.is_collapse}
           showArrow={false}
         >
           <div className={styles.sub_wrapper}>

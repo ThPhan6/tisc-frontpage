@@ -70,6 +70,9 @@ const BasisPresetList: React.FC = () => {
       },
       width: 300,
       isExpandable: true,
+      render: (value) => {
+        return <span className="text-uppercase">{value}</span>;
+      },
     },
     {
       title: 'Preset Name',
@@ -89,6 +92,7 @@ const BasisPresetList: React.FC = () => {
         return (
           <HeaderDropdown
             arrow={true}
+            align={{ offset: [-14, -10] }}
             items={[
               {
                 onClick: () => handleAction('edit', record.id),
@@ -122,6 +126,9 @@ const BasisPresetList: React.FC = () => {
       dataIndex: 'name',
       width: 250,
       isExpandable: true,
+      render: (value) => {
+        return <span className="text-capitalize">{value}</span>;
+      },
     },
     ...SameColumns,
     {
