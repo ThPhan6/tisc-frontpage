@@ -1,9 +1,23 @@
 .quill-editor {
+  :global(.ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke),
+  :global(.ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke) {
+    stroke: @mono-color;
+  }
+  :global(.ql-snow.ql-toolbar .ql-picker-label.ql-active),
+  :global(.ql-snow.ql-toolbar .ql-picker-label:hover),
   :global(.ql-editor p) {
-    color: #000;
+    color: @mono-color;
+  }
+  :global(.ql-snow .ql-transparent) {
+    opacity: 1;
+  }
+  :global(.ql-snow .ql-stroke) {
+    stroke: @mono-color;
+    stroke-width: 1;
   }
 
   :global(.ql-editor) {
+    min-height: 54px;
     padding: 5px 12px;
     font-weight: 300;
     font-size: 14px;
@@ -23,7 +37,7 @@
 
   :global(.ql-container.ql-snow) {
     border: none;
-    border-bottom: 0.5px solid @mono-color;
+    box-shadow: 0 0.5px 0 @mono-color;
   }
 
   :global(.ql-editor.ql-blank::before) {
@@ -47,6 +61,7 @@
     stroke-width: 0.5px;
   }
 
+  :global(.ql-snow .ql-color-picker),
   :global(.ql-snow.ql-toolbar button) {
     margin: 0 8px;
   }
