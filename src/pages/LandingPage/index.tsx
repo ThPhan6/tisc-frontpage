@@ -39,25 +39,11 @@ const LandingPage = () => {
   const tokenResetPwd = useQuery().get('token');
 
   const { fetchUserInfo } = useCustomInitialState();
-  const openTiscLogin = useBoolean();
   const openResetPwd = useBoolean();
   const isLoading = useBoolean();
-  const openTiscAbout = useBoolean();
-  const openTiscContact = useBoolean();
-  const openTiscNotice = useBoolean();
-  const openTiscPolicies = useBoolean();
-  const openSignup = useBoolean();
+  const openTisc = useBoolean();
   const [value, setValue] = useState('');
-
-  const handleOnClickChooseFeature = (valueClick: string) => {
-    setValue(valueClick);
-    openSignup.setValue(true);
-  };
-
-  const handleClickLogin = (valueClick: string) => {
-    setValue(valueClick);
-    openTiscLogin.setValue(true);
-  };
+  const [valueChoose, setValueChoose] = useState('');
 
   useEffect(() => {
     if ((!emailResetPwd || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
@@ -92,7 +78,7 @@ const LandingPage = () => {
     isLoading.setValue(true);
     forgotPasswordMiddleware({ email: email }, async (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
-        openTiscLogin.setValue(false);
+        openTisc.setValue(false);
         message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD);
       } else {
         message.error(msg);
@@ -118,32 +104,46 @@ const LandingPage = () => {
   const handleOnClick = (item: string) => {
     switch (item) {
       case 'About':
-        openTiscAbout.setValue(true);
-        openTiscContact.setValue(false);
-        openTiscNotice.setValue(false);
-        openTiscPolicies.setValue(false);
+        setValueChoose('About');
+        openTisc.setValue(true);
         break;
       case 'Policies':
-        openTiscAbout.setValue(false);
-        openTiscContact.setValue(false);
-        openTiscNotice.setValue(false);
-        openTiscPolicies.setValue(true);
+        setValueChoose('Policies');
+        openTisc.setValue(true);
         break;
       case 'Contact':
-        openTiscContact.setValue(true);
-        openTiscAbout.setValue(false);
-        openTiscNotice.setValue(false);
-        openTiscPolicies.setValue(false);
+        setValueChoose('Contact');
+        openTisc.setValue(true);
         break;
       case 'Browser Compatibility':
-        openTiscAbout.setValue(false);
-        openTiscNotice.setValue(true);
-        openTiscContact.setValue(false);
-        openTiscPolicies.setValue(false);
+        setValueChoose('Browser Compatibility');
+        openTisc.setValue(true);
+        break;
+      case 'signup':
+        setValueChoose('signup');
+        setValue('signup');
+        openTisc.setValue(true);
+        break;
+      case 'interested':
+        setValueChoose('signup');
+        setValue('interested');
+        openTisc.setValue(true);
+        break;
+      case 'login':
+        setValueChoose('login');
+        setValue('login');
+        openTisc.setValue(true);
+        break;
+      case 'tisc-login':
+        setValueChoose('login');
+        setValue('tisc-login');
+        openTisc.setValue(true);
+        break;
       default:
         break;
     }
   };
+
   return (
     <div className={styles.login}>
       <div className={styles.container}>
@@ -155,7 +155,7 @@ const LandingPage = () => {
                 icon={<SingleRight />}
                 width="104px"
                 buttonClass={styles['login-button']}
-                onClick={() => handleClickLogin('login')}
+                onClick={() => handleOnClick('login')}
               >
                 Log in
               </CustomButton>
@@ -204,7 +204,7 @@ const LandingPage = () => {
                       properties="warning"
                       size="large"
                       buttonClass={styles['action-button']}
-                      onClick={() => handleOnClickChooseFeature('interested')}
+                      onClick={() => handleOnClick('interested')}
                     >
                       INTERESTED
                     </CustomButton>
@@ -244,7 +244,7 @@ const LandingPage = () => {
                       properties="warning"
                       size="large"
                       buttonClass={styles['action-button']}
-                      onClick={() => handleOnClickChooseFeature('signup')}
+                      onClick={() => handleOnClick('signup')}
                     >
                       SIGN ME UP
                     </CustomButton>
@@ -281,7 +281,7 @@ const LandingPage = () => {
                   level={5}
                   fontFamily="Roboto"
                   customClass={styles['tisc-login']}
-                  onClick={() => handleClickLogin('tisc-login')}
+                  onClick={() => handleOnClick('tisc-login')}
                 >
                   TISC Log in
                 </BodyText>
@@ -290,18 +290,20 @@ const LandingPage = () => {
           </Col>
         </Row>
       </div>
-      <LoginModal
-        visible={openTiscLogin}
-        theme={value === 'tisc-login' ? 'dark' : 'default'}
-        handleSubmitLogin={handleSubmitLogin}
-        handleForgotPassword={handleForgotPassword}
-        type={value}
-      />
-      <AboutModal visible={openTiscAbout} theme="dark" />
-      <ContactModal visible={openTiscContact} theme="dark" />
-      <NoticeModal visible={openTiscNotice} theme="dark" />
-      <PoliciesModal visible={openTiscPolicies} theme="dark" />
-      <SignupModal visible={openSignup} theme="default" type={value} />
+      {valueChoose === 'login' && (
+        <LoginModal
+          visible={openTisc}
+          theme={value === 'tisc-login' ? 'dark' : 'default'}
+          handleSubmitLogin={handleSubmitLogin}
+          handleForgotPassword={handleForgotPassword}
+          type={value}
+        />
+      )}
+      {valueChoose === 'About' && <AboutModal visible={openTisc} theme="dark" />}
+      {valueChoose === 'Policies' && <PoliciesModal visible={openTisc} theme="dark" />}
+      {valueChoose === 'Contact' && <ContactModal visible={openTisc} theme="dark" />}
+      {valueChoose === 'Browser Compatibility' && <NoticeModal visible={openTisc} theme="dark" />}
+      {valueChoose === 'signup' && <SignupModal visible={openTisc} theme="default" type={value} />}
       {emailResetPwd && (
         <ResetPasswordModal
           visible={openResetPwd}
