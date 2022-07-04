@@ -33,7 +33,7 @@ export const EmailAutoRespondEntryForm: FC<EmailAutoRespond> = ({ value, onChang
           <div className={styles.title_field}>
             <CustomInput
               borderBottomColor="mono-medium"
-              placeholder="document title"
+              placeholder="message title"
               onChange={handleOnChangeTitleInput}
               value={value.title}
               className={value.title && styles.title_input}
@@ -44,9 +44,9 @@ export const EmailAutoRespondEntryForm: FC<EmailAutoRespond> = ({ value, onChang
           </div>
         </FormGroup>
         <CustomInputEditor
-          label="Document"
+          label="Message"
           required={true}
-          placeholder="type text..."
+          placeholder="type text here"
           layout="vertical"
           formClass={styles.label_editor}
           inputClass={styles.input_editor}
