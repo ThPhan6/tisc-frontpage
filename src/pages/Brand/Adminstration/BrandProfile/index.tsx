@@ -51,8 +51,6 @@ const BrandProfile = () => {
       });
   };
 
-  console.log(brandProfile);
-
   return (
     <div className={styles.content}>
       <Row>
