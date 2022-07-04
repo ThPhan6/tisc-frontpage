@@ -273,7 +273,8 @@
           {
             path: '/tisc/adminstration/messages/email-autoresponders',
             name: 'email',
-            component: './Welcome',
+            component:
+              './TISC/Adminstration/Messages/EmailAutoresponders/CreateEmailAutorespondersPage',
           },
           {
             path: '/tisc/adminstration/messages/inspirational-quotations',
