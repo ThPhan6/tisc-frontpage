@@ -244,7 +244,7 @@
           {
             path: '/tisc/adminstration/documentation/agreement-policy-terms',
             name: 'terms.policy',
-            component: './Welcome',
+            component: './Brand/Adminstration/BrandProfile',
           },
           {
             path: '/tisc/adminstration/documentation/how-to',

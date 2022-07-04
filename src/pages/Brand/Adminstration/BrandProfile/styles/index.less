@@ -1,5 +1,11 @@
 .content {
-  height: 804px;
+  :global(.ant-input) {
+    color: @primary-color-dark;
+  }
+  .container {
+    height: 804px;
+    background-color: #fff;
+  }
   .formTitle {
     height: 48px;
     padding: 13px 16px;
@@ -15,14 +21,16 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 40px;
+      height: 32px;
       margin-bottom: 16px;
       border-bottom: 0.5px solid @mono-color-medium;
       .customLabel {
         margin-bottom: 0;
       }
+      .customIcon {
+        margin-top: 8px;
+      }
     }
-
     .customFormArea {
       margin-bottom: 0;
       :global(.ant-input-textarea-show-count::after) {
@@ -35,8 +43,14 @@
         display: flex;
         align-items: center;
         justify-content: flex-end;
+        .iconAdd {
+          margin-left: 12px;
+        }
       }
       .customText {
+        display: flex;
+        align-items: center;
+        height: 32px;
         label {
           p {
             font-weight: 600;
@@ -49,7 +63,14 @@
         height: 36px;
         border-bottom: 0.5px solid @mono-color-medium;
         .customInput {
-          width: 200px !important;
+          width: auto !important;
+          :global(.ant-input[disabled]) {
+            border-bottom: none;
+          }
+        }
+        .icon {
+          margin-top: 8px;
+          cursor: pointer;
         }
       }
     }
@@ -65,9 +86,8 @@
       }
     }
   }
-
   .actionButton {
-    padding: 12px 16px 12px 0;
+    margin: 12px 16px 12px 0;
     .customButton {
       float: right;
       border-radius: 12px;
