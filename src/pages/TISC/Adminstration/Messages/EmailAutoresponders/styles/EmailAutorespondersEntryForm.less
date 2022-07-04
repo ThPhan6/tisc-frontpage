@@ -1,4 +1,4 @@
-.editor-form(@text-padding-x, @text-padding-y, @resize : vertical) {
+.editor-form(@text-padding-x, @text-padding-y, @placeholder-color, @resize : vertical) {
   :global(.ql-editor) {
     padding: @text-padding-y @text-padding-x;
     resize: @resize;
@@ -6,6 +6,7 @@
   :global(.ql-editor.ql-blank::before) {
     right: @text-padding-x;
     left: @text-padding-x;
+    color: @placeholder-color;
   }
 }
 
@@ -17,11 +18,18 @@
     border-bottom-color: transparent;
     box-shadow: none;
   }
+  :global(.ant-space-item) {
+    white-space: nowrap;
+  }
+  :global(.ant-radio-group) {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
 
-  .radio_form,
-  .label_editor {
-    label {
-      margin-bottom: 8px;
+  .radio_form {
+    margin-bottom: 16px;
+    .radio_container {
+      box-shadow: 0 0.5px 0 @mono-color-medium;
     }
   }
 
@@ -51,11 +59,18 @@
     }
   }
 
+  .label_editor {
+    label {
+      margin-bottom: 8px;
+    }
+  }
+
   .input_editor {
     @text-padding-x: 16px;
     @text-padding-y: 4px;
     @resize-none: none;
-    .editor-form(@text-padding-x, @text-padding-y, @resize-none);
+    @placeholder-color: @mono-color-medium;
+    .editor-form(@text-padding-x, @text-padding-y,@placeholder-color, @resize-none);
     :global(.ql-editor) {
       height: 100%;
     }

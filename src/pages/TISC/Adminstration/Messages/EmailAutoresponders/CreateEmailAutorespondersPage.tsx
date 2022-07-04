@@ -4,6 +4,8 @@ import { EmailAutoRespondEntryForm } from './components/EmailAutorespondersEntry
 import { EmailAutoRespondProps } from './types';
 
 const DEFAULT_EMAILAUTORESPONDERS_VALUE = {
+  topic: '',
+  targetedFor: '',
   title: '',
   message: '',
 };

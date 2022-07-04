@@ -3,15 +3,28 @@ import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomInputEditor } from '@/components/Form/InputEditor';
 import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
-
 import styles from '../styles/EmailAutorespondersEntryForm.less';
 import { EmailAutoRespondProps } from '../types';
 import React, { FC } from 'react';
+import { CustomRadio } from '@/components/CustomRadio';
 
 interface EmailAutoRespond {
   value: EmailAutoRespondProps;
   onChange: (value: EmailAutoRespondProps) => void;
 }
+
+const optionsRadio = {
+  topic: [
+    { label: 'Marketing', value: '1' },
+    { label: 'Messages', value: '2' },
+  ],
+  targetedFor: [
+    { label: 'TISC Team', value: '1' },
+    { label: 'Brand', value: '2' },
+    { label: 'Design Firm', value: '3' },
+    { label: 'Distributor', value: '4' },
+  ],
+};
 
 export const EmailAutoRespondEntryForm: FC<EmailAutoRespond> = ({ value, onChange }) => {
   const handleOnChangeTitleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,9 +39,39 @@ export const EmailAutoRespondEntryForm: FC<EmailAutoRespond> = ({ value, onChang
     onChange({ ...value, message: input.text.replace(/[_.\n\s\r\t__]*/g, '') });
   };
 
+  const handleOnChangeRadio = (typeRadio: 'topic' | 'targetedFor', valueRadio: string | number) => {
+    onChange({
+      ...value,
+      [typeRadio]: valueRadio,
+    });
+  };
+
   return (
     <div className={styles.container}>
       <EntryFormWrapper>
+        <FormGroup label="Topic" required={true} layout="vertical" formClass={styles.radio_form}>
+          <CustomRadio
+            direction="horizontal"
+            value={value.topic}
+            onChange={(radioValue) => handleOnChangeRadio('topic', radioValue.value)}
+            options={optionsRadio.topic}
+            containerClass={styles.radio_container}
+          />
+        </FormGroup>
+        <FormGroup
+          label="Targeted For"
+          required={true}
+          layout="vertical"
+          formClass={styles.radio_form}
+        >
+          <CustomRadio
+            direction="horizontal"
+            value={value.targetedFor}
+            onChange={(radioValue) => handleOnChangeRadio('targetedFor', radioValue.value)}
+            options={optionsRadio.targetedFor}
+            containerClass={styles.radio_container}
+          />
+        </FormGroup>
         <FormGroup label="Title" required={true} layout="vertical" formClass={styles.title}>
           <div className={styles.title_field}>
             <CustomInput
