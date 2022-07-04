@@ -45,6 +45,7 @@ const CustomToolbar: FC<CustomToolbarProps> = ({ toolbarId }) => {
             <button className="ql-italic" />
             <button className="ql-underline" />
             <button className="ql-link" />
+            <select className="ql-color" />
           </div>
           <div>
             <button className="ql-indent" value="+1" />
@@ -84,7 +85,8 @@ export const CustomInputEditor: FC<CustomInputEditorProps> = ({
       container: `#` + toolbarId,
     },
   };
-  const formats = ['bold', 'italic', 'underline', 'link', 'indent'];
+
+  const formats = ['bold', 'italic', 'underline', 'link', 'color', 'indent'];
 
   const onChangeValue = (
     content: string,
