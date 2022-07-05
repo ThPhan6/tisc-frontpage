@@ -43,7 +43,7 @@ const LandingPage = () => {
   const openResetPwd = useBoolean();
   const isLoading = useBoolean();
   const [openModal, setOpenModal] = useState<ModalOpen>('');
-  const listMenu: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
+  const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
 
   const handleCloseModal = () => {
     setOpenModal('');
@@ -225,7 +225,7 @@ const LandingPage = () => {
               </BodyText>
               <div className={styles['menu-wrapper']}>
                 <div className={styles.menu}>
-                  {listMenu.map((item, index) => (
+                  {listMenuFooter.map((item, index) => (
                     <BodyText
                       key={index}
                       level={5}
