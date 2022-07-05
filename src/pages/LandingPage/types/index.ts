@@ -2,10 +2,8 @@ import type { STATUS_RESPONSE } from '@/constants/util';
 
 export interface LoginModalProps {
   theme?: 'default' | 'dark';
-  visible: {
-    value: boolean;
-    setValue: (value: boolean) => void;
-  };
+  visible: boolean;
+  onClose: () => void;
   handleSubmitLogin: (data: { email: string; password: string }) => void;
   handleForgotPassword: (email: string) => void;
   type?: string;
@@ -67,17 +65,13 @@ export type ResetPasswordBodyProp = {
 
 export interface AboutModalProps {
   theme?: 'default' | 'dark';
-  visible: {
-    value: boolean;
-    setValue: (value: boolean) => void;
-  };
+  visible: boolean;
+  onClose: () => void;
 }
 
 export interface ContactModalProps {
   theme?: 'default' | 'dark';
-  visible: {
-    value: boolean;
-    setValue: (value: boolean) => void;
-  };
+  visible: boolean;
+  onClose: () => void;
   type?: string;
 }

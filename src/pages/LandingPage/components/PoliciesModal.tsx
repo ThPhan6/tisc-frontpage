@@ -4,7 +4,7 @@ import { FC, useState } from 'react';
 import { AboutModalProps } from '../types';
 import { CustomTabs } from '@/components/Tabs';
 
-export const PoliciesModal: FC<AboutModalProps> = ({ visible, theme = 'default' }) => {
+export const PoliciesModal: FC<AboutModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const listTab = [
     { tab: 'TERMS OF SERVICES', key: '1' },
     { tab: 'PRIVACY POLICY', key: '2' },
@@ -31,14 +31,14 @@ export const PoliciesModal: FC<AboutModalProps> = ({ visible, theme = 'default' 
 
   return (
     <CustomModal
-      visible={visible.value}
+      visible={visible}
       footer={false}
       containerClass={theme === 'dark' && styles.modal}
       bodyStyle={{
         backgroundColor: theme === 'dark' ? '#000' : '',
       }}
       closeIconClass={theme === 'dark' && styles.closeIcon}
-      onCancel={() => visible.setValue(false)}
+      onCancel={onClose}
     >
       <div className={styles.content}>
         <div className={styles.header}>

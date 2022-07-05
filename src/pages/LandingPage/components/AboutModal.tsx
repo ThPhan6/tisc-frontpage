@@ -4,19 +4,19 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import { FC } from 'react';
 import { AboutModalProps } from '../types';
 
-export const AboutModal: FC<AboutModalProps> = ({ visible, theme = 'default' }) => {
+export const AboutModal: FC<AboutModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
 
   return (
     <CustomModal
-      visible={visible.value}
+      visible={visible}
       footer={false}
       containerClass={theme === 'dark' && styles.modal}
       bodyStyle={{
         backgroundColor: theme === 'dark' ? '#000' : '',
       }}
       closeIconClass={theme === 'dark' && styles.closeIcon}
-      onCancel={() => visible.setValue(false)}
+      onCancel={onClose}
     >
       <div className={styles.content}>
         <div className={styles.intro}>

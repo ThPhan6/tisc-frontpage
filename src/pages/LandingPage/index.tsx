@@ -41,9 +41,12 @@ const LandingPage = () => {
   const { fetchUserInfo } = useCustomInitialState();
   const openResetPwd = useBoolean();
   const isLoading = useBoolean();
-  const openTisc = useBoolean();
-  const [value, setValue] = useState('');
-  const [valueChoose, setValueChoose] = useState('');
+  const [openModal, setOpenModal] = useState('');
+  const [choiceType, setChoiceType] = useState('');
+
+  const handleCloseModal = () => {
+    setOpenModal('');
+  };
 
   useEffect(() => {
     if ((!emailResetPwd || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
@@ -78,7 +81,7 @@ const LandingPage = () => {
     isLoading.setValue(true);
     forgotPasswordMiddleware({ email: email }, async (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
-        openTisc.setValue(false);
+        setOpenModal('');
         message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD);
       } else {
         message.error(msg);
@@ -101,43 +104,35 @@ const LandingPage = () => {
     });
   };
 
-  const handleOnClick = (item: string) => {
+  const handleOnClickButton = (item: string) => {
     switch (item) {
       case 'About':
-        setValueChoose('About');
-        openTisc.setValue(true);
+        setOpenModal('About');
         break;
       case 'Policies':
-        setValueChoose('Policies');
-        openTisc.setValue(true);
+        setOpenModal('Policies');
         break;
       case 'Contact':
-        setValueChoose('Contact');
-        openTisc.setValue(true);
+        setOpenModal('Contact');
         break;
       case 'Browser Compatibility':
-        setValueChoose('Browser Compatibility');
-        openTisc.setValue(true);
+        setOpenModal('Browser Compatibility');
         break;
       case 'signup':
-        setValueChoose('signup');
-        setValue('signup');
-        openTisc.setValue(true);
+        setOpenModal('signup');
+        setChoiceType('signup');
         break;
       case 'interested':
-        setValueChoose('signup');
-        setValue('interested');
-        openTisc.setValue(true);
+        setOpenModal('signup');
+        setChoiceType('interested');
         break;
       case 'login':
-        setValueChoose('login');
-        setValue('login');
-        openTisc.setValue(true);
+        setChoiceType('login');
+        setOpenModal('login');
         break;
       case 'tisc-login':
-        setValueChoose('login');
-        setValue('tisc-login');
-        openTisc.setValue(true);
+        setChoiceType('tisc-login');
+        setOpenModal('login');
         break;
       default:
         break;
@@ -155,7 +150,7 @@ const LandingPage = () => {
                 icon={<SingleRight />}
                 width="104px"
                 buttonClass={styles['login-button']}
-                onClick={() => handleOnClick('login')}
+                onClick={() => handleOnClickButton('login')}
               >
                 Log in
               </CustomButton>
@@ -204,7 +199,7 @@ const LandingPage = () => {
                       properties="warning"
                       size="large"
                       buttonClass={styles['action-button']}
-                      onClick={() => handleOnClick('interested')}
+                      onClick={() => handleOnClickButton('interested')}
                     >
                       INTERESTED
                     </CustomButton>
@@ -244,7 +239,7 @@ const LandingPage = () => {
                       properties="warning"
                       size="large"
                       buttonClass={styles['action-button']}
-                      onClick={() => handleOnClick('signup')}
+                      onClick={() => handleOnClickButton('signup')}
                     >
                       SIGN ME UP
                     </CustomButton>
@@ -270,7 +265,7 @@ const LandingPage = () => {
                       level={5}
                       fontFamily="Roboto"
                       customClass={styles.item}
-                      onClick={() => handleOnClick(item)}
+                      onClick={() => handleOnClickButton(item)}
                     >
                       {item}
                     </BodyText>
@@ -281,7 +276,7 @@ const LandingPage = () => {
                   level={5}
                   fontFamily="Roboto"
                   customClass={styles['tisc-login']}
-                  onClick={() => handleOnClick('tisc-login')}
+                  onClick={() => handleOnClickButton('tisc-login')}
                 >
                   TISC Log in
                 </BodyText>
@@ -290,20 +285,29 @@ const LandingPage = () => {
           </Col>
         </Row>
       </div>
-      {valueChoose === 'login' && (
-        <LoginModal
-          visible={openTisc}
-          theme={value === 'tisc-login' ? 'dark' : 'default'}
-          handleSubmitLogin={handleSubmitLogin}
-          handleForgotPassword={handleForgotPassword}
-          type={value}
-        />
-      )}
-      {valueChoose === 'About' && <AboutModal visible={openTisc} theme="dark" />}
-      {valueChoose === 'Policies' && <PoliciesModal visible={openTisc} theme="dark" />}
-      {valueChoose === 'Contact' && <ContactModal visible={openTisc} theme="dark" />}
-      {valueChoose === 'Browser Compatibility' && <NoticeModal visible={openTisc} theme="dark" />}
-      {valueChoose === 'signup' && <SignupModal visible={openTisc} theme="default" type={value} />}
+
+      <LoginModal
+        visible={openModal === 'login'}
+        onClose={handleCloseModal}
+        theme={choiceType === 'tisc-login' ? 'dark' : 'default'}
+        handleSubmitLogin={handleSubmitLogin}
+        handleForgotPassword={handleForgotPassword}
+        type={choiceType}
+      />
+      <AboutModal visible={openModal === 'About'} onClose={handleCloseModal} theme="dark" />
+      <PoliciesModal visible={openModal === 'Policies'} onClose={handleCloseModal} theme="dark" />
+      <ContactModal visible={openModal === 'Contact'} onClose={handleCloseModal} theme="dark" />
+      <NoticeModal
+        visible={openModal === 'Browser Compatibility'}
+        onClose={handleCloseModal}
+        theme="dark"
+      />
+      <SignupModal
+        visible={openModal === 'signup'}
+        onClose={handleCloseModal}
+        theme="default"
+        type={choiceType}
+      />
       {emailResetPwd && (
         <ResetPasswordModal
           visible={openResetPwd}

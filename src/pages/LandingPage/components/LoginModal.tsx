@@ -18,6 +18,7 @@ import { isShowErrorMessage, validateEmail } from '@/helper/utils';
 export const LoginModal: FC<LoginModalProps> = ({
   theme = 'default',
   visible,
+  onClose,
   handleSubmitLogin,
   handleForgotPassword,
   type,
@@ -99,9 +100,9 @@ export const LoginModal: FC<LoginModalProps> = ({
 
   return (
     <CustomModal
-      visible={visible.value}
-      onOk={() => visible.setValue(false)}
-      onCancel={() => visible.setValue(false)}
+      visible={visible}
+      onOk={onClose}
+      onCancel={onClose}
       footer={false}
       containerClass={theme === 'dark' && styles.modal}
       bodyStyle={{

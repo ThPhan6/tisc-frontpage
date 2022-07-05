@@ -3,7 +3,7 @@ import { CustomModal } from '@/components/Modal';
 import { MainTitle } from '@/components/Typography';
 import { CustomInput } from '@/components/Form/CustomInput';
 import CustomButton from '@/components/Button';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { ContactModalProps } from '../types';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
@@ -12,23 +12,27 @@ import { ReactComponent as InternetIcon } from '@/assets/icons/internet-icon.svg
 import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
 import classNames from 'classnames';
 import { Checkbox } from 'antd';
-import { useBoolean } from '@/helper/hook';
 import { PoliciesModal } from './PoliciesModal';
 
-export const SignupModal: FC<ContactModalProps> = ({ visible, theme = 'default', type }) => {
+export const SignupModal: FC<ContactModalProps> = ({
+  visible,
+  onClose,
+  theme = 'default',
+  type,
+}) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
-  const openTiscPolicies = useBoolean();
+  const [openModalPolicies, setOpenModalPolicies] = useState('');
 
   return (
     <CustomModal
-      visible={visible.value}
+      visible={visible}
       footer={false}
       containerClass={theme === 'dark' && styles.modal}
       bodyStyle={{
         backgroundColor: theme === 'dark' ? '#000' : '',
       }}
       closeIconClass={theme === 'dark' && styles.closeIcon}
-      onCancel={() => visible.setValue(false)}
+      onCancel={onClose}
     >
       <div className={styles.content}>
         <div className={styles.intro}>
@@ -91,7 +95,7 @@ export const SignupModal: FC<ContactModalProps> = ({ visible, theme = 'default',
           />
           <Checkbox>By clicking and continuing, we agree TISC’s</Checkbox>
           <div className={styles.customLink}>
-            <span onClick={() => openTiscPolicies.setValue(true)}>
+            <span onClick={() => setOpenModalPolicies('Policies')}>
               Terms of Services, Privacy Policy and Cookie Policy
             </span>
           </div>
@@ -102,7 +106,11 @@ export const SignupModal: FC<ContactModalProps> = ({ visible, theme = 'default',
           </CustomButton>
         </div>
       </div>
-      <PoliciesModal visible={openTiscPolicies} theme="dark" />
+      <PoliciesModal
+        visible={openModalPolicies === 'Policies'}
+        onClose={() => setOpenModalPolicies('')}
+        theme="dark"
+      />
     </CustomModal>
   );
 };

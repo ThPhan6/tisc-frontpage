@@ -11,19 +11,19 @@ import { ReactComponent as MessageIcon } from '@/assets/icons/message-icon-18px.
 import classNames from 'classnames';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 
-export const ContactModal: FC<ContactModalProps> = ({ visible, theme = 'default' }) => {
+export const ContactModal: FC<ContactModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
 
   return (
     <CustomModal
-      visible={visible.value}
+      visible={visible}
       footer={false}
       containerClass={theme === 'dark' && styles.modal}
       bodyStyle={{
         backgroundColor: theme === 'dark' ? '#000' : '',
       }}
       closeIconClass={theme === 'dark' && styles.closeIcon}
-      onCancel={() => visible.setValue(false)}
+      onCancel={onClose}
     >
       <div className={styles.content}>
         <div className={styles.intro}>
