@@ -69,15 +69,13 @@ export interface ModalProps {
   onClose: () => void;
 }
 
-export interface LandingPageProp {
-  modal:
-    | 'About'
-    | 'Policies'
-    | 'Contact'
-    | 'Browser Compatibility'
-    | 'Designer Signup'
-    | 'Brand Interested'
-    | 'Tisc Login'
-    | 'Login'
-    | '';
-}
+export type ModalOpen =
+  | 'About'
+  | 'Policies'
+  | 'Contact'
+  | 'Browser Compatibility'
+  | 'Designer Signup'
+  | 'Brand Interested'
+  | 'Tisc Login'
+  | 'Login'
+  | '';

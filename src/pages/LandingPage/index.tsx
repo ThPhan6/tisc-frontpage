@@ -24,9 +24,9 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { STATUS_RESPONSE } from '@/constants/util';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { PATH } from '@/constants/path';
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ResetPasswordModal } from './components/ResetPasswordModal';
-import type { LandingPageProp, LoginBodyProp, ResetPasswordBodyProp } from './types';
+import type { LoginBodyProp, ModalOpen, ResetPasswordBodyProp } from './types';
 import { redirectAfterLogin } from '@/helper/utils';
 import { AboutModal } from './components/AboutModal';
 import { ContactModal } from './components/ContactModal';
@@ -35,14 +35,15 @@ import { PoliciesModal } from './components/PoliciesModal';
 import { SignupModal } from './components/SignupModal';
 import { BrandInterestedModal } from './components/BrandInterestedModal';
 
-const LandingPage: FC<LandingPageProp> = ({ modal }) => {
+const LandingPage = () => {
   const emailResetPwd = useQuery().get('email');
   const tokenResetPwd = useQuery().get('token');
 
   const { fetchUserInfo } = useCustomInitialState();
   const openResetPwd = useBoolean();
   const isLoading = useBoolean();
-  const [openModal, setOpenModal] = useState(modal);
+  const [openModal, setOpenModal] = useState<ModalOpen>('');
+  const listMenu: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
 
   const handleCloseModal = () => {
     setOpenModal('');
@@ -102,25 +103,6 @@ const LandingPage: FC<LandingPageProp> = ({ modal }) => {
       }
       isLoading.setValue(false);
     });
-  };
-
-  const handleOnClickMenu = (item: string) => {
-    switch (item) {
-      case 'About':
-        setOpenModal('About');
-        break;
-      case 'Policies':
-        setOpenModal('Policies');
-        break;
-      case 'Contact':
-        setOpenModal('Contact');
-        break;
-      case 'Browser Compatibility':
-        setOpenModal('Browser Compatibility');
-        break;
-      default:
-        break;
-    }
   };
 
   return (
@@ -243,13 +225,13 @@ const LandingPage: FC<LandingPageProp> = ({ modal }) => {
               </BodyText>
               <div className={styles['menu-wrapper']}>
                 <div className={styles.menu}>
-                  {['About', 'Policies', 'Contact', 'Browser Compatibility'].map((item, index) => (
+                  {listMenu.map((item, index) => (
                     <BodyText
                       key={index}
                       level={5}
                       fontFamily="Roboto"
                       customClass={styles.item}
-                      onClick={() => handleOnClickMenu(item)}
+                      onClick={() => setOpenModal(item)}
                     >
                       {item}
                     </BodyText>
