@@ -1,0 +1,84 @@
+.customFont {
+  margin-bottom: 8px;
+  font-weight: 300;
+  font-size: 16px;
+  font-family: 'Roboto';
+  font-style: normal;
+  line-height: 24px;
+}
+
+.content {
+  height: 510px;
+  padding: 32px 0;
+  .intro {
+    padding-bottom: 48px;
+    text-align: center;
+  }
+  .form {
+    .user {
+      .customFont;
+    }
+    .email {
+      .customFont;
+    }
+    .brand {
+      .customFont;
+    }
+    .website {
+      .customFont;
+    }
+  }
+  :global(.ant-checkbox-wrapper) {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    margin-bottom: 8px;
+    padding-left: 18px;
+  }
+  :global(.ant-checkbox-inner) {
+    border-color: @mono-color;
+  }
+  :global(.ant-checkbox-checked .ant-checkbox-inner) {
+    background-color: @primary-color-dark;
+    border-color: @primary-color-dark;
+  }
+  :global(.ant-checkbox + span) {
+    color: @mono-color;
+    font-weight: 300;
+    font-size: 14px;
+    font-family: 'Roboto';
+    font-style: normal;
+    line-height: 22px;
+  }
+  :global(.ant-checkbox) {
+    margin-bottom: 4px;
+  }
+  .submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    float: right;
+    margin-top: 40px;
+    padding: 0 20px;
+    color: '#fff';
+    font-weight: 300;
+    font-size: 14px;
+    font-family: 'Roboto';
+    font-style: normal;
+    line-height: 22px;
+    text-align: right;
+    background: @primary-color;
+    border: 1px solid @primary-color;
+    border-radius: 16px;
+  }
+  .customLink {
+    padding-left: 46px;
+    color: @primary-color-dark;
+    font-weight: 300;
+    font-size: 14px;
+    font-family: 'Roboto';
+    font-style: normal;
+    line-height: 22px;
+    cursor: pointer;
+  }
+}
