@@ -17,38 +17,43 @@ import {
 import { ItemWebsite } from './components/ItemWebsite';
 import { getBase64 } from '@/helper/utils';
 import Logo from '@/assets/image-logo.png';
+import { useBoolean } from '@/helper/hook';
+import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
+import { ReactComponent as WarningIcon } from '@/assets/icons/warning-icon.svg';
 
 const BrandProfile = () => {
   const [brandProfile, setBrandProfile] = useState<BrandProfileProp>(brandProfileValueDefault);
+  const submitButtonStatus = useBoolean(false);
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setBrandProfile({ ...brandProfile, [e.target.name]: e.target.value });
+  const onSubmitForm = () => {
+    submitButtonStatus.setValue(true);
   };
 
-  const handleOnChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleOnChangeValueForm = (
+    e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>,
+  ) => {
     setBrandProfile({ ...brandProfile, [e.target.name]: e.target.value });
+    if (e.target.files) {
+      const file = e.target.files![0];
+      getBase64(file)
+        .then((base64Image) => {
+          setBrandProfile({ ...brandProfile, image: base64Image });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
-  const handleAddItem = () => {
-    const newWebsite = [...brandProfile.website, websiteValueDefautl];
-    setBrandProfile({ ...brandProfile, website: newWebsite });
+  const handleAddWebsiteItem = () => {
+    const newWebsiteItem = [...brandProfile.website, websiteValueDefautl];
+    setBrandProfile({ ...brandProfile, website: newWebsiteItem });
   };
 
   const handleOnChangeWebsiteItem = (websiteItem: WebsiteValueProp, index: number) => {
     const newWebsiteItem = [...brandProfile.website];
     newWebsiteItem[index] = websiteItem;
     setBrandProfile({ ...brandProfile, website: newWebsiteItem });
-  };
-
-  const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files![0];
-    getBase64(file)
-      .then((base64Image) => {
-        setBrandProfile({ ...brandProfile, image: base64Image });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   return (
@@ -71,7 +76,8 @@ const BrandProfile = () => {
                     borderBottomColor="mono-medium"
                     placeholder="registered name/trademark"
                     name="brand"
-                    onChange={handleOnChange}
+                    onChange={handleOnChangeValueForm}
+                    value={brandProfile.brand}
                   />
                 </FormGroup>
               </div>
@@ -84,7 +90,8 @@ const BrandProfile = () => {
                   borderBottomColor="mono-medium"
                   placeholder="holding company name, if any"
                   name="company"
-                  onChange={handleOnChange}
+                  onChange={handleOnChangeValueForm}
+                  value={brandProfile.company}
                 />
               </FormGroup>
               <div className={styles.logo}>
@@ -97,7 +104,7 @@ const BrandProfile = () => {
                   tooltip="LOGO prefers high quality, squared shape PNG format, and less than 240 KB file size."
                   required
                   formClass={styles.customLabel}
-                  type="warning"
+                  iconTooltip={<WarningIcon className={styles.customWarningIcon} />}
                 ></FormGroup>
                 <div className={styles.customIcon}>
                   <label htmlFor="image">
@@ -109,7 +116,7 @@ const BrandProfile = () => {
                       style={{ display: 'none' }}
                       id="image"
                       accept=".png"
-                      onChange={handleUploadImage}
+                      onChange={handleOnChangeValueForm}
                     />
                   </div>
                 </div>
@@ -119,7 +126,8 @@ const BrandProfile = () => {
                   borderBottomColor="mono-medium"
                   placeholder="brand slogan, if any"
                   name="slogan"
-                  onChange={handleOnChange}
+                  onChange={handleOnChangeValueForm}
+                  value={brandProfile.slogan}
                 />
               </FormGroup>
               <FormGroup
@@ -134,7 +142,8 @@ const BrandProfile = () => {
                   maxLength={250}
                   borderBottomColor="mono-medium"
                   name="mission"
-                  onChange={handleOnChangeTextArea}
+                  onChange={handleOnChangeValueForm}
+                  value={brandProfile.mission}
                 />
               </FormGroup>
               <div className={styles.website}>
@@ -142,14 +151,14 @@ const BrandProfile = () => {
                   <div className={styles.rightWebsite}>
                     <BodyText level={4}>Add Web Site</BodyText>
                     <span className={styles.iconAdd}>
-                      <CustomPlusButton onClick={handleAddItem} />
+                      <CustomPlusButton onClick={handleAddWebsiteItem} />
                     </span>
                   </div>
                 </FormGroup>
                 {brandProfile.website.map((item, index) => (
                   <div key={index}>
                     <ItemWebsite
-                      value={item}
+                      websiteValue={item}
                       onChange={(value) => handleOnChangeWebsiteItem(value, index)}
                     />
                   </div>
@@ -157,9 +166,17 @@ const BrandProfile = () => {
               </div>
             </div>
             <div className={styles.actionButton}>
-              <CustomButton size="small" buttonClass={styles.customButton}>
-                Save
-              </CustomButton>
+              {submitButtonStatus.value ? (
+                <CustomButton
+                  icon={<CheckSuccessIcon />}
+                  size="small"
+                  buttonClass={styles.customButtonSuccess}
+                />
+              ) : (
+                <CustomButton size="small" buttonClass={styles.customButton} onClick={onSubmitForm}>
+                  Save
+                </CustomButton>
+              )}
             </div>
           </div>
         </Col>

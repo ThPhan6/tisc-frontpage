@@ -27,6 +27,6 @@ export const websiteValueDefautl = {
 };
 
 export interface ItemWebsiteProp {
-  value: WebsiteValueProp;
+  websiteValue: WebsiteValueProp;
   onChange: (value: WebsiteValueProp) => void;
 }

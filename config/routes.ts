@@ -244,7 +244,7 @@
           {
             path: '/tisc/adminstration/documentation/agreement-policy-terms',
             name: 'terms.policy',
-            component: './Brand/Adminstration/BrandProfile',
+            component: './Welcome',
           },
           {
             path: '/tisc/adminstration/documentation/how-to',
@@ -300,6 +300,12 @@
         ],
       },
     ],
+  },
+  {
+    path: '/brand/adminstration/brand-profile',
+    name: 'BRAND PROFILE',
+    icon: 'brand-icon.svg',
+    component: './Brand/Adminstration/BrandProfile',
   },
   // {
   //   name: 'list.table-list',

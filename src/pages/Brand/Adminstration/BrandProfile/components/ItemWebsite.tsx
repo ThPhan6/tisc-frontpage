@@ -3,9 +3,9 @@ import { FC } from 'react';
 import { ItemWebsiteProp } from '../types';
 import { ReactComponent as LeftIcon } from '@/assets/icons/pagination-right-18px.svg';
 import styles from '@/pages/Brand/Adminstration/BrandProfile/styles/index.less';
-export const ItemWebsite: FC<ItemWebsiteProp> = ({ value, onChange }) => {
+export const ItemWebsite: FC<ItemWebsiteProp> = ({ websiteValue, onChange }) => {
   const handOnChangeItem = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...value, url: e.target.value });
+    onChange({ ...websiteValue, url: e.target.value });
   };
 
   return (
@@ -14,7 +14,11 @@ export const ItemWebsite: FC<ItemWebsiteProp> = ({ value, onChange }) => {
       <div className={styles.icon}>
         <LeftIcon />
       </div>
-      <CustomInput placeholder="paste site URL link here" onChange={handOnChangeItem} />
+      <CustomInput
+        placeholder="paste site URL link here"
+        onChange={handOnChangeItem}
+        value={websiteValue.url}
+      />
     </div>
   );
 };

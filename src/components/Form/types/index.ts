@@ -1,5 +1,6 @@
 import type { InputProps } from 'antd';
 import type { TextAreaProps } from 'antd/lib/input';
+import { ReactNode } from 'react';
 
 export interface FormGroupProps {
   layout?: 'horizontal' | 'vertical';
@@ -10,7 +11,7 @@ export interface FormGroupProps {
   label: string;
   message?: string;
   messageType?: 'normal' | 'error' | 'warning';
-  type?: string;
+  iconTooltip?: ReactNode;
 }
 
 export interface CustomInputProps extends InputProps {

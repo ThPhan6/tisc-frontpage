@@ -3,7 +3,6 @@ import { BodyText } from '../Typography';
 import style from './styles/Form.less';
 import type { FormGroupProps } from './types';
 import { ReactComponent as QuestionIcon } from '../../assets/icons/question-icon.svg';
-import { ReactComponent as WarningIcon } from '@/assets/icons/warning-icon.svg';
 import { Tooltip } from 'antd';
 
 export const FormGroup: FC<FormGroupProps> = ({
@@ -16,7 +15,7 @@ export const FormGroup: FC<FormGroupProps> = ({
   message,
   label,
   messageType = 'normal',
-  type,
+  iconTooltip,
   ...props
 }) => {
   const setFormLayout = () => {
@@ -38,11 +37,7 @@ export const FormGroup: FC<FormGroupProps> = ({
         {required && <span className={style.required}>*</span>}
         {tooltip && (
           <Tooltip placement="top" title={tooltip}>
-            {type === 'warning' ? (
-              <WarningIcon className={style['warning-icon']} />
-            ) : (
-              <QuestionIcon className={style['question-icon']} />
-            )}
+            {iconTooltip ? iconTooltip : <QuestionIcon className={style['question-icon']} />}
           </Tooltip>
         )}
         <span className={style.colon}>:</span>
