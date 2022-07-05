@@ -1,28 +1,30 @@
 import styles from './PoliciesModal.less';
 import { CustomModal } from '@/components/Modal';
 import { FC, useState } from 'react';
-import { AboutModalProps } from '../types';
+import { ModalProps } from '../types';
 import { CustomTabs } from '@/components/Tabs';
 
-export const PoliciesModal: FC<AboutModalProps> = ({ visible, onClose, theme = 'default' }) => {
+type key = 'terms of services' | 'privacy policy' | 'cookie policy';
+
+export const PoliciesModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const listTab = [
-    { tab: 'TERMS OF SERVICES', key: '1' },
-    { tab: 'PRIVACY POLICY', key: '2' },
-    { tab: 'COOKIE POLICY', key: '3' },
+    { tab: 'TERMS OF SERVICES', key: 'terms of services' },
+    { tab: 'PRIVACY POLICY', key: 'privacy policy' },
+    { tab: 'COOKIE POLICY', key: 'cookie policy' },
   ];
 
   const [activeTab, setActiveTab] = useState({
     tab: 'TERMS OF SERVICES',
-    key: '1',
+    key: 'terms of services',
   });
 
   const renderTabContent = () => {
-    switch (activeTab.key) {
-      case '1':
+    switch (activeTab.key as key) {
+      case 'terms of services':
         return <div style={{ color: 'white' }}>Content TERMS OF SERVICES</div>;
-      case '2':
+      case 'privacy policy':
         return <div style={{ color: 'white' }}>Content PRIVACY POLICY</div>;
-      case '3':
+      case 'cookie policy':
         return <div style={{ color: 'white' }}>Content COOKIE POLICY</div>;
       default:
         break;

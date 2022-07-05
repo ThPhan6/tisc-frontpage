@@ -7,12 +7,13 @@ import { FC, useState } from 'react';
 import { ModalProps } from '../types';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
-import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
+import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
+import { ReactComponent as InternetIcon } from '@/assets/icons/internet-icon.svg';
 import classNames from 'classnames';
 import { Checkbox } from 'antd';
 import { PoliciesModal } from './PoliciesModal';
 
-export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
+export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
   const [openModalPolicies, setOpenModalPolicies] = useState('');
 
@@ -30,7 +31,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={2} customClass={styles[`body${themeStyle()}`]}>
-            Please fill out the below information, and check your email for verification.
+            Please fill out the below information, and arrange a product DEMO and Q&A session.
           </MainTitle>
         </div>
         <div className={styles.form}>
@@ -38,8 +39,8 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             fromLandingPage
             theme={theme}
             size="large"
-            placeholder="first name / last name"
-            prefix={<UserIcon />}
+            placeholder="brand / company name"
+            prefix={<BrandIcon />}
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
             containerClass={classNames(styles.brand)}
             name="user"
@@ -50,34 +51,34 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             fromLandingPage
             theme={theme}
             size="large"
-            placeholder="work email"
-            prefix={<EmailIcon />}
+            placeholder="company website"
+            prefix={<InternetIcon />}
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
             containerClass={classNames(styles.website)}
             name="user"
-            type="email"
+            type="text"
             required={true}
           />
           <CustomInput
             fromLandingPage
             theme={theme}
             size="large"
-            placeholder="password"
-            prefix={<LockedIcon />}
+            placeholder="first name / last name"
+            prefix={<UserIcon />}
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
             containerClass={classNames(styles.user)}
             name="user"
-            type="password"
+            type="text"
             required={true}
           />
           <CustomInput
             fromLandingPage
             theme={theme}
-            type="password"
+            type="email"
             containerClass={classNames(styles.email)}
             size="large"
-            placeholder="confirm password"
-            prefix={<LockedIcon />}
+            placeholder="work email"
+            prefix={<EmailIcon />}
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
             name="email"
             required={true}
@@ -90,7 +91,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
           </div>
         </div>
         <div className={styles.button}>
-          <CustomButton buttonClass={styles.submit}>Let’s be productive</CustomButton>
+          <CustomButton buttonClass={styles.submit}>Book a Demo</CustomButton>
         </div>
       </div>
       <PoliciesModal

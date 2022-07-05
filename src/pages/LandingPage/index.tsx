@@ -24,25 +24,25 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { STATUS_RESPONSE } from '@/constants/util';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { PATH } from '@/constants/path';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { ResetPasswordModal } from './components/ResetPasswordModal';
-import type { LoginBodyProp, ResetPasswordBodyProp } from './types';
+import type { LandingPageProp, LoginBodyProp, ResetPasswordBodyProp } from './types';
 import { redirectAfterLogin } from '@/helper/utils';
 import { AboutModal } from './components/AboutModal';
 import { ContactModal } from './components/ContactModal';
 import { NoticeModal } from './components/NoticeModal';
 import { PoliciesModal } from './components/PoliciesModal';
 import { SignupModal } from './components/SignupModal';
+import { BrandInterestedModal } from './components/BrandInterestedModal';
 
-const LandingPage = () => {
+const LandingPage: FC<LandingPageProp> = ({ modal }) => {
   const emailResetPwd = useQuery().get('email');
   const tokenResetPwd = useQuery().get('token');
 
   const { fetchUserInfo } = useCustomInitialState();
   const openResetPwd = useBoolean();
   const isLoading = useBoolean();
-  const [openModal, setOpenModal] = useState('');
-  const [choiceType, setChoiceType] = useState('');
+  const [openModal, setOpenModal] = useState(modal);
 
   const handleCloseModal = () => {
     setOpenModal('');
@@ -104,7 +104,7 @@ const LandingPage = () => {
     });
   };
 
-  const handleOnClickButton = (item: string) => {
+  const handleOnClickMenu = (item: string) => {
     switch (item) {
       case 'About':
         setOpenModal('About');
@@ -117,22 +117,6 @@ const LandingPage = () => {
         break;
       case 'Browser Compatibility':
         setOpenModal('Browser Compatibility');
-        break;
-      case 'signup':
-        setOpenModal('signup');
-        setChoiceType('signup');
-        break;
-      case 'interested':
-        setOpenModal('signup');
-        setChoiceType('interested');
-        break;
-      case 'login':
-        setChoiceType('login');
-        setOpenModal('login');
-        break;
-      case 'tisc-login':
-        setChoiceType('tisc-login');
-        setOpenModal('login');
         break;
       default:
         break;
@@ -150,7 +134,7 @@ const LandingPage = () => {
                 icon={<SingleRight />}
                 width="104px"
                 buttonClass={styles['login-button']}
-                onClick={() => handleOnClickButton('login')}
+                onClick={() => setOpenModal('Login')}
               >
                 Log in
               </CustomButton>
@@ -199,7 +183,7 @@ const LandingPage = () => {
                       properties="warning"
                       size="large"
                       buttonClass={styles['action-button']}
-                      onClick={() => handleOnClickButton('interested')}
+                      onClick={() => setOpenModal('Brand Interested')}
                     >
                       INTERESTED
                     </CustomButton>
@@ -239,7 +223,7 @@ const LandingPage = () => {
                       properties="warning"
                       size="large"
                       buttonClass={styles['action-button']}
-                      onClick={() => handleOnClickButton('signup')}
+                      onClick={() => setOpenModal('Designer Signup')}
                     >
                       SIGN ME UP
                     </CustomButton>
@@ -265,7 +249,7 @@ const LandingPage = () => {
                       level={5}
                       fontFamily="Roboto"
                       customClass={styles.item}
-                      onClick={() => handleOnClickButton(item)}
+                      onClick={() => handleOnClickMenu(item)}
                     >
                       {item}
                     </BodyText>
@@ -276,7 +260,7 @@ const LandingPage = () => {
                   level={5}
                   fontFamily="Roboto"
                   customClass={styles['tisc-login']}
-                  onClick={() => handleOnClickButton('tisc-login')}
+                  onClick={() => setOpenModal('Tisc Login')}
                 >
                   TISC Log in
                 </BodyText>
@@ -287,12 +271,12 @@ const LandingPage = () => {
       </div>
 
       <LoginModal
-        visible={openModal === 'login'}
+        visible={openModal === 'Login' || openModal === 'Tisc Login'}
         onClose={handleCloseModal}
-        theme={choiceType === 'tisc-login' ? 'dark' : 'default'}
+        theme={openModal === 'Tisc Login' ? 'dark' : 'default'}
         handleSubmitLogin={handleSubmitLogin}
         handleForgotPassword={handleForgotPassword}
-        type={choiceType}
+        type={openModal}
       />
       <AboutModal visible={openModal === 'About'} onClose={handleCloseModal} theme="dark" />
       <PoliciesModal visible={openModal === 'Policies'} onClose={handleCloseModal} theme="dark" />
@@ -303,10 +287,14 @@ const LandingPage = () => {
         theme="dark"
       />
       <SignupModal
-        visible={openModal === 'signup'}
+        visible={openModal === 'Designer Signup'}
         onClose={handleCloseModal}
         theme="default"
-        type={choiceType}
+      />
+      <BrandInterestedModal
+        visible={openModal === 'Brand Interested'}
+        onClose={handleCloseModal}
+        theme="default"
       />
       {emailResetPwd && (
         <ResetPasswordModal

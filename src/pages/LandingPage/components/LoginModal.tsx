@@ -113,12 +113,12 @@ export const LoginModal: FC<LoginModalProps> = ({
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={2} customClass={styles[`body${themeStyle()}`]}>
-            {type === 'tisc-login'
+            {type === 'Tisc Login'
               ? 'Your most unhappy customers are your greatest source of learning.'
               : 'Do or do not. There is no try.'}
           </MainTitle>
           <BodyText level={2} customClass={styles[`title${themeStyle()}`]}>
-            {type === 'tisc-login' ? 'Bill Gate, Microsoft co-founder' : 'Yoda, Jedi Master'}
+            {type === 'Tisc Login' ? 'Bill Gate, Microsoft co-founder' : 'Yoda, Jedi Master'}
           </BodyText>
         </div>
         <div className={styles.form}>
@@ -183,7 +183,7 @@ export const LoginModal: FC<LoginModalProps> = ({
                 theme={theme}
                 size="large"
                 containerClass={
-                  type === 'tisc-login' ? styles['forgot-input-dark'] : styles['forgot-input']
+                  type === 'Tisc Login' ? styles['forgot-input-dark'] : styles['forgot-input']
                 }
                 placeholder="type your work email to verify"
                 focusColor="secondary"

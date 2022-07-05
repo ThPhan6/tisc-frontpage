@@ -63,15 +63,21 @@ export type ResetPasswordBodyProp = {
   reset_password_token: string;
 };
 
-export interface AboutModalProps {
+export interface ModalProps {
   theme?: 'default' | 'dark';
   visible: boolean;
   onClose: () => void;
 }
 
-export interface ContactModalProps {
-  theme?: 'default' | 'dark';
-  visible: boolean;
-  onClose: () => void;
-  type?: string;
+export interface LandingPageProp {
+  modal:
+    | 'About'
+    | 'Policies'
+    | 'Contact'
+    | 'Browser Compatibility'
+    | 'Designer Signup'
+    | 'Brand Interested'
+    | 'Tisc Login'
+    | 'Login'
+    | '';
 }
