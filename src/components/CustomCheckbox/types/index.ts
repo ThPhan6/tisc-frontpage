@@ -1,5 +1,7 @@
+import type { ReactNode } from 'react';
+
 export type CheckboxValue = {
-  label: string;
+  label: string | ReactNode;
   value: string;
   disabled?: boolean;
 };

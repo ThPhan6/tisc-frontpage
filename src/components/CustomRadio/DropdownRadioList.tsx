@@ -19,6 +19,7 @@ interface IDropdownRadioList {
   data: IDropdownRadioItemList[];
   renderTitle?: (data: IDropdownRadioItemList) => string | number | React.ReactNode;
   onChange?: (value: RadioValue) => void;
+  noCollapse?: boolean;
 }
 type ActiveKeyType = string | number | (string | number)[];
 

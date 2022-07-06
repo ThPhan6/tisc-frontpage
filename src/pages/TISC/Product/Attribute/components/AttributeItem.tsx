@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { lowerCase } from 'lodash';
 import type { FC } from 'react';
 import styles from '../styles/attributeItem.less';
-import type { IAttributeSubForm } from '../types';
+import type { IAttributeSubForm } from '@/types';
 
 interface IAttributeItem {
   item: IAttributeSubForm;

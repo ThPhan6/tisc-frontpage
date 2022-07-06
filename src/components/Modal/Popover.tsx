@@ -5,7 +5,11 @@ import { ReactComponent as CloseIcon } from '../../assets/icons/action-close-ope
 import CustomButton from '@/components/Button';
 import { MainTitle } from '@/components/Typography';
 import DropdownRadioList from '@/components/CustomRadio/DropdownRadioList';
+import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
+import GroupRadioList from '@/components/CustomRadio/RadioList';
 import type { IDropdownRadioItemList } from '@/components/CustomRadio/DropdownRadioList';
+import type { IDropdownCheckboxItemList } from '@/components/CustomCheckbox/DropdownCheckboxList';
+import type { IRadioListOption } from '@/components/CustomRadio/RadioList';
 
 import styles from './styles/Popover.less';
 
@@ -13,10 +17,23 @@ interface IPopover {
   title: string;
   visible: boolean;
   setVisible: (visible: boolean) => void;
+  /// dropdown radio list
   dropdownRadioList?: IDropdownRadioItemList[];
   dropDownRadioTitle?: (data: IDropdownRadioItemList) => string | number | ReactNode;
+
+  /// group radio list
+  groupRadioList?: IRadioListOption[];
+
+  /// dropdown checkbox list
+  dropdownCheckboxList?: IDropdownCheckboxItemList[];
+  dropdownCheckboxTitle?: (data: IDropdownCheckboxItemList) => string | number | ReactNode;
+
+  // active value
   chosenValue?: any;
   setChosenValue?: (value: any) => void;
+
+  // extra top action
+  extraTopAction?: ReactNode;
 }
 const Popover: FC<IPopover> = ({
   title,
@@ -24,8 +41,12 @@ const Popover: FC<IPopover> = ({
   setVisible,
   dropdownRadioList,
   dropDownRadioTitle,
+  dropdownCheckboxList,
+  dropdownCheckboxTitle,
+  groupRadioList,
   chosenValue,
   setChosenValue,
+  extraTopAction,
 }) => {
   const [currentValue, setCurrentValue] = useState<any>(chosenValue);
 
@@ -38,6 +59,29 @@ const Popover: FC<IPopover> = ({
           chosenItem={chosenValue}
           data={dropdownRadioList}
           renderTitle={dropDownRadioTitle}
+          onChange={setCurrentValue}
+        />
+      );
+    }
+    // group radio list
+    if (groupRadioList) {
+      return (
+        <GroupRadioList
+          selected={currentValue}
+          chosenItem={chosenValue}
+          data={groupRadioList}
+          onChange={setCurrentValue}
+        />
+      );
+    }
+    /// drodown checkbox list
+    if (dropdownCheckboxList) {
+      return (
+        <DropdownCheckboxList
+          selected={currentValue}
+          chosenItem={chosenValue}
+          data={dropdownCheckboxList}
+          renderTitle={dropdownCheckboxTitle}
           onChange={setCurrentValue}
         />
       );
@@ -92,6 +136,7 @@ const Popover: FC<IPopover> = ({
         }
         className={styles.customPopover}
       >
+        {extraTopAction}
         {renderChildren()}
       </Modal>
     </div>

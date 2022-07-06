@@ -8,8 +8,8 @@ import { useState, useEffect } from 'react';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { pushTo } from '@/helper/history';
 
-import type { IAttributeForm } from './types';
-import { updateAttribute, getOneAttribute } from './services/api';
+import type { IAttributeForm } from '@/types';
+import { updateAttribute, getOneAttribute } from '@/services';
 const DEFAULT_ATTRIBUTE: IAttributeForm = {
   name: '',
   subs: [],

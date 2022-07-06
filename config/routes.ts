@@ -234,7 +234,7 @@
             hideInMenu: true,
           },
           {
-            path: '/tisc/products/configuration/create',
+            path: '/tisc/products/configuration/create/:brandId',
             component: './TISC/Product/Configuration/Create',
             hideInMenu: true,
           },

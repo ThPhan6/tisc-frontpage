@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import type { FC } from 'react';
 import { Row, Col } from 'antd';
 import styles from '../styles/ConversionItem.less';
-import { ConversionItemProps, ElementInputProp } from '../types';
+import { ConversionItemProps, ElementInputProp } from '@/types';
 
 const ElementInput: FC<ElementInputProp> = ({ order, onChange, value }) => {
   return (

@@ -8,20 +8,11 @@ import classNames from 'classnames';
 export const CustomTabs: FC<CustomTabsProps> = ({
   listTab,
   tabDisplay = 'start',
-  onChange,
-  activeTab,
   tabPosition = 'top',
   heightItem = '40px',
   widthItem = '128px',
   ...props
 }) => {
-  const handleChangeValue = (key: string) => {
-    const value = listTab.filter((item) => item.key === key)[0];
-    if (onChange) {
-      onChange(value);
-    }
-  };
-
   return (
     <div
       className={classNames(
@@ -30,12 +21,7 @@ export const CustomTabs: FC<CustomTabsProps> = ({
         style[`tabs-${tabDisplay}`],
       )}
     >
-      <Tabs
-        {...props}
-        tabPosition={tabPosition}
-        onChange={handleChangeValue}
-        activeKey={activeTab.key}
-      >
+      <Tabs {...props} tabPosition={tabPosition}>
         {listTab.map((tab) => (
           <TabPane
             tab={

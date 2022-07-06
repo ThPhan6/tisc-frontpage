@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { BodyText } from '@/components/Typography';
 import Popover from '@/components/Modal/Popover';
 import { HeaderDropdown } from '@/components/HeaderDropdown';
-import { getBrandAlphabet, getProductSummary } from '../services/api';
-import type { IBrandAlphabet, IBrandAlphabetItem, IGeneralData } from '../types';
+import { getBrandAlphabet, getProductSummary } from '@/services';
+import type { IBrandAlphabet, IBrandDetail, IGeneralData } from '@/types';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SmallPlusIcon } from '@/assets/icons/small-plus-icon.svg';
 import { showImageUrl } from '@/helper/utils';
@@ -62,7 +62,7 @@ const ProductTopBar: React.FC = () => {
   /// set brand to product reducer
   useEffect(() => {
     if (brandData) {
-      let brand: IBrandAlphabetItem | undefined;
+      let brand: IBrandDetail | undefined;
       forEach(brandAlphabet, (brands) => {
         const foundedBrand = brands.find((item) => item.id === brandData.value);
         if (foundedBrand) {
@@ -106,7 +106,7 @@ const ProductTopBar: React.FC = () => {
   console.log(product);
 
   /// render custom radio brand list label
-  const renderLabel = (item: IBrandAlphabetItem) => {
+  const renderLabel = (item: IBrandDetail) => {
     return (
       <BodyText level={5} fontFamily="Roboto">
         <img src={showImageUrl(item.logo)} className={styles.brandLogo} />

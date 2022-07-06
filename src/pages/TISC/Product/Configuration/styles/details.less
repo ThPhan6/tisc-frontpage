@@ -1,141 +1,308 @@
 .productContent {
   margin-top: 8px;
+  input {
+    color: @primary-color-dark !important;
+  }
   .productImageWrapper {
     padding: 16px 16px 0;
     background-color: #fff;
   }
-}
-
-.uploadZone {
-  position: relative;
-  height: 0 !important;
-  padding-top: 100%;
-  background: @mono-color-medium !important;
-  border: 0.3px solid #000 !important;
-  cursor: default !important;
-  .uploadZoneContent {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    padding: 32px 16px;
-    cursor: default;
-    p {
-      color: #fff;
-      font-weight: 600;
-    }
-    .primaryPhoto {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .dropzoneNote {
-      position: initial;
-      width: 100%;
-      height: 100%;
-      .placeholderPhoto {
-        position: absolute;
-        top: 25%;
-        left: 25%;
-        width: 50%;
-      }
-    }
-    .primaryAction {
-      position: absolute;
-      bottom: 32px;
-      left: 0;
-      z-index: 2;
-      width: 100%;
-      .actionIcon {
-        margin: 0 12px;
-        color: @primary-color-dark;
-        background-color: #fff;
-      }
-    }
-  }
-}
-.photoList {
-  margin-top: 8px;
-  .listWrapper {
-    flex-flow: nowrap;
-    padding-bottom: 4px;
-    overflow: auto;
-  }
-  .addMoreSubPhotos {
+  .uploadZone {
     position: relative;
-    display: inline-flex;
-    width: 100%;
+    height: 0 !important;
     padding-top: 100%;
-    cursor: pointer;
-    .addMorePhotocontent {
+    background: @mono-color-medium !important;
+    border: 0.3px solid #000 !important;
+    border-radius: 0;
+    cursor: default !important;
+    .uploadZoneContent {
       position: absolute;
       top: 0;
       left: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
       width: 100%;
       height: 100%;
-      padding: 12px 0;
-      overflow: hidden;
-      text-align: center;
-      border: 0.6px dashed @primary-color-dark;
+      padding: 32px 16px;
+      cursor: default;
       p {
-        color: @primary-color-dark;
+        color: #fff;
+        font-weight: 600;
       }
-    }
-  }
-  .fileItem {
-    position: relative;
-    width: 100%;
-    padding-top: 100%;
-    .filePreview {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: @mono-color-medium;
-      border: 0.3px solid #000;
-      img {
+      .primaryPhoto {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
       }
-      .subPhotoAction {
-        position: absolute;
-        bottom: 15px;
-        left: 0;
+      .dropzoneNote {
+        position: initial;
         width: 100%;
-        text-align: center;
-        button {
+        height: 100%;
+        .placeholderPhoto {
+          position: absolute;
+          top: 25%;
+          left: 25%;
+          width: 50%;
+        }
+      }
+      .primaryAction {
+        position: absolute;
+        bottom: 32px;
+        left: 0;
+        z-index: 2;
+        width: 100%;
+        .actionIcon {
+          margin: 0 12px;
           color: @primary-color-dark;
           background-color: #fff;
         }
       }
     }
   }
-}
-.photoKeyword {
-  display: flex;
-  align-items: center;
-  height: 40px;
-  div {
-    width: auto !important;
-    span {
-      font-size: 12px;
+  .photoList {
+    margin-top: 8px;
+    .listWrapper {
+      flex-flow: nowrap;
+      padding-bottom: 4px;
+      overflow: auto;
     }
-    input {
-      margin-left: 8px;
-      padding: 0 0 4px 0 !important;
-      font-size: 12px;
+    .addMoreSubPhotos {
+      position: relative;
+      display: inline-flex;
+      width: 100%;
+      padding-top: 100%;
+      cursor: pointer;
+      .addMorePhotocontent {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        height: 100%;
+        padding: 12px 0;
+        overflow: hidden;
+        text-align: center;
+        border: 0.6px dashed @primary-color-dark;
+        p {
+          color: @primary-color-dark;
+        }
+      }
+    }
+    .fileItem {
+      position: relative;
+      width: 100%;
+      padding-top: 100%;
+      .filePreview {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: @mono-color-medium;
+        border: 0.3px solid #000;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        .subPhotoAction {
+          position: absolute;
+          bottom: 15px;
+          left: 0;
+          width: 100%;
+          text-align: center;
+          button {
+            color: @primary-color-dark;
+            background-color: #fff;
+          }
+        }
+      }
+    }
+  }
+  .photoKeyword {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    div {
+      width: auto !important;
+      span {
+        font-size: 12px;
+      }
+      input {
+        margin-left: 8px;
+        padding: 0 !important;
+        font-size: 12px;
+      }
+    }
+  }
+  // info
+  :global(.ant-collapse) {
+    border: 0;
+    border-radius: 0;
+  }
+  .productHeaderCollapse {
+    border-bottom: 0 !important;
+    &:global(.ant-collapse-item-active) {
+      box-shadow: none;
+      :global(.brand-label) {
+        padding-right: 46px !important;
+      }
+      :global(.ant-collapse-header) {
+        box-shadow: none;
+      }
+    }
+    :global(.ant-collapse-content) {
+      background: #fff;
+      border-top: 0 !important;
+      border-radius: 0 !important;
+      box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 30%);
+      :global(.ant-collapse-content-box) {
+        padding: 0 16px 4px;
+        :global(.input-label-container) {
+          width: 93px;
+        }
+      }
+    }
+    :global(.ant-collapse-header) {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center;
+      height: 40px;
+      padding: 4px 48px 0 0 !important;
+      background: #fff;
+      border-radius: 0;
+      box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 30%);
+      :global(.header-group) {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        p {
+          line-height: 20px;
+        }
+        :global(.brand-name) {
+          margin-right: auto;
+          font-weight: 500;
+        }
+        :global(.brand-label) {
+          padding-right: 12px;
+          padding-left: 16px;
+          transition: all 0.3s;
+        }
+        img {
+          width: 18px;
+          height: 18px;
+          object-fit: cover;
+        }
+      }
+    }
+  }
+  // tab
+  .productTabContainer {
+    :global(.ant-tabs) {
+      :global(.ant-tabs-nav) {
+        margin: 0;
+        background-color: #fff;
+        box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0);
+        &::before {
+          border: 0;
+        }
+        :global(.ant-tabs-tab) {
+          font-size: 14px !important;
+          line-height: 22px;
+          letter-spacing: 0.02em;
+          text-align: center;
+          text-transform: uppercase;
+        }
+      }
+    }
+  }
+  .addAttributeBtn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 40px;
+    padding: 0 16px;
+    cursor: pointer;
+    :global(.add-attribute-text) {
+      margin-right: 12px;
+    }
+  }
+  .productAttributeItem {
+    border-bottom: 0 !important;
+    &:global(.ant-collapse-item-active) {
+      box-shadow: none;
+    }
+    :global(.ant-collapse-content) {
+      background: #fff;
+      border-top: 0 !important;
+      border-radius: 0 !important;
+      :global(.ant-collapse-content-box) {
+        padding: 0;
+      }
+    }
+    :global(.ant-collapse-header) {
+      display: flex !important;
+      align-items: center !important;
+      height: 40px;
+      padding: 4px 48px 0 16px !important;
+      background: #fff;
+      border-radius: 0;
+      :global(.input-label) {
+        height: 18px;
+        margin-right: 12px;
+      }
+    }
+    :global(.attribute-select-group) {
+      display: flex;
+      align-items: center;
+      height: 36px;
+      padding: 0 16px;
+      box-shadow: inset 0 0.5px 0 rgba(0, 0, 0, 30%);
+      cursor: pointer;
+      :global(.single-right-icon) {
+        margin-right: auto;
+        margin-left: 8px;
+      }
+    }
+    .attributeSubItem {
+      display: flex;
+      align-items: center;
+      height: 36px;
+      padding: 0 16px;
+      box-shadow: inset 0 0.5px 0 #000;
+      :global(.input-label) {
+        width: 100px;
+      }
+    }
+  }
+}
+.extraAction {
+  box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
+  :global(.extra-heading) {
+    display: flex;
+    align-items: center;
+    height: 36px;
+  }
+  :global(.extra-input-group) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    :global(.extra-custom-button) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      :global(.extra-custom-button-label) {
+        margin-right: 12px;
+      }
     }
   }
 }

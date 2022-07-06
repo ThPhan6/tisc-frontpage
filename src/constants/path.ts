@@ -35,7 +35,7 @@ export const PATH = {
 
   // configuration
   productConfiguration: '/tisc/products/configuration',
-  productConfigurationCreate: '/tisc/products/configuration/create',
+  productConfigurationCreate: '/tisc/products/configuration/create/:brandId',
   productConfigurationUpdate: '/tisc/products/configuration/:id',
 };
 

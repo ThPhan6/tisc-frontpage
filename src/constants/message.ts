@@ -25,6 +25,7 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_CATEGORY_ERROR: 'Update the category error',
 
   // ATTRIBUTE
+  GET_ATTRRIBUTE_DATA_FAILED: 'Failed to get attribute data',
   CREATE_ATTRIBUTE_SUCCESS: 'Create attribute successfully',
   UPDATE_ATTRIBUTE_SUCCESS: 'Update attribute successfully',
   DELETE_ATTRIBUTE_SUCCESS: 'Delete attribute successfully',
@@ -63,6 +64,8 @@ export const MESSAGE_NOTIFICATION = {
   // configuration
   GET_BRAND_DATA_ERROR: 'Failed to get Brand data',
   GET_BRAND_SUMMARY_DATA_ERROR: 'Failed to get Brand summary data',
+  CREATE_BRAND_COLLECTION_ERROR: 'Failed to create Brand collection',
+  GET_BRAND_COLLECTION_ERROR: 'Failed to get Brand collection data',
 };
 
 export const MESSAGE_TOOLTIP = {

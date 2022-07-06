@@ -5,8 +5,8 @@ import { useBoolean } from '@/helper/hook';
 import { useState } from 'react';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { pushTo } from '@/helper/history';
-import type { IAttributeForm } from './types';
-import { createAttribute } from './services/api';
+import type { IAttributeForm } from '@/types';
+import { createAttribute } from '@/services';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 const DEFAULT_ATTRIBUTE: IAttributeForm = {
   name: '',

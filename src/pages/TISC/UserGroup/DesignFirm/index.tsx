@@ -4,9 +4,9 @@ import type { ICustomTableColumnType } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
-import { getDesignFirmPagination } from './services/api';
+import { getDesignFirmPagination } from '@/services';
 import { showImageUrl } from '@/helper/utils';
-import type { IDesignFirmListResponse } from './types';
+import type { IDesignFirmList } from '@/types';
 import styles from './styles/index.less';
 import { PageContainer } from '@ant-design/pro-layout';
 import { MenuSummary } from '@/components/MenuSummary';
@@ -19,7 +19,7 @@ const DesignFirmList: React.FC = () => {
     alert('Coming Soon!');
   };
 
-  const TableColumns: ICustomTableColumnType<IDesignFirmListResponse>[] = [
+  const TableColumns: ICustomTableColumnType<IDesignFirmList>[] = [
     {
       title: '',
       dataIndex: 'logo',
