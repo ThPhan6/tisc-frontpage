@@ -7,6 +7,8 @@ import styles from '../styles/EmailAutorespondersEntryForm.less';
 import { EmailAutoRespondProps } from '../types';
 import React, { FC } from 'react';
 import { CustomRadio } from '@/components/CustomRadio';
+import { ScrollMenu } from 'react-horizontal-scrolling-menu';
+import { useDrag } from '../utils/useDrag';
 
 interface EmailAutoRespond {
   value: EmailAutoRespondProps;
@@ -27,6 +29,9 @@ const optionsRadio = {
 };
 
 export const EmailAutoRespondEntryForm: FC<EmailAutoRespond> = ({ value, onChange }) => {
+  /// for dragging radio item
+  const { dragStart, dragStop, onWheel, handleDrag } = useDrag();
+
   const handleOnChangeTitleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ ...value, title: e.target.value });
   };
@@ -50,13 +55,24 @@ export const EmailAutoRespondEntryForm: FC<EmailAutoRespond> = ({ value, onChang
     <div className={styles.container}>
       <EntryFormWrapper>
         <FormGroup label="Topic" required={true} layout="vertical" formClass={styles.radio_form}>
-          <CustomRadio
-            direction="horizontal"
-            value={value.topic}
-            onChange={(radioValue) => handleOnChangeRadio('topic', radioValue.value)}
-            options={optionsRadio.topic}
-            containerClass={styles.radio_container}
-          />
+          <div onMouseLeave={() => dragStop}>
+            <ScrollMenu
+              onWheel={onWheel}
+              onMouseDown={() => dragStart}
+              onMouseMove={handleDrag}
+              onMouseUp={() => dragStop}
+            >
+              {optionsRadio.topic.map((item) => (
+                <CustomRadio
+                  direction="horizontal"
+                  value={value.topic}
+                  onChange={(radioValue) => handleOnChangeRadio('topic', radioValue.value)}
+                  options={[item]}
+                  containerClass={styles.radio_container}
+                />
+              ))}
+            </ScrollMenu>
+          </div>
         </FormGroup>
         <FormGroup
           label="Targeted For"
@@ -64,13 +80,24 @@ export const EmailAutoRespondEntryForm: FC<EmailAutoRespond> = ({ value, onChang
           layout="vertical"
           formClass={styles.radio_form}
         >
-          <CustomRadio
-            direction="horizontal"
-            value={value.targetedFor}
-            onChange={(radioValue) => handleOnChangeRadio('targetedFor', radioValue.value)}
-            options={optionsRadio.targetedFor}
-            containerClass={styles.radio_container}
-          />
+          <div onMouseLeave={() => dragStop}>
+            <ScrollMenu
+              onWheel={onWheel}
+              onMouseDown={() => dragStart}
+              onMouseMove={handleDrag}
+              onMouseUp={() => dragStop}
+            >
+              {optionsRadio.targetedFor.map((item) => (
+                <CustomRadio
+                  direction="horizontal"
+                  value={value.targetedFor}
+                  onChange={(radioValue) => handleOnChangeRadio('targetedFor', radioValue.value)}
+                  options={[item]}
+                  containerClass={styles.radio_container}
+                />
+              ))}
+            </ScrollMenu>
+          </div>
         </FormGroup>
         <FormGroup label="Title" required={true} layout="vertical" formClass={styles.title}>
           <div className={styles.title_field}>

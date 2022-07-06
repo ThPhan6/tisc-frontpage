@@ -1,5 +1,5 @@
 import { Radio, Space } from 'antd';
-import { FC, useEffect, useRef } from 'react';
+import { FC } from 'react';
 import { useState } from 'react';
 import type { CustomRadioProps } from './types';
 import style from './styles/index.less';
@@ -19,20 +19,6 @@ export const CustomRadio: FC<CustomRadioProps> = ({
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
-  const [isOverflow, setIsOverflow] = useState<boolean>(false);
-  const radioGroup: any = useRef();
-
-  useEffect(() => {
-    const updateSize = () => {
-      const parentWidth = radioGroup.current.offsetWidth;
-      const childrenWidth = radioGroup.current.children[0].offsetWidth;
-      setIsOverflow(childrenWidth > parentWidth ? true : false);
-    };
-
-    window.addEventListener('resize', updateSize);
-    updateSize();
-    return () => window.removeEventListener('resize', updateSize);
-  }, []);
 
   const onChangeValue = (e: any) => {
     const newValue = {
@@ -59,18 +45,12 @@ export const CustomRadio: FC<CustomRadioProps> = ({
         isRadioList ? style['radio-list'] : '',
         containerClass,
       )}
-      style={{
-        boxShadow: isOverflow === true ? 'none' : '',
-        borderBottomColor: isOverflow === true ? 'transparent' : '',
-        borderBottom: isOverflow === true ? 'none' : '',
-      }}
     >
       <Radio.Group
         {...props}
         onChange={onChangeValue}
         value={value}
         defaultValue={defaultValue?.value}
-        ref={radioGroup}
       >
         <Space direction={isRadioList ? 'vertical' : direction}>
           {options.map((option, index) => (
