@@ -6,7 +6,6 @@ import styles from './styles/index.less';
 import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import CustomButton from '@/components/Button';
 import { useState } from 'react';
 import {
   BrandProfileProp,
@@ -18,8 +17,8 @@ import { ItemWebsite } from './components/ItemWebsite';
 import { getBase64 } from '@/helper/utils';
 import Logo from '@/assets/image-logo.png';
 import { useBoolean } from '@/helper/hook';
-import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-icon.svg';
+import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 
 const BrandProfile = () => {
   const [brandProfile, setBrandProfile] = useState<BrandProfileProp>(brandProfileValueDefault);
@@ -27,6 +26,9 @@ const BrandProfile = () => {
 
   const onSubmitForm = () => {
     submitButtonStatus.setValue(true);
+    setTimeout(() => {
+      submitButtonStatus.setValue(false);
+    }, 1000);
   };
 
   const handleOnChangeValueForm = (
@@ -166,17 +168,10 @@ const BrandProfile = () => {
               </div>
             </div>
             <div className={styles.actionButton}>
-              {submitButtonStatus.value ? (
-                <CustomButton
-                  icon={<CheckSuccessIcon />}
-                  size="small"
-                  buttonClass={styles.customButtonSuccess}
-                />
-              ) : (
-                <CustomButton size="small" buttonClass={styles.customButton} onClick={onSubmitForm}>
-                  Save
-                </CustomButton>
-              )}
+              <CustomSaveButton
+                submitButtonStatus={submitButtonStatus.value}
+                onClick={onSubmitForm}
+              />
             </div>
           </div>
         </Col>
