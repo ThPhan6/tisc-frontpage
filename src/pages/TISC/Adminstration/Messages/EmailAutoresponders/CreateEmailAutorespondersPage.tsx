@@ -17,8 +17,6 @@ const CreateEmailAutoRespondersPage = () => {
     setValue(newValue);
   };
 
-  console.log(value);
-
   return (
     <div>
       <TableHeader title="Email Autoresponders" />
