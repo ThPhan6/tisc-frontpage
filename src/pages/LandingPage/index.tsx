@@ -24,19 +24,30 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { STATUS_RESPONSE } from '@/constants/util';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { PATH } from '@/constants/path';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ResetPasswordModal } from './components/ResetPasswordModal';
-import type { LoginBodyProp, ResetPasswordBodyProp } from './types';
+import type { LoginBodyProp, ModalOpen, ResetPasswordBodyProp } from './types';
 import { redirectAfterLogin } from '@/helper/utils';
+import { AboutModal } from './components/AboutModal';
+import { ContactModal } from './components/ContactModal';
+import { NoticeModal } from './components/NoticeModal';
+import { PoliciesModal } from './components/PoliciesModal';
+import { SignupModal } from './components/SignupModal';
+import { BrandInterestedModal } from './components/BrandInterestedModal';
 
 const LandingPage = () => {
   const emailResetPwd = useQuery().get('email');
   const tokenResetPwd = useQuery().get('token');
 
   const { fetchUserInfo } = useCustomInitialState();
-  const openTiscLogin = useBoolean();
   const openResetPwd = useBoolean();
   const isLoading = useBoolean();
+  const [openModal, setOpenModal] = useState<ModalOpen>('');
+  const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
+
+  const handleCloseModal = () => {
+    setOpenModal('');
+  };
 
   useEffect(() => {
     if ((!emailResetPwd || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
@@ -71,7 +82,7 @@ const LandingPage = () => {
     isLoading.setValue(true);
     forgotPasswordMiddleware({ email: email }, async (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
-        openTiscLogin.setValue(false);
+        setOpenModal('');
         message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD);
       } else {
         message.error(msg);
@@ -105,6 +116,7 @@ const LandingPage = () => {
                 icon={<SingleRight />}
                 width="104px"
                 buttonClass={styles['login-button']}
+                onClick={() => setOpenModal('Login')}
               >
                 Log in
               </CustomButton>
@@ -153,6 +165,7 @@ const LandingPage = () => {
                       properties="warning"
                       size="large"
                       buttonClass={styles['action-button']}
+                      onClick={() => setOpenModal('Brand Interested')}
                     >
                       INTERESTED
                     </CustomButton>
@@ -192,8 +205,9 @@ const LandingPage = () => {
                       properties="warning"
                       size="large"
                       buttonClass={styles['action-button']}
+                      onClick={() => setOpenModal('Designer Signup')}
                     >
-                      INTERESTED
+                      SIGN ME UP
                     </CustomButton>
                   </div>
                 </div>
@@ -211,8 +225,14 @@ const LandingPage = () => {
               </BodyText>
               <div className={styles['menu-wrapper']}>
                 <div className={styles.menu}>
-                  {['About', 'Policies', 'Contact'].map((item, index) => (
-                    <BodyText key={index} level={5} fontFamily="Roboto" customClass={styles.item}>
+                  {listMenuFooter.map((item, index) => (
+                    <BodyText
+                      key={index}
+                      level={5}
+                      fontFamily="Roboto"
+                      customClass={styles.item}
+                      onClick={() => setOpenModal(item)}
+                    >
                       {item}
                     </BodyText>
                   ))}
@@ -222,9 +242,7 @@ const LandingPage = () => {
                   level={5}
                   fontFamily="Roboto"
                   customClass={styles['tisc-login']}
-                  onClick={() => {
-                    openTiscLogin.setValue(true);
-                  }}
+                  onClick={() => setOpenModal('Tisc Login')}
                 >
                   TISC Log in
                 </BodyText>
@@ -233,11 +251,32 @@ const LandingPage = () => {
           </Col>
         </Row>
       </div>
+
       <LoginModal
-        visible={openTiscLogin}
-        theme="dark"
+        visible={openModal === 'Login' || openModal === 'Tisc Login'}
+        onClose={handleCloseModal}
+        theme={openModal === 'Tisc Login' ? 'dark' : 'default'}
         handleSubmitLogin={handleSubmitLogin}
         handleForgotPassword={handleForgotPassword}
+        type={openModal}
+      />
+      <AboutModal visible={openModal === 'About'} onClose={handleCloseModal} theme="dark" />
+      <PoliciesModal visible={openModal === 'Policies'} onClose={handleCloseModal} theme="dark" />
+      <ContactModal visible={openModal === 'Contact'} onClose={handleCloseModal} theme="dark" />
+      <NoticeModal
+        visible={openModal === 'Browser Compatibility'}
+        onClose={handleCloseModal}
+        theme="dark"
+      />
+      <SignupModal
+        visible={openModal === 'Designer Signup'}
+        onClose={handleCloseModal}
+        theme="default"
+      />
+      <BrandInterestedModal
+        visible={openModal === 'Brand Interested'}
+        onClose={handleCloseModal}
+        theme="default"
       />
       {emailResetPwd && (
         <ResetPasswordModal

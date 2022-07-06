@@ -20,6 +20,7 @@ const Header = () => {
         {
           onClick: () => {
             showQuestionDropdown.setValue(false);
+            pushTo(PATH.howTo);
           },
           icon: <QuestionIcon />,
           label: 'How-To',
