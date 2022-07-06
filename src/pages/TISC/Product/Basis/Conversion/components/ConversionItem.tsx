@@ -17,7 +17,7 @@ const ElementInput: FC<ElementInputProp> = ({ order, onChange, value }) => {
         name={`formula_${order}`}
         size="small"
         autoWidth
-        defaultWidth={60}
+        defaultWidth={62}
         containerClass={styles.element__input_formula}
         onChange={onChange}
         value={value[`formula_${order}`]}
@@ -83,7 +83,7 @@ export const ConversionItem: FC<ConversionItemProps> = ({
         <ActionDeleteIcon className={styles.field__delete_icon} onClick={handleOnClickDelete} />
       </div>
 
-      <Row className={styles.form}>
+      <Row className={styles.form} gutter={16}>
         <ElementInput order={1} onChange={handleOnChange} value={value} />
         <ElementInput order={2} onChange={handleOnChange} value={value} />
       </Row>

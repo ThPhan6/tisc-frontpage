@@ -60,7 +60,7 @@
         display: flex;
         align-items: center;
         height: 40px;
-        padding-left: 12px;
+        padding-left: 16px;
         .setForgotWrapper(@primary-color-dark);
       }
       .wrapper-dark {
@@ -73,8 +73,14 @@
         .setForgotWrapper(#fff);
       }
       .forgot-input {
-        input {
-          padding-left: 42px;
+        div {
+          &::before {
+            left: 32px;
+          }
+          input {
+            padding-left: 44px;
+            color: @mono-color;
+          }
         }
       }
       .forgot-input-dark {

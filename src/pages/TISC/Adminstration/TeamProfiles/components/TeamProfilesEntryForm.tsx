@@ -9,11 +9,12 @@ import { ReactComponent as DropUpIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
 import CustomButton from '@/components/Button';
 import React, { FC, useState } from 'react';
-import { TeamProfilesProps, typeInput, typePhoneInput, typeRadio } from '../types';
+import { TeamProfilesProps, typeInput, typeOpenModal, typePhoneInput, typeRadio } from '../types';
 import { RadioValue } from '@/components/CustomRadio/types';
 import classNames from 'classnames';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { PhoneInputValueProp } from '@/components/Form/types';
+import TISCAccessLevelModal from './TISCAccessLevelModal';
 
 const genderData = [
   { label: 'Male', value: '1' },
@@ -46,6 +47,13 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({ value, o
     /// showing department list
     setVisible(!visible);
   };
+
+  // for open access level modal
+  const [openModal, setOpenModal] = useState<typeOpenModal>('');
+  const handleCloseModal = () => {
+    setOpenModal('');
+  };
+  const handleOpenModal = () => {};
 
   /// handle phone and mobile input
   const handleOnChangePhoneNumber = (
@@ -260,6 +268,7 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({ value, o
       </FormGroup>
 
       {/* Access Level */}
+
       <FormGroup
         label="Access Level"
         required={true}
@@ -267,12 +276,15 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({ value, o
         layout="vertical"
         formClass={classNames(styles.form_group, styles.access_label)}
       >
+        <div onClick={handleOpenModal}></div>
         <CustomRadio
           options={accessLevelData}
           value={value.access_level.value}
           onChange={(radioValue) => handleChooseRadioContentType('access_level', radioValue)}
         />
       </FormGroup>
+      {/* TISC Access level modal */}
+      <TISCAccessLevelModal isModalOpen={openModal === 'access_level'} onClose={handleCloseModal} />
 
       {/* Status */}
       <FormGroup label="Status" layout="vertical" formClass={styles.form_group}>

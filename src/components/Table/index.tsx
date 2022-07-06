@@ -131,7 +131,7 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
         onChange={handleTableChange}
         showSorterTooltip={false}
         sortDirections={['ascend', 'descend', 'ascend']}
-        tableLayout="fixed"
+        tableLayout="auto"
         scroll={{
           x: 'max-content',
         }}
@@ -167,12 +167,9 @@ export const GetExpandableTableConfig = (props: IExpandableTable): ExpandableCon
         <Table
           pagination={false}
           columns={columns}
-          scroll={{
-            x: 'max-content',
-          }}
           rowKey="id"
           rowClassName={level === 2 ? 'custom-expanded-level-2' : ''}
-          tableLayout="fixed"
+          tableLayout="auto"
           expandable={{
             ...expandable,
             expandedRowKeys: expended ? [expended] : undefined,
