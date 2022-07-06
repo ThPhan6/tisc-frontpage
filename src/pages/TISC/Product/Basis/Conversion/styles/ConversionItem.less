@@ -22,6 +22,7 @@
           margin: 0 8px;
           padding: 0;
           color: @primary-color-dark;
+          text-transform: capitalize;
         }
       }
     }
@@ -29,7 +30,6 @@
       cursor: pointer;
       path {
         transition: fill 1s;
-        fill: @mono-color-medium;
       }
       &:hover {
         path {
@@ -44,6 +44,7 @@
     .element {
       display: flex;
       align-items: center;
+      overflow: hidden;
       &__input_formula,
       &__input_unit {
         // flex: 1;

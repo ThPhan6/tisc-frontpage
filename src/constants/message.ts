@@ -2,7 +2,7 @@ export const MESSAGE_ERROR = {
   EMAIL: 'Unknown email',
   PASSWORD: 'Password error',
   CONFIRM_PASSWORD: 'Passwords do not match',
-  PHONE_INPUT: 'Phone input error',
+  PHONE_INPUT: 'Invalid phone number',
 };
 
 export const MESSAGE_NOTIFICATION = {

@@ -26,8 +26,10 @@ export const CustomInput: FC<CustomInputProps> = ({
       let textWidth = span.current.offsetWidth;
       if (textWidth < defaultWidth) {
         textWidth = defaultWidth;
+      } else {
+        textWidth += 4;
       }
-      setWidth(textWidth + 4);
+      setWidth(textWidth);
     }
   }, [props.value]);
 

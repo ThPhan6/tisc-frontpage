@@ -50,6 +50,9 @@ const CategoryList: React.FC = () => {
       },
       width: 350,
       isExpandable: true,
+      render: (value) => {
+        return <span className="text-uppercase">{value}</span>;
+      },
     },
     {
       title: 'Subcategory',
@@ -112,6 +115,9 @@ const CategoryList: React.FC = () => {
       width: 250,
       sorter: true,
       isExpandable: true,
+      render: (value) => {
+        return <span className="text-capitalize">{value}</span>;
+      },
     },
     {
       title: 'Category',
