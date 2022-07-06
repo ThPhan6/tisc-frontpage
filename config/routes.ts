@@ -15,7 +15,10 @@
     path: '/profiles',
     component: './ProfilesPage',
   },
-
+  {
+    path: '/howTo',
+    component: './HowTo',
+  },
   // TISC MENU - ADMIN ACCESS ONLY
   {
     path: '/tisc/dashboard',

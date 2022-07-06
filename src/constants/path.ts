@@ -7,6 +7,9 @@ export const PATH = {
   profiles: '/profiles',
   homePage: '/tisc/dashboard',
 
+  //how-to
+  howTo: '/howTo',
+
   // Tisc
   categories: '/tisc/products/categories',
   createCategories: '/tisc/products/categories/create',
