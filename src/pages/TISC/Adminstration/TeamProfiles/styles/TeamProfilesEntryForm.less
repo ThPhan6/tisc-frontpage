@@ -1,0 +1,80 @@
+.entry_form {
+  :global(.ant-input) {
+    color: @primary-color-dark;
+    border-bottom-color: transparent;
+  }
+  :global(.ant-input:hover) {
+    border-bottom-color: transparent;
+  }
+  :global(.ant-input[disabled]) {
+    color: @primary-color-dark;
+    text-transform: capitalize;
+    background: transparent;
+    border-bottom-color: transparent;
+    cursor: pointer;
+  }
+  :global(.ant-input:placeholder-shown) {
+    text-transform: lowercase;
+  }
+
+  .access_label {
+    label {
+      cursor: pointer;
+    }
+  }
+
+  .form_group {
+    margin-bottom: 16px;
+    box-shadow: 0 0.5px 0 @mono-color-medium;
+
+    &__content {
+      display: flex;
+      align-items: center;
+
+      .phone_input {
+        width: 100%;
+        border-bottom-color: transparent;
+      }
+
+      .action_right_icon,
+      .drop_icon,
+      .remove_icon {
+        position: absolute;
+        right: 0;
+      }
+
+      .remove_icon {
+        cursor: pointer;
+        path {
+          transition: fill 1s;
+        }
+        &:hover {
+          path {
+            fill: @primary-color-dark;
+          }
+        }
+      }
+    }
+
+    .radio_list {
+      :global(.ant-radio-wrapper) {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+      }
+      :global(span.ant-radio + *) {
+        padding-left: 0;
+      }
+      :global(.radio-horizontal) {
+        display: block;
+      }
+    }
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+  }
+}

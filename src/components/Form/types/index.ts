@@ -58,6 +58,7 @@ export interface PhoneInputProps {
   phoneNumberReadOnly?: boolean;
   value?: PhoneInputValueProp;
   status?: 'error' | 'warning' | '';
+  containerClass?: string;
 }
 export type PhoneInputValueProp = {
   zoneCode: string;

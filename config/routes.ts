@@ -263,7 +263,7 @@
         path: '/tisc/adminstration/team-profiles',
         name: 'team.profile',
         icon: 'team-profile-icon.svg',
-        component: './Welcome',
+        component: './TISC/Adminstration/TeamProfiles/CreateTeamProfilesPage',
       },
       {
         path: '/tisc/adminstration/messages',
