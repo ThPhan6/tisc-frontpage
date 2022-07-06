@@ -304,6 +304,11 @@
       },
     ],
   },
+  {
+    path: '/brand/administration/distributors',
+    name: 'DISTRIBUTORS',
+    component: './Brand/Adminstration/Distributors',
+  },
   // {
   //   name: 'list.table-list',
   //   icon: 'table',

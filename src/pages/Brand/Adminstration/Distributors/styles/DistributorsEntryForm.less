@@ -1,0 +1,48 @@
+.customTitle {
+  height: 36px;
+  margin-bottom: 16px;
+  padding: 7px 0;
+  box-shadow: inset 0 -0.5px 0 @mono-color;
+}
+
+.title {
+  .customTitle;
+}
+
+.titleDistribution {
+  display: flex;
+  align-items: center;
+  .customTitle;
+  p {
+    margin-right: 8px;
+  }
+}
+
+.customShowCount {
+  margin-bottom: 40px;
+  :global(.ant-input-textarea-show-count::after) {
+    color: @mono-color;
+  }
+  :global(.ant-input) {
+    color: @primary-color-dark;
+    text-transform: capitalize;
+  }
+}
+
+.customMarginBottom {
+  margin-bottom: 16px;
+  :global(.ant-input) {
+    color: @primary-color-dark;
+    text-transform: capitalize;
+  }
+  :global(.ant-input-affix-wrapper) {
+    padding-right: 0;
+  }
+}
+
+.customEmail {
+  margin-bottom: 16px;
+  :global(.ant-input) {
+    color: @primary-color-dark;
+  }
+}
