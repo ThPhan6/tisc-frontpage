@@ -7,7 +7,7 @@ import { BodyText } from '@/components/Typography';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { FC, useEffect, useState } from 'react';
 import { isEmpty, isEqual } from 'lodash';
-import { SubcategoryItemProps, subcategoryValueDefault, SubcategoryValueProp } from '../types';
+import { SubcategoryItemProps, subcategoryValueDefault, SubcategoryValueProp } from '@/types';
 
 const ElementInput: FC<{
   value: string;

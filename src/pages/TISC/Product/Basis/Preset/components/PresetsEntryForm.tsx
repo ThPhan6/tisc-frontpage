@@ -7,7 +7,7 @@ import {
   PresetsEntryFormProps,
   presetsValueDefault,
   PresetsValueProp,
-} from '../types';
+} from '@/types';
 
 export const PresetsEntryForm: FC<PresetsEntryFormProps> = ({
   onCancel,

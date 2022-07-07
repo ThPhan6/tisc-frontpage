@@ -4,8 +4,8 @@ import type { FC } from 'react';
 import { useState, useEffect } from 'react';
 import { AttributeItem } from './AttributeItem';
 import ContentTypeModal from './ContentTypeModal';
-import { getProductAttributeContentType } from '../services/api';
-import type { IAttributeForm, IAttributeSubForm, IAttributeContentType } from '../types';
+import { getProductAttributeContentType } from '@/services';
+import type { IAttributeForm, IAttributeSubForm, IAttributeContentType } from '@/types';
 
 interface IAttributeEntryForm {
   type: number;

@@ -3,9 +3,9 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import OptionEntryForm from './components/OptionsEntryForm';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
-import { IBasisOptionForm } from './types';
+import { IBasisOptionForm } from '@/types';
 import { useBoolean } from '@/helper/hook';
-import { createOptionMiddleWare } from './services/api';
+import { createOptionMiddleWare } from '@/services';
 import { useState } from 'react';
 
 const CreateOptionPage = () => {

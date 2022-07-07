@@ -38,7 +38,7 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProp> = ({ items, onParent
       }}
       className={classNames(styles.item, containerClass)}
     >
-      {icon && <div className={styles.icon}>{icon}</div>}
+      {icon ? <div className={styles.icon}>{icon}</div> : null}
       <BodyText fontFamily="Roboto" level={6}>
         {label}
       </BodyText>
@@ -46,7 +46,7 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProp> = ({ items, onParent
   );
 
   return (
-    <div className={styles['menu-header']}>
+    <div className={`${styles['menu-header']} tisc-dropdown-item`}>
       {items.map((item, index) => (
         <MenuItem
           containerClass={index !== items.length - 1 && styles.border}
