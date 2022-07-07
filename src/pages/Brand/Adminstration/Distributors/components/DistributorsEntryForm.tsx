@@ -32,11 +32,11 @@ export const DistributorsEntryForm = () => {
     setDistributorsValue({ ...distributorsValue, [e.target.name]: e.target.value });
   };
 
-  const handleOnChangeValueRadio = (value: string, typeRadio: typeRadio) => {
+  const handleOnChangeValueGenderAndCoverageBeyond = (value: string, typeRadio: typeRadio) => {
     setDistributorsValue({ ...distributorsValue, [typeRadio]: value });
   };
 
-  const handleOnChangeValuePhoneInput = (value: object, typePhoneInput: typePhoneInput) => {
+  const handleOnChangeValueWorkPhoneAndMobile = (value: object, typePhoneInput: typePhoneInput) => {
     setDistributorsValue({ ...distributorsValue, [typePhoneInput]: value['phoneNumber'] });
   };
 
@@ -180,10 +180,17 @@ export const DistributorsEntryForm = () => {
             <CustomRadio
               options={optionsGender}
               value={distributorsValue.gender}
-              onChange={(RadioValue) => handleOnChangeValueRadio(RadioValue.value, 'gender')}
+              onChange={(RadioValue) =>
+                handleOnChangeValueGenderAndCoverageBeyond(RadioValue.value, 'gender')
+              }
             />
           </FormGroup>
-          <FormGroup label="Work Email" required layout="vertical" formClass={styles.customEmail}>
+          <FormGroup
+            label="Work Email"
+            required
+            layout="vertical"
+            formClass={styles.customMarginBottom}
+          >
             <CustomInput
               placeholder="user work email address"
               borderBottomColor="mono-medium"
@@ -201,7 +208,7 @@ export const DistributorsEntryForm = () => {
           >
             <PhoneInput
               phonePlaceholder="area code / number"
-              onChange={(value) => handleOnChangeValuePhoneInput(value, 'phone')}
+              onChange={(value) => handleOnChangeValueWorkPhoneAndMobile(value, 'phone')}
             />
           </FormGroup>
           <FormGroup
@@ -212,7 +219,7 @@ export const DistributorsEntryForm = () => {
           >
             <PhoneInput
               phonePlaceholder="mobile number"
-              onChange={(value) => handleOnChangeValuePhoneInput(value, 'mobile')}
+              onChange={(value) => handleOnChangeValueWorkPhoneAndMobile(value, 'mobile')}
             />
           </FormGroup>
         </div>
@@ -242,7 +249,7 @@ export const DistributorsEntryForm = () => {
               options={optionsCoverageBeyond}
               value={distributorsValue.coverageBeyond}
               onChange={(RadioValue) =>
-                handleOnChangeValueRadio(RadioValue.value, 'coverageBeyond')
+                handleOnChangeValueGenderAndCoverageBeyond(RadioValue.value, 'coverageBeyond')
               }
             />
           </FormGroup>
