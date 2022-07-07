@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import { isEmpty } from 'lodash';
 import React, { FC } from 'react';
 import styles from '../styles/OptionItem.less';
-import { ISubBasisOption, IBasisOptionSubForm } from '../types';
+import { ISubBasisOption, IBasisOptionSubForm } from '@/types';
 import { Collapse, Radio, Row, Col } from 'antd';
 import { getBase64, showImageUrl } from '@/helper/utils';
 

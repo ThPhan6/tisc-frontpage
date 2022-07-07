@@ -39,13 +39,10 @@ const Welcome: React.FC = () => {
     { tab: '4th tab', key: '4' },
   ];
 
-  const [activeTab, setActiveTab] = useState({
-    tab: '1st tab',
-    key: '1',
-  });
+  const [activeTab, setActiveTab] = useState('1');
 
   const renderTabContent = () => {
-    switch (activeTab.key) {
+    switch (activeTab) {
       case '1':
         return <div>tab 1</div>;
       case '2':
@@ -55,7 +52,7 @@ const Welcome: React.FC = () => {
       case '4':
         return <div>tab 4</div>;
       default:
-        break;
+        return '1';
     }
   };
 
@@ -82,13 +79,13 @@ const Welcome: React.FC = () => {
             tabPosition="top"
             tabDisplay="space"
             onChange={setActiveTab}
-            activeTab={activeTab}
+            activeKey={activeTab}
           />
         </div>
         {renderTabContent()}
         <br />
         <div>
-          <CustomTabs listTab={listTab} tabPosition="left" activeTab={activeTab} />
+          <CustomTabs listTab={listTab} tabPosition="left" activeKey={activeTab} />
           <br />
         </div>
         <div>
@@ -96,7 +93,7 @@ const Welcome: React.FC = () => {
             listTab={listTab}
             tabPosition="top"
             tabDisplay="start"
-            activeTab={activeTab}
+            activeKey={activeTab}
           />
           <br />
         </div>

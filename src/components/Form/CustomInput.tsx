@@ -13,6 +13,7 @@ export const CustomInput: FC<CustomInputProps> = ({
   containerClass,
   type,
   status,
+  fontLevel,
   fromLandingPage,
   required = false,
   autoWidth,
@@ -42,6 +43,12 @@ export const CustomInput: FC<CustomInputProps> = ({
           return styles[`disabled-default-theme${props.prefix || props.suffix ? '-affix' : ''}`];
       }
     }
+  };
+  const setFontLevel = () => {
+    if (fontLevel) {
+      return styles[`bodyText${fontLevel}`];
+    }
+    return '';
   };
 
   const classNameInputDefault = classNames(
@@ -92,6 +99,7 @@ export const CustomInput: FC<CustomInputProps> = ({
           <Input
             type={type}
             {...props}
+            className={classNames(setFontLevel(), props.className ?? '')}
             style={
               autoWidth
                 ? {
