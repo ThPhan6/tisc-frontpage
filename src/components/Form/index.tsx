@@ -14,6 +14,7 @@ export const FormGroup: FC<FormGroupProps> = ({
   children,
   message,
   label,
+  onClick,
   messageType = 'normal',
   ...props
 }) => {
@@ -24,7 +25,10 @@ export const FormGroup: FC<FormGroupProps> = ({
   const classNameForm = `${setFormLayout()} ${formClass}`;
   return (
     <div className={classNameForm} {...props}>
-      <label className={`${style.label} ${layout === 'horizontal' && style['label-margin']}`}>
+      <label
+        className={`${style.label} ${layout === 'horizontal' && style['label-margin']}`}
+        onClick={onClick}
+      >
         <BodyText fontFamily="Cormorant-Garamond" level={3}>
           {label}
         </BodyText>

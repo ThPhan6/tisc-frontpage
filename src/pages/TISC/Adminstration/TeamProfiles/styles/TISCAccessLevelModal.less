@@ -1,7 +1,49 @@
-.container {
-  .subs_logo_name,
-  .logo_name {
-    display: flex;
-    align-items: center;
+.table {
+  @logo-space: 8px;
+  @item-space: 16px;
+
+  .body > tr {
+    margin-bottom: 4px;
+  }
+  .body > tr:first-child {
+    td {
+      padding-left: 0;
+    }
+  }
+  .body > tr:last-child {
+    margin-bottom: 0;
+  }
+
+  th {
+    height: 36px;
+    text-align: center;
+  }
+
+  .sub_menu {
+    padding-left: @item-space;
+  }
+  .menu {
+    &_item {
+      display: flex;
+      align-items: center;
+
+      &__name {
+        text-transform: uppercase;
+      }
+      &__logo {
+        margin-right: @logo-space;
+      }
+    }
+
+    &_accessable {
+      text-align: center;
+
+      &_true,
+      &_not_null,
+      &_null,
+      &_false {
+        cursor: pointer;
+      }
+    }
   }
 }

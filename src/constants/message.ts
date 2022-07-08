@@ -66,6 +66,9 @@ export const MESSAGE_NOTIFICATION = {
   GET_BRAND_SUMMARY_DATA_ERROR: 'Failed to get Brand summary data',
   CREATE_BRAND_COLLECTION_ERROR: 'Failed to create Brand collection',
   GET_BRAND_COLLECTION_ERROR: 'Failed to get Brand collection data',
+
+  // permission
+  GET_PERMISSION_DATA_ERROR: 'Failed to get Permission data',
 };
 
 export const MESSAGE_TOOLTIP = {

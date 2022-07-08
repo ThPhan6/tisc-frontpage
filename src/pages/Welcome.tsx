@@ -19,7 +19,6 @@ import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
 import { MenuSummary } from '@/components/MenuSummary';
 import { PresetsEntryForm } from './TISC/Product/Basis/Preset/components/PresetsEntryForm';
 import { ProfileIcon } from '@/components/ProfileIcon';
-import { TISCAccessLevelModal } from './TISC/Adminstration/TeamProfiles/components/TISCAccessLevelModal';
 
 const Welcome: React.FC = () => {
   const optionsRadio = [
@@ -59,8 +58,6 @@ const Welcome: React.FC = () => {
   return (
     <PageContainer>
       <Card>
-        <TISCAccessLevelModal />
-
         {/* Profile icon */}
         <div className={styles.profile_icon}>
           <ProfileIcon name="Adele" />
