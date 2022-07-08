@@ -1,30 +1,46 @@
 import { CustomRadio } from '@/components/CustomRadio';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormGroup } from '@/components/Form';
-import { CustomInput } from '@/components/Form/CustomInput';
+import InputGroup from '@/components/EntryForm/InputGroup';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { Title } from '@/components/Typography';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
-import { ReactComponent as ActionRightIcon } from '@/assets/icons/pagination-right.svg';
 import styles from '../styles/DistributorsEntryForm.less';
 import { useState } from 'react';
 import { DistributorsProp, distributorsValueProp } from '../types';
+import { CountryModal } from './CountryModal';
+import { RadioValue } from '@/components/CustomRadio/types';
+import { AuthorizedCountryModal } from './AuthorizedCountryModal';
+import { StateModal } from './StateModal';
+import { CityModal } from './CityModal';
+import { DistributionTerritoryModal } from './DistributionTerritoryModal';
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { ReactComponent as SingleRightFormIconDisable } from '@/assets/icons/single-right-form-icon-disable.svg';
+import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 
-export type typeRadio = 'gender' | 'coverageBeyond';
-export type typePhoneInput = 'phone' | 'mobile';
+const optionsGender = [
+  { label: 'Male', value: 'Male' },
+  { label: 'Female', value: 'Female' },
+];
+
+const optionsCoverageBeyond = [
+  { label: 'Not Allow', value: 'Not Allow' },
+  { label: 'Allow', value: 'Allow' },
+];
 
 export const DistributorsEntryForm = () => {
   const [distributorsValue, setDistributorsValue] =
     useState<DistributorsProp>(distributorsValueProp);
-  const optionsGender = [
-    { label: 'Male', value: 'male' },
-    { label: 'Female', value: 'female' },
-  ];
-  const optionsCoverageBeyond = [
-    { label: 'Not Allow', value: 'not allow' },
-    { label: 'Allow', value: 'allow' },
-  ];
+  const [countryVisible, setCountryVisible] = useState(false);
+  const [countryValue, setCountryValue] = useState<RadioValue>({ value: '', label: '' });
+  const [authorizedCountryVisible, setAuthorizedCountryVisible] = useState(false);
+  const [territoryVisible, setTerritoryVisible] = useState(false);
+  const [stateVisible, setStateVisible] = useState(false);
+  const [cityVisible, setCityVisible] = useState(false);
+  const [stateValue, setStateValue] = useState<RadioValue>({ value: '', label: '' });
+  const [cityValue, setCityValue] = useState<RadioValue>();
+  const [authorCountryValue, setAuthorCountryValue] = useState<CheckboxValue[]>();
 
   const handleOnChangeValueForm = (
     e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>,
@@ -32,229 +48,276 @@ export const DistributorsEntryForm = () => {
     setDistributorsValue({ ...distributorsValue, [e.target.name]: e.target.value });
   };
 
-  const handleOnChangeValueGenderAndCoverageBeyond = (value: string, typeRadio: typeRadio) => {
-    setDistributorsValue({ ...distributorsValue, [typeRadio]: value });
+  const handleOnChangeGenderAndCoverageBeyond = (radioValue: string, name: string) => {
+    setDistributorsValue({ ...distributorsValue, [name]: radioValue });
   };
 
-  const handleOnChangeValueWorkPhoneAndMobile = (value: object, typePhoneInput: typePhoneInput) => {
-    setDistributorsValue({ ...distributorsValue, [typePhoneInput]: value['phoneNumber'] });
+  const handleOnChangePhoneAndMobile = (phoneInputValue: object, name: string) => {
+    setDistributorsValue({
+      ...distributorsValue,
+      [name]: phoneInputValue['phoneNumber'],
+    });
   };
 
   return (
-    <EntryFormWrapper>
-      <div className="form">
-        <div className="company information">
-          <div className={styles.title}>
-            <Title level={8}>A - COMPANY INFORMATION</Title>
-          </div>
-          <FormGroup
-            label="Distributor Name"
-            required
-            layout="vertical"
-            formClass={styles.customMarginBottom}
-          >
-            <CustomInput
-              placeholder="authorized distributor company name"
-              borderBottomColor="mono-medium"
-              type="text"
-              name="distributorName"
+    <>
+      <EntryFormWrapper>
+        <div className="form">
+          <div className="company information">
+            <div className={styles.title}>
+              <Title level={8}>A - COMPANY INFORMATION</Title>
+            </div>
+            <InputGroup
+              label="Distributor Name"
+              required
+              fontLevel={3}
               onChange={handleOnChangeValueForm}
               value={distributorsValue.distributorName}
-            />
-          </FormGroup>
-          <FormGroup
-            label="Country"
-            required
-            layout="vertical"
-            formClass={styles.customMarginBottom}
-          >
-            <CustomInput
-              placeholder="select country"
+              name="distributorName"
               borderBottomColor="mono-medium"
-              suffix={<ActionRightIcon />}
-              type="text"
+              placeholder="authorized distributor company name"
+              hasHeight
+              hasPadding
+              colorPrimaryDark
+              colorRequired="tertiary"
+            />
+            <InputGroup
+              label="Country"
+              required
+              fontLevel={3}
               name="country"
+              placeholder="select country"
               onChange={handleOnChangeValueForm}
-              value={distributorsValue.country}
-            />
-          </FormGroup>
-          <FormGroup
-            label="State / Province"
-            required
-            layout="vertical"
-            formClass={styles.customMarginBottom}
-          >
-            <CustomInput
-              placeholder="select state / province"
+              value={(countryValue?.label as string) ?? ''}
               borderBottomColor="mono-medium"
-              suffix={<ActionRightIcon />}
-              type="text"
+              hasPadding
+              rightIcon
+              hasHeight
+              colorPrimaryDark
+              colorRequired="tertiary"
+              onRightIconClick={() => setCountryVisible(true)}
+            />
+            <InputGroup
+              label="State / Province"
+              required
+              fontLevel={3}
               name="province"
+              placeholder="select state / province"
               onChange={handleOnChangeValueForm}
-              value={distributorsValue.province}
-            />
-          </FormGroup>
-          <FormGroup
-            label="City / Town"
-            required
-            layout="vertical"
-            formClass={styles.customMarginBottom}
-          >
-            <CustomInput
-              placeholder="select city / town"
+              value={(stateValue?.label as string) ?? ''}
               borderBottomColor="mono-medium"
-              suffix={<ActionRightIcon />}
-              type="text"
+              hasPadding
+              rightIcon={
+                countryValue.value === '' ? (
+                  <SingleRightFormIconDisable style={{ cursor: 'not-allowed' }} />
+                ) : (
+                  <SingleRightFormIcon onClick={() => setStateVisible(true)} />
+                )
+              }
+              hasHeight
+              colorPrimaryDark
+              colorRequired="tertiary"
+            />
+            <InputGroup
+              label="City / Town"
+              required
+              fontLevel={3}
               name="city"
+              placeholder="select city / town"
               onChange={handleOnChangeValueForm}
-              value={distributorsValue.city}
-            />
-          </FormGroup>
-          <FormGroup label="Address" required layout="vertical" formClass={styles.customShowCount}>
-            <CustomTextArea
-              maxLength={120}
-              showCount
+              value={(cityValue?.label as string) ?? ''}
               borderBottomColor="mono-medium"
-              placeholder="unit #, street / road name"
-              name="address"
-              onChange={handleOnChangeValueForm}
-              value={distributorsValue.address}
+              hasPadding
+              rightIcon={
+                countryValue.value !== '' && stateValue.value !== '' ? (
+                  <SingleRightFormIcon onClick={() => setCityVisible(true)} />
+                ) : (
+                  <SingleRightFormIconDisable style={{ cursor: 'not-allowed' }} />
+                )
+              }
+              hasHeight
+              colorPrimaryDark
+              colorRequired="tertiary"
             />
-          </FormGroup>
-          <FormGroup
-            label="Postal / Zip Code"
-            required
-            layout="vertical"
-            formClass={styles.customMarginBottom}
-          >
-            <CustomInput
-              placeholder="postal / zip code"
-              borderBottomColor="mono-medium"
+            <FormGroup
+              label="Address"
+              required
+              layout="vertical"
+              formClass={styles.customShowCount}
+            >
+              <CustomTextArea
+                maxLength={120}
+                showCount
+                borderBottomColor="mono-medium"
+                placeholder="unit #, street / road name"
+                name="address"
+                onChange={handleOnChangeValueForm}
+                value={distributorsValue.address}
+              />
+            </FormGroup>
+            <InputGroup
+              label="Postal / Zip Code"
+              required
+              fontLevel={3}
               type="number"
               name="zipCode"
+              placeholder="postal / zip code"
               onChange={handleOnChangeValueForm}
               value={distributorsValue.zipCode}
-            />
-          </FormGroup>
-        </div>
-        <div className="contact person">
-          <div className={styles.title}>
-            <Title level={8}>B - CONTACT PERSON</Title>
-          </div>
-          <FormGroup
-            label="First Name"
-            required
-            layout="vertical"
-            formClass={styles.customMarginBottom}
-          >
-            <CustomInput
-              placeholder="user first name"
               borderBottomColor="mono-medium"
-              type="text"
+              hasPadding
+              hasHeight
+              colorPrimaryDark
+              colorRequired="tertiary"
+            />
+          </div>
+          <div className="contact person">
+            <div className={styles.title}>
+              <Title level={8}>B - CONTACT PERSON</Title>
+            </div>
+            <InputGroup
+              label="First Name"
+              required
+              fontLevel={3}
               name="firstName"
+              placeholder="user first name"
               onChange={handleOnChangeValueForm}
               value={distributorsValue.firstName}
-            />
-          </FormGroup>
-          <FormGroup
-            label="Last Name"
-            required
-            layout="vertical"
-            formClass={styles.customMarginBottom}
-          >
-            <CustomInput
-              placeholder="user last name"
               borderBottomColor="mono-medium"
-              type="text"
+              hasPadding
+              hasHeight
+              colorPrimaryDark
+              colorRequired="tertiary"
+            />
+            <InputGroup
+              label="Last Name"
+              required
+              fontLevel={3}
               name="lastName"
+              placeholder="user last name"
               onChange={handleOnChangeValueForm}
               value={distributorsValue.lastName}
-            />
-          </FormGroup>
-          <FormGroup
-            label="Gender"
-            required
-            layout="vertical"
-            formClass={styles.customMarginBottom}
-          >
-            <CustomRadio
-              options={optionsGender}
-              value={distributorsValue.gender}
-              onChange={(RadioValue) =>
-                handleOnChangeValueGenderAndCoverageBeyond(RadioValue.value, 'gender')
-              }
-            />
-          </FormGroup>
-          <FormGroup
-            label="Work Email"
-            required
-            layout="vertical"
-            formClass={styles.customMarginBottom}
-          >
-            <CustomInput
-              placeholder="user work email address"
               borderBottomColor="mono-medium"
-              type="email"
+              hasPadding
+              hasHeight
+              colorPrimaryDark
+              colorRequired="tertiary"
+            />
+            <FormGroup
+              label="Gender"
+              required
+              layout="vertical"
+              formClass={styles.customMarginBottom}
+            >
+              <CustomRadio
+                options={optionsGender}
+                value={distributorsValue.gender}
+                onChange={(radioValue) =>
+                  handleOnChangeGenderAndCoverageBeyond(radioValue.value, 'gender')
+                }
+              />
+            </FormGroup>
+            <InputGroup
+              label="Work Email"
+              required
+              fontLevel={3}
               name="email"
+              placeholder="user work email address"
               onChange={handleOnChangeValueForm}
               value={distributorsValue.email}
-            />
-          </FormGroup>
-          <FormGroup
-            label="Work Phone"
-            required
-            layout="vertical"
-            formClass={styles.customMarginBottom}
-          >
-            <PhoneInput
-              phonePlaceholder="area code / number"
-              onChange={(value) => handleOnChangeValueWorkPhoneAndMobile(value, 'phone')}
-            />
-          </FormGroup>
-          <FormGroup
-            label="Work Mobile"
-            required
-            layout="vertical"
-            formClass={styles.customMarginBottom}
-          >
-            <PhoneInput
-              phonePlaceholder="mobile number"
-              onChange={(value) => handleOnChangeValueWorkPhoneAndMobile(value, 'mobile')}
-            />
-          </FormGroup>
-        </div>
-        <div className="distribution">
-          <div className={styles.titleDistribution}>
-            <Title level={8}>C - DISTIBUTION TERRITORY</Title>
-            <WarningIcon />
-          </div>
-          <FormGroup
-            label="Authorized Country"
-            required
-            layout="vertical"
-            formClass={styles.customMarginBottom}
-          >
-            <CustomInput
-              placeholder="select country"
               borderBottomColor="mono-medium"
-              suffix={<ActionRightIcon />}
-              type="text"
+              hasPadding
+              hasHeight
+              colorPrimaryDark
+              colorRequired="tertiary"
+            />
+            <FormGroup
+              label="Work Phone"
+              required
+              layout="vertical"
+              formClass={styles.customMarginBottom}
+            >
+              <PhoneInput
+                phonePlaceholder="area code / number"
+                onChange={(value) => handleOnChangePhoneAndMobile(value, 'phone')}
+                colorPlaceholder="mono"
+              />
+            </FormGroup>
+            <FormGroup
+              label="Work Mobile"
+              required
+              layout="vertical"
+              formClass={styles.customMarginBottom}
+            >
+              <PhoneInput
+                phonePlaceholder="mobile number"
+                onChange={(value) => handleOnChangePhoneAndMobile(value, 'mobile')}
+                colorPlaceholder="mono"
+              />
+            </FormGroup>
+          </div>
+          <div className="distribution">
+            <div className={styles.titleDistribution} onClick={() => setTerritoryVisible(true)}>
+              <Title level={8}>C - DISTIBUTION TERRITORY</Title>
+              <WarningIcon />
+            </div>
+            <InputGroup
+              label="Authorized Country"
+              required
+              fontLevel={3}
               name="authorizedCountry"
+              placeholder="select country"
               onChange={handleOnChangeValueForm}
-              value={distributorsValue.authorizedCountry}
+              value={authorCountryValue?.map((item) => item.value as string) ?? ''}
+              borderBottomColor="mono-medium"
+              hasPadding
+              rightIcon
+              hasHeight
+              colorPrimaryDark
+              colorRequired="tertiary"
+              onRightIconClick={() => setAuthorizedCountryVisible(true)}
             />
-          </FormGroup>
-          <FormGroup label="Coverage Beyond" required layout="vertical">
-            <CustomRadio
-              options={optionsCoverageBeyond}
-              value={distributorsValue.coverageBeyond}
-              onChange={(RadioValue) =>
-                handleOnChangeValueGenderAndCoverageBeyond(RadioValue.value, 'coverageBeyond')
-              }
-            />
-          </FormGroup>
+            <FormGroup label="Coverage Beyond" required layout="vertical">
+              <CustomRadio
+                options={optionsCoverageBeyond}
+                value={distributorsValue.coverageBeyond}
+                onChange={(radioValue) =>
+                  handleOnChangeGenderAndCoverageBeyond(radioValue.value, 'coverageBeyond')
+                }
+              />
+            </FormGroup>
+          </div>
         </div>
-      </div>
-    </EntryFormWrapper>
+      </EntryFormWrapper>
+
+      <CountryModal
+        visible={countryVisible}
+        setVisible={setCountryVisible}
+        chosenValue={countryValue}
+        setChosenValue={setCountryValue}
+      />
+      <StateModal
+        countryId={countryValue.value}
+        visible={stateVisible}
+        setVisible={setStateVisible}
+        chosenValue={stateValue}
+        setChosenValue={setStateValue}
+      />
+      <CityModal
+        stateId={stateValue.value}
+        countryId={countryValue.value}
+        visible={cityVisible}
+        setVisible={setCityVisible}
+        chosenValue={cityValue}
+        setChosenValue={setCityValue}
+      />
+      <AuthorizedCountryModal
+        visible={authorizedCountryVisible}
+        setVisible={setAuthorizedCountryVisible}
+        chosenValue={authorCountryValue}
+        setChosenValue={setAuthorCountryValue}
+      />
+      <DistributionTerritoryModal visible={territoryVisible} setVisible={setTerritoryVisible} />
+    </>
   );
 };

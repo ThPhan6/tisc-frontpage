@@ -1,0 +1,24 @@
+.customRadio {
+  display: flex;
+  justify-content: space-between;
+}
+
+.customHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  :global(.ant-radio-wrapper) {
+    margin-right: 0;
+  }
+  :global(.ant-radio-inner) {
+    width: 18px;
+    height: 18px;
+    border-color: @mono-color;
+  }
+  .customTitle {
+    font-weight: 300;
+    font-size: 14px;
+    font-family: 'Roboto';
+  }
+}
