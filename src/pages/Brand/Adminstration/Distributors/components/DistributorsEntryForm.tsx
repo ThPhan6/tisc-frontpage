@@ -87,7 +87,6 @@ export const DistributorsEntryForm = () => {
               fontLevel={3}
               name="country"
               placeholder="select country"
-              onChange={handleOnChangeValueForm}
               value={(countryValue?.label as string) ?? ''}
               borderBottomColor="mono-medium"
               hasPadding
@@ -103,7 +102,6 @@ export const DistributorsEntryForm = () => {
               fontLevel={3}
               name="province"
               placeholder="select state / province"
-              onChange={handleOnChangeValueForm}
               value={(stateValue?.label as string) ?? ''}
               borderBottomColor="mono-medium"
               hasPadding
@@ -124,7 +122,6 @@ export const DistributorsEntryForm = () => {
               fontLevel={3}
               name="city"
               placeholder="select city / town"
-              onChange={handleOnChangeValueForm}
               value={(cityValue?.label as string) ?? ''}
               borderBottomColor="mono-medium"
               hasPadding
@@ -267,7 +264,6 @@ export const DistributorsEntryForm = () => {
               fontLevel={3}
               name="authorizedCountry"
               placeholder="select country"
-              onChange={handleOnChangeValueForm}
               value={authorCountryValue?.map((item) => item.value as string) ?? ''}
               borderBottomColor="mono-medium"
               hasPadding
