@@ -1,7 +1,52 @@
-.container {
-  .subs_logo_name,
-  .logo_name {
-    display: flex;
-    align-items: center;
+.table {
+  @logo-space: 8px;
+  @item-space: 16px;
+
+  th {
+    height: 36px;
+    text-align: center;
+  }
+
+  .body > tr:last-child > td {
+    margin-bottom: 0;
+  }
+  .body > tr:first-child > td {
+    padding-left: 0;
+  }
+
+  .furture_data p {
+    color: @mono-color-medium;
+  }
+
+  .sub_menu {
+    padding-left: @item-space;
+    p {
+      text-transform: capitalize;
+    }
+  }
+  .menu {
+    &_item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px;
+
+      &__name {
+        text-transform: uppercase;
+      }
+      &__logo {
+        margin-right: @logo-space;
+      }
+    }
+
+    &_accessable {
+      text-align: center;
+
+      &_true,
+      &_not_null,
+      &_null,
+      &_false {
+        cursor: pointer;
+      }
+    }
   }
 }

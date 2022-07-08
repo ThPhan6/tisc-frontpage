@@ -11,7 +11,7 @@
     text-transform: capitalize;
     background: transparent;
     border-bottom-color: transparent;
-    cursor: pointer;
+    cursor: not-allowed;
   }
   :global(.ant-input:placeholder-shown) {
     text-transform: lowercase;
@@ -24,6 +24,15 @@
     label {
       cursor: pointer;
     }
+  }
+
+  .warning_icon {
+    margin-left: 4px;
+  }
+
+  .form_group:last-child {
+    height: 64px;
+    margin-bottom: 0;
   }
 
   .form_group {
@@ -44,6 +53,8 @@
       .remove_icon {
         position: absolute;
         right: 0;
+        height: 100%;
+        cursor: pointer;
       }
 
       .remove_icon {
@@ -72,12 +83,12 @@
         display: block;
       }
     }
-  }
 
-  .status {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 16px;
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 16px;
+    }
   }
 }

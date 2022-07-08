@@ -13,7 +13,9 @@ export const FormGroup: FC<FormGroupProps> = ({
   tooltip,
   children,
   message,
+  iconTooltip,
   label,
+  onClick,
   messageType = 'normal',
   ...props
 }) => {
@@ -24,7 +26,10 @@ export const FormGroup: FC<FormGroupProps> = ({
   const classNameForm = `${setFormLayout()} ${formClass}`;
   return (
     <div className={classNameForm} {...props}>
-      <label className={`${style.label} ${layout === 'horizontal' && style['label-margin']}`}>
+      <label
+        className={`${style.label} ${layout === 'horizontal' && style['label-margin']}`}
+        onClick={onClick}
+      >
         <BodyText fontFamily="Cormorant-Garamond" level={3}>
           {label}
         </BodyText>
@@ -36,7 +41,7 @@ export const FormGroup: FC<FormGroupProps> = ({
         {required && <span className={style.required}>*</span>}
         {tooltip && (
           <Tooltip placement="top" title={tooltip}>
-            <QuestionIcon className={style['question-icon']} />
+            {iconTooltip ? iconTooltip : <QuestionIcon className={style['question-icon']} />}
           </Tooltip>
         )}
         <span className={style.colon}>:</span>

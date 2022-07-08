@@ -15,21 +15,6 @@ export interface TeamProfilesProps {
   status: boolean;
 }
 
-export interface AccessLevelModalItemProps {
-  id: string;
-  name: string;
-  accessable: boolean;
-}
-
-export interface AccessLevelModalProps {
-  logo?: JSX.Element;
-  name: string;
-  items: AccessLevelModalItemProps[];
-  number: number;
-  parent_number: number | null;
-  subs?: AccessLevelModalProps[];
-}
-
 export type typeInput = 'firstname' | 'lastname' | 'position' | 'email';
 
 export type typePhoneInput = 'phone' | 'mobile';
