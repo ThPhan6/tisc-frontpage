@@ -1,10 +1,16 @@
 .table {
   @logo-space: 8px;
+  @logo-size: 18px;
   @item-space: 16px;
 
   th {
     height: 36px;
+    padding: 0;
     text-align: center;
+  }
+
+  td {
+    padding: 0;
   }
 
   .body > tr:last-child > td {
@@ -14,7 +20,7 @@
     padding-left: 0;
   }
 
-  // delete if already have real data
+  // delete these if already have real data
   // last column
   .body > tr > td:nth-child(5) {
     display: none;
@@ -32,7 +38,7 @@
   }
   .furture_data_name {
     display: flex;
-    padding-left: 16px;
+    padding-left: @item-space;
   }
   //----------------------
 
@@ -43,15 +49,19 @@
     }
   }
   .menu {
+    position: relative;
+    top: 4px;
     &_item {
       display: flex;
       align-items: center;
-      margin-bottom: 4px;
+      height: 24px;
 
       &__name {
         text-transform: uppercase;
       }
       &__logo {
+        width: @logo-size;
+        height: @logo-size;
         margin-right: @logo-space;
       }
     }

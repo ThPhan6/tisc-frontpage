@@ -7,6 +7,8 @@ import classNames from 'classnames';
 import ModalTISC from '@/components/ModalTISC';
 import { AccessLevelModalItemProps, AccessLevelModalProps } from '@/components/ModalTISC/types';
 import { getPermission } from '@/services/permission.api';
+
+// for future data
 import { ReactComponent as FeebBackIcon } from '@/assets/icons/feedback.svg';
 import { ReactComponent as RecommendationIcon } from '@/assets/icons/recommendation.svg';
 import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/share-via-email.svg';
@@ -37,8 +39,6 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
   // load permission data
   useEffect(() => {
     getPermission().then((permissionData) => {
-      console.log(permissionData);
-
       if (permissionData) {
         setData(permissionData);
       }
@@ -125,7 +125,7 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
 
             {/* future data, can delete */}
             {furturePermissionData.map((fData) => (
-              <tr>
+              <tr style={{ position: 'relative', top: '4px' }}>
                 <td className={styles.furture_data_name}>
                   {fData.logo}
                   <BodyText fontFamily="Roboto" level={6}>
