@@ -3,7 +3,6 @@ import styles from '../styles/TISCAccessLevelModal.less';
 import { ReactComponent as AccessableTickIcon } from '@/assets/icons/accessable-tick-icon.svg';
 import { ReactComponent as AccessableMinusIcon } from '@/assets/icons/accessable-minus-icon.svg';
 import { BodyText, MainTitle } from '@/components/Typography';
-import classNames from 'classnames';
 import ModalTISC from '@/components/ModalTISC';
 import { AccessLevelModalItemProps, AccessLevelModalProps } from '@/components/ModalTISC/types';
 import { getPermission } from '@/services/permission.api';
@@ -56,7 +55,7 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
     return (
       <>
         <tr className={styles.menu} key={menu.name}>
-          <td className={classNames(styles.menu_item, !menu.subs && styles.sub_menu)}>
+          <td className={`${styles.menu_item} ${!menu.subs && styles.sub_menu}`}>
             <img src={menu.logo} className={styles.menu_item__logo} />
             <BodyText fontFamily="Roboto" level={6} customClass={styles.menu_item__name}>
               {menu.name}
@@ -121,12 +120,29 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
         {/* body */}
         <tbody className={styles.body}>
           <>
+            <tr>
+              <td>
+                <BodyText fontFamily="Roboto" level={6} customClass={styles.my_dashboard}>
+                  MY DASHBOARD (future)
+                </BodyText>
+              </td>
+              {[1, 2].map(() => (
+                <td style={{ textAlign: 'center' }}>
+                  <AccessableTickIcon className={styles.menu_accessable_null} />
+                </td>
+              ))}
+              <td style={{ textAlign: 'center' }}>
+                <AccessableMinusIcon className={styles.menu_accessable_null} />
+              </td>
+            </tr>
+
+            {/* main content */}
             {data.map((menu) => renderPermission(menu))}
 
             {/* future data, can delete */}
             {furturePermissionData.map((fData) => (
-              <tr style={{ position: 'relative', top: '4px' }}>
-                <td className={styles.furture_data_name}>
+              <tr>
+                <td className={styles.furture_data_name} style={{ marginTop: '4px' }}>
                   {fData.logo}
                   <BodyText fontFamily="Roboto" level={6}>
                     {fData.name}
@@ -139,6 +155,12 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
                 ))}
               </tr>
             ))}
+            <tr>
+              <td></td>
+              <td></td>
+              <td style={{ color: '#bfbfbf', textAlign: 'center' }}>(future)</td>
+              <td></td>
+            </tr>
           </>
         </tbody>
       </table>

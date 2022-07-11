@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import { FC } from 'react';
 import CustomButton from '../Button';
 import { FormGroup } from './index';
@@ -19,9 +18,9 @@ export const Status: FC<StatusProps> = ({
   UnActiveButtonClass,
 }) => {
   return (
-    <FormGroup label={label} layout={layout} formClass={classNames(styles.form_group, formClass)}>
+    <FormGroup label={label} layout={layout} formClass={`${styles.form_group} ${formClass}`}>
       <div className={styles.status}>
-        <span className={classNames(styles.status_text, textClass)}>{value ? text_1 : text_2}</span>
+        <span className={`${styles.status_text} ${textClass}`}>{value ? text_1 : text_2}</span>
         {value ? (
           <CustomButton className={activeButtonClass} disabled onClick={onClick}>
             {buttonName}

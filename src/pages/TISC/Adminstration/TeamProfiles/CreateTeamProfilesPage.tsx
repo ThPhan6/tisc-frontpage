@@ -2,7 +2,7 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { TeamProfilesEntryForm } from './components/TeamProfilesEntryForm';
 import { useState } from 'react';
-import { TeamProfilesProps } from './types/index';
+import { TeamProfilesProps } from '@/types/index';
 
 const DEFAULT_TEAMPROFILEENTRYFORM_VALUE = {
   firstname: '',

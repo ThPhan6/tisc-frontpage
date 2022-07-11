@@ -17,7 +17,6 @@ import {
   typeRadio,
 } from '@/types/team-profile.type';
 import { RadioValue } from '@/components/CustomRadio/types';
-import classNames from 'classnames';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { PhoneInputValueProp } from '@/components/Form/types';
 import TISCAccessLevelModal from './TISCAccessLevelModal';
@@ -300,7 +299,7 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({ value, o
           tooltip={'How are you'}
           iconTooltip={<WarningCircleIcon className={styles.warning_icon} />}
           layout="vertical"
-          formClass={classNames(styles.form_group, styles.access_label)}
+          formClass={`${styles.form_group} ${styles.access_label}`}
           onClick={() => handleOpenContent('access_level')}
         >
           <CustomRadio

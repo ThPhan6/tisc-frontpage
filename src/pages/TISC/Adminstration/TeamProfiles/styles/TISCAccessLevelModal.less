@@ -13,6 +13,13 @@
     padding: 0;
   }
 
+  tbody {
+    margin-top: 4px;
+  }
+
+  .body > tr:nth-child(2) > td:first-child {
+    padding-left: 0;
+  }
   .body > tr:last-child > td {
     margin-bottom: 0;
   }
@@ -42,6 +49,10 @@
   }
   //----------------------
 
+  .my_dashboard {
+    color: @mono-color-medium;
+  }
+
   .sub_menu {
     padding-left: @item-space;
     p {
@@ -49,12 +60,10 @@
     }
   }
   .menu {
-    position: relative;
-    top: 4px;
     &_item {
       display: flex;
       align-items: center;
-      height: 24px;
+      margin-top: 4px;
 
       &__name {
         text-transform: uppercase;
