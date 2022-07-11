@@ -67,3 +67,17 @@ export type PhoneInputValueProp = {
   zoneCode: string;
   phoneNumber: string;
 };
+
+export interface StatusProps {
+  value: any;
+  onClick: () => void;
+  label: string;
+  layout?: 'horizontal' | 'vertical';
+  buttonName: string;
+  text_1: string;
+  text_2: string;
+  formClass?: string;
+  textClass?: string;
+  activeButtonClass?: string;
+  UnActiveButtonClass?: string;
+}

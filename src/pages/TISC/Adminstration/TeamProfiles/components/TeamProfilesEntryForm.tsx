@@ -8,7 +8,6 @@ import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove
 import { ReactComponent as ActionRightIcon } from '@/assets/icons/pagination-right.svg';
 import { ReactComponent as DropUpIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
-import CustomButton from '@/components/Button';
 import React, { FC, useState } from 'react';
 import {
   TeamProfilesProps,
@@ -23,6 +22,7 @@ import { PhoneInput } from '@/components/Form/PhoneInput';
 import { PhoneInputValueProp } from '@/components/Form/types';
 import TISCAccessLevelModal from './TISCAccessLevelModal';
 import LocationModal from './LocationModal';
+import { Status } from '@/components/Form/Status';
 
 const genderData = [
   { label: 'Male', value: '1' },
@@ -311,18 +311,15 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({ value, o
         </FormGroup>
 
         {/* Status */}
-        <FormGroup label="Status" layout="vertical" formClass={styles.form_group}>
-          <div className={styles.status}>
-            <span>{value.status ? 'Activated' : 'Unactivated'}</span>
-            {value.status ? (
-              <CustomButton disabled onClick={handleSendInvite}>
-                Send Invite
-              </CustomButton>
-            ) : (
-              <CustomButton onClick={handleSendInvite}>Send Invite</CustomButton>
-            )}
-          </div>
-        </FormGroup>
+        <Status
+          value={value.status}
+          onClick={handleSendInvite}
+          label="Status"
+          buttonName="Send Invite"
+          text_1="Activated"
+          text_2="Unactivated"
+          formClass={styles.status}
+        />
       </EntryFormWrapper>
 
       {/* TISC Access level modal */}
