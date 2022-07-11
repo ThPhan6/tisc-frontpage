@@ -2,7 +2,6 @@
   display: flex;
   justify-content: space-between;
 }
-
 .customHeading {
   display: flex;
   align-items: center;
@@ -10,6 +9,17 @@
   width: 100%;
   :global(.ant-radio-wrapper) {
     margin-right: 0;
+  }
+  :global(.ant-radio-checked .ant-radio-inner::after) {
+    width: 22px;
+    height: 22px;
+    margin-top: -11px;
+    margin-left: -11px;
+    background-color: @primary-color-dark;
+  }
+  :global(.ant-radio-checked .ant-radio-inner) {
+    border-color: @primary-color-dark;
+    box-shadow: none;
   }
   :global(.ant-radio-inner) {
     width: 18px;

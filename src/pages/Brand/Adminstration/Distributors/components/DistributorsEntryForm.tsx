@@ -9,12 +9,12 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-ico
 import styles from '../styles/DistributorsEntryForm.less';
 import { useState } from 'react';
 import { DistributorsProp, distributorsValueProp } from '../types';
-import { CountryModal } from './CountryModal';
+import CountryModal from './CountryModal';
 import { RadioValue } from '@/components/CustomRadio/types';
-import { AuthorizedCountryModal } from './AuthorizedCountryModal';
-import { StateModal } from './StateModal';
-import { CityModal } from './CityModal';
-import { DistributionTerritoryModal } from './DistributionTerritoryModal';
+import AuthorizedCountryModal from './AuthorizedCountryModal';
+import StateModal from './StateModal';
+import CityModal from './CityModal';
+import DistributionTerritoryModal from './DistributionTerritoryModal';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { ReactComponent as SingleRightFormIconDisable } from '@/assets/icons/single-right-form-icon-disable.svg';
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';

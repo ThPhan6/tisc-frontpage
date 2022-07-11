@@ -5,7 +5,7 @@ import { Radio } from 'antd';
 import { FC, useEffect, useState } from 'react';
 import styles from '../styles/CountryModal.less';
 
-export const CountryModal: FC<{
+const CountryModal: FC<{
   visible: boolean;
   setVisible: (visible: boolean) => void;
   chosenValue?: any;
@@ -47,3 +47,4 @@ export const CountryModal: FC<{
     />
   );
 };
+export default CountryModal;

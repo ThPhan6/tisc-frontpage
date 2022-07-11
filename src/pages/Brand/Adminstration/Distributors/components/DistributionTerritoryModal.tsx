@@ -3,7 +3,7 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import { FC } from 'react';
 import styles from '../styles/DistributionTerritoryModal.less';
 
-export const DistributionTerritoryModal: FC<{
+const DistributionTerritoryModal: FC<{
   visible: boolean;
   setVisible: (visible: boolean) => void;
 }> = ({ visible, setVisible }) => {
@@ -40,3 +40,4 @@ export const DistributionTerritoryModal: FC<{
     />
   );
 };
+export default DistributionTerritoryModal;

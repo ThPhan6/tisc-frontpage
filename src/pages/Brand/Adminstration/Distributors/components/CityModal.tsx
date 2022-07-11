@@ -5,27 +5,26 @@ import { Radio } from 'antd';
 import { FC, useEffect, useState } from 'react';
 import styles from '../styles/CountryModal.less';
 
-export const CityModal: FC<{
+const CityModal: FC<{
   stateId: string;
   countryId: string;
   visible: boolean;
   setVisible: (visible: boolean) => void;
   chosenValue?: any;
-  setChosenValue?: (value: any) => void;
+  setChosenValue: (value: any) => void;
 }> = ({ visible, setVisible, chosenValue, setChosenValue, stateId, countryId }) => {
   const [cities, setCities] = useState<ICity[]>([]);
 
   const getCityList = () => {
-    if (stateId && countryId) {
-      getCities(countryId, stateId).then(setCities);
-    }
+    getCities(countryId, stateId).then(setCities);
+    setChosenValue({ value: '', label: '' });
   };
 
   useEffect(() => {
     if (stateId && countryId) {
       getCityList();
     }
-  }, [stateId && countryId]);
+  }, [stateId, countryId]);
 
   return (
     <Popover
@@ -53,3 +52,4 @@ export const CityModal: FC<{
     />
   );
 };
+export default CityModal;

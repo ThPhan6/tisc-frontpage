@@ -4,7 +4,7 @@ import { getListCountryGroup } from '@/services/location.api';
 import { ICountryGroup, ILocationDetail } from '@/types/location.types';
 import { FC, useEffect, useState } from 'react';
 
-export const AuthorizedCountryModal: FC<{
+const AuthorizedCountryModal: FC<{
   visible: boolean;
   setVisible: (visible: boolean) => void;
   chosenValue?: any;
@@ -51,3 +51,4 @@ export const AuthorizedCountryModal: FC<{
     />
   );
 };
+export default AuthorizedCountryModal;

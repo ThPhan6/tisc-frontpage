@@ -5,19 +5,18 @@ import { Radio } from 'antd';
 import { FC, useEffect, useState } from 'react';
 import styles from '../styles/CountryModal.less';
 
-export const StateModal: FC<{
+const StateModal: FC<{
   countryId: string;
   visible: boolean;
   setVisible: (visible: boolean) => void;
   chosenValue?: any;
-  setChosenValue?: (value: any) => void;
+  setChosenValue: (value: any) => void;
 }> = ({ visible, setVisible, chosenValue, setChosenValue, countryId }) => {
   const [states, setStates] = useState<IState[]>([]);
 
   const getStateList = () => {
-    if (countryId) {
-      getStates(countryId).then(setStates);
-    }
+    getStates(countryId).then(setStates);
+    setChosenValue({ value: '', label: '' });
   };
 
   useEffect(() => {
@@ -52,3 +51,5 @@ export const StateModal: FC<{
     />
   );
 };
+
+export default StateModal;
