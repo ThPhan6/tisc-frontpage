@@ -35,6 +35,11 @@ export const PATH = {
   attributeGeneralCreate: '/tisc/products/attributes/general/create',
   attributeGeneralUpdate: '/tisc/products/attributes/general/:id',
   //
+
+  // configuration
+  productConfiguration: '/tisc/products/configuration',
+  productConfigurationCreate: '/tisc/products/configuration/create/:brandId',
+  productConfigurationUpdate: '/tisc/products/configuration/:id',
 };
 
 export const PUBLIC_PATH = [PATH.landingPage, PATH.resetPassword];

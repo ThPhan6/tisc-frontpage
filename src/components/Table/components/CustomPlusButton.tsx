@@ -4,11 +4,23 @@ import styles from '@/components/Table/styles/TableHeader.less';
 interface ICustomPlusButton {
   onClick?: () => void;
   disabled?: boolean;
+  size?: number;
 }
 
-const CustomPlusButton: FC<ICustomPlusButton> = ({ onClick, disabled }) => {
+const CustomPlusButton: FC<ICustomPlusButton> = ({ onClick, disabled, size }) => {
   return (
-    <div className={disabled ? styles.customButtonDisable : styles.customButton} onClick={onClick}>
+    <div
+      className={disabled ? styles.customButtonDisable : styles.customButton}
+      onClick={onClick}
+      style={
+        size
+          ? {
+              width: size,
+              height: size,
+            }
+          : undefined
+      }
+    >
       <PlusIcon />
     </div>
   );

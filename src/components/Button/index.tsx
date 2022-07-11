@@ -19,6 +19,8 @@ const CustomButton: React.FC<CustomButtonProps> = ({
         return styles[`${variant}Warning`];
       case 'circle':
         return `${styles[`${variant}Standard`]} ${styles.circle}`;
+      case 'rounded':
+        return `${styles[`${variant}Standard`]} ${styles.rounded}`;
       default:
         return styles[`${variant}Standard`];
     }

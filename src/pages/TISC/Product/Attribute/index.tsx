@@ -5,13 +5,13 @@ import { HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
-import { getProductAttributePagination, deleteAttribute } from './services/api';
+import { getProductAttributePagination, deleteAttribute } from '@/services';
 import { pushTo } from '@/helper/history';
 import { useAttributeLocation } from './hooks/location';
 import { confirmDelete } from '@/helper/common';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import type { IAttributeListResponse, ISubAttribute } from './types';
+import type { IAttributeListResponse, ISubAttribute } from '@/types';
 
 const AttributeList: React.FC = () => {
   const tableRef = useRef<any>();

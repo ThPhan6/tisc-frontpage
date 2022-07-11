@@ -4,7 +4,7 @@ import Style from './styles/index.less';
 
 export const Title: FC<CustomTypography> = ({
   color,
-  customClass,
+  customClass = '',
   level = 1,
   children,
   ...props
@@ -24,7 +24,7 @@ export const Title: FC<CustomTypography> = ({
 export const BodyText: FC<BodyTextProps> = ({
   color,
   fontFamily = 'Cormorant-Garamond',
-  customClass,
+  customClass = '',
   level = 1,
   children,
   ...props
@@ -48,7 +48,7 @@ export const BodyText: FC<BodyTextProps> = ({
 
 export const MainTitle: FC<MainTitleProps> = ({
   color,
-  customClass,
+  customClass = '',
   level = 1,
   children,
   ...props
