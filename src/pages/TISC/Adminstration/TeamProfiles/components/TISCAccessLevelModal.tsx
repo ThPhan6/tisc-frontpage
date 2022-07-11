@@ -7,37 +7,22 @@ import classNames from 'classnames';
 import ModalTISC from '@/components/ModalTISC';
 import { AccessLevelModalItemProps, AccessLevelModalProps } from '@/components/ModalTISC/types';
 import { getPermission } from '@/services/permission.api';
+import { ReactComponent as FeebBackIcon } from '@/assets/icons/feedback.svg';
+import { ReactComponent as RecommendationIcon } from '@/assets/icons/recommendation.svg';
+import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/share-via-email.svg';
 
-const furture__permission_data = [
+const furturePermissionData = [
   {
-    logo: 'logo/feedback.svg',
+    logo: <FeebBackIcon className={styles.menu_item__logo} />,
     name: 'Feedback(future)',
-    number: 1,
-    parent_number: null,
-    items: [
-      { accessable: null, id: 'b185a556-efb1-4eb0-bb03-25215005clkm', name: 'TISC Admin' },
-      { accessable: null, id: '12a4c61b-749b-4014-a125-9951a97e2cdb', name: 'Consultant Team' },
-    ],
   },
   {
-    logo: 'logo/recommendation.svg',
+    logo: <RecommendationIcon className={styles.menu_item__logo} />,
     name: 'Recommendation(future)',
-    number: 1,
-    parent_number: null,
-    items: [
-      { accessable: null, id: 'b185a556-efb1-4eb0-bb03-25215005cacc', name: 'TISC Admin' },
-      { accessable: null, id: '12a4c61b-749b-4014-a125-9951a97e2bfr', name: 'Consultant Team' },
-    ],
   },
   {
-    logo: 'logo/share_via_email.svg',
+    logo: <ShareViaEmailIcon className={styles.menu_item__logo} />,
     name: 'Share via Email(future)',
-    number: 1,
-    parent_number: null,
-    items: [
-      { accessable: null, id: 'b185a556-efb1-4eb0-bb03-252150051232', name: 'TISC Admin' },
-      { accessable: null, id: '12a4c61b-749b-4014-a125-9951a97e2873', name: 'Consultant Team' },
-    ],
   },
 ];
 
@@ -52,6 +37,8 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
   // load permission data
   useEffect(() => {
     getPermission().then((permissionData) => {
+      console.log(permissionData);
+
       if (permissionData) {
         setData(permissionData);
       }
@@ -75,6 +62,8 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
               {menu.name}
             </BodyText>
           </td>
+
+          {/* render icon */}
           {menu.items.map((item) => (
             <>
               <td className={styles.menu_accessable} key={item.id}>
@@ -92,7 +81,11 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
                   )
                 )}
               </td>
-              <td></td>
+
+              {/* for future data */}
+              <td style={{ textAlign: 'center', display: menu.subs ? 'none' : '' }}>
+                <AccessableTickIcon className={styles.menu_accessable_null} />
+              </td>
             </>
           ))}
         </tr>
@@ -115,7 +108,8 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
             <th>
               <MainTitle level={4}>TISC Admin</MainTitle>
             </th>
-            <th className={styles.furture_data}>
+            {/* future data header, can delete */}
+            <th className={styles.furture_data_header}>
               <MainTitle level={4}>TISC Team</MainTitle>
             </th>
             <th>
@@ -128,9 +122,23 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
         <tbody className={styles.body}>
           <>
             {data.map((menu) => renderPermission(menu))}
-            <div className={styles.furture_data}>
-              {furture__permission_data.map((fData) => renderPermission(fData))}
-            </div>
+
+            {/* future data, can delete */}
+            {furturePermissionData.map((fData) => (
+              <tr>
+                <td className={styles.furture_data_name}>
+                  {fData.logo}
+                  <BodyText fontFamily="Roboto" level={6}>
+                    {fData.name}
+                  </BodyText>
+                </td>
+                {[1, 2, 3].map(() => (
+                  <td style={{ textAlign: 'center' }}>
+                    <AccessableTickIcon className={styles.menu_accessable_null} />
+                  </td>
+                ))}
+              </tr>
+            ))}
           </>
         </tbody>
       </table>

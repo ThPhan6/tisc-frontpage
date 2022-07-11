@@ -14,9 +14,27 @@
     padding-left: 0;
   }
 
-  .furture_data p {
-    color: @mono-color-medium;
+  // delete if already have real data
+  // last column
+  .body > tr > td:nth-child(5) {
+    display: none;
   }
+  // future data
+  .furture_data_header,
+  .furture_data_name {
+    p {
+      color: @mono-color-medium;
+      text-transform: capitalize;
+    }
+  }
+  .furture_data_header {
+    text-align: center;
+  }
+  .furture_data_name {
+    display: flex;
+    padding-left: 16px;
+  }
+  //----------------------
 
   .sub_menu {
     padding-left: @item-space;
@@ -41,9 +59,13 @@
     &_accessable {
       text-align: center;
 
+      &_null {
+        path {
+          fill: @mono-color-medium;
+        }
+      }
+
       &_true,
-      &_not_null,
-      &_null,
       &_false {
         cursor: pointer;
       }
