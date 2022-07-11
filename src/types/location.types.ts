@@ -32,6 +32,9 @@ export interface ILocationDetail {
   phone_code: string;
   postal_code: string;
   address: string;
+  country_id: string;
+  state_id: string;
+  city_id: string;
 }
 
 export interface ICountryGroup {

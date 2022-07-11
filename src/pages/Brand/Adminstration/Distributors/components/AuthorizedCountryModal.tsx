@@ -43,6 +43,7 @@ const AuthorizedCountryModal: FC<{
             return {
               label: renderLabel(item),
               value: item.country_name,
+              id: item.country_id,
             };
           }),
         };

@@ -44,7 +44,7 @@ const CityModal: FC<{
           options: cities.map((city) => {
             return {
               label: city.name,
-              value: city.name,
+              value: city.id,
             };
           }),
         },

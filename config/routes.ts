@@ -321,9 +321,25 @@
     ],
   },
   {
-    path: '/brand/administration/distributors',
+    path: '/brand/adminstration/distributors',
     name: 'DISTRIBUTORS',
-    component: './Brand/Adminstration/Distributors',
+    routes: [
+      {
+        path: '/brand/adminstration/distributors',
+        component: './Brand/Adminstration/Distributors',
+        hideInMenu: true,
+      },
+      {
+        path: '/brand/adminstration/distributors/create',
+        component: './Brand/Adminstration/Distributors/CreatePage',
+        hideInMenu: true,
+      },
+      {
+        path: '/brand/adminstration/distributors/:id',
+        component: './Brand/Adminstration/Distributors/UpdatePage',
+        hideInMenu: true,
+      },
+    ],
   },
   // {
   //   name: 'list.table-list',

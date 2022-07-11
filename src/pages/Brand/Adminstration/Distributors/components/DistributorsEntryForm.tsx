@@ -7,8 +7,7 @@ import { PhoneInput } from '@/components/Form/PhoneInput';
 import { Title } from '@/components/Typography';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 import styles from '../styles/DistributorsEntryForm.less';
-import { useState } from 'react';
-import { DistributorsProp, distributorsValueProp } from '../types';
+import { FC, useState } from 'react';
 import CountryModal from './CountryModal';
 import { RadioValue } from '@/components/CustomRadio/types';
 import AuthorizedCountryModal from './AuthorizedCountryModal';
@@ -18,20 +17,43 @@ import DistributionTerritoryModal from './DistributionTerritoryModal';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { ReactComponent as SingleRightFormIconDisable } from '@/assets/icons/single-right-form-icon-disable.svg';
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
+import { ICountryDetail, IDistributorEntryForm } from '@/types/distributor.type';
+import { useEffect } from 'react';
+import { getCountryById } from '@/services/location.api';
 
 const optionsGender = [
-  { label: 'Male', value: 'Male' },
-  { label: 'Female', value: 'Female' },
+  { label: 'Male', value: true },
+  { label: 'Female', value: false },
 ];
 
 const optionsCoverageBeyond = [
-  { label: 'Not Allow', value: 'Not Allow' },
-  { label: 'Allow', value: 'Allow' },
+  { label: 'Not Allow', value: true },
+  { label: 'Allow', value: false },
 ];
 
-export const DistributorsEntryForm = () => {
-  const [distributorsValue, setDistributorsValue] =
-    useState<DistributorsProp>(distributorsValueProp);
+const DEFAULT_COUNTRY_DETAIL: ICountryDetail = {
+  id: '',
+  name: '',
+  iso3: '',
+  iso2: '',
+  numeric_code: '',
+  phone_code: '00',
+  capital: '',
+  currency: '',
+  currency_name: '',
+  currency_symbol: '',
+  tld: '',
+  native: '',
+  region: '',
+  subregion: '',
+  timezones: '',
+  latitude: 0,
+  longitude: 0,
+  emoji: '',
+  emojiU: '',
+};
+export const DistributorsEntryForm: FC<IDistributorEntryForm> = (props) => {
+  const { submitButtonStatus, onSubmit, onCancel, data, setData } = props;
   const [countryVisible, setCountryVisible] = useState(false);
   const [countryValue, setCountryValue] = useState<RadioValue>({ value: '', label: '' });
   const [authorizedCountryVisible, setAuthorizedCountryVisible] = useState(false);
@@ -41,27 +63,52 @@ export const DistributorsEntryForm = () => {
   const [stateValue, setStateValue] = useState<RadioValue>({ value: '', label: '' });
   const [cityValue, setCityValue] = useState<RadioValue>();
   const [authorCountryValue, setAuthorCountryValue] = useState<CheckboxValue[]>();
+  const [countryValueDetail, setCountryValueDetail] =
+    useState<ICountryDetail>(DEFAULT_COUNTRY_DETAIL);
 
   const handleOnChangeValueForm = (
     e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>,
   ) => {
-    setDistributorsValue({ ...distributorsValue, [e.target.name]: e.target.value });
+    setData({ ...data, [e.target.name]: e.target.value });
   };
 
-  const handleOnChangeGenderAndCoverageBeyond = (radioValue: string, name: string) => {
-    setDistributorsValue({ ...distributorsValue, [name]: radioValue });
+  const handleOnChangeGenderAndCoverageBeyond = (radioValue: boolean, name: string) => {
+    setData({ ...data, [name]: radioValue });
   };
 
   const handleOnChangePhoneAndMobile = (phoneInputValue: object, name: string) => {
-    setDistributorsValue({
-      ...distributorsValue,
+    setData({
+      ...data,
       [name]: phoneInputValue['phoneNumber'],
     });
   };
 
+  const handleSubmit = () => {
+    onSubmit({
+      ...data,
+      country_id: countryValue.value as string,
+      state_id: stateValue.value as string,
+      city_id: cityValue?.value as string,
+      // authorized_country_ids: authorCountryValue?.map((item) => item.id) as string[],
+      authorized_country_ids: ['4'],
+      brand_id: '54bbfa0d-5fda-413b-81a9-1332081e2739',
+    });
+  };
+
+  useEffect(() => {
+    if (countryValue.value !== '') {
+      getCountryById(countryValue.value as string).then(setCountryValueDetail);
+    }
+  }, [countryValue.value !== '']);
+
+  console.log(countryValueDetail);
   return (
     <>
-      <EntryFormWrapper>
+      <EntryFormWrapper
+        handleSubmit={handleSubmit}
+        handleCancel={onCancel}
+        submitButtonStatus={submitButtonStatus}
+      >
         <div className="form">
           <div className="company information">
             <div className={styles.title}>
@@ -72,8 +119,8 @@ export const DistributorsEntryForm = () => {
               required
               fontLevel={3}
               onChange={handleOnChangeValueForm}
-              value={distributorsValue.distributorName}
-              name="distributorName"
+              value={data.name}
+              name="name"
               borderBottomColor="mono-medium"
               placeholder="authorized distributor company name"
               hasHeight
@@ -149,7 +196,7 @@ export const DistributorsEntryForm = () => {
                 placeholder="unit #, street / road name"
                 name="address"
                 onChange={handleOnChangeValueForm}
-                value={distributorsValue.address}
+                value={data.address}
               />
             </FormGroup>
             <InputGroup
@@ -157,10 +204,10 @@ export const DistributorsEntryForm = () => {
               required
               fontLevel={3}
               type="number"
-              name="zipCode"
+              name="postal_code"
               placeholder="postal / zip code"
               onChange={handleOnChangeValueForm}
-              value={distributorsValue.zipCode}
+              value={data.postal_code}
               borderBottomColor="mono-medium"
               hasPadding
               hasHeight
@@ -176,10 +223,10 @@ export const DistributorsEntryForm = () => {
               label="First Name"
               required
               fontLevel={3}
-              name="firstName"
+              name="first_name"
               placeholder="user first name"
               onChange={handleOnChangeValueForm}
-              value={distributorsValue.firstName}
+              value={data.first_name}
               borderBottomColor="mono-medium"
               hasPadding
               hasHeight
@@ -190,10 +237,10 @@ export const DistributorsEntryForm = () => {
               label="Last Name"
               required
               fontLevel={3}
-              name="lastName"
+              name="last_name"
               placeholder="user last name"
               onChange={handleOnChangeValueForm}
-              value={distributorsValue.lastName}
+              value={data.last_name}
               borderBottomColor="mono-medium"
               hasPadding
               hasHeight
@@ -208,9 +255,9 @@ export const DistributorsEntryForm = () => {
             >
               <CustomRadio
                 options={optionsGender}
-                value={distributorsValue.gender}
+                value={data.gender}
                 onChange={(radioValue) =>
-                  handleOnChangeGenderAndCoverageBeyond(radioValue.value, 'gender')
+                  handleOnChangeGenderAndCoverageBeyond(radioValue.value as boolean, 'gender')
                 }
               />
             </FormGroup>
@@ -221,7 +268,6 @@ export const DistributorsEntryForm = () => {
               name="email"
               placeholder="user work email address"
               onChange={handleOnChangeValueForm}
-              value={distributorsValue.email}
               borderBottomColor="mono-medium"
               hasPadding
               hasHeight
@@ -238,6 +284,8 @@ export const DistributorsEntryForm = () => {
                 phonePlaceholder="area code / number"
                 onChange={(value) => handleOnChangePhoneAndMobile(value, 'phone')}
                 colorPlaceholder="mono"
+                codePlaceholder={countryValueDetail.phone_code}
+                codeReadOnly
               />
             </FormGroup>
             <FormGroup
@@ -250,6 +298,8 @@ export const DistributorsEntryForm = () => {
                 phonePlaceholder="mobile number"
                 onChange={(value) => handleOnChangePhoneAndMobile(value, 'mobile')}
                 colorPlaceholder="mono"
+                codePlaceholder={countryValueDetail.phone_code}
+                codeReadOnly
               />
             </FormGroup>
           </div>
@@ -276,9 +326,12 @@ export const DistributorsEntryForm = () => {
             <FormGroup label="Coverage Beyond" required layout="vertical">
               <CustomRadio
                 options={optionsCoverageBeyond}
-                value={distributorsValue.coverageBeyond}
+                value={data.coverage_beyond}
                 onChange={(radioValue) =>
-                  handleOnChangeGenderAndCoverageBeyond(radioValue.value, 'coverageBeyond')
+                  handleOnChangeGenderAndCoverageBeyond(
+                    radioValue.value as boolean,
+                    'coverage_beyond',
+                  )
                 }
               />
             </FormGroup>
@@ -293,15 +346,15 @@ export const DistributorsEntryForm = () => {
         setChosenValue={setCountryValue}
       />
       <StateModal
-        countryId={countryValue.value}
+        countryId={countryValue.value as string}
         visible={stateVisible}
         setVisible={setStateVisible}
         chosenValue={stateValue}
         setChosenValue={setStateValue}
       />
       <CityModal
-        stateId={stateValue.value}
-        countryId={countryValue.value}
+        stateId={stateValue.value as string}
+        countryId={countryValue.value as string}
         visible={cityVisible}
         setVisible={setCityVisible}
         chosenValue={cityValue}

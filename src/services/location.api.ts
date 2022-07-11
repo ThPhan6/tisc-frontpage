@@ -56,3 +56,13 @@ export async function getListCountryGroup() {
       return [];
     });
 }
+
+export async function getCountryById(id: string) {
+  return request(`/api/location/get-country/${id}`, { method: 'GET' })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_COUNTRY_ERROR);
+    });
+}

@@ -1,0 +1,69 @@
+import LoadingPageCustomize from '@/components/LoadingPage';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { TableHeader } from '@/components/Table/TableHeader';
+import { PATH } from '@/constants/path';
+import { pushTo } from '@/helper/history';
+import { useBoolean } from '@/helper/hook';
+import { createDistributor } from '@/services/distributor.api';
+import { IDistributorForm } from '@/types/distributor.type';
+import { useState } from 'react';
+import { DistributorsEntryForm } from './components/DistributorsEntryForm';
+
+const DEFAULT_DISTRIBUTOR: IDistributorForm = {
+  brand_id: '',
+  name: '',
+  country_id: '',
+  state_id: '',
+  city_id: '',
+  address: '',
+  postal_code: '',
+  first_name: '',
+  last_name: '',
+  gender: true,
+  email: '',
+  phone: '',
+  mobile: '',
+  authorized_country_ids: [],
+  coverage_beyond: true,
+};
+
+const CreatePage = () => {
+  const isLoading = useBoolean();
+  const submitButtonStatus = useBoolean(false);
+  const [data, setData] = useState<IDistributorForm>(DEFAULT_DISTRIBUTOR);
+
+  const handleCreate = (submitData: IDistributorForm) => {
+    isLoading.setValue(true);
+    createDistributor(submitData).then((isSuccess) => {
+      isLoading.setValue(false);
+      if (isSuccess) {
+        submitButtonStatus.setValue(true);
+        setTimeout(() => {
+          pushTo(PATH.distributors);
+        }, 1000);
+        return;
+      }
+    });
+  };
+
+  const handleCancel = () => {
+    pushTo(PATH.distributors);
+  };
+
+  return (
+    <div>
+      <TableHeader title="DISTIBUTORS" rightAction={<CustomPlusButton disabled />} />
+      <div>
+        <DistributorsEntryForm
+          data={data}
+          setData={setData}
+          submitButtonStatus={submitButtonStatus.value}
+          onSubmit={handleCreate}
+          onCancel={handleCancel}
+        />
+      </div>
+      {isLoading.value && <LoadingPageCustomize />}
+    </div>
+  );
+};
+export default CreatePage;
