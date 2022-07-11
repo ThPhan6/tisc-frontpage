@@ -4,7 +4,6 @@ import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 import DefaultImage from '@/assets/icons/default-option-icon.png';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
-import classNames from 'classnames';
 import { isEmpty } from 'lodash';
 import React, { FC } from 'react';
 import styles from '../styles/OptionItem.less';
@@ -111,7 +110,7 @@ const SubItemOption: FC<ISubItemOption> = ({
               size="small"
               autoWidth
               defaultWidth={30}
-              containerClass={classNames(styles.form_input__unit)}
+              containerClass={styles.form_input__unit}
               onChange={handleChangeInput}
               value={subItemOption[`unit_${order}`]}
             />
@@ -207,12 +206,13 @@ export const OptionItem: FC<IOptionItem> = (props) => {
               />
             </div>
             <div
-              className={classNames(
-                styles.panel_header__field_image,
-                subOption.is_have_image
-                  ? styles['set-checked-color']
-                  : styles['set-unchecked-color'],
-              )}
+              className={`
+                ${styles.panel_header__field_image}
+                ${
+                  subOption.is_have_image
+                    ? styles['set-checked-color']
+                    : styles['set-unchecked-color']
+                }`}
               onClick={handleOnClickUsingImage}
             >
               <BodyText level={7}>Image</BodyText>
@@ -256,7 +256,7 @@ export const OptionItem: FC<IOptionItem> = (props) => {
         >
           <div className={styles.sub_wrapper}>
             {subOption.subs.map((subItemOption, index) => (
-              <div key={index} className={classNames(styles.element_input)}>
+              <div key={index} className={styles.element_input}>
                 <div className={styles.optionItemGroup}>
                   <div className={styles.form}>
                     <SubItemOption

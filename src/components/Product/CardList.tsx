@@ -4,7 +4,6 @@ import ProductCard from './Card';
 // import { useDispatch } from 'react-redux';
 // import { useAppSelector } from '@/reducers';
 // import { setBrand } from '@/reducers/product';
-// import classnames from 'classnames';
 import styles from './styles/cardList.less';
 
 interface IProductCardList {
