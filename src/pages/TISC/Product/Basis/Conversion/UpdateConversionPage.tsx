@@ -9,8 +9,8 @@ import { message } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams } from 'umi';
 import { ConversionsEntryForm } from './components/ConversionsEntryForm';
-import { getOneConversionMiddleware, updateConversionMiddleware } from './services/api';
-import { ConversionValueProp } from './types';
+import { getOneConversionMiddleware, updateConversionMiddleware } from '@/services';
+import { ConversionValueProp } from '@/types';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const UpdateConversionPage = () => {

@@ -2,7 +2,7 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import type { FC } from 'react';
 import { OptionItem } from './OptionItem';
-import type { IBasisOptionForm, IBasisOptionSubForm, ISubBasisOption } from '../types';
+import type { IBasisOptionForm, IBasisOptionSubForm, ISubBasisOption } from '@/types';
 import { merge } from 'lodash';
 
 interface IOptionEntryForm {

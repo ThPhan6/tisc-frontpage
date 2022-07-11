@@ -15,7 +15,10 @@
     path: '/profiles',
     component: './ProfilesPage',
   },
-
+  {
+    path: '/howTo',
+    component: './HowTo',
+  },
   // TISC MENU - ADMIN ACCESS ONLY
   {
     path: '/tisc/dashboard',
@@ -227,7 +230,23 @@
         path: '/tisc/products/configuration',
         name: 'configuration',
         icon: 'configuration-icon.svg',
-        component: './Welcome',
+        routes: [
+          {
+            path: '/tisc/products/configuration',
+            component: './TISC/Product/Configuration',
+            hideInMenu: true,
+          },
+          {
+            path: '/tisc/products/configuration/create/:brandId',
+            component: './TISC/Product/Configuration/Create',
+            hideInMenu: true,
+          },
+          {
+            path: '/tisc/products/configuration/:id',
+            component: './TISC/Product/Configuration/Update',
+            hideInMenu: true,
+          },
+        ],
       },
     ],
   },

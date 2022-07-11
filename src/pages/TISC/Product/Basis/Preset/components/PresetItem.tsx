@@ -14,7 +14,7 @@ import {
   PresetItemValueProp,
   presetsValueDefault,
   subPresetDefaultValue,
-} from '../types';
+} from '@/types';
 
 const PresetElementInput: FC<PresetElementInputProp> = ({ order, onChange, value }) => {
   return (

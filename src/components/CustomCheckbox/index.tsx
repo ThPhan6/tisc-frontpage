@@ -13,13 +13,17 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   options,
   onChange,
   isCheckboxList,
-  defaultValue,
+  selected,
   checkboxClass,
   heightItem = '32px',
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
-  const [checkboxValue, setCheckboxValue] = useState(defaultValue ? [defaultValue] : []);
+  const [randomId] = useState(
+    Math.random()
+      .toString()
+      .replace(/[^0-9]+/g, ''),
+  );
 
   const onChangeValue = (checkedValues: CheckboxValueType[]) => {
     const newCheckboxValue = checkedValues.map((value) =>
@@ -27,35 +31,29 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
         ? { label: inputValue, value: 'other' }
         : options.filter((item) => item.value === value)[0],
     );
-    setCheckboxValue(newCheckboxValue);
     if (onChange) {
       onChange(newCheckboxValue);
     }
   };
 
   const handleClickInput = () => {
-    const checkOtherInput =
-      checkboxValue.filter((checkbox) => checkbox.value === 'other').length === 0;
+    const checkOtherInput = selected?.filter((checkbox) => checkbox.value === 'other').length === 0;
     if (onChange && checkOtherInput) {
-      onChange([...checkboxValue, { label: inputValue, value: 'other' }]);
-    }
-    if (checkOtherInput) {
-      setCheckboxValue([...checkboxValue, { label: inputValue, value: 'other' }]);
+      onChange([...selected, { label: inputValue, value: 'other' }]);
     }
   };
 
   const onChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
-    const newData = checkboxValue.map((itemCheckbox) => {
+    const newData = selected?.map((itemCheckbox) => {
       if (itemCheckbox.value === 'other') {
         return { ...itemCheckbox, label: e.target.value };
       }
       return itemCheckbox;
     });
     if (onChange) {
-      onChange(newData);
+      onChange(newData ?? []);
     }
-    setCheckboxValue(newData);
   };
 
   return (
@@ -70,19 +68,20 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     >
       <Checkbox.Group
         {...props}
-        value={checkboxValue.map((checkbox) => checkbox.value)}
+        value={selected?.map((item) => item.value) ?? []}
         onChange={onChangeValue}
       >
         {options.map((option, index) => (
           <div key={index}>
             {isCheckboxList ? (
-              <div
+              <label
                 className={classNames(style['item-wrapper'], 'item-wrapper-custom')}
                 style={{ height: heightItem }}
+                htmlFor={`${option.value}_${index}_${randomId}`}
               >
                 <span>{option.label}</span>
-                <Checkbox {...option} />
-              </div>
+                <Checkbox id={`${option.value}_${index}_${randomId}`} {...option} />
+              </label>
             ) : (
               <div
                 className={classNames(style['item-checkbox'], 'item-wrapper-checkbox')}
