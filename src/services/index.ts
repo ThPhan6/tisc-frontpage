@@ -7,3 +7,4 @@ export * from './basis-preset.api';
 export * from './basis-option.api';
 export * from './collection.api';
 export * from './product.api';
+export * from './inspirational-quotation.api';

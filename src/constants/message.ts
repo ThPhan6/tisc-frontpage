@@ -66,6 +66,16 @@ export const MESSAGE_NOTIFICATION = {
   GET_BRAND_SUMMARY_DATA_ERROR: 'Failed to get Brand summary data',
   CREATE_BRAND_COLLECTION_ERROR: 'Failed to create Brand collection',
   GET_BRAND_COLLECTION_ERROR: 'Failed to get Brand collection data',
+
+  // inspirational quotation
+  GET_LIST_INSPIRATIONAL_QUOTATION_ERROR: 'Get list inspirational quotation error',
+  GET_ONE_INSPIRATIONAL_QUOTATION_ERROR: 'Get one inspirational quotation error',
+  CREATE_INSPIRATIONAL_QUOTATION_SUCCESS: 'Create inspirational quotation successfully',
+  CREATE_INSPIRATIONAL_QUOTATION_ERROR: 'Create inspirational quotation error',
+  DELETE_INSPIRATIONAL_QUOTATION_SUCCESS: 'Delete inspirational quotation successfully',
+  DELETE_INSPIRATIONAL_QUOTATION_ERROR: 'Delete inspirational quotation error',
+  UPDATE_INSPIRATIONAL_QUOTATION_SUCCESS: 'Update inspirational quotation successfully',
+  UPDATE_INSPIRATIONAL_QUOTATION_ERROR: 'Update inspirational quotation error',
 };
 
 export const MESSAGE_TOOLTIP = {

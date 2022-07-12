@@ -295,10 +295,27 @@
             component: './Welcome',
           },
           {
-            path: '/tisc/adminstration/messages/inspirational-quotations',
+            path: '/tisc/adminstration/messages/quotation',
             name: 'quotation',
-            component:
-              './TISC/Product/Adminstration/Messages/InspirationalQuotations/CreateInspirationalQuotationsPage',
+            routes: [
+              {
+                path: '/tisc/adminstration/messages/quotation',
+                component: './TISC/Product/Adminstration/Messages/InspirationalQuotations',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/adminstration/messages/quotation/create',
+                component:
+                  './TISC/Product/Adminstration/Messages/InspirationalQuotations/CreateQuotationPage',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/adminstration/messages/quotation/update/:id',
+                component:
+                  './TISC/Product/Adminstration/Messages/InspirationalQuotations/UpdateQuotationPage',
+                hideInMenu: true,
+              },
+            ],
           },
         ],
       },

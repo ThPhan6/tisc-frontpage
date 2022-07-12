@@ -5,17 +5,22 @@ import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
 import { FC } from 'react';
 import styles from '../styles/InspirationalQuotationEntryForm.less';
-import { inputProps } from '../types';
-import classNames from 'classnames';
+import { IInspirationalQuotationForm } from '../../../../../../../types/inspiration-quotation';
 
-interface InspirationalQuotationEntryFormProps {
-  value: inputProps;
-  onChange: (value: inputProps) => void;
+interface IInspirationalQuotationEntryFormProps {
+  value: IInspirationalQuotationForm;
+  onChange: (value: IInspirationalQuotationForm) => void;
+  onCancel: () => void;
+  onSubmit: (value: IInspirationalQuotationForm) => void;
+  submitButtonStatus: boolean;
 }
 
-export const InspirationalQuotationEntryForm: FC<InspirationalQuotationEntryFormProps> = ({
+export const InspirationalQuotationEntryForm: FC<IInspirationalQuotationEntryFormProps> = ({
   value,
   onChange,
+  onCancel,
+  onSubmit,
+  submitButtonStatus,
 }) => {
   const handleOnChangeInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     onChange({
@@ -31,14 +36,22 @@ export const InspirationalQuotationEntryForm: FC<InspirationalQuotationEntryForm
     });
   };
 
+  const handleSubmitData = () => {
+    return onSubmit(value);
+  };
+
   return (
     <div className={styles.IQ_container}>
-      <EntryFormWrapper>
+      <EntryFormWrapper
+        handleCancel={onCancel}
+        handleSubmit={handleSubmitData}
+        submitButtonStatus={submitButtonStatus}
+      >
         <FormGroup label="Author" required={true} layout="vertical" formClass={styles.input_form}>
           <div className={styles.input_field} id="author-input">
             <CustomInput
               placeholder="author name"
-              className={classNames(styles.author, value.author && styles.input_item)}
+              className={`${styles.author} ${value.author && styles.input_item}`}
               name="author"
               value={value.author}
               onChange={handleOnChangeInput}
@@ -55,7 +68,7 @@ export const InspirationalQuotationEntryForm: FC<InspirationalQuotationEntryForm
           <div className={styles.input_field} id="identity-input">
             <CustomInput
               placeholder="author position / role"
-              className={classNames(styles.identity, value.identity && styles.input_item)}
+              className={`${styles.identity} ${value.identity && styles.input_item}`}
               name="identity"
               value={value.identity}
               onChange={handleOnChangeInput}
