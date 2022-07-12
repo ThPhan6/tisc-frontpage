@@ -8,3 +8,5 @@ export * from './basis-option.type';
 export * from './collection.type';
 export * from './product.type';
 export * from './general.type';
+export * from './product-tip.type';
+export * from './product-download.type';

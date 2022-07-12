@@ -54,12 +54,14 @@ const LandingPage = () => {
       history.push(PATH.landingPage);
       return;
     } else {
-      validateResetToken(tokenResetPwd).then((res) => {
-        if (res) {
-          return openResetPwd.setValue(res);
-        }
-        history.push(PATH.landingPage);
-      });
+      if (tokenResetPwd) {
+        validateResetToken(tokenResetPwd).then((res) => {
+          if (res) {
+            return openResetPwd.setValue(res);
+          }
+          history.push(PATH.landingPage);
+        });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [emailResetPwd]);

@@ -103,8 +103,6 @@ const ProductTopBar: React.FC = () => {
     [filter],
   );
 
-  console.log(product);
-
   /// render custom radio brand list label
   const renderLabel = (item: IBrandDetail) => {
     return (

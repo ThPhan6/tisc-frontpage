@@ -79,7 +79,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                 style={{ height: heightItem }}
                 htmlFor={`${option.value}_${index}_${randomId}`}
               >
-                <span>{option.label}</span>
+                <div style={{ width: '100%' }}>{option.label}</div>
                 <Checkbox id={`${option.value}_${index}_${randomId}`} {...option} />
               </label>
             ) : (

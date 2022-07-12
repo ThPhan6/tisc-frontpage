@@ -1,66 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { MainTitle } from '@/components/Typography';
-import AttributeItem from './AttributeItem';
+// import { MainTitle } from '@/components/Typography';
+import GeneralFeatureAttribute from './GeneralFeatureAttribute';
+import SpecificationAttribute from './SpecificationAttribute';
 import { CustomTabs } from '@/components/Tabs';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { getProductAttributeByType } from '@/services';
-import { IAttributeListResponse } from '@/types';
+// import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { getAllAttribute } from '@/services';
+import { IAttributebyType } from '@/types';
 import styles from '../styles/details.less';
-import { map } from 'lodash';
+import { LIST_TAB } from '../constants';
+import type { ACTIVE_KEY } from '../types';
+// import {showImageUrl} from '@/helper/utils';
+// import { useDispatch } from 'react-redux';
+// import { useAppSelector } from '@/reducers';
+// import {
+//   setPartialProductDetail,
+// } from '@/reducers/product';
 
-interface IAttributeSelectList {
-  general: IAttributeListResponse[];
-  feature: IAttributeListResponse[];
-  specification: IAttributeListResponse[];
-}
-
-const LIST_TAB = [
-  { tab: 'GENERAL', key: 'general' },
-  { tab: 'FEATURE', key: 'feature' },
-  { tab: 'SPECIFICATION', key: 'specification' },
-  { tab: 'VENDOR', key: 'vendor' },
-];
-
-const ATTRIBUTE_TYPE = {
-  general: 1,
-  feature: 2,
-  specification: 3,
-};
-const ProductConfigurationCreate: React.FC = () => {
-  const [activeKey, setActiveKey] = useState('general');
-  const [attribute, setAttribute] = useState<IAttributeSelectList>({
+const ProductAttribute: React.FC = () => {
+  const [activeKey, setActiveKey] = useState<ACTIVE_KEY>('specification');
+  const [attribute, setAttribute] = useState<IAttributebyType>({
     general: [],
     feature: [],
     specification: [],
   });
 
-  const loadAttributes = async () => {
-    /// load all 3 type of attribute
-    const finalData = await Promise.all(
-      map(ATTRIBUTE_TYPE, async (type, key) => {
-        return getProductAttributeByType(type).then((response) => {
-          return {
-            key: key,
-            data: response,
-          };
-        });
-      }),
-    );
-
-    /// re-format to match with attribute state
-    setAttribute(
-      finalData.reduce((finalItem, newItem) => {
-        finalItem[newItem.key] = newItem.data;
-        return finalItem;
-      }, {} as IAttributeSelectList),
-    );
-  };
-
   useEffect(() => {
-    loadAttributes();
+    getAllAttribute().then(setAttribute);
   }, []);
-
-  console.log('attribute', attribute);
 
   return (
     <div className={styles.productTabContainer}>
@@ -69,18 +35,16 @@ const ProductConfigurationCreate: React.FC = () => {
         centered={true}
         tabPosition="top"
         tabDisplay="space"
-        onChange={setActiveKey}
+        onChange={(key) => setActiveKey(key as ACTIVE_KEY)}
         activeKey={activeKey}
       />
-      <div className={styles.addAttributeBtn}>
-        <MainTitle level={4} customClass="add-attribute-text">
-          Add Attribute
-        </MainTitle>
-        <CustomPlusButton size={18} />
-      </div>
-      <AttributeItem />
+      {activeKey !== 'vendor' && activeKey !== 'specification' ? (
+        <GeneralFeatureAttribute attributes={attribute[activeKey]} activeKey={activeKey} />
+      ) : activeKey === 'specification' ? (
+        <SpecificationAttribute attributes={attribute.specification} />
+      ) : null}
     </div>
   );
 };
 
-export default ProductConfigurationCreate;
+export default ProductAttribute;

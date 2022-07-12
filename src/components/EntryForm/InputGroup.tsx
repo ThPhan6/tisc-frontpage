@@ -53,7 +53,15 @@ const InputGroup: FC<IInputGroup> = ({
           fontLevel={fontLevel ? ((fontLevel + 2) as 7) : 7}
           readOnly={rightIcon || readOnly ? true : false}
           className="input-box"
-          onClick={(e) => e.stopPropagation()}
+          style={{
+            cursor: onRightIconClick ? 'pointer' : 'auto',
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onRightIconClick) {
+              onRightIconClick();
+            }
+          }}
         />
         {rightIcon ? (
           rightIcon === true ? (

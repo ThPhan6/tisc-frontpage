@@ -1,37 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { TableHeader } from '@/components/Table/TableHeader';
-// import { MainTitle } from '@/components/Typography';
+import React, { useEffect } from 'react';
+import ProductHeader from './components/ProductHeader';
 import { useParams } from 'umi';
 import PhotoUpload from './components/PhotoUpload';
 import ProductInfo from './components/ProductInfo';
 import ProductAttribute from './components/ProductAttribute';
-// import { CustomTabs } from '@/components/Tabs';
-// import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import ProductFooter from './components/ProductFooter';
 import { Row, Col } from 'antd';
 import { getBrandById } from '@/services';
-import { IBrandDetail } from '@/types';
+import { useDispatch } from 'react-redux';
+import { setBrand } from '@/reducers/product';
 import styles from './styles/details.less';
 
 const ProductConfigurationCreate: React.FC = () => {
-  const [brand, setBrand] = useState<IBrandDetail>();
+  const dispatch = useDispatch();
   const params = useParams<{ brandId: string }>();
   const brandId = params?.brandId || '';
 
   useEffect(() => {
     if (brandId) {
-      getBrandById(brandId).then(setBrand);
+      getBrandById(brandId).then((res) => dispatch(setBrand(res)));
     }
   }, [brandId]);
 
   return (
     <Row gutter={8}>
       <Col span={24}>
-        <TableHeader title={'CATEGORY'} />
+        <ProductHeader title={'CATEGORY'} />
       </Col>
-      <PhotoUpload brand={brand} />
+      <PhotoUpload />
       <Col span={12} className={styles.productContent}>
-        <ProductInfo brand={brand} />
-        <ProductAttribute />
+        <Row style={{ flexDirection: 'column', height: '100%' }}>
+          <Col>
+            <ProductInfo />
+          </Col>
+          <Col style={{ marginBottom: 24 }}>
+            <ProductAttribute />
+          </Col>
+          <Col style={{ marginTop: 'auto' }}>
+            <ProductFooter />
+          </Col>
+        </Row>
       </Col>
     </Row>
   );

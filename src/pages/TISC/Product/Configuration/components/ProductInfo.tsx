@@ -11,35 +11,36 @@ import { showImageUrl } from '@/helper/utils';
 import { Collapse } from 'antd';
 import styles from '../styles/details.less';
 import { createCollection, getCollectionByBrandId } from '@/services';
-import type { IBrandDetail, ICollection } from '@/types';
-import type { RadioValue } from '@/components/CustomRadio/types';
+import type { ICollection } from '@/types';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from '@/reducers';
+import { setPartialProductDetail } from '@/reducers/product';
 
-interface IProductInfo {
-  brand?: IBrandDetail;
-}
-const ProductInfo: React.FC<IProductInfo> = (props) => {
-  const { brand } = props;
-  const [collectionVisible, setCollectionVisible] = useState(false);
-  const [selectedCollection, setSelectedCollection] = useState<RadioValue>();
+const ProductInfo: React.FC = () => {
+  const product = useAppSelector((state) => state.product);
+  const dispatch = useDispatch();
+  const { name, description, collection } = product.details;
+
+  const [visible, setVisible] = useState(false);
   const [collections, setCollections] = useState<ICollection[]>([]);
   const [newCollection, setNewCollection] = useState('');
   const disabled = useBoolean();
 
   const getCollectionList = () => {
-    if (brand?.id) {
-      getCollectionByBrandId(brand.id).then(setCollections);
+    if (product.brand?.id) {
+      getCollectionByBrandId(product.brand.id).then(setCollections);
     }
   };
 
   const handleCreateCollection = () => {
-    if (!brand) {
+    if (!product.brand) {
       /// do nothing
       return;
     }
     disabled.setValue(true);
     createCollection({
       name: newCollection,
-      brand_id: brand.id,
+      brand_id: product.brand.id,
     }).then((res) => {
       /// disable loading
       disabled.setValue(false);
@@ -54,10 +55,10 @@ const ProductInfo: React.FC<IProductInfo> = (props) => {
 
   //
   useEffect(() => {
-    if (brand?.id) {
+    if (product.brand?.id) {
       getCollectionList();
     }
-  }, [brand]);
+  }, [product.brand]);
 
   return (
     <>
@@ -75,9 +76,9 @@ const ProductInfo: React.FC<IProductInfo> = (props) => {
                 Brand
               </BodyText>
               <BodyText level={6} fontFamily="Roboto" customClass="brand-name">
-                {brand?.name ?? 'N/A'}
+                {product.brand?.name ?? 'N/A'}
               </BodyText>
-              {brand?.logo ? <img src={showImageUrl(brand.logo)} /> : null}
+              {product.brand?.logo ? <img src={showImageUrl(product.brand.logo)} /> : null}
             </div>
           }
         >
@@ -88,8 +89,8 @@ const ProductInfo: React.FC<IProductInfo> = (props) => {
             placeholder="create or assign from the list"
             rightIcon
             noWrap
-            value={(selectedCollection?.label as string) ?? ''}
-            onRightIconClick={() => setCollectionVisible(true)}
+            value={collection?.name ?? ''}
+            onRightIconClick={() => setVisible(true)}
           />
           <InputGroup
             horizontal
@@ -98,6 +99,14 @@ const ProductInfo: React.FC<IProductInfo> = (props) => {
             placeholder="type max.50 characters short description"
             maxLength={50}
             noWrap
+            value={name}
+            onChange={(e) => {
+              dispatch(
+                setPartialProductDetail({
+                  name: e.target.value,
+                }),
+              );
+            }}
           />
           <InputGroup horizontal fontLevel={4} label="Product ID" readOnly={true} noWrap />
           <InputGroup
@@ -107,22 +116,48 @@ const ProductInfo: React.FC<IProductInfo> = (props) => {
             placeholder="max.50 words of product summary"
             maxLength={50}
             noWrap
+            value={description}
+            onChange={(e) => {
+              dispatch(
+                setPartialProductDetail({
+                  description: e.target.value,
+                }),
+              );
+            }}
           />
         </Collapse.Panel>
       </Collapse>
       <Popover
         title="SELECT COLLECTION"
-        visible={collectionVisible}
-        setVisible={setCollectionVisible}
-        chosenValue={selectedCollection}
-        setChosenValue={setSelectedCollection}
+        visible={visible}
+        setVisible={setVisible}
+        chosenValue={
+          collection
+            ? {
+                value: collection.id,
+                label: collection.name,
+              }
+            : undefined
+        }
+        setChosenValue={(selected) => {
+          if (selected) {
+            dispatch(
+              setPartialProductDetail({
+                collection: {
+                  name: selected.label,
+                  id: selected.value,
+                },
+              }),
+            );
+          }
+        }}
         groupRadioList={[
           {
             heading: 'Assign bellow Collection',
-            options: collections.map((collection) => {
+            options: collections.map((item) => {
               return {
-                label: collection.name,
-                value: collection.id,
+                label: item.name,
+                value: item.id,
               };
             }),
           },
