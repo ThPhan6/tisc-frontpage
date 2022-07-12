@@ -5,7 +5,6 @@ import useMergedState from 'rc-util/es/hooks/useMergedState';
 import type { AutoCompleteProps } from 'antd/es/auto-complete';
 import React, { useRef } from 'react';
 
-import classNames from 'classnames';
 import styles from './index.less';
 
 export type HeaderSearchProps = {
@@ -44,12 +43,10 @@ const HeaderSearch: React.FC<HeaderSearchProps> = (props) => {
     onChange: onVisibleChange,
   });
 
-  const inputClass = classNames(styles.input, {
-    [styles.show]: searchMode,
-  });
+  const inputClass = `${styles.input} ${{ [styles.show]: searchMode }}`;
   return (
     <div
-      className={classNames(className, styles.headerSearch)}
+      className={`${className} ${styles.headerSearch}`}
       onClick={() => {
         setSearchMode(true);
         if (searchMode && inputRef.current) {
