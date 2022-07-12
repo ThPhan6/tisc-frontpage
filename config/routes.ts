@@ -290,10 +290,20 @@
         icon: 'messages-icon.svg',
         routes: [
           {
-            path: '/tisc/adminstration/messages/email-autoresponders',
+            path: '/tisc/adminstration/messages/email-auto',
             name: 'email',
-            component:
-              './TISC/Adminstration/Messages/EmailAutoresponders/CreateEmailAutorespondersPage',
+            routes: [
+              {
+                path: '/tisc/adminstration/messages/email-auto',
+                component: './TISC/Adminstration/Messages/EmailAutoresponders/',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/adminstration/messages/email-auto/update/:id',
+                component: './TISC/Adminstration/Messages/EmailAutoresponders/UpdateEmailAutoPage',
+                hideInMenu: true,
+              },
+            ],
           },
           {
             path: '/tisc/adminstration/messages/inspirational-quotations',

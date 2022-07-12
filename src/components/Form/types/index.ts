@@ -35,6 +35,7 @@ export interface CustomInputEditorProps {
   optional?: boolean;
   required?: boolean;
   label: string;
+  value: string;
   handleOnChange?: (value: { text: string; html: string }) => void;
   containerClass?: string;
   formClass?: string;
