@@ -2,7 +2,6 @@ import { Checkbox } from 'antd';
 import { FC, useState } from 'react';
 import { CustomCheckboxProps } from './types';
 import style from './styles/index.less';
-import classNames from 'classnames';
 import { CustomInput } from '../Form/CustomInput';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 
@@ -58,13 +57,13 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
 
   return (
     <div
-      className={classNames(
-        style[`checkbox-${direction}`],
-        style['checkbox-list'],
-        isCheckboxList && style['item-list-checkbox'],
-        style['color-checkbox-checked'],
-        checkboxClass,
-      )}
+      className={`
+        ${style[`checkbox-${direction}`]}
+        ${style['checkbox-list']}
+        ${isCheckboxList && style['item-list-checkbox']}
+        ${style['color-checkbox-checked']}
+        ${checkboxClass})
+      `}
     >
       <Checkbox.Group
         {...props}
@@ -75,7 +74,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
           <div key={index}>
             {isCheckboxList ? (
               <label
-                className={classNames(style['item-wrapper'], 'item-wrapper-custom')}
+                className={`${style['item-wrapper']} ${'item-wrapper-custom'}`}
                 style={{ height: heightItem }}
                 htmlFor={`${option.value}_${index}_${randomId}`}
               >
@@ -84,7 +83,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
               </label>
             ) : (
               <div
-                className={classNames(style['item-checkbox'], 'item-wrapper-checkbox')}
+                className={`${style['item-checkbox']} ${'item-wrapper-checkbox'}`}
                 style={{ height: heightItem }}
               >
                 <Checkbox {...option}>{option.label}</Checkbox>

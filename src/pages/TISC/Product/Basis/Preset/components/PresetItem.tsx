@@ -1,7 +1,6 @@
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
-import classNames from 'classnames';
 import { isEmpty, isEqual } from 'lodash';
 import { FC, useEffect, useState } from 'react';
 import styles from '../styles/PresetItem.less';
@@ -36,7 +35,7 @@ const PresetElementInput: FC<PresetElementInputProp> = ({ order, onChange, value
         size="small"
         autoWidth
         defaultWidth={30}
-        containerClass={classNames(styles.presetElement__input_unit)}
+        containerClass={styles.presetElement__input_unit}
         onChange={onChange}
         value={value[`unit_${order}`]}
       />
@@ -131,10 +130,9 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
     <div className={styles.preset}>
       <Collapse ghost activeKey={presetItem.is_collapse}>
         <Collapse.Panel
-          className={classNames(
-            styles['customPadding'],
-            isEmpty(presetItem.is_collapse) ? styles['bottomMedium'] : styles['bottomBlack'],
-          )}
+          className={`
+           ${styles['customPadding']}
+            ${isEmpty(presetItem.is_collapse) ? styles['bottomMedium'] : styles['bottomBlack']}`}
           header={renderPanelHeader()}
           key={presetItem.is_collapse}
           showArrow={false}

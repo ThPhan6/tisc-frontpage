@@ -1,5 +1,4 @@
 import { FormGroup } from '@/components/Form';
-import classNames from 'classnames';
 import React, { FC, useState } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -37,7 +36,7 @@ const CustomToolbar: FC<CustomToolbarProps> = ({ toolbarId }) => {
   icons.outdent = Icons.indentRight;
 
   return (
-    <div className={classNames(style['toolbar-editor'])}>
+    <div className={style['toolbar-editor']}>
       <div id={toolbarId}>
         <div className={style['d-flex-content-between']}>
           <div>
@@ -105,7 +104,7 @@ export const CustomInputEditor: FC<CustomInputEditorProps> = ({
   };
 
   return (
-    <div className={classNames(style['quill-editor'], containerClass)}>
+    <div className={`${style['quill-editor']} ${containerClass}`}>
       <FormGroup
         label={label}
         tooltip={tooltip}

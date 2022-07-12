@@ -3,7 +3,6 @@ import type { FC } from 'react';
 import { useState } from 'react';
 import type { CustomRadioProps } from './types';
 import style from './styles/index.less';
-import classNames from 'classnames';
 import { CustomInput } from '../Form/CustomInput';
 
 export const CustomRadio: FC<CustomRadioProps> = ({
@@ -40,12 +39,12 @@ export const CustomRadio: FC<CustomRadioProps> = ({
 
   return (
     <div
-      className={classNames(
-        style['radio-container'],
-        style[`radio-${isRadioList ? 'vertical' : direction}`],
-        isRadioList ? style['radio-list'] : '',
-        containerClass,
-      )}
+      className={`
+        ${style['radio-container']}
+        ${style[`radio-${isRadioList ? 'vertical' : direction}`]}
+        ${isRadioList ? style['radio-list'] : ''}
+        ${containerClass}
+      `}
     >
       <Radio.Group
         {...props}

@@ -3,7 +3,6 @@ import { Tabs } from 'antd';
 import { FC } from 'react';
 import { CustomTabsProps } from './types';
 import style from './styles/index.less';
-import classNames from 'classnames';
 
 export const CustomTabs: FC<CustomTabsProps> = ({
   listTab,
@@ -15,11 +14,11 @@ export const CustomTabs: FC<CustomTabsProps> = ({
 }) => {
   return (
     <div
-      className={classNames(
-        style[`tabs-${tabPosition}`],
-        style['tab-list'],
-        style[`tabs-${tabDisplay}`],
-      )}
+      className={`
+        ${style[`tabs-${tabPosition}`]}
+        ${style['tab-list']}
+        ${style[`tabs-${tabDisplay}`]}
+      `}
     >
       <Tabs {...props} tabPosition={tabPosition}>
         {listTab.map((tab) => (
@@ -30,7 +29,7 @@ export const CustomTabs: FC<CustomTabsProps> = ({
                   height: heightItem,
                   width: tabDisplay !== 'space' ? widthItem : '',
                 }}
-                className={classNames(style['item-tab'], tab?.disable && style['custom-color'])}
+                className={`${style['item-tab']} ${tab?.disable && style['custom-color']}`}
               >
                 {tab?.icon && <span className={style['custom-icon']}>{tab.icon}</span>}
                 {tab.tab}
