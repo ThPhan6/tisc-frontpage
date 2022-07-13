@@ -81,6 +81,7 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_DISTRIBUTOR_ERROR: 'Delete distributor error',
   UPDATE_DISTRIBUTOR_SUCCESS: 'Update distributor successfully',
   UPDATE_DISTRIBUTOR_ERROR: 'Update distributor error',
+  GET_ONE_DISTRIBUTOR_ERROR: 'Get one distributor error',
 };
 
 export const MESSAGE_TOOLTIP = {

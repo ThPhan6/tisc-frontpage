@@ -77,3 +77,14 @@ export async function updateDistributor(id: string, data: IDistributorForm) {
       return false;
     });
 }
+
+export async function getOneDistributor(id: string) {
+  return request(`/api/distributor/get-one/${id}`, { method: 'GET' })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_DISTRIBUTOR_ERROR);
+      return [];
+    });
+}

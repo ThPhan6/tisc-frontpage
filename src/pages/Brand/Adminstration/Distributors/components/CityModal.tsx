@@ -1,5 +1,5 @@
 import Popover from '@/components/Modal/Popover';
-import { getCities } from '@/services/location.api';
+import { getCitiesByCountryIdAndStateId } from '@/services/location.api';
 import { ICity } from '@/types/location.types';
 import { Radio } from 'antd';
 import { FC, useEffect, useState } from 'react';
@@ -16,15 +16,23 @@ const CityModal: FC<{
   const [cities, setCities] = useState<ICity[]>([]);
 
   const getCityList = () => {
-    getCities(countryId, stateId).then(setCities);
-    setChosenValue({ value: '', label: '' });
+    getCitiesByCountryIdAndStateId(countryId, stateId).then((res) => {
+      if (res) {
+        if (!res.find((item) => item.id === chosenValue.value)) {
+          setChosenValue({ id: '', label: '' });
+        }
+        setCities(res);
+      }
+    });
   };
 
   useEffect(() => {
-    if (stateId && countryId) {
+    if (stateId) {
       getCityList();
+    } else {
+      setChosenValue({ id: '', label: '' });
     }
-  }, [stateId, countryId]);
+  }, [stateId]);
 
   return (
     <Popover

@@ -12,10 +12,14 @@ import { DistributorsEntryForm } from './components/DistributorsEntryForm';
 const DEFAULT_DISTRIBUTOR: IDistributorForm = {
   brand_id: '',
   name: '',
+  country_name: '',
   country_id: '',
+  state_name: '',
   state_id: '',
+  city_name: '',
   city_id: '',
   address: '',
+  phone_code: '',
   postal_code: '',
   first_name: '',
   last_name: '',
@@ -24,6 +28,7 @@ const DEFAULT_DISTRIBUTOR: IDistributorForm = {
   phone: '',
   mobile: '',
   authorized_country_ids: [],
+  authorized_country_name: '',
   coverage_beyond: true,
 };
 

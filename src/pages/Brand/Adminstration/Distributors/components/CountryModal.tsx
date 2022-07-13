@@ -9,7 +9,7 @@ const CountryModal: FC<{
   visible: boolean;
   setVisible: (visible: boolean) => void;
   chosenValue?: any;
-  setChosenValue?: (value: any) => void;
+  setChosenValue: (value: any) => void;
 }> = ({ visible, setVisible, chosenValue, setChosenValue }) => {
   const [countries, setCountries] = useState<ICountry[]>([]);
 

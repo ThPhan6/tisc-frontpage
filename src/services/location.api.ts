@@ -16,7 +16,7 @@ export async function getCountries() {
     });
 }
 
-export async function getStates(countryId: string) {
+export async function getStatesByCountryId(countryId: string) {
   return request<{ data: IState[] }>(`/api/location/get-states`, {
     method: 'GET',
     params: { country_id: countryId },
@@ -30,7 +30,7 @@ export async function getStates(countryId: string) {
     });
 }
 
-export async function getCities(countryId: string, stateId: string) {
+export async function getCitiesByCountryIdAndStateId(countryId: string, stateId: string) {
   return request<{ data: ICity[] }>(`/api/location/get-cities`, {
     method: 'GET',
     params: { country_id: countryId, state_id: stateId },
