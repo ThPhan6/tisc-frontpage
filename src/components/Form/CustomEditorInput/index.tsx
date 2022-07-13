@@ -22,8 +22,8 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
 }) => {
   const onChange = (e: CKEditorEventPayload<'change'>) => {
     // console.log('e', e);
-    // console.log('editor.document', e.editor.document.getBody().getHtml());
-    const html = e.editor.document.getBody()?.getHtml() || '';
+    const html = e.editor.getData() || '';
+    // console.log('html', html);
     onChangeText(html);
   };
 
@@ -31,10 +31,47 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
     <div className={`${styles.container} ${containerClass}`}>
       <CKEditor
         config={{
-          toolbar: [['Bold', 'Italic', 'Underline', 'Link', 'Color', 'Indent', 'simplebutton']],
-          extraPlugins: ['simplebutton', 'editorplaceholder'],
-          removePlugins: ['resize'],
+          // toolbar: [['Bold', 'Italic', 'Underline', 'Strikethrough', 'Link', 'colors', 'Indent', 'simplebutton']],
+          extraPlugins: ['simplebutton', 'editorplaceholder', 'colorbutton'],
+          allowedContent: true, // disable format tag styles
+          removePlugins: ['resize', 'elementspath'],
+          removeButtons: '',
           editorplaceholder: placeholder,
+          toolbarGroups: [
+            // { "name": "clipboard", "groups": ["clipboard", "undo"] },
+            // {
+            //   "name": "editing",
+            //   "groups": ["find",
+            //     "selection",
+            //     "spellchecker"]
+            // },
+            // { "name": "insert" },
+            // { "name": "forms" },
+            // { "name": "tools" },
+            // {
+            //   "name": "document",
+            //   "groups": ["mode",
+            //     "document",
+            //     "doctools"]
+            // },
+            {
+              name: 'basicstyles',
+            },
+            // { "name": "links" },
+            {
+              name: 'paragraph',
+              groups: [
+                'list',
+                'indent',
+                // "blocks",
+                'align',
+                'bidi',
+              ],
+            },
+            { name: 'styles' },
+            { name: 'colors' },
+            { name: 'others' }, // extraPlugins
+          ],
         }}
         {...props}
         onBeforeLoad={loadPlugins}
