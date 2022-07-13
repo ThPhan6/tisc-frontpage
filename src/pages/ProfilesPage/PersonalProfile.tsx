@@ -18,7 +18,6 @@ import {
   validatePhoneInput,
 } from '@/helper/utils';
 import { useBoolean, useCustomInitialState } from '@/helper/hook';
-import classNames from 'classnames';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { updateAvatarTeamProfile, updateTeamProfile } from './services/api';
 import { STATUS_RESPONSE } from '@/constants/util';
@@ -175,7 +174,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
           <div className={styles.avatar}>
             <img src={setPreviewAvatar()} alt="avatar-upload" className={styles.img} />
           </div>
-          <FormGroup label="Avatar" formClass={classNames(styles['form-upload'], styles.form)}>
+          <FormGroup label="Avatar" formClass={`${styles['form-upload']} ${styles.form}`}>
             <div className={styles['wrapper-upload']}>
               <Upload maxCount={1} showUploadList={false} {...props} accept=".png,.jpg,.jpeg,.webp">
                 <UploadIcon className={styles.icon} />
