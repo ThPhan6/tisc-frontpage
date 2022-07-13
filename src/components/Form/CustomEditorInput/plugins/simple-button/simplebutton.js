@@ -7,7 +7,7 @@ export const loadSimpleButtonScript = (CKEDITOR) => {
       editor.ui.addButton('simplebutton', {
         label: 'Simple Button',
         command: 'simplebutton',
-        icon: 'https://cdn4.iconfinder.com/data/icons/24x24-free-pixel-icons/24/Clock.png',
+        icon: 'https://cdn0.iconfinder.com/data/icons/phosphor-duotone-vol-3/256/rectangle-duotone-24.png',
       });
       editor.on('doubleclick', function (evt) {
         var element = evt.data.element;

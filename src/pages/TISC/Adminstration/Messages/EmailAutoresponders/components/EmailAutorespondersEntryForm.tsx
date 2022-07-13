@@ -1,7 +1,6 @@
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
-import { CustomInputEditor } from '@/components/Form/InputEditor';
 import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
 import styles from '../styles/EmailAutorespondersEntryForm.less';
 import { IEmailAutoRadioListProps, IEmailAutoRespondForm } from '@/types';
@@ -40,9 +39,9 @@ export const EmailAutoRespondEntryForm: FC<EmailAutoRespondProps> = ({
   };
 
   /// only get content entered
-  const handleOnChangeMessageInput = (html: string) => {
-    onChange({ ...value, message: html });
-  };
+  // const handleOnChangeMessageInput = (html: string) => {
+  //   onChange({ ...value, message: html });
+  // };
 
   const handleOnChangeRadio = (
     typeRadio: 'topic' | 'targeted_for',
@@ -133,16 +132,6 @@ export const EmailAutoRespondEntryForm: FC<EmailAutoRespondProps> = ({
         </FormGroup>
 
         {/* Message */}
-        <CustomInputEditor
-          label="Message"
-          required={true}
-          placeholder="type text here"
-          layout="vertical"
-          formClass={styles.label_editor}
-          inputClass={styles.input_editor}
-          handleOnChange={(input) => handleOnChangeMessageInput(input.html)}
-          value={value.message}
-        />
       </EntryFormWrapper>
     </div>
   );
