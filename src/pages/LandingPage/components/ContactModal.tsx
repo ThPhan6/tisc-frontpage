@@ -8,7 +8,6 @@ import { ModalProps } from '../types';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { ReactComponent as MessageIcon } from '@/assets/icons/message-icon-18px.svg';
-import classNames from 'classnames';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 
 export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
@@ -40,7 +39,7 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
             prefix={<UserIcon />}
             focusColor="secondary"
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-            containerClass={classNames(styles.user)}
+            containerClass={styles.user}
             name="user"
             type={'text'}
             required={true}
@@ -49,7 +48,7 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
             fromLandingPage
             theme={theme}
             type={'email'}
-            containerClass={classNames(styles.email)}
+            containerClass={styles.email}
             size="large"
             placeholder="contact email"
             prefix={<EmailIcon />}
