@@ -70,8 +70,8 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
         return paginationParams;
       }
       /// normal case
-      paginationParams.sort_name = sortName;
-      paginationParams.sort_order = sortOrder;
+      paginationParams.sort = sortName;
+      paginationParams.order = sortOrder;
       return paginationParams;
     }
     return paginationParams;
@@ -80,8 +80,6 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
   const fetchData = (params: IPaginationParams) => {
     setLoading(true);
     fetchDataFunc(formatPaginationParams(params), (response) => {
-      console.log(response);
-
       setData(response.data ?? []);
       setSummary(response.summary ?? []);
       setLoading(false);

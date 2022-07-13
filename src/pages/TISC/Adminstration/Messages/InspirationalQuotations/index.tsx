@@ -3,7 +3,7 @@ import CustomTable from '@/components/Table';
 import { pushTo } from '@/helper/history';
 import { useRef } from 'react';
 import { deleteQuotation, getQuotationPagination } from '@/services';
-import { IInspirationalQuotationForm } from '../../../../../../types/inspiration-quotation';
+import { IInspirationalQuotationForm } from '@/types';
 import { ICustomTableColumnType } from '@/components/Table/types';
 import { HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
@@ -33,7 +33,7 @@ const InspirationalQuotationsList: React.FC = () => {
     {
       title: 'Author',
       dataIndex: 'author',
-      sorter: { multiple: 1 },
+      sorter: true,
       width: '10%',
     },
     {
@@ -82,7 +82,7 @@ const InspirationalQuotationsList: React.FC = () => {
       ref={tableRef}
       columns={mainColums}
       fetchDataFunc={getQuotationPagination}
-      title="Inspirational Quotations"
+      title="INSPIRATIONAL QUOTATIONS"
     />
   );
 };
