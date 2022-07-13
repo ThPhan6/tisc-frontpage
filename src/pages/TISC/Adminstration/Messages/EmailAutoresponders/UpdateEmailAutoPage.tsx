@@ -34,8 +34,6 @@ const UpdateEmailAutoPage = () => {
     setValue(newValue);
   };
 
-  console.log(value);
-
   const handleCancel = () => {
     pushTo(PATH.emailAuto);
   };
@@ -68,7 +66,6 @@ const UpdateEmailAutoPage = () => {
   };
 
   useEffect(() => {
-    getOneEmailAutoData();
     /// load topic list
     getTopicEmailAutoList();
 
@@ -76,9 +73,10 @@ const UpdateEmailAutoPage = () => {
     getTargetedForEmailAutoList();
   }, []);
 
-  /// load email auto form data
-  // useEffect(() => {
-  // }, []);
+  // load email auto form data
+  useEffect(() => {
+    getOneEmailAutoData();
+  }, []);
 
   const handleUpdateEmailAuto = (data: IEmailAutoRespondForm) => {
     isLoading.setValue(true);

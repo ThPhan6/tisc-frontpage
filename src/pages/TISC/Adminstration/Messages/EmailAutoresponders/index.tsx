@@ -19,19 +19,19 @@ const EmailAutoList = () => {
     {
       title: 'Topic',
       dataIndex: 'topic',
-      width: '10%',
-      sorter: { multiple: 1 },
+      width: '5%',
+      sorter: true,
     },
     {
       title: 'Targeted For',
       dataIndex: 'targeted_for',
-      width: '15%',
-      sorter: { multiple: 2 },
+      width: '8%',
+      sorter: true,
     },
     {
       title: 'Title',
       dataIndex: 'title',
-      sorter: { multiple: 3 },
+      sorter: true,
     },
     {
       title: 'Action',
@@ -64,11 +64,6 @@ const EmailAutoList = () => {
         title={'EMAIL AUTORESPONDER'}
         columns={mainColumns}
         fetchDataFunc={getEmailAutoPagination}
-        multiSort={{
-          topic: 'topic',
-          targeted_for: 'targeted_for',
-          title: 'title',
-        }}
       />
     </div>
   );

@@ -44,7 +44,6 @@ export const CustomInputEditor: FC<CustomInputEditorProps> = ({
   optional,
   required,
   value,
-  handleOnChange,
   containerClass,
   formClass,
   inputClass,
@@ -76,12 +75,9 @@ export const CustomInputEditor: FC<CustomInputEditorProps> = ({
   ) => {
     const newInputEditorValue = {
       text: editor.getText(),
-      html: editor.getHTML(),
+      html: content,
     };
-    if (handleOnChange) {
-      handleOnChange({ ...newInputEditorValue });
-    }
-    setInputEditorValue(newInputEditorValue);
+    setInputEditorValue({ ...newInputEditorValue });
   };
 
   return (
