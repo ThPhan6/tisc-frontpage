@@ -300,19 +300,19 @@
             routes: [
               {
                 path: '/tisc/adminstration/messages/quotation',
-                component: './TISC/Product/Adminstration/Messages/InspirationalQuotations',
+                component: './TISC/Adminstration/Messages/InspirationalQuotations',
                 hideInMenu: true,
               },
               {
                 path: '/tisc/adminstration/messages/quotation/create',
                 component:
-                  './TISC/Product/Adminstration/Messages/InspirationalQuotations/CreateQuotationPage',
+                  './TISC/Adminstration/Messages/InspirationalQuotations/CreateQuotationPage',
                 hideInMenu: true,
               },
               {
                 path: '/tisc/adminstration/messages/quotation/update/:id',
                 component:
-                  './TISC/Product/Adminstration/Messages/InspirationalQuotations/UpdateQuotationPage',
+                  './TISC/Adminstration/Messages/InspirationalQuotations/UpdateQuotationPage',
                 hideInMenu: true,
               },
             ],

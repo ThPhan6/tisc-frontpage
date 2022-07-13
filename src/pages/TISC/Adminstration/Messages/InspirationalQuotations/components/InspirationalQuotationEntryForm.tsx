@@ -5,7 +5,7 @@ import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
 import { FC } from 'react';
 import styles from '../styles/InspirationalQuotationEntryForm.less';
-import { IInspirationalQuotationForm } from '../../../../../../../types/inspiration-quotation';
+import { IInspirationalQuotationForm } from '@/types';
 
 interface IInspirationalQuotationEntryFormProps {
   value: IInspirationalQuotationForm;
