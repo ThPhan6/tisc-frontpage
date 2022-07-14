@@ -4,8 +4,8 @@ import { request } from 'umi';
 import type {
   LoginBodyProp,
   LoginResponseProp,
-  UserInfoDataProp,
   ResetPasswordBodyProp,
+  UserInfoDataProp,
 } from '../types';
 
 export async function loginMiddleware(
@@ -13,6 +13,23 @@ export async function loginMiddleware(
   callback: (type: STATUS_RESPONSE, message?: string) => void,
 ) {
   request(`/api/auth/login`, {
+    method: 'POST',
+    data,
+  })
+    .then((response: LoginResponseProp) => {
+      localStorage.setItem('access_token', response.token);
+      callback(STATUS_RESPONSE.SUCCESS);
+    })
+    .catch((error) => {
+      callback(STATUS_RESPONSE.ERROR, error?.data?.message || MESSAGE_NOTIFICATION.LOGIN_ERROR);
+    });
+}
+
+export async function brandLoginMiddleware(
+  data: LoginBodyProp,
+  callback: (type: STATUS_RESPONSE, message?: string) => void,
+) {
+  request(`/api/auth/login/brand`, {
     method: 'POST',
     data,
   })
