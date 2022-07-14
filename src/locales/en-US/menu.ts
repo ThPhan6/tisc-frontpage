@@ -6,7 +6,7 @@ export default {
   'menu.project': 'PROJECTS',
   'menu.project.listing': 'Listing',
 
-  'menu.adminstration': 'ADMINSTRATION',
+  'menu.adminstration': 'ADMINISTRATION',
   'menu.adminstration.documentation': 'Documentation',
   'menu.adminstration.documentation.terms.policy': 'Agreement/Policies/Terms',
   'menu.adminstration.documentation.how.to': 'How-To',
@@ -30,4 +30,10 @@ export default {
   'menu.product.attribute.general': 'General Attributes',
   'menu.product.attribute.feature': 'Feature Attributes',
   'menu.product.attribute.specification': 'Specifications',
+
+  'menu.general_inquiry': 'GENERAL INQUIRIES',
+  'menu.project_tracking': 'PROJECT TRACKING',
+  'menu.adminstration.brand.distributor': 'Distributors',
+  'menu.adminstration.brand.market_availability': 'Market Availability',
+  'menu.adminstration.brand.subscription': 'Subscription',
 };

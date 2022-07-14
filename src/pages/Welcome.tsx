@@ -5,7 +5,6 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
-import { CustomInputEditor } from '@/components/Form/InputEditor';
 import { CustomTabs } from '@/components/Tabs';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { UserOutlined } from '@ant-design/icons';
@@ -18,6 +17,7 @@ import { dataMenuSummary } from '@/constants/util';
 import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
 import { MenuSummary } from '@/components/MenuSummary';
 import { PresetsEntryForm } from './TISC/Product/Basis/Preset/components/PresetsEntryForm';
+import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
 
 const Welcome: React.FC = () => {
   const optionsRadio = [
@@ -56,6 +56,21 @@ const Welcome: React.FC = () => {
 
   return (
     <PageContainer>
+      <FormGroup label="Editor">
+        <CustomEditorInput
+          onChangeText={(html) => {
+            console.log('html', html);
+          }}
+          containerClass={`${styles.mb}`}
+          initData={`<p>This is <strong>some</strong> of <strong>our text</strong></p>
+
+          <p><strong><a class="simple-button-plugin" href="" style="display:inline-block;background-color:#27AE61;border:1px solid #27AE61;color:#fff !important;padding:5px 10px;border-radius:5px;font-size:14px;text-decoration: none !important; cursor: pointer;" target="_blank">Unsubscribe</a>​​​​​​​</strong></p>
+          
+          <p>&nbsp;</p>
+          
+          <p>&nbsp;</p>`}
+        />
+      </FormGroup>
       <Card>
         <PresetsEntryForm />
         {/*Tabs*/}
@@ -152,50 +167,6 @@ const Welcome: React.FC = () => {
           />
         </FormGroup>
         {/* Input Editor */}
-        <div className={styles.mb}>
-          <CustomInputEditor
-            label="Field Name"
-            tooltip="How are you"
-            placeholder="Type text..."
-            layout="horizontal"
-          />
-        </div>
-        <div className={styles.mb}>
-          <CustomInputEditor
-            label="Field Name"
-            tooltip="How are you"
-            placeholder="type text..."
-            layout="vertical"
-          />
-        </div>
-        <div className={styles.mb}>
-          <CustomInputEditor
-            label="Field Name"
-            tooltip="How are you"
-            optional={true}
-            placeholder="Type text..."
-            layout="vertical"
-          />
-        </div>
-        <div className={styles.mb}>
-          <CustomInputEditor
-            label="Document"
-            required={true}
-            placeholder="type text..."
-            layout="vertical"
-            containerClass={styles['input-editor-0']}
-          />
-        </div>
-        <div className={styles.mb}>
-          <CustomInputEditor
-            label="Message"
-            required={true}
-            placeholder="type text here"
-            layout="vertical"
-            formClass={styles['label-editor']}
-            inputClass={styles['input-editor']}
-          />
-        </div>
 
         {/* radio */}
         <FormGroup label="Test Radio horizontal" tooltip="How are you">

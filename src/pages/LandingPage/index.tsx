@@ -1,39 +1,40 @@
 import CustomButton from '@/components/Button';
-import styles from './index.less';
-import { ReactComponent as LogoBeta } from '../../assets/icons/logo-beta.svg';
-import { ReactComponent as SingleRight } from '../../assets/icons/single-right.svg';
+import LoadingPageCustomize from '@/components/LoadingPage';
+import { BodyText, MainTitle, Title } from '@/components/Typography';
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { PATH } from '@/constants/path';
+import { STATUS_RESPONSE } from '@/constants/util';
+import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
+import { redirectAfterBrandOrDesignLogin, redirectAfterLogin } from '@/helper/utils';
+import { Col, message, Row } from 'antd';
+import { useEffect, useState } from 'react';
+import { history } from 'umi';
+import graphic from '../../assets/graphic.png';
 import { ReactComponent as BinocularsIcon } from '../../assets/icons/binoculars-icon.svg';
 import { ReactComponent as CheckAllIcon } from '../../assets/icons/check-all-icon.svg';
-import { ReactComponent as PiggyBankIcon } from '../../assets/icons/piggy-bank-icon.svg';
-import { ReactComponent as TimeMoney } from '../../assets/icons/time-money-icon.svg';
-import { ReactComponent as TargetMoneyIcon } from '../../assets/icons/target-money-icon.svg';
 import { ReactComponent as GraphicTabletIcon } from '../../assets/icons/graphic-tablet-icon.svg';
-import graphic from '../../assets/graphic.png';
-import { BodyText, MainTitle, Title } from '@/components/Typography';
+import { ReactComponent as LogoBeta } from '../../assets/icons/logo-beta.svg';
+import { ReactComponent as PiggyBankIcon } from '../../assets/icons/piggy-bank-icon.svg';
+import { ReactComponent as SingleRight } from '../../assets/icons/single-right.svg';
+import { ReactComponent as TargetMoneyIcon } from '../../assets/icons/target-money-icon.svg';
+import { ReactComponent as TimeMoney } from '../../assets/icons/time-money-icon.svg';
+import { AboutModal } from './components/AboutModal';
+import { BrandInterestedModal } from './components/BrandInterestedModal';
+import { ContactModal } from './components/ContactModal';
 import { LoginModal } from './components/LoginModal';
-import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
+import { NoticeModal } from './components/NoticeModal';
+import { PoliciesModal } from './components/PoliciesModal';
+import { ResetPasswordModal } from './components/ResetPasswordModal';
+import { SignupModal } from './components/SignupModal';
+import styles from './index.less';
 import {
-  loginMiddleware,
+  brandLoginMiddleware,
   forgotPasswordMiddleware,
+  loginMiddleware,
   resetPasswordMiddleware,
   validateResetToken,
 } from './services/api';
-import { Col, message, Row } from 'antd';
-import { history } from 'umi';
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { STATUS_RESPONSE } from '@/constants/util';
-import LoadingPageCustomize from '@/components/LoadingPage';
-import { PATH } from '@/constants/path';
-import { useEffect, useState } from 'react';
-import { ResetPasswordModal } from './components/ResetPasswordModal';
 import type { LoginBodyProp, ModalOpen, ResetPasswordBodyProp } from './types';
-import { redirectAfterLogin } from '@/helper/utils';
-import { AboutModal } from './components/AboutModal';
-import { ContactModal } from './components/ContactModal';
-import { NoticeModal } from './components/NoticeModal';
-import { PoliciesModal } from './components/PoliciesModal';
-import { SignupModal } from './components/SignupModal';
-import { BrandInterestedModal } from './components/BrandInterestedModal';
 
 const LandingPage = () => {
   const emailResetPwd = useQuery().get('email');
@@ -68,16 +69,31 @@ const LandingPage = () => {
 
   const handleSubmitLogin = (data: LoginBodyProp) => {
     isLoading.setValue(true);
-    loginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
-      if (type === STATUS_RESPONSE.SUCCESS) {
-        message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
-        await fetchUserInfo();
-        redirectAfterLogin();
-      } else {
-        message.error(msg);
-      }
-      isLoading.setValue(false);
-    });
+    if (openModal === 'Tisc Login') {
+      loginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
+        if (type === STATUS_RESPONSE.SUCCESS) {
+          message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
+          await fetchUserInfo();
+
+          redirectAfterLogin();
+        } else {
+          message.error(msg);
+        }
+        isLoading.setValue(false);
+      });
+    } else {
+      brandLoginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
+        if (type === STATUS_RESPONSE.SUCCESS) {
+          message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
+          await fetchUserInfo();
+
+          redirectAfterBrandOrDesignLogin();
+        } else {
+          message.error(msg);
+        }
+        isLoading.setValue(false);
+      });
+    }
   };
 
   const handleForgotPassword = (email: string) => {
