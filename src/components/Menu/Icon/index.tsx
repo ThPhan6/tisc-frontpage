@@ -3,19 +3,23 @@ import { ReactComponent as AttributeIcon } from '../../../assets/icons/attribute
 import { ReactComponent as BasisIcon } from '../../../assets/icons/basis-icon.svg';
 import { ReactComponent as BrandIcon } from '../../../assets/icons/brand-icon.svg';
 import { ReactComponent as CategoryIcon } from '../../../assets/icons/category-icon.svg';
+import { ReactComponent as GeneralInquiryIcon } from '../../../assets/icons/chat-icon.svg';
 import { ReactComponent as ConfigurationIcon } from '../../../assets/icons/configuration-icon.svg';
 import { ReactComponent as DesignFirmIcon } from '../../../assets/icons/design-firm-icon.svg';
+import { ReactComponent as DistributorIcon } from '../../../assets/icons/distributor.svg';
 import { ReactComponent as DocumentationIcon } from '../../../assets/icons/documentation-icon.svg';
 import { ReactComponent as ListingIcon } from '../../../assets/icons/listing-icon.svg';
 import { ReactComponent as LocationIcon } from '../../../assets/icons/location-icon.svg';
+import { ReactComponent as MarketAvailabilityIcon } from '../../../assets/icons/market_availability.svg';
 import { ReactComponent as MessageIcon } from '../../../assets/icons/messages-icon.svg';
 import { ReactComponent as ProductIcon } from '../../../assets/icons/product-icon.svg';
 import { ReactComponent as ProjectIcon } from '../../../assets/icons/project-icon.svg';
+import { ReactComponent as ProjectTrackingIcon } from '../../../assets/icons/project-tracking.svg';
 import { ReactComponent as RevenueIcon } from '../../../assets/icons/revenue-icon.svg';
+import { ReactComponent as SubscriptionIcon } from '../../../assets/icons/subscription.svg';
 import { ReactComponent as TeamProfileIcon } from '../../../assets/icons/team-profile-icon.svg';
 import { ReactComponent as UserGroupIcon } from '../../../assets/icons/user-group-icon.svg';
 import { ReactComponent as WorkspaceIcon } from '../../../assets/icons/workspace-icon.svg';
-import { ReactComponent as DisitributorIcon } from '../../../assets/icons/distributor-icon.svg';
 
 const IconList = {
   'adminstration-icon.svg': <AdminstrationIcon className="anticon" />,
@@ -35,7 +39,11 @@ const IconList = {
   'team-profile-icon.svg': <TeamProfileIcon className="anticon" />,
   'user-group-icon.svg': <UserGroupIcon className="anticon" />,
   'workspace-icon.svg': <WorkspaceIcon className="anticon" />,
-  'distributor-icon.svg': <DisitributorIcon className="anticon" />,
+  'general-inquiry-icon.svg': <GeneralInquiryIcon className="anticon" />,
+  'project-tracking-icon.svg': <ProjectTrackingIcon className="anticon" />,
+  'distributor-icon.svg': <DistributorIcon className="anticon" />,
+  'market-availability-icon.svg': <MarketAvailabilityIcon className="anticon" />,
+  'subscription-icon.svg': <SubscriptionIcon className="anticon" />,
 };
 export const renderIconByName = (key: any): React.ReactNode => {
   if (key && IconList[key]) {
