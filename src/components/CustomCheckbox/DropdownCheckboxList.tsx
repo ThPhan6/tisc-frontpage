@@ -25,6 +25,7 @@ type ActiveKeyType = string | number | (string | number)[];
 
 const DropdownCheckboxList: React.FC<IDropdownCheckboxList> = (props) => {
   const { data, selected, onChange, renderTitle, chosenItem } = props;
+
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
   useEffect(() => {
     data.forEach((item, index) => {

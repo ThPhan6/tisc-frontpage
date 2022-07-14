@@ -19,6 +19,32 @@
     path: '/howTo',
     component: './HowTo',
   },
+  // BRAND MENU
+  {
+    path: '/brand/adminstration',
+    name: 'adminstration',
+    icon: 'adminstration-icon.svg',
+    routes: [
+      {
+        path: '/brand/adminstration/market-availability',
+        name: 'Market Availability',
+        icon: 'market-availability-icon.svg',
+        routes: [
+          {
+            path: '/brand/adminstration/market-availability',
+            component: './Brand/Adminstration/MarketAvailability',
+            hideInMenu: true,
+          },
+          {
+            path: '/brand/adminstration/market-availability/update/:id',
+            component: './Brand/Adminstration/MarketAvailability/UpdatePage',
+            hideInMenu: true,
+          },
+        ],
+      },
+    ],
+  },
+
   // TISC MENU - ADMIN ACCESS ONLY
   {
     path: '/tisc/dashboard',
