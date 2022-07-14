@@ -8,6 +8,7 @@ import React, { FC } from 'react';
 import { CustomRadio } from '@/components/CustomRadio';
 import { ScrollMenu } from 'react-horizontal-scrolling-menu';
 import { useDrag } from '../utils/useDrag';
+import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
 
 interface EmailAutoRespondProps {
   value: IEmailAutoRespondForm;
@@ -39,9 +40,10 @@ export const EmailAutoRespondEntryForm: FC<EmailAutoRespondProps> = ({
   };
 
   /// only get content entered
-  // const handleOnChangeMessageInput = (html: string) => {
-  //   onChange({ ...value, message: html });
-  // };
+  const handleOnChangeMessageInput = (html: string) => {
+    // onChange({ ...value, message: html });
+    onChange({ ...value, message: html });
+  };
 
   const handleOnChangeRadio = (
     typeRadio: 'topic' | 'targeted_for',
@@ -131,6 +133,9 @@ export const EmailAutoRespondEntryForm: FC<EmailAutoRespondProps> = ({
           </div>
         </FormGroup>
 
+        {value.message && (
+          <CustomEditorInput onChangeText={handleOnChangeMessageInput} initData={value.message} />
+        )}
         {/* Message */}
       </EntryFormWrapper>
     </div>
