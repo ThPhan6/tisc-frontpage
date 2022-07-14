@@ -7,3 +7,6 @@ export * from './basis-preset.api';
 export * from './basis-option.api';
 export * from './collection.api';
 export * from './product.api';
+export * from './product-tip.api';
+export * from './product-download.api';
+export * from './product-catelogue.api';

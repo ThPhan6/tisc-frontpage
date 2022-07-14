@@ -62,7 +62,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
         ${style['checkbox-list']}
         ${isCheckboxList && style['item-list-checkbox']}
         ${style['color-checkbox-checked']}
-        ${checkboxClass})
+        ${checkboxClass}
       `}
     >
       <Checkbox.Group

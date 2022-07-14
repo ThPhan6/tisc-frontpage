@@ -1,23 +1,20 @@
 import React, { useState, useEffect } from 'react';
-// import { MainTitle } from '@/components/Typography';
 import GeneralFeatureAttribute from './GeneralFeatureAttribute';
 import SpecificationAttribute from './SpecificationAttribute';
+import ProductVendor from './ProductVendor';
 import { CustomTabs } from '@/components/Tabs';
-// import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { getAllAttribute } from '@/services';
 import { IAttributebyType } from '@/types';
 import styles from '../styles/details.less';
 import { LIST_TAB } from '../constants';
 import type { ACTIVE_KEY } from '../types';
-// import {showImageUrl} from '@/helper/utils';
-// import { useDispatch } from 'react-redux';
-// import { useAppSelector } from '@/reducers';
-// import {
-//   setPartialProductDetail,
-// } from '@/reducers/product';
 
-const ProductAttribute: React.FC = () => {
-  const [activeKey, setActiveKey] = useState<ACTIVE_KEY>('specification');
+interface ProductAttributeInterface {
+  activeKey: ACTIVE_KEY;
+  setActiveKey: (activeKey: ACTIVE_KEY) => void;
+}
+
+const ProductAttribute: React.FC<ProductAttributeInterface> = ({ activeKey, setActiveKey }) => {
   const [attribute, setAttribute] = useState<IAttributebyType>({
     general: [],
     feature: [],
@@ -42,7 +39,9 @@ const ProductAttribute: React.FC = () => {
         <GeneralFeatureAttribute attributes={attribute[activeKey]} activeKey={activeKey} />
       ) : activeKey === 'specification' ? (
         <SpecificationAttribute attributes={attribute.specification} />
-      ) : null}
+      ) : (
+        <ProductVendor />
+      )}
     </div>
   );
 };

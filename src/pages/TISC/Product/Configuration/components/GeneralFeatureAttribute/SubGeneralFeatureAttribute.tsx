@@ -4,11 +4,11 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import ConversionInput from '@/components/EntryForm/ConversionInput';
 import Popover from '@/components/Modal/Popover';
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
-import { IAttributeGeneralFeature, IGeneralFeatureFormInput } from '@/types';
+import type { IAttributeGeneralFeature, IGeneralFeatureFormInput } from '@/types';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
 import { setPartialProductDetail } from '@/reducers/product';
-
+import type { RadioValue } from '@/components/CustomRadio/types';
 interface ISubGeneralFeatureAttribute {
   attributes: IAttributeGeneralFeature[];
   itemAttributes: IGeneralFeatureFormInput['attributes'];
@@ -21,8 +21,6 @@ interface ISubGeneralFeatureAttribute {
 }
 
 const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props) => {
-  const [visible, setVisible] = useState(false);
-  const [selected, setSelected] = useState<any>();
   const {
     itemAttributes,
     attributes,
@@ -39,7 +37,7 @@ const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props
   const { general_attribute_groups, feature_attribute_groups } = product.details;
 
   // get current attribute
-  let currentAttribute: any = {};
+  let currentAttribute = {} as any;
   attributes.forEach((attribute) => {
     attribute.subs?.map((sub) => {
       if (sub.basis_id === item.basis_id) {
@@ -49,6 +47,16 @@ const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props
   });
   /// basis of attribute
   const { basis } = currentAttribute;
+  console.log('basis');
+  /// global state of current attribute
+  const localAttribute = itemAttributes.find((attr) => currentAttribute.id === attr.id);
+
+  /// default state
+  const [visible, setVisible] = useState(false);
+  const [selected, setSelected] = useState<RadioValue>({
+    label: localAttribute?.text ?? '',
+    value: localAttribute?.basis_value_id ?? '',
+  });
 
   useEffect(() => {
     if (selected) {

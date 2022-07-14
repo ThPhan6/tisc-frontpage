@@ -15,7 +15,6 @@ export const CustomRadio: FC<CustomRadioProps> = ({
   inputPlaceholder = 'type here',
   containerClass,
   value,
-  onClick,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');

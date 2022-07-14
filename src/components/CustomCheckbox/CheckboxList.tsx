@@ -11,6 +11,7 @@ export interface ICheckboxListOption {
   options: CheckboxValue[];
   heading: string;
   hasAllOption?: boolean;
+  customItemClass?: string;
 }
 
 interface ICheckboxList {
@@ -62,7 +63,8 @@ const CheckboxList: React.FC<ICheckboxList> = (props) => {
             options={data.options}
             selected={selected}
             onChange={onChange}
-            heightItem="36px"
+            heightItem="auto"
+            checkboxClass={data.customItemClass}
             isCheckboxList
           />
         </div>

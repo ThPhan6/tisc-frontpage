@@ -2,7 +2,6 @@ import type { FC } from 'react';
 import { MainTitle } from '@/components/Typography';
 import { CustomInput } from '@/components/Form/CustomInput';
 import type { InputProps } from 'antd';
-import classnames from 'classnames';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import styles from './styles/DynamicFormInput.less';
@@ -84,7 +83,7 @@ const DynamicFormInput: FC<IDynamicFormInput> = ({
         <CustomPlusButton size={18} />
       </div>
       {data?.map((item, index) => (
-        <div className={classnames(styles.dynamicFormInput, 'dynamic-wrapper')} key={index}>
+        <div className={`${styles.dynamicFormInput} dynamic-wrapper`} key={index}>
           <div className="flex-input-with-icon">
             <CustomInput
               fontLevel={fontLevel ?? 5}

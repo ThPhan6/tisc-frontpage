@@ -10,25 +10,20 @@ import { BodyText } from '@/components/Typography';
 // import { setBrand } from '@/reducers/product';
 import styles from './styles/cardList.less';
 
-interface IProductCard {
-  onItemClick: () => void;
-}
-
-const ProductCard: React.FC<IProductCard> = (props) => {
-  const { onItemClick } = props;
+const ProductCard: React.FC = () => {
   return (
     <div className={styles.productCardItem}>
       <div className={styles.imageWrapper}>
         <img src={SampleProductImage} />
-        <div className={styles.imagePlaceholder} onClick={onItemClick}>
+        <div className={styles.imagePlaceholder}>
           <BodyText level={5} fontFamily="Roboto">
-            produt/items dea asd asd asd asd asd ascription
+            product/items description
           </BodyText>
         </div>
       </div>
       <div className={styles.productInfo}>
         <BodyText level={6} fontFamily="Roboto" customClass="product-description">
-          produt/items dea asd asd asd asd asd ascription
+          product/items description
         </BodyText>
         <BodyText level={7} fontFamily="Roboto" customClass="text-uppercase">
           Silestone

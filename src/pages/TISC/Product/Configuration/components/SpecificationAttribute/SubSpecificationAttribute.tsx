@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-// import { Title } from '@/components/Typography';
+import { BodyText } from '@/components/Typography';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { CustomInput } from '@/components/Form/CustomInput';
 import ConversionInput from '@/components/EntryForm/ConversionInput';
 import Popover from '@/components/Modal/Popover';
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
-// import {showImageUrl} from '@/helper/utils';
+import { showImageUrl } from '@/helper/utils';
 import type { IAttributeSpecification, ISpecificationFormInput, ISubBasisOption } from '@/types';
-// import { useDispatch } from 'react-redux';
-// import { useAppSelector } from '@/reducers';
-// import { setPartialProductDetail } from '@/reducers/product';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from '@/reducers';
+import { setPartialProductDetail } from '@/reducers/product';
+import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 import styles from './styles/index.less';
 
 interface ISubGeneralFeatureAttribute {
@@ -23,8 +24,6 @@ interface ISubGeneralFeatureAttribute {
 }
 
 const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props) => {
-  const [visible, setVisible] = useState(false);
-  const [selected, setSelected] = useState<any>();
   const {
     itemAttributes,
     attributes,
@@ -32,14 +31,13 @@ const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props
     onDelete,
     onItemChange,
     attributeItemIndex,
-    // attributeIndex,
+    attributeIndex,
   } = props;
 
-  // const product = useAppSelector((state) => state.product);
-  // const dispatch = useDispatch();
-  // const {specification_attribute_groups} = product.details;
-
-  // get current attribute
+  const product = useAppSelector((state) => state.product);
+  const dispatch = useDispatch();
+  const { specification_attribute_groups } = product.details;
+  // get current attribute data
   let currentAttribute: any = {};
   attributes.forEach((attribute) => {
     attribute.subs?.map((sub) => {
@@ -48,31 +46,61 @@ const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props
       }
     });
   });
-  /// basis of attribute
-  const { basis } = currentAttribute;
 
+  /// basis of attribute data
+  const { basis } = currentAttribute;
+  /// global state of current attribute
+  const localAttribute = itemAttributes.find((attr) => currentAttribute.id === attr.id);
+
+  /// default state
+  const [visible, setVisible] = useState(false);
+  const [selected, setSelected] = useState<CheckboxValue[]>(
+    localAttribute?.basis_options.map((opt) => {
+      return {
+        label: '',
+        value: opt.id,
+      };
+    }) ?? [],
+  );
+  const [basisOptions, setBasisOptions] = useState<
+    {
+      id: string;
+      option_code: string;
+    }[]
+  >(localAttribute?.basis_options ?? []);
   useEffect(() => {
     if (selected) {
-      // const newAttributes = [...specification_attribute_groups];
-      // const newItemAttributes = [...newAttributes[attributeIndex].attributes];
-      // newItemAttributes[attributeItemIndex] = {
-      //   ...newItemAttributes[attributeItemIndex],
-      //   basis_value_id: selected.value,
-      //   text: selected.label as string,
-      // }
-      // newAttributes[attributeIndex] = {
-      //   ...newAttributes[attributeIndex],
-      //   attributes: newItemAttributes
-      // }
-      // if (activeKey === 'feature') {
-      //   dispatch(setPartialProductDetail({
-      //     feature_attribute_groups: newAttributes
-      //   }));
-      // } else {
-      //   dispatch(setPartialProductDetail({
-      //     general_attribute_groups: newAttributes
-      //   }));
-      // }
+      const newAttributes = [...specification_attribute_groups];
+      const newItemAttributes = [...newAttributes[attributeIndex].attributes];
+      const activeBasisOptions = selected.map((itemSelected: any) => {
+        const changedBasisOption = basisOptions.find((option) => option.id === itemSelected.value);
+        if (changedBasisOption) {
+          return changedBasisOption;
+        }
+        return {
+          id: itemSelected.value,
+          option_code: '',
+        };
+      });
+      newItemAttributes[attributeItemIndex] = {
+        ...newItemAttributes[attributeItemIndex],
+        basis_options: activeBasisOptions,
+        text:
+          activeBasisOptions.length > 0
+            ? `Selected ${activeBasisOptions.length} item${
+                activeBasisOptions.length > 1 ? 's' : ''
+              }`
+            : '',
+      };
+      newAttributes[attributeIndex] = {
+        ...newAttributes[attributeIndex],
+        attributes: newItemAttributes,
+      };
+      dispatch(
+        setPartialProductDetail({
+          specification_attribute_groups: newAttributes,
+        }),
+      );
     }
   }, [selected]);
 
@@ -137,7 +165,13 @@ const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props
         }
         onRightIconClick={basis?.type === 'Options' ? () => setVisible(true) : undefined}
         deleteIcon
-        onDelete={onDelete}
+        onDelete={() => {
+          setSelected([]);
+          setBasisOptions([]);
+          if (onDelete) {
+            onDelete();
+          }
+        }}
         noWrap
         value={item.text}
         onChange={(e) => {
@@ -150,29 +184,66 @@ const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props
   };
 
   const renderOptionLabel = (option: ISubBasisOption, index: number) => {
+    if (!option.image || option.image == '') {
+      return (
+        <div className={styles.defaultOptionList}>
+          <div className="group-option-name">
+            <span className="value">{option.value_1}</span>
+            <span>{option.unit_1}</span>
+          </div>
+          <div className="group-option-name">
+            <span className="value">{option.value_2}</span>
+            <span>{option.unit_2}</span>
+          </div>
+          <span className="product-id-label">Product ID:</span>
+          <CustomInput
+            placeholder="type here"
+            className="product-id-input"
+            fontLevel={6}
+            value={basisOptions[index]?.option_code ?? ''}
+            onChange={(e) => {
+              const newBasisOptions = [...basisOptions];
+              newBasisOptions[index] = {
+                id: option.id as string,
+                option_code: e.target.value,
+              };
+              setBasisOptions(newBasisOptions);
+            }}
+            tabIndex={index}
+          />
+        </div>
+      );
+    }
     return (
-      <div className={styles.defaultOptionList}>
-        <div className="group-option-name">
-          <span className="value">{option.value_1}</span>
-          <span>{option.unit_1}</span>
+      <div className={styles.defaultOptionImageList}>
+        <img src={showImageUrl(option.image)} />
+        <div className="option-image-list-wrapper">
+          <BodyText level={6} fontFamily="Roboto" customClass="heading-option-group">
+            {option.value_1} - {option.value_2}
+          </BodyText>
+          <div className="product-input-group">
+            <span className="product-id-label">Product ID:</span>
+            <CustomInput
+              placeholder="type here"
+              className="product-id-input"
+              fontLevel={6}
+              value={basisOptions[index]?.option_code ?? ''}
+              onChange={(e) => {
+                const newBasisOptions = [...basisOptions];
+                newBasisOptions[index] = {
+                  id: option.id as string,
+                  option_code: e.target.value,
+                };
+                setBasisOptions(newBasisOptions);
+              }}
+              tabIndex={index}
+            />
+          </div>
         </div>
-        <div className="group-option-name">
-          <span className="value">{option.value_2}</span>
-          <span>{option.unit_2}</span>
-        </div>
-        <span className="product-id-label">Product ID:</span>
-        <CustomInput
-          placeholder="type here"
-          className="product-id-input"
-          fontLevel={6}
-          // value={value}
-          // onChange={(e) => setValue(e.target.value)}
-          tabIndex={index}
-        />
       </div>
     );
   };
-  console.log(currentAttribute);
+
   return (
     <div style={{ width: '100%' }}>
       {renderProductAttributeItem()}
@@ -182,6 +253,7 @@ const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props
         setVisible={setVisible}
         checkboxList={{
           heading: basis?.name ?? 'N/A',
+          customItemClass: styles.customItemClass,
           options:
             currentAttribute?.basis?.subs?.map((sub: any, index: number) => {
               return {

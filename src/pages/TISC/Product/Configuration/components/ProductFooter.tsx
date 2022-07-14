@@ -9,7 +9,7 @@ import SampleProductImage from '@/assets/images/sample-product-img.png';
 import { showImageUrl } from '@/helper/utils';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
-import { setProductTips, setProductDownloads } from '@/reducers/product';
+import { setProductTip, setProductDownload } from '@/reducers/product';
 import styles from '../styles/details.less';
 
 const LIST_TAB: TabProp[] = [
@@ -21,7 +21,7 @@ const LIST_TAB: TabProp[] = [
 const ProductFooter: React.FC = () => {
   const product = useAppSelector((state) => state.product);
   const dispatch = useDispatch();
-  const { tips, downloads, relatedProduct } = product;
+  const { tip, download, relatedProduct } = product;
   const [activeKey, setActiveKey] = useState('');
 
   return (
@@ -67,23 +67,24 @@ const ProductFooter: React.FC = () => {
         ) : null}
         {activeKey === 'tip' ? (
           <DynamicFormInput
-            data={tips.map((tip) => {
+            data={tip.contents.map((value) => {
               return {
-                title: tip.title,
-                value: tip.content,
+                title: value.title,
+                value: value.content,
               };
             })}
             setData={(data) =>
               dispatch(
-                setProductTips(
-                  data.map((item, index) => {
+                setProductTip({
+                  ...tip,
+                  contents: data.map((item, index) => {
                     return {
-                      ...tips[index],
+                      ...tip.contents[index],
                       title: item.title,
                       content: item.value,
                     };
                   }),
-                ),
+                }),
               )
             }
             titlePlaceholder="type title here"
@@ -93,23 +94,24 @@ const ProductFooter: React.FC = () => {
         ) : null}
         {activeKey === 'download' ? (
           <DynamicFormInput
-            data={downloads.map((download) => {
+            data={download.contents.map((value) => {
               return {
-                title: download.file_name,
-                value: download.url,
+                title: value.title,
+                value: value.url,
               };
             })}
             setData={(data) =>
               dispatch(
-                setProductDownloads(
-                  data.map((item, index) => {
+                setProductDownload({
+                  ...download,
+                  contents: data.map((item, index) => {
                     return {
-                      ...downloads[index],
-                      file_name: item.title,
+                      ...download.contents[index],
+                      title: item.title,
                       url: item.value,
                     };
                   }),
-                ),
+                }),
               )
             }
             titlePlaceholder="type file name here"

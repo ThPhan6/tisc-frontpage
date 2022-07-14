@@ -10,3 +10,4 @@ export * from './product.type';
 export * from './general.type';
 export * from './product-tip.type';
 export * from './product-download.type';
+export * from './product-catelogue.type';

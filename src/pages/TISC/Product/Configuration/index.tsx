@@ -18,7 +18,7 @@ const ProductConfiguration: React.FC = () => {
 
   return (
     <PageContainer pageHeaderRender={() => <TopBar />}>
-      {product.brand?.id ? <CardList onItemClick={onItemClick} /> : null}
+      <CardList onItemClick={onItemClick} />
     </PageContainer>
   );
 };

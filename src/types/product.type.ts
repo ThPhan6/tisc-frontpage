@@ -8,7 +8,8 @@ export interface IProductSummary {
   card_count: number;
   product_count: number;
 }
-
+export type IGeneralFeatureFormInputType = 'Text' | 'Conversions' | 'Presets';
+export type ISpecificationFormInputType = 'Text' | 'Conversions' | 'Options';
 export interface IGeneralFeatureFormInput {
   id?: string;
   name: string;
@@ -16,7 +17,7 @@ export interface IGeneralFeatureFormInput {
     id: string;
     basis_id: string;
     basis_value_id: string;
-    type: 'Text' | 'Conversions' | 'Presets';
+    type: IGeneralFeatureFormInputType;
     text: string;
     conversion_value_1: string;
     conversion_value_2: string;
@@ -29,7 +30,7 @@ export interface ISpecificationFormInput {
   attributes: {
     id: string;
     basis_id: string;
-    type: 'Text' | 'Conversions' | 'Options';
+    type: ISpecificationFormInputType;
     text: string;
     conversion_value_1: string;
     conversion_value_2: string;
@@ -86,4 +87,17 @@ export interface IRelatedCollection {
   name: string;
   images: string[];
   created_at: string;
+}
+
+export interface IProductGetListParameter {
+  brand_id: string;
+  category_id?: string;
+  collection_id?: string;
+}
+
+export interface GroupProductList {
+  count: number;
+  id: string;
+  name: string;
+  products: IProductDetail[];
 }

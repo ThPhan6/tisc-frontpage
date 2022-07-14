@@ -1,7 +1,11 @@
 export interface IProductDownload {
   id?: string;
   product_id?: string;
-  file_name: string;
-  url: string;
+  contents: IProductDownloadData[];
   created_at?: string;
+}
+export interface IProductDownloadData {
+  id?: string;
+  title: string;
+  url: string;
 }

@@ -5,10 +5,8 @@ import Popover from '@/components/Modal/Popover';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { CustomInput } from '@/components/Form/CustomInput';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
-import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
+import CustomCollapse from '@/components/Collapse';
 import { showImageUrl } from '@/helper/utils';
-import { Collapse } from 'antd';
 import styles from '../styles/details.less';
 import { createCollection, getCollectionByBrandId } from '@/services';
 import type { ICollection } from '@/types';
@@ -62,71 +60,65 @@ const ProductInfo: React.FC = () => {
 
   return (
     <>
-      <Collapse
+      <CustomCollapse
         defaultActiveKey={['1']}
-        expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
-        expandIconPosition="right"
+        header={
+          <div className="header-group">
+            <BodyText level={4} customClass="brand-label">
+              Brand
+            </BodyText>
+            <BodyText level={6} fontFamily="Roboto" customClass="brand-name">
+              {product.brand?.name ?? 'N/A'}
+            </BodyText>
+            {product.brand?.logo ? <img src={showImageUrl(product.brand.logo)} /> : null}
+          </div>
+        }
+        customHeaderClass={styles.productHeaderCollapse}
       >
-        <Collapse.Panel
-          key="1"
-          className={styles.productHeaderCollapse}
-          header={
-            <div className="header-group">
-              <BodyText level={4} customClass="brand-label">
-                Brand
-              </BodyText>
-              <BodyText level={6} fontFamily="Roboto" customClass="brand-name">
-                {product.brand?.name ?? 'N/A'}
-              </BodyText>
-              {product.brand?.logo ? <img src={showImageUrl(product.brand.logo)} /> : null}
-            </div>
-          }
-        >
-          <InputGroup
-            horizontal
-            fontLevel={4}
-            label="Collection"
-            placeholder="create or assign from the list"
-            rightIcon
-            noWrap
-            value={collection?.name ?? ''}
-            onRightIconClick={() => setVisible(true)}
-          />
-          <InputGroup
-            horizontal
-            fontLevel={4}
-            label="Product"
-            placeholder="type max.50 characters short description"
-            maxLength={50}
-            noWrap
-            value={name}
-            onChange={(e) => {
-              dispatch(
-                setPartialProductDetail({
-                  name: e.target.value,
-                }),
-              );
-            }}
-          />
-          <InputGroup horizontal fontLevel={4} label="Product ID" readOnly={true} noWrap />
-          <InputGroup
-            horizontal
-            fontLevel={4}
-            label="Description"
-            placeholder="max.50 words of product summary"
-            maxLength={50}
-            noWrap
-            value={description}
-            onChange={(e) => {
-              dispatch(
-                setPartialProductDetail({
-                  description: e.target.value,
-                }),
-              );
-            }}
-          />
-        </Collapse.Panel>
-      </Collapse>
+        <InputGroup
+          horizontal
+          fontLevel={4}
+          label="Collection"
+          placeholder="create or assign from the list"
+          rightIcon
+          noWrap
+          value={collection?.name ?? ''}
+          onRightIconClick={() => setVisible(true)}
+        />
+        <InputGroup
+          horizontal
+          fontLevel={4}
+          label="Product"
+          placeholder="type max.50 characters short description"
+          maxLength={50}
+          noWrap
+          value={name}
+          onChange={(e) => {
+            dispatch(
+              setPartialProductDetail({
+                name: e.target.value,
+              }),
+            );
+          }}
+        />
+        <InputGroup horizontal fontLevel={4} label="Product ID" readOnly={true} noWrap />
+        <InputGroup
+          horizontal
+          fontLevel={4}
+          label="Description"
+          placeholder="max.50 words of product summary"
+          maxLength={50}
+          noWrap
+          value={description}
+          onChange={(e) => {
+            dispatch(
+              setPartialProductDetail({
+                description: e.target.value,
+              }),
+            );
+          }}
+        />
+      </CustomCollapse>
       <Popover
         title="SELECT COLLECTION"
         visible={visible}

@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from 'react';
-// import {useBoolean} from '@/helper/hook';
 import { BodyText, MainTitle } from '@/components/Typography';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import SubSpecificationAttribute from './SubSpecificationAttribute';
 import Popover from '@/components/Modal/Popover';
-// import { CustomInput } from '@/components/Form/CustomInput';
-// import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { Collapse } from 'antd';
-import { IAttributeSpecification, ISpecificationFormInput } from '@/types';
+import type {
+  IAttributeSpecification,
+  ISpecificationFormInput,
+  IAttributeSpecificationSub,
+  ISpecificationFormInputType,
+} from '@/types';
 import { POPOVER_TITLE } from '../../constants';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
 import { setPartialProductDetail } from '@/reducers/product';
-
+import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 import styles from '../../styles/details.less';
 import { map, upperCase } from 'lodash';
-// import {createCollection, getCollectionByBrandId} from '@/services';
-// import type {IBrandDetail, ICollection} from '@/types';
 
 interface IGeneralFeatureAttributeItem {
   attributes: IAttributeSpecification[];
@@ -32,22 +32,20 @@ interface IGeneralFeatureAttributeItem {
 }
 
 const GeneralFeatureAttributeItem: React.FC<IGeneralFeatureAttributeItem> = (props) => {
-  const [visible, setVisible] = useState(false);
-  const [selected, setSelected] = useState<any>();
-  const [activeAttribute, setActiveAttribute] = useState(-1);
   const product = useAppSelector((state) => state.product);
   const dispatch = useDispatch();
   const { specification_attribute_groups } = product.details;
   const { attributes, attributeItem, onDelete, onItemChange, index } = props;
-
+  const [visible, setVisible] = useState(false);
+  const [selected, setSelected] = useState<CheckboxValue[]>([]);
   useEffect(() => {
     if (selected) {
       const newAttributes = [...specification_attribute_groups];
-      newAttributes[activeAttribute] = {
-        ...newAttributes[activeAttribute],
-        attributes: selected.map((item: any, key: number) => {
+      newAttributes[index] = {
+        ...newAttributes[index],
+        attributes: selected.map((item, key: number) => {
           /// radio value
-          let selectedAttribute: any = {};
+          let selectedAttribute = {} as IAttributeSpecificationSub;
           attributes.forEach((attr) => {
             attr.subs.forEach((sub) => {
               if (sub.id === item.value) {
@@ -55,7 +53,7 @@ const GeneralFeatureAttributeItem: React.FC<IGeneralFeatureAttributeItem> = (pro
               }
             });
           });
-          const previousData = newAttributes[activeAttribute][key];
+          const previousData = newAttributes[index][key];
           const activeData = {
             text: '',
             conversion_value_1: '',
@@ -72,7 +70,7 @@ const GeneralFeatureAttributeItem: React.FC<IGeneralFeatureAttributeItem> = (pro
           return {
             id: selectedAttribute.id,
             basis_id: selectedAttribute.basis_id,
-            type: selectedAttribute.basis?.type ?? 'Text',
+            type: (selectedAttribute.basis?.type ?? 'Text') as ISpecificationFormInputType,
             ...activeData,
           };
         }),
@@ -162,21 +160,7 @@ const GeneralFeatureAttributeItem: React.FC<IGeneralFeatureAttributeItem> = (pro
           }
         >
           <div className="attribute-select-group">
-            <div
-              className="attribute-select-group-left"
-              onClick={() => {
-                setSelected(() => {
-                  return attributeItem.attributes.map((attr) => {
-                    return {
-                      label: '',
-                      value: attr.id,
-                    };
-                  });
-                });
-                setActiveAttribute(index);
-                setVisible(true);
-              }}
-            >
+            <div className="attribute-select-group-left" onClick={() => setVisible(true)}>
               <MainTitle level={4} customClass="group-heading-text">
                 {POPOVER_TITLE.specification}
               </MainTitle>

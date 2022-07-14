@@ -8,6 +8,8 @@ import DropdownRadioList from '@/components/CustomRadio/DropdownRadioList';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
 import GroupRadioList from '@/components/CustomRadio/RadioList';
 import CheckboxList from '@/components/CustomCheckbox/CheckboxList';
+import DropdownCategoryList from '@/pages/TISC/Product/Configuration/components/CategoryDropdown';
+
 import type { ICheckboxListOption } from '@/components/CustomCheckbox/CheckboxList';
 import type { IDropdownRadioItemList } from '@/components/CustomRadio/DropdownRadioList';
 import type { IDropdownCheckboxItemList } from '@/components/CustomCheckbox/DropdownCheckboxList';
@@ -33,6 +35,9 @@ interface IPopover {
   // checkbox listTab
   checkboxList?: ICheckboxListOption;
 
+  // category dropdown checkbox
+  categoryDropdown?: boolean;
+
   // active value
   chosenValue?: any;
   setChosenValue?: (value: any) => void;
@@ -50,6 +55,7 @@ const Popover: FC<IPopover> = ({
   dropdownCheckboxTitle,
   groupRadioList,
   checkboxList,
+  categoryDropdown,
   chosenValue,
   setChosenValue,
   extraTopAction,
@@ -102,6 +108,16 @@ const Popover: FC<IPopover> = ({
           selected={currentValue}
           chosenItem={chosenValue}
           data={checkboxList}
+          onChange={setCurrentValue}
+        />
+      );
+    }
+
+    if (categoryDropdown) {
+      return (
+        <DropdownCategoryList
+          selected={currentValue}
+          chosenItem={chosenValue}
           onChange={setCurrentValue}
         />
       );

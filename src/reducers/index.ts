@@ -4,9 +4,11 @@ import { useSelector } from 'react-redux';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import productReducer from './product';
+import categoryReducer from './category';
 
 const reducers = combineReducers({
   product: productReducer,
+  category: categoryReducer,
 });
 
 const persistConfig = {

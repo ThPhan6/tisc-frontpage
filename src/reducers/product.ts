@@ -7,15 +7,19 @@ import type {
   IProductDownload,
   IProductDetail,
   IRelatedCollection,
+  IProductCatelogue,
+  GroupProductList,
 } from '@/types';
 
 interface ProductState {
   brand?: IBrandDetail;
   summary?: IProductSummary;
-  tips: IProductTip[];
-  downloads: IProductDownload[];
+  tip: IProductTip;
+  download: IProductDownload;
+  catelogue: IProductCatelogue;
   details: IProductDetail;
   relatedProduct: IRelatedCollection[];
+  list: GroupProductList[];
 }
 
 const initialState: ProductState = {
@@ -29,9 +33,17 @@ const initialState: ProductState = {
     specification_attribute_groups: [],
     categories: [],
   },
-  tips: [],
-  downloads: [],
+  tip: {
+    contents: [],
+  },
+  download: {
+    contents: [],
+  },
+  catelogue: {
+    contents: [],
+  },
   relatedProduct: [],
+  list: [],
 };
 
 const productSlice = createSlice({
@@ -65,23 +77,43 @@ const productSlice = createSlice({
         images: newImages,
       };
     },
-    setProductTips(state, action: PayloadAction<IProductTip[]>) {
-      state.tips = action.payload;
+    setProductTip(state, action: PayloadAction<Partial<IProductTip>>) {
+      state.tip = {
+        ...state.tip,
+        ...action.payload,
+      };
     },
-
-    setProductDownloads(state, action: PayloadAction<IProductDownload[]>) {
-      state.downloads = action.payload;
+    setProductDownload(state, action: PayloadAction<Partial<IProductDownload>>) {
+      state.download = {
+        ...state.download,
+        ...action.payload,
+      };
+    },
+    setProductCatelogue(state, action: PayloadAction<Partial<IProductCatelogue>>) {
+      state.catelogue = {
+        ...state.catelogue,
+        ...action.payload,
+      };
+    },
+    setProductList(state, action: PayloadAction<GroupProductList[]>) {
+      state.list = action.payload;
+    },
+    reset() {
+      return initialState;
     },
   },
 });
 
 export const {
+  reset,
   setBrand,
   setProductSummary,
   setProductDetail,
   setPartialProductDetail,
   setProductDetailImage,
-  setProductTips,
-  setProductDownloads,
+  setProductTip,
+  setProductCatelogue,
+  setProductDownload,
+  setProductList,
 } = productSlice.actions;
 export default productSlice.reducer;
