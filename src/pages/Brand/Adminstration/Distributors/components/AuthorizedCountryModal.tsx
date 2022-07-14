@@ -24,7 +24,7 @@ const AuthorizedCountryModal: FC<{
     return (
       <BodyText level={5} fontFamily="Roboto">
         <span style={{ marginRight: '8px' }}>{item.country_name}</span>
-        <span>{item.phone_code}</span>
+        <span>+{item.phone_code}</span>
       </BodyText>
     );
   };

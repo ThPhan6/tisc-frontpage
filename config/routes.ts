@@ -323,6 +323,7 @@
   {
     path: '/brand/adminstration/distributors',
     name: 'DISTRIBUTORS',
+    icon: 'distributor-icon.svg',
     routes: [
       {
         path: '/brand/adminstration/distributors',

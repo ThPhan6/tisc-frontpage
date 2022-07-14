@@ -30,6 +30,7 @@ const DEFAULT_DISTRIBUTOR: IDistributorForm = {
   mobile: '',
   authorized_country_ids: [],
   authorized_country_name: '',
+  authorized_countries: [],
   coverage_beyond: true,
 };
 

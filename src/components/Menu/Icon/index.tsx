@@ -15,6 +15,7 @@ import { ReactComponent as RevenueIcon } from '../../../assets/icons/revenue-ico
 import { ReactComponent as TeamProfileIcon } from '../../../assets/icons/team-profile-icon.svg';
 import { ReactComponent as UserGroupIcon } from '../../../assets/icons/user-group-icon.svg';
 import { ReactComponent as WorkspaceIcon } from '../../../assets/icons/workspace-icon.svg';
+import { ReactComponent as DisitributorIcon } from '../../../assets/icons/distributor-icon.svg';
 
 const IconList = {
   'adminstration-icon.svg': <AdminstrationIcon className="anticon" />,
@@ -34,6 +35,7 @@ const IconList = {
   'team-profile-icon.svg': <TeamProfileIcon className="anticon" />,
   'user-group-icon.svg': <UserGroupIcon className="anticon" />,
   'workspace-icon.svg': <WorkspaceIcon className="anticon" />,
+  'distributor-icon.svg': <DisitributorIcon className="anticon" />,
 };
 export const renderIconByName = (key: any): React.ReactNode => {
   if (key && IconList[key]) {

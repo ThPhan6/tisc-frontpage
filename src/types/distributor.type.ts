@@ -18,6 +18,7 @@ export interface IDistributorForm {
   mobile: string;
   authorized_country_ids: string[];
   authorized_country_name: string;
+  authorized_countries: string[];
   coverage_beyond: true;
 }
 

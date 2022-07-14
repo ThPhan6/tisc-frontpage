@@ -4,7 +4,6 @@ export type CheckboxValue = {
   label: string | ReactNode;
   value: string;
   disabled?: boolean;
-  id?: string;
 };
 
 export interface CustomCheckboxProps {

@@ -13,7 +13,6 @@ import AuthorizedCountryModal from './AuthorizedCountryModal';
 import StateModal from './StateModal';
 import CityModal from './CityModal';
 import DistributionTerritoryModal from './DistributionTerritoryModal';
-import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { ReactComponent as SingleRightFormIconDisable } from '@/assets/icons/single-right-form-icon-disable.svg';
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 import { IDistributorEntryForm } from '@/types/distributor.type';
@@ -38,7 +37,6 @@ export const DistributorsEntryForm: FC<IDistributorEntryForm> = (props) => {
   const [territoryVisible, setTerritoryVisible] = useState(false);
   const [stateVisible, setStateVisible] = useState(false);
   const [cityVisible, setCityVisible] = useState(false);
-  const [authorCountryValue, setAuthorCountryValue] = useState<CheckboxValue[]>();
 
   const handleOnChangeValueForm = (
     e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>,
@@ -69,8 +67,8 @@ export const DistributorsEntryForm: FC<IDistributorEntryForm> = (props) => {
     setData({
       ...data,
       authorized_country_ids: chosenValue && chosenValue.map((item: any) => item.id),
+      authorized_country_name: chosenValue.map((name: any) => name.value).toString(),
     });
-    setAuthorCountryValue(chosenValue);
   };
 
   const handleSubmit = () => {
@@ -316,10 +314,7 @@ export const DistributorsEntryForm: FC<IDistributorEntryForm> = (props) => {
               fontLevel={3}
               name="authorizedCountry"
               placeholder="select country"
-              value={
-                (authorCountryValue?.map((item) => item.value as string) ?? '') ||
-                data.authorized_country_name
-              }
+              value={data.authorized_country_name}
               borderBottomColor="mono-medium"
               hasPadding
               rightIcon
@@ -377,7 +372,7 @@ export const DistributorsEntryForm: FC<IDistributorEntryForm> = (props) => {
       <AuthorizedCountryModal
         visible={authorizedCountryVisible}
         setVisible={setAuthorizedCountryVisible}
-        chosenValue={authorCountryValue}
+        chosenValue={data.authorized_countries}
         setChosenValue={(chosenValue) => handleOnchangeAuthorCountryValue(chosenValue)}
       />
 
