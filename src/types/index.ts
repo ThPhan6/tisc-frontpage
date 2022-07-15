@@ -8,5 +8,6 @@ export * from './basis-option.type';
 export * from './collection.type';
 export * from './product.type';
 export * from './general.type';
+export * from './inspiration-quotation';
 export * from './email-auto.type';
 export * from './agreement-policy.type';
