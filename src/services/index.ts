@@ -8,3 +8,5 @@ export * from './basis-option.api';
 export * from './collection.api';
 export * from './product.api';
 export * from './inspirational-quotation.api';
+export * from './location.api';
+export * from './distributor.api';

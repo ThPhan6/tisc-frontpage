@@ -46,6 +46,13 @@ export const PATH = {
   productConfiguration: '/tisc/products/configuration',
   productConfigurationCreate: '/tisc/products/configuration/create/:brandId',
   productConfigurationUpdate: '/tisc/products/configuration/:id',
+
+  //brand
+  //adminstration
+  //distributors
+  distributors: '/brand/adminstration/distributors',
+  createDistributor: '/brand/adminstration/distributors/create',
+  updateDistributor: '/brand/adminstration/distributors/:id',
 };
 
 export const PUBLIC_PATH = [PATH.landingPage, PATH.resetPassword];

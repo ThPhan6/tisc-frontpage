@@ -2,13 +2,13 @@
 import type { ReactNode, FC } from 'react';
 import { BodyText } from '@/components/Typography';
 import { CustomInput } from '@/components/Form/CustomInput';
-import type { InputProps } from 'antd';
+import type { CustomInputProps } from '@/components/Form/types';
 import { Row, Col } from 'antd';
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 import styles from './styles/InputGroup.less';
 
-interface IInputGroup extends InputProps {
+interface IInputGroup extends CustomInputProps {
   horizontal?: boolean;
   rightIcon?: boolean | ReactNode;
   deleteIcon?: boolean | ReactNode;
