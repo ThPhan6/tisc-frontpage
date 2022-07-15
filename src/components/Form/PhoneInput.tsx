@@ -1,5 +1,4 @@
 import { Input } from 'antd';
-import classNames from 'classnames';
 import { FC, useEffect, useState } from 'react';
 import { BodyText } from '../Typography';
 import styles from './styles/PhoneInput.less';
@@ -55,11 +54,9 @@ export const PhoneInput: FC<PhoneInputProps> = ({
 
   return (
     <div
-      className={classNames(
-        styles['phone-input-container'],
-        status && styles[`${status}-status`],
-        containerClass,
-      )}
+      className={`${styles['phone-input-container']} ${
+        status ? styles[`${status}-status`] : ''
+      } ${containerClass} `}
     >
       <div className={styles['wrapper-code-input']}>
         <BodyText level={5} fontFamily="Roboto">

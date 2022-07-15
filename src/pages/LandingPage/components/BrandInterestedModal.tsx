@@ -9,7 +9,6 @@ import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg'
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
 import { ReactComponent as InternetIcon } from '@/assets/icons/internet-icon.svg';
-import classNames from 'classnames';
 import { Checkbox } from 'antd';
 import { PoliciesModal } from './PoliciesModal';
 
@@ -42,7 +41,7 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
             placeholder="brand / company name"
             prefix={<BrandIcon />}
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-            containerClass={classNames(styles.brand)}
+            containerClass={styles.brand}
             name="user"
             type={'text'}
             required={true}
@@ -54,7 +53,7 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
             placeholder="company website"
             prefix={<InternetIcon />}
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-            containerClass={classNames(styles.website)}
+            containerClass={styles.website}
             name="user"
             type="text"
             required={true}
@@ -66,7 +65,7 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
             placeholder="first name / last name"
             prefix={<UserIcon />}
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-            containerClass={classNames(styles.user)}
+            containerClass={styles.user}
             name="user"
             type="text"
             required={true}
@@ -75,7 +74,7 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
             fromLandingPage
             theme={theme}
             type="email"
-            containerClass={classNames(styles.email)}
+            containerClass={styles.email}
             size="large"
             placeholder="work email"
             prefix={<EmailIcon />}

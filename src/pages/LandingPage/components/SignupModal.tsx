@@ -8,7 +8,6 @@ import { ModalProps } from '../types';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
-import classNames from 'classnames';
 import { Checkbox } from 'antd';
 import { PoliciesModal } from './PoliciesModal';
 
@@ -41,7 +40,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             placeholder="first name / last name"
             prefix={<UserIcon />}
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-            containerClass={classNames(styles.brand)}
+            containerClass={styles.brand}
             name="user"
             type={'text'}
             required={true}
@@ -53,7 +52,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             placeholder="work email"
             prefix={<EmailIcon />}
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-            containerClass={classNames(styles.website)}
+            containerClass={styles.website}
             name="user"
             type="email"
             required={true}
@@ -65,7 +64,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             placeholder="password"
             prefix={<LockedIcon />}
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-            containerClass={classNames(styles.user)}
+            containerClass={styles.user}
             name="user"
             type="password"
             required={true}
@@ -74,7 +73,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             fromLandingPage
             theme={theme}
             type="password"
-            containerClass={classNames(styles.email)}
+            containerClass={styles.email}
             size="large"
             placeholder="confirm password"
             prefix={<LockedIcon />}

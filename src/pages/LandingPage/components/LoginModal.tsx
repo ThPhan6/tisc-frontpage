@@ -10,7 +10,6 @@ import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.sv
 import { ReactComponent as LockedForgotIcon } from '@/assets/icons/lock-forgot-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 import { useBoolean, useString } from '@/helper/hook';
-import classNames from 'classnames';
 import CustomButton from '@/components/Button';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { isShowErrorMessage, validateEmail } from '@/helper/utils';
@@ -128,10 +127,9 @@ export const LoginModal: FC<LoginModalProps> = ({
               status={isShowErrorMessage('email', inputValue.email) ? '' : 'error'}
               theme={theme}
               size="large"
-              containerClass={classNames(
-                styles.email,
-                showForgotPassword.value ? styles.disabled : '',
-              )}
+              containerClass={`
+                ${styles.email}
+                ${showForgotPassword.value ? styles.disabled : ''}`}
               placeholder="work email"
               prefix={<EmailIcon />}
               focusColor="secondary"
@@ -146,10 +144,9 @@ export const LoginModal: FC<LoginModalProps> = ({
               status={inputValue.password ? (inputValue.password.length < 8 ? 'error' : '') : ''}
               theme={theme}
               type={'password'}
-              containerClass={classNames(
-                styles.password,
-                showForgotPassword.value ? styles.disabled : '',
-              )}
+              containerClass={`
+                ${styles.password}
+                ${showForgotPassword.value ? styles.disabled : ''}`}
               size="large"
               placeholder="password"
               prefix={<LockedIcon />}
@@ -163,11 +160,10 @@ export const LoginModal: FC<LoginModalProps> = ({
           </div>
           <div className={styles['forgot-password']}>
             <div
-              className={classNames(
-                styles.wrapper,
-                styles[`${theme === 'dark' && 'wrapper-dark'}`],
-                styles[showForgotPassword.value && `wrapper-active${themeStyle()}`],
-              )}
+              className={`
+                ${styles.wrapper}
+                ${styles[`${theme === 'dark' && 'wrapper-dark'}`]}
+                ${styles[showForgotPassword.value && `wrapper-active${themeStyle()}`]}`}
               onClick={() => showForgotPassword.setValue(!showForgotPassword.value)}
             >
               <LockedForgotIcon className={styles.icon} />

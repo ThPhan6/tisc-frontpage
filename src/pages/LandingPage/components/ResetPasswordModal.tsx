@@ -4,7 +4,6 @@ import { useState } from 'react';
 import styles from './ResetPasswordModal.less';
 import type { ResetInputValueProp, ResetPasswordModalProps } from '../types';
 import { CustomInput } from '@/components/Form/CustomInput';
-import classNames from 'classnames';
 import { BodyText, MainTitle } from '@/components/Typography';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';
 import { ReactComponent as LockedIcon } from '@/assets/icons/circle-pass-icon.svg';
@@ -95,7 +94,7 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
         <div className={styles.form}>
           <CustomInput
             size="large"
-            containerClass={classNames(styles.email)}
+            containerClass={styles.email}
             placeholder="work email"
             prefix={<EmailIcon />}
             name="email"
@@ -106,7 +105,7 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
           <CustomInput
             required
             fromLandingPage
-            containerClass={classNames(styles.password)}
+            containerClass={styles.password}
             type={'password'}
             size="large"
             placeholder="password"

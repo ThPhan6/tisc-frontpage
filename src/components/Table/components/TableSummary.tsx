@@ -1,5 +1,4 @@
 import { Title, BodyText } from '@/components/Typography';
-import classnames from 'classnames';
 import type { ISummaryResponse } from '../types';
 import styles from '../styles/table.less';
 
@@ -9,7 +8,7 @@ interface ITableSummary {
 
 const TableSummary = ({ summary }: ITableSummary) => {
   return (
-    <div className={classnames(styles.customPaginator, styles.tableSummary)}>
+    <div className={`${styles.customPaginator} ${styles.tableSummary}`}>
       {summary.map((item, index) => (
         <div className="item" key={index}>
           <BodyText level={6} customClass="name" fontFamily="Roboto">
