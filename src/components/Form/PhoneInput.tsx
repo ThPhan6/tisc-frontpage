@@ -56,7 +56,7 @@ export const PhoneInput: FC<PhoneInputProps> = ({
     <div className={`${styles['phone-input-container']} ${status && styles[`${status}-status`]} `}>
       <div
         className={`${styles['wrapper-code-input']} ${
-          colorPlaceholder === 'mono' && styles['color-placeholder']
+          colorPlaceholder === 'mono' ? styles['color-placeholder'] : ''
         }`}
       >
         <BodyText level={5} fontFamily="Roboto">

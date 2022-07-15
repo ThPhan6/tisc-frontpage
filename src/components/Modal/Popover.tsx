@@ -126,9 +126,7 @@ const Popover: FC<IPopover> = ({
         width={576}
         closeIcon={<CloseIcon />}
         footer={
-          noFooter ? (
-            ''
-          ) : (
+          noFooter ? undefined : (
             <CustomButton
               size="small"
               variant="primary"

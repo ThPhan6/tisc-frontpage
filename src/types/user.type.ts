@@ -32,7 +32,7 @@ export interface IUserDetail {
   linkedin: string;
 }
 
-export const UserDetailValueDefault = {
+export const InitialUserDetail = {
   access_level: '',
   avatar: '',
   backup_email: '',
