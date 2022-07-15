@@ -1,5 +1,4 @@
 import React from 'react';
-import classnames from 'classnames';
 import styles from './styles/smallIconButton.less';
 
 interface ISmallIconButton {
@@ -12,9 +11,7 @@ const SmallIconButton: React.FC<ISmallIconButton> = ({ icon, onClick, className 
   return (
     <button
       onClick={onClick}
-      className={
-        className ? classnames(styles.smallBtnContainer, className) : styles.smallBtnContainer
-      }
+      className={className ? `${styles.smallBtnContainer} ${className}` : styles.smallBtnContainer}
     >
       {icon}
     </button>

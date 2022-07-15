@@ -25,23 +25,27 @@
     name: 'workspace',
     icon: 'workspace-icon.svg',
     component: './Welcome',
+    access: 'tisc_workspace',
   },
   {
     path: '/tisc/user-groups',
     name: 'usergroup',
     icon: 'user-group-icon.svg',
+    access: 'tisc_user_group',
     routes: [
       {
         path: '/tisc/user-groups/brands',
         name: 'brand',
         icon: 'brand-icon.svg',
         component: './TISC/UserGroup/Brand',
+        access: 'tisc_user_group_brand',
       },
       {
         path: '/tisc/user-groups/design-firms',
         name: 'designfirm',
         icon: 'design-firm-icon.svg',
         component: './TISC/UserGroup/DesignFirm',
+        access: 'tisc_user_group_design',
       },
     ],
   },
@@ -49,12 +53,14 @@
     path: '/tisc/projects',
     name: 'project',
     icon: 'project-icon.svg',
+    access: 'tisc_project',
     routes: [
       {
         path: '/tisc/projects/listing',
         name: 'listing',
         icon: 'listing-icon.svg',
         component: './Welcome',
+        access: 'tisc_project_list',
       },
     ],
   },
@@ -62,11 +68,13 @@
     path: '/tisc/products',
     name: 'product',
     icon: 'product-icon.svg',
+    access: 'tisc_product',
     routes: [
       {
         path: '/tisc/products/categories',
         name: 'category',
         icon: 'category-icon.svg',
+        access: 'tisc_product_category',
         routes: [
           {
             path: '/tisc/products/categories',
@@ -89,6 +97,7 @@
         path: '/tisc/products/basis',
         name: 'basis',
         icon: 'basis-icon.svg',
+        access: 'tisc_product_basis',
         routes: [
           {
             path: '/tisc/products/basis/conversions',
@@ -160,6 +169,7 @@
         path: '/tisc/products/attributes',
         name: 'attribute',
         icon: 'attributes-icon.svg',
+        access: 'tisc_product_attribute',
         routes: [
           {
             path: '/tisc/products/attributes/general',
@@ -230,6 +240,7 @@
         path: '/tisc/products/configuration',
         name: 'configuration',
         icon: 'configuration-icon.svg',
+        access: 'tisc_product_configuration',
         routes: [
           {
             path: '/tisc/products/configuration',
@@ -254,11 +265,13 @@
     path: '/tisc/adminstration',
     name: 'adminstration',
     icon: 'adminstration-icon.svg',
+    access: 'tisc_administration',
     routes: [
       {
         path: '/tisc/adminstration/documentation',
         name: 'documentation',
         icon: 'documentation-icon.svg',
+        access: 'tisc_administration_documentation',
         routes: [
           {
             path: '/tisc/adminstration/documentation/agreement-policy-terms',
@@ -277,17 +290,20 @@
         name: 'location',
         icon: 'location-icon.svg',
         component: './Welcome',
+        access: 'tisc_administration_location',
       },
       {
         path: '/tisc/adminstration/team-profiles',
         name: 'team.profile',
         icon: 'team-profile-icon.svg',
         component: './Welcome',
+        access: 'tisc_administration_team_profile',
       },
       {
         path: '/tisc/adminstration/messages',
         name: 'messages',
         icon: 'messages-icon.svg',
+        access: 'tisc_administration_message',
         routes: [
           {
             path: '/tisc/adminstration/messages/email-autoresponders',
@@ -305,6 +321,7 @@
         path: '/tisc/adminstration/revenues',
         name: 'revenue',
         icon: 'revenue-icon.svg',
+        access: 'tisc_administration_revenue',
         routes: [
           {
             path: '/tisc/adminstration/revenues/services',
@@ -321,10 +338,82 @@
     ],
   },
   {
-    path: '/brand/adminstration/brand-profile',
-    name: 'BRAND PROFILE',
-    icon: 'brand-icon.svg',
-    component: './Brand/Adminstration/BrandProfile',
+    path: '/brand/dashboard',
+    name: 'workspace',
+    icon: 'workspace-icon.svg',
+    component: './Welcome',
+    access: 'brand_workspace',
+  },
+  {
+    path: '/brand/product',
+    name: 'product',
+    icon: 'product-icon.svg',
+    component: './Welcome',
+    access: 'brand_product',
+  },
+  {
+    path: '/brand/general-inquiry',
+    name: 'general_inquiry',
+    icon: 'general-inquiry-icon.svg',
+    component: './Welcome',
+    access: 'brand_genenral_inquiry',
+  },
+  {
+    path: '/brand/project-tracking',
+    name: 'project_tracking',
+    icon: 'project-tracking-icon.svg',
+    component: './Welcome',
+    access: 'brand_project_tracking',
+  },
+  {
+    path: '/brand/adminstration',
+    name: 'adminstration',
+    icon: 'adminstration-icon.svg',
+    access: 'brand_administration',
+    routes: [
+      {
+        path: '/brand/adminstration/brand-profile',
+        name: 'brand_profile',
+        icon: 'brand-icon.svg',
+        access: 'brand_administration_brand_profile',
+        component: './Brand/Adminstration/BrandProfile',
+      },
+      {
+        path: '/brand/adminstration/locations',
+        name: 'location',
+        icon: 'location-icon.svg',
+        component: './Welcome',
+        access: 'brand_administration_location',
+      },
+      {
+        path: '/brand/adminstration/team-profiles',
+        name: 'team.profile',
+        icon: 'team-profile-icon.svg',
+        component: './Welcome',
+        access: 'brand_administration_team_profile',
+      },
+      {
+        path: '/brand/adminstration/distributors',
+        name: 'brand.distributor',
+        icon: 'distributor-icon.svg',
+        component: './Welcome',
+        access: 'brand_administration_distributor',
+      },
+      {
+        path: '/brand/adminstration/market-availability',
+        name: 'brand.market_availability',
+        icon: 'market-availability-icon.svg',
+        component: './Welcome',
+        access: 'brand_administration_market_availability',
+      },
+      {
+        path: '/brand/adminstration/subscription',
+        name: 'brand.subscription',
+        icon: 'subscription-icon.svg',
+        component: './Welcome',
+        access: 'brand_administration_subscription',
+      },
+    ],
   },
   // {
   //   name: 'list.table-list',

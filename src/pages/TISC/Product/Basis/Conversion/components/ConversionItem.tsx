@@ -2,7 +2,6 @@ import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
-import classNames from 'classnames';
 import type { FC } from 'react';
 import { Row, Col } from 'antd';
 import styles from '../styles/ConversionItem.less';
@@ -28,7 +27,7 @@ const ElementInput: FC<ElementInputProp> = ({ order, onChange, value }) => {
         size="small"
         autoWidth
         defaultWidth={30}
-        containerClass={classNames(styles.element__input_unit)}
+        containerClass={styles.element__input_unit}
         onChange={onChange}
         value={value[`unit_${order}`]}
       />

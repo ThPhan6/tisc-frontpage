@@ -6,6 +6,7 @@ export const PATH = {
   // private path
   profiles: '/profiles',
   homePage: '/tisc/dashboard',
+  brandHomePage: '/brand/dashboard',
 
   //how-to
   howTo: '/howTo',

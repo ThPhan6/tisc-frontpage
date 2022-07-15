@@ -11,7 +11,6 @@ import { map, forEach, debounce } from 'lodash';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
 import { setBrand } from '@/reducers/product';
-import classnames from 'classnames';
 import styles from '../styles/topbar.less';
 
 type IViewType = 'Categories' | 'Collections';
@@ -216,10 +215,9 @@ const ProductTopBar: React.FC = () => {
             customClass="left-divider"
             icon={
               <span
-                className={classnames(
-                  styles.newCardIcon,
-                  product.summary ? styles.activeNewCard : styles.disabledNewCard,
-                )}
+                className={`
+                  ${styles.newCardIcon}
+                  ${product.summary ? styles.activeNewCard : styles.disabledNewCard}`}
               >
                 <SmallPlusIcon />
               </span>
