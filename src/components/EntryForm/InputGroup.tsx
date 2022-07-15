@@ -75,7 +75,15 @@ const InputGroup: FC<IInputGroup> = ({
           className={`input-box ${hasPadding ? 'has-padding' : ''} ${
             colorPrimaryDark ? 'color-primary-dark' : ''
           }`}
-          onClick={(e) => e.stopPropagation()}
+          style={{
+            cursor: onRightIconClick ? 'pointer' : 'auto',
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onRightIconClick) {
+              onRightIconClick();
+            }
+          }}
         />
         {rightIcon ? (
           rightIcon === true ? (

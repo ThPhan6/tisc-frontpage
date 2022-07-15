@@ -62,6 +62,9 @@ export const isShowErrorMessage = (
 };
 
 export function showImageUrl(url: string) {
+  if (url.startsWith('data:image')) {
+    return url;
+  }
   return `${STORE_URL}${url}`;
 }
 

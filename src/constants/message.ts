@@ -23,6 +23,34 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_CATEGORY_ERROR: 'Delete the category error',
   UPDATE_CATEGORY_SUCCESS: 'Update the category successfully',
   UPDATE_CATEGORY_ERROR: 'Update the category error',
+  GET_LIST_CATEGORY_ERROR: 'Failed to get list category',
+
+  // product
+  CREATE_PRODUCT_SUCCESS: 'Create product card successfully',
+  CREATE_PRODUCT_ERROR: 'Failed to create product card',
+  UPDATE_PRODUCT_SUCCESS: 'Update product card successfully',
+  UPDATE_PRODUCT_ERROR: 'Failed to update product card',
+  GET_LIST_PRODUCT_BY_BRAND_ERROR: 'Failed to get product list',
+  DELETE_PRODUCT_SUCCESS: 'Delete product successfully',
+  DELETE_PRODUCT_ERROR: 'Failed to delete product',
+  DUPLICATE_PRODUCT_SUCCESS: 'Duplicate product successfully',
+  DUPLICATE_PRODUCT_ERROR: 'Failed to duplicate product',
+  GET_ONE_PRODUCT_ERROR: 'Failed to get product information',
+
+  // product catelogue
+  CREATE_PRODUCT_CATELOGUE_SUCCESS: 'Create product catelogue successfully',
+  CREATE_PRODUCT_CATELOGUE_ERROR: 'Failed to create product catelogue',
+  GET_PRODUCT_CATELOGUE_BY_PRODUCT_ID_ERROR: 'Failed to get product catelogues',
+
+  // product download
+  CREATE_PRODUCT_DOWNLOAD_SUCCESS: 'Create product download successfully',
+  CREATE_PRODUCT_DOWNLOAD_ERROR: 'Failed to create product download',
+  GET_PRODUCT_DOWNLOAD_BY_PRODUCT_ID_ERROR: 'Failed to get product downloads',
+
+  // product tip
+  CREATE_PRODUCT_TIP_SUCCESS: 'Create product tip successfully',
+  CREATE_PRODUCT_TIP_ERROR: 'Failed to create product tip',
+  GET_PRODUCT_TIP_BY_PRODUCT_ID_ERROR: 'Failed to get product tips',
 
   // ATTRIBUTE
   GET_ATTRRIBUTE_DATA_FAILED: 'Failed to get attribute data',

@@ -1,7 +1,12 @@
 import { request } from 'umi';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import type { IAttributeListResponse, IAttributeContentType, IAttributeForm } from '@/types';
+import type {
+  IAttributeListResponse,
+  IAttributeContentType,
+  IAttributeForm,
+  IAttributebyType,
+} from '@/types';
 import type {
   IDataTableResponse,
   IPaginationRequest,
@@ -39,24 +44,6 @@ export async function getProductAttributePagination(
     .catch((error) => {
       console.log('error', error);
       message.error(error.message);
-    });
-}
-
-export async function getProductAttributeByType(type: number) {
-  return request<ICategoryPaginationResponse>(`/api/attribute/get-list`, {
-    method: 'GET',
-    params: {
-      page: 1,
-      pageSize: 99999999,
-      type,
-    },
-  })
-    .then((response) => {
-      return response.data.attributes;
-    })
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ATTRRIBUTE_DATA_FAILED);
-      return [] as IAttributeListResponse[];
     });
 }
 
@@ -122,5 +109,20 @@ export async function deleteAttribute(id: string) {
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.DELETE_ATTRIBUTE_ERROR);
       return false;
+    });
+}
+
+export async function getAllAttribute() {
+  return request<{ data: IAttributebyType }>(`/api/attribute/get-all`, {})
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ATTRRIBUTE_DATA_FAILED);
+      return {
+        general: [],
+        feature: [],
+        specification: [],
+      } as IAttributebyType;
     });
 }

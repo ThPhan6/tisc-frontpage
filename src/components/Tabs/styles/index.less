@@ -1,12 +1,16 @@
 .tab-list {
   :global(.ant-tabs-tab) {
     display: block;
+    width: 100%;
     padding: 0;
     color: @mono-color;
     font-weight: 300;
     font-size: 12px;
     line-height: 22px;
     text-transform: uppercase;
+  }
+  :global(.ant-tabs-nav-operations) {
+    display: none !important;
   }
   :global(.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn) {
     color: #fff;
@@ -68,10 +72,9 @@
 }
 
 .tabs-space {
-  @numbertab: 4;
   :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
-    display: grid;
-    grid-template-columns: repeat(@numbertab, 100% / @numbertab);
+    // display: grid;
+    // grid-template-columns: repeat(@numbertab, 100% / @numbertab);
     width: 100%;
   }
 }

@@ -191,7 +191,9 @@ export const dataMenuFirm = {
     },
   ],
 };
-
+export const IMAGE_ACCEPT_TYPES = {
+  image: '.png,.jpeg,.webp,.svg,.jpg',
+};
 export const howToPagePanel: IHowToForm = {
   tisc: {
     data: [

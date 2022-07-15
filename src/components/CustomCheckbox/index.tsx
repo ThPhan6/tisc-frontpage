@@ -62,7 +62,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
         ${style['checkbox-list']}
         ${isCheckboxList && style['item-list-checkbox']}
         ${style['color-checkbox-checked']}
-        ${checkboxClass})
+        ${checkboxClass}
       `}
     >
       <Checkbox.Group
@@ -78,7 +78,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                 style={{ height: heightItem }}
                 htmlFor={`${option.value}_${index}_${randomId}`}
               >
-                <span>{option.label}</span>
+                <div style={{ width: '100%' }}>{option.label}</div>
                 <Checkbox id={`${option.value}_${index}_${randomId}`} {...option} />
               </label>
             ) : (
