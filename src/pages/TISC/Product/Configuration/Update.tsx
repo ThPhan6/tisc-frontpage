@@ -31,7 +31,7 @@ const ProductConfigurationCreate: React.FC = () => {
   const params = useParams<{ id: string }>();
   const productId = params?.id || '';
   const product = useAppSelector((state) => state.product);
-  const [activeKey, setActiveKey] = useState<ACTIVE_KEY>('specification');
+  const [activeKey, setActiveKey] = useState<ACTIVE_KEY>('general');
 
   useEffect(() => {
     if (productId) {
@@ -92,7 +92,7 @@ const ProductConfigurationCreate: React.FC = () => {
     });
   };
   if (!product.details.id) {
-    return false;
+    return null;
   }
   return (
     <Row gutter={8}>
