@@ -1,21 +1,25 @@
 import type { FC } from 'react';
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon.svg';
 import styles from '@/components/Table/styles/TableHeader.less';
-import classNames from 'classnames';
 interface ICustomPlusButton {
   onClick?: () => void;
   disabled?: boolean;
-  containerClass?: string;
+  size?: number;
 }
 
-const CustomPlusButton: FC<ICustomPlusButton> = ({ onClick, disabled, containerClass }) => {
+const CustomPlusButton: FC<ICustomPlusButton> = ({ onClick, disabled, size }) => {
   return (
     <div
-      className={classNames(
-        disabled ? styles.customButtonDisable : styles.customButton,
-        containerClass,
-      )}
+      className={disabled ? styles.customButtonDisable : styles.customButton}
       onClick={onClick}
+      style={
+        size
+          ? {
+              width: size,
+              height: size,
+            }
+          : undefined
+      }
     >
       <PlusIcon />
     </div>

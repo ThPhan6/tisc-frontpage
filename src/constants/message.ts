@@ -25,6 +25,7 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_CATEGORY_ERROR: 'Update the category error',
 
   // ATTRIBUTE
+  GET_ATTRRIBUTE_DATA_FAILED: 'Failed to get attribute data',
   CREATE_ATTRIBUTE_SUCCESS: 'Create attribute successfully',
   UPDATE_ATTRIBUTE_SUCCESS: 'Update attribute successfully',
   DELETE_ATTRIBUTE_SUCCESS: 'Delete attribute successfully',
@@ -59,6 +60,40 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PRESET_SUCCESS: 'Update preset successfully',
   UPDATE_PRESET_ERROR: 'Update preset error',
   GET_ONE_PRESET_ERROR: 'Get one preset error',
+
+  // email auto
+  GET_ONE_EMAIL_AUTO_ERROR: 'Get one email auto error',
+  GET_LIST_EMAIL_AUTO_ERROR: 'Get list email auto error',
+  GET_TARGETEDFOR_LIST_EMAIL_AUTO_ERROR: 'Get list targeted-for  error',
+  GET_TOPIC_LIST_EMAIL_AUTO_ERROR: 'Get list topic  error',
+  CREATE_EMAIL_AUTO_SUCCESS: 'Create email auto successfully',
+  CREATE_EMAIL_AUTO_ERROR: 'Create email auto error',
+  DELETE_EMAIL_AUTO_SUCCESS: 'Delete email auto successfully',
+  DELETE_EMAIL_AUTO_ERROR: 'Delete email auto error',
+  UPDATE_EMAIL_AUTO_SUCCESS: 'Update email auto successfully',
+  UPDATE_EMAIL_AUTO_ERROR: 'Update email auto error',
+
+  // configuration
+  GET_BRAND_DATA_ERROR: 'Failed to get Brand data',
+  GET_BRAND_SUMMARY_DATA_ERROR: 'Failed to get Brand summary data',
+  CREATE_BRAND_COLLECTION_ERROR: 'Failed to create Brand collection',
+  GET_BRAND_COLLECTION_ERROR: 'Failed to get Brand collection data',
+
+  //location
+  GET_COUNTRIES_ERROR: 'Failed to get countries data',
+  GET_STATES_ERROR: 'Failed to get states data',
+  GET_CITIES_ERROR: 'Failed to get cities data',
+  GET_LIST_COUNTRY_GROUP: 'Failed to get list country group data',
+  GET_ONE_COUNTRY_ERROR: 'Failed to get one country',
+
+  //distributor
+  CREATE_DISTRIBUTOR_SUCCESS: 'Create distributor successfully',
+  CREATE_DISTRIBUTOR_ERROR: 'Create distributor error',
+  DELETE_DISTRIBUTOR_SUCCESS: 'Delete distributor successfully',
+  DELETE_DISTRIBUTOR_ERROR: 'Delete distributor error',
+  UPDATE_DISTRIBUTOR_SUCCESS: 'Update distributor successfully',
+  UPDATE_DISTRIBUTOR_ERROR: 'Update distributor error',
+  GET_ONE_DISTRIBUTOR_ERROR: 'Get one distributor error',
 };
 
 export const MESSAGE_TOOLTIP = {

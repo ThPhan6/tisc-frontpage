@@ -6,6 +6,10 @@ export const PATH = {
   // private path
   profiles: '/profiles',
   homePage: '/tisc/dashboard',
+  brandHomePage: '/brand/dashboard',
+
+  //how-to
+  howTo: '/howTo',
 
   // Tisc
   categories: '/tisc/products/categories',
@@ -32,6 +36,22 @@ export const PATH = {
   attributeGeneralCreate: '/tisc/products/attributes/general/create',
   attributeGeneralUpdate: '/tisc/products/attributes/general/:id',
   //
+
+  // email autorepsonder
+  emailAuto: '/tisc/adminstration/messages/email-auto',
+  updateEmailAuto: '/tisc/adminstration/messages/email-auto/update/:id',
+
+  // configuration
+  productConfiguration: '/tisc/products/configuration',
+  productConfigurationCreate: '/tisc/products/configuration/create/:brandId',
+  productConfigurationUpdate: '/tisc/products/configuration/:id',
+
+  //brand
+  //adminstration
+  //distributors
+  distributors: '/brand/adminstration/distributors',
+  createDistributor: '/brand/adminstration/distributors/create',
+  updateDistributor: '/brand/adminstration/distributors/:id',
 };
 
 export const PUBLIC_PATH = [PATH.landingPage, PATH.resetPassword];

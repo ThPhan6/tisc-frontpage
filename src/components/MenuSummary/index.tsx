@@ -2,13 +2,12 @@ import { FC, useState } from 'react';
 import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
 import { ReactComponent as ActionLeftIcon } from '@/assets/icons/action-left.svg';
 import style from './index.less';
-import classNames from 'classnames';
 import { ElementSummaryProps, ItemSummaryProps, MenuSummaryProps } from './types';
 import { checkUndefined } from '@/helper/utils';
 
 const ItemSummary: FC<ItemSummaryProps> = ({ brand }) => {
   return (
-    <div className={classNames(style['item-container'])}>
+    <div className={style['item-container']}>
       <span>{checkUndefined(brand?.quantity)}</span>
       <label>{checkUndefined(brand?.label)}</label>
     </div>
@@ -24,10 +23,9 @@ const ElementSummary: FC<ElementSummaryProps> = ({
 
   return (
     <div
-      className={classNames(
-        style['element-container'],
-        toggle ? style['menuActive'] : style['menuUnactive'],
-      )}
+      className={`
+        ${style['element-container']}
+        ${toggle ? style['menuActive'] : style['menuUnactive']}`}
       key={dataElementSummary.id}
     >
       <div
@@ -43,7 +41,7 @@ const ElementSummary: FC<ElementSummaryProps> = ({
         </div>
       </div>
       {toggle && (
-        <div className={classNames(style['item-wrapper'])}>
+        <div className={style['item-wrapper']}>
           {dataElementSummary?.brands &&
             dataElementSummary.brands.map((brand) => {
               return (
@@ -111,11 +109,11 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
   };
 
   return (
-    <div className={classNames(style['header-summary'], containerClass)} style={{ height: height }}>
-      <div className={classNames(style['brand-container'])}>
+    <div className={`${style['header-summary']} ${containerClass}`} style={{ height: height }}>
+      <div className={style['brand-container']}>
         {menuSummaryData.map((data) => {
           return (
-            <div className={classNames(style['wrapper'])} key={data.id}>
+            <div className={style['wrapper']} key={data.id}>
               <ElementSummary
                 dataElementSummary={data}
                 activeId={activeId}

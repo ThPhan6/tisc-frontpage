@@ -1,0 +1,98 @@
+// import {useState, useEffect} from 'react';
+import type { ReactNode, FC } from 'react';
+import { BodyText } from '@/components/Typography';
+import { CustomInput } from '@/components/Form/CustomInput';
+import type { CustomInputProps } from '@/components/Form/types';
+import { Row, Col } from 'antd';
+import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
+import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
+import styles from './styles/InputGroup.less';
+import classNames from 'classnames';
+
+interface IInputGroup extends CustomInputProps {
+  horizontal?: boolean;
+  rightIcon?: boolean | ReactNode;
+  deleteIcon?: boolean | ReactNode;
+  onDelete?: () => void;
+  onRightIconClick?: () => void;
+  required?: boolean;
+  fontLevel?: 1 | 2 | 3 | 4 | 5;
+  label?: string | ReactNode;
+  noWrap?: boolean;
+  hasPadding?: boolean;
+  hasHeight?: boolean;
+  colorPrimaryDark?: boolean;
+  colorRequired?: string;
+}
+
+const InputGroup: FC<IInputGroup> = ({
+  label,
+  horizontal,
+  rightIcon,
+  required,
+  fontLevel,
+  readOnly,
+  noWrap,
+  hasPadding,
+  hasHeight,
+  colorPrimaryDark,
+  colorRequired,
+  onRightIconClick,
+  deleteIcon,
+  onDelete,
+  ...props
+}) => {
+  return (
+    <Row
+      className={classNames(styles.inputGroupContainer, hasHeight && styles.heightInputGroup)}
+      gutter={0}
+      align="middle"
+      wrap={noWrap ? false : true}
+    >
+      <Col span={horizontal ? (noWrap ? undefined : 4) : 24} className="input-label-container">
+        <BodyText level={fontLevel ?? 5} customClass="input-label">
+          {label}
+          {required ? (
+            <span
+              className={
+                colorRequired === 'tertiary' ? styles.requiredColorTertiary : styles.required
+              }
+            >
+              *
+            </span>
+          ) : (
+            ''
+          )}
+          {required ? <span>:</span> : ''}
+        </BodyText>
+      </Col>
+      <Col className={styles.inputGroupContent} span={horizontal ? (noWrap ? undefined : 20) : 24}>
+        <CustomInput
+          {...props}
+          fontLevel={fontLevel ? ((fontLevel + 2) as 7) : 7}
+          readOnly={rightIcon || readOnly ? true : false}
+          className={`input-box ${hasPadding ? 'has-padding' : ''} ${
+            colorPrimaryDark ? 'color-primary-dark' : ''
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        />
+        {rightIcon ? (
+          rightIcon === true ? (
+            <SingleRightFormIcon onClick={onRightIconClick} />
+          ) : (
+            rightIcon
+          )
+        ) : null}
+        {deleteIcon ? (
+          deleteIcon === true ? (
+            <RemoveIcon onClick={onDelete} className="delete-action-input-group" />
+          ) : (
+            deleteIcon
+          )
+        ) : null}
+      </Col>
+    </Row>
+  );
+};
+
+export default InputGroup;

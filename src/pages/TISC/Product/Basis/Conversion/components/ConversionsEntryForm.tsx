@@ -2,7 +2,7 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { FC } from 'react';
 import { ConversionItem } from './ConversionItem';
-import { ConversionsEntryFormProps, conversionValueDefault, ConversionValueProp } from '../types';
+import { ConversionsEntryFormProps, conversionValueDefault, ConversionValueProp } from '@/types';
 
 export const ConversionsEntryForm: FC<ConversionsEntryFormProps> = ({
   conversionValue,

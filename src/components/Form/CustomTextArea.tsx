@@ -3,7 +3,6 @@ import { Input } from 'antd';
 import type { FC } from 'react';
 import type { CustomTextAreaProps } from './types';
 import style from './styles/TextArea.less';
-import classNames from 'classnames';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 import { useState } from 'react';
@@ -40,10 +39,8 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
 
   return (
     <div
-      className={classNames(
-        style['textarea-container'],
-        style[`${borderBottomColor}-border-bottom-color`],
-      )}
+      className={`${style['textarea-container']}
+        ${style[`${borderBottomColor}-border-bottom-color`]}`}
     >
       <Input.TextArea
         ref={textarea}
