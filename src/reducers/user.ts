@@ -1,4 +1,4 @@
-import { IUserDetail, UserDetailValueDefault } from '@/types/user.type';
+import { IUserDetail, InitialUserDetail } from '@/types/user.type';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface UserState {
@@ -6,7 +6,7 @@ interface UserState {
 }
 
 const initialState: UserState = {
-  user: UserDetailValueDefault,
+  user: InitialUserDetail,
 };
 
 const userReducer = createSlice({
