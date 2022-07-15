@@ -17,6 +17,7 @@ type CustomEditorInputProps = Partial<CKEditorProps<CKEditorEventHandlerProp>> &
 
 const id = `editor-container-${Date.now()}`;
 
+// IMPORTANT: do not wrap this component inside another component
 export const CustomEditorInput: FC<CustomEditorInputProps> = ({
   onChangeText,
   containerClass,
@@ -32,15 +33,18 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
           const editorEl = document.querySelector(`#${id}`);
           const iFrameEl = document.querySelector('iframe.cke_wysiwyg_frame');
 
-          if (!containerEl || !editorEl) {
+          if (!containerEl || !editorEl || !iFrameEl) {
             return;
           }
 
           const contentFullHeight =
-            (containerEl.offsetHeight || 0) -
-            (iFrameEl.offsetTop || 0) -
+            Math.abs((containerEl.offsetHeight || 0) - (iFrameEl.offsetTop || 0)) -
             (containerEl.offsetTop || 0) +
             89;
+
+          // console.log('containerEl.offsetHeight', containerEl.offsetHeight);
+          // console.log('iFrameEl.offsetTop', iFrameEl, iFrameEl.offsetTop);
+          // console.log('containerEl.offsetTop', containerEl.offsetTop);
 
           if (contentFullHeight && iFrameEl?.style) {
             iFrameEl.style.height = `${contentFullHeight}px`;

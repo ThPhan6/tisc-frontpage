@@ -1,12 +1,12 @@
-import { EntryFormWrapper } from '@/components/EntryForm';
+import { contentId, EntryFormWrapper } from '@/components/EntryForm';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
-import { CustomInputEditor } from '@/components/Form/InputEditor';
 import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
-
 import styles from '../styles/AgreementPoliciesEntryForm.less';
-import { AgreementPoliciesProps } from '../types';
+import { AgreementPoliciesProps } from '../../../../../../types/agreement-policy.type';
 import React, { FC } from 'react';
+import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
+import { REGEX_GET_CONTENT_ONLY } from '@/helper/utils';
 
 interface AgreementPolicies {
   value: AgreementPoliciesProps;
@@ -22,8 +22,8 @@ export const EmailAutoRespondEntryForm: FC<AgreementPolicies> = ({ value, onChan
   };
 
   /// only get content entered
-  const handleOnChangeMessageInput = (input: { text: string; html: string }) => {
-    onChange({ ...value, message: input.text.replace(/[_.\n\s\r\t__]*/g, '') });
+  const handleOnChangeMessageInput = (html: string) => {
+    onChange({ ...value, message: html.replace(REGEX_GET_CONTENT_ONLY, '') });
   };
 
   return (
@@ -43,14 +43,14 @@ export const EmailAutoRespondEntryForm: FC<AgreementPolicies> = ({ value, onChan
             )}
           </div>
         </FormGroup>
-        <CustomInputEditor
-          label="Document"
-          required={true}
+
+        <FormGroup label="Document" required={true} layout="vertical" formClass={styles.editor} />
+
+        {/* do not wrap CustomEditorInout component inside FormGroup */}
+        <CustomEditorInput
+          onChangeText={(input) => handleOnChangeMessageInput(input)}
           placeholder="type text..."
-          layout="vertical"
-          formClass={styles.label_editor}
-          inputClass={styles.input_editor}
-          handleOnChange={(input) => handleOnChangeMessageInput(input)}
+          containerSelector={`#${contentId}`}
         />
       </EntryFormWrapper>
     </div>

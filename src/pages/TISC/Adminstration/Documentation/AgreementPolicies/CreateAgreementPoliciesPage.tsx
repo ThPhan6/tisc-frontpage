@@ -1,7 +1,7 @@
 import { TableHeader } from '@/components/Table/TableHeader';
 import { useState } from 'react';
 import { EmailAutoRespondEntryForm } from './components/AgreementPoliciesEntryForm';
-import { AgreementPoliciesProps } from './types';
+import { AgreementPoliciesProps } from '@/types';
 
 const DEFAULT_AGREEMENTPOLICIES_VALUE = {
   title: '',
