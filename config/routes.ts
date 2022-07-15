@@ -306,9 +306,20 @@
         access: 'tisc_administration_message',
         routes: [
           {
-            path: '/tisc/adminstration/messages/email-autoresponders',
+            path: '/tisc/adminstration/messages/email-auto',
             name: 'email',
-            component: './Welcome',
+            routes: [
+              {
+                path: '/tisc/adminstration/messages/email-auto',
+                component: './TISC/Adminstration/Messages/EmailAutoresponders/',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/adminstration/messages/email-auto/update/:id',
+                component: './TISC/Adminstration/Messages/EmailAutoresponders/UpdateEmailAutoPage',
+                hideInMenu: true,
+              },
+            ],
           },
           {
             path: '/tisc/adminstration/messages/inspirational-quotations',
