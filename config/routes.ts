@@ -297,7 +297,7 @@
         path: '/tisc/adminstration/team-profiles',
         name: 'team.profile',
         icon: 'team-profile-icon.svg',
-        component: './Welcome',
+        component: './TISC/Adminstration/TeamProfiles/CreateTeamProfilesPage',
         access: 'tisc_administration_team_profile',
       },
       {

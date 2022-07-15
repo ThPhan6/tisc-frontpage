@@ -107,6 +107,8 @@ export const MESSAGE_NOTIFICATION = {
   CREATE_BRAND_COLLECTION_ERROR: 'Failed to create Brand collection',
   GET_BRAND_COLLECTION_ERROR: 'Failed to get Brand collection data',
 
+  // permission
+  GET_PERMISSION_DATA_ERROR: 'Failed to get Permission data',
   // inspirational quotation
   GET_LIST_INSPIRATIONAL_QUOTATION_ERROR: 'Get list inspirational quotation error',
   GET_ONE_INSPIRATIONAL_QUOTATION_ERROR: 'Get one inspirational quotation error',

@@ -13,7 +13,7 @@ export const PhoneInput: FC<PhoneInputProps> = ({
   codeReadOnly,
   phoneNumberReadOnly,
   status,
-  colorPlaceholder,
+  containerClass,
 }) => {
   const [phoneInputValue, setPhoneInputValue] = useState({
     zoneCode: '',
@@ -53,12 +53,12 @@ export const PhoneInput: FC<PhoneInputProps> = ({
   };
 
   return (
-    <div className={`${styles['phone-input-container']} ${status && styles[`${status}-status`]} `}>
-      <div
-        className={`${styles['wrapper-code-input']} ${
-          colorPlaceholder === 'mono' ? styles['color-placeholder'] : ''
-        }`}
-      >
+    <div
+      className={`${styles['phone-input-container']} ${
+        status ? styles[`${status}-status`] : ''
+      } ${containerClass} `}
+    >
+      <div className={styles['wrapper-code-input']}>
         <BodyText level={5} fontFamily="Roboto">
           +
         </BodyText>

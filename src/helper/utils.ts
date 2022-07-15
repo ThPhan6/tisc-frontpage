@@ -31,6 +31,25 @@ export const redirectAfterBrandOrDesignLogin = async () => {
   pushTo(PATH.brandHomePage);
 };
 
+export const getLetterAvatarBackgroundColor = (name: string) => {
+  let digitString = '';
+
+  /// convert character string to integer string
+  for (let i = 0; i < name.length; i++) {
+    digitString += name[i].charCodeAt(0);
+  }
+
+  const number = Number(digitString) * 9999;
+  const backgroundColor =
+    '#' +
+    number
+      .toString()
+      .replace(/\D/g, '')
+      .substring(number.toString().length - 6, number.toString().length);
+
+  return backgroundColor;
+};
+
 export const getBase64 = (file: any): Promise<string> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();

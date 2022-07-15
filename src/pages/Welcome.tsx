@@ -17,6 +17,7 @@ import { dataMenuSummary } from '@/constants/util';
 import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
 import { MenuSummary } from '@/components/MenuSummary';
 import { PresetsEntryForm } from './TISC/Product/Basis/Preset/components/PresetsEntryForm';
+import { ProfileIcon } from '@/components/ProfileIcon';
 import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
 
 const Welcome: React.FC = () => {
@@ -72,6 +73,16 @@ const Welcome: React.FC = () => {
         />
       </FormGroup>
       <Card>
+        {/* Profile icon */}
+        <div className={styles.profile_icon}>
+          <ProfileIcon name="Adele" />
+          <ProfileIcon name="Black Panther" />
+          <ProfileIcon name="Black Panther" />
+          <ProfileIcon name="Black Adam" />
+          <ProfileIcon name="Tony Start" />
+          <ProfileIcon name="Thor" />
+        </div>
+
         <PresetsEntryForm />
         {/*Tabs*/}
         <div>
@@ -166,7 +177,6 @@ const Welcome: React.FC = () => {
             defaultValue={optionsCheckbox[0]}
           />
         </FormGroup>
-        {/* Input Editor */}
 
         {/* radio */}
         <FormGroup label="Test Radio horizontal" tooltip="How are you">
