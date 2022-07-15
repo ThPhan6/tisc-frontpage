@@ -276,12 +276,13 @@
           {
             path: '/tisc/adminstration/documentation/agreement-policy-terms',
             name: 'terms.policy',
-            component: './Welcome',
+            component:
+              './TISC/Adminstration/Documentation/AgreementPolicies/CreateAgreementPoliciesPage',
           },
           {
             path: '/tisc/adminstration/documentation/how-to',
             name: 'how.to',
-            component: './Welcome',
+            component: './TISC/Adminstration/Documentation/HowTo',
           },
         ],
       },
@@ -322,9 +323,27 @@
             ],
           },
           {
-            path: '/tisc/adminstration/messages/inspirational-quotations',
+            path: '/tisc/adminstration/messages/quotation',
             name: 'quotation',
-            component: './Welcome',
+            routes: [
+              {
+                path: '/tisc/adminstration/messages/quotation',
+                component: './TISC/Adminstration/Messages/InspirationalQuotations',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/adminstration/messages/quotation/create',
+                component:
+                  './TISC/Adminstration/Messages/InspirationalQuotations/CreateQuotationPage',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/adminstration/messages/quotation/update/:id',
+                component:
+                  './TISC/Adminstration/Messages/InspirationalQuotations/UpdateQuotationPage',
+                hideInMenu: true,
+              },
+            ],
           },
         ],
       },

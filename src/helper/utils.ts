@@ -7,6 +7,7 @@ import { pushTo } from './history';
 export const REGEX_PASSWORD =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d][\w~@#$%^&*+=`|{}:;!.?\"()\[\]-]{7,}$/;
 export const REGEX_EMAIL = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+export const REGEX_GET_CONTENT_ONLY = /[_.\n\s\r\t__]*/g;
 
 export const validateEmail = (email: string) => {
   return REGEX_EMAIL.test(email);
@@ -80,6 +81,9 @@ export const isShowErrorMessage = (
 };
 
 export function showImageUrl(url: string) {
+  if (url.startsWith('data:image')) {
+    return url;
+  }
   return `${STORE_URL}${url}`;
 }
 

@@ -128,7 +128,9 @@
   .photoKeyword {
     display: flex;
     align-items: center;
+    width: 100%;
     height: 40px;
+    overflow: auto;
     div {
       width: auto !important;
       span {
@@ -227,7 +229,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    height: 40px;
+    height: 36px;
     padding: 0 16px;
     cursor: pointer;
     :global(.add-attribute-text) {
@@ -257,18 +259,31 @@
       :global(.input-label) {
         height: 18px;
         margin-right: 12px;
+        text-transform: capitalize;
       }
     }
     :global(.attribute-select-group) {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       height: 36px;
       padding: 0 16px;
       box-shadow: inset 0 0.5px 0 rgba(0, 0, 0, 30%);
-      cursor: pointer;
-      :global(.single-right-icon) {
-        margin-right: auto;
-        margin-left: 8px;
+      :global(.attribute-select-group-left) {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        :global(.single-right-icon) {
+          margin-right: auto;
+          margin-left: 8px;
+        }
+      }
+      :global(.delete-icon) {
+        cursor: pointer;
+        &:hover {
+          color: @primary-color-dark;
+        }
       }
     }
     .attributeSubItem {
@@ -278,7 +293,10 @@
       padding: 0 16px;
       box-shadow: inset 0 0.5px 0 #000;
       :global(.input-label) {
-        width: 100px;
+        width: auto;
+        margin-right: 12px;
+        white-space: nowrap;
+        text-transform: capitalize;
       }
     }
   }
@@ -302,6 +320,102 @@
       cursor: pointer;
       :global(.extra-custom-button-label) {
         margin-right: 12px;
+      }
+    }
+  }
+}
+.attributeItemCheckBox {
+  display: flex;
+  align-items: center;
+  text-transform: capitalize;
+  :global(.attribute-name) {
+    margin-right: 12px;
+  }
+  :global(.attribute-description) {
+    color: @mono-color-medium;
+  }
+}
+.productFooter {
+  box-shadow: inset 0 0.5px 0 rgba(0, 0, 0, 0.3);
+  :global(.ant-tabs-nav) {
+    margin: 0;
+    box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
+    &::before {
+      border-bottom: 0 !important;
+    }
+  }
+  :global(.footer-content) {
+    width: 100%;
+    &:global(.collection) {
+      padding: 8px;
+      box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
+    }
+    &:global(.tip) {
+      padding: 0 8px 8px;
+      box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
+    }
+    &:global(.download) {
+      padding: 0 8px 8px;
+      box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
+    }
+    :global(.dynamic-wrapper) {
+      box-shadow: inset 0 0.5px 0 rgba(0, 0, 0, 0.3);
+    }
+    :global(.relative-product-wrapper) {
+      width: 100%;
+      height: 72px;
+      overflow: auto hidden;
+      :global(.relative-product-list) {
+        display: inline-flex;
+        align-items: center;
+        :global(.relative-product-item) {
+          position: relative;
+          width: 72px;
+          margin-right: 8px;
+          padding-top: 72px;
+          cursor: pointer;
+          :global(.relative-product) {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            img {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              border: 1px solid @mono-color-medium;
+            }
+            :global(.placeholder-text) {
+              position: absolute;
+              top: 0;
+              left: 0;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 100%;
+              height: 100%;
+              padding: 4px;
+              color: #fff;
+              font-weight: 300;
+              font-size: 10px;
+              font-family: 'Roboto';
+              font-style: normal;
+              line-height: 9px;
+              letter-spacing: 0.02em;
+              text-align: center;
+              background-color: #000;
+              opacity: 0;
+              transition: all 0.4s;
+              &:hover {
+                opacity: 1;
+              }
+            }
+          }
+        }
       }
     }
   }

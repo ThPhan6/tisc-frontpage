@@ -53,7 +53,11 @@ export const CustomRadio: FC<CustomRadioProps> = ({
       >
         <Space direction={isRadioList ? 'vertical' : direction}>
           {options.map((option, index) => (
-            <label key={index} className={style.panel_radio} htmlFor={`${option.value}_${index}`}>
+            <label
+              key={index}
+              className={`${style.panel_radio} radio-label`}
+              htmlFor={`${option.value}_${index}`}
+            >
               <div style={{ width: '100%' }}>
                 {isRadioList ? (
                   <div className={style['item-wrapper']}>
