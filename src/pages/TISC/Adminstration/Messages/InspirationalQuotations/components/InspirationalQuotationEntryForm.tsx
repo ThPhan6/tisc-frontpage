@@ -1,11 +1,10 @@
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormGroup } from '@/components/Form';
-import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
-import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
 import { FC } from 'react';
 import styles from '../styles/InspirationalQuotationEntryForm.less';
 import { IInspirationalQuotationForm } from '@/types';
+import InputGroup from '@/components/EntryForm/InputGroup';
 
 interface IInspirationalQuotationEntryFormProps {
   value: IInspirationalQuotationForm;
@@ -47,40 +46,41 @@ export const InspirationalQuotationEntryForm: FC<IInspirationalQuotationEntryFor
         handleSubmit={handleSubmitData}
         submitButtonStatus={submitButtonStatus}
       >
-        <FormGroup label="Author" required={true} layout="vertical" formClass={styles.input_form}>
-          <div className={styles.input_field} id="author-input">
-            <CustomInput
-              placeholder="author name"
-              className={`${styles.author} ${value.author && styles.input_item}`}
-              name="author"
-              value={value.author}
-              onChange={handleOnChangeInput}
-            />
-            {value.author && (
-              <ActionRemoveIcon
-                className={styles.remove_icon}
-                onClick={() => handleRemoveInput('author')}
-              />
-            )}
-          </div>
-        </FormGroup>
-        <FormGroup label="Identity" required={true} layout="vertical" formClass={styles.input_form}>
-          <div className={styles.input_field} id="identity-input">
-            <CustomInput
-              placeholder="author position / role"
-              className={`${styles.identity} ${value.identity && styles.input_item}`}
-              name="identity"
-              value={value.identity}
-              onChange={handleOnChangeInput}
-            />
-            {value.identity && (
-              <ActionRemoveIcon
-                className={styles.remove_icon}
-                onClick={() => handleRemoveInput('identity')}
-              />
-            )}
-          </div>
-        </FormGroup>
+        {/* author */}
+        <InputGroup
+          label="Author"
+          required
+          colorPrimaryDark
+          colorRequired="tertiary"
+          placeholder="author name"
+          name="author"
+          value={value.author}
+          onChange={handleOnChangeInput}
+          deleteIcon
+          onDelete={() => handleRemoveInput('author')}
+          hasPadding
+          hasHeight
+          fontLevel={3}
+        />
+
+        {/* identity */}
+        <InputGroup
+          label="Identity"
+          required
+          colorPrimaryDark
+          colorRequired="tertiary"
+          placeholder="author position / role"
+          name="identity"
+          value={value.identity}
+          onChange={handleOnChangeInput}
+          deleteIcon
+          onDelete={() => handleRemoveInput('identity')}
+          hasPadding
+          hasHeight
+          fontLevel={3}
+        />
+
+        {/* quotation */}
         <FormGroup label="Quotation" required={true} layout="vertical">
           <CustomTextArea
             showCount

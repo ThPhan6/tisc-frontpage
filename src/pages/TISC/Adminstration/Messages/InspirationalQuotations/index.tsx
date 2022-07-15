@@ -29,7 +29,7 @@ const InspirationalQuotationsList: React.FC = () => {
     });
   };
 
-  const mainColums: ICustomTableColumnType<IInspirationalQuotationForm>[] = [
+  const mainColumns: ICustomTableColumnType<IInspirationalQuotationForm>[] = [
     {
       title: 'Author',
       dataIndex: 'author',
@@ -80,7 +80,7 @@ const InspirationalQuotationsList: React.FC = () => {
     <CustomTable
       rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createQuotation)} />}
       ref={tableRef}
-      columns={mainColums}
+      columns={mainColumns}
       fetchDataFunc={getQuotationPagination}
       title="INSPIRATIONAL QUOTATIONS"
     />

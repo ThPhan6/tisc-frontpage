@@ -20,6 +20,8 @@ const CreateInspirationalQuotationsPage = () => {
   const submitButtonStatus = useBoolean(false);
   const [input, setInput] = useState<IInspirationalQuotationForm>(DEFAULT_INPUT);
 
+  console.log(input);
+
   const handleOnChangeInput = (newInput: IInspirationalQuotationForm) => {
     setInput(newInput);
   };

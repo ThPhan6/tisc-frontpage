@@ -14,39 +14,6 @@
     color: @mono-color;
   }
 
-  .input_field {
-    display: flex;
-    align-items: center;
-
-    :first-child {
-      width: 100%;
-    }
-
-    .author,
-    .identity {
-      width: 100%;
-      height: 32px;
-    }
-
-    .input_item {
-      padding-right: 20px;
-    }
-
-    .remove_icon {
-      position: absolute;
-      right: 0;
-      cursor: pointer;
-      path {
-        transition: fill 1s;
-      }
-      &:hover {
-        path {
-          fill: @primary-color-dark;
-        }
-      }
-    }
-  }
-
   .quotation {
     :global(.ant-input) {
       width: 100%;
