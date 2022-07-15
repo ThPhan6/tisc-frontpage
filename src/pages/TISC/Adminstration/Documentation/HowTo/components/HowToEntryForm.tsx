@@ -86,7 +86,7 @@ const QuestionAndAnswerField: FC<IFAQField> = ({
   );
 };
 
-const RenderPanelHeader: FC<IPanelHeader> = ({ value, panel, handleActiveKeyToCollapse }) => {
+const PanelHeader: FC<IPanelHeader> = ({ value, panel, handleActiveKeyToCollapse }) => {
   return (
     <div className={styles.panel}>
       <div className={styles.panel_header} onClick={() => handleActiveKeyToCollapse(panel.title)}>
@@ -180,7 +180,7 @@ export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
                         : styles.unactive_collapse_panel
                     }
                     header={
-                      <RenderPanelHeader
+                      <PanelHeader
                         key={panelIndex}
                         value={value}
                         panel={panel}

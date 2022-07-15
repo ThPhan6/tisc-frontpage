@@ -192,7 +192,7 @@ export const dataMenuFirm = {
   ],
 };
 
-export const dataPanelHowTo: IHowToForm = {
+export const howToPagePanel: IHowToForm = {
   tisc: {
     data: [
       {

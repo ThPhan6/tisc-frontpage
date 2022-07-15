@@ -83,7 +83,7 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
     });
   };
 
-  const renderPanelHeader = () => {
+  const PanelHeader = () => {
     return (
       <div className={styles.panel_header}>
         <div className={styles.panel_header__field}>
@@ -133,7 +133,7 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
           className={`
            ${styles['customPadding']}
             ${isEmpty(presetItem.is_collapse) ? styles['bottomMedium'] : styles['bottomBlack']}`}
-          header={renderPanelHeader()}
+          header={PanelHeader()}
           key={presetItem.is_collapse}
           showArrow={false}
         >

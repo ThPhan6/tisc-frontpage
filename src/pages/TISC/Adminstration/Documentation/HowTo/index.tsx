@@ -6,7 +6,7 @@ import { FC, useState } from 'react';
 import { HowToEntryForm } from './components/HowToEntryForm';
 import classNames from 'classnames';
 import { IHowToForm } from './types';
-import { dataPanelHowTo } from '@/constants/util';
+import { howToPagePanel } from '@/constants/util';
 
 interface IHowToPage {
   containerClass?: string;
@@ -21,7 +21,7 @@ const HowToPage: FC<IHowToPage> = ({ containerClass }) => {
   const selectedTab = listTab[0];
   const [activeTab, setActiveTab] = useState<TabProp>(selectedTab);
 
-  const [howTo, setHowTo] = useState<IHowToForm>(dataPanelHowTo);
+  const [howTo, setHowTo] = useState<IHowToForm>(howToPagePanel);
 
   return (
     <div className={classNames(styles.howto_container, containerClass)}>
