@@ -41,13 +41,31 @@ const departmentData = [
   { label: 'Human Resource', value: '41' },
   { label: 'Marketing & Sales', value: '51' },
 ];
+const DEFAULT_TEAMPROFILE = {
+  firstname: '',
+  lastname: '',
+  position: '',
+  email: '',
+  location_id: '',
+  gender: { value: '', label: '' },
+  department: { value: '', label: '' },
+  access_level: { value: '', label: '' },
+  phone: { zoneCode: '', phoneNumber: '' },
+  mobile: { zoneCode: '', phoneNumber: '' },
+  status: false,
+};
 
 interface TeamProfilesEntryFormValue {
-  value: TeamProfilesProps;
-  onChange: (value: TeamProfilesProps) => void;
+  // value: TeamProfilesProps;
+  // onChange: (value: TeamProfilesProps) => void;
 }
 
-export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({ value, onChange }) => {
+export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = (
+  {
+    /* value, onChange */
+  },
+) => {
+  const [entryFormValue, setEntryFormValue] = useState<TeamProfilesProps>(DEFAULT_TEAMPROFILE);
   // for location, department and TISC Access Level modal
   const [visible, setVisible] = useState<typeOpenModal | boolean>('' || false);
   const handleOpenContent = (typeModal: typeOpenModal) => {
@@ -62,28 +80,46 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({ value, o
     phoneInputKey: typePhoneInput,
     phoneNumber: PhoneInputValueProp,
   ) => {
-    onChange({ ...value, [phoneInputKey]: phoneNumber });
+    setEntryFormValue((prevState) => ({
+      ...prevState,
+      [phoneInputKey]: phoneNumber,
+    }));
   };
   const handleRemovePhoneInputContent = (phoneInputKey: typePhoneInput) => {
-    onChange({ ...value, [phoneInputKey]: { zoneCode: value.phone.zoneCode, phoneNumber: '' } });
+    setEntryFormValue((prevState) => ({
+      ...prevState,
+      [phoneInputKey]: {
+        zoneCode: phoneInputKey === 'phone' ? prevState.phone.zoneCode : prevState.mobile.zoneCode,
+        phoneNumber: '',
+      },
+    }));
   };
 
   /// handle another input
   const handleOnChangeInput = (inputKey: typeInput, e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...value, [inputKey]: e.target.value });
+    setEntryFormValue((prevState) => ({
+      ...prevState,
+      [inputKey]: e.target.value,
+    }));
   };
   const handleRemoveInputContent = (inputKey: typeInput) => {
-    onChange({ ...value, [inputKey]: '' });
+    setEntryFormValue((prevState) => ({ ...prevState, [inputKey]: '' }));
   };
 
   const handleChooseRadioContentType = (radioKey: typeRadio, radioValue: RadioValue) => {
     /// overwrite data
-    onChange({ ...value, [radioKey]: { value: radioValue.value, label: radioValue.label } });
+    setEntryFormValue((prevState) => ({
+      ...prevState,
+      [radioKey]: { value: radioValue.value, label: radioValue.label },
+    }));
   };
 
   ///
   const handleSendInvite = () => {
-    onChange({ ...value, status: value.status ? false : true });
+    setEntryFormValue((prevState) => ({
+      ...prevState,
+      status: prevState.status ? false : true,
+    }));
   };
 
   return (
@@ -100,10 +136,10 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({ value, o
             <CustomInput
               borderBottomColor="mono-medium"
               placeholder="member first name"
-              value={value.firstname}
+              value={entryFormValue.firstname}
               onChange={(e) => handleOnChangeInput('firstname', e)}
             />
-            {value.firstname && (
+            {entryFormValue.firstname && (
               <ActionRemoveIcon
                 className={styles.remove_icon}
                 onClick={() => handleRemoveInputContent('firstname')}
@@ -123,10 +159,10 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({ value, o
             <CustomInput
               borderBottomColor="mono-medium"
               placeholder="member last name"
-              value={value.lastname}
+              value={entryFormValue.lastname}
               onChange={(e) => handleOnChangeInput('lastname', e)}
             />
-            {value.lastname && (
+            {entryFormValue.lastname && (
               <ActionRemoveIcon
                 className={styles.remove_icon}
                 onClick={() => handleRemoveInputContent('lastname')}
@@ -139,7 +175,7 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({ value, o
         <FormGroup label="Gender" required={true} layout="vertical">
           <CustomRadio
             options={genderData}
-            value={value.gender.value}
+            value={entryFormValue.gender.value}
             onChange={(radioValue) => handleChooseRadioContentType('gender', radioValue)}
           />
         </FormGroup>
@@ -176,7 +212,7 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({ value, o
               borderBottomColor="mono-medium"
               placeholder="select from the list"
               disabled
-              value={value.department.label as string}
+              value={entryFormValue.department.label as string}
             />
             {visible === 'department' ? (
               <DropUpIcon className={styles.drop_icon} onClick={handleCloseContent} />
@@ -193,7 +229,7 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({ value, o
                 options={departmentData}
                 isRadioList
                 otherInput
-                value={value.department.value}
+                value={entryFormValue.department.value}
                 onChange={(radioValue) => handleChooseRadioContentType('department', radioValue)}
               />
             )}
@@ -211,10 +247,10 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({ value, o
             <CustomInput
               borderBottomColor="mono-medium"
               placeholder="member position/role"
-              value={value.position}
+              value={entryFormValue.position}
               onChange={(e) => handleOnChangeInput('position', e)}
             />
-            {value.position && (
+            {entryFormValue.position && (
               <ActionRemoveIcon
                 className={styles.remove_icon}
                 onClick={() => handleRemoveInputContent('position')}
@@ -234,10 +270,10 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({ value, o
             <CustomInput
               borderBottomColor="mono-medium"
               placeholder="user work email address"
-              value={value.email}
+              value={entryFormValue.email}
               onChange={(e) => handleOnChangeInput('email', e)}
             />
-            {value.email && (
+            {entryFormValue.email && (
               <ActionRemoveIcon
                 className={styles.remove_icon}
                 onClick={() => handleRemoveInputContent('email')}
@@ -256,11 +292,11 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({ value, o
           <div className={styles.form_group__content}>
             <PhoneInput
               phonePlaceholder="area code / number"
-              value={value.phone}
+              value={entryFormValue.phone}
               onChange={(phoneInputValue) => handleOnChangePhoneNumber('phone', phoneInputValue)}
               containerClass={styles.phone_input}
             />
-            {value.phone.phoneNumber && (
+            {entryFormValue.phone.phoneNumber && (
               <ActionRemoveIcon
                 className={styles.remove_icon}
                 onClick={() => handleRemovePhoneInputContent('phone')}
@@ -279,11 +315,11 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({ value, o
           <div className={styles.form_group__content}>
             <PhoneInput
               phonePlaceholder="mobile number"
-              value={value.mobile}
+              value={entryFormValue.mobile}
               onChange={(mobileInputValue) => handleOnChangePhoneNumber('mobile', mobileInputValue)}
               containerClass={styles.phone_input}
             />
-            {value.mobile.phoneNumber && (
+            {entryFormValue.mobile.phoneNumber && (
               <ActionRemoveIcon
                 className={styles.remove_icon}
                 onClick={() => handleRemovePhoneInputContent('mobile')}
@@ -304,19 +340,19 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({ value, o
         >
           <CustomRadio
             options={accessLevelData}
-            value={value.access_level.value}
+            value={entryFormValue.access_level.value}
             onChange={(radioValue) => handleChooseRadioContentType('access_level', radioValue)}
           />
         </FormGroup>
 
         {/* Status */}
         <Status
-          value={value.status}
+          value={entryFormValue.status}
           onClick={handleSendInvite}
           label="Status"
           buttonName="Send Invite"
           text_1="Activated"
-          text_2="Unactivated"
+          text_2="Inactivated"
           formClass={styles.status}
         />
       </EntryFormWrapper>

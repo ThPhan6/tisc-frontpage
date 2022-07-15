@@ -27,7 +27,7 @@ export const redirectAfterLogin = async () => {
   pushTo(redirect || PATH.homePage);
 };
 
-export const getBackgroundColor = (name: string) => {
+export const getLetterAvatarBackgroundColor = (name: string) => {
   let digitString = '';
 
   /// convert character string to integer string
