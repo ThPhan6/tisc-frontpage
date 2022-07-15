@@ -1,0 +1,90 @@
+.editor-form(@text-padding-x, @text-padding-y, @placeholder-color, @resize : vertical) {
+  :global(.ql-editor) {
+    padding: @text-padding-y @text-padding-x;
+    resize: @resize;
+  }
+  :global(.ql-editor.ql-blank::before) {
+    right: @text-padding-x;
+    left: @text-padding-x;
+    color: @placeholder-color;
+  }
+}
+
+.container {
+  :global(.ant-input) {
+    color: @primary-color-dark;
+  }
+  :global(.ql-container.ql-snow) {
+    border-bottom-color: transparent;
+    box-shadow: none;
+  }
+  :global(.ant-space-item) {
+    margin-left: 0;
+    padding: 0 16px;
+    white-space: nowrap;
+  }
+  :global(.ant-radio-wrapper) {
+    margin-right: 0;
+    // padding-right: 8px;
+  }
+  :global(.react-horizontal-scrolling-menu--scroll-container) {
+    overflow: hidden;
+  }
+
+  .radio_form {
+    margin-bottom: 16px;
+    box-shadow: 0 0.5px 0 @mono-color-medium;
+
+    .scroll_wrapper {
+      display: flex;
+      // align-items: center;
+    }
+
+    .radio_container {
+      box-shadow: 0 0.5px 0 @mono-color-medium;
+    }
+  }
+
+  .title {
+    margin-bottom: 16px;
+
+    .title_field {
+      display: flex;
+      align-items: center;
+
+      .title_input {
+        padding-right: 20px;
+      }
+      .remove_icon {
+        position: absolute;
+        right: 0;
+        cursor: pointer;
+        path {
+          transition: fill 1s;
+        }
+        &:hover {
+          path {
+            fill: @primary-color-dark;
+          }
+        }
+      }
+    }
+  }
+
+  .label_editor {
+    label {
+      margin-bottom: 8px;
+    }
+  }
+
+  .input_editor {
+    @text-padding-x: 16px;
+    @text-padding-y: 4px;
+    @resize-none: none;
+    @placeholder-color: @mono-color-medium;
+    .editor-form(@text-padding-x, @text-padding-y,@placeholder-color, @resize-none);
+    :global(.ql-editor) {
+      height: 100%;
+    }
+  }
+}

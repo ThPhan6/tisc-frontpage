@@ -37,6 +37,10 @@ export const PATH = {
   attributeGeneralUpdate: '/tisc/products/attributes/general/:id',
   //
 
+  // email autorepsonder
+  emailAuto: '/tisc/adminstration/messages/email-auto',
+  updateEmailAuto: '/tisc/adminstration/messages/email-auto/update/:id',
+
   // configuration
   productConfiguration: '/tisc/products/configuration',
   productConfigurationCreate: '/tisc/products/configuration/create/:brandId',
