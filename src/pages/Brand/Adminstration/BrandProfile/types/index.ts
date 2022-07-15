@@ -29,3 +29,11 @@ export interface ItemWebsiteProp {
   websiteValue: IWebsiteValueProp;
   onChange: (value: IWebsiteValueProp) => void;
 }
+
+export interface ILogoBrandProfile {
+  logo: string;
+}
+
+export const logoValueDefault = {
+  logo: '',
+};

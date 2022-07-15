@@ -10,7 +10,8 @@ const CountryModal: FC<{
   setVisible: (visible: boolean) => void;
   chosenValue?: any;
   setChosenValue: (value: any) => void;
-}> = ({ visible, setVisible, chosenValue, setChosenValue }) => {
+  phone_code?: boolean;
+}> = ({ visible, setVisible, chosenValue, setChosenValue, phone_code }) => {
   const [countries, setCountries] = useState<ICountry[]>([]);
 
   const getCountryList = () => {
@@ -38,7 +39,7 @@ const CountryModal: FC<{
           ),
           options: countries.map((country) => {
             return {
-              label: country.name,
+              label: phone_code ? `${country.name}  +${country.phone_code}` : country.name,
               value: country.id,
             };
           }),

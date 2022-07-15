@@ -1,6 +1,6 @@
 .content {
   :global(.ant-input) {
-    color: @primary-color-dark;
+    color: @primary-color-dark !important;
   }
   .container {
     height: 804px;
@@ -33,6 +33,15 @@
       }
       .customWarningIcon {
         margin-left: 4px;
+      }
+      .wrapper-upload {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        height: 100%;
+        .icon {
+          cursor: pointer;
+        }
       }
     }
     .customFormArea {

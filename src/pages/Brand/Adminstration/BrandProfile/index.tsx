@@ -1,12 +1,12 @@
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText, Title } from '@/components/Typography';
-import { Col, Row } from 'antd';
+import { Col, Row, Upload, UploadProps } from 'antd';
 import styles from './styles/index.less';
 import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   IBrandProfileProp,
   brandProfileValueDefault,
@@ -14,37 +14,25 @@ import {
   IWebsiteValueProp,
 } from './types';
 import { ItemWebsite } from './components/ItemWebsite';
-import { getBase64 } from '@/helper/utils';
+import { showImageUrl } from '@/helper/utils';
 import Logo from '@/assets/image-logo.png';
 import { useBoolean } from '@/helper/hook';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-icon.svg';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
+import { updateBrandProfile, updateLogoBrandProfile } from '@/services/brand-profile';
+import { useAppSelector } from '@/reducers';
 
 const BrandProfile = () => {
   const [brandProfile, setBrandProfile] = useState<IBrandProfileProp>(brandProfileValueDefault);
   const submitButtonStatus = useBoolean(false);
-
-  const onSubmitForm = () => {
-    submitButtonStatus.setValue(true);
-    setTimeout(() => {
-      submitButtonStatus.setValue(false);
-    }, 1000);
-  };
+  const isLoading = useBoolean(false);
+  const [fileInput, setFileInput] = useState<any>();
+  const user = useAppSelector((state) => state.user);
 
   const handleOnChangeValueForm = (
     e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>,
   ) => {
     setBrandProfile({ ...brandProfile, [e.target.name]: e.target.value });
-    if (e.target.files) {
-      const file = e.target.files![0];
-      getBase64(file)
-        .then((base64Image) => {
-          setBrandProfile({ ...brandProfile, slogan: base64Image });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
   };
 
   const handleAddWebsiteItem = () => {
@@ -60,7 +48,49 @@ const BrandProfile = () => {
     setBrandProfile({ ...brandProfile, official_websites: newWebsiteItem });
   };
 
-  console.log(brandProfile);
+  const handleUpdateLogo = () => {
+    const formData = new FormData();
+    formData.append('logo', fileInput);
+    isLoading.setValue(true);
+    updateLogoBrandProfile(formData as any).then((isSuccess) => {
+      if (isSuccess) {
+        isLoading.setValue(false);
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (fileInput) {
+      handleUpdateLogo();
+    }
+  }, [fileInput]);
+
+  const setPreviewAvatar = () => {
+    if (user) {
+      return showImageUrl(user.user?.brand?.logo as string);
+    }
+    return Logo;
+  };
+
+  const props: UploadProps = {
+    beforeUpload: (file) => {
+      setFileInput(file);
+      return false;
+    },
+  };
+
+  const onSubmitForm = () => {
+    isLoading.setValue(true);
+    updateBrandProfile(brandProfile).then((isSuccess) => {
+      isLoading.setValue(false);
+      if (isSuccess) {
+        submitButtonStatus.setValue(true);
+        return;
+      }
+    });
+  };
+
+  console.log(fileInput);
   return (
     <div className={styles.content}>
       <Row>
@@ -100,7 +130,7 @@ const BrandProfile = () => {
                 />
               </FormGroup>
               <div className={styles.logo}>
-                <img src={brandProfile.slogan ? brandProfile.slogan : Logo} />
+                <img src={setPreviewAvatar()} />
               </div>
               <div className={styles.customFormLogo}>
                 <FormGroup
@@ -110,21 +140,19 @@ const BrandProfile = () => {
                   required
                   formClass={styles.customLabel}
                   iconTooltip={<WarningIcon className={styles.customWarningIcon} />}
-                ></FormGroup>
-                <div className={styles.customIcon}>
-                  <label htmlFor="image">
-                    <UploadIcon style={{ cursor: 'pointer' }} />
-                  </label>
-                  <div>
-                    <input
-                      type="file"
-                      style={{ display: 'none' }}
-                      id="image"
+                >
+                  <div className={styles['wrapper-upload']}>
+                    <Upload
+                      maxCount={1}
+                      showUploadList={false}
+                      {...props}
                       accept=".png"
-                      onChange={handleOnChangeValueForm}
-                    />
+                      onChange={() => handleOnChangeValueForm}
+                    >
+                      <UploadIcon className={styles.icon} />
+                    </Upload>
                   </div>
-                </div>
+                </FormGroup>
               </div>
               <FormGroup label="Slogan" layout="vertical" formClass={styles.customFormGroup}>
                 <CustomInput
