@@ -52,7 +52,6 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
       let sortOrder: any = '';
       ///
       if (!isArray(sorter)) {
-        console.log('go here');
         sortName = sorter.field;
         sortOrder = sorter.order === 'descend' ? 'DESC' : 'ASC';
       }
