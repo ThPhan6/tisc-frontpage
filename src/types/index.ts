@@ -9,3 +9,4 @@ export * from './collection.type';
 export * from './product.type';
 export * from './general.type';
 export * from './email-auto.type';
+export * from './agreement-policy.type';

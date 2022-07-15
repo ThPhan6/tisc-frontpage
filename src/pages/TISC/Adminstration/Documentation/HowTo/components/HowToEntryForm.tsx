@@ -114,8 +114,6 @@ const PanelHeader: FC<IPanelHeader> = ({ value, panel, handleActiveKeyToCollapse
 };
 
 export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
-  console.log(value);
-
   const handleActiveKeyToCollapse = (collapseValue: string) => {
     onChange({
       activeKey: value.activeKey === collapseValue ? '' : collapseValue,
