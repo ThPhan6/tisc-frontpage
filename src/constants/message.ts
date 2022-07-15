@@ -78,6 +78,22 @@ export const MESSAGE_NOTIFICATION = {
   GET_BRAND_SUMMARY_DATA_ERROR: 'Failed to get Brand summary data',
   CREATE_BRAND_COLLECTION_ERROR: 'Failed to create Brand collection',
   GET_BRAND_COLLECTION_ERROR: 'Failed to get Brand collection data',
+
+  //location
+  GET_COUNTRIES_ERROR: 'Failed to get countries data',
+  GET_STATES_ERROR: 'Failed to get states data',
+  GET_CITIES_ERROR: 'Failed to get cities data',
+  GET_LIST_COUNTRY_GROUP: 'Failed to get list country group data',
+  GET_ONE_COUNTRY_ERROR: 'Failed to get one country',
+
+  //distributor
+  CREATE_DISTRIBUTOR_SUCCESS: 'Create distributor successfully',
+  CREATE_DISTRIBUTOR_ERROR: 'Create distributor error',
+  DELETE_DISTRIBUTOR_SUCCESS: 'Delete distributor successfully',
+  DELETE_DISTRIBUTOR_ERROR: 'Delete distributor error',
+  UPDATE_DISTRIBUTOR_SUCCESS: 'Update distributor successfully',
+  UPDATE_DISTRIBUTOR_ERROR: 'Update distributor error',
+  GET_ONE_DISTRIBUTOR_ERROR: 'Get one distributor error',
 };
 
 export const MESSAGE_TOOLTIP = {

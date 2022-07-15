@@ -8,3 +8,5 @@ export * from './basis-option.api';
 export * from './collection.api';
 export * from './product.api';
 export * from './email-auto.api';
+export * from './location.api';
+export * from './distributor.api';

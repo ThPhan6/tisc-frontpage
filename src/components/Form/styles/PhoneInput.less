@@ -32,6 +32,14 @@
   .phone-input {
     flex: 1;
   }
+  .color-placeholder {
+    ::placeholder {
+      color: @mono-color;
+    }
+    :global(.ant-input) {
+      color: @mono-color;
+    }
+  }
 }
 
 .warning-status {
