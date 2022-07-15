@@ -1,4 +1,4 @@
-import { EntryFormWrapper, idChildren } from '@/components/EntryForm';
+import { EntryFormWrapper, contentId } from '@/components/EntryForm';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
@@ -138,7 +138,7 @@ export const EmailAutoRespondEntryForm: FC<EmailAutoRespondProps> = ({
           <CustomEditorInput
             onChangeText={handleOnChangeMessageInput}
             initData={value.message}
-            containerSelector={`#${idChildren}`}
+            containerSelector={`#${contentId}`}
           />
         )}
       </EntryFormWrapper>
