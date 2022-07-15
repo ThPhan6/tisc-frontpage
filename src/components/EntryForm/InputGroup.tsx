@@ -44,7 +44,7 @@ const InputGroup: FC<IInputGroup> = ({
 }) => {
   return (
     <Row
-      className={`${styles.inputGroupContainer} ${hasHeight && styles.heightInputGroup}`}
+      className={`${styles.inputGroupContainer} ${hasHeight ? styles.heightInputGroup : ''}`}
       gutter={0}
       align="middle"
       wrap={noWrap ? false : true}
