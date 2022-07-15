@@ -1,32 +1,31 @@
-export type BrandProfileProp = {
-  brand: string;
-  company: string;
-  image: string;
+export interface IBrandProfileProp {
+  name: string;
+  parent_company: string;
   slogan: string;
-  mission: string;
-  website: WebsiteValueProp[];
-};
+  mission_n_vision: string;
+  official_websites: IWebsiteValueProp[];
+}
 
-export type WebsiteValueProp = {
-  country: string;
+export interface IWebsiteValueProp {
+  country_id: string;
   url: string;
-};
+}
 
 export const brandProfileValueDefault = {
-  brand: '',
-  company: '',
+  name: '',
+  parent_company: '',
   image: '',
   slogan: '',
-  mission: '',
-  website: [],
+  mission_n_vision: '',
+  official_websites: [],
 };
 
 export const websiteValueDefautl = {
-  country: '',
+  country_id: '',
   url: '',
 };
 
 export interface ItemWebsiteProp {
-  websiteValue: WebsiteValueProp;
-  onChange: (value: WebsiteValueProp) => void;
+  websiteValue: IWebsiteValueProp;
+  onChange: (value: IWebsiteValueProp) => void;
 }

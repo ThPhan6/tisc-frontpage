@@ -66,6 +66,10 @@ export const MESSAGE_NOTIFICATION = {
   GET_BRAND_SUMMARY_DATA_ERROR: 'Failed to get Brand summary data',
   CREATE_BRAND_COLLECTION_ERROR: 'Failed to create Brand collection',
   GET_BRAND_COLLECTION_ERROR: 'Failed to get Brand collection data',
+
+  //brand-profile
+  UPDATE_BRAND_PROFILE_SUCCESS: 'Update profile successfully',
+  UPDATE_BRAND_PROFILE_ERROR: 'Update profile error',
 };
 
 export const MESSAGE_TOOLTIP = {

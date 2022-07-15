@@ -8,10 +8,10 @@ import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { useState } from 'react';
 import {
-  BrandProfileProp,
+  IBrandProfileProp,
   brandProfileValueDefault,
   websiteValueDefautl,
-  WebsiteValueProp,
+  IWebsiteValueProp,
 } from './types';
 import { ItemWebsite } from './components/ItemWebsite';
 import { getBase64 } from '@/helper/utils';
@@ -21,7 +21,7 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-icon.svg';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 
 const BrandProfile = () => {
-  const [brandProfile, setBrandProfile] = useState<BrandProfileProp>(brandProfileValueDefault);
+  const [brandProfile, setBrandProfile] = useState<IBrandProfileProp>(brandProfileValueDefault);
   const submitButtonStatus = useBoolean(false);
 
   const onSubmitForm = () => {
@@ -39,7 +39,7 @@ const BrandProfile = () => {
       const file = e.target.files![0];
       getBase64(file)
         .then((base64Image) => {
-          setBrandProfile({ ...brandProfile, image: base64Image });
+          setBrandProfile({ ...brandProfile, slogan: base64Image });
         })
         .catch((err) => {
           console.log(err);
@@ -48,16 +48,19 @@ const BrandProfile = () => {
   };
 
   const handleAddWebsiteItem = () => {
-    const newWebsiteItem = [...brandProfile.website, websiteValueDefautl];
-    setBrandProfile({ ...brandProfile, website: newWebsiteItem });
+    setBrandProfile((state) => {
+      const newWebsiteItem = [...state.official_websites, websiteValueDefautl];
+      return { ...state, official_websites: newWebsiteItem };
+    });
   };
 
-  const handleOnChangeWebsiteItem = (websiteItem: WebsiteValueProp, index: number) => {
-    const newWebsiteItem = [...brandProfile.website];
+  const handleOnChangeWebsiteItem = (websiteItem: IWebsiteValueProp, index: number) => {
+    const newWebsiteItem = [...brandProfile.official_websites];
     newWebsiteItem[index] = websiteItem;
-    setBrandProfile({ ...brandProfile, website: newWebsiteItem });
+    setBrandProfile({ ...brandProfile, official_websites: newWebsiteItem });
   };
 
+  console.log(brandProfile);
   return (
     <div className={styles.content}>
       <Row>
@@ -77,9 +80,9 @@ const BrandProfile = () => {
                   <CustomInput
                     borderBottomColor="mono-medium"
                     placeholder="registered name/trademark"
-                    name="brand"
+                    name="name"
                     onChange={handleOnChangeValueForm}
-                    value={brandProfile.brand}
+                    value={brandProfile.name}
                   />
                 </FormGroup>
               </div>
@@ -91,13 +94,13 @@ const BrandProfile = () => {
                 <CustomInput
                   borderBottomColor="mono-medium"
                   placeholder="holding company name, if any"
-                  name="company"
+                  name="parent_company"
                   onChange={handleOnChangeValueForm}
-                  value={brandProfile.company}
+                  value={brandProfile.parent_company}
                 />
               </FormGroup>
               <div className={styles.logo}>
-                <img src={brandProfile.image ? brandProfile.image : Logo} />
+                <img src={brandProfile.slogan ? brandProfile.slogan : Logo} />
               </div>
               <div className={styles.customFormLogo}>
                 <FormGroup
@@ -143,9 +146,9 @@ const BrandProfile = () => {
                   showCount
                   maxLength={250}
                   borderBottomColor="mono-medium"
-                  name="mission"
+                  name="mission_n_vision"
                   onChange={handleOnChangeValueForm}
-                  value={brandProfile.mission}
+                  value={brandProfile.mission_n_vision}
                 />
               </FormGroup>
               <div className={styles.website}>
@@ -157,7 +160,7 @@ const BrandProfile = () => {
                     </span>
                   </div>
                 </FormGroup>
-                {brandProfile.website.map((item, index) => (
+                {brandProfile.official_websites.map((item, index) => (
                   <div key={index}>
                     <ItemWebsite
                       websiteValue={item}
