@@ -83,12 +83,10 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
             // { "name": "insert" },
             // { "name": "forms" },
             // { "name": "tools" },
-            // {
-            //   "name": "document",
-            //   "groups": ["mode",
-            //     "document",
-            //     "doctools"]
-            // },
+            {
+              name: 'document',
+              groups: ['mode', 'document', 'doctools'],
+            },
             {
               name: 'basicstyles',
             },
