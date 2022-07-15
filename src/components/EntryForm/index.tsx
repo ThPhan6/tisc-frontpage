@@ -1,12 +1,13 @@
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 import { Col, Row } from 'antd';
-import classNames from 'classnames';
 import { FC } from 'react';
 import CustomButton from '../Button';
 import { BodyText, MainTitle } from '../Typography';
 import styles from './styles/index.less';
 import { EntryFormWrapperProps } from './types';
+
+export const contentId = `entry-form-wrapper--children-${Date.now()}`;
 
 export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   handleSubmit,
@@ -22,14 +23,21 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   return (
     <Row>
       <Col className={styles.entry_form_wrapper} span={12}>
-        <div className={classNames(styles.entry_form_container, customClass)}>
+        <div className={`${styles.entry_form_container} ${customClass}`}>
+          {/* header */}
           <div className={styles.header}>
             <MainTitle level={3} customClass={styles.header__title}>
               {title}
             </MainTitle>
             <CloseIcon className={styles.header__icon} onClick={handleCancel} />
           </div>
-          <div className={classNames(styles.content, contentClass)}>{children}</div>
+
+          {/* children */}
+          <div id={contentId} className={`${styles.content} ${contentClass}`}>
+            {children}
+          </div>
+
+          {/* footer */}
           <div className={styles.footer}>
             <CustomButton
               size="small"

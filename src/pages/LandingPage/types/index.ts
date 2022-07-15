@@ -2,12 +2,11 @@ import type { STATUS_RESPONSE } from '@/constants/util';
 
 export interface LoginModalProps {
   theme?: 'default' | 'dark';
-  visible: {
-    value: boolean;
-    setValue: (value: boolean) => void;
-  };
+  visible: boolean;
+  onClose: () => void;
   handleSubmitLogin: (data: { email: string; password: string }) => void;
   handleForgotPassword: (email: string) => void;
+  type?: string;
 }
 
 export type InputValueProp = {
@@ -27,6 +26,10 @@ export type LoginResponseProp = {
 };
 
 export type UserInfoDataProp = {
+  id: string;
+  role_id: string;
+  permissions: any;
+  access_level: string;
   firstname: string;
   lastname: string;
   gender: string;
@@ -63,3 +66,20 @@ export type ResetPasswordBodyProp = {
   confirmed_password: string;
   reset_password_token: string;
 };
+
+export interface ModalProps {
+  theme?: 'default' | 'dark';
+  visible: boolean;
+  onClose: () => void;
+}
+
+export type ModalOpen =
+  | 'About'
+  | 'Policies'
+  | 'Contact'
+  | 'Browser Compatibility'
+  | 'Designer Signup'
+  | 'Brand Interested'
+  | 'Tisc Login'
+  | 'Login'
+  | '';

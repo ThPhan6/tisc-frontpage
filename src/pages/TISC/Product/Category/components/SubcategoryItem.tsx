@@ -7,7 +7,7 @@ import { BodyText } from '@/components/Typography';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { FC, useEffect, useState } from 'react';
 import { isEmpty, isEqual } from 'lodash';
-import { SubcategoryItemProps, subcategoryValueDefault, SubcategoryValueProp } from '../types';
+import { SubcategoryItemProps, subcategoryValueDefault, SubcategoryValueProp } from '@/types';
 
 const ElementInput: FC<{
   value: string;
@@ -78,7 +78,7 @@ export const SubcategoryItem: FC<SubcategoryItemProps> = ({
     onChange({ ...subcategoryValue, subs: newSubs });
   };
 
-  const renderPanelHeader = () => {
+  const PanelHeader = () => {
     return (
       <div className={styles.panel_header}>
         <div className={styles.panel_header__field}>
@@ -131,7 +131,7 @@ export const SubcategoryItem: FC<SubcategoryItemProps> = ({
             paddingBottom: '8px',
             borderRadius: '0px',
           }}
-          header={renderPanelHeader()}
+          header={PanelHeader()}
           key="1"
           showArrow={false}
         >

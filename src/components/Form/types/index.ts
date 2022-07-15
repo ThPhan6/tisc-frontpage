@@ -20,33 +20,14 @@ export interface CustomInputProps extends InputProps {
   status?: 'error' | 'warning' | '';
   fromLandingPage?: boolean;
   autoWidth?: boolean;
+  fontLevel?: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   defaultWidth?: string | number;
 }
 
 export interface CustomTextAreaProps extends TextAreaProps {
   borderBottomColor?: 'mono' | 'mono-medium';
-}
-
-export interface CustomInputEditorProps {
-  layout?: 'horizontal' | 'vertical';
-  placeholder?: string;
-  tooltip?: string;
-  optional?: boolean;
-  required?: boolean;
-  label: string;
-  handleOnChange?: (value: { text: string; html: string }) => void;
-  containerClass?: string;
-  formClass?: string;
-  inputClass?: string;
-}
-
-export interface CustomToolbarProps {
-  toolbarId: string;
-}
-
-export interface EditorServiceProps {
-  getText: (index?: number, length?: number) => string;
-  getHTML: () => string;
+  maxHeight?: number;
+  defaultHeight?: number;
 }
 
 export interface PhoneInputProps {
@@ -58,6 +39,7 @@ export interface PhoneInputProps {
   phoneNumberReadOnly?: boolean;
   value?: PhoneInputValueProp;
   status?: 'error' | 'warning' | '';
+  colorPlaceholder?: string;
 }
 export type PhoneInputValueProp = {
   zoneCode: string;
