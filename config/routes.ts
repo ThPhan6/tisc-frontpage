@@ -338,13 +338,6 @@
     ],
   },
   {
-    path: '/brand/dashboard',
-    name: 'workspace',
-    icon: 'workspace-icon.svg',
-    component: './Welcome',
-    access: 'brand_workspace',
-  },
-  {
     path: '/brand/product',
     name: 'product',
     icon: 'product-icon.svg',
@@ -396,8 +389,24 @@
         path: '/brand/adminstration/distributors',
         name: 'brand.distributor',
         icon: 'distributor-icon.svg',
-        component: './Welcome',
         access: 'brand_administration_distributor',
+        routes: [
+          {
+            path: '/brand/adminstration/distributors',
+            component: './Brand/Adminstration/Distributors',
+            hideInMenu: true,
+          },
+          {
+            path: '/brand/adminstration/distributors/create',
+            component: './Brand/Adminstration/Distributors/CreatePage',
+            hideInMenu: true,
+          },
+          {
+            path: '/brand/adminstration/distributors/:id',
+            component: './Brand/Adminstration/Distributors/UpdatePage',
+            hideInMenu: true,
+          },
+        ],
       },
       {
         path: '/brand/adminstration/market-availability',
