@@ -4,9 +4,8 @@ import styles from './styles/index.less';
 import { TabProp } from '@/components/Tabs/types';
 import { FC, useState } from 'react';
 import { HowToEntryForm } from './components/HowToEntryForm';
-import classNames from 'classnames';
 import { IHowToForm } from './types';
-import { dataPanelHowTo } from '@/constants/util';
+import { howToPagePanel } from '@/constants/util';
 
 interface IHowToPage {
   containerClass?: string;
@@ -18,13 +17,13 @@ const HowToPage: FC<IHowToPage> = ({ containerClass }) => {
     { tab: 'BRANDS', key: 'brands' },
     { tab: 'DESIGNERS', key: 'designers' },
   ];
-  const selectedTab = listTab[0];
-  const [activeTab, setActiveTab] = useState<TabProp>(selectedTab);
+  const selectedTab = listTab[0].key;
+  const [activeTab, setActiveTab] = useState<string>(selectedTab);
 
-  const [howTo, setHowTo] = useState<IHowToForm>(dataPanelHowTo);
+  const [howTo, setHowTo] = useState<IHowToForm>(howToPagePanel);
 
   return (
-    <div className={classNames(styles.howto_container, containerClass)}>
+    <div className={`${styles.howto_container} ${containerClass}`}>
       <TableHeader title={'HOW TO'} />
       <div className={styles.tabs}>
         <CustomTabs
@@ -32,16 +31,16 @@ const HowToPage: FC<IHowToPage> = ({ containerClass }) => {
           tabPosition="top"
           tabDisplay="start"
           onChange={setActiveTab}
-          activeTab={activeTab}
+          activeKey={activeTab}
           widthItem={'125px'}
         />
       </div>
       <HowToEntryForm
-        value={howTo[activeTab.key]}
+        value={howTo[activeTab]}
         onChange={(value) => {
           setHowTo({
             ...howTo,
-            [activeTab.key]: value,
+            [activeTab]: value,
           });
         }}
       />

@@ -21,20 +21,20 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
 
   useEffect(() => {
     let contentHeight = textarea.current.resizableTextArea.textArea.scrollHeight;
-    if (maxHeight && defaultHeight) {
-      if (props.value !== '') {
-        if (contentHeight < maxHeight) {
-          contentHeight = contentHeight;
-          setCheckedOverflow('hidden');
-        } else {
-          contentHeight = maxHeight;
-          setCheckedOverflow('hidden auto');
-        }
-      } else {
-        contentHeight = defaultHeight;
-      }
-      setHeight(contentHeight);
+
+    if (!maxHeight || !defaultHeight || props.value === '') {
+      contentHeight = defaultHeight;
     }
+
+    if (contentHeight < maxHeight) {
+      contentHeight = contentHeight;
+      setCheckedOverflow('hidden');
+    } else {
+      contentHeight = maxHeight;
+      setCheckedOverflow('hidden auto');
+    }
+
+    setHeight(contentHeight);
   }, [props.value]);
 
   return (

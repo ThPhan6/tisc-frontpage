@@ -184,7 +184,7 @@ export const OptionItem: FC<IOptionItem> = (props) => {
     });
   };
 
-  const renderPanelHeader = () => {
+  const PanelHeader = () => {
     return (
       <div className={styles.panel_header}>
         <div className={styles.panel_header__field}>
@@ -250,7 +250,7 @@ export const OptionItem: FC<IOptionItem> = (props) => {
               ? styles.active_collapse_panel
               : styles.unactive_collapse_panel
           }
-          header={renderPanelHeader()}
+          header={PanelHeader()}
           key={subOption.is_collapse!}
           showArrow={false}
         >

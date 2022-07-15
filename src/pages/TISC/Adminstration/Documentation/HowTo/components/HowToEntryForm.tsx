@@ -86,7 +86,7 @@ const QuestionAndAnswerField: FC<IFAQField> = ({
   );
 };
 
-const RenderPanelHeader: FC<IPanelHeader> = ({ value, panel, handleActiveKeyToCollapse }) => {
+const PanelHeader: FC<IPanelHeader> = ({ value, panel, handleActiveKeyToCollapse }) => {
   return (
     <div className={styles.panel}>
       <div className={styles.panel_header} onClick={() => handleActiveKeyToCollapse(panel.title)}>
@@ -114,6 +114,8 @@ const RenderPanelHeader: FC<IPanelHeader> = ({ value, panel, handleActiveKeyToCo
 };
 
 export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
+  console.log(value);
+
   const handleActiveKeyToCollapse = (collapseValue: string) => {
     onChange({
       activeKey: value.activeKey === collapseValue ? '' : collapseValue,
@@ -180,7 +182,7 @@ export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
                         : styles.unactive_collapse_panel
                     }
                     header={
-                      <RenderPanelHeader
+                      <PanelHeader
                         key={panelIndex}
                         value={value}
                         panel={panel}
@@ -206,10 +208,7 @@ export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
                       <BodyText level={3} customClass={styles.text}>
                         Add Content
                       </BodyText>
-                      <CustomPlusButton
-                        onClick={() => handleAddFAQContent(panelIndex)}
-                        containerClass={styles.add_content__button}
-                      />
+                      <CustomPlusButton onClick={() => handleAddFAQContent(panelIndex)} size={20} />
                     </div>
                     <div className={styles.fAQ}>
                       {panel.FAQ.map((faqItem, faqIndex) => {
