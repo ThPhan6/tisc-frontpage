@@ -28,7 +28,14 @@ export const MESSAGE_NOTIFICATION = {
   // product
   CREATE_PRODUCT_SUCCESS: 'Create product card successfully',
   CREATE_PRODUCT_ERROR: 'Failed to create product card',
+  UPDATE_PRODUCT_SUCCESS: 'Update product card successfully',
+  UPDATE_PRODUCT_ERROR: 'Failed to update product card',
   GET_LIST_PRODUCT_BY_BRAND_ERROR: 'Failed to get product list',
+  DELETE_PRODUCT_SUCCESS: 'Delete product successfully',
+  DELETE_PRODUCT_ERROR: 'Failed to delete product',
+  DUPLICATE_PRODUCT_SUCCESS: 'Duplicate product successfully',
+  DUPLICATE_PRODUCT_ERROR: 'Failed to duplicate product',
+  GET_ONE_PRODUCT_ERROR: 'Failed to get product information',
 
   // product catelogue
   CREATE_PRODUCT_CATELOGUE_SUCCESS: 'Create product catelogue successfully',

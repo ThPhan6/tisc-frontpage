@@ -37,7 +37,15 @@ const GeneralFeatureAttributeItem: React.FC<IGeneralFeatureAttributeItem> = (pro
   const { specification_attribute_groups } = product.details;
   const { attributes, attributeItem, onDelete, onItemChange, index } = props;
   const [visible, setVisible] = useState(false);
-  const [selected, setSelected] = useState<CheckboxValue[]>([]);
+  const [selected, setSelected] = useState<CheckboxValue[]>(
+    attributeItem.attributes.map((attr) => {
+      return {
+        label: '',
+        value: attr.id,
+      };
+    }),
+  );
+
   useEffect(() => {
     if (selected) {
       const newAttributes = [...specification_attribute_groups];
@@ -53,20 +61,20 @@ const GeneralFeatureAttributeItem: React.FC<IGeneralFeatureAttributeItem> = (pro
               }
             });
           });
-          const previousData = newAttributes[index][key];
-          const activeData = {
+          const previousData = newAttributes[index].attributes[key];
+          const activeData: any = {
             text: '',
             conversion_value_1: '',
             conversion_value_2: '',
             basis_options: [],
           };
+
           if (previousData && previousData.id === selectedAttribute.id) {
             activeData.text = previousData.text;
             activeData.conversion_value_1 = previousData.conversion_value_1;
             activeData.conversion_value_2 = previousData.conversion_value_2;
             activeData.basis_options = previousData.basis_options;
           }
-
           return {
             id: selectedAttribute.id,
             basis_id: selectedAttribute.basis_id,

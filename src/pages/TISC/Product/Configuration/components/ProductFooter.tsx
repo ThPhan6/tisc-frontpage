@@ -10,6 +10,7 @@ import { showImageUrl } from '@/helper/utils';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
 import { setProductTip, setProductDownload } from '@/reducers/product';
+import { PATH } from '@/constants/path';
 import styles from '../styles/details.less';
 
 const LIST_TAB: TabProp[] = [
@@ -45,14 +46,20 @@ const ProductFooter: React.FC = () => {
             <div className="relative-product-list">
               {relatedProduct.length > 0 ? (
                 relatedProduct.map((item, key) => (
-                  <div className="relative-product-item" key={key}>
+                  <a
+                    className="relative-product-item"
+                    key={key}
+                    target="_blank"
+                    rel="noreferrer"
+                    href={PATH.productConfigurationUpdate.replace(':id', item.id)}
+                  >
                     <div className="relative-product">
                       <img
                         src={item.images[0] ? showImageUrl(item.images[0]) : SampleProductImage}
                       />
                       <div className="placeholder-text">{item.name}</div>
                     </div>
-                  </div>
+                  </a>
                 ))
               ) : (
                 <div className="relative-product-item">

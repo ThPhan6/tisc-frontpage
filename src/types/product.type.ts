@@ -1,4 +1,4 @@
-import { IGeneralData } from '@/types';
+import { IGeneralData, IBrandDetail } from '@/types';
 
 export interface IProductSummary {
   categories: IGeneralData[];
@@ -7,6 +7,7 @@ export interface IProductSummary {
   collection_count: number;
   card_count: number;
   product_count: number;
+  brandId: string;
 }
 export type IGeneralFeatureFormInputType = 'Text' | 'Conversions' | 'Presets';
 export type ISpecificationFormInputType = 'Text' | 'Conversions' | 'Options';
@@ -44,10 +45,7 @@ export type IProductKeyword = [string, string, string, string];
 
 export interface IProductDetail {
   id?: string;
-  brand?: {
-    id: string;
-    name: string;
-  };
+  brand?: IBrandDetail;
   collection?: {
     id: string;
     name: string;
@@ -58,6 +56,7 @@ export interface IProductDetail {
   }[];
   name: string;
   code?: string;
+  is_liked: boolean;
   description: string;
   general_attribute_groups: IGeneralFeatureFormInput[];
   feature_attribute_groups: IGeneralFeatureFormInput[];
@@ -100,4 +99,15 @@ export interface GroupProductList {
   id: string;
   name: string;
   products: IProductDetail[];
+}
+
+export type IFilterType = 'category_id' | 'collection_id';
+export interface ITopBarFilter {
+  name: IFilterType;
+  title: string;
+  value: string;
+}
+export interface IProductList {
+  filter?: ITopBarFilter;
+  data: GroupProductList[];
 }

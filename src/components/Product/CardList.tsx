@@ -12,7 +12,7 @@ const CardList: React.FC = () => {
   const product = useAppSelector((state) => state.product);
   return (
     <>
-      {product.list.map((group, index) => (
+      {product.list.data.map((group, index) => (
         <CustomCollapse
           className={styles.productCardCollapse}
           customHeaderClass={styles.productCardHeaderCollapse}

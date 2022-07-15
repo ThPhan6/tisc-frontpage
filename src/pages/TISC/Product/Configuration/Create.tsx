@@ -18,6 +18,8 @@ import { useDispatch } from 'react-redux';
 import { setBrand } from '@/reducers/product';
 import { useAppSelector } from '@/reducers';
 import styles from './styles/details.less';
+import { pushTo } from '@/helper/history';
+import { PATH } from '@/constants/path';
 import type { ACTIVE_KEY } from './types';
 
 const ProductConfigurationCreate: React.FC = () => {
@@ -25,9 +27,8 @@ const ProductConfigurationCreate: React.FC = () => {
   const params = useParams<{ brandId: string }>();
   const brandId = params?.brandId || '';
   const product = useAppSelector((state) => state.product);
-  const [activeKey, setActiveKey] = useState<ACTIVE_KEY>('vendor');
+  const [activeKey, setActiveKey] = useState<ACTIVE_KEY>('general');
 
-  // console.log(product);
   useEffect(() => {
     if (brandId) {
       getBrandById(brandId).then((res) => dispatch(setBrand(res)));
@@ -67,6 +68,8 @@ const ProductConfigurationCreate: React.FC = () => {
           product_id: productDetail.id,
           contents: catelogue.contents,
         });
+        /// push to product update, 100% have product detail id
+        pushTo(PATH.productConfigurationUpdate.replace(':id', productDetail.id ?? ''));
       }
     });
   };
@@ -74,7 +77,11 @@ const ProductConfigurationCreate: React.FC = () => {
   return (
     <Row gutter={8}>
       <Col span={24}>
-        <ProductHeader title={'CATEGORY'} onSave={onSave} />
+        <ProductHeader
+          title={'CATEGORY'}
+          onSave={onSave}
+          onCancel={() => pushTo(PATH.productConfiguration)}
+        />
       </Col>
       <PhotoUpload />
       <Col span={12} className={styles.productContent}>

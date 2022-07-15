@@ -41,7 +41,7 @@ const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props
   let currentAttribute: any = {};
   attributes.forEach((attribute) => {
     attribute.subs?.map((sub) => {
-      if (sub.basis_id === item.basis_id) {
+      if (sub.id === item.id) {
         currentAttribute = sub;
       }
     });
@@ -51,7 +51,6 @@ const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props
   const { basis } = currentAttribute;
   /// global state of current attribute
   const localAttribute = itemAttributes.find((attr) => currentAttribute.id === attr.id);
-
   /// default state
   const [visible, setVisible] = useState(false);
   const [selected, setSelected] = useState<CheckboxValue[]>(
@@ -149,7 +148,6 @@ const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props
         />
       );
     }
-
     return (
       <InputGroup
         horizontal
@@ -243,7 +241,6 @@ const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props
       </div>
     );
   };
-
   return (
     <div style={{ width: '100%' }}>
       {renderProductAttributeItem()}

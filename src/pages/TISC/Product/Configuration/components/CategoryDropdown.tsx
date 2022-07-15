@@ -37,7 +37,7 @@ const DropdownCategoryList: React.FC<IDropdownCategoryList> = (props) => {
         }
       });
     });
-  }, [chosenItem]);
+  }, [category, chosenItem]);
 
   useEffect(() => {
     getAllProductCategory();

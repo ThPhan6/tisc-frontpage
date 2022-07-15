@@ -15,6 +15,7 @@ interface ProductAttributeInterface {
 }
 
 const ProductAttribute: React.FC<ProductAttributeInterface> = ({ activeKey, setActiveKey }) => {
+  const [isReady, setIsReady] = useState(false);
   const [attribute, setAttribute] = useState<IAttributebyType>({
     general: [],
     feature: [],
@@ -22,9 +23,17 @@ const ProductAttribute: React.FC<ProductAttributeInterface> = ({ activeKey, setA
   });
 
   useEffect(() => {
-    getAllAttribute().then(setAttribute);
+    getAllAttribute().then((data) => {
+      setAttribute(data);
+      setTimeout(() => {
+        setIsReady(true);
+      }, 200);
+    });
   }, []);
 
+  if (!isReady) {
+    return null;
+  }
   return (
     <div className={styles.productTabContainer}>
       <CustomTabs

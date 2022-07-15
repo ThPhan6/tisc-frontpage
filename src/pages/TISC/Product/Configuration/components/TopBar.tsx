@@ -3,15 +3,23 @@ import { BodyText } from '@/components/Typography';
 import Popover from '@/components/Modal/Popover';
 import { HeaderDropdown } from '@/components/HeaderDropdown';
 import { getBrandAlphabet, getProductSummary, getProductListByBrandId } from '@/services';
-import type { IBrandAlphabet, IBrandDetail, IGeneralData, IProductGetListParameter } from '@/types';
+import type {
+  IBrandAlphabet,
+  IBrandDetail,
+  IGeneralData,
+  IProductGetListParameter,
+  IFilterType,
+} from '@/types';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SmallPlusIcon } from '@/assets/icons/small-plus-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { showImageUrl } from '@/helper/utils';
-import { map, forEach, isUndefined } from 'lodash';
+import { map, forEach, capitalize } from 'lodash';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
-import { setBrand, setProductList } from '@/reducers/product';
+import { setBrand, setProductList, reset } from '@/reducers/product';
+import { pushTo } from '@/helper/history';
+import { PATH } from '@/constants/path';
 import styles from '../styles/topbar.less';
 
 interface IProductTopBar {
@@ -48,25 +56,28 @@ interface IFilterItem {
 const FilterItem: React.FC<IFilterItem> = ({ title, onDelete }) => {
   return (
     <span className={styles.filterItem}>
-      {title}
+      {capitalize(title)}
       <DeleteIcon onClick={onDelete} />
     </span>
   );
 };
 
-type IFilterType = 'category_id' | 'collection_id';
-interface ITopBarFilter {
-  name: IFilterType;
-  title: string;
-  value: string;
-}
 const ProductTopBar: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [brandAlphabet, setBrandAlphabet] = useState<IBrandAlphabet>({});
   const [brandData, setBrandData] = useState<any>();
-  const [filter, setFilter] = useState<ITopBarFilter>();
   const product = useAppSelector((state) => state.product);
+  const { filter } = product.list;
   const dispatch = useDispatch();
+
+  const resetProductList = () => {
+    dispatch(
+      setProductList({
+        filter: undefined,
+        data: [],
+      }),
+    );
+  };
 
   /// set brand to product reducer
   useEffect(() => {
@@ -90,11 +101,11 @@ const ProductTopBar: React.FC = () => {
 
   // brand product summary
   useEffect(() => {
-    if (product.brand && product.brand.id) {
+    if (product.brand && product.brand.id && product.summary?.brandId !== product.brand.id) {
       // get product summary
       getProductSummary(product.brand.id).then(() => {
         // reset filter
-        setFilter(undefined);
+        resetProductList();
       });
     }
   }, [product.brand]);
@@ -112,14 +123,14 @@ const ProductTopBar: React.FC = () => {
       }
       getProductListByBrandId(params);
     }
-  }, [product.brand, filter]);
-
-  useEffect(() => {
-    if (isUndefined(filter)) {
-      // reset product list
-      setProductList([]);
-    }
   }, [filter]);
+
+  const gotoProductForm = () => {
+    dispatch(reset());
+    if (product.brand && product.brand.id) {
+      pushTo(PATH.productConfigurationCreate.replace(':brandId', product.brand.id));
+    }
+  };
 
   /// render custom radio brand list label
   const renderLabel = (item: IBrandDetail) => {
@@ -144,11 +155,15 @@ const ProductTopBar: React.FC = () => {
         items={items.map((item) => {
           return {
             onClick: () => {
-              setFilter({
-                name: filterName,
-                title: item.name,
-                value: item.id,
-              });
+              dispatch(
+                setProductList({
+                  filter: {
+                    name: filterName,
+                    title: item.name,
+                    value: item.id,
+                  },
+                }),
+              );
             },
             label: item.name,
           };
@@ -162,7 +177,6 @@ const ProductTopBar: React.FC = () => {
       </HeaderDropdown>
     );
   };
-
   return (
     <>
       <div className={styles.topbarContainer}>
@@ -203,7 +217,7 @@ const ProductTopBar: React.FC = () => {
           <TopBarItem
             topValue={
               filter?.name === 'category_id' ? (
-                <FilterItem title={filter.title} onDelete={() => setFilter(undefined)} />
+                <FilterItem title={filter.title} onDelete={resetProductList} />
               ) : (
                 `view`
               )
@@ -220,7 +234,7 @@ const ProductTopBar: React.FC = () => {
           <TopBarItem
             topValue={
               filter?.name === 'collection_id' ? (
-                <FilterItem title={filter.title} onDelete={() => setFilter(undefined)} />
+                <FilterItem title={filter.title} onDelete={resetProductList} />
               ) : (
                 `view`
               )
@@ -235,11 +249,12 @@ const ProductTopBar: React.FC = () => {
             customClass="left-divider"
           />
           <TopBarItem
-            topValue=""
+            topValue={<span style={{ opacity: 0 }}>.</span>}
             disabled
             bottomEnable={product.summary ? true : false}
             bottomValue="New Card"
             customClass="left-divider"
+            onClick={product.summary ? gotoProductForm : undefined}
             icon={
               <span
                 className={`

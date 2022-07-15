@@ -40,14 +40,13 @@ const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props
   let currentAttribute = {} as any;
   attributes.forEach((attribute) => {
     attribute.subs?.map((sub) => {
-      if (sub.basis_id === item.basis_id) {
+      if (sub.id === item.id) {
         currentAttribute = sub;
       }
     });
   });
   /// basis of attribute
   const { basis } = currentAttribute;
-  console.log('basis');
   /// global state of current attribute
   const localAttribute = itemAttributes.find((attr) => currentAttribute.id === attr.id);
 

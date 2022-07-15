@@ -8,7 +8,7 @@ import type {
   IProductDetail,
   IRelatedCollection,
   IProductCatelogue,
-  GroupProductList,
+  IProductList,
 } from '@/types';
 
 interface ProductState {
@@ -19,7 +19,7 @@ interface ProductState {
   catelogue: IProductCatelogue;
   details: IProductDetail;
   relatedProduct: IRelatedCollection[];
-  list: GroupProductList[];
+  list: IProductList;
 }
 
 const initialState: ProductState = {
@@ -43,7 +43,9 @@ const initialState: ProductState = {
     contents: [],
   },
   relatedProduct: [],
-  list: [],
+  list: {
+    data: [],
+  },
 };
 
 const productSlice = createSlice({
@@ -95,11 +97,20 @@ const productSlice = createSlice({
         ...action.payload,
       };
     },
-    setProductList(state, action: PayloadAction<GroupProductList[]>) {
-      state.list = action.payload;
+    setProductList(state, action: PayloadAction<Partial<IProductList>>) {
+      state.list = {
+        ...state.list,
+        ...action.payload,
+      };
     },
-    reset() {
-      return initialState;
+    setRelatedProduct(state, action: PayloadAction<IRelatedCollection[]>) {
+      state.relatedProduct = action.payload;
+    },
+    reset(state) {
+      return {
+        ...initialState,
+        list: state.list,
+      };
     },
   },
 });
@@ -115,5 +126,6 @@ export const {
   setProductCatelogue,
   setProductDownload,
   setProductList,
+  setRelatedProduct,
 } = productSlice.actions;
 export default productSlice.reducer;
