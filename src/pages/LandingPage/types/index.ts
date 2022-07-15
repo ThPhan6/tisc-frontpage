@@ -26,6 +26,10 @@ export type LoginResponseProp = {
 };
 
 export type UserInfoDataProp = {
+  id: string;
+  role_id: string;
+  permissions: any;
+  access_level: string;
   firstname: string;
   lastname: string;
   gender: string;
