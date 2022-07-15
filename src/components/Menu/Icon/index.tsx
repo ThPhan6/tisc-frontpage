@@ -20,6 +20,8 @@ import { ReactComponent as SubscriptionIcon } from '../../../assets/icons/subscr
 import { ReactComponent as TeamProfileIcon } from '../../../assets/icons/team-profile-icon.svg';
 import { ReactComponent as UserGroupIcon } from '../../../assets/icons/user-group-icon.svg';
 import { ReactComponent as WorkspaceIcon } from '../../../assets/icons/workspace-icon.svg';
+import { ReactComponent as MyFavouriteIcon } from '../../../assets/icons/my-favourite-icon.svg';
+import { ReactComponent as GeneralInquireIcon } from '../../../assets/icons/general-inquire-icon.svg';
 
 const IconList = {
   'adminstration-icon.svg': <AdminstrationIcon className="anticon" />,
@@ -39,8 +41,10 @@ const IconList = {
   'team-profile-icon.svg': <TeamProfileIcon className="anticon" />,
   'user-group-icon.svg': <UserGroupIcon className="anticon" />,
   'workspace-icon.svg': <WorkspaceIcon className="anticon" />,
-  'general-inquiry-icon.svg': <GeneralInquiryIcon className="anticon" />,
+  'my-favourite-icon.svg': <MyFavouriteIcon className="anticon" />,
   'project-tracking-icon.svg': <ProjectTrackingIcon className="anticon" />,
+  'general-inquire-icon.svg': <GeneralInquireIcon className="anticon" />,
+  'general-inquiry-icon.svg': <GeneralInquiryIcon className="anticon" />,
   'distributor-icon.svg': <DistributorIcon className="anticon" />,
   'market-availability-icon.svg': <MarketAvailabilityIcon className="anticon" />,
   'subscription-icon.svg': <SubscriptionIcon className="anticon" />,

@@ -4,6 +4,11 @@
   .required {
     margin: 0 4px;
     color: @primary-color-dark;
+    font-size: 14px;
+    font-family: 'Roboto';
+  }
+  .requiredColorTertiary {
+    color: @tertiary-color;
   }
   .doubleinputGroupContent {
     display: flex;
@@ -47,8 +52,19 @@
     width: 100%;
     input {
       padding: 0;
+      &:global(.has-padding) {
+        padding: 4px 16px;
+      }
+      &[readonly] {
+        cursor: not-allowed;
+      }
+      &:global(.color-primary-dark) {
+        color: @primary-color-dark;
+      }
     }
     svg {
+      position: absolute;
+      right: 0;
       width: 18px;
       height: 18px;
       cursor: pointer;
@@ -62,4 +78,8 @@
       }
     }
   }
+}
+.heightInputGroup {
+  height: 56px;
+  margin-bottom: 16px;
 }

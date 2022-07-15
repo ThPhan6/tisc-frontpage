@@ -44,6 +44,7 @@ interface IPopover {
 
   // extra top action
   extraTopAction?: ReactNode;
+  noFooter?: boolean;
 }
 const Popover: FC<IPopover> = ({
   title,
@@ -59,6 +60,7 @@ const Popover: FC<IPopover> = ({
   chosenValue,
   setChosenValue,
   extraTopAction,
+  noFooter,
 }) => {
   const [currentValue, setCurrentValue] = useState<any>(chosenValue);
 
@@ -161,15 +163,17 @@ const Popover: FC<IPopover> = ({
         width={576}
         closeIcon={<CloseIcon />}
         footer={
-          <CustomButton
-            size="small"
-            variant="primary"
-            properties="rounded"
-            buttonClass="done-btn"
-            onClick={handleDone}
-          >
-            Done
-          </CustomButton>
+          noFooter ? null : (
+            <CustomButton
+              size="small"
+              variant="primary"
+              properties="rounded"
+              buttonClass="done-btn"
+              onClick={handleDone}
+            >
+              Done
+            </CustomButton>
+          )
         }
         className={styles.customPopover}
       >

@@ -1,5 +1,5 @@
 import { Radio, Space } from 'antd';
-import type { FC } from 'react';
+import { FC } from 'react';
 import { useState } from 'react';
 import type { CustomRadioProps } from './types';
 import style from './styles/index.less';

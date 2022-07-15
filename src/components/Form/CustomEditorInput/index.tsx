@@ -1,25 +1,64 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import {
   CKEditor,
   CKEditorEventHandlerProp,
   CKEditorEventPayload,
   CKEditorProps,
 } from 'ckeditor4-react';
-import styles from './styles.less';
+import styles from './index.less';
 import { loadPlugins } from './plugins/load-plugins';
 
 type CustomEditorInputProps = Partial<CKEditorProps<CKEditorEventHandlerProp>> & {
   onChangeText: (html: string) => void;
   containerClass?: string;
   placeholder?: string;
+  containerSelector?: string;
 };
 
+const id = `editor-container-${Date.now()}`;
+
+// IMPORTANT: do not wrap this component inside another component
 export const CustomEditorInput: FC<CustomEditorInputProps> = ({
   onChangeText,
   containerClass,
   placeholder,
+  containerSelector,
   ...props
 }) => {
+  useEffect(() => {
+    setTimeout(() => {
+      if (containerSelector) {
+        const updateSize = () => {
+          const containerEl = document.querySelector(containerSelector);
+          const editorEl = document.querySelector(`#${id}`);
+          const iFrameEl = document.querySelector('iframe.cke_wysiwyg_frame');
+
+          if (!containerEl || !editorEl || !iFrameEl) {
+            return;
+          }
+
+          const contentFullHeight =
+            Math.abs((containerEl.offsetHeight || 0) - (iFrameEl.offsetTop || 0)) -
+            (containerEl.offsetTop || 0) +
+            89;
+
+          // console.log('containerEl.offsetHeight', containerEl.offsetHeight);
+          // console.log('iFrameEl.offsetTop', iFrameEl, iFrameEl.offsetTop);
+          // console.log('containerEl.offsetTop', containerEl.offsetTop);
+
+          if (contentFullHeight && iFrameEl?.style) {
+            iFrameEl.style.height = `${contentFullHeight}px`;
+          }
+        };
+
+        // editor is resizing while window is resizing
+        window.addEventListener('resize', updateSize);
+        updateSize();
+        return () => window.removeEventListener('resize', updateSize);
+      }
+    }, 200);
+  }, [containerSelector]);
+
   const onChange = (e: CKEditorEventPayload<'change'>) => {
     // console.log('e', e);
     const html = e.editor.getData() || '';
@@ -28,7 +67,7 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
   };
 
   return (
-    <div className={`${styles.container} ${containerClass}`}>
+    <div id={id} className={`${styles.container} ${containerClass}`}>
       <CKEditor
         config={{
           // toolbar: [['Bold', 'Italic', 'Underline', 'Strikethrough', 'Link', 'colors', 'Indent', 'simplebutton']],

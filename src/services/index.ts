@@ -10,3 +10,7 @@ export * from './product.api';
 export * from './product-tip.api';
 export * from './product-download.api';
 export * from './product-catelogue.api';
+export * from './inspirational-quotation.api';
+export * from './email-auto.api';
+export * from './location.api';
+export * from './distributor.api';

@@ -276,12 +276,13 @@
           {
             path: '/tisc/adminstration/documentation/agreement-policy-terms',
             name: 'terms.policy',
-            component: './Welcome',
+            component:
+              './TISC/Adminstration/Documentation/AgreementPolicies/CreateAgreementPoliciesPage',
           },
           {
             path: '/tisc/adminstration/documentation/how-to',
             name: 'how.to',
-            component: './Welcome',
+            component: './TISC/Adminstration/Documentation/HowTo',
           },
         ],
       },
@@ -306,14 +307,43 @@
         access: 'tisc_administration_message',
         routes: [
           {
-            path: '/tisc/adminstration/messages/email-autoresponders',
+            path: '/tisc/adminstration/messages/email-auto',
             name: 'email',
-            component: './Welcome',
+            routes: [
+              {
+                path: '/tisc/adminstration/messages/email-auto',
+                component: './TISC/Adminstration/Messages/EmailAutoresponders/',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/adminstration/messages/email-auto/update/:id',
+                component: './TISC/Adminstration/Messages/EmailAutoresponders/UpdateEmailAutoPage',
+                hideInMenu: true,
+              },
+            ],
           },
           {
-            path: '/tisc/adminstration/messages/inspirational-quotations',
+            path: '/tisc/adminstration/messages/quotation',
             name: 'quotation',
-            component: './Welcome',
+            routes: [
+              {
+                path: '/tisc/adminstration/messages/quotation',
+                component: './TISC/Adminstration/Messages/InspirationalQuotations',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/adminstration/messages/quotation/create',
+                component:
+                  './TISC/Adminstration/Messages/InspirationalQuotations/CreateQuotationPage',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/adminstration/messages/quotation/update/:id',
+                component:
+                  './TISC/Adminstration/Messages/InspirationalQuotations/UpdateQuotationPage',
+                hideInMenu: true,
+              },
+            ],
           },
         ],
       },
@@ -336,13 +366,6 @@
         ],
       },
     ],
-  },
-  {
-    path: '/brand/dashboard',
-    name: 'workspace',
-    icon: 'workspace-icon.svg',
-    component: './Welcome',
-    access: 'brand_workspace',
   },
   {
     path: '/brand/product',
@@ -395,8 +418,24 @@
         path: '/brand/adminstration/distributors',
         name: 'brand.distributor',
         icon: 'distributor-icon.svg',
-        component: './Welcome',
         access: 'brand_administration_distributor',
+        routes: [
+          {
+            path: '/brand/adminstration/distributors',
+            component: './Brand/Adminstration/Distributors',
+            hideInMenu: true,
+          },
+          {
+            path: '/brand/adminstration/distributors/create',
+            component: './Brand/Adminstration/Distributors/CreatePage',
+            hideInMenu: true,
+          },
+          {
+            path: '/brand/adminstration/distributors/:id',
+            component: './Brand/Adminstration/Distributors/UpdatePage',
+            hideInMenu: true,
+          },
+        ],
       },
       {
         path: '/brand/adminstration/market-availability',

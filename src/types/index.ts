@@ -11,3 +11,6 @@ export * from './general.type';
 export * from './product-tip.type';
 export * from './product-download.type';
 export * from './product-catelogue.type';
+export * from './inspiration-quotation';
+export * from './email-auto.type';
+export * from './agreement-policy.type';
