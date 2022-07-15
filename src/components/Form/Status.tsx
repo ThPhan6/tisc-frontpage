@@ -15,7 +15,7 @@ export const Status: FC<StatusProps> = ({
   formClass,
   textClass,
   activeButtonClass,
-  UnActiveButtonClass,
+  InActiveButtonClass,
 }) => {
   return (
     <FormGroup label={label} layout={layout} formClass={`${styles.form_group} ${formClass}`}>
@@ -26,7 +26,7 @@ export const Status: FC<StatusProps> = ({
             {buttonName}
           </CustomButton>
         ) : (
-          <CustomButton className={UnActiveButtonClass} onClick={onClick}>
+          <CustomButton className={InActiveButtonClass} onClick={onClick}>
             {buttonName}
           </CustomButton>
         )}

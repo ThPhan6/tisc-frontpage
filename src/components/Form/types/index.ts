@@ -79,5 +79,5 @@ export interface StatusProps {
   formClass?: string;
   textClass?: string;
   activeButtonClass?: string;
-  UnActiveButtonClass?: string;
+  InActiveButtonClass?: string;
 }

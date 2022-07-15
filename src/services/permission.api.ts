@@ -1,6 +1,6 @@
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import type { AccessLevelModalProps } from '@/components/ModalTISC/types';
+import type { AccessLevelModalProps } from '@/components/TISCModal/types';
 import { request } from 'umi';
 import { showImageUrl } from '@/helper/utils';
 
@@ -17,6 +17,8 @@ export async function getPermission() {
           item.subs.map((sub) => (sub.logo = showImageUrl(sub.logo!)));
         }
       });
+
+      console.log(response.data);
 
       return response.data;
     })

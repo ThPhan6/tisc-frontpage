@@ -5,13 +5,13 @@ import { MainTitle } from '@/components/Typography';
 
 import styles from './styles/index.less';
 
-interface IModalTISC {
+interface ITISCModal {
   title: string;
   visible: boolean;
   footer?: boolean;
   setVisible: (visible: boolean) => void;
 }
-const ModalTISC: FC<IModalTISC> = ({ title, visible, setVisible, children, ...props }) => {
+const TISCModal: FC<ITISCModal> = ({ title, visible, setVisible, children, ...props }) => {
   const onCancel = () => {
     /// hide modal
     setVisible(false);
@@ -39,4 +39,4 @@ const ModalTISC: FC<IModalTISC> = ({ title, visible, setVisible, children, ...pr
     </div>
   );
 };
-export default ModalTISC;
+export default TISCModal;

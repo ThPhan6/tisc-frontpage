@@ -3,8 +3,8 @@ import styles from '../styles/TISCAccessLevelModal.less';
 import { ReactComponent as AccessableTickIcon } from '@/assets/icons/accessable-tick-icon.svg';
 import { ReactComponent as AccessableMinusIcon } from '@/assets/icons/accessable-minus-icon.svg';
 import { BodyText, MainTitle } from '@/components/Typography';
-import ModalTISC from '@/components/ModalTISC';
-import { AccessLevelModalItemProps, AccessLevelModalProps } from '@/components/ModalTISC/types';
+import TISCModal from '@/components/TISCModal';
+import { AccessLevelModalItemProps, AccessLevelModalProps } from '@/components/TISCModal/types';
 import { getPermission } from '@/services/permission.api';
 
 // for future data
@@ -82,9 +82,13 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
               </td>
 
               {/* for future data */}
-              <td style={{ textAlign: 'center', display: menu.subs ? 'none' : '' }}>
+              <td
+                key={`fData_${item.id}`}
+                style={{ textAlign: 'center', display: menu.subs ? 'none' : '' }}
+              >
                 <AccessableTickIcon className={styles.menu_accessable_null} />
               </td>
+              {/* --------- */}
             </>
           ))}
         </tr>
@@ -95,7 +99,7 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
   };
 
   return (
-    <ModalTISC title="TISC ACCESS LEVEL" visible={visible} setVisible={setVisible}>
+    <TISCModal title="TISC ACCESS LEVEL" visible={visible} setVisible={setVisible}>
       <table className={styles.table} style={{ width: '100%' }}>
         {/* header */}
         <thead className={styles.header}>
@@ -111,6 +115,7 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
             <th className={styles.furture_data_header}>
               <MainTitle level={4}>TISC Team</MainTitle>
             </th>
+            {/* ---------- */}
             <th>
               <MainTitle level={4}>Consultant Team</MainTitle>
             </th>
@@ -126,8 +131,8 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
                   MY DASHBOARD (future)
                 </BodyText>
               </td>
-              {[1, 2].map(() => (
-                <td style={{ textAlign: 'center' }}>
+              {[1, 2].map((item) => (
+                <td key={`icon_${item}`} style={{ textAlign: 'center' }}>
                   <AccessableTickIcon className={styles.menu_accessable_null} />
                 </td>
               ))}
@@ -140,16 +145,16 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
             {data.map((menu) => renderPermission(menu))}
 
             {/* future data, can delete */}
-            {furturePermissionData.map((fData) => (
-              <tr>
+            {furturePermissionData.map((fData, index) => (
+              <tr key={`futureData_${index}`}>
                 <td className={styles.furture_data_name} style={{ marginTop: '4px' }}>
                   {fData.logo}
                   <BodyText fontFamily="Roboto" level={6}>
                     {fData.name}
                   </BodyText>
                 </td>
-                {[1, 2, 3].map(() => (
-                  <td style={{ textAlign: 'center' }}>
+                {[1, 2, 3].map((_, i) => (
+                  <td key={`${index}_${i}`} style={{ textAlign: 'center' }}>
                     <AccessableTickIcon className={styles.menu_accessable_null} />
                   </td>
                 ))}
@@ -161,10 +166,11 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
               <td style={{ color: '#bfbfbf', textAlign: 'center' }}>(future)</td>
               <td></td>
             </tr>
+            {/* ------- */}
           </>
         </tbody>
       </table>
-    </ModalTISC>
+    </TISCModal>
   );
 };
 
