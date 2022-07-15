@@ -19,6 +19,7 @@ import { IDistributorEntryForm } from '@/types/distributor.type';
 import { useEffect } from 'react';
 import { getCountryById } from '@/services/location.api';
 import { PhoneInputValueProp } from '@/components/Form/types';
+import { useAppSelector } from '@/reducers';
 
 const optionsGender = [
   { label: 'Male', value: true },
@@ -37,6 +38,7 @@ export const DistributorsEntryForm: FC<IDistributorEntryForm> = (props) => {
   const [territoryVisible, setTerritoryVisible] = useState(false);
   const [stateVisible, setStateVisible] = useState(false);
   const [cityVisible, setCityVisible] = useState(false);
+  const user = useAppSelector((state) => state.user);
 
   const handleOnChangeValueForm = (
     e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>,
@@ -74,7 +76,7 @@ export const DistributorsEntryForm: FC<IDistributorEntryForm> = (props) => {
   const handleSubmit = () => {
     onSubmit({
       ...data,
-      brand_id: '54bbfa0d-5fda-413b-81a9-1332081e2739',
+      brand_id: user.user?.brand?.id as string,
     });
   };
 

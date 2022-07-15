@@ -31,9 +31,8 @@ export async function createDistributor(data: IDistributorForm) {
 export async function getDistributorPagination(
   params: IPaginationRequest,
   callback: (data: IDataTableResponse) => void,
-  //   brand_id: string,
 ) {
-  request(`/api/distributor/get-list?brand_id=54bbfa0d-5fda-413b-81a9-1332081e2739`, {
+  request(`/api/distributor/get-list`, {
     method: 'GET',
     params,
   })

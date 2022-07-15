@@ -11,9 +11,11 @@ import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg'
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { deleteDistributor, getDistributorPagination } from '@/services/distributor.api';
 import { confirmDelete } from '@/helper/common';
+import { useAppSelector } from '@/reducers';
 
 const Distributors = () => {
   const tableRef = useRef<any>();
+  const user = useAppSelector((state) => state.user);
 
   const handleUpdateDistributor = (id: string) => {
     pushTo(PATH.updateDistributor.replace(':id', id));
@@ -28,8 +30,6 @@ const Distributors = () => {
       });
     });
   };
-
-  // const brand_id = '54bbfa0d-5fda-413b-81a9-1332081e2739';
 
   const MainColumns: ICustomTableColumnType<IDistributorListResponse>[] = [
     {
@@ -118,6 +118,9 @@ const Distributors = () => {
         columns={MainColumns}
         ref={tableRef}
         fetchDataFunc={getDistributorPagination}
+        extraParams={{
+          brand_id: user.user?.brand?.id,
+        }}
       />
     </>
   );
