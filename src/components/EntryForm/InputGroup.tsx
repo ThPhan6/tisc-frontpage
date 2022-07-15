@@ -7,7 +7,6 @@ import { Row, Col } from 'antd';
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 import styles from './styles/InputGroup.less';
-import classNames from 'classnames';
 
 interface IInputGroup extends CustomInputProps {
   horizontal?: boolean;
@@ -44,7 +43,7 @@ const InputGroup: FC<IInputGroup> = ({
 }) => {
   return (
     <Row
-      className={classNames(styles.inputGroupContainer, hasHeight && styles.heightInputGroup)}
+      className={`${styles.inputGroupContainer} ${hasHeight ? styles.heightInputGroup : ''}`}
       gutter={0}
       align="middle"
       wrap={noWrap ? false : true}
