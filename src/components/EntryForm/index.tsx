@@ -7,6 +7,8 @@ import { BodyText, MainTitle } from '../Typography';
 import styles from './styles/index.less';
 import { EntryFormWrapperProps } from './types';
 
+export const idChildren = `entry-form-wrapper--children-${Date.now()}`;
+
 export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   handleSubmit,
   handleCancel,
@@ -22,13 +24,20 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
     <Row>
       <Col className={styles.entry_form_wrapper} span={12}>
         <div className={`${styles.entry_form_container} ${customClass}`}>
+          {/* header */}
           <div className={styles.header}>
             <MainTitle level={3} customClass={styles.header__title}>
               {title}
             </MainTitle>
             <CloseIcon className={styles.header__icon} onClick={handleCancel} />
           </div>
-          <div className={`${styles.content} ${contentClass}`}>{children}</div>
+
+          {/* children */}
+          <div id={idChildren} className={`${styles.content} ${contentClass}`}>
+            {children}
+          </div>
+
+          {/* footer */}
           <div className={styles.footer}>
             <CustomButton
               size="small"
