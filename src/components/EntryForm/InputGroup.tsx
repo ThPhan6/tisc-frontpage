@@ -2,13 +2,14 @@
 import type { ReactNode, FC } from 'react';
 import { BodyText } from '@/components/Typography';
 import { CustomInput } from '@/components/Form/CustomInput';
-import type { InputProps } from 'antd';
+import type { CustomInputProps } from '@/components/Form/types';
 import { Row, Col } from 'antd';
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 import styles from './styles/InputGroup.less';
+import classNames from 'classnames';
 
-interface IInputGroup extends InputProps {
+interface IInputGroup extends CustomInputProps {
   horizontal?: boolean;
   rightIcon?: boolean | ReactNode;
   deleteIcon?: boolean | ReactNode;
@@ -18,6 +19,10 @@ interface IInputGroup extends InputProps {
   fontLevel?: 1 | 2 | 3 | 4 | 5;
   label?: string | ReactNode;
   noWrap?: boolean;
+  hasPadding?: boolean;
+  hasHeight?: boolean;
+  colorPrimaryDark?: boolean;
+  colorRequired?: string;
 }
 
 const InputGroup: FC<IInputGroup> = ({
@@ -28,6 +33,10 @@ const InputGroup: FC<IInputGroup> = ({
   fontLevel,
   readOnly,
   noWrap,
+  hasPadding,
+  hasHeight,
+  colorPrimaryDark,
+  colorRequired,
   onRightIconClick,
   deleteIcon,
   onDelete,
@@ -35,7 +44,7 @@ const InputGroup: FC<IInputGroup> = ({
 }) => {
   return (
     <Row
-      className={styles.inputGroupContainer}
+      className={classNames(styles.inputGroupContainer, hasHeight && styles.heightInputGroup)}
       gutter={0}
       align="middle"
       wrap={noWrap ? false : true}
@@ -43,7 +52,17 @@ const InputGroup: FC<IInputGroup> = ({
       <Col span={horizontal ? (noWrap ? undefined : 4) : 24} className="input-label-container">
         <BodyText level={fontLevel ?? 5} customClass="input-label">
           {label}
-          {required ? <span className={styles.required}>*</span> : ''}
+          {required ? (
+            <span
+              className={
+                colorRequired === 'tertiary' ? styles.requiredColorTertiary : styles.required
+              }
+            >
+              *
+            </span>
+          ) : (
+            ''
+          )}
           {required ? <span>:</span> : ''}
         </BodyText>
       </Col>
@@ -52,7 +71,9 @@ const InputGroup: FC<IInputGroup> = ({
           {...props}
           fontLevel={fontLevel ? ((fontLevel + 2) as 7) : 7}
           readOnly={rightIcon || readOnly ? true : false}
-          className="input-box"
+          className={`input-box ${hasPadding ? 'has-padding' : ''} ${
+            colorPrimaryDark ? 'color-primary-dark' : ''
+          }`}
           onClick={(e) => e.stopPropagation()}
         />
         {rightIcon ? (

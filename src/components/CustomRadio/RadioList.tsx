@@ -9,7 +9,7 @@ import styles from './styles/radioList.less';
 
 export interface IRadioListOption {
   options: RadioValue[];
-  heading: string;
+  heading: string | React.ReactNode;
 }
 
 interface IRadioList {
