@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { WebsiteUrl } from '../types';
 import { ReactComponent as LeftIcon } from '@/assets/icons/pagination-right-18px.svg';
 import styles from '@/pages/Brand/Adminstration/BrandProfile/styles/index.less';
-import CountryModal from '../../Distributors/components/CountryModal';
+import CountryModal from '@/components/LocationModal/CountryModal';
 import { getCountryById } from '@/services';
 
 export const ItemWebsite: FC<WebsiteUrl> = ({ websiteValue, onChange }) => {
@@ -52,7 +52,7 @@ export const ItemWebsite: FC<WebsiteUrl> = ({ websiteValue, onChange }) => {
         setVisible={setCountryVisible}
         chosenValue={{ label: countryValue, value: websiteValue.country_id }}
         setChosenValue={(chosenValue) => onChangeCountryValue(chosenValue, 'country_id')}
-        phone_code
+        withPhoneCode
       />
     </>
   );
