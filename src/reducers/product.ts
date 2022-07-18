@@ -1,25 +1,25 @@
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
 import type {
   IBrandDetail,
-  IProductSummary,
-  IProductTip,
-  IProductDownload,
-  IProductDetail,
+  ProductCatelogue,
+  ProductDownload,
+  ProductList,
+  ProductSummary,
+  ProductTip,
   IRelatedCollection,
-  IProductCatelogue,
-  IProductList,
+  ProductItem,
 } from '@/types';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 interface ProductState {
   brand?: IBrandDetail;
-  summary?: IProductSummary;
-  tip: IProductTip;
-  download: IProductDownload;
-  catelogue: IProductCatelogue;
-  details: IProductDetail;
+  summary?: ProductSummary;
+  tip: ProductTip;
+  download: ProductDownload;
+  catelogue: ProductCatelogue;
+  details: ProductItem;
   relatedProduct: IRelatedCollection[];
-  list: IProductList;
+  list: ProductList;
 }
 
 const initialState: ProductState = {
@@ -55,13 +55,13 @@ const productSlice = createSlice({
     setBrand(state, action: PayloadAction<IBrandDetail | undefined>) {
       state.brand = action.payload;
     },
-    setProductSummary(state, action: PayloadAction<IProductSummary | undefined>) {
+    setProductSummary(state, action: PayloadAction<ProductSummary | undefined>) {
       state.summary = action.payload;
     },
-    setProductDetail(state, action: PayloadAction<IProductDetail>) {
+    setProductDetail(state, action: PayloadAction<ProductItem>) {
       state.details = action.payload;
     },
-    setPartialProductDetail(state, action: PayloadAction<Partial<IProductDetail>>) {
+    setPartialProductDetail(state, action: PayloadAction<Partial<ProductItem>>) {
       state.details = {
         ...state.details,
         ...action.payload,
@@ -79,25 +79,25 @@ const productSlice = createSlice({
         images: newImages,
       };
     },
-    setProductTip(state, action: PayloadAction<Partial<IProductTip>>) {
+    setProductTip(state, action: PayloadAction<Partial<ProductTip>>) {
       state.tip = {
         ...state.tip,
         ...action.payload,
       };
     },
-    setProductDownload(state, action: PayloadAction<Partial<IProductDownload>>) {
+    setProductDownload(state, action: PayloadAction<Partial<ProductDownload>>) {
       state.download = {
         ...state.download,
         ...action.payload,
       };
     },
-    setProductCatelogue(state, action: PayloadAction<Partial<IProductCatelogue>>) {
+    setProductCatelogue(state, action: PayloadAction<Partial<ProductCatelogue>>) {
       state.catelogue = {
         ...state.catelogue,
         ...action.payload,
       };
     },
-    setProductList(state, action: PayloadAction<Partial<IProductList>>) {
+    setProductList(state, action: PayloadAction<Partial<ProductList>>) {
       state.list = {
         ...state.list,
         ...action.payload,

@@ -1,25 +1,25 @@
 import {
-  IDataTableResponse,
-  IPaginationRequest,
-  IPaginationResponse,
-  ISummaryResponse,
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
+  SummaryResponse,
 } from '@/components/Table/types';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { IInspirationalQuotationForm } from '@/types';
+import { Quotation } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
 
 interface IQuotationPaginationResponse {
   data: {
-    quotations: IInspirationalQuotationForm[];
-    pagination: IPaginationResponse;
-    summary: ISummaryResponse[];
+    quotations: Quotation[];
+    pagination: PaginationResponse;
+    summary: SummaryResponse[];
   };
 }
 
 export async function getQuotationPagination(
-  params: IPaginationRequest,
-  callback: (data: IDataTableResponse) => void,
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
 ) {
   request(`/api/quotation/get-list`, {
     method: 'GET',
@@ -45,7 +45,7 @@ export async function getQuotationPagination(
 }
 
 export async function getOneQuotation(id: string) {
-  return request<{ data: IInspirationalQuotationForm }>(`/api/quotation/get-one/${id}`, {
+  return request<{ data: Quotation }>(`/api/quotation/get-one/${id}`, {
     method: 'GET',
   })
     .then((response) => {
@@ -55,11 +55,11 @@ export async function getOneQuotation(id: string) {
       message.error(
         error.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_INSPIRATIONAL_QUOTATION_ERROR,
       );
-      return {} as IInspirationalQuotationForm;
+      return {} as Quotation;
     });
 }
 
-export async function createQuotation(data: IInspirationalQuotationForm) {
+export async function createQuotation(data: Quotation) {
   return request<boolean>(`/api/quotation/create`, { method: 'POST', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CREATE_INSPIRATIONAL_QUOTATION_SUCCESS);
@@ -73,7 +73,7 @@ export async function createQuotation(data: IInspirationalQuotationForm) {
     });
 }
 
-export async function updateQuotation(id: string, data: IInspirationalQuotationForm) {
+export async function updateQuotation(id: string, data: Quotation) {
   return request<boolean>(`/api/quotation/update/${id}`, { method: 'PUT', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_INSPIRATIONAL_QUOTATION_SUCCESS);

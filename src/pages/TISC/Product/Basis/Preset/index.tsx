@@ -1,11 +1,11 @@
 import React, { useRef } from 'react';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import type { ICustomTableColumnType } from '@/components/Table/types';
+import type { TableColumnItem } from '@/components/Table/types';
 import { HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { deletePresetMiddleware, getProductBasisPresetPagination } from '@/services';
-import type { IBasisPresetListResponse, ISubBasisPreset } from '@/types';
+import type { BasisPresetListResponse, SubBasisPreset } from '@/types';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
@@ -13,6 +13,7 @@ import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { confirmDelete } from '@/helper/common';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+
 const BasisPresetList: React.FC = () => {
   const tableRef = useRef<any>();
 
@@ -36,7 +37,7 @@ const BasisPresetList: React.FC = () => {
     confirmDelete(onOk, onCancel);
   };
 
-  const SameColumns: ICustomTableColumnType<any>[] = [
+  const SameColumns: TableColumnItem<any>[] = [
     {
       title: '1st Value',
       dataIndex: 'value_1',
@@ -61,7 +62,7 @@ const BasisPresetList: React.FC = () => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
   ];
 
-  const MainColumns: ICustomTableColumnType<IBasisPresetListResponse>[] = [
+  const MainColumns: TableColumnItem<BasisPresetListResponse>[] = [
     {
       title: 'Preset Group',
       dataIndex: 'name',
@@ -114,7 +115,7 @@ const BasisPresetList: React.FC = () => {
     },
   ];
 
-  const SubColumns: ICustomTableColumnType<ISubBasisPreset>[] = [
+  const SubColumns: TableColumnItem<SubBasisPreset>[] = [
     {
       title: 'Preset Group',
       dataIndex: 'preset_group',
@@ -139,7 +140,7 @@ const BasisPresetList: React.FC = () => {
     },
   ];
 
-  const ChildColumns: ICustomTableColumnType<IBasisPresetListResponse>[] = [
+  const ChildColumns: TableColumnItem<BasisPresetListResponse>[] = [
     {
       title: 'Preset Group',
       dataIndex: 'preset_group',

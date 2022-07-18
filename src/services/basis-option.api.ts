@@ -1,24 +1,24 @@
-import { request } from 'umi';
-import { message } from 'antd';
-import type { IBasisOptionForm, IBasisOptionListResponse } from '@/types';
 import type {
-  IDataTableResponse,
-  IPaginationRequest,
-  IPaginationResponse,
-  ISummaryResponse,
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
+  SummaryResponse,
 } from '@/components/Table/types';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import type { BasisOptionForm, BasisOptionListResponse } from '@/types';
+import { message } from 'antd';
+import { request } from 'umi';
 
 interface ICategoryPaginationResponse {
   data: {
-    basis_options: IBasisOptionListResponse[];
-    pagination: IPaginationResponse;
-    summary: ISummaryResponse[];
+    basis_options: BasisOptionListResponse[];
+    pagination: PaginationResponse;
+    summary: SummaryResponse[];
   };
 }
 export async function getProductBasisOptionPagination(
-  params: IPaginationRequest,
-  callback: (data: IDataTableResponse) => void,
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
 ) {
   request(`/api/basis-option/get-list`, {
     method: 'GET',
@@ -41,7 +41,7 @@ export async function getProductBasisOptionPagination(
     });
 }
 
-export async function createOptionMiddleWare(data: IBasisOptionForm) {
+export async function createOptionMiddleWare(data: BasisOptionForm) {
   return request<boolean>(`/api/basis-option/create`, {
     method: 'POST',
     data,
@@ -56,7 +56,7 @@ export async function createOptionMiddleWare(data: IBasisOptionForm) {
     });
 }
 export async function getOneBasisOption(id: string) {
-  return request<{ data: IBasisOptionForm }>(`/api/basis-option/get-one/${id}`, {
+  return request<{ data: BasisOptionForm }>(`/api/basis-option/get-one/${id}`, {
     method: 'GET',
   })
     .then((response) => {
@@ -80,7 +80,7 @@ export async function getOneBasisOption(id: string) {
     });
 }
 
-export async function updateBasisOption(id: string, data: IBasisOptionForm) {
+export async function updateBasisOption(id: string, data: BasisOptionForm) {
   return request<boolean>(`/api/basis-option/update/${id}`, {
     method: 'PUT',
     data,

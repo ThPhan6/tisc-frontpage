@@ -5,13 +5,13 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import styles from './styles/collapse.less';
 
-interface CustomCollapseInterface extends CollapseProps {
+interface CustomCollapseProps extends CollapseProps {
   header: string | ReactNode;
   children: ReactNode;
   customHeaderClass?: string;
 }
 
-const CustomCollapse: FC<CustomCollapseInterface> = ({
+const CustomCollapse: FC<CustomCollapseProps> = ({
   header,
   children,
   customHeaderClass,

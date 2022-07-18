@@ -1,4 +1,4 @@
-export interface IDistributorForm {
+export interface DistributorForm {
   brand_id: string;
   name: string;
   country_name: string;
@@ -22,15 +22,15 @@ export interface IDistributorForm {
   coverage_beyond: true;
 }
 
-export interface IDistributorEntryForm {
+export interface DistributorEntryForm {
   submitButtonStatus: any;
-  onSubmit: (data: IDistributorForm) => void;
+  onSubmit: (data: DistributorForm) => void;
   onCancel: () => void;
-  data: IDistributorForm;
-  setData: (data: IDistributorForm) => void;
+  data: DistributorForm;
+  setData: (data: DistributorForm) => void;
 }
 
-export interface IDistributorListResponse {
+export interface Distributor {
   id: string;
   name: string;
   count: number;

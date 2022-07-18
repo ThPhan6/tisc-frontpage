@@ -5,12 +5,12 @@ import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
 import { getOneDistributor, updateDistributor } from '@/services';
-import { IDistributorForm } from '@/types/distributor.type';
+import { DistributorForm } from '@/types/distributor.type';
 import { useEffect, useState } from 'react';
 import { useParams } from 'umi';
 import { DistributorsEntryForm } from './components/DistributorsEntryForm';
 
-const DEFAULT_DISTRIBUTOR: IDistributorForm = {
+const DEFAULT_DISTRIBUTOR: DistributorForm = {
   brand_id: '',
   name: '',
   country_name: '',
@@ -35,7 +35,7 @@ const DEFAULT_DISTRIBUTOR: IDistributorForm = {
 };
 
 const UpdatePage = () => {
-  const [data, setData] = useState<IDistributorForm>(DEFAULT_DISTRIBUTOR);
+  const [data, setData] = useState<DistributorForm>(DEFAULT_DISTRIBUTOR);
   const submitButtonStatus = useBoolean(false);
   const isLoading = useBoolean();
   const params = useParams<{ id: string }>();
@@ -53,7 +53,7 @@ const UpdatePage = () => {
     getDistributorData();
   }, []);
 
-  const handleUpdate = (submitData: IDistributorForm) => {
+  const handleUpdate = (submitData: DistributorForm) => {
     isLoading.setValue(true);
     updateDistributor(idDistributor, submitData).then((isSuccess) => {
       isLoading.setValue(false);

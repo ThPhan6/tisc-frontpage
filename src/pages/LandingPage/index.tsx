@@ -34,7 +34,7 @@ import {
   resetPasswordMiddleware,
   validateResetToken,
 } from './services/api';
-import type { LoginBodyProp, ModalOpen, ResetPasswordBodyProp } from './types';
+import type { LoginInput, ModalOpen, ResetPasswordRequestBody } from './types';
 
 const LandingPage = () => {
   const emailResetPwd = useQuery().get('email');
@@ -67,7 +67,7 @@ const LandingPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [emailResetPwd]);
 
-  const handleSubmitLogin = (data: LoginBodyProp) => {
+  const handleSubmitLogin = (data: LoginInput) => {
     isLoading.setValue(true);
     if (openModal === 'Tisc Login') {
       loginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
@@ -109,7 +109,7 @@ const LandingPage = () => {
     });
   };
 
-  const handleResetPassword = (data: ResetPasswordBodyProp) => {
+  const handleResetPassword = (data: ResetPasswordRequestBody) => {
     isLoading.setValue(true);
     resetPasswordMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {

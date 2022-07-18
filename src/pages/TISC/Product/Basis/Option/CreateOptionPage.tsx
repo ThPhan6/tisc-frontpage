@@ -3,7 +3,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import OptionEntryForm from './components/OptionsEntryForm';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
-import { IBasisOptionForm } from '@/types';
+import { BasisOptionForm } from '@/types';
 import { useBoolean } from '@/helper/hook';
 import { createOptionMiddleWare } from '@/services';
 import { useState } from 'react';
@@ -11,7 +11,7 @@ import { useState } from 'react';
 const CreateOptionPage = () => {
   const isLoading = useBoolean();
   const submitButtonStatus = useBoolean(false);
-  const [option, setOption] = useState<IBasisOptionForm>({
+  const [option, setOption] = useState<BasisOptionForm>({
     name: '',
     subs: [],
   });
@@ -20,7 +20,7 @@ const CreateOptionPage = () => {
     pushTo(PATH.options);
   };
 
-  const handleCreateOption = (data: IBasisOptionForm) => {
+  const handleCreateOption = (data: BasisOptionForm) => {
     isLoading.setValue(true);
 
     createOptionMiddleWare(data).then((isSuccess) => {

@@ -1,13 +1,13 @@
 import React, { useRef } from 'react';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import type { ICustomTableColumnType } from '@/components/Table/types';
+import type { TableColumnItem } from '@/components/Table/types';
 import { HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { getProductBasisOptionPagination, deleteBasisOption } from '@/services';
 import { showImageUrl } from '@/helper/utils';
-import type { IBasisOptionListResponse, ISubBasisOption } from '@/types';
+import type { BasisOptionListResponse, SubBasisOption } from '@/types';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
@@ -29,7 +29,7 @@ const BasisOptionList: React.FC = () => {
     });
   };
 
-  const SameColumn: ICustomTableColumnType<any>[] = [
+  const SameColumn: TableColumnItem<any>[] = [
     {
       title: 'Image',
       dataIndex: 'image',
@@ -70,7 +70,7 @@ const BasisOptionList: React.FC = () => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
   ];
 
-  const MainColumns: ICustomTableColumnType<IBasisOptionListResponse>[] = [
+  const MainColumns: TableColumnItem<BasisOptionListResponse>[] = [
     {
       title: 'Option Group',
       dataIndex: 'name',
@@ -123,7 +123,7 @@ const BasisOptionList: React.FC = () => {
     },
   ];
 
-  const SubColumns: ICustomTableColumnType<ISubBasisOption>[] = [
+  const SubColumns: TableColumnItem<SubBasisOption>[] = [
     {
       title: 'Option Group',
       dataIndex: 'option_group',
@@ -148,7 +148,7 @@ const BasisOptionList: React.FC = () => {
     },
   ];
 
-  const ChildColumns: ICustomTableColumnType<IBasisOptionListResponse>[] = [
+  const ChildColumns: TableColumnItem<BasisOptionListResponse>[] = [
     {
       title: 'Option Group',
       dataIndex: 'option_group',

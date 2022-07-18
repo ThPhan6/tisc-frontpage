@@ -4,29 +4,29 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import { Row, Col } from 'antd';
 import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 import styles from './styles/InputGroup.less';
-import type { ISubBasisConversion } from '@/types';
+import type { SubBasisConversion } from '@/types';
 
-interface IConversionValue {
+interface ConversionValue {
   firstValue: string;
   secondValue: string;
 }
 
-interface IConversionInput {
+interface ConversionInputProps {
   horizontal?: boolean;
   required?: boolean;
   fontLevel?: 1 | 2 | 3 | 4 | 5;
   label?: string | ReactNode;
   noWrap?: boolean;
-  conversionData: ISubBasisConversion;
+  conversionData: SubBasisConversion;
   placeholder1?: string;
   placeholder2?: string;
   deleteIcon?: boolean | ReactNode;
   onDelete?: () => void;
-  conversionValue: IConversionValue;
-  setConversionValue: (data: IConversionValue) => void;
+  conversionValue: ConversionValue;
+  setConversionValue: (data: ConversionValue) => void;
 }
 
-const ConversionInput: FC<IConversionInput> = ({
+const ConversionInput: FC<ConversionInputProps> = ({
   label,
   horizontal,
   required,

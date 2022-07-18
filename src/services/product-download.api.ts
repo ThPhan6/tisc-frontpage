@@ -1,12 +1,12 @@
 import { request } from 'umi';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import type { IProductDownload } from '@/types';
+import type { ProductDownload } from '@/types';
 import { setProductDownload } from '@/reducers/product';
 import store from '@/reducers';
 
 export const getProductDownloadByProductID = async (productId: string) => {
-  return request<{ data: IProductDownload }>(`/api/product-download/get-one/${productId}`, {
+  return request<{ data: ProductDownload }>(`/api/product-download/get-one/${productId}`, {
     method: 'GET',
   })
     .then((res) => {
@@ -19,7 +19,7 @@ export const getProductDownloadByProductID = async (productId: string) => {
     });
 };
 
-export const createProductDownload = async (data: IProductDownload) => {
+export const createProductDownload = async (data: ProductDownload) => {
   return request(`/api/product-download/create`, {
     method: 'POST',
     data,

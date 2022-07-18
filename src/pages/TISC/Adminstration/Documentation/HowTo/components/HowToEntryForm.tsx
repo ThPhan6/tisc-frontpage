@@ -7,25 +7,14 @@ import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove
 import { Col, Collapse, Row } from 'antd';
 import styles from '../styles/HowToEntryForm.less';
 import React, { FC } from 'react';
-import { IFAQFieldProps, IHowToSubProps, IHowToValueProps } from '../types';
+import { FaqInput, FaqPanel, FaqItems } from '../types';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import CustomButton from '@/components/Button';
 import { isEmpty } from 'lodash';
 
-interface IHowToEntryForm {
-  value: IHowToValueProps;
-  onChange: (value: IHowToValueProps) => void;
-}
-
-interface IPanelHeader {
-  value: IHowToValueProps;
-  panel: IHowToSubProps;
-  handleActiveKeyToCollapse: (title: string) => void;
-}
-
-interface IFAQField {
-  value: IFAQFieldProps;
-  onChange: (value: IFAQFieldProps) => void;
+interface FAQFieldProps {
+  value: FaqInput;
+  onChange: (value: FaqInput) => void;
   handleDeleteFAQItem: () => void;
   handleDeleteAnswerFieldItem: () => void;
 }
@@ -35,7 +24,7 @@ const DEFAULT_FAQ_FIELD = {
   answer: '',
 };
 
-const QuestionAndAnswerField: FC<IFAQField> = ({
+const QuestionAndAnswerField: FC<FAQFieldProps> = ({
   value,
   onChange,
   handleDeleteFAQItem,
@@ -86,7 +75,13 @@ const QuestionAndAnswerField: FC<IFAQField> = ({
   );
 };
 
-const PanelHeader: FC<IPanelHeader> = ({ value, panel, handleActiveKeyToCollapse }) => {
+interface PanelHeaderProps {
+  value: FaqItems;
+  panel: FaqPanel;
+  handleActiveKeyToCollapse: (title: string) => void;
+}
+
+const PanelHeader: FC<PanelHeaderProps> = ({ value, panel, handleActiveKeyToCollapse }) => {
   return (
     <div className={styles.panel}>
       <div className={styles.panel_header} onClick={() => handleActiveKeyToCollapse(panel.title)}>
@@ -113,7 +108,12 @@ const PanelHeader: FC<IPanelHeader> = ({ value, panel, handleActiveKeyToCollapse
   );
 };
 
-export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
+interface HowToEntryFormProps {
+  value: FaqItems;
+  onChange: (value: FaqItems) => void;
+}
+
+export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange }) => {
   const handleActiveKeyToCollapse = (collapseValue: string) => {
     onChange({
       activeKey: value.activeKey === collapseValue ? '' : collapseValue,
@@ -122,7 +122,7 @@ export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
   };
 
   /// overwrite data
-  const updatedOnChange = (dataHowTo: IHowToValueProps) => {
+  const updatedOnChange = (dataHowTo: FaqItems) => {
     onChange({ ...dataHowTo, data: dataHowTo.data });
   };
 
@@ -136,7 +136,7 @@ export const HowToEntryForm: FC<IHowToEntryForm> = ({ value, onChange }) => {
     updatedOnChange(value);
   };
 
-  const handleOnChangeFAQContent = (faq: IFAQFieldProps, panelIndex: number, faqIndex: number) => {
+  const handleOnChangeFAQContent = (faq: FaqInput, panelIndex: number, faqIndex: number) => {
     const newItem = [...value.data];
     newItem[panelIndex].FAQ[faqIndex] = faq;
     updatedOnChange(value);
