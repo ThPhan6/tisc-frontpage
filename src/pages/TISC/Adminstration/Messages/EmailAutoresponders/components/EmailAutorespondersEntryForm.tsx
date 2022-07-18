@@ -41,13 +41,14 @@ export const EmailAutoRespondEntryForm: FC<EmailAutoRespondProps> = ({
 
   /// only get content entered
   const handleOnChangeMessageInput = (html: string) => {
-    // onChange({ ...value, message: html });
-    onChange({ ...value, message: html });
+    if (html) {
+      onChange({ ...value, message: html });
+    }
   };
 
   const handleOnChangeRadio = (
     typeRadio: 'topic' | 'targeted_for',
-    valueRadio: string | number,
+    valueRadio: string | boolean,
   ) => {
     onChange({
       ...value,
