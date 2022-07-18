@@ -1,12 +1,12 @@
 import React, { useRef } from 'react';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import type { ICustomTableColumnType } from '@/components/Table/types';
+import type { TableColumnItem } from '@/components/Table/types';
 import { HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { deleteCategoryMiddleware, getProductCategoryPagination } from '@/services';
-import type { ICategoryListResponse } from '@/types';
+import type { CategoryListResponse } from '@/types';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import { STATUS_RESPONSE } from '@/constants/util';
@@ -41,7 +41,7 @@ const CategoryList: React.FC = () => {
     confirmDelete(onOk, onCancel);
   };
 
-  const MainColumns: ICustomTableColumnType<ICategoryListResponse>[] = [
+  const MainColumns: TableColumnItem<CategoryListResponse>[] = [
     {
       title: 'Main Category',
       dataIndex: 'name',
@@ -101,7 +101,7 @@ const CategoryList: React.FC = () => {
       },
     },
   ];
-  const SubColumns: ICustomTableColumnType<ICategoryListResponse>[] = [
+  const SubColumns: TableColumnItem<CategoryListResponse>[] = [
     {
       title: 'Main Category',
       dataIndex: 'maincategory',
@@ -131,7 +131,7 @@ const CategoryList: React.FC = () => {
       width: '5%',
     },
   ];
-  const ChildColumns: ICustomTableColumnType<ICategoryListResponse>[] = [
+  const ChildColumns: TableColumnItem<CategoryListResponse>[] = [
     {
       title: 'Main Category',
       dataIndex: 'maincategory',

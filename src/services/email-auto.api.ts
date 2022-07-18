@@ -1,28 +1,28 @@
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import type {
-  IDataTableResponse,
-  IPaginationRequest,
-  IPaginationResponse,
-  ISummaryResponse,
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
+  SummaryResponse,
 } from '@/components/Table/types';
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { EmailTemplate, RadioItem } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
-import { IEmailAutoRadioListProps, IEmailAutoRespondForm } from '@/types';
 
-interface IEmailAutoPaginationResponse {
+interface EmailTemplatePaginationResponse {
   data: {
-    auto_emails: IEmailAutoRespondForm[];
-    pagination: IPaginationResponse;
-    summary: ISummaryResponse[];
+    auto_emails: EmailTemplate[];
+    pagination: PaginationResponse;
+    summary: SummaryResponse[];
   };
 }
 
-export async function getEmailAutoPagination(
-  params: IPaginationRequest,
-  callback: (data: IDataTableResponse) => void,
+export async function getEmailTemplatePagination(
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
 ) {
   request(`/api/email-auto/get-list`, { method: 'GET', params })
-    .then((response: IEmailAutoPaginationResponse) => {
+    .then((response: EmailTemplatePaginationResponse) => {
       const { auto_emails, pagination, summary } = response.data;
       callback({
         data: auto_emails,
@@ -40,7 +40,7 @@ export async function getEmailAutoPagination(
 }
 
 export async function getOneEmailAuto(id: string) {
-  return request<{ data: IEmailAutoRespondForm }>(`/api/email-auto/get-one/${id}`, {
+  return request<{ data: EmailTemplate }>(`/api/email-auto/get-one/${id}`, {
     method: 'GET',
   })
     .then((response) => {
@@ -48,12 +48,12 @@ export async function getOneEmailAuto(id: string) {
     })
     .catch((error) => {
       message.error(error.message?.data ?? MESSAGE_NOTIFICATION.GET_ONE_EMAIL_AUTO_ERROR);
-      return {} as IEmailAutoRespondForm;
+      return {} as EmailTemplate;
     });
 }
 
 export async function getTargetedForList() {
-  return request<IEmailAutoRadioListProps[]>(`/api/email-auto/get-list-targeted-for`)
+  return request<RadioItem[]>(`/api/email-auto/get-list-targeted-for`)
     .then((response) => {
       return response;
     })
@@ -61,22 +61,22 @@ export async function getTargetedForList() {
       message.error(
         error.message?.data ?? MESSAGE_NOTIFICATION.GET_TARGETEDFOR_LIST_EMAIL_AUTO_ERROR,
       );
-      return [] as IEmailAutoRadioListProps[];
+      return [] as RadioItem[];
     });
 }
 
 export async function getTopicList() {
-  return request<IEmailAutoRadioListProps[]>(`/api/email-auto/get-list-topic`)
+  return request<RadioItem[]>(`/api/email-auto/get-list-topic`)
     .then((response) => {
       return response;
     })
     .catch((error) => {
       message.error(error.message?.data ?? MESSAGE_NOTIFICATION.GET_TOPIC_LIST_EMAIL_AUTO_ERROR);
-      return [] as IEmailAutoRadioListProps[];
+      return [] as RadioItem[];
     });
 }
 
-export async function updateEmailAuto(id: string, data: IEmailAutoRespondForm) {
+export async function updateEmailAuto(id: string, data: EmailTemplate) {
   return request<boolean>(`/api/email-auto/update/${id}`, { method: 'PUT', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_EMAIL_AUTO_SUCCESS);

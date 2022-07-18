@@ -3,7 +3,7 @@ import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
 import styles from '../styles/EmailAutorespondersEntryForm.less';
-import { IEmailAutoRadioListProps, IEmailAutoRespondForm } from '@/types';
+import { RadioItem, EmailTemplate } from '@/types';
 import React, { FC } from 'react';
 import { CustomRadio } from '@/components/CustomRadio';
 import { ScrollMenu } from 'react-horizontal-scrolling-menu';
@@ -11,13 +11,13 @@ import { useDrag } from '../utils/useDrag';
 import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
 
 interface EmailAutoRespondProps {
-  value: IEmailAutoRespondForm;
-  onChange: (value: IEmailAutoRespondForm) => void;
+  value: EmailTemplate;
+  onChange: (value: EmailTemplate) => void;
   onCancel: () => void;
-  onSubmit: (data: IEmailAutoRespondForm) => void;
+  onSubmit: (data: EmailTemplate) => void;
   submitButtonStatus: boolean;
-  topicList: IEmailAutoRadioListProps[];
-  targetedForList: IEmailAutoRadioListProps[];
+  topicList: RadioItem[];
+  targetedForList: RadioItem[];
 }
 
 export const EmailAutoRespondEntryForm: FC<EmailAutoRespondProps> = ({
@@ -41,13 +41,14 @@ export const EmailAutoRespondEntryForm: FC<EmailAutoRespondProps> = ({
 
   /// only get content entered
   const handleOnChangeMessageInput = (html: string) => {
-    // onChange({ ...value, message: html });
-    onChange({ ...value, message: html });
+    if (html) {
+      onChange({ ...value, message: html });
+    }
   };
 
   const handleOnChangeRadio = (
     typeRadio: 'topic' | 'targeted_for',
-    valueRadio: string | number,
+    valueRadio: string | boolean,
   ) => {
     onChange({
       ...value,

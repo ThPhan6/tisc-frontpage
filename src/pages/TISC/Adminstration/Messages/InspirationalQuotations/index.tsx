@@ -3,8 +3,8 @@ import CustomTable from '@/components/Table';
 import { pushTo } from '@/helper/history';
 import { useRef } from 'react';
 import { deleteQuotation, getQuotationPagination } from '@/services';
-import { IInspirationalQuotationForm } from '@/types';
-import { ICustomTableColumnType } from '@/components/Table/types';
+import { Quotation } from '@/types';
+import { TableColumnItem } from '@/components/Table/types';
 import { HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
@@ -29,7 +29,7 @@ const InspirationalQuotationsList: React.FC = () => {
     });
   };
 
-  const mainColumns: ICustomTableColumnType<IInspirationalQuotationForm>[] = [
+  const mainColumns: TableColumnItem<Quotation>[] = [
     {
       title: 'Author',
       dataIndex: 'author',

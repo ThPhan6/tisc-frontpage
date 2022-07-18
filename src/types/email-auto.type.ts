@@ -1,4 +1,4 @@
-export interface IEmailAutoRespondForm {
+export interface EmailTemplate {
   topic: string;
   targeted_for: string;
   title: string;
@@ -6,7 +6,7 @@ export interface IEmailAutoRespondForm {
 }
 
 // for topic and targeted-for list
-export interface IEmailAutoRadioListProps {
+export interface RadioItem {
   key: string;
   value: any;
 }

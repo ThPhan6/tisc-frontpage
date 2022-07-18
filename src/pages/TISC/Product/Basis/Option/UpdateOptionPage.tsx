@@ -3,7 +3,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import OptionEntryForm from './components/OptionsEntryForm';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
-import { IBasisOptionForm } from '@/types';
+import { BasisOptionForm } from '@/types';
 import { useBoolean } from '@/helper/hook';
 import { getOneBasisOption, updateBasisOption } from '@/services';
 import { useState, useEffect } from 'react';
@@ -12,7 +12,7 @@ import { useParams } from 'umi';
 const CreateOptionPage = () => {
   const isLoading = useBoolean();
   const submitButtonStatus = useBoolean(false);
-  const [option, setOption] = useState<IBasisOptionForm>({
+  const [option, setOption] = useState<BasisOptionForm>({
     name: '',
     subs: [],
   });
@@ -31,7 +31,7 @@ const CreateOptionPage = () => {
     pushTo(PATH.options);
   };
 
-  const handleCreateOption = (data: IBasisOptionForm) => {
+  const handleCreateOption = (data: BasisOptionForm) => {
     isLoading.setValue(true);
     updateBasisOption(idBasisOption, data).then((isSuccess) => {
       if (isSuccess) {

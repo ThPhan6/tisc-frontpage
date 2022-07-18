@@ -7,7 +7,7 @@ import CustomCollapse from '@/components/Collapse';
 import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
-import { IAttributeGeneralFeature, IGeneralFeatureFormInput } from '@/types';
+import { AttributeGeneralFeature, GeneralFeatureFormInput } from '@/types';
 import { POPOVER_TITLE } from '../../constants';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
@@ -16,16 +16,16 @@ import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 import styles from '../../styles/details.less';
 import { map, upperCase } from 'lodash';
 
-interface IGeneralFeatureAttributeItem {
-  attributes: IAttributeGeneralFeature[];
-  attributeItem: IGeneralFeatureFormInput;
+interface GeneralFeatureAttributeItemProps {
+  attributes: AttributeGeneralFeature[];
+  attributeItem: GeneralFeatureFormInput;
   onDelete?: () => void;
-  onItemChange?: (data: IGeneralFeatureFormInput['attributes']) => void;
+  onItemChange?: (data: GeneralFeatureFormInput['attributes']) => void;
   index: number;
   activeKey: 'general' | 'feature';
 }
 
-const GeneralFeatureAttributeItem: React.FC<IGeneralFeatureAttributeItem> = (props) => {
+const GeneralFeatureAttributeItem: React.FC<GeneralFeatureAttributeItemProps> = (props) => {
   const product = useAppSelector((state) => state.product);
   const dispatch = useDispatch();
   const { general_attribute_groups, feature_attribute_groups } = product.details;

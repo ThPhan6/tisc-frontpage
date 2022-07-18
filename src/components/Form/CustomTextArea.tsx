@@ -1,4 +1,3 @@
-import React from 'react';
 import { Input } from 'antd';
 import type { FC } from 'react';
 import type { CustomTextAreaProps } from './types';

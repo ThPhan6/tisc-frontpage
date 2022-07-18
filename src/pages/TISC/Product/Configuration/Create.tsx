@@ -13,7 +13,7 @@ import {
   createProductDownload,
   createProductCatelogue,
 } from '@/services';
-import type { IProductFormData } from '@/types';
+import type { ProductFormData } from '@/types';
 import { useDispatch } from 'react-redux';
 import { setBrand } from '@/reducers/product';
 import { useAppSelector } from '@/reducers';
@@ -37,7 +37,7 @@ const ProductConfigurationCreate: React.FC = () => {
 
   const onSave = () => {
     const { details, tip, download, catelogue } = product;
-    const data: IProductFormData = {
+    const data: ProductFormData = {
       brand_id: brandId,
       category_ids: details.categories.map((category) => category.id),
       collection_id: details.collection?.id ?? '',

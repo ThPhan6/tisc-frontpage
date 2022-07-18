@@ -10,44 +10,47 @@ import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success
 import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constants/message';
 import avatarImg from '@/assets/img-avatar.png';
 import { FC, useEffect, useState } from 'react';
-import {
-  getPersonalPhone,
-  isShowErrorMessage,
-  showImageUrl,
-  validateEmail,
-  validatePhoneInput,
-} from '@/helper/utils';
+import { isShowErrorMessage, showImageUrl, validateEmail } from '@/helper/utils';
 import { useBoolean, useCustomInitialState } from '@/helper/hook';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { updateAvatarTeamProfile, updateTeamProfile } from './services/api';
 import { STATUS_RESPONSE } from '@/constants/util';
-import {
-  defaultPersonalProfileValue,
-  PersonalProfileProps,
-  PersonalProfileValueProp,
-} from './types';
 import { PhoneInputValueProp } from '@/components/Form/types';
 import { isEqual } from 'lodash';
+
+export type PersonalProfileState = {
+  backupEmail: string;
+  phoneNumber: string;
+  linkedin: string;
+};
+
+export interface PersonalProfileProps {
+  isLoading: {
+    value: boolean;
+    setValue: (value: boolean) => void;
+  };
+}
 
 export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
   const [fileInput, setFileInput] = useState<any>();
   const { fetchUserInfo, currentUser } = useCustomInitialState();
   const submitButtonStatus = useBoolean();
 
-  const [inputValue, setInputValue] = useState<PersonalProfileValueProp>(
-    defaultPersonalProfileValue,
-  );
+  const [inputValue, setInputValue] = useState<PersonalProfileState>({
+    backupEmail: '',
+    phoneNumber: '',
+    linkedin: '',
+  });
 
   useEffect(() => {
-    setInputValue({
-      backupEmail: currentUser?.backup_email || '',
-      mobile: getPersonalPhone(currentUser?.personal_mobile) || {
-        zoneCode: '',
-        phoneNumber: '',
-      },
-      linkedin: currentUser?.linkedin || '',
-    });
-  }, []);
+    if (currentUser) {
+      setInputValue({
+        backupEmail: currentUser.backup_email || '',
+        phoneNumber: currentUser.personal_mobile,
+        linkedin: currentUser?.linkedin || '',
+      });
+    }
+  }, [currentUser]);
 
   const handleUpdateAvatar = () => {
     const formData = new FormData();
@@ -87,26 +90,27 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
   };
 
   const handleSubmit = () => {
-    const bodyData = {
-      backup_email: inputValue.backupEmail,
-      personal_mobile: inputValue.mobile.phoneNumber,
-      linkedin: inputValue.linkedin,
-      zone_code: inputValue.mobile.zoneCode,
-    };
     isLoading.setValue(true);
-    updateTeamProfile(bodyData, (type: STATUS_RESPONSE, msg?: string) => {
-      if (type === STATUS_RESPONSE.SUCCESS) {
-        message.success(MESSAGE_NOTIFICATION.UPDATE_PERSONAL_PROFILE_SUCCESS);
-        fetchUserInfo();
-        submitButtonStatus.setValue(true);
-        setTimeout(() => {
-          submitButtonStatus.setValue(false);
-        }, 3000);
-      } else {
-        message.error(msg || MESSAGE_NOTIFICATION.UPDATE_PERSONAL_PROFILE_ERROR);
-      }
-      isLoading.setValue(false);
-    });
+    updateTeamProfile(
+      {
+        backup_email: inputValue.backupEmail,
+        personal_mobile: inputValue.phoneNumber,
+        linkedin: inputValue.linkedin,
+      },
+      (type: STATUS_RESPONSE, msg?: string) => {
+        if (type === STATUS_RESPONSE.SUCCESS) {
+          message.success(MESSAGE_NOTIFICATION.UPDATE_PERSONAL_PROFILE_SUCCESS);
+          fetchUserInfo();
+          submitButtonStatus.setValue(true);
+          setTimeout(() => {
+            submitButtonStatus.setValue(false);
+          }, 3000);
+        } else {
+          message.error(msg || MESSAGE_NOTIFICATION.UPDATE_PERSONAL_PROFILE_ERROR);
+        }
+        isLoading.setValue(false);
+      },
+    );
   };
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,25 +123,23 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
   const handleOnChangePhoneInput = (phoneValue: PhoneInputValueProp) => {
     setInputValue({
       ...inputValue,
-      mobile: phoneValue,
+      phoneNumber: phoneValue.phoneNumber,
     });
   };
 
-  const handleDisabled = () => {
-    const phone = getPersonalPhone(currentUser?.personal_mobile);
-    const currentUserData = {
-      backupEmail: currentUser?.backup_email,
-      linkedin: currentUser?.linkedin,
-      mobile: {
-        phoneNumber: phone?.phoneNumber,
-        zoneCode: phone?.zoneCode,
-      },
+  const checkSaveDisabled = () => {
+    if (!currentUser) {
+      return true;
+    }
+    const currentUserData: PersonalProfileState = {
+      backupEmail: currentUser.backup_email,
+      linkedin: currentUser.linkedin,
+      phoneNumber: currentUser.personal_mobile,
     };
     if (
       isEqual(currentUserData, inputValue) ||
       (inputValue.backupEmail && !validateEmail(inputValue.backupEmail)) ||
-      (!validatePhoneInput(inputValue.mobile) &&
-        (inputValue.mobile.zoneCode || inputValue.mobile.phoneNumber))
+      !inputValue.phoneNumber
     ) {
       return true;
     }
@@ -197,20 +199,15 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
               onChange={handleOnChange}
             />
           </FormGroup>
-          <FormGroup
-            label="Mobile"
-            layout="vertical"
-            formClass={styles.form}
-            messageType="error"
-            message={
-              isShowErrorMessage('phone-input', inputValue.mobile) ? '' : MESSAGE_ERROR.PHONE_INPUT
-            }
-          >
+          <FormGroup label="Mobile" layout="vertical" formClass={styles.form} messageType="error">
             <PhoneInput
-              status={isShowErrorMessage('phone-input', inputValue.mobile) ? '' : 'error'}
               phonePlaceholder="personal mobile"
               onChange={handleOnChangePhoneInput}
-              value={inputValue.mobile}
+              codeReadOnly
+              value={{
+                zoneCode: currentUser?.phone_code || '',
+                phoneNumber: inputValue.phoneNumber,
+              }}
             />
           </FormGroup>
           <FormGroup label="Linkedin" layout="vertical" formClass={styles.form}>
@@ -237,7 +234,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
               size="small"
               width="64px"
               onClick={handleSubmit}
-              disabled={handleDisabled()}
+              disabled={checkSaveDisabled()}
             >
               <BodyText level={6} fontFamily="Roboto">
                 Save

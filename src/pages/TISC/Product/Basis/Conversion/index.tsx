@@ -1,11 +1,11 @@
 import React, { useRef } from 'react';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import type { ICustomTableColumnType } from '@/components/Table/types';
+import type { TableColumnItem } from '@/components/Table/types';
 import { HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { deleteConversionMiddleware, getProductBasisConversionPagination } from '@/services';
-import type { IBasisConversionListResponse, ISubBasisConversion } from '@/types';
+import type { BasisConversionListResponse, SubBasisConversion } from '@/types';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
@@ -37,7 +37,7 @@ const BasisConversionList: React.FC = () => {
     confirmDelete(onOk, onCancel);
   };
 
-  const MainColumns: ICustomTableColumnType<IBasisConversionListResponse>[] = [
+  const MainColumns: TableColumnItem<BasisConversionListResponse>[] = [
     {
       title: 'Conversion Group',
       dataIndex: 'name',
@@ -99,7 +99,7 @@ const BasisConversionList: React.FC = () => {
       },
     },
   ];
-  const SubColumns: ICustomTableColumnType<ISubBasisConversion>[] = [
+  const SubColumns: TableColumnItem<SubBasisConversion>[] = [
     {
       title: 'Conversion Group',
       dataIndex: 'name',

@@ -2,9 +2,9 @@ import styles from './AboutModal.less';
 import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
 import { FC } from 'react';
-import { AboutModalProps } from '../types';
+import { ModalProps } from '../types';
 
-export const AboutModal: FC<AboutModalProps> = ({ visible, onClose, theme = 'default' }) => {
+export const AboutModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
 
   return (

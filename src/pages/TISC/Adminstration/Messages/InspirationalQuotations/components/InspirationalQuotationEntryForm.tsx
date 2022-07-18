@@ -3,18 +3,18 @@ import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { FC } from 'react';
 import styles from '../styles/InspirationalQuotationEntryForm.less';
-import { IInspirationalQuotationForm } from '@/types';
+import { Quotation } from '@/types';
 import InputGroup from '@/components/EntryForm/InputGroup';
 
-interface IInspirationalQuotationEntryFormProps {
-  value: IInspirationalQuotationForm;
-  onChange: (value: IInspirationalQuotationForm) => void;
+interface QuotationEntryFormProps {
+  value: Quotation;
+  onChange: (value: Quotation) => void;
   onCancel: () => void;
-  onSubmit: (value: IInspirationalQuotationForm) => void;
+  onSubmit: (value: Quotation) => void;
   submitButtonStatus: boolean;
 }
 
-export const InspirationalQuotationEntryForm: FC<IInspirationalQuotationEntryFormProps> = ({
+export const InspirationalQuotationEntryForm: FC<QuotationEntryFormProps> = ({
   value,
   onChange,
   onCancel,

@@ -17,10 +17,6 @@ export const validatePassword = (password: string) => {
   return REGEX_PASSWORD.test(password);
 };
 
-export const validatePhoneInput = (value: PhoneInputValueProp) => {
-  return value.phoneNumber && value.zoneCode;
-};
-
 export const redirectAfterLogin = async () => {
   if (!history) return;
   const { query } = history.location;
@@ -59,10 +55,10 @@ export const getBase64 = (file: any): Promise<string> =>
   });
 
 export const isShowErrorMessage = (
-  type: 'email' | 'password' | 'phone-input',
+  type: 'email' | 'password',
   value: string | PhoneInputValueProp,
 ) => {
-  if (typeof value === 'string' && type !== 'phone-input') {
+  if (typeof value === 'string') {
     if (!value) {
       return true;
     }
@@ -70,12 +66,6 @@ export const isShowErrorMessage = (
       return validateEmail(value);
     }
     return validatePassword(value);
-  }
-  if (type === 'phone-input' && typeof value !== 'string') {
-    if (!value.phoneNumber && !value.zoneCode) {
-      return true;
-    }
-    return validatePhoneInput(value);
   }
   return false;
 };
@@ -86,16 +76,6 @@ export function showImageUrl(url: string) {
   }
   return `${STORE_URL}${url}`;
 }
-
-export const getPersonalPhone = (phone: string | undefined) => {
-  if (phone) {
-    const phoneArray = phone.split(' ');
-    return {
-      zoneCode: phoneArray[0],
-      phoneNumber: phoneArray[1],
-    };
-  }
-};
 
 export const checkUndefined = (value: string | number | undefined) => {
   return isUndefined(value) ? 'N/A' : value;

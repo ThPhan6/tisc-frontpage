@@ -6,24 +6,24 @@ import ConversionInput from '@/components/EntryForm/ConversionInput';
 import Popover from '@/components/Modal/Popover';
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 import { showImageUrl } from '@/helper/utils';
-import type { IAttributeSpecification, ISpecificationFormInput, ISubBasisOption } from '@/types';
+import type { AttributeSpecification, SpecificationFormInput, SubBasisOption } from '@/types';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
 import { setPartialProductDetail } from '@/reducers/product';
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 import styles from './styles/index.less';
 
-interface ISubGeneralFeatureAttribute {
-  attributes: IAttributeSpecification[];
-  itemAttributes: ISpecificationFormInput['attributes'];
-  item: ISpecificationFormInput['attributes'][0];
+interface SubGeneralFeatureAttributeProps {
+  attributes: AttributeSpecification[];
+  itemAttributes: SpecificationFormInput['attributes'];
+  item: SpecificationFormInput['attributes'][0];
   onDelete?: () => void;
-  onItemChange?: (data: ISpecificationFormInput['attributes']) => void;
+  onItemChange?: (data: SpecificationFormInput['attributes']) => void;
   attributeIndex: number;
   attributeItemIndex: number;
 }
 
-const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props) => {
+const SubGeneralFeatureAttribute: React.FC<SubGeneralFeatureAttributeProps> = (props) => {
   const {
     itemAttributes,
     attributes,
@@ -105,7 +105,7 @@ const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props
 
   const onChangeAttributeItem = (
     key: number,
-    data: Partial<ISpecificationFormInput['attributes'][0]>,
+    data: Partial<SpecificationFormInput['attributes'][0]>,
   ) => {
     const newGeneralAttributeItem = [...itemAttributes];
     newGeneralAttributeItem[key] = {
@@ -181,7 +181,7 @@ const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props
     );
   };
 
-  const renderOptionLabel = (option: ISubBasisOption, index: number) => {
+  const renderOptionLabel = (option: SubBasisOption, index: number) => {
     if (!option.image || option.image == '') {
       return (
         <div className={styles.defaultOptionList}>

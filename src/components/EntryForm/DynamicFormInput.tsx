@@ -6,18 +6,18 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import styles from './styles/DynamicFormInput.less';
 
-interface IDynamicFormInputData {
+interface DynamicFormInputData {
   title: string;
   value: string;
 }
-export const DEFAULT_FORM_INPUT: IDynamicFormInputData = {
+export const DEFAULT_FORM_INPUT: DynamicFormInputData = {
   title: '',
   value: '',
 };
 
-interface IDynamicFormInput extends InputProps {
-  data?: IDynamicFormInputData[];
-  setData?: (data: IDynamicFormInputData[]) => void;
+interface DynamicFormInputProps extends InputProps {
+  data?: DynamicFormInputData[];
+  setData?: (data: DynamicFormInputData[]) => void;
   fontLevel?: 1 | 2 | 3 | 4 | 5;
   titlePlaceholder?: string;
   valuePlaceholder?: string;
@@ -25,7 +25,7 @@ interface IDynamicFormInput extends InputProps {
   maxValueWords?: number;
 }
 
-const DynamicFormInput: FC<IDynamicFormInput> = ({
+const DynamicFormInput: FC<DynamicFormInputProps> = ({
   data,
   setData,
   fontLevel,

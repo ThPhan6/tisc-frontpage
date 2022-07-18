@@ -140,6 +140,12 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_DISTRIBUTOR_SUCCESS: 'Update distributor successfully',
   UPDATE_DISTRIBUTOR_ERROR: 'Update distributor error',
   GET_ONE_DISTRIBUTOR_ERROR: 'Get one distributor error',
+
+  //brand-profile
+  UPDATE_BRAND_PROFILE_SUCCESS: 'Update profile successfully',
+  UPDATE_BRAND_PROFILE_ERROR: 'Update profile error',
+  UPDATE_LOGO_BRAND_PROFILE_SUCCESS: 'Update logo brand profile successfully',
+  UPDATE_LOGO_BRAND_PROFILE_ERROR: 'Update logo brand profile error',
 };
 
 export const MESSAGE_TOOLTIP = {

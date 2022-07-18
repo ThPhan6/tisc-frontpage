@@ -1,5 +1,6 @@
 import type { InputProps } from 'antd';
 import type { TextAreaProps } from 'antd/lib/input';
+import { ReactNode } from 'react';
 
 export interface FormGroupProps {
   layout?: 'horizontal' | 'vertical';
@@ -8,9 +9,9 @@ export interface FormGroupProps {
   required?: boolean;
   tooltip?: string;
   label: string;
-  iconTooltip?: JSX.Element;
   message?: string;
   messageType?: 'normal' | 'error' | 'warning';
+  iconTooltip?: ReactNode;
   onClick?: () => void;
 }
 
