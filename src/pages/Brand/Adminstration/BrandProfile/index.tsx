@@ -102,7 +102,6 @@ const BrandProfile = () => {
     });
   };
 
-  console.log(logoBrandProfile);
   return (
     <div className={styles.content}>
       <Row>
