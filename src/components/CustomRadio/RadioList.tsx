@@ -9,7 +9,7 @@ import styles from './styles/radioList.less';
 
 export interface IRadioListOption {
   options: RadioValue[];
-  heading: string | React.ReactNode;
+  heading?: string | React.ReactNode;
 }
 
 interface IRadioList {
@@ -27,7 +27,7 @@ const GroupRadioList: React.FC<IRadioList> = (props) => {
     <div className={styles.radioListContainer}>
       {data.map((item, key) => (
         <div className={styles.radioListItem} key={key}>
-          {isString(item.heading) ? (
+          {item.heading && isString(item.heading) ? (
             <MainTitle customClass="radio-list-heading" level={3}>
               {item.heading}
             </MainTitle>

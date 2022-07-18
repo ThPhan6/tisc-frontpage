@@ -22,6 +22,9 @@ interface IInputGroup extends CustomInputProps {
   hasHeight?: boolean;
   colorPrimaryDark?: boolean;
   colorRequired?: string;
+  hasBoxShadow?: boolean;
+  message?: string;
+  messageType?: 'normal' | 'warning' | 'error';
 }
 
 const InputGroup: FC<IInputGroup> = ({
@@ -40,11 +43,18 @@ const InputGroup: FC<IInputGroup> = ({
   deleteIcon,
   onDelete,
   value,
+  hasBoxShadow,
+  message,
+  messageType = 'normal',
+  disabled,
   ...props
 }) => {
   return (
     <Row
-      className={`${styles.inputGroupContainer} ${hasHeight ? styles.heightInputGroup : ''}`}
+      className={`
+        ${styles.inputGroupContainer}
+        ${hasHeight ? styles.heightInputGroup : ''}
+      `}
       gutter={0}
       align="middle"
       wrap={noWrap ? false : true}
@@ -66,7 +76,13 @@ const InputGroup: FC<IInputGroup> = ({
           {required ? <span className={styles.colon}>:</span> : ''}
         </BodyText>
       </Col>
-      <Col className={styles.inputGroupContent} span={horizontal ? (noWrap ? undefined : 20) : 24}>
+      <Col
+        className={`
+          ${styles.inputGroupContent}
+          ${hasBoxShadow ? styles.boxShadow : ''}
+        `}
+        span={horizontal ? (noWrap ? undefined : 20) : 24}
+      >
         <CustomInput
           {...props}
           value={value}
@@ -76,18 +92,21 @@ const InputGroup: FC<IInputGroup> = ({
             colorPrimaryDark ? 'color-primary-dark' : ''
           }`}
           style={{
-            cursor: onRightIconClick ? 'pointer' : 'auto',
+            cursor: onRightIconClick && !disabled ? 'pointer' : 'auto',
           }}
           onClick={(e) => {
             e.stopPropagation();
-            if (onRightIconClick) {
+            if (onRightIconClick && !disabled && !readOnly) {
               onRightIconClick();
             }
           }}
         />
         {rightIcon ? (
           rightIcon === true ? (
-            <SingleRightFormIcon onClick={onRightIconClick} />
+            <SingleRightFormIcon
+              onClick={onRightIconClick}
+              className={disabled ? styles.iconDisabled : ''}
+            />
           ) : (
             rightIcon
           )
@@ -100,6 +119,13 @@ const InputGroup: FC<IInputGroup> = ({
           )
         ) : null}
       </Col>
+      {message && (
+        <div className={styles.message}>
+          <BodyText fontFamily="Roboto" level={6} customClass={messageType}>
+            {message}
+          </BodyText>
+        </div>
+      )}
     </Row>
   );
 };

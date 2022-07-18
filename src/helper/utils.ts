@@ -100,3 +100,16 @@ export const getPersonalPhone = (phone: string | undefined) => {
 export const checkUndefined = (value: string | number | undefined) => {
   return isUndefined(value) ? 'N/A' : value;
 };
+
+export const formatPhoneCode = (phoneCode: string, removePlus: boolean = false) => {
+  if (phoneCode.startsWith('+') || phoneCode === '') {
+    if (removePlus) {
+      return phoneCode.substring(1);
+    }
+    return phoneCode;
+  }
+  if (removePlus) {
+    return phoneCode;
+  }
+  return `+${phoneCode}`;
+};
