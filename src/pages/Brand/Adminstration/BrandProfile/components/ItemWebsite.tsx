@@ -6,7 +6,8 @@ import styles from '@/pages/Brand/Adminstration/BrandProfile/styles/index.less';
 import CountryModal from '../../Distributors/components/CountryModal';
 export const ItemWebsite: FC<ItemWebsiteProp> = ({ websiteValue, onChange }) => {
   const [countryVisible, setCountryVisible] = useState(false);
-  const [countryValue, setCountryValue] = useState();
+  const [countryValue, setCountryValue] = useState<string>('');
+
   const handOnChangeItem = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ ...websiteValue, url: e.target.value });
   };
@@ -23,7 +24,7 @@ export const ItemWebsite: FC<ItemWebsiteProp> = ({ websiteValue, onChange }) => 
           placeholder="target country"
           containerClass={styles.customInput}
           disabled
-          value={countryValue}
+          value={countryValue.split(' ')[0]}
         />
         <div className={styles.icon}>
           <LeftIcon onClick={() => setCountryVisible(true)} />
@@ -37,7 +38,7 @@ export const ItemWebsite: FC<ItemWebsiteProp> = ({ websiteValue, onChange }) => 
       <CountryModal
         visible={countryVisible}
         setVisible={setCountryVisible}
-        // chosenValue={{ label: websiteValue, value: websiteValue.country_id }}
+        chosenValue={{ label: websiteValue, value: websiteValue.country_id }}
         setChosenValue={(chosenValue) => onChangeCountryValue(chosenValue, 'country_id')}
         phone_code
       />

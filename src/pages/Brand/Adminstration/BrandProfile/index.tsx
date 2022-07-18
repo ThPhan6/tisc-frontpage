@@ -14,25 +14,36 @@ import {
   IWebsiteValueProp,
 } from './types';
 import { ItemWebsite } from './components/ItemWebsite';
-import { showImageUrl } from '@/helper/utils';
+import { getBase64, showImageUrl } from '@/helper/utils';
 import Logo from '@/assets/image-logo.png';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useCustomInitialState } from '@/helper/hook';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-icon.svg';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { updateBrandProfile, updateLogoBrandProfile } from '@/services/brand-profile';
 import { useAppSelector } from '@/reducers';
-
 const BrandProfile = () => {
-  const [brandProfile, setBrandProfile] = useState<IBrandProfileProp>(brandProfileValueDefault);
   const submitButtonStatus = useBoolean(false);
   const isLoading = useBoolean(false);
   const [fileInput, setFileInput] = useState<any>();
   const user = useAppSelector((state) => state.user);
+  const [brandProfile, setBrandProfile] = useState<IBrandProfileProp>(brandProfileValueDefault);
+  const { fetchUserInfo } = useCustomInitialState();
+  const [logoBrandProfile, setLogoBrandProfile] = useState<string>('');
 
   const handleOnChangeValueForm = (
     e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>,
   ) => {
     setBrandProfile({ ...brandProfile, [e.target.name]: e.target.value });
+    // if (e.target.files) {
+    //   const file = e.target.files![0];
+    //   getBase64(file)
+    //     .then((base64Image) => {
+    //       setLogoBrandProfile(base64Image);
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // }
   };
 
   const handleAddWebsiteItem = () => {
@@ -54,8 +65,9 @@ const BrandProfile = () => {
     isLoading.setValue(true);
     updateLogoBrandProfile(formData as any).then((isSuccess) => {
       if (isSuccess) {
-        isLoading.setValue(false);
+        fetchUserInfo();
       }
+      isLoading.setValue(false);
     });
   };
 
@@ -66,7 +78,7 @@ const BrandProfile = () => {
   }, [fileInput]);
 
   const setPreviewAvatar = () => {
-    if (user) {
+    if (user.user?.brand?.logo) {
       return showImageUrl(user.user?.brand?.logo as string);
     }
     return Logo;
@@ -75,6 +87,13 @@ const BrandProfile = () => {
   const props: UploadProps = {
     beforeUpload: (file) => {
       setFileInput(file);
+      getBase64(file)
+        .then((base64Image) => {
+          setLogoBrandProfile(base64Image);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       return false;
     },
   };
@@ -84,13 +103,16 @@ const BrandProfile = () => {
     updateBrandProfile(brandProfile).then((isSuccess) => {
       isLoading.setValue(false);
       if (isSuccess) {
+        fetchUserInfo();
         submitButtonStatus.setValue(true);
-        return;
+        setTimeout(() => {
+          submitButtonStatus.setValue(false);
+        }, 3000);
       }
     });
   };
 
-  console.log(fileInput);
+  console.log(logoBrandProfile);
   return (
     <div className={styles.content}>
       <Row>
@@ -130,7 +152,7 @@ const BrandProfile = () => {
                 />
               </FormGroup>
               <div className={styles.logo}>
-                <img src={setPreviewAvatar()} />
+                <img src={logoBrandProfile || setPreviewAvatar()} />
               </div>
               <div className={styles.customFormLogo}>
                 <FormGroup
@@ -147,7 +169,7 @@ const BrandProfile = () => {
                       showUploadList={false}
                       {...props}
                       accept=".png"
-                      onChange={() => handleOnChangeValueForm}
+                      // onChange={(value) => handleOnChangeValueFormTest}
                     >
                       <UploadIcon className={styles.icon} />
                     </Upload>
