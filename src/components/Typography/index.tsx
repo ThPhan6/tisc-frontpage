@@ -34,7 +34,7 @@ export const BodyText: FC<BodyTextProps> = ({
       case 'Roboto':
         return Style[`bodyText${level}`];
       default:
-        return Style[`bodyTextCormorant${level >= 4 ? 4 : level}`];
+        return Style[`bodyTextCormorant${level >= 5 ? 5 : level}`];
     }
   };
 

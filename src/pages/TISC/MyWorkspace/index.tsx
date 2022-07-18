@@ -38,9 +38,7 @@ const MyWorkspace: React.FC = () => {
             </div>
             <div className={styles.middle}>
               <div className={styles.middleKey}>
-                <BodyText level={6} fontFamily="Roboto">
-                  Categories:
-                </BodyText>
+                <BodyText level={5}>Categories:</BodyText>
               </div>
               <div className={styles.middleValue}>
                 <BodyText level={6} fontFamily="Roboto">
@@ -50,9 +48,7 @@ const MyWorkspace: React.FC = () => {
             </div>
             <div className={styles.middle}>
               <div className={styles.middleKey}>
-                <BodyText level={6} fontFamily="Roboto">
-                  Collections:
-                </BodyText>
+                <BodyText level={5}>Collections:</BodyText>
               </div>
               <div className={styles.middleValue}>
                 <BodyText level={6} fontFamily="Roboto">
@@ -62,9 +58,7 @@ const MyWorkspace: React.FC = () => {
             </div>
             <div className={styles.middle}>
               <div className={styles.middleKey}>
-                <BodyText level={6} fontFamily="Roboto">
-                  Cards:
-                </BodyText>
+                <BodyText level={5}>Cards:</BodyText>
               </div>
               <div className={styles.middleValue}>
                 <BodyText level={6} fontFamily="Roboto">
@@ -74,7 +68,7 @@ const MyWorkspace: React.FC = () => {
             </div>
             <div className={styles.bottom}>
               <div className={styles.profile_icon}>
-                <BodyText level={6} customClass={styles.team} fontFamily="Roboto">
+                <BodyText level={5} customClass={styles.team}>
                   Teams:
                 </BodyText>
                 {brand.teams.map((user: any) => {
