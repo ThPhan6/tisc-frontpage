@@ -399,6 +399,7 @@
         name: 'brand_profile',
         icon: 'brand-icon.svg',
         access: 'brand_administration_brand_profile',
+        component: './Brand/Adminstration/BrandProfile',
       },
       {
         path: '/brand/adminstration/locations',
