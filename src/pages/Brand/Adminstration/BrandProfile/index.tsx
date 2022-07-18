@@ -123,7 +123,7 @@ const BrandProfile = () => {
                     placeholder="registered name/trademark"
                     name="name"
                     onChange={handleOnChangeValueForm}
-                    value={brandProfile.name}
+                    value={brandProfile.name || user.user?.brand?.name}
                   />
                 </FormGroup>
               </div>
@@ -137,7 +137,9 @@ const BrandProfile = () => {
                   placeholder="holding company name, if any"
                   name="parent_company"
                   onChange={handleOnChangeValueForm}
-                  value={brandProfile.parent_company}
+                  value={
+                    brandProfile.parent_company || (user.user?.brand?.parent_company as string)
+                  }
                 />
               </FormGroup>
               <div className={styles.logo}>
@@ -165,7 +167,7 @@ const BrandProfile = () => {
                   placeholder="brand slogan, if any"
                   name="slogan"
                   onChange={handleOnChangeValueForm}
-                  value={brandProfile.slogan}
+                  value={brandProfile.slogan || (user.user?.brand?.slogan as string)}
                 />
               </FormGroup>
               <FormGroup
@@ -181,7 +183,7 @@ const BrandProfile = () => {
                   borderBottomColor="mono-medium"
                   name="mission_n_vision"
                   onChange={handleOnChangeValueForm}
-                  value={brandProfile.mission_n_vision}
+                  value={brandProfile.mission_n_vision || user.user?.brand?.mission_n_vision}
                 />
               </FormGroup>
               <div className={styles.website}>

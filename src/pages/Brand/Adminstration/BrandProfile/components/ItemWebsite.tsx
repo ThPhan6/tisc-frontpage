@@ -38,7 +38,7 @@ export const ItemWebsite: FC<ItemWebsiteProp> = ({ websiteValue, onChange }) => 
       <CountryModal
         visible={countryVisible}
         setVisible={setCountryVisible}
-        chosenValue={{ label: websiteValue, value: websiteValue.country_id }}
+        chosenValue={{ label: countryValue, value: websiteValue.country_id }}
         setChosenValue={(chosenValue) => onChangeCountryValue(chosenValue, 'country_id')}
         phone_code
       />
