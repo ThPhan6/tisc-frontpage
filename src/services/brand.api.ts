@@ -1,7 +1,7 @@
 import { request } from 'umi';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import type { IBrandListItem, IBrandAlphabet, IBrandDetail } from '@/types';
+import type { IBrandListItem, IBrandAlphabet, IBrandDetail, IBrandCards } from '@/types';
 import type {
   IDataTableResponse,
   IPaginationRequest,
@@ -48,6 +48,18 @@ export async function getBrandAlphabet() {
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
       return {} as IBrandAlphabet;
+    });
+}
+export async function getBrandCards() {
+  return request<{ data: IBrandCards }>(`/api/brand/get-list-card`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
+      return [] as any;
     });
 }
 

@@ -35,3 +35,22 @@ export interface IBrandDetail {
 export interface IBrandAlphabet {
   [key: string]: IBrandDetail[];
 }
+export interface IBrandCard {
+  id: string;
+  name: string;
+  logo: string;
+  country: string;
+  category_count: string;
+  collection_count: string;
+  card_count: string;
+  teams: {
+    id: string;
+    firstname: string;
+    lastname: string;
+    avatar: any;
+  }[];
+}
+
+export interface IBrandCards {
+  [key: string]: IBrandCard[];
+}
