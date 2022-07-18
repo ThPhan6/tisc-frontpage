@@ -396,7 +396,7 @@
     routes: [
       {
         path: '/brand/adminstration/brand-profile',
-        name: 'brand_profile',
+        name: 'Brand Profile',
         icon: 'brand-icon.svg',
         access: 'brand_administration_brand_profile',
         component: './Brand/Adminstration/BrandProfile',
