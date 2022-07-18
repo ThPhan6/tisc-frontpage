@@ -1,27 +1,27 @@
-import { request } from 'umi';
-import { message } from 'antd';
-import type { CategoryBodyProp, ICategoryListResponse } from '@/types';
 import type {
-  IDataTableResponse,
-  IPaginationRequest,
-  IPaginationResponse,
-  ISummaryResponse,
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
+  SummaryResponse,
 } from '@/components/Table/types';
-import { STATUS_RESPONSE } from '@/constants/util';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { setList } from '@/reducers/category';
+import { STATUS_RESPONSE } from '@/constants/util';
 import store from '@/reducers';
+import { setList } from '@/reducers/category';
+import type { CategoryBodyProp, CategoryListResponse } from '@/types';
+import { message } from 'antd';
+import { request } from 'umi';
 
 interface ICategoryPaginationResponse {
   data: {
-    categories: ICategoryListResponse[];
-    pagination: IPaginationResponse;
-    summary: ISummaryResponse[];
+    categories: CategoryListResponse[];
+    pagination: PaginationResponse;
+    summary: SummaryResponse[];
   };
 }
 export async function getProductCategoryPagination(
-  params: IPaginationRequest,
-  callback: (data: IDataTableResponse) => void,
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
 ) {
   request(`/api/category/get-list`, {
     method: 'GET',

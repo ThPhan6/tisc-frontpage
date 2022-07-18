@@ -18,14 +18,14 @@ import {
   duplicateProductById,
   likeProductById,
 } from '@/services';
-import { IProductDetail, IProductGetListParameter } from '@/types';
+import { ProductItem, ProductGetListParameter } from '@/types';
 import styles from './styles/cardList.less';
 
-interface IProductCard {
-  product: IProductDetail;
+interface ProductCardProps {
+  product: ProductItem;
 }
 
-const ProductCard: React.FC<IProductCard> = ({ product }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { filter } = useAppSelector((state) => state.product.list);
   const [liked, setLiked] = useState(product.is_liked);
   const reloadProductInformation = () => {
@@ -33,7 +33,7 @@ const ProductCard: React.FC<IProductCard> = ({ product }) => {
       getProductSummary(product.brand.id).then(() => {
         const params = {
           brand_id: product.brand?.id,
-        } as IProductGetListParameter;
+        } as ProductGetListParameter;
         if (filter.name === 'category_id' && filter.value !== 'all') {
           params.category_id = filter.value;
         }

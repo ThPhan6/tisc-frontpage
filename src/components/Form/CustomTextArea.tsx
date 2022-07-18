@@ -1,4 +1,3 @@
-import React from 'react';
 import { Input } from 'antd';
 import type { FC } from 'react';
 import type { CustomTextAreaProps } from './types';
@@ -24,9 +23,7 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
 
     if (!maxHeight || !defaultHeight || props.value === '') {
       contentHeight = defaultHeight;
-    }
-
-    if (contentHeight < maxHeight) {
+    } else if (contentHeight < maxHeight) {
       contentHeight = contentHeight;
       setCheckedOverflow('hidden');
     } else {

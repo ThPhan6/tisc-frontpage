@@ -8,7 +8,7 @@ import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-rig
 import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 import styles from './styles/InputGroup.less';
 
-interface IInputGroup extends CustomInputProps {
+interface InputGroupProps extends CustomInputProps {
   horizontal?: boolean;
   rightIcon?: boolean | ReactNode;
   deleteIcon?: boolean | ReactNode;
@@ -24,7 +24,7 @@ interface IInputGroup extends CustomInputProps {
   colorRequired?: string;
 }
 
-const InputGroup: FC<IInputGroup> = ({
+const InputGroup: FC<InputGroupProps> = ({
   label,
   horizontal,
   fontLevel,

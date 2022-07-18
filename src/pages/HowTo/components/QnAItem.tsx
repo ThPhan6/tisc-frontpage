@@ -4,9 +4,9 @@ import { FC } from 'react';
 import styles from '../index.less';
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-20px.svg';
 import { ReactComponent as ExtendIcon } from '@/assets/icons/action-extend.svg';
-import { ItemQAProp, QuestionProp } from '../types';
+import { CollapsingProps, QnA, QuestionProps } from '../types';
 
-const RenderQuestion: FC<QuestionProp> = (props) => {
+const RenderQuestion: FC<QuestionProps> = (props) => {
   const { id, question, activeKey, handleActiveCollapse } = props;
 
   return (
@@ -22,7 +22,11 @@ const RenderQuestion: FC<QuestionProp> = (props) => {
   );
 };
 
-export const ItemQA: FC<ItemQAProp> = ({ item, activeKey, handleActiveCollapse }) => {
+export interface QnAItemProps extends CollapsingProps {
+  item: QnA;
+}
+
+export const QnAItem: FC<QnAItemProps> = ({ item, activeKey, handleActiveCollapse }) => {
   return (
     <div>
       <Collapse ghost activeKey={activeKey}>

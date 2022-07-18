@@ -7,10 +7,10 @@ import { useBoolean } from '@/helper/hook';
 import { useEffect, useState } from 'react';
 import { EmailAutoRespondEntryForm } from './components/EmailAutorespondersEntryForm';
 import { getOneEmailAuto, getTargetedForList, getTopicList, updateEmailAuto } from '@/services';
-import { IEmailAutoRadioListProps, IEmailAutoRespondForm } from '@/types';
+import { RadioItem, EmailTemplate } from '@/types';
 import { useParams } from 'umi';
 
-const DEFAULT_EMAILAUTORESPONDERS_VALUE: IEmailAutoRespondForm = {
+const DEFAULT_EMAILAUTORESPONDERS_VALUE: EmailTemplate = {
   topic: '',
   targeted_for: '',
   title: '',
@@ -24,13 +24,13 @@ const UpdateEmailAutoPage = () => {
   const idEmailAuto = params?.id || '';
 
   /// email auto form
-  const [value, setValue] = useState<IEmailAutoRespondForm>(DEFAULT_EMAILAUTORESPONDERS_VALUE);
+  const [value, setValue] = useState<EmailTemplate>(DEFAULT_EMAILAUTORESPONDERS_VALUE);
   /// for topic list
-  const [topicList, setTopicList] = useState<IEmailAutoRadioListProps[]>([]);
+  const [topicList, setTopicList] = useState<RadioItem[]>([]);
   /// for targeted-for list
-  const [targetedForList, setTargetedForList] = useState<IEmailAutoRadioListProps[]>([]);
+  const [targetedForList, setTargetedForList] = useState<RadioItem[]>([]);
 
-  const handleOnChange = (newValue: IEmailAutoRespondForm) => {
+  const handleOnChange = (newValue: EmailTemplate) => {
     setValue(newValue);
   };
 
@@ -78,7 +78,7 @@ const UpdateEmailAutoPage = () => {
     getOneEmailAutoData();
   }, []);
 
-  const handleUpdateEmailAuto = (data: IEmailAutoRespondForm) => {
+  const handleUpdateEmailAuto = (data: EmailTemplate) => {
     isLoading.setValue(true);
     updateEmailAuto(idEmailAuto, data).then((isSuccess) => {
       isLoading.setValue(false);

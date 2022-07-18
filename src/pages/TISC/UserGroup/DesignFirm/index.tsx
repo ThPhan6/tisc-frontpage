@@ -1,12 +1,12 @@
 import React, { useRef } from 'react';
 import CustomTable from '@/components/Table';
-import type { ICustomTableColumnType } from '@/components/Table/types';
+import type { TableColumnItem } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { getDesignFirmPagination } from '@/services';
 import { showImageUrl } from '@/helper/utils';
-import type { IDesignFirmList } from '@/types';
+import type { DesignFirm } from '@/types';
 import styles from './styles/index.less';
 import { PageContainer } from '@ant-design/pro-layout';
 import { MenuSummary } from '@/components/MenuSummary';
@@ -19,7 +19,7 @@ const DesignFirmList: React.FC = () => {
     alert('Coming Soon!');
   };
 
-  const TableColumns: ICustomTableColumnType<IDesignFirmList>[] = [
+  const TableColumns: TableColumnItem<DesignFirm>[] = [
     {
       title: '',
       dataIndex: 'logo',

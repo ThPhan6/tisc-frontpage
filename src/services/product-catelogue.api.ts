@@ -1,12 +1,12 @@
 import { request } from 'umi';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import type { IProductCatelogue } from '@/types';
+import type { ProductCatelogue } from '@/types';
 import { setProductCatelogue } from '@/reducers/product';
 import store from '@/reducers';
 
 export const getProductCatelogueByProductID = async (productId: string) => {
-  return request<{ data: IProductCatelogue }>(
+  return request<{ data: ProductCatelogue }>(
     `/api/product-catelogue-download/get-one/${productId}`,
     {
       method: 'GET',
@@ -22,7 +22,7 @@ export const getProductCatelogueByProductID = async (productId: string) => {
     });
 };
 
-export const createProductCatelogue = async (data: IProductCatelogue) => {
+export const createProductCatelogue = async (data: ProductCatelogue) => {
   return request(`/api/product-catelogue-download/create`, {
     method: 'POST',
     data,

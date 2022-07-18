@@ -7,23 +7,23 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { isEmpty } from 'lodash';
 import styles from './styles/dropdownList.less';
 
-export interface IDropdownRadioItemList {
+export interface DropdownRadioItem {
   [key: string]: any;
   margin?: 8 | 12;
   options: RadioValue[];
 }
 
-interface IDropdownRadioList {
+interface DropdownRadioListProps {
   selected?: RadioValue;
   chosenItem?: RadioValue;
-  data: IDropdownRadioItemList[];
-  renderTitle?: (data: IDropdownRadioItemList) => string | number | React.ReactNode;
+  data: DropdownRadioItem[];
+  renderTitle?: (data: DropdownRadioItem) => string | number | React.ReactNode;
   onChange?: (value: RadioValue) => void;
   noCollapse?: boolean;
 }
 type ActiveKeyType = string | number | (string | number)[];
 
-const DropdownRadioList: React.FC<IDropdownRadioList> = (props) => {
+const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
   const { data, selected, onChange, renderTitle, chosenItem } = props;
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
 
@@ -38,7 +38,7 @@ const DropdownRadioList: React.FC<IDropdownRadioList> = (props) => {
     });
   }, [chosenItem]);
 
-  const renderHeader = (item: IDropdownRadioItemList, index: number) => {
+  const renderHeader = (item: DropdownRadioItem, index: number) => {
     if (renderTitle) {
       return (
         <span>

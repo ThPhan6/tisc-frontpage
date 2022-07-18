@@ -21,12 +21,12 @@ type MenuIconProp = {
   onClick: () => void;
 };
 
-type MenuHeaderDropdownProp = {
+type MenuHeaderDropdownProps = {
   items: MenuIconProp[];
   onParentClick?: () => void;
 };
 
-export const MenuHeaderDropdown: FC<MenuHeaderDropdownProp> = ({ items, onParentClick }) => {
+export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParentClick }) => {
   const MenuItem = ({ label, icon, onClick, containerClass }: MenuIconProp) => (
     <div
       onClick={() => {

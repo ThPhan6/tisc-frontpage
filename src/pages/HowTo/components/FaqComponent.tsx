@@ -2,12 +2,16 @@ import { BodyText } from '@/components/Typography';
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-20px.svg';
 import { ReactComponent as ExtendIcon } from '@/assets/icons/action-extend.svg';
 import styles from '../index.less';
-import { ItemHowToProp } from '../types';
 import { FC, useState } from 'react';
 import { Collapse } from 'antd';
-import { ItemQA } from './ItemQA';
+import { QnAItem } from './QnAItem';
+import { FaqItem, CollapsingProps } from '../types';
 
-const RenderHeader: FC<ItemHowToProp> = (props) => {
+export interface FaqItemProps extends CollapsingProps {
+  value: FaqItem;
+}
+
+const RenderHeader: FC<FaqItemProps> = (props) => {
   const { value, activeKey, handleActiveCollapse } = props;
 
   return (
@@ -33,7 +37,7 @@ const RenderHeader: FC<ItemHowToProp> = (props) => {
   );
 };
 
-export const ItemHowTo: FC<ItemHowToProp> = ({ value, activeKey, handleActiveCollapse }) => {
+export const FaqComponent: FC<FaqItemProps> = ({ value, activeKey, handleActiveCollapse }) => {
   const [activeKeyItem, setActiveKeyItem] = useState<string>('');
 
   const handleActiveCollapseItem = (id: string) => () => {
@@ -63,7 +67,7 @@ export const ItemHowTo: FC<ItemHowToProp> = ({ value, activeKey, handleActiveCol
           <div className={styles.qa}>
             {value.question_and_answer?.map((item, index) => (
               <div key={index}>
-                <ItemQA
+                <QnAItem
                   item={item}
                   activeKey={activeKeyItem}
                   handleActiveCollapse={handleActiveCollapseItem(item.id)}

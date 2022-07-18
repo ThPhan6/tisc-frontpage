@@ -1,4 +1,4 @@
-export interface IGeneralData {
+export interface GeneralData {
   id: string;
   name: string;
 }

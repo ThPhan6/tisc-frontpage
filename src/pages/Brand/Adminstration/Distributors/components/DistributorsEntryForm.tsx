@@ -15,7 +15,7 @@ import CityModal from './CityModal';
 import DistributionTerritoryModal from './DistributionTerritoryModal';
 import { ReactComponent as SingleRightFormIconDisable } from '@/assets/icons/single-right-form-icon-disable.svg';
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
-import { IDistributorEntryForm } from '@/types/distributor.type';
+import { DistributorEntryForm } from '@/types/distributor.type';
 import { useEffect } from 'react';
 import { getCountryById } from '@/services/location.api';
 import { PhoneInputValueProp } from '@/components/Form/types';
@@ -31,7 +31,7 @@ const optionsCoverageBeyond = [
   { label: 'Allow', value: false },
 ];
 
-export const DistributorsEntryForm: FC<IDistributorEntryForm> = (props) => {
+export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
   const { submitButtonStatus, onSubmit, onCancel, data, setData } = props;
   const [countryVisible, setCountryVisible] = useState(false);
   const [authorizedCountryVisible, setAuthorizedCountryVisible] = useState(false);

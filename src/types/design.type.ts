@@ -1,4 +1,4 @@
-export interface IDesignFirmList {
+export interface DesignFirm {
   id: string;
   name: string;
   logo: string;

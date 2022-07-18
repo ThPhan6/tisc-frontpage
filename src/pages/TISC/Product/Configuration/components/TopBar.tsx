@@ -6,8 +6,8 @@ import { getBrandAlphabet, getProductSummary, getProductListByBrandId } from '@/
 import type {
   IBrandAlphabet,
   IBrandDetail,
-  IGeneralData,
-  IProductGetListParameter,
+  GeneralData,
+  ProductGetListParameter,
   IFilterType,
 } from '@/types';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
@@ -22,7 +22,7 @@ import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import styles from '../styles/topbar.less';
 
-interface IProductTopBar {
+interface ProductTopBarProps {
   topValue?: string | React.ReactNode;
   disabled?: boolean;
   bottomValue?: string | React.ReactNode;
@@ -31,7 +31,8 @@ interface IProductTopBar {
   customClass?: string;
   onClick?: () => void;
 }
-const TopBarItem: React.FC<IProductTopBar> = (props) => {
+
+const TopBarItem: React.FC<ProductTopBarProps> = (props) => {
   const { topValue, bottomValue, icon, disabled, bottomEnable, customClass, onClick } = props;
   return (
     <div className={`item ${customClass ?? ''}`} onClick={onClick}>
@@ -114,7 +115,7 @@ const ProductTopBar: React.FC = () => {
     if (product.brand && product.brand.id && filter) {
       const params = {
         brand_id: product.brand.id,
-      } as IProductGetListParameter;
+      } as ProductGetListParameter;
       if (filter.name === 'category_id' && filter.value !== 'all') {
         params.category_id = filter.value;
       }
@@ -142,7 +143,7 @@ const ProductTopBar: React.FC = () => {
     );
   };
 
-  const renderDropDownList = (title: string, filterName: IFilterType, data: IGeneralData[]) => {
+  const renderDropDownList = (title: string, filterName: IFilterType, data: GeneralData[]) => {
     // merge view small
     const items = [{ id: 'all', name: 'VIEW ALL' }, ...data];
     ///

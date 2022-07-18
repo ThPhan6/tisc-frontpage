@@ -1,37 +1,37 @@
-import { IGeneralData, IBrandDetail } from '@/types';
+import { IBrandDetail, GeneralData } from '@/types';
 
-export interface IProductSummary {
-  categories: IGeneralData[];
-  collections: IGeneralData[];
+export interface ProductSummary {
+  categories: GeneralData[];
+  collections: GeneralData[];
   category_count: number;
   collection_count: number;
   card_count: number;
   product_count: number;
   brandId: string;
 }
-export type IGeneralFeatureFormInputType = 'Text' | 'Conversions' | 'Presets';
-export type ISpecificationFormInputType = 'Text' | 'Conversions' | 'Options';
-export interface IGeneralFeatureFormInput {
+export type GeneralFeatureFormInputType = 'Text' | 'Conversions' | 'Presets';
+export type SpecificationFormInputType = 'Text' | 'Conversions' | 'Options';
+export interface GeneralFeatureFormInput {
   id?: string;
   name: string;
   attributes: {
     id: string;
     basis_id: string;
     basis_value_id: string;
-    type: IGeneralFeatureFormInputType;
+    type: GeneralFeatureFormInputType;
     text: string;
     conversion_value_1: string;
     conversion_value_2: string;
   }[];
 }
 
-export interface ISpecificationFormInput {
+export interface SpecificationFormInput {
   id?: string;
   name: string;
   attributes: {
     id: string;
     basis_id: string;
-    type: ISpecificationFormInputType;
+    type: SpecificationFormInputType;
     text: string;
     conversion_value_1: string;
     conversion_value_2: string;
@@ -41,9 +41,9 @@ export interface ISpecificationFormInput {
     }[];
   }[];
 }
-export type IProductKeyword = [string, string, string, string];
+export type ProductKeyword = [string, string, string, string];
 
-export interface IProductDetail {
+export interface ProductItem {
   id?: string;
   brand?: IBrandDetail;
   collection?: {
@@ -58,27 +58,27 @@ export interface IProductDetail {
   code?: string;
   is_liked: boolean;
   description: string;
-  general_attribute_groups: IGeneralFeatureFormInput[];
-  feature_attribute_groups: IGeneralFeatureFormInput[];
-  specification_attribute_groups: ISpecificationFormInput[];
+  general_attribute_groups: GeneralFeatureFormInput[];
+  feature_attribute_groups: GeneralFeatureFormInput[];
+  specification_attribute_groups: SpecificationFormInput[];
   favorites?: number;
   images: string[];
-  keywords: IProductKeyword;
+  keywords: ProductKeyword;
   created_at?: string;
   created_by?: string;
 }
 
-export interface IProductFormData {
+export interface ProductFormData {
   brand_id: string;
   collection_id: string;
   category_ids: string[];
   name: string;
   description: string;
-  general_attribute_groups: IGeneralFeatureFormInput[];
-  feature_attribute_groups: IGeneralFeatureFormInput[];
-  specification_attribute_groups: ISpecificationFormInput[];
+  general_attribute_groups: GeneralFeatureFormInput[];
+  feature_attribute_groups: GeneralFeatureFormInput[];
+  specification_attribute_groups: SpecificationFormInput[];
   images: string[];
-  keywords: IProductKeyword;
+  keywords: ProductKeyword;
 }
 export interface IRelatedCollection {
   id: string;
@@ -88,7 +88,7 @@ export interface IRelatedCollection {
   created_at: string;
 }
 
-export interface IProductGetListParameter {
+export interface ProductGetListParameter {
   brand_id: string;
   category_id?: string;
   collection_id?: string;
@@ -98,7 +98,7 @@ export interface GroupProductList {
   count: number;
   id: string;
   name: string;
-  products: IProductDetail[];
+  products: ProductItem[];
 }
 
 export type IFilterType = 'category_id' | 'collection_id';
@@ -107,7 +107,7 @@ export interface ITopBarFilter {
   title: string;
   value: string;
 }
-export interface IProductList {
+export interface ProductList {
   filter?: ITopBarFilter;
   data: GroupProductList[];
 }

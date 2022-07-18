@@ -7,7 +7,7 @@ import { useBoolean } from '@/helper/hook';
 import { createQuotation } from '@/services';
 import { useState } from 'react';
 import { InspirationalQuotationEntryForm } from './components/InspirationalQuotationEntryForm';
-import { IInspirationalQuotationForm } from '@/types';
+import { Quotation } from '@/types';
 
 const DEFAULT_INPUT = {
   author: '',
@@ -18,9 +18,9 @@ const DEFAULT_INPUT = {
 const CreateInspirationalQuotationsPage = () => {
   const isLoading = useBoolean();
   const submitButtonStatus = useBoolean(false);
-  const [input, setInput] = useState<IInspirationalQuotationForm>(DEFAULT_INPUT);
+  const [input, setInput] = useState<Quotation>(DEFAULT_INPUT);
 
-  const handleOnChangeInput = (newInput: IInspirationalQuotationForm) => {
+  const handleOnChangeInput = (newInput: Quotation) => {
     setInput(newInput);
   };
 
@@ -28,7 +28,7 @@ const CreateInspirationalQuotationsPage = () => {
     pushTo(PATH.quotation);
   };
 
-  const handleCreateData = (data: IInspirationalQuotationForm) => {
+  const handleCreateData = (data: Quotation) => {
     isLoading.setValue(true);
 
     createQuotation(data).then((isSuccess) => {

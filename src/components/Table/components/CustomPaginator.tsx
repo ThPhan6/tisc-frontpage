@@ -1,9 +1,18 @@
 import { ReactComponent as PaginationLeftIcon } from '@/assets/icons/pagination-left.svg';
 import { ReactComponent as PaginationRightIcon } from '@/assets/icons/pagination-right.svg';
-import type { ICustomPaginator } from '../types';
+import { TablePaginationConfig } from 'antd';
+import { SorterResult } from 'antd/lib/table/interface';
 import styles from '../styles/table.less';
+import { PaginationParams } from '../types';
 
-const CustomPaginator = (props: ICustomPaginator) => {
+export interface CustomPaginatorProps {
+  fetchData: (params: PaginationParams) => void;
+  pagination: TablePaginationConfig;
+  dataLength: number;
+  sorter: SorterResult<any> | SorterResult<any>[];
+}
+
+const CustomPaginator = (props: CustomPaginatorProps) => {
   const { fetchData, pagination, dataLength, sorter } = props;
   const currentPage = pagination.current ?? 1;
   const currentPageSize = pagination.pageSize ?? 1;
