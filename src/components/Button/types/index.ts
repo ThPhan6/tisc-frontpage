@@ -9,6 +9,6 @@ export interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButton
 }
 
 export interface CustomSaveButtonProps {
-  submitButtonStatus?: boolean;
+  isSuccess?: boolean;
   onClick?: () => void;
 }

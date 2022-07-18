@@ -5,16 +5,16 @@ import styles from '../Button/styles/index.less';
 import { BodyText } from '../Typography';
 import classNames from 'classnames';
 
-export const CustomSaveButton: FC<CustomSaveButtonProps> = ({ submitButtonStatus, onClick }) => {
+export const CustomSaveButton: FC<CustomSaveButtonProps> = ({ isSuccess, onClick }) => {
   return (
     <button
       className={classNames(
         styles.sizeButton,
-        submitButtonStatus ? styles.customButtonSuccess : styles.customButton,
+        isSuccess ? styles.customButtonSuccess : styles.customButton,
       )}
       onClick={onClick}
     >
-      {submitButtonStatus ? (
+      {isSuccess ? (
         <CheckSuccessIcon />
       ) : (
         <BodyText level={6} fontFamily="Roboto">

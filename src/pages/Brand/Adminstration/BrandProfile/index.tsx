@@ -204,10 +204,7 @@ const BrandProfile = () => {
               </div>
             </div>
             <div className={styles.actionButton}>
-              <CustomSaveButton
-                submitButtonStatus={submitButtonStatus.value}
-                onClick={onSubmitForm}
-              />
+              <CustomSaveButton isSuccess={submitButtonStatus.value} onClick={onSubmitForm} />
             </div>
           </div>
         </Col>
