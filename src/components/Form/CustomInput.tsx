@@ -95,7 +95,7 @@ export const CustomInput: FC<CustomInputProps> = ({
           className={required && !(props.prefix || props.suffix) ? styles['required-input'] : ''}
         >
           {autoWidth ? (
-            <span className={styles.hiddenSpan} ref={span}>
+            <span className={`${styles.hiddenSpan} ${setFontLevel()}`} ref={span}>
               {props.value}
             </span>
           ) : null}
@@ -106,9 +106,10 @@ export const CustomInput: FC<CustomInputProps> = ({
             style={
               autoWidth
                 ? {
+                    ...props.style,
                     width: isUndefined(width) ? '100%' : width,
                   }
-                : undefined
+                : props.style
             }
           />
         </div>

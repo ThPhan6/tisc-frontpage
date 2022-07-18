@@ -1,37 +1,103 @@
 import React, { useState, useEffect } from 'react';
-import { TableHeader } from '@/components/Table/TableHeader';
-// import { MainTitle } from '@/components/Typography';
+import ProductHeader from './components/ProductHeader';
 import { useParams } from 'umi';
 import PhotoUpload from './components/PhotoUpload';
 import ProductInfo from './components/ProductInfo';
 import ProductAttribute from './components/ProductAttribute';
-// import { CustomTabs } from '@/components/Tabs';
-// import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import ProductFooter from './components/ProductFooter';
 import { Row, Col } from 'antd';
-import { getBrandById } from '@/services';
-import { IBrandDetail } from '@/types';
+import {
+  getBrandById,
+  createProductCard,
+  createProductTip,
+  createProductDownload,
+  createProductCatelogue,
+} from '@/services';
+import type { IProductFormData } from '@/types';
+import { useDispatch } from 'react-redux';
+import { setBrand } from '@/reducers/product';
+import { useAppSelector } from '@/reducers';
 import styles from './styles/details.less';
+import { pushTo } from '@/helper/history';
+import { PATH } from '@/constants/path';
+import type { ACTIVE_KEY } from './types';
 
 const ProductConfigurationCreate: React.FC = () => {
-  const [brand, setBrand] = useState<IBrandDetail>();
+  const dispatch = useDispatch();
   const params = useParams<{ brandId: string }>();
   const brandId = params?.brandId || '';
+  const product = useAppSelector((state) => state.product);
+  const [activeKey, setActiveKey] = useState<ACTIVE_KEY>('general');
 
   useEffect(() => {
     if (brandId) {
-      getBrandById(brandId).then(setBrand);
+      getBrandById(brandId).then((res) => dispatch(setBrand(res)));
     }
   }, [brandId]);
+
+  const onSave = () => {
+    const { details, tip, download, catelogue } = product;
+    const data: IProductFormData = {
+      brand_id: brandId,
+      category_ids: details.categories.map((category) => category.id),
+      collection_id: details.collection?.id ?? '',
+      name: details.name,
+      description: details.description,
+      general_attribute_groups: details.general_attribute_groups,
+      feature_attribute_groups: details.feature_attribute_groups,
+      specification_attribute_groups: details.specification_attribute_groups,
+      keywords: details.keywords,
+      images: details.images.map((image) => {
+        if (image.indexOf('data:image') > -1) {
+          return image.split(',')[1];
+        }
+        return image;
+      }),
+    };
+    createProductCard(data).then((productDetail) => {
+      if (productDetail) {
+        createProductTip({
+          product_id: productDetail.id,
+          contents: tip.contents,
+        });
+        createProductDownload({
+          product_id: productDetail.id,
+          contents: download.contents,
+        });
+        createProductCatelogue({
+          product_id: productDetail.id,
+          contents: catelogue.contents,
+        });
+        /// push to product update, 100% have product detail id
+        pushTo(PATH.productConfigurationUpdate.replace(':id', productDetail.id ?? ''));
+      }
+    });
+  };
 
   return (
     <Row gutter={8}>
       <Col span={24}>
-        <TableHeader title={'CATEGORY'} />
+        <ProductHeader
+          title={'CATEGORY'}
+          onSave={onSave}
+          onCancel={() => pushTo(PATH.productConfiguration)}
+        />
       </Col>
-      <PhotoUpload brand={brand} />
+      <PhotoUpload />
       <Col span={12} className={styles.productContent}>
-        <ProductInfo brand={brand} />
-        <ProductAttribute />
+        <Row style={{ flexDirection: 'column', height: '100%' }}>
+          <Col>
+            <ProductInfo />
+          </Col>
+          <Col style={{ marginBottom: activeKey !== 'vendor' ? 24 : 0 }}>
+            <ProductAttribute activeKey={activeKey} setActiveKey={setActiveKey} />
+          </Col>
+          {activeKey !== 'vendor' ? (
+            <Col style={{ marginTop: 'auto' }}>
+              <ProductFooter />
+            </Col>
+          ) : null}
+        </Row>
       </Col>
     </Row>
   );

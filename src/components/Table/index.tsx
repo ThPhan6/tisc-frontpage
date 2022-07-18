@@ -52,7 +52,6 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
       let sortOrder: any = '';
       ///
       if (!isArray(sorter)) {
-        console.log('go here');
         sortName = sorter.field;
         sortOrder = sorter.order === 'descend' ? 'DESC' : 'ASC';
       }
@@ -70,8 +69,8 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
         return paginationParams;
       }
       /// normal case
-      paginationParams.sort_name = sortName;
-      paginationParams.sort_order = sortOrder;
+      paginationParams.sort = sortName;
+      paginationParams.order = sortOrder;
       return paginationParams;
     }
     return paginationParams;

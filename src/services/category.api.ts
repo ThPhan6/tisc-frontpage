@@ -9,6 +9,8 @@ import type {
 } from '@/components/Table/types';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { setList } from '@/reducers/category';
+import store from '@/reducers';
 
 interface ICategoryPaginationResponse {
   data: {
@@ -38,8 +40,22 @@ export async function getProductCategoryPagination(
       });
     })
     .catch((error) => {
-      console.log('error', error);
-      message.error(error.message);
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.GET_LIST_CATEGORY_ERROR);
+    });
+}
+export async function getAllProductCategory() {
+  request(`/api/category/get-list`, {
+    method: 'GET',
+    params: {
+      pageSize: 9999999999,
+      page: 1,
+    },
+  })
+    .then((response: ICategoryPaginationResponse) => {
+      store.dispatch(setList(response.data.categories));
+    })
+    .catch((error) => {
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.GET_LIST_CATEGORY_ERROR);
     });
 }
 

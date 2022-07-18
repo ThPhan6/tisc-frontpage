@@ -37,6 +37,14 @@ export const PATH = {
   attributeGeneralUpdate: '/tisc/products/attributes/general/:id',
   //
 
+  // inspirational quotation
+  quotation: '/tisc/adminstration/messages/quotation',
+  createQuotation: '/tisc/adminstration/messages/quotation/create',
+  updateQuotation: '/tisc/adminstration/messages/quotation/update/:id',
+  // email autorepsonder
+  emailAuto: '/tisc/adminstration/messages/email-auto',
+  updateEmailAuto: '/tisc/adminstration/messages/email-auto/update/:id',
+
   // configuration
   productConfiguration: '/tisc/products/configuration',
   productConfigurationCreate: '/tisc/products/configuration/create/:brandId',

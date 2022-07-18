@@ -1,12 +1,16 @@
 import { Modal } from 'antd';
 import type { FC, ReactNode } from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ReactComponent as CloseIcon } from '../../assets/icons/action-close-open-icon.svg';
 import CustomButton from '@/components/Button';
 import { MainTitle } from '@/components/Typography';
 import DropdownRadioList from '@/components/CustomRadio/DropdownRadioList';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
 import GroupRadioList from '@/components/CustomRadio/RadioList';
+import CheckboxList from '@/components/CustomCheckbox/CheckboxList';
+import DropdownCategoryList from '@/pages/TISC/Product/Configuration/components/CategoryDropdown';
+
+import type { ICheckboxListOption } from '@/components/CustomCheckbox/CheckboxList';
 import type { IDropdownRadioItemList } from '@/components/CustomRadio/DropdownRadioList';
 import type { IDropdownCheckboxItemList } from '@/components/CustomCheckbox/DropdownCheckboxList';
 import type { IRadioListOption } from '@/components/CustomRadio/RadioList';
@@ -28,6 +32,12 @@ interface IPopover {
   dropdownCheckboxList?: IDropdownCheckboxItemList[];
   dropdownCheckboxTitle?: (data: IDropdownCheckboxItemList) => string | number | ReactNode;
 
+  // checkbox listTab
+  checkboxList?: ICheckboxListOption;
+
+  // category dropdown checkbox
+  categoryDropdown?: boolean;
+
   // active value
   chosenValue?: any;
   setChosenValue?: (value: any) => void;
@@ -45,12 +55,18 @@ const Popover: FC<IPopover> = ({
   dropdownCheckboxList,
   dropdownCheckboxTitle,
   groupRadioList,
+  checkboxList,
+  categoryDropdown,
   chosenValue,
   setChosenValue,
   extraTopAction,
   noFooter,
 }) => {
   const [currentValue, setCurrentValue] = useState<any>(chosenValue);
+
+  useEffect(() => {
+    setCurrentValue(chosenValue);
+  }, [chosenValue]);
 
   const renderChildren = () => {
     /// for dropdown radio list
@@ -88,6 +104,27 @@ const Popover: FC<IPopover> = ({
         />
       );
     }
+    if (checkboxList) {
+      return (
+        <CheckboxList
+          selected={currentValue}
+          chosenItem={chosenValue}
+          data={checkboxList}
+          onChange={setCurrentValue}
+        />
+      );
+    }
+
+    if (categoryDropdown) {
+      return (
+        <DropdownCategoryList
+          selected={currentValue}
+          chosenItem={chosenValue}
+          onChange={setCurrentValue}
+        />
+      );
+    }
+
     /// default
     return null;
   };

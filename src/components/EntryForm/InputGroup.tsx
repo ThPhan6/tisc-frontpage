@@ -7,7 +7,6 @@ import { Row, Col } from 'antd';
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 import styles from './styles/InputGroup.less';
-import classNames from 'classnames';
 
 interface IInputGroup extends CustomInputProps {
   horizontal?: boolean;
@@ -28,23 +27,24 @@ interface IInputGroup extends CustomInputProps {
 const InputGroup: FC<IInputGroup> = ({
   label,
   horizontal,
-  rightIcon,
-  required,
   fontLevel,
   readOnly,
   noWrap,
   hasPadding,
   hasHeight,
   colorPrimaryDark,
+  required,
   colorRequired,
+  rightIcon,
   onRightIconClick,
   deleteIcon,
   onDelete,
+  value,
   ...props
 }) => {
   return (
     <Row
-      className={classNames(styles.inputGroupContainer, hasHeight && styles.heightInputGroup)}
+      className={`${styles.inputGroupContainer} ${hasHeight ? styles.heightInputGroup : ''}`}
       gutter={0}
       align="middle"
       wrap={noWrap ? false : true}
@@ -54,27 +54,36 @@ const InputGroup: FC<IInputGroup> = ({
           {label}
           {required ? (
             <span
-              className={
-                colorRequired === 'tertiary' ? styles.requiredColorTertiary : styles.required
-              }
+              className={`${colorRequired === 'tertiary' && styles.requiredColorTertiary} ${
+                styles.required
+              }`}
             >
               *
             </span>
           ) : (
             ''
           )}
-          {required ? <span>:</span> : ''}
+          {required ? <span className={styles.colon}>:</span> : ''}
         </BodyText>
       </Col>
       <Col className={styles.inputGroupContent} span={horizontal ? (noWrap ? undefined : 20) : 24}>
         <CustomInput
           {...props}
+          value={value}
           fontLevel={fontLevel ? ((fontLevel + 2) as 7) : 7}
           readOnly={rightIcon || readOnly ? true : false}
           className={`input-box ${hasPadding ? 'has-padding' : ''} ${
             colorPrimaryDark ? 'color-primary-dark' : ''
           }`}
-          onClick={(e) => e.stopPropagation()}
+          style={{
+            cursor: onRightIconClick ? 'pointer' : 'auto',
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onRightIconClick) {
+              onRightIconClick();
+            }
+          }}
         />
         {rightIcon ? (
           rightIcon === true ? (
@@ -83,7 +92,7 @@ const InputGroup: FC<IInputGroup> = ({
             rightIcon
           )
         ) : null}
-        {deleteIcon ? (
+        {value && deleteIcon ? (
           deleteIcon === true ? (
             <RemoveIcon onClick={onDelete} className="delete-action-input-group" />
           ) : (

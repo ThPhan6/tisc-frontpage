@@ -15,8 +15,8 @@ export interface IPaginationRequest {
   filter?: {
     [key: string]: any;
   };
-  sort_name?: string;
-  sort_order?: string;
+  sort?: string;
+  order?: string;
   [key: string]: any;
 }
 

@@ -34,16 +34,6 @@ const BrandProfile = () => {
     e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>,
   ) => {
     setBrandProfile({ ...brandProfile, [e.target.name]: e.target.value });
-    // if (e.target.files) {
-    //   const file = e.target.files![0];
-    //   getBase64(file)
-    //     .then((base64Image) => {
-    //       setLogoBrandProfile(base64Image);
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //     });
-    // }
   };
 
   const handleAddWebsiteItem = () => {
@@ -164,13 +154,7 @@ const BrandProfile = () => {
                   iconTooltip={<WarningIcon className={styles.customWarningIcon} />}
                 >
                   <div className={styles['wrapper-upload']}>
-                    <Upload
-                      maxCount={1}
-                      showUploadList={false}
-                      {...props}
-                      accept=".png"
-                      // onChange={(value) => handleOnChangeValueFormTest}
-                    >
+                    <Upload maxCount={1} showUploadList={false} {...props} accept=".png">
                       <UploadIcon className={styles.icon} />
                     </Upload>
                   </div>

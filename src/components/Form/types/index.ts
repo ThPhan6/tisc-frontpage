@@ -12,6 +12,7 @@ export interface FormGroupProps {
   message?: string;
   messageType?: 'normal' | 'error' | 'warning';
   iconTooltip?: ReactNode;
+  onClick?: () => void;
 }
 
 export interface CustomInputProps extends InputProps {
@@ -28,6 +29,8 @@ export interface CustomInputProps extends InputProps {
 
 export interface CustomTextAreaProps extends TextAreaProps {
   borderBottomColor?: 'mono' | 'mono-medium';
+  maxHeight?: number;
+  defaultHeight?: number;
 }
 
 export interface PhoneInputProps {
@@ -39,9 +42,24 @@ export interface PhoneInputProps {
   phoneNumberReadOnly?: boolean;
   value?: PhoneInputValueProp;
   status?: 'error' | 'warning' | '';
+  containerClass?: string;
   colorPlaceholder?: string;
 }
 export type PhoneInputValueProp = {
   zoneCode: string;
   phoneNumber: string;
 };
+
+export interface StatusProps {
+  value: any;
+  onClick: () => void;
+  label: string;
+  layout?: 'horizontal' | 'vertical';
+  buttonName: string;
+  text_1: string;
+  text_2: string;
+  formClass?: string;
+  textClass?: string;
+  activeButtonClass?: string;
+  InActiveButtonClass?: string;
+}

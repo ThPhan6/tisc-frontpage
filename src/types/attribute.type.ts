@@ -1,3 +1,5 @@
+import { ISubBasisConversion, ISubBasisOption, ISubBasisPreset } from '@/types';
+
 export interface ISubAttribute {
   id: string;
   name: string;
@@ -56,4 +58,40 @@ export interface IAttributeForm {
   type?: number;
   name: string;
   subs: IAttributeSubForm[];
+}
+
+export interface IAttributeGeneralFeatureSub extends ISubAttribute {
+  basis: {
+    id: string;
+    type: string;
+    name: string;
+    subs: ISubBasisConversion[] & ISubBasisPreset[] & IBasisText[];
+  };
+}
+export interface IAttributeGeneralFeature {
+  id: string;
+  name: string;
+  type: number;
+  subs: IAttributeGeneralFeatureSub[];
+}
+
+export interface IAttributeSpecificationSub extends ISubAttribute {
+  basis: {
+    id: string;
+    type: string;
+    name: string;
+    subs: ISubBasisConversion[] & IBasisText[] & ISubBasisOption[];
+  };
+}
+export interface IAttributeSpecification {
+  id: string;
+  name: string;
+  type: number;
+  subs: IAttributeSpecificationSub[];
+}
+
+export interface IAttributebyType {
+  general: IAttributeGeneralFeature[];
+  feature: IAttributeGeneralFeature[];
+  specification: IAttributeSpecification[];
 }

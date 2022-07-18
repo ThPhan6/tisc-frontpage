@@ -276,12 +276,13 @@
           {
             path: '/tisc/adminstration/documentation/agreement-policy-terms',
             name: 'terms.policy',
-            component: './Welcome',
+            component:
+              './TISC/Adminstration/Documentation/AgreementPolicies/CreateAgreementPoliciesPage',
           },
           {
             path: '/tisc/adminstration/documentation/how-to',
             name: 'how.to',
-            component: './Welcome',
+            component: './TISC/Adminstration/Documentation/HowTo',
           },
         ],
       },
@@ -296,7 +297,7 @@
         path: '/tisc/adminstration/team-profiles',
         name: 'team.profile',
         icon: 'team-profile-icon.svg',
-        component: './Welcome',
+        component: './TISC/Adminstration/TeamProfiles/CreateTeamProfilesPage',
         access: 'tisc_administration_team_profile',
       },
       {
@@ -306,14 +307,43 @@
         access: 'tisc_administration_message',
         routes: [
           {
-            path: '/tisc/adminstration/messages/email-autoresponders',
+            path: '/tisc/adminstration/messages/email-auto',
             name: 'email',
-            component: './Welcome',
+            routes: [
+              {
+                path: '/tisc/adminstration/messages/email-auto',
+                component: './TISC/Adminstration/Messages/EmailAutoresponders/',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/adminstration/messages/email-auto/update/:id',
+                component: './TISC/Adminstration/Messages/EmailAutoresponders/UpdateEmailAutoPage',
+                hideInMenu: true,
+              },
+            ],
           },
           {
-            path: '/tisc/adminstration/messages/inspirational-quotations',
+            path: '/tisc/adminstration/messages/quotation',
             name: 'quotation',
-            component: './Welcome',
+            routes: [
+              {
+                path: '/tisc/adminstration/messages/quotation',
+                component: './TISC/Adminstration/Messages/InspirationalQuotations',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/adminstration/messages/quotation/create',
+                component:
+                  './TISC/Adminstration/Messages/InspirationalQuotations/CreateQuotationPage',
+                hideInMenu: true,
+              },
+              {
+                path: '/tisc/adminstration/messages/quotation/update/:id',
+                component:
+                  './TISC/Adminstration/Messages/InspirationalQuotations/UpdateQuotationPage',
+                hideInMenu: true,
+              },
+            ],
           },
         ],
       },
