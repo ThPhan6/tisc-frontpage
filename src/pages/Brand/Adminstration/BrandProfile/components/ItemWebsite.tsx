@@ -1,11 +1,12 @@
 import { CustomInput } from '@/components/Form/CustomInput';
 import { FC, useEffect, useState } from 'react';
-import { ItemWebsiteProp } from '../types';
+import { WebsiteUrl } from '../types';
 import { ReactComponent as LeftIcon } from '@/assets/icons/pagination-right-18px.svg';
 import styles from '@/pages/Brand/Adminstration/BrandProfile/styles/index.less';
 import CountryModal from '../../Distributors/components/CountryModal';
 import { getCountryById } from '@/services';
-export const ItemWebsite: FC<ItemWebsiteProp> = ({ websiteValue, onChange }) => {
+
+export const ItemWebsite: FC<WebsiteUrl> = ({ websiteValue, onChange }) => {
   const [countryVisible, setCountryVisible] = useState(false);
   const [countryValue, setCountryValue] = useState<string>('');
 

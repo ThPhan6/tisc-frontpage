@@ -7,7 +7,7 @@ import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { useEffect, useState } from 'react';
-import { IBrandProfileProp, websiteValueDefautl, IWebsiteValueProp } from './types';
+import { UpdateBrandProfileRequestBody, websiteValueDefautl } from './types';
 import { ItemWebsite } from './components/ItemWebsite';
 import { getBase64, showImageUrl } from '@/helper/utils';
 import Logo from '@/assets/image-logo.png';
@@ -16,14 +16,37 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-icon.svg';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { updateBrandProfile, updateLogoBrandProfile } from '@/services/brand-profile';
 import { useAppSelector } from '@/reducers';
-const BrandProfile = () => {
+import { WebsiteUrlItem } from '@/types/user.type';
+
+const initialBrandProfileState: UpdateBrandProfileRequestBody = {
+  mission_n_vision: '',
+  name: '',
+  parent_company: '',
+  slogan: '',
+  official_websites: [],
+};
+
+const BrandProfilePage = () => {
   const submitButtonStatus = useBoolean(false);
   const isLoading = useBoolean(false);
   const [fileInput, setFileInput] = useState<any>();
-  const user = useAppSelector((state) => state.user);
-  const [brandProfile, setBrandProfile] = useState<IBrandProfileProp>(user.user?.brand as any);
+  const brandAppState = useAppSelector((state) => state.user.user?.brand);
+  const [brandProfile, setBrandProfile] =
+    useState<UpdateBrandProfileRequestBody>(initialBrandProfileState);
   const { fetchUserInfo } = useCustomInitialState();
   const [logoBrandProfile, setLogoBrandProfile] = useState<string>('');
+
+  useEffect(() => {
+    if (brandAppState) {
+      setBrandProfile({
+        mission_n_vision: brandAppState.mission_n_vision,
+        name: brandAppState.name,
+        parent_company: brandAppState.parent_company || '',
+        slogan: brandAppState.slogan || '',
+        official_websites: brandAppState.official_websites || [],
+      });
+    }
+  }, [brandAppState]);
 
   const handleOnChangeValueForm = (
     e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>,
@@ -38,7 +61,7 @@ const BrandProfile = () => {
     });
   };
 
-  const handleOnChangeWebsiteItem = (websiteItem: IWebsiteValueProp, index: number) => {
+  const handleOnChangeWebsiteItem = (websiteItem: WebsiteUrlItem, index: number) => {
     const newWebsiteItem = [...brandProfile.official_websites];
     newWebsiteItem[index] = websiteItem;
     setBrandProfile({ ...brandProfile, official_websites: newWebsiteItem });
@@ -63,8 +86,8 @@ const BrandProfile = () => {
   }, [fileInput]);
 
   const setPreviewAvatar = () => {
-    if (user.user?.brand?.logo) {
-      return showImageUrl(user.user?.brand?.logo as string);
+    if (brandAppState?.logo) {
+      return showImageUrl(brandAppState?.logo as string);
     }
     return Logo;
   };
@@ -207,4 +230,4 @@ const BrandProfile = () => {
     </div>
   );
 };
-export default BrandProfile;
+export default BrandProfilePage;
