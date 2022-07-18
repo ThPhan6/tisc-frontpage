@@ -11,7 +11,6 @@ import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constant
 import avatarImg from '@/assets/img-avatar.png';
 import { FC, useEffect, useState } from 'react';
 import {
-  getPersonalPhone,
   isShowErrorMessage,
   showImageUrl,
   validateEmail,
@@ -39,15 +38,17 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
   );
 
   useEffect(() => {
-    setInputValue({
-      backupEmail: currentUser?.backup_email || '',
-      mobile: getPersonalPhone(currentUser?.personal_mobile) || {
-        zoneCode: '',
-        phoneNumber: '',
-      },
-      linkedin: currentUser?.linkedin || '',
-    });
-  }, []);
+    if (currentUser) {
+      setInputValue({
+        backupEmail: currentUser.backup_email || '',
+        mobile: {
+          zoneCode: currentUser.phone_code,
+          phoneNumber: currentUser.personal_mobile,
+        },
+        linkedin: currentUser?.linkedin || '',
+      });
+    }
+  }, [currentUser]);
 
   const handleUpdateAvatar = () => {
     const formData = new FormData();
@@ -123,14 +124,17 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
     });
   };
 
-  const handleDisabled = () => {
-    const phone = getPersonalPhone(currentUser?.personal_mobile);
+  const checkSaveDisabled = () => {
+    if (!currentUser) {
+      return true;
+    }
+    console.log('currentUser', currentUser);
     const currentUserData = {
-      backupEmail: currentUser?.backup_email,
-      linkedin: currentUser?.linkedin,
+      backupEmail: currentUser.backup_email,
+      linkedin: currentUser.linkedin,
       mobile: {
-        phoneNumber: phone?.phoneNumber,
-        zoneCode: phone?.zoneCode,
+        phoneNumber: currentUser.personal_mobile,
+        zoneCode: currentUser.phone_code,
       },
     };
     if (
@@ -237,7 +241,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
               size="small"
               width="64px"
               onClick={handleSubmit}
-              disabled={handleDisabled()}
+              disabled={checkSaveDisabled()}
             >
               <BodyText level={6} fontFamily="Roboto">
                 Save

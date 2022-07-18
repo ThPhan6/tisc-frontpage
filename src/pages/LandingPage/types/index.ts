@@ -24,6 +24,7 @@ export type UserInfoDataProp = {
   email: string;
   phone: string;
   mobile: string;
+  phone_code: string;
   avatar: string;
   backup_email: string;
   personal_mobile: string;

@@ -87,16 +87,6 @@ export function showImageUrl(url: string) {
   return `${STORE_URL}${url}`;
 }
 
-export const getPersonalPhone = (phone: string | undefined) => {
-  if (phone) {
-    const phoneArray = phone.split(' ');
-    return {
-      zoneCode: phoneArray[0],
-      phoneNumber: phoneArray[1],
-    };
-  }
-};
-
 export const checkUndefined = (value: string | number | undefined) => {
   return isUndefined(value) ? 'N/A' : value;
 };
