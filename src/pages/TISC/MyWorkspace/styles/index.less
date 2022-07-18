@@ -23,12 +23,21 @@
       max-width: 20%;
     }
     .productCardItem {
+      &:hover {
+        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        .top {
+          box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
+        }
+        .bottom {
+          box-shadow: inset 0 0.5px 0 rgba(0, 0, 0, 0.3);
+        }
+      }
+
       background-color: #fff;
-      border: 1px solid #bfbfbf;
+      border: 0.5px solid #bfbfbf;
       .top {
         position: relative;
         padding: 12px 40px 8px 12px;
-        border-bottom: 1px solid #bfbfbf;
         .bold {
           font-weight: 500;
         }
@@ -64,7 +73,6 @@
         align-items: center;
         height: 40px;
         padding: 0 12px;
-        border-top: 1px solid #bfbfbf;
         .profile_icon {
           display: flex;
           align-items: center;
