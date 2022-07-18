@@ -7,12 +7,7 @@ import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { useEffect, useState } from 'react';
-import {
-  IBrandProfileProp,
-  brandProfileValueDefault,
-  websiteValueDefautl,
-  IWebsiteValueProp,
-} from './types';
+import { IBrandProfileProp, websiteValueDefautl, IWebsiteValueProp } from './types';
 import { ItemWebsite } from './components/ItemWebsite';
 import { getBase64, showImageUrl } from '@/helper/utils';
 import Logo from '@/assets/image-logo.png';
@@ -26,7 +21,7 @@ const BrandProfile = () => {
   const isLoading = useBoolean(false);
   const [fileInput, setFileInput] = useState<any>();
   const user = useAppSelector((state) => state.user);
-  const [brandProfile, setBrandProfile] = useState<IBrandProfileProp>(brandProfileValueDefault);
+  const [brandProfile, setBrandProfile] = useState<IBrandProfileProp>(user.user?.brand as any);
   const { fetchUserInfo } = useCustomInitialState();
   const [logoBrandProfile, setLogoBrandProfile] = useState<string>('');
 
@@ -123,7 +118,7 @@ const BrandProfile = () => {
                     placeholder="registered name/trademark"
                     name="name"
                     onChange={handleOnChangeValueForm}
-                    value={brandProfile.name || user.user?.brand?.name}
+                    value={brandProfile.name}
                   />
                 </FormGroup>
               </div>
@@ -137,9 +132,7 @@ const BrandProfile = () => {
                   placeholder="holding company name, if any"
                   name="parent_company"
                   onChange={handleOnChangeValueForm}
-                  value={
-                    brandProfile.parent_company || (user.user?.brand?.parent_company as string)
-                  }
+                  value={brandProfile.parent_company}
                 />
               </FormGroup>
               <div className={styles.logo}>
@@ -167,7 +160,7 @@ const BrandProfile = () => {
                   placeholder="brand slogan, if any"
                   name="slogan"
                   onChange={handleOnChangeValueForm}
-                  value={brandProfile.slogan || (user.user?.brand?.slogan as string)}
+                  value={brandProfile.slogan}
                 />
               </FormGroup>
               <FormGroup
@@ -183,7 +176,7 @@ const BrandProfile = () => {
                   borderBottomColor="mono-medium"
                   name="mission_n_vision"
                   onChange={handleOnChangeValueForm}
-                  value={brandProfile.mission_n_vision || user.user?.brand?.mission_n_vision}
+                  value={brandProfile.mission_n_vision}
                 />
               </FormGroup>
               <div className={styles.website}>

@@ -1,9 +1,10 @@
 import { CustomInput } from '@/components/Form/CustomInput';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { ItemWebsiteProp } from '../types';
 import { ReactComponent as LeftIcon } from '@/assets/icons/pagination-right-18px.svg';
 import styles from '@/pages/Brand/Adminstration/BrandProfile/styles/index.less';
 import CountryModal from '../../Distributors/components/CountryModal';
+import { getCountryById } from '@/services';
 export const ItemWebsite: FC<ItemWebsiteProp> = ({ websiteValue, onChange }) => {
   const [countryVisible, setCountryVisible] = useState(false);
   const [countryValue, setCountryValue] = useState<string>('');
@@ -16,6 +17,16 @@ export const ItemWebsite: FC<ItemWebsiteProp> = ({ websiteValue, onChange }) => 
     onChange({ ...websiteValue, [country_id]: chosenValue.value });
     setCountryValue(chosenValue.label);
   };
+
+  useEffect(() => {
+    if (websiteValue) {
+      getCountryById(websiteValue.country_id).then((res) => {
+        if (res) {
+          setCountryValue(res.name);
+        }
+      });
+    }
+  }, [websiteValue]);
 
   return (
     <>
