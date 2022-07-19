@@ -6,11 +6,12 @@ import type {
   ILocationDetail,
   FunctionalTypeData,
   LocationForm,
+  ICountryGroup,
 } from '@/types';
 import type {
-  IDataTableResponse,
-  IPaginationRequest,
-  IPaginationResponse,
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
 } from '@/components/Table/types';
 import { message } from 'antd';
 import { request } from 'umi';
@@ -57,7 +58,7 @@ export async function getCitiesByCountryIdAndStateId(countryId: string, stateId:
 }
 
 export async function getListCountryGroup() {
-  return request(`/api/location/get-list-with-country-group`, {
+  return request<{ data: ICountryGroup[] }>(`/api/location/get-list-with-country-group`, {
     method: 'GET',
   })
     .then((response) => {
@@ -65,7 +66,7 @@ export async function getListCountryGroup() {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_COUNTRY_GROUP);
-      return [];
+      return [] as ICountryGroup[];
     });
 }
 
@@ -80,13 +81,13 @@ export async function getCountryById(id: string) {
 }
 
 export async function getLocationPagination(
-  params: IPaginationRequest,
-  callback: (data: IDataTableResponse) => void,
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
 ) {
   return request<{
     data: {
       locations: ILocationDetail[];
-      pagination: IPaginationResponse;
+      pagination: PaginationResponse;
     };
   }>(`/api/location/get-list`, {
     method: 'GET',

@@ -13,13 +13,13 @@ import AuthorizedCountryModal from './AuthorizedCountryModal';
 import StateModal from '@/components/Location/StateModal';
 import CityModal from '@/components/Location/CityModal';
 import DistributionTerritoryModal from './DistributionTerritoryModal';
-import { ReactComponent as SingleRightFormIconDisable } from '@/assets/icons/single-right-form-icon-disable.svg';
-import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
-import { DistributorEntryForm } from '@/types/distributor.type';
+import { DistributorEntryForm, DistributorForm } from '@/types/distributor.type';
 import { useEffect } from 'react';
-import { getCountryById } from '@/services/location.api';
-import { PhoneInputValueProp } from '@/components/Form/types';
 import { useAppSelector } from '@/reducers';
+import { validateEmail } from '@/helper/utils';
+import { MESSAGE_ERROR } from '@/constants/message';
+import { message } from 'antd';
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
 
 const optionsGender = [
   { label: 'Male', value: true },
@@ -31,68 +31,88 @@ const optionsCoverageBeyond = [
   { label: 'Allow', value: false },
 ];
 
+type FieldName = keyof DistributorForm;
+
 export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
   const { submitButtonStatus, onSubmit, onCancel, data, setData } = props;
-  const [countryVisible, setCountryVisible] = useState(false);
-  const [authorizedCountryVisible, setAuthorizedCountryVisible] = useState(false);
-  const [territoryVisible, setTerritoryVisible] = useState(false);
-  const [stateVisible, setStateVisible] = useState(false);
-  const [cityVisible, setCityVisible] = useState(false);
-  const user = useAppSelector((state) => state.user);
 
-  const handleOnChangeValueForm = (
-    e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>,
-  ) => {
-    setData({ ...data, [e.target.name]: e.target.value });
+  const [visible, setVisible] = useState({
+    country: false,
+    state: false,
+    city: false,
+    authorCountry: false,
+    territory: false,
+  });
+
+  const [countryData, setCountryData] = useState({
+    label: '',
+    value: data.country_id,
+    phoneCode: '00',
+  });
+
+  const [stateData, setStateData] = useState({ label: '', value: data.state_id });
+
+  const [cityData, setCityData] = useState({ label: '', value: data.city_id });
+
+  const user = useAppSelector((state) => state.user.user);
+
+  const isValidEmail = validateEmail(data.email);
+
+  const [authorCountryData, setAuthorCountryData] = useState<CheckboxValue[]>(
+    data.authorized_countries.map((country) => {
+      return {
+        label: country.name,
+        value: country.id,
+      };
+    }),
+  );
+
+  const onChangeData = (fieldName: FieldName, fieldValue: any) => {
+    setData({ ...data, [fieldName]: fieldValue });
   };
 
   const handleOnChangeGenderAndCoverageBeyond = (radioValue: boolean, name: string) => {
     setData({ ...data, [name]: radioValue });
   };
 
-  const handleOnChangePhoneAndMobile = (phoneInputValue: object, name: string) => {
-    setData({
-      ...data,
-      [name]: phoneInputValue['phoneNumber'],
-    });
-  };
-
-  const handleOnchangeChosenValue = (chosenValue: any, modalValue: string, modalLabel: string) => {
-    setData({
-      ...data,
-      [modalValue]: chosenValue.value,
-      [modalLabel]: chosenValue.label,
-    });
-  };
-
-  const handleOnchangeAuthorCountryValue = (chosenValue: any) => {
-    setData({
-      ...data,
-      authorized_country_ids: chosenValue && chosenValue.map((item: any) => item.id),
-      authorized_country_name: chosenValue.map((name: any) => name.value).toString(),
-    });
-  };
-
-  const handleSubmit = () => {
-    onSubmit({
-      ...data,
-      brand_id: user.user?.brand?.id as string,
-    });
-  };
+  useEffect(() => {
+    if (countryData.value !== '') {
+      onChangeData('country_id', countryData.value);
+    }
+  }, [countryData]);
 
   useEffect(() => {
-    if (data.country_id) {
-      getCountryById(data.country_id).then((res) => {
-        if (res) {
-          setData({
-            ...data,
-            phone_code: res.phone_code,
-          });
-        }
-      });
+    if (countryData.value !== '-1' && stateData.value !== '') {
+      onChangeData('state_id', stateData.value);
     }
-  }, [data.country_id]);
+  }, [stateData]);
 
+  useEffect(() => {
+    if (stateData.value !== '' && cityData.value !== '') {
+      onChangeData('city_id', cityData.value);
+    }
+  }, [cityData]);
+
+  useEffect(() => {
+    if (authorCountryData) {
+      onChangeData(
+        'authorized_country_ids',
+        authorCountryData.map((item) => item.value),
+      );
+    }
+  }, [authorCountryData]);
+
+  const handleSubmit = () => {
+    if (!isValidEmail) {
+      return message.error(MESSAGE_ERROR.EMAIL);
+    }
+    return onSubmit({
+      ...data,
+      brand_id: user?.brand?.id as string,
+    });
+  };
+
+  console.log('authorCountryData', authorCountryData);
   return (
     <>
       <EntryFormWrapper
@@ -109,10 +129,13 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               label="Distributor Name"
               required
               fontLevel={3}
-              onChange={handleOnChangeValueForm}
+              onChange={(e) => {
+                onChangeData('name', e.target.value);
+              }}
+              onDelete={() => onChangeData('name', '')}
+              deleteIcon
               value={data.name}
-              name="name"
-              borderBottomColor="mono-medium"
+              hasBoxShadow
               placeholder="authorized distributor company name"
               hasHeight
               hasPadding
@@ -123,33 +146,43 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               label="Country"
               required
               fontLevel={3}
-              name="country"
               placeholder="select country"
-              value={data.country_name}
-              borderBottomColor="mono-medium"
+              value={countryData.label}
+              hasBoxShadow
               hasPadding
               rightIcon
               hasHeight
               colorPrimaryDark
               colorRequired="tertiary"
-              onRightIconClick={() => setCountryVisible(true)}
+              onRightIconClick={() =>
+                setVisible({
+                  city: false,
+                  state: false,
+                  country: true,
+                  authorCountry: false,
+                  territory: false,
+                })
+              }
             />
             <InputGroup
               label="State / Province"
               required
               fontLevel={3}
-              name="province"
               placeholder="select state / province"
-              value={data.state_name}
-              borderBottomColor="mono-medium"
+              value={stateData.label}
+              hasBoxShadow
               hasPadding
-              rightIcon={
-                data.country_id ? (
-                  <SingleRightFormIcon onClick={() => setStateVisible(true)} />
-                ) : (
-                  <SingleRightFormIconDisable style={{ cursor: 'not-allowed' }} />
-                )
+              disabled={countryData.value === '-1' || countryData.value === ''}
+              onRightIconClick={() =>
+                setVisible({
+                  city: false,
+                  state: true,
+                  country: false,
+                  authorCountry: false,
+                  territory: false,
+                })
               }
+              rightIcon
               hasHeight
               colorPrimaryDark
               colorRequired="tertiary"
@@ -158,17 +191,20 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               label="City / Town"
               required
               fontLevel={3}
-              name="city"
               placeholder="select city / town"
-              value={data.city_name}
-              borderBottomColor="mono-medium"
+              value={cityData.label}
+              hasBoxShadow
               hasPadding
-              rightIcon={
-                data.country_id && data.state_id ? (
-                  <SingleRightFormIcon onClick={() => setCityVisible(true)} />
-                ) : (
-                  <SingleRightFormIconDisable style={{ cursor: 'not-allowed' }} />
-                )
+              rightIcon
+              disabled={stateData.value === ''}
+              onRightIconClick={() =>
+                setVisible({
+                  city: true,
+                  state: false,
+                  country: false,
+                  authorCountry: false,
+                  territory: false,
+                })
               }
               hasHeight
               colorPrimaryDark
@@ -183,10 +219,9 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               <CustomTextArea
                 maxLength={120}
                 showCount
-                borderBottomColor="mono-medium"
+                boxShadow
                 placeholder="unit #, street / road name"
-                name="address"
-                onChange={handleOnChangeValueForm}
+                onChange={(e) => onChangeData('address', e.target.value)}
                 value={data.address}
               />
             </FormGroup>
@@ -194,16 +229,16 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               label="Postal / Zip Code"
               required
               fontLevel={3}
-              type="number"
-              name="postal_code"
               placeholder="postal / zip code"
-              onChange={handleOnChangeValueForm}
+              onChange={(e) => onChangeData('postal_code', e.target.value)}
               value={data.postal_code}
-              borderBottomColor="mono-medium"
+              hasBoxShadow
               hasPadding
               hasHeight
               colorPrimaryDark
               colorRequired="tertiary"
+              onDelete={() => onChangeData('postal_code', '')}
+              deleteIcon
             />
           </div>
           <div className="contact person">
@@ -214,36 +249,33 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               label="First Name"
               required
               fontLevel={3}
-              name="first_name"
               placeholder="user first name"
-              onChange={handleOnChangeValueForm}
+              onChange={(e) => onChangeData('first_name', e.target.value)}
               value={data.first_name}
-              borderBottomColor="mono-medium"
+              hasBoxShadow
               hasPadding
               hasHeight
               colorPrimaryDark
               colorRequired="tertiary"
+              onDelete={() => onChangeData('first_name', '')}
+              deleteIcon
             />
             <InputGroup
               label="Last Name"
               required
               fontLevel={3}
-              name="last_name"
               placeholder="user last name"
-              onChange={handleOnChangeValueForm}
+              onChange={(e) => onChangeData('last_name', e.target.value)}
               value={data.last_name}
-              borderBottomColor="mono-medium"
+              hasBoxShadow
               hasPadding
               hasHeight
               colorPrimaryDark
               colorRequired="tertiary"
+              onDelete={() => onChangeData('last_name', '')}
+              deleteIcon
             />
-            <FormGroup
-              label="Gender"
-              required
-              layout="vertical"
-              formClass={styles.customMarginBottom}
-            >
+            <FormGroup label="Gender" required layout="vertical" formClass={styles.formGroup}>
               <CustomRadio
                 options={optionsGender}
                 value={data.gender}
@@ -256,57 +288,57 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               label="Work Email"
               required
               fontLevel={3}
-              name="email"
               placeholder="user work email address"
               value={data.email}
-              onChange={handleOnChangeValueForm}
-              borderBottomColor="mono-medium"
+              onChange={(e) => onChangeData('email', e.target.value)}
+              hasBoxShadow
               hasPadding
               hasHeight
               colorPrimaryDark
               colorRequired="tertiary"
+              onDelete={() => onChangeData('email', '')}
+              deleteIcon
+              message={data.email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.EMAIL) : undefined}
+              messageType={data.email !== '' ? (isValidEmail ? 'normal' : 'error') : undefined}
             />
-            <FormGroup
-              label="Work Phone"
-              required
-              layout="vertical"
-              formClass={styles.customMarginBottom}
-            >
+            <FormGroup label="Work Phone" required layout="vertical" formClass={styles.formGroup}>
               <PhoneInput
                 phonePlaceholder="area code / number"
-                onChange={(value) => handleOnChangePhoneAndMobile(value, 'phone')}
-                colorPlaceholder="mono"
+                onChange={(value) => onChangeData('phone', value.phoneNumber)}
                 codeReadOnly
-                value={
-                  {
-                    zoneCode: data.phone_code,
-                    phoneNumber: data.phone,
-                  } as PhoneInputValueProp
-                }
+                containerClass={styles.phoneInputCustom}
+                value={{
+                  zoneCode: countryData.phoneCode,
+                  phoneNumber: data.phone,
+                }}
               />
             </FormGroup>
-            <FormGroup
-              label="Work Mobile"
-              required
-              layout="vertical"
-              formClass={styles.customMarginBottom}
-            >
+            <FormGroup label="Work Mobile" required layout="vertical" formClass={styles.formGroup}>
               <PhoneInput
                 phonePlaceholder="mobile number"
-                onChange={(value) => handleOnChangePhoneAndMobile(value, 'mobile')}
-                colorPlaceholder="mono"
+                onChange={(value) => onChangeData('mobile', value.phoneNumber)}
                 codeReadOnly
-                value={
-                  {
-                    zoneCode: data.phone_code,
-                    phoneNumber: data.mobile,
-                  } as PhoneInputValueProp
-                }
+                containerClass={styles.phoneInputCustom}
+                value={{
+                  zoneCode: countryData.phoneCode,
+                  phoneNumber: data.mobile,
+                }}
               />
             </FormGroup>
           </div>
           <div className="distribution">
-            <div className={styles.titleDistribution} onClick={() => setTerritoryVisible(true)}>
+            <div
+              className={styles.titleDistribution}
+              onClick={() =>
+                setVisible({
+                  city: false,
+                  state: false,
+                  country: false,
+                  authorCountry: false,
+                  territory: true,
+                })
+              }
+            >
               <Title level={8}>C - DISTIBUTION TERRITORY</Title>
               <WarningIcon />
             </div>
@@ -316,14 +348,22 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               fontLevel={3}
               name="authorizedCountry"
               placeholder="select country"
-              value={data.authorized_country_name}
-              borderBottomColor="mono-medium"
+              value={authorCountryData.map((item) => item.label).join(', ')}
+              hasBoxShadow
               hasPadding
               rightIcon
               hasHeight
               colorPrimaryDark
               colorRequired="tertiary"
-              onRightIconClick={() => setAuthorizedCountryVisible(true)}
+              onRightIconClick={() =>
+                setVisible({
+                  city: false,
+                  state: false,
+                  country: false,
+                  authorCountry: true,
+                  territory: false,
+                })
+              }
             />
             <FormGroup label="Coverage Beyond" required layout="vertical">
               <CustomRadio
@@ -342,43 +382,80 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
       </EntryFormWrapper>
 
       <CountryModal
-        visible={countryVisible}
-        setVisible={setCountryVisible}
-        chosenValue={{ label: data.country_name, value: data.country_id }}
-        setChosenValue={(chosenValue) =>
-          handleOnchangeChosenValue(chosenValue, 'country_id', 'country_name')
+        visible={visible.country}
+        setVisible={(status) =>
+          setVisible({
+            city: false,
+            state: false,
+            country: status,
+            authorCountry: false,
+            territory: false,
+          })
         }
+        chosenValue={countryData}
+        setChosenValue={setCountryData}
       />
 
       <StateModal
         countryId={data.country_id}
-        visible={stateVisible}
-        setVisible={setStateVisible}
-        chosenValue={{ label: data.state_name, value: data.state_id }}
-        setChosenValue={(chosenValue) =>
-          handleOnchangeChosenValue(chosenValue, 'state_id', 'state_name')
+        visible={visible.state}
+        setVisible={(status) =>
+          setVisible({
+            city: false,
+            state: status,
+            country: false,
+            authorCountry: false,
+            territory: false,
+          })
         }
+        chosenValue={stateData}
+        setChosenValue={setStateData}
       />
 
       <CityModal
         stateId={data.state_id}
         countryId={data.country_id}
-        visible={cityVisible}
-        setVisible={setCityVisible}
-        chosenValue={{ label: data.city_name, value: data.city_id }}
-        setChosenValue={(chosenValue) =>
-          handleOnchangeChosenValue(chosenValue, 'city_id', 'city_name')
+        visible={visible.city}
+        setVisible={(status) =>
+          setVisible({
+            city: status,
+            state: false,
+            country: false,
+            authorCountry: false,
+            territory: false,
+          })
         }
+        chosenValue={cityData}
+        setChosenValue={setCityData}
       />
 
       <AuthorizedCountryModal
-        visible={authorizedCountryVisible}
-        setVisible={setAuthorizedCountryVisible}
-        chosenValue={data.authorized_countries}
-        setChosenValue={(chosenValue) => handleOnchangeAuthorCountryValue(chosenValue)}
+        visible={visible.authorCountry}
+        setVisible={(status) =>
+          setVisible({
+            city: false,
+            state: false,
+            country: false,
+            authorCountry: status,
+            territory: false,
+          })
+        }
+        chosenValue={authorCountryData}
+        setChosenValue={setAuthorCountryData}
       />
 
-      <DistributionTerritoryModal visible={territoryVisible} setVisible={setTerritoryVisible} />
+      <DistributionTerritoryModal
+        visible={visible.territory}
+        setVisible={(status) =>
+          setVisible({
+            city: false,
+            state: false,
+            country: false,
+            authorCountry: false,
+            territory: status,
+          })
+        }
+      />
     </>
   );
 };

@@ -1,3 +1,4 @@
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
 import { getListCountryGroup } from '@/services/location.api';
@@ -8,12 +9,14 @@ const AuthorizedCountryModal: FC<{
   visible: boolean;
   setVisible: (visible: boolean) => void;
   chosenValue?: any;
-  setChosenValue?: (value: any) => void;
+  setChosenValue: (value: any) => void;
 }> = ({ visible, setVisible, chosenValue, setChosenValue }) => {
   const [countryGroup, setCountryGroup] = useState<ICountryGroup[]>([]);
 
   const getCountryGroup = () => {
-    getListCountryGroup().then(setCountryGroup);
+    getListCountryGroup().then((res) => {
+      setCountryGroup(res as ICountryGroup[]);
+    });
   };
 
   useEffect(() => {
@@ -29,21 +32,35 @@ const AuthorizedCountryModal: FC<{
     );
   };
 
+  const handleSelectedData = (checkedData: CheckboxValue[]) => {
+    console.log(checkedData);
+    // const newChosenData = [];
+    const selectedCountry = checkedData.map((checked) => {
+      countryGroup.map((item) => {
+        console.log(item.locations);
+        item.locations.find((country) => country.country_id === checked.value);
+      });
+    });
+    console.log(selectedCountry);
+    if (selectedCountry) {
+      setChosenValue('');
+    }
+  };
+
   return (
     <Popover
       title="SELECT COUNTRY"
       visible={visible}
       setVisible={setVisible}
       chosenValue={chosenValue}
-      setChosenValue={setChosenValue}
+      setChosenValue={(data) => handleSelectedData(data)}
       dropdownCheckboxList={countryGroup.map((items) => {
         return {
           key: items.country_name,
           options: items.locations.map((item) => {
             return {
               label: renderLabel(item),
-              value: item.country_name,
-              id: item.country_id,
+              value: item.country_id,
             };
           }),
         };

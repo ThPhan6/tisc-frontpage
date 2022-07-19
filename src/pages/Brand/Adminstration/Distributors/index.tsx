@@ -15,7 +15,7 @@ import { useAppSelector } from '@/reducers';
 
 const Distributors = () => {
   const tableRef = useRef<any>();
-  const user = useAppSelector((state) => state.user);
+  const user = useAppSelector((state) => state.user.user);
 
   const handleUpdateDistributor = (id: string) => {
     pushTo(PATH.updateDistributor.replace(':id', id));
@@ -110,6 +110,10 @@ const Distributors = () => {
       },
     },
   ];
+
+  if (!user?.brand) {
+    return null;
+  }
   return (
     <>
       <CustomTable
@@ -119,7 +123,7 @@ const Distributors = () => {
         ref={tableRef}
         fetchDataFunc={getDistributorPagination}
         extraParams={{
-          brand_id: user.user?.brand?.id,
+          brand_id: user.brand.id,
         }}
       />
     </>
