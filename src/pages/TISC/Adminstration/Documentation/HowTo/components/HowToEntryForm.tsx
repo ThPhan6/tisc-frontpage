@@ -7,17 +7,19 @@ import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
 import { showImageUrl } from '@/helper/utils';
+import { FaqItem, FaqState } from '@/types/faq.type';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import React, { FC } from 'react';
 import styles from '../styles/HowToEntryForm.less';
-import { FaqInput, FaqItems, FaqPanel } from '../types';
+import { FaqInput, FaqPanel } from '../types';
 
 interface FAQFieldProps {
+  index: number;
   value: FaqInput;
-  onChange: (value: FaqInput) => void;
-  handleDeleteFAQItem: () => void;
-  handleDeleteAnswerFieldItem: () => void;
+  onChange: (index: number, value: FaqInput) => void;
+  handleDeleteQnAItem: (index: number) => void;
+  handleDeleteAnswerFieldItem: (index: number) => void;
 }
 
 const DEFAULT_FAQ_FIELD = {
@@ -26,18 +28,20 @@ const DEFAULT_FAQ_FIELD = {
 };
 
 const QuestionAndAnswerField: FC<FAQFieldProps> = ({
+  index,
   value,
   onChange,
-  handleDeleteFAQItem,
+  handleDeleteQnAItem,
   handleDeleteAnswerFieldItem,
 }) => {
   /// handle change FAQ field
   const handleOnChangeInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onChange({
+    onChange(index, {
       ...value,
       [e.target.name]: e.target.value,
     });
   };
+  console.log('value', value);
 
   return (
     <div className={styles.FAQ_field}>
@@ -52,7 +56,10 @@ const QuestionAndAnswerField: FC<FAQFieldProps> = ({
             defaultHeight={32}
             maxLength={300}
           />
-          <ActionDeleteIcon className={styles.question_delete_icon} onClick={handleDeleteFAQItem} />
+          <ActionDeleteIcon
+            className={styles.question_delete_icon}
+            onClick={() => handleDeleteQnAItem(index)}
+          />
         </div>
         <div className={styles.FAQ_field__input_answer}>
           <CustomTextArea
@@ -67,7 +74,7 @@ const QuestionAndAnswerField: FC<FAQFieldProps> = ({
           {!isEmpty(value.answer) && (
             <ActionRemoveIcon
               className={styles.answer_remove_icon}
-              onClick={handleDeleteAnswerFieldItem}
+              onClick={() => handleDeleteAnswerFieldItem(index)}
             />
           )}
         </div>
@@ -77,23 +84,30 @@ const QuestionAndAnswerField: FC<FAQFieldProps> = ({
 };
 
 interface PanelHeaderProps {
-  value: FaqItems;
+  isExpanded: boolean;
+  index: number;
   panel: FaqPanel;
-  handleActiveKeyToCollapse: (title: string) => void;
+  handleActiveKeyToCollapse: (index: number) => void;
 }
 
-const PanelHeader: FC<PanelHeaderProps> = ({ value, panel, handleActiveKeyToCollapse }) => {
+const PanelHeader: FC<PanelHeaderProps> = ({
+  index,
+  panel,
+  isExpanded,
+  handleActiveKeyToCollapse,
+}) => {
   return (
     <div className={styles.panel}>
-      <div className={styles.panel_header} onClick={() => handleActiveKeyToCollapse(panel.title)}>
+      <div
+        className={styles.panel_header}
+        onClick={() => handleActiveKeyToCollapse(isExpanded ? 0 : index + 1)}
+      >
         <div className={styles.panel_header__info}>
-          {panel?.icon && <img src={showImageUrl(String(panel.icon))} className={styles.icon} />}
+          {panel?.logo && <img src={showImageUrl(String(panel.logo))} className={styles.icon} />}
           <BodyText
             level={4}
             fontFamily="Roboto"
-            customClass={
-              value.activeKey !== panel.title ? styles.font_weight_300 : styles.font_weight_500
-            }
+            customClass={isExpanded ? styles.font_weight_500 : styles.font_weight_300}
           >
             {panel.title}
           </BodyText>
@@ -101,7 +115,7 @@ const PanelHeader: FC<PanelHeaderProps> = ({ value, panel, handleActiveKeyToColl
         <ArrowIcon
           className={styles.panel_header__collapse_icon}
           style={{
-            transform: `rotate(${value.activeKey !== panel.title ? '0' : '180'}deg)`,
+            transform: `rotate(${isExpanded ? '180' : '0'}deg)`,
           }}
         />
       </div>
@@ -110,23 +124,22 @@ const PanelHeader: FC<PanelHeaderProps> = ({ value, panel, handleActiveKeyToColl
 };
 
 interface HowToEntryFormProps {
-  value: FaqItems;
-  onChange: (value: FaqItems) => void;
-  onSubmit: (value: FaqItems) => void;
+  value: FaqState;
+  onChange: (value: FaqState) => void;
+  onSubmit: () => void;
   submitButtonStatus: boolean;
 }
 
 export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSubmit }) => {
-  const handleActiveKeyToCollapse = (collapseValue: string) => {
+  const handleActiveKeyToCollapse = (index: number) => {
     onChange({
-      activeKey: value.activeKey === collapseValue ? '' : collapseValue,
-      data: value.data,
+      expandedIndex: index,
+      value: value.value,
     });
   };
-
   /// overwrite data
-  const updatedOnChange = (dataHowTo: FaqItems) => {
-    onChange({ ...dataHowTo, data: dataHowTo.data });
+  const updatedOnChange = (v: FaqItem[]) => {
+    onChange({ ...value, value: v });
   };
 
   /// handle change description
@@ -134,70 +147,75 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
     e: React.ChangeEvent<HTMLTextAreaElement>,
     panelIndex: number,
   ) => {
-    const newItem = [...value.data];
-    newItem[panelIndex].description = e.target.value;
-    updatedOnChange(value);
+    const newValue = [...value.value];
+    newValue[panelIndex].document.document = e.target.value;
+    updatedOnChange(newValue);
   };
 
-  const handleOnChangeFAQContent = (faq: FaqInput, panelIndex: number, faqIndex: number) => {
-    const newItem = [...value.data];
-    newItem[panelIndex].FAQ[faqIndex] = faq;
-    updatedOnChange(value);
+  const handleChangeQnA = (panelIndex: number) => (qnaIdx: number, faqValue: FaqInput) => {
+    const newValue = value.value;
+    const newQnAs = newValue[panelIndex].document.question_and_answer;
+    newQnAs[qnaIdx] = faqValue;
+    console.log('newQnAs', newQnAs);
+    newValue[panelIndex].document.question_and_answer = newQnAs;
+    console.log('newValue', newValue);
+    updatedOnChange(newValue);
   };
 
   const handleAddFAQContent = (panelIndex: number) => {
-    const newItem = [...value.data];
+    const newValue = value.value;
     /// keep existed FAQ content and add new FAQ item
-    newItem[panelIndex].FAQ = [...newItem[panelIndex].FAQ, DEFAULT_FAQ_FIELD];
-    updatedOnChange(value);
+    newValue[panelIndex].document.question_and_answer.push(DEFAULT_FAQ_FIELD);
+    updatedOnChange(newValue);
   };
 
-  const handleDeleteFAQItem = (panelIndex: number, faqIndex: number) => {
-    const newItem = [...value.data];
-    newItem[panelIndex].FAQ.splice(faqIndex, 1);
-    updatedOnChange(value);
+  const handleDeleteQnAItem = (panelIndex: number) => (faqIndex: number) => {
+    const newValue = [...value.value];
+    newValue[panelIndex].document.question_and_answer.splice(faqIndex, 1);
+    updatedOnChange(newValue);
   };
 
-  const handleDeleteAnswerFieldItem = (panelIndex: number, faqIndex: number) => {
-    const newItem = [...value.data];
-    newItem[panelIndex].FAQ[faqIndex].answer = '';
-    updatedOnChange(value);
+  const handleDeleteAnswerFieldItem = (panelIndex: number) => (faqIndex: number) => {
+    const newValue = [...value.value];
+    newValue[panelIndex].document.question_and_answer[faqIndex].answer = '';
+    updatedOnChange(newValue);
   };
 
-  const handleSubmit = () => {
-    return onSubmit(value);
-  };
-
+  // console.log('value', value);
   return (
     <Row>
       <Col span={12}>
         <div className={styles.main_container}>
           <div className={styles.collapse_container}>
-            {value.data.map((panel, panelIndex) => {
+            {value.value?.map((panel, panelIndex) => {
+              const panelIdx = panelIndex + 1;
+              const isExpanded = value.expandedIndex === panelIdx;
+              // console.log('panel.document.question_and_answer', panel.document.question_and_answer);
               return (
-                <Collapse key={panelIndex} ghost activeKey={value.activeKey}>
+                <Collapse key={panel.id} ghost activeKey={value.expandedIndex}>
                   <Collapse.Panel
                     className={
-                      value.activeKey !== panel.title
-                        ? styles.active_collapse_panel
-                        : styles.unactive_collapse_panel
+                      value.expandedIndex === panelIndex
+                        ? styles.unactive_collapse_panel
+                        : styles.active_collapse_panel
                     }
                     header={
                       <PanelHeader
-                        key={panelIndex}
-                        value={value}
+                        key={panel.id}
                         panel={panel}
+                        index={panelIndex}
+                        isExpanded={isExpanded}
                         handleActiveKeyToCollapse={handleActiveKeyToCollapse}
                       />
                     }
-                    key={panel.title}
+                    key={panelIdx}
                     showArrow={false}
                   >
                     <FormGroup label="Description" required={true} layout="vertical">
                       <CustomTextArea
                         placeholder="type text here"
                         name="description"
-                        value={panel.description}
+                        value={panel.document.document}
                         onChange={(e) => handleOnChangeDescription(e, panelIndex)}
                         className={styles.description}
                         maxHeight={80}
@@ -212,16 +230,15 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
                       <CustomPlusButton onClick={() => handleAddFAQContent(panelIndex)} size={20} />
                     </div>
                     <div className={styles.fAQ}>
-                      {panel.FAQ?.map((faqItem, faqIndex) => {
+                      {panel.document.question_and_answer?.map((faqItem, faqIndex) => {
                         return (
                           <QuestionAndAnswerField
                             key={`panel_${panelIndex}_faq_${faqIndex}`}
+                            index={faqIndex}
                             value={faqItem}
-                            onChange={(faq) => handleOnChangeFAQContent(faq, panelIndex, faqIndex)}
-                            handleDeleteFAQItem={() => handleDeleteFAQItem(panelIndex, faqIndex)}
-                            handleDeleteAnswerFieldItem={() =>
-                              handleDeleteAnswerFieldItem(panelIndex, faqIndex)
-                            }
+                            onChange={handleChangeQnA(panelIndex)}
+                            handleDeleteQnAItem={handleDeleteQnAItem(panelIndex)}
+                            handleDeleteAnswerFieldItem={handleDeleteAnswerFieldItem(panelIndex)}
                           />
                         );
                       })}
@@ -232,7 +249,7 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
             })}
           </div>
           <div className={styles.footer}>
-            <CustomButton onClick={handleSubmit} size="small" buttonClass={styles.submitBtn}>
+            <CustomButton onClick={onSubmit} size="small" buttonClass={styles.submitBtn}>
               Save
             </CustomButton>
           </div>

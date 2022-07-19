@@ -1,34 +1,32 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import type { FaqPanel } from '@/pages/TISC/Adminstration/Documentation/HowTo/types';
-import type { IFAQ } from '@/types/faq.type';
+import type { FaqItem } from '@/pages/TISC/Adminstration/Documentation/HowTo/types';
+import type { AllFaq } from '@/types/faq.type';
 import { message } from 'antd';
 import { request } from 'umi';
 
-export const getFAQ = async (type: number) => {
-  return request<{ data: { documentations: IFAQ[] } }>(`/api/documentation/get-list`, {
+export const getAllFAQ = async () => {
+  return request<{ data: AllFaq }>(`/api/documentation/howto/get-all`, {
     method: 'GET',
-    params: { type },
   })
     .then((res) => {
-      return res.data.documentations;
+      return res.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_FAQ_ERROR);
-      return [] as IFAQ[];
+      return {} as AllFaq;
     });
 };
 
-export const updateFAQ = async (data: FaqPanel[]) => {
-  console.log(data, '[data]');
-  return request<{ data: FaqPanel[] }>(`/api/documentation/update`, {
+export const updateFAQ = async (data: FaqItem[]) => {
+  return request<{ data: FaqItem[] }>(`/api/documentation/howto/update`, {
     method: 'PUT',
-    data,
+    data: { data },
   })
     .then((res) => {
       return res.data;
     })
     .catch((error) => {
       message.error(error.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_FAQ_ERROR);
-      return [] as FaqPanel[];
+      return [] as FaqItem[];
     });
 };

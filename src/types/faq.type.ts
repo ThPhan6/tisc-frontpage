@@ -1,16 +1,21 @@
-export interface IFAQ {
+export interface FaqItem {
   id: string;
-  logo: string;
   title: string;
+  logo: null;
   document: {
     document: string;
-    question_and_answer: [
-      {
-        question: string;
-        answer: string;
-      },
-    ];
+    question_and_answer: {
+      question: string;
+      answer: string;
+    }[];
   };
+  created_at: string;
+}
+
+export interface AllFaq {
+  tisc: FaqItem[];
+  brand: FaqItem[];
+  design: FaqItem[];
 }
 export interface IFAQUpdateRequest {
   title: string;
@@ -23,4 +28,15 @@ export interface IFAQUpdateRequest {
       },
     ];
   };
+}
+
+export type FaqState = {
+  value: FaqItem[];
+  expandedIndex: number;
+};
+
+export interface AllFaqState {
+  brand: FaqState;
+  design: FaqState;
+  tisc: FaqState;
 }

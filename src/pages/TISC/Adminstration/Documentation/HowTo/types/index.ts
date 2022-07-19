@@ -1,16 +1,20 @@
-import type { ReactNode } from 'react';
-
 export interface FaqInput {
   question: string;
   answer: string;
 }
 
 export interface FaqPanel {
-  id?: string;
-  icon?: ReactNode;
+  id: string;
   title: string;
-  description: string;
-  FAQ: FaqInput[];
+  logo: null;
+  document: {
+    document: string;
+    question_and_answer: {
+      question: string;
+      answer: string;
+    }[];
+  };
+  created_at: string;
 }
 
 export interface FaqItems {
@@ -20,6 +24,19 @@ export interface FaqItems {
 
 export interface FaqForm {
   tisc: FaqItems;
-  brands: FaqItems;
-  designers: FaqItems;
+  brand: FaqItems;
+  design: FaqItems;
 }
+
+export type FaqItem = {
+  id: string;
+  icon?: string;
+  title: string;
+  document?: string;
+  question_and_answer?: QnA[];
+};
+
+export type FaqState = {
+  value: FaqItem[];
+  expandedIndex: number;
+};

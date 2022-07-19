@@ -1,5 +1,5 @@
 import { Title } from '@/components/Typography';
-import { getFAQ } from '@/services/faq.api';
+import { getAllFAQ } from '@/services/faq.api';
 import { Col, Row } from 'antd';
 import { useEffect, useState } from 'react';
 import { FaqComponent } from './components/FaqComponent';
@@ -16,7 +16,7 @@ const HowTo = () => {
   };
 
   const getFAQList = (type: number) => {
-    getFAQ(type).then((res) => {
+    getAllFAQ(type).then((res) => {
       const data = res.map((item) => {
         return {
           id: item.id,
