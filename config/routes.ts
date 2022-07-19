@@ -27,7 +27,7 @@ export default [
     path: '/tisc/dashboard',
     name: 'workspace',
     icon: 'workspace-icon.svg',
-    component: './Welcome',
+    component: './TISC/MyWorkspace',
     access: 'tisc_workspace',
   },
   {

@@ -1,10 +1,10 @@
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import type { IBrandListItem, IBrandAlphabet, IBrandDetail, IBrandCard } from '@/types';
 import type {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import type { IBrandAlphabet, IBrandDetail, IBrandListItem } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -48,6 +48,18 @@ export async function getBrandAlphabet() {
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
       return {} as IBrandAlphabet;
+    });
+}
+export async function getBrandCards() {
+  return request<{ data: IBrandCard[] }>(`/api/brand/get-list-card`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
+      return [] as IBrandCard[];
     });
 }
 
