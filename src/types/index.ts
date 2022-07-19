@@ -17,3 +17,4 @@ export * from './email-auto.type';
 export * from './agreement-policy.type';
 export * from './location.type';
 export * from './department.type';
+export * from './market-availability.type';
