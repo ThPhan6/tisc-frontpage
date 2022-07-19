@@ -421,8 +421,24 @@
         path: '/brand/adminstration/locations',
         name: 'location',
         icon: 'location-icon.svg',
-        component: './Welcome',
         access: 'brand_administration_location',
+        routes: [
+          {
+            path: '/brand/adminstration/locations',
+            component: './Brand/Adminstration/Location',
+            hideInMenu: true,
+          },
+          {
+            path: '/brand/adminstration/locations/create',
+            hideInMenu: true,
+            component: './Brand/Adminstration/Location/CreatePage',
+          },
+          {
+            path: '/brand/adminstration/locations/:id',
+            hideInMenu: true,
+            component: './Brand/Adminstration/Location/UpdatePage',
+          },
+        ],
       },
       {
         path: '/brand/adminstration/team-profiles',
