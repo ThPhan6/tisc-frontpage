@@ -35,9 +35,19 @@
     margin-bottom: 0;
   }
 
+  .department {
+    :global(.ant-radio-group) {
+      padding-top: 8px;
+    }
+  }
+
   .form_group {
     margin-bottom: 16px;
     box-shadow: 0 0.5px 0 @mono-color-medium;
+
+    :global(.ant-collapse-header) {
+      box-shadow: none;
+    }
 
     &__content {
       display: flex;

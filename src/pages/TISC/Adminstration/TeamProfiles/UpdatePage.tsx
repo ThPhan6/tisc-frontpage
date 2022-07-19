@@ -66,19 +66,19 @@ const UpdateTeamProfilesPage = () => {
       if (data) {
         console.log(data);
 
-        // setDepartmentList({
-        //   firstname: data.firstname,
-        //   lastname: data.lastname,
-        //   position: data.position,
-        //   email: data.email,
-        //   location: { value: data.location_id, label: data.work_location },
-        //   gender: { label: 'Male', value: '1' },
-        //   department: { value: '', label: '' },
-        //   access_level: { label: 'TISC Admin', value: '111' },
-        //   phone: { zoneCode: data.phone_code, phoneNumber: data.phone },
-        //   mobile: { zoneCode: data.phone_code, phoneNumber: data.mobile },
-        //   status: data.status,
-        // });
+        setEntryFormValue({
+          firstname: data.firstname,
+          lastname: data.lastname,
+          position: data.position,
+          email: data.email,
+          location: { value: data.location_id, label: data.work_location },
+          gender: { label: 'Male', value: '1' },
+          department: { value: '', label: '' },
+          access_level: { label: 'TISC Admin', value: '111' },
+          phone: { zoneCode: data.phone_code, phoneNumber: data.phone },
+          mobile: { zoneCode: data.phone_code, phoneNumber: data.mobile },
+          status: true,
+        });
       }
     });
   }, []);

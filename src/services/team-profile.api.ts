@@ -1,9 +1,9 @@
 import { request } from 'umi';
 import type {
-  IDataTableResponse,
-  IPaginationRequest,
-  IPaginationResponse,
-  ISummaryResponse,
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
+  SummaryResponse,
 } from '@/components/Table/types';
 import {
   ICountryGroup,
@@ -17,14 +17,14 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 interface ITeamProfilePaginationResponse {
   data: {
     users: ITeamProfilesResponseForm[];
-    pagination: IPaginationResponse;
-    summary: ISummaryResponse[];
+    pagination: PaginationResponse;
+    summary: SummaryResponse[];
   };
 }
 
 export async function getTeamProfileList(
-  params: IPaginationRequest,
-  callback: (data: IDataTableResponse) => void,
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
 ) {
   request('/api/team-profile/get-list', { method: 'GET', params })
     .then((response: ITeamProfilePaginationResponse) => {

@@ -1,6 +1,4 @@
 import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
-import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
-import { ReactComponent as DropUpIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as ActionRightIcon } from '@/assets/icons/pagination-right.svg';
 import { ReactComponent as WarningCircleIcon } from '@/assets/icons/warning-circle-icon.svg';
 import { CustomRadio } from '@/components/CustomRadio';
@@ -21,11 +19,11 @@ import {
   typePhoneInput,
   typeRadio,
 } from '@/types/';
-// import CollapseCheckboxList from '@/components/CustomCheckbox/CollapseCheckboxList';
 import React, { FC, useState } from 'react';
 import styles from '../styles/TeamProfilesEntryForm.less';
 import LocationModal from './LocationModal';
 import TISCAccessLevelModal from './TISCAccessLevelModal';
+import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
 
 const genderData = [
   { label: 'Male', value: '1' },
@@ -75,9 +73,6 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({
   const handleOpenContent = (typeModal: typeOpenModal) => {
     setVisible(typeModal);
   };
-  const handleCloseContent = () => {
-    setVisible('');
-  };
 
   /// handle phone and mobile input
   const handleOnChangePhoneNumber = (
@@ -98,7 +93,7 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({
       },
     }));
   };
-
+  console.log('entryform', entryFormValue);
   /// handle another input
   const handleOnChangeInput = (inputKey: typeInput, e: React.ChangeEvent<HTMLInputElement>) => {
     setEntryFormValue((prevState) => ({
@@ -114,7 +109,17 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({
     /// overwrite data
     setEntryFormValue((prevState) => ({
       ...prevState,
-      [radioKey]: { value: radioValue.value, label: radioValue.label },
+      [radioKey]:
+        radioKey === 'location'
+          ? {
+              value: radioValue?.value,
+              label: radioValue?.label?.props
+                ? `${radioValue.label.props.business || ''}, ${
+                    radioValue.label.props.country || ''
+                  }`
+                : '',
+            }
+          : { value: radioValue?.value, label: radioValue?.label || '' },
     }));
   };
 
@@ -136,7 +141,7 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({
     const submitData: TeamProfilesSubmitData = {
       firstname: entryFormValue.firstname,
       lastname: entryFormValue.lastname,
-      gender: entryFormValue.gender.value ? true : false,
+      gender: entryFormValue.gender.value === 'male' ? true : false,
       location_id: entryFormValue.location.value as string,
       department_id: entryFormValue.department.value as string,
       position: entryFormValue.position,
@@ -238,46 +243,20 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({
           label="Department"
           required={true}
           layout="vertical"
-          formClass={styles.form_group}
+          formClass={styles.department}
         >
-          <div className={styles.form_group__content}>
-            <CustomInput
-              borderBottomColor="mono-medium"
-              placeholder="select from the list"
-              disabled
-              value={entryFormValue.department.label as string}
-            />
-            {visible === 'department' ? (
-              <DropUpIcon className={styles.drop_icon} onClick={handleCloseContent} />
-            ) : (
-              <DropDownIcon
-                className={styles.drop_icon}
-                onClick={() => handleOpenContent('department')}
-              />
-            )}
-          </div>
-          <div className={styles.radio_list}>
-            {visible === 'department' &&
-              departmentList.map((department) => (
-                <CustomRadio
-                  key={department.id}
-                  options={[{ value: department.id, label: department.name }]}
-                  isRadioList
-                  value={entryFormValue.department.value}
-                  onChange={(radioValue) => handleChooseRadioContentType('department', radioValue)}
-                />
-              ))}
-            {visible === 'department' && (
-              <CustomRadio
-                options={[]}
-                isRadioList
-                otherInput
-                value={entryFormValue.department.value}
-                onChange={(radioValue) => handleChooseRadioContentType('department', radioValue)}
-                containerClass={styles.other_input}
-              />
-            )}
-          </div>
+          <CollapseRadioList
+            options={departmentList.map((functionalType) => {
+              return {
+                label: functionalType.name,
+                value: functionalType.id,
+              };
+            })}
+            checked={entryFormValue.department}
+            onChange={(radioValue) => handleChooseRadioContentType('department', radioValue)}
+            placeholder={(entryFormValue.department.label as string) || 'select from the list'}
+            otherInput
+          />
         </FormGroup>
 
         {/* Position / Role */}
@@ -413,7 +392,7 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({
       <LocationModal
         visible={visible === 'location'}
         setVisible={setVisible}
-        locationValue={entryFormValue.location.value}
+        locationValue={entryFormValue.location}
         setLocationValue={(radioValue) => handleChooseRadioContentType('location', radioValue)}
       />
     </>
