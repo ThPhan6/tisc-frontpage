@@ -4,27 +4,29 @@ import { BodyText } from '@/components/Typography';
 import { ProfileIcon } from '@/components/ProfileIcon';
 import { getBrandCards } from '@/services';
 import LoadingPage from '@/components/LoadingPage';
+import { IBrandCard, IBrandCardTeam } from '@/types';
 
 const MyWorkspace: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<IBrandCard[]>([]);
 
   useEffect(() => {
     setLoading(true);
     getBrandCards().then((res) => {
-      setData(res);
+      if (res) {
+        setData(res);
+      }
+      setLoading(false);
     });
-    setLoading(false);
   }, []);
 
   return loading ? (
     <LoadingPage />
   ) : (
     <div className={styles.productCardContainer}>
-      {data.map((brand: any) => (
-        <div className={styles.productCardItemWrapper}>
+      {data.map((brand: IBrandCard) => (
+        <div key={brand.id} className={styles.productCardItemWrapper}>
           <div className={styles.productCardItem}>
-            {' '}
             <div className={styles.top}>
               <div className={styles.brandName}>
                 <BodyText level={6} customClass={styles.bold} fontFamily="Roboto">
@@ -71,8 +73,8 @@ const MyWorkspace: React.FC = () => {
                 <BodyText level={5} customClass={styles.team}>
                   Teams:
                 </BodyText>
-                {brand.teams.map((user: any) => {
-                  return <ProfileIcon name={user.firstname + ' ' + user.lastname} />;
+                {brand.teams.map((user: IBrandCardTeam) => {
+                  return <ProfileIcon key={user.id} name={user.firstname + ' ' + user.lastname} />;
                 })}
               </div>
             </div>

@@ -43,14 +43,11 @@ export interface IBrandCard {
   category_count: string;
   collection_count: string;
   card_count: string;
-  teams: {
-    id: string;
-    firstname: string;
-    lastname: string;
-    avatar: any;
-  }[];
+  teams: IBrandCardTeam[];
 }
-
-export interface IBrandCards {
-  [key: string]: IBrandCard[];
+export interface IBrandCardTeam {
+  id: string;
+  firstname: string;
+  lastname: string;
+  avatar: any;
 }
