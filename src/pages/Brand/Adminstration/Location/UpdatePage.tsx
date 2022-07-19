@@ -8,7 +8,7 @@ import { useParams } from 'umi';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
 
-const LocationLocationUpdatePage: React.FC = () => {
+const BrandLocationUpdatePage: React.FC = () => {
   const submitButtonStatus = useBoolean(false);
   const isLoading = useBoolean();
   const [loadedData, setLoadedData] = useState(false);
@@ -90,4 +90,4 @@ const LocationLocationUpdatePage: React.FC = () => {
   );
 };
 
-export default LocationLocationUpdatePage;
+export default BrandLocationUpdatePage;
