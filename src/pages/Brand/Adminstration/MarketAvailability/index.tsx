@@ -1,33 +1,54 @@
 import { HeaderDropdown } from '@/components/HeaderDropdown';
 import CustomTable from '@/components/Table';
-import { ICustomTableColumnType } from '@/components/Table/types';
+import { TableColumnItem } from '@/components/Table/types';
 import { getMarketAvailabilityList } from '@/services';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
+import { useAppSelector } from '@/reducers';
+import type { MarketAvailabilityDataList } from '@/types';
 
 const MarketAvailabilityList = () => {
+  const user = useAppSelector((state) => state.user.user);
+
   const handleUpdateMarketAvailability = (id: string) => {
     pushTo(PATH.updateMarketAvailability.replace(':id', id));
   };
 
-  const mainColumns: ICustomTableColumnType<any>[] = [
+  const mainColumns: TableColumnItem<MarketAvailabilityDataList>[] = [
     {
       title: 'Collections/Series',
-      dataIndex: 'collections',
-      width: '20%',
+      dataIndex: 'collection_name',
       sorter: true,
     },
     {
       title: 'Available Countries',
-      dataIndex: 'countries',
-      width: '20%',
+      dataIndex: 'available_countries',
     },
     {
       title: 'Africa',
       dataIndex: 'africa',
-      width: '5%',
+    },
+    {
+      title: 'Asia',
+      dataIndex: 'asia',
+    },
+    {
+      title: 'Europe',
+      dataIndex: 'europe',
+    },
+    {
+      title: 'N. America',
+      dataIndex: 'north_america',
+    },
+    {
+      title: 'Oceania',
+      dataIndex: 'oceania',
+    },
+    {
+      title: 'S. America',
+      dataIndex: 'south_america',
     },
     {
       title: 'Action',
@@ -41,7 +62,7 @@ const MarketAvailabilityList = () => {
             align={{ offset: [-14, -10] }}
             items={[
               {
-                onClick: () => handleUpdateMarketAvailability(record.id),
+                onClick: () => handleUpdateMarketAvailability(record.collection_id),
                 icon: <EditIcon />,
                 label: 'Edit',
               },
@@ -54,12 +75,17 @@ const MarketAvailabilityList = () => {
       },
     },
   ];
-
+  if (!user?.brand) {
+    return null;
+  }
   return (
     <CustomTable
       title="MARKET AVAILABILITY"
       fetchDataFunc={getMarketAvailabilityList}
       columns={mainColumns}
+      extraParams={{
+        brand_id: user.brand.id,
+      }}
     />
   );
 };

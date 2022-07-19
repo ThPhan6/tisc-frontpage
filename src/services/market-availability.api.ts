@@ -1,31 +1,31 @@
 import type {
-  IDataTableResponse,
-  IPaginationRequest,
-  IPaginationResponse,
-  ISummaryResponse,
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
+  SummaryResponse,
 } from '@/components/Table/types';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { IMarketAvailabilityForm } from '@/types';
+import { MarketAvailabilityDataList, MarketAvailabilityDetails } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
 
 interface ICategoryPaginationResponse {
   data: {
-    collections: IMarketAvailabilityForm[];
-    pagination: IPaginationResponse;
-    summary: ISummaryResponse[];
+    collections: MarketAvailabilityDataList[];
+    pagination: PaginationResponse;
+    summary: SummaryResponse[];
   };
 }
 
 export async function getMarketAvailabilityList(
-  params: IPaginationRequest,
-  callback: (data: IDataTableResponse) => void,
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
 ) {
-  request(`/api/market-availability/get-list?brand_id=54bbfa0d-5fda-413b-81a9-1332081e2739`, {
+  request<ICategoryPaginationResponse>(`/api/market-availability/get-list`, {
     method: 'GET',
     params,
   })
-    .then((response: ICategoryPaginationResponse) => {
+    .then((response) => {
       const { collections, pagination, summary } = response.data;
       callback({
         data: collections,
@@ -41,5 +41,37 @@ export async function getMarketAvailabilityList(
       message.error(
         error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_MARKET_AVAILABILITY_ERROR,
       );
+    });
+}
+
+export async function getMarketAvailabilityByCollectionId(collectionId: string) {
+  return request<{ data: MarketAvailabilityDetails }>(
+    `/api/market-availability/get-one/${collectionId}`,
+  )
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_MARKET_AVAILABILITY_ERROR);
+    });
+}
+
+export async function updateMarketAvailabilityByCollectionId(
+  collectionId: string,
+  countryIds: string[],
+) {
+  return request(`/api/market-availability/update/${collectionId}`, {
+    method: 'PUT',
+    data: {
+      country_ids: countryIds,
+    },
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.UPDATE_MARKET_AVAILABILITY_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_MARKET_AVAILABILITY_ERROR);
+      return false;
     });
 }

@@ -111,7 +111,7 @@ export const MESSAGE_NOTIFICATION = {
   GET_LIST_MARKET_AVAILABILITY_ERROR: 'Get list market availability error',
   GET_ONE_MARKET_AVAILABILITY_ERROR: 'Get one market availability error',
   UPDATE_MARKET_AVAILABILITY_SUCCESS: 'Update market availability successfully',
-  UPDATE_MARKET_AVAILABILITY_ERROR: 'Update market availability  error',
+  UPDATE_MARKET_AVAILABILITY_ERROR: 'Failed to update market availability',
 
   // permission
   GET_PERMISSION_DATA_ERROR: 'Failed to get Permission data',

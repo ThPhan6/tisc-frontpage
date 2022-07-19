@@ -22,10 +22,11 @@ interface DropdownCheckboxListProps {
   renderTitle?: (data: DropdownCheckboxItem) => string | number | React.ReactNode;
   onChange?: (value: CheckboxValue[]) => void;
   noCollapse?: boolean;
+  combinable?: boolean;
 }
 
 const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
-  const { data, selected, onChange, renderTitle, chosenItem } = props;
+  const { data, selected, onChange, renderTitle, chosenItem, combinable } = props;
 
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
   useEffect(() => {
@@ -76,8 +77,27 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
         >
           <CustomCheckbox
             options={item.options}
-            selected={selected}
-            onChange={onChange}
+            selected={
+              selected
+                ? selected.filter((selectedItem) =>
+                    item.options.find((option) => option.value === selectedItem.value),
+                  )
+                : undefined
+            }
+            onChange={(changedData) => {
+              let otherSelected: CheckboxValue[] = [];
+              if (combinable && selected) {
+                otherSelected = selected.reduce((finalData, selectedItem) => {
+                  if (item.options.find((option) => option.value !== selectedItem.value)) {
+                    finalData.push(selectedItem);
+                  }
+                  return finalData;
+                }, [] as CheckboxValue[]);
+              }
+              if (onChange) {
+                onChange([...changedData, ...otherSelected]);
+              }
+            }}
             isCheckboxList
           />
         </Collapse.Panel>

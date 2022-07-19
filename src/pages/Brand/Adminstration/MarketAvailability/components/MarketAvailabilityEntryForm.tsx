@@ -2,71 +2,68 @@ import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxLi
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { BodyText, Title } from '@/components/Typography';
-import { sum } from 'lodash';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { upperCase } from 'lodash';
+import { formatPhoneCode } from '@/helper/utils';
+import type { MarketAvailabilityDetails, MarketAvailabilityDetailRegionCountry } from '@/types';
 import styles from '../styles/MarketAvailabilityEntryForm.less';
 
-interface IContinent {
-  country_name: string;
-  phone_code: string;
-}
-
-interface IMarketAvailabilityEntryForm {
-  value: any;
-  onChange: (value: any) => void;
+interface MarketAvailabilityEntryFormProps {
+  data: MarketAvailabilityDetails;
+  setData: (data: MarketAvailabilityDetails) => void;
   onCancel: () => void;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: string[]) => void;
   submitButtonStatus: boolean;
 }
 
-const countriesData = [
-  {
-    continent: 'ASIA',
-    options: [
-      { label: { country_name: 'China', phone_code: '+86' }, value: '1' },
-      { label: { country_name: 'VietNam', phone_code: '+84' }, value: '2' },
-    ],
-  },
-  {
-    continent: 'EUROPE',
-    options: [
-      { label: { country_name: 'England', phone_code: '+186' }, value: '11' },
-      { label: { country_name: 'Russia', phone_code: '+16' }, value: '23' },
-      { label: { country_name: 'Ukraine', phone_code: '+161' }, value: '22' },
-    ],
-  },
-];
-
-export const MarketAvailabilityEntryForm: FC<IMarketAvailabilityEntryForm> = ({
-  value,
-  onChange,
+export const MarketAvailabilityEntryForm: FC<MarketAvailabilityEntryFormProps> = ({
+  data,
+  setData,
   onCancel,
   onSubmit,
   submitButtonStatus,
 }) => {
-  /// Total Distributed Countries
-  const countTDC = sum(countriesData.map((country) => country.options?.length));
+  const checked: CheckboxValue[] = [];
+  data.regions.forEach((region) => {
+    region.countries.forEach((country) => {
+      if (country.available) {
+        checked.push({
+          label: '',
+          value: country.id.toString(),
+        });
+      }
+    });
+  });
 
-  const handleSelectedCountry = (selectedCountry: CheckboxValue[]) => {
-    onChange(selectedCountry);
-
-    /// handle Total Avaiable Countries, comming
-    // using country selected to set count TAC
-    // onChange({...props, count_TAC: selectedCountry.length})
+  const setChecked = (checkedData: CheckboxValue[]) => {
+    const newData = { ...data };
+    newData.regions = newData.regions.map((region) => {
+      return {
+        ...region,
+        countries: region.countries.map((country) => {
+          const availability = checkedData.find((item) => item.value === country.id.toString());
+          return {
+            ...country,
+            available: availability ? true : false,
+          };
+        }),
+      };
+    });
+    setData(newData);
   };
 
   /// for country label
-  const renderLabel = (item: IContinent) => {
+  const renderOptionLabel = (item: MarketAvailabilityDetailRegionCountry) => {
     return (
       <BodyText level={5} fontFamily="Roboto">
-        <span style={{ marginRight: '8px' }}>{item.country_name}</span>
-        <span>{item.phone_code}</span>
+        <span style={{ marginRight: '8px' }}>{item.name}</span>
+        <span>{formatPhoneCode(item.phone_code)}</span>
       </BodyText>
     );
   };
 
   const handleSubmitData = () => {
-    onSubmit(value);
+    onSubmit(checked.map((item) => item.value));
   };
 
   return (
@@ -75,16 +72,20 @@ export const MarketAvailabilityEntryForm: FC<IMarketAvailabilityEntryForm> = ({
         handleCancel={onCancel}
         handleSubmit={handleSubmitData}
         submitButtonStatus={submitButtonStatus}
-        title="COLECTION NAME 01"
+        title={upperCase(data.collection_name)}
         textAlignTitle="left"
         customClass={styles.entry_form}
         headerContent={
           <div className={styles.header}>
             <div className={styles.header_content}>
-              <Title level={8}>Total Distributed Countries</Title>
-              <BodyText level={3}>(distributors and its authorised countries):</BodyText>
+              <Title level={8}>
+                Total Distributed Countries
+                <span> (distributors and its authorised countries): </span>
+              </Title>
             </div>
-            <Title level={8}>{countTDC ?? 'N/A'}</Title>
+            <Title level={8} customClass="total-available">
+              {data.total}
+            </Title>
           </div>
         }
         footerContent={
@@ -97,25 +98,25 @@ export const MarketAvailabilityEntryForm: FC<IMarketAvailabilityEntryForm> = ({
             </BodyText>
             {/* waitting to pass count TAC */}
             <Title level={8} customClass={styles.footer_quantity}>
-              0
+              {data.total}
             </Title>
           </div>
         }
       >
         <DropdownCheckboxList
-          data={countriesData.map((country) => {
+          data={data.regions.map((region) => {
             return {
-              key: country.continent,
-              options: country.options.map((option) => ({
-                label: renderLabel(option.label),
-                value: option.value,
+              name: region.name,
+              options: region.countries.map((country) => ({
+                label: renderOptionLabel(country),
+                value: country.id.toString(),
               })),
             };
           })}
-          renderTitle={(continent) => continent.key}
-          /// using selected prop to pass to checkbox
-          selected={value}
-          onChange={handleSelectedCountry}
+          renderTitle={(dropdownData) => dropdownData.name}
+          selected={checked}
+          onChange={setChecked}
+          combinable
         />
       </EntryFormWrapper>
     </>
