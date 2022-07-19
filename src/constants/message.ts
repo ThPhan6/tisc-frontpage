@@ -89,6 +89,20 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PRESET_ERROR: 'Update preset error',
   GET_ONE_PRESET_ERROR: 'Get one preset error',
 
+  // department
+  GET_LIST_DEPARTMENT_ERROR: 'Get list department error',
+
+  // team profile
+  GET_LIST_TEAM_PROFILE_ERROR: 'Get list team profile error',
+  GET_ONE_TEAM_PROFILE_ERROR: 'Get one team profile error',
+  CREATE_TEAM_PROFILE_SUCCESS: 'Create team profile successfully',
+  CREATE_TEAM_PROFILE_ERROR: 'Create team profile error',
+  DELETE_TEAM_PROFILE_SUCCESS: 'Delete team profile successfully',
+  DELETE_TEAM_PROFILE_ERROR: 'Delete team profile error',
+  UPDATE_TEAM_PROFILE_SUCCESS: 'Update team profile successfully',
+  UPDATE_TEAM_PROFILE_ERROR: 'Update team profile error',
+  SEND_INVITE_SUCCESS: 'Send invite successfully',
+
   // email auto
   GET_ONE_EMAIL_AUTO_ERROR: 'Get one email auto error',
   GET_LIST_EMAIL_AUTO_ERROR: 'Get list email auto error',
@@ -119,6 +133,8 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_INSPIRATIONAL_QUOTATION_SUCCESS: 'Update inspirational quotation successfully',
   UPDATE_INSPIRATIONAL_QUOTATION_ERROR: 'Update inspirational quotation error',
   //location
+  GET_LIST_LOCATION_ERROR: 'Get list location error',
+  GET_LIST_WITH_COUNTRY_GROUP_ERROR: 'Get list with country group error',
   GET_COUNTRIES_ERROR: 'Failed to get countries data',
   GET_STATES_ERROR: 'Failed to get states data',
   GET_CITIES_ERROR: 'Failed to get cities data',

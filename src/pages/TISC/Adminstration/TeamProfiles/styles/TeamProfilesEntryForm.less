@@ -7,6 +7,7 @@
     border-bottom-color: transparent;
   }
   :global(.ant-input[disabled]) {
+    padding-right: 20px;
     color: @primary-color-dark;
     text-transform: capitalize;
     background: transparent;
@@ -85,6 +86,23 @@
       :global(.radio-horizontal) {
         display: block;
       }
+
+      .other_input {
+        :global(.ant-radio) {
+          display: none;
+        }
+        :global(span.ant-radio + *) {
+          padding-right: 0;
+        }
+        :global(.ant-input) {
+          padding-right: 0;
+        }
+      }
     }
   }
+}
+
+.send_invite_tip {
+  color: @primary-color-light;
+  font-size: 14px;
 }

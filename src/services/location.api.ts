@@ -1,7 +1,49 @@
+import { ILocationDetail } from '@/types';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { ICity, ICountry, IState } from '@/types/location.types';
+import { ICity, ICountry, IState } from '@/types/';
 import { message } from 'antd';
 import { request } from 'umi';
+import type {
+  IDataTableResponse,
+  IPaginationRequest,
+  IPaginationResponse,
+  ISummaryResponse,
+} from '@/components/Table/types';
+
+interface ILocationPaginationResponse {
+  data: {
+    locations: ILocationDetail[];
+    pagination: IPaginationResponse;
+    summary: ISummaryResponse[];
+  };
+}
+
+export async function getLocationList(
+  params: IPaginationRequest,
+  callback: (data: IDataTableResponse) => void,
+) {
+  request(`/api/location/get-list`, {
+    method: 'GET',
+    params,
+  })
+    .then((response: ILocationPaginationResponse) => {
+      const { locations, pagination, summary } = response.data;
+
+      callback({
+        data: locations,
+        pagination: {
+          current: pagination.page,
+          pageSize: pagination.page_size,
+          total: pagination.total,
+        },
+        summary: summary,
+      });
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_LOCATION_ERROR);
+      return [] as ILocationDetail[];
+    });
+}
 
 export async function getCountries() {
   return request<{ data: ICountry[] }>(`/api/location/get-countries`, {

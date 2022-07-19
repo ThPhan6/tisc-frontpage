@@ -1,27 +1,30 @@
+import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
+import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
+import { ReactComponent as DropUpIcon } from '@/assets/icons/drop-up-icon.svg';
+import { ReactComponent as ActionRightIcon } from '@/assets/icons/pagination-right.svg';
+import { ReactComponent as WarningCircleIcon } from '@/assets/icons/warning-circle-icon.svg';
 import { CustomRadio } from '@/components/CustomRadio';
+import { RadioValue } from '@/components/CustomRadio/types';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
-import styles from '../styles/TeamProfilesEntryForm.less';
-import { ReactComponent as WarningCircleIcon } from '@/assets/icons/warning-circle-icon.svg';
-import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
-import { ReactComponent as ActionRightIcon } from '@/assets/icons/pagination-right.svg';
-import { ReactComponent as DropUpIcon } from '@/assets/icons/drop-up-icon.svg';
-import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
-import React, { FC, useState } from 'react';
+import { PhoneInput } from '@/components/Form/PhoneInput';
+import { Status } from '@/components/Form/Status';
+import { PhoneInputValueProp } from '@/components/Form/types';
+import { getUserInfoMiddleware } from '@/pages/LandingPage/services/api';
 import {
-  TeamProfilesProps,
+  IDepartmentForm,
+  ITeamProfilesProps,
+  TeamProfilesSubmitData,
   typeInput,
   typeOpenModal,
   typePhoneInput,
   typeRadio,
-} from '@/types/team-profile.type';
-import { RadioValue } from '@/components/CustomRadio/types';
-import { PhoneInput } from '@/components/Form/PhoneInput';
-import { PhoneInputValueProp } from '@/components/Form/types';
-import TISCAccessLevelModal from './TISCAccessLevelModal';
+} from '@/types/';
+import React, { FC, useState } from 'react';
+import styles from '../styles/TeamProfilesEntryForm.less';
 import LocationModal from './LocationModal';
-import { Status } from '@/components/Form/Status';
+import TISCAccessLevelModal from './TISCAccessLevelModal';
 
 const genderData = [
   { label: 'Male', value: '1' },
@@ -34,19 +37,21 @@ const accessLevelData = [
   { label: 'Consultant Team', value: '333' },
 ];
 
-const departmentData = [
-  { label: 'Accounting/Finance', value: '11' },
-  { label: 'Communication & PR', value: '21' },
-  { label: 'DeSign & Creativity', value: '31' },
-  { label: 'Human Resource', value: '41' },
-  { label: 'Marketing & Sales', value: '51' },
-];
+interface TeamProfilesEntryFormValue {
+  value: ITeamProfilesProps;
+  onChange: (value: ITeamProfilesProps) => void;
+  onCancel: () => void;
+  onSubmit: (value: TeamProfilesSubmitData) => void;
+  submitButtonStatus: boolean;
+  departmentList: IDepartmentForm[];
+}
+
 const DEFAULT_TEAMPROFILE = {
   firstname: '',
   lastname: '',
   position: '',
   email: '',
-  location_id: '',
+  location: { value: '', label: '' },
   gender: { value: '', label: '' },
   department: { value: '', label: '' },
   access_level: { value: '', label: '' },
@@ -55,17 +60,15 @@ const DEFAULT_TEAMPROFILE = {
   status: false,
 };
 
-interface TeamProfilesEntryFormValue {
-  // value: TeamProfilesProps;
-  // onChange: (value: TeamProfilesProps) => void;
-}
-
-export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = (
-  {
-    /* value, onChange */
-  },
-) => {
-  const [entryFormValue, setEntryFormValue] = useState<TeamProfilesProps>(DEFAULT_TEAMPROFILE);
+export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = ({
+  // value,
+  // onChange,
+  onCancel,
+  onSubmit,
+  submitButtonStatus,
+  departmentList,
+}) => {
+  const [entryFormValue, setEntryFormValue] = useState<ITeamProfilesProps>(DEFAULT_TEAMPROFILE);
   // for location, department and TISC Access Level modal
   const [visible, setVisible] = useState<typeOpenModal | boolean>('' || false);
   const handleOpenContent = (typeModal: typeOpenModal) => {
@@ -116,15 +119,43 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = (
 
   ///
   const handleSendInvite = () => {
+    alert('comming soon');
     setEntryFormValue((prevState) => ({
       ...prevState,
       status: prevState.status ? false : true,
     }));
   };
 
+  const handleSubmit = () => {
+    let userId = '';
+    getUserInfoMiddleware().then((userProfile) => {
+      userId = userProfile.id;
+    });
+
+    const submitData: TeamProfilesSubmitData = {
+      firstname: entryFormValue.firstname,
+      lastname: entryFormValue.lastname,
+      gender: entryFormValue.gender.value ? true : false,
+      location_id: entryFormValue.location.value as string,
+      department_id: entryFormValue.department.value as string,
+      position: entryFormValue.position,
+      email: entryFormValue.email,
+      phone: entryFormValue.phone.phoneNumber,
+      mobile: entryFormValue.mobile.phoneNumber,
+      role_id: userId,
+    };
+
+    onSubmit(submitData);
+  };
+
   return (
     <>
-      <EntryFormWrapper customClass={styles.entry_form}>
+      <EntryFormWrapper
+        handleCancel={onCancel}
+        handleSubmit={handleSubmit}
+        submitButtonStatus={submitButtonStatus}
+        customClass={styles.entry_form}
+      >
         {/* First Name */}
         <FormGroup
           label="First Name"
@@ -192,6 +223,7 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = (
               borderBottomColor="mono-medium"
               placeholder="select from the list"
               disabled
+              value={entryFormValue.location.label as string}
             />
             <ActionRightIcon
               className={styles.action_right_icon}
@@ -224,13 +256,24 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = (
             )}
           </div>
           <div className={styles.radio_list}>
+            {visible === 'department' &&
+              departmentList.map((department) => (
+                <CustomRadio
+                  key={department.id}
+                  options={[{ value: department.id, label: department.name }]}
+                  isRadioList
+                  value={entryFormValue.department.value}
+                  onChange={(radioValue) => handleChooseRadioContentType('department', radioValue)}
+                />
+              ))}
             {visible === 'department' && (
               <CustomRadio
-                options={departmentData}
+                options={[]}
                 isRadioList
                 otherInput
                 value={entryFormValue.department.value}
                 onChange={(radioValue) => handleChooseRadioContentType('department', radioValue)}
+                containerClass={styles.other_input}
               />
             )}
           </div>
@@ -332,7 +375,12 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = (
         <FormGroup
           label="Access Level"
           required={true}
-          tooltip={'How are you'}
+          tooltip={
+            <span>
+              Click <span className={styles.send_invite_tip}>Send Invite</span> button to send team
+              member email invitation. You could resend it multiple time as a reminder.
+            </span>
+          }
           iconTooltip={<WarningCircleIcon className={styles.warning_icon} />}
           layout="vertical"
           formClass={`${styles.form_group} ${styles.access_label}`}
@@ -352,7 +400,7 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = (
           label="Status"
           buttonName="Send Invite"
           text_1="Activated"
-          text_2="Inactivated"
+          text_2="Pendding"
           formClass={styles.status}
         />
       </EntryFormWrapper>
@@ -361,7 +409,12 @@ export const TeamProfilesEntryForm: FC<TeamProfilesEntryFormValue> = (
       <TISCAccessLevelModal visible={visible === 'access_level'} setVisible={setVisible} />
 
       {/* Location Modal */}
-      <LocationModal visible={visible === 'location'} setVisible={setVisible} />
+      <LocationModal
+        visible={visible === 'location'}
+        setVisible={setVisible}
+        locationValue={entryFormValue.location.value}
+        setLocationValue={(radioValue) => handleChooseRadioContentType('location', radioValue)}
+      />
     </>
   );
 };

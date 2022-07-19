@@ -6,7 +6,7 @@ export interface FormGroupProps {
   formClass?: string;
   optional?: boolean;
   required?: boolean;
-  tooltip?: string;
+  tooltip?: string | JSX.Element;
   label: string;
   iconTooltip?: JSX.Element;
   message?: string;

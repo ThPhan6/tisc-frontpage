@@ -37,6 +37,11 @@ export const PATH = {
   attributeGeneralUpdate: '/tisc/products/attributes/general/:id',
   //
 
+  // team profile
+  teamProfile: '/tisc/adminstration/team-profiles',
+  createTeamProfile: '/tisc/adminstration/team-profiles/create',
+  updateTeamProfile: '/tisc/adminstration/team-profiles/update/:id',
+
   // inspirational quotation
   quotation: '/tisc/adminstration/messages/quotation',
   createQuotation: '/tisc/adminstration/messages/quotation/create',

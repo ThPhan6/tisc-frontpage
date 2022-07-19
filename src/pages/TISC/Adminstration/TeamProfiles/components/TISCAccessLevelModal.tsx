@@ -11,6 +11,7 @@ import { getPermission } from '@/services/permission.api';
 import { ReactComponent as FeebBackIcon } from '@/assets/icons/feedback.svg';
 import { ReactComponent as RecommendationIcon } from '@/assets/icons/recommendation.svg';
 import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/share-via-email.svg';
+import { showImageUrl } from '@/helper/utils';
 
 const furturePermissionData = [
   {
@@ -56,7 +57,7 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
       <>
         <tr className={styles.menu} key={menu.name}>
           <td className={`${styles.menu_item} ${!menu.subs && styles.sub_menu}`}>
-            <img src={menu.logo} className={styles.menu_item__logo} />
+            <img src={showImageUrl(menu.logo!)} className={styles.menu_item__logo} />
             <BodyText fontFamily="Roboto" level={6} customClass={styles.menu_item__name}>
               {menu.name}
             </BodyText>

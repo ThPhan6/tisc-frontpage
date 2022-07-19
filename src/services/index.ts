@@ -14,3 +14,6 @@ export * from './inspirational-quotation.api';
 export * from './email-auto.api';
 export * from './location.api';
 export * from './distributor.api';
+export * from './team-profile.api';
+export * from './department.api';
+export * from './location.api';
