@@ -19,6 +19,7 @@
     path: '/howTo',
     component: './HowTo',
   },
+
   // TISC MENU - ADMIN ACCESS ONLY
   {
     path: '/tisc/dashboard',
@@ -474,8 +475,19 @@
         path: '/brand/adminstration/market-availability',
         name: 'brand.market_availability',
         icon: 'market-availability-icon.svg',
-        component: './Welcome',
         access: 'brand_administration_market_availability',
+        routes: [
+          {
+            path: '/brand/adminstration/market-availability',
+            component: './Brand/Adminstration/MarketAvailability',
+            hideInMenu: true,
+          },
+          {
+            path: '/brand/adminstration/market-availability/:id',
+            component: './Brand/Adminstration/MarketAvailability/UpdatePage',
+            hideInMenu: true,
+          },
+        ],
       },
       {
         path: '/brand/adminstration/subscription',

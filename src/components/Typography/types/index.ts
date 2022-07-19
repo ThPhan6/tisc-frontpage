@@ -10,5 +10,6 @@ export interface BodyTextProps extends CustomTypography {
 }
 
 export interface MainTitleProps extends CustomTypography {
+  textAlign?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify';
   level?: 1 | 2 | 3 | 4;
 }

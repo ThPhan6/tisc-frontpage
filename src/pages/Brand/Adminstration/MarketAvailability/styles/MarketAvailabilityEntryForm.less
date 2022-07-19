@@ -1,0 +1,33 @@
+.entry_form {
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    &_content {
+      display: flex;
+      align-items: center;
+      span {
+        font-weight: 300;
+      }
+    }
+    :global(.total-available) {
+      min-width: 20px;
+      text-align: center;
+    }
+  }
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    height: 40px;
+
+    &_colon {
+      margin-left: 4px;
+    }
+
+    &_quantity {
+      margin-left: 8px;
+    }
+  }
+}
