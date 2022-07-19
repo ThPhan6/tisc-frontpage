@@ -17,6 +17,7 @@ export interface ICity {
 export interface ILocationDetail {
   id: string;
   business_name: string;
+  business_number: string;
   functional_types: [
     {
       id: string;
@@ -41,4 +42,22 @@ export interface ICountryGroup {
   country_name: string;
   count: 0;
   locations: ILocationDetail[];
+}
+
+export interface LocationForm {
+  business_name: string;
+  business_number: string;
+  functional_type_ids: string[];
+  country_id: string;
+  state_id: string;
+  city_id: string;
+  address: string;
+  postal_code: string;
+  general_phone: string;
+  general_email: string;
+}
+
+export interface FunctionalTypeData {
+  id: string;
+  name: string;
 }

@@ -124,6 +124,13 @@ export const MESSAGE_NOTIFICATION = {
   GET_CITIES_ERROR: 'Failed to get cities data',
   GET_LIST_COUNTRY_GROUP: 'Failed to get list country group data',
   GET_ONE_COUNTRY_ERROR: 'Failed to get one country',
+  CREATE_LOCATION_SUCCESS: 'Create location successfully',
+  CREATE_LOCATION_FAILED: 'Failed to create new location',
+  UPDATE_LOCATION_SUCCESS: 'Update location successfully',
+  UPDATE_LOCATION_FAILED: 'Failed to update location',
+  DELETE_LOCATION_SUCCESS: 'Delete location successfully',
+  DELETE_LOCATION_FAILED: 'Failed to delete location',
+  GET_LOCATION_FAILED: 'Failed to get location data',
 
   //distributor
   CREATE_DISTRIBUTOR_SUCCESS: 'Create distributor successfully',

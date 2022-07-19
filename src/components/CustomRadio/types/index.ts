@@ -4,6 +4,7 @@ export type RadioValue = {
   value: string | boolean;
   label: string | ReactNode;
   disabled?: boolean;
+  customClass?: string;
 };
 
 export interface CustomRadioProps {

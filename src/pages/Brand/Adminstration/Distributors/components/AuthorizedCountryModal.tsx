@@ -1,7 +1,7 @@
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
 import { getListCountryGroup } from '@/services/location.api';
-import { ICountryGroup, ILocationDetail } from '@/types/location.types';
+import { ICountryGroup, ILocationDetail } from '@/types';
 import { FC, useEffect, useState } from 'react';
 
 const AuthorizedCountryModal: FC<{

@@ -15,3 +15,4 @@ export * from './product-catelogue.type';
 export * from './inspiration-quotation';
 export * from './email-auto.type';
 export * from './agreement-policy.type';
+export * from './location.type';
