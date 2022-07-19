@@ -1,8 +1,8 @@
-export interface ICategoryListResponse {
+export interface CategoryListResponse {
   id: string;
   name?: string;
   count?: number;
-  subs: ICategoryListResponse[];
+  subs: CategoryListResponse[];
 }
 
 export type SubcategoryValueProp = {

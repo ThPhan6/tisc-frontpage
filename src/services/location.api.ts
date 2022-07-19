@@ -1,32 +1,38 @@
-import { ILocationDetail } from '@/types';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { ICity, ICountry, IState } from '@/types/';
+import type {
+  ICity,
+  ICountry,
+  IState,
+  ILocationDetail,
+  FunctionalTypeData,
+  LocationForm,
+} from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
 import type {
-  IDataTableResponse,
-  IPaginationRequest,
-  IPaginationResponse,
-  ISummaryResponse,
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
+  SummaryResponse,
 } from '@/components/Table/types';
 
-interface ILocationPaginationResponse {
+interface LocationPaginationResponse {
   data: {
     locations: ILocationDetail[];
-    pagination: IPaginationResponse;
-    summary: ISummaryResponse[];
+    pagination: PaginationResponse;
+    summary: SummaryResponse[];
   };
 }
 
 export async function getLocationList(
-  params: IPaginationRequest,
-  callback: (data: IDataTableResponse) => void,
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
 ) {
-  request(`/api/location/get-list`, {
+  request<LocationPaginationResponse>(`/api/location/get-list`, {
     method: 'GET',
     params,
   })
-    .then((response: ILocationPaginationResponse) => {
+    .then((response) => {
       const { locations, pagination, summary } = response.data;
 
       callback({
@@ -106,5 +112,94 @@ export async function getCountryById(id: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_COUNTRY_ERROR);
+    });
+}
+
+export async function getLocationPagination(
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
+) {
+  return request<{
+    data: {
+      locations: ILocationDetail[];
+      pagination: PaginationResponse;
+    };
+  }>(`/api/location/get-list`, {
+    method: 'GET',
+    params,
+  })
+    .then((response) => {
+      const { locations, pagination } = response.data;
+      callback({
+        data: locations,
+        pagination: {
+          current: pagination.page,
+          pageSize: pagination.page_size,
+          total: pagination.total,
+        },
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export async function getListFunctionalType() {
+  return request<{ data: FunctionalTypeData[] }>(`/api/functional-type/get-list`)
+    .then((res) => {
+      return res.data;
+    })
+    .catch(() => {
+      return [] as FunctionalTypeData[];
+    });
+}
+
+export async function createLocation(data: LocationForm) {
+  return request(`/api/location/create`, {
+    method: 'POST',
+    data,
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.CREATE_LOCATION_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_LOCATION_FAILED);
+      return false;
+    });
+}
+export async function getLocationById(id: string) {
+  return request<{ data: ILocationDetail }>(`/api/location/get-one/${id}`)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LOCATION_FAILED);
+    });
+}
+export async function updateLocation(id: string, data: LocationForm) {
+  return request(`/api/location/update/${id}`, {
+    method: 'PUT',
+    data,
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.UPDATE_LOCATION_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_LOCATION_FAILED);
+      return false;
+    });
+}
+
+export async function deleteLocationById(id: string) {
+  return request(`/api/location/delete/${id}`, { method: 'DELETE' })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.DELETE_LOCATION_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_LOCATION_FAILED);
+      return false;
     });
 }

@@ -140,6 +140,13 @@ export const MESSAGE_NOTIFICATION = {
   GET_CITIES_ERROR: 'Failed to get cities data',
   GET_LIST_COUNTRY_GROUP: 'Failed to get list country group data',
   GET_ONE_COUNTRY_ERROR: 'Failed to get one country',
+  CREATE_LOCATION_SUCCESS: 'Create location successfully',
+  CREATE_LOCATION_FAILED: 'Failed to create new location',
+  UPDATE_LOCATION_SUCCESS: 'Update location successfully',
+  UPDATE_LOCATION_FAILED: 'Failed to update location',
+  DELETE_LOCATION_SUCCESS: 'Delete location successfully',
+  DELETE_LOCATION_FAILED: 'Failed to delete location',
+  GET_LOCATION_FAILED: 'Failed to get location data',
 
   //distributor
   CREATE_DISTRIBUTOR_SUCCESS: 'Create distributor successfully',
@@ -149,6 +156,12 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_DISTRIBUTOR_SUCCESS: 'Update distributor successfully',
   UPDATE_DISTRIBUTOR_ERROR: 'Update distributor error',
   GET_ONE_DISTRIBUTOR_ERROR: 'Get one distributor error',
+
+  //brand-profile
+  UPDATE_BRAND_PROFILE_SUCCESS: 'Update profile successfully',
+  UPDATE_BRAND_PROFILE_ERROR: 'Update profile error',
+  UPDATE_LOGO_BRAND_PROFILE_SUCCESS: 'Update logo brand profile successfully',
+  UPDATE_LOGO_BRAND_PROFILE_ERROR: 'Update logo brand profile error',
 };
 
 export const MESSAGE_TOOLTIP = {

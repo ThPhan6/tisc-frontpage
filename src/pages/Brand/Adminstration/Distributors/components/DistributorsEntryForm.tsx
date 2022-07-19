@@ -8,14 +8,14 @@ import { Title } from '@/components/Typography';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 import styles from '../styles/DistributorsEntryForm.less';
 import { FC, useState } from 'react';
-import CountryModal from './CountryModal';
+import CountryModal from '@/components/Location/CountryModal';
 import AuthorizedCountryModal from './AuthorizedCountryModal';
-import StateModal from './StateModal';
-import CityModal from './CityModal';
+import StateModal from '@/components/Location/StateModal';
+import CityModal from '@/components/Location/CityModal';
 import DistributionTerritoryModal from './DistributionTerritoryModal';
 import { ReactComponent as SingleRightFormIconDisable } from '@/assets/icons/single-right-form-icon-disable.svg';
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
-import { IDistributorEntryForm } from '@/types/distributor.type';
+import { DistributorEntryForm } from '@/types/distributor.type';
 import { useEffect } from 'react';
 import { getCountryById } from '@/services/location.api';
 import { PhoneInputValueProp } from '@/components/Form/types';
@@ -31,7 +31,7 @@ const optionsCoverageBeyond = [
   { label: 'Allow', value: false },
 ];
 
-export const DistributorsEntryForm: FC<IDistributorEntryForm> = (props) => {
+export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
   const { submitButtonStatus, onSubmit, onCancel, data, setData } = props;
   const [countryVisible, setCountryVisible] = useState(false);
   const [authorizedCountryVisible, setAuthorizedCountryVisible] = useState(false);

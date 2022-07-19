@@ -1,29 +1,29 @@
-import { request } from 'umi';
-import { message } from 'antd';
+import type {
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
+  SummaryResponse,
+} from '@/components/Table/types';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import type {
-  IAttributeListResponse,
-  IAttributeContentType,
-  IAttributeForm,
-  IAttributebyType,
+  AttributebyType,
+  AttributeContentType,
+  AttributeForm,
+  AttributeListResponse,
 } from '@/types';
-import type {
-  IDataTableResponse,
-  IPaginationRequest,
-  IPaginationResponse,
-  ISummaryResponse,
-} from '@/components/Table/types';
+import { message } from 'antd';
+import { request } from 'umi';
 
 interface ICategoryPaginationResponse {
   data: {
-    attributes: IAttributeListResponse[];
-    pagination: IPaginationResponse;
-    summary: ISummaryResponse[];
+    attributes: AttributeListResponse[];
+    pagination: PaginationResponse;
+    summary: SummaryResponse[];
   };
 }
 export async function getProductAttributePagination(
-  params: IPaginationRequest,
-  callback: (data: IDataTableResponse) => void,
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
 ) {
   request(`/api/attribute/get-list`, {
     method: 'GET',
@@ -48,7 +48,7 @@ export async function getProductAttributePagination(
 }
 
 export async function getProductAttributeContentType() {
-  return request<{ data: IAttributeContentType }>(`/api/attribute/content-type/get-list`, {
+  return request<{ data: AttributeContentType }>(`/api/attribute/content-type/get-list`, {
     method: 'GET',
   })
     .then((response) => {
@@ -59,7 +59,7 @@ export async function getProductAttributeContentType() {
     });
 }
 
-export async function createAttribute(data: IAttributeForm) {
+export async function createAttribute(data: AttributeForm) {
   return request<boolean>(`/api/attribute/create`, {
     method: 'POST',
     data,
@@ -74,7 +74,7 @@ export async function createAttribute(data: IAttributeForm) {
     });
 }
 export async function getOneAttribute(id: string) {
-  return request<{ data: IAttributeForm }>(`/api/attribute/get-one/${id}`, {
+  return request<{ data: AttributeForm }>(`/api/attribute/get-one/${id}`, {
     method: 'GET',
   })
     .then((response) => {
@@ -84,7 +84,7 @@ export async function getOneAttribute(id: string) {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_ATTRIBUTE_ERROR);
     });
 }
-export async function updateAttribute(id: string, data: IAttributeForm) {
+export async function updateAttribute(id: string, data: AttributeForm) {
   return request<boolean>(`/api/attribute/update/${id}`, {
     method: 'PUT',
     data,
@@ -113,7 +113,7 @@ export async function deleteAttribute(id: string) {
 }
 
 export async function getAllAttribute() {
-  return request<{ data: IAttributebyType }>(`/api/attribute/get-all`, {})
+  return request<{ data: AttributebyType }>(`/api/attribute/get-all`, {})
     .then((response) => {
       return response.data;
     })
@@ -123,6 +123,6 @@ export async function getAllAttribute() {
         general: [],
         feature: [],
         specification: [],
-      } as IAttributebyType;
+      } as AttributebyType;
     });
 }

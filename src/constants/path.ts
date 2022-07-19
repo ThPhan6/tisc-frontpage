@@ -55,6 +55,11 @@ export const PATH = {
   productConfigurationCreate: '/tisc/products/configuration/create/:brandId',
   productConfigurationUpdate: '/tisc/products/configuration/:id',
 
+  // tisc - locations
+  tiscLocation: '/tisc/adminstration/locations',
+  tiscLocationCreate: '/tisc/adminstration/locations/create',
+  tiscLocationUpdate: '/tisc/adminstration/locations/:id',
+
   //brand
   //adminstration
   //distributors

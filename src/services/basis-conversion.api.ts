@@ -1,25 +1,25 @@
-import { request } from 'umi';
-import { message } from 'antd';
-import type { ConversionBodyProp, IBasisConversionListResponse } from '@/types';
 import type {
-  IDataTableResponse,
-  IPaginationRequest,
-  IPaginationResponse,
-  ISummaryResponse,
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
+  SummaryResponse,
 } from '@/components/Table/types';
-import { STATUS_RESPONSE } from '@/constants/util';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { STATUS_RESPONSE } from '@/constants/util';
+import type { BasisConversionListResponse, ConversionBodyProp } from '@/types';
+import { message } from 'antd';
+import { request } from 'umi';
 
 interface ICategoryPaginationResponse {
   data: {
-    basis_conversions: IBasisConversionListResponse[];
-    pagination: IPaginationResponse;
-    summary: ISummaryResponse[];
+    basis_conversions: BasisConversionListResponse[];
+    pagination: PaginationResponse;
+    summary: SummaryResponse[];
   };
 }
 export async function getProductBasisConversionPagination(
-  params: IPaginationRequest,
-  callback: (data: IDataTableResponse) => void,
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
 ) {
   request(`/api/basis-conversion/get-list`, {
     method: 'GET',

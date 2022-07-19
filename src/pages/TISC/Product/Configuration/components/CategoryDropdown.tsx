@@ -9,7 +9,7 @@ import { ReactComponent as DropdownV2Icon } from '@/assets/icons/action-down-ico
 import { isEmpty, upperCase, capitalize } from 'lodash';
 import { getAllProductCategory } from '@/services';
 import { useAppSelector } from '@/reducers';
-import { ICategoryListResponse } from '@/types';
+import { CategoryListResponse } from '@/types';
 import styles from '../styles/category-dropdown.less';
 
 interface IDropdownCategoryList {
@@ -43,7 +43,7 @@ const DropdownCategoryList: React.FC<IDropdownCategoryList> = (props) => {
     getAllProductCategory();
   }, []);
 
-  const renderHeader = (item: ICategoryListResponse) => {
+  const renderHeader = (item: CategoryListResponse) => {
     return (
       <span>
         {upperCase(item.name)}
@@ -58,7 +58,7 @@ const DropdownCategoryList: React.FC<IDropdownCategoryList> = (props) => {
       </span>
     );
   };
-  const renderSubHeader = (item: ICategoryListResponse) => {
+  const renderSubHeader = (item: CategoryListResponse) => {
     return (
       <span>
         {capitalize(item.name)}

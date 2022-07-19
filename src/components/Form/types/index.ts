@@ -1,5 +1,6 @@
 import type { InputProps } from 'antd';
 import type { TextAreaProps } from 'antd/lib/input';
+import { ReactNode } from 'react';
 
 export interface FormGroupProps {
   layout?: 'horizontal' | 'vertical';
@@ -8,9 +9,9 @@ export interface FormGroupProps {
   required?: boolean;
   tooltip?: string | JSX.Element;
   label: string;
-  iconTooltip?: JSX.Element;
   message?: string;
   messageType?: 'normal' | 'error' | 'warning';
+  iconTooltip?: ReactNode;
   onClick?: () => void;
 }
 
@@ -30,6 +31,7 @@ export interface CustomTextAreaProps extends TextAreaProps {
   borderBottomColor?: 'mono' | 'mono-medium';
   maxHeight?: number;
   defaultHeight?: number;
+  boxShadow?: boolean;
 }
 
 export interface PhoneInputProps {

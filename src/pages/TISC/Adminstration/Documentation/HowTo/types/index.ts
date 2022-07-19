@@ -1,24 +1,25 @@
 import type { ReactNode } from 'react';
-export interface IFAQFieldProps {
+
+export interface FaqInput {
   question: string;
   answer: string;
 }
 
-export interface IHowToSubProps {
+export interface FaqPanel {
   id?: string;
   icon?: ReactNode;
   title: string;
   description: string;
-  FAQ: IFAQFieldProps[];
+  FAQ: FaqInput[];
 }
 
-export interface IHowToValueProps {
+export interface FaqItems {
   activeKey?: string | number | (string | number)[];
-  data: IHowToSubProps[];
+  data: FaqPanel[];
 }
 
-export interface IHowToForm {
-  tisc: IHowToValueProps;
-  brands: IHowToValueProps;
-  designers: IHowToValueProps;
+export interface FaqForm {
+  tisc: FaqItems;
+  brands: FaqItems;
+  designers: FaqItems;
 }

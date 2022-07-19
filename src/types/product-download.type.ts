@@ -1,10 +1,10 @@
-export interface IProductDownload {
+export interface ProductDownload {
   id?: string;
   product_id?: string;
-  contents: IProductDownloadData[];
+  contents: ProductDownloadData[];
   created_at?: string;
 }
-export interface IProductDownloadData {
+export interface ProductDownloadData {
   id?: string;
   title: string;
   url: string;

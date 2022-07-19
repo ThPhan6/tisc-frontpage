@@ -3,9 +3,9 @@ import CustomTable from '@/components/Table';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { ICustomTableColumnType } from '@/components/Table/types';
-import { IEmailAutoRespondForm } from '@/types';
-import { getEmailAutoPagination } from '@/services';
+import { TableColumnItem } from '@/components/Table/types';
+import { EmailTemplate } from '@/types';
+import { getEmailTemplatePagination } from '@/services';
 import styles from './styles/index.less';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
@@ -15,7 +15,7 @@ const EmailAutoList = () => {
     pushTo(PATH.updateEmailAuto.replace(':id', id));
   };
 
-  const mainColumns: ICustomTableColumnType<IEmailAutoRespondForm>[] = [
+  const mainColumns: TableColumnItem<EmailTemplate>[] = [
     {
       title: 'Topic',
       dataIndex: 'topic',
@@ -63,7 +63,7 @@ const EmailAutoList = () => {
         rightAction={<CustomPlusButton disabled />}
         title={'EMAIL AUTORESPONDER'}
         columns={mainColumns}
-        fetchDataFunc={getEmailAutoPagination}
+        fetchDataFunc={getEmailTemplatePagination}
       />
     </div>
   );

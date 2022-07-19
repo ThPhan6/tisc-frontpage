@@ -1,9 +1,7 @@
 import Popover from '@/components/Modal/Popover';
 import { getStatesByCountryId } from '@/services/location.api';
-import { IState } from '@/types/location.types';
-import { Radio } from 'antd';
+import { IState } from '@/types';
 import { FC, useEffect, useState } from 'react';
-import styles from '../styles/CountryModal.less';
 
 const StateModal: FC<{
   countryId: string;
@@ -17,8 +15,11 @@ const StateModal: FC<{
   const getStateList = () => {
     getStatesByCountryId(countryId).then((res) => {
       if (res) {
-        if (!res.find((item) => item.id === chosenValue.value)) {
+        const checked = res.find((item) => item.id === chosenValue.value);
+        if (!checked) {
           setChosenValue({ value: '', label: '' });
+        } else {
+          setChosenValue({ value: checked.id, label: checked.name });
         }
         setStates(res);
       }
@@ -42,12 +43,6 @@ const StateModal: FC<{
       setChosenValue={setChosenValue}
       groupRadioList={[
         {
-          heading: (
-            <div className={styles.customHeading}>
-              <span className={styles.customTitle}>Global</span>
-              <Radio />
-            </div>
-          ),
           options: states.map((state) => {
             return {
               label: state.name,

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import type { ICustomTableColumnType } from '@/components/Table/types';
+import type { TableColumnItem } from '@/components/Table/types';
 import { HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
@@ -11,7 +11,7 @@ import { useAttributeLocation } from './hooks/location';
 import { confirmDelete } from '@/helper/common';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import type { IAttributeListResponse, ISubAttribute } from '@/types';
+import type { AttributeListResponse, SubAttribute } from '@/types';
 
 const AttributeList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -30,7 +30,7 @@ const AttributeList: React.FC = () => {
     });
   };
 
-  const MainColumns: ICustomTableColumnType<IAttributeListResponse>[] = [
+  const MainColumns: TableColumnItem<AttributeListResponse>[] = [
     {
       title: 'Attribute Group',
       dataIndex: 'name',
@@ -94,7 +94,7 @@ const AttributeList: React.FC = () => {
       },
     },
   ];
-  const SubColumns: ICustomTableColumnType<ISubAttribute>[] = [
+  const SubColumns: TableColumnItem<SubAttribute>[] = [
     {
       title: 'Attribute Group',
       dataIndex: 'attribute_group',

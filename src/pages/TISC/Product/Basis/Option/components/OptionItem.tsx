@@ -7,32 +7,32 @@ import { BodyText } from '@/components/Typography';
 import { isEmpty } from 'lodash';
 import React, { FC } from 'react';
 import styles from '../styles/OptionItem.less';
-import { ISubBasisOption, IBasisOptionSubForm } from '@/types';
+import { SubBasisOption, BasisOptionSubForm } from '@/types';
 import { Collapse, Radio, Row, Col } from 'antd';
 import { getBase64, showImageUrl } from '@/helper/utils';
 
 interface IOptionItem {
-  subOption: IBasisOptionSubForm;
-  handleChangeSubItem: (changedSubs: IBasisOptionSubForm) => void;
+  subOption: BasisOptionSubForm;
+  handleChangeSubItem: (changedSubs: BasisOptionSubForm) => void;
   handleDeleteSubOption: () => void;
   optionIndex: number;
 }
-interface ISubItemOption {
+interface SubItemOptionProps {
   is_have_image?: boolean;
-  subItemOption: ISubBasisOption;
-  onChange: (subItemOption: ISubBasisOption) => void;
+  subItemOption: SubBasisOption;
+  onChange: (subItemOption: SubBasisOption) => void;
   index: number;
   optionIndex: number;
 }
 
-const DEFAULT_SUB_OPTION_ITEM: ISubBasisOption = {
+const DEFAULT_SUB_OPTION_ITEM: SubBasisOption = {
   value_1: '',
   value_2: '',
   unit_2: '',
   unit_1: '',
 };
 
-const SubItemOption: FC<ISubItemOption> = ({
+const SubItemOption: FC<SubItemOptionProps> = ({
   is_have_image,
   subItemOption,
   onChange,
@@ -175,7 +175,7 @@ export const OptionItem: FC<IOptionItem> = (props) => {
     }
   };
 
-  const handleChangeSubOptionItem = (changedOptionItem: ISubBasisOption, index: number) => {
+  const handleChangeSubOptionItem = (changedOptionItem: SubBasisOption, index: number) => {
     const newSubItems = [...subOption.subs];
     newSubItems[index] = changedOptionItem;
     handleChangeSubItem({

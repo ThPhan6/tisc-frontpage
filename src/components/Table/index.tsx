@@ -1,6 +1,5 @@
 import { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
 import { Table } from 'antd';
-// import { Title } from '@/components/Typography';
 import { useCustomTable } from './hooks';
 import { forEach, isArray, isEmpty } from 'lodash';
 import CustomPaginator from './components/CustomPaginator';
@@ -8,16 +7,34 @@ import TableSummary from './components/TableSummary';
 import type { TablePaginationConfig } from 'antd/lib/table';
 import type { SorterResult, ExpandableConfig, FilterValue } from 'antd/lib/table/interface';
 import type {
-  IPaginationParams,
-  IPaginationRequest,
-  ICustomTable,
-  IExpandableTable,
-  ISummaryResponse,
+  PaginationParams,
+  PaginationRequestParams,
+  SummaryResponse,
+  TableColumnItem,
+  DataTableResponse,
 } from './types';
 import styles from './styles/table.less';
 import { TableHeader } from './TableHeader';
 
-const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
+export interface CustomTableProps {
+  columns: TableColumnItem<any>[];
+  expandable?: ExpandableConfig<any>;
+  rightAction?: React.ReactNode;
+  fetchDataFunc: (
+    params: PaginationRequestParams,
+    callback: (data: DataTableResponse) => void,
+  ) => void;
+  title: string;
+  multiSort?: {
+    [key: string]: any;
+  };
+  hasPagination?: boolean;
+  extraParams?: {
+    [key: string]: any;
+  };
+}
+
+const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const { expandable, fetchDataFunc, title, rightAction, multiSort, hasPagination, extraParams } =
     props;
 
@@ -26,7 +43,7 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
 
   const { columns, expended } = useCustomTable(props.columns);
   const [data, setData] = useState<any>([]);
-  const [summary, setSummary] = useState<ISummaryResponse[]>([]);
+  const [summary, setSummary] = useState<SummaryResponse[]>([]);
   const [currentSorter, setCurrentSorter] = useState<SorterResult<any> | SorterResult<any>[]>([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -35,9 +52,9 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
     total: 0,
   });
 
-  const formatPaginationParams = (params: IPaginationParams) => {
+  const formatPaginationParams = (params: PaginationParams) => {
     const { sorter, filter } = params;
-    const paginationParams: IPaginationRequest = {
+    const paginationParams: PaginationRequestParams = {
       page: data.pagination?.current ?? DEFAULT_PAGE_NUMBER,
       pageSize: data.pagination?.pageSize ?? DEFAULT_PAGESIZE,
       ...extraParams,
@@ -76,7 +93,7 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
     return paginationParams;
   };
 
-  const fetchData = (params: IPaginationParams) => {
+  const fetchData = (params: PaginationParams) => {
     setLoading(true);
     fetchDataFunc(formatPaginationParams(params), (response) => {
       setData(response.data ?? []);
@@ -154,7 +171,14 @@ const CustomTable = forwardRef((props: ICustomTable, ref: any) => {
 });
 
 // start expandable table
-export const GetExpandableTableConfig = (props: IExpandableTable): ExpandableConfig<any> => {
+interface ExpandableTableProps {
+  columns: TableColumnItem<any>[];
+  childrenColumnName: string;
+  expandable?: ExpandableConfig<any>;
+  level?: number;
+}
+
+export const GetExpandableTableConfig = (props: ExpandableTableProps): ExpandableConfig<any> => {
   const { expandable, childrenColumnName, level } = props;
   const { columns, expended } = useCustomTable(props.columns);
 

@@ -1,10 +1,10 @@
-export interface IProductCatelogue {
+export interface ProductCatelogue {
   id?: string;
   product_id?: string;
-  contents: IProductCatelogueData[];
+  contents: ProductCatelogueData[];
   created_at?: string;
 }
-export interface IProductCatelogueData {
+export interface ProductCatelogueData {
   id?: string;
   title: string;
   url: string;

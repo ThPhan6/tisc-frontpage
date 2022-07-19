@@ -1,31 +1,23 @@
-export interface ICollapseProps {
+export interface CollapsingProps {
   activeKey?: string;
   handleActiveCollapse: (id: string) => void;
 }
 
-export interface ItemHowToProp extends ICollapseProps {
-  value: HowToValueProp;
-}
+export type QnA = {
+  id: string;
+  question: string;
+  answer: string;
+};
 
-export interface ItemQAProp extends ICollapseProps {
-  item: QAValueProp;
-}
-
-export interface QuestionProp extends ICollapseProps {
+export interface QuestionProps extends CollapsingProps {
   id: string;
   question: string;
 }
 
-export type HowToValueProp = {
+export type FaqItem = {
   id: string;
   icon?: JSX.Element;
   title: string;
   document?: string;
-  question_and_answer?: QAValueProp[];
-};
-
-export type QAValueProp = {
-  id: string;
-  question: string;
-  answer: string;
+  question_and_answer?: QnA[];
 };

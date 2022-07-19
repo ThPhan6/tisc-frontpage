@@ -1,22 +1,22 @@
 import {
-  IDataTableResponse,
-  IPaginationRequest,
-  IPaginationResponse,
-  ISummaryResponse,
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
+  SummaryResponse,
 } from '@/components/Table/types';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { IDistributorForm, IDistributorListResponse } from '@/types/distributor.type';
+import { Distributor, DistributorForm } from '@/types/distributor.type';
 import { message } from 'antd';
 import { request } from 'umi';
 
 interface IDistributorPaginationResponse {
   data: {
-    pagination: IPaginationResponse;
-    distributors: IDistributorListResponse[];
-    summary: ISummaryResponse[];
+    pagination: PaginationResponse;
+    distributors: Distributor[];
+    summary: SummaryResponse[];
   };
 }
-export async function createDistributor(data: IDistributorForm) {
+export async function createDistributor(data: DistributorForm) {
   return request<boolean>('/api/distributor/create', { method: 'POST', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CREATE_DISTRIBUTOR_SUCCESS);
@@ -29,8 +29,8 @@ export async function createDistributor(data: IDistributorForm) {
 }
 
 export async function getDistributorPagination(
-  params: IPaginationRequest,
-  callback: (data: IDataTableResponse) => void,
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
 ) {
   request(`/api/distributor/get-list`, {
     method: 'GET',
@@ -65,7 +65,7 @@ export async function deleteDistributor(id: string) {
     });
 }
 
-export async function updateDistributor(id: string, data: IDistributorForm) {
+export async function updateDistributor(id: string, data: DistributorForm) {
   return request<boolean>(`/api/distributor/update/${id}`, { method: 'PUT', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_DISTRIBUTOR_SUCCESS);

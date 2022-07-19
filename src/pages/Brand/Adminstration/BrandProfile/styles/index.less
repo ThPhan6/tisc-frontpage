@@ -1,0 +1,108 @@
+.content {
+  :global(.ant-input) {
+    color: @primary-color-dark !important;
+  }
+  .container {
+    height: 804px;
+    background-color: #fff;
+  }
+  .formTitle {
+    height: 48px;
+    padding: 13px 16px;
+    box-shadow: inset 0 -0.5px 0 @mono-color;
+  }
+  .form {
+    height: 708px;
+    padding: 16px 16px 0 16px;
+    box-shadow: inset 0 -0.5px 0 @mono-color;
+    .customFormGroup {
+      margin-bottom: 16px;
+    }
+    .customFormLogo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 32px;
+      margin-bottom: 16px;
+      box-shadow: inset 0 -0.5px 0 @mono-color-medium;
+      .customLabel {
+        margin-bottom: 0;
+      }
+      .customIcon {
+        margin-top: 8px;
+      }
+      .customWarningIcon {
+        margin-left: 4px;
+      }
+      .wrapper-upload {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        height: 100%;
+        .icon {
+          cursor: pointer;
+        }
+      }
+    }
+    .customFormArea {
+      margin-bottom: 0;
+      :global(.ant-input-textarea-show-count::after) {
+        margin-bottom: 16px;
+        color: @mono-color;
+      }
+    }
+    .website {
+      .rightWebsite {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        .iconAdd {
+          margin-left: 12px;
+        }
+      }
+      .customText {
+        display: flex;
+        align-items: center;
+        height: 32px;
+        label {
+          p {
+            font-weight: 600;
+          }
+        }
+      }
+      .bottomWebsite {
+        display: flex;
+        align-items: center;
+        height: 36px;
+        box-shadow: inset 0 -0.5px 0 @mono-color-medium;
+        .customInput {
+          width: auto !important;
+          :global(.ant-input[disabled]) {
+            background-color: transparent;
+            border-bottom: none;
+          }
+        }
+        .icon {
+          margin-top: 8px;
+          cursor: pointer;
+        }
+      }
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      height: 152px;
+      margin-bottom: 16px;
+      padding-left: 28px;
+      img {
+        width: 72px;
+        height: 72px;
+      }
+    }
+  }
+  .actionButton {
+    float: right;
+    height: 48px;
+    padding: 12px 16px 12px 0;
+  }
+}

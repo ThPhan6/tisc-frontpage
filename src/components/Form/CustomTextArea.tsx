@@ -1,4 +1,3 @@
-import React from 'react';
 import { Input } from 'antd';
 import type { FC } from 'react';
 import type { CustomTextAreaProps } from './types';
@@ -13,6 +12,7 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
   maxHeight,
   defaultHeight,
   children,
+  boxShadow,
   ...props
 }) => {
   const textarea: any = useRef();
@@ -25,8 +25,7 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
     if (!maxHeight || !defaultHeight || props.value === '') {
       contentHeight = defaultHeight;
     }
-
-    if (contentHeight < maxHeight) {
+    if (maxHeight && contentHeight < maxHeight) {
       contentHeight = contentHeight;
       setCheckedOverflow('hidden');
     } else {
@@ -39,8 +38,11 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
 
   return (
     <div
-      className={`${style['textarea-container']}
-        ${style[`${borderBottomColor}-border-bottom-color`]}`}
+      className={`
+        ${style['textarea-container']}
+        ${style[`${borderBottomColor}-border-bottom-color`]}
+        ${boxShadow ? style.boxShadow : ''}
+      `}
     >
       <Input.TextArea
         ref={textarea}

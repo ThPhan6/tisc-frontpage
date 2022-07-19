@@ -1,9 +1,9 @@
 import { STATUS_RESPONSE } from '@/constants/util';
 import { request } from 'umi';
-import { UpdateTeamProfileBodyProp } from '../types';
+import { UpdatePersonalProfileRequestBody } from '../types';
 
 export async function updateTeamProfile(
-  data: UpdateTeamProfileBodyProp,
+  data: UpdatePersonalProfileRequestBody,
   callback: (type: STATUS_RESPONSE, message?: string) => void,
 ) {
   request(`/api/team-profile/update-me`, {

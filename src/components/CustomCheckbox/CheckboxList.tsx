@@ -7,21 +7,21 @@ import { Title, MainTitle } from '@/components/Typography';
 // import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import styles from './styles/checkboxList.less';
 
-export interface ICheckboxListOption {
+export interface CheckboxOption {
   options: CheckboxValue[];
   heading: string;
   hasAllOption?: boolean;
   customItemClass?: string;
 }
 
-interface ICheckboxList {
-  data: ICheckboxListOption;
+interface CheckboxListProps {
+  data: CheckboxOption;
   selected?: CheckboxValue[];
   chosenItem?: CheckboxValue[];
   onChange?: (value: CheckboxValue[]) => void;
 }
 
-const CheckboxList: React.FC<ICheckboxList> = (props) => {
+const CheckboxList: React.FC<CheckboxListProps> = (props) => {
   const [selectAll, setSelectAll] = useState(false);
   const { data, selected, onChange } = props;
 

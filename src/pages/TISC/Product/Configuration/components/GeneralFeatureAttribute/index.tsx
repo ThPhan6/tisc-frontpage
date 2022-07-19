@@ -1,17 +1,18 @@
 import { MainTitle } from '@/components/Typography';
 import GeneralFeatureAttributeItem from './GeneralFeatureAttributeItem';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { IAttributebyType } from '@/types';
+import { AttributebyType } from '@/types';
 import styles from '../../styles/details.less';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
 import { setPartialProductDetail } from '@/reducers/product';
 
-interface IGeneralFeatureAttributeItem {
-  attributes: IAttributebyType['general'] | IAttributebyType['feature'];
+interface GeneralFeatureAttributeProps {
+  attributes: AttributebyType['general'] | AttributebyType['feature'];
   activeKey: 'general' | 'feature';
 }
-const GeneralFeatureAttribute = (props: IGeneralFeatureAttributeItem) => {
+
+const GeneralFeatureAttribute = (props: GeneralFeatureAttributeProps) => {
   const { attributes, activeKey } = props;
   const product = useAppSelector((state) => state.product);
   const dispatch = useDispatch();

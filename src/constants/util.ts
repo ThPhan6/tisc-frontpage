@@ -1,5 +1,5 @@
 import { renderIconByName } from '@/components/Menu/Icon';
-import { IHowToForm } from '@/pages/TISC/Adminstration/Documentation/HowTo/types';
+import { FaqForm } from '@/pages/TISC/Adminstration/Documentation/HowTo/types';
 
 export enum STATUS_RESPONSE {
   SUCCESS = 'SUCCESS',
@@ -194,7 +194,7 @@ export const dataMenuFirm = {
 export const IMAGE_ACCEPT_TYPES = {
   image: '.png,.jpeg,.webp,.svg,.jpg',
 };
-export const howToPagePanel: IHowToForm = {
+export const howToPagePanel: FaqForm = {
   tisc: {
     data: [
       {

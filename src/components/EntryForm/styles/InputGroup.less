@@ -1,6 +1,6 @@
 .inputGroupContainer {
   width: 100%;
-  height: 32px;
+  min-height: 32px;
   .required {
     margin: 0 4px;
     color: @primary-color-dark;
@@ -50,10 +50,11 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    min-height: 32px;
     input {
       padding: 0;
       &:global(.has-padding) {
-        padding: 4px 16px;
+        padding: 0 16px;
       }
       &[readonly] {
         cursor: not-allowed;
@@ -78,6 +79,30 @@
   }
 }
 .heightInputGroup {
-  height: 56px;
+  min-height: 56px;
   margin-bottom: 16px;
+}
+.boxShadow {
+  box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
+}
+.message {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  min-height: 24px;
+  :global(.normal) {
+    color: @mono-color;
+  }
+  :global(.error) {
+    color: @tertiary-color;
+  }
+  :global(.warning) {
+    color: @secondary-color;
+  }
+}
+.iconDisabled {
+  color: @mono-color-medium;
+  cursor: not-allowed;
+  pointer-events: none;
 }

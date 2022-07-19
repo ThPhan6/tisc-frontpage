@@ -5,11 +5,11 @@ import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
 import { createDistributor } from '@/services/distributor.api';
-import { IDistributorForm } from '@/types/distributor.type';
+import { DistributorForm } from '@/types/distributor.type';
 import { useState } from 'react';
 import { DistributorsEntryForm } from './components/DistributorsEntryForm';
 
-const DEFAULT_DISTRIBUTOR: IDistributorForm = {
+const DEFAULT_DISTRIBUTOR: DistributorForm = {
   brand_id: '',
   name: '',
   country_name: '',
@@ -36,9 +36,9 @@ const DEFAULT_DISTRIBUTOR: IDistributorForm = {
 const CreatePage = () => {
   const isLoading = useBoolean();
   const submitButtonStatus = useBoolean(false);
-  const [data, setData] = useState<IDistributorForm>(DEFAULT_DISTRIBUTOR);
+  const [data, setData] = useState<DistributorForm>(DEFAULT_DISTRIBUTOR);
 
-  const handleCreate = (submitData: IDistributorForm) => {
+  const handleCreate = (submitData: DistributorForm) => {
     isLoading.setValue(true);
     createDistributor(submitData).then((isSuccess) => {
       isLoading.setValue(false);

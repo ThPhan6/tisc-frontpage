@@ -1,25 +1,25 @@
-import { request } from 'umi';
-import { message } from 'antd';
-import type { IBasisPresetListResponse, PresetsValueProp } from '@/types';
 import type {
-  IDataTableResponse,
-  IPaginationRequest,
-  IPaginationResponse,
-  ISummaryResponse,
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
+  SummaryResponse,
 } from '@/components/Table/types';
-import { STATUS_RESPONSE } from '@/constants/util';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { STATUS_RESPONSE } from '@/constants/util';
+import type { BasisPresetListResponse, PresetsValueProp } from '@/types';
+import { message } from 'antd';
+import { request } from 'umi';
 
 interface ICategoryPaginationResponse {
   data: {
-    basis_presets: IBasisPresetListResponse[];
-    pagination: IPaginationResponse;
-    summary: ISummaryResponse[];
+    basis_presets: BasisPresetListResponse[];
+    pagination: PaginationResponse;
+    summary: SummaryResponse[];
   };
 }
 export async function getProductBasisPresetPagination(
-  params: IPaginationRequest,
-  callback: (data: IDataTableResponse) => void,
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
 ) {
   request(`/api/basis-preset/get-list`, {
     method: 'GET',

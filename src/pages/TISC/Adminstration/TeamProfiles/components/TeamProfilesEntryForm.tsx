@@ -21,6 +21,7 @@ import {
   typePhoneInput,
   typeRadio,
 } from '@/types/';
+// import CollapseCheckboxList from '@/components/CustomCheckbox/CollapseCheckboxList';
 import React, { FC, useState } from 'react';
 import styles from '../styles/TeamProfilesEntryForm.less';
 import LocationModal from './LocationModal';

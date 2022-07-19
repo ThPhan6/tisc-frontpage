@@ -181,3 +181,32 @@
   .font-size-custom(12px, 20px);
   .size(24px, 24px, 12px, 12px, 0px);
 }
+
+.customButton {
+  background-color: @primary-color;
+  border-radius: 12px;
+  cursor: pointer;
+  p {
+    color: #fff;
+  }
+  &:hover {
+    background-color: @primary-color-dark;
+    p {
+      font-weight: 500;
+    }
+  }
+}
+.customButtonSuccess {
+  background-color: @primary-color-dark;
+  border-radius: 12px;
+  cursor: default;
+  animation: fadeIn 2s;
+  svg {
+    margin-top: 4px;
+  }
+}
+
+.sizeButton {
+  .font-size-custom(12px, 20px);
+  .size(24px, 64px, 16px, 16px, 0);
+}
