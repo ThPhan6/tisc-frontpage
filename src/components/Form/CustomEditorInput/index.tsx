@@ -15,6 +15,8 @@ type CustomEditorInputProps = Partial<CKEditorProps<CKEditorEventHandlerProp>> &
 };
 
 const id = `editor-container-${Date.now()}`;
+let firstLoad = true;
+const PADDING = 16;
 
 // IMPORTANT: do not wrap this component inside another component
 export const CustomEditorInput: FC<CustomEditorInputProps> = ({
@@ -42,22 +44,25 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
 
       const contentBottomOffset = (containerEl.offsetHeight || 0) + (containerEl.offsetTop || 0);
 
-      const contentFullHeight = contentBottomOffset - (iFrameEl.offsetTop || 0) - 1;
+      const contentFullHeight =
+        contentBottomOffset - (iFrameEl.offsetTop || 0) - 1 + (firstLoad ? 0 : -PADDING);
 
       // console.log('containerEl.offsetHeight', containerEl.offsetHeight);
-      // console.log('iFrameEl.offsetTop', iFrameEl, iFrameEl.offsetTop);
+      // console.log('iFrameEl', iFrameEl);
       // console.log('iFrameEl.offsetTop', iFrameEl.offsetTop);
       // console.log('contentBottomOffset', contentBottomOffset);
+      // console.log('contentFullHeight', contentFullHeight);
 
       if (contentFullHeight && iFrameEl) {
-        setHeight(null); // force reload by render to component to null
+        firstLoad = false;
+        setHeight((prevHeight) => (prevHeight === contentFullHeight ? contentFullHeight : null)); // force reload by render to component to null
         setTimeout(() => setHeight(contentFullHeight), 1);
       } else {
         setTimeout(updateSize, 100);
       }
     };
 
-    updateSize();
+    setTimeout(updateSize, 200);
 
     // editor is resizing while window is resizing
     window.addEventListener('resize', updateSize);
@@ -97,10 +102,6 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
             // { "name": "forms" },
             // { "name": "tools" },
             {
-              name: 'document',
-              groups: ['mode', 'document', 'doctools'],
-            },
-            {
               name: 'basicstyles',
             },
             // { "name": "links" },
@@ -117,6 +118,10 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
             { name: 'styles' },
             { name: 'colors' },
             { name: 'others' }, // extraPlugins
+            {
+              name: 'document',
+              groups: ['mode', 'document', 'doctools'],
+            },
           ],
         }}
         {...props}
