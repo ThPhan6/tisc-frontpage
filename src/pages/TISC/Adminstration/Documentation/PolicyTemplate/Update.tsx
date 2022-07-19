@@ -28,7 +28,6 @@ const CreateAgreementPoliciesPage = () => {
 
   const fetchOne = () => {
     getOnePolicyTemplete(params.id).then((res) => {
-      console.log(res);
       if (res) {
         setValue({
           message: res.document.document,
@@ -82,7 +81,6 @@ const CreateAgreementPoliciesPage = () => {
           handleSubmit={handleSubmit}
           handleCancel={history.goBack}
           submitButtonStatus={submitButtonStatus.value}
-          disableSubmitButton
         >
           <FormGroup label="Title" required={true} layout="vertical" formClass={styles.title}>
             <div className={styles.title_field}>
