@@ -94,12 +94,14 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
     if (!isValidEmail) {
       return message.error(MESSAGE_ERROR.EMAIL);
     }
+    console.log('selectedFunctionalTypes', selectedFunctionalTypes);
     return onSubmit({
       ...data,
       functional_type_ids: selectedFunctionalTypes.map((selected) => {
         if (selected.value === 'other') {
           return selected.label as string;
         }
+
         return selected.value;
       }),
     });
