@@ -12,7 +12,7 @@ export interface EntryFormWrapperProps {
   submitButtonStatus?: boolean;
 }
 
-export interface FormNameInputProp {
+export interface FormNameInputProps {
   HandleOnClickAddIcon?: () => void;
   title: string;
   placeholder?: string;

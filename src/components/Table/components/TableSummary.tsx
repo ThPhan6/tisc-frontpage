@@ -1,12 +1,12 @@
 import { Title, BodyText } from '@/components/Typography';
-import type { ISummaryResponse } from '../types';
+import type { SummaryResponse } from '../types';
 import styles from '../styles/table.less';
 
-interface ITableSummary {
-  summary: ISummaryResponse[];
+interface TableSummaryProps {
+  summary: SummaryResponse[];
 }
 
-const TableSummary = ({ summary }: ITableSummary) => {
+const TableSummary = ({ summary }: TableSummaryProps) => {
   return (
     <div className={`${styles.customPaginator} ${styles.tableSummary}`}>
       {summary.map((item, index) => (

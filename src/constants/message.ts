@@ -23,6 +23,34 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_CATEGORY_ERROR: 'Delete the category error',
   UPDATE_CATEGORY_SUCCESS: 'Update the category successfully',
   UPDATE_CATEGORY_ERROR: 'Update the category error',
+  GET_LIST_CATEGORY_ERROR: 'Failed to get list category',
+
+  // product
+  CREATE_PRODUCT_SUCCESS: 'Create product card successfully',
+  CREATE_PRODUCT_ERROR: 'Failed to create product card',
+  UPDATE_PRODUCT_SUCCESS: 'Update product card successfully',
+  UPDATE_PRODUCT_ERROR: 'Failed to update product card',
+  GET_LIST_PRODUCT_BY_BRAND_ERROR: 'Failed to get product list',
+  DELETE_PRODUCT_SUCCESS: 'Delete product successfully',
+  DELETE_PRODUCT_ERROR: 'Failed to delete product',
+  DUPLICATE_PRODUCT_SUCCESS: 'Duplicate product successfully',
+  DUPLICATE_PRODUCT_ERROR: 'Failed to duplicate product',
+  GET_ONE_PRODUCT_ERROR: 'Failed to get product information',
+
+  // product catelogue
+  CREATE_PRODUCT_CATELOGUE_SUCCESS: 'Create product catelogue successfully',
+  CREATE_PRODUCT_CATELOGUE_ERROR: 'Failed to create product catelogue',
+  GET_PRODUCT_CATELOGUE_BY_PRODUCT_ID_ERROR: 'Failed to get product catelogues',
+
+  // product download
+  CREATE_PRODUCT_DOWNLOAD_SUCCESS: 'Create product download successfully',
+  CREATE_PRODUCT_DOWNLOAD_ERROR: 'Failed to create product download',
+  GET_PRODUCT_DOWNLOAD_BY_PRODUCT_ID_ERROR: 'Failed to get product downloads',
+
+  // product tip
+  CREATE_PRODUCT_TIP_SUCCESS: 'Create product tip successfully',
+  CREATE_PRODUCT_TIP_ERROR: 'Failed to create product tip',
+  GET_PRODUCT_TIP_BY_PRODUCT_ID_ERROR: 'Failed to get product tips',
 
   // ATTRIBUTE
   GET_ATTRRIBUTE_DATA_FAILED: 'Failed to get attribute data',
@@ -61,6 +89,18 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PRESET_ERROR: 'Update preset error',
   GET_ONE_PRESET_ERROR: 'Get one preset error',
 
+  // email auto
+  GET_ONE_EMAIL_AUTO_ERROR: 'Get one email auto error',
+  GET_LIST_EMAIL_AUTO_ERROR: 'Get list email auto error',
+  GET_TARGETEDFOR_LIST_EMAIL_AUTO_ERROR: 'Get list targeted-for  error',
+  GET_TOPIC_LIST_EMAIL_AUTO_ERROR: 'Get list topic  error',
+  CREATE_EMAIL_AUTO_SUCCESS: 'Create email auto successfully',
+  CREATE_EMAIL_AUTO_ERROR: 'Create email auto error',
+  DELETE_EMAIL_AUTO_SUCCESS: 'Delete email auto successfully',
+  DELETE_EMAIL_AUTO_ERROR: 'Delete email auto error',
+  UPDATE_EMAIL_AUTO_SUCCESS: 'Update email auto successfully',
+  UPDATE_EMAIL_AUTO_ERROR: 'Update email auto error',
+
   // configuration
   GET_BRAND_DATA_ERROR: 'Failed to get Brand data',
   GET_BRAND_SUMMARY_DATA_ERROR: 'Failed to get Brand summary data',
@@ -72,6 +112,46 @@ export const MESSAGE_NOTIFICATION = {
   GET_ONE_MARKET_AVAILABILITY_ERROR: 'Get one market availability error',
   UPDATE_MARKET_AVAILABILITY_SUCCESS: 'Update market availability successfully',
   UPDATE_MARKET_AVAILABILITY_ERROR: 'Update market availability  error',
+
+  // permission
+  GET_PERMISSION_DATA_ERROR: 'Failed to get Permission data',
+  // inspirational quotation
+  GET_LIST_INSPIRATIONAL_QUOTATION_ERROR: 'Get list inspirational quotation error',
+  GET_ONE_INSPIRATIONAL_QUOTATION_ERROR: 'Get one inspirational quotation error',
+  CREATE_INSPIRATIONAL_QUOTATION_SUCCESS: 'Create inspirational quotation successfully',
+  CREATE_INSPIRATIONAL_QUOTATION_ERROR: 'Create inspirational quotation error',
+  DELETE_INSPIRATIONAL_QUOTATION_SUCCESS: 'Delete inspirational quotation successfully',
+  DELETE_INSPIRATIONAL_QUOTATION_ERROR: 'Delete inspirational quotation error',
+  UPDATE_INSPIRATIONAL_QUOTATION_SUCCESS: 'Update inspirational quotation successfully',
+  UPDATE_INSPIRATIONAL_QUOTATION_ERROR: 'Update inspirational quotation error',
+  //location
+  GET_COUNTRIES_ERROR: 'Failed to get countries data',
+  GET_STATES_ERROR: 'Failed to get states data',
+  GET_CITIES_ERROR: 'Failed to get cities data',
+  GET_LIST_COUNTRY_GROUP: 'Failed to get list country group data',
+  GET_ONE_COUNTRY_ERROR: 'Failed to get one country',
+  CREATE_LOCATION_SUCCESS: 'Create location successfully',
+  CREATE_LOCATION_FAILED: 'Failed to create new location',
+  UPDATE_LOCATION_SUCCESS: 'Update location successfully',
+  UPDATE_LOCATION_FAILED: 'Failed to update location',
+  DELETE_LOCATION_SUCCESS: 'Delete location successfully',
+  DELETE_LOCATION_FAILED: 'Failed to delete location',
+  GET_LOCATION_FAILED: 'Failed to get location data',
+
+  //distributor
+  CREATE_DISTRIBUTOR_SUCCESS: 'Create distributor successfully',
+  CREATE_DISTRIBUTOR_ERROR: 'Create distributor error',
+  DELETE_DISTRIBUTOR_SUCCESS: 'Delete distributor successfully',
+  DELETE_DISTRIBUTOR_ERROR: 'Delete distributor error',
+  UPDATE_DISTRIBUTOR_SUCCESS: 'Update distributor successfully',
+  UPDATE_DISTRIBUTOR_ERROR: 'Update distributor error',
+  GET_ONE_DISTRIBUTOR_ERROR: 'Get one distributor error',
+
+  //brand-profile
+  UPDATE_BRAND_PROFILE_SUCCESS: 'Update profile successfully',
+  UPDATE_BRAND_PROFILE_ERROR: 'Update profile error',
+  UPDATE_LOGO_BRAND_PROFILE_SUCCESS: 'Update logo brand profile successfully',
+  UPDATE_LOGO_BRAND_PROFILE_ERROR: 'Update logo brand profile error',
 };
 
 export const MESSAGE_TOOLTIP = {

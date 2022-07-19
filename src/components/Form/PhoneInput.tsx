@@ -2,6 +2,7 @@ import { Input } from 'antd';
 import { FC, useEffect, useState } from 'react';
 import { BodyText } from '../Typography';
 import styles from './styles/PhoneInput.less';
+import { formatPhoneCode } from '@/helper/utils';
 import { PhoneInputProps } from './types';
 
 export const PhoneInput: FC<PhoneInputProps> = ({
@@ -13,6 +14,7 @@ export const PhoneInput: FC<PhoneInputProps> = ({
   codeReadOnly,
   phoneNumberReadOnly,
   status,
+  containerClass,
 }) => {
   const [phoneInputValue, setPhoneInputValue] = useState({
     zoneCode: '',
@@ -52,7 +54,11 @@ export const PhoneInput: FC<PhoneInputProps> = ({
   };
 
   return (
-    <div className={`${styles['phone-input-container']} ${status && styles[`${status}-status`]}`}>
+    <div
+      className={`${styles['phone-input-container']} ${
+        status ? styles[`${status}-status`] : ''
+      } ${containerClass} `}
+    >
       <div className={styles['wrapper-code-input']}>
         <BodyText level={5} fontFamily="Roboto">
           +
@@ -61,8 +67,7 @@ export const PhoneInput: FC<PhoneInputProps> = ({
           readOnly={codeReadOnly}
           className={styles['code-input']}
           placeholder={codePlaceholder || '00'}
-          value={value?.zoneCode || phoneInputValue.zoneCode}
-          type="number"
+          value={formatPhoneCode(phoneInputValue.zoneCode, true)}
           onChange={handleOnChange}
           name="zoneCode"
           defaultValue={defaultValue?.zoneCode || ''}
@@ -76,7 +81,10 @@ export const PhoneInput: FC<PhoneInputProps> = ({
         readOnly={phoneNumberReadOnly}
         placeholder={phonePlaceholder}
         value={value?.phoneNumber || phoneInputValue.phoneNumber}
-        className={styles['phone-input']}
+        className={`
+          ${styles['phone-input']}
+          phone-input-custom-text
+        `}
         type="number"
         onChange={handleOnChange}
         name="phoneNumber"

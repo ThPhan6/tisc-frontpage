@@ -1,5 +1,5 @@
 import { Radio, Space } from 'antd';
-import type { FC } from 'react';
+import { FC } from 'react';
 import { useState } from 'react';
 import type { CustomRadioProps } from './types';
 import style from './styles/index.less';
@@ -53,7 +53,15 @@ export const CustomRadio: FC<CustomRadioProps> = ({
       >
         <Space direction={isRadioList ? 'vertical' : direction}>
           {options.map((option, index) => (
-            <label key={index} className={style.panel_radio} htmlFor={`${option.value}_${index}`}>
+            <label
+              key={index}
+              className={`
+                ${style.panel_radio}
+                ${option.customClass ? option.customClass : ''}
+                radio-label
+              `}
+              htmlFor={`${option.value}_${index}`}
+            >
               <div style={{ width: '100%' }}>
                 {isRadioList ? (
                   <div className={style['item-wrapper']}>

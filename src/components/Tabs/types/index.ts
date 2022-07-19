@@ -1,6 +1,6 @@
 import type { TabsProps } from 'antd';
 
-export interface TabProp {
+export interface TabItem {
   tab: string;
   key: string;
   icon?: JSX.Element;
@@ -8,7 +8,7 @@ export interface TabProp {
 }
 
 export interface CustomTabsProps extends TabsProps {
-  listTab: TabProp[];
+  listTab: TabItem[];
   tabDisplay?: 'start' | 'end' | 'space';
   tabPosition?: 'left' | 'right' | 'top' | 'bottom';
   heightItem?: string;

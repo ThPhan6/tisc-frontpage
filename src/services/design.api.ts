@@ -1,26 +1,26 @@
-import { request } from 'umi';
-import { message } from 'antd';
-import type { IDesignFirmList } from '@/types';
 import type {
-  IDataTableResponse,
-  IPaginationRequest,
-  IPaginationResponse,
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
 } from '@/components/Table/types';
+import { DesignFirm } from '@/types';
+import { message } from 'antd';
+import { request } from 'umi';
 
-interface IDesignFirmListResponse {
-  designers: IDesignFirmList;
-  pagination: IPaginationResponse;
+interface DesignFirmListResponse {
+  designers: DesignFirm;
+  pagination: PaginationResponse;
 }
 
 export async function getDesignFirmPagination(
-  params: IPaginationRequest,
-  callback: (data: IDataTableResponse) => void,
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
 ) {
   request(`/api/design/get-list`, {
     method: 'GET',
     params,
   })
-    .then((response: { data: IDesignFirmListResponse }) => {
+    .then((response: { data: DesignFirmListResponse }) => {
       const { designers, pagination } = response.data;
       callback({
         data: designers,

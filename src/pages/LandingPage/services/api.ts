@@ -2,14 +2,14 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { request } from 'umi';
 import type {
-  LoginBodyProp,
+  LoginInput,
   LoginResponseProp,
+  ResetPasswordRequestBody,
   UserInfoDataProp,
-  ResetPasswordBodyProp,
 } from '../types';
 
 export async function loginMiddleware(
-  data: LoginBodyProp,
+  data: LoginInput,
   callback: (type: STATUS_RESPONSE, message?: string) => void,
 ) {
   request(`/api/auth/login`, {
@@ -25,8 +25,25 @@ export async function loginMiddleware(
     });
 }
 
+export async function brandLoginMiddleware(
+  data: LoginInput,
+  callback: (type: STATUS_RESPONSE, message?: string) => void,
+) {
+  request(`/api/auth/login/brand`, {
+    method: 'POST',
+    data,
+  })
+    .then((response: LoginResponseProp) => {
+      localStorage.setItem('access_token', response.token);
+      callback(STATUS_RESPONSE.SUCCESS);
+    })
+    .catch((error) => {
+      callback(STATUS_RESPONSE.ERROR, error?.data?.message || MESSAGE_NOTIFICATION.LOGIN_ERROR);
+    });
+}
+
 export async function resetPasswordMiddleware(
-  data: ResetPasswordBodyProp,
+  data: ResetPasswordRequestBody,
   callback: (type: STATUS_RESPONSE, message?: string) => void,
 ) {
   request(`/api/auth/reset-password-and-login`, {

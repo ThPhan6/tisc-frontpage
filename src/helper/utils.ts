@@ -7,6 +7,7 @@ import { pushTo } from './history';
 export const REGEX_PASSWORD =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d][\w~@#$%^&*+=`|{}:;!.?\"()\[\]-]{7,}$/;
 export const REGEX_EMAIL = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+export const REGEX_GET_CONTENT_ONLY = /[_.\n\s\r\t__]*/g;
 
 export const validateEmail = (email: string) => {
   return REGEX_EMAIL.test(email);
@@ -16,15 +17,33 @@ export const validatePassword = (password: string) => {
   return REGEX_PASSWORD.test(password);
 };
 
-export const validatePhoneInput = (value: PhoneInputValueProp) => {
-  return value.phoneNumber && value.zoneCode;
-};
-
 export const redirectAfterLogin = async () => {
   if (!history) return;
   const { query } = history.location;
   const { redirect } = query as { redirect: string };
   pushTo(redirect || PATH.homePage);
+};
+export const redirectAfterBrandOrDesignLogin = async () => {
+  pushTo(PATH.brandHomePage);
+};
+
+export const getLetterAvatarBackgroundColor = (name: string) => {
+  let digitString = '';
+
+  /// convert character string to integer string
+  for (let i = 0; i < name.length; i++) {
+    digitString += name[i].charCodeAt(0);
+  }
+
+  const number = Number(digitString) * 9999;
+  const backgroundColor =
+    '#' +
+    number
+      .toString()
+      .replace(/\D/g, '')
+      .substring(number.toString().length - 6, number.toString().length);
+
+  return backgroundColor;
 };
 
 export const getBase64 = (file: any): Promise<string> =>
@@ -36,10 +55,10 @@ export const getBase64 = (file: any): Promise<string> =>
   });
 
 export const isShowErrorMessage = (
-  type: 'email' | 'password' | 'phone-input',
+  type: 'email' | 'password',
   value: string | PhoneInputValueProp,
 ) => {
-  if (typeof value === 'string' && type !== 'phone-input') {
+  if (typeof value === 'string') {
     if (!value) {
       return true;
     }
@@ -48,29 +67,29 @@ export const isShowErrorMessage = (
     }
     return validatePassword(value);
   }
-  if (type === 'phone-input' && typeof value !== 'string') {
-    if (!value.phoneNumber && !value.zoneCode) {
-      return true;
-    }
-    return validatePhoneInput(value);
-  }
   return false;
 };
 
 export function showImageUrl(url: string) {
+  if (url.startsWith('data:image')) {
+    return url;
+  }
   return `${STORE_URL}${url}`;
 }
 
-export const getPersonalPhone = (phone: string | undefined) => {
-  if (phone) {
-    const phoneArray = phone.split(' ');
-    return {
-      zoneCode: phoneArray[0],
-      phoneNumber: phoneArray[1],
-    };
-  }
-};
-
 export const checkUndefined = (value: string | number | undefined) => {
   return isUndefined(value) ? 'N/A' : value;
+};
+
+export const formatPhoneCode = (phoneCode: string, removePlus: boolean = false) => {
+  if (phoneCode.startsWith('+') || phoneCode === '') {
+    if (removePlus) {
+      return phoneCode.substring(1);
+    }
+    return phoneCode;
+  }
+  if (removePlus) {
+    return phoneCode;
+  }
+  return `+${phoneCode}`;
 };

@@ -1,3 +1,6 @@
+import { renderIconByName } from '@/components/Menu/Icon';
+import { FaqForm } from '@/pages/TISC/Adminstration/Documentation/HowTo/types';
+
 export enum STATUS_RESPONSE {
   SUCCESS = 'SUCCESS',
   ERROR = 'ERROR',
@@ -187,4 +190,127 @@ export const dataMenuFirm = {
       ],
     },
   ],
+};
+export const IMAGE_ACCEPT_TYPES = {
+  image: '.png,.jpeg,.webp,.svg,.jpg',
+};
+export const howToPagePanel: FaqForm = {
+  tisc: {
+    data: [
+      {
+        title: 'Onboarding Guide',
+        description: '',
+        FAQ: [],
+      },
+      {
+        title: 'My Workspace',
+        icon: renderIconByName('workspace-icon.svg'),
+        description: '',
+        FAQ: [],
+      },
+      {
+        title: 'User Group',
+        icon: renderIconByName('user-group-icon.svg'),
+        description: '',
+        FAQ: [],
+      },
+      {
+        title: 'Projects',
+        icon: renderIconByName('project-icon.svg'),
+        description: '',
+        FAQ: [],
+      },
+      {
+        title: 'Products',
+        icon: renderIconByName('product-icon.svg'),
+        description: '',
+        FAQ: [],
+      },
+      {
+        title: 'Adminstration',
+        icon: renderIconByName('adminstration-icon.svg'),
+        description: '',
+        FAQ: [],
+      },
+    ],
+  },
+  brands: {
+    data: [
+      {
+        title: 'Onboarding Guide',
+        description: '',
+        FAQ: [],
+      },
+      {
+        title: 'My Workspace',
+        icon: renderIconByName('workspace-icon.svg'),
+        description: '',
+        FAQ: [],
+      },
+      {
+        title: 'Products',
+        icon: renderIconByName('product-icon.svg'),
+        description: '',
+        FAQ: [],
+      },
+      {
+        title: 'General Inquires',
+        icon: renderIconByName('general-inquire-icon.svg'),
+        description: '',
+        FAQ: [],
+      },
+      {
+        title: 'Project Tracking',
+        icon: renderIconByName('project-tracking-icon.svg'),
+        description: '',
+        FAQ: [],
+      },
+      {
+        title: 'Adminstration',
+        icon: renderIconByName('adminstration-icon.svg'),
+        description: '',
+        FAQ: [],
+      },
+    ],
+  },
+  designers: {
+    data: [
+      {
+        title: 'Onboarding Guide',
+        description: '',
+        FAQ: [],
+      },
+      {
+        title: 'My Workspace',
+        icon: renderIconByName('workspace-icon.svg'),
+        description: '',
+        FAQ: [],
+      },
+      {
+        title: 'My Favourites',
+        icon: renderIconByName('my-favourite-icon.svg'),
+        description: '',
+        FAQ: [],
+      },
+      {
+        title: 'Products',
+        icon: renderIconByName('product-icon.svg'),
+        description: '',
+        FAQ: [],
+      },
+      {
+        title: 'Projects',
+        icon: renderIconByName('project-icon.svg'),
+        description: '',
+        FAQ: [],
+      },
+
+      {
+        title: 'Adminstration',
+        icon: renderIconByName('adminstration-icon.svg'),
+        description: '',
+        FAQ: [],
+      },
+    ],
+  },
 };

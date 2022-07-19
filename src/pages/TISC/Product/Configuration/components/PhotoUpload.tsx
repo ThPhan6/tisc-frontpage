@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BodyText } from '@/components/Typography';
 import ProductPlaceHolderImage from '@/assets/images/product-placeholder.png';
 import { ReactComponent as UploadIcon } from '@/assets/icons/action-upload-icon.svg';
@@ -8,61 +8,36 @@ import SmallIconButton from '@/components/Button/SmallIconButton';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { Row, Col, message } from 'antd';
 import { getBase64 } from '@/helper/utils';
-import type { RcFile, UploadProps } from 'antd/es/upload';
+import type { UploadProps } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { Upload } from 'antd';
-import { map } from 'lodash';
-import type { IBrandDetail } from '@/types';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from '@/reducers';
+import { setPartialProductDetail, setProductDetailImage } from '@/reducers/product';
+import { showImageUrl } from '@/helper/utils';
+import { IMAGE_ACCEPT_TYPES } from '@/constants/util';
+import type { ProductKeyword } from '@/types';
 
 import styles from '../styles/details.less';
 
-interface IPhotoData {
-  base64?: string;
-  file: RcFile;
-}
-interface IPhotoUpload {
-  brand?: IBrandDetail;
-}
+const PhotoUpload: React.FC = () => {
+  const product = useAppSelector((state) => state.product);
+  const dispatch = useDispatch();
+  const { images, keywords } = product.details;
 
-const PhotoUpload: React.FC<IPhotoUpload> = (props) => {
-  const { brand } = props;
-  const [photos, setPhotos] = useState<IPhotoData[]>([]);
-  const [photoNames, setPhotoNames] = useState({
-    keyword1: '',
-    keyword2: '',
-    keyword3: '',
-    keyword4: '',
-  });
-
-  const handleLoadPhoto = async (
-    file: UploadFile<any>,
-    type: 'primary' | 'secondary' = 'primary',
-  ) => {
-    const base64 = await getBase64(file.originFileObj);
-    setPhotos((prevState) => {
-      const uploadedFile = file.originFileObj as RcFile;
-      if (type === 'primary') {
-        return [
-          {
-            base64,
-            file: uploadedFile,
-          },
-          ...prevState,
-        ];
-      }
-      return [
-        ...prevState,
-        {
-          base64,
-          file: uploadedFile,
-        },
-      ];
-    });
+  const handleLoadPhoto = async (file: UploadFile<any>, type: 'first' | 'last' = 'first') => {
+    const imageBase64 = await getBase64(file.originFileObj);
+    dispatch(
+      setProductDetailImage({
+        type,
+        image: imageBase64,
+      }),
+    );
   };
 
   const primaryProps: UploadProps = {
     name: 'file',
-    accept: '.png,.jpeg,.webp,.svg,.jpg',
+    accept: IMAGE_ACCEPT_TYPES.image,
     multiple: true,
     onChange: async (info) => {
       const { file, event } = info;
@@ -71,7 +46,7 @@ const PhotoUpload: React.FC<IPhotoUpload> = (props) => {
       }
     },
     beforeUpload: (_file, fileList) => {
-      if (photos.length + fileList.length > 9) {
+      if (images.length + fileList.length > 9) {
         message.error('Max photos is 9');
         return false;
       }
@@ -86,7 +61,7 @@ const PhotoUpload: React.FC<IPhotoUpload> = (props) => {
     onChange: async (info) => {
       const { file, event } = info;
       if (event?.percent === 100) {
-        handleLoadPhoto(file, 'secondary');
+        handleLoadPhoto(file, 'last');
       }
     },
     className: styles.addMoreSubPhotos,
@@ -100,10 +75,14 @@ const PhotoUpload: React.FC<IPhotoUpload> = (props) => {
 
   const deletePhoto = (e: React.ChangeEvent<any>, index: number) => {
     e.stopPropagation();
-    const newPhotos = photos.filter((_photo, key) => {
+    const newPhotos = images.filter((_photo, key) => {
       return index !== key;
     });
-    setPhotos(newPhotos);
+    dispatch(
+      setPartialProductDetail({
+        images: newPhotos,
+      }),
+    );
   };
 
   return (
@@ -111,8 +90,8 @@ const PhotoUpload: React.FC<IPhotoUpload> = (props) => {
       <div className={styles.productImageWrapper}>
         <Upload.Dragger {...primaryProps}>
           <div className={styles.uploadZoneContent}>
-            {photos[0]?.base64 ? (
-              <img src={photos[0]?.base64} className={styles.primaryPhoto} />
+            {images[0] ? (
+              <img src={showImageUrl(images[0])} className={styles.primaryPhoto} />
             ) : (
               <div className={styles.dropzoneNote}>
                 <BodyText level={3}>
@@ -141,13 +120,13 @@ const PhotoUpload: React.FC<IPhotoUpload> = (props) => {
         <Row className={styles.photoList} gutter={8}>
           <Col span={18}>
             <Row gutter={8} className={styles.listWrapper}>
-              {photos
+              {images
                 .filter((_item, index) => index !== 0)
-                .map((item, key) => (
+                .map((image, key) => (
                   <Col span={8} key={key}>
                     <div className={styles.fileItem}>
                       <div className={styles.filePreview}>
-                        <img src={item.base64 ? item.base64 : ProductPlaceHolderImage} />
+                        <img src={showImageUrl(image) ?? ProductPlaceHolderImage} />
                         <div className={styles.subPhotoAction}>
                           <SmallIconButton
                             icon={<DeleteIcon />}
@@ -176,21 +155,24 @@ const PhotoUpload: React.FC<IPhotoUpload> = (props) => {
         </Row>
         <div className={styles.photoKeyword}>
           <BodyText level={6} fontFamily="Roboto">
-            {brand?.name ?? 'N/A'}
+            {product.brand?.name ?? 'N/A'}
           </BodyText>
-          {map(photoNames, (value, name) => (
+          {keywords.map((value, index) => (
             <CustomInput
-              key={name}
-              placeholder={name}
+              key={index}
+              placeholder={`keyword${index + 1}`}
               autoWidth
               defaultWidth={55}
               value={value}
-              onChange={(e) =>
-                setPhotoNames({
-                  ...photoNames,
-                  [name]: e.target.value,
-                })
-              }
+              onChange={(e) => {
+                const newKeywords = [...keywords] as ProductKeyword;
+                newKeywords[index] = e.target.value;
+                dispatch(
+                  setPartialProductDetail({
+                    keywords: newKeywords,
+                  }),
+                );
+              }}
             />
           ))}
         </div>

@@ -1,11 +1,11 @@
-export interface ISubBasisPreset {
+export interface SubBasisPreset {
   id: string;
   value_1: string;
   value_2: string;
   unit_1: string;
   unit_2: string;
 }
-export interface IBasisPresetListResponse {
+export interface BasisPresetListResponse {
   id: string;
   name: string;
   count: number;
@@ -13,7 +13,7 @@ export interface IBasisPresetListResponse {
     id: string;
     name: string;
     count: number;
-    subs: ISubBasisPreset[];
+    subs: SubBasisPreset[];
   }[];
   created_at: string;
 }

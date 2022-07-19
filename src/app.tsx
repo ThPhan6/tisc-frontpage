@@ -13,6 +13,7 @@ import { PATH, PUBLIC_PATH } from './constants/path';
 import type { UserInfoDataProp } from './pages/LandingPage/types';
 import Header from '@/components/Header';
 import AsideMenu from './components/Menu/AsideMenu';
+import { setUserProfile } from './reducers/user';
 
 // config request umi
 const errorHandler = function (error: any) {
@@ -61,6 +62,7 @@ export async function getInitialState(): Promise<{
   };
   if (token) {
     const currentUser = await fetchUserInfo();
+    store.dispatch(setUserProfile(currentUser));
     return {
       fetchUserInfo,
       currentUser,

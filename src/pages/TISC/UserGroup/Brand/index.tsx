@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import CustomTable from '@/components/Table';
-import type { ICustomTableColumnType } from '@/components/Table/types';
+import type { TableColumnItem } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
@@ -22,7 +22,7 @@ const BrandList: React.FC = () => {
     alert('Coming Soon!');
   };
 
-  const TableColumns: ICustomTableColumnType<IBrandListItem>[] = [
+  const TableColumns: TableColumnItem<IBrandListItem>[] = [
     {
       title: '',
       dataIndex: 'logo',

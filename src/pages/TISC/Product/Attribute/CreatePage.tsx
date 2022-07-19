@@ -5,10 +5,10 @@ import { useBoolean } from '@/helper/hook';
 import { useState } from 'react';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { pushTo } from '@/helper/history';
-import type { IAttributeForm } from '@/types';
+import type { AttributeForm } from '@/types';
 import { createAttribute } from '@/services';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-const DEFAULT_ATTRIBUTE: IAttributeForm = {
+const DEFAULT_ATTRIBUTE: AttributeForm = {
   name: '',
   subs: [],
 };
@@ -17,9 +17,9 @@ const CreateAttributePage = () => {
   const { activePath, attributeLocation } = useAttributeLocation();
   const isLoading = useBoolean();
   const submitButtonStatus = useBoolean(false);
-  const [data, setData] = useState<IAttributeForm>(DEFAULT_ATTRIBUTE);
+  const [data, setData] = useState<AttributeForm>(DEFAULT_ATTRIBUTE);
 
-  const handleCreate = (submitData: IAttributeForm) => {
+  const handleCreate = (submitData: AttributeForm) => {
     isLoading.setValue(true);
     createAttribute(submitData).then((isSuccess) => {
       isLoading.setValue(false);

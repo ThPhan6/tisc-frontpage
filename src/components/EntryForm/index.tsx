@@ -7,6 +7,8 @@ import { BodyText, MainTitle } from '../Typography';
 import styles from './styles/index.less';
 import { EntryFormWrapperProps } from './types';
 
+export const contentId = `entry-form-wrapper--children-${Date.now()}`;
+
 export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   handleSubmit,
   handleCancel,
@@ -34,7 +36,9 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
             </div>
             <div className={styles.header_content}>{headerContent}</div>
           </div>
-          <div className={`${styles.content} ${contentClass}`}>{children}</div>
+          <div id={contentId} className={`${styles.content} ${contentClass}`}>
+            {children}
+          </div>
           <div className={styles.footer_main}>
             <div className={styles.footer_content}>{footerContent}</div>
             <div className={styles.footer}>

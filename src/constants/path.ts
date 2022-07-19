@@ -6,6 +6,7 @@ export const PATH = {
   // private path
   profiles: '/profiles',
   homePage: '/tisc/dashboard',
+  brandHomePage: '/brand/dashboard',
 
   //how-to
   howTo: '/howTo',
@@ -36,14 +37,37 @@ export const PATH = {
   attributeGeneralUpdate: '/tisc/products/attributes/general/:id',
   //
 
+  // inspirational quotation
+  quotation: '/tisc/adminstration/messages/quotation',
+  createQuotation: '/tisc/adminstration/messages/quotation/create',
+  updateQuotation: '/tisc/adminstration/messages/quotation/update/:id',
+  // email autorepsonder
+  emailAuto: '/tisc/adminstration/messages/email-auto',
+  updateEmailAuto: '/tisc/adminstration/messages/email-auto/update/:id',
+
   // configuration
   productConfiguration: '/tisc/products/configuration',
   productConfigurationCreate: '/tisc/products/configuration/create/:brandId',
   productConfigurationUpdate: '/tisc/products/configuration/:id',
 
+  // tisc - locations
+  tiscLocation: '/tisc/adminstration/locations',
+  tiscLocationCreate: '/tisc/adminstration/locations/create',
+  tiscLocationUpdate: '/tisc/adminstration/locations/:id',
+
+  //brand
+  //adminstration
   // market availablity
   marketAvailability: '/brand/adminstration/market-availability',
   updateMarketAvailability: '/brand/adminstration/market-availability/update/:id',
+  //locations
+  brandLocation: '/brand/adminstration/locations',
+  brandLocationCreate: '/brand/adminstration/locations/create',
+  brandLocationUpdate: '/brand/adminstration/locations/:id',
+  //distributors
+  distributors: '/brand/adminstration/distributors',
+  createDistributor: '/brand/adminstration/distributors/create',
+  updateDistributor: '/brand/adminstration/distributors/:id',
 };
 
 export const PUBLIC_PATH = [PATH.landingPage, PATH.resetPassword];
