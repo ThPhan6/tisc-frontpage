@@ -43,3 +43,8 @@ export interface DataTableResponse {
   pagination: TablePaginationConfig;
   summary?: SummaryResponse[];
 }
+
+export type GetDataListResponse = {
+  pagination: PaginationResponse;
+  summary: SummaryResponse[];
+};

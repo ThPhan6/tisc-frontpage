@@ -12,6 +12,7 @@ export const PATH = {
   howTo: '/howTo',
 
   // Tisc
+  // category
   categories: '/tisc/products/categories',
   createCategories: '/tisc/products/categories/create',
   updateCategories: '/tisc/products/categories/update/:id',
@@ -49,6 +50,10 @@ export const PATH = {
   productConfiguration: '/tisc/products/configuration',
   productConfigurationCreate: '/tisc/products/configuration/create/:brandId',
   productConfigurationUpdate: '/tisc/products/configuration/:id',
+
+  // documentation
+  policy: '/tisc/adminstration/documentation/agreement-policy-terms',
+  policyUpdate: '/tisc/adminstration/documentation/agreement-policy-terms/:id',
 
   // tisc - locations
   tiscLocation: '/tisc/adminstration/locations',
