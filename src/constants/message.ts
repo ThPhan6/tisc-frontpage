@@ -118,6 +118,7 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_INSPIRATIONAL_QUOTATION_ERROR: 'Delete inspirational quotation error',
   UPDATE_INSPIRATIONAL_QUOTATION_SUCCESS: 'Update inspirational quotation successfully',
   UPDATE_INSPIRATIONAL_QUOTATION_ERROR: 'Update inspirational quotation error',
+
   //location
   GET_COUNTRIES_ERROR: 'Failed to get countries data',
   GET_STATES_ERROR: 'Failed to get states data',

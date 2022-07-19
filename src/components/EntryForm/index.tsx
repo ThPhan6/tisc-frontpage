@@ -16,8 +16,8 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   contentClass,
   children,
   title = 'ENTRY FORM',
-  handleDisabledCancel = false,
-  handleDisabledSubmit = false,
+  disableCancelButton = false,
+  disableSubmitButton = false,
   submitButtonStatus = false,
 }) => {
   return (
@@ -43,7 +43,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
               size="small"
               buttonClass={styles.footer__cancel_bt}
               onClick={handleCancel}
-              disabled={handleDisabledCancel}
+              disabled={disableCancelButton}
             >
               Cancel
             </CustomButton>
@@ -62,7 +62,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
                   size="small"
                   width="64px"
                   onClick={handleSubmit}
-                  disabled={handleDisabledSubmit}
+                  disabled={disableSubmitButton}
                 >
                   <BodyText level={6} fontFamily="Roboto">
                     Save
@@ -82,7 +82,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
 size="small"
 buttonClass={styles.footer__submit_bt}
 onClick={handleSubmit}
-disabled={handleDisabledCancel}
+disabled={disableCancelButton}
 >
 Save
 </CustomButton> */

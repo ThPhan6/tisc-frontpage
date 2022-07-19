@@ -4,8 +4,8 @@ export interface EntryFormWrapperProps {
   customClass?: string;
   contentClass?: string;
   title?: string;
-  handleDisabledCancel?: boolean;
-  handleDisabledSubmit?: boolean;
+  disableCancelButton?: boolean;
+  disableSubmitButton?: boolean;
   submitButtonStatus?: boolean;
 }
 
