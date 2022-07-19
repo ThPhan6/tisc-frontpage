@@ -8,9 +8,9 @@ import type {
   LocationForm,
 } from '@/types';
 import type {
-  IDataTableResponse,
-  IPaginationRequest,
-  IPaginationResponse,
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
 } from '@/components/Table/types';
 import { message } from 'antd';
 import { request } from 'umi';
@@ -80,13 +80,13 @@ export async function getCountryById(id: string) {
 }
 
 export async function getLocationPagination(
-  params: IPaginationRequest,
-  callback: (data: IDataTableResponse) => void,
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
 ) {
   return request<{
     data: {
       locations: ILocationDetail[];
-      pagination: IPaginationResponse;
+      pagination: PaginationResponse;
     };
   }>(`/api/location/get-list`, {
     method: 'GET',

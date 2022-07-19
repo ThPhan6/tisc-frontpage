@@ -57,6 +57,10 @@ export const PATH = {
 
   //brand
   //adminstration
+  //locations
+  brandLocation: '/brand/adminstration/locations',
+  brandLocationCreate: '/brand/adminstration/locations/create',
+  brandLocationUpdate: '/brand/adminstration/locations/:id',
   //distributors
   distributors: '/brand/adminstration/distributors',
   createDistributor: '/brand/adminstration/distributors/create',
