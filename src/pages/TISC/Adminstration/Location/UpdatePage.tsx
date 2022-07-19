@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import LocationEntryForm from './components/LocationEntryForm';
+import LocationEntryForm from '@/components/Location/LocationEntryForm';
 import { useBoolean } from '@/helper/hook';
-// import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-// import { ICustomTableColumnType } from '@/components/Table/types';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { LocationForm } from '@/types';
 import { updateLocation, getLocationById } from '@/services';

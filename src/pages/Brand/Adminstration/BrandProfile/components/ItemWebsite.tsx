@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { WebsiteUrl } from '../types';
 import { ReactComponent as LeftIcon } from '@/assets/icons/pagination-right-18px.svg';
 import styles from '@/pages/Brand/Adminstration/BrandProfile/styles/index.less';
-import CountryModal from '@/components/LocationModal/CountryModal';
+import CountryModal from '@/components/Location/CountryModal';
 import { getCountryById } from '@/services';
 
 export const ItemWebsite: FC<WebsiteUrl> = ({ websiteValue, onChange }) => {

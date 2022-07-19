@@ -2,18 +2,16 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import type { FC } from 'react';
 import { useState, useEffect } from 'react';
 import InputGroup from '@/components/EntryForm/InputGroup';
-import CountryModal from '@/components/LocationModal/CountryModal';
-import StateModal from '@/components/LocationModal/StateModal';
-import CityModal from '@/components/LocationModal/CityModal';
+import CountryModal from '@/components/Location/CountryModal';
+import StateModal from '@/components/Location/StateModal';
+import CityModal from '@/components/Location/CityModal';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import type { LocationForm, FunctionalTypeData } from '@/types';
-import styles from '../styles/entryForm.less';
-import CustomCollapse from '@/components/Collapse';
-import { CustomCheckbox } from '@/components/CustomCheckbox';
+import styles from './styles/entryForm.less';
+import CollapseCheckboxList from '@/components/CustomCheckbox/CollapseCheckboxList';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
-import { BodyText } from '@/components/Typography';
 import { getListFunctionalType } from '@/services';
 import { validateEmail } from '@/helper/utils';
 import { MESSAGE_ERROR } from '@/constants/message';
@@ -58,7 +56,7 @@ const AttributeEntryForm: FC<IAttributeEntryForm> = (props) => {
       };
     }),
   );
-  const [departments, setFunctionalTypes] = useState<FunctionalTypeData[]>([]);
+  const [functionalTypes, setFunctionalTypes] = useState<FunctionalTypeData[]>([]);
 
   // validate email Address
   const isValidEmail = validateEmail(data.general_email);
@@ -146,28 +144,18 @@ const AttributeEntryForm: FC<IAttributeEntryForm> = (props) => {
       />
 
       <FormGroup label="Functional Type" required layout="vertical" formClass={styles.formGroup}>
-        <CustomCollapse
-          header={
-            <BodyText level={5} customClass="function-type-placeholder" fontFamily="Roboto">
-              select all relevance
-            </BodyText>
-          }
-          className={styles.functionTypeDropdown}
-        >
-          <CustomCheckbox
-            options={departments.map((department) => {
-              return {
-                label: department.name,
-                value: department.id,
-              };
-            })}
-            isCheckboxList
-            heightItem="36px"
-            otherInput
-            selected={selectedFunctionalTypes}
-            onChange={setSelectedFunctionalTypes}
-          />
-        </CustomCollapse>
+        <CollapseCheckboxList
+          options={functionalTypes.map((functionalType) => {
+            return {
+              label: functionalType.name,
+              value: functionalType.id,
+            };
+          })}
+          checked={selectedFunctionalTypes}
+          onChange={setSelectedFunctionalTypes}
+          placeholder="select all relevance"
+          otherInput
+        />
       </FormGroup>
 
       <InputGroup
