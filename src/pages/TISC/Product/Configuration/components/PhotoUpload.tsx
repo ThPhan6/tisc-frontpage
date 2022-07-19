@@ -16,7 +16,7 @@ import { useAppSelector } from '@/reducers';
 import { setPartialProductDetail, setProductDetailImage } from '@/reducers/product';
 import { showImageUrl } from '@/helper/utils';
 import { IMAGE_ACCEPT_TYPES } from '@/constants/util';
-import type { IProductKeyword } from '@/types';
+import type { ProductKeyword } from '@/types';
 
 import styles from '../styles/details.less';
 
@@ -165,7 +165,7 @@ const PhotoUpload: React.FC = () => {
               defaultWidth={55}
               value={value}
               onChange={(e) => {
-                const newKeywords = [...keywords] as IProductKeyword;
+                const newKeywords = [...keywords] as ProductKeyword;
                 newKeywords[index] = e.target.value;
                 dispatch(
                   setPartialProductDetail({

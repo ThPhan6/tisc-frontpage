@@ -4,7 +4,7 @@ import SpecificationAttribute from './SpecificationAttribute';
 import ProductVendor from './ProductVendor';
 import { CustomTabs } from '@/components/Tabs';
 import { getAllAttribute } from '@/services';
-import { IAttributebyType } from '@/types';
+import { AttributebyType } from '@/types';
 import styles from '../styles/details.less';
 import { LIST_TAB } from '../constants';
 import type { ACTIVE_KEY } from '../types';
@@ -16,7 +16,7 @@ interface ProductAttributeInterface {
 
 const ProductAttribute: React.FC<ProductAttributeInterface> = ({ activeKey, setActiveKey }) => {
   const [isReady, setIsReady] = useState(false);
-  const [attribute, setAttribute] = useState<IAttributebyType>({
+  const [attribute, setAttribute] = useState<AttributebyType>({
     general: [],
     feature: [],
     specification: [],

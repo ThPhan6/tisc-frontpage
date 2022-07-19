@@ -6,7 +6,7 @@ import { ReactComponent as AdminstrationIcon } from '@/assets/icons/adminstratio
 import styles from './index.less';
 import { Col, Row } from 'antd';
 import { Title } from '@/components/Typography';
-import { ItemHowTo } from './components/ItemHowTo';
+import { FaqComponent } from './components/FaqComponent';
 import { useState } from 'react';
 
 const HowTo = () => {
@@ -106,7 +106,7 @@ const HowTo = () => {
             </div>
             <div className={styles.list}>
               {data.map((item, index) => (
-                <ItemHowTo
+                <FaqComponent
                   value={item}
                   key={index}
                   activeKey={activeKey}

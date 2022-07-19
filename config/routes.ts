@@ -290,8 +290,24 @@
         path: '/tisc/adminstration/locations',
         name: 'location',
         icon: 'location-icon.svg',
-        component: './Welcome',
         access: 'tisc_administration_location',
+        routes: [
+          {
+            path: '/tisc/adminstration/locations',
+            component: './TISC/Adminstration/Location',
+            hideInMenu: true,
+          },
+          {
+            path: '/tisc/adminstration/locations/create',
+            hideInMenu: true,
+            component: './TISC/Adminstration/Location/CreatePage',
+          },
+          {
+            path: '/tisc/adminstration/locations/:id',
+            hideInMenu: true,
+            component: './TISC/Adminstration/Location/UpdatePage',
+          },
+        ],
       },
       {
         path: '/tisc/adminstration/team-profiles',
@@ -396,7 +412,7 @@
     routes: [
       {
         path: '/brand/adminstration/brand-profile',
-        name: 'brand_profile',
+        name: 'brand.profile',
         icon: 'brand-icon.svg',
         access: 'brand_administration_brand_profile',
         component: './Brand/Adminstration/BrandProfile',

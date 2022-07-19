@@ -36,8 +36,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   };
 
   const handleClickInput = () => {
-    const checkOtherInput = selected?.filter((checkbox) => checkbox.value === 'other').length === 0;
-    if (onChange && checkOtherInput) {
+    // const checkOtherInput = selected?.filter((checkbox) => checkbox.value === 'other').length === 0;
+    if (onChange && selected) {
       onChange([...selected, { label: inputValue, value: 'other' }]);
     }
   };

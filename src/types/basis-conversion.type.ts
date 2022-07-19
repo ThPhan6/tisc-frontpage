@@ -1,4 +1,4 @@
-export interface ISubBasisConversion {
+export interface SubBasisConversion {
   id: string;
   name_1: string;
   name_2: string;
@@ -10,11 +10,11 @@ export interface ISubBasisConversion {
   first_formula: string;
   second_formula: string;
 }
-export interface IBasisConversionListResponse {
+export interface BasisConversionListResponse {
   id: string;
   name: string;
   count: number;
-  subs: ISubBasisConversion[];
+  subs: SubBasisConversion[];
   created_at: string;
 }
 

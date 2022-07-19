@@ -1,9 +1,8 @@
 import Popover from '@/components/Modal/Popover';
 import { getCitiesByCountryIdAndStateId } from '@/services/location.api';
-import { ICity } from '@/types/location.types';
-import { Radio } from 'antd';
+import { ICity } from '@/types';
 import { FC, useEffect, useState } from 'react';
-import styles from '../styles/CountryModal.less';
+// import styles from './styles/CountryModal.less';
 
 const CityModal: FC<{
   stateId: string;
@@ -18,8 +17,11 @@ const CityModal: FC<{
   const getCityList = () => {
     getCitiesByCountryIdAndStateId(countryId, stateId).then((res) => {
       if (res) {
-        if (!res.find((item) => item.id === chosenValue.value)) {
-          setChosenValue({ id: '', label: '' });
+        const checked = res.find((item) => item.id === chosenValue.value);
+        if (!checked) {
+          setChosenValue({ value: '', label: '' });
+        } else {
+          setChosenValue({ value: checked.id, label: checked.name });
         }
         setCities(res);
       }
@@ -30,7 +32,7 @@ const CityModal: FC<{
     if (stateId) {
       getCityList();
     } else {
-      setChosenValue({ id: '', label: '' });
+      setChosenValue({ value: '', label: '' });
     }
   }, [stateId]);
 
@@ -43,12 +45,6 @@ const CityModal: FC<{
       setChosenValue={setChosenValue}
       groupRadioList={[
         {
-          heading: (
-            <div className={styles.customHeading}>
-              <span className={styles.customTitle}>Global</span>
-              <Radio />
-            </div>
-          ),
           options: cities.map((city) => {
             return {
               label: city.name,

@@ -4,23 +4,24 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import ConversionInput from '@/components/EntryForm/ConversionInput';
 import Popover from '@/components/Modal/Popover';
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
-import type { IAttributeGeneralFeature, IGeneralFeatureFormInput } from '@/types';
+import type { AttributeGeneralFeature, GeneralFeatureFormInput } from '@/types';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
 import { setPartialProductDetail } from '@/reducers/product';
 import type { RadioValue } from '@/components/CustomRadio/types';
-interface ISubGeneralFeatureAttribute {
-  attributes: IAttributeGeneralFeature[];
-  itemAttributes: IGeneralFeatureFormInput['attributes'];
-  item: IGeneralFeatureFormInput['attributes'][0];
+
+interface SubGeneralFeatureAttributeProps {
+  attributes: AttributeGeneralFeature[];
+  itemAttributes: GeneralFeatureFormInput['attributes'];
+  item: GeneralFeatureFormInput['attributes'][0];
   onDelete?: () => void;
-  onItemChange?: (data: IGeneralFeatureFormInput['attributes']) => void;
+  onItemChange?: (data: GeneralFeatureFormInput['attributes']) => void;
   attributeIndex: number;
   attributeItemIndex: number;
   activeKey: 'general' | 'feature';
 }
 
-const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props) => {
+const SubGeneralFeatureAttribute: React.FC<SubGeneralFeatureAttributeProps> = (props) => {
   const {
     itemAttributes,
     attributes,
@@ -66,7 +67,7 @@ const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props
       const newItemAttributes = [...newAttributes[attributeIndex].attributes];
       newItemAttributes[attributeItemIndex] = {
         ...newItemAttributes[attributeItemIndex],
-        basis_value_id: selected.value,
+        basis_value_id: String(selected.value),
         text: selected.label as string,
       };
       newAttributes[attributeIndex] = {
@@ -91,7 +92,7 @@ const SubGeneralFeatureAttribute: React.FC<ISubGeneralFeatureAttribute> = (props
 
   const onChangeAttributeItem = (
     key: number,
-    data: Partial<IGeneralFeatureFormInput['attributes'][0]>,
+    data: Partial<GeneralFeatureFormInput['attributes'][0]>,
   ) => {
     const newGeneralAttributeItem = [...itemAttributes];
     newGeneralAttributeItem[key] = {

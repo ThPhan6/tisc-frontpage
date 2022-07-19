@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CustomTabs } from '@/components/Tabs';
-import { TabProp } from '@/components/Tabs/types';
+import { TabItem } from '@/components/Tabs/types';
 import DynamicFormInput from '@/components/EntryForm/DynamicFormInput';
 import { ReactComponent as CollectionIcon } from '@/assets/icons/collection-icon.svg';
 import { ReactComponent as TipsIcon } from '@/assets/icons/bookmark-icon.svg';
@@ -13,7 +13,7 @@ import { setProductTip, setProductDownload } from '@/reducers/product';
 import { PATH } from '@/constants/path';
 import styles from '../styles/details.less';
 
-const LIST_TAB: TabProp[] = [
+const LIST_TAB: TabItem[] = [
   { tab: 'Collections', key: 'collection', icon: <CollectionIcon /> },
   { tab: 'Tips', key: 'tip', icon: <TipsIcon /> },
   { tab: 'Downloads', key: 'download', icon: <DownloadIcon /> },

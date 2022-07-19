@@ -1,10 +1,10 @@
 import { HeaderDropdown } from '@/components/HeaderDropdown';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { ICustomTableColumnType } from '@/components/Table/types';
+import { TableColumnItem } from '@/components/Table/types';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
-import { IDistributorListResponse } from '@/types/distributor.type';
+import { Distributor } from '@/types/distributor.type';
 import { useRef } from 'react';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
@@ -31,7 +31,7 @@ const Distributors = () => {
     });
   };
 
-  const MainColumns: ICustomTableColumnType<IDistributorListResponse>[] = [
+  const MainColumns: TableColumnItem<Distributor>[] = [
     {
       title: 'Name',
       dataIndex: 'name',

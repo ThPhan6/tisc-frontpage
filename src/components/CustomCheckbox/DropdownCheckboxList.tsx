@@ -7,23 +7,24 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { isEmpty } from 'lodash';
 import styles from './styles/dropdownList.less';
 
-export interface IDropdownCheckboxItemList {
+export interface DropdownCheckboxItem {
   [key: string]: any;
   margin?: 8 | 12;
   options: CheckboxValue[];
 }
 
-interface IDropdownCheckboxList {
+type ActiveKeyType = string | number | (string | number)[];
+
+interface DropdownCheckboxListProps {
   selected?: CheckboxValue[];
   chosenItem?: CheckboxValue[];
-  data: IDropdownCheckboxItemList[];
-  renderTitle?: (data: IDropdownCheckboxItemList) => string | number | React.ReactNode;
+  data: DropdownCheckboxItem[];
+  renderTitle?: (data: DropdownCheckboxItem) => string | number | React.ReactNode;
   onChange?: (value: CheckboxValue[]) => void;
   noCollapse?: boolean;
 }
-type ActiveKeyType = string | number | (string | number)[];
 
-const DropdownCheckboxList: React.FC<IDropdownCheckboxList> = (props) => {
+const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
   const { data, selected, onChange, renderTitle, chosenItem } = props;
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
   useEffect(() => {
@@ -37,7 +38,7 @@ const DropdownCheckboxList: React.FC<IDropdownCheckboxList> = (props) => {
     });
   }, [chosenItem]);
 
-  const renderHeader = (item: IDropdownCheckboxItemList, index: number) => {
+  const renderHeader = (item: DropdownCheckboxItem, index: number) => {
     if (renderTitle) {
       return (
         <span>

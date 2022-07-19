@@ -10,30 +10,30 @@ import GroupRadioList from '@/components/CustomRadio/RadioList';
 import CheckboxList from '@/components/CustomCheckbox/CheckboxList';
 import DropdownCategoryList from '@/pages/TISC/Product/Configuration/components/CategoryDropdown';
 
-import type { ICheckboxListOption } from '@/components/CustomCheckbox/CheckboxList';
-import type { IDropdownRadioItemList } from '@/components/CustomRadio/DropdownRadioList';
-import type { IDropdownCheckboxItemList } from '@/components/CustomCheckbox/DropdownCheckboxList';
+import type { CheckboxOption } from '@/components/CustomCheckbox/CheckboxList';
+import type { DropdownRadioItem } from '@/components/CustomRadio/DropdownRadioList';
+import type { DropdownCheckboxItem } from '@/components/CustomCheckbox/DropdownCheckboxList';
 import type { IRadioListOption } from '@/components/CustomRadio/RadioList';
 
 import styles from './styles/Popover.less';
 
-interface IPopover {
+interface PopoverProps {
   title: string;
   visible: boolean;
   setVisible: (visible: boolean) => void;
   /// dropdown radio list
-  dropdownRadioList?: IDropdownRadioItemList[];
-  dropDownRadioTitle?: (data: IDropdownRadioItemList) => string | number | ReactNode;
+  dropdownRadioList?: DropdownRadioItem[];
+  dropDownRadioTitle?: (data: DropdownRadioItem) => string | number | ReactNode;
 
   /// group radio list
   groupRadioList?: IRadioListOption[];
 
   /// dropdown checkbox list
-  dropdownCheckboxList?: IDropdownCheckboxItemList[];
-  dropdownCheckboxTitle?: (data: IDropdownCheckboxItemList) => string | number | ReactNode;
+  dropdownCheckboxList?: DropdownCheckboxItem[];
+  dropdownCheckboxTitle?: (data: DropdownCheckboxItem) => string | number | ReactNode;
 
   // checkbox listTab
-  checkboxList?: ICheckboxListOption;
+  checkboxList?: CheckboxOption;
 
   // category dropdown checkbox
   categoryDropdown?: boolean;
@@ -46,7 +46,8 @@ interface IPopover {
   extraTopAction?: ReactNode;
   noFooter?: boolean;
 }
-const Popover: FC<IPopover> = ({
+
+const Popover: FC<PopoverProps> = ({
   title,
   visible,
   setVisible,

@@ -2,7 +2,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { useEffect, useState } from 'react';
 import { InspirationalQuotationEntryForm } from './components/InspirationalQuotationEntryForm';
-import { IInspirationalQuotationForm } from '@/types';
+import { Quotation } from '@/types';
 import { useBoolean } from '@/helper/hook';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
@@ -21,7 +21,7 @@ const UpdateInspirationalQuotationsPage = () => {
   const submitButtonStatus = useBoolean(false);
   const params = useParams<{ id: string }>();
   const idQuotation = params?.id || '';
-  const [input, setInput] = useState<IInspirationalQuotationForm>(DEFAULT_INPUT);
+  const [input, setInput] = useState<Quotation>(DEFAULT_INPUT);
 
   /// get data to update
   const getOneQuotationData = () => {
@@ -38,7 +38,7 @@ const UpdateInspirationalQuotationsPage = () => {
   }, []);
 
   /// rewrite data
-  const handleOnChangeInput = (newInput: IInspirationalQuotationForm) => {
+  const handleOnChangeInput = (newInput: Quotation) => {
     setInput(newInput);
   };
 
@@ -46,7 +46,7 @@ const UpdateInspirationalQuotationsPage = () => {
     pushTo(PATH.quotation);
   };
 
-  const handleUpdateData = (data: IInspirationalQuotationForm) => {
+  const handleUpdateData = (data: Quotation) => {
     isLoading.setValue(true);
 
     updateQuotation(idQuotation, data).then((isSuccess) => {

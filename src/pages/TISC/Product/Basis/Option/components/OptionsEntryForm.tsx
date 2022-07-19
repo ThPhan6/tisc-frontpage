@@ -2,18 +2,18 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import type { FC } from 'react';
 import { OptionItem } from './OptionItem';
-import type { IBasisOptionForm, IBasisOptionSubForm, ISubBasisOption } from '@/types';
+import type { BasisOptionForm, BasisOptionSubForm, SubBasisOption } from '@/types';
 import { merge } from 'lodash';
 
 interface IOptionEntryForm {
-  option: IBasisOptionForm;
-  setOption: (data: IBasisOptionForm) => void;
+  option: BasisOptionForm;
+  setOption: (data: BasisOptionForm) => void;
   onCancel: () => void;
-  onSubmit: (data: IBasisOptionForm) => void;
+  onSubmit: (data: BasisOptionForm) => void;
   submitButtonStatus: any;
 }
 
-const DEFAULT_SUB_OPTION: IBasisOptionSubForm = {
+const DEFAULT_SUB_OPTION: BasisOptionSubForm = {
   name: '',
   is_have_image: false,
   subs: [],
@@ -44,7 +44,7 @@ const OptionEntryForm: FC<IOptionEntryForm> = (props) => {
     });
   };
 
-  const handleChangeSubItem = (changedSubs: IBasisOptionSubForm, index: number) => {
+  const handleChangeSubItem = (changedSubs: BasisOptionSubForm, index: number) => {
     const newSubs = [...option.subs];
     newSubs[index] = changedSubs;
     setOption({
@@ -54,8 +54,8 @@ const OptionEntryForm: FC<IOptionEntryForm> = (props) => {
   };
 
   const handleSubmit = () => {
-    const newSubs: IBasisOptionSubForm[] = option.subs.map((subOption) => {
-      const itemOptions: ISubBasisOption[] = subOption.subs.map((optionItem) => {
+    const newSubs: BasisOptionSubForm[] = option.subs.map((subOption) => {
+      const itemOptions: SubBasisOption[] = subOption.subs.map((optionItem) => {
         let requiredValue = {
           value_1: optionItem.value_1,
           value_2: optionItem.value_2,

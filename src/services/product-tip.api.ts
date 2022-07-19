@@ -1,12 +1,12 @@
 import { request } from 'umi';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import type { IProductTip } from '@/types';
+import type { ProductTip } from '@/types';
 import { setProductTip } from '@/reducers/product';
 import store from '@/reducers';
 
 export const getProductTipByProductID = async (productId: string) => {
-  return request<{ data: IProductTip }>(`/api/product-tip/get-one/${productId}`, {
+  return request<{ data: ProductTip }>(`/api/product-tip/get-one/${productId}`, {
     method: 'GET',
   })
     .then((res) => {
@@ -19,7 +19,7 @@ export const getProductTipByProductID = async (productId: string) => {
     });
 };
 
-export const createProductTip = async (data: IProductTip) => {
+export const createProductTip = async (data: ProductTip) => {
   return request(`/api/product-tip/create`, {
     method: 'POST',
     data,

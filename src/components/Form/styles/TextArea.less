@@ -1,6 +1,6 @@
 .textarea-container {
   :global(.ant-input) {
-    color: @mono-color;
+    color: @primary-color-dark;
     font-weight: 300;
     font-size: 14px;
     line-height: 22px;
@@ -11,6 +11,11 @@
     }
     &:focus {
       box-shadow: none;
+    }
+  }
+  :global(.ant-input-textarea-show-count) {
+    &::after {
+      color: #000;
     }
   }
 }
@@ -28,6 +33,21 @@
     border-bottom-color: @mono-color-medium;
     &:hover {
       border-bottom-color: @mono-color-medium;
+    }
+  }
+}
+.boxShadow {
+  :global(.ant-input) {
+    border-bottom-color: transparent;
+    box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
+    transition: all 0.3s;
+    &:hover {
+      border-bottom-color: transparent;
+      box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
+    }
+    &:focus {
+      border-bottom-color: transparent;
+      box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
     }
   }
 }

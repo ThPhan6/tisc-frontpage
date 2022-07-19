@@ -1,16 +1,16 @@
 import { MainTitle } from '@/components/Typography';
 import SpecificationAttributeItem from './SpecificationAttributeItem';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { IAttributebyType } from '@/types';
+import { AttributebyType } from '@/types';
 import styles from '../../styles/details.less';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
 import { setPartialProductDetail } from '@/reducers/product';
 
-interface ISpecificationAttributeItem {
-  attributes: IAttributebyType['specification'];
+interface SpecificationAttributeProps {
+  attributes: AttributebyType['specification'];
 }
-const SpecificationAttribute = (props: ISpecificationAttributeItem) => {
+const SpecificationAttribute = (props: SpecificationAttributeProps) => {
   const { attributes } = props;
   const product = useAppSelector((state) => state.product);
   const dispatch = useDispatch();

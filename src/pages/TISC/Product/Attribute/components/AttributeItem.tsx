@@ -6,15 +6,16 @@ import { MainTitle, BodyText } from '@/components/Typography';
 import { lowerCase } from 'lodash';
 import type { FC } from 'react';
 import styles from '../styles/attributeItem.less';
-import type { IAttributeSubForm } from '@/types';
+import type { AttributeSubForm } from '@/types';
 
-interface IAttributeItem {
-  item: IAttributeSubForm;
+interface AttributeItemProps {
+  item: AttributeSubForm;
   handleOnClickDelete: () => void;
   handleSelectContentType: () => void;
   onChangeItemName: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
-export const AttributeItem: FC<IAttributeItem> = ({
+
+export const AttributeItem: FC<AttributeItemProps> = ({
   item,
   onChangeItemName,
   handleOnClickDelete,

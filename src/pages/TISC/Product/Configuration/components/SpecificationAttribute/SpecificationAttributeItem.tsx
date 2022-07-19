@@ -10,10 +10,10 @@ import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-f
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { Collapse } from 'antd';
 import type {
-  IAttributeSpecification,
-  ISpecificationFormInput,
-  IAttributeSpecificationSub,
-  ISpecificationFormInputType,
+  AttributeSpecification,
+  SpecificationFormInput,
+  AttributeSpecificationSub,
+  SpecificationFormInputType,
 } from '@/types';
 import { POPOVER_TITLE } from '../../constants';
 import { useDispatch } from 'react-redux';
@@ -23,15 +23,15 @@ import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 import styles from '../../styles/details.less';
 import { map, upperCase } from 'lodash';
 
-interface IGeneralFeatureAttributeItem {
-  attributes: IAttributeSpecification[];
-  attributeItem: ISpecificationFormInput;
+interface GeneralFeatureAttributeItemProps {
+  attributes: AttributeSpecification[];
+  attributeItem: SpecificationFormInput;
   onDelete?: () => void;
-  onItemChange?: (data: ISpecificationFormInput['attributes']) => void;
+  onItemChange?: (data: SpecificationFormInput['attributes']) => void;
   index: number;
 }
 
-const GeneralFeatureAttributeItem: React.FC<IGeneralFeatureAttributeItem> = (props) => {
+const GeneralFeatureAttributeItem: React.FC<GeneralFeatureAttributeItemProps> = (props) => {
   const product = useAppSelector((state) => state.product);
   const dispatch = useDispatch();
   const { specification_attribute_groups } = product.details;
@@ -53,7 +53,7 @@ const GeneralFeatureAttributeItem: React.FC<IGeneralFeatureAttributeItem> = (pro
         ...newAttributes[index],
         attributes: selected.map((item, key: number) => {
           /// radio value
-          let selectedAttribute = {} as IAttributeSpecificationSub;
+          let selectedAttribute = {} as AttributeSpecificationSub;
           attributes.forEach((attr) => {
             attr.subs.forEach((sub) => {
               if (sub.id === item.value) {
@@ -78,7 +78,7 @@ const GeneralFeatureAttributeItem: React.FC<IGeneralFeatureAttributeItem> = (pro
           return {
             id: selectedAttribute.id,
             basis_id: selectedAttribute.basis_id,
-            type: (selectedAttribute.basis?.type ?? 'Text') as ISpecificationFormInputType,
+            type: (selectedAttribute.basis?.type ?? 'Text') as SpecificationFormInputType,
             ...activeData,
           };
         }),

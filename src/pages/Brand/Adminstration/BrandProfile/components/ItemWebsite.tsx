@@ -1,10 +1,12 @@
 import { CustomInput } from '@/components/Form/CustomInput';
-import { FC, useState } from 'react';
-import { ItemWebsiteProp } from '../types';
+import { FC, useEffect, useState } from 'react';
+import { WebsiteUrl } from '../types';
 import { ReactComponent as LeftIcon } from '@/assets/icons/pagination-right-18px.svg';
 import styles from '@/pages/Brand/Adminstration/BrandProfile/styles/index.less';
-import CountryModal from '../../Distributors/components/CountryModal';
-export const ItemWebsite: FC<ItemWebsiteProp> = ({ websiteValue, onChange }) => {
+import CountryModal from '@/components/Location/CountryModal';
+import { getCountryById } from '@/services';
+
+export const ItemWebsite: FC<WebsiteUrl> = ({ websiteValue, onChange }) => {
   const [countryVisible, setCountryVisible] = useState(false);
   const [countryValue, setCountryValue] = useState<string>('');
 
@@ -16,6 +18,16 @@ export const ItemWebsite: FC<ItemWebsiteProp> = ({ websiteValue, onChange }) => 
     onChange({ ...websiteValue, [country_id]: chosenValue.value });
     setCountryValue(chosenValue.label);
   };
+
+  useEffect(() => {
+    if (websiteValue) {
+      getCountryById(websiteValue.country_id).then((res) => {
+        if (res) {
+          setCountryValue(res.name);
+        }
+      });
+    }
+  }, [websiteValue]);
 
   return (
     <>
@@ -38,9 +50,9 @@ export const ItemWebsite: FC<ItemWebsiteProp> = ({ websiteValue, onChange }) => 
       <CountryModal
         visible={countryVisible}
         setVisible={setCountryVisible}
-        chosenValue={{ label: websiteValue, value: websiteValue.country_id }}
+        chosenValue={{ label: countryValue, value: websiteValue.country_id }}
         setChosenValue={(chosenValue) => onChangeCountryValue(chosenValue, 'country_id')}
-        phone_code
+        withPhoneCode
       />
     </>
   );

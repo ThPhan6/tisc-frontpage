@@ -5,28 +5,32 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import styles from '../styles/table.less';
 import type { ColumnType } from 'antd/lib/table';
-import type { ICustomTableColumnType, IExpended } from '../types';
+import type { TableColumnItem } from '../types';
 
-export const useCustomTable = (columns: ICustomTableColumnType<any>[]) => {
-  const [expended, setExpended] = useState<IExpended>();
+type Expanded = number | undefined | string;
 
-  const expend = (index: IExpended) => {
-    if (expended === index) setExpended(undefined);
-    else setExpended(index);
+export const useCustomTable = (columns: TableColumnItem<any>[]) => {
+  const [expanded, setExpanded] = useState<Expanded>();
+
+  const expend = (index: Expanded) => {
+    if (expanded === index) setExpanded(undefined);
+    else setExpanded(index);
   };
+
   const renderExpandedColumn = (value: any, record: any) => {
     if (!value) {
       return null;
     }
-    const expendedKey = `${record.id}`;
+    const expandedKey = `${record.id}`;
     return (
-      <div onClick={() => expend(expendedKey)} className={styles.expandedCell}>
-        <span className={expendedKey === expended ? styles.expandedColumn : ''}>{value}</span>
-        {expendedKey === expended ? <DropupIcon /> : <DropdownIcon />}
+      <div onClick={() => expend(expandedKey)} className={styles.expandedCell}>
+        <span className={expandedKey === expanded ? styles.expandedColumn : ''}>{value}</span>
+        {expandedKey === expanded ? <DropupIcon /> : <DropdownIcon />}
       </div>
     );
   };
-  const formatTitleColumn = (column: ICustomTableColumnType<any>) => {
+
+  const formatTitleColumn = (column: TableColumnItem<any>) => {
     return () => {
       return (
         <div className={styles.titleTable}>
@@ -80,7 +84,7 @@ export const useCustomTable = (columns: ICustomTableColumnType<any>[]) => {
   };
 
   return {
-    expended,
+    expanded,
     columns: formatColumns(),
   };
 };

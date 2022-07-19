@@ -55,7 +55,11 @@ export const CustomRadio: FC<CustomRadioProps> = ({
           {options.map((option, index) => (
             <label
               key={index}
-              className={`${style.panel_radio} radio-label`}
+              className={`
+                ${style.panel_radio}
+                ${option.customClass ? option.customClass : ''}
+                radio-label
+              `}
               htmlFor={`${option.value}_${index}`}
             >
               <div style={{ width: '100%' }}>

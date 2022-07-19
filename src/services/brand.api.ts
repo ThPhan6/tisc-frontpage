@@ -1,21 +1,21 @@
-import { request } from 'umi';
-import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import type { IBrandListItem, IBrandAlphabet, IBrandDetail, IBrandCard } from '@/types';
 import type {
-  IDataTableResponse,
-  IPaginationRequest,
-  IPaginationResponse,
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
 } from '@/components/Table/types';
+import { message } from 'antd';
+import { request } from 'umi';
 
 interface IBrandListResponse {
   brands: IBrandListItem;
-  pagination: IPaginationResponse;
+  pagination: PaginationResponse;
 }
 
 export async function getBrandPagination(
-  params: IPaginationRequest,
-  callback: (data: IDataTableResponse) => void,
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
 ) {
   request(`/api/brand/get-list`, {
     method: 'GET',

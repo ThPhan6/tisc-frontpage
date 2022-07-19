@@ -1,25 +1,25 @@
-import { request } from 'umi';
-import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import type {
-  IProductSummary,
-  IProductFormData,
-  IProductGetListParameter,
-  IProductDetail,
-  GroupProductList,
-  IBrandDetail,
-  IRelatedCollection,
-} from '@/types';
+import store from '@/reducers';
 import {
-  setProductSummary,
-  setProductList,
   setProductDetail,
+  setProductList,
+  setProductSummary,
   setRelatedProduct,
 } from '@/reducers/product';
-import store from '@/reducers';
+import type {
+  GroupProductList,
+  IBrandDetail,
+  ProductFormData,
+  ProductGetListParameter,
+  ProductSummary,
+  IRelatedCollection,
+  ProductItem,
+} from '@/types';
+import { message } from 'antd';
+import { request } from 'umi';
 
 export async function getProductSummary(brandId: string) {
-  return request<{ data: IProductSummary }>(`/api/product/brand-product-summary/${brandId}`, {
+  return request<{ data: ProductSummary }>(`/api/product/brand-product-summary/${brandId}`, {
     method: 'GET',
   })
     .then((response) => {
@@ -36,8 +36,8 @@ export async function getProductSummary(brandId: string) {
     });
 }
 
-export const createProductCard = async (data: IProductFormData) => {
-  return request<{ data: IProductDetail }>(`/api/product/create`, {
+export const createProductCard = async (data: ProductFormData) => {
+  return request<{ data: ProductItem }>(`/api/product/create`, {
     method: 'POST',
     data,
   })
@@ -50,7 +50,7 @@ export const createProductCard = async (data: IProductFormData) => {
     });
 };
 //
-export const getProductListByBrandId = async (params: IProductGetListParameter) => {
+export const getProductListByBrandId = async (params: ProductGetListParameter) => {
   return request<{ data: { data: GroupProductList[]; brand: IBrandDetail } }>(
     `/api/product/get-list`,
     {
@@ -119,7 +119,7 @@ export const likeProductById = async (productId: string) => {
 };
 
 export const getProductById = async (productId: string) => {
-  return request<{ data: IProductDetail }>(`/api/product/get-one/${productId}`, {
+  return request<{ data: ProductItem }>(`/api/product/get-one/${productId}`, {
     method: 'GET',
   })
     .then((res) => {
@@ -137,8 +137,8 @@ export const getProductById = async (productId: string) => {
     });
 };
 
-export const updateProductCard = async (productId: string, data: IProductFormData) => {
-  return request<{ data: IProductDetail }>(`/api/product/update/${productId}`, {
+export const updateProductCard = async (productId: string, data: ProductFormData) => {
+  return request<{ data: ProductItem }>(`/api/product/update/${productId}`, {
     method: 'PUT',
     data,
   })

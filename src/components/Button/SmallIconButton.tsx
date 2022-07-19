@@ -1,13 +1,13 @@
 import React from 'react';
 import styles from './styles/smallIconButton.less';
 
-interface ISmallIconButton {
+interface SmallIconButtonProps {
   icon: React.ReactNode;
   onClick: (e: React.ChangeEvent<any>) => void;
   className?: string;
 }
 
-const SmallIconButton: React.FC<ISmallIconButton> = ({ icon, onClick, className }) => {
+const SmallIconButton: React.FC<SmallIconButtonProps> = ({ icon, onClick, className }) => {
   return (
     <button
       onClick={onClick}

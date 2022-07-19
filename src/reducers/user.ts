@@ -1,23 +1,21 @@
-import { IUserDetail, InitialUserDetail } from '@/types/user.type';
+import { UserDetail } from '@/types/user.type';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface UserState {
-  user?: IUserDetail;
+  user?: UserDetail;
 }
 
-const initialState: UserState = {
-  user: InitialUserDetail,
-};
+const initialState: UserState = {};
 
 const userReducer = createSlice({
-  name: 'userBrand',
+  name: 'user',
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<IUserDetail | undefined>) {
+    setUserProfile(state, action: PayloadAction<UserDetail | undefined>) {
       state.user = action.payload;
     },
   },
 });
 
-export const { setUser } = userReducer.actions;
+export const { setUserProfile } = userReducer.actions;
 export default userReducer.reducer;
