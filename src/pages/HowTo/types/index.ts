@@ -4,7 +4,6 @@ export interface CollapsingProps {
 }
 
 export type QnA = {
-  id: string;
   question: string;
   answer: string;
 };
@@ -16,7 +15,7 @@ export interface QuestionProps extends CollapsingProps {
 
 export type FaqItem = {
   id: string;
-  icon?: JSX.Element;
+  icon?: string;
   title: string;
   document?: string;
   question_and_answer?: QnA[];

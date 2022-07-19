@@ -6,6 +6,7 @@ import { FC, useState } from 'react';
 import { Collapse } from 'antd';
 import { QnAItem } from './QnAItem';
 import { FaqItem, CollapsingProps } from '../types';
+import { showImageUrl } from '@/helper/utils';
 
 export interface FaqItemProps extends CollapsingProps {
   value: FaqItem;
@@ -18,7 +19,8 @@ const RenderHeader: FC<FaqItemProps> = (props) => {
     <div className={styles.panel_header}>
       <div className={styles.panel_header__field} onClick={() => handleActiveCollapse(value.id)}>
         <div className={styles.titleIcon}>
-          {value?.icon && <span className={styles.icon}>{value.icon}</span>}
+          {/* {value?.icon && <span className={styles.icon}>{value.icon}</span>} */}
+          {value?.icon && <img src={showImageUrl(value.icon)} className={styles.icon} />}
           <div>
             <BodyText
               level={4}
@@ -70,7 +72,7 @@ export const FaqComponent: FC<FaqItemProps> = ({ value, activeKey, handleActiveC
                 <QnAItem
                   item={item}
                   activeKey={activeKeyItem}
-                  handleActiveCollapse={handleActiveCollapseItem(item.id)}
+                  handleActiveCollapse={handleActiveCollapseItem(String(index))}
                 />
               </div>
             ))}

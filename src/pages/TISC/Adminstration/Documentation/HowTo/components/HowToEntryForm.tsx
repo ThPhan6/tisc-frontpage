@@ -1,16 +1,17 @@
-import { FormGroup } from '@/components/Form';
-import { CustomTextArea } from '@/components/Form/CustomTextArea';
-import { BodyText } from '@/components/Typography';
-import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove-icon.svg';
-import { Col, Collapse, Row } from 'antd';
-import styles from '../styles/HowToEntryForm.less';
-import React, { FC } from 'react';
-import { FaqInput, FaqPanel, FaqItems } from '../types';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 import CustomButton from '@/components/Button';
+import { FormGroup } from '@/components/Form';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { BodyText } from '@/components/Typography';
+import { showImageUrl } from '@/helper/utils';
+import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
+import React, { FC } from 'react';
+import styles from '../styles/HowToEntryForm.less';
+import { FaqInput, FaqItems, FaqPanel } from '../types';
 
 interface FAQFieldProps {
   value: FaqInput;
@@ -86,7 +87,7 @@ const PanelHeader: FC<PanelHeaderProps> = ({ value, panel, handleActiveKeyToColl
     <div className={styles.panel}>
       <div className={styles.panel_header} onClick={() => handleActiveKeyToCollapse(panel.title)}>
         <div className={styles.panel_header__info}>
-          {panel.icon && panel.icon}
+          {panel?.icon && <img src={showImageUrl(String(panel.icon))} className={styles.icon} />}
           <BodyText
             level={4}
             fontFamily="Roboto"
@@ -111,9 +112,11 @@ const PanelHeader: FC<PanelHeaderProps> = ({ value, panel, handleActiveKeyToColl
 interface HowToEntryFormProps {
   value: FaqItems;
   onChange: (value: FaqItems) => void;
+  onSubmit: (value: FaqItems) => void;
+  submitButtonStatus: boolean;
 }
 
-export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange }) => {
+export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSubmit }) => {
   const handleActiveKeyToCollapse = (collapseValue: string) => {
     onChange({
       activeKey: value.activeKey === collapseValue ? '' : collapseValue,
@@ -161,8 +164,8 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange }) => 
     updatedOnChange(value);
   };
 
-  const onSubmit = () => {
-    alert('comming soon');
+  const handleSubmit = () => {
+    return onSubmit(value);
   };
 
   return (
@@ -209,7 +212,7 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange }) => 
                       <CustomPlusButton onClick={() => handleAddFAQContent(panelIndex)} size={20} />
                     </div>
                     <div className={styles.fAQ}>
-                      {panel.FAQ.map((faqItem, faqIndex) => {
+                      {panel.FAQ?.map((faqItem, faqIndex) => {
                         return (
                           <QuestionAndAnswerField
                             key={`panel_${panelIndex}_faq_${faqIndex}`}
@@ -229,7 +232,7 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange }) => 
             })}
           </div>
           <div className={styles.footer}>
-            <CustomButton onClick={onSubmit} size="small" buttonClass={styles.submitBtn}>
+            <CustomButton onClick={handleSubmit} size="small" buttonClass={styles.submitBtn}>
               Save
             </CustomButton>
           </div>
