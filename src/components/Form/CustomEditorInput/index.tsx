@@ -66,6 +66,10 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
 
     // editor is resizing while window is resizing
     window.addEventListener('resize', updateSize);
+
+    return () => {
+      firstLoad = true;
+    };
   }, [containerSelector]);
 
   const onChange = (e: CKEditorEventPayload<'change'>) => {
