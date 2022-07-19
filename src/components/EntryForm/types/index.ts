@@ -3,9 +3,12 @@ export interface EntryFormWrapperProps {
   handleCancel?: () => void;
   customClass?: string;
   contentClass?: string;
+  textAlignTitle?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify';
   title?: string;
   disableCancelButton?: boolean;
   disableSubmitButton?: boolean;
+  headerContent?: any;
+  footerContent?: any;
   submitButtonStatus?: boolean;
 }
 

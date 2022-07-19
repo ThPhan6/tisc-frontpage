@@ -107,6 +107,12 @@ export const MESSAGE_NOTIFICATION = {
   CREATE_BRAND_COLLECTION_ERROR: 'Failed to create Brand collection',
   GET_BRAND_COLLECTION_ERROR: 'Failed to get Brand collection data',
 
+  // market availability
+  GET_LIST_MARKET_AVAILABILITY_ERROR: 'Get list market availability error',
+  GET_ONE_MARKET_AVAILABILITY_ERROR: 'Get one market availability error',
+  UPDATE_MARKET_AVAILABILITY_SUCCESS: 'Update market availability successfully',
+  UPDATE_MARKET_AVAILABILITY_ERROR: 'Failed to update market availability',
+
   // permission
   GET_PERMISSION_DATA_ERROR: 'Failed to get Permission data',
   // inspirational quotation
@@ -125,6 +131,13 @@ export const MESSAGE_NOTIFICATION = {
   GET_CITIES_ERROR: 'Failed to get cities data',
   GET_LIST_COUNTRY_GROUP: 'Failed to get list country group data',
   GET_ONE_COUNTRY_ERROR: 'Failed to get one country',
+  CREATE_LOCATION_SUCCESS: 'Create location successfully',
+  CREATE_LOCATION_FAILED: 'Failed to create new location',
+  UPDATE_LOCATION_SUCCESS: 'Update location successfully',
+  UPDATE_LOCATION_FAILED: 'Failed to update location',
+  DELETE_LOCATION_SUCCESS: 'Delete location successfully',
+  DELETE_LOCATION_FAILED: 'Failed to delete location',
+  GET_LOCATION_FAILED: 'Failed to get location data',
 
   //distributor
   CREATE_DISTRIBUTOR_SUCCESS: 'Create distributor successfully',

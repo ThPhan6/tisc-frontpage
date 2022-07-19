@@ -51,6 +51,7 @@ export const MainTitle: FC<MainTitleProps> = ({
   customClass = '',
   level = 1,
   children,
+  textAlign = 'center',
   ...props
 }) => {
   const setLevel = () => {
@@ -59,7 +60,11 @@ export const MainTitle: FC<MainTitleProps> = ({
 
   const classNameMainTitle = `${setLevel()}`;
   return (
-    <p {...props} className={`${classNameMainTitle} ${customClass}`} style={{ color: color }}>
+    <p
+      {...props}
+      className={`${classNameMainTitle} ${customClass}`}
+      style={{ color: color, textAlign: textAlign }}
+    >
       {children}
     </p>
   );

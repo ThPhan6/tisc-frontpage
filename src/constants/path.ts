@@ -55,8 +55,20 @@ export const PATH = {
   policy: '/tisc/adminstration/documentation/agreement-policy-terms',
   policyUpdate: '/tisc/adminstration/documentation/agreement-policy-terms/:id',
 
+  // tisc - locations
+  tiscLocation: '/tisc/adminstration/locations',
+  tiscLocationCreate: '/tisc/adminstration/locations/create',
+  tiscLocationUpdate: '/tisc/adminstration/locations/:id',
+
   //brand
   //adminstration
+  // market availablity
+  marketAvailability: '/brand/adminstration/market-availability',
+  updateMarketAvailability: '/brand/adminstration/market-availability/:id',
+  //locations
+  brandLocation: '/brand/adminstration/locations',
+  brandLocationCreate: '/brand/adminstration/locations/create',
+  brandLocationUpdate: '/brand/adminstration/locations/:id',
   //distributors
   distributors: '/brand/adminstration/distributors',
   createDistributor: '/brand/adminstration/distributors/create',
