@@ -5,10 +5,10 @@ export interface EntryFormWrapperProps {
   contentClass?: string;
   textAlignTitle?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify';
   title?: string;
+  disableCancelButton?: boolean;
+  disableSubmitButton?: boolean;
   headerContent?: any;
   footerContent?: any;
-  handleDisabledCancel?: boolean;
-  handleDisabledSubmit?: boolean;
   submitButtonStatus?: boolean;
 }
 

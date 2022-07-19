@@ -41,7 +41,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const DEFAULT_PAGE_NUMBER = 1;
   const DEFAULT_PAGESIZE = hasPagination ? 10 : 999999999999;
 
-  const { columns, expended } = useCustomTable(props.columns);
+  const { columns, expanded } = useCustomTable(props.columns);
   const [data, setData] = useState<any>([]);
   const [summary, setSummary] = useState<SummaryResponse[]>([]);
   const [currentSorter, setCurrentSorter] = useState<SorterResult<any> | SorterResult<any>[]>([]);
@@ -137,7 +137,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         columns={columns}
         rowKey="id"
         rowClassName={(record) => {
-          if (record.id === expended) {
+          if (record.id === expanded) {
             return 'custom-expanded' as any;
           }
         }}
@@ -153,7 +153,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         }}
         expandable={{
           ...expandable,
-          expandedRowKeys: expended ? [expended] : undefined,
+          expandedRowKeys: expanded ? [expanded] : undefined,
         }}
       />
       {hasPagination && pagination ? (
@@ -180,7 +180,7 @@ interface ExpandableTableProps {
 
 export const GetExpandableTableConfig = (props: ExpandableTableProps): ExpandableConfig<any> => {
   const { expandable, childrenColumnName, level } = props;
-  const { columns, expended } = useCustomTable(props.columns);
+  const { columns, expanded } = useCustomTable(props.columns);
 
   return {
     expandRowByClick: false,
@@ -195,7 +195,7 @@ export const GetExpandableTableConfig = (props: ExpandableTableProps): Expandabl
           tableLayout="auto"
           expandable={{
             ...expandable,
-            expandedRowKeys: expended ? [expended] : undefined,
+            expandedRowKeys: expanded ? [expanded] : undefined,
           }}
           dataSource={record[childrenColumnName]}
         />

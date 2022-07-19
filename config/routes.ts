@@ -1,4 +1,6 @@
-﻿export default [
+﻿import { PATH } from '../src/constants/path';
+
+export default [
   // NO REQUIRE AUTHENTICATION
   {
     path: '/',
@@ -277,8 +279,18 @@
           {
             path: '/tisc/adminstration/documentation/agreement-policy-terms',
             name: 'terms.policy',
-            component:
-              './TISC/Adminstration/Documentation/AgreementPolicies/CreateAgreementPoliciesPage',
+            routes: [
+              {
+                path: PATH.policy,
+                component: './TISC/Adminstration/Documentation/PolicyTemplate',
+                hideInMenu: true,
+              },
+              {
+                path: PATH.policyUpdate,
+                component: './TISC/Adminstration/Documentation/PolicyTemplate/Update',
+                hideInMenu: true,
+              },
+            ],
           },
           {
             path: '/tisc/adminstration/documentation/how-to',

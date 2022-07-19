@@ -1,11 +1,10 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
   CKEditor,
   CKEditorEventHandlerProp,
   CKEditorEventPayload,
   CKEditorProps,
 } from 'ckeditor4-react';
-import styles from './index.less';
 import { loadPlugins } from './plugins/load-plugins';
 
 type CustomEditorInputProps = Partial<CKEditorProps<CKEditorEventHandlerProp>> & {
@@ -16,6 +15,8 @@ type CustomEditorInputProps = Partial<CKEditorProps<CKEditorEventHandlerProp>> &
 };
 
 const id = `editor-container-${Date.now()}`;
+let firstLoad = true;
+const PADDING = 16;
 
 // IMPORTANT: do not wrap this component inside another component
 export const CustomEditorInput: FC<CustomEditorInputProps> = ({
@@ -25,38 +26,46 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
   containerSelector,
   ...props
 }) => {
+  const [height, setHeight] = useState<number | null>(0);
+
   useEffect(() => {
-    setTimeout(() => {
-      if (containerSelector) {
-        const updateSize = () => {
-          const containerEl = document.querySelector(containerSelector);
-          const editorEl = document.querySelector(`#${id}`);
-          const iFrameEl = document.querySelector('iframe.cke_wysiwyg_frame');
-
-          if (!containerEl || !editorEl || !iFrameEl) {
-            return;
-          }
-
-          const contentFullHeight =
-            Math.abs((containerEl.offsetHeight || 0) - (iFrameEl.offsetTop || 0)) -
-            (containerEl.offsetTop || 0) +
-            89;
-
-          // console.log('containerEl.offsetHeight', containerEl.offsetHeight);
-          // console.log('iFrameEl.offsetTop', iFrameEl, iFrameEl.offsetTop);
-          // console.log('containerEl.offsetTop', containerEl.offsetTop);
-
-          if (contentFullHeight && iFrameEl?.style) {
-            iFrameEl.style.height = `${contentFullHeight}px`;
-          }
-        };
-
-        // editor is resizing while window is resizing
-        window.addEventListener('resize', updateSize);
-        updateSize();
-        return () => window.removeEventListener('resize', updateSize);
+    const updateSize = () => {
+      if (!containerSelector) {
+        return;
       }
-    }, 200);
+      const containerEl = document.querySelector(containerSelector);
+      const iFrameEl = document.querySelector('iframe.cke_wysiwyg_frame');
+      const editorEl = document.querySelector(`#${id}`); // For checking editor is loaded or not
+
+      if (!containerEl || !editorEl || !iFrameEl) {
+        setTimeout(updateSize, 100);
+        return;
+      }
+
+      const contentBottomOffset = (containerEl.offsetHeight || 0) + (containerEl.offsetTop || 0);
+
+      const contentFullHeight =
+        contentBottomOffset - (iFrameEl.offsetTop || 0) - 1 + (firstLoad ? 0 : -PADDING);
+
+      // console.log('containerEl.offsetHeight', containerEl.offsetHeight);
+      // console.log('iFrameEl', iFrameEl);
+      // console.log('iFrameEl.offsetTop', iFrameEl.offsetTop);
+      // console.log('contentBottomOffset', contentBottomOffset);
+      // console.log('contentFullHeight', contentFullHeight);
+
+      if (contentFullHeight && iFrameEl) {
+        firstLoad = false;
+        setHeight((prevHeight) => (prevHeight === contentFullHeight ? contentFullHeight : null)); // force reload by render to component to null
+        setTimeout(() => setHeight(contentFullHeight), 1);
+      } else {
+        setTimeout(updateSize, 100);
+      }
+    };
+
+    setTimeout(updateSize, 200);
+
+    // editor is resizing while window is resizing
+    window.addEventListener('resize', updateSize);
   }, [containerSelector]);
 
   const onChange = (e: CKEditorEventPayload<'change'>) => {
@@ -66,10 +75,15 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
     onChangeText(html);
   };
 
+  if (height === null) {
+    return null;
+  }
+
   return (
-    <div id={id} className={`${styles.container} ${containerClass}`}>
+    <div id={id} className={containerClass}>
       <CKEditor
         config={{
+          height: `${height}px`,
           // toolbar: [['Bold', 'Italic', 'Underline', 'Strikethrough', 'Link', 'colors', 'Indent', 'simplebutton']],
           extraPlugins: ['simplebutton', 'editorplaceholder', 'colorbutton'],
           allowedContent: true, // disable format tag styles
@@ -88,10 +102,6 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
             // { "name": "forms" },
             // { "name": "tools" },
             {
-              name: 'document',
-              groups: ['mode', 'document', 'doctools'],
-            },
-            {
               name: 'basicstyles',
             },
             // { "name": "links" },
@@ -108,6 +118,10 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
             { name: 'styles' },
             { name: 'colors' },
             { name: 'others' }, // extraPlugins
+            {
+              name: 'document',
+              groups: ['mode', 'document', 'doctools'],
+            },
           ],
         }}
         {...props}
