@@ -25,11 +25,11 @@ const PolicyTemplatePage: React.FC = () => {
     },
     {
       title: 'Author',
-      dataIndex: ['author'],
+      dataIndex: 'firstname',
       width: '15%',
       sorter: true,
-      render: (value) => {
-        return `${value.firstname} ${value.lastname}`;
+      render: (value, record: Quotation) => {
+        return `${record.author.firstname} ${record.author.lastname}`;
       },
     },
     {
