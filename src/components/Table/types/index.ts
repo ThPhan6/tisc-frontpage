@@ -24,6 +24,7 @@ export interface TableColumnItem<T> extends ColumnType<T> {
   isExpandable?: boolean;
   noBoxShadow?: boolean;
   lightHeading?: boolean;
+  hidden?: boolean;
 }
 
 export interface PaginationResponse {
