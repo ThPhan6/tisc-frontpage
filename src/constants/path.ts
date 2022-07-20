@@ -2,6 +2,7 @@ export const PATH = {
   // public path
   landingPage: '/',
   resetPassword: '/reset-password',
+  createPassword: '/create-password',
 
   // private path
   profiles: '/profiles',
@@ -37,6 +38,11 @@ export const PATH = {
   attributeGeneralCreate: '/tisc/products/attributes/general/create',
   attributeGeneralUpdate: '/tisc/products/attributes/general/:id',
   //
+
+  // team profile
+  teamProfile: '/tisc/adminstration/team-profiles',
+  createTeamProfile: '/tisc/adminstration/team-profiles/create',
+  updateTeamProfile: '/tisc/adminstration/team-profiles/update/:id',
 
   // inspirational quotation
   quotation: '/tisc/adminstration/messages/quotation',
@@ -75,4 +81,4 @@ export const PATH = {
   updateDistributor: '/brand/adminstration/distributors/:id',
 };
 
-export const PUBLIC_PATH = [PATH.landingPage, PATH.resetPassword];
+export const PUBLIC_PATH = [PATH.landingPage, PATH.resetPassword, PATH.createPassword];

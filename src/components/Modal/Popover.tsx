@@ -45,6 +45,8 @@ interface PopoverProps {
   // extra top action
   extraTopAction?: ReactNode;
   noFooter?: boolean;
+
+  className?: string;
 }
 
 const Popover: FC<PopoverProps> = ({
@@ -62,6 +64,7 @@ const Popover: FC<PopoverProps> = ({
   setChosenValue,
   extraTopAction,
   noFooter,
+  className,
 }) => {
   const [currentValue, setCurrentValue] = useState<any>(chosenValue);
 
@@ -176,7 +179,7 @@ const Popover: FC<PopoverProps> = ({
             </CustomButton>
           )
         }
-        className={styles.customPopover}
+        className={`${styles.customPopover} ${className ?? ''}`}
       >
         {extraTopAction}
         {renderChildren()}

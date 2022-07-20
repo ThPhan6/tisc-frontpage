@@ -1,8 +1,8 @@
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
-import { getListCountryGroup } from '@/services/location.api';
-import { ICountryGroup, ILocationDetail } from '@/types';
+import { getWorkLocations } from '@/services/location.api';
+import { LocationGroupedByCountry, ILocationDetail } from '@/types';
 import { FC, useEffect, useState } from 'react';
 
 const AuthorizedCountryModal: FC<{
@@ -11,11 +11,11 @@ const AuthorizedCountryModal: FC<{
   chosenValue?: any;
   setChosenValue: (value: any) => void;
 }> = ({ visible, setVisible, chosenValue, setChosenValue }) => {
-  const [countryGroup, setCountryGroup] = useState<ICountryGroup[]>([]);
+  const [countryGroup, setCountryGroup] = useState<LocationGroupedByCountry[]>([]);
 
   const getCountryGroup = () => {
-    getListCountryGroup().then((res) => {
-      setCountryGroup(res as ICountryGroup[]);
+    getWorkLocations().then((res) => {
+      setCountryGroup(res);
     });
   };
 

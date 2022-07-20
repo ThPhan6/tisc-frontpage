@@ -36,7 +36,21 @@ const LocationModal: FC<ILocationModal> = ({
 
   // load location list
   useEffect(() => {
-    getWorkLocations().then(setWorkLocations);
+    getWorkLocations().then((res) => {
+      setWorkLocations(res);
+      res.forEach((country) => {
+        const selectedLocation = country.locations.find((location) => {
+          return location.id === workLocation.value;
+        });
+        if (selectedLocation) {
+          setWorkLocation({
+            label: `${selectedLocation.business_name}, ${upperCase(selectedLocation.country_name)}`,
+            value: selectedLocation.id,
+            phoneCode: selectedLocation.phone_code,
+          });
+        }
+      });
+    });
   }, []);
 
   const setLocationValue = (selectedValue: RadioValue) => {
@@ -95,6 +109,7 @@ const LocationModal: FC<ILocationModal> = ({
         value: workLocation.value,
       }}
       setChosenValue={setLocationValue}
+      className={styles.customLocationModal}
     />
   );
 };

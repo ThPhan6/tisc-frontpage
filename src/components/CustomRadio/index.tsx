@@ -11,6 +11,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
   defaultValue,
   isRadioList,
   otherInput,
+  selected,
   onChange,
   inputPlaceholder = 'type here',
   containerClass,
@@ -31,7 +32,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
 
   const onChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
-      onChange({ value: 'other', label: e.target.value });
+      onChange({ ...selected, value: 'other', label: e.target.value });
     }
     setInputValue(e.target.value);
   };

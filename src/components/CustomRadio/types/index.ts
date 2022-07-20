@@ -12,6 +12,7 @@ export interface CustomRadioProps {
   options: RadioValue[];
   defaultValue?: RadioValue;
   value?: string | number | boolean;
+  selected?: RadioValue;
   isRadioList?: boolean;
   otherInput?: boolean;
   onChange?: (value: RadioValue) => void;
