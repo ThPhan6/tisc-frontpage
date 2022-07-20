@@ -84,7 +84,7 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
   };
 
   return {
-    expended: expanded,
+    expanded,
     columns: formatColumns(),
   };
 };

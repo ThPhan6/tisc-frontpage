@@ -418,6 +418,12 @@ export default [
     ],
   },
   {
+    path: '/brand/dashboard',
+    name: 'workspace',
+    icon: 'workspace-icon.svg',
+    component: './Welcome',
+  },
+  {
     path: '/brand/product',
     name: 'product',
     icon: 'product-icon.svg',
@@ -478,6 +484,7 @@ export default [
         name: 'team.profile',
         icon: 'team-profile-icon.svg',
         access: 'brand_administration_team_profile',
+        path: '/brand/adminstration/team-profiles',
         routes: [
           {
             path: '/brand/adminstration/team-profiles',
@@ -520,10 +527,10 @@ export default [
         ],
       },
       {
-        path: '/brand/adminstration/market-availability',
         name: 'brand.market_availability',
         icon: 'market-availability-icon.svg',
         access: 'brand_administration_market_availability',
+        path: '/brand/adminstration/market-availability',
         routes: [
           {
             path: '/brand/adminstration/market-availability',
