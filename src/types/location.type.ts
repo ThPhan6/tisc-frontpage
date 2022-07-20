@@ -38,9 +38,9 @@ export interface ILocationDetail {
   city_id: string;
 }
 
-export interface ICountryGroup {
+export interface LocationGroupedByCountry {
   country_name: string;
-  count: 0;
+  count: number;
   locations: ILocationDetail[];
 }
 
