@@ -39,7 +39,7 @@ const BrandProfilePage = () => {
     useState<UpdateBrandProfileRequestBody>(initialBrandProfileState);
   const { fetchUserInfo } = useCustomInitialState();
   const [logoBrandProfile, setLogoBrandProfile] = useState<string>('');
-
+  const [loadedData, setLoadedData] = useState(false);
   useEffect(() => {
     fetchUserInfo();
   }, []);
@@ -53,6 +53,7 @@ const BrandProfilePage = () => {
         slogan: brandAppState.slogan || '',
         official_websites: brandAppState.official_websites || [],
       });
+      setLoadedData(true);
     }
   }, [brandAppState]);
 
@@ -131,6 +132,10 @@ const BrandProfilePage = () => {
       }
     });
   };
+
+  if (!loadedData) {
+    return null;
+  }
 
   return (
     <div className={styles.content}>
