@@ -18,7 +18,7 @@ import type { IRadioListOption } from '@/components/CustomRadio/RadioList';
 import styles from './styles/Popover.less';
 
 interface PopoverProps {
-  title: string | ReactNode;
+  title: string;
   visible: boolean;
   setVisible: (visible: boolean) => void;
   /// dropdown radio list

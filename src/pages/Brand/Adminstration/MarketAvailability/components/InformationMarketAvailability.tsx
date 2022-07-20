@@ -1,5 +1,5 @@
 import Popover from '@/components/Modal/Popover';
-import { BodyText, MainTitle, Title } from '@/components/Typography';
+import { BodyText, Title } from '@/components/Typography';
 import { FC } from 'react';
 import styles from '../styles/InformationMarketAvailability.less';
 
@@ -9,11 +9,7 @@ const InformationMarketAvailability: FC<{
 }> = ({ visible, setVisible }) => {
   return (
     <Popover
-      title={
-        <MainTitle level={3} textAlign="left">
-          MARKET AVAIABILITY
-        </MainTitle>
-      }
+      title="MARKET AVAIABILITY"
       visible={visible}
       setVisible={setVisible}
       noFooter
