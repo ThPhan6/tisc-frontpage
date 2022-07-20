@@ -113,15 +113,21 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
 
             {/* another */}
             <th>
-              <MainTitle level={4}>TISC Admin</MainTitle>
+              <MainTitle textAlign="center" level={4}>
+                TISC Admin
+              </MainTitle>
             </th>
             {/* future data header, can delete */}
             <th className={styles.furture_data_header}>
-              <MainTitle level={4}>TISC Team</MainTitle>
+              <MainTitle textAlign="center" level={4}>
+                TISC Team
+              </MainTitle>
             </th>
             {/* ---------- */}
             <th>
-              <MainTitle level={4}>Consultant Team</MainTitle>
+              <MainTitle textAlign="center" level={4}>
+                Consultant Team
+              </MainTitle>
             </th>
           </tr>
         </thead>
