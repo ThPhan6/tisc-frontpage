@@ -9,6 +9,8 @@ import type {
   CreatePasswordRequestBody,
 } from '../types';
 import { message } from 'antd';
+import { setUserProfile } from '@/reducers/user';
+import store from '@/reducers';
 
 export async function loginMiddleware(
   data: LoginInput,
@@ -88,6 +90,7 @@ export async function getUserInfoMiddleware() {
   }>(`/api/team-profile/get-me`, {
     method: 'get',
   });
+  store.dispatch(setUserProfile(dataRes.data));
   return dataRes.data;
 }
 
