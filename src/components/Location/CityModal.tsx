@@ -34,7 +34,7 @@ const CityModal: FC<{
     } else {
       setChosenValue({ value: '', label: '' });
     }
-  }, [stateId]);
+  }, [stateId, countryId]);
 
   return (
     <Popover

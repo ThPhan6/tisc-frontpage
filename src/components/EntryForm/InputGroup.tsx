@@ -21,7 +21,7 @@ interface InputGroupProps extends CustomInputProps {
   hasPadding?: boolean;
   hasHeight?: boolean;
   colorPrimaryDark?: boolean;
-  colorRequired?: string;
+  colorRequired?: 'tertiary' | 'primary-dark';
   hasBoxShadow?: boolean;
   message?: string;
   messageType?: 'normal' | 'warning' | 'error';
@@ -37,7 +37,7 @@ const InputGroup: FC<InputGroupProps> = ({
   hasHeight,
   colorPrimaryDark,
   required,
-  colorRequired,
+  colorRequired = 'tertiary',
   rightIcon,
   onRightIconClick,
   deleteIcon,
@@ -64,9 +64,12 @@ const InputGroup: FC<InputGroupProps> = ({
           {label}
           {required ? (
             <span
-              className={`${colorRequired === 'tertiary' && styles.requiredColorTertiary} ${
-                styles.required
-              }`}
+              className={`${
+                colorRequired === 'tertiary'
+                  ? styles.requiredColorTertiary
+                  : styles.requiredColorPrimaryDark
+              }
+              ${styles.required}`}
             >
               *
             </span>

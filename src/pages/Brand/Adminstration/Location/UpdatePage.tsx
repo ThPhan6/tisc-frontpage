@@ -7,6 +7,8 @@ import { updateLocation, getLocationById } from '@/services';
 import { useParams } from 'umi';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
+import { TableHeader } from '@/components/Table/TableHeader';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const BrandLocationUpdatePage: React.FC = () => {
   const submitButtonStatus = useBoolean(false);
@@ -78,6 +80,7 @@ const BrandLocationUpdatePage: React.FC = () => {
 
   return (
     <div>
+      <TableHeader title="LOCATIONS" rightAction={<CustomPlusButton disabled />} />
       <LocationEntryForm
         submitButtonStatus={submitButtonStatus.value}
         onSubmit={onSubmit}
