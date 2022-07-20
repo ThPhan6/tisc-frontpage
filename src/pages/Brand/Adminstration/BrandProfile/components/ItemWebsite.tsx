@@ -36,7 +36,7 @@ export const ItemWebsite: FC<WebsiteUrl> = ({ websiteValue, onChange }) => {
           placeholder="target country"
           containerClass={styles.customInput}
           disabled
-          value={countryValue.split(' ')[0]}
+          value={countryValue}
         />
         <div className={styles.icon}>
           <LeftIcon onClick={() => setCountryVisible(true)} />
