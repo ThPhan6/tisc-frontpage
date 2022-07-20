@@ -193,12 +193,9 @@ export async function deleteLocationById(id: string) {
 }
 
 export async function getWorkLocations() {
-  return request<{ data: LocationGroupedByCountry[] }>(
-    `/api/location/get-list-with-country-group`,
-    {
-      method: 'GET',
-    },
-  )
+  return request<{ data: LocationGroupedByCountry[] }>(`/api/location/regions`, {
+    method: 'GET',
+  })
     .then((response) => {
       return response.data;
     })
