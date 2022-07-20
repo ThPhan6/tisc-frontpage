@@ -3,6 +3,7 @@ export const MESSAGE_ERROR = {
   PASSWORD: 'Password error',
   CONFIRM_PASSWORD: 'Passwords do not match',
   PHONE_INPUT: 'Invalid phone number',
+  reachLogoSizeLimit: 'Logo size limit reached (240 KB)',
 };
 
 export const MESSAGE_NOTIFICATION = {
@@ -142,6 +143,7 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_INSPIRATIONAL_QUOTATION_ERROR: 'Delete inspirational quotation error',
   UPDATE_INSPIRATIONAL_QUOTATION_SUCCESS: 'Update inspirational quotation successfully',
   UPDATE_INSPIRATIONAL_QUOTATION_ERROR: 'Update inspirational quotation error',
+
   //location
   GET_LIST_LOCATION_ERROR: 'Get list location error',
   GET_LIST_WITH_COUNTRY_GROUP_ERROR: 'Get list with country group error',

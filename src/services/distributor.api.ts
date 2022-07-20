@@ -5,7 +5,7 @@ import {
   SummaryResponse,
 } from '@/components/Table/types';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { Distributor, DistributorForm } from '@/types/distributor.type';
+import { Distributor, DistributorForm, DistributorDetail } from '@/types/distributor.type';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -78,12 +78,11 @@ export async function updateDistributor(id: string, data: DistributorForm) {
 }
 
 export async function getOneDistributor(id: string) {
-  return request(`/api/distributor/get-one/${id}`, { method: 'GET' })
+  return request<{ data: DistributorDetail }>(`/api/distributor/get-one/${id}`, { method: 'GET' })
     .then((response) => {
       return response.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_DISTRIBUTOR_ERROR);
-      return [];
     });
 }

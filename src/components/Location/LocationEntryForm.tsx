@@ -17,7 +17,7 @@ import { validateEmail } from '@/helper/utils';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
 
-interface IAttributeEntryForm {
+interface ILocationEntryForm {
   submitButtonStatus: any;
   onSubmit: (data: LocationForm) => void;
   onCancel: () => void;
@@ -25,7 +25,7 @@ interface IAttributeEntryForm {
   setData: (data: LocationForm) => void;
 }
 type FieldName = keyof LocationForm;
-const AttributeEntryForm: FC<IAttributeEntryForm> = (props) => {
+const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
   const { submitButtonStatus, onSubmit, onCancel, data, setData } = props;
   // for content type modal
   const [visible, setVisible] = useState({
@@ -94,12 +94,14 @@ const AttributeEntryForm: FC<IAttributeEntryForm> = (props) => {
     if (!isValidEmail) {
       return message.error(MESSAGE_ERROR.EMAIL);
     }
+
     return onSubmit({
       ...data,
       functional_type_ids: selectedFunctionalTypes.map((selected) => {
         if (selected.value === 'other') {
           return selected.label as string;
         }
+
         return selected.value;
       }),
     });
@@ -261,7 +263,7 @@ const AttributeEntryForm: FC<IAttributeEntryForm> = (props) => {
         />
       </FormGroup>
       <InputGroup
-        label="Gernal Email"
+        label="General Email"
         required
         deleteIcon
         fontLevel={3}
@@ -323,4 +325,4 @@ const AttributeEntryForm: FC<IAttributeEntryForm> = (props) => {
   );
 };
 
-export default AttributeEntryForm;
+export default LocationEntryForm;

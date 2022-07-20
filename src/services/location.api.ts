@@ -93,19 +93,6 @@ export async function getCitiesByCountryIdAndStateId(countryId: string, stateId:
     });
 }
 
-export async function getListCountryGroup() {
-  return request(`/api/location/get-list-with-country-group`, {
-    method: 'GET',
-  })
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_COUNTRY_GROUP);
-      return [];
-    });
-}
-
 export async function getCountryById(id: string) {
   return request(`/api/location/get-country/${id}`, { method: 'GET' })
     .then((response) => {
