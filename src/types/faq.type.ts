@@ -1,7 +1,7 @@
 export interface FaqItem {
   id: string;
   title: string;
-  logo: null;
+  logo: string;
   document: {
     document: string;
     question_and_answer: {

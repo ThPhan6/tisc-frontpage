@@ -1,3 +1,5 @@
+import { FaqItem } from '@/types/faq.type';
+
 export interface FaqInput {
   question: string;
   answer: string;
@@ -6,7 +8,7 @@ export interface FaqInput {
 export interface FaqPanel {
   id: string;
   title: string;
-  logo: null;
+  logo: string;
   document: {
     document: string;
     question_and_answer: {
@@ -28,13 +30,13 @@ export interface FaqForm {
   design: FaqItems;
 }
 
-export type FaqItem = {
-  id: string;
-  icon?: string;
-  title: string;
-  document?: string;
-  question_and_answer?: QnA[];
-};
+// export type FaqItem = {
+//   id: string;
+//   icon?: string;
+//   title: string;
+//   document?: string;
+//   question_and_answer?: QnA[];
+// };
 
 export type FaqState = {
   value: FaqItem[];

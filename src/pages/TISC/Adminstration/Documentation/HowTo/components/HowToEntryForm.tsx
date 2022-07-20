@@ -156,9 +156,7 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
     const newValue = value.value;
     const newQnAs = newValue[panelIndex].document.question_and_answer;
     newQnAs[qnaIdx] = faqValue;
-    console.log('newQnAs', newQnAs);
     newValue[panelIndex].document.question_and_answer = newQnAs;
-    console.log('newValue', newValue);
     updatedOnChange(newValue);
   };
 

@@ -52,10 +52,7 @@ const HowToPage: FC<HowToPageProps> = ({ containerClass }) => {
   }, []);
 
   const onSubmit = () => {
-    updateFAQ((howTo[activeTab] as FaqState).value).then((res) => {
-      // setHowTo(res);
-      console.log('res', res);
-    });
+    updateFAQ((howTo[activeTab] as FaqState).value);
   };
 
   return (
