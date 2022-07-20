@@ -25,7 +25,8 @@ const renderMenuItem = (menu: MenuDataItem) => {
 };
 
 const renderSubMenu = (menu: MenuDataItem) => {
-  const children = menu.children && menu.children.filter((item) => !item.hideInMenu);
+  const children =
+    menu.children && menu.children.filter((item) => !item.hideInMenu && !item.unaccessible);
   if (isEmpty(children)) {
     return renderMenuItem(menu);
   }
@@ -36,14 +37,17 @@ const renderSubMenu = (menu: MenuDataItem) => {
       icon={renderIconByName(menu.icon)}
       className={styles.customAsideSubMenu}
     >
-      {children?.map((child) => {
-        const childrenLevel2 = child.children && child.children.filter((item) => !item.hideInMenu);
+      {children &&
+        children.map((child) => {
+          const childrenLevel2 =
+            child.children &&
+            child.children.filter((item) => !item.hideInMenu && !item.unaccessible);
 
-        if (childrenLevel2) {
-          return renderSubMenu(child);
-        }
-        return renderMenuItem(child);
-      })}
+          if (childrenLevel2) {
+            return renderSubMenu(child);
+          }
+          return renderMenuItem(child);
+        })}
     </Menu.SubMenu>
   );
 };
