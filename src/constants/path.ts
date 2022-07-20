@@ -79,6 +79,10 @@ export const PATH = {
   distributors: '/brand/adminstration/distributors',
   createDistributor: '/brand/adminstration/distributors/create',
   updateDistributor: '/brand/adminstration/distributors/:id',
+  /// brand team profile
+  brandTeamProfile: '/brand/adminstration/team-profiles',
+  brandCreateTeamProfile: '/brand/adminstration/team-profiles/create',
+  brandUpdateTeamProfile: '/brand/adminstration/team-profiles/update/:id',
 };
 
 export const PUBLIC_PATH = [PATH.landingPage, PATH.resetPassword, PATH.createPassword];

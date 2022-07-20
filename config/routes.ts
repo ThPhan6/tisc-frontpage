@@ -475,11 +475,26 @@ export default [
         ],
       },
       {
-        path: '/brand/adminstration/team-profiles',
         name: 'team.profile',
         icon: 'team-profile-icon.svg',
-        component: './Welcome',
         access: 'brand_administration_team_profile',
+        routes: [
+          {
+            path: '/brand/adminstration/team-profiles',
+            component: './Brand/Adminstration/TeamProfiles',
+            hideInMenu: true,
+          },
+          {
+            path: '/brand/adminstration/team-profiles/create',
+            component: './Brand/Adminstration/TeamProfiles/CreatePage',
+            hideInMenu: true,
+          },
+          {
+            path: '/brand/adminstration/team-profiles/update/:id',
+            component: './Brand/Adminstration/TeamProfiles/UpdatePage',
+            hideInMenu: true,
+          },
+        ],
       },
       {
         path: '/brand/adminstration/distributors',
