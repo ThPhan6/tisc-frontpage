@@ -100,7 +100,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <Tooltip placement="bottom" title="Favourite">
           <BodyText level={6} fontFamily="Roboto" customClass="action-like">
             {liked ? <LikedIcon onClick={likeProduct} /> : <LikeIcon onClick={likeProduct} />}
-            {`${likeCount.toLocaleString('en-us')} ${likeCount > 1 ? 'like' : 'likes'}`}
+            {`${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
           </BodyText>
         </Tooltip>
         <BodyText customClass="action-other">
