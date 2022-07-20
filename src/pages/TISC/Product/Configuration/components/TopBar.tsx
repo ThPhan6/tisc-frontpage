@@ -219,34 +219,42 @@ const ProductTopBar: React.FC = () => {
             topValue={
               filter?.name === 'category_id' ? (
                 <FilterItem title={filter.title} onDelete={resetProductList} />
+              ) : product.brand ? (
+                'view'
               ) : (
-                `view`
+                <span style={{ opacity: 0 }}>.</span>
               )
             }
             disabled
             bottomEnable={product.summary ? true : false}
-            bottomValue={renderDropDownList(
-              'Categories',
-              'category_id',
-              product.summary?.categories ?? [],
-            )}
+            bottomValue={
+              !product.brand
+                ? 'View By Category'
+                : renderDropDownList('Categories', 'category_id', product.summary?.categories ?? [])
+            }
             customClass="left-divider"
           />
           <TopBarItem
             topValue={
               filter?.name === 'collection_id' ? (
                 <FilterItem title={filter.title} onDelete={resetProductList} />
+              ) : product.brand ? (
+                'view'
               ) : (
-                `view`
+                <span style={{ opacity: 0 }}>.</span>
               )
             }
             disabled
             bottomEnable={product.summary ? true : false}
-            bottomValue={renderDropDownList(
-              'Collections',
-              'collection_id',
-              product.summary?.collections ?? [],
-            )}
+            bottomValue={
+              !product.brand
+                ? 'View By Collection'
+                : renderDropDownList(
+                    'Collections',
+                    'collection_id',
+                    product.summary?.collections ?? [],
+                  )
+            }
             customClass="left-divider"
           />
           <TopBarItem

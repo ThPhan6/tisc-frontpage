@@ -26,6 +26,7 @@ export interface CustomInputProps extends InputProps {
   autoWidth?: boolean;
   fontLevel?: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   defaultWidth?: string | number;
+  maxWords?: number;
 }
 
 export interface CustomTextAreaProps extends TextAreaProps {

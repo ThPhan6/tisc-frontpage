@@ -52,7 +52,7 @@ const ProductHeader: FC<ProductHeaderProps> = ({ title, customClass, onSave, onC
             buttonClass="cancel-btn"
             onClick={onCancel}
           >
-            Cancel
+            Close
           </CustomButton>
         </div>
       </div>

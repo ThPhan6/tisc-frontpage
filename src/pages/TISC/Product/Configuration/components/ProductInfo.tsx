@@ -5,6 +5,7 @@ import Popover from '@/components/Modal/Popover';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { CustomInput } from '@/components/Form/CustomInput';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ReactComponent as RightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 import CustomCollapse from '@/components/Collapse';
 import { showImageUrl } from '@/helper/utils';
 import styles from '../styles/details.less';
@@ -80,17 +81,16 @@ const ProductInfo: React.FC = () => {
           fontLevel={4}
           label="Collection"
           placeholder="create or assign from the list"
-          rightIcon
+          rightIcon={<RightLeftIcon onClick={() => setVisible(true)} />}
           noWrap
           value={collection?.name ?? ''}
-          onRightIconClick={() => setVisible(true)}
         />
         <InputGroup
           horizontal
           fontLevel={4}
           label="Product"
-          placeholder="type max.50 characters short description"
-          maxLength={50}
+          placeholder="type max.100 characters short description"
+          maxLength={100}
           noWrap
           value={name}
           onChange={(e) => {
@@ -107,7 +107,7 @@ const ProductInfo: React.FC = () => {
           fontLevel={4}
           label="Description"
           placeholder="max.50 words of product summary"
-          maxLength={50}
+          maxWords={50}
           noWrap
           value={description}
           onChange={(e) => {
