@@ -72,8 +72,8 @@ const LocationModal: FC<ILocationModal> = ({
     return (
       <div className={styles.detail}>
         <div className={styles.detail_business}>
-          <span className={styles.name}>{business}</span>
-          <span className={styles.type}>{type && `(${type})`}</span>
+          <span className={styles.name}> {business} </span>
+          <span className={styles.type}> {type && `(${type})`} </span>
         </div>
         <span className={styles.detail_address}>{address}</span>
       </div>

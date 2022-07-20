@@ -1,7 +1,7 @@
 import { Radio, Space } from 'antd';
 import { FC } from 'react';
 import { useState } from 'react';
-import type { CustomRadioProps } from './types';
+import type { CustomRadioProps, RadioValue } from './types';
 import style from './styles/index.less';
 import { CustomInput } from '../Form/CustomInput';
 
@@ -37,6 +37,13 @@ export const CustomRadio: FC<CustomRadioProps> = ({
     setInputValue(e.target.value);
   };
 
+  const renderActiveClass = (option: RadioValue) => {
+    if (option.value == value) {
+      return 'item-option-checked';
+    }
+    return '';
+  };
+
   return (
     <div
       className={`
@@ -66,12 +73,12 @@ export const CustomRadio: FC<CustomRadioProps> = ({
               <div style={{ width: '100%' }}>
                 {isRadioList ? (
                   <div className={style['item-wrapper']}>
-                    <span>{option.label}</span>
+                    <span className={renderActiveClass(option)}>{option.label}</span>
                     <Radio id={`${option.value}_${index}`} {...option} />
                   </div>
                 ) : (
                   <Radio id={`${option.value}_${index}`} {...option}>
-                    {option.label}
+                    <span className={renderActiveClass(option)}>{option.label}</span>
                   </Radio>
                 )}
               </div>
