@@ -10,6 +10,11 @@
     component: './LandingPage',
     layout: false,
   },
+  {
+    path: '/create-password',
+    component: './LandingPage',
+    layout: false,
+  },
   // REQUIRED AUTHENTICATION
   {
     path: '/profiles',

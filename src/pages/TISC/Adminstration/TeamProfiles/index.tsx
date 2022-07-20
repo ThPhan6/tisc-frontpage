@@ -1,8 +1,8 @@
 import { HeaderDropdown } from '@/components/HeaderDropdown';
 import CustomTable from '@/components/Table';
-import { ICustomTableColumnType } from '@/components/Table/types';
+import { TableColumnItem } from '@/components/Table/types';
 import { deleteTeamProfile, getTeamProfileList } from '@/services';
-import { ITeamProfilesResponseForm } from '@/types';
+import { TeamProfileTableProps } from '@/types';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
@@ -29,7 +29,7 @@ const TeamProfilesList = () => {
       });
     });
   };
-  const mainColumns: ICustomTableColumnType<ITeamProfilesResponseForm>[] = [
+  const mainColumns: TableColumnItem<TeamProfileTableProps>[] = [
     {
       title: '',
       dataIndex: 'avatar',
@@ -117,6 +117,7 @@ const TeamProfilesList = () => {
       columns={mainColumns}
       fetchDataFunc={getTeamProfileList}
       ref={tableRef}
+      hasPagination
     />
   );
 };

@@ -2,6 +2,7 @@ export const PATH = {
   // public path
   landingPage: '/',
   resetPassword: '/reset-password',
+  createPassword: '/create-password',
 
   // private path
   profiles: '/profiles',
@@ -75,4 +76,4 @@ export const PATH = {
   updateDistributor: '/brand/adminstration/distributors/:id',
 };
 
-export const PUBLIC_PATH = [PATH.landingPage, PATH.resetPassword];
+export const PUBLIC_PATH = [PATH.landingPage, PATH.resetPassword, PATH.createPassword];

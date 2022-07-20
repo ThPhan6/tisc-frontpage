@@ -25,6 +25,7 @@ import { LoginModal } from './components/LoginModal';
 import { NoticeModal } from './components/NoticeModal';
 import { PoliciesModal } from './components/PoliciesModal';
 import { ResetPasswordModal } from './components/ResetPasswordModal';
+import { CreatePasswordModal } from './components/CreatePasswordModal';
 import { SignupModal } from './components/SignupModal';
 import styles from './index.less';
 import {
@@ -33,15 +34,23 @@ import {
   loginMiddleware,
   resetPasswordMiddleware,
   validateResetToken,
+  createPasswordVerify,
 } from './services/api';
-import type { LoginInput, ModalOpen, ResetPasswordRequestBody } from './types';
+import type {
+  LoginInput,
+  ModalOpen,
+  ResetPasswordRequestBody,
+  CreatePasswordRequestBody,
+} from './types';
 
 const LandingPage = () => {
   const emailResetPwd = useQuery().get('email');
   const tokenResetPwd = useQuery().get('token');
+  const tokenVerification = useQuery().get('verification_token');
 
   const { fetchUserInfo } = useCustomInitialState();
   const openResetPwd = useBoolean();
+  const openVerificationModal = useBoolean();
   const isLoading = useBoolean();
   const [openModal, setOpenModal] = useState<ModalOpen>('');
   const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
@@ -66,6 +75,17 @@ const LandingPage = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [emailResetPwd]);
+
+  useEffect(() => {
+    if (!tokenVerification && history.location.pathname === PATH.createPassword) {
+      history.push(PATH.landingPage);
+      return;
+    } else {
+      if (tokenVerification) {
+        openVerificationModal.setValue(true);
+      }
+    }
+  }, [tokenVerification]);
 
   const handleSubmitLogin = (data: LoginInput) => {
     isLoading.setValue(true);
@@ -120,6 +140,16 @@ const LandingPage = () => {
         message.error(msg);
       }
       isLoading.setValue(false);
+    });
+  };
+
+  const handleVerifyAccount = (data: CreatePasswordRequestBody) => {
+    isLoading.setValue(true);
+    createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
+      isLoading.setValue(false);
+      if (isSuccess) {
+        redirectAfterLogin();
+      }
     });
   };
 
@@ -306,6 +336,14 @@ const LandingPage = () => {
           }}
         />
       )}
+      <CreatePasswordModal
+        visible={openVerificationModal}
+        handleSubmit={handleVerifyAccount}
+        data={{
+          email: 'vuongd36@gmail.com',
+          token: tokenVerification || '',
+        }}
+      />
       {isLoading.value && <LoadingPageCustomize />}
     </div>
   );

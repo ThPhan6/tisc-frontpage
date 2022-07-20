@@ -5,18 +5,13 @@ import type {
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import {
-  ICountryGroup,
-  ITeamProfileGetOneResponseForm,
-  ITeamProfilesResponseForm,
-  TeamProfilesSubmitData,
-} from '@/types';
+import { TeamProfileTableProps, TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 
 interface ITeamProfilePaginationResponse {
   data: {
-    users: ITeamProfilesResponseForm[];
+    users: TeamProfileTableProps[];
     pagination: PaginationResponse;
     summary: SummaryResponse[];
   };
@@ -46,7 +41,7 @@ export async function getTeamProfileList(
 }
 
 export async function getOneTeamProfile(id: string) {
-  return request<{ data: ITeamProfileGetOneResponseForm }>(`/api/team-profile/get-one/${id}`, {
+  return request<{ data: TeamProfileDetailProps }>(`/api/team-profile/get-one/${id}`, {
     method: 'GET',
   })
     .then((response) => {
@@ -54,27 +49,26 @@ export async function getOneTeamProfile(id: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_TEAM_PROFILE_ERROR);
-      return {} as ITeamProfileGetOneResponseForm;
     });
 }
 
-export async function createTeamProfile() {
-  return request<{ data: ITeamProfilePaginationResponse[] }>(`/api/team-profile/create`, {
+export async function createTeamProfile(data: TeamProfileRequestBody) {
+  return request<{ data: TeamProfileDetailProps }>(`/api/team-profile/create`, {
     method: 'POST',
+    data,
   })
-    .then((response) => {
+    .then((res) => {
       message.success(MESSAGE_NOTIFICATION.CREATE_TEAM_PROFILE_SUCCESS);
-      return response.data;
+      return res.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_TEAM_PROFILE_ERROR);
-      return [] as ITeamProfilePaginationResponse[];
     });
 }
 
-export async function updateTeamProfile(id: string, data: TeamProfilesSubmitData) {
-  return request<boolean>(`/api/team-profile/update/${id}`, {
-    method: 'PUT',
+export async function updateTeamProfile(id: string, data: TeamProfileRequestBody) {
+  return request(`/api/team-profile/update/${id}`, {
+    method: 'POST',
     data,
   })
     .then(() => {
@@ -88,7 +82,7 @@ export async function updateTeamProfile(id: string, data: TeamProfilesSubmitData
 }
 
 export async function deleteTeamProfile(id: string) {
-  return request<boolean>(`/api/team-profile/delete/${id}`, {
+  return request(`/api/team-profile/delete/${id}`, {
     method: 'DELETE',
   })
     .then(() => {
@@ -101,15 +95,16 @@ export async function deleteTeamProfile(id: string) {
     });
 }
 
-export async function getTeamProfileLocationList() {
-  return request<{ data: ICountryGroup[] }>(`/api/location/get-list-with-country-group`, {
-    method: 'GET',
+export async function inviteUser(userId: string) {
+  return request(`/api/team-profile/invite/${userId}`, {
+    method: 'POST',
   })
-    .then((response) => {
-      return response.data;
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.SEND_INVITE_SUCCESS);
+      return true;
     })
     .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_WITH_COUNTRY_GROUP_ERROR);
-      return [] as ICountryGroup[];
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.SEND_INVITE_ERROR);
+      return false;
     });
 }

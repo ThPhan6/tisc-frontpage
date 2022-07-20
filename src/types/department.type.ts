@@ -1,4 +1,4 @@
-export interface IDepartmentForm {
+export interface DepartmentData {
   id: string;
   name: string;
 }

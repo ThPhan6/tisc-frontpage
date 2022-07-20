@@ -1,73 +1,60 @@
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { TeamProfilesEntryForm } from './components/TeamProfilesEntryForm';
+import { TeamProfilesEntryForm } from '@/components/TeamProfile/components/TeamProfilesEntryForm';
 import { useBoolean } from '@/helper/hook';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
-import { createTeamProfile, getDepartmentList } from '@/services';
-import { IDepartmentForm, ITeamProfilesProps } from '@/types';
-import { useEffect, useState } from 'react';
+import { createTeamProfile, inviteUser } from '@/services';
+import { TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
+import { useState } from 'react';
 import LoadingPageCustomize from '@/components/LoadingPage';
-
-const DEFAULT_TEAMPROFILE = {
-  firstname: '',
-  lastname: '',
-  position: '',
-  email: '',
-  location: { value: '', label: '' },
-  gender: { value: '', label: '' },
-  department: { value: '', label: '' },
-  access_level: { value: '', label: '' },
-  phone: { zoneCode: '', phoneNumber: '' },
-  mobile: { zoneCode: '', phoneNumber: '' },
-  status: false,
-};
+import { AccessLevelDataRole } from './constants/role';
+import { DEFAULT_TEAMPROFILE } from '@/components/TeamProfile/constants/entryForm';
 
 const CreateTeamProfilesPage = () => {
   const submitButtonStatus = useBoolean(false);
   const isLoading = useBoolean(false);
-
   // for entry form
-  const [entryFormValue, setEntryFormValue] = useState<ITeamProfilesProps>(DEFAULT_TEAMPROFILE);
-  /// for department
-  const [departmentList, setDepartmentList] = useState<IDepartmentForm[]>([]);
+  const [data, setData] = useState<TeamProfileDetailProps>(DEFAULT_TEAMPROFILE);
 
   const handleCancel = () => {
     pushTo(PATH.teamProfile);
   };
 
-  const handleCreateData = () => {
+  const handleCreateData = (
+    submitData: TeamProfileRequestBody,
+    callBack?: (userId: string) => void,
+  ) => {
     isLoading.setValue(true);
-    createTeamProfile().then((isSuccess) => {
+    createTeamProfile(submitData).then((teamProfile) => {
       isLoading.setValue(false);
-      if (isSuccess) {
+      if (teamProfile) {
         submitButtonStatus.setValue(true);
-        setTimeout(() => {
-          pushTo(PATH.teamProfile);
-        }, 1000);
+        if (callBack) {
+          callBack(teamProfile.id ?? '');
+        } else {
+          pushTo(PATH.updateTeamProfile.replace(':id', teamProfile.id ?? ''));
+        }
       }
     });
   };
 
-  useEffect(() => {
-    /// get department list
-    getDepartmentList().then((isSuccess) => {
-      if (isSuccess) {
-        setDepartmentList(isSuccess);
-      }
-    });
-  }, []);
+  const handleInvite = (userId: string) => {
+    inviteUser(userId);
+    pushTo(PATH.updateTeamProfile.replace(':id', userId));
+  };
 
   return (
     <div>
       <TableHeader title="TEAM PROFILES" rightAction={<CustomPlusButton disabled />} />
       <TeamProfilesEntryForm
-        value={entryFormValue}
-        onChange={setEntryFormValue}
+        data={data}
+        setData={setData}
         onCancel={handleCancel}
         onSubmit={handleCreateData}
+        handleInvite={handleInvite}
         submitButtonStatus={submitButtonStatus.value}
-        departmentList={departmentList}
+        AccessLevelDataRole={AccessLevelDataRole}
       />
       {isLoading.value && <LoadingPageCustomize />}
     </div>

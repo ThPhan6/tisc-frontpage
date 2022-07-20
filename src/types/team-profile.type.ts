@@ -1,22 +1,7 @@
-import { RadioValue } from '@/components/CustomRadio/types';
-import { PhoneInputValueProp } from '@/components/Form/types';
-
-export interface ITeamProfilesProps {
+export interface TeamProfileTableProps {
+  id: string;
   firstname: string;
   lastname: string;
-  position: string;
-  email: string;
-  phone: PhoneInputValueProp;
-  mobile: PhoneInputValueProp;
-  gender: RadioValue;
-  location: RadioValue;
-  department: RadioValue;
-  access_level: RadioValue;
-  status: boolean;
-}
-
-export interface ITeamProfilesResponseForm {
-  id: string;
   fullname: string;
   work_location: string;
   position: string;
@@ -29,13 +14,13 @@ export interface ITeamProfilesResponseForm {
   phone_code: string;
 }
 
-export interface ITeamProfileGetOneResponseForm {
-  id: string;
+export interface TeamProfileDetailProps {
+  id?: string;
   role_id: string;
   firstname: string;
   lastname: string;
   fullname: string;
-  gender: string;
+  gender: boolean;
   location_id: string;
   department_id: string;
   position: string;
@@ -54,10 +39,9 @@ export interface ITeamProfileGetOneResponseForm {
   type: string | number;
   relation_id: string;
   permissions: string;
-  brand: string;
 }
 
-export interface TeamProfilesSubmitData {
+export interface TeamProfileRequestBody {
   firstname: string;
   lastname: string;
   gender: boolean;

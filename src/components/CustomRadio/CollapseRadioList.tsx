@@ -7,7 +7,7 @@ import styles from './styles/collapseRadioList.less';
 
 interface CollapseRadioListProps {
   options: RadioValue[];
-  checked?: RadioValue;
+  checked?: string | number;
   onChange?: (checked: RadioValue) => void;
   otherInput?: boolean;
   placeholder?: string;
@@ -36,7 +36,7 @@ const CollapseRadioList: FC<CollapseRadioListProps> = ({
         options={options}
         isRadioList
         otherInput={otherInput}
-        value={checked?.value}
+        value={checked}
         onChange={onChange}
       />
     </CustomCollapse>

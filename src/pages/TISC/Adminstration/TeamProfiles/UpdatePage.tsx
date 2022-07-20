@@ -1,98 +1,75 @@
-import LoadingPageCustomize from '@/components/LoadingPage';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { TableHeader } from '@/components/Table/TableHeader';
-import { PATH } from '@/constants/path';
-import { pushTo } from '@/helper/history';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { TeamProfilesEntryForm } from '@/components/TeamProfile/components/TeamProfilesEntryForm';
 import { useBoolean } from '@/helper/hook';
-import { getDepartmentList, getOneTeamProfile, updateTeamProfile } from '@/services';
-import { IDepartmentForm, ITeamProfilesProps, TeamProfilesSubmitData } from '@/types';
-import { useEffect, useState } from 'react';
+import { pushTo } from '@/helper/history';
+import { PATH } from '@/constants/path';
+import { updateTeamProfile, getOneTeamProfile, inviteUser } from '@/services';
+import { TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
+import { useState, useEffect } from 'react';
 import { useParams } from 'umi';
-import { TeamProfilesEntryForm } from './components/TeamProfilesEntryForm';
-
-const DEFAULT_TEAMPROFILE = {
-  firstname: '',
-  lastname: '',
-  position: '',
-  email: '',
-  location: { value: '', label: '' },
-  gender: { value: '', label: '' },
-  department: { value: '', label: '' },
-  access_level: { value: '', label: '' },
-  phone: { zoneCode: '', phoneNumber: '' },
-  mobile: { zoneCode: '', phoneNumber: '' },
-  status: false,
-};
+import LoadingPageCustomize from '@/components/LoadingPage';
+import { AccessLevelDataRole } from './constants/role';
+import { DEFAULT_TEAMPROFILE } from '@/components/TeamProfile/constants/entryForm';
 
 const UpdateTeamProfilesPage = () => {
   const submitButtonStatus = useBoolean(false);
   const isLoading = useBoolean(false);
-  const params = useParams<{ id: string }>();
-  const teamProfileId = params?.id || '';
+  const [loadedData, setLoadedData] = useState(false);
+  const params = useParams<{
+    id: string;
+  }>();
+  const userId = params?.id || '';
 
   // for entry form
-  const [entryFormValue, setEntryFormValue] = useState<ITeamProfilesProps>(DEFAULT_TEAMPROFILE);
-  /// for department
-  const [departmentList, setDepartmentList] = useState<IDepartmentForm[]>([]);
+  const [data, setData] = useState<TeamProfileDetailProps>(DEFAULT_TEAMPROFILE);
 
   const handleCancel = () => {
     pushTo(PATH.teamProfile);
   };
 
-  const handleUpdateData = (data: TeamProfilesSubmitData) => {
-    updateTeamProfile(teamProfileId, data).then((isSuccess) => {
+  const handleUpdateData = (submitData: TeamProfileRequestBody) => {
+    isLoading.setValue(true);
+    updateTeamProfile(userId, submitData).then((isSuccess) => {
       isLoading.setValue(false);
       if (isSuccess) {
         submitButtonStatus.setValue(true);
         setTimeout(() => {
-          pushTo(PATH.teamProfile);
+          submitButtonStatus.setValue(false);
         }, 1000);
       }
     });
   };
 
-  /// get department list
   useEffect(() => {
-    getDepartmentList().then((isSuccess) => {
-      if (isSuccess) {
-        setDepartmentList(isSuccess);
+    getOneTeamProfile(userId).then((res) => {
+      if (res) {
+        setData(res);
+        setLoadedData(true);
       }
     });
   }, []);
 
-  /// get one team profile
-  useEffect(() => {
-    getOneTeamProfile(teamProfileId).then((data) => {
-      if (data) {
-        console.log(data);
+  if (!loadedData) {
+    return null;
+  }
 
-        setEntryFormValue({
-          firstname: data.firstname,
-          lastname: data.lastname,
-          position: data.position,
-          email: data.email,
-          location: { value: data.location_id, label: data.work_location },
-          gender: { label: 'Male', value: '1' },
-          department: { value: '', label: '' },
-          access_level: { label: 'TISC Admin', value: '111' },
-          phone: { zoneCode: data.phone_code, phoneNumber: data.phone },
-          mobile: { zoneCode: data.phone_code, phoneNumber: data.mobile },
-          status: true,
-        });
-      }
-    });
-  }, []);
+  const handleInvite = () => {
+    inviteUser(userId);
+  };
 
   return (
     <div>
       <TableHeader title="TEAM PROFILES" rightAction={<CustomPlusButton disabled />} />
       <TeamProfilesEntryForm
-        value={entryFormValue}
-        onChange={setEntryFormValue}
+        data={data}
+        setData={setData}
+        userId={userId}
         onCancel={handleCancel}
         onSubmit={handleUpdateData}
         submitButtonStatus={submitButtonStatus.value}
-        departmentList={departmentList}
+        handleInvite={handleInvite}
+        AccessLevelDataRole={AccessLevelDataRole}
       />
       {isLoading.value && <LoadingPageCustomize />}
     </div>
