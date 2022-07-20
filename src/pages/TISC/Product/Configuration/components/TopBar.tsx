@@ -138,7 +138,7 @@ const ProductTopBar: React.FC = () => {
     return (
       <BodyText level={5} fontFamily="Roboto">
         <img src={showImageUrl(item.logo ?? '')} className={styles.brandLogo} />
-        <span>{item.name}</span>
+        <span className="brand-name">{item.name}</span>
       </BodyText>
     );
   };
