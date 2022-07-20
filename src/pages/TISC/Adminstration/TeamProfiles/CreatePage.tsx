@@ -8,7 +8,7 @@ import { createTeamProfile, inviteUser } from '@/services';
 import { TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
 import { useState } from 'react';
 import LoadingPageCustomize from '@/components/LoadingPage';
-import { AccessLevelDataRole } from './constants/role';
+import { TISCAccessLevelDataRole } from './constants/role';
 import { DEFAULT_TEAMPROFILE } from '@/components/TeamProfile/constants/entryForm';
 
 const CreateTeamProfilesPage = () => {
@@ -54,7 +54,8 @@ const CreateTeamProfilesPage = () => {
         onSubmit={handleCreateData}
         handleInvite={handleInvite}
         submitButtonStatus={submitButtonStatus.value}
-        AccessLevelDataRole={AccessLevelDataRole}
+        AccessLevelDataRole={TISCAccessLevelDataRole}
+        role="TISC"
       />
       {isLoading.value && <LoadingPageCustomize />}
     </div>

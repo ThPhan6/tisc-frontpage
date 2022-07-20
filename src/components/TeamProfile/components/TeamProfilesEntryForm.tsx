@@ -12,6 +12,7 @@ import { getDepartmentList } from '@/services';
 import styles from '../styles/TeamProfilesEntryForm.less';
 import LocationModal from './LocationModal';
 import TISCAccessLevelModal from './TISCAccessLevelModal';
+import BrandAccessLevelModal from './BrandAccessLevelModal';
 import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
 import { validateEmail } from '@/helper/utils';
 import { MESSAGE_ERROR } from '@/constants/message';
@@ -31,6 +32,7 @@ interface TeamProfilesEntryFormValue {
   onSubmit: (value: TeamProfileRequestBody, callBack?: (userId: string) => void) => void;
   submitButtonStatus: boolean;
   AccessLevelDataRole: RadioValue[];
+  role: 'TISC' | 'BRAND' | 'DESIGNER';
 }
 
 type FieldName = keyof TeamProfileDetailProps;
@@ -44,6 +46,7 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
   handleInvite,
   userId,
   AccessLevelDataRole,
+  role,
 }) => {
   /// for department
   const [departments, setDepartments] = useState<DepartmentData[]>([]);
@@ -309,16 +312,27 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
         />
       </EntryFormWrapper>
 
-      {/* TISC Access level modal */}
-      <TISCAccessLevelModal
-        visible={visible.accessModal}
-        setVisible={(visibled) =>
-          setVisible({
-            accessModal: visibled,
-            workLocationModal: false,
-          })
-        }
-      />
+      {role === 'TISC' ? (
+        <TISCAccessLevelModal
+          visible={visible.accessModal}
+          setVisible={(visibled) =>
+            setVisible({
+              accessModal: visibled,
+              workLocationModal: false,
+            })
+          }
+        />
+      ) : role === 'BRAND' ? (
+        <BrandAccessLevelModal
+          visible={visible.accessModal}
+          setVisible={(visibled) =>
+            setVisible({
+              accessModal: visibled,
+              workLocationModal: false,
+            })
+          }
+        />
+      ) : null}
 
       {/* Location Modal */}
       <LocationModal

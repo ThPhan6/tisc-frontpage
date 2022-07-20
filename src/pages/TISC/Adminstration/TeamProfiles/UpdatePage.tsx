@@ -9,7 +9,7 @@ import { TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
 import { useState, useEffect } from 'react';
 import { useParams } from 'umi';
 import LoadingPageCustomize from '@/components/LoadingPage';
-import { AccessLevelDataRole } from './constants/role';
+import { TISCAccessLevelDataRole } from './constants/role';
 import { DEFAULT_TEAMPROFILE } from '@/components/TeamProfile/constants/entryForm';
 
 const UpdateTeamProfilesPage = () => {
@@ -69,7 +69,8 @@ const UpdateTeamProfilesPage = () => {
         onSubmit={handleUpdateData}
         submitButtonStatus={submitButtonStatus.value}
         handleInvite={handleInvite}
-        AccessLevelDataRole={AccessLevelDataRole}
+        AccessLevelDataRole={TISCAccessLevelDataRole}
+        role="TISC"
       />
       {isLoading.value && <LoadingPageCustomize />}
     </div>

@@ -44,7 +44,7 @@ import type {
 } from './types';
 
 const LandingPage = () => {
-  const emailResetPwd = useQuery().get('email');
+  const userEmail = useQuery().get('email');
   const tokenResetPwd = useQuery().get('token');
   const tokenVerification = useQuery().get('verification_token');
 
@@ -60,7 +60,7 @@ const LandingPage = () => {
   };
 
   useEffect(() => {
-    if ((!emailResetPwd || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
+    if ((!userEmail || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
       history.push(PATH.landingPage);
       return;
     } else {
@@ -74,7 +74,7 @@ const LandingPage = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [emailResetPwd]);
+  }, [userEmail]);
 
   useEffect(() => {
     if (!tokenVerification && history.location.pathname === PATH.createPassword) {
@@ -326,12 +326,12 @@ const LandingPage = () => {
         onClose={handleCloseModal}
         theme="default"
       />
-      {emailResetPwd && (
+      {userEmail && (
         <ResetPasswordModal
           visible={openResetPwd}
           handleSubmit={handleResetPassword}
           resetData={{
-            email: emailResetPwd,
+            email: userEmail,
             token: tokenResetPwd || '',
           }}
         />
@@ -340,7 +340,7 @@ const LandingPage = () => {
         visible={openVerificationModal}
         handleSubmit={handleVerifyAccount}
         data={{
-          email: 'vuongd36@gmail.com',
+          email: userEmail ?? '',
           token: tokenVerification || '',
         }}
       />
