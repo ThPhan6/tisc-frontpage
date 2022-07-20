@@ -13,9 +13,9 @@ interface HowToPageProps {
 }
 
 const intialState = {
-  brand: { expandedIndex: 0, value: [] },
-  design: { expandedIndex: 0, value: [] },
-  tisc: { expandedIndex: 0, value: [] },
+  brand: { expandedIndex: -1, value: [] },
+  design: { expandedIndex: -1, value: [] },
+  tisc: { expandedIndex: -1, value: [] },
 };
 
 const HowToPage: FC<HowToPageProps> = ({ containerClass }) => {
@@ -32,15 +32,15 @@ const HowToPage: FC<HowToPageProps> = ({ containerClass }) => {
     getAllFAQ().then((res) => {
       setHowTo({
         brand: {
-          expandedIndex: 0,
+          expandedIndex: -1,
           value: res.brand,
         },
         design: {
-          expandedIndex: 0,
+          expandedIndex: -1,
           value: res.design,
         },
         tisc: {
-          expandedIndex: 0,
+          expandedIndex: -1,
           value: res.tisc,
         },
       });
@@ -72,7 +72,6 @@ const HowToPage: FC<HowToPageProps> = ({ containerClass }) => {
       <HowToEntryForm
         value={howTo[activeTab]}
         onChange={(value) => {
-          console.log('onChange', value);
           setHowTo((prevState) => {
             return {
               ...prevState,

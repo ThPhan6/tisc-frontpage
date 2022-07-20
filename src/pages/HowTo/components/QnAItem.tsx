@@ -1,41 +1,43 @@
+import { ReactComponent as ExtendIcon } from '@/assets/icons/action-extend.svg';
+import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-20px.svg';
 import { BodyText } from '@/components/Typography';
 import { Collapse } from 'antd';
 import { FC } from 'react';
 import styles from '../index.less';
-import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-20px.svg';
-import { ReactComponent as ExtendIcon } from '@/assets/icons/action-extend.svg';
 import { CollapsingProps, QnA, QuestionProps } from '../types';
 
 const RenderQuestion: FC<QuestionProps> = (props) => {
-  const { id, question, activeKey, handleActiveCollapse } = props;
-
+  const { index, question, activeKey, handleActiveCollapse } = props;
   return (
-    <div onClick={() => handleActiveCollapse(id)} className={styles.itemQuestion}>
+    <div onClick={() => handleActiveCollapse(index)} className={styles.itemQuestion}>
       <BodyText
         level={4}
-        customClass={id !== activeKey ? styles.font_weight_300 : styles.font_weight_600}
+        customClass={String(index) !== activeKey ? styles.font_weight_300 : styles.font_weight_600}
       >
         {question}
       </BodyText>
-      <div className={styles.addIcon}>{id !== activeKey ? <PlusIcon /> : <ExtendIcon />}</div>
+      <div className={styles.addIcon}>
+        {String(index) !== activeKey ? <PlusIcon /> : <ExtendIcon />}
+      </div>
     </div>
   );
 };
 
 export interface QnAItemProps extends CollapsingProps {
+  index: number;
   item: QnA;
 }
 
-export const QnAItem: FC<QnAItemProps> = ({ item, activeKey, handleActiveCollapse }) => {
+export const QnAItem: FC<QnAItemProps> = ({ index, item, activeKey, handleActiveCollapse }) => {
   return (
     <div>
       <Collapse ghost activeKey={activeKey}>
         <Collapse.Panel
-          key={item.id}
+          key={index}
           showArrow={false}
           header={
             <RenderQuestion
-              id={item.id}
+              index={index}
               question={item.question}
               activeKey={activeKey}
               handleActiveCollapse={handleActiveCollapse}

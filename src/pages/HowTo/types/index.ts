@@ -1,6 +1,6 @@
 export interface CollapsingProps {
   activeKey?: string;
-  handleActiveCollapse: (id: string) => void;
+  handleActiveCollapse: (index: number) => void;
 }
 
 export type QnA = {
@@ -9,14 +9,14 @@ export type QnA = {
 };
 
 export interface QuestionProps extends CollapsingProps {
-  id: string;
+  index: number;
   question: string;
 }
 
-// export type FaqItem = {
-//   id: string;
-//   icon?: string;
-//   title: string;
-//   document?: string;
-//   question_and_answer?: QnA[];
-// };
+export type FaqItem = {
+  id: string;
+  icon?: string;
+  title: string;
+  document?: string;
+  question_and_answer?: QnA[];
+};

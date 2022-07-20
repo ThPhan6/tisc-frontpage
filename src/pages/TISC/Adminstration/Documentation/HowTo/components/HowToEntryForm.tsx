@@ -178,8 +178,6 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
     newValue[panelIndex].document.question_and_answer[faqIndex].answer = '';
     updatedOnChange(newValue);
   };
-
-  // console.log('value', value);
   return (
     <Row>
       <Col span={12}>
@@ -188,14 +186,14 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
             {value.value?.map((panel, panelIndex) => {
               const panelIdx = panelIndex + 1;
               const isExpanded = value.expandedIndex === panelIdx;
-              // console.log('panel.document.question_and_answer', panel.document.question_and_answer);
+
               return (
                 <Collapse key={panel.id} ghost activeKey={value.expandedIndex}>
                   <Collapse.Panel
                     className={
-                      value.expandedIndex === panelIndex
-                        ? styles.unactive_collapse_panel
-                        : styles.active_collapse_panel
+                      value.expandedIndex - 1 === panelIndex
+                        ? styles.active_collapse_panel
+                        : styles.unactive_collapse_panel
                     }
                     header={
                       <PanelHeader

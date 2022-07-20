@@ -22,6 +22,7 @@ export const updateFAQ = async (data: FaqItem[]) => {
     data: { data },
   })
     .then((res) => {
+      message.success(MESSAGE_NOTIFICATION.UPDATE_FAQ_SUCCESS);
       return res.data;
     })
     .catch((error) => {

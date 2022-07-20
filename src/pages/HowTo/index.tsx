@@ -1,22 +1,19 @@
 import { Title } from '@/components/Typography';
-import { getAllFAQ } from '@/services/faq.api';
+import { getFAQCurrent } from '@/services/faq.api';
 import { Col, Row } from 'antd';
 import { useEffect, useState } from 'react';
 import { FaqComponent } from './components/FaqComponent';
 import styles from './index.less';
 import type { FaqItem } from './types';
-import { getUserInfoMiddleware } from '@/pages/LandingPage/services/api';
 
 const HowTo = () => {
   const [activeKey, setActiveKey] = useState<string>('');
   const [howTo, setHowTo] = useState<FaqItem[]>([]);
-
-  const handleActiveCollapse = (id: string) => () => {
-    setActiveKey(activeKey === id ? '' : id);
+  const handleActiveCollapse = (index: number) => {
+    setActiveKey(activeKey === String(index) ? '' : String(index));
   };
-
-  const getFAQList = (type: number) => {
-    getAllFAQ(type).then((res) => {
+  const getFAQList = () => {
+    getFAQCurrent().then((res) => {
       const data = res.map((item) => {
         return {
           id: item.id,
@@ -30,13 +27,7 @@ const HowTo = () => {
     });
   };
   useEffect(() => {
-    const getTypeFAQ = async () => {
-      const user = await getUserInfoMiddleware();
-      return user.type + 1;
-    };
-    getTypeFAQ().then((typeFAQ) => {
-      getFAQList(typeFAQ);
-    });
+    getFAQList();
   }, []);
   return (
     <div className={styles.content}>
@@ -49,10 +40,11 @@ const HowTo = () => {
             <div className={styles.list}>
               {howTo.map((item, index) => (
                 <FaqComponent
+                  key={item.id}
+                  index={index}
                   value={item}
-                  key={index}
                   activeKey={activeKey}
-                  handleActiveCollapse={handleActiveCollapse(item.id)}
+                  handleActiveCollapse={handleActiveCollapse}
                 />
               ))}
             </div>

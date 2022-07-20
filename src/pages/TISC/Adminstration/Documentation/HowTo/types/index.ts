@@ -19,25 +19,6 @@ export interface FaqPanel {
   created_at: string;
 }
 
-export interface FaqItems {
-  activeKey?: string | number | (string | number)[];
-  data: FaqPanel[];
-}
-
-export interface FaqForm {
-  tisc: FaqItems;
-  brand: FaqItems;
-  design: FaqItems;
-}
-
-// export type FaqItem = {
-//   id: string;
-//   icon?: string;
-//   title: string;
-//   document?: string;
-//   question_and_answer?: QnA[];
-// };
-
 export type FaqState = {
   value: FaqItem[];
   expandedIndex: number;
