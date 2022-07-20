@@ -51,7 +51,7 @@ export const MainTitle: FC<MainTitleProps> = ({
   customClass = '',
   level = 1,
   children,
-  textAlign = 'center',
+  textAlign = 'left',
   ...props
 }) => {
   const setLevel = () => {
