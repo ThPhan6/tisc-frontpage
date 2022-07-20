@@ -6,14 +6,51 @@ import type {
   ILocationDetail,
   FunctionalTypeData,
   LocationForm,
+  LocationGroupedByCountry,
 } from '@/types';
+import { message } from 'antd';
+import { request } from 'umi';
 import type {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
+  SummaryResponse,
 } from '@/components/Table/types';
-import { message } from 'antd';
-import { request } from 'umi';
+
+interface LocationPaginationResponse {
+  data: {
+    locations: ILocationDetail[];
+    pagination: PaginationResponse;
+    summary: SummaryResponse[];
+  };
+}
+
+export async function getLocationList(
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
+) {
+  request<LocationPaginationResponse>(`/api/location/get-list`, {
+    method: 'GET',
+    params,
+  })
+    .then((response) => {
+      const { locations, pagination, summary } = response.data;
+
+      callback({
+        data: locations,
+        pagination: {
+          current: pagination.page,
+          pageSize: pagination.page_size,
+          total: pagination.total,
+        },
+        summary: summary,
+      });
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_LOCATION_ERROR);
+      return [] as ILocationDetail[];
+    });
+}
 
 export async function getCountries() {
   return request<{ data: ICountry[] }>(`/api/location/get-countries`, {
@@ -53,19 +90,6 @@ export async function getCitiesByCountryIdAndStateId(countryId: string, stateId:
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_CITIES_ERROR);
       return [] as ICity[];
-    });
-}
-
-export async function getListCountryGroup() {
-  return request(`/api/location/get-list-with-country-group`, {
-    method: 'GET',
-  })
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_COUNTRY_GROUP);
-      return [];
     });
 }
 
@@ -165,5 +189,21 @@ export async function deleteLocationById(id: string) {
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_LOCATION_FAILED);
       return false;
+    });
+}
+
+export async function getWorkLocations() {
+  return request<{ data: LocationGroupedByCountry[] }>(
+    `/api/location/get-list-with-country-group`,
+    {
+      method: 'GET',
+    },
+  )
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_WITH_COUNTRY_GROUP_ERROR);
+      return [] as LocationGroupedByCountry[];
     });
 }

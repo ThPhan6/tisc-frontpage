@@ -7,11 +7,12 @@ export interface FormGroupProps {
   formClass?: string;
   optional?: boolean;
   required?: boolean;
-  tooltip?: string;
+  tooltip?: string | JSX.Element;
   label: string;
   message?: string;
   messageType?: 'normal' | 'error' | 'warning';
   iconTooltip?: ReactNode;
+  customIcon?: ReactNode;
   onClick?: () => void;
 }
 
@@ -25,6 +26,7 @@ export interface CustomInputProps extends InputProps {
   autoWidth?: boolean;
   fontLevel?: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   defaultWidth?: string | number;
+  maxWords?: number;
 }
 
 export interface CustomTextAreaProps extends TextAreaProps {

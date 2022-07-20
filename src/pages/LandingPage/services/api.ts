@@ -6,7 +6,9 @@ import type {
   LoginResponseProp,
   ResetPasswordRequestBody,
   UserInfoDataProp,
+  CreatePasswordRequestBody,
 } from '../types';
+import { message } from 'antd';
 
 export async function loginMiddleware(
   data: LoginInput,
@@ -95,6 +97,22 @@ export async function validateResetToken(token: string | null) {
       return res.data;
     })
     .catch(() => {
+      return false;
+    });
+}
+export async function createPasswordVerify(token: string, data: CreatePasswordRequestBody) {
+  return request(`/api/auth/create-password-verify/${token}`, {
+    method: 'POST',
+    data,
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.CREATE_PASSSWORD_VERIFICATION_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(
+        error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_PASSSWORD_VERIFICATION_FAILED,
+      );
       return false;
     });
 }

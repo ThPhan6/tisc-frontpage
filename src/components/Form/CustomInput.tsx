@@ -17,6 +17,7 @@ export const CustomInput: FC<CustomInputProps> = ({
   required = false,
   autoWidth,
   defaultWidth,
+  maxWords,
   ...props
 }) => {
   const [width, setWidth] = useState(defaultWidth);
@@ -102,6 +103,19 @@ export const CustomInput: FC<CustomInputProps> = ({
           <Input
             type={type}
             {...props}
+            onChange={(e) => {
+              if (maxWords) {
+                const text = e.target.value;
+                const textLength = text.split(' ').length;
+                if (textLength > maxWords) {
+                  return false;
+                }
+              }
+              if (props.onChange) {
+                props.onChange(e);
+              }
+              return true;
+            }}
             className={`${setFontLevel()}  ${props.className ?? ''}`}
             style={
               autoWidth

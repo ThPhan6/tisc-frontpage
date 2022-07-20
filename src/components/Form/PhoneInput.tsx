@@ -91,6 +91,7 @@ export const PhoneInput: FC<PhoneInputProps> = ({
         `}
         onChange={handleOnChange}
         name="phoneNumber"
+        pattern=""
       />
     </div>
   );

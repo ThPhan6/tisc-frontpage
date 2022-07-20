@@ -25,6 +25,7 @@ import { LoginModal } from './components/LoginModal';
 import { NoticeModal } from './components/NoticeModal';
 import { PoliciesModal } from './components/PoliciesModal';
 import { ResetPasswordModal } from './components/ResetPasswordModal';
+import { CreatePasswordModal } from './components/CreatePasswordModal';
 import { SignupModal } from './components/SignupModal';
 import styles from './index.less';
 import {
@@ -33,15 +34,23 @@ import {
   loginMiddleware,
   resetPasswordMiddleware,
   validateResetToken,
+  createPasswordVerify,
 } from './services/api';
-import type { LoginInput, ModalOpen, ResetPasswordRequestBody } from './types';
+import type {
+  LoginInput,
+  ModalOpen,
+  ResetPasswordRequestBody,
+  CreatePasswordRequestBody,
+} from './types';
 
 const LandingPage = () => {
-  const emailResetPwd = useQuery().get('email');
+  const userEmail = useQuery().get('email');
   const tokenResetPwd = useQuery().get('token');
+  const tokenVerification = useQuery().get('verification_token');
 
   const { fetchUserInfo } = useCustomInitialState();
   const openResetPwd = useBoolean();
+  const openVerificationModal = useBoolean();
   const isLoading = useBoolean();
   const [openModal, setOpenModal] = useState<ModalOpen>('');
   const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
@@ -51,7 +60,7 @@ const LandingPage = () => {
   };
 
   useEffect(() => {
-    if ((!emailResetPwd || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
+    if ((!userEmail || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
       history.push(PATH.landingPage);
       return;
     } else {
@@ -65,7 +74,18 @@ const LandingPage = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [emailResetPwd]);
+  }, [userEmail]);
+
+  useEffect(() => {
+    if (!tokenVerification && history.location.pathname === PATH.createPassword) {
+      history.push(PATH.landingPage);
+      return;
+    } else {
+      if (tokenVerification) {
+        openVerificationModal.setValue(true);
+      }
+    }
+  }, [tokenVerification]);
 
   const handleSubmitLogin = (data: LoginInput) => {
     isLoading.setValue(true);
@@ -120,6 +140,16 @@ const LandingPage = () => {
         message.error(msg);
       }
       isLoading.setValue(false);
+    });
+  };
+
+  const handleVerifyAccount = (data: CreatePasswordRequestBody) => {
+    isLoading.setValue(true);
+    createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
+      isLoading.setValue(false);
+      if (isSuccess) {
+        redirectAfterLogin();
+      }
     });
   };
 
@@ -296,16 +326,24 @@ const LandingPage = () => {
         onClose={handleCloseModal}
         theme="default"
       />
-      {emailResetPwd && (
+      {userEmail && (
         <ResetPasswordModal
           visible={openResetPwd}
           handleSubmit={handleResetPassword}
           resetData={{
-            email: emailResetPwd,
+            email: userEmail,
             token: tokenResetPwd || '',
           }}
         />
       )}
+      <CreatePasswordModal
+        visible={openVerificationModal}
+        handleSubmit={handleVerifyAccount}
+        data={{
+          email: userEmail ?? '',
+          token: tokenVerification || '',
+        }}
+      />
       {isLoading.value && <LoadingPageCustomize />}
     </div>
   );

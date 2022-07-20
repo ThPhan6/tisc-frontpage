@@ -1,7 +1,7 @@
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText, Title } from '@/components/Typography';
-import { Col, Row, Upload, UploadProps } from 'antd';
+import { Col, message, Row, Upload, UploadProps } from 'antd';
 import styles from './styles/index.less';
 import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
@@ -17,6 +17,7 @@ import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { updateBrandProfile, updateLogoBrandProfile } from '@/services/brand-profile';
 import { useAppSelector } from '@/reducers';
 import { WebsiteUrlItem } from '@/types/user.type';
+import { MESSAGE_ERROR } from '@/constants/message';
 
 const initialBrandProfileState: UpdateBrandProfileRequestBody = {
   mission_n_vision: '',
@@ -26,15 +27,22 @@ const initialBrandProfileState: UpdateBrandProfileRequestBody = {
   official_websites: [],
 };
 
+const LOGO_SIZE_LIMIT = 240 * 1024; // 240 KB
+
 const BrandProfilePage = () => {
+  const brandAppState = useAppSelector((state) => state.user.user?.brand);
   const submitButtonStatus = useBoolean(false);
+
   const isLoading = useBoolean(false);
   const [fileInput, setFileInput] = useState<any>();
-  const brandAppState = useAppSelector((state) => state.user.user?.brand);
   const [brandProfile, setBrandProfile] =
     useState<UpdateBrandProfileRequestBody>(initialBrandProfileState);
   const { fetchUserInfo } = useCustomInitialState();
   const [logoBrandProfile, setLogoBrandProfile] = useState<string>('');
+  const [loadedData, setLoadedData] = useState(false);
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
 
   useEffect(() => {
     if (brandAppState) {
@@ -45,6 +53,7 @@ const BrandProfilePage = () => {
         slogan: brandAppState.slogan || '',
         official_websites: brandAppState.official_websites || [],
       });
+      setLoadedData(true);
     }
   }, [brandAppState]);
 
@@ -94,6 +103,10 @@ const BrandProfilePage = () => {
 
   const props: UploadProps = {
     beforeUpload: (file) => {
+      if (file.size > LOGO_SIZE_LIMIT) {
+        message.error(MESSAGE_ERROR.reachLogoSizeLimit);
+        return false;
+      }
       setFileInput(file);
       getBase64(file)
         .then((base64Image) => {
@@ -119,6 +132,10 @@ const BrandProfilePage = () => {
       }
     });
   };
+
+  if (!loadedData) {
+    return null;
+  }
 
   return (
     <div className={styles.content}>

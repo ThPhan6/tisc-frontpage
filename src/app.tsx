@@ -95,7 +95,12 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       const token = localStorage.getItem('access_token') || '';
       if (PUBLIC_PATH.includes(location.pathname)) {
         if (token) {
-          history.push(PATH.homePage);
+          const user = store.getState().user.user;
+          if (user?.brand) {
+            history.push(PATH.brandHomePage);
+          } else {
+            history.push(PATH.homePage);
+          }
         } else {
           history.push(`${location.pathname}${location.search}`);
         }

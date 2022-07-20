@@ -12,6 +12,7 @@ type CustomEditorInputProps = Partial<CKEditorProps<CKEditorEventHandlerProp>> &
   containerClass?: string;
   placeholder?: string;
   containerSelector?: string;
+  loading: boolean;
 };
 
 const id = `editor-container-${Date.now()}`;
@@ -22,15 +23,47 @@ const PADDING = 16;
 export const CustomEditorInput: FC<CustomEditorInputProps> = ({
   onChangeText,
   containerClass,
-  placeholder,
+  placeholder = 'type text here',
   containerSelector,
+  loading,
   ...props
 }) => {
   const [height, setHeight] = useState<number | null>(0);
 
+  // Fix but initData prop not working
+  // useEffect(() => {
+  //   // console.log('isInitData', isInitData);
+  //   // console.log('props.initData', props.initData);
+  //   const setInitData = () => {
+  //     const iFrameBodyEl = document.querySelector('iframe.cke_wysiwyg_frame');
+  //     if (iFrameBodyEl) {
+  //       console.log('iFrameBodyEl', { iFrameBodyEl });
+  //       // iFrameBodyEl.innerHTML = props.initData;
+  //       // iFrameBodyEl.innerText = props.initData;
+  //     } else {
+  //       setTimeout(setInitData, 100);
+  //     }
+  //   };
+  //   if (props.initData && isInitData === false) {
+  //     isInitData = true;
+  //     setInitData();
+  //   }
+  //   return () => {
+  //     isInitData = false;
+  //   };
+  // }, [props.initData]);
+
+  // useEffect(() => {
+  //   if (loading) {
+
+  //   }
+
+  // },[loading])
+
   useEffect(() => {
     const updateSize = () => {
-      if (!containerSelector) {
+      // console.log('loading', loading);
+      if (!containerSelector || loading) {
         return;
       }
       const containerEl = document.querySelector(containerSelector);
@@ -70,16 +103,17 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
     return () => {
       firstLoad = true;
     };
-  }, [containerSelector]);
+  }, [containerSelector, loading]);
 
   const onChange = (e: CKEditorEventPayload<'change'>) => {
-    // console.log('e', e);
+    // console.log('onChange', e);
     const html = e.editor.getData() || '';
     // console.log('html', html);
     onChangeText(html);
   };
 
   if (height === null) {
+    // for force reload
     return null;
   }
 
