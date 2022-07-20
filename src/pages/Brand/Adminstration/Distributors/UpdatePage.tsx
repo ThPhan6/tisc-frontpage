@@ -5,19 +5,16 @@ import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
 import { getOneDistributor, updateDistributor } from '@/services';
-import { DistributorForm } from '@/types/distributor.type';
+import { DistributorDetail, DistributorForm } from '@/types/distributor.type';
 import { useEffect, useState } from 'react';
 import { useParams } from 'umi';
 import { DistributorsEntryForm } from './components/DistributorsEntryForm';
 
-const DEFAULT_DISTRIBUTOR: DistributorForm = {
+const DEFAULT_DISTRIBUTOR: DistributorDetail = {
   brand_id: '',
   name: '',
-  country_name: '',
   country_id: '',
-  state_name: '',
   state_id: '',
-  city_name: '',
   city_id: '',
   address: '',
   phone_code: '',
@@ -29,23 +26,24 @@ const DEFAULT_DISTRIBUTOR: DistributorForm = {
   phone: '',
   mobile: '',
   authorized_country_ids: [],
-  authorized_country_name: '',
   authorized_countries: [],
   coverage_beyond: true,
 };
 
 const UpdatePage = () => {
-  const [data, setData] = useState<DistributorForm>(DEFAULT_DISTRIBUTOR);
+  const [data, setData] = useState<DistributorDetail>(DEFAULT_DISTRIBUTOR);
   const submitButtonStatus = useBoolean(false);
   const isLoading = useBoolean();
   const params = useParams<{ id: string }>();
   const idDistributor = params?.id || '';
+  const [loadedData, setLoadedData] = useState(false);
 
   const getDistributorData = () => {
     getOneDistributor(idDistributor).then((res) => {
       if (res) {
         setData(res);
       }
+      setLoadedData(true);
     });
   };
 
@@ -70,6 +68,10 @@ const UpdatePage = () => {
   const handleCancel = () => {
     pushTo(PATH.distributors);
   };
+
+  if (!loadedData) {
+    return null;
+  }
 
   return (
     <div>
