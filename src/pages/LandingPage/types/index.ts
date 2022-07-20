@@ -41,6 +41,10 @@ export type ResetPasswordRequestBody = {
   confirmed_password: string;
   reset_password_token: string;
 };
+export type CreatePasswordRequestBody = {
+  password: string;
+  confirmed_password: string;
+};
 
 export interface ModalProps {
   theme?: 'default' | 'dark';

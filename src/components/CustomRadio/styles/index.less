@@ -21,6 +21,9 @@
   }
 
   :global(.ant-radio-wrapper) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: @mono-color;
     line-height: 22px;
   }
@@ -81,6 +84,12 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
+    :global(.item-option-checked) {
+      color: @primary-color-dark;
+      p {
+        color: @primary-color-dark;
+      }
+    }
   }
 }
 

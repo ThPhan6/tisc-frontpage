@@ -14,6 +14,7 @@ export const FormGroup: FC<FormGroupProps> = ({
   children,
   message,
   iconTooltip,
+  customIcon,
   label,
   onClick,
   messageType = 'normal',
@@ -44,6 +45,7 @@ export const FormGroup: FC<FormGroupProps> = ({
             {iconTooltip ? iconTooltip : <QuestionIcon className={style['question-icon']} />}
           </Tooltip>
         )}
+        {customIcon ? customIcon : null}
         <span className={style.colon}>:</span>
       </label>
       <div className={style['children-wrapper']}>

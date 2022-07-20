@@ -12,6 +12,11 @@ export default [
     component: './LandingPage',
     layout: false,
   },
+  {
+    path: '/create-password',
+    component: './LandingPage',
+    layout: false,
+  },
   // REQUIRED AUTHENTICATION
   {
     path: '/profiles',
@@ -326,8 +331,24 @@ export default [
         path: '/tisc/adminstration/team-profiles',
         name: 'team.profile',
         icon: 'team-profile-icon.svg',
-        component: './TISC/Adminstration/TeamProfiles/CreateTeamProfilesPage',
         access: 'tisc_administration_team_profile',
+        routes: [
+          {
+            path: '/tisc/adminstration/team-profiles',
+            component: './TISC/Adminstration/TeamProfiles',
+            hideInMenu: true,
+          },
+          {
+            path: '/tisc/adminstration/team-profiles/create',
+            component: './TISC/Adminstration/TeamProfiles/CreatePage',
+            hideInMenu: true,
+          },
+          {
+            path: '/tisc/adminstration/team-profiles/update/:id',
+            component: './TISC/Adminstration/TeamProfiles/UpdatePage',
+            hideInMenu: true,
+          },
+        ],
       },
       {
         path: '/tisc/adminstration/messages',
@@ -454,11 +475,26 @@ export default [
         ],
       },
       {
-        path: '/brand/adminstration/team-profiles',
         name: 'team.profile',
         icon: 'team-profile-icon.svg',
-        component: './Welcome',
         access: 'brand_administration_team_profile',
+        routes: [
+          {
+            path: '/brand/adminstration/team-profiles',
+            component: './Brand/Adminstration/TeamProfiles',
+            hideInMenu: true,
+          },
+          {
+            path: '/brand/adminstration/team-profiles/create',
+            component: './Brand/Adminstration/TeamProfiles/CreatePage',
+            hideInMenu: true,
+          },
+          {
+            path: '/brand/adminstration/team-profiles/update/:id',
+            component: './Brand/Adminstration/TeamProfiles/UpdatePage',
+            hideInMenu: true,
+          },
+        ],
       },
       {
         path: '/brand/adminstration/distributors',

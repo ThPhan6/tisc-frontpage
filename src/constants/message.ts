@@ -16,6 +16,8 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_AVATAR_ERROR: 'Update avatar error',
   UPDATE_PERSONAL_PROFILE_SUCCESS: 'Update personal profile successfully',
   UPDATE_PERSONAL_PROFILE_ERROR: 'Update personal profile error',
+  CREATE_PASSSWORD_VERIFICATION_SUCCESS: 'Create account password successfully',
+  CREATE_PASSSWORD_VERIFICATION_FAILED: 'Failed to create account password',
 
   // Category
   CREATE_CATEGORY_SUCCESS: 'Create the category successfully',
@@ -90,6 +92,33 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PRESET_ERROR: 'Update preset error',
   GET_ONE_PRESET_ERROR: 'Get one preset error',
 
+  // department
+  GET_LIST_DEPARTMENT_ERROR: 'Get list department error',
+
+  // team profile
+  GET_LIST_TEAM_PROFILE_ERROR: 'Get list team profile error',
+  GET_ONE_TEAM_PROFILE_ERROR: 'Get one team profile error',
+  CREATE_TEAM_PROFILE_SUCCESS: 'Create team profile successfully',
+  CREATE_TEAM_PROFILE_ERROR: 'Create team profile error',
+  DELETE_TEAM_PROFILE_SUCCESS: 'Delete team profile successfully',
+  DELETE_TEAM_PROFILE_ERROR: 'Delete team profile error',
+  UPDATE_TEAM_PROFILE_SUCCESS: 'Update team profile successfully',
+  UPDATE_TEAM_PROFILE_ERROR: 'Update team profile error',
+  SEND_INVITE_SUCCESS: 'Send invitation successfully',
+  SEND_INVITE_ERROR: 'Failed to send invitation',
+
+  // email auto
+  GET_ONE_EMAIL_AUTO_ERROR: 'Get one email auto error',
+  GET_LIST_EMAIL_AUTO_ERROR: 'Get list email auto error',
+  GET_TARGETEDFOR_LIST_EMAIL_AUTO_ERROR: 'Get list targeted-for  error',
+  GET_TOPIC_LIST_EMAIL_AUTO_ERROR: 'Get list topic  error',
+  CREATE_EMAIL_AUTO_SUCCESS: 'Create email auto successfully',
+  CREATE_EMAIL_AUTO_ERROR: 'Create email auto error',
+  DELETE_EMAIL_AUTO_SUCCESS: 'Delete email auto successfully',
+  DELETE_EMAIL_AUTO_ERROR: 'Delete email auto error',
+  UPDATE_EMAIL_AUTO_SUCCESS: 'Update email auto successfully',
+  UPDATE_EMAIL_AUTO_ERROR: 'Update email auto error',
+
   // configuration
   GET_BRAND_DATA_ERROR: 'Failed to get Brand data',
   GET_BRAND_SUMMARY_DATA_ERROR: 'Failed to get Brand summary data',
@@ -103,7 +132,8 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_MARKET_AVAILABILITY_ERROR: 'Failed to update market availability',
 
   // permission
-  GET_PERMISSION_DATA_ERROR: 'Failed to get Permission data',
+  GET_PERMISSION_DATA_ERROR: 'Failed to get permission data',
+  UPDATE_PERMISSION_DATA_ERROR: 'Failed to update permission data',
   // inspirational quotation
   GET_LIST_INSPIRATIONAL_QUOTATION_ERROR: 'Get list inspirational quotation error',
   GET_ONE_INSPIRATIONAL_QUOTATION_ERROR: 'Get one inspirational quotation error',
@@ -115,6 +145,8 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_INSPIRATIONAL_QUOTATION_ERROR: 'Update inspirational quotation error',
 
   //location
+  GET_LIST_LOCATION_ERROR: 'Get list location error',
+  GET_LIST_WITH_COUNTRY_GROUP_ERROR: 'Get list with country group error',
   GET_COUNTRIES_ERROR: 'Failed to get countries data',
   GET_STATES_ERROR: 'Failed to get states data',
   GET_CITIES_ERROR: 'Failed to get cities data',
