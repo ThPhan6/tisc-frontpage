@@ -8,7 +8,7 @@ export const REGEX_PASSWORD =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d][\w~@#$%^&*+=`|{}:;!.?\"()\[\]-]{7,}$/;
 export const REGEX_EMAIL = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 export const REGEX_GET_CONTENT_ONLY = /[_.\n\s\r\t__]*/g;
-export const REGEX_NUMBER_ONLY = /^[0-9]*$/;
+export const REGEX_NUMBER_ONLY = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/;
 
 export const validateEmail = (email: string) => {
   return REGEX_EMAIL.test(email);

@@ -33,7 +33,7 @@ export const PhoneInput: FC<PhoneInputProps> = ({
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const phoneNumber = e.target.value;
-    if (phoneNumber != '' && !validatePhoneNumber(phoneNumber)) {
+    if (phoneNumber != '' && !validatePhoneNumber(phoneNumber) && e.target.name === 'phoneNumber') {
       return;
     }
     const newPhoneInputValue = {
