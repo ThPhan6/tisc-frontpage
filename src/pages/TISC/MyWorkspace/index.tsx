@@ -33,7 +33,7 @@ const MyWorkspace: React.FC = () => {
                   {brand.name}
                 </BodyText>
               </div>
-              <img src={STORE_URL + brand.logo} alt="brand logo" className={styles.img} />
+              <img src={STORE_URL + brand.logo} className={styles.img} />
               <BodyText level={6} fontFamily="Roboto">
                 {brand.country}
               </BodyText>
