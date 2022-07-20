@@ -1,4 +1,4 @@
-import { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
+import { useEffect, useState, useImperativeHandle, forwardRef, ReactNode } from 'react';
 import { Table } from 'antd';
 import { useCustomTable } from './hooks';
 import { forEach, isArray, isEmpty } from 'lodash';
@@ -24,7 +24,7 @@ export interface CustomTableProps {
     params: PaginationRequestParams,
     callback: (data: DataTableResponse) => void,
   ) => void;
-  title: string;
+  title: string | ReactNode;
   multiSort?: {
     [key: string]: any;
   };
