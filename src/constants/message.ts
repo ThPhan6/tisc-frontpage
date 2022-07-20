@@ -90,18 +90,6 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PRESET_ERROR: 'Update preset error',
   GET_ONE_PRESET_ERROR: 'Get one preset error',
 
-  // email auto
-  GET_ONE_EMAIL_AUTO_ERROR: 'Get one email auto error',
-  GET_LIST_EMAIL_AUTO_ERROR: 'Get list email auto error',
-  GET_TARGETEDFOR_LIST_EMAIL_AUTO_ERROR: 'Get list targeted-for  error',
-  GET_TOPIC_LIST_EMAIL_AUTO_ERROR: 'Get list topic  error',
-  CREATE_EMAIL_AUTO_SUCCESS: 'Create email auto successfully',
-  CREATE_EMAIL_AUTO_ERROR: 'Create email auto error',
-  DELETE_EMAIL_AUTO_SUCCESS: 'Delete email auto successfully',
-  DELETE_EMAIL_AUTO_ERROR: 'Delete email auto error',
-  UPDATE_EMAIL_AUTO_SUCCESS: 'Update email auto successfully',
-  UPDATE_EMAIL_AUTO_ERROR: 'Update email auto error',
-
   // configuration
   GET_BRAND_DATA_ERROR: 'Failed to get Brand data',
   GET_BRAND_SUMMARY_DATA_ERROR: 'Failed to get Brand summary data',

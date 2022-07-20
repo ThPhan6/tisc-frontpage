@@ -2,7 +2,7 @@ import { Input } from 'antd';
 import { FC, useEffect, useState } from 'react';
 import { BodyText } from '../Typography';
 import styles from './styles/PhoneInput.less';
-import { formatPhoneCode } from '@/helper/utils';
+import { formatPhoneCode, isValidPhoneNumber } from '@/helper/utils';
 import { PhoneInputProps } from './types';
 
 export const PhoneInput: FC<PhoneInputProps> = ({
@@ -32,9 +32,17 @@ export const PhoneInput: FC<PhoneInputProps> = ({
   }, [value]);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    if (
+      e.target.name === 'phoneNumber' &&
+      newValue !== '' &&
+      isValidPhoneNumber(newValue) === false
+    ) {
+      return;
+    }
     const newPhoneInputValue = {
       ...phoneInputValue,
-      [e.target.name]: e.target.value,
+      [e.target.name]: newValue,
     };
     setPhoneInputValue({ ...newPhoneInputValue });
     if (onChange) {
@@ -85,9 +93,9 @@ export const PhoneInput: FC<PhoneInputProps> = ({
           ${styles['phone-input']}
           phone-input-custom-text
         `}
-        type="number"
         onChange={handleOnChange}
         name="phoneNumber"
+        pattern=""
       />
     </div>
   );

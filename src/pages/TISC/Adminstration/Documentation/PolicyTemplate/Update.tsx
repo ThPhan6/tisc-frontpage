@@ -12,7 +12,7 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
 import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
 import { REGEX_GET_CONTENT_ONLY } from '@/helper/utils';
-import { useHistory, useParams } from 'umi';
+import { useParams } from 'umi';
 
 const DEFAULT_AGREEMENTPOLICIES_VALUE = {
   title: '',
@@ -22,12 +22,13 @@ const DEFAULT_AGREEMENTPOLICIES_VALUE = {
 const CreateAgreementPoliciesPage = () => {
   const isLoading = useBoolean();
   const submitButtonStatus = useBoolean();
+  const loadingEmail = useBoolean(true);
   const [value, setValue] = useState<AgreementPoliciesProps>(DEFAULT_AGREEMENTPOLICIES_VALUE);
   const params = useParams<{ id: string }>();
-  const history = useHistory();
 
   const fetchOne = () => {
     getOnePolicyTemplete(params.id).then((res) => {
+      loadingEmail.setValue(false);
       if (res) {
         setValue({
           message: res.document.document,
@@ -77,11 +78,7 @@ const CreateAgreementPoliciesPage = () => {
       <TableHeader title="AGREEMENT / POLICIES / TERMS" />
 
       <div className={styles.container}>
-        <EntryFormWrapper
-          handleSubmit={handleSubmit}
-          handleCancel={history.goBack}
-          submitButtonStatus={submitButtonStatus.value}
-        >
+        <EntryFormWrapper handleSubmit={handleSubmit} submitButtonStatus={submitButtonStatus.value}>
           <FormGroup label="Title" required={true} layout="vertical" formClass={styles.title}>
             <div className={styles.title_field}>
               <CustomInput
@@ -100,14 +97,12 @@ const CreateAgreementPoliciesPage = () => {
           <FormGroup label="Document" required={true} layout="vertical" formClass={styles.editor} />
 
           {/* do not wrap CustomEditorInout component inside FormGroup */}
-          {value.message && (
-            <CustomEditorInput
-              initData={value.message}
-              onChangeText={(input) => handleOnChangeMessageInput(input)}
-              placeholder="type text..."
-              containerSelector={`#${contentId}`}
-            />
-          )}
+          <CustomEditorInput
+            loading={loadingEmail.value}
+            initData={value.message}
+            onChangeText={(input) => handleOnChangeMessageInput(input)}
+            containerSelector={`#${contentId}`}
+          />
         </EntryFormWrapper>
       </div>
     </div>

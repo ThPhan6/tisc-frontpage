@@ -2,7 +2,6 @@ import { HeaderDropdown } from '@/components/HeaderDropdown';
 import CustomTable from '@/components/Table';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { TableColumnItem } from '@/components/Table/types';
 import { EmailTemplate } from '@/types';
 import { getEmailTemplatePagination } from '@/services';
@@ -18,14 +17,14 @@ const EmailAutoList = () => {
   const mainColumns: TableColumnItem<EmailTemplate>[] = [
     {
       title: 'Topic',
-      dataIndex: 'topic',
-      width: '5%',
+      dataIndex: 'topic_key',
+      width: '8%',
       sorter: true,
     },
     {
       title: 'Targeted For',
-      dataIndex: 'targeted_for',
-      width: '8%',
+      dataIndex: 'targeted_for_key',
+      width: '10%',
       sorter: true,
     },
     {
@@ -37,6 +36,7 @@ const EmailAutoList = () => {
       title: 'Action',
       dataIndex: 'action',
       width: '5%',
+      align: 'center',
       render: (_value: any, record: any) => {
         return (
           <HeaderDropdown
@@ -60,7 +60,6 @@ const EmailAutoList = () => {
   return (
     <div className={styles.email_table}>
       <CustomTable
-        rightAction={<CustomPlusButton disabled />}
         title={'EMAIL AUTORESPONDER'}
         columns={mainColumns}
         fetchDataFunc={getEmailTemplatePagination}

@@ -2,6 +2,7 @@ import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 import { Col, Row } from 'antd';
 import { FC } from 'react';
+import { useHistory } from 'umi';
 import CustomButton from '../Button';
 import { BodyText, MainTitle } from '../Typography';
 import styles from './styles/index.less';
@@ -23,6 +24,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   footerContent,
   submitButtonStatus = false,
 }) => {
+  const history = useHistory();
   return (
     <Row>
       <Col className={styles.entry_form_wrapper} span={12}>
@@ -47,7 +49,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
               <CustomButton
                 size="small"
                 buttonClass={styles.footer__cancel_bt}
-                onClick={handleCancel}
+                onClick={handleCancel || history.goBack}
                 disabled={disableCancelButton}
               >
                 Cancel

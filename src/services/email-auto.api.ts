@@ -4,7 +4,7 @@ import type {
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { getResponseMessage } from '@/helper/common';
 import { EmailTemplate, RadioItem } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
@@ -35,7 +35,7 @@ export async function getEmailTemplatePagination(
       });
     })
     .catch((error) => {
-      message.error(error.message?.data ?? MESSAGE_NOTIFICATION.GET_LIST_EMAIL_AUTO_ERROR);
+      message.error(getResponseMessage('get-list', 'email autoresponder', 'failed', error));
     });
 }
 
@@ -47,7 +47,7 @@ export async function getOneEmailAuto(id: string) {
       return response.data;
     })
     .catch((error) => {
-      message.error(error.message?.data ?? MESSAGE_NOTIFICATION.GET_ONE_EMAIL_AUTO_ERROR);
+      message.error(getResponseMessage('get-one', 'email autoresponder', 'failed', error));
       return {} as EmailTemplate;
     });
 }
@@ -58,9 +58,7 @@ export async function getTargetedForList() {
       return response;
     })
     .catch((error) => {
-      message.error(
-        error.message?.data ?? MESSAGE_NOTIFICATION.GET_TARGETEDFOR_LIST_EMAIL_AUTO_ERROR,
-      );
+      message.error(getResponseMessage('get-list', 'targeted', 'failed', error));
       return [] as RadioItem[];
     });
 }
@@ -71,7 +69,7 @@ export async function getTopicList() {
       return response;
     })
     .catch((error) => {
-      message.error(error.message?.data ?? MESSAGE_NOTIFICATION.GET_TOPIC_LIST_EMAIL_AUTO_ERROR);
+      message.error(getResponseMessage('update', 'email topic', 'failed', error));
       return [] as RadioItem[];
     });
 }
@@ -79,11 +77,12 @@ export async function getTopicList() {
 export async function updateEmailAuto(id: string, data: EmailTemplate) {
   return request<boolean>(`/api/email-auto/update/${id}`, { method: 'PUT', data })
     .then(() => {
-      message.success(MESSAGE_NOTIFICATION.UPDATE_EMAIL_AUTO_SUCCESS);
+      message.success(getResponseMessage('update', 'email autoresponder'));
+
       return true;
     })
     .catch((error) => {
-      message.error(error.message?.data ?? MESSAGE_NOTIFICATION.UPDATE_EMAIL_AUTO_ERROR);
+      message.error(getResponseMessage('update', 'email autoresponder', 'failed', error));
       return false;
     });
 }
