@@ -71,6 +71,7 @@ export const LoginModal: FC<LoginModalProps> = ({
     if (verifyEmail.value && !validateEmail(verifyEmail.value)) {
       return MESSAGE_ERROR.EMAIL;
     }
+    return '';
   };
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,11 +110,11 @@ export const LoginModal: FC<LoginModalProps> = ({
       onOk={onClose}
       onCancel={onClose}
       footer={false}
-      containerClass={theme === 'dark' && styles.modal}
+      containerClass={theme === 'dark' ? styles.modal : ''}
       bodyStyle={{
         backgroundColor: theme === 'dark' ? '#000' : '',
       }}
-      closeIconClass={theme === 'dark' && styles.closeIcon}
+      closeIconClass={theme === 'dark' ? styles.closeIcon : ''}
     >
       <div className={styles.content}>
         <div className={styles.intro}>
@@ -168,8 +169,9 @@ export const LoginModal: FC<LoginModalProps> = ({
             <div
               className={`
                 ${styles.wrapper}
-                ${styles[`${theme === 'dark' && 'wrapper-dark'}`]}
-                ${styles[showForgotPassword.value && `wrapper-active${themeStyle()}`]}`}
+                ${theme === 'dark' ? styles['wrapper-dark'] : ''}
+                ${showForgotPassword.value ? styles[`wrapper-active${themeStyle()}`] : ''}
+              `}
               onClick={() => showForgotPassword.setValue(!showForgotPassword.value)}
             >
               <LockedForgotIcon className={styles.icon} />
