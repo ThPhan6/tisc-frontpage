@@ -10,7 +10,7 @@ import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import { useRef } from 'react';
-import { showImageUrl } from '@/helper/utils';
+import { showImageUrl, formatPhoneCode } from '@/helper/utils';
 import { ProfileIcon } from '@/components/ProfileIcon';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
@@ -69,6 +69,9 @@ const TeamProfilesList = () => {
     {
       title: 'Work Phone',
       dataIndex: 'phone',
+      render: (value, record) => {
+        return `${formatPhoneCode(record.phone_code)} ${value ?? ''}`;
+      },
     },
     {
       title: 'Access Level',
@@ -84,6 +87,7 @@ const TeamProfilesList = () => {
       title: 'Action',
       dataIndex: 'action',
       width: '5%',
+      align: 'center',
       render: (_value: any, record: any) => {
         return (
           <HeaderDropdown
