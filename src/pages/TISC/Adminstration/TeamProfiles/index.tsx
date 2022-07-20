@@ -13,6 +13,7 @@ import { useRef } from 'react';
 import { showImageUrl, formatPhoneCode } from '@/helper/utils';
 import { ProfileIcon } from '@/components/ProfileIcon';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { USER_STATUS_TEXTS } from '@/constants/util';
 
 const TeamProfilesList = () => {
   const tableRef = useRef<any>();
@@ -82,6 +83,7 @@ const TeamProfilesList = () => {
       title: 'Status',
       dataIndex: 'status',
       sorter: true,
+      render: (value) => USER_STATUS_TEXTS[value] ?? 'N/A',
     },
     {
       title: 'Action',
