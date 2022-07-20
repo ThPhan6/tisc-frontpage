@@ -6,6 +6,8 @@ import { LocationForm } from '@/types';
 import { createLocation } from '@/services';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
+import { TableHeader } from '@/components/Table/TableHeader';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const TISCLocationCreatePage: React.FC = () => {
   const submitButtonStatus = useBoolean(false);
@@ -43,6 +45,7 @@ const TISCLocationCreatePage: React.FC = () => {
 
   return (
     <div>
+      <TableHeader title="LOCATIONS" rightAction={<CustomPlusButton disabled />} />
       <LocationEntryForm
         submitButtonStatus={submitButtonStatus.value}
         onSubmit={onSubmit}

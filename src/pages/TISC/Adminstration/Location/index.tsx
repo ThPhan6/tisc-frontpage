@@ -5,7 +5,7 @@ import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { ICustomTableColumnType } from '@/components/Table/types';
+import { TableColumnItem } from '@/components/Table/types';
 import { ILocationDetail } from '@/types';
 import { getLocationPagination, deleteLocationById } from '@/services';
 import { confirmDelete } from '@/helper/common';
@@ -32,7 +32,7 @@ const TISCLocation: React.FC = () => {
     });
   };
 
-  const mainColumns: ICustomTableColumnType<ILocationDetail>[] = [
+  const mainColumns: TableColumnItem<ILocationDetail>[] = [
     {
       title: 'Name',
       dataIndex: 'business_name',

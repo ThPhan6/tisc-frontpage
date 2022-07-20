@@ -1,8 +1,9 @@
 export const MESSAGE_ERROR = {
-  EMAIL: 'Unknown email',
+  EMAIL: 'General email is required',
   PASSWORD: 'Password error',
   CONFIRM_PASSWORD: 'Passwords do not match',
   PHONE_INPUT: 'Invalid phone number',
+  POSTAL_CODE: 'Postal code is greater than 5 chars and less than 10 chars',
   reachLogoSizeLimit: 'Logo size limit reached (240 KB)',
 };
 

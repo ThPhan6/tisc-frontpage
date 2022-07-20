@@ -1,6 +1,6 @@
 import { EntryFormWrapper } from '@/components/EntryForm';
 import type { FC } from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import CountryModal from '@/components/Location/CountryModal';
 import StateModal from '@/components/Location/StateModal';
@@ -9,13 +9,14 @@ import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import type { LocationForm, FunctionalTypeData } from '@/types';
-import styles from './styles/entryForm.less';
+import styles from './styles/LocationEntryForm.less';
 import CollapseCheckboxList from '@/components/CustomCheckbox/CollapseCheckboxList';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { getListFunctionalType } from '@/services';
-import { validateEmail } from '@/helper/utils';
+import { validateEmail, validatePostalCode } from '@/helper/utils';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
+import { trimStart } from 'lodash';
 
 interface ILocationEntryForm {
   submitButtonStatus: any;
@@ -61,10 +62,24 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
   // validate email Address
   const isValidEmail = validateEmail(data.general_email);
 
+  // validate postal code
+  const isValidPostal = validatePostalCode(data.postal_code);
+
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({
       ...data,
-      [fieldName]: fieldValue,
+      [fieldName]: trimStart(fieldValue),
+    });
+  };
+
+  // handle onchange postal code
+  const onChangePostalCode = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length > 10) {
+      return;
+    }
+    setData({
+      ...data,
+      postal_code: trimStart(e.target.value),
     });
   };
 
@@ -222,6 +237,7 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
 
       <FormGroup label="Address" required layout="vertical">
         <CustomTextArea
+          className={styles.address}
           maxLength={120}
           showCount
           placeholder="unit #, street / road name"
@@ -233,6 +249,7 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
       </FormGroup>
       <InputGroup
         label="Postal / Zip Code"
+        placeholder="postal / zip code"
         required
         deleteIcon
         fontLevel={3}
@@ -242,10 +259,13 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
         hasBoxShadow
         hasHeight
         onChange={(e) => {
-          onChangeData('postal_code', e.target.value);
+          onChangePostalCode(e);
         }}
         onDelete={() => onChangeData('postal_code', '')}
-        placeholder="postal / zip code"
+        message={
+          data.postal_code !== '' ? (isValidPostal ? '' : MESSAGE_ERROR.POSTAL_CODE) : undefined
+        }
+        messageType={data.postal_code !== '' ? (isValidPostal ? 'normal' : 'error') : undefined}
       />
       <FormGroup label="General Phone" required layout="vertical" formClass={styles.formGroup}>
         <PhoneInput
