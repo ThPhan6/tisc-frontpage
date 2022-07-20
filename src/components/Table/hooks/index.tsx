@@ -12,7 +12,7 @@ type Expanded = number | undefined | string;
 export const useCustomTable = (columns: TableColumnItem<any>[]) => {
   const [expanded, setExpanded] = useState<Expanded>();
 
-  const expend = (index: Expanded) => {
+  const expand = (index: Expanded) => {
     if (expanded === index) setExpanded(undefined);
     else setExpanded(index);
   };
@@ -23,7 +23,7 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
     }
     const expandedKey = `${record.id}`;
     return (
-      <div onClick={() => expend(expandedKey)} className={styles.expandedCell}>
+      <div onClick={() => expand(expandedKey)} className={styles.expandedCell}>
         <span className={expandedKey === expanded ? styles.expandedColumn : ''}>{value}</span>
         {expandedKey === expanded ? <DropupIcon /> : <DropdownIcon />}
       </div>
@@ -84,7 +84,7 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
   };
 
   return {
-    expended: expanded,
+    expanded,
     columns: formatColumns(),
   };
 };
