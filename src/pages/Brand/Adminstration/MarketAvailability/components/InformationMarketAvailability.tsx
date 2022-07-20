@@ -9,7 +9,7 @@ const InformationMarketAvailability: FC<{
 }> = ({ visible, setVisible }) => {
   return (
     <Popover
-      title="MARKET AVAIABILITY"
+      title="MARKET AVAILABILITY"
       visible={visible}
       setVisible={setVisible}
       noFooter
