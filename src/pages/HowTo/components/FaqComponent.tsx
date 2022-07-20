@@ -15,12 +15,13 @@ export interface FaqItemProps extends CollapsingProps {
 
 const RenderHeader: FC<FaqItemProps> = (props) => {
   const { value, activeKey, handleActiveCollapse, index } = props;
-
   return (
     <div className={styles.panel_header}>
-      <div className={styles.panel_header__field} onClick={() => handleActiveCollapse(index)}>
+      <div
+        className={styles.panel_header__field}
+        onClick={() => handleActiveCollapse(value.document ? index : -1)}
+      >
         <div className={styles.titleIcon}>
-          {/* {value?.icon && <span className={styles.icon}>{value.icon}</span>} */}
           {value?.icon && <img src={showImageUrl(value.icon)} className={styles.icon} />}
           <div>
             <BodyText
@@ -35,7 +36,7 @@ const RenderHeader: FC<FaqItemProps> = (props) => {
           </div>
         </div>
         <div className={styles.addIcon}>
-          {String(index) !== activeKey ? <PlusIcon /> : <ExtendIcon />}
+          {value.document ? String(index) !== activeKey ? <PlusIcon /> : <ExtendIcon /> : ''}
         </div>
       </div>
     </div>
@@ -76,16 +77,21 @@ export const FaqComponent: FC<FaqItemProps> = ({
             </BodyText>
           </div>
           <div className={styles.qa}>
-            {value.question_and_answer?.map((item, idx) => (
-              <div key={idx}>
-                <QnAItem
-                  index={idx}
-                  item={item}
-                  activeKey={activeKeyItem}
-                  handleActiveCollapse={handleActiveCollapseItem}
-                />
-              </div>
-            ))}
+            {value.question_and_answer?.map((item, idx) => {
+              return (
+                item.question &&
+                item.answer && (
+                  <div key={idx}>
+                    <QnAItem
+                      index={idx}
+                      item={item}
+                      activeKey={activeKeyItem}
+                      handleActiveCollapse={handleActiveCollapseItem}
+                    />
+                  </div>
+                )
+              );
+            })}
           </div>
         </Collapse.Panel>
       </Collapse>

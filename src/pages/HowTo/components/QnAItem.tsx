@@ -9,7 +9,10 @@ import { CollapsingProps, QnA, QuestionProps } from '../types';
 const RenderQuestion: FC<QuestionProps> = (props) => {
   const { index, question, activeKey, handleActiveCollapse } = props;
   return (
-    <div onClick={() => handleActiveCollapse(index)} className={styles.itemQuestion}>
+    <div
+      onClick={() => handleActiveCollapse(question ? index : -1)}
+      className={styles.itemQuestion}
+    >
       <BodyText
         level={4}
         customClass={String(index) !== activeKey ? styles.font_weight_300 : styles.font_weight_600}
@@ -17,7 +20,7 @@ const RenderQuestion: FC<QuestionProps> = (props) => {
         {question}
       </BodyText>
       <div className={styles.addIcon}>
-        {String(index) !== activeKey ? <PlusIcon /> : <ExtendIcon />}
+        {question ? String(index) !== activeKey ? <PlusIcon /> : <ExtendIcon /> : ''}
       </div>
     </div>
   );

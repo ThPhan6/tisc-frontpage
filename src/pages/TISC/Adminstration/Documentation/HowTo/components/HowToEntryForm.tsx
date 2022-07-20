@@ -41,7 +41,6 @@ const QuestionAndAnswerField: FC<FAQFieldProps> = ({
       [e.target.name]: e.target.value,
     });
   };
-  console.log('value', value);
 
   return (
     <div className={styles.FAQ_field}>
