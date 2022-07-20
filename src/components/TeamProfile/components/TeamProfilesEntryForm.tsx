@@ -1,4 +1,4 @@
-import { ReactComponent as WarningCircleIcon } from '@/assets/icons/warning-circle-icon.svg';
+import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 import { CustomRadio } from '@/components/CustomRadio';
 import type { RadioValue } from '@/components/CustomRadio/types';
 import { EntryFormWrapper } from '@/components/EntryForm';
@@ -277,7 +277,7 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
         <FormGroup
           label="Access Level"
           required={true}
-          iconTooltip={<WarningCircleIcon className={styles.warning_icon} />}
+          customIcon={<InfoIcon className={styles.warning_icon} />}
           layout="vertical"
           formClass={`${styles.form_group} ${styles.access_label}`}
           onClick={() =>

@@ -12,6 +12,7 @@ export interface FormGroupProps {
   message?: string;
   messageType?: 'normal' | 'error' | 'warning';
   iconTooltip?: ReactNode;
+  customIcon?: ReactNode;
   onClick?: () => void;
 }
 
