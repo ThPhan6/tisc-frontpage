@@ -93,15 +93,21 @@ const BrandAccessLevelModal: FC<BrandAccessLevelModalProps> = ({ visible, setVis
 
             {/* another */}
             <th>
-              <MainTitle level={4}>Brand Admin</MainTitle>
+              <MainTitle textAlign="center" level={4}>
+                Brand Admin
+              </MainTitle>
             </th>
             {/* future data header, can delete */}
             <th className={styles.furture_data_header}>
-              <MainTitle level={4}>Brand Lead</MainTitle>
+              <MainTitle textAlign="center" level={4}>
+                Brand Lead
+              </MainTitle>
             </th>
             {/* ---------- */}
             <th>
-              <MainTitle level={4}>Brand Team</MainTitle>
+              <MainTitle textAlign="center" level={4}>
+                Brand Team
+              </MainTitle>
             </th>
           </tr>
         </thead>
