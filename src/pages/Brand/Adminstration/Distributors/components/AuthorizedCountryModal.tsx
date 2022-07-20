@@ -33,17 +33,22 @@ const AuthorizedCountryModal: FC<{
   };
 
   const handleSelectedData = (checkedData: CheckboxValue[]) => {
-    console.log(checkedData);
-    // const newChosenData = [];
-    const selectedCountry = checkedData.map((checked) => {
-      countryGroup.map((item) => {
-        console.log(item.locations);
-        item.locations.find((country) => country.country_id === checked.value);
+    let selectedCountry = undefined;
+    checkedData.map((checked) => {
+      countryGroup.forEach((item) => {
+        const result = item.locations.find((country) => country.country_id === checked.value);
+        if (result) {
+          selectedCountry = result;
+        }
       });
     });
-    console.log(selectedCountry);
     if (selectedCountry) {
-      setChosenValue('');
+      setChosenValue([
+        {
+          label: selectedCountry['country_name'],
+          value: selectedCountry['country_id'],
+        },
+      ]);
     }
   };
 
