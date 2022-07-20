@@ -14,3 +14,4 @@ export * from './inspirational-quotation.api';
 export * from './email-auto.api';
 export * from './location.api';
 export * from './distributor.api';
+export * from './market-availability.api';

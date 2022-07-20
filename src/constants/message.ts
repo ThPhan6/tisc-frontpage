@@ -107,6 +107,12 @@ export const MESSAGE_NOTIFICATION = {
   CREATE_BRAND_COLLECTION_ERROR: 'Failed to create Brand collection',
   GET_BRAND_COLLECTION_ERROR: 'Failed to get Brand collection data',
 
+  // market availability
+  GET_LIST_MARKET_AVAILABILITY_ERROR: 'Get list market availability error',
+  GET_ONE_MARKET_AVAILABILITY_ERROR: 'Get one market availability error',
+  UPDATE_MARKET_AVAILABILITY_SUCCESS: 'Update market availability successfully',
+  UPDATE_MARKET_AVAILABILITY_ERROR: 'Failed to update market availability',
+
   // permission
   GET_PERMISSION_DATA_ERROR: 'Failed to get Permission data',
   // inspirational quotation
@@ -118,6 +124,7 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_INSPIRATIONAL_QUOTATION_ERROR: 'Delete inspirational quotation error',
   UPDATE_INSPIRATIONAL_QUOTATION_SUCCESS: 'Update inspirational quotation successfully',
   UPDATE_INSPIRATIONAL_QUOTATION_ERROR: 'Update inspirational quotation error',
+
   //location
   GET_COUNTRIES_ERROR: 'Failed to get countries data',
   GET_STATES_ERROR: 'Failed to get states data',

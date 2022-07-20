@@ -34,7 +34,7 @@ export const BodyText: FC<BodyTextProps> = ({
       case 'Roboto':
         return Style[`bodyText${level}`];
       default:
-        return Style[`bodyTextCormorant${level >= 4 ? 4 : level}`];
+        return Style[`bodyTextCormorant${level >= 5 ? 5 : level}`];
     }
   };
 
@@ -51,6 +51,7 @@ export const MainTitle: FC<MainTitleProps> = ({
   customClass = '',
   level = 1,
   children,
+  textAlign = 'center',
   ...props
 }) => {
   const setLevel = () => {
@@ -59,7 +60,11 @@ export const MainTitle: FC<MainTitleProps> = ({
 
   const classNameMainTitle = `${setLevel()}`;
   return (
-    <p {...props} className={`${classNameMainTitle} ${customClass}`} style={{ color: color }}>
+    <p
+      {...props}
+      className={`${classNameMainTitle} ${customClass}`}
+      style={{ color: color, textAlign: textAlign }}
+    >
       {children}
     </p>
   );

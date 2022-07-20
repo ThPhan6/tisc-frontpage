@@ -14,61 +14,67 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   handleCancel,
   customClass,
   contentClass,
+  textAlignTitle = 'center',
   children,
   title = 'ENTRY FORM',
-  handleDisabledCancel = false,
-  handleDisabledSubmit = false,
+  disableCancelButton = false,
+  disableSubmitButton = false,
+  headerContent,
+  footerContent,
   submitButtonStatus = false,
 }) => {
   return (
     <Row>
       <Col className={styles.entry_form_wrapper} span={12}>
         <div className={`${styles.entry_form_container} ${customClass}`}>
-          {/* header */}
-          <div className={styles.header}>
-            <MainTitle level={3} customClass={styles.header__title}>
-              {title}
-            </MainTitle>
-            <CloseIcon className={styles.header__icon} onClick={handleCancel} />
+          <div className={styles.header_main}>
+            <div className={styles.header}>
+              <MainTitle level={3} textAlign={textAlignTitle} customClass={styles.header__title}>
+                {title}
+              </MainTitle>
+              <CloseIcon className={styles.header__icon} onClick={handleCancel} />
+            </div>
+            <div className={styles.header_content}>{headerContent}</div>
           </div>
-
-          {/* children */}
           <div id={contentId} className={`${styles.content} ${contentClass}`}>
             {children}
           </div>
+          <div className={styles.footer_main}>
+            <div className={styles.footer_content}>{footerContent}</div>
 
-          {/* footer */}
-          <div className={styles.footer}>
-            <CustomButton
-              size="small"
-              buttonClass={styles.footer__cancel_bt}
-              onClick={handleCancel}
-              disabled={handleDisabledCancel}
-            >
-              Cancel
-            </CustomButton>
+            {/* footer */}
+            <div className={styles.footer}>
+              <CustomButton
+                size="small"
+                buttonClass={styles.footer__cancel_bt}
+                onClick={handleCancel}
+                disabled={disableCancelButton}
+              >
+                Cancel
+              </CustomButton>
 
-            <div className={styles.footer__wrapper_submit}>
-              {submitButtonStatus ? (
-                <CustomButton
-                  buttonClass={styles.footer__wrapper_submit_success}
-                  size="small"
-                  width="64px"
-                  icon={<CheckSuccessIcon />}
-                />
-              ) : (
-                <CustomButton
-                  buttonClass={styles.footer__wrapper_submit_normal}
-                  size="small"
-                  width="64px"
-                  onClick={handleSubmit}
-                  disabled={handleDisabledSubmit}
-                >
-                  <BodyText level={6} fontFamily="Roboto">
-                    Save
-                  </BodyText>
-                </CustomButton>
-              )}
+              <div className={styles.footer__wrapper_submit}>
+                {submitButtonStatus ? (
+                  <CustomButton
+                    buttonClass={styles.footer__wrapper_submit_success}
+                    size="small"
+                    width="64px"
+                    icon={<CheckSuccessIcon />}
+                  />
+                ) : (
+                  <CustomButton
+                    buttonClass={styles.footer__wrapper_submit_normal}
+                    size="small"
+                    width="64px"
+                    onClick={handleSubmit}
+                    disabled={disableSubmitButton}
+                  >
+                    <BodyText level={6} fontFamily="Roboto">
+                      Save
+                    </BodyText>
+                  </CustomButton>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -82,7 +88,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
 size="small"
 buttonClass={styles.footer__submit_bt}
 onClick={handleSubmit}
-disabled={handleDisabledCancel}
+disabled={disableCancelButton}
 >
 Save
 </CustomButton> */

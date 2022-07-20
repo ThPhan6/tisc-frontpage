@@ -1,4 +1,6 @@
-﻿export default [
+﻿import { PATH } from '../src/constants/path';
+
+export default [
   // NO REQUIRE AUTHENTICATION
   {
     path: '/',
@@ -19,12 +21,13 @@
     path: '/howTo',
     component: './HowTo',
   },
+
   // TISC MENU - ADMIN ACCESS ONLY
   {
     path: '/tisc/dashboard',
     name: 'workspace',
     icon: 'workspace-icon.svg',
-    component: './Welcome',
+    component: './TISC/MyWorkspace',
     access: 'tisc_workspace',
   },
   {
@@ -276,8 +279,18 @@
           {
             path: '/tisc/adminstration/documentation/agreement-policy-terms',
             name: 'terms.policy',
-            component:
-              './TISC/Adminstration/Documentation/AgreementPolicies/CreateAgreementPoliciesPage',
+            routes: [
+              {
+                path: PATH.policy,
+                component: './TISC/Adminstration/Documentation/PolicyTemplate',
+                hideInMenu: true,
+              },
+              {
+                path: PATH.policyUpdate,
+                component: './TISC/Adminstration/Documentation/PolicyTemplate/Update',
+                hideInMenu: true,
+              },
+            ],
           },
           {
             path: '/tisc/adminstration/documentation/how-to',
@@ -421,8 +434,24 @@
         path: '/brand/adminstration/locations',
         name: 'location',
         icon: 'location-icon.svg',
-        component: './Welcome',
         access: 'brand_administration_location',
+        routes: [
+          {
+            path: '/brand/adminstration/locations',
+            component: './Brand/Adminstration/Location',
+            hideInMenu: true,
+          },
+          {
+            path: '/brand/adminstration/locations/create',
+            hideInMenu: true,
+            component: './Brand/Adminstration/Location/CreatePage',
+          },
+          {
+            path: '/brand/adminstration/locations/:id',
+            hideInMenu: true,
+            component: './Brand/Adminstration/Location/UpdatePage',
+          },
+        ],
       },
       {
         path: '/brand/adminstration/team-profiles',
@@ -458,8 +487,19 @@
         path: '/brand/adminstration/market-availability',
         name: 'brand.market_availability',
         icon: 'market-availability-icon.svg',
-        component: './Welcome',
         access: 'brand_administration_market_availability',
+        routes: [
+          {
+            path: '/brand/adminstration/market-availability',
+            component: './Brand/Adminstration/MarketAvailability',
+            hideInMenu: true,
+          },
+          {
+            path: '/brand/adminstration/market-availability/:id',
+            component: './Brand/Adminstration/MarketAvailability/UpdatePage',
+            hideInMenu: true,
+          },
+        ],
       },
       {
         path: '/brand/adminstration/subscription',
