@@ -6,6 +6,7 @@ import type {
   ILocationDetail,
   FunctionalTypeData,
   LocationForm,
+  ICountryGroup,
 } from '@/types';
 import type {
   DataTableResponse,
@@ -57,7 +58,7 @@ export async function getCitiesByCountryIdAndStateId(countryId: string, stateId:
 }
 
 export async function getListCountryGroup() {
-  return request(`/api/location/get-list-with-country-group`, {
+  return request<{ data: ICountryGroup[] }>(`/api/location/get-list-with-country-group`, {
     method: 'GET',
   })
     .then((response) => {
@@ -65,7 +66,7 @@ export async function getListCountryGroup() {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_COUNTRY_GROUP);
-      return [];
+      return [] as ICountryGroup[];
     });
 }
 

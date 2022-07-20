@@ -3,6 +3,7 @@ export const MESSAGE_ERROR = {
   PASSWORD: 'Password error',
   CONFIRM_PASSWORD: 'Passwords do not match',
   PHONE_INPUT: 'Invalid phone number',
+  reachLogoSizeLimit: 'Logo size limit reached (240 KB)',
 };
 
 export const MESSAGE_NOTIFICATION = {

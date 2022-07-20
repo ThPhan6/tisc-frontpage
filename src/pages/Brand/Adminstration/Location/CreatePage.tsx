@@ -29,6 +29,8 @@ const BrandLocationCreatePage: React.FC = () => {
 
   const onSubmit = (submitData: LocationForm) => {
     isLoading.setValue(true);
+
+    console.log('submitData', submitData);
     createLocation(submitData).then((isSuccess) => {
       isLoading.setValue(false);
       if (isSuccess) {
