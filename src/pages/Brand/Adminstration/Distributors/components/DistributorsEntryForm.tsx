@@ -112,7 +112,6 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
     });
   };
 
-  console.log('authorCountryData', authorCountryData);
   return (
     <>
       <EntryFormWrapper
