@@ -8,7 +8,7 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-ico
 import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
 import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constants/message';
-import avatarImg from '@/assets/img-avatar.png';
+import avatarImg from '@/assets/icons/avatar-icon.svg';
 import { FC, useEffect, useState } from 'react';
 import { isShowErrorMessage, showImageUrl, validateEmail } from '@/helper/utils';
 import { useBoolean, useCustomInitialState } from '@/helper/hook';
@@ -160,7 +160,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
           }}
           overlayInnerStyle={{
             width: '240px',
-            height: '96px',
+            height: 'auto',
             padding: '8px 19.5px',
             fontWeight: '300',
             fontSize: '12px',
