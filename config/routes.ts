@@ -422,6 +422,7 @@ export default [
     name: 'workspace',
     icon: 'workspace-icon.svg',
     component: './Welcome',
+    access: 'brand_workspace',
   },
   {
     path: '/brand/product',
