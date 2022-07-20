@@ -88,7 +88,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </BodyText>
         </div>
       </div>
-      <div className={styles.productInfo}>
+      <div className={styles.productInfo} onClick={gotoProductDetailPage}>
         <BodyText level={6} fontFamily="Roboto" customClass="product-description">
           {product.name}
         </BodyText>
