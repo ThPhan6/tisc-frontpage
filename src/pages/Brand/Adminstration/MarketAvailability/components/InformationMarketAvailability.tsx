@@ -38,7 +38,9 @@ const InformationMarketAvailability: FC<{
             </BodyText>
           </div>
           <div className={styles.text}>
-            <Title level={9}>02 - Distributors & Authorisation Countries</Title>
+            <Title level={9} customClass={styles.title}>
+              02 - Distributors & Authorisation Countries
+            </Title>
             <BodyText level={6} fontFamily="Roboto">
               Before the <span className={styles.customText}>Market Availability</span>{' '}
               configurations, the brand company should input and define the distributors and its
@@ -46,7 +48,9 @@ const InformationMarketAvailability: FC<{
             </BodyText>
           </div>
           <div className={styles.text}>
-            <Title level={9}>03 - Configurations</Title>
+            <Title level={9} customClass={styles.title}>
+              03 - Configurations
+            </Title>
             <BodyText level={6} fontFamily="Roboto">
               The brand company could then assign each{' '}
               <span className={styles.customText}>Collections/Series</span> to the regions and
