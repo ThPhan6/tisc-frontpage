@@ -26,30 +26,34 @@ const AuthorizedCountryModal: FC<{
   const renderLabel = (item: ILocationDetail) => {
     return (
       <BodyText level={5} fontFamily="Roboto">
-        <span style={{ marginRight: '8px' }}>{item.country_name}</span>
+        <span style={{ marginRight: '8px' }}>{item.name}</span>
         <span>+{item.phone_code}</span>
       </BodyText>
     );
   };
 
   const handleSelectedData = (checkedData: CheckboxValue[]) => {
+    const newData: ILocationDetail[] = [];
+    let authorCountryData: CheckboxValue[] = [];
     let selectedCountry = undefined;
     checkedData.map((checked) => {
       countryGroup.forEach((item) => {
-        const result = item.locations.find((country) => country.country_id === checked.value);
+        const result = item.countries.find((country) => country.id === checked.value);
         if (result) {
           selectedCountry = result;
+          newData.push(selectedCountry);
         }
       });
     });
-    if (selectedCountry) {
-      setChosenValue([
-        {
-          label: selectedCountry['country_name'],
-          value: selectedCountry['country_id'],
-        },
-      ]);
+    if (newData.length > 0) {
+      authorCountryData = newData.map((item) => {
+        return {
+          label: item.name,
+          value: item.id,
+        };
+      });
     }
+    setChosenValue(authorCountryData);
   };
 
   return (
@@ -61,11 +65,11 @@ const AuthorizedCountryModal: FC<{
       setChosenValue={(data) => handleSelectedData(data)}
       dropdownCheckboxList={countryGroup.map((items) => {
         return {
-          key: items.country_name,
-          options: items.locations.map((item) => {
+          key: items.name,
+          options: items.countries.map((item) => {
             return {
               label: renderLabel(item),
-              value: item.country_id,
+              value: item.id,
             };
           }),
         };

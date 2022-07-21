@@ -16,32 +16,14 @@ export interface ICity {
 
 export interface ILocationDetail {
   id: string;
-  business_name: string;
-  business_number: string;
-  functional_types: [
-    {
-      id: string;
-      name: string;
-    },
-  ];
-  country_name: string;
-  state_name: string;
-  city_name: string;
-  general_phone: string;
-  general_email: string;
-  created_at: string;
+  name: string;
   phone_code: string;
-  postal_code: string;
-  address: string;
-  country_id: string;
-  state_id: string;
-  city_id: string;
 }
 
 export interface LocationGroupedByCountry {
-  country_name: string;
+  name: string;
   count: number;
-  locations: ILocationDetail[];
+  countries: ILocationDetail[];
 }
 
 export interface LocationForm {
