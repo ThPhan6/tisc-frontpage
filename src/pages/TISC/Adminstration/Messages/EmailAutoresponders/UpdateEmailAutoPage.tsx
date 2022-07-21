@@ -101,14 +101,18 @@ const UpdateEmailAutoPage = () => {
     }));
   };
 
-  const handleUpdateEmailAuto = () => {
+  const handleCancel = () => {
+    pushTo(PATH.emailAuto);
+  };
+
+  const handleUpdateEmailAuto = (/* data: EmailTemplate */) => {
     isLoading.setValue(true);
-    updateEmailAuto(idEmailAuto, value).then((isSuccess) => {
+    updateEmailAuto(idEmailAuto, formState).then((isSuccess) => {
       isLoading.setValue(false);
       if (isSuccess) {
         submitButtonStatus.setValue(true);
         setTimeout(() => {
-          pushTo(PATH.emailAuto);
+          submitButtonStatus.setValue(false);
         }, 1000);
         return;
       }
@@ -132,6 +136,7 @@ const UpdateEmailAutoPage = () => {
       <TableHeader title="Email Autoresponders" rightAction={<CustomPlusButton disabled />} />
       <div className={styles.container}>
         <EntryFormWrapper
+          handleCancel={handleCancel}
           handleSubmit={handleUpdateEmailAuto}
           submitButtonStatus={submitButtonStatus.value}
         >
