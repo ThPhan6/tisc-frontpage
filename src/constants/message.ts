@@ -176,6 +176,12 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_BRAND_PROFILE_ERROR: 'Update profile error',
   UPDATE_LOGO_BRAND_PROFILE_SUCCESS: 'Update logo brand profile successfully',
   UPDATE_LOGO_BRAND_PROFILE_ERROR: 'Update logo brand profile error',
+
+  //FAQ
+  GET_FAQ_ERROR: 'Failed to get FAQ data',
+  UPDATE_FAQ_SUCCESS: 'Update FAQ successfully',
+  UPDATE_FAQ_ERROR: 'Update FAQ error',
+  GET_ONE_FAQ_ERROR: 'Get one FAQ error',
 };
 
 export const MESSAGE_TOOLTIP = {
