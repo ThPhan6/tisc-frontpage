@@ -125,6 +125,7 @@ const Distributors = () => {
         extraParams={{
           brand_id: user.brand.id,
         }}
+        hasPagination
       />
     </>
   );

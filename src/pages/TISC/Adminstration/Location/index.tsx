@@ -105,6 +105,7 @@ const TISCLocation: React.FC = () => {
         title={'LOCATIONS'}
         columns={mainColumns}
         fetchDataFunc={getLocationPagination}
+        hasPagination
       />
     </div>
   );

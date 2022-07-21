@@ -4,6 +4,7 @@ import { BodyText } from '../Typography';
 import styles from './styles/PhoneInput.less';
 import { formatPhoneCode, validatePhoneNumber } from '@/helper/utils';
 import { PhoneInputProps } from './types';
+import { trimStart } from 'lodash';
 
 export const PhoneInput: FC<PhoneInputProps> = ({
   codePlaceholder,
@@ -32,7 +33,7 @@ export const PhoneInput: FC<PhoneInputProps> = ({
   }, [value]);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const phoneNumber = e.target.value;
+    const phoneNumber = trimStart(e.target.value ?? '');
     if (phoneNumber != '' && !validatePhoneNumber(phoneNumber) && e.target.name === 'phoneNumber') {
       return;
     }

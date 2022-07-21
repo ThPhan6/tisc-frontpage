@@ -32,7 +32,7 @@ const CheckboxList: React.FC<CheckboxListProps> = (props) => {
           {data.heading}
         </Title>
         <div
-          className={styles.checkedAllRadio}
+          className={`${styles.checkedAllRadio} selected-all-option-radio`}
           onClick={(e) => {
             e.preventDefault();
             const checkedAll = !selectAll;

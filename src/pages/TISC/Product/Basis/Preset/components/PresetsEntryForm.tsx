@@ -46,7 +46,25 @@ export const PresetsEntryForm: FC<PresetsEntryFormProps> = ({
 
   const handleSubmit = () => {
     if (onSubmit) {
-      onSubmit(presetsValue);
+      onSubmit({
+        ...presetsValue,
+        name: presetsValue.name.trim(),
+        subs: presetsValue.subs.map((sub) => {
+          return {
+            ...sub,
+            name: sub.name.trim(),
+            subs: sub.subs?.map((subItem) => {
+              return {
+                ...subItem,
+                value_1: subItem.value_1.trim(),
+                value_2: subItem.value_2.trim(),
+                unit_1: subItem.unit_1.trim(),
+                unit_2: subItem.unit_2.trim(),
+              };
+            }),
+          };
+        }),
+      });
     }
   };
 

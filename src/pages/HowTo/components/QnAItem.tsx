@@ -14,7 +14,7 @@ const RenderQuestion: FC<QuestionProps> = (props) => {
       className={styles.itemQuestion}
     >
       <BodyText
-        level={4}
+        level={3}
         customClass={String(index) !== activeKey ? styles.font_weight_300 : styles.font_weight_600}
       >
         {question}

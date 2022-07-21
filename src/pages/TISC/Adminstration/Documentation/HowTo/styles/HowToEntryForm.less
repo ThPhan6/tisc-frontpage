@@ -82,7 +82,7 @@
     justify-content: right;
     height: 40px;
     margin-bottom: 8px;
-
+    cursor: pointer;
     &__button {
       width: 20px;
       height: 20px;
@@ -109,7 +109,6 @@
       display: flex;
       flex-direction: column;
       margin-bottom: 8px;
-
       &_question,
       &_answer {
         display: flex;
@@ -120,6 +119,7 @@
         }
 
         svg {
+          margin-right: 2px;
           cursor: pointer;
           path {
             transition: fill 1s;
@@ -139,6 +139,11 @@
       &_question {
         :global(.ant-input) {
           padding-left: 0;
+        }
+        textarea {
+          font-size: 16px;
+          font-family: 'Cormorant-Garamond';
+          line-height: 24px;
         }
       }
       &_answer {
