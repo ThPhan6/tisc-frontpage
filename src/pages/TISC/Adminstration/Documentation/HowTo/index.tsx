@@ -1,26 +1,59 @@
 import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabs } from '@/components/Tabs';
-import styles from './styles/index.less';
-import { TabItem } from '@/components/Tabs/types';
-import { FC, useState } from 'react';
+import type { TabItem } from '@/components/Tabs/types';
+import { getAllFAQ, updateFAQ } from '@/services/faq.api';
+import { AllFaqState } from '@/types/faq.type';
+import { FC, useEffect, useState } from 'react';
 import { HowToEntryForm } from './components/HowToEntryForm';
-import { FaqForm } from './types';
-import { howToPagePanel } from '@/constants/util';
+import styles from './styles/index.less';
+import { FaqState } from './types';
 
 interface HowToPageProps {
   containerClass?: string;
 }
 
+const intialState = {
+  brand: { expandedIndex: -1, value: [] },
+  design: { expandedIndex: -1, value: [] },
+  tisc: { expandedIndex: -1, value: [] },
+};
+
 const HowToPage: FC<HowToPageProps> = ({ containerClass }) => {
   const listTab: TabItem[] = [
     { tab: 'TISC', key: 'tisc' },
-    { tab: 'BRANDS', key: 'brands' },
-    { tab: 'DESIGNERS', key: 'designers' },
+    { tab: 'BRANDS', key: 'brand' },
+    { tab: 'DESIGNERS', key: 'design' },
   ];
   const selectedTab = listTab[0].key;
+  const [howTo, setHowTo] = useState<AllFaqState>(intialState);
   const [activeTab, setActiveTab] = useState<string>(selectedTab);
 
-  const [howTo, setHowTo] = useState<FaqForm>(howToPagePanel);
+  const getFAQList = () => {
+    getAllFAQ().then((res) => {
+      setHowTo({
+        brand: {
+          expandedIndex: -1,
+          value: res.brand,
+        },
+        design: {
+          expandedIndex: -1,
+          value: res.design,
+        },
+        tisc: {
+          expandedIndex: -1,
+          value: res.tisc,
+        },
+      });
+    });
+  };
+
+  useEffect(() => {
+    getFAQList();
+  }, []);
+
+  const onSubmit = () => {
+    updateFAQ((howTo[activeTab] as FaqState).value);
+  };
 
   return (
     <div className={`${styles.howto_container} ${containerClass}`}>
@@ -35,14 +68,19 @@ const HowToPage: FC<HowToPageProps> = ({ containerClass }) => {
           widthItem={'125px'}
         />
       </div>
+
       <HowToEntryForm
         value={howTo[activeTab]}
         onChange={(value) => {
-          setHowTo({
-            ...howTo,
-            [activeTab]: value,
+          setHowTo((prevState) => {
+            return {
+              ...prevState,
+              [activeTab]: value,
+            };
           });
         }}
+        onSubmit={onSubmit}
+        submitButtonStatus={true}
       />
     </div>
   );

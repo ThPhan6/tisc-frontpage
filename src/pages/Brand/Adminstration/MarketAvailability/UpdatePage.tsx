@@ -47,9 +47,11 @@ const UpdateMarketAvailabilityPage = () => {
   };
 
   useEffect(() => {
+    isLoading.setValue(true);
     getMarketAvailabilityByCollectionId(collectionId).then((res) => {
       if (res) {
         setData(res);
+        isLoading.setValue(false);
       }
     });
   }, []);

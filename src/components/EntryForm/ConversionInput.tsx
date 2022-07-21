@@ -80,7 +80,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
             <BodyText
               level={fontLevel ? ((fontLevel + 2) as 7) : 7}
               fontFamily="Roboto"
-              customClass="first-input-label"
+              customClass="unit-input-label"
             >
               {conversionData.unit_1}
             </BodyText>
@@ -106,7 +106,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
             <BodyText
               level={fontLevel ? ((fontLevel + 2) as 7) : 7}
               fontFamily="Roboto"
-              customClass="first-input-label"
+              customClass="unit-input-label"
             >
               {conversionData.unit_2}
             </BodyText>

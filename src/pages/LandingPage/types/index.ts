@@ -29,6 +29,7 @@ export type UserInfoDataProp = {
   backup_email: string;
   personal_mobile: string;
   linkedin: string;
+  type: number;
 };
 
 export type ResetPasswordInput = {

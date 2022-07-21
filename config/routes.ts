@@ -357,16 +357,16 @@ export default [
         access: 'tisc_administration_message',
         routes: [
           {
-            path: '/tisc/adminstration/messages/email-auto',
+            path: '/tisc/adminstration/messages/email-autoresponders',
             name: 'email',
             routes: [
               {
-                path: '/tisc/adminstration/messages/email-auto',
+                path: '/tisc/adminstration/messages/email-autoresponders',
                 component: './TISC/Adminstration/Messages/EmailAutoresponders/',
                 hideInMenu: true,
               },
               {
-                path: '/tisc/adminstration/messages/email-auto/update/:id',
+                path: '/tisc/adminstration/messages/email-autoresponders/update/:id',
                 component: './TISC/Adminstration/Messages/EmailAutoresponders/UpdateEmailAutoPage',
                 hideInMenu: true,
               },

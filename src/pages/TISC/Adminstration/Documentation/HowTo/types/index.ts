@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { FaqItem } from '@/types/faq.type';
 
 export interface FaqInput {
   question: string;
@@ -6,20 +6,20 @@ export interface FaqInput {
 }
 
 export interface FaqPanel {
-  id?: string;
-  icon?: ReactNode;
+  id: string;
   title: string;
-  description: string;
-  FAQ: FaqInput[];
+  logo: string;
+  document: {
+    document: string;
+    question_and_answer: {
+      question: string;
+      answer: string;
+    }[];
+  };
+  created_at: string;
 }
 
-export interface FaqItems {
-  activeKey?: string | number | (string | number)[];
-  data: FaqPanel[];
-}
-
-export interface FaqForm {
-  tisc: FaqItems;
-  brands: FaqItems;
-  designers: FaqItems;
-}
+export type FaqState = {
+  value: FaqItem[];
+  expandedIndex: number;
+};

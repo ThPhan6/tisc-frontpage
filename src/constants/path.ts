@@ -49,8 +49,8 @@ export const PATH = {
   createQuotation: '/tisc/adminstration/messages/quotation/create',
   updateQuotation: '/tisc/adminstration/messages/quotation/update/:id',
   // email autorepsonder
-  emailAuto: '/tisc/adminstration/messages/email-auto',
-  updateEmailAuto: '/tisc/adminstration/messages/email-auto/update/:id',
+  emailAuto: '/tisc/adminstration/messages/email-autoresponders',
+  updateEmailAuto: '/tisc/adminstration/messages/email-autoresponders/update/:id',
 
   // configuration
   productConfiguration: '/tisc/products/configuration',
