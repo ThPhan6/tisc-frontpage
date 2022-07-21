@@ -136,7 +136,7 @@ const UpdateEmailAutoPage = () => {
 
   /// only get content entered
   const handleOnChangeMessageInput = (html: string) => {
-    onChangeState('message', trimStart(html));
+    onChangeState('message', html);
   };
 
   return (

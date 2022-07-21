@@ -61,7 +61,7 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
   // },[loading])
 
   useEffect(() => {
-    console.log('loading', loading);
+    // console.log('loading', loading);
     const updateSize = () => {
       if (!containerSelector || loading) {
         return;
