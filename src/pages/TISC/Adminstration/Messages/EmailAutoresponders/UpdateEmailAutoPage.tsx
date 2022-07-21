@@ -17,6 +17,9 @@ import { useDrag } from './utils/useDrag';
 import { CustomRadio } from '@/components/CustomRadio';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
+import { isEmpty, trimStart } from 'lodash';
+import { message } from 'antd';
+import { MESSAGE_ERROR } from '@/constants/message';
 
 const DEFAULT_EMAILAUTORESPONDERS_VALUE: EmailTemplate = {
   topic: '',
@@ -105,22 +108,27 @@ const UpdateEmailAutoPage = () => {
     pushTo(PATH.emailAuto);
   };
 
-  const handleUpdateEmailAuto = (/* data: EmailTemplate */) => {
-    isLoading.setValue(true);
-    updateEmailAuto(idEmailAuto, formState).then((isSuccess) => {
-      isLoading.setValue(false);
-      if (isSuccess) {
-        submitButtonStatus.setValue(true);
-        setTimeout(() => {
-          submitButtonStatus.setValue(false);
-        }, 1000);
-        return;
-      }
-    });
+  const handleUpdateEmailAuto = () => {
+    if (isEmpty(formState.message)) {
+      message.error(MESSAGE_ERROR.EMAIL_AUTO);
+      return;
+    } else {
+      isLoading.setValue(true);
+      updateEmailAuto(idEmailAuto, formState).then((isSuccess) => {
+        isLoading.setValue(false);
+        if (isSuccess) {
+          submitButtonStatus.setValue(true);
+          setTimeout(() => {
+            submitButtonStatus.setValue(false);
+          }, 1000);
+          return;
+        }
+      });
+    }
   };
 
   const handleOnChangeTitleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChangeState('title', e.target.value);
+    onChangeState('title', trimStart(e.target.value));
   };
   const handleRemoveTitleInput = () => {
     onChangeState('title', '');
@@ -207,7 +215,7 @@ const UpdateEmailAutoPage = () => {
             </div>
           </FormGroup>
 
-          <FormGroup label="Document" required={true} layout="vertical" formClass={styles.editor} />
+          <FormGroup label="Message" required={true} layout="vertical" formClass={styles.editor} />
           {/* Message */}
           {
             <CustomEditorInput
