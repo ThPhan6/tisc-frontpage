@@ -11,7 +11,6 @@ import { CustomInput } from '@/components/Form/CustomInput';
 
 import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
 import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
-import { REGEX_GET_CONTENT_ONLY } from '@/helper/utils';
 import { useParams } from 'umi';
 
 const DEFAULT_AGREEMENTPOLICIES_VALUE = {
@@ -51,7 +50,7 @@ const CreateAgreementPoliciesPage = () => {
 
   /// only get content entered
   const handleOnChangeMessageInput = (html: string) => {
-    setValue((state) => ({ ...state, message: html.replace(REGEX_GET_CONTENT_ONLY, '') }));
+    setValue((state) => ({ ...state, message: html }));
   };
 
   const handleSubmit = () => {
