@@ -1,11 +1,11 @@
-import { HeaderDropdown, MenuIconProp } from '../HeaderDropdown';
+import { HeaderDropdown, MenuIconProps } from '../HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { FC } from 'react';
 
-interface IActionForm {
-  actionItems?: MenuIconProp[];
+interface ActionFormProps {
+  actionItems?: MenuIconProps[];
   actionIcon?: JSX.Element;
   offsetAlign?: [number, number];
   trigger?: 'click' | 'hover' | 'contextMenu';
@@ -13,12 +13,12 @@ interface IActionForm {
   placement?: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topCenter' | 'topRight' | 'bottomCenter';
 }
 
-interface IActionMenu extends IActionForm {
+interface ActionMenuForm extends ActionFormProps {
   handleUpdate: () => void;
   handleDelete: () => void;
 }
 
-export const ActionForm: FC<IActionForm> = ({
+export const ActionForm: FC<ActionFormProps> = ({
   actionItems,
   offsetAlign = [14, -10],
   actionIcon,
@@ -43,7 +43,7 @@ export const ActionForm: FC<IActionForm> = ({
   );
 };
 
-export const ActionMenu: FC<IActionMenu> = ({ handleDelete, handleUpdate }) => {
+export const ActionMenu: FC<ActionMenuForm> = ({ handleDelete, handleUpdate }) => {
   return (
     <ActionForm
       actionItems={[
