@@ -3,13 +3,14 @@ import type { FC, ReactNode } from 'react';
 import { useState, useEffect } from 'react';
 import { ReactComponent as CloseIcon } from '../../assets/icons/action-close-open-icon.svg';
 import CustomButton from '@/components/Button';
-import { MainTitle } from '@/components/Typography';
+import { MainTitle, BodyText } from '@/components/Typography';
 import DropdownRadioList from '@/components/CustomRadio/DropdownRadioList';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
 import GroupRadioList from '@/components/CustomRadio/RadioList';
 import CheckboxList from '@/components/CustomCheckbox/CheckboxList';
 import DropdownCategoryList from '@/pages/TISC/Product/Configuration/components/CategoryDropdown';
-
+import { Empty } from 'antd';
+import { isEmpty } from 'lodash';
 import type { CheckboxOption } from '@/components/CustomCheckbox/CheckboxList';
 import type { DropdownRadioItem } from '@/components/CustomRadio/DropdownRadioList';
 import type { DropdownCheckboxItem } from '@/components/CustomCheckbox/DropdownCheckboxList';
@@ -72,9 +73,20 @@ const Popover: FC<PopoverProps> = ({
     setCurrentValue(chosenValue);
   }, [chosenValue]);
 
+  const renderEmptyData = () => {
+    return (
+      <div className={styles.popoverEmptyData}>
+        <Empty description={<BodyText level={3}>No Data</BodyText>} />
+      </div>
+    );
+  };
+
   const renderChildren = () => {
     /// for dropdown radio list
     if (dropdownRadioList) {
+      if (dropdownRadioList.length == 1 && isEmpty(dropdownRadioList[0].options)) {
+        return renderEmptyData();
+      }
       return (
         <DropdownRadioList
           selected={currentValue}
@@ -87,6 +99,9 @@ const Popover: FC<PopoverProps> = ({
     }
     // group radio list
     if (groupRadioList) {
+      if (groupRadioList.length == 1 && isEmpty(groupRadioList[0].options)) {
+        return renderEmptyData();
+      }
       return (
         <GroupRadioList
           selected={currentValue}
@@ -98,6 +113,9 @@ const Popover: FC<PopoverProps> = ({
     }
     /// drodown checkbox list
     if (dropdownCheckboxList) {
+      if (dropdownCheckboxList.length == 1 && isEmpty(dropdownCheckboxList[0].options)) {
+        return renderEmptyData();
+      }
       return (
         <DropdownCheckboxList
           selected={currentValue}
@@ -109,6 +127,9 @@ const Popover: FC<PopoverProps> = ({
       );
     }
     if (checkboxList) {
+      if (isEmpty(checkboxList)) {
+        return renderEmptyData();
+      }
       return (
         <CheckboxList
           selected={currentValue}
