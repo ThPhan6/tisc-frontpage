@@ -190,9 +190,7 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
                 <Collapse key={panel.id} ghost activeKey={value.expandedIndex}>
                   <Collapse.Panel
                     className={
-                      value.expandedIndex - 1 === panelIndex
-                        ? styles.active_collapse_panel
-                        : styles.unactive_collapse_panel
+                      isExpanded ? styles.active_collapse_panel : styles.unactive_collapse_panel
                     }
                     header={
                       <PanelHeader
