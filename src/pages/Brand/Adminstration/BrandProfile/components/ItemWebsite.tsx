@@ -4,6 +4,7 @@ import { WebsiteUrl } from '../types';
 import { ReactComponent as LeftIcon } from '@/assets/icons/pagination-right-18px.svg';
 import styles from '@/pages/Brand/Adminstration/BrandProfile/styles/index.less';
 import CountryModal from '@/components/Location/CountryModal';
+import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 
 export const ItemWebsite: FC<WebsiteUrl> = ({ websiteValue, onChange }) => {
   const [countryVisible, setCountryVisible] = useState(false);
@@ -37,6 +38,12 @@ export const ItemWebsite: FC<WebsiteUrl> = ({ websiteValue, onChange }) => {
           onChange={handOnChangeItem}
           value={websiteValue.url}
         />
+        <div>
+          <DeleteIcon
+            onClick={() => onChange({ ...websiteValue, url: '' })}
+            className={styles.iconDelete}
+          />
+        </div>
       </div>
 
       <CountryModal

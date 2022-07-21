@@ -183,6 +183,7 @@ const BrandProfilePage = () => {
                   label="Logo/Trademark"
                   layout="horizontal"
                   tooltip="LOGO prefers high quality, squared shape PNG format, and less than 240 KB file size."
+                  placement="bottom"
                   required
                   formClass={styles.customLabel}
                   iconTooltip={<WarningIcon className={styles.customWarningIcon} />}

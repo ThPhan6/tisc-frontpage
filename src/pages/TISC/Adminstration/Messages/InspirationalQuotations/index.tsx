@@ -46,7 +46,7 @@ const InspirationalQuotationsList: React.FC = () => {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
-      width: '5%',
+      width: '5px',
       render: (_value: any, record: any) => {
         return (
           <ActionMenu

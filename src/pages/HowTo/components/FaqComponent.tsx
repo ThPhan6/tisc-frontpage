@@ -6,42 +6,53 @@ import { FC, useState } from 'react';
 import { Collapse } from 'antd';
 import { QnAItem } from './QnAItem';
 import { FaqItem, CollapsingProps } from '../types';
+import { showImageUrl } from '@/helper/utils';
 
 export interface FaqItemProps extends CollapsingProps {
   value: FaqItem;
+  index: number;
 }
 
 const RenderHeader: FC<FaqItemProps> = (props) => {
-  const { value, activeKey, handleActiveCollapse } = props;
-
+  const { value, activeKey, handleActiveCollapse, index } = props;
   return (
     <div className={styles.panel_header}>
-      <div className={styles.panel_header__field} onClick={() => handleActiveCollapse(value.id)}>
+      <div
+        className={styles.panel_header__field}
+        onClick={() => handleActiveCollapse(value.document ? index : -1)}
+      >
         <div className={styles.titleIcon}>
-          {value?.icon && <span className={styles.icon}>{value.icon}</span>}
+          {value?.icon && <img src={showImageUrl(value.icon)} className={styles.icon} />}
           <div>
             <BodyText
               level={4}
               fontFamily="Roboto"
-              customClass={value.id !== activeKey ? styles.font_weight_300 : styles.font_weight_500}
+              customClass={
+                String(index) !== activeKey ? styles.font_weight_300 : styles.font_weight_500
+              }
             >
               {value.title}
             </BodyText>
           </div>
         </div>
         <div className={styles.addIcon}>
-          {value.id !== activeKey ? <PlusIcon /> : <ExtendIcon />}
+          {value.document ? String(index) !== activeKey ? <PlusIcon /> : <ExtendIcon /> : ''}
         </div>
       </div>
     </div>
   );
 };
 
-export const FaqComponent: FC<FaqItemProps> = ({ value, activeKey, handleActiveCollapse }) => {
+export const FaqComponent: FC<FaqItemProps> = ({
+  index,
+  value,
+  activeKey,
+  handleActiveCollapse,
+}) => {
   const [activeKeyItem, setActiveKeyItem] = useState<string>('');
 
-  const handleActiveCollapseItem = (id: string) => () => {
-    setActiveKeyItem(activeKeyItem === id ? '' : id);
+  const handleActiveCollapseItem = () => {
+    setActiveKeyItem(activeKeyItem === String(index) ? '' : String(index));
   };
 
   return (
@@ -50,12 +61,13 @@ export const FaqComponent: FC<FaqItemProps> = ({ value, activeKey, handleActiveC
         <Collapse.Panel
           header={
             <RenderHeader
+              index={index}
               value={value}
               activeKey={activeKey}
               handleActiveCollapse={handleActiveCollapse}
             />
           }
-          key={value.id}
+          key={index}
           showArrow={false}
           className={value.id !== activeKey ? styles['bottomMedium'] : styles['bottomBlack']}
         >
@@ -65,15 +77,21 @@ export const FaqComponent: FC<FaqItemProps> = ({ value, activeKey, handleActiveC
             </BodyText>
           </div>
           <div className={styles.qa}>
-            {value.question_and_answer?.map((item, index) => (
-              <div key={index}>
-                <QnAItem
-                  item={item}
-                  activeKey={activeKeyItem}
-                  handleActiveCollapse={handleActiveCollapseItem(item.id)}
-                />
-              </div>
-            ))}
+            {value.question_and_answer?.map((item, idx) => {
+              return (
+                item.question &&
+                item.answer && (
+                  <div key={idx}>
+                    <QnAItem
+                      index={idx}
+                      item={item}
+                      activeKey={activeKeyItem}
+                      handleActiveCollapse={handleActiveCollapseItem}
+                    />
+                  </div>
+                )
+              );
+            })}
           </div>
         </Collapse.Panel>
       </Collapse>
