@@ -15,6 +15,7 @@ export const FormGroup: FC<FormGroupProps> = ({
   message,
   iconTooltip,
   customIcon,
+  placement = 'top',
   label,
   onClick,
   messageType = 'normal',
@@ -41,7 +42,24 @@ export const FormGroup: FC<FormGroupProps> = ({
         )}
         {required && <span className={style.required}>*</span>}
         {tooltip && (
-          <Tooltip placement="top" title={tooltip}>
+          <Tooltip
+            placement={placement}
+            title={tooltip}
+            overlayInnerStyle={
+              placement === 'bottom'
+                ? {
+                    width: '160px',
+                    height: 'auto',
+                    padding: '6px 12px',
+                    fontWeight: '300',
+                    fontSize: '12px',
+                    lineHeight: '20px',
+                    letterSpacing: '0.02em',
+                    fontFamily: 'Roboto',
+                  }
+                : {}
+            }
+          >
             {iconTooltip ? iconTooltip : <QuestionIcon className={style['question-icon']} />}
           </Tooltip>
         )}
