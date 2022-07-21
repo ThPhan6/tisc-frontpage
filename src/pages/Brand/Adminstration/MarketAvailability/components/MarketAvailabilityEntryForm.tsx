@@ -37,11 +37,15 @@ export const MarketAvailabilityEntryForm: FC<MarketAvailabilityEntryFormProps> =
 
   const setChecked = (checkedData: CheckboxValue[]) => {
     const newData = { ...data };
+    let totalActive = 0;
     newData.regions = newData.regions.map((region) => {
       return {
         ...region,
         countries: region.countries.map((country) => {
           const availability = checkedData.find((item) => item.value === country.id.toString());
+          if (availability) {
+            totalActive++;
+          }
           return {
             ...country,
             available: availability ? true : false,
@@ -49,6 +53,7 @@ export const MarketAvailabilityEntryForm: FC<MarketAvailabilityEntryFormProps> =
         }),
       };
     });
+    newData.total = totalActive;
     setData(newData);
   };
 
@@ -91,7 +96,7 @@ export const MarketAvailabilityEntryForm: FC<MarketAvailabilityEntryFormProps> =
         footerContent={
           <div className={styles.footer}>
             <BodyText level={6} fontFamily="Roboto">
-              Total Avaiable Countries
+              Total Available Countries
             </BodyText>
             <BodyText level={3} customClass={styles.footer_colon}>
               :
