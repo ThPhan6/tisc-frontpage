@@ -51,8 +51,8 @@ export const FaqComponent: FC<FaqItemProps> = ({
 }) => {
   const [activeKeyItem, setActiveKeyItem] = useState<string>('');
 
-  const handleActiveCollapseItem = () => {
-    setActiveKeyItem(activeKeyItem === String(index) ? '' : String(index));
+  const handleActiveCollapseItem = (indexItem: number) => {
+    setActiveKeyItem(activeKeyItem === String(indexItem) ? '' : String(indexItem));
   };
 
   return (
