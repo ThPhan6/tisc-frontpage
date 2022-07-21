@@ -261,6 +261,7 @@ const SubGeneralFeatureAttribute: React.FC<SubGeneralFeatureAttributeProps> = (p
         }}
         chosenValue={selected}
         setChosenValue={setSelected}
+        className={styles.specificationOptionCheckbox}
       />
     </div>
   );

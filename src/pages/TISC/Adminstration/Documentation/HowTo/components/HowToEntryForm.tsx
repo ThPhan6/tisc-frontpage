@@ -52,7 +52,7 @@ const QuestionAndAnswerField: FC<FAQFieldProps> = ({
             value={value.question}
             onChange={handleOnChangeInput}
             maxHeight={80}
-            defaultHeight={32}
+            defaultHeight={24}
             maxLength={300}
           />
           <ActionDeleteIcon
@@ -216,11 +216,14 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
                         maxLength={500}
                       />
                     </FormGroup>
-                    <div className={styles.add_content}>
+                    <div
+                      className={styles.add_content}
+                      onClick={() => handleAddFAQContent(panelIndex)}
+                    >
                       <BodyText level={3} customClass={styles.text}>
                         Add Content
                       </BodyText>
-                      <CustomPlusButton onClick={() => handleAddFAQContent(panelIndex)} size={20} />
+                      <CustomPlusButton size={20} />
                     </div>
                     <div className={styles.fAQ}>
                       {panel.document.question_and_answer?.map((faqItem, faqIndex) => {

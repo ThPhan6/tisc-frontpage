@@ -121,12 +121,12 @@ const AttributeEntryForm: FC<AttributeEntryFormProps> = (props) => {
       if (sub.id) {
         return {
           id: sub.id,
-          name: sub.name,
+          name: sub.name.trim(),
           basis_id: sub.basis_id,
         };
       }
       return {
-        name: sub.name,
+        name: sub.name.trim(),
         basis_id: sub.basis_id,
       };
     });

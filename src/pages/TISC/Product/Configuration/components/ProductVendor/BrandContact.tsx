@@ -16,7 +16,7 @@ const BrandContact: FC<IBrandContactBox> = ({ title }) => {
         <BodyText level={4} customClass="contact-item-title">
           {title}
         </BodyText>
-        <div className="contact-select-box" onClick={() => setVisible(true)}>
+        <div className="contact-select-box">
           <BodyText level={6} fontFamily="Roboto">
             select
           </BodyText>

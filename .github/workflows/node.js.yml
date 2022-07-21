@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ master, develop, staging ]
+    branches: [ master, staging, test ]
   pull_request:
-    branches: [ master, develop, staging ]
+    branches: [ master, staging, test ]
 
 jobs:
   quality-control:
@@ -24,7 +24,7 @@ jobs:
     #- run: npm test
   deploy-dev-server:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop' # run this job only for the develop branch
+    if: github.ref == 'refs/heads/test' # run this job only for the test branch
     steps:
     # DigitalOcean Droplet already have deploy files
     - uses: actions/checkout@v3
@@ -35,10 +35,10 @@ jobs:
         username: ${{ secrets.DEV_SERVER_USERNAME }}
         key: ${{ secrets.DEV_SERVER_SSH_PRIVATE_KEY }}
         port: ${{ secrets.DEV_SERVER_PORT }}
-        script: /var/www/dev/cd_frontpage.sh develop
+        script: /var/www/dev/cd_frontpage.sh test
   deploy-staging-server:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/staging' # run this job only for the develop branch
+    if: github.ref == 'refs/heads/staging' # run this job only for the staging branch
     steps:
     # DigitalOcean Droplet already have deploy files
     - uses: actions/checkout@v3

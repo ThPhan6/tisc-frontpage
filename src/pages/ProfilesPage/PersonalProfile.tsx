@@ -93,9 +93,9 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
     isLoading.setValue(true);
     updateTeamProfile(
       {
-        backup_email: inputValue.backupEmail,
-        personal_mobile: inputValue.phoneNumber,
-        linkedin: inputValue.linkedin,
+        backup_email: inputValue.backupEmail.trim(),
+        personal_mobile: inputValue.phoneNumber.trim(),
+        linkedin: inputValue.linkedin.trim(),
       },
       (type: STATUS_RESPONSE, msg?: string) => {
         if (type === STATUS_RESPONSE.SUCCESS) {

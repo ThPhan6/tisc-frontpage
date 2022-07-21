@@ -114,7 +114,10 @@ const UpdateEmailAutoPage = () => {
       return;
     } else {
       isLoading.setValue(true);
-      updateEmailAuto(idEmailAuto, formState).then((isSuccess) => {
+      updateEmailAuto(idEmailAuto, {
+        ...formState,
+        title: formState.title.trim(),
+      }).then((isSuccess) => {
         isLoading.setValue(false);
         if (isSuccess) {
           submitButtonStatus.setValue(true);

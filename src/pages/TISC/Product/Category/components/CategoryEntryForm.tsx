@@ -13,7 +13,22 @@ export const CategoryEntryForm: FC<CategoryEntryFormProps> = ({
 }) => {
   const handleSubmit = () => {
     if (onSubmit) {
-      onSubmit(categoryValue);
+      onSubmit({
+        ...categoryValue,
+        name: categoryValue.name.trim(),
+        subs: categoryValue.subs.map((sub) => {
+          return {
+            ...sub,
+            name: sub.name.trim(),
+            subs: sub.subs?.map((subItem) => {
+              return {
+                ...subItem,
+                name: subItem.name.trim(),
+              };
+            }),
+          };
+        }),
+      });
     }
   };
 
