@@ -6,7 +6,7 @@ import styles from '@/pages/Brand/Adminstration/BrandProfile/styles/index.less';
 import CountryModal from '@/components/Location/CountryModal';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 
-export const ItemWebsite: FC<WebsiteUrl> = ({ websiteValue, onChange }) => {
+export const ItemWebsite: FC<WebsiteUrl> = ({ websiteValue, onChange, onDeleteWebsiteItem }) => {
   const [countryVisible, setCountryVisible] = useState(false);
   const [countryValue, setCountryValue] = useState({ label: '', value: websiteValue.country_id });
 
@@ -39,10 +39,7 @@ export const ItemWebsite: FC<WebsiteUrl> = ({ websiteValue, onChange }) => {
           value={websiteValue.url}
         />
         <div>
-          <DeleteIcon
-            onClick={() => onChange({ ...websiteValue, url: '' })}
-            className={styles.iconDelete}
-          />
+          <DeleteIcon onClick={onDeleteWebsiteItem} className={styles.iconDelete} />
         </div>
       </div>
 
