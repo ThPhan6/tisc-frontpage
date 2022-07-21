@@ -1,8 +1,8 @@
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
-import { getWorkLocations } from '@/services/location.api';
-import { LocationGroupedByCountry, ILocationDetail } from '@/types';
+import { getRegions } from '@/services/location.api';
+import { ICountry, Regions } from '@/types';
 import { FC, useEffect, useState } from 'react';
 
 const AuthorizedCountryModal: FC<{
@@ -11,10 +11,10 @@ const AuthorizedCountryModal: FC<{
   chosenValue?: any;
   setChosenValue: (value: any) => void;
 }> = ({ visible, setVisible, chosenValue, setChosenValue }) => {
-  const [countryGroup, setCountryGroup] = useState<LocationGroupedByCountry[]>([]);
+  const [countryGroup, setCountryGroup] = useState<Regions[]>([]);
 
   const getCountryGroup = () => {
-    getWorkLocations().then((res) => {
+    getRegions().then((res) => {
       setCountryGroup(res);
     });
   };
@@ -23,7 +23,7 @@ const AuthorizedCountryModal: FC<{
     getCountryGroup();
   }, []);
 
-  const renderLabel = (item: ILocationDetail) => {
+  const renderLabel = (item: ICountry) => {
     return (
       <BodyText level={5} fontFamily="Roboto">
         <span style={{ marginRight: '8px' }}>{item.name}</span>
@@ -33,7 +33,7 @@ const AuthorizedCountryModal: FC<{
   };
 
   const handleSelectedData = (checkedData: CheckboxValue[]) => {
-    const newData: ILocationDetail[] = [];
+    const newData: ICountry[] = [];
     let authorCountryData: CheckboxValue[] = [];
     let selectedCountry = undefined;
     checkedData.map((checked) => {
