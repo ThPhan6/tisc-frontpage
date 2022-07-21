@@ -40,11 +40,8 @@ const TISCLocation: React.FC = () => {
     },
     {
       title: 'Functional Type',
-      dataIndex: 'business_name',
+      dataIndex: 'functional_type',
       sorter: true,
-      render: (_v, record) => {
-        return record.functional_types[0]?.name ?? 'N/A';
-      },
     },
     {
       title: 'Country',
