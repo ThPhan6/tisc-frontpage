@@ -3,8 +3,9 @@ export const MESSAGE_ERROR = {
   PASSWORD: 'Password error',
   CONFIRM_PASSWORD: 'Passwords do not match',
   PHONE_INPUT: 'Invalid phone number',
-  POSTAL_CODE: 'Postal code is greater than 5 chars and less than 10 chars',
+  POSTAL_CODE: 'You are allowed to enter 10 characters only / The minimum lenght is 5 characters',
   reachLogoSizeLimit: 'Logo size limit reached (240 KB)',
+  WORK_EMAIL: 'Work email is required',
 };
 
 export const MESSAGE_NOTIFICATION = {
