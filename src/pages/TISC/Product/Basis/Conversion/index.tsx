@@ -1,40 +1,29 @@
 import React, { useRef } from 'react';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import type { TableColumnItem } from '@/components/Table/types';
-import { HeaderDropdown } from '@/components/HeaderDropdown';
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { deleteConversionMiddleware, getProductBasisConversionPagination } from '@/services';
 import type { BasisConversionListResponse, SubBasisConversion } from '@/types';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
-import { message } from 'antd';
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { confirmDelete } from '@/helper/common';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ActionMenu } from '@/components/Action';
 
 const BasisConversionList: React.FC = () => {
   const tableRef = useRef<any>();
 
-  const handleAction = (actionType: 'edit' | 'delete', id: string) => {
-    if (actionType === 'edit') {
-      pushTo(PATH.updateConversions.replace(':id', id));
-      return;
-    }
+  const handleUpdateConversion = (id: string) => {
+    pushTo(PATH.updateConversions.replace(':id', id));
+  };
 
-    const onOk = () => {
-      deleteConversionMiddleware(id, () => {
-        tableRef.current.reload();
-        message.success(MESSAGE_NOTIFICATION.DELETE_CONVERSION_SUCCESS);
+  const handleDeleteConversion = (id: string) => {
+    confirmDelete(() => {
+      deleteConversionMiddleware(id).then((isSuccess) => {
+        if (isSuccess) {
+          tableRef.current.reload();
+        }
       });
-    };
-
-    const onCancel = () => {
-      pushTo(PATH.conversions);
-    };
-
-    confirmDelete(onOk, onCancel);
+    });
   };
 
   const MainColumns: TableColumnItem<BasisConversionListResponse>[] = [
@@ -72,29 +61,13 @@ const BasisConversionList: React.FC = () => {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
-      width: '5%',
+      width: '5px',
       render: (_value, record) => {
         return (
-          <HeaderDropdown
-            arrow
-            align={{ offset: [13, -10] }}
-            placement="bottomRight"
-            items={[
-              {
-                onClick: () => handleAction('edit', record.id),
-                icon: <EditIcon />,
-                label: 'Edit',
-              },
-              {
-                onClick: () => handleAction('delete', record.id),
-                icon: <DeleteIcon />,
-                label: 'Delete',
-              },
-            ]}
-            trigger={['click']}
-          >
-            <ActionIcon />
-          </HeaderDropdown>
+          <ActionMenu
+            handleUpdate={() => handleUpdateConversion(record.id)}
+            handleDelete={() => handleDeleteConversion(record.id)}
+          />
         );
       },
     },

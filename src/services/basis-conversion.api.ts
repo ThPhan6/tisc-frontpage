@@ -98,14 +98,16 @@ export async function updateConversionMiddleware(
     });
 }
 
-export async function deleteConversionMiddleware(id: string, callback: () => void) {
-  request(`/api/basis-conversion/delete/${id}`, {
+export async function deleteConversionMiddleware(id: string) {
+  return request<boolean>(`/api/basis-conversion/delete/${id}`, {
     method: 'DELETE',
   })
     .then(() => {
-      callback();
+      message.success(MESSAGE_NOTIFICATION.DELETE_CONVERSION_SUCCESS);
+      return true;
     })
     .catch((error) => {
       message.error(error?.data?.message || MESSAGE_NOTIFICATION.DELETE_CONVERSION_ERROR);
+      return false;
     });
 }

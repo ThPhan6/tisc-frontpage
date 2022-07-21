@@ -1,44 +1,28 @@
 import React, { useRef } from 'react';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import type { TableColumnItem } from '@/components/Table/types';
-import { HeaderDropdown } from '@/components/HeaderDropdown';
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { deleteCategoryMiddleware, getProductCategoryPagination } from '@/services';
 import type { CategoryListResponse } from '@/types';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
-import { STATUS_RESPONSE } from '@/constants/util';
-import { message } from 'antd';
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { confirmDelete } from '@/helper/common';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ActionMenu } from '@/components/Action';
 const CategoryList: React.FC = () => {
   const tableRef = useRef<any>();
 
-  const handleActionCategory = (actionType: 'edit' | 'delete', id: string) => {
-    if (actionType === 'edit') {
-      pushTo(PATH.updateCategories.replace(':id', id));
-      return;
-    }
+  const handleUpdateCategory = (id: string) => {
+    pushTo(PATH.updateCategories.replace(':id', id));
+  };
 
-    const onOk = () => {
-      deleteCategoryMiddleware(id, (type: STATUS_RESPONSE, msg?: string) => {
-        if (type === STATUS_RESPONSE.SUCCESS) {
-          message.success(MESSAGE_NOTIFICATION.DELETE_CATEGORY_SUCCESS);
+  const handleDeleteCategory = (id: string) => {
+    confirmDelete(() => {
+      deleteCategoryMiddleware(id).then((isSuccess) => {
+        if (isSuccess) {
           tableRef.current.reload();
-        } else {
-          message.error(msg);
         }
       });
-    };
-
-    const onCancel = () => {
-      pushTo(PATH.categories);
-    };
-
-    confirmDelete(onOk, onCancel);
+    });
   };
 
   const MainColumns: TableColumnItem<CategoryListResponse>[] = [
@@ -74,29 +58,13 @@ const CategoryList: React.FC = () => {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
-      width: '5%',
+      width: '5px',
       render: (_value, record) => {
         return (
-          <HeaderDropdown
-            arrow
-            align={{ offset: [13, -10] }}
-            placement="bottomRight"
-            items={[
-              {
-                onClick: () => handleActionCategory('edit', record.id),
-                icon: <EditIcon />,
-                label: 'Edit',
-              },
-              {
-                onClick: () => handleActionCategory('delete', record.id),
-                icon: <DeleteIcon />,
-                label: 'Delete',
-              },
-            ]}
-            trigger={['click']}
-          >
-            <ActionIcon />
-          </HeaderDropdown>
+          <ActionMenu
+            handleUpdate={() => handleUpdateCategory(record.id)}
+            handleDelete={() => handleDeleteCategory(record.id)}
+          />
         );
       },
     },

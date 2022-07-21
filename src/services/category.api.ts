@@ -98,21 +98,17 @@ export async function updateCategoryMiddleware(
     });
 }
 
-export async function deleteCategoryMiddleware(
-  id: string,
-  callback: (type: STATUS_RESPONSE, message?: string) => void,
-) {
-  request(`/api/category/delete/${id}`, {
+export async function deleteCategoryMiddleware(id: string) {
+  return request(`/api/category/delete/${id}`, {
     method: 'DELETE',
   })
     .then(() => {
-      callback(STATUS_RESPONSE.SUCCESS);
+      message.success(MESSAGE_NOTIFICATION.DELETE_CATEGORY_SUCCESS);
+      return true;
     })
     .catch((error) => {
-      callback(
-        STATUS_RESPONSE.ERROR,
-        error?.data?.message || MESSAGE_NOTIFICATION.DELETE_CATEGORY_ERROR,
-      );
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.DELETE_CATEGORY_ERROR);
+      return false;
     });
 }
 

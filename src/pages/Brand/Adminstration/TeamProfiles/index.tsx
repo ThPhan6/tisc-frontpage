@@ -1,11 +1,7 @@
-import { HeaderDropdown } from '@/components/HeaderDropdown';
 import CustomTable from '@/components/Table';
 import { TableColumnItem } from '@/components/Table/types';
 import { deleteTeamProfile, getTeamProfileList } from '@/services';
 import { TeamProfileTableProps } from '@/types';
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
@@ -14,6 +10,7 @@ import { showImageUrl, formatPhoneCode } from '@/helper/utils';
 import { ProfileIcon } from '@/components/ProfileIcon';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { USER_STATUS_TEXTS } from '@/constants/util';
+import { ActionMenu } from '@/components/Action';
 
 const TeamProfilesList = () => {
   const tableRef = useRef<any>();
@@ -88,29 +85,14 @@ const TeamProfilesList = () => {
     {
       title: 'Action',
       dataIndex: 'action',
-      width: '5%',
+      width: '5px',
       align: 'center',
       render: (_value: any, record: any) => {
         return (
-          <HeaderDropdown
-            arrow={true}
-            align={{ offset: [-14, -10] }}
-            items={[
-              {
-                onClick: () => handleUpdateTeamProfile(record.id),
-                icon: <EditIcon />,
-                label: 'Edit',
-              },
-              {
-                onClick: () => handleDeleteTeamProfile(record.id),
-                icon: <DeleteIcon />,
-                label: 'Delete',
-              },
-            ]}
-            trigger={['click']}
-          >
-            <ActionIcon />
-          </HeaderDropdown>
+          <ActionMenu
+            handleUpdate={() => handleUpdateTeamProfile(record.id)}
+            handleDelete={() => handleDeleteTeamProfile(record.id)}
+          />
         );
       },
     },

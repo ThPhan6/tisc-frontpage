@@ -1,9 +1,5 @@
 import React, { useRef } from 'react';
-import { HeaderDropdown } from '@/components/HeaderDropdown';
 import CustomTable from '@/components/Table';
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
-import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { TableColumnItem } from '@/components/Table/types';
 import { ILocationDetail } from '@/types';
@@ -11,6 +7,7 @@ import { getLocationPagination, deleteLocationById } from '@/services';
 import { confirmDelete } from '@/helper/common';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
+import { ActionMenu } from '@/components/Action';
 
 const BrandLocation: React.FC = () => {
   const tableRef = useRef<any>();
@@ -74,28 +71,13 @@ const BrandLocation: React.FC = () => {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
-      width: '5%',
+      width: '5px',
       render: (_value: any, record: any) => {
         return (
-          <HeaderDropdown
-            arrow={true}
-            align={{ offset: [-14, -10] }}
-            items={[
-              {
-                onClick: () => handleUpdateLocation(record.id),
-                icon: <EditIcon />,
-                label: 'Edit',
-              },
-              {
-                onClick: () => handleDeleteLocation(record.id),
-                icon: <DeleteIcon />,
-                label: 'Delete',
-              },
-            ]}
-            trigger={['click']}
-          >
-            <ActionIcon />
-          </HeaderDropdown>
+          <ActionMenu
+            handleUpdate={() => handleUpdateLocation(record.id)}
+            handleDelete={() => handleDeleteLocation(record.id)}
+          />
         );
       },
     },

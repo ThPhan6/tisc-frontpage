@@ -14,7 +14,7 @@ export type HeaderDropdownProps = {
   placement?: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topCenter' | 'topRight' | 'bottomCenter';
 } & Omit<DropDownProps, 'overlay'>;
 
-type MenuIconProp = {
+export type MenuIconProp = {
   containerClass?: string;
   label: string;
   icon?: JSX.Element;

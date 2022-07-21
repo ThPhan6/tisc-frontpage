@@ -1,8 +1,6 @@
-import { HeaderDropdown } from '@/components/HeaderDropdown';
 import CustomTable from '@/components/Table';
 import { TableColumnItem } from '@/components/Table/types';
 import { getMarketAvailabilityList } from '@/services';
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
@@ -13,6 +11,7 @@ import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 import styles from '../MarketAvailability/styles/index.less';
 import { useState } from 'react';
 import InformationMarketAvailability from './components/InformationMarketAvailability';
+import { ActionForm } from '@/components/Action';
 
 const MarketAvailabilityList = () => {
   const user = useAppSelector((state) => state.user.user);
@@ -66,23 +65,18 @@ const MarketAvailabilityList = () => {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
-      width: '5%',
+      width: '5px',
       render: (_value, record) => {
         return (
-          <HeaderDropdown
-            arrow={true}
-            align={{ offset: [-14, -10] }}
-            items={[
+          <ActionForm
+            actionItems={[
               {
                 onClick: () => handleUpdateMarketAvailability(record.collection_id),
                 icon: <EditIcon />,
                 label: 'Edit',
               },
             ]}
-            trigger={['click']}
-          >
-            <ActionIcon />
-          </HeaderDropdown>
+          />
         );
       },
     },
