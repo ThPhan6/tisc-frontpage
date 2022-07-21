@@ -61,8 +61,8 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
   // },[loading])
 
   useEffect(() => {
+    console.log('loading', loading);
     const updateSize = () => {
-      // console.log('loading', loading);
       if (!containerSelector || loading) {
         return;
       }
@@ -95,7 +95,7 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
       }
     };
 
-    setTimeout(updateSize, 200);
+    setTimeout(updateSize, 777);
 
     // editor is resizing while window is resizing
     window.addEventListener('resize', updateSize);
