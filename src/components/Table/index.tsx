@@ -55,8 +55,8 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const formatPaginationParams = (params: PaginationParams) => {
     const { sorter, filter } = params;
     const paginationParams: PaginationRequestParams = {
-      page: data.pagination?.current ?? DEFAULT_PAGE_NUMBER,
-      pageSize: data.pagination?.pageSize ?? DEFAULT_PAGESIZE,
+      page: params.pagination.current ?? DEFAULT_PAGE_NUMBER,
+      pageSize: params.pagination.pageSize ?? DEFAULT_PAGESIZE,
       ...extraParams,
     };
     /// if enable filter
