@@ -38,14 +38,12 @@ export const ItemWebsite: FC<WebsiteUrl> = ({ websiteValue, onChange }) => {
           onChange={handOnChangeItem}
           value={websiteValue.url}
         />
-        {websiteValue.url !== '' && (
-          <div>
-            <DeleteIcon
-              onClick={() => onChange({ ...websiteValue, url: '' })}
-              className={styles.iconDelete}
-            />
-          </div>
-        )}
+        <div>
+          <DeleteIcon
+            onClick={() => onChange({ ...websiteValue, url: '' })}
+            className={styles.iconDelete}
+          />
+        </div>
       </div>
 
       <CountryModal
