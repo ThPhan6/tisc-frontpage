@@ -94,7 +94,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
               let otherSelected: CheckboxValue[] = [];
               if (combinable && selected) {
                 otherSelected = selected.reduce((finalData, selectedItem) => {
-                  if (item.options.find((option) => option.value !== selectedItem.value)) {
+                  if (!item.options.find((option) => option.value === selectedItem.value)) {
                     finalData.push(selectedItem);
                   }
                   return finalData;
