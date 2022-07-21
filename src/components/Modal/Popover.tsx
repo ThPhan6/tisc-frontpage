@@ -47,6 +47,9 @@ interface PopoverProps {
   noFooter?: boolean;
 
   className?: string;
+
+  // combinable checkbox value ?
+  combinableCheckbox?: boolean;
 }
 
 const Popover: FC<PopoverProps> = ({
@@ -65,6 +68,7 @@ const Popover: FC<PopoverProps> = ({
   extraTopAction,
   noFooter,
   className,
+  combinableCheckbox,
 }) => {
   const [currentValue, setCurrentValue] = useState<any>(chosenValue);
 
@@ -105,6 +109,7 @@ const Popover: FC<PopoverProps> = ({
           data={dropdownCheckboxList}
           renderTitle={dropdownCheckboxTitle}
           onChange={setCurrentValue}
+          combinable={combinableCheckbox}
         />
       );
     }

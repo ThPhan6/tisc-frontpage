@@ -75,6 +75,7 @@ const AuthorizedCountryModal: FC<{
         };
       })}
       dropdownCheckboxTitle={(data) => data.key}
+      combinableCheckbox
     />
   );
 };
