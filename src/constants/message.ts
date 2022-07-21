@@ -160,6 +160,7 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_LOCATION_SUCCESS: 'Delete location successfully',
   DELETE_LOCATION_FAILED: 'Failed to delete location',
   GET_LOCATION_FAILED: 'Failed to get location data',
+  GET_REGIONS_ERROR: 'Failed to get regions',
 
   //distributor
   CREATE_DISTRIBUTOR_SUCCESS: 'Create distributor successfully',

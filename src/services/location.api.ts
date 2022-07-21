@@ -7,6 +7,7 @@ import type {
   FunctionalTypeData,
   LocationForm,
   LocationGroupedByCountry,
+  Regions,
 } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
@@ -193,14 +194,28 @@ export async function deleteLocationById(id: string) {
 }
 
 export async function getWorkLocations() {
-  return request<{ data: LocationGroupedByCountry[] }>(`/api/location/regions`, {
-    method: 'GET',
-  })
+  return request<{ data: LocationGroupedByCountry[] }>(
+    `/api/location/get-list-with-country-group`,
+    {
+      method: 'GET',
+    },
+  )
     .then((response) => {
       return response.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_WITH_COUNTRY_GROUP_ERROR);
       return [] as LocationGroupedByCountry[];
+    });
+}
+
+export async function getRegions() {
+  return request<{ data: Regions[] }>(`/api/location/regions`, { method: 'GET' })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_REGIONS_ERROR);
+      return [] as Regions[];
     });
 }
