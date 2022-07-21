@@ -98,7 +98,7 @@ export const MarketAvailabilityEntryForm: FC<MarketAvailabilityEntryFormProps> =
             </BodyText>
             {/* waitting to pass count TAC */}
             <Title level={8} customClass={styles.footer_quantity}>
-              {data.total}
+              {data.total_available}
             </Title>
           </div>
         }
