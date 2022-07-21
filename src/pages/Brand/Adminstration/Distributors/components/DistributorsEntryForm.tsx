@@ -117,7 +117,10 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
 
   const handleSubmit = () => {
     if (!isValidEmail) {
-      return message.error(MESSAGE_ERROR.EMAIL);
+      return message.error(MESSAGE_ERROR.WORK_EMAIL);
+    }
+    if (data.postal_code.length < 5) {
+      return message.error(MESSAGE_ERROR.POSTAL_CODE);
     }
     return onSubmit({
       ...data,
