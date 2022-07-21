@@ -61,7 +61,7 @@ const BasisConversionList: React.FC = () => {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
-      width: '5px',
+      width: '5%',
       render: (_value, record) => {
         return (
           <ActionMenu

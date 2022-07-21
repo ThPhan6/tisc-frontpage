@@ -81,7 +81,7 @@ const Distributors = () => {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
-      width: '3%',
+      width: '5%',
       render: (_value, record) => {
         return (
           <ActionMenu

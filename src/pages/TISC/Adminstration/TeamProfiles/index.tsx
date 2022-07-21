@@ -85,7 +85,7 @@ const TeamProfilesList = () => {
     {
       title: 'Action',
       dataIndex: 'action',
-      width: '5px',
+      width: '5%',
       align: 'center',
       render: (_value: any, record: any) => {
         return (

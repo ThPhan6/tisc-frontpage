@@ -93,7 +93,7 @@ const BasisOptionList: React.FC = () => {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
-      width: '5px',
+      width: '5%',
       render: (_value: any, record: any) => {
         return (
           <ActionMenu
