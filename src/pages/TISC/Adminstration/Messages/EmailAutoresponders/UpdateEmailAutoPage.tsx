@@ -103,7 +103,7 @@ const UpdateEmailAutoPage = () => {
 
   const handleUpdateEmailAuto = () => {
     isLoading.setValue(true);
-    updateEmailAuto(idEmailAuto, value).then((isSuccess) => {
+    updateEmailAuto(idEmailAuto, formState).then((isSuccess) => {
       isLoading.setValue(false);
       if (isSuccess) {
         submitButtonStatus.setValue(true);
