@@ -76,6 +76,12 @@ const BrandProfilePage = () => {
     setBrandProfile({ ...brandProfile, official_websites: newWebsiteItem });
   };
 
+  const handleDeleteWebsiteItem = (index: number) => {
+    const websiteItem = [...brandProfile.official_websites];
+    websiteItem.splice(index, 1);
+    setBrandProfile({ ...brandProfile, official_websites: websiteItem });
+  };
+
   const handleUpdateLogo = () => {
     const formData = new FormData();
     formData.append('logo', fileInput);
@@ -225,7 +231,7 @@ const BrandProfilePage = () => {
                   <div className={styles.rightWebsite}>
                     <BodyText level={4}>Add Web Site</BodyText>
                     <span className={styles.iconAdd}>
-                      <CustomPlusButton onClick={handleAddWebsiteItem} />
+                      <CustomPlusButton onClick={handleAddWebsiteItem} size={18} />
                     </span>
                   </div>
                 </FormGroup>
@@ -234,6 +240,7 @@ const BrandProfilePage = () => {
                     <ItemWebsite
                       websiteValue={item}
                       onChange={(value) => handleOnChangeWebsiteItem(value, index)}
+                      onDeleteWebsiteItem={() => handleDeleteWebsiteItem(index)}
                     />
                   </div>
                 ))}
