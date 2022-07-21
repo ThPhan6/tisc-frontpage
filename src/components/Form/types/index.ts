@@ -14,6 +14,19 @@ export interface FormGroupProps {
   iconTooltip?: ReactNode;
   customIcon?: ReactNode;
   onClick?: () => void;
+  placement?:
+    | 'top'
+    | 'left'
+    | 'right'
+    | 'bottom'
+    | 'topLeft'
+    | 'topRight'
+    | 'bottomLeft'
+    | 'bottomRight'
+    | 'leftTop'
+    | 'leftBottom'
+    | 'rightTop'
+    | 'rightBottom';
 }
 
 export interface CustomInputProps extends InputProps {
