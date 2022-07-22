@@ -245,9 +245,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               required
               fontLevel={3}
               placeholder="postal / zip code"
-              onChange={(e) => {
-                onChangePostalCode(e);
-              }}
+              onChange={onChangePostalCode}
               value={data.postal_code}
               hasBoxShadow
               hasPadding
