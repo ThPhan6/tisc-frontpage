@@ -101,7 +101,7 @@ export const validatePhoneNumber = (phoneNumber: string) => {
 };
 
 export const validatePostalCode = (postalCode: string) => {
-  if (postalCode.length >= 5 && postalCode.length <= 10) {
+  if (postalCode.length <= 10) {
     return true;
   }
   return false;

@@ -5,6 +5,7 @@ import styles from './styles/PhoneInput.less';
 import { formatPhoneCode, validatePhoneNumber } from '@/helper/utils';
 import { PhoneInputProps } from './types';
 import { trimStart } from 'lodash';
+import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 
 export const PhoneInput: FC<PhoneInputProps> = ({
   codePlaceholder,
@@ -16,6 +17,7 @@ export const PhoneInput: FC<PhoneInputProps> = ({
   phoneNumberReadOnly,
   status,
   containerClass,
+  deleteIcon,
 }) => {
   const [phoneInputValue, setPhoneInputValue] = useState({
     zoneCode: '',
@@ -58,6 +60,15 @@ export const PhoneInput: FC<PhoneInputProps> = ({
     return zoneCodeLength * 8 + 'px';
   };
 
+  const handleClearPhoneInput = () => {
+    if (onChange) {
+      onChange({
+        zoneCode: phoneInputValue.zoneCode,
+        phoneNumber: '',
+      });
+    }
+  };
+
   return (
     <div
       className={`${styles['phone-input-container']} ${
@@ -94,6 +105,9 @@ export const PhoneInput: FC<PhoneInputProps> = ({
         name="phoneNumber"
         pattern=""
       />
+      {phoneInputValue.phoneNumber && deleteIcon ? (
+        <RemoveIcon className={styles.removePhoneInputText} onClick={handleClearPhoneInput} />
+      ) : null}
     </div>
   );
 };
