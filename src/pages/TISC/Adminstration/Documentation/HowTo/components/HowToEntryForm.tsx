@@ -147,6 +147,9 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
     panelIndex: number,
   ) => {
     const newValue = [...value.value];
+    if (!newValue[panelIndex].document.document) {
+      newValue[panelIndex].document.document = '';
+    }
     newValue[panelIndex].document.document = e.target.value;
     updatedOnChange(newValue);
   };
@@ -161,8 +164,13 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
 
   const handleAddFAQContent = (panelIndex: number) => {
     const newValue = value.value;
-    /// keep existed FAQ content and add new FAQ item
-    newValue[panelIndex].document.question_and_answer.push(DEFAULT_FAQ_FIELD);
+    /// add new question_and_answer in document if it undefined
+    if (!newValue[panelIndex].document.question_and_answer) {
+      newValue[panelIndex].document.question_and_answer = [DEFAULT_FAQ_FIELD];
+    } else {
+      /// keep existed FAQ content and add new FAQ item
+      newValue[panelIndex].document.question_and_answer.push(DEFAULT_FAQ_FIELD);
+    }
     updatedOnChange(newValue);
   };
 
