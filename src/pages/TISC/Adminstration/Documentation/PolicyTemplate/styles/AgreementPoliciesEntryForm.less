@@ -32,14 +32,11 @@
       .remove_icon {
         position: absolute;
         right: 0;
+        color: @mono-color-medium;
         cursor: pointer;
-        path {
-          transition: fill 1s;
-        }
+        transition: all 0.3s;
         &:hover {
-          path {
-            fill: @primary-color-dark;
-          }
+          color: @primary-color-dark;
         }
       }
     }

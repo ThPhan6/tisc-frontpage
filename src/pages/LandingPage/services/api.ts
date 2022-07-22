@@ -5,9 +5,9 @@ import type {
   LoginInput,
   LoginResponseProp,
   ResetPasswordRequestBody,
-  UserInfoDataProp,
   CreatePasswordRequestBody,
 } from '../types';
+import { UserDetail } from '@/types';
 import { message } from 'antd';
 import { setUserProfile } from '@/reducers/user';
 import store from '@/reducers';
@@ -86,7 +86,7 @@ export async function forgotPasswordMiddleware(
 
 export async function getUserInfoMiddleware() {
   const dataRes = await request<{
-    data: UserInfoDataProp;
+    data: UserDetail;
   }>(`/api/team-profile/get-me`, {
     method: 'get',
   });

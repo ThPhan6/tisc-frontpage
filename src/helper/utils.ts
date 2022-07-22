@@ -101,10 +101,22 @@ export const validatePhoneNumber = (phoneNumber: string) => {
 };
 
 export const validatePostalCode = (postalCode: string) => {
-  if (postalCode.length >= 5 && postalCode.length <= 10) {
+  if (postalCode.length <= 10) {
     return true;
   }
   return false;
+};
+// for postal code
+export const messageError = (input: string, length: number = 10, message: string) => {
+  return input !== '' ? (input.length === length ? message : '') : undefined;
+};
+export const messageErrorType = (
+  input: string,
+  length: number,
+  error: 'error' | 'warning',
+  normal: 'normal',
+) => {
+  return input !== '' ? (input.length === length ? error : normal) : undefined;
 };
 
 export const isEmptySpace = (input: string) => {

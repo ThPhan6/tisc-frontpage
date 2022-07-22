@@ -60,6 +60,7 @@ export interface PhoneInputProps {
   status?: 'error' | 'warning' | '';
   containerClass?: string;
   colorPlaceholder?: string;
+  deleteIcon?: boolean;
 }
 export type PhoneInputValueProp = {
   zoneCode: string;

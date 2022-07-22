@@ -37,4 +37,5 @@ export interface UserDetail {
   mobile: string;
   personal_mobile: string;
   linkedin: string;
+  work_location: string;
 }

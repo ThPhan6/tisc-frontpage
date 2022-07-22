@@ -13,7 +13,13 @@ import styles from './styles/LocationEntryForm.less';
 import CollapseCheckboxList from '@/components/CustomCheckbox/CollapseCheckboxList';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { getListFunctionalType } from '@/services';
-import { isEmptySpace, validateEmail, validatePostalCode } from '@/helper/utils';
+import {
+  isEmptySpace,
+  messageError,
+  messageErrorType,
+  validateEmail,
+  validatePostalCode,
+} from '@/helper/utils';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
 import { trimStart } from 'lodash';
@@ -62,9 +68,6 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
   // validate email Address
   const isValidEmail = validateEmail(data.general_email);
 
-  // validate postal code
-  const isValidPostal = validatePostalCode(data.postal_code);
-
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({
       ...data,
@@ -74,7 +77,8 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
 
   // handle onchange postal code
   const onChangePostalCode = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length > 10 || !isEmptySpace(e.target.value)) {
+    // only 10 chars and cannot type space
+    if (!validatePostalCode(e.target.value) || !isEmptySpace(e.target.value)) {
       return;
     }
     setData({
@@ -94,41 +98,39 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
   }, [countryData]);
 
   useEffect(() => {
-    if (countryData.value !== '-1' && stateData.value !== '') {
-      onChangeData('state_id', stateData.value);
-    }
+    onChangeData('state_id', stateData.value);
   }, [stateData]);
 
   useEffect(() => {
-    if (stateData.value !== '' && cityData.value !== '') {
-      onChangeData('city_id', cityData.value);
-    }
+    onChangeData('city_id', cityData.value);
   }, [cityData]);
 
   const handleSubmit = () => {
     if (!isValidEmail) {
-      return message.error(MESSAGE_ERROR.EMAIL);
-    }
-    if (data.postal_code.length < 5) {
-      return message.error(MESSAGE_ERROR.POSTAL_CODE);
+      return message.error(MESSAGE_ERROR.GENERAL_EMAIL);
     }
 
     return onSubmit({
-      business_name: data.business_name.trim(),
-      business_number: data.business_number.trim(),
+      business_name: data.business_name?.trim() ?? '',
+      business_number: data.business_number?.trim() ?? '',
       country_id: data.country_id,
       state_id: data.state_id,
       city_id: data.city_id,
-      address: data.address.trim(),
-      postal_code: data.postal_code.trim(),
-      general_phone: data.general_phone.trim(),
-      general_email: data.general_email.trim(),
-      functional_type_ids: selectedFunctionalTypes.map((selected) => {
+      address: data.address?.trim() ?? '',
+      postal_code: data.postal_code?.trim() ?? '',
+      general_phone: data.general_phone?.trim() ?? '',
+      general_email: data.general_email?.trim() ?? '',
+      functional_type_ids: selectedFunctionalTypes.reduce((newTypes, selected) => {
         if (selected.value === 'other') {
-          return (selected.label as string).trim();
+          const otherValue = (selected.label as string)?.trim() ?? '';
+          if (otherValue !== '') {
+            newTypes.push(otherValue);
+          }
+        } else {
+          newTypes.push(selected.value);
         }
-        return selected.value;
-      }),
+        return newTypes;
+      }, [] as string[]),
     });
   };
   return (
@@ -272,10 +274,8 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
           onChangePostalCode(e);
         }}
         onDelete={() => onChangeData('postal_code', '')}
-        message={
-          data.postal_code !== '' ? (isValidPostal ? '' : MESSAGE_ERROR.POSTAL_CODE) : undefined
-        }
-        messageType={data.postal_code !== '' ? (isValidPostal ? 'normal' : 'error') : undefined}
+        message={messageError(data.postal_code, 10, MESSAGE_ERROR.POSTAL_CODE)}
+        messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
       />
       <FormGroup label="General Phone" required layout="vertical" formClass={styles.formGroup}>
         <PhoneInput
@@ -290,6 +290,7 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
             zoneCode: countryData.phoneCode,
             phoneNumber: data.general_phone,
           }}
+          deleteIcon
         />
       </FormGroup>
       <InputGroup
@@ -307,7 +308,9 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
         }}
         onDelete={() => onChangeData('general_email', '')}
         placeholder="general email address"
-        message={data.general_email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.EMAIL) : undefined}
+        message={
+          data.general_email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.EMAIL_UNVALID) : undefined
+        }
         messageType={data.general_email !== '' ? (isValidEmail ? 'normal' : 'error') : undefined}
       />
       <CountryModal

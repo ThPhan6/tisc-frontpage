@@ -11,9 +11,11 @@ import { ProfileIcon } from '@/components/ProfileIcon';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { USER_STATUS_TEXTS } from '@/constants/util';
 import { ActionMenu } from '@/components/Action';
+import { useAppSelector } from '@/reducers';
 
 const TeamProfilesList = () => {
   const tableRef = useRef<any>();
+  const userId = useAppSelector((state) => state.user.user?.id);
   const handleUpdateTeamProfile = (id: string) => {
     pushTo(PATH.brandUpdateTeamProfile.replace(':id', id));
   };
@@ -95,7 +97,9 @@ const TeamProfilesList = () => {
         return (
           <ActionMenu
             handleUpdate={() => handleUpdateTeamProfile(record.id)}
-            handleDelete={() => handleDeleteTeamProfile(record.id)}
+            handleDelete={
+              userId === record.id ? undefined : () => handleDeleteTeamProfile(record.id)
+            }
           />
         );
       },
