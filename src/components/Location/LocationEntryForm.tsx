@@ -13,7 +13,7 @@ import styles from './styles/LocationEntryForm.less';
 import CollapseCheckboxList from '@/components/CustomCheckbox/CollapseCheckboxList';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { getListFunctionalType } from '@/services';
-import { isEmptySpace, validateEmail, validatePostalCode } from '@/helper/utils';
+import { isEmptySpace, messageError, validateEmail, validatePostalCode } from '@/helper/utils';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
 import { trimStart } from 'lodash';
@@ -118,12 +118,17 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
       postal_code: data.postal_code?.trim() ?? '',
       general_phone: data.general_phone?.trim() ?? '',
       general_email: data.general_email?.trim() ?? '',
-      functional_type_ids: selectedFunctionalTypes.map((selected) => {
+      functional_type_ids: selectedFunctionalTypes.reduce((newTypes, selected) => {
         if (selected.value === 'other') {
-          return (selected.label as string)?.trim() ?? '';
+          const otherValue = (selected.label as string)?.trim() ?? '';
+          if (otherValue !== '') {
+            newTypes.push(otherValue);
+          }
+        } else {
+          newTypes.push(selected.value);
         }
-        return selected.value;
-      }),
+        return newTypes;
+      }, [] as string[]),
     });
   };
   return (
@@ -267,13 +272,7 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
           onChangePostalCode(e);
         }}
         onDelete={() => onChangeData('postal_code', '')}
-        message={
-          data.postal_code !== ''
-            ? data.postal_code.length === 10
-              ? MESSAGE_ERROR.POSTAL_CODE
-              : ''
-            : undefined
-        }
+        message={messageError(data.postal_code, 10, MESSAGE_ERROR.POSTAL_CODE)}
         messageType={
           data.postal_code !== ''
             ? data.postal_code.length === 10
