@@ -128,14 +128,14 @@ const BrandProfilePage = () => {
   const onSubmitForm = () => {
     isLoading.setValue(true);
     updateBrandProfile({
-      name: brandProfile.name.trim(),
-      parent_company: brandProfile.parent_company.trim(),
-      slogan: brandProfile.slogan.trim(),
-      mission_n_vision: brandProfile.mission_n_vision.trim(),
+      name: brandProfile.name?.trim() ?? '',
+      parent_company: brandProfile.parent_company?.trim() ?? '',
+      slogan: brandProfile.slogan?.trim() ?? '',
+      mission_n_vision: brandProfile.mission_n_vision?.trim() ?? '',
       official_websites: brandProfile.official_websites.map((website) => {
         return {
           ...website,
-          url: website.url.trim(),
+          url: website.url?.trim() ?? '',
         };
       }),
     }).then((isSuccess) => {
