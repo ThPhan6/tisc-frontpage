@@ -107,7 +107,6 @@ const styleLvl2 = document.createElement('style');
 styleLvl2.id = 'lvl2';
 
 const onCellLvl2Click = (expandableCellLvl2: Element) => {
-  console.log('expandableCellLvl2', { expandableCellLvl2 });
   const isExpanding = expandableCellLvl2.querySelector('span[class^="expandedColumn"]')
     ? true
     : false;
@@ -147,8 +146,8 @@ const onLvl1CellClick = (expandableCellLvl1: Element, colWidthLvl2?: number) => 
     'tr[class*="ant-table-expanded-row"]:not([style*="display: none;"]) tbody tr:not([class*="custom-expanded-level-"]):first-child td',
   );
 
-  console.log({ expandedColumns });
-  console.log({ nestedSubColumns });
+  // console.log({ expandedColumns });
+  // console.log({ nestedSubColumns });
   if (expandedColumns) {
     if (expandedColumns.length < 4) {
       return;
@@ -160,7 +159,7 @@ const onLvl1CellClick = (expandableCellLvl1: Element, colWidthLvl2?: number) => 
         return;
       }
       // console.log(dataCell);
-      console.log(nestedSubColumns?.[index], nestedSubColumns?.[index]?.clientWidth);
+      // console.log(nestedSubColumns?.[index], nestedSubColumns?.[index]?.clientWidth);
       totalWidthDiff += nestedSubColumns?.[index]?.clientWidth - dataCell.clientWidth;
       // console.log('widthDiff', nestedSubColumns?.[index]?.clientWidth - dataCell.clientWidth);
       // console.log('totalWidthDiff', totalWidthDiff);
@@ -236,7 +235,6 @@ export const useAutoExpandNestedTableColumn = (colWidthLvl1: number, colWidthLvl
         );
         if (spanTxtElLvl1) {
           const textMaxwidth = colWidthLvl1 - OTHER_ELEMENTS_WIDTH;
-          console.log('textMaxwidth', textMaxwidth);
           spanTxtElLvl1.style['max-width'] = `${textMaxwidth}px`;
         }
 
