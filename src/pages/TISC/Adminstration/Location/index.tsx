@@ -8,6 +8,7 @@ import { confirmDelete } from '@/helper/common';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
 import { ActionMenu } from '@/components/Action';
+import { formatPhoneCode } from '@/helper/utils';
 
 const TISCLocation: React.FC = () => {
   const tableRef = useRef<any>();
@@ -53,6 +54,7 @@ const TISCLocation: React.FC = () => {
     {
       title: 'General Phone',
       dataIndex: 'general_phone',
+      render: (_v, record) => `${formatPhoneCode(record.phone_code ?? '')} ${record.general_phone}`,
     },
     {
       title: 'General Email',
