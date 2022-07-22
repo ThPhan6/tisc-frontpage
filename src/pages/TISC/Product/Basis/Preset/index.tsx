@@ -13,8 +13,12 @@ import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { confirmDelete } from '@/helper/common';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 
+const MAIN_COL_WIDTH = 236;
+const SUB_COL_WIDTH = 138;
 const BasisPresetList: React.FC = () => {
+  useAutoExpandNestedTableColumn(MAIN_COL_WIDTH, SUB_COL_WIDTH);
   const tableRef = useRef<any>();
 
   const handleAction = (actionType: 'edit' | 'delete', id: string) => {
@@ -69,7 +73,7 @@ const BasisPresetList: React.FC = () => {
       sorter: {
         multiple: 1,
       },
-      width: 300,
+      width: MAIN_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-uppercase">{value}</span>;
@@ -78,7 +82,7 @@ const BasisPresetList: React.FC = () => {
     {
       title: 'Preset Name',
       dataIndex: 'preset_name',
-      width: 250,
+      width: SUB_COL_WIDTH,
       sorter: {
         multiple: 2,
       },
@@ -119,13 +123,13 @@ const BasisPresetList: React.FC = () => {
     {
       title: 'Preset Group',
       dataIndex: 'preset_group',
-      width: 300,
+      width: MAIN_COL_WIDTH,
       noBoxShadow: true,
     },
     {
       title: 'Preset Name',
       dataIndex: 'name',
-      width: 250,
+      width: SUB_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
@@ -144,13 +148,13 @@ const BasisPresetList: React.FC = () => {
     {
       title: 'Preset Group',
       dataIndex: 'preset_group',
-      width: 300,
+      width: MAIN_COL_WIDTH,
       noBoxShadow: true,
     },
     {
       title: 'Preset Name',
       dataIndex: 'preset_name',
-      width: 250,
+      width: SUB_COL_WIDTH,
     },
     ...SameColumns,
     {

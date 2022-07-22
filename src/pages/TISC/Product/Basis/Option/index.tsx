@@ -12,8 +12,12 @@ import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { confirmDelete } from '@/helper/common';
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 
+const MAIN_COL_WIDTH = 253;
+const SUB_COL_WIDTH = 135;
 const BasisOptionList: React.FC = () => {
+  useAutoExpandNestedTableColumn(MAIN_COL_WIDTH, SUB_COL_WIDTH);
   const tableRef = useRef<any>();
 
   const handleUpdateBasisOption = (id: string) => {
@@ -77,7 +81,7 @@ const BasisOptionList: React.FC = () => {
       sorter: {
         multiple: 1,
       },
-      width: 400,
+      width: MAIN_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-uppercase">{value}</span>;
@@ -86,7 +90,7 @@ const BasisOptionList: React.FC = () => {
     {
       title: 'Option Name',
       dataIndex: 'option_name',
-      width: 300,
+      width: SUB_COL_WIDTH,
       sorter: {
         multiple: 2,
       },
@@ -127,13 +131,13 @@ const BasisOptionList: React.FC = () => {
     {
       title: 'Option Group',
       dataIndex: 'option_group',
-      width: 400,
+      width: MAIN_COL_WIDTH,
       noBoxShadow: true,
     },
     {
       title: 'Option Name',
       dataIndex: 'name',
-      width: 300,
+      width: SUB_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
@@ -152,13 +156,13 @@ const BasisOptionList: React.FC = () => {
     {
       title: 'Option Group',
       dataIndex: 'option_group',
-      width: 400,
+      width: MAIN_COL_WIDTH,
       noBoxShadow: true,
     },
     {
       title: 'Option Name',
       dataIndex: 'option_name',
-      width: 300,
+      width: SUB_COL_WIDTH,
     },
     ...SameColumn,
     {

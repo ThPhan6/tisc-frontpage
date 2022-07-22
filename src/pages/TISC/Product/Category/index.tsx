@@ -14,7 +14,12 @@ import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { confirmDelete } from '@/helper/common';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
+
+const MAIN_COL_WIDTH = 343;
+const SUB_COL_WIDTH = 160;
 const CategoryList: React.FC = () => {
+  useAutoExpandNestedTableColumn(MAIN_COL_WIDTH, SUB_COL_WIDTH);
   const tableRef = useRef<any>();
 
   const handleActionCategory = (actionType: 'edit' | 'delete', id: string) => {
@@ -48,7 +53,7 @@ const CategoryList: React.FC = () => {
       sorter: {
         multiple: 1,
       },
-      width: 350,
+      width: MAIN_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-uppercase">{value}</span>;
@@ -57,7 +62,7 @@ const CategoryList: React.FC = () => {
     {
       title: 'Subcategory',
       dataIndex: 'subcategory',
-      width: 250,
+      width: SUB_COL_WIDTH,
       sorter: {
         multiple: 2,
       },
@@ -105,14 +110,14 @@ const CategoryList: React.FC = () => {
     {
       title: 'Main Category',
       dataIndex: 'maincategory',
-      width: 350,
+      width: MAIN_COL_WIDTH,
       sorter: true,
       noBoxShadow: true,
     },
     {
       title: 'Subcategory',
       dataIndex: 'name',
-      width: 250,
+      width: SUB_COL_WIDTH,
       sorter: true,
       isExpandable: true,
       render: (value) => {
@@ -135,14 +140,14 @@ const CategoryList: React.FC = () => {
     {
       title: 'Main Category',
       dataIndex: 'maincategory',
-      width: 350,
+      width: MAIN_COL_WIDTH,
       sorter: true,
       noBoxShadow: true,
     },
     {
       title: 'Subcategory',
       dataIndex: 'Subcategory',
-      width: 250,
+      width: SUB_COL_WIDTH,
       sorter: true,
     },
     {
