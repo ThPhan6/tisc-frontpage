@@ -16,10 +16,11 @@ import DistributionTerritoryModal from './DistributionTerritoryModal';
 import { DistributorEntryForm, DistributorForm } from '@/types/distributor.type';
 import { useEffect } from 'react';
 import { useAppSelector } from '@/reducers';
-import { validateEmail } from '@/helper/utils';
+import { REGEX_EMPTY_SPACE, validateEmail, validatePostalCode } from '@/helper/utils';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { trimStart } from 'lodash';
 
 const optionsGender = [
   { label: 'Male', value: true },
@@ -57,6 +58,18 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
   const user = useAppSelector((state) => state.user.user);
 
   const isValidEmail = validateEmail(data.email);
+
+  const isValidPostal = validatePostalCode(data.postal_code);
+
+  const onChangePostalCode = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length > 10 || !REGEX_EMPTY_SPACE.test(e.target.value)) {
+      return;
+    }
+    setData({
+      ...data,
+      postal_code: trimStart(e.target.value),
+    });
+  };
 
   const [authorCountryData, setAuthorCountryData] = useState<CheckboxValue[]>(
     data.authorized_countries.map((country) => {
@@ -104,7 +117,10 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
 
   const handleSubmit = () => {
     if (!isValidEmail) {
-      return message.error(MESSAGE_ERROR.EMAIL);
+      return message.error(MESSAGE_ERROR.WORK_EMAIL);
+    }
+    if (data.postal_code.length < 5) {
+      return message.error(MESSAGE_ERROR.POSTAL_CODE);
     }
     return onSubmit({
       ...data,
@@ -229,7 +245,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               required
               fontLevel={3}
               placeholder="postal / zip code"
-              onChange={(e) => onChangeData('postal_code', e.target.value)}
+              onChange={onChangePostalCode}
               value={data.postal_code}
               hasBoxShadow
               hasPadding
@@ -238,6 +254,16 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               colorRequired="tertiary"
               onDelete={() => onChangeData('postal_code', '')}
               deleteIcon
+              message={
+                data.postal_code !== ''
+                  ? isValidPostal
+                    ? ''
+                    : MESSAGE_ERROR.POSTAL_CODE
+                  : undefined
+              }
+              messageType={
+                data.postal_code !== '' ? (isValidPostal ? 'normal' : 'error') : undefined
+              }
             />
           </div>
           <div className="contact person">
@@ -297,7 +323,9 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               colorRequired="tertiary"
               onDelete={() => onChangeData('email', '')}
               deleteIcon
-              message={data.email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.EMAIL) : undefined}
+              message={
+                data.email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.WORK_EMAIL) : undefined
+              }
               messageType={data.email !== '' ? (isValidEmail ? 'normal' : 'error') : undefined}
             />
             <FormGroup label="Work Phone" required layout="vertical" formClass={styles.formGroup}>
