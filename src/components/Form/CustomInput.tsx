@@ -3,8 +3,7 @@ import type { FC } from 'react';
 import { useState, useRef, useEffect } from 'react';
 import styles from './styles/Input.less';
 import type { CustomInputProps } from './types';
-import classNames from 'classnames';
-import { isUndefined } from 'lodash';
+import { isUndefined, trimStart } from 'lodash';
 
 export const CustomInput: FC<CustomInputProps> = ({
   theme = 'default',
@@ -13,10 +12,12 @@ export const CustomInput: FC<CustomInputProps> = ({
   containerClass,
   type,
   status,
+  fontLevel,
   fromLandingPage,
   required = false,
   autoWidth,
   defaultWidth,
+  maxWords,
   ...props
 }) => {
   const [width, setWidth] = useState(defaultWidth);
@@ -43,35 +44,45 @@ export const CustomInput: FC<CustomInputProps> = ({
       }
     }
   };
+  const setFontLevel = () => {
+    if (fontLevel) {
+      return styles[`bodyText${fontLevel}`];
+    }
+    return '';
+  };
 
-  const classNameInputDefault = classNames(
-    styles.input,
-    borderBottomColor ? styles[`${borderBottomColor}-border-bottom-color`] : '',
-    fromLandingPage ? styles[`${theme}-focus-normal`] : '',
-    status &&
-      styles[`${fromLandingPage ? (status === 'error' ? 'warning' : 'error') : status}-status`],
-    styles[`${theme}-theme`],
-    setDisabled(),
-  );
+  const classNameInputDefault = `
+    ${styles.input}
+    ${borderBottomColor ? styles[`${borderBottomColor}-border-bottom-color`] : ''}
+    ${fromLandingPage ? styles[`${theme}-focus-normal`] : ''}
+    ${
+      status &&
+      styles[`${fromLandingPage ? (status === 'error' ? 'warning' : 'error') : status}-status`]
+    }
+    ${styles[`${theme}-theme`]}
+    ${setDisabled()}
+  `;
 
-  const classNameInputAffix = classNames(
-    styles['input-affix'],
-    required && styles['required-input-affix'],
-    borderBottomColor ? styles[`${borderBottomColor}-border-bottom-color-affix`] : '',
-    fromLandingPage ? styles[`${theme}-focus-normal-affix`] : '',
-    status
-      ? styles[
-          `${fromLandingPage ? (status === 'error' ? 'warning' : 'error') : status}-status-affix`
-        ]
-      : '',
-    styles[`${theme}-theme-affix`],
-    setDisabled(),
-  );
+  const classNameInputAffix = `
+    ${styles['input-affix']}
+    ${required && styles['required-input-affix']}
+    ${borderBottomColor ? styles[`${borderBottomColor}-border-bottom-color-affix`] : ''}
+    ${fromLandingPage ? styles[`${theme}-focus-normal-affix`] : ''}
+    ${
+      status
+        ? styles[
+            `${fromLandingPage ? (status === 'error' ? 'warning' : 'error') : status}-status-affix`
+          ]
+        : ''
+    }
+    ${styles[`${theme}-theme-affix`]}
+    ${setDisabled()}
+  `;
 
   const classNameInput = props.prefix || props.suffix ? classNameInputAffix : classNameInputDefault;
 
   return (
-    <div className={classNames(classNameInput, containerClass)} style={{ width: '100%' }}>
+    <div className={`${classNameInput}  ${containerClass}`} style={{ width: '100%' }}>
       {type === 'password' ? (
         <div
           style={{ width: '100%' }}
@@ -85,19 +96,36 @@ export const CustomInput: FC<CustomInputProps> = ({
           className={required && !(props.prefix || props.suffix) ? styles['required-input'] : ''}
         >
           {autoWidth ? (
-            <span className={styles.hiddenSpan} ref={span}>
+            <span className={`${styles.hiddenSpan} ${setFontLevel()}`} ref={span}>
               {props.value}
             </span>
           ) : null}
           <Input
             type={type}
             {...props}
+            onChange={(e) => {
+              if (maxWords) {
+                const text = e.target.value;
+                const textLength = text.split(' ').length;
+                if (textLength > maxWords) {
+                  return false;
+                }
+              }
+              /// trim prefix of input
+              e.target.value = trimStart(e.target.value ?? '');
+              if (props.onChange) {
+                props.onChange(e);
+              }
+              return true;
+            }}
+            className={`${setFontLevel()}  ${props.className ?? ''}`}
             style={
               autoWidth
                 ? {
+                    ...props.style,
                     width: isUndefined(width) ? '100%' : width,
                   }
-                : undefined
+                : props.style
             }
           />
         </div>

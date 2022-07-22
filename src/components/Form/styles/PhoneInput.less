@@ -3,7 +3,7 @@
   align-items: center;
   box-sizing: border-box;
   height: 32px;
-  padding: 0 16px;
+  padding: 0 0 0 16px;
   border: 0.5px solid transparent;
   border-bottom-color: @mono-color-medium;
   transition: all 0.3s;
@@ -11,6 +11,13 @@
   input[type='number']::-webkit-outer-spin-button {
     margin: 0;
     -webkit-appearance: none;
+  }
+  .removePhoneInputText {
+    color: @mono-color-medium;
+    cursor: pointer;
+    &:hover {
+      color: @primary-color-dark;
+    }
   }
   :global(.ant-input) {
     padding: 0;
@@ -31,6 +38,15 @@
   }
   .phone-input {
     flex: 1;
+    padding-right: 16px;
+  }
+  .color-placeholder {
+    ::placeholder {
+      color: @mono-color;
+    }
+    :global(.ant-input) {
+      color: @mono-color;
+    }
   }
 }
 

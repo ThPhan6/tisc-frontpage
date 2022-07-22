@@ -3,8 +3,14 @@ import type { TypedUseSelectorHook } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-
-const reducers = combineReducers({});
+import productReducer from './product';
+import userReducer from './user';
+import categoryReducer from './category';
+const reducers = combineReducers({
+  product: productReducer,
+  category: categoryReducer,
+  user: userReducer,
+});
 
 const persistConfig = {
   key: 'root',

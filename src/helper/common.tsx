@@ -16,3 +16,30 @@ export const confirmDelete = (onOk: () => void, onCancel?: () => void) => {
     maskClosable: true,
   });
 };
+
+export const getResponseMessage = (
+  type: 'get-list' | 'get-one' | 'create' | 'delete' | 'update',
+  action: string,
+  status: 'success' | 'failed' = 'success',
+  error?: any,
+) => {
+  if (error?.data?.message) {
+    return error.data?.message;
+  }
+
+  let startWith = '';
+  switch (type) {
+    case 'get-list':
+      startWith = 'Get list';
+    case 'get-one':
+      startWith = 'Get';
+    case 'create':
+      startWith = 'Create';
+    case 'delete':
+      startWith = 'Delete';
+    case 'update':
+      startWith = 'Update';
+  }
+
+  return `${startWith} ${action} ${status === 'success' ? 'successfully' : 'failed'}`;
+};

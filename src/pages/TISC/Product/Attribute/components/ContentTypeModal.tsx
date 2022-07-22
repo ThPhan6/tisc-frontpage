@@ -11,15 +11,15 @@ import { SPECIFICATION_TYPE } from '../utils';
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 
 import type { RadioValue } from '@/components/CustomRadio/types';
-import type { TabProp } from '@/components/Tabs/types';
+import type { TabItem } from '@/components/Tabs/types';
 import type {
-  IBasisConvention,
-  IBasisConventionOption,
-  IAttributeContentType,
-  IBasisPresetOption,
-  IBasisText,
-  IAttributeSubForm,
-} from '../types';
+  BasisConvention,
+  BasisConventionOption,
+  AttributeContentType,
+  BasisPresetOption,
+  BasisText,
+  AttributeSubForm,
+} from '@/types';
 
 import type { ISelectedItem } from './AttributeEntryForm';
 
@@ -27,18 +27,18 @@ import styles from '../styles/contentTypeModal.less';
 
 interface IContentTypeModal {
   setVisible: (value: boolean) => void;
-  contentType: IAttributeContentType | undefined;
+  contentType: AttributeContentType | undefined;
   selectedItem: ISelectedItem;
-  onSubmit: (data: Omit<IAttributeSubForm, 'id' | 'name'>) => void;
+  onSubmit: (data: Omit<AttributeSubForm, 'id' | 'name'>) => void;
   type: number;
 }
 type ACTIVE_TAB = 'conversions' | 'presets' | 'options' | 'text';
 
 interface IContentTypeOption {
-  data: IBasisConvention[] | IBasisPresetOption[] | IBasisText[];
+  data: BasisConvention[] | BasisPresetOption[] | BasisText[];
   type: ACTIVE_TAB;
-  selectedOption: Omit<IAttributeSubForm, 'id' | 'name'>;
-  setSelectedOption: (selected: Omit<IAttributeSubForm, 'id' | 'name'>) => void;
+  selectedOption: Omit<AttributeSubForm, 'id' | 'name'>;
+  setSelectedOption: (selected: Omit<AttributeSubForm, 'id' | 'name'>) => void;
 }
 
 const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
@@ -47,7 +47,7 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
   let selectedKeys: string | string[] = [];
   /// active key for conversions
   if (type == 'conversions') {
-    const conversions = [...data] as IBasisConvention[];
+    const conversions = [...data] as BasisConvention[];
     conversions.forEach((conversion) => {
       const selected = conversion.subs.find((sub) => {
         return sub.id === selectedOption.basis_id;
@@ -59,7 +59,7 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
   }
   /// active key for presets and options
   if (type === 'presets' || type === 'options') {
-    const presetOptions = [...data] as IBasisConvention[];
+    const presetOptions = [...data] as BasisConvention[];
     presetOptions.forEach((presetOption) => {
       const selected = presetOption.subs.find((sub) => {
         return sub.id === selectedOption.basis_id;
@@ -72,11 +72,11 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
 
   const [activeKey, setActiveKey] = useState<string | string[]>(selectedKeys);
 
-  const formatConventionGroup = (items: IBasisConventionOption[]): RadioValue[] => {
+  const formatConventionGroup = (items: BasisConventionOption[]): RadioValue[] => {
     return items.map((item) => {
       return {
         label: (
-          <span className="basis-conversion-group">
+          <span className="basis-conversion-group text-capitalize">
             {item.name_1}
             <SwapIcon />
             {item.name_2}
@@ -87,11 +87,11 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
     });
   };
   //
-  const formatPresetOptionGroup = (items: IBasisPresetOption[]): RadioValue[] => {
+  const formatPresetOptionGroup = (items: BasisPresetOption[]): RadioValue[] => {
     return items.map((item) => {
       return {
         label: (
-          <span className="basis-preset-option-group">
+          <span className="basis-preset-option-group text-capitalize">
             <span>{item.name}</span>
             <span className="count-number">({item.count})</span>
           </span>
@@ -101,17 +101,17 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
     });
   };
   //
-  const formatBasisText = (items: IBasisText[]): RadioValue[] => {
+  const formatBasisText = (items: BasisText[]): RadioValue[] => {
     return items.map((item) => {
       return {
-        label: <span className="basis-preset-option-group">{item.name}</span>,
+        label: <span className="basis-preset-option-group text-capitalize">{item.name}</span>,
         value: item.id,
       };
     });
   };
   //
   const onChangeConversion = (basisId: string) => {
-    const conversions = [...data] as IBasisConvention[];
+    const conversions = [...data] as BasisConvention[];
     conversions.forEach((conversion) => {
       const selected = conversion.subs.find((sub) => {
         return sub.id === basisId;
@@ -127,7 +127,7 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
     });
   };
   const onChangePresetOption = (basisId: string) => {
-    const presetOptions = [...data] as IBasisPresetOption[];
+    const presetOptions = [...data] as BasisPresetOption[];
     presetOptions.forEach((presetOption) => {
       const selected = presetOption.subs?.find((sub) => {
         return sub.id === basisId;
@@ -143,7 +143,7 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
   };
 
   const onChangeBasisText = (basisId: string) => {
-    const basistexts = [...data] as IBasisText[];
+    const basistexts = [...data] as BasisText[];
     const selected = basistexts.find((item) => {
       return item.id === basisId;
     });
@@ -163,7 +163,7 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
         <CustomRadio
           options={formatBasisText(data)}
           value={selectedOption.basis_id}
-          onChange={(radioValue) => onChangeBasisText(radioValue.value)}
+          onChange={(radioValue) => onChangeBasisText(String(radioValue.value))}
           isRadioList
         />
       </div>
@@ -185,7 +185,7 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
           <Collapse.Panel
             header={
               <span className={activeKey.includes(snakeCase(option.name)) ? 'activated' : ''}>
-                <span>{option.name}</span>
+                <span className="text-uppercase">{option.name}</span>
                 <span className="count-number">({option.count})</span>
               </span>
             }
@@ -201,9 +201,9 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
               value={selectedOption.basis_id}
               onChange={(radioValue) => {
                 if (type === 'conversions') {
-                  return onChangeConversion(radioValue.value);
+                  return onChangeConversion(String(radioValue.value));
                 }
-                return onChangePresetOption(radioValue.value);
+                return onChangePresetOption(String(radioValue.value));
               }}
               isRadioList
             />
@@ -216,7 +216,7 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
 const ContentTypeModal: React.FC<IContentTypeModal> = (props) => {
   const { setVisible, contentType, selectedItem, onSubmit, type } = props;
   const { subAttribute } = selectedItem;
-  let listTab: TabProp[] = [
+  let listTab: TabItem[] = [
     { tab: 'TEXT', key: 'text' },
     { tab: 'CONVERSIONS', key: 'conversions' },
     { tab: 'PRESETS', key: 'presets' },
@@ -236,7 +236,7 @@ const ContentTypeModal: React.FC<IContentTypeModal> = (props) => {
   });
 
   /// default selected option
-  const [selectedOption, setSelectedOption] = useState<Omit<IAttributeSubForm, 'id' | 'name'>>({
+  const [selectedOption, setSelectedOption] = useState<Omit<AttributeSubForm, 'id' | 'name'>>({
     basis_id: subAttribute.basis_id,
   });
   /// set active tab
@@ -249,7 +249,7 @@ const ContentTypeModal: React.FC<IContentTypeModal> = (props) => {
       selectedTab = selected;
     }
   }
-  const [activeTab, setActiveTab] = useState<TabProp>(selectedTab);
+  const [activeTab, setActiveTab] = useState<string>(selectedTab.key);
 
   return (
     <>
@@ -279,14 +279,12 @@ const ContentTypeModal: React.FC<IContentTypeModal> = (props) => {
             tabPosition="top"
             tabDisplay="space"
             onChange={setActiveTab}
-            activeTab={activeTab}
+            activeKey={activeTab}
           />
           <div className={styles.contentTypeOption}>
             <ContentTypeOption
-              type={activeTab.key as ACTIVE_TAB}
-              data={
-                contentType ? contentType[activeTab.key === 'text' ? 'texts' : activeTab.key] : []
-              }
+              type={activeTab as ACTIVE_TAB}
+              data={contentType ? contentType[activeTab === 'text' ? 'texts' : activeTab] : []}
               selectedOption={selectedOption}
               setSelectedOption={setSelectedOption}
             />

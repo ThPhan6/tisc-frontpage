@@ -1,35 +1,53 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Title, BodyText } from '@/components/Typography';
 import { ReactComponent as SortIcon } from '@/assets/icons/sort-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import styles from '../styles/table.less';
 import type { ColumnType } from 'antd/lib/table';
-import type { ICustomTableColumnType, IExpended } from '../types';
+import type { TableColumnItem } from '../types';
 
-export const useCustomTable = (columns: ICustomTableColumnType<any>[]) => {
-  const [expended, setExpended] = useState<IExpended>();
+type Expanded = number | undefined | string;
 
-  const expend = (index: IExpended) => {
-    if (expended === index) setExpended(undefined);
-    else setExpended(index);
+export const useCustomTable = (columns: TableColumnItem<any>[]) => {
+  const [expanded, setExpanded] = useState<Expanded>();
+
+  const expand = (index: Expanded) => {
+    if (expanded === index) setExpanded(undefined);
+    else setExpanded(index);
   };
+
   const renderExpandedColumn = (value: any, record: any) => {
     if (!value) {
       return null;
     }
-    const expendedKey = `${record.id}`;
+    const expandedKey = `${record.id}`;
     return (
-      <div onClick={() => expend(expendedKey)} className={styles.expandedCell}>
-        <span className={expendedKey === expended ? styles.expandedColumn : ''}>{value}</span>
-        {expendedKey === expended ? <DropupIcon /> : <DropdownIcon />}
+      <div onClick={() => expand(expandedKey)} className={styles.expandedCell}>
+        <span className={expandedKey === expanded ? styles.expandedColumn : ''}>{value}</span>
+        {expandedKey === expanded ? (
+          <DropupIcon width="18" height="18" />
+        ) : (
+          <DropdownIcon width="18" height="18" />
+        )}
       </div>
     );
   };
-  const formatTitleColumn = (column: ICustomTableColumnType<any>) => {
+
+  const formatTitleColumn = (column: TableColumnItem<any>) => {
     return () => {
       return (
-        <div className={styles.titleTable}>
+        <div
+          className={styles.titleTable}
+          style={{
+            justifyContent:
+              column.align === 'center'
+                ? 'center'
+                : column.align === 'right'
+                ? 'flex-end'
+                : undefined,
+          }}
+        >
           {column.lightHeading ? (
             <BodyText fontFamily="Roboto" level={5}>
               {column.title}
@@ -51,36 +69,192 @@ export const useCustomTable = (columns: ICustomTableColumnType<any>[]) => {
           className: `${noBoxShadow}`,
         },
       };
-      if (column.isExpandable === undefined || column.isExpandable !== true) {
-        return {
-          ...column,
-          title: formatTitleColumn(column),
-          render: (value: any, record: any, index: any) => {
-            return {
-              ...cellClassName,
-              children: column.render ? column.render(value, record, index) : value,
-            };
-          },
-        };
-      }
+
       return {
         ...column,
-        /* eslint-disable @typescript-eslint/no-unused-vars */
+        title: formatTitleColumn(column),
         render: (value: any, record: any, index: any) => {
+          if (column.isExpandable) {
+            return {
+              ...cellClassName,
+              children: column.render
+                ? renderExpandedColumn(column.render(value, record, index), record)
+                : renderExpandedColumn(value, record),
+            };
+          }
+
           return {
             ...cellClassName,
-            children: column.render
-              ? renderExpandedColumn(column.render(value, record, index), record)
-              : renderExpandedColumn(value, record),
+            children: column.render ? column.render(value, record, index) : value,
           };
         },
-        title: formatTitleColumn(column),
       };
     });
   };
 
   return {
-    expended,
+    expanded,
     columns: formatColumns(),
   };
+};
+
+const EXPANDED_DELAY = 50; // ms
+const RETRY_INTERVAL = 100; // ms
+const OTHER_ELEMENTS_WIDTH = 50; // two padding and arrow icon width
+const style = document.createElement('style');
+style.id = 'lvl1';
+const styleLvl2 = document.createElement('style');
+styleLvl2.id = 'lvl2';
+
+const onCellLvl2Click = (expandableCellLvl2: Element) => {
+  const isExpanding = expandableCellLvl2.querySelector('span[class^="expandedColumn"]')
+    ? true
+    : false;
+
+  // console.log('expandableCellLvl2.clientWidth', expandableCellLvl2.clientWidth);
+  // console.log('newWidth', newWidth);
+  // console.log('isExpanding', isExpanding);
+
+  try {
+    // try remove before re-add
+    document.getElementsByTagName('head')[0].removeChild(styleLvl2);
+  } catch (err) {}
+
+  if (isExpanding === false) {
+    return;
+  }
+
+  // Insert styles
+  const newWidth = expandableCellLvl2.clientWidth;
+  styleLvl2.innerHTML = `.ant-table-expanded-row.ant-table-expanded-row-level-1:not([style*="display: none;"]) tr[class*="ant-table-row-level"] td:nth-child(2),
+    .ant-table-row-level-0.custom-expanded td:nth-child(2) { width: ${newWidth}px; }`;
+  document.getElementsByTagName('head')[0].appendChild(styleLvl2);
+};
+
+const onLvl1CellClick = (expandableCellLvl1: Element, colWidthLvl2?: number) => {
+  try {
+    // try reset styles
+    document.getElementsByTagName('head')[0].removeChild(style);
+    document.getElementsByTagName('head')[0].removeChild(styleLvl2);
+  } catch (err) {}
+
+  const newWidth = expandableCellLvl1.clientWidth;
+  style.innerHTML = `.ant-table-expanded-row.ant-table-expanded-row-level-1:not([style*="display: none;"]) tr[class*="ant-table-row-level"] td:first-child { width: ${newWidth}px; }`;
+
+  const expandedColumns = document.querySelectorAll('tr[class*="custom-expanded"] td');
+  const nestedSubColumns = document.querySelectorAll(
+    'tr[class*="ant-table-expanded-row"]:not([style*="display: none;"]) tbody tr:not([class*="custom-expanded-level-"]):first-child td',
+  );
+
+  // console.log({ expandedColumns });
+  // console.log({ nestedSubColumns });
+  if (expandedColumns) {
+    if (expandedColumns.length < 4) {
+      return;
+    }
+    let totalWidthDiff = 0;
+    expandedColumns.forEach((dataCell, index) => {
+      // Avoid resize first cell, last cells (Count and Account column)
+      if ([0, expandedColumns.length - 1, expandedColumns.length - 2].includes(index)) {
+        return;
+      }
+      // console.log(dataCell);
+      // console.log(nestedSubColumns?.[index], nestedSubColumns?.[index]?.clientWidth);
+      totalWidthDiff += nestedSubColumns?.[index]?.clientWidth - dataCell.clientWidth;
+      // console.log('widthDiff', nestedSubColumns?.[index]?.clientWidth - dataCell.clientWidth);
+      // console.log('totalWidthDiff', totalWidthDiff);
+      const isLastResizeableCell = index === expandedColumns.length - 3;
+      const newCellWidth =
+        nestedSubColumns?.[index]?.clientWidth + (isLastResizeableCell ? -totalWidthDiff : 0);
+      if (newCellWidth) {
+        style.innerHTML += ` tr[class*="custom-expanded"] td:nth-child(${
+          index + 1
+        }) { width: ${newCellWidth}px }`;
+      }
+      // dataCell.style.width = isExpanding ? `${nestedSubColumns?.[index]?.clientWidth}px` : 'auto';
+    });
+  }
+  document.getElementsByTagName('head')[0].appendChild(style);
+
+  if (!colWidthLvl2) {
+    return;
+  }
+
+  const expandableCellsLvl2 = document.querySelectorAll(
+    'tr.ant-table-row-level-0.custom-expanded-level-2 td:nth-child(2)',
+  );
+  // console.log('expandableCellsLvl2', {expandableCellsLvl2});
+  if (expandableCellsLvl2.length === 0) {
+    return;
+  }
+
+  expandableCellsLvl2.forEach((expandableCellLvl2) => {
+    if (!expandableCellLvl2) {
+      return;
+    }
+    const spanTxtElLvl2 = expandableCellLvl2.querySelector("div[class^='expandedCell'] span span");
+    // const expandedColumnEl = expandableCellLvl2.querySelector('span[class^=expandedColumn]');
+    // if (expandedColumnEl) {
+    //   expandedColumnEl.className = '';
+    // }
+    onCellLvl2Click(expandableCellLvl2);
+
+    if (spanTxtElLvl2) {
+      const textMaxwidth = colWidthLvl2 - OTHER_ELEMENTS_WIDTH;
+      spanTxtElLvl2.style['max-width'] = `${textMaxwidth}px`;
+    }
+
+    expandableCellLvl2.addEventListener('click', () => {
+      setTimeout(() => onCellLvl2Click(expandableCellLvl2), EXPANDED_DELAY);
+    });
+  });
+};
+
+export const useAutoExpandNestedTableColumn = (colWidthLvl1: number, colWidthLvl2?: number) => {
+  useEffect(() => {
+    const injectClickToAdjustTableCellWidth = () => {
+      const expandableCellsLvl1 = document.querySelectorAll(
+        'tr.ant-table-row-level-0 td:first-child',
+      );
+      // console.log('expandableCellsLvl1', expandableCellsLvl1);
+
+      // Recall until injected
+      if (expandableCellsLvl1.length === 0) {
+        setTimeout(injectClickToAdjustTableCellWidth, RETRY_INTERVAL);
+        return;
+      }
+
+      expandableCellsLvl1.forEach((expandableCellLvl1) => {
+        if (!expandableCellLvl1) {
+          return;
+        }
+
+        // Insert styles for first columns
+        const spanTxtElLvl1 = expandableCellLvl1.querySelector(
+          "div[class^='expandedCell'] span span",
+        );
+        if (spanTxtElLvl1) {
+          const textMaxwidth = colWidthLvl1 - OTHER_ELEMENTS_WIDTH;
+          spanTxtElLvl1.style['max-width'] = `${textMaxwidth}px`;
+        }
+
+        const clickableEl = expandableCellLvl1.querySelector("div[class^='expandedCell']");
+
+        clickableEl?.addEventListener('click', () => {
+          setTimeout(() => onLvl1CellClick(expandableCellLvl1, colWidthLvl2), EXPANDED_DELAY);
+        });
+      });
+    };
+
+    setTimeout(injectClickToAdjustTableCellWidth, RETRY_INTERVAL);
+
+    return () => {
+      try {
+        // try reset styles
+        document.getElementsByTagName('head')[0].removeChild(style);
+        document.getElementsByTagName('head')[0].removeChild(styleLvl2);
+      } catch (err) {}
+    };
+  }, []);
+  return null;
 };

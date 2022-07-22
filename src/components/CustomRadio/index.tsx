@@ -1,9 +1,8 @@
 import { Radio, Space } from 'antd';
-import type { FC } from 'react';
+import { FC } from 'react';
 import { useState } from 'react';
-import type { CustomRadioProps } from './types';
+import type { CustomRadioProps, RadioValue } from './types';
 import style from './styles/index.less';
-import classNames from 'classnames';
 import { CustomInput } from '../Form/CustomInput';
 
 export const CustomRadio: FC<CustomRadioProps> = ({
@@ -12,6 +11,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
   defaultValue,
   isRadioList,
   otherInput,
+  selected,
   onChange,
   inputPlaceholder = 'type here',
   containerClass,
@@ -32,19 +32,26 @@ export const CustomRadio: FC<CustomRadioProps> = ({
 
   const onChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
-      onChange({ value: 'other', label: e.target.value });
+      onChange({ ...selected, value: 'other', label: e.target.value });
     }
     setInputValue(e.target.value);
   };
 
+  const renderActiveClass = (option: RadioValue) => {
+    if (option.value == value) {
+      return 'item-option-checked';
+    }
+    return '';
+  };
+
   return (
     <div
-      className={classNames(
-        style['radio-container'],
-        style[`radio-${isRadioList ? 'vertical' : direction}`],
-        isRadioList ? style['radio-list'] : '',
-        containerClass,
-      )}
+      className={`
+        ${style['radio-container']}
+        ${style[`radio-${isRadioList ? 'vertical' : direction}`]}
+        ${isRadioList ? style['radio-list'] : ''}
+        ${containerClass}
+      `}
     >
       <Radio.Group
         {...props}
@@ -54,16 +61,24 @@ export const CustomRadio: FC<CustomRadioProps> = ({
       >
         <Space direction={isRadioList ? 'vertical' : direction}>
           {options.map((option, index) => (
-            <label key={index} className={style.panel_radio} htmlFor={`${option.value}_${index}`}>
+            <label
+              key={index}
+              className={`
+                ${style.panel_radio}
+                ${option.customClass ? option.customClass : ''}
+                radio-label
+              `}
+              htmlFor={`${option.value}_${index}`}
+            >
               <div style={{ width: '100%' }}>
                 {isRadioList ? (
                   <div className={style['item-wrapper']}>
-                    <span>{option.label}</span>
+                    <span className={renderActiveClass(option)}>{option.label}</span>
                     <Radio id={`${option.value}_${index}`} {...option} />
                   </div>
                 ) : (
                   <Radio id={`${option.value}_${index}`} {...option}>
-                    {option.label}
+                    <span className={renderActiveClass(option)}>{option.label}</span>
                   </Radio>
                 )}
               </div>

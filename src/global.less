@@ -1,5 +1,4 @@
 @import '~antd/es/style/variable.less';
-
 html,
 body,
 #root {
@@ -75,7 +74,6 @@ ol {
 .basis-conversion-group {
   display: flex;
   align-items: center;
-  color: #000;
   text-transform: capitalize;
   svg {
     margin: 0 12px;
@@ -125,7 +123,12 @@ button {
   border: none;
 }
 .ant-tooltip-inner {
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5) !important;
   .anticon {
     margin-right: 12px;
   }
+}
+.ant-collapse-header-text {
+  display: block;
+  width: 100%;
 }

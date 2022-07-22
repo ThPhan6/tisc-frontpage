@@ -8,9 +8,9 @@ import { useState, useEffect } from 'react';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { pushTo } from '@/helper/history';
 
-import type { IAttributeForm } from './types';
-import { updateAttribute, getOneAttribute } from './services/api';
-const DEFAULT_ATTRIBUTE: IAttributeForm = {
+import type { AttributeForm } from '@/types';
+import { updateAttribute, getOneAttribute } from '@/services';
+const DEFAULT_ATTRIBUTE: AttributeForm = {
   name: '',
   subs: [],
 };
@@ -19,7 +19,7 @@ const UpdateAttributePage = () => {
   const { activePath, attributeLocation } = useAttributeLocation();
   const isLoading = useBoolean();
   const submitButtonStatus = useBoolean(false);
-  const [data, setData] = useState<IAttributeForm>(DEFAULT_ATTRIBUTE);
+  const [data, setData] = useState<AttributeForm>(DEFAULT_ATTRIBUTE);
   const params = useParams<{
     id: string;
   }>();
@@ -37,7 +37,7 @@ const UpdateAttributePage = () => {
     getAttributeData();
   }, []);
 
-  const handleCreate = (submitData: IAttributeForm) => {
+  const handleCreate = (submitData: AttributeForm) => {
     isLoading.setValue(true);
     updateAttribute(idAttribute, submitData).then((isSuccess) => {
       isLoading.setValue(false);

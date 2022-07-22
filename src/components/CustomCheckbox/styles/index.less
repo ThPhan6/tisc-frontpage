@@ -37,6 +37,13 @@
     justify-content: space-between;
     height: 32px;
     color: @mono-color;
+    cursor: pointer;
+    :global(.item-option-checked) {
+      color: @primary-color-dark;
+      p {
+        color: @primary-color-dark;
+      }
+    }
   }
   .item-checkbox {
     display: flex;

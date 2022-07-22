@@ -2,14 +2,18 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { request } from 'umi';
 import type {
-  LoginBodyProp,
+  LoginInput,
   LoginResponseProp,
-  UserInfoDataProp,
-  ResetPasswordBodyProp,
+  ResetPasswordRequestBody,
+  CreatePasswordRequestBody,
 } from '../types';
+import { UserDetail } from '@/types';
+import { message } from 'antd';
+import { setUserProfile } from '@/reducers/user';
+import store from '@/reducers';
 
 export async function loginMiddleware(
-  data: LoginBodyProp,
+  data: LoginInput,
   callback: (type: STATUS_RESPONSE, message?: string) => void,
 ) {
   request(`/api/auth/login`, {
@@ -25,8 +29,25 @@ export async function loginMiddleware(
     });
 }
 
+export async function brandLoginMiddleware(
+  data: LoginInput,
+  callback: (type: STATUS_RESPONSE, message?: string) => void,
+) {
+  request(`/api/auth/login/brand`, {
+    method: 'POST',
+    data,
+  })
+    .then((response: LoginResponseProp) => {
+      localStorage.setItem('access_token', response.token);
+      callback(STATUS_RESPONSE.SUCCESS);
+    })
+    .catch((error) => {
+      callback(STATUS_RESPONSE.ERROR, error?.data?.message || MESSAGE_NOTIFICATION.LOGIN_ERROR);
+    });
+}
+
 export async function resetPasswordMiddleware(
-  data: ResetPasswordBodyProp,
+  data: ResetPasswordRequestBody,
   callback: (type: STATUS_RESPONSE, message?: string) => void,
 ) {
   request(`/api/auth/reset-password-and-login`, {
@@ -65,10 +86,11 @@ export async function forgotPasswordMiddleware(
 
 export async function getUserInfoMiddleware() {
   const dataRes = await request<{
-    data: UserInfoDataProp;
+    data: UserDetail;
   }>(`/api/team-profile/get-me`, {
     method: 'get',
   });
+  store.dispatch(setUserProfile(dataRes.data));
   return dataRes.data;
 }
 
@@ -78,6 +100,22 @@ export async function validateResetToken(token: string | null) {
       return res.data;
     })
     .catch(() => {
+      return false;
+    });
+}
+export async function createPasswordVerify(token: string, data: CreatePasswordRequestBody) {
+  return request(`/api/auth/create-password-verify/${token}`, {
+    method: 'POST',
+    data,
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.CREATE_PASSSWORD_VERIFICATION_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(
+        error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_PASSSWORD_VERIFICATION_FAILED,
+      );
       return false;
     });
 }

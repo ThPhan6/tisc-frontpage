@@ -4,23 +4,23 @@ import type { FC } from 'react';
 import { useState, useEffect } from 'react';
 import { AttributeItem } from './AttributeItem';
 import ContentTypeModal from './ContentTypeModal';
-import { getProductAttributeContentType } from '../services/api';
-import type { IAttributeForm, IAttributeSubForm, IAttributeContentType } from '../types';
+import { getProductAttributeContentType } from '@/services';
+import type { AttributeForm, AttributeSubForm, AttributeContentType } from '@/types';
 
-interface IAttributeEntryForm {
+interface AttributeEntryFormProps {
   type: number;
   submitButtonStatus: any;
-  onSubmit: (data: IAttributeForm) => void;
+  onSubmit: (data: AttributeForm) => void;
   onCancel: () => void;
-  data: IAttributeForm;
-  setData: (data: IAttributeForm) => void;
+  data: AttributeForm;
+  setData: (data: AttributeForm) => void;
 }
 export interface ISelectedItem {
-  subAttribute: IAttributeSubForm;
+  subAttribute: AttributeSubForm;
   index: number;
 }
 
-const DEFAULT_SUB_ATTRIBUTE: IAttributeSubForm = {
+const DEFAULT_SUB_ATTRIBUTE: AttributeSubForm = {
   name: '',
   basis_id: '',
 };
@@ -34,12 +34,12 @@ const DEFAULT_SELECTED_ATTRIBUTE: ISelectedItem = {
 // onSubmit,
 // submitButtonStatus,
 
-const AttributeEntryForm: FC<IAttributeEntryForm> = (props) => {
+const AttributeEntryForm: FC<AttributeEntryFormProps> = (props) => {
   const { type, submitButtonStatus, onSubmit, onCancel, data, setData } = props;
   // for content type modal
   const [visible, setVisible] = useState(false);
   // for content type data
-  const [contentType, setContentType] = useState<IAttributeContentType>();
+  const [contentType, setContentType] = useState<AttributeContentType>();
   // selected content types
   const [selectedItem, setSelectedItem] = useState<ISelectedItem>(DEFAULT_SELECTED_ATTRIBUTE);
   // load data content type
@@ -88,7 +88,7 @@ const AttributeEntryForm: FC<IAttributeEntryForm> = (props) => {
     });
   };
 
-  const handleSelectContentType = (subAttribute: IAttributeSubForm, index: number) => {
+  const handleSelectContentType = (subAttribute: AttributeSubForm, index: number) => {
     setSelectedItem({
       subAttribute,
       index,
@@ -96,7 +96,7 @@ const AttributeEntryForm: FC<IAttributeEntryForm> = (props) => {
     setVisible(true);
   };
 
-  const onContentTypeSubmit = (changedSub: Omit<IAttributeSubForm, 'id' | 'name'>) => {
+  const onContentTypeSubmit = (changedSub: Omit<AttributeSubForm, 'id' | 'name'>) => {
     if (selectedItem) {
       const newSubs = [...data.subs];
       /// overwrite new subs
@@ -117,16 +117,16 @@ const AttributeEntryForm: FC<IAttributeEntryForm> = (props) => {
   };
 
   const handleSubmit = () => {
-    const newSubs: IAttributeSubForm[] = data.subs.map((sub) => {
+    const newSubs: AttributeSubForm[] = data.subs.map((sub) => {
       if (sub.id) {
         return {
           id: sub.id,
-          name: sub.name,
+          name: sub.name.trim(),
           basis_id: sub.basis_id,
         };
       }
       return {
-        name: sub.name,
+        name: sub.name.trim(),
         basis_id: sub.basis_id,
       };
     });

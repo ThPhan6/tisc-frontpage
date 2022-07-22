@@ -1,0 +1,118 @@
+.topbarContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: max-content;
+  height: 56px;
+  padding: 0 24px;
+  overflow: auto;
+  background-color: #fff;
+  :global(.left-side),
+  :global(.right-side) {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  :global(.item) {
+    margin-right: 12px;
+    padding: 0 12px;
+    transition: width 0.3s;
+    &:global(.right-divider) {
+      box-shadow: inset -0.5px 0 0 #0000004d;
+    }
+    &:global(.left-divider) {
+      box-shadow: inset 0.5px 0 0 #0000004d;
+    }
+    :global(.disabled) {
+      color: @mono-color-medium;
+    }
+    :global(.bold) {
+      font-weight: 500;
+    }
+    &:global(.brand-dropdown) {
+      margin-right: 0;
+      padding-right: 24px;
+      padding-left: 0;
+    }
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+  :global(.topbar-group-btn) {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    &:global(.disabled) {
+      cursor: default;
+    }
+    svg {
+      margin-left: 8px;
+    }
+    :global(.ant-dropdown-trigger) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+
+.brandLogo {
+  width: 18px;
+  height: 18px;
+  margin-right: 16px;
+  object-fit: contain;
+}
+
+.newCardIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
+  border-radius: 100%;
+  &.activeNewCard {
+    color: #fff;
+    background-color: @primary-color-dark;
+  }
+  &.disabledNewCard {
+    color: @mono-color-medium;
+    background-color: @mono-color-light;
+  }
+  svg {
+    margin-left: 0 !important;
+  }
+}
+.topbarDropdown {
+  width: 240px;
+  :global(.tisc-dropdown-item) {
+    & > div {
+      &:not(:first-child) {
+        box-shadow: none;
+      }
+      &:hover {
+        background-color: @primary-color-light;
+      }
+    }
+  }
+}
+.flexBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.filterItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  text-transform: capitalize;
+  svg {
+    margin-left: 8px;
+    color: @mono-color-medium;
+    cursor: pointer;
+    &:hover {
+      color: @primary-color-dark;
+    }
+  }
+}

@@ -1,5 +1,7 @@
+import type { ReactNode } from 'react';
+
 export type CheckboxValue = {
-  label: string;
+  label: string | ReactNode;
   value: string;
   disabled?: boolean;
 };
@@ -11,7 +13,7 @@ export interface CustomCheckboxProps {
   inputPlaceholder?: string;
   onChange?: (value: CheckboxValue[]) => void;
   isCheckboxList?: boolean;
-  defaultValue?: CheckboxValue;
+  selected?: CheckboxValue[];
   checkboxClass?: string;
   heightItem?: string;
 }

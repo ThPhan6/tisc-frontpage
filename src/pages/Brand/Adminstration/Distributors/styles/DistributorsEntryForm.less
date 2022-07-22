@@ -1,0 +1,45 @@
+.customTitle {
+  height: 36px;
+  margin-bottom: 16px;
+  padding: 7px 0;
+  box-shadow: inset 0 -0.5px 0 @mono-color;
+}
+
+.title {
+  .customTitle;
+}
+
+.customIconDisable {
+  svg {
+    cursor: not-allowed;
+  }
+}
+
+.titleDistribution {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  .customTitle;
+  p {
+    margin-right: 8px;
+  }
+}
+
+.customShowCount {
+  margin-bottom: 40px;
+  :global(.ant-input-textarea-show-count::after) {
+    color: @mono-color;
+  }
+  :global(.ant-input) {
+    color: @primary-color-dark;
+  }
+}
+
+.formGroup {
+  margin-bottom: 16px;
+  .phoneInputCustom {
+    :global(.phone-input-custom-text) {
+      color: @primary-color-dark;
+    }
+  }
+}

@@ -4,7 +4,7 @@ import Style from './styles/index.less';
 
 export const Title: FC<CustomTypography> = ({
   color,
-  customClass,
+  customClass = '',
   level = 1,
   children,
   ...props
@@ -24,7 +24,7 @@ export const Title: FC<CustomTypography> = ({
 export const BodyText: FC<BodyTextProps> = ({
   color,
   fontFamily = 'Cormorant-Garamond',
-  customClass,
+  customClass = '',
   level = 1,
   children,
   ...props
@@ -34,7 +34,7 @@ export const BodyText: FC<BodyTextProps> = ({
       case 'Roboto':
         return Style[`bodyText${level}`];
       default:
-        return Style[`bodyTextCormorant${level >= 4 ? 4 : level}`];
+        return Style[`bodyTextCormorant${level >= 5 ? 5 : level}`];
     }
   };
 
@@ -48,9 +48,10 @@ export const BodyText: FC<BodyTextProps> = ({
 
 export const MainTitle: FC<MainTitleProps> = ({
   color,
-  customClass,
+  customClass = '',
   level = 1,
   children,
+  textAlign,
   ...props
 }) => {
   const setLevel = () => {
@@ -59,7 +60,14 @@ export const MainTitle: FC<MainTitleProps> = ({
 
   const classNameMainTitle = `${setLevel()}`;
   return (
-    <p {...props} className={`${classNameMainTitle} ${customClass}`} style={{ color: color }}>
+    <p
+      {...props}
+      className={`${classNameMainTitle} ${customClass}`}
+      style={{
+        color: color,
+        textAlign: textAlign,
+      }}
+    >
       {children}
     </p>
   );

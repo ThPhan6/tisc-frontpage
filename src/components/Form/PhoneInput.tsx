@@ -1,9 +1,11 @@
 import { Input } from 'antd';
-import classNames from 'classnames';
 import { FC, useEffect, useState } from 'react';
 import { BodyText } from '../Typography';
 import styles from './styles/PhoneInput.less';
+import { formatPhoneCode, validatePhoneNumber } from '@/helper/utils';
 import { PhoneInputProps } from './types';
+import { trimStart } from 'lodash';
+import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 
 export const PhoneInput: FC<PhoneInputProps> = ({
   codePlaceholder,
@@ -14,6 +16,8 @@ export const PhoneInput: FC<PhoneInputProps> = ({
   codeReadOnly,
   phoneNumberReadOnly,
   status,
+  containerClass,
+  deleteIcon,
 }) => {
   const [phoneInputValue, setPhoneInputValue] = useState({
     zoneCode: '',
@@ -31,9 +35,13 @@ export const PhoneInput: FC<PhoneInputProps> = ({
   }, [value]);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const phoneNumber = trimStart(e.target.value ?? '');
+    if (phoneNumber != '' && !validatePhoneNumber(phoneNumber) && e.target.name === 'phoneNumber') {
+      return;
+    }
     const newPhoneInputValue = {
       ...phoneInputValue,
-      [e.target.name]: e.target.value,
+      [e.target.name]: phoneNumber,
     };
     setPhoneInputValue({ ...newPhoneInputValue });
     if (onChange) {
@@ -52,9 +60,20 @@ export const PhoneInput: FC<PhoneInputProps> = ({
     return zoneCodeLength * 8 + 'px';
   };
 
+  const handleClearPhoneInput = () => {
+    if (onChange) {
+      onChange({
+        zoneCode: phoneInputValue.zoneCode,
+        phoneNumber: '',
+      });
+    }
+  };
+
   return (
     <div
-      className={classNames(styles['phone-input-container'], status && styles[`${status}-status`])}
+      className={`${styles['phone-input-container']} ${
+        status ? styles[`${status}-status`] : ''
+      } ${containerClass} `}
     >
       <div className={styles['wrapper-code-input']}>
         <BodyText level={5} fontFamily="Roboto">
@@ -64,8 +83,7 @@ export const PhoneInput: FC<PhoneInputProps> = ({
           readOnly={codeReadOnly}
           className={styles['code-input']}
           placeholder={codePlaceholder || '00'}
-          value={value?.zoneCode || phoneInputValue.zoneCode}
-          type="number"
+          value={formatPhoneCode(phoneInputValue.zoneCode, true)}
           onChange={handleOnChange}
           name="zoneCode"
           defaultValue={defaultValue?.zoneCode || ''}
@@ -79,11 +97,17 @@ export const PhoneInput: FC<PhoneInputProps> = ({
         readOnly={phoneNumberReadOnly}
         placeholder={phonePlaceholder}
         value={value?.phoneNumber || phoneInputValue.phoneNumber}
-        className={styles['phone-input']}
-        type="number"
+        className={`
+          ${styles['phone-input']}
+          phone-input-custom-text
+        `}
         onChange={handleOnChange}
         name="phoneNumber"
+        pattern=""
       />
+      {phoneInputValue.phoneNumber && deleteIcon ? (
+        <RemoveIcon className={styles.removePhoneInputText} onClick={handleClearPhoneInput} />
+      ) : null}
     </div>
   );
 };

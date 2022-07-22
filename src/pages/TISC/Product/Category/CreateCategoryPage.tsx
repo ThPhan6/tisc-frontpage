@@ -1,7 +1,7 @@
 import { TableHeader } from '@/components/Table/TableHeader';
 import { CategoryEntryForm } from './components/CategoryEntryForm';
-import { CategoryBodyProp, SubcategoryValueProp } from './types';
-import { createCategoryMiddleware } from './services/api';
+import { CategoryBodyProp, SubcategoryValueProp } from '@/types';
+import { createCategoryMiddleware } from '@/services';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';

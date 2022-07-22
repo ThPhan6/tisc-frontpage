@@ -1,0 +1,38 @@
+.dynamicFormInput {
+  padding-top: 8px;
+  > div {
+    input {
+      background-color: transparent;
+      &::placeholder {
+        /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: @mono-color-dark;
+        opacity: 1; /* Firefox */
+      }
+    }
+    :global(.dynamic-title-box) {
+      height: 24px;
+      font-family: 'Cormorant-Garamond';
+    }
+    :global(.dynamic-value-box) {
+      height: 32px;
+      padding-left: 32px;
+    }
+  }
+  :global(.flex-input-with-icon) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+}
+.dynamicFormAddMore {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 36px;
+  padding: 0 16px;
+  cursor: pointer;
+  :global(.add-attribute-text) {
+    margin-right: 12px;
+  }
+}

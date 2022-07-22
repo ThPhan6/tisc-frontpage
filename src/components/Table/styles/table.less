@@ -1,5 +1,3 @@
-@import (reference) '~antd/es/style/themes/index';
-
 .customTable {
   padding-bottom: 40px;
   :global(.ant-table) {
@@ -58,7 +56,7 @@
       height: 36px;
       padding: 6px 12px;
       color: black;
-      // white-space: nowrap;
+      white-space: nowrap;
       background-color: #fff;
       border-bottom: 0;
       &::before {
@@ -216,6 +214,24 @@
     margin-left: 8px;
   }
 }
+
 .expandedColumn {
   font-weight: 500;
+}
+
+div[class^='expandedCell'] span:not([class^='expandedColumn']) span {
+  display: block;
+  // max-width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+span[class^='expandedColumn'] span,
+tr[class^='ant-table-expanded-row'] tbody > tr > td {
+  white-space: nowrap;
+}
+
+.ant-table-tbody > tr > td {
+  transition: all 0.3s;
 }

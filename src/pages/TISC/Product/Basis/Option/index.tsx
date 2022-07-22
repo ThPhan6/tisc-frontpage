@@ -1,19 +1,20 @@
 import React, { useRef } from 'react';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import type { ICustomTableColumnType } from '@/components/Table/types';
-import { HeaderDropdown } from '@/components/HeaderDropdown';
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
-import { getProductBasisOptionPagination, deleteBasisOption } from './services/api';
+import type { TableColumnItem } from '@/components/Table/types';
+import { getProductBasisOptionPagination, deleteBasisOption } from '@/services';
 import { showImageUrl } from '@/helper/utils';
-import type { IBasisOptionListResponse, ISubBasisOption } from './types';
+import type { BasisOptionListResponse, SubBasisOption } from '@/types';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { confirmDelete } from '@/helper/common';
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
+import { ActionMenu } from '@/components/Action';
 
+const MAIN_COL_WIDTH = 253;
+const SUB_COL_WIDTH = 135;
 const BasisOptionList: React.FC = () => {
+  useAutoExpandNestedTableColumn(MAIN_COL_WIDTH, SUB_COL_WIDTH);
   const tableRef = useRef<any>();
 
   const handleUpdateBasisOption = (id: string) => {
@@ -29,7 +30,7 @@ const BasisOptionList: React.FC = () => {
     });
   };
 
-  const SameColumn: ICustomTableColumnType<any>[] = [
+  const SameColumn: TableColumnItem<any>[] = [
     {
       title: 'Image',
       dataIndex: 'image',
@@ -70,14 +71,14 @@ const BasisOptionList: React.FC = () => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
   ];
 
-  const MainColumns: ICustomTableColumnType<IBasisOptionListResponse>[] = [
+  const MainColumns: TableColumnItem<BasisOptionListResponse>[] = [
     {
       title: 'Option Group',
       dataIndex: 'name',
       sorter: {
         multiple: 1,
       },
-      width: 400,
+      width: MAIN_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-uppercase">{value}</span>;
@@ -86,7 +87,7 @@ const BasisOptionList: React.FC = () => {
     {
       title: 'Option Name',
       dataIndex: 'option_name',
-      width: 300,
+      width: SUB_COL_WIDTH,
       sorter: {
         multiple: 2,
       },
@@ -99,41 +100,26 @@ const BasisOptionList: React.FC = () => {
       width: '5%',
       render: (_value: any, record: any) => {
         return (
-          <HeaderDropdown
-            arrow={true}
-            align={{ offset: [-14, -10] }}
-            items={[
-              {
-                onClick: () => handleUpdateBasisOption(record.id),
-                icon: <EditIcon />,
-                label: 'Edit',
-              },
-              {
-                onClick: () => handleDeleteBasisOption(record.id),
-                icon: <DeleteIcon />,
-                label: 'Delete',
-              },
-            ]}
-            trigger={['click']}
-          >
-            <ActionIcon />
-          </HeaderDropdown>
+          <ActionMenu
+            handleUpdate={() => handleUpdateBasisOption(record.id)}
+            handleDelete={() => handleDeleteBasisOption(record.id)}
+          />
         );
       },
     },
   ];
 
-  const SubColumns: ICustomTableColumnType<ISubBasisOption>[] = [
+  const SubColumns: TableColumnItem<SubBasisOption>[] = [
     {
       title: 'Option Group',
       dataIndex: 'option_group',
-      width: 400,
+      width: MAIN_COL_WIDTH,
       noBoxShadow: true,
     },
     {
       title: 'Option Name',
       dataIndex: 'name',
-      width: 300,
+      width: SUB_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
@@ -148,17 +134,17 @@ const BasisOptionList: React.FC = () => {
     },
   ];
 
-  const ChildColumns: ICustomTableColumnType<IBasisOptionListResponse>[] = [
+  const ChildColumns: TableColumnItem<BasisOptionListResponse>[] = [
     {
       title: 'Option Group',
       dataIndex: 'option_group',
-      width: 400,
+      width: MAIN_COL_WIDTH,
       noBoxShadow: true,
     },
     {
       title: 'Option Name',
       dataIndex: 'option_name',
-      width: 300,
+      width: SUB_COL_WIDTH,
     },
     ...SameColumn,
     {

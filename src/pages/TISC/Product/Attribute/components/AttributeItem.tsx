@@ -3,19 +3,19 @@ import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-rig
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { MainTitle, BodyText } from '@/components/Typography';
-import classNames from 'classnames';
 import { lowerCase } from 'lodash';
 import type { FC } from 'react';
 import styles from '../styles/attributeItem.less';
-import type { IAttributeSubForm } from '../types';
+import type { AttributeSubForm } from '@/types';
 
-interface IAttributeItem {
-  item: IAttributeSubForm;
+interface AttributeItemProps {
+  item: AttributeSubForm;
   handleOnClickDelete: () => void;
   handleSelectContentType: () => void;
   onChangeItemName: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
-export const AttributeItem: FC<IAttributeItem> = ({
+
+export const AttributeItem: FC<AttributeItemProps> = ({
   item,
   onChangeItemName,
   handleOnClickDelete,
@@ -32,10 +32,10 @@ export const AttributeItem: FC<IAttributeItem> = ({
             className="attribute-input"
             onChange={onChangeItemName}
           />
-          <ActionDeleteIcon onClick={handleOnClickDelete} />
+          <ActionDeleteIcon className={styles.delete_icon} onClick={handleOnClickDelete} />
         </div>
         <div
-          className={classNames(styles.form_input__element, styles.form_input__cursor)}
+          className={`${styles.form_input__element} ${styles.form_input__cursor}`}
           onClick={handleSelectContentType}
         >
           <div className="group-content-type">

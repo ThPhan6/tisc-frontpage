@@ -1,11 +1,11 @@
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { Title } from '@/components/Typography';
-import { useCustomInitialState } from '@/helper/hook';
 import styles from './styles/WorkplaceProfile.less';
+import { useAppSelector } from '@/reducers';
 
 export const WorkplaceProfile = () => {
-  const { initialState } = useCustomInitialState();
+  const user = useAppSelector((state) => state.user.user);
   return (
     <div className={styles['workplace-container']}>
       <div className={styles.header}>
@@ -16,35 +16,27 @@ export const WorkplaceProfile = () => {
           <CustomInput
             readOnly
             borderBottomColor="mono-medium"
-            value={`${initialState?.currentUser?.firstname} ${initialState?.currentUser?.lastname}`}
+            value={`${user?.firstname} ${user?.lastname}`}
           />
         </FormGroup>
         <FormGroup label="Work Location" layout="vertical" formClass={styles.form}>
           <CustomInput
             readOnly
             borderBottomColor="mono-medium"
-            value={initialState?.currentUser?.location}
+            value={user?.work_location ?? 'N/A'}
           />
         </FormGroup>
         <FormGroup label="Position / Role" layout="vertical" formClass={styles.form}>
-          <CustomInput
-            readOnly
-            borderBottomColor="mono-medium"
-            value={initialState?.currentUser?.position}
-          />
+          <CustomInput readOnly borderBottomColor="mono-medium" value={user?.position ?? 'N/A'} />
         </FormGroup>
         <FormGroup label="Work Email" layout="vertical" formClass={styles.form}>
-          <CustomInput
-            readOnly
-            borderBottomColor="mono-medium"
-            value={initialState?.currentUser?.email}
-          />
+          <CustomInput readOnly borderBottomColor="mono-medium" value={user?.email ?? 'N/A'} />
         </FormGroup>
         <FormGroup label="Work Phone" layout="vertical" formClass={styles.form}>
-          <CustomInput readOnly borderBottomColor="mono-medium" />
+          <CustomInput readOnly borderBottomColor="mono-medium" value={user?.phone ?? 'N/A'} />
         </FormGroup>
         <FormGroup label="Work Mobile" layout="vertical" formClass={styles.form}>
-          <CustomInput readOnly borderBottomColor="mono-medium" />
+          <CustomInput readOnly borderBottomColor="mono-medium" value={user?.mobile ?? 'N/A'} />
         </FormGroup>
       </div>
     </div>

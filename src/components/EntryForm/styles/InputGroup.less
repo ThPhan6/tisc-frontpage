@@ -1,0 +1,113 @@
+.inputGroupContainer {
+  width: 100%;
+  min-height: 32px;
+  .required {
+    margin: 0 4px;
+    font-size: 14px;
+    font-family: 'Roboto';
+  }
+  .requiredColorTertiary {
+    color: @tertiary-color;
+  }
+  .requiredColorPrimaryDark {
+    color: @primary-color-dark;
+  }
+  .doubleinputGroupContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    :global(.double-input-group-wrapper) {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      :global(.double-input-group) {
+        display: flex;
+        align-items: center;
+        &:first-child {
+          margin-right: 24px;
+        }
+        input {
+          margin-right: 4px;
+          padding: 0;
+        }
+      }
+      :global(.unit-input-label) {
+        margin-top: 2px;
+      }
+    }
+    svg {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    :global(.delete-action-input-group) {
+      margin-left: 4px;
+      color: @mono-color-medium;
+      transition: all 0.2s;
+      &:hover {
+        color: @primary-color-dark;
+      }
+    }
+  }
+  .inputGroupContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 32px;
+    input {
+      padding: 0;
+      &:global(.has-padding) {
+        padding: 0 16px;
+      }
+      &[readonly] {
+        cursor: not-allowed;
+      }
+      &:global(.color-primary-dark) {
+        color: @primary-color-dark;
+      }
+    }
+    svg {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    :global(.delete-action-input-group) {
+      margin-left: 4px;
+      color: @mono-color-medium;
+      transition: all 0.2s;
+      &:hover {
+        color: @primary-color-dark;
+      }
+    }
+  }
+}
+.heightInputGroup {
+  min-height: 56px;
+  margin-bottom: 16px;
+}
+.boxShadow {
+  box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
+}
+.message {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  min-height: 24px;
+  :global(.normal) {
+    color: @mono-color;
+  }
+  :global(.error) {
+    color: @tertiary-color;
+  }
+  :global(.warning) {
+    color: @secondary-color;
+  }
+}
+.iconDisabled {
+  color: @mono-color-medium;
+  cursor: not-allowed;
+  pointer-events: none;
+}

@@ -13,7 +13,11 @@ export const FormGroup: FC<FormGroupProps> = ({
   tooltip,
   children,
   message,
+  iconTooltip,
+  customIcon,
+  placement = 'top',
   label,
+  onClick,
   messageType = 'normal',
   ...props
 }) => {
@@ -24,7 +28,10 @@ export const FormGroup: FC<FormGroupProps> = ({
   const classNameForm = `${setFormLayout()} ${formClass}`;
   return (
     <div className={classNameForm} {...props}>
-      <label className={`${style.label} ${layout === 'horizontal' && style['label-margin']}`}>
+      <label
+        className={`${style.label} ${layout === 'horizontal' && style['label-margin']}`}
+        onClick={onClick}
+      >
         <BodyText fontFamily="Cormorant-Garamond" level={3}>
           {label}
         </BodyText>
@@ -35,10 +42,28 @@ export const FormGroup: FC<FormGroupProps> = ({
         )}
         {required && <span className={style.required}>*</span>}
         {tooltip && (
-          <Tooltip placement="top" title={tooltip}>
-            <QuestionIcon className={style['question-icon']} />
+          <Tooltip
+            placement={placement}
+            title={tooltip}
+            overlayInnerStyle={
+              placement === 'bottom'
+                ? {
+                    width: '160px',
+                    height: 'auto',
+                    padding: '6px 12px',
+                    fontWeight: '300',
+                    fontSize: '12px',
+                    lineHeight: '20px',
+                    letterSpacing: '0.02em',
+                    fontFamily: 'Roboto',
+                  }
+                : {}
+            }
+          >
+            {iconTooltip ? iconTooltip : <QuestionIcon className={style['question-icon']} />}
           </Tooltip>
         )}
+        {customIcon ? customIcon : null}
         <span className={style.colon}>:</span>
       </label>
       <div className={style['children-wrapper']}>

@@ -3,13 +3,16 @@ export interface EntryFormWrapperProps {
   handleCancel?: () => void;
   customClass?: string;
   contentClass?: string;
+  textAlignTitle?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify';
   title?: string;
-  handleDisabledCancel?: boolean;
-  handleDisabledSubmit?: boolean;
+  disableCancelButton?: boolean;
+  disableSubmitButton?: boolean;
+  headerContent?: any;
+  footerContent?: any;
   submitButtonStatus?: boolean;
 }
 
-export interface FormNameInputProp {
+export interface FormNameInputProps {
   HandleOnClickAddIcon?: () => void;
   title: string;
   placeholder?: string;

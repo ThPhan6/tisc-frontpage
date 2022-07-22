@@ -1,0 +1,62 @@
+.editor-form(@text-padding-x, @text-padding-y, @placeholder-color, @resize : vertical) {
+  :global(.ql-editor) {
+    padding: @text-padding-y @text-padding-x;
+    resize: @resize;
+  }
+  :global(.ql-editor.ql-blank::before) {
+    right: @text-padding-x;
+    left: @text-padding-x;
+    color: @placeholder-color;
+  }
+}
+
+.container {
+  :global(.ant-input) {
+    color: @primary-color-dark;
+  }
+  :global(.ql-container.ql-snow) {
+    border-bottom-color: transparent;
+    box-shadow: none;
+  }
+
+  .title {
+    margin-bottom: 16px;
+
+    .title_field {
+      display: flex;
+      align-items: center;
+
+      .title_input {
+        padding-right: 20px;
+      }
+      .remove_icon {
+        position: absolute;
+        right: 0;
+        color: @mono-color-medium;
+        cursor: pointer;
+        transition: all 0.3s;
+        &:hover {
+          color: @primary-color-dark;
+        }
+      }
+    }
+  }
+
+  .editor {
+    margin-bottom: 0;
+    label {
+      margin-bottom: 8px;
+    }
+  }
+
+  // .input_editor {
+  //   @text-padding-x: 0;
+  //   @text-padding-y: 4px;
+  //   @resize-none: none;
+  //   @placeholder-color: @mono-color-medium;
+  //   .editor-form(@text-padding-x, @text-padding-y, @placeholder-color, @resize-none);
+  //   :global(.ql-editor) {
+  //     height: 100%;
+  //   }
+  // }
+}

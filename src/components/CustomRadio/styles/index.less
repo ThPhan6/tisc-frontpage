@@ -21,10 +21,14 @@
   }
 
   :global(.ant-radio-wrapper) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: @mono-color;
     line-height: 22px;
   }
   :global(.ant-radio) {
+    top: 0;
     margin-right: 4px;
     :global(.ant-radio-inner) {
       width: 18px;
@@ -40,7 +44,7 @@
   :global(.ant-space-item) {
     display: flex;
     align-items: center;
-    height: 32px;
+    min-height: 32px;
     margin-left: 16px;
   }
   :global(input[type='radio']) {
@@ -51,7 +55,7 @@
 .radio-horizontal {
   display: flex;
   align-items: center;
-  height: 32px;
+  min-height: 32px;
 }
 
 .radio-vertical {
@@ -75,12 +79,18 @@
     margin-right: 0;
   }
   :global(.ant-space-item) {
-    height: 36px;
+    min-height: 36px;
   }
   .item-wrapper {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    :global(.item-option-checked) {
+      color: @primary-color-dark;
+      p {
+        color: @primary-color-dark;
+      }
+    }
   }
 }
 

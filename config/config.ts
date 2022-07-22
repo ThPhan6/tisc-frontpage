@@ -22,9 +22,9 @@ export default defineConfig({
     // default true, when it is true, will use `navigator.language` overwrite default
     baseNavigator: true,
   },
-  dynamicImport: {
-    loading: '@/components/LoadingPage',
-  },
+  // dynamicImport: {
+  //   loading: '@/components/LoadingPage',
+  // },
   targets: {
     ie: 11,
   },

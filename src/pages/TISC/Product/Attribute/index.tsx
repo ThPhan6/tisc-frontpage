@@ -1,19 +1,19 @@
-import React, { useRef } from 'react';
-import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import type { ICustomTableColumnType } from '@/components/Table/types';
-import { HeaderDropdown } from '@/components/HeaderDropdown';
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
-import { getProductAttributePagination, deleteAttribute } from './services/api';
-import { pushTo } from '@/helper/history';
-import { useAttributeLocation } from './hooks/location';
-import { confirmDelete } from '@/helper/common';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
+import { ActionMenu } from '@/components/Action';
+import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import type { IAttributeListResponse, ISubAttribute } from './types';
+import type { TableColumnItem } from '@/components/Table/types';
+import { confirmDelete } from '@/helper/common';
+import { pushTo } from '@/helper/history';
+import { deleteAttribute, getProductAttributePagination } from '@/services';
+import type { AttributeListResponse, SubAttribute } from '@/types';
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
+import React, { useRef } from 'react';
+import { useAttributeLocation } from './hooks/location';
 
+const MAIN_COL_WIDTH = 200;
 const AttributeList: React.FC = () => {
+  useAutoExpandNestedTableColumn(MAIN_COL_WIDTH);
   const tableRef = useRef<any>();
   const { activePath, attributeLocation } = useAttributeLocation();
 
@@ -30,14 +30,14 @@ const AttributeList: React.FC = () => {
     });
   };
 
-  const MainColumns: ICustomTableColumnType<IAttributeListResponse>[] = [
+  const MainColumns: TableColumnItem<AttributeListResponse>[] = [
     {
       title: 'Attribute Group',
       dataIndex: 'name',
       sorter: {
         multiple: 1,
       },
-      width: 300,
+      width: MAIN_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-uppercase">{value}</span>;
@@ -46,7 +46,7 @@ const AttributeList: React.FC = () => {
     {
       title: 'Attribute Name',
       dataIndex: 'attribute_name',
-      width: 250,
+      width: 150,
       sorter: {
         multiple: 2,
       },
@@ -54,7 +54,7 @@ const AttributeList: React.FC = () => {
     {
       title: 'Content Type',
       dataIndex: 'content_type',
-      width: 250,
+      width: 136,
       sorter: {
         multiple: 3,
       },
@@ -71,40 +71,25 @@ const AttributeList: React.FC = () => {
       width: '5%',
       render: (_value, record) => {
         return (
-          <HeaderDropdown
-            arrow={true}
-            align={{ offset: [-14, -10] }}
-            items={[
-              {
-                onClick: () => handleUpdateAttribute(record.id),
-                icon: <EditIcon />,
-                label: 'Edit',
-              },
-              {
-                onClick: () => handleDeleteAttribute(record.id),
-                icon: <DeleteIcon />,
-                label: 'Delete',
-              },
-            ]}
-            trigger={['click']}
-          >
-            <ActionIcon />
-          </HeaderDropdown>
+          <ActionMenu
+            handleUpdate={() => handleUpdateAttribute(record.id)}
+            handleDelete={() => handleDeleteAttribute(record.id)}
+          />
         );
       },
     },
   ];
-  const SubColumns: ICustomTableColumnType<ISubAttribute>[] = [
+  const SubColumns: TableColumnItem<SubAttribute>[] = [
     {
       title: 'Attribute Group',
       dataIndex: 'attribute_group',
-      width: 300,
+      width: MAIN_COL_WIDTH,
       noBoxShadow: true,
     },
     {
       title: 'Attribute Name',
       dataIndex: 'name',
-      width: 250,
+      width: 150,
       noBoxShadow: true,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
@@ -113,7 +98,7 @@ const AttributeList: React.FC = () => {
     {
       title: 'Content Type',
       dataIndex: 'content_type',
-      width: 250,
+      width: 136,
       noBoxShadow: true,
     },
     {

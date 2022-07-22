@@ -1,7 +1,6 @@
 import type { DropDownProps } from 'antd/es/dropdown';
 import { Dropdown } from 'antd';
 import React, { FC, useState } from 'react';
-import classNames from 'classnames';
 import styles from './index.less';
 import { BodyText } from '../Typography';
 
@@ -11,24 +10,24 @@ export type HeaderDropdownProps = {
   containerClass?: string;
   overlayClassName?: string;
   overlay?: React.ReactNode | (() => React.ReactNode) | any;
-  items?: MenuIconProp[];
+  items?: MenuIconProps[];
   placement?: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topCenter' | 'topRight' | 'bottomCenter';
 } & Omit<DropDownProps, 'overlay'>;
 
-type MenuIconProp = {
+export type MenuIconProps = {
   containerClass?: string;
   label: string;
   icon?: JSX.Element;
   onClick: () => void;
 };
 
-type MenuHeaderDropdownProp = {
-  items: MenuIconProp[];
+type MenuHeaderDropdownProps = {
+  items: MenuIconProps[];
   onParentClick?: () => void;
 };
 
-export const MenuHeaderDropdown: FC<MenuHeaderDropdownProp> = ({ items, onParentClick }) => {
-  const MenuItem = ({ label, icon, onClick, containerClass }: MenuIconProp) => (
+export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParentClick }) => {
+  const MenuItem = ({ label, icon, onClick, containerClass }: MenuIconProps) => (
     <div
       onClick={() => {
         if (onParentClick) {
@@ -36,9 +35,9 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProp> = ({ items, onParent
         }
         onClick();
       }}
-      className={classNames(styles.item, containerClass)}
+      className={`${styles.item} ${containerClass}`}
     >
-      {icon && <div className={styles.icon}>{icon}</div>}
+      {icon ? <div className={styles.icon}>{icon}</div> : null}
       <BodyText fontFamily="Roboto" level={6}>
         {label}
       </BodyText>
@@ -46,7 +45,7 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProp> = ({ items, onParent
   );
 
   return (
-    <div className={styles['menu-header']}>
+    <div className={`${styles['menu-header']} tisc-dropdown-item`}>
       {items.map((item, index) => (
         <MenuItem
           containerClass={index !== items.length - 1 && styles.border}
@@ -74,12 +73,11 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   return (
     <Dropdown
       className={styles.dropdownWrapper}
-      overlayClassName={classNames(
-        styles.container,
-        arrowPositionCenter && styles[`arrow-center`],
-        cls,
-        containerClass,
-      )}
+      overlayClassName={`
+        ${styles.container}
+        ${arrowPositionCenter && styles[`arrow-center`]}
+        ${cls}
+        ${containerClass}`}
       arrow={arrow}
       visible={visible}
       onVisibleChange={(value) => setVisible(value)}

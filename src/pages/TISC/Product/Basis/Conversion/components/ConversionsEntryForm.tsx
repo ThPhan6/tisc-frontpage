@@ -2,7 +2,7 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { FC } from 'react';
 import { ConversionItem } from './ConversionItem';
-import { ConversionsEntryFormProps, conversionValueDefault, ConversionValueProp } from '../types';
+import { ConversionsEntryFormProps, conversionValueDefault, ConversionValueProp } from '@/types';
 
 export const ConversionsEntryForm: FC<ConversionsEntryFormProps> = ({
   conversionValue,
@@ -31,7 +31,21 @@ export const ConversionsEntryForm: FC<ConversionsEntryFormProps> = ({
 
   const handleSubmit = () => {
     if (onSubmit) {
-      onSubmit(conversionValue);
+      onSubmit({
+        ...conversionValue,
+        name: conversionValue.name.trim(),
+        subs: conversionValue.subs.map((sub) => {
+          return {
+            ...sub,
+            name_1: sub.name_1.trim(),
+            name_2: sub.name_2.trim(),
+            unit_1: sub.unit_1.trim(),
+            unit_2: sub.unit_2.trim(),
+            formula_1: sub.formula_1.trim(),
+            formula_2: sub.formula_2.trim(),
+          };
+        }),
+      });
     }
   };
 

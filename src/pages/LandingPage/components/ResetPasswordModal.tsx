@@ -2,9 +2,8 @@ import { CustomModal } from '@/components/Modal';
 import type { FC } from 'react';
 import { useState } from 'react';
 import styles from './ResetPasswordModal.less';
-import type { ResetInputValueProp, ResetPasswordModalProps } from '../types';
+import type { ResetPasswordInput, ResetPasswordRequestBody } from '../types';
 import { CustomInput } from '@/components/Form/CustomInput';
-import classNames from 'classnames';
 import { BodyText, MainTitle } from '@/components/Typography';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';
 import { ReactComponent as LockedIcon } from '@/assets/icons/circle-pass-icon.svg';
@@ -15,12 +14,24 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-whi
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
 
+interface ResetPasswordModalProps {
+  resetData: {
+    email: string;
+    token: string;
+  };
+  visible: {
+    value: boolean;
+    setValue: (value: boolean) => void;
+  };
+  handleSubmit: (data: ResetPasswordRequestBody) => void;
+}
+
 export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
   visible,
   resetData,
   handleSubmit,
 }) => {
-  const [resetInputValue, setResetInputValue] = useState<ResetInputValueProp>({
+  const [resetInputValue, setResetInputValue] = useState<ResetPasswordInput>({
     password: '',
     confirmPassword: '',
   });
@@ -95,7 +106,7 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
         <div className={styles.form}>
           <CustomInput
             size="large"
-            containerClass={classNames(styles.email)}
+            containerClass={styles.email}
             placeholder="work email"
             prefix={<EmailIcon />}
             name="email"
@@ -106,7 +117,7 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
           <CustomInput
             required
             fromLandingPage
-            containerClass={classNames(styles.password)}
+            containerClass={styles.password}
             type={'password'}
             size="large"
             placeholder="password"

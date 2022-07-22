@@ -8,6 +8,18 @@ export enum STATUS_RESPONSE_CODE {
   SUCCESS = 200,
 }
 
+export const USER_STATUSES = {
+  ACTIVE: 1,
+  BLOCKED: 2,
+  PENDING: 3,
+};
+
+export const USER_STATUS_TEXTS = {
+  [USER_STATUSES.ACTIVE]: 'Activated',
+  [USER_STATUSES.BLOCKED]: 'Blocked',
+  [USER_STATUSES.PENDING]: 'Pending',
+};
+
 export const dataMenuSummary = {
   leftData: [
     {
@@ -187,4 +199,7 @@ export const dataMenuFirm = {
       ],
     },
   ],
+};
+export const IMAGE_ACCEPT_TYPES = {
+  image: '.png,.jpeg,.webp,.svg,.jpg',
 };

@@ -1,0 +1,125 @@
+.formGroup {
+  margin-bottom: 16px;
+}
+.phoneInputCustom {
+  :global(.phone-input-custom-text) {
+    color: @primary-color-dark;
+  }
+}
+
+.entry_form {
+  :global(.ant-input:hover) {
+    border-bottom-color: transparent;
+  }
+  :global(.ant-input[disabled]) {
+    padding-right: 20px;
+    color: @primary-color-dark;
+    text-transform: capitalize;
+    background: transparent;
+    border-bottom-color: transparent;
+    cursor: not-allowed;
+  }
+  :global(.ant-input:placeholder-shown) {
+    text-transform: lowercase;
+  }
+  :global(.ant-space) {
+    white-space: nowrap;
+  }
+
+  .access_label {
+    label {
+      cursor: pointer;
+    }
+  }
+
+  .warning_icon {
+    margin-left: 4px;
+  }
+
+  .status {
+    margin-bottom: 0;
+  }
+
+  .department {
+    :global(.ant-radio-group) {
+      padding-top: 8px;
+    }
+    &.activeDepartment {
+      :global(.function-type-placeholder) {
+        overflow: hidden;
+        color: @primary-color-dark;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  .form_group {
+    margin-bottom: 16px;
+    box-shadow: 0 0.5px 0 @mono-color-medium;
+
+    :global(.ant-collapse-header) {
+      box-shadow: none;
+    }
+
+    &__content {
+      display: flex;
+      align-items: center;
+
+      .phone_input {
+        width: 100%;
+        border-bottom-color: transparent;
+
+        // div > :global(.ant-input) {
+        //   cursor: not-allowed;
+        // }
+      }
+
+      .action_right_icon,
+      .drop_icon,
+      .remove_icon {
+        position: absolute;
+        right: 0;
+        height: 100%;
+        cursor: pointer;
+      }
+
+      .remove_icon {
+        cursor: pointer;
+        path {
+          transition: fill 1s;
+        }
+        &:hover {
+          path {
+            fill: @primary-color-dark;
+          }
+        }
+      }
+    }
+
+    .radio_list {
+      :global(.ant-radio-wrapper) {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+      }
+      :global(span.ant-radio + *) {
+        padding-left: 0;
+      }
+      :global(.radio-horizontal) {
+        display: block;
+      }
+
+      .other_input {
+        :global(.ant-radio) {
+          display: none;
+        }
+        :global(span.ant-radio + *) {
+          padding-right: 0;
+        }
+        :global(.ant-input) {
+          padding-right: 0;
+        }
+      }
+    }
+  }
+}
