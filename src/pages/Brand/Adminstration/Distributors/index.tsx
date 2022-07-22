@@ -1,4 +1,3 @@
-import { HeaderDropdown } from '@/components/HeaderDropdown';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { TableColumnItem } from '@/components/Table/types';
@@ -6,12 +5,10 @@ import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
 import { Distributor } from '@/types/distributor.type';
 import { useRef } from 'react';
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
-import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { deleteDistributor, getDistributorPagination } from '@/services/distributor.api';
 import { confirmDelete } from '@/helper/common';
 import { useAppSelector } from '@/reducers';
+import { ActionMenu } from '@/components/Action';
 
 const Distributors = () => {
   const tableRef = useRef<any>();
@@ -87,25 +84,10 @@ const Distributors = () => {
       width: '5%',
       render: (_value, record) => {
         return (
-          <HeaderDropdown
-            arrow={true}
-            align={{ offset: [-14, -10] }}
-            items={[
-              {
-                onClick: () => handleUpdateDistributor(record.id),
-                icon: <EditIcon />,
-                label: 'Edit',
-              },
-              {
-                onClick: () => handleDeleteDistributor(record.id),
-                icon: <DeleteIcon />,
-                label: 'Delete',
-              },
-            ]}
-            trigger={['click']}
-          >
-            <ActionIcon />
-          </HeaderDropdown>
+          <ActionMenu
+            handleUpdate={() => handleUpdateDistributor(record.id)}
+            handleDelete={() => handleDeleteDistributor(record.id)}
+          />
         );
       },
     },

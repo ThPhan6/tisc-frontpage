@@ -53,7 +53,7 @@ export const MarketAvailabilityEntryForm: FC<MarketAvailabilityEntryFormProps> =
         }),
       };
     });
-    newData.total = totalActive;
+    newData.total_available = totalActive;
     setData(newData);
   };
 

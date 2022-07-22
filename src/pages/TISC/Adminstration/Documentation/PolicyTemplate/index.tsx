@@ -3,12 +3,11 @@ import { pushTo } from '@/helper/history';
 import { useRef } from 'react';
 import { Documentation } from '@/types';
 import { TableColumnItem } from '@/components/Table/types';
-import { HeaderDropdown } from '@/components/HeaderDropdown';
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { PATH } from '@/constants/path';
 import { getPolicyTemplates } from './api';
 import moment from 'moment';
+import { ActionForm } from '@/components/Action';
 
 const PolicyTemplatePage: React.FC = () => {
   const tableRef = useRef<any>();
@@ -25,7 +24,7 @@ const PolicyTemplatePage: React.FC = () => {
     },
     {
       title: 'Author',
-      dataIndex: 'firstname',
+      dataIndex: 'author',
       width: '15%',
       sorter: true,
       render: (_value, record) => {
@@ -44,20 +43,15 @@ const PolicyTemplatePage: React.FC = () => {
       width: '5%',
       render: (_value: any, record: any) => {
         return (
-          <HeaderDropdown
-            arrow={true}
-            align={{ offset: [-14, -10] }}
-            items={[
+          <ActionForm
+            actionItems={[
               {
                 onClick: () => pushTo(PATH.policyUpdate.replace(':id', record.id)),
                 icon: <EditIcon />,
                 label: 'Edit',
               },
             ]}
-            trigger={['click']}
-          >
-            <ActionIcon />
-          </HeaderDropdown>
+          />
         );
       },
     },

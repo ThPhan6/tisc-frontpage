@@ -64,7 +64,7 @@ const UpdateInspirationalQuotationsPage = () => {
 
   return (
     <div>
-      <TableHeader title="Inspirational Quotations" rightAction={<CustomPlusButton disabled />} />
+      <TableHeader title="Inspirational Quotes" rightAction={<CustomPlusButton disabled />} />
       <InspirationalQuotationEntryForm
         value={input}
         onChange={handleOnChangeInput}

@@ -1,6 +1,4 @@
-import { HeaderDropdown } from '@/components/HeaderDropdown';
 import CustomTable from '@/components/Table';
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { TableColumnItem } from '@/components/Table/types';
 import { EmailTemplate } from '@/types';
@@ -8,6 +6,7 @@ import { getEmailTemplatePagination } from '@/services';
 import styles from './styles/index.less';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
+import { ActionForm } from '@/components/Action';
 
 const EmailAutoList = () => {
   const handleUpdateEmailAuto = (id: string) => {
@@ -41,20 +40,15 @@ const EmailAutoList = () => {
       align: 'center',
       render: (_value: any, record: any) => {
         return (
-          <HeaderDropdown
-            arrow={true}
-            align={{ offset: [-14, -10] }}
-            items={[
+          <ActionForm
+            actionItems={[
               {
                 onClick: () => handleUpdateEmailAuto(record.id),
                 icon: <EditIcon />,
                 label: 'Edit',
               },
             ]}
-            trigger={['click']}
-          >
-            <ActionIcon />
-          </HeaderDropdown>
+          />
         );
       },
     },
