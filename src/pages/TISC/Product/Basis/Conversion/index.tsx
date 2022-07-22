@@ -7,9 +7,12 @@ import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import { confirmDelete } from '@/helper/common';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { ActionMenu } from '@/components/Action';
 
+const MAIN_COL_WIDTH = 167;
 const BasisConversionList: React.FC = () => {
+  useAutoExpandNestedTableColumn(MAIN_COL_WIDTH);
   const tableRef = useRef<any>();
 
   const handleUpdateConversion = (id: string) => {
@@ -33,7 +36,7 @@ const BasisConversionList: React.FC = () => {
       sorter: {
         multiple: 1,
       },
-      width: 250,
+      width: MAIN_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-uppercase">{value}</span>;
@@ -42,7 +45,7 @@ const BasisConversionList: React.FC = () => {
     {
       title: 'Conversion Between',
       dataIndex: 'conversion_between',
-      width: 250,
+      width: 200,
       sorter: {
         multiple: 2,
       },
@@ -50,7 +53,7 @@ const BasisConversionList: React.FC = () => {
     {
       title: '1st Formula',
       dataIndex: 'first_formula',
-      width: 250,
+      width: 200,
     },
     {
       title: '2nd Formula',
@@ -76,13 +79,13 @@ const BasisConversionList: React.FC = () => {
     {
       title: 'Conversion Group',
       dataIndex: 'name',
-      width: 250,
       noBoxShadow: true,
+      width: MAIN_COL_WIDTH,
     },
     {
       title: 'Conversion Between',
       dataIndex: 'conversion_between',
-      width: 250,
+      width: 200,
       noBoxShadow: true,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
@@ -91,7 +94,7 @@ const BasisConversionList: React.FC = () => {
     {
       title: '1st Formula',
       dataIndex: 'first_formula',
-      width: 250,
+      width: 200,
       noBoxShadow: true,
     },
     {

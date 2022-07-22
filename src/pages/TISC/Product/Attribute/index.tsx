@@ -7,10 +7,13 @@ import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { deleteAttribute, getProductAttributePagination } from '@/services';
 import type { AttributeListResponse, SubAttribute } from '@/types';
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import React, { useRef } from 'react';
 import { useAttributeLocation } from './hooks/location';
 
+const MAIN_COL_WIDTH = 200;
 const AttributeList: React.FC = () => {
+  useAutoExpandNestedTableColumn(MAIN_COL_WIDTH);
   const tableRef = useRef<any>();
   const { activePath, attributeLocation } = useAttributeLocation();
 
@@ -34,7 +37,7 @@ const AttributeList: React.FC = () => {
       sorter: {
         multiple: 1,
       },
-      width: 300,
+      width: MAIN_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-uppercase">{value}</span>;
@@ -43,7 +46,7 @@ const AttributeList: React.FC = () => {
     {
       title: 'Attribute Name',
       dataIndex: 'attribute_name',
-      width: 250,
+      width: 150,
       sorter: {
         multiple: 2,
       },
@@ -51,7 +54,7 @@ const AttributeList: React.FC = () => {
     {
       title: 'Content Type',
       dataIndex: 'content_type',
-      width: 250,
+      width: 136,
       sorter: {
         multiple: 3,
       },
@@ -80,13 +83,13 @@ const AttributeList: React.FC = () => {
     {
       title: 'Attribute Group',
       dataIndex: 'attribute_group',
-      width: 300,
+      width: MAIN_COL_WIDTH,
       noBoxShadow: true,
     },
     {
       title: 'Attribute Name',
       dataIndex: 'name',
-      width: 250,
+      width: 150,
       noBoxShadow: true,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
@@ -95,7 +98,7 @@ const AttributeList: React.FC = () => {
     {
       title: 'Content Type',
       dataIndex: 'content_type',
-      width: 250,
+      width: 136,
       noBoxShadow: true,
     },
     {
