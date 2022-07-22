@@ -25,6 +25,7 @@ interface InputGroupProps extends CustomInputProps {
   hasBoxShadow?: boolean;
   message?: string;
   messageType?: 'normal' | 'warning' | 'error';
+  forceDisplayDeleteIcon?: boolean;
 }
 
 const InputGroup: FC<InputGroupProps> = ({
@@ -47,6 +48,7 @@ const InputGroup: FC<InputGroupProps> = ({
   message,
   messageType = 'normal',
   disabled,
+  forceDisplayDeleteIcon,
   ...props
 }) => {
   return (
@@ -114,7 +116,7 @@ const InputGroup: FC<InputGroupProps> = ({
             rightIcon
           )
         ) : null}
-        {value && deleteIcon ? (
+        {(forceDisplayDeleteIcon || value) && deleteIcon ? (
           deleteIcon === true ? (
             <RemoveIcon onClick={onDelete} className="delete-action-input-group" />
           ) : (

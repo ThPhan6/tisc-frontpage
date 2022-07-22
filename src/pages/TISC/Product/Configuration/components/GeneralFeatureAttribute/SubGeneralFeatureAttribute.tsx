@@ -159,6 +159,7 @@ const SubGeneralFeatureAttribute: React.FC<SubGeneralFeatureAttributeProps> = (p
             text: e.target.value,
           });
         }}
+        forceDisplayDeleteIcon
       />
     );
   };

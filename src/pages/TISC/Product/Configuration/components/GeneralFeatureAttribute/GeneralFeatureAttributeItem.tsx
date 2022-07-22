@@ -39,7 +39,6 @@ const GeneralFeatureAttributeItem: React.FC<GeneralFeatureAttributeItemProps> = 
       };
     }),
   );
-
   useEffect(() => {
     if (selected) {
       let newAttributes = [...general_attribute_groups];
@@ -105,6 +104,15 @@ const GeneralFeatureAttributeItem: React.FC<GeneralFeatureAttributeItemProps> = 
       ...newAttributes[index],
       attributes: newItemAttributes,
     };
+    /// reset selected
+    setSelected(
+      newAttributes[index].attributes.map((attr) => {
+        return {
+          label: '',
+          value: attr.id,
+        };
+      }),
+    );
     if (activeKey === 'feature') {
       dispatch(
         setPartialProductDetail({

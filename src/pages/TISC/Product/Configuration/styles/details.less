@@ -3,6 +3,7 @@
   input {
     color: @primary-color-dark !important;
   }
+
   .productImageWrapper {
     padding: 16px 16px 0;
     background-color: #fff;
@@ -241,6 +242,9 @@
     &:global(.ant-collapse-item-active) {
       box-shadow: none;
     }
+    :global(.delete-icon) {
+      color: @mono-color-dark;
+    }
     :global(.ant-collapse-content) {
       background: #fff;
       border-top: 0 !important;
@@ -351,15 +355,21 @@
       box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
     }
     &:global(.tip) {
-      padding: 0 8px 8px;
       box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
     }
     &:global(.download) {
-      padding: 0 8px 8px;
       box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
     }
     :global(.dynamic-wrapper) {
+      padding-right: 16px;
       box-shadow: inset 0 0.5px 0 rgba(0, 0, 0, 0.3);
+      svg {
+        color: @mono-color-dark;
+        transition: all 0.3s;
+        &:hover {
+          color: @primary-color-dark;
+        }
+      }
     }
     :global(.relative-product-wrapper) {
       width: 100%;
