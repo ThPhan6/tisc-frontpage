@@ -5,6 +5,7 @@ import style from './styles/TextArea.less';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 import { useState } from 'react';
+import { trimStart } from 'lodash';
 
 export const CustomTextArea: FC<CustomTextAreaProps> = ({
   borderBottomColor = 'mono',
@@ -49,6 +50,12 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
         style={{ height: height, overflow: checkedOverflow }}
         maxLength={maxLength ? maxLength : 100}
         {...props}
+        onChange={(e) => {
+          e.target.value = trimStart(e.target.value);
+          if (props.onChange) {
+            props.onChange(e);
+          }
+        }}
       />
     </div>
   );

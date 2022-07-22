@@ -114,12 +114,19 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
     }
 
     return onSubmit({
-      ...data,
+      business_name: data.business_name.trim(),
+      business_number: data.business_number.trim(),
+      country_id: data.country_id,
+      state_id: data.state_id,
+      city_id: data.city_id,
+      address: data.address.trim(),
+      postal_code: data.postal_code.trim(),
+      general_phone: data.general_phone.trim(),
+      general_email: data.general_email.trim(),
       functional_type_ids: selectedFunctionalTypes.map((selected) => {
         if (selected.value === 'other') {
-          return selected.label as string;
+          return (selected.label as string).trim();
         }
-
         return selected.value;
       }),
     });

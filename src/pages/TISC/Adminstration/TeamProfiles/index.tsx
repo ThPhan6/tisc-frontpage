@@ -40,6 +40,9 @@ const TeamProfilesList = () => {
             style={{
               height: '18px',
               width: '18px',
+              borderRadius: '50%',
+              boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
+              border: '1px solid #fff',
             }}
           />
         ) : (
@@ -48,7 +51,8 @@ const TeamProfilesList = () => {
     },
     {
       title: 'Full Name',
-      dataIndex: 'fullname',
+      dataIndex: 'firstname',
+      render: (_v, record) => record.fullname,
       sorter: true,
     },
     {

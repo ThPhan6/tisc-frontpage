@@ -1,7 +1,7 @@
 import CustomTable from '@/components/Table';
 import { pushTo } from '@/helper/history';
 import { useRef } from 'react';
-import { Quotation } from '@/types';
+import { Documentation } from '@/types';
 import { TableColumnItem } from '@/components/Table/types';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { PATH } from '@/constants/path';
@@ -12,7 +12,7 @@ import { ActionForm } from '@/components/Action';
 const PolicyTemplatePage: React.FC = () => {
   const tableRef = useRef<any>();
 
-  const mainColumns: TableColumnItem<Quotation>[] = [
+  const mainColumns: TableColumnItem<Documentation>[] = [
     {
       title: 'Last Updated',
       dataIndex: 'updated_at',
@@ -27,7 +27,7 @@ const PolicyTemplatePage: React.FC = () => {
       dataIndex: 'author',
       width: '15%',
       sorter: true,
-      render: (value, record: any) => {
+      render: (_value, record) => {
         return `${record.author.firstname} ${record.author.lastname}`;
       },
     },
@@ -63,6 +63,7 @@ const PolicyTemplatePage: React.FC = () => {
       columns={mainColumns}
       fetchDataFunc={getPolicyTemplates}
       title="AGREEMENT / POLICIES / TERMS"
+      hasPagination
     />
   );
 };

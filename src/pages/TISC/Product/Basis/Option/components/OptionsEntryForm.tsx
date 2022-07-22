@@ -57,10 +57,10 @@ const OptionEntryForm: FC<IOptionEntryForm> = (props) => {
     const newSubs: BasisOptionSubForm[] = option.subs.map((subOption) => {
       const itemOptions: SubBasisOption[] = subOption.subs.map((optionItem) => {
         let requiredValue = {
-          value_1: optionItem.value_1,
-          value_2: optionItem.value_2,
-          unit_1: optionItem.unit_1,
-          unit_2: optionItem.unit_2,
+          value_1: optionItem.value_1.trim(),
+          value_2: optionItem.value_2.trim(),
+          unit_1: optionItem.unit_1.trim(),
+          unit_2: optionItem.unit_2.trim(),
         };
         /// if it has ID, include ID
         if (optionItem.id) {
@@ -74,7 +74,7 @@ const OptionEntryForm: FC<IOptionEntryForm> = (props) => {
         return requiredValue;
       });
       let newSubOption = {
-        name: subOption.name,
+        name: subOption.name.trim(),
         subs: itemOptions,
         is_have_image: subOption.is_have_image ? true : false,
       };
@@ -85,6 +85,7 @@ const OptionEntryForm: FC<IOptionEntryForm> = (props) => {
     });
     return onSubmit({
       ...option,
+      name: option.name.trim(),
       subs: newSubs,
     });
   };

@@ -19,14 +19,14 @@ const EmailAutoList = () => {
       dataIndex: 'topic',
       width: '8%',
       sorter: true,
-      render: (value, record: any) => record.topic_key,
+      render: (_value, record: any) => record.topic_key,
     },
     {
       title: 'Targeted For',
       dataIndex: 'targeted_for',
       width: '10%',
       sorter: true,
-      render: (value, record: any) => record.targeted_for_key,
+      render: (_value, record: any) => record.targeted_for_key,
     },
     {
       title: 'Title',
@@ -59,6 +59,7 @@ const EmailAutoList = () => {
         title={'EMAIL AUTORESPONDER'}
         columns={mainColumns}
         fetchDataFunc={getEmailTemplatePagination}
+        hasPagination
       />
     </div>
   );

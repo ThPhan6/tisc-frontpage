@@ -3,7 +3,7 @@ import type { FC } from 'react';
 import { useState, useRef, useEffect } from 'react';
 import styles from './styles/Input.less';
 import type { CustomInputProps } from './types';
-import { isUndefined } from 'lodash';
+import { isUndefined, trimStart } from 'lodash';
 
 export const CustomInput: FC<CustomInputProps> = ({
   theme = 'default',
@@ -111,6 +111,8 @@ export const CustomInput: FC<CustomInputProps> = ({
                   return false;
                 }
               }
+              /// trim prefix of input
+              e.target.value = trimStart(e.target.value ?? '');
               if (props.onChange) {
                 props.onChange(e);
               }

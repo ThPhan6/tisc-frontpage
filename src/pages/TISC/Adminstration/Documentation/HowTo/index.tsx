@@ -52,7 +52,24 @@ const HowToPage: FC<HowToPageProps> = ({ containerClass }) => {
   }, []);
 
   const onSubmit = () => {
-    updateFAQ((howTo[activeTab] as FaqState).value);
+    updateFAQ(
+      (howTo[activeTab] as FaqState).value.map((faq) => {
+        return {
+          ...faq,
+          document: {
+            ...faq.document,
+            document: faq.document.document.trim(),
+            question_and_answer: faq.document.question_and_answer.map((sub) => {
+              return {
+                ...sub,
+                question: sub.question.trim(),
+                answer: sub.answer.trim(),
+              };
+            }),
+          },
+        };
+      }),
+    );
   };
 
   return (

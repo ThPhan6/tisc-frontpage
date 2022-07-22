@@ -33,7 +33,7 @@ const CreateTeamProfilesPage = () => {
         if (callBack) {
           callBack(teamProfile.id ?? '');
         } else {
-          pushTo(PATH.brandUpdateTeamProfile.replace(':id', teamProfile.id ?? ''));
+          pushTo(PATH.brandTeamProfile);
         }
       }
     });
@@ -41,7 +41,7 @@ const CreateTeamProfilesPage = () => {
 
   const handleInvite = (userId: string) => {
     inviteUser(userId);
-    pushTo(PATH.brandUpdateTeamProfile.replace(':id', userId));
+    pushTo(PATH.brandTeamProfile);
   };
 
   return (
