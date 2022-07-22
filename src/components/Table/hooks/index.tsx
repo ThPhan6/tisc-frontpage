@@ -33,7 +33,17 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
   const formatTitleColumn = (column: TableColumnItem<any>) => {
     return () => {
       return (
-        <div className={styles.titleTable}>
+        <div
+          className={styles.titleTable}
+          style={{
+            justifyContent:
+              column.align === 'center'
+                ? 'center'
+                : column.align === 'right'
+                ? 'flex-end'
+                : undefined,
+          }}
+        >
           {column.lightHeading ? (
             <BodyText fontFamily="Roboto" level={5}>
               {column.title}

@@ -10,11 +10,11 @@ export type HeaderDropdownProps = {
   containerClass?: string;
   overlayClassName?: string;
   overlay?: React.ReactNode | (() => React.ReactNode) | any;
-  items?: MenuIconProp[];
+  items?: MenuIconProps[];
   placement?: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topCenter' | 'topRight' | 'bottomCenter';
 } & Omit<DropDownProps, 'overlay'>;
 
-type MenuIconProp = {
+export type MenuIconProps = {
   containerClass?: string;
   label: string;
   icon?: JSX.Element;
@@ -22,12 +22,12 @@ type MenuIconProp = {
 };
 
 type MenuHeaderDropdownProps = {
-  items: MenuIconProp[];
+  items: MenuIconProps[];
   onParentClick?: () => void;
 };
 
 export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParentClick }) => {
-  const MenuItem = ({ label, icon, onClick, containerClass }: MenuIconProp) => (
+  const MenuItem = ({ label, icon, onClick, containerClass }: MenuIconProps) => (
     <div
       onClick={() => {
         if (onParentClick) {
