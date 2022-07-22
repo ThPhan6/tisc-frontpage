@@ -236,7 +236,9 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
           }}
           onDelete={() => onChangeData('email', '')}
           placeholder="user work email"
-          message={data.email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.WORK_EMAIL) : undefined}
+          message={
+            data.email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.EMAIL_UNVALID) : undefined
+          }
           messageType={data.email !== '' ? (isValidEmail ? 'normal' : 'error') : undefined}
         />
 
