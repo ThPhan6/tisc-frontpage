@@ -16,7 +16,13 @@ import DistributionTerritoryModal from './DistributionTerritoryModal';
 import { DistributorEntryForm, DistributorForm } from '@/types/distributor.type';
 import { useEffect } from 'react';
 import { useAppSelector } from '@/reducers';
-import { isEmptySpace, messageError, validateEmail, validatePostalCode } from '@/helper/utils';
+import {
+  isEmptySpace,
+  messageError,
+  messageErrorType,
+  validateEmail,
+  validatePostalCode,
+} from '@/helper/utils';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -250,13 +256,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               onDelete={() => onChangeData('postal_code', '')}
               deleteIcon
               message={messageError(data.postal_code, 10, MESSAGE_ERROR.POSTAL_CODE)}
-              messageType={
-                data.postal_code !== ''
-                  ? data.postal_code.length === 10
-                    ? 'error'
-                    : 'normal'
-                  : undefined
-              }
+              messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
             />
           </div>
           <div className="contact person">

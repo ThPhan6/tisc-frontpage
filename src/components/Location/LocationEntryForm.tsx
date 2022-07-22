@@ -13,7 +13,13 @@ import styles from './styles/LocationEntryForm.less';
 import CollapseCheckboxList from '@/components/CustomCheckbox/CollapseCheckboxList';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { getListFunctionalType } from '@/services';
-import { isEmptySpace, messageError, validateEmail, validatePostalCode } from '@/helper/utils';
+import {
+  isEmptySpace,
+  messageError,
+  messageErrorType,
+  validateEmail,
+  validatePostalCode,
+} from '@/helper/utils';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
 import { trimStart } from 'lodash';
@@ -273,13 +279,7 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
         }}
         onDelete={() => onChangeData('postal_code', '')}
         message={messageError(data.postal_code, 10, MESSAGE_ERROR.POSTAL_CODE)}
-        messageType={
-          data.postal_code !== ''
-            ? data.postal_code.length === 10
-              ? 'error'
-              : 'normal'
-            : undefined
-        }
+        messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
       />
       <FormGroup label="General Phone" required layout="vertical" formClass={styles.formGroup}>
         <PhoneInput
