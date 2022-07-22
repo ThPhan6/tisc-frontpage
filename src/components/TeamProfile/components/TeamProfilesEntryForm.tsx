@@ -236,7 +236,7 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
           }}
           onDelete={() => onChangeData('email', '')}
           placeholder="user work email"
-          message={data.email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.EMAIL) : undefined}
+          message={data.email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.WORK_EMAIL) : undefined}
           messageType={data.email !== '' ? (isValidEmail ? 'normal' : 'error') : undefined}
         />
 
@@ -254,6 +254,7 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
               zoneCode: workLocation.phoneCode,
               phoneNumber: data.phone,
             }}
+            deleteIcon
           />
         </FormGroup>
         {/* Work Mobile */}
@@ -270,6 +271,7 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
               zoneCode: workLocation.phoneCode,
               phoneNumber: data.mobile,
             }}
+            deleteIcon
           />
         </FormGroup>
 

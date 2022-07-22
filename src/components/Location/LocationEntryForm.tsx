@@ -107,7 +107,7 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
 
   const handleSubmit = () => {
     if (!isValidEmail) {
-      return message.error(MESSAGE_ERROR.EMAIL);
+      return message.error(MESSAGE_ERROR.GENERAL_EMAIL);
     }
     if (data.postal_code.length < 5) {
       return message.error(MESSAGE_ERROR.POSTAL_CODE);
@@ -290,6 +290,7 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
             zoneCode: countryData.phoneCode,
             phoneNumber: data.general_phone,
           }}
+          deleteIcon
         />
       </FormGroup>
       <InputGroup
@@ -307,7 +308,9 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
         }}
         onDelete={() => onChangeData('general_email', '')}
         placeholder="general email address"
-        message={data.general_email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.EMAIL) : undefined}
+        message={
+          data.general_email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.GENERAL_EMAIL) : undefined
+        }
         messageType={data.general_email !== '' ? (isValidEmail ? 'normal' : 'error') : undefined}
       />
       <CountryModal

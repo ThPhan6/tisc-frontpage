@@ -338,6 +338,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
                   zoneCode: countryData.phoneCode,
                   phoneNumber: data.phone,
                 }}
+                deleteIcon
               />
             </FormGroup>
             <FormGroup label="Work Mobile" required layout="vertical" formClass={styles.formGroup}>
@@ -350,6 +351,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
                   zoneCode: countryData.phoneCode,
                   phoneNumber: data.mobile,
                 }}
+                deleteIcon
               />
             </FormGroup>
           </div>
