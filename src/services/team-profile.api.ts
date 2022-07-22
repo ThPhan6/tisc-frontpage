@@ -8,6 +8,8 @@ import type {
 import { TeamProfileTableProps, TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import store from '@/reducers';
+import { getUserInfoMiddleware } from '@/pages/LandingPage/services/api';
 
 interface ITeamProfilePaginationResponse {
   data: {
@@ -72,6 +74,10 @@ export async function updateTeamProfile(id: string, data: TeamProfileRequestBody
     data,
   })
     .then(() => {
+      const globalState = store.getState();
+      if (globalState.user.user?.id === id) {
+        getUserInfoMiddleware();
+      }
       message.success(MESSAGE_NOTIFICATION.UPDATE_TEAM_PROFILE_SUCCESS);
       return true;
     })

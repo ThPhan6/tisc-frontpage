@@ -78,15 +78,15 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
   const handleSubmit = (callBack?: (id: string) => void) => {
     onSubmit(
       {
-        firstname: data.firstname.trim(),
-        lastname: data.lastname.trim(),
-        gender: data.gender,
+        firstname: data.firstname?.trim() ?? '',
+        lastname: data.lastname?.trim() ?? '',
+        gender: data.gender === true ? true : false,
         location_id: data.location_id,
-        department_id: data.department_id.trim(),
-        position: data.position.trim(),
-        email: data.email.trim(),
-        phone: data.phone.trim(),
-        mobile: data.mobile.trim(),
+        department_id: data.department_id?.trim() ?? '',
+        position: data.position?.trim() ?? '',
+        email: data.email?.trim() ?? '',
+        phone: data.phone?.trim() ?? '',
+        mobile: data.mobile?.trim() ?? '',
         role_id: data.role_id,
       },
       callBack,

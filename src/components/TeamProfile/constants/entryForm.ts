@@ -3,7 +3,7 @@ export const DEFAULT_TEAMPROFILE = {
   firstname: '',
   lastname: '',
   fullname: '',
-  gender: true,
+  gender: null,
   location_id: '',
   department_id: '',
   position: '',
