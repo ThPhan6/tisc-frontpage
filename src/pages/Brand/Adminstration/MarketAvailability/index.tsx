@@ -6,7 +6,6 @@ import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import { useAppSelector } from '@/reducers';
 import type { MarketAvailabilityDataList } from '@/types';
-import { Title } from '@/components/Typography';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 import styles from '../MarketAvailability/styles/index.less';
 import { useState } from 'react';
@@ -87,11 +86,9 @@ const MarketAvailabilityList = () => {
   return (
     <>
       <CustomTable
-        title={
-          <div className={styles.title}>
-            <Title level={7}>MARKET AVAILABILITY</Title>{' '}
-            <InfoIcon className={styles.iconInfor} onClick={() => setInformationVisible(true)} />
-          </div>
+        title={'MARKET AVAILABILITY'}
+        rightAction={
+          <InfoIcon className={styles.iconInfor} onClick={() => setInformationVisible(true)} />
         }
         fetchDataFunc={getMarketAvailabilityList}
         columns={mainColumns}
@@ -99,6 +96,8 @@ const MarketAvailabilityList = () => {
           brand_id: user.brand.id,
         }}
         hasPagination
+        customClass={styles.customTitle}
+        rowKey="collection_name"
       />
       <InformationMarketAvailability
         visible={informationVisible}
