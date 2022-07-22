@@ -39,7 +39,7 @@ const InspirationalQuotationsList: React.FC = () => {
       width: '15%',
     },
     {
-      title: 'Quotation',
+      title: 'Quotes',
       dataIndex: 'quotation',
     },
     {
@@ -64,7 +64,7 @@ const InspirationalQuotationsList: React.FC = () => {
       ref={tableRef}
       columns={mainColumns}
       fetchDataFunc={getQuotationPagination}
-      title="INSPIRATIONAL QUOTATIONS"
+      title="INSPIRATIONAL QUOTES"
       hasPagination
     />
   );
