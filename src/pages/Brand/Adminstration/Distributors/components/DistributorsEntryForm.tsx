@@ -93,15 +93,11 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
   }, [countryData]);
 
   useEffect(() => {
-    if (countryData.value !== '-1' && stateData.value !== '') {
-      onChangeData('state_id', stateData.value);
-    }
+    onChangeData('state_id', stateData.value);
   }, [stateData]);
 
   useEffect(() => {
-    if (stateData.value !== '' && cityData.value !== '') {
-      onChangeData('city_id', cityData.value);
-    }
+    onChangeData('city_id', cityData.value);
   }, [cityData]);
 
   useEffect(() => {
