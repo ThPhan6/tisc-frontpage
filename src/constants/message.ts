@@ -6,6 +6,7 @@ export const MESSAGE_ERROR = {
   POSTAL_CODE: 'You are allowed to enter 10 characters only / The minimum lenght is 5 characters',
   reachLogoSizeLimit: 'Logo size limit reached (240 KB)',
   WORK_EMAIL: 'Work email is required',
+  EMAIL_AUTO: 'Message is required',
 };
 
 export const MESSAGE_NOTIFICATION = {

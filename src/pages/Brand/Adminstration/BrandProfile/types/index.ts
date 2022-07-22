@@ -16,6 +16,7 @@ export interface UpdateBrandProfileRequestBody {
 export interface WebsiteUrl {
   websiteValue: WebsiteUrlItem;
   onChange: (value: WebsiteUrlItem) => void;
+  onDeleteWebsiteItem: () => void;
 }
 
 export interface LogoBrandProfile {

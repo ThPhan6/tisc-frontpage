@@ -83,6 +83,7 @@ const InspirationalQuotationsList: React.FC = () => {
       columns={mainColumns}
       fetchDataFunc={getQuotationPagination}
       title="INSPIRATIONAL QUOTATIONS"
+      hasPagination
     />
   );
 };

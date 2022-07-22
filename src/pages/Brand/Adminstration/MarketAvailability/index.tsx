@@ -104,6 +104,7 @@ const MarketAvailabilityList = () => {
         extraParams={{
           brand_id: user.brand.id,
         }}
+        hasPagination
       />
       <InformationMarketAvailability
         visible={informationVisible}
