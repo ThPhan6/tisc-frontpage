@@ -185,7 +185,7 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
           <Collapse.Panel
             header={
               <span className={activeKey.includes(snakeCase(option.name)) ? 'activated' : ''}>
-                <span className="text-capitalize">{option.name}</span>
+                <span className="text-uppercase">{option.name}</span>
                 <span className="count-number">({option.count})</span>
               </span>
             }
