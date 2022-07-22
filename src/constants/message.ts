@@ -3,11 +3,12 @@ export const MESSAGE_ERROR = {
   PASSWORD: 'Password error',
   CONFIRM_PASSWORD: 'Passwords do not match',
   PHONE_INPUT: 'Invalid phone number',
-  POSTAL_CODE: 'You are allowed to enter 10 characters only / The minimum lenght is 5 characters',
+  POSTAL_CODE: 'You are allowed to enter 10 characters only',
   reachLogoSizeLimit: 'Logo size limit reached (240 KB)',
   WORK_EMAIL: 'Work email is required',
   GENERAL_EMAIL: 'General email is required',
   EMAIL_AUTO: 'Message is required',
+  EMAIL_UNVALID: 'Email is not valid',
 };
 
 export const MESSAGE_NOTIFICATION = {
