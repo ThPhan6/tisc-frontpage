@@ -110,14 +110,9 @@ const onCellLvl2Click = (expandableCellLvl2: Element) => {
     ? true
     : false;
 
-  try {
     // try remove before re-add
     // styleLvl2.remove();
-  } catch (err) {}
 
-  if (isExpanding === false) {
-    return;
-  }
 
   // Insert styles
   const newWidth = expandableCellLvl2.clientWidth;
@@ -148,12 +143,12 @@ const onLvl1CellClick = async (expandableCellLvl1: Element, colWidthLvl2?: numbe
   );
 
   if (expandedColumns && expandedColumns.length >= 4) {
-    let totalWidthDiff = 0;
-    expandedColumns.forEach((dataCell, index) => {
-      // Avoid resize first cell, last cells (Count and Account column)
-      if ([0, expandedColumns.length - 1, expandedColumns.length - 2].includes(index)) {
-        return;
-      }
+  // console.log({ expandedColumns });
+  // console.log({ nestedSubColumns });
+  if (expandedColumns) {
+    if (expandedColumns.length < 4) {
+      return;
+    }
       // console.log('dataCell', dataCell);
       totalWidthDiff += nestedSubColumns?.[index]?.clientWidth - dataCell.clientWidth;
       // console.log('widthDiff', nestedSubColumns?.[index]?.clientWidth - dataCell.clientWidth);
@@ -176,7 +171,7 @@ const onLvl1CellClick = async (expandableCellLvl1: Element, colWidthLvl2?: numbe
   const expandableCellsLvl2 = document.querySelectorAll(
     'tr.ant-table-row-level-0.custom-expanded-level-2 td:nth-child(2)',
   );
-  // console.log('expandableCellsLvl2', { expandableCellsLvl2 });
+  
   if (expandableCellsLvl2.length === 0) {
     return;
   }
