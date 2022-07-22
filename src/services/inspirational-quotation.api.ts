@@ -39,7 +39,7 @@ export async function getQuotationPagination(
     })
     .catch((error) => {
       message.error(
-        error.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_INSPIRATIONAL_QUOTATION_ERROR,
+        error.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_INSPIRATIONAL_QUOTES_ERROR,
       );
     });
 }
@@ -52,9 +52,7 @@ export async function getOneQuotation(id: string) {
       return response.data;
     })
     .catch((error) => {
-      message.error(
-        error.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_INSPIRATIONAL_QUOTATION_ERROR,
-      );
+      message.error(error.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_INSPIRATIONAL_QUOTES_ERROR);
       return {} as Quotation;
     });
 }
@@ -62,13 +60,11 @@ export async function getOneQuotation(id: string) {
 export async function createQuotation(data: Quotation) {
   return request<boolean>(`/api/quotation/create`, { method: 'POST', data })
     .then(() => {
-      message.success(MESSAGE_NOTIFICATION.CREATE_INSPIRATIONAL_QUOTATION_SUCCESS);
+      message.success(MESSAGE_NOTIFICATION.CREATE_INSPIRATIONAL_QUOTES_SUCCESS);
       return true;
     })
     .catch((error) => {
-      message.error(
-        error.data?.message ?? MESSAGE_NOTIFICATION.CREATE_INSPIRATIONAL_QUOTATION_ERROR,
-      );
+      message.error(error.data?.message ?? MESSAGE_NOTIFICATION.CREATE_INSPIRATIONAL_QUOTES_ERROR);
       return false;
     });
 }
@@ -76,13 +72,11 @@ export async function createQuotation(data: Quotation) {
 export async function updateQuotation(id: string, data: Quotation) {
   return request<boolean>(`/api/quotation/update/${id}`, { method: 'PUT', data })
     .then(() => {
-      message.success(MESSAGE_NOTIFICATION.UPDATE_INSPIRATIONAL_QUOTATION_SUCCESS);
+      message.success(MESSAGE_NOTIFICATION.UPDATE_INSPIRATIONAL_QUOTES_SUCCESS);
       return true;
     })
     .catch((error) => {
-      message.error(
-        error.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_INSPIRATIONAL_QUOTATION_ERROR,
-      );
+      message.error(error.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_INSPIRATIONAL_QUOTES_ERROR);
       return false;
     });
 }
@@ -90,13 +84,11 @@ export async function updateQuotation(id: string, data: Quotation) {
 export async function deleteQuotation(id: string) {
   return request<boolean>(`/api/quotation/delete/${id}`, { method: 'DELETE' })
     .then(() => {
-      message.success(MESSAGE_NOTIFICATION.DELETE_INSPIRATIONAL_QUOTATION_SUCCESS);
+      message.success(MESSAGE_NOTIFICATION.DELETE_INSPIRATIONAL_QUOTES_SUCCESS);
       return true;
     })
     .catch((error) => {
-      message.error(
-        error.data?.message ?? MESSAGE_NOTIFICATION.DELETE_INSPIRATIONAL_QUOTATION_ERROR,
-      );
+      message.error(error.data?.message ?? MESSAGE_NOTIFICATION.DELETE_INSPIRATIONAL_QUOTES_ERROR);
       return false;
     });
 }

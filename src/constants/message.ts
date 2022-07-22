@@ -139,15 +139,16 @@ export const MESSAGE_NOTIFICATION = {
   // permission
   GET_PERMISSION_DATA_ERROR: 'Failed to get permission data',
   UPDATE_PERMISSION_DATA_ERROR: 'Failed to update permission data',
-  // inspirational quotation
-  GET_LIST_INSPIRATIONAL_QUOTATION_ERROR: 'Get list inspirational quotation error',
-  GET_ONE_INSPIRATIONAL_QUOTATION_ERROR: 'Get one inspirational quotation error',
-  CREATE_INSPIRATIONAL_QUOTATION_SUCCESS: 'Create inspirational quotation successfully',
-  CREATE_INSPIRATIONAL_QUOTATION_ERROR: 'Create inspirational quotation error',
-  DELETE_INSPIRATIONAL_QUOTATION_SUCCESS: 'Delete inspirational quotation successfully',
-  DELETE_INSPIRATIONAL_QUOTATION_ERROR: 'Delete inspirational quotation error',
-  UPDATE_INSPIRATIONAL_QUOTATION_SUCCESS: 'Update inspirational quotation successfully',
-  UPDATE_INSPIRATIONAL_QUOTATION_ERROR: 'Update inspirational quotation error',
+
+  // inspirational quotes
+  GET_LIST_INSPIRATIONAL_QUOTES_ERROR: 'Get list inspirational quotes error',
+  GET_ONE_INSPIRATIONAL_QUOTES_ERROR: 'Get one inspirational quotes error',
+  CREATE_INSPIRATIONAL_QUOTES_SUCCESS: 'Create inspirational quotes successfully',
+  CREATE_INSPIRATIONAL_QUOTES_ERROR: 'Create inspirational quotes error',
+  DELETE_INSPIRATIONAL_QUOTES_SUCCESS: 'Delete inspirational quotes successfully',
+  DELETE_INSPIRATIONAL_QUOTES_ERROR: 'Delete inspirational quotes error',
+  UPDATE_INSPIRATIONAL_QUOTES_SUCCESS: 'Update inspirational quotes successfully',
+  UPDATE_INSPIRATIONAL_QUOTES_ERROR: 'Update inspirational quotes error',
 
   //location
   GET_LIST_LOCATION_ERROR: 'Get list location error',
