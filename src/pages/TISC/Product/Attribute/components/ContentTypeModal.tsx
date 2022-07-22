@@ -76,7 +76,7 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
     return items.map((item) => {
       return {
         label: (
-          <span className="basis-conversion-group">
+          <span className="basis-conversion-group text-capitalize">
             {item.name_1}
             <SwapIcon />
             {item.name_2}
@@ -91,7 +91,7 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
     return items.map((item) => {
       return {
         label: (
-          <span className="basis-preset-option-group">
+          <span className="basis-preset-option-group text-capitalize">
             <span>{item.name}</span>
             <span className="count-number">({item.count})</span>
           </span>
@@ -104,7 +104,7 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
   const formatBasisText = (items: BasisText[]): RadioValue[] => {
     return items.map((item) => {
       return {
-        label: <span className="basis-preset-option-group">{item.name}</span>,
+        label: <span className="basis-preset-option-group text-capitalize">{item.name}</span>,
         value: item.id,
       };
     });
@@ -185,7 +185,7 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
           <Collapse.Panel
             header={
               <span className={activeKey.includes(snakeCase(option.name)) ? 'activated' : ''}>
-                <span>{option.name}</span>
+                <span className="text-uppercase">{option.name}</span>
                 <span className="count-number">({option.count})</span>
               </span>
             }

@@ -53,16 +53,18 @@ const ProductVendor: FC = () => {
             </BodyText>
             <table className="brand-websites">
               <tbody>
-                {brand?.offical_websites?.map((_website: any, index: number) => (
+                {brand?.official_websites?.map((website, index: number) => (
                   <tr key={index}>
                     <td>
                       <BodyText level={6} fontFamily="Roboto">
-                        Global
+                        {website.country_name ?? 'N/A'}
                       </BodyText>
                     </td>
                     <td>
                       <BodyText level={6} fontFamily="Roboto">
-                        www.silestone.com
+                        <a href={website.url ?? 'N/A'} target="_blank" rel="noreferrer">
+                          {website.url ?? 'N/A'}
+                        </a>
                       </BodyText>
                     </td>
                   </tr>

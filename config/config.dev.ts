@@ -2,5 +2,7 @@
 import { defineConfig } from 'umi';
 
 export default defineConfig({
-  plugins: [],
+  dynamicImport: {
+    loading: '@/components/LoadingPage',
+  },
 });

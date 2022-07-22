@@ -36,7 +36,11 @@ export const InspirationalQuotationEntryForm: FC<QuotationEntryFormProps> = ({
   };
 
   const handleSubmitData = () => {
-    return onSubmit(value);
+    return onSubmit({
+      author: value.author.trim(),
+      identity: value.identity.trim(),
+      quotation: value.quotation.trim(),
+    });
   };
 
   return (
@@ -81,7 +85,7 @@ export const InspirationalQuotationEntryForm: FC<QuotationEntryFormProps> = ({
         />
 
         {/* quotation */}
-        <FormGroup label="Quotation" required={true} layout="vertical">
+        <FormGroup label="Quotes" required={true} layout="vertical">
           <CustomTextArea
             showCount
             maxLength={120}

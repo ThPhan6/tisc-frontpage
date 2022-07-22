@@ -5,9 +5,16 @@
       :global(.ant-collapse-content-box) {
         padding: 0;
         :global(.dynamic-wrapper) {
-          padding: 8px 16px;
+          padding: 8px 16px 0;
+          &:last-child {
+            padding-bottom: 8px;
+          }
           svg {
             color: @mono-color-medium;
+            transition: all 0.3s;
+            &:hover {
+              color: @primary-color-dark;
+            }
           }
           :global(.dynamic-title-box) {
             padding-left: 0;
@@ -19,7 +26,7 @@
       }
       .vendorCustomPanelBox {
         :global(.ant-collapse-content-box) {
-          padding: 8px 16px;
+          padding: 0;
         }
         &:global(.ant-collapse-item-active) {
           box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
@@ -116,6 +123,9 @@
     td {
       height: 36px;
       padding: 0 16px;
+      a {
+        color: #000;
+      }
     }
   }
 }

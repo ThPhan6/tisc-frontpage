@@ -15,7 +15,7 @@ export default {
   'menu.adminstration.messages': 'Messages',
   'menu.adminstration.revenue': 'Revenues',
   'menu.adminstration.messages.email': 'Email Autoresponders',
-  'menu.adminstration.messages.quotation': 'Inspirational Quotations',
+  'menu.adminstration.messages.quotation': 'Inspirational Quotes',
   'menu.adminstration.revenue.service': 'Services',
   'menu.adminstration.revenue.subscription': 'Subscription',
 

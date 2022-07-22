@@ -13,7 +13,7 @@ import {
   createProductDownload,
   createProductCatelogue,
 } from '@/services';
-import type { ProductFormData } from '@/types';
+import type { ProductFormData, ProductKeyword } from '@/types';
 import { useDispatch } from 'react-redux';
 import { setBrand } from '@/reducers/product';
 import { useAppSelector } from '@/reducers';
@@ -41,12 +41,12 @@ const ProductConfigurationCreate: React.FC = () => {
       brand_id: brandId,
       category_ids: details.categories.map((category) => category.id),
       collection_id: details.collection?.id ?? '',
-      name: details.name,
-      description: details.description,
+      name: details.name.trim(),
+      description: details.description.trim(),
       general_attribute_groups: details.general_attribute_groups,
       feature_attribute_groups: details.feature_attribute_groups,
       specification_attribute_groups: details.specification_attribute_groups,
-      keywords: details.keywords,
+      keywords: details.keywords.map((keyword) => keyword.trim()) as ProductKeyword,
       images: details.images.map((image) => {
         if (image.indexOf('data:image') > -1) {
           return image.split(',')[1];

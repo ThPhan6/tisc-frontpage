@@ -5,12 +5,9 @@ import { useRef } from 'react';
 import { deleteQuotation, getQuotationPagination } from '@/services';
 import { Quotation } from '@/types';
 import { TableColumnItem } from '@/components/Table/types';
-import { HeaderDropdown } from '@/components/HeaderDropdown';
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { PATH } from '@/constants/path';
 import { confirmDelete } from '@/helper/common';
+import { ActionMenu } from '@/components/Action';
 
 const InspirationalQuotationsList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -42,7 +39,7 @@ const InspirationalQuotationsList: React.FC = () => {
       width: '15%',
     },
     {
-      title: 'Quotation',
+      title: 'Quotes',
       dataIndex: 'quotation',
     },
     {
@@ -52,25 +49,10 @@ const InspirationalQuotationsList: React.FC = () => {
       width: '5%',
       render: (_value: any, record: any) => {
         return (
-          <HeaderDropdown
-            arrow={true}
-            align={{ offset: [-14, -10] }}
-            items={[
-              {
-                onClick: () => handleUpdateQuotation(record.id),
-                icon: <EditIcon />,
-                label: 'Edit',
-              },
-              {
-                onClick: () => handleDeleteQuotation(record.id),
-                icon: <DeleteIcon />,
-                label: 'Delete',
-              },
-            ]}
-            trigger={['click']}
-          >
-            <ActionIcon />
-          </HeaderDropdown>
+          <ActionMenu
+            handleUpdate={() => handleUpdateQuotation(record.id)}
+            handleDelete={() => handleDeleteQuotation(record.id)}
+          />
         );
       },
     },
@@ -82,7 +64,8 @@ const InspirationalQuotationsList: React.FC = () => {
       ref={tableRef}
       columns={mainColumns}
       fetchDataFunc={getQuotationPagination}
-      title="INSPIRATIONAL QUOTATIONS"
+      title="INSPIRATIONAL QUOTES"
+      hasPagination
     />
   );
 };

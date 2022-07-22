@@ -30,14 +30,20 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
 
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
   useEffect(() => {
+    let activeKeys: number[] = [];
     data.forEach((item, index) => {
       const selectedOption = item.options.find((option) => {
         return chosenItem && chosenItem.find((checked) => option.value === checked.value);
       });
       if (selectedOption) {
-        setActiveKey([index]);
+        if (combinable) {
+          activeKeys.push(index);
+        } else {
+          activeKeys = [index];
+        }
       }
     });
+    setActiveKey(activeKeys);
   }, [chosenItem]);
 
   const renderHeader = (item: DropdownCheckboxItem, index: number) => {
@@ -88,7 +94,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
               let otherSelected: CheckboxValue[] = [];
               if (combinable && selected) {
                 otherSelected = selected.reduce((finalData, selectedItem) => {
-                  if (item.options.find((option) => option.value !== selectedItem.value)) {
+                  if (!item.options.find((option) => option.value === selectedItem.value)) {
                     finalData.push(selectedItem);
                   }
                   return finalData;

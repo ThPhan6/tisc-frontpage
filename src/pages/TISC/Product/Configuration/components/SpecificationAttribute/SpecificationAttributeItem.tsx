@@ -98,6 +98,15 @@ const GeneralFeatureAttributeItem: React.FC<GeneralFeatureAttributeItemProps> = 
       ...newAttributes[index],
       attributes: newItemAttributes,
     };
+    /// reset selected
+    setSelected(
+      newAttributes[index].attributes.map((attr) => {
+        return {
+          label: '',
+          value: attr.id,
+        };
+      }),
+    );
     dispatch(
       setPartialProductDetail({
         specification_attribute_groups: newAttributes,

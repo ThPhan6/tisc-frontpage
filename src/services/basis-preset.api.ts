@@ -62,13 +62,15 @@ export async function createPresetMiddleware(
     });
 }
 
-export async function deletePresetMiddleware(id: string, callback: () => void) {
-  request(`/api/basis-preset/delete/${id}`, { method: 'DELETE' })
+export async function deletePresetMiddleware(id: string) {
+  return request<boolean>(`/api/basis-preset/delete/${id}`, { method: 'DELETE' })
     .then(() => {
-      callback();
+      message.success(MESSAGE_NOTIFICATION.DELETE_PRESET_SUCCESS);
+      return true;
     })
     .catch((error) => {
       message.error(error?.data?.message || MESSAGE_NOTIFICATION.DELETE_PRESET_ERROR);
+      return false;
     });
 }
 

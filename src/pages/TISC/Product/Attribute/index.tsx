@@ -1,18 +1,15 @@
-import React, { useRef } from 'react';
-import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import type { TableColumnItem } from '@/components/Table/types';
-import { HeaderDropdown } from '@/components/HeaderDropdown';
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
-import { getProductAttributePagination, deleteAttribute } from '@/services';
-import { pushTo } from '@/helper/history';
-import { useAttributeLocation } from './hooks/location';
-import { confirmDelete } from '@/helper/common';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
+import { ActionMenu } from '@/components/Action';
+import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import type { TableColumnItem } from '@/components/Table/types';
+import { confirmDelete } from '@/helper/common';
+import { pushTo } from '@/helper/history';
+import { deleteAttribute, getProductAttributePagination } from '@/services';
 import type { AttributeListResponse, SubAttribute } from '@/types';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
+import React, { useRef } from 'react';
+import { useAttributeLocation } from './hooks/location';
 
 const MAIN_COL_WIDTH = 200;
 const AttributeList: React.FC = () => {
@@ -74,25 +71,10 @@ const AttributeList: React.FC = () => {
       width: '5%',
       render: (_value, record) => {
         return (
-          <HeaderDropdown
-            arrow={true}
-            align={{ offset: [-14, -10] }}
-            items={[
-              {
-                onClick: () => handleUpdateAttribute(record.id),
-                icon: <EditIcon />,
-                label: 'Edit',
-              },
-              {
-                onClick: () => handleDeleteAttribute(record.id),
-                icon: <DeleteIcon />,
-                label: 'Delete',
-              },
-            ]}
-            trigger={['click']}
-          >
-            <ActionIcon />
-          </HeaderDropdown>
+          <ActionMenu
+            handleUpdate={() => handleUpdateAttribute(record.id)}
+            handleDelete={() => handleDeleteAttribute(record.id)}
+          />
         );
       },
     },

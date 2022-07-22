@@ -11,8 +11,9 @@ import { CustomInput } from '@/components/Form/CustomInput';
 
 import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
 import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
-import { REGEX_GET_CONTENT_ONLY } from '@/helper/utils';
 import { useParams } from 'umi';
+import { pushTo } from '@/helper/history';
+import { PATH } from '@/constants/path';
 
 const DEFAULT_AGREEMENTPOLICIES_VALUE = {
   title: '',
@@ -51,7 +52,7 @@ const CreateAgreementPoliciesPage = () => {
 
   /// only get content entered
   const handleOnChangeMessageInput = (html: string) => {
-    setValue((state) => ({ ...state, message: html.replace(REGEX_GET_CONTENT_ONLY, '') }));
+    setValue((state) => ({ ...state, message: html }));
   };
 
   const handleSubmit = () => {
@@ -73,12 +74,20 @@ const CreateAgreementPoliciesPage = () => {
     });
   };
 
+  const handleCancel = () => {
+    pushTo(PATH.policy);
+  };
+
   return (
     <div>
       <TableHeader title="AGREEMENT / POLICIES / TERMS" />
 
       <div className={styles.container}>
-        <EntryFormWrapper handleSubmit={handleSubmit} submitButtonStatus={submitButtonStatus.value}>
+        <EntryFormWrapper
+          handleCancel={handleCancel}
+          handleSubmit={handleSubmit}
+          submitButtonStatus={submitButtonStatus.value}
+        >
           <FormGroup label="Title" required={true} layout="vertical" formClass={styles.title}>
             <div className={styles.title_field}>
               <CustomInput

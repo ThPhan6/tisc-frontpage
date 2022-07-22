@@ -177,6 +177,7 @@ const SubGeneralFeatureAttribute: React.FC<SubGeneralFeatureAttributeProps> = (p
             text: e.target.value,
           });
         }}
+        forceDisplayDeleteIcon
       />
     );
   };
@@ -261,6 +262,7 @@ const SubGeneralFeatureAttribute: React.FC<SubGeneralFeatureAttributeProps> = (p
         }}
         chosenValue={selected}
         setChosenValue={setSelected}
+        className={styles.specificationOptionCheckbox}
       />
     </div>
   );

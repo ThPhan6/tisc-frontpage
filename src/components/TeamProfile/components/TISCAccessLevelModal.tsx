@@ -157,7 +157,7 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
             {/* future data, can delete */}
             {furturePermissionData.map((fData, index) => (
               <tr key={`futureData_${index}`}>
-                <td className={styles.furture_data_name} style={{ marginTop: '4px' }}>
+                <td className={`${styles.furture_data_name} ${styles.menu_item}`}>
                   {fData.logo}
                   <BodyText fontFamily="Roboto" level={6}>
                     {fData.name}

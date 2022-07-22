@@ -24,7 +24,11 @@ export interface IBrandDetail {
   logo: string;
   mission_n_vision: string;
   name: string;
-  offical_websites: any;
+  official_websites: {
+    country_id: string;
+    country_name: string;
+    url: string;
+  }[];
   parent_company: string | null;
   slogan: string | null;
   status: number;
