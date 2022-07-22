@@ -106,6 +106,18 @@ export const validatePostalCode = (postalCode: string) => {
   }
   return false;
 };
+// for postal code
+export const messageError = (input: string, length: number = 10, message: string) => {
+  return input !== '' ? (input.length === length ? message : '') : undefined;
+};
+export const messageErrorType = (
+  input: string,
+  length: number,
+  error: 'error' | 'warning',
+  normal: 'normal',
+) => {
+  return input !== '' ? (input.length === length ? error : normal) : undefined;
+};
 
 export const isEmptySpace = (input: string) => {
   return REGEX_EMPTY_SPACE.test(input);

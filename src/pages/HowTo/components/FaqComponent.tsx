@@ -1,5 +1,5 @@
 import { BodyText } from '@/components/Typography';
-import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-20px.svg';
+import { ReactComponent as PlusIcon } from '@/assets/icons/action-plus-icon.svg';
 import { ReactComponent as ExtendIcon } from '@/assets/icons/action-extend.svg';
 import styles from '../index.less';
 import { FC, useState } from 'react';

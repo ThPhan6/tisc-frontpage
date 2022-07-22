@@ -1,5 +1,5 @@
+import { ReactComponent as PlusIcon } from '@/assets/icons/action-plus-icon.svg';
 import { ReactComponent as ExtendIcon } from '@/assets/icons/action-extend.svg';
-import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon-20px.svg';
 import { BodyText } from '@/components/Typography';
 import { Collapse } from 'antd';
 import { FC } from 'react';
