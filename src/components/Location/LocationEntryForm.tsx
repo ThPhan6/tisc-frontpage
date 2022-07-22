@@ -13,7 +13,7 @@ import styles from './styles/LocationEntryForm.less';
 import CollapseCheckboxList from '@/components/CustomCheckbox/CollapseCheckboxList';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { getListFunctionalType } from '@/services';
-import { REGEX_EMPTY_SPACE, validateEmail, validatePostalCode } from '@/helper/utils';
+import { isEmptySpace, validateEmail, validatePostalCode } from '@/helper/utils';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
 import { trimStart } from 'lodash';
@@ -74,7 +74,7 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
 
   // handle onchange postal code
   const onChangePostalCode = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length > 10 || !REGEX_EMPTY_SPACE.test(e.target.value)) {
+    if (e.target.value.length > 10 || !isEmptySpace(e.target.value)) {
       return;
     }
     setData({
