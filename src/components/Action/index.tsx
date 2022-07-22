@@ -14,8 +14,8 @@ interface ActionFormProps {
 }
 
 interface ActionMenuForm extends ActionFormProps {
-  handleUpdate: () => void;
-  handleDelete: () => void;
+  handleUpdate?: () => void;
+  handleDelete?: () => void;
 }
 
 export const ActionForm: FC<ActionFormProps> = ({
@@ -44,20 +44,21 @@ export const ActionForm: FC<ActionFormProps> = ({
 };
 
 export const ActionMenu: FC<ActionMenuForm> = ({ handleDelete, handleUpdate }) => {
-  return (
-    <ActionForm
-      actionItems={[
-        {
-          icon: <EditIcon />,
-          onClick: handleUpdate,
-          label: 'Edit',
-        },
-        {
-          icon: <DeleteIcon />,
-          onClick: handleDelete,
-          label: 'Delete',
-        },
-      ]}
-    />
-  );
+  const actionItems = [];
+  if (handleUpdate) {
+    actionItems.push({
+      icon: <EditIcon />,
+      onClick: handleUpdate,
+      label: 'Edit',
+    });
+  }
+  if (handleDelete) {
+    actionItems.push({
+      icon: <DeleteIcon />,
+      onClick: handleDelete,
+      label: 'Delete',
+    });
+  }
+
+  return <ActionForm actionItems={actionItems} />;
 };

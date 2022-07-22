@@ -44,7 +44,7 @@ const LocationModal: FC<ILocationModal> = ({
         });
         if (selectedLocation) {
           setWorkLocation({
-            label: `${selectedLocation.business_name}, ${upperCase(selectedLocation.country_name)}`,
+            label: `${selectedLocation.city_name}, ${upperCase(selectedLocation.country_name)}`,
             value: selectedLocation.id,
             phoneCode: selectedLocation.phone_code,
           });
@@ -60,7 +60,7 @@ const LocationModal: FC<ILocationModal> = ({
       });
       if (selectedLocation) {
         setWorkLocation({
-          label: `${selectedLocation.business_name}, ${upperCase(selectedLocation.country_name)}`,
+          label: `${selectedLocation.city_name}, ${upperCase(selectedLocation.country_name)}`,
           value: selectedLocation.id,
           phoneCode: selectedLocation.phone_code,
         });
