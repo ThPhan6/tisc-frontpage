@@ -44,7 +44,7 @@ export const PATH = {
   createTeamProfile: '/tisc/adminstration/team-profiles/create',
   updateTeamProfile: '/tisc/adminstration/team-profiles/update/:id',
 
-  // inspirational quotation
+  // inspirational quotes
   quotation: '/tisc/adminstration/messages/quotation',
   createQuotation: '/tisc/adminstration/messages/quotation/create',
   updateQuotation: '/tisc/adminstration/messages/quotation/update/:id',
