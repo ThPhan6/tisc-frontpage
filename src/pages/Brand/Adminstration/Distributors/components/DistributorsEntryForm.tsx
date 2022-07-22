@@ -16,7 +16,7 @@ import DistributionTerritoryModal from './DistributionTerritoryModal';
 import { DistributorEntryForm, DistributorForm } from '@/types/distributor.type';
 import { useEffect } from 'react';
 import { useAppSelector } from '@/reducers';
-import { REGEX_EMPTY_SPACE, validateEmail, validatePostalCode } from '@/helper/utils';
+import { isEmptySpace, validateEmail, validatePostalCode } from '@/helper/utils';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -59,10 +59,8 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
 
   const isValidEmail = validateEmail(data.email);
 
-  const isValidPostal = validatePostalCode(data.postal_code);
-
   const onChangePostalCode = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length > 10 || !REGEX_EMPTY_SPACE.test(e.target.value)) {
+    if (!validatePostalCode(e.target.value) || !isEmptySpace(e.target.value)) {
       return;
     }
     setData({
@@ -118,9 +116,6 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
   const handleSubmit = () => {
     if (!isValidEmail) {
       return message.error(MESSAGE_ERROR.WORK_EMAIL);
-    }
-    if (data.postal_code.length < 5) {
-      return message.error(MESSAGE_ERROR.POSTAL_CODE);
     }
     return onSubmit({
       ...data,
@@ -256,13 +251,17 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               deleteIcon
               message={
                 data.postal_code !== ''
-                  ? isValidPostal
-                    ? ''
-                    : MESSAGE_ERROR.POSTAL_CODE
+                  ? data.postal_code.length === 10
+                    ? MESSAGE_ERROR.POSTAL_CODE
+                    : ''
                   : undefined
               }
               messageType={
-                data.postal_code !== '' ? (isValidPostal ? 'normal' : 'error') : undefined
+                data.postal_code !== ''
+                  ? data.postal_code.length === 10
+                    ? 'error'
+                    : 'normal'
+                  : undefined
               }
             />
           </div>
@@ -324,7 +323,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               onDelete={() => onChangeData('email', '')}
               deleteIcon
               message={
-                data.email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.WORK_EMAIL) : undefined
+                data.email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.EMAIL_UNVALID) : undefined
               }
               messageType={data.email !== '' ? (isValidEmail ? 'normal' : 'error') : undefined}
             />
@@ -338,6 +337,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
                   zoneCode: countryData.phoneCode,
                   phoneNumber: data.phone,
                 }}
+                deleteIcon
               />
             </FormGroup>
             <FormGroup label="Work Mobile" required layout="vertical" formClass={styles.formGroup}>
@@ -350,6 +350,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
                   zoneCode: countryData.phoneCode,
                   phoneNumber: data.mobile,
                 }}
+                deleteIcon
               />
             </FormGroup>
           </div>

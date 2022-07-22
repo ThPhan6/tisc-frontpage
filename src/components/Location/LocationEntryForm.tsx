@@ -62,9 +62,6 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
   // validate email Address
   const isValidEmail = validateEmail(data.general_email);
 
-  // validate postal code
-  const isValidPostal = validatePostalCode(data.postal_code);
-
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({
       ...data,
@@ -74,7 +71,8 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
 
   // handle onchange postal code
   const onChangePostalCode = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length > 10 || !isEmptySpace(e.target.value)) {
+    // only 10 chars and cannot type space
+    if (!validatePostalCode(e.target.value) || !isEmptySpace(e.target.value)) {
       return;
     }
     setData({
@@ -107,25 +105,22 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
 
   const handleSubmit = () => {
     if (!isValidEmail) {
-      return message.error(MESSAGE_ERROR.EMAIL);
-    }
-    if (data.postal_code.length < 5) {
-      return message.error(MESSAGE_ERROR.POSTAL_CODE);
+      return message.error(MESSAGE_ERROR.GENERAL_EMAIL);
     }
 
     return onSubmit({
-      business_name: data.business_name.trim(),
-      business_number: data.business_number.trim(),
+      business_name: data.business_name?.trim() ?? '',
+      business_number: data.business_number?.trim() ?? '',
       country_id: data.country_id,
       state_id: data.state_id,
       city_id: data.city_id,
-      address: data.address.trim(),
-      postal_code: data.postal_code.trim(),
-      general_phone: data.general_phone.trim(),
-      general_email: data.general_email.trim(),
+      address: data.address?.trim() ?? '',
+      postal_code: data.postal_code?.trim() ?? '',
+      general_phone: data.general_phone?.trim() ?? '',
+      general_email: data.general_email?.trim() ?? '',
       functional_type_ids: selectedFunctionalTypes.map((selected) => {
         if (selected.value === 'other') {
-          return (selected.label as string).trim();
+          return (selected.label as string)?.trim() ?? '';
         }
         return selected.value;
       }),
@@ -273,9 +268,19 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
         }}
         onDelete={() => onChangeData('postal_code', '')}
         message={
-          data.postal_code !== '' ? (isValidPostal ? '' : MESSAGE_ERROR.POSTAL_CODE) : undefined
+          data.postal_code !== ''
+            ? data.postal_code.length === 10
+              ? MESSAGE_ERROR.POSTAL_CODE
+              : ''
+            : undefined
         }
-        messageType={data.postal_code !== '' ? (isValidPostal ? 'normal' : 'error') : undefined}
+        messageType={
+          data.postal_code !== ''
+            ? data.postal_code.length === 10
+              ? 'error'
+              : 'normal'
+            : undefined
+        }
       />
       <FormGroup label="General Phone" required layout="vertical" formClass={styles.formGroup}>
         <PhoneInput
@@ -290,6 +295,7 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
             zoneCode: countryData.phoneCode,
             phoneNumber: data.general_phone,
           }}
+          deleteIcon
         />
       </FormGroup>
       <InputGroup
@@ -307,7 +313,9 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
         }}
         onDelete={() => onChangeData('general_email', '')}
         placeholder="general email address"
-        message={data.general_email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.EMAIL) : undefined}
+        message={
+          data.general_email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.EMAIL_UNVALID) : undefined
+        }
         messageType={data.general_email !== '' ? (isValidEmail ? 'normal' : 'error') : undefined}
       />
       <CountryModal

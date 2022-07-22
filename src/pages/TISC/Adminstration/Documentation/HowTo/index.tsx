@@ -58,14 +58,15 @@ const HowToPage: FC<HowToPageProps> = ({ containerClass }) => {
           ...faq,
           document: {
             ...faq.document,
-            document: faq.document.document.trim(),
-            question_and_answer: faq.document.question_and_answer.map((sub) => {
-              return {
-                ...sub,
-                question: sub.question.trim(),
-                answer: sub.answer.trim(),
-              };
-            }),
+            document: faq.document.document ? faq.document.document.trim() : '',
+            question_and_answer:
+              faq.document.question_and_answer?.map((sub) => {
+                return {
+                  ...sub,
+                  question: sub.question.trim(),
+                  answer: sub.answer.trim(),
+                };
+              }) ?? [],
           },
         };
       }),

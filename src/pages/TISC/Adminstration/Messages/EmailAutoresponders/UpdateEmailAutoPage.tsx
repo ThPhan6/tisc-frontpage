@@ -144,7 +144,7 @@ const UpdateEmailAutoPage = () => {
 
   return (
     <div>
-      <TableHeader title="Email Autoresponders" rightAction={<CustomPlusButton disabled />} />
+      <TableHeader title="Email Autoresponder" rightAction={<CustomPlusButton disabled />} />
       <div className={styles.container}>
         <EntryFormWrapper
           handleCancel={handleCancel}
