@@ -149,7 +149,7 @@ const ProductTopBar: React.FC = () => {
     ///
     return (
       <HeaderDropdown
-        align={{ offset: [40, 7] }}
+        align={{ offset: [26, 7] }}
         placement="bottomRight"
         containerClass={styles.topbarDropdown}
         disabled={product.summary ? false : true}

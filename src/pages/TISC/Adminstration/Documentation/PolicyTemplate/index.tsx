@@ -28,7 +28,7 @@ const PolicyTemplatePage: React.FC = () => {
       width: '15%',
       sorter: true,
       render: (_value, record) => {
-        return `${record.author.firstname} ${record.author.lastname}`;
+        return `${record.author.lastname} ${record.author.firstname}`;
       },
     },
     {

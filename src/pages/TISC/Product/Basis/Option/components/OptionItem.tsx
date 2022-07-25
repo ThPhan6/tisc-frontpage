@@ -215,7 +215,9 @@ export const OptionItem: FC<IOptionItem> = (props) => {
                 }`}
               onClick={handleOnClickUsingImage}
             >
-              <BodyText level={7}>Image</BodyText>
+              <BodyText fontFamily="Roboto" level={6}>
+                Image
+              </BodyText>
               <Radio />
             </div>
           </div>

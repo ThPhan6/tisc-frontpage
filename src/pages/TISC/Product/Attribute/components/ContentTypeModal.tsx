@@ -159,7 +159,7 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
   /// basis TEXT
   if (type === 'text') {
     return (
-      <div style={{ paddingRight: 16 }}>
+      <div /* style={{ paddingRight: 16 }} */>
         <CustomRadio
           options={formatBasisText(data)}
           value={selectedOption.basis_id}
