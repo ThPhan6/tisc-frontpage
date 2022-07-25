@@ -154,15 +154,13 @@ const PhotoUpload: React.FC = () => {
           </Col>
         </Row>
         <div className={styles.photoKeyword}>
-          <BodyText level={6} fontFamily="Roboto">
-            {product.brand?.name ?? 'N/A'}
+          <BodyText level={4} customClass={styles.imageNaming}>
+            Image naming:
           </BodyText>
           {keywords.map((value, index) => (
             <CustomInput
               key={index}
               placeholder={`keyword${index + 1}`}
-              autoWidth
-              defaultWidth={55}
               value={value}
               onChange={(e) => {
                 const newKeywords = [...keywords] as ProductKeyword;
