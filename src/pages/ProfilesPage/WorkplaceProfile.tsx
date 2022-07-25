@@ -16,7 +16,7 @@ export const WorkplaceProfile = () => {
           <CustomInput
             readOnly
             borderBottomColor="mono-medium"
-            value={`${user?.firstname} ${user?.lastname}`}
+            value={`${user?.lastname} ${user?.firstname}`}
           />
         </FormGroup>
         <FormGroup label="Work Location" layout="vertical" formClass={styles.form}>

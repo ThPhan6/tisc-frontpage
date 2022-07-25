@@ -81,7 +81,7 @@ export const AvatarDropdown = () => {
           alt="avatar"
         />
         <BodyText fontFamily="Roboto" level={4} customClass={styles['user-name']}>
-          {`${currentUser?.firstname} ${currentUser?.lastname}`}
+          {`${currentUser?.lastname} ${currentUser?.firstname}`}
         </BodyText>
       </span>
     </HeaderDropdown>

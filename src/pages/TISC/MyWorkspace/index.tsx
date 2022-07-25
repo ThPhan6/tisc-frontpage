@@ -74,7 +74,7 @@ const MyWorkspace: React.FC = () => {
                   Teams:
                 </BodyText>
                 {brand.teams.map((user: IBrandCardTeam) => {
-                  return <ProfileIcon key={user.id} name={user.firstname + ' ' + user.lastname} />;
+                  return <ProfileIcon key={user.id} name={user.lastname + ' ' + user.firstname} />;
                 })}
               </div>
             </div>
