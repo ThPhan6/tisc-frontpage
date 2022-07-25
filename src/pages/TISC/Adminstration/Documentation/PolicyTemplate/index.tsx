@@ -8,6 +8,7 @@ import { PATH } from '@/constants/path';
 import { getPolicyTemplates } from './api';
 import moment from 'moment';
 import { ActionForm } from '@/components/Action';
+import { fullName } from '@/helper/utils';
 
 const PolicyTemplatePage: React.FC = () => {
   const tableRef = useRef<any>();
@@ -28,7 +29,8 @@ const PolicyTemplatePage: React.FC = () => {
       width: '15%',
       sorter: true,
       render: (_value, record) => {
-        return `${record.author.lastname} ${record.author.firstname}`;
+        // return `${record.author.lastname} ${record.author.firstname}`;
+        return fullName(record.author);
       },
     },
     {

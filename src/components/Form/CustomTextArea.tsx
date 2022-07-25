@@ -26,10 +26,10 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
     if (!maxHeight || !defaultHeight || props.value === '') {
       contentHeight = defaultHeight;
     }
-    if (maxHeight && contentHeight < maxHeight) {
-      contentHeight = contentHeight;
-      // setCheckedOverflow('hidden');
-    }
+    // if (maxHeight && contentHeight < maxHeight) {
+    // contentHeight = contentHeight;
+    // setCheckedOverflow('hidden');
+    // }
     // else {
     // contentHeight = maxHeight;
     // setCheckedOverflow('hidden auto');
