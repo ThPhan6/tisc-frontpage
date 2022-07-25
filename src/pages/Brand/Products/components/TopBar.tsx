@@ -68,21 +68,6 @@ const ProductTopBar: React.FC = () => {
     );
   };
 
-  // set brand to product reducer
-  //   useEffect(() => {
-  //     if (brandData) {
-  //       let brand: IBrandDetail | undefined;
-  //       forEach(brandAlphabet, (brands) => {
-  //         const foundedBrand = brands.find((item) => item.id === brandData.value);
-  //         if (foundedBrand) {
-  //           brand = foundedBrand;
-  //         }
-  //       });
-  //       //
-  //       dispatch(setBrand(brand));
-  //     }
-  //   }, [brandData]);
-
   // brand product summary
   useEffect(() => {
     if (userBrand?.id) {
@@ -95,7 +80,7 @@ const ProductTopBar: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (userBrand?.id /*  && filter */) {
+    if (userBrand?.id && filter) {
       const params = {
         brand_id: userBrand.id,
       } as ProductGetListParameter;
@@ -109,7 +94,8 @@ const ProductTopBar: React.FC = () => {
     }
   }, [filter]);
 
-  console.log(userBrand);
+  // console.log('userBrand', userBrand);
+  // console.log('product', product);
 
   const renderDropDownList = (title: string, filterName: IFilterType, data: GeneralData[]) => {
     // merge view small
@@ -117,10 +103,10 @@ const ProductTopBar: React.FC = () => {
     ///
     return (
       <HeaderDropdown
-        align={{ offset: [40, 7] }}
+        align={{ offset: [26, 7] }}
         placement="bottomRight"
         containerClass={styles.topbarDropdown}
-        // disabled={userBrand?.summary ? false : true}
+        disabled={product.summary ? false : true}
         items={items.map((item) => {
           return {
             onClick: () => {
@@ -177,7 +163,7 @@ const ProductTopBar: React.FC = () => {
             topValue={
               filter?.name === 'category_id' ? (
                 <FilterItem title={filter.title} onDelete={resetProductList} />
-              ) : product.brand ? (
+              ) : userBrand ? (
                 'view'
               ) : (
                 <span style={{ opacity: 0 }}>.</span>
@@ -186,7 +172,7 @@ const ProductTopBar: React.FC = () => {
             disabled
             bottomEnable={product.summary ? true : false}
             bottomValue={
-              !product.brand
+              !userBrand
                 ? 'Categories'
                 : renderDropDownList('Categories', 'category_id', product.summary?.categories ?? [])
             }
@@ -196,7 +182,7 @@ const ProductTopBar: React.FC = () => {
             topValue={
               filter?.name === 'collection_id' ? (
                 <FilterItem title={filter.title} onDelete={resetProductList} />
-              ) : product.brand ? (
+              ) : userBrand ? (
                 'view'
               ) : (
                 <span style={{ opacity: 0 }}>.</span>
@@ -205,7 +191,7 @@ const ProductTopBar: React.FC = () => {
             disabled
             bottomEnable={product.summary ? true : false}
             bottomValue={
-              !product.brand
+              !userBrand
                 ? 'Collections'
                 : renderDropDownList(
                     'Collections',

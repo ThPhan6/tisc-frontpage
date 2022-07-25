@@ -435,16 +435,11 @@ export default [
         component: './Brand/Products',
         hideInMenu: true,
       },
-      // {
-      //   path: '/brand/products/create/:brandId',
-      //   component: './Brand/Product/Create',
-      //   hideInMenu: true,
-      // },
-      // {
-      //   path: '/brand/products/:id',
-      //   component: './Brand/Product/Update',
-      //   hideInMenu: true,
-      // },
+      {
+        path: '/brand/product/:id',
+        component: './Brand/Products/UpdatePage',
+        hideInMenu: true,
+      },
     ],
   },
   {
