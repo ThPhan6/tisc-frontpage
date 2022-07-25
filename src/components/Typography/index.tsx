@@ -3,7 +3,7 @@ import type { BodyTextProps, CustomTypography, MainTitleProps } from './types';
 import Style from './styles/index.less';
 
 export const Title: FC<CustomTypography> = ({
-  color,
+  color = 'mono-color',
   customClass = '',
   level = 1,
   children,
@@ -15,14 +15,14 @@ export const Title: FC<CustomTypography> = ({
 
   const classNameTitle = `${setLevel()}`;
   return (
-    <p {...props} className={`${classNameTitle} ${customClass}`} style={{ color: color }}>
+    <p {...props} className={`${classNameTitle} ${customClass} ${color}`} style={{ color: color }}>
       {children}
     </p>
   );
 };
 
 export const BodyText: FC<BodyTextProps> = ({
-  color,
+  color = 'mono-color',
   fontFamily = 'Cormorant-Garamond',
   customClass = '',
   level = 1,
@@ -40,14 +40,14 @@ export const BodyText: FC<BodyTextProps> = ({
 
   const classNameBodyText = `${setLevel()}`;
   return (
-    <p {...props} className={`${classNameBodyText} ${customClass}`} style={{ color: color }}>
+    <p {...props} className={`${classNameBodyText} ${customClass} ${color}`}>
       {children}
     </p>
   );
 };
 
 export const MainTitle: FC<MainTitleProps> = ({
-  color,
+  color = 'mono-color',
   customClass = '',
   level = 1,
   children,

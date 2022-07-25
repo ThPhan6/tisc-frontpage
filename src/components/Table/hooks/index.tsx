@@ -138,7 +138,6 @@ const onLvl1CellClick = async (expandableCellLvl1: Element, colWidthLvl2?: numbe
   // await sleep(2000);
   const newWidth = expandableCellLvl1.clientWidth;
 
-  console.log('newWidth', { expandableCellLvl1 }, expandableCellLvl1.getBoundingClientRect());
   // console.log('expandableCellLvl1', { expandableCellLvl1 });
   style.innerHTML = `.ant-table-expanded-row.ant-table-expanded-row-level-1:not([style*="display: none;"]) tr[class*="ant-table-row-level"] td:first-child { width: ${newWidth}px; }`;
 
@@ -148,18 +147,18 @@ const onLvl1CellClick = async (expandableCellLvl1: Element, colWidthLvl2?: numbe
   );
 
   if (expandedColumns && expandedColumns.length >= 4) {
-    let totalWidthDiff = 0;
+    // let totalWidthDiff = 0;
     expandedColumns.forEach((dataCell, index) => {
       // Avoid resize first cell, last cells (Count and Account column)
       if ([0, expandedColumns.length - 1, expandedColumns.length - 2].includes(index)) {
         return;
       }
-      // console.log('dataCell', dataCell);
-      totalWidthDiff += nestedSubColumns?.[index]?.clientWidth - dataCell.clientWidth;
+      // totalWidthDiff += nestedSubColumns?.[index]?.clientWidth - dataCell.clientWidth;
       // console.log('widthDiff', nestedSubColumns?.[index]?.clientWidth - dataCell.clientWidth);
-      const isLastResizeableCell = index === expandedColumns.length - 3;
-      const newCellWidth =
-        nestedSubColumns?.[index]?.clientWidth + (isLastResizeableCell ? -totalWidthDiff : 0);
+      // console.log('totalWidthDiff', totalWidthDiff);
+      // const isLastResizeableCell = index === expandedColumns.length - 3;
+      const newCellWidth = nestedSubColumns?.[index]?.clientWidth;
+      // console.log('newCellWidth', newCellWidth);
       if (newCellWidth) {
         style.innerHTML += ` tr[class*="custom-expanded"] td:nth-child(${
           index + 1

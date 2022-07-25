@@ -1,7 +1,7 @@
 import { RadioValue } from '@/components/CustomRadio/types';
 import Popover from '@/components/Modal/Popover';
 import { getWorkLocations } from '@/services';
-import { LocationGroupedByCountry } from '@/types';
+import { LocationGroupedByCountry, ILocationDetail } from '@/types';
 import { FC, useEffect, useState } from 'react';
 import { upperCase } from 'lodash';
 import styles from '../styles/LocationModal.less';
@@ -34,6 +34,21 @@ const LocationModal: FC<ILocationModal> = ({
 }) => {
   const [workLocations, setWorkLocations] = useState<LocationGroupedByCountry[]>([]);
 
+  const setSelectedWorkLocation = (location: ILocationDetail) => {
+    let workLocationText = '';
+    if (location.city_name) {
+      workLocationText = `${location.city_name}, `;
+    }
+    if (location.country_name) {
+      workLocationText += upperCase(location.country_name);
+    }
+    setWorkLocation({
+      label: workLocationText,
+      value: location.id,
+      phoneCode: location.phone_code ?? '',
+    });
+  };
+
   // load location list
   useEffect(() => {
     getWorkLocations().then((res) => {
@@ -43,11 +58,7 @@ const LocationModal: FC<ILocationModal> = ({
           return location.id === workLocation.value;
         });
         if (selectedLocation) {
-          setWorkLocation({
-            label: `${selectedLocation.city_name}, ${upperCase(selectedLocation.country_name)}`,
-            value: selectedLocation.id,
-            phoneCode: selectedLocation.phone_code,
-          });
+          setSelectedWorkLocation(selectedLocation);
         }
       });
     });
@@ -59,11 +70,7 @@ const LocationModal: FC<ILocationModal> = ({
         return location.id === selectedValue.value;
       });
       if (selectedLocation) {
-        setWorkLocation({
-          label: `${selectedLocation.city_name}, ${upperCase(selectedLocation.country_name)}`,
-          value: selectedLocation.id,
-          phoneCode: selectedLocation.phone_code,
-        });
+        setSelectedWorkLocation(selectedLocation);
       }
     });
   };
