@@ -63,3 +63,9 @@ export type ModalOpen =
   | 'Tisc Login'
   | 'Login'
   | '';
+
+export type SignUpDesignerRequestBody = {
+  firstname: string;
+  email: string;
+  password: string;
+};
