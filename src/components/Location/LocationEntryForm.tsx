@@ -21,7 +21,6 @@ import {
   validatePostalCode,
 } from '@/helper/utils';
 import { MESSAGE_ERROR } from '@/constants/message';
-import { message } from 'antd';
 import { trimStart } from 'lodash';
 
 interface ILocationEntryForm {
@@ -106,10 +105,6 @@ const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
   }, [cityData]);
 
   const handleSubmit = () => {
-    if (!isValidEmail) {
-      return message.error(MESSAGE_ERROR.GENERAL_EMAIL);
-    }
-
     return onSubmit({
       business_name: data.business_name?.trim() ?? '',
       business_number: data.business_number?.trim() ?? '',
