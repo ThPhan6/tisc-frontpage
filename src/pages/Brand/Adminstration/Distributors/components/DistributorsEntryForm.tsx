@@ -24,7 +24,6 @@ import {
   validatePostalCode,
 } from '@/helper/utils';
 import { MESSAGE_ERROR } from '@/constants/message';
-import { message } from 'antd';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { trimStart } from 'lodash';
 
@@ -116,9 +115,6 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
   }, [authorCountryData]);
 
   const handleSubmit = () => {
-    if (!isValidEmail) {
-      return message.error(MESSAGE_ERROR.WORK_EMAIL);
-    }
     return onSubmit({
       ...data,
       brand_id: user?.brand?.id as string,
