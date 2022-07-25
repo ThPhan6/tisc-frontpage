@@ -1,4 +1,4 @@
-import { useEffect, useState, useImperativeHandle, forwardRef, ReactNode } from 'react';
+import { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
 import { Table } from 'antd';
 import { useCustomTable } from './hooks';
 import { forEach, isArray, isEmpty } from 'lodash';
@@ -24,7 +24,7 @@ export interface CustomTableProps {
     params: PaginationRequestParams,
     callback: (data: DataTableResponse) => void,
   ) => void;
-  title: string | ReactNode;
+  title: string;
   multiSort?: {
     [key: string]: any;
   };
@@ -32,11 +32,22 @@ export interface CustomTableProps {
   extraParams?: {
     [key: string]: any;
   };
+  customClass?: string;
+  rowKey?: string;
 }
 
 const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
-  const { expandable, fetchDataFunc, title, rightAction, multiSort, hasPagination, extraParams } =
-    props;
+  const {
+    expandable,
+    fetchDataFunc,
+    title,
+    rightAction,
+    multiSort,
+    hasPagination,
+    extraParams,
+    customClass,
+    rowKey = 'id',
+  } = props;
 
   const DEFAULT_PAGE_NUMBER = 1;
   const DEFAULT_PAGESIZE = hasPagination ? 10 : 999999999999;
@@ -131,13 +142,17 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   }));
   return (
     <div className={styles.customTable}>
-      <TableHeader title={title} rightAction={rightAction} />
+      <TableHeader
+        title={title}
+        rightAction={rightAction}
+        customClass={customClass ? customClass : ''}
+      />
 
       <Table
         columns={columns}
-        rowKey="id"
+        rowKey={rowKey}
         rowClassName={(record) => {
-          if (record.id === expanded) {
+          if (record[rowKey] === expanded) {
             return 'custom-expanded' as any;
           }
         }}
@@ -176,10 +191,11 @@ interface ExpandableTableProps {
   childrenColumnName: string;
   expandable?: ExpandableConfig<any>;
   level?: number;
+  rowKey?: string;
 }
 
 export const GetExpandableTableConfig = (props: ExpandableTableProps): ExpandableConfig<any> => {
-  const { expandable, childrenColumnName, level } = props;
+  const { expandable, childrenColumnName, level, rowKey = 'id' } = props;
   const { columns, expanded } = useCustomTable(props.columns);
 
   return {
@@ -190,7 +206,7 @@ export const GetExpandableTableConfig = (props: ExpandableTableProps): Expandabl
         <Table
           pagination={false}
           columns={columns}
-          rowKey="id"
+          rowKey={rowKey}
           rowClassName={level === 2 ? 'custom-expanded-level-2' : ''}
           tableLayout="auto"
           expandable={{
