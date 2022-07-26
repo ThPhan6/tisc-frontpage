@@ -7,6 +7,7 @@ import { BodyText } from '@/components/Typography';
 import { useAppSelector } from '@/reducers';
 // import { setBrand } from '@/reducers/product';
 import styles from './styles/cardList.less';
+import { truncate, capitalize } from 'lodash';
 
 const CardList: React.FC = () => {
   const product = useAppSelector((state) => state.product);
@@ -20,7 +21,7 @@ const CardList: React.FC = () => {
           header={
             <div className="header-text">
               <BodyText level={5} fontFamily="Roboto">
-                {group.name}
+                {truncate(capitalize(group.name), { length: 40 })}
                 <span className="product-count">({group.count})</span>
               </BodyText>
             </div>

@@ -6,7 +6,7 @@ import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import { useRef } from 'react';
-import { showImageUrl, formatPhoneCode } from '@/helper/utils';
+import { showImageUrl, formatPhoneCode, getFullName } from '@/helper/utils';
 import { ProfileIcon } from '@/components/ProfileIcon';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { USER_STATUS_TEXTS } from '@/constants/util';
@@ -46,13 +46,13 @@ const TeamProfilesList = () => {
             }}
           />
         ) : (
-          <ProfileIcon name={record.fullname} />
+          <ProfileIcon name={getFullName(record)} />
         ),
     },
     {
       title: 'Full Name',
       dataIndex: 'firstname',
-      render: (_v, record) => record.fullname,
+      render: (_v, record) => getFullName(record),
       sorter: true,
     },
     {

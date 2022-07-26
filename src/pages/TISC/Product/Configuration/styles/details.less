@@ -133,7 +133,6 @@
     height: 40px;
     overflow: auto hidden;
     div {
-      width: auto !important;
       span {
         font-size: 12px;
       }
@@ -277,7 +276,7 @@
       justify-content: space-between;
       height: 36px;
       padding: 0 16px;
-      box-shadow: @border-top-light;
+      // box-shadow: @border-top-light;
       :global(.attribute-select-group-left) {
         display: flex;
         align-items: center;
@@ -439,11 +438,14 @@
   }
 }
 .collectionLabel {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-right: 32px;
   svg {
-    margin-left: 8px;
+    position: absolute;
+    right: 8px;
     color: @mono-color-medium;
     cursor: pointer;
     &:hover {
