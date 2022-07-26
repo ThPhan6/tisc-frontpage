@@ -437,7 +437,7 @@ export default [
       },
       {
         path: '/brand/product/:id',
-        component: './Brand/Products/UpdatePage',
+        component: './Brand/Products/ViewPage',
         hideInMenu: true,
       },
     ],

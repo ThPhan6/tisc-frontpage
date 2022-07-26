@@ -15,7 +15,11 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
 import { setPartialProductDetail } from '@/reducers/product';
 
-const ProductInfo: React.FC = () => {
+interface ProductEditActive {
+  isEdit: boolean;
+}
+
+const ProductInfo: React.FC<ProductEditActive> = ({ isEdit }) => {
   const product = useAppSelector((state) => state.product);
   const dispatch = useDispatch();
   const { name, description, collection } = product.details;
@@ -76,20 +80,25 @@ const ProductInfo: React.FC = () => {
         }
         customHeaderClass={styles.productHeaderCollapse}
       >
+        {/* Collection */}
         <InputGroup
           horizontal
           fontLevel={4}
           label="Collection"
-          placeholder="create or assign from the list"
-          rightIcon={<RightLeftIcon onClick={() => setVisible(true)} />}
+          placeholder={isEdit ? 'create or assign from the list' : ''}
+          rightIcon={isEdit ? <RightLeftIcon onClick={() => setVisible(true)} /> : undefined}
           noWrap
           value={collection?.name ?? ''}
+          readOnly={isEdit ? false : true}
         />
+
+        {/* Product */}
         <InputGroup
           horizontal
           fontLevel={4}
           label="Product"
-          placeholder="type max.100 characters short description"
+          placeholder={isEdit ? 'type max.100 characters short description' : ''}
+          readOnly={isEdit ? false : true}
           maxLength={100}
           noWrap
           value={name}
@@ -101,12 +110,15 @@ const ProductInfo: React.FC = () => {
             );
           }}
         />
+        {/* Product ID */}
         <InputGroup horizontal fontLevel={4} label="Product ID" readOnly={true} noWrap />
+        {/* Description */}
         <InputGroup
           horizontal
           fontLevel={4}
           label="Description"
-          placeholder="max.50 words of product summary"
+          placeholder={isEdit ? 'max.50 words of product summary' : ''}
+          readOnly={isEdit ? false : true}
           maxWords={50}
           noWrap
           value={description}
@@ -119,66 +131,68 @@ const ProductInfo: React.FC = () => {
           }}
         />
       </CustomCollapse>
-      <Popover
-        title="SELECT COLLECTION"
-        visible={visible}
-        setVisible={setVisible}
-        chosenValue={
-          collection
-            ? {
-                value: collection.id,
-                label: collection.name,
-              }
-            : undefined
-        }
-        setChosenValue={(selected) => {
-          if (selected) {
-            dispatch(
-              setPartialProductDetail({
-                collection: {
-                  name: selected.label,
-                  id: selected.value,
-                },
-              }),
-            );
+      {isEdit && (
+        <Popover
+          title="SELECT COLLECTION"
+          visible={visible}
+          setVisible={setVisible}
+          chosenValue={
+            collection
+              ? {
+                  value: collection.id,
+                  label: collection.name,
+                }
+              : undefined
           }
-        }}
-        groupRadioList={[
-          {
-            heading: 'Assign bellow Collection',
-            options: collections.map((item) => {
-              return {
-                label: item.name,
-                value: item.id,
-              };
-            }),
-          },
-        ]}
-        extraTopAction={
-          <div className={styles.extraAction}>
-            <MainTitle level={3} customClass="extra-heading">
-              Create new collection
-            </MainTitle>
-            <div className="extra-input-group">
-              <CustomInput
-                className="extra-input"
-                placeholder="type new collection name"
-                value={newCollection}
-                onChange={(e) => setNewCollection(e.target.value)}
-              />
-              <div
-                className="extra-custom-button"
-                onClick={disabled.value ? undefined : handleCreateCollection}
-              >
-                <MainTitle level={4} customClass="extra-custom-button-label">
-                  Add
-                </MainTitle>
-                <CustomPlusButton size={18} />
+          setChosenValue={(selected) => {
+            if (selected) {
+              dispatch(
+                setPartialProductDetail({
+                  collection: {
+                    name: selected.label,
+                    id: selected.value,
+                  },
+                }),
+              );
+            }
+          }}
+          groupRadioList={[
+            {
+              heading: 'Assign bellow Collection',
+              options: collections.map((item) => {
+                return {
+                  label: item.name,
+                  value: item.id,
+                };
+              }),
+            },
+          ]}
+          extraTopAction={
+            <div className={styles.extraAction}>
+              <MainTitle level={3} customClass="extra-heading">
+                Create new collection
+              </MainTitle>
+              <div className="extra-input-group">
+                <CustomInput
+                  className="extra-input"
+                  placeholder="type new collection name"
+                  value={newCollection}
+                  onChange={(e) => setNewCollection(e.target.value)}
+                />
+                <div
+                  className="extra-custom-button"
+                  onClick={disabled.value ? undefined : handleCreateCollection}
+                >
+                  <MainTitle level={4} customClass="extra-custom-button-label">
+                    Add
+                  </MainTitle>
+                  <CustomPlusButton size={18} />
+                </div>
               </div>
             </div>
-          </div>
-        }
-      />
+          }
+        />
+      )}
     </>
   );
 };

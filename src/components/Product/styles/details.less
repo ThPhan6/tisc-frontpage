@@ -433,3 +433,25 @@
     text-transform: capitalize;
   }
 }
+.productBrandAction {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+
+  .actionIcon {
+    margin-right: 8px;
+  }
+
+  .shareViaEmail,
+  .likeAction {
+    display: flex;
+    align-items: center;
+  }
+
+  .shareViaEmail {
+    &_icon path {
+      fill: @mono-color;
+    }
+  }
+}

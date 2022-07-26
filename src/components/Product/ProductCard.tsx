@@ -71,11 +71,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, productPage }) => {
     });
   };
 
-  console.log('productPage', productPage);
   const gotoProductDetailPage = (pageType: 'brand' | 'tisc') => {
     if (pageType === 'brand') {
-      // console.log('pageType', pageType);
-
       if (product.id) {
         pushTo(PATH.updateProductBrand.replace(':id', product.id));
       }

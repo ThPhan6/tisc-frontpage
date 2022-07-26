@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import GeneralFeatureAttribute from './GeneralFeatureAttribute';
-import SpecificationAttribute from './SpecificationAttribute';
-import ProductVendor from './ProductVendor';
 import { CustomTabs } from '@/components/Tabs';
 import { getAllAttribute } from '@/services';
-import { AttributebyType } from '@/types';
+// import { AttributebyType } from '@/types';
 import styles from './styles/details.less';
 import { LIST_TAB } from './constants';
 import type { ACTIVE_KEY } from './types';
@@ -16,15 +13,15 @@ interface ProductAttributeInterface {
 
 const ProductAttribute: React.FC<ProductAttributeInterface> = ({ activeKey, setActiveKey }) => {
   const [isReady, setIsReady] = useState(false);
-  const [attribute, setAttribute] = useState<AttributebyType>({
-    general: [],
-    feature: [],
-    specification: [],
-  });
+  // const [attribute, setAttribute] = useState<AttributebyType>({
+  //   general: [],
+  //   feature: [],
+  //   specification: [],
+  // });
 
   useEffect(() => {
-    getAllAttribute().then((data) => {
-      setAttribute(data);
+    getAllAttribute().then((/* data */) => {
+      // setAttribute(data);
       setTimeout(() => {
         setIsReady(true);
       }, 200);
@@ -44,13 +41,13 @@ const ProductAttribute: React.FC<ProductAttributeInterface> = ({ activeKey, setA
         onChange={(key) => setActiveKey(key as ACTIVE_KEY)}
         activeKey={activeKey}
       />
-      {activeKey !== 'vendor' && activeKey !== 'specification' ? (
+      {/* {activeKey !== 'vendor' && activeKey !== 'specification' ? (
         <GeneralFeatureAttribute attributes={attribute[activeKey]} activeKey={activeKey} />
       ) : activeKey === 'specification' ? (
         <SpecificationAttribute attributes={attribute.specification} />
       ) : (
         <ProductVendor />
-      )}
+      )} */}
     </div>
   );
 };

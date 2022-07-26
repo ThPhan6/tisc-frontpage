@@ -53,7 +53,6 @@ const FilterItem: React.FC<IFilterItem> = ({ title, onDelete }) => {
 };
 
 const ProductTopBar: React.FC = () => {
-  //   const [brandData, setBrandData] = useState<any>();
   const product = useAppSelector((state) => state.product);
   const userBrand = useAppSelector((state) => state.user.user?.brand);
   const { filter } = product.list;
@@ -93,9 +92,6 @@ const ProductTopBar: React.FC = () => {
       getProductListByBrandId(params);
     }
   }, [filter]);
-
-  // console.log('userBrand', userBrand);
-  // console.log('product', product);
 
   const renderDropDownList = (title: string, filterName: IFilterType, data: GeneralData[]) => {
     // merge view small
