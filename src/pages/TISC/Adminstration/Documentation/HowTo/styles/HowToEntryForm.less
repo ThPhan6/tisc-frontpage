@@ -7,10 +7,10 @@
     background: #fff;
 
     .active_collapse_panel {
-      box-shadow: inset 0 -0.5px 0 @mono-color;
+      box-shadow: @border-bottom;
     }
     .unactive_collapse_panel {
-      box-shadow: inset 0 -0.5px 0 @mono-color-medium;
+      box-shadow: inset 0 -0.7px 0 @mono-color-medium;
     }
 
     :global(.ant-collapse > .ant-collapse-item:last-child) {
@@ -94,7 +94,7 @@
   }
 
   .box-shadow(@color) {
-    box-shadow: 0 0.5px 0 @color;
+    box-shadow: 0 0.7px 0 @color;
   }
 
   .FAQ_field {
@@ -159,7 +159,7 @@
     height: 48px;
     padding: 0 16px;
     background: #fff;
-    border-top: 0.5px solid @mono-color;
+    border-top: 0.7px solid @mono-color;
     .submitBtn {
       border-radius: 12px;
     }

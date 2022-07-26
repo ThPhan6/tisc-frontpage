@@ -48,7 +48,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
       return MESSAGE_ERROR.CONFIRM_PASSWORD;
     }
     if (inputValue.email && !validateEmail(inputValue.email)) {
-      return MESSAGE_ERROR.EMAIL_ALREADY_TOKEN;
+      return MESSAGE_ERROR.EMAIL_ALREADY_TAKEN;
     }
     if (agreeTisc === true && inputValue.agree_tisc === false) {
       return MESSAGE_ERROR.AGREE_TISC;

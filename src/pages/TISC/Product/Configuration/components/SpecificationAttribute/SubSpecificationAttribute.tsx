@@ -12,6 +12,7 @@ import { useAppSelector } from '@/reducers';
 import { setPartialProductDetail } from '@/reducers/product';
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 import styles from './styles/index.less';
+import { truncate } from 'lodash';
 
 interface SubGeneralFeatureAttributeProps {
   attributes: AttributeSpecification[];
@@ -131,7 +132,7 @@ const SubGeneralFeatureAttribute: React.FC<SubGeneralFeatureAttributeProps> = (p
           horizontal
           noWrap
           fontLevel={4}
-          label={currentAttribute?.name ?? 'N/A'}
+          label={currentAttribute?.name ? truncate(currentAttribute.name, { length: 20 }) : 'N/A'}
           conversionData={basis}
           deleteIcon
           onDelete={onDelete}
@@ -152,7 +153,7 @@ const SubGeneralFeatureAttribute: React.FC<SubGeneralFeatureAttributeProps> = (p
       <InputGroup
         horizontal
         fontLevel={4}
-        label={currentAttribute?.name ?? 'N/A'}
+        label={currentAttribute?.name ? truncate(currentAttribute.name, { length: 20 }) : 'N/A'}
         placeholder={placeholder}
         rightIcon={
           basis?.type === 'Options' ? (
