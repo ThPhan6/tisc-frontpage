@@ -438,11 +438,14 @@
   }
 }
 .collectionLabel {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-right: 32px;
   svg {
-    margin-left: 8px;
+    position: absolute;
+    right: 8px;
     color: @mono-color-medium;
     cursor: pointer;
     &:hover {
