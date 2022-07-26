@@ -2,7 +2,7 @@ import { Avatar, Spin } from 'antd';
 import { useModel } from 'umi';
 import { HeaderDropdown } from '../HeaderDropdown';
 import styles from './styles/AvatarDropdown.less';
-import AvatarIcon from '@/assets/icons/avatar-icon.svg';
+import DefaultAvatarIcon from '@/assets/icons/ic-user-white.svg';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
 import { BodyText } from '../Typography';
@@ -76,8 +76,8 @@ export const AvatarDropdown = () => {
       <span className={`${styles.container}`}>
         <Avatar
           size="small"
-          className={styles.avatar}
-          src={currentUser?.avatar ? showImageUrl(currentUser.avatar) : AvatarIcon}
+          className={`${styles.avatar} ${currentUser?.avatar ? '' : 'default'}`}
+          src={currentUser?.avatar ? showImageUrl(currentUser.avatar) : DefaultAvatarIcon}
           alt="avatar"
         />
         <BodyText fontFamily="Roboto" level={4} customClass={styles['user-name']}>
