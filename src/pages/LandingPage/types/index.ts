@@ -68,4 +68,5 @@ export type SignUpDesignerRequestBody = {
   firstname: string;
   email: string;
   password: string;
+  confirmed_password: string;
 };

@@ -13,15 +13,14 @@ import { PoliciesModal } from './PoliciesModal';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { isShowErrorMessage, validateEmail } from '@/helper/utils';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
-import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { signUpDesigner } from '../services/api';
 
 interface SignupInput {
   firstname: string;
   email: string;
   password: string;
-  confirmPassword: string;
-  agree: boolean;
+  confirmed_password: string;
+  agree_tisc: boolean;
 }
 export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
@@ -30,39 +29,48 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
     email: '',
     password: '',
     firstname: '',
-    confirmPassword: '',
-    agree: false,
+    confirmed_password: '',
+    agree_tisc: false,
   });
+  const [agreeTisc, setAgreeTisc] = useState(false);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue({ ...inputValue, [e.target.name]: e.target.value });
   };
 
-  const handleAgree = (e: CheckboxChangeEvent) => {
-    setInputValue({ ...inputValue, agree: e.target.checked });
+  const handleAgreeTisc = () => {
+    setAgreeTisc(!agreeTisc);
+    setInputValue({ ...inputValue, agree_tisc: !inputValue.agree_tisc });
   };
 
   const setErrorMessage = () => {
-    if (inputValue.confirmPassword && inputValue.password !== inputValue.confirmPassword) {
+    if (inputValue.confirmed_password && inputValue.password !== inputValue.confirmed_password) {
       return MESSAGE_ERROR.CONFIRM_PASSWORD;
     }
     if (inputValue.email && !validateEmail(inputValue.email)) {
       return MESSAGE_ERROR.EMAIL_ALREADY_TOKEN;
     }
-    if (inputValue.agree && inputValue.agree !== true) {
+    if (agreeTisc === true && inputValue.agree_tisc === false) {
       return MESSAGE_ERROR.AGREE_TISC;
     }
     return '';
   };
 
   const handleSubmit = () => {
-    if (inputValue.agree === true) {
-      signUpDesigner(inputValue).then((res) => {
+    if (inputValue.agree_tisc === true) {
+      signUpDesigner({
+        firstname: inputValue.firstname,
+        email: inputValue.email,
+        password: inputValue.password,
+        confirmed_password: inputValue.confirmed_password,
+      }).then((res) => {
         if (res) {
+          onClose();
         }
       });
+    } else {
+      setAgreeTisc(true);
     }
-    setErrorMessage();
   };
 
   return (
@@ -132,18 +140,27 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             placeholder="confirm password"
             prefix={<LockedIcon />}
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-            name="confirmPassword"
+            name="confirmed_password"
             required={true}
             onChange={handleOnChange}
             status={
-              inputValue.confirmPassword
-                ? inputValue.password !== inputValue.confirmPassword
+              inputValue.confirmed_password
+                ? inputValue.password !== inputValue.confirmed_password
                   ? 'error'
                   : ''
                 : ''
             }
           />
-          <Checkbox onChange={handleAgree}>By clicking and continuing, we agree TISC’s</Checkbox>
+          <div
+            className={
+              agreeTisc === true && inputValue.agree_tisc === false ? styles.errorStatus : ''
+            }
+          >
+            <Checkbox onChange={handleAgreeTisc}>
+              By clicking and continuing, we agree TISC’s
+            </Checkbox>
+          </div>
+
           <div className={styles.customLink}>
             <span onClick={() => setOpenModalPolicies('Policies')}>
               Terms of Services, Privacy Policy and Cookie Policy
