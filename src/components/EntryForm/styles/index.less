@@ -6,14 +6,14 @@
   .header_main {
     .header_content {
       padding: 0 16px;
-      box-shadow: 0 0.5px 0 @mono-color;
+      box-shadow: 0 0.7px 0 @mono-color;
     }
     .header {
       display: flex;
       align-items: center;
       height: 48px;
       padding: 0 16px;
-      border-bottom: 0.5px inset @mono-color;
+      border-bottom: 0.7px inset @mono-color;
       &__title {
         flex: 1;
         margin-right: 8px;
@@ -31,7 +31,7 @@
   }
   .footer_content {
     padding: 0 16px;
-    box-shadow: 0 -0.5px 0 @mono-color;
+    box-shadow: @border-bottom;
   }
   .footer {
     display: flex;
@@ -39,7 +39,7 @@
     justify-content: flex-end;
     height: 48px;
     padding: 0 16px;
-    border-top: 0.5px inset @mono-color;
+    box-shadow: @border-top;
     &__cancel_bt,
     &__submit_bt {
       min-width: 64px;

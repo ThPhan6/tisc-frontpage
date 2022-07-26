@@ -36,3 +36,16 @@ export async function createCollection(data: { name: string; brand_id: string })
       return false;
     });
 }
+export async function deleteCollection(id: string) {
+  return request(`/api/collection/delete/${id}`, {
+    method: 'DELETE',
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.DELETE_BRAND_COLLECTION_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.DELETE_BRAND_COLLECTION_ERROR);
+      return false;
+    });
+}

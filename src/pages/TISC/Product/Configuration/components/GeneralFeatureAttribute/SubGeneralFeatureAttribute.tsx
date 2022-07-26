@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
 import { setPartialProductDetail } from '@/reducers/product';
 import type { RadioValue } from '@/components/CustomRadio/types';
+import { truncate } from 'lodash';
 
 interface SubGeneralFeatureAttributeProps {
   attributes: AttributeGeneralFeature[];
@@ -118,7 +119,7 @@ const SubGeneralFeatureAttribute: React.FC<SubGeneralFeatureAttributeProps> = (p
           horizontal
           noWrap
           fontLevel={4}
-          label={currentAttribute?.name ?? 'N/A'}
+          label={currentAttribute?.name ? truncate(currentAttribute.name, { length: 20 }) : 'N/A'}
           conversionData={basis}
           deleteIcon
           onDelete={onDelete}
@@ -140,7 +141,7 @@ const SubGeneralFeatureAttribute: React.FC<SubGeneralFeatureAttributeProps> = (p
       <InputGroup
         horizontal
         fontLevel={4}
-        label={currentAttribute?.name ?? 'N/A'}
+        label={currentAttribute?.name ? truncate(currentAttribute.name, { length: 20 }) : 'N/A'}
         placeholder={placeholder}
         rightIcon={
           basis?.type === 'Presets' ? (
