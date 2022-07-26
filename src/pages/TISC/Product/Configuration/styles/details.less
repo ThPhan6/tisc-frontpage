@@ -169,7 +169,7 @@
       background: #fff;
       border-top: 0 !important;
       border-radius: 0 !important;
-      box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 30%);
+      box-shadow: @border-bottom-light;
       :global(.ant-collapse-content-box) {
         padding: 0 16px 4px;
         :global(.input-label-container) {
@@ -185,7 +185,7 @@
       padding: 4px 48px 0 0 !important;
       background: #fff;
       border-radius: 0;
-      box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 30%);
+      box-shadow: @border-bottom-light;
       :global(.header-group) {
         display: flex;
         align-items: center;
@@ -217,7 +217,7 @@
       :global(.ant-tabs-nav) {
         margin: 0;
         background-color: #fff;
-        box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0);
+        box-shadow: @border-bottom;
         &::before {
           border: 0;
         }
@@ -277,7 +277,7 @@
       justify-content: space-between;
       height: 36px;
       padding: 0 16px;
-      box-shadow: inset 0 0.5px 0 rgba(0, 0, 0, 30%);
+      box-shadow: @border-top-light;
       :global(.attribute-select-group-left) {
         display: flex;
         align-items: center;
@@ -300,7 +300,7 @@
       align-items: center;
       height: 36px;
       padding: 0 16px;
-      box-shadow: inset 0 0.5px 0 #000;
+      box-shadow: @border-top;
       :global(.input-label) {
         width: auto;
         margin-right: 12px;
@@ -311,7 +311,7 @@
   }
 }
 .extraAction {
-  box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: @border-bottom-light;
   :global(.extra-heading) {
     display: flex;
     align-items: center;
@@ -345,10 +345,10 @@
   }
 }
 .productFooter {
-  box-shadow: inset 0 0.5px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: @border-top-light;
   :global(.ant-tabs-nav) {
     margin: 0;
-    box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: @border-bottom-light;
     &::before {
       border-bottom: 0 !important;
     }
@@ -357,17 +357,17 @@
     width: 100%;
     &:global(.collection) {
       padding: 8px;
-      box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
+      box-shadow: @border-bottom-light;
     }
     &:global(.tip) {
-      box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
+      box-shadow: @border-bottom-light;
     }
     &:global(.download) {
-      box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.3);
+      box-shadow: @border-bottom-light;
     }
     :global(.dynamic-wrapper) {
       padding-right: 16px;
-      box-shadow: inset 0 0.5px 0 rgba(0, 0, 0, 0.3);
+      box-shadow: @border-top-light;
       svg {
         color: @mono-color-dark;
         transition: all 0.3s;
