@@ -1,12 +1,15 @@
 .container {
   display: flex;
   align-items: center;
+  margin-top: 0;
   cursor: pointer;
   .avatar {
     width: 20px;
     height: 20px;
     margin-right: 16px;
-    background-color: #fff;
+    &:not([class*='default']) {
+      background-color: #fff;
+    }
   }
   .user-name {
     color: #fff;

@@ -14,7 +14,7 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as SmallPlusIcon } from '@/assets/icons/small-plus-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { showImageUrl } from '@/helper/utils';
-import { map, forEach, capitalize } from 'lodash';
+import { map, forEach, capitalize, truncate } from 'lodash';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
 import { setBrand, setProductList, reset } from '@/reducers/product';
@@ -57,7 +57,7 @@ interface IFilterItem {
 const FilterItem: React.FC<IFilterItem> = ({ title, onDelete }) => {
   return (
     <span className={styles.filterItem}>
-      {capitalize(title)}
+      {truncate(capitalize(title), { length: 25 })}
       <DeleteIcon onClick={onDelete} />
     </span>
   );
@@ -149,7 +149,7 @@ const ProductTopBar: React.FC = () => {
     ///
     return (
       <HeaderDropdown
-        align={{ offset: [40, 7] }}
+        align={{ offset: [26, 7] }}
         placement="bottomRight"
         containerClass={styles.topbarDropdown}
         disabled={product.summary ? false : true}
