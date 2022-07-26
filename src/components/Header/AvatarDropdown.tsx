@@ -2,14 +2,14 @@ import { Avatar, Spin } from 'antd';
 import { useModel } from 'umi';
 import { HeaderDropdown } from '../HeaderDropdown';
 import styles from './styles/AvatarDropdown.less';
-import AvatarIcon from '@/assets/icons/avatar-icon.svg';
+import DefaultAvatarIcon from '@/assets/icons/ic-user-white.svg';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
 import { BodyText } from '../Typography';
 import { ReactComponent as LogOutIcon } from '@/assets/icons/outside-icon.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon.svg';
 import { MenuHeaderDropdown } from '@/components/HeaderDropdown';
-import { showImageUrl } from '@/helper/utils';
+import { getFullName, showImageUrl } from '@/helper/utils';
 import { useBoolean } from '@/helper/hook';
 
 export const AvatarDropdown = () => {
@@ -76,12 +76,13 @@ export const AvatarDropdown = () => {
       <span className={`${styles.container}`}>
         <Avatar
           size="small"
-          className={styles.avatar}
-          src={currentUser?.avatar ? showImageUrl(currentUser.avatar) : AvatarIcon}
+          className={`${styles.avatar} ${currentUser?.avatar ? '' : 'default'}`}
+          src={currentUser?.avatar ? showImageUrl(currentUser.avatar) : DefaultAvatarIcon}
           alt="avatar"
         />
         <BodyText fontFamily="Roboto" level={4} customClass={styles['user-name']}>
-          {`${currentUser?.firstname} ${currentUser?.lastname}`}
+          {/* {`${currentUser?.lastname} ${currentUser?.firstname}`} */}
+          {getFullName(currentUser)}
         </BodyText>
       </span>
     </HeaderDropdown>

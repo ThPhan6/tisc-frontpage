@@ -59,7 +59,7 @@ const TISCLocation: React.FC = () => {
     {
       title: 'General Email',
       dataIndex: 'general_email',
-      width: '30%',
+      // width: '30%',
     },
     {
       title: 'Teams',

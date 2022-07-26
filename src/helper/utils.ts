@@ -138,3 +138,6 @@ export const getPathName = (pathName: string) => {
 
   return false;
 };
+export const getFullName = (data: any) => {
+  return `${data?.lastname ?? ''} ${data?.firstname ?? ''}`;
+};

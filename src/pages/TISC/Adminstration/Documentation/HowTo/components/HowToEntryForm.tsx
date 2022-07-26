@@ -212,7 +212,7 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
                     key={panelIdx}
                     showArrow={false}
                   >
-                    <FormGroup label="Description" required={true} layout="vertical">
+                    <FormGroup label="Description" layout="vertical">
                       <CustomTextArea
                         placeholder="type text here"
                         name="description"

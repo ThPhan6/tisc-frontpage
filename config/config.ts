@@ -35,6 +35,8 @@ export default defineConfig({
   theme: {
     // https://ant.design/docs/react/customize-theme-variable-cn
     // 'root-entry-name': 'variable',
+
+    // colors
     'primary-color': '#1A227F',
     'primary-color-dark': '#2B39D4',
     'primary-color-medium': '#8088E5',
@@ -49,6 +51,18 @@ export default defineConfig({
     'mono-color-dark': '#808080',
     'mono-color-medium': '#BFBFBF',
     'mono-color-light': '#E6E6E6',
+
+    // box-shadow border
+    'border-top': 'inset 0 .7px 0 #000',
+    'border-bottom': 'inset 0 -.7px 0 #000',
+    'border-left': 'inset .7px 0 0 #000',
+    'border-right': 'inset -.7px 0 0 #000',
+    'border-all': 'inset 0 0 0 .7px #000',
+    'border-top-light': 'inset 0 .7px 0 rgba(0, 0, 0, 0.3)',
+    'border-bottom-light': 'inset 0 -.7px 0 rgba(0, 0, 0, 0.3)',
+    'border-left-light': 'inset .7px 0 0 rgba(0, 0, 0, 0.3)',
+    'border-right-light': 'inset -.7px 0 0 rgba(0, 0, 0, 0.3)',
+    'border-all-light': 'inset 0 0 0 .7px rgba(0, 0, 0, 0.3)',
   },
   // esbuild is father build tools
   // https://umijs.org/plugins/plugin-esbuild
