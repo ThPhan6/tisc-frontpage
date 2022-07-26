@@ -7,7 +7,9 @@
     width: 20px;
     height: 20px;
     margin-right: 16px;
-    background-color: #fff;
+    &:not([class*='default']) {
+      background-color: #fff;
+    }
   }
   .user-name {
     color: #fff;
