@@ -82,7 +82,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
             {isCheckboxList ? (
               <label
                 className={`${style['item-wrapper']} ${'item-wrapper-custom'}`}
-                style={{ height: heightItem }}
+                style={{ minHeight: heightItem }}
                 htmlFor={`${option.value}_${index}_${randomId}`}
               >
                 <div style={{ width: '100%' }} className={renderActiveClass(option)}>
@@ -93,7 +93,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
             ) : (
               <div
                 className={`${style['item-checkbox']} ${'item-wrapper-checkbox'}`}
-                style={{ height: heightItem }}
+                style={{ minHeight: heightItem }}
               >
                 <Checkbox {...option}>
                   <span className={renderActiveClass(option)}>{option.label}</span>

@@ -8,7 +8,7 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-ico
 import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
 import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constants/message';
-import avatarImg from '@/assets/icons/avatar-icon.svg';
+import UserIcon from '@/assets/icons/ic-user.svg';
 import { FC, useEffect, useState } from 'react';
 import { isShowErrorMessage, showImageUrl, validateEmail } from '@/helper/utils';
 import { useBoolean, useCustomInitialState } from '@/helper/hook';
@@ -76,7 +76,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
     if (currentUser?.avatar) {
       return showImageUrl(currentUser?.avatar);
     }
-    return avatarImg;
+    return UserIcon;
   };
 
   const uploadProps: UploadProps = {

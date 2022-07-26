@@ -1,10 +1,10 @@
 .collapse_container {
   margin-top: 16px;
   .active_collapse_panel {
-    box-shadow: inset 0 -0.5px 0 @mono-color-medium;
+    box-shadow: inset 0 -0.7px 0 @mono-color-medium;
   }
   .unactive_collapse_panel {
-    box-shadow: inset 0 -0.5px 0 @mono-color;
+    box-shadow: @border-bottom;
   }
 
   :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
@@ -188,11 +188,7 @@
 }
 
 .set-unchecked-color {
-  @unactive-color: @mono-color-medium;
-
-  p {
-    color: @unactive-color;
-  }
+  @unactive-color: #000;
 
   :global(.ant-radio-inner),
   :global(.ant-radio-wrapper:hover .ant-radio),
@@ -211,10 +207,6 @@
 
 .set-checked-color {
   @active-color: @primary-color-dark;
-
-  p {
-    color: @active-color;
-  }
 
   :global(.ant-radio-inner),
   :global(.ant-radio-wrapper:hover .ant-radio),
