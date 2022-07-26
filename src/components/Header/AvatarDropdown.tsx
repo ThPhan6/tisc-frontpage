@@ -9,7 +9,7 @@ import { BodyText } from '../Typography';
 import { ReactComponent as LogOutIcon } from '@/assets/icons/outside-icon.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon.svg';
 import { MenuHeaderDropdown } from '@/components/HeaderDropdown';
-import { showImageUrl } from '@/helper/utils';
+import { fullName, showImageUrl } from '@/helper/utils';
 import { useBoolean } from '@/helper/hook';
 
 export const AvatarDropdown = () => {
@@ -81,7 +81,8 @@ export const AvatarDropdown = () => {
           alt="avatar"
         />
         <BodyText fontFamily="Roboto" level={4} customClass={styles['user-name']}>
-          {`${currentUser?.firstname} ${currentUser?.lastname}`}
+          {/* {`${currentUser?.lastname} ${currentUser?.firstname}`} */}
+          {fullName(currentUser)}
         </BodyText>
       </span>
     </HeaderDropdown>
