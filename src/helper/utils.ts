@@ -128,3 +128,7 @@ export const messageErrorType = (
 export const isEmptySpace = (input: string) => {
   return REGEX_EMPTY_SPACE.test(input);
 };
+
+export const getFullName = (data: any) => {
+  return `${data?.lastname ?? ''} ${data?.firstname ?? ''}`;
+};
