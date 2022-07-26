@@ -129,6 +129,8 @@ export const MESSAGE_NOTIFICATION = {
   GET_BRAND_SUMMARY_DATA_ERROR: 'Failed to get Brand summary data',
   CREATE_BRAND_COLLECTION_ERROR: 'Failed to create Brand collection',
   GET_BRAND_COLLECTION_ERROR: 'Failed to get Brand collection data',
+  DELETE_BRAND_COLLECTION_SUCCESS: 'Delete collection successfully',
+  DELETE_BRAND_COLLECTION_ERROR: 'Failed to delete collection',
 
   // market availability
   GET_LIST_MARKET_AVAILABILITY_ERROR: 'Get list market availability error',

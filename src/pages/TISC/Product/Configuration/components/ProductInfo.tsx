@@ -6,10 +6,12 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { CustomInput } from '@/components/Form/CustomInput';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ReactComponent as RightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
+import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 import CustomCollapse from '@/components/Collapse';
 import { showImageUrl } from '@/helper/utils';
 import styles from '../styles/details.less';
-import { createCollection, getCollectionByBrandId } from '@/services';
+import { createCollection, getCollectionByBrandId, deleteCollection } from '@/services';
+import { confirmDelete } from '@/helper/common';
 import type { ICollection } from '@/types';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
@@ -52,6 +54,20 @@ const ProductInfo: React.FC = () => {
     });
   };
 
+  const handleRemoveCollection = (e: React.ChangeEvent<any>, id: string) => {
+    /// prevent checked radio value
+    e.stopPropagation();
+    e.preventDefault();
+    // call API
+    confirmDelete(() => {
+      deleteCollection(id).then((isSuccess) => {
+        if (isSuccess) {
+          getCollectionList();
+        }
+      });
+    });
+  };
+
   //
   useEffect(() => {
     if (product.brand?.id) {
@@ -82,6 +98,7 @@ const ProductInfo: React.FC = () => {
           label="Collection"
           placeholder="create or assign from the list"
           rightIcon={<RightLeftIcon onClick={() => setVisible(true)} />}
+          onRightIconClick={() => setVisible(true)}
           noWrap
           value={collection?.name ?? ''}
         />
@@ -133,14 +150,17 @@ const ProductInfo: React.FC = () => {
         }
         setChosenValue={(selected) => {
           if (selected) {
-            dispatch(
-              setPartialProductDetail({
-                collection: {
-                  name: selected.label,
-                  id: selected.value,
-                },
-              }),
-            );
+            const selectedCollection = collections.find((col) => col.id === selected.value);
+            if (selectedCollection) {
+              dispatch(
+                setPartialProductDetail({
+                  collection: {
+                    name: selectedCollection.name,
+                    id: selectedCollection.id,
+                  },
+                }),
+              );
+            }
           }
         }}
         groupRadioList={[
@@ -148,7 +168,12 @@ const ProductInfo: React.FC = () => {
             heading: 'Assign bellow Collection',
             options: collections.map((item) => {
               return {
-                label: item.name,
+                label: (
+                  <span className={styles.collectionLabel}>
+                    {item.name}
+                    <RemoveIcon onClick={(e: any) => handleRemoveCollection(e, item.id)} />
+                  </span>
+                ),
                 value: item.id,
               };
             }),
