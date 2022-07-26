@@ -188,11 +188,7 @@
 }
 
 .set-unchecked-color {
-  @unactive-color: @mono-color-medium;
-
-  p {
-    color: @unactive-color;
-  }
+  @unactive-color: #000;
 
   :global(.ant-radio-inner),
   :global(.ant-radio-wrapper:hover .ant-radio),
@@ -211,10 +207,6 @@
 
 .set-checked-color {
   @active-color: @primary-color-dark;
-
-  p {
-    color: @active-color;
-  }
 
   :global(.ant-radio-inner),
   :global(.ant-radio-wrapper:hover .ant-radio),
