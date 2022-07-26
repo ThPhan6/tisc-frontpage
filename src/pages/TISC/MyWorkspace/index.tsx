@@ -5,7 +5,7 @@ import { ProfileIcon } from '@/components/ProfileIcon';
 import { getBrandCards } from '@/services';
 import LoadingPage from '@/components/LoadingPage';
 import { IBrandCard, IBrandCardTeam } from '@/types';
-import { fullName } from '@/helper/utils';
+import { getFullName } from '@/helper/utils';
 
 const MyWorkspace: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -75,7 +75,7 @@ const MyWorkspace: React.FC = () => {
                   Teams:
                 </BodyText>
                 {brand.teams.map((user: IBrandCardTeam) => {
-                  return <ProfileIcon key={user.id} name={fullName(user)} />;
+                  return <ProfileIcon key={user.id} name={getFullName(user)} />;
                 })}
               </div>
             </div>
