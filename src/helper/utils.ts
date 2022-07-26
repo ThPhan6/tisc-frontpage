@@ -72,7 +72,10 @@ export const isShowErrorMessage = (
   return false;
 };
 
-export function showImageUrl(url: string) {
+export function showImageUrl(url?: string | null) {
+  if (!url) {
+    return '';
+  }
   if (url.startsWith('data:image')) {
     return url;
   }
@@ -83,7 +86,10 @@ export const checkUndefined = (value: string | number | undefined) => {
   return isUndefined(value) ? 'N/A' : value;
 };
 
-export const formatPhoneCode = (phoneCode: string, removePlus: boolean = false) => {
+export const formatPhoneCode = (phoneCode?: string | null, removePlus: boolean = false) => {
+  if (!phoneCode) {
+    return '';
+  }
   if (phoneCode.startsWith('+') || phoneCode === '') {
     if (removePlus) {
       return phoneCode.substring(1);
@@ -121,4 +127,8 @@ export const messageErrorType = (
 
 export const isEmptySpace = (input: string) => {
   return REGEX_EMPTY_SPACE.test(input);
+};
+
+export const getFullName = (data: any) => {
+  return `${data?.lastname ?? ''} ${data?.firstname ?? ''}`;
 };

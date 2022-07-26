@@ -14,7 +14,7 @@ import { isShowErrorMessage, showImageUrl, validateEmail } from '@/helper/utils'
 import { useBoolean, useCustomInitialState } from '@/helper/hook';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { updateAvatarTeamProfile, updateTeamProfile } from './services/api';
-import { STATUS_RESPONSE } from '@/constants/util';
+import { AVATAR_ACCEPT_TYPES, STATUS_RESPONSE } from '@/constants/util';
 import { PhoneInputValueProp } from '@/components/Form/types';
 import { isEqual } from 'lodash';
 
@@ -42,6 +42,23 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
     linkedin: '',
   });
 
+  const handleUpdateAvatar = (avtFile: File) => {
+    const formData = new FormData();
+    formData.append('avatar', avtFile);
+    console.log('avtFile', avtFile);
+    isLoading.setValue(true);
+    updateAvatarTeamProfile(formData, (type: STATUS_RESPONSE, msg?: string) => {
+      if (type === STATUS_RESPONSE.SUCCESS) {
+        message.success(MESSAGE_NOTIFICATION.UPDATE_AVATAR_SUCCESS);
+        fetchUserInfo();
+      } else {
+        message.error(msg || MESSAGE_NOTIFICATION.UPDATE_AVATAR_ERROR);
+        setFileInput(undefined);
+      }
+      isLoading.setValue(false);
+    });
+  };
+
   useEffect(() => {
     if (currentUser) {
       setInputValue({
@@ -52,41 +69,33 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
     }
   }, [currentUser]);
 
-  const handleUpdateAvatar = () => {
-    const formData = new FormData();
-    formData.append('avatar', fileInput);
-    isLoading.setValue(true);
-    updateAvatarTeamProfile(formData, (type: STATUS_RESPONSE, msg?: string) => {
-      if (type === STATUS_RESPONSE.SUCCESS) {
-        message.success(MESSAGE_NOTIFICATION.UPDATE_AVATAR_SUCCESS);
-        fetchUserInfo();
-      } else {
-        message.error(msg || MESSAGE_NOTIFICATION.UPDATE_AVATAR_ERROR);
-      }
-      isLoading.setValue(false);
-    });
-  };
-
-  useEffect(() => {
-    if (fileInput) {
-      handleUpdateAvatar();
-    }
-  }, [fileInput]);
-
   const setPreviewAvatar = () => {
-    // if (fileInput) {
-    //   return URL.createObjectURL(fileInput);
-    // }
+    if (fileInput) {
+      return URL.createObjectURL(fileInput);
+    }
     if (currentUser?.avatar) {
       return showImageUrl(currentUser?.avatar);
     }
     return avatarImg;
   };
-  const props: UploadProps = {
+
+  const uploadProps: UploadProps = {
     beforeUpload: (file) => {
+      // console.log('file', file);
+      const isValid = AVATAR_ACCEPT_TYPES.some((imgType) => file.type.includes(imgType));
+      if (!isValid) {
+        message.error(
+          `Only file with the following extensions are allowed: ${AVATAR_ACCEPT_TYPES.join('/')}.`,
+        );
+        return false;
+      }
       setFileInput(file);
+      handleUpdateAvatar(file);
       return false;
     },
+    multiple: false,
+    showUploadList: false,
+    openFileDialogOnClick: true,
   };
 
   const handleSubmit = () => {
@@ -173,12 +182,22 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
       </div>
       <div className={styles.wrapper}>
         <div className={styles.content}>
-          <div className={styles.avatar}>
-            <img src={setPreviewAvatar()} alt="avatar-upload" className={styles.img} />
-          </div>
+          <Upload name="avatar-drag-drop" {...uploadProps}>
+            <div className={`${styles.avatarContainer}`}>
+              <div>
+                <img src={setPreviewAvatar()} alt="avatar-upload" />
+                <div className={styles.avatarHover}>
+                  <BodyText fontFamily="Roboto" level={7} color="mono-color-dark">
+                    Drag & drop profile photo
+                  </BodyText>
+                </div>
+              </div>
+            </div>
+          </Upload>
+
           <FormGroup label="Avatar" formClass={`${styles['form-upload']} ${styles.form}`}>
             <div className={styles['wrapper-upload']}>
-              <Upload maxCount={1} showUploadList={false} {...props} accept=".png,.jpg,.jpeg,.webp">
+              <Upload name="avatar-click" {...uploadProps}>
                 <UploadIcon className={styles.icon} />
               </Upload>
             </div>

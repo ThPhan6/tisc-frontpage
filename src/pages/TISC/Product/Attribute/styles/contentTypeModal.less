@@ -34,6 +34,7 @@
     box-shadow: inset 0 -0.5px 0 #000;
   }
   :global(.ant-tabs-nav) {
+    margin: 0;
     &::before {
       height: 1px;
       border-bottom: 0 !important;
@@ -43,8 +44,11 @@
   .contentTypeOption {
     height: 600px;
     max-height: calc(100vh - 200px);
+    padding: 16px;
     overflow: hidden auto;
     :global(.ant-space-item) {
+      min-height: 40px;
+      margin-left: 0;
       box-shadow: inset 0 -0.5px 0 #0000004d;
     }
   }
@@ -56,15 +60,22 @@
       &:global(.ant-collapse-item-active) {
         box-shadow: inset 0 -0.5px 0 #000;
         :global(.ant-collapse-content-box) {
-          padding: 0 16px 8px;
+          padding: 0 0 8px 16px;
         }
+      }
+      :global(.ant-collapse-content-box) {
+        padding-right: 0;
+        padding-left: 16px;
+      }
+      :global(.ant-collapse-arrow) {
+        right: 0;
       }
     }
 
     :global(.ant-collapse-header) {
       display: flex;
       align-items: center;
-      padding: 9px 16px !important;
+      padding: 9px 0 !important;
       font-weight: 300;
       font-size: 14px;
       font-family: 'Roboto';

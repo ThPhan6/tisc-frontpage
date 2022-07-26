@@ -50,7 +50,7 @@ export const PhoneInput: FC<PhoneInputProps> = ({
   };
 
   const getWidthZoneCode = () => {
-    const zoneCodeLength = phoneInputValue.zoneCode.length;
+    const zoneCodeLength = phoneInputValue.zoneCode?.length ?? 0;
     if (zoneCodeLength <= 2) {
       return '16px';
     }
