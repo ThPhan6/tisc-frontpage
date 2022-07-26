@@ -3,7 +3,7 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import { Title } from '@/components/Typography';
 import styles from './styles/WorkplaceProfile.less';
 import { useAppSelector } from '@/reducers';
-import { fullName } from '@/helper/utils';
+import { getFullName } from '@/helper/utils';
 
 export const WorkplaceProfile = () => {
   const user = useAppSelector((state) => state.user.user);
@@ -18,7 +18,7 @@ export const WorkplaceProfile = () => {
             readOnly
             borderBottomColor="mono-medium"
             // value={`${user?.lastname} ${user?.firstname}`}
-            value={fullName(user)}
+            value={getFullName(user)}
           />
         </FormGroup>
         <FormGroup label="Work Location" layout="vertical" formClass={styles.form}>

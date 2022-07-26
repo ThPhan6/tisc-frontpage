@@ -1,14 +1,14 @@
 import CustomTable from '@/components/Table';
 import { pushTo } from '@/helper/history';
 import { useRef } from 'react';
-import { Documentation } from '@/types';
 import { TableColumnItem } from '@/components/Table/types';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { PATH } from '@/constants/path';
 import { getPolicyTemplates } from './api';
 import moment from 'moment';
 import { ActionForm } from '@/components/Action';
-import { fullName } from '@/helper/utils';
+import { getFullName } from '@/helper/utils';
+import { Documentation } from './types';
 
 const PolicyTemplatePage: React.FC = () => {
   const tableRef = useRef<any>();
@@ -28,10 +28,7 @@ const PolicyTemplatePage: React.FC = () => {
       dataIndex: 'author',
       width: '15%',
       sorter: true,
-      render: (_value, record) => {
-        // return `${record.author.lastname} ${record.author.firstname}`;
-        return fullName(record.author);
-      },
+      render: (_value, record) => getFullName(record.author),
     },
     {
       title: 'Title',
