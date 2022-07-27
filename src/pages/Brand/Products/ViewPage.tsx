@@ -71,7 +71,7 @@ const ProductBrandViewPage: React.FC = () => {
         <TableHeader
           title={title}
           rightAction={
-            <CloseIcon className="closeIcon" onClick={() => pushTo(PATH.productBrand)} />
+            <CloseIcon className="closeIcon" onClick={() => pushTo(PATH.brandProduct)} />
           }
         />
       </Col>
