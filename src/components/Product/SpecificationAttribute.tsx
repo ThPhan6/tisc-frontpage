@@ -11,8 +11,6 @@ const SpecificationAttribute = () => {
   const [visible, setVisible] = useState<boolean>(false);
   const [groupName, setGroupName] = useState<string>('');
 
-  console.log('feature_attribute_groups', specification_attribute_groups);
-
   const handleShowPopUp = (title: string) => {
     /// get group name to show inside popup
     setGroupName(title);
@@ -23,9 +21,10 @@ const SpecificationAttribute = () => {
   return (
     <div className={styles.attributes}>
       <div className={styles.specification}>
-        {specification_attribute_groups.map((group) => {
+        {specification_attribute_groups.map((group, index) => {
           return (
             <CustomCollapse
+              key={`${group.name}_${index}`}
               className={styles.vendorSection}
               customHeaderClass={styles.vendorCustomPanelBox}
               header={
@@ -38,8 +37,8 @@ const SpecificationAttribute = () => {
             >
               {group.attributes.map((attribute) => {
                 return (
-                  <div className={styles.attribute}>
-                    <BodyText level={4} customClass={styles.content_type}>
+                  <div className={styles.attribute} key={attribute.id}>
+                    <BodyText level={4} customClass={styles.content_text}>
                       {attribute.text}
                     </BodyText>
                     <div className={styles.content} onClick={() => handleShowPopUp(group.name)}>

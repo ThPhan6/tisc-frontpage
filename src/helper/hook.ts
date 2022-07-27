@@ -57,15 +57,16 @@ export const useQuery = () => {
 };
 
 export const useCheckPermission = (allowRoles: AccessLevelType | AccessLevelType[]) => {
-  const access_level = useAppSelector(
-    (state) => state.user.user?.access_level,
-  )?.toLocaleLowerCase();
+  const access_level = useAppSelector((state) => state.user.user?.access_level);
 
   if (!access_level) {
-    return false;
+    return { permission: false, role: allowRoles };
   }
 
-  return typeof allowRoles === 'string'
-    ? access_level === allowRoles
-    : allowRoles.some((role) => access_level.includes(role));
+  const userRole =
+    typeof allowRoles === 'string'
+      ? access_level === allowRoles
+      : allowRoles.some((role) => access_level.includes(role));
+
+  return { permission: userRole, role: access_level };
 };
