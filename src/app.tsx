@@ -95,6 +95,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
           const user = store.getState().user.user;
           if (user?.brand) {
             history.push(PATH.brandHomePage);
+          } else if (user?.access_level === 'Design Admin') {
+            history.push(PATH.designerHomePage);
           } else {
             history.push(PATH.homePage);
           }

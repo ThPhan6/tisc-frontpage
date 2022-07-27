@@ -54,19 +54,19 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       isBrand && getAccessable('administration', 'market availability'),
     brand_administration_subscription: isBrand && getAccessable('administration', 'subscription'),
 
-    designer_workspace: isDesigner && getAccessable('workspace'),
-    designer_my_favourite: isDesigner && getAccessable('favourite'),
-    designer_product: isDesigner && getAccessable('product'),
-    designer_product_brand_product: isDesigner && getAccessable('product', 'brand product'),
-    designer_product_custom_library: isDesigner && getAccessable('product', 'custom library'),
-    designer_project: isDesigner && getAccessable('project'),
-    designer_administration: isDesigner && getAccessable('administration'),
-    designer_administration_office_profile:
+    design_workspace: isDesigner && getAccessable('workspace'),
+    design_my_favourite: isDesigner && getAccessable('favourite'),
+    design_product: isDesigner && getAccessable('product'),
+    design_product_brand_product: isDesigner && getAccessable('product', 'brand product'),
+    design_product_custom_library: isDesigner && getAccessable('product', 'custom library'),
+    design_project: isDesigner && getAccessable('project'),
+    design_administration: isDesigner && getAccessable('administration'),
+    design_administration_office_profile:
       isDesigner && getAccessable('administration', 'office profile'),
-    designer_administration_location: isDesigner && getAccessable('administration', 'location'),
-    designer_administration_team_profile:
+    design_administration_location: isDesigner && getAccessable('administration', 'location'),
+    design_administration_team_profile:
       isDesigner && getAccessable('administration', 'team profile'),
-    designer_administration_material_product_code:
+    design_administration_material_product_code:
       isDesigner && getAccessable('administration', 'material/product code'),
   };
 }

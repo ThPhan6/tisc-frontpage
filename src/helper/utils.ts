@@ -19,18 +19,18 @@ export const validatePassword = (password: string) => {
   return REGEX_PASSWORD.test(password);
 };
 
-export const redirectAfterLogin = async () => {
+export const redirectAfterLogin = () => {
   if (!history) return;
   const { query } = history.location;
   const { redirect } = query as { redirect: string };
   pushTo(redirect || PATH.homePage);
 };
 
-export const redirectAfterBrandLogin = async () => {
+export const redirectAfterBrandLogin = () => {
   pushTo(PATH.brandHomePage);
 };
 
-export const redirectAfterDesignerLogin = async () => {
+export const redirectAfterDesignerLogin = () => {
   pushTo(PATH.designerHomePage);
 };
 
