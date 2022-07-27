@@ -194,6 +194,9 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_FAQ_SUCCESS: 'Update FAQ successfully',
   UPDATE_FAQ_ERROR: 'Update FAQ error',
   GET_ONE_FAQ_ERROR: 'Get one FAQ error',
+
+  //project_type
+  GET_PROJECT_LIST_FAILED: 'Failed to get projects data',
 };
 
 export const MESSAGE_TOOLTIP = {

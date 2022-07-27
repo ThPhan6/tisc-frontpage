@@ -128,6 +128,8 @@ export const PATH = {
   designerBrandProduct: '/design-firms/products/brand-products',
   designerCustomLibrary: '/design-firms/products/custom-library',
   designerProject: '/design-firms/projects',
+  designerCreateProject: '/design-firms/projects/create',
+  designerUpdateProject: '/design-firms/projects/:id',
   designerProjectCreate: '/design-firms/projects/create',
   designerProjectUpdate: '/design-firms/projects/update/:id',
   designerAdminstration: '/design-firms/administration',
