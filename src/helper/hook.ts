@@ -1,5 +1,15 @@
+import { useAppSelector } from '@/reducers';
 import React from 'react';
 import { useLocation, useModel } from 'umi';
+
+/// check user permission
+type AccessLevelType =
+  | 'TISC Admin'
+  | 'Consultant Team'
+  | 'Brand Admin'
+  | 'Brand Team'
+  | 'Design Admin'
+  | 'Design Team';
 
 export function useDefault(defaultValue: any) {
   const [value, setValue] = React.useState(defaultValue);
@@ -44,4 +54,18 @@ export const useCustomInitialState = () => {
 
 export const useQuery = () => {
   return new URLSearchParams(useLocation().search);
+};
+
+export const useCheckPermission = (allowRoles: AccessLevelType | AccessLevelType[]) => {
+  const access_level = useAppSelector(
+    (state) => state.user.user?.access_level,
+  )?.toLocaleLowerCase();
+
+  if (!access_level) {
+    return false;
+  }
+
+  return typeof allowRoles === 'string'
+    ? access_level === allowRoles
+    : allowRoles.some((role) => access_level.includes(role));
 };

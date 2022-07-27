@@ -97,6 +97,7 @@ export const PATH = {
 
   //brand
   brandProduct: '/brand/product',
+  updateProductBrand: '/brand/product/:id',
   brandGeneralInquiry: '/brand/general-inquiry',
   brandProjectTracking: '/brand/project-tracking',
   //adminstration

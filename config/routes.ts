@@ -428,8 +428,19 @@ export default [
     path: PATH.brandProduct,
     name: 'product',
     icon: 'product-icon.svg',
-    component: './Admin',
     access: 'brand_product',
+    routes: [
+      {
+        path: '/brand/product',
+        component: './Brand/Products',
+        hideInMenu: true,
+      },
+      {
+        path: '/brand/product/:id',
+        component: './Brand/Products/ViewPage',
+        hideInMenu: true,
+      },
+    ],
   },
   {
     path: PATH.brandGeneralInquiry,

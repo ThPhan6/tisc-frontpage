@@ -1,1 +1,1 @@
-export type ACTIVE_KEY = 'general' | 'feature' | 'specification' | 'vendor';
+export type ProductInfoTab = 'general' | 'feature' | 'specification' | 'vendor';
