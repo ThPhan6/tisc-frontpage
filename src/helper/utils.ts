@@ -23,7 +23,7 @@ export const redirectAfterLogin = () => {
   if (!history) return;
   const { query } = history.location;
   const { redirect } = query as { redirect: string };
-  pushTo(redirect || PATH.homePage);
+  pushTo(redirect || PATH.tiscHomePage);
 };
 
 export const redirectAfterBrandLogin = () => {
@@ -134,6 +134,15 @@ export const isEmptySpace = (input: string) => {
   return REGEX_EMPTY_SPACE.test(input);
 };
 
+export const getPathName = (pathName: string) => {
+  const name = pathName.split('/')[1];
+
+  if (name === 'tisc') {
+    return true;
+  }
+
+  return false;
+};
 export const getFullName = (data: any) => {
   return `${data?.lastname ?? ''} ${data?.firstname ?? ''}`;
 };

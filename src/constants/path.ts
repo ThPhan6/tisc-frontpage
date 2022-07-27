@@ -5,10 +5,9 @@ export const PATH = {
   createPassword: '/create-password',
   verifyAccount: '/verify',
   // private path
-  profiles: '/profiles',
-  homePage: '/tisc/dashboard',
+  profiles: '/profile-settings',
+  tiscHomePage: '/tisc/dashboard',
   brandHomePage: '/brand/dashboard',
-  designerHomePage: '/design/dashboard',
 
   //how-to
   howTo: '/howTo',
@@ -18,8 +17,17 @@ export const PATH = {
   categories: '/tisc/products/categories',
   createCategories: '/tisc/products/categories/create',
   updateCategories: '/tisc/products/categories/update/:id',
+  // user group
+  tiscUserGroupList: '/tisc/user-groups',
+  tiscUserGroupBrandList: '/tisc/user-groups/brands',
+  tiscUserGroupDesignerList: '/tisc/user-groups/design-firms',
+  // tisc project_tracking
+  tiscProject: '/tisc/projects',
+  tiscProjectListing: '/tisc/projects/listing',
+  tiscProduct: '/tisc/products',
 
   // basic
+  tiscBasis: '/tisc/products/basis',
   //preset
   presets: '/tisc/products/basis/presets',
   createPresets: '/tisc/products/basis/presets/create',
@@ -35,10 +43,23 @@ export const PATH = {
   createOptions: '/tisc/products/basis/options/create',
   updateOptions: '/tisc/products/basis/options/:id',
   // attribute general
+  attribute: '/tisc/products/attributes',
   attributeGeneral: '/tisc/products/attributes/general',
   attributeGeneralCreate: '/tisc/products/attributes/general/create',
   attributeGeneralUpdate: '/tisc/products/attributes/general/:id',
-  //
+
+  // attribute general
+  attributeFeature: '/tisc/products/attributes/feature',
+  attributeFeatureCreate: '/tisc/products/attributes/feature/create',
+  attributeFeatureUpdate: '/tisc/products/attributes/feature/:id',
+
+  // attribute feature
+  attributeSpecification: '/tisc/products/attributes/specification',
+  attributeSpecificationCreate: '/tisc/products/attributes/specification/create',
+  attributeSpecificationUpdate: '/tisc/products/attributes/specification/:id',
+
+  //tisc adminstration
+  tiscAdministration: '/tisc/adminstration',
 
   // team profile
   teamProfile: '/tisc/adminstration/team-profiles',
@@ -46,6 +67,7 @@ export const PATH = {
   updateTeamProfile: '/tisc/adminstration/team-profiles/update/:id',
 
   // inspirational quotes
+  tiscAdministrationMessage: '/tisc/adminstration/messages',
   quotation: '/tisc/adminstration/messages/quotation',
   createQuotation: '/tisc/adminstration/messages/quotation/create',
   updateQuotation: '/tisc/adminstration/messages/quotation/update/:id',
@@ -59,8 +81,14 @@ export const PATH = {
   productConfigurationUpdate: '/tisc/products/configuration/:id',
 
   // documentation
+  tiscDocumentation: '/tisc/adminstration/documentation',
   policy: '/tisc/adminstration/documentation/agreement-policy-terms',
   policyUpdate: '/tisc/adminstration/documentation/agreement-policy-terms/:id',
+
+  tiscDocumentationHowTo: '/tisc/adminstration/documentation/how-to',
+  tiscRevenue: '/tisc/adminstration/revenues',
+  tiscRevenueService: '/tisc/adminstration/revenues/service',
+  tiscRevenueSubscription: '/tisc/adminstration/revenues/subscription',
 
   // tisc - locations
   tiscLocation: '/tisc/adminstration/locations',
@@ -68,7 +96,13 @@ export const PATH = {
   tiscLocationUpdate: '/tisc/adminstration/locations/:id',
 
   //brand
+  brandProduct: '/brand/product',
+  updateProductBrand: '/brand/product/:id',
+  brandGeneralInquiry: '/brand/general-inquiry',
+  brandProjectTracking: '/brand/project-tracking',
   //adminstration
+  brandAdministration: '/brand/adminstration',
+  brandAdministrationProfile: '/brand/adminstration/brand-profile',
   // market availablity
   marketAvailability: '/brand/adminstration/market-availability',
   updateMarketAvailability: '/brand/adminstration/market-availability/:id',
@@ -84,6 +118,23 @@ export const PATH = {
   brandTeamProfile: '/brand/adminstration/team-profiles',
   brandCreateTeamProfile: '/brand/adminstration/team-profiles/create',
   brandUpdateTeamProfile: '/brand/adminstration/team-profiles/update/:id',
+  // brand subscription
+  brandSubscription: '/brand/adminstration/subscription',
+
+  // design-firms
+  designerHomePage: '/design-firms/dashboard',
+  designerFavourite: '/design-firms/my-favorites',
+  designerProduct: '/design-firms/products',
+  designerBrandProduct: '/design-firms/products/brand-products',
+  designerCustomLibrary: '/design-firms/products/custom-library',
+  designerProject: '/design-firms/projects',
+  designerProjectCreate: '/design-firms/projects/create',
+  designerProjectUpdate: '/design-firms/projects/update/:id',
+  designerAdminstration: '/design-firms/administration',
+  designerOfficeProfile: '/design-firms/administration/office-profile',
+  designerOfficeLocation: '/design-firms/administration/locations',
+  designerOfficeTeamProfile: '/design-firms/administration/team-profiles',
+  designerMaterialProductCode: '/design-firms/administration/material-product-code',
 };
 
 export const PUBLIC_PATH = [
