@@ -23,7 +23,7 @@ export const redirectAfterLogin = () => {
   if (!history) return;
   const { query } = history.location;
   const { redirect } = query as { redirect: string };
-  pushTo(redirect || PATH.homePage);
+  pushTo(redirect || PATH.tiscHomePage);
 };
 
 export const redirectAfterBrandLogin = () => {
