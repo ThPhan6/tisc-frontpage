@@ -9,6 +9,8 @@ export const MESSAGE_ERROR = {
   GENERAL_EMAIL: 'General email is required',
   EMAIL_AUTO: 'Message is required',
   EMAIL_UNVALID: 'Email is not valid',
+  EMAIL_ALREADY_TAKEN: 'Email alreadly taken',
+  AGREE_TISC: 'Click to proceed',
 };
 
 export const MESSAGE_NOTIFICATION = {
@@ -23,6 +25,9 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PERSONAL_PROFILE_ERROR: 'Update personal profile error',
   CREATE_PASSSWORD_VERIFICATION_SUCCESS: 'Create account password successfully',
   CREATE_PASSSWORD_VERIFICATION_FAILED: 'Failed to create account password',
+  SIGN_UP_DESIGNER_SUCCESS: 'Sign up designer successfully',
+  SIGN_UP_DESIGNER_ERROR: 'Sign up designer error',
+  CHECK_EMAIL_VERIFY_ACCOUNT: 'Please check your email to verify account',
 
   // Category
   CREATE_CATEGORY_SUCCESS: 'Create the category successfully',

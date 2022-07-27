@@ -1,6 +1,6 @@
 import styles from './SignupModal.less';
 import { CustomModal } from '@/components/Modal';
-import { MainTitle } from '@/components/Typography';
+import { BodyText, MainTitle } from '@/components/Typography';
 import { CustomInput } from '@/components/Form/CustomInput';
 import CustomButton from '@/components/Button';
 import { FC, useState } from 'react';
@@ -8,12 +8,71 @@ import { ModalProps } from '../types';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
-import { Checkbox } from 'antd';
+import { Checkbox, message } from 'antd';
 import { PoliciesModal } from './PoliciesModal';
+import { MESSAGE_ERROR, MESSAGE_NOTIFICATION } from '@/constants/message';
+import { isShowErrorMessage, validateEmail } from '@/helper/utils';
+import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
+import { signUpDesigner } from '../services/api';
 
+interface SignUpFormState {
+  firstname: string;
+  email: string;
+  password: string;
+  confirmed_password: string;
+  agree_tisc: boolean;
+}
 export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
   const [openModalPolicies, setOpenModalPolicies] = useState('');
+  const [formInput, setFormInput] = useState<SignUpFormState>({
+    email: '',
+    password: '',
+    firstname: '',
+    confirmed_password: '',
+    agree_tisc: false,
+  });
+  const [agreeTisc, setAgreeTisc] = useState(false);
+
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormInput({ ...formInput, [e.target.name]: e.target.value });
+  };
+
+  const handleAgreeTisc = () => {
+    setAgreeTisc(!agreeTisc);
+    setFormInput({ ...formInput, agree_tisc: !formInput.agree_tisc });
+  };
+
+  const setErrorMessage = () => {
+    if (formInput.confirmed_password && formInput.password !== formInput.confirmed_password) {
+      return MESSAGE_ERROR.CONFIRM_PASSWORD;
+    }
+    if (formInput.email && !validateEmail(formInput.email)) {
+      return MESSAGE_ERROR.EMAIL_ALREADY_TAKEN;
+    }
+    if (agreeTisc === true && formInput.agree_tisc === false) {
+      return MESSAGE_ERROR.AGREE_TISC;
+    }
+    return '';
+  };
+
+  const handleSubmit = () => {
+    if (formInput.agree_tisc === true) {
+      signUpDesigner({
+        firstname: formInput.firstname,
+        email: formInput.email,
+        password: formInput.password,
+        confirmed_password: formInput.confirmed_password,
+      }).then((res) => {
+        if (res) {
+          onClose();
+          message.success(MESSAGE_NOTIFICATION.CHECK_EMAIL_VERIFY_ACCOUNT);
+        }
+      });
+    } else {
+      setAgreeTisc(true);
+    }
+  };
 
   return (
     <CustomModal
@@ -41,9 +100,10 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             prefix={<UserIcon />}
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
             containerClass={styles.brand}
-            name="user"
+            name="firstname"
             type={'text'}
             required={true}
+            onChange={handleOnChange}
           />
           <CustomInput
             fromLandingPage
@@ -53,9 +113,11 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             prefix={<EmailIcon />}
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
             containerClass={styles.website}
-            name="user"
+            name="email"
             type="email"
             required={true}
+            onChange={handleOnChange}
+            status={isShowErrorMessage('email', formInput.email) ? '' : 'error'}
           />
           <CustomInput
             fromLandingPage
@@ -65,9 +127,10 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             prefix={<LockedIcon />}
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
             containerClass={styles.user}
-            name="user"
+            name="password"
             type="password"
             required={true}
+            onChange={handleOnChange}
           />
           <CustomInput
             fromLandingPage
@@ -78,10 +141,27 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             placeholder="confirm password"
             prefix={<LockedIcon />}
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-            name="email"
+            name="confirmed_password"
             required={true}
+            onChange={handleOnChange}
+            status={
+              formInput.confirmed_password
+                ? formInput.password !== formInput.confirmed_password
+                  ? 'error'
+                  : ''
+                : ''
+            }
           />
-          <Checkbox>By clicking and continuing, we agree TISC’s</Checkbox>
+          <div
+            className={
+              agreeTisc === true && formInput.agree_tisc === false ? styles.errorStatus : ''
+            }
+          >
+            <Checkbox onChange={handleAgreeTisc}>
+              By clicking and continuing, we agree TISC’s
+            </Checkbox>
+          </div>
+
           <div className={styles.customLink}>
             <span onClick={() => setOpenModalPolicies('Policies')}>
               Terms of Services, Privacy Policy and Cookie Policy
@@ -89,7 +169,19 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
           </div>
         </div>
         <div className={styles.button}>
-          <CustomButton buttonClass={styles.submit}>Let’s be productive</CustomButton>
+          <div>
+            {setErrorMessage() && (
+              <div className={styles.warning}>
+                <WarningIcon />
+                <BodyText level={4} fontFamily="Roboto">
+                  {setErrorMessage()}
+                </BodyText>
+              </div>
+            )}
+          </div>
+          <CustomButton buttonClass={styles.submit} onClick={handleSubmit}>
+            Let’s be productive
+          </CustomButton>
         </div>
       </div>
       <PoliciesModal

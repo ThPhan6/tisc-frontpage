@@ -5,7 +5,9 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
   const { currentUser } = initialState ?? {};
   const isBrand = currentUser?.type === 2;
   const isTisc = currentUser?.type === 1;
+  const isDesigner = currentUser?.type === 3;
   const permissions = currentUser?.permissions.data;
+
   const getAccessable = (name: string, subname?: string) => {
     const found = permissions.find((item: any) => item.name.toLowerCase().includes(name));
     if (found) {
@@ -51,5 +53,20 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     brand_administration_market_availability:
       isBrand && getAccessable('administration', 'market availability'),
     brand_administration_subscription: isBrand && getAccessable('administration', 'subscription'),
+
+    design_workspace: isDesigner && getAccessable('workspace'),
+    design_my_favourite: isDesigner && getAccessable('favourite'),
+    design_product: isDesigner && getAccessable('product'),
+    design_product_brand_product: isDesigner && getAccessable('product', 'brand product'),
+    design_product_custom_library: isDesigner && getAccessable('product', 'custom library'),
+    design_project: isDesigner && getAccessable('project'),
+    design_administration: isDesigner && getAccessable('administration'),
+    design_administration_office_profile:
+      isDesigner && getAccessable('administration', 'office profile'),
+    design_administration_location: isDesigner && getAccessable('administration', 'location'),
+    design_administration_team_profile:
+      isDesigner && getAccessable('administration', 'team profile'),
+    design_administration_material_product_code:
+      isDesigner && getAccessable('administration', 'material/product code'),
   };
 }

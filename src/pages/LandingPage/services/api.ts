@@ -6,6 +6,7 @@ import type {
   LoginResponseProp,
   ResetPasswordRequestBody,
   CreatePasswordRequestBody,
+  SignUpDesignerRequestBody,
 } from '../types';
 import { UserDetail } from '@/types';
 import { message } from 'antd';
@@ -29,17 +30,17 @@ export async function loginMiddleware(
     });
 }
 
-export async function brandLoginMiddleware(
+export async function loginByBrandOrDesigner(
   data: LoginInput,
-  callback: (type: STATUS_RESPONSE, message?: string) => void,
+  callback: (type: STATUS_RESPONSE, message?: string, dataResponse?: LoginResponseProp) => void,
 ) {
-  request(`/api/auth/login/brand`, {
+  request(`/api/auth/brand-design/login`, {
     method: 'POST',
     data,
   })
     .then((response: LoginResponseProp) => {
       localStorage.setItem('access_token', response.token);
-      callback(STATUS_RESPONSE.SUCCESS);
+      callback(STATUS_RESPONSE.SUCCESS, '', response);
     })
     .catch((error) => {
       callback(STATUS_RESPONSE.ERROR, error?.data?.message || MESSAGE_NOTIFICATION.LOGIN_ERROR);
@@ -116,6 +117,18 @@ export async function createPasswordVerify(token: string, data: CreatePasswordRe
       message.error(
         error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_PASSSWORD_VERIFICATION_FAILED,
       );
+      return false;
+    });
+}
+
+export async function signUpDesigner(data: SignUpDesignerRequestBody) {
+  return request(`/api/auth/register`, { method: 'POST', data })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.SIGN_UP_DESIGNER_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.SIGN_UP_DESIGNER_ERROR);
       return false;
     });
 }

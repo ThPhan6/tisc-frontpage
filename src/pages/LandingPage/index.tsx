@@ -5,7 +5,11 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
-import { redirectAfterBrandOrDesignLogin, redirectAfterLogin } from '@/helper/utils';
+import {
+  redirectAfterBrandLogin,
+  redirectAfterDesignerLogin,
+  redirectAfterLogin,
+} from '@/helper/utils';
 import { Col, message, Row } from 'antd';
 import { useEffect, useState } from 'react';
 import { history } from 'umi';
@@ -29,18 +33,19 @@ import { CreatePasswordModal } from './components/CreatePasswordModal';
 import { SignupModal } from './components/SignupModal';
 import styles from './index.less';
 import {
-  brandLoginMiddleware,
   forgotPasswordMiddleware,
   loginMiddleware,
   resetPasswordMiddleware,
   validateResetToken,
   createPasswordVerify,
+  loginByBrandOrDesigner,
 } from './services/api';
 import type {
   LoginInput,
   ModalOpen,
   ResetPasswordRequestBody,
   CreatePasswordRequestBody,
+  LoginResponseProp,
 } from './types';
 
 const LandingPage = () => {
@@ -54,7 +59,6 @@ const LandingPage = () => {
   const isLoading = useBoolean();
   const [openModal, setOpenModal] = useState<ModalOpen>('');
   const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
-
   const handleCloseModal = () => {
     setOpenModal('');
   };
@@ -94,7 +98,6 @@ const LandingPage = () => {
         if (type === STATUS_RESPONSE.SUCCESS) {
           message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
           await fetchUserInfo();
-
           redirectAfterLogin();
         } else {
           message.error(msg);
@@ -102,17 +105,24 @@ const LandingPage = () => {
         isLoading.setValue(false);
       });
     } else {
-      brandLoginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
-        if (type === STATUS_RESPONSE.SUCCESS) {
-          message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
-          await fetchUserInfo();
-
-          redirectAfterBrandOrDesignLogin();
-        } else {
-          message.error(msg);
-        }
-        isLoading.setValue(false);
-      });
+      loginByBrandOrDesigner(
+        data,
+        async (type: STATUS_RESPONSE, msg?: string, response?: LoginResponseProp) => {
+          if (type === STATUS_RESPONSE.SUCCESS) {
+            message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
+            if (response?.type === 'design') {
+              await fetchUserInfo();
+              redirectAfterDesignerLogin();
+            } else if (response?.type === 'brand') {
+              await fetchUserInfo();
+              redirectAfterBrandLogin();
+            }
+          } else {
+            message.error(msg);
+          }
+          isLoading.setValue(false);
+        },
+      );
     }
   };
 
