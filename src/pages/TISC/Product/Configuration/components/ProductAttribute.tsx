@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import GeneralFeatureAttribute from './GeneralFeatureAttribute';
 import SpecificationAttribute from './SpecificationAttribute';
-import ProductVendor from './ProductVendor';
 import { CustomTabs } from '@/components/Tabs';
 import { getAllAttribute } from '@/services';
 import { AttributebyType } from '@/types';
 import styles from '../styles/details.less';
 import { LIST_TAB } from '../constants';
-import type { ACTIVE_KEY } from '../types';
+import type { ProductInfoTab } from '../types';
+import TISCProductVendor from './ProductVendorAttribute';
 
 interface ProductAttributeInterface {
-  activeKey: ACTIVE_KEY;
-  setActiveKey: (activeKey: ACTIVE_KEY) => void;
+  activeKey: ProductInfoTab;
+  setActiveKey: (activeKey: ProductInfoTab) => void;
 }
 
 const ProductAttribute: React.FC<ProductAttributeInterface> = ({ activeKey, setActiveKey }) => {
@@ -41,7 +41,7 @@ const ProductAttribute: React.FC<ProductAttributeInterface> = ({ activeKey, setA
         centered={true}
         tabPosition="top"
         tabDisplay="space"
-        onChange={(key) => setActiveKey(key as ACTIVE_KEY)}
+        onChange={(key) => setActiveKey(key as ProductInfoTab)}
         activeKey={activeKey}
       />
       {activeKey !== 'vendor' && activeKey !== 'specification' ? (
@@ -49,7 +49,7 @@ const ProductAttribute: React.FC<ProductAttributeInterface> = ({ activeKey, setA
       ) : activeKey === 'specification' ? (
         <SpecificationAttribute attributes={attribute.specification} />
       ) : (
-        <ProductVendor />
+        <TISCProductVendor />
       )}
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useParams } from 'umi';
+import { useParams } from 'umi';
 import PhotoUpload from './components/PhotoUpload';
 import ProductInfo from '@/components/Product/ProductInfo';
 import ProductAttribute from '@/components/Product/ProductAttribute';
@@ -19,23 +19,24 @@ import styles from '@/components/Product/styles/details.less';
 import './styles/viewPage.less';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
-import type { ACTIVE_KEY } from '@/components/Product/types';
+import type { ProductInfoTab } from '@/components/Product/types';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
-import { getPathName } from '@/helper/utils';
+import { useCheckPermission } from '@/helper/hook';
 
 const ProductBrandViewPage: React.FC = () => {
   const dispatch = useDispatch();
   const params = useParams<{ id: string }>();
   const productId = params?.id || '';
   const product = useAppSelector((state) => state.product);
-  const [activeKey, setActiveKey] = useState<ACTIVE_KEY>('general');
+  const [activeKey, setActiveKey] = useState<ProductInfoTab>('general');
   const [title, setTitle] = useState<string>('');
 
   /// for reuse component,
-  /// to allow product actions
-  const location = useLocation();
-  const isEdit = getPathName(location.pathname);
+  /// to allow access level
+  const editable = useCheckPermission('TISC Admin');
+
+  console.log('ProductBrandViewPage', product);
 
   useEffect(() => {
     if (productId) {
@@ -78,7 +79,7 @@ const ProductBrandViewPage: React.FC = () => {
       <Col span={12} className={styles.productContent}>
         <Row style={{ flexDirection: 'column', height: '100%' }}>
           <Col>
-            <ProductInfo isEdit={isEdit} />
+            <ProductInfo editable={editable} />
           </Col>
           <Col style={{ marginBottom: activeKey !== 'vendor' ? 24 : 0 }}>
             <ProductAttribute activeKey={activeKey} setActiveKey={setActiveKey} />

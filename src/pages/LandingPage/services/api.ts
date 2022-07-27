@@ -33,7 +33,7 @@ export async function brandLoginMiddleware(
   data: LoginInput,
   callback: (type: STATUS_RESPONSE, message?: string) => void,
 ) {
-  request(`/api/auth/login/brand`, {
+  request(`/api/auth/brand-design/login`, {
     method: 'POST',
     data,
   })

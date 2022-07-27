@@ -6,16 +6,16 @@ import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
 // import { validateEmail } from '@/helper/utils';
 import { FC } from 'react';
-import styles from '../styles/shareViaEmail.less';
+import styles from './index.less';
 
 interface ShareViaEmailProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
-  productData: any;
+  productData?: any;
 }
 
-const ShareViaEmail: FC<ShareViaEmailProps> = ({ visible, setVisible, productData }) => {
-  console.log('productData', productData);
+const ShareViaEmail: FC<ShareViaEmailProps> = ({ visible, setVisible }) => {
+  // console.log('productData', productData);
   // validate email Address
   //   const isValidEmail = validateEmail(data.general_email);
 

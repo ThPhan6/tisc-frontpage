@@ -24,14 +24,14 @@ import { setBrand } from '@/reducers/product';
 import styles from './styles/details.less';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
-import type { ACTIVE_KEY } from './types';
+import type { ProductInfoTab } from './types';
 
 const ProductConfigurationCreate: React.FC = () => {
   const dispatch = useDispatch();
   const params = useParams<{ id: string }>();
   const productId = params?.id || '';
   const product = useAppSelector((state) => state.product);
-  const [activeKey, setActiveKey] = useState<ACTIVE_KEY>('general');
+  const [activeKey, setActiveKey] = useState<ProductInfoTab>('general');
 
   useEffect(() => {
     if (productId) {

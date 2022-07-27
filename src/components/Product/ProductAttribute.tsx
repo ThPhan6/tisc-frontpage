@@ -1,36 +1,18 @@
-import React, { useState, useEffect } from 'react';
 import { CustomTabs } from '@/components/Tabs';
-import { getAllAttribute } from '@/services';
-// import { AttributebyType } from '@/types';
-import styles from './styles/details.less';
+import React from 'react';
 import { LIST_TAB } from './constants';
-import type { ACTIVE_KEY } from './types';
+import DownloadContent from './DownloadContent';
+import GeneralFeatureAttribute from './GeneralFeatureAttribute';
+import SpecificationAttribute from './SpecificationAttribute';
+import styles from './styles/details.less';
+import type { ProductInfoTab } from './types';
 
 interface ProductAttributeInterface {
-  activeKey: ACTIVE_KEY;
-  setActiveKey: (activeKey: ACTIVE_KEY) => void;
+  activeKey: ProductInfoTab;
+  setActiveKey: (activeKey: ProductInfoTab) => void;
 }
 
 const ProductAttribute: React.FC<ProductAttributeInterface> = ({ activeKey, setActiveKey }) => {
-  const [isReady, setIsReady] = useState(false);
-  // const [attribute, setAttribute] = useState<AttributebyType>({
-  //   general: [],
-  //   feature: [],
-  //   specification: [],
-  // });
-
-  useEffect(() => {
-    getAllAttribute().then((/* data */) => {
-      // setAttribute(data);
-      setTimeout(() => {
-        setIsReady(true);
-      }, 200);
-    });
-  }, []);
-
-  if (!isReady) {
-    return null;
-  }
   return (
     <div className={styles.productTabContainer}>
       <CustomTabs
@@ -38,16 +20,16 @@ const ProductAttribute: React.FC<ProductAttributeInterface> = ({ activeKey, setA
         centered={true}
         tabPosition="top"
         tabDisplay="space"
-        onChange={(key) => setActiveKey(key as ACTIVE_KEY)}
+        onChange={(key) => setActiveKey(key as ProductInfoTab)}
         activeKey={activeKey}
       />
-      {/* {activeKey !== 'vendor' && activeKey !== 'specification' ? (
-        <GeneralFeatureAttribute attributes={attribute[activeKey]} activeKey={activeKey} />
+      {activeKey !== 'vendor' && activeKey !== 'specification' ? (
+        <GeneralFeatureAttribute activeKey={activeKey} />
       ) : activeKey === 'specification' ? (
-        <SpecificationAttribute attributes={attribute.specification} />
+        <SpecificationAttribute />
       ) : (
-        <ProductVendor />
-      )} */}
+        <DownloadContent />
+      )}
     </div>
   );
 };

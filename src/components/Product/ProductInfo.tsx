@@ -16,10 +16,10 @@ import { useAppSelector } from '@/reducers';
 import { setPartialProductDetail } from '@/reducers/product';
 
 interface ProductEditActive {
-  isEdit: boolean;
+  editable: boolean;
 }
 
-const ProductInfo: React.FC<ProductEditActive> = ({ isEdit }) => {
+const ProductInfo: React.FC<ProductEditActive> = ({ editable }) => {
   const product = useAppSelector((state) => state.product);
   const dispatch = useDispatch();
   const { name, description, collection } = product.details;
@@ -85,11 +85,11 @@ const ProductInfo: React.FC<ProductEditActive> = ({ isEdit }) => {
           horizontal
           fontLevel={4}
           label="Collection"
-          placeholder={isEdit ? 'create or assign from the list' : ''}
-          rightIcon={isEdit ? <RightLeftIcon onClick={() => setVisible(true)} /> : undefined}
+          placeholder={editable ? 'create or assign from the list' : ''}
+          rightIcon={editable ? <RightLeftIcon onClick={() => setVisible(true)} /> : undefined}
           noWrap
           value={collection?.name ?? ''}
-          readOnly={isEdit ? false : true}
+          readOnly={editable === false}
         />
 
         {/* Product */}
@@ -97,8 +97,8 @@ const ProductInfo: React.FC<ProductEditActive> = ({ isEdit }) => {
           horizontal
           fontLevel={4}
           label="Product"
-          placeholder={isEdit ? 'type max.100 characters short description' : ''}
-          readOnly={isEdit ? false : true}
+          placeholder={editable ? 'type max.100 characters short description' : ''}
+          readOnly={editable === false}
           maxLength={100}
           noWrap
           value={name}
@@ -117,8 +117,8 @@ const ProductInfo: React.FC<ProductEditActive> = ({ isEdit }) => {
           horizontal
           fontLevel={4}
           label="Description"
-          placeholder={isEdit ? 'max.50 words of product summary' : ''}
-          readOnly={isEdit ? false : true}
+          placeholder={editable ? 'max.50 words of product summary' : ''}
+          readOnly={editable === false}
           maxWords={50}
           noWrap
           value={description}
@@ -131,7 +131,7 @@ const ProductInfo: React.FC<ProductEditActive> = ({ isEdit }) => {
           }}
         />
       </CustomCollapse>
-      {isEdit && (
+      {editable && (
         <Popover
           title="SELECT COLLECTION"
           visible={visible}

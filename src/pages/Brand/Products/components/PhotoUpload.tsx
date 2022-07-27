@@ -12,10 +12,9 @@ import type { UploadProps } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-
-import ShareViaEmail from '@/pages/Brand/Products/components/ShareViaEmail';
 import { likeProductById } from '@/services';
 import styles from '@/components/Product/styles/details.less';
+import ShareViaEmail from '@/components/ShareViaEmail/index';
 
 const PhotoUpload: React.FC = () => {
   const product = useAppSelector((state) => state.product);
