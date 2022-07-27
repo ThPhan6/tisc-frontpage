@@ -23,21 +23,17 @@
       max-width: 20%;
     }
     .productCardItem {
-      &:hover {
-        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-        .top {
-          box-shadow: @border-bottom-light;
-        }
-        .bottom {
-          box-shadow: @border-top-light;
-        }
-      }
-
       background-color: #fff;
       border: 0.5px solid #bfbfbf;
+      box-shadow: 0 0 0 #000;
+      transition: all 0.3s;
+      &:hover {
+        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      }
       .top {
         position: relative;
         padding: 12px 40px 8px 12px;
+        box-shadow: @border-bottom-light;
         .bold {
           font-weight: 500;
         }
@@ -60,11 +56,11 @@
         height: 28px;
         padding: 0 12px;
         .middleKey {
-          width: 50%;
+          width: calc(100% - 24px);
           text-align: left;
         }
         .middleValue {
-          width: 50%;
+          width: 24px;
           text-align: center;
         }
       }
@@ -73,6 +69,7 @@
         align-items: center;
         height: 40px;
         padding: 0 12px;
+        box-shadow: @border-top-light;
         .profile_icon {
           display: flex;
           align-items: center;
