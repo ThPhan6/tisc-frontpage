@@ -30,17 +30,17 @@ export async function loginMiddleware(
     });
 }
 
-export async function brandLoginMiddleware(
+export async function loginByBrandOrDesigner(
   data: LoginInput,
-  callback: (type: STATUS_RESPONSE, message?: string) => void,
+  callback: (type: STATUS_RESPONSE, message?: string, dataResponse?: LoginResponseProp) => void,
 ) {
-  request(`/api/auth/login/brand`, {
+  request(`/api/auth/brand-design/login`, {
     method: 'POST',
     data,
   })
     .then((response: LoginResponseProp) => {
       localStorage.setItem('access_token', response.token);
-      callback(STATUS_RESPONSE.SUCCESS);
+      callback(STATUS_RESPONSE.SUCCESS, '', response);
     })
     .catch((error) => {
       callback(STATUS_RESPONSE.ERROR, error?.data?.message || MESSAGE_NOTIFICATION.LOGIN_ERROR);

@@ -8,14 +8,14 @@ import { ModalProps } from '../types';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
-import { Checkbox } from 'antd';
+import { Checkbox, message } from 'antd';
 import { PoliciesModal } from './PoliciesModal';
-import { MESSAGE_ERROR } from '@/constants/message';
+import { MESSAGE_ERROR, MESSAGE_NOTIFICATION } from '@/constants/message';
 import { isShowErrorMessage, validateEmail } from '@/helper/utils';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 import { signUpDesigner } from '../services/api';
 
-interface SignupInput {
+interface SignUpFormState {
   firstname: string;
   email: string;
   password: string;
@@ -25,7 +25,7 @@ interface SignupInput {
 export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
   const [openModalPolicies, setOpenModalPolicies] = useState('');
-  const [inputValue, setInputValue] = useState<SignupInput>({
+  const [formInput, setFormInput] = useState<SignUpFormState>({
     email: '',
     password: '',
     firstname: '',
@@ -35,37 +35,38 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
   const [agreeTisc, setAgreeTisc] = useState(false);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue({ ...inputValue, [e.target.name]: e.target.value });
+    setFormInput({ ...formInput, [e.target.name]: e.target.value });
   };
 
   const handleAgreeTisc = () => {
     setAgreeTisc(!agreeTisc);
-    setInputValue({ ...inputValue, agree_tisc: !inputValue.agree_tisc });
+    setFormInput({ ...formInput, agree_tisc: !formInput.agree_tisc });
   };
 
   const setErrorMessage = () => {
-    if (inputValue.confirmed_password && inputValue.password !== inputValue.confirmed_password) {
+    if (formInput.confirmed_password && formInput.password !== formInput.confirmed_password) {
       return MESSAGE_ERROR.CONFIRM_PASSWORD;
     }
-    if (inputValue.email && !validateEmail(inputValue.email)) {
+    if (formInput.email && !validateEmail(formInput.email)) {
       return MESSAGE_ERROR.EMAIL_ALREADY_TAKEN;
     }
-    if (agreeTisc === true && inputValue.agree_tisc === false) {
+    if (agreeTisc === true && formInput.agree_tisc === false) {
       return MESSAGE_ERROR.AGREE_TISC;
     }
     return '';
   };
 
   const handleSubmit = () => {
-    if (inputValue.agree_tisc === true) {
+    if (formInput.agree_tisc === true) {
       signUpDesigner({
-        firstname: inputValue.firstname,
-        email: inputValue.email,
-        password: inputValue.password,
-        confirmed_password: inputValue.confirmed_password,
+        firstname: formInput.firstname,
+        email: formInput.email,
+        password: formInput.password,
+        confirmed_password: formInput.confirmed_password,
       }).then((res) => {
         if (res) {
           onClose();
+          message.success(MESSAGE_NOTIFICATION.CHECK_EMAIL_VERIFY_ACCOUNT);
         }
       });
     } else {
@@ -116,7 +117,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             type="email"
             required={true}
             onChange={handleOnChange}
-            status={isShowErrorMessage('email', inputValue.email) ? '' : 'error'}
+            status={isShowErrorMessage('email', formInput.email) ? '' : 'error'}
           />
           <CustomInput
             fromLandingPage
@@ -144,8 +145,8 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             required={true}
             onChange={handleOnChange}
             status={
-              inputValue.confirmed_password
-                ? inputValue.password !== inputValue.confirmed_password
+              formInput.confirmed_password
+                ? formInput.password !== formInput.confirmed_password
                   ? 'error'
                   : ''
                 : ''
@@ -153,7 +154,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
           />
           <div
             className={
-              agreeTisc === true && inputValue.agree_tisc === false ? styles.errorStatus : ''
+              agreeTisc === true && formInput.agree_tisc === false ? styles.errorStatus : ''
             }
           >
             <Checkbox onChange={handleAgreeTisc}>

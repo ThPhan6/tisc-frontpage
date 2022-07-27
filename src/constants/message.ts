@@ -27,6 +27,7 @@ export const MESSAGE_NOTIFICATION = {
   CREATE_PASSSWORD_VERIFICATION_FAILED: 'Failed to create account password',
   SIGN_UP_DESIGNER_SUCCESS: 'Sign up designer successfully',
   SIGN_UP_DESIGNER_ERROR: 'Sign up designer error',
+  CHECK_EMAIL_VERIFY_ACCOUNT: 'Please check your email to verify account',
 
   // Category
   CREATE_CATEGORY_SUCCESS: 'Create the category successfully',

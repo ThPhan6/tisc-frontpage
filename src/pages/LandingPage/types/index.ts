@@ -9,6 +9,7 @@ export type LoginResponseProp = {
   message: STATUS_RESPONSE;
   statusCode: number;
   token: string;
+  type: string;
 };
 
 export type UserInfoDataProp = {

@@ -25,8 +25,13 @@ export const redirectAfterLogin = async () => {
   const { redirect } = query as { redirect: string };
   pushTo(redirect || PATH.homePage);
 };
-export const redirectAfterBrandOrDesignLogin = async () => {
+
+export const redirectAfterBrandLogin = async () => {
   pushTo(PATH.brandHomePage);
+};
+
+export const redirectAfterDesignerLogin = async () => {
+  pushTo(PATH.designerHomePage);
 };
 
 export const getLetterAvatarBackgroundColor = (name: string) => {
