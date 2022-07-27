@@ -1,7 +1,7 @@
 import { useAppSelector } from '@/reducers';
 import { FC } from 'react';
 import CustomCollapse from '../Collapse';
-// import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
+import { BodyText } from '../Typography';
 import styles from './styles/attributes.less';
 
 interface GeneralFeatureAttributeProps {
@@ -18,21 +18,45 @@ const GeneralFeatureAttribute: FC<GeneralFeatureAttributeProps> = ({ activeKey }
 
   return (
     <div className={styles.attributes}>
-      {activeKey === 'general'
-        ? general_attribute_groups.map((group) => {
-            return (
-              <div className={styles.group}>
-                <CustomCollapse header={group.name}>ddd</CustomCollapse>
-              </div>
-            );
-          })
-        : feature_attribute_groups.map((group) => {
-            return (
-              <div className={styles.group}>
-                <CustomCollapse header={group.name}>feature</CustomCollapse>
-              </div>
-            );
-          })}
+      <div className={styles.generalFeature}>
+        {activeKey === 'general'
+          ? general_attribute_groups.map((group) => {
+              return (
+                <div className={styles.group}>
+                  <CustomCollapse header={group.name}>
+                    {group.attributes.map((attribute) => (
+                      <div className={styles.content}>
+                        <BodyText level={4} customClass={styles.content_text}>
+                          {attribute.text}
+                        </BodyText>
+                        <BodyText level={6} customClass={styles.content_type} fontFamily="Roboto">
+                          {attribute.type}
+                        </BodyText>
+                      </div>
+                    ))}
+                  </CustomCollapse>
+                </div>
+              );
+            })
+          : feature_attribute_groups.map((group) => {
+              return (
+                <div className={styles.group}>
+                  <CustomCollapse header={group.name}>
+                    {group.attributes.map((attribute) => (
+                      <div className={styles.content}>
+                        <BodyText level={4} customClass={styles.content_text}>
+                          {attribute.text}
+                        </BodyText>
+                        <BodyText level={6} customClass={styles.content_type} fontFamily="Roboto">
+                          {attribute.type}
+                        </BodyText>
+                      </div>
+                    ))}
+                  </CustomCollapse>
+                </div>
+              );
+            })}
+      </div>
     </div>
   );
 };

@@ -6,7 +6,7 @@ import styles from './styles/attributes.less';
 import Popover from '../Modal/Popover';
 import { useState } from 'react';
 
-const SpecificationAttribute = ({}) => {
+const SpecificationAttribute = () => {
   const { specification_attribute_groups } = useAppSelector((state) => state.product.details);
   const [visible, setVisible] = useState<boolean>(false);
   const [groupName, setGroupName] = useState<string>('');
@@ -30,7 +30,9 @@ const SpecificationAttribute = ({}) => {
               customHeaderClass={styles.vendorCustomPanelBox}
               header={
                 <div className={styles.brandProfileHeader}>
-                  <span className={styles.name}>{group.name}</span>
+                  <BodyText level={6} fontFamily="Roboto" className={styles.name}>
+                    {group.name}
+                  </BodyText>
                 </div>
               }
             >

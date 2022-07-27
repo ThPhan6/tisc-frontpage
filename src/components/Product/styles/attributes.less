@@ -3,8 +3,7 @@
   transition: all 0.3s;
 
   :global(.ant-collapse-content > .ant-collapse-content-box) {
-    margin-top: 8px;
-    padding: 0 16px;
+    padding: 8px 16px;
   }
   :global(.ant-collapse-header) {
     justify-content: left;
@@ -13,6 +12,23 @@
 
   .group {
     margin-top: 8px;
+  }
+}
+
+.generalFeature {
+  .content {
+    display: flex;
+    align-items: center;
+    height: 36px;
+
+    &_text {
+      margin-right: 12px;
+      text-transform: capitalize;
+    }
+
+    &_type {
+      text-transform: capitalize;
+    }
   }
 }
 
@@ -30,7 +46,7 @@
       cursor: pointer;
 
       &_type {
-        margin-right: 16px;
+        margin-right: 12px;
         white-space: nowrap;
       }
 
