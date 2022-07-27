@@ -1,4 +1,4 @@
-import { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
+import { useEffect, useState, useImperativeHandle, forwardRef, ReactNode } from 'react';
 import { Table } from 'antd';
 import { useCustomTable } from './hooks';
 import { forEach, isArray, isEmpty } from 'lodash';
@@ -16,9 +16,59 @@ import type {
 import styles from './styles/table.less';
 import { TableHeader } from './TableHeader';
 
+// start expandable table
+interface ExpandableTableConfig {
+  columns: TableColumnItem<any>[];
+  childrenColumnName: string;
+  expandable?: ExpandableConfig<any>;
+  level?: number;
+  rowKey?: string;
+  gridView?: boolean;
+  renderSubContent?: (data: any) => ReactNode;
+}
+
+export const GetExpandableTableConfig = (
+  props: ExpandableTableConfig,
+  data?: any,
+): ExpandableConfig<any> => {
+  const {
+    expandable,
+    childrenColumnName,
+    level,
+    rowKey = 'id',
+    gridView,
+    renderSubContent,
+  } = props;
+  const { columns, expanded } = useCustomTable(props.columns);
+  return {
+    expandRowByClick: false,
+    showExpandColumn: false,
+    expandedRowRender: (record: any, index: number) => {
+      if (gridView && renderSubContent) {
+        return renderSubContent(data[index]);
+      }
+      return (
+        <Table
+          pagination={false}
+          columns={columns}
+          rowKey={rowKey}
+          rowClassName={level === 2 ? 'custom-expanded-level-2' : ''}
+          tableLayout="auto"
+          expandable={{
+            ...expandable,
+            expandedRowKeys: expanded ? [expanded] : undefined,
+          }}
+          dataSource={record[childrenColumnName]}
+        />
+      );
+    },
+  };
+};
+
 export interface CustomTableProps {
   columns: TableColumnItem<any>[];
   expandable?: ExpandableConfig<any>;
+  expandableConfig?: ExpandableTableConfig;
   rightAction?: React.ReactNode;
   fetchDataFunc: (
     params: PaginationRequestParams,
@@ -62,6 +112,9 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     pageSize: DEFAULT_PAGESIZE,
     total: 0,
   });
+  const customExpandable = props.expandableConfig
+    ? GetExpandableTableConfig(props.expandableConfig, data)
+    : undefined;
 
   const formatPaginationParams = (params: PaginationParams) => {
     const { sorter, filter } = params;
@@ -141,7 +194,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     },
   }));
   return (
-    <div className={styles.customTable}>
+    <div className={`${styles.customTable} ${customExpandable ? styles['sub-grid'] : ''}`}>
       <TableHeader
         title={title}
         rightAction={rightAction}
@@ -167,7 +220,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
           x: 'max-content',
         }}
         expandable={{
-          ...expandable,
+          ...(customExpandable ?? expandable),
           expandedRowKeys: expanded ? [expanded] : undefined,
         }}
       />
@@ -184,40 +237,5 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     </div>
   );
 });
-
-// start expandable table
-interface ExpandableTableProps {
-  columns: TableColumnItem<any>[];
-  childrenColumnName: string;
-  expandable?: ExpandableConfig<any>;
-  level?: number;
-  rowKey?: string;
-}
-
-export const GetExpandableTableConfig = (props: ExpandableTableProps): ExpandableConfig<any> => {
-  const { expandable, childrenColumnName, level, rowKey = 'id' } = props;
-  const { columns, expanded } = useCustomTable(props.columns);
-
-  return {
-    expandRowByClick: false,
-    showExpandColumn: false,
-    expandedRowRender: (record: any) => {
-      return (
-        <Table
-          pagination={false}
-          columns={columns}
-          rowKey={rowKey}
-          rowClassName={level === 2 ? 'custom-expanded-level-2' : ''}
-          tableLayout="auto"
-          expandable={{
-            ...expandable,
-            expandedRowKeys: expanded ? [expanded] : undefined,
-          }}
-          dataSource={record[childrenColumnName]}
-        />
-      );
-    },
-  };
-};
 
 export default CustomTable;
