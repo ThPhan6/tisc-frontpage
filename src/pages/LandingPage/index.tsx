@@ -1,7 +1,7 @@
 import CustomButton from '@/components/Button';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { MESSAGE_ERROR, MESSAGE_NOTIFICATION } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
@@ -29,7 +29,7 @@ import { LoginModal } from './components/LoginModal';
 import { NoticeModal } from './components/NoticeModal';
 import { PoliciesModal } from './components/PoliciesModal';
 import { ResetPasswordModal } from './components/ResetPasswordModal';
-import { CreatePasswordModal } from './components/CreatePasswordModal';
+// import { CreatePasswordModal } from './components/CreatePasswordModal';
 import { SignupModal } from './components/SignupModal';
 import styles from './index.less';
 import {
@@ -37,16 +37,18 @@ import {
   loginMiddleware,
   resetPasswordMiddleware,
   validateResetToken,
-  createPasswordVerify,
+  // createPasswordVerify,
   loginByBrandOrDesigner,
+  verifyAccount,
 } from './services/api';
 import type {
   LoginInput,
   ModalOpen,
   ResetPasswordRequestBody,
-  CreatePasswordRequestBody,
+  // CreatePasswordRequestBody,
   LoginResponseProp,
 } from './types';
+import { VerifyAccount } from './components/VerifyAccount';
 
 const LandingPage = () => {
   const userEmail = useQuery().get('email');
@@ -55,10 +57,12 @@ const LandingPage = () => {
 
   const { fetchUserInfo } = useCustomInitialState();
   const openResetPwd = useBoolean();
-  const openVerificationModal = useBoolean();
+  // const openVerificationModal = useBoolean();
   const isLoading = useBoolean();
   const [openModal, setOpenModal] = useState<ModalOpen>('');
   const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
+  const openVerifyAccountModal = useBoolean();
+
   const handleCloseModal = () => {
     setOpenModal('');
   };
@@ -81,12 +85,22 @@ const LandingPage = () => {
   }, [userEmail]);
 
   useEffect(() => {
-    if (!tokenVerification && history.location.pathname === PATH.createPassword) {
+    if (
+      // (!tokenVerification && history.location.pathname === PATH.createPassword)
+      !tokenVerification &&
+      history.location.pathname === PATH.verifyAccount
+    ) {
       history.push(PATH.landingPage);
       return;
     } else {
       if (tokenVerification) {
-        openVerificationModal.setValue(true);
+        verifyAccount(tokenVerification).then((res) => {
+          if (res) {
+            openVerifyAccountModal.setValue(res);
+          }
+          message.error(MESSAGE_ERROR.VERIFY_TOKEN_EXPIRED);
+        });
+        // openVerificationModal.setValue(true);
       }
     }
   }, [tokenVerification]);
@@ -110,11 +124,10 @@ const LandingPage = () => {
         async (type: STATUS_RESPONSE, msg?: string, response?: LoginResponseProp) => {
           if (type === STATUS_RESPONSE.SUCCESS) {
             message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
+            await fetchUserInfo();
             if (response?.type === 'design') {
-              await fetchUserInfo();
               redirectAfterDesignerLogin();
             } else if (response?.type === 'brand') {
-              await fetchUserInfo();
               redirectAfterBrandLogin();
             }
           } else {
@@ -153,14 +166,18 @@ const LandingPage = () => {
     });
   };
 
-  const handleVerifyAccount = (data: CreatePasswordRequestBody) => {
-    isLoading.setValue(true);
-    createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
-      isLoading.setValue(false);
-      if (isSuccess) {
-        redirectAfterLogin();
-      }
-    });
+  // const handleVerifyAccount = (data: CreatePasswordRequestBody) => {
+  //   isLoading.setValue(true);
+  //   createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
+  //     isLoading.setValue(false);
+  //     if (isSuccess) {
+  //       redirectAfterLogin();
+  //     }
+  //   });
+  // };
+
+  const handleActiveAccount = () => {
+    setOpenModal('Login');
   };
 
   return (
@@ -346,14 +363,22 @@ const LandingPage = () => {
           }}
         />
       )}
-      <CreatePasswordModal
+      {/* <CreatePasswordModal
         visible={openVerificationModal}
         handleSubmit={handleVerifyAccount}
         data={{
           email: userEmail ?? '',
           token: tokenVerification || '',
         }}
-      />
+      /> */}
+      {openVerifyAccountModal.value === true && (
+        <VerifyAccount
+          visible={openVerifyAccountModal}
+          handleSubmit={handleActiveAccount}
+          openLogin={() => setOpenModal('Login')}
+        />
+      )}
+
       {isLoading.value && <LoadingPageCustomize />}
     </div>
   );

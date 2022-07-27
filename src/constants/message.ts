@@ -11,6 +11,7 @@ export const MESSAGE_ERROR = {
   EMAIL_UNVALID: 'Email is not valid',
   EMAIL_ALREADY_TAKEN: 'Email alreadly taken',
   AGREE_TISC: 'Click to proceed',
+  VERIFY_TOKEN_EXPIRED: 'Verification link has expired',
 };
 
 export const MESSAGE_NOTIFICATION = {

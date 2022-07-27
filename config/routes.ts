@@ -17,6 +17,11 @@ export default [
     component: './LandingPage',
     layout: false,
   },
+  {
+    path: PATH.verifyAccount,
+    component: './LandingPage',
+    layout: false,
+  },
   // REQUIRED AUTHENTICATION
   {
     path: '/profiles',

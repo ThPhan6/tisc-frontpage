@@ -3,7 +3,7 @@ export const PATH = {
   landingPage: '/',
   resetPassword: '/reset-password',
   createPassword: '/create-password',
-
+  verifyAccount: '/verify',
   // private path
   profiles: '/profiles',
   homePage: '/tisc/dashboard',
@@ -86,4 +86,9 @@ export const PATH = {
   brandUpdateTeamProfile: '/brand/adminstration/team-profiles/update/:id',
 };
 
-export const PUBLIC_PATH = [PATH.landingPage, PATH.resetPassword, PATH.createPassword];
+export const PUBLIC_PATH = [
+  PATH.landingPage,
+  PATH.resetPassword,
+  PATH.createPassword,
+  PATH.verifyAccount,
+];
