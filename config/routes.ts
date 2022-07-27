@@ -606,8 +606,25 @@ export default [
     path: PATH.designerProject,
     name: 'project',
     icon: 'project-icon.svg',
-    component: './Designer/Project',
+    component: './Admin',
     access: 'design_project',
+    // routes: [
+    //   {
+    //     path: PATH.designerProject,
+    //     component: './TISC/Adminstration/Location',
+    //     hideInMenu: true,
+    //   },
+    //   {
+    //     path: PATH.tiscLocationCreate,
+    //     hideInMenu: true,
+    //     component: './TISC/Adminstration/Location/CreatePage',
+    //   },
+    //   {
+    //     path: PATH.tiscLocationUpdate,
+    //     hideInMenu: true,
+    //     component: './TISC/Adminstration/Location/UpdatePage',
+    //   },
+    // ],
   },
   {
     path: PATH.designerAdminstration,
