@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BodyText, Title } from '@/components/Typography';
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
-import { ProjectTabKeys, ProjectTabs, ProjectTabValue } from '../../constants/tab';
+import { ProjectTabKeys, ProjectTabs } from '../../constants/tab';
 //
 import { CustomTabs } from '@/components/Tabs';
 //
@@ -35,9 +35,12 @@ const ProductDataTitle: React.FC<ProductDataTitleProps> = (props) => {
   );
 };
 
-const ProjectDetailHeader: React.FC = () => {
-  const [selectedTab, setSelectedTab] = useState<ProjectTabValue>(ProjectTabKeys.basicInformation);
+interface ProjectDetailHeaderProps {
+  activeKey: ProjectTabKeys;
+  onChangeTab: (activeKey: ProjectTabKeys) => void;
+}
 
+const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({ activeKey, onChangeTab }) => {
   const goBackToProjectList = () => {
     pushTo(PATH.designerProject);
   };
@@ -54,8 +57,8 @@ const ProjectDetailHeader: React.FC = () => {
         tabPosition="top"
         tabDisplay="space"
         className={styles.projectTabInfo}
-        onChange={(changedKey) => setSelectedTab(changedKey as ProjectTabValue)}
-        activeKey={selectedTab}
+        onChange={(changedKey) => onChangeTab(changedKey as ProjectTabKeys)}
+        activeKey={activeKey}
       />
     </div>
   );

@@ -1,6 +1,6 @@
 import TabPane from '@ant-design/pro-card/lib/components/TabPane';
 import { Tabs } from 'antd';
-import { FC } from 'react';
+import { FC, HTMLAttributes, memo } from 'react';
 import { CustomTabsProps } from './types';
 import style from './styles/index.less';
 
@@ -43,3 +43,13 @@ export const CustomTabs: FC<CustomTabsProps> = ({
     </div>
   );
 };
+
+interface TabPaneProps extends HTMLAttributes<HTMLDivElement> {
+  active?: boolean;
+}
+export const CustomTabPane: FC<TabPaneProps> = memo(({ active, ...props }) => {
+  if (!active) {
+    return null;
+  }
+  return <div {...props} />;
+});
