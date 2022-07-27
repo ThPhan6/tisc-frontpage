@@ -20,13 +20,14 @@ import {
 } from '@/services';
 import { ProductItem, ProductGetListParameter } from '@/types';
 import styles from './styles/cardList.less';
+import { CardListProps } from './types';
 
-interface ProductCardProps {
+interface ProductCardProps extends CardListProps {
   product: ProductItem;
   hasBorder?: boolean;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, productPage, hasBorder }) => {
   const { filter } = useAppSelector((state) => state.product.list);
   const [liked, setLiked] = useState(product.is_liked);
   const reloadProductInformation = () => {
@@ -71,9 +72,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
     });
   };
 
-  const gotoProductDetailPage = () => {
-    if (product.id) {
-      pushTo(PATH.productConfigurationUpdate.replace(':id', product.id));
+  const gotoProductDetailPage = (pageType: 'brand' | 'tisc') => {
+    if (pageType === 'brand') {
+      if (product.id) {
+        pushTo(PATH.updateProductBrand.replace(':id', product.id));
+      }
+    } else if (pageType === 'tisc') {
+      if (product.id) {
+        pushTo(PATH.productConfigurationUpdate.replace(':id', product.id));
+      }
     }
   };
 
@@ -89,7 +96,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
           </BodyText>
         </div>
       </div>
-      <div className={styles.productInfo} onClick={gotoProductDetailPage}>
+      <div className={styles.productInfo} onClick={() => gotoProductDetailPage(productPage)}>
         <BodyText level={6} fontFamily="Roboto" customClass="product-description">
           {product.name}
         </BodyText>

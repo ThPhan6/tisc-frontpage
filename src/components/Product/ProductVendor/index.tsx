@@ -1,20 +1,16 @@
-import { FC } from 'react';
-import { BodyText } from '@/components/Typography';
-import CustomCollapse from '@/components/Collapse';
-import DynamicFormInput from '@/components/EntryForm/DynamicFormInput';
-import BrandContact from './BrandContact';
 import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
 import { ReactComponent as CatelogueIcon } from '@/assets/icons/catelogue-icon.svg';
 import { ReactComponent as LocationIcon } from '@/assets/icons/location-icon.svg';
-import { useDispatch } from 'react-redux';
+import CustomCollapse from '@/components/Collapse';
+import { BodyText } from '@/components/Typography';
 import { useAppSelector } from '@/reducers';
-import { setProductCatelogue } from '@/reducers/product';
+import { FC } from 'react';
+import BrandContact from './BrandContact';
 import styles from './styles/vendor.less';
 
-const ProductVendor: FC = () => {
+const ProductVendor: FC = ({ children }) => {
   const product = useAppSelector((state) => state.product);
-  const { catelogue, brand } = product;
-  const dispatch = useDispatch();
+  const { brand } = product;
 
   return (
     <div className={styles.productVendorContainer}>
@@ -100,30 +96,7 @@ const ProductVendor: FC = () => {
           </div>
         }
       >
-        <DynamicFormInput
-          data={catelogue.contents.map((item) => {
-            return {
-              title: item.title,
-              value: item.url,
-            };
-          })}
-          setData={(data) => {
-            dispatch(
-              setProductCatelogue({
-                ...catelogue,
-                contents: data.map((item, index) => {
-                  return {
-                    ...catelogue.contents[index],
-                    title: item.title,
-                    url: item.value,
-                  };
-                }),
-              }),
-            );
-          }}
-          titlePlaceholder="type catelogue name here"
-          valuePlaceholder="paste file URL link here"
-        />
+        {children}
       </CustomCollapse>
     </div>
   );

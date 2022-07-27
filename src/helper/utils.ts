@@ -134,6 +134,15 @@ export const isEmptySpace = (input: string) => {
   return REGEX_EMPTY_SPACE.test(input);
 };
 
+export const getPathName = (pathName: string) => {
+  const name = pathName.split('/')[1];
+
+  if (name === 'tisc') {
+    return true;
+  }
+
+  return false;
+};
 export const getFullName = (data: any) => {
   return `${data?.lastname ?? ''} ${data?.firstname ?? ''}`;
 };
