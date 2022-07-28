@@ -17,7 +17,7 @@ import { showImageUrl } from '@/helper/utils';
 import { map, forEach, capitalize, truncate } from 'lodash';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
-import { setBrand, setProductList, reset } from '@/reducers/product';
+import { setBrand, setProductList, resetProductState } from '@/reducers/product';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import styles from '../styles/topbar.less';
@@ -127,7 +127,7 @@ const ProductTopBar: React.FC = () => {
   }, [filter]);
 
   const gotoProductForm = () => {
-    dispatch(reset());
+    dispatch(resetProductState());
     if (product.brand && product.brand.id) {
       pushTo(PATH.productConfigurationCreate.replace(':brandId', product.brand.id));
     }

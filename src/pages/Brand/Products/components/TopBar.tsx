@@ -2,8 +2,8 @@ import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { HeaderDropdown } from '@/components/HeaderDropdown';
 import { BodyText } from '@/components/Typography';
-import { useAppSelector } from '@/reducers';
-import { setProductList } from '@/reducers/product';
+import store, { useAppSelector } from '@/reducers';
+import { resetProductState, setProductList } from '@/reducers/product';
 import { getProductListByBrandId, getProductSummary } from '@/services';
 import type { GeneralData, IFilterType, ProductGetListParameter } from '@/types';
 import { capitalize } from 'lodash';
@@ -76,6 +76,10 @@ const ProductTopBar: React.FC = () => {
         resetProductList();
       });
     }
+
+    return () => {
+      store.dispatch(resetProductState());
+    };
   }, []);
 
   useEffect(() => {
@@ -91,10 +95,6 @@ const ProductTopBar: React.FC = () => {
       }
       getProductListByBrandId(params);
     }
-
-    return () => {
-      resetProductList();
-    };
   }, [filter]);
 
   const renderDropDownList = (title: string, filterName: IFilterType, data: GeneralData[]) => {

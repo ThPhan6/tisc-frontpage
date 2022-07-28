@@ -17,8 +17,7 @@ import { setPartialProductDetail, setProductDetailImage } from '@/reducers/produ
 import { showImageUrl } from '@/helper/utils';
 import { IMAGE_ACCEPT_TYPES } from '@/constants/util';
 import type { ProductKeyword } from '@/types';
-
-import styles from '../styles/details.less';
+import styles from '@/components/Product/styles/details.less';
 
 const PhotoUpload: React.FC = () => {
   const product = useAppSelector((state) => state.product);

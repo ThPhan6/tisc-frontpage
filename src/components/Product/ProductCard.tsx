@@ -1,29 +1,28 @@
-import React, { useState } from 'react';
-import SampleProductImage from '@/assets/images/sample-product-img.png';
+import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
-import { ReactComponent as TabIcon } from '@/assets/icons/tabs-icon.svg';
 import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/share-via-email.svg';
-import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
+import { ReactComponent as TabIcon } from '@/assets/icons/tabs-icon.svg';
+import SampleProductImage from '@/assets/images/sample-product-img.png';
 import { BodyText } from '@/components/Typography';
-import { showImageUrl } from '@/helper/utils';
-import { Tooltip } from 'antd';
 import { confirmDelete } from '@/helper/common';
-import { useAppSelector } from '@/reducers';
 import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
+import { useCheckPermission, useCheckUserRole } from '@/helper/hook';
+import { showImageUrl } from '@/helper/utils';
+import { useAppSelector } from '@/reducers';
 import {
   deleteProductById,
+  duplicateProductById,
   getProductListByBrandId,
   getProductSummary,
-  duplicateProductById,
   likeProductById,
 } from '@/services';
-import { ProductItem, ProductGetListParameter } from '@/types';
-import styles from './styles/cardList.less';
-import { useCheckPermission, useCheckUserRole } from '@/helper/hook';
-import { USER_ROLE } from '@/constants/userRoles';
+import { ProductGetListParameter, ProductItem } from '@/types';
+import { Tooltip } from 'antd';
+import React, { useState } from 'react';
 import ShareViaEmail from '../ShareViaEmail';
+import styles from './styles/cardList.less';
+import { gotoProductDetailPage } from './utils';
 
 interface ProductCardProps {
   product: ProductItem;
@@ -36,12 +35,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
 
   const [visible, setVisible] = useState<boolean>(false);
 
-  // check user role to redirect
-  const userRole = useCheckUserRole();
-
   // check user permission to action
   const showShareEmail = useCheckPermission('Brand Admin');
   const showDuplicateAndDelete = useCheckPermission('TISC Admin');
+
+  // check user role to redirect
+  const userRole = useCheckUserRole();
+  const handleRedirectRoute = () => {
+    const path = gotoProductDetailPage(userRole, product.id);
+    if (path) {
+      pushTo(path);
+    }
+  };
 
   const reloadProductInformation = () => {
     if (filter && product.brand?.id) {
@@ -90,23 +95,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
     });
   };
 
-  const gotoProductDetailPage = () => {
-    if (userRole === USER_ROLE.brand) {
-      if (product.id) {
-        pushTo(PATH.updateProductBrand.replace(':id', product.id));
-      }
-    } else if (userRole === USER_ROLE.tisc) {
-      if (product.id) {
-        pushTo(PATH.productConfigurationUpdate.replace(':id', product.id));
-      }
-    }
-  };
-
   const likeCount = (product.favorites ?? 0) + (liked ? 1 : 0);
 
   return (
     <div className={`${styles.productCardItem} ${hasBorder ? styles.border : ''}`}>
-      <div className={styles.imageWrapper} onClick={gotoProductDetailPage}>
+      <div className={styles.imageWrapper} onClick={handleRedirectRoute}>
         <img src={product.images?.[0] ? showImageUrl(product.images[0]) : SampleProductImage} />
         <div className={styles.imagePlaceholder}>
           <BodyText level={5} fontFamily="Roboto">
@@ -114,7 +107,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
           </BodyText>
         </div>
       </div>
-      <div className={styles.productInfo} onClick={gotoProductDetailPage}>
+      <div className={styles.productInfo} onClick={handleRedirectRoute}>
         <BodyText level={6} fontFamily="Roboto" customClass="product-description">
           {product.name}
         </BodyText>
