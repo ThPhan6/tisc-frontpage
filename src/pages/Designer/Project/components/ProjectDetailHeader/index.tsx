@@ -6,7 +6,7 @@ import { PATH } from '@/constants/path';
 import { ProjectTabKeys, ProjectTabs } from '../../constants/tab';
 //
 import { CustomTabs } from '@/components/Tabs';
-//
+import { ProjectDetailProps } from '@/types';
 
 import styles from '../../styles/project-detail-header.less';
 
@@ -15,13 +15,13 @@ interface ProductDataTitleProps {
   code?: string;
 }
 
-// const EmptyProductDataTitle: React.FC = () => {
-//   return (
-//     <BodyText level={4} fontFamily="Roboto" customClass={styles.emptyTitle}>
-//       enter project code & name below
-//     </BodyText>
-//   );
-// }
+const EmptyProductDataTitle: React.FC = () => {
+  return (
+    <BodyText level={4} fontFamily="Roboto" customClass={styles.emptyTitle}>
+      enter project code & name below
+    </BodyText>
+  );
+};
 
 const ProductDataTitle: React.FC<ProductDataTitleProps> = (props) => {
   const { name = '', code = '' } = props;
@@ -38,9 +38,14 @@ const ProductDataTitle: React.FC<ProductDataTitleProps> = (props) => {
 interface ProjectDetailHeaderProps {
   activeKey: ProjectTabKeys;
   onChangeTab: (activeKey: ProjectTabKeys) => void;
+  project?: ProjectDetailProps;
 }
 
-const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({ activeKey, onChangeTab }) => {
+const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({
+  activeKey,
+  onChangeTab,
+  project,
+}) => {
   const goBackToProjectList = () => {
     pushTo(PATH.designerProject);
   };
@@ -48,7 +53,12 @@ const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({ activeKey, on
   return (
     <div className={styles.projectDetaiHeaderWrapper}>
       <div className={styles.projectDetailTitle}>
-        <ProductDataTitle name="Project Enable" code="0000" />
+        {project ? (
+          <ProductDataTitle name={project.name} code={project.code} />
+        ) : (
+          <EmptyProductDataTitle />
+        )}
+
         <CloseIcon onClick={goBackToProjectList} />
       </div>
       <CustomTabs

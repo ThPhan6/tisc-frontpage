@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 export type RadioValue = {
-  value: string | boolean;
+  value: string | boolean | number;
   label: string | ReactNode;
   disabled?: boolean;
   customClass?: string;

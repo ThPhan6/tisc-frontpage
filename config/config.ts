@@ -63,6 +63,10 @@ export default defineConfig({
     'border-left-light': 'inset .7px 0 0 rgba(0, 0, 0, 0.3)',
     'border-right-light': 'inset -.7px 0 0 rgba(0, 0, 0, 0.3)',
     'border-all-light': 'inset 0 0 0 .7px rgba(0, 0, 0, 0.3)',
+
+    //font fontFamily
+    'font-primary': 'Roboto',
+    'font-secondary': 'Cormorant-Garamond',
   },
   // esbuild is father build tools
   // https://umijs.org/plugins/plugin-esbuild

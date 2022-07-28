@@ -621,7 +621,7 @@ export default [
       {
         path: PATH.designerUpdateProject,
         hideInMenu: true,
-        component: './Admin',
+        component: './Designer/Project/UpdatePage',
       },
     ],
   },
@@ -665,8 +665,8 @@ export default [
   // {
   //   name: 'list.table-list',
   //   icon: 'table',
-  //   path: '/list',
-  //   component: './TableList',
+  //   path: '/welcome',
+  //   component: './Welcome',
   // },
   // GENERAL PAGE
   {

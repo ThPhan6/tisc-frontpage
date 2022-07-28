@@ -5,21 +5,20 @@ import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
 import type { TableColumnItem } from '@/components/Table/types';
-// import { confirmDelete } from '@/helper/common';
+import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
-import { getProjectPagination } from '@/services';
+import { getProjectPagination, deleteProject } from '@/services';
 import type { ProjectListProps } from '@/types';
 import React, { useRef } from 'react';
 import ProjectListHeader from './components/ProjectListHeader';
-import { ProfileIcon } from '@/components/ProfileIcon';
+import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
 import { PageContainer } from '@ant-design/pro-layout';
 import { FilterStatusIcons } from './constants/filter';
-import { getFullName } from '@/helper/utils';
 import { isEmpty } from 'lodash';
 import { message } from 'antd';
 import { FilterValues, GlobalFilter } from './constants/filter';
-
+import moment from 'moment';
 import styles from './styles/project-list.less';
 
 const ProjectList: React.FC = () => {
@@ -30,21 +29,18 @@ const ProjectList: React.FC = () => {
     pushTo(PATH.designerCreateProject);
   };
 
-  // const handleUpdateProject = (id: string) => {
-  // pushTo(`${activePath}/${id}`);
-  // };
-  // const handleCreateProject = (id: string) => {
-  //   pushTo(`${activePath}/${id}`);
-  // };
-  // const handleDeleteAttribute = (id: string) => {
-  //   confirmDelete(() => {
-  //     deleteAttribute(id).then((isSuccess) => {
-  //       if (isSuccess) {
-  //         tableRef.current.reload();
-  //       }
-  //     });
-  //   });
-  // };
+  const goToUpdateProject = (id: string) => {
+    pushTo(PATH.designerUpdateProject.replace(':id', id));
+  };
+  const handleDeleteProject = (id: string) => {
+    confirmDelete(() => {
+      deleteProject(id).then((isSuccess) => {
+        if (isSuccess) {
+          tableRef.current.reload();
+        }
+      });
+    });
+  };
 
   const handleAssignTeams = () => {
     message.info('This feature will coming at Phase 4!');
@@ -59,6 +55,7 @@ const ProjectList: React.FC = () => {
     {
       title: 'Status',
       dataIndex: 'status',
+      align: 'center',
       render: (value) => FilterStatusIcons[value] ?? '',
     },
     {
@@ -83,14 +80,14 @@ const ProjectList: React.FC = () => {
     },
     {
       title: 'Building Type',
-      dataIndex: 'building',
+      dataIndex: 'building_type',
       sorter: true,
     },
     {
       title: 'Design Due',
       dataIndex: 'design_due',
       render: (value) => {
-        const dueDay = value ?? 0;
+        const dueDay = moment(value).diff(moment(), 'days') ?? 0;
         let suffix = 'day';
         if (dueDay > 1 || dueDay < -1) {
           suffix += 's';
@@ -107,16 +104,17 @@ const ProjectList: React.FC = () => {
       },
     },
     {
-      title: 'Assign Teams',
+      title: 'Assign Team',
       dataIndex: 'assign_teams',
+      align: 'center',
       render: (_value, record) => {
         if (isEmpty(record.assign_teams)) {
           return <UserAddIcon onClick={handleAssignTeams} />;
         }
         return (
-          <div onClick={handleAssignTeams}>
+          <div onClick={handleAssignTeams} className={styles.asignTeamMember}>
             {record.assign_teams.map((teamProfile, key) => (
-              <ProfileIcon key={key} name={getFullName(teamProfile)} />
+              <TeamIcon key={key} avatar={teamProfile.avatar} name={teamProfile.name} />
             ))}
           </div>
         );
@@ -124,11 +122,16 @@ const ProjectList: React.FC = () => {
     },
     {
       title: 'Action',
-      dataIndex: 'action',
+      dataIndex: 'id',
       align: 'center',
       width: '5%',
-      render: () => {
-        return <ActionMenu />;
+      render: (projectId) => {
+        return (
+          <ActionMenu
+            handleUpdate={() => goToUpdateProject(projectId)}
+            handleDelete={() => handleDeleteProject(projectId)}
+          />
+        );
       },
     },
   ];
@@ -152,7 +155,9 @@ const ProjectList: React.FC = () => {
         extraParams={
           selectedFilter && selectedFilter.id !== FilterValues.global
             ? {
-                status: selectedFilter.id,
+                filter: {
+                  status: selectedFilter.id,
+                },
               }
             : undefined
         }
