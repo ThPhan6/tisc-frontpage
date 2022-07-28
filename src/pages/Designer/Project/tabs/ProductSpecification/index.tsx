@@ -5,7 +5,7 @@ const ProductSpecification: React.FC = () => {
   return (
     <div>
       <ProjectTabContentHeader />
-      General Information
+      Product Specification
     </div>
   );
 };

@@ -74,7 +74,7 @@ export interface CustomTableProps {
     params: PaginationRequestParams,
     callback: (data: DataTableResponse) => void,
   ) => void;
-  title: string;
+  title?: string;
   multiSort?: {
     [key: string]: any;
   };
@@ -199,11 +199,13 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   }));
   return (
     <div className={`${styles.customTable} ${customExpandable ? styles['sub-grid'] : ''}`}>
-      <TableHeader
-        title={title}
-        rightAction={rightAction}
-        customClass={customClass ? customClass : ''}
-      />
+      {title && (
+        <TableHeader
+          title={title}
+          rightAction={rightAction}
+          customClass={customClass ? customClass : ''}
+        />
+      )}
 
       <Table
         columns={columns}
