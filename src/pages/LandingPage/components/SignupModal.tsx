@@ -59,37 +59,33 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
   };
 
   const handleSubmit = () => {
-    isLoading.setValue(true);
-    if (
-      formInput.agree_tisc === true &&
-      formInput.password.length >= 8 &&
-      formInput.firstname !== '' &&
-      formInput.email !== '' &&
-      validateEmail(formInput.email) &&
-      formInput.password === formInput.confirmed_password
-    ) {
-      signUpDesigner({
-        firstname: formInput.firstname,
-        email: formInput.email,
-        password: formInput.password,
-        confirmed_password: formInput.confirmed_password,
-      }).then((res) => {
-        if (res) {
-          onClose();
-          message.success(MESSAGE_NOTIFICATION.CHECK_EMAIL_VERIFY_ACCOUNT);
-        }
-      });
-    } else if (formInput.firstname === '') {
-      message.error(MESSAGE_ERROR.FIRST_NAME);
-    } else if (formInput.email === '') {
-      message.error(MESSAGE_ERROR.EMAIL_REQUIRED);
-    } else if (formInput.password.length < 8) {
-      message.error(MESSAGE_ERROR.PASSWORD_CHARACTER);
-    } else if (formInput.password !== formInput.confirmed_password) {
-      message.error(MESSAGE_ERROR.CONFIRM_PASSWORD);
-    } else {
-      setAgreeTisc(true);
+    if (formInput.firstname === '') {
+      return message.error(MESSAGE_ERROR.FIRST_NAME);
     }
+    if (formInput.email === '') {
+      return message.error(MESSAGE_ERROR.EMAIL_REQUIRED);
+    }
+    if (formInput.password.length < 8) {
+      return message.error(MESSAGE_ERROR.PASSWORD_CHARACTER);
+    }
+    if (formInput.password !== formInput.confirmed_password) {
+      return message.error(MESSAGE_ERROR.CONFIRM_PASSWORD);
+    }
+    if (formInput.agree_tisc === false) {
+      return setAgreeTisc(true);
+    }
+    isLoading.setValue(true);
+    signUpDesigner({
+      firstname: formInput.firstname,
+      email: formInput.email,
+      password: formInput.password,
+      confirmed_password: formInput.confirmed_password,
+    }).then((res) => {
+      if (res) {
+        onClose();
+        message.success(MESSAGE_NOTIFICATION.CHECK_EMAIL_VERIFY_ACCOUNT);
+      }
+    });
     isLoading.setValue(false);
   };
 
