@@ -10,10 +10,10 @@ import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
 import { Checkbox, message } from 'antd';
 import { PoliciesModal } from './PoliciesModal';
-import { MESSAGE_ERROR, MESSAGE_NOTIFICATION } from '@/constants/message';
+import { MESSAGE_ERROR } from '@/constants/message';
 import { isShowErrorMessage, validateEmail } from '@/helper/utils';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
-import { signUpDesigner } from '../services/api';
+import { checkEmailAlreadyUsed, signUpDesigner } from '../services/api';
 import { useBoolean } from '@/helper/hook';
 
 interface SignUpFormState {
@@ -35,6 +35,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
   });
   const [agreeTisc, setAgreeTisc] = useState(false);
   const isLoading = useBoolean();
+  const [isExistEmail, setIsExistEmail] = useState(true);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormInput({ ...formInput, [e.target.name]: e.target.value });
@@ -45,12 +46,22 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
     setFormInput({ ...formInput, agree_tisc: !formInput.agree_tisc });
   };
 
+  const checkEmail = (email: string) => {
+    checkEmailAlreadyUsed(email).then((res) => {
+      setIsExistEmail(res);
+    });
+    return isExistEmail;
+  };
+
   const setErrorMessage = () => {
     if (formInput.confirmed_password && formInput.password !== formInput.confirmed_password) {
       return MESSAGE_ERROR.CONFIRM_PASSWORD;
     }
     if (formInput.email && !validateEmail(formInput.email)) {
-      return MESSAGE_ERROR.EMAIL_ALREADY_TAKEN;
+      return MESSAGE_ERROR.EMAIL;
+    }
+    if (formInput.email && !checkEmail(formInput.email)) {
+      return MESSAGE_ERROR.EMAIL_ALREADY_USED;
     }
     if (agreeTisc === true && formInput.agree_tisc === false) {
       return MESSAGE_ERROR.AGREE_TISC;
@@ -59,23 +70,33 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
   };
 
   const handleSubmit = () => {
-    isLoading.setValue(true);
-    if (formInput.agree_tisc === true) {
-      signUpDesigner({
-        firstname: formInput.firstname,
-        email: formInput.email,
-        password: formInput.password,
-        confirmed_password: formInput.confirmed_password,
-      }).then((res) => {
-        if (res) {
-          onClose();
-          message.success(MESSAGE_NOTIFICATION.CHECK_EMAIL_VERIFY_ACCOUNT);
-        }
-      });
-    } else {
-      setAgreeTisc(true);
+    if (formInput.firstname === '') {
+      return message.error(MESSAGE_ERROR.FIRST_NAME);
     }
-    isLoading.setValue(false);
+    if (formInput.email === '') {
+      return message.error(MESSAGE_ERROR.EMAIL_REQUIRED);
+    }
+    if (formInput.password.length < 8) {
+      return message.error(MESSAGE_ERROR.PASSWORD_CHARACTER);
+    }
+    if (formInput.password !== formInput.confirmed_password) {
+      return message.error(MESSAGE_ERROR.CONFIRM_PASSWORD);
+    }
+    if (formInput.agree_tisc === false) {
+      return setAgreeTisc(true);
+    }
+    isLoading.setValue(true);
+    signUpDesigner({
+      firstname: formInput.firstname,
+      email: formInput.email,
+      password: formInput.password,
+      confirmed_password: formInput.confirmed_password,
+    }).then((res) => {
+      if (res) {
+        onClose();
+      }
+      isLoading.setValue(false);
+    });
   };
 
   return (
@@ -168,7 +189,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
 
           <div className={styles.customLink}>
             <span onClick={() => setOpenModalPolicies('Policies')}>
-              Terms of Services, Privacy Policy and Cookie Policy
+              Terms of Use and Privacy Policies.
             </span>
           </div>
         </div>

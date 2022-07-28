@@ -86,11 +86,13 @@ const LandingPage = () => {
 
   useEffect(() => {
     if (tokenVerification) {
-      verifyAccount(tokenVerification).then((res) => {
-        if (res) {
-          openVerifyAccountModal.setValue(res);
+      verifyAccount(tokenVerification).then((success) => {
+        if (success) {
+          openVerifyAccountModal.setValue(success);
+        } else {
+          history.replace(PATH.landingPage);
+          message.error(MESSAGE_ERROR.VERIFY_TOKEN_EXPIRED);
         }
-        message.error(MESSAGE_ERROR.VERIFY_TOKEN_EXPIRED);
       });
       return;
     }

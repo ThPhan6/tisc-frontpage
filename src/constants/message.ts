@@ -9,10 +9,14 @@ export const MESSAGE_ERROR = {
   GENERAL_EMAIL: 'General email is required',
   EMAIL_AUTO: 'Message is required',
   EMAIL_UNVALID: 'Email is not valid',
+  EMAIL_INVALID_INCORRECT: 'Email invalid is not incorrect',
   URL_INVALID: 'Some download urls are not valid',
-  EMAIL_ALREADY_TAKEN: 'Email alreadly taken',
   AGREE_TISC: 'Click to proceed',
   VERIFY_TOKEN_EXPIRED: 'Verification link has expired',
+  PASSWORD_CHARACTER: 'Password must be more than 8 characters',
+  FIRST_NAME: 'First name is required',
+  EMAIL_REQUIRED: 'Email is required',
+  EMAIL_ALREADY_USED: 'Email already taken',
 };
 
 export const MESSAGE_NOTIFICATION = {
@@ -27,9 +31,9 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PERSONAL_PROFILE_ERROR: 'Update personal profile error',
   CREATE_PASSSWORD_VERIFICATION_SUCCESS: 'Create account password successfully',
   CREATE_PASSSWORD_VERIFICATION_FAILED: 'Failed to create account password',
-  SIGN_UP_DESIGNER_SUCCESS: 'Sign up designer successfully',
+  SIGN_UP_DESIGNER_SUCCESS:
+    'Sign up designer successfully and please check your email to verify account',
   SIGN_UP_DESIGNER_ERROR: 'Sign up designer error',
-  CHECK_EMAIL_VERIFY_ACCOUNT: 'Please check your email to verify account',
 
   // Category
   CREATE_CATEGORY_SUCCESS: 'Create the category successfully',

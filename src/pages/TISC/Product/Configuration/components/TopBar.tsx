@@ -12,56 +12,15 @@ import type {
 } from '@/types';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SmallPlusIcon } from '@/assets/icons/small-plus-icon.svg';
-import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { showImageUrl } from '@/helper/utils';
-import { map, forEach, capitalize, truncate } from 'lodash';
+import { map, forEach } from 'lodash';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
 import { setBrand, setProductList, resetProductState } from '@/reducers/product';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import styles from '../styles/topbar.less';
-
-interface ProductTopBarProps {
-  topValue?: string | React.ReactNode;
-  disabled?: boolean;
-  bottomValue?: string | React.ReactNode;
-  bottomEnable?: boolean;
-  icon?: React.ReactNode;
-  customClass?: string;
-  onClick?: () => void;
-}
-
-const TopBarItem: React.FC<ProductTopBarProps> = (props) => {
-  const { topValue, bottomValue, icon, disabled, bottomEnable, customClass, onClick } = props;
-  return (
-    <div className={`item ${customClass ?? ''}`} onClick={onClick}>
-      <BodyText level={5} fontFamily="Roboto" customClass={disabled ? 'disabled ' : ''}>
-        {topValue}
-      </BodyText>
-      <BodyText
-        level={6}
-        fontFamily="Roboto"
-        customClass={`topbar-group-btn ${disabled && !bottomEnable ? 'disabled' : ''}`}
-      >
-        <span>{bottomValue}</span>
-        {icon ? icon : null}
-      </BodyText>
-    </div>
-  );
-};
-interface IFilterItem {
-  title: string;
-  onDelete?: () => void;
-}
-const FilterItem: React.FC<IFilterItem> = ({ title, onDelete }) => {
-  return (
-    <span className={styles.filterItem}>
-      {truncate(capitalize(title), { length: 25 })}
-      <DeleteIcon onClick={onDelete} />
-    </span>
-  );
-};
+import { FilterItem, TopBarItem } from '@/components/Product/components/ProductTopBarItem';
 
 const ProductTopBar: React.FC = () => {
   const [visible, setVisible] = useState(false);

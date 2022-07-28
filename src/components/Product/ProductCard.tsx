@@ -7,7 +7,6 @@ import SampleProductImage from '@/assets/images/sample-product-img.png';
 import { BodyText } from '@/components/Typography';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { useCheckPermission, useCheckUserRole } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
 import { useAppSelector } from '@/reducers';
 import {
@@ -20,6 +19,7 @@ import {
 import { ProductGetListParameter, ProductItem } from '@/types';
 import { Tooltip } from 'antd';
 import React, { useState } from 'react';
+import { useCheckPermission, useGetUserRoleFromPathname } from '@/helper/hook';
 import ShareViaEmail from '../ShareViaEmail';
 import styles from './styles/cardList.less';
 import { gotoProductDetailPage } from './utils';
@@ -35,12 +35,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
 
   const [visible, setVisible] = useState<boolean>(false);
 
+  // check user role to redirect
+  const userRole = useGetUserRoleFromPathname();
+
   // check user permission to action
   const showShareEmail = useCheckPermission('Brand Admin');
   const showDuplicateAndDelete = useCheckPermission('TISC Admin');
 
-  // check user role to redirect
-  const userRole = useCheckUserRole();
   const handleRedirectRoute = () => {
     const path = gotoProductDetailPage(userRole, product.id);
     if (path) {
