@@ -21,7 +21,7 @@ import {
 } from '@/services';
 import { ProductItem, ProductGetListParameter } from '@/types';
 import styles from './styles/cardList.less';
-import { useCheckPermission, useCheckUserRole } from '@/helper/hook';
+import { useCheckPermission, useGetUserRoleFromPathname } from '@/helper/hook';
 import { USER_ROLE } from '@/constants/userRoles';
 import ShareViaEmail from '../ShareViaEmail';
 
@@ -37,7 +37,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
   const [visible, setVisible] = useState<boolean>(false);
 
   // check user role to redirect
-  const userRole = useCheckUserRole();
+  const userRole = useGetUserRoleFromPathname();
 
   // check user permission to action
   const showShareEmail = useCheckPermission('Brand Admin');
