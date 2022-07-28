@@ -5,9 +5,9 @@ import { ProjectFilterValueProps } from '@/types';
 
 export const FilterValues = {
   global: -1,
-  live: 1,
-  onHold: 2,
-  archived: 3,
+  live: 2,
+  onHold: 3,
+  archived: 1,
 };
 
 export const FilterNames = {
@@ -28,8 +28,7 @@ export const GlobalFilter: ProjectFilterValueProps = {
   name: FilterNames[FilterValues.global],
 };
 
-export const ProjectFilters: ProjectFilterValueProps[] = [
-  GlobalFilter,
+export const ProjectStatuses: ProjectFilterValueProps[] = [
   {
     id: FilterValues.live,
     name: FilterNames[FilterValues.live],
@@ -46,3 +45,5 @@ export const ProjectFilters: ProjectFilterValueProps[] = [
     icon: FilterStatusIcons[FilterValues.archived],
   },
 ];
+
+export const ProjectFilters: ProjectFilterValueProps[] = [GlobalFilter, ...ProjectStatuses];
