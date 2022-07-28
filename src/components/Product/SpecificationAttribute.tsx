@@ -5,6 +5,7 @@ import { BodyText } from '../Typography';
 import styles from './styles/attributes.less';
 import Popover from '../Modal/Popover';
 import { useState } from 'react';
+import { GeneralFeatureHeader } from './components/GeneralFeature';
 
 const SpecificationAttribute = () => {
   const { specification_attribute_groups } = useAppSelector((state) => state.product.details);
@@ -27,13 +28,7 @@ const SpecificationAttribute = () => {
               key={`${group.name}_${index}`}
               className={styles.vendorSection}
               customHeaderClass={styles.vendorCustomPanelBox}
-              header={
-                <div className={styles.brandProfileHeader}>
-                  <BodyText level={6} fontFamily="Roboto" className={styles.name}>
-                    {group.name}
-                  </BodyText>
-                </div>
-              }
+              header={<GeneralFeatureHeader name={group.name} />}
             >
               {group.attributes.map((attribute) => {
                 return (

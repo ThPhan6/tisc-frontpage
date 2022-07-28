@@ -13,9 +13,9 @@ interface IBrandContactBox {
 const BrandContact: FC<IBrandContactBox> = ({ title }) => {
   const [visible, setVisible] = useState(false);
 
-  const editable = useCheckPermission('TISC Admin');
+  const showPopUp = useCheckPermission('Brand Admin');
   const handleShowPopup = () => {
-    if (editable.role !== 'TISC Admin') {
+    if (showPopUp) {
       setVisible(true);
     }
   };
@@ -30,11 +30,7 @@ const BrandContact: FC<IBrandContactBox> = ({ title }) => {
           <BodyText level={6} fontFamily="Roboto">
             select
           </BodyText>
-          {editable.role === 'TISC Admin' ? (
-            <DropdownIcon />
-          ) : (
-            <SingleRightIcon className="single-right-icon" />
-          )}
+          {showPopUp ? <SingleRightIcon className="single-right-icon" /> : <DropdownIcon />}
         </div>
       </div>
       <Popover title="SELECT LOCATION" visible={visible} setVisible={setVisible} />

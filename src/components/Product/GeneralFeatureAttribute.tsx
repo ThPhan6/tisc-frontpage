@@ -20,9 +20,10 @@ const GeneralFeatureAttribute: FC<GeneralFeatureAttributeProps> = ({ activeKey }
           ? general_attribute_groups.map((group, index) => {
               return (
                 <CustomCollapse
-                  header={<GeneralFeatureHeader name={group.name} />}
-                  className={styles.group}
                   key={`${group.name}_${index}`}
+                  className={styles.vendorSection}
+                  customHeaderClass={styles.vendorCustomPanelBox}
+                  header={<GeneralFeatureHeader name={group.name} />}
                 >
                   {group.attributes.map((attribute) => (
                     <GeneralFeatureContent
@@ -37,9 +38,10 @@ const GeneralFeatureAttribute: FC<GeneralFeatureAttributeProps> = ({ activeKey }
           : feature_attribute_groups.map((group, index) => {
               return (
                 <CustomCollapse
-                  header={<GeneralFeatureHeader name={group.name} />}
-                  className={styles.group}
                   key={`${group.name}_${index}`}
+                  className={styles.vendorSection}
+                  customHeaderClass={styles.vendorCustomPanelBox}
+                  header={<GeneralFeatureHeader name={group.name} />}
                 >
                   {group.attributes.map((attribute) => (
                     <GeneralFeatureContent

@@ -9,6 +9,7 @@ export const MESSAGE_ERROR = {
   GENERAL_EMAIL: 'General email is required',
   EMAIL_AUTO: 'Message is required',
   EMAIL_UNVALID: 'Email is not valid',
+  URL_INVALID: 'Some download urls are not valid',
 };
 
 export const MESSAGE_NOTIFICATION = {

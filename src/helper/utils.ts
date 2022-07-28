@@ -141,3 +141,14 @@ export const getPathName = (pathName: string) => {
 export const getFullName = (data: any) => {
   return `${data?.lastname ?? ''} ${data?.firstname ?? ''}`;
 };
+
+export const isValidURL = (url: string) => {
+  let validURL: URL;
+  try {
+    validURL = new URL(url);
+  } catch (_) {
+    return false;
+  }
+
+  return validURL.protocol === 'http:' || validURL.protocol === 'https:';
+};

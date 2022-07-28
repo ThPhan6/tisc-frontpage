@@ -106,17 +106,14 @@ const productSlice = createSlice({
     setRelatedProduct(state, action: PayloadAction<IRelatedCollection[]>) {
       state.relatedProduct = action.payload;
     },
-    reset(state) {
-      return {
-        ...initialState,
-        list: state.list,
-      };
+    resetProductState() {
+      return initialState;
     },
   },
 });
 
 export const {
-  reset,
+  resetProductState,
   setBrand,
   setProductSummary,
   setProductDetail,

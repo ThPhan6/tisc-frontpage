@@ -91,6 +91,10 @@ const ProductTopBar: React.FC = () => {
       }
       getProductListByBrandId(params);
     }
+
+    return () => {
+      resetProductList();
+    };
   }, [filter]);
 
   const renderDropDownList = (title: string, filterName: IFilterType, data: GeneralData[]) => {

@@ -34,7 +34,7 @@ const ProductBrandViewPage: React.FC = () => {
 
   /// for reuse component,
   /// to allow access level
-  const { permission } = useCheckPermission('TISC Admin');
+  const editable = useCheckPermission('TISC Admin');
 
   console.log('ProductBrandViewPage', product);
 
@@ -43,6 +43,7 @@ const ProductBrandViewPage: React.FC = () => {
       getProductById(productId);
     }
   }, [productId]);
+
   useEffect(() => {
     if (product.details.brand) {
       // load brand information
@@ -79,7 +80,7 @@ const ProductBrandViewPage: React.FC = () => {
       <Col span={12} className={styles.productContent}>
         <Row style={{ flexDirection: 'column', height: '100%' }}>
           <Col>
-            <ProductInfo editable={permission} />
+            <ProductInfo editable={editable} />
           </Col>
           <Col style={{ marginBottom: activeKey !== 'vendor' ? 24 : 0 }}>
             <ProductAttribute activeKey={activeKey} setActiveKey={setActiveKey} />
