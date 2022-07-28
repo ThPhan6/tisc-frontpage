@@ -43,6 +43,7 @@ const ProductBrandViewPage: React.FC = () => {
       getProductById(productId);
     }
   }, [productId]);
+
   useEffect(() => {
     if (product.details.brand) {
       // load brand information

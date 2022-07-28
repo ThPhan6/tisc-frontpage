@@ -3,6 +3,7 @@ import SampleProductImage from '@/assets/images/sample-product-img.png';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
 import { ReactComponent as TabIcon } from '@/assets/icons/tabs-icon.svg';
+import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/share-via-email.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { BodyText } from '@/components/Typography';
 import { showImageUrl } from '@/helper/utils';
@@ -20,16 +21,28 @@ import {
 } from '@/services';
 import { ProductItem, ProductGetListParameter } from '@/types';
 import styles from './styles/cardList.less';
-import { CardListProps } from './types';
+import { useCheckPermission, useGetUserRoleFromPathname } from '@/helper/hook';
+import { USER_ROLE } from '@/constants/userRoles';
+import ShareViaEmail from '../ShareViaEmail';
 
-interface ProductCardProps extends CardListProps {
+interface ProductCardProps {
   product: ProductItem;
   hasBorder?: boolean;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, productPage, hasBorder }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
   const { filter } = useAppSelector((state) => state.product.list);
   const [liked, setLiked] = useState(product.is_liked);
+
+  const [visible, setVisible] = useState<boolean>(false);
+
+  // check user role to redirect
+  const userRole = useGetUserRoleFromPathname();
+
+  // check user permission to action
+  const showShareEmail = useCheckPermission('Brand Admin');
+  const showDuplicateAndDelete = useCheckPermission('TISC Admin');
+
   const reloadProductInformation = () => {
     if (filter && product.brand?.id) {
       getProductSummary(product.brand.id).then(() => {
@@ -48,22 +61,27 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, productPage, hasBord
   };
 
   const handleDeleteProduct = () => {
-    confirmDelete(() => {
-      deleteProductById(product.id ?? '').then((isSuccess) => {
-        if (isSuccess && filter && product.brand && product.brand.id) {
-          reloadProductInformation();
-        }
+    if (showDuplicateAndDelete) {
+      confirmDelete(() => {
+        deleteProductById(product.id ?? '').then((isSuccess) => {
+          if (isSuccess && filter && product.brand && product.brand.id) {
+            reloadProductInformation();
+          }
+        });
       });
-    });
+    }
   };
 
   const duplicateProduct = () => {
-    duplicateProductById(product.id ?? '').then((isSuccess) => {
-      if (isSuccess) {
-        reloadProductInformation();
-      }
-    });
+    if (showDuplicateAndDelete) {
+      duplicateProductById(product.id ?? '').then((isSuccess) => {
+        if (isSuccess) {
+          reloadProductInformation();
+        }
+      });
+    }
   };
+
   const likeProduct = () => {
     likeProductById(product.id ?? '').then((isSuccess) => {
       if (isSuccess) {
@@ -72,12 +90,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, productPage, hasBord
     });
   };
 
-  const gotoProductDetailPage = (pageType: 'brand' | 'tisc') => {
-    if (pageType === 'brand') {
+  const gotoProductDetailPage = () => {
+    if (userRole === USER_ROLE.brand) {
       if (product.id) {
         pushTo(PATH.updateProductBrand.replace(':id', product.id));
       }
-    } else if (pageType === 'tisc') {
+    } else if (userRole === USER_ROLE.tisc) {
       if (product.id) {
         pushTo(PATH.productConfigurationUpdate.replace(':id', product.id));
       }
@@ -96,7 +114,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, productPage, hasBord
           </BodyText>
         </div>
       </div>
-      <div className={styles.productInfo} onClick={() => gotoProductDetailPage(productPage)}>
+      <div className={styles.productInfo} onClick={gotoProductDetailPage}>
         <BodyText level={6} fontFamily="Roboto" customClass="product-description">
           {product.name}
         </BodyText>
@@ -111,14 +129,26 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, productPage, hasBord
             {`${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
           </BodyText>
         </Tooltip>
-        <BodyText customClass="action-other">
-          <Tooltip placement="bottom" title="Duplicate">
-            <TabIcon onClick={duplicateProduct} />
-          </Tooltip>
-          <Tooltip placement="bottom" title="Delete">
-            <DeleteIcon onClick={handleDeleteProduct} />
-          </Tooltip>
-        </BodyText>
+
+        {/* for role tisc */}
+        {showDuplicateAndDelete && (
+          <BodyText customClass="action-other">
+            <Tooltip placement="bottom" title="Duplicate">
+              <TabIcon onClick={duplicateProduct} />
+            </Tooltip>
+            <Tooltip placement="bottom" title="Delete">
+              <DeleteIcon onClick={handleDeleteProduct} />
+            </Tooltip>
+          </BodyText>
+        )}
+
+        {/* for role brand */}
+        {showShareEmail && (
+          <div className={styles.shareEmail}>
+            <ShareViaEmailIcon className={styles.shareEmailIcon} onClick={() => setVisible(true)} />
+            <ShareViaEmail visible={visible} setVisible={setVisible} />
+          </div>
+        )}
       </div>
     </div>
   );

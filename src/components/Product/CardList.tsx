@@ -7,10 +7,9 @@ import { BodyText } from '@/components/Typography';
 import { useAppSelector } from '@/reducers';
 // import { setBrand } from '@/reducers/product';
 import styles from './styles/cardList.less';
-import { CardListProps } from './types';
 import { truncate, capitalize } from 'lodash';
 
-const CardList: React.FC<CardListProps> = ({ productPage }) => {
+const CardList: React.FC = ({}) => {
   const product = useAppSelector((state) => state.product);
   return (
     <>
@@ -31,7 +30,7 @@ const CardList: React.FC<CardListProps> = ({ productPage }) => {
           <div className={styles.productCardContainer}>
             {group.products.map((productItem, productKey) => (
               <div className={styles.productCardItemWrapper} key={productKey}>
-                <ProductCard product={productItem} productPage={productPage} />
+                <ProductCard product={productItem} />
               </div>
             ))}
           </div>

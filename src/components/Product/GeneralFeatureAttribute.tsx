@@ -1,7 +1,7 @@
 import { useAppSelector } from '@/reducers';
 import { FC } from 'react';
 import CustomCollapse from '../Collapse';
-import { BodyText } from '../Typography';
+import { GeneralFeatureContent, GeneralFeatureHeader } from './components/GeneralFeature';
 import styles from './styles/attributes.less';
 
 interface GeneralFeatureAttributeProps {
@@ -13,47 +13,44 @@ const GeneralFeatureAttribute: FC<GeneralFeatureAttributeProps> = ({ activeKey }
     (state) => state.product.details,
   );
 
-  // console.log('feature_attribute_groups', feature_attribute_groups);
-  console.log('activekey', activeKey);
-
   return (
     <div className={styles.attributes}>
       <div className={styles.generalFeature}>
         {activeKey === 'general'
-          ? general_attribute_groups.map((group) => {
+          ? general_attribute_groups.map((group, index) => {
               return (
-                <div className={styles.group}>
-                  <CustomCollapse header={group.name}>
-                    {group.attributes.map((attribute) => (
-                      <div className={styles.content}>
-                        <BodyText level={4} customClass={styles.content_text}>
-                          {attribute.text}
-                        </BodyText>
-                        <BodyText level={6} customClass={styles.content_type} fontFamily="Roboto">
-                          {attribute.type}
-                        </BodyText>
-                      </div>
-                    ))}
-                  </CustomCollapse>
-                </div>
+                <CustomCollapse
+                  key={`${group.name}_${index}`}
+                  className={styles.vendorSection}
+                  customHeaderClass={styles.vendorCustomPanelBox}
+                  header={<GeneralFeatureHeader name={group.name} />}
+                >
+                  {group.attributes.map((attribute) => (
+                    <GeneralFeatureContent
+                      key={attribute.id}
+                      type={attribute.type}
+                      text={attribute.text}
+                    />
+                  ))}
+                </CustomCollapse>
               );
             })
-          : feature_attribute_groups.map((group) => {
+          : feature_attribute_groups.map((group, index) => {
               return (
-                <div className={styles.group}>
-                  <CustomCollapse header={group.name}>
-                    {group.attributes.map((attribute) => (
-                      <div className={styles.content}>
-                        <BodyText level={4} customClass={styles.content_text}>
-                          {attribute.text}
-                        </BodyText>
-                        <BodyText level={6} customClass={styles.content_type} fontFamily="Roboto">
-                          {attribute.type}
-                        </BodyText>
-                      </div>
-                    ))}
-                  </CustomCollapse>
-                </div>
+                <CustomCollapse
+                  key={`${group.name}_${index}`}
+                  className={styles.vendorSection}
+                  customHeaderClass={styles.vendorCustomPanelBox}
+                  header={<GeneralFeatureHeader name={group.name} />}
+                >
+                  {group.attributes.map((attribute) => (
+                    <GeneralFeatureContent
+                      key={attribute.id}
+                      type={attribute.type}
+                      text={attribute.text}
+                    />
+                  ))}
+                </CustomCollapse>
               );
             })}
       </div>

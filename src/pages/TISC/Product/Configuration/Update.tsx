@@ -5,7 +5,7 @@ import PhotoUpload from './components/PhotoUpload';
 import ProductInfo from './components/ProductInfo';
 import ProductAttribute from './components/ProductAttribute';
 import ProductFooter from './components/ProductFooter';
-import { Row, Col } from 'antd';
+import { Row, Col, message } from 'antd';
 import {
   getProductById,
   getProductCatelogueByProductID,
@@ -25,6 +25,8 @@ import styles from './styles/details.less';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import type { ProductInfoTab } from './types';
+import { isValidURL } from '@/helper/utils';
+import { MESSAGE_ERROR } from '@/constants/message';
 
 const ProductConfigurationCreate: React.FC = () => {
   const dispatch = useDispatch();
@@ -57,6 +59,12 @@ const ProductConfigurationCreate: React.FC = () => {
 
   const onSave = () => {
     const { details, brand, tip, download, catelogue } = product;
+    const haveInvalidURL = download.contents.some((content) => isValidURL(content.url) === false);
+
+    if (haveInvalidURL) {
+      return message.error(MESSAGE_ERROR.URL_INVALID);
+    }
+
     const data: ProductFormData = {
       brand_id: brand?.id ?? '', /// 100% have brand.id
       category_ids: details.categories.map((category) => category.id),
@@ -80,6 +88,7 @@ const ProductConfigurationCreate: React.FC = () => {
           product_id: productDetail.id,
           contents: tip.contents,
         });
+
         createProductDownload({
           product_id: productDetail.id,
           contents: download.contents,
