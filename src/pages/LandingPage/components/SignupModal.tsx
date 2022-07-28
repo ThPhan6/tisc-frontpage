@@ -50,7 +50,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
       return MESSAGE_ERROR.CONFIRM_PASSWORD;
     }
     if (formInput.email && !validateEmail(formInput.email)) {
-      return MESSAGE_ERROR.EMAIL_ALREADY_TAKEN;
+      return MESSAGE_ERROR.EMAIL_INVALID_INCORRECT;
     }
     if (agreeTisc === true && formInput.agree_tisc === false) {
       return MESSAGE_ERROR.AGREE_TISC;
@@ -60,7 +60,14 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
 
   const handleSubmit = () => {
     isLoading.setValue(true);
-    if (formInput.agree_tisc === true) {
+    if (
+      formInput.agree_tisc === true &&
+      formInput.password.length >= 8 &&
+      formInput.firstname !== '' &&
+      formInput.email !== '' &&
+      validateEmail(formInput.email) &&
+      formInput.password === formInput.confirmed_password
+    ) {
       signUpDesigner({
         firstname: formInput.firstname,
         email: formInput.email,
@@ -72,6 +79,14 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
           message.success(MESSAGE_NOTIFICATION.CHECK_EMAIL_VERIFY_ACCOUNT);
         }
       });
+    } else if (formInput.firstname === '') {
+      message.error(MESSAGE_ERROR.FIRST_NAME);
+    } else if (formInput.email === '') {
+      message.error(MESSAGE_ERROR.EMAIL_REQUIRED);
+    } else if (formInput.password.length < 8) {
+      message.error(MESSAGE_ERROR.PASSWORD_CHARACTER);
+    } else if (formInput.password !== formInput.confirmed_password) {
+      message.error(MESSAGE_ERROR.CONFIRM_PASSWORD);
     } else {
       setAgreeTisc(true);
     }
