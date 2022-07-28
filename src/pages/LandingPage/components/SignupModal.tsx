@@ -85,8 +85,8 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
         onClose();
         message.success(MESSAGE_NOTIFICATION.CHECK_EMAIL_VERIFY_ACCOUNT);
       }
+      isLoading.setValue(false);
     });
-    isLoading.setValue(false);
   };
 
   return (
