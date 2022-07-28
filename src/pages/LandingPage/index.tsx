@@ -91,7 +91,6 @@ const LandingPage = () => {
       history.location.pathname === PATH.verifyAccount
     ) {
       history.push(PATH.landingPage);
-      return;
     } else {
       if (tokenVerification) {
         verifyAccount(tokenVerification).then((res) => {

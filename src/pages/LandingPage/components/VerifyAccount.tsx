@@ -31,11 +31,11 @@ export const VerifyAccount: FC<VerifyAccountModal> = ({ visible, handleSubmit, o
           Your account was verify successfully
         </MainTitle>
         <BodyText fontFamily="Roboto" level={4} customClass={styles.text}>
-          It will be redirect to Login after 00:0{time}
+          It will be redirect to Login after {time}s
         </BodyText>
         <div className={styles.login}>
           <CustomButton onClick={handleSubmit} buttonClass={styles.submit}>
-            Login
+            Login Now
           </CustomButton>
         </div>
       </div>
