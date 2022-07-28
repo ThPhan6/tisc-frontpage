@@ -14,6 +14,7 @@ import { MESSAGE_ERROR, MESSAGE_NOTIFICATION } from '@/constants/message';
 import { isShowErrorMessage, validateEmail } from '@/helper/utils';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 import { signUpDesigner } from '../services/api';
+import { useBoolean } from '@/helper/hook';
 
 interface SignUpFormState {
   firstname: string;
@@ -33,6 +34,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
     agree_tisc: false,
   });
   const [agreeTisc, setAgreeTisc] = useState(false);
+  const isLoading = useBoolean();
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormInput({ ...formInput, [e.target.name]: e.target.value });
@@ -57,6 +59,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
   };
 
   const handleSubmit = () => {
+    isLoading.setValue(true);
     if (formInput.agree_tisc === true) {
       signUpDesigner({
         firstname: formInput.firstname,
@@ -72,6 +75,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
     } else {
       setAgreeTisc(true);
     }
+    isLoading.setValue(false);
   };
 
   return (

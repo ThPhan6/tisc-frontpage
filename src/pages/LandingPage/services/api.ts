@@ -132,3 +132,15 @@ export async function signUpDesigner(data: SignUpDesignerRequestBody) {
       return false;
     });
 }
+
+export async function verifyAccount(verification_token: string | null) {
+  return request<{ data: boolean }>(`/api/auth/verify/${verification_token ?? ''}`, {
+    method: 'POST',
+  })
+    .then((res) => {
+      return res.data;
+    })
+    .catch(() => {
+      return false;
+    });
+}

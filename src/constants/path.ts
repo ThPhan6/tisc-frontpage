@@ -3,7 +3,7 @@ export const PATH = {
   landingPage: '/',
   resetPassword: '/reset-password',
   createPassword: '/create-password',
-
+  verifyAccount: '/verify',
   // private path
   profiles: '/profile-settings',
   tiscHomePage: '/tisc/dashboard',
@@ -139,4 +139,9 @@ export const PATH = {
   designerMaterialProductCode: '/design-firms/administration/material-product-code',
 };
 
-export const PUBLIC_PATH = [PATH.landingPage, PATH.resetPassword, PATH.createPassword];
+export const PUBLIC_PATH = [
+  PATH.landingPage,
+  PATH.resetPassword,
+  PATH.createPassword,
+  PATH.verifyAccount,
+];
