@@ -13,6 +13,7 @@ import { PATH, PUBLIC_PATH } from './constants/path';
 import type { UserInfoDataProp } from './pages/LandingPage/types';
 import Header from '@/components/Header';
 import AsideMenu from './components/Menu/AsideMenu';
+import { UserHomePagePaths } from '@/constants/user.constant';
 // config request umi
 const errorHandler = function (error: any) {
   throw error;
@@ -93,10 +94,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       if (PUBLIC_PATH.includes(location.pathname)) {
         if (token) {
           const user = store.getState().user.user;
-          if (user?.brand) {
-            history.push(PATH.brandHomePage);
-          } else {
-            history.push(PATH.homePage);
+          if (user) {
+            history.push(UserHomePagePaths[user.type]);
           }
         } else {
           history.push(`${location.pathname}${location.search}`);

@@ -20,12 +20,14 @@ import {
 } from '@/services';
 import { ProductItem, ProductGetListParameter } from '@/types';
 import styles from './styles/cardList.less';
+import { CardListProps } from './types';
 
-interface ProductCardProps {
+interface ProductCardProps extends CardListProps {
   product: ProductItem;
+  hasBorder?: boolean;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, productPage, hasBorder }) => {
   const { filter } = useAppSelector((state) => state.product.list);
   const [liked, setLiked] = useState(product.is_liked);
   const reloadProductInformation = () => {
@@ -70,25 +72,31 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     });
   };
 
-  const gotoProductDetailPage = () => {
-    if (product.id) {
-      pushTo(PATH.productConfigurationUpdate.replace(':id', product.id));
+  const gotoProductDetailPage = (pageType: 'brand' | 'tisc') => {
+    if (pageType === 'brand') {
+      if (product.id) {
+        pushTo(PATH.updateProductBrand.replace(':id', product.id));
+      }
+    } else if (pageType === 'tisc') {
+      if (product.id) {
+        pushTo(PATH.productConfigurationUpdate.replace(':id', product.id));
+      }
     }
   };
 
   const likeCount = (product.favorites ?? 0) + (liked ? 1 : 0);
 
   return (
-    <div className={styles.productCardItem}>
+    <div className={`${styles.productCardItem} ${hasBorder ? styles.border : ''}`}>
       <div className={styles.imageWrapper} onClick={gotoProductDetailPage}>
-        <img src={product.images[0] ? showImageUrl(product.images[0]) : SampleProductImage} />
+        <img src={product.images?.[0] ? showImageUrl(product.images[0]) : SampleProductImage} />
         <div className={styles.imagePlaceholder}>
           <BodyText level={5} fontFamily="Roboto">
             {product.description}
           </BodyText>
         </div>
       </div>
-      <div className={styles.productInfo} onClick={gotoProductDetailPage}>
+      <div className={styles.productInfo} onClick={() => gotoProductDetailPage(productPage)}>
         <BodyText level={6} fontFamily="Roboto" customClass="product-description">
           {product.name}
         </BodyText>

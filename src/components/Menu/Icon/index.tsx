@@ -22,6 +22,8 @@ import { ReactComponent as WorkspaceIcon } from '@/assets/icons/workspace-icon.s
 import { ReactComponent as MyFavouriteIcon } from '@/assets/icons/my-favourite-icon.svg';
 import { ReactComponent as GeneralInquireIcon } from '@/assets/icons/general-inquire-icon.svg';
 import { ReactComponent as MatketAvailability } from '@/assets/icons/market-availability-icon.svg';
+import { ReactComponent as OfficeProfile } from '@/assets/icons/office-profile-icon.svg';
+import { ReactComponent as MaterialProductCode } from '@/assets/icons/material-product-code-icon.svg';
 
 const IconList = {
   'adminstration-icon.svg': <AdminstrationIcon className="anticon" />,
@@ -48,6 +50,8 @@ const IconList = {
   'distributor-icon.svg': <DistributorIcon className="anticon" />,
   'subscription-icon.svg': <SubscriptionIcon className="anticon" />,
   'market-availability-icon.svg': <MatketAvailability className="anticon" />,
+  'office-profile-icon.svg': <OfficeProfile className="anticon" />,
+  'material-product-code.svg': <MaterialProductCode className="anticon" />,
 };
 export const renderIconByName = (key: any): React.ReactNode => {
   if (key && IconList[key]) {

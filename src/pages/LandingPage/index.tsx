@@ -1,11 +1,15 @@
 import CustomButton from '@/components/Button';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { MESSAGE_ERROR, MESSAGE_NOTIFICATION } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
-import { redirectAfterBrandOrDesignLogin, redirectAfterLogin } from '@/helper/utils';
+import {
+  redirectAfterBrandLogin,
+  redirectAfterDesignerLogin,
+  redirectAfterLogin,
+} from '@/helper/utils';
 import { Col, message, Row } from 'antd';
 import { useEffect, useState } from 'react';
 import { history } from 'umi';
@@ -25,23 +29,26 @@ import { LoginModal } from './components/LoginModal';
 import { NoticeModal } from './components/NoticeModal';
 import { PoliciesModal } from './components/PoliciesModal';
 import { ResetPasswordModal } from './components/ResetPasswordModal';
-import { CreatePasswordModal } from './components/CreatePasswordModal';
+// import { CreatePasswordModal } from './components/CreatePasswordModal';
 import { SignupModal } from './components/SignupModal';
 import styles from './index.less';
 import {
-  brandLoginMiddleware,
   forgotPasswordMiddleware,
   loginMiddleware,
   resetPasswordMiddleware,
   validateResetToken,
-  createPasswordVerify,
+  // createPasswordVerify,
+  loginByBrandOrDesigner,
+  verifyAccount,
 } from './services/api';
 import type {
   LoginInput,
   ModalOpen,
   ResetPasswordRequestBody,
-  CreatePasswordRequestBody,
+  // CreatePasswordRequestBody,
+  LoginResponseProp,
 } from './types';
+import { VerifyAccount } from './components/VerifyAccount';
 
 const LandingPage = () => {
   const userEmail = useQuery().get('email');
@@ -50,10 +57,11 @@ const LandingPage = () => {
 
   const { fetchUserInfo } = useCustomInitialState();
   const openResetPwd = useBoolean();
-  const openVerificationModal = useBoolean();
+  // const openVerificationModal = useBoolean();
   const isLoading = useBoolean();
   const [openModal, setOpenModal] = useState<ModalOpen>('');
   const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
+  const openVerifyAccountModal = useBoolean();
 
   const handleCloseModal = () => {
     setOpenModal('');
@@ -77,13 +85,17 @@ const LandingPage = () => {
   }, [userEmail]);
 
   useEffect(() => {
-    if (!tokenVerification && history.location.pathname === PATH.createPassword) {
-      history.push(PATH.landingPage);
+    if (tokenVerification) {
+      verifyAccount(tokenVerification).then((res) => {
+        if (res) {
+          openVerifyAccountModal.setValue(res);
+        }
+        message.error(MESSAGE_ERROR.VERIFY_TOKEN_EXPIRED);
+      });
       return;
-    } else {
-      if (tokenVerification) {
-        openVerificationModal.setValue(true);
-      }
+    }
+    if (history.location.pathname === PATH.verifyAccount) {
+      history.push(PATH.landingPage);
     }
   }, [tokenVerification]);
 
@@ -94,7 +106,6 @@ const LandingPage = () => {
         if (type === STATUS_RESPONSE.SUCCESS) {
           message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
           await fetchUserInfo();
-
           redirectAfterLogin();
         } else {
           message.error(msg);
@@ -102,17 +113,23 @@ const LandingPage = () => {
         isLoading.setValue(false);
       });
     } else {
-      brandLoginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
-        if (type === STATUS_RESPONSE.SUCCESS) {
-          message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
-          await fetchUserInfo();
-
-          redirectAfterBrandOrDesignLogin();
-        } else {
-          message.error(msg);
-        }
-        isLoading.setValue(false);
-      });
+      loginByBrandOrDesigner(
+        data,
+        async (type: STATUS_RESPONSE, msg?: string, response?: LoginResponseProp) => {
+          if (type === STATUS_RESPONSE.SUCCESS) {
+            message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
+            await fetchUserInfo();
+            if (response?.type === 'design') {
+              redirectAfterDesignerLogin();
+            } else if (response?.type === 'brand') {
+              redirectAfterBrandLogin();
+            }
+          } else {
+            message.error(msg);
+          }
+          isLoading.setValue(false);
+        },
+      );
     }
   };
 
@@ -143,14 +160,18 @@ const LandingPage = () => {
     });
   };
 
-  const handleVerifyAccount = (data: CreatePasswordRequestBody) => {
-    isLoading.setValue(true);
-    createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
-      isLoading.setValue(false);
-      if (isSuccess) {
-        redirectAfterLogin();
-      }
-    });
+  // const handleVerifyAccount = (data: CreatePasswordRequestBody) => {
+  //   isLoading.setValue(true);
+  //   createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
+  //     isLoading.setValue(false);
+  //     if (isSuccess) {
+  //       redirectAfterLogin();
+  //     }
+  //   });
+  // };
+
+  const handleActiveAccount = () => {
+    setOpenModal('Login');
   };
 
   return (
@@ -336,14 +357,22 @@ const LandingPage = () => {
           }}
         />
       )}
-      <CreatePasswordModal
+      {/* <CreatePasswordModal
         visible={openVerificationModal}
         handleSubmit={handleVerifyAccount}
         data={{
           email: userEmail ?? '',
           token: tokenVerification || '',
         }}
-      />
+      /> */}
+      {openVerifyAccountModal.value === true && (
+        <VerifyAccount
+          visible={openVerifyAccountModal}
+          handleSubmit={handleActiveAccount}
+          openLogin={() => setOpenModal('Login')}
+        />
+      )}
+
       {isLoading.value && <LoadingPageCustomize />}
     </div>
   );

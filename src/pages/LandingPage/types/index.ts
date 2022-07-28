@@ -9,6 +9,7 @@ export type LoginResponseProp = {
   message: STATUS_RESPONSE;
   statusCode: number;
   token: string;
+  type: string;
 };
 
 export type UserInfoDataProp = {
@@ -63,3 +64,10 @@ export type ModalOpen =
   | 'Tisc Login'
   | 'Login'
   | '';
+
+export type SignUpDesignerRequestBody = {
+  firstname: string;
+  email: string;
+  password: string;
+  confirmed_password: string;
+};
