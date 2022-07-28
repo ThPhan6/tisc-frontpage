@@ -1,56 +1,13 @@
-import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { HeaderDropdown } from '@/components/HeaderDropdown';
-import { BodyText } from '@/components/Typography';
+import { FilterItem, TopBarItem } from '@/components/Product/components/ProductTopBarItem';
 import { useAppSelector } from '@/reducers';
 import { setProductList } from '@/reducers/product';
 import { getProductListByBrandId, getProductSummary } from '@/services';
 import type { GeneralData, IFilterType, ProductGetListParameter } from '@/types';
-import { capitalize } from 'lodash';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import styles from '../styles/TopBar.less';
-
-interface ProductTopBarProps {
-  topValue?: string | React.ReactNode;
-  disabled?: boolean;
-  bottomValue?: string | React.ReactNode;
-  bottomEnable?: boolean;
-  icon?: React.ReactNode;
-  customClass?: string;
-  onClick?: () => void;
-}
-
-const TopBarItem: React.FC<ProductTopBarProps> = (props) => {
-  const { topValue, bottomValue, icon, disabled, bottomEnable, customClass, onClick } = props;
-  return (
-    <div className={`item ${customClass ?? ''}`} onClick={onClick}>
-      <BodyText level={5} fontFamily="Roboto" customClass={disabled ? 'disabled ' : ''}>
-        {topValue}
-      </BodyText>
-      <BodyText
-        level={6}
-        fontFamily="Roboto"
-        customClass={`topbar-group-btn ${disabled && !bottomEnable ? 'disabled' : ''}`}
-      >
-        <span>{bottomValue}</span>
-        {icon ? icon : null}
-      </BodyText>
-    </div>
-  );
-};
-interface IFilterItem {
-  title: string;
-  onDelete?: () => void;
-}
-const FilterItem: React.FC<IFilterItem> = ({ title, onDelete }) => {
-  return (
-    <span className={styles.filterItem}>
-      {capitalize(title)}
-      <DeleteIcon onClick={onDelete} />
-    </span>
-  );
-};
 
 const ProductTopBar: React.FC = () => {
   const product = useAppSelector((state) => state.product);
@@ -66,6 +23,10 @@ const ProductTopBar: React.FC = () => {
       }),
     );
   };
+
+  useEffect(() => {
+    return resetProductList;
+  }, []);
 
   // brand product summary
   useEffect(() => {
@@ -91,10 +52,6 @@ const ProductTopBar: React.FC = () => {
       }
       getProductListByBrandId(params);
     }
-
-    return () => {
-      resetProductList();
-    };
   }, [filter]);
 
   const renderDropDownList = (title: string, filterName: IFilterType, data: GeneralData[]) => {
