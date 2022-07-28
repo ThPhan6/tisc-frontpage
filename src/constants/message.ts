@@ -9,6 +9,7 @@ export const MESSAGE_ERROR = {
   GENERAL_EMAIL: 'General email is required',
   EMAIL_AUTO: 'Message is required',
   EMAIL_UNVALID: 'Email is not valid',
+  URL_INVALID: 'Some download urls are not valid',
   EMAIL_ALREADY_TAKEN: 'Email alreadly taken',
   AGREE_TISC: 'Click to proceed',
   VERIFY_TOKEN_EXPIRED: 'Verification link has expired',

@@ -6,7 +6,7 @@ import { BodyText } from '@/components/Typography';
 import { useAppSelector } from '@/reducers';
 import { FC } from 'react';
 import BrandContact from './BrandContact';
-import styles from './styles/vendor.less';
+import styles from './styles/index.less';
 
 const ProductVendor: FC = ({ children }) => {
   const product = useAppSelector((state) => state.product);
