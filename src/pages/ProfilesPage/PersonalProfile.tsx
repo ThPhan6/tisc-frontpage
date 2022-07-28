@@ -24,6 +24,7 @@ export type PersonalProfileState = {
   backupEmail: string;
   phoneNumber: string;
   linkedin: string;
+  interested: string[];
 };
 
 export interface PersonalProfileProps {
@@ -34,15 +35,16 @@ export interface PersonalProfileProps {
 }
 
 const interestedData = [
-  { label: 'Brand Factory/Showroom Visits', value: 'Brand Factory/Showroom Visits' },
-  { label: 'Design Conferences/Events/Seminars', value: 'Design Conferences/Events/Seminars' },
-  { label: 'Industry Exhibitions/Trade Shows', value: 'Industry Exhibitions/Trade Shows' },
+  { label: 'Brand Factory/Showroom Visits', value: '0' },
+  { label: 'Design Conferences/Events/Seminars', value: '1 ' },
+  { label: 'Industry Exhibitions/Trade Shows', value: '2' },
   {
     label: 'Product Launches/Promotions/Workshops',
-    value: 'Product Launches/Promotions/Workshops',
+    value: '3',
   },
-  { label: 'Product Recommendations/Updates', value: 'Product Recommendations/Updates' },
+  { label: 'Product Recommendations/Updates', value: '4' },
 ];
+
 export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
   const [fileInput, setFileInput] = useState<any>();
   const { fetchUserInfo, currentUser } = useCustomInitialState();
@@ -52,9 +54,17 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
     backupEmail: '',
     phoneNumber: '',
     linkedin: '',
+    interested: [],
   });
 
-  const [selectedInterested, setSelectedIntersted] = useState<CheckboxValue[]>();
+  const [selectedInterested, setSelectedIntersted] = useState<CheckboxValue[]>(
+    currentUser.interested.map((interestedId) => {
+      return {
+        label: '',
+        value: interestedId,
+      };
+    }),
+  );
 
   const handleUpdateAvatar = (avtFile: File) => {
     const formData = new FormData();
@@ -79,6 +89,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
         backupEmail: currentUser.backup_email || '',
         phoneNumber: currentUser.personal_mobile,
         linkedin: currentUser?.linkedin || '',
+        interested: currentUser.interested || [],
       });
     }
   }, [currentUser]);
@@ -119,6 +130,10 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
         backup_email: inputValue.backupEmail.trim(),
         personal_mobile: inputValue.phoneNumber.trim(),
         linkedin: inputValue.linkedin.trim(),
+        interested: selectedInterested.reduce((newInterested, selected) => {
+          newInterested.push(selected.value);
+          return newInterested;
+        }, [] as string[]),
       },
       (type: STATUS_RESPONSE, msg?: string) => {
         if (type === STATUS_RESPONSE.SUCCESS) {
@@ -158,6 +173,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
       backupEmail: currentUser.backup_email,
       linkedin: currentUser.linkedin,
       phoneNumber: currentUser.personal_mobile,
+      interested: currentUser.interested,
     };
     if (
       isEqual(currentUserData, inputValue) ||
@@ -168,7 +184,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
     }
     return false;
   };
-
+  console.log(inputValue);
   return (
     <div className={styles['personal-container']}>
       <div className={styles.header}>

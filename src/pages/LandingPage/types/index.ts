@@ -31,6 +31,7 @@ export type UserInfoDataProp = {
   personal_mobile: string;
   linkedin: string;
   type: number;
+  interested: string[];
 };
 
 export type ResetPasswordInput = {
