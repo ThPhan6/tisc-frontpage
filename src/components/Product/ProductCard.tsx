@@ -27,9 +27,10 @@ import ShareViaEmail from '../ShareViaEmail';
 
 interface ProductCardProps {
   product: ProductItem;
+  hasBorder?: boolean;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
   const { filter } = useAppSelector((state) => state.product.list);
   const [liked, setLiked] = useState(product.is_liked);
 
@@ -104,9 +105,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const likeCount = (product.favorites ?? 0) + (liked ? 1 : 0);
 
   return (
-    <div className={styles.productCardItem}>
+    <div className={`${styles.productCardItem} ${hasBorder ? styles.border : ''}`}>
       <div className={styles.imageWrapper} onClick={gotoProductDetailPage}>
-        <img src={product.images[0] ? showImageUrl(product.images[0]) : SampleProductImage} />
+        <img src={product.images?.[0] ? showImageUrl(product.images[0]) : SampleProductImage} />
         <div className={styles.imagePlaceholder}>
           <BodyText level={5} fontFamily="Roboto">
             {product.description}
