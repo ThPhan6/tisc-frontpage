@@ -10,6 +10,7 @@ export const MESSAGE_ERROR = {
   EMAIL_AUTO: 'Message is required',
   EMAIL_UNVALID: 'Email is not valid',
   EMAIL_INVALID_INCORRECT: 'Email invalid is not incorrect',
+  URL_INVALID: 'Some download urls are not valid',
   AGREE_TISC: 'Click to proceed',
   VERIFY_TOKEN_EXPIRED: 'Verification link has expired',
   PASSWORD_CHARACTER: 'Password must be more than 8 characters',

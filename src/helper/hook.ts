@@ -66,6 +66,10 @@ export const useCheckPermission = (allowRoles: AccessLevelType | AccessLevelType
   }
 
   return typeof allowRoles === 'string'
-    ? access_level === allowRoles
-    : allowRoles.some((role) => access_level.includes(role));
+    ? access_level === allowRoles.toLocaleLowerCase()
+    : allowRoles.some((role) => access_level.includes(role.toLocaleLowerCase()));
+};
+
+export const useCheckUserRole = () => {
+  return useLocation().pathname.split('/')[1];
 };

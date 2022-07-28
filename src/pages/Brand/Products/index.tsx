@@ -7,7 +7,7 @@ import ProductCardList from '@/components/Product/CardList';
 const BrandProduct: React.FC = () => {
   return (
     <PageContainer pageHeaderRender={() => <TopBar />}>
-      <ProductCardList productPage="brand" />
+      <ProductCardList />
     </PageContainer>
   );
 };
