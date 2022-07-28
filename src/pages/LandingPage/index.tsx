@@ -85,22 +85,17 @@ const LandingPage = () => {
   }, [userEmail]);
 
   useEffect(() => {
-    if (
-      // (!tokenVerification && history.location.pathname === PATH.createPassword)
-      !tokenVerification &&
-      history.location.pathname === PATH.verifyAccount
-    ) {
+    if (tokenVerification) {
+      verifyAccount(tokenVerification).then((res) => {
+        if (res) {
+          openVerifyAccountModal.setValue(res);
+        }
+        message.error(MESSAGE_ERROR.VERIFY_TOKEN_EXPIRED);
+      });
+      return;
+    }
+    if (history.location.pathname === PATH.verifyAccount) {
       history.push(PATH.landingPage);
-    } else {
-      if (tokenVerification) {
-        verifyAccount(tokenVerification).then((res) => {
-          if (res) {
-            openVerifyAccountModal.setValue(res);
-          }
-          message.error(MESSAGE_ERROR.VERIFY_TOKEN_EXPIRED);
-        });
-        // openVerificationModal.setValue(true);
-      }
     }
   }, [tokenVerification]);
 
