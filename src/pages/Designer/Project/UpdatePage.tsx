@@ -30,7 +30,7 @@ const ProjectCreatePage: React.FC = () => {
       <ProjectDetailHeader activeKey={selectedTab} onChangeTab={setSelectedTab} project={project} />
 
       <CustomTabPane active={selectedTab === ProjectTabKeys.basicInformation}>
-        <GeneralInformation project={project} />
+        <GeneralInformation project={project} setProject={setProject} />
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectTabKeys.zoneAreaRoom}>

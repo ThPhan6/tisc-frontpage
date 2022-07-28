@@ -17,9 +17,10 @@ import styles from '../../styles/basic-information.less';
 
 interface GeneralInformationProps {
   project?: ProjectDetailProps;
+  setProject?: (project: ProjectDetailProps) => void;
 }
 
-const GeneralInformation: React.FC<GeneralInformationProps> = ({ project }) => {
+const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setProject }) => {
   const [data, setData] = useState<ProjectBodyRequest>(DefaultProjectRequest);
   const buttonStatus = useBoolean();
   const isLoading = useBoolean();
@@ -35,6 +36,12 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project }) => {
           setTimeout(() => {
             buttonStatus.setValue(false);
           }, 1000);
+          if (setProject && project) {
+            setProject({
+              ...project,
+              ...data,
+            });
+          }
         }
       });
     } else {
