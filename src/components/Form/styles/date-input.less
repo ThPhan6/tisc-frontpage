@@ -1,0 +1,112 @@
+.datepickerWrapper {
+  width: 100%;
+  padding: 4px 0 4px 16px;
+  font-family: @font-primary;
+  border: 0;
+  border-radius: 0;
+  box-shadow: @border-bottom-light;
+  input {
+    color: @primary-color-dark;
+    font-weight: 300;
+    font-size: 14px;
+    font-family: @font-primary;
+    line-height: 22px;
+    border: 1px solid transparent;
+    border-radius: 0;
+    &:hover {
+      border-color: transparent;
+    }
+    &:focus {
+      border-color: transparent;
+    }
+    &:active {
+      border-color: transparent;
+    }
+    &:visited {
+      border-color: transparent;
+    }
+  }
+  :global(.ant-picker-suffix) {
+    svg {
+      color: #000;
+      &:hover {
+        color: @primary-color-dark;
+      }
+    }
+  }
+}
+.popupDatepickerWrapper {
+  :global(.ant-picker-header) {
+    :global(.ant-picker-header-view) {
+      line-height: auto;
+      :global(.ant-picker-month-btn),
+      :global(.ant-picker-year-btn),
+      :global(.ant-picker-decade-btn) {
+        font-weight: 300;
+        font-size: 20px;
+        font-family: @font-secondary;
+      }
+    }
+  }
+  :global(.ant-picker-body) {
+    :global(.ant-picker-content) {
+      th {
+        font-weight: 300;
+        font-size: 14px;
+        font-family: @font-primary;
+        &:nth-child(1),
+        &:nth-child(7) {
+          color: @primary-color-medium;
+        }
+        &:nth-child(2),
+        &:nth-child(3),
+        &:nth-child(4),
+        &:nth-child(5),
+        &:nth-child(6) {
+          color: @primary-color;
+        }
+      }
+    }
+    :global(.ant-picker-cell) {
+      min-width: 32px;
+      &:global(.ant-picker-cell-in-view) {
+        color: #000;
+      }
+      &:hover {
+        :global(.ant-picker-cell-inner) {
+          // background:
+        }
+      }
+      &::before {
+        height: 32px;
+      }
+      :global(.ant-picker-cell-inner) {
+        min-width: 32px;
+        height: 32px;
+        font-weight: 500;
+        font-family: @font-primary;
+        line-height: 32px;
+        border-radius: 50%;
+        &::before {
+          border-color: @primary-color-dark;
+          border-radius: 50%;
+        }
+      }
+      &:global(.ant-picker-cell-selected) {
+        :global(.ant-picker-cell-inner) {
+          background: @primary-color-dark;
+          border: 0;
+          &::before {
+            border: 0;
+          }
+        }
+      }
+    }
+  }
+  .datePickerFooter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+  }
+}

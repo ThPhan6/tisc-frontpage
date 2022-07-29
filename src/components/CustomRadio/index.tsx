@@ -4,6 +4,7 @@ import { useState } from 'react';
 import type { CustomRadioProps, RadioValue } from './types';
 import style from './styles/index.less';
 import { CustomInput } from '../Form/CustomInput';
+import { uniqueId } from 'lodash';
 
 export const CustomRadio: FC<CustomRadioProps> = ({
   direction = 'horizontal',
@@ -19,7 +20,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
-
+  const [randomID] = useState(uniqueId('radio_'));
   const onChangeValue = (e: any) => {
     const newValue = {
       value: e.target.value,
@@ -68,16 +69,16 @@ export const CustomRadio: FC<CustomRadioProps> = ({
                 ${option.customClass ? option.customClass : ''}
                 radio-label
               `}
-              htmlFor={`${option.value}_${index}`}
+              htmlFor={`${randomID}_${option.value}_${index}`}
             >
               <div style={{ width: '100%' }}>
                 {isRadioList ? (
                   <div className={style['item-wrapper']}>
                     <span className={renderActiveClass(option)}>{option.label}</span>
-                    <Radio id={`${option.value}_${index}`} {...option} />
+                    <Radio id={`${randomID}_${option.value}_${index}`} {...option} />
                   </div>
                 ) : (
-                  <Radio id={`${option.value}_${index}`} {...option}>
+                  <Radio id={`${randomID}_${option.value}_${index}`} {...option}>
                     <span className={renderActiveClass(option)}>{option.label}</span>
                   </Radio>
                 )}
