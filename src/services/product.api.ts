@@ -159,8 +159,6 @@ export const updateProductCard = async (productId: string, data: ProductFormData
     data,
   })
     .then((res) => {
-      console.log(res.data);
-
       message.success(MESSAGE_NOTIFICATION.UPDATE_PRODUCT_SUCCESS);
       return res.data;
     })
@@ -178,6 +176,23 @@ export async function getRelatedCollectionProducts(productId: string) {
   )
     .then((response) => {
       store.dispatch(setRelatedProduct(response.data));
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_SUMMARY_DATA_ERROR);
+    });
+}
+
+export async function getProductBasisOptionList(productId: string, attributeId: string) {
+  return request<{ data: IRelatedCollection[] }>(
+    `/api/product/${productId}/attribute/${attributeId}/get-options`,
+    {
+      method: 'GET',
+    },
+  )
+    .then((response) => {
+      console.log(response.data);
+
+      return response.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_SUMMARY_DATA_ERROR);
