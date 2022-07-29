@@ -208,6 +208,7 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_PROJECT_FAILED: 'Failed to delete project',
   DELETE_PROJECT_SUCCESS: 'Delete project successfully',
   GET_PROJECT_DATA_FAILED: 'Failed to get project data',
+  GET_PROJECT_SUMMARY_DATA_FAILED: 'Failed to get project summary data',
 };
 
 export const MESSAGE_TOOLTIP = {
