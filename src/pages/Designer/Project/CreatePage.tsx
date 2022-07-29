@@ -8,7 +8,7 @@ import ProductConsidered from './tabs/ProductConsidered';
 import ProductSpecification from './tabs/ProductSpecification';
 
 const ProjectCreatePage: React.FC = () => {
-  const [selectedTab, setSelectedTab] = useState<ProjectTabKeys>(ProjectTabKeys.productConsidered);
+  const [selectedTab, setSelectedTab] = useState<ProjectTabKeys>(ProjectTabKeys.basicInformation);
   return (
     <div>
       <ProjectDetailHeader activeKey={selectedTab} onChangeTab={setSelectedTab} />
