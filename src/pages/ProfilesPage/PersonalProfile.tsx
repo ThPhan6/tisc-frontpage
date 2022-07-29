@@ -11,7 +11,7 @@ import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constant
 import UserIcon from '@/assets/icons/ic-user.svg';
 import { FC, useEffect, useState } from 'react';
 import { isShowErrorMessage, showImageUrl, validateEmail } from '@/helper/utils';
-import { useBoolean, useCustomInitialState } from '@/helper/hook';
+import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { updateAvatarTeamProfile, updateTeamProfile } from './services/api';
 import { AVATAR_ACCEPT_TYPES, STATUS_RESPONSE } from '@/constants/util';
@@ -49,6 +49,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
   const [fileInput, setFileInput] = useState<any>();
   const { fetchUserInfo, currentUser } = useCustomInitialState();
   const submitButtonStatus = useBoolean();
+  const showIntersted = useCheckPermission('Design Admin');
 
   const [inputValue, setInputValue] = useState<PersonalProfileState>({
     backupEmail: '',
@@ -130,10 +131,9 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
         backup_email: inputValue.backupEmail.trim(),
         personal_mobile: inputValue.phoneNumber.trim(),
         linkedin: inputValue.linkedin.trim(),
-        interested: selectedInterested.reduce((newInterested, selected) => {
-          newInterested.push(selected.value as number);
-          return newInterested;
-        }, [] as number[]),
+        interested: selectedInterested.map((interested) => {
+          return interested.value as number;
+        }),
       },
       (type: STATUS_RESPONSE, msg?: string) => {
         if (type === STATUS_RESPONSE.SUCCESS) {
@@ -268,7 +268,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
               onChange={handleOnChange}
             />
           </FormGroup>
-          {currentUser?.type === 3 && (
+          {showIntersted && (
             <div>
               <FormGroup label="I am interested in" layout="vertical" formClass={styles.interested}>
                 <CustomCheckbox
