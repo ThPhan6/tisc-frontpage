@@ -101,25 +101,25 @@ const ProductTopBar: React.FC = () => {
             topValue={product.summary?.category_count ?? '0'}
             disabled={product.summary ? false : true}
             bottomValue="Categories"
-            customClass={styles.category}
+            customClass={`${styles.category} ${product.summary?.category_count ? 'bold' : null} `}
           />
           <TopBarItem
             topValue={product.summary?.collection_count ?? '0'}
             disabled={product.summary ? false : true}
             bottomValue="Collections"
-            customClass="left-divider"
+            customClass={`left-divider ${product.summary?.collection_count ? 'bold' : null}`}
           />
           <TopBarItem
             topValue={product.summary?.card_count ?? '0'}
             disabled={product.summary ? false : true}
             bottomValue="Cards"
-            customClass="left-divider"
+            customClass={`left-divider ${product.summary?.card_count ? 'bold' : null}`}
           />
           <TopBarItem
             topValue={product.summary?.product_count ?? '0'}
             disabled={product.summary ? false : true}
             bottomValue="Products"
-            customClass="left-divider"
+            customClass={`left-divider ${product.summary?.product_count ? 'bold' : null}`}
           />
         </div>
         <div className="right-side">

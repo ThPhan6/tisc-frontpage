@@ -3,9 +3,8 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
 import { setProductCatelogue } from '@/reducers/product';
 
-const DownloadAddContent = () => {
-  const product = useAppSelector((state) => state.product);
-  const { catelogue } = product;
+const CatelogueDownload = () => {
+  const { catelogue } = useAppSelector((state) => state.product);
   const dispatch = useDispatch();
 
   return (
@@ -36,4 +35,4 @@ const DownloadAddContent = () => {
   );
 };
 
-export default DownloadAddContent;
+export default CatelogueDownload;

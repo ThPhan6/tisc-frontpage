@@ -40,7 +40,7 @@ const ProductTip: FC<{ userRole: string }> = ({ userRole }): any => {
           maxValueWords={100}
         />
       );
-    case USER_ROLE.brand:
+    case USER_ROLE.brand || USER_ROLE.design:
       return (
         <div className={styles.tipFooter}>
           <table>

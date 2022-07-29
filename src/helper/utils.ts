@@ -155,5 +155,7 @@ export const isValidURL = (url: string) => {
     return false;
   }
 
+  console.log(url);
+
   return validURL.protocol === 'http:' || validURL.protocol === 'https:';
 };

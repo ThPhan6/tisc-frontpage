@@ -1,28 +1,58 @@
 import { useAppSelector } from '@/reducers';
 import { FC } from 'react';
 import { USER_ROLE } from '@/constants/userRoles';
-import DownloadAddContent from './DownLoadAddContent';
 import { ReactComponent as DownloadIconV2 } from '@/assets/icons/download-2-icon.svg';
 import { BodyText } from '../Typography';
-import styles from './styles/productDownload.less';
+import styles from './styles/productDownloadFooter.less';
 import { isValidURL } from '@/helper/utils';
+import DynamicFormInput from '../EntryForm/DynamicFormInput';
+import { useDispatch } from 'react-redux';
+import { setProductDownload } from '@/reducers/product';
 
-const ProductDownload: FC<{ userRole: string }> = ({ userRole }): any => {
+const ProductDownloadFooter: FC<{ userRole: string }> = ({ userRole }): any => {
   const { download } = useAppSelector((state) => state.product);
-  const handleDownload = (url: string) => {
-    if (!url) {
-      return;
-    }
-    const validURL = isValidURL(url);
-    if (validURL) {
-      window.open(url, '_blank');
-    }
-  };
+  const dispatch = useDispatch();
 
   switch (userRole) {
     case USER_ROLE.tisc:
-      return <DownloadAddContent />;
-    case USER_ROLE.brand:
+      return (
+        <DynamicFormInput
+          data={download.contents.map((item) => {
+            return {
+              title: item.title,
+              value: item.url,
+            };
+          })}
+          setData={(data) => {
+            dispatch(
+              setProductDownload({
+                ...download,
+                contents: data.map((item, index) => {
+                  return {
+                    ...download.contents[index],
+                    title: item.title,
+                    url: item.value,
+                  };
+                }),
+              }),
+            );
+          }}
+          titlePlaceholder="type file name here"
+          valuePlaceholder="paste file URL link here"
+        />
+      );
+
+    case USER_ROLE.brand || USER_ROLE.design:
+      const handleDownload = (url: string) => {
+        if (!url) {
+          return;
+        }
+        const validURL = isValidURL(url);
+        if (validURL) {
+          window.open(url, '_blank');
+        }
+      };
+
       return (
         <div className={styles.downloadFooter}>
           <table>
@@ -57,4 +87,4 @@ const ProductDownload: FC<{ userRole: string }> = ({ userRole }): any => {
   }
 };
 
-export default ProductDownload;
+export default ProductDownloadFooter;

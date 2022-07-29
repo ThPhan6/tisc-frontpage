@@ -153,8 +153,10 @@
     border: 0;
     border-radius: 0;
   }
+
   .productHeaderCollapse {
     border-bottom: 0 !important;
+
     &:global(.ant-collapse-item-active) {
       box-shadow: none;
       :global(.brand-label) {
@@ -173,6 +175,11 @@
         padding: 0 16px 4px;
         :global(.input-label-container) {
           width: 93px;
+        }
+      }
+      .viewInfo {
+        :global(.ant-input) {
+          color: #000 !important;
         }
       }
     }

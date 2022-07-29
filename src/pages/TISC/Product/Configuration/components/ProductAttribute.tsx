@@ -8,7 +8,7 @@ import styles from '@/components/Product/styles/details.less';
 import { LIST_TAB } from '../constants';
 import type { ProductInfoTab } from '../types';
 import ProductVendor from '@/components/Product/ProductVendor';
-import DownloadAddContent from '@/components/Product/DownLoadAddContent';
+import CatelogueDownload from '@/components/Product/CatelogueDownload';
 
 interface ProductAttributeInterface {
   activeKey: ProductInfoTab;
@@ -51,7 +51,7 @@ const ProductAttribute: React.FC<ProductAttributeInterface> = ({ activeKey, setA
         <SpecificationAttribute attributes={attribute.specification} />
       ) : (
         <ProductVendor>
-          <DownloadAddContent />
+          <CatelogueDownload />
         </ProductVendor>
       )}
     </div>

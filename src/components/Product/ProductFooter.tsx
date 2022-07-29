@@ -4,11 +4,11 @@ import { ReactComponent as DownloadIcon } from '@/assets/icons/download-1-icon.s
 import SampleProductImage from '@/assets/images/sample-product-img.png';
 import { CustomTabs } from '@/components/Tabs';
 import { TabItem } from '@/components/Tabs/types';
-import { useCheckUserRole } from '@/helper/hook';
+import { useGetUserRoleFromPathname } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
 import { useAppSelector } from '@/reducers';
 import React, { useState } from 'react';
-import ProductDownload from './ProductDownload';
+import ProductDownloadFooter from './ProductDownloadFooter';
 import ProductTip from './ProductTip';
 import styles from './styles/details.less';
 import { gotoProductDetailPage } from './utils';
@@ -24,7 +24,7 @@ const ProductFooter: React.FC = () => {
   const [activeKey, setActiveKey] = useState('');
 
   // check user role to set UI and redirect URL
-  const userRole = useCheckUserRole();
+  const userRole = useGetUserRoleFromPathname();
 
   return (
     <div className={styles.productFooter}>
@@ -74,7 +74,7 @@ const ProductFooter: React.FC = () => {
           </div>
         ) : null}
         {activeKey === 'tip' ? <ProductTip userRole={userRole} /> : null}
-        {activeKey === 'download' ? <ProductDownload userRole={userRole} /> : null}
+        {activeKey === 'download' ? <ProductDownloadFooter userRole={userRole} /> : null}
       </div>
     </div>
   );
