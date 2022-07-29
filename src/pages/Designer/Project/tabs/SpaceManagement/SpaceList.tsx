@@ -11,13 +11,14 @@ import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import React, { useRef } from 'react';
 
 const MAIN_COL_WIDTH = 200;
+const SUB_COL_WIDTH = 150;
 
 interface SpaceListProps {
   handleUpdateSpace: (record: ProjectSpaceZone) => void;
 }
 
 const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace }) => {
-  useAutoExpandNestedTableColumn(MAIN_COL_WIDTH);
+  useAutoExpandNestedTableColumn(MAIN_COL_WIDTH, SUB_COL_WIDTH);
   const tableRef = useRef<any>();
 
   // const handleUpdateAttribute = (id: string) => {
@@ -37,7 +38,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace }) => {
     {
       title: 'Room Size',
       dataIndex: 'size',
-      width: 136,
+      width: 106,
     },
     {
       title: 'Quantity',
@@ -67,7 +68,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace }) => {
     {
       title: 'Areas',
       dataIndex: 'area_coumn',
-      width: 150,
+      width: SUB_COL_WIDTH,
       sorter: {
         multiple: 2,
       },
@@ -115,6 +116,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace }) => {
     {
       title: 'Action',
       dataIndex: 'action',
+      width: '5%',
     },
   ];
 
@@ -127,7 +129,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace }) => {
     {
       title: 'Areas',
       dataIndex: 'name',
-      width: 150,
+      width: SUB_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
@@ -145,7 +147,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace }) => {
     {
       title: 'Areas',
       dataIndex: 'name',
-      width: 150,
+      width: SUB_COL_WIDTH,
     },
     ...SubGeneralColumns,
   ];
