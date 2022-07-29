@@ -21,7 +21,7 @@ interface ICategoryPaginationResponse {
 }
 export async function getProductCategoryPagination(
   params: PaginationRequestParams,
-  callback: (data: DataTableResponse) => void,
+  callback: (data: DataTableResponse<CategoryListResponse[]>) => void,
 ) {
   request(`/api/category/get-list`, {
     method: 'GET',

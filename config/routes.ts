@@ -588,15 +588,25 @@ export default [
     path: PATH.designerProduct,
     name: 'product',
     icon: 'product-icon.svg',
-    component: './Admin',
     access: 'design_product',
     routes: [
       {
         path: PATH.designerBrandProduct,
         name: 'brand.product',
         icon: 'brand-icon.svg',
-        component: './Admin',
         access: 'design_product_brand_product',
+        routes: [
+          {
+            path: PATH.designerBrandProduct,
+            component: './Designer/Products',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerBrandProductDetail,
+            component: './Brand/Products/ViewPage',
+            hideInMenu: true,
+          },
+        ],
       },
       {
         path: PATH.designerCustomLibrary,

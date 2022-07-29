@@ -1,13 +1,16 @@
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { HeaderDropdown } from '@/components/HeaderDropdown';
-import { FilterItem, TopBarItem } from '@/components/Product/components/ProductTopBarItem';
+import {
+  FilterItem,
+  TopBarContainer,
+  TopBarItem,
+} from '@/components/Product/components/ProductTopBarItem';
 import { useAppSelector } from '@/reducers';
 import { setProductList } from '@/reducers/product';
 import { getProductListByBrandId, getProductSummary } from '@/services';
-import type { GeneralData, IFilterType, ProductGetListParameter } from '@/types';
+import type { GeneralData, ProductFilterType, ProductGetListParameter } from '@/types';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import styles from '../styles/TopBar.less';
 
 const ProductTopBar: React.FC = () => {
   const product = useAppSelector((state) => state.product);
@@ -54,7 +57,11 @@ const ProductTopBar: React.FC = () => {
     }
   }, [filter]);
 
-  const renderDropDownList = (title: string, filterName: IFilterType, data: GeneralData[]) => {
+  const renderDropDownList = (
+    title: string,
+    filterName: ProductFilterType,
+    data: GeneralData[],
+  ) => {
     // merge view small
     const items = [{ id: 'all', name: 'VIEW ALL' }, ...data];
     ///
@@ -89,15 +96,17 @@ const ProductTopBar: React.FC = () => {
       </HeaderDropdown>
     );
   };
+
   return (
-    <>
-      <div className={styles.topbarContainer}>
-        <div className="left-side">
+    <TopBarContainer
+      LeftSideContent={
+        <>
           <TopBarItem
             topValue={product.summary?.category_count ?? '0'}
             disabled={product.summary ? false : true}
             bottomValue="Categories"
             customClass={styles.category}
+            style={{ paddingLeft: 0 }}
           />
           <TopBarItem
             topValue={product.summary?.collection_count ?? '0'}
@@ -117,8 +126,10 @@ const ProductTopBar: React.FC = () => {
             bottomValue="Products"
             customClass="left-divider"
           />
-        </div>
-        <div className="right-side">
+        </>
+      }
+      RightSideContent={
+        <>
           <TopBarItem
             topValue={
               filter?.name === 'category_id' ? (
@@ -161,9 +172,9 @@ const ProductTopBar: React.FC = () => {
             }
             customClass="left-divider collection"
           />
-        </div>
-      </div>
-    </>
+        </>
+      }
+    />
   );
 };
 
