@@ -24,7 +24,6 @@ export type PersonalProfileState = {
   backupEmail: string;
   phoneNumber: string;
   linkedin: string;
-  interested: number[];
 };
 
 export interface PersonalProfileProps {
@@ -55,7 +54,6 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
     backupEmail: '',
     phoneNumber: '',
     linkedin: '',
-    interested: [],
   });
 
   const [selectedInterested, setSelectedIntersted] = useState<CheckboxValue[]>(
@@ -90,7 +88,6 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
         backupEmail: currentUser.backup_email || '',
         phoneNumber: currentUser.personal_mobile,
         linkedin: currentUser?.linkedin || '',
-        interested: currentUser.interested || [],
       });
     }
   }, [currentUser]);
@@ -173,10 +170,13 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
       backupEmail: currentUser.backup_email,
       linkedin: currentUser.linkedin,
       phoneNumber: currentUser.personal_mobile,
-      interested: currentUser.interested,
     };
     if (
-      isEqual(currentUserData, inputValue) ||
+      (currentUser.interested.length ===
+        selectedInterested.map((item) => {
+          return item.value;
+        }).length &&
+        isEqual(currentUserData, inputValue)) ||
       (inputValue.backupEmail && !validateEmail(inputValue.backupEmail)) ||
       !inputValue.phoneNumber
     ) {
