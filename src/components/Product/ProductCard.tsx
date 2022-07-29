@@ -23,6 +23,8 @@ import { useCheckPermission, useGetUserRoleFromPathname } from '@/helper/hook';
 import ShareViaEmail from '../ShareViaEmail';
 import styles from './styles/cardList.less';
 import { gotoProductDetailPage } from './utils';
+// import { USER_ROLE } from '@/constants/userRoles';
+// import { PATH } from '@/constants/path';
 
 interface ProductCardProps {
   product: ProductItem;
@@ -37,17 +39,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
 
   // check user role to redirect
   const userRole = useGetUserRoleFromPathname();
+  const hanldeRedirectURL = () => {
+    const path = gotoProductDetailPage(userRole, product.id!);
+    pushTo(path);
+  };
 
   // check user permission to action
   const showShareEmail = useCheckPermission('Brand Admin');
   const showDuplicateAndDelete = useCheckPermission('TISC Admin');
-
-  const handleRedirectRoute = () => {
-    const path = gotoProductDetailPage(userRole, product.id);
-    if (path) {
-      pushTo(path);
-    }
-  };
 
   const reloadProductInformation = () => {
     if (filter && product.brand?.id) {
@@ -96,11 +95,32 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
     });
   };
 
+  // const gotoProductDetailPage = () => {
+  //   if (!product.id) {
+  //     return;
+  //   }
+  //   let path = '';
+  //   switch (userRole) {
+  //     case USER_ROLE.tisc:
+  //       path = PATH.productConfigurationUpdate;
+  //       break;
+  //     case USER_ROLE.brand:
+  //       path = PATH.updateProductBrand;
+  //       break;
+  //     case USER_ROLE.design:
+  //       path = PATH.designerBrandProductDetail;
+  //       break;
+  //   }
+  //   if (path) {
+  //     pushTo(path.replace(':id', product.id));
+  //   }
+  // };
+
   const likeCount = (product.favorites ?? 0) + (liked ? 1 : 0);
 
   return (
     <div className={`${styles.productCardItem} ${hasBorder ? styles.border : ''}`}>
-      <div className={styles.imageWrapper} onClick={handleRedirectRoute}>
+      <div className={styles.imageWrapper} onClick={hanldeRedirectURL}>
         <img src={product.images?.[0] ? showImageUrl(product.images[0]) : SampleProductImage} />
         <div className={styles.imagePlaceholder}>
           <BodyText level={5} fontFamily="Roboto">
@@ -108,7 +128,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
           </BodyText>
         </div>
       </div>
-      <div className={styles.productInfo} onClick={handleRedirectRoute}>
+      <div className={styles.productInfo} onClick={hanldeRedirectURL}>
         <BodyText level={6} fontFamily="Roboto" customClass="product-description">
           {product.name}
         </BodyText>
