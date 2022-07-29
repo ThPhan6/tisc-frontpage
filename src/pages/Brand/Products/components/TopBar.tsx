@@ -1,16 +1,17 @@
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { HeaderDropdown } from '@/components/HeaderDropdown';
+import store, { useAppSelector } from '@/reducers';
+import { resetProductState, setProductList } from '@/reducers/product';
 import {
   FilterItem,
   TopBarContainer,
   TopBarItem,
 } from '@/components/Product/components/ProductTopBarItem';
-import { useAppSelector } from '@/reducers';
-import { setProductList } from '@/reducers/product';
 import { getProductListByBrandId, getProductSummary } from '@/services';
 import type { GeneralData, ProductFilterType, ProductGetListParameter } from '@/types';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import styles from '../styles/topBar.less';
 
 const ProductTopBar: React.FC = () => {
   const product = useAppSelector((state) => state.product);
@@ -40,6 +41,10 @@ const ProductTopBar: React.FC = () => {
         resetProductList();
       });
     }
+
+    return () => {
+      store.dispatch(resetProductState());
+    };
   }, []);
 
   useEffect(() => {
@@ -105,26 +110,25 @@ const ProductTopBar: React.FC = () => {
             topValue={product.summary?.category_count ?? '0'}
             disabled={product.summary ? false : true}
             bottomValue="Categories"
-            customClass={styles.category}
-            style={{ paddingLeft: 0 }}
+            customClass={`category ${product.summary?.category_count ? 'bold' : ''}`}
           />
           <TopBarItem
             topValue={product.summary?.collection_count ?? '0'}
             disabled={product.summary ? false : true}
             bottomValue="Collections"
-            customClass="left-divider"
+            customClass={`left-divider ${product.summary?.collection_count ? 'bold' : ''}`}
           />
           <TopBarItem
             topValue={product.summary?.card_count ?? '0'}
             disabled={product.summary ? false : true}
             bottomValue="Cards"
-            customClass="left-divider"
+            customClass={`left-divider ${product.summary?.card_count ? 'bold' : ''}`}
           />
           <TopBarItem
             topValue={product.summary?.product_count ?? '0'}
             disabled={product.summary ? false : true}
             bottomValue="Products"
-            customClass="left-divider"
+            customClass={`left-divider ${product.summary?.product_count ? 'bold' : ''}`}
           />
         </>
       }

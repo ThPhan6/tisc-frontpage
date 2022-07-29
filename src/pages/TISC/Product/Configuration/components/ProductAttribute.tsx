@@ -4,10 +4,11 @@ import SpecificationAttribute from './SpecificationAttribute';
 import { CustomTabs } from '@/components/Tabs';
 import { getAllAttribute } from '@/services';
 import { AttributebyType } from '@/types';
-import styles from '../styles/details.less';
+import styles from '@/components/Product/styles/details.less';
 import { LIST_TAB } from '../constants';
 import type { ProductInfoTab } from '../types';
-import TISCProductVendor from './ProductVendorAttribute';
+import ProductVendor from '@/components/Product/ProductVendor';
+import CatelogueDownload from '@/components/Product/CatelogueDownload';
 
 interface ProductAttributeInterface {
   activeKey: ProductInfoTab;
@@ -49,7 +50,9 @@ const ProductAttribute: React.FC<ProductAttributeInterface> = ({ activeKey, setA
       ) : activeKey === 'specification' ? (
         <SpecificationAttribute attributes={attribute.specification} />
       ) : (
-        <TISCProductVendor />
+        <ProductVendor>
+          <CatelogueDownload />
+        </ProductVendor>
       )}
     </div>
   );

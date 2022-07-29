@@ -13,7 +13,7 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
 import { setPartialProductDetail } from '@/reducers/product';
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
-import styles from '../../styles/details.less';
+import styles from '@/components/Product/styles/details.less';
 import { map, upperCase } from 'lodash';
 
 interface GeneralFeatureAttributeItemProps {
