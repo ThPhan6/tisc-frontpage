@@ -7,7 +7,7 @@ export interface ProjectFilterValueProps {
 export interface ProjectSummaryData {
   projects: number;
   live: number;
-  onHold: number;
+  on_hold: number;
   archived: number;
 }
 
