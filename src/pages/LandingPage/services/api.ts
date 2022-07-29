@@ -137,8 +137,18 @@ export async function verifyAccount(verification_token: string | null) {
   return request<{ data: boolean }>(`/api/auth/verify/${verification_token ?? ''}`, {
     method: 'POST',
   })
-    .then((res) => {
-      return res.data;
+    .then(() => {
+      return true;
+    })
+    .catch(() => {
+      return false;
+    });
+}
+
+export async function checkEmailAlreadyUsed(email: string) {
+  return request(`/api/auth/check-email/${email}`, { method: 'GET' })
+    .then(() => {
+      return true;
     })
     .catch(() => {
       return false;
