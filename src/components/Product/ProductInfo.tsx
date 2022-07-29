@@ -66,6 +66,7 @@ const ProductInfo: React.FC<ProductEditActive> = ({ editable }) => {
   return (
     <>
       <CustomCollapse
+        showActiveBoxShadow
         defaultActiveKey={['1']}
         header={
           <div className="header-group">
