@@ -13,6 +13,7 @@ import {
   KeyValueData,
   ProjectBodyRequest,
   ProjectDetailProps,
+  ProjectSummaryData,
 } from '@/types';
 
 interface IProjectPaginationResponse {
@@ -127,5 +128,14 @@ export async function deleteProject(id: string) {
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.DELETE_PROJECT_FAILED);
       return false;
+    });
+}
+export async function getProjectSummary() {
+  return request<ProjectSummaryData>(`/api/project/get-summary`)
+    .then((res) => {
+      return res;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_SUMMARY_DATA_FAILED);
     });
 }

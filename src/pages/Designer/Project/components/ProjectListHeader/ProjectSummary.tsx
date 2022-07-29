@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BodyText, Title } from '@/components/Typography';
-import { ProjectSummaryProps } from '@/types';
+import { ProjectSummaryData } from '@/types';
 import styles from '../../styles/project-summary.less';
 import { startCase, upperCase, capitalize, map } from 'lodash';
 
@@ -8,6 +8,10 @@ interface ProjectSummaryItemProps {
   label: string;
   value?: number;
   isBold?: boolean;
+}
+
+interface ProjectSummaryProps {
+  summaryData?: ProjectSummaryData;
 }
 
 const ProjectSummaryItem = ({ label, value, isBold }: ProjectSummaryItemProps) => {
@@ -31,21 +35,27 @@ const ProjectSummaryItem = ({ label, value, isBold }: ProjectSummaryItemProps) =
   );
 };
 
-const ProjectSummary = () => {
-  const [summaryData] = useState<ProjectSummaryProps>({
+const ProjectSummary: React.FC<ProjectSummaryProps> = ({ summaryData }) => {
+  const [state, setState] = useState<ProjectSummaryData>({
     projects: 0,
     live: 0,
     onHold: 0,
     archived: 0,
   });
 
-  const data: ProjectSummaryItemProps[] = map(summaryData, (value, label) => {
+  const data: ProjectSummaryItemProps[] = map(state, (value, label) => {
     return {
       label: label === 'projects' ? upperCase(label) : capitalize(startCase(label)),
       value: value ?? 0,
       isBold: label === 'projects',
     };
   });
+
+  useEffect(() => {
+    if (summaryData) {
+      setState(summaryData);
+    }
+  }, [summaryData]);
 
   return (
     <div className={styles.projectSummaryWrapper}>

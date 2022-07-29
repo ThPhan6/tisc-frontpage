@@ -4,7 +4,7 @@ export interface ProjectFilterValueProps {
   icon?: React.ReactNode;
 }
 
-export interface ProjectSummaryProps {
+export interface ProjectSummaryData {
   projects: number;
   live: number;
   onHold: number;

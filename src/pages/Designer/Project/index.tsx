@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 import { ActionMenu } from '@/components/Action';
 import CustomTable from '@/components/Table';
@@ -8,9 +8,8 @@ import type { TableColumnItem } from '@/components/Table/types';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
-import { getProjectPagination, deleteProject } from '@/services';
-import type { ProjectListProps } from '@/types';
-import React, { useRef } from 'react';
+import { getProjectPagination, deleteProject, getProjectSummary } from '@/services';
+import type { ProjectListProps, ProjectSummaryData } from '@/types';
 import ProjectListHeader from './components/ProjectListHeader';
 import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -24,7 +23,7 @@ import styles from './styles/project-list.less';
 const ProjectList: React.FC = () => {
   const tableRef = useRef<any>();
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
-
+  const [summaryData, setSummaryData] = useState<ProjectSummaryData>();
   const goToCreatePage = () => {
     pushTo(PATH.designerCreateProject);
   };
@@ -32,11 +31,21 @@ const ProjectList: React.FC = () => {
   const goToUpdateProject = (id: string) => {
     pushTo(PATH.designerUpdateProject.replace(':id', id));
   };
+
+  const loadProjectSummaryData = () => {
+    getProjectSummary().then((res) => {
+      if (res) {
+        setSummaryData(res);
+      }
+    });
+  };
+
   const handleDeleteProject = (id: string) => {
     confirmDelete(() => {
       deleteProject(id).then((isSuccess) => {
         if (isSuccess) {
           tableRef.current.reload();
+          loadProjectSummaryData();
         }
       });
     });
@@ -50,6 +59,10 @@ const ProjectList: React.FC = () => {
   useEffect(() => {
     tableRef.current.reload();
   }, [selectedFilter]);
+
+  useEffect(() => {
+    loadProjectSummaryData();
+  }, []);
 
   const MainColumns: TableColumnItem<ProjectListProps>[] = [
     {
@@ -98,7 +111,7 @@ const ProjectList: React.FC = () => {
             fontFamily="Roboto"
             customClass={`${styles.dueDayText} ${dueDay < 0 ? 'late' : ''}`}
           >
-            {dueDay} {suffix}
+            {dueDay === 0 ? 'Today' : `${dueDay} ${suffix}`}
           </BodyText>
         );
       },
@@ -143,6 +156,7 @@ const ProjectList: React.FC = () => {
           <ProjectListHeader
             selectedFilter={selectedFilter}
             setSelectedFilter={setSelectedFilter}
+            summaryData={summaryData}
           />
         );
       }}
