@@ -4,7 +4,7 @@ import { useAppSelector } from '@/reducers';
 import { setProductCatelogue } from '@/reducers/product';
 
 const CatelogueDownload = () => {
-  const { catelogue } = useAppSelector((state) => state.product);
+  const catelogue = useAppSelector((state) => state.product.catelogue);
   const dispatch = useDispatch();
 
   return (

@@ -5,7 +5,7 @@ import SampleProductImage from '@/assets/images/sample-product-img.png';
 import { CustomTabs } from '@/components/Tabs';
 import { TabItem } from '@/components/Tabs/types';
 import { useGetUserRoleFromPathname } from '@/helper/hook';
-import { showImageUrl } from '@/helper/utils';
+import { getMaxLengthText, showImageUrl } from '@/helper/utils';
 import { useAppSelector } from '@/reducers';
 import React, { useState } from 'react';
 import ProductDownloadFooter from './ProductDownloadFooter';
@@ -58,7 +58,9 @@ const ProductDetailFooter: React.FC = () => {
                       <img
                         src={item.images?.[0] ? showImageUrl(item.images[0]) : SampleProductImage}
                       />
-                      <div className="placeholder-text">{item.name}</div>
+                      <div className="placeholder-text">
+                        {getMaxLengthText(item.name + item.name, 80)}
+                      </div>
                     </div>
                   </a>
                 ))
