@@ -18,3 +18,4 @@ export * from './location.type';
 export * from './department.type';
 export * from './market-availability.type';
 export * from './permission.type';
+export * from './project.type';

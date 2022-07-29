@@ -1,25 +1,35 @@
+import { BodyText } from '@/components/Typography';
 import React, { useRef } from 'react';
-import CustomTable from '@/components/Table';
-import type { TableColumnItem } from '@/components/Table/types';
-import { deleteConversionMiddleware, getProductBasisConversionPagination } from '@/services';
-import type { BasisConversionListResponse, SubBasisConversion } from '@/types';
+import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
+import { ReactComponent as MenuIcon } from '@/assets/icons/ic-menu.svg';
+import { ReactComponent as GridIcon } from '@/assets/icons/ic-grid.svg';
+import ActionButton from '@/components/Button/ActionButton';
+import { useBoolean } from '@/helper/hook';
+import { ActionMenu } from '@/components/Action';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
+import { TableColumnItem } from '@/components/Table/types';
+import { BasisConversionListResponse, SubBasisConversion } from '@/types';
 import { confirmDelete } from '@/helper/common';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { deleteConversionMiddleware, getProductBasisConversionPagination } from '@/services';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
-import { ActionMenu } from '@/components/Action';
-import { Button } from 'antd';
-import { useBoolean } from '@/helper/hook';
-import ProductCard from '@/components/Product/ProductCard';
+import CustomTable from '@/components/Table';
 import cardStyles from '@/components/Product/styles/cardList.less';
+import ProductCard from '@/components/Product/ProductCard';
 
-const MAIN_COL_WIDTH = 167;
-
-const BasisConversionList: React.FC = () => {
-  const gridView = useBoolean();
-  useAutoExpandNestedTableColumn(MAIN_COL_WIDTH);
+const COL_WIDTH = {
+  zones: 165,
+  areas: 88,
+  rooms: 96,
+  image: 65,
+  brand: 180,
+  collection: 128,
+  product: 171,
+};
+const ProductConsidered: React.FC = () => {
+  useAutoExpandNestedTableColumn(COL_WIDTH.zones);
   const tableRef = useRef<any>();
+  const gridView = useBoolean();
 
   const handleUpdateConversion = (id: string) => {
     pushTo(PATH.updateConversions.replace(':id', id));
@@ -35,34 +45,56 @@ const BasisConversionList: React.FC = () => {
     });
   };
 
+  const onShareCell =
+    (type: 'main' | 'shared' = 'shared') =>
+    () => ({
+      colSpan: gridView.value ? (type === 'main' ? 6 : 0) : 1,
+    });
+
   const MainColumns: TableColumnItem<BasisConversionListResponse>[] = [
     {
-      title: 'Conversion Group',
+      title: 'Zones',
       dataIndex: 'name',
       sorter: {
         multiple: 1,
       },
-      width: MAIN_COL_WIDTH,
+      width: COL_WIDTH.zones,
       isExpandable: true,
       render: (value) => {
         return <span className="text-uppercase">{value}</span>;
       },
     },
     {
-      title: 'Conversion Between',
+      title: 'Areas',
       dataIndex: 'conversion_between',
-      width: 200,
+      width: COL_WIDTH.areas,
       sorter: {
-        multiple: 2,
+        multiple: 1,
       },
     },
     {
-      title: '1st Formula',
+      title: 'Rooms',
       dataIndex: 'first_formula',
-      width: 200,
+      width: COL_WIDTH.rooms,
+      sorter: true,
     },
     {
-      title: '2nd Formula',
+      title: 'Image',
+      dataIndex: 'second_formula',
+      width: COL_WIDTH.image,
+    },
+    {
+      title: 'Brand',
+      dataIndex: 'second_formula',
+      width: COL_WIDTH.brand,
+    },
+    {
+      title: 'Collection',
+      dataIndex: 'second_formula',
+      width: COL_WIDTH.collection,
+    },
+    {
+      title: 'Product',
       dataIndex: 'second_formula',
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
@@ -71,7 +103,7 @@ const BasisConversionList: React.FC = () => {
       dataIndex: 'action',
       align: 'center',
       width: '5%',
-      render: (_value, record) => {
+      render: (v, record) => {
         return (
           <ActionMenu
             handleUpdate={() => handleUpdateConversion(record.id)}
@@ -82,24 +114,18 @@ const BasisConversionList: React.FC = () => {
     },
   ];
 
-  const onShareCell =
-    (type: 'main' | 'shared' = 'shared') =>
-    () => ({
-      colSpan: gridView.value ? (type === 'main' ? 6 : 0) : 1,
-    });
-
   const SubColumns: TableColumnItem<SubBasisConversion>[] = [
     {
-      title: 'Conversion Group',
+      title: 'Zones',
       dataIndex: 'name',
       noBoxShadow: true,
-      width: MAIN_COL_WIDTH,
+      width: COL_WIDTH.zones,
       onCell: onShareCell('main'),
     },
     {
-      title: 'Conversion Between',
+      title: 'Areas',
       dataIndex: 'conversion_between',
-      width: 200,
+      width: COL_WIDTH.areas,
       noBoxShadow: true,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
@@ -107,17 +133,35 @@ const BasisConversionList: React.FC = () => {
       onCell: onShareCell(),
     },
     {
-      title: '1st Formula',
+      title: 'Rooms',
       dataIndex: 'first_formula',
-      width: 200,
+      width: COL_WIDTH.rooms,
       noBoxShadow: true,
       onCell: onShareCell(),
     },
     {
-      title: '2nd Formula',
+      title: 'Image',
       dataIndex: 'second_formula',
       noBoxShadow: true,
       onCell: onShareCell(),
+      width: COL_WIDTH.image,
+    },
+    {
+      title: 'Brand',
+      dataIndex: 'second_formula',
+      noBoxShadow: true,
+      width: COL_WIDTH.brand,
+    },
+    {
+      title: 'Collection',
+      dataIndex: 'second_formula',
+      width: COL_WIDTH.collection,
+      noBoxShadow: true,
+    },
+    {
+      title: 'Product',
+      dataIndex: 'second_formula',
+      noBoxShadow: true,
     },
     {
       title: 'Count',
@@ -138,16 +182,32 @@ const BasisConversionList: React.FC = () => {
   ];
 
   return (
-    <>
+    <div>
+      <ProjectTabContentHeader>
+        <BodyText
+          level={4}
+          fontFamily="Cormorant-Garamond"
+          color="mono-color"
+          style={{ fontWeight: '600' }}
+        >
+          View By:
+        </BodyText>
+
+        <ActionButton
+          active={gridView.value === false}
+          icon={<MenuIcon style={{ width: 13.33, height: 10 }} />}
+          onClick={() => gridView.setValue(false)}
+          title="List"
+        />
+        <ActionButton
+          active={gridView.value}
+          icon={<GridIcon style={{ width: 13.33, height: 13.33 }} />}
+          onClick={() => gridView.setValue(true)}
+          title="Card"
+        />
+      </ProjectTabContentHeader>
+
       <CustomTable
-        rightAction={
-          <>
-            <CustomPlusButton onClick={() => pushTo(PATH.createConversions)} />
-            <Button onClick={() => gridView.setValue(false)}>List</Button>
-            <Button onClick={() => gridView.setValue(true)}>Card</Button>
-          </>
-        }
-        title="CONVERSIONS"
         columns={MainColumns}
         ref={tableRef}
         fetchDataFunc={getProductBasisConversionPagination}
@@ -175,8 +235,8 @@ const BasisConversionList: React.FC = () => {
           },
         }}
       />
-    </>
+    </div>
   );
 };
 
-export default BasisConversionList;
+export default ProductConsidered;

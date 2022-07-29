@@ -200,6 +200,20 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_FAQ_SUCCESS: 'Update FAQ successfully',
   UPDATE_FAQ_ERROR: 'Update FAQ error',
   GET_ONE_FAQ_ERROR: 'Get one FAQ error',
+
+  //project_type
+  GET_PROJECT_LIST_FAILED: 'Failed to get projects data',
+  GET_PROJECT_BUILDING_TYPE_FAILED: 'Failed to get project building types',
+  GET_PROJECT_TYPE_FAILED: 'Failed to get project types',
+  GET_PROJECT_MEASUREMENT_UNIT_FAILED: 'Failed to get project measurement units',
+  CREATE_PROJECT_FAILED: 'Failed to create project',
+  CREATE_PROJECT_SUCCESS: 'Create project successfully',
+  UPDATE_PROJECT_FAILED: 'Failed to update project',
+  UPDATE_PROJECT_SUCCESS: 'Update project successfully',
+  DELETE_PROJECT_FAILED: 'Failed to delete project',
+  DELETE_PROJECT_SUCCESS: 'Delete project successfully',
+  GET_PROJECT_DATA_FAILED: 'Failed to get project data',
+  GET_PROJECT_SUMMARY_DATA_FAILED: 'Failed to get project summary data',
 };
 
 export const MESSAGE_TOOLTIP = {
