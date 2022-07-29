@@ -24,7 +24,7 @@ export type PersonalProfileState = {
   backupEmail: string;
   phoneNumber: string;
   linkedin: string;
-  interested: string[];
+  interested: number[];
 };
 
 export interface PersonalProfileProps {
@@ -35,14 +35,14 @@ export interface PersonalProfileProps {
 }
 
 const interestedData = [
-  { label: 'Brand Factory/Showroom Visits', value: '0' },
-  { label: 'Design Conferences/Events/Seminars', value: '1 ' },
-  { label: 'Industry Exhibitions/Trade Shows', value: '2' },
+  { label: 'Brand Factory/Showroom Visits', value: 0 },
+  { label: 'Design Conferences/Events/Seminars', value: 1 },
+  { label: 'Industry Exhibitions/Trade Shows', value: 2 },
   {
     label: 'Product Launches/Promotions/Workshops',
-    value: '3',
+    value: 3,
   },
-  { label: 'Product Recommendations/Updates', value: '4' },
+  { label: 'Product Recommendations/Updates', value: 4 },
 ];
 
 export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
@@ -58,12 +58,12 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
   });
 
   const [selectedInterested, setSelectedIntersted] = useState<CheckboxValue[]>(
-    currentUser.interested.map((interestedId) => {
+    currentUser?.interested.map((interestedId) => {
       return {
         label: '',
         value: interestedId,
       };
-    }),
+    }) || [],
   );
 
   const handleUpdateAvatar = (avtFile: File) => {
@@ -131,9 +131,9 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
         personal_mobile: inputValue.phoneNumber.trim(),
         linkedin: inputValue.linkedin.trim(),
         interested: selectedInterested.reduce((newInterested, selected) => {
-          newInterested.push(selected.value);
+          newInterested.push(selected.value as number);
           return newInterested;
-        }, [] as string[]),
+        }, [] as number[]),
       },
       (type: STATUS_RESPONSE, msg?: string) => {
         if (type === STATUS_RESPONSE.SUCCESS) {
@@ -184,7 +184,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
     }
     return false;
   };
-  console.log(inputValue);
+
   return (
     <div className={styles['personal-container']}>
       <div className={styles.header}>
