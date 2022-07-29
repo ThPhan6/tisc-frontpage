@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 export type CheckboxValue = {
   label: string | ReactNode;
-  value: string;
+  value: string | number;
   disabled?: boolean;
 };
 

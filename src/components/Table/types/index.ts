@@ -39,8 +39,8 @@ export interface SummaryResponse {
   value: string | number;
 }
 
-export interface DataTableResponse {
-  data: any;
+export interface DataTableResponse<T = any> {
+  data: T;
   pagination: TablePaginationConfig;
   summary?: SummaryResponse[];
 }

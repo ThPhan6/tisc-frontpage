@@ -144,3 +144,13 @@ export async function verifyAccount(verification_token: string | null) {
       return false;
     });
 }
+
+export async function checkEmailAlreadyUsed(email: string) {
+  return request(`/api/auth/check-email/${email}`, { method: 'GET' })
+    .then(() => {
+      return true;
+    })
+    .catch(() => {
+      return false;
+    });
+}
