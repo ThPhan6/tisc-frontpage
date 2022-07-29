@@ -42,9 +42,15 @@ const ProductConfigurationCreate: React.FC = () => {
 
   const onSave = () => {
     const { details, tip, download, catelogue } = product;
-    const haveInvalidURL = download.contents.some((content) => isValidURL(content.url) === false);
 
-    if (haveInvalidURL) {
+    // check url
+    const haveInvaliDownloadURL = download.contents.some(
+      (content) => isValidURL(content.url) === false,
+    );
+    const haveInvaliCatelogueURL = catelogue.contents.some(
+      (content) => isValidURL(content.url) === false,
+    );
+    if (haveInvaliDownloadURL || haveInvaliCatelogueURL) {
       return message.error(MESSAGE_ERROR.URL_INVALID);
     }
     const data: ProductFormData = {
