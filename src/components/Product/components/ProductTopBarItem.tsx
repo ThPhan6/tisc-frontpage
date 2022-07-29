@@ -145,11 +145,13 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
 interface CustomDropDownProps extends Omit<DropDownProps, 'overlay'> {
   items: ItemType[];
   menuStyle?: CSSProperties;
+  hideDropdownIcon?: boolean;
 }
 export const CustomDropDown: FC<CustomDropDownProps> = ({
   children,
   items,
   menuStyle,
+  hideDropdownIcon,
   ...props
 }) => {
   const dropdownVisible = useBoolean(false);
@@ -173,7 +175,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
     >
       <span>
         {children}
-        <DropdownIcon />
+        {hideDropdownIcon ? null : <DropdownIcon />}
       </span>
     </Dropdown>
   );

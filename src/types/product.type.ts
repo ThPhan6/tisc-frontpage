@@ -101,20 +101,31 @@ export interface GroupProductList {
   products: ProductItem[];
 }
 
-export type ProductFilterType = 'category_id' | 'collection_id' | 'brand_id';
+export type ProductFilterType = 'category_id' | 'collection_id' | 'brand_id' | 'name';
 
 export interface ProductTopBarFilter {
   name: ProductFilterType;
   title: string;
   value: string;
 }
+
+export type SortOrder = 'ASC' | 'DESC';
+export type SortParams = {
+  sort: string;
+  order: SortOrder;
+};
+
 export interface ProductList {
   filter?: ProductTopBarFilter;
   data: GroupProductList[];
+  search?: string;
+  sort?: SortParams;
 }
 
 export interface GetListProductForDesignerRequestParams {
   brand_id?: string;
   category_id?: string;
   name?: string;
+  sort?: string;
+  order?: SortOrder;
 }
