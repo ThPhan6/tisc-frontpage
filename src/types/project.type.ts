@@ -32,24 +32,6 @@ export interface ProjectDetailProps extends ProjectBodyRequest {
   id: string;
 }
 
-export interface ProjectSpaceRoom {
-  id?: string;
-  name: string;
-  room_id: string;
-  size: string;
-  quantity: number;
-}
-export interface ProjectSpaceArea {
-  id?: string;
-  name: string;
-  subs: ProjectSpaceRoom[];
-}
-export interface ProjectSpaceZone {
-  id?: string;
-  name: string;
-  subs: ProjectSpaceArea[];
-}
-
 export interface ProjectListProps {
   id: string;
   status: number;
