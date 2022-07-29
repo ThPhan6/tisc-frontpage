@@ -74,15 +74,20 @@ interface CascadingMenuProps {
   items: ItemType[];
   subLevel?: number;
   visible?: boolean;
-  onCloseMenu?: () => void;
+  onCloseMenu: () => void;
+  menuStyle?: CSSProperties;
 }
 
 const DEFAULT_INDEX = -1;
 
-const CascadingMenu: FC<CascadingMenuProps> = ({ items, subLevel, visible, onCloseMenu }) => {
+const CascadingMenu: FC<CascadingMenuProps> = ({
+  items,
+  subLevel,
+  visible,
+  onCloseMenu,
+  menuStyle,
+}) => {
   const [selectedItem, setSelectedItem] = useState<number>(DEFAULT_INDEX);
-  console.log('selectedItem', selectedItem);
-  console.log('subLevel', subLevel);
 
   useEffect(() => {
     setSelectedItem(DEFAULT_INDEX);
@@ -93,7 +98,6 @@ const CascadingMenu: FC<CascadingMenuProps> = ({ items, subLevel, visible, onClo
       <Menu
         style={{
           width: 260,
-          minWidth: 260,
           position: subLevel ? 'absolute' : 'relative',
           top: subLevel ? 0 : undefined,
           left: subLevel ? subLevel * 260 : undefined,
@@ -101,37 +105,37 @@ const CascadingMenu: FC<CascadingMenuProps> = ({ items, subLevel, visible, onClo
           height: 432,
           overflow: 'hidden auto',
           padding: 0,
+          ...menuStyle,
         }}
       >
         {items.map((item, index) => {
-          // console.log('item', item);
           return (
-            <>
-              <Menu.Item
-                key={item?.id || index}
-                onClick={() => {
-                  setSelectedItem((curIndex) => (curIndex === index ? DEFAULT_INDEX : index));
-                  if (!item?.children) {
-                    item.onClick?.();
-                    onCloseMenu();
-                  }
-                }}
-                className={`${selectedItem === index ? styles.active : ''} ${
-                  item?.children ? '' : styles.noSub
-                }`}
-                icon={item?.children ? <DropdownIcon /> : undefined}
-              >
-                {item.label}
-              </Menu.Item>
-            </>
+            <Menu.Item
+              key={item?.id || index}
+              onClick={() => {
+                setSelectedItem((curIndex) => (curIndex === index ? DEFAULT_INDEX : index));
+                if (!item?.children) {
+                  item.onClick?.();
+                  onCloseMenu();
+                }
+              }}
+              className={`${selectedItem === index ? styles.active : ''} ${
+                item?.children ? '' : styles.noSub
+              }`}
+              icon={item?.icon || (item?.children ? <DropdownIcon /> : undefined)}
+            >
+              {item.label}
+            </Menu.Item>
           );
         })}
       </Menu>
+
       {items?.[selectedItem]?.children && (
         <CascadingMenu
           items={items?.[selectedItem].children}
           subLevel={(subLevel || 0) + 1}
           onCloseMenu={onCloseMenu}
+          menuStyle={menuStyle}
         />
       )}
     </>
@@ -140,8 +144,16 @@ const CascadingMenu: FC<CascadingMenuProps> = ({ items, subLevel, visible, onClo
 
 interface CustomDropDownProps extends Omit<DropDownProps, 'overlay'> {
   items: ItemType[];
+  menuStyle?: CSSProperties;
+  hideDropdownIcon?: boolean;
 }
-export const CustomDropDown: FC<CustomDropDownProps> = ({ children, items, ...props }) => {
+export const CustomDropDown: FC<CustomDropDownProps> = ({
+  children,
+  items,
+  menuStyle,
+  hideDropdownIcon,
+  ...props
+}) => {
   const dropdownVisible = useBoolean(false);
   return (
     <Dropdown
@@ -150,7 +162,6 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({ children, items, ...pr
       {...props}
       visible={dropdownVisible.value}
       onVisibleChange={(visible) => {
-        console.log('visible', visible);
         dropdownVisible.setValue(visible);
       }}
       overlay={
@@ -158,12 +169,13 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({ children, items, ...pr
           items={items}
           visible={dropdownVisible.value}
           onCloseMenu={() => dropdownVisible.setValue(false)}
+          menuStyle={menuStyle}
         />
       }
     >
       <span>
         {children}
-        <DropdownIcon />
+        {hideDropdownIcon ? null : <DropdownIcon />}
       </span>
     </Dropdown>
   );

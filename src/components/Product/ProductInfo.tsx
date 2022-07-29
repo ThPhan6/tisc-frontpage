@@ -66,6 +66,7 @@ const ProductInfo: React.FC<ProductEditActive> = ({ editable }) => {
   return (
     <>
       <CustomCollapse
+        showActiveBoxShadow
         defaultActiveKey={['1']}
         header={
           <div className="header-group">
@@ -90,11 +91,13 @@ const ProductInfo: React.FC<ProductEditActive> = ({ editable }) => {
           noWrap
           value={collection?.name ?? ''}
           readOnly={editable === false}
+          containerClass={!editable ? styles.viewInfo : ''}
         />
 
         {/* Product */}
         <InputGroup
           horizontal
+          containerClass={!editable ? styles.viewInfo : ''}
           fontLevel={4}
           label="Product"
           placeholder={editable ? 'type max.100 characters short description' : ''}
@@ -115,6 +118,7 @@ const ProductInfo: React.FC<ProductEditActive> = ({ editable }) => {
         {/* Description */}
         <InputGroup
           horizontal
+          containerClass={!editable ? styles.viewInfo : ''}
           fontLevel={4}
           label="Description"
           placeholder={editable ? 'max.50 words of product summary' : ''}

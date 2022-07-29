@@ -1,29 +1,30 @@
-import React, { useState } from 'react';
-import SampleProductImage from '@/assets/images/sample-product-img.png';
+import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
-import { ReactComponent as TabIcon } from '@/assets/icons/tabs-icon.svg';
 import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/share-via-email.svg';
-import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
+import { ReactComponent as TabIcon } from '@/assets/icons/tabs-icon.svg';
+import SampleProductImage from '@/assets/images/sample-product-img.png';
 import { BodyText } from '@/components/Typography';
-import { showImageUrl } from '@/helper/utils';
-import { Tooltip } from 'antd';
 import { confirmDelete } from '@/helper/common';
-import { useAppSelector } from '@/reducers';
 import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
+import { showImageUrl } from '@/helper/utils';
+import { useAppSelector } from '@/reducers';
 import {
   deleteProductById,
+  duplicateProductById,
   getProductListByBrandId,
   getProductSummary,
-  duplicateProductById,
   likeProductById,
 } from '@/services';
-import { ProductItem, ProductGetListParameter } from '@/types';
-import styles from './styles/cardList.less';
+import { ProductGetListParameter, ProductItem } from '@/types';
+import { Tooltip } from 'antd';
+import React, { useState } from 'react';
 import { useCheckPermission, useGetUserRoleFromPathname } from '@/helper/hook';
-import { USER_ROLE } from '@/constants/userRoles';
 import ShareViaEmail from '../ShareViaEmail';
+import styles from './styles/cardList.less';
+import { gotoProductDetailPage } from './utils';
+// import { USER_ROLE } from '@/constants/userRoles';
+// import { PATH } from '@/constants/path';
 
 interface ProductCardProps {
   product: ProductItem;
@@ -38,6 +39,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
 
   // check user role to redirect
   const userRole = useGetUserRoleFromPathname();
+  const hanldeRedirectURL = () => {
+    const path = gotoProductDetailPage(userRole, product.id!);
+    pushTo(path);
+  };
 
   // check user permission to action
   const showShareEmail = useCheckPermission('Brand Admin');
@@ -90,32 +95,32 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
     });
   };
 
-  const gotoProductDetailPage = () => {
-    if (!product.id) {
-      return;
-    }
-    let path = '';
-    switch (userRole) {
-      case USER_ROLE.tisc:
-        path = PATH.productConfigurationUpdate;
-        break;
-      case USER_ROLE.brand:
-        path = PATH.updateProductBrand;
-        break;
-      case USER_ROLE.design:
-        path = PATH.designerBrandProductDetail;
-        break;
-    }
-    if (path) {
-      pushTo(path.replace(':id', product.id));
-    }
-  };
+  // const gotoProductDetailPage = () => {
+  //   if (!product.id) {
+  //     return;
+  //   }
+  //   let path = '';
+  //   switch (userRole) {
+  //     case USER_ROLE.tisc:
+  //       path = PATH.productConfigurationUpdate;
+  //       break;
+  //     case USER_ROLE.brand:
+  //       path = PATH.updateProductBrand;
+  //       break;
+  //     case USER_ROLE.design:
+  //       path = PATH.designerBrandProductDetail;
+  //       break;
+  //   }
+  //   if (path) {
+  //     pushTo(path.replace(':id', product.id));
+  //   }
+  // };
 
   const likeCount = (product.favorites ?? 0) + (liked ? 1 : 0);
 
   return (
     <div className={`${styles.productCardItem} ${hasBorder ? styles.border : ''}`}>
-      <div className={styles.imageWrapper} onClick={gotoProductDetailPage}>
+      <div className={styles.imageWrapper} onClick={hanldeRedirectURL}>
         <img src={product.images?.[0] ? showImageUrl(product.images[0]) : SampleProductImage} />
         <div className={styles.imagePlaceholder}>
           <BodyText level={5} fontFamily="Roboto">
@@ -123,7 +128,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
           </BodyText>
         </div>
       </div>
-      <div className={styles.productInfo} onClick={gotoProductDetailPage}>
+      <div className={styles.productInfo} onClick={hanldeRedirectURL}>
         <BodyText level={6} fontFamily="Roboto" customClass="product-description">
           {product.name}
         </BodyText>

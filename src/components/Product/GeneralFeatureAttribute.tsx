@@ -20,6 +20,7 @@ const GeneralFeatureAttribute: FC<GeneralFeatureAttributeProps> = ({ activeKey }
           ? general_attribute_groups.map((group, index) => {
               return (
                 <CustomCollapse
+                  showActiveBoxShadow
                   key={`${group.name}_${index}`}
                   className={styles.vendorSection}
                   customHeaderClass={styles.vendorCustomPanelBox}
@@ -38,6 +39,7 @@ const GeneralFeatureAttribute: FC<GeneralFeatureAttributeProps> = ({ activeKey }
           : feature_attribute_groups.map((group, index) => {
               return (
                 <CustomCollapse
+                  showActiveBoxShadow
                   key={`${group.name}_${index}`}
                   className={styles.vendorSection}
                   customHeaderClass={styles.vendorCustomPanelBox}

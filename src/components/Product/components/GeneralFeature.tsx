@@ -27,11 +27,3 @@ export const GeneralFeatureContent: FC<{ type: string; text: string }> = ({
     </div>
   );
 };
-
-// export const CollapseGeneralFeature: FC<{ name: string }> = ({ name, children }) => {
-//   return (
-//     <CustomCollapse header={<GeneralFeatureHeader name={name} />} className={styles.group}>
-//       {children}
-//     </CustomCollapse>
-//   );
-// };

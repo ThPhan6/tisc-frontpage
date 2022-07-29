@@ -9,6 +9,7 @@ interface CustomCollapseProps extends CollapseProps {
   header: string | ReactNode;
   children: ReactNode;
   customHeaderClass?: string;
+  showActiveBoxShadow?: boolean;
 }
 
 const CustomCollapse: FC<CustomCollapseProps> = ({
@@ -16,13 +17,16 @@ const CustomCollapse: FC<CustomCollapseProps> = ({
   children,
   customHeaderClass,
   className,
+  showActiveBoxShadow,
   ...props
 }) => {
   return (
     <Collapse
       expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
-      expandIconPosition="end"
-      className={`${styles.customCollapse} ${className}`}
+      expandIconPosition="right"
+      className={`${styles.customCollapse} ${className || ''} ${
+        showActiveBoxShadow ? styles.activeBoxShadow : ''
+      }`}
       {...props}
     >
       <Collapse.Panel

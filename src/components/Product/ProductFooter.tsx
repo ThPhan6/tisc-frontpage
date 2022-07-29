@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { CustomTabs } from '@/components/Tabs';
-import { TabItem } from '@/components/Tabs/types';
-import DynamicFormInput from '@/components/EntryForm/DynamicFormInput';
-import { ReactComponent as CollectionIcon } from '@/assets/icons/collection-icon.svg';
 import { ReactComponent as TipsIcon } from '@/assets/icons/bookmark-icon.svg';
+import { ReactComponent as CollectionIcon } from '@/assets/icons/collection-icon.svg';
 import { ReactComponent as DownloadIcon } from '@/assets/icons/download-1-icon.svg';
 import SampleProductImage from '@/assets/images/sample-product-img.png';
-import { showImageUrl } from '@/helper/utils';
-import { useDispatch } from 'react-redux';
+import { CustomTabs } from '@/components/Tabs';
+import { TabItem } from '@/components/Tabs/types';
+import { useGetUserRoleFromPathname } from '@/helper/hook';
+import { getMaxLengthText, showImageUrl } from '@/helper/utils';
 import { useAppSelector } from '@/reducers';
-import { setProductTip, setProductDownload } from '@/reducers/product';
-import { PATH } from '@/constants/path';
+import React, { useState } from 'react';
+import ProductDownloadFooter from './ProductDownloadFooter';
+import ProductTip from './ProductTip';
 import styles from './styles/details.less';
+import { gotoProductDetailPage } from './utils';
 
 const LIST_TAB: TabItem[] = [
   { tab: 'Collections', key: 'collection', icon: <CollectionIcon /> },
@@ -19,11 +19,12 @@ const LIST_TAB: TabItem[] = [
   { tab: 'Downloads', key: 'download', icon: <DownloadIcon /> },
 ];
 
-const ProductFooter: React.FC = () => {
-  const product = useAppSelector((state) => state.product);
-  const dispatch = useDispatch();
-  const { tip, download, relatedProduct } = product;
+const ProductDetailFooter: React.FC = () => {
+  const { relatedProduct } = useAppSelector((state) => state.product);
   const [activeKey, setActiveKey] = useState('');
+
+  // check user role to set UI and redirect URL
+  const userRole = useGetUserRoleFromPathname();
 
   return (
     <div className={styles.productFooter}>
@@ -51,13 +52,15 @@ const ProductFooter: React.FC = () => {
                     key={key}
                     target="_blank"
                     rel="noreferrer"
-                    href={PATH.productConfigurationUpdate.replace(':id', item.id)}
+                    href={gotoProductDetailPage(userRole, item.id)}
                   >
                     <div className="relative-product">
                       <img
-                        src={item.images[0] ? showImageUrl(item.images[0]) : SampleProductImage}
+                        src={item.images?.[0] ? showImageUrl(item.images[0]) : SampleProductImage}
                       />
-                      <div className="placeholder-text">{item.name}</div>
+                      <div className="placeholder-text">
+                        {getMaxLengthText(item.name + item.name, 80)}
+                      </div>
                     </div>
                   </a>
                 ))
@@ -72,62 +75,11 @@ const ProductFooter: React.FC = () => {
             </div>
           </div>
         ) : null}
-        {activeKey === 'tip' ? (
-          <DynamicFormInput
-            data={tip.contents.map((value) => {
-              return {
-                title: value.title,
-                value: value.content,
-              };
-            })}
-            setData={(data) =>
-              dispatch(
-                setProductTip({
-                  ...tip,
-                  contents: data.map((item, index) => {
-                    return {
-                      ...tip.contents[index],
-                      title: item.title,
-                      content: item.value,
-                    };
-                  }),
-                }),
-              )
-            }
-            titlePlaceholder="type title here"
-            valuePlaceholder="type content text (max. 100 words)"
-            maxValueWords={100}
-          />
-        ) : null}
-        {activeKey === 'download' ? (
-          <DynamicFormInput
-            data={download.contents.map((value) => {
-              return {
-                title: value.title,
-                value: value.url,
-              };
-            })}
-            setData={(data) =>
-              dispatch(
-                setProductDownload({
-                  ...download,
-                  contents: data.map((item, index) => {
-                    return {
-                      ...download.contents[index],
-                      title: item.title,
-                      url: item.value,
-                    };
-                  }),
-                }),
-              )
-            }
-            titlePlaceholder="type file name here"
-            valuePlaceholder="paste file URL link here"
-          />
-        ) : null}
+        {activeKey === 'tip' ? <ProductTip userRole={userRole} /> : null}
+        {activeKey === 'download' ? <ProductDownloadFooter userRole={userRole} /> : null}
       </div>
     </div>
   );
 };
 
-export default ProductFooter;
+export default ProductDetailFooter;

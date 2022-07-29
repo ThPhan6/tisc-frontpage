@@ -7,6 +7,9 @@
   padding: 0 24px;
   overflow: auto;
   background-color: #fff;
+  :global(.left-side > .category) {
+    padding-left: 0;
+  }
   :global(.left-side),
   :global(.right-side) {
     display: flex;
@@ -26,7 +29,7 @@
     :global(.disabled) {
       color: @mono-color-medium;
     }
-    :global(.bold) {
+    &:global(.bold > p:first-child) {
       font-weight: 500;
     }
     &:global(.brand-dropdown) {
@@ -159,5 +162,9 @@
   }
   &.noSub {
     padding-right: 16.5px;
+  }
+
+  :global(.ant-dropdown-menu-item-icon) {
+    margin-right: 12px;
   }
 }
