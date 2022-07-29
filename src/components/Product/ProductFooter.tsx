@@ -19,7 +19,7 @@ const LIST_TAB: TabItem[] = [
   { tab: 'Downloads', key: 'download', icon: <DownloadIcon /> },
 ];
 
-const ProductFooter: React.FC = () => {
+const ProductDetailFooter: React.FC = () => {
   const { relatedProduct } = useAppSelector((state) => state.product);
   const [activeKey, setActiveKey] = useState('');
 
@@ -56,7 +56,7 @@ const ProductFooter: React.FC = () => {
                   >
                     <div className="relative-product">
                       <img
-                        src={item.images[0] ? showImageUrl(item.images[0]) : SampleProductImage}
+                        src={item.images?.[0] ? showImageUrl(item.images[0]) : SampleProductImage}
                       />
                       <div className="placeholder-text">{item.name}</div>
                     </div>
@@ -80,4 +80,4 @@ const ProductFooter: React.FC = () => {
   );
 };
 
-export default ProductFooter;
+export default ProductDetailFooter;

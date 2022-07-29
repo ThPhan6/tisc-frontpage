@@ -9,8 +9,8 @@ import DynamicFormInput from '../EntryForm/DynamicFormInput';
 import { useDispatch } from 'react-redux';
 import { setProductDownload } from '@/reducers/product';
 
-const ProductDownloadFooter: FC<{ userRole: string }> = ({ userRole }): any => {
-  const { download } = useAppSelector((state) => state.product);
+const ProductDownloadFooter: FC<{ userRole: USER_ROLE }> = ({ userRole }) => {
+  const download = useAppSelector((state) => state.product.download);
   const dispatch = useDispatch();
 
   switch (userRole) {
@@ -83,7 +83,7 @@ const ProductDownloadFooter: FC<{ userRole: string }> = ({ userRole }): any => {
       );
 
     default:
-      return;
+      return null;
   }
 };
 

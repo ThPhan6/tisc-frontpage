@@ -2,7 +2,7 @@ import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
 // import { pushTo } from '@/helper/history';
 
-export const gotoProductDetailPage = (userRole: any, productId?: string) => {
+export const gotoProductDetailPage = (userRole: string, productId?: string) => {
   if (!productId) {
     return '';
   }

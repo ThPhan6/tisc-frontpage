@@ -7,8 +7,8 @@ import styles from './styles/productTip.less';
 import { USER_ROLE } from '@/constants/userRoles';
 import { BodyText } from '../Typography';
 
-const ProductTip: FC<{ userRole: string }> = ({ userRole }): any => {
-  const { tip } = useAppSelector((state) => state.product);
+const ProductTip: FC<{ userRole: USER_ROLE }> = ({ userRole }) => {
+  const tip = useAppSelector((state) => state.product.tip);
   const dispatch = useDispatch();
 
   switch (userRole) {
@@ -65,7 +65,7 @@ const ProductTip: FC<{ userRole: string }> = ({ userRole }): any => {
       );
 
     default:
-      return;
+      return null;
   }
 };
 

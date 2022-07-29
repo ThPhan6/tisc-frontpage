@@ -1,3 +1,4 @@
+import { USER_ROLE } from '@/constants/userRoles';
 import { useAppSelector } from '@/reducers';
 import React from 'react';
 import { useLocation, useModel } from 'umi';
@@ -71,5 +72,5 @@ export const useCheckPermission = (allowRoles: AccessLevelType | AccessLevelType
 };
 
 export const useGetUserRoleFromPathname = () => {
-  return useLocation().pathname.split('/')[1];
+  return useLocation().pathname.split('/')[1] as USER_ROLE;
 };
