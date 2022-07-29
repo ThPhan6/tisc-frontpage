@@ -91,14 +91,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
   };
 
   const gotoProductDetailPage = () => {
-    if (userRole === USER_ROLE.brand) {
-      if (product.id) {
-        pushTo(PATH.updateProductBrand.replace(':id', product.id));
-      }
-    } else if (userRole === USER_ROLE.tisc) {
-      if (product.id) {
-        pushTo(PATH.productConfigurationUpdate.replace(':id', product.id));
-      }
+    if (!product.id) {
+      return;
+    }
+    let path = '';
+    switch (userRole) {
+      case USER_ROLE.tisc:
+        path = PATH.productConfigurationUpdate;
+        break;
+      case USER_ROLE.brand:
+        path = PATH.updateProductBrand;
+        break;
+      case USER_ROLE.design:
+        path = PATH.designerBrandProductDetail;
+        break;
+    }
+    if (path) {
+      pushTo(path.replace(':id', product.id));
     }
   };
 
