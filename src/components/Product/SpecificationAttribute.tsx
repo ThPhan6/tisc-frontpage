@@ -16,6 +16,7 @@ const SpecificationAttribute = () => {
         {specification_attribute_groups.map((group, index) => {
           return (
             <CustomCollapse
+              showActiveBoxShadow
               key={`${group.name}_${index}`}
               className={styles.vendorSection}
               customHeaderClass={styles.vendorCustomPanelBox}

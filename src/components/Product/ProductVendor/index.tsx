@@ -15,6 +15,7 @@ const ProductVendor: FC = ({ children }) => {
   return (
     <div className={styles.productVendorContainer}>
       <CustomCollapse
+        showActiveBoxShadow
         className={styles.vendorSection}
         customHeaderClass={styles.vendorCustomPanelBox}
         header={
@@ -86,6 +87,7 @@ const ProductVendor: FC = ({ children }) => {
       </div>
 
       <CustomCollapse
+        showActiveBoxShadow
         className={`${styles.vendorSection} ${styles.catelogueSection}`}
         customHeaderClass={styles.vendorCustomPanelBox}
         header={

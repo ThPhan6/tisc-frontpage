@@ -159,3 +159,14 @@ export const isValidURL = (url: string) => {
 
   return validURL.protocol === 'http:' || validURL.protocol === 'https:';
 };
+
+export const getMaxLengthText = (text: string, maxLength: number) => {
+  if (!text) {
+    return '';
+  }
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  return text.slice(0, maxLength - 3) + '...';
+};

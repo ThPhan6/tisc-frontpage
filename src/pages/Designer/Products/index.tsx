@@ -9,7 +9,12 @@ import {
 } from '@/components/Product/components/ProductTopBarItem';
 import store, { useAppSelector } from '@/reducers';
 import { useDispatch } from 'react-redux';
-import { setProductList } from '@/reducers/product';
+import {
+  resetProductState,
+  setProductList,
+  setProductListSearchValue,
+  setProductListSorter,
+} from '@/reducers/product';
 import {
   getBrandPagination,
   getProductCategoryPagination,
@@ -18,6 +23,10 @@ import {
 import { CategoryListResponse, IBrandListItem } from '@/types';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { showImageUrl } from '@/helper/utils';
+import { ReactComponent as SearchIcon } from '@/assets/icons/ic-search.svg';
+import { CustomInput } from '@/components/Form/CustomInput';
+import styles from './styles.less';
+import { debounce } from 'lodash';
 
 const formatCategoriesToDropDownData = (categories: CategoryListResponse[]): ItemType[] => {
   return categories.map((el) => ({
@@ -56,19 +65,53 @@ const formatBrandsToDropDownData = (categories: IBrandListItem[]): ItemType[] =>
   }));
 };
 
+const SORTER_DROPDOWN_DATA: ItemType[] = [
+  {
+    key: 'ASC',
+    label: 'A - Z',
+    onClick: () =>
+      store.dispatch(
+        setProductListSorter({
+          order: 'ASC',
+          sort: 'name',
+        }),
+      ),
+  },
+  {
+    key: 'DESC',
+    label: 'Z - A',
+    onClick: () =>
+      store.dispatch(
+        setProductListSorter({
+          order: 'DESC',
+          sort: 'name',
+        }),
+      ),
+  },
+];
+
 const BrandProductListPage: React.FC = () => {
-  const product = useAppSelector((state) => state.product);
-  const { filter } = product.list;
+  const filter = useAppSelector((state) => state.product.list.filter);
+  const sort = useAppSelector((state) => state.product.list.sort);
+  const search = useAppSelector((state) => state.product.list.search);
   const dispatch = useDispatch();
   const [categories, setCategories] = useState<ItemType[]>([]);
   const [brands, setBrands] = useState<ItemType[]>([]);
-  console.log('categories', categories);
-  console.log('product', product);
 
-  const resetProductList = () => {
+  const resetProductListFilter = () => {
     dispatch(
       setProductList({
         filter: undefined,
+        search: undefined,
+        data: [],
+      }),
+    );
+  };
+
+  const resetProductListSorter = () => {
+    dispatch(
+      setProductList({
+        sort: undefined,
         data: [],
       }),
     );
@@ -94,20 +137,28 @@ const BrandProductListPage: React.FC = () => {
       },
     );
 
-    return resetProductList;
+    return () => {
+      dispatch(resetProductState());
+    };
   }, []);
 
   useEffect(() => {
-    if (filter) {
+    if (filter || search || sort) {
       getProductListForDesigner({
         category_id:
           filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
         brand_id: filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
+        name: search || undefined,
+        sort: sort?.sort,
+        order: sort?.order,
       });
     }
-  }, [filter]);
+  }, [filter, search, sort]);
 
-  console.log('brands', brands);
+  const searchProductByKeyword = debounce((e) => {
+    dispatch(setProductListSearchValue(e.target.value));
+  }, 300);
+
   return (
     <PageContainer
       pageHeaderRender={() => (
@@ -117,7 +168,7 @@ const BrandProductListPage: React.FC = () => {
               <TopBarItem
                 topValue={
                   filter?.name === 'category_id' ? (
-                    <FilterItem title={filter.title} onDelete={resetProductList} />
+                    <FilterItem title={filter.title} onDelete={resetProductListFilter} />
                   ) : (
                     'select'
                   )
@@ -126,32 +177,70 @@ const BrandProductListPage: React.FC = () => {
                 disabled={categories.length ? true : false}
                 bottomValue={<CustomDropDown items={categories}>Categories</CustomDropDown>}
                 customClass="right-divider"
-                style={{
-                  paddingLeft: 0,
-                }}
+                style={{ paddingLeft: 0 }}
               />
               <TopBarItem
                 topValue={
                   filter?.name === 'brand_id' ? (
-                    <FilterItem title={filter.title} onDelete={resetProductList} />
+                    <FilterItem title={filter.title} onDelete={resetProductListFilter} />
                   ) : (
                     'select'
                   )
                 }
-                bottomEnable={categories.length ? true : false}
-                disabled={categories.length ? true : false}
+                bottomEnable={brands.length ? true : false}
+                disabled={brands.length ? true : false}
                 bottomValue={
                   <CustomDropDown items={brands} menuStyle={{ width: 240 }}>
                     Brands
                   </CustomDropDown>
                 }
+                style={{ paddingLeft: 0 }}
+              />
+              <TopBarItem
+                topValue={
+                  sort ? (
+                    <FilterItem title={sort.order} onDelete={resetProductListSorter} />
+                  ) : (
+                    'select'
+                  )
+                }
+                bottomEnable={true}
+                disabled
+                bottomValue={
+                  <CustomDropDown
+                    items={SORTER_DROPDOWN_DATA}
+                    menuStyle={{ width: 160, height: 'auto' }}
+                  >
+                    Sort By
+                  </CustomDropDown>
+                }
+                style={{ paddingLeft: 0 }}
+              />
+            </>
+          }
+          RightSideContent={
+            <>
+              <TopBarItem
+                topValue={
+                  <CustomInput
+                    placeholder="search"
+                    className={styles.searchInput}
+                    onChange={searchProductByKeyword}
+                  />
+                }
+                bottomValue={
+                  <span style={{ display: 'flex', alignItems: 'center' }}>
+                    Keywords <SearchIcon />
+                  </span>
+                }
+                customClass="left-divider"
               />
             </>
           }
         />
       )}
     >
-      <ProductCardList />
+      {filter || search || sort ? <ProductCardList /> : null}
     </PageContainer>
   );
 };

@@ -11,14 +11,15 @@ import { showImageUrl } from '@/helper/utils';
 export interface FaqItemProps extends CollapsingProps {
   value: FaqItem;
   index: number;
+  customClass?: string;
 }
 
 const RenderHeader: FC<FaqItemProps> = (props) => {
-  const { value, activeKey, handleActiveCollapse, index } = props;
+  const { value, activeKey, handleActiveCollapse, index, customClass } = props;
   return (
     <div className={styles.panel_header}>
       <div
-        className={styles.panel_header__field}
+        className={`${styles.panel_header__field} ${customClass}`}
         onClick={() => handleActiveCollapse(value.document ? index : -1)}
       >
         <div className={styles.titleIcon}>
@@ -36,7 +37,15 @@ const RenderHeader: FC<FaqItemProps> = (props) => {
           </div>
         </div>
         <div className={styles.addIcon}>
-          {value.document ? String(index) !== activeKey ? <PlusIcon /> : <ExtendIcon /> : ''}
+          {value.document ? (
+            String(index) !== activeKey ? (
+              <PlusIcon />
+            ) : (
+              <ExtendIcon />
+            )
+          ) : (
+            <PlusIcon className={styles.disablePlusIcon} />
+          )}
         </div>
       </div>
     </div>
@@ -48,13 +57,13 @@ export const FaqComponent: FC<FaqItemProps> = ({
   value,
   activeKey,
   handleActiveCollapse,
+  customClass,
 }) => {
   const [activeKeyItem, setActiveKeyItem] = useState<string>('');
 
   const handleActiveCollapseItem = (indexItem: number) => {
     setActiveKeyItem(activeKeyItem === String(indexItem) ? '' : String(indexItem));
   };
-
   return (
     <div className={styles.listItem}>
       <Collapse ghost activeKey={activeKey}>
@@ -65,6 +74,7 @@ export const FaqComponent: FC<FaqItemProps> = ({
               value={value}
               activeKey={activeKey}
               handleActiveCollapse={handleActiveCollapse}
+              customClass={customClass}
             />
           }
           key={index}
