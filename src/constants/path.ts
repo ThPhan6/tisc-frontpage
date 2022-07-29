@@ -126,6 +126,7 @@ export const PATH = {
   designerFavourite: '/design-firms/my-favorites',
   designerProduct: '/design-firms/products',
   designerBrandProduct: '/design-firms/products/brand-products',
+  designerBrandProductDetail: '/design-firms/products/brand-products/:id',
   designerCustomLibrary: '/design-firms/products/custom-library',
   designerProject: '/design-firms/projects',
   designerProjectCreate: '/design-firms/projects/create',

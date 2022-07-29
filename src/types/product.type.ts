@@ -101,13 +101,20 @@ export interface GroupProductList {
   products: ProductItem[];
 }
 
-export type IFilterType = 'category_id' | 'collection_id';
-export interface ITopBarFilter {
-  name: IFilterType;
+export type ProductFilterType = 'category_id' | 'collection_id' | 'brand_id';
+
+export interface ProductTopBarFilter {
+  name: ProductFilterType;
   title: string;
   value: string;
 }
 export interface ProductList {
-  filter?: ITopBarFilter;
+  filter?: ProductTopBarFilter;
   data: GroupProductList[];
+}
+
+export interface GetListProductForDesignerRequestParams {
+  brand_id?: string;
+  category_id?: string;
+  name?: string;
 }

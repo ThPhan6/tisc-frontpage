@@ -11,17 +11,20 @@ import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constant
 import UserIcon from '@/assets/icons/ic-user.svg';
 import { FC, useEffect, useState } from 'react';
 import { isShowErrorMessage, showImageUrl, validateEmail } from '@/helper/utils';
-import { useBoolean, useCustomInitialState } from '@/helper/hook';
+import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { updateAvatarTeamProfile, updateTeamProfile } from './services/api';
 import { AVATAR_ACCEPT_TYPES, STATUS_RESPONSE } from '@/constants/util';
 import { PhoneInputValueProp } from '@/components/Form/types';
 import { isEqual } from 'lodash';
+import { CustomCheckbox } from '@/components/CustomCheckbox';
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
 
 export type PersonalProfileState = {
   backupEmail: string;
   phoneNumber: string;
   linkedin: string;
+  interested: number[];
 };
 
 export interface PersonalProfileProps {
@@ -31,16 +34,38 @@ export interface PersonalProfileProps {
   };
 }
 
+const interestedData = [
+  { label: 'Brand Factory/Showroom Visits', value: 0 },
+  { label: 'Design Conferences/Events/Seminars', value: 1 },
+  { label: 'Industry Exhibitions/Trade Shows', value: 2 },
+  {
+    label: 'Product Launches/Promotions/Workshops',
+    value: 3,
+  },
+  { label: 'Product Recommendations/Updates', value: 4 },
+];
+
 export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
   const [fileInput, setFileInput] = useState<any>();
   const { fetchUserInfo, currentUser } = useCustomInitialState();
   const submitButtonStatus = useBoolean();
+  const showIntersted = useCheckPermission('Design Admin');
 
   const [inputValue, setInputValue] = useState<PersonalProfileState>({
     backupEmail: '',
     phoneNumber: '',
     linkedin: '',
+    interested: [],
   });
+
+  const [selectedInterested, setSelectedIntersted] = useState<CheckboxValue[]>(
+    currentUser?.interested.map((interestedId) => {
+      return {
+        label: '',
+        value: interestedId,
+      };
+    }) || [],
+  );
 
   const handleUpdateAvatar = (avtFile: File) => {
     const formData = new FormData();
@@ -65,6 +90,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
         backupEmail: currentUser.backup_email || '',
         phoneNumber: currentUser.personal_mobile,
         linkedin: currentUser?.linkedin || '',
+        interested: currentUser.interested || [],
       });
     }
   }, [currentUser]);
@@ -105,6 +131,9 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
         backup_email: inputValue.backupEmail.trim(),
         personal_mobile: inputValue.phoneNumber.trim(),
         linkedin: inputValue.linkedin.trim(),
+        interested: selectedInterested.map((interested) => {
+          return interested.value as number;
+        }),
       },
       (type: STATUS_RESPONSE, msg?: string) => {
         if (type === STATUS_RESPONSE.SUCCESS) {
@@ -144,6 +173,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
       backupEmail: currentUser.backup_email,
       linkedin: currentUser.linkedin,
       phoneNumber: currentUser.personal_mobile,
+      interested: currentUser.interested,
     };
     if (
       isEqual(currentUserData, inputValue) ||
@@ -238,6 +268,24 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
               onChange={handleOnChange}
             />
           </FormGroup>
+          {showIntersted && (
+            <div>
+              <FormGroup label="I am interested in" layout="vertical" formClass={styles.interested}>
+                <CustomCheckbox
+                  options={interestedData}
+                  isCheckboxList
+                  heightItem="36px"
+                  checkboxClass={styles.listInterested}
+                  onChange={setSelectedIntersted}
+                  selected={selectedInterested}
+                />
+              </FormGroup>
+              <BodyText level={6} fontFamily="Roboto">
+                Note: By select above options, you are agreeded to receive relevant email newsletter
+                and updates.{' '}
+              </BodyText>
+            </div>
+          )}
         </div>
         <div className={styles['wrapper-submit']}>
           {submitButtonStatus.value ? (

@@ -14,6 +14,7 @@ import type {
   ProductSummary,
   IRelatedCollection,
   ProductItem,
+  GetListProductForDesignerRequestParams,
 } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
@@ -49,10 +50,42 @@ export const createProductCard = async (data: ProductFormData) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_SUMMARY_DATA_ERROR);
     });
 };
+
 //
 export const getProductListByBrandId = async (params: ProductGetListParameter) => {
   return request<{ data: { data: GroupProductList[]; brand: IBrandDetail } }>(
     `/api/product/get-list`,
+    {
+      method: 'GET',
+      params,
+    },
+  )
+    .then(({ data }) => {
+      store.dispatch(
+        setProductList({
+          data: data.data.map((group) => {
+            return {
+              ...group,
+              products: group.products.map((product) => {
+                return {
+                  ...product,
+                  brand: data.brand,
+                };
+              }),
+            };
+          }),
+        }),
+      );
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_PRODUCT_BY_BRAND_ERROR);
+    });
+};
+
+//
+export const getProductListForDesigner = async (params: GetListProductForDesignerRequestParams) => {
+  return request<{ data: { data: GroupProductList[]; brand: IBrandDetail } }>(
+    `/api/product/design/get-list`,
     {
       method: 'GET',
       params,
