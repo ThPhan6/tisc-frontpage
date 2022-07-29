@@ -39,7 +39,7 @@ const ProjectSummary: React.FC<ProjectSummaryProps> = ({ summaryData }) => {
   const [state, setState] = useState<ProjectSummaryData>({
     projects: 0,
     live: 0,
-    onHold: 0,
+    on_hold: 0,
     archived: 0,
   });
 
