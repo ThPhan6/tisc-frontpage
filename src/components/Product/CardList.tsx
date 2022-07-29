@@ -11,6 +11,12 @@ import { truncate, capitalize } from 'lodash';
 
 const CardList: React.FC = ({}) => {
   const product = useAppSelector((state) => state.product);
+
+  // console.log('product', product);
+  // if (!product.list.data.length) {
+  //   return <EmptyDataMessage message={EMPTY_DATA_MESSAGE.product} />;
+  // }
+
   return (
     <>
       {product.list.data.map((group, index) => (

@@ -84,29 +84,12 @@ export const getProductListByBrandId = async (params: ProductGetListParameter) =
 
 //
 export const getProductListForDesigner = async (params: GetListProductForDesignerRequestParams) => {
-  return request<{ data: { data: GroupProductList[]; brand: IBrandDetail } }>(
-    `/api/product/design/get-list`,
-    {
-      method: 'GET',
-      params,
-    },
-  )
+  return request<{ data: GroupProductList[] }>(`/api/product/design/get-list`, {
+    method: 'GET',
+    params,
+  })
     .then(({ data }) => {
-      store.dispatch(
-        setProductList({
-          data: data.data.map((group) => {
-            return {
-              ...group,
-              products: group.products.map((product) => {
-                return {
-                  ...product,
-                  brand: data.brand,
-                };
-              }),
-            };
-          }),
-        }),
-      );
+      store.dispatch(setProductList({ data }));
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_PRODUCT_BY_BRAND_ERROR);

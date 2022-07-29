@@ -9,13 +9,13 @@ import { message } from 'antd';
 import { request } from 'umi';
 
 interface IBrandListResponse {
-  brands: IBrandListItem;
+  brands: IBrandListItem[];
   pagination: PaginationResponse;
 }
 
 export async function getBrandPagination(
   params: PaginationRequestParams,
-  callback: (data: DataTableResponse) => void,
+  callback: (data: DataTableResponse<IBrandListItem[]>) => void,
 ) {
   request(`/api/brand/get-list`, {
     method: 'GET',

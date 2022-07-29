@@ -206,3 +206,7 @@ export const MESSAGE_TOOLTIP = {
   PERSONAL_PROFILE:
     'We value user personal privacy. However, the platform will require individual information for verification purpose from time to time.',
 };
+
+export const EMPTY_DATA_MESSAGE = {
+  product: 'No product data yet',
+};
