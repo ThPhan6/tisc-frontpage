@@ -1,0 +1,43 @@
+.projectFilter {
+  padding: 0 12px;
+  box-shadow: @border-left-light;
+  .topFilter {
+    display: flex;
+    align-items: center;
+    color: @mono-color-medium;
+    &:global(.active-filter) {
+      color: #000;
+    }
+  }
+  .projectFilterLabel {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  svg {
+    margin-left: 8px;
+    cursor: pointer;
+  }
+}
+.filterDropdown {
+  width: 160px;
+  :global(.tisc-dropdown-item) {
+    & > div {
+      min-height: 36px;
+      &:not(:first-child) {
+        box-shadow: none;
+      }
+      &:hover {
+        background-color: @primary-color-light;
+      }
+    }
+  }
+  .filterItemLabel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    svg {
+      margin-right: 12px;
+    }
+  }
+}

@@ -16,7 +16,7 @@ export type HeaderDropdownProps = {
 
 export type MenuIconProps = {
   containerClass?: string;
-  label: string;
+  label: string | React.ReactNode;
   icon?: JSX.Element;
   onClick: () => void;
 };

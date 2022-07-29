@@ -74,7 +74,7 @@ export interface CustomTableProps {
     params: PaginationRequestParams,
     callback: (data: DataTableResponse) => void,
   ) => void;
-  title: string;
+  title?: string;
   multiSort?: {
     [key: string]: any;
   };
@@ -84,6 +84,7 @@ export interface CustomTableProps {
   };
   customClass?: string;
   rowKey?: string;
+  autoLoad?: boolean;
 }
 
 const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
@@ -97,6 +98,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     extraParams,
     customClass,
     rowKey = 'id',
+    autoLoad = true,
   } = props;
 
   const DEFAULT_PAGE_NUMBER = 1;
@@ -168,7 +170,9 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   };
 
   useEffect(() => {
-    fetchData({ pagination, sorter: currentSorter });
+    if (autoLoad) {
+      fetchData({ pagination, sorter: currentSorter });
+    }
     // react-hooks/exhaustive-deps
   }, []);
 
@@ -195,11 +199,13 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   }));
   return (
     <div className={`${styles.customTable} ${customExpandable ? styles['sub-grid'] : ''}`}>
-      <TableHeader
-        title={title}
-        rightAction={rightAction}
-        customClass={customClass ? customClass : ''}
-      />
+      {title && (
+        <TableHeader
+          title={title}
+          rightAction={rightAction}
+          customClass={customClass ? customClass : ''}
+        />
+      )}
 
       <Table
         columns={columns}
