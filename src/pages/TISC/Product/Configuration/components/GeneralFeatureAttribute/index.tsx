@@ -2,7 +2,7 @@ import { MainTitle } from '@/components/Typography';
 import GeneralFeatureAttributeItem from './GeneralFeatureAttributeItem';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { AttributebyType } from '@/types';
-import styles from '../../styles/details.less';
+import styles from '@/components/Product/styles/details.less';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
 import { setPartialProductDetail } from '@/reducers/product';

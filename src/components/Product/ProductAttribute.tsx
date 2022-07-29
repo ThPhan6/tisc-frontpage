@@ -3,6 +3,7 @@ import React from 'react';
 import { LIST_TAB } from './constants';
 import DownloadContent from './DownloadContent';
 import GeneralFeatureAttribute from './GeneralFeatureAttribute';
+import ProductVendor from './ProductVendor';
 import SpecificationAttribute from './SpecificationAttribute';
 import styles from './styles/details.less';
 import type { ProductInfoTab } from './types';
@@ -28,7 +29,9 @@ const ProductAttribute: React.FC<ProductAttributeInterface> = ({ activeKey, setA
       ) : activeKey === 'specification' ? (
         <SpecificationAttribute />
       ) : (
-        <DownloadContent />
+        <ProductVendor>
+          <DownloadContent />
+        </ProductVendor>
       )}
     </div>
   );

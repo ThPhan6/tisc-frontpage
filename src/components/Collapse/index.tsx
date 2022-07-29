@@ -21,7 +21,7 @@ const CustomCollapse: FC<CustomCollapseProps> = ({
   return (
     <Collapse
       expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
-      expandIconPosition="end"
+      expandIconPosition="right"
       className={`${styles.customCollapse} ${className}`}
       {...props}
     >
