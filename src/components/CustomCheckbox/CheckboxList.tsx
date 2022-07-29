@@ -35,7 +35,10 @@ const CheckboxList: React.FC<CheckboxListProps> = (props) => {
           className={`${styles.checkedAllRadio} selected-all-option-radio`}
           onClick={(e) => {
             e.preventDefault();
-            const checkedAll = !selectAll;
+            let checkedAll = !selectAll;
+            if (selected?.length === data.options.length) {
+              checkedAll = false;
+            }
             if (onChange) {
               if (checkedAll) {
                 onChange(data.options);

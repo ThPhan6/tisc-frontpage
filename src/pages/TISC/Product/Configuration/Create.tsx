@@ -44,13 +44,13 @@ const ProductConfigurationCreate: React.FC = () => {
     const { details, tip, download, catelogue } = product;
 
     // check url
-    const haveInvaliDownloadURL = download.contents.some(
+    const haveInvalidDownloadURL = download.contents.some(
       (content) => isValidURL(content.url) === false,
     );
-    const haveInvaliCatelogueURL = catelogue.contents.some(
+    const haveInvalidCatelogueURL = catelogue.contents.some(
       (content) => isValidURL(content.url) === false,
     );
-    if (haveInvaliDownloadURL || haveInvaliCatelogueURL) {
+    if (haveInvalidDownloadURL || haveInvalidCatelogueURL) {
       return message.error(MESSAGE_ERROR.URL_INVALID);
     }
     const data: ProductFormData = {
