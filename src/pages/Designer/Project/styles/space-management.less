@@ -1,0 +1,21 @@
+.createSpaceButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  :global(.button-name) {
+    margin-right: 12px;
+  }
+  &:global(.disabled) {
+    cursor: not-allowed;
+    :global(.button-name) {
+      color: @mono-color-medium;
+    }
+  }
+}
+.spaceEntryForm {
+  margin-top: 0;
+  :global(.space-form-content-wrapper) {
+    height: calc(100vh - 328px);
+  }
+}
