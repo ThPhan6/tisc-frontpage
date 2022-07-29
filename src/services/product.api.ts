@@ -181,20 +181,3 @@ export async function getRelatedCollectionProducts(productId: string) {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_SUMMARY_DATA_ERROR);
     });
 }
-
-export async function getProductBasisOptionList(productId: string, attributeId: string) {
-  return request<{ data: IRelatedCollection[] }>(
-    `/api/product/${productId}/attribute/${attributeId}/get-options`,
-    {
-      method: 'GET',
-    },
-  )
-    .then((response) => {
-      console.log(response.data);
-
-      return response.data;
-    })
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_SUMMARY_DATA_ERROR);
-    });
-}
