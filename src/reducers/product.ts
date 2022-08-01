@@ -7,6 +7,7 @@ import type {
   ProductTip,
   IRelatedCollection,
   ProductItem,
+  SortParams,
 } from '@/types';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
@@ -106,17 +107,20 @@ const productSlice = createSlice({
     setRelatedProduct(state, action: PayloadAction<IRelatedCollection[]>) {
       state.relatedProduct = action.payload;
     },
-    reset(state) {
-      return {
-        ...initialState,
-        list: state.list,
-      };
+    setProductListSearchValue(state, action: PayloadAction<string>) {
+      state.list.search = action.payload;
+    },
+    setProductListSorter(state, action: PayloadAction<SortParams>) {
+      state.list.sort = action.payload;
+    },
+    resetProductState() {
+      return initialState;
     },
   },
 });
 
 export const {
-  reset,
+  resetProductState,
   setBrand,
   setProductSummary,
   setProductDetail,
@@ -127,5 +131,7 @@ export const {
   setProductDownload,
   setProductList,
   setRelatedProduct,
+  setProductListSearchValue,
+  setProductListSorter,
 } = productSlice.actions;
 export default productSlice.reducer;

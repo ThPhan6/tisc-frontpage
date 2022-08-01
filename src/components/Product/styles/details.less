@@ -153,8 +153,10 @@
     border: 0;
     border-radius: 0;
   }
+
   .productHeaderCollapse {
     border-bottom: 0 !important;
+
     &:global(.ant-collapse-item-active) {
       box-shadow: none;
       :global(.brand-label) {
@@ -173,6 +175,11 @@
         padding: 0 16px 4px;
         :global(.input-label-container) {
           width: 93px;
+        }
+      }
+      .viewInfo {
+        :global(.ant-input) {
+          color: #000 !important;
         }
       }
     }
@@ -309,6 +316,7 @@
     }
   }
 }
+
 .extraAction {
   box-shadow: @border-bottom-light;
   :global(.extra-heading) {
@@ -356,6 +364,7 @@
     width: 100%;
     &:global(.collection) {
       padding: 8px;
+      overflow: auto hidden;
       box-shadow: @border-bottom-light;
     }
     &:global(.tip) {
@@ -378,7 +387,6 @@
     :global(.relative-product-wrapper) {
       width: 100%;
       height: 72px;
-      overflow: auto hidden;
       :global(.relative-product-list) {
         display: inline-flex;
         align-items: center;
@@ -408,24 +416,29 @@
               top: 0;
               left: 0;
               display: flex;
+              flex-wrap: wrap;
               align-items: center;
               justify-content: center;
-              width: 100%;
+              width: 72px;
               height: 100%;
               padding: 4px;
-              color: #fff;
-              font-weight: 300;
-              font-size: 10px;
-              font-family: 'Roboto';
-              font-style: normal;
-              line-height: 9px;
-              letter-spacing: 0.02em;
-              text-align: center;
               background-color: #000;
               opacity: 0;
               transition: all 0.4s;
               &:hover {
                 opacity: 1;
+              }
+              :global(span) {
+                width: 72px;
+                color: #fff;
+                font-weight: 300;
+                font-size: 10px;
+                font-family: 'Roboto';
+                font-style: normal;
+                line-height: 9px;
+                letter-spacing: 0.02em;
+                text-align: center;
+                text-overflow: ellipsis;
               }
             }
           }
@@ -464,16 +477,24 @@
     margin-right: 8px;
   }
 
-  .shareViaEmail,
-  .likeAction {
+  .actionItem,
+  .actionLeft {
     display: flex;
     align-items: center;
     cursor: pointer;
+    svg {
+      margin-right: 8px;
+    }
+    svg path {
+      fill: @mono-color;
+    }
   }
 
-  .shareViaEmail {
-    &_icon path {
-      fill: @mono-color;
+  .actionRight {
+    display: flex;
+
+    > :not(:last-child) {
+      margin-right: 24px;
     }
   }
 }

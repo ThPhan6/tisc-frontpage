@@ -10,7 +10,7 @@ import { getPermission, updatePermission } from '@/services/permission.api';
 // for future data
 import { ReactComponent as FeebBackIcon } from '@/assets/icons/feedback.svg';
 import { ReactComponent as RecommendationIcon } from '@/assets/icons/recommendation.svg';
-import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/share-via-email.svg';
+import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/ic-share.svg';
 import { showImageUrl } from '@/helper/utils';
 
 const furturePermissionData = [

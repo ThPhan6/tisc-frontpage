@@ -1,6 +1,7 @@
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
-import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/share-via-email.svg';
+import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/ic-share.svg';
+import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign.svg';
 import ProductPlaceHolderImage from '@/assets/images/product-placeholder.png';
 import { BodyText } from '@/components/Typography';
 import { IMAGE_ACCEPT_TYPES } from '@/constants/util';
@@ -10,11 +11,27 @@ import { setProductDetailImage } from '@/reducers/product';
 import { Col, Row, Upload } from 'antd';
 import type { UploadProps } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
-import React, { useState } from 'react';
+import React, { FC, ReactNode, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { likeProductById } from '@/services';
 import styles from '@/components/Product/styles/details.less';
 import ShareViaEmail from '@/components/ShareViaEmail/index';
+import { useBoolean, useCheckPermission } from '@/helper/hook';
+
+const ActionItem: FC<{ onClick: () => void; label: string; icon: ReactNode }> = ({
+  icon,
+  onClick,
+  label,
+}) => {
+  return (
+    <div className={styles.actionItem} onClick={onClick}>
+      {icon}
+      <BodyText level={6} fontFamily="Roboto">
+        {label}
+      </BodyText>
+    </div>
+  );
+};
 
 const PhotoUpload: React.FC = () => {
   const product = useAppSelector((state) => state.product);
@@ -22,7 +39,9 @@ const PhotoUpload: React.FC = () => {
   const { images, is_liked, id, favorites } = product.details;
   const [liked, setLiked] = useState(is_liked);
   const likeCount = (favorites ?? 0) + (liked ? 1 : 0);
-  const [visible, setVisible] = useState<boolean>(false);
+  const showShareEmailModal = useBoolean();
+  const showAssignProductModal = useBoolean();
+  const isDesignerUser = useCheckPermission('Design Admin');
 
   const handleLoadPhoto = async (file: UploadFile<any>, type: 'first' | 'last' = 'first') => {
     const imageBase64 = await getBase64(file.originFileObj);
@@ -91,7 +110,7 @@ const PhotoUpload: React.FC = () => {
         </Row>
 
         <div className={styles.productBrandAction}>
-          <div className={styles.likeAction}>
+          <div className={styles.actionLeft}>
             {liked ? (
               <LikedIcon className={styles.actionIcon} onClick={likeProduct} />
             ) : (
@@ -101,16 +120,29 @@ const PhotoUpload: React.FC = () => {
               {`${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
             </BodyText>
           </div>
-          <div className={styles.shareViaEmail} onClick={() => setVisible(true)}>
-            <ShareViaEmailIcon className={`${styles.actionIcon} ${styles.shareViaEmail_icon}`} />
-            <BodyText level={6} fontFamily="Roboto">
-              Share via Email
-            </BodyText>
+
+          <div className={styles.actionRight}>
+            {isDesignerUser && (
+              <ActionItem
+                label="Assign Product"
+                icon={<AssignIcon />}
+                onClick={() => showAssignProductModal.setValue(true)}
+              />
+            )}
+
+            <ActionItem
+              label="Share via Email"
+              icon={<ShareViaEmailIcon />}
+              onClick={() => showShareEmailModal.setValue(true)}
+            />
           </div>
         </div>
-        {visible && (
-          <ShareViaEmail visible={visible} setVisible={setVisible} productData={product.brand} />
-        )}
+
+        <ShareViaEmail
+          visible={showShareEmailModal.value}
+          setVisible={showShareEmailModal.setValue}
+          productData={product.brand}
+        />
       </div>
     </Col>
   );

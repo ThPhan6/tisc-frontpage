@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import ProductHeader from './components/ProductHeader';
 import { useParams } from 'umi';
 import PhotoUpload from './components/PhotoUpload';
-import ProductInfo from './components/ProductInfo';
+
 import ProductAttribute from './components/ProductAttribute';
-import ProductFooter from './components/ProductFooter';
-import { Row, Col } from 'antd';
+import ProductFooter from '@/components/Product/ProductFooter';
+import { Row, Col, message } from 'antd';
 import {
   getBrandById,
   createProductCard,
@@ -17,10 +17,14 @@ import type { ProductFormData, ProductKeyword } from '@/types';
 import { useDispatch } from 'react-redux';
 import { setBrand } from '@/reducers/product';
 import { useAppSelector } from '@/reducers';
-import styles from './styles/details.less';
+import styles from '@/components/Product/styles/details.less';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import type { ProductInfoTab } from './types';
+import ProductInfo from '@/components/Product/ProductInfo';
+import { useCheckPermission } from '@/helper/hook';
+import { isValidURL } from '@/helper/utils';
+import { MESSAGE_ERROR } from '@/constants/message';
 
 const ProductConfigurationCreate: React.FC = () => {
   const dispatch = useDispatch();
@@ -28,6 +32,7 @@ const ProductConfigurationCreate: React.FC = () => {
   const brandId = params?.brandId || '';
   const product = useAppSelector((state) => state.product);
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('general');
+  const editable = useCheckPermission('TISC Admin');
 
   useEffect(() => {
     if (brandId) {
@@ -37,6 +42,11 @@ const ProductConfigurationCreate: React.FC = () => {
 
   const onSave = () => {
     const { details, tip, download, catelogue } = product;
+    const haveInvalidURL = download.contents.some((content) => isValidURL(content.url) === false);
+
+    if (haveInvalidURL) {
+      return message.error(MESSAGE_ERROR.URL_INVALID);
+    }
     const data: ProductFormData = {
       brand_id: brandId,
       category_ids: details.categories.map((category) => category.id),
@@ -87,7 +97,7 @@ const ProductConfigurationCreate: React.FC = () => {
       <Col span={12} className={styles.productContent}>
         <Row style={{ flexDirection: 'column', height: '100%' }}>
           <Col>
-            <ProductInfo />
+            <ProductInfo editable={editable} />
           </Col>
           <Col style={{ marginBottom: activeKey !== 'vendor' ? 24 : 0 }}>
             <ProductAttribute activeKey={activeKey} setActiveKey={setActiveKey} />

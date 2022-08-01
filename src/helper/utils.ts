@@ -146,3 +146,27 @@ export const getPathName = (pathName: string) => {
 export const getFullName = (data: any) => {
   return `${data?.lastname ?? ''} ${data?.firstname ?? ''}`;
 };
+
+export const isValidURL = (url: string) => {
+  let validURL: URL;
+  try {
+    validURL = new URL(url);
+  } catch (_) {
+    return false;
+  }
+
+  console.log(url);
+
+  return validURL.protocol === 'http:' || validURL.protocol === 'https:';
+};
+
+export const getMaxLengthText = (text: string, maxLength: number) => {
+  if (!text) {
+    return '';
+  }
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  return text.slice(0, maxLength - 3) + '...';
+};

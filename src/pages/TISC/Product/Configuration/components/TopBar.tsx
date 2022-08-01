@@ -8,60 +8,23 @@ import type {
   IBrandDetail,
   GeneralData,
   ProductGetListParameter,
-  IFilterType,
+  ProductFilterType,
 } from '@/types';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SmallPlusIcon } from '@/assets/icons/small-plus-icon.svg';
-import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { showImageUrl } from '@/helper/utils';
-import { map, forEach, capitalize, truncate } from 'lodash';
+import { map, forEach } from 'lodash';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
-import { setBrand, setProductList, reset } from '@/reducers/product';
+import { setBrand, setProductList, resetProductState } from '@/reducers/product';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
-import styles from '../styles/topbar.less';
-
-interface ProductTopBarProps {
-  topValue?: string | React.ReactNode;
-  disabled?: boolean;
-  bottomValue?: string | React.ReactNode;
-  bottomEnable?: boolean;
-  icon?: React.ReactNode;
-  customClass?: string;
-  onClick?: () => void;
-}
-
-const TopBarItem: React.FC<ProductTopBarProps> = (props) => {
-  const { topValue, bottomValue, icon, disabled, bottomEnable, customClass, onClick } = props;
-  return (
-    <div className={`item ${customClass ?? ''}`} onClick={onClick}>
-      <BodyText level={5} fontFamily="Roboto" customClass={disabled ? 'disabled ' : ''}>
-        {topValue}
-      </BodyText>
-      <BodyText
-        level={6}
-        fontFamily="Roboto"
-        customClass={`topbar-group-btn ${disabled && !bottomEnable ? 'disabled' : ''}`}
-      >
-        <span>{bottomValue}</span>
-        {icon ? icon : null}
-      </BodyText>
-    </div>
-  );
-};
-interface IFilterItem {
-  title: string;
-  onDelete?: () => void;
-}
-const FilterItem: React.FC<IFilterItem> = ({ title, onDelete }) => {
-  return (
-    <span className={styles.filterItem}>
-      {truncate(capitalize(title), { length: 25 })}
-      <DeleteIcon onClick={onDelete} />
-    </span>
-  );
-};
+import {
+  FilterItem,
+  TopBarContainer,
+  TopBarItem,
+} from '@/components/Product/components/ProductTopBarItem';
+import styles from '@/components/Product/styles/top-bar.less';
 
 const ProductTopBar: React.FC = () => {
   const [visible, setVisible] = useState(false);
@@ -127,7 +90,7 @@ const ProductTopBar: React.FC = () => {
   }, [filter]);
 
   const gotoProductForm = () => {
-    dispatch(reset());
+    dispatch(resetProductState());
     if (product.brand && product.brand.id) {
       pushTo(PATH.productConfigurationCreate.replace(':brandId', product.brand.id));
     }
@@ -143,7 +106,11 @@ const ProductTopBar: React.FC = () => {
     );
   };
 
-  const renderDropDownList = (title: string, filterName: IFilterType, data: GeneralData[]) => {
+  const renderDropDownList = (
+    title: string,
+    filterName: ProductFilterType,
+    data: GeneralData[],
+  ) => {
     // merge view small
     const items = [{ id: 'all', name: 'VIEW ALL' }, ...data];
     ///
@@ -178,104 +145,115 @@ const ProductTopBar: React.FC = () => {
       </HeaderDropdown>
     );
   };
+
   return (
     <>
-      <div className={styles.topbarContainer}>
-        <div className="left-side">
-          <TopBarItem
-            topValue={
-              product.brand?.name ? <span className="bold">{product.brand.name}</span> : 'select'
-            }
-            disabled={product.brand?.name ? false : true}
-            bottomEnable
-            bottomValue="Brands"
-            customClass="brand-dropdown right-divider"
-            icon={<DropdownIcon />}
-            onClick={() => setVisible(true)}
-          />
-          <TopBarItem
-            topValue={product.summary?.category_count ?? ''}
-            disabled={product.summary ? false : true}
-            bottomValue="Categories"
-          />
-          <TopBarItem
-            topValue={product.summary?.collection_count ?? ''}
-            disabled={product.summary ? false : true}
-            bottomValue="Collections"
-          />
-          <TopBarItem
-            topValue={product.summary?.card_count ?? ''}
-            disabled={product.summary ? false : true}
-            bottomValue="Cards"
-          />
-          <TopBarItem
-            topValue={product.summary?.product_count ?? ''}
-            disabled={product.summary ? false : true}
-            bottomValue="Products"
-          />
-        </div>
-        <div className="right-side">
-          <TopBarItem
-            topValue={
-              filter?.name === 'category_id' ? (
-                <FilterItem title={filter.title} onDelete={resetProductList} />
-              ) : product.brand ? (
-                'view'
-              ) : (
-                <span style={{ opacity: 0 }}>.</span>
-              )
-            }
-            disabled
-            bottomEnable={product.summary ? true : false}
-            bottomValue={
-              !product.brand
-                ? 'View By Category'
-                : renderDropDownList('Categories', 'category_id', product.summary?.categories ?? [])
-            }
-            customClass="left-divider"
-          />
-          <TopBarItem
-            topValue={
-              filter?.name === 'collection_id' ? (
-                <FilterItem title={filter.title} onDelete={resetProductList} />
-              ) : product.brand ? (
-                'view'
-              ) : (
-                <span style={{ opacity: 0 }}>.</span>
-              )
-            }
-            disabled
-            bottomEnable={product.summary ? true : false}
-            bottomValue={
-              !product.brand
-                ? 'View By Collection'
-                : renderDropDownList(
-                    'Collections',
-                    'collection_id',
-                    product.summary?.collections ?? [],
-                  )
-            }
-            customClass="left-divider"
-          />
-          <TopBarItem
-            topValue={<span style={{ opacity: 0 }}>.</span>}
-            disabled
-            bottomEnable={product.summary ? true : false}
-            bottomValue="New Card"
-            customClass="left-divider"
-            onClick={product.summary ? gotoProductForm : undefined}
-            icon={
-              <span
-                className={`
-                  ${styles.newCardIcon}
-                  ${product.summary ? styles.activeNewCard : styles.disabledNewCard}`}
-              >
-                <SmallPlusIcon />
-              </span>
-            }
-          />
-        </div>
-      </div>
+      <TopBarContainer
+        LeftSideContent={
+          <>
+            <TopBarItem
+              topValue={
+                product.brand?.name ? <span className="bold">{product.brand.name}</span> : 'select'
+              }
+              disabled={product.brand?.name ? false : true}
+              bottomEnable
+              bottomValue="Brands"
+              customClass="brand-dropdown right-divider"
+              icon={<DropdownIcon />}
+              onClick={() => setVisible(true)}
+            />
+            <TopBarItem
+              topValue={product.summary?.category_count ?? ''}
+              disabled={product.summary ? false : true}
+              bottomValue="Categories"
+            />
+            <TopBarItem
+              topValue={product.summary?.collection_count ?? ''}
+              disabled={product.summary ? false : true}
+              bottomValue="Collections"
+            />
+            <TopBarItem
+              topValue={product.summary?.card_count ?? ''}
+              disabled={product.summary ? false : true}
+              bottomValue="Cards"
+            />
+            <TopBarItem
+              topValue={product.summary?.product_count ?? ''}
+              disabled={product.summary ? false : true}
+              bottomValue="Products"
+            />
+          </>
+        }
+        RightSideContent={
+          <>
+            {' '}
+            <TopBarItem
+              topValue={
+                filter?.name === 'category_id' ? (
+                  <FilterItem title={filter.title} onDelete={resetProductList} />
+                ) : product.brand ? (
+                  'view'
+                ) : (
+                  <span style={{ opacity: 0 }}>.</span>
+                )
+              }
+              disabled
+              bottomEnable={product.summary ? true : false}
+              bottomValue={
+                !product.brand
+                  ? 'View By Category'
+                  : renderDropDownList(
+                      'Categories',
+                      'category_id',
+                      product.summary?.categories ?? [],
+                    )
+              }
+              customClass="left-divider"
+            />
+            <TopBarItem
+              topValue={
+                filter?.name === 'collection_id' ? (
+                  <FilterItem title={filter.title} onDelete={resetProductList} />
+                ) : product.brand ? (
+                  'view'
+                ) : (
+                  <span style={{ opacity: 0 }}>.</span>
+                )
+              }
+              disabled
+              bottomEnable={product.summary ? true : false}
+              bottomValue={
+                !product.brand
+                  ? 'View By Collection'
+                  : renderDropDownList(
+                      'Collections',
+                      'collection_id',
+                      product.summary?.collections ?? [],
+                    )
+              }
+              customClass="left-divider"
+            />
+            <TopBarItem
+              topValue={<span style={{ opacity: 0 }}>.</span>}
+              disabled
+              bottomEnable={product.summary ? true : false}
+              bottomValue="New Card"
+              customClass="left-divider"
+              onClick={product.summary ? gotoProductForm : undefined}
+              icon={
+                <span
+                  className={`
+                ${styles.newCardIcon}
+                ${product.summary ? styles.activeNewCard : styles.disabledNewCard}`}
+                >
+                  <SmallPlusIcon />
+                </span>
+              }
+            />
+          </>
+        }
+      />
+
       <Popover
         visible={visible}
         setVisible={setVisible}

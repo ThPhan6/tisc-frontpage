@@ -1,15 +1,7 @@
+import { USER_ROLE } from '@/constants/userRoles';
 import { useAppSelector } from '@/reducers';
 import React from 'react';
 import { useLocation, useModel } from 'umi';
-
-/// check user permission
-type AccessLevelType =
-  | 'TISC Admin'
-  | 'Consultant Team'
-  | 'Brand Admin'
-  | 'Brand Team'
-  | 'Design Admin'
-  | 'Design Team';
 
 export function useDefault(defaultValue: any) {
   const [value, setValue] = React.useState(defaultValue);
@@ -56,6 +48,15 @@ export const useQuery = () => {
   return new URLSearchParams(useLocation().search);
 };
 
+/// check user permission
+type AccessLevelType =
+  | 'TISC Admin'
+  | 'Consultant Team'
+  | 'Brand Admin'
+  | 'Brand Team'
+  | 'Design Admin'
+  | 'Design Team';
+
 export const useCheckPermission = (allowRoles: AccessLevelType | AccessLevelType[]) => {
   const access_level = useAppSelector(
     (state) => state.user.user?.access_level,
@@ -66,6 +67,10 @@ export const useCheckPermission = (allowRoles: AccessLevelType | AccessLevelType
   }
 
   return typeof allowRoles === 'string'
-    ? access_level === allowRoles
-    : allowRoles.some((role) => access_level.includes(role));
+    ? access_level === allowRoles.toLocaleLowerCase()
+    : allowRoles.some((role) => access_level.includes(role.toLocaleLowerCase()));
+};
+
+export const useGetUserRoleFromPathname = () => {
+  return useLocation().pathname.split('/')[1] as USER_ROLE;
 };

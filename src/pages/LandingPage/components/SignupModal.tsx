@@ -3,18 +3,19 @@ import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
 import { CustomInput } from '@/components/Form/CustomInput';
 import CustomButton from '@/components/Button';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { ModalProps } from '../types';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
 import { Checkbox, message } from 'antd';
 import { PoliciesModal } from './PoliciesModal';
-import { MESSAGE_ERROR, MESSAGE_NOTIFICATION } from '@/constants/message';
+import { MESSAGE_ERROR } from '@/constants/message';
 import { isShowErrorMessage, validateEmail } from '@/helper/utils';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
-import { signUpDesigner } from '../services/api';
+import { checkEmailAlreadyUsed, signUpDesigner } from '../services/api';
 import { useBoolean } from '@/helper/hook';
+import { debounce } from 'lodash';
 
 interface SignUpFormState {
   firstname: string;
@@ -35,22 +36,34 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
   });
   const [agreeTisc, setAgreeTisc] = useState(false);
   const isLoading = useBoolean();
+  const [emailExisted, setEmailExisted] = useState(false);
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (formInput.email && validateEmail(formInput.email)) {
+      checkEmailAlreadyUsed(formInput.email).then((res) => {
+        setEmailExisted(res);
+      });
+    }
+  }, [formInput.email]);
+
+  const handleOnChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     setFormInput({ ...formInput, [e.target.name]: e.target.value });
-  };
+  }, 300);
 
   const handleAgreeTisc = () => {
     setAgreeTisc(!agreeTisc);
     setFormInput({ ...formInput, agree_tisc: !formInput.agree_tisc });
   };
 
-  const setErrorMessage = () => {
+  const getErrorMessage = () => {
     if (formInput.confirmed_password && formInput.password !== formInput.confirmed_password) {
       return MESSAGE_ERROR.CONFIRM_PASSWORD;
     }
     if (formInput.email && !validateEmail(formInput.email)) {
-      return MESSAGE_ERROR.EMAIL_ALREADY_TAKEN;
+      return MESSAGE_ERROR.EMAIL;
+    }
+    if (formInput.email && !emailExisted) {
+      return MESSAGE_ERROR.EMAIL_ALREADY_USED;
     }
     if (agreeTisc === true && formInput.agree_tisc === false) {
       return MESSAGE_ERROR.AGREE_TISC;
@@ -59,23 +72,33 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
   };
 
   const handleSubmit = () => {
-    isLoading.setValue(true);
-    if (formInput.agree_tisc === true) {
-      signUpDesigner({
-        firstname: formInput.firstname,
-        email: formInput.email,
-        password: formInput.password,
-        confirmed_password: formInput.confirmed_password,
-      }).then((res) => {
-        if (res) {
-          onClose();
-          message.success(MESSAGE_NOTIFICATION.CHECK_EMAIL_VERIFY_ACCOUNT);
-        }
-      });
-    } else {
-      setAgreeTisc(true);
+    if (formInput.firstname === '') {
+      return message.error(MESSAGE_ERROR.FIRST_NAME);
     }
-    isLoading.setValue(false);
+    if (formInput.email === '') {
+      return message.error(MESSAGE_ERROR.EMAIL_REQUIRED);
+    }
+    if (formInput.password.length < 8) {
+      return message.error(MESSAGE_ERROR.PASSWORD_CHARACTER);
+    }
+    if (formInput.password !== formInput.confirmed_password) {
+      return message.error(MESSAGE_ERROR.CONFIRM_PASSWORD);
+    }
+    if (formInput.agree_tisc === false) {
+      return setAgreeTisc(true);
+    }
+    isLoading.setValue(true);
+    signUpDesigner({
+      firstname: formInput.firstname,
+      email: formInput.email,
+      password: formInput.password,
+      confirmed_password: formInput.confirmed_password,
+    }).then((res) => {
+      if (res) {
+        onClose();
+      }
+      isLoading.setValue(false);
+    });
   };
 
   return (
@@ -110,6 +133,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             onChange={handleOnChange}
           />
           <CustomInput
+            autoComplete={'' + Math.random()}
             fromLandingPage
             theme={theme}
             size="large"
@@ -124,6 +148,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             status={isShowErrorMessage('email', formInput.email) ? '' : 'error'}
           />
           <CustomInput
+            autoComplete={'' + Math.random()}
             fromLandingPage
             theme={theme}
             size="large"
@@ -140,12 +165,12 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             fromLandingPage
             theme={theme}
             type="password"
+            name="confirmed_password"
             containerClass={styles.email}
             size="large"
             placeholder="confirm password"
             prefix={<LockedIcon />}
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-            name="confirmed_password"
             required={true}
             onChange={handleOnChange}
             status={
@@ -174,11 +199,11 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
         </div>
         <div className={styles.button}>
           <div>
-            {setErrorMessage() && (
+            {getErrorMessage() && (
               <div className={styles.warning}>
                 <WarningIcon />
                 <BodyText level={4} fontFamily="Roboto">
-                  {setErrorMessage()}
+                  {getErrorMessage()}
                 </BodyText>
               </div>
             )}

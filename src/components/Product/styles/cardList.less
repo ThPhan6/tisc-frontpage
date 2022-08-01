@@ -69,10 +69,10 @@
         box-shadow: @border-top-light;
         cursor: pointer;
         p {
-          display: flex;
-          align-items: center;
           height: 32px;
+          padding: 7px 0;
           overflow: hidden;
+          line-height: 20px;
           white-space: nowrap;
           text-overflow: ellipsis;
           &:global(.product-description) {
@@ -108,6 +108,16 @@
             }
           }
         }
+
+        .shareEmail {
+          height: 18px;
+          .shareEmailIcon {
+            cursor: pointer;
+            path {
+              fill: @mono-color;
+            }
+          }
+        }
       }
       &.border {
         box-shadow: @border-all-light;
@@ -115,6 +125,7 @@
     }
   }
 }
+
 .productCardCollapse {
   margin-bottom: 8px;
   background-color: @mono-color-light !important;
@@ -125,6 +136,7 @@
       transition: all 0.3s;
     }
     &:global(.ant-collapse-item-active) {
+      box-shadow: none;
       :global(.ant-collapse-header) {
         box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
       }

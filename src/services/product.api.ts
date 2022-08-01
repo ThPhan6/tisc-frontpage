@@ -14,6 +14,7 @@ import type {
   ProductSummary,
   IRelatedCollection,
   ProductItem,
+  GetListProductForDesignerRequestParams,
 } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
@@ -49,6 +50,7 @@ export const createProductCard = async (data: ProductFormData) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_SUMMARY_DATA_ERROR);
     });
 };
+
 //
 export const getProductListByBrandId = async (params: ProductGetListParameter) => {
   return request<{ data: { data: GroupProductList[]; brand: IBrandDetail } }>(
@@ -74,6 +76,20 @@ export const getProductListByBrandId = async (params: ProductGetListParameter) =
           }),
         }),
       );
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_PRODUCT_BY_BRAND_ERROR);
+    });
+};
+
+//
+export const getProductListForDesigner = async (params: GetListProductForDesignerRequestParams) => {
+  return request<{ data: GroupProductList[] }>(`/api/product/design/get-list`, {
+    method: 'GET',
+    params,
+  })
+    .then(({ data }) => {
+      store.dispatch(setProductList({ data }));
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_PRODUCT_BY_BRAND_ERROR);
@@ -143,6 +159,8 @@ export const updateProductCard = async (productId: string, data: ProductFormData
     data,
   })
     .then((res) => {
+      console.log(res.data);
+
       message.success(MESSAGE_NOTIFICATION.UPDATE_PRODUCT_SUCCESS);
       return res.data;
     })

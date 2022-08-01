@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'umi';
+import { useHistory, useParams } from 'umi';
 import PhotoUpload from './components/PhotoUpload';
 import ProductInfo from '@/components/Product/ProductInfo';
 import ProductAttribute from '@/components/Product/ProductAttribute';
@@ -17,8 +17,6 @@ import { useAppSelector } from '@/reducers';
 import { setBrand } from '@/reducers/product';
 import styles from '@/components/Product/styles/details.less';
 import './styles/viewPage.less';
-import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
 import type { ProductInfoTab } from '@/components/Product/types';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
@@ -31,18 +29,20 @@ const ProductBrandViewPage: React.FC = () => {
   const product = useAppSelector((state) => state.product);
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('general');
   const [title, setTitle] = useState<string>('');
+  const history = useHistory();
 
   /// for reuse component,
   /// to allow access level
   const editable = useCheckPermission('TISC Admin');
 
-  console.log('ProductBrandViewPage', product);
+  // console.log('ProductBrandViewPage', product);
 
   useEffect(() => {
     if (productId) {
       getProductById(productId);
     }
   }, [productId]);
+
   useEffect(() => {
     if (product.details.brand) {
       // load brand information
@@ -70,9 +70,7 @@ const ProductBrandViewPage: React.FC = () => {
       <Col span={24}>
         <TableHeader
           title={title}
-          rightAction={
-            <CloseIcon className="closeIcon" onClick={() => pushTo(PATH.brandProduct)} />
-          }
+          rightAction={<CloseIcon className="closeIcon" onClick={history.goBack} />}
         />
       </Col>
       <PhotoUpload />
