@@ -14,6 +14,7 @@ export interface FormGroupProps {
   iconTooltip?: ReactNode;
   customIcon?: ReactNode;
   onClick?: () => void;
+  placementBottomWidth?: string;
   placement?:
     | 'top'
     | 'left'
@@ -79,4 +80,5 @@ export interface StatusProps {
   textClass?: string;
   activeButtonClass?: string;
   InActiveButtonClass?: string;
+  title?: string | ReactNode;
 }

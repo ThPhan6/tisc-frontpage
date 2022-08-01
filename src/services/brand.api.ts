@@ -75,3 +75,34 @@ export async function getBrandById(brandId: string) {
       return undefined;
     });
 }
+
+export async function getBrandStatuses() {
+  return request<{
+    data: {
+      key: string;
+      value: string | number;
+    }[];
+  }>(`/api/brand/statuses`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
+      return undefined;
+    });
+}
+
+export async function createBrand() {
+  return request<{ data: IBrandDetail }>(`/api/brand/create`, {
+    method: 'POST',
+  })
+    .then(() => {
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
+      return false;
+    });
+}

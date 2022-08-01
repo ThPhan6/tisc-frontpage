@@ -6,6 +6,7 @@ import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 import { ReactComponent as ActionUnreadedIcon } from '@/assets/icons/action-unreaded-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
 import { getBrandPagination } from '@/services';
 import { showImageUrl } from '@/helper/utils';
@@ -14,6 +15,8 @@ import styles from './styles/index.less';
 import { PageContainer } from '@ant-design/pro-layout';
 import { MenuSummary } from '@/components/MenuSummary';
 import { dataMenuSummary } from '@/constants/util';
+import { pushTo } from '@/helper/history';
+import { PATH } from '@/constants/path';
 
 const BrandList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -118,6 +121,7 @@ const BrandList: React.FC = () => {
     >
       <CustomTable
         title="BRANDS"
+        rightAction={<CustomPlusButton onClick={() => pushTo(PATH.tiscUserGroupBrandEntryFrom)} />}
         columns={TableColumns}
         ref={tableRef}
         fetchDataFunc={getBrandPagination}

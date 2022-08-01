@@ -50,8 +50,24 @@ export default [
         path: PATH.tiscUserGroupBrandList,
         name: 'brand',
         icon: 'brand-icon.svg',
-        component: './TISC/UserGroup/Brand',
         access: 'tisc_user_group_brand',
+        routes: [
+          {
+            hideInMenu: true,
+            path: PATH.tiscUserGroupBrandList,
+            component: './TISC/UserGroup/Brand',
+          },
+          {
+            hideInMenu: true,
+            path: PATH.tiscUserGroupBrandEntryFrom,
+            component: './TISC/UserGroup/Brand/CreatePage',
+          },
+          {
+            hideInMenu: true,
+            path: PATH.tiscUserGroupBrandViewDetail,
+            component: './TISC/UserGroup/Brand/UpdatePage',
+          },
+        ],
       },
       {
         path: PATH.tiscUserGroupDesignerList,

@@ -55,3 +55,5 @@ export interface IBrandCardTeam {
   lastname: string;
   avatar: any;
 }
+
+// export interface Brand
