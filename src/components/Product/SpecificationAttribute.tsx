@@ -41,20 +41,3 @@ const SpecificationAttribute = () => {
 };
 
 export default SpecificationAttribute;
-
-// {group.attributes.map((attribute) => {
-//   return (
-//     <div className={styles.attribute} key={attribute.id}>
-//       <BodyText level={4} customClass={styles.content_text}>
-//         {attribute.text}
-//       </BodyText>
-//
-//       <div className={styles.content} onClick={() => handleShowPopUp(group.name)}>
-//         <BodyText level={6} fontFamily="Roboto" customClass={styles.content_select}>
-//           select
-//         </BodyText>
-//         <ActionRightIcon className={styles.singlerRighIcon} />
-//       </div>
-//     </div>
-//   )
-// })}
