@@ -56,7 +56,7 @@ export interface ProductItem {
   }[];
   name: string;
   code?: string;
-  is_liked: boolean;
+  is_liked?: boolean;
   description: string;
   general_attribute_groups: GeneralFeatureFormInput[];
   feature_attribute_groups: GeneralFeatureFormInput[];

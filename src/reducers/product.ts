@@ -1,11 +1,11 @@
 import type {
-  IBrandDetail,
+  BrandDetail,
   ProductCatelogue,
   ProductDownload,
   ProductList,
   ProductSummary,
   ProductTip,
-  IRelatedCollection,
+  RelatedCollection,
   ProductItem,
   SortParams,
 } from '@/types';
@@ -13,13 +13,13 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface ProductState {
-  brand?: IBrandDetail;
+  brand?: BrandDetail;
   summary?: ProductSummary;
   tip: ProductTip;
   download: ProductDownload;
   catelogue: ProductCatelogue;
   details: ProductItem;
-  relatedProduct: IRelatedCollection[];
+  relatedProduct: RelatedCollection[];
   list: ProductList;
 }
 
@@ -53,7 +53,7 @@ const productSlice = createSlice({
   name: 'product',
   initialState,
   reducers: {
-    setBrand(state, action: PayloadAction<IBrandDetail | undefined>) {
+    setBrand(state, action: PayloadAction<BrandDetail | undefined>) {
       state.brand = action.payload;
     },
     setProductSummary(state, action: PayloadAction<ProductSummary | undefined>) {
@@ -104,7 +104,7 @@ const productSlice = createSlice({
         ...action.payload,
       };
     },
-    setRelatedProduct(state, action: PayloadAction<IRelatedCollection[]>) {
+    setRelatedProduct(state, action: PayloadAction<RelatedCollection[]>) {
       state.relatedProduct = action.payload;
     },
     setProductListSearchValue(state, action: PayloadAction<string>) {

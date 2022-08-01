@@ -8,11 +8,11 @@ import {
 } from '@/reducers/product';
 import type {
   GroupProductList,
-  IBrandDetail,
+  BrandDetail,
   ProductFormData,
   ProductGetListParameter,
   ProductSummary,
-  IRelatedCollection,
+  RelatedCollection,
   ProductItem,
   GetListProductForDesignerRequestParams,
 } from '@/types';
@@ -53,7 +53,7 @@ export const createProductCard = async (data: ProductFormData) => {
 
 //
 export const getProductListByBrandId = async (params: ProductGetListParameter) => {
-  return request<{ data: { data: GroupProductList[]; brand: IBrandDetail } }>(
+  return request<{ data: { data: GroupProductList[]; brand: BrandDetail } }>(
     `/api/product/get-list`,
     {
       method: 'GET',
@@ -170,7 +170,7 @@ export const updateProductCard = async (productId: string, data: ProductFormData
 };
 
 export async function getRelatedCollectionProducts(productId: string) {
-  return request<{ data: IRelatedCollection[] }>(
+  return request<{ data: RelatedCollection[] }>(
     `/api/product/get-list-rest-collection-product/${productId}`,
     {
       method: 'GET',

@@ -4,8 +4,8 @@ import Popover from '@/components/Modal/Popover';
 import { HeaderDropdown } from '@/components/HeaderDropdown';
 import { getBrandAlphabet, getProductSummary, getProductListByBrandId } from '@/services';
 import type {
-  IBrandAlphabet,
-  IBrandDetail,
+  BrandAlphabet,
+  BrandDetail,
   GeneralData,
   ProductGetListParameter,
   ProductFilterType,
@@ -28,7 +28,7 @@ import styles from '@/components/Product/styles/top-bar.less';
 
 const ProductTopBar: React.FC = () => {
   const [visible, setVisible] = useState(false);
-  const [brandAlphabet, setBrandAlphabet] = useState<IBrandAlphabet>({});
+  const [brandAlphabet, setBrandAlphabet] = useState<BrandAlphabet>({});
   const [brandData, setBrandData] = useState<any>();
   const product = useAppSelector((state) => state.product);
   const { filter } = product.list;
@@ -46,7 +46,7 @@ const ProductTopBar: React.FC = () => {
   /// set brand to product reducer
   useEffect(() => {
     if (brandData) {
-      let brand: IBrandDetail | undefined;
+      let brand: BrandDetail | undefined;
       forEach(brandAlphabet, (brands) => {
         const foundedBrand = brands.find((item) => item.id === brandData.value);
         if (foundedBrand) {
@@ -97,7 +97,7 @@ const ProductTopBar: React.FC = () => {
   };
 
   /// render custom radio brand list label
-  const renderLabel = (item: IBrandDetail) => {
+  const renderLabel = (item: BrandDetail) => {
     return (
       <BodyText level={5} fontFamily="Roboto">
         <img src={showImageUrl(item.logo ?? '')} className={styles.brandLogo} />
