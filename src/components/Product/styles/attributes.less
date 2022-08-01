@@ -22,7 +22,7 @@
   .content {
     display: flex;
     align-items: center;
-    height: 36px;
+    min-height: 36px;
 
     &_type {
       margin-right: 12px;
@@ -41,7 +41,7 @@
   .attribute {
     display: flex;
     align-items: center;
-    height: 36px;
+    min-height: 36px;
 
     .content {
       display: flex;
@@ -49,7 +49,11 @@
       justify-content: space-between;
       width: 100%;
       cursor: pointer;
-
+      &_type {
+        margin-right: 12px;
+        white-space: nowrap;
+        text-transform: capitalize;
+      }
       &_text {
         margin-right: 12px;
         white-space: nowrap;
@@ -153,6 +157,13 @@
   }
 }
 
+.converstionText {
+  margin-right: 24px;
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
 .brandProfileHeader {
   display: flex;
   align-items: center;
@@ -161,5 +172,107 @@
     width: 18px;
     height: 18px;
     margin-right: 12px;
+  }
+}
+
+.defaultOptionList {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  :global(.group-option-name) {
+    min-width: 80px;
+    margin-right: 24px;
+    white-space: nowrap;
+    text-align: right;
+    :global(.value) {
+      margin-right: 8px;
+    }
+  }
+  :global(.product-id-label) {
+    color: @mono-color-dark;
+    font-weight: 300;
+    font-size: 14px;
+    font-family: @font-secondary;
+    font-style: normal;
+    line-height: 21px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  :global(.product-id-value) {
+    margin-left: 12px;
+    color: @mono-color-dark;
+    font-weight: 300;
+    font-size: 12px;
+    font-family: @font-primary;
+    font-style: normal;
+    line-height: 20px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+}
+.defaultOptionImageList {
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+  img {
+    width: 48px;
+    height: 48px;
+    margin-right: 16px;
+    object-fit: cover;
+  }
+  :global(.option-image-list-wrapper) {
+    width: 100%;
+    :global(.heading-option-group) {
+      height: 24px;
+    }
+    :global(.product-input-group) {
+      display: flex;
+      width: 100%;
+      height: 24px;
+      :global(.product-id-label) {
+        color: @mono-color-dark;
+        font-weight: 300;
+        font-size: 14px;
+        font-family: 'Cormorant-Garamond';
+        font-style: normal;
+        line-height: 21px;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+      }
+      :global(.product-id-value) {
+        margin-left: 12px;
+        color: @mono-color-dark;
+        font-weight: 300;
+        font-size: 12px;
+        font-family: @font-primary;
+        font-style: normal;
+        line-height: 20px;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+      }
+    }
+  }
+}
+.specificationAttributeOption {
+  :global(.ant-space-item) {
+    margin-bottom: 4px;
+  }
+  :global(.radio-list-heading) {
+    margin-bottom: 16px;
+    padding-left: 16px;
+    font-weight: 500;
+    font-size: 14px;
+    font-family: @font-primary;
+    line-height: 22px;
+  }
+  &.specificationAttributeImageOption {
+    :global(.ant-space-item) {
+      margin-bottom: 8px;
+      box-shadow: @border-bottom-light;
+    }
+    :global(.radio-list-heading) {
+      box-shadow: @border-bottom-light;
+    }
   }
 }
