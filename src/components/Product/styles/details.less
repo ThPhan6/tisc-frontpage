@@ -415,24 +415,29 @@
               top: 0;
               left: 0;
               display: flex;
+              flex-wrap: wrap;
               align-items: center;
               justify-content: center;
-              width: 100%;
+              width: 72px;
               height: 100%;
               padding: 4px;
-              color: #fff;
-              font-weight: 300;
-              font-size: 10px;
-              font-family: 'Roboto';
-              font-style: normal;
-              line-height: 9px;
-              letter-spacing: 0.02em;
-              text-align: center;
               background-color: #000;
               opacity: 0;
               transition: all 0.4s;
               &:hover {
                 opacity: 1;
+              }
+              :global(span) {
+                width: 72px;
+                color: #fff;
+                font-weight: 300;
+                font-size: 10px;
+                font-family: 'Roboto';
+                font-style: normal;
+                line-height: 9px;
+                letter-spacing: 0.02em;
+                text-align: center;
+                text-overflow: ellipsis;
               }
             }
           }

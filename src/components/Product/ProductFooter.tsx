@@ -1,17 +1,14 @@
 import { ReactComponent as TipsIcon } from '@/assets/icons/bookmark-icon.svg';
 import { ReactComponent as CollectionIcon } from '@/assets/icons/collection-icon.svg';
 import { ReactComponent as DownloadIcon } from '@/assets/icons/download-1-icon.svg';
-import SampleProductImage from '@/assets/images/sample-product-img.png';
-import { CustomTabs } from '@/components/Tabs';
+import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 import { TabItem } from '@/components/Tabs/types';
 import { useGetUserRoleFromPathname } from '@/helper/hook';
-import { getMaxLengthText, showImageUrl } from '@/helper/utils';
-import { useAppSelector } from '@/reducers';
 import React, { useState } from 'react';
+import { ProductCollection } from './ProductCollection';
 import ProductDownloadFooter from './ProductDownloadFooter';
 import ProductTip from './ProductTip';
 import styles from './styles/details.less';
-import { gotoProductDetailPage } from './utils';
 
 const LIST_TAB: TabItem[] = [
   { tab: 'Collections', key: 'collection', icon: <CollectionIcon /> },
@@ -19,9 +16,10 @@ const LIST_TAB: TabItem[] = [
   { tab: 'Downloads', key: 'download', icon: <DownloadIcon /> },
 ];
 
+type ProductFooterTabs = 'collection' | 'tip' | 'download' | '';
+
 const ProductDetailFooter: React.FC = () => {
-  const { relatedProduct } = useAppSelector((state) => state.product);
-  const [activeKey, setActiveKey] = useState('');
+  const [activeKey, setActiveKey] = useState<ProductFooterTabs>('');
 
   // check user role to set UI and redirect URL
   const userRole = useGetUserRoleFromPathname();
@@ -33,7 +31,7 @@ const ProductDetailFooter: React.FC = () => {
         centered={true}
         tabPosition="top"
         tabDisplay="space"
-        onChange={setActiveKey}
+        onChange={(tab) => setActiveKey(tab as ProductFooterTabs)}
         activeKey={activeKey}
         onTabClick={(currentKey) => {
           if (currentKey == activeKey) {
@@ -42,41 +40,17 @@ const ProductDetailFooter: React.FC = () => {
         }}
       />
       <div className={`footer-content ${activeKey}`}>
-        {activeKey === 'collection' ? (
-          <div className="relative-product-wrapper">
-            <div className="relative-product-list">
-              {relatedProduct.length > 0 ? (
-                relatedProduct.map((item, key) => (
-                  <a
-                    className="relative-product-item"
-                    key={key}
-                    target="_blank"
-                    rel="noreferrer"
-                    href={gotoProductDetailPage(userRole, item.id)}
-                  >
-                    <div className="relative-product">
-                      <img
-                        src={item.images?.[0] ? showImageUrl(item.images[0]) : SampleProductImage}
-                      />
-                      <div className="placeholder-text">
-                        {getMaxLengthText(item.name + item.name, 80)}
-                      </div>
-                    </div>
-                  </a>
-                ))
-              ) : (
-                <div className="relative-product-item">
-                  <div className="relative-product">
-                    <img src={SampleProductImage} />
-                    <div className="placeholder-text">Product Label</div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        ) : null}
-        {activeKey === 'tip' ? <ProductTip userRole={userRole} /> : null}
-        {activeKey === 'download' ? <ProductDownloadFooter userRole={userRole} /> : null}
+        <CustomTabPane active={activeKey === 'collection'}>
+          <ProductCollection />
+        </CustomTabPane>
+
+        <CustomTabPane active={activeKey === 'tip'}>
+          <ProductTip userRole={userRole} />
+        </CustomTabPane>
+
+        <CustomTabPane active={activeKey === 'download'}>
+          <ProductDownloadFooter userRole={userRole} />
+        </CustomTabPane>
       </div>
     </div>
   );
