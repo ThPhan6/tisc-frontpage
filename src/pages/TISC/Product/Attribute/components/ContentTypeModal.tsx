@@ -21,27 +21,20 @@ import type {
   AttributeSubForm,
 } from '@/types';
 
-import type { ISelectedItem } from './AttributeEntryForm';
+import type { SelectedItem } from './AttributeEntryForm';
 
 import styles from '../styles/contentTypeModal.less';
 
-interface IContentTypeModal {
-  setVisible: (value: boolean) => void;
-  contentType: AttributeContentType | undefined;
-  selectedItem: ISelectedItem;
-  onSubmit: (data: Omit<AttributeSubForm, 'id' | 'name'>) => void;
-  type: number;
-}
 type ACTIVE_TAB = 'conversions' | 'presets' | 'options' | 'text';
 
-interface IContentTypeOption {
+interface ContentTypeOptionProps {
   data: BasisConvention[] | BasisPresetOption[] | BasisText[];
   type: ACTIVE_TAB;
   selectedOption: Omit<AttributeSubForm, 'id' | 'name'>;
   setSelectedOption: (selected: Omit<AttributeSubForm, 'id' | 'name'>) => void;
 }
 
-const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
+const ContentTypeOption: React.FC<ContentTypeOptionProps> = (props) => {
   const { data, type, selectedOption, setSelectedOption } = props;
   /// default open content type dropdown
   let selectedKeys: string | string[] = [];
@@ -213,7 +206,14 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
   );
 };
 
-const ContentTypeModal: React.FC<IContentTypeModal> = (props) => {
+interface ContentTypeModalProps {
+  setVisible: (value: boolean) => void;
+  contentType: AttributeContentType | undefined;
+  selectedItem: SelectedItem;
+  onSubmit: (data: Omit<AttributeSubForm, 'id' | 'name'>) => void;
+  type: number;
+}
+const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
   const { setVisible, contentType, selectedItem, onSubmit, type } = props;
   const { subAttribute } = selectedItem;
   let listTab: TabItem[] = [

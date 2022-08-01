@@ -14,7 +14,7 @@ import type {
 import { message } from 'antd';
 import { request } from 'umi';
 
-interface ICategoryPaginationResponse {
+interface CategoryPaginationResponse {
   data: {
     attributes: AttributeListResponse[];
     pagination: PaginationResponse;
@@ -29,7 +29,7 @@ export async function getProductAttributePagination(
     method: 'GET',
     params,
   })
-    .then((response: ICategoryPaginationResponse) => {
+    .then((response: CategoryPaginationResponse) => {
       const { attributes, pagination, summary } = response.data;
       callback({
         data: attributes,

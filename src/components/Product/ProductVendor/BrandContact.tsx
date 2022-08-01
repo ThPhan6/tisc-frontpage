@@ -6,11 +6,11 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 import { useCheckPermission } from '@/helper/hook';
 
-interface IBrandContactBox {
+interface BrandContactBoxProps {
   title: string;
 }
 
-const BrandContact: FC<IBrandContactBox> = ({ title }) => {
+const BrandContact: FC<BrandContactBoxProps> = ({ title }) => {
   const [visible, setVisible] = useState(false);
 
   const showPopUp = useCheckPermission('Brand Admin');

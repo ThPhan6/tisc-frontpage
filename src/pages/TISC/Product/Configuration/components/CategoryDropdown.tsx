@@ -12,14 +12,14 @@ import { useAppSelector } from '@/reducers';
 import { CategoryListResponse } from '@/types';
 import styles from '../styles/category-dropdown.less';
 
-interface IDropdownCategoryList {
+interface DropdownCategoryListProps {
   selected?: CheckboxValue[];
   chosenItem?: CheckboxValue[];
   onChange?: (value: CheckboxValue[]) => void;
 }
 type ActiveKeyType = string | number | (string | number)[];
 
-const DropdownCategoryList: React.FC<IDropdownCategoryList> = (props) => {
+const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props) => {
   const { selected, onChange, chosenItem } = props;
   const category = useAppSelector((state) => state.category);
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
