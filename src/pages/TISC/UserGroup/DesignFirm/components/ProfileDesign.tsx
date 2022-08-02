@@ -2,16 +2,37 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { Col, Row } from 'antd';
 import styles from '../styles/ProfileDesign.less';
 import LogoDesignFirm from '@/assets/images/logo-design-firm.png';
+import { DesignFirmDetail } from '@/types';
+import { FC } from 'react';
+import { showImageUrl } from '@/helper/utils';
 
-const ProfileDesign = () => {
+interface ProfileDesignProps {
+  data: DesignFirmDetail;
+}
+const ProfileDesign: FC<ProfileDesignProps> = ({ data }) => {
+  const setViewAvatar = () => {
+    if (data.logo) {
+      return showImageUrl(data.logo);
+    }
+    return LogoDesignFirm;
+  };
+
   return (
     <div>
       <Row>
         <Col span={12}>
           <div className={styles.contentTab}>
             <div className={styles.designName}>
-              <InputGroup label="Design Firm Name" hasBoxShadow hasHeight fontLevel={3} />
-              <img src={LogoDesignFirm} className={styles.logo} />
+              <InputGroup
+                label="Design Firm Name"
+                hasBoxShadow
+                hasHeight
+                fontLevel={3}
+                value={data.name}
+                readOnly
+                hasPadding
+              />
+              <img src={setViewAvatar()} className={styles.logo} />
             </div>
             <InputGroup
               label="Parent Company"
@@ -19,11 +40,46 @@ const ProfileDesign = () => {
               hasHeight
               fontLevel={3}
               className={styles.label}
+              value={data.parent_company}
+              readOnly
+              hasPadding
             />
-            <InputGroup label="Slogan" hasBoxShadow hasHeight fontLevel={3} />
-            <InputGroup label="Profile & Philosophy" hasBoxShadow hasHeight fontLevel={3} />
-            <InputGroup label="Offical Website" hasBoxShadow hasHeight fontLevel={3} />
-            <InputGroup label="Design Capabilities" hasBoxShadow hasHeight fontLevel={3} />
+            <InputGroup
+              label="Slogan"
+              hasBoxShadow
+              hasHeight
+              fontLevel={3}
+              value={data.slogan}
+              readOnly
+              hasPadding
+            />
+            <InputGroup
+              label="Profile & Philosophy"
+              hasBoxShadow
+              hasHeight
+              fontLevel={3}
+              value={data.profile_n_philosophy}
+              readOnly
+              hasPadding
+            />
+            <InputGroup
+              label="Offical Website"
+              hasBoxShadow
+              hasHeight
+              fontLevel={3}
+              value={data.official_website}
+              readOnly
+              hasPadding
+            />
+            <InputGroup
+              label="Design Capabilities"
+              hasBoxShadow
+              hasHeight
+              fontLevel={3}
+              value={data.design_capabilities}
+              readOnly
+              hasPadding
+            />
           </div>
         </Col>
       </Row>

@@ -214,6 +214,9 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_PROJECT_SUCCESS: 'Delete project successfully',
   GET_PROJECT_DATA_FAILED: 'Failed to get project data',
   GET_PROJECT_SUMMARY_DATA_FAILED: 'Failed to get project summary data',
+
+  //user-group / design firms
+  GET_ONE_DESIGN_FIRM_ERROR: 'Failed to get one design firm',
 };
 
 export const MESSAGE_TOOLTIP = {
