@@ -55,7 +55,7 @@ const SubGeneralFeatureAttribute: React.FC<SubGeneralFeatureAttributeProps> = (p
   /// default state
   const [visible, setVisible] = useState(false);
   const [selected, setSelected] = useState<CheckboxValue[]>(
-    localAttribute?.basis_options.map((opt) => {
+    localAttribute?.basis_options?.map((opt) => {
       return {
         label: '',
         value: opt.id,

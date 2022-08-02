@@ -1,8 +1,9 @@
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
-import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/share-via-email.svg';
+import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/ic-share.svg';
 import { ReactComponent as TabIcon } from '@/assets/icons/tabs-icon.svg';
+import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign.svg';
 import SampleProductImage from '@/assets/images/sample-product-img.png';
 import { BodyText } from '@/components/Typography';
 import { confirmDelete } from '@/helper/common';
@@ -47,6 +48,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
   // check user permission to action
   const showShareEmail = useCheckPermission('Brand Admin');
   const showDuplicateAndDelete = useCheckPermission('TISC Admin');
+  const isDesignerUser = useCheckPermission('Design Admin');
 
   const reloadProductInformation = () => {
     if (filter && product.brand?.id) {
@@ -155,6 +157,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
             </Tooltip>
           </BodyText>
         )}
+
+        {isDesignerUser && <AssignIcon onClick={() => {}} />}
 
         {/* for role brand */}
         {showShareEmail && (

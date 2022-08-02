@@ -5,7 +5,7 @@ import CustomCollapse from '@/components/Collapse';
 import { BodyText } from '@/components/Typography';
 import { useAppSelector } from '@/reducers';
 import { FC } from 'react';
-import BrandContact from './BrandContact';
+import BrandContact, { BRAND_CONTACT_TITLE } from './BrandContact';
 import styles from './styles/index.less';
 
 const ProductVendor: FC = ({ children }) => {
@@ -80,8 +80,9 @@ const ProductVendor: FC = ({ children }) => {
           </BodyText>
         </div>
         <div className={styles.contactContent}>
-          <BrandContact title="Brand Locations" />
-          <BrandContact title="Distributor Locations" />
+          {BRAND_CONTACT_TITLE.map((title) => (
+            <BrandContact title={title} />
+          ))}
         </div>
       </div>
 

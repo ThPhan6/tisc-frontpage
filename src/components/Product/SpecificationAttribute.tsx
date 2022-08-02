@@ -1,10 +1,12 @@
+import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
 import { useAppSelector } from '@/reducers';
-import styles from './styles/attributes.less';
 import AttributeCollapse from './components/AttributeCollapse';
 import ProductAttributeLine from './components/ProductAttributeLine';
 import AttributeOption from './components/AttributeOption';
 import GeneralText from './components/GeneralText';
 import ConversionText from './components/ConversionText';
+
+import styles from './styles/attributes.less';
 
 const SpecificationAttribute = () => {
   const { specification_attribute_groups } = useAppSelector((state) => state.product.details);

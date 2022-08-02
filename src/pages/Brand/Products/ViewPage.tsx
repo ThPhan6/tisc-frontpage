@@ -35,7 +35,7 @@ const ProductBrandViewPage: React.FC = () => {
   /// to allow access level
   const editable = useCheckPermission('TISC Admin');
 
-  // console.log('ProductBrandViewPage', product);
+  console.log('ProductBrandViewPage', product);
 
   useEffect(() => {
     if (productId) {

@@ -316,6 +316,7 @@
     }
   }
 }
+
 .extraAction {
   box-shadow: @border-bottom-light;
   :global(.extra-heading) {
@@ -476,16 +477,24 @@
     margin-right: 8px;
   }
 
-  .shareViaEmail,
-  .likeAction {
+  .actionItem,
+  .actionLeft {
     display: flex;
     align-items: center;
     cursor: pointer;
+    svg {
+      margin-right: 8px;
+    }
+    svg path {
+      fill: @mono-color;
+    }
   }
 
-  .shareViaEmail {
-    &_icon path {
-      fill: @mono-color;
+  .actionRight {
+    display: flex;
+
+    > :not(:last-child) {
+      margin-right: 24px;
     }
   }
 }
