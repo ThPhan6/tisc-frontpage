@@ -26,6 +26,7 @@ interface InputGroupProps extends CustomInputProps {
   message?: string;
   messageType?: 'normal' | 'warning' | 'error';
   forceDisplayDeleteIcon?: boolean;
+  colon?: boolean;
 }
 
 const InputGroup: FC<InputGroupProps> = ({
@@ -49,6 +50,7 @@ const InputGroup: FC<InputGroupProps> = ({
   messageType = 'normal',
   disabled,
   forceDisplayDeleteIcon,
+  colon,
   ...props
 }) => {
   return (
@@ -79,6 +81,7 @@ const InputGroup: FC<InputGroupProps> = ({
             ''
           )}
           {required ? <span className={styles.colon}>:</span> : ''}
+          {colon ? <span className={styles.colon1}>:</span> : ''}
         </BodyText>
       </Col>
       <Col

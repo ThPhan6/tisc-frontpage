@@ -13,6 +13,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { FC, useState } from 'react';
 import { BrandAccessLevelDataRole } from '../../Adminstration/TeamProfiles/constants/role';
 import BrandLocationDetail from './components/Location';
+import BrandProfileDetail from './components/Profile';
 import BrandTeamDetail from './components/Team';
 import styles from './styles/index.less';
 import { BrandTabKeys, BrandTabs } from './types';
@@ -20,7 +21,7 @@ import { BrandTabKeys, BrandTabs } from './types';
 const UpdateCreatePage = () => {
   //   const submitButtonStatus = useBoolean(false);
 
-  const [selectedTab, setSelectedTab] = useState<BrandTabKeys>(BrandTabKeys.teams);
+  const [selectedTab, setSelectedTab] = useState<BrandTabKeys>(BrandTabKeys.profile);
 
   // for detail page
   const [data, setData] = useState([]);
@@ -100,12 +101,10 @@ const UpdateCreatePage = () => {
         </div>
       </div>
 
-      {/* <BrandViewDetail
-        onCancel={handleCancel}
-        // onSubmit={handleCreateData}
-        submitButtonStatus={submitButtonStatus.value}
-        activeTab={activeTab}
-      /> */}
+      {/* profile */}
+      <CustomTabPane active={selectedTab === BrandTabKeys.profile}>
+        <BrandProfileDetail />
+      </CustomTabPane>
 
       {/* location */}
       <CustomTabPane active={selectedTab === BrandTabKeys.locations}>
@@ -115,6 +114,16 @@ const UpdateCreatePage = () => {
       {/* team */}
       <CustomTabPane active={selectedTab === BrandTabKeys.teams}>
         <BrandTeamDetail />
+      </CustomTabPane>
+
+      {/* distributors */}
+      <CustomTabPane active={selectedTab === BrandTabKeys.distributors}>
+        {/* <BrandTeamDetail /> */}
+      </CustomTabPane>
+
+      {/* availability */}
+      <CustomTabPane active={selectedTab === BrandTabKeys.availability}>
+        {/* <BrandTeamDetail /> */}
       </CustomTabPane>
     </PageContainer>
   );

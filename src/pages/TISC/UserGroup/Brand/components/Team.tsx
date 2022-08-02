@@ -3,14 +3,14 @@ import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.sv
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import InputGroup from '@/components/EntryForm/InputGroup';
+import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
 import { USER_STATUS_TEXTS } from '@/constants/util';
 import { BrandTeam, TISCUserGroupBrandTeam } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { capitalize, isEmpty, upperCase } from 'lodash';
 import { useEffect, useState } from 'react';
-import styles from '../styles/brandViewDetail.less';
 import indexStyles from '../../index.less';
-import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
+import styles from '../styles/brandViewDetail.less';
 
 type ActiveKeyType = string | number | (string | number)[];
 
@@ -168,36 +168,60 @@ const BrandTeamDetail = () => {
                     >
                       <div className={`${indexStyles.info} ${styles.teamInfo}`}>
                         <InputGroup
-                          label="Gender :"
+                          label="Gender"
+                          colon
                           fontLevel={3}
                           value={user.gender === true ? 'Male' : 'Female'}
+                          readOnly
                         />
                         <InputGroup
-                          label="Work Location :"
+                          label="Work Location"
+                          colon
                           fontLevel={3}
                           value={user.work_location ?? ''}
+                          readOnly
                         />
                         <InputGroup
-                          label="Department :"
+                          label="Department"
+                          colon
                           fontLevel={3}
                           value={user.department ?? ''}
+                          readOnly
                         />
                         <InputGroup
-                          label="Position/Title :"
+                          label="Position/Title"
+                          colon
                           fontLevel={3}
                           value={user.position ?? ''}
+                          readOnly
                         />
-                        <InputGroup label="Phone :" fontLevel={3} value={user.phone ?? ''} />
-                        <InputGroup label="Work Mobile :" fontLevel={3} value={user.mobile ?? ''} />
                         <InputGroup
-                          label="Access Level :"
+                          label="Phone"
+                          colon
+                          fontLevel={3}
+                          value={user.phone ?? ''}
+                          readOnly
+                        />
+                        <InputGroup
+                          label="Work Mobile"
+                          colon
+                          fontLevel={3}
+                          value={user.mobile ?? ''}
+                          readOnly
+                        />
+                        <InputGroup
+                          label="Access Level"
+                          colon
                           fontLevel={3}
                           value={user.access_level ?? ''}
+                          readOnly
                         />
                         <InputGroup
-                          label="Status :"
+                          label="Status"
+                          colon
                           fontLevel={3}
                           value={USER_STATUS_TEXTS[user.status] ?? 'N/A'}
+                          readOnly
                         />
                       </div>
                     </Collapse.Panel>
