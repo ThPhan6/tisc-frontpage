@@ -73,8 +73,19 @@ export default [
         path: PATH.tiscUserGroupDesignerList,
         name: 'designfirm',
         icon: 'design-firm-icon.svg',
-        component: './TISC/UserGroup/DesignFirm',
         access: 'tisc_user_group_design',
+        routes: [
+          {
+            path: PATH.tiscUserGroupDesignerList,
+            hideInMenu: true,
+            component: './TISC/UserGroup/DesignFirm',
+          },
+          {
+            path: PATH.tiscUserGroupViewDesigner,
+            hideInMenu: true,
+            component: './TISC/UserGroup/DesignFirm/ViewDesignFirmPage',
+          },
+        ],
       },
     ],
   },

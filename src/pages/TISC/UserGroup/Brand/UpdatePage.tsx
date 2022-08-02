@@ -20,7 +20,7 @@ import { BrandTabKeys, BrandTabs } from './types';
 const UpdateCreatePage = () => {
   //   const submitButtonStatus = useBoolean(false);
 
-  const [selectedTab, setSelectedTab] = useState<BrandTabKeys>(BrandTabKeys.profile);
+  const [selectedTab, setSelectedTab] = useState<BrandTabKeys>(BrandTabKeys.teams);
 
   // for detail page
   const [data, setData] = useState([]);

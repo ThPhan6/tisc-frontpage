@@ -27,6 +27,9 @@ export const PATH = {
 
   // user group - design-firms
   tiscUserGroupDesignerList: '/tisc/user-groups/design-firms',
+
+  //user group / design-firms
+  tiscUserGroupViewDesigner: '/tisc/user-groups/design-firms/view/:id',
   // tisc project_tracking
   tiscProject: '/tisc/projects',
   tiscProjectListing: '/tisc/projects/listing',
