@@ -2,125 +2,228 @@ import { ReactComponent as DropdownV2Icon } from '@/assets/icons/action-down-ico
 import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
+import InputGroup from '@/components/EntryForm/InputGroup';
+import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
+import { USER_STATUS_TEXTS } from '@/constants/util';
+import { BrandTeam, TISCUserGroupBrandTeam } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { capitalize, isEmpty, upperCase } from 'lodash';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import indexStyles from '../../index.less';
 import styles from '../styles/brandViewDetail.less';
 
 type ActiveKeyType = string | number | (string | number)[];
 
 const data = [
   {
-    id: '1',
-    name: 'Singapore',
-    location: [
+    // id: '1',
+    country_name: 'Singapore',
+    users: [
       {
-        business_name: 'singapo1',
-        info: {
-          location: 'main office',
-          address: 'aa',
-          phone: '11',
-          gmail: 'a@gmail.com',
-        },
+        logo: '',
+        firstname: 'thinh',
+        lastname: 'phan',
+        gender: true,
+        work_location: 'location',
+        department: 'department',
+        position: 'sales',
+        email: 'emial@gmail.com',
+        phone: '08754',
+        mobile: '3434',
+        access_level: 'brand lead',
+        status: 2,
+      },
+      {
+        logo: '',
+        firstname: 'thinh',
+        lastname: 'phan',
+        gender: true,
+        work_location: 'location',
+        department: 'department',
+        position: 'sales',
+        email: 'emial@gmail.com',
+        phone: '08754',
+        mobile: '3434',
+        access_level: 'brand lead',
+        status: 3,
       },
     ],
   },
   {
-    id: '2',
-    name: 'Thailand',
-    location: [
+    // id: '2',
+    country_name: 'Thailand',
+    users: [
       {
-        business_name: 'singapo1',
-        info: {
-          location: 'main office',
-          address: 'aa',
-          phone: '11',
-          gmail: 'a@gmail.com',
-        },
+        logo: '',
+        firstname: 'thinh',
+        lastname: 'phan',
+        gender: true,
+        work_location: 'location',
+        department: 'department',
+        position: 'sales',
+        email: 'emial@gmail.com',
+        phone: '08754',
+        mobile: '3434',
+        access_level: 'brand lead',
+        status: 2,
+      },
+    ],
+  },
+];
+
+const DEFAULT_BRANDTEAM = [
+  {
+    country_name: '',
+    users: [
+      {
+        logo: '',
+        firstname: '',
+        lastname: '',
+        gender: true,
+        work_location: '',
+        department: '',
+        position: '',
+        email: '',
+        phone: '',
+        mobile: '',
+        access_level: '',
+        status: 1,
       },
     ],
   },
 ];
 
 const BrandTeamDetail = () => {
-  // const params = useParams<{ id: string }>();
-  // const productId = params?.id || '';
-
-  // const [teamProfile, setTeamProfile] = useState<TeamProfileDetailProps>();
-
-  // console.log('data', teamProfile);
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
-  const [secondActiveKey, setSecondActiveKey] = useState<ActiveKeyType>([]);
+  // const [secondActiveKey, setSecondActiveKey] = useState<ActiveKeyType>([]);
+  const [teamData, setTeamData] = useState<TISCUserGroupBrandTeam[]>(DEFAULT_BRANDTEAM);
 
-  const renderHeader = (item: any) => {
+  useEffect(() => {
+    setTeamData(data);
+  }, []);
+
+  const renderUserHeader = (user: BrandTeam) => {
     return (
-      <span>
-        {upperCase(item.name)}
-        <span
-          className={styles.dropdownCount}
-          style={{
-            marginLeft: 8,
-          }}
-        >
-          ({item.subs.length})
-        </span>
-      </span>
+      <div className={styles.userName}>
+        <TeamIcon avatar={user.logo} name={user.firstname} />
+        <span className={`${styles.name} ${indexStyles.dropdownCount}`}>{`${capitalize(
+          user.firstname,
+        )} ${capitalize(user.lastname)}`}</span>
+      </div>
     );
   };
-  const renderSubHeader = (item: any) => {
+
+  const renderHeader = (team: TISCUserGroupBrandTeam) => {
     return (
       <span>
-        {capitalize(item.name)}
+        {upperCase(team.country_name)}
         <span
-          className={styles.dropdownCount}
+          className={indexStyles.dropdownCount}
           style={{
             marginLeft: 8,
           }}
         >
-          ({item.subs.length})
+          ({team.users.length})
         </span>
       </span>
     );
   };
 
   return (
-    <Row className={styles.container}>
+    <Row className={indexStyles.container}>
       <Col span={12}>
-        <div className={styles.team_form}>
+        <div className={`${indexStyles.form} ${styles.team_form}`}>
           <Collapse
             bordered={false}
             expandIconPosition="right"
             expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
-            className={styles.dropdownList}
+            className={indexStyles.dropdownList}
+            activeKey={activeKey}
             onChange={(key) => {
-              setSecondActiveKey([]);
+              // setSecondActiveKey([]);
               setActiveKey(key);
             }}
-            activeKey={activeKey}
           >
-            {data.map((item, index) => (
+            {teamData.map((team, index) => (
               <Collapse.Panel
-                header={renderHeader(item)}
+                header={renderHeader(team)}
                 key={index}
-                collapsible={isEmpty(item.name) ? 'disabled' : undefined}
-                className="site-collapse-custom-panel"
+                collapsible={isEmpty(team.country_name) ? 'disabled' : undefined}
+                // className="site-collapse-custom-panel"
               >
                 <Collapse
                   bordered={false}
                   expandIconPosition="right"
                   expandIcon={({ isActive }) => (isActive ? <DropupV2Icon /> : <DropdownV2Icon />)}
-                  className={styles.secondDropdownList}
-                  onChange={setSecondActiveKey}
-                  activeKey={secondActiveKey}
+                  className={indexStyles.secondDropdownList}
+                  // onChange={setSecondActiveKey}
+                  // activeKey={secondActiveKey}
                 >
-                  {item.location.map((sub, subIndex) => (
+                  {team.users.map((user, userIndex) => (
                     <Collapse.Panel
-                      header={renderSubHeader(sub)}
-                      key={`${index}-${subIndex}`}
-                      collapsible={isEmpty(sub.business_name) ? 'disabled' : undefined}
-                      className="site-collapse-custom-panel"
+                      header={renderUserHeader(user)}
+                      key={`${index}-${userIndex}`}
+                      collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}
+                      // className="site-collapse-custom-panel"
                     >
-                      <div></div>
+                      <div className={`${indexStyles.info} ${styles.teamInfo}`}>
+                        <InputGroup
+                          label="Gender"
+                          colon
+                          fontLevel={3}
+                          value={user.gender === true ? 'Male' : 'Female'}
+                          readOnly
+                        />
+                        <InputGroup
+                          label="Work Location"
+                          colon
+                          fontLevel={3}
+                          value={user.work_location ?? ''}
+                          readOnly
+                        />
+                        <InputGroup
+                          label="Department"
+                          colon
+                          fontLevel={3}
+                          value={user.department ?? ''}
+                          readOnly
+                        />
+                        <InputGroup
+                          label="Position/Title"
+                          colon
+                          fontLevel={3}
+                          value={user.position ?? ''}
+                          readOnly
+                        />
+                        <InputGroup
+                          label="Phone"
+                          colon
+                          fontLevel={3}
+                          value={user.phone ?? ''}
+                          readOnly
+                        />
+                        <InputGroup
+                          label="Work Mobile"
+                          colon
+                          fontLevel={3}
+                          value={user.mobile ?? ''}
+                          readOnly
+                        />
+                        <InputGroup
+                          label="Access Level"
+                          colon
+                          fontLevel={3}
+                          value={user.access_level ?? ''}
+                          readOnly
+                        />
+                        <InputGroup
+                          label="Status"
+                          colon
+                          fontLevel={3}
+                          value={USER_STATUS_TEXTS[user.status] ?? 'N/A'}
+                          readOnly
+                        />
+                      </div>
                     </Collapse.Panel>
                   ))}
                 </Collapse>

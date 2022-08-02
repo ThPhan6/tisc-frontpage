@@ -1,9 +1,27 @@
-.container {
-  margin-top: 8px;
+.team_form {
+  :global(.ant-collapse-borderless) {
+    background: #fff !important;
+  }
 
-  .team_form {
-    height: calc(100vh - 250px);
-    padding: 16px;
-    background: #fff;
+  .teamInfo {
+    // :global(.mono-color) {
+    //   color: @mono-color-dark !important;
+    // }
+    // :global(.heightInputGroup) {
+    //   margin-bottom: 8px !important;
+    // }
+
+    :last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .userName {
+    display: flex;
+    align-items: center;
+
+    .name {
+      margin-left: 8px;
+    }
   }
 }
