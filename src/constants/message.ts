@@ -111,6 +111,10 @@ export const MESSAGE_NOTIFICATION = {
   // department
   GET_LIST_DEPARTMENT_ERROR: 'Get list department error',
 
+  /// user group
+  // brand
+  GET_LIST_BRAND_SUMMARY_ERROR: 'Get list brand summary error',
+
   // team profile
   GET_LIST_TEAM_PROFILE_ERROR: 'Get list team profile error',
   GET_ONE_TEAM_PROFILE_ERROR: 'Get one team profile error',

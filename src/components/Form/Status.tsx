@@ -18,6 +18,7 @@ export const Status: FC<StatusProps> = ({
   textClass,
   activeButtonClass,
   InActiveButtonClass,
+  title,
 }) => {
   return (
     <FormGroup label={label} layout={layout} formClass={`${styles.form_group} ${formClass}`}>
@@ -38,10 +39,14 @@ export const Status: FC<StatusProps> = ({
         ) : (
           <Tooltip
             title={
-              <span className={styles.send_invite_tip}>
-                Click <span className={styles.highlight}>Send Invite</span> button to send team
-                member email invitation. You could resend it multiple time as a reminder.
-              </span>
+              title ? (
+                title
+              ) : (
+                <span className={styles.send_invite_tip}>
+                  Click <span className={styles.highlight}>Send Invite</span> button to send team
+                  member email invitation. You could resend it multiple time as a reminder.
+                </span>
+              )
             }
             placement="topRight"
           >
