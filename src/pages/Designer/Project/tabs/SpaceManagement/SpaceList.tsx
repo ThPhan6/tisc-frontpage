@@ -6,7 +6,7 @@ import { confirmDelete } from '@/helper/common';
 import { getProjectSpaceListPagination, deleteProjectSpace } from '@/services';
 import type { ProjectSpaceZone, ProjectSpaceArea, ProjectSpaceRoom } from '@/types';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 const MAIN_COL_WIDTH = 200;
 const SUB_COL_WIDTH = 150;
@@ -19,7 +19,10 @@ interface SpaceListProps {
 const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) => {
   useAutoExpandNestedTableColumn(MAIN_COL_WIDTH, SUB_COL_WIDTH);
   const tableRef = useRef<any>();
-
+  const [combinableSorter, setCombinableSorter] = useState<{ key: string; value: string }>({
+    key: '',
+    value: '',
+  });
   const handleDeleteZone = (id: string) => {
     confirmDelete(() => {
       deleteProjectSpace(id).then((isSuccess) => {
@@ -30,11 +33,26 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
     });
   };
 
-  const GeneralColumns: TableColumnItem<ProjectSpaceZone>[] = [
+  const reUpdateCombinableSorterState = () => {
+    setCombinableSorter((oldState) => {
+      return {
+        key: oldState.key,
+        value: oldState.value,
+      };
+    });
+  };
+
+  const GeneralColumns: TableColumnItem<any>[] = [
     {
       title: 'Room Size',
       dataIndex: 'room_size',
       width: 106,
+      render: (value, record) => {
+        if (value) {
+          return `${value} ${record.room_size_unit ?? ''}`;
+        }
+        return '';
+      },
     },
     {
       title: 'Quantity',
@@ -43,7 +61,13 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
     },
     {
       title: 'Sub-total',
-      dataIndex: 'sub_total',
+      dataIndex: 'room_size',
+      render: (value, record) => {
+        if (value && record.quantity) {
+          return `${value * record.quantity} ${record.room_size_unit ?? ''}`;
+        }
+        return '';
+      },
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
   ];
@@ -60,6 +84,11 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
       },
+      onHeaderCell: () => {
+        return {
+          onClick: reUpdateCombinableSorterState,
+        };
+      },
     },
     {
       title: 'Areas',
@@ -67,6 +96,11 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
       width: SUB_COL_WIDTH,
       sorter: {
         multiple: 2,
+      },
+      onHeaderCell: () => {
+        return {
+          onClick: reUpdateCombinableSorterState,
+        };
       },
     },
     {
@@ -76,6 +110,18 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
       sorter: {
         multiple: 3,
       },
+      onHeaderCell: () => {
+        return {
+          onClick: () => {
+            setCombinableSorter(() => {
+              return {
+                key: 'room_column',
+                value: 'room_name_order',
+              };
+            });
+          },
+        };
+      },
     },
     {
       title: 'Room ID',
@@ -83,6 +129,18 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
       width: 106,
       sorter: {
         multiple: 4,
+      },
+      onHeaderCell: () => {
+        return {
+          onClick: () => {
+            setCombinableSorter(() => {
+              return {
+                key: 'room_id_column',
+                value: 'room_id_order',
+              };
+            });
+          },
+        };
       },
     },
     ...GeneralColumns,
@@ -153,6 +211,10 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
     ...SubGeneralColumns,
   ];
 
+  useEffect(() => {
+    tableRef.current.reload();
+  }, [combinableSorter]);
+
   return (
     <>
       <CustomTable
@@ -163,8 +225,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
         multiSort={{
           name: 'zone_order',
           area_coumn: 'area_order',
-          room_column: 'room_name_order',
-          room_id_column: 'room_id_order',
+          [combinableSorter.key]: combinableSorter.value,
         }}
         expandable={GetExpandableTableConfig({
           columns: AreaColumns,
@@ -177,6 +238,8 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
         extraParams={{
           project_id: projectId,
         }}
+        onFilterLoad={false}
+        autoLoad={false}
       />
     </>
   );
