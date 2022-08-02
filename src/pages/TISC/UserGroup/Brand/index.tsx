@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import CustomTable from '@/components/Table';
 import type { TableColumnItem } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
@@ -13,10 +13,9 @@ import { showImageUrl } from '@/helper/utils';
 import type { IBrandListItem } from '@/types';
 import styles from './styles/index.less';
 import { PageContainer } from '@ant-design/pro-layout';
-import { MenuSummary } from '@/components/MenuSummary';
-import { dataMenuSummary } from '@/constants/util';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
+import BrandMenuSummary from './components/BrandMenuSummary';
 
 const BrandList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -24,6 +23,8 @@ const BrandList: React.FC = () => {
   const comingSoon = () => {
     alert('Coming Soon!');
   };
+
+  useEffect(() => {});
 
   const TableColumns: TableColumnItem<IBrandListItem>[] = [
     {
@@ -77,7 +78,7 @@ const BrandList: React.FC = () => {
       dataIndex: 'action',
       align: 'center',
       //  @typescript-eslint/no-unused-vars
-      render: () => {
+      render: (_v, record: any) => {
         return (
           <HeaderDropdown
             containerClass={styles.customAction}
@@ -88,7 +89,8 @@ const BrandList: React.FC = () => {
               <MenuHeaderDropdown
                 items={[
                   {
-                    onClick: comingSoon,
+                    onClick: () =>
+                      pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', record.id)),
                     icon: <ViewIcon />,
                     label: 'View',
                   },
@@ -110,15 +112,7 @@ const BrandList: React.FC = () => {
   ];
 
   return (
-    <PageContainer
-      pageHeaderRender={() => (
-        <MenuSummary
-          containerClass={styles.customMenuSummary}
-          menuSummaryData={dataMenuSummary.leftData}
-          typeMenu="project"
-        />
-      )}
-    >
+    <PageContainer pageHeaderRender={() => <BrandMenuSummary />}>
       <CustomTable
         title="BRANDS"
         rightAction={<CustomPlusButton onClick={() => pushTo(PATH.tiscUserGroupBrandEntryFrom)} />}

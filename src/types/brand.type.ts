@@ -56,4 +56,19 @@ export interface IBrandCardTeam {
   avatar: any;
 }
 
-// export interface Brand
+export interface BrandSummary {
+  brands: number;
+  locations: number;
+  teams: number;
+  countries: number;
+  africa: number;
+  asia: number;
+  europe: number;
+  north_america: number;
+  card: number;
+  oceania: number;
+  south_america: number;
+  collections: number;
+  categories: number;
+  products: number;
+}

@@ -51,7 +51,7 @@ const BrandCreatePage = () => {
         <MenuSummary
           containerClass={styles.customMenuSummary}
           menuSummaryData={dataMenuSummary.leftData}
-          typeMenu="project"
+          typeMenu="brand"
         />
       )}
     >

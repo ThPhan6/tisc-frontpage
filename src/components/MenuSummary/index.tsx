@@ -1,6 +1,6 @@
-import { FC, useState } from 'react';
-import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
 import { ReactComponent as ActionLeftIcon } from '@/assets/icons/action-left.svg';
+import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
+import { FC, useState } from 'react';
 import style from './index.less';
 import { ElementSummaryProps, ItemSummaryProps, MenuSummaryProps } from './types';
 import { checkUndefined } from '@/helper/utils';
@@ -74,6 +74,11 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
   };
 
   const typeCircumstance = (type: MenuSummaryProps['typeMenu']) => {
+    /// 100% have type
+    if (!type) {
+      return;
+    }
+
     switch (type) {
       case 'subscription':
         return (
@@ -111,9 +116,9 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
   return (
     <div className={`${style['header-summary']} ${containerClass}`} style={{ height: height }}>
       <div className={style['brand-container']}>
-        {menuSummaryData.map((data) => {
+        {menuSummaryData.map((data, index) => {
           return (
-            <div className={style['wrapper']} key={data.id}>
+            <div className={style['wrapper']} key={data?.id ?? index}>
               <ElementSummary
                 dataElementSummary={data}
                 activeId={activeId}

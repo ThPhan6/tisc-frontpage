@@ -19,3 +19,43 @@
   display: flex;
   align-items: center;
 }
+
+.tabs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  box-shadow: inset 0 -0.7px 0 #000;
+
+  :global(.ant-tabs-top > .ant-tabs-nav) {
+    margin-bottom: 0;
+  }
+
+  :global(.tab-list .ant-tabs-top > .ant-tabs-nav::before),
+  :global(.ant-tabs-top > .ant-tabs-nav::before) {
+    border-bottom: none !important;
+  }
+
+  :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
+    width: 100%;
+  }
+
+  :global(.ant-tabs-tab) {
+    width: 125px;
+  }
+
+  &_right {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.tooltip {
+  p {
+    color: #fff !important;
+  }
+}
+
+.status {
+  margin-bottom: 0;
+}

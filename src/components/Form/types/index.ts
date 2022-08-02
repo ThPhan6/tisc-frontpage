@@ -8,7 +8,7 @@ export interface FormGroupProps {
   optional?: boolean;
   required?: boolean;
   tooltip?: string | JSX.Element;
-  label: string;
+  label: string | JSX.Element;
   message?: string;
   messageType?: 'normal' | 'error' | 'warning';
   iconTooltip?: ReactNode;

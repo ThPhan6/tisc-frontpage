@@ -1,5 +1,11 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import type { IBrandListItem, IBrandAlphabet, IBrandDetail, IBrandCard } from '@/types';
+import type {
+  IBrandListItem,
+  IBrandAlphabet,
+  IBrandDetail,
+  IBrandCard,
+  BrandSummary,
+} from '@/types';
 import type {
   DataTableResponse,
   PaginationRequestParams,
@@ -73,6 +79,21 @@ export async function getBrandById(brandId: string) {
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
       return undefined;
+    });
+}
+
+export async function getBrandSummary() {
+  return request<{
+    data: BrandSummary;
+  }>(`/api/brand/summary`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_BRAND_SUMMARY_ERROR);
+      return {} as BrandSummary;
     });
 }
 

@@ -66,24 +66,6 @@ const BrandEntryForm: FC<BrandEntryFormValue> = ({
     );
   };
 
-  const RenderLabelToolTip: FC<{ statusText: string; plainText: string }> = ({
-    statusText,
-    plainText,
-  }) => {
-    return (
-      <tr>
-        <td>
-          <BodyText level={4} style={{ marginRight: '4px' }}>{`${statusText}:`}</BodyText>
-        </td>
-        <td>
-          <BodyText level={6} fontFamily="Roboto">
-            {plainText}
-          </BodyText>
-        </td>
-      </tr>
-    );
-  };
-
   return (
     <EntryFormWrapper
       handleCancel={onCancel}
@@ -160,15 +142,6 @@ const BrandEntryForm: FC<BrandEntryFormValue> = ({
         label="Access Level"
         required={true}
         iconTooltip={<InfoIcon />}
-        tooltip={
-          <table className={styles.tooltip}>
-            <RenderLabelToolTip statusText="Pending" plainText="Waiting user activate" />
-            <RenderLabelToolTip statusText="Active" plainText="Full activated" />
-            <RenderLabelToolTip statusText="Inactive" plainText="Temporarily removed" />
-          </table>
-        }
-        placement="bottom"
-        placementBottomWidth="auto"
         layout="vertical"
         formClass={styles.access_label}
         // onClick={() =>
