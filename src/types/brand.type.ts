@@ -16,7 +16,7 @@ export interface IBrandListItem {
   teams: number;
 }
 
-export interface IBrandDetail {
+export interface BrandDetail {
   created_at: string;
   id: string;
   is_deleted: boolean;
@@ -37,7 +37,7 @@ export interface IBrandDetail {
 }
 
 export interface IBrandAlphabet {
-  [key: string]: IBrandDetail[];
+  [key: string]: BrandDetail[];
 }
 export interface IBrandCard {
   id: string;

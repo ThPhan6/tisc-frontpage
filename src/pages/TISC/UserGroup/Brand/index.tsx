@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CustomTable from '@/components/Table';
 import type { TableColumnItem } from '@/components/Table/types';
 import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
@@ -16,6 +16,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import BrandMenuSummary from './components/BrandMenuSummary';
+import Popover from '@/components/Modal/Popover';
 
 const BrandList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -23,6 +24,8 @@ const BrandList: React.FC = () => {
   const comingSoon = () => {
     alert('Coming Soon!');
   };
+
+  const [visible, setVisible] = useState<boolean>(false);
 
   useEffect(() => {});
 
@@ -66,7 +69,12 @@ const BrandList: React.FC = () => {
       align: 'center',
       render: () => {
         return (
-          <a style={{ color: 'black' }} onClick={comingSoon}>
+          <a
+            style={{ color: 'black' }}
+            onClick={() => {
+              setVisible(true);
+            }}
+          >
             <UserAddIcon />
           </a>
         );
@@ -112,16 +120,41 @@ const BrandList: React.FC = () => {
   ];
 
   return (
-    <PageContainer pageHeaderRender={() => <BrandMenuSummary />}>
-      <CustomTable
-        title="BRANDS"
-        rightAction={<CustomPlusButton onClick={() => pushTo(PATH.tiscUserGroupBrandEntryFrom)} />}
-        columns={TableColumns}
-        ref={tableRef}
-        fetchDataFunc={getBrandPagination}
-        hasPagination
-      />
-    </PageContainer>
+    <div>
+      <PageContainer pageHeaderRender={() => <BrandMenuSummary />}>
+        <CustomTable
+          title="BRANDS"
+          rightAction={
+            <CustomPlusButton onClick={() => pushTo(PATH.tiscUserGroupBrandEntryFrom)} />
+          }
+          columns={TableColumns}
+          ref={tableRef}
+          fetchDataFunc={getBrandPagination}
+          hasPagination
+        />
+      </PageContainer>
+      {visible && (
+        <Popover
+          title="ASSIGN TEAM"
+          visible={visible}
+          setVisible={setVisible}
+          dropdownCheckboxList={map(attributes, (item) => {
+            return {
+              name: item.name,
+              options: item.subs.map((sub) => {
+                return {
+                  label: renderCheckBoxLabel(sub),
+                  value: sub.id,
+                };
+              }),
+            };
+          })}
+          dropdownCheckboxTitle={(data) => data.name}
+          // chosenValue={selected}
+          // setChosenValue={setSelected}
+        />
+      )}
+    </div>
   );
 };
 

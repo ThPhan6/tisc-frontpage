@@ -48,6 +48,31 @@
     display: flex;
     align-items: center;
   }
+  .status {
+    margin-bottom: 0;
+
+    :global(.bodyTextCormorant3),
+    :global(.mono-color) {
+      font-weight: 600;
+    }
+
+    :global(.label) {
+      p {
+        font-weight: 600;
+      }
+
+      span {
+        display: none;
+      }
+    }
+  }
+  :global(.label .colon) {
+    display: none;
+  }
+  .actionBtn {
+    margin: 8px 10px;
+    border-radius: 12px;
+  }
 }
 
 .tooltip {
@@ -56,6 +81,6 @@
   }
 }
 
-.status {
-  margin-bottom: 0;
+.info_icon {
+  margin-left: 4px;
 }

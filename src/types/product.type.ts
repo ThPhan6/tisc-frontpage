@@ -1,4 +1,4 @@
-import { IBrandDetail, GeneralData } from '@/types';
+import { BrandDetail, GeneralData } from '@/types';
 
 export interface ProductSummary {
   categories: GeneralData[];
@@ -45,7 +45,7 @@ export type ProductKeyword = [string, string, string, string];
 
 export interface ProductItem {
   id?: string;
-  brand?: IBrandDetail;
+  brand?: BrandDetail;
   collection?: {
     id: string;
     name: string;
