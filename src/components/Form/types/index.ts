@@ -40,6 +40,7 @@ export interface CustomInputProps extends InputProps {
   fontLevel?: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   defaultWidth?: string | number;
   maxWords?: number;
+  inputValidation?: (value: string) => boolean;
 }
 
 export interface CustomTextAreaProps extends TextAreaProps {

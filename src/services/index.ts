@@ -19,3 +19,4 @@ export * from './department.api';
 export * from './location.api';
 export * from './market-availability.api';
 export * from './project.api';
+export * from './project-space.api';

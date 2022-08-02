@@ -7,11 +7,15 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { DefaultProjectZone } from '../../constants/form';
 import { useBoolean } from '@/helper/hook';
 import LoadingPageCustomize from '@/components/LoadingPage';
-
+import { createProjectSpace, updateProjectSpace } from '@/services';
 import type { ProjectSpaceZone } from '@/types';
 import styles from '../../styles/space-management.less';
 
-const SpaceManagement: React.FC = () => {
+interface SpaceManagementProps {
+  projectId?: string;
+}
+
+const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
   const [space, setSpace] = useState<ProjectSpaceZone>();
   const isLoading = useBoolean();
   const submitButtonStatus = useBoolean();
@@ -24,14 +28,33 @@ const SpaceManagement: React.FC = () => {
   };
 
   const handleSubmitSpaceForm = () => {
-    console.log('space', space);
+    if (!space) {
+      return false;
+    }
     isLoading.setValue(true);
-    submitButtonStatus.setValue(true);
-    setTimeout(() => {
-      submitButtonStatus.setValue(false);
+    space.project_id = projectId;
+    if (space.id) {
+      return updateProjectSpace(space.id, space).then((data) => {
+        isLoading.setValue(false);
+        if (data) {
+          setSpace(data);
+          submitButtonStatus.setValue(true);
+          setTimeout(() => {
+            submitButtonStatus.setValue(false);
+          }, 1000);
+        }
+      });
+    }
+    return createProjectSpace(space).then((isSuccess) => {
       isLoading.setValue(false);
-      hideSpaceForm();
-    }, 1000);
+      if (isSuccess) {
+        submitButtonStatus.setValue(true);
+        setTimeout(() => {
+          submitButtonStatus.setValue(false);
+          hideSpaceForm();
+        }, 1000);
+      }
+    });
   };
 
   return (
@@ -56,9 +79,9 @@ const SpaceManagement: React.FC = () => {
           handleSubmit={handleSubmitSpaceForm}
           submitButtonStatus={submitButtonStatus.value}
         />
-      ) : (
-        <SpaceList handleUpdateSpace={(record) => displaySpaceForm(record)} />
-      )}
+      ) : projectId ? (
+        <SpaceList handleUpdateSpace={(record) => displaySpaceForm(record)} projectId={projectId} />
+      ) : null}
       {isLoading.value && <LoadingPageCustomize />}
     </>
   );

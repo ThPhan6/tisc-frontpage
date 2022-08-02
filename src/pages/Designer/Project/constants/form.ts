@@ -17,17 +17,18 @@ export const DefaultProjectRequest: ProjectBodyRequest = {
   status: FilterValues.live,
 };
 
-export const DefaultProjectZone: ProjectSpaceZone = {
-  name: '',
-  area: [],
+export const DefaultProjectRoom: ProjectSpaceRoom = {
+  room_name: '',
+  room_id: '',
+  room_size: '',
+  quantity: '',
 };
 export const DefaultProjectArea: ProjectSpaceArea = {
   name: '',
-  room: [],
+  rooms: [DefaultProjectRoom],
 };
-export const DefaultProjectRoom: ProjectSpaceRoom = {
+
+export const DefaultProjectZone: ProjectSpaceZone = {
   name: '',
-  room_id: '',
-  size: '',
-  quantity: 0,
+  areas: [],
 };

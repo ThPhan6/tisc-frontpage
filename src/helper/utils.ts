@@ -8,8 +8,23 @@ export const REGEX_PASSWORD =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d][\w~@#$%^&*+=`|{}:;!.?\"()\[\]-]{7,}$/;
 export const REGEX_EMAIL = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 export const REGEX_GET_CONTENT_ONLY = /[_.\n\s\r\t__]*/g;
-export const REGEX_NUMBER_ONLY = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/;
+export const REGEX_PHONE_NUMBER_ONLY = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/;
 export const REGEX_EMPTY_SPACE = /^\S*$/;
+export const REGEX_NUMBER_ONLY = /^[0-9]*$/;
+export const REGEX_NUMBER_FLOAT_ONLY = /^([0-9]+([.][0-9]*)?|[.][0-9]+)$/;
+
+export const validateNumber = (text: string, allowEmpty = true) => {
+  if (text === '' && allowEmpty) {
+    return true;
+  }
+  return REGEX_NUMBER_ONLY.test(text);
+};
+export const validateFloatNumber = (text: string, allowEmpty = true) => {
+  if (text === '' && allowEmpty) {
+    return true;
+  }
+  return REGEX_NUMBER_FLOAT_ONLY.test(text);
+};
 
 export const validateEmail = (email: string) => {
   return REGEX_EMAIL.test(email);
@@ -108,7 +123,7 @@ export const formatPhoneCode = (phoneCode?: string | null, removePlus: boolean =
 };
 
 export const validatePhoneNumber = (phoneNumber: string) => {
-  return REGEX_NUMBER_ONLY.test(phoneNumber);
+  return REGEX_PHONE_NUMBER_ONLY.test(phoneNumber);
 };
 
 export const validatePostalCode = (postalCode: string) => {

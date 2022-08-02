@@ -1,11 +1,9 @@
-// import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 import { ActionMenu } from '@/components/Action';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import type { TableColumnItem } from '@/components/Table/types';
-// import { confirmDelete } from '@/helper/common';
-// import { pushTo } from '@/helper/history';
-import { getProductAttributePagination } from '@/services';
+import { confirmDelete } from '@/helper/common';
+import { getProjectSpaceListPagination, deleteProjectSpace } from '@/services';
 import type { ProjectSpaceZone, ProjectSpaceArea, ProjectSpaceRoom } from '@/types';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import React, { useRef } from 'react';
@@ -15,29 +13,27 @@ const SUB_COL_WIDTH = 150;
 
 interface SpaceListProps {
   handleUpdateSpace: (record: ProjectSpaceZone) => void;
+  projectId?: string;
 }
 
-const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace }) => {
+const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) => {
   useAutoExpandNestedTableColumn(MAIN_COL_WIDTH, SUB_COL_WIDTH);
   const tableRef = useRef<any>();
 
-  // const handleUpdateAttribute = (id: string) => {
-  //   pushTo(`${activePath}/${id}`);
-  // };
-  // const handleDeleteAttribute = (id: string) => {
-  //   confirmDelete(() => {
-  //     deleteAttribute(id).then((isSuccess) => {
-  //       if (isSuccess) {
-  //         tableRef.current.reload();
-  //       }
-  //     });
-  //   });
-  // };
+  const handleDeleteZone = (id: string) => {
+    confirmDelete(() => {
+      deleteProjectSpace(id).then((isSuccess) => {
+        if (isSuccess) {
+          tableRef.current.reload();
+        }
+      });
+    });
+  };
 
   const GeneralColumns: TableColumnItem<ProjectSpaceZone>[] = [
     {
       title: 'Room Size',
-      dataIndex: 'size',
+      dataIndex: 'room_size',
       width: 106,
     },
     {
@@ -47,7 +43,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace }) => {
     },
     {
       title: 'Sub-total',
-      dataIndex: 'quantity',
+      dataIndex: 'sub_total',
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
   ];
@@ -95,8 +91,13 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace }) => {
       dataIndex: 'id',
       align: 'center',
       width: '5%',
-      render: (_v, record) => {
-        return <ActionMenu handleUpdate={() => handleUpdateSpace(record)} />;
+      render: (zoneId, record) => {
+        return (
+          <ActionMenu
+            handleUpdate={() => handleUpdateSpace(record)}
+            handleDelete={() => handleDeleteZone(zoneId)}
+          />
+        );
       },
     },
   ];
@@ -158,21 +159,24 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace }) => {
         rightAction={<CustomPlusButton />}
         columns={ZoneColumns}
         ref={tableRef}
-        fetchDataFunc={getProductAttributePagination}
+        fetchDataFunc={getProjectSpaceListPagination}
         multiSort={{
-          name: 'name_order',
-          area_coumn: 'area_coumn_order',
-          room_column: 'room_column_order',
-          room_id_column: 'room_id_column_order',
+          name: 'zone_order',
+          area_coumn: 'area_order',
+          room_column: 'room_name_order',
+          room_id_column: 'room_id_order',
         }}
         expandable={GetExpandableTableConfig({
           columns: AreaColumns,
-          childrenColumnName: 'subs',
+          childrenColumnName: 'areas',
           expandable: GetExpandableTableConfig({
             columns: RoomColumns,
-            childrenColumnName: 'subs',
+            childrenColumnName: 'rooms',
           }),
         })}
+        extraParams={{
+          project_id: projectId,
+        }}
       />
     </>
   );

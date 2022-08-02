@@ -34,7 +34,7 @@ const ProjectCreatePage: React.FC = () => {
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectTabKeys.zoneAreaRoom}>
-        <SpaceManagement />
+        <SpaceManagement projectId={projectId} />
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectTabKeys.productConsidered}>
