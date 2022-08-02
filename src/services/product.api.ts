@@ -159,8 +159,6 @@ export const updateProductCard = async (productId: string, data: ProductFormData
     data,
   })
     .then((res) => {
-      console.log(res.data);
-
       message.success(MESSAGE_NOTIFICATION.UPDATE_PRODUCT_SUCCESS);
       return res.data;
     })

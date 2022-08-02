@@ -1,9 +1,10 @@
-// :global(.ant-collapse-item-active) {
-//   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-// }
 .attributes {
   // margin-top: 8px;
   // transition: all 0.3s;
+
+  :global(.ant-collapse-item-active) {
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  }
 
   :global(.ant-collapse-content > .ant-collapse-content-box) {
     padding: 8px 16px;
@@ -60,6 +61,17 @@
         padding-top: 1px;
         color: @mono-color-medium;
       }
+    }
+  }
+  .attributeItemCheckBox {
+    display: flex;
+    align-items: center;
+    text-transform: capitalize;
+    :global(.attribute-name) {
+      margin-right: 12px;
+    }
+    :global(.attribute-description) {
+      color: @mono-color-medium !important;
     }
   }
 }
