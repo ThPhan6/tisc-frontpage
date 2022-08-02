@@ -1,4 +1,4 @@
-import { IBrandDetail, GeneralData } from '@/types';
+import { IBrandDetail, GeneralData, ConversionSubValueProps } from '@/types';
 
 export interface ProductSummary {
   categories: GeneralData[];
@@ -16,29 +16,38 @@ export interface GeneralFeatureFormInput {
   name: string;
   attributes: {
     id: string;
+    name: string;
     basis_id: string;
     basis_value_id: string;
     type: GeneralFeatureFormInputType;
     text: string;
     conversion_value_1: string;
     conversion_value_2: string;
+    conversion?: ConversionSubValueProps;
   }[];
 }
-
+export interface SpecificationAttributeBasisOptionProps {
+  id: string;
+  option_code: string;
+  image?: string | null;
+  unit_1?: string;
+  unit_2?: string;
+  value_1?: string;
+  value_2?: string;
+}
 export interface SpecificationFormInput {
   id?: string;
   name: string;
   attributes: {
     id: string;
+    name: string;
     basis_id: string;
     type: SpecificationFormInputType;
     text: string;
     conversion_value_1: string;
     conversion_value_2: string;
-    basis_options: {
-      id: string;
-      option_code: string;
-    }[];
+    conversion?: ConversionSubValueProps;
+    basis_options: SpecificationAttributeBasisOptionProps[];
   }[];
 }
 export type ProductKeyword = [string, string, string, string];
