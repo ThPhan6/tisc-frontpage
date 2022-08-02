@@ -40,6 +40,7 @@ const GeneralFeatureAttributeItem: React.FC<GeneralFeatureAttributeItemProps> = 
       };
     }),
   );
+
   useEffect(() => {
     if (selected) {
       let newAttributes = [...general_attribute_groups];
@@ -70,13 +71,15 @@ const GeneralFeatureAttributeItem: React.FC<GeneralFeatureAttributeItemProps> = 
             activeData.conversion_value_2 = previousData.conversion_value_2;
           }
 
-          return {
+          const newAttribute: GeneralFeatureFormInput['attributes'][0] = {
             id: selectedAttribute.id,
             basis_id: selectedAttribute.basis_id,
             basis_value_id: '',
             type: selectedAttribute.basis?.type ?? 'Text',
             ...activeData,
           };
+
+          return newAttribute;
         }),
       };
       if (activeKey === 'feature') {

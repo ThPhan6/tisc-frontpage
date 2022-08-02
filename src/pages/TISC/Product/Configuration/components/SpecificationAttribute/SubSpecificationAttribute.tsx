@@ -69,6 +69,7 @@ const SubGeneralFeatureAttribute: React.FC<SubGeneralFeatureAttributeProps> = (p
       option_code: string;
     }[]
   >(localAttribute?.basis_options ?? []);
+
   useEffect(() => {
     if (selected) {
       const newAttributes = [...specification_attribute_groups];

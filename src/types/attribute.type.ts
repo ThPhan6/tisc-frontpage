@@ -1,4 +1,4 @@
-import { SubBasisConversion, SubBasisOption, SubBasisPreset } from '@/types';
+import { SubBasisConversion, SubBasisPreset } from '@/types';
 
 export interface SubAttribute {
   id: string;
@@ -75,23 +75,8 @@ export interface AttributeGeneralFeature {
   subs: AttributeGeneralFeatureSub[];
 }
 
-export interface AttributeSpecificationSub extends SubAttribute {
-  basis: {
-    id: string;
-    type: string;
-    name: string;
-    subs: SubBasisConversion[] & BasisText[] & SubBasisOption[];
-  };
-}
-export interface AttributeSpecification {
-  id: string;
-  name: string;
-  type: number;
-  subs: AttributeSpecificationSub[];
-}
-
 export interface AttributebyType {
   general: AttributeGeneralFeature[];
   feature: AttributeGeneralFeature[];
-  specification: AttributeSpecification[];
+  specification: AttributeGeneralFeature[];
 }

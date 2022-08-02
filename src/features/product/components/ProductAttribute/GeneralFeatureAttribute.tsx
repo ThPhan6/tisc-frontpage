@@ -1,21 +1,49 @@
 import { FC } from 'react';
+import styles from '../detail.less';
 import { useAppSelector } from '@/reducers';
 import { useDispatch } from 'react-redux';
-import styles from '../detail.less';
-import CustomCollapse from '@/components/Collapse';
-import { GeneralFeatureContent, GeneralFeatureHeader } from './GeneralFeature';
-import { useCheckPermission } from '@/helper/hook';
 import { AttributebyType } from '@/types';
-import { setPartialProductDetail } from '../../reducers';
+import { GeneralFeatureFormInput } from '../../types';
+import {
+  AttributeCollapse,
+  ConversionText,
+  GeneralText,
+  ProductAttributeLine,
+} from './AttributeComponent';
+import { useCheckPermission } from '@/helper/hook';
 import { MainTitle } from '@/components/Typography';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import GeneralFeatureAttributeItem from './GeneralFeatureAttributeItem';
+import { setPartialProductDetail } from '../../reducers';
+
+interface CollapseProductAttributeProps {
+  group: GeneralFeatureFormInput;
+  index: number;
+}
+const CollapseProductAttribute: React.FC<CollapseProductAttributeProps> = ({ group, index }) => {
+  return (
+    <AttributeCollapse name={group.name} index={index}>
+      {group.attributes.map((attribute, key) => (
+        <ProductAttributeLine name={attribute.name} key={key}>
+          {attribute.conversion ? (
+            <ConversionText
+              conversion={attribute.conversion}
+              firstValue={attribute.conversion_value_1}
+              secondValue={attribute.conversion_value_2}
+            />
+          ) : (
+            <GeneralText text={attribute.text} />
+          )}
+        </ProductAttributeLine>
+      ))}
+    </AttributeCollapse>
+  );
+};
 
 interface GeneralFeatureAttributeProps {
-  attributes: AttributebyType['general'] | AttributebyType['feature'];
+  attributes?: AttributebyType['general'] | AttributebyType['feature'];
   activeKey: 'general' | 'feature';
 }
-
 export const GeneralFeatureAttribute: FC<GeneralFeatureAttributeProps> = ({
   activeKey,
   attributes,
@@ -25,6 +53,7 @@ export const GeneralFeatureAttribute: FC<GeneralFeatureAttributeProps> = ({
   const { feature_attribute_groups, general_attribute_groups } = useAppSelector(
     (state) => state.product.details,
   );
+
   const attributeGroup =
     activeKey === 'general' ? general_attribute_groups : feature_attribute_groups;
 
@@ -88,7 +117,10 @@ export const GeneralFeatureAttribute: FC<GeneralFeatureAttributeProps> = ({
       )}
 
       {attributeGroup.map((group, index) => {
-        if (isTiscAdmin) {
+        if (isTiscAdmin === false) {
+          return <CollapseProductAttribute key={group.id || index} group={group} index={index} />;
+        }
+        if (attributes) {
           return (
             <GeneralFeatureAttributeItem
               attributes={attributes}
@@ -112,23 +144,7 @@ export const GeneralFeatureAttribute: FC<GeneralFeatureAttributeProps> = ({
             />
           );
         }
-        return (
-          <CustomCollapse
-            showActiveBoxShadow
-            key={`${group.name}_${index}`}
-            className={styles.vendorSection}
-            customHeaderClass={styles.vendorCustomPanelBox}
-            header={<GeneralFeatureHeader name={group.name} />}
-          >
-            {group.attributes.map((attribute) => (
-              <GeneralFeatureContent
-                key={attribute.id}
-                type={attribute.type}
-                text={attribute.text}
-              />
-            ))}
-          </CustomCollapse>
-        );
+        return null;
       })}
     </>
   );
