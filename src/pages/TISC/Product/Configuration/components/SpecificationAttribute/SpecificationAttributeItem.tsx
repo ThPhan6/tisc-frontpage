@@ -46,6 +46,8 @@ const GeneralFeatureAttributeItem: React.FC<GeneralFeatureAttributeItemProps> = 
     }),
   );
 
+  console.log('attribute');
+
   useEffect(() => {
     if (selected) {
       const newAttributes = [...specification_attribute_groups];

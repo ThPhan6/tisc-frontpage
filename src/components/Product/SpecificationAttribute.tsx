@@ -1,23 +1,14 @@
+import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
 import { useAppSelector } from '@/reducers';
 import CustomCollapse from '../Collapse';
-import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
 import { BodyText } from '../Typography';
-import styles from './styles/attributes.less';
-import Popover from '../Modal/Popover';
-import { useState } from 'react';
 import { GeneralFeatureHeader } from './components/GeneralFeature';
+import styles from './styles/attributes.less';
 
 const SpecificationAttribute = () => {
-  const { specification_attribute_groups } = useAppSelector((state) => state.product.details);
-  const [visible, setVisible] = useState<boolean>(false);
-  const [groupName, setGroupName] = useState<string>('');
-
-  const handleShowPopUp = (title: string) => {
-    /// get group name to show inside popup
-    setGroupName(title);
-    /// show popup
-    setVisible(true);
-  };
+  const specification_attribute_groups = useAppSelector(
+    (state) => state.product.details.specification_attribute_groups,
+  );
 
   return (
     <div className={styles.attributes}>
@@ -37,7 +28,9 @@ const SpecificationAttribute = () => {
                     <BodyText level={4} customClass={styles.content_text}>
                       {attribute.text}
                     </BodyText>
-                    <div className={styles.content} onClick={() => handleShowPopUp(group.name)}>
+                    <div
+                      className={styles.content} /* onClick={() => handleShowPopUp(group.name)} */
+                    >
                       <BodyText level={6} fontFamily="Roboto" customClass={styles.content_select}>
                         select
                       </BodyText>
@@ -49,10 +42,9 @@ const SpecificationAttribute = () => {
             </CustomCollapse>
           );
         })}
-      </div>
 
-      {/* popup */}
-      {visible && <Popover title={groupName} visible={visible} setVisible={setVisible}></Popover>}
+        {/* popup */}
+      </div>
     </div>
   );
 };
