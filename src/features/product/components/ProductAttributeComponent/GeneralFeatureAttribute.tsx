@@ -2,7 +2,7 @@ import { FC } from 'react';
 import styles from '../detail.less';
 import { useAppSelector } from '@/reducers';
 import { useDispatch } from 'react-redux';
-import { AttributebyType } from '@/types';
+import { ProductAttributeByType } from '@/types';
 import { GeneralFeatureFormInput } from '../../types';
 import {
   AttributeCollapse,
@@ -41,7 +41,7 @@ const CollapseProductAttribute: React.FC<CollapseProductAttributeProps> = ({ gro
 };
 
 interface GeneralFeatureAttributeProps {
-  attributes?: AttributebyType['general'] | AttributebyType['feature'];
+  attributes?: ProductAttributeByType['general'] | ProductAttributeByType['feature'];
   activeKey: 'general' | 'feature';
 }
 export const GeneralFeatureAttribute: FC<GeneralFeatureAttributeProps> = ({

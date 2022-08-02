@@ -1,14 +1,14 @@
 import { MainTitle } from '@/components/Typography';
 import SpecificationAttributeItem from './SpecificationAttributeItem';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { AttributebyType } from '@/types';
+import { ProductAttributeByType } from '@/types';
 import styles from '@/features/product/components/detail.less';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
 import { setPartialProductDetail } from '@/features/product/reducers';
 
 interface SpecificationAttributeProps {
-  attributes: AttributebyType['specification'];
+  attributes: ProductAttributeByType['specification'];
 }
 const SpecificationAttribute = (props: SpecificationAttributeProps) => {
   const { attributes } = props;

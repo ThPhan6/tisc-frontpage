@@ -14,11 +14,11 @@ import { setPartialProductDetail } from '@/features/product/reducers';
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 import styles from '../detail.less';
 import { map, upperCase } from 'lodash';
-import { AttributeGeneralFeature } from '@/types';
+import { ProductAttributes } from '@/types';
 import GeneralFeatureAttributeSubItem from './GeneralFeatureAttributeSubItem';
 
 interface GeneralFeatureAttributeItemProps {
-  attributes: AttributeGeneralFeature[];
+  attributes: ProductAttributes[];
   attributeItem: GeneralFeatureFormInput;
   onDelete?: () => void;
   onItemChange?: (data: GeneralFeatureFormInput['attributes']) => void;

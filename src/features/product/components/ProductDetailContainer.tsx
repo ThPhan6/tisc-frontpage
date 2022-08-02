@@ -19,9 +19,9 @@ import { useAppSelector } from '@/reducers';
 import styles from './detail.less';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
-import { ProductInfoTab } from './ProductAttribute/types';
+import { ProductInfoTab } from './ProductAttributeComponent/types';
 import { ProductBasicInfo } from './ProductBasicInfo';
-import { ProductAttribute } from './ProductAttribute';
+import { ProductAttributeComponent } from './ProductAttributeComponent';
 import { ProductDetailFooter } from './ProductDetailFooter';
 import ProductImagePreview from './ProductImagePreview';
 import { getBrandById } from '@/services';
@@ -183,7 +183,7 @@ const ProductDetailContainer: React.FC = () => {
           </Col>
 
           <Col style={{ marginBottom: activeKey !== 'vendor' ? 24 : 0 }}>
-            <ProductAttribute activeKey={activeKey} setActiveKey={setActiveKey} />
+            <ProductAttributeComponent activeKey={activeKey} setActiveKey={setActiveKey} />
           </Col>
 
           <Col style={{ marginTop: 'auto' }}>

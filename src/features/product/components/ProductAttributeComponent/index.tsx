@@ -7,7 +7,7 @@ import { GeneralFeatureAttribute } from './GeneralFeatureAttribute';
 import { ProductInfoTab } from './types';
 import { ProductVendor } from './ProductVendor';
 import { getAllAttribute } from '@/services';
-import { AttributebyType } from '@/types';
+import { ProductAttributeByType } from '@/types';
 
 const LIST_TAB = [
   { tab: 'GENERAL', key: 'general' },
@@ -16,17 +16,17 @@ const LIST_TAB = [
   { tab: 'VENDOR', key: 'vendor' },
 ];
 
-interface ProductAttributeInterface {
+interface ProductAttributeComponentProps {
   activeKey: ProductInfoTab;
   setActiveKey: (activeKey: ProductInfoTab) => void;
 }
 
-export const ProductAttribute: React.FC<ProductAttributeInterface> = ({
+export const ProductAttributeComponent: React.FC<ProductAttributeComponentProps> = ({
   activeKey,
   setActiveKey,
 }) => {
   const [isReady, setIsReady] = useState(false);
-  const [attribute, setAttribute] = useState<AttributebyType>({
+  const [attribute, setAttribute] = useState<ProductAttributeByType>({
     general: [],
     feature: [],
     specification: [],

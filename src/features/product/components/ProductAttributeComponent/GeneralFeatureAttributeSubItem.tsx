@@ -5,7 +5,7 @@ import ConversionInput from '@/components/EntryForm/ConversionInput';
 import Popover from '@/components/Modal/Popover';
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 import type { GeneralFeatureFormInput } from '@/features/product/types';
-import type { AttributeGeneralFeature } from '@/types';
+import type { ProductAttributes } from '@/types';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
 import { setPartialProductDetail } from '@/features/product/reducers';
@@ -13,7 +13,7 @@ import type { RadioValue } from '@/components/CustomRadio/types';
 import { truncate } from 'lodash';
 
 interface GeneralFeatureAttributeSubItemProps {
-  attributes: AttributeGeneralFeature[];
+  attributes: ProductAttributes[];
   itemAttributes: GeneralFeatureFormInput['attributes'];
   item: GeneralFeatureFormInput['attributes'][0];
   onDelete?: () => void;
