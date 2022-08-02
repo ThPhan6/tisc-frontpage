@@ -1,0 +1,73 @@
+.profile {
+  :global(.mono-color) {
+    color: @mono-color-dark;
+  }
+  .designName {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .logo {
+      height: 56px;
+      margin-bottom: 14px;
+      margin-left: 12px;
+    }
+  }
+  .official_websites {
+    // display: flex;
+    // align-items: center;
+
+    box-shadow: @border-bottom-light;
+
+    &_table {
+      width: 100%;
+      white-space: nowrap;
+      table-layout: fixed;
+
+      tr {
+        height: 32px;
+      }
+
+      td {
+        height: 32px;
+        padding: 0;
+
+        p {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .text {
+        width: 30%;
+        padding-right: 24px;
+        text-transform: capitalize;
+      }
+
+      .url {
+        width: 70%;
+      }
+    }
+  }
+}
+
+.team_form {
+  :global(.ant-collapse-borderless) {
+    background: #fff !important;
+  }
+
+  .teamInfo {
+    :last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .userName {
+    display: flex;
+    align-items: center;
+
+    .name {
+      margin-left: 8px;
+    }
+  }
+}

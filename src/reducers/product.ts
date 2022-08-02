@@ -1,5 +1,5 @@
 import type {
-  IBrandDetail,
+  BrandDetail,
   ProductCatelogue,
   ProductDownload,
   ProductList,
@@ -13,7 +13,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface ProductState {
-  brand?: IBrandDetail;
+  brand?: BrandDetail;
   summary?: ProductSummary;
   tip: ProductTip;
   download: ProductDownload;
@@ -53,7 +53,7 @@ const productSlice = createSlice({
   name: 'product',
   initialState,
   reducers: {
-    setBrand(state, action: PayloadAction<IBrandDetail | undefined>) {
+    setBrand(state, action: PayloadAction<BrandDetail | undefined>) {
       state.brand = action.payload;
     },
     setProductSummary(state, action: PayloadAction<ProductSummary | undefined>) {

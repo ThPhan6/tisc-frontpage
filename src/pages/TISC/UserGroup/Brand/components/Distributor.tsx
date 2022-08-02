@@ -11,13 +11,13 @@ import indexStyles from '../../styles/index.less';
 import { ActiveKeyType } from '../../types';
 import styles from '../styles/details.less';
 
-const BrandLocationDetail = () => {
+const BrandDistributorDetail = () => {
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
 
-  const [locations, setLocations] = useState<any>([]);
+  const [distributor, setDistributor] = useState<any>([]);
 
   useEffect(() => {
-    setLocations(BrandDetailData);
+    setDistributor(BrandDetailData);
   });
 
   const renderBusinessHeader = (business: any) => {
@@ -56,7 +56,7 @@ const BrandLocationDetail = () => {
               setActiveKey(key);
             }}
           >
-            {locations.map((location, index) => (
+            {distributor.map((location, index) => (
               <Collapse.Panel
                 header={renderLocationHeader(location)}
                 key={index}
@@ -72,54 +72,75 @@ const BrandLocationDetail = () => {
                   // onChange={setSecondActiveKey}
                   // activeKey={secondActiveKey}
                 >
-                  {location.users.map((business, userIndex) => (
+                  {location.users.map((user, userIndex) => (
                     <Collapse.Panel
-                      header={renderBusinessHeader(business)}
+                      header={renderBusinessHeader(user)}
                       key={`${index}-${userIndex}`}
-                      collapsible={isEmpty(business.firstname) ? 'disabled' : undefined}
+                      collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}
                       // className="site-collapse-custom-panel"
                     >
                       <div className={`${indexStyles.info} ${styles.teamInfo}`}>
                         <InputGroup
-                          label="Registered Number"
+                          label="Address"
                           colon
                           fontLevel={3}
-                          value={business.gender === true ? 'Male' : 'Female'}
+                          value={user.address ?? ''}
                           readOnly
                         />
                         <InputGroup
-                          label="Location Type"
+                          label="Person in charge"
                           colon
                           fontLevel={3}
-                          value={business.work_location ?? ''}
+                          value={user.gender === true ? 'Male' : 'Female'}
+                          readOnly
+                        />
+                        <InputGroup
+                          label="Gender"
+                          colon
+                          fontLevel={3}
+                          value={user.work_location ?? ''}
                           readOnly
                         />
                         <InputGroup
                           label="Location Function"
                           colon
                           fontLevel={3}
-                          value={business.department ?? ''}
+                          value={user.department ?? ''}
                           readOnly
                         />
                         <InputGroup
-                          label="Address"
+                          label="Work Email"
                           colon
                           fontLevel={3}
-                          value={business.position ?? ''}
+                          value={user.email ?? ''}
                           readOnly
                         />
                         <InputGroup
-                          label="General Phone"
+                          label="Work Phone"
                           colon
                           fontLevel={3}
-                          value={business.phone ?? ''}
+                          value={user.phone ?? ''}
                           readOnly
                         />
                         <InputGroup
-                          label="General Email"
+                          label="Work Mobile"
                           colon
                           fontLevel={3}
-                          value={business.phone ?? ''}
+                          value={user.mobile ?? ''}
+                          readOnly
+                        />
+                        <InputGroup
+                          label="Authorized Countries"
+                          colon
+                          fontLevel={3}
+                          value={user.mobile ?? ''}
+                          readOnly
+                        />
+                        <InputGroup
+                          label="Coverage Beyond"
+                          colon
+                          fontLevel={3}
+                          value={user.mobile ?? ''}
                           readOnly
                         />
                       </div>
@@ -135,4 +156,4 @@ const BrandLocationDetail = () => {
   );
 };
 
-export default BrandLocationDetail;
+export default BrandDistributorDetail;

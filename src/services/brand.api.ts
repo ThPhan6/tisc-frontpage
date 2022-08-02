@@ -2,9 +2,10 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import type {
   IBrandListItem,
   IBrandAlphabet,
-  IBrandDetail,
+  BrandDetail,
   IBrandCard,
   BrandSummary,
+  BrandStatuses,
 } from '@/types';
 import type {
   DataTableResponse,
@@ -70,7 +71,7 @@ export async function getBrandCards() {
 }
 
 export async function getBrandById(brandId: string) {
-  return request<{ data: IBrandDetail }>(`/api/brand/get-one/${brandId}`, {
+  return request<{ data: BrandDetail }>(`/api/brand/get-one/${brandId}`, {
     method: 'GET',
   })
     .then((response) => {
@@ -78,7 +79,7 @@ export async function getBrandById(brandId: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
-      return undefined;
+      return {} as BrandDetail;
     });
 }
 
@@ -98,25 +99,20 @@ export async function getBrandSummary() {
 }
 
 export async function getBrandStatuses() {
-  return request<{
-    data: {
-      key: string;
-      value: string | number;
-    }[];
-  }>(`/api/brand/statuses`, {
+  return request<BrandStatuses[]>(`/api/brand/statuses`, {
     method: 'GET',
   })
     .then((response) => {
-      return response.data;
+      return response;
     })
     .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
-      return undefined;
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_STATUSES_ERROR);
+      return [] as BrandStatuses[];
     });
 }
 
 export async function createBrand() {
-  return request<{ data: IBrandDetail }>(`/api/brand/create`, {
+  return request<{ data: BrandDetail }>(`/api/brand/create`, {
     method: 'POST',
   })
     .then(() => {

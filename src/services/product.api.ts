@@ -8,7 +8,7 @@ import {
 } from '@/reducers/product';
 import type {
   GroupProductList,
-  IBrandDetail,
+  BrandDetail,
   ProductFormData,
   ProductGetListParameter,
   ProductSummary,
@@ -53,7 +53,7 @@ export const createProductCard = async (data: ProductFormData) => {
 
 //
 export const getProductListByBrandId = async (params: ProductGetListParameter) => {
-  return request<{ data: { data: GroupProductList[]; brand: IBrandDetail } }>(
+  return request<{ data: { data: GroupProductList[]; brand: BrandDetail } }>(
     `/api/product/get-list`,
     {
       method: 'GET',
