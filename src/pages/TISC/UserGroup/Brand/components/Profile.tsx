@@ -92,7 +92,7 @@ const BrandProfileDetail = () => {
                   </td>
                   <td className={styles.url}>
                     <BodyText level={5} fontFamily="Roboto">
-                      {web.url ?? ''}{' '}
+                      {web.url ?? ''}
                     </BodyText>
                   </td>
                 </tr>
