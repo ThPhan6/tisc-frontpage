@@ -219,3 +219,29 @@ export async function getRegions() {
       return [] as Regions[];
     });
 }
+
+export async function getDistributorLocation(productId: string) {
+  return request<{ data: LocationGroupedByCountry[] }>(`/api/location/market/${productId}`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LOCATION_DISTRIBUTOR_ERROR);
+      return [] as LocationGroupedByCountry[];
+    });
+}
+
+export async function getBrandLocation(brandId: string) {
+  return request<{ data: LocationGroupedByCountry[] }>(`/api/location/brand/${brandId}`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LOCATION_BRAND_ERROR);
+      return [] as LocationGroupedByCountry[];
+    });
+}

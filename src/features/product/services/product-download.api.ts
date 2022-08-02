@@ -6,12 +6,9 @@ import { setProductDownload } from '@/features/product/reducers';
 import store from '@/reducers';
 
 export const getProductDownloadByProductID = async (productId: string) => {
-  return request<{ data: ProductDownload }>(
-    `/api/product-catelogue-download/get-one/${productId}`,
-    {
-      method: 'GET',
-    },
-  )
+  return request<{ data: ProductDownload }>(`/api/product-download/get-one/${productId}`, {
+    method: 'GET',
+  })
     .then((res) => {
       store.dispatch(setProductDownload(res.data));
     })
@@ -23,7 +20,7 @@ export const getProductDownloadByProductID = async (productId: string) => {
 };
 
 export const createProductDownload = async (data: ProductDownload) => {
-  return request(`/api/product-catelogue-download/create`, {
+  return request(`/api/product-download/create`, {
     method: 'POST',
     data,
   })

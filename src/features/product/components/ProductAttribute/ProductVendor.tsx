@@ -1,44 +1,158 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useAppSelector } from '@/reducers';
 import styles from './ProductVendor.less';
 import CustomCollapse from '@/components/Collapse';
 import { BodyText } from '@/components/Typography';
-import { useCheckPermission } from '@/helper/hook';
+import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
 import { ReactComponent as CatelogueIcon } from '@/assets/icons/catelogue-icon.svg';
 import { ReactComponent as LocationIcon } from '@/assets/icons/location-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 import Popover from '@/components/Modal/Popover';
+import { getBrandLocation, getDistributorLocation } from '@/services';
+import { LocationGroupedByCountry } from '@/types';
+import { useParams } from 'umi';
 
-interface BrandContactBoxProps {
-  title: string;
+interface IBusinessDetail {
+  business: string;
+  type: string;
+  address: string;
+  country?: string;
+}
+const BusinessDetail: FC<IBusinessDetail> = ({ business, type = '', address }) => {
+  return (
+    <div className={styles.detail}>
+      <div className={styles.detail_business}>
+        <span className={styles.name}> {business} </span>
+        <span className={styles.type}> {type && `(${type})`} </span>
+      </div>
+      <span className={styles.detail_address}>{address}</span>
+    </div>
+  );
+};
+
+type BrandContactTitle = 'Brand Locations' | 'Distributor Locations';
+interface BrandContactProps {
+  title: BrandContactTitle;
 }
 
-export const BrandContact: FC<BrandContactBoxProps> = ({ title }) => {
-  const [visible, setVisible] = useState(false);
+export const BRAND_CONTACT_TITLE: BrandContactTitle[] = [
+  'Brand Locations',
+  'Distributor Locations',
+];
 
-  const showPopUp = useCheckPermission('Brand Admin');
-  const handleShowPopup = () => {
-    if (showPopUp) {
-      setVisible(true);
+export const BrandContact: FC<BrandContactProps> = ({ title }) => {
+  /// for distributor location
+  const showDistributeSelection = useBoolean();
+  const [distributorLocation, setDistributorLocation] = useState<LocationGroupedByCountry[]>([]);
+
+  /// for brand location
+  const showBrandSelection = useBoolean();
+  const [brandLocation, setBrandLocation] = useState<LocationGroupedByCountry[]>([]);
+
+  /// get productID
+  const params = useParams<{ id: string }>();
+  const productID = params?.id || '';
+
+  /// check user permission
+  const showPopUp = useCheckPermission(['Brand Admin', 'Design Admin']);
+
+  const brandID = useAppSelector((state) => state.product.brand?.id) || '';
+
+  const handleShowPopup = (locationTitle: BrandContactTitle) => {
+    if (!showPopUp) {
+      return;
+    }
+    if (locationTitle === 'Brand Locations') {
+      showBrandSelection.setValue(true);
+    } else if (locationTitle === 'Distributor Locations') {
+      showDistributeSelection.setValue(true);
     }
   };
 
+  useEffect(() => {
+    getDistributorLocation(productID).then((data) => {
+      if (data) {
+        setBrandLocation(data);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    getBrandLocation(brandID).then((data) => {
+      if (data) {
+        setDistributorLocation(data);
+      }
+    });
+  }, []);
   return (
     <div className="contact-item-wrapper">
       <div className="contact-item">
         <BodyText level={4} customClass="contact-item-title">
           {title}
         </BodyText>
-        <div className="contact-select-box" onClick={handleShowPopup}>
+        <div className="contact-select-box" onClick={() => handleShowPopup(title)}>
           <BodyText level={6} fontFamily="Roboto">
             select
           </BodyText>
           {showPopUp ? <SingleRightIcon className="single-right-icon" /> : <DropdownIcon />}
         </div>
       </div>
-      <Popover title="SELECT LOCATION" visible={visible} setVisible={setVisible} />
+
+      {/* distributor location */}
+      <Popover
+        title="SELECT LOCATION"
+        className={styles.customLocationModal}
+        visible={showDistributeSelection.value}
+        setVisible={showDistributeSelection.setValue}
+        dropDownRadioTitle={(dropdownData) => dropdownData.country_name}
+        dropdownRadioList={distributorLocation.map((country) => {
+          return {
+            country_name: country.country_name,
+            options: country.locations.map((location) => {
+              return {
+                label: (
+                  <BusinessDetail
+                    business={location.business_name}
+                    type={location.functional_types[0]?.name}
+                    address={location.address}
+                    country={location.country_name.toUpperCase()}
+                  />
+                ),
+                value: location.id,
+              };
+            }),
+          };
+        })}
+      />
+
+      {/* brand location */}
+      <Popover
+        title="SELECT LOCATION"
+        className={styles.customLocationModal}
+        visible={showBrandSelection.value}
+        setVisible={showBrandSelection.setValue}
+        dropDownRadioTitle={(dropdownData) => dropdownData.country_name}
+        dropdownRadioList={brandLocation.map((country) => {
+          return {
+            country_name: country.country_name,
+            options: country.locations.map((location) => {
+              return {
+                label: (
+                  <BusinessDetail
+                    business={location.business_name}
+                    type={location.functional_types[0]?.name}
+                    address={location.address}
+                    country={location.country_name.toUpperCase()}
+                  />
+                ),
+                value: location.id,
+              };
+            }),
+          };
+        })}
+      />
     </div>
   );
 };
@@ -115,8 +229,9 @@ export const ProductVendor: FC = ({ children }) => {
           </BodyText>
         </div>
         <div className={styles.contactContent}>
-          <BrandContact title="Brand Locations" />
-          <BrandContact title="Distributor Locations" />
+          {BRAND_CONTACT_TITLE.map((title) => (
+            <BrandContact title={title} />
+          ))}
         </div>
       </div>
 
