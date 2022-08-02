@@ -1,0 +1,22 @@
+.label {
+  color: @mono-color-dark;
+}
+.contentTab {
+  height: calc(100vh - 272px);
+  margin-top: 8px;
+  padding: 16px;
+  background-color: #fff;
+  :global(.mono-color) {
+    color: @mono-color-dark;
+  }
+  .designName {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .logo {
+      height: 56px;
+      margin-bottom: 14px;
+      margin-left: 12px;
+    }
+  }
+}

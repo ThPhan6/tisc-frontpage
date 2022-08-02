@@ -219,6 +219,7 @@ export const MESSAGE_NOTIFICATION = {
 export const MESSAGE_TOOLTIP = {
   PERSONAL_PROFILE:
     'We value user personal privacy. However, the platform will require individual information for verification purpose from time to time.',
+  STATUS_DESING_FIRMS: 'Active: Fully activated. Inactive: Removed & archived',
 };
 
 export const EMPTY_DATA_MESSAGE = {
