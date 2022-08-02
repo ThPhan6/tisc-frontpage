@@ -2,10 +2,10 @@ import { MainTitle } from '@/components/Typography';
 import SpecificationAttributeItem from './SpecificationAttributeItem';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { AttributebyType } from '@/types';
-import styles from '@/components/Product/styles/details.less';
+import styles from '@/features/product/components/detail.less';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
-import { setPartialProductDetail } from '@/reducers/product';
+import { setPartialProductDetail } from '@/features/product/reducers';
 
 interface SpecificationAttributeProps {
   attributes: AttributebyType['specification'];

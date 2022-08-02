@@ -9,18 +9,14 @@ import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { Collapse } from 'antd';
-import type {
-  AttributeSpecification,
-  SpecificationFormInput,
-  AttributeSpecificationSub,
-  SpecificationFormInputType,
-} from '@/types';
+import type { SpecificationFormInput, SpecificationFormInputType } from '@/features/product/types';
+import type { AttributeSpecification, AttributeSpecificationSub } from '@/types';
 import { POPOVER_TITLE } from '../../constants';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
-import { setPartialProductDetail } from '@/reducers/product';
+import { setPartialProductDetail } from '@/features/product/reducers';
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
-import styles from '@/components/Product/styles/details.less';
+import styles from '@/features/product/components/detail.less';
 import { map, upperCase } from 'lodash';
 
 interface GeneralFeatureAttributeItemProps {

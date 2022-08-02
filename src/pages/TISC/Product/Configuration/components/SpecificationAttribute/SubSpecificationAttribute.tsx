@@ -6,13 +6,14 @@ import ConversionInput from '@/components/EntryForm/ConversionInput';
 import Popover from '@/components/Modal/Popover';
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 import { showImageUrl } from '@/helper/utils';
-import type { AttributeSpecification, SpecificationFormInput, SubBasisOption } from '@/types';
+import type { AttributeSpecification, SubBasisOption } from '@/types';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
-import { setPartialProductDetail } from '@/reducers/product';
+import { setPartialProductDetail } from '@/features/product/reducers';
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 import styles from './styles/index.less';
 import { truncate } from 'lodash';
+import { SpecificationFormInput } from '@/features/product/types';
 
 interface SubGeneralFeatureAttributeProps {
   attributes: AttributeSpecification[];

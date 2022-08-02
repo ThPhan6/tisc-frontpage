@@ -51,7 +51,7 @@ export async function getAllProductCategory() {
       page: 1,
     },
   })
-    .then((response: ICategoryPaginationResponse) => {
+    .then((response: CategoryPaginationResponse) => {
       store.dispatch(setList(response.data.categories));
     })
     .catch((error) => {
