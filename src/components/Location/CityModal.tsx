@@ -1,6 +1,6 @@
 import Popover from '@/components/Modal/Popover';
 import { getCitiesByCountryIdAndStateId } from '@/services/location.api';
-import { ICity } from '@/types';
+import { City } from '@/types';
 import { FC, useEffect, useState } from 'react';
 // import styles from './styles/CountryModal.less';
 
@@ -12,7 +12,7 @@ const CityModal: FC<{
   chosenValue?: any;
   setChosenValue: (value: any) => void;
 }> = ({ visible, setVisible, chosenValue, setChosenValue, stateId, countryId }) => {
-  const [cities, setCities] = useState<ICity[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
 
   const getCityList = () => {
     getCitiesByCountryIdAndStateId(countryId, stateId).then((res) => {

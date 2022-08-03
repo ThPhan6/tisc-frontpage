@@ -1,6 +1,6 @@
 import Popover from '@/components/Modal/Popover';
 import { getCountries } from '@/services/location.api';
-import { ICountry } from '@/types';
+import { Country } from '@/types';
 import { FC, useEffect, useState } from 'react';
 import { formatPhoneCode } from '@/helper/utils';
 import styles from './styles/CountryModal.less';
@@ -12,7 +12,7 @@ const CountryModal: FC<{
   setChosenValue: (value: any) => void;
   withPhoneCode?: boolean;
 }> = ({ visible, setVisible, chosenValue, setChosenValue, withPhoneCode }) => {
-  const [countries, setCountries] = useState<ICountry[]>([]);
+  const [countries, setCountries] = useState<Country[]>([]);
 
   const getCountryList = () => {
     getCountries().then((res) => {

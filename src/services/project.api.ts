@@ -16,7 +16,7 @@ import {
   ProjectSummaryData,
 } from '@/types';
 
-interface IProjectPaginationResponse {
+interface ProjectPaginationResponse {
   data: {
     projects: ProjectListProps[];
     pagination: PaginationResponse;
@@ -31,7 +31,7 @@ export async function getProjectPagination(
     method: 'GET',
     params,
   })
-    .then((response: IProjectPaginationResponse) => {
+    .then((response: ProjectPaginationResponse) => {
       const { projects, pagination } = response.data;
       callback({
         data: projects,

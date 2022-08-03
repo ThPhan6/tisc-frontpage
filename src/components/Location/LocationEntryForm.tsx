@@ -23,15 +23,16 @@ import {
 import { MESSAGE_ERROR } from '@/constants/message';
 import { trimStart } from 'lodash';
 
-interface ILocationEntryForm {
+interface LocationEntryFormProps {
   submitButtonStatus: any;
   onSubmit: (data: LocationForm) => void;
   onCancel: () => void;
   data: LocationForm;
   setData: (data: LocationForm) => void;
 }
+
 type FieldName = keyof LocationForm;
-const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
+const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
   const { submitButtonStatus, onSubmit, onCancel, data, setData } = props;
   // for content type modal
   const [visible, setVisible] = useState({

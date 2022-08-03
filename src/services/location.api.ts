@@ -1,9 +1,9 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import type {
-  ICity,
-  ICountry,
-  IState,
-  ILocationDetail,
+  City,
+  Country,
+  State,
+  LocationDetail,
   FunctionalTypeData,
   LocationForm,
   LocationGroupedByCountry,
@@ -20,7 +20,7 @@ import type {
 
 interface LocationPaginationResponse {
   data: {
-    locations: ILocationDetail[];
+    locations: LocationDetail[];
     pagination: PaginationResponse;
     summary: SummaryResponse[];
   };
@@ -49,12 +49,12 @@ export async function getLocationList(
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_LOCATION_ERROR);
-      return [] as ILocationDetail[];
+      return [] as LocationDetail[];
     });
 }
 
 export async function getCountries() {
-  return request<{ data: ICountry[] }>(`/api/location/get-countries`, {
+  return request<{ data: Country[] }>(`/api/location/get-countries`, {
     method: 'GET',
   })
     .then((response) => {
@@ -62,12 +62,12 @@ export async function getCountries() {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_COUNTRIES_ERROR);
-      return [] as ICountry[];
+      return [] as Country[];
     });
 }
 
 export async function getStatesByCountryId(countryId: string) {
-  return request<{ data: IState[] }>(`/api/location/get-states`, {
+  return request<{ data: State[] }>(`/api/location/get-states`, {
     method: 'GET',
     params: { country_id: countryId },
   })
@@ -76,12 +76,12 @@ export async function getStatesByCountryId(countryId: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_STATES_ERROR);
-      return [] as IState[];
+      return [] as State[];
     });
 }
 
 export async function getCitiesByCountryIdAndStateId(countryId: string, stateId: string) {
-  return request<{ data: ICity[] }>(`/api/location/get-cities`, {
+  return request<{ data: City[] }>(`/api/location/get-cities`, {
     method: 'GET',
     params: { country_id: countryId, state_id: stateId },
   })
@@ -90,7 +90,7 @@ export async function getCitiesByCountryIdAndStateId(countryId: string, stateId:
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_CITIES_ERROR);
-      return [] as ICity[];
+      return [] as City[];
     });
 }
 
@@ -110,7 +110,7 @@ export async function getLocationPagination(
 ) {
   return request<{
     data: {
-      locations: ILocationDetail[];
+      locations: LocationDetail[];
       pagination: PaginationResponse;
     };
   }>(`/api/location/get-list`, {
@@ -158,7 +158,7 @@ export async function createLocation(data: LocationForm) {
     });
 }
 export async function getLocationById(id: string) {
-  return request<{ data: ILocationDetail }>(`/api/location/get-one/${id}`)
+  return request<{ data: LocationDetail }>(`/api/location/get-one/${id}`)
     .then((res) => {
       return res.data;
     })

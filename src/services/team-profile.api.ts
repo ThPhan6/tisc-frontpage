@@ -11,7 +11,7 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import store from '@/reducers';
 import { getUserInfoMiddleware } from '@/pages/LandingPage/services/api';
 
-interface ITeamProfilePaginationResponse {
+interface TeamProfilePaginationResponse {
   data: {
     users: TeamProfileTableProps[];
     pagination: PaginationResponse;
@@ -24,7 +24,7 @@ export async function getTeamProfileList(
   callback: (data: DataTableResponse) => void,
 ) {
   request('/api/team-profile/get-list', { method: 'GET', params })
-    .then((response: ITeamProfilePaginationResponse) => {
+    .then((response: TeamProfilePaginationResponse) => {
       const { users, pagination, summary } = response.data;
       callback({
         data: users,
