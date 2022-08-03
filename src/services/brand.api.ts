@@ -90,6 +90,8 @@ export async function getBrandSummary() {
     method: 'GET',
   })
     .then((response) => {
+      console.log('data', response.data);
+
       return response.data;
     })
     .catch((error) => {
