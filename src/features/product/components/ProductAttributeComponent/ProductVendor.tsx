@@ -13,14 +13,15 @@ import Popover from '@/components/Modal/Popover';
 import { getBrandLocation, getDistributorLocation } from '@/services';
 import { LocationGroupedByCountry } from '@/types';
 import { useParams } from 'umi';
+import { CatelogueDownload } from './CatelogueDownload';
 
-interface IBusinessDetail {
+interface BusinessDetailProps {
   business: string;
   type: string;
   address: string;
   country?: string;
 }
-const BusinessDetail: FC<IBusinessDetail> = ({ business, type = '', address }) => {
+const BusinessDetail: FC<BusinessDetailProps> = ({ business, type = '', address }) => {
   return (
     <div className={styles.detail}>
       <div className={styles.detail_business}>
@@ -86,6 +87,7 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
       }
     });
   }, []);
+
   return (
     <div className="contact-item-wrapper">
       <div className="contact-item">
@@ -157,7 +159,7 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
   );
 };
 
-export const ProductVendor: FC = ({ children }) => {
+export const ProductVendor: FC = () => {
   const product = useAppSelector((state) => state.product);
   const { brand } = product;
 
@@ -248,7 +250,7 @@ export const ProductVendor: FC = ({ children }) => {
           </div>
         }
       >
-        {children}
+        <CatelogueDownload />
       </CustomCollapse>
     </div>
   );

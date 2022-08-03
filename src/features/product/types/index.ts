@@ -9,23 +9,9 @@ export interface ProductSummary {
   product_count: number;
   brandId: string;
 }
-export type GeneralFeatureFormInputType = 'Text' | 'Conversions' | 'Presets';
-export type SpecificationFormInputType = 'Text' | 'Conversions' | 'Options';
-export interface GeneralFeatureFormInput {
-  id?: string;
-  name: string;
-  attributes: {
-    id: string;
-    name: string;
-    basis_id: string;
-    basis_value_id: string;
-    type: GeneralFeatureFormInputType;
-    text: string;
-    conversion_value_1: string;
-    conversion_value_2: string;
-    conversion?: ConversionSubValueProps;
-  }[];
-}
+
+export type ProductAttributeType = 'Text' | 'Conversions' | 'Presets' | 'Options';
+
 export interface SpecificationAttributeBasisOptionProps {
   id: string;
   option_code: string;
@@ -35,21 +21,26 @@ export interface SpecificationAttributeBasisOptionProps {
   value_1?: string;
   value_2?: string;
 }
-export interface SpecificationFormInput {
+
+export interface ProductAttributeProps {
+  id: string;
+  name: string;
+  basis_id: string;
+  basis_value_id: string;
+  type: ProductAttributeType;
+  text: string;
+  conversion_value_1: string;
+  conversion_value_2: string;
+  conversion?: ConversionSubValueProps;
+  basis_options?: SpecificationAttributeBasisOptionProps[];
+}
+
+export interface ProductAttributeFormInput {
   id?: string;
   name: string;
-  attributes: {
-    id: string;
-    name: string;
-    basis_id: string;
-    type: SpecificationFormInputType;
-    text: string;
-    conversion_value_1: string;
-    conversion_value_2: string;
-    conversion?: ConversionSubValueProps;
-    basis_options: SpecificationAttributeBasisOptionProps[];
-  }[];
+  attributes: ProductAttributeProps[];
 }
+
 export type ProductKeyword = [string, string, string, string];
 
 export interface ProductItem {
@@ -67,9 +58,9 @@ export interface ProductItem {
   code?: string;
   is_liked?: boolean;
   description: string;
-  general_attribute_groups: GeneralFeatureFormInput[];
-  feature_attribute_groups: GeneralFeatureFormInput[];
-  specification_attribute_groups: SpecificationFormInput[];
+  general_attribute_groups: ProductAttributeFormInput[];
+  feature_attribute_groups: ProductAttributeFormInput[];
+  specification_attribute_groups: ProductAttributeFormInput[];
   favorites?: number;
   images: string[];
   keywords: ProductKeyword;
@@ -83,9 +74,9 @@ export interface ProductFormData {
   category_ids: string[];
   name: string;
   description: string;
-  general_attribute_groups: GeneralFeatureFormInput[];
-  feature_attribute_groups: GeneralFeatureFormInput[];
-  specification_attribute_groups: SpecificationFormInput[];
+  general_attribute_groups: ProductAttributeFormInput[];
+  feature_attribute_groups: ProductAttributeFormInput[];
+  specification_attribute_groups: ProductAttributeFormInput[];
   images: string[];
   keywords: ProductKeyword;
 }

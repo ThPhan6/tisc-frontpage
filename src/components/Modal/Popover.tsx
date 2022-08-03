@@ -8,7 +8,7 @@ import DropdownRadioList from '@/components/CustomRadio/DropdownRadioList';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
 import GroupRadioList from '@/components/CustomRadio/RadioList';
 import CheckboxList from '@/components/CustomCheckbox/CheckboxList';
-import DropdownCategoryList from '@/pages/TISC/Product/Configuration/components/CategoryDropdown';
+import { DropdownCategoryList } from '@/features/categories/components';
 import { Empty } from 'antd';
 import { isEmpty } from 'lodash';
 import type { CheckboxOption } from '@/components/CustomCheckbox/CheckboxList';

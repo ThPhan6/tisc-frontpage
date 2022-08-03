@@ -10,15 +10,12 @@ export const getProductDetailPathname = (userRole: string, productId?: string) =
   switch (userRole) {
     case USER_ROLE.tisc:
       path = PATH.productConfigurationUpdate.replace(':id', productId);
-      // path = PATH.productConfigurationUpdate;
       break;
     case USER_ROLE.brand:
       path = PATH.updateProductBrand.replace(':id', productId);
-      // path = PATH.updateProductBrand;
       break;
     case USER_ROLE.design:
       path = PATH.designerBrandProductDetail.replace(':id', productId);
-      // path = PATH.designerBrandProductDetail;
       break;
   }
 

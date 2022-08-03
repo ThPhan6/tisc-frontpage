@@ -19,8 +19,8 @@ import {
   TopBarContainer,
   TopBarItem,
 } from '@/features/product/components';
-import styles from '../styles/index.less';
 import { ProductGetListParameter } from '@/features/product/types';
+import styles from './TopBar.less';
 
 const ProductTopBar: React.FC = () => {
   const [visible, setVisible] = useState(false);

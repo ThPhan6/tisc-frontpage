@@ -1,3 +1,4 @@
+import { ProductAttributeType } from '@/features/product/types';
 import { SubBasisConversion, SubBasisPreset } from '@/types';
 
 export interface SubAttribute {
@@ -66,7 +67,7 @@ export interface AttributeForm {
 export interface ProductSubAttributes extends SubAttribute {
   basis: {
     id: string;
-    type: string;
+    type: ProductAttributeType;
     name: string;
     subs: SubBasisConversion[] & SubBasisPreset[] & BasisText[];
   };

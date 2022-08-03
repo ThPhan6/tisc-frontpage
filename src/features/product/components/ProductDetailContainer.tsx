@@ -7,7 +7,6 @@ import {
   createProductDownload,
   createProductTip,
   getProductById,
-  getProductCatelogueByProductID,
   getProductDownloadByProductID,
   getProductTipByProductID,
   getRelatedCollectionProducts,
@@ -47,7 +46,9 @@ const ProductDetailContainer: React.FC = () => {
   const tip = useAppSelector((state) => state.product.tip);
   const download = useAppSelector((state) => state.product.download);
   const catelogue = useAppSelector((state) => state.product.catelogue);
-
+  console.log('brand', brand);
+  console.log('details', details);
+  console.log('params', params);
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('general');
   const [title, setTitle] = useState<string>('');
 
@@ -71,8 +72,6 @@ const ProductDetailContainer: React.FC = () => {
       setTitle(details?.name);
     }
     if (details.id) {
-      /// load product detail catelogues
-      getProductCatelogueByProductID(details.id);
       /// load product detail downloads
       getProductDownloadByProductID(details.id);
       /// load product detail tips
@@ -96,9 +95,9 @@ const ProductDetailContainer: React.FC = () => {
     }
 
     const data: ProductFormData = {
-      brand_id: brandId ?? brand?.id ?? '',
+      brand_id: brandId || details.brand?.id || '',
       category_ids: details.categories.map((category) => category.id),
-      collection_id: details.collection?.id ?? '',
+      collection_id: details.collection?.id || '',
       name: details.name.trim(),
       description: details.description.trim(),
       general_attribute_groups: details.general_attribute_groups,

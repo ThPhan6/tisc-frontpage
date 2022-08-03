@@ -10,7 +10,7 @@ import { isEmpty, upperCase, capitalize } from 'lodash';
 import { getAllProductCategory } from '@/services';
 import { useAppSelector } from '@/reducers';
 import { CategoryListResponse } from '@/types';
-import styles from '../styles/category-dropdown.less';
+import styles from './CategoryDropdown.less';
 
 interface DropdownCategoryListProps {
   selected?: CheckboxValue[];
@@ -19,7 +19,7 @@ interface DropdownCategoryListProps {
 }
 type ActiveKeyType = string | number | (string | number)[];
 
-const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props) => {
+export const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props) => {
   const { selected, onChange, chosenItem } = props;
   const category = useAppSelector((state) => state.category);
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
@@ -128,5 +128,3 @@ const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props) => {
     </Collapse>
   );
 };
-
-export default DropdownCategoryList;

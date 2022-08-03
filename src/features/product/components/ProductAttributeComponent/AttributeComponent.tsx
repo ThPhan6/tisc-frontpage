@@ -4,7 +4,7 @@ import { BodyText } from '@/components/Typography';
 import Popover from '@/components/Modal/Popover';
 import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
 import { showImageUrl } from '@/helper/utils';
-import styles from './GeneralFeatureAttribute.less';
+import styles from './ProductAttributeContainer.less';
 import CustomCollapse from '@/components/Collapse';
 import { ConversionSubValueProps } from '@/types';
 
@@ -101,21 +101,25 @@ interface AttributeCollapseProps {
 
 export const AttributeCollapse: FC<AttributeCollapseProps> = ({ name, index, children }) => {
   return (
-    <CustomCollapse
-      showActiveBoxShadow
-      key={`${name}_${index}`}
-      className={styles.vendorSection}
-      customHeaderClass={styles.vendorCustomPanelBox}
-      header={
-        <div className={styles.brandProfileHeader}>
-          <BodyText level={6} fontFamily="Roboto" className={styles.name}>
-            {name}
-          </BodyText>
-        </div>
-      }
-    >
-      {children}
-    </CustomCollapse>
+    <div className={styles.attributes}>
+      <div className={styles.specification}>
+        <CustomCollapse
+          showActiveBoxShadow
+          key={`${name}_${index}`}
+          className={styles.vendorSection}
+          customHeaderClass={styles.vendorCustomPanelBox}
+          header={
+            <div className={styles.brandProfileHeader}>
+              <BodyText level={6} fontFamily="Roboto" className={styles.name}>
+                {name}
+              </BodyText>
+            </div>
+          }
+        >
+          {children}
+        </CustomCollapse>
+      </div>
+    </div>
   );
 };
 

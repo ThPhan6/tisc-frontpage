@@ -5,32 +5,54 @@ import Popover from '@/components/Modal/Popover';
 import CustomCollapse from '@/components/Collapse';
 import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
+import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
+import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
-import { GeneralFeatureFormInput } from '@/features/product/types';
-import { POPOVER_TITLE } from '../../../../pages/TISC/Product/Configuration/constants';
+import { ProductAttributeFormInput, ProductAttributeProps } from '@/features/product/types';
 import { useDispatch } from 'react-redux';
-import { useAppSelector } from '@/reducers';
 import { setPartialProductDetail } from '@/features/product/reducers';
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 import styles from '../detail.less';
 import { map, upperCase } from 'lodash';
-import { ProductAttributes } from '@/types';
-import GeneralFeatureAttributeSubItem from './GeneralFeatureAttributeSubItem';
+import { ProductAttributes, ProductSubAttributes } from '@/types';
+import { ProductAttributeSubItem } from './ProductAttributeSubItem';
+import { ProductInfoTab } from './types';
 
-interface GeneralFeatureAttributeItemProps {
+const POPOVER_TITLE = {
+  general: 'Select General Attributes',
+  feature: 'Select Feature Attributes',
+  specification: 'Select Specification',
+};
+
+export type AttributeGroupKey =
+  | 'general_attribute_groups'
+  | 'feature_attribute_groups'
+  | 'specification_attribute_groups';
+
+export interface ProductAttributeItemProps {
   attributes: ProductAttributes[];
-  attributeItem: GeneralFeatureFormInput;
+  attributeGroup: ProductAttributeFormInput[];
+  attributeGroupKey: AttributeGroupKey;
   onDelete?: () => void;
-  onItemChange?: (data: GeneralFeatureFormInput['attributes']) => void;
+  onItemChange?: (data: ProductAttributeProps[]) => void;
   index: number;
-  activeKey: 'general' | 'feature';
+  activeKey: ProductInfoTab;
 }
 
-const GeneralFeatureAttributeItem: React.FC<GeneralFeatureAttributeItemProps> = (props) => {
-  const product = useAppSelector((state) => state.product);
+const ProductAttributeItem: React.FC<ProductAttributeItemProps> = ({
+  attributes,
+  attributeGroup,
+  attributeGroupKey,
+  onDelete,
+  onItemChange,
+  index,
+  activeKey,
+}) => {
   const dispatch = useDispatch();
-  const { general_attribute_groups, feature_attribute_groups } = product.details;
-  const { attributes, attributeItem, onDelete, onItemChange, index, activeKey } = props;
+
+  const attributeItem = attributeGroup[index];
+  const isSpecification = activeKey === 'specification';
+
   const [visible, setVisible] = useState(false);
   const [selected, setSelected] = useState<CheckboxValue[]>(
     attributeItem.attributes.map((attr) => {
@@ -42,72 +64,69 @@ const GeneralFeatureAttributeItem: React.FC<GeneralFeatureAttributeItemProps> = 
   );
 
   useEffect(() => {
-    if (selected) {
-      let newAttributes = [...general_attribute_groups];
-      if (activeKey === 'feature') {
-        newAttributes = [...feature_attribute_groups];
-      }
-      newAttributes[index] = {
-        ...newAttributes[index],
-        attributes: selected.map((item, key: number) => {
-          /// radio value
-          let selectedAttribute: any = {};
-          attributes.forEach((attr) => {
-            attr.subs.forEach((sub) => {
-              if (sub.id === item.value) {
-                selectedAttribute = sub;
-              }
-            });
-          });
-          const previousData = newAttributes[index].attributes[key];
-          const activeData = {
-            text: '',
-            conversion_value_1: '',
-            conversion_value_2: '',
-          };
-          if (previousData && previousData.id === selectedAttribute.id) {
-            activeData.text = previousData.text;
-            activeData.conversion_value_1 = previousData.conversion_value_1;
-            activeData.conversion_value_2 = previousData.conversion_value_2;
-          }
-
-          const newAttribute: GeneralFeatureFormInput['attributes'][0] = {
-            id: selectedAttribute.id,
-            basis_id: selectedAttribute.basis_id,
-            basis_value_id: '',
-            type: selectedAttribute.basis?.type ?? 'Text',
-            ...activeData,
-          };
-
-          return newAttribute;
-        }),
-      };
-      if (activeKey === 'feature') {
-        dispatch(
-          setPartialProductDetail({
-            feature_attribute_groups: newAttributes,
-          }),
-        );
-      } else {
-        dispatch(
-          setPartialProductDetail({
-            general_attribute_groups: newAttributes,
-          }),
-        );
-      }
+    if (!selected) {
+      return;
     }
+
+    const newAttributes = [...attributeGroup];
+    newAttributes[index] = {
+      ...newAttributes[index],
+      attributes: selected.map((item, key: number) => {
+        /// radio value
+        let selectedAttribute: ProductSubAttributes | undefined;
+        attributes.forEach((attr) => {
+          attr.subs.forEach((sub) => {
+            if (sub.id === item.value) {
+              selectedAttribute = sub;
+            }
+          });
+        });
+
+        const previousData = newAttributes[index].attributes[key];
+
+        const activeData: any = {
+          text: '',
+          conversion_value_1: '',
+          conversion_value_2: '',
+        };
+
+        if (previousData && previousData.id === selectedAttribute?.id) {
+          activeData.text = previousData.text;
+          activeData.conversion_value_1 = previousData.conversion_value_1;
+          activeData.conversion_value_2 = previousData.conversion_value_2;
+          if (isSpecification) {
+            activeData.basis_options = previousData.basis_options;
+          }
+        }
+
+        const newAttribute: ProductAttributeProps = {
+          id: selectedAttribute?.id || '',
+          basis_id: selectedAttribute?.basis_id || '',
+          basis_value_id: '',
+          type: selectedAttribute?.basis?.type ?? 'Text',
+          ...activeData,
+        };
+
+        return newAttribute;
+      }),
+    };
+
+    dispatch(
+      setPartialProductDetail({
+        [attributeGroupKey]: newAttributes,
+      }),
+    );
   }, [selected]);
 
-  const deleteAttributeItem = (key: number) => {
+  const deleteAttributeItem = (key: number) => () => {
+    const newAttributes = [...attributeGroup];
     const newItemAttributes = attributeItem.attributes.filter((_attr, idx) => idx !== key);
-    let newAttributes = [...general_attribute_groups];
-    if (activeKey === 'feature') {
-      newAttributes = [...feature_attribute_groups];
-    }
+
     newAttributes[index] = {
       ...newAttributes[index],
       attributes: newItemAttributes,
     };
+
     /// reset selected
     setSelected(
       newAttributes[index].attributes.map((attr) => {
@@ -117,41 +136,25 @@ const GeneralFeatureAttributeItem: React.FC<GeneralFeatureAttributeItemProps> = 
         };
       }),
     );
-    if (activeKey === 'feature') {
-      dispatch(
-        setPartialProductDetail({
-          feature_attribute_groups: newAttributes,
-        }),
-      );
-    } else {
-      dispatch(
-        setPartialProductDetail({
-          general_attribute_groups: newAttributes,
-        }),
-      );
-    }
+    dispatch(
+      setPartialProductDetail({
+        [attributeGroupKey]: newAttributes,
+      }),
+    );
   };
+
   const onChangeAttributeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newAttributes = [...attributeGroup];
     const newItemAttributes = { ...attributeItem };
+
     newItemAttributes.name = e.target.value;
-    let newAttributes = [...general_attribute_groups];
-    if (activeKey === 'feature') {
-      newAttributes = [...feature_attribute_groups];
-    }
     newAttributes[index] = newItemAttributes;
-    if (activeKey === 'feature') {
-      dispatch(
-        setPartialProductDetail({
-          feature_attribute_groups: newAttributes,
-        }),
-      );
-    } else {
-      dispatch(
-        setPartialProductDetail({
-          general_attribute_groups: newAttributes,
-        }),
-      );
-    }
+
+    dispatch(
+      setPartialProductDetail({
+        [attributeGroupKey]: newAttributes,
+      }),
+    );
   };
 
   const renderCheckBoxLabel = (item: any) => {
@@ -186,8 +189,10 @@ const GeneralFeatureAttributeItem: React.FC<GeneralFeatureAttributeItemProps> = 
   return (
     <div style={{ marginBottom: 8 }}>
       <CustomCollapse
-        defaultActiveKey={['1']}
+        defaultActiveKey={'1'}
         customHeaderClass={styles.productAttributeItem}
+        expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
+        expandIconPosition="right"
         header={
           <InputGroup
             horizontal
@@ -209,21 +214,25 @@ const GeneralFeatureAttributeItem: React.FC<GeneralFeatureAttributeItemProps> = 
           </div>
           <DeleteIcon className="delete-icon" onClick={onDelete} />
         </div>
+
         {attributeItem.attributes.map((item, key) => (
           <div className={styles.attributeSubItem} key={key}>
-            <GeneralFeatureAttributeSubItem
+            <ProductAttributeSubItem
               item={item}
               attributeItemIndex={key}
               attributeIndex={index}
               attributes={attributes}
               itemAttributes={attributeItem.attributes}
               onItemChange={onItemChange}
-              onDelete={() => deleteAttributeItem(key)}
+              onDelete={deleteAttributeItem(key)}
               activeKey={activeKey}
+              attributeGroup={attributeGroup}
+              attributeGroupKey={attributeGroupKey}
             />
           </div>
         ))}
       </CustomCollapse>
+
       <Popover
         title={upperCase(POPOVER_TITLE[activeKey])}
         visible={visible}
@@ -247,4 +256,4 @@ const GeneralFeatureAttributeItem: React.FC<GeneralFeatureAttributeItemProps> = 
   );
 };
 
-export default GeneralFeatureAttributeItem;
+export default ProductAttributeItem;
