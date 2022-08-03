@@ -3,7 +3,6 @@ import { ReactComponent as CollectionIcon } from '@/assets/icons/collection-icon
 import { ReactComponent as DownloadIcon } from '@/assets/icons/download-1-icon.svg';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 import { TabItem } from '@/components/Tabs/types';
-import { useGetUserRoleFromPathname } from '@/helper/hook';
 import React, { memo, useState } from 'react';
 import { ProductCollection } from './ProductCollection';
 import ProductDownloadFooter from './ProductDownloadFooter';
@@ -20,9 +19,6 @@ type ProductFooterTabs = 'collection' | 'tip' | 'download' | '';
 
 export const ProductDetailFooter: React.FC<{ visible: boolean }> = memo(({ visible }) => {
   const [activeKey, setActiveKey] = useState<ProductFooterTabs>('');
-
-  // check user role to set UI and redirect URL
-  const userRole = useGetUserRoleFromPathname();
 
   return (
     <div className={`${styles.productFooter} ${visible ? '' : styles.hidden}`}>
@@ -45,11 +41,11 @@ export const ProductDetailFooter: React.FC<{ visible: boolean }> = memo(({ visib
         </CustomTabPane>
 
         <CustomTabPane active={activeKey === 'tip'}>
-          <ProductTip userRole={userRole} />
+          <ProductTip />
         </CustomTabPane>
 
         <CustomTabPane active={activeKey === 'download'}>
-          <ProductDownloadFooter userRole={userRole} />
+          <ProductDownloadFooter />
         </CustomTabPane>
       </div>
     </div>
