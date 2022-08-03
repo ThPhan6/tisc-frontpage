@@ -4,7 +4,6 @@ import type {
   IBrandAlphabet,
   BrandDetail,
   IBrandCard,
-  BrandSummary,
   BrandStatuses,
 } from '@/types';
 import type {
@@ -14,6 +13,7 @@ import type {
 } from '@/components/Table/types';
 import { message } from 'antd';
 import { request } from 'umi';
+import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 
 interface IBrandListResponse {
   brands: IBrandListItem[];
@@ -85,16 +85,18 @@ export async function getBrandById(brandId: string) {
 
 export async function getBrandSummary() {
   return request<{
-    data: BrandSummary;
+    data: DataMenuSummaryProps[];
   }>(`/api/brand/summary`, {
     method: 'GET',
   })
     .then((response) => {
+      console.log('data', response.data);
+
       return response.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_BRAND_SUMMARY_ERROR);
-      return {} as BrandSummary;
+      return [] as DataMenuSummaryProps[];
     });
 }
 

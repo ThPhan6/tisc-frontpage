@@ -2,14 +2,18 @@ import { ReactComponent as ActionLeftIcon } from '@/assets/icons/action-left.svg
 import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
 import { FC, useState } from 'react';
 import style from './index.less';
-import { ElementSummaryProps, ItemSummaryProps, MenuSummaryProps } from './types';
+import { ElementSummaryProps, MenuSummaryProps, SummaryProps } from './types';
 import { checkUndefined } from '@/helper/utils';
 
-const ItemSummary: FC<ItemSummaryProps> = ({ brand }) => {
+interface ItemSummaryProps {
+  sub: SummaryProps;
+}
+
+const ItemSummary: FC<ItemSummaryProps> = ({ sub }) => {
   return (
     <div className={style['item-container']}>
-      <span>{checkUndefined(brand?.quantity)}</span>
-      <label>{checkUndefined(brand?.label)}</label>
+      <span>{checkUndefined(sub?.quantity)}</span>
+      <label>{checkUndefined(sub?.label)}</label>
     </div>
   );
 };
@@ -42,11 +46,11 @@ const ElementSummary: FC<ElementSummaryProps> = ({
       </div>
       {toggle && (
         <div className={style['item-wrapper']}>
-          {dataElementSummary?.brands &&
-            dataElementSummary.brands.map((brand) => {
+          {dataElementSummary?.subs &&
+            dataElementSummary.subs.map((sub) => {
               return (
-                <div className={style['item']} key={brand?.id}>
-                  <ItemSummary brand={brand} />
+                <div className={style['item']} key={sub?.id}>
+                  <ItemSummary sub={sub} />
                 </div>
               );
             })}
@@ -83,9 +87,9 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
       case 'subscription':
         return (
           <div className={style[`${type}-container`]}>
-            {typeMenuData?.map((data) => {
+            {typeMenuData?.map((data, index) => {
               return (
-                <div className={style[`element-right`]}>
+                <div className={style[`element-right`]} key={data.id ?? index}>
                   <span>{data.quantity}</span>
                   <label>{data.label}</label>
                 </div>
@@ -97,9 +101,9 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
       case 'project':
         return (
           <div className={style[`${type}-container`]}>
-            {typeMenuData?.map((data) => {
+            {typeMenuData?.map((data, index) => {
               return (
-                <div className={style[`element-right`]}>
+                <div className={style[`element-right`]} key={data.id ?? index}>
                   <span>{data.quantity}</span>
                   <label>{data.label}</label>
                 </div>

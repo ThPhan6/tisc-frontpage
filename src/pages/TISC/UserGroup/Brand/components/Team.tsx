@@ -11,6 +11,7 @@ import { Col, Collapse, Row } from 'antd';
 import { capitalize, isEmpty, upperCase } from 'lodash';
 import { useEffect, useState } from 'react';
 import indexStyles from '../../styles/index.less';
+import { ActiveKeyType } from '../../types';
 import styles from '../styles/details.less';
 
 const DEFAULT_BRANDTEAM = [

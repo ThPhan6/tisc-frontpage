@@ -76,3 +76,30 @@
 .info_icon {
   margin-left: 4px;
 }
+
+.basicToolbarForm {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  .projectStatusLabel {
+    display: flex;
+    align-items: cener;
+    svg {
+      margin-left: 4px;
+    }
+  }
+  :global(.ant-space) {
+    gap: 0 !important;
+    :global(.ant-radio) {
+      + * {
+        padding-right: 0;
+      }
+    }
+  }
+  :global(.ant-radio-wrapper) {
+    margin-right: 0;
+  }
+  button {
+    margin: 0 8px 0 24px;
+  }
+}
