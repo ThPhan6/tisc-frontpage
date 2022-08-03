@@ -21,10 +21,13 @@ import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import LocationDesign from './components/LocationDesign';
 import { useEffect, useState } from 'react';
-import { DesignFirmDetail } from '@/types';
-import { getOneDesignFirm } from '@/services';
+import { DesignFirmDetail, LocationDesignFirm } from '@/types';
+import { getLocationByDesignFirms, getOneDesignFirm } from '@/services';
 import { useParams } from 'umi';
-// import TeamsDesign from './components/TeamsDesign';
+import TeamsDesign from './components/TeamsDesign';
+import MaterialCode from './components/MaterialCode';
+import ProjectDesign from './components/ProjectDesign';
+import CustomDesign from './components/CustomDesign';
 
 export enum DesignTabKeys {
   profile = 'profile',
@@ -57,6 +60,7 @@ const ViewDesignFirmPage = () => {
   const designId = params?.id || '';
   const [loadedData, setLoadedData] = useState(false);
   const [data, setData] = useState<DesignFirmDetail>({
+    id: '',
     name: '',
     parent_company: '',
     logo: '',
@@ -71,6 +75,7 @@ const ViewDesignFirmPage = () => {
     status: 1,
   });
 
+  const [locationData, setLocationData] = useState<LocationDesignFirm[]>([]);
   const handleOnChangeStatus = (radioValue: number) => {
     setData({ ...data, status: radioValue });
   };
@@ -79,6 +84,7 @@ const ViewDesignFirmPage = () => {
     getOneDesignFirm(designId).then((res) => {
       if (res) {
         setData({
+          id: res.id,
           name: res.name,
           parent_company: res.parent_company,
           logo: res.logo,
@@ -97,8 +103,16 @@ const ViewDesignFirmPage = () => {
     });
   };
 
+  const getLocation = () => {
+    getLocationByDesignFirms(designId).then((res) => {
+      if (res) {
+        setLocationData(res);
+      }
+    });
+  };
   useEffect(() => {
     viewDesignFirm();
+    getLocation();
   }, []);
 
   if (!loadedData) {
@@ -174,12 +188,27 @@ const ViewDesignFirmPage = () => {
 
         {/* locations */}
         <CustomTabPane active={selectedTab === DesignTabKeys.locations}>
-          <LocationDesign />
+          <LocationDesign locationData={locationData} />
         </CustomTabPane>
 
         {/* teams */}
         <CustomTabPane active={selectedTab === DesignTabKeys.teams}>
-          {/* <TeamsDesign /> */}
+          <TeamsDesign />
+        </CustomTabPane>
+
+        {/* material code */}
+        <CustomTabPane active={selectedTab === DesignTabKeys.materialCode}>
+          <MaterialCode />
+        </CustomTabPane>
+
+        {/* project */}
+        <CustomTabPane active={selectedTab === DesignTabKeys.projects}>
+          <ProjectDesign />
+        </CustomTabPane>
+
+        {/* custom */}
+        <CustomTabPane active={selectedTab === DesignTabKeys.custom}>
+          <CustomDesign />
         </CustomTabPane>
       </div>
     </>

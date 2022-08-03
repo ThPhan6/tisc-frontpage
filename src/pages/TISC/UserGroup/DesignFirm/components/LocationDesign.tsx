@@ -1,157 +1,131 @@
-import { BodyText } from '@/components/Typography';
-import { CollapsingProps } from '@/pages/HowTo/types';
-import { Col, Collapse, Row } from 'antd';
-import { FC, useState } from 'react';
-import styles from '../styles/LocationDesign.less';
+import { ReactComponent as DropdownV2Icon } from '@/assets/icons/action-down-icon.svg';
+import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
-import ItemLocationDesign from './ItemLocationDesign';
+import InputGroup from '@/components/EntryForm/InputGroup';
+import { LocationDesignFirm, LocationDetail } from '@/types';
+import { Col, Collapse, Row } from 'antd';
+import { isEmpty } from 'lodash';
+import { FC, useState } from 'react';
+import indexStyles from '../../index.less';
+import styles from '../styles/TeamsDesign.less';
 
-interface LocationDesignProps extends CollapsingProps {
-  value: {
-    id: string;
-    name: string;
-    location: {
-      business_name: string;
-      info: { location: string; address: string; phone: string; gmail: string };
-    }[];
-  };
-  index: number;
-  customClass?: string;
+type ActiveKeyType = string | number | (string | number)[];
+
+interface LocationDesignProps {
+  locationData: LocationDesignFirm[];
 }
-const data = [
-  {
-    id: '1',
-    name: 'Singapore',
-    location: [
-      {
-        business_name: 'singapo1',
-        info: {
-          location: 'main office',
-          address: 'aa',
-          phone: '11',
-          gmail: 'a@gmail.com',
-        },
-      },
-    ],
-  },
-  {
-    id: '2',
-    name: 'Thailand',
-    location: [
-      {
-        business_name: 'singapo1',
-        info: {
-          location: 'main office',
-          address: 'aa',
-          phone: '11',
-          gmail: 'a@gmail.com',
-        },
-      },
-    ],
-  },
-];
-const RenderHeader: FC<LocationDesignProps> = (props) => {
-  const { value, activeKey, handleActiveCollapse, index, customClass } = props;
-  return (
-    <div className={styles.panel_header}>
-      <div
-        className={`${styles.panel_header__field} ${customClass}`}
-        onClick={() => handleActiveCollapse(value ? index : -1)}
-      >
-        <div className={styles.titleIcon}>
-          <div>
-            <BodyText
-              level={5}
-              fontFamily="Roboto"
-              customClass={
-                String(index) !== activeKey ? styles.font_weight_300 : styles.font_weight_500
-              }
-            >
-              {value.name}
-              <span style={{ marginLeft: '8px' }}>({value.location.length})</span>
-            </BodyText>
-          </div>
-        </div>
-        <div className={styles.addIcon}>
-          {String(index) !== activeKey ? <DropdownIcon /> : <DropupIcon />}
-        </div>
+const LocationDesign: FC<LocationDesignProps> = ({ locationData }) => {
+  const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
+
+  const renderLocationHeader = (businessName: LocationDetail) => {
+    return (
+      <div className={styles.userName}>
+        <span className={`${styles.name} ${indexStyles.dropdownCount}`}>
+          {businessName.business_name}
+        </span>
       </div>
-    </div>
-  );
-};
-
-const ListLocation: FC<LocationDesignProps> = ({
-  index,
-  value,
-  activeKey,
-  handleActiveCollapse,
-  customClass,
-}) => {
-  const [activeKeyItem, setActiveKeyItem] = useState<string>('');
-  const handleActiveCollapseItem = (indexItem: number) => {
-    setActiveKeyItem(activeKeyItem === String(indexItem) ? '' : String(indexItem));
+    );
   };
-  return (
-    <div className={styles.location}>
-      <Collapse ghost activeKey={activeKey}>
-        <Collapse.Panel
-          header={
-            <RenderHeader
-              index={index}
-              value={value}
-              activeKey={activeKey}
-              handleActiveCollapse={handleActiveCollapse}
-              customClass={customClass}
-            />
-          }
-          key={index}
-          showArrow={false}
-          className={value.id !== activeKey ? styles['bottomMedium'] : styles['bottomBlack']}
+
+  const renderHeader = (countryName: LocationDesignFirm) => {
+    return (
+      <span>
+        {countryName.country_name}
+        <span
+          className={indexStyles.dropdownCount}
+          style={{
+            marginLeft: 8,
+          }}
         >
-          <div>
-            {value.location.map((location, key) => {
-              return (
-                <ItemLocationDesign
-                  index={key}
-                  value={location}
-                  activeKey={activeKeyItem}
-                  handleActiveCollapse={handleActiveCollapseItem}
-                />
-              );
-            })}
-          </div>
-        </Collapse.Panel>
-      </Collapse>
-    </div>
+          ({countryName.locations.length})
+        </span>
+      </span>
+    );
+  };
+
+  return (
+    <Row className={indexStyles.container}>
+      <Col span={12}>
+        <div className={`${indexStyles.form} ${styles.team_form}`}>
+          <Collapse
+            accordion
+            bordered={false}
+            expandIconPosition="right"
+            expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
+            className={indexStyles.dropdownList}
+            activeKey={activeKey}
+            onChange={(key) => {
+              setActiveKey(key);
+            }}
+          >
+            {locationData.map((location, index) => (
+              <Collapse.Panel
+                header={renderHeader(location)}
+                key={index}
+                collapsible={isEmpty(location.country_name) ? 'disabled' : undefined}
+              >
+                <Collapse
+                  accordion
+                  bordered={false}
+                  expandIconPosition="right"
+                  expandIcon={({ isActive }) => (isActive ? <DropupV2Icon /> : <DropdownV2Icon />)}
+                  className={indexStyles.secondDropdownList}
+                >
+                  {location.locations.map((loca, locationIndex) => (
+                    <Collapse.Panel
+                      header={renderLocationHeader(loca)}
+                      key={`${index}-${locationIndex}`}
+                      collapsible={isEmpty(loca.business_name) ? 'disabled' : undefined}
+                    >
+                      <div className={`${indexStyles.info} ${styles.teamInfo}`}>
+                        <InputGroup
+                          label="Location Function"
+                          hasHeight
+                          fontLevel={3}
+                          className={styles.label}
+                          hasPadding
+                          value={loca.business_name}
+                          readOnly
+                        />
+                        <InputGroup
+                          label="Address"
+                          hasHeight
+                          fontLevel={3}
+                          className={styles.label}
+                          value={loca.address}
+                          hasPadding
+                          readOnly
+                        />
+                        <InputGroup
+                          label="General Phone"
+                          hasHeight
+                          fontLevel={3}
+                          className={styles.label}
+                          value={loca.general_phone}
+                          hasPadding
+                          readOnly
+                        />
+                        <InputGroup
+                          label="General Email"
+                          hasHeight
+                          fontLevel={3}
+                          className={styles.label}
+                          value={loca.general_email}
+                          hasPadding
+                          readOnly
+                        />
+                      </div>
+                    </Collapse.Panel>
+                  ))}
+                </Collapse>
+              </Collapse.Panel>
+            ))}
+          </Collapse>
+        </div>
+      </Col>
+    </Row>
   );
 };
 
-const LocationDesign = () => {
-  const [activeKey, setActiveKey] = useState<string>('');
-  const handleActiveCollapse = (index: number) => {
-    setActiveKey(activeKey === String(index) ? '' : String(index));
-  };
-  return (
-    <div>
-      <Row>
-        <Col span={12}>
-          <div className={styles.content}>
-            {data.map((item, index) => (
-              <div>
-                <ListLocation
-                  key={index}
-                  index={index}
-                  value={item}
-                  activeKey={activeKey}
-                  handleActiveCollapse={handleActiveCollapse}
-                />
-              </div>
-            ))}
-          </div>
-        </Col>
-      </Row>
-    </div>
-  );
-};
 export default LocationDesign;

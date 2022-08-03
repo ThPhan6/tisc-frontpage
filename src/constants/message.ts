@@ -221,6 +221,8 @@ export const MESSAGE_NOTIFICATION = {
 
   //user-group / design firms
   GET_ONE_DESIGN_FIRM_ERROR: 'Failed to get one design firm',
+  GET_SUMMARY: 'Failed to get summary',
+  GET_LOCATION_BY_DESIGN_FIRMS: 'Failed to get location by design firm',
 };
 
 export const MESSAGE_TOOLTIP = {

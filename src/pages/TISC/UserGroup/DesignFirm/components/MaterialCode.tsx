@@ -2,42 +2,50 @@ import { ReactComponent as DropdownV2Icon } from '@/assets/icons/action-down-ico
 import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
-import InputGroup from '@/components/EntryForm/InputGroup';
+import { CustomInput } from '@/components/Form/CustomInput';
+import { BodyText, Title } from '@/components/Typography';
 import { Col, Collapse, Row } from 'antd';
-import { capitalize, isEmpty, upperCase } from 'lodash';
+import { isEmpty } from 'lodash';
 import { useState } from 'react';
-import styles from '../styles/brandViewDetail.less';
+import indexStyles from '../../index.less';
+import styles from '../styles/TeamsDesign.less';
 
 type ActiveKeyType = string | number | (string | number)[];
 
 const data = [
   {
-    id: '1',
-    name: 'Singapore',
-    location: [
+    name: 'General Material',
+    material_code: [
       {
-        business_name: 'singapo1',
-        info: {
-          location: 'main office',
-          address: 'aa',
-          phone: '11',
-          gmail: 'a@gmail.com',
-        },
+        list_material: 'Metal Alloy',
+        subs: [
+          {
+            code: 'AL',
+            material: 'Architectural Aluminium',
+          },
+          {
+            code: 'BRS',
+            material: 'Architectural Brass',
+          },
+        ],
       },
     ],
   },
   {
-    id: '2',
-    name: 'Thailand',
-    location: [
+    name: 'Interior Fitout',
+    material_code: [
       {
-        business_name: 'singapo1',
-        info: {
-          location: 'main office',
-          address: 'aa',
-          phone: '11',
-          gmail: 'a@gmail.com',
-        },
+        list_material: 'Metal Alloy',
+        subs: [
+          {
+            code: 'AL',
+            material: 'Architectural Aluminium',
+          },
+          {
+            code: 'BRS',
+            material: 'Architectural Brass',
+          },
+        ],
       },
     ],
   },
@@ -45,142 +53,89 @@ const data = [
 
 const MaterialCode = () => {
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
-  const [secondActiveKey, setSecondActiveKey] = useState<ActiveKeyType>([]);
 
-  const renderHeader = (item: any) => {
+  const renderMaterialHeader = (user: any) => {
     return (
-      <span>
-        {upperCase(item.name)}
-        <span
-          className={styles.dropdownCount}
-          style={{
-            marginLeft: 8,
-          }}
-        >
-          ({item.subs.length})
+      <div className={styles.userName}>
+        <span>
+          {user.list_material}
+          <span
+            className={indexStyles.dropdownCount}
+            style={{
+              marginLeft: 8,
+            }}
+          >
+            ({user.subs.length})
+          </span>
         </span>
-      </span>
+      </div>
     );
   };
-  const renderSubHeader = (item: any) => {
+
+  const renderHeader = (team: any) => {
     return (
       <span>
-        {capitalize(item.name)}
+        {team.name}
         <span
-          className={styles.dropdownCount}
+          className={indexStyles.dropdownCount}
           style={{
             marginLeft: 8,
           }}
         >
-          ({item.subs.length})
+          ({team.material_code.length})
         </span>
       </span>
     );
   };
 
   return (
-    <Row className={styles.container}>
+    <Row className={indexStyles.container}>
       <Col span={12}>
-        <div className={styles.team_form}>
+        <div className={`${indexStyles.form} ${styles.team_form}`}>
           <Collapse
+            accordion
             bordered={false}
             expandIconPosition="right"
             expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
-            className={styles.dropdownList}
+            className={indexStyles.dropdownList}
+            activeKey={activeKey}
             onChange={(key) => {
-              setSecondActiveKey([]);
               setActiveKey(key);
             }}
-            activeKey={activeKey}
           >
             {data.map((item, index) => (
               <Collapse.Panel
                 header={renderHeader(item)}
                 key={index}
                 collapsible={isEmpty(item.name) ? 'disabled' : undefined}
-                className="site-collapse-custom-panel"
               >
                 <Collapse
+                  accordion
                   bordered={false}
                   expandIconPosition="right"
                   expandIcon={({ isActive }) => (isActive ? <DropupV2Icon /> : <DropdownV2Icon />)}
-                  className={styles.secondDropdownList}
-                  onChange={setSecondActiveKey}
-                  activeKey={secondActiveKey}
+                  className={indexStyles.secondDropdownList}
                 >
-                  {item.location.map((sub, subIndex) => (
+                  {item.material_code.map((material, userIndex) => (
                     <Collapse.Panel
-                      header={renderSubHeader(sub)}
-                      key={`${index}-${subIndex}`}
-                      collapsible={isEmpty(sub.business_name) ? 'disabled' : undefined}
-                      className="site-collapse-custom-panel"
+                      header={renderMaterialHeader(material)}
+                      key={`${index}-${userIndex}`}
+                      collapsible={isEmpty(material.list_material) ? 'disabled' : undefined}
                     >
-                      <div>
-                        <div className={styles.formLocation}>
-                          <InputGroup
-                            label="Gender"
-                            hasHeight
-                            fontLevel={3}
-                            className={styles.label}
-                            readOnly
+                      {material.subs.map((itm, idx) => {
+                        console.log(item);
+                        <div className={`${indexStyles.info} ${styles.teamInfo}`} key={idx}>
+                          <CustomInput containerClass={styles.customInputURL} value={itm.code} />
+                          <CustomInput
+                            containerClass={styles.customInputURL}
+                            value={itm.material}
                           />
-                          <InputGroup
-                            label="Work Location"
-                            hasHeight
-                            fontLevel={3}
-                            className={styles.label}
-                            readOnly
-                          />
-                          <InputGroup
-                            label="Department"
-                            hasHeight
-                            fontLevel={3}
-                            className={styles.label}
-                          />
-                          <InputGroup
-                            label="Position/Title"
-                            hasHeight
-                            fontLevel={3}
-                            className={styles.label}
-                            readOnly
-                          />
-                          <InputGroup
-                            label="Work Email"
-                            hasHeight
-                            fontLevel={3}
-                            className={styles.label}
-                            readOnly
-                          />
-                          <InputGroup
-                            label="Work Phone"
-                            hasHeight
-                            fontLevel={3}
-                            className={styles.label}
-                            readOnly
-                          />
-                          <InputGroup
-                            label="Work Mobile"
-                            hasHeight
-                            fontLevel={3}
-                            className={styles.label}
-                            readOnly
-                          />
-                          <InputGroup
-                            label="Access Level"
-                            hasHeight
-                            fontLevel={3}
-                            className={styles.label}
-                            readOnly
-                          />
-                          <InputGroup
-                            label="Status"
-                            hasHeight
-                            fontLevel={3}
-                            className={styles.label}
-                            readOnly
-                          />
-                        </div>
-                      </div>
+                          <Title level={8}>{itm.code}</Title>
+                          <BodyText level={5} fontFamily="Roboto">
+                            {itm.material}
+                          </BodyText>
+                        </div>;
+                      })}
                     </Collapse.Panel>
                   ))}
                 </Collapse>

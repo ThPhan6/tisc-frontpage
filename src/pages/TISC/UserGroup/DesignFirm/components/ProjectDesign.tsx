@@ -4,15 +4,29 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { Col, Collapse, Row } from 'antd';
-import { capitalize, isEmpty, upperCase } from 'lodash';
-import { useState } from 'react';
-import styles from '../styles/brandViewDetail.less';
+import { isEmpty } from 'lodash';
+import { useEffect, useState } from 'react';
+import indexStyles from '../../index.less';
+import styles from '../styles/TeamsDesign.less';
 
 type ActiveKeyType = string | number | (string | number)[];
 
+interface DesignLocation {
+  name: string;
+  location: DetailLocation[];
+}
+
+interface DetailLocation {
+  business_name: string;
+  info: {
+    location: string;
+    address: string;
+    phone: string;
+    gmail: string;
+  };
+}
 const data = [
   {
-    id: '1',
     name: 'Singapore',
     location: [
       {
@@ -27,7 +41,6 @@ const data = [
     ],
   },
   {
-    id: '2',
     name: 'Thailand',
     location: [
       {
@@ -42,129 +55,138 @@ const data = [
     ],
   },
 ];
+const DEFAULT_LOCATIONDESIGN = [
+  {
+    name: '',
+    location: [
+      {
+        business_name: '',
+        info: {
+          location: '',
+          address: '',
+          phone: '',
+          gmail: '',
+        },
+      },
+    ],
+  },
+];
 
 const ProjectDesign = () => {
-  // const params = useParams<{ id: string }>();
-  // const productId = params?.id || '';
-
-  // const [teamProfile, setTeamProfile] = useState<TeamProfileDetailProps>();
-
-  // console.log('data', teamProfile);
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
-  const [secondActiveKey, setSecondActiveKey] = useState<ActiveKeyType>([]);
+  const [teamData, setTeamData] = useState<DesignLocation[]>(DEFAULT_LOCATIONDESIGN);
 
-  const renderHeader = (item: any) => {
+  useEffect(() => {
+    setTeamData(data);
+  }, []);
+
+  const renderProjectHeader = (user: DetailLocation) => {
     return (
-      <span>
-        {upperCase(item.name)}
-        <span
-          className={styles.dropdownCount}
-          style={{
-            marginLeft: 8,
-          }}
-        >
-          ({item.subs.length})
-        </span>
-      </span>
+      <div className={styles.userName}>
+        <span className={`${styles.name} ${indexStyles.dropdownCount}`}>{user.business_name}</span>
+      </div>
     );
   };
-  const renderSubHeader = (item: any) => {
+
+  const renderHeader = (team: DesignLocation) => {
     return (
       <span>
-        {capitalize(item.name)}
+        {team.name}
         <span
-          className={styles.dropdownCount}
+          className={indexStyles.dropdownCount}
           style={{
             marginLeft: 8,
           }}
         >
-          ({item.subs.length})
+          ({team.location.length})
         </span>
       </span>
     );
   };
 
   return (
-    <Row className={styles.container}>
+    <Row className={indexStyles.container}>
       <Col span={12}>
-        <div className={styles.team_form}>
+        <div className={`${indexStyles.form} ${styles.team_form}`}>
           <Collapse
+            accordion
             bordered={false}
             expandIconPosition="right"
             expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
-            className={styles.dropdownList}
+            className={indexStyles.dropdownList}
+            activeKey={activeKey}
             onChange={(key) => {
-              setSecondActiveKey([]);
               setActiveKey(key);
             }}
-            activeKey={activeKey}
           >
-            {data.map((item, index) => (
+            {teamData.map((team, index) => (
               <Collapse.Panel
-                header={renderHeader(item)}
+                header={renderHeader(team)}
                 key={index}
-                collapsible={isEmpty(item.name) ? 'disabled' : undefined}
-                className="site-collapse-custom-panel"
+                collapsible={isEmpty(team.name) ? 'disabled' : undefined}
               >
                 <Collapse
+                  accordion
                   bordered={false}
                   expandIconPosition="right"
                   expandIcon={({ isActive }) => (isActive ? <DropupV2Icon /> : <DropdownV2Icon />)}
-                  className={styles.secondDropdownList}
-                  onChange={setSecondActiveKey}
-                  activeKey={secondActiveKey}
+                  className={indexStyles.secondDropdownList}
                 >
-                  {item.location.map((sub, subIndex) => (
+                  {team.location.map((user, userIndex) => (
                     <Collapse.Panel
-                      header={renderSubHeader(sub)}
-                      key={`${index}-${subIndex}`}
-                      collapsible={isEmpty(sub.business_name) ? 'disabled' : undefined}
-                      className="site-collapse-custom-panel"
+                      header={renderProjectHeader(user)}
+                      key={`${index}-${userIndex}`}
+                      collapsible={isEmpty(user.business_name) ? 'disabled' : undefined}
                     >
-                      <div>
-                        <div className={styles.formLocation}>
-                          <InputGroup
-                            label="Project Location"
-                            hasHeight
-                            fontLevel={3}
-                            className={styles.label}
-                            readOnly
-                          />
-                          <InputGroup
-                            label="Building Type"
-                            hasHeight
-                            fontLevel={3}
-                            className={styles.label}
-                            readOnly
-                          />
-                          <InputGroup
-                            label="Project Type"
-                            hasHeight
-                            fontLevel={3}
-                            className={styles.label}
-                          />
-                          <InputGroup
-                            label="Measurement Unit"
-                            hasHeight
-                            fontLevel={3}
-                            className={styles.label}
-                            readOnly
-                          />
-                          <InputGroup
-                            label="Design Due"
-                            hasHeight
-                            fontLevel={3}
-                            className={styles.label}
-                            readOnly
-                          />
-                          <InputGroup
-                            label="Construction Start"
-                            hasHeight
-                            fontLevel={3}
-                            className={styles.label}
-                            readOnly
-                          />
-                        </div>
+                      <div className={`${indexStyles.info} ${styles.teamInfo}`}>
+                        <InputGroup
+                          label="Project Location"
+                          hasHeight
+                          fontLevel={3}
+                          className={styles.label}
+                          readOnly
+                          hasPadding
+                        />
+                        <InputGroup
+                          label="Building Type"
+                          hasHeight
+                          fontLevel={3}
+                          className={styles.label}
+                          readOnly
+                          hasPadding
+                        />
+                        <InputGroup
+                          label="Project Type"
+                          hasHeight
+                          fontLevel={3}
+                          className={styles.label}
+                          readOnly
+                          hasPadding
+                        />
+                        <InputGroup
+                          label="Measurement Unit"
+                          hasHeight
+                          fontLevel={3}
+                          className={styles.label}
+                          readOnly
+                          hasPadding
+                        />
+                        <InputGroup
+                          label="Design Due"
+                          hasHeight
+                          fontLevel={3}
+                          className={styles.label}
+                          readOnly
+                          hasPadding
+                        />
+                        <InputGroup
+                          label="Construction Start"
+                          hasHeight
+                          fontLevel={3}
+                          className={styles.label}
+                          readOnly
+                          hasPadding
+                        />
                       </div>
                     </Collapse.Panel>
                   ))}

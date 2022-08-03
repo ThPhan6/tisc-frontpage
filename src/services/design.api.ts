@@ -1,10 +1,11 @@
+import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import type {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { DesignFirm, DesignFirmDetail } from '@/types';
+import { DesignFirm, DesignFirmDetail, LocationDesignFirm } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -45,5 +46,26 @@ export async function getOneDesignFirm(id: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_DESIGN_FIRM_ERROR);
+    });
+}
+
+export async function getSummary() {
+  return request<{ data: DataMenuSummaryProps }>(`/api/design/summary`, { method: 'GET' })
+    .then((response) => {
+      console.log(response.data);
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_SUMMARY);
+    });
+}
+
+export async function getLocationByDesignFirms(id: string) {
+  return request<{ data: LocationDesignFirm[] }>(`/api/location/design/${id}`, { method: 'GET' })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LOCATION_BY_DESIGN_FIRMS);
     });
 }
