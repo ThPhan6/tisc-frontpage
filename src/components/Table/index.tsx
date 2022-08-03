@@ -85,6 +85,7 @@ export interface CustomTableProps {
   customClass?: string;
   rowKey?: string;
   autoLoad?: boolean;
+  onFilterLoad?: boolean;
 }
 
 const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
@@ -99,6 +100,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     customClass,
     rowKey = 'id',
     autoLoad = true,
+    onFilterLoad = true,
   } = props;
 
   const DEFAULT_PAGE_NUMBER = 1;
@@ -145,8 +147,10 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
           paginationParams[multiSort[sortName]] = sortOrder;
         } else {
           forEach(sorter, (item: any) => {
-            paginationParams[multiSort[item['field']]] =
-              item['order'] === 'descend' ? 'DESC' : 'ASC';
+            const multiSortName = multiSort[item['field']];
+            if (multiSortName) {
+              paginationParams[multiSortName] = item['order'] === 'descend' ? 'DESC' : 'ASC';
+            }
           });
         }
         return paginationParams;
@@ -182,11 +186,13 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     sorter: SorterResult<any> | SorterResult<any>[],
   ) => {
     setCurrentSorter(sorter);
-    fetchData({
-      pagination: newPagination,
-      sorter,
-      ...filters,
-    });
+    if (onFilterLoad) {
+      fetchData({
+        pagination: newPagination,
+        sorter,
+        ...filters,
+      });
+    }
   };
 
   // The component instance will be extended
