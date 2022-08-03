@@ -1,4 +1,4 @@
-export interface IBrandListItem {
+export interface BrandListItem {
   id: string;
   assign_team: any[];
   cards: number;
@@ -36,10 +36,10 @@ export interface BrandDetail {
   updated_at: string | null;
 }
 
-export interface IBrandAlphabet {
+export interface BrandAlphabet {
   [key: string]: BrandDetail[];
 }
-export interface IBrandCard {
+export interface BrandCard {
   id: string;
   name: string;
   logo: string;
@@ -47,9 +47,9 @@ export interface IBrandCard {
   category_count: string;
   collection_count: string;
   card_count: string;
-  teams: IBrandCardTeam[];
+  teams: BrandCardTeam[];
 }
-export interface IBrandCardTeam {
+export interface BrandCardTeam {
   id: string;
   firstname: string;
   lastname: string;

@@ -1,11 +1,5 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import type {
-  IBrandListItem,
-  IBrandAlphabet,
-  BrandDetail,
-  IBrandCard,
-  BrandStatuses,
-} from '@/types';
+import type { BrandListItem, BrandAlphabet, BrandDetail, BrandCard, BrandStatuses } from '@/types';
 import type {
   DataTableResponse,
   PaginationRequestParams,
@@ -15,20 +9,20 @@ import { message } from 'antd';
 import { request } from 'umi';
 import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 
-interface IBrandListResponse {
-  brands: IBrandListItem[];
+interface BrandListResponse {
+  brands: BrandListItem[];
   pagination: PaginationResponse;
 }
 
 export async function getBrandPagination(
   params: PaginationRequestParams,
-  callback: (data: DataTableResponse<IBrandListItem[]>) => void,
+  callback: (data: DataTableResponse<BrandListItem[]>) => void,
 ) {
   request(`/api/brand/get-list`, {
     method: 'GET',
     params,
   })
-    .then((response: { data: IBrandListResponse }) => {
+    .then((response: { data: BrandListResponse }) => {
       const { brands, pagination } = response.data;
       callback({
         data: brands,
@@ -46,7 +40,7 @@ export async function getBrandPagination(
 }
 
 export async function getBrandAlphabet() {
-  return request<{ data: IBrandAlphabet }>(`/api/brand/get-all-alphabet`, {
+  return request<{ data: BrandAlphabet }>(`/api/brand/get-all-alphabet`, {
     method: 'GET',
   })
     .then((response) => {
@@ -54,11 +48,11 @@ export async function getBrandAlphabet() {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
-      return {} as IBrandAlphabet;
+      return {} as BrandAlphabet;
     });
 }
 export async function getBrandCards() {
-  return request<{ data: IBrandCard[] }>(`/api/brand/get-list-card`, {
+  return request<{ data: BrandCard[] }>(`/api/brand/get-list-card`, {
     method: 'GET',
   })
     .then((response) => {
@@ -66,7 +60,7 @@ export async function getBrandCards() {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
-      return [] as IBrandCard[];
+      return [] as BrandCard[];
     });
 }
 

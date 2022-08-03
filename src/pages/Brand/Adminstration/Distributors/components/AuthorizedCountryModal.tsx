@@ -2,7 +2,7 @@ import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
 import { getRegions } from '@/services/location.api';
-import { ICountry, Regions } from '@/types';
+import { Country, Regions } from '@/types';
 import { FC, useEffect, useState } from 'react';
 
 const AuthorizedCountryModal: FC<{
@@ -23,7 +23,7 @@ const AuthorizedCountryModal: FC<{
     getCountryGroup();
   }, []);
 
-  const renderLabel = (item: ICountry) => {
+  const renderLabel = (item: Country) => {
     return (
       <BodyText level={5} fontFamily="Roboto">
         <span style={{ marginRight: '8px' }}>{item.name}</span>
@@ -33,7 +33,7 @@ const AuthorizedCountryModal: FC<{
   };
 
   const handleSelectedData = (checkedData: CheckboxValue[]) => {
-    const newData: ICountry[] = [];
+    const newData: Country[] = [];
     let authorCountryData: CheckboxValue[] = [];
     let selectedCountry = undefined;
     checkedData.map((checked) => {

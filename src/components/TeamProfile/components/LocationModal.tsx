@@ -1,17 +1,10 @@
 import { RadioValue } from '@/components/CustomRadio/types';
 import Popover from '@/components/Modal/Popover';
 import { getWorkLocations } from '@/services';
-import { LocationGroupedByCountry, ILocationDetail } from '@/types';
+import { LocationGroupedByCountry, LocationDetail } from '@/types';
 import { FC, useEffect, useState } from 'react';
 import { upperCase } from 'lodash';
 import styles from '../styles/LocationModal.less';
-
-interface IBusinessDetail {
-  business: string;
-  type: string;
-  address: string;
-  country?: string;
-}
 
 interface WorkLocationData {
   label: string;
@@ -19,14 +12,14 @@ interface WorkLocationData {
   phoneCode: string;
 }
 
-interface ILocationModal {
+interface LocationModalProps {
   workLocation: WorkLocationData;
   setWorkLocation: (data: WorkLocationData) => void;
   visible: boolean;
   setVisible: (value: boolean) => void;
 }
 
-const LocationModal: FC<ILocationModal> = ({
+const LocationModal: FC<LocationModalProps> = ({
   visible,
   setVisible,
   workLocation,
@@ -34,7 +27,7 @@ const LocationModal: FC<ILocationModal> = ({
 }) => {
   const [workLocations, setWorkLocations] = useState<LocationGroupedByCountry[]>([]);
 
-  const setSelectedWorkLocation = (location: ILocationDetail) => {
+  const setSelectedWorkLocation = (location: LocationDetail) => {
     let workLocationText = '';
     if (location.city_name) {
       workLocationText = `${location.city_name}, `;
@@ -75,7 +68,14 @@ const LocationModal: FC<ILocationModal> = ({
     });
   };
 
-  const BusinessDetail: FC<IBusinessDetail> = ({ business, type = '', address }) => {
+  interface BusinessDetailProps {
+    business: string;
+    type: string;
+    address: string;
+    country?: string;
+  }
+
+  const BusinessDetail: FC<BusinessDetailProps> = ({ business, type = '', address }) => {
     return (
       <div className={styles.detail}>
         <div className={styles.detail_business}>

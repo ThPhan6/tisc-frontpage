@@ -10,7 +10,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
 import { getBrandPagination } from '@/services';
 import { showImageUrl } from '@/helper/utils';
-import type { IBrandListItem } from '@/types';
+import type { BrandListItem } from '@/types';
 import styles from './styles/index.less';
 import { PageContainer } from '@ant-design/pro-layout';
 import { pushTo } from '@/helper/history';
@@ -29,7 +29,7 @@ const BrandList: React.FC = () => {
 
   useEffect(() => {});
 
-  const TableColumns: TableColumnItem<IBrandListItem>[] = [
+  const TableColumns: TableColumnItem<BrandListItem>[] = [
     {
       title: '',
       dataIndex: 'logo',

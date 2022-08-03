@@ -9,7 +9,7 @@ import type { BasisOptionForm, BasisOptionListResponse } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
 
-interface ICategoryPaginationResponse {
+interface CategoryPaginationResponse {
   data: {
     basis_options: BasisOptionListResponse[];
     pagination: PaginationResponse;
@@ -24,7 +24,7 @@ export async function getProductBasisOptionPagination(
     method: 'GET',
     params,
   })
-    .then((response: ICategoryPaginationResponse) => {
+    .then((response: CategoryPaginationResponse) => {
       const { basis_options, pagination, summary } = response.data;
       callback({
         data: basis_options,

@@ -18,33 +18,35 @@ export interface BasisConversionListResponse {
   created_at: string;
 }
 
+export interface ConversionSubValueProps {
+  id?: string;
+  name_1: string;
+  name_2: string;
+  formula_1: string;
+  formula_2: string;
+  unit_1: string;
+  unit_2: string;
+}
+
 export interface ElementInputProp {
-  value: ConversionValueProp['subs'][0];
+  value: ConversionSubValueProps;
   order: number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface ConversionItemProps {
-  value: ConversionValueProp['subs'][0];
-  onChangeValue: (value: ConversionValueProp['subs'][0]) => void;
+  value: ConversionSubValueProps;
+  onChangeValue: (value: ConversionSubValueProps) => void;
   handleOnClickDelete: () => void;
 }
 
 export type ConversionValueProp = {
   id?: string;
   name: string;
-  subs: {
-    id?: string;
-    name_1: string;
-    name_2: string;
-    formula_1: string;
-    formula_2: string;
-    unit_1: string;
-    unit_2: string;
-  }[];
+  subs: ConversionSubValueProps[];
 };
 
-export const conversionValueDefault = {
+export const conversionValueDefault: ConversionSubValueProps = {
   name_1: '',
   name_2: '',
   formula_1: '',

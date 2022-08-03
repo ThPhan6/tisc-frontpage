@@ -12,7 +12,7 @@ import type { CategoryBodyProp, CategoryListResponse } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
 
-interface ICategoryPaginationResponse {
+interface CategoryPaginationResponse {
   data: {
     categories: CategoryListResponse[];
     pagination: PaginationResponse;
@@ -27,7 +27,7 @@ export async function getProductCategoryPagination(
     method: 'GET',
     params,
   })
-    .then((response: ICategoryPaginationResponse) => {
+    .then((response: CategoryPaginationResponse) => {
       const { categories, pagination, summary } = response.data;
       callback({
         data: categories,
@@ -51,7 +51,7 @@ export async function getAllProductCategory() {
       page: 1,
     },
   })
-    .then((response: ICategoryPaginationResponse) => {
+    .then((response: CategoryPaginationResponse) => {
       store.dispatch(setList(response.data.categories));
     })
     .catch((error) => {

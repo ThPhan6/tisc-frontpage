@@ -15,7 +15,7 @@ interface AttributeEntryFormProps {
   data: AttributeForm;
   setData: (data: AttributeForm) => void;
 }
-export interface ISelectedItem {
+export interface SelectedItem {
   subAttribute: AttributeSubForm;
   index: number;
 }
@@ -24,7 +24,7 @@ const DEFAULT_SUB_ATTRIBUTE: AttributeSubForm = {
   name: '',
   basis_id: '',
 };
-const DEFAULT_SELECTED_ATTRIBUTE: ISelectedItem = {
+const DEFAULT_SELECTED_ATTRIBUTE: SelectedItem = {
   index: 0,
   subAttribute: DEFAULT_SUB_ATTRIBUTE,
 };
@@ -41,7 +41,7 @@ const AttributeEntryForm: FC<AttributeEntryFormProps> = (props) => {
   // for content type data
   const [contentType, setContentType] = useState<AttributeContentType>();
   // selected content types
-  const [selectedItem, setSelectedItem] = useState<ISelectedItem>(DEFAULT_SELECTED_ATTRIBUTE);
+  const [selectedItem, setSelectedItem] = useState<SelectedItem>(DEFAULT_SELECTED_ATTRIBUTE);
   // load data content type
   useEffect(() => {
     getProductAttributeContentType().then((contentTypeData) => {

@@ -17,12 +17,13 @@ import styles from '../../styles/basic-information.less';
 import { isEmptySpace, messageError, messageErrorType, validatePostalCode } from '@/helper/utils';
 import { MESSAGE_ERROR } from '@/constants/message';
 
-interface ILocationEntryForm {
+interface LocationEntryFormProps {
   data: ProjectBodyRequest;
   setData: (data: ProjectBodyRequest) => void;
 }
 type FieldName = keyof ProjectBodyRequest;
-const LocationEntryForm: FC<ILocationEntryForm> = (props) => {
+
+const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
   const { data, setData } = props;
   // for content type modal
   const [visible, setVisible] = useState({

@@ -9,7 +9,7 @@ import { MarketAvailabilityDataList, MarketAvailabilityDetails } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
 
-interface ICategoryPaginationResponse {
+interface CategoryPaginationResponse {
   data: {
     collections: MarketAvailabilityDataList[];
     pagination: PaginationResponse;
@@ -21,7 +21,7 @@ export async function getMarketAvailabilityList(
   params: PaginationRequestParams,
   callback: (data: DataTableResponse) => void,
 ) {
-  request<ICategoryPaginationResponse>(`/api/market-availability/get-list`, {
+  request<CategoryPaginationResponse>(`/api/market-availability/get-list`, {
     method: 'GET',
     params,
   })

@@ -1,4 +1,5 @@
-import { SubBasisConversion, SubBasisOption, SubBasisPreset } from '@/types';
+import { ProductAttributeType } from '@/features/product/types';
+import { SubBasisConversion, SubBasisPreset } from '@/types';
 
 export interface SubAttribute {
   id: string;
@@ -9,6 +10,7 @@ export interface SubAttribute {
   description_2: string;
   content_type: string;
 }
+
 export interface AttributeListResponse {
   id: string;
   name: string;
@@ -27,10 +29,12 @@ export interface BasisConventionOption {
   name_1: string;
   name_2: string;
 }
+
 export interface BasisConvention extends BasisText {
   count: number;
   subs: BasisConventionOption[];
 }
+
 export interface BasisPresetOption extends BasisText {
   count?: number;
   subs?: BasisPresetOption[];
@@ -60,38 +64,24 @@ export interface AttributeForm {
   subs: AttributeSubForm[];
 }
 
-export interface AttributeGeneralFeatureSub extends SubAttribute {
+export interface ProductSubAttributes extends SubAttribute {
   basis: {
     id: string;
-    type: string;
+    type: ProductAttributeType;
     name: string;
     subs: SubBasisConversion[] & SubBasisPreset[] & BasisText[];
   };
 }
-export interface AttributeGeneralFeature {
+
+export interface ProductAttributes {
   id: string;
   name: string;
   type: number;
-  subs: AttributeGeneralFeatureSub[];
+  subs: ProductSubAttributes[];
 }
 
-export interface AttributeSpecificationSub extends SubAttribute {
-  basis: {
-    id: string;
-    type: string;
-    name: string;
-    subs: SubBasisConversion[] & BasisText[] & SubBasisOption[];
-  };
-}
-export interface AttributeSpecification {
-  id: string;
-  name: string;
-  type: number;
-  subs: AttributeSpecificationSub[];
-}
-
-export interface AttributebyType {
-  general: AttributeGeneralFeature[];
-  feature: AttributeGeneralFeature[];
-  specification: AttributeSpecification[];
+export interface ProductAttributeByType {
+  general: ProductAttributes[];
+  feature: ProductAttributes[];
+  specification: ProductAttributes[];
 }

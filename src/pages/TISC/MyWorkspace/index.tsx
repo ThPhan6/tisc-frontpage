@@ -4,12 +4,12 @@ import { BodyText } from '@/components/Typography';
 import { ProfileIcon } from '@/components/ProfileIcon';
 import { getBrandCards } from '@/services';
 import LoadingPage from '@/components/LoadingPage';
-import { IBrandCard, IBrandCardTeam } from '@/types';
+import { BrandCard, BrandCardTeam } from '@/types';
 import { getFullName } from '@/helper/utils';
 
 const MyWorkspace: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<IBrandCard[]>([]);
+  const [data, setData] = useState<BrandCard[]>([]);
 
   useEffect(() => {
     setLoading(true);
@@ -25,7 +25,7 @@ const MyWorkspace: React.FC = () => {
     <LoadingPage />
   ) : (
     <div className={styles.productCardContainer}>
-      {data.map((brand: IBrandCard) => (
+      {data.map((brand: BrandCard) => (
         <div key={brand.id} className={styles.productCardItemWrapper}>
           <div className={styles.productCardItem}>
             <div className={styles.top}>
@@ -74,7 +74,7 @@ const MyWorkspace: React.FC = () => {
                 <BodyText level={5} customClass={styles.team}>
                   Teams:
                 </BodyText>
-                {brand.teams.map((user: IBrandCardTeam) => {
+                {brand.teams.map((user: BrandCardTeam) => {
                   return <ProfileIcon key={user.id} name={getFullName(user)} />;
                 })}
               </div>
