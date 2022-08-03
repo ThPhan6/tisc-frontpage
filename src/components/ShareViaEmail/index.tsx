@@ -11,10 +11,10 @@ import styles from './index.less';
 interface ShareViaEmailProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
-  productData?: any;
 }
 
 const ShareViaEmail: FC<ShareViaEmailProps> = ({ visible, setVisible }) => {
+  // const brand = useAppSelector((state) => state.product.brand);
   // console.log('productData', productData);
   // validate email Address
   //   const isValidEmail = validateEmail(data.general_email);

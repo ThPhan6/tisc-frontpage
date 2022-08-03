@@ -9,7 +9,7 @@ import { Quotation } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
 
-interface IQuotationPaginationResponse {
+interface QuotationPaginationResponse {
   data: {
     quotations: Quotation[];
     pagination: PaginationResponse;
@@ -25,7 +25,7 @@ export async function getQuotationPagination(
     method: 'GET',
     params,
   })
-    .then((response: IQuotationPaginationResponse) => {
+    .then((response: QuotationPaginationResponse) => {
       const { quotations, pagination, summary } = response.data;
       callback({
         data: quotations,

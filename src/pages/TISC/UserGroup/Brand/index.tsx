@@ -9,7 +9,7 @@ import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
 import { getBrandPagination } from '@/services';
 import { showImageUrl } from '@/helper/utils';
-import type { IBrandListItem } from '@/types';
+import type { BrandListItem } from '@/types';
 import styles from './styles/index.less';
 import { PageContainer } from '@ant-design/pro-layout';
 import { MenuSummary } from '@/components/MenuSummary';
@@ -22,7 +22,7 @@ const BrandList: React.FC = () => {
     alert('Coming Soon!');
   };
 
-  const TableColumns: TableColumnItem<IBrandListItem>[] = [
+  const TableColumns: TableColumnItem<BrandListItem>[] = [
     {
       title: '',
       dataIndex: 'logo',

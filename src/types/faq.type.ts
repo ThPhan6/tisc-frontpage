@@ -17,7 +17,7 @@ export interface AllFaq {
   brand: FaqItem[];
   design: FaqItem[];
 }
-export interface IFAQUpdateRequest {
+export interface FAQUpdateRequest {
   title: string;
   document: {
     document: string;

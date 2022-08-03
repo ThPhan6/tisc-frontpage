@@ -1,6 +1,6 @@
 import Popover from '@/components/Modal/Popover';
 import { getStatesByCountryId } from '@/services/location.api';
-import { IState } from '@/types';
+import { State } from '@/types';
 import { FC, useEffect, useState } from 'react';
 
 const StateModal: FC<{
@@ -10,7 +10,7 @@ const StateModal: FC<{
   chosenValue?: any;
   setChosenValue: (value: any) => void;
 }> = ({ visible, setVisible, chosenValue, setChosenValue, countryId }) => {
-  const [states, setStates] = useState<IState[]>([]);
+  const [states, setStates] = useState<State[]>([]);
 
   const getStateList = () => {
     getStatesByCountryId(countryId).then((res) => {

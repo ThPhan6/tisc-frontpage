@@ -82,7 +82,7 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
             name="email"
             required={true}
           />
-          <Checkbox>By clicking and continuing, we agree TISC’s</Checkbox>
+          <Checkbox>By clicking and continuing, we agree to TISC’s</Checkbox>
           <div className={styles.customLink}>
             <span onClick={() => setOpenModalPolicies('Policies')}>
               Terms of Services, Privacy Policy and Cookie Policy

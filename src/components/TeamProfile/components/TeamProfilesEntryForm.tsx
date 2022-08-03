@@ -68,8 +68,6 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
     });
   };
 
-  console.log('data role', data);
-
   useEffect(() => {
     getDepartmentList().then(setDepartments);
   }, []);

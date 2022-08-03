@@ -1,4 +1,4 @@
-export interface IMarketAvailabilityForm {
+export interface MarketAvailabilityForm {
   collections: string[];
 }
 export interface MarketAvailabilityDataList {

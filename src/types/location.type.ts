@@ -1,20 +1,20 @@
-export interface ICountry {
+export interface Country {
   id: string;
   name: string;
   phone_code: string;
 }
 
-export interface IState {
+export interface State {
   id: string;
   name: string;
 }
 
-export interface ICity {
+export interface City {
   id: string;
   name: string;
 }
 
-export interface ILocationDetail {
+export interface LocationDetail {
   id: string;
   business_name: string;
   functional_types: {
@@ -39,7 +39,7 @@ export interface ILocationDetail {
 export interface LocationGroupedByCountry {
   country_name: string;
   count: number;
-  locations: ILocationDetail[];
+  locations: LocationDetail[];
 }
 
 export interface LocationForm {
@@ -63,5 +63,5 @@ export interface FunctionalTypeData {
 export interface Regions {
   name: string;
   count: number;
-  countries: ICountry[];
+  countries: Country[];
 }
