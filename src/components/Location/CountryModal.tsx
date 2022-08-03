@@ -11,12 +11,17 @@ const CountryModal: FC<{
   chosenValue?: any;
   setChosenValue: (value: any) => void;
   withPhoneCode?: boolean;
-}> = ({ visible, setVisible, chosenValue, setChosenValue, withPhoneCode }) => {
+  hasGlobal?: boolean;
+}> = ({ visible, setVisible, chosenValue, setChosenValue, withPhoneCode, hasGlobal = true }) => {
   const [countries, setCountries] = useState<Country[]>([]);
-
+  const GlobalItem: Country = { name: 'Global', id: '-1', phone_code: '00' };
   const getCountryList = () => {
     getCountries().then((res) => {
-      const newCountries = [{ name: 'Global', id: '-1', phone_code: '00' }, ...res];
+      let newCountries: Country[] = [];
+      if (hasGlobal) {
+        newCountries = [GlobalItem];
+      }
+      newCountries = [...newCountries, ...res];
       setCountries(newCountries);
       if (chosenValue.value) {
         const checked = newCountries.find((item) => item.id === chosenValue.value);
