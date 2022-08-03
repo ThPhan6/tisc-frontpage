@@ -1,4 +1,4 @@
-export interface IMarketAvailabilityForm {
+export interface MarketAvailabilityForm {
   collections: string[];
 }
 export interface MarketAvailabilityDataList {
@@ -31,4 +31,16 @@ export interface MarketAvailabilityDetails {
   total_available: number;
   total: number;
   regions: MarketAvailabilityDetailRegion[];
+}
+
+export interface RegionAvailabilityCollection {
+  region_name: string;
+  count: number;
+  region_country: string;
+}
+
+export interface AvailabilityCollectionGroup {
+  collection_name: string;
+  count: number;
+  regions: RegionAvailabilityCollection[];
 }

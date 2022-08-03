@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import CustomTable from '@/components/Table';
 import type { TableColumnItem } from '@/components/Table/types';
-import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 import { ReactComponent as ActionUnreadedIcon } from '@/assets/icons/action-unreaded-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
@@ -10,26 +8,32 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
 import { getBrandPagination } from '@/services';
 import { showImageUrl } from '@/helper/utils';
-import type { IBrandListItem } from '@/types';
+import type { BrandListItem } from '@/types';
 import styles from './styles/index.less';
 import { PageContainer } from '@ant-design/pro-layout';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import BrandMenuSummary from './components/BrandMenuSummary';
 import Popover from '@/components/Modal/Popover';
+import { ActionForm } from '@/components/Action';
+import { isEmpty } from 'lodash';
+import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
 
 const BrandList: React.FC = () => {
   const tableRef = useRef<any>();
 
-  const comingSoon = () => {
-    alert('Coming Soon!');
+  const [visible, setVisible] = useState<boolean>(false);
+  const handleAssignTeams = () => {
+    setVisible(true);
   };
 
-  const [visible, setVisible] = useState<boolean>(false);
+  const handleEmailInvite = () => {
+    setVisible(true);
+  };
 
   useEffect(() => {});
 
-  const TableColumns: TableColumnItem<IBrandListItem>[] = [
+  const TableColumns: TableColumnItem<BrandListItem>[] = [
     {
       title: '',
       dataIndex: 'logo',
@@ -67,16 +71,21 @@ const BrandList: React.FC = () => {
       title: 'Assign Team',
       dataIndex: 'assign_team',
       align: 'center',
-      render: () => {
+      render: (_v, record) => {
+        if (isEmpty(record.assign_team)) {
+          return <UserAddIcon onClick={handleAssignTeams} style={{ cursor: 'pointer' }} />;
+        }
         return (
-          <a
-            style={{ color: 'black' }}
-            onClick={() => {
-              setVisible(true);
-            }}
-          >
-            <UserAddIcon />
-          </a>
+          <div onClick={handleAssignTeams} style={{ cursor: 'pointer' }}>
+            {record.assign_team.map((teamProfile, key) => (
+              <TeamIcon
+                key={teamProfile.id ?? key}
+                avatar={teamProfile.avatar}
+                name={teamProfile.firstname}
+                customClass={styles.member}
+              />
+            ))}
+          </div>
         );
       },
     },
@@ -88,32 +97,20 @@ const BrandList: React.FC = () => {
       //  @typescript-eslint/no-unused-vars
       render: (_v, record: any) => {
         return (
-          <HeaderDropdown
-            containerClass={styles.customAction}
-            arrow
-            align={{ offset: [13, -10] }}
-            placement="bottomRight"
-            overlay={
-              <MenuHeaderDropdown
-                items={[
-                  {
-                    onClick: () =>
-                      pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', record.id)),
-                    icon: <ViewIcon />,
-                    label: 'View',
-                  },
-                  {
-                    onClick: comingSoon,
-                    icon: <EmailInviteIcon />,
-                    label: 'Email Invite',
-                  },
-                ]}
-              />
-            }
-            trigger={['click']}
-          >
-            <ActionIcon />
-          </HeaderDropdown>
+          <ActionForm
+            actionItems={[
+              {
+                onClick: () => pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', record.id)),
+                icon: <ViewIcon />,
+                label: 'View',
+              },
+              {
+                onClick: () => handleEmailInvite(),
+                icon: <EmailInviteIcon />,
+                label: 'Email Invite',
+              },
+            ]}
+          />
         );
       },
     },
@@ -138,17 +135,17 @@ const BrandList: React.FC = () => {
           title="ASSIGN TEAM"
           visible={visible}
           setVisible={setVisible}
-          dropdownCheckboxList={map(attributes, (item) => {
-            return {
-              name: item.name,
-              options: item.subs.map((sub) => {
-                return {
-                  label: renderCheckBoxLabel(sub),
-                  value: sub.id,
-                };
-              }),
-            };
-          })}
+          // dropdownCheckboxList={map(attributes, (item) => {
+          //   return {
+          //     name: item.name,
+          //     options: item.subs.map((sub) => {
+          //       return {
+          //         label: renderCheckBoxLabel(sub),
+          //         value: sub.id,
+          //       };
+          //     }),
+          //   };
+          // })}
           dropdownCheckboxTitle={(data) => data.name}
           // chosenValue={selected}
           // setChosenValue={setSelected}

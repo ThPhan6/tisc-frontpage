@@ -6,7 +6,7 @@ import type {
 } from '@/components/Table/types';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import type {
-  AttributebyType,
+  ProductAttributeByType,
   AttributeContentType,
   AttributeForm,
   AttributeListResponse,
@@ -14,7 +14,7 @@ import type {
 import { message } from 'antd';
 import { request } from 'umi';
 
-interface ICategoryPaginationResponse {
+interface CategoryPaginationResponse {
   data: {
     attributes: AttributeListResponse[];
     pagination: PaginationResponse;
@@ -29,7 +29,7 @@ export async function getProductAttributePagination(
     method: 'GET',
     params,
   })
-    .then((response: ICategoryPaginationResponse) => {
+    .then((response: CategoryPaginationResponse) => {
       const { attributes, pagination, summary } = response.data;
       callback({
         data: attributes,
@@ -113,7 +113,7 @@ export async function deleteAttribute(id: string) {
 }
 
 export async function getAllAttribute() {
-  return request<{ data: AttributebyType }>(`/api/attribute/get-all`, {})
+  return request<{ data: ProductAttributeByType }>(`/api/attribute/get-all`, {})
     .then((response) => {
       return response.data;
     })
@@ -123,6 +123,6 @@ export async function getAllAttribute() {
         general: [],
         feature: [],
         specification: [],
-      } as AttributebyType;
+      } as ProductAttributeByType;
     });
 }

@@ -1,3 +1,4 @@
+import { BodyTextProps, CustomTypography } from './../../Typography/types/index';
 import type { InputProps } from 'antd';
 import type { TextAreaProps } from 'antd/lib/input';
 import { ReactNode } from 'react';
@@ -9,11 +10,13 @@ export interface FormGroupProps {
   required?: boolean;
   tooltip?: string | JSX.Element;
   label: string | JSX.Element;
+  labelColor?: CustomTypography['color'];
   message?: string;
   messageType?: 'normal' | 'error' | 'warning';
   iconTooltip?: ReactNode;
   customIcon?: ReactNode;
   onClick?: () => void;
+  bodyText?: BodyTextExtraProps;
   placementBottomWidth?: string;
   placement?:
     | 'top'
@@ -28,6 +31,10 @@ export interface FormGroupProps {
     | 'leftBottom'
     | 'rightTop'
     | 'rightBottom';
+}
+
+export interface BodyTextExtraProps extends BodyTextProps {
+  text: string;
 }
 
 export interface CustomInputProps extends InputProps {

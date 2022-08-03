@@ -84,20 +84,22 @@ const BrandProfileDetail = () => {
           />
           <div className={styles.official_websites}>
             <BodyText level={3}>Offical Website</BodyText>
-            {profile.official_websites?.map((web, index) => (
-              <table className={styles.official_websites_table} key={index}>
-                <tr>
-                  <td className={styles.text}>
-                    <BodyText level={3}>{web.country_name ?? 'N/A'}</BodyText>
-                  </td>
-                  <td className={styles.url}>
-                    <BodyText level={5} fontFamily="Roboto">
-                      {web.url ?? ''}
-                    </BodyText>
-                  </td>
-                </tr>
-              </table>
-            ))}
+            <div className={styles.content}>
+              {profile.official_websites?.map((web, index) => (
+                <table className={styles.table} key={index}>
+                  <tr>
+                    <td className={styles.text}>
+                      <BodyText level={3}>{web.country_name ?? 'N/A'}</BodyText>
+                    </td>
+                    <td className={styles.url}>
+                      <BodyText level={5} fontFamily="Roboto">
+                        {web.url ?? ''}
+                      </BodyText>
+                    </td>
+                  </tr>
+                </table>
+              ))}
+            </div>
           </div>
         </div>
       </Col>

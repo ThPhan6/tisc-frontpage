@@ -20,50 +20,71 @@
   align-items: center;
 }
 
-.tabs {
-  display: flex;
+.member {
+  display: inline-block;
   align-items: center;
-  justify-content: space-between;
+  margin-right: 2px;
+  cursor: pointer;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.menuTab {
   background: #fff;
   box-shadow: inset 0 -0.7px 0 #000;
-
-  :global(.ant-tabs-top > .ant-tabs-nav) {
-    margin-bottom: 0;
+  :global(.react-horizontal-scrolling-menu--scroll-container) {
+    display: block;
   }
 
-  :global(.tab-list .ant-tabs-top > .ant-tabs-nav::before),
-  :global(.ant-tabs-top > .ant-tabs-nav::before) {
-    border-bottom: none !important;
-  }
-
-  :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
-    width: 100%;
-  }
-
-  :global(.ant-tabs-tab) {
-    width: 125px;
-  }
-
-  &_right {
+  .tabs {
     display: flex;
     align-items: center;
-  }
+    // justify-content: space-between;
 
-  .status {
-    margin-bottom: 0;
-
-    > label > span {
-      display: none;
+    &_items {
+      flex: 1;
     }
 
-    > label > p {
-      font-weight: 600;
+    :global(.ant-tabs-top > .ant-tabs-nav) {
+      margin-bottom: 0;
     }
-  }
 
-  .actionBtn {
-    margin: 8px 10px;
-    border-radius: 12px;
+    :global(.tab-list .ant-tabs-top > .ant-tabs-nav::before),
+    :global(.ant-tabs-top > .ant-tabs-nav::before) {
+      border-bottom: none !important;
+    }
+
+    :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
+      width: 100%;
+    }
+
+    :global(.ant-tabs-tab) {
+      width: 125px;
+    }
+
+    &_right {
+      display: flex;
+      align-items: center;
+    }
+
+    .status {
+      margin-bottom: 0;
+
+      > label > span {
+        display: none;
+      }
+
+      > label > p {
+        font-weight: 600;
+      }
+    }
+
+    .actionBtn {
+      margin: 8px 10px;
+      border-radius: 12px;
+    }
   }
 }
 
@@ -81,6 +102,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  padding-bottom: 2px;
   .projectStatusLabel {
     display: flex;
     align-items: cener;

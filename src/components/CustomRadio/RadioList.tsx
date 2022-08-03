@@ -7,20 +7,20 @@ import { MainTitle } from '@/components/Typography';
 import { isString } from 'lodash';
 import styles from './styles/radioList.less';
 
-export interface IRadioListOption {
+export interface RadioListOption {
   options: RadioValue[];
   heading?: string | React.ReactNode;
 }
 
-interface IRadioList {
-  data: IRadioListOption[];
+interface GroupRadioListProps {
+  data: RadioListOption[];
   selected?: RadioValue;
   chosenItem?: RadioValue;
   onChange?: (value: RadioValue) => void;
   noCollapse?: boolean;
 }
 
-const GroupRadioList: React.FC<IRadioList> = (props) => {
+const GroupRadioList: React.FC<GroupRadioListProps> = (props) => {
   const { data, selected, onChange } = props;
 
   return (

@@ -13,13 +13,13 @@ import { contentId, EntryFormWrapper } from '@/components/EntryForm';
 import { FormGroup } from '@/components/Form';
 import styles from './styles/EmailAutorespondersEntryForm.less';
 import { ScrollMenu } from 'react-horizontal-scrolling-menu';
-import { useDrag } from './utils/useDrag';
 import { CustomRadio } from '@/components/CustomRadio';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
 import { isEmpty, trimStart } from 'lodash';
 import { message } from 'antd';
 import { MESSAGE_ERROR } from '@/constants/message';
+import { useDrag } from '@/components/ScrollBar/useDrag';
 
 const DEFAULT_EMAILAUTORESPONDERS_VALUE: EmailTemplate = {
   topic: '',

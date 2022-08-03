@@ -5,11 +5,15 @@ import type {
   SummaryResponse,
 } from '@/components/Table/types';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { MarketAvailabilityDataList, MarketAvailabilityDetails } from '@/types';
+import {
+  AvailabilityCollectionGroup,
+  MarketAvailabilityDataList,
+  MarketAvailabilityDetails,
+} from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
 
-interface ICategoryPaginationResponse {
+interface CategoryPaginationResponse {
   data: {
     collections: MarketAvailabilityDataList[];
     pagination: PaginationResponse;
@@ -21,7 +25,7 @@ export async function getMarketAvailabilityList(
   params: PaginationRequestParams,
   callback: (data: DataTableResponse) => void,
 ) {
-  request<ICategoryPaginationResponse>(`/api/market-availability/get-list`, {
+  request<CategoryPaginationResponse>(`/api/market-availability/get-list`, {
     method: 'GET',
     params,
   })
@@ -73,5 +77,21 @@ export async function updateMarketAvailabilityByCollectionId(
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_MARKET_AVAILABILITY_ERROR);
       return false;
+    });
+}
+
+export async function getAvailabilityListCountryGroupByBrandId(brandId: string) {
+  return request<{ data: AvailabilityCollectionGroup[] }>(
+    `/api/market-availability/get-list-group-by-collection/${brandId}`,
+    {
+      method: 'GET',
+    },
+  )
+    .then((response) => response.data)
+    .catch((error) => {
+      message.error(
+        error.message.data ?? MESSAGE_NOTIFICATION.GET_LIST_AVAILABILITY_GROUP_COLLECTION_ERROR,
+      );
+      return [] as AvailabilityCollectionGroup[];
     });
 }

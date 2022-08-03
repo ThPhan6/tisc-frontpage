@@ -11,12 +11,6 @@ import { SubBasisOption, BasisOptionSubForm } from '@/types';
 import { Collapse, Radio, Row, Col } from 'antd';
 import { getBase64, showImageUrl } from '@/helper/utils';
 
-interface IOptionItem {
-  subOption: BasisOptionSubForm;
-  handleChangeSubItem: (changedSubs: BasisOptionSubForm) => void;
-  handleDeleteSubOption: () => void;
-  optionIndex: number;
-}
 interface SubItemOptionProps {
   is_have_image?: boolean;
   subItemOption: SubBasisOption;
@@ -121,7 +115,14 @@ const SubItemOption: FC<SubItemOptionProps> = ({
   );
 };
 
-export const OptionItem: FC<IOptionItem> = (props) => {
+interface OptionItemProps {
+  subOption: BasisOptionSubForm;
+  handleChangeSubItem: (changedSubs: BasisOptionSubForm) => void;
+  handleDeleteSubOption: () => void;
+  optionIndex: number;
+}
+
+export const OptionItem: FC<OptionItemProps> = (props) => {
   const { subOption, handleChangeSubItem, handleDeleteSubOption, optionIndex } = props;
 
   const handleActiveKeyToCollapse = () => {

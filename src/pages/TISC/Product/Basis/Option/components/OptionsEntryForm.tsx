@@ -5,7 +5,7 @@ import { OptionItem } from './OptionItem';
 import type { BasisOptionForm, BasisOptionSubForm, SubBasisOption } from '@/types';
 import { merge } from 'lodash';
 
-interface IOptionEntryForm {
+interface OptionEntryFormProps {
   option: BasisOptionForm;
   setOption: (data: BasisOptionForm) => void;
   onCancel: () => void;
@@ -19,7 +19,7 @@ const DEFAULT_SUB_OPTION: BasisOptionSubForm = {
   subs: [],
 };
 
-const OptionEntryForm: FC<IOptionEntryForm> = (props) => {
+const OptionEntryForm: FC<OptionEntryFormProps> = (props) => {
   const { onCancel, onSubmit, option, setOption, submitButtonStatus } = props;
 
   /// handle change name

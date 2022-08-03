@@ -46,14 +46,13 @@ const ElementSummary: FC<ElementSummaryProps> = ({
       </div>
       {toggle && (
         <div className={style['item-wrapper']}>
-          {dataElementSummary?.subs &&
-            dataElementSummary.subs.map((sub) => {
-              return (
-                <div className={style['item']} key={sub?.id}>
-                  <ItemSummary sub={sub} />
-                </div>
-              );
-            })}
+          {dataElementSummary?.subs?.map((sub, index) => {
+            return (
+              <div className={style['item']} key={sub?.id ?? index}>
+                <ItemSummary sub={sub} />
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

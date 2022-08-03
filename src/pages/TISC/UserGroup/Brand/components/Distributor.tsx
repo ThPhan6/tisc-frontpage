@@ -2,11 +2,14 @@ import { ReactComponent as DropdownV2Icon } from '@/assets/icons/action-down-ico
 import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
-import InputGroup from '@/components/EntryForm/InputGroup';
-import { BrandDetailData } from '@/constants/util';
+import { FormGroup } from '@/components/Form';
+import { useGetParam } from '@/helper/hook';
+import { getListDistributorGroupCountryByBrandId } from '@/services';
+import { DistributorResponseForm } from '@/types/distributor.type';
 import { Col, Collapse, Row } from 'antd';
-import { capitalize, isEmpty, upperCase } from 'lodash';
+import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
+import { RenderMainHeader, RenderSubHeader } from '../../components/renderHeader';
 import indexStyles from '../../styles/index.less';
 import { ActiveKeyType } from '../../types';
 import styles from '../styles/details.less';
@@ -14,36 +17,20 @@ import styles from '../styles/details.less';
 const BrandDistributorDetail = () => {
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
 
-  const [distributor, setDistributor] = useState<any>([]);
+  const [distributors, setDistributors] = useState<DistributorResponseForm[]>([]);
+
+  const brandId = useGetParam();
 
   useEffect(() => {
-    setDistributor(BrandDetailData);
-  });
-
-  const renderBusinessHeader = (business: any) => {
-    return <span className={indexStyles.dropdownCount}>{capitalize(business.firstname)}</span>;
-  };
-
-  const renderLocationHeader = (country: any) => {
-    return (
-      <span>
-        {upperCase(country.country_name)}
-        <span
-          className={indexStyles.dropdownCount}
-          style={{
-            marginLeft: 8,
-          }}
-        >
-          ({country.users.length})
-        </span>
-      </span>
-    );
-  };
+    if (brandId) {
+      getListDistributorGroupCountryByBrandId(brandId).then(setDistributors);
+    }
+  }, []);
 
   return (
     <Row className={indexStyles.container}>
       <Col span={12}>
-        <div className={`${indexStyles.form} ${styles.team_form}`}>
+        <div className={`${indexStyles.form} ${styles.distributor_form}`}>
           <Collapse
             accordion
             bordered={false}
@@ -56,9 +43,16 @@ const BrandDistributorDetail = () => {
               setActiveKey(key);
             }}
           >
-            {distributor.map((location, index) => (
+            {distributors.map((location, index) => (
               <Collapse.Panel
-                header={renderLocationHeader(location)}
+                header={
+                  location.country_name && (
+                    <RenderMainHeader
+                      header={location.country_name}
+                      quantity={location.distributors.length}
+                    />
+                  )
+                }
                 key={index}
                 collapsible={isEmpty(location.country_name) ? 'disabled' : undefined}
                 // className="site-collapse-custom-panel"
@@ -72,76 +66,85 @@ const BrandDistributorDetail = () => {
                   // onChange={setSecondActiveKey}
                   // activeKey={secondActiveKey}
                 >
-                  {location.users.map((user, userIndex) => (
+                  {location.distributors.map((distributor, idx) => (
                     <Collapse.Panel
-                      header={renderBusinessHeader(user)}
-                      key={`${index}-${userIndex}`}
-                      collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}
+                      // header={renderBusinessHeader(user)}
+                      header={<RenderSubHeader header={distributor.name} />}
+                      key={`${index}-${idx}`}
+                      collapsible={isEmpty(distributor.name) ? 'disabled' : undefined}
                       // className="site-collapse-custom-panel"
                     >
                       <div className={`${indexStyles.info} ${styles.teamInfo}`}>
-                        <InputGroup
+                        <FormGroup
                           label="Address"
-                          colon
-                          fontLevel={3}
-                          value={user.address ?? ''}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: distributor.address ?? '',
+                          }}
                         />
-                        <InputGroup
+
+                        <FormGroup
                           label="Person in charge"
-                          colon
-                          fontLevel={3}
-                          value={user.gender === true ? 'Male' : 'Female'}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: distributor.person ?? '',
+                          }}
                         />
-                        <InputGroup
+
+                        <FormGroup
                           label="Gender"
-                          colon
-                          fontLevel={3}
-                          value={user.work_location ?? ''}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: distributor.gender ? 'Male' : 'Female' ?? '',
+                          }}
                         />
-                        <InputGroup
-                          label="Location Function"
-                          colon
-                          fontLevel={3}
-                          value={user.department ?? ''}
-                          readOnly
-                        />
-                        <InputGroup
+
+                        <FormGroup
                           label="Work Email"
-                          colon
-                          fontLevel={3}
-                          value={user.email ?? ''}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: distributor.email ?? '',
+                          }}
                         />
-                        <InputGroup
+
+                        <FormGroup
                           label="Work Phone"
-                          colon
-                          fontLevel={3}
-                          value={user.phone ?? ''}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: distributor.phone ?? '',
+                          }}
                         />
-                        <InputGroup
+
+                        <FormGroup
                           label="Work Mobile"
-                          colon
-                          fontLevel={3}
-                          value={user.mobile ?? ''}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: distributor.mobile ?? '',
+                          }}
                         />
-                        <InputGroup
+
+                        <FormGroup
                           label="Authorized Countries"
-                          colon
-                          fontLevel={3}
-                          value={user.mobile ?? ''}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: distributor.authorized_country_name ?? '',
+                          }}
                         />
-                        <InputGroup
+
+                        <FormGroup
                           label="Coverage Beyond"
-                          colon
-                          fontLevel={3}
-                          value={user.mobile ?? ''}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: String(distributor.coverage_beyond) ?? '',
+                          }}
                         />
                       </div>
                     </Collapse.Panel>

@@ -2,56 +2,29 @@ import { ReactComponent as DropdownV2Icon } from '@/assets/icons/action-down-ico
 import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
-import InputGroup from '@/components/EntryForm/InputGroup';
+import { FormGroup } from '@/components/Form';
+import { useGetParam } from '@/helper/hook';
 import { getLocationByBrandId } from '@/services';
-import { ILocationDetail, LocationGroupedByCountry } from '@/types';
+import { LocationGroupedByCountry } from '@/types';
 import { Col, Collapse, Row } from 'antd';
-import { isEmpty, upperCase } from 'lodash';
+import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
-import { useParams } from 'umi';
+import { RenderMainHeader, RenderSubHeader } from '../../components/renderHeader';
+import indexStyles from '../../styles/index.less';
 import { ActiveKeyType } from '../../types';
 import styles from '../styles/details.less';
-import indexStyles from '../../styles/index.less';
 
 const BrandLocationDetail = () => {
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
   const [locations, setLocations] = useState<LocationGroupedByCountry[]>([]);
 
-  const params = useParams<{ id: string }>();
-  const brandId = params?.id || '';
+  const brandId = useGetParam();
 
   useEffect(() => {
-    getLocationByBrandId(brandId).then(setLocations);
+    if (brandId) {
+      getLocationByBrandId(brandId).then(setLocations);
+    }
   }, []);
-
-  const renderBusinessHeader = (business: ILocationDetail) => {
-    return (
-      <span
-        className={indexStyles.dropdownCount}
-        style={{
-          textTransform: 'capitalize',
-        }}
-      >
-        {business.business_name}
-      </span>
-    );
-  };
-
-  const renderLocationHeader = (country: LocationGroupedByCountry) => {
-    return (
-      <span>
-        {upperCase(country.country_name)}
-        <span
-          className={indexStyles.dropdownCount}
-          style={{
-            marginLeft: 8,
-          }}
-        >
-          ({country.locations.length})
-        </span>
-      </span>
-    );
-  };
 
   return (
     <Row className={indexStyles.container}>
@@ -71,7 +44,14 @@ const BrandLocationDetail = () => {
           >
             {locations.map((country, index) => (
               <Collapse.Panel
-                header={renderLocationHeader(country)}
+                header={
+                  country.country_name && (
+                    <RenderMainHeader
+                      header={country.country_name}
+                      quantity={country.locations.length}
+                    />
+                  )
+                }
                 key={index}
                 collapsible={isEmpty(country.country_name) ? 'disabled' : undefined}
                 // className="site-collapse-custom-panel"
@@ -87,54 +67,56 @@ const BrandLocationDetail = () => {
                 >
                   {country.locations.map((location, userIndex) => (
                     <Collapse.Panel
-                      header={renderBusinessHeader(location)}
+                      header={<RenderSubHeader header={location.business_name} />}
                       key={`${index}-${userIndex}`}
                       collapsible={isEmpty(location.business_name) ? 'disabled' : undefined}
                       // className="site-collapse-custom-panel"
                     >
                       <div className={`${indexStyles.info} ${styles.locationInfo}`}>
-                        <InputGroup
+                        <FormGroup
                           label="Registered Number"
-                          colon
-                          fontLevel={3}
-                          value={location.business_number ?? ''}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: location.business_number ?? '',
+                          }}
                         />
-                        <InputGroup
-                          label="Location Type"
-                          colon
-                          fontLevel={3}
-                          value={location.functional_types.map((type) => ` ${type.name}`) ?? ''}
-                          readOnly
-                          containerClass={indexStyles.stringInfo}
-                        />
-                        <InputGroup
+
+                        <FormGroup
                           label="Location Function"
-                          colon
-                          fontLevel={3}
-                          value={location.functional_type ?? ''}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text:
+                              location.functional_types.map((type) => type.name).join(', ') ?? '',
+                          }}
                         />
-                        <InputGroup
+
+                        <FormGroup
                           label="Address"
-                          colon
-                          fontLevel={3}
-                          value={location.address ?? ''}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: location.address ?? '',
+                          }}
                         />
-                        <InputGroup
+
+                        <FormGroup
                           label="General Phone"
-                          colon
-                          fontLevel={3}
-                          value={location.general_phone ?? ''}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: location.general_phone ?? '',
+                          }}
                         />
-                        <InputGroup
+
+                        <FormGroup
                           label="General Email"
-                          colon
-                          fontLevel={3}
-                          value={location.general_email ?? ''}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: location.general_email ?? '',
+                          }}
                         />
                       </div>
                     </Collapse.Panel>

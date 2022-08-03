@@ -151,6 +151,7 @@ export const MESSAGE_NOTIFICATION = {
 
   // market availability
   GET_LIST_MARKET_AVAILABILITY_ERROR: 'Get list market availability error',
+  GET_LIST_AVAILABILITY_GROUP_COLLECTION_ERROR: 'Get list group availability collection error',
   GET_ONE_MARKET_AVAILABILITY_ERROR: 'Get one market availability error',
   UPDATE_MARKET_AVAILABILITY_SUCCESS: 'Update market availability successfully',
   UPDATE_MARKET_AVAILABILITY_ERROR: 'Failed to update market availability',
@@ -185,6 +186,8 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_LOCATION_FAILED: 'Failed to delete location',
   GET_LOCATION_FAILED: 'Failed to get location data',
   GET_REGIONS_ERROR: 'Failed to get regions',
+  GET_LOCATION_DISTRIBUTOR_ERROR: 'Failed to get distributor location',
+  GET_LOCATION_BRAND_ERROR: 'Failed to get brand location',
 
   //distributor
   CREATE_DISTRIBUTOR_SUCCESS: 'Create distributor successfully',
@@ -194,6 +197,7 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_DISTRIBUTOR_SUCCESS: 'Update distributor successfully',
   UPDATE_DISTRIBUTOR_ERROR: 'Update distributor error',
   GET_ONE_DISTRIBUTOR_ERROR: 'Get one distributor error',
+  GET_LIST_DISTRIBUTOR_GROUP_COUNTRY_ERROR: 'Get list group distributor country error',
 
   //brand-profile
   UPDATE_BRAND_PROFILE_SUCCESS: 'Update profile successfully',

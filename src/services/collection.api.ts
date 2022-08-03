@@ -1,12 +1,12 @@
 import { request } from 'umi';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import type { ICollection } from '@/types';
+import type { Collection } from '@/types';
 // import { setProductSummary } from '@/reducers/product';
 // import store from '@/reducers';
 
 export async function getCollectionByBrandId(brandId: string) {
-  return request<{ data: { collections: ICollection[] } }>(`/api/collection/get-list`, {
+  return request<{ data: { collections: Collection[] } }>(`/api/collection/get-list`, {
     method: 'GET',
     params: {
       page: 1,
@@ -19,7 +19,7 @@ export async function getCollectionByBrandId(brandId: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_COLLECTION_ERROR);
-      return [] as ICollection[];
+      return [] as Collection[];
     });
 }
 

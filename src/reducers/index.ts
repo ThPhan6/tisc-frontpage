@@ -3,9 +3,10 @@ import type { TypedUseSelectorHook } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import productReducer from './product';
 import userReducer from './user';
 import categoryReducer from './category';
+import { productReducer } from '@/features/product/reducers';
+
 const reducers = combineReducers({
   product: productReducer,
   category: categoryReducer,

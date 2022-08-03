@@ -2,16 +2,16 @@ import { ReactComponent as DropdownV2Icon } from '@/assets/icons/action-down-ico
 import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
-import InputGroup from '@/components/EntryForm/InputGroup';
-import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
+import { FormGroup } from '@/components/Form';
 import { USER_STATUS_TEXTS } from '@/constants/util';
-import { showImageUrl } from '@/helper/utils';
+import { useGetParam } from '@/helper/hook';
 import { getListTeamProfileGroupCountryByBrandId } from '@/services';
-import { BrandTeam, TeamProfileGroupCountry } from '@/types';
+import { TeamProfileGroupCountry } from '@/types';
 import { Col, Collapse, Row } from 'antd';
-import { capitalize, isEmpty, upperCase } from 'lodash';
+import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
-import { useParams } from 'umi';
+import { RenderMainHeader, RenderMemberHeader } from '../../components/renderHeader';
+
 import indexStyles from '../../styles/index.less';
 import { ActiveKeyType } from '../../types';
 import styles from '../styles/details.less';
@@ -44,43 +44,13 @@ const BrandTeamDetail = () => {
   // const [secondActiveKey, setSecondActiveKey] = useState<ActiveKeyType>([]);
   const [teamData, setTeamData] = useState<TeamProfileGroupCountry[]>(DEFAULT_BRANDTEAM);
 
-  const params = useParams<{ id: string }>();
-  const brandId = params?.id || '';
+  const brandId = useGetParam();
 
   useEffect(() => {
-    getListTeamProfileGroupCountryByBrandId(brandId).then(setTeamData);
+    if (brandId) {
+      getListTeamProfileGroupCountryByBrandId(brandId).then(setTeamData);
+    }
   }, []);
-
-  const renderUserHeader = (user: BrandTeam) => {
-    return (
-      <div className={styles.userName}>
-        <TeamIcon
-          avatar={showImageUrl(user.logo)}
-          name={user.firstname}
-          customClass={indexStyles.avatar}
-        />
-        <span className={`${styles.name} ${indexStyles.dropdownCount}`}>{`${capitalize(
-          user.firstname,
-        )} ${capitalize(user.lastname)}`}</span>
-      </div>
-    );
-  };
-
-  const renderHeader = (team: TeamProfileGroupCountry) => {
-    return (
-      <span>
-        {upperCase(team.country_name)}
-        <span
-          className={indexStyles.dropdownCount}
-          style={{
-            marginLeft: 8,
-          }}
-        >
-          ({team.users.length})
-        </span>
-      </span>
-    );
-  };
 
   return (
     <Row className={indexStyles.container}>
@@ -100,7 +70,11 @@ const BrandTeamDetail = () => {
           >
             {teamData.map((team, index) => (
               <Collapse.Panel
-                header={renderHeader(team)}
+                header={
+                  team.country_name && (
+                    <RenderMainHeader header={team.country_name} quantity={team.users.length} />
+                  )
+                }
                 key={index}
                 collapsible={isEmpty(team.country_name) ? 'disabled' : undefined}
                 // className="site-collapse-custom-panel"
@@ -116,67 +90,97 @@ const BrandTeamDetail = () => {
                 >
                   {team.users.map((user, userIndex) => (
                     <Collapse.Panel
-                      header={renderUserHeader(user)}
+                      header={
+                        <RenderMemberHeader
+                          firstName={user.firstname}
+                          lastName={user.lastname}
+                          avatar={user.logo}
+                        />
+                      }
                       key={`${index}-${userIndex}`}
                       collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}
                       // className="site-collapse-custom-panel"
                     >
                       <div className={`${indexStyles.info} ${styles.teamInfo}`}>
-                        <InputGroup
+                        <FormGroup
                           label="Gender"
-                          colon
-                          fontLevel={3}
-                          value={user.gender === true ? 'Male' : 'Female'}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: user.gender === true ? 'Male' : 'Female',
+                          }}
                         />
-                        <InputGroup
+
+                        <FormGroup
                           label="Work Location"
-                          colon
-                          fontLevel={3}
-                          value={user.work_location ?? ''}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: user.work_location ?? '',
+                          }}
                         />
-                        <InputGroup
+
+                        <FormGroup
                           label="Department"
-                          colon
-                          fontLevel={3}
-                          value={user.department ?? ''}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: user.department ?? '',
+                          }}
                         />
-                        <InputGroup
+
+                        <FormGroup
                           label="Position/Title"
-                          colon
-                          fontLevel={3}
-                          value={user.position ?? ''}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: user.position ?? '',
+                          }}
                         />
-                        <InputGroup
-                          label="Phone"
-                          colon
-                          fontLevel={3}
-                          value={user.phone ?? ''}
-                          readOnly
+
+                        <FormGroup
+                          label="Work Email"
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: user.email ?? '',
+                          }}
                         />
-                        <InputGroup
+
+                        <FormGroup
+                          label="Work Phone"
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: user.phone ?? '',
+                          }}
+                        />
+
+                        <FormGroup
                           label="Work Mobile"
-                          colon
-                          fontLevel={3}
-                          value={user.mobile ?? ''}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: user.mobile ?? '',
+                          }}
                         />
-                        <InputGroup
+
+                        <FormGroup
                           label="Access Level"
-                          colon
-                          fontLevel={3}
-                          value={user.access_level ?? ''}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: user.access_level ?? '',
+                          }}
                         />
-                        <InputGroup
+
+                        <FormGroup
                           label="Status"
-                          colon
-                          fontLevel={3}
-                          value={USER_STATUS_TEXTS[user.status] ?? 'N/A'}
-                          readOnly
+                          labelColor="mono-color-medium"
+                          layout="vertical"
+                          bodyText={{
+                            text: USER_STATUS_TEXTS[user.status] ?? 'N/A',
+                          }}
                         />
                       </div>
                     </Collapse.Panel>

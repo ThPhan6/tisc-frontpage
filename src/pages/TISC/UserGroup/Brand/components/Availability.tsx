@@ -3,10 +3,13 @@ import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.sv
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { BodyText } from '@/components/Typography';
-import { BrandDetailData } from '@/constants/util';
+import { useGetParam } from '@/helper/hook';
+import { getAvailabilityListCountryGroupByBrandId } from '@/services';
+import { AvailabilityCollectionGroup } from '@/types';
 import { Col, Collapse, Row } from 'antd';
-import { capitalize, isEmpty, upperCase } from 'lodash';
+import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
+import { RenderMainHeader } from '../../components/renderHeader';
 import indexStyles from '../../styles/index.less';
 import { ActiveKeyType } from '../../types';
 import styles from '../styles/details.less';
@@ -14,36 +17,20 @@ import styles from '../styles/details.less';
 const BrandAvailabilityDetail = () => {
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
 
-  const [availability, setAvailability] = useState<any>([]);
+  const [availability, setAvailability] = useState<AvailabilityCollectionGroup[]>([]);
+
+  const brandId = useGetParam();
 
   useEffect(() => {
-    setAvailability(BrandDetailData);
-  });
-
-  const renderLocationHeader = (collection: any) => {
-    return <span className={indexStyles.dropdownCount}>{capitalize(collection.firstname)}</span>;
-  };
-
-  const renderCollectionHeader = (country: any) => {
-    return (
-      <span>
-        {upperCase(country.country_name)}
-        <span
-          className={indexStyles.dropdownCount}
-          style={{
-            marginLeft: 8,
-          }}
-        >
-          ({country.users.length})
-        </span>
-      </span>
-    );
-  };
+    if (brandId) {
+      getAvailabilityListCountryGroupByBrandId(brandId).then(setAvailability);
+    }
+  }, []);
 
   return (
     <Row className={indexStyles.container}>
       <Col span={12}>
-        <div className={`${indexStyles.form} ${styles.team_form}`}>
+        <div className={`${indexStyles.form} ${styles.availability_form}`}>
           <Collapse
             accordion
             bordered={false}
@@ -56,11 +43,20 @@ const BrandAvailabilityDetail = () => {
               setActiveKey(key);
             }}
           >
-            {availability.map((collection, index) => (
+            {availability.map((collections, index) => (
               <Collapse.Panel
-                header={renderCollectionHeader(collection)}
+                // header={renderCollectionHeader(collection)}
+                header={
+                  collections.collection_name && (
+                    <RenderMainHeader
+                      header={collections.collection_name}
+                      quantity={collections.regions?.length}
+                      isUpperCase={false}
+                    />
+                  )
+                }
                 key={index}
-                collapsible={isEmpty(collection.country_name) ? 'disabled' : undefined}
+                collapsible={isEmpty(collections.collection_name) ? 'disabled' : undefined}
                 // className="site-collapse-custom-panel"
               >
                 <Collapse
@@ -72,20 +68,27 @@ const BrandAvailabilityDetail = () => {
                   // onChange={setSecondActiveKey}
                   // activeKey={secondActiveKey}
                 >
-                  {collection.users.map((user, userIndex) => (
-                    <Collapse.Panel
-                      header={renderLocationHeader(user)}
-                      key={`${index}-${userIndex}`}
-                      collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}
-                      // className="site-collapse-custom-panel"
-                    >
-                      <div className={styles.teamInfo}>
-                        <BodyText level={5} fontFamily="Roboto">
-                          {user.firstname}
+                  {collections.regions &&
+                    collections.regions.map((region, regionIdx) => (
+                      <Collapse.Panel
+                        header={
+                          region.region_name && (
+                            <RenderMainHeader
+                              header={region.region_name}
+                              quantity={region.count}
+                              isUpperCase={false}
+                            />
+                          )
+                        }
+                        key={`${index}-${regionIdx}`}
+                        collapsible={isEmpty(region.region_name) ? 'disabled' : undefined}
+                        // className="site-collapse-custom-panel"
+                      >
+                        <BodyText level={5} fontFamily="Roboto" color="mono-color">
+                          {region.region_country}
                         </BodyText>
-                      </div>
-                    </Collapse.Panel>
-                  ))}
+                      </Collapse.Panel>
+                    ))}
                 </Collapse>
               </Collapse.Panel>
             ))}

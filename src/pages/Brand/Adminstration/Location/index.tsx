@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { TableColumnItem } from '@/components/Table/types';
-import { ILocationDetail } from '@/types';
+import { LocationDetail } from '@/types';
 import { getLocationPagination, deleteLocationById } from '@/services';
 import { confirmDelete } from '@/helper/common';
 import { PATH } from '@/constants/path';
@@ -30,7 +30,7 @@ const BrandLocation: React.FC = () => {
     });
   };
 
-  const mainColumns: TableColumnItem<ILocationDetail>[] = [
+  const mainColumns: TableColumnItem<LocationDetail>[] = [
     {
       title: 'Name',
       dataIndex: 'business_name',

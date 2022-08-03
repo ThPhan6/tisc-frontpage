@@ -1,0 +1,290 @@
+.attributes {
+  // margin-top: 8px;
+  // transition: all 0.3s;
+
+  :global(.ant-collapse-item-active) {
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  }
+
+  :global(.ant-collapse-content > .ant-collapse-content-box) {
+    padding: 8px 16px;
+  }
+  :global(.ant-collapse) {
+    margin-top: 8px;
+  }
+
+  .brandProfileHeader {
+    padding-left: 16px;
+    text-transform: capitalize;
+  }
+}
+
+.generalFeature {
+  .content {
+    display: flex;
+    align-items: center;
+    min-height: 36px;
+
+    &_type {
+      margin-right: 12px;
+      white-space: nowrap;
+      text-transform: capitalize;
+    }
+
+    &_text {
+      padding-top: 1px;
+      text-transform: capitalize;
+    }
+  }
+}
+
+.specification {
+  .attribute {
+    display: flex;
+    align-items: center;
+    min-height: 36px;
+
+    .content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      cursor: pointer;
+      &_type {
+        margin-right: 12px;
+        white-space: nowrap;
+        text-transform: capitalize;
+      }
+      &_text {
+        margin-right: 12px;
+        white-space: nowrap;
+        text-transform: capitalize;
+      }
+
+      &_select {
+        padding-top: 1px;
+        color: @mono-color-medium;
+      }
+    }
+  }
+  .attributeItemCheckBox {
+    display: flex;
+    align-items: center;
+    text-transform: capitalize;
+    :global(.attribute-name) {
+      margin-right: 12px;
+    }
+    :global(.attribute-description) {
+      color: @mono-color-medium !important;
+    }
+  }
+}
+
+.vendorSection {
+  margin-top: 8px;
+  &.catelogueSection {
+    :global(.ant-collapse-content-box) {
+      padding: 0;
+      :global(.dynamic-wrapper) {
+        padding: 8px 16px 0;
+        &:last-child {
+          padding-bottom: 8px;
+        }
+        svg {
+          color: @mono-color-medium;
+          transition: all 0.3s;
+          &:hover {
+            color: @primary-color-dark;
+          }
+        }
+        :global(.dynamic-title-box) {
+          padding-left: 0;
+        }
+        :global(.dynamic-value-box) {
+          padding-left: 16px;
+        }
+      }
+    }
+    .vendorCustomPanelBox {
+      :global(.ant-collapse-content-box) {
+        padding: 0;
+      }
+      &:global(.ant-collapse-item-active) {
+        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      }
+    }
+  }
+  .vendorCustomPanelBox {
+    transition: all 0.3s;
+    .brandProfileHeader {
+      text-transform: capitalize;
+    }
+    &:global(.ant-collapse-item-active) {
+      .brandProfileHeader {
+        p {
+          font-weight: 500;
+          line-height: 20px;
+        }
+      }
+    }
+  }
+  .contactHeadline {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 16px;
+    background-color: #fff;
+    box-shadow: @border-bottom-light;
+    :global(.contact-icon) {
+      margin-right: 12px;
+    }
+  }
+  .contactContent {
+    padding: 0 16px;
+    background-color: #fff;
+    :global(.contact-item-wrapper) {
+      box-shadow: @border-bottom-light;
+      &:last-child {
+        box-shadow: none;
+      }
+      :global(.contact-item) {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 40px;
+        :global(.contact-select-box) {
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          p {
+            margin-right: 12px;
+            color: @mono-color-medium;
+          }
+          svg {
+            color: @mono-color-medium;
+          }
+        }
+      }
+    }
+  }
+}
+
+.converstionText {
+  margin-right: 24px;
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.brandProfileHeader {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  svg {
+    width: 18px;
+    height: 18px;
+    margin-right: 12px;
+  }
+}
+
+.defaultOptionList {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  :global(.group-option-name) {
+    min-width: 80px;
+    margin-right: 24px;
+    white-space: nowrap;
+    text-align: right;
+    :global(.value) {
+      margin-right: 8px;
+    }
+  }
+  :global(.product-id-label) {
+    color: @mono-color-dark;
+    font-weight: 300;
+    font-size: 14px;
+    font-family: @font-secondary;
+    font-style: normal;
+    line-height: 21px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  :global(.product-id-value) {
+    margin-left: 12px;
+    color: @mono-color-dark;
+    font-weight: 300;
+    font-size: 12px;
+    font-family: @font-primary;
+    font-style: normal;
+    line-height: 20px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+}
+.defaultOptionImageList {
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+  img {
+    width: 48px;
+    height: 48px;
+    margin-right: 16px;
+    object-fit: cover;
+  }
+  :global(.option-image-list-wrapper) {
+    width: 100%;
+    :global(.heading-option-group) {
+      height: 24px;
+    }
+    :global(.product-input-group) {
+      display: flex;
+      width: 100%;
+      height: 24px;
+      :global(.product-id-label) {
+        color: @mono-color-dark;
+        font-weight: 300;
+        font-size: 14px;
+        font-family: 'Cormorant-Garamond';
+        font-style: normal;
+        line-height: 21px;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+      }
+      :global(.product-id-value) {
+        margin-left: 12px;
+        color: @mono-color-dark;
+        font-weight: 300;
+        font-size: 12px;
+        font-family: @font-primary;
+        font-style: normal;
+        line-height: 20px;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+      }
+    }
+  }
+}
+.specificationAttributeOption {
+  :global(.ant-space-item) {
+    margin-bottom: 4px;
+  }
+  :global(.radio-list-heading) {
+    margin-bottom: 16px;
+    padding-left: 16px;
+    font-weight: 500;
+    font-size: 14px;
+    font-family: @font-primary;
+    line-height: 22px;
+  }
+  &.specificationAttributeImageOption {
+    :global(.ant-space-item) {
+      margin-bottom: 8px;
+      box-shadow: @border-bottom-light;
+    }
+    :global(.radio-list-heading) {
+      box-shadow: @border-bottom-light;
+    }
+  }
+}
