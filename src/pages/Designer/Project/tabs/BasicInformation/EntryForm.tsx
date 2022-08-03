@@ -308,6 +308,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
           setCountryLabel(chosenData.label);
         }}
         withPhoneCode
+        hasGlobal={false}
       />
       <StateModal
         countryId={data.country_id}
