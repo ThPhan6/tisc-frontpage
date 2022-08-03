@@ -24,13 +24,18 @@ import {
   TopBarItem,
   CollapseProductList,
 } from '@/features/product/components';
+import { BodyText, Title } from '@/components/Typography';
 
-const formatCategoriesToDropDownData = (categories: CategoryListResponse[]): ItemType[] => {
+const formatCategoriesToDropDownData = (
+  categories: CategoryListResponse[],
+  level: number,
+): ItemType[] => {
   return categories.map((el) => ({
     key: el.id,
     label: el.name || '',
-    children: el.subs ? formatCategoriesToDropDownData(el.subs) : undefined,
-    onClick: el.subs
+    children: el.subs ? formatCategoriesToDropDownData(el.subs, level + 1) : undefined,
+    disabled: (el.subs || []).length === 0 && level < 3,
+    onClick: el.subs?.length
       ? undefined
       : () =>
           store.dispatch(
@@ -89,12 +94,14 @@ const SORTER_DROPDOWN_DATA: ItemType[] = [
 ];
 
 const BrandProductListPage: React.FC = () => {
-  const filter = useAppSelector((state) => state.product.list.filter);
-  const sort = useAppSelector((state) => state.product.list.sort);
-  const search = useAppSelector((state) => state.product.list.search);
   const dispatch = useDispatch();
   const [categories, setCategories] = useState<ItemType[]>([]);
   const [brands, setBrands] = useState<ItemType[]>([]);
+
+  const filter = useAppSelector((state) => state.product.list.filter);
+  const sort = useAppSelector((state) => state.product.list.sort);
+  const search = useAppSelector((state) => state.product.list.search);
+  const brandSummary = useAppSelector((state) => state.product.list.brandSummary);
 
   const resetProductListFilter = () => {
     dispatch(
@@ -116,13 +123,21 @@ const BrandProductListPage: React.FC = () => {
   };
 
   useEffect(() => {
+    getProductListForDesigner({});
+
+    return () => {
+      dispatch(resetProductState());
+    };
+  }, []);
+
+  useEffect(() => {
     getProductCategoryPagination(
       {
         page: 1,
         pageSize: 99999,
       },
       (data) => {
-        setCategories(formatCategoriesToDropDownData(data.data));
+        setCategories(formatCategoriesToDropDownData(data.data, 1));
       },
     );
     getBrandPagination(
@@ -134,111 +149,141 @@ const BrandProductListPage: React.FC = () => {
         setBrands(formatBrandsToDropDownData(data.data));
       },
     );
-
-    return () => {
-      dispatch(resetProductState());
-    };
   }, []);
 
   useEffect(() => {
-    if (filter || search || sort) {
-      getProductListForDesigner({
-        category_id:
-          filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
-        brand_id: filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
-        name: search || undefined,
-        sort: sort?.sort,
-        order: sort?.order,
-      });
-    }
+    dispatch(
+      setProductList({
+        data: [],
+      }),
+    );
+    getProductListForDesigner({
+      category_id:
+        filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
+      brand_id: filter?.name === 'brand_id' && filter.value !== 'all' ? filter.value : undefined,
+      name: search || undefined,
+      sort: sort?.sort,
+      order: sort?.order,
+    });
   }, [filter, search, sort]);
 
   const searchProductByKeyword = debounce((e) => {
     dispatch(setProductListSearchValue(e.target.value));
   }, 300);
 
+  const renderInfoItem = (info: string, count: number, lastOne?: boolean) => (
+    <div className="flex-start" style={{ marginRight: lastOne ? undefined : 24 }}>
+      <BodyText level={5} fontFamily="Roboto" style={{ marginRight: 8 }}>
+        {info}:{' '}
+      </BodyText>
+      <Title level={8}>{count}</Title>
+    </div>
+  );
+
+  const PageHeader = () => (
+    <TopBarContainer
+      LeftSideContent={
+        <>
+          <TopBarItem
+            topValue={
+              filter?.name === 'category_id' ? (
+                <FilterItem title={filter.title} onDelete={resetProductListFilter} />
+              ) : (
+                'select'
+              )
+            }
+            bottomEnable={categories.length ? true : false}
+            disabled={categories.length ? true : false}
+            bottomValue={<CustomDropDown items={categories}>Categories</CustomDropDown>}
+            customClass="right-divider"
+            style={{ paddingLeft: 0 }}
+          />
+          <TopBarItem
+            topValue={
+              filter?.name === 'brand_id' ? (
+                <FilterItem title={filter.title} onDelete={resetProductListFilter} />
+              ) : (
+                'select'
+              )
+            }
+            bottomEnable={brands.length ? true : false}
+            disabled={brands.length ? true : false}
+            bottomValue={
+              <CustomDropDown items={brands} menuStyle={{ width: 240 }}>
+                Brands
+              </CustomDropDown>
+            }
+            style={{ paddingLeft: 0 }}
+          />
+          <TopBarItem
+            topValue={
+              sort ? (
+                <FilterItem
+                  title={sort.order === 'ASC' ? 'A - Z' : 'Z - A'}
+                  onDelete={resetProductListSorter}
+                />
+              ) : (
+                'select'
+              )
+            }
+            bottomEnable={true}
+            disabled
+            bottomValue={
+              <CustomDropDown
+                items={SORTER_DROPDOWN_DATA}
+                menuStyle={{ width: 160, height: 'auto' }}
+              >
+                Sort By
+              </CustomDropDown>
+            }
+            style={{ paddingLeft: 0 }}
+          />
+        </>
+      }
+      RightSideContent={
+        <>
+          <TopBarItem
+            topValue={
+              <CustomInput
+                placeholder="search"
+                className={styles.searchInput}
+                onChange={searchProductByKeyword}
+              />
+            }
+            bottomValue={
+              <span style={{ display: 'flex', alignItems: 'center' }}>
+                Keywords <SearchIcon />
+              </span>
+            }
+            customClass="left-divider"
+          />
+        </>
+      }
+      BottomContent={
+        brandSummary && (
+          <>
+            <div className="flex-center">
+              <img
+                src={showImageUrl(brandSummary.brand_logo)}
+                style={{ marginRight: 8, width: 20, height: 20 }}
+              />
+              <Title level={8}>{brandSummary.brand_name}</Title>
+            </div>
+
+            <div className="flex-end">
+              {renderInfoItem('Collections', brandSummary.collection_count)}
+              {renderInfoItem('Cards', brandSummary.card_count)}
+              {renderInfoItem('Products', brandSummary.product_count, true)}
+            </div>
+          </>
+        )
+      }
+    />
+  );
+
   return (
-    <PageContainer
-      pageHeaderRender={() => (
-        <TopBarContainer
-          LeftSideContent={
-            <>
-              <TopBarItem
-                topValue={
-                  filter?.name === 'category_id' ? (
-                    <FilterItem title={filter.title} onDelete={resetProductListFilter} />
-                  ) : (
-                    'select'
-                  )
-                }
-                bottomEnable={categories.length ? true : false}
-                disabled={categories.length ? true : false}
-                bottomValue={<CustomDropDown items={categories}>Categories</CustomDropDown>}
-                customClass="right-divider"
-                style={{ paddingLeft: 0 }}
-              />
-              <TopBarItem
-                topValue={
-                  filter?.name === 'brand_id' ? (
-                    <FilterItem title={filter.title} onDelete={resetProductListFilter} />
-                  ) : (
-                    'select'
-                  )
-                }
-                bottomEnable={brands.length ? true : false}
-                disabled={brands.length ? true : false}
-                bottomValue={
-                  <CustomDropDown items={brands} menuStyle={{ width: 240 }}>
-                    Brands
-                  </CustomDropDown>
-                }
-                style={{ paddingLeft: 0 }}
-              />
-              <TopBarItem
-                topValue={
-                  sort ? (
-                    <FilterItem title={sort.order} onDelete={resetProductListSorter} />
-                  ) : (
-                    'select'
-                  )
-                }
-                bottomEnable={true}
-                disabled
-                bottomValue={
-                  <CustomDropDown
-                    items={SORTER_DROPDOWN_DATA}
-                    menuStyle={{ width: 160, height: 'auto' }}
-                  >
-                    Sort By
-                  </CustomDropDown>
-                }
-                style={{ paddingLeft: 0 }}
-              />
-            </>
-          }
-          RightSideContent={
-            <>
-              <TopBarItem
-                topValue={
-                  <CustomInput
-                    placeholder="search"
-                    className={styles.searchInput}
-                    onChange={searchProductByKeyword}
-                  />
-                }
-                bottomValue={
-                  <span style={{ display: 'flex', alignItems: 'center' }}>
-                    Keywords <SearchIcon />
-                  </span>
-                }
-                customClass="left-divider"
-              />
-            </>
-          }
-        />
-      )}
-    >
-      {filter || search || sort ? <CollapseProductList /> : null}
+    <PageContainer pageHeaderRender={PageHeader}>
+      <CollapseProductList showBrandLogo={filter?.name === 'category_id'} />
     </PageContainer>
   );
 };
