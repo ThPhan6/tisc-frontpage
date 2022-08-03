@@ -20,105 +20,105 @@ export const USER_STATUS_TEXTS = {
   [USER_STATUSES.PENDING]: 'Pending',
 };
 
-export const dataMenuSummary = {
-  leftData: [
-    {
-      id: '1',
-      quantity: 4,
-      label: 'BRAND COMPANIES',
-      brands: [
-        {
-          id: '11',
-          quantity: 8,
-          label: 'Locations',
-        },
-        {
-          id: '12',
-          quantity: 18,
-          label: 'Teams',
-        },
-      ],
-    },
-    {
-      id: '2',
-      quantity: 3,
-      label: 'COUNTRIES',
-      brands: [
-        {
-          id: '21',
-          quantity: 0,
-          label: 'Africa',
-        },
-        {
-          id: '22',
-          quantity: 1,
-          label: 'Asia',
-        },
-        {
-          id: '23',
-          quantity: 1,
-          label: 'Europe',
-        },
-        {
-          id: '24',
-          quantity: 0,
-          label: 'N.America',
-        },
-        {
-          id: '25',
-          quantity: 1,
-          label: 'Oceania',
-        },
-        {
-          id: '26',
-          quantity: 0,
-          label: 'S.America',
-        },
-      ],
-    },
-    {
-      id: '3',
-      quantity: '1,223',
-      label: 'PRODUCTS',
-      brands: [
-        {
-          id: '31',
-          quantity: 5,
-          label: 'Categories',
-        },
-        {
-          id: '32',
-          quantity: 19,
-          label: 'Collections',
-        },
-        {
-          id: '33',
-          quantity: 220,
-          label: 'Cards',
-        },
-      ],
-    },
-  ],
-  projectData: [
-    {
-      id: '1',
-      quantity: '$127,300',
-      label: 'Total sq.m.',
-    },
-    {
-      id: '2',
-      quantity: '$1,370,246',
-      label: 'Total sq.ft.',
-    },
-  ],
-  subscriptionData: [
-    {
-      id: '1',
-      quantity: '$8,901',
-      label: 'Grand Total',
-    },
-  ],
-};
+// export const dataMenuSummary = {
+//   leftData: [
+//     {
+//       id: '1',
+//       quantity: 4,
+//       label: 'BRAND COMPANIES',
+//       brands: [
+//         {
+//           id: '11',
+//           quantity: 8,
+//           label: 'Locations',
+//         },
+//         {
+//           id: '12',
+//           quantity: 18,
+//           label: 'Teams',
+//         },
+//       ],
+//     },
+//     {
+//       id: '2',
+//       quantity: 3,
+//       label: 'COUNTRIES',
+//       brands: [
+//         {
+//           id: '21',
+//           quantity: 0,
+//           label: 'Africa',
+//         },
+//         {
+//           id: '22',
+//           quantity: 1,
+//           label: 'Asia',
+//         },
+//         {
+//           id: '23',
+//           quantity: 1,
+//           label: 'Europe',
+//         },
+//         {
+//           id: '24',
+//           quantity: 0,
+//           label: 'N.America',
+//         },
+//         {
+//           id: '25',
+//           quantity: 1,
+//           label: 'Oceania',
+//         },
+//         {
+//           id: '26',
+//           quantity: 0,
+//           label: 'S.America',
+//         },
+//       ],
+//     },
+//     {
+//       id: '3',
+//       quantity: '1,223',
+//       label: 'PRODUCTS',
+//       brands: [
+//         {
+//           id: '31',
+//           quantity: 5,
+//           label: 'Categories',
+//         },
+//         {
+//           id: '32',
+//           quantity: 19,
+//           label: 'Collections',
+//         },
+//         {
+//           id: '33',
+//           quantity: 220,
+//           label: 'Cards',
+//         },
+//       ],
+//     },
+//   ],
+//   projectData: [
+//     {
+//       id: '1',
+//       quantity: '$127,300',
+//       label: 'Total sq.m.',
+//     },
+//     {
+//       id: '2',
+//       quantity: '$1,370,246',
+//       label: 'Total sq.ft.',
+//     },
+//   ],
+//   subscriptionData: [
+//     {
+//       id: '1',
+//       quantity: '$8,901',
+//       label: 'Grand Total',
+//     },
+//   ],
+// };
 
 export const dataMenuFirm = {
   leftData: [
@@ -205,3 +205,210 @@ export const IMAGE_ACCEPT_TYPES = {
 };
 
 export const AVATAR_ACCEPT_TYPES = ['png', 'jpeg', 'jpg', 'webp', 'svg'];
+
+export const BrandDetailData = [
+  {
+    country_name: 'Algeria',
+    users: [
+      {
+        id: '73c97863-299b-4a27-9b79-722cb5accad1',
+        role_id: '4fb9a23d-d60a-45a4-8ed4-2300276bc19b',
+        firstname: 'Tisc',
+        lastname: 'vuong admin',
+        gender: false,
+        location_id: 'b5a74c05-4b19-4379-9a79-d429f1579fb7',
+        department: null,
+        position: '124124',
+        email: 'vuongd36@gmail.com',
+        phone: '0935352423',
+        mobile: '214124124124124124',
+        password: '$2a$10$8ZlarWjDarsII3SMVUGDu.1MnyzM7Lo1qATOkEYH8NVRpPHZ0wrxu',
+        avatar: '/avatar/output_1658742203932.webp',
+        backup_email: 'personal.mail@gmail.cn',
+        personal_mobile: '869123123',
+        linkedin: 'personal.mail@gmail.c',
+        is_verified: true,
+        verification_token: null,
+        reset_password_token:
+          '70f18acb5253001b5f593ff9c6199172ead8fd0a1bb5ac223d2147bd8ed9a329fb97618aa4c5be7e0daec15a2db06e7b726a82157874ced9f06ccd2b4a8a3860',
+        status: 1,
+        created_at: null,
+        type: 1,
+        relation_id: null,
+        is_deleted: false,
+        work_location: 'Adrar, Algeria',
+        access_level: 'Tisc Admin',
+        department_id: '4182e888-ec0f-45a9-8d83-123608e6e2c6',
+        interested: [],
+      },
+    ],
+    count: 1,
+  },
+  {
+    country_name: 'Afghanistan',
+    users: [
+      {
+        id: '4bfb9d26-1264-4c5a-a768-4146fc3bbfbc',
+        role_id: '4fb9a23d-d60a-45a4-8ed4-2300276bc19b',
+        firstname: 'Pham',
+        lastname: 'Nga',
+        gender: false,
+        location_id: '59c35159-e7b4-4395-a4f1-cc9d1162e66a',
+        department: null,
+        position: 'Admin',
+        email: 'nga.pham@enablestartup.io',
+        phone: '966345679',
+        mobile: '966345679',
+        password: '$2a$10$IZJhjG9sFimcu/EooyExiOR1rkcchIiFcr8uMH97X97doMMKUa3A2',
+        avatar: '/avatar/lionel-gustave-FQkgtrVJJy4-unsplash_1658304843653.jpg',
+        backup_email: 'nga.pham@enablestartup.io',
+        personal_mobile: '1234454655',
+        linkedin: 'https://dev-tisc.enabledemo.com/profiles',
+        is_verified: true,
+        verification_token: null,
+        reset_password_token: null,
+        status: 1,
+        created_at: null,
+        type: 1,
+        relation_id: null,
+        is_deleted: false,
+        work_location: 'Ghazni, Afghanistan',
+        department_id: 'b7784d69-c2cb-4f87-998d-9644daec8134',
+      },
+    ],
+    count: 1,
+  },
+  {
+    country_name: 'Global',
+    users: [
+      {
+        id: 'e433c7cd-0329-44a9-a324-8a94c47683ed',
+        role_id: '4fb9a23d-d60a-45a4-8ed4-2300276bc19b',
+        access_level: 'TISC Admin',
+        firstname: 'ABCD',
+        lastname: 'ABCD',
+        gender: true,
+        location_id: 'fcdbd9f3-b225-45ae-af20-471ae8f9ff3c',
+        work_location: ', Global',
+        department_id: '0b2d7491-5cf8-4468-a747-4446ea0a3359',
+        position: 'Admin',
+        email: 'vuong.pham@enablestartup.com',
+        phone: '0935352423',
+        mobile: '0935352423',
+        password: '$2a$10$ZJfigXsCfSokbsnweHdxleZaYdTAocx8KVkLbN515G6wWuznKLU8S',
+        avatar: null,
+        backup_email: null,
+        personal_mobile: null,
+        linkedin: null,
+        is_verified: true,
+        verification_token: null,
+        reset_password_token:
+          '99375a5cc68cee25a5002ba5011a1aab87c766172a669414411b0d57974799c4df419b9347969f20555a15dd0c9096225bbcc39e401f743922c8ec83cd4d47a3',
+        status: 1,
+        created_at: '2022-07-20T10:50:56.499Z',
+        type: 1,
+        relation_id: null,
+        is_deleted: false,
+      },
+      {
+        id: '43fe1e85-7776-447c-97d3-889302cdbf39',
+        role_id: '248a21fc-42e0-48c6-9bc2-b95e11a81fb7',
+        access_level: 'Consultant Team',
+        firstname: 'Tester',
+        lastname: 'Phm',
+        gender: false,
+        location_id: 'e7f61a13-b62e-443a-96f5-ea2eaf2e6ac6',
+        work_location: ', GLOBAL',
+        department_id: '0b2d7491-5cf8-4468-a747-4446ea0a3359',
+        position: 'admin',
+        email: 'nga@gmail.com',
+        phone: '977362508',
+        mobile: '977362503',
+        password: null,
+        avatar: null,
+        backup_email: null,
+        personal_mobile: null,
+        linkedin: null,
+        is_verified: false,
+        verification_token:
+          '24c0e64a316345478ef4dd7f31aa64659723c9188c9a3c0e015da40777b5a6227b7d18ec2f828d7a768e919ae79407d360bc89ff21126655be493972a5dcec24',
+        reset_password_token: null,
+        status: 3,
+        created_at: '2022-07-26T03:42:15.713Z',
+        type: 1,
+        relation_id: null,
+        is_deleted: false,
+      },
+    ],
+    count: 2,
+  },
+  {
+    country_name: 'Aland Islands',
+    users: [
+      {
+        id: '70d7683a-5dde-41cf-900b-e4b6be643e8d',
+        role_id: '248a21fc-42e0-48c6-9bc2-b95e11a81fb7',
+        access_level: 'Consultant Team',
+        firstname: 'Ha',
+        lastname: '123',
+        gender: true,
+        location_id: 'ff479173-f4ce-4804-a148-40dd193c6765',
+        work_location: ', Aland Islands',
+        department_id: '0b2d7491-5cf8-4468-a747-4446ea0a3359',
+        position: 'CEO',
+        email: 'nkh11112021@gmail.com',
+        phone: '0935345253',
+        mobile: '0935345253',
+        password: '$2a$10$7l8KsRsTmO1j5XjwINWhNOOISglBohDhIGVNybOWnhacvz5CMcI2y',
+        avatar: null,
+        backup_email: null,
+        personal_mobile: null,
+        linkedin: null,
+        is_verified: true,
+        verification_token: null,
+        reset_password_token:
+          '88fd7c805df830e8eb83febf953d104d664f159739ee72876c9a444dfbdab049a5a8a53ee0282f0e53cef2ae125e6fcffdb8d2e36179f6d82cd63b590a4fc543',
+        status: 1,
+        created_at: '2022-07-12T02:23:33.003Z',
+        type: 1,
+        relation_id: null,
+        is_deleted: false,
+      },
+    ],
+    count: 1,
+  },
+  {
+    country_name: 'Singapore',
+    users: [
+      {
+        id: '4bfb9d26-1264-4c5a-a768-4146fc3bbaaa',
+        role_id: '4fb9a23d-d60a-45a4-8ed4-2300276bc19b',
+        firstname: 'Henley',
+        lastname: 'Tran',
+        gender: false,
+        location_id: '84bf370e-4146-4a05-9ece-ec32a202b93d',
+        department: null,
+        position: '3',
+        email: 'henley.tran@enablestartup.io',
+        phone: '0905288192',
+        mobile: '0905288192',
+        password: '$2a$09$Uk42d5scAMr8MkxbzTTsceXpsouiX4aKFXL4NHQ6b.HHBI23rpIgS',
+        avatar: '/avatar/3248387545858037965_1658823574945.png',
+        backup_email: 'henley.tran@enablestartup.io',
+        personal_mobile: '0905288192e23',
+        linkedin: 'goo',
+        is_verified: true,
+        verification_token: null,
+        reset_password_token: null,
+        status: 1,
+        created_at: null,
+        type: 1,
+        relation_id: null,
+        is_deleted: false,
+        work_location: ', Singapore',
+        department_id: 'b7784d69-c2cb-4f87-998d-9644daec8134',
+      },
+    ],
+    count: 1,
+  },
+];

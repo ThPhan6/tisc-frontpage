@@ -13,11 +13,7 @@ export interface ElementSummaryProps {
 }
 
 export interface DataMenuSummaryProps extends SummaryProps {
-  brands: SummaryProps[];
-}
-
-export interface ItemSummaryProps {
-  brand: SummaryProps;
+  subs: SummaryProps[];
 }
 
 export interface SummaryProps {

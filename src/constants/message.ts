@@ -114,6 +114,7 @@ export const MESSAGE_NOTIFICATION = {
   /// user group
   // brand
   GET_LIST_BRAND_SUMMARY_ERROR: 'Get list brand summary error',
+  GET_BRAND_STATUSES_ERROR: 'Get brand statuses error',
 
   // team profile
   GET_LIST_TEAM_PROFILE_ERROR: 'Get list team profile error',

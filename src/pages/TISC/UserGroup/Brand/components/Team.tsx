@@ -4,72 +4,15 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
-import { USER_STATUS_TEXTS } from '@/constants/util';
+import { BrandDetailData, USER_STATUS_TEXTS } from '@/constants/util';
+import { showImageUrl } from '@/helper/utils';
 import { BrandTeam, TISCUserGroupBrandTeam } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { capitalize, isEmpty, upperCase } from 'lodash';
 import { useEffect, useState } from 'react';
-import indexStyles from '../../index.less';
-import styles from '../styles/brandViewDetail.less';
-
-type ActiveKeyType = string | number | (string | number)[];
-
-const data = [
-  {
-    // id: '1',
-    country_name: 'Singapore',
-    users: [
-      {
-        logo: '',
-        firstname: 'thinh',
-        lastname: 'phan',
-        gender: true,
-        work_location: 'location',
-        department: 'department',
-        position: 'sales',
-        email: 'emial@gmail.com',
-        phone: '08754',
-        mobile: '3434',
-        access_level: 'brand lead',
-        status: 2,
-      },
-      {
-        logo: '',
-        firstname: 'thinh',
-        lastname: 'phan',
-        gender: true,
-        work_location: 'location',
-        department: 'department',
-        position: 'sales',
-        email: 'emial@gmail.com',
-        phone: '08754',
-        mobile: '3434',
-        access_level: 'brand lead',
-        status: 3,
-      },
-    ],
-  },
-  {
-    // id: '2',
-    country_name: 'Thailand',
-    users: [
-      {
-        logo: '',
-        firstname: 'thinh',
-        lastname: 'phan',
-        gender: true,
-        work_location: 'location',
-        department: 'department',
-        position: 'sales',
-        email: 'emial@gmail.com',
-        phone: '08754',
-        mobile: '3434',
-        access_level: 'brand lead',
-        status: 2,
-      },
-    ],
-  },
-];
+import indexStyles from '../../styles/index.less';
+import { ActiveKeyType } from '../../types';
+import styles from '../styles/details.less';
 
 const DEFAULT_BRANDTEAM = [
   {
@@ -99,13 +42,17 @@ const BrandTeamDetail = () => {
   const [teamData, setTeamData] = useState<TISCUserGroupBrandTeam[]>(DEFAULT_BRANDTEAM);
 
   useEffect(() => {
-    setTeamData(data);
+    setTeamData(BrandDetailData);
   }, []);
 
   const renderUserHeader = (user: BrandTeam) => {
     return (
       <div className={styles.userName}>
-        <TeamIcon avatar={user.logo} name={user.firstname} />
+        <TeamIcon
+          avatar={showImageUrl(user.logo)}
+          name={user.firstname}
+          customClass={indexStyles.avatar}
+        />
         <span className={`${styles.name} ${indexStyles.dropdownCount}`}>{`${capitalize(
           user.firstname,
         )} ${capitalize(user.lastname)}`}</span>
@@ -134,6 +81,7 @@ const BrandTeamDetail = () => {
       <Col span={12}>
         <div className={`${indexStyles.form} ${styles.team_form}`}>
           <Collapse
+            accordion
             bordered={false}
             expandIconPosition="right"
             expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
@@ -152,6 +100,7 @@ const BrandTeamDetail = () => {
                 // className="site-collapse-custom-panel"
               >
                 <Collapse
+                  accordion
                   bordered={false}
                   expandIconPosition="right"
                   expandIcon={({ isActive }) => (isActive ? <DropupV2Icon /> : <DropdownV2Icon />)}
