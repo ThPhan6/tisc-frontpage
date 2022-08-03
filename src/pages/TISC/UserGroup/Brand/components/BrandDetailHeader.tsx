@@ -7,13 +7,15 @@ import styles from '../styles/index.less';
 import { CustomTabs } from '@/components/Tabs';
 import { BrandTabKeys, BrandTabs } from '../types';
 import { FC, useEffect, useState } from 'react';
-import { FormGroup } from '@/components/Form';
-import { BodyText } from '@/components/Typography';
+import { BodyText, MainTitle } from '@/components/Typography';
 import { CustomRadio } from '@/components/CustomRadio';
-import CustomButton from '@/components/Button';
 import { getBrandById, getBrandStatuses } from '@/services';
 import { BrandDetail, BrandStatuses } from '@/types';
 import { useParams } from 'umi';
+import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
+import { useBoolean } from '@/helper/hook';
+import LoadingPageCustomize from '@/components/LoadingPage';
+import { Tooltip } from 'antd';
 
 interface BrandDetailHeaderProps {
   selectedTab: BrandTabKeys;
@@ -24,6 +26,8 @@ const BrandDetailHeader: FC<BrandDetailHeaderProps> = ({ selectedTab, setSelecte
   const params = useParams<{ id: string }>();
   const brandId = params?.id || '';
   const [statuses, setStatuses] = useState<BrandStatuses[]>([]);
+  const buttonStatus = useBoolean();
+  const isLoading = useBoolean();
   const [data, setData] = useState<BrandDetail>({
     id: '',
     name: '',
@@ -48,6 +52,8 @@ const BrandDetailHeader: FC<BrandDetailHeaderProps> = ({ selectedTab, setSelecte
   useEffect(() => {
     getBrandById(brandId).then((brandData) => {
       if (brandData) {
+        console.log('brand Data', brandData);
+
         setData(brandData);
       }
     });
@@ -62,7 +68,9 @@ const BrandDetailHeader: FC<BrandDetailHeaderProps> = ({ selectedTab, setSelecte
     });
   }, []);
 
-  const onSubmit = () => {};
+  const handleSaveButton = () => {
+    isLoading.setValue(false);
+  };
 
   const RenderLabelToolTip: FC<{ statusText: string; plainText: string }> = ({
     statusText,
@@ -94,38 +102,44 @@ const BrandDetailHeader: FC<BrandDetailHeaderProps> = ({ selectedTab, setSelecte
           activeKey={selectedTab}
           widthItem={'125px'}
         />
-        <div className={styles.tabs_right}>
-          <FormGroup
-            label="Status:"
-            iconTooltip={<InfoIcon className={styles.info_icon} />}
-            formClass={styles.status}
-            layout="horizontal"
-            tooltip={
+        <div className={styles.basicToolbarForm}>
+          <MainTitle level={3}>Status:</MainTitle>
+          <Tooltip
+            placement="bottom"
+            title={
               <table className={styles.tooltip}>
                 <RenderLabelToolTip statusText="Pending" plainText="Waiting user activate" />
                 <RenderLabelToolTip statusText="Active" plainText="Full activated" />
                 <RenderLabelToolTip statusText="Inactive" plainText="Temporarily removed" />
               </table>
             }
-            placement="bottom"
-            placementBottomWidth="auto"
           >
-            <CustomRadio
-              options={statuses?.map((status) => ({
-                label: status.key,
+            <InfoIcon className={styles.info_icon} />
+          </Tooltip>
+          <CustomRadio
+            options={statuses.map((status) => {
+              return {
+                label: (
+                  <BodyText level={6} fontFamily="Roboto" customClass={styles.projectStatusLabel}>
+                    {status.key}
+                  </BodyText>
+                ),
                 value: status.value,
-              }))}
-              value={data.status}
-              onChange={(radioValue) =>
-                setData((prevState) => ({ ...prevState, status: radioValue.value as number }))
-              }
-            />
-          </FormGroup>
-          <CustomButton buttonClass={styles.actionBtn} size="small" onClick={onSubmit}>
-            Save
-          </CustomButton>
+              };
+            })}
+            value={data.status}
+            onChange={(selectedValue) =>
+              setData({
+                ...data,
+                status: selectedValue.value as number,
+              })
+            }
+          />
+          <CustomSaveButton onClick={handleSaveButton} isSuccess={buttonStatus.value} />
         </div>
       </div>
+
+      {isLoading.value && <LoadingPageCustomize />}
     </div>
   );
 };

@@ -1,17 +1,16 @@
 import { MenuSummary } from '@/components/MenuSummary';
+import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import { getBrandSummary } from '@/services';
 import { useEffect, useState } from 'react';
 import styles from '../styles/index.less';
 
 const BrandMenuSummary = () => {
-  const [brandData, setbrandData] = useState<any[]>([]);
+  const [brandData, setbrandData] = useState<DataMenuSummaryProps[]>([]);
 
   useEffect(() => {
     getBrandSummary().then((data) => {
       if (data) {
-        console.log(data);
-
-        setbrandData([]);
+        setbrandData(data);
       }
     });
   }, []);

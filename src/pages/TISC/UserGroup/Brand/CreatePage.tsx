@@ -1,10 +1,8 @@
 import { TableHeader } from '@/components/Table/TableHeader';
 
 import LoadingPageCustomize from '@/components/LoadingPage';
-import { MenuSummary } from '@/components/MenuSummary';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { PATH } from '@/constants/path';
-import { dataMenuSummary } from '@/constants/util';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
 import { inviteUser } from '@/services';
@@ -12,7 +10,7 @@ import { inviteUser } from '@/services';
 import { PageContainer } from '@ant-design/pro-layout';
 import { TISCAccessLevelDataRole } from '../../Adminstration/TeamProfiles/constants/role';
 import BrandEntryForm from './components/BrandEntryForm';
-import styles from './styles/index.less';
+import BrandMenuSummary from './components/BrandMenuSummary';
 
 const BrandCreatePage = () => {
   const submitButtonStatus = useBoolean(false);
@@ -46,15 +44,7 @@ const BrandCreatePage = () => {
     };
 
   return (
-    <PageContainer
-      pageHeaderRender={() => (
-        <MenuSummary
-          containerClass={styles.customMenuSummary}
-          menuSummaryData={dataMenuSummary.leftData}
-          typeMenu="brand"
-        />
-      )}
-    >
+    <PageContainer pageHeaderRender={() => <BrandMenuSummary />}>
       <TableHeader title="BRANDS" rightAction={<CustomPlusButton disabled />} />
       <BrandEntryForm
         onCancel={handleCancel}

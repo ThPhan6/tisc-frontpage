@@ -53,6 +53,19 @@ export async function getLocationList(
     });
 }
 
+export async function getLocationByBrandId(brandId: string) {
+  return request<{ data: LocationGroupedByCountry[] }>(`/api/location/brand/${brandId}`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_COUNTRIES_ERROR);
+      return [] as LocationGroupedByCountry[];
+    });
+}
+
 export async function getCountries() {
   return request<{ data: ICountry[] }>(`/api/location/get-countries`, {
     method: 'GET',

@@ -3,28 +3,41 @@ import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.sv
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import InputGroup from '@/components/EntryForm/InputGroup';
-import { BrandDetailData } from '@/constants/util';
+import { getLocationByBrandId } from '@/services';
+import { ILocationDetail, LocationGroupedByCountry } from '@/types';
 import { Col, Collapse, Row } from 'antd';
-import { capitalize, isEmpty, upperCase } from 'lodash';
+import { isEmpty, upperCase } from 'lodash';
 import { useEffect, useState } from 'react';
-import indexStyles from '../../styles/index.less';
+import { useParams } from 'umi';
 import { ActiveKeyType } from '../../types';
 import styles from '../styles/details.less';
+import indexStyles from '../../styles/index.less';
 
 const BrandLocationDetail = () => {
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
+  const [locations, setLocations] = useState<LocationGroupedByCountry[]>([]);
 
-  const [locations, setLocations] = useState<any>([]);
+  const params = useParams<{ id: string }>();
+  const brandId = params?.id || '';
 
   useEffect(() => {
-    setLocations(BrandDetailData);
-  });
+    getLocationByBrandId(brandId).then(setLocations);
+  }, []);
 
-  const renderBusinessHeader = (business: any) => {
-    return <span className={indexStyles.dropdownCount}>{capitalize(business.firstname)}</span>;
+  const renderBusinessHeader = (business: ILocationDetail) => {
+    return (
+      <span
+        className={indexStyles.dropdownCount}
+        style={{
+          textTransform: 'capitalize',
+        }}
+      >
+        {business.business_name}
+      </span>
+    );
   };
 
-  const renderLocationHeader = (country: any) => {
+  const renderLocationHeader = (country: LocationGroupedByCountry) => {
     return (
       <span>
         {upperCase(country.country_name)}
@@ -34,7 +47,7 @@ const BrandLocationDetail = () => {
             marginLeft: 8,
           }}
         >
-          ({country.users.length})
+          ({country.locations.length})
         </span>
       </span>
     );
@@ -43,7 +56,7 @@ const BrandLocationDetail = () => {
   return (
     <Row className={indexStyles.container}>
       <Col span={12}>
-        <div className={`${indexStyles.form} ${styles.team_form}`}>
+        <div className={`${indexStyles.form} ${styles.location_form}`}>
           <Collapse
             accordion
             bordered={false}
@@ -56,11 +69,11 @@ const BrandLocationDetail = () => {
               setActiveKey(key);
             }}
           >
-            {locations.map((location, index) => (
+            {locations.map((country, index) => (
               <Collapse.Panel
-                header={renderLocationHeader(location)}
+                header={renderLocationHeader(country)}
                 key={index}
-                collapsible={isEmpty(location.country_name) ? 'disabled' : undefined}
+                collapsible={isEmpty(country.country_name) ? 'disabled' : undefined}
                 // className="site-collapse-custom-panel"
               >
                 <Collapse
@@ -72,54 +85,55 @@ const BrandLocationDetail = () => {
                   // onChange={setSecondActiveKey}
                   // activeKey={secondActiveKey}
                 >
-                  {location.users.map((business, userIndex) => (
+                  {country.locations.map((location, userIndex) => (
                     <Collapse.Panel
-                      header={renderBusinessHeader(business)}
+                      header={renderBusinessHeader(location)}
                       key={`${index}-${userIndex}`}
-                      collapsible={isEmpty(business.firstname) ? 'disabled' : undefined}
+                      collapsible={isEmpty(location.business_name) ? 'disabled' : undefined}
                       // className="site-collapse-custom-panel"
                     >
-                      <div className={`${indexStyles.info} ${styles.teamInfo}`}>
+                      <div className={`${indexStyles.info} ${styles.locationInfo}`}>
                         <InputGroup
                           label="Registered Number"
                           colon
                           fontLevel={3}
-                          value={business.gender === true ? 'Male' : 'Female'}
+                          value={location.business_number ?? ''}
                           readOnly
                         />
                         <InputGroup
                           label="Location Type"
                           colon
                           fontLevel={3}
-                          value={business.work_location ?? ''}
+                          value={location.functional_types.map((type) => ` ${type.name}`) ?? ''}
                           readOnly
+                          containerClass={indexStyles.stringInfo}
                         />
                         <InputGroup
                           label="Location Function"
                           colon
                           fontLevel={3}
-                          value={business.department ?? ''}
+                          value={location.functional_type ?? ''}
                           readOnly
                         />
                         <InputGroup
                           label="Address"
                           colon
                           fontLevel={3}
-                          value={business.position ?? ''}
+                          value={location.address ?? ''}
                           readOnly
                         />
                         <InputGroup
                           label="General Phone"
                           colon
                           fontLevel={3}
-                          value={business.phone ?? ''}
+                          value={location.general_phone ?? ''}
                           readOnly
                         />
                         <InputGroup
                           label="General Email"
                           colon
                           fontLevel={3}
-                          value={business.phone ?? ''}
+                          value={location.general_email ?? ''}
                           readOnly
                         />
                       </div>

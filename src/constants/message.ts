@@ -118,6 +118,7 @@ export const MESSAGE_NOTIFICATION = {
 
   // team profile
   GET_LIST_TEAM_PROFILE_ERROR: 'Get list team profile error',
+  GET_LIST_TEAM_PROFILE_COUNTRY_GROUP_ERROR: 'Get list team profile country group error',
   GET_ONE_TEAM_PROFILE_ERROR: 'Get one team profile error',
   CREATE_TEAM_PROFILE_SUCCESS: 'Create team profile successfully',
   CREATE_TEAM_PROFILE_ERROR: 'Create team profile error',

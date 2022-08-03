@@ -4,18 +4,22 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
-import { BrandDetailData, USER_STATUS_TEXTS } from '@/constants/util';
+import { USER_STATUS_TEXTS } from '@/constants/util';
 import { showImageUrl } from '@/helper/utils';
-import { BrandTeam, TISCUserGroupBrandTeam } from '@/types';
+import { getListTeamProfileGroupCountryByBrandId } from '@/services';
+import { BrandTeam, TeamProfileGroupCountry } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { capitalize, isEmpty, upperCase } from 'lodash';
 import { useEffect, useState } from 'react';
+import { useParams } from 'umi';
 import indexStyles from '../../styles/index.less';
+import { ActiveKeyType } from '../../types';
 import styles from '../styles/details.less';
 
 const DEFAULT_BRANDTEAM = [
   {
     country_name: '',
+    count: 0,
     users: [
       {
         logo: '',
@@ -29,7 +33,7 @@ const DEFAULT_BRANDTEAM = [
         phone: '',
         mobile: '',
         access_level: '',
-        status: 1,
+        status: 0,
       },
     ],
   },
@@ -38,10 +42,13 @@ const DEFAULT_BRANDTEAM = [
 const BrandTeamDetail = () => {
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
   // const [secondActiveKey, setSecondActiveKey] = useState<ActiveKeyType>([]);
-  const [teamData, setTeamData] = useState<TISCUserGroupBrandTeam[]>(DEFAULT_BRANDTEAM);
+  const [teamData, setTeamData] = useState<TeamProfileGroupCountry[]>(DEFAULT_BRANDTEAM);
+
+  const params = useParams<{ id: string }>();
+  const brandId = params?.id || '';
 
   useEffect(() => {
-    setTeamData(BrandDetailData);
+    getListTeamProfileGroupCountryByBrandId(brandId).then(setTeamData);
   }, []);
 
   const renderUserHeader = (user: BrandTeam) => {
@@ -59,7 +66,7 @@ const BrandTeamDetail = () => {
     );
   };
 
-  const renderHeader = (team: TISCUserGroupBrandTeam) => {
+  const renderHeader = (team: TeamProfileGroupCountry) => {
     return (
       <span>
         {upperCase(team.country_name)}
