@@ -16,10 +16,24 @@ export interface BrandListItem {
   teams: number;
 }
 
-export interface IBrandDetail {
+export interface BrandDetail {
   created_at: string;
   id: string;
   is_deleted: boolean;
+  location_ids: any;
+  logo: string;
+  mission_n_vision: string;
+  name: string;
+  official_websites: {
+    country_id: string;
+    country_name: string;
+    url: string;
+  }[];
+  parent_company: string | null;
+  slogan: string | null;
+  status: number;
+  team_profile_ids: any;
+  updated_at: string | null;
 }
 
 export interface BrandAlphabet {
@@ -40,9 +54,4 @@ export interface BrandCardTeam {
   firstname: string;
   lastname: string;
   avatar: any;
-}
-
-export interface BrandStatuses {
-  key: string;
-  value: string | number;
 }

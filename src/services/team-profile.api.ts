@@ -5,12 +5,7 @@ import type {
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import {
-  TeamProfileTableProps,
-  TeamProfileDetailProps,
-  TeamProfileRequestBody,
-  TeamProfileGroupCountry,
-} from '@/types';
+import { TeamProfileTableProps, TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import store from '@/reducers';
