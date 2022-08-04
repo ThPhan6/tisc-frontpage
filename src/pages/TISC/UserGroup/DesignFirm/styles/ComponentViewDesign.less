@@ -2,9 +2,22 @@
   :global(.ant-collapse-borderless) {
     background: #fff !important;
   }
-  // :global(.ant-collapse-borderless > .ant-collapse-item) {
-  //   border-bottom: none;
-  // }
+  :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
+    padding: 8px 0;
+  }
+  :global(.ant-collapse-icon-position-end
+      > .ant-collapse-item
+      > .ant-collapse-header
+      .ant-collapse-arrow) {
+    right: 0;
+  }
+  :global(.ant-collapse > .ant-collapse-item) {
+    border-bottom: none;
+  }
+
+  :global(.ant-collapse .ant-collapse-item-disabled > .ant-collapse-header) {
+    cursor: default;
+  }
 
   .teamInfo {
     :last-child {
@@ -42,6 +55,7 @@
           }
         }
         .code {
+          width: 10%;
           padding-right: 12px;
           text-transform: capitalize;
           .colorMaterial {
@@ -49,7 +63,7 @@
           }
         }
         .material {
-          width: 92%;
+          width: 90%;
           .colorMaterial {
             color: @mono-color !important;
           }

@@ -8,7 +8,6 @@ import { ReactComponent as LocationIcon } from '@/assets/icons/location-icon.svg
 import { ReactComponent as TeamIcon } from '@/assets/icons/team-profile-icon.svg';
 import { ReactComponent as ProjectIcon } from '@/assets/icons/project-icon.svg';
 import { ReactComponent as MaterialIcon } from '@/assets/icons/material-product-code-icon.svg';
-import CustomButton from '@/components/Button';
 import { ReactComponent as CustomIcon } from '@/assets/icons/custom-icon.svg';
 import { Tooltip } from 'antd';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
@@ -18,8 +17,21 @@ import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import LocationDesign from './components/LocationDesign';
 import { FC, useEffect, useState } from 'react';
-import { DesignFirmDetail, LocationsDesignFirm, TeamsDesignFirm } from '@/types';
-import { getLocationsByDesignFirm, getOneDesignFirm, getTeamsByDesignFirm } from '@/services';
+import {
+  DesignFirmDetail,
+  LocationsDesignFirm,
+  MaterialCodeDesignFirm,
+  ProjectsDesignFirm,
+  TeamsDesignFirm,
+} from '@/types';
+import {
+  getLocationsByDesignFirm,
+  getMaterialCodeByDesignFirm,
+  getOneDesignFirm,
+  getProjectsByDesignFirm,
+  getTeamsByDesignFirm,
+  updateStatusDesignFirm,
+} from '@/services';
 import { useParams } from 'umi';
 import TeamsDesign from './components/TeamsDesign';
 import MaterialCode from './components/MaterialCode';
@@ -28,6 +40,7 @@ import CustomDesign from './components/CustomDesign';
 import DesignFirmSummary from './components/DesignFirmSummary';
 import { useBoolean } from '@/helper/hook';
 import LoadingPageCustomize from '@/components/LoadingPage';
+import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 
 export enum DesignTabKeys {
   profile = 'profile',
@@ -78,6 +91,9 @@ const ViewDesignFirmPage = () => {
 
   const [locationData, setLocationData] = useState<LocationsDesignFirm[]>([]);
   const [teamData, setTeamData] = useState<TeamsDesignFirm[]>([]);
+  const [projectData, setProjectData] = useState<ProjectsDesignFirm[]>([]);
+  const [materialCodeData, setMaterialCodeData] = useState<MaterialCodeDesignFirm[]>([]);
+  const submitButtonStatus = useBoolean(false);
 
   const handleOnChangeStatus = (radioValue: number) => {
     setData({ ...data, status: radioValue });
@@ -102,38 +118,48 @@ const ViewDesignFirmPage = () => {
           project_ids: res.project_ids,
           status: res.status,
         });
+      }
+    });
+    getLocationsByDesignFirm(designId).then((res) => {
+      if (res) {
+        setLocationData(res);
+      }
+    });
+    getTeamsByDesignFirm(designId).then((res) => {
+      if (res) {
+        setTeamData(res);
+      }
+    });
+    getProjectsByDesignFirm(designId).then((res) => {
+      if (res) {
+        setProjectData(res);
+      }
+    });
+    getMaterialCodeByDesignFirm(designId).then((res) => {
+      if (res) {
+        setMaterialCodeData(res);
         setLoadedData(true);
         isLoading.setValue(false);
       }
     });
   };
 
-  const getLocations = () => {
-    getLocationsByDesignFirm(designId).then((res) => {
-      if (res) {
-        setLocationData(res);
-        setLoadedData(true);
-      }
-    });
-  };
-
-  const getTeams = () => {
-    getTeamsByDesignFirm(designId).then((res) => {
-      if (res) {
-        setTeamData(res);
-        setLoadedData(true);
-      }
-    });
-  };
-
   useEffect(() => {
     viewDesignFirm();
-    getLocations();
-    getTeams();
   }, []);
 
   const handleUpdateStatus = () => {
-    alert('Coming soon!');
+    isLoading.setValue(true);
+    updateStatusDesignFirm(designId, { status: data.status }).then((isSuccess) => {
+      isLoading.setValue(false);
+      submitButtonStatus.setValue(true);
+      setTimeout(() => {
+        submitButtonStatus.setValue(false);
+      }, 2000);
+      if (isSuccess) {
+        return viewDesignFirm();
+      }
+    });
   };
 
   if (!loadedData) {
@@ -205,9 +231,9 @@ const ViewDesignFirmPage = () => {
                 value={data.status}
               />
             </div>
-            <CustomButton buttonClass={styles.action} size="small" onClick={handleUpdateStatus}>
-              Save
-            </CustomButton>
+            <div>
+              <CustomSaveButton isSuccess={submitButtonStatus.value} onClick={handleUpdateStatus} />
+            </div>
           </div>
         </div>
       </div>
@@ -229,12 +255,12 @@ const ViewDesignFirmPage = () => {
 
         {/* material code */}
         <CustomTabPane active={selectedTab === DesignTabKeys.materialCode}>
-          <MaterialCode />
+          <MaterialCode materialCodeData={materialCodeData} />
         </CustomTabPane>
 
         {/* project */}
         <CustomTabPane active={selectedTab === DesignTabKeys.projects}>
-          <ProjectDesign />
+          <ProjectDesign projectData={projectData} />
         </CustomTabPane>
 
         {/* custom */}

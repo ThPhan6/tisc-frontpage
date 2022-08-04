@@ -3,112 +3,35 @@ import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.sv
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import InputGroup from '@/components/EntryForm/InputGroup';
+import { ProjectDetail, ProjectsDesignFirm } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
-import { useEffect, useState } from 'react';
+import { FC, useState } from 'react';
+import { RenderLabelHeader } from '../../components/renderHeader';
 import indexStyles from '../../styles/index.less';
 import { ActiveKeyType } from '../../types';
 import styles from '../styles/ComponentViewDesign.less';
 
-interface DesignLocation {
-  name: string;
-  location: DetailLocation[];
+interface ProjectDesignProp {
+  projectData: ProjectsDesignFirm[];
 }
-
-interface DetailLocation {
-  business_name: string;
-  info: {
-    location: string;
-    address: string;
-    phone: string;
-    gmail: string;
-  };
-}
-const data = [
-  {
-    name: 'Singapore',
-    location: [
-      {
-        business_name: 'singapo1',
-        info: {
-          location: 'main office',
-          address: 'aa',
-          phone: '11',
-          gmail: 'a@gmail.com',
-        },
-      },
-    ],
-  },
-  {
-    name: 'Thailand',
-    location: [
-      {
-        business_name: 'singapo1',
-        info: {
-          location: 'main office',
-          address: 'aa',
-          phone: '11',
-          gmail: 'a@gmail.com',
-        },
-      },
-    ],
-  },
-];
-const DEFAULT_LOCATIONDESIGN = [
-  {
-    name: '',
-    location: [
-      {
-        business_name: '',
-        info: {
-          location: '',
-          address: '',
-          phone: '',
-          gmail: '',
-        },
-      },
-    ],
-  },
-];
-
-const ProjectDesign = () => {
+const ProjectDesign: FC<ProjectDesignProp> = ({ projectData }) => {
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
-  const [teamData, setTeamData] = useState<DesignLocation[]>(DEFAULT_LOCATIONDESIGN);
 
-  useEffect(() => {
-    setTeamData(data);
-  }, []);
-
-  const renderProjectHeader = (user: DetailLocation) => {
+  const renderProjectHeader = (project: ProjectDetail) => {
     return (
       <div className={styles.userName}>
         <span className={indexStyles.dropdownCount}>
-          {user.business_name}
+          Code {project.code}
           <span
             style={{
               marginLeft: 8,
             }}
           >
-            {user.business_name}
+            {project.name}
           </span>
         </span>
       </div>
-    );
-  };
-
-  const renderHeader = (team: DesignLocation) => {
-    return (
-      <span>
-        {team.name}
-        <span
-          className={indexStyles.dropdownCount}
-          style={{
-            marginLeft: 8,
-          }}
-        >
-          ({team.location.length})
-        </span>
-      </span>
     );
   };
 
@@ -127,11 +50,18 @@ const ProjectDesign = () => {
               setActiveKey(key);
             }}
           >
-            {teamData.map((team, index) => (
+            {projectData.map((project, index) => (
               <Collapse.Panel
-                header={renderHeader(team)}
+                header={
+                  <RenderLabelHeader
+                    header={project.status_name}
+                    quantity={project.count}
+                    isSubHeader={false}
+                    isUpperCase={false}
+                  />
+                }
                 key={index}
-                collapsible={isEmpty(team.name) ? 'disabled' : undefined}
+                collapsible={project.count === 0 ? 'disabled' : undefined}
               >
                 <Collapse
                   accordion
@@ -140,11 +70,11 @@ const ProjectDesign = () => {
                   expandIcon={({ isActive }) => (isActive ? <DropupV2Icon /> : <DropdownV2Icon />)}
                   className={indexStyles.secondDropdownList}
                 >
-                  {team.location.map((user, userIndex) => (
+                  {project.projects.map((pro, proIndex) => (
                     <Collapse.Panel
-                      header={renderProjectHeader(user)}
-                      key={`${index}-${userIndex}`}
-                      collapsible={isEmpty(user.business_name) ? 'disabled' : undefined}
+                      header={renderProjectHeader(pro)}
+                      key={`${index}-${proIndex}`}
+                      collapsible={isEmpty(pro.code) ? 'disabled' : undefined}
                     >
                       <div className={`${indexStyles.info} ${styles.teamInfo}`}>
                         <InputGroup
@@ -154,6 +84,7 @@ const ProjectDesign = () => {
                           className={styles.label}
                           readOnly
                           hasPadding
+                          value={pro.location}
                         />
                         <InputGroup
                           label="Building Type"
@@ -162,6 +93,7 @@ const ProjectDesign = () => {
                           className={styles.label}
                           readOnly
                           hasPadding
+                          value={pro.building_type}
                         />
                         <InputGroup
                           label="Project Type"
@@ -170,6 +102,7 @@ const ProjectDesign = () => {
                           className={styles.label}
                           readOnly
                           hasPadding
+                          value={pro.type}
                         />
                         <InputGroup
                           label="Measurement Unit"
@@ -178,6 +111,13 @@ const ProjectDesign = () => {
                           className={styles.label}
                           readOnly
                           hasPadding
+                          value={
+                            pro.measurement_unit === 1
+                              ? 'Imperial'
+                              : pro.measurement_unit === 2
+                              ? 'Metric'
+                              : ''
+                          }
                         />
                         <InputGroup
                           label="Design Due"
@@ -186,6 +126,7 @@ const ProjectDesign = () => {
                           className={styles.label}
                           readOnly
                           hasPadding
+                          value={pro.design_due}
                         />
                         <InputGroup
                           label="Construction Start"
@@ -194,6 +135,7 @@ const ProjectDesign = () => {
                           className={styles.label}
                           readOnly
                           hasPadding
+                          value={pro.construction_start}
                         />
                       </div>
                     </Collapse.Panel>

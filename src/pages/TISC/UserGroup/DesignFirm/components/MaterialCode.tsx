@@ -3,99 +3,20 @@ import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.sv
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { BodyText, Title } from '@/components/Typography';
+import { MaterialCodeDesignFirm } from '@/types';
 import { Col, Collapse, Row } from 'antd';
-import { isEmpty } from 'lodash';
-import { useState } from 'react';
+import { FC, useState } from 'react';
+import { RenderLabelHeader } from '../../components/renderHeader';
 import indexStyles from '../../styles/index.less';
 import { ActiveKeyType } from '../../types';
 import styles from '../styles/ComponentViewDesign.less';
 
-const data = [
-  {
-    name: 'General Material',
-    material_code: [
-      {
-        list_material: 'Metal Alloy',
-        subs: [
-          {
-            code: 'AL',
-            material: 'Architectural Aluminium',
-          },
-          {
-            code: 'BRS',
-            material: 'Architectural Brass',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    name: 'Interior Fitout',
-    material_code: [
-      {
-        list_material: 'Metal Alloy',
-        subs: [
-          {
-            code: 'AL',
-            material: 'Architectural Aluminium',
-          },
-          {
-            code: 'BRS',
-            material: 'Architectural Brass',
-          },
-        ],
-      },
-    ],
-  },
-];
+interface MaterialCodeProp {
+  materialCodeData: MaterialCodeDesignFirm[];
+}
 
-interface Material {
-  list_material: string;
-  subs: {
-    code: string;
-    material: string;
-  }[];
-}
-interface ListMaterial {
-  name: string;
-  material_code: Material[];
-}
-const MaterialCode = () => {
+const MaterialCode: FC<MaterialCodeProp> = ({ materialCodeData }) => {
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
-
-  const renderMaterialHeader = (user: Material) => {
-    return (
-      <div className={styles.userName}>
-        <span className={indexStyles.dropdownCount}>
-          {user.list_material}
-          <span
-            style={{
-              marginLeft: 8,
-              fontWeight: 300,
-            }}
-          >
-            ({user.subs.length})
-          </span>
-        </span>
-      </div>
-    );
-  };
-
-  const renderHeader = (team: ListMaterial) => {
-    return (
-      <span>
-        {team.name}
-        <span
-          className={indexStyles.dropdownCount}
-          style={{
-            marginLeft: 8,
-          }}
-        >
-          ({team.material_code.length})
-        </span>
-      </span>
-    );
-  };
 
   return (
     <Row className={indexStyles.container}>
@@ -112,11 +33,18 @@ const MaterialCode = () => {
               setActiveKey(key);
             }}
           >
-            {data.map((item, index) => (
+            {materialCodeData.map((item, index) => (
               <Collapse.Panel
-                header={renderHeader(item)}
+                header={
+                  <RenderLabelHeader
+                    header={item.name}
+                    quantity={item.count}
+                    isSubHeader={false}
+                    isUpperCase={false}
+                  />
+                }
                 key={index}
-                collapsible={isEmpty(item.name) ? 'disabled' : undefined}
+                collapsible={item.count === 0 ? 'disabled' : undefined}
               >
                 <Collapse
                   accordion
@@ -125,14 +53,21 @@ const MaterialCode = () => {
                   expandIcon={({ isActive }) => (isActive ? <DropupV2Icon /> : <DropdownV2Icon />)}
                   className={indexStyles.secondDropdownList}
                 >
-                  {item.material_code.map((material, userIndex) => (
+                  {item.subs.map((material, materialIndex) => (
                     <Collapse.Panel
-                      header={renderMaterialHeader(material)}
-                      key={`${index}-${userIndex}`}
-                      collapsible={isEmpty(material.list_material) ? 'disabled' : undefined}
+                      header={
+                        <RenderLabelHeader
+                          header={material.name}
+                          quantity={material.count}
+                          isSubHeader={true}
+                          isUpperCase={false}
+                        />
+                      }
+                      key={`${index}-${materialIndex}`}
+                      collapsible={material.count === 0 ? 'disabled' : undefined}
                     >
                       <div className={`${indexStyles.info} ${styles.teamInfo}`}>
-                        {material.subs.map((itm, idx) => (
+                        {material.codes.map((itm, idx) => (
                           <table className={styles.list_material_table} key={idx}>
                             <tr>
                               <td className={styles.code}>
@@ -146,7 +81,7 @@ const MaterialCode = () => {
                                   fontFamily="Roboto"
                                   customClass={styles.colorMaterial}
                                 >
-                                  {itm.material}
+                                  {itm.description}
                                 </BodyText>
                               </td>
                             </tr>

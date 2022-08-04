@@ -222,6 +222,10 @@ export const MESSAGE_NOTIFICATION = {
   GET_SUMMARY: 'Failed to get summary',
   GET_LOCATIONS_BY_DESIGN_FIRM: 'Failed to get locations by design firm',
   GET_TEAMS_BY_DESIGN_FIRM: 'Failed to get teams by design firm',
+  GET_PROJECTS_BY_DESIGN_FIRM: 'Failed to get projects by design firm',
+  GET_MATERIAL_CODE_BY_DESIGN_FIRM: 'Failed to get material code by design firm',
+  UPDATE_STATUS_DESIGN_FIRM_SUCCESS: 'Update status design firm successfully',
+  UPDATE_STATUS_DESIGN_FIRM_ERROR: 'Update status design firm error',
 };
 
 export const MESSAGE_TOOLTIP = {

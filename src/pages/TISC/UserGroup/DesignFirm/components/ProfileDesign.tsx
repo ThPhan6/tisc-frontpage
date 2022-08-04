@@ -6,10 +6,10 @@ import { DesignFirmDetail } from '@/types';
 import { FC } from 'react';
 import { showImageUrl } from '@/helper/utils';
 
-interface ProfileDesignProps {
+interface ProfileDesignProp {
   data: DesignFirmDetail;
 }
-const ProfileDesign: FC<ProfileDesignProps> = ({ data }) => {
+const ProfileDesign: FC<ProfileDesignProp> = ({ data }) => {
   const setViewAvatar = () => {
     if (data.logo) {
       return showImageUrl(data.logo);

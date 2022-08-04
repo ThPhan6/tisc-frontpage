@@ -42,27 +42,6 @@ export async function getTeamProfileList(
     });
 }
 
-export async function getListTeamProfileGroupCountryByBrandId(brandId: string) {
-  return request<{ data: TeamProfileGroupCountry[] }>(
-    `/api/team-profile/get-list-group-by-country`,
-    {
-      method: 'GET',
-      params: { brand_id: brandId },
-    },
-  )
-    .then((response) => {
-      console.log(' response.data', response.data);
-
-      return response.data;
-    })
-    .catch((error) => {
-      message.error(
-        error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_TEAM_PROFILE_COUNTRY_GROUP_ERROR,
-      );
-      return [] as TeamProfileGroupCountry[];
-    });
-}
-
 export async function getOneTeamProfile(id: string) {
   return request<{ data: TeamProfileDetailProps }>(`/api/team-profile/get-one/${id}`, {
     method: 'GET',

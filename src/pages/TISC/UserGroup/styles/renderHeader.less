@@ -1,0 +1,29 @@
+.memberName {
+  display: flex;
+  align-items: center;
+
+  .avatar {
+    align-self: baseline;
+  }
+
+  .name {
+    margin-left: 8px;
+    text-transform: capitalize;
+  }
+}
+
+.quantity {
+  font-weight: 300 !important;
+}
+.dropdownCount {
+  font-weight: 300;
+}
+
+:global(.ant-collapse-item) {
+  :global(.ant-collapse-item-active) {
+    box-shadow: @border-bottom;
+    .dropdownCount {
+      font-weight: 500;
+    }
+  }
+}

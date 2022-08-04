@@ -5,7 +5,14 @@ import type {
   PaginationResponse,
 } from '@/components/Table/types';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { DesignFirm, DesignFirmDetail, LocationsDesignFirm, TeamsDesignFirm } from '@/types';
+import {
+  DesignFirm,
+  DesignFirmDetail,
+  LocationsDesignFirm,
+  MaterialCodeDesignFirm,
+  ProjectsDesignFirm,
+  TeamsDesignFirm,
+} from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -76,5 +83,44 @@ export async function getTeamsByDesignFirm(id: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_TEAMS_BY_DESIGN_FIRM);
+    });
+}
+
+export async function getProjectsByDesignFirm(id: string) {
+  return request<{ data: ProjectsDesignFirm[] }>(
+    `/api/project/get-list-group-by-status?design_id=${id}`,
+    {
+      method: 'GET',
+    },
+  )
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECTS_BY_DESIGN_FIRM);
+    });
+}
+
+export async function getMaterialCodeByDesignFirm(id: string) {
+  return request<{ data: MaterialCodeDesignFirm[] }>(`/api/material-code/get-list-group/${id}`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_MATERIAL_CODE_BY_DESIGN_FIRM);
+    });
+}
+
+export async function updateStatusDesignFirm(id: string, data: { status: number }) {
+  return request<boolean>(`/api/design/update-status/${id}`, { method: 'PUT', data })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.UPDATE_STATUS_DESIGN_FIRM_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_STATUS_DESIGN_FIRM_ERROR);
+      return false;
     });
 }

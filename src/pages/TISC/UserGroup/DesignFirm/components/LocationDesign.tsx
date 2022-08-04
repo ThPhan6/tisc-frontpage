@@ -5,46 +5,21 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
-import { LocationsDesignFirm, LocationDetail } from '@/types';
+import { LocationsDesignFirm } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import { FC, useState } from 'react';
+import { RenderLabelHeader } from '../../components/renderHeader';
 import indexStyles from '../../styles/index.less';
 import { ActiveKeyType } from '../../types';
 import styles from '../styles/ComponentViewDesign.less';
 
-interface LocationDesignProps {
+interface LocationDesignProp {
   locationData: LocationsDesignFirm[];
 }
 
-const LocationDesign: FC<LocationDesignProps> = ({ locationData }) => {
+const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
-
-  const renderLocationHeader = (businessName: LocationDetail) => {
-    return (
-      <div className={styles.userName}>
-        <span className={`${styles.name} ${indexStyles.dropdownCount}`}>
-          {businessName.business_name}
-        </span>
-      </div>
-    );
-  };
-
-  const renderHeader = (countryName: LocationsDesignFirm) => {
-    return (
-      <span>
-        {countryName.country_name}
-        <span
-          className={indexStyles.dropdownCount}
-          style={{
-            marginLeft: 8,
-          }}
-        >
-          ({countryName.count})
-        </span>
-      </span>
-    );
-  };
 
   return (
     <Row className={indexStyles.container}>
@@ -63,9 +38,16 @@ const LocationDesign: FC<LocationDesignProps> = ({ locationData }) => {
           >
             {locationData.map((location, index) => (
               <Collapse.Panel
-                header={renderHeader(location)}
+                header={
+                  <RenderLabelHeader
+                    header={location.country_name}
+                    quantity={location.count}
+                    isSubHeader={false}
+                    isUpperCase={false}
+                  />
+                }
                 key={index}
-                collapsible={isEmpty(location.country_name) ? 'disabled' : undefined}
+                collapsible={location.count === 0 ? 'disabled' : undefined}
               >
                 <Collapse
                   accordion
@@ -76,7 +58,7 @@ const LocationDesign: FC<LocationDesignProps> = ({ locationData }) => {
                 >
                   {location.locations.map((loca, locationIndex) => (
                     <Collapse.Panel
-                      header={renderLocationHeader(loca)}
+                      header={<RenderLabelHeader header={loca.business_name} isSubHeader={true} />}
                       key={`${index}-${locationIndex}`}
                       collapsible={isEmpty(loca.business_name) ? 'disabled' : undefined}
                     >
@@ -87,7 +69,7 @@ const LocationDesign: FC<LocationDesignProps> = ({ locationData }) => {
                           fontLevel={3}
                           className={styles.label}
                           hasPadding
-                          value={loca.functional_types.map((type) => ` ${type.name}`) ?? ''}
+                          value={loca.functional_types.map((type) => type.name).join(',')}
                           readOnly
                           colon
                         />
@@ -101,16 +83,6 @@ const LocationDesign: FC<LocationDesignProps> = ({ locationData }) => {
                           readOnly
                           colon
                         />
-                        {/* <InputGroup
-                          label="General Phone"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          value={loca.general_phone}
-                          hasPadding
-                          readOnly
-                          colon
-                        /> */}
                         <FormGroup
                           label="General Phone"
                           layout="vertical"

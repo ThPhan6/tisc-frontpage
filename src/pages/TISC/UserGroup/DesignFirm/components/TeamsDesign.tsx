@@ -5,50 +5,21 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
-import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
-import { TeamsDesignFirm, UserInfo } from '@/types';
+import { TeamsDesignFirm } from '@/types';
 import { Col, Collapse, Row } from 'antd';
-import { capitalize, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import { FC, useState } from 'react';
+import { RenderLabelHeader, RenderMemberHeader } from '../../components/renderHeader';
 import indexStyles from '../../styles/index.less';
 import { ActiveKeyType } from '../../types';
 import styles from '../styles/ComponentViewDesign.less';
 
-interface TeamsDesignProps {
+interface TeamsDesignProp {
   teamData: TeamsDesignFirm[];
 }
 
-const TeamsDesign: FC<TeamsDesignProps> = ({ teamData }) => {
+const TeamsDesign: FC<TeamsDesignProp> = ({ teamData }) => {
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
-
-  const renderUserHeader = (user: UserInfo) => {
-    return (
-      <div className={styles.userName}>
-        <span className={styles.icon}>
-          <TeamIcon avatar={user.logo} name={user.firstname} />
-        </span>
-        <span className={indexStyles.dropdownCount}>{`${capitalize(user.firstname)} ${capitalize(
-          user.lastname,
-        )}`}</span>
-      </div>
-    );
-  };
-
-  const renderHeader = (team: TeamsDesignFirm) => {
-    return (
-      <span>
-        {team.country_name}
-        <span
-          className={indexStyles.dropdownCount}
-          style={{
-            marginLeft: 8,
-          }}
-        >
-          ({team.count})
-        </span>
-      </span>
-    );
-  };
 
   return (
     <Row className={indexStyles.container}>
@@ -67,9 +38,16 @@ const TeamsDesign: FC<TeamsDesignProps> = ({ teamData }) => {
           >
             {teamData.map((team, index) => (
               <Collapse.Panel
-                header={renderHeader(team)}
+                header={
+                  <RenderLabelHeader
+                    header={team.country_name}
+                    quantity={team.count}
+                    isSubHeader={false}
+                    isUpperCase={false}
+                  />
+                }
                 key={index}
-                collapsible={isEmpty(team.country_name) ? 'disabled' : undefined}
+                collapsible={team.count === 0 ? 'disabled' : undefined}
               >
                 <Collapse
                   accordion
@@ -80,7 +58,13 @@ const TeamsDesign: FC<TeamsDesignProps> = ({ teamData }) => {
                 >
                   {team.users.map((user, userIndex) => (
                     <Collapse.Panel
-                      header={renderUserHeader(user)}
+                      header={
+                        <RenderMemberHeader
+                          firstName={user.firstname}
+                          lastName={user.lastname}
+                          avatar={user.logo}
+                        />
+                      }
                       key={`${index}-${userIndex}`}
                       collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}
                     >

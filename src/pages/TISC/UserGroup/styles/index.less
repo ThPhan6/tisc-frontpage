@@ -63,7 +63,10 @@
         font-weight: 500;
       }
     }
-
+    p,
+    span {
+      color: @mono-color;
+    }
     :global(.ant-collapse-header) {
       height: 36px;
       // margin-bottom: 16px;
@@ -84,6 +87,11 @@
       :global(.ant-collapse-item) {
         border-bottom: 0;
         box-shadow: none;
+      }
+      :global(.ant-collapse-item:last-child > .ant-collapse-content) {
+        :global(.ant-collapse-content-box) {
+          padding: 8px 0 0 16px !important;
+        }
       }
     }
   }
