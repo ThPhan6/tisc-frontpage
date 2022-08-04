@@ -66,6 +66,7 @@ export interface ProductItem {
   keywords: ProductKeyword;
   created_at?: string;
   created_by?: string;
+  brand_name?: string;
 }
 
 export interface ProductFormData {
@@ -99,6 +100,15 @@ export interface GroupProductList {
   id: string;
   name: string;
   products: ProductItem[];
+  brand_logo?: string;
+}
+
+export interface BrandSummary {
+  card_count: number;
+  collection_count: number;
+  product_count: number;
+  brand_logo: string;
+  brand_name: string;
 }
 
 export type ProductFilterType = 'category_id' | 'collection_id' | 'brand_id' | 'name';
@@ -120,6 +130,7 @@ export interface ProductList {
   data: GroupProductList[];
   search?: string;
   sort?: SortParams;
+  brandSummary?: BrandSummary;
 }
 
 export interface GetListProductForDesignerRequestParams {

@@ -39,13 +39,22 @@ interface ProjectDetailHeaderProps {
   activeKey: ProjectTabKeys;
   onChangeTab: (activeKey: ProjectTabKeys) => void;
   project?: ProjectDetailProps;
+  activeOnlyGeneral?: boolean;
 }
 
 const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({
   activeKey,
   onChangeTab,
   project,
+  activeOnlyGeneral,
 }) => {
+  const listTab = activeOnlyGeneral
+    ? ProjectTabs.map((el) => ({
+        ...el,
+        disable: el.key === ProjectTabKeys.basicInformation ? undefined : true,
+      }))
+    : ProjectTabs;
+
   const goBackToProjectList = () => {
     pushTo(PATH.designerProject);
   };
@@ -62,7 +71,7 @@ const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({
         <CloseIcon onClick={goBackToProjectList} />
       </div>
       <CustomTabs
-        listTab={ProjectTabs}
+        listTab={listTab}
         centered={true}
         tabPosition="top"
         tabDisplay="space"

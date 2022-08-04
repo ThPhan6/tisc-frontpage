@@ -225,6 +225,13 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_PROJECT_SUCCESS: 'Delete project successfully',
   GET_PROJECT_DATA_FAILED: 'Failed to get project data',
   GET_PROJECT_SUMMARY_DATA_FAILED: 'Failed to get project summary data',
+  GET_PROJECT_SPACE_DATA_FAILED: 'Failed to get project space data',
+  CREATE_PROJECT_SPACE_FAILED: 'Failed to create project space',
+  CREATE_PROJECT_SPACE_SUCCESS: 'Create project space successfully',
+  UPDATE_PROJECT_SPACE_FAILED: 'Failed to update project space',
+  UPDATE_PROJECT_SPACE_SUCCESS: 'Update project space successfully',
+  DELETE_PROJECT_SPACE_FAILED: 'Failed to delete project space',
+  DELETE_PROJECT_SPACE_SUCCESS: 'Delete project space successfully',
 };
 
 export const MESSAGE_TOOLTIP = {

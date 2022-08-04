@@ -18,6 +18,7 @@ export const CustomInput: FC<CustomInputProps> = ({
   autoWidth,
   defaultWidth,
   maxWords,
+  inputValidation,
   ...props
 }) => {
   const [width, setWidth] = useState(defaultWidth);
@@ -104,6 +105,11 @@ export const CustomInput: FC<CustomInputProps> = ({
             type={type}
             {...props}
             onChange={(e) => {
+              if (inputValidation) {
+                if (!inputValidation(e.target.value)) {
+                  return false;
+                }
+              }
               if (maxWords) {
                 const text = e.target.value;
                 const textLength = text.split(' ').length;

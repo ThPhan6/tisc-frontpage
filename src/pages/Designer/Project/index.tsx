@@ -107,7 +107,7 @@ const ProjectList: React.FC = () => {
         }
         return (
           <BodyText
-            level={6}
+            level={5}
             fontFamily="Roboto"
             customClass={`${styles.dueDayText} ${dueDay < 0 ? 'late' : ''}`}
           >
