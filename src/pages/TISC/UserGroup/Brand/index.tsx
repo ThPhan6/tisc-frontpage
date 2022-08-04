@@ -6,7 +6,7 @@ import { ReactComponent as ActionUnreadedIcon } from '@/assets/icons/action-unre
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
-import { getBrandPagination } from '@/services';
+import { getBrandPagination, inviteUser } from '@/services';
 import { showImageUrl } from '@/helper/utils';
 import type { BrandListItem } from '@/types';
 import styles from './styles/index.less';
@@ -18,6 +18,8 @@ import Popover from '@/components/Modal/Popover';
 import { ActionForm } from '@/components/Action';
 import { isEmpty } from 'lodash';
 import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
+import { message } from 'antd';
+import { MESSAGE_ERROR } from '@/constants/message';
 
 const BrandList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -27,8 +29,14 @@ const BrandList: React.FC = () => {
     setVisible(true);
   };
 
-  const handleEmailInvite = () => {
-    setVisible(true);
+  const handleEmailInvite = (status: 1 | 2 | 3, teams: any) => {
+    if (status === 1) {
+      setVisible(true);
+      // inviteUser(userId);
+      return teams.map((team) => inviteUser(team.id));
+    }
+
+    return message.error(MESSAGE_ERROR.STATUS_ACTIVED);
   };
 
   useEffect(() => {});
@@ -96,6 +104,8 @@ const BrandList: React.FC = () => {
       align: 'center',
       //  @typescript-eslint/no-unused-vars
       render: (_v, record: any) => {
+        console.log('record', record);
+
         return (
           <ActionForm
             actionItems={[
@@ -105,7 +115,7 @@ const BrandList: React.FC = () => {
                 label: 'View',
               },
               {
-                onClick: () => handleEmailInvite(),
+                onClick: () => handleEmailInvite(record.status, record.assign_team),
                 icon: <EmailInviteIcon />,
                 label: 'Email Invite',
               },

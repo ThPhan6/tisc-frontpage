@@ -1,11 +1,16 @@
 import { TableHeader } from '@/components/Table/TableHeader';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
+import { ReactComponent as ProfileIcon } from '@/assets/icons/brand-icon.svg';
+import { ReactComponent as LocationIcon } from '@/assets/icons/location-icon.svg';
+import { ReactComponent as TeamIcon } from '@/assets/icons/team-profile-icon.svg';
+import { ReactComponent as DistributorIcon } from '@/assets/icons/distributor-icon.svg';
+import { ReactComponent as AvailabilityIcon } from '@/assets/icons/market-availability-icon.svg';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import styles from '../styles/index.less';
 import { CustomTabs } from '@/components/Tabs';
-import { BrandTabKeys, BrandTabs } from '../types';
+import { BrandTabKeys } from '../types';
 import { FC, useEffect, useState } from 'react';
 import { BodyText, MainTitle } from '@/components/Typography';
 import { CustomRadio } from '@/components/CustomRadio';
@@ -16,7 +21,16 @@ import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { useBoolean } from '@/helper/hook';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { Tooltip } from 'antd';
-import ScrollBar from '@/components/ScrollBar';
+import { TabItem } from '@/components/Tabs/types';
+// import ScrollBar from '@/components/ScrollBar';
+
+export const BrandTabs: TabItem[] = [
+  { tab: 'PROFILE', key: BrandTabKeys.profile, icon: <ProfileIcon /> },
+  { tab: 'LOCATIONS', key: BrandTabKeys.locations, icon: <LocationIcon /> },
+  { tab: 'TEAMS', key: BrandTabKeys.teams, icon: <TeamIcon /> },
+  { tab: 'DISTRIBUTORS', key: BrandTabKeys.distributors, icon: <DistributorIcon /> },
+  { tab: 'AVAILABILITY', key: BrandTabKeys.availability, icon: <AvailabilityIcon /> },
+];
 
 interface BrandDetailHeaderProps {
   selectedTab: BrandTabKeys;
@@ -98,61 +112,57 @@ const BrandDetailHeader: FC<BrandDetailHeaderProps> = ({ selectedTab, setSelecte
         rightAction={<CloseIcon onClick={goBackToBrandList} style={{ cursor: 'pointer' }} />}
       />
       <div className={styles.menuTab}>
-        <ScrollBar>
-          <div className={styles.tabs}>
-            <CustomTabs
-              listTab={BrandTabs}
-              tabPosition="top"
-              tabDisplay="start"
-              onChange={(changedKey) => setSelectedTab(changedKey as BrandTabKeys)}
-              activeKey={selectedTab}
-              widthItem={'125px'}
-              customClass={styles.tabs_items}
+        {/* <ScrollBar> */}
+        <div className={styles.tabs}>
+          <CustomTabs
+            listTab={BrandTabs}
+            tabPosition="top"
+            tabDisplay="start"
+            onChange={(changedKey) => setSelectedTab(changedKey as BrandTabKeys)}
+            activeKey={selectedTab}
+            widthItem={'125px'}
+            customClass={styles.tabs_items}
+          />
+          <div className={styles.basicToolbarForm}>
+            <MainTitle level={3}>Status:</MainTitle>
+            <Tooltip
+              placement="bottom"
+              align={{
+                offset: [0, -2],
+              }}
+              title={
+                <table className={styles.tooltip}>
+                  <RenderLabelToolTip statusText="Pending" plainText="Waiting user activate" />
+                  <RenderLabelToolTip statusText="Active" plainText="Full activated" />
+                  <RenderLabelToolTip statusText="Inactive" plainText="Temporarily removed" />
+                </table>
+              }
+            >
+              <InfoIcon className={styles.info_icon} />
+            </Tooltip>
+            <CustomRadio
+              options={statuses.map((status) => {
+                return {
+                  label: (
+                    <BodyText level={6} fontFamily="Roboto" customClass={styles.projectStatusLabel}>
+                      {status.key}
+                    </BodyText>
+                  ),
+                  value: status.value,
+                };
+              })}
+              value={data.status}
+              onChange={(selectedValue) =>
+                setData({
+                  ...data,
+                  status: selectedValue.value as number,
+                })
+              }
             />
-            <div className={styles.basicToolbarForm}>
-              <MainTitle level={3}>Status:</MainTitle>
-              <Tooltip
-                placement="bottom"
-                align={{
-                  offset: [0, -2],
-                }}
-                title={
-                  <table className={styles.tooltip}>
-                    <RenderLabelToolTip statusText="Pending" plainText="Waiting user activate" />
-                    <RenderLabelToolTip statusText="Active" plainText="Full activated" />
-                    <RenderLabelToolTip statusText="Inactive" plainText="Temporarily removed" />
-                  </table>
-                }
-              >
-                <InfoIcon className={styles.info_icon} />
-              </Tooltip>
-              <CustomRadio
-                options={statuses.map((status) => {
-                  return {
-                    label: (
-                      <BodyText
-                        level={6}
-                        fontFamily="Roboto"
-                        customClass={styles.projectStatusLabel}
-                      >
-                        {status.key}
-                      </BodyText>
-                    ),
-                    value: status.value,
-                  };
-                })}
-                value={data.status}
-                onChange={(selectedValue) =>
-                  setData({
-                    ...data,
-                    status: selectedValue.value as number,
-                  })
-                }
-              />
-              <CustomSaveButton onClick={handleSaveButton} isSuccess={buttonStatus.value} />
-            </div>
+            <CustomSaveButton onClick={handleSaveButton} isSuccess={buttonStatus.value} />
           </div>
-        </ScrollBar>
+        </div>
+        {/* </ScrollBar> */}
       </div>
 
       {isLoading.value && <LoadingPageCustomize />}

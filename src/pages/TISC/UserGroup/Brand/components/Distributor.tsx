@@ -48,16 +48,14 @@ const BrandDistributorDetail = () => {
                 header={
                   <RenderLabelHeader
                     header={location.country_name}
-                    quantity={location.distributors?.length}
+                    quantity={location.count}
                     isSubHeader={false}
                     isUpperCase={true}
                   />
                 }
                 key={index}
                 collapsible={
-                  isEmpty(location.country_name) || location.distributors?.length === 0
-                    ? 'disabled'
-                    : undefined
+                  isEmpty(location.country_name) || location.count == 0 ? 'disabled' : undefined
                 }
                 // className="site-collapse-custom-panel"
               >

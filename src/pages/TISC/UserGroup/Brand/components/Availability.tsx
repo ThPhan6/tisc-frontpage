@@ -49,13 +49,13 @@ const BrandAvailabilityDetail = () => {
                 header={
                   <RenderLabelHeader
                     header={collections.collection_name}
-                    quantity={collections.regions?.length}
+                    quantity={collections.count}
                     isSubHeader={false}
                   />
                 }
                 key={index}
                 collapsible={
-                  collections.regions?.length === 0 || isEmpty(collections.collection_name)
+                  collections.count == 0 || isEmpty(collections.collection_name)
                     ? 'disabled'
                     : undefined
                 }
@@ -80,7 +80,7 @@ const BrandAvailabilityDetail = () => {
                         />
                       }
                       key={`${index}-${regionIdx}`}
-                      collapsible={region.count === 0 ? 'disabled' : undefined}
+                      collapsible={region.count == 0 ? 'disabled' : undefined}
                       // className="site-collapse-custom-panel"
                     >
                       <BodyText level={5} fontFamily="Roboto" color="mono-color">

@@ -47,16 +47,14 @@ const BrandLocationDetail = () => {
                 header={
                   <RenderLabelHeader
                     header={country.country_name}
-                    quantity={country.locations?.length}
+                    quantity={country.count}
                     isSubHeader={false}
                     isUpperCase={true}
                   />
                 }
                 key={index}
                 collapsible={
-                  isEmpty(country.country_name) || country.locations.length === 0
-                    ? 'disabled'
-                    : undefined
+                  isEmpty(country.country_name) || country.count == 0 ? 'disabled' : undefined
                 }
                 // className="site-collapse-custom-panel"
               >

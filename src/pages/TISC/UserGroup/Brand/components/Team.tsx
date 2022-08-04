@@ -73,15 +73,13 @@ const BrandTeamDetail = () => {
                 header={
                   <RenderLabelHeader
                     header={team.country_name}
-                    quantity={team.users?.length}
+                    quantity={team.count}
                     isUpperCase={true}
                     isSubHeader={false}
                   />
                 }
                 key={index}
-                collapsible={
-                  isEmpty(team.country_name) || team.users.length === 0 ? 'disabled' : undefined
-                }
+                collapsible={isEmpty(team.country_name) || team.count == 0 ? 'disabled' : undefined}
                 // className="site-collapse-custom-panel"
               >
                 <Collapse

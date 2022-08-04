@@ -17,6 +17,7 @@ export const MESSAGE_ERROR = {
   FIRST_NAME: 'First name is required',
   EMAIL_REQUIRED: 'Email is required',
   EMAIL_ALREADY_USED: 'Email already taken',
+  STATUS_ACTIVED: 'Only brand actived can send invite email',
 };
 
 export const MESSAGE_NOTIFICATION = {
