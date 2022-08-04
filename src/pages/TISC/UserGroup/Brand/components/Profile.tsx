@@ -83,7 +83,7 @@ const BrandProfileDetail = () => {
             formClass={styles.profile_info}
           />
           <FormGroup
-            label="Mission & Vision"
+            label="Offical Website"
             labelColor="mono-color-medium"
             layout="vertical"
             formClass={styles.profile_info}
