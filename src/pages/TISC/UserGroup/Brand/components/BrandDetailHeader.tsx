@@ -1,27 +1,27 @@
-import { TableHeader } from '@/components/Table/TableHeader';
+import { ReactComponent as ProfileIcon } from '@/assets/icons/brand-icon.svg';
+import { ReactComponent as DistributorIcon } from '@/assets/icons/distributor-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
-import { ReactComponent as ProfileIcon } from '@/assets/icons/brand-icon.svg';
 import { ReactComponent as LocationIcon } from '@/assets/icons/location-icon.svg';
-import { ReactComponent as TeamIcon } from '@/assets/icons/team-profile-icon.svg';
-import { ReactComponent as DistributorIcon } from '@/assets/icons/distributor-icon.svg';
 import { ReactComponent as AvailabilityIcon } from '@/assets/icons/market-availability-icon.svg';
-import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
-import styles from '../styles/index.less';
-import { CustomTabs } from '@/components/Tabs';
-import { BrandTabKeys } from '../types';
-import { FC, useEffect, useState } from 'react';
-import { BodyText, MainTitle } from '@/components/Typography';
-import { CustomRadio } from '@/components/CustomRadio';
-import { getBrandById, getBrandStatuses } from '@/services';
-import { BrandDetail, BrandStatuses } from '@/types';
-import { useParams } from 'umi';
+import { ReactComponent as TeamIcon } from '@/assets/icons/team-profile-icon.svg';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
-import { useBoolean } from '@/helper/hook';
+import { CustomRadio } from '@/components/CustomRadio';
 import LoadingPageCustomize from '@/components/LoadingPage';
-import { Tooltip } from 'antd';
+import { TableHeader } from '@/components/Table/TableHeader';
+import { CustomTabs } from '@/components/Tabs';
 import { TabItem } from '@/components/Tabs/types';
+import { BodyText, MainTitle } from '@/components/Typography';
+import { PATH } from '@/constants/path';
+import { pushTo } from '@/helper/history';
+import { useBoolean, useGetParam } from '@/helper/hook';
+import { getBrandById, getBrandStatuses } from '@/services';
+import { updateBrandStatus } from '@/services/brand-profile';
+import { BrandDetail, BrandStatuses } from '@/types';
+import { Tooltip } from 'antd';
+import { FC, useEffect, useState } from 'react';
+import styles from '../styles/index.less';
+import { BrandTabKeys } from '../types';
 // import ScrollBar from '@/components/ScrollBar';
 
 export const BrandTabs: TabItem[] = [
@@ -38,8 +38,7 @@ interface BrandDetailHeaderProps {
 }
 
 const BrandDetailHeader: FC<BrandDetailHeaderProps> = ({ selectedTab, setSelectedTab }) => {
-  const params = useParams<{ id: string }>();
-  const brandId = params?.id || '';
+  const brandId = useGetParam();
   const [statuses, setStatuses] = useState<BrandStatuses[]>([]);
   const buttonStatus = useBoolean();
   const isLoading = useBoolean();
@@ -53,7 +52,7 @@ const BrandDetailHeader: FC<BrandDetailHeaderProps> = ({ selectedTab, setSelecte
     official_websites: [],
     team_profile_ids: [],
     location_ids: [],
-    status: 1,
+    status: 0,
     created_at: '',
     updated_at: null,
     is_deleted: false,
@@ -84,7 +83,16 @@ const BrandDetailHeader: FC<BrandDetailHeaderProps> = ({ selectedTab, setSelecte
   }, []);
 
   const handleSaveButton = () => {
-    isLoading.setValue(false);
+    isLoading.setValue(true);
+    updateBrandStatus(brandId, { status: data.status }).then((isSuccess) => {
+      isLoading.setValue(false);
+      if (isSuccess) {
+        buttonStatus.setValue(true);
+        setTimeout(() => {
+          buttonStatus.setValue(false);
+        }, 1000);
+      }
+    });
   };
 
   const RenderLabelToolTip: FC<{ statusText: string; plainText: string }> = ({

@@ -1,45 +1,56 @@
-import React, { useEffect, useRef, useState } from 'react';
-import CustomTable from '@/components/Table';
-import type { TableColumnItem } from '@/components/Table/types';
-import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 import { ReactComponent as ActionUnreadedIcon } from '@/assets/icons/action-unreaded-icon.svg';
-import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
-import { getBrandPagination, inviteUser } from '@/services';
-import { showImageUrl } from '@/helper/utils';
-import type { BrandListItem } from '@/types';
-import styles from './styles/index.less';
-import { PageContainer } from '@ant-design/pro-layout';
-import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
-import BrandMenuSummary from './components/BrandMenuSummary';
-import Popover from '@/components/Modal/Popover';
+import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
+import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 import { ActionForm } from '@/components/Action';
-import { isEmpty } from 'lodash';
+import AssignTeam from '@/components/AssignTeam';
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import CustomTable from '@/components/Table';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import type { TableColumnItem } from '@/components/Table/types';
 import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
-import { message } from 'antd';
 import { MESSAGE_ERROR } from '@/constants/message';
+import { PATH } from '@/constants/path';
+import { pushTo } from '@/helper/history';
+import { showImageUrl } from '@/helper/utils';
+import { getBrandPagination, inviteUser } from '@/services';
+import type { BrandListItem, TeamProfileBrandAssignMember } from '@/types';
+import { PageContainer } from '@ant-design/pro-layout';
+import { message } from 'antd';
+import { isEmpty } from 'lodash';
+import React, { useEffect, useRef, useState } from 'react';
+import BrandMenuSummary from './components/BrandMenuSummary';
+import styles from './styles/index.less';
 
 const BrandList: React.FC = () => {
   const tableRef = useRef<any>();
 
   const [visible, setVisible] = useState<boolean>(false);
+  const [selected, setSelected] = useState<CheckboxValue[]>();
   const handleAssignTeams = () => {
     setVisible(true);
   };
+  const [assignTeam, setAssignTeam] = useState<TeamProfileBrandAssignMember[]>([]);
 
-  const handleEmailInvite = (status: 1 | 2 | 3, teams: any) => {
-    if (status === 1) {
-      setVisible(true);
-      // inviteUser(userId);
-      return teams.map((team) => inviteUser(team.id));
+  const handleEmailInvite = (status: 1 | 2 | 3, teams: TeamProfileBrandAssignMember[]) => {
+    if (status !== 3) {
+      return message.error(MESSAGE_ERROR.STATUS_ACTIVED);
+    }
+    if (teams.length === 0) {
+      return message.error(MESSAGE_ERROR.NO_TEAMPROFILE);
     }
 
-    return message.error(MESSAGE_ERROR.STATUS_ACTIVED);
+    return teams.map((team) => inviteUser(team.id));
   };
 
-  useEffect(() => {});
+  useEffect(() => {
+    // table synced if team member has selected
+    tableRef.current.reload();
+
+    setAssignTeam([]);
+
+    // get assign team
+  }, [selected]);
 
   const TableColumns: TableColumnItem<BrandListItem>[] = [
     {
@@ -104,8 +115,6 @@ const BrandList: React.FC = () => {
       align: 'center',
       //  @typescript-eslint/no-unused-vars
       render: (_v, record: any) => {
-        console.log('record', record);
-
         return (
           <ActionForm
             actionItems={[
@@ -140,27 +149,13 @@ const BrandList: React.FC = () => {
           hasPagination
         />
       </PageContainer>
-      {visible && (
-        <Popover
-          title="ASSIGN TEAM"
-          visible={visible}
-          setVisible={setVisible}
-          // dropdownCheckboxList={map(attributes, (item) => {
-          //   return {
-          //     name: item.name,
-          //     options: item.subs.map((sub) => {
-          //       return {
-          //         label: renderCheckBoxLabel(sub),
-          //         value: sub.id,
-          //       };
-          //     }),
-          //   };
-          // })}
-          dropdownCheckboxTitle={(data) => data.name}
-          // chosenValue={selected}
-          // setChosenValue={setSelected}
-        />
-      )}
+      <AssignTeam
+        visible={visible}
+        setVisible={setVisible}
+        selected={selected}
+        setSelected={setSelected}
+        teams={assignTeam}
+      />
     </div>
   );
 };

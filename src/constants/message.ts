@@ -17,7 +17,8 @@ export const MESSAGE_ERROR = {
   FIRST_NAME: 'First name is required',
   EMAIL_REQUIRED: 'Email is required',
   EMAIL_ALREADY_USED: 'Email already taken',
-  STATUS_ACTIVED: 'Only brand actived can send invite email',
+  STATUS_ACTIVED: 'Only brand has pendding status can send invite email',
+  NO_TEAMPROFILE: 'Add member to invite',
 };
 
 export const MESSAGE_NOTIFICATION = {
@@ -116,6 +117,8 @@ export const MESSAGE_NOTIFICATION = {
   // brand
   GET_LIST_BRAND_SUMMARY_ERROR: 'Get list brand summary error',
   GET_BRAND_STATUSES_ERROR: 'Get brand statuses error',
+  UPDATE_BRAND_STATUS_SUCCESS: 'Update brand status successfully',
+  UPDATE_BRAND_STATUS_ERROR: 'Update brand status error',
 
   // team profile
   GET_LIST_TEAM_PROFILE_ERROR: 'Get list team profile error',

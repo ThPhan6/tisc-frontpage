@@ -2,6 +2,7 @@ import { ReactComponent as DropdownV2Icon } from '@/assets/icons/action-down-ico
 import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
+import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { BodyText } from '@/components/Typography';
 import { useGetParam } from '@/helper/hook';
 import { getAvailabilityListCountryGroupByBrandId } from '@/services';
@@ -9,7 +10,6 @@ import { AvailabilityCollectionGroup } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
-import { RenderLabelHeader } from '../../components/renderHeader';
 import indexStyles from '../../styles/index.less';
 import { ActiveKeyType } from '../../types';
 import styles from '../styles/details.less';

@@ -19,7 +19,7 @@ const DEFAULT_BRANDPROFILE: BrandDetail = {
   official_websites: [],
   team_profile_ids: [],
   location_ids: [],
-  status: 1,
+  status: 0,
   created_at: '',
   updated_at: null,
   is_deleted: false,

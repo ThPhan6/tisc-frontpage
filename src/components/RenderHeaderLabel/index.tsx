@@ -1,6 +1,6 @@
 import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
 import { FC } from 'react';
-import styles from '../styles/renderHeader.less';
+import styles from './index.less';
 
 interface RenderLabelHeaderProps {
   header: string;
@@ -9,41 +9,11 @@ interface RenderLabelHeaderProps {
   isSubHeader: boolean;
 }
 
-// interface RenderHeaderProps {
-//   header: string;
-//   quantity: number | string;
-//   isUpperCase?: boolean;
-// }
-
 interface RenderMemberHeaderProps {
   firstName: string;
   lastName?: string;
   avatar?: string;
 }
-
-// export const RenderMainHeader: FC<RenderHeaderProps> = ({
-//   header,
-//   quantity,
-//   isUpperCase = true,
-// }) => {
-//   return (
-//     <span
-//       style={{
-//         textTransform: isUpperCase ? 'uppercase' : 'capitalize',
-//       }}
-//     >
-//       {header}
-//       <span
-//         className={styles.dropdownCount}
-//         style={{
-//           marginLeft: 8,
-//         }}
-//       >
-//         ({quantity})
-//       </span>
-//     </span>
-//   );
-// };
 
 export const RenderLabelHeader: FC<RenderLabelHeaderProps> = ({
   header,
@@ -60,7 +30,7 @@ export const RenderLabelHeader: FC<RenderLabelHeaderProps> = ({
       }}
     >
       {header}
-      {quantity ? (
+      {quantity !== undefined ? (
         quantity == 0 ? (
           <span
             style={{
@@ -71,7 +41,7 @@ export const RenderLabelHeader: FC<RenderLabelHeaderProps> = ({
           </span>
         ) : (
           <span
-            className={`${styles.quantity} ${styles.dropdownCount}`}
+            className={styles.quantity}
             style={{
               marginLeft: 8,
             }}

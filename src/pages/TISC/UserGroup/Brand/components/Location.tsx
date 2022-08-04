@@ -3,19 +3,19 @@ import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.sv
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { FormGroup } from '@/components/Form';
+import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { useGetParam } from '@/helper/hook';
 import { getLocationByBrandId } from '@/services';
 import { LocationGroupedByCountry } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
-import { RenderLabelHeader } from '../../components/renderHeader';
 import indexStyles from '../../styles/index.less';
-import { ActiveKeyType } from '../../types';
+// import { ActiveKeyType } from '../../types';
 import styles from '../styles/details.less';
 
 const BrandLocationDetail = () => {
-  const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
+  // const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
   const [locations, setLocations] = useState<LocationGroupedByCountry[]>([]);
 
   const brandId = useGetParam();
@@ -29,18 +29,18 @@ const BrandLocationDetail = () => {
   return (
     <Row className={indexStyles.container}>
       <Col span={12}>
-        <div className={`${indexStyles.form} ${styles.location_form}`}>
+        <div className={indexStyles.form}>
           <Collapse
             accordion
             bordered={false}
             expandIconPosition="right"
             expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
             className={indexStyles.dropdownList}
-            activeKey={activeKey}
-            onChange={(key) => {
-              // setSecondActiveKey([]);
-              setActiveKey(key);
-            }}
+            // activeKey={activeKey}
+            // onChange={(key) => {
+            // setSecondActiveKey([]);
+            // setActiveKey(key);
+            // }}
           >
             {locations.map((country, index) => (
               <Collapse.Panel

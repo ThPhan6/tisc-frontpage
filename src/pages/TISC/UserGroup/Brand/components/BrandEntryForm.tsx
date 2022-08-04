@@ -163,11 +163,12 @@ const BrandEntryForm: FC<BrandEntryFormValue> = ({
       <Status
         value={data.status}
         label="Status"
-        title={
+        toolTipTitle={
           <BodyText level={6} fontFamily="Roboto" style={{ color: '#fff' }}>
             Send email invite
           </BodyText>
         }
+        alignOffset={[0, 6]}
         buttonName="Send Invite"
         text_1="Activated"
         text_2="pending invite"

@@ -88,5 +88,6 @@ export interface StatusProps {
   textClass?: string;
   activeButtonClass?: string;
   InActiveButtonClass?: string;
-  title?: string | ReactNode;
+  toolTipTitle?: string | ReactNode;
+  alignOffset?: [number, number];
 }

@@ -54,6 +54,15 @@ export interface TeamProfileRequestBody {
   role_id: string;
 }
 
+export interface TeamProfileBrandAssignMember {
+  avatar: string | null;
+  email: string;
+  firstname: string;
+  lastname: string;
+  id: string;
+  role_id: string;
+}
+
 export interface BrandTeam {
   logo: string;
   firstname: string;
