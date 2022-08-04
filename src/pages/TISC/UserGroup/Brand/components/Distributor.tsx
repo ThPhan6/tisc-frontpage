@@ -9,7 +9,7 @@ import { DistributorResponseForm } from '@/types/distributor.type';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
-import { RenderMainHeader, RenderSubHeader } from '../../components/renderHeader';
+import { RenderLabelHeader } from '../../components/renderHeader';
 import indexStyles from '../../styles/index.less';
 import { ActiveKeyType } from '../../types';
 import styles from '../styles/details.less';
@@ -46,15 +46,19 @@ const BrandDistributorDetail = () => {
             {distributors.map((location, index) => (
               <Collapse.Panel
                 header={
-                  location.country_name && (
-                    <RenderMainHeader
-                      header={location.country_name}
-                      quantity={location.distributors.length}
-                    />
-                  )
+                  <RenderLabelHeader
+                    header={location.country_name}
+                    quantity={location.distributors?.length}
+                    isSubHeader={false}
+                    isUpperCase={true}
+                  />
                 }
                 key={index}
-                collapsible={isEmpty(location.country_name) ? 'disabled' : undefined}
+                collapsible={
+                  isEmpty(location.country_name) || location.distributors?.length === 0
+                    ? 'disabled'
+                    : undefined
+                }
                 // className="site-collapse-custom-panel"
               >
                 <Collapse
@@ -66,10 +70,9 @@ const BrandDistributorDetail = () => {
                   // onChange={setSecondActiveKey}
                   // activeKey={secondActiveKey}
                 >
-                  {location.distributors.map((distributor, idx) => (
+                  {location.distributors?.map((distributor, idx) => (
                     <Collapse.Panel
-                      // header={renderBusinessHeader(user)}
-                      header={<RenderSubHeader header={distributor.name} />}
+                      header={<RenderLabelHeader header={distributor.name} isSubHeader={true} />}
                       key={`${index}-${idx}`}
                       collapsible={isEmpty(distributor.name) ? 'disabled' : undefined}
                       // className="site-collapse-custom-panel"

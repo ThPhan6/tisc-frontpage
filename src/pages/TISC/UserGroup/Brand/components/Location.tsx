@@ -9,7 +9,7 @@ import { LocationGroupedByCountry } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
-import { RenderMainHeader, RenderSubHeader } from '../../components/renderHeader';
+import { RenderLabelHeader } from '../../components/renderHeader';
 import indexStyles from '../../styles/index.less';
 import { ActiveKeyType } from '../../types';
 import styles from '../styles/details.less';
@@ -45,15 +45,19 @@ const BrandLocationDetail = () => {
             {locations.map((country, index) => (
               <Collapse.Panel
                 header={
-                  country.country_name && (
-                    <RenderMainHeader
-                      header={country.country_name}
-                      quantity={country.locations.length}
-                    />
-                  )
+                  <RenderLabelHeader
+                    header={country.country_name}
+                    quantity={country.locations?.length}
+                    isSubHeader={false}
+                    isUpperCase={true}
+                  />
                 }
                 key={index}
-                collapsible={isEmpty(country.country_name) ? 'disabled' : undefined}
+                collapsible={
+                  isEmpty(country.country_name) || country.locations.length === 0
+                    ? 'disabled'
+                    : undefined
+                }
                 // className="site-collapse-custom-panel"
               >
                 <Collapse
@@ -65,9 +69,11 @@ const BrandLocationDetail = () => {
                   // onChange={setSecondActiveKey}
                   // activeKey={secondActiveKey}
                 >
-                  {country.locations.map((location, userIndex) => (
+                  {country.locations?.map((location, userIndex) => (
                     <Collapse.Panel
-                      header={<RenderSubHeader header={location.business_name} />}
+                      header={
+                        <RenderLabelHeader header={location.business_name} isSubHeader={true} />
+                      }
                       key={`${index}-${userIndex}`}
                       collapsible={isEmpty(location.business_name) ? 'disabled' : undefined}
                       // className="site-collapse-custom-panel"

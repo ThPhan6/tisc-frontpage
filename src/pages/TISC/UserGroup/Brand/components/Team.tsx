@@ -10,7 +10,7 @@ import { TeamProfileGroupCountry } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
-import { RenderMainHeader, RenderMemberHeader } from '../../components/renderHeader';
+import { RenderLabelHeader, RenderMemberHeader } from '../../components/renderHeader';
 
 import indexStyles from '../../styles/index.less';
 import { ActiveKeyType } from '../../types';
@@ -71,12 +71,17 @@ const BrandTeamDetail = () => {
             {teamData.map((team, index) => (
               <Collapse.Panel
                 header={
-                  team.country_name && (
-                    <RenderMainHeader header={team.country_name} quantity={team.users.length} />
-                  )
+                  <RenderLabelHeader
+                    header={team.country_name}
+                    quantity={team.users?.length}
+                    isUpperCase={true}
+                    isSubHeader={false}
+                  />
                 }
                 key={index}
-                collapsible={isEmpty(team.country_name) ? 'disabled' : undefined}
+                collapsible={
+                  isEmpty(team.country_name) || team.users.length === 0 ? 'disabled' : undefined
+                }
                 // className="site-collapse-custom-panel"
               >
                 <Collapse
@@ -88,7 +93,7 @@ const BrandTeamDetail = () => {
                   // onChange={setSecondActiveKey}
                   // activeKey={secondActiveKey}
                 >
-                  {team.users.map((user, userIndex) => (
+                  {team.users?.map((user, userIndex) => (
                     <Collapse.Panel
                       header={
                         <RenderMemberHeader

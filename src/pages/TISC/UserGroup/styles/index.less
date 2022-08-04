@@ -44,12 +44,6 @@
         font-weight: 500;
       }
     }
-    :global(.ant-collapse-item-active) {
-      box-shadow: @border-bottom;
-      .dropdownCount {
-        font-weight: 500;
-      }
-    }
 
     :global(.ant-collapse-header) {
       height: 36px;
@@ -61,6 +55,11 @@
       font-style: normal;
       line-height: 22px;
       letter-spacing: 0.02em;
+
+      p,
+      span {
+        color: @mono-color;
+      }
       :global(.ant-collapse-arrow) {
         right: 0;
       }

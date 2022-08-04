@@ -2,14 +2,18 @@ import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
 import { FC } from 'react';
 import styles from '../styles/renderHeader.less';
 
-interface RenderSubHeaderProps {
+interface RenderLabelHeaderProps {
   header: string;
+  quantity?: number | string;
+  isUpperCase?: boolean;
+  isSubHeader: boolean;
 }
 
-interface RenderHeaderProps extends RenderSubHeaderProps {
-  quantity: number | string;
-  isUpperCase?: boolean;
-}
+// interface RenderHeaderProps {
+//   header: string;
+//   quantity: number | string;
+//   isUpperCase?: boolean;
+// }
 
 interface RenderMemberHeaderProps {
   firstName: string;
@@ -17,39 +21,65 @@ interface RenderMemberHeaderProps {
   avatar?: string;
 }
 
-export const RenderMainHeader: FC<RenderHeaderProps> = ({
+// export const RenderMainHeader: FC<RenderHeaderProps> = ({
+//   header,
+//   quantity,
+//   isUpperCase = true,
+// }) => {
+//   return (
+//     <span
+//       style={{
+//         textTransform: isUpperCase ? 'uppercase' : 'capitalize',
+//       }}
+//     >
+//       {header}
+//       <span
+//         className={styles.dropdownCount}
+//         style={{
+//           marginLeft: 8,
+//         }}
+//       >
+//         ({quantity})
+//       </span>
+//     </span>
+//   );
+// };
+
+export const RenderLabelHeader: FC<RenderLabelHeaderProps> = ({
   header,
   quantity,
-  isUpperCase = true,
+  isUpperCase,
+  isSubHeader,
 }) => {
   return (
     <span
+      className={isSubHeader ? styles.dropdownCount : ''}
       style={{
         textTransform: isUpperCase ? 'uppercase' : 'capitalize',
+        color: '@mono-color',
       }}
     >
       {header}
-      <span
-        className={styles.dropdownCount}
-        style={{
-          marginLeft: 8,
-        }}
-      >
-        ({quantity})
-      </span>
-    </span>
-  );
-};
-
-export const RenderSubHeader: FC<RenderSubHeaderProps> = ({ header }) => {
-  return (
-    <span
-      className={styles.dropdownCount}
-      style={{
-        textTransform: 'capitalize',
-      }}
-    >
-      {header}
+      {quantity ? (
+        quantity == 0 ? (
+          <span
+            style={{
+              marginLeft: 8,
+            }}
+          >
+            (0)
+          </span>
+        ) : (
+          <span
+            className={`${styles.quantity} ${styles.dropdownCount}`}
+            style={{
+              marginLeft: 8,
+            }}
+          >
+            ({quantity})
+          </span>
+        )
+      ) : null}
     </span>
   );
 };

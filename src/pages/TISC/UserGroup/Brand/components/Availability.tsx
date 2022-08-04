@@ -9,7 +9,7 @@ import { AvailabilityCollectionGroup } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
-import { RenderMainHeader } from '../../components/renderHeader';
+import { RenderLabelHeader } from '../../components/renderHeader';
 import indexStyles from '../../styles/index.less';
 import { ActiveKeyType } from '../../types';
 import styles from '../styles/details.less';
@@ -47,16 +47,18 @@ const BrandAvailabilityDetail = () => {
               <Collapse.Panel
                 // header={renderCollectionHeader(collection)}
                 header={
-                  collections.collection_name && (
-                    <RenderMainHeader
-                      header={collections.collection_name}
-                      quantity={collections.regions?.length}
-                      isUpperCase={false}
-                    />
-                  )
+                  <RenderLabelHeader
+                    header={collections.collection_name}
+                    quantity={collections.regions?.length}
+                    isSubHeader={false}
+                  />
                 }
                 key={index}
-                collapsible={isEmpty(collections.collection_name) ? 'disabled' : undefined}
+                collapsible={
+                  collections.regions?.length === 0 || isEmpty(collections.collection_name)
+                    ? 'disabled'
+                    : undefined
+                }
                 // className="site-collapse-custom-panel"
               >
                 <Collapse
@@ -68,27 +70,24 @@ const BrandAvailabilityDetail = () => {
                   // onChange={setSecondActiveKey}
                   // activeKey={secondActiveKey}
                 >
-                  {collections.regions &&
-                    collections.regions.map((region, regionIdx) => (
-                      <Collapse.Panel
-                        header={
-                          region.region_name && (
-                            <RenderMainHeader
-                              header={region.region_name}
-                              quantity={region.count}
-                              isUpperCase={false}
-                            />
-                          )
-                        }
-                        key={`${index}-${regionIdx}`}
-                        collapsible={isEmpty(region.region_name) ? 'disabled' : undefined}
-                        // className="site-collapse-custom-panel"
-                      >
-                        <BodyText level={5} fontFamily="Roboto" color="mono-color">
-                          {region.region_country}
-                        </BodyText>
-                      </Collapse.Panel>
-                    ))}
+                  {collections.regions?.map((region, regionIdx) => (
+                    <Collapse.Panel
+                      header={
+                        <RenderLabelHeader
+                          header={region.region_name}
+                          quantity={region.count}
+                          isSubHeader={true}
+                        />
+                      }
+                      key={`${index}-${regionIdx}`}
+                      collapsible={region.count === 0 ? 'disabled' : undefined}
+                      // className="site-collapse-custom-panel"
+                    >
+                      <BodyText level={5} fontFamily="Roboto" color="mono-color">
+                        {region.region_country}
+                      </BodyText>
+                    </Collapse.Panel>
+                  ))}
                 </Collapse>
               </Collapse.Panel>
             ))}

@@ -34,7 +34,7 @@ export interface FormGroupProps {
 }
 
 export interface BodyTextExtraProps extends BodyTextProps {
-  text: string;
+  text: string | JSX.Element;
 }
 
 export interface CustomInputProps extends InputProps {
