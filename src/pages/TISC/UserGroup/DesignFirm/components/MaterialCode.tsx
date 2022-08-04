@@ -2,15 +2,13 @@ import { ReactComponent as DropdownV2Icon } from '@/assets/icons/action-down-ico
 import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
-import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText, Title } from '@/components/Typography';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import { useState } from 'react';
-import indexStyles from '../../index.less';
-import styles from '../styles/TeamsDesign.less';
-
-type ActiveKeyType = string | number | (string | number)[];
+import indexStyles from '../../styles/index.less';
+import { ActiveKeyType } from '../../types';
+import styles from '../styles/ComponentViewDesign.less';
 
 const data = [
   {
@@ -51,18 +49,29 @@ const data = [
   },
 ];
 
+interface Material {
+  list_material: string;
+  subs: {
+    code: string;
+    material: string;
+  }[];
+}
+interface ListMaterial {
+  name: string;
+  material_code: Material[];
+}
 const MaterialCode = () => {
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
 
-  const renderMaterialHeader = (user: any) => {
+  const renderMaterialHeader = (user: Material) => {
     return (
       <div className={styles.userName}>
-        <span>
+        <span className={indexStyles.dropdownCount}>
           {user.list_material}
           <span
-            className={indexStyles.dropdownCount}
             style={{
               marginLeft: 8,
+              fontWeight: 300,
             }}
           >
             ({user.subs.length})
@@ -72,7 +81,7 @@ const MaterialCode = () => {
     );
   };
 
-  const renderHeader = (team: any) => {
+  const renderHeader = (team: ListMaterial) => {
     return (
       <span>
         {team.name}
@@ -122,20 +131,28 @@ const MaterialCode = () => {
                       key={`${index}-${userIndex}`}
                       collapsible={isEmpty(material.list_material) ? 'disabled' : undefined}
                     >
-                      {material.subs.map((itm, idx) => {
-                        console.log(item);
-                        <div className={`${indexStyles.info} ${styles.teamInfo}`} key={idx}>
-                          <CustomInput containerClass={styles.customInputURL} value={itm.code} />
-                          <CustomInput
-                            containerClass={styles.customInputURL}
-                            value={itm.material}
-                          />
-                          <Title level={8}>{itm.code}</Title>
-                          <BodyText level={5} fontFamily="Roboto">
-                            {itm.material}
-                          </BodyText>
-                        </div>;
-                      })}
+                      <div className={`${indexStyles.info} ${styles.teamInfo}`}>
+                        {material.subs.map((itm, idx) => (
+                          <table className={styles.list_material_table} key={idx}>
+                            <tr>
+                              <td className={styles.code}>
+                                <Title level={8} customClass={styles.colorMaterial}>
+                                  {itm.code}
+                                </Title>
+                              </td>
+                              <td className={styles.material}>
+                                <BodyText
+                                  level={5}
+                                  fontFamily="Roboto"
+                                  customClass={styles.colorMaterial}
+                                >
+                                  {itm.material}
+                                </BodyText>
+                              </td>
+                            </tr>
+                          </table>
+                        ))}
+                      </div>
                     </Collapse.Panel>
                   ))}
                 </Collapse>

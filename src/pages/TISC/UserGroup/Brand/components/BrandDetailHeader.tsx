@@ -5,7 +5,7 @@ import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import styles from '../styles/index.less';
 import { CustomTabs } from '@/components/Tabs';
-import { BrandTabKeys, BrandTabs } from '../types';
+import { BrandTabKeys } from '../types';
 import { FC, useEffect, useState } from 'react';
 import { BodyText, MainTitle } from '@/components/Typography';
 import { CustomRadio } from '@/components/CustomRadio';
@@ -16,11 +16,25 @@ import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { useBoolean } from '@/helper/hook';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { Tooltip } from 'antd';
+import { TabItem } from '@/components/Tabs/types';
+import { ReactComponent as ProfileIcon } from '@/assets/icons/brand-icon.svg';
+import { ReactComponent as LocationIcon } from '@/assets/icons/location-icon.svg';
+import { ReactComponent as TeamIcon } from '@/assets/icons/team-profile-icon.svg';
+import { ReactComponent as DistributorIcon } from '@/assets/icons/distributor-icon.svg';
+import { ReactComponent as AvailabilityIcon } from '@/assets/icons/market-availability-icon.svg';
 
 interface BrandDetailHeaderProps {
   selectedTab: BrandTabKeys;
   setSelectedTab: (selectedTab: BrandTabKeys) => void;
 }
+
+export const BrandTabs: TabItem[] = [
+  { tab: 'PROFILE', key: BrandTabKeys.profile, icon: <ProfileIcon /> },
+  { tab: 'LOCATIONS', key: BrandTabKeys.locations, icon: <LocationIcon /> },
+  { tab: 'TEAMS', key: BrandTabKeys.teams, icon: <TeamIcon /> },
+  { tab: 'DISTRIBUTORS', key: BrandTabKeys.distributors, icon: <DistributorIcon /> },
+  { tab: 'AVAILABILITY', key: BrandTabKeys.availability, icon: <AvailabilityIcon /> },
+];
 
 const BrandDetailHeader: FC<BrandDetailHeaderProps> = ({ selectedTab, setSelectedTab }) => {
   const params = useParams<{ id: string }>();

@@ -1,7 +1,5 @@
-import { MainTitle, Title } from '@/components/Typography';
+import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
-import { MenuSummary } from '@/components/MenuSummary';
-import { dataMenuFirm } from '@/constants/util';
 import styles from '../DesignFirm/styles/index.less';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 import { TabItem } from '@/components/Tabs/types';
@@ -14,20 +12,22 @@ import CustomButton from '@/components/Button';
 import { ReactComponent as CustomIcon } from '@/assets/icons/custom-icon.svg';
 import { Tooltip } from 'antd';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
-import { MESSAGE_TOOLTIP } from '@/constants/message';
 import { CustomRadio } from '@/components/CustomRadio';
 import ProfileDesign from './components/ProfileDesign';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import LocationDesign from './components/LocationDesign';
-import { useEffect, useState } from 'react';
-import { DesignFirmDetail, LocationDesignFirm } from '@/types';
-import { getLocationByDesignFirms, getOneDesignFirm } from '@/services';
+import { FC, useEffect, useState } from 'react';
+import { DesignFirmDetail, LocationsDesignFirm, TeamsDesignFirm } from '@/types';
+import { getLocationsByDesignFirm, getOneDesignFirm, getTeamsByDesignFirm } from '@/services';
 import { useParams } from 'umi';
 import TeamsDesign from './components/TeamsDesign';
 import MaterialCode from './components/MaterialCode';
 import ProjectDesign from './components/ProjectDesign';
 import CustomDesign from './components/CustomDesign';
+import DesignFirmSummary from './components/DesignFirmSummary';
+import { useBoolean } from '@/helper/hook';
+import LoadingPageCustomize from '@/components/LoadingPage';
 
 export enum DesignTabKeys {
   profile = 'profile',
@@ -54,6 +54,7 @@ const optionStatus = [
 
 const ViewDesignFirmPage = () => {
   const [selectedTab, setSelectedTab] = useState<DesignTabKeys>(DesignTabKeys.profile);
+  const isLoading = useBoolean();
   const params = useParams<{
     id: string;
   }>();
@@ -75,12 +76,15 @@ const ViewDesignFirmPage = () => {
     status: 1,
   });
 
-  const [locationData, setLocationData] = useState<LocationDesignFirm[]>([]);
+  const [locationData, setLocationData] = useState<LocationsDesignFirm[]>([]);
+  const [teamData, setTeamData] = useState<TeamsDesignFirm[]>([]);
+
   const handleOnChangeStatus = (radioValue: number) => {
     setData({ ...data, status: radioValue });
   };
 
   const viewDesignFirm = () => {
+    isLoading.setValue(true);
     getOneDesignFirm(designId).then((res) => {
       if (res) {
         setData({
@@ -99,38 +103,69 @@ const ViewDesignFirmPage = () => {
           status: res.status,
         });
         setLoadedData(true);
+        isLoading.setValue(false);
       }
     });
   };
 
-  const getLocation = () => {
-    getLocationByDesignFirms(designId).then((res) => {
+  const getLocations = () => {
+    getLocationsByDesignFirm(designId).then((res) => {
       if (res) {
         setLocationData(res);
+        setLoadedData(true);
       }
     });
   };
+
+  const getTeams = () => {
+    getTeamsByDesignFirm(designId).then((res) => {
+      if (res) {
+        setTeamData(res);
+        setLoadedData(true);
+      }
+    });
+  };
+
   useEffect(() => {
     viewDesignFirm();
-    getLocation();
+    getLocations();
+    getTeams();
   }, []);
+
+  const handleUpdateStatus = () => {
+    alert('Coming soon!');
+  };
 
   if (!loadedData) {
     return null;
   }
 
+  const RenderLabelToolTip: FC<{ statusText: string; plainText: string }> = ({
+    statusText,
+    plainText,
+  }) => {
+    return (
+      <tr>
+        <td>
+          <BodyText level={4} style={{ marginRight: '4px' }}>{`${statusText}:`}</BodyText>
+        </td>
+        <td>
+          <BodyText level={6} fontFamily="Roboto">
+            {plainText}
+          </BodyText>
+        </td>
+      </tr>
+    );
+  };
+
   return (
     <>
       <div className={styles.menuSummary}>
-        <MenuSummary
-          typeMenu="subscription"
-          menuSummaryData={dataMenuFirm.leftData}
-          containerClass={styles.customMenuSummary}
-        />
+        <DesignFirmSummary />
       </div>
       <div className={styles.content}>
         <div className={styles.header}>
-          <Title level={7}>Design Firms</Title>
+          <Title level={7}>{data.name}</Title>
           <CloseIcon
             onClick={() => pushTo(PATH.tiscUserGroupDesignerList)}
             className={styles.closeIcon}
@@ -144,24 +179,20 @@ const ViewDesignFirmPage = () => {
           />
           <div className={styles.rightHeader}>
             <div className={styles.status}>
-              <div className={styles.status}>
+              <div className={styles.status_item}>
                 <MainTitle level={4} customClass={styles.textStatus}>
                   Status:
                 </MainTitle>
                 <Tooltip
                   placement="bottomLeft"
-                  title={MESSAGE_TOOLTIP.STATUS_DESING_FIRMS}
+                  title={
+                    <table className={styles.tooltip}>
+                      <RenderLabelToolTip statusText="Active" plainText="Fully activated." />
+                      <RenderLabelToolTip statusText="Inactive" plainText="Removed & archived" />
+                    </table>
+                  }
                   align={{
                     offset: [-14, -9],
-                  }}
-                  overlayInnerStyle={{
-                    width: '188px',
-                    height: 'auto',
-                    padding: '6px 12px',
-                    fontWeight: '300',
-                    fontSize: '14px',
-                    lineHeight: '21px',
-                    letterSpacing: '0.24px',
                   }}
                 >
                   <WarningIcon />
@@ -174,7 +205,7 @@ const ViewDesignFirmPage = () => {
                 value={data.status}
               />
             </div>
-            <CustomButton buttonClass={styles.action} size="small">
+            <CustomButton buttonClass={styles.action} size="small" onClick={handleUpdateStatus}>
               Save
             </CustomButton>
           </div>
@@ -193,7 +224,7 @@ const ViewDesignFirmPage = () => {
 
         {/* teams */}
         <CustomTabPane active={selectedTab === DesignTabKeys.teams}>
-          <TeamsDesign />
+          <TeamsDesign teamData={teamData} />
         </CustomTabPane>
 
         {/* material code */}
@@ -211,6 +242,7 @@ const ViewDesignFirmPage = () => {
           <CustomDesign />
         </CustomTabPane>
       </div>
+      {isLoading.value && <LoadingPageCustomize />}
     </>
   );
 };

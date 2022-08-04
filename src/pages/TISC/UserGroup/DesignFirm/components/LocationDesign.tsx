@@ -3,18 +3,20 @@ import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.sv
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import InputGroup from '@/components/EntryForm/InputGroup';
-import { LocationDesignFirm, LocationDetail } from '@/types';
+import { FormGroup } from '@/components/Form';
+import { PhoneInput } from '@/components/Form/PhoneInput';
+import { LocationsDesignFirm, LocationDetail } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import { FC, useState } from 'react';
-import indexStyles from '../../index.less';
-import styles from '../styles/TeamsDesign.less';
-
-type ActiveKeyType = string | number | (string | number)[];
+import indexStyles from '../../styles/index.less';
+import { ActiveKeyType } from '../../types';
+import styles from '../styles/ComponentViewDesign.less';
 
 interface LocationDesignProps {
-  locationData: LocationDesignFirm[];
+  locationData: LocationsDesignFirm[];
 }
+
 const LocationDesign: FC<LocationDesignProps> = ({ locationData }) => {
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
 
@@ -28,7 +30,7 @@ const LocationDesign: FC<LocationDesignProps> = ({ locationData }) => {
     );
   };
 
-  const renderHeader = (countryName: LocationDesignFirm) => {
+  const renderHeader = (countryName: LocationsDesignFirm) => {
     return (
       <span>
         {countryName.country_name}
@@ -38,7 +40,7 @@ const LocationDesign: FC<LocationDesignProps> = ({ locationData }) => {
             marginLeft: 8,
           }}
         >
-          ({countryName.locations.length})
+          ({countryName.count})
         </span>
       </span>
     );
@@ -85,8 +87,9 @@ const LocationDesign: FC<LocationDesignProps> = ({ locationData }) => {
                           fontLevel={3}
                           className={styles.label}
                           hasPadding
-                          value={loca.business_name}
+                          value={loca.functional_type}
                           readOnly
+                          colon
                         />
                         <InputGroup
                           label="Address"
@@ -96,8 +99,9 @@ const LocationDesign: FC<LocationDesignProps> = ({ locationData }) => {
                           value={loca.address}
                           hasPadding
                           readOnly
+                          colon
                         />
-                        <InputGroup
+                        {/* <InputGroup
                           label="General Phone"
                           hasHeight
                           fontLevel={3}
@@ -105,7 +109,22 @@ const LocationDesign: FC<LocationDesignProps> = ({ locationData }) => {
                           value={loca.general_phone}
                           hasPadding
                           readOnly
-                        />
+                          colon
+                        /> */}
+                        <FormGroup
+                          label="General Phone"
+                          layout="vertical"
+                          formClass={styles.formGroup}
+                        >
+                          <PhoneInput
+                            codeReadOnly
+                            containerClass={styles.phoneInputCustom}
+                            value={{
+                              zoneCode: loca.phone_code,
+                              phoneNumber: loca.general_phone,
+                            }}
+                          />
+                        </FormGroup>
                         <InputGroup
                           label="General Email"
                           hasHeight
@@ -114,6 +133,7 @@ const LocationDesign: FC<LocationDesignProps> = ({ locationData }) => {
                           value={loca.general_email}
                           hasPadding
                           readOnly
+                          colon
                         />
                       </div>
                     </Collapse.Panel>

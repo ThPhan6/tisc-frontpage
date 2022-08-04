@@ -3,102 +3,25 @@ import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.sv
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import InputGroup from '@/components/EntryForm/InputGroup';
+import { FormGroup } from '@/components/Form';
+import { PhoneInput } from '@/components/Form/PhoneInput';
 import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
-import { BrandTeam, TISCUserGroupBrandTeam } from '@/types';
+import { TeamsDesignFirm, UserInfo } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { capitalize, isEmpty } from 'lodash';
-import { useEffect, useState } from 'react';
-import indexStyles from '../../index.less';
-import styles from '../styles/TeamsDesign.less';
+import { FC, useState } from 'react';
+import indexStyles from '../../styles/index.less';
+import { ActiveKeyType } from '../../types';
+import styles from '../styles/ComponentViewDesign.less';
 
-type ActiveKeyType = string | number | (string | number)[];
+interface TeamsDesignProps {
+  teamData: TeamsDesignFirm[];
+}
 
-const data = [
-  {
-    country_name: 'Singapore',
-    users: [
-      {
-        logo: '',
-        firstname: 'thinh',
-        lastname: 'phan',
-        gender: true,
-        work_location: 'location',
-        department: 'department',
-        position: 'sales',
-        email: 'emial@gmail.com',
-        phone: '08754',
-        mobile: '3434',
-        access_level: 'brand lead',
-        status: 2,
-      },
-      {
-        logo: '',
-        firstname: 'thinh',
-        lastname: 'phan',
-        gender: true,
-        work_location: 'location',
-        department: 'department',
-        position: 'sales',
-        email: 'emial@gmail.com',
-        phone: '08754',
-        mobile: '3434',
-        access_level: 'brand lead',
-        status: 3,
-      },
-    ],
-  },
-  {
-    country_name: 'Thailand',
-    users: [
-      {
-        logo: '',
-        firstname: 'thinh',
-        lastname: 'phan',
-        gender: true,
-        work_location: 'location',
-        department: 'department',
-        position: 'sales',
-        email: 'emial@gmail.com',
-        phone: '08754',
-        mobile: '3434',
-        access_level: 'brand lead',
-        status: 2,
-      },
-    ],
-  },
-];
-
-const DEFAULT_BRANDTEAM = [
-  {
-    country_name: '',
-    users: [
-      {
-        logo: '',
-        firstname: '',
-        lastname: '',
-        gender: true,
-        work_location: '',
-        department: '',
-        position: '',
-        email: '',
-        phone: '',
-        mobile: '',
-        access_level: '',
-        status: 1,
-      },
-    ],
-  },
-];
-
-const TeamsDesign = () => {
+const TeamsDesign: FC<TeamsDesignProps> = ({ teamData }) => {
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
-  const [teamData, setTeamData] = useState<TISCUserGroupBrandTeam[]>(DEFAULT_BRANDTEAM);
 
-  useEffect(() => {
-    setTeamData(data);
-  }, []);
-
-  const renderUserHeader = (user: BrandTeam) => {
+  const renderUserHeader = (user: UserInfo) => {
     return (
       <div className={styles.userName}>
         <span className={styles.icon}>
@@ -111,7 +34,7 @@ const TeamsDesign = () => {
     );
   };
 
-  const renderHeader = (team: TISCUserGroupBrandTeam) => {
+  const renderHeader = (team: TeamsDesignFirm) => {
     return (
       <span>
         {team.country_name}
@@ -121,7 +44,7 @@ const TeamsDesign = () => {
             marginLeft: 8,
           }}
         >
-          ({team.users.length})
+          ({team.count})
         </span>
       </span>
     );
@@ -169,6 +92,8 @@ const TeamsDesign = () => {
                           className={styles.label}
                           readOnly
                           hasPadding
+                          colon
+                          value={user.gender === true ? 'Male' : 'Female'}
                         />
                         <InputGroup
                           label="Work Location"
@@ -177,6 +102,8 @@ const TeamsDesign = () => {
                           className={styles.label}
                           readOnly
                           hasPadding
+                          colon
+                          value={user.work_location}
                         />
                         <InputGroup
                           label="Department"
@@ -185,6 +112,8 @@ const TeamsDesign = () => {
                           className={styles.label}
                           readOnly
                           hasPadding
+                          colon
+                          value={user.department}
                         />
                         <InputGroup
                           label="Position/Title"
@@ -193,6 +122,8 @@ const TeamsDesign = () => {
                           className={styles.label}
                           readOnly
                           hasPadding
+                          colon
+                          value={user.position}
                         />
                         <InputGroup
                           label="Work Email"
@@ -201,23 +132,37 @@ const TeamsDesign = () => {
                           className={styles.label}
                           readOnly
                           hasPadding
+                          colon
+                          value={user.email}
                         />
-                        <InputGroup
+                        <FormGroup
                           label="Work Phone"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          readOnly
-                          hasPadding
-                        />
-                        <InputGroup
+                          layout="vertical"
+                          formClass={styles.formGroup}
+                        >
+                          <PhoneInput
+                            codeReadOnly
+                            containerClass={styles.phoneInputCustom}
+                            value={{
+                              zoneCode: user.phone_code,
+                              phoneNumber: user.phone,
+                            }}
+                          />
+                        </FormGroup>
+                        <FormGroup
                           label="Work Mobile"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          readOnly
-                          hasPadding
-                        />
+                          layout="vertical"
+                          formClass={styles.formGroup}
+                        >
+                          <PhoneInput
+                            codeReadOnly
+                            containerClass={styles.phoneInputCustom}
+                            value={{
+                              zoneCode: user.phone_code,
+                              phoneNumber: user.mobile,
+                            }}
+                          />
+                        </FormGroup>
                         <InputGroup
                           label="Access Level"
                           hasHeight
@@ -225,6 +170,8 @@ const TeamsDesign = () => {
                           className={styles.label}
                           readOnly
                           hasPadding
+                          colon
+                          value={user.access_level}
                         />
                         <InputGroup
                           label="Status"
@@ -233,6 +180,14 @@ const TeamsDesign = () => {
                           className={styles.label}
                           readOnly
                           hasPadding
+                          colon
+                          value={
+                            user.status === 1
+                              ? 'Activated'
+                              : user.status === 2
+                              ? 'Blocked'
+                              : 'Pending'
+                          }
                         />
                       </div>
                     </Collapse.Panel>

@@ -33,7 +33,7 @@ export interface DesignFirmDetail {
   status: number;
 }
 
-export interface LocationDesignFirm {
+export interface LocationsDesignFirm {
   country_name: string;
   count: 0;
   locations: LocationDetail[];
@@ -59,4 +59,25 @@ export interface LocationDetail {
   phone_code: string;
   postal_code: string;
   address: string;
+}
+
+export interface TeamsDesignFirm {
+  country_name: string;
+  count: 0;
+  users: UserInfo[];
+}
+
+export interface UserInfo {
+  logo: string;
+  firstname: string;
+  lastname: string;
+  gender: true;
+  work_location: string;
+  department: string;
+  position: string;
+  email: string;
+  phone: string;
+  mobile: string;
+  access_level: string;
+  status: number;
 }

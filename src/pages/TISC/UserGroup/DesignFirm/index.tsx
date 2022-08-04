@@ -9,10 +9,9 @@ import { showImageUrl } from '@/helper/utils';
 import type { DesignFirm } from '@/types';
 import styles from './styles/index.less';
 import { PageContainer } from '@ant-design/pro-layout';
-import { MenuSummary } from '@/components/MenuSummary';
-import { dataMenuFirm } from '@/constants/util';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
+import DesignFirmSummary from './components/DesignFirmSummary';
 
 const DesignFirmList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -86,15 +85,7 @@ const DesignFirmList: React.FC = () => {
   ];
 
   return (
-    <PageContainer
-      pageHeaderRender={() => (
-        <MenuSummary
-          containerClass={styles.customMenuSummary}
-          menuSummaryData={dataMenuFirm.leftData}
-          typeMenu="subscription"
-        />
-      )}
-    >
+    <PageContainer pageHeaderRender={() => <DesignFirmSummary />}>
       <CustomTable
         title="DESIGN FIRMS"
         columns={TableColumns}

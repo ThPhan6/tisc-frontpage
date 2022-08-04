@@ -6,10 +6,9 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
-import indexStyles from '../../index.less';
-import styles from '../styles/TeamsDesign.less';
-
-type ActiveKeyType = string | number | (string | number)[];
+import indexStyles from '../../styles/index.less';
+import { ActiveKeyType } from '../../types';
+import styles from '../styles/ComponentViewDesign.less';
 
 interface DesignLocation {
   name: string;
@@ -83,7 +82,16 @@ const ProjectDesign = () => {
   const renderProjectHeader = (user: DetailLocation) => {
     return (
       <div className={styles.userName}>
-        <span className={`${styles.name} ${indexStyles.dropdownCount}`}>{user.business_name}</span>
+        <span className={indexStyles.dropdownCount}>
+          {user.business_name}
+          <span
+            style={{
+              marginLeft: 8,
+            }}
+          >
+            {user.business_name}
+          </span>
+        </span>
       </div>
     );
   };

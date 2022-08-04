@@ -223,13 +223,13 @@ export const MESSAGE_NOTIFICATION = {
   //user-group / design firms
   GET_ONE_DESIGN_FIRM_ERROR: 'Failed to get one design firm',
   GET_SUMMARY: 'Failed to get summary',
-  GET_LOCATION_BY_DESIGN_FIRMS: 'Failed to get location by design firm',
+  GET_LOCATIONS_BY_DESIGN_FIRM: 'Failed to get locations by design firm',
+  GET_TEAMS_BY_DESIGN_FIRM: 'Failed to get teams by design firm',
 };
 
 export const MESSAGE_TOOLTIP = {
   PERSONAL_PROFILE:
     'We value user personal privacy. However, the platform will require individual information for verification purpose from time to time.',
-  STATUS_DESING_FIRMS: 'Active: Fully activated. Inactive: Removed & archived',
 };
 
 export const EMPTY_DATA_MESSAGE = {

@@ -1,0 +1,72 @@
+.team_form {
+  :global(.ant-collapse-borderless) {
+    background: #fff !important;
+  }
+  // :global(.ant-collapse-borderless > .ant-collapse-item) {
+  //   border-bottom: none;
+  // }
+
+  .teamInfo {
+    :last-child {
+      margin-bottom: 0;
+    }
+    .formGroup {
+      margin-bottom: 16px;
+      .phoneInputCustom {
+        border: none;
+        p {
+          color: @mono-color !important;
+        }
+      }
+    }
+    .list_material {
+      display: flex;
+      align-items: center;
+      box-shadow: @border-bottom-light;
+      &_table {
+        width: 100%;
+        white-space: nowrap;
+        table-layout: fixed;
+        tr {
+          height: 36px;
+        }
+
+        td {
+          height: 36px;
+          padding: 0;
+
+          p {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+        }
+        .code {
+          padding-right: 12px;
+          text-transform: capitalize;
+          .colorMaterial {
+            color: @mono-color !important;
+          }
+        }
+        .material {
+          width: 92%;
+          .colorMaterial {
+            color: @mono-color !important;
+          }
+        }
+      }
+    }
+  }
+  .team_name {
+    margin-bottom: 16px;
+  }
+
+  .userName {
+    display: flex;
+    align-items: center;
+
+    .icon {
+      margin-right: 8px;
+    }
+  }
+}

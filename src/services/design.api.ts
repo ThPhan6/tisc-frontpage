@@ -5,7 +5,7 @@ import type {
   PaginationResponse,
 } from '@/components/Table/types';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { DesignFirm, DesignFirmDetail, LocationDesignFirm } from '@/types';
+import { DesignFirm, DesignFirmDetail, LocationsDesignFirm, TeamsDesignFirm } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -50,9 +50,8 @@ export async function getOneDesignFirm(id: string) {
 }
 
 export async function getSummary() {
-  return request<{ data: DataMenuSummaryProps }>(`/api/design/summary`, { method: 'GET' })
+  return request<{ data: DataMenuSummaryProps[] }>(`/api/design/summary`, { method: 'GET' })
     .then((response) => {
-      console.log(response.data);
       return response.data;
     })
     .catch((error) => {
@@ -60,12 +59,22 @@ export async function getSummary() {
     });
 }
 
-export async function getLocationByDesignFirms(id: string) {
-  return request<{ data: LocationDesignFirm[] }>(`/api/location/design/${id}`, { method: 'GET' })
+export async function getLocationsByDesignFirm(id: string) {
+  return request<{ data: LocationsDesignFirm[] }>(`/api/location/design/${id}`, { method: 'GET' })
     .then((response) => {
       return response.data;
     })
     .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LOCATION_BY_DESIGN_FIRMS);
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LOCATIONS_BY_DESIGN_FIRM);
+    });
+}
+
+export async function getTeamsByDesignFirm(id: string) {
+  return request<{ data: TeamsDesignFirm[] }>(`/api/team-profile/design/${id}`, { method: 'GET' })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_TEAMS_BY_DESIGN_FIRM);
     });
 }
