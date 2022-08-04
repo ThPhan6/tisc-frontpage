@@ -1,4 +1,4 @@
-import { ProjectBodyRequest } from '@/types';
+import { ProjectBodyRequest, ProjectSpaceZone, ProjectSpaceArea, ProjectSpaceRoom } from '@/types';
 import { FilterValues } from './filter';
 
 export const DefaultProjectRequest: ProjectBodyRequest = {
@@ -15,4 +15,20 @@ export const DefaultProjectRequest: ProjectBodyRequest = {
   design_due: '',
   construction_start: '',
   status: FilterValues.live,
+};
+
+export const DefaultProjectRoom: ProjectSpaceRoom = {
+  room_name: '',
+  room_id: '',
+  room_size: '',
+  quantity: '',
+};
+export const DefaultProjectArea: ProjectSpaceArea = {
+  name: '',
+  rooms: [DefaultProjectRoom],
+};
+
+export const DefaultProjectZone: ProjectSpaceZone = {
+  name: '',
+  areas: [],
 };

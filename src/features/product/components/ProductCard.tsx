@@ -114,7 +114,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
           {product.name}
         </BodyText>
         <BodyText level={7} fontFamily="Roboto" customClass="text-uppercase">
-          {product.brand?.name ?? 'N/A'}
+          {product.brand?.name ?? product.brand_name ?? 'N/A'}
         </BodyText>
       </div>
       <div className={styles.productAction}>
@@ -153,10 +153,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
 
 export default ProductCard;
 
-export const CollapseProductList: React.FC = ({}) => {
+export const CollapseProductList: React.FC<{ showBrandLogo?: boolean }> = ({ showBrandLogo }) => {
   const list = useAppSelector((state) => state.product.list);
 
-  // console.log('product', product);
   // if (!product.list.data.length) {
   //   return <EmptyDataMessage message={EMPTY_DATA_MESSAGE.product} />;
   // }
@@ -171,6 +170,8 @@ export const CollapseProductList: React.FC = ({}) => {
           header={
             <div className="header-text">
               <BodyText level={5} fontFamily="Roboto">
+                {showBrandLogo ? <img src={showImageUrl(group.brand_logo)} /> : null}
+
                 {truncate(capitalize(group.name), { length: 40 })}
                 <span className="product-count">({group.count})</span>
               </BodyText>

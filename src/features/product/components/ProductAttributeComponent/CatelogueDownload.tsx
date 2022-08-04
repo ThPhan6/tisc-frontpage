@@ -6,7 +6,6 @@ import { setProductCatelogue } from '@/features/product/reducers';
 import DynamicFormInput from '@/components/EntryForm/DynamicFormInput';
 import { useCheckPermission } from '@/helper/hook';
 import styles from './CatelogueDownload.less';
-import { isValidURL } from '@/helper/utils';
 import { getProductCatelogueByProductID } from '@/features/product/services';
 import { BodyText } from '@/components/Typography';
 import { ReactComponent as DownloadIconV2 } from '@/assets/icons/download-2-icon.svg';
@@ -23,16 +22,6 @@ const DownloadContent = () => {
     }
   }, [productId]);
 
-  const handleDownload = (url: string) => {
-    if (!url) {
-      return;
-    }
-    const validURL = isValidURL(url);
-    if (validURL) {
-      window.open(url, '_blank');
-    }
-  };
-
   return (
     <div className={styles.download}>
       {contents.map((content, index) => {
@@ -41,10 +30,9 @@ const DownloadContent = () => {
             <BodyText level={6} fontFamily="Roboto">
               {content.title}
             </BodyText>
-            <DownloadIconV2
-              className={styles.download_icon}
-              onClick={() => handleDownload(content.url)}
-            />
+            <a href={content.url} download>
+              <DownloadIconV2 className={styles.download_icon} />
+            </a>
           </div>
         );
       })}

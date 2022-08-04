@@ -85,13 +85,14 @@ export async function createProject(data: ProjectBodyRequest) {
     method: 'POST',
     data,
   })
-    .then(() => {
+    .then((res: { data: { id: string } }) => {
       message.success(MESSAGE_NOTIFICATION.CREATE_PROJECT_SUCCESS);
-      return true;
+      console.log('res', res);
+      return res.data.id;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_PROJECT_FAILED);
-      return false;
+      return '';
     });
 }
 export async function updateProject(id: string, data: ProjectBodyRequest) {

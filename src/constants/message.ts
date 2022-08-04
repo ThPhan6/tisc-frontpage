@@ -226,6 +226,14 @@ export const MESSAGE_NOTIFICATION = {
   GET_MATERIAL_CODE_BY_DESIGN_FIRM: 'Failed to get material code by design firm',
   UPDATE_STATUS_DESIGN_FIRM_SUCCESS: 'Update status design firm successfully',
   UPDATE_STATUS_DESIGN_FIRM_ERROR: 'Update status design firm error',
+
+  GET_PROJECT_SPACE_DATA_FAILED: 'Failed to get project space data',
+  CREATE_PROJECT_SPACE_FAILED: 'Failed to create project space',
+  CREATE_PROJECT_SPACE_SUCCESS: 'Create project space successfully',
+  UPDATE_PROJECT_SPACE_FAILED: 'Failed to update project space',
+  UPDATE_PROJECT_SPACE_SUCCESS: 'Update project space successfully',
+  DELETE_PROJECT_SPACE_FAILED: 'Failed to delete project space',
+  DELETE_PROJECT_SPACE_SUCCESS: 'Delete project space successfully',
 };
 
 export const MESSAGE_TOOLTIP = {

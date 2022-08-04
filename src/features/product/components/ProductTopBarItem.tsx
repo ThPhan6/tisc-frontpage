@@ -61,17 +61,22 @@ export const FilterItem: React.FC<FilterItemProps> = ({ title, onDelete }) => {
 interface TopBarContainerProps {
   LeftSideContent?: JSX.Element;
   RightSideContent?: JSX.Element;
+  BottomContent?: JSX.Element;
 }
 
 export const TopBarContainer: React.FC<TopBarContainerProps> = ({
   LeftSideContent,
   RightSideContent,
+  BottomContent,
 }) => {
   return (
-    <div className={styles.topbarContainer}>
-      <div className="left-side">{LeftSideContent}</div>
-      <div className="right-side">{RightSideContent}</div>
-    </div>
+    <>
+      <div className={styles.topbarContainer}>
+        <div className="left-side">{LeftSideContent}</div>
+        <div className="right-side">{RightSideContent}</div>
+      </div>
+      {BottomContent && <div className={styles.topbarBottomContainer}>{BottomContent}</div>}
+    </>
   );
 };
 
@@ -114,20 +119,23 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
         }}
       >
         {items.map((item, index) => {
+          const hasChildren = item?.children?.length > 0;
+
           return (
             <Menu.Item
               key={item?.id || index}
               onClick={() => {
                 setSelectedItem((curIndex) => (curIndex === index ? DEFAULT_INDEX : index));
-                if (!item?.children) {
-                  item.onClick?.();
+                if (hasChildren === false) {
+                  item?.onClick?.();
                   onCloseMenu();
                 }
               }}
               className={`${selectedItem === index ? styles.active : ''} ${
-                item?.children ? '' : styles.noSub
+                hasChildren ? '' : styles.noSub
               }`}
-              icon={item?.icon || (item?.children ? <DropdownIcon /> : undefined)}
+              disabled={item.disabled}
+              icon={item?.icon || (hasChildren ? <DropdownIcon /> : undefined)}
             >
               {item.label}
             </Menu.Item>
