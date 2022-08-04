@@ -7,6 +7,8 @@ import { setProductDownload } from '@/features/product/reducers';
 import DynamicFormInput from '@/components/EntryForm/DynamicFormInput';
 import { BodyText } from '@/components/Typography';
 import { useCheckPermission } from '@/helper/hook';
+import { EmptyOne } from '@/components/Empty';
+import { isEmpty } from 'lodash';
 
 const ProductDownloadFooter: FC = () => {
   const dispatch = useDispatch();
@@ -42,7 +44,9 @@ const ProductDownloadFooter: FC = () => {
       />
     );
   }
-
+  if (isEmpty(download.contents)) {
+    return <EmptyOne />;
+  }
   return (
     <div className={styles.downloadFooter}>
       <table>
