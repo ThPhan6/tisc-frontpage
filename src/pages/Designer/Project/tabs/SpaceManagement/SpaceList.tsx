@@ -105,7 +105,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
       },
     },
     {
-      title: 'Room',
+      title: 'Rooms',
       dataIndex: 'room_column',
       width: 106,
       sorter: {
