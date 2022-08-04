@@ -1,0 +1,31 @@
+.productContainer {
+  background-color: blue;
+}
+
+.brandLogo {
+  width: 18px;
+  height: 18px;
+  margin-right: 16px;
+  object-fit: contain;
+}
+
+.newCardIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
+  border-radius: 100%;
+  &.activeNewCard {
+    color: #fff;
+    background-color: @primary-color-dark;
+  }
+  &.disabledNewCard {
+    color: @mono-color-medium;
+    background-color: @mono-color-light;
+  }
+  svg {
+    margin-left: 0 !important;
+  }
+}

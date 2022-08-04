@@ -9,7 +9,7 @@ import { Distributor, DistributorForm, DistributorDetail } from '@/types/distrib
 import { message } from 'antd';
 import { request } from 'umi';
 
-interface IDistributorPaginationResponse {
+interface DistributorPaginationResponse {
   data: {
     pagination: PaginationResponse;
     distributors: Distributor[];
@@ -36,7 +36,7 @@ export async function getDistributorPagination(
     method: 'GET',
     params,
   })
-    .then((response: IDistributorPaginationResponse) => {
+    .then((response: DistributorPaginationResponse) => {
       const { distributors, pagination, summary } = response.data;
       callback({
         data: distributors,

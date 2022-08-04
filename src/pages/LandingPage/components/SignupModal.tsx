@@ -3,7 +3,7 @@ import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
 import { CustomInput } from '@/components/Form/CustomInput';
 import CustomButton from '@/components/Button';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { ModalProps } from '../types';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
@@ -15,6 +15,7 @@ import { isShowErrorMessage, validateEmail } from '@/helper/utils';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 import { checkEmailAlreadyUsed, signUpDesigner } from '../services/api';
 import { useBoolean } from '@/helper/hook';
+import { debounce } from 'lodash';
 
 interface SignUpFormState {
   firstname: string;
@@ -35,32 +36,33 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
   });
   const [agreeTisc, setAgreeTisc] = useState(false);
   const isLoading = useBoolean();
-  const [isExistEmail, setIsExistEmail] = useState(true);
+  const [emailExisted, setEmailExisted] = useState(false);
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (formInput.email && validateEmail(formInput.email)) {
+      checkEmailAlreadyUsed(formInput.email).then((res) => {
+        setEmailExisted(res);
+      });
+    }
+  }, [formInput.email]);
+
+  const handleOnChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     setFormInput({ ...formInput, [e.target.name]: e.target.value });
-  };
+  }, 300);
 
   const handleAgreeTisc = () => {
     setAgreeTisc(!agreeTisc);
     setFormInput({ ...formInput, agree_tisc: !formInput.agree_tisc });
   };
 
-  const checkEmail = (email: string) => {
-    checkEmailAlreadyUsed(email).then((res) => {
-      setIsExistEmail(res);
-    });
-    return isExistEmail;
-  };
-
-  const setErrorMessage = () => {
+  const getErrorMessage = () => {
     if (formInput.confirmed_password && formInput.password !== formInput.confirmed_password) {
       return MESSAGE_ERROR.CONFIRM_PASSWORD;
     }
     if (formInput.email && !validateEmail(formInput.email)) {
       return MESSAGE_ERROR.EMAIL;
     }
-    if (formInput.email && !checkEmail(formInput.email)) {
+    if (formInput.email && !emailExisted) {
       return MESSAGE_ERROR.EMAIL_ALREADY_USED;
     }
     if (agreeTisc === true && formInput.agree_tisc === false) {
@@ -131,6 +133,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             onChange={handleOnChange}
           />
           <CustomInput
+            autoComplete={'' + Math.random()}
             fromLandingPage
             theme={theme}
             size="large"
@@ -145,6 +148,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             status={isShowErrorMessage('email', formInput.email) ? '' : 'error'}
           />
           <CustomInput
+            autoComplete={'' + Math.random()}
             fromLandingPage
             theme={theme}
             size="large"
@@ -161,12 +165,12 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             fromLandingPage
             theme={theme}
             type="password"
+            name="confirmed_password"
             containerClass={styles.email}
             size="large"
             placeholder="confirm password"
             prefix={<LockedIcon />}
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-            name="confirmed_password"
             required={true}
             onChange={handleOnChange}
             status={
@@ -189,17 +193,17 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
 
           <div className={styles.customLink}>
             <span onClick={() => setOpenModalPolicies('Policies')}>
-              Terms of Use and Privacy Policies.
+              Terms of Services, Privacy Policy and Cookie Policy
             </span>
           </div>
         </div>
         <div className={styles.button}>
           <div>
-            {setErrorMessage() && (
+            {getErrorMessage() && (
               <div className={styles.warning}>
                 <WarningIcon />
                 <BodyText level={4} fontFamily="Roboto">
-                  {setErrorMessage()}
+                  {getErrorMessage()}
                 </BodyText>
               </div>
             )}

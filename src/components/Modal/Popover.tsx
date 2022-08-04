@@ -8,13 +8,13 @@ import DropdownRadioList from '@/components/CustomRadio/DropdownRadioList';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
 import GroupRadioList from '@/components/CustomRadio/RadioList';
 import CheckboxList from '@/components/CustomCheckbox/CheckboxList';
-import DropdownCategoryList from '@/pages/TISC/Product/Configuration/components/CategoryDropdown';
+import { DropdownCategoryList } from '@/features/categories/components';
 import { Empty } from 'antd';
 import { isEmpty } from 'lodash';
 import type { CheckboxOption } from '@/components/CustomCheckbox/CheckboxList';
 import type { DropdownRadioItem } from '@/components/CustomRadio/DropdownRadioList';
 import type { DropdownCheckboxItem } from '@/components/CustomCheckbox/DropdownCheckboxList';
-import type { IRadioListOption } from '@/components/CustomRadio/RadioList';
+import type { RadioListOption } from '@/components/CustomRadio/RadioList';
 
 import styles from './styles/Popover.less';
 
@@ -27,7 +27,7 @@ interface PopoverProps {
   dropDownRadioTitle?: (data: DropdownRadioItem) => string | number | ReactNode;
 
   /// group radio list
-  groupRadioList?: IRadioListOption[];
+  groupRadioList?: RadioListOption[];
 
   /// dropdown checkbox list
   dropdownCheckboxList?: DropdownCheckboxItem[];

@@ -20,105 +20,105 @@ export const USER_STATUS_TEXTS = {
   [USER_STATUSES.PENDING]: 'Pending',
 };
 
-// export const dataMenuSummary = {
-//   leftData: [
-//     {
-//       id: '1',
-//       quantity: 4,
-//       label: 'BRAND COMPANIES',
-//       brands: [
-//         {
-//           id: '11',
-//           quantity: 8,
-//           label: 'Locations',
-//         },
-//         {
-//           id: '12',
-//           quantity: 18,
-//           label: 'Teams',
-//         },
-//       ],
-//     },
-//     {
-//       id: '2',
-//       quantity: 3,
-//       label: 'COUNTRIES',
-//       brands: [
-//         {
-//           id: '21',
-//           quantity: 0,
-//           label: 'Africa',
-//         },
-//         {
-//           id: '22',
-//           quantity: 1,
-//           label: 'Asia',
-//         },
-//         {
-//           id: '23',
-//           quantity: 1,
-//           label: 'Europe',
-//         },
-//         {
-//           id: '24',
-//           quantity: 0,
-//           label: 'N.America',
-//         },
-//         {
-//           id: '25',
-//           quantity: 1,
-//           label: 'Oceania',
-//         },
-//         {
-//           id: '26',
-//           quantity: 0,
-//           label: 'S.America',
-//         },
-//       ],
-//     },
-//     {
-//       id: '3',
-//       quantity: '1,223',
-//       label: 'PRODUCTS',
-//       brands: [
-//         {
-//           id: '31',
-//           quantity: 5,
-//           label: 'Categories',
-//         },
-//         {
-//           id: '32',
-//           quantity: 19,
-//           label: 'Collections',
-//         },
-//         {
-//           id: '33',
-//           quantity: 220,
-//           label: 'Cards',
-//         },
-//       ],
-//     },
-//   ],
-//   projectData: [
-//     {
-//       id: '1',
-//       quantity: '$127,300',
-//       label: 'Total sq.m.',
-//     },
-//     {
-//       id: '2',
-//       quantity: '$1,370,246',
-//       label: 'Total sq.ft.',
-//     },
-//   ],
-//   subscriptionData: [
-//     {
-//       id: '1',
-//       quantity: '$8,901',
-//       label: 'Grand Total',
-//     },
-//   ],
-// };
+export const dataMenuSummary = {
+  leftData: [
+    {
+      id: '1',
+      quantity: 4,
+      label: 'BRAND COMPANIES',
+      brands: [
+        {
+          id: '11',
+          quantity: 8,
+          label: 'Locations',
+        },
+        {
+          id: '12',
+          quantity: 18,
+          label: 'Teams',
+        },
+      ],
+    },
+    {
+      id: '2',
+      quantity: 3,
+      label: 'COUNTRIES',
+      brands: [
+        {
+          id: '21',
+          quantity: 0,
+          label: 'Africa',
+        },
+        {
+          id: '22',
+          quantity: 1,
+          label: 'Asia',
+        },
+        {
+          id: '23',
+          quantity: 1,
+          label: 'Europe',
+        },
+        {
+          id: '24',
+          quantity: 0,
+          label: 'N.America',
+        },
+        {
+          id: '25',
+          quantity: 1,
+          label: 'Oceania',
+        },
+        {
+          id: '26',
+          quantity: 0,
+          label: 'S.America',
+        },
+      ],
+    },
+    {
+      id: '3',
+      quantity: '1,223',
+      label: 'PRODUCTS',
+      brands: [
+        {
+          id: '31',
+          quantity: 5,
+          label: 'Categories',
+        },
+        {
+          id: '32',
+          quantity: 19,
+          label: 'Collections',
+        },
+        {
+          id: '33',
+          quantity: 220,
+          label: 'Cards',
+        },
+      ],
+    },
+  ],
+  projectData: [
+    {
+      id: '1',
+      quantity: '$127,300',
+      label: 'Total sq.m.',
+    },
+    {
+      id: '2',
+      quantity: '$1,370,246',
+      label: 'Total sq.ft.',
+    },
+  ],
+  subscriptionData: [
+    {
+      id: '1',
+      quantity: '$8,901',
+      label: 'Grand Total',
+    },
+  ],
+};
 
 // export const dataMenuFirm = {
 //   leftData: [

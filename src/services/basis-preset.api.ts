@@ -10,7 +10,7 @@ import type { BasisPresetListResponse, PresetsValueProp } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
 
-interface ICategoryPaginationResponse {
+interface CategoryPaginationResponse {
   data: {
     basis_presets: BasisPresetListResponse[];
     pagination: PaginationResponse;
@@ -25,7 +25,7 @@ export async function getProductBasisPresetPagination(
     method: 'GET',
     params,
   })
-    .then((response: ICategoryPaginationResponse) => {
+    .then((response: CategoryPaginationResponse) => {
       const { basis_presets, pagination, summary } = response.data;
       callback({
         data: basis_presets,

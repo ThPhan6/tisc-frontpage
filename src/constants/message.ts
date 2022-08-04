@@ -111,13 +111,9 @@ export const MESSAGE_NOTIFICATION = {
   // department
   GET_LIST_DEPARTMENT_ERROR: 'Get list department error',
 
-  /// user group
-  // brand
-  GET_LIST_BRAND_SUMMARY_ERROR: 'Get list brand summary error',
-  GET_BRAND_STATUSES_ERROR: 'Get brand statuses error',
-
   // team profile
   GET_LIST_TEAM_PROFILE_ERROR: 'Get list team profile error',
+  GET_LIST_TEAM_PROFILE_COUNTRY_GROUP_ERROR: 'Get list team profile country group error',
   GET_ONE_TEAM_PROFILE_ERROR: 'Get one team profile error',
   CREATE_TEAM_PROFILE_SUCCESS: 'Create team profile successfully',
   CREATE_TEAM_PROFILE_ERROR: 'Create team profile error',
@@ -184,6 +180,8 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_LOCATION_FAILED: 'Failed to delete location',
   GET_LOCATION_FAILED: 'Failed to get location data',
   GET_REGIONS_ERROR: 'Failed to get regions',
+  GET_LOCATION_DISTRIBUTOR_ERROR: 'Failed to get distributor location',
+  GET_LOCATION_BRAND_ERROR: 'Failed to get brand location',
 
   //distributor
   CREATE_DISTRIBUTOR_SUCCESS: 'Create distributor successfully',

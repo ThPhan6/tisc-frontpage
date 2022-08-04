@@ -14,8 +14,8 @@ import { confirmDelete } from '@/helper/common';
 import { deleteConversionMiddleware, getProductBasisConversionPagination } from '@/services';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import CustomTable from '@/components/Table';
-import cardStyles from '@/components/Product/styles/cardList.less';
-import ProductCard from '@/components/Product/ProductCard';
+import cardStyles from '@/features/product/components/ProductCard.less';
+import ProductCard from '@/features/product/components/ProductCard';
 
 const COL_WIDTH = {
   zones: 165,
@@ -225,9 +225,9 @@ const ProductConsidered: React.FC = () => {
             }
             return (
               <div className={cardStyles.productCardContainer} style={{ padding: 16 }}>
-                {data.subs.map((item) => (
+                {data.subs.map((item: any) => (
                   <div className={cardStyles.productCardItemWrapper} key={item.id}>
-                    <ProductCard product={item} hasBorder productPage="brand" />
+                    <ProductCard product={item} hasBorder />
                   </div>
                 ))}
               </div>

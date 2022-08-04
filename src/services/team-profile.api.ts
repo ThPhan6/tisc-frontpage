@@ -5,13 +5,18 @@ import type {
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import { TeamProfileTableProps, TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
+import {
+  TeamProfileTableProps,
+  TeamProfileDetailProps,
+  TeamProfileRequestBody,
+  TeamProfileGroupCountry,
+} from '@/types';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import store from '@/reducers';
 import { getUserInfoMiddleware } from '@/pages/LandingPage/services/api';
 
-interface ITeamProfilePaginationResponse {
+interface TeamProfilePaginationResponse {
   data: {
     users: TeamProfileTableProps[];
     pagination: PaginationResponse;
@@ -24,7 +29,7 @@ export async function getTeamProfileList(
   callback: (data: DataTableResponse) => void,
 ) {
   request('/api/team-profile/get-list', { method: 'GET', params })
-    .then((response: ITeamProfilePaginationResponse) => {
+    .then((response: TeamProfilePaginationResponse) => {
       const { users, pagination, summary } = response.data;
       callback({
         data: users,
@@ -39,6 +44,27 @@ export async function getTeamProfileList(
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_TEAM_PROFILE_ERROR);
       return false;
+    });
+}
+
+export async function getListTeamProfileGroupCountryByBrandId(brandId: string) {
+  return request<{ data: TeamProfileGroupCountry[] }>(
+    `/api/team-profile/get-list-group-by-country`,
+    {
+      method: 'GET',
+      params: { brand_id: brandId },
+    },
+  )
+    .then((response) => {
+      console.log(' response.data', response.data);
+
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(
+        error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_TEAM_PROFILE_COUNTRY_GROUP_ERROR,
+      );
+      return [] as TeamProfileGroupCountry[];
     });
 }
 

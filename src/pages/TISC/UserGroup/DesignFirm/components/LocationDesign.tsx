@@ -87,7 +87,7 @@ const LocationDesign: FC<LocationDesignProps> = ({ locationData }) => {
                           fontLevel={3}
                           className={styles.label}
                           hasPadding
-                          value={loca.functional_type}
+                          value={loca.functional_types.map((type) => ` ${type.name}`) ?? ''}
                           readOnly
                           colon
                         />

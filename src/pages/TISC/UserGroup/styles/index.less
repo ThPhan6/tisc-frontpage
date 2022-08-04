@@ -1,6 +1,15 @@
 .container {
   margin-top: 8px;
 
+  :global(.ant-input) {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  :global(.ant-collapse-borderless) {
+    background: #fff !important;
+  }
+
   .form {
     height: calc(100vh - 248px);
     padding: 16px;
@@ -23,6 +32,10 @@
   }
   .avatar {
     align-self: baseline;
+  }
+
+  .stringInfo {
+    margin-left: -4px;
   }
 }
 .dropdownList {

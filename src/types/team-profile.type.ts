@@ -54,6 +54,27 @@ export interface TeamProfileRequestBody {
   role_id: string;
 }
 
+export interface BrandTeam {
+  logo: string;
+  firstname: string;
+  lastname: string;
+  gender: boolean;
+  work_location: string | null;
+  department: string;
+  position: string | null;
+  email: string;
+  phone: string | null;
+  mobile: string | null;
+  access_level: string;
+  status: number;
+}
+
+export interface TeamProfileGroupCountry {
+  country_name: string;
+  count: number;
+  users: BrandTeam[];
+}
+
 export type typeInput = 'firstname' | 'lastname' | 'position' | 'email';
 
 export type typePhoneInput = 'phone' | 'mobile';

@@ -16,7 +16,6 @@ export const FormGroup: FC<FormGroupProps> = ({
   iconTooltip,
   customIcon,
   placement = 'top',
-  placementBottomWidth,
   label,
   onClick,
   messageType = 'normal',
@@ -49,7 +48,7 @@ export const FormGroup: FC<FormGroupProps> = ({
             overlayInnerStyle={
               placement === 'bottom'
                 ? {
-                    width: placementBottomWidth ? placementBottomWidth : '160px',
+                    width: '160px',
                     height: 'auto',
                     padding: '6px 12px',
                     fontWeight: '300',

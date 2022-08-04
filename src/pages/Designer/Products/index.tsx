@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import ProductCardList from '@/components/Product/CardList';
-import {
-  CustomDropDown,
-  FilterItem,
-  TopBarContainer,
-  TopBarItem,
-} from '@/components/Product/components/ProductTopBarItem';
 import store, { useAppSelector } from '@/reducers';
 import { useDispatch } from 'react-redux';
 import {
@@ -14,19 +7,23 @@ import {
   setProductList,
   setProductListSearchValue,
   setProductListSorter,
-} from '@/reducers/product';
-import {
-  getBrandPagination,
-  getProductCategoryPagination,
-  getProductListForDesigner,
-} from '@/services';
-import { CategoryListResponse, IBrandListItem } from '@/types';
+} from '@/features/product/reducers';
+import { getBrandPagination, getProductCategoryPagination } from '@/services';
+import { CategoryListResponse, BrandListItem } from '@/types';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { showImageUrl } from '@/helper/utils';
 import { ReactComponent as SearchIcon } from '@/assets/icons/ic-search.svg';
 import { CustomInput } from '@/components/Form/CustomInput';
 import styles from './styles.less';
 import { debounce } from 'lodash';
+import { getProductListForDesigner } from '@/features/product/services';
+import {
+  CustomDropDown,
+  FilterItem,
+  TopBarContainer,
+  TopBarItem,
+  CollapseProductList,
+} from '@/features/product/components';
 
 const formatCategoriesToDropDownData = (categories: CategoryListResponse[]): ItemType[] => {
   return categories.map((el) => ({
@@ -47,7 +44,8 @@ const formatCategoriesToDropDownData = (categories: CategoryListResponse[]): Ite
           ),
   }));
 };
-const formatBrandsToDropDownData = (categories: IBrandListItem[]): ItemType[] => {
+
+const formatBrandsToDropDownData = (categories: BrandListItem[]): ItemType[] => {
   return categories.map((el) => ({
     key: el.id,
     label: el.name || '',
@@ -240,7 +238,7 @@ const BrandProductListPage: React.FC = () => {
         />
       )}
     >
-      {filter || search || sort ? <ProductCardList /> : null}
+      {filter || search || sort ? <CollapseProductList /> : null}
     </PageContainer>
   );
 };

@@ -8,13 +8,12 @@ export interface FormGroupProps {
   optional?: boolean;
   required?: boolean;
   tooltip?: string | JSX.Element;
-  label: string | JSX.Element;
+  label: string;
   message?: string;
   messageType?: 'normal' | 'error' | 'warning';
   iconTooltip?: ReactNode;
   customIcon?: ReactNode;
   onClick?: () => void;
-  placementBottomWidth?: string;
   placement?:
     | 'top'
     | 'left'
@@ -80,5 +79,4 @@ export interface StatusProps {
   textClass?: string;
   activeButtonClass?: string;
   InActiveButtonClass?: string;
-  title?: string | ReactNode;
 }

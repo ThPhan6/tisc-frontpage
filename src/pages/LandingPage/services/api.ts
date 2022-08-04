@@ -8,10 +8,10 @@ import type {
   CreatePasswordRequestBody,
   SignUpDesignerRequestBody,
 } from '../types';
-import { UserDetail } from '@/types';
 import { message } from 'antd';
 import { setUserProfile } from '@/reducers/user';
 import store from '@/reducers';
+import { UserDetail } from '@/types/user.type';
 
 export async function loginMiddleware(
   data: LoginInput,

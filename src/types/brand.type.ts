@@ -1,4 +1,4 @@
-export interface IBrandListItem {
+export interface BrandListItem {
   id: string;
   assign_team: any[];
   cards: number;
@@ -16,30 +16,16 @@ export interface IBrandListItem {
   teams: number;
 }
 
-export interface BrandDetail {
+export interface IBrandDetail {
   created_at: string;
   id: string;
   is_deleted: boolean;
-  location_ids: any;
-  logo: string;
-  mission_n_vision: string;
-  name: string;
-  official_websites: {
-    country_id: string;
-    country_name: string;
-    url: string;
-  }[];
-  parent_company: string | null;
-  slogan: string | null;
-  status: number;
-  team_profile_ids: any;
-  updated_at: string | null;
 }
 
-export interface IBrandAlphabet {
+export interface BrandAlphabet {
   [key: string]: BrandDetail[];
 }
-export interface IBrandCard {
+export interface BrandCard {
   id: string;
   name: string;
   logo: string;
@@ -47,9 +33,9 @@ export interface IBrandCard {
   category_count: string;
   collection_count: string;
   card_count: string;
-  teams: IBrandCardTeam[];
+  teams: BrandCardTeam[];
 }
-export interface IBrandCardTeam {
+export interface BrandCardTeam {
   id: string;
   firstname: string;
   lastname: string;

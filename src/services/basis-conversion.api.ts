@@ -10,7 +10,7 @@ import type { BasisConversionListResponse, ConversionBodyProp } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
 
-interface ICategoryPaginationResponse {
+interface CategoryPaginationResponse {
   data: {
     basis_conversions: BasisConversionListResponse[];
     pagination: PaginationResponse;
@@ -25,7 +25,7 @@ export async function getProductBasisConversionPagination(
     method: 'GET',
     params,
   })
-    .then((response: ICategoryPaginationResponse) => {
+    .then((response: CategoryPaginationResponse) => {
       const { basis_conversions, pagination, summary } = response.data;
       callback({
         data: basis_conversions,

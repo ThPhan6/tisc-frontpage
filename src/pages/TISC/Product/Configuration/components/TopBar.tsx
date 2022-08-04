@@ -1,34 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { BodyText } from '@/components/Typography';
 import Popover from '@/components/Modal/Popover';
-import { HeaderDropdown } from '@/components/HeaderDropdown';
-import { getBrandAlphabet, getProductSummary, getProductListByBrandId } from '@/services';
-import type {
-  IBrandAlphabet,
-  BrandDetail,
-  GeneralData,
-  ProductGetListParameter,
-  ProductFilterType,
-} from '@/types';
+import { getBrandAlphabet } from '@/services';
+import type { BrandAlphabet, BrandDetail } from '@/types';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SmallPlusIcon } from '@/assets/icons/small-plus-icon.svg';
 import { showImageUrl } from '@/helper/utils';
 import { map, forEach } from 'lodash';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/reducers';
-import { setBrand, setProductList, resetProductState } from '@/reducers/product';
+import { setBrand, setProductList, resetProductState } from '@/features/product/reducers';
+import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import {
   FilterItem,
+  renderDropDownList,
   TopBarContainer,
   TopBarItem,
-} from '@/components/Product/components/ProductTopBarItem';
-import styles from '@/components/Product/styles/top-bar.less';
+} from '@/features/product/components';
+import { ProductGetListParameter } from '@/features/product/types';
+import styles from './TopBar.less';
 
 const ProductTopBar: React.FC = () => {
   const [visible, setVisible] = useState(false);
-  const [brandAlphabet, setBrandAlphabet] = useState<IBrandAlphabet>({});
+  const [brandAlphabet, setBrandAlphabet] = useState<BrandAlphabet>({});
   const [brandData, setBrandData] = useState<any>();
   const product = useAppSelector((state) => state.product);
   const { filter } = product.list;
@@ -106,46 +102,6 @@ const ProductTopBar: React.FC = () => {
     );
   };
 
-  const renderDropDownList = (
-    title: string,
-    filterName: ProductFilterType,
-    data: GeneralData[],
-  ) => {
-    // merge view small
-    const items = [{ id: 'all', name: 'VIEW ALL' }, ...data];
-    ///
-    return (
-      <HeaderDropdown
-        align={{ offset: [26, 7] }}
-        placement="bottomRight"
-        containerClass={styles.topbarDropdown}
-        disabled={product.summary ? false : true}
-        items={items.map((item) => {
-          return {
-            onClick: () => {
-              dispatch(
-                setProductList({
-                  filter: {
-                    name: filterName,
-                    title: item.name,
-                    value: item.id,
-                  },
-                }),
-              );
-            },
-            label: item.name,
-          };
-        })}
-        trigger={['click']}
-      >
-        <span>
-          {title}
-          <DropdownIcon />
-        </span>
-      </HeaderDropdown>
-    );
-  };
-
   return (
     <>
       <TopBarContainer
@@ -186,7 +142,6 @@ const ProductTopBar: React.FC = () => {
         }
         RightSideContent={
           <>
-            {' '}
             <TopBarItem
               topValue={
                 filter?.name === 'category_id' ? (
@@ -206,6 +161,7 @@ const ProductTopBar: React.FC = () => {
                       'Categories',
                       'category_id',
                       product.summary?.categories ?? [],
+                      product.summary ? false : true,
                     )
               }
               customClass="left-divider"
@@ -229,6 +185,7 @@ const ProductTopBar: React.FC = () => {
                       'Collections',
                       'collection_id',
                       product.summary?.collections ?? [],
+                      product.summary ? false : true,
                     )
               }
               customClass="left-divider"
