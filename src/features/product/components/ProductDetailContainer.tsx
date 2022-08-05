@@ -41,14 +41,11 @@ const ProductDetailContainer: React.FC = () => {
 
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
-  const brand = useAppSelector((state) => state.product.brand);
   const details = useAppSelector((state) => state.product.details);
   const tip = useAppSelector((state) => state.product.tip);
   const download = useAppSelector((state) => state.product.download);
   const catelogue = useAppSelector((state) => state.product.catelogue);
-  console.log('brand', brand);
-  console.log('details', details);
-  console.log('params', params);
+
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('general');
   const [title, setTitle] = useState<string>('');
 

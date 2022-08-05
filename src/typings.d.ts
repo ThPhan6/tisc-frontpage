@@ -3,7 +3,6 @@ declare module '*.css';
 declare module '*.less';
 declare module '*.scss';
 declare module '*.sass';
-declare module '*.svg';
 declare module '*.png';
 declare module '*.jpg';
 declare module '*.jpeg';
@@ -25,3 +24,9 @@ declare const REACT_APP_ENV: 'test' | 'dev' | 'pre' | false;
 
 declare const API_URL: string;
 declare const STORE_URL: string;
+
+declare module '*.svg' {
+  export const ReactComponent: React.FC<React.SVGProps<SVGSVGElement>>;
+  const src: string;
+  export default src;
+}

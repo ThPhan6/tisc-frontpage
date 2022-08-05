@@ -5,8 +5,6 @@ import Popover from '@/components/Modal/Popover';
 import CustomCollapse from '@/components/Collapse';
 import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
-import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
-import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ProductAttributeFormInput, ProductAttributeProps } from '@/features/product/types';
 import { useDispatch } from 'react-redux';
@@ -191,8 +189,6 @@ const ProductAttributeItem: React.FC<ProductAttributeItemProps> = ({
       <CustomCollapse
         defaultActiveKey={'1'}
         customHeaderClass={styles.productAttributeItem}
-        expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
-        expandIconPosition="right"
         header={
           <InputGroup
             horizontal

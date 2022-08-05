@@ -23,6 +23,7 @@ import { setPartialProductDetail, setProductDetailImage } from '@/features/produ
 import SmallIconButton from '@/components/Button/SmallIconButton';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { ProductKeyword } from '../types';
+import AssignProductModal from '../modals/AssignProductModal';
 
 const ActionItem: FC<{ onClick: () => void; label: string; icon: ReactNode }> = ({
   icon,
@@ -268,6 +269,14 @@ const ProductImagePreview: React.FC = () => {
           visible={showShareEmailModal.value}
           setVisible={showShareEmailModal.setValue}
         />
+
+        {id && (
+          <AssignProductModal
+            visible={showAssignProductModal.value}
+            setVisible={showAssignProductModal.setValue}
+            productId={id}
+          />
+        )}
       </div>
     </Col>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import store, { useAppSelector } from '@/reducers';
 import { useDispatch } from 'react-redux';
@@ -25,6 +25,7 @@ import {
   CollapseProductList,
 } from '@/features/product/components';
 import { BodyText, Title } from '@/components/Typography';
+import { InputRef } from 'antd';
 
 const formatCategoriesToDropDownData = (
   categories: CategoryListResponse[],
@@ -97,6 +98,7 @@ const BrandProductListPage: React.FC = () => {
   const dispatch = useDispatch();
   const [categories, setCategories] = useState<ItemType[]>([]);
   const [brands, setBrands] = useState<ItemType[]>([]);
+  const searchInputRef = useRef<InputRef>(null);
 
   const filter = useAppSelector((state) => state.product.list.filter);
   const sort = useAppSelector((state) => state.product.list.sort);
@@ -245,13 +247,17 @@ const BrandProductListPage: React.FC = () => {
           <TopBarItem
             topValue={
               <CustomInput
+                ref={searchInputRef}
                 placeholder="search"
                 className={styles.searchInput}
                 onChange={searchProductByKeyword}
               />
             }
             bottomValue={
-              <span style={{ display: 'flex', alignItems: 'center' }}>
+              <span
+                style={{ display: 'flex', alignItems: 'center' }}
+                onClick={() => searchInputRef.current?.focus()}
+              >
                 Keywords <SearchIcon />
               </span>
             }

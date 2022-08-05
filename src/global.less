@@ -123,7 +123,13 @@ button {
   border: none;
 }
 .ant-tooltip-inner {
+  padding: 6px 12px;
+  font-weight: 300;
+  font-size: 12px;
+  line-height: 20px;
+  letter-spacing: 0.02em;
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5) !important;
+
   .anticon {
     margin-right: 12px;
   }
@@ -195,4 +201,17 @@ button {
 .flex-start {
   display: flex;
   align-items: center;
+}
+
+.text-overflow {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ant-checkbox-group,
+.ant-radio-group,
+.ant-collapse-header,
+li.ant-menu-submenu {
+  user-select: none;
 }
