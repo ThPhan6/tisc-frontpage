@@ -9,6 +9,9 @@
   :global(.ant-collapse-borderless) {
     background: #fff !important;
   }
+  :global(.ant-collapse-item-disabled > .ant-collapse-header) {
+    cursor: default !important;
+  }
 
   .form {
     height: calc(100vh - 248px);
@@ -46,7 +49,7 @@
     box-shadow: @border-bottom-light;
     :global(.ant-collapse-item-disabled) {
       :global(.ant-collapse-header) {
-        color: #000;
+        color: @mono-color;
         :global(.ant-collapse-arrow) {
           color: @mono-color-medium;
         }
