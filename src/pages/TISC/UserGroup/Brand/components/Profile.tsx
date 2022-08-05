@@ -7,7 +7,7 @@ import { Col, Row } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams } from 'umi';
 import indexStyles from '../../styles/index.less';
-import styles from '../styles/details.less';
+import styles from '../styles/profile.less';
 
 const DEFAULT_BRANDPROFILE: BrandDetail = {
   id: '',

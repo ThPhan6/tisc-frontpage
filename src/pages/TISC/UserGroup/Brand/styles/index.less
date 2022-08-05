@@ -34,14 +34,13 @@
 .menuTab {
   background: #fff;
   box-shadow: inset 0 -0.7px 0 #000;
-  :global(.react-horizontal-scrolling-menu--scroll-container) {
-    display: block;
-  }
+  // :global(.react-horizontal-scrolling-menu--scroll-container) {
+  //   display: block;
+  // }
 
   .tabs {
     display: flex;
     align-items: center;
-    // justify-content: space-between;
     overflow: auto hidden;
 
     &_items {
@@ -63,28 +62,6 @@
 
     :global(.ant-tabs-tab) {
       width: 125px;
-    }
-
-    &_right {
-      display: flex;
-      align-items: center;
-    }
-
-    .status {
-      margin-bottom: 0;
-
-      > label > span {
-        display: none;
-      }
-
-      > label > p {
-        font-weight: 600;
-      }
-    }
-
-    .actionBtn {
-      margin: 8px 10px;
-      border-radius: 12px;
     }
   }
 }

@@ -1,7 +1,3 @@
-import { ReactComponent as DropdownV2Icon } from '@/assets/icons/action-down-icon.svg';
-import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.svg';
-import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
-import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { BodyText } from '@/components/Typography';
 import { useGetParam } from '@/helper/hook';
@@ -10,13 +6,10 @@ import { AvailabilityCollectionGroup } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
-import indexStyles from '../../styles/index.less';
-import { ActiveKeyType } from '../../types';
-import styles from '../styles/details.less';
+import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
+import styles from '../../styles/index.less';
 
 const BrandAvailabilityDetail = () => {
-  const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
-
   const [availability, setAvailability] = useState<AvailabilityCollectionGroup[]>([]);
 
   const brandId = useGetParam();
@@ -28,69 +21,48 @@ const BrandAvailabilityDetail = () => {
   }, []);
 
   return (
-    <Row className={indexStyles.container}>
+    <Row className={styles.container}>
       <Col span={12}>
-        <div className={`${indexStyles.form} ${styles.availability_form}`}>
-          <Collapse
-            accordion
-            bordered={false}
-            expandIconPosition="right"
-            expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
-            className={indexStyles.dropdownList}
-            activeKey={activeKey}
-            onChange={(key) => {
-              // setSecondActiveKey([]);
-              setActiveKey(key);
-            }}
-          >
-            {availability.map((collections, index) => (
-              <Collapse.Panel
-                // header={renderCollectionHeader(collection)}
-                header={
-                  <RenderLabelHeader
-                    header={collections.collection_name}
-                    quantity={collections.count}
-                    isSubHeader={false}
-                  />
-                }
-                key={index}
-                collapsible={
-                  collections.count == 0 || isEmpty(collections.collection_name)
-                    ? 'disabled'
-                    : undefined
-                }
-                // className="site-collapse-custom-panel"
-              >
-                <Collapse
-                  accordion
-                  bordered={false}
-                  expandIconPosition="right"
-                  expandIcon={({ isActive }) => (isActive ? <DropupV2Icon /> : <DropdownV2Icon />)}
-                  className={indexStyles.secondDropdownList}
-                  // onChange={setSecondActiveKey}
-                  // activeKey={secondActiveKey}
+        <div className={styles.form}>
+          <Collapse {...CollapseLevel1Props}>
+            {availability.length &&
+              availability.map((collections, index) => (
+                <Collapse.Panel
+                  header={
+                    <RenderLabelHeader
+                      header={collections.collection_name}
+                      quantity={collections.count}
+                      isSubHeader={false}
+                    />
+                  }
+                  key={index}
+                  collapsible={
+                    collections.count == 0 || isEmpty(collections.collection_name)
+                      ? 'disabled'
+                      : undefined
+                  }
                 >
-                  {collections.regions?.map((region, regionIdx) => (
-                    <Collapse.Panel
-                      header={
-                        <RenderLabelHeader
-                          header={region.region_name}
-                          quantity={region.count}
-                          isSubHeader={true}
-                        />
-                      }
-                      key={`${index}-${regionIdx}`}
-                      collapsible={region.count == 0 ? 'disabled' : undefined}
-                      // className="site-collapse-custom-panel"
-                    >
-                      <BodyText level={5} fontFamily="Roboto" color="mono-color">
-                        {region.region_country}
-                      </BodyText>
-                    </Collapse.Panel>
-                  ))}
-                </Collapse>
-              </Collapse.Panel>
-            ))}
+                  <Collapse {...CollapseLevel2Props}>
+                    {collections.regions?.map((region, regionIdx) => (
+                      <Collapse.Panel
+                        header={
+                          <RenderLabelHeader
+                            header={region.region_name}
+                            quantity={region.count}
+                            isSubHeader={true}
+                          />
+                        }
+                        key={`${index}-${regionIdx}`}
+                        collapsible={region.count == 0 ? 'disabled' : undefined}
+                      >
+                        <BodyText level={5} fontFamily="Roboto" color="mono-color">
+                          {region.region_country}
+                        </BodyText>
+                      </Collapse.Panel>
+                    ))}
+                  </Collapse>
+                </Collapse.Panel>
+              ))}
           </Collapse>
         </div>
       </Col>
