@@ -90,6 +90,7 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
                 status: selectedValue.value as number,
               })
             }
+            containerClass={styles.projectStatusRadio}
           />
 
           <CustomSaveButton onClick={handleSubmitForm} isSuccess={buttonStatus.value} />
