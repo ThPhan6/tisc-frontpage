@@ -1,5 +1,6 @@
 import { FormGroup } from '@/components/Form';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
+import { BodyText } from '@/components/Typography';
 import { useGetParam } from '@/helper/hook';
 import { getLocationByBrandId } from '@/services';
 import { LocationGroupedByCountry } from '@/types';
@@ -51,14 +52,23 @@ const BrandLocationDetail = () => {
                         collapsible={isEmpty(location.business_name) ? 'disabled' : undefined}
                       >
                         <div className={styles.info}>
-                          <FormGroup
+                          {/* <FormGroup
                             label="Registered Number"
                             labelColor="mono-color-medium"
                             layout="vertical"
                             bodyText={{
                               text: location.business_number ?? '',
                             }}
-                          />
+                          /> */}
+                          <FormGroup
+                            label="Registered Number"
+                            labelColor="mono-color-medium"
+                            layout="vertical"
+                          >
+                            <BodyText level={5} fontFamily="Roboto">
+                              {location.business_number ?? ''}
+                            </BodyText>
+                          </FormGroup>
                           <FormGroup
                             label="Location Function"
                             labelColor="mono-color-medium"

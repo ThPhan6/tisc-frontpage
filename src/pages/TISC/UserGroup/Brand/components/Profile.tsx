@@ -1,4 +1,4 @@
-import { FormGroup } from '@/components/Form';
+import TextForm from '@/components/Form/TextForm';
 import { BodyText } from '@/components/Typography';
 import { showImageUrl } from '@/helper/utils';
 import { getBrandById } from '@/services';
@@ -43,70 +43,33 @@ const BrandProfileDetail = () => {
       <Col span={12}>
         <div className={`${styles.profile} ${indexStyles.form}`}>
           <div className={styles.designName}>
-            <FormGroup
-              label="Brand Name"
-              labelColor="mono-color-medium"
-              layout="vertical"
-              bodyText={{
-                text: profile.parent_company ?? '',
-              }}
-              formClass={styles.brandName}
-            />
-            {profile.logo && <img src={showImageUrl(profile.logo)} className={styles.logo} />}
+            <TextForm label="Brand Name" formClass={styles.brandName}>
+              {profile.name ?? ''}
+            </TextForm>
+            {profile.logo ? <img src={showImageUrl(profile.logo)} className={styles.logo} /> : ''}
           </div>
 
-          <FormGroup
-            label="Parent Company"
-            labelColor="mono-color-medium"
-            layout="vertical"
-            bodyText={{
-              text: profile.parent_company ?? '',
-            }}
-            formClass={styles.profile_info}
-          />
-          <FormGroup
-            label="Slogan"
-            labelColor="mono-color-medium"
-            layout="vertical"
-            bodyText={{
-              text: profile.slogan ?? '',
-            }}
-            formClass={styles.profile_info}
-          />
-          <FormGroup
-            label="Mission & Vision"
-            labelColor="mono-color-medium"
-            layout="vertical"
-            bodyText={{
-              text: profile.mission_n_vision ?? '',
-            }}
-            formClass={styles.profile_info}
-          />
-          <FormGroup
-            label="Offical Website"
-            labelColor="mono-color-medium"
-            layout="vertical"
-            formClass={styles.profile_info}
-            bodyText={{
-              text:
-                (
-                  <table className={styles.table}>
-                    {profile.official_websites?.map((web, index) => (
-                      <tr key={index}>
-                        <td className={styles.text}>
-                          <BodyText level={3}>{web.country_name ?? 'N/A'}</BodyText>
-                        </td>
-                        <td className={styles.url}>
-                          <BodyText level={5} fontFamily="Roboto">
-                            {web.url ?? ''}
-                          </BodyText>
-                        </td>
-                      </tr>
-                    ))}
-                  </table>
-                ) ?? '',
-            }}
-          />
+          <TextForm label="Parent Company">{profile.parent_company ?? ''}</TextForm>
+          <TextForm label="Slogan">{profile.slogan ?? ''}</TextForm>
+          <TextForm label="Mission & Vision">{profile.mission_n_vision ?? ''}</TextForm>
+          <TextForm label="Offical Website">
+            {(
+              <table className={styles.table}>
+                {profile.official_websites?.map((web, index) => (
+                  <tr key={index}>
+                    <td className={styles.text}>
+                      <BodyText level={3}>{web.country_name ?? 'N/A'}</BodyText>
+                    </td>
+                    <td className={styles.url}>
+                      <BodyText level={5} fontFamily="Roboto">
+                        {web.url ?? ''}
+                      </BodyText>
+                    </td>
+                  </tr>
+                ))}
+              </table>
+            ) ?? ''}
+          </TextForm>
         </div>
       </Col>
     </Row>
