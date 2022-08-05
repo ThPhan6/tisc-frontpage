@@ -46,6 +46,14 @@ export const BodyText: FC<BodyTextProps> = ({
   );
 };
 
+export const RobotoBodyText: FC<BodyTextProps> = ({ children, ...props }) => {
+  return (
+    <BodyText fontFamily="Roboto" {...props}>
+      {children}
+    </BodyText>
+  );
+};
+
 export const MainTitle: FC<MainTitleProps> = ({
   color = 'mono-color',
   customClass = '',

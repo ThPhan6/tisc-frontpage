@@ -1,5 +1,6 @@
 import { BodyText } from '@/components/Typography';
 import React, { useRef } from 'react';
+import SpecifyingModal from './SpecifyingModal';
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
 import { ReactComponent as MenuIcon } from '@/assets/icons/ic-menu.svg';
 import { ReactComponent as GridIcon } from '@/assets/icons/ic-grid.svg';
@@ -235,6 +236,7 @@ const ProductConsidered: React.FC = () => {
           },
         }}
       />
+      <SpecifyingModal />
     </div>
   );
 };

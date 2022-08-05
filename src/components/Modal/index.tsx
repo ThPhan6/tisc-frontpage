@@ -8,7 +8,6 @@ export const CustomModal: FC<CustomModalProps> = ({
   centered,
   width,
   children,
-  title,
   closeIconClass,
   containerClass,
   closeIcon,

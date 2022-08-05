@@ -6,12 +6,15 @@ import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.s
 import { showImageUrl } from '@/helper/utils';
 import styles from './ProductAttributeContainer.less';
 import CustomCollapse from '@/components/Collapse';
+import type { RadioValue } from '@/components/CustomRadio/types';
 import { ConversionSubValueProps } from '@/types';
 
 interface AttributeOptionProps {
   title: string;
   attributeName: string;
   options: SpecificationAttributeBasisOptionProps[];
+  chosenOptions?: RadioValue;
+  setChosenOptions?: (value: RadioValue) => void;
 }
 const AttributeOptionLabel = (option: SpecificationAttributeBasisOptionProps) => {
   if (!option.image || option.image == '') {
@@ -46,7 +49,13 @@ const AttributeOptionLabel = (option: SpecificationAttributeBasisOptionProps) =>
   );
 };
 
-export const AttributeOption: FC<AttributeOptionProps> = ({ title, attributeName, options }) => {
+export const AttributeOption: FC<AttributeOptionProps> = ({
+  title,
+  attributeName,
+  options,
+  chosenOptions,
+  setChosenOptions,
+}) => {
   const [visible, setVisible] = useState<boolean>(false);
   const isOptionWithImage =
     options.findIndex((option) => {
@@ -77,9 +86,11 @@ export const AttributeOption: FC<AttributeOptionProps> = ({ title, attributeName
           },
         ]}
         className={`
-        ${styles.specificationAttributeOption}
-        ${isOptionWithImage ? styles.specificationAttributeImageOption : ''}
-      `}
+          ${styles.specificationAttributeOption}
+          ${isOptionWithImage ? styles.specificationAttributeImageOption : ''}
+        `}
+        chosenValue={chosenOptions}
+        setChosenValue={setChosenOptions}
       ></Popover>
     </>
   );
