@@ -49,16 +49,10 @@ const BrandProfileDetail = () => {
             {profile.logo ? <img src={showImageUrl(profile.logo)} className={styles.logo} /> : ''}
           </div>
 
-          <TextForm formClass={styles.profile_label} label="Parent Company">
-            {profile.parent_company ?? ''}
-          </TextForm>
-          <TextForm formClass={styles.profile_label} label="Slogan">
-            {profile.slogan ?? ''}
-          </TextForm>
-          <TextForm formClass={styles.profile_label} label="Mission & Vision">
-            {profile.mission_n_vision ?? ''}
-          </TextForm>
-          <TextForm formClass={styles.profile_label} label="Offical Website">
+          <TextForm label="Parent Company">{profile.parent_company ?? ''}</TextForm>
+          <TextForm label="Slogan">{profile.slogan ?? ''}</TextForm>
+          <TextForm label="Mission & Vision">{profile.mission_n_vision ?? ''}</TextForm>
+          <TextForm label="Offical Website">
             {(
               <table className={styles.table}>
                 {profile.official_websites?.map((web, index) => (
