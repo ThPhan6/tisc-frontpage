@@ -75,7 +75,7 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
   useEffect(() => {
     getDistributorLocation(productID).then((data) => {
       if (data) {
-        setBrandLocation(data);
+        setDistributorLocation(data);
       }
     });
   }, []);
@@ -83,7 +83,7 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
   useEffect(() => {
     getBrandLocation(brandID).then((data) => {
       if (data) {
-        setDistributorLocation(data);
+        setBrandLocation(data);
       }
     });
   }, []);

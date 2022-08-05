@@ -11,9 +11,9 @@ import { ProjectStatuses } from '../../constants/filter';
 import { CustomRadio } from '@/components/CustomRadio';
 import { MainTitle, BodyText } from '@/components/Typography';
 import LoadingPageCustomize from '@/components/LoadingPage';
-import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
 import styles from '../../styles/basic-information.less';
+import { useHistory } from 'umi';
 
 interface GeneralInformationProps {
   project?: ProjectDetailProps;
@@ -25,7 +25,9 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
   const buttonStatus = useBoolean();
   const isLoading = useBoolean();
   const [projectId, setProjectId] = useState<string>();
-  const handleDoneButton = () => {
+  const history = useHistory();
+
+  const handleSubmitForm = () => {
     isLoading.setValue(true);
     if (projectId) {
       /// update project
@@ -46,12 +48,12 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
       });
     } else {
       /// create
-      createProject(data).then((isSuccess) => {
+      createProject(data).then((newProjectId) => {
         isLoading.setValue(false);
-        if (isSuccess) {
+        if (newProjectId) {
           buttonStatus.setValue(true);
           setTimeout(() => {
-            pushTo(PATH.designerProject);
+            history.replace(PATH.designerUpdateProject.replace(':id', newProjectId));
           }, 1000);
         }
       });
@@ -88,12 +90,13 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
                 status: selectedValue.value as number,
               })
             }
+            containerClass={styles.projectStatusRadio}
           />
-          <CustomSaveButton onClick={handleDoneButton} isSuccess={buttonStatus.value}>
-            Done
-          </CustomSaveButton>
+
+          <CustomSaveButton onClick={handleSubmitForm} isSuccess={buttonStatus.value} />
         </div>
       </ProjectTabContentHeader>
+
       <Row className={styles.basicInformationWrapper}>
         <Col span={12}>
           <EntryForm data={data} setData={setData} />

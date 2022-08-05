@@ -29,6 +29,11 @@
   border: 0;
   svg {
     cursor: pointer;
+    &:global(.action-icon) {
+      &:hover {
+        color: @primary-color-dark;
+      }
+    }
   }
   input {
     color: @primary-color-dark !important;

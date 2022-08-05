@@ -193,7 +193,7 @@ const BrandProductListPage: React.FC = () => {
               )
             }
             bottomEnable={categories.length ? true : false}
-            disabled={categories.length ? true : false}
+            disabled
             bottomValue={<CustomDropDown items={categories}>Categories</CustomDropDown>}
             customClass="right-divider"
             style={{ paddingLeft: 0 }}
@@ -207,7 +207,7 @@ const BrandProductListPage: React.FC = () => {
               )
             }
             bottomEnable={brands.length ? true : false}
-            disabled={brands.length ? true : false}
+            disabled
             bottomValue={
               <CustomDropDown items={brands} menuStyle={{ width: 240 }}>
                 Brands
@@ -283,7 +283,9 @@ const BrandProductListPage: React.FC = () => {
 
   return (
     <PageContainer pageHeaderRender={PageHeader}>
-      <CollapseProductList showBrandLogo={filter?.name === 'category_id'} />
+      <CollapseProductList
+      // showBrandLogo={filter?.name === 'category_id'}
+      />
     </PageContainer>
   );
 };
