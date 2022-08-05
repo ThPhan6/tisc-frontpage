@@ -11,7 +11,7 @@ type Expanded = number | undefined | string;
 
 export const useCustomTable = (columns: TableColumnItem<any>[]) => {
   const [expanded, setExpanded] = useState<Expanded>();
-  const renderExpandedColumn = (value: any, record: any) => {
+  const renderExpandedColumn = (value: any, record: any, noExpand?: boolean) => {
     if (!value) {
       return null;
     }
@@ -19,6 +19,10 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
     const expandedKey = `${record.id}`;
     const isExpanding = expandedKey === expanded;
     const DropDownIcon = isExpanding ? DropupIcon : DropdownIcon;
+
+    if (noExpand) {
+      return <div />;
+    }
 
     return (
       <div
@@ -73,12 +77,25 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
         ...column,
         title: formatTitleColumn(column),
         render: (value: any, record: any, index: any) => {
+          // console.log(
+          //   'record[column.noExpandIfEmptyData]',
+          //   column.noExpandIfEmptyData,
+          //   record[column.noExpandIfEmptyData],
+          // );
+
           if (column.isExpandable) {
+            const noExpand =
+              column.noExpandIfEmptyData && record[column.noExpandIfEmptyData] === undefined
+                ? true
+                : false;
+            // if (noExpand) {
+            //   cellClassName.props.className = 'no-box-shadow';
+            // }
             return {
               ...cellClassName,
               children: column.render
-                ? renderExpandedColumn(column.render(value, record, index), record)
-                : renderExpandedColumn(value, record),
+                ? renderExpandedColumn(column.render(value, record, index), record, noExpand)
+                : renderExpandedColumn(value, record, noExpand),
             };
           }
 
@@ -112,7 +129,7 @@ const onCellLvl2Click = (expandableCellLvl2: Element) => {
 
   try {
     // try remove before re-add
-    // styleLvl2.remove();
+    styleLvl2.innerHTML = '';
   } catch (err) {}
 
   if (isExpanding === false) {
@@ -122,24 +139,22 @@ const onCellLvl2Click = (expandableCellLvl2: Element) => {
   // Insert styles
   const newWidth = expandableCellLvl2.clientWidth;
   // console.log('newWidth', newWidth);
-  styleLvl2.innerHTML = `.ant-table-expanded-row.ant-table-expanded-row-level-1:not([style*="display: none;"]) tr[class*="ant-table-row-level"] td:nth-child(2),
-    .ant-table-row-level-0.custom-expanded td:nth-child(2) { width: ${newWidth}px; }`;
+
+  styleLvl2.innerHTML = `tr[data-row-key] td:nth-child(2) { width: ${newWidth}px; }`;
 };
 
 // function sleep(ms) {
 //   return new Promise((resolve) => setTimeout(resolve, ms));
 // }
 const onLvl1CellClick = async (expandableCellLvl1: Element, colWidthLvl2?: number) => {
-  // try reset styles
-  // style.remove();
-  // styleLvl2.remove();
+  // reset styles
   style.innerHTML = '';
   styleLvl2.innerHTML = '';
   // await sleep(2000);
   const newWidth = expandableCellLvl1.clientWidth;
 
   // console.log('expandableCellLvl1', { expandableCellLvl1 });
-  style.innerHTML = `.ant-table-expanded-row.ant-table-expanded-row-level-1:not([style*="display: none;"]) tr[class*="ant-table-row-level"] td:first-child { width: ${newWidth}px; }`;
+  style.innerHTML = `tr[data-row-key] td:first-child { width: ${newWidth}px; }`;
 
   const expandedColumns = document.querySelectorAll('tr[class*="custom-expanded"] td');
   const nestedSubColumns = document.querySelectorAll(
@@ -158,9 +173,10 @@ const onLvl1CellClick = async (expandableCellLvl1: Element, colWidthLvl2?: numbe
       // console.log('totalWidthDiff', totalWidthDiff);
       // const isLastResizeableCell = index === expandedColumns.length - 3;
       const newCellWidth = nestedSubColumns?.[index]?.clientWidth;
-      // console.log('newCellWidth', newCellWidth);
+      console.log('newCellWidth', newCellWidth);
+
       if (newCellWidth) {
-        style.innerHTML += ` tr[class*="custom-expanded"] td:nth-child(${
+        style.innerHTML += ` tr[data-row-key] td:nth-child(${
           index + 1
         }) { width: ${newCellWidth}px }`;
       }
@@ -245,8 +261,8 @@ export const useAutoExpandNestedTableColumn = (colWidthLvl1: number, colWidthLvl
     setTimeout(injectClickToAdjustTableCellWidth, RETRY_INTERVAL);
 
     return () => {
-      style.remove();
-      styleLvl2.remove();
+      style.innerHTML = '';
+      styleLvl2.innerHTML = '';
     };
   }, []);
   return null;

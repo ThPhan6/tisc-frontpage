@@ -67,6 +67,7 @@ export interface ConsideredProjectArea {
 }
 
 export interface ConsideredProduct {
+  id?: string;
   name: string;
   count: number;
   products: ProductItem[];

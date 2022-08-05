@@ -20,6 +20,7 @@ import { TableHeader } from './TableHeader';
 interface ExpandableTableConfig {
   columns: TableColumnItem<any>[];
   childrenColumnName: string;
+  subtituteChildrenColumnName?: string;
   expandable?: ExpandableConfig<any>;
   level?: number;
   rowKey?: string;
@@ -34,6 +35,7 @@ export const GetExpandableTableConfig = (
   const {
     expandable,
     childrenColumnName,
+    subtituteChildrenColumnName,
     level,
     rowKey = 'id',
     gridView,
@@ -58,7 +60,10 @@ export const GetExpandableTableConfig = (
             ...expandable,
             expandedRowKeys: expanded ? [expanded] : undefined,
           }}
-          dataSource={record[childrenColumnName]}
+          dataSource={
+            record[childrenColumnName] ||
+            (subtituteChildrenColumnName ? record[subtituteChildrenColumnName] : [])
+          }
         />
       );
     },
@@ -119,6 +124,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const customExpandable = props.expandableConfig
     ? GetExpandableTableConfig(props.expandableConfig, data)
     : undefined;
+  // console.log('customExpandable', props.expandableConfig, customExpandable);
 
   const formatPaginationParams = (params: PaginationParams) => {
     const { sorter, filter } = params;
@@ -169,7 +175,9 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       setData(response.data ?? []);
       setSummary(response.summary ?? []);
       setLoading(false);
-      setPagination(response.pagination);
+      if (response.pagination) {
+        setPagination(response.pagination);
+      }
     });
   };
 

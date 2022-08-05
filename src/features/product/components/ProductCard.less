@@ -89,12 +89,17 @@
         height: 32px;
         padding: 0 12px;
         box-shadow: @border-top-light;
+
+        svg {
+          cursor: pointer;
+          path {
+            fill: @mono-color;
+          }
+        }
+
         p {
           display: flex;
           align-items: center;
-          svg {
-            cursor: pointer;
-          }
           &:global(.action-like) {
             svg {
               margin-right: 4px;
@@ -106,12 +111,6 @@
           cursor: pointer;
           :not(:last-child) {
             margin-right: 8px;
-          }
-
-          svg {
-            path {
-              fill: @mono-color;
-            }
           }
         }
       }

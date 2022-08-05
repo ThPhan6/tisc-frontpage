@@ -4,6 +4,8 @@ import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.sv
 import { ReactComponent as ShareIcon } from '@/assets/icons/ic-share.svg';
 import { ReactComponent as TabIcon } from '@/assets/icons/tabs-icon.svg';
 import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign.svg';
+import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
+import { ReactComponent as CommentIcon } from '@/assets/icons/ic-comment.svg';
 import SampleProductImage from '@/assets/images/sample-product-img.png';
 import { BodyText } from '@/components/Typography';
 import { confirmDelete } from '@/helper/common';
@@ -17,7 +19,7 @@ import {
   getProductSummary,
   likeProductById,
 } from '@/features/product/services';
-import { Tooltip, TooltipProps } from 'antd';
+import { message, Tooltip, TooltipProps } from 'antd';
 import React, { useState } from 'react';
 import { useBoolean, useCheckPermission, useGetUserRoleFromPathname } from '@/helper/hook';
 import styles from './ProductCard.less';
@@ -31,9 +33,20 @@ import AssignProductModal from '../modals/AssignProductModal';
 interface ProductCardProps {
   product: ProductItem;
   hasBorder?: boolean;
+  hideFavorite?: boolean;
+  hideAssign?: boolean;
+  showInquiryRequest?: boolean;
+  showSpecify?: boolean;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  hasBorder,
+  hideFavorite,
+  hideAssign,
+  showInquiryRequest,
+  showSpecify,
+}) => {
   const filter = useAppSelector((state) => state.product.list.filter);
 
   const [liked, setLiked] = useState(product.is_liked);
@@ -119,9 +132,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
     },
     {
       tooltipText: 'Assign Product',
-      show: isDesignerUser,
+      show: isDesignerUser && !hideAssign,
       Icon: AssignIcon,
       onClick: () => showAssignProductModal.setValue(true),
+    },
+    {
+      tooltipText: 'Inquiry/Request',
+      show: Boolean(showInquiryRequest && isDesignerUser),
+      Icon: CommentIcon,
+      onClick: () => message.info('Feature is coming in Phase 4'),
     },
     {
       tooltipText: 'Share via Email',
@@ -150,12 +169,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
         </BodyText>
       </div>
       <div className={styles.productAction}>
-        <Tooltip title="Favourite" {...tooltipProps}>
-          <BodyText level={6} fontFamily="Roboto" customClass="action-like">
-            {liked ? <LikedIcon onClick={likeProduct} /> : <LikeIcon onClick={likeProduct} />}
-            {`${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
-          </BodyText>
-        </Tooltip>
+        <div>
+          {hideFavorite ? null : (
+            <Tooltip title="Favourite" {...tooltipProps}>
+              <BodyText level={6} fontFamily="Roboto" customClass="action-like">
+                {liked ? <LikedIcon onClick={likeProduct} /> : <LikeIcon onClick={likeProduct} />}
+                {`${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
+              </BodyText>
+            </Tooltip>
+          )}
+          {showSpecify && isDesignerUser ? (
+            <Tooltip title={'Specifying'} {...tooltipProps}>
+              <DispatchIcon onClick={() => message.info('Feature is under development')} />
+            </Tooltip>
+          ) : null}
+        </div>
 
         <div className={`${styles.rightAction} flex-center`}>
           {rightActions.map(

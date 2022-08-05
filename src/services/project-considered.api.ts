@@ -37,6 +37,7 @@ export async function getConsideredProducts(
     .then(
       (response: { data: GetDataListResponse & { considered_products: ConsideredProduct[] } }) => {
         const { considered_products, summary } = response.data;
+        considered_products[0].id = 'entire_project';
         callback({
           data: considered_products,
           summary,
