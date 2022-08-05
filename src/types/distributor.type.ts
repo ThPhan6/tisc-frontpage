@@ -40,6 +40,19 @@ export interface DistributorForm {
   coverage_beyond: true;
 }
 
+export interface DistributorExtraForm extends DistributorDetail {
+  id: string;
+  country_name: string;
+  person: string;
+  authorized_country_name: string;
+}
+
+export interface DistributorResponseForm {
+  country_name: string;
+  count: number;
+  distributors: DistributorExtraForm[];
+}
+
 export interface DistributorEntryForm {
   submitButtonStatus: any;
   onSubmit: (data: DistributorForm) => void;

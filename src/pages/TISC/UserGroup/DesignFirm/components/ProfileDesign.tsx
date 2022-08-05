@@ -22,9 +22,8 @@ const ProfileDesign: FC<ProfileDesignProp> = ({ data }) => {
                 value={data.name}
                 readOnly
                 hasPadding
-                colon
               />
-              <img src={data.logo} className={styles.logo} />
+              {data.logo ? <img src={data.logo} className={styles.logo} /> : ''}
             </div>
             <InputGroup
               label="Parent Company"
@@ -35,7 +34,6 @@ const ProfileDesign: FC<ProfileDesignProp> = ({ data }) => {
               value={data.parent_company}
               readOnly
               hasPadding
-              colon
             />
             <InputGroup
               label="Slogan"
@@ -45,7 +43,6 @@ const ProfileDesign: FC<ProfileDesignProp> = ({ data }) => {
               value={data.slogan}
               readOnly
               hasPadding
-              colon
             />
             <InputGroup
               label="Profile & Philosophy"
@@ -55,7 +52,6 @@ const ProfileDesign: FC<ProfileDesignProp> = ({ data }) => {
               value={data.profile_n_philosophy}
               readOnly
               hasPadding
-              colon
             />
             <InputGroup
               label="Offical Website"
@@ -65,7 +61,6 @@ const ProfileDesign: FC<ProfileDesignProp> = ({ data }) => {
               value={data.official_website}
               readOnly
               hasPadding
-              colon
             />
             <InputGroup
               label="Design Capabilities"
@@ -75,7 +70,6 @@ const ProfileDesign: FC<ProfileDesignProp> = ({ data }) => {
               value={data.design_capabilities}
               readOnly
               hasPadding
-              colon
             />
           </div>
         </Col>

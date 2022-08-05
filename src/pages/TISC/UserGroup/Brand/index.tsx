@@ -1,26 +1,56 @@
-import React, { useRef } from 'react';
-import CustomTable from '@/components/Table';
-import type { TableColumnItem } from '@/components/Table/types';
-import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 import { ReactComponent as ActionUnreadedIcon } from '@/assets/icons/action-unreaded-icon.svg';
-import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
-import { getBrandPagination } from '@/services';
+import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
+import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
+import { ActionForm } from '@/components/Action';
+import AssignTeam from '@/components/AssignTeam';
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import CustomTable from '@/components/Table';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import type { TableColumnItem } from '@/components/Table/types';
+import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
+import { MESSAGE_ERROR } from '@/constants/message';
+import { PATH } from '@/constants/path';
+import { pushTo } from '@/helper/history';
 import { showImageUrl } from '@/helper/utils';
-import type { BrandListItem } from '@/types';
-import styles from './styles/index.less';
+import { getBrandPagination, inviteUser } from '@/services';
+import type { BrandListItem, TeamProfileBrandAssignMember } from '@/types';
 import { PageContainer } from '@ant-design/pro-layout';
-import { MenuSummary } from '@/components/MenuSummary';
-import { dataMenuSummary } from '@/constants/util';
+import { message } from 'antd';
+import { isEmpty } from 'lodash';
+import React, { useEffect, useRef, useState } from 'react';
+import BrandMenuSummary from './components/BrandMenuSummary';
+import styles from './styles/index.less';
 
 const BrandList: React.FC = () => {
   const tableRef = useRef<any>();
 
-  const comingSoon = () => {
-    alert('Coming Soon!');
+  const [visible, setVisible] = useState<boolean>(false);
+  const [selected, setSelected] = useState<CheckboxValue[]>();
+  const handleAssignTeams = () => {
+    setVisible(true);
   };
+  const [assignTeam, setAssignTeam] = useState<TeamProfileBrandAssignMember[]>([]);
+
+  const handleEmailInvite = (status: 1 | 2 | 3, teams: TeamProfileBrandAssignMember[]) => {
+    if (status !== 3) {
+      return message.error(MESSAGE_ERROR.STATUS_ACTIVED);
+    }
+    if (teams.length === 0) {
+      return message.error(MESSAGE_ERROR.NO_TEAMPROFILE);
+    }
+
+    return teams.map((team) => inviteUser(team.id));
+  };
+
+  useEffect(() => {
+    // table synced if team member has selected
+    tableRef.current.reload();
+
+    setAssignTeam([]);
+
+    // get assign team
+  }, [selected]);
 
   const TableColumns: TableColumnItem<BrandListItem>[] = [
     {
@@ -60,11 +90,21 @@ const BrandList: React.FC = () => {
       title: 'Assign Team',
       dataIndex: 'assign_team',
       align: 'center',
-      render: () => {
+      render: (_v, record) => {
+        if (isEmpty(record.assign_team)) {
+          return <UserAddIcon onClick={handleAssignTeams} style={{ cursor: 'pointer' }} />;
+        }
         return (
-          <a style={{ color: 'black' }} onClick={comingSoon}>
-            <UserAddIcon />
-          </a>
+          <div onClick={handleAssignTeams} style={{ cursor: 'pointer' }}>
+            {record.assign_team.map((teamProfile, key) => (
+              <TeamIcon
+                key={teamProfile.id ?? key}
+                avatar={teamProfile.avatar}
+                name={teamProfile.firstname}
+                customClass={styles.member}
+              />
+            ))}
+          </div>
         );
       },
     },
@@ -76,54 +116,47 @@ const BrandList: React.FC = () => {
       //  @typescript-eslint/no-unused-vars
       render: () => {
         return (
-          <HeaderDropdown
-            containerClass={styles.customAction}
-            arrow
-            align={{ offset: [13, -10] }}
-            placement="bottomRight"
-            overlay={
-              <MenuHeaderDropdown
-                items={[
-                  {
-                    onClick: comingSoon,
-                    icon: <ViewIcon />,
-                    label: 'View',
-                  },
-                  {
-                    onClick: comingSoon,
-                    icon: <EmailInviteIcon />,
-                    label: 'Email Invite',
-                  },
-                ]}
-              />
-            }
-            trigger={['click']}
-          >
-            <ActionIcon />
-          </HeaderDropdown>
+          <ActionForm
+            actionItems={[
+              {
+                onClick: () => pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', record.id)),
+                icon: <ViewIcon />,
+                label: 'View',
+              },
+              {
+                onClick: () => handleEmailInvite(record.status, record.assign_team),
+                icon: <EmailInviteIcon />,
+                label: 'Email Invite',
+              },
+            ]}
+          />
         );
       },
     },
   ];
 
   return (
-    <PageContainer
-      pageHeaderRender={() => (
-        <MenuSummary
-          containerClass={styles.customMenuSummary}
-          menuSummaryData={dataMenuSummary.leftData}
-          typeMenu="project"
+    <div>
+      <PageContainer pageHeaderRender={() => <BrandMenuSummary />}>
+        <CustomTable
+          title="BRANDS"
+          rightAction={
+            <CustomPlusButton onClick={() => pushTo(PATH.tiscUserGroupBrandEntryFrom)} />
+          }
+          columns={TableColumns}
+          ref={tableRef}
+          fetchDataFunc={getBrandPagination}
+          hasPagination
         />
-      )}
-    >
-      <CustomTable
-        title="BRANDS"
-        columns={TableColumns}
-        ref={tableRef}
-        fetchDataFunc={getBrandPagination}
-        hasPagination
+      </PageContainer>
+      <AssignTeam
+        visible={visible}
+        setVisible={setVisible}
+        selected={selected}
+        setSelected={setSelected}
+        teams={assignTeam}
       />
-    </PageContainer>
+    </div>
   );
 };
 

@@ -17,3 +17,4 @@ export * from './permission.type';
 export * from './project.type';
 export * from './project-space.type';
 export * from './material-code.type';
+export * from './tisc-user-group-brand.type';

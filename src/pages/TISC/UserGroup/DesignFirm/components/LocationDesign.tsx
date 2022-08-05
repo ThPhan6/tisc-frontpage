@@ -73,7 +73,6 @@ const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
                           hasPadding
                           value={location.functional_types.map((type) => type.name).join(',')}
                           readOnly
-                          colon
                         />
                         <InputGroup
                           label="Address"
@@ -83,7 +82,6 @@ const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
                           value={location.address}
                           hasPadding
                           readOnly
-                          colon
                         />
                         <FormGroup
                           label="General Phone"
@@ -107,7 +105,6 @@ const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
                           value={location.general_email}
                           hasPadding
                           readOnly
-                          colon
                         />
                       </div>
                     </Collapse.Panel>
