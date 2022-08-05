@@ -231,7 +231,7 @@ const ViewDesignFirmPage = () => {
                 value={data.status}
               />
             </div>
-            <div>
+            <div className={styles.action}>
               <CustomSaveButton isSuccess={submitButtonStatus.value} onClick={handleUpdateStatus} />
             </div>
           </div>
