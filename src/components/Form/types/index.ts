@@ -1,4 +1,4 @@
-import { BodyTextProps, CustomTypography } from './../../Typography/types/index';
+import { BodyTextProps, CustomTypography } from '@/components/Typography/types/index';
 import type { InputProps } from 'antd';
 import type { TextAreaProps } from 'antd/lib/input';
 import { CSSProperties, ReactNode } from 'react';
@@ -36,6 +36,14 @@ export interface FormGroupProps {
 
 export interface BodyTextExtraProps extends BodyTextProps {
   text: string | JSX.Element;
+}
+
+export interface TextFormProps extends FormGroupProps {
+  children: string | ReactNode;
+  fontLevel?: CustomInputProps['fontLevel'];
+  fontFamily?: BodyTextProps['fontFamily'];
+  bodyTextClass?: string;
+  formClass?: string;
 }
 
 export interface CustomInputProps extends InputProps {

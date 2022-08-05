@@ -58,13 +58,6 @@ export const FormGroup: FC<FormGroupProps> = ({
               placement === 'bottom'
                 ? {
                     width: placementBottomWidth ? placementBottomWidth : '160px',
-                    height: 'auto',
-                    padding: '6px 12px',
-                    fontWeight: '300',
-                    fontSize: '12px',
-                    lineHeight: '20px',
-                    letterSpacing: '0.02em',
-                    fontFamily: 'Roboto',
                   }
                 : {}
             }

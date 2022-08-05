@@ -1,4 +1,4 @@
-import { FormGroup } from '@/components/Form';
+import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { useGetParam } from '@/helper/hook';
 import { getLocationByBrandId } from '@/services';
@@ -51,47 +51,15 @@ const BrandLocationDetail = () => {
                         collapsible={isEmpty(location.business_name) ? 'disabled' : undefined}
                       >
                         <div className={styles.info}>
-                          <FormGroup
-                            label="Registered Number"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: location.business_number ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="Location Function"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text:
-                                location.functional_types.map((type) => type.name).join(', ') ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="Address"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: location.address ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="General Phone"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: location.general_phone ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="General Email"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: location.general_email ?? '',
-                            }}
-                          />
+                          <TextForm label="Registered Number">
+                            {location.business_number ?? ''}
+                          </TextForm>
+                          <TextForm label="Location Function">
+                            {location.functional_types.map((type) => type.name).join(', ') ?? ''}
+                          </TextForm>
+                          <TextForm label="Address">{location.address ?? ''}</TextForm>
+                          <TextForm label="General Phone">{location.general_phone ?? ''}</TextForm>
+                          <TextForm label="General Email">{location.general_email ?? ''}</TextForm>
                         </div>
                       </Collapse.Panel>
                     ))}
