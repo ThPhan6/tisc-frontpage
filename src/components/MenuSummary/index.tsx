@@ -48,7 +48,7 @@ const ElementSummary: FC<ElementSummaryProps> = ({
         <div className={style['item-wrapper']}>
           {dataElementSummary?.subs?.map((sub, index) => {
             return (
-              <div className={style['item']} key={sub?.id ?? index}>
+              <div className={style['item']} key={index}>
                 <ItemSummary sub={sub} />
               </div>
             );
@@ -88,7 +88,7 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
           <div className={style[`${type}-container`]}>
             {typeMenuData?.map((data, index) => {
               return (
-                <div className={style[`element-right`]} key={data.id ?? index}>
+                <div className={style[`element-right`]} key={index}>
                   <span>{data.quantity}</span>
                   <label>{data.label}</label>
                 </div>
@@ -102,7 +102,7 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
           <div className={style[`${type}-container`]}>
             {typeMenuData?.map((data, index) => {
               return (
-                <div className={style[`element-right`]} key={data.id ?? index}>
+                <div className={style[`element-right`]} key={index}>
                   <span>{data.quantity}</span>
                   <label>{data.label}</label>
                 </div>
@@ -121,7 +121,7 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
       <div className={style['brand-container']}>
         {menuSummaryData.map((data, index) => {
           return (
-            <div className={style['wrapper']} key={data?.id ?? index}>
+            <div className={style['wrapper']} key={index}>
               <ElementSummary
                 dataElementSummary={data}
                 activeId={activeId}

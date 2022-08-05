@@ -7,6 +7,7 @@ import type {
 } from '@/components/Table/types';
 import { message } from 'antd';
 import { request } from 'umi';
+import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 
 interface BrandListResponse {
   brands: BrandListItem[];
