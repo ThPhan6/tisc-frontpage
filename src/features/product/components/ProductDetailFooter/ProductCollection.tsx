@@ -4,6 +4,19 @@ import { getMaxLengthText, showImageUrl } from '@/helper/utils';
 import { useAppSelector } from '@/reducers';
 import { useGetUserRoleFromPathname } from '@/helper/hook';
 import { getProductDetailPathname } from '../../utils';
+import { EmptyOne } from '@/components/Empty';
+import { USER_ROLE } from '@/constants/userRoles';
+
+const ProductPlaceHolder = () => {
+  return (
+    <div className="relative-product-item">
+      <div className="relative-product">
+        <img src={SampleProductImage} />
+        <div className="placeholder-text">Product Label</div>
+      </div>
+    </div>
+  );
+};
 
 export const ProductCollection: FC = memo(() => {
   const relatedProduct = useAppSelector((state) => state.product.relatedProduct);
@@ -29,13 +42,10 @@ export const ProductCollection: FC = memo(() => {
               </div>
             </a>
           ))
+        ) : userRole === USER_ROLE.tisc ? (
+          <ProductPlaceHolder />
         ) : (
-          <div className="relative-product-item">
-            <div className="relative-product">
-              <img src={SampleProductImage} />
-              <div className="placeholder-text">Product Label</div>
-            </div>
-          </div>
+          <EmptyOne />
         )}
       </div>
     </div>

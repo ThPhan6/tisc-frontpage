@@ -57,6 +57,7 @@ const AreaRoomCollapse: React.FC<AreaRoomCollapseProps> = ({
             />
           </div>
           <ActionDeleteIcon
+            className="action-icon"
             onClick={(e: any) => {
               preventCollapseAction(e);
               onDeleteRoom();
@@ -221,7 +222,10 @@ const SpaceEntryForm: React.FC<SpaceEntryFormProps> = (props) => {
                 <BodyText level={3}>Area</BodyText>
                 <ArrowIcon />
               </div>
-              <CirclePlusIcon onClick={(e: any) => addMoreRoom(e, areaIndex)} />
+              <CirclePlusIcon
+                className="action-icon"
+                onClick={(e: any) => addMoreRoom(e, areaIndex)}
+              />
             </>
           }
         >
@@ -232,7 +236,7 @@ const SpaceEntryForm: React.FC<SpaceEntryFormProps> = (props) => {
               placeholder="type area name"
               containerClass={styles.areaInputName}
             />
-            <ActionDeleteIcon onClick={() => onDeleteArea(areaIndex)} />
+            <ActionDeleteIcon className="action-icon" onClick={() => onDeleteArea(areaIndex)} />
           </div>
           {area.rooms.map((room, roomIndex) => (
             <AreaRoomCollapse

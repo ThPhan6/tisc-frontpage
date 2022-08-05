@@ -6,6 +6,8 @@ import styles from './ProductTip.less';
 import DynamicFormInput from '@/components/EntryForm/DynamicFormInput';
 import { BodyText } from '@/components/Typography';
 import { useCheckPermission } from '@/helper/hook';
+import { EmptyOne } from '@/components/Empty';
+import { isEmpty } from 'lodash';
 
 const ProductTip: FC = () => {
   const dispatch = useDispatch();
@@ -41,6 +43,10 @@ const ProductTip: FC = () => {
         maxValueWords={100}
       />
     );
+  }
+
+  if (isEmpty(tip.contents)) {
+    return <EmptyOne />;
   }
 
   return (

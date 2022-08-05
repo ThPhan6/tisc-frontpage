@@ -17,7 +17,10 @@ const CustomPaginator = (props: CustomPaginatorProps) => {
   const currentPage = pagination.current ?? 1;
   const currentPageSize = pagination.pageSize ?? 1;
   const currentTotal = pagination.total ?? 0;
-  const firstRecord = (currentPage - 1) * currentPageSize + 1;
+  let firstRecord = (currentPage - 1) * currentPageSize + 1;
+  if (currentPage && dataLength === 0) {
+    firstRecord = 0;
+  }
   const lastRecord = (currentPage - 1) * currentPageSize + dataLength;
 
   const renderLeftPaginator = () => {
