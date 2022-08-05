@@ -19,7 +19,7 @@ import LocationDesign from './components/LocationDesign';
 import { FC, useEffect, useState } from 'react';
 import {
   DesignFirmDetail,
-  LocationsDesignFirm,
+  LocationGroupedByCountry,
   MaterialCodeDesignFirm,
   ProjectsDesignFirm,
   TeamsDesignFirm,
@@ -89,7 +89,7 @@ const ViewDesignFirmPage = () => {
     status: 1,
   });
 
-  const [locationData, setLocationData] = useState<LocationsDesignFirm[]>([]);
+  const [locationData, setLocationData] = useState<LocationGroupedByCountry[]>([]);
   const [teamData, setTeamData] = useState<TeamsDesignFirm[]>([]);
   const [projectData, setProjectData] = useState<ProjectsDesignFirm[]>([]);
   const [materialCodeData, setMaterialCodeData] = useState<MaterialCodeDesignFirm[]>([]);

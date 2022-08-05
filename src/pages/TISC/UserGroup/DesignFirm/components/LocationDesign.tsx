@@ -5,7 +5,7 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
-import { LocationsDesignFirm } from '@/types';
+import { LocationGroupedByCountry } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import { FC, useState } from 'react';
@@ -15,7 +15,7 @@ import { ActiveKeyType } from '../../types';
 import styles from '../styles/ComponentViewDesign.less';
 
 interface LocationDesignProp {
-  locationData: LocationsDesignFirm[];
+  locationData: LocationGroupedByCountry[];
 }
 
 const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
@@ -36,18 +36,18 @@ const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
               setActiveKey(key);
             }}
           >
-            {locationData.map((location, index) => (
+            {locationData.map((country, index) => (
               <Collapse.Panel
                 header={
                   <RenderLabelHeader
-                    header={location.country_name}
-                    quantity={location.count}
+                    header={country.country_name}
+                    quantity={country.count}
                     isSubHeader={false}
                     isUpperCase={false}
                   />
                 }
                 key={index}
-                collapsible={location.count === 0 ? 'disabled' : undefined}
+                collapsible={country.count === 0 ? 'disabled' : undefined}
               >
                 <Collapse
                   accordion
@@ -56,11 +56,13 @@ const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
                   expandIcon={({ isActive }) => (isActive ? <DropupV2Icon /> : <DropdownV2Icon />)}
                   className={indexStyles.secondDropdownList}
                 >
-                  {location.locations.map((loca, locationIndex) => (
+                  {country.locations.map((location, locationIndex) => (
                     <Collapse.Panel
-                      header={<RenderLabelHeader header={loca.business_name} isSubHeader={true} />}
+                      header={
+                        <RenderLabelHeader header={location.business_name} isSubHeader={true} />
+                      }
                       key={`${index}-${locationIndex}`}
-                      collapsible={isEmpty(loca.business_name) ? 'disabled' : undefined}
+                      collapsible={isEmpty(location.business_name) ? 'disabled' : undefined}
                     >
                       <div className={`${indexStyles.info} ${styles.teamInfo}`}>
                         <InputGroup
@@ -69,7 +71,7 @@ const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
                           fontLevel={3}
                           className={styles.label}
                           hasPadding
-                          value={loca.functional_types.map((type) => type.name).join(',')}
+                          value={location.functional_types.map((type) => type.name).join(',')}
                           readOnly
                           colon
                         />
@@ -78,7 +80,7 @@ const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
                           hasHeight
                           fontLevel={3}
                           className={styles.label}
-                          value={loca.address}
+                          value={location.address}
                           hasPadding
                           readOnly
                           colon
@@ -92,8 +94,8 @@ const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
                             codeReadOnly
                             containerClass={styles.phoneInputCustom}
                             value={{
-                              zoneCode: loca.phone_code,
-                              phoneNumber: loca.general_phone,
+                              zoneCode: location.phone_code,
+                              phoneNumber: location.general_phone,
                             }}
                           />
                         </FormGroup>
@@ -102,7 +104,7 @@ const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
                           hasHeight
                           fontLevel={3}
                           className={styles.label}
-                          value={loca.general_email}
+                          value={location.general_email}
                           hasPadding
                           readOnly
                           colon

@@ -3,6 +3,7 @@ import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.sv
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import InputGroup from '@/components/EntryForm/InputGroup';
+import { MEASUREMENT_UNIT } from '@/constants/util';
 import { ProjectDetail, ProjectsDesignFirm } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
@@ -50,18 +51,18 @@ const ProjectDesign: FC<ProjectDesignProp> = ({ projectData }) => {
               setActiveKey(key);
             }}
           >
-            {projectData.map((project, index) => (
+            {projectData.map((listProject, index) => (
               <Collapse.Panel
                 header={
                   <RenderLabelHeader
-                    header={project.status_name}
-                    quantity={project.count}
+                    header={listProject.status_name}
+                    quantity={listProject.count}
                     isSubHeader={false}
                     isUpperCase={false}
                   />
                 }
                 key={index}
-                collapsible={project.count === 0 ? 'disabled' : undefined}
+                collapsible={listProject.count === 0 ? 'disabled' : undefined}
               >
                 <Collapse
                   accordion
@@ -70,11 +71,11 @@ const ProjectDesign: FC<ProjectDesignProp> = ({ projectData }) => {
                   expandIcon={({ isActive }) => (isActive ? <DropupV2Icon /> : <DropdownV2Icon />)}
                   className={indexStyles.secondDropdownList}
                 >
-                  {project.projects.map((pro, proIndex) => (
+                  {listProject.projects.map((project, projectIndex) => (
                     <Collapse.Panel
-                      header={renderProjectHeader(pro)}
-                      key={`${index}-${proIndex}`}
-                      collapsible={isEmpty(pro.code) ? 'disabled' : undefined}
+                      header={renderProjectHeader(project)}
+                      key={`${index}-${projectIndex}`}
+                      collapsible={isEmpty(project.code) ? 'disabled' : undefined}
                     >
                       <div className={`${indexStyles.info} ${styles.teamInfo}`}>
                         <InputGroup
@@ -84,7 +85,7 @@ const ProjectDesign: FC<ProjectDesignProp> = ({ projectData }) => {
                           className={styles.label}
                           readOnly
                           hasPadding
-                          value={pro.location}
+                          value={project.location}
                         />
                         <InputGroup
                           label="Building Type"
@@ -93,7 +94,7 @@ const ProjectDesign: FC<ProjectDesignProp> = ({ projectData }) => {
                           className={styles.label}
                           readOnly
                           hasPadding
-                          value={pro.building_type}
+                          value={project.building_type}
                         />
                         <InputGroup
                           label="Project Type"
@@ -102,7 +103,7 @@ const ProjectDesign: FC<ProjectDesignProp> = ({ projectData }) => {
                           className={styles.label}
                           readOnly
                           hasPadding
-                          value={pro.type}
+                          value={project.type}
                         />
                         <InputGroup
                           label="Measurement Unit"
@@ -112,9 +113,9 @@ const ProjectDesign: FC<ProjectDesignProp> = ({ projectData }) => {
                           readOnly
                           hasPadding
                           value={
-                            pro.measurement_unit === 1
+                            project.measurement_unit === MEASUREMENT_UNIT.IMPERIAL
                               ? 'Imperial'
-                              : pro.measurement_unit === 2
+                              : project.measurement_unit === MEASUREMENT_UNIT.METRIC
                               ? 'Metric'
                               : ''
                           }
@@ -126,7 +127,7 @@ const ProjectDesign: FC<ProjectDesignProp> = ({ projectData }) => {
                           className={styles.label}
                           readOnly
                           hasPadding
-                          value={pro.design_due}
+                          value={project.design_due}
                         />
                         <InputGroup
                           label="Construction Start"
@@ -135,7 +136,7 @@ const ProjectDesign: FC<ProjectDesignProp> = ({ projectData }) => {
                           className={styles.label}
                           readOnly
                           hasPadding
-                          value={pro.construction_start}
+                          value={project.construction_start}
                         />
                       </div>
                     </Collapse.Panel>

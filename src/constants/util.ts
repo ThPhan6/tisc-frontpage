@@ -14,6 +14,16 @@ export const USER_STATUSES = {
   PENDING: 3,
 };
 
+export const DESIGN_STATUSES = {
+  ACTIVE: 1,
+  INACTIVE: 2,
+};
+
+export const MEASUREMENT_UNIT = {
+  IMPERIAL: 1,
+  METRIC: 2,
+};
+
 export const USER_STATUS_TEXTS = {
   [USER_STATUSES.ACTIVE]: 'Activated',
   [USER_STATUSES.BLOCKED]: 'Blocked',

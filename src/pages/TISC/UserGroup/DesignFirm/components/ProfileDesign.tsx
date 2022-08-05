@@ -1,22 +1,13 @@
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { Col, Row } from 'antd';
 import styles from '../styles/ProfileDesign.less';
-import LogoDesignFirm from '@/assets/images/logo-design-firm.png';
 import { DesignFirmDetail } from '@/types';
 import { FC } from 'react';
-import { showImageUrl } from '@/helper/utils';
 
 interface ProfileDesignProp {
   data: DesignFirmDetail;
 }
 const ProfileDesign: FC<ProfileDesignProp> = ({ data }) => {
-  const setViewAvatar = () => {
-    if (data.logo) {
-      return showImageUrl(data.logo);
-    }
-    return LogoDesignFirm;
-  };
-
   return (
     <div>
       <Row>
@@ -33,7 +24,7 @@ const ProfileDesign: FC<ProfileDesignProp> = ({ data }) => {
                 hasPadding
                 colon
               />
-              <img src={setViewAvatar()} className={styles.logo} />
+              <img src={data.logo} className={styles.logo} />
             </div>
             <InputGroup
               label="Parent Company"

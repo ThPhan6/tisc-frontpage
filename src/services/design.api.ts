@@ -8,7 +8,7 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import {
   DesignFirm,
   DesignFirmDetail,
-  LocationsDesignFirm,
+  LocationGroupedByCountry,
   MaterialCodeDesignFirm,
   ProjectsDesignFirm,
   TeamsDesignFirm,
@@ -67,7 +67,9 @@ export async function getSummary() {
 }
 
 export async function getLocationsByDesignFirm(id: string) {
-  return request<{ data: LocationsDesignFirm[] }>(`/api/location/design/${id}`, { method: 'GET' })
+  return request<{ data: LocationGroupedByCountry[] }>(`/api/location/design/${id}`, {
+    method: 'GET',
+  })
     .then((response) => {
       return response.data;
     })

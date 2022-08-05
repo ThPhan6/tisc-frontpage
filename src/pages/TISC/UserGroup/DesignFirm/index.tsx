@@ -12,6 +12,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
 import DesignFirmSummary from './components/DesignFirmSummary';
+import { DESIGN_STATUSES } from '@/constants/util';
 
 const DesignFirmList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -50,7 +51,15 @@ const DesignFirmList: React.FC = () => {
       title: 'Status',
       dataIndex: 'status',
       render: (value) => {
-        return <span>{value === 1 ? 'Active' : value === 2 ? 'Inactive' : ''}</span>;
+        return (
+          <span>
+            {value === DESIGN_STATUSES.ACTIVE
+              ? 'Active'
+              : value === DESIGN_STATUSES.INACTIVE
+              ? 'Inactive'
+              : ''}
+          </span>
+        );
       },
     },
     {
