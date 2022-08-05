@@ -20,7 +20,6 @@ export const FormGroup: FC<FormGroupProps> = ({
   label,
   labelColor = 'mono-color',
   onClick,
-  bodyText,
   messageType = 'normal',
   ...props
 }) => {
@@ -74,16 +73,6 @@ export const FormGroup: FC<FormGroupProps> = ({
       </label>
       <div className={style['children-wrapper']}>
         {children}
-        {bodyText && (
-          <BodyText
-            fontFamily={bodyText.fontFamily ? bodyText.fontFamily : 'Roboto'}
-            level={bodyText.level ? bodyText.level : 5}
-            color={bodyText.color ? bodyText.color : 'mono-color'}
-            customClass={style.bodyText}
-          >
-            {bodyText.text}
-          </BodyText>
-        )}
         {message && (
           <div className={style.message}>
             <BodyText fontFamily="Roboto" level={6} customClass={style[`${messageType}`]}>

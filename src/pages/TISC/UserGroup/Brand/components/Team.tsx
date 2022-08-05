@@ -1,4 +1,4 @@
-import { FormGroup } from '@/components/Form';
+import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader, RenderMemberHeader } from '@/components/RenderHeaderLabel';
 import { USER_STATUS_TEXTS } from '@/constants/util';
 import { useGetParam } from '@/helper/hook';
@@ -56,78 +56,19 @@ const BrandTeamDetail = () => {
                         collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}
                       >
                         <div className={indexStyles.info}>
-                          <FormGroup
-                            label="Gender"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: user.gender === true ? 'Male' : 'Female',
-                            }}
-                          />
-                          <FormGroup
-                            label="Work Location"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: user.work_location ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="Department"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: user.department ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="Position/Title"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: user.position ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="Work Email"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: user.email ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="Work Phone"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: user.phone ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="Work Mobile"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: user.mobile ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="Access Level"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: user.access_level ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="Status"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: USER_STATUS_TEXTS[user.status] ?? 'N/A',
-                            }}
-                          />
+                          <TextForm label="Gender">
+                            {user.gender === true ? 'Male' : 'Female'}
+                          </TextForm>
+                          <TextForm label="Work Location">{user.work_location ?? ''}</TextForm>
+                          <TextForm label="Department">{user.department ?? ''}</TextForm>
+                          <TextForm label="Position/Title">{user.position ?? ''}</TextForm>
+                          <TextForm label="Work Email">{user.email ?? ''}</TextForm>
+                          <TextForm label="Work Phone">{user.phone ?? ''}</TextForm>
+                          <TextForm label="Work Mobile">{user.mobile ?? ''}</TextForm>
+                          <TextForm label="Access Level">{user.access_level ?? ''}</TextForm>
+                          <TextForm label="Status">
+                            {USER_STATUS_TEXTS[user.status] ?? 'N/A'}
+                          </TextForm>
                         </div>
                       </Collapse.Panel>
                     ))}

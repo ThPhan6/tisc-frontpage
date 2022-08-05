@@ -3,16 +3,25 @@ import { FC } from 'react';
 import { CheckboxValue } from '../CustomCheckbox/types';
 import Popover from '../Modal/Popover';
 import { RenderMemberHeader } from '@/components/RenderHeaderLabel';
+import { AssignTeamForm } from '@/types';
 
 interface AssignTeamProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
   selected?: CheckboxValue[];
   setSelected?: (selected: CheckboxValue[]) => void;
-  teams: any[];
+  teams: AssignTeamForm[];
+  handleSubmit: () => void;
 }
 
-const AssignTeam: FC<AssignTeamProps> = ({ visible, setVisible, selected, setSelected, teams }) => {
+const AssignTeam: FC<AssignTeamProps> = ({
+  visible,
+  setVisible,
+  selected,
+  setSelected,
+  teams,
+  handleSubmit,
+}) => {
   return (
     <Popover
       title="ASSIGN TEAM"
@@ -20,17 +29,18 @@ const AssignTeam: FC<AssignTeamProps> = ({ visible, setVisible, selected, setSel
       setVisible={setVisible}
       chosenValue={selected}
       setChosenValue={setSelected}
+      onFormSubmit={handleSubmit}
       dropdownCheckboxTitle={(data) => data.name}
       dropdownCheckboxList={map(teams, (team) => {
         return {
           name: team.name,
-          options: team.subs.map((member) => {
+          options: team.users.map((member, index) => {
             return {
               label: (
                 <RenderMemberHeader
-                  firstName={member.firstname}
-                  lastName={member.lastname}
+                  firstName={member.full_name}
                   avatar={member.avatar}
+                  key={member.id ?? index}
                 />
               ),
               value: member.id,

@@ -1,5 +1,12 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import type { BrandListItem, BrandAlphabet, BrandDetail, BrandCard, BrandStatuses } from '@/types';
+import type {
+  BrandListItem,
+  BrandAlphabet,
+  BrandDetail,
+  BrandCard,
+  BrandStatuses,
+  AssignTeamForm,
+} from '@/types';
 import type {
   DataTableResponse,
   PaginationRequestParams,
@@ -102,6 +109,19 @@ export async function getBrandStatuses() {
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_STATUSES_ERROR);
       return [] as BrandStatuses[];
+    });
+}
+
+export async function getListAssignTeamByBrandId(brandId: string) {
+  return request<{ data: AssignTeamForm[] }>(`/api/team/get-list-group-by-type/${brandId}`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_ASSIGN_TEAM_ERROR);
+      return [] as AssignTeamForm[];
     });
 }
 

@@ -60,3 +60,15 @@ export interface BrandStatuses {
   key: string;
   value: string | number;
 }
+
+export interface AssignTeamForm {
+  name: string;
+  users: [
+    {
+      id: string;
+      avatar: string;
+      full_name: string;
+      is_assigned: true;
+    },
+  ];
+}
