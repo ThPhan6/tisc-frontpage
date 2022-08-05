@@ -159,9 +159,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
 
         <div className={`${styles.rightAction} flex-center`}>
           {rightActions.map(
-            ({ Icon, onClick, show, tooltipText }) =>
+            ({ Icon, onClick, show, tooltipText }, index) =>
               show && (
-                <Tooltip title={tooltipText} {...tooltipProps}>
+                <Tooltip key={index} title={tooltipText} {...tooltipProps}>
                   <Icon onClick={onClick} />
                 </Tooltip>
               ),

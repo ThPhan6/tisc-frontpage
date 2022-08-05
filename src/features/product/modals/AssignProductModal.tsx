@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import Popover, { PopoverProps } from '@/components/Modal/Popover';
 import { FormGroup } from '@/components/Form';
 import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
-import { assignProductToProject, getAllProjects, getProjectSpaceListPagination } from '@/services';
+import { assignProductToProject, getAllProjects, getProductAssignSpaceByProject } from '@/services';
 import { RadioValue } from '@/components/CustomRadio/types';
 import { useAppSelector } from '@/reducers';
 import { CustomRadio } from '@/components/CustomRadio';
@@ -60,21 +60,33 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
 
   useEffect(() => {
     if (selectedProject?.value) {
-      getProjectSpaceListPagination(
-        {
-          page: 1,
-          pageSize: 9999,
-          project_id: selectedProject.value,
-        },
-        (data) => {
-          setZones(data.data);
+      getProductAssignSpaceByProject(
+        String(selectedProject.value),
+        productId,
+        (isEntireProject, data) => {
+          entireProject.setValue(isEntireProject);
+          setZones(data);
+
+          const curSelectedRooms: { [areaId: string]: CheckboxValue[] } = {};
+          data.map((zone) => {
+            zone.areas.map((area) => {
+              const assignedRooms = area.rooms.filter((room) => room.is_assigned === true);
+              const roomCheckboxs: CheckboxValue[] = assignedRooms.map((el) => ({
+                value: el.id || '',
+                label: el.room_name,
+              }));
+              curSelectedRooms[area.id] = roomCheckboxs;
+            });
+          });
+          console.log('curSelectedRooms', curSelectedRooms);
+          setSelectedRooms(curSelectedRooms);
         },
       );
     }
   }, [selectedProject]);
 
-  const renderRoomLabel = (roomId: string, roomName: string) => (
-    <span className="selected-item flex-start" style={{ paddingLeft: 16 }}>
+  const renderRoomLabel = (key: string, roomId: string, roomName: string) => (
+    <span key={key} className="selected-item flex-start" style={{ paddingLeft: 16 }}>
       <BodyText
         fontFamily="Roboto"
         level={5}
@@ -122,7 +134,7 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
               <CustomCheckbox
                 isCheckboxList
                 options={area.rooms.map((room) => ({
-                  label: renderRoomLabel(room.room_id, room.room_name),
+                  label: renderRoomLabel(room.id || '', room.room_id, room.room_name),
                   value: room.id || '',
                 }))}
                 selected={selectedRooms[area.id]}
@@ -173,6 +185,7 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
             setProjectCollapse([]);
           }}
           placeholder={selectedProject ? selectedProject.label : 'select from My Workspace'}
+          Header={selectedProject?.label}
           containerClass={styles.customRadioList}
           onCollapseChange={setProjectCollapse}
         />

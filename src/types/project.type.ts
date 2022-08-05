@@ -1,3 +1,5 @@
+import { ProductItem } from '@/features/product/types';
+
 export interface ProjectFilterValueProps {
   id: number;
   name: string;
@@ -48,6 +50,25 @@ export interface ProjectListProps {
   }[];
 }
 
-export interface GetConsideredProductsResponse {
-  summary: [];
+export interface ConsideredProjectRoom {
+  id: string;
+  count: number;
+  room_name: string;
+  room_id: string;
+  room_size: number;
+  quantity: number;
+  products: ProductItem[];
+}
+
+export interface ConsideredProjectArea {
+  id?: string;
+  name: string;
+  rooms: ConsideredProjectRoom[];
+}
+
+export interface ConsideredProduct {
+  name: string;
+  count: number;
+  products: ProductItem[];
+  area?: ConsideredProjectArea[];
 }

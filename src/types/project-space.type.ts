@@ -18,6 +18,7 @@ export interface ProjectSpaceZone {
 }
 export interface ProjectSpaceListProps extends ProjectSpaceZone {
   count: number;
+  is_assigned?: boolean;
   areas: {
     count: number;
     id: string;
@@ -30,6 +31,7 @@ export interface ProjectSpaceListProps extends ProjectSpaceZone {
       quantity: number;
       sub_total: number;
       room_size_unit: number;
+      is_assigned?: boolean;
     }[];
   }[];
 }

@@ -15,6 +15,7 @@ interface CollapseRadioListProps {
   checkboxItemHeight?: string;
   activeKey?: string | string[];
   onCollapseChange?: (key: string | string[]) => void;
+  Header?: ReactNode;
 }
 
 const CollapseRadioList: FC<CollapseRadioListProps> = ({
@@ -26,15 +27,18 @@ const CollapseRadioList: FC<CollapseRadioListProps> = ({
   containerClass = '',
   activeKey = '',
   onCollapseChange,
+  Header,
 }) => {
   return (
     <CustomCollapse
       onChange={onCollapseChange}
       activeKey={activeKey}
       header={
-        <BodyText level={5} customClass="function-type-placeholder" fontFamily="Roboto">
-          {placeholder}
-        </BodyText>
+        Header || (
+          <BodyText level={5} customClass="function-type-placeholder" fontFamily="Roboto">
+            {placeholder}
+          </BodyText>
+        )
       }
       className={`${styles.functionTypeDropdown} ${containerClass}`}
     >

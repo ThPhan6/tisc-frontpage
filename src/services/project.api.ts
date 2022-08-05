@@ -15,7 +15,6 @@ import {
   ProjectDetailProps,
   ProjectSummaryData,
 } from '@/types';
-import { getResponseMessage } from '@/helper/common';
 import { ProjectItem, setProjectList } from '@/features/project/reducers';
 import store from '@/reducers';
 
@@ -153,36 +152,5 @@ export async function getProjectSummary() {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_SUMMARY_DATA_FAILED);
-    });
-}
-
-export async function getConsideredProducts(projectId: string) {
-  return request<ProjectSummaryData>(`/api/considered-product/get-list/${projectId}`)
-    .then((res) => {
-      return res;
-    })
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_SUMMARY_DATA_FAILED);
-    });
-}
-
-export async function assignProductToProject(data: {
-  is_entire: boolean;
-  product_id: string;
-  project_id: string;
-  project_zone_ids: string[];
-}) {
-  return request<ProjectSummaryData>(`/api/product/assign`, {
-    method: 'POST',
-    data,
-  })
-    .then(() => {
-      message.success(getResponseMessage('assign', 'product'));
-      return true;
-    })
-    .catch((error) => {
-      console.log('assignProductToProject error', error);
-      message.error(getResponseMessage('assign', 'product', 'failed', error));
-      return false;
     });
 }
