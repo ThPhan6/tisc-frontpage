@@ -9,6 +9,7 @@ import {
   ConversionText,
   GeneralText,
   ProductAttributeLine,
+  AttributeOption,
 } from './AttributeComponent';
 import { useCheckPermission } from '@/helper/hook';
 import { MainTitle } from '@/components/Typography';
@@ -31,6 +32,12 @@ const CollapseProductAttribute: React.FC<CollapseProductAttributeProps> = ({ gro
               conversion={attribute.conversion}
               firstValue={attribute.conversion_value_1}
               secondValue={attribute.conversion_value_2}
+            />
+          ) : attribute.type === 'Options' ? (
+            <AttributeOption
+              title={group.name}
+              attributeName={attribute.name}
+              options={attribute.basis_options ?? []}
             />
           ) : (
             <GeneralText text={attribute.text} />

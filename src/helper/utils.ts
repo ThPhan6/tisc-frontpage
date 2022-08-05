@@ -1,6 +1,6 @@
 import { PhoneInputValueProp } from '@/components/Form/types';
 import { PATH } from '@/constants/path';
-import { isUndefined } from 'lodash';
+import { isUndefined, isNumber, toNumber, isNaN } from 'lodash';
 import { history } from 'umi';
 import { pushTo } from './history';
 
@@ -184,4 +184,19 @@ export const getMaxLengthText = (text: string, maxLength: number) => {
   }
 
   return text.slice(0, maxLength - 3) + '...';
+};
+
+export const formatNumberDisplay = (
+  num: number | string,
+  locale: Intl.LocalesArgument = 'en-us',
+  options: Intl.NumberFormatOptions = {},
+) => {
+  let value = num;
+  if (!isNumber(value)) {
+    value = toNumber(value);
+  }
+  if (isNaN(value)) {
+    return 'N/A';
+  }
+  return value.toLocaleString(locale, options);
 };
