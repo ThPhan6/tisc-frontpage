@@ -20,7 +20,7 @@ export interface ProjectSpaceListProps extends ProjectSpaceZone {
   count: number;
   areas: {
     count: number;
-    id?: string;
+    id: string;
     name: string;
     rooms: {
       id?: string;

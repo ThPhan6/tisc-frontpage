@@ -1,6 +1,6 @@
 import type { InputProps } from 'antd';
 import type { TextAreaProps } from 'antd/lib/input';
-import { ReactNode } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 
 export interface FormGroupProps {
   layout?: 'horizontal' | 'vertical';
@@ -27,6 +27,7 @@ export interface FormGroupProps {
     | 'leftBottom'
     | 'rightTop'
     | 'rightBottom';
+  style?: CSSProperties;
 }
 
 export interface CustomInputProps extends InputProps {

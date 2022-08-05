@@ -47,3 +47,7 @@ export interface ProjectListProps {
     avatar: string;
   }[];
 }
+
+export interface GetConsideredProductsResponse {
+  summary: [];
+}

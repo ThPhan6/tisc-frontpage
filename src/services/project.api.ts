@@ -15,6 +15,9 @@ import {
   ProjectDetailProps,
   ProjectSummaryData,
 } from '@/types';
+import { getResponseMessage } from '@/helper/common';
+import { ProjectItem, setProjectList } from '@/features/project/reducers';
+import store from '@/reducers';
 
 interface ProjectPaginationResponse {
   data: {
@@ -44,6 +47,18 @@ export async function getProjectPagination(
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_LIST_FAILED);
+    });
+}
+
+export async function getAllProjects() {
+  request(`/api/project/get-all`, {
+    method: 'GET',
+  })
+    .then((response: { data: ProjectItem[] }) => {
+      store.dispatch(setProjectList(response.data));
+    })
+    .catch((error) => {
+      console.log('getAllProjects', error);
     });
 }
 
@@ -87,7 +102,7 @@ export async function createProject(data: ProjectBodyRequest) {
   })
     .then((res: { data: { id: string } }) => {
       message.success(MESSAGE_NOTIFICATION.CREATE_PROJECT_SUCCESS);
-      console.log('res', res);
+      // console.log('res', res);
       return res.data.id;
     })
     .catch((error) => {
@@ -138,5 +153,36 @@ export async function getProjectSummary() {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_SUMMARY_DATA_FAILED);
+    });
+}
+
+export async function getConsideredProducts(projectId: string) {
+  return request<ProjectSummaryData>(`/api/considered-product/get-list/${projectId}`)
+    .then((res) => {
+      return res;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_SUMMARY_DATA_FAILED);
+    });
+}
+
+export async function assignProductToProject(data: {
+  is_entire: boolean;
+  product_id: string;
+  project_id: string;
+  project_zone_ids: string[];
+}) {
+  return request<ProjectSummaryData>(`/api/product/assign`, {
+    method: 'POST',
+    data,
+  })
+    .then(() => {
+      message.success(getResponseMessage('assign', 'product'));
+      return true;
+    })
+    .catch((error) => {
+      console.log('assignProductToProject error', error);
+      message.error(getResponseMessage('assign', 'product', 'failed', error));
+      return false;
     });
 }

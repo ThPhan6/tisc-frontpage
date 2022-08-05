@@ -18,7 +18,7 @@ export const confirmDelete = (onOk: () => void, onCancel?: () => void) => {
 };
 
 export const getResponseMessage = (
-  type: 'get-list' | 'get-one' | 'create' | 'delete' | 'update',
+  type: 'get-list' | 'get-one' | 'create' | 'delete' | 'update' | 'assign',
   action: string,
   status: 'success' | 'failed' = 'success',
   error?: any,
@@ -39,6 +39,8 @@ export const getResponseMessage = (
       startWith = 'Delete';
     case 'update':
       startWith = 'Update';
+    case 'assign':
+      startWith = 'Assign';
   }
 
   return `${startWith} ${action} ${status === 'success' ? 'successfully' : 'failed'}`;

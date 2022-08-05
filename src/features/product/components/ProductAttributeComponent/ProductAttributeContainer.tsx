@@ -22,7 +22,6 @@ interface CollapseProductAttributeProps {
   index: number;
 }
 const CollapseProductAttribute: React.FC<CollapseProductAttributeProps> = ({ group, index }) => {
-  console.log('group.attributes', group.attributes);
   return (
     <AttributeCollapse name={group.name} index={index}>
       {group.attributes.map((attribute, key) => (
