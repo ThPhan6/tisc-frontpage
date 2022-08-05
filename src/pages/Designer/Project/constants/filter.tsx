@@ -18,9 +18,9 @@ export const FilterNames = {
 };
 
 export const FilterStatusIcons = {
-  [FilterValues.live]: <ProjectLiveIcon />,
-  [FilterValues.onHold]: <ProjectOnHoldIcon />,
-  [FilterValues.archived]: <ProjectArchivedIcon />,
+  [FilterValues.live]: <ProjectLiveIcon className="icon-align" />,
+  [FilterValues.onHold]: <ProjectOnHoldIcon className="icon-align" />,
+  [FilterValues.archived]: <ProjectArchivedIcon className="icon-align" />,
 };
 
 export const GlobalFilter: ProjectFilterValueProps = {

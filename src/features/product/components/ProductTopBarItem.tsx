@@ -28,11 +28,16 @@ interface ProductTopBarProps {
 export const TopBarItem: React.FC<ProductTopBarProps> = (props) => {
   const { topValue, bottomValue, icon, disabled, bottomEnable, customClass, onClick, style } =
     props;
+
   return (
     <div className={`item ${customClass ?? ''}`} onClick={onClick} style={style}>
-      <BodyText level={5} fontFamily="Roboto" customClass={disabled ? 'disabled ' : ''}>
-        {topValue}
-      </BodyText>
+      {typeof topValue === 'string' ? (
+        <BodyText level={5} fontFamily="Roboto" customClass={disabled ? 'disabled ' : ''}>
+          {topValue}
+        </BodyText>
+      ) : (
+        topValue
+      )}
       <BodyText
         level={6}
         fontFamily="Roboto"

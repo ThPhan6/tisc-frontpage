@@ -10,6 +10,8 @@ interface CustomCollapseProps extends CollapseProps {
   children: ReactNode;
   customHeaderClass?: string;
   showActiveBoxShadow?: boolean;
+  noBorder?: boolean;
+  arrowAlignRight?: boolean;
 }
 
 const CustomCollapse: FC<CustomCollapseProps> = ({
@@ -18,6 +20,8 @@ const CustomCollapse: FC<CustomCollapseProps> = ({
   customHeaderClass,
   className,
   showActiveBoxShadow,
+  noBorder,
+  arrowAlignRight,
   ...props
 }) => {
   return (
@@ -26,12 +30,12 @@ const CustomCollapse: FC<CustomCollapseProps> = ({
       expandIconPosition="right"
       className={`${styles.customCollapse} ${className || ''} ${
         showActiveBoxShadow ? styles.activeBoxShadow : ''
-      }`}
+      } ${noBorder ? styles.noBorder : ''} ${arrowAlignRight ? styles.arrowAlignRight : ''}`}
       {...props}
     >
       <Collapse.Panel
         key="1"
-        className={`${styles.customHeaderCollapse} ${customHeaderClass}`}
+        className={`${styles.customHeaderCollapse} ${customHeaderClass || ''}`}
         header={header}
       >
         {children}

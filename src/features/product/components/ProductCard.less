@@ -100,19 +100,15 @@
               margin-right: 4px;
             }
           }
-          &:global(.action-other) {
-            svg {
-              &:first-child {
-                margin-right: 8px;
-              }
-            }
-          }
         }
 
-        .shareEmail {
-          height: 18px;
-          .shareEmailIcon {
-            cursor: pointer;
+        .rightAction {
+          cursor: pointer;
+          :not(:last-child) {
+            margin-right: 8px;
+          }
+
+          svg {
             path {
               fill: @mono-color;
             }

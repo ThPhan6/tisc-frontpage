@@ -59,10 +59,9 @@ export async function getOnePolicyTemplete(id: string) {
 }
 
 export async function updatePolicyTemplate(id: string, data: CreateDocumentationResquestBody) {
-  console.log('data', data);
   return request<boolean>(`/api/documentation/update/${id}`, { method: 'PUT', data })
     .then(() => {
-      console.log('updatePolicyTemplate success');
+      // console.log('updatePolicyTemplate success');
       message.success(getResponseMessage('update', 'documentation'));
       return true;
     })

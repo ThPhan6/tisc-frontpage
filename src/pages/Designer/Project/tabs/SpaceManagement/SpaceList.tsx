@@ -7,6 +7,7 @@ import { getProjectSpaceListPagination, deleteProjectSpace } from '@/services';
 import type { ProjectSpaceZone, ProjectSpaceArea, ProjectSpaceRoom } from '@/types';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import React, { useRef, useState, useEffect } from 'react';
+import { formatNumberDisplay } from '@/helper/utils';
 
 const MAIN_COL_WIDTH = 200;
 const SUB_COL_WIDTH = 150;
@@ -49,7 +50,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
       width: 106,
       render: (value, record) => {
         if (value) {
-          return `${value} ${record.room_size_unit ?? ''}`;
+          return `${formatNumberDisplay(value)} ${record.room_size_unit ?? ''}`;
         }
         return '';
       },
@@ -64,7 +65,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
       dataIndex: 'room_size',
       render: (value, record) => {
         if (value && record.quantity) {
-          return `${value * record.quantity} ${record.room_size_unit ?? ''}`;
+          return `${formatNumberDisplay(value * record.quantity)} ${record.room_size_unit ?? ''}`;
         }
         return '';
       },
@@ -104,7 +105,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
       },
     },
     {
-      title: 'Room',
+      title: 'Rooms',
       dataIndex: 'room_column',
       width: 106,
       sorter: {
