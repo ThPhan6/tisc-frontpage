@@ -1,5 +1,12 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import type { BrandListItem, BrandAlphabet, BrandDetail, BrandCard } from '@/types';
+import type {
+  BrandListItem,
+  BrandAlphabet,
+  BrandDetail,
+  BrandCard,
+  BrandStatuses,
+  AssignTeamForm,
+} from '@/types';
 import type {
   DataTableResponse,
   PaginationRequestParams,
@@ -7,6 +14,7 @@ import type {
 } from '@/components/Table/types';
 import { message } from 'antd';
 import { request } from 'umi';
+import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 
 interface BrandListResponse {
   brands: BrandListItem[];
@@ -72,6 +80,74 @@ export async function getBrandById(brandId: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
-      return undefined;
+      return {} as BrandDetail;
+    });
+}
+
+export async function getBrandSummary() {
+  return request<{
+    data: DataMenuSummaryProps[];
+  }>(`/api/brand/summary`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_BRAND_SUMMARY_ERROR);
+      return [] as DataMenuSummaryProps[];
+    });
+}
+
+export async function getBrandStatuses() {
+  return request<BrandStatuses[]>(`/api/brand/statuses`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_STATUSES_ERROR);
+      return [] as BrandStatuses[];
+    });
+}
+
+export async function getListAssignTeamByBrandId(brandId: string) {
+  return request<{ data: AssignTeamForm[] }>(`/api/team/get-list-group-by-type/${brandId}`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_ASSIGN_TEAM_ERROR);
+      return [] as AssignTeamForm[];
+    });
+}
+
+export async function createAssignTeamByBrandId(brandId: string, data: string[]) {
+  return request<boolean>(`/api/team/assign/${brandId}`, {
+    method: 'POST',
+    data: { user_ids: data },
+  })
+    .then(() => {
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_LIST_ASSIGN_TEAM_ERROR);
+      return false;
+    });
+}
+
+export async function createBrand() {
+  return request<{ data: BrandDetail }>(`/api/brand/create`, {
+    method: 'POST',
+  })
+    .then(() => {
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
+      return false;
     });
 }

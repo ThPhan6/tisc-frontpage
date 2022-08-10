@@ -11,12 +11,14 @@ import styles from './styles/index.less';
 import { PageContainer } from '@ant-design/pro-layout';
 import { MenuSummary } from '@/components/MenuSummary';
 import { dataMenuFirm } from '@/constants/util';
+import { PATH } from '@/constants/path';
+import { pushTo } from '@/helper/history';
 
 const DesignFirmList: React.FC = () => {
   const tableRef = useRef<any>();
 
-  const comingSoon = () => {
-    alert('Coming Soon!');
+  const handleViewDesignFirm = (id: string) => {
+    pushTo(PATH.tiscUserGroupViewDesigner.replace(':id', id));
   };
 
   const TableColumns: TableColumnItem<DesignFirm>[] = [
@@ -45,12 +47,18 @@ const DesignFirmList: React.FC = () => {
     { title: 'Live', dataIndex: 'live', lightHeading: true },
     { title: 'On Hold', dataIndex: 'on_hold', lightHeading: true },
     { title: 'Archived', dataIndex: 'archived', lightHeading: true },
-    { title: 'Status', dataIndex: 'status' },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render: (value) => {
+        return <span>{value === 1 ? 'Active' : value === 2 ? 'Inactive' : ''}</span>;
+      },
+    },
     {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
-      render: () => {
+      render: (_value, record) => {
         return (
           <HeaderDropdown
             containerClass={styles.customAction}
@@ -61,7 +69,7 @@ const DesignFirmList: React.FC = () => {
               <MenuHeaderDropdown
                 items={[
                   {
-                    onClick: comingSoon,
+                    onClick: () => handleViewDesignFirm(record.id),
                     icon: <ViewIcon />,
                     label: 'View',
                   },

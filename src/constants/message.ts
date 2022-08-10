@@ -17,6 +17,7 @@ export const MESSAGE_ERROR = {
   FIRST_NAME: 'First name is required',
   EMAIL_REQUIRED: 'Email is required',
   EMAIL_ALREADY_USED: 'Email already taken',
+  NO_TEAMPROFILE: 'Add member to invite',
 };
 
 export const MESSAGE_NOTIFICATION = {
@@ -111,8 +112,18 @@ export const MESSAGE_NOTIFICATION = {
   // department
   GET_LIST_DEPARTMENT_ERROR: 'Get list department error',
 
+  /// user group
+  // brand
+  GET_LIST_BRAND_SUMMARY_ERROR: 'Get list brand summary error',
+  GET_LIST_ASSIGN_TEAM_ERROR: 'Get list assign team error',
+  GET_BRAND_STATUSES_ERROR: 'Get brand statuses error',
+  CREATE_LIST_ASSIGN_TEAM_ERROR: 'Create list assign team error',
+  UPDATE_BRAND_STATUS_SUCCESS: 'Update brand status successfully',
+  UPDATE_BRAND_STATUS_ERROR: 'Update brand status error',
+
   // team profile
   GET_LIST_TEAM_PROFILE_ERROR: 'Get list team profile error',
+  GET_LIST_TEAM_PROFILE_COUNTRY_GROUP_ERROR: 'Get list team profile country group error',
   GET_ONE_TEAM_PROFILE_ERROR: 'Get one team profile error',
   CREATE_TEAM_PROFILE_SUCCESS: 'Create team profile successfully',
   CREATE_TEAM_PROFILE_ERROR: 'Create team profile error',
@@ -145,6 +156,7 @@ export const MESSAGE_NOTIFICATION = {
 
   // market availability
   GET_LIST_MARKET_AVAILABILITY_ERROR: 'Get list market availability error',
+  GET_LIST_AVAILABILITY_GROUP_COLLECTION_ERROR: 'Get list group availability collection error',
   GET_ONE_MARKET_AVAILABILITY_ERROR: 'Get one market availability error',
   UPDATE_MARKET_AVAILABILITY_SUCCESS: 'Update market availability successfully',
   UPDATE_MARKET_AVAILABILITY_ERROR: 'Failed to update market availability',
@@ -190,6 +202,7 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_DISTRIBUTOR_SUCCESS: 'Update distributor successfully',
   UPDATE_DISTRIBUTOR_ERROR: 'Update distributor error',
   GET_ONE_DISTRIBUTOR_ERROR: 'Get one distributor error',
+  GET_LIST_DISTRIBUTOR_GROUP_COUNTRY_ERROR: 'Get list group distributor country error',
 
   //brand-profile
   UPDATE_BRAND_PROFILE_SUCCESS: 'Update profile successfully',
@@ -228,6 +241,7 @@ export const MESSAGE_NOTIFICATION = {
 export const MESSAGE_TOOLTIP = {
   PERSONAL_PROFILE:
     'We value user personal privacy. However, the platform will require individual information for verification purpose from time to time.',
+  STATUS_DESING_FIRMS: 'Active: Fully activated. Inactive: Removed & archived',
 };
 
 export const EMPTY_DATA_MESSAGE = {

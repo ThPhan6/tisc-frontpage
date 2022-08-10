@@ -55,3 +55,20 @@ export interface BrandCardTeam {
   lastname: string;
   avatar: any;
 }
+
+export interface BrandStatuses {
+  key: string;
+  value: string | number;
+}
+
+export interface MemberAssignTeam {
+  id: string;
+  avatar: string;
+  full_name: string;
+  is_assigned: boolean;
+}
+
+export interface AssignTeamForm {
+  name: string;
+  users: MemberAssignTeam[];
+}

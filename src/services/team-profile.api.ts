@@ -5,7 +5,12 @@ import type {
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import { TeamProfileTableProps, TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
+import {
+  TeamProfileTableProps,
+  TeamProfileDetailProps,
+  TeamProfileRequestBody,
+  TeamProfileGroupCountry,
+} from '@/types';
 import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import store from '@/reducers';
@@ -39,6 +44,21 @@ export async function getTeamProfileList(
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_TEAM_PROFILE_ERROR);
       return false;
+    });
+}
+
+export async function getListTeamProfileGroupCountryByBrandId(brandId: string) {
+  return request<{ data: TeamProfileGroupCountry[] }>(`/api/team-profile/brand/${brandId}`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(
+        error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_TEAM_PROFILE_COUNTRY_GROUP_ERROR,
+      );
+      return [] as TeamProfileGroupCountry[];
     });
 }
 

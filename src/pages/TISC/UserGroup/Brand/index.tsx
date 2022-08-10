@@ -1,25 +1,121 @@
-import React, { useRef } from 'react';
-import CustomTable from '@/components/Table';
-import type { TableColumnItem } from '@/components/Table/types';
-import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 import { ReactComponent as ActionUnreadedIcon } from '@/assets/icons/action-unreaded-icon.svg';
-import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
-import { getBrandPagination } from '@/services';
+import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
+import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
+import { ActionForm } from '@/components/Action';
+import AssignTeam from '@/components/AssignTeam';
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import CustomTable from '@/components/Table';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import type { TableColumnItem } from '@/components/Table/types';
+import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
+import { MESSAGE_ERROR } from '@/constants/message';
+import { PATH } from '@/constants/path';
+import { pushTo } from '@/helper/history';
 import { showImageUrl } from '@/helper/utils';
-import type { BrandListItem } from '@/types';
-import styles from './styles/index.less';
+import {
+  createAssignTeamByBrandId,
+  getBrandPagination,
+  getListAssignTeamByBrandId,
+  inviteUser,
+} from '@/services';
+import type {
+  AssignTeamForm,
+  BrandListItem,
+  MemberAssignTeam,
+  TeamProfileBrandAssignMember,
+} from '@/types';
 import { PageContainer } from '@ant-design/pro-layout';
-import { MenuSummary } from '@/components/MenuSummary';
-import { dataMenuSummary } from '@/constants/util';
+import { message } from 'antd';
+import { isEmpty } from 'lodash';
+import React, { useRef, useState } from 'react';
+import BrandMenuSummary from './components/BrandMenuSummary';
+import styles from './styles/index.less';
 
 const BrandList: React.FC = () => {
   const tableRef = useRef<any>();
 
-  const comingSoon = () => {
-    alert('Coming Soon!');
+  // get each assign team
+  const [recordAssignTeam, setRecordAssignTeam] = useState<BrandListItem>();
+
+  const [visible, setVisible] = useState<boolean>(false);
+  // get list assign team to display inside popup
+  const [assignTeam, setAssignTeam] = useState<AssignTeamForm[]>([]);
+  // seleted member
+  const [selected, setSelected] = useState<CheckboxValue[]>([]);
+
+  const showAssignTeams = (brandInfo: BrandListItem) => () => {
+    // get list team
+    getListAssignTeamByBrandId(brandInfo.id).then((res) => {
+      /// set assignTeam state to display
+      setAssignTeam(res);
+
+      // show user selected
+      setSelected(
+        brandInfo.assign_team.map((member) => {
+          return {
+            label: '',
+            value: member.id,
+          };
+        }),
+      );
+      /// get brand info
+      setRecordAssignTeam(brandInfo);
+    });
+    // open popup
+    setVisible(true);
+  };
+
+  // update assign team
+  const handleSubmitAssignTeam = (checkedData: CheckboxValue[]) => {
+    // new assign team
+    const memberAssignTeam: MemberAssignTeam[] = [];
+
+    // for reset member selected
+    let newAssignTeamSelected: CheckboxValue[] = [];
+
+    checkedData.map((checked) => {
+      assignTeam.forEach((team) => {
+        const result = team.users.find((user) => user.id === checked.value);
+
+        if (result) {
+          memberAssignTeam.push(result);
+        }
+      });
+    });
+
+    if (recordAssignTeam?.id) {
+      // add member selected to data
+      createAssignTeamByBrandId(
+        recordAssignTeam.id,
+        memberAssignTeam.map((member) => member.id),
+      ).then((isSuccess) => {
+        if (isSuccess) {
+          // reload table after updating
+          tableRef.current.reload();
+
+          // set member selected for next display
+          if (memberAssignTeam.length > 0) {
+            newAssignTeamSelected = memberAssignTeam.map((member) => ({
+              label: member.full_name,
+              value: member.id,
+            }));
+          }
+          setSelected(newAssignTeamSelected);
+
+          // close popup
+          setVisible(false);
+        }
+      });
+    }
+  };
+
+  const handleEmailInvite = (teams: TeamProfileBrandAssignMember[]) => {
+    if (teams.length === 0) {
+      return message.error(MESSAGE_ERROR.NO_TEAMPROFILE);
+    }
+
+    return teams.map((team) => inviteUser(team.id));
   };
 
   const TableColumns: TableColumnItem<BrandListItem>[] = [
@@ -60,11 +156,21 @@ const BrandList: React.FC = () => {
       title: 'Assign Team',
       dataIndex: 'assign_team',
       align: 'center',
-      render: () => {
+      render: (_v, record) => {
+        if (isEmpty(record.assign_team)) {
+          return <UserAddIcon onClick={showAssignTeams(record)} style={{ cursor: 'pointer' }} />;
+        }
         return (
-          <a style={{ color: 'black' }} onClick={comingSoon}>
-            <UserAddIcon />
-          </a>
+          <div onClick={showAssignTeams(record)} style={{ cursor: 'pointer' }}>
+            {record.assign_team.map((user, key) => (
+              <TeamIcon
+                key={user.id ?? key}
+                avatar={user.avatar}
+                name={`${user.firstName}${user.lastname}`}
+                customClass={styles.member}
+              />
+            ))}
+          </div>
         );
       },
     },
@@ -74,56 +180,47 @@ const BrandList: React.FC = () => {
       dataIndex: 'action',
       align: 'center',
       //  @typescript-eslint/no-unused-vars
-      render: () => {
-        return (
-          <HeaderDropdown
-            containerClass={styles.customAction}
-            arrow
-            align={{ offset: [13, -10] }}
-            placement="bottomRight"
-            overlay={
-              <MenuHeaderDropdown
-                items={[
-                  {
-                    onClick: comingSoon,
-                    icon: <ViewIcon />,
-                    label: 'View',
-                  },
-                  {
-                    onClick: comingSoon,
-                    icon: <EmailInviteIcon />,
-                    label: 'Email Invite',
-                  },
-                ]}
-              />
-            }
-            trigger={['click']}
-          >
-            <ActionIcon />
-          </HeaderDropdown>
-        );
+      render: (_v, record: any) => {
+        const actionItems = [];
+        actionItems.push({
+          onClick: () => pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', record.id)),
+          icon: <ViewIcon />,
+          label: 'View',
+        });
+        if (record.status === 3) {
+          actionItems.push({
+            onClick: () => handleEmailInvite(record.assign_team),
+            icon: <EmailInviteIcon />,
+            label: 'Email Invite',
+          });
+        }
+        return <ActionForm actionItems={actionItems} />;
       },
     },
   ];
 
   return (
-    <PageContainer
-      pageHeaderRender={() => (
-        <MenuSummary
-          containerClass={styles.customMenuSummary}
-          menuSummaryData={dataMenuSummary.leftData}
-          typeMenu="project"
+    <div>
+      <PageContainer pageHeaderRender={() => <BrandMenuSummary />}>
+        <CustomTable
+          title="BRANDS"
+          rightAction={
+            <CustomPlusButton onClick={() => pushTo(PATH.tiscUserGroupBrandEntryFrom)} />
+          }
+          columns={TableColumns}
+          ref={tableRef}
+          fetchDataFunc={getBrandPagination}
+          hasPagination
         />
-      )}
-    >
-      <CustomTable
-        title="BRANDS"
-        columns={TableColumns}
-        ref={tableRef}
-        fetchDataFunc={getBrandPagination}
-        hasPagination
+      </PageContainer>
+      <AssignTeam
+        visible={visible}
+        setVisible={setVisible}
+        selected={selected}
+        setSelected={(data) => handleSubmitAssignTeam(data)}
+        teams={assignTeam}
       />
-    </PageContainer>
+    </div>
   );
 };
 

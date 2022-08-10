@@ -5,9 +5,10 @@ import { ProfileIcon } from '@/components/ProfileIcon';
 interface TeamIconProps {
   avatar?: string;
   name?: string;
+  customClass?: string;
 }
 
-const TeamIcon: React.FC<TeamIconProps> = ({ avatar, name }) => {
+const TeamIcon: React.FC<TeamIconProps> = ({ avatar, name, customClass }) => {
   if (avatar) {
     return (
       <img
@@ -20,11 +21,12 @@ const TeamIcon: React.FC<TeamIconProps> = ({ avatar, name }) => {
           boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
           border: '1px solid #fff',
         }}
+        className={customClass}
       />
     );
   }
   if (name) {
-    return <ProfileIcon name={name} />;
+    return <ProfileIcon name={name} customClass={customClass} />;
   }
   return null;
 };

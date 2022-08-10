@@ -1,3 +1,4 @@
+import { BodyTextProps, CustomTypography } from '@/components/Typography/types/index';
 import type { InputProps } from 'antd';
 import type { TextAreaProps } from 'antd/lib/input';
 import { CSSProperties, ReactNode } from 'react';
@@ -8,12 +9,14 @@ export interface FormGroupProps {
   optional?: boolean;
   required?: boolean;
   tooltip?: string | JSX.Element;
-  label: string;
+  label: string | JSX.Element;
+  labelColor?: CustomTypography['color'];
   message?: string;
   messageType?: 'normal' | 'error' | 'warning';
   iconTooltip?: ReactNode;
   customIcon?: ReactNode;
   onClick?: () => void;
+  placementBottomWidth?: string;
   placement?:
     | 'top'
     | 'left'
@@ -28,6 +31,14 @@ export interface FormGroupProps {
     | 'rightTop'
     | 'rightBottom';
   style?: CSSProperties;
+}
+
+export interface TextFormProps extends FormGroupProps {
+  children: string | ReactNode;
+  fontLevel?: CustomInputProps['fontLevel'];
+  fontFamily?: BodyTextProps['fontFamily'];
+  bodyTextClass?: string;
+  formClass?: string;
 }
 
 export interface CustomInputProps extends InputProps {
@@ -81,4 +92,6 @@ export interface StatusProps {
   textClass?: string;
   activeButtonClass?: string;
   InActiveButtonClass?: string;
+  toolTipTitle?: string | ReactNode;
+  alignOffset?: [number, number];
 }

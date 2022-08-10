@@ -19,3 +19,87 @@
   display: flex;
   align-items: center;
 }
+
+.member {
+  display: inline-block;
+  align-items: center;
+  margin-right: 2px;
+  cursor: pointer;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.menuTab {
+  background: #fff;
+  box-shadow: inset 0 -0.7px 0 #000;
+  // :global(.react-horizontal-scrolling-menu--scroll-container) {
+  //   display: block;
+  // }
+
+  .tabs {
+    display: flex;
+    align-items: center;
+    overflow: auto hidden;
+
+    &_items {
+      flex: 1;
+    }
+
+    :global(.ant-tabs-top > .ant-tabs-nav) {
+      margin-bottom: 0;
+    }
+
+    :global(.tab-list .ant-tabs-top > .ant-tabs-nav::before),
+    :global(.ant-tabs-top > .ant-tabs-nav::before) {
+      border-bottom: none !important;
+    }
+
+    :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
+      width: 100%;
+    }
+
+    :global(.ant-tabs-tab) {
+      width: 125px;
+    }
+  }
+}
+
+.tooltip {
+  p {
+    color: #fff !important;
+  }
+}
+
+.info_icon {
+  margin-left: 4px;
+}
+
+.basicToolbarForm {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 2px;
+  .projectStatusLabel {
+    display: flex;
+    align-items: cener;
+    svg {
+      margin-left: 4px;
+    }
+  }
+  :global(.ant-space) {
+    gap: 0 !important;
+    :global(.ant-radio) {
+      + * {
+        padding-right: 0;
+      }
+    }
+  }
+  :global(.ant-radio-wrapper) {
+    margin-right: 0;
+  }
+  button {
+    margin: 0 8px 0 24px;
+  }
+}
