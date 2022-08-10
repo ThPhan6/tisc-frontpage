@@ -1,9 +1,9 @@
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
-import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/ic-share.svg';
+import { ReactComponent as ShareIcon } from '@/assets/icons/ic-share.svg';
 import { ReactComponent as TabIcon } from '@/assets/icons/tabs-icon.svg';
-// import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign.svg';
+import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign.svg';
 import SampleProductImage from '@/assets/images/sample-product-img.png';
 import { BodyText } from '@/components/Typography';
 import { confirmDelete } from '@/helper/common';
@@ -17,15 +17,16 @@ import {
   getProductSummary,
   likeProductById,
 } from '@/features/product/services';
-import { Tooltip } from 'antd';
+import { Tooltip, TooltipProps } from 'antd';
 import React, { useState } from 'react';
-import { useCheckPermission, useGetUserRoleFromPathname } from '@/helper/hook';
+import { useBoolean, useCheckPermission, useGetUserRoleFromPathname } from '@/helper/hook';
 import styles from './ProductCard.less';
 import ShareViaEmail from '@/components/ShareViaEmail';
 import { getProductDetailPathname } from '../utils';
 import CustomCollapse from '@/components/Collapse';
 import { truncate, capitalize } from 'lodash';
 import { ProductGetListParameter, ProductItem } from '../types';
+import AssignProductModal from '../modals/AssignProductModal';
 
 interface ProductCardProps {
   product: ProductItem;
@@ -34,9 +35,10 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
   const filter = useAppSelector((state) => state.product.list.filter);
-  const [liked, setLiked] = useState(product.is_liked);
 
-  const [visible, setVisible] = useState<boolean>(false);
+  const [liked, setLiked] = useState(product.is_liked);
+  const showShareEmailModal = useBoolean();
+  const showAssignProductModal = useBoolean();
 
   // check user role to redirect
   const userRole = useGetUserRoleFromPathname();
@@ -47,8 +49,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
 
   // check user permission to action
   const showShareEmail = useCheckPermission(['Brand Admin', 'Design Admin']);
-  const showDuplicateAndDelete = useCheckPermission('TISC Admin');
-  // const isDesignerUser = useCheckPermission('Design Admin');
+  const isTiscAdmin = useCheckPermission('TISC Admin');
+  const isDesignerUser = useCheckPermission('Design Admin');
 
   const reloadProductInformation = () => {
     if (filter && product.brand?.id) {
@@ -68,25 +70,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
   };
 
   const handleDeleteProduct = () => {
-    if (showDuplicateAndDelete) {
-      confirmDelete(() => {
-        deleteProductById(product.id ?? '').then((isSuccess) => {
-          if (isSuccess && filter && product.brand && product.brand.id) {
-            reloadProductInformation();
-          }
-        });
-      });
-    }
-  };
-
-  const duplicateProduct = () => {
-    if (showDuplicateAndDelete) {
-      duplicateProductById(product.id ?? '').then((isSuccess) => {
-        if (isSuccess) {
+    confirmDelete(() => {
+      deleteProductById(product.id ?? '').then((isSuccess) => {
+        if (isSuccess && filter && product.brand && product.brand.id) {
           reloadProductInformation();
         }
       });
-    }
+    });
+  };
+
+  const duplicateProduct = () => {
+    duplicateProductById(product.id ?? '').then((isSuccess) => {
+      if (isSuccess) {
+        reloadProductInformation();
+      }
+    });
   };
 
   const likeProduct = () => {
@@ -98,6 +96,40 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
   };
 
   const likeCount = (product.favorites ?? 0) + (liked ? 1 : 0);
+
+  const tooltipProps: Partial<TooltipProps> = { align: { offset: [0, 0] }, placement: 'bottom' };
+
+  const rightActions: {
+    tooltipText: string;
+    Icon: React.FC<React.SVGProps<SVGSVGElement>>;
+    onClick: () => void;
+    show: boolean;
+  }[] = [
+    {
+      tooltipText: 'Duplicate',
+      show: isTiscAdmin,
+      Icon: TabIcon,
+      onClick: duplicateProduct,
+    },
+    {
+      tooltipText: 'Delete',
+      show: isTiscAdmin,
+      Icon: DeleteIcon,
+      onClick: handleDeleteProduct,
+    },
+    {
+      tooltipText: 'Assign Product',
+      show: isDesignerUser,
+      Icon: AssignIcon,
+      onClick: () => showAssignProductModal.setValue(true),
+    },
+    {
+      tooltipText: 'Share via Email',
+      show: showShareEmail,
+      Icon: ShareIcon,
+      onClick: () => showShareEmailModal.setValue(true),
+    },
+  ];
 
   return (
     <div className={`${styles.productCardItem} ${hasBorder ? styles.border : ''}`}>
@@ -118,35 +150,40 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hasBorder }) => {
         </BodyText>
       </div>
       <div className={styles.productAction}>
-        <Tooltip placement="bottom" title="Favourite">
+        <Tooltip title="Favourite" {...tooltipProps}>
           <BodyText level={6} fontFamily="Roboto" customClass="action-like">
             {liked ? <LikedIcon onClick={likeProduct} /> : <LikeIcon onClick={likeProduct} />}
             {`${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
           </BodyText>
         </Tooltip>
 
-        {/* for role tisc */}
-        {showDuplicateAndDelete && (
-          <BodyText customClass="action-other">
-            <Tooltip placement="bottom" title="Duplicate">
-              <TabIcon onClick={duplicateProduct} />
-            </Tooltip>
-            <Tooltip placement="bottom" title="Delete">
-              <DeleteIcon onClick={handleDeleteProduct} />
-            </Tooltip>
-          </BodyText>
-        )}
-
-        {/* {isDesignerUser && <AssignIcon onClick={() => {}} />} */}
-
-        {/* for role brand */}
-        {showShareEmail && (
-          <div className={styles.shareEmail}>
-            <ShareViaEmailIcon className={styles.shareEmailIcon} onClick={() => setVisible(true)} />
-            <ShareViaEmail visible={visible} setVisible={setVisible} />
-          </div>
-        )}
+        <div className={`${styles.rightAction} flex-center`}>
+          {rightActions.map(
+            ({ Icon, onClick, show, tooltipText }, index) =>
+              show && (
+                <Tooltip key={index} title={tooltipText} {...tooltipProps}>
+                  <Icon onClick={onClick} />
+                </Tooltip>
+              ),
+          )}
+        </div>
       </div>
+
+      {/* Keep condition to show Modals for better performance */}
+      {showShareEmailModal.value && (
+        <ShareViaEmail
+          visible={showShareEmailModal.value}
+          setVisible={showShareEmailModal.setValue}
+        />
+      )}
+
+      {showAssignProductModal.value && product.id ? (
+        <AssignProductModal
+          visible={showAssignProductModal.value}
+          setVisible={showAssignProductModal.setValue}
+          productId={product.id}
+        />
+      ) : null}
     </div>
   );
 };

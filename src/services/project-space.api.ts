@@ -10,7 +10,7 @@ import type {
 } from '@/components/Table/types';
 import { ProjectSpaceListProps, ProjectSpaceZone } from '@/types';
 
-interface IProjectSpacePaginationResponse {
+interface ProjectSpacePaginationResponse {
   data: {
     project_zones: ProjectSpaceListProps[];
     pagination: PaginationResponse;
@@ -26,7 +26,7 @@ export async function getProjectSpaceListPagination(
     method: 'GET',
     params,
   })
-    .then((response: IProjectSpacePaginationResponse) => {
+    .then((response: ProjectSpacePaginationResponse) => {
       const { project_zones, summary } = response.data;
       callback({
         data: project_zones,
