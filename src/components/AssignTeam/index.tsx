@@ -1,35 +1,27 @@
 import { map } from 'lodash';
 import { FC } from 'react';
-import { CheckboxValue } from '../CustomCheckbox/types';
 import Popover from '../Modal/Popover';
 import { RenderMemberHeader } from '@/components/RenderHeaderLabel';
 import { AssignTeamForm } from '@/types';
+import styles from './index.less';
 
 interface AssignTeamProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
-  selected?: CheckboxValue[];
-  setSelected?: (selected: CheckboxValue[]) => void;
+  selected: any;
+  setSelected: (selected: any) => void;
   teams: AssignTeamForm[];
-  handleSubmit: () => void;
 }
 
-const AssignTeam: FC<AssignTeamProps> = ({
-  visible,
-  setVisible,
-  selected,
-  setSelected,
-  teams,
-  handleSubmit,
-}) => {
+const AssignTeam: FC<AssignTeamProps> = ({ visible, setVisible, selected, setSelected, teams }) => {
   return (
     <Popover
       title="ASSIGN TEAM"
       visible={visible}
       setVisible={setVisible}
       chosenValue={selected}
-      setChosenValue={setSelected}
-      onFormSubmit={handleSubmit}
+      setChosenValue={(value) => setSelected(value)}
+      className={styles.teams}
       dropdownCheckboxTitle={(data) => data.name}
       dropdownCheckboxList={map(teams, (team) => {
         return {

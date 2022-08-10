@@ -61,14 +61,14 @@ export interface BrandStatuses {
   value: string | number;
 }
 
+export interface MemberAssignTeam {
+  id: string;
+  avatar: string;
+  full_name: string;
+  is_assigned: boolean;
+}
+
 export interface AssignTeamForm {
   name: string;
-  users: [
-    {
-      id: string;
-      avatar: string;
-      full_name: string;
-      is_assigned: true;
-    },
-  ];
+  users: MemberAssignTeam[];
 }

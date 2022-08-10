@@ -1,11 +1,11 @@
 import TextForm from '@/components/Form/TextForm';
 import { BodyText } from '@/components/Typography';
+import { useGetParam } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
 import { getBrandById } from '@/services';
 import { BrandDetail } from '@/types';
 import { Col, Row } from 'antd';
 import { useEffect, useState } from 'react';
-import { useParams } from 'umi';
 import indexStyles from '../../styles/index.less';
 import styles from '../styles/profile.less';
 
@@ -26,8 +26,7 @@ const DEFAULT_BRANDPROFILE: BrandDetail = {
 };
 
 const BrandProfileDetail = () => {
-  const params = useParams<{ id: string }>();
-  const brandId = params?.id || '';
+  const brandId = useGetParam();
   const [profile, setProfile] = useState<BrandDetail>(DEFAULT_BRANDPROFILE);
 
   useEffect(() => {
