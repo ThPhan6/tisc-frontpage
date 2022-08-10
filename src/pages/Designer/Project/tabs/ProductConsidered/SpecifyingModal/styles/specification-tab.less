@@ -1,5 +1,4 @@
 .specificationTab {
-  background-color: aqua;
   .referText {
     display: flex;
     align-items: center;
@@ -22,4 +21,31 @@
 
 .specificationHeaderItem {
   width: 100%;
+}
+.attributeOptionWrapper {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  :global(.attribute-type) {
+    margin-right: 12px;
+    white-space: nowrap;
+    text-transform: capitalize;
+  }
+  :global(.product-attribute-option-wrapper) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    cursor: pointer;
+    p {
+      color: @mono-color-medium;
+    }
+  }
+}
+:global(.attribute-group-option-popover) {
+  :global(.item-option-checked) {
+    :global(.product-id-value) {
+      color: @primary-color-dark;
+    }
+  }
 }

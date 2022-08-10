@@ -48,8 +48,5 @@ interface TabPaneProps extends HTMLAttributes<HTMLDivElement> {
   active?: boolean;
 }
 export const CustomTabPane: FC<TabPaneProps> = memo(({ active, ...props }) => {
-  if (!active) {
-    return null;
-  }
-  return <div {...props} />;
+  return <div {...props} style={{ display: !active ? 'none' : undefined }} />;
 });

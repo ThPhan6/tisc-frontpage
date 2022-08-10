@@ -28,7 +28,7 @@ const SpecifyingModal: FC<SpecifyingModalProps> = () => {
   );
   return (
     <CustomModal
-      className={popoverStyles.customPopover}
+      className={`${popoverStyles.customPopover} ${styles.specifyingModal}`}
       visible={true}
       title={
         <MainTitle level={3} customClass="text-uppercase">

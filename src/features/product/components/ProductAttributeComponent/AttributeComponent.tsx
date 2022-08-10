@@ -13,7 +13,7 @@ interface AttributeOptionProps {
   title: string;
   attributeName: string;
   options: SpecificationAttributeBasisOptionProps[];
-  chosenOptions?: RadioValue;
+  chosenOption?: RadioValue;
   setChosenOptions?: (value: RadioValue) => void;
 }
 const AttributeOptionLabel = (option: SpecificationAttributeBasisOptionProps) => {
@@ -53,7 +53,7 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
   title,
   attributeName,
   options,
-  chosenOptions,
+  chosenOption,
   setChosenOptions,
 }) => {
   const [visible, setVisible] = useState<boolean>(false);
@@ -63,9 +63,12 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
     }) > -1;
   return (
     <>
-      <div className={styles.content} onClick={() => setVisible(true)}>
+      <div
+        className={`${styles.content} product-attribute-option-wrapper`}
+        onClick={() => setVisible(true)}
+      >
         <BodyText level={6} fontFamily="Roboto" customClass={styles.content_select}>
-          select
+          {chosenOption ? chosenOption.label : 'select'}
         </BodyText>
         <ActionRightIcon className={styles.singlerRighIcon} />
       </div>
@@ -88,8 +91,9 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
         className={`
           ${styles.specificationAttributeOption}
           ${isOptionWithImage ? styles.specificationAttributeImageOption : ''}
+          attribute-group-option-popover
         `}
-        chosenValue={chosenOptions}
+        chosenValue={chosenOption}
         setChosenValue={setChosenOptions}
       ></Popover>
     </>
@@ -173,7 +177,7 @@ interface ProductAttributeLineProps {
 }
 export const ProductAttributeLine: FC<ProductAttributeLineProps> = ({ name = '', children }) => {
   return (
-    <div className={`${styles.content} ${styles.attribute}`}>
+    <div className={`${styles.content} ${styles.attribute} attribute-type`}>
       <BodyText level={4} customClass={styles.content_type}>
         {name}
       </BodyText>
