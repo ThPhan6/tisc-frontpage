@@ -46,9 +46,6 @@ const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
                         <TextForm label="Location Function">
                           {location.functional_types.map((type) => type.name).join(',')}
                         </TextForm>
-                        <TextForm label="Location Function">
-                          {location.functional_types.map((type) => type.name).join(',')}
-                        </TextForm>
                         <TextForm label="Address">{location.address}</TextForm>
                         <FormGroup
                           label="General Phone"

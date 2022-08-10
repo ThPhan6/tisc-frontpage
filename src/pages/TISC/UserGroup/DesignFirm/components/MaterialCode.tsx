@@ -31,26 +31,26 @@ const MaterialCode: FC<MaterialCodeProp> = ({ materialCodeData }) => {
                 collapsible={item.count === 0 ? 'disabled' : undefined}
               >
                 <Collapse {...CollapseLevel2Props}>
-                  {item.subs.map((material, materialIndex) => (
+                  {item.subs.map((listMaterial, materialIndex) => (
                     <Collapse.Panel
                       header={
                         <RenderLabelHeader
-                          header={material.name}
-                          quantity={material.count}
+                          header={listMaterial.name}
+                          quantity={listMaterial.count}
                           isSubHeader={true}
                           isUpperCase={false}
                         />
                       }
                       key={`${index}-${materialIndex}`}
-                      collapsible={material.count === 0 ? 'disabled' : undefined}
+                      collapsible={listMaterial.count === 0 ? 'disabled' : undefined}
                     >
                       <div className={`${indexStyles.info} ${styles.teamInfo}`}>
-                        {material.codes.map((itm, idx) => (
+                        {listMaterial.codes.map((materialCode, idx) => (
                           <table className={styles.list_material_table} key={idx}>
                             <tr>
                               <td className={styles.code}>
                                 <Title level={8} customClass={styles.colorMaterial}>
-                                  {itm.code}
+                                  {materialCode.code}
                                 </Title>
                               </td>
                               <td className={styles.material}>
@@ -59,7 +59,7 @@ const MaterialCode: FC<MaterialCodeProp> = ({ materialCodeData }) => {
                                   fontFamily="Roboto"
                                   customClass={styles.colorMaterial}
                                 >
-                                  {itm.description}
+                                  {materialCode.description}
                                 </BodyText>
                               </td>
                             </tr>

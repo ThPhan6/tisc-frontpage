@@ -6,7 +6,7 @@ import styles from './styles/textForm.less';
 
 const TextForm: FC<TextFormProps> = ({
   label,
-  labelColor = 'mono-color-medium',
+  labelColor = 'mono-color-dark',
   children,
   fontLevel = 5,
   fontFamily = 'Roboto',
