@@ -13,6 +13,7 @@ const TextForm: FC<TextFormProps> = ({
   layout = 'vertical',
   bodyTextClass = '',
   formClass = '',
+  boxShadow = false,
   ...props
 }) => {
   return (
@@ -26,7 +27,7 @@ const TextForm: FC<TextFormProps> = ({
       <BodyText
         level={fontLevel}
         fontFamily={fontFamily}
-        customClass={`${styles.content} ${bodyTextClass}`}
+        customClass={`${styles.content} ${bodyTextClass} ${boxShadow ? styles.boxShadow : ''}`}
       >
         {children}
       </BodyText>

@@ -1,14 +1,10 @@
-import { ReactComponent as DropdownV2Icon } from '@/assets/icons/action-down-icon.svg';
-import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.svg';
-import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
-import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
+import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { BodyText, Title } from '@/components/Typography';
 import { MaterialCodeDesignFirm } from '@/types';
 import { Col, Collapse, Row } from 'antd';
-import { FC, useState } from 'react';
-import { RenderLabelHeader } from '../../components/renderHeader';
+import { FC } from 'react';
+import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
 import indexStyles from '../../styles/index.less';
-import { ActiveKeyType } from '../../types';
 import styles from '../styles/ComponentViewDesign.less';
 
 interface MaterialCodeProp {
@@ -16,23 +12,11 @@ interface MaterialCodeProp {
 }
 
 const MaterialCode: FC<MaterialCodeProp> = ({ materialCodeData }) => {
-  const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
-
   return (
     <Row className={indexStyles.container}>
       <Col span={12}>
         <div className={`${indexStyles.form} ${styles.team_form}`}>
-          <Collapse
-            accordion
-            bordered={false}
-            expandIconPosition="right"
-            expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
-            className={indexStyles.dropdownList}
-            activeKey={activeKey}
-            onChange={(key) => {
-              setActiveKey(key);
-            }}
-          >
+          <Collapse {...CollapseLevel1Props}>
             {materialCodeData.map((item, index) => (
               <Collapse.Panel
                 header={
@@ -46,13 +30,7 @@ const MaterialCode: FC<MaterialCodeProp> = ({ materialCodeData }) => {
                 key={index}
                 collapsible={item.count === 0 ? 'disabled' : undefined}
               >
-                <Collapse
-                  accordion
-                  bordered={false}
-                  expandIconPosition="right"
-                  expandIcon={({ isActive }) => (isActive ? <DropupV2Icon /> : <DropdownV2Icon />)}
-                  className={indexStyles.secondDropdownList}
-                >
+                <Collapse {...CollapseLevel2Props}>
                   {item.subs.map((material, materialIndex) => (
                     <Collapse.Panel
                       header={

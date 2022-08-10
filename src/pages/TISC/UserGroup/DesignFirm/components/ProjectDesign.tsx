@@ -1,28 +1,22 @@
-import { ReactComponent as DropdownV2Icon } from '@/assets/icons/action-down-icon.svg';
-import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.svg';
-import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
-import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
-import InputGroup from '@/components/EntryForm/InputGroup';
+import TextForm from '@/components/Form/TextForm';
+import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { MEASUREMENT_UNIT } from '@/constants/util';
 import { ProjectDetail, ProjectsDesignFirm } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
-import { FC, useState } from 'react';
-import { RenderLabelHeader } from '../../components/renderHeader';
+import { FC } from 'react';
+import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
 import indexStyles from '../../styles/index.less';
-import { ActiveKeyType } from '../../types';
 import styles from '../styles/ComponentViewDesign.less';
 
 interface ProjectDesignProp {
   projectData: ProjectsDesignFirm[];
 }
 const ProjectDesign: FC<ProjectDesignProp> = ({ projectData }) => {
-  const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
-
   const renderProjectHeader = (project: ProjectDetail) => {
     return (
       <div className={styles.userName}>
-        <span className={indexStyles.dropdownCount}>
+        <span className={styles.dropdownCount}>
           Code {project.code}
           <span
             style={{
@@ -40,17 +34,7 @@ const ProjectDesign: FC<ProjectDesignProp> = ({ projectData }) => {
     <Row className={indexStyles.container}>
       <Col span={12}>
         <div className={`${indexStyles.form} ${styles.team_form}`}>
-          <Collapse
-            accordion
-            bordered={false}
-            expandIconPosition="right"
-            expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
-            className={indexStyles.dropdownList}
-            activeKey={activeKey}
-            onChange={(key) => {
-              setActiveKey(key);
-            }}
-          >
+          <Collapse {...CollapseLevel1Props}>
             {projectData.map((listProject, index) => (
               <Collapse.Panel
                 header={
@@ -64,13 +48,7 @@ const ProjectDesign: FC<ProjectDesignProp> = ({ projectData }) => {
                 key={index}
                 collapsible={listProject.count === 0 ? 'disabled' : undefined}
               >
-                <Collapse
-                  accordion
-                  bordered={false}
-                  expandIconPosition="right"
-                  expandIcon={({ isActive }) => (isActive ? <DropupV2Icon /> : <DropdownV2Icon />)}
-                  className={indexStyles.secondDropdownList}
-                >
+                <Collapse {...CollapseLevel2Props}>
                   {listProject.projects.map((project, projectIndex) => (
                     <Collapse.Panel
                       header={renderProjectHeader(project)}
@@ -78,66 +56,18 @@ const ProjectDesign: FC<ProjectDesignProp> = ({ projectData }) => {
                       collapsible={isEmpty(project.code) ? 'disabled' : undefined}
                     >
                       <div className={`${indexStyles.info} ${styles.teamInfo}`}>
-                        <InputGroup
-                          label="Project Location"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          readOnly
-                          hasPadding
-                          value={project.location}
-                        />
-                        <InputGroup
-                          label="Building Type"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          readOnly
-                          hasPadding
-                          value={project.building_type}
-                        />
-                        <InputGroup
-                          label="Project Type"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          readOnly
-                          hasPadding
-                          value={project.type}
-                        />
-                        <InputGroup
-                          label="Measurement Unit"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          readOnly
-                          hasPadding
-                          value={
-                            project.measurement_unit === MEASUREMENT_UNIT.IMPERIAL
-                              ? 'Imperial'
-                              : project.measurement_unit === MEASUREMENT_UNIT.METRIC
-                              ? 'Metric'
-                              : ''
-                          }
-                        />
-                        <InputGroup
-                          label="Design Due"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          readOnly
-                          hasPadding
-                          value={project.design_due}
-                        />
-                        <InputGroup
-                          label="Construction Start"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          readOnly
-                          hasPadding
-                          value={project.construction_start}
-                        />
+                        <TextForm label="Project Location">{project.location}</TextForm>
+                        <TextForm label="Building Type">{project.building_type}</TextForm>
+                        <TextForm label="Project Type">{project.type}</TextForm>
+                        <TextForm label="Measurement Unit">
+                          {project.measurement_unit === MEASUREMENT_UNIT.IMPERIAL
+                            ? 'Imperial'
+                            : project.measurement_unit === MEASUREMENT_UNIT.METRIC
+                            ? 'Metric'
+                            : ''}
+                        </TextForm>
+                        <TextForm label="Design Due">{project.design_due}</TextForm>
+                        <TextForm label="Construction Start">{project.construction_start}</TextForm>
                       </div>
                     </Collapse.Panel>
                   ))}

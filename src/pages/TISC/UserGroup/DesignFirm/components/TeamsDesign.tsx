@@ -1,17 +1,14 @@
-import { ReactComponent as DropdownV2Icon } from '@/assets/icons/action-down-icon.svg';
-import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.svg';
-import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
-import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
-import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
+import TextForm from '@/components/Form/TextForm';
+import { RenderLabelHeader, RenderMemberHeader } from '@/components/RenderHeaderLabel';
+import { USER_STATUSES } from '@/constants/util';
 import { TeamsDesignFirm } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
-import { FC, useState } from 'react';
-import { RenderLabelHeader, RenderMemberHeader } from '../../components/renderHeader';
+import { FC } from 'react';
+import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
 import indexStyles from '../../styles/index.less';
-import { ActiveKeyType } from '../../types';
 import styles from '../styles/ComponentViewDesign.less';
 
 interface TeamsDesignProp {
@@ -19,23 +16,11 @@ interface TeamsDesignProp {
 }
 
 const TeamsDesign: FC<TeamsDesignProp> = ({ teamData }) => {
-  const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
-
   return (
     <Row className={indexStyles.container}>
       <Col span={12}>
         <div className={`${indexStyles.form} ${styles.team_form}`}>
-          <Collapse
-            accordion
-            bordered={false}
-            expandIconPosition="right"
-            expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
-            className={indexStyles.dropdownList}
-            activeKey={activeKey}
-            onChange={(key) => {
-              setActiveKey(key);
-            }}
-          >
+          <Collapse {...CollapseLevel1Props}>
             {teamData.map((team, index) => (
               <Collapse.Panel
                 header={
@@ -49,13 +34,7 @@ const TeamsDesign: FC<TeamsDesignProp> = ({ teamData }) => {
                 key={index}
                 collapsible={team.count === 0 ? 'disabled' : undefined}
               >
-                <Collapse
-                  accordion
-                  bordered={false}
-                  expandIconPosition="right"
-                  expandIcon={({ isActive }) => (isActive ? <DropupV2Icon /> : <DropdownV2Icon />)}
-                  className={indexStyles.secondDropdownList}
-                >
+                <Collapse {...CollapseLevel2Props}>
                   {team.users.map((user, userIndex) => (
                     <Collapse.Panel
                       header={
@@ -69,51 +48,13 @@ const TeamsDesign: FC<TeamsDesignProp> = ({ teamData }) => {
                       collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}
                     >
                       <div className={`${indexStyles.info} ${styles.teamInfo}`}>
-                        <InputGroup
-                          label="Gender"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          readOnly
-                          hasPadding
-                          value={user.gender === true ? 'Male' : 'Female'}
-                        />
-                        <InputGroup
-                          label="Work Location"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          readOnly
-                          hasPadding
-                          value={user.work_location}
-                        />
-                        <InputGroup
-                          label="Department"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          readOnly
-                          hasPadding
-                          value={user.department}
-                        />
-                        <InputGroup
-                          label="Position/Title"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          readOnly
-                          hasPadding
-                          value={user.position}
-                        />
-                        <InputGroup
-                          label="Work Email"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          readOnly
-                          hasPadding
-                          value={user.email}
-                        />
+                        <TextForm label="Gender">
+                          {user.gender === true ? 'Male' : 'Female'}
+                        </TextForm>
+                        <TextForm label="Work Location">{user.work_location}</TextForm>
+                        <TextForm label="Department">{user.department}</TextForm>
+                        <TextForm label="Position/Title">{user.position}</TextForm>
+                        <TextForm label="Work Email">{user.email}</TextForm>
                         <FormGroup
                           label="Work Phone"
                           layout="vertical"
@@ -142,30 +83,14 @@ const TeamsDesign: FC<TeamsDesignProp> = ({ teamData }) => {
                             }}
                           />
                         </FormGroup>
-                        <InputGroup
-                          label="Access Level"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          readOnly
-                          hasPadding
-                          value={user.access_level}
-                        />
-                        <InputGroup
-                          label="Status"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          readOnly
-                          hasPadding
-                          value={
-                            user.status === 1
-                              ? 'Activated'
-                              : user.status === 2
-                              ? 'Blocked'
-                              : 'Pending'
-                          }
-                        />
+                        <TextForm label="Access Level">{user.access_level}</TextForm>
+                        <TextForm label="Status">
+                          {user.status === USER_STATUSES.ACTIVE
+                            ? 'Activated'
+                            : user.status === USER_STATUSES.BLOCKED
+                            ? 'Blocked'
+                            : 'Pending'}
+                        </TextForm>
                       </div>
                     </Collapse.Panel>
                   ))}

@@ -1,17 +1,13 @@
-import { ReactComponent as DropdownV2Icon } from '@/assets/icons/action-down-icon.svg';
-import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.svg';
-import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
-import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
-import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
+import TextForm from '@/components/Form/TextForm';
+import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { LocationGroupedByCountry } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
-import { FC, useState } from 'react';
-import { RenderLabelHeader } from '../../components/renderHeader';
+import { FC } from 'react';
+import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
 import indexStyles from '../../styles/index.less';
-import { ActiveKeyType } from '../../types';
 import styles from '../styles/ComponentViewDesign.less';
 
 interface LocationDesignProp {
@@ -19,23 +15,11 @@ interface LocationDesignProp {
 }
 
 const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
-  const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
-
   return (
     <Row className={indexStyles.container}>
       <Col span={12}>
         <div className={`${indexStyles.form} ${styles.team_form}`}>
-          <Collapse
-            accordion
-            bordered={false}
-            expandIconPosition="right"
-            expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
-            className={indexStyles.dropdownList}
-            activeKey={activeKey}
-            onChange={(key) => {
-              setActiveKey(key);
-            }}
-          >
+          <Collapse {...CollapseLevel1Props}>
             {locationData.map((country, index) => (
               <Collapse.Panel
                 header={
@@ -49,13 +33,7 @@ const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
                 key={index}
                 collapsible={country.count === 0 ? 'disabled' : undefined}
               >
-                <Collapse
-                  accordion
-                  bordered={false}
-                  expandIconPosition="right"
-                  expandIcon={({ isActive }) => (isActive ? <DropupV2Icon /> : <DropdownV2Icon />)}
-                  className={indexStyles.secondDropdownList}
-                >
+                <Collapse {...CollapseLevel2Props}>
                   {country.locations.map((location, locationIndex) => (
                     <Collapse.Panel
                       header={
@@ -65,24 +43,13 @@ const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
                       collapsible={isEmpty(location.business_name) ? 'disabled' : undefined}
                     >
                       <div className={`${indexStyles.info} ${styles.teamInfo}`}>
-                        <InputGroup
-                          label="Location Function"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          hasPadding
-                          value={location.functional_types.map((type) => type.name).join(',')}
-                          readOnly
-                        />
-                        <InputGroup
-                          label="Address"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          value={location.address}
-                          hasPadding
-                          readOnly
-                        />
+                        <TextForm label="Location Function">
+                          {location.functional_types.map((type) => type.name).join(',')}
+                        </TextForm>
+                        <TextForm label="Location Function">
+                          {location.functional_types.map((type) => type.name).join(',')}
+                        </TextForm>
+                        <TextForm label="Address">{location.address}</TextForm>
                         <FormGroup
                           label="General Phone"
                           layout="vertical"
@@ -97,15 +64,7 @@ const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
                             }}
                           />
                         </FormGroup>
-                        <InputGroup
-                          label="General Email"
-                          hasHeight
-                          fontLevel={3}
-                          className={styles.label}
-                          value={location.general_email}
-                          hasPadding
-                          readOnly
-                        />
+                        <TextForm label="General Email">{location.general_email}</TextForm>
                       </div>
                     </Collapse.Panel>
                   ))}
