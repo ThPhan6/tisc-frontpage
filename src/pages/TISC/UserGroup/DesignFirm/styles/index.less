@@ -18,39 +18,44 @@
   background-color: #fff;
 }
 
+.customDisplayFlex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .content {
   margin-top: 24px;
   background-color: #fff;
   .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     height: 48px;
     padding: 0 16px;
-    box-shadow: inset 0 -0.7px 0 @mono-color;
+    box-shadow: @border-bottom;
     .closeIcon {
       cursor: pointer;
     }
+    .customDisplayFlex;
   }
   .bottomHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     height: 40px;
-    box-shadow: inset 0 -0.7px 0 @mono-color;
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-shadow: @border-bottom;
     :global(.ant-tabs-top > .ant-tabs-nav::before) {
       border-bottom: 0;
     }
     :global(.ant-tabs-top) {
       height: 40px;
     }
+    .customDisplayFlex;
     .rightHeader {
       display: flex;
       align-items: center;
       .status {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        .customDisplayFlex;
+        &_item {
+          .customDisplayFlex;
+        }
         .textStatus {
           margin-right: 4px;
         }
@@ -59,13 +64,14 @@
         }
       }
       .action {
-        margin: 8px 10px;
-        border-radius: 12px;
+        margin: 0 10px;
       }
     }
   }
 }
-// .contentTab {
-//   margin-top: 8px;
-//   background-color: #fff;
-// }
+
+.tooltip {
+  p {
+    color: #fff !important;
+  }
+}

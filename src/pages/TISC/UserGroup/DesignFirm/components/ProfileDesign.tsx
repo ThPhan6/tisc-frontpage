@@ -1,29 +1,41 @@
-import InputGroup from '@/components/EntryForm/InputGroup';
 import { Col, Row } from 'antd';
 import styles from '../styles/ProfileDesign.less';
-import LogoDesignFirm from '@/assets/images/logo-design-firm.png';
+import { DesignFirmDetail } from '@/types';
+import { FC } from 'react';
+import { showImageUrl } from '@/helper/utils';
+import indexStyles from '../../styles/index.less';
+import TextForm from '@/components/Form/TextForm';
 
-const ProfileDesign = () => {
+interface ProfileDesignProp {
+  data: DesignFirmDetail;
+}
+const ProfileDesign: FC<ProfileDesignProp> = ({ data }) => {
   return (
     <div>
-      <Row>
+      <Row className={indexStyles.container}>
         <Col span={12}>
-          <div className={styles.contentTab}>
+          <div className={`${styles.contentTab} ${indexStyles.form}`}>
             <div className={styles.designName}>
-              <InputGroup label="Design Firm Name" hasBoxShadow hasHeight fontLevel={3} />
-              <img src={LogoDesignFirm} className={styles.logo} />
+              <TextForm label="Design Firm Name" formClass={styles.brandName}>
+                {data.name}
+              </TextForm>
+              {data.logo ? <img src={showImageUrl(data.logo)} className={styles.logo} /> : ''}
             </div>
-            <InputGroup
-              label="Parent Company"
-              hasBoxShadow
-              hasHeight
-              fontLevel={3}
-              className={styles.label}
-            />
-            <InputGroup label="Slogan" hasBoxShadow hasHeight fontLevel={3} />
-            <InputGroup label="Profile & Philosophy" hasBoxShadow hasHeight fontLevel={3} />
-            <InputGroup label="Offical Website" hasBoxShadow hasHeight fontLevel={3} />
-            <InputGroup label="Design Capabilities" hasBoxShadow hasHeight fontLevel={3} />
+            <TextForm label="Parent Company" boxShadow>
+              {data.parent_company}
+            </TextForm>
+            <TextForm label="Slogan" boxShadow>
+              {data.slogan}
+            </TextForm>
+            <TextForm label="Profile & Philosophy" boxShadow>
+              {data.profile_n_philosophy}
+            </TextForm>
+            <TextForm label="Offical Website" boxShadow>
+              {data.official_website}
+            </TextForm>
+            <TextForm label="Design Capabilities" boxShadow>
+              {data.design_capabilities}
+            </TextForm>
           </div>
         </Col>
       </Row>

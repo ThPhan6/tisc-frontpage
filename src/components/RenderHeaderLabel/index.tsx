@@ -1,4 +1,5 @@
 import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
+import { isNaN, isNumber } from 'lodash';
 import { FC } from 'react';
 import styles from './index.less';
 
@@ -30,25 +31,15 @@ export const RenderLabelHeader: FC<RenderLabelHeaderProps> = ({
       }}
     >
       {header}
-      {quantity !== undefined ? (
-        quantity == 0 ? (
-          <span
-            style={{
-              marginLeft: 8,
-            }}
-          >
-            (0)
-          </span>
-        ) : (
-          <span
-            className={styles.quantity}
-            style={{
-              marginLeft: 8,
-            }}
-          >
-            ({quantity})
-          </span>
-        )
+      {isNumber(quantity) && !isNaN(quantity) ? (
+        <span
+          className={styles.quantity}
+          style={{
+            marginLeft: 8,
+          }}
+        >
+          ({quantity ?? '0'})
+        </span>
       ) : null}
     </span>
   );
@@ -61,7 +52,7 @@ export const RenderMemberHeader: FC<RenderMemberHeaderProps> = ({
 }) => {
   return (
     <div className={styles.memberName}>
-      <TeamIcon avatar={avatar} name={firstName} customClass={styles.avatar} />
+      <TeamIcon avatar={avatar} name={`${firstName} ${lastName}`} customClass={styles.avatar} />
       <span className={`${styles.name} ${styles.dropdownCount}`}>{`${firstName} ${lastName}`}</span>
     </div>
   );

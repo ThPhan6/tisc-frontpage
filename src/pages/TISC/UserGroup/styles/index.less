@@ -29,13 +29,17 @@
   :global(.ant-collapse-borderless) {
     background: #fff !important;
   }
-
+  :global(.ant-collapse-item-disabled > .ant-collapse-header) {
+    cursor: default !important;
+    :global(.ant-collapse-header-text) {
+      color: @mono-color !important;
+    }
+  }
   .form {
     height: calc(100vh - 248px);
     padding: 16px;
     overflow: hidden auto;
     background: #fff;
-
     .info {
       :last-child {
         margin-bottom: 0;
@@ -58,6 +62,11 @@
         span,
         .dropdownCount {
           font-weight: 500 !important;
+        }
+      }
+      :global(.ant-collapse-item:last-child > .ant-collapse-content) {
+        :global(.ant-collapse-content-box) {
+          padding: 8px 0 0 16px !important;
         }
       }
     }

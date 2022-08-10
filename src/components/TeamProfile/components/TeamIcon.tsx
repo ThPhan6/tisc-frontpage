@@ -8,7 +8,7 @@ interface TeamIconProps {
   customClass?: string;
 }
 
-const TeamIcon: React.FC<TeamIconProps> = ({ avatar, name, customClass }) => {
+const TeamIcon: React.FC<TeamIconProps> = ({ avatar, name, customClass = '' }) => {
   if (avatar) {
     return (
       <img

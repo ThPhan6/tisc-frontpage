@@ -1,6 +1,6 @@
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { BodyText } from '@/components/Typography';
-import { useGetParam } from '@/helper/hook';
+import { useGetParamId } from '@/helper/hook';
 import { getAvailabilityListCountryGroupByBrandId } from '@/services';
 import { AvailabilityCollectionGroup } from '@/types';
 import { Col, Collapse, Row } from 'antd';
@@ -12,7 +12,7 @@ import styles from '../../styles/index.less';
 const BrandAvailabilityDetail = () => {
   const [availability, setAvailability] = useState<AvailabilityCollectionGroup[]>([]);
 
-  const brandId = useGetParam();
+  const brandId = useGetParamId();
 
   useEffect(() => {
     if (brandId) {

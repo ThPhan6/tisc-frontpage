@@ -16,7 +16,6 @@ export const FormGroup: FC<FormGroupProps> = ({
   iconTooltip,
   customIcon,
   placement = 'top',
-  placementBottomWidth,
   label,
   labelColor = 'mono-color',
   onClick,

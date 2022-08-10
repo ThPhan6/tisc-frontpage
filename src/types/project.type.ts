@@ -50,6 +50,23 @@ export interface ProjectListProps {
   }[];
 }
 
+export interface ProjectsDesignFirm {
+  status_name: string;
+  count: 0;
+  projects: ProjectDetail[];
+}
+
+export interface ProjectDetail {
+  code: string;
+  name: string;
+  location: string;
+  building_type: string;
+  type: string;
+  measurement_unit: number;
+  design_due: string;
+  construction_start: string;
+}
+
 export interface ConsideredProjectRoom {
   id: string;
   count: number;

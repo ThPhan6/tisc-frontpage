@@ -14,7 +14,7 @@ import { TabItem } from '@/components/Tabs/types';
 import { BodyText, MainTitle } from '@/components/Typography';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
-import { useBoolean, useGetParam } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 import { getBrandById, getBrandStatuses } from '@/services';
 import { updateBrandStatus } from '@/services/brand-profile';
 import { BrandDetail, BrandStatuses } from '@/types';
@@ -38,7 +38,7 @@ interface BrandDetailHeaderProps {
 }
 
 const BrandDetailHeader: FC<BrandDetailHeaderProps> = ({ selectedTab, setSelectedTab }) => {
-  const brandId = useGetParam();
+  const brandId = useGetParamId();
   const [statuses, setStatuses] = useState<BrandStatuses[]>([]);
   const buttonStatus = useBoolean();
   const isLoading = useBoolean();

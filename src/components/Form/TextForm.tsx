@@ -6,13 +6,14 @@ import styles from './styles/textForm.less';
 
 const TextForm: FC<TextFormProps> = ({
   label,
-  labelColor = 'mono-color-medium',
+  labelColor = 'mono-color-dark',
   children,
   fontLevel = 5,
   fontFamily = 'Roboto',
   layout = 'vertical',
   bodyTextClass = '',
   formClass = '',
+  boxShadow = false,
   ...props
 }) => {
   return (
@@ -26,7 +27,7 @@ const TextForm: FC<TextFormProps> = ({
       <BodyText
         level={fontLevel}
         fontFamily={fontFamily}
-        customClass={`${styles.content} ${bodyTextClass}`}
+        customClass={`${styles.content} ${bodyTextClass} ${boxShadow ? styles.boxShadow : ''}`}
       >
         {children}
       </BodyText>

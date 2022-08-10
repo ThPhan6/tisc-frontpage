@@ -39,6 +39,7 @@ export interface TextFormProps extends FormGroupProps {
   fontFamily?: BodyTextProps['fontFamily'];
   bodyTextClass?: string;
   formClass?: string;
+  boxShadow?: boolean;
 }
 
 export interface CustomInputProps extends InputProps {

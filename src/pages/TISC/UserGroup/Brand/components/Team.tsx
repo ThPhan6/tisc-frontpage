@@ -1,7 +1,7 @@
 import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader, RenderMemberHeader } from '@/components/RenderHeaderLabel';
 import { USER_STATUS_TEXTS } from '@/constants/util';
-import { useGetParam } from '@/helper/hook';
+import { useGetParamId } from '@/helper/hook';
 import { getListTeamProfileGroupCountryByBrandId } from '@/services';
 import { TeamProfileGroupCountry } from '@/types';
 import { Col, Collapse, Row } from 'antd';
@@ -13,7 +13,7 @@ import indexStyles from '../../styles/index.less';
 const BrandTeamDetail = () => {
   const [teamData, setTeamData] = useState<TeamProfileGroupCountry[]>([]);
 
-  const brandId = useGetParam();
+  const brandId = useGetParamId();
 
   useEffect(() => {
     if (brandId) {

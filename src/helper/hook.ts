@@ -75,7 +75,7 @@ export const useGetUserRoleFromPathname = () => {
   return useLocation().pathname.split('/')[1] as USER_ROLE;
 };
 
-export const useGetParam = () => {
+export const useGetParamId = () => {
   const params = useParams<{ id: string }>();
   return params?.id ?? '';
 };

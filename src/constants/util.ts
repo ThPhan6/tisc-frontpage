@@ -14,28 +14,38 @@ export const USER_STATUSES = {
   PENDING: 3,
 };
 
+export const DESIGN_STATUSES = {
+  ACTIVE: 1,
+  INACTIVE: 2,
+};
+
+export const MEASUREMENT_UNIT = {
+  IMPERIAL: 1,
+  METRIC: 2,
+};
+
 export const USER_STATUS_TEXTS = {
   [USER_STATUSES.ACTIVE]: 'Activated',
   [USER_STATUSES.BLOCKED]: 'Blocked',
   [USER_STATUSES.PENDING]: 'Pending',
 };
 
-export const dataMenuFirm = {
+export const dataMenuSummary = {
   leftData: [
     {
       id: '1',
-      quantity: 3,
-      label: 'DESIGN FIRMS',
+      quantity: 4,
+      label: 'BRAND COMPANIES',
       brands: [
         {
           id: '11',
-          quantity: 7,
+          quantity: 8,
           label: 'Locations',
         },
         {
           id: '12',
-          quantity: 28,
-          label: 'Designers',
+          quantity: 18,
+          label: 'Teams',
         },
       ],
     },
@@ -51,12 +61,12 @@ export const dataMenuFirm = {
         },
         {
           id: '22',
-          quantity: 3,
+          quantity: 1,
           label: 'Asia',
         },
         {
           id: '23',
-          quantity: 0,
+          quantity: 1,
           label: 'Europe',
         },
         {
@@ -66,7 +76,7 @@ export const dataMenuFirm = {
         },
         {
           id: '25',
-          quantity: 0,
+          quantity: 1,
           label: 'Oceania',
         },
         {
@@ -78,28 +88,48 @@ export const dataMenuFirm = {
     },
     {
       id: '3',
-      quantity: 11,
-      label: 'PROJECTS',
+      quantity: '1,223',
+      label: 'PRODUCTS',
       brands: [
         {
           id: '31',
-          quantity: 8,
-          label: 'Live',
+          quantity: 5,
+          label: 'Categories',
         },
         {
           id: '32',
-          quantity: 2,
-          label: 'On Hold',
+          quantity: 19,
+          label: 'Collections',
         },
         {
           id: '33',
-          quantity: 1,
-          label: 'Archived',
+          quantity: 220,
+          label: 'Cards',
         },
       ],
     },
   ],
+  projectData: [
+    {
+      id: '1',
+      quantity: '$127,300',
+      label: 'Total sq.m.',
+    },
+    {
+      id: '2',
+      quantity: '$1,370,246',
+      label: 'Total sq.ft.',
+    },
+  ],
+  subscriptionData: [
+    {
+      id: '1',
+      quantity: '$8,901',
+      label: 'Grand Total',
+    },
+  ],
 };
+
 export const IMAGE_ACCEPT_TYPES = {
   image: '.png,.jpeg,.webp,.svg,.jpg',
 };
