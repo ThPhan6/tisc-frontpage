@@ -1,6 +1,6 @@
 import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
-import { useGetParam } from '@/helper/hook';
+import { useGetParamId } from '@/helper/hook';
 import { getLocationByBrandId } from '@/services';
 import { LocationGroupedByCountry } from '@/types';
 import { Col, Collapse, Row } from 'antd';
@@ -12,7 +12,7 @@ import styles from '../../styles/index.less';
 const BrandLocationDetail = () => {
   const [locations, setLocations] = useState<LocationGroupedByCountry[]>([]);
 
-  const brandId = useGetParam();
+  const brandId = useGetParamId();
 
   useEffect(() => {
     if (brandId) {

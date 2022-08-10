@@ -37,7 +37,7 @@ import MaterialCode from './components/MaterialCode';
 import ProjectDesign from './components/ProjectDesign';
 import CustomDesign from './components/CustomDesign';
 import DesignFirmSummary from './components/DesignFirmSummary';
-import { useBoolean, useGetParam } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 
@@ -67,7 +67,7 @@ const optionStatus = [
 const ViewDesignFirmPage = () => {
   const [selectedTab, setSelectedTab] = useState<DesignTabKeys>(DesignTabKeys.profile);
   const isLoading = useBoolean();
-  const designId = useGetParam();
+  const designId = useGetParamId();
   const [loadedData, setLoadedData] = useState(false);
   const [data, setData] = useState<DesignFirmDetail>({
     id: '',
