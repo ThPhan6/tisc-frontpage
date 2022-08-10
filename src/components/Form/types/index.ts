@@ -16,7 +16,6 @@ export interface FormGroupProps {
   iconTooltip?: ReactNode;
   customIcon?: ReactNode;
   onClick?: () => void;
-  bodyText?: BodyTextExtraProps;
   placementBottomWidth?: string;
   placement?:
     | 'top'
@@ -32,10 +31,6 @@ export interface FormGroupProps {
     | 'rightTop'
     | 'rightBottom';
   style?: CSSProperties;
-}
-
-export interface BodyTextExtraProps extends BodyTextProps {
-  text: string | JSX.Element;
 }
 
 export interface TextFormProps extends FormGroupProps {

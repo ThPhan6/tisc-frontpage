@@ -13,12 +13,12 @@ import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
 import { showImageUrl } from '@/helper/utils';
-import { getBrandPagination, inviteUser } from '@/services';
-import type { BrandListItem, TeamProfileBrandAssignMember } from '@/types';
+import { getBrandPagination, getListAssignTeamByBrandId, inviteUser } from '@/services';
+import type { AssignTeamForm, BrandListItem, TeamProfileBrandAssignMember } from '@/types';
 import { PageContainer } from '@ant-design/pro-layout';
 import { message } from 'antd';
 import { isEmpty } from 'lodash';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import BrandMenuSummary from './components/BrandMenuSummary';
 import styles from './styles/index.less';
 
@@ -26,31 +26,30 @@ const BrandList: React.FC = () => {
   const tableRef = useRef<any>();
 
   const [visible, setVisible] = useState<boolean>(false);
-  const [selected, setSelected] = useState<CheckboxValue[]>();
-  const handleAssignTeams = () => {
-    setVisible(true);
-  };
-  const [assignTeam, setAssignTeam] = useState<TeamProfileBrandAssignMember[]>([]);
+  const [selected, setSelected] = useState<CheckboxValue[]>([]);
 
-  const handleEmailInvite = (status: 1 | 2 | 3, teams: TeamProfileBrandAssignMember[]) => {
-    if (status !== 3) {
-      return message.error(MESSAGE_ERROR.STATUS_ACTIVED);
-    }
+  const [assignTeam, setAssignTeam] = useState<AssignTeamForm[]>([]);
+  const handleAssignTeams = (brandId: string) => () => {
+    // open popup
+    setVisible(true);
+    // get list team
+    getListAssignTeamByBrandId(brandId).then(setAssignTeam);
+  };
+
+  const handleSubmitAssignTeam = () => {
+    // update assign team
+    // call api here
+    // reload table after updating
+    tableRef.current.reload();
+  };
+
+  const handleEmailInvite = (teams: TeamProfileBrandAssignMember[]) => {
     if (teams.length === 0) {
       return message.error(MESSAGE_ERROR.NO_TEAMPROFILE);
     }
 
     return teams.map((team) => inviteUser(team.id));
   };
-
-  useEffect(() => {
-    // table synced if team member has selected
-    tableRef.current.reload();
-
-    setAssignTeam([]);
-
-    // get assign team
-  }, [selected]);
 
   const TableColumns: TableColumnItem<BrandListItem>[] = [
     {
@@ -92,15 +91,17 @@ const BrandList: React.FC = () => {
       align: 'center',
       render: (_v, record) => {
         if (isEmpty(record.assign_team)) {
-          return <UserAddIcon onClick={handleAssignTeams} style={{ cursor: 'pointer' }} />;
+          return (
+            <UserAddIcon onClick={handleAssignTeams(record.id)} style={{ cursor: 'pointer' }} />
+          );
         }
         return (
-          <div onClick={handleAssignTeams} style={{ cursor: 'pointer' }}>
-            {record.assign_team.map((teamProfile, key) => (
+          <div onClick={handleAssignTeams(record.id)} style={{ cursor: 'pointer' }}>
+            {record.assign_team.map((user, key) => (
               <TeamIcon
-                key={teamProfile.id ?? key}
-                avatar={teamProfile.avatar}
-                name={teamProfile.firstname}
+                key={user.id ?? key}
+                avatar={user.avatar}
+                name={`${user.firstName}${user.lastname}`}
                 customClass={styles.member}
               />
             ))}
@@ -114,23 +115,21 @@ const BrandList: React.FC = () => {
       dataIndex: 'action',
       align: 'center',
       //  @typescript-eslint/no-unused-vars
-      render: () => {
-        return (
-          <ActionForm
-            actionItems={[
-              {
-                onClick: () => pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', record.id)),
-                icon: <ViewIcon />,
-                label: 'View',
-              },
-              {
-                onClick: () => handleEmailInvite(record.status, record.assign_team),
-                icon: <EmailInviteIcon />,
-                label: 'Email Invite',
-              },
-            ]}
-          />
-        );
+      render: (_v, record: any) => {
+        const actionItems = [];
+        actionItems.push({
+          onClick: () => pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', record.id)),
+          icon: <ViewIcon />,
+          label: 'View',
+        });
+        if (record.status === 3) {
+          actionItems.push({
+            onClick: () => handleEmailInvite(record.assign_team),
+            icon: <EmailInviteIcon />,
+            label: 'Email Invite',
+          });
+        }
+        return <ActionForm actionItems={actionItems} />;
       },
     },
   ];
@@ -155,6 +154,7 @@ const BrandList: React.FC = () => {
         selected={selected}
         setSelected={setSelected}
         teams={assignTeam}
+        handleSubmit={handleSubmitAssignTeam}
       />
     </div>
   );

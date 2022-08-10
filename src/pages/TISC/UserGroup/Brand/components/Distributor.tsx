@@ -1,4 +1,4 @@
-import { FormGroup } from '@/components/Form';
+import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { useGetParam } from '@/helper/hook';
 import { getListDistributorGroupCountryByBrandId } from '@/services';
@@ -49,70 +49,20 @@ const BrandDistributorDetail = () => {
                         collapsible={isEmpty(distributor.name) ? 'disabled' : undefined}
                       >
                         <div className={styles.info}>
-                          <FormGroup
-                            label="Address"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: distributor.address ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="Person in charge"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: distributor.person ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="Gender"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: distributor.gender ? 'Male' : 'Female' ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="Work Email"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: distributor.email ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="Work Phone"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: distributor.phone ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="Work Mobile"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: distributor.mobile ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="Authorized Countries"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: distributor.authorized_country_name ?? '',
-                            }}
-                          />
-                          <FormGroup
-                            label="Coverage Beyond"
-                            labelColor="mono-color-medium"
-                            layout="vertical"
-                            bodyText={{
-                              text: String(distributor.coverage_beyond) ?? '',
-                            }}
-                          />
+                          <TextForm label="Address">{distributor.address ?? ''}</TextForm>
+                          <TextForm label="Person in charge">{distributor.person ?? ''}</TextForm>
+                          <TextForm label="Gender">
+                            {distributor.gender ? 'Male' : 'Female'}
+                          </TextForm>
+                          <TextForm label="Work Email">{distributor.email ?? ''}</TextForm>
+                          <TextForm label="Work Phone">{distributor.phone ?? ''}</TextForm>
+                          <TextForm label="Work Mobile">{distributor.mobile ?? ''}</TextForm>
+                          <TextForm label="Authorized Countries">
+                            {distributor.authorized_country_name ?? ''}
+                          </TextForm>
+                          <TextForm label="Coverage Beyond">
+                            {String(distributor.coverage_beyond) ?? ''}
+                          </TextForm>
                         </div>
                       </Collapse.Panel>
                     ))}
