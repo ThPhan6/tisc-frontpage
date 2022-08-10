@@ -32,13 +32,12 @@ import {
   getTeamsByDesignFirm,
   updateStatusDesignFirm,
 } from '@/services';
-import { useParams } from 'umi';
 import TeamsDesign from './components/TeamsDesign';
 import MaterialCode from './components/MaterialCode';
 import ProjectDesign from './components/ProjectDesign';
 import CustomDesign from './components/CustomDesign';
 import DesignFirmSummary from './components/DesignFirmSummary';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useGetParam } from '@/helper/hook';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 
@@ -68,10 +67,7 @@ const optionStatus = [
 const ViewDesignFirmPage = () => {
   const [selectedTab, setSelectedTab] = useState<DesignTabKeys>(DesignTabKeys.profile);
   const isLoading = useBoolean();
-  const params = useParams<{
-    id: string;
-  }>();
-  const designId = params?.id || '';
+  const designId = useGetParam();
   const [loadedData, setLoadedData] = useState(false);
   const [data, setData] = useState<DesignFirmDetail>({
     id: '',

@@ -10,7 +10,7 @@ export const CustomTabs: FC<CustomTabsProps> = ({
   tabPosition = 'top',
   heightItem = '40px',
   widthItem = '128px',
-  customClass,
+  customClass = '',
   ...props
 }) => {
   return (
