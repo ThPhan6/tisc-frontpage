@@ -125,6 +125,20 @@ export async function getListAssignTeamByBrandId(brandId: string) {
     });
 }
 
+export async function createAssignTeamByBrandId(brandId: string, data: string[]) {
+  return request<boolean>(`/api/team/assign/${brandId}`, {
+    method: 'POST',
+    data: { user_ids: data },
+  })
+    .then(() => {
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_LIST_ASSIGN_TEAM_ERROR);
+      return false;
+    });
+}
+
 export async function createBrand() {
   return request<{ data: BrandDetail }>(`/api/brand/create`, {
     method: 'POST',

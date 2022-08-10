@@ -66,8 +66,6 @@ const BrandDetailHeader: FC<BrandDetailHeaderProps> = ({ selectedTab, setSelecte
   useEffect(() => {
     getBrandById(brandId).then((brandData) => {
       if (brandData) {
-        console.log('brand Data', brandData);
-
         setData(brandData);
       }
     });
@@ -116,7 +114,7 @@ const BrandDetailHeader: FC<BrandDetailHeaderProps> = ({ selectedTab, setSelecte
   return (
     <div>
       <TableHeader
-        title="BRANDS"
+        title={data.name}
         rightAction={<CloseIcon onClick={goBackToBrandList} style={{ cursor: 'pointer' }} />}
       />
       <div className={styles.menuTab}>

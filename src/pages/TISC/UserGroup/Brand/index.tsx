@@ -13,8 +13,18 @@ import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
 import { showImageUrl } from '@/helper/utils';
-import { getBrandPagination, getListAssignTeamByBrandId, inviteUser } from '@/services';
-import type { AssignTeamForm, BrandListItem, TeamProfileBrandAssignMember } from '@/types';
+import {
+  createAssignTeamByBrandId,
+  getBrandPagination,
+  getListAssignTeamByBrandId,
+  inviteUser,
+} from '@/services';
+import type {
+  AssignTeamForm,
+  BrandListItem,
+  MemberAssignTeam,
+  TeamProfileBrandAssignMember,
+} from '@/types';
 import { PageContainer } from '@ant-design/pro-layout';
 import { message } from 'antd';
 import { isEmpty } from 'lodash';
@@ -25,22 +35,79 @@ import styles from './styles/index.less';
 const BrandList: React.FC = () => {
   const tableRef = useRef<any>();
 
+  // get each assign team
+  const [recordAssignTeam, setRecordAssignTeam] = useState<BrandListItem>();
+
   const [visible, setVisible] = useState<boolean>(false);
+  // get list assign team to display inside popup
+  const [assignTeam, setAssignTeam] = useState<AssignTeamForm[]>([]);
+  // seleted member
   const [selected, setSelected] = useState<CheckboxValue[]>([]);
 
-  const [assignTeam, setAssignTeam] = useState<AssignTeamForm[]>([]);
-  const handleAssignTeams = (brandId: string) => () => {
+  const showAssignTeams = (brandInfo: BrandListItem) => () => {
+    // get list team
+    getListAssignTeamByBrandId(brandInfo.id).then((res) => {
+      /// set assignTeam state to display
+      setAssignTeam(res);
+
+      // show user selected
+      setSelected(
+        brandInfo.assign_team.map((member) => {
+          return {
+            label: '',
+            value: member.id,
+          };
+        }),
+      );
+      /// get brand info
+      setRecordAssignTeam(brandInfo);
+    });
     // open popup
     setVisible(true);
-    // get list team
-    getListAssignTeamByBrandId(brandId).then(setAssignTeam);
   };
 
-  const handleSubmitAssignTeam = () => {
-    // update assign team
-    // call api here
-    // reload table after updating
-    tableRef.current.reload();
+  // update assign team
+  const handleSubmitAssignTeam = (checkedData: CheckboxValue[]) => {
+    // new assign team
+    const memberAssignTeam: MemberAssignTeam[] = [];
+
+    // for reset member selected
+    let newAssignTeamSelected: CheckboxValue[] = [];
+
+    checkedData.map((checked) => {
+      assignTeam.forEach((team) => {
+        const result = team.users.find((user) => user.id === checked.value);
+
+        if (result) {
+          memberAssignTeam.push(result);
+        }
+      });
+    });
+
+    if (recordAssignTeam?.id) {
+      // add member selected to data
+      createAssignTeamByBrandId(
+        recordAssignTeam.id,
+        memberAssignTeam.map((member) => member.id),
+      ).then((isSuccess) => {
+        if (isSuccess) {
+          // reload table after updating
+          tableRef.current.reload();
+
+          // set member selected for next display
+          if (memberAssignTeam.length > 0) {
+            newAssignTeamSelected = memberAssignTeam.map((member) => ({
+              label: member.full_name,
+              value: member.id,
+            }));
+          }
+          setSelected(newAssignTeamSelected);
+
+          // close popup
+          setVisible(false);
+        }
+      });
+    }
   };
 
   const handleEmailInvite = (teams: TeamProfileBrandAssignMember[]) => {
@@ -91,12 +158,10 @@ const BrandList: React.FC = () => {
       align: 'center',
       render: (_v, record) => {
         if (isEmpty(record.assign_team)) {
-          return (
-            <UserAddIcon onClick={handleAssignTeams(record.id)} style={{ cursor: 'pointer' }} />
-          );
+          return <UserAddIcon onClick={showAssignTeams(record)} style={{ cursor: 'pointer' }} />;
         }
         return (
-          <div onClick={handleAssignTeams(record.id)} style={{ cursor: 'pointer' }}>
+          <div onClick={showAssignTeams(record)} style={{ cursor: 'pointer' }}>
             {record.assign_team.map((user, key) => (
               <TeamIcon
                 key={user.id ?? key}
@@ -152,9 +217,8 @@ const BrandList: React.FC = () => {
         visible={visible}
         setVisible={setVisible}
         selected={selected}
-        setSelected={setSelected}
+        setSelected={(data) => handleSubmitAssignTeam(data)}
         teams={assignTeam}
-        handleSubmit={handleSubmitAssignTeam}
       />
     </div>
   );
