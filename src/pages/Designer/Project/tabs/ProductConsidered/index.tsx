@@ -85,27 +85,23 @@ const ProductConsidered: React.FC = () => {
   const MainColumns: TableColumnItem<ConsideredProduct>[] = [
     {
       title: 'Zones',
-      dataIndex: 'name',
-      sorter: {
-        multiple: 1,
-      },
+      dataIndex: 'zone_order',
+      sorter: true,
       width: COL_WIDTH.zones,
       isExpandable: true,
-      render: (value) => {
-        return <span className="text-uppercase">{value}</span>;
+      render: (value, record) => {
+        return <span className="text-uppercase">{record.name}</span>;
       },
     },
     {
       title: 'Areas',
-      dataIndex: 'area_id',
+      dataIndex: 'area_order',
       width: COL_WIDTH.areas,
-      sorter: {
-        multiple: 1,
-      },
+      sorter: true,
     },
     {
       title: 'Rooms',
-      dataIndex: 'room_id',
+      dataIndex: 'room_order',
       width: COL_WIDTH.rooms,
       sorter: true,
     },
@@ -128,9 +124,6 @@ const ProductConsidered: React.FC = () => {
       dataIndex: 'zone_id',
       noBoxShadow: true,
       width: COL_WIDTH.zones,
-      onCell: () => ({
-        colSpan: gridView.value ? 6 : 1,
-      }),
     },
     {
       title: 'Areas',
@@ -150,6 +143,7 @@ const ProductConsidered: React.FC = () => {
     {
       title: 'Product',
       dataIndex: 'name',
+      render: (value, record) => (record.rooms ? null : value),
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
@@ -206,6 +200,9 @@ const ProductConsidered: React.FC = () => {
       dataIndex: 'zone_id',
       noBoxShadow: true,
       width: COL_WIDTH.zones,
+      onCell: () => ({
+        colSpan: gridView.value ? 9 : 1,
+      }),
     },
     {
       title: 'Areas',
@@ -236,6 +233,32 @@ const ProductConsidered: React.FC = () => {
       },
     },
   ];
+
+  const renderGridContent = (products: ProductItem[]) => {
+    console.log('products', products);
+    if (!products) {
+      return;
+    }
+    return (
+      <div
+        className={cardStyles.productCardContainer}
+        style={{ padding: '16px 16px 8px', maxWidth: 'calc(83.33vw - 40px)' }}
+      >
+        {products.map((item, index: number) => (
+          <div className={cardStyles.productCardItemWrapper} key={index}>
+            <ProductCard
+              product={item}
+              hasBorder
+              hideFavorite
+              hideAssign
+              showInquiryRequest
+              showSpecify
+            />
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div>
@@ -273,41 +296,25 @@ const ProductConsidered: React.FC = () => {
           columns: SubColumns,
           childrenColumnName: 'areas',
           subtituteChildrenColumnName: 'products',
-          gridView: gridView.value,
           level: 2,
-          renderSubContent: (data) => {
-            // console.log('data', data);
-            if (!data?.products) {
-              return;
-            }
-            return (
-              <div
-                className={cardStyles.productCardContainer}
-                style={{ padding: 16, maxWidth: 'calc(100vw - 255px)' }}
-              >
-                {data.products.map((item: any, index: number) => (
-                  <div className={cardStyles.productCardItemWrapper} key={index}>
-                    <ProductCard
-                      product={{ ...item, images: [item.image] }}
-                      hasBorder
-                      hideFavorite
-                      hideAssign
-                      showInquiryRequest
-                      showSpecify
-                    />
-                  </div>
-                ))}
-              </div>
-            );
-          },
+
+          gridView: gridView.value,
+          gridViewContentIndex: 'products',
+          renderGridContent,
 
           expandable: GetExpandableTableConfig({
             columns: SubSubColumns,
             childrenColumnName: 'rooms',
             level: 3,
+
             expandable: GetExpandableTableConfig({
               columns: ChildColumns,
               childrenColumnName: 'products',
+              level: 4,
+
+              gridView: gridView.value,
+              gridViewContentIndex: 'products',
+              renderGridContent,
             }),
           }),
         }}

@@ -126,13 +126,10 @@ const onCellLvl2Click = (expandableCellLvl2: Element) => {
   const isExpanding = expandableCellLvl2.querySelector('span[class^="expandedColumn"]')
     ? true
     : false;
-
-  try {
-    // try remove before re-add
-    styleLvl2.innerHTML = '';
-  } catch (err) {}
+  // console.log('isExpanding', isExpanding);
 
   if (isExpanding === false) {
+    styleLvl2.innerHTML = '';
     return;
   }
 
@@ -147,13 +144,13 @@ const onCellLvl2Click = (expandableCellLvl2: Element) => {
 //   return new Promise((resolve) => setTimeout(resolve, ms));
 // }
 const onLvl1CellClick = async (expandableCellLvl1: Element, colWidthLvl2?: number) => {
-  // reset styles
+  // remove styles before re-add
   style.innerHTML = '';
-  styleLvl2.innerHTML = '';
+  // styleLvl2.innerHTML = '';
   // await sleep(2000);
+
   const newWidth = expandableCellLvl1.clientWidth;
 
-  // console.log('expandableCellLvl1', { expandableCellLvl1 });
   style.innerHTML = `tr[data-row-key] td:first-child { width: ${newWidth}px; }`;
 
   const expandedColumns = document.querySelectorAll('tr[class*="custom-expanded"] td');
@@ -173,7 +170,7 @@ const onLvl1CellClick = async (expandableCellLvl1: Element, colWidthLvl2?: numbe
       // console.log('totalWidthDiff', totalWidthDiff);
       // const isLastResizeableCell = index === expandedColumns.length - 3;
       const newCellWidth = nestedSubColumns?.[index]?.clientWidth;
-      console.log('newCellWidth', newCellWidth);
+      // console.log('newCellWidth', newCellWidth);
 
       if (newCellWidth) {
         style.innerHTML += ` tr[data-row-key] td:nth-child(${
@@ -201,11 +198,8 @@ const onLvl1CellClick = async (expandableCellLvl1: Element, colWidthLvl2?: numbe
       return;
     }
     const spanTxtElLvl2 = expandableCellLvl2.querySelector("div[class^='expandedCell'] span span");
-    // const expandedColumnEl = expandableCellLvl2.querySelector('span[class^=expandedColumn]');
-    // if (expandedColumnEl) {
-    //   expandedColumnEl.className = '';
-    // }
-    onCellLvl2Click(expandableCellLvl2);
+
+    // onCellLvl2Click(expandableCellLvl2);
 
     if (spanTxtElLvl2) {
       const textMaxwidth = colWidthLvl2 - OTHER_ELEMENTS_WIDTH;

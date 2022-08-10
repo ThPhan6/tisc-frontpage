@@ -153,7 +153,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div className={`${styles.productCardItem} ${hasBorder ? styles.border : ''}`}>
       <div className={styles.imageWrapper} onClick={hanldeRedirectURL}>
-        <img src={product.images?.[0] ? showImageUrl(product.images[0]) : SampleProductImage} />
+        <img
+          src={
+            product.images?.[0] || product.image
+              ? showImageUrl(product.images?.[0] ?? product.image)
+              : SampleProductImage
+          }
+        />
         <div className={styles.imagePlaceholder}>
           <BodyText level={5} fontFamily="Roboto">
             {product.description}
@@ -169,7 +175,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </BodyText>
       </div>
       <div className={styles.productAction}>
-        <div>
+        <div className={`${styles.leftAction} flex-center`}>
           {hideFavorite ? null : (
             <Tooltip title="Favourite" {...tooltipProps}>
               <BodyText level={6} fontFamily="Roboto" customClass="action-like">

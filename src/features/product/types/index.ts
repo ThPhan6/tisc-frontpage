@@ -63,6 +63,7 @@ export interface ProductItem {
   specification_attribute_groups: ProductAttributeFormInput[];
   favorites?: number;
   images: string[];
+  image?: string;
   keywords: ProductKeyword;
   created_at?: string;
   created_by?: string;

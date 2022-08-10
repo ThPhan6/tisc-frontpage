@@ -25,13 +25,11 @@ interface ExpandableTableConfig {
   level?: number;
   rowKey?: string;
   gridView?: boolean;
-  renderSubContent?: (data: any) => ReactNode;
+  gridViewContentIndex?: string;
+  renderGridContent?: (data: any) => ReactNode;
 }
 
-export const GetExpandableTableConfig = (
-  props: ExpandableTableConfig,
-  data?: any,
-): ExpandableConfig<any> => {
+export const GetExpandableTableConfig = (props: ExpandableTableConfig): ExpandableConfig<any> => {
   const {
     expandable,
     childrenColumnName,
@@ -39,16 +37,18 @@ export const GetExpandableTableConfig = (
     level,
     rowKey = 'id',
     gridView,
-    renderSubContent,
+    gridViewContentIndex,
+    renderGridContent,
   } = props;
   const { columns, expanded } = useCustomTable(props.columns);
   return {
     expandRowByClick: false,
     showExpandColumn: false,
-    expandedRowRender: (record: any, index: number) => {
-      if (gridView && renderSubContent) {
-        return renderSubContent(data[index]);
+    expandedRowRender: (record: any) => {
+      if (gridView && renderGridContent && gridViewContentIndex && record?.[gridViewContentIndex]) {
+        return renderGridContent(record[gridViewContentIndex]);
       }
+
       return (
         <Table
           pagination={false}
@@ -56,10 +56,14 @@ export const GetExpandableTableConfig = (
           rowKey={rowKey}
           rowClassName={level === 2 ? 'custom-expanded-level-2' : ''}
           tableLayout="auto"
-          expandable={{
-            ...expandable,
-            expandedRowKeys: expanded ? [expanded] : undefined,
-          }}
+          expandable={
+            subtituteChildrenColumnName && record[subtituteChildrenColumnName]
+              ? undefined
+              : {
+                  ...expandable,
+                  expandedRowKeys: expanded ? [expanded] : undefined,
+                }
+          }
           dataSource={
             record[childrenColumnName] ||
             (subtituteChildrenColumnName ? record[subtituteChildrenColumnName] : [])
@@ -122,7 +126,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     total: 0,
   });
   const customExpandable = props.expandableConfig
-    ? GetExpandableTableConfig(props.expandableConfig, data)
+    ? GetExpandableTableConfig(props.expandableConfig)
     : undefined;
   // console.log('customExpandable', props.expandableConfig, customExpandable);
 
@@ -211,6 +215,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       fetchData({ pagination, sorter: currentSorter });
     },
   }));
+
   return (
     <div className={`${styles.customTable} ${customExpandable ? styles['sub-grid'] : ''}`}>
       {title && (
