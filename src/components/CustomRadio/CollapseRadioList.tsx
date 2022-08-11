@@ -1,4 +1,4 @@
-import type { FC, ReactNode } from 'react';
+import { FC, ReactNode, useState } from 'react';
 import { CustomRadio } from '@/components/CustomRadio';
 import { RadioValue } from '@/components/CustomRadio/types';
 import { BodyText } from '@/components/Typography';
@@ -13,8 +13,6 @@ interface CollapseRadioListProps {
   placeholder?: string | ReactNode;
   containerClass?: string;
   checkboxItemHeight?: string;
-  activeKey?: string | string[];
-  onCollapseChange?: (key: string | string[]) => void;
   Header?: ReactNode;
 }
 
@@ -25,13 +23,16 @@ const CollapseRadioList: FC<CollapseRadioListProps> = ({
   otherInput,
   placeholder = 'select from the list',
   containerClass = '',
-  activeKey = '',
-  onCollapseChange,
   Header,
 }) => {
+  const [activeKey, setActiveKey] = useState<string | string[]>();
+  const handleOpenDepartmentData = (key: string | string[]) => {
+    setActiveKey(key === '' ? '1' : key);
+  };
+
   return (
     <CustomCollapse
-      onChange={onCollapseChange}
+      onChange={handleOpenDepartmentData}
       activeKey={activeKey}
       header={
         Header || (

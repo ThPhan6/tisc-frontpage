@@ -141,7 +141,6 @@ const BrandList: React.FC = () => {
     {
       title: 'Name',
       dataIndex: 'name',
-      sorter: true,
       render: (value, record) => {
         return (
           <div className={styles.customBrandName}>
@@ -151,7 +150,13 @@ const BrandList: React.FC = () => {
         );
       },
     },
-    { title: 'Origin', dataIndex: 'origin', sorter: true },
+    {
+      title: 'Origin',
+      dataIndex: 'origin',
+      sorter: {
+        multiple: 1,
+      },
+    },
     { title: 'Locations', dataIndex: 'locations' },
     { title: 'Teams', dataIndex: 'teams' },
     { title: 'Distributors', dataIndex: 'distributors' },
@@ -184,7 +189,13 @@ const BrandList: React.FC = () => {
         );
       },
     },
-    { title: 'Status', dataIndex: 'status', sorter: true },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      sorter: {
+        multiple: 1,
+      },
+    },
     {
       title: 'Action',
       dataIndex: 'action',
@@ -221,6 +232,9 @@ const BrandList: React.FC = () => {
           ref={tableRef}
           fetchDataFunc={getBrandPagination}
           hasPagination
+          multiSort={{
+            brand_order: 'brand_order',
+          }}
         />
       </PageContainer>
       <AssignTeam
