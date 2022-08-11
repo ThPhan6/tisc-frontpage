@@ -1,6 +1,6 @@
 import TextForm from '@/components/Form/TextForm';
 import { BodyText } from '@/components/Typography';
-import { useGetParam } from '@/helper/hook';
+import { useGetParamId } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
 import { getBrandById } from '@/services';
 import { BrandDetail } from '@/types';
@@ -26,7 +26,7 @@ const DEFAULT_BRANDPROFILE: BrandDetail = {
 };
 
 const BrandProfileDetail = () => {
-  const brandId = useGetParam();
+  const brandId = useGetParamId();
   const [profile, setProfile] = useState<BrandDetail>(DEFAULT_BRANDPROFILE);
 
   useEffect(() => {
