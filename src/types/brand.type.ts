@@ -64,7 +64,8 @@ export interface BrandStatuses {
 export interface MemberAssignTeam {
   id: string;
   avatar: string;
-  full_name: string;
+  first_name: string;
+  last_name: string;
   is_assigned: boolean;
 }
 
