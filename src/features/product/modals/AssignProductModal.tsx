@@ -26,11 +26,9 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
   const [zones, setZones] = useState<ProjectSpaceListProps[]>([]);
 
   const [selectedProject, setSelectedProject] = useState<RadioValue>();
-  const [projectCollapse, setProjectCollapse] = useState<string | string[]>([]);
   const expandingZone = useNumber(-1);
   const entireProject = useBoolean();
   const [selectedRooms, setSelectedRooms] = useState<{ [areaId: string]: CheckboxValue[] }>({});
-  // console.log('selectedRooms', selectedRooms);
 
   const projectOptions: RadioValue[] = projects.map((el) => ({
     value: el.id,
@@ -91,7 +89,7 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
         fontFamily="Roboto"
         level={5}
         className="text-overflow"
-        style={{ marginRight: 16, width: 60 }}
+        style={{ marginRight: 12, width: 60 }}
       >
         {roomId}
       </BodyText>
@@ -174,20 +172,15 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
   };
 
   return (
-    <Popover {...props} title="Asign material/product" onFormSubmit={onSubmitAssigning}>
+    <Popover {...props} title="Assign material/product" onFormSubmit={onSubmitAssigning}>
       <FormGroup label="Project Name" layout="vertical">
         <CollapseRadioList
-          activeKey={projectCollapse}
           options={projectOptions}
           checked={String(selectedProject?.value)}
-          onChange={(checked) => {
-            setSelectedProject(checked);
-            setProjectCollapse([]);
-          }}
+          onChange={setSelectedProject}
           placeholder={selectedProject ? selectedProject.label : 'select from My Workspace'}
           Header={selectedProject?.label}
           containerClass={styles.customRadioList}
-          onCollapseChange={setProjectCollapse}
         />
       </FormGroup>
 
