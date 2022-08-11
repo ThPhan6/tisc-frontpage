@@ -103,7 +103,6 @@
 :global(.ant-dropdown) {
   :global(li.ant-dropdown-menu-item) {
     padding: 8px 36.5px 8px 12px;
-    text-transform: uppercase;
     user-select: none;
 
     span {
@@ -114,16 +113,20 @@
       font-family: 'Roboto';
       font-style: normal;
       line-height: 20px;
+      letter-spacing: 0.02em;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
 
-    svg {
+    &.alignRight svg {
       position: absolute;
       right: 0;
       width: 15px;
       margin-right: 13.5px;
       // transition: transform 0.1s;
+    }
+    &.textCapitalize {
+      text-transform: uppercase;
     }
 
     &.active svg {

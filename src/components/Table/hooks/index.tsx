@@ -122,7 +122,7 @@ style.id = 'lvl1';
 const styleLvl2 = document.createElement('style');
 styleLvl2.id = 'lvl2';
 
-const onCellLvl2Click = (expandableCellLvl2: Element) => {
+const onCellLvl2Click = (expandableCellLvl2: Element, colWidthLvl3?: number) => {
   const isExpanding = expandableCellLvl2.querySelector('span[class^="expandedColumn"]')
     ? true
     : false;
@@ -133,6 +133,29 @@ const onCellLvl2Click = (expandableCellLvl2: Element) => {
     return;
   }
 
+  if (colWidthLvl3) {
+    const expandableCellsLvl3 = document.querySelectorAll('tr[data-row-key] td:nth-child(3)');
+    expandableCellsLvl3.forEach((expandableCellLvl3) => {
+      if (!expandableCellLvl3) {
+        return;
+      }
+      const spanTxtElLvl3 = expandableCellLvl3.querySelector(
+        "div[class^='expandedCell'] span span",
+      );
+      console.log('spanTxtElLvl3', spanTxtElLvl3);
+      // onCellLvl2Click(expandableCellLvl3);
+
+      if (spanTxtElLvl3) {
+        const textMaxwidth = colWidthLvl3 - OTHER_ELEMENTS_WIDTH;
+        spanTxtElLvl3.style['max-width'] = `${textMaxwidth}px`;
+      }
+
+      // expandableCellLvl3.addEventListener('click', () => {
+      //   setTimeout(() => onCellLvl2Click(expandableCellLvl3, colWidthLvl3), EXPANDED_DELAY);
+      // });
+    });
+  }
+
   // Insert styles
   const newWidth = expandableCellLvl2.clientWidth;
   // console.log('newWidth', newWidth);
@@ -140,14 +163,14 @@ const onCellLvl2Click = (expandableCellLvl2: Element) => {
   styleLvl2.innerHTML = `tr[data-row-key] td:nth-child(2) { width: ${newWidth}px; }`;
 };
 
-// function sleep(ms) {
-//   return new Promise((resolve) => setTimeout(resolve, ms));
-// }
-const onLvl1CellClick = async (expandableCellLvl1: Element, colWidthLvl2?: number) => {
+const onLvl1CellClick = async (
+  expandableCellLvl1: Element,
+  colWidthLvl2?: number,
+  colWidthLvl3?: number,
+) => {
   // remove styles before re-add
   style.innerHTML = '';
-  // styleLvl2.innerHTML = '';
-  // await sleep(2000);
+  styleLvl2.innerHTML = '';
 
   const newWidth = expandableCellLvl1.clientWidth;
 
@@ -157,18 +180,14 @@ const onLvl1CellClick = async (expandableCellLvl1: Element, colWidthLvl2?: numbe
   const nestedSubColumns = document.querySelectorAll(
     'tr[class*="ant-table-expanded-row"]:not([style*="display: none;"]) tbody tr:not([class*="custom-expanded-level-"]):first-child td',
   );
+  // console.log('expandedColumns', expandedColumns);
 
   if (expandedColumns && expandedColumns.length >= 4) {
-    // let totalWidthDiff = 0;
     expandedColumns.forEach((dataCell, index) => {
       // Avoid resize first cell, last cells (Count and Account column)
       if ([0, expandedColumns.length - 1, expandedColumns.length - 2].includes(index)) {
         return;
       }
-      // totalWidthDiff += nestedSubColumns?.[index]?.clientWidth - dataCell.clientWidth;
-      // console.log('widthDiff', nestedSubColumns?.[index]?.clientWidth - dataCell.clientWidth);
-      // console.log('totalWidthDiff', totalWidthDiff);
-      // const isLastResizeableCell = index === expandedColumns.length - 3;
       const newCellWidth = nestedSubColumns?.[index]?.clientWidth;
       // console.log('newCellWidth', newCellWidth);
 
@@ -207,12 +226,16 @@ const onLvl1CellClick = async (expandableCellLvl1: Element, colWidthLvl2?: numbe
     }
 
     expandableCellLvl2.addEventListener('click', () => {
-      setTimeout(() => onCellLvl2Click(expandableCellLvl2), EXPANDED_DELAY);
+      setTimeout(() => onCellLvl2Click(expandableCellLvl2, colWidthLvl3), EXPANDED_DELAY);
     });
   });
 };
 
-export const useAutoExpandNestedTableColumn = (colWidthLvl1: number, colWidthLvl2?: number) => {
+export const useAutoExpandNestedTableColumn = (
+  colWidthLvl1: number,
+  colWidthLvl2?: number,
+  colWidthLvl3?: number,
+) => {
   useEffect(() => {
     style.innerHTML = '';
     styleLvl2.innerHTML = '';
@@ -247,7 +270,10 @@ export const useAutoExpandNestedTableColumn = (colWidthLvl1: number, colWidthLvl
         const clickableEl = expandableCellLvl1.querySelector("div[class^='expandedCell']");
 
         clickableEl?.addEventListener('click', () => {
-          setTimeout(() => onLvl1CellClick(expandableCellLvl1, colWidthLvl2), EXPANDED_DELAY);
+          setTimeout(
+            () => onLvl1CellClick(expandableCellLvl1, colWidthLvl2, colWidthLvl3),
+            EXPANDED_DELAY,
+          );
         });
       });
     };

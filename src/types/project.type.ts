@@ -73,3 +73,17 @@ export interface ConsideredProduct {
   products: ProductItem[];
   area?: ConsideredProjectArea[];
 }
+
+export enum AssigningStatus {
+  'Considered' = 1,
+  'Re-considered' = 2,
+  'Unlisted' = 3,
+}
+
+export type AssigningStatusName = keyof typeof AssigningStatus;
+
+export interface FindProductConsiderRequest {
+  project_id: string;
+  project_zone_id?: string;
+  is_entire?: boolean;
+}
