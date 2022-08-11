@@ -148,12 +148,11 @@ const ViewDesignFirmPage = () => {
     isLoading.setValue(true);
     updateStatusDesignFirm(designId, { status: data.status }).then((isSuccess) => {
       isLoading.setValue(false);
-      submitButtonStatus.setValue(true);
-      setTimeout(() => {
-        submitButtonStatus.setValue(false);
-      }, 2000);
       if (isSuccess) {
-        return viewDesignFirm();
+        submitButtonStatus.setValue(true);
+        setTimeout(() => {
+          submitButtonStatus.setValue(false);
+        }, 2000);
       }
     });
   };
