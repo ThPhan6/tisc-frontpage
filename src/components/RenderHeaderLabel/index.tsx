@@ -61,7 +61,7 @@ export const RenderMemberHeader: FC<RenderMemberHeaderProps> = ({
 }) => {
   return (
     <div className={styles.memberName}>
-      <TeamIcon avatar={avatar} name={firstName} customClass={styles.avatar} />
+      <TeamIcon avatar={avatar} name={`${firstName} ${lastName}`} customClass={styles.avatar} />
       <span className={`${styles.name} ${styles.dropdownCount}`}>{`${firstName} ${lastName}`}</span>
     </div>
   );
