@@ -30,6 +30,7 @@ import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { ReactComponent as CheckIcon } from '@/assets/icons/ic-square-check.svg';
 import { ReactComponent as CancelIcon } from '@/assets/icons/ic-square-cancel.svg';
 import { confirmDelete } from '@/helper/common';
+import { message } from 'antd';
 
 const COL_WIDTH = {
   zones: 165,
@@ -106,7 +107,9 @@ const ProductConsidered: React.FC = () => {
     }
     return (
       <ActionMenu
-        handleSpecify={() => {}}
+        handleSpecify={() => {
+          message.info('Feature is under development');
+        }}
         handleDelete={() =>
           confirmDelete(() => {
             removeProductFromProject(record.id, {
