@@ -11,6 +11,7 @@ export enum STATUS_RESPONSE_CODE {
 export const USER_STATUSES = {
   ACTIVE: 1,
   BLOCKED: 2,
+  INACTIVE: 2,
   PENDING: 3,
 };
 
@@ -27,6 +28,7 @@ export const MEASUREMENT_UNIT = {
 export const USER_STATUS_TEXTS = {
   [USER_STATUSES.ACTIVE]: 'Activated',
   [USER_STATUSES.BLOCKED]: 'Blocked',
+  [USER_STATUSES.INACTIVE]: 'Inactive',
   [USER_STATUSES.PENDING]: 'Pending',
 };
 
