@@ -27,6 +27,8 @@ const AssignTeam: FC<AssignTeamProps> = ({ visible, setVisible, selected, setSel
         return {
           name: team.name,
           options: team.users.map((member, index) => {
+            console.log(`${member.first_name} ${member.last_name}`);
+
             return {
               label: (
                 <RenderMemberHeader
