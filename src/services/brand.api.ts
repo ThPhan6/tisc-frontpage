@@ -113,7 +113,7 @@ export async function getBrandStatuses() {
 }
 
 export async function getListAssignTeamByBrandId(brandId: string) {
-  return request<{ data: AssignTeamForm[] }>(`/api/team/get-list-group-by-type/${brandId}`, {
+  return request<{ data: AssignTeamForm[] }>(`/api/team/get-list-group-team-profile/${brandId}`, {
     method: 'GET',
   })
     .then((response) => {
@@ -131,6 +131,9 @@ export async function createAssignTeamByBrandId(brandId: string, data: string[])
     data: { user_ids: data },
   })
     .then(() => {
+      if (data.length > 0) {
+        message.success(MESSAGE_NOTIFICATION.CREATE_LIST_ASSIGN_TEAM_SUCCESS);
+      }
       return true;
     })
     .catch((error) => {
