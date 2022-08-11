@@ -25,6 +25,7 @@ export interface TableColumnItem<T> extends ColumnType<T> {
   noBoxShadow?: boolean;
   lightHeading?: boolean;
   hidden?: boolean;
+  noExpandIfEmptyData?: string;
 }
 
 export interface PaginationResponse {
@@ -41,7 +42,7 @@ export interface SummaryResponse {
 
 export interface DataTableResponse<T = any> {
   data: T;
-  pagination: TablePaginationConfig;
+  pagination?: TablePaginationConfig;
   summary?: SummaryResponse[];
 }
 
