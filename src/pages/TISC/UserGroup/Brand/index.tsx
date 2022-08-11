@@ -169,7 +169,10 @@ const BrandList: React.FC = () => {
           return <UserAddIcon onClick={showAssignTeams(record)} style={{ cursor: 'pointer' }} />;
         }
         return (
-          <div onClick={showAssignTeams(record)} style={{ cursor: 'pointer' }}>
+          <div
+            onClick={showAssignTeams(record)}
+            style={{ cursor: 'pointer', display: 'inline-flex' }}
+          >
             {record.assign_team.map((user, key) => {
               return (
                 <TeamIcon
