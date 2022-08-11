@@ -1,3 +1,4 @@
+import { EmptyOne } from '@/components/Empty';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { BodyText } from '@/components/Typography';
 import { useGetParamId } from '@/helper/hook';
@@ -25,7 +26,7 @@ const BrandAvailabilityDetail = () => {
       <Col span={12}>
         <div className={styles.form}>
           <Collapse {...CollapseLevel1Props}>
-            {availability.length &&
+            {availability.length ? (
               availability.map((collections, index) => (
                 <Collapse.Panel
                   header={
@@ -62,7 +63,10 @@ const BrandAvailabilityDetail = () => {
                     ))}
                   </Collapse>
                 </Collapse.Panel>
-              ))}
+              ))
+            ) : (
+              <EmptyOne isCenter />
+            )}
           </Collapse>
         </div>
       </Col>
