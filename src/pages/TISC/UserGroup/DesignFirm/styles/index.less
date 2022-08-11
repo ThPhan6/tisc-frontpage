@@ -10,6 +10,68 @@
   cursor: pointer;
 }
 
+.menuSummary {
+  margin: -24px -24px 0 -24px;
+}
+
 .customMenuSummary {
   background-color: #fff;
+}
+
+.customDisplayFlex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.content {
+  margin-top: 24px;
+  background-color: #fff;
+  .header {
+    height: 48px;
+    padding: 0 16px;
+    box-shadow: @border-bottom;
+    .closeIcon {
+      cursor: pointer;
+    }
+    .customDisplayFlex;
+  }
+  .bottomHeader {
+    height: 40px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-shadow: @border-bottom;
+    :global(.ant-tabs-top > .ant-tabs-nav::before) {
+      border-bottom: 0;
+    }
+    :global(.ant-tabs-top) {
+      height: 40px;
+    }
+    .customDisplayFlex;
+    .rightHeader {
+      display: flex;
+      align-items: center;
+      .status {
+        .customDisplayFlex;
+        &_item {
+          .customDisplayFlex;
+        }
+        .textStatus {
+          margin-right: 4px;
+        }
+        .listStatus {
+          margin-left: 16px;
+        }
+      }
+      .action {
+        margin: 0 10px;
+      }
+    }
+  }
+}
+
+.tooltip {
+  p {
+    color: #fff !important;
+  }
 }

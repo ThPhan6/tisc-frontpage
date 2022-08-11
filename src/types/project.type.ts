@@ -1,3 +1,5 @@
+import { ProductItem } from '@/features/product/types';
+
 export interface ProjectFilterValueProps {
   id: number;
   name: string;
@@ -46,4 +48,59 @@ export interface ProjectListProps {
     name: string;
     avatar: string;
   }[];
+}
+
+export interface ProjectsDesignFirm {
+  status_name: string;
+  count: 0;
+  projects: ProjectDetail[];
+}
+
+export interface ProjectDetail {
+  code: string;
+  name: string;
+  location: string;
+  building_type: string;
+  type: string;
+  measurement_unit: number;
+  design_due: string;
+  construction_start: string;
+}
+
+export interface ConsideredProjectRoom {
+  id: string;
+  count: number;
+  room_name: string;
+  room_id: string;
+  room_size: number;
+  quantity: number;
+  products: ProductItem[];
+}
+
+export interface ConsideredProjectArea {
+  id?: string;
+  name: string;
+  rooms: ConsideredProjectRoom[];
+}
+
+export interface ConsideredProduct {
+  id?: string;
+  name: string;
+  count: number;
+  products: ProductItem[];
+  area?: ConsideredProjectArea[];
+}
+
+export enum AssigningStatus {
+  'Considered' = 1,
+  'Re-considered' = 2,
+  'Unlisted' = 3,
+}
+
+export type AssigningStatusName = keyof typeof AssigningStatus;
+
+export interface FindProductConsiderRequest {
+  project_id: string;
+  project_zone_id?: string;
+  is_entire?: boolean;
 }

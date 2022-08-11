@@ -199,12 +199,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
           }}
           overlayInnerStyle={{
             width: '240px',
-            height: 'auto',
             padding: '8px 19.5px',
-            fontWeight: '300',
-            fontSize: '12px',
-            lineHeight: '20px',
-            letterSpacing: '0.24px',
           }}
         >
           <WarningIcon className={styles['warning-icon']} />

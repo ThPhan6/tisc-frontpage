@@ -32,3 +32,15 @@ export interface MarketAvailabilityDetails {
   total: number;
   regions: MarketAvailabilityDetailRegion[];
 }
+
+export interface RegionAvailabilityCollection {
+  region_name: string;
+  count: number;
+  region_country: string;
+}
+
+export interface AvailabilityCollectionGroup {
+  collection_name: string;
+  count: number;
+  regions: RegionAvailabilityCollection[];
+}

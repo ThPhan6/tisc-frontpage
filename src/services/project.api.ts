@@ -15,6 +15,8 @@ import {
   ProjectDetailProps,
   ProjectSummaryData,
 } from '@/types';
+import { ProjectItem, setProjectList } from '@/features/project/reducers';
+import store from '@/reducers';
 
 interface ProjectPaginationResponse {
   data: {
@@ -44,6 +46,18 @@ export async function getProjectPagination(
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_LIST_FAILED);
+    });
+}
+
+export async function getAllProjects() {
+  request(`/api/project/get-all`, {
+    method: 'GET',
+  })
+    .then((response: { data: ProjectItem[] }) => {
+      store.dispatch(setProjectList(response.data));
+    })
+    .catch((error) => {
+      console.log('getAllProjects', error);
     });
 }
 
@@ -87,7 +101,7 @@ export async function createProject(data: ProjectBodyRequest) {
   })
     .then((res: { data: { id: string } }) => {
       message.success(MESSAGE_NOTIFICATION.CREATE_PROJECT_SUCCESS);
-      console.log('res', res);
+      // console.log('res', res);
       return res.data.id;
     })
     .catch((error) => {

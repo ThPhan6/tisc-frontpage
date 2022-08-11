@@ -19,8 +19,13 @@ export const PATH = {
   updateCategories: '/tisc/products/categories/update/:id',
   // user group
   tiscUserGroupList: '/tisc/user-groups',
+
   tiscUserGroupBrandList: '/tisc/user-groups/brands',
+
+  // user group - design-firms
   tiscUserGroupDesignerList: '/tisc/user-groups/design-firms',
+  tiscUserGroupViewDesigner: '/tisc/user-groups/design-firms/view/:id',
+
   // tisc project_tracking
   tiscProject: '/tisc/projects',
   tiscProjectListing: '/tisc/projects/listing',

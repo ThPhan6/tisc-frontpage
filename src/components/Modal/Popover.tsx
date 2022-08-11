@@ -18,7 +18,7 @@ import type { RadioListOption } from '@/components/CustomRadio/RadioList';
 
 import styles from './styles/Popover.less';
 
-interface PopoverProps {
+export interface PopoverProps {
   title: string;
   visible: boolean;
   setVisible: (visible: boolean) => void;
@@ -51,6 +51,8 @@ interface PopoverProps {
 
   // combinable checkbox value ?
   combinableCheckbox?: boolean;
+
+  onFormSubmit?: () => void;
 }
 
 const Popover: FC<PopoverProps> = ({
@@ -70,6 +72,8 @@ const Popover: FC<PopoverProps> = ({
   noFooter,
   className,
   combinableCheckbox,
+  children,
+  onFormSubmit,
 }) => {
   const [currentValue, setCurrentValue] = useState<any>(chosenValue);
 
@@ -171,6 +175,10 @@ const Popover: FC<PopoverProps> = ({
   };
 
   const handleDone = () => {
+    if (onFormSubmit) {
+      return onFormSubmit();
+    }
+
     // onchange selected Value
     if (setChosenValue) {
       setChosenValue(currentValue);
@@ -209,6 +217,7 @@ const Popover: FC<PopoverProps> = ({
       >
         {extraTopAction}
         {renderChildren()}
+        {children}
       </Modal>
     </div>
   );

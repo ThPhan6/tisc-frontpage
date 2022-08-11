@@ -17,6 +17,7 @@ export const MESSAGE_ERROR = {
   FIRST_NAME: 'First name is required',
   EMAIL_REQUIRED: 'Email is required',
   EMAIL_ALREADY_USED: 'Email already taken',
+  NO_TEAMPROFILE: 'Add member to invite',
 };
 
 export const MESSAGE_NOTIFICATION = {
@@ -111,6 +112,16 @@ export const MESSAGE_NOTIFICATION = {
   // department
   GET_LIST_DEPARTMENT_ERROR: 'Get list department error',
 
+  /// user group
+  // brand
+  GET_LIST_BRAND_SUMMARY_ERROR: 'Get list brand summary error',
+  GET_LIST_ASSIGN_TEAM_ERROR: 'Get list assign team error',
+  GET_BRAND_STATUSES_ERROR: 'Get brand statuses error',
+  CREATE_LIST_ASSIGN_TEAM_ERROR: 'Create list assign team error',
+  CREATE_LIST_ASSIGN_TEAM_SUCCESS: 'Create list assign team successfully',
+  UPDATE_BRAND_STATUS_SUCCESS: 'Update brand status successfully',
+  UPDATE_BRAND_STATUS_ERROR: 'Update brand status error',
+
   // team profile
   GET_LIST_TEAM_PROFILE_ERROR: 'Get list team profile error',
   GET_ONE_TEAM_PROFILE_ERROR: 'Get one team profile error',
@@ -145,6 +156,7 @@ export const MESSAGE_NOTIFICATION = {
 
   // market availability
   GET_LIST_MARKET_AVAILABILITY_ERROR: 'Get list market availability error',
+  GET_LIST_AVAILABILITY_GROUP_COLLECTION_ERROR: 'Get list group availability collection error',
   GET_ONE_MARKET_AVAILABILITY_ERROR: 'Get one market availability error',
   UPDATE_MARKET_AVAILABILITY_SUCCESS: 'Update market availability successfully',
   UPDATE_MARKET_AVAILABILITY_ERROR: 'Failed to update market availability',
@@ -190,6 +202,7 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_DISTRIBUTOR_SUCCESS: 'Update distributor successfully',
   UPDATE_DISTRIBUTOR_ERROR: 'Update distributor error',
   GET_ONE_DISTRIBUTOR_ERROR: 'Get one distributor error',
+  GET_LIST_DISTRIBUTOR_GROUP_COUNTRY_ERROR: 'Get list group distributor country error',
 
   //brand-profile
   UPDATE_BRAND_PROFILE_SUCCESS: 'Update profile successfully',
@@ -216,6 +229,17 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_PROJECT_SUCCESS: 'Delete project successfully',
   GET_PROJECT_DATA_FAILED: 'Failed to get project data',
   GET_PROJECT_SUMMARY_DATA_FAILED: 'Failed to get project summary data',
+
+  //user-group / design firms
+  GET_ONE_DESIGN_FIRM_ERROR: 'Failed to get one design firm',
+  GET_SUMMARY: 'Failed to get summary',
+  GET_LOCATIONS_BY_DESIGN_FIRM: 'Failed to get locations by design firm',
+  GET_TEAMS_BY_DESIGN_FIRM: 'Failed to get teams by design firm',
+  GET_PROJECTS_BY_DESIGN_FIRM: 'Failed to get projects by design firm',
+  GET_MATERIAL_CODE_BY_DESIGN_FIRM: 'Failed to get material code by design firm',
+  UPDATE_STATUS_DESIGN_FIRM_SUCCESS: 'Update status design firm successfully',
+  UPDATE_STATUS_DESIGN_FIRM_ERROR: 'Update status design firm error',
+
   GET_PROJECT_SPACE_DATA_FAILED: 'Failed to get project space data',
   CREATE_PROJECT_SPACE_FAILED: 'Failed to create project space',
   CREATE_PROJECT_SPACE_SUCCESS: 'Create project space successfully',

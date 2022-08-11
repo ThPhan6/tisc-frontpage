@@ -16,3 +16,19 @@ export interface DesignFirm {
   created_at: string;
   updated_at: string;
 }
+
+export interface DesignFirmDetail {
+  id: string;
+  name: string;
+  parent_company: string;
+  logo: string;
+  slogan: string;
+  profile_n_philosophy: string;
+  official_website: string;
+  design_capabilities: string;
+  team_profile_ids: [];
+  location_ids: [];
+  material_code_ids: [];
+  project_ids: [];
+  status: number;
+}
