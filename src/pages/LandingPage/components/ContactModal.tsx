@@ -3,16 +3,36 @@ import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
 import { CustomInput } from '@/components/Form/CustomInput';
 import CustomButton from '@/components/Button';
-import { FC } from 'react';
-import { ModalProps } from '../types';
+import { FC, useState } from 'react';
+import { ContactRequestBody, ModalProps } from '../types';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { ReactComponent as MessageIcon } from '@/assets/icons/message-icon-18px.svg';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import { contact } from '../services/api';
 
 export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
 
+  const [valueForm, setValueForm] = useState<ContactRequestBody>({
+    name: '',
+    email: '',
+    inquiry: '',
+  });
+
+  const handleOnChangeValueForm = (
+    e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>,
+  ) => {
+    setValueForm({ ...valueForm, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmitContact = () => {
+    contact(valueForm).then((res) => {
+      if (res) {
+        onClose();
+      }
+    });
+  };
   return (
     <CustomModal
       visible={visible}
@@ -40,9 +60,10 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
             focusColor="secondary"
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
             containerClass={styles.user}
-            name="user"
+            name="name"
             type={'text'}
             required={true}
+            onChange={handleOnChangeValueForm}
           />
           <CustomInput
             fromLandingPage
@@ -56,6 +77,7 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
             name="email"
             required={true}
+            onChange={handleOnChangeValueForm}
           />
           <div className={styles.wrapper}>
             <MessageIcon />
@@ -69,11 +91,15 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
               placeholder="type here..."
               maxLength={125}
               borderBottomColor="mono-medium"
+              name="inquiry"
+              onChange={handleOnChangeValueForm}
             />
           </div>
         </div>
         <div className={styles.button}>
-          <CustomButton buttonClass={styles.submit}>Thank you</CustomButton>
+          <CustomButton buttonClass={styles.submit} onClick={handleSubmitContact}>
+            Thank you
+          </CustomButton>
         </div>
       </div>
     </CustomModal>

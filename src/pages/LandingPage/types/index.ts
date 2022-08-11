@@ -72,3 +72,9 @@ export type SignUpDesignerRequestBody = {
   password: string;
   confirmed_password: string;
 };
+
+export type ContactRequestBody = {
+  name: string;
+  email: string;
+  inquiry: string;
+};

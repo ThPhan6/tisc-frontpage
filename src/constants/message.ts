@@ -35,6 +35,8 @@ export const MESSAGE_NOTIFICATION = {
   SIGN_UP_DESIGNER_SUCCESS:
     'Sign up designer successfully and please check your email to verify account',
   SIGN_UP_DESIGNER_ERROR: 'Sign up designer error',
+  CONTACT_SUCCESS: 'Contact successfully',
+  CONTACT_ERROR: 'Contact error',
 
   // Category
   CREATE_CATEGORY_SUCCESS: 'Create the category successfully',
