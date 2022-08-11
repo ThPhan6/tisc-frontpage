@@ -1,7 +1,7 @@
 import { USER_ROLE } from '@/constants/userRoles';
 import { useAppSelector } from '@/reducers';
 import React from 'react';
-import { useLocation, useModel } from 'umi';
+import { useLocation, useModel, useParams } from 'umi';
 
 export function useDefault(defaultValue: any) {
   const [value, setValue] = React.useState(defaultValue);
@@ -73,4 +73,9 @@ export const useCheckPermission = (allowRoles: AccessLevelType | AccessLevelType
 
 export const useGetUserRoleFromPathname = () => {
   return useLocation().pathname.split('/')[1] as USER_ROLE;
+};
+
+export const useGetParamId = () => {
+  const params = useParams<{ id: string }>();
+  return params?.id ?? '';
 };

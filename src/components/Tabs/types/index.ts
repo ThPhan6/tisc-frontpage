@@ -13,4 +13,5 @@ export interface CustomTabsProps extends TabsProps {
   tabPosition?: 'left' | 'right' | 'top' | 'bottom';
   heightItem?: string;
   widthItem?: string;
+  customClass?: string;
 }

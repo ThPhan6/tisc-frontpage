@@ -50,6 +50,23 @@ export interface ProjectListProps {
   }[];
 }
 
+export interface ProjectsDesignFirm {
+  status_name: string;
+  count: 0;
+  projects: ProjectDetail[];
+}
+
+export interface ProjectDetail {
+  code: string;
+  name: string;
+  location: string;
+  building_type: string;
+  type: string;
+  measurement_unit: number;
+  design_due: string;
+  construction_start: string;
+}
+
 export interface ConsideredProjectRoom {
   id: string;
   count: number;
@@ -67,8 +84,23 @@ export interface ConsideredProjectArea {
 }
 
 export interface ConsideredProduct {
+  id?: string;
   name: string;
   count: number;
   products: ProductItem[];
   area?: ConsideredProjectArea[];
+}
+
+export enum AssigningStatus {
+  'Considered' = 1,
+  'Re-considered' = 2,
+  'Unlisted' = 3,
+}
+
+export type AssigningStatusName = keyof typeof AssigningStatus;
+
+export interface FindProductConsiderRequest {
+  project_id: string;
+  project_zone_id?: string;
+  is_entire?: boolean;
 }

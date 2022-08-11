@@ -5,7 +5,12 @@ import {
   SummaryResponse,
 } from '@/components/Table/types';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { Distributor, DistributorForm, DistributorDetail } from '@/types/distributor.type';
+import {
+  Distributor,
+  DistributorForm,
+  DistributorDetail,
+  DistributorResponseForm,
+} from '@/types/distributor.type';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -84,5 +89,24 @@ export async function getOneDistributor(id: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_DISTRIBUTOR_ERROR);
+    });
+}
+
+export async function getListDistributorGroupCountryByBrandId(brandId: string) {
+  return request<{ data: DistributorResponseForm[] }>(
+    `/api/distributor/get-list-group-by-country`,
+    {
+      method: 'GET',
+      params: { brand_id: brandId },
+    },
+  )
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(
+        error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_DISTRIBUTOR_GROUP_COUNTRY_ERROR,
+      );
+      return [] as DistributorResponseForm[];
     });
 }

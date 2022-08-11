@@ -5,7 +5,13 @@ import type {
   PaginationRequestParams,
   GetDataListResponse,
 } from '@/components/Table/types';
-import { ProjectSummaryData, ConsideredProduct, ProjectSpaceListProps } from '@/types';
+import {
+  ProjectSummaryData,
+  ConsideredProduct,
+  ProjectSpaceListProps,
+  FindProductConsiderRequest,
+  AssigningStatus,
+} from '@/types';
 import { getResponseMessage } from '@/helper/common';
 
 export async function getProductAssignSpaceByProject(
@@ -37,6 +43,7 @@ export async function getConsideredProducts(
     .then(
       (response: { data: GetDataListResponse & { considered_products: ConsideredProduct[] } }) => {
         const { considered_products, summary } = response.data;
+        considered_products[0].id = 'entire_project';
         callback({
           data: considered_products,
           summary,
@@ -66,6 +73,46 @@ export async function assignProductToProject(data: {
     .catch((error) => {
       console.log('assignProductToProject error', error);
       message.error(getResponseMessage('assign', 'product', 'failed', error));
+      return false;
+    });
+}
+
+export async function updateProductConsiderStatus(
+  product_id: string,
+  data: FindProductConsiderRequest & {
+    status: AssigningStatus;
+  },
+) {
+  return request<ProjectSummaryData>(`/api/considered-product/update-status/${product_id}`, {
+    method: 'PATCH',
+    data,
+  })
+    .then(() => {
+      message.success(getResponseMessage('update', 'consider status'));
+      return true;
+    })
+    .catch((error) => {
+      console.log('updateProductConsiderStatus error', error);
+      message.error(getResponseMessage('update', 'consider status', 'failed', error));
+      return false;
+    });
+}
+
+export async function removeProductFromProject(
+  product_id: string,
+  data: FindProductConsiderRequest,
+) {
+  return request<ProjectSummaryData>(`/api/considered-product/delete/${product_id}`, {
+    method: 'DELETE',
+    data,
+  })
+    .then(() => {
+      message.success(getResponseMessage('delete', 'product from project'));
+      return true;
+    })
+    .catch((error) => {
+      console.log('removeProductFromProject error', error);
+      message.error(getResponseMessage('delete', 'product from project', 'failed', error));
       return false;
     });
 }
