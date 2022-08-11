@@ -1,4 +1,10 @@
-import { BrandDetail, GeneralData, ConversionSubValueProps } from '@/types';
+import {
+  BrandDetail,
+  GeneralData,
+  ConversionSubValueProps,
+  AssigningStatus,
+  AssigningStatusName,
+} from '@/types';
 
 export interface ProductSummary {
   categories: GeneralData[];
@@ -66,7 +72,12 @@ export interface ProductItem {
   keywords: ProductKeyword;
   created_at?: string;
   created_by?: string;
+  image?: string;
   brand_name?: string;
+  status?: AssigningStatus;
+  status_name?: AssigningStatusName;
+  is_entire?: boolean;
+  project_zone_id?: string;
 }
 
 export interface ProductFormData {

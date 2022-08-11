@@ -1,8 +1,9 @@
+import { FC } from 'react';
 import { HeaderDropdown, MenuIconProps } from '../HeaderDropdown';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
-import { FC } from 'react';
+import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
 
 interface ActionFormProps {
   actionItems?: MenuIconProps[];
@@ -11,11 +12,6 @@ interface ActionFormProps {
   trigger?: 'click' | 'hover' | 'contextMenu';
   arrow?: boolean;
   placement?: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topCenter' | 'topRight' | 'bottomCenter';
-}
-
-interface ActionMenuForm extends ActionFormProps {
-  handleUpdate?: () => void;
-  handleDelete?: () => void;
 }
 
 export const ActionForm: FC<ActionFormProps> = ({
@@ -43,8 +39,21 @@ export const ActionForm: FC<ActionFormProps> = ({
   );
 };
 
-export const ActionMenu: FC<ActionMenuForm> = ({ handleDelete, handleUpdate }) => {
+interface ActionMenuForm extends ActionFormProps {
+  handleUpdate?: () => void;
+  handleDelete?: () => void;
+  handleSpecify?: () => void;
+}
+export const ActionMenu: FC<ActionMenuForm> = ({ handleDelete, handleUpdate, handleSpecify }) => {
   const actionItems = [];
+
+  if (handleSpecify) {
+    actionItems.push({
+      icon: <DispatchIcon />,
+      onClick: handleSpecify,
+      label: 'Specify',
+    });
+  }
   if (handleUpdate) {
     actionItems.push({
       icon: <EditIcon />,
