@@ -147,8 +147,8 @@ const ViewDesignFirmPage = () => {
   const handleUpdateStatus = () => {
     isLoading.setValue(true);
     updateStatusDesignFirm(designId, { status: data.status }).then((isSuccess) => {
+      isLoading.setValue(false);
       if (isSuccess) {
-        isLoading.setValue(false);
         submitButtonStatus.setValue(true);
         setTimeout(() => {
           submitButtonStatus.setValue(false);
