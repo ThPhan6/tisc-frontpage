@@ -27,7 +27,7 @@ import type {
 } from '@/types';
 import { PageContainer } from '@ant-design/pro-layout';
 import { message } from 'antd';
-import { isEmpty } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 import React, { useRef, useState } from 'react';
 import BrandMenuSummary from './components/BrandMenuSummary';
 import styles from './styles/index.less';
@@ -47,20 +47,22 @@ const BrandList: React.FC = () => {
   const showAssignTeams = (brandInfo: BrandListItem) => () => {
     // get list team
     getListAssignTeamByBrandId(brandInfo.id).then((res) => {
-      /// set assignTeam state to display
-      setAssignTeam(res);
+      if (res) {
+        /// set assignTeam state to display
+        setAssignTeam(res);
 
-      // show user selected
-      setSelected(
-        brandInfo.assign_team.map((member) => {
-          return {
-            label: '',
-            value: member.id,
-          };
-        }),
-      );
-      /// get brand info
-      setRecordAssignTeam(brandInfo);
+        // show user selected
+        setSelected(
+          brandInfo.assign_team.map((member) => {
+            return {
+              label: '',
+              value: member.id,
+            };
+          }),
+        );
+        /// get brand info
+        setRecordAssignTeam(brandInfo);
+      }
     });
     // open popup
     setVisible(true);
@@ -76,15 +78,21 @@ const BrandList: React.FC = () => {
 
     checkedData.map((checked) => {
       assignTeam.forEach((team) => {
-        const result = team.users.find((user) => user.id === checked.value);
+        const member = team.users.find((user) => user.id === checked.value);
 
-        if (result) {
-          memberAssignTeam.push(result);
+        if (member) {
+          memberAssignTeam.push(member);
         }
       });
     });
 
     if (recordAssignTeam?.id) {
+      // dont call api if havent changed
+      const checkedIds = checkedData.map((check) => check.value);
+      const assignedTeamIds = recordAssignTeam.assign_team.map((team) => team.id);
+      const noSelectionChange = isEqual(checkedIds, assignedTeamIds);
+      if (noSelectionChange) return;
+
       // add member selected to data
       createAssignTeamByBrandId(
         recordAssignTeam.id,
@@ -97,7 +105,7 @@ const BrandList: React.FC = () => {
           // set member selected for next display
           if (memberAssignTeam.length > 0) {
             newAssignTeamSelected = memberAssignTeam.map((member) => ({
-              label: member.full_name,
+              label: `${member.first_name} ${member.last_name}`,
               value: member.id,
             }));
           }
@@ -162,14 +170,16 @@ const BrandList: React.FC = () => {
         }
         return (
           <div onClick={showAssignTeams(record)} style={{ cursor: 'pointer' }}>
-            {record.assign_team.map((user, key) => (
-              <TeamIcon
-                key={user.id ?? key}
-                avatar={user.avatar}
-                name={`${user.firstName}${user.lastname}`}
-                customClass={styles.member}
-              />
-            ))}
+            {record.assign_team.map((user, key) => {
+              return (
+                <TeamIcon
+                  key={user.id ?? key}
+                  avatar={user.avatar}
+                  name={`${user.firstname} ${user.lastname}`}
+                  customClass={styles.member}
+                />
+              );
+            })}
           </div>
         );
       },
@@ -217,7 +227,7 @@ const BrandList: React.FC = () => {
         visible={visible}
         setVisible={setVisible}
         selected={selected}
-        setSelected={(data) => handleSubmitAssignTeam(data)}
+        setSelected={handleSubmitAssignTeam}
         teams={assignTeam}
       />
     </div>

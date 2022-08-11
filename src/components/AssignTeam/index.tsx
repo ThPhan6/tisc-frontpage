@@ -1,8 +1,8 @@
+import { RenderMemberHeader } from '@/components/RenderHeaderLabel';
+import { AssignTeamForm } from '@/types';
 import { map } from 'lodash';
 import { FC } from 'react';
 import Popover from '../Modal/Popover';
-import { RenderMemberHeader } from '@/components/RenderHeaderLabel';
-import { AssignTeamForm } from '@/types';
 import styles from './index.less';
 
 interface AssignTeamProps {
@@ -20,17 +20,20 @@ const AssignTeam: FC<AssignTeamProps> = ({ visible, setVisible, selected, setSel
       visible={visible}
       setVisible={setVisible}
       chosenValue={selected}
-      setChosenValue={(value) => setSelected(value)}
+      setChosenValue={setSelected}
       className={styles.teams}
       dropdownCheckboxTitle={(data) => data.name}
       dropdownCheckboxList={map(teams, (team) => {
         return {
           name: team.name,
           options: team.users.map((member, index) => {
+            console.log(`${member.first_name} ${member.last_name}`);
+
             return {
               label: (
                 <RenderMemberHeader
-                  firstName={member.full_name}
+                  firstName={member.first_name}
+                  lastName={member.last_name}
                   avatar={member.avatar}
                   key={member.id ?? index}
                 />
