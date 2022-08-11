@@ -1,3 +1,4 @@
+import { EmptyOne } from '@/components/Empty';
 import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { useGetParamId } from '@/helper/hook';
@@ -25,7 +26,7 @@ const BrandLocationDetail = () => {
       <Col span={12}>
         <div className={styles.form}>
           <Collapse {...CollapseLevel1Props}>
-            {locations.length &&
+            {locations.length ? (
               locations.map((country, index) => (
                 <Collapse.Panel
                   header={
@@ -65,7 +66,10 @@ const BrandLocationDetail = () => {
                     ))}
                   </Collapse>
                 </Collapse.Panel>
-              ))}
+              ))
+            ) : (
+              <EmptyOne isCenter />
+            )}
           </Collapse>
         </div>
       </Col>

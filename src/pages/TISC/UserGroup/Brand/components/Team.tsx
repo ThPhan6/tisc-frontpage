@@ -1,3 +1,4 @@
+import { EmptyOne } from '@/components/Empty';
 import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader, RenderMemberHeader } from '@/components/RenderHeaderLabel';
 import { USER_STATUS_TEXTS } from '@/constants/util';
@@ -26,7 +27,7 @@ const BrandTeamDetail = () => {
       <Col span={12}>
         <div className={indexStyles.form}>
           <Collapse {...CollapseLevel1Props}>
-            {teamData.length &&
+            {teamData.length ? (
               teamData.map((team, index) => (
                 <Collapse.Panel
                   header={
@@ -74,7 +75,10 @@ const BrandTeamDetail = () => {
                     ))}
                   </Collapse>
                 </Collapse.Panel>
-              ))}
+              ))
+            ) : (
+              <EmptyOne isCenter />
+            )}
           </Collapse>
         </div>
       </Col>
