@@ -1,8 +1,3 @@
-.header {
-  margin-bottom: 20px;
-  box-shadow: @border-bottom;
-}
-
 .radioGroup {
   :global(.ant-radio-group) {
     padding-left: 16px;
@@ -18,6 +13,7 @@
 
   &.activeLabel {
     :global(.function-type-placeholder) {
+      display: inline-flex;
       overflow: hidden;
       color: @primary-color-dark;
       text-overflow: ellipsis;

@@ -153,7 +153,11 @@ const BrandList: React.FC = () => {
         );
       },
     },
-    { title: 'Origin', dataIndex: 'origin', sorter: true },
+    {
+      title: 'Origin',
+      dataIndex: 'origin',
+      sorter: true,
+    },
     { title: 'Locations', dataIndex: 'locations' },
     { title: 'Teams', dataIndex: 'teams' },
     { title: 'Distributors', dataIndex: 'distributors' },
