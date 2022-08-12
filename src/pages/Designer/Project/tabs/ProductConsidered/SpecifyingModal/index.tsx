@@ -1,23 +1,23 @@
-import { useState } from 'react';
-import type { FC } from 'react';
-import { CustomModal } from '@/components/Modal';
 import CustomButton from '@/components/Button';
-import { RobotoBodyText, MainTitle } from '@/components/Typography';
-import { CustomTabs, CustomTabPane } from '@/components/Tabs';
+import { CustomModal } from '@/components/Modal';
+import { CustomTabPane, CustomTabs } from '@/components/Tabs';
+import { MainTitle } from '@/components/Typography';
+import type { FC } from 'react';
+import { useState } from 'react';
 import {
-  ProjectSpecifyTabValue,
   ProjectSpecifyTabKeys,
   ProjectSpecifyTabs,
+  ProjectSpecifyTabValue,
 } from '../../../constants/tab';
 import AllocationTab from './AllocationTab';
-import VendorTab from './VendorTab';
-import SpecificationTab from './SpecificationTab';
 import CodeOrderTab from './CodeOrderTab';
+import SpecificationTab from './SpecificationTab';
+import VendorTab from './VendorTab';
 
-import styles from './styles/specifying-modal.less';
+import BrandProductBasicHeader from '@/components/BrandProductBasicHeader';
 import popoverStyles from '@/components/Modal/styles/Popover.less';
 import { ProductItem } from '@/features/product/types';
-import { showImageUrl } from '@/helper/utils';
+import styles from './styles/specifying-modal.less';
 
 interface SpecifyingModalProps {
   visible: boolean;
@@ -30,7 +30,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({ visible, setVisible,
   const [selectedTab, setSelectedTab] = useState<ProjectSpecifyTabValue>(
     ProjectSpecifyTabKeys.specification,
   );
-  console.log('product', product);
+  // console.log('product', product);
   return (
     <CustomModal
       className={`${popoverStyles.customPopover} ${styles.specifyingModal}`}
@@ -56,19 +56,13 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({ visible, setVisible,
         </CustomButton>
       }
     >
-      <div className={styles.productInformationWrapper}>
-        <div className={styles.productInformationContainer}>
-          <img src={showImageUrl(product.image)} className={styles.productImage} />
-          <div className={styles.productInformation}>
-            <RobotoBodyText level={6}> {product.brand_name} </RobotoBodyText>
-            <RobotoBodyText level={6}> {product.collection_name} </RobotoBodyText>
-            <RobotoBodyText level={6}> {product.description} </RobotoBodyText>
-          </div>
-        </div>
-        <div className={styles.brandLogo}>
-          <img src="https://via.placeholder.com/24" />
-        </div>
-      </div>
+      <BrandProductBasicHeader
+        image={product.image}
+        logo={'https://via.placeholder.com/24'}
+        text_1={product.brand_name}
+        text_2={product.collection_name}
+        text_3={product.description}
+      />
 
       <CustomTabs
         listTab={ProjectSpecifyTabs}
@@ -81,7 +75,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({ visible, setVisible,
       />
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.specification}>
-        <SpecificationTab />
+        <SpecificationTab productId={product.id} />
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.vendor}>
