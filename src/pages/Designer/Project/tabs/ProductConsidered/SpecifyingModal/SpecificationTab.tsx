@@ -110,8 +110,8 @@ const SpecificationTab: FC<SpecificationTabProps> = () => {
   //   // }
   // }
 
-  console.log('specifiyData', specifiyData);
-  console.log('product', product);
+  // console.log('specifiyData', specifiyData);
+  // console.log('product', product);
 
   useEffect(() => {
     getProductByIdAndReturn('c0a418b9-2476-4c05-a2e3-c31e31cc0843').then((res) => {

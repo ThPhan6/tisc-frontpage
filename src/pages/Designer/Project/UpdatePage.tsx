@@ -15,6 +15,7 @@ const ProjectCreatePage: React.FC = () => {
   const projectId = params?.id || '';
   const [selectedTab, setSelectedTab] = useState<ProjectTabKeys>(ProjectTabKeys.productConsidered);
   const [project, setProject] = useState<ProjectDetailProps>();
+
   useEffect(() => {
     if (projectId) {
       getProjectById(projectId).then((projectDetail) => {

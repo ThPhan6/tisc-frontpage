@@ -16,23 +16,29 @@ import CodeOrderTab from './CodeOrderTab';
 
 import styles from './styles/specifying-modal.less';
 import popoverStyles from '@/components/Modal/styles/Popover.less';
+import { ProductItem } from '@/features/product/types';
+import { showImageUrl } from '@/helper/utils';
+
 interface SpecifyingModalProps {
-  title?: string;
-  visible?: boolean;
-  setVisible?: (visible: boolean) => void;
+  visible: boolean;
+  setVisible: (visible: boolean) => void;
+  projectId: string;
+  product: ProductItem;
 }
 
-const SpecifyingModal: FC<SpecifyingModalProps> = () => {
+export const SpecifyingModal: FC<SpecifyingModalProps> = ({ visible, setVisible, product }) => {
   const [selectedTab, setSelectedTab] = useState<ProjectSpecifyTabValue>(
     ProjectSpecifyTabKeys.specification,
   );
+  console.log('product', product);
   return (
     <CustomModal
       className={`${popoverStyles.customPopover} ${styles.specifyingModal}`}
-      visible={true}
+      visible={visible}
+      onCancel={() => setVisible(false)}
       title={
         <MainTitle level={3} customClass="text-uppercase">
-          specifiy
+          Specifying
         </MainTitle>
       }
       centered
@@ -52,11 +58,11 @@ const SpecifyingModal: FC<SpecifyingModalProps> = () => {
     >
       <div className={styles.productInformationWrapper}>
         <div className={styles.productInformationContainer}>
-          <img src="https://via.placeholder.com/70" className={styles.productImage} />
+          <img src={showImageUrl(product.image)} className={styles.productImage} />
           <div className={styles.productInformation}>
-            <RobotoBodyText level={6}> Brand company name </RobotoBodyText>
-            <RobotoBodyText level={6}> Collection/Series name </RobotoBodyText>
-            <RobotoBodyText level={6}> Product/Item description </RobotoBodyText>
+            <RobotoBodyText level={6}> {product.brand_name} </RobotoBodyText>
+            <RobotoBodyText level={6}> {product.collection_name} </RobotoBodyText>
+            <RobotoBodyText level={6}> {product.description} </RobotoBodyText>
           </div>
         </div>
         <div className={styles.brandLogo}>
@@ -77,16 +83,18 @@ const SpecifyingModal: FC<SpecifyingModalProps> = () => {
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.specification}>
         <SpecificationTab />
       </CustomTabPane>
+
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.vendor}>
         <VendorTab />
       </CustomTabPane>
+
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.allocation}>
         <AllocationTab />
       </CustomTabPane>
+
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.codeAndOrder}>
         <CodeOrderTab />
       </CustomTabPane>
     </CustomModal>
   );
 };
-export default SpecifyingModal;

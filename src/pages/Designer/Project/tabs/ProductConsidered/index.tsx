@@ -1,6 +1,5 @@
 import { BodyText } from '@/components/Typography';
-import React, { useRef } from 'react';
-import SpecifyingModal from './SpecifyingModal';
+import React, { useRef, useState } from 'react';
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
 import { ReactComponent as MenuIcon } from '@/assets/icons/ic-menu.svg';
 import { ReactComponent as GridIcon } from '@/assets/icons/ic-grid.svg';
@@ -31,7 +30,7 @@ import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { ReactComponent as CheckIcon } from '@/assets/icons/ic-square-check.svg';
 import { ReactComponent as CancelIcon } from '@/assets/icons/ic-square-cancel.svg';
 import { confirmDelete } from '@/helper/common';
-import { message } from 'antd';
+import { SpecifyingModal } from './SpecifyingModal';
 
 const COL_WIDTH = {
   zones: 165,
@@ -49,6 +48,7 @@ const ProductConsidered: React.FC = () => {
   useAutoExpandNestedTableColumn(COL_WIDTH.zones, COL_WIDTH.areas, COL_WIDTH.rooms);
   const tableRef = useRef<any>();
   const gridView = useBoolean();
+  const [specifyingProduct, setSpecifyingProduct] = useState<ProductItem>();
   const params = useParams<{ id: string }>();
 
   const renderStatusDropdown = (v: any, record: any) => {
@@ -109,7 +109,7 @@ const ProductConsidered: React.FC = () => {
     return (
       <ActionMenu
         handleSpecify={() => {
-          message.info('Feature is under development');
+          setSpecifyingProduct(record);
         }}
         handleDelete={() =>
           confirmDelete(() => {
@@ -443,7 +443,15 @@ const ProductConsidered: React.FC = () => {
           }),
         })}
       />
-      <SpecifyingModal />
+
+      {specifyingProduct && (
+        <SpecifyingModal
+          visible={Boolean(specifyingProduct)}
+          product={specifyingProduct}
+          projectId={params.id}
+          setVisible={(visible) => (visible ? undefined : setSpecifyingProduct(undefined))}
+        />
+      )}
     </div>
   );
 };

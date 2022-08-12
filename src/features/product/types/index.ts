@@ -74,6 +74,7 @@ export interface ProductItem {
   created_by?: string;
   image?: string;
   brand_name?: string;
+  collection_name?: string;
   status?: AssigningStatus;
   status_name?: AssigningStatusName;
   is_entire?: boolean;
