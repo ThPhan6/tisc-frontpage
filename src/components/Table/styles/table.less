@@ -247,3 +247,12 @@ tr[class^='ant-table-expanded-row'] tbody > tr > td {
 .ant-table-tbody > tr > td {
   transition: all 0.3s;
 }
+
+:global(.ant-table-cell.disabled) {
+  cursor: not-allowed;
+  pointer-events: none;
+  p,
+  svg {
+    color: @mono-color-light;
+  }
+}
