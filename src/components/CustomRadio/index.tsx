@@ -17,6 +17,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
   inputPlaceholder = 'type here',
   containerClass,
   value,
+  containerStyle,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -53,6 +54,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
         ${isRadioList ? style['radio-list'] : ''}
         ${containerClass}
       `}
+      style={containerStyle}
     >
       <Radio.Group
         {...props}

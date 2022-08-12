@@ -1,9 +1,30 @@
-// import { useState } from 'react';
+import { useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
 import type { FC } from 'react';
+import { OnChangeSpecifyingProductFnc } from './types';
 
-interface AllocationTabProps {}
+interface AllocationTabProps {
+  projectId: string;
+  productId: string;
+  onChangeSpecifyingState: OnChangeSpecifyingProductFnc;
+}
 
-const AllocationTab: FC<AllocationTabProps> = () => {
-  return <h3>Allocation</h3>;
+const AllocationTab: FC<AllocationTabProps> = ({
+  projectId,
+  productId,
+  onChangeSpecifyingState,
+}) => {
+  const { AssignProductToSpaceForm } = useAssignProductToSpaceForm(
+    productId,
+    projectId,
+    (isEntire) => onChangeSpecifyingState({ is_entire: isEntire }),
+    (selectedRooms) => onChangeSpecifyingState({ project_zone_ids: selectedRooms }),
+  );
+
+  return (
+    <div>
+      <AssignProductToSpaceForm specifyingModal />
+    </div>
+  );
 };
+
 export default AllocationTab;
