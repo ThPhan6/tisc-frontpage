@@ -97,10 +97,42 @@ export enum AssigningStatus {
   'Unlisted' = 3,
 }
 
+export enum SpecifyStatus {
+  'Specified' = 1,
+  'Re-specified' = 2,
+  'Canceled' = 3,
+}
+
 export type AssigningStatusName = keyof typeof AssigningStatus;
 
 export interface FindProductConsiderRequest {
   project_id: string;
   project_zone_id?: string;
   is_entire?: boolean;
+}
+
+export interface SpecifiedProductBrand {
+  name: string;
+  count: 2;
+  products: ProductItem[];
+}
+
+export interface SpecifiedProductMaterial {
+  name: string;
+  description: string;
+  image: string;
+  brand_name: string;
+  product: string;
+  quantity: number;
+  unit: string;
+  method: string;
+  status: number;
+}
+
+export interface SpecifiedProductSpace {
+  id: string;
+  name: string;
+  count: number;
+  products: ProductItem[];
+  area?: ConsideredProjectArea[];
 }
