@@ -3,11 +3,10 @@ import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import Popover from '@/components/Modal/Popover';
 import { MESSAGE_ERROR } from '@/constants/message';
-import { validateEmail } from '@/helper/utils';
+import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
 import { useAppSelector } from '@/reducers';
 import { getDepartmentList } from '@/services';
 import { ShareViaEmailForm } from '@/types/share-via-email.type';
-// import { validateEmail } from '@/helper/utils';
 import { FC, useEffect, useState } from 'react';
 import BrandProductBasicHeader from '../BrandProductBasicHeader';
 import CollapseRadioFormGroup from '../CustomRadio/CollapseRadioFormGroup';
@@ -45,9 +44,6 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ visible, setVisible }) => {
   // for Sharing Group
   const [sharingGroup, setSharingGroup] = useState<SharingGroup[]>([]);
   const [sharingPurpose, setSharingPurpose] = useState<SharingGroup[]>([]);
-
-  // validate email Address
-  const isValidEmail = validateEmail(shareViaEmailData.email_to);
 
   useEffect(() => {
     getDepartmentList().then((res) => {
@@ -148,16 +144,8 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ visible, setVisible }) => {
           onChangeData('email_to', e.target.value);
         }}
         onDelete={() => onChangeData('email_to', '')}
-        message={
-          shareViaEmailData.email_to !== ''
-            ? isValidEmail
-              ? ''
-              : MESSAGE_ERROR.EMAIL_UNVALID
-            : undefined
-        }
-        messageType={
-          shareViaEmailData.email_to !== '' ? (isValidEmail ? 'normal' : 'error') : undefined
-        }
+        message={emailMessageError(shareViaEmailData.email_to, MESSAGE_ERROR.EMAIL_UNVALID)}
+        messageType={emailMessageErrorType(shareViaEmailData.email_to, 'error', 'normal')}
       />
 
       {/* Title */}
