@@ -142,7 +142,6 @@ const onCellLvl2Click = (expandableCellLvl2: Element, colWidthLvl3?: number) => 
       const spanTxtElLvl3 = expandableCellLvl3.querySelector(
         "div[class^='expandedCell'] span span",
       );
-      console.log('spanTxtElLvl3', spanTxtElLvl3);
       // onCellLvl2Click(expandableCellLvl3);
 
       if (spanTxtElLvl3) {
