@@ -1,21 +1,21 @@
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 import { CustomRadio } from '@/components/CustomRadio';
+import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
 import type { RadioValue } from '@/components/CustomRadio/types';
 import { EntryFormWrapper } from '@/components/EntryForm';
+import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { Status } from '@/components/Form/Status';
-import InputGroup from '@/components/EntryForm/InputGroup';
-import { DepartmentData, TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
-import React, { useState, useEffect } from 'react';
+import { MESSAGE_ERROR } from '@/constants/message';
+import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
 import { getDepartmentList } from '@/services';
+import { DepartmentData, TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
+import React, { useEffect, useState } from 'react';
 import styles from '../styles/TeamProfilesEntryForm.less';
+import BrandAccessLevelModal from './BrandAccessLevelModal';
 import LocationModal from './LocationModal';
 import TISCAccessLevelModal from './TISCAccessLevelModal';
-import BrandAccessLevelModal from './BrandAccessLevelModal';
-import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
-import { validateEmail } from '@/helper/utils';
-import { MESSAGE_ERROR } from '@/constants/message';
 // import { message } from 'antd';
 
 const GenderRadio = [
@@ -98,8 +98,6 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
     name: data.department_id,
     id: '',
   };
-  // validate email Address
-  const isValidEmail = validateEmail(data.email);
 
   return (
     <>
@@ -236,10 +234,8 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
           }}
           onDelete={() => onChangeData('email', '')}
           placeholder="user work email"
-          message={
-            data.email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.EMAIL_UNVALID) : undefined
-          }
-          messageType={data.email !== '' ? (isValidEmail ? 'normal' : 'error') : undefined}
+          message={emailMessageError(data.email, MESSAGE_ERROR.EMAIL_UNVALID)}
+          messageType={emailMessageErrorType(data.email, 'error', 'normal')}
         />
 
         {/* Work Phone */}

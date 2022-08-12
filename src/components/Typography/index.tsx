@@ -1,7 +1,6 @@
 import type { FC } from 'react';
 import type { BodyTextProps, CustomTypography, MainTitleProps } from './types';
 import Style from './styles/index.less';
-
 export const Title: FC<CustomTypography> = ({
   color = 'mono-color',
   customClass = '',
@@ -12,7 +11,6 @@ export const Title: FC<CustomTypography> = ({
   const setLevel = () => {
     return Style[`title${level}`];
   };
-
   const classNameTitle = `${setLevel()}`;
   return (
     <p {...props} className={`${classNameTitle} ${customClass} ${color}`} style={{ color: color }}>
@@ -20,7 +18,6 @@ export const Title: FC<CustomTypography> = ({
     </p>
   );
 };
-
 export const BodyText: FC<BodyTextProps> = ({
   color = 'mono-color',
   fontFamily = 'Cormorant-Garamond',
@@ -37,7 +34,6 @@ export const BodyText: FC<BodyTextProps> = ({
         return Style[`bodyTextCormorant${level >= 5 ? 5 : level}`];
     }
   };
-
   const classNameBodyText = `${setLevel()}`;
   return (
     <p {...props} className={`${classNameBodyText} ${customClass} ${color}`}>
@@ -45,7 +41,13 @@ export const BodyText: FC<BodyTextProps> = ({
     </p>
   );
 };
-
+export const RobotoBodyText: FC<BodyTextProps> = ({ children, ...props }) => {
+  return (
+    <BodyText fontFamily="Roboto" {...props}>
+      {children}
+    </BodyText>
+  );
+};
 export const MainTitle: FC<MainTitleProps> = ({
   color = 'mono-color',
   customClass = '',
@@ -57,7 +59,6 @@ export const MainTitle: FC<MainTitleProps> = ({
   const setLevel = () => {
     return Style[`mainTitle${level}`];
   };
-
   const classNameMainTitle = `${setLevel()}`;
   return (
     <p

@@ -14,10 +14,11 @@ import CollapseCheckboxList from '@/components/CustomCheckbox/CollapseCheckboxLi
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { getListFunctionalType } from '@/services';
 import {
+  emailMessageError,
+  emailMessageErrorType,
   isEmptySpace,
   messageError,
   messageErrorType,
-  validateEmail,
   validatePostalCode,
 } from '@/helper/utils';
 import { MESSAGE_ERROR } from '@/constants/message';
@@ -64,9 +65,6 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     }),
   );
   const [functionalTypes, setFunctionalTypes] = useState<FunctionalTypeData[]>([]);
-
-  // validate email Address
-  const isValidEmail = validateEmail(data.general_email);
 
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({
@@ -123,7 +121,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
             newTypes.push(otherValue);
           }
         } else {
-          newTypes.push(selected.value);
+          newTypes.push(selected.value as string);
         }
         return newTypes;
       }, [] as string[]),
@@ -304,10 +302,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         }}
         onDelete={() => onChangeData('general_email', '')}
         placeholder="general email address"
-        message={
-          data.general_email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.EMAIL_UNVALID) : undefined
-        }
-        messageType={data.general_email !== '' ? (isValidEmail ? 'normal' : 'error') : undefined}
+        message={emailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_UNVALID)}
+        messageType={emailMessageErrorType(data.general_email, 'error', 'normal')}
       />
       <CountryModal
         visible={visible.country}

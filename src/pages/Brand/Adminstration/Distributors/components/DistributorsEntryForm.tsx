@@ -1,31 +1,31 @@
+import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { CustomRadio } from '@/components/CustomRadio';
 import { EntryFormWrapper } from '@/components/EntryForm';
-import { FormGroup } from '@/components/Form';
 import InputGroup from '@/components/EntryForm/InputGroup';
+import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { PhoneInput } from '@/components/Form/PhoneInput';
-import { Title } from '@/components/Typography';
-import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
-import styles from '../styles/DistributorsEntryForm.less';
-import { FC, useState } from 'react';
-import CountryModal from '@/components/Location/CountryModal';
-import AuthorizedCountryModal from './AuthorizedCountryModal';
-import StateModal from '@/components/Location/StateModal';
 import CityModal from '@/components/Location/CityModal';
-import DistributionTerritoryModal from './DistributionTerritoryModal';
-import { DistributorEntryForm, DistributorForm } from '@/types/distributor.type';
-import { useEffect } from 'react';
-import { useAppSelector } from '@/reducers';
+import CountryModal from '@/components/Location/CountryModal';
+import StateModal from '@/components/Location/StateModal';
+import { Title } from '@/components/Typography';
+import { MESSAGE_ERROR } from '@/constants/message';
 import {
+  emailMessageError,
+  emailMessageErrorType,
   isEmptySpace,
   messageError,
   messageErrorType,
-  validateEmail,
   validatePostalCode,
 } from '@/helper/utils';
-import { MESSAGE_ERROR } from '@/constants/message';
-import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { useAppSelector } from '@/reducers';
+import { DistributorEntryForm, DistributorForm } from '@/types/distributor.type';
 import { trimStart } from 'lodash';
+import { FC, useEffect, useState } from 'react';
+import styles from '../styles/DistributorsEntryForm.less';
+import AuthorizedCountryModal from './AuthorizedCountryModal';
+import DistributionTerritoryModal from './DistributionTerritoryModal';
 
 const optionsGender = [
   { label: 'Male', value: true },
@@ -61,8 +61,6 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
   const [cityData, setCityData] = useState({ label: '', value: data.city_id });
 
   const user = useAppSelector((state) => state.user.user);
-
-  const isValidEmail = validateEmail(data.email);
 
   const onChangePostalCode = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!validatePostalCode(e.target.value) || !isEmptySpace(e.target.value)) {
@@ -308,10 +306,8 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               colorRequired="tertiary"
               onDelete={() => onChangeData('email', '')}
               deleteIcon
-              message={
-                data.email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.EMAIL_UNVALID) : undefined
-              }
-              messageType={data.email !== '' ? (isValidEmail ? 'normal' : 'error') : undefined}
+              message={emailMessageError(data.email, MESSAGE_ERROR.EMAIL_UNVALID)}
+              messageType={emailMessageErrorType(data.email, 'error', 'normal')}
             />
             <FormGroup label="Work Phone" required layout="vertical" formClass={styles.formGroup}>
               <PhoneInput
