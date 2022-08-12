@@ -26,6 +26,7 @@ export interface SpecificationAttributeBasisOptionProps {
   unit_2?: string;
   value_1?: string;
   value_2?: string;
+  isChecked?: boolean;
 }
 
 export interface ProductAttributeProps {
@@ -45,6 +46,7 @@ export interface ProductAttributeFormInput {
   id?: string;
   name: string;
   attributes: ProductAttributeProps[];
+  isChecked?: boolean;
 }
 
 export type ProductKeyword = [string, string, string, string];

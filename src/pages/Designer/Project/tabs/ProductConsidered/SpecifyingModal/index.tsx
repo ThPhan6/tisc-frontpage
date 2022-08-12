@@ -19,6 +19,7 @@ import popoverStyles from '@/components/Modal/styles/Popover.less';
 import { ProductItem } from '@/features/product/types';
 import styles from './styles/specifying-modal.less';
 import { OnChangeSpecifyingProductFnc, SpecifyingProductRequestBody } from './types';
+import { SpecificationAttributeGroup } from '@/types';
 
 interface SpecifyingModalProps {
   visible: boolean;
@@ -43,6 +44,30 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   const onChangeSpecifyingState: OnChangeSpecifyingProductFnc = (newStateParts) =>
     setSpecifyingState(
       (prevState) => ({ ...prevState, ...newStateParts } as SpecifyingProductRequestBody),
+    );
+
+  const onChangeReferToDocument = (isRefer: boolean) =>
+    setSpecifyingState(
+      (prevState) =>
+        ({
+          ...prevState,
+          specification: {
+            ...prevState?.specification,
+            is_refer_document: isRefer,
+          },
+        } as SpecifyingProductRequestBody),
+    );
+
+  const onChangeSpecification = (specification_attribute_groups: SpecificationAttributeGroup[]) =>
+    setSpecifyingState(
+      (prevState) =>
+        ({
+          ...prevState,
+          specification: {
+            ...prevState?.specification,
+            specification_attribute_groups,
+          },
+        } as SpecifyingProductRequestBody),
     );
 
   return (
@@ -89,7 +114,14 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       />
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.specification}>
-        <SpecificationTab productId={product.id} />
+        <SpecificationTab
+          productId={product.id}
+          onChangeSpecifyingState={onChangeSpecifyingState}
+          onChangeReferToDocument={onChangeReferToDocument}
+          onChangeSpecification={onChangeSpecification}
+          // specification_attribute_groups={specifyingState.specification_attribute_groups}
+          is_refer_document={specifyingState?.specification.is_refer_document || false}
+        />
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.vendor}>

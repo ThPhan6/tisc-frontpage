@@ -134,11 +134,10 @@ export const useAssignProductToSpaceForm = (
           {specifyingModal ? 'Entire Project' : 'ENTIRE PROJECT'}
         </BodyText>
         <Tooltip
-          trigger={['click']}
           placement="bottom"
           title="Select this option if you apply the material/product throughout the entire project. (E.g. paint/surface coating, etc.)"
           overlayInnerStyle={{
-            width: 200,
+            width: 199,
           }}
         >
           <InfoIcon style={{ width: 18, height: 18, marginLeft: 8 }} />

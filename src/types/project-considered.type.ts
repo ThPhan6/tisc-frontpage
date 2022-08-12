@@ -1,11 +1,10 @@
-export interface SpecificationBasisOption {
+export interface SelectedSpecAttributte {
   id: string;
   basis_option_id: string;
 }
 export interface SpecificationAttributeGroup {
   id: string;
-  isChecked: boolean;
-  attribute: SpecificationBasisOption[];
+  attribute: SelectedSpecAttributte[];
 }
 export interface SpecificationBodyRequest {
   is_refer_document: boolean;

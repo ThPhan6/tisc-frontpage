@@ -23,7 +23,6 @@ export async function getProductAssignSpaceByProject(
     method: 'GET',
   })
     .then((response: { data: ProjectSpaceListProps[] }) => {
-      console.log('response', response);
       const [entireProject, ...zones] = response.data;
       callback(entireProject.is_assigned || false, zones);
     })
