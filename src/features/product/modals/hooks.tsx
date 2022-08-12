@@ -1,0 +1,176 @@
+import { FC, useEffect, useState } from 'react';
+import { getProductAssignSpaceByProject } from '@/services';
+import { CustomRadio } from '@/components/CustomRadio';
+import { BodyText } from '@/components/Typography';
+import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
+import { Tooltip } from 'antd';
+import { useBoolean, useNumber } from '@/helper/hook';
+import { ProjectSpaceListProps } from '@/types';
+import CustomCollapse from '@/components/Collapse';
+import { CustomCheckbox } from '@/components/CustomCheckbox';
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
+
+type RoomsState = { [areaId: string]: CheckboxValue[] };
+
+export const getSelectedRoomIds = (selectedRooms: RoomsState) => {
+  const selectedRoomIds: string[] = [];
+  Object.values(selectedRooms).forEach((area) =>
+    area.forEach((room) => selectedRoomIds.push(String(room.value))),
+  );
+  return selectedRoomIds;
+};
+
+export const useAssignProductToSpaceForm = (
+  productId: string,
+  projectId: string,
+  onChangeEntireProjectCallback?: (isEntire: boolean) => void,
+  onChangeSelectedRoomsCallback?: (selectedRooms: string[]) => void,
+) => {
+  const entireProject = useBoolean();
+  const [selectedRooms, setSelectedRooms] = useState<RoomsState>({});
+  const expandingZone = useNumber(-1);
+  const [zones, setZones] = useState<ProjectSpaceListProps[]>([]);
+
+  useEffect(() => {
+    if (projectId) {
+      getProductAssignSpaceByProject(projectId, productId, (isEntireProject, data) => {
+        entireProject.setValue(isEntireProject);
+        setZones(data);
+
+        const curSelectedRooms: { [areaId: string]: CheckboxValue[] } = {};
+        data.map((zone) => {
+          zone.areas.map((area) => {
+            const assignedRooms = area.rooms.filter((room) => room.is_assigned === true);
+            const roomCheckboxs: CheckboxValue[] = assignedRooms.map((el) => ({
+              value: el.id || '',
+              label: el.room_name,
+            }));
+            curSelectedRooms[area.id] = roomCheckboxs;
+          });
+        });
+        setSelectedRooms(curSelectedRooms);
+      });
+    }
+  }, [projectId]);
+
+  const onChangeEntireProject = () => {
+    entireProject.setValue(true);
+    onChangeEntireProjectCallback?.(true);
+
+    setSelectedRooms({}); // clear rooms
+    onChangeSelectedRoomsCallback?.([]);
+  };
+
+  const onSelectRooms = (areaId: string) => (value: CheckboxValue[]) => {
+    setSelectedRooms((prevRooms) => {
+      const nextRooms = { ...prevRooms, [areaId]: value };
+      onChangeSelectedRoomsCallback?.(getSelectedRoomIds(nextRooms));
+      return nextRooms;
+    });
+
+    entireProject.setValue(false); // not entire project anymore
+    onChangeEntireProjectCallback?.(false);
+  };
+
+  const renderRoomLabel = (key: string, roomId: string, roomName: string) => (
+    <span key={key} className="selected-item flex-start" style={{ paddingLeft: 16 }}>
+      <BodyText
+        fontFamily="Roboto"
+        level={5}
+        className="text-overflow"
+        style={{ marginRight: 12, width: 60 }}
+      >
+        {roomId}
+      </BodyText>
+      <BodyText fontFamily="Roboto" level={5}>
+        {roomName}
+      </BodyText>
+    </span>
+  );
+
+  const renderCollapseZone = (zone: ProjectSpaceListProps, index: number) => {
+    return (
+      <CustomCollapse
+        key={zone.id}
+        activeKey={expandingZone.value === index ? '1' : ''}
+        header={zone.name}
+        noBorder
+        arrowAlignRight
+        onChange={() =>
+          expandingZone.setValue((prevIndex: number) => (prevIndex === index ? -1 : index))
+        }
+      >
+        {zone.areas.map((area) => {
+          return (
+            <div key={area.id} style={{ paddingBottom: 8, paddingLeft: 16 }}>
+              <BodyText level={5} fontFamily="Roboto" style={{ paddingBottom: 8 }}>
+                {area.name}
+              </BodyText>
+              <CustomCheckbox
+                isCheckboxList
+                options={area.rooms.map((room) => ({
+                  label: renderRoomLabel(room.id || '', room.room_id, room.room_name),
+                  value: room.id || '',
+                }))}
+                selected={selectedRooms[area.id]}
+                onChange={onSelectRooms(area.id)}
+                heightItem={'36px'}
+              />
+            </div>
+          );
+        })}
+      </CustomCollapse>
+    );
+  };
+
+  const renderEntireProjectLabel = (specifyingModal?: boolean) => {
+    return (
+      <div className="flex-center" style={{ padding: specifyingModal ? '10px 0' : '9px 0' }}>
+        <BodyText
+          fontFamily="Roboto"
+          level={specifyingModal ? 6 : 5}
+          style={{ fontWeight: specifyingModal ? '500' : undefined }}
+        >
+          {specifyingModal ? 'Entire Project' : 'ENTIRE PROJECT'}
+        </BodyText>
+        <Tooltip
+          trigger={['click']}
+          placement="bottom"
+          title="Select this option if you apply the material/product throughout the entire project. (E.g. paint/surface coating, etc.)"
+          overlayInnerStyle={{
+            width: 200,
+          }}
+        >
+          <InfoIcon style={{ width: 18, height: 18, marginLeft: 8 }} />
+        </Tooltip>
+      </div>
+    );
+  };
+
+  const AssignProductToSpaceForm: FC<{ specifyingModal?: boolean }> = ({ specifyingModal }) => (
+    <>
+      {projectId && (
+        <CustomRadio
+          options={[
+            {
+              label: renderEntireProjectLabel(specifyingModal),
+              value: true,
+            },
+          ]}
+          isRadioList
+          value={entireProject.value}
+          onChange={onChangeEntireProject}
+          containerStyle={{ boxShadow: 'inset 0 -.7px 0 #000' }}
+        />
+      )}
+
+      {projectId && zones.length ? zones.map((el, index) => renderCollapseZone(el, index)) : null}
+    </>
+  );
+
+  return {
+    AssignProductToSpaceForm,
+    selectedRooms,
+    isEntire: entireProject.value,
+  };
+};

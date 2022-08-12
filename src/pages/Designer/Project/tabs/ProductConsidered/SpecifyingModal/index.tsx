@@ -18,6 +18,7 @@ import styles from './styles/specifying-modal.less';
 import popoverStyles from '@/components/Modal/styles/Popover.less';
 import { ProductItem } from '@/features/product/types';
 import { showImageUrl } from '@/helper/utils';
+import { OnChangeSpecifyingProductFnc, SpecifyingProductRequestBody } from './types';
 
 interface SpecifyingModalProps {
   visible: boolean;
@@ -26,11 +27,23 @@ interface SpecifyingModalProps {
   product: ProductItem;
 }
 
-export const SpecifyingModal: FC<SpecifyingModalProps> = ({ visible, setVisible, product }) => {
+export const SpecifyingModal: FC<SpecifyingModalProps> = ({
+  visible,
+  setVisible,
+  product,
+  projectId,
+}) => {
   const [selectedTab, setSelectedTab] = useState<ProjectSpecifyTabValue>(
     ProjectSpecifyTabKeys.specification,
   );
-  console.log('product', product);
+  const [specifyingState, setSpecifyingState] = useState<SpecifyingProductRequestBody>();
+  console.log('specifyingState', specifyingState);
+
+  const onChangeSpecifyingState: OnChangeSpecifyingProductFnc = (newStateParts) =>
+    setSpecifyingState(
+      (prevState) => ({ ...prevState, ...newStateParts } as SpecifyingProductRequestBody),
+    );
+
   return (
     <CustomModal
       className={`${popoverStyles.customPopover} ${styles.specifyingModal}`}
@@ -89,7 +102,11 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({ visible, setVisible,
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.allocation}>
-        <AllocationTab />
+        <AllocationTab
+          projectId={projectId}
+          productId={product.id}
+          onChangeSpecifyingState={onChangeSpecifyingState}
+        />
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.codeAndOrder}>
