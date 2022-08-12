@@ -124,12 +124,15 @@ const ProductConsidered: React.FC = () => {
     );
   };
 
+  const disabledClassname = gridView.value ? 'disabled' : undefined;
+
   const SameColumn: TableColumnItem<any>[] = [
     {
       title: 'Image',
       dataIndex: 'image',
       width: COL_WIDTH.image,
       align: 'center',
+      className: disabledClassname,
       render: (value) => {
         if (value) {
           return (
@@ -146,6 +149,7 @@ const ProductConsidered: React.FC = () => {
       title: 'Brand',
       dataIndex: 'brand_order',
       width: COL_WIDTH.brand,
+      className: disabledClassname,
       sorter: {
         multiple: 4,
       },
@@ -153,6 +157,7 @@ const ProductConsidered: React.FC = () => {
     },
     {
       title: 'Collection',
+      className: disabledClassname,
       dataIndex: 'collection_name',
       width: COL_WIDTH.collection,
     },
@@ -167,7 +172,7 @@ const ProductConsidered: React.FC = () => {
       },
       width: COL_WIDTH.zones,
       isExpandable: true,
-      render: (value, record) => <span className="text-uppercase">{record.name}</span>,
+      render: (value, record) => <span>{record.name}</span>,
     },
     {
       title: 'Areas',
@@ -188,22 +193,25 @@ const ProductConsidered: React.FC = () => {
     ...SameColumn,
     {
       title: 'Product',
+      className: disabledClassname,
     },
     {
       title: 'Assigned By',
       width: COL_WIDTH.assignedBy,
+      className: disabledClassname,
     },
+    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
       width: COL_WIDTH.status,
       hidden: gridView.value,
       align: 'center',
     },
-    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Action',
       align: 'center',
       width: '5%',
+      className: disabledClassname,
     },
   ];
 
@@ -212,17 +220,26 @@ const ProductConsidered: React.FC = () => {
       title: 'Zones',
       width: COL_WIDTH.zones,
       noBoxShadow: true,
+      onCell: (data) => ({
+        colSpan: data.rooms ? 1 : 3,
+      }),
     },
     {
       title: 'Areas',
       noExpandIfEmptyData: 'rooms',
       width: COL_WIDTH.areas,
       isExpandable: true,
-      render: (value, record) => <span className="text-uppercase">{record.name}</span>,
+      render: (value, record) => <span>{record.name}</span>,
+      onCell: (data) => ({
+        colSpan: data.rooms ? 1 : 0,
+      }),
     },
     {
       title: 'Rooms',
       width: COL_WIDTH.rooms,
+      onCell: (data) => ({
+        colSpan: data.rooms ? 1 : 0,
+      }),
     },
     ...SameColumn,
     {
@@ -236,6 +253,7 @@ const ProductConsidered: React.FC = () => {
       width: COL_WIDTH.assignedBy,
       render: (value, record) => (record.rooms ? null : value), // For Entire project
     },
+    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
       dataIndex: 'status_name',
@@ -243,7 +261,6 @@ const ProductConsidered: React.FC = () => {
       hidden: gridView.value,
       render: renderStatusDropdown, // For Entire project
     },
-    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Action',
       align: 'center',
@@ -267,7 +284,7 @@ const ProductConsidered: React.FC = () => {
       title: 'Rooms',
       width: COL_WIDTH.rooms,
       isExpandable: true,
-      render: (value, record) => <span className="text-uppercase">{record.room_name}</span>,
+      render: (value, record) => <span>{record.room_name}</span>,
     },
     ...SameColumn,
     {
@@ -277,12 +294,12 @@ const ProductConsidered: React.FC = () => {
       title: 'Assigned By',
       width: COL_WIDTH.assignedBy,
     },
+    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
       width: COL_WIDTH.status,
       hidden: gridView.value,
     },
-    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Action',
       align: 'center',
@@ -317,13 +334,13 @@ const ProductConsidered: React.FC = () => {
       dataIndex: 'assigned_name',
       width: COL_WIDTH.assignedBy,
     },
+    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
       width: COL_WIDTH.status,
       hidden: gridView.value,
       render: renderStatusDropdown,
     },
-    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Action',
       align: 'center',
@@ -399,7 +416,7 @@ const ProductConsidered: React.FC = () => {
           room_order: 'room_order',
           brand_order: 'brand_order',
         }}
-        expandableConfig={{
+        expandable={GetExpandableTableConfig({
           columns: filteredColumns(AreaColumns),
           childrenColumnName: 'areas',
           subtituteChildrenColumnName: 'products',
@@ -424,7 +441,7 @@ const ProductConsidered: React.FC = () => {
               renderGridContent,
             }),
           }),
-        }}
+        })}
       />
       <SpecifyingModal />
     </div>

@@ -9,8 +9,10 @@ import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import type { TableColumnItem } from '@/components/Table/types';
 import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
+import { BodyText } from '@/components/Typography';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
+import { USER_STATUSES } from '@/constants/util';
 import { pushTo } from '@/helper/history';
 import { showImageUrl } from '@/helper/utils';
 import {
@@ -169,7 +171,7 @@ const BrandList: React.FC = () => {
           return <UserAddIcon onClick={showAssignTeams(record)} style={{ cursor: 'pointer' }} />;
         }
         return (
-          <div onClick={showAssignTeams(record)} style={{ cursor: 'pointer' }}>
+          <div onClick={showAssignTeams(record)} className={styles.avatar}>
             {record.assign_team.map((user, key) => {
               return (
                 <TeamIcon
@@ -184,7 +186,22 @@ const BrandList: React.FC = () => {
         );
       },
     },
-    { title: 'Status', dataIndex: 'status', sorter: true },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      sorter: true,
+      render: (_v, record) => {
+        return (
+          <BodyText level={5} fontFamily="Roboto">
+            {record.status === USER_STATUSES.ACTIVE
+              ? 'Active'
+              : record.status === USER_STATUSES.INACTIVE
+              ? 'Inactive'
+              : 'Pending'}
+          </BodyText>
+        );
+      },
+    },
     {
       title: 'Action',
       dataIndex: 'action',
