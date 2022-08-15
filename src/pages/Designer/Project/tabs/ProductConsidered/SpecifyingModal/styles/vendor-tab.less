@@ -1,32 +1,52 @@
+.collapsed,
+.notCollapsed {
+  margin-bottom: 8px;
+}
+
+.collapsed {
+  border-bottom: 0.7px solid @mono-color;
+}
+
+.notCollapsed {
+  border-bottom: 0.7px solid @mono-color-medium;
+}
+
 .address {
   display: flex;
-  // align-items: center;
   justify-content: space-between;
-  // height: 36px;
-  margin-bottom: 8px;
-  box-shadow: @border-bottom-light;
 
   :global(.ant-collapse) {
+    flex: 1;
     border: none;
   }
   :global(.ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header) {
-    // box-shadow: none !important;
+    justify-content: start;
     height: 36px;
+    padding: 0 !important;
+    box-shadow: none !important;
     > div {
       display: none;
     }
   }
 }
 
+.activeLabel {
+  :global(.mono-color) {
+    color: @mono-color !important;
+  }
+}
+
 .brandDistributor {
-  // margin-bottom: 8px;
   padding: 0;
 
   :global(.contact-item-wrapper) {
-    // box-shadow: none !important;
-
+    box-shadow: none !important;
     :global(.contact-item) {
       height: 36px;
     }
   }
+}
+
+.businessDetail {
+  padding: 8px 0 8px 16px;
 }

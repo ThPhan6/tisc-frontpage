@@ -1,5 +1,5 @@
 import Popover from '@/components/Modal/Popover';
-import { BodyText } from '@/components/Typography';
+import { BodyText, RobotoBodyText } from '@/components/Typography';
 import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { getBrandLocation, getDistributorLocation } from '@/services';
 import { LocationGroupedByCountry } from '@/types';
@@ -7,31 +7,61 @@ import { FC, ReactNode, useEffect, useState } from 'react';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 import styles from './BrandContact.less';
+import { RadioValue } from '@/components/CustomRadio/types';
 
-interface BusinessDetailProps {
+export interface BusinessDetailProps {
   business: string;
   type: string;
   address: string;
   country?: string;
+  phone_code?: string;
+  general_phone?: string;
+  genernal_email?: string;
+  customClass?: string;
 }
-const BusinessDetail: FC<BusinessDetailProps> = ({ business, type = '', address }) => {
+export const BusinessDetail: FC<BusinessDetailProps> = ({
+  business = '',
+  type = '',
+  address = '',
+  phone_code = '',
+  general_phone = '',
+  genernal_email = '',
+  customClass = '',
+}) => {
   return (
-    <div className={styles.detail}>
+    <div className={`${styles.detail} ${customClass}`}>
       <div className={styles.detail_business}>
-        <span className={styles.name}> {business} </span>
-        <span className={styles.type}> {type && `(${type})`} </span>
+        <RobotoBodyText level={6} customClass={styles.name}>
+          {business}
+        </RobotoBodyText>
+        <RobotoBodyText level={6} customClass={styles.type}>
+          {type && `(${type})`}
+        </RobotoBodyText>
       </div>
-      <span className={styles.detail_address}>{address}</span>
+      <RobotoBodyText level={6} customClass={styles.detail_address}>
+        {address}
+      </RobotoBodyText>
+      <div className={styles.detail_phoneEmail}>
+        <RobotoBodyText level={6} customClass={styles.phone}>
+          T: {`${phone_code} ${general_phone}`}
+        </RobotoBodyText>
+        <RobotoBodyText level={6}>E: {genernal_email}</RobotoBodyText>
+      </div>
+      {/* {      <span className={styles.detail_contact}>Contact: hien tai trong data khong co</span> :  ''} */}
     </div>
   );
 };
 
-interface BrandDistributorLocationProps {
+export type BrandDistributorLocationAddress = BusinessDetailProps & RadioValue;
+interface ChosenValueProps {
+  chosenValue?: BrandDistributorLocationAddress;
+  setChosenValue?: (chosenValue: BrandDistributorLocationAddress) => void;
+}
+
+interface BrandDistributorLocationProps extends ChosenValueProps {
   showSelection: { value: any; setValue: React.Dispatch<any> };
   data: LocationGroupedByCountry[];
   title?: string;
-  chosenValue: any;
-  setChosenValue?: (chosenValue: any) => void;
 }
 
 export const BrandDistributorLocationPopUp: FC<BrandDistributorLocationProps> = ({
@@ -62,6 +92,9 @@ export const BrandDistributorLocationPopUp: FC<BrandDistributorLocationProps> = 
                   type={location.functional_types[0]?.name}
                   address={location.address}
                   country={location.country_name.toUpperCase()}
+                  phone_code={location.phone_code}
+                  general_phone={location.general_phone}
+                  genernal_email={location.general_email}
                 />
               ),
             };
@@ -116,20 +149,14 @@ export const BrandDistributorLabel: FC<BrandDistributorLabelProps> = ({
   );
 };
 
-type BrandContactTitle =
-  | 'Brand Locations'
-  | 'Distributor Locations'
-  | 'Brand Address'
-  | 'Distributor Address';
-interface BrandContactProps {
+type BrandContactTitle = 'Brand' | 'Distributor';
+interface BrandContactProps extends ChosenValueProps {
   productId?: string;
   brandId?: string;
   title: BrandContactTitle;
   label?: string;
-  // showTitle?: boolean;
+  showTitle?: boolean;
   customClass?: string;
-  chosenValue: any;
-  setChosenValue?: (chosenValue: any) => void;
 }
 
 // export const BRAND_CONTACT_TITLE: BrandContactTitle[] = [
@@ -144,7 +171,7 @@ const BrandContact: FC<BrandContactProps> = ({
   brandId,
   title,
   label = 'select',
-  // showTitle,
+  showTitle,
   customClass = '',
   chosenValue,
   setChosenValue,
@@ -166,12 +193,9 @@ const BrandContact: FC<BrandContactProps> = ({
     if (!showPopUp) {
       return;
     }
-    if (locationTitle === 'Brand Locations' || locationTitle === 'Brand Address') {
+    if (locationTitle === 'Brand') {
       showBrandSelection.setValue(true);
-    } else if (
-      locationTitle === 'Distributor Locations' ||
-      locationTitle === 'Distributor Address'
-    ) {
+    } else if (locationTitle === 'Distributor') {
       showDistributeSelection.setValue(true);
     }
   };
@@ -190,8 +214,6 @@ const BrandContact: FC<BrandContactProps> = ({
     if (brandId) {
       getBrandLocation(brandId).then((data) => {
         if (data) {
-          console.log('brand location data', data);
-
           setBrandLocation(data);
         }
       });
@@ -206,6 +228,7 @@ const BrandContact: FC<BrandContactProps> = ({
           label={label}
           handleShowPopup={() => handleShowPopup(title)}
           showPopUp
+          showTitle={showTitle}
         />
 
         {/* distributor location */}
