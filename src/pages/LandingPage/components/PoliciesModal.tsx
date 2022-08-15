@@ -1,9 +1,9 @@
 import styles from './PoliciesModal.less';
 import { CustomModal } from '@/components/Modal';
-import { FC, useState } from 'react';
-import { ModalProps } from '../types';
+import { FC, useEffect, useState } from 'react';
+import { ModalProps, Policy } from '../types';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
-// import { Documentation } from '@/pages/TISC/Adminstration/Documentation/PolicyTemplate/types';
+import { getListPolicy } from '../services/api';
 
 enum PolicyTabKeys {
   terms = 'terms of services',
@@ -12,12 +12,25 @@ enum PolicyTabKeys {
 }
 
 export const PoliciesModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
-  // const [policyTemplates, setPolicyTemplates] = useState<Documentation[]>([]);
-  // useEffect(() => {
+  const [termsOfService, setTermOfService] = useState<Policy>();
+  const [privacy, setPrivacy] = useState<Policy>();
+  const [cookie, setCookie] = useState<Policy>();
 
-  // }, []);
-
-  // console.log(policyTemplates);
+  useEffect(() => {
+    getListPolicy().then((res) => {
+      if (res) {
+        res.data.forEach((item: any) => {
+          if (item['terms_of_services']?.title === 'TERMS OF SERVICES') {
+            setTermOfService(item['terms_of_services']);
+          } else if (item['privacy_policy']?.title === 'PRIVACY POLICY') {
+            setPrivacy(item['privacy_policy']);
+          } else {
+            setCookie(item['cookie_policy']);
+          }
+        });
+      }
+    });
+  }, []);
 
   const listTab = [
     { tab: 'TERMS OF SERVICES', key: PolicyTabKeys.terms },
@@ -51,15 +64,15 @@ export const PoliciesModal: FC<ModalProps> = ({ visible, onClose, theme = 'defau
         <div className={styles.body}>
           {/* terms of services */}
           <CustomTabPane active={selectedTab === PolicyTabKeys.terms}>
-            <div>Content terms of services</div>
+            <div dangerouslySetInnerHTML={{ __html: `${termsOfService?.document.document}` }}></div>
           </CustomTabPane>
           {/* privacy policy */}
           <CustomTabPane active={selectedTab === PolicyTabKeys.privacy_policy}>
-            <div>Content privacy policy</div>
+            <div dangerouslySetInnerHTML={{ __html: `${privacy?.document.document}` }}></div>
           </CustomTabPane>
           {/* cookie policy */}
           <CustomTabPane active={selectedTab === PolicyTabKeys.cookie_policy}>
-            <div>Content cookie policy</div>
+            <div dangerouslySetInnerHTML={{ __html: `${cookie?.document.document}` }}></div>
           </CustomTabPane>
         </div>
       </div>

@@ -167,3 +167,13 @@ export async function contact(data: ContactRequestBody) {
       return false;
     });
 }
+
+export async function getListPolicy() {
+  return request(`/api/documentation/get-list-policy`, { method: 'GET' })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_POLICY);
+    });
+}

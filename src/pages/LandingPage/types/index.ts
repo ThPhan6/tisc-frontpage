@@ -78,3 +78,11 @@ export type ContactRequestBody = {
   email: string;
   inquiry: string;
 };
+
+export type Policy = {
+  id: string;
+  title: string;
+  document: {
+    document: '';
+  };
+};

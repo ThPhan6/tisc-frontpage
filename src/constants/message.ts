@@ -37,6 +37,7 @@ export const MESSAGE_NOTIFICATION = {
   SIGN_UP_DESIGNER_ERROR: 'Sign up designer error',
   CONTACT_SUCCESS: 'Contact successfully',
   CONTACT_ERROR: 'Contact error',
+  GET_LIST_POLICY: 'Get list policy error',
 
   // Category
   CREATE_CATEGORY_SUCCESS: 'Create the category successfully',
