@@ -18,9 +18,9 @@
     width: 572px;
     padding: 16px;
     background-color: #fff;
-    .action {
-      margin-top: calc(100vh - 382px);
-    }
+    // .action {
+    //   margin-top: calc(100vh - 382px);
+    // }
     .pdf {
       margin-right: 16px;
     }
@@ -29,18 +29,30 @@
 .formInformation {
   padding: 0 16px;
   overflow: auto;
+  :global(.ant-input) {
+    color: @primary-color-dark;
+  }
   .customDate {
-    box-shadow: @border-bottom;
     :global(.ant-picker) {
       justify-content: space-between;
       width: 100%;
       border: 0;
+      border-radius: 0;
+      box-shadow: @border-bottom-light;
     }
     :global(.ant-picker-focused) {
       border-color: none;
       box-shadow: none;
     }
     :global(.ant-picker-input > input:placeholder-shown) {
+      color: @primary-color-dark;
+      font-weight: 300;
+    }
+    :global(.children-wrapper) {
+      box-shadow: @border-bottom;
+    }
+    :global(.ant-picker-input > input) {
+      color: @primary-color-dark;
       font-weight: 300;
     }
   }
