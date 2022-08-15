@@ -1,0 +1,62 @@
+.contactContent {
+  padding: 0 16px;
+  background-color: #fff;
+  :global(.contact-item-wrapper) {
+    box-shadow: @border-bottom-light;
+    // &:last-child {
+    //   box-shadow: none;
+    // }
+    :global(.contact-item) {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 40px;
+      :global(.contact-select-box) {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        p {
+          margin-right: 12px;
+          color: @mono-color-medium;
+        }
+        svg {
+          color: @mono-color-medium;
+        }
+        :global(.single-right-icon) {
+          color: @mono-color;
+        }
+      }
+    }
+  }
+}
+.detail {
+  &_business .name,
+  &_business .type,
+  &_address {
+    font-family: 'Roboto';
+    font-style: normal;
+    line-height: 20px;
+  }
+
+  &_business {
+    .name {
+      font-weight: 500;
+      font-size: 12px;
+    }
+  }
+  &_address,
+  .type {
+    font-weight: 300;
+    font-size: 12px;
+  }
+}
+.customLocationModal {
+  :global(.ant-collapse-item) {
+    :global(.ant-collapse-content-box) {
+      padding: 16px 0 0 16px !important;
+    }
+  }
+  :global(.radio-label) {
+    margin-bottom: 16px;
+  }
+}

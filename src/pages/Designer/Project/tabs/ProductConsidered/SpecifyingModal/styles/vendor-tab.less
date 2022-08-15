@@ -1,0 +1,32 @@
+.address {
+  display: flex;
+  // align-items: center;
+  justify-content: space-between;
+  // height: 36px;
+  margin-bottom: 8px;
+  box-shadow: @border-bottom-light;
+
+  :global(.ant-collapse) {
+    border: none;
+  }
+  :global(.ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header) {
+    // box-shadow: none !important;
+    height: 36px;
+    > div {
+      display: none;
+    }
+  }
+}
+
+.brandDistributor {
+  // margin-bottom: 8px;
+  padding: 0;
+
+  :global(.contact-item-wrapper) {
+    // box-shadow: none !important;
+
+    :global(.contact-item) {
+      height: 36px;
+    }
+  }
+}
