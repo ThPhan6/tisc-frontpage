@@ -1,7 +1,7 @@
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
 import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/ic-share.svg';
-import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign.svg';
+import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign-2.svg';
 import ProductPlaceHolderImage from '@/assets/images/product-placeholder.png';
 import { ReactComponent as UploadIcon } from '@/assets/icons/action-upload-icon.svg';
 import { ReactComponent as AddMoreIcon } from '@/assets/icons/circle-plus-48.svg';

@@ -3,6 +3,7 @@
   :global(.ant-table) {
     color: black;
   }
+
   &.sub-grid {
     :global(td[colspan]) {
       box-shadow: none !important;
@@ -77,7 +78,10 @@
     }
     :global(.ant-table-expanded-row) {
       > td:global(.ant-table-cell) {
-        &(:first-child) {
+        padding-top: 0;
+        padding-bottom: 0;
+
+        &:first-child {
           border-bottom: 1px solid #d8d8d8;
           :global(.ant-table-expanded-row) {
             > td:global(.ant-table-cell) {
@@ -111,11 +115,9 @@
         }
         // box-shadow: @border-bottom-light;
       }
-      &:global(.custom-expanded-level-2) {
-        &(:nth-child(1)) {
-          :global(.ant-table-cell) {
-            box-shadow: none;
-          }
+      &:global(.custom-expanded-level-2):nth-child(1) {
+        :global(.ant-table-cell) {
+          box-shadow: none;
         }
       }
       &:global(.ant-table-expanded-row) {
@@ -151,7 +153,8 @@
               }
             }
             :global(.ant-table-cell) {
-              padding: 8px 12px;
+              height: 36px;
+              padding: 0 12px;
             }
             :global(.ant-table-expanded-row) {
               :global(.ant-table-cell) {
@@ -165,8 +168,8 @@
                 }
                 :global(.ant-table) {
                   margin: 0;
-                  :global(.ant-table-cell) {
-                    padding: 8px 12px;
+                  :global(td.ant-table-cell:not([colspan])) {
+                    padding: 0 12px;
                   }
                 }
               }
@@ -177,6 +180,7 @@
     }
   }
 }
+
 .customPaginator {
   position: absolute;
   bottom: -24px;
@@ -242,4 +246,13 @@ tr[class^='ant-table-expanded-row'] tbody > tr > td {
 
 .ant-table-tbody > tr > td {
   transition: all 0.3s;
+}
+
+:global(.ant-table-cell.disabled) {
+  cursor: not-allowed;
+  pointer-events: none;
+  p,
+  svg {
+    color: @mono-color-light;
+  }
 }

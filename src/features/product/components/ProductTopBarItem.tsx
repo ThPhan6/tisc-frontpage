@@ -91,6 +91,8 @@ interface CascadingMenuProps {
   visible?: boolean;
   onCloseMenu: () => void;
   menuStyle?: CSSProperties;
+  alignRight?: boolean;
+  textCapitalize?: boolean;
 }
 
 const DEFAULT_INDEX = -1;
@@ -101,6 +103,8 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
   visible,
   onCloseMenu,
   menuStyle,
+  alignRight,
+  textCapitalize,
 }) => {
   const [selectedItem, setSelectedItem] = useState<number>(DEFAULT_INDEX);
 
@@ -136,9 +140,9 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
                   onCloseMenu();
                 }
               }}
-              className={`${selectedItem === index ? styles.active : ''} ${
-                hasChildren ? '' : styles.noSub
-              }`}
+              className={`${alignRight ? styles.alignRight : ''} ${
+                textCapitalize ? styles.textCapitalize : ''
+              } ${selectedItem === index ? styles.active : ''} ${hasChildren ? '' : styles.noSub}`}
               disabled={item.disabled}
               icon={item?.icon || (hasChildren ? <DropdownIcon /> : undefined)}
             >
@@ -154,6 +158,7 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
           subLevel={(subLevel || 0) + 1}
           onCloseMenu={onCloseMenu}
           menuStyle={menuStyle}
+          alignRight={alignRight}
         />
       )}
     </>
@@ -163,13 +168,21 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
 interface CustomDropDownProps extends Omit<DropDownProps, 'overlay'> {
   items: ItemType[];
   menuStyle?: CSSProperties;
+  labelProps?: React.HTMLAttributes<HTMLSpanElement>;
   hideDropdownIcon?: boolean;
+  overlay?: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
+  alignRight?: boolean;
+  textCapitalize?: boolean;
 }
 export const CustomDropDown: FC<CustomDropDownProps> = ({
   children,
   items,
   menuStyle,
+  labelProps,
   hideDropdownIcon,
+  overlay,
+  alignRight = true,
+  textCapitalize = true,
   ...props
 }) => {
   const dropdownVisible = useBoolean(false);
@@ -183,15 +196,19 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
         dropdownVisible.setValue(visible);
       }}
       overlay={
-        <CascadingMenu
-          items={items}
-          visible={dropdownVisible.value}
-          onCloseMenu={() => dropdownVisible.setValue(false)}
-          menuStyle={menuStyle}
-        />
+        overlay ?? (
+          <CascadingMenu
+            items={items}
+            visible={dropdownVisible.value}
+            onCloseMenu={() => dropdownVisible.setValue(false)}
+            menuStyle={menuStyle}
+            alignRight={alignRight}
+            textCapitalize={textCapitalize}
+          />
+        )
       }
     >
-      <span>
+      <span {...labelProps}>
         {children}
         {hideDropdownIcon ? null : <DropdownIcon />}
       </span>

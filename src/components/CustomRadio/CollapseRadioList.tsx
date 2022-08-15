@@ -1,4 +1,4 @@
-import type { FC, ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 import { CustomRadio } from '@/components/CustomRadio';
 import { RadioValue } from '@/components/CustomRadio/types';
 import { BodyText } from '@/components/Typography';
@@ -13,9 +13,9 @@ interface CollapseRadioListProps {
   placeholder?: string | ReactNode;
   containerClass?: string;
   checkboxItemHeight?: string;
-  activeKey?: string | string[];
   onCollapseChange?: (key: string | string[]) => void;
   Header?: ReactNode;
+  inputPlaceholder?: string;
 }
 
 const CollapseRadioList: FC<CollapseRadioListProps> = ({
@@ -25,14 +25,13 @@ const CollapseRadioList: FC<CollapseRadioListProps> = ({
   otherInput,
   placeholder = 'select from the list',
   containerClass = '',
-  activeKey = '',
   onCollapseChange,
   Header,
+  inputPlaceholder,
 }) => {
   return (
     <CustomCollapse
       onChange={onCollapseChange}
-      activeKey={activeKey}
       header={
         Header || (
           <BodyText level={5} customClass="function-type-placeholder" fontFamily="Roboto">
@@ -46,6 +45,7 @@ const CollapseRadioList: FC<CollapseRadioListProps> = ({
         options={options}
         isRadioList
         otherInput={otherInput}
+        inputPlaceholder={inputPlaceholder}
         value={checked}
         onChange={onChange}
       />

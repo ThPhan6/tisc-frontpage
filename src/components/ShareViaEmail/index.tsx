@@ -1,11 +1,15 @@
-// import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import Popover from '@/components/Modal/Popover';
-import { BodyText } from '@/components/Typography';
-// import { validateEmail } from '@/helper/utils';
-import { FC } from 'react';
+import { MESSAGE_ERROR } from '@/constants/message';
+import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+import { useAppSelector } from '@/reducers';
+import { getDepartmentList } from '@/services';
+import { ShareViaEmailForm } from '@/types/share-via-email.type';
+import { FC, useEffect, useState } from 'react';
+import BrandProductBasicHeader from '../BrandProductBasicHeader';
+import CollapseRadioFormGroup from '../CustomRadio/CollapseRadioFormGroup';
 import styles from './index.less';
 
 interface ShareViaEmailProps {
@@ -13,54 +17,116 @@ interface ShareViaEmailProps {
   setVisible: (visible: boolean) => void;
 }
 
+interface SharingGroup {
+  id: string;
+  name: string;
+}
+
+const DEFAULT_SHAREVIAEMAIL_VALUE: ShareViaEmailForm = {
+  image: '',
+  logo: '',
+  sharing_group_id: '',
+  sharing_purpose_id: '',
+  email_to: '',
+  title: '',
+  message: '',
+};
+type FieldName = keyof ShareViaEmailForm;
+
 const ShareViaEmail: FC<ShareViaEmailProps> = ({ visible, setVisible }) => {
-  // const brand = useAppSelector((state) => state.product.brand);
-  // console.log('productData', productData);
-  // validate email Address
-  //   const isValidEmail = validateEmail(data.general_email);
+  const brand = useAppSelector((state) => state.product);
+  console.log('productData', brand);
+
+  const [shareViaEmailData, setShareViaEmailData] = useState<ShareViaEmailForm>(
+    DEFAULT_SHAREVIAEMAIL_VALUE,
+  );
+
+  // for Sharing Group
+  const [sharingGroup, setSharingGroup] = useState<SharingGroup[]>([]);
+  const [sharingPurpose, setSharingPurpose] = useState<SharingGroup[]>([]);
+
+  useEffect(() => {
+    getDepartmentList().then((res) => {
+      if (res) {
+        setSharingGroup(res);
+        setSharingPurpose(res);
+      }
+    });
+  }, []);
+
+  // format data
+  const sharingGroupLabel = sharingGroup.find(
+    (item) => item.id === shareViaEmailData.sharing_group_id,
+  ) ?? {
+    name: shareViaEmailData.sharing_group_id,
+    id: '',
+  };
+  const sharingPurposeLabel = sharingPurpose.find(
+    (item) => item.id === shareViaEmailData.sharing_purpose_id,
+  ) ?? {
+    name: shareViaEmailData.sharing_purpose_id,
+    id: '',
+  };
+
+  const onChangeData = (fieldName: FieldName, fieldValue: any) => {
+    setShareViaEmailData({
+      ...shareViaEmailData,
+      [fieldName]: fieldValue,
+    });
+  };
 
   return (
     <Popover title="Share Via Email" visible={visible} setVisible={setVisible}>
-      <div className={styles.header}>
-        <div className={styles.header_detail}>
-          <img className={styles.image} />
-          <div className={styles.content}>
-            <BodyText level={6}>Brand company name</BodyText>
-            <BodyText level={6}>Collection/Series name</BodyText>
-            <BodyText level={6}>Product/item description</BodyText>
-          </div>
-        </div>
-        <div className={styles.header_logo}></div>
-      </div>
+      <BrandProductBasicHeader
+        image={shareViaEmailData.image}
+        logo={shareViaEmailData.logo}
+        text_1="Brand company name"
+        text_2="Collection/Series name"
+        text_3="Product/item description"
+        customClass={styles.header}
+      />
 
       {/* Sharing Group */}
-      {/* <FormGroup
+      <CollapseRadioFormGroup
         label="Sharing Group"
-        required={true}
-        layout="vertical"
-        formClass={`${styles.department} ${
-          departmentData.name !== '' ? styles.activeDepartment : ''
-        }`}
-      >
-        <CollapseRadioList
-          options={departments.map((department) => {
-            return {
-              label: department.name,
-              value: department.id,
-            };
-          })}
-          checked={data.department_id}
-          onChange={(radioValue) => {
-            if (radioValue.value === 'other') {
-              onChangeData('department_id', radioValue.label);
-            } else {
-              onChangeData('department_id', radioValue.value);
-            }
-          }}
-          placeholder={departmentData.name === '' ? 'select from list' : departmentData.name}
-          otherInput
-        />
-      </FormGroup> */}
+        checked={shareViaEmailData.sharing_group_id}
+        placeholder={sharingGroupLabel.name}
+        otherInput
+        optionData={sharingGroup.map((item) => {
+          return {
+            label: item.name,
+            value: item.id,
+          };
+        })}
+        onChange={(radioValue) => {
+          if (radioValue.value === 'other') {
+            onChangeData('sharing_group_id', radioValue.label);
+          } else {
+            onChangeData('sharing_group_id', radioValue.value);
+          }
+        }}
+      />
+
+      {/* Sharing Purpose */}
+      <CollapseRadioFormGroup
+        label="Sharing Purpose"
+        checked={shareViaEmailData.sharing_purpose_id}
+        placeholder={sharingPurposeLabel.name}
+        otherInput
+        optionData={sharingGroup.map((item) => {
+          return {
+            label: item.name,
+            value: item.id,
+          };
+        })}
+        onChange={(radioValue) => {
+          if (radioValue.value === 'other') {
+            onChangeData('sharing_purpose_id', radioValue.label);
+          } else {
+            onChangeData('sharing_purpose_id', radioValue.value);
+          }
+        }}
+      />
 
       {/* Email To */}
       <InputGroup
@@ -68,20 +134,18 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ visible, setVisible }) => {
         required
         deleteIcon
         fontLevel={3}
-        // value={data.general_email}
         hasPadding
         colorPrimaryDark
         hasBoxShadow
         hasHeight
-        // onChange={(e) => {
-        //   onChangeData('general_email', e.target.value);
-        // }}
-        // onDelete={() => onChangeData('general_email', '')}
         placeholder="type receiver email address"
-        // message={
-        //   data.general_email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.EMAIL_UNVALID) : undefined
-        // }
-        // messageType={data.general_email !== '' ? (isValidEmail ? 'normal' : 'error') : undefined}
+        value={shareViaEmailData.email_to}
+        onChange={(e) => {
+          onChangeData('email_to', e.target.value);
+        }}
+        onDelete={() => onChangeData('email_to', '')}
+        message={emailMessageError(shareViaEmailData.email_to, MESSAGE_ERROR.EMAIL_UNVALID)}
+        messageType={emailMessageErrorType(shareViaEmailData.email_to, 'error', 'normal')}
       />
 
       {/* Title */}
@@ -90,20 +154,16 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ visible, setVisible }) => {
         required
         deleteIcon
         fontLevel={3}
-        // value={data.general_email}
         hasPadding
         colorPrimaryDark
         hasBoxShadow
         hasHeight
-        // onChange={(e) => {
-        //   onChangeData('general_email', e.target.value);
-        // }}
-        // onDelete={() => onChangeData('general_email', '')}
         placeholder="type message title"
-        // message={
-        //   data.general_email !== '' ? (isValidEmail ? '' : MESSAGE_ERROR.EMAIL_UNVALID) : undefined
-        // }
-        // messageType={data.general_email !== '' ? (isValidEmail ? 'normal' : 'error') : undefined}
+        value={shareViaEmailData.title}
+        onChange={(e) => {
+          onChangeData('title', e.target.value);
+        }}
+        onDelete={() => onChangeData('title', '')}
       />
 
       {/* Message */}
@@ -114,9 +174,9 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ visible, setVisible }) => {
           showCount
           placeholder="type message here..."
           borderBottomColor="mono-medium"
-          //   onChange={(e) => onChangeData('address', e.target.value)}
-          //   value={data.address}
           boxShadow
+          onChange={(e) => onChangeData('message', e.target.value)}
+          value={shareViaEmailData.message}
         />
       </FormGroup>
     </Popover>

@@ -1,0 +1,38 @@
+.productInformationWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 104px;
+  padding: 0 16px;
+  box-shadow: @border-bottom-light;
+  .productInformationContainer {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    min-width: 0;
+    .productImage {
+      width: 70px;
+      height: 70px;
+      margin-right: 12px;
+      object-fit: cover;
+    }
+    .productInformation {
+      flex: 1;
+      min-width: 0;
+      p {
+        padding: 5px 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+  .brandLogo {
+    height: 90px;
+    img {
+      width: 24px;
+      height: 24px;
+      object-fit: cover;
+    }
+  }
+}
