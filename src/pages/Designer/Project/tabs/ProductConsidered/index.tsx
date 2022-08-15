@@ -12,12 +12,12 @@ import {
   ConsideredProduct,
   ConsideredProjectArea,
   ConsideredProjectRoom,
-} from '@/types';
+} from '@/features/project/types';
 import {
   getConsideredProducts,
   removeProductFromProject,
   updateProductConsiderStatus,
-} from '@/services';
+} from '@/features/project/services';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import { useParams } from 'umi';

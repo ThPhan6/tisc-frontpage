@@ -6,6 +6,7 @@ export const Title: FC<CustomTypography> = ({
   customClass = '',
   level = 1,
   children,
+  style,
   ...props
 }) => {
   const setLevel = () => {
@@ -13,7 +14,11 @@ export const Title: FC<CustomTypography> = ({
   };
   const classNameTitle = `${setLevel()}`;
   return (
-    <p {...props} className={`${classNameTitle} ${customClass} ${color}`} style={{ color: color }}>
+    <p
+      {...props}
+      className={`${classNameTitle} ${customClass} ${color}`}
+      style={{ color, ...style }}
+    >
       {children}
     </p>
   );

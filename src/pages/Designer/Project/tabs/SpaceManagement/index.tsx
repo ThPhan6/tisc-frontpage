@@ -7,8 +7,8 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { DefaultProjectZone } from '../../constants/form';
 import { useBoolean } from '@/helper/hook';
 import LoadingPageCustomize from '@/components/LoadingPage';
-import { createProjectSpace, updateProjectSpace } from '@/services';
-import type { ProjectSpaceZone } from '@/types';
+import { createProjectSpace, updateProjectSpace } from '@/features/project/services';
+import type { ProjectSpaceZone } from '@/features/project/types';
 import styles from '../../styles/space-management.less';
 
 interface SpaceManagementProps {

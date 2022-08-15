@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BodyText, Title } from '@/components/Typography';
-import { ProjectSummaryData } from '@/types';
+import { ProjectSummaryData } from '@/features/project/types';
 import styles from '../../styles/project-summary.less';
 import { startCase, upperCase, capitalize, map } from 'lodash';
 

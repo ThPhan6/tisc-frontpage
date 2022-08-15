@@ -22,7 +22,7 @@ const AllocationTab: FC<AllocationTabProps> = ({
 
   return (
     <div>
-      <AssignProductToSpaceForm specifyingModal />
+      <AssignProductToSpaceForm specifyingModal noPaddingLeft />
     </div>
   );
 };

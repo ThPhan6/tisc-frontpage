@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 export type CheckboxValue = {
   label: string | ReactNode;
@@ -16,4 +16,5 @@ export interface CustomCheckboxProps {
   selected?: CheckboxValue[];
   checkboxClass?: string;
   heightItem?: string;
+  style?: CSSProperties;
 }

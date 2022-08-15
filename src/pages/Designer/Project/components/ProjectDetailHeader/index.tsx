@@ -6,7 +6,7 @@ import { PATH } from '@/constants/path';
 import { ProjectTabKeys, ProjectTabs } from '../../constants/tab';
 //
 import { CustomTabs } from '@/components/Tabs';
-import { ProjectDetailProps } from '@/types';
+import { ProjectDetailProps } from '@/features/project/types';
 
 import styles from '../../styles/project-detail-header.less';
 

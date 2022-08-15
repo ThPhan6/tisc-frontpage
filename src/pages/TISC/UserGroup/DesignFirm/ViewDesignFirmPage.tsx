@@ -21,7 +21,6 @@ import {
   DesignFirmDetail,
   LocationGroupedByCountry,
   MaterialCodeDesignFirm,
-  ProjectsDesignFirm,
   TeamsDesignFirm,
 } from '@/types';
 import {
@@ -40,6 +39,7 @@ import DesignFirmSummary from './components/DesignFirmSummary';
 import { useBoolean, useGetParamId } from '@/helper/hook';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
+import { ProjectsDesignFirm } from '@/features/project/types';
 
 export enum DesignTabKeys {
   profile = 'profile',

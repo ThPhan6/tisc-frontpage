@@ -1,7 +1,7 @@
 import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { MEASUREMENT_UNIT } from '@/constants/util';
-import { ProjectDetail, ProjectsDesignFirm } from '@/types';
+import { ProjectDetail, ProjectsDesignFirm } from '@/features/project/types';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
 import { FC } from 'react';

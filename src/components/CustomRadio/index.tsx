@@ -18,6 +18,8 @@ export const CustomRadio: FC<CustomRadioProps> = ({
   containerClass,
   value,
   containerStyle,
+  noPaddingLeft,
+  otherStickyBottom,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -39,7 +41,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
     setInputValue(e.target.value);
   };
 
-  const renderActiveClass = (option: RadioValue) => {
+  const getActiveClass = (option: RadioValue) => {
     if (option.value == value) {
       return 'item-option-checked';
     }
@@ -48,12 +50,11 @@ export const CustomRadio: FC<CustomRadioProps> = ({
 
   return (
     <div
-      className={`
-        ${style['radio-container']}
-        ${style[`radio-${isRadioList ? 'vertical' : direction}`]}
-        ${isRadioList ? style['radio-list'] : ''}
-        ${containerClass}
-      `}
+      className={`${style['radio-container']} ${
+        style[`radio-${isRadioList ? 'vertical' : direction}`]
+      } ${isRadioList ? style['radio-list'] : ''} ${noPaddingLeft ? style.noPaddingLeft : ''} ${
+        containerClass || ''
+      }`}
       style={containerStyle}
     >
       <Radio.Group
@@ -62,7 +63,10 @@ export const CustomRadio: FC<CustomRadioProps> = ({
         value={value}
         defaultValue={defaultValue?.value}
       >
-        <Space direction={isRadioList ? 'vertical' : direction}>
+        <Space
+          direction={isRadioList ? 'vertical' : direction}
+          className={`${otherStickyBottom ? style.stickyBottom : ''}`}
+        >
           {options.map((option, index) => (
             <label
               key={index}
@@ -76,19 +80,20 @@ export const CustomRadio: FC<CustomRadioProps> = ({
               <div style={{ width: '100%' }}>
                 {isRadioList ? (
                   <div className={style['item-wrapper']}>
-                    <span className={renderActiveClass(option)}>{option.label}</span>
+                    <span className={getActiveClass(option)}>{option.label}</span>
                     <Radio id={`${randomID}_${option.value}_${index}`} {...option} />
                   </div>
                 ) : (
                   <Radio id={`${randomID}_${option.value}_${index}`} {...option}>
-                    <span className={renderActiveClass(option)}>{option.label}</span>
+                    <span className={getActiveClass(option)}>{option.label}</span>
                   </Radio>
                 )}
               </div>
             </label>
           ))}
+
           {otherInput && (
-            <div className={isRadioList ? style['other-field-radio-list'] : ''}>
+            <div className={`${isRadioList ? style['other-field-radio-list'] : ''}`}>
               <Radio value={'other'}>
                 <div className={style['input-wrapper']}>
                   Other{' '}

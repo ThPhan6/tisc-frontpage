@@ -1,10 +1,5 @@
-import {
-  BrandDetail,
-  GeneralData,
-  ConversionSubValueProps,
-  AssigningStatus,
-  AssigningStatusName,
-} from '@/types';
+import { AssigningStatus, AssigningStatusName } from '@/features/project/types';
+import { BrandDetail, GeneralData, ConversionSubValueProps } from '@/types';
 
 export interface ProductSummary {
   categories: GeneralData[];
@@ -76,6 +71,7 @@ export interface ProductItem {
   created_by?: string;
   image?: string;
   brand_name?: string;
+  brand_logo?: string;
   collection_name?: string;
   status?: AssigningStatus;
   status_name?: AssigningStatusName;

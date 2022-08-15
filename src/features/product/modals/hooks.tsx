@@ -1,14 +1,14 @@
 import { FC, useEffect, useState } from 'react';
-import { getProductAssignSpaceByProject } from '@/services';
 import { CustomRadio } from '@/components/CustomRadio';
 import { BodyText } from '@/components/Typography';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 import { Tooltip } from 'antd';
 import { useBoolean, useNumber } from '@/helper/hook';
-import { ProjectSpaceListProps } from '@/types';
+import { ProjectSpaceListProps } from '@/features/project/types';
 import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { getProductAssignSpaceByProject } from '@/features/project/services';
 
 type RoomsState = { [areaId: string]: CheckboxValue[] };
 
@@ -146,7 +146,10 @@ export const useAssignProductToSpaceForm = (
     );
   };
 
-  const AssignProductToSpaceForm: FC<{ specifyingModal?: boolean }> = ({ specifyingModal }) => (
+  const AssignProductToSpaceForm: FC<{ specifyingModal?: boolean; noPaddingLeft?: boolean }> = ({
+    specifyingModal,
+    noPaddingLeft,
+  }) => (
     <>
       {projectId && (
         <CustomRadio
@@ -160,6 +163,7 @@ export const useAssignProductToSpaceForm = (
           value={entireProject.value}
           onChange={onChangeEntireProject}
           containerStyle={{ boxShadow: 'inset 0 -.7px 0 #000' }}
+          noPaddingLeft={noPaddingLeft}
         />
       )}
 

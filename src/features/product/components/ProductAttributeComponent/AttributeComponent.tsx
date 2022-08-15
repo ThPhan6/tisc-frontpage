@@ -67,7 +67,12 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
         className={`${styles.content} product-attribute-option-wrapper`}
         onClick={() => setVisible(true)}
       >
-        <BodyText level={6} fontFamily="Roboto" customClass={styles.content_select}>
+        <BodyText
+          level={6}
+          fontFamily="Roboto"
+          customClass={styles.content_select}
+          color={chosenOption?.label ? 'primary-color-dark' : 'mono-color'}
+        >
           {chosenOption ? chosenOption.label : 'select'}
         </BodyText>
         <ActionRightIcon className={styles.singlerRighIcon} />

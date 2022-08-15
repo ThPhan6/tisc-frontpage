@@ -13,7 +13,7 @@ import {
   ProductAttributeLine,
 } from '@/features/product/components/ProductAttributeComponent/AttributeComponent';
 import type { FC } from 'react';
-import type { SpecificationAttributeGroup, SelectedSpecAttributte } from '@/types';
+import type { SpecificationAttributeGroup, SelectedSpecAttributte } from '@/features/project/types';
 
 import styles from './styles/specification-tab.less';
 import { OnChangeSpecifyingProductFnc } from './types';
@@ -123,6 +123,9 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
     attributeIndex: number,
     optionId: string,
   ) => {
+    if (!optionId) {
+      return;
+    }
     setSpecifyingGroups((prevState) => {
       const basisOptions = prevState[groupIndex].attributes[attributeIndex].basis_options;
       if (!basisOptions) {
@@ -158,6 +161,7 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
     value: true,
     label: <ReferToDesignLabel />,
   };
+
   return (
     <div className={styles.specificationTab}>
       <CustomRadio
@@ -166,6 +170,7 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
         value={is_refer_document}
         onChange={() => onCheckReferDocument()}
         containerStyle={{ boxShadow: 'inset 0 -.7px 0 #000' }}
+        noPaddingLeft
       />
 
       <div>
@@ -200,14 +205,15 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
                     chosenOption={
                       chosenOption
                         ? {
-                            label: `${chosenOption.value_1} ${chosenOption.unit_1} - ${chosenOption.value_1} ${chosenOption.unit_1}`,
+                            label: `${chosenOption.value_1} ${chosenOption.unit_1} - ${chosenOption.value_2} ${chosenOption.unit_2}`,
                             value: chosenOption?.id,
                           }
                         : undefined
                     }
-                    setChosenOptions={(option) =>
-                      onSelectSpecificationOption(index, attributeIndex, String(option.value))
-                    }
+                    setChosenOptions={(option) => {
+                      // console.log('option', option);
+                      onSelectSpecificationOption(index, attributeIndex, String(option?.value));
+                    }}
                   />
                 </div>
               );

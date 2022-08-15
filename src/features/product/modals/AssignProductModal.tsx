@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import Popover, { PopoverProps } from '@/components/Modal/Popover';
 import { FormGroup } from '@/components/Form';
 import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
-import { assignProductToProject, getAllProjects } from '@/services';
+import { assignProductToProject, getAllProjects } from '@/features/project/services';
 import { RadioValue } from '@/components/CustomRadio/types';
 import { useAppSelector } from '@/reducers';
 import { BodyText } from '@/components/Typography';

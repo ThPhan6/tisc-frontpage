@@ -1,0 +1,21 @@
+.overlayContainer {
+  width: 259px;
+  max-height: 271px;
+  overflow-y: scroll;
+  background: #fff;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+
+  :global(.ant-radio-group .ant-space-item) {
+    padding-right: 16px;
+  }
+}
+
+.selectDropdown {
+  position: relative;
+  :global(svg.ic-select) {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+  }
+}

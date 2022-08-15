@@ -11,7 +11,7 @@ import {
   ProjectSpaceListProps,
   FindProductConsiderRequest,
   AssigningStatus,
-} from '@/types';
+} from '@/features/project/types';
 import { getResponseMessage } from '@/helper/common';
 
 export async function getProductAssignSpaceByProject(

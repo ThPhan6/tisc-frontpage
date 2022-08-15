@@ -19,4 +19,6 @@ export interface CustomRadioProps {
   inputPlaceholder?: string;
   containerClass?: string;
   containerStyle?: CSSProperties;
+  noPaddingLeft?: boolean;
+  otherStickyBottom?: boolean;
 }

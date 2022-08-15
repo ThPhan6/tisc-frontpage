@@ -9,14 +9,13 @@ import type {
 } from '@/components/Table/types';
 import {
   ProjectListProps,
-  GeneralData,
-  KeyValueData,
   ProjectBodyRequest,
   ProjectDetailProps,
   ProjectSummaryData,
-} from '@/types';
+} from '@/features/project/types';
 import { ProjectItem, setProjectList } from '@/features/project/reducers';
 import store from '@/reducers';
+import { GeneralData, KeyValueData } from '@/types';
 
 interface ProjectPaginationResponse {
   data: {
