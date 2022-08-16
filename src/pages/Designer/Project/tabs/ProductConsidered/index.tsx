@@ -64,11 +64,8 @@ const ProductConsidered: React.FC = () => {
         icon: <CheckIcon style={{ width: 16, height: 16 }} />,
         disabled: record.status !== AssigningStatus.Unlisted,
         onClick: () => {
-          updateProductConsiderStatus(record.id, {
-            project_id: params.id,
+          updateProductConsiderStatus(record.considered_id, {
             status: AssigningStatus['Re-considered'],
-            is_entire: record.is_entire,
-            project_zone_id: record.project_zone_id,
           }).then((success) => (success ? tableRef.current.reload() : undefined));
         },
       },
@@ -78,11 +75,8 @@ const ProductConsidered: React.FC = () => {
         icon: <CancelIcon style={{ width: 16, height: 16 }} />,
         disabled: record.status === AssigningStatus.Unlisted,
         onClick: () => {
-          updateProductConsiderStatus(record.id, {
-            project_id: params.id,
+          updateProductConsiderStatus(record.considered_id, {
             status: AssigningStatus.Unlisted,
-            is_entire: record.is_entire,
-            project_zone_id: record.project_zone_id,
           }).then((success) => (success ? tableRef.current.reload() : undefined));
         },
       },
@@ -113,11 +107,9 @@ const ProductConsidered: React.FC = () => {
         }}
         handleDelete={() =>
           confirmDelete(() => {
-            removeProductFromProject(record.id, {
-              project_id: params.id,
-              is_entire: record.is_entire,
-              project_zone_id: record.project_zone_id,
-            }).then((success) => (success ? tableRef.current.reload() : undefined));
+            removeProductFromProject(record.considered_id).then((success) =>
+              success ? tableRef.current.reload() : undefined,
+            );
           })
         }
       />

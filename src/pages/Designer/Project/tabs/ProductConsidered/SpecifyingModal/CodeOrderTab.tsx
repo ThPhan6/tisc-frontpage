@@ -58,7 +58,6 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
   const materialCode = material_code_id
     ? materialCodeOpts.find((el) => el.value === material_code_id)
     : undefined;
-  console.log('unitType', unitType);
 
   const renderDualLabel = (firstTxt: string, secTxt: string) => {
     return (

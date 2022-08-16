@@ -18,7 +18,7 @@ export const confirmDelete = (onOk: () => void, onCancel?: () => void) => {
 };
 
 export const getResponseMessage = (
-  type: 'get-list' | 'get-one' | 'create' | 'delete' | 'update' | 'assign',
+  type: 'get-list' | 'get-one' | 'create' | 'delete' | 'update' | 'assign' | 'remove',
   action: string,
   status: 'success' | 'failed' = 'success',
   error?: any,
@@ -31,16 +31,25 @@ export const getResponseMessage = (
   switch (type) {
     case 'get-list':
       startWith = 'Get list';
+      break;
     case 'get-one':
       startWith = 'Get';
+      break;
     case 'create':
       startWith = 'Create';
+      break;
     case 'delete':
       startWith = 'Delete';
+      break;
+    case 'remove':
+      startWith = 'Remove';
+      break;
     case 'update':
       startWith = 'Update';
+      break;
     case 'assign':
       startWith = 'Assign';
+      break;
   }
 
   return `${startWith} ${action} ${status === 'success' ? 'successfully' : 'failed'}`;

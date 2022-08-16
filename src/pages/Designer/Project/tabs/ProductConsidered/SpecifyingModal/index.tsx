@@ -2,7 +2,7 @@ import CustomButton from '@/components/Button';
 import { CustomModal } from '@/components/Modal';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 import { MainTitle } from '@/components/Typography';
-import type { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useState } from 'react';
 import {
   ProjectSpecifyTabKeys,
@@ -20,7 +20,8 @@ import { ProductItem } from '@/features/product/types';
 import styles from './styles/specifying-modal.less';
 import { OnChangeSpecifyingProductFnc, SpecifyingProductRequestBody } from './types';
 import { SpecificationAttributeGroup } from '@/features/project/types';
-import { updateProductSpecifying } from '@/features/project/services';
+import { getProductSpecifying, updateProductSpecifying } from '@/features/project/services';
+import { pick } from 'lodash';
 
 const DEFAULT_STATE: SpecifyingProductRequestBody = {
   considered_product_id: '',
@@ -59,14 +60,43 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   const [selectedTab, setSelectedTab] = useState<ProjectSpecifyTabValue>(
     ProjectSpecifyTabKeys.specification,
   );
-  // console.log('product', product);
   const [specifyingState, setSpecifyingState] =
     useState<SpecifyingProductRequestBody>(DEFAULT_STATE);
+  console.log('specifyingState', specifyingState);
 
   const onChangeSpecifyingState: OnChangeSpecifyingProductFnc = (newStateParts) =>
     setSpecifyingState(
       (prevState) => ({ ...prevState, ...newStateParts } as SpecifyingProductRequestBody),
     );
+
+  useEffect(() => {
+    if (product.considered_id) {
+      onChangeSpecifyingState({ considered_product_id: product.considered_id });
+      getProductSpecifying(product.considered_id).then((res) => {
+        console.log('getProductSpecifying sres', res);
+        if (res) {
+          onChangeSpecifyingState(
+            pick(res, [
+              'brand_location_id',
+              'considered_product_id',
+              'description',
+              'distributor_location_id',
+              'instruction_type_ids',
+              'is_entire',
+              'material_code_id',
+              'order_method',
+              'quantity',
+              'requirement_type_ids',
+              'special_instructions',
+              'specification',
+              'suffix_code',
+              'unit_type_id',
+            ]),
+          );
+        }
+      });
+    }
+  }, [product.considered_id]);
 
   const onChangeReferToDocument = (isRefer: boolean) =>
     setSpecifyingState(
@@ -93,7 +123,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     );
 
   const onSubmit = () => {
-    console.log('specifyingState', specifyingState);
     updateProductSpecifying(specifyingState, () => {
       setVisible(false);
       setSpecifyingState(DEFAULT_STATE);
@@ -148,13 +177,19 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           onChangeSpecifyingState={onChangeSpecifyingState}
           onChangeReferToDocument={onChangeReferToDocument}
           onChangeSpecification={onChangeSpecification}
-          // specification_attribute_groups={specifyingState.specification_attribute_groups}
+          specification_attribute_groups={
+            specifyingState.specification?.specification_attribute_groups
+          }
           is_refer_document={specifyingState?.specification?.is_refer_document || false}
         />
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.vendor}>
-        <VendorTab productId={product.id} brandId={product.brand?.id ?? ''} />
+        <VendorTab
+          productId={product.id}
+          brandId={product.brand?.id ?? ''}
+          onChangeSpecifyingState={onChangeSpecifyingState}
+        />
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.allocation}>

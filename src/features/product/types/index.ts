@@ -77,6 +77,7 @@ export interface ProductItem {
   status_name?: AssigningStatusName;
   is_entire?: boolean;
   project_zone_id?: string;
+  considered_id?: string;
 }
 
 export interface ProductFormData {

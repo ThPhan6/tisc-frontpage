@@ -9,7 +9,6 @@ import {
   ProjectSummaryData,
   ConsideredProduct,
   ProjectSpaceListProps,
-  FindProductConsiderRequest,
   AssigningStatus,
 } from '@/features/project/types';
 import { getResponseMessage } from '@/helper/common';
@@ -77,12 +76,12 @@ export async function assignProductToProject(data: {
 }
 
 export async function updateProductConsiderStatus(
-  product_id: string,
-  data: FindProductConsiderRequest & {
+  consider_id: string,
+  data: {
     status: AssigningStatus;
   },
 ) {
-  return request<ProjectSummaryData>(`/api/considered-product/update-status/${product_id}`, {
+  return request<ProjectSummaryData>(`/api/considered-product/update-status/${consider_id}`, {
     method: 'PATCH',
     data,
   })
@@ -97,13 +96,9 @@ export async function updateProductConsiderStatus(
     });
 }
 
-export async function removeProductFromProject(
-  product_id: string,
-  data: FindProductConsiderRequest,
-) {
-  return request<ProjectSummaryData>(`/api/considered-product/delete/${product_id}`, {
+export async function removeProductFromProject(consider_id: string) {
+  return request<ProjectSummaryData>(`/api/considered-product/delete/${consider_id}`, {
     method: 'DELETE',
-    data,
   })
     .then(() => {
       message.success(getResponseMessage('delete', 'product from project'));

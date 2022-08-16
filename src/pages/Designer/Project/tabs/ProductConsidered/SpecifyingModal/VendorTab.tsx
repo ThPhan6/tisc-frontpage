@@ -10,13 +10,15 @@ import { FC, useState } from 'react';
 import CustomCollapse from '@/components/Collapse';
 import { RadioValue } from '@/components/CustomRadio/types';
 import { CollapsibleType } from 'antd/lib/collapse/CollapsePanel';
+import { OnChangeSpecifyingProductFnc } from './types';
 
 interface VendorTabProps {
   productId: string;
   brandId: string;
+  onChangeSpecifyingState: OnChangeSpecifyingProductFnc;
 }
 
-const VendorTab: FC<VendorTabProps> = ({ productId, brandId }) => {
+const VendorTab: FC<VendorTabProps> = ({ productId, brandId, onChangeSpecifyingState }) => {
   console.log('productId', productId);
   console.log('brandId', brandId);
 
@@ -24,12 +26,14 @@ const VendorTab: FC<VendorTabProps> = ({ productId, brandId }) => {
   const [brandAddressDetail, setBrandAddressDetail] = useState<BrandDistributorLocationAddress>();
   const [brandCollapsible, setBrandCollapsible] = useState<CollapsibleType>('disabled');
   const [brandBottomLine, setBrandBottomLine] = useState<boolean>(false);
+
   const onBrandAddressSelected = (locationSelected: RadioValue) => {
     // get detail
     setBrandAddressDetail(locationSelected?.label?.props);
 
     /// handle collapse
     if (locationSelected?.value) {
+      onChangeSpecifyingState({ brand_location_id: String(locationSelected.value) });
       setBrandCollapsible('header');
     }
   };
@@ -39,10 +43,12 @@ const VendorTab: FC<VendorTabProps> = ({ productId, brandId }) => {
     useState<BrandDistributorLocationAddress>();
   const [distributorCollapsible, setDistributorCollapsible] = useState<CollapsibleType>('disabled');
   const [distributorBottomLine, setDistributorBottomLine] = useState<boolean>(false);
+
   const onDistributorAddressSelected = (locationSelected: RadioValue) => {
     setDistributorAddressDetail(locationSelected?.label?.props);
 
     if (locationSelected?.value) {
+      onChangeSpecifyingState({ distributor_location_id: String(locationSelected.value) });
       setDistributorCollapsible('header');
     }
   };
