@@ -170,8 +170,6 @@ export const isValidURL = (url: string) => {
     return false;
   }
 
-  console.log(url);
-
   return validURL.protocol === 'http:' || validURL.protocol === 'https:';
 };
 
@@ -199,4 +197,20 @@ export const formatNumberDisplay = (
     return 'N/A';
   }
   return value.toLocaleString(locale, options);
+};
+
+// for email
+export const emailMessageError = (email: string, errorMessage: string) => {
+  const checkValidEmail = validateEmail(email);
+
+  return email !== '' ? (checkValidEmail ? '' : errorMessage) : undefined;
+};
+export const emailMessageErrorType = (
+  email: string,
+  error: 'error' | 'warning',
+  normal: 'normal',
+) => {
+  const checkValidEmail = validateEmail(email);
+
+  return email !== '' ? (checkValidEmail ? normal : error) : undefined;
 };
