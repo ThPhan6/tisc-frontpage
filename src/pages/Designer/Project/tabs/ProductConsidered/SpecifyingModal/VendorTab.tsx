@@ -11,53 +11,6 @@ import CustomCollapse from '@/components/Collapse';
 import { RadioValue } from '@/components/CustomRadio/types';
 import { CollapsibleType } from 'antd/lib/collapse/CollapsePanel';
 
-// interface AddressDetailProps {
-//   collapsible: CollapsibleType;
-//   handleCollapse: () => void;
-//   addressDetail: BrandDistributorLocationAddress;
-//   title: 'Brand' | 'Distributor';
-// }
-
-// const AddressDetail: FC<AddressDetailProps> = ({
-//   collapsible,
-//   handleCollapse,
-//   addressDetail,
-//   title,
-// }) => {
-//   return (
-//     <div className={`${bottomLine ? styles.collapsed : styles.notCollapsed} `}>
-//       <div className={styles.address}>
-//         <CustomCollapse
-//           header={<RobotoBodyText level={5}>Distributor Address</RobotoBodyText>}
-//           collapsible={collapsible}
-//           onChange={handleCollapse}
-//         >
-//           <BusinessDetail
-//             business={addressDetail?.business ?? ''}
-//             type={addressDetail?.type ?? ''}
-//             address={addressDetail?.address ?? ''}
-//             phone_code={addressDetail?.phone_code ?? ''}
-//             general_phone={addressDetail?.general_phone ?? ''}
-//             genernal_email={addressDetail?.genernal_email ?? ''}
-//             customClass={styles.businessDetail}
-//           />
-//         </CustomCollapse>
-
-//         <BrandContact
-//           productId={'c0a418b9-2476-4c05-a2e3-c31e31cc0843'}
-//           title="Distributor"
-//           label={addressDetail ? addressDetail.country : 'selection location'}
-//           customClass={`
-//       ${styles.brandDistributor} ${collapsible === 'header' ? styles.activeLabel : ''}
-//       `}
-//           chosenValue={addressDetail}
-//           setChosenValue={(chosenValue) => onDistributorAddressSelected(chosenValue)}
-//         />
-//       </div>
-//     </div>
-//   );
-// };
-
 interface VendorTabProps {
   productId: string;
   brandId: string;
@@ -67,6 +20,7 @@ const VendorTab: FC<VendorTabProps> = ({ productId, brandId }) => {
   console.log('productId', productId);
   console.log('brandId', brandId);
 
+  const [brandActiveKey, setBrandActiveKey] = useState<string | string[]>();
   const [brandAddressDetail, setBrandAddressDetail] = useState<BrandDistributorLocationAddress>();
   const [brandCollapsible, setBrandCollapsible] = useState<CollapsibleType>('disabled');
   const [brandBottomLine, setBrandBottomLine] = useState<boolean>(false);
@@ -79,10 +33,8 @@ const VendorTab: FC<VendorTabProps> = ({ productId, brandId }) => {
       setBrandCollapsible('header');
     }
   };
-  const handleBrandAddressCollapse = () => {
-    setBrandBottomLine(!brandBottomLine);
-  };
 
+  const [distributorActiveKey, setDistributorActiveKey] = useState<string | string[]>();
   const [distributorAddressDetail, setDistributorAddressDetail] =
     useState<BrandDistributorLocationAddress>();
   const [distributorCollapsible, setDistributorCollapsible] = useState<CollapsibleType>('disabled');
@@ -94,8 +46,35 @@ const VendorTab: FC<VendorTabProps> = ({ productId, brandId }) => {
       setDistributorCollapsible('header');
     }
   };
-  const handleDistributorAddressCollapse = () => {
-    setDistributorBottomLine(!distributorBottomLine);
+
+  const handleCollapse = (field: 'Brand' | 'Distributor', key: string | string[]) => {
+    if (field === 'Brand') {
+      setBrandBottomLine(!brandBottomLine);
+      setDistributorBottomLine(false);
+      setBrandActiveKey(key === '1' ? '' : key);
+      setDistributorActiveKey('');
+    } else if (field === 'Distributor') {
+      setDistributorBottomLine(!distributorBottomLine);
+      setBrandBottomLine(false);
+      setDistributorActiveKey(key === '1' ? '' : key);
+      setBrandActiveKey('');
+    }
+  };
+
+  const BusinessAdressDetail: FC<{ addressDetail?: BrandDistributorLocationAddress }> = ({
+    addressDetail,
+  }) => {
+    return (
+      <BusinessDetail
+        business={addressDetail?.business ?? ''}
+        type={addressDetail?.type ?? ''}
+        address={addressDetail?.address ?? ''}
+        phone_code={addressDetail?.phone_code ?? ''}
+        general_phone={addressDetail?.general_phone ?? ''}
+        genernal_email={addressDetail?.genernal_email ?? ''}
+        customClass={styles.businessDetail}
+      />
+    );
   };
 
   return (
@@ -116,17 +95,10 @@ const VendorTab: FC<VendorTabProps> = ({ productId, brandId }) => {
             <CustomCollapse
               header={<RobotoBodyText level={5}>Brand Address</RobotoBodyText>}
               collapsible={brandCollapsible}
-              onChange={handleBrandAddressCollapse}
+              onChange={(key) => handleCollapse('Brand', key)}
+              activeKey={brandActiveKey}
             >
-              <BusinessDetail
-                business={brandAddressDetail?.business ?? ''}
-                type={brandAddressDetail?.type ?? ''}
-                address={brandAddressDetail?.address ?? ''}
-                phone_code={brandAddressDetail?.phone_code ?? ''}
-                general_phone={brandAddressDetail?.general_phone ?? ''}
-                genernal_email={brandAddressDetail?.genernal_email ?? ''}
-                customClass={styles.businessDetail}
-              />
+              <BusinessAdressDetail addressDetail={brandAddressDetail} />
             </CustomCollapse>
 
             <BrandContact
@@ -148,17 +120,10 @@ const VendorTab: FC<VendorTabProps> = ({ productId, brandId }) => {
             <CustomCollapse
               header={<RobotoBodyText level={5}>Distributor Address</RobotoBodyText>}
               collapsible={distributorCollapsible}
-              onChange={handleDistributorAddressCollapse}
+              onChange={(key) => handleCollapse('Distributor', key)}
+              activeKey={distributorActiveKey}
             >
-              <BusinessDetail
-                business={distributorAddressDetail?.business ?? ''}
-                type={distributorAddressDetail?.type ?? ''}
-                address={distributorAddressDetail?.address ?? ''}
-                phone_code={distributorAddressDetail?.phone_code ?? ''}
-                general_phone={distributorAddressDetail?.general_phone ?? ''}
-                genernal_email={distributorAddressDetail?.genernal_email ?? ''}
-                customClass={styles.businessDetail}
-              />
+              <BusinessAdressDetail addressDetail={distributorAddressDetail} />
             </CustomCollapse>
 
             <BrandContact

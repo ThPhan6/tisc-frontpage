@@ -8,7 +8,8 @@
 }
 
 .notCollapsed {
-  border-bottom: 0.7px solid @mono-color-medium;
+  // border-bottom: 0.7px solid @mono-color-medium;
+  box-shadow: 0 0.7px @mono-color-medium;
 }
 
 .address {
@@ -21,7 +22,7 @@
   }
   :global(.ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header) {
     justify-content: start;
-    height: 36px;
+    height: 36px !important;
     padding: 0 !important;
     box-shadow: none !important;
     > div {
@@ -37,12 +38,12 @@
 }
 
 .brandDistributor {
-  padding: 0;
+  padding: 0 !important;
 
   :global(.contact-item-wrapper) {
     box-shadow: none !important;
     :global(.contact-item) {
-      height: 36px;
+      height: 36px !important;
     }
   }
 }

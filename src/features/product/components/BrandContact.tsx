@@ -42,10 +42,14 @@ export const BusinessDetail: FC<BusinessDetailProps> = ({
         {address}
       </RobotoBodyText>
       <div className={styles.detail_phoneEmail}>
-        <RobotoBodyText level={6} customClass={styles.phone}>
-          T: {`${phone_code} ${general_phone}`}
-        </RobotoBodyText>
-        <RobotoBodyText level={6}>E: {genernal_email}</RobotoBodyText>
+        {general_phone ? (
+          <RobotoBodyText level={6} customClass={styles.phone}>
+            T: {`${phone_code} ${general_phone}`}
+          </RobotoBodyText>
+        ) : (
+          ''
+        )}
+        {genernal_email ? <RobotoBodyText level={6}>E: {genernal_email}</RobotoBodyText> : ''}
       </div>
       {/* {      <span className={styles.detail_contact}>Contact: hien tai trong data khong co</span> :  ''} */}
     </div>
