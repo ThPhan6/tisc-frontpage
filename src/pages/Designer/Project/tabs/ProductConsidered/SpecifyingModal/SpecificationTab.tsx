@@ -43,13 +43,15 @@ interface SpecificationTabProps {
   onChangeSpecifyingState: OnChangeSpecifyingProductFnc;
   onChangeSpecification: (specification_attribute_groups: SpecificationAttributeGroup[]) => void;
   onChangeReferToDocument: (isRefer: boolean) => void;
-  // specification_attribute_groups: SpecificationAttributeGroup[];
+  specification_attribute_groups: SpecificationAttributeGroup[];
   is_refer_document: boolean;
 }
 
 const SpecificationTab: FC<SpecificationTabProps> = ({
+  productId,
   onChangeReferToDocument,
   onChangeSpecification,
+  // specification_attribute_groups = [],
   is_refer_document,
 }) => {
   const [specifyingGroups, setSpecifyingGroups] = useState<ProductAttributeFormInput[]>([]);
@@ -149,9 +151,10 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
   };
 
   useEffect(() => {
-    getProductByIdAndReturn('c0a418b9-2476-4c05-a2e3-c31e31cc0843').then((res) => {
-      console.log('res', res);
+    getProductByIdAndReturn(productId).then((res) => {
       if (res) {
+        const specGroups = res.specification_attribute_groups;
+        console.log('specGroups', specGroups);
         setSpecifyingGroups(res.specification_attribute_groups);
       }
     });

@@ -44,6 +44,20 @@ export async function getRequirementTypeList() {
     });
 }
 
+export async function getProductSpecifying(consider_id: string) {
+  return request<{ data: SpecifyingProductRequestBody }>(
+    `/api/specified-product/get-one/${consider_id}`,
+    { method: 'GET' },
+  )
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log('getInstructionTypeList error', error);
+      return undefined;
+    });
+}
+
 export async function updateProductSpecifying(
   data: SpecifyingProductRequestBody,
   callback: () => void,
@@ -53,7 +67,7 @@ export async function updateProductSpecifying(
     data,
   })
     .then(() => {
-      message.error(getResponseMessage('update', 'product specifying'));
+      message.success(getResponseMessage('update', 'product specifying'));
       callback();
     })
     .catch((error) => {
