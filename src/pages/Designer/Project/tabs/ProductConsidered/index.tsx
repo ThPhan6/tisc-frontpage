@@ -442,6 +442,7 @@ const ProductConsidered: React.FC = () => {
           product={specifyingProduct}
           projectId={params.id}
           setVisible={(visible) => (visible ? undefined : setSpecifyingProduct(undefined))}
+          reloadTable={tableRef.current.reload}
         />
       )}
     </div>

@@ -4,7 +4,8 @@ export interface SelectedSpecAttributte {
 }
 export interface SpecificationAttributeGroup {
   id: string;
-  attribute: SelectedSpecAttributte[];
+  attributes: SelectedSpecAttributte[];
+  isChecked?: boolean;
 }
 export interface SpecificationBodyRequest {
   is_refer_document: boolean;

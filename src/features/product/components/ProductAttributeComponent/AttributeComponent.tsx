@@ -15,6 +15,7 @@ interface AttributeOptionProps {
   options: SpecificationAttributeBasisOptionProps[];
   chosenOption?: RadioValue;
   setChosenOptions?: (value: RadioValue) => void;
+  clearOnClose?: boolean;
 }
 const AttributeOptionLabel = (option: SpecificationAttributeBasisOptionProps) => {
   if (!option.image || option.image == '') {
@@ -55,6 +56,7 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
   options,
   chosenOption,
   setChosenOptions,
+  clearOnClose,
 }) => {
   const [visible, setVisible] = useState<boolean>(false);
   const isOptionWithImage =
@@ -100,6 +102,7 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
         `}
         chosenValue={chosenOption}
         setChosenValue={setChosenOptions}
+        clearOnClose={clearOnClose}
       ></Popover>
     </>
   );

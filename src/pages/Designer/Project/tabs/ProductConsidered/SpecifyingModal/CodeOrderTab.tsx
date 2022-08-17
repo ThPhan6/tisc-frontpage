@@ -36,13 +36,14 @@ interface CodeOrderTabProps {
   onChangeSpecifyingState: OnChangeSpecifyingProductFnc;
 }
 
+const getSelectedOptions = (options: CheckboxValue[], selectedIds: string[]) =>
+  options.filter((opt) => selectedIds.includes(String(opt.value)));
+
 const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyingState }) => {
   const [materialCodeOpts, setMaterialCodeOtps] = useState<CustomRadiaValue[]>([]);
   const [unitTypeOtps, setUnitTypeOtps] = useState<CustomRadiaValue[]>([]);
   const [requirements, setRequirements] = useState<CheckboxValue[]>([]);
-  const [selectedRequirements, setSelectedRequirements] = useState<CheckboxValue[]>([]);
   const [instructions, setInstructions] = useState<CheckboxValue[]>([]);
-  const [selectedInstructions, setSelectedInstructions] = useState<CheckboxValue[]>([]);
 
   const {
     description,
@@ -52,7 +53,12 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
     suffix_code,
     unit_type_id,
     special_instructions,
+    instruction_type_ids,
+    requirement_type_ids,
   } = codeOrderState;
+
+  const selectedInstructions = getSelectedOptions(instructions, instruction_type_ids);
+  const selectedRequirements = getSelectedOptions(requirements, requirement_type_ids);
 
   const unitType = unit_type_id ? unitTypeOtps.find((el) => el.value === unit_type_id) : undefined;
   const materialCode = material_code_id
@@ -175,28 +181,24 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
           </FormGroup>
         </Col>
         <Col span={12}>
-          <div>
-            <DropdownSelectInput
-              placeholder="unit type"
-              borderBottomColor="light"
-              value={unitType?.labelText}
-              overlay={
-                <CustomRadio
-                  options={unitTypeOtps}
-                  isRadioList
-                  otherInput
-                  otherStickyBottom
-                  inputPlaceholder="please specify"
-                  value={unit_type_id}
-                  onChange={(e) =>
-                    onChangeSpecifyingState({
-                      unit_type_id: String(e.value),
-                    })
-                  }
-                />
-              }
-            />
-          </div>
+          <DropdownSelectInput
+            placeholder="unit type"
+            borderBottomColor="light"
+            value={unitType?.labelText}
+            overlay={
+              <CustomRadio
+                options={unitTypeOtps}
+                isRadioList
+                inputPlaceholder="please specify"
+                value={unit_type_id}
+                onChange={(e) =>
+                  onChangeSpecifyingState({
+                    unit_type_id: String(e.value),
+                  })
+                }
+              />
+            }
+          />
         </Col>
 
         <Col span={24}>
@@ -220,7 +222,6 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
               options={requirements}
               selected={selectedRequirements}
               onChange={(options) => {
-                setSelectedRequirements(options);
                 onChangeSpecifyingState({
                   requirement_type_ids: options.map((opt) => String(opt.value)),
                 });
@@ -241,7 +242,6 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
               options={instructions}
               selected={selectedInstructions}
               onChange={(options) => {
-                setSelectedInstructions(options);
                 onChangeSpecifyingState({
                   instruction_type_ids: options.map((opt) =>
                     String(opt.value === 'other' ? opt.label : opt.value),

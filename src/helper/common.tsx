@@ -1,8 +1,8 @@
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-triangle.svg';
-import { Modal } from 'antd';
+import { Modal, ModalFuncProps } from 'antd';
 import styles from './common.less';
 
-export const confirmDelete = (onOk: () => void, onCancel?: () => void) => {
+export const confirmDelete = (onOk: () => void, props?: ModalFuncProps, onCancel?: () => void) => {
   Modal.confirm({
     title: 'Are you sure to delete this item?',
     icon: <WarningIcon className={styles.deleteModalIcon} />,
@@ -14,6 +14,7 @@ export const confirmDelete = (onOk: () => void, onCancel?: () => void) => {
     centered: true,
     className: styles.customModal,
     maskClosable: true,
+    ...props,
   });
 };
 

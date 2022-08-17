@@ -1,11 +1,9 @@
-import { useState, useEffect } from 'react';
 import { Tooltip } from 'antd';
 import { CustomRadio } from '@/components/CustomRadio';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { Title, RobotoBodyText } from '@/components/Typography';
 import CustomCollapse from '@/components/Collapse';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
-import { getProductByIdAndReturn } from '@/features/product/services';
 import { ProductAttributeFormInput } from '@/features/product/types';
 import type { RadioValue } from '@/components/CustomRadio/types';
 import {
@@ -13,10 +11,9 @@ import {
   ProductAttributeLine,
 } from '@/features/product/components/ProductAttributeComponent/AttributeComponent';
 import type { FC } from 'react';
-import type { SpecificationAttributeGroup, SelectedSpecAttributte } from '@/features/project/types';
+import type { SpecificationAttributeGroup } from '@/features/project/types';
 
 import styles from './styles/specification-tab.less';
-import { OnChangeSpecifyingProductFnc } from './types';
 
 const ReferToDesignLabel = () => {
   const TooltipText = () => {
@@ -39,126 +36,56 @@ const ReferToDesignLabel = () => {
 };
 
 interface SpecificationTabProps {
-  productId: string;
-  onChangeSpecifyingState: OnChangeSpecifyingProductFnc;
   onChangeSpecification: (specification_attribute_groups: SpecificationAttributeGroup[]) => void;
   onChangeReferToDocument: (isRefer: boolean) => void;
   specification_attribute_groups: SpecificationAttributeGroup[];
   is_refer_document: boolean;
+  specifyingGroups: ProductAttributeFormInput[];
 }
 
 const SpecificationTab: FC<SpecificationTabProps> = ({
-  productId,
   onChangeReferToDocument,
   onChangeSpecification,
-  // specification_attribute_groups = [],
-  is_refer_document,
+  specification_attribute_groups = [],
+  is_refer_document = false,
+  specifyingGroups,
 }) => {
-  const [specifyingGroups, setSpecifyingGroups] = useState<ProductAttributeFormInput[]>([]);
-
-  const resetAllSpecificationChecked = () => {
-    setSpecifyingGroups((prevState) =>
-      prevState.map((group) => ({
-        ...group,
-        isChecked: false,
-        attributes: group.attributes.map((attr) => ({
-          ...attr,
-          basis_options: attr.basis_options?.map((basisOpt) => ({
-            ...basisOpt,
-            isChecked: false,
-          })),
-        })),
-      })),
-    );
-  };
+  // console.log('specification_attribute_groups', specification_attribute_groups);
+  // console.log('specifyingGroups', specifyingGroups);
 
   const onCheckReferDocument = () => {
     onChangeReferToDocument(true);
     onChangeSpecification([]);
-    resetAllSpecificationChecked();
-  };
-
-  const getSelectedSpecification = (specGroups: ProductAttributeFormInput[]) => {
-    const selectedSpecs: SpecificationAttributeGroup[] = [];
-
-    specGroups.forEach((specGroup) => {
-      if (!specGroup.isChecked) {
-        return;
-      }
-      const selectedAttributes: SelectedSpecAttributte[] = [];
-      specGroup.attributes.forEach((attr) => {
-        attr.basis_options?.forEach((basisOption) => {
-          if (basisOption.isChecked) {
-            selectedAttributes.push({
-              id: attr.id,
-              basis_option_id: basisOption.id,
-            });
-          }
-        });
-      });
-
-      const selectedSpec: SpecificationAttributeGroup = {
-        id: specGroup.id || '',
-        attribute: selectedAttributes,
-      };
-      selectedSpecs.push(selectedSpec);
-    });
-
-    return selectedSpecs;
   };
 
   const onCheckedSpecification = (index: number) => {
     onChangeReferToDocument(false);
-
-    setSpecifyingGroups((prevState) => {
-      const newChecked = !prevState[index].isChecked;
-      const newState = [...prevState];
-      newState[index].isChecked = newChecked;
-
-      onChangeSpecification(getSelectedSpecification(newState));
-      return newState;
-    });
+    const newState = specification_attribute_groups;
+    specification_attribute_groups[index].isChecked =
+      !specification_attribute_groups[index].isChecked;
+    onChangeSpecification(newState);
   };
 
   const onSelectSpecificationOption = (
     groupIndex: number,
     attributeIndex: number,
-    optionId: string,
+    attributeId: string,
+    optionId?: string,
   ) => {
+    const newState = specification_attribute_groups;
+    console.log('newState', newState);
     if (!optionId) {
-      return;
+      // Uncheck
+      newState[groupIndex].attributes.splice(attributeIndex, 1);
+    } else {
+      console.log('newState[groupIndex]', newState[groupIndex]);
+      newState[groupIndex].attributes[attributeIndex] = {
+        basis_option_id: optionId,
+        id: attributeId,
+      };
     }
-    setSpecifyingGroups((prevState) => {
-      const basisOptions = prevState[groupIndex].attributes[attributeIndex].basis_options;
-      if (!basisOptions) {
-        return prevState;
-      }
-
-      const optionIndex = basisOptions.findIndex((el) => el.id === optionId);
-
-      if (optionIndex !== -1) {
-        const newChecked = !basisOptions[optionIndex].isChecked;
-        const newState = [...prevState];
-
-        newState[groupIndex].attributes[attributeIndex].basis_options[optionIndex].isChecked =
-          newChecked;
-
-        onChangeSpecification(getSelectedSpecification(newState));
-        return newState;
-      }
-      return prevState;
-    });
+    onChangeSpecification(newState);
   };
-
-  useEffect(() => {
-    getProductByIdAndReturn(productId).then((res) => {
-      if (res) {
-        const specGroups = res.specification_attribute_groups;
-        console.log('specGroups', specGroups);
-        setSpecifyingGroups(res.specification_attribute_groups);
-      }
-    });
-  }, []);
 
   const ReferToDesignRadio: RadioValue = {
     value: true,
@@ -171,7 +98,7 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
         options={[ReferToDesignRadio]}
         isRadioList
         value={is_refer_document}
-        onChange={() => onCheckReferDocument()}
+        onChange={onCheckReferDocument}
         containerStyle={{ boxShadow: 'inset 0 -.7px 0 #000' }}
         noPaddingLeft
       />
@@ -187,7 +114,9 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
                 <CustomCheckbox
                   options={[{ label: group.name, value: index }]}
                   selected={
-                    specifyingGroups[index]?.isChecked ? [{ label: group.name, value: index }] : []
+                    specification_attribute_groups.some((gr) => gr.isChecked && gr.id === group.id)
+                      ? [{ label: group.name, value: index }]
+                      : []
                   }
                   onChange={() => onCheckedSpecification(index)}
                 />
@@ -196,7 +125,11 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
           >
             {group.attributes.map((attribute, attributeIndex) => {
               const basisOptions = specifyingGroups[index].attributes[attributeIndex].basis_options;
-              const chosenOption = basisOptions?.find((el) => el.isChecked);
+              const chosenOption = basisOptions?.find((el) =>
+                specification_attribute_groups
+                  .find((gr) => gr.id === group.id)
+                  ?.attributes?.some((attr) => attr.basis_option_id === el.id),
+              );
 
               return (
                 <div className={styles.attributeOptionWrapper} key={attributeIndex}>
@@ -214,9 +147,14 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
                         : undefined
                     }
                     setChosenOptions={(option) => {
-                      // console.log('option', option);
-                      onSelectSpecificationOption(index, attributeIndex, String(option?.value));
+                      onSelectSpecificationOption(
+                        index,
+                        attributeIndex,
+                        attribute.id,
+                        option?.value?.toString() || undefined,
+                      );
                     }}
+                    clearOnClose
                   />
                 </div>
               );

@@ -16,23 +16,29 @@ import VendorTab from './VendorTab';
 
 import BrandProductBasicHeader from '@/components/BrandProductBasicHeader';
 import popoverStyles from '@/components/Modal/styles/Popover.less';
-import { ProductItem } from '@/features/product/types';
+import { ProductAttributeFormInput, ProductItem } from '@/features/product/types';
 import styles from './styles/specifying-modal.less';
 import { OnChangeSpecifyingProductFnc, SpecifyingProductRequestBody } from './types';
 import { SpecificationAttributeGroup } from '@/features/project/types';
-import { getProductSpecifying, updateProductSpecifying } from '@/features/project/services';
+import {
+  assignProductToProject,
+  getProductSpecifying,
+  updateProductSpecifying,
+} from '@/features/project/services';
 import { pick } from 'lodash';
+import { getProductByIdAndReturn } from '@/features/product/services';
+import { useBoolean } from '@/helper/hook';
 
 const DEFAULT_STATE: SpecifyingProductRequestBody = {
   considered_product_id: '',
   specification: {
-    is_refer_document: true,
+    is_refer_document: false,
     specification_attribute_groups: [],
   },
   brand_location_id: '',
   distributor_location_id: '',
   is_entire: true,
-  project_zone_ids: [''],
+  project_zone_ids: [],
   material_code_id: '',
   suffix_code: '',
   description: '',
@@ -49,6 +55,7 @@ interface SpecifyingModalProps {
   setVisible: (visible: boolean) => void;
   projectId: string;
   product: ProductItem;
+  reloadTable: () => void;
 }
 
 export const SpecifyingModal: FC<SpecifyingModalProps> = ({
@@ -56,6 +63,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   setVisible,
   product,
   projectId,
+  reloadTable,
 }) => {
   const [selectedTab, setSelectedTab] = useState<ProjectSpecifyTabValue>(
     ProjectSpecifyTabKeys.specification,
@@ -63,6 +71,8 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   const [specifyingState, setSpecifyingState] =
     useState<SpecifyingProductRequestBody>(DEFAULT_STATE);
   console.log('specifyingState', specifyingState);
+  const [specifyingGroups, setSpecifyingGroups] = useState<ProductAttributeFormInput[]>([]);
+  const dataLoaded = useBoolean();
 
   const onChangeSpecifyingState: OnChangeSpecifyingProductFnc = (newStateParts) =>
     setSpecifyingState(
@@ -75,6 +85,11 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       getProductSpecifying(product.considered_id).then((res) => {
         console.log('getProductSpecifying sres', res);
         if (res) {
+          res.specification.specification_attribute_groups =
+            res.specification.specification_attribute_groups.map((el) => ({
+              ...el,
+              isChecked: el.attributes.length > 0,
+            }));
           onChangeSpecifyingState(
             pick(res, [
               'brand_location_id',
@@ -97,6 +112,57 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       });
     }
   }, [product.considered_id]);
+
+  useEffect(() => {
+    getProductByIdAndReturn(product.id).then((res) => {
+      if (res) {
+        const specGroups = res.specification_attribute_groups;
+        console.log('specGroups', specGroups);
+        setSpecifyingGroups(res.specification_attribute_groups);
+        dataLoaded.setValue(true);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!dataLoaded.value) {
+      return;
+    }
+    // Update checked status
+    setSpecifyingGroups((prevState) => {
+      if (prevState.length === 0) {
+        return [];
+      }
+
+      if (specifyingState.specification.specification_attribute_groups.length === 0) {
+        specifyingState.specification.specification_attribute_groups = prevState.map((el) => ({
+          id: el.id || '',
+          attributes: [],
+          isChecked: false,
+        }));
+      }
+
+      const newState = prevState.map((group, groupIndex) => ({
+        ...group,
+        isChecked:
+          specifyingState.specification.specification_attribute_groups[groupIndex]?.attributes
+            .length > 0,
+        attributes: group?.attributes.map((attr, attrIndex) => ({
+          ...attr,
+          basis_options:
+            attr.basis_options?.map((option) => ({
+              ...option,
+              isChecked:
+                option.id ===
+                specifyingState.specification.specification_attribute_groups[groupIndex]
+                  ?.attributes[attrIndex]?.basis_option_id,
+            })) || [],
+        })),
+      }));
+
+      return newState;
+    });
+  }, [specifyingState.specification.specification_attribute_groups, dataLoaded.value]);
 
   const onChangeReferToDocument = (isRefer: boolean) =>
     setSpecifyingState(
@@ -124,8 +190,18 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
 
   const onSubmit = () => {
     updateProductSpecifying(specifyingState, () => {
-      setVisible(false);
-      setSpecifyingState(DEFAULT_STATE);
+      assignProductToProject({
+        product_id: product.id,
+        project_id: projectId,
+        is_entire: specifyingState.is_entire,
+        project_zone_ids: specifyingState.project_zone_ids,
+      }).then((success) => {
+        if (success) {
+          reloadTable();
+          setVisible(false);
+          setSpecifyingState(DEFAULT_STATE);
+        }
+      });
     });
   };
 
@@ -173,10 +249,9 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.specification}>
         <SpecificationTab
-          productId={product.id}
-          onChangeSpecifyingState={onChangeSpecifyingState}
           onChangeReferToDocument={onChangeReferToDocument}
           onChangeSpecification={onChangeSpecification}
+          specifyingGroups={specifyingGroups}
           specification_attribute_groups={
             specifyingState.specification?.specification_attribute_groups
           }
