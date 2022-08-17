@@ -70,6 +70,7 @@ export interface ProductItem {
   created_at?: string;
   created_by?: string;
   image?: string;
+  brand_id?: string;
   brand_name?: string;
   brand_logo?: string;
   collection_name?: string;

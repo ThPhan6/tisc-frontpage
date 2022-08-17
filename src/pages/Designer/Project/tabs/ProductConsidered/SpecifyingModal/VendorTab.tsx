@@ -1,85 +1,174 @@
 // import { useState } from 'react';
-import styles from './styles/vendor-tab.less';
-import { RenderEntireProjectLabel } from '@/components/RenderHeaderLabel';
-import { RobotoBodyText } from '@/components/Typography';
-import BrandContact, {
-  BrandDistributorLocationAddress,
-  BusinessDetail,
-} from '@/features/product/components/BrandContact';
-import { FC, useState } from 'react';
+import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 import CustomCollapse from '@/components/Collapse';
 import { RadioValue } from '@/components/CustomRadio/types';
-import { CollapsibleType } from 'antd/lib/collapse/CollapsePanel';
+import Popover from '@/components/Modal/Popover';
+import { RenderEntireProjectLabel } from '@/components/RenderHeaderLabel';
+import { BodyText, RobotoBodyText } from '@/components/Typography';
+import { BusinessDetail } from '@/features/product/components/BrandContact';
+import { getBrandLocation, getDistributorLocation } from '@/services';
+import { LocationDetail, LocationGroupedByCountry } from '@/types';
+import { FC, useEffect, useState } from 'react';
+import styles from './styles/vendor-tab.less';
 import { OnChangeSpecifyingProductFnc } from './types';
+
+const activeKey = '1';
+
+const getSelectedLocation = (locationGroup: LocationGroupedByCountry[], selectedId: string) => {
+  const allLocations = locationGroup.flatMap((el) => el.locations);
+
+  const selectedLocation = allLocations.find((el) => el.id === selectedId);
+  const locationOption: RadioValue = {
+    value: selectedId || '',
+    label: selectedLocation ? (
+      <BusinessDetail
+        business={selectedLocation.business_name}
+        type={selectedLocation.functional_types[0]?.name}
+        address={selectedLocation.address}
+        country={selectedLocation.country_name.toUpperCase()}
+        phone_code={selectedLocation.phone_code}
+        general_phone={selectedLocation.general_phone}
+        genernal_email={selectedLocation.general_email}
+      />
+    ) : (
+      ''
+    ),
+  };
+
+  return {
+    selectedLocation,
+    locationOption,
+    countryName: selectedLocation?.country_name || '',
+  };
+};
 
 interface VendorTabProps {
   productId: string;
   brandId: string;
   onChangeSpecifyingState: OnChangeSpecifyingProductFnc;
+  brandAddressId: string;
+  distributorAddressId: string;
 }
 
-const VendorTab: FC<VendorTabProps> = ({ productId, brandId, onChangeSpecifyingState }) => {
-  console.log('productId', productId);
-  console.log('brandId', brandId);
-
+const VendorTab: FC<VendorTabProps> = ({
+  productId,
+  brandId,
+  onChangeSpecifyingState,
+  brandAddressId,
+  distributorAddressId,
+}) => {
+  // for brand
   const [brandActiveKey, setBrandActiveKey] = useState<string | string[]>();
-  const [brandAddressDetail, setBrandAddressDetail] = useState<BrandDistributorLocationAddress>();
-  const [brandCollapsible, setBrandCollapsible] = useState<CollapsibleType>('disabled');
-  const [brandBottomLine, setBrandBottomLine] = useState<boolean>(false);
+  const [brandAddresses, setBrandAddresses] = useState<LocationGroupedByCountry[]>([]);
 
-  const onBrandAddressSelected = (locationSelected: RadioValue) => {
-    // get detail
-    setBrandAddressDetail(locationSelected?.label?.props);
-
-    /// handle collapse
-    if (locationSelected?.value) {
-      onChangeSpecifyingState({ brand_location_id: String(locationSelected.value) });
-      setBrandCollapsible('header');
-    }
-  };
-
+  // for distributor
   const [distributorActiveKey, setDistributorActiveKey] = useState<string | string[]>();
-  const [distributorAddressDetail, setDistributorAddressDetail] =
-    useState<BrandDistributorLocationAddress>();
-  const [distributorCollapsible, setDistributorCollapsible] = useState<CollapsibleType>('disabled');
-  const [distributorBottomLine, setDistributorBottomLine] = useState<boolean>(false);
+  const [distributorAddresses, setDistributorAddresses] = useState<LocationGroupedByCountry[]>([]);
 
-  const onDistributorAddressSelected = (locationSelected: RadioValue) => {
-    setDistributorAddressDetail(locationSelected?.label?.props);
+  // get location selected
+  const {
+    locationOption: chosenBrand,
+    countryName: chosenBrandCountry,
+    selectedLocation: selectedLocationBrand,
+  } = getSelectedLocation(brandAddresses, brandAddressId);
+  const {
+    locationOption: chosenDistributor,
+    countryName: chosenDistributorCountry,
+    selectedLocation: selectedLocationDistributor,
+  } = getSelectedLocation(distributorAddresses, distributorAddressId);
 
-    if (locationSelected?.value) {
-      onChangeSpecifyingState({ distributor_location_id: String(locationSelected.value) });
-      setDistributorCollapsible('header');
+  const [locationPopup, setLocationPopup] = useState<'' | 'brand' | 'distributor'>('');
+
+  // get data
+  const dropdownRadioList =
+    locationPopup === 'brand'
+      ? brandAddresses
+      : locationPopup === 'distributor'
+      ? distributorAddresses
+      : [];
+  const chosenValue =
+    locationPopup === 'brand'
+      ? chosenBrand
+      : locationPopup === 'distributor'
+      ? chosenDistributor
+      : undefined;
+
+  useEffect(() => {
+    getBrandLocation(brandId).then((data) => {
+      if (data) {
+        setBrandAddresses(data);
+      }
+    });
+
+    getDistributorLocation(productId).then((data) => {
+      if (data) {
+        setDistributorAddresses(data);
+      }
+    });
+  }, []);
+
+  const handleCollapse = (field: 'brand' | 'distributor', key: string | string[]) => {
+    if (field === 'brand') {
+      setBrandActiveKey(key === activeKey ? '' : typeof key !== 'string' ? key[0] : key);
+
+      setDistributorActiveKey([]);
+    } else if (field === 'distributor') {
+      setDistributorActiveKey(key === activeKey ? '' : typeof key !== 'string' ? key[0] : key);
+
+      setBrandActiveKey([]);
     }
   };
 
-  const handleCollapse = (field: 'Brand' | 'Distributor', key: string | string[]) => {
-    if (field === 'Brand') {
-      setBrandBottomLine(!brandBottomLine);
-      setDistributorBottomLine(false);
-      setBrandActiveKey(key === '1' ? '' : key);
-      setDistributorActiveKey('');
-    } else if (field === 'Distributor') {
-      setDistributorBottomLine(!distributorBottomLine);
-      setBrandBottomLine(false);
-      setDistributorActiveKey(key === '1' ? '' : key);
-      setBrandActiveKey('');
+  const handleOnChangeSpecifying = (checked: RadioValue) => {
+    if (locationPopup === 'brand') {
+      onChangeSpecifyingState({
+        brand_location_id: String(checked.value),
+      });
+    }
+    if (locationPopup === 'distributor') {
+      onChangeSpecifyingState({
+        distributor_location_id: String(checked.value),
+      });
     }
   };
 
-  const BusinessAdressDetail: FC<{ addressDetail?: BrandDistributorLocationAddress }> = ({
-    addressDetail,
-  }) => {
-    return (
+  const renderBusinessAdressDetail = (location?: LocationDetail) =>
+    location ? (
       <BusinessDetail
-        business={addressDetail?.business ?? ''}
-        type={addressDetail?.type ?? ''}
-        address={addressDetail?.address ?? ''}
-        phone_code={addressDetail?.phone_code ?? ''}
-        general_phone={addressDetail?.general_phone ?? ''}
-        genernal_email={addressDetail?.genernal_email ?? ''}
+        business={location?.business_name ?? ''}
+        type={location?.functional_types?.[0]?.name ?? ''}
+        address={location?.address ?? ''}
+        phone_code={location?.phone_code ?? ''}
+        general_phone={location?.general_phone ?? ''}
+        genernal_email={location?.general_email ?? ''}
         customClass={styles.businessDetail}
       />
+    ) : null;
+
+  const renderCollapseHeader = (
+    title: string,
+    country: string,
+    activeCollapse: boolean,
+    onSelect: () => void,
+  ) => {
+    return (
+      <div className={country ? 'contact-item-selected' : 'contact-item-not-selected'}>
+        <BodyText level={4} customClass={`${activeCollapse ? 'active-title' : 'inActive-title'}`}>
+          {title}
+        </BodyText>
+
+        <div className="contact-select-box" onClick={onSelect}>
+          <BodyText
+            level={6}
+            fontFamily="Roboto"
+            color={country ? 'mono-color' : 'mono-color-medium'}
+            customClass="country-name"
+          >
+            {country || 'select location'}
+          </BodyText>
+          <SingleRightIcon className={country ? 'icon-active' : 'icon-unActive'} />
+        </div>
+      </div>
     );
   };
 
@@ -96,59 +185,96 @@ const VendorTab: FC<VendorTabProps> = ({ productId, brandId, onChangeSpecifyingS
 
       <div>
         {/* Brand Address */}
-        <div className={`${brandBottomLine ? styles.collapsed : styles.notCollapsed} `}>
+        <div
+          className={`${
+            brandActiveKey === activeKey && chosenBrand.value
+              ? styles.collapsed
+              : styles.notCollapsed
+          } `}
+        >
           <div className={styles.address}>
             <CustomCollapse
-              header={<RobotoBodyText level={5}>Brand Address</RobotoBodyText>}
-              collapsible={brandCollapsible}
-              onChange={(key) => handleCollapse('Brand', key)}
+              header={renderCollapseHeader(
+                'Brand Address',
+                chosenBrandCountry,
+                brandActiveKey === activeKey && chosenBrand.value ? true : false,
+                () => {
+                  setLocationPopup('brand');
+                  setBrandActiveKey(activeKey);
+                },
+              )}
+              collapsible={chosenBrand.value ? 'header' : 'disabled'}
+              onChange={(key) => handleCollapse('brand', key)}
               activeKey={brandActiveKey}
+              customHeaderClass={styles.collapseHeader}
             >
-              <BusinessAdressDetail addressDetail={brandAddressDetail} />
+              {renderBusinessAdressDetail(selectedLocationBrand)}
             </CustomCollapse>
-
-            <BrandContact
-              brandId={'4e572577-93ca-4fe7-9c09-06ad65d717ea'}
-              title="Brand"
-              label={brandAddressDetail ? brandAddressDetail.country : 'selection location'}
-              customClass={`
-              ${styles.brandDistributor} ${brandCollapsible === 'header' ? styles.activeLabel : ''} 
-              `}
-              chosenValue={brandAddressDetail}
-              setChosenValue={(chosenValue) => onBrandAddressSelected(chosenValue)}
-            />
           </div>
         </div>
 
         {/* Distributor Address */}
-        <div className={`${distributorBottomLine ? styles.collapsed : styles.notCollapsed} `}>
+        <div
+          className={`${
+            distributorActiveKey === activeKey && chosenDistributor.value
+              ? styles.collapsed
+              : styles.notCollapsed
+          } `}
+        >
           <div className={styles.address}>
             <CustomCollapse
-              header={<RobotoBodyText level={5}>Distributor Address</RobotoBodyText>}
-              collapsible={distributorCollapsible}
-              onChange={(key) => handleCollapse('Distributor', key)}
+              header={renderCollapseHeader(
+                'Distributor Address',
+                chosenDistributorCountry,
+                distributorActiveKey === activeKey && chosenDistributor.value ? true : false,
+                () => {
+                  setLocationPopup('distributor');
+                  setDistributorActiveKey(activeKey);
+                },
+              )}
+              collapsible={chosenDistributor.value ? 'header' : 'disabled'}
+              onChange={(key) => handleCollapse('distributor', key)}
               activeKey={distributorActiveKey}
+              customHeaderClass={styles.collapseHeader}
             >
-              <BusinessAdressDetail addressDetail={distributorAddressDetail} />
+              {renderBusinessAdressDetail(selectedLocationDistributor)}
             </CustomCollapse>
-
-            <BrandContact
-              productId={'c0a418b9-2476-4c05-a2e3-c31e31cc0843'}
-              title="Distributor"
-              label={
-                distributorAddressDetail ? distributorAddressDetail.country : 'selection location'
-              }
-              customClass={`
-              ${styles.brandDistributor} ${
-                distributorCollapsible === 'header' ? styles.activeLabel : ''
-              } 
-              `}
-              chosenValue={distributorAddressDetail}
-              setChosenValue={(chosenValue) => onDistributorAddressSelected(chosenValue)}
-            />
           </div>
         </div>
       </div>
+
+      <Popover
+        title="SELECT LOCATION"
+        className={styles.customLocationModal}
+        visible={locationPopup !== ''}
+        setVisible={(visible) => (visible ? undefined : setLocationPopup(''))}
+        chosenValue={chosenValue}
+        setChosenValue={(checked) =>
+          locationPopup ? handleOnChangeSpecifying(checked) : undefined
+        }
+        dropDownRadioTitle={(dropdownData) => dropdownData.country_name}
+        dropdownRadioList={dropdownRadioList.map((country) => {
+          return {
+            country_name: country.country_name,
+            options: country.locations.map((location) => {
+              return {
+                value: location.id,
+                label: (
+                  <BusinessDetail
+                    business={location.business_name}
+                    type={location.functional_types[0]?.name}
+                    address={location.address}
+                    country={location.country_name.toUpperCase()}
+                    phone_code={location.phone_code}
+                    general_phone={location.general_phone}
+                    genernal_email={location.general_email}
+                  />
+                ),
+              };
+            }),
+          };
+        })}
+      />
     </div>
   );
 };
