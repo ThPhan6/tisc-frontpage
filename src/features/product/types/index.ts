@@ -50,7 +50,7 @@ export interface ProductAttributeFormInput {
 export type ProductKeyword = [string, string, string, string];
 
 export interface ProductItem {
-  id: string;
+  id?: string;
   brand?: BrandDetail;
   collection?: {
     id: string;
