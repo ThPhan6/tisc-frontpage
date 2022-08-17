@@ -89,7 +89,7 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
             <CustomTextArea
               showCount
               placeholder="type here..."
-              maxLength={125}
+              maxLength={250}
               borderBottomColor="mono-medium"
               name="inquiry"
               onChange={handleOnChangeValueForm}
