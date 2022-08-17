@@ -13,7 +13,7 @@ import { getProjectById } from '@/features/project/services';
 const ProjectCreatePage: React.FC = () => {
   const params = useParams<{ id: string }>();
   const projectId = params?.id || '';
-  const [selectedTab, setSelectedTab] = useState<ProjectTabKeys>(ProjectTabKeys.productConsidered);
+  const [selectedTab, setSelectedTab] = useState<ProjectTabKeys>(ProjectTabKeys.basicInformation);
   const [project, setProject] = useState<ProjectDetailProps>();
 
   useEffect(() => {

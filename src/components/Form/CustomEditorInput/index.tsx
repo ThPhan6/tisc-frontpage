@@ -142,7 +142,7 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
             {
               name: 'basicstyles',
             },
-            // { "name": "links" },
+            { name: 'links' },
             {
               name: 'paragraph',
               groups: [
