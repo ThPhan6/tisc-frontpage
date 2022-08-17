@@ -99,6 +99,7 @@ export const useAssignProductToSpaceForm = (
         onChange={() =>
           expandingZone.setValue((prevIndex: number) => (prevIndex === index ? -1 : index))
         }
+        customHeaderClass="collapse-header"
       >
         {zone.areas.map((area) => {
           return (
