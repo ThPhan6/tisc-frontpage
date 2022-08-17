@@ -70,7 +70,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   );
   const [specifyingState, setSpecifyingState] =
     useState<SpecifyingProductRequestBody>(DEFAULT_STATE);
-  console.log('specifyingState', specifyingState);
+  // console.log('specifyingState', specifyingState);
   const [specifyingGroups, setSpecifyingGroups] = useState<ProductAttributeFormInput[]>([]);
   const dataLoaded = useBoolean();
 
@@ -83,7 +83,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     if (product.considered_id) {
       onChangeSpecifyingState({ considered_product_id: product.considered_id });
       getProductSpecifying(product.considered_id).then((res) => {
-        console.log('getProductSpecifying sres', res);
         if (res) {
           res.specification.specification_attribute_groups =
             res.specification.specification_attribute_groups.map((el) => ({
@@ -273,6 +272,8 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         <AllocationTab
           projectId={projectId}
           productId={product.id}
+          roomId={product.project_zone_id}
+          isEntire={product.is_entire}
           onChangeSpecifyingState={onChangeSpecifyingState}
         />
       </CustomTabPane>

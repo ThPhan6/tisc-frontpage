@@ -12,7 +12,8 @@
 .content {
   height: 568px;
   .header {
-    padding: 16px 0;
+    margin-bottom: 8px;
+    padding-top: 16px;
     .customTab {
       :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
         display: grid;
@@ -37,12 +38,17 @@
     }
   }
   .body {
-    padding: 24px 0;
+    color: #fff !important;
     div {
       height: 430px;
       overflow: auto;
+      ::-webkit-scrollbar {
+        display: none;
+      }
       span {
-        color: #fff !important;
+        color: #fff;
+        font-size: 14px;
+        font-family: 'Roboto';
       }
     }
   }

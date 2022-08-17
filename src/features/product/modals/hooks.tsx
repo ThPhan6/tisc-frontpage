@@ -9,6 +9,7 @@ import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { getProductAssignSpaceByProject } from '@/features/project/services';
+import { confirmDelete } from '@/helper/common';
 
 type RoomsState = { [areaId: string]: CheckboxValue[] };
 
@@ -23,8 +24,12 @@ export const getSelectedRoomIds = (selectedRooms: RoomsState) => {
 export const useAssignProductToSpaceForm = (
   productId: string,
   projectId: string,
-  onChangeEntireProjectCallback?: (isEntire: boolean) => void,
-  onChangeSelectedRoomsCallback?: (selectedRooms: string[]) => void,
+  specifyOptions?: {
+    onChangeEntireProjectCallback: (isEntire: boolean) => void;
+    onChangeSelectedRoomsCallback: (selectedRooms: string[]) => void;
+    isEntire?: boolean;
+    roomId?: string;
+  },
 ) => {
   const entireProject = useBoolean();
   const [selectedRooms, setSelectedRooms] = useState<RoomsState>({});
@@ -54,22 +59,51 @@ export const useAssignProductToSpaceForm = (
   }, [projectId]);
 
   const onChangeEntireProject = () => {
-    entireProject.setValue(true);
-    onChangeEntireProjectCallback?.(true);
+    const handleChooseEntireProject = () => {
+      specifyOptions?.onChangeEntireProjectCallback(true);
+      specifyOptions?.onChangeSelectedRoomsCallback([]);
+      entireProject.setValue(true);
+      setSelectedRooms({}); // clear rooms
+    };
+    if (specifyOptions?.roomId) {
+      return confirmDelete(handleChooseEntireProject, {
+        title: 'Are you sure to re-allocate?',
+        content:
+          'You are re-allocate product from entire project to some specific rooms. All of your specifying data will be remove along with this consider after submitting.',
+      });
+    }
 
-    setSelectedRooms({}); // clear rooms
-    onChangeSelectedRoomsCallback?.([]);
+    handleChooseEntireProject();
   };
 
   const onSelectRooms = (areaId: string) => (value: CheckboxValue[]) => {
-    setSelectedRooms((prevRooms) => {
-      const nextRooms = { ...prevRooms, [areaId]: value };
-      onChangeSelectedRoomsCallback?.(getSelectedRoomIds(nextRooms));
-      return nextRooms;
-    });
+    const handleSelectRooms = () => {
+      setSelectedRooms((prevRooms) => {
+        const nextRooms = { ...prevRooms, [areaId]: value };
+        specifyOptions?.onChangeSelectedRoomsCallback(getSelectedRoomIds(nextRooms));
+        return nextRooms;
+      });
+      entireProject.setValue(false); // not entire project anymore
+      specifyOptions?.onChangeEntireProjectCallback(false);
+    };
 
-    entireProject.setValue(false); // not entire project anymore
-    onChangeEntireProjectCallback?.(false);
+    const nextRooms = { ...selectedRooms, [areaId]: value };
+    const roomIds = getSelectedRoomIds(nextRooms);
+    console.log('roomIds', roomIds);
+    console.log('specifyOptions?.roomId', specifyOptions?.roomId);
+    const isSelectedRoomBeRemoved =
+      specifyOptions?.roomId && roomIds.length && roomIds.includes(specifyOptions.roomId) === false;
+
+    if (specifyOptions?.isEntire || isSelectedRoomBeRemoved) {
+      return confirmDelete(handleSelectRooms, {
+        title: 'Are you sure to re-allocate?',
+        content: isSelectedRoomBeRemoved
+          ? 'Your are removing this consider by uncheck its room. All of your specifying data will be remove along with this consider after submitting.'
+          : 'You are re-allocate product from current room to entire project along with all of your specifying data after submitting.',
+      });
+    }
+
+    handleSelectRooms();
   };
 
   const renderRoomLabel = (key: string, roomId: string, roomName: string) => (
