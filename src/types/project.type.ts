@@ -97,6 +97,17 @@ export enum AssigningStatus {
   'Unlisted' = 3,
 }
 
+export enum SpecifyStatus {
+  'Specified' = 1,
+  'Re-specified' = 2,
+  'Canceled' = 3,
+}
+
+export enum OrderMethod {
+  'Direct Purchase' = 1,
+  'Custom Order' = 2,
+}
+
 export type AssigningStatusName = keyof typeof AssigningStatus;
 
 export interface FindProductConsiderRequest {
