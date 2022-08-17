@@ -122,12 +122,12 @@ const VendorTab: FC<VendorTabProps> = ({
   const handleOnChangeSpecifying = (checked: RadioValue) => {
     if (locationPopup === 'brand') {
       onChangeSpecifyingState({
-        brand_location_id: String(checked.value),
+        brand_location_id: checked?.value ? String(checked.value) : '',
       });
     }
     if (locationPopup === 'distributor') {
       onChangeSpecifyingState({
-        distributor_location_id: String(checked.value),
+        distributor_location_id: checked?.value ? String(checked.value) : '',
       });
     }
   };
