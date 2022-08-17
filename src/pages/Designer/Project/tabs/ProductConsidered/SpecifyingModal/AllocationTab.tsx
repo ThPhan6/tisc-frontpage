@@ -6,20 +6,25 @@ import styles from './styles/allocationTab.less';
 interface AllocationTabProps {
   projectId: string;
   productId: string;
+  roomId?: string;
+  isEntire?: boolean;
   onChangeSpecifyingState: OnChangeSpecifyingProductFnc;
 }
 
 const AllocationTab: FC<AllocationTabProps> = ({
   projectId,
   productId,
+  roomId,
+  isEntire,
   onChangeSpecifyingState,
 }) => {
-  const { AssignProductToSpaceForm } = useAssignProductToSpaceForm(
-    productId,
-    projectId,
-    (isEntire) => onChangeSpecifyingState({ is_entire: isEntire }),
-    (selectedRooms) => onChangeSpecifyingState({ project_zone_ids: selectedRooms }),
-  );
+  const { AssignProductToSpaceForm } = useAssignProductToSpaceForm(productId, projectId, {
+    onChangeEntireProjectCallback: (is_entire) => onChangeSpecifyingState({ is_entire }),
+    onChangeSelectedRoomsCallback: (selectedRooms) =>
+      onChangeSpecifyingState({ project_zone_ids: selectedRooms }),
+    roomId,
+    isEntire,
+  });
 
   return (
     <div className={styles.allocationTab}>
