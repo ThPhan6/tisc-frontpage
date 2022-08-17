@@ -46,7 +46,7 @@ export interface CustomInputProps extends InputProps {
   containerClass?: string;
   focusColor?: 'primary' | 'secondary' | 'tertiary';
   theme?: 'dark' | 'default';
-  borderBottomColor?: 'mono' | 'mono-medium' | 'white';
+  borderBottomColor?: 'mono' | 'mono-medium' | 'white' | 'light';
   status?: 'error' | 'warning' | '';
   fromLandingPage?: boolean;
   autoWidth?: boolean;
@@ -57,7 +57,7 @@ export interface CustomInputProps extends InputProps {
 }
 
 export interface CustomTextAreaProps extends TextAreaProps {
-  borderBottomColor?: 'mono' | 'mono-medium';
+  borderBottomColor?: 'mono' | 'mono-medium' | 'light';
   maxHeight?: number;
   defaultHeight?: number;
   boxShadow?: boolean;

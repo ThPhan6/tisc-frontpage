@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 export type RadioValue = {
   value: string | boolean | number;
@@ -18,4 +18,7 @@ export interface CustomRadioProps {
   onChange?: (value: RadioValue) => void;
   inputPlaceholder?: string;
   containerClass?: string;
+  containerStyle?: CSSProperties;
+  noPaddingLeft?: boolean;
+  otherStickyBottom?: boolean;
 }

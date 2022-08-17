@@ -53,6 +53,9 @@ export interface PopoverProps {
   combinableCheckbox?: boolean;
 
   onFormSubmit?: () => void;
+
+  // clear select on close
+  clearOnClose?: boolean;
 }
 
 const Popover: FC<PopoverProps> = ({
@@ -74,6 +77,7 @@ const Popover: FC<PopoverProps> = ({
   combinableCheckbox,
   children,
   onFormSubmit,
+  clearOnClose,
 }) => {
   const [currentValue, setCurrentValue] = useState<any>(chosenValue);
 
@@ -164,11 +168,15 @@ const Popover: FC<PopoverProps> = ({
   };
 
   const onCancel = () => {
-    // reset current value
-    setCurrentValue(chosenValue);
-    // onchange selected Value
-    if (setChosenValue) {
-      setChosenValue(chosenValue);
+    if (clearOnClose) {
+      setChosenValue?.(undefined);
+    } else {
+      // reset current value
+      setCurrentValue(chosenValue);
+      // onchange selected Value
+      if (setChosenValue) {
+        setChosenValue(chosenValue);
+      }
     }
     // hide popup
     setVisible(false);

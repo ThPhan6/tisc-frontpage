@@ -7,11 +7,16 @@ import CityModal from '@/components/Location/CityModal';
 import { FormGroup } from '@/components/Form';
 import DateInput from '@/components/Form/DateInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
-import type { ProjectBodyRequest, GeneralData } from '@/types';
+import type { ProjectBodyRequest } from '@/features/project/types';
+import type { GeneralData } from '@/types';
 import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
 import { CustomRadio } from '@/components/CustomRadio';
 import type { RadioValue } from '@/components/CustomRadio/types';
-import { getProjectBuildingTypes, getProjectTypes, getProjectMeasurementUnits } from '@/services';
+import {
+  getProjectBuildingTypes,
+  getProjectTypes,
+  getProjectMeasurementUnits,
+} from '@/features/project/services';
 
 import styles from '../../styles/basic-information.less';
 import { isEmptySpace, messageError, messageErrorType, validatePostalCode } from '@/helper/utils';

@@ -165,18 +165,18 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
   );
 };
 
-interface CustomDropDownProps extends Omit<DropDownProps, 'overlay'> {
-  items: ItemType[];
+export interface CustomDropDownProps extends Omit<DropDownProps, 'overlay'> {
+  items?: ItemType[]; // Use items or overlay
+  overlay?: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
   menuStyle?: CSSProperties;
   labelProps?: React.HTMLAttributes<HTMLSpanElement>;
   hideDropdownIcon?: boolean;
-  overlay?: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
   alignRight?: boolean;
   textCapitalize?: boolean;
 }
 export const CustomDropDown: FC<CustomDropDownProps> = ({
   children,
-  items,
+  items = [],
   menuStyle,
   labelProps,
   hideDropdownIcon,

@@ -1,10 +1,5 @@
-import {
-  BrandDetail,
-  GeneralData,
-  ConversionSubValueProps,
-  AssigningStatus,
-  AssigningStatusName,
-} from '@/types';
+import { AssigningStatus, AssigningStatusName } from '@/features/project/types';
+import { BrandDetail, GeneralData, ConversionSubValueProps } from '@/types';
 
 export interface ProductSummary {
   categories: GeneralData[];
@@ -26,6 +21,7 @@ export interface SpecificationAttributeBasisOptionProps {
   unit_2?: string;
   value_1?: string;
   value_2?: string;
+  isChecked?: boolean;
 }
 
 export interface ProductAttributeProps {
@@ -45,12 +41,13 @@ export interface ProductAttributeFormInput {
   id?: string;
   name: string;
   attributes: ProductAttributeProps[];
+  isChecked?: boolean;
 }
 
 export type ProductKeyword = [string, string, string, string];
 
 export interface ProductItem {
-  id?: string;
+  id: string;
   brand?: BrandDetail;
   collection?: {
     id: string;
@@ -73,11 +70,15 @@ export interface ProductItem {
   created_at?: string;
   created_by?: string;
   image?: string;
+  brand_id?: string;
   brand_name?: string;
+  brand_logo?: string;
+  collection_name?: string;
   status?: AssigningStatus;
   status_name?: AssigningStatusName;
   is_entire?: boolean;
   project_zone_id?: string;
+  considered_id?: string;
 }
 
 export interface ProductFormData {

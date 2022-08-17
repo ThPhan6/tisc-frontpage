@@ -4,7 +4,7 @@ import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.
 import { BodyText } from '@/components/Typography';
 import { HeaderDropdown } from '@/components/HeaderDropdown';
 import { ProjectFilters, GlobalFilter } from '../../constants/filter';
-import { ProjectFilterValueProps } from '@/types';
+import { ProjectFilterValueProps } from '@/features/project/types';
 
 import styles from '../../styles/project-filter.less';
 

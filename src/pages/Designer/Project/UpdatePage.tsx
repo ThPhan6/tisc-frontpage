@@ -6,15 +6,16 @@ import SpaceManagement from './tabs/SpaceManagement';
 import { ProjectTabKeys } from './constants/tab';
 import ProductConsidered from './tabs/ProductConsidered';
 import ProductSpecification from './tabs/ProductSpecification';
-import { getProjectById } from '@/services';
-import type { ProjectDetailProps } from '@/types';
+import type { ProjectDetailProps } from '@/features/project/types';
 import { useParams } from 'umi';
+import { getProjectById } from '@/features/project/services';
 
 const ProjectCreatePage: React.FC = () => {
   const params = useParams<{ id: string }>();
   const projectId = params?.id || '';
   const [selectedTab, setSelectedTab] = useState<ProjectTabKeys>(ProjectTabKeys.basicInformation);
   const [project, setProject] = useState<ProjectDetailProps>();
+
   useEffect(() => {
     if (projectId) {
       getProjectById(projectId).then((projectDetail) => {

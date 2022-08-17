@@ -20,6 +20,12 @@
     cursor: pointer;
   }
 
+  &.noPaddingLeft {
+    :global(.ant-space-item) {
+      padding-left: 0;
+    }
+  }
+
   :global(.ant-radio-wrapper) {
     display: flex;
     align-items: center;
@@ -45,8 +51,9 @@
     display: flex;
     align-items: center;
     min-height: 32px;
-    margin-left: 16px;
+    padding-left: 16px;
   }
+
   :global(input[type='radio']) {
     display: none;
   }
@@ -113,5 +120,17 @@
   align-items: center;
   .other-input {
     flex: 1;
+  }
+}
+
+&.stickyBottom :global(.ant-space-item:last-child) {
+  position: sticky;
+  bottom: -8px;
+  height: 40px;
+  padding-bottom: 8px;
+  background: #fff;
+
+  .other-field-radio-list {
+    border-top: 0.7px solid rgba(0, 0, 0, 0.3);
   }
 }

@@ -24,7 +24,7 @@ interface ExpandableTableConfig {
   expandable?: ExpandableConfig<any>;
   level?: number;
   rowKey?: string;
-  gridView?: boolean;
+  gridView?: boolean | string;
   gridViewContentIndex?: string;
   renderGridContent?: (data: any) => ReactNode;
 }
