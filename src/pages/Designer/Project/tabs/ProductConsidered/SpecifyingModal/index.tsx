@@ -262,8 +262,10 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.vendor}>
         <VendorTab
           productId={product.id}
-          brandId={product.brand?.id ?? ''}
+          brandId={product.brand_id ?? ''}
           onChangeSpecifyingState={onChangeSpecifyingState}
+          brandAddressId={specifyingState.brand_location_id}
+          distributorAddressId={specifyingState.distributor_location_id}
         />
       </CustomTabPane>
 

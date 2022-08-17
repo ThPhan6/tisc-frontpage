@@ -7,6 +7,7 @@ import type {
   ResetPasswordRequestBody,
   CreatePasswordRequestBody,
   SignUpDesignerRequestBody,
+  ContactRequestBody,
 } from '../types';
 import { message } from 'antd';
 import { setUserProfile } from '@/reducers/user';
@@ -152,5 +153,27 @@ export async function checkEmailAlreadyUsed(email: string) {
     })
     .catch(() => {
       return false;
+    });
+}
+
+export async function contact(data: ContactRequestBody) {
+  return request<boolean>(`/api/contact/create`, { method: 'POST', data })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.CONTACT_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CONTACT_ERROR);
+      return false;
+    });
+}
+
+export async function getListPolicy() {
+  return request(`/api/documentation/get-list-policy`, { method: 'GET' })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_POLICY);
     });
 }
