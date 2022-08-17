@@ -1,6 +1,7 @@
 import { useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
 import type { FC } from 'react';
 import { OnChangeSpecifyingProductFnc } from './types';
+import styles from './styles/allocationTab.less';
 
 interface AllocationTabProps {
   projectId: string;
@@ -21,7 +22,7 @@ const AllocationTab: FC<AllocationTabProps> = ({
   );
 
   return (
-    <div>
+    <div className={styles.allocationTab}>
       <AssignProductToSpaceForm specifyingModal noPaddingLeft />
     </div>
   );

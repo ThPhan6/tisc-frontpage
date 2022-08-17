@@ -103,7 +103,7 @@ export const useAssignProductToSpaceForm = (
         {zone.areas.map((area) => {
           return (
             <div key={area.id} style={{ paddingBottom: 8, paddingLeft: 16 }}>
-              <BodyText level={5} fontFamily="Roboto" style={{ paddingBottom: 8 }}>
+              <BodyText level={5} fontFamily="Roboto" style={{ height: '36px' }}>
                 {area.name}
               </BodyText>
               <CustomCheckbox
