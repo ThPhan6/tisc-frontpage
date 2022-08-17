@@ -10,16 +10,8 @@ import CustomButton from '@/components/Button';
 import styles from '../ProductSpecification/styles/index.less';
 import CustomTable from '@/components/Table';
 import { TableColumnItem } from '@/components/Table/types';
-import {
-  SpecifiedProductBrand,
-  SpecifiedProductMaterial,
-  SpecifiedProductSpace,
-  SpecifyStatus,
-} from '@/types';
-import { getConsideredProducts } from '@/services';
-import { ProductItem } from '@/features/product/types';
-import cardStyles from '@/features/product/components/ProductCard.less';
-import ProductCard from '@/features/product/components/ProductCard';
+import { OrderMethod, SpecifyStatus } from '@/types';
+import { getSpecifiedProductByMaterial } from '@/services';
 import { CustomDropDown } from '@/features/product/components';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
@@ -28,16 +20,9 @@ import { ActionMenu } from '@/components/Action';
 import { useParams } from 'umi';
 import { showImageUrl } from '@/helper/utils';
 import PDF from './PDF';
-
-const COL_WIDTH_BRAND = {
-  brand: 124,
-  collection: 90,
-  product: 75,
-  option: 569,
-  productId: 93,
-  count: 67,
-  status: 66,
-};
+import BrandList from './BrandList';
+import { SpecifiedProductMaterial } from '@/types/project-specified.type';
+import SpaceList from './SpaceList';
 
 const COL_WIDTH_MATERIAL = {
   material: 141,
@@ -51,78 +36,19 @@ const COL_WIDTH_MATERIAL = {
   status: 120,
 };
 
-const COL_WIDTH_SPACE = {
-  zones: 164,
-  areas: 88,
-  room: 96,
-  image: 65,
-  brand: 88,
-  product: 75,
-  material: 115,
-  description: 266,
-  count: 63,
-  status: 66,
-};
 type viewBy = 'brand' | 'material' | 'space' | 'pdf';
 const ProductSpecification: React.FC = () => {
   const [viewBy, setViewBy] = useState<viewBy>('brand');
   const tableRef = useRef<any>();
   const params = useParams<{ id: string }>();
-  const BrandColumns: TableColumnItem<SpecifiedProductBrand>[] = [
-    {
-      title: 'Brand',
-      dataIndex: 'brand_order',
-      sorter: true,
-      width: COL_WIDTH_BRAND.brand,
-      isExpandable: true,
-      render: (value, record) => <span>{record.name}</span>,
-    },
 
-    {
-      title: 'Collection',
-      dataIndex: 'collection',
-      width: COL_WIDTH_BRAND.collection,
-    },
-    {
-      title: 'Product',
-      dataIndex: 'product',
-      width: COL_WIDTH_BRAND.product,
-    },
-    {
-      title: 'Option/Variant',
-      dataIndex: 'option',
-      width: COL_WIDTH_BRAND.option,
-    },
-    {
-      title: 'ProductID',
-      dataIndex: 'prpoduct_id',
-      width: COL_WIDTH_BRAND.productId,
-    },
-    {
-      title: 'Count',
-      dataIndex: 'count',
-      width: '5%',
-      align: 'center',
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      width: COL_WIDTH_BRAND.status,
-    },
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      width: '5%',
-      align: 'center',
-    },
-  ];
-
-  const renderStatusDropdown = (v: any, record: any) => {
+  const renderStatusDropdown = (_value: any, record: any) => {
     const menuItems: ItemType[] = [
       {
         key: SpecifyStatus['Specified'],
         label: 'Re-specify',
         icon: <DispatchIcon style={{ width: 16, height: 16 }} />,
+        disabled: record.status !== SpecifyStatus.Canceled,
         onClick: () => {
           alert('Coming soon!');
         },
@@ -131,6 +57,7 @@ const ProductSpecification: React.FC = () => {
         key: SpecifyStatus.Canceled,
         label: 'Cancel',
         icon: <CancelIcon style={{ width: 16, height: 16 }} />,
+        disabled: record.status === SpecifyStatus.Canceled,
         onClick: () => {
           alert('Coming soon!');
         },
@@ -146,88 +73,31 @@ const ProductSpecification: React.FC = () => {
         menuStyle={{ width: 160, height: 'auto' }}
         labelProps={{ className: 'flex-center' }}
       >
-        {record.status_name}
+        {record.status === SpecifyStatus.Specified
+          ? 'Specified'
+          : record.status === SpecifyStatus['Re-specified']
+          ? 'Re-specified'
+          : 'Canceled'}
       </CustomDropDown>
     );
   };
 
   const renderActionCell = () => {
-    return <ActionMenu />;
-  };
-
-  const CollectionColumns: TableColumnItem<ProductItem>[] = [
-    {
-      title: 'Collection',
-      dataIndex: 'collection_name',
-      width: COL_WIDTH_BRAND.collection,
-    },
-
-    {
-      title: 'Product',
-      dataIndex: 'product',
-      width: COL_WIDTH_BRAND.product,
-    },
-
-    {
-      title: 'Option/Variant',
-      dataIndex: 'option',
-      width: COL_WIDTH_BRAND.option,
-    },
-
-    {
-      title: 'ProductID',
-      width: COL_WIDTH_BRAND.productId,
-      dataIndex: 'product_id',
-    },
-    {
-      title: 'Count',
-      width: COL_WIDTH_BRAND.count,
-    },
-    {
-      title: 'Status',
-      width: COL_WIDTH_BRAND.status,
-      render: renderStatusDropdown,
-    },
-    {
-      title: 'Action',
-      align: 'center',
-      width: '5%',
-      render: renderActionCell,
-    },
-  ];
-
-  const renderGridContent = (products: ProductItem[]) => {
-    if (!products) {
-      return;
-    }
     return (
-      <div
-        className={cardStyles.productCardContainer}
-        style={{ padding: '16px 16px 8px', maxWidth: 'calc(83.33vw - 40px)' }}
-      >
-        {products.map((item, index: number) => (
-          <div className={cardStyles.productCardItemWrapper} key={index}>
-            <ProductCard
-              product={item}
-              hasBorder
-              hideFavorite
-              hideAssign
-              showInquiryRequest
-              showSpecify
-            />
-          </div>
-        ))}
-      </div>
+      <ActionMenu
+        handleUpdate={() => alert('Coming soon!')}
+        handleDelete={() => alert('Coming soon!')}
+      />
     );
   };
 
   const MaterialColumns: TableColumnItem<SpecifiedProductMaterial>[] = [
     {
       title: 'Material',
-      dataIndex: 'name',
+      dataIndex: 'material_order',
       sorter: true,
       width: COL_WIDTH_MATERIAL.material,
-      render: (value, record) => <span>{record.name}</span>,
+      render: (_value, record) => <span>{record.material_code}</span>,
     },
     {
       title: 'Description',
@@ -238,73 +108,6 @@ const ProductSpecification: React.FC = () => {
       title: 'Image',
       dataIndex: 'image',
       width: COL_WIDTH_MATERIAL.image,
-    },
-    {
-      title: 'Brand',
-      dataIndex: 'brand_name',
-      width: COL_WIDTH_MATERIAL.brand,
-      sorter: true,
-    },
-    {
-      title: 'Product',
-      dataIndex: 'product',
-      width: COL_WIDTH_MATERIAL.product,
-    },
-    {
-      title: 'Quantitis',
-      dataIndex: 'quantity',
-      width: COL_WIDTH_MATERIAL.quantity,
-    },
-    {
-      title: 'Unit',
-      dataIndex: 'unit',
-      width: COL_WIDTH_MATERIAL.unit,
-    },
-    {
-      title: 'Order Method',
-      dataIndex: 'method',
-      width: COL_WIDTH_MATERIAL.method,
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      width: COL_WIDTH_MATERIAL.status,
-      align: 'center',
-      render: renderStatusDropdown,
-    },
-  ];
-
-  const SpaceColumns: TableColumnItem<SpecifiedProductSpace>[] = [
-    {
-      title: 'Zones',
-      dataIndex: 'name',
-      sorter: {
-        multiple: 1,
-      },
-      width: COL_WIDTH_SPACE.zones,
-      isExpandable: true,
-      render: (value, record) => <span className="text-uppercase">{record.name}</span>,
-    },
-    {
-      title: 'Areas',
-      dataIndex: 'area',
-      sorter: {
-        multiple: 2,
-      },
-      width: COL_WIDTH_SPACE.areas,
-    },
-    {
-      title: 'Rooms',
-      dataIndex: 'rooms',
-      width: COL_WIDTH_SPACE.room,
-      sorter: {
-        multiple: 4,
-      },
-    },
-    {
-      title: 'Image',
-      dataIndex: 'image',
-      width: COL_WIDTH_SPACE.image,
       align: 'center',
       render: (value) => {
         if (value) {
@@ -320,42 +123,50 @@ const ProductSpecification: React.FC = () => {
     },
     {
       title: 'Brand',
-      dataIndex: 'brand',
-      width: COL_WIDTH_SPACE.brand,
-      sorter: {
-        multiple: 4,
-      },
+      dataIndex: 'brand_order',
+      width: COL_WIDTH_MATERIAL.brand,
+      sorter: true,
+      render: (_value, record) => <span>{record.brand_name}</span>,
     },
     {
       title: 'Product',
-      dataIndex: 'products',
-      width: COL_WIDTH_SPACE.product,
+      dataIndex: 'product_name',
+      width: COL_WIDTH_MATERIAL.product,
     },
     {
-      title: 'Material Code',
-      dataIndex: 'material',
-      width: COL_WIDTH_SPACE.product,
-    },
-    {
-      title: 'Desciption',
-      dataIndex: 'description',
-      width: COL_WIDTH_SPACE.product,
-    },
-    {
-      title: 'Count',
-      dataIndex: 'count',
-      width: COL_WIDTH_SPACE.count,
+      title: 'Quantitis',
+      dataIndex: 'quantity',
+      width: COL_WIDTH_MATERIAL.quantity,
       align: 'center',
+    },
+    {
+      title: 'Unit',
+      dataIndex: 'unit',
+      width: COL_WIDTH_MATERIAL.unit,
+    },
+    {
+      title: 'Order Method',
+      dataIndex: 'order_method',
+      width: COL_WIDTH_MATERIAL.method,
+      render: (_value, record) => (
+        <span>
+          {record.order_method === OrderMethod['Direct Purchase']
+            ? 'Direct Purchase'
+            : 'Custom Order'}
+        </span>
+      ),
     },
     {
       title: 'Status',
       dataIndex: 'status',
-      width: COL_WIDTH_SPACE.status,
+      width: COL_WIDTH_MATERIAL.status,
+      align: 'center',
+      render: renderStatusDropdown,
     },
     {
       title: 'Action',
-      align: 'center',
       width: '5%',
+      align: 'center',
       render: renderActionCell,
     },
   ];
@@ -403,39 +214,29 @@ const ProductSpecification: React.FC = () => {
           PDF
         </CustomButton>
       </ProjectTabContentHeader>
-      {viewBy !== 'pdf' ? (
+      {viewBy === 'material' ? (
         <CustomTable
-          columns={
-            viewBy === 'brand'
-              ? filteredColumns(BrandColumns)
-              : viewBy === 'material'
-              ? filteredColumns(MaterialColumns)
-              : viewBy === 'space'
-              ? filteredColumns(SpaceColumns)
-              : []
-          }
+          columns={filteredColumns(MaterialColumns)}
           ref={tableRef}
           hasPagination={false}
           multiSort={{
             brand_order: 'brand_order',
-            zone_order: 'zone_order',
-            area_order: 'area_order',
-            room_order: 'room_order',
             material_order: 'material_order',
           }}
           extraParams={{ projectId: params.id }}
-          fetchDataFunc={getConsideredProducts}
+          fetchDataFunc={getSpecifiedProductByMaterial}
           expandableConfig={{
-            columns: filteredColumns(CollectionColumns),
-            childrenColumnName: 'collection',
-            level: 2,
+            columns: filteredColumns(MaterialColumns),
+            childrenColumnName: 'material',
             gridView: viewBy,
-            gridViewContentIndex: 'collection',
-            renderGridContent,
           }}
         />
-      ) : (
+      ) : viewBy === 'pdf' ? (
         <PDF />
+      ) : viewBy === 'brand' ? (
+        <BrandList projectId={params.id} />
+      ) : (
+        <SpaceList projectId={params.id} />
       )}
     </div>
   );

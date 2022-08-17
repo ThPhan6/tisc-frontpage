@@ -1,6 +1,7 @@
 import CustomButton from '@/components/Button';
 import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
 import { FormGroup } from '@/components/Form';
+import { Switch } from 'antd';
 import styles from '../styles/index.less';
 
 const data = {
@@ -22,9 +23,12 @@ const Standard = () => {
     <div>
       <div className={styles.standard}>
         <FormGroup label="Cover Page Included" formClass={styles.customTitle}>
-          <CustomButton size="small" properties="rounded" buttonClass={styles.button}>
-            Yes
-          </CustomButton>
+          <Switch
+            checkedChildren="Yes"
+            unCheckedChildren="No"
+            defaultChecked
+            className={styles.switch}
+          />
         </FormGroup>
         <CollapseRadioList
           options={data.subs.map((item) => {
@@ -54,7 +58,6 @@ const Standard = () => {
             };
           })}
           placeholder={data.name}
-          otherInput
           containerClass={styles.marginBottom}
         />
       </div>

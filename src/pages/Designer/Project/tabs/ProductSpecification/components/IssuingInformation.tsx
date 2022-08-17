@@ -1,7 +1,7 @@
 import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
-import { DatePicker } from 'antd';
+import DateInput from '@/components/Form/DateInput';
 import styles from '../styles/index.less';
 
 const data = {
@@ -23,7 +23,7 @@ const optionsRadio = [
 const IssuingInformation = () => {
   return (
     <div className={styles.formInformation}>
-      <FormGroup label="Issuing Office" required={true} layout="vertical">
+      <FormGroup label="Issuing Office" required layout="vertical">
         <CollapseRadioList
           options={optionsRadio.map((office) => {
             return {
@@ -34,7 +34,7 @@ const IssuingInformation = () => {
           placeholder={data.issuingOffice}
         />
       </FormGroup>
-      <FormGroup label="Issuing For" required={true} layout="vertical">
+      <FormGroup label="Issuing For" required layout="vertical">
         <CollapseRadioList
           options={optionsRadio.map((issuingFor) => {
             return {
@@ -46,13 +46,8 @@ const IssuingInformation = () => {
           otherInput
         />
       </FormGroup>
-      <FormGroup
-        label="Issuing Date"
-        required={true}
-        layout="vertical"
-        formClass={styles.customDate}
-      >
-        <DatePicker />
+      <FormGroup label="Issuing Date" required layout="vertical">
+        <DateInput />
       </FormGroup>
       <FormGroup label="Revision #" layout="vertical">
         <CustomInput placeholder="e.g. Rev.01" borderBottomColor="mono-medium" />

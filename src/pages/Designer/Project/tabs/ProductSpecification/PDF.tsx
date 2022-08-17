@@ -6,7 +6,7 @@ import IssuingInformation from './components/IssuingInformation';
 import Standard from './components/Standard';
 import PageTemplate from '@/assets/images/page.png';
 import CustomButton from '@/components/Button';
-import { Pagination } from 'antd';
+import CustomPaginator from '@/components/Table/components/CustomPaginator';
 
 const PDF = () => {
   const [selectedTab, setSelectedTab] = useState<ProductSpecifiedTabKeys>(
@@ -36,8 +36,8 @@ const PDF = () => {
         <div className={styles.pdf}>
           <img src={PageTemplate} />
         </div>
-        <div>
-          <Pagination />
+        <div className={styles.customPagination}>
+          <CustomPaginator fetchData={() => {}} pagination={{}} dataLength={0} sorter={{}} />
           <div className={styles.action}>
             <CustomButton size="small" properties="rounded">
               Download
