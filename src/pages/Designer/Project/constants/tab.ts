@@ -27,3 +27,20 @@ export const ProductSpecifiedTabs: TabItem[] = [
   { tab: 'standard spec sheet', key: ProductSpecifiedTabKeys.standardSpecSheet },
   { tab: 'custom spec sheet', key: ProductSpecifiedTabKeys.customSpecSheet, disable: true },
 ];
+
+// specifiy tab
+export type ProjectSpecifyTabValue = 'specification' | 'vendor' | 'allocation' | 'codeAndOrder';
+
+export enum ProjectSpecifyTabKeys {
+  specification = 'specification',
+  vendor = 'vendor',
+  allocation = 'allocation',
+  codeAndOrder = 'codeAndOrder',
+}
+
+export const ProjectSpecifyTabs: TabItem[] = [
+  { tab: 'specification', key: ProjectSpecifyTabKeys.specification },
+  { tab: 'vendor', key: ProjectSpecifyTabKeys.vendor },
+  { tab: 'allocation', key: ProjectSpecifyTabKeys.allocation },
+  { tab: 'code & order', key: ProjectSpecifyTabKeys.codeAndOrder },
+];

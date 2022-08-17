@@ -3,7 +3,7 @@ import ProjectSummary from './ProjectSummary';
 import ProjectFilter from './ProjectFilter';
 import styles from '../../styles/project-list-header.less';
 import type { ProjectFilterProps } from './ProjectFilter';
-import type { ProjectSummaryData } from '@/types';
+import type { ProjectSummaryData } from '@/features/project/types';
 
 interface ProjectListHeaderProps extends ProjectFilterProps {
   summaryData?: ProjectSummaryData;

@@ -10,8 +10,8 @@ import CustomButton from '@/components/Button';
 import styles from '../ProductSpecification/styles/index.less';
 import CustomTable from '@/components/Table';
 import { TableColumnItem } from '@/components/Table/types';
-import { OrderMethod, SpecifyStatus } from '@/types';
-import { getSpecifiedProductByMaterial } from '@/services';
+import {} from '@/types';
+import { getSpecifiedProductByMaterial } from '@/features/project/services';
 import { CustomDropDown } from '@/features/product/components';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
@@ -21,7 +21,7 @@ import { useParams } from 'umi';
 import { showImageUrl } from '@/helper/utils';
 import PDF from './PDF';
 import BrandList from './BrandList';
-import { SpecifiedProductMaterial } from '@/types/project-specified.type';
+import { SpecifiedProductMaterial, OrderMethod, SpecifyStatus } from '@/features/project/types';
 import SpaceList from './SpaceList';
 
 const COL_WIDTH_MATERIAL = {

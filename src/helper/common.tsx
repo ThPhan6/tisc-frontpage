@@ -1,8 +1,8 @@
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-triangle.svg';
-import { Modal } from 'antd';
+import { Modal, ModalFuncProps } from 'antd';
 import styles from './common.less';
 
-export const confirmDelete = (onOk: () => void, onCancel?: () => void) => {
+export const confirmDelete = (onOk: () => void, props?: ModalFuncProps, onCancel?: () => void) => {
   Modal.confirm({
     title: 'Are you sure to delete this item?',
     icon: <WarningIcon className={styles.deleteModalIcon} />,
@@ -14,11 +14,12 @@ export const confirmDelete = (onOk: () => void, onCancel?: () => void) => {
     centered: true,
     className: styles.customModal,
     maskClosable: true,
+    ...props,
   });
 };
 
 export const getResponseMessage = (
-  type: 'get-list' | 'get-one' | 'create' | 'delete' | 'update' | 'assign',
+  type: 'get-list' | 'get-one' | 'create' | 'delete' | 'update' | 'assign' | 'remove',
   action: string,
   status: 'success' | 'failed' = 'success',
   error?: any,
@@ -31,16 +32,25 @@ export const getResponseMessage = (
   switch (type) {
     case 'get-list':
       startWith = 'Get list';
+      break;
     case 'get-one':
       startWith = 'Get';
+      break;
     case 'create':
       startWith = 'Create';
+      break;
     case 'delete':
       startWith = 'Delete';
+      break;
+    case 'remove':
+      startWith = 'Remove';
+      break;
     case 'update':
       startWith = 'Update';
+      break;
     case 'assign':
       startWith = 'Assign';
+      break;
   }
 
   return `${startWith} ${action} ${status === 'success' ? 'successfully' : 'failed'}`;

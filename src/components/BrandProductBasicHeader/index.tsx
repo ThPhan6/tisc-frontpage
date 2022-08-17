@@ -4,11 +4,11 @@ import { RobotoBodyText } from '../Typography';
 import styles from './index.less';
 
 interface BrandProductBasicHeaderProps {
-  image: string;
-  logo: string;
-  text_1: string;
-  text_2: string;
-  text_3: string;
+  image?: string;
+  logo?: string;
+  text_1?: string;
+  text_2?: string;
+  text_3?: string;
   customClass?: string;
 }
 

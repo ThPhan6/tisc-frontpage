@@ -1,5 +1,5 @@
 import { BodyText } from '@/components/Typography';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
 import { ReactComponent as MenuIcon } from '@/assets/icons/ic-menu.svg';
 import { ReactComponent as GridIcon } from '@/assets/icons/ic-grid.svg';
@@ -12,12 +12,12 @@ import {
   ConsideredProduct,
   ConsideredProjectArea,
   ConsideredProjectRoom,
-} from '@/types';
+} from '@/features/project/types';
 import {
   getConsideredProducts,
   removeProductFromProject,
   updateProductConsiderStatus,
-} from '@/services';
+} from '@/features/project/services';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import { useParams } from 'umi';
@@ -30,7 +30,7 @@ import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { ReactComponent as CheckIcon } from '@/assets/icons/ic-square-check.svg';
 import { ReactComponent as CancelIcon } from '@/assets/icons/ic-square-cancel.svg';
 import { confirmDelete } from '@/helper/common';
-import { message } from 'antd';
+import { SpecifyingModal } from './SpecifyingModal';
 
 const COL_WIDTH = {
   zones: 165,
@@ -48,6 +48,7 @@ const ProductConsidered: React.FC = () => {
   useAutoExpandNestedTableColumn(COL_WIDTH.zones, COL_WIDTH.areas, COL_WIDTH.rooms);
   const tableRef = useRef<any>();
   const gridView = useBoolean();
+  const [specifyingProduct, setSpecifyingProduct] = useState<ProductItem>();
   const params = useParams<{ id: string }>();
 
   const renderStatusDropdown = (v: any, record: any) => {
@@ -63,11 +64,8 @@ const ProductConsidered: React.FC = () => {
         icon: <CheckIcon style={{ width: 16, height: 16 }} />,
         disabled: record.status !== AssigningStatus.Unlisted,
         onClick: () => {
-          updateProductConsiderStatus(record.id, {
-            project_id: params.id,
+          updateProductConsiderStatus(record.considered_id, {
             status: AssigningStatus['Re-considered'],
-            is_entire: record.is_entire,
-            project_zone_id: record.project_zone_id,
           }).then((success) => (success ? tableRef.current.reload() : undefined));
         },
       },
@@ -77,11 +75,8 @@ const ProductConsidered: React.FC = () => {
         icon: <CancelIcon style={{ width: 16, height: 16 }} />,
         disabled: record.status === AssigningStatus.Unlisted,
         onClick: () => {
-          updateProductConsiderStatus(record.id, {
-            project_id: params.id,
+          updateProductConsiderStatus(record.considered_id, {
             status: AssigningStatus.Unlisted,
-            is_entire: record.is_entire,
-            project_zone_id: record.project_zone_id,
           }).then((success) => (success ? tableRef.current.reload() : undefined));
         },
       },
@@ -108,15 +103,13 @@ const ProductConsidered: React.FC = () => {
     return (
       <ActionMenu
         handleSpecify={() => {
-          message.info('Feature is under development');
+          setSpecifyingProduct(record);
         }}
         handleDelete={() =>
           confirmDelete(() => {
-            removeProductFromProject(record.id, {
-              project_id: params.id,
-              is_entire: record.is_entire,
-              project_zone_id: record.project_zone_id,
-            }).then((success) => (success ? tableRef.current.reload() : undefined));
+            removeProductFromProject(record.considered_id).then((success) =>
+              success ? tableRef.current.reload() : undefined,
+            );
           })
         }
       />
@@ -442,6 +435,16 @@ const ProductConsidered: React.FC = () => {
           }),
         })}
       />
+
+      {specifyingProduct && (
+        <SpecifyingModal
+          visible={Boolean(specifyingProduct)}
+          product={specifyingProduct}
+          projectId={params.id}
+          setVisible={(visible) => (visible ? undefined : setSpecifyingProduct(undefined))}
+          reloadTable={tableRef.current.reload}
+        />
+      )}
     </div>
   );
 };

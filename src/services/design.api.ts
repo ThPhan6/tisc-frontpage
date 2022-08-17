@@ -5,12 +5,13 @@ import type {
   PaginationResponse,
 } from '@/components/Table/types';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { ProjectsDesignFirm } from '@/features/project/types';
+import { MaterialCode } from '@/features/project/types/project-specifying.type';
 import {
   DesignFirm,
   DesignFirmDetail,
   LocationGroupedByCountry,
   MaterialCodeDesignFirm,
-  ProjectsDesignFirm,
   TeamsDesignFirm,
 } from '@/types';
 import { message } from 'antd';
@@ -112,6 +113,20 @@ export async function getMaterialCodeByDesignFirm(id: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_MATERIAL_CODE_BY_DESIGN_FIRM);
+      return [] as MaterialCodeDesignFirm[];
+    });
+}
+
+export async function getAllMaterialCode() {
+  return request<{ data: MaterialCode[] }>(`/api/material-code/get-list-code`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_MATERIAL_CODE_BY_DESIGN_FIRM);
+      return [] as MaterialCode[];
     });
 }
 

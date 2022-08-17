@@ -2,13 +2,12 @@ import { ActionMenu } from '@/components/Action';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import { TableColumnItem } from '@/components/Table/types';
 import { CustomDropDown } from '@/features/product/components';
-import { SpecifyStatus } from '@/types';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
 import { ReactComponent as CancelIcon } from '@/assets/icons/ic-circle-cancel.svg';
-import { getSpecifiedProductsByBrand } from '@/services';
+import { getSpecifiedProductsByBrand } from '@/features/project/services';
 import { FC, useEffect, useRef } from 'react';
-import { ProductItemBrand, SpecifiedProductBrand } from '@/types/project-specified.type';
+import { ProductItemBrand, SpecifiedProductBrand, SpecifyStatus } from '@/features/project/types';
 import { showImageUrl } from '@/helper/utils';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 

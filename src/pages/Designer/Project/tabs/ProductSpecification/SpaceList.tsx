@@ -4,17 +4,17 @@ import { CustomDropDown } from '@/features/product/components';
 import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
 import { ReactComponent as CancelIcon } from '@/assets/icons/ic-circle-cancel.svg';
 import { FC, useEffect, useRef } from 'react';
-import { SpecifyStatus } from '@/types';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import { ActionMenu } from '@/components/Action';
 import { showImageUrl } from '@/helper/utils';
-import { getSpecifiedProductBySpace } from '@/services';
+import { getSpecifiedProductBySpace } from '@/features/project/services';
 import {
   ProductItemSpace,
   SpecifiedProductArea,
   SpecifiedProductRoom,
   SpecifiedProductSpace,
-} from '@/types/project-specified.type';
+  SpecifyStatus,
+} from '@/features/project/types';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 
 const COL_WIDTH_SPACE = {

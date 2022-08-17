@@ -7,7 +7,7 @@ import {
   SpecifiedProductBrand,
   SpecifiedProductMaterial,
   SpecifiedProductSpace,
-} from '@/types/project-specified.type';
+} from '@/features/project/types';
 import { message } from 'antd';
 import { request } from 'umi';
 

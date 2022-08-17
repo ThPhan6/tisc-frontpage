@@ -6,12 +6,16 @@ import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.s
 import { showImageUrl } from '@/helper/utils';
 import styles from './ProductAttributeContainer.less';
 import CustomCollapse from '@/components/Collapse';
+import type { RadioValue } from '@/components/CustomRadio/types';
 import { ConversionSubValueProps } from '@/types';
 
 interface AttributeOptionProps {
   title: string;
   attributeName: string;
   options: SpecificationAttributeBasisOptionProps[];
+  chosenOption?: RadioValue;
+  setChosenOptions?: (value: RadioValue) => void;
+  clearOnClose?: boolean;
 }
 const AttributeOptionLabel = (option: SpecificationAttributeBasisOptionProps) => {
   if (!option.image || option.image == '') {
@@ -46,7 +50,14 @@ const AttributeOptionLabel = (option: SpecificationAttributeBasisOptionProps) =>
   );
 };
 
-export const AttributeOption: FC<AttributeOptionProps> = ({ title, attributeName, options }) => {
+export const AttributeOption: FC<AttributeOptionProps> = ({
+  title,
+  attributeName,
+  options,
+  chosenOption,
+  setChosenOptions,
+  clearOnClose,
+}) => {
   const [visible, setVisible] = useState<boolean>(false);
   const isOptionWithImage =
     options.findIndex((option) => {
@@ -54,9 +65,17 @@ export const AttributeOption: FC<AttributeOptionProps> = ({ title, attributeName
     }) > -1;
   return (
     <>
-      <div className={styles.content} onClick={() => setVisible(true)}>
-        <BodyText level={6} fontFamily="Roboto" customClass={styles.content_select}>
-          select
+      <div
+        className={`${styles.content} product-attribute-option-wrapper`}
+        onClick={() => setVisible(true)}
+      >
+        <BodyText
+          level={6}
+          fontFamily="Roboto"
+          customClass={styles.content_select}
+          color={chosenOption?.label ? 'primary-color-dark' : 'mono-color'}
+        >
+          {chosenOption ? chosenOption.label : 'select'}
         </BodyText>
         <ActionRightIcon className={styles.singlerRighIcon} />
       </div>
@@ -77,9 +96,13 @@ export const AttributeOption: FC<AttributeOptionProps> = ({ title, attributeName
           },
         ]}
         className={`
-        ${styles.specificationAttributeOption}
-        ${isOptionWithImage ? styles.specificationAttributeImageOption : ''}
-      `}
+          ${styles.specificationAttributeOption}
+          ${isOptionWithImage ? styles.specificationAttributeImageOption : ''}
+          attribute-group-option-popover
+        `}
+        chosenValue={chosenOption}
+        setChosenValue={setChosenOptions}
+        clearOnClose={clearOnClose}
       ></Popover>
     </>
   );
@@ -162,7 +185,7 @@ interface ProductAttributeLineProps {
 }
 export const ProductAttributeLine: FC<ProductAttributeLineProps> = ({ name = '', children }) => {
   return (
-    <div className={`${styles.content} ${styles.attribute}`}>
+    <div className={`${styles.content} ${styles.attribute} attribute-type`}>
       <BodyText level={4} customClass={styles.content_type}>
         {name}
       </BodyText>

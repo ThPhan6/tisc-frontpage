@@ -8,8 +8,12 @@ import type { TableColumnItem } from '@/components/Table/types';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { PATH } from '@/constants/path';
-import { getProjectPagination, deleteProject, getProjectSummary } from '@/services';
-import type { ProjectListProps, ProjectSummaryData } from '@/types';
+import {
+  getProjectPagination,
+  deleteProject,
+  getProjectSummary,
+} from '@/features/project/services';
+import type { ProjectListProps, ProjectSummaryData } from '@/features/project/types';
 import ProjectListHeader from './components/ProjectListHeader';
 import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
 import { PageContainer } from '@ant-design/pro-layout';
