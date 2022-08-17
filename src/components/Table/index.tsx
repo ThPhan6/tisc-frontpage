@@ -45,7 +45,12 @@ export const GetExpandableTableConfig = (props: ExpandableTableConfig): Expandab
     expandRowByClick: false,
     showExpandColumn: false,
     expandedRowRender: (record: any) => {
-      if (gridView && renderGridContent && gridViewContentIndex && record?.[gridViewContentIndex]) {
+      if (
+        gridView &&
+        renderGridContent &&
+        gridViewContentIndex &&
+        record?.[gridViewContentIndex]?.length
+      ) {
         return renderGridContent(record[gridViewContentIndex]);
       }
 
@@ -249,6 +254,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
           expandedRowKeys: expanded ? [expanded] : undefined,
         }}
       />
+
       {hasPagination && pagination ? (
         <CustomPaginator
           fetchData={fetchData}
