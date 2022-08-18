@@ -122,21 +122,25 @@ const ProductTopBar: React.FC = () => {
               topValue={product.summary?.category_count ?? ''}
               disabled={product.summary ? false : true}
               bottomValue="Categories"
+              cursor="default"
             />
             <TopBarItem
               topValue={product.summary?.collection_count ?? ''}
               disabled={product.summary ? false : true}
               bottomValue="Collections"
+              cursor="default"
             />
             <TopBarItem
               topValue={product.summary?.card_count ?? ''}
               disabled={product.summary ? false : true}
               bottomValue="Cards"
+              cursor="default"
             />
             <TopBarItem
               topValue={product.summary?.product_count ?? ''}
               disabled={product.summary ? false : true}
               bottomValue="Products"
+              cursor="default"
             />
           </>
         }

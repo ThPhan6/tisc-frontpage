@@ -47,7 +47,7 @@ export async function getTeamProfileList(
     });
 }
 
-export async function getListTeamProfileGroupCountryByBrandId(brandId: string) {
+export async function getListTeamProfileUserGroupByBrandId(brandId: string) {
   return request<{ data: TeamProfileGroupCountry[] }>(`/api/team-profile/brand/${brandId}`, {
     method: 'GET',
   })
@@ -55,9 +55,7 @@ export async function getListTeamProfileGroupCountryByBrandId(brandId: string) {
       return response.data;
     })
     .catch((error) => {
-      message.error(
-        error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_TEAM_PROFILE_COUNTRY_GROUP_ERROR,
-      );
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_TEAM_PROFILE_ERROR);
       return [] as TeamProfileGroupCountry[];
     });
 }

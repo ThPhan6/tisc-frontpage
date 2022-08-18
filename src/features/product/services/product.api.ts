@@ -65,6 +65,8 @@ export const getProductListByBrandId = async (params: ProductGetListParameter) =
       store.dispatch(
         setProductList({
           data: data.data.map((group) => {
+            console.log('getProductListByBrandId', group);
+
             return {
               ...group,
               products: group.products.map((product) => {
