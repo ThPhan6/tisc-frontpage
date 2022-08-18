@@ -37,6 +37,7 @@ interface ProductCardProps {
   hideAssign?: boolean;
   showInquiryRequest?: boolean;
   showSpecify?: boolean;
+  onSpecifyClick?: () => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -46,6 +47,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   hideAssign,
   showInquiryRequest,
   showSpecify,
+  onSpecifyClick,
 }) => {
   const filter = useAppSelector((state) => state.product.list.filter);
 
@@ -186,7 +188,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           )}
           {showSpecify && isDesignerUser ? (
             <Tooltip title={'Specifying'} {...tooltipProps}>
-              <DispatchIcon onClick={() => message.info('Feature is under development')} />
+              <DispatchIcon onClick={onSpecifyClick} />
             </Tooltip>
           ) : null}
         </div>
