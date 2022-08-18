@@ -41,6 +41,17 @@
       justify-content: center;
       margin-right: 12px;
     }
+
+    &.disabled {
+      cursor: not-allowed;
+      user-select: none;
+      p {
+        color: @mono-color-medium;
+      }
+      path {
+        fill: @mono-color-medium;
+      }
+    }
   }
 }
 

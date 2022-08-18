@@ -27,7 +27,7 @@
       background-color: #fff;
       .imageWrapper {
         position: relative;
-        cursor: pointer;
+        cursor: default;
 
         &_image {
           padding-top: 100%;
@@ -125,6 +125,18 @@
       }
       &.border {
         box-shadow: @border-all-light;
+      }
+
+      &.disabled {
+        .productInfo p {
+          color: @mono-color-medium;
+        }
+        .unlistedDisabled {
+          cursor: default;
+          path {
+            fill: @mono-color-medium;
+          }
+        }
       }
     }
   }
