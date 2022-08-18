@@ -181,7 +181,7 @@ const ProductSpecification: React.FC = () => {
           level={4}
           fontFamily="Cormorant-Garamond"
           color="mono-color"
-          style={{ fontWeight: '600' }}
+          style={{ fontWeight: '600', marginRight: 4 }}
         >
           View By:
         </BodyText>

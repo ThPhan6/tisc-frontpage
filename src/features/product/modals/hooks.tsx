@@ -169,7 +169,8 @@ export const useAssignProductToSpaceForm = (
         </BodyText>
         <Tooltip
           placement="bottom"
-          title="Select this option if you apply the material/product throughout the entire project. (E.g. paint/surface coating, etc.)"
+          title={`Select this option if you apply the material/product throughout the entire project.
+            (E.g. paint/surface coating, etc)`}
           overlayInnerStyle={{
             width: 199,
           }}
