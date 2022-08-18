@@ -360,6 +360,7 @@ const ProductConsidered: React.FC = () => {
               hideAssign
               showInquiryRequest
               showSpecify
+              onSpecifyClick={() => setSpecifyingProduct(item)}
             />
           </div>
         ))}
