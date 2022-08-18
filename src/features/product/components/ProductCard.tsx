@@ -73,11 +73,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
         const params = {
           brand_id: product.brand?.id,
         } as ProductGetListParameter;
-        if (filter.name === 'category_id' && filter.value !== 'all') {
-          params.category_id = filter.value;
+        if (filter.name === 'category_id') {
+          params.category_id = filter.value === 'all' ? 'all' : filter.value;
         }
-        if (filter.name === 'collection_id' && filter.value !== 'all') {
-          params.collection_id = filter.value;
+        if (filter.name === 'collection_id') {
+          params.collection_id = filter.value === 'all' ? 'all' : filter.value;
         }
         getProductListByBrandId(params);
       });
@@ -161,6 +161,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               ? showImageUrl(product.images?.[0] ?? product.image)
               : SampleProductImage
           }
+          className={product.images?.[0] || product.image ? '' : styles.imageWrapper_image}
         />
         <div className={styles.imagePlaceholder}>
           <BodyText level={5} fontFamily="Roboto">
