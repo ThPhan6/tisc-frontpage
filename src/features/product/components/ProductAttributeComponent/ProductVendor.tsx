@@ -11,7 +11,8 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 import Popover from '@/components/Modal/Popover';
 import { getBrandLocation, getDistributorLocation } from '@/services';
-import { LocationGroupedByCountry } from '@/types';
+import { formatPhoneCode } from '@/helper/utils';
+import { LocationGroupedByCountry, DistributorProductMarket } from '@/types';
 import { useParams } from 'umi';
 import { CatelogueDownload } from './CatelogueDownload';
 
@@ -46,7 +47,7 @@ export const BRAND_CONTACT_TITLE: BrandContactTitle[] = [
 export const BrandContact: FC<BrandContactProps> = ({ title }) => {
   /// for distributor location
   const showDistributeSelection = useBoolean();
-  const [distributorLocation, setDistributorLocation] = useState<LocationGroupedByCountry[]>([]);
+  const [distributorLocation, setDistributorLocation] = useState<DistributorProductMarket[]>([]);
 
   /// for brand location
   const showBrandSelection = useBoolean();
@@ -73,20 +74,24 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
   };
 
   useEffect(() => {
-    getDistributorLocation(productID).then((data) => {
-      if (data) {
-        setDistributorLocation(data);
-      }
-    });
-  }, []);
+    if (productID) {
+      getDistributorLocation(productID).then((data) => {
+        if (data) {
+          setDistributorLocation(data);
+        }
+      });
+    }
+  }, [productID]);
 
   useEffect(() => {
-    getBrandLocation(brandID).then((data) => {
-      if (data) {
-        setBrandLocation(data);
-      }
-    });
-  }, []);
+    if (brandID) {
+      getBrandLocation(brandID).then((data) => {
+        if (data) {
+          setBrandLocation(data);
+        }
+      });
+    }
+  }, [brandID]);
 
   return (
     <div className="contact-item-wrapper">
@@ -112,17 +117,20 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
         dropdownRadioList={distributorLocation.map((country) => {
           return {
             country_name: country.country_name,
-            options: country.locations.map((location) => {
+            options: country.distributors.map((distributor) => {
               return {
                 label: (
                   <BusinessDetail
-                    business={location.business_name}
-                    type={location.functional_types[0]?.name}
-                    address={location.address}
-                    country={location.country_name.toUpperCase()}
+                    business={distributor.name}
+                    type={`
+                      ${distributor.last_name} ${distributor.first_name},
+                      ${formatPhoneCode(distributor.phone_code)} ${distributor.phone}
+                    `}
+                    address={`${distributor.address}, ${distributor.city_name}`}
+                    country={country.country_name.toUpperCase()}
                   />
                 ),
-                value: location.id,
+                value: distributor.id,
               };
             }),
           };
