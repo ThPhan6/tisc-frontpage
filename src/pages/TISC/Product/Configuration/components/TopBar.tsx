@@ -75,11 +75,11 @@ const ProductTopBar: React.FC = () => {
       const params = {
         brand_id: product.brand.id,
       } as ProductGetListParameter;
-      if (filter.name === 'category_id' && filter.value !== 'all') {
-        params.category_id = filter.value;
+      if (filter.name === 'category_id') {
+        params.category_id = filter.value === 'all' ? 'all' : filter.value;
       }
-      if (filter.name === 'collection_id' && filter.value !== 'all') {
-        params.collection_id = filter.value;
+      if (filter.name === 'collection_id') {
+        params.collection_id = filter.value === 'all' ? 'all' : filter.value;
       }
       getProductListByBrandId(params);
     }
@@ -122,21 +122,25 @@ const ProductTopBar: React.FC = () => {
               topValue={product.summary?.category_count ?? ''}
               disabled={product.summary ? false : true}
               bottomValue="Categories"
+              cursor="default"
             />
             <TopBarItem
               topValue={product.summary?.collection_count ?? ''}
               disabled={product.summary ? false : true}
               bottomValue="Collections"
+              cursor="default"
             />
             <TopBarItem
               topValue={product.summary?.card_count ?? ''}
               disabled={product.summary ? false : true}
               bottomValue="Cards"
+              cursor="default"
             />
             <TopBarItem
               topValue={product.summary?.product_count ?? ''}
               disabled={product.summary ? false : true}
               bottomValue="Products"
+              cursor="default"
             />
           </>
         }

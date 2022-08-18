@@ -30,6 +30,11 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
     contact(valueForm).then((res) => {
       if (res) {
         onClose();
+        setValueForm({
+          name: '',
+          email: '',
+          inquiry: '',
+        });
       }
     });
   };
@@ -64,6 +69,7 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
             type={'text'}
             required={true}
             onChange={handleOnChangeValueForm}
+            value={valueForm.name}
           />
           <CustomInput
             fromLandingPage
@@ -78,6 +84,7 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
             name="email"
             required={true}
             onChange={handleOnChangeValueForm}
+            value={valueForm.email}
           />
           <div className={styles.wrapper}>
             <MessageIcon />
@@ -93,6 +100,7 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
               borderBottomColor="mono-medium"
               name="inquiry"
               onChange={handleOnChangeValueForm}
+              value={valueForm.inquiry}
             />
           </div>
         </div>

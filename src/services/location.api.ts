@@ -8,6 +8,7 @@ import type {
   LocationForm,
   LocationGroupedByCountry,
   Regions,
+  DistributorProductMarket,
 } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
@@ -234,7 +235,7 @@ export async function getRegions() {
 }
 
 export async function getDistributorLocation(productId: string) {
-  return request<{ data: LocationGroupedByCountry[] }>(`/api/location/market/${productId}`, {
+  return request<{ data: DistributorProductMarket[] }>(`/api/distributor/market/${productId}`, {
     method: 'GET',
   })
     .then((response) => {
@@ -242,7 +243,7 @@ export async function getDistributorLocation(productId: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LOCATION_DISTRIBUTOR_ERROR);
-      return [] as LocationGroupedByCountry[];
+      return [] as DistributorProductMarket[];
     });
 }
 

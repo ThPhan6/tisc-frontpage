@@ -59,6 +59,7 @@ export async function assignProductToProject(data: {
   product_id: string;
   project_id: string;
   project_zone_ids: string[];
+  considered_product_id?: string;
 }) {
   return request<ProjectSummaryData>(`/api/product/assign`, {
     method: 'POST',

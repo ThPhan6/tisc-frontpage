@@ -23,11 +23,21 @@ interface ProductTopBarProps {
   customClass?: string;
   onClick?: () => void;
   style?: CSSProperties;
+  cursor?: 'pointer' | 'default';
 }
 
 export const TopBarItem: React.FC<ProductTopBarProps> = (props) => {
-  const { topValue, bottomValue, icon, disabled, bottomEnable, customClass, onClick, style } =
-    props;
+  const {
+    topValue,
+    bottomValue,
+    icon,
+    disabled,
+    bottomEnable,
+    customClass,
+    onClick,
+    style,
+    cursor,
+  } = props;
 
   return (
     <div className={`item ${customClass ?? ''}`} onClick={onClick} style={style}>
@@ -42,6 +52,7 @@ export const TopBarItem: React.FC<ProductTopBarProps> = (props) => {
         level={6}
         fontFamily="Roboto"
         customClass={`topbar-group-btn ${disabled && !bottomEnable ? 'disabled' : ''}`}
+        style={{ cursor: cursor }}
       >
         <span>{bottomValue}</span>
         {icon ? icon : null}

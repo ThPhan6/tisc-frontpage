@@ -22,6 +22,9 @@ export const ProductCollection: FC = memo(() => {
   const relatedProduct = useAppSelector((state) => state.product.relatedProduct);
   const userRole = useGetUserRoleFromPathname();
 
+  if (relatedProduct.length === 0 && userRole !== USER_ROLE.tisc) {
+    return <EmptyOne />;
+  }
   return (
     <div className="relative-product-wrapper">
       <div className="relative-product-list">
@@ -44,9 +47,7 @@ export const ProductCollection: FC = memo(() => {
           ))
         ) : userRole === USER_ROLE.tisc ? (
           <ProductPlaceHolder />
-        ) : (
-          <EmptyOne />
-        )}
+        ) : null}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader, RenderMemberHeader } from '@/components/RenderHeaderLabel';
 import { USER_STATUS_TEXTS } from '@/constants/util';
 import { useGetParamId } from '@/helper/hook';
-import { getListTeamProfileGroupCountryByBrandId } from '@/services';
+import { getListTeamProfileUserGroupByBrandId } from '@/services';
 import { TeamProfileGroupCountry } from '@/types';
 import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
@@ -18,7 +18,7 @@ const BrandTeamDetail = () => {
 
   useEffect(() => {
     if (brandId) {
-      getListTeamProfileGroupCountryByBrandId(brandId).then(setTeamData);
+      getListTeamProfileUserGroupByBrandId(brandId).then(setTeamData);
     }
   }, []);
 

@@ -73,11 +73,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
         const params = {
           brand_id: product.brand?.id,
         } as ProductGetListParameter;
-        if (filter.name === 'category_id' && filter.value !== 'all') {
-          params.category_id = filter.value;
+        if (filter.name === 'category_id') {
+          params.category_id = filter.value === 'all' ? 'all' : filter.value;
         }
-        if (filter.name === 'collection_id' && filter.value !== 'all') {
-          params.collection_id = filter.value;
+        if (filter.name === 'collection_id') {
+          params.collection_id = filter.value === 'all' ? 'all' : filter.value;
         }
         getProductListByBrandId(params);
       });
@@ -155,12 +155,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div className={`${styles.productCardItem} ${hasBorder ? styles.border : ''}`}>
       <div className={styles.imageWrapper} onClick={hanldeRedirectURL}>
-        <img
-          src={
-            product.images?.[0] || product.image
-              ? showImageUrl(product.images?.[0] ?? product.image)
-              : SampleProductImage
-          }
+        <div
+          style={{
+            backgroundImage: `url(${
+              product.images?.[0] || product.image
+                ? showImageUrl(product.images?.[0] ?? product.image)
+                : SampleProductImage
+            }`,
+          }}
+          className={styles.imageWrapper_image}
         />
         <div className={styles.imagePlaceholder}>
           <BodyText level={5} fontFamily="Roboto">
