@@ -102,9 +102,8 @@ const ProductConsidered: React.FC = () => {
     }
     return (
       <ActionMenu
-        handleSpecify={() => {
-          setSpecifyingProduct(record);
-        }}
+        handleSpecify={() => setSpecifyingProduct(record)}
+        disableSpecify={record.status === AssigningStatus.Unlisted}
         handleDelete={() =>
           confirmDelete(() => {
             removeProductFromProject(record.considered_id).then((success) =>
