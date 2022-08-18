@@ -194,6 +194,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         project_id: projectId,
         is_entire: specifyingState.is_entire,
         project_zone_ids: specifyingState.project_zone_ids,
+        considered_product_id: specifyingState.considered_product_id,
       }).then((success) => {
         if (success) {
           reloadTable();

@@ -1,7 +1,7 @@
 import { Tooltip } from 'antd';
 import { CustomRadio } from '@/components/CustomRadio';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
-import { Title, RobotoBodyText } from '@/components/Typography';
+import { Title } from '@/components/Typography';
 import CustomCollapse from '@/components/Collapse';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 import { ProductAttributeFormInput } from '@/features/product/types';
@@ -16,19 +16,18 @@ import type { SpecificationAttributeGroup } from '@/features/project/types';
 import styles from './styles/specification-tab.less';
 
 const ReferToDesignLabel = () => {
-  const TooltipText = () => {
-    return (
-      <RobotoBodyText level={6} customClass={styles.referTooltipText}>
-        Select this option if you can not find the listed options or the variants are different from
-        your design specification.
-      </RobotoBodyText>
-    );
-  };
-
   return (
     <Title level={9} customClass={styles.referText}>
       <span>Refer to Design Document</span>
-      <Tooltip placement="bottom" title={<TooltipText />} overlayClassName={styles.referTooltip}>
+      <Tooltip
+        placement="bottom"
+        title={
+          'Select this option if you cannot find the listed options or the variants are different from your design specification.'
+        }
+        overlayInnerStyle={{
+          width: 197,
+        }}
+      >
         <WarningIcon />
       </Tooltip>
     </Title>
