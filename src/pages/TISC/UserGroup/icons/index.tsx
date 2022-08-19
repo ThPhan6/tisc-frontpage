@@ -21,7 +21,7 @@ interface PanelProps {
 }
 
 export const expandIconLevel1 = ({ isActive }: PanelProps) => {
-  return isActive ? <DropdownIcon /> : <DropupIcon />;
+  return isActive ? <DropupIcon /> : <DropdownIcon />;
 };
 
 export const expandIconLevel2 = ({ isActive }: PanelProps) => {
