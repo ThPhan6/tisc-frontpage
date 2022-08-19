@@ -39,4 +39,5 @@ export interface UserDetail {
   linkedin: string;
   work_location: string;
   type: number;
+  retrieve_favourite: boolean;
 }

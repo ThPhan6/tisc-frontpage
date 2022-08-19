@@ -608,7 +608,7 @@ export default [
     path: PATH.designerFavourite,
     name: 'favourite',
     icon: 'my-favourite-icon.svg',
-    component: './Admin',
+    component: './Designer/MyFavourite',
     access: 'design_my_favourite',
   },
   {

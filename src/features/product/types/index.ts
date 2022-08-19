@@ -81,6 +81,38 @@ export interface ProductItem {
   considered_id?: string;
 }
 
+export interface ProductItemValue {
+  id: string;
+  name: string;
+}
+export interface FavouriteProductList {
+  id: string;
+  name: string;
+  count: number;
+  products: [
+    {
+      id: string;
+      brand: string;
+      collection?: ProductItemValue;
+      categories: ProductItemValue[];
+      name: string;
+      code?: string;
+      is_liked?: boolean;
+      description: string;
+      general_attribute_groups: string;
+      feature_attribute_groups: string;
+      specification_attribute_groups: string;
+      favorites: 0;
+      images: string;
+      keywords: ProductKeyword;
+      brand_location_id: string;
+      distributor_location_id: string;
+      created_by: string;
+      created_at: string;
+    },
+  ];
+}
+
 export interface ProductFormData {
   brand_id: string;
   collection_id: string;
