@@ -1,23 +1,17 @@
-import { ActionMenu } from '@/components/Action';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import { TableColumnItem } from '@/components/Table/types';
-import { CustomDropDown } from '@/features/product/components';
-import { ItemType } from 'antd/es/menu/hooks/useItems';
-import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
-import { ReactComponent as CancelIcon } from '@/assets/icons/ic-circle-cancel.svg';
 import { getSpecifiedProductsByBrand } from '@/features/project/services';
-import { FC, useEffect, useRef } from 'react';
-import { ProductItemBrand, SpecifiedProductBrand, SpecifyStatus } from '@/features/project/types';
+import { FC, useRef } from 'react';
+import { ProductItemBrand, SpecifiedProductByBrand } from '@/features/project/types';
 import { showImageUrl } from '@/helper/utils';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
+import { renderActionCell, renderStatusDropdown, useSpecifyingModal } from '../../hooks';
 
 const COL_WIDTH_BRAND = {
   brand: 124,
-  collection: 90,
-  product: 75,
-  option: 569,
+  collection: 143,
   productId: 93,
-  status: 120,
+  status: 130,
 };
 
 interface BrandListProps {
@@ -27,57 +21,9 @@ interface BrandListProps {
 const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
   useAutoExpandNestedTableColumn(COL_WIDTH_BRAND.brand);
   const tableRef = useRef<any>();
+  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
-  const renderStatusDropdown = (_value: any, record: any) => {
-    const menuItems: ItemType[] = [
-      {
-        key: SpecifyStatus['Specified'],
-        label: 'Re-specify',
-        icon: <DispatchIcon style={{ width: 16, height: 16 }} />,
-        disabled: record.status !== SpecifyStatus.Canceled,
-        onClick: () => {
-          alert('Coming soon!');
-        },
-      },
-      {
-        key: SpecifyStatus.Canceled,
-        label: 'Cancel',
-        icon: <CancelIcon style={{ width: 16, height: 16 }} />,
-        disabled: record.status === SpecifyStatus.Canceled,
-        onClick: () => {
-          alert('Coming soon!');
-        },
-      },
-    ];
-
-    return (
-      <CustomDropDown
-        arrow
-        alignRight={false}
-        textCapitalize={false}
-        items={menuItems}
-        menuStyle={{ width: 160, height: 'auto' }}
-        labelProps={{ className: 'flex-center' }}
-      >
-        {record.status === SpecifyStatus.Specified
-          ? 'Specified'
-          : record.status === SpecifyStatus['Re-specified']
-          ? 'Re-specified'
-          : 'Canceled'}
-      </CustomDropDown>
-    );
-  };
-
-  const renderActionCell = () => {
-    return (
-      <ActionMenu
-        handleUpdate={() => alert('Coming soon!')}
-        handleDelete={() => alert('Coming soon!')}
-      />
-    );
-  };
-
-  const BrandColumns: TableColumnItem<SpecifiedProductBrand>[] = [
+  const BrandColumns: TableColumnItem<SpecifiedProductByBrand>[] = [
     {
       title: 'Brand',
       dataIndex: 'brand_order',
@@ -90,14 +36,8 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       title: 'Collection',
       width: COL_WIDTH_BRAND.collection,
     },
-    {
-      title: 'Product',
-      width: COL_WIDTH_BRAND.product,
-    },
-    {
-      title: 'Option/Variant',
-      width: COL_WIDTH_BRAND.option,
-    },
+    { title: 'Product' },
+    { title: 'Option/Variant' },
     {
       title: 'Product ID',
       width: COL_WIDTH_BRAND.productId,
@@ -108,16 +48,8 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       width: '5%',
       align: 'center',
     },
-    {
-      title: 'Status',
-      width: COL_WIDTH_BRAND.status,
-      align: 'center',
-    },
-    {
-      title: 'Action',
-      width: '5%',
-      align: 'center',
-    },
+    { title: 'Status', align: 'center', width: COL_WIDTH_BRAND.status },
+    { title: 'Action', width: '5%', align: 'center' },
   ];
 
   const CollectionColumns: TableColumnItem<ProductItemBrand>[] = [
@@ -149,13 +81,11 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       title: 'Product',
       dataIndex: 'name',
       noBoxShadow: true,
-      width: COL_WIDTH_BRAND.product,
     },
     {
       title: 'Option/Variant',
       dataIndex: 'variant',
       noBoxShadow: true,
-      width: COL_WIDTH_BRAND.option,
     },
     {
       title: 'ProductID',
@@ -172,22 +102,18 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       title: 'Status',
       noBoxShadow: true,
       dataIndex: 'status',
-      width: COL_WIDTH_BRAND.status,
       align: 'center',
-      render: renderStatusDropdown,
+      width: COL_WIDTH_BRAND.status,
+      render: renderStatusDropdown(tableRef),
     },
     {
       title: 'Action',
       align: 'center',
       width: '5%',
       noBoxShadow: true,
-      render: renderActionCell,
+      render: renderActionCell(setSpecifyingProduct, tableRef),
     },
   ];
-
-  useEffect(() => {
-    tableRef.current.reload();
-  }, []);
 
   return (
     <>
@@ -204,9 +130,9 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
           columns: CollectionColumns,
           childrenColumnName: 'products',
         })}
-        onFilterLoad={false}
-        autoLoad={false}
       />
+
+      {renderSpecifyingModal()}
     </>
   );
 };

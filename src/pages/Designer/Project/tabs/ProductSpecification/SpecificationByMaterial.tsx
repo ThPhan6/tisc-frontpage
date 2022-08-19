@@ -1,84 +1,29 @@
-import { ActionMenu } from '@/components/Action';
 import CustomTable from '@/components/Table';
 import { TableColumnItem } from '@/components/Table/types';
-import { CustomDropDown } from '@/features/product/components';
-import { OrderMethod, SpecifiedProductMaterial, SpecifyStatus } from '@/features/project/types';
-import { ItemType } from 'antd/lib/menu/hooks/useItems';
+import { OrderMethod, SpecifiedProductByMaterial } from '@/features/project/types';
 import { FC, useRef } from 'react';
-import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
-import { ReactComponent as CancelIcon } from '@/assets/icons/ic-circle-cancel.svg';
 import { showImageUrl } from '@/helper/utils';
 import { getSpecifiedProductByMaterial } from '@/features/project/services';
 import { useParams } from 'umi';
+import { renderActionCell, renderStatusDropdown, useSpecifyingModal } from '../../hooks';
 
 const COL_WIDTH_MATERIAL = {
   material: 141,
-  description: 223,
   image: 65,
-  brand: 98,
-  product: 231,
   quantity: 91,
   unit: 52,
   method: 125,
-  status: 120,
+  status: 130,
 };
 
 export const SpecificationByMaterial: FC = () => {
   const tableRef = useRef<any>();
   const params = useParams<{ id: string }>();
+  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
-  const renderStatusDropdown = (_value: any, record: any) => {
-    const menuItems: ItemType[] = [
-      {
-        key: SpecifyStatus['Specified'],
-        label: 'Re-specify',
-        icon: <DispatchIcon style={{ width: 16, height: 16 }} />,
-        disabled: record.status !== SpecifyStatus.Canceled,
-        onClick: () => {
-          alert('Coming soon!');
-        },
-      },
-      {
-        key: SpecifyStatus.Canceled,
-        label: 'Cancel',
-        icon: <CancelIcon style={{ width: 16, height: 16 }} />,
-        disabled: record.status === SpecifyStatus.Canceled,
-        onClick: () => {
-          alert('Coming soon!');
-        },
-      },
-    ];
-
-    return (
-      <CustomDropDown
-        arrow
-        alignRight={false}
-        textCapitalize={false}
-        items={menuItems}
-        menuStyle={{ width: 160, height: 'auto' }}
-        labelProps={{ className: 'flex-center' }}
-      >
-        {record.status === SpecifyStatus.Specified
-          ? 'Specified'
-          : record.status === SpecifyStatus['Re-specified']
-          ? 'Re-specified'
-          : 'Canceled'}
-      </CustomDropDown>
-    );
-  };
-
-  const renderActionCell = () => {
-    return (
-      <ActionMenu
-        handleUpdate={() => alert('Coming soon!')}
-        handleDelete={() => alert('Coming soon!')}
-      />
-    );
-  };
-
-  const MaterialColumns: TableColumnItem<SpecifiedProductMaterial>[] = [
+  const MaterialColumns: TableColumnItem<SpecifiedProductByMaterial>[] = [
     {
-      title: 'Material',
+      title: 'Material Code',
       dataIndex: 'material_order',
       sorter: true,
       width: COL_WIDTH_MATERIAL.material,
@@ -87,7 +32,6 @@ export const SpecificationByMaterial: FC = () => {
     {
       title: 'Description',
       dataIndex: 'description',
-      width: COL_WIDTH_MATERIAL.description,
     },
     {
       title: 'Image',
@@ -109,17 +53,15 @@ export const SpecificationByMaterial: FC = () => {
     {
       title: 'Brand',
       dataIndex: 'brand_order',
-      width: COL_WIDTH_MATERIAL.brand,
       sorter: true,
       render: (_value, record) => <span>{record.brand_name}</span>,
     },
     {
       title: 'Product',
       dataIndex: 'product_name',
-      width: COL_WIDTH_MATERIAL.product,
     },
     {
-      title: 'Quantitis',
+      title: 'Quantities',
       dataIndex: 'quantity',
       width: COL_WIDTH_MATERIAL.quantity,
       align: 'center',
@@ -144,29 +86,32 @@ export const SpecificationByMaterial: FC = () => {
     {
       title: 'Status',
       dataIndex: 'status',
-      width: COL_WIDTH_MATERIAL.status,
       align: 'center',
-      render: renderStatusDropdown,
+      width: COL_WIDTH_MATERIAL.status,
+      render: renderStatusDropdown(tableRef),
     },
     {
       title: 'Action',
       width: '5%',
       align: 'center',
-      render: renderActionCell,
+      render: renderActionCell(setSpecifyingProduct, tableRef),
     },
   ];
 
   return (
-    <CustomTable
-      columns={MaterialColumns}
-      ref={tableRef}
-      hasPagination={false}
-      multiSort={{
-        brand_order: 'brand_order',
-        material_order: 'material_order',
-      }}
-      extraParams={{ projectId: params.id }}
-      fetchDataFunc={getSpecifiedProductByMaterial}
-    />
+    <>
+      <CustomTable
+        columns={MaterialColumns}
+        ref={tableRef}
+        hasPagination={false}
+        multiSort={{
+          brand_order: 'brand_order',
+          material_order: 'material_order',
+        }}
+        extraParams={{ projectId: params.id }}
+        fetchDataFunc={getSpecifiedProductByMaterial}
+      />
+      {renderSpecifyingModal()}
+    </>
   );
 };
