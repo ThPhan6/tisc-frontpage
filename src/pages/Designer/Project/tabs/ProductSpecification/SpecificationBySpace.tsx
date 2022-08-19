@@ -32,7 +32,7 @@ const COL_WIDTH_SPACE = {
 export interface SpaceListProps {
   projectId?: string;
 }
-const SpaceList: FC<SpaceListProps> = ({ projectId }) => {
+const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
   useAutoExpandNestedTableColumn(
     COL_WIDTH_SPACE.zones,
     COL_WIDTH_SPACE.areas,
@@ -322,4 +322,4 @@ const SpaceList: FC<SpaceListProps> = ({ projectId }) => {
     />
   );
 };
-export default SpaceList;
+export default SpecificationBySpace;

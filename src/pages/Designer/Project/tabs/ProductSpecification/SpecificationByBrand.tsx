@@ -17,7 +17,6 @@ const COL_WIDTH_BRAND = {
   product: 75,
   option: 569,
   productId: 93,
-  count: 67,
   status: 120,
 };
 
@@ -25,51 +24,9 @@ interface BrandListProps {
   projectId?: string;
 }
 
-const BrandList: FC<BrandListProps> = ({ projectId }) => {
+const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
   useAutoExpandNestedTableColumn(COL_WIDTH_BRAND.brand);
   const tableRef = useRef<any>();
-  const BrandColumns: TableColumnItem<SpecifiedProductBrand>[] = [
-    {
-      title: 'Brand',
-      dataIndex: 'brand_order',
-      sorter: true,
-      width: COL_WIDTH_BRAND.brand,
-      isExpandable: true,
-      render: (value, record) => <span>{record.name}</span>,
-    },
-    {
-      title: 'Collection',
-      width: COL_WIDTH_BRAND.collection,
-    },
-    {
-      title: 'Product',
-      width: COL_WIDTH_BRAND.product,
-    },
-    {
-      title: 'Option/Variant',
-      width: COL_WIDTH_BRAND.option,
-    },
-    {
-      title: 'ProductID',
-      width: COL_WIDTH_BRAND.productId,
-    },
-    {
-      title: 'Count',
-      dataIndex: 'count',
-      width: '5%',
-      align: 'center',
-    },
-    {
-      title: 'Status',
-      width: COL_WIDTH_BRAND.status,
-      align: 'center',
-    },
-    {
-      title: 'Action',
-      width: '5%',
-      align: 'center',
-    },
-  ];
 
   const renderStatusDropdown = (_value: any, record: any) => {
     const menuItems: ItemType[] = [
@@ -120,6 +77,49 @@ const BrandList: FC<BrandListProps> = ({ projectId }) => {
     );
   };
 
+  const BrandColumns: TableColumnItem<SpecifiedProductBrand>[] = [
+    {
+      title: 'Brand',
+      dataIndex: 'brand_order',
+      sorter: true,
+      width: COL_WIDTH_BRAND.brand,
+      isExpandable: true,
+      render: (value, record) => <span>{record.name}</span>,
+    },
+    {
+      title: 'Collection',
+      width: COL_WIDTH_BRAND.collection,
+    },
+    {
+      title: 'Product',
+      width: COL_WIDTH_BRAND.product,
+    },
+    {
+      title: 'Option/Variant',
+      width: COL_WIDTH_BRAND.option,
+    },
+    {
+      title: 'Product ID',
+      width: COL_WIDTH_BRAND.productId,
+    },
+    {
+      title: 'Count',
+      dataIndex: 'count',
+      width: '5%',
+      align: 'center',
+    },
+    {
+      title: 'Status',
+      width: COL_WIDTH_BRAND.status,
+      align: 'center',
+    },
+    {
+      title: 'Action',
+      width: '5%',
+      align: 'center',
+    },
+  ];
+
   const CollectionColumns: TableColumnItem<ProductItemBrand>[] = [
     {
       title: 'Brand',
@@ -166,7 +166,7 @@ const BrandList: FC<BrandListProps> = ({ projectId }) => {
     {
       title: 'Count',
       noBoxShadow: true,
-      width: COL_WIDTH_BRAND.count,
+      width: '5%',
     },
     {
       title: 'Status',
@@ -211,4 +211,4 @@ const BrandList: FC<BrandListProps> = ({ projectId }) => {
   );
 };
 
-export default BrandList;
+export default SpecificationByBrand;

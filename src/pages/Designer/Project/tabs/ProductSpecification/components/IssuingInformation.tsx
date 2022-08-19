@@ -2,7 +2,7 @@ import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import DateInput from '@/components/Form/DateInput';
-import styles from '../styles/index.less';
+import styles from '../index.less';
 
 const data = {
   issuingOffice: 'Office name A',

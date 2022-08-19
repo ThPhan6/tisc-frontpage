@@ -2,7 +2,7 @@ import CustomButton from '@/components/Button';
 import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
 import { FormGroup } from '@/components/Form';
 import { Switch } from 'antd';
-import styles from '../styles/index.less';
+import styles from '../index.less';
 
 const data = {
   name: 'Brands & Distributors List',
