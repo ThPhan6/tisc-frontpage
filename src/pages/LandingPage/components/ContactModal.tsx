@@ -10,6 +10,9 @@ import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { ReactComponent as MessageIcon } from '@/assets/icons/message-icon-18px.svg';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { contact } from '../services/api';
+import { validateEmail } from '@/helper/utils';
+import { message } from 'antd';
+import { MESSAGE_ERROR } from '@/constants/message';
 
 export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
@@ -27,6 +30,9 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
   };
 
   const handleSubmitContact = () => {
+    if (!validateEmail(valueForm.email)) {
+      return message.error(MESSAGE_ERROR.EMAIL_UNVALID);
+    }
     contact(valueForm).then((res) => {
       if (res) {
         onClose();
