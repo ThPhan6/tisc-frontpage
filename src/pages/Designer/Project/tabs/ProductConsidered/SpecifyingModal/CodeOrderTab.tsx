@@ -37,7 +37,7 @@ interface CodeOrderTabProps {
 }
 
 const getSelectedOptions = (options: CheckboxValue[], selectedIds: string[]) =>
-  options.filter((opt) => selectedIds.includes(String(opt.value)));
+  options.filter((opt) => selectedIds.includes(String(opt.value)) || opt.value === 'other');
 
 const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyingState }) => {
   const [materialCodeOpts, setMaterialCodeOtps] = useState<CustomRadiaValue[]>([]);
@@ -222,8 +222,11 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
               options={requirements}
               selected={selectedRequirements}
               onChange={(options) => {
+                console.log('options', options);
                 onChangeSpecifyingState({
-                  requirement_type_ids: options.map((opt) => String(opt.value)),
+                  requirement_type_ids: options.map((opt) =>
+                    opt.value === 'other' ? String(opt.label) : String(opt.value),
+                  ),
                 });
               }}
               otherInput
@@ -259,6 +262,8 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
             <CustomTextArea
               placeholder="type here..."
               borderBottomColor="light"
+              showCount
+              maxLength={250}
               value={special_instructions}
               onChange={(e) => onChangeSpecifyingState({ special_instructions: e.target.value })}
             />

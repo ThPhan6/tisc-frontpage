@@ -19,6 +19,7 @@ export type MenuIconProps = {
   label: string | React.ReactNode;
   icon?: JSX.Element;
   onClick: () => void;
+  disabled?: boolean;
 };
 
 type MenuHeaderDropdownProps = {
@@ -27,15 +28,16 @@ type MenuHeaderDropdownProps = {
 };
 
 export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParentClick }) => {
-  const MenuItem = ({ label, icon, onClick, containerClass }: MenuIconProps) => (
+  const MenuItem = ({ label, icon, onClick, containerClass, disabled }: MenuIconProps) => (
     <div
       onClick={() => {
-        if (onParentClick) {
-          onParentClick();
+        if (disabled) {
+          return;
         }
+        onParentClick?.();
         onClick();
       }}
-      className={`${styles.item} ${containerClass}`}
+      className={`${styles.item} ${containerClass} ${disabled ? styles.disabled : ''}`}
     >
       {icon ? <div className={styles.icon}>{icon}</div> : null}
       <BodyText fontFamily="Roboto" level={6}>
@@ -53,6 +55,7 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParen
           onClick={item.onClick}
           label={item.label}
           icon={item.icon}
+          disabled={item.disabled}
         />
       ))}
     </div>
@@ -82,11 +85,10 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
       visible={visible}
       onVisibleChange={(value) => setVisible(value)}
       overlay={
-        overlay ? (
-          overlay
-        ) : items ? (
+        overlay ||
+        (items ? (
           <MenuHeaderDropdown items={items} onParentClick={() => setVisible(false)} />
-        ) : null
+        ) : null)
       }
       {...restProps}
     />

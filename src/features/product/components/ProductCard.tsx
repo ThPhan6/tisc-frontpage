@@ -29,6 +29,7 @@ import CustomCollapse from '@/components/Collapse';
 import { truncate, capitalize } from 'lodash';
 import { ProductGetListParameter, ProductItem } from '../types';
 import AssignProductModal from '../modals/AssignProductModal';
+import { AssigningStatus } from '@/features/project/types';
 
 interface ProductCardProps {
   product: ProductItem;
@@ -54,6 +55,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const [liked, setLiked] = useState(product.is_liked);
   const showShareEmailModal = useBoolean();
   const showAssignProductModal = useBoolean();
+
+  const unlistedDisabled = product.status === AssigningStatus.Unlisted;
 
   // check user role to redirect
   const userRole = useGetUserRoleFromPathname();
@@ -153,7 +156,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
   ];
 
   return (
-    <div className={`${styles.productCardItem} ${hasBorder ? styles.border : ''}`}>
+    <div
+      className={`${styles.productCardItem} ${hasBorder ? styles.border : ''} ${
+        unlistedDisabled ? styles.disabled : ''
+      }`}
+    >
       <div className={styles.imageWrapper} onClick={hanldeRedirectURL}>
         <div
           style={{
@@ -190,8 +197,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </Tooltip>
           )}
           {showSpecify && isDesignerUser ? (
-            <Tooltip title={'Specifying'} {...tooltipProps}>
-              <DispatchIcon onClick={onSpecifyClick} />
+            <Tooltip title={'Specify'} {...tooltipProps}>
+              <DispatchIcon
+                onClick={unlistedDisabled ? undefined : onSpecifyClick}
+                className={unlistedDisabled ? styles.unlistedDisabled : ''}
+              />
             </Tooltip>
           ) : null}
         </div>

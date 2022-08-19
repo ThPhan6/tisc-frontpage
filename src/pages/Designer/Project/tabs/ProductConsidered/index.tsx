@@ -89,7 +89,7 @@ const ProductConsidered: React.FC = () => {
         textCapitalize={false}
         items={menuItems}
         menuStyle={{ width: 160, height: 'auto' }}
-        labelProps={{ className: 'flex-center' }}
+        labelProps={{ className: 'flex-between' }}
       >
         {record.status_name}
       </CustomDropDown>
@@ -102,9 +102,8 @@ const ProductConsidered: React.FC = () => {
     }
     return (
       <ActionMenu
-        handleSpecify={() => {
-          setSpecifyingProduct(record);
-        }}
+        handleSpecify={() => setSpecifyingProduct(record)}
+        disableSpecify={record.status === AssigningStatus.Unlisted}
         handleDelete={() =>
           confirmDelete(() => {
             removeProductFromProject(record.considered_id).then((success) =>
@@ -117,6 +116,10 @@ const ProductConsidered: React.FC = () => {
   };
 
   const disabledClassname = gridView.value ? 'disabled' : undefined;
+
+  const onCellUnlisted = (data: any) => ({
+    className: data.status === AssigningStatus.Unlisted ? 'light-content' : undefined,
+  });
 
   const SameColumn: TableColumnItem<any>[] = [
     {
@@ -146,12 +149,14 @@ const ProductConsidered: React.FC = () => {
         multiple: 4,
       },
       render: (v, record) => record.brand_name,
+      onCell: onCellUnlisted,
     },
     {
       title: 'Collection',
       className: disabledClassname,
       dataIndex: 'collection_name',
       width: COL_WIDTH.collection,
+      onCell: onCellUnlisted,
     },
   ];
 
@@ -214,6 +219,7 @@ const ProductConsidered: React.FC = () => {
       noBoxShadow: true,
       onCell: (data) => ({
         colSpan: data.rooms ? 1 : 3,
+        color: 'red',
       }),
     },
     {
@@ -238,12 +244,14 @@ const ProductConsidered: React.FC = () => {
       title: 'Product',
       dataIndex: 'name',
       render: (value, record) => (record.rooms ? null : value), // For Entire project
+      onCell: onCellUnlisted,
     },
     {
       title: 'Assigned By',
       dataIndex: 'assigned_name',
       width: COL_WIDTH.assignedBy,
       render: (value, record) => (record.rooms ? null : value), // For Entire project
+      onCell: onCellUnlisted,
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
@@ -320,11 +328,13 @@ const ProductConsidered: React.FC = () => {
     {
       title: 'Product',
       dataIndex: 'name',
+      onCell: onCellUnlisted,
     },
     {
       title: 'Assigned By',
       dataIndex: 'assigned_name',
       width: COL_WIDTH.assignedBy,
+      onCell: onCellUnlisted,
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
@@ -378,7 +388,7 @@ const ProductConsidered: React.FC = () => {
           level={4}
           fontFamily="Cormorant-Garamond"
           color="mono-color"
-          style={{ fontWeight: '600' }}
+          style={{ fontWeight: '600', marginRight: 4 }}
         >
           View By:
         </BodyText>

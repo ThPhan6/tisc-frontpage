@@ -7,7 +7,7 @@ import { RenderEntireProjectLabel } from '@/components/RenderHeaderLabel';
 import { BodyText, RobotoBodyText } from '@/components/Typography';
 import { BusinessDetail } from '@/features/product/components/BrandContact';
 import { getBrandLocation, getDistributorLocation } from '@/services';
-import { LocationDetail, LocationGroupedByCountry } from '@/types';
+import { LocationDetail, LocationGroupedByCountry, DistributorProductMarket } from '@/types';
 import { FC, useEffect, useState } from 'react';
 import styles from './styles/vendor-tab.less';
 import { OnChangeSpecifyingProductFnc } from './types';
@@ -42,6 +42,34 @@ const getSelectedLocation = (locationGroup: LocationGroupedByCountry[], selected
   };
 };
 
+const getSelectedDistributors = (locationGroup: DistributorProductMarket[], selectedId: string) => {
+  const allLocations = locationGroup.flatMap((el) => el.distributors);
+
+  const selectedLocation = allLocations.find((el) => el.id === selectedId);
+  const locationOption: RadioValue = {
+    value: selectedId || '',
+    label: selectedLocation ? (
+      <BusinessDetail
+        business={selectedLocation.name}
+        type={` ${selectedLocation.last_name} ${selectedLocation.first_name} `}
+        address={`${selectedLocation.address}, ${selectedLocation.city_name}`}
+        country={selectedLocation.country_name.toUpperCase()}
+        phone_code={selectedLocation.phone_code}
+        general_phone={selectedLocation.phone}
+        genernal_email={selectedLocation.email}
+      />
+    ) : (
+      ''
+    ),
+  };
+
+  return {
+    selectedLocation,
+    locationOption,
+    countryName: selectedLocation?.country_name || '',
+  };
+};
+
 interface VendorTabProps {
   productId: string;
   brandId: string;
@@ -63,7 +91,7 @@ const VendorTab: FC<VendorTabProps> = ({
 
   // for distributor
   const [distributorActiveKey, setDistributorActiveKey] = useState<string | string[]>();
-  const [distributorAddresses, setDistributorAddresses] = useState<LocationGroupedByCountry[]>([]);
+  const [distributorAddresses, setDistributorAddresses] = useState<DistributorProductMarket[]>([]);
 
   // get location selected
   const {
@@ -75,17 +103,11 @@ const VendorTab: FC<VendorTabProps> = ({
     locationOption: chosenDistributor,
     countryName: chosenDistributorCountry,
     selectedLocation: selectedLocationDistributor,
-  } = getSelectedLocation(distributorAddresses, distributorAddressId);
+  } = getSelectedDistributors(distributorAddresses, distributorAddressId);
 
   const [locationPopup, setLocationPopup] = useState<'' | 'brand' | 'distributor'>('');
 
   // get data
-  const dropdownRadioList =
-    locationPopup === 'brand'
-      ? brandAddresses
-      : locationPopup === 'distributor'
-      ? distributorAddresses
-      : [];
   const chosenValue =
     locationPopup === 'brand'
       ? chosenBrand
@@ -141,6 +163,21 @@ const VendorTab: FC<VendorTabProps> = ({
         phone_code={location?.phone_code ?? ''}
         general_phone={location?.general_phone ?? ''}
         genernal_email={location?.general_email ?? ''}
+        customClass={styles.businessDetail}
+      />
+    ) : null;
+
+  const renderDistributorBusinessAdressDetail = (
+    location?: DistributorProductMarket['distributors'][0],
+  ) =>
+    location ? (
+      <BusinessDetail
+        business={location?.name ?? ''}
+        type={` ${location.last_name} ${location.first_name} `}
+        address={`${location.address}, ${location.city_name}`}
+        phone_code={location?.phone_code ?? ''}
+        general_phone={location?.phone ?? ''}
+        genernal_email={location?.email ?? ''}
         customClass={styles.businessDetail}
       />
     ) : null;
@@ -237,7 +274,7 @@ const VendorTab: FC<VendorTabProps> = ({
               activeKey={distributorActiveKey}
               customHeaderClass={styles.collapseHeader}
             >
-              {renderBusinessAdressDetail(selectedLocationDistributor)}
+              {renderDistributorBusinessAdressDetail(selectedLocationDistributor)}
             </CustomCollapse>
           </div>
         </div>
@@ -246,14 +283,14 @@ const VendorTab: FC<VendorTabProps> = ({
       <Popover
         title="SELECT LOCATION"
         className={styles.customLocationModal}
-        visible={locationPopup !== ''}
+        visible={locationPopup === 'brand'}
         setVisible={(visible) => (visible ? undefined : setLocationPopup(''))}
         chosenValue={chosenValue}
         setChosenValue={(checked) =>
           locationPopup ? handleOnChangeSpecifying(checked) : undefined
         }
         dropDownRadioTitle={(dropdownData) => dropdownData.country_name}
-        dropdownRadioList={dropdownRadioList.map((country) => {
+        dropdownRadioList={brandAddresses.map((country) => {
           return {
             country_name: country.country_name,
             options: country.locations.map((location) => {
@@ -268,6 +305,39 @@ const VendorTab: FC<VendorTabProps> = ({
                     phone_code={location.phone_code}
                     general_phone={location.general_phone}
                     genernal_email={location.general_email}
+                  />
+                ),
+              };
+            }),
+          };
+        })}
+      />
+
+      <Popover
+        title="SELECT LOCATION"
+        className={styles.customLocationModal}
+        visible={locationPopup === 'distributor'}
+        setVisible={(visible) => (visible ? undefined : setLocationPopup(''))}
+        chosenValue={chosenValue}
+        setChosenValue={(checked) =>
+          locationPopup ? handleOnChangeSpecifying(checked) : undefined
+        }
+        dropDownRadioTitle={(dropdownData) => dropdownData.country_name}
+        dropdownRadioList={distributorAddresses.map((country) => {
+          return {
+            country_name: country.country_name,
+            options: country.distributors.map((distributor) => {
+              return {
+                value: distributor.id,
+                label: (
+                  <BusinessDetail
+                    business={distributor.name}
+                    type={`${distributor.last_name} ${distributor.first_name}`}
+                    address={`${distributor.address}, ${distributor.city_name}`}
+                    country={distributor.country_name.toUpperCase()}
+                    phone_code={distributor.phone_code}
+                    general_phone={distributor.phone}
+                    genernal_email={distributor.email}
                   />
                 ),
               };

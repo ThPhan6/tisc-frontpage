@@ -69,7 +69,7 @@ export const useAssignProductToSpaceForm = (
       return confirmDelete(handleChooseEntireProject, {
         title: 'Are you sure to re-allocate?',
         content:
-          'You are re-allocate product from entire project to some specific rooms. All of your specifying data will be remove along with this consider after submitting.',
+          'You are re-allocate product from current room to entire project along with all of your specifying data after submitting.',
       });
     }
 
@@ -99,7 +99,7 @@ export const useAssignProductToSpaceForm = (
         title: 'Are you sure to re-allocate?',
         content: isSelectedRoomBeRemoved
           ? 'Your are removing this consider by uncheck its room. All of your specifying data will be remove along with this consider after submitting.'
-          : 'You are re-allocate product from current room to entire project along with all of your specifying data after submitting.',
+          : 'You are re-allocate product from entire project to some specific rooms. All of specifying data will be move to new assigned rooms - considers.',
       });
     }
 
@@ -170,7 +170,8 @@ export const useAssignProductToSpaceForm = (
         </BodyText>
         <Tooltip
           placement="bottom"
-          title="Select this option if you apply the material/product throughout the entire project. (E.g. paint/surface coating, etc.)"
+          title={`Select this option if you apply the material/product throughout the entire project.
+            (E.g. paint/surface coating, etc)`}
           overlayInnerStyle={{
             width: 199,
           }}

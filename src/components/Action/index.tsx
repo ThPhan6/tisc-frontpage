@@ -28,13 +28,9 @@ export const ActionForm: FC<ActionFormProps> = ({
       align={{ offset: offsetAlign }}
       trigger={[trigger]}
       placement={placement}
-      items={actionItems?.map((item) => ({
-        onClick: item.onClick,
-        icon: item.icon && item.icon,
-        label: item.label,
-      }))}
+      items={actionItems}
     >
-      {actionIcon ? actionIcon : <ActionIcon />}
+      {actionIcon || <ActionIcon />}
     </HeaderDropdown>
   );
 };
@@ -43,15 +39,22 @@ interface ActionMenuForm extends ActionFormProps {
   handleUpdate?: () => void;
   handleDelete?: () => void;
   handleSpecify?: () => void;
+  disableSpecify?: boolean;
 }
-export const ActionMenu: FC<ActionMenuForm> = ({ handleDelete, handleUpdate, handleSpecify }) => {
-  const actionItems = [];
+export const ActionMenu: FC<ActionMenuForm> = ({
+  handleDelete,
+  handleUpdate,
+  handleSpecify,
+  disableSpecify,
+}) => {
+  const actionItems: MenuIconProps[] = [];
 
   if (handleSpecify) {
     actionItems.push({
       icon: <DispatchIcon />,
       onClick: handleSpecify,
       label: 'Specify',
+      disabled: disableSpecify,
     });
   }
   if (handleUpdate) {

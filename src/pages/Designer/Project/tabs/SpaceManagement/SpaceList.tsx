@@ -189,6 +189,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
       title: 'Zone',
       dataIndex: 'zone',
       width: MAIN_COL_WIDTH,
+      noBoxShadow: true,
     },
     {
       title: 'Areas',
