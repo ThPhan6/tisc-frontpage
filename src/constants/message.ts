@@ -250,6 +250,11 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PROJECT_SPACE_SUCCESS: 'Update project space successfully',
   DELETE_PROJECT_SPACE_FAILED: 'Failed to delete project space',
   DELETE_PROJECT_SPACE_SUCCESS: 'Delete project space successfully',
+
+  //design - my favourite
+  RETRIEVE_FAVOURITE_PRODUCT_SUCCESS: 'Retrieve favourite product successfully',
+  RETRIEVE_FAVOURITE_PRODUCT_ERROR: 'Retrieve favourite product error',
+  SKIP_FAVOURITE_PRODUCT_SUCCESS: 'Skip favourite product successfully',
 };
 
 export const MESSAGE_TOOLTIP = {
