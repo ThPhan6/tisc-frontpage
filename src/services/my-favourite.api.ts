@@ -6,7 +6,7 @@ import {
   GetListProductForDesignerRequestParams,
 } from '@/features/product/types';
 import store from '@/reducers';
-import { FavouriteProductSummary } from '@/types';
+import { FavouriteProductSummary, FavouriteRetrieve } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -42,24 +42,20 @@ export async function getFavouriteProductSummary() {
     });
 }
 
-export async function createFavouriteRetrieve() {
-  return request<boolean>(`/api/favourite/retrieve`, {
-    method: 'POST',
-  })
+export async function retrieveFavouriteProduct(data: FavouriteRetrieve) {
+  return request<boolean>(`/api/favourite/retrieve`, { method: 'POST', data })
     .then(() => {
-      message.success(MESSAGE_NOTIFICATION.CREATE_FAVOURITE_RETRIEVE_SUCCESS);
+      message.success(MESSAGE_NOTIFICATION.RETRIEVE_FAVOURITE_PRODUCT_SUCCESS);
       return true;
     })
     .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_FAVOURITE_RETRIEVE_ERROR);
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.RETRIEVE_FAVOURITE_PRODUCT_ERROR);
       return false;
     });
 }
 
-export async function skipFavouriteRetrieve() {
-  return request<boolean>(`/api/favourite/skip`, {
-    method: 'POST',
-  })
+export async function skipFavouriteProduct() {
+  return request<boolean>(`/api/favourite/skip`, { method: 'POST' })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.SKIP_FAVOURITE_SUCCESS);
       return true;

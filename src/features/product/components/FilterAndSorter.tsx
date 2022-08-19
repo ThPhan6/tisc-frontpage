@@ -150,6 +150,7 @@ export const useProductListFilterAndSorter = () => {
     brandSummary,
     resetProductListFilter,
     resetProductListSorter,
+    resetAllProductList,
     dispatch,
   };
 };

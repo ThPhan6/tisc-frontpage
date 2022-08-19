@@ -4,30 +4,37 @@ import {
   TopBarContainer,
   TopBarItem,
 } from '@/features/product/components';
+import {
+  SORTER_DROPDOWN_DATA,
+  useProductListFilterAndSorter,
+} from '@/features/product/components/FilterAndSorter';
 import { getFavouriteProductSummary } from '@/services';
 import type { FavouriteProductSummary } from '@/types';
 import React, { useEffect, useState } from 'react';
-import {
-  productListFilterAndSorter,
-  SORTER_DROPDOWN_DATA,
-} from '@/features/product/components/FilterAndSorter';
-import './topBar.less';
-// import { resetProductState, setProductList } from '@/features/product/reducers';
-// import { useDispatch } from 'react-redux';
+import '../styles/topBar.less';
 
-const ProductSummrayTopBar: React.FC = () => {
+export interface ProductSummrayTopBarProps {
+  isFavouriteRetrieved: boolean;
+}
+
+const ProductSummrayTopBar: React.FC<ProductSummrayTopBarProps> = ({ isFavouriteRetrieved }) => {
   const [productSummary, setProductSummary] = useState<FavouriteProductSummary>();
 
   const { filter, sort, brands, categories, resetProductListFilter, resetProductListSorter } =
-    productListFilterAndSorter();
+    useProductListFilterAndSorter();
 
-  // get profuct summary
+  const activeBrands = brands.length && isFavouriteRetrieved;
+  const activeCategories = categories.length && isFavouriteRetrieved;
+
+  // show product summary when user already has retrieved favourite
   useEffect(() => {
-    getFavouriteProductSummary().then((data) => {
-      if (data) {
-        setProductSummary(data);
-      }
-    });
+    if (isFavouriteRetrieved) {
+      getFavouriteProductSummary().then((data) => {
+        if (data) {
+          setProductSummary(data);
+        }
+      });
+    }
   }, []);
 
   return (
@@ -59,7 +66,7 @@ const ProductSummrayTopBar: React.FC = () => {
             {/* brands */}
             <TopBarItem
               disabled
-              customClass="left-divider"
+              customClass={`left-divider ${activeBrands ? 'cursor-pointer' : 'cursor-default'} `}
               topValue={
                 filter?.name === 'brand_id' ? (
                   <FilterItem title={filter.title} onDelete={resetProductListFilter} />
@@ -67,12 +74,13 @@ const ProductSummrayTopBar: React.FC = () => {
                   'select'
                 )
               }
-              bottomEnable={brands.length ? true : false}
+              bottomEnable={activeBrands ? true : false}
               bottomValue={
                 <CustomDropDown
                   items={brands}
                   menuStyle={{ width: 240 }}
                   align={{ offset: [-180, 3] }}
+                  disabled={activeBrands ? false : true}
                 >
                   Brands
                 </CustomDropDown>
@@ -82,7 +90,9 @@ const ProductSummrayTopBar: React.FC = () => {
             {/* categories */}
             <TopBarItem
               disabled
-              customClass="left-divider"
+              customClass={`left-divider ${
+                activeCategories ? 'cursor-pointer' : 'cursor-default'
+              } `}
               topValue={
                 filter?.name === 'category_id' ? (
                   <FilterItem title={filter.title} onDelete={resetProductListFilter} />
@@ -90,9 +100,13 @@ const ProductSummrayTopBar: React.FC = () => {
                   'select'
                 )
               }
-              bottomEnable={categories.length ? true : false}
+              bottomEnable={activeCategories ? true : false}
               bottomValue={
-                <CustomDropDown items={categories} position="left">
+                <CustomDropDown
+                  items={categories}
+                  position="left"
+                  disabled={activeCategories ? false : true}
+                >
                   Categories
                 </CustomDropDown>
               }
@@ -101,8 +115,10 @@ const ProductSummrayTopBar: React.FC = () => {
             {/* sort */}
             <TopBarItem
               disabled
-              customClass="left-divider"
-              bottomEnable={true}
+              customClass={`left-divider ${
+                isFavouriteRetrieved ? 'cursor-pointer' : 'cursor-default'
+              } `}
+              bottomEnable={isFavouriteRetrieved ? true : false}
               topValue={
                 sort ? (
                   <FilterItem
@@ -117,6 +133,7 @@ const ProductSummrayTopBar: React.FC = () => {
                 <CustomDropDown
                   items={SORTER_DROPDOWN_DATA}
                   menuStyle={{ width: 160, height: 'auto' }}
+                  disabled={isFavouriteRetrieved ? false : true}
                 >
                   Sort By
                 </CustomDropDown>

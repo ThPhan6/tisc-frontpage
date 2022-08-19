@@ -32,6 +32,7 @@ export type UserInfoDataProp = {
   linkedin: string;
   type: number;
   interested: number[];
+  retrieve_favourite: boolean;
 };
 
 export type ResetPasswordInput = {

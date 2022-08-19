@@ -257,6 +257,8 @@ export const MESSAGE_NOTIFICATION = {
   GET_FAVOURITE_CATEGORY_PRODUCT_SUMMARY_ERROR: 'Get favourite category product error',
   CREATE_FAVOURITE_RETRIEVE_SUCCESS: 'Now you can have your own favourite product',
   CREATE_FAVOURITE_RETRIEVE_ERROR: 'Failed to create your favourite product',
+  RETRIEVE_FAVOURITE_PRODUCT_SUCCESS: 'Retrieve favourite product successfully',
+  RETRIEVE_FAVOURITE_PRODUCT_ERROR: 'Retrieve favourite product error',
   SKIP_FAVOURITE_SUCCESS: 'Skipped Successfully',
   SKIP_FAVOURITE_ERROR: 'Failed to skip',
 };

@@ -33,12 +33,18 @@ const BrandProductListPage: React.FC = () => {
     brandSummary,
     resetProductListFilter,
     resetProductListSorter,
+    resetAllProductList,
     dispatch,
   } = useProductListFilterAndSorter();
 
   const searchProductByKeyword = debounce((e) => {
     dispatch(setProductListSearchValue(e.target.value));
   }, 300);
+
+  // clear all on first loading
+  useEffect(() => {
+    resetAllProductList();
+  }, []);
 
   useEffect(() => {
     dispatch(
