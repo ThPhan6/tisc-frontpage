@@ -1,3 +1,4 @@
+import { ShareViaEmailForm } from '@/components/ShareViaEmail/types';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import store from '@/reducers';
 import type { BrandDetail } from '@/types';
@@ -18,6 +19,7 @@ import {
   ProductItem,
   GetListProductForDesignerRequestParams,
   BrandSummary,
+  ProductItemValue,
 } from '../types';
 
 export async function getProductSummary(brandId: string) {
@@ -194,5 +196,35 @@ export async function getRelatedCollectionProducts(productId: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_SUMMARY_DATA_ERROR);
+    });
+}
+
+export async function getSharingGroups() {
+  return request<{ data: ProductItemValue[] }>(`/api/product/sharing-groups`, { method: 'GET' })
+    .then((res) => res.data)
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_SHARING_GROUPS_ERROR);
+      return [] as ProductItemValue[];
+    });
+}
+
+export async function getSharingPurposes() {
+  return request<{ data: ProductItemValue[] }>(`/api/product/sharing-purposes`, { method: 'GET' })
+    .then((res) => res.data)
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_SHARING_PURPOSES_ERROR);
+      return [] as ProductItemValue[];
+    });
+}
+
+export async function createShareViaEmail(data: ShareViaEmailForm) {
+  return request<boolean>(`/api/product/share-via-email`, { method: 'POST', data })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.CREATE_SHARE_VIA_EMAIL_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_SHARE_VIA_EMAIL_ERROR);
+      return false;
     });
 }

@@ -268,6 +268,7 @@ const ProductImagePreview: React.FC = () => {
         <ShareViaEmail
           visible={showShareEmailModal.value}
           setVisible={showShareEmailModal.setValue}
+          product={product}
         />
 
         {id && (
