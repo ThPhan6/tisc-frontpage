@@ -3,68 +3,74 @@ import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import Popover from '@/components/Modal/Popover';
 import { MESSAGE_ERROR } from '@/constants/message';
+import {
+  createShareViaEmail,
+  getSharingGroups,
+  getSharingPurposes,
+} from '@/features/product/services';
+import { ProductItem, ProductItemValue } from '@/features/product/types';
 import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
-import { useAppSelector } from '@/reducers';
-import { getDepartmentList } from '@/services';
-import { ShareViaEmailForm } from '@/types/share-via-email.type';
 import { FC, useEffect, useState } from 'react';
 import BrandProductBasicHeader from '../BrandProductBasicHeader';
 import CollapseRadioFormGroup from '../CustomRadio/CollapseRadioFormGroup';
 import styles from './index.less';
 
+export interface ShareViaEmailForm {
+  product_id: string;
+  sharing_group: string;
+  sharing_purpose: string;
+  to_email: string;
+  title: string;
+  message: string;
+}
+
 interface ShareViaEmailProps {
+  product: ProductItem;
   visible: boolean;
   setVisible: (visible: boolean) => void;
 }
 
-interface SharingGroup {
-  id: string;
-  name: string;
-}
-
-const DEFAULT_SHAREVIAEMAIL_VALUE: ShareViaEmailForm = {
-  image: '',
-  logo: '',
-  sharing_group_id: '',
-  sharing_purpose_id: '',
-  email_to: '',
-  title: '',
-  message: '',
-};
 type FieldName = keyof ShareViaEmailForm;
 
-const ShareViaEmail: FC<ShareViaEmailProps> = ({ visible, setVisible }) => {
-  const brand = useAppSelector((state) => state.product);
-  console.log('productData', brand);
-
-  const [shareViaEmailData, setShareViaEmailData] = useState<ShareViaEmailForm>(
-    DEFAULT_SHAREVIAEMAIL_VALUE,
-  );
+const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible }) => {
+  const [shareViaEmailData, setShareViaEmailData] = useState<ShareViaEmailForm>({
+    product_id: product.id,
+    sharing_group: '',
+    sharing_purpose: '',
+    to_email: '',
+    title: '',
+    message: '',
+  });
 
   // for Sharing Group
-  const [sharingGroup, setSharingGroup] = useState<SharingGroup[]>([]);
-  const [sharingPurpose, setSharingPurpose] = useState<SharingGroup[]>([]);
+  const [sharingGroup, setSharingGroup] = useState<ProductItemValue[]>([]);
+  const [sharingPurpose, setSharingPurpose] = useState<ProductItemValue[]>([]);
 
   useEffect(() => {
-    getDepartmentList().then((res) => {
-      if (res) {
-        setSharingGroup(res);
-        setSharingPurpose(res);
+    getSharingGroups().then((data) => {
+      if (data) {
+        setSharingGroup(data);
+      }
+    });
+
+    getSharingPurposes().then((data) => {
+      if (data) {
+        setSharingPurpose(data);
       }
     });
   }, []);
 
   // format data
   const sharingGroupLabel = sharingGroup.find(
-    (item) => item.id === shareViaEmailData.sharing_group_id,
+    (item) => item.id === shareViaEmailData.sharing_group,
   ) ?? {
-    name: shareViaEmailData.sharing_group_id,
+    name: shareViaEmailData.sharing_group,
     id: '',
   };
   const sharingPurposeLabel = sharingPurpose.find(
-    (item) => item.id === shareViaEmailData.sharing_purpose_id,
+    (item) => item.id === shareViaEmailData.sharing_purpose,
   ) ?? {
-    name: shareViaEmailData.sharing_purpose_id,
+    name: shareViaEmailData.sharing_purpose,
     id: '',
   };
 
@@ -75,21 +81,35 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ visible, setVisible }) => {
     });
   };
 
+  const handleSubmit = () => {
+    createShareViaEmail(shareViaEmailData);
+    // .then((isSuccess) => {
+    //   if (isSuccess) {
+    //     setVisible(false);
+    //   }
+    // });
+  };
+
   return (
-    <Popover title="Share Via Email" visible={visible} setVisible={setVisible}>
+    <Popover
+      title="Share Via Email"
+      visible={visible}
+      setVisible={setVisible}
+      onFormSubmit={handleSubmit}
+    >
       <BrandProductBasicHeader
-        image={shareViaEmailData.image}
-        logo={shareViaEmailData.logo}
-        text_1="Brand company name"
-        text_2="Collection/Series name"
-        text_3="Product/item description"
+        image={product.images?.[0] || product.image}
+        logo={product.brand?.logo}
+        text_1={product.brand_name}
+        text_2={product.name}
+        text_3={product.description}
         customClass={styles.header}
       />
 
       {/* Sharing Group */}
       <CollapseRadioFormGroup
         label="Sharing Group"
-        checked={shareViaEmailData.sharing_group_id}
+        checked={shareViaEmailData.sharing_group}
         placeholder={sharingGroupLabel.name}
         otherInput
         optionData={sharingGroup.map((item) => {
@@ -100,9 +120,9 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ visible, setVisible }) => {
         })}
         onChange={(radioValue) => {
           if (radioValue.value === 'other') {
-            onChangeData('sharing_group_id', radioValue.label);
+            onChangeData('sharing_group', radioValue.label);
           } else {
-            onChangeData('sharing_group_id', radioValue.value);
+            onChangeData('sharing_group', radioValue.value);
           }
         }}
       />
@@ -110,10 +130,10 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ visible, setVisible }) => {
       {/* Sharing Purpose */}
       <CollapseRadioFormGroup
         label="Sharing Purpose"
-        checked={shareViaEmailData.sharing_purpose_id}
+        checked={shareViaEmailData.sharing_purpose}
         placeholder={sharingPurposeLabel.name}
         otherInput
-        optionData={sharingGroup.map((item) => {
+        optionData={sharingPurpose.map((item) => {
           return {
             label: item.name,
             value: item.id,
@@ -121,9 +141,9 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ visible, setVisible }) => {
         })}
         onChange={(radioValue) => {
           if (radioValue.value === 'other') {
-            onChangeData('sharing_purpose_id', radioValue.label);
+            onChangeData('sharing_purpose', radioValue.label);
           } else {
-            onChangeData('sharing_purpose_id', radioValue.value);
+            onChangeData('sharing_purpose', radioValue.value);
           }
         }}
       />
@@ -139,13 +159,13 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ visible, setVisible }) => {
         hasBoxShadow
         hasHeight
         placeholder="type receiver email address"
-        value={shareViaEmailData.email_to}
+        value={shareViaEmailData.to_email}
         onChange={(e) => {
-          onChangeData('email_to', e.target.value);
+          onChangeData('to_email', e.target.value);
         }}
-        onDelete={() => onChangeData('email_to', '')}
-        message={emailMessageError(shareViaEmailData.email_to, MESSAGE_ERROR.EMAIL_UNVALID)}
-        messageType={emailMessageErrorType(shareViaEmailData.email_to, 'error', 'normal')}
+        onDelete={() => onChangeData('to_email', '')}
+        message={emailMessageError(shareViaEmailData.to_email, MESSAGE_ERROR.EMAIL_UNVALID)}
+        messageType={emailMessageErrorType(shareViaEmailData.to_email, 'error', 'normal')}
       />
 
       {/* Title */}
