@@ -86,3 +86,10 @@ export type Policy = {
     document: '';
   };
 };
+
+export type Quotation = {
+  id: string;
+  author: string;
+  identity: string;
+  quotation: string;
+};
