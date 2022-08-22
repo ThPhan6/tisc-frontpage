@@ -58,8 +58,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   const unlistedDisabled = product.status === AssigningStatus.Unlisted;
 
-  console.log('ProductCard', product);
-
   // check user role to redirect
   const userRole = useGetUserRoleFromPathname();
   const hanldeRedirectURL = () => {
