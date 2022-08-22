@@ -45,77 +45,75 @@ const FavouriteForm = () => {
   };
 
   return (
-    <div>
-      <Row>
-        <Col span={12}>
-          <div className={styles.content}>
-            <div className={styles.title}>
-              <MainTitle level={3} textAlign="center">
-                FOR NEW USER
-              </MainTitle>
-              <div className={styles.text}>
-                <BodyText level={5} fontFamily="Roboto">
-                  Click{' '}
-                </BodyText>
-                <LikeIcon className={styles.icon} />
-                <BodyText level={5} fontFamily="Roboto">
-                  icon to add the product to
-                </BodyText>
-                <MainTitle level={3} customClass={styles.textItem}>
-                  My Favourites
-                </MainTitle>
-              </div>
-            </div>
-            <div className={styles.form}>
-              <MainTitle level={3} textAlign="center">
-                FOR EXISTING USER WHO JOINED A NEW OFFICE
-              </MainTitle>
-              <BodyText level={5} fontFamily="Roboto" customClass={styles.formText}>
-                Submit your personal email & mobile to reload the <span>My Favourites </span>
-                preference
+    <Row>
+      <Col span={12}>
+        <div className={styles.content}>
+          <div className={styles.title}>
+            <MainTitle level={3} textAlign="center">
+              FOR NEW USER
+            </MainTitle>
+            <div className={styles.text}>
+              <BodyText level={5} fontFamily="Roboto">
+                Click{' '}
               </BodyText>
-
-              <CustomInput
-                placeholder="type personal email"
-                borderBottomColor="mono-medium"
-                containerClass={styles.input}
-                onChange={(e) => handleOnChangeValueForm('personal_email', e.target.value)}
-                name=" personal_email"
-                value={valueForm.personal_email}
-                message={emailMessageError(valueForm.personal_email, MESSAGE_ERROR.EMAIL_UNVALID)}
-                messageType={emailMessageErrorType(valueForm.personal_email, 'error', 'normal')}
-              />
-              <PhoneInput
-                codePlaceholder="00"
-                phonePlaceholder="mobile number"
-                containerClass={styles.phoneInput}
-                onChange={(value) =>
-                  handleOnChangeValueForm('phone_code', value.zoneCode, 'mobile', value.phoneNumber)
-                }
-                value={{
-                  zoneCode: valueForm.phone_code,
-                  phoneNumber: valueForm.mobile,
-                }}
-              />
-
-              <div className={styles.action}>
-                <CustomButton size="small" properties="rounded" onClick={onSubmitForm}>
-                  Submit
-                </CustomButton>
-                <CustomButton
-                  size="small"
-                  properties="rounded"
-                  buttonClass={styles.skipButton}
-                  onClick={onSkipForm}
-                >
-                  Skip
-                </CustomButton>
-              </div>
+              <LikeIcon className={styles.icon} />
+              <BodyText level={5} fontFamily="Roboto">
+                icon to add the product to
+              </BodyText>
+              <MainTitle level={3} customClass={styles.textItem}>
+                My Favourites
+              </MainTitle>
             </div>
           </div>
-        </Col>
-      </Row>
-    </div>
+          <div className={styles.form}>
+            <MainTitle level={3} textAlign="center">
+              FOR EXISTING USER WHO JOINED A NEW OFFICE
+            </MainTitle>
+            <BodyText level={5} fontFamily="Roboto" customClass={styles.formText}>
+              Submit your personal email & mobile to reload the <span>My Favourites </span>
+              preference
+            </BodyText>
+
+            <CustomInput
+              placeholder="type personal email"
+              borderBottomColor="mono-medium"
+              containerClass={styles.input}
+              onChange={(e) => handleOnChangeValueForm('personal_email', e.target.value)}
+              name=" personal_email"
+              value={valueForm.personal_email}
+              message={emailMessageError(valueForm.personal_email, MESSAGE_ERROR.EMAIL_UNVALID)}
+              messageType={emailMessageErrorType(valueForm.personal_email, 'error', 'normal')}
+            />
+            <PhoneInput
+              codePlaceholder="00"
+              phonePlaceholder="mobile number"
+              containerClass={styles.phoneInput}
+              onChange={(value) =>
+                handleOnChangeValueForm('phone_code', value.zoneCode, 'mobile', value.phoneNumber)
+              }
+              value={{
+                zoneCode: valueForm.phone_code,
+                phoneNumber: valueForm.mobile,
+              }}
+            />
+
+            <div className={styles.action}>
+              <CustomButton size="small" properties="rounded" onClick={onSubmitForm}>
+                Submit
+              </CustomButton>
+              <CustomButton
+                size="small"
+                properties="rounded"
+                buttonClass={styles.skipButton}
+                onClick={onSkipForm}
+              >
+                Skip
+              </CustomButton>
+            </div>
+          </div>
+        </div>
+      </Col>
+    </Row>
   );
 };
 export default FavouriteForm;

@@ -79,8 +79,8 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
                 <CustomDropDown
                   items={brands}
                   menuStyle={{ width: 240 }}
-                  align={{ offset: [-180, 3] }}
                   disabled={activeBrands ? false : true}
+                  placement="bottomRight"
                 >
                   Brands
                 </CustomDropDown>
