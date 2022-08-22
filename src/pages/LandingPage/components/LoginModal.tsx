@@ -2,7 +2,7 @@ import styles from './LoginModal.less';
 import { CustomModal } from '@/components/Modal';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
-import type { LoginInput, ModalProps } from '../types';
+import type { LoginInput, ModalProps, Quotation } from '../types';
 import { BodyText, MainTitle } from '@/components/Typography';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';
@@ -13,6 +13,8 @@ import { useBoolean, useString } from '@/helper/hook';
 import CustomButton from '@/components/Button';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { isShowErrorMessage, validateEmail } from '@/helper/utils';
+import { getListQuotation } from '../services/api';
+import { DataTableResponse } from '@/components/Table/types';
 
 export interface LoginModalProps extends ModalProps {
   handleSubmitLogin: (data: { email: string; password: string }) => void;
@@ -34,6 +36,7 @@ export const LoginModal: FC<LoginModalProps> = ({
   });
   const verifyEmail = useString('');
   const showForgotPassword = useBoolean(false);
+  const [quotation, setQuotation] = useState<Quotation>();
 
   useEffect(() => {
     if (!showForgotPassword.value) {
@@ -104,6 +107,18 @@ export const LoginModal: FC<LoginModalProps> = ({
 
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
 
+  useEffect(() => {
+    getListQuotation(
+      {
+        page: 1,
+        pageSize: 99999,
+      },
+      (data: DataTableResponse) => {
+        setQuotation(data.data[Math.floor(Math.random() * data.data.length)]);
+      },
+    );
+  }, []);
+
   return (
     <CustomModal
       visible={visible}
@@ -119,12 +134,10 @@ export const LoginModal: FC<LoginModalProps> = ({
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={2} customClass={styles[`body${themeStyle()}`]}>
-            {type === 'Tisc Login'
-              ? 'Your most unhappy customers are your greatest source of learning.'
-              : 'Do or do not. There is no try.'}
+            {quotation?.quotation}
           </MainTitle>
           <BodyText level={2} customClass={styles[`title${themeStyle()}`]}>
-            {type === 'Tisc Login' ? 'Bill Gate, Microsoft co-founder' : 'Yoda, Jedi Master'}
+            {quotation?.author}
           </BodyText>
         </div>
         <div className={styles.form}>

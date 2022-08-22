@@ -6,9 +6,7 @@ import styles from './GeneralData.less';
 const GeneralData: FC = ({ children }) => {
   return (
     <div>
-      {children ? (
-        children
-      ) : (
+      {children || (
         <Empty description={<BodyText level={3}>No Data</BodyText>} className={styles.empty} />
       )}
     </div>
