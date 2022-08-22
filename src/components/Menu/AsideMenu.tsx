@@ -106,50 +106,51 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
   };
 
   return (
-    <Layout.Sider
-      width={props.siderWidth ?? 240}
-      breakpoint={'md'}
-      style={{
-        paddingTop: 48,
-        overflow: 'auto',
-        // height: '100vh',
-        // position: 'fixed',
-        // left: 0,
-        // top: 0,
-        // bottom: 0,
-        // zIndex: 99
-      }}
-      collapsible
-      collapsedWidth={60}
-      collapsed={collapsed}
-      onCollapse={(value) => setCollapsed(value)}
-      className={styles.customAsideSider}
-      trigger={collapsed ? <AlignRightIcon /> : <AlignLeftIcon />}
-    >
-      <div className="menu-sider-wrapper">
-        <Menu
-          theme={props.headerTheme}
-          selectedKeys={openKeys}
-          openKeys={openKeys}
-          onOpenChange={onOpenChange}
-          style={{ height: '100%' }}
-          mode={'inline'}
-          onClick={onClick}
-          inlineIndent={16}
-          expandIcon={customExpandIcon}
-          triggerSubMenuAction={'click'}
-        >
-          {menuData?.map((menu) => {
-            const children = menu.children && menu.children.filter((item) => !item.hideInMenu);
-            if (children) {
-              return renderSubMenu(menu);
-            } else {
-              return renderMenuItem(menu);
-            }
-          })}
-        </Menu>
-      </div>
-    </Layout.Sider>
+    <>
+      <div
+        style={{
+          overflow: 'hidden',
+          width: collapsed ? 60 : '16.66666667%',
+          flex: `0 0 ${collapsed ? '60px' : '16.66666667%'}`,
+          maxWidth: collapsed ? 60 : '16.66666667%',
+          transition:
+            'background-color 0.3s ease 0s, min-width 0.3s ease 0s, max-width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) 0s',
+        }}
+      />
+      <Layout.Sider
+        breakpoint={'md'}
+        collapsible
+        collapsedWidth={60}
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+        className={styles.customAsideSider}
+        trigger={collapsed ? <AlignRightIcon /> : <AlignLeftIcon />}
+      >
+        <div className="menu-sider-wrapper">
+          <Menu
+            theme={props.headerTheme}
+            selectedKeys={openKeys}
+            openKeys={openKeys}
+            onOpenChange={onOpenChange}
+            style={{ height: '100%' }}
+            mode={'inline'}
+            onClick={onClick}
+            inlineIndent={16}
+            expandIcon={customExpandIcon}
+            triggerSubMenuAction={'click'}
+          >
+            {menuData?.map((menu) => {
+              const children = menu.children && menu.children.filter((item) => !item.hideInMenu);
+              if (children) {
+                return renderSubMenu(menu);
+              } else {
+                return renderMenuItem(menu);
+              }
+            })}
+          </Menu>
+        </div>
+      </Layout.Sider>
+    </>
   );
 };
 
