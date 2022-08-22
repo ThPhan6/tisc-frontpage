@@ -15,7 +15,7 @@ import { setProductList } from '@/features/product/reducers';
 import { ProductFilterType } from '@/features/product/types';
 
 interface ProductTopBarProps {
-  topValue?: string | React.ReactNode;
+  topValue?: string | number | React.ReactNode;
   disabled?: boolean;
   bottomValue?: string | React.ReactNode;
   bottomEnable?: boolean;
