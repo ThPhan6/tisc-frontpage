@@ -32,6 +32,7 @@ export type UserInfoDataProp = {
   linkedin: string;
   type: number;
   interested: number[];
+  retrieve_favourite: boolean;
 };
 
 export type ResetPasswordInput = {
@@ -85,4 +86,11 @@ export type Policy = {
   document: {
     document: '';
   };
+};
+
+export type Quotation = {
+  id: string;
+  author: string;
+  identity: string;
+  quotation: string;
 };
