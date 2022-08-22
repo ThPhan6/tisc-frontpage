@@ -250,6 +250,17 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PROJECT_SPACE_SUCCESS: 'Update project space successfully',
   DELETE_PROJECT_SPACE_FAILED: 'Failed to delete project space',
   DELETE_PROJECT_SPACE_SUCCESS: 'Delete project space successfully',
+
+  // favourite
+  GET_FAVOURITE_PRODUCT_SUMMARY_ERROR: 'Get product summary error',
+  GET_FAVOURITE_BRAND_PRODUCT_LIST_ERROR: 'Get favourite brand product error',
+  GET_FAVOURITE_CATEGORY_PRODUCT_SUMMARY_ERROR: 'Get favourite category product error',
+  CREATE_FAVOURITE_RETRIEVE_SUCCESS: 'Now you can have your own favourite product',
+  CREATE_FAVOURITE_RETRIEVE_ERROR: 'Failed to create your favourite product',
+  RETRIEVE_FAVOURITE_PRODUCT_SUCCESS: 'Retrieve favourite product successfully',
+  RETRIEVE_FAVOURITE_PRODUCT_ERROR: 'Retrieve favourite product error',
+  SKIP_FAVOURITE_SUCCESS: 'Skipped Successfully',
+  SKIP_FAVOURITE_ERROR: 'Failed to skip',
 };
 
 export const MESSAGE_TOOLTIP = {

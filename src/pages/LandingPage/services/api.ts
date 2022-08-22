@@ -8,12 +8,26 @@ import type {
   CreatePasswordRequestBody,
   SignUpDesignerRequestBody,
   ContactRequestBody,
+  Quotation,
 } from '../types';
 import { message } from 'antd';
 import { setUserProfile } from '@/reducers/user';
 import store from '@/reducers';
 import { UserDetail } from '@/types/user.type';
+import {
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
+  SummaryResponse,
+} from '@/components/Table/types';
 
+interface QuotationPaginationResponse {
+  data: {
+    pagination: PaginationResponse;
+    quotations: Quotation[];
+    summary: SummaryResponse[];
+  };
+}
 export async function loginMiddleware(
   data: LoginInput,
   callback: (type: STATUS_RESPONSE, message?: string) => void,
@@ -175,5 +189,27 @@ export async function getListPolicy() {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_POLICY);
+    });
+}
+
+export async function getListQuotation(
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
+) {
+  request(`/api/quotation/landing-page/get-list`, { method: 'GET', params })
+    .then((response: QuotationPaginationResponse) => {
+      const { quotations, pagination, summary } = response.data;
+      callback({
+        data: quotations,
+        pagination: {
+          current: pagination.page,
+          pageSize: pagination.page_size,
+          total: pagination.total,
+        },
+        summary,
+      });
+    })
+    .catch((error) => {
+      message.error(error.message);
     });
 }

@@ -69,6 +69,8 @@ export interface ProductItem {
   keywords: ProductKeyword;
   created_at?: string;
   created_by?: string;
+
+  // consider data
   image?: string;
   brand_id?: string;
   brand_name?: string;
@@ -79,6 +81,11 @@ export interface ProductItem {
   is_entire?: boolean;
   project_zone_id?: string;
   considered_id?: string;
+}
+
+export interface ProductItemValue {
+  id: string;
+  name: string;
 }
 
 export interface ProductFormData {

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import styles from './styles/Input.less';
 import type { CustomInputProps } from './types';
 import { isUndefined, trimStart } from 'lodash';
+import { RobotoBodyText } from '../Typography';
 
 export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInputProps>(
   (
@@ -21,6 +22,8 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
       defaultWidth,
       maxWords,
       inputValidation,
+      message,
+      messageType,
       ...props
     },
     ref,
@@ -140,6 +143,13 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
                   : props.style
               }
             />
+            {message ? (
+              <div className={styles.message}>
+                <RobotoBodyText level={6} customClass={messageType}>
+                  {message}
+                </RobotoBodyText>
+              </div>
+            ) : null}
           </div>
         )}
       </div>

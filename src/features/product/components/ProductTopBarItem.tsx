@@ -15,7 +15,7 @@ import { setProductList } from '@/features/product/reducers';
 import { ProductFilterType } from '@/features/product/types';
 
 interface ProductTopBarProps {
-  topValue?: string | React.ReactNode;
+  topValue?: string | number | React.ReactNode;
   disabled?: boolean;
   bottomValue?: string | React.ReactNode;
   bottomEnable?: boolean;
@@ -41,7 +41,7 @@ export const TopBarItem: React.FC<ProductTopBarProps> = (props) => {
 
   return (
     <div className={`item ${customClass ?? ''}`} onClick={onClick} style={style}>
-      {typeof topValue === 'string' ? (
+      {typeof topValue === 'string' || typeof topValue === 'number' ? (
         <BodyText level={5} fontFamily="Roboto" customClass={disabled ? 'disabled ' : ''}>
           {topValue}
         </BodyText>
@@ -104,9 +104,11 @@ interface CascadingMenuProps {
   menuStyle?: CSSProperties;
   alignRight?: boolean;
   textCapitalize?: boolean;
+  position: 'left' | 'right';
 }
 
 const DEFAULT_INDEX = -1;
+const DEFAULT_WIDTH = 260;
 
 const CascadingMenu: FC<CascadingMenuProps> = ({
   items,
@@ -116,6 +118,7 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
   menuStyle,
   alignRight,
   textCapitalize,
+  position = 'right',
 }) => {
   const [selectedItem, setSelectedItem] = useState<number>(DEFAULT_INDEX);
 
@@ -127,10 +130,10 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
     <>
       <Menu
         style={{
-          width: 260,
+          width: DEFAULT_WIDTH,
           position: subLevel ? 'absolute' : 'relative',
           top: subLevel ? 0 : undefined,
-          left: subLevel ? subLevel * 260 : undefined,
+          left: subLevel ? subLevel * DEFAULT_WIDTH * (position === 'right' ? 1 : -1) : undefined,
           boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
           height: 432,
           overflow: 'hidden auto',
@@ -170,6 +173,7 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
           onCloseMenu={onCloseMenu}
           menuStyle={menuStyle}
           alignRight={alignRight}
+          position={position}
         />
       )}
     </>
@@ -184,6 +188,7 @@ export interface CustomDropDownProps extends Omit<DropDownProps, 'overlay'> {
   hideDropdownIcon?: boolean;
   alignRight?: boolean;
   textCapitalize?: boolean;
+  position?: 'left' | 'right';
 }
 export const CustomDropDown: FC<CustomDropDownProps> = ({
   children,
@@ -194,6 +199,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
   overlay,
   alignRight = true,
   textCapitalize = true,
+  position = 'right',
   ...props
 }) => {
   const dropdownVisible = useBoolean(false);
@@ -215,6 +221,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
             menuStyle={menuStyle}
             alignRight={alignRight}
             textCapitalize={textCapitalize}
+            position={position}
           />
         )
       }
