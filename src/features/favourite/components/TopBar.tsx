@@ -8,16 +8,16 @@ import {
   SORTER_DROPDOWN_DATA,
   useProductListFilterAndSorter,
 } from '@/features/product/components/FilterAndSorter';
-import { getFavouriteProductSummary } from '@/services';
-import type { FavouriteProductSummary } from '@/types';
+import { getFavouriteProductSummary } from './services';
+import type { FavouriteProductSummary } from './types';
 import React, { useEffect, useState } from 'react';
-import '../styles/topBar.less';
+import './topBar.less';
 
-export interface ProductSummrayTopBarProps {
+export interface ProductSummaryTopBarProps {
   isFavouriteRetrieved: boolean;
 }
 
-const ProductSummrayTopBar: React.FC<ProductSummrayTopBarProps> = ({ isFavouriteRetrieved }) => {
+const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavouriteRetrieved }) => {
   const [productSummary, setProductSummary] = useState<FavouriteProductSummary>();
 
   const { filter, sort, brands, categories, resetProductListFilter, resetProductListSorter } =
@@ -146,4 +146,4 @@ const ProductSummrayTopBar: React.FC<ProductSummrayTopBarProps> = ({ isFavourite
   );
 };
 
-export default ProductSummrayTopBar;
+export default ProductSummaryTopBar;

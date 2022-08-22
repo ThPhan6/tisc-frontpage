@@ -16,4 +16,3 @@ export * from './market-availability.type';
 export * from './permission.type';
 export * from './material-code.type';
 export * from './tisc-user-group-brand.type';
-export * from './my-favourite.type';

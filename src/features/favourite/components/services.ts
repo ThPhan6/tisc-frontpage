@@ -4,14 +4,15 @@ import {
   BrandSummary,
   FavouriteProductList,
   GetListProductForDesignerRequestParams,
+  GroupProductList,
 } from '@/features/product/types';
 import store from '@/reducers';
-import { FavouriteProductSummary, FavouriteRetrieve } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
+import { FavouriteProductSummary, FavouriteRetrieve } from './types';
 
 export async function getFavouriteProductList(params: GetListProductForDesignerRequestParams) {
-  return request<{ data: FavouriteProductList[]; brand_summary?: BrandSummary }>(
+  return request<{ data: GroupProductList[]; brand_summary?: BrandSummary }>(
     `/api/favourite/product-list`,
     {
       method: 'GET',

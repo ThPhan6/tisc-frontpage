@@ -41,7 +41,7 @@ export const TopBarItem: React.FC<ProductTopBarProps> = (props) => {
 
   return (
     <div className={`item ${customClass ?? ''}`} onClick={onClick} style={style}>
-      {typeof topValue === 'string' ? (
+      {typeof topValue === 'string' || typeof topValue === 'number' ? (
         <BodyText level={5} fontFamily="Roboto" customClass={disabled ? 'disabled ' : ''}>
           {topValue}
         </BodyText>
@@ -133,11 +133,7 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
           width: DEFAULT_WIDTH,
           position: subLevel ? 'absolute' : 'relative',
           top: subLevel ? 0 : undefined,
-          left: subLevel
-            ? position === 'right'
-              ? subLevel * DEFAULT_WIDTH
-              : subLevel * DEFAULT_WIDTH * -1
-            : undefined,
+          left: subLevel ? subLevel * DEFAULT_WIDTH * (position === 'right' ? 1 : -1) : undefined,
           boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
           height: 432,
           overflow: 'hidden auto',

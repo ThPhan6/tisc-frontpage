@@ -69,6 +69,8 @@ export interface ProductItem {
   keywords: ProductKeyword;
   created_at?: string;
   created_by?: string;
+
+  // consider data
   image?: string;
   brand_id?: string;
   brand_name?: string;
@@ -99,9 +101,6 @@ export interface FavouriteProductList {
       code?: string;
       is_liked?: boolean;
       description: string;
-      general_attribute_groups: string;
-      feature_attribute_groups: string;
-      specification_attribute_groups: string;
       favorites: 0;
       images: string;
       keywords: ProductKeyword;

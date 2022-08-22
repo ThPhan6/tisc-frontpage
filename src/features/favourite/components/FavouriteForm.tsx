@@ -3,12 +3,14 @@ import CustomButton from '@/components/Button';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { BodyText, MainTitle } from '@/components/Typography';
+import { MESSAGE_ERROR } from '@/constants/message';
+import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
 import { getUserInfoMiddleware } from '@/pages/LandingPage/services/api';
-import { retrieveFavouriteProduct, skipFavouriteProduct } from '@/services';
-import { FavouriteRetrieve } from '@/types';
+import { retrieveFavouriteProduct, skipFavouriteProduct } from './services';
+import { FavouriteRetrieve } from './types';
 import { Col, Row } from 'antd';
 import { useState } from 'react';
-import styles from '../styles/FavouriteForm.less';
+import styles from './FavouriteForm.less';
 
 const FavouriteForm = () => {
   const [valueForm, setValueForm] = useState<FavouriteRetrieve>({
@@ -80,6 +82,8 @@ const FavouriteForm = () => {
                 onChange={(e) => handleOnChangeValueForm('personal_email', e.target.value)}
                 name=" personal_email"
                 value={valueForm.personal_email}
+                message={emailMessageError(valueForm.personal_email, MESSAGE_ERROR.EMAIL_UNVALID)}
+                messageType={emailMessageErrorType(valueForm.personal_email, 'error', 'normal')}
               />
               <PhoneInput
                 codePlaceholder="00"
