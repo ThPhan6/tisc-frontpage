@@ -98,9 +98,9 @@ export enum AssigningStatus {
 }
 
 export enum SpecifyStatus {
-  'Specified' = 1,
+  'Cancelled' = 1,
   'Re-specified' = 2,
-  'Canceled' = 3,
+  'Specified' = 3,
 }
 
 export enum OrderMethod {

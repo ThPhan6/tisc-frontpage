@@ -20,11 +20,7 @@ import { ProductAttributeFormInput, ProductItem } from '@/features/product/types
 import styles from './styles/specifying-modal.less';
 import { OnChangeSpecifyingProductFnc, SpecifyingProductRequestBody } from './types';
 import { SpecificationAttributeGroup } from '@/features/project/types';
-import {
-  assignProductToProject,
-  getProductSpecifying,
-  updateProductSpecifying,
-} from '@/features/project/services';
+import { getProductSpecifying, updateProductSpecifying } from '@/features/project/services';
 import { pick } from 'lodash';
 import { getProductByIdAndReturn } from '@/features/product/services';
 import { useBoolean } from '@/helper/hook';
@@ -72,6 +68,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     useState<SpecifyingProductRequestBody>(DEFAULT_STATE);
   // console.log('specifyingState', specifyingState);
   const [specifyingGroups, setSpecifyingGroups] = useState<ProductAttributeFormInput[]>([]);
+  // console.log('specifyingGroups', specifyingGroups);
   const dataLoaded = useBoolean();
 
   const onChangeSpecifyingState: OnChangeSpecifyingProductFnc = (newStateParts) =>
@@ -116,8 +113,8 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     getProductByIdAndReturn(product.id).then((res) => {
       if (res) {
         const specGroups = res.specification_attribute_groups;
-        console.log('specGroups', specGroups);
-        setSpecifyingGroups(res.specification_attribute_groups);
+        // console.log('specGroups', specGroups);
+        setSpecifyingGroups(specGroups);
         dataLoaded.setValue(true);
       }
     });
@@ -133,7 +130,10 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         return [];
       }
 
-      if (specifyingState.specification.specification_attribute_groups.length === 0) {
+      const specGroups = specifyingState.specification.specification_attribute_groups;
+
+      // Initial
+      if (specGroups.length === 0) {
         specifyingState.specification.specification_attribute_groups = prevState.map((el) => ({
           id: el.id || '',
           attributes: [],
@@ -141,20 +141,17 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         }));
       }
 
+      // Update checked status
       const newState = prevState.map((group, groupIndex) => ({
         ...group,
-        isChecked:
-          specifyingState.specification.specification_attribute_groups[groupIndex]?.attributes
-            .length > 0,
+        isChecked: specGroups[groupIndex]?.attributes.length > 0,
         attributes: group?.attributes.map((attr, attrIndex) => ({
           ...attr,
           basis_options:
             attr.basis_options?.map((option) => ({
               ...option,
               isChecked:
-                option.id ===
-                specifyingState.specification.specification_attribute_groups[groupIndex]
-                  ?.attributes[attrIndex]?.basis_option_id,
+                option.id === specGroups[groupIndex]?.attributes[attrIndex]?.basis_option_id,
             })) || [],
         })),
       }));
@@ -188,21 +185,49 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     );
 
   const onSubmit = () => {
-    updateProductSpecifying(specifyingState, () => {
-      assignProductToProject({
-        product_id: product.id,
-        project_id: projectId,
-        is_entire: specifyingState.is_entire,
-        project_zone_ids: specifyingState.project_zone_ids,
-        considered_product_id: specifyingState.considered_product_id,
-      }).then((success) => {
-        if (success) {
-          reloadTable();
-          setVisible(false);
-          setSpecifyingState(DEFAULT_STATE);
+    let variant = '';
+    if (specifyingState.specification.is_refer_document) {
+      variant = 'Refer to Document';
+    } else {
+      specifyingState.specification.specification_attribute_groups.forEach((group, groupIndex) => {
+        if (!group.isChecked) {
+          return;
         }
+        group.attributes.forEach((attr) => {
+          const attribute = specifyingGroups[groupIndex]?.attributes?.find(
+            (stateAttr) => stateAttr.id === attr.id,
+          );
+          const basisOption = attribute?.basis_options?.find(
+            (el) => el.id === attr.basis_option_id,
+          );
+          // console.log('basisOption', basisOption);
+          if (basisOption) {
+            variant += `${attribute?.name}: ${basisOption.value_1} ${basisOption.unit_1} - ${basisOption.value_2} ${basisOption.unit_2}; `;
+          }
+        });
       });
-    });
+      variant = variant.slice(0, -2);
+    }
+
+    updateProductSpecifying(
+      {
+        ...specifyingState,
+        variant,
+        specification: {
+          ...specifyingState.specification,
+          specification_attribute_groups:
+            specifyingState.specification.specification_attribute_groups.map((el) => ({
+              ...el,
+              attributes: el.isChecked ? el.attributes : [],
+            })),
+        },
+      },
+      () => {
+        reloadTable();
+        setVisible(false);
+        setSpecifyingState(DEFAULT_STATE);
+      },
+    );
   };
 
   return (

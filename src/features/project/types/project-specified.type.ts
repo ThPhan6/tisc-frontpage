@@ -1,10 +1,10 @@
-export interface SpecifiedProductBrand {
+interface SpecifiedProductResponse {
   id: string;
   name: string;
-  products: ProductItemBrand[];
   count: number;
 }
 
+// View By Brand Table
 export interface ProductItemBrand {
   id: string;
   name: string;
@@ -15,32 +15,16 @@ export interface ProductItemBrand {
   status: number;
 }
 
-export interface SpecifiedProductMaterial {
-  id: string;
-  material_code: string;
-  description: string;
-  image: string;
-  brand_name: string;
-  product_name: string;
-  quantity: number;
-  unit: string;
-  order_method: number;
-  status: number;
+export interface SpecifiedProductByBrand extends SpecifiedProductResponse {
+  products: ProductItemBrand[];
 }
 
-export interface SpecifiedProductSpace {
-  id?: string;
-  name: string;
-  count: number;
-  products: ProductItemSpace[];
-  area?: SpecifiedProductArea[];
-}
+// View By Space Table
 export interface SpecifiedProductArea {
   id?: string;
   name: string;
   rooms: SpecifiedProductRoom[];
 }
-
 export interface SpecifiedProductRoom {
   id: string;
   count: number;
@@ -50,7 +34,6 @@ export interface SpecifiedProductRoom {
   quantity: number;
   products: ProductItemSpace[];
 }
-
 export interface ProductItemSpace {
   id: string;
   image: string;
@@ -58,5 +41,23 @@ export interface ProductItemSpace {
   product_id: string;
   material_code: string;
   description: string;
+  status: number;
+}
+export interface SpecifiedProductBySpace extends SpecifiedProductResponse {
+  products: ProductItemSpace[];
+  area?: SpecifiedProductArea[];
+}
+
+// View By Material Table
+export interface SpecifiedProductByMaterial {
+  id: string;
+  material_code: string;
+  description: string;
+  image: string;
+  brand_name: string;
+  product_name: string;
+  quantity: number;
+  unit: string;
+  order_method: number;
   status: number;
 }

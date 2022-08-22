@@ -197,6 +197,8 @@ const ViewDesignFirmPage = () => {
             listTab={LIST_MENU_DESIGN_FIRM}
             onChange={(changedKey) => setSelectedTab(changedKey as DesignTabKeys)}
             activeKey={selectedTab}
+            customClass={styles.tab}
+            widthItem="auto"
           />
           <div className={styles.rightHeader}>
             <div className={styles.status}>

@@ -117,6 +117,9 @@
         &:global(.light-content) {
           color: @mono-color-medium;
         }
+        &:global(.strike-through) {
+          text-decoration: line-through;
+        }
       }
       &:global(.custom-expanded-level-2):nth-child(1) {
         :global(.ant-table-cell) {
@@ -188,6 +191,10 @@
 
   :global(.ant-table-expanded-row.ant-table-expanded-row-level-1 td[colspan]) {
     height: 36px;
+  }
+
+  :global(.ant-empty-normal) {
+    margin: 8px 0;
   }
 }
 
