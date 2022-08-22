@@ -2,7 +2,6 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { setProductList } from '@/features/product/reducers';
 import {
   BrandSummary,
-  FavouriteProductList,
   GetListProductForDesignerRequestParams,
   GroupProductList,
 } from '@/features/product/types';
@@ -26,7 +25,7 @@ export async function getFavouriteProductList(params: GetListProductForDesignerR
       message.error(
         error?.data?.message ?? MESSAGE_NOTIFICATION.GET_FAVOURITE_PRODUCT_SUMMARY_ERROR,
       );
-      return [] as FavouriteProductList[];
+      return [] as GroupProductList[];
     });
 }
 
