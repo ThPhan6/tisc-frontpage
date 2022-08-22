@@ -5,7 +5,12 @@ import { FC, useRef } from 'react';
 import { showImageUrl } from '@/helper/utils';
 import { getSpecifiedProductByMaterial } from '@/features/project/services';
 import { useParams } from 'umi';
-import { renderActionCell, renderStatusDropdown, useSpecifyingModal } from '../../hooks';
+import {
+  onCellCancelled,
+  renderActionCell,
+  renderStatusDropdown,
+  useSpecifyingModal,
+} from '../../hooks';
 
 const COL_WIDTH_MATERIAL = {
   material: 141,
@@ -28,10 +33,12 @@ export const SpecificationByMaterial: FC = () => {
       sorter: true,
       width: COL_WIDTH_MATERIAL.material,
       render: (_value, record) => <span>{record.material_code}</span>,
+      onCell: onCellCancelled,
     },
     {
       title: 'Description',
       dataIndex: 'description',
+      onCell: onCellCancelled,
     },
     {
       title: 'Image',
@@ -55,21 +62,25 @@ export const SpecificationByMaterial: FC = () => {
       dataIndex: 'brand_order',
       sorter: true,
       render: (_value, record) => <span>{record.brand_name}</span>,
+      onCell: onCellCancelled,
     },
     {
       title: 'Product',
       dataIndex: 'product_name',
+      onCell: onCellCancelled,
     },
     {
       title: 'Quantities',
       dataIndex: 'quantity',
       width: COL_WIDTH_MATERIAL.quantity,
       align: 'center',
+      onCell: onCellCancelled,
     },
     {
       title: 'Unit',
       dataIndex: 'unit',
       width: COL_WIDTH_MATERIAL.unit,
+      onCell: onCellCancelled,
     },
     {
       title: 'Order Method',
@@ -82,6 +93,7 @@ export const SpecificationByMaterial: FC = () => {
             : 'Custom Order'}
         </span>
       ),
+      onCell: onCellCancelled,
     },
     {
       title: 'Status',
@@ -89,6 +101,7 @@ export const SpecificationByMaterial: FC = () => {
       align: 'center',
       width: COL_WIDTH_MATERIAL.status,
       render: renderStatusDropdown(tableRef),
+      onCell: onCellCancelled,
     },
     {
       title: 'Action',
@@ -102,6 +115,7 @@ export const SpecificationByMaterial: FC = () => {
     <>
       <CustomTable
         columns={MaterialColumns}
+        rowKey="specified_product_id"
         ref={tableRef}
         hasPagination={false}
         multiSort={{

@@ -5,7 +5,12 @@ import { FC, useRef } from 'react';
 import { ProductItemBrand, SpecifiedProductByBrand } from '@/features/project/types';
 import { showImageUrl } from '@/helper/utils';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
-import { renderActionCell, renderStatusDropdown, useSpecifyingModal } from '../../hooks';
+import {
+  onCellCancelled,
+  renderActionCell,
+  renderStatusDropdown,
+  useSpecifyingModal,
+} from '../../hooks';
 
 const COL_WIDTH_BRAND = {
   brand: 124,
@@ -76,22 +81,26 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       dataIndex: 'collection_name',
       noBoxShadow: true,
       width: COL_WIDTH_BRAND.collection,
+      onCell: onCellCancelled,
     },
     {
       title: 'Product',
       dataIndex: 'name',
       noBoxShadow: true,
+      onCell: onCellCancelled,
     },
     {
       title: 'Option/Variant',
       dataIndex: 'variant',
       noBoxShadow: true,
+      onCell: onCellCancelled,
     },
     {
       title: 'ProductID',
       noBoxShadow: true,
       width: COL_WIDTH_BRAND.productId,
       dataIndex: 'product_id',
+      onCell: onCellCancelled,
     },
     {
       title: 'Count',
@@ -105,6 +114,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       align: 'center',
       width: COL_WIDTH_BRAND.status,
       render: renderStatusDropdown(tableRef),
+      onCell: onCellCancelled,
     },
     {
       title: 'Action',
@@ -129,6 +139,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
         expandable={GetExpandableTableConfig({
           columns: CollectionColumns,
           childrenColumnName: 'products',
+          rowKey: 'specified_product_id',
         })}
       />
 

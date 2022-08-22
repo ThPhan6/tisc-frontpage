@@ -10,7 +10,12 @@ import {
   SpecifiedProductBySpace,
 } from '@/features/project/types';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
-import { renderActionCell, renderStatusDropdown, useSpecifyingModal } from '../../hooks';
+import {
+  onCellCancelled,
+  renderActionCell,
+  renderStatusDropdown,
+  useSpecifyingModal,
+} from '../../hooks';
 
 const COL_WIDTH_SPACE = {
   zones: 165,
@@ -53,20 +58,24 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       width: COL_WIDTH_SPACE.brand,
       sorter: { multiple: 4 },
       render: (_value, record) => record.brand_name,
+      onCell: onCellCancelled,
     },
     {
       title: 'Product',
       dataIndex: 'product_id',
+      onCell: onCellCancelled,
     },
     {
       title: 'Material Code',
       dataIndex: 'material_code',
       width: COL_WIDTH_SPACE.material,
+      onCell: onCellCancelled,
     },
     {
       title: 'Desciption',
       dataIndex: 'description',
       width: COL_WIDTH_SPACE.description,
+      onCell: onCellCancelled,
     },
   ];
 
@@ -126,6 +135,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       width: COL_WIDTH_SPACE.status,
       align: 'center',
       render: renderStatusDropdown(tableRef, true),
+      onCell: onCellCancelled,
     },
     {
       title: 'Action',
@@ -188,6 +198,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       width: COL_WIDTH_SPACE.status,
       align: 'center',
       render: renderStatusDropdown(tableRef, true),
+      onCell: onCellCancelled,
     },
     {
       title: 'Action',
@@ -230,6 +241,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
               columns: ProductColumns,
               childrenColumnName: 'products',
               level: 4,
+              rowKey: 'specified_product_id',
             }),
           }),
         }}

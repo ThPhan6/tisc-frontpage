@@ -103,3 +103,7 @@ export const renderActionCell =
       />
     );
   };
+
+export const onCellCancelled = (data: any) => ({
+  className: data.status === SpecifyStatus.Cancelled ? 'strike-through' : undefined,
+});

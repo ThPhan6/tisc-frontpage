@@ -67,17 +67,23 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
 
   const onSelectSpecificationOption = (
     groupIndex: number,
-    attributeIndex: number,
     attributeId: string,
     optionId?: string,
   ) => {
     const newState = specification_attribute_groups;
-    console.log('newState', newState);
+    const attributeIndex = newState[groupIndex].attributes.findIndex((el) => el.id === attributeId);
+
     if (!optionId) {
       // Uncheck
       newState[groupIndex].attributes.splice(attributeIndex, 1);
+    } else if (attributeIndex === -1) {
+      // push new one
+      newState[groupIndex].attributes.push({
+        basis_option_id: optionId,
+        id: attributeId,
+      });
     } else {
-      console.log('newState[groupIndex]', newState[groupIndex]);
+      // update existed one
       newState[groupIndex].attributes[attributeIndex] = {
         basis_option_id: optionId,
         id: attributeId,
@@ -103,32 +109,35 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
       />
 
       <div>
-        {specifyingGroups.map((group, index) => (
+        {specifyingGroups.map((group, groupIndex) => (
           <CustomCollapse
-            key={index}
+            key={groupIndex}
             defaultActiveKey={['1']}
             className={styles.specificationItem}
             header={
               <div className={styles.specificationHeaderItem}>
                 <CustomCheckbox
-                  options={[{ label: group.name, value: index }]}
+                  options={[{ label: group.name, value: groupIndex }]}
                   selected={
                     specification_attribute_groups.some((gr) => gr.isChecked && gr.id === group.id)
-                      ? [{ label: group.name, value: index }]
+                      ? [{ label: group.name, value: groupIndex }]
                       : []
                   }
-                  onChange={() => onCheckedSpecification(index)}
+                  onChange={() => onCheckedSpecification(groupIndex)}
                 />
               </div>
             }
           >
             {group.attributes.map((attribute, attributeIndex) => {
-              const basisOptions = specifyingGroups[index].attributes[attributeIndex].basis_options;
-              const chosenOption = basisOptions?.find((el) =>
-                specification_attribute_groups
-                  .find((gr) => gr.id === group.id)
-                  ?.attributes?.some((attr) => attr.basis_option_id === el.id),
+              const curAttribute = specification_attribute_groups[groupIndex]?.attributes?.find(
+                (el) => el.id === attribute.id,
               );
+
+              const chosenOption = curAttribute
+                ? attribute.basis_options?.find((el) => el.id === curAttribute.basis_option_id)
+                : undefined;
+              // console.log('curAttribute', curAttribute);
+              // console.log('chosenOption', chosenOption);
 
               return (
                 <div className={styles.attributeOptionWrapper} key={attributeIndex}>
@@ -147,8 +156,7 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
                     }
                     setChosenOptions={(option) => {
                       onSelectSpecificationOption(
-                        index,
-                        attributeIndex,
+                        groupIndex,
                         attribute.id,
                         option?.value?.toString() || undefined,
                       );

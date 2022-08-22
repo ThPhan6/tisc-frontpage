@@ -32,6 +32,7 @@ export const useAssignProductToSpaceForm = (
   },
 ) => {
   const entireProject = useBoolean();
+  const haveConfirmed = useBoolean();
   const [selectedRooms, setSelectedRooms] = useState<RoomsState>({});
   const expandingZone = useNumber(-1);
   const [zones, setZones] = useState<ProjectSpaceListProps[]>([]);
@@ -64,12 +65,13 @@ export const useAssignProductToSpaceForm = (
       specifyOptions?.onChangeSelectedRoomsCallback([]);
       entireProject.setValue(true);
       setSelectedRooms({}); // clear rooms
+      haveConfirmed.setValue(true);
     };
-    if (specifyOptions?.roomId) {
+    if (specifyOptions?.roomId && haveConfirmed.value === false) {
       return confirmDelete(handleChooseEntireProject, {
         title: 'Are you sure to re-allocate?',
         content:
-          'You are re-allocate product from current room to entire project along with all of your specifying data after submitting.',
+          'You are re-allocating product from current room to entire project along with all of your specifying data after submitting.',
       });
     }
 
@@ -85,6 +87,7 @@ export const useAssignProductToSpaceForm = (
       });
       entireProject.setValue(false); // not entire project anymore
       specifyOptions?.onChangeEntireProjectCallback(false);
+      haveConfirmed.setValue(true);
     };
 
     const nextRooms = { ...selectedRooms, [areaId]: value };
@@ -94,12 +97,12 @@ export const useAssignProductToSpaceForm = (
     const isSelectedRoomBeRemoved =
       specifyOptions?.roomId && roomIds.length && roomIds.includes(specifyOptions.roomId) === false;
 
-    if (specifyOptions?.isEntire || isSelectedRoomBeRemoved) {
+    if (haveConfirmed.value === false && (specifyOptions?.isEntire || isSelectedRoomBeRemoved)) {
       return confirmDelete(handleSelectRooms, {
         title: 'Are you sure to re-allocate?',
         content: isSelectedRoomBeRemoved
           ? 'Your are removing this consider by uncheck its room. All of your specifying data will be remove along with this consider after submitting.'
-          : 'You are re-allocate product from entire project to some specific rooms. All of specifying data will be move to new assigned rooms - considers.',
+          : 'You are re-allocating product from entire project to some specific rooms. All of specifying data will be move to new assigned rooms - considers.',
       });
     }
 

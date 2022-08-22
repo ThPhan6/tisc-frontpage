@@ -59,7 +59,7 @@ export async function getProductSpecifying(consider_id: string) {
 }
 
 export async function updateProductSpecifying(
-  data: SpecifyingProductRequestBody,
+  data: SpecifyingProductRequestBody & { variant: string },
   callback: () => void,
 ) {
   await request(`/api/specified-product/specify`, {

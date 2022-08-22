@@ -112,6 +112,12 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
       style={{
         paddingTop: 48,
         overflow: 'auto',
+        // height: '100vh',
+        // position: 'fixed',
+        // left: 0,
+        // top: 0,
+        // bottom: 0,
+        // zIndex: 99
       }}
       collapsible
       collapsedWidth={60}
