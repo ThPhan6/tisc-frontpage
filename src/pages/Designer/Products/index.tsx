@@ -1,156 +1,49 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
-import store, { useAppSelector } from '@/reducers';
-import { useDispatch } from 'react-redux';
-import {
-  resetProductState,
-  setProductList,
-  setProductListSearchValue,
-  setProductListSorter,
-} from '@/features/product/reducers';
-import { getBrandPagination, getProductCategoryPagination } from '@/services';
-import { CategoryListResponse, BrandListItem } from '@/types';
-import { ItemType } from 'antd/lib/menu/hooks/useItems';
-import { showImageUrl } from '@/helper/utils';
 import { ReactComponent as SearchIcon } from '@/assets/icons/ic-search.svg';
 import { CustomInput } from '@/components/Form/CustomInput';
-import styles from './styles.less';
-import { debounce } from 'lodash';
-import { getProductListForDesigner } from '@/features/product/services';
+import { BodyText, Title } from '@/components/Typography';
 import {
+  CollapseProductList,
   CustomDropDown,
   FilterItem,
   TopBarContainer,
   TopBarItem,
-  CollapseProductList,
 } from '@/features/product/components';
-import { BodyText, Title } from '@/components/Typography';
+import {
+  useProductListFilterAndSorter,
+  SORTER_DROPDOWN_DATA,
+} from '@/features/product/components/FilterAndSorter';
+import { setProductList, setProductListSearchValue } from '@/features/product/reducers';
+import { getProductListForDesigner } from '@/features/product/services';
+import { showImageUrl } from '@/helper/utils';
+import { PageContainer } from '@ant-design/pro-layout';
 import { InputRef } from 'antd';
-
-const formatCategoriesToDropDownData = (
-  categories: CategoryListResponse[],
-  level: number,
-): ItemType[] => {
-  return categories.map((el) => ({
-    key: el.id,
-    label: el.name || '',
-    children: el.subs ? formatCategoriesToDropDownData(el.subs, level + 1) : undefined,
-    disabled: (el.subs || []).length === 0 && level < 3,
-    onClick: el.subs?.length
-      ? undefined
-      : () =>
-          store.dispatch(
-            setProductList({
-              filter: {
-                name: 'category_id',
-                title: el.name || '',
-                value: el.id,
-              },
-            }),
-          ),
-  }));
-};
-
-const formatBrandsToDropDownData = (categories: BrandListItem[]): ItemType[] => {
-  return categories.map((el) => ({
-    key: el.id,
-    label: el.name || '',
-    icon: <img src={showImageUrl(el.logo)} style={{ width: 18, height: 18 }} />,
-    onClick: () =>
-      store.dispatch(
-        setProductList({
-          filter: {
-            name: 'brand_id',
-            title: el.name || '',
-            value: el.id,
-          },
-        }),
-      ),
-  }));
-};
-
-const SORTER_DROPDOWN_DATA: ItemType[] = [
-  {
-    key: 'ASC',
-    label: 'A - Z',
-    onClick: () =>
-      store.dispatch(
-        setProductListSorter({
-          order: 'ASC',
-          sort: 'name',
-        }),
-      ),
-  },
-  {
-    key: 'DESC',
-    label: 'Z - A',
-    onClick: () =>
-      store.dispatch(
-        setProductListSorter({
-          order: 'DESC',
-          sort: 'name',
-        }),
-      ),
-  },
-];
+import { debounce } from 'lodash';
+import React, { useEffect, useRef } from 'react';
+import styles from './styles.less';
 
 const BrandProductListPage: React.FC = () => {
-  const dispatch = useDispatch();
-  const [categories, setCategories] = useState<ItemType[]>([]);
-  const [brands, setBrands] = useState<ItemType[]>([]);
   const searchInputRef = useRef<InputRef>(null);
 
-  const filter = useAppSelector((state) => state.product.list.filter);
-  const sort = useAppSelector((state) => state.product.list.sort);
-  const search = useAppSelector((state) => state.product.list.search);
-  const brandSummary = useAppSelector((state) => state.product.list.brandSummary);
+  const {
+    filter,
+    sort,
+    brands,
+    search,
+    categories,
+    brandSummary,
+    resetProductListFilter,
+    resetProductListSorter,
+    resetAllProductList,
+    dispatch,
+  } = useProductListFilterAndSorter();
 
-  const resetProductListFilter = () => {
-    dispatch(
-      setProductList({
-        filter: undefined,
-        search: undefined,
-        data: [],
-      }),
-    );
-  };
+  const searchProductByKeyword = debounce((e) => {
+    dispatch(setProductListSearchValue(e.target.value));
+  }, 300);
 
-  const resetProductListSorter = () => {
-    dispatch(
-      setProductList({
-        sort: undefined,
-        data: [],
-      }),
-    );
-  };
-
+  // clear all on first loading
   useEffect(() => {
-    getProductListForDesigner({});
-
-    return () => {
-      dispatch(resetProductState());
-    };
-  }, []);
-
-  useEffect(() => {
-    getProductCategoryPagination(
-      {
-        page: 1,
-        pageSize: 99999,
-      },
-      (data) => {
-        setCategories(formatCategoriesToDropDownData(data.data, 1));
-      },
-    );
-    getBrandPagination(
-      {
-        page: 1,
-        pageSize: 99999,
-      },
-      (data) => {
-        setBrands(formatBrandsToDropDownData(data.data));
-      },
-    );
+    resetAllProductList();
   }, []);
 
   useEffect(() => {
@@ -168,10 +61,6 @@ const BrandProductListPage: React.FC = () => {
       order: sort?.order,
     });
   }, [filter, search, sort]);
-
-  const searchProductByKeyword = debounce((e) => {
-    dispatch(setProductListSearchValue(e.target.value));
-  }, 300);
 
   const renderInfoItem = (info: string, count: number, lastOne?: boolean) => (
     <div className="flex-start" style={{ marginRight: lastOne ? undefined : 24 }}>

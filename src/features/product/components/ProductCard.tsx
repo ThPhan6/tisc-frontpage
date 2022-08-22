@@ -70,6 +70,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const isTiscAdmin = useCheckPermission('TISC Admin');
   const isDesignerUser = useCheckPermission('Design Admin');
 
+  const [likeCount, setLikeCount] = useState(product.favorites ?? 0);
+  const likeProduct = () => {
+    likeProductById(product.id ?? '').then((isSuccess) => {
+      if (isSuccess) {
+        const newLiked = !liked;
+        setLiked(newLiked);
+        setLikeCount(likeCount + (newLiked ? 1 : -1));
+      }
+    });
+  };
+
   const reloadProductInformation = () => {
     if (filter && product.brand?.id) {
       getProductSummary(product.brand.id).then(() => {
@@ -104,16 +115,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
       }
     });
   };
-
-  const likeProduct = () => {
-    likeProductById(product.id ?? '').then((isSuccess) => {
-      if (isSuccess) {
-        setLiked(!liked);
-      }
-    });
-  };
-
-  const likeCount = (product.favorites ?? 0) + (liked ? 1 : 0);
 
   const tooltipProps: Partial<TooltipProps> = { align: { offset: [0, 0] }, placement: 'bottom' };
 
