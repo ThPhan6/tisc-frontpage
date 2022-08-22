@@ -124,13 +124,13 @@ const InputGroup: FC<InputGroupProps> = ({
           )
         ) : null}
       </Col>
-      {message && (
+      {message ? (
         <div className={styles.message}>
           <BodyText fontFamily="Roboto" level={6} customClass={messageType}>
             {message}
           </BodyText>
         </div>
-      )}
+      ) : null}
     </Row>
   );
 };

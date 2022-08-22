@@ -48,6 +48,8 @@ export interface CustomInputProps extends InputProps {
   theme?: 'dark' | 'default';
   borderBottomColor?: 'mono' | 'mono-medium' | 'white' | 'light';
   status?: 'error' | 'warning' | '';
+  message?: string;
+  messageType?: 'normal' | 'warning' | 'error';
   fromLandingPage?: boolean;
   autoWidth?: boolean;
   fontLevel?: 1 | 2 | 3 | 4 | 5 | 6 | 7;

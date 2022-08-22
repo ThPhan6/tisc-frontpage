@@ -2,12 +2,12 @@ import { CollapseProductList } from '@/features/product/components';
 import { useProductListFilterAndSorter } from '@/features/product/components/FilterAndSorter';
 import { setProductList } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
-import { getFavouriteProductList } from '@/services';
 import { PageContainer } from '@ant-design/pro-layout';
 import { useEffect } from 'react';
-import FavouriteForm from './components/FavouriteForm';
-import ProductSummrayTopBar from './components/TopBar';
-import './styles/index.less';
+import FavouriteForm from '@/features/favourite/components/FavouriteForm';
+import ProductSummaryTopBar from '@/features/favourite/components/TopBar';
+import './index.less';
+import { getFavouriteProductList } from '@/features/favourite/services/index';
 
 const MyFavourite = () => {
   const { filter, sort, resetAllProductList, dispatch } = useProductListFilterAndSorter();
@@ -38,7 +38,7 @@ const MyFavourite = () => {
   return (
     <div>
       <PageContainer
-        pageHeaderRender={() => <ProductSummrayTopBar isFavouriteRetrieved={retrievedFavourite!} />}
+        pageHeaderRender={() => <ProductSummaryTopBar isFavouriteRetrieved={retrievedFavourite!} />}
       >
         {retrievedFavourite ? <CollapseProductList /> : <FavouriteForm />}
       </PageContainer>
