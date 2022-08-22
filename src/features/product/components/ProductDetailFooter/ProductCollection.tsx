@@ -23,7 +23,7 @@ export const ProductCollection: FC = memo(() => {
   const userRole = useGetUserRoleFromPathname();
 
   if (relatedProduct.length === 0 && userRole !== USER_ROLE.tisc) {
-    return <EmptyOne />;
+    return <EmptyOne customClass="product-collection" />;
   }
   return (
     <div className="relative-product-wrapper">
