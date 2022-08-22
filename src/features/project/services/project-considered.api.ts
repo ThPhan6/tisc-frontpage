@@ -82,7 +82,7 @@ export async function updateProductConsiderStatus(
     status: AssigningStatus;
   },
 ) {
-  return request<ProjectSummaryData>(`/api/considered-product/update-status/${consider_id}`, {
+  return request(`/api/considered-product/update-status/${consider_id}`, {
     method: 'PATCH',
     data,
   })
@@ -98,7 +98,7 @@ export async function updateProductConsiderStatus(
 }
 
 export async function removeProductFromProject(consider_id: string) {
-  return request<ProjectSummaryData>(`/api/considered-product/delete/${consider_id}`, {
+  return request(`/api/considered-product/delete/${consider_id}`, {
     method: 'DELETE',
   })
     .then(() => {

@@ -6,6 +6,7 @@ export interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButton
   icon?: JSX.Element;
   width?: string;
   height?: string;
+  active?: boolean;
 }
 
 export interface CustomSaveButtonProps {

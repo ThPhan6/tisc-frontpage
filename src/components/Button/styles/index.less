@@ -19,7 +19,20 @@
   color: @color;
   background-color: @bg-color;
   border: 0.5px solid @border-color;
-  &:hover {
+
+  svg path {
+    fill: @color;
+  }
+  p {
+    color: @color;
+  }
+
+  &.active {
+    font-weight: 500;
+  }
+
+  &:hover,
+  &.active {
     color: @h-color;
     background-color: @h-bg-color;
     border-color: @h-border-color;
@@ -29,12 +42,6 @@
     p {
       color: @color;
     }
-  }
-  svg path {
-    fill: @color;
-  }
-  p {
-    color: @color;
   }
 }
 

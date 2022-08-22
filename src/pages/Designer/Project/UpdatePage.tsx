@@ -30,19 +30,19 @@ const ProjectCreatePage: React.FC = () => {
     <div>
       <ProjectDetailHeader activeKey={selectedTab} onChangeTab={setSelectedTab} project={project} />
 
-      <CustomTabPane active={selectedTab === ProjectTabKeys.basicInformation}>
+      <CustomTabPane active={selectedTab === ProjectTabKeys.basicInformation} lazyLoad>
         <GeneralInformation project={project} setProject={setProject} />
       </CustomTabPane>
 
-      <CustomTabPane active={selectedTab === ProjectTabKeys.zoneAreaRoom}>
+      <CustomTabPane active={selectedTab === ProjectTabKeys.zoneAreaRoom} lazyLoad>
         <SpaceManagement projectId={projectId} />
       </CustomTabPane>
 
-      <CustomTabPane active={selectedTab === ProjectTabKeys.productConsidered}>
+      <CustomTabPane active={selectedTab === ProjectTabKeys.productConsidered} lazyLoad>
         <ProductConsidered />
       </CustomTabPane>
 
-      <CustomTabPane active={selectedTab === ProjectTabKeys.productSpecified}>
+      <CustomTabPane active={selectedTab === ProjectTabKeys.productSpecified} lazyLoad>
         <ProductSpecification />
       </CustomTabPane>
     </div>

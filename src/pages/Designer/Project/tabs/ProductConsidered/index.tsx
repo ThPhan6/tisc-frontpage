@@ -1,5 +1,5 @@
 import { BodyText } from '@/components/Typography';
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
 import { ReactComponent as MenuIcon } from '@/assets/icons/ic-menu.svg';
 import { ReactComponent as GridIcon } from '@/assets/icons/ic-grid.svg';
@@ -30,7 +30,7 @@ import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { ReactComponent as CheckIcon } from '@/assets/icons/ic-square-check.svg';
 import { ReactComponent as CancelIcon } from '@/assets/icons/ic-square-cancel.svg';
 import { confirmDelete } from '@/helper/common';
-import { SpecifyingModal } from './SpecifyingModal';
+import { useSpecifyingModal } from '../../hooks';
 
 const COL_WIDTH = {
   zones: 165,
@@ -46,10 +46,10 @@ const COL_WIDTH = {
 
 const ProductConsidered: React.FC = () => {
   useAutoExpandNestedTableColumn(COL_WIDTH.zones, COL_WIDTH.areas, COL_WIDTH.rooms);
+  const params = useParams<{ id: string }>();
   const tableRef = useRef<any>();
   const gridView = useBoolean();
-  const [specifyingProduct, setSpecifyingProduct] = useState<ProductItem>();
-  const params = useParams<{ id: string }>();
+  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
   const renderStatusDropdown = (v: any, record: any) => {
     // console.log('record', record);
@@ -66,7 +66,7 @@ const ProductConsidered: React.FC = () => {
         onClick: () => {
           updateProductConsiderStatus(record.considered_id, {
             status: AssigningStatus['Re-considered'],
-          }).then((success) => (success ? tableRef.current.reload() : undefined));
+          }).then((success) => (success ? tableRef.current?.reload() : undefined));
         },
       },
       {
@@ -77,7 +77,7 @@ const ProductConsidered: React.FC = () => {
         onClick: () => {
           updateProductConsiderStatus(record.considered_id, {
             status: AssigningStatus.Unlisted,
-          }).then((success) => (success ? tableRef.current.reload() : undefined));
+          }).then((success) => (success ? tableRef.current?.reload() : undefined));
         },
       },
     ];
@@ -102,12 +102,14 @@ const ProductConsidered: React.FC = () => {
     }
     return (
       <ActionMenu
-        handleSpecify={() => setSpecifyingProduct(record)}
-        disableSpecify={record.status === AssigningStatus.Unlisted}
+        specify={{
+          disabled: record.status === AssigningStatus.Unlisted,
+          handleSpecify: () => setSpecifyingProduct(record),
+        }}
         handleDelete={() =>
           confirmDelete(() => {
             removeProductFromProject(record.considered_id).then((success) =>
-              success ? tableRef.current.reload() : undefined,
+              success ? tableRef.current?.reload() : undefined,
             );
           })
         }
@@ -128,17 +130,10 @@ const ProductConsidered: React.FC = () => {
       width: COL_WIDTH.image,
       align: 'center',
       className: disabledClassname,
-      render: (value) => {
-        if (value) {
-          return (
-            <img
-              src={showImageUrl(value)}
-              style={{ width: 18, height: 18, objectFit: 'contain' }}
-            />
-          );
-        }
-        return null;
-      },
+      render: (value) =>
+        value ? (
+          <img src={showImageUrl(value)} style={{ width: 18, height: 18, objectFit: 'contain' }} />
+        ) : null,
     },
     {
       title: 'Brand',
@@ -164,9 +159,7 @@ const ProductConsidered: React.FC = () => {
     {
       title: 'Zones',
       dataIndex: 'zone_order',
-      sorter: {
-        multiple: 1,
-      },
+      sorter: { multiple: 1 },
       width: COL_WIDTH.zones,
       isExpandable: true,
       render: (value, record) => <span>{record.name}</span>,
@@ -447,15 +440,7 @@ const ProductConsidered: React.FC = () => {
         })}
       />
 
-      {specifyingProduct && (
-        <SpecifyingModal
-          visible={Boolean(specifyingProduct)}
-          product={specifyingProduct}
-          projectId={params.id}
-          setVisible={(visible) => (visible ? undefined : setSpecifyingProduct(undefined))}
-          reloadTable={tableRef.current.reload}
-        />
-      )}
+      {renderSpecifyingModal()}
     </div>
   );
 };

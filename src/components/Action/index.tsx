@@ -38,23 +38,21 @@ export const ActionForm: FC<ActionFormProps> = ({
 interface ActionMenuForm extends ActionFormProps {
   handleUpdate?: () => void;
   handleDelete?: () => void;
-  handleSpecify?: () => void;
-  disableSpecify?: boolean;
+  specify?: {
+    handleSpecify: () => void;
+    disabled: boolean;
+    label?: string;
+  };
 }
-export const ActionMenu: FC<ActionMenuForm> = ({
-  handleDelete,
-  handleUpdate,
-  handleSpecify,
-  disableSpecify,
-}) => {
+export const ActionMenu: FC<ActionMenuForm> = ({ handleDelete, handleUpdate, specify }) => {
   const actionItems: MenuIconProps[] = [];
 
-  if (handleSpecify) {
+  if (specify) {
     actionItems.push({
       icon: <DispatchIcon />,
-      onClick: handleSpecify,
-      label: 'Specify',
-      disabled: disableSpecify,
+      onClick: specify.handleSpecify,
+      label: specify.label || 'Specify',
+      disabled: specify.disabled,
     });
   }
   if (handleUpdate) {
