@@ -1,7 +1,6 @@
 import { CollapseProductList } from '@/features/product/components';
 import { useProductListFilterAndSorter } from '@/features/product/components/FilterAndSorter';
 import { setProductList } from '@/features/product/reducers';
-import { getUserInfoMiddleware } from '@/pages/LandingPage/services/api';
 import { useAppSelector } from '@/reducers';
 import { getFavouriteProductList } from '@/services';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -18,26 +17,23 @@ const MyFavourite = () => {
   // clear all on first loading
   useEffect(() => {
     resetAllProductList();
-  }, []);
+  }, [retrievedFavourite]);
 
   useEffect(() => {
-    dispatch(
-      setProductList({
-        data: [],
-      }),
-    );
-    getFavouriteProductList({
-      category_id: filter?.name === 'category_id' ? filter.value : undefined,
-      brand_id: filter?.name === 'brand_id' ? filter.value : undefined,
-      // sort: sort?.sort,
-      order: sort?.order,
-    });
-  }, [filter, sort]);
-
-  // check user already has retrieved favourite
-  useEffect(() => {
-    getUserInfoMiddleware();
-  }, []);
+    if (retrievedFavourite) {
+      dispatch(
+        setProductList({
+          data: [],
+        }),
+      );
+      getFavouriteProductList({
+        category_id: filter?.name === 'category_id' ? filter.value : undefined,
+        brand_id: filter?.name === 'brand_id' ? filter.value : undefined,
+        // sort: sort?.sort,
+        order: sort?.order,
+      });
+    }
+  }, [filter, sort, retrievedFavourite]);
 
   return (
     <div>

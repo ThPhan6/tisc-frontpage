@@ -74,8 +74,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const likeProduct = () => {
     likeProductById(product.id ?? '').then((isSuccess) => {
       if (isSuccess) {
-        setLiked(!liked);
-        setLikeCount(likeCount + (liked ? -1 : 1));
+        const newLiked = !liked;
+        setLiked(newLiked);
+        setLikeCount(likeCount + (newLiked ? 1 : -1));
       }
     });
   };

@@ -35,7 +35,7 @@ const ProductSummrayTopBar: React.FC<ProductSummrayTopBarProps> = ({ isFavourite
         }
       });
     }
-  }, []);
+  }, [isFavouriteRetrieved]);
 
   return (
     <div className="productSummary">
