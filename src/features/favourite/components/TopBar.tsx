@@ -52,13 +52,13 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
               cursor="default"
             />
             <TopBarItem
-              topValue={productSummary?.card_count ?? '0'}
+              topValue={productSummary?.category_count ?? '0'}
               bottomValue="Categories"
               customClass="left-divider"
               cursor="default"
             />
             <TopBarItem
-              topValue={productSummary?.category_count ?? '0'}
+              topValue={productSummary?.card_count ?? '0'}
               bottomValue="Cards"
               customClass="left-divider"
               cursor="default"
