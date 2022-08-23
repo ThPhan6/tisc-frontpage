@@ -12,6 +12,8 @@ export interface BusinessDetailProps {
   phone_code?: string;
   general_phone?: string;
   genernal_email?: string;
+  first_name?: string;
+  last_name?: string;
   customClass?: string;
 }
 export const BusinessDetail: FC<BusinessDetailProps> = ({
@@ -21,6 +23,8 @@ export const BusinessDetail: FC<BusinessDetailProps> = ({
   phone_code = '',
   general_phone = '',
   genernal_email = '',
+  first_name = '',
+  last_name = '',
   customClass = '',
 }) => {
   return (
@@ -46,7 +50,15 @@ export const BusinessDetail: FC<BusinessDetailProps> = ({
         )}
         {genernal_email ? <RobotoBodyText level={6}>E: {genernal_email}</RobotoBodyText> : ''}
       </div>
-      {/* {      <span className={styles.detail_contact}>Contact: hien tai trong data khong co</span> :  ''} */}
+      <span className={styles.detail_contact}>
+        {first_name ? (
+          <RobotoBodyText level={6}>
+            Contact: {first_name} {last_name}
+          </RobotoBodyText>
+        ) : (
+          ''
+        )}
+      </span>
     </div>
   );
 };
