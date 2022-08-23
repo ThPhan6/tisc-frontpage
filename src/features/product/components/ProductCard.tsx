@@ -229,6 +229,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <ShareViaEmail
           visible={showShareEmailModal.value}
           setVisible={showShareEmailModal.setValue}
+          product={product}
         />
       )}
 

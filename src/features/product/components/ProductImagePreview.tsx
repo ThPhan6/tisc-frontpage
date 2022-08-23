@@ -48,16 +48,14 @@ const ActionItem: FC<{ onClick: () => void; label: string; icon: ReactNode }> = 
 
 const ProductImagePreview: React.FC = () => {
   const dispatch = useDispatch();
-  const { images, is_liked, id, favorites, keywords } = useAppSelector(
-    (state) => state.product.details,
-  );
+  const product = useAppSelector((state) => state.product.details);
   const showShareEmailModal = useBoolean();
   const showAssignProductModal = useBoolean();
   const isDesignerUser = useCheckPermission('Design Admin');
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
-  const [liked, setLiked] = useState(is_liked);
-  const likeCount = (favorites ?? 0) + (liked ? 1 : 0);
+  const [liked, setLiked] = useState(product.is_liked);
+  const likeCount = (product.favorites ?? 0) + (liked ? 1 : 0);
 
   const handleLoadPhoto = async (file: UploadFile<any>, type: 'first' | 'last' = 'first') => {
     const imageBase64 = await getBase64(file.originFileObj);
@@ -80,7 +78,7 @@ const ProductImagePreview: React.FC = () => {
       }
     },
     beforeUpload: (_file, fileList) => {
-      if (images.length + fileList.length > 9) {
+      if (product.images.length + fileList.length > 9) {
         message.error('Max photos is 9');
         return false;
       }
@@ -110,7 +108,7 @@ const ProductImagePreview: React.FC = () => {
 
   const deletePhoto = (e: React.ChangeEvent<any>, index: number) => {
     e.stopPropagation();
-    const newPhotos = images.filter((_photo, key) => {
+    const newPhotos = product.images.filter((_photo, key) => {
       return index !== key;
     });
     dispatch(
@@ -121,7 +119,7 @@ const ProductImagePreview: React.FC = () => {
   };
 
   const likeProduct = () => {
-    likeProductById(id ?? '').then((isSuccess) => {
+    likeProductById(product.id ?? '').then((isSuccess) => {
       if (isSuccess) {
         setLiked(!liked);
       }
@@ -135,13 +133,13 @@ const ProductImagePreview: React.FC = () => {
           <BodyText level={4} customClass={styles.imageNaming}>
             Image naming:
           </BodyText>
-          {keywords.map((value, index) => (
+          {product.keywords.map((value, index) => (
             <CustomInput
               key={index}
               placeholder={`keyword${index + 1}`}
               value={value}
               onChange={(e) => {
-                const newKeywords = [...keywords] as ProductKeyword;
+                const newKeywords = [...product.keywords] as ProductKeyword;
                 newKeywords[index] = e.target.value;
                 dispatch(
                   setPartialProductDetail({
@@ -193,8 +191,8 @@ const ProductImagePreview: React.FC = () => {
       <div className={styles.productImageWrapper}>
         <Upload.Dragger {...primaryProps}>
           <div className={styles.uploadZoneContent}>
-            {images[0] ? (
-              <img src={showImageUrl(images[0])} className={styles.primaryPhoto} />
+            {product.images[0] ? (
+              <img src={showImageUrl(product.images[0])} className={styles.primaryPhoto} />
             ) : isTiscAdmin ? (
               <div className={styles.dropzoneNote}>
                 <BodyText level={3}>
@@ -230,7 +228,7 @@ const ProductImagePreview: React.FC = () => {
         <Row className={styles.photoList} gutter={8}>
           <Col span={isTiscAdmin ? 18 : 24}>
             <Row gutter={8} className={styles.listWrapper}>
-              {images
+              {product.images
                 .filter((_item, index) => index !== 0)
                 .map((image, key) => (
                   <Col span={8} key={key}>
@@ -274,13 +272,14 @@ const ProductImagePreview: React.FC = () => {
         <ShareViaEmail
           visible={showShareEmailModal.value}
           setVisible={showShareEmailModal.setValue}
+          product={product}
         />
 
-        {id && (
+        {product.id && (
           <AssignProductModal
             visible={showAssignProductModal.value}
             setVisible={showAssignProductModal.setValue}
-            productId={id}
+            productId={product.id}
           />
         )}
       </div>
