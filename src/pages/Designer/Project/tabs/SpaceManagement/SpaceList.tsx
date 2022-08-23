@@ -211,11 +211,13 @@ const SpecificationBySpace: React.FC<SpaceListProps> = ({ handleUpdateSpace, pro
       title: 'Zone',
       dataIndex: 'zone',
       width: MAIN_COL_WIDTH,
+      noBoxShadow: true,
     },
     {
       title: 'Areas',
       dataIndex: 'name',
       width: SUB_COL_WIDTH,
+      noBoxShadow: true,
     },
     ...SubGeneralColumns,
   ];
