@@ -6,7 +6,7 @@ import styles from './BrandContact.less';
 
 export interface BusinessDetailProps {
   business: string;
-  type: string;
+  type?: string;
   address: string;
   country?: string;
   phone_code?: string;
@@ -34,7 +34,7 @@ export const BusinessDetail: FC<BusinessDetailProps> = ({
           {business}
         </RobotoBodyText>
         <RobotoBodyText level={6} customClass={styles.type}>
-          {type && `(${type})`}
+          {type ? `(${type})` : ''}
         </RobotoBodyText>
       </div>
       <RobotoBodyText level={6} customClass={styles.detail_address}>
