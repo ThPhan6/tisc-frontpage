@@ -55,15 +55,18 @@ export const ProductAttributeComponent: React.FC<ProductAttributeComponentProps>
       />
 
       <CustomTabPane active={activeKey === 'general'}>
-        <ProductAttributeContainer attributes={attribute[activeKey]} activeKey={'general'} />
+        <ProductAttributeContainer attributes={attribute.general} activeKey={'general'} />
       </CustomTabPane>
 
       <CustomTabPane active={activeKey === 'feature'}>
-        <ProductAttributeContainer attributes={attribute[activeKey]} activeKey={'feature'} />
+        <ProductAttributeContainer attributes={attribute.feature} activeKey={'feature'} />
       </CustomTabPane>
 
       <CustomTabPane active={activeKey === 'specification'}>
-        <ProductAttributeContainer attributes={attribute[activeKey]} activeKey={'specification'} />
+        <ProductAttributeContainer
+          attributes={attribute.specification}
+          activeKey={'specification'}
+        />
       </CustomTabPane>
 
       <CustomTabPane active={activeKey === 'vendor'}>
