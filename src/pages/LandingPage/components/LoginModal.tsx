@@ -137,7 +137,7 @@ export const LoginModal: FC<LoginModalProps> = ({
             {quotation?.quotation}
           </MainTitle>
           <BodyText level={2} customClass={styles[`title${themeStyle()}`]}>
-            {quotation?.author}
+            {quotation?.author}, {quotation?.identity}
           </BodyText>
         </div>
         <div className={styles.form}>
