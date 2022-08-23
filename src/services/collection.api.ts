@@ -4,9 +4,6 @@ import { request } from 'umi';
 
 import type { Collection } from '@/types';
 
-// import { setProductSummary } from '@/reducers/product';
-// import store from '@/reducers';
-
 export async function getCollectionByBrandId(brandId: string) {
   return request<{ data: { collections: Collection[] } }>(`/api/collection/get-list`, {
     method: 'GET',

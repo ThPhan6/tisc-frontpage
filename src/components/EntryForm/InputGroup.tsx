@@ -1,4 +1,3 @@
-// import {useState, useEffect} from 'react';
 import type { FC, ReactNode } from 'react';
 
 import { Col, Row } from 'antd';

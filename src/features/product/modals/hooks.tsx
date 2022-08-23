@@ -49,8 +49,8 @@ export const useAssignProductToSpaceForm = (
         setZones(data);
 
         const curSelectedRooms: { [areaId: string]: CheckboxValue[] } = {};
-        data.map((zone) => {
-          zone.areas.map((area) => {
+        data.forEach((zone) => {
+          zone.areas.forEach((area) => {
             const assignedRooms = area.rooms.filter((room) => room.is_assigned === true);
             const roomCheckboxs: CheckboxValue[] = assignedRooms.map((el) => ({
               value: el.id || '',
@@ -97,8 +97,7 @@ export const useAssignProductToSpaceForm = (
 
     const nextRooms = { ...selectedRooms, [areaId]: value };
     const roomIds = getSelectedRoomIds(nextRooms);
-    console.log('roomIds', roomIds);
-    console.log('specifyOptions?.roomId', specifyOptions?.roomId);
+
     const isSelectedRoomBeRemoved =
       specifyOptions?.roomId && roomIds.length && roomIds.includes(specifyOptions.roomId) === false;
 
