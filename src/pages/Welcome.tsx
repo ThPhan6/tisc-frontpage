@@ -1,25 +1,29 @@
-import CustomButton from '@/components/Button';
-import { CustomRadio } from '@/components/CustomRadio';
-import { FormGroup } from '@/components/Form';
-import { CustomInput } from '@/components/Form/CustomInput';
-import { CustomTextArea } from '@/components/Form/CustomTextArea';
-import { PhoneInput } from '@/components/Form/PhoneInput';
-import { CustomCheckbox } from '@/components/CustomCheckbox';
-import { CustomTabs } from '@/components/Tabs';
-import { BodyText, MainTitle, Title } from '@/components/Typography';
+import React, { useState } from 'react';
+
+import { dataMenuSummary } from '@/constants/util';
 import { UserOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Card } from 'antd';
-import React, { useState } from 'react';
+
 import { ReactComponent as SingleRightIcon } from '../assets/icons/single-right.svg';
-import styles from './Welcome.less';
-import { dataMenuSummary } from '@/constants/util';
 import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
-import { MenuSummary } from '@/components/MenuSummary';
+
 import { PresetsEntryForm } from './TISC/Product/Basis/Preset/components/PresetsEntryForm';
-import BrandProfile from './Brand/Adminstration/BrandProfile';
-import { ProfileIcon } from '@/components/ProfileIcon';
+import CustomButton from '@/components/Button';
+import { CustomCheckbox } from '@/components/CustomCheckbox';
+import { CustomRadio } from '@/components/CustomRadio';
+import { FormGroup } from '@/components/Form';
 import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
+import { CustomInput } from '@/components/Form/CustomInput';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import { PhoneInput } from '@/components/Form/PhoneInput';
+import { MenuSummary } from '@/components/MenuSummary';
+import { ProfileIcon } from '@/components/ProfileIcon';
+import { CustomTabs } from '@/components/Tabs';
+import { BodyText, MainTitle, Title } from '@/components/Typography';
+
+import BrandProfile from './Brand/Adminstration/BrandProfile';
+import styles from './Welcome.less';
 
 const Welcome: React.FC = () => {
   const optionsRadio = [
@@ -215,8 +219,7 @@ const Welcome: React.FC = () => {
           label="FormGroup horizontal"
           tooltip="How are you"
           message="message"
-          messageType="error"
-        >
+          messageType="error">
           <CustomInput focusColor="tertiary" borderBottomColor="mono-medium" />
         </FormGroup>
         <FormGroup
@@ -224,8 +227,7 @@ const Welcome: React.FC = () => {
           tooltip="How are you"
           message="message"
           messageType="warning"
-          layout="vertical"
-        >
+          layout="vertical">
           <CustomInput borderBottomColor="mono-medium" focusColor="secondary" />
         </FormGroup>
 

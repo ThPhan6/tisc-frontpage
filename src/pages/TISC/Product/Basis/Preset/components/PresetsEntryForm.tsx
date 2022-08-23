@@ -1,13 +1,16 @@
-import { EntryFormWrapper } from '@/components/EntryForm';
-import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { FC, useEffect, useState } from 'react';
-import { PresetItem } from './PresetItem';
+
 import {
   PresetItemValueProp,
   PresetsEntryFormProps,
-  presetsValueDefault,
   PresetsValueProp,
+  presetsValueDefault,
 } from '@/types';
+
+import { EntryFormWrapper } from '@/components/EntryForm';
+import { FormNameInput } from '@/components/EntryForm/FormNameInput';
+
+import { PresetItem } from './PresetItem';
 
 export const PresetsEntryForm: FC<PresetsEntryFormProps> = ({
   onCancel,
@@ -78,8 +81,7 @@ export const PresetsEntryForm: FC<PresetsEntryFormProps> = ({
     <EntryFormWrapper
       handleSubmit={handleSubmit}
       handleCancel={handleCancel}
-      submitButtonStatus={submitButtonStatus}
-    >
+      submitButtonStatus={submitButtonStatus}>
       <FormNameInput
         placeholder="type group name"
         title="Preset group"

@@ -1,19 +1,23 @@
-import ActionButton from '@/components/Button/ActionButton';
-import { BodyText } from '@/components/Typography';
 import { FC, useState } from 'react';
-import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
+
+import { useParams } from 'umi';
+
 import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
 import { ReactComponent as MaterialIcon } from '@/assets/icons/material-product-icon.svg';
-import { ReactComponent as SpaceIcon } from '@/assets/icons/space-icon.svg';
 import { ReactComponent as PrintIcon } from '@/assets/icons/print-icon.svg';
+import { ReactComponent as SpaceIcon } from '@/assets/icons/space-icon.svg';
+
+import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
 import CustomButton from '@/components/Button';
-import styles from './index.less';
-import { useParams } from 'umi';
+import ActionButton from '@/components/Button/ActionButton';
+import { CustomTabPane } from '@/components/Tabs';
+import { BodyText } from '@/components/Typography';
+
 import ProductSpecifyToPDF from './ProductSpecifyToPDF';
 import SpecificationByBrand from './SpecificationByBrand';
-import SpecificationBySpace from './SpecificationBySpace';
-import { CustomTabPane } from '@/components/Tabs';
 import { SpecificationByMaterial } from './SpecificationByMaterial';
+import SpecificationBySpace from './SpecificationBySpace';
+import styles from './index.less';
 
 type viewBy = 'brand' | 'material' | 'space' | 'pdf';
 
@@ -28,8 +32,7 @@ const ProductSpecification: FC = () => {
           level={4}
           fontFamily="Cormorant-Garamond"
           color="mono-color"
-          style={{ fontWeight: '600', marginRight: 4 }}
-        >
+          style={{ fontWeight: '600', marginRight: 4 }}>
           View By:
         </BodyText>
         <ActionButton
@@ -56,8 +59,7 @@ const ProductSpecification: FC = () => {
           variant="secondary"
           buttonClass={styles.button}
           onClick={() => setViewBy('pdf')}
-          active={viewBy === 'pdf'}
-        >
+          active={viewBy === 'pdf'}>
           <PrintIcon />
           PDF
         </CustomButton>

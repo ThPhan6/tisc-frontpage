@@ -1,7 +1,9 @@
-import { BodyTextProps, CustomTypography } from '@/components/Typography/types/index';
+import { CSSProperties, ReactNode } from 'react';
+
 import type { InputProps } from 'antd';
 import type { TextAreaProps } from 'antd/lib/input';
-import { CSSProperties, ReactNode } from 'react';
+
+import { BodyTextProps, CustomTypography } from '@/components/Typography/types/index';
 
 export interface FormGroupProps {
   layout?: 'horizontal' | 'vertical';

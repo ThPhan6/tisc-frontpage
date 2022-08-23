@@ -1,5 +1,6 @@
 import { Button, message, notification } from 'antd';
 import { useIntl } from 'umi';
+
 import defaultSettings from '../config/defaultSettings';
 
 const { pwa } = defaultSettings;
@@ -60,8 +61,7 @@ if (pwa) {
         onClick={() => {
           notification.close(key);
           reloadSW();
-        }}
-      >
+        }}>
         {useIntl().formatMessage({ id: 'app.pwa.serviceworker.updated.ok' })}
       </Button>
     );

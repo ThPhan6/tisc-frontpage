@@ -1,29 +1,32 @@
-import { Collapse, Modal } from 'antd';
 import React, { useState } from 'react';
-import { CustomTabs } from '@/components/Tabs';
-import { CustomRadio } from '@/components/CustomRadio';
-import CustomButton from '@/components/Button';
+
+import { Collapse, Modal } from 'antd';
+
+import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
-import { snakeCase, isEmpty, isUndefined, lowerCase } from 'lodash';
-import { SPECIFICATION_TYPE } from '../utils';
-import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
+
+import { isEmpty, isUndefined, lowerCase, snakeCase } from 'lodash';
 
 import type { RadioValue } from '@/components/CustomRadio/types';
 import type { TabItem } from '@/components/Tabs/types';
 import type {
+  AttributeContentType,
+  AttributeSubForm,
   BasisConvention,
   BasisConventionOption,
-  AttributeContentType,
   BasisPresetOption,
   BasisText,
-  AttributeSubForm,
 } from '@/types';
 
-import type { SelectedItem } from './AttributeEntryForm';
+import CustomButton from '@/components/Button';
+import { CustomRadio } from '@/components/CustomRadio';
+import { CustomTabs } from '@/components/Tabs';
 
 import styles from '../styles/contentTypeModal.less';
+import { SPECIFICATION_TYPE } from '../utils';
+import type { SelectedItem } from './AttributeEntryForm';
 
 type ACTIVE_TAB = 'conversions' | 'presets' | 'options' | 'text';
 
@@ -170,8 +173,7 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = (props) => {
       expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
       className={styles.contentTypeCollapse}
       onChange={setActiveKey}
-      activeKey={activeKey}
-    >
+      activeKey={activeKey}>
       {[...data]
         .filter((item: any) => !isEmpty(item.subs))
         .map((option: any) => (
@@ -183,8 +185,7 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = (props) => {
               </span>
             }
             key={snakeCase(option.name)}
-            className="site-collapse-custom-panel"
-          >
+            className="site-collapse-custom-panel">
             <CustomRadio
               options={
                 type === 'conversions'
@@ -265,14 +266,12 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
             <CustomButton
               size="small"
               buttonClass={styles.contentTypeSubmitBtn}
-              onClick={() => onSubmit(selectedOption)}
-            >
+              onClick={() => onSubmit(selectedOption)}>
               Done
             </CustomButton>
           </div>
         }
-        className={styles.contentTypeModalWrapper}
-      >
+        className={styles.contentTypeModalWrapper}>
         <div>
           <CustomTabs
             listTab={listTab}

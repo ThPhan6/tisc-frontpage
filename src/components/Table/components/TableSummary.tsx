@@ -1,5 +1,7 @@
-import { Title, BodyText } from '@/components/Typography';
 import type { SummaryResponse } from '../types';
+
+import { BodyText, Title } from '@/components/Typography';
+
 import styles from '../styles/table.less';
 
 interface TableSummaryProps {

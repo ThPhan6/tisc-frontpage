@@ -1,17 +1,21 @@
-import { FC, useEffect, useState, Fragment } from 'react';
-import styles from '../styles/AccessLevelModal.less';
-import { ReactComponent as AccessableTickIcon } from '@/assets/icons/accessable-tick-icon.svg';
-import { ReactComponent as AccessableMinusIcon } from '@/assets/icons/accessable-minus-icon.svg';
-import { BodyText, MainTitle } from '@/components/Typography';
-import TISCModal from '@/components/TISCModal';
-import { AccessLevelModalItemProps, AccessLevelModalProps } from '@/components/TISCModal/types';
-import { getPermission, updatePermission } from '@/services/permission.api';
+import { FC, Fragment, useEffect, useState } from 'react';
 
+import { ReactComponent as AccessableMinusIcon } from '@/assets/icons/accessable-minus-icon.svg';
+import { ReactComponent as AccessableTickIcon } from '@/assets/icons/accessable-tick-icon.svg';
 // for future data
 import { ReactComponent as FeebBackIcon } from '@/assets/icons/feedback.svg';
-import { ReactComponent as RecommendationIcon } from '@/assets/icons/recommendation.svg';
 import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/ic-share.svg';
+import { ReactComponent as RecommendationIcon } from '@/assets/icons/recommendation.svg';
+
 import { showImageUrl } from '@/helper/utils';
+import { getPermission, updatePermission } from '@/services/permission.api';
+
+import { AccessLevelModalItemProps, AccessLevelModalProps } from '@/components/TISCModal/types';
+
+import TISCModal from '@/components/TISCModal';
+import { BodyText, MainTitle } from '@/components/Typography';
+
+import styles from '../styles/AccessLevelModal.less';
 
 const furturePermissionData = [
   {
@@ -88,8 +92,7 @@ const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisib
               {/* for future data */}
               <td
                 key={`fData_${item.id}`}
-                style={{ textAlign: 'center', display: menu.subs ? 'none' : '' }}
-              >
+                style={{ textAlign: 'center', display: menu.subs ? 'none' : '' }}>
                 <AccessableTickIcon className={styles.menu_accessable_null} />
               </td>
               {/* --------- */}

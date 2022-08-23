@@ -1,13 +1,16 @@
-import styles from './ProductDetailHeader.less';
 import { useState } from 'react';
 import type { FC } from 'react';
-import { Title } from '@/components/Typography';
-import Popover from '@/components/Modal/Popover';
-import CustomButton from '@/components/Button';
 import { useDispatch } from 'react-redux';
-import { useAppSelector } from '@/reducers';
-import { setPartialProductDetail } from '@/features/product/reducers';
+
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { setPartialProductDetail } from '@/features/product/reducers';
+import { useAppSelector } from '@/reducers';
+
+import CustomButton from '@/components/Button';
+import Popover from '@/components/Modal/Popover';
+import { Title } from '@/components/Typography';
+
+import styles from './ProductDetailHeader.less';
 
 interface ProductDetailHeaderProps {
   title: string;
@@ -35,8 +38,7 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
           <CustomButton
             variant="text"
             buttonClass="select-category-btn"
-            onClick={() => setVisible(true)}
-          >
+            onClick={() => setVisible(true)}>
             select
           </CustomButton>
         </div>
@@ -46,8 +48,7 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
             variant="primary"
             properties="rounded"
             buttonClass="save-btn"
-            onClick={onSave}
-          >
+            onClick={onSave}>
             Save
           </CustomButton>
           <CustomButton
@@ -55,8 +56,7 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
             variant="primary"
             properties="rounded"
             buttonClass="cancel-btn"
-            onClick={onCancel}
-          >
+            onClick={onCancel}>
             Close
           </CustomButton>
         </div>

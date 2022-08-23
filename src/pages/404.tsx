@@ -1,6 +1,8 @@
-import { pushTo } from '@/helper/history';
-import { Button, Result } from 'antd';
 import React from 'react';
+
+import { Button, Result } from 'antd';
+
+import { pushTo } from '@/helper/history';
 
 const NoFoundPage: React.FC = () => (
   <Result

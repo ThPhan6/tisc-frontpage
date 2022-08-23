@@ -1,8 +1,7 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import store from '@/reducers';
-import type { BrandDetail } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
+
 import {
   setProductDetail,
   setProductList,
@@ -13,12 +12,16 @@ import {
   GroupProductList,
   ProductFormData,
   ProductGetListParameter,
+  ProductItem,
   ProductSummary,
   RelatedCollection,
-  ProductItem,
   GetListProductForDesignerRequestParams,
   BrandSummary,
+  ProductItemValue,
 } from '../types';
+import store from '@/reducers';
+import type { BrandDetail } from '@/types';
+import { ShareViaEmailForm } from '@/components/ShareViaEmail';
 
 export async function getProductSummary(brandId: string) {
   return request<{ data: ProductSummary }>(`/api/product/brand-product-summary/${brandId}`, {
@@ -194,5 +197,35 @@ export async function getRelatedCollectionProducts(productId: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_SUMMARY_DATA_ERROR);
+    });
+}
+
+export async function getSharingGroups() {
+  return request<{ data: ProductItemValue[] }>(`/api/product/sharing-groups`, { method: 'GET' })
+    .then((res) => res.data)
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_SHARING_GROUPS_ERROR);
+      return [] as ProductItemValue[];
+    });
+}
+
+export async function getSharingPurposes() {
+  return request<{ data: ProductItemValue[] }>(`/api/product/sharing-purposes`, { method: 'GET' })
+    .then((res) => res.data)
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_SHARING_PURPOSES_ERROR);
+      return [] as ProductItemValue[];
+    });
+}
+
+export async function createShareViaEmail(data: ShareViaEmailForm) {
+  return request<boolean>(`/api/product/share-via-email`, { method: 'POST', data })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.CREATE_SHARE_VIA_EMAIL_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_SHARE_VIA_EMAIL_ERROR);
+      return false;
     });
 }

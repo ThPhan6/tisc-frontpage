@@ -1,10 +1,13 @@
 import { FC } from 'react';
+
+import { USER_STATUSES } from '@/constants/util';
+import { Tooltip } from 'antd';
+
+import { StatusProps } from './types';
+
 import CustomButton from '../Button';
 import { FormGroup } from './index';
 import styles from './styles/status.less';
-import { StatusProps } from './types';
-import { Tooltip } from 'antd';
-import { USER_STATUSES } from '@/constants/util';
 
 export const Status: FC<StatusProps> = ({
   value,
@@ -29,8 +32,7 @@ export const Status: FC<StatusProps> = ({
           ${styles.status_text}
           ${textClass}
           ${value === USER_STATUSES.PENDING || !value ? styles.pendingText : ''}
-          `}
-        >
+          `}>
           {value === USER_STATUSES.PENDING || !value ? text_2 : text_1}
         </span>
         {value == USER_STATUSES.ACTIVE || value == USER_STATUSES.BLOCKED ? (
@@ -50,13 +52,11 @@ export const Status: FC<StatusProps> = ({
               )
             }
             placement="topRight"
-            align={{ offset: alignOffset }}
-          >
+            align={{ offset: alignOffset }}>
             <CustomButton
               buttonClass={`${InActiveButtonClass} ${styles.sendInvite}`}
               onClick={onClick}
-              variant="secondary"
-            >
+              variant="secondary">
               {buttonName}
             </CustomButton>
           </Tooltip>

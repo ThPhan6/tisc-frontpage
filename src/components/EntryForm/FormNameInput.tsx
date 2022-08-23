@@ -1,9 +1,12 @@
 import { FC } from 'react';
-import styles from './styles/FormNameInput.less';
-import { MainTitle } from '../Typography';
-import { FormNameInputProps } from './types';
+
 import { ReactComponent as AddIcon } from '@/assets/icons/square-plus-icon.svg';
+
+import { FormNameInputProps } from './types';
+
 import { CustomInput } from '../Form/CustomInput';
+import { MainTitle } from '../Typography';
+import styles from './styles/FormNameInput.less';
 
 export const FormNameInput: FC<FormNameInputProps> = ({
   HandleOnClickAddIcon,

@@ -1,7 +1,9 @@
+import { FC, useEffect, useState } from 'react';
+
 import CustomButton from '@/components/Button';
 import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
-import { FC, useEffect, useState } from 'react';
+
 import styles from './VerifyAccount.less';
 
 interface VerifyAccountModal {

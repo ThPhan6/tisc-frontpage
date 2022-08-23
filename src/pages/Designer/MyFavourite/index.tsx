@@ -1,13 +1,18 @@
-import { CollapseProductList } from '@/features/product/components';
-import { useProductListFilterAndSorter } from '@/features/product/components/FilterAndSorter';
+import { useEffect } from 'react';
+
+import { PageContainer } from '@ant-design/pro-layout';
+
+import { getFavouriteProductList } from '@/features/favourite/services';
+
 import { setProductList } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
-import { PageContainer } from '@ant-design/pro-layout';
-import { useEffect } from 'react';
+
 import FavouriteForm from '@/features/favourite/components/FavouriteForm';
 import ProductSummaryTopBar from '@/features/favourite/components/TopBar';
+import { CollapseProductList } from '@/features/product/components';
+import { useProductListFilterAndSorter } from '@/features/product/components/FilterAndSorter';
+
 import './index.less';
-import { getFavouriteProductList } from '@/features/favourite/components/services';
 
 const MyFavourite = () => {
   const { filter, sort, resetAllProductList, dispatch } = useProductListFilterAndSorter();
@@ -38,8 +43,9 @@ const MyFavourite = () => {
   return (
     <div>
       <PageContainer
-        pageHeaderRender={() => <ProductSummaryTopBar isFavouriteRetrieved={retrievedFavourite!} />}
-      >
+        pageHeaderRender={() => (
+          <ProductSummaryTopBar isFavouriteRetrieved={retrievedFavourite!} />
+        )}>
         {retrievedFavourite ? <CollapseProductList /> : <FavouriteForm />}
       </PageContainer>
     </div>

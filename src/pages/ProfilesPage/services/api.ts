@@ -1,5 +1,6 @@
 import { STATUS_RESPONSE } from '@/constants/util';
 import { request } from 'umi';
+
 import { UpdatePersonalProfileRequestBody } from '../types';
 
 export async function updateTeamProfile(

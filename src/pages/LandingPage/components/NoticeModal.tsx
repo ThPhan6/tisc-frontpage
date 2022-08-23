@@ -1,8 +1,11 @@
-import styles from './NoticeModal.less';
+import { FC } from 'react';
+
+import { ModalProps } from '../types';
+
 import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
-import { FC } from 'react';
-import { ModalProps } from '../types';
+
+import styles from './NoticeModal.less';
 
 export const NoticeModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
@@ -16,8 +19,7 @@ export const NoticeModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
         backgroundColor: theme === 'dark' ? '#000' : '',
       }}
       closeIconClass={theme === 'dark' && styles.closeIcon}
-      onCancel={onClose}
-    >
+      onCancel={onClose}>
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={1} customClass={styles[`body${themeStyle()}`]}>
@@ -39,8 +41,7 @@ export const NoticeModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
                     level={5}
                     fontFamily="Roboto"
                     customClass={styles[`body${themeStyle()}`]}
-                    key={index}
-                  >
+                    key={index}>
                     {item}
                   </BodyText>
                 ),
@@ -59,8 +60,7 @@ export const NoticeModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
                   level={5}
                   fontFamily="Roboto"
                   customClass={styles[`body${themeStyle()}`]}
-                  key={index}
-                >
+                  key={index}>
                   {item}
                 </BodyText>
               ))}

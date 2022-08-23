@@ -1,10 +1,14 @@
 import React from 'react';
-import { CustomRadio } from '@/components/CustomRadio';
-import type { RadioValue } from '@/components/CustomRadio/types';
-import { MainTitle } from '@/components/Typography';
+
 // import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 // import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { isString } from 'lodash';
+
+import type { RadioValue } from '@/components/CustomRadio/types';
+
+import { CustomRadio } from '@/components/CustomRadio';
+import { MainTitle } from '@/components/Typography';
+
 import styles from './styles/radioList.less';
 
 export interface RadioListOption {

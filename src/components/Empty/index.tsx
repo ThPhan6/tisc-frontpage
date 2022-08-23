@@ -1,7 +1,11 @@
 import type { FC } from 'react';
+
 import { Empty } from 'antd';
-import { BodyText } from '@/components/Typography';
+
 import EmptyOnePlaceholder from '@/assets/images/empty-image-placeholder.png';
+
+import { BodyText } from '@/components/Typography';
+
 import styles from './index.less';
 
 type BodyTextLevel = 1 | 2 | 3 | 4 | 5 | 6 | 7;

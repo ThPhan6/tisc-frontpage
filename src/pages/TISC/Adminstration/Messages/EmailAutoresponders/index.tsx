@@ -1,12 +1,17 @@
-import CustomTable from '@/components/Table';
+import { PATH } from '@/constants/path';
+
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
+
+import { pushTo } from '@/helper/history';
+import { getEmailTemplatePagination } from '@/services';
+
 import { TableColumnItem } from '@/components/Table/types';
 import { EmailTemplate } from '@/types';
-import { getEmailTemplatePagination } from '@/services';
-import styles from './styles/index.less';
-import { PATH } from '@/constants/path';
-import { pushTo } from '@/helper/history';
+
 import { ActionForm } from '@/components/Action';
+import CustomTable from '@/components/Table';
+
+import styles from './styles/index.less';
 
 const EmailAutoList = () => {
   const handleUpdateEmailAuto = (id: string) => {

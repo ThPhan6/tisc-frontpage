@@ -1,17 +1,20 @@
+import React, { useEffect, useRef, useState } from 'react';
+
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
+import { deleteProjectSpace, getProjectSpaceListPagination } from '@/features/project/services';
+import { confirmDelete } from '@/helper/common';
+import { formatNumberDisplay } from '@/helper/utils';
+
+import type { TableColumnItem } from '@/components/Table/types';
+import type {
+  ProjectSpaceArea,
+  ProjectSpaceRoom,
+  ProjectSpaceZone,
+} from '@/features/project/types';
+
 import { ActionMenu } from '@/components/Action';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import type { TableColumnItem } from '@/components/Table/types';
-import { confirmDelete } from '@/helper/common';
-import { getProjectSpaceListPagination, deleteProjectSpace } from '@/features/project/services';
-import type {
-  ProjectSpaceZone,
-  ProjectSpaceArea,
-  ProjectSpaceRoom,
-} from '@/features/project/types';
-import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
-import React, { useRef, useState, useEffect } from 'react';
-import { formatNumberDisplay } from '@/helper/utils';
 
 const MAIN_COL_WIDTH = 200;
 const SUB_COL_WIDTH = 150;

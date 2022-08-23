@@ -1,13 +1,15 @@
+import { message } from 'antd';
+import { request } from 'umi';
+
+import { getResponseMessage } from '@/helper/common';
+
 import type {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import { getResponseMessage } from '@/helper/common';
 import { EmailTemplate, RadioItem } from '@/types';
-import { message } from 'antd';
-import { request } from 'umi';
 
 interface EmailTemplatePaginationResponse {
   data: {

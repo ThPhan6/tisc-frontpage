@@ -1,13 +1,17 @@
-import { TableHeader } from '@/components/Table/TableHeader';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import OptionEntryForm from './components/OptionsEntryForm';
+import { useEffect, useState } from 'react';
+
 import { PATH } from '@/constants/path';
+import { useParams } from 'umi';
+
 import { pushTo } from '@/helper/history';
-import { BasisOptionForm } from '@/types';
 import { useBoolean } from '@/helper/hook';
 import { getOneBasisOption, updateBasisOption } from '@/services';
-import { useState, useEffect } from 'react';
-import { useParams } from 'umi';
+
+import { BasisOptionForm } from '@/types';
+
+import OptionEntryForm from './components/OptionsEntryForm';
+import { TableHeader } from '@/components/Table/TableHeader';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const CreateOptionPage = () => {
   const isLoading = useBoolean();

@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { ScrollMenu } from 'react-horizontal-scrolling-menu';
+
 import { useDrag } from './useDrag';
 
 const ScrollBar: FC = ({ children }) => {
@@ -12,8 +13,7 @@ const ScrollBar: FC = ({ children }) => {
           onWheel={onWheel}
           onMouseDown={() => dragStart}
           onMouseMove={handleDrag}
-          onMouseUp={() => dragStop}
-        >
+          onMouseUp={() => dragStop}>
           {children as any}
         </ScrollMenu>
       </div>

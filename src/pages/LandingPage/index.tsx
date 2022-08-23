@@ -1,54 +1,60 @@
-import CustomButton from '@/components/Button';
-import LoadingPageCustomize from '@/components/LoadingPage';
-import { BodyText, MainTitle, Title } from '@/components/Typography';
+import { useEffect, useState } from 'react';
+
 import { MESSAGE_ERROR, MESSAGE_NOTIFICATION } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { STATUS_RESPONSE } from '@/constants/util';
+import { Col, Row, message } from 'antd';
+import { history } from 'umi';
+
+import graphic from '@/assets/graphic.png';
+import { ReactComponent as BinocularsIcon } from '@/assets/icons/binoculars-icon.svg';
+import { ReactComponent as CheckAllIcon } from '@/assets/icons/check-all-icon.svg';
+import { ReactComponent as GraphicTabletIcon } from '@/assets/icons/graphic-tablet-icon.svg';
+import { ReactComponent as LogoBeta } from '@/assets/icons/logo-beta.svg';
+import { ReactComponent as PiggyBankIcon } from '@/assets/icons/piggy-bank-icon.svg';
+import { ReactComponent as SingleRight } from '@/assets/icons/single-right.svg';
+import { ReactComponent as TargetMoneyIcon } from '@/assets/icons/target-money-icon.svg';
+import { ReactComponent as TimeMoney } from '@/assets/icons/time-money-icon.svg';
+
+import {
+  createPasswordVerify,
+  forgotPasswordMiddleware,
+  loginByBrandOrDesigner,
+  loginMiddleware,
+  resetPasswordMiddleware,
+  validateResetToken,
+  verifyAccount,
+} from './services/api';
 import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
 import {
   redirectAfterBrandLogin,
   redirectAfterDesignerLogin,
   redirectAfterLogin,
 } from '@/helper/utils';
-import { Col, message, Row } from 'antd';
-import { useEffect, useState } from 'react';
-import { history } from 'umi';
-import graphic from '../../assets/graphic.png';
-import { ReactComponent as BinocularsIcon } from '../../assets/icons/binoculars-icon.svg';
-import { ReactComponent as CheckAllIcon } from '../../assets/icons/check-all-icon.svg';
-import { ReactComponent as GraphicTabletIcon } from '../../assets/icons/graphic-tablet-icon.svg';
-import { ReactComponent as LogoBeta } from '../../assets/icons/logo-beta.svg';
-import { ReactComponent as PiggyBankIcon } from '../../assets/icons/piggy-bank-icon.svg';
-import { ReactComponent as SingleRight } from '../../assets/icons/single-right.svg';
-import { ReactComponent as TargetMoneyIcon } from '../../assets/icons/target-money-icon.svg';
-import { ReactComponent as TimeMoney } from '../../assets/icons/time-money-icon.svg';
+
+import type {
+  CreatePasswordRequestBody,
+  LoginInput,
+  LoginResponseProp,
+  ModalOpen,
+  ResetPasswordRequestBody,
+} from './types';
+
 import { AboutModal } from './components/AboutModal';
 import { BrandInterestedModal } from './components/BrandInterestedModal';
 import { ContactModal } from './components/ContactModal';
+import { CreatePasswordModal } from './components/CreatePasswordModal';
 import { LoginModal } from './components/LoginModal';
 import { NoticeModal } from './components/NoticeModal';
 import { PoliciesModal } from './components/PoliciesModal';
 import { ResetPasswordModal } from './components/ResetPasswordModal';
-import { CreatePasswordModal } from './components/CreatePasswordModal';
 import { SignupModal } from './components/SignupModal';
-import styles from './index.less';
-import {
-  forgotPasswordMiddleware,
-  loginMiddleware,
-  resetPasswordMiddleware,
-  validateResetToken,
-  createPasswordVerify,
-  loginByBrandOrDesigner,
-  verifyAccount,
-} from './services/api';
-import type {
-  LoginInput,
-  ModalOpen,
-  ResetPasswordRequestBody,
-  CreatePasswordRequestBody,
-  LoginResponseProp,
-} from './types';
 import { VerifyAccount } from './components/VerifyAccount';
+import CustomButton from '@/components/Button';
+import LoadingPageCustomize from '@/components/LoadingPage';
+import { BodyText, MainTitle, Title } from '@/components/Typography';
+
+import styles from './index.less';
 
 const LandingPage = () => {
   const userEmail = useQuery().get('email');
@@ -189,8 +195,7 @@ const LandingPage = () => {
                 icon={<SingleRight />}
                 width="104px"
                 buttonClass={styles['login-button']}
-                onClick={() => setOpenModal('Login')}
-              >
+                onClick={() => setOpenModal('Login')}>
                 Log in
               </CustomButton>
             </div>
@@ -238,8 +243,7 @@ const LandingPage = () => {
                       properties="warning"
                       size="large"
                       buttonClass={styles['action-button']}
-                      onClick={() => setOpenModal('Brand Interested')}
-                    >
+                      onClick={() => setOpenModal('Brand Interested')}>
                       INTERESTED
                     </CustomButton>
                   </div>
@@ -278,8 +282,7 @@ const LandingPage = () => {
                       properties="warning"
                       size="large"
                       buttonClass={styles['action-button']}
-                      onClick={() => setOpenModal('Designer Signup')}
-                    >
+                      onClick={() => setOpenModal('Designer Signup')}>
                       SIGN ME UP
                     </CustomButton>
                   </div>
@@ -304,8 +307,7 @@ const LandingPage = () => {
                       level={5}
                       fontFamily="Roboto"
                       customClass={styles.item}
-                      onClick={() => setOpenModal(item)}
-                    >
+                      onClick={() => setOpenModal(item)}>
                       {item}
                     </BodyText>
                   ))}
@@ -315,8 +317,7 @@ const LandingPage = () => {
                   level={5}
                   fontFamily="Roboto"
                   customClass={styles['tisc-login']}
-                  onClick={() => setOpenModal('Tisc Login')}
-                >
+                  onClick={() => setOpenModal('Tisc Login')}>
                   TISC Log in
                 </BodyText>
               </div>

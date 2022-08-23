@@ -1,12 +1,16 @@
-import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 import { useState } from 'react';
+
 import { ProductSpecifiedTabKeys, ProductSpecifiedTabs } from '../../constants/tab';
-import styles from './index.less';
+
+import PageTemplate from '@/assets/images/page.png';
+
 import IssuingInformation from './components/IssuingInformation';
 import Standard from './components/Standard';
-import PageTemplate from '@/assets/images/page.png';
 import CustomButton from '@/components/Button';
 import CustomPaginator from '@/components/Table/components/CustomPaginator';
+import { CustomTabPane, CustomTabs } from '@/components/Tabs';
+
+import styles from './index.less';
 
 const ProductSpecifyToPDF = () => {
   const [selectedTab, setSelectedTab] = useState<ProductSpecifiedTabKeys>(

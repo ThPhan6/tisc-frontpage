@@ -1,13 +1,17 @@
+import React, { memo, useState } from 'react';
+
 import { ReactComponent as TipsIcon } from '@/assets/icons/bookmark-icon.svg';
 import { ReactComponent as CollectionIcon } from '@/assets/icons/collection-icon.svg';
 import { ReactComponent as DownloadIcon } from '@/assets/icons/download-1-icon.svg';
-import { CustomTabPane, CustomTabs } from '@/components/Tabs';
+
 import { TabItem } from '@/components/Tabs/types';
-import React, { memo, useState } from 'react';
+
+import { CustomTabPane, CustomTabs } from '@/components/Tabs';
+
+import styles from '../detail.less';
 import { ProductCollection } from './ProductCollection';
 import ProductDownloadFooter from './ProductDownloadFooter';
 import ProductTip from './ProductTip';
-import styles from '../detail.less';
 
 const LIST_TAB: TabItem[] = [
   { tab: 'Collections', key: 'collection', icon: <CollectionIcon /> },

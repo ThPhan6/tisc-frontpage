@@ -1,16 +1,21 @@
 // import { useState } from 'react';
+import { FC, useEffect, useState } from 'react';
+
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
-import CustomCollapse from '@/components/Collapse';
+
+import { getBrandLocation, getDistributorLocation } from '@/services';
+
+import { OnChangeSpecifyingProductFnc } from './types';
 import { RadioValue } from '@/components/CustomRadio/types';
+import { DistributorProductMarket, LocationDetail, LocationGroupedByCountry } from '@/types';
+
+import CustomCollapse from '@/components/Collapse';
 import Popover from '@/components/Modal/Popover';
 import { RenderEntireProjectLabel } from '@/components/RenderHeaderLabel';
 import { BodyText, RobotoBodyText } from '@/components/Typography';
 import { BusinessDetail } from '@/features/product/components/BrandContact';
-import { getBrandLocation, getDistributorLocation } from '@/services';
-import { LocationDetail, LocationGroupedByCountry, DistributorProductMarket } from '@/types';
-import { FC, useEffect, useState } from 'react';
+
 import styles from './styles/vendor-tab.less';
-import { OnChangeSpecifyingProductFnc } from './types';
 
 const activeKey = '1';
 
@@ -24,7 +29,11 @@ const getSelectedLocation = (locationGroup: LocationGroupedByCountry[], selected
       <BusinessDetail
         business={selectedLocation.business_name}
         type={selectedLocation.functional_types[0]?.name}
-        address={selectedLocation.address}
+        address={`${selectedLocation.address}, ${
+          selectedLocation.city_name !== '' ? `${selectedLocation.city_name},` : ''
+        } ${selectedLocation.state_name !== '' ? `${selectedLocation.state_name},` : ''} ${
+          selectedLocation.country_name
+        }`}
         country={selectedLocation.country_name.toUpperCase()}
         phone_code={selectedLocation.phone_code}
         general_phone={selectedLocation.general_phone}
@@ -52,11 +61,17 @@ const getSelectedDistributors = (locationGroup: DistributorProductMarket[], sele
       <BusinessDetail
         business={selectedLocation.name}
         type={` ${selectedLocation.last_name} ${selectedLocation.first_name} `}
-        address={`${selectedLocation.address}, ${selectedLocation.city_name}`}
+        address={`${selectedLocation.address}, ${
+          selectedLocation.city_name !== '' ? `${selectedLocation.city_name},` : ''
+        } ${selectedLocation.state_name !== '' ? `${selectedLocation.state_name},` : ''} ${
+          selectedLocation.country_name
+        }`}
         country={selectedLocation.country_name.toUpperCase()}
         phone_code={selectedLocation.phone_code}
         general_phone={selectedLocation.phone}
         genernal_email={selectedLocation.email}
+        first_name={selectedLocation.first_name}
+        last_name={selectedLocation.last_name}
       />
     ) : (
       ''
@@ -159,7 +174,9 @@ const VendorTab: FC<VendorTabProps> = ({
       <BusinessDetail
         business={location?.business_name ?? ''}
         type={location?.functional_types?.[0]?.name ?? ''}
-        address={location?.address ?? ''}
+        address={`${location.address}, ${
+          location.city_name !== '' ? `${location.city_name},` : ''
+        } ${location.state_name !== '' ? `${location.state_name},` : ''} ${location.country_name}`}
         phone_code={location?.phone_code ?? ''}
         general_phone={location?.general_phone ?? ''}
         genernal_email={location?.general_email ?? ''}
@@ -174,11 +191,15 @@ const VendorTab: FC<VendorTabProps> = ({
       <BusinessDetail
         business={location?.name ?? ''}
         type={` ${location.last_name} ${location.first_name} `}
-        address={`${location.address}, ${location.city_name}`}
+        address={`${location.address}, ${
+          location.city_name !== '' ? `${location.city_name},` : ''
+        } ${location.state_name !== '' ? `${location.state_name},` : ''} ${location.country_name}`}
         phone_code={location?.phone_code ?? ''}
         general_phone={location?.phone ?? ''}
         genernal_email={location?.email ?? ''}
         customClass={styles.businessDetail}
+        first_name={location.first_name}
+        last_name={location.last_name}
       />
     ) : null;
 
@@ -199,8 +220,7 @@ const VendorTab: FC<VendorTabProps> = ({
             level={6}
             fontFamily="Roboto"
             color={country ? 'mono-color' : 'mono-color-medium'}
-            customClass="country-name"
-          >
+            customClass="country-name">
             {country || 'select location'}
           </BodyText>
           <SingleRightIcon className={country ? 'icon-active' : 'icon-unActive'} />
@@ -227,8 +247,7 @@ const VendorTab: FC<VendorTabProps> = ({
             brandActiveKey === activeKey && chosenBrand.value
               ? styles.collapsed
               : styles.notCollapsed
-          } `}
-        >
+          } `}>
           <div className={styles.address}>
             <CustomCollapse
               header={renderCollapseHeader(
@@ -243,8 +262,7 @@ const VendorTab: FC<VendorTabProps> = ({
               collapsible={chosenBrand.value ? 'header' : 'disabled'}
               onChange={(key) => handleCollapse('brand', key)}
               activeKey={brandActiveKey}
-              customHeaderClass={styles.collapseHeader}
-            >
+              customHeaderClass={styles.collapseHeader}>
               {renderBusinessAdressDetail(selectedLocationBrand)}
             </CustomCollapse>
           </div>
@@ -256,8 +274,7 @@ const VendorTab: FC<VendorTabProps> = ({
             distributorActiveKey === activeKey && chosenDistributor.value
               ? styles.collapsed
               : styles.notCollapsed
-          } `}
-        >
+          } `}>
           <div className={styles.address}>
             <CustomCollapse
               header={renderCollapseHeader(
@@ -272,8 +289,7 @@ const VendorTab: FC<VendorTabProps> = ({
               collapsible={chosenDistributor.value ? 'header' : 'disabled'}
               onChange={(key) => handleCollapse('distributor', key)}
               activeKey={distributorActiveKey}
-              customHeaderClass={styles.collapseHeader}
-            >
+              customHeaderClass={styles.collapseHeader}>
               {renderDistributorBusinessAdressDetail(selectedLocationDistributor)}
             </CustomCollapse>
           </div>
@@ -300,7 +316,11 @@ const VendorTab: FC<VendorTabProps> = ({
                   <BusinessDetail
                     business={location.business_name}
                     type={location.functional_types[0]?.name}
-                    address={location.address}
+                    address={`${location.address}, ${
+                      location.city_name !== '' ? `${location.city_name},` : ''
+                    } ${location.state_name !== '' ? `${location.state_name},` : ''} ${
+                      location.country_name
+                    }`}
                     country={location.country_name.toUpperCase()}
                     phone_code={location.phone_code}
                     general_phone={location.general_phone}
@@ -333,11 +353,17 @@ const VendorTab: FC<VendorTabProps> = ({
                   <BusinessDetail
                     business={distributor.name}
                     type={`${distributor.last_name} ${distributor.first_name}`}
-                    address={`${distributor.address}, ${distributor.city_name}`}
+                    address={`${distributor.address}, ${
+                      distributor.city_name !== '' ? `${distributor.city_name},` : ''
+                    } ${distributor.state_name !== '' ? `${distributor.state_name},` : ''} ${
+                      distributor.country_name
+                    }`}
                     country={distributor.country_name.toUpperCase()}
                     phone_code={distributor.phone_code}
                     general_phone={distributor.phone}
                     genernal_email={distributor.email}
+                    first_name={distributor.first_name}
+                    last_name={distributor.last_name}
                   />
                 ),
               };

@@ -1,12 +1,13 @@
-import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
-import { CustomInput } from '@/components/Form/CustomInput';
-import { BodyText } from '@/components/Typography';
-import { isEmpty, isEqual } from 'lodash';
 import { FC, useEffect, useState } from 'react';
-import styles from '../styles/PresetItem.less';
-import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
+
+import { Col, Collapse, Row } from 'antd';
+
+import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
-import { Collapse, Col, Row } from 'antd';
+import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
+
+import { isEmpty, isEqual } from 'lodash';
+
 import {
   PresetElementInputProp,
   PresetItemProps,
@@ -14,6 +15,11 @@ import {
   presetsValueDefault,
   subPresetDefaultValue,
 } from '@/types';
+
+import { CustomInput } from '@/components/Form/CustomInput';
+import { BodyText } from '@/components/Typography';
+
+import styles from '../styles/PresetItem.less';
 
 const PresetElementInput: FC<PresetElementInputProp> = ({ order, onChange, value }) => {
   return (
@@ -92,8 +98,7 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
               level={3}
               customClass={
                 isEmpty(presetItem.is_collapse) ? styles.font_weight_300 : styles.font_weight_600
-              }
-            >
+              }>
               Preset Name
             </BodyText>
             <ArrowIcon
@@ -135,8 +140,7 @@ export const PresetItem: FC<PresetItemProps> = ({ handleOnClickDelete, onChangeV
             ${isEmpty(presetItem.is_collapse) ? styles['bottomMedium'] : styles['bottomBlack']}`}
           header={PanelHeader()}
           key={presetItem.is_collapse}
-          showArrow={false}
-        >
+          showArrow={false}>
           <div>
             {presetItem.subs.map((preset, index) => (
               <div className={styles.form} key={index}>

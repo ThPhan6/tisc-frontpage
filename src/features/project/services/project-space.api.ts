@@ -1,6 +1,6 @@
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
 
 import type {
   DataTableResponse,

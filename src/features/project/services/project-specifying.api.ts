@@ -1,9 +1,11 @@
-import { getResponseMessage } from '@/helper/common';
-import { SpecifyingProductRequestBody } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
-import { GeneralData } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
+
+import { getResponseMessage } from '@/helper/common';
+
 import { UnitType } from '../types/project-specifying.type';
+import { SpecifyingProductRequestBody } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
+import { GeneralData } from '@/types';
 
 export async function getUnitTypeList() {
   return request<{ data: UnitType[] }>(`/api/unit-type/get-list`, {

@@ -1,15 +1,21 @@
+import { useState } from 'react';
+
+import { MESSAGE_ERROR } from '@/constants/message';
+import { Col, Row } from 'antd';
+
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
+
+import { retrieveFavouriteProduct, skipFavouriteProduct } from '../services';
+import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+import { getUserInfoMiddleware } from '@/pages/LandingPage/services/api';
+
+import { FavouriteRetrieve } from '../types';
+
 import CustomButton from '@/components/Button';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { BodyText, MainTitle } from '@/components/Typography';
-import { MESSAGE_ERROR } from '@/constants/message';
-import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
-import { getUserInfoMiddleware } from '@/pages/LandingPage/services/api';
-import { retrieveFavouriteProduct, skipFavouriteProduct } from './services';
-import { FavouriteRetrieve } from './types';
-import { Col, Row } from 'antd';
-import { useState } from 'react';
+
 import styles from './FavouriteForm.less';
 
 const FavouriteForm = () => {
@@ -105,8 +111,7 @@ const FavouriteForm = () => {
                 size="small"
                 properties="rounded"
                 buttonClass={styles.skipButton}
-                onClick={onSkipForm}
-              >
+                onClick={onSkipForm}>
                 Skip
               </CustomButton>
             </div>

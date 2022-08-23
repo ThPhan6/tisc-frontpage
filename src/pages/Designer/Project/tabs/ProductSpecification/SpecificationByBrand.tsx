@@ -1,16 +1,19 @@
-import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import { TableColumnItem } from '@/components/Table/types';
-import { getSpecifiedProductsByBrand } from '@/features/project/services';
 import { FC, useRef } from 'react';
-import { ProductItemBrand, SpecifiedProductByBrand } from '@/features/project/types';
-import { showImageUrl } from '@/helper/utils';
-import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
+
 import {
   onCellCancelled,
   renderActionCell,
   renderStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
+import { getSpecifiedProductsByBrand } from '@/features/project/services';
+import { showImageUrl } from '@/helper/utils';
+
+import { TableColumnItem } from '@/components/Table/types';
+import { ProductItemBrand, SpecifiedProductByBrand } from '@/features/project/types';
+
+import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 
 const COL_WIDTH_BRAND = {
   brand: 124,

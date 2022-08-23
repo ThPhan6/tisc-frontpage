@@ -1,29 +1,35 @@
-import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
-import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
-import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/ic-share.svg';
-import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign-2.svg';
-import ProductPlaceHolderImage from '@/assets/images/product-placeholder.png';
-import { ReactComponent as UploadIcon } from '@/assets/icons/action-upload-icon.svg';
-import { ReactComponent as AddMoreIcon } from '@/assets/icons/circle-plus-48.svg';
-import { ReactComponent as DeleteIcon } from '@/assets/icons/trash-icon-12.svg';
-import { BodyText } from '@/components/Typography';
-import { IMAGE_ACCEPT_TYPES } from '@/constants/util';
-import { getBase64, showImageUrl } from '@/helper/utils';
-import { useAppSelector } from '@/reducers';
-import { Col, message, Row, Upload } from 'antd';
-import type { UploadProps } from 'antd/es/upload';
-import type { UploadFile } from 'antd/es/upload/interface';
 import React, { FC, ReactNode, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import styles from './detail.less';
-import ShareViaEmail from '@/components/ShareViaEmail/index';
-import { useBoolean, useCheckPermission } from '@/helper/hook';
+
+import { IMAGE_ACCEPT_TYPES } from '@/constants/util';
+import { Col, Row, Upload, message } from 'antd';
+import type { UploadProps } from 'antd/es/upload';
+import type { UploadFile } from 'antd/es/upload/interface';
+
+import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
+import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
+import { ReactComponent as UploadIcon } from '@/assets/icons/action-upload-icon.svg';
+import { ReactComponent as AddMoreIcon } from '@/assets/icons/circle-plus-48.svg';
+import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign-2.svg';
+import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/ic-share.svg';
+import { ReactComponent as DeleteIcon } from '@/assets/icons/trash-icon-12.svg';
+import ProductPlaceHolderImage from '@/assets/images/product-placeholder.png';
+
 import { likeProductById } from '@/features/product/services';
+import { useBoolean, useCheckPermission } from '@/helper/hook';
+import { getBase64, showImageUrl } from '@/helper/utils';
+
+import { ProductKeyword } from '../types';
 import { setPartialProductDetail, setProductDetailImage } from '@/features/product/reducers';
+import { useAppSelector } from '@/reducers';
+
 import SmallIconButton from '@/components/Button/SmallIconButton';
 import { CustomInput } from '@/components/Form/CustomInput';
-import { ProductKeyword } from '../types';
+import ShareViaEmail from '@/components/ShareViaEmail/index';
+import { BodyText } from '@/components/Typography';
+
 import AssignProductModal from '../modals/AssignProductModal';
+import styles from './detail.less';
 
 const ActionItem: FC<{ onClick: () => void; label: string; icon: ReactNode }> = ({
   icon,
@@ -42,16 +48,14 @@ const ActionItem: FC<{ onClick: () => void; label: string; icon: ReactNode }> = 
 
 const ProductImagePreview: React.FC = () => {
   const dispatch = useDispatch();
-  const { images, is_liked, id, favorites, keywords } = useAppSelector(
-    (state) => state.product.details,
-  );
+  const product = useAppSelector((state) => state.product.details);
   const showShareEmailModal = useBoolean();
   const showAssignProductModal = useBoolean();
   const isDesignerUser = useCheckPermission('Design Admin');
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
-  const [liked, setLiked] = useState(is_liked);
-  const likeCount = (favorites ?? 0) + (liked ? 1 : 0);
+  const [liked, setLiked] = useState(product.is_liked);
+  const likeCount = (product.favorites ?? 0) + (liked ? 1 : 0);
 
   const handleLoadPhoto = async (file: UploadFile<any>, type: 'first' | 'last' = 'first') => {
     const imageBase64 = await getBase64(file.originFileObj);
@@ -74,7 +78,7 @@ const ProductImagePreview: React.FC = () => {
       }
     },
     beforeUpload: (_file, fileList) => {
-      if (images.length + fileList.length > 9) {
+      if (product.images.length + fileList.length > 9) {
         message.error('Max photos is 9');
         return false;
       }
@@ -104,7 +108,7 @@ const ProductImagePreview: React.FC = () => {
 
   const deletePhoto = (e: React.ChangeEvent<any>, index: number) => {
     e.stopPropagation();
-    const newPhotos = images.filter((_photo, key) => {
+    const newPhotos = product.images.filter((_photo, key) => {
       return index !== key;
     });
     dispatch(
@@ -115,7 +119,7 @@ const ProductImagePreview: React.FC = () => {
   };
 
   const likeProduct = () => {
-    likeProductById(id ?? '').then((isSuccess) => {
+    likeProductById(product.id ?? '').then((isSuccess) => {
       if (isSuccess) {
         setLiked(!liked);
       }
@@ -129,13 +133,13 @@ const ProductImagePreview: React.FC = () => {
           <BodyText level={4} customClass={styles.imageNaming}>
             Image naming:
           </BodyText>
-          {keywords.map((value, index) => (
+          {product.keywords.map((value, index) => (
             <CustomInput
               key={index}
               placeholder={`keyword${index + 1}`}
               value={value}
               onChange={(e) => {
-                const newKeywords = [...keywords] as ProductKeyword;
+                const newKeywords = [...product.keywords] as ProductKeyword;
                 newKeywords[index] = e.target.value;
                 dispatch(
                   setPartialProductDetail({
@@ -187,8 +191,8 @@ const ProductImagePreview: React.FC = () => {
       <div className={styles.productImageWrapper}>
         <Upload.Dragger {...primaryProps}>
           <div className={styles.uploadZoneContent}>
-            {images[0] ? (
-              <img src={showImageUrl(images[0])} className={styles.primaryPhoto} />
+            {product.images[0] ? (
+              <img src={showImageUrl(product.images[0])} className={styles.primaryPhoto} />
             ) : isTiscAdmin ? (
               <div className={styles.dropzoneNote}>
                 <BodyText level={3}>
@@ -224,7 +228,7 @@ const ProductImagePreview: React.FC = () => {
         <Row className={styles.photoList} gutter={8}>
           <Col span={isTiscAdmin ? 18 : 24}>
             <Row gutter={8} className={styles.listWrapper}>
-              {images
+              {product.images
                 .filter((_item, index) => index !== 0)
                 .map((image, key) => (
                   <Col span={8} key={key}>
@@ -268,13 +272,14 @@ const ProductImagePreview: React.FC = () => {
         <ShareViaEmail
           visible={showShareEmailModal.value}
           setVisible={showShareEmailModal.setValue}
+          product={product}
         />
 
-        {id && (
+        {product.id && (
           <AssignProductModal
             visible={showAssignProductModal.value}
             setVisible={showAssignProductModal.setValue}
-            productId={id}
+            productId={product.id}
           />
         )}
       </div>

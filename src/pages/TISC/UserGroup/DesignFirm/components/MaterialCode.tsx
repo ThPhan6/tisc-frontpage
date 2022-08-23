@@ -1,9 +1,13 @@
+import { FC } from 'react';
+
+import { Col, Collapse, Row } from 'antd';
+
+import { MaterialCodeDesignFirm } from '@/types';
+
+import GeneralData from '../../components/GeneralData';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { BodyText, Title } from '@/components/Typography';
-import { MaterialCodeDesignFirm } from '@/types';
-import { Col, Collapse, Row } from 'antd';
-import { FC } from 'react';
-import GeneralData from '../../components/GeneralData';
+
 import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
 import indexStyles from '../../styles/index.less';
 import styles from '../styles/ComponentViewDesign.less';
@@ -31,8 +35,7 @@ const MaterialCode: FC<MaterialCodeProp> = ({ materialCodeData }) => {
                       />
                     }
                     key={index}
-                    collapsible={item.count === 0 ? 'disabled' : undefined}
-                  >
+                    collapsible={item.count === 0 ? 'disabled' : undefined}>
                     <Collapse {...CollapseLevel2Props}>
                       {item.subs.map((listMaterial, materialIndex) => (
                         <Collapse.Panel
@@ -45,8 +48,7 @@ const MaterialCode: FC<MaterialCodeProp> = ({ materialCodeData }) => {
                             />
                           }
                           key={`${index}-${materialIndex}`}
-                          collapsible={listMaterial.count === 0 ? 'disabled' : undefined}
-                        >
+                          collapsible={listMaterial.count === 0 ? 'disabled' : undefined}>
                           <div className={`${indexStyles.info} ${styles.teamInfo}`}>
                             {listMaterial.codes.map((materialCode, idx) => (
                               <table className={styles.list_material_table} key={idx}>
@@ -60,8 +62,7 @@ const MaterialCode: FC<MaterialCodeProp> = ({ materialCodeData }) => {
                                     <BodyText
                                       level={5}
                                       fontFamily="Roboto"
-                                      customClass={styles.colorMaterial}
-                                    >
+                                      customClass={styles.colorMaterial}>
                                       {materialCode.description}
                                     </BodyText>
                                   </td>

@@ -1,9 +1,11 @@
 import { FC } from 'react';
-import { HeaderDropdown, MenuIconProps } from '../HeaderDropdown';
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
+
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
+import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
+
+import { HeaderDropdown, MenuIconProps } from '../HeaderDropdown';
 
 interface ActionFormProps {
   actionItems?: MenuIconProps[];
@@ -28,8 +30,7 @@ export const ActionForm: FC<ActionFormProps> = ({
       align={{ offset: offsetAlign }}
       trigger={[trigger]}
       placement={placement}
-      items={actionItems}
-    >
+      items={actionItems}>
       {actionIcon || <ActionIcon />}
     </HeaderDropdown>
   );

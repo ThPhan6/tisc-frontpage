@@ -1,21 +1,28 @@
+import React, { useEffect, useState } from 'react';
+
+import { MESSAGE_ERROR } from '@/constants/message';
+
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
+
+import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+import { getDepartmentList } from '@/services';
+
+import type { RadioValue } from '@/components/CustomRadio/types';
+import { DepartmentData, TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
+
 import { CustomRadio } from '@/components/CustomRadio';
 import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
-import type { RadioValue } from '@/components/CustomRadio/types';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { Status } from '@/components/Form/Status';
-import { MESSAGE_ERROR } from '@/constants/message';
-import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
-import { getDepartmentList } from '@/services';
-import { DepartmentData, TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
-import React, { useEffect, useState } from 'react';
+
 import styles from '../styles/TeamProfilesEntryForm.less';
 import BrandAccessLevelModal from './BrandAccessLevelModal';
 import LocationModal from './LocationModal';
 import TISCAccessLevelModal from './TISCAccessLevelModal';
+
 // import { message } from 'antd';
 
 const GenderRadio = [
@@ -105,8 +112,7 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
         handleCancel={onCancel}
         handleSubmit={() => handleSubmit()}
         submitButtonStatus={submitButtonStatus}
-        customClass={styles.entry_form}
-      >
+        customClass={styles.entry_form}>
         {/* First Name */}
         <InputGroup
           label="First Name"
@@ -178,8 +184,7 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
           layout="vertical"
           formClass={`${styles.department} ${
             departmentData.name !== '' ? styles.activeDepartment : ''
-          }`}
-        >
+          }`}>
           <CollapseRadioList
             options={departments.map((department) => {
               return {
@@ -285,8 +290,7 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
               accessModal: true,
               workLocationModal: false,
             })
-          }
-        >
+          }>
           <CustomRadio
             options={AccessLevelDataRole}
             value={data.role_id}

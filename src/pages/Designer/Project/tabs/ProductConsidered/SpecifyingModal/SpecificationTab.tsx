@@ -1,17 +1,21 @@
+import type { FC } from 'react';
+
 import { Tooltip } from 'antd';
-import { CustomRadio } from '@/components/CustomRadio';
-import { CustomCheckbox } from '@/components/CustomCheckbox';
-import { Title } from '@/components/Typography';
-import CustomCollapse from '@/components/Collapse';
+
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
-import { ProductAttributeFormInput } from '@/features/product/types';
+
 import type { RadioValue } from '@/components/CustomRadio/types';
+import { ProductAttributeFormInput } from '@/features/product/types';
+import type { SpecificationAttributeGroup } from '@/features/project/types';
+
+import CustomCollapse from '@/components/Collapse';
+import { CustomCheckbox } from '@/components/CustomCheckbox';
+import { CustomRadio } from '@/components/CustomRadio';
+import { Title } from '@/components/Typography';
 import {
   AttributeOption,
   ProductAttributeLine,
 } from '@/features/product/components/ProductAttributeComponent/AttributeComponent';
-import type { FC } from 'react';
-import type { SpecificationAttributeGroup } from '@/features/project/types';
 
 import styles from './styles/specification-tab.less';
 
@@ -26,8 +30,7 @@ const ReferToDesignLabel = () => {
         }
         overlayInnerStyle={{
           width: 197,
-        }}
-      >
+        }}>
         <WarningIcon />
       </Tooltip>
     </Title>
@@ -126,8 +129,7 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
                   onChange={() => onCheckedSpecification(groupIndex)}
                 />
               </div>
-            }
-          >
+            }>
             {group.attributes.map((attribute, attributeIndex) => {
               const curAttribute = specification_attribute_groups[groupIndex]?.attributes?.find(
                 (el) => el.id === attribute.id,

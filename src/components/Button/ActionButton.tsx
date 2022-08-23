@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { BodyText } from '../Typography';
 import styles from './styles/index.less';
 
@@ -24,8 +25,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
       className={`${styles.container} ${styles.actionButton} ${className ?? ''} ${
         active ? styles.active : ''
       }`}
-      {...props}
-    >
+      {...props}>
       {icon}
 
       <BodyText level={6} fontFamily="Roboto">

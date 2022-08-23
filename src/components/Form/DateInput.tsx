@@ -1,11 +1,16 @@
-import React, { useState, useRef, useLayoutEffect, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+
 import { DatePicker } from 'antd';
-import { ReactComponent as CalendarIcon } from '@/assets/icons/calendar-icon.svg';
 import type { DatePickerProps } from 'antd';
-import moment, { Moment } from 'moment';
+
+import { ReactComponent as CalendarIcon } from '@/assets/icons/calendar-icon.svg';
+
 import { uniqueId } from 'lodash';
+
 import CustomButton from '@/components/Button';
+
 import styles from './styles/date-input.less';
+import moment, { Moment } from 'moment';
 
 interface DateInputProps {
   value?: string | null;
@@ -84,8 +89,7 @@ const DateInput: React.FC<DateInputProps> = ({ value, onChange, containerClass }
                 variant="primary"
                 properties="rounded"
                 buttonClass="cancel-btn"
-                onClick={handleDoneButton}
-              >
+                onClick={handleDoneButton}>
                 Done
               </CustomButton>
             </div>

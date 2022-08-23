@@ -1,6 +1,9 @@
-import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
 import { FC } from 'react';
+
+import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
+
 import { CustomSaveButtonProps } from './types';
+
 import styles from '../Button/styles/index.less';
 import { BodyText } from '../Typography';
 import classNames from 'classnames';
@@ -12,8 +15,7 @@ export const CustomSaveButton: FC<CustomSaveButtonProps> = ({ isSuccess, onClick
         styles.sizeButton,
         isSuccess ? styles.customButtonSuccess : styles.customButton,
       )}
-      onClick={onClick}
-    >
+      onClick={onClick}>
       {isSuccess ? (
         <CheckSuccessIcon />
       ) : (

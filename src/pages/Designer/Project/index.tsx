@@ -1,28 +1,34 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { FilterStatusIcons } from './constants/filter';
+import { FilterValues, GlobalFilter } from './constants/filter';
+import { PATH } from '@/constants/path';
+import { PageContainer } from '@ant-design/pro-layout';
+import { message } from 'antd';
+
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
+
+import {
+  deleteProject,
+  getProjectPagination,
+  getProjectSummary,
+} from '@/features/project/services';
+import { confirmDelete } from '@/helper/common';
+import { pushTo } from '@/helper/history';
+import { isEmpty } from 'lodash';
+
+import type { TableColumnItem } from '@/components/Table/types';
+import type { ProjectListProps, ProjectSummaryData } from '@/features/project/types';
+
+import ProjectListHeader from './components/ProjectListHeader';
 import { ActionMenu } from '@/components/Action';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { BodyText } from '@/components/Typography';
-import type { TableColumnItem } from '@/components/Table/types';
-import { confirmDelete } from '@/helper/common';
-import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
-import {
-  getProjectPagination,
-  deleteProject,
-  getProjectSummary,
-} from '@/features/project/services';
-import type { ProjectListProps, ProjectSummaryData } from '@/features/project/types';
-import ProjectListHeader from './components/ProjectListHeader';
 import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
-import { PageContainer } from '@ant-design/pro-layout';
-import { FilterStatusIcons } from './constants/filter';
-import { isEmpty } from 'lodash';
-import { message } from 'antd';
-import { FilterValues, GlobalFilter } from './constants/filter';
-import moment from 'moment';
+import { BodyText } from '@/components/Typography';
+
 import styles from './styles/project-list.less';
+import moment from 'moment';
 
 const ProjectList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -113,8 +119,7 @@ const ProjectList: React.FC = () => {
           <BodyText
             level={5}
             fontFamily="Roboto"
-            customClass={`${styles.dueDayText} ${dueDay < 0 ? 'late' : ''}`}
-          >
+            customClass={`${styles.dueDayText} ${dueDay < 0 ? 'late' : ''}`}>
             {dueDay === 0 ? 'Today' : `${dueDay} ${suffix}`}
           </BodyText>
         );
@@ -163,8 +168,7 @@ const ProjectList: React.FC = () => {
             summaryData={summaryData}
           />
         );
-      }}
-    >
+      }}>
       <CustomTable
         rightAction={<CustomPlusButton onClick={goToCreatePage} />}
         title={'PROJECTS'}

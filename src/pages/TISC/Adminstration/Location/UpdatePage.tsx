@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import LocationEntryForm from '@/components/Location/LocationEntryForm';
-import { useBoolean } from '@/helper/hook';
-import LoadingPageCustomize from '@/components/LoadingPage';
-import { LocationForm } from '@/types';
-import { updateLocation, getLocationById } from '@/services';
-import { useParams } from 'umi';
+import React, { useEffect, useState } from 'react';
+
 import { PATH } from '@/constants/path';
+import { useParams } from 'umi';
+
 import { pushTo } from '@/helper/history';
+import { useBoolean } from '@/helper/hook';
+import { getLocationById, updateLocation } from '@/services';
+
+import { LocationForm } from '@/types';
+
+import LoadingPageCustomize from '@/components/LoadingPage';
+import LocationEntryForm from '@/components/Location/LocationEntryForm';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 

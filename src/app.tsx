@@ -1,19 +1,25 @@
-import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
-import { PageLoading } from '@ant-design/pro-layout';
-import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
-import { history } from 'umi';
-import defaultSettings from '../config/defaultSettings';
 import React from 'react';
 import { Provider } from 'react-redux';
-import store, { persistor } from './reducers';
 import { PersistGate } from 'redux-persist/integration/react';
-import { ConfigProvider } from 'antd';
-import { getUserInfoMiddleware } from './pages/LandingPage/services/api';
+
 import { PATH, PUBLIC_PATH } from './constants/path';
-import type { UserInfoDataProp } from './pages/LandingPage/types';
-import Header from '@/components/Header';
-import AsideMenu from './components/Menu/AsideMenu';
 import { UserHomePagePaths } from '@/constants/user.constant';
+import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import { PageLoading } from '@ant-design/pro-layout';
+import { ConfigProvider } from 'antd';
+import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
+import { history } from 'umi';
+
+import { getUserInfoMiddleware } from './pages/LandingPage/services/api';
+
+import type { UserInfoDataProp } from './pages/LandingPage/types';
+import store, { persistor } from './reducers';
+
+import AsideMenu from './components/Menu/AsideMenu';
+import Header from '@/components/Header';
+
+import defaultSettings from '../config/defaultSettings';
+
 // config request umi
 const errorHandler = function (error: any) {
   throw error;

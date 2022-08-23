@@ -1,10 +1,14 @@
 import React from 'react';
-import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
+
+import { GlobalFilter, ProjectFilters } from '../../constants/filter';
+
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
-import { BodyText } from '@/components/Typography';
-import { HeaderDropdown } from '@/components/HeaderDropdown';
-import { ProjectFilters, GlobalFilter } from '../../constants/filter';
+import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
+
 import { ProjectFilterValueProps } from '@/features/project/types';
+
+import { HeaderDropdown } from '@/components/HeaderDropdown';
+import { BodyText } from '@/components/Typography';
 
 import styles from '../../styles/project-filter.less';
 
@@ -25,8 +29,7 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({ selectedFilter, setSelect
       <BodyText
         level={5}
         fontFamily="Roboto"
-        customClass={`${styles.topFilter} ${isGlobalFilter ? '' : 'active-filter'}`}
-      >
+        customClass={`${styles.topFilter} ${isGlobalFilter ? '' : 'active-filter'}`}>
         {isGlobalFilter ? (
           'view'
         ) : (
@@ -50,8 +53,7 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({ selectedFilter, setSelect
             ),
           };
         })}
-        trigger={['click']}
-      >
+        trigger={['click']}>
         <BodyText level={6} fontFamily="Roboto" customClass={styles.projectFilterLabel}>
           <span>Project Status</span>
           <DropdownIcon />

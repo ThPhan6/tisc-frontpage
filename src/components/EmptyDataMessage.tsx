@@ -1,4 +1,5 @@
 import { FC } from 'react';
+
 import { BodyText } from './Typography';
 
 export const EmptyDataMessage: FC<{ message: string }> = ({ message }) => {

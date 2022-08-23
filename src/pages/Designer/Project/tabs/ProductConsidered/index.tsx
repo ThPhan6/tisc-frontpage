@@ -1,36 +1,41 @@
-import { BodyText } from '@/components/Typography';
 import React, { useRef } from 'react';
-import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
-import { ReactComponent as MenuIcon } from '@/assets/icons/ic-menu.svg';
+
+import { ItemType } from 'antd/lib/menu/hooks/useItems';
+import { useParams } from 'umi';
+
 import { ReactComponent as GridIcon } from '@/assets/icons/ic-grid.svg';
-import ActionButton from '@/components/Button/ActionButton';
+import { ReactComponent as MenuIcon } from '@/assets/icons/ic-menu.svg';
+import { ReactComponent as CancelIcon } from '@/assets/icons/ic-square-cancel.svg';
+import { ReactComponent as CheckIcon } from '@/assets/icons/ic-square-check.svg';
+
+import { useSpecifyingModal } from '../../hooks';
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
+import {
+  getConsideredProducts,
+  removeProductFromProject,
+  updateProductConsiderStatus,
+} from '@/features/project/services';
+import { confirmDelete } from '@/helper/common';
 import { useBoolean } from '@/helper/hook';
-import { ActionMenu } from '@/components/Action';
+import { showImageUrl } from '@/helper/utils';
+
 import { TableColumnItem } from '@/components/Table/types';
+import { ProductItem } from '@/features/product/types';
 import {
   AssigningStatus,
   ConsideredProduct,
   ConsideredProjectArea,
   ConsideredProjectRoom,
 } from '@/features/project/types';
-import {
-  getConsideredProducts,
-  removeProductFromProject,
-  updateProductConsiderStatus,
-} from '@/features/project/services';
-import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
+
+import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
+import { ActionMenu } from '@/components/Action';
+import ActionButton from '@/components/Button/ActionButton';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import { useParams } from 'umi';
-import { showImageUrl } from '@/helper/utils';
-import { ProductItem } from '@/features/product/types';
-import cardStyles from '@/features/product/components/ProductCard.less';
-import ProductCard from '@/features/product/components/ProductCard';
+import { BodyText } from '@/components/Typography';
 import { CustomDropDown } from '@/features/product/components';
-import { ItemType } from 'antd/lib/menu/hooks/useItems';
-import { ReactComponent as CheckIcon } from '@/assets/icons/ic-square-check.svg';
-import { ReactComponent as CancelIcon } from '@/assets/icons/ic-square-cancel.svg';
-import { confirmDelete } from '@/helper/common';
-import { useSpecifyingModal } from '../../hooks';
+import ProductCard from '@/features/product/components/ProductCard';
+import cardStyles from '@/features/product/components/ProductCard.less';
 
 const COL_WIDTH = {
   zones: 165,
@@ -89,8 +94,7 @@ const ProductConsidered: React.FC = () => {
         textCapitalize={false}
         items={menuItems}
         menuStyle={{ width: 160, height: 'auto' }}
-        labelProps={{ className: 'flex-between' }}
-      >
+        labelProps={{ className: 'flex-between' }}>
         {record.status_name}
       </CustomDropDown>
     );
@@ -352,8 +356,7 @@ const ProductConsidered: React.FC = () => {
     return (
       <div
         className={cardStyles.productCardContainer}
-        style={{ padding: '16px 16px 8px', maxWidth: 'calc(83.33vw - 40px)' }}
-      >
+        style={{ padding: '16px 16px 8px', maxWidth: 'calc(83.33vw - 40px)' }}>
         {products.map((item, index: number) => (
           <div className={cardStyles.productCardItemWrapper} key={index}>
             <ProductCard
@@ -381,8 +384,7 @@ const ProductConsidered: React.FC = () => {
           level={4}
           fontFamily="Cormorant-Garamond"
           color="mono-color"
-          style={{ fontWeight: '600', marginRight: 4 }}
-        >
+          style={{ fontWeight: '600', marginRight: 4 }}>
           View By:
         </BodyText>
 

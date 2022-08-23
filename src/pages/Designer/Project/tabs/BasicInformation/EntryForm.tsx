@@ -1,26 +1,30 @@
 import type { FC } from 'react';
-import React, { useState, useEffect } from 'react';
-import InputGroup from '@/components/EntryForm/InputGroup';
-import CountryModal from '@/components/Location/CountryModal';
-import StateModal from '@/components/Location/StateModal';
-import CityModal from '@/components/Location/CityModal';
-import { FormGroup } from '@/components/Form';
-import DateInput from '@/components/Form/DateInput';
-import { CustomTextArea } from '@/components/Form/CustomTextArea';
-import type { ProjectBodyRequest } from '@/features/project/types';
-import type { GeneralData } from '@/types';
-import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
-import { CustomRadio } from '@/components/CustomRadio';
-import type { RadioValue } from '@/components/CustomRadio/types';
+import React, { useEffect, useState } from 'react';
+
+import { MESSAGE_ERROR } from '@/constants/message';
+
 import {
   getProjectBuildingTypes,
-  getProjectTypes,
   getProjectMeasurementUnits,
+  getProjectTypes,
 } from '@/features/project/services';
+import { isEmptySpace, messageError, messageErrorType, validatePostalCode } from '@/helper/utils';
+
+import type { RadioValue } from '@/components/CustomRadio/types';
+import type { ProjectBodyRequest } from '@/features/project/types';
+import type { GeneralData } from '@/types';
+
+import { CustomRadio } from '@/components/CustomRadio';
+import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
+import InputGroup from '@/components/EntryForm/InputGroup';
+import { FormGroup } from '@/components/Form';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import DateInput from '@/components/Form/DateInput';
+import CityModal from '@/components/Location/CityModal';
+import CountryModal from '@/components/Location/CountryModal';
+import StateModal from '@/components/Location/StateModal';
 
 import styles from '../../styles/basic-information.less';
-import { isEmptySpace, messageError, messageErrorType, validatePostalCode } from '@/helper/utils';
-import { MESSAGE_ERROR } from '@/constants/message';
 
 interface LocationEntryFormProps {
   data: ProjectBodyRequest;
@@ -222,8 +226,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         label="Project Type"
         required
         layout="vertical"
-        formClass={`${styles.formGroup} ${projectTypeData.name !== '' ? styles.activeText : ''}`}
-      >
+        formClass={`${styles.formGroup} ${projectTypeData.name !== '' ? styles.activeText : ''}`}>
         <CollapseRadioList
           options={projectTypes.map((projectType) => {
             return {
@@ -247,8 +250,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         label="Building Type"
         required
         layout="vertical"
-        formClass={`${styles.formGroup} ${buildingTypeData.name !== '' ? styles.activeText : ''}`}
-      >
+        formClass={`${styles.formGroup} ${buildingTypeData.name !== '' ? styles.activeText : ''}`}>
         <CollapseRadioList
           options={buildingTypes.map((buildingType) => {
             return {
@@ -273,8 +275,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         label="Measurement Unit"
         required={true}
         layout="vertical"
-        formClass={styles.form_group}
-      >
+        formClass={styles.form_group}>
         <CustomRadio
           options={measurementUnits}
           value={data.measurement_unit}

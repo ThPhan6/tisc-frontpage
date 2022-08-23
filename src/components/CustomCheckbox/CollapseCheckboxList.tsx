@@ -1,8 +1,11 @@
 import type { FC } from 'react';
-import { CustomCheckbox } from '@/components/CustomCheckbox';
+
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
-import { BodyText } from '@/components/Typography';
+
 import CustomCollapse from '@/components/Collapse';
+import { CustomCheckbox } from '@/components/CustomCheckbox';
+import { BodyText } from '@/components/Typography';
+
 import styles from './styles/collapseCheckboxList.less';
 
 interface CollapseCheckboxListProps {
@@ -31,8 +34,7 @@ const CollapseCheckboxList: FC<CollapseCheckboxListProps> = ({
           {placeholder}
         </BodyText>
       }
-      className={`${styles.functionTypeDropdown} ${containerClass}`}
-    >
+      className={`${styles.functionTypeDropdown} ${containerClass}`}>
       <CustomCheckbox
         options={options}
         isCheckboxList

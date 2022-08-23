@@ -1,7 +1,10 @@
+import { FC } from 'react';
+
+import { CategoryEntryFormProps, SubcategoryValueProp, subcategoryValueDefault } from '@/types';
+
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import { FC } from 'react';
-import { CategoryEntryFormProps, subcategoryValueDefault, SubcategoryValueProp } from '@/types';
+
 import { SubcategoryItem } from './SubcategoryItem';
 
 export const CategoryEntryForm: FC<CategoryEntryFormProps> = ({
@@ -54,8 +57,7 @@ export const CategoryEntryForm: FC<CategoryEntryFormProps> = ({
     <EntryFormWrapper
       handleSubmit={handleSubmit}
       handleCancel={handleCancel}
-      submitButtonStatus={submitButtonStatus}
-    >
+      submitButtonStatus={submitButtonStatus}>
       <FormNameInput
         HandleOnClickAddIcon={() => {
           setCategoryValue({

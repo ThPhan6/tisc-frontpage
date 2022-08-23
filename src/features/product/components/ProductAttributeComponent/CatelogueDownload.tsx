@@ -1,14 +1,20 @@
 import { useEffect } from 'react';
-import { useParams } from 'umi';
 import { useDispatch } from 'react-redux';
-import { useAppSelector } from '@/reducers';
-import { setProductCatelogue } from '@/features/product/reducers';
-import DynamicFormInput from '@/components/EntryForm/DynamicFormInput';
-import { useCheckPermission } from '@/helper/hook';
-import styles from './CatelogueDownload.less';
-import { getProductCatelogueByProductID } from '@/features/product/services';
-import { BodyText } from '@/components/Typography';
+
+import { useParams } from 'umi';
+
 import { ReactComponent as DownloadIconV2 } from '@/assets/icons/download-2-icon.svg';
+
+import { getProductCatelogueByProductID } from '@/features/product/services';
+import { useCheckPermission } from '@/helper/hook';
+
+import { setProductCatelogue } from '@/features/product/reducers';
+import { useAppSelector } from '@/reducers';
+
+import DynamicFormInput from '@/components/EntryForm/DynamicFormInput';
+import { BodyText } from '@/components/Typography';
+
+import styles from './CatelogueDownload.less';
 
 const DownloadContent = () => {
   const params = useParams<{ id: string }>();

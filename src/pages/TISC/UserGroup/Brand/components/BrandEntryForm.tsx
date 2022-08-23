@@ -1,14 +1,18 @@
-import { CustomRadio } from '@/components/CustomRadio';
+import React, { FC, useState } from 'react';
+
+import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
+
 import { RadioValue } from '@/components/CustomRadio/types';
+import { TISCUserGroupBrandForm, entryFormInput } from '@/types';
+
+import { CustomRadio } from '@/components/CustomRadio';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { Status } from '@/components/Form/Status';
-import React, { FC, useState } from 'react';
-import styles from '../styles/brandEntryForm.less';
-import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
-import { entryFormInput, TISCUserGroupBrandForm } from '@/types';
 import { BodyText } from '@/components/Typography';
+
+import styles from '../styles/brandEntryForm.less';
 
 interface BrandEntryFormValue {
   onCancel: () => void;
@@ -71,8 +75,7 @@ const BrandEntryForm: FC<BrandEntryFormValue> = ({
       handleCancel={onCancel}
       handleSubmit={handleSubmit}
       submitButtonStatus={submitButtonStatus}
-      contentClass={styles.contentEntryForm}
-    >
+      contentClass={styles.contentEntryForm}>
       {/* brand - company name */}
       <InputGroup
         label="Brand / Company Name"

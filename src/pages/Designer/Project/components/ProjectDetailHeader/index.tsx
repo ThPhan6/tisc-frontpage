@@ -1,12 +1,17 @@
 import React from 'react';
-import { BodyText, Title } from '@/components/Typography';
-import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
-import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
+
 import { ProjectTabKeys, ProjectTabs } from '../../constants/tab';
+import { PATH } from '@/constants/path';
+
+import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
+
+import { pushTo } from '@/helper/history';
+
+import { ProjectDetailProps } from '@/features/project/types';
+
 //
 import { CustomTabs } from '@/components/Tabs';
-import { ProjectDetailProps } from '@/features/project/types';
+import { BodyText, Title } from '@/components/Typography';
 
 import styles from '../../styles/project-detail-header.less';
 

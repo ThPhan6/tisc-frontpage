@@ -1,20 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { BodyText, MainTitle } from '@/components/Typography';
-import InputGroup from '@/components/EntryForm/InputGroup';
-import Popover from '@/components/Modal/Popover';
-import CustomCollapse from '@/components/Collapse';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
-import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
-import { ProductAttributeFormInput, ProductAttributeProps } from '@/features/product/types';
-import { useDispatch } from 'react-redux';
-import { setPartialProductDetail } from '@/features/product/reducers';
-import type { CheckboxValue } from '@/components/CustomCheckbox/types';
-import styles from '../detail.less';
+
 import { map, upperCase } from 'lodash';
-import { ProductAttributes, ProductSubAttributes } from '@/types';
-import { ProductAttributeSubItem } from './ProductAttributeSubItem';
+
 import { ProductInfoTab } from './types';
+import type { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { setPartialProductDetail } from '@/features/product/reducers';
+import { ProductAttributeFormInput, ProductAttributeProps } from '@/features/product/types';
+import { ProductAttributes, ProductSubAttributes } from '@/types';
+
+import CustomCollapse from '@/components/Collapse';
+import InputGroup from '@/components/EntryForm/InputGroup';
+import Popover from '@/components/Modal/Popover';
+import { BodyText, MainTitle } from '@/components/Typography';
+
+import styles from '../detail.less';
+import { ProductAttributeSubItem } from './ProductAttributeSubItem';
 
 const POPOVER_TITLE = {
   general: 'Select General Attributes',
@@ -199,8 +204,7 @@ const ProductAttributeItem: React.FC<ProductAttributeItemProps> = ({
             value={attributeItem.name}
             onChange={onChangeAttributeName}
           />
-        }
-      >
+        }>
         <div className="attribute-select-group">
           <div className="attribute-select-group-left" onClick={() => setVisible(true)}>
             <MainTitle level={4} customClass="group-heading-text">

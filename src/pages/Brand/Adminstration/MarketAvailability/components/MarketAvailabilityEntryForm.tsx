@@ -1,11 +1,15 @@
-import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
+import type { FC } from 'react';
+
+import { formatPhoneCode } from '@/helper/utils';
+import { upperCase } from 'lodash';
+
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import type { MarketAvailabilityDetailRegionCountry, MarketAvailabilityDetails } from '@/types';
+
+import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { BodyText, Title } from '@/components/Typography';
-import type { FC } from 'react';
-import { upperCase } from 'lodash';
-import { formatPhoneCode } from '@/helper/utils';
-import type { MarketAvailabilityDetails, MarketAvailabilityDetailRegionCountry } from '@/types';
+
 import styles from '../styles/MarketAvailabilityEntryForm.less';
 
 interface MarketAvailabilityEntryFormProps {
@@ -106,8 +110,7 @@ export const MarketAvailabilityEntryForm: FC<MarketAvailabilityEntryFormProps> =
               {data.total_available}
             </Title>
           </div>
-        }
-      >
+        }>
         <DropdownCheckboxList
           data={data.regions.map((region) => {
             return {

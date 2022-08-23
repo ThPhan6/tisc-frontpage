@@ -1,12 +1,17 @@
-import TextForm from '@/components/Form/TextForm';
-import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
+import { useEffect, useState } from 'react';
+
+import { Col, Collapse, Row } from 'antd';
+
 import { useGetParamId } from '@/helper/hook';
 import { getLocationByBrandId } from '@/services';
-import { LocationGroupedByCountry } from '@/types';
-import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
-import { useEffect, useState } from 'react';
+
+import { LocationGroupedByCountry } from '@/types';
+
 import GeneralData from '../../components/GeneralData';
+import TextForm from '@/components/Form/TextForm';
+import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
+
 import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
 import styles from '../../styles/index.less';
 
@@ -41,8 +46,7 @@ const BrandLocationDetail = () => {
                     key={index}
                     collapsible={
                       isEmpty(country.country_name) || country.count == 0 ? 'disabled' : undefined
-                    }
-                  >
+                    }>
                     <Collapse {...CollapseLevel2Props}>
                       {country.locations?.map((location, locationIndex) => (
                         <Collapse.Panel
@@ -50,8 +54,7 @@ const BrandLocationDetail = () => {
                             <RenderLabelHeader header={location.business_name} isSubHeader={true} />
                           }
                           key={`${index}-${locationIndex}`}
-                          collapsible={isEmpty(location.business_name) ? 'disabled' : undefined}
-                        >
+                          collapsible={isEmpty(location.business_name) ? 'disabled' : undefined}>
                           <div className={styles.info}>
                             <TextForm label="Registered Number">
                               {location.business_number ?? ''}

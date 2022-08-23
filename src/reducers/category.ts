@@ -1,6 +1,7 @@
+import type { CategoryListResponse } from '@/types';
+
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { CategoryListResponse } from '@/types';
 
 interface CategoryState {
   list: CategoryListResponse[];

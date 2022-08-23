@@ -1,20 +1,26 @@
 import { FC, useEffect, useState } from 'react';
-import { useAppSelector } from '@/reducers';
-import styles from './ProductVendor.less';
-import CustomCollapse from '@/components/Collapse';
-import { BodyText } from '@/components/Typography';
-import { useBoolean, useCheckPermission } from '@/helper/hook';
+
+import { useParams } from 'umi';
+
 import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
 import { ReactComponent as CatelogueIcon } from '@/assets/icons/catelogue-icon.svg';
-import { ReactComponent as LocationIcon } from '@/assets/icons/location-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
+import { ReactComponent as LocationIcon } from '@/assets/icons/location-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
-import Popover from '@/components/Modal/Popover';
-import { getBrandLocation, getDistributorLocation } from '@/services';
+
+import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { formatPhoneCode } from '@/helper/utils';
-import { LocationGroupedByCountry, DistributorProductMarket } from '@/types';
-import { useParams } from 'umi';
+import { getBrandLocation, getDistributorLocation } from '@/services';
+
+import { useAppSelector } from '@/reducers';
+import { DistributorProductMarket, LocationGroupedByCountry } from '@/types';
+
+import CustomCollapse from '@/components/Collapse';
+import Popover from '@/components/Modal/Popover';
+import { BodyText } from '@/components/Typography';
+
 import { CatelogueDownload } from './CatelogueDownload';
+import styles from './ProductVendor.less';
 
 interface BusinessDetailProps {
   business: string;
@@ -184,8 +190,7 @@ export const ProductVendor: FC = () => {
               Brand Profile
             </BodyText>
           </div>
-        }
-      >
+        }>
         <div className={styles.brandProfileInfo}>
           <div className="info-group">
             <BodyText level={4} customClass="brand-text-info-label">
@@ -256,8 +261,7 @@ export const ProductVendor: FC = () => {
               Catelogue & Download
             </BodyText>
           </div>
-        }
-      >
+        }>
         <CatelogueDownload />
       </CustomCollapse>
     </div>

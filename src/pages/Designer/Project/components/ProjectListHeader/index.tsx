@@ -1,9 +1,11 @@
 import React from 'react';
-import ProjectSummary from './ProjectSummary';
-import ProjectFilter from './ProjectFilter';
-import styles from '../../styles/project-list-header.less';
-import type { ProjectFilterProps } from './ProjectFilter';
+
 import type { ProjectSummaryData } from '@/features/project/types';
+
+import styles from '../../styles/project-list-header.less';
+import ProjectFilter from './ProjectFilter';
+import type { ProjectFilterProps } from './ProjectFilter';
+import ProjectSummary from './ProjectSummary';
 
 interface ProjectListHeaderProps extends ProjectFilterProps {
   summaryData?: ProjectSummaryData;

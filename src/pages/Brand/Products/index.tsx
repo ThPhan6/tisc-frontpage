@@ -1,17 +1,21 @@
 import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+
 import { PageContainer } from '@ant-design/pro-layout';
+
+import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
+
+import { resetProductState, setProductList } from '@/features/product/reducers';
+import type { ProductGetListParameter } from '@/features/product/types';
+import { useAppSelector } from '@/reducers';
+
 import {
+  CollapseProductList,
   FilterItem,
-  renderDropDownList,
   TopBarContainer,
   TopBarItem,
-  CollapseProductList,
+  renderDropDownList,
 } from '@/features/product/components';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '@/reducers';
-import { resetProductState, setProductList } from '@/features/product/reducers';
-import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
-import type { ProductGetListParameter } from '@/features/product/types';
 
 const BrandProductListPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -147,8 +151,7 @@ const BrandProductListPage: React.FC = () => {
             </>
           }
         />
-      )}
-    >
+      )}>
       <CollapseProductList />
     </PageContainer>
   );

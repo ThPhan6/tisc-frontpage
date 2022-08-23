@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import styles from '../detail.less';
-import { CustomTabPane, CustomTabs } from '@/components/Tabs';
-import { ProductAttributeContainer } from './ProductAttributeContainer';
-import { ProductInfoTab } from './types';
-import { ProductVendor } from './ProductVendor';
+
 import { getAllAttribute } from '@/services';
+
+import { ProductInfoTab } from './types';
 import { ProductAttributeByType } from '@/types';
+
+import { CustomTabPane, CustomTabs } from '@/components/Tabs';
+
+import styles from '../detail.less';
+import { ProductAttributeContainer } from './ProductAttributeContainer';
+import { ProductVendor } from './ProductVendor';
 
 const LIST_TAB = [
   { tab: 'GENERAL', key: 'general' },

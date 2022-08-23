@@ -1,14 +1,18 @@
-import LoadingPageCustomize from '@/components/LoadingPage';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { TableHeader } from '@/components/Table/TableHeader';
+import { useEffect, useState } from 'react';
+
 import { PATH } from '@/constants/path';
+import { useParams } from 'umi';
+
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
 import { getOneDistributor, updateDistributor } from '@/services';
+
 import { DistributorDetail, DistributorForm } from '@/types/distributor.type';
-import { useEffect, useState } from 'react';
-import { useParams } from 'umi';
+
 import { DistributorsEntryForm } from './components/DistributorsEntryForm';
+import LoadingPageCustomize from '@/components/LoadingPage';
+import { TableHeader } from '@/components/Table/TableHeader';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const DEFAULT_DISTRIBUTOR: DistributorDetail = {
   brand_id: '',

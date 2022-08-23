@@ -1,8 +1,12 @@
-import { useState, useEffect } from 'react';
-import { BodyText, Title } from '@/components/Typography';
+import { useEffect, useState } from 'react';
+
+import { capitalize, map, startCase, upperCase } from 'lodash';
+
 import { ProjectSummaryData } from '@/features/project/types';
+
+import { BodyText, Title } from '@/components/Typography';
+
 import styles from '../../styles/project-summary.less';
-import { startCase, upperCase, capitalize, map } from 'lodash';
 
 interface ProjectSummaryItemProps {
   label: string;
