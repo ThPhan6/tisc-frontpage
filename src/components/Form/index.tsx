@@ -24,6 +24,7 @@ export const FormGroup: FC<FormGroupProps> = ({
   labelColor = 'mono-color',
   onClick,
   messageType = 'normal',
+  placementBottomWidth,
   ...props
 }) => {
   const setFormLayout = () => {
