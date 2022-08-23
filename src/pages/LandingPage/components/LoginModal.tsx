@@ -139,7 +139,7 @@ export const LoginModal: FC<LoginModalProps> = ({
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={2} customClass={styles[`body${themeStyle()}`]}>
-            {quotation?.quotation}
+            &quot;{quotation?.quotation}&quot;
           </MainTitle>
           <BodyText level={2} customClass={styles[`title${themeStyle()}`]}>
             {quotation?.author}, {quotation?.identity}

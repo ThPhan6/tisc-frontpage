@@ -60,7 +60,6 @@ const getSelectedDistributors = (locationGroup: DistributorProductMarket[], sele
     label: selectedLocation ? (
       <BusinessDetail
         business={selectedLocation.name}
-        type={` ${selectedLocation.last_name} ${selectedLocation.first_name} `}
         address={`${selectedLocation.address}, ${
           selectedLocation.city_name !== '' ? `${selectedLocation.city_name},` : ''
         } ${selectedLocation.state_name !== '' ? `${selectedLocation.state_name},` : ''} ${
@@ -190,7 +189,6 @@ const VendorTab: FC<VendorTabProps> = ({
     location ? (
       <BusinessDetail
         business={location?.name ?? ''}
-        type={` ${location.last_name} ${location.first_name} `}
         address={`${location.address}, ${
           location.city_name !== '' ? `${location.city_name},` : ''
         } ${location.state_name !== '' ? `${location.state_name},` : ''} ${location.country_name}`}
@@ -352,7 +350,6 @@ const VendorTab: FC<VendorTabProps> = ({
                 label: (
                   <BusinessDetail
                     business={distributor.name}
-                    type={`${distributor.last_name} ${distributor.first_name}`}
                     address={`${distributor.address}, ${
                       distributor.city_name !== '' ? `${distributor.city_name},` : ''
                     } ${distributor.state_name !== '' ? `${distributor.state_name},` : ''} ${
