@@ -58,8 +58,7 @@ export async function getInitialState(): Promise<{
   const token = localStorage.getItem('access_token') || '';
   const fetchUserInfo = async () => {
     try {
-      const msg = await getUserInfoMiddleware();
-      return msg;
+      return await getUserInfoMiddleware();
     } catch (error) {
       localStorage.clear();
     }

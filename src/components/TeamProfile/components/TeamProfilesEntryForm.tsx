@@ -23,8 +23,6 @@ import BrandAccessLevelModal from './BrandAccessLevelModal';
 import LocationModal from './LocationModal';
 import TISCAccessLevelModal from './TISCAccessLevelModal';
 
-// import { message } from 'antd';
-
 const GenderRadio = [
   { label: 'Male', value: '1' },
   { label: 'Female', value: '0' },

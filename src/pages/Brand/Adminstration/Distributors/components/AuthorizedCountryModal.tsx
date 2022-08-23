@@ -39,7 +39,7 @@ const AuthorizedCountryModal: FC<{
     const newData: Country[] = [];
     let authorCountryData: CheckboxValue[] = [];
     let selectedCountry = undefined;
-    checkedData.map((checked) => {
+    checkedData.forEach((checked) => {
       countryGroup.forEach((item) => {
         const result = item.countries.find((country) => country.id === checked.value);
         if (result) {

@@ -6,8 +6,6 @@ import { City } from '@/types';
 
 import Popover from '@/components/Modal/Popover';
 
-// import styles from './styles/CountryModal.less';
-
 const CityModal: FC<{
   stateId: string;
   countryId: string;

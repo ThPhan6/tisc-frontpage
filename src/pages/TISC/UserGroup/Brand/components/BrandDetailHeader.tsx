@@ -29,8 +29,6 @@ import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from '../styles/index.less';
 
-// import ScrollBar from '@/components/ScrollBar';
-
 export const BrandTabs: TabItem[] = [
   { tab: 'PROFILE', key: BrandTabKeys.profile, icon: <ProfileIcon /> },
   { tab: 'LOCATIONS', key: BrandTabKeys.locations, icon: <LocationIcon /> },

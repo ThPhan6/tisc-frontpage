@@ -21,11 +21,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
-  const [randomId] = useState(
-    Math.random()
-      .toString()
-      .replace(/[^0-9]+/g, ''),
-  );
+  const [randomId] = useState(Math.random().toString().replace(/[\D]+/g, ''));
 
   const onChangeValue = (checkedValues: CheckboxValueType[]) => {
     const haveOtherInput = checkedValues.some((checkbox) => checkbox === 'other');
@@ -42,13 +38,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
       onChange(newCheckboxValue);
     }
   };
-
-  // const handleClickInput = () => {
-  //   const checkOtherInput = selected?.filter((checkbox) => checkbox.value === 'other').length === 0;
-  //   if (onChange && checkOtherInput) {
-  //     onChange([...selected, { label: inputValue, value: 'other' }]);
-  //   }
-  // };
 
   const onChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;

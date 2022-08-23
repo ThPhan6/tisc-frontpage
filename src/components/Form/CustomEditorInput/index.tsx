@@ -31,38 +31,7 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
 }) => {
   const [height, setHeight] = useState<number | null>(0);
 
-  // Fix but initData prop not working
-  // useEffect(() => {
-  //   // console.log('isInitData', isInitData);
-  //   // console.log('props.initData', props.initData);
-  //   const setInitData = () => {
-  //     const iFrameBodyEl = document.querySelector('iframe.cke_wysiwyg_frame');
-  //     if (iFrameBodyEl) {
-  //       console.log('iFrameBodyEl', { iFrameBodyEl });
-  //       // iFrameBodyEl.innerHTML = props.initData;
-  //       // iFrameBodyEl.innerText = props.initData;
-  //     } else {
-  //       setTimeout(setInitData, 100);
-  //     }
-  //   };
-  //   if (props.initData && isInitData === false) {
-  //     isInitData = true;
-  //     setInitData();
-  //   }
-  //   return () => {
-  //     isInitData = false;
-  //   };
-  // }, [props.initData]);
-
-  // useEffect(() => {
-  //   if (loading) {
-
-  //   }
-
-  // },[loading])
-
   useEffect(() => {
-    // console.log('loading', loading);
     const updateSize = () => {
       if (!containerSelector || loading) {
         return;
@@ -80,12 +49,6 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
 
       const contentFullHeight =
         contentBottomOffset - (iFrameEl.offsetTop || 0) - 1 + (firstLoad ? 0 : -PADDING);
-
-      // console.log('containerEl.offsetHeight', containerEl.offsetHeight);
-      // console.log('iFrameEl', iFrameEl);
-      // console.log('iFrameEl.offsetTop', iFrameEl.offsetTop);
-      // console.log('contentBottomOffset', contentBottomOffset);
-      // console.log('contentFullHeight', contentFullHeight);
 
       if (contentFullHeight && iFrameEl) {
         firstLoad = false;
@@ -107,9 +70,7 @@ export const CustomEditorInput: FC<CustomEditorInputProps> = ({
   }, [containerSelector, loading]);
 
   const onChange = (e: CKEditorEventPayload<'change'>) => {
-    // console.log('onChange', e);
     const html = e.editor.getData() || '';
-    // console.log('html', html);
     onChangeText(html);
   };
 

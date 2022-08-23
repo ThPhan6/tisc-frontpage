@@ -6,8 +6,6 @@ import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { CustomRadio } from '@/components/CustomRadio';
 import { MainTitle, Title } from '@/components/Typography';
 
-// import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
-// import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import styles from './styles/checkboxList.less';
 
 export interface CheckboxOption {

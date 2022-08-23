@@ -1,6 +1,5 @@
 import { TISCAccessLevelDataRole } from '../../Adminstration/TeamProfiles/constants/role';
 import { PATH } from '@/constants/path';
-// import { TISCUserGroupBrandForm } from '@/types';
 import { PageContainer } from '@ant-design/pro-layout';
 
 import { pushTo } from '@/helper/history';

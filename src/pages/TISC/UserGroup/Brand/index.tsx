@@ -84,7 +84,7 @@ const BrandList: React.FC = () => {
     // for reset member selected
     let newAssignTeamSelected: CheckboxValue[] = [];
 
-    checkedData.map((checked) => {
+    checkedData.forEach((checked) => {
       assignTeam.forEach((team) => {
         const member = team.users.find((user) => user.id === checked.value);
 
