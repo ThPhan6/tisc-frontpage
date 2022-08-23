@@ -29,7 +29,7 @@ import { LoginModal } from './components/LoginModal';
 import { NoticeModal } from './components/NoticeModal';
 import { PoliciesModal } from './components/PoliciesModal';
 import { ResetPasswordModal } from './components/ResetPasswordModal';
-// import { CreatePasswordModal } from './components/CreatePasswordModal';
+import { CreatePasswordModal } from './components/CreatePasswordModal';
 import { SignupModal } from './components/SignupModal';
 import styles from './index.less';
 import {
@@ -37,7 +37,7 @@ import {
   loginMiddleware,
   resetPasswordMiddleware,
   validateResetToken,
-  // createPasswordVerify,
+  createPasswordVerify,
   loginByBrandOrDesigner,
   verifyAccount,
 } from './services/api';
@@ -45,7 +45,7 @@ import type {
   LoginInput,
   ModalOpen,
   ResetPasswordRequestBody,
-  // CreatePasswordRequestBody,
+  CreatePasswordRequestBody,
   LoginResponseProp,
 } from './types';
 import { VerifyAccount } from './components/VerifyAccount';
@@ -57,7 +57,7 @@ const LandingPage = () => {
 
   const { fetchUserInfo } = useCustomInitialState();
   const openResetPwd = useBoolean();
-  // const openVerificationModal = useBoolean();
+  const openVerificationModal = useBoolean();
   const isLoading = useBoolean();
   const [openModal, setOpenModal] = useState<ModalOpen>('');
   const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
@@ -85,7 +85,7 @@ const LandingPage = () => {
   }, [userEmail]);
 
   useEffect(() => {
-    if (tokenVerification) {
+    if (tokenVerification && history.location.pathname !== PATH.createPassword) {
       verifyAccount(tokenVerification).then((success) => {
         if (success) {
           openVerifyAccountModal.setValue(success);
@@ -95,6 +95,8 @@ const LandingPage = () => {
         }
       });
       return;
+    } else if (tokenVerification && history.location.pathname === PATH.createPassword) {
+      openVerificationModal.setValue(true);
     }
     if (history.location.pathname === PATH.verifyAccount) {
       history.push(PATH.landingPage);
@@ -162,15 +164,15 @@ const LandingPage = () => {
     });
   };
 
-  // const handleVerifyAccount = (data: CreatePasswordRequestBody) => {
-  //   isLoading.setValue(true);
-  //   createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
-  //     isLoading.setValue(false);
-  //     if (isSuccess) {
-  //       redirectAfterLogin();
-  //     }
-  //   });
-  // };
+  const handleVerifyAccount = (data: CreatePasswordRequestBody) => {
+    isLoading.setValue(true);
+    createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
+      isLoading.setValue(false);
+      if (isSuccess) {
+        redirectAfterLogin();
+      }
+    });
+  };
 
   const handleActiveAccount = () => {
     setOpenModal('Login');
@@ -359,14 +361,14 @@ const LandingPage = () => {
           }}
         />
       )}
-      {/* <CreatePasswordModal
+      <CreatePasswordModal
         visible={openVerificationModal}
         handleSubmit={handleVerifyAccount}
         data={{
           email: userEmail ?? '',
           token: tokenVerification || '',
         }}
-      /> */}
+      />
       {openVerifyAccountModal.value === true && (
         <VerifyAccount
           visible={openVerifyAccountModal}
