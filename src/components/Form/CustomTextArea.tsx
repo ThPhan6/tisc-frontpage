@@ -1,7 +1,4 @@
-import type { FC } from 'react';
-import { useEffect } from 'react';
-import { useRef } from 'react';
-import { useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 
 import { Input } from 'antd';
 
