@@ -33,7 +33,7 @@ const ORDER_METHODS: RadioValue[] = [
   },
 ];
 
-type CustomRadiaValue = RadioValue & { labelText: string };
+type CustomRadioValue = RadioValue & { labelText: string };
 
 interface CodeOrderTabProps {
   codeOrderState: CodeOrderRequestParams;
@@ -44,10 +44,12 @@ const getSelectedOptions = (options: CheckboxValue[], selectedIds: string[]) =>
   options.filter((opt) => selectedIds.includes(String(opt.value)) || opt.value === 'other');
 
 const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyingState }) => {
-  const [materialCodeOpts, setMaterialCodeOtps] = useState<CustomRadiaValue[]>([]);
-  const [unitTypeOtps, setUnitTypeOtps] = useState<CustomRadiaValue[]>([]);
+  const [materialCodeOpts, setMaterialCodeOtps] = useState<CustomRadioValue[]>([]);
+  const [unitTypeOtps, setUnitTypeOtps] = useState<CheckboxValue[]>([]);
   const [requirements, setRequirements] = useState<CheckboxValue[]>([]);
   const [instructions, setInstructions] = useState<CheckboxValue[]>([]);
+
+  const [selectedUnit, setSelectedUnit] = useState<RadioValue | null>(null);
 
   const {
     description,
@@ -64,7 +66,10 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
   const selectedInstructions = getSelectedOptions(instructions, instruction_type_ids);
   const selectedRequirements = getSelectedOptions(requirements, requirement_type_ids);
 
-  const unitType = unit_type_id ? unitTypeOtps.find((el) => el.value === unit_type_id) : undefined;
+  const unitType = unit_type_id
+    ? unitTypeOtps.find((el) => el.value === unit_type_id) || selectedUnit
+    : undefined;
+
   const materialCode = material_code_id
     ? materialCodeOpts.find((el) => el.value === material_code_id)
     : undefined;
@@ -96,9 +101,8 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
     getUnitTypeList().then((res) => {
       setUnitTypeOtps(
         res.map((el) => ({
-          label: renderDualLabel(el.code, el.name),
+          label: el.name,
           value: el.id,
-          labelText: `${el.name} (${el.code})`,
         })),
       );
     });
@@ -188,18 +192,24 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
           <DropdownSelectInput
             placeholder="unit type"
             borderBottomColor="light"
-            value={unitType?.labelText}
+            value={unitType?.label ? String(unitType?.label) : ''}
+            noPadding
             overlay={
               <CustomRadio
                 options={unitTypeOtps}
                 isRadioList
                 inputPlaceholder="please specify"
                 value={unit_type_id}
-                onChange={(e) =>
+                otherInput
+                otherStickyBottom
+                stickyTopItem
+                containerStyle={{ padding: 0 }}
+                onChange={(e) => {
+                  setSelectedUnit(e);
                   onChangeSpecifyingState({
-                    unit_type_id: String(e.value),
-                  })
-                }
+                    unit_type_id: String(e.value === 'other' ? e.label : e.value),
+                  });
+                }}
               />
             }
           />
@@ -226,10 +236,9 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
               options={requirements}
               selected={selectedRequirements}
               onChange={(options) => {
-                console.log('options', options);
                 onChangeSpecifyingState({
                   requirement_type_ids: options.map((opt) =>
-                    opt.value === 'other' ? String(opt.label) : String(opt.value),
+                    String(opt.value === 'other' ? opt.label : opt.value),
                   ),
                 });
               }}
