@@ -1,9 +1,12 @@
-import { ReactComponent as PaginationLeftIcon } from '@/assets/icons/pagination-left.svg';
-import { ReactComponent as PaginationRightIcon } from '@/assets/icons/pagination-right.svg';
 import { TablePaginationConfig } from 'antd';
 import { SorterResult } from 'antd/lib/table/interface';
-import styles from '../styles/table.less';
+
+import { ReactComponent as PaginationLeftIcon } from '@/assets/icons/pagination-left.svg';
+import { ReactComponent as PaginationRightIcon } from '@/assets/icons/pagination-right.svg';
+
 import { PaginationParams } from '../types';
+
+import styles from '../styles/table.less';
 
 export interface CustomPaginatorProps {
   fetchData: (params: PaginationParams) => void;

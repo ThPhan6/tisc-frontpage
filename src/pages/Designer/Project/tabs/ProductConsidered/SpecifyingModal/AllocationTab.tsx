@@ -1,6 +1,9 @@
-import { useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
 import type { FC } from 'react';
+
+import { useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
+
 import { OnChangeSpecifyingProductFnc } from './types';
+
 import styles from './styles/allocationTab.less';
 
 interface AllocationTabProps {

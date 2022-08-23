@@ -1,29 +1,35 @@
-import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
-import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
-import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/ic-share.svg';
-import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign-2.svg';
-import ProductPlaceHolderImage from '@/assets/images/product-placeholder.png';
-import { ReactComponent as UploadIcon } from '@/assets/icons/action-upload-icon.svg';
-import { ReactComponent as AddMoreIcon } from '@/assets/icons/circle-plus-48.svg';
-import { ReactComponent as DeleteIcon } from '@/assets/icons/trash-icon-12.svg';
-import { BodyText } from '@/components/Typography';
-import { IMAGE_ACCEPT_TYPES } from '@/constants/util';
-import { getBase64, showImageUrl } from '@/helper/utils';
-import { useAppSelector } from '@/reducers';
-import { Col, message, Row, Upload } from 'antd';
-import type { UploadProps } from 'antd/es/upload';
-import type { UploadFile } from 'antd/es/upload/interface';
 import React, { FC, ReactNode, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import styles from './detail.less';
-import ShareViaEmail from '@/components/ShareViaEmail/index';
-import { useBoolean, useCheckPermission } from '@/helper/hook';
+
+import { IMAGE_ACCEPT_TYPES } from '@/constants/util';
+import { Col, Row, Upload, message } from 'antd';
+import type { UploadProps } from 'antd/es/upload';
+import type { UploadFile } from 'antd/es/upload/interface';
+
+import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
+import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
+import { ReactComponent as UploadIcon } from '@/assets/icons/action-upload-icon.svg';
+import { ReactComponent as AddMoreIcon } from '@/assets/icons/circle-plus-48.svg';
+import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign-2.svg';
+import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/ic-share.svg';
+import { ReactComponent as DeleteIcon } from '@/assets/icons/trash-icon-12.svg';
+import ProductPlaceHolderImage from '@/assets/images/product-placeholder.png';
+
 import { likeProductById } from '@/features/product/services';
+import { useBoolean, useCheckPermission } from '@/helper/hook';
+import { getBase64, showImageUrl } from '@/helper/utils';
+
+import { ProductKeyword } from '../types';
 import { setPartialProductDetail, setProductDetailImage } from '@/features/product/reducers';
+import { useAppSelector } from '@/reducers';
+
 import SmallIconButton from '@/components/Button/SmallIconButton';
 import { CustomInput } from '@/components/Form/CustomInput';
-import { ProductKeyword } from '../types';
+import ShareViaEmail from '@/components/ShareViaEmail/index';
+import { BodyText } from '@/components/Typography';
+
 import AssignProductModal from '../modals/AssignProductModal';
+import styles from './detail.less';
 
 const ActionItem: FC<{ onClick: () => void; label: string; icon: ReactNode }> = ({
   icon,

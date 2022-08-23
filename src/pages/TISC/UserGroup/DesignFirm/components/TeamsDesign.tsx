@@ -1,13 +1,18 @@
+import { FC } from 'react';
+
+import { USER_STATUSES } from '@/constants/util';
+import { Col, Collapse, Row } from 'antd';
+
+import { isEmpty } from 'lodash';
+
+import { TeamsDesignFirm } from '@/types';
+
+import GeneralData from '../../components/GeneralData';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader, RenderMemberHeader } from '@/components/RenderHeaderLabel';
-import { USER_STATUSES } from '@/constants/util';
-import { TeamsDesignFirm } from '@/types';
-import { Col, Collapse, Row } from 'antd';
-import { isEmpty } from 'lodash';
-import { FC } from 'react';
-import GeneralData from '../../components/GeneralData';
+
 import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
 import indexStyles from '../../styles/index.less';
 import styles from '../styles/ComponentViewDesign.less';
@@ -35,8 +40,7 @@ const TeamsDesign: FC<TeamsDesignProp> = ({ teamData }) => {
                       />
                     }
                     key={index}
-                    collapsible={team.count === 0 ? 'disabled' : undefined}
-                  >
+                    collapsible={team.count === 0 ? 'disabled' : undefined}>
                     <Collapse {...CollapseLevel2Props}>
                       {team.users.map((user, userIndex) => (
                         <Collapse.Panel
@@ -48,8 +52,7 @@ const TeamsDesign: FC<TeamsDesignProp> = ({ teamData }) => {
                             />
                           }
                           key={`${index}-${userIndex}`}
-                          collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}
-                        >
+                          collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}>
                           <div className={`${indexStyles.info} ${styles.teamInfo}`}>
                             <TextForm label="Gender">
                               {user.gender === true ? 'Male' : 'Female'}
@@ -61,8 +64,7 @@ const TeamsDesign: FC<TeamsDesignProp> = ({ teamData }) => {
                             <FormGroup
                               label="Work Phone"
                               layout="vertical"
-                              formClass={styles.formGroup}
-                            >
+                              formClass={styles.formGroup}>
                               <PhoneInput
                                 codeReadOnly
                                 containerClass={styles.phoneInputCustom}
@@ -75,8 +77,7 @@ const TeamsDesign: FC<TeamsDesignProp> = ({ teamData }) => {
                             <FormGroup
                               label="Work Mobile"
                               layout="vertical"
-                              formClass={styles.formGroup}
-                            >
+                              formClass={styles.formGroup}>
                               <PhoneInput
                                 codeReadOnly
                                 containerClass={styles.phoneInputCustom}

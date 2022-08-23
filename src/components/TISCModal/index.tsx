@@ -1,6 +1,9 @@
-import { Modal } from 'antd';
 import { FC } from 'react';
-import { ReactComponent as CloseIcon } from '../../assets/icons/action-close-open-icon.svg';
+
+import { Modal } from 'antd';
+
+import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
+
 import { MainTitle } from '@/components/Typography';
 
 import styles from './styles/index.less';
@@ -33,8 +36,7 @@ const TISCModal: FC<TiscModalProps> = ({ title, visible, setVisible, children, .
         className={styles.customModal}
         footer={false}
         onCancel={onCancel}
-        {...props}
-      >
+        {...props}>
         {children}
       </Modal>
     </div>

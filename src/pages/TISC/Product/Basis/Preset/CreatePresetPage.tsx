@@ -1,14 +1,17 @@
-import { TableHeader } from '@/components/Table/TableHeader';
-import { PresetsEntryForm } from './components/PresetsEntryForm';
-import LoadingPageCustomize from '@/components/LoadingPage';
-import { useBoolean } from '@/helper/hook';
-import { pushTo } from '@/helper/history';
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { PATH } from '@/constants/path';
-import { PresetsValueProp } from '@/types';
-import { createPresetMiddleware } from '@/services';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
+
+import { pushTo } from '@/helper/history';
+import { useBoolean } from '@/helper/hook';
+import { createPresetMiddleware } from '@/services';
+
+import { PresetsValueProp } from '@/types';
+
+import { PresetsEntryForm } from './components/PresetsEntryForm';
+import LoadingPageCustomize from '@/components/LoadingPage';
+import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const CreatePresetPage = () => {

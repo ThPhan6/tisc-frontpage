@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { showImageUrl } from '@/helper/utils';
+
 import { ProfileIcon } from '@/components/ProfileIcon';
 
 interface TeamIconProps {

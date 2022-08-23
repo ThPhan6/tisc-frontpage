@@ -1,13 +1,17 @@
-import { useAppSelector } from '@/reducers';
 import { FC } from 'react';
 import { useDispatch } from 'react-redux';
+
+import { useCheckPermission } from '@/helper/hook';
+import { isEmpty } from 'lodash';
+
 import { setProductTip } from '@/features/product/reducers';
-import styles from './ProductTip.less';
+import { useAppSelector } from '@/reducers';
+
+import { EmptyOne } from '@/components/Empty';
 import DynamicFormInput from '@/components/EntryForm/DynamicFormInput';
 import { BodyText } from '@/components/Typography';
-import { useCheckPermission } from '@/helper/hook';
-import { EmptyOne } from '@/components/Empty';
-import { isEmpty } from 'lodash';
+
+import styles from './ProductTip.less';
 
 const ProductTip: FC = () => {
   const dispatch = useDispatch();

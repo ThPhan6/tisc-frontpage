@@ -1,11 +1,16 @@
+import type { FC } from 'react';
+
+import { Col, Row } from 'antd';
+
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
+
+import { ConversionItemProps, ElementInputProp } from '@/types';
+
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
-import type { FC } from 'react';
-import { Row, Col } from 'antd';
+
 import styles from '../styles/ConversionItem.less';
-import { ConversionItemProps, ElementInputProp } from '@/types';
 
 const ElementInput: FC<ElementInputProp> = ({ order, onChange, value }) => {
   return (

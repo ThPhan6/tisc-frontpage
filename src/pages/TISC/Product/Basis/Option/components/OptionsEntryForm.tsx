@@ -1,9 +1,13 @@
+import type { FC } from 'react';
+
+import { merge } from 'lodash';
+
+import type { BasisOptionForm, BasisOptionSubForm, SubBasisOption } from '@/types';
+
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import type { FC } from 'react';
+
 import { OptionItem } from './OptionItem';
-import type { BasisOptionForm, BasisOptionSubForm, SubBasisOption } from '@/types';
-import { merge } from 'lodash';
 
 interface OptionEntryFormProps {
   option: BasisOptionForm;
@@ -94,8 +98,7 @@ const OptionEntryForm: FC<OptionEntryFormProps> = (props) => {
     <EntryFormWrapper
       handleSubmit={handleSubmit}
       handleCancel={onCancel}
-      submitButtonStatus={submitButtonStatus}
-    >
+      submitButtonStatus={submitButtonStatus}>
       <FormNameInput
         placeholder="type group name"
         title="Option Group"

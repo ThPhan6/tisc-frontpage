@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import LocationEntryForm from '@/components/Location/LocationEntryForm';
-import { useBoolean } from '@/helper/hook';
-import LoadingPageCustomize from '@/components/LoadingPage';
-import { LocationForm } from '@/types';
-import { createLocation } from '@/services';
+
 import { PATH } from '@/constants/path';
+
 import { pushTo } from '@/helper/history';
+import { useBoolean } from '@/helper/hook';
+import { createLocation } from '@/services';
+
+import { LocationForm } from '@/types';
+
+import LoadingPageCustomize from '@/components/LoadingPage';
+import LocationEntryForm from '@/components/Location/LocationEntryForm';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 

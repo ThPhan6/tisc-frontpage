@@ -1,9 +1,13 @@
-import styles from './PoliciesModal.less';
-import { CustomModal } from '@/components/Modal';
 import { FC, useEffect, useState } from 'react';
-import { ModalProps, Policy } from '../types';
-import { CustomTabPane, CustomTabs } from '@/components/Tabs';
+
 import { getListPolicy } from '../services/api';
+
+import { ModalProps, Policy } from '../types';
+
+import { CustomModal } from '@/components/Modal';
+import { CustomTabPane, CustomTabs } from '@/components/Tabs';
+
+import styles from './PoliciesModal.less';
 
 enum PolicyTabKeys {
   terms = 'terms of services',
@@ -49,8 +53,7 @@ export const PoliciesModal: FC<ModalProps> = ({ visible, onClose, theme = 'defau
         backgroundColor: theme === 'dark' ? '#000' : '',
       }}
       closeIconClass={theme === 'dark' && styles.closeIcon}
-      onCancel={onClose}
-    >
+      onCancel={onClose}>
       <div className={styles.content}>
         <div className={styles.header}>
           <div className={styles.customTab}>

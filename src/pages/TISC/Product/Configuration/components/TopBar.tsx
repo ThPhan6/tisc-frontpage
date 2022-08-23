@@ -1,25 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { BodyText } from '@/components/Typography';
-import Popover from '@/components/Modal/Popover';
-import { getBrandAlphabet } from '@/services';
-import type { BrandAlphabet, BrandDetail } from '@/types';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { PATH } from '@/constants/path';
+
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SmallPlusIcon } from '@/assets/icons/small-plus-icon.svg';
-import { showImageUrl } from '@/helper/utils';
-import { map, forEach } from 'lodash';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '@/reducers';
-import { setBrand, setProductList, resetProductState } from '@/features/product/reducers';
+
 import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
 import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
+import { showImageUrl } from '@/helper/utils';
+import { getBrandAlphabet } from '@/services';
+import { forEach, map } from 'lodash';
+
+import { resetProductState, setBrand, setProductList } from '@/features/product/reducers';
+import { ProductGetListParameter } from '@/features/product/types';
+import { useAppSelector } from '@/reducers';
+import type { BrandAlphabet, BrandDetail } from '@/types';
+
+import Popover from '@/components/Modal/Popover';
+import { BodyText } from '@/components/Typography';
 import {
   FilterItem,
-  renderDropDownList,
   TopBarContainer,
   TopBarItem,
+  renderDropDownList,
 } from '@/features/product/components';
-import { ProductGetListParameter } from '@/features/product/types';
+
 import styles from './TopBar.less';
 
 const ProductTopBar: React.FC = () => {
@@ -205,8 +211,7 @@ const ProductTopBar: React.FC = () => {
                 <span
                   className={`
                 ${styles.newCardIcon}
-                ${product.summary ? styles.activeNewCard : styles.disabledNewCard}`}
-                >
+                ${product.summary ? styles.activeNewCard : styles.disabledNewCard}`}>
                   <SmallPlusIcon />
                 </span>
               }

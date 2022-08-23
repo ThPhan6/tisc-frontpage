@@ -1,5 +1,7 @@
-import { ReactComponent as WarningIcon } from '@/assets/icons/warning-triangle.svg';
 import { Modal, ModalFuncProps } from 'antd';
+
+import { ReactComponent as WarningIcon } from '@/assets/icons/warning-triangle.svg';
+
 import styles from './common.less';
 
 export const confirmDelete = (onOk: () => void, props?: ModalFuncProps, onCancel?: () => void) => {

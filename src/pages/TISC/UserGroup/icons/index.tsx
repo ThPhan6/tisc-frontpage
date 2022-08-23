@@ -1,10 +1,13 @@
+import type { CollapseProps } from 'antd/lib/collapse/Collapse';
+import type { CollapsibleType } from 'antd/lib/collapse/CollapsePanel';
+
 import { ReactComponent as DropdownV2Icon } from '@/assets/icons/action-down-icon.svg';
 import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
-import type { CollapsibleType } from 'antd/lib/collapse/CollapsePanel';
-import type { CollapseProps } from 'antd/lib/collapse/Collapse';
+
 import dropdownStyle from '@/components/CustomRadio/styles/dropdownList.less';
+
 import styles from '../styles/index.less';
 
 interface PanelProps {

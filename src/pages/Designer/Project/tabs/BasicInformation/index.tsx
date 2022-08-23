@@ -1,19 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
-import EntryForm from './EntryForm';
+import React, { useEffect, useState } from 'react';
+
+import { ProjectStatuses } from '../../constants/filter';
 import { DefaultProjectRequest } from '../../constants/form';
-import { Row, Col } from 'antd';
-import type { ProjectBodyRequest, ProjectDetailProps } from '@/features/project/types';
+import { PATH } from '@/constants/path';
+import { Col, Row } from 'antd';
+import { useHistory } from 'umi';
+
 import { createProject, updateProject } from '@/features/project/services';
 import { useBoolean } from '@/helper/hook';
+
+import type { ProjectBodyRequest, ProjectDetailProps } from '@/features/project/types';
+
+import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
-import { ProjectStatuses } from '../../constants/filter';
 import { CustomRadio } from '@/components/CustomRadio';
-import { MainTitle, BodyText } from '@/components/Typography';
 import LoadingPageCustomize from '@/components/LoadingPage';
-import { PATH } from '@/constants/path';
+import { BodyText, MainTitle } from '@/components/Typography';
+
 import styles from '../../styles/basic-information.less';
-import { useHistory } from 'umi';
+import EntryForm from './EntryForm';
 
 interface GeneralInformationProps {
   project?: ProjectDetailProps;

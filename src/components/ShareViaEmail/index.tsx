@@ -1,13 +1,18 @@
+import { FC, useEffect, useState } from 'react';
+
+import { MESSAGE_ERROR } from '@/constants/message';
+
+import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+import { getDepartmentList } from '@/services';
+
+import { useAppSelector } from '@/reducers';
+import { ShareViaEmailForm } from '@/types/share-via-email.type';
+
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import Popover from '@/components/Modal/Popover';
-import { MESSAGE_ERROR } from '@/constants/message';
-import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
-import { useAppSelector } from '@/reducers';
-import { getDepartmentList } from '@/services';
-import { ShareViaEmailForm } from '@/types/share-via-email.type';
-import { FC, useEffect, useState } from 'react';
+
 import BrandProductBasicHeader from '../BrandProductBasicHeader';
 import CollapseRadioFormGroup from '../CustomRadio/CollapseRadioFormGroup';
 import styles from './index.less';

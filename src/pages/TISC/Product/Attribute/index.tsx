@@ -1,15 +1,19 @@
+import React, { useRef } from 'react';
+
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
-import { ActionMenu } from '@/components/Action';
-import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import type { TableColumnItem } from '@/components/Table/types';
+
+import { useAttributeLocation } from './hooks/location';
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { deleteAttribute, getProductAttributePagination } from '@/services';
+
+import type { TableColumnItem } from '@/components/Table/types';
 import type { AttributeListResponse, SubAttribute } from '@/types';
-import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
-import React, { useRef } from 'react';
-import { useAttributeLocation } from './hooks/location';
+
+import { ActionMenu } from '@/components/Action';
+import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const MAIN_COL_WIDTH = 200;
 const AttributeList: React.FC = () => {

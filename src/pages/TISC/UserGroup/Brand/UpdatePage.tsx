@@ -1,6 +1,9 @@
-import { CustomTabPane } from '@/components/Tabs';
-import { PageContainer } from '@ant-design/pro-layout';
 import { useState } from 'react';
+
+import { PageContainer } from '@ant-design/pro-layout';
+
+import { BrandTabKeys } from './types';
+
 import BrandAvailabilityDetail from './components/Availability';
 import BrandDetailHeader from './components/BrandDetailHeader';
 import BrandMenuSummary from './components/BrandMenuSummary';
@@ -8,7 +11,7 @@ import BrandDistributorDetail from './components/Distributor';
 import BrandLocationDetail from './components/Location';
 import BrandProfileDetail from './components/Profile';
 import BrandTeamDetail from './components/Team';
-import { BrandTabKeys } from './types';
+import { CustomTabPane } from '@/components/Tabs';
 
 const UpdateCreatePage = () => {
   const [selectedTab, setSelectedTab] = useState<BrandTabKeys>(BrandTabKeys.profile);

@@ -1,8 +1,10 @@
-import type { DropDownProps } from 'antd/es/dropdown';
-import { Dropdown } from 'antd';
 import React, { FC, useState } from 'react';
-import styles from './index.less';
+
+import { Dropdown } from 'antd';
+import type { DropDownProps } from 'antd/es/dropdown';
+
 import { BodyText } from '../Typography';
+import styles from './index.less';
 
 export type HeaderDropdownProps = {
   arrow?: boolean;
@@ -37,8 +39,7 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParen
         onParentClick?.();
         onClick();
       }}
-      className={`${styles.item} ${containerClass} ${disabled ? styles.disabled : ''}`}
-    >
+      className={`${styles.item} ${containerClass} ${disabled ? styles.disabled : ''}`}>
       {icon ? <div className={styles.icon}>{icon}</div> : null}
       <BodyText fontFamily="Roboto" level={6}>
         {label}

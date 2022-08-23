@@ -1,25 +1,26 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { STATUS_RESPONSE } from '@/constants/util';
+import { message } from 'antd';
 import { request } from 'umi';
+
 import type {
+  ContactRequestBody,
+  CreatePasswordRequestBody,
   LoginInput,
   LoginResponseProp,
-  ResetPasswordRequestBody,
-  CreatePasswordRequestBody,
-  SignUpDesignerRequestBody,
-  ContactRequestBody,
   Quotation,
+  ResetPasswordRequestBody,
+  SignUpDesignerRequestBody,
 } from '../types';
-import { message } from 'antd';
-import { setUserProfile } from '@/reducers/user';
-import store from '@/reducers';
-import { UserDetail } from '@/types/user.type';
 import {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
+import store from '@/reducers';
+import { setUserProfile } from '@/reducers/user';
+import { UserDetail } from '@/types/user.type';
 
 interface QuotationPaginationResponse {
   data: {

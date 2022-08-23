@@ -1,5 +1,23 @@
+import { FC, useEffect, useState } from 'react';
+
+import { MESSAGE_ERROR } from '@/constants/message';
+
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
+
+import {
+  emailMessageError,
+  emailMessageErrorType,
+  isEmptySpace,
+  messageError,
+  messageErrorType,
+  validatePostalCode,
+} from '@/helper/utils';
+import { trimStart } from 'lodash';
+
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { useAppSelector } from '@/reducers';
+import { DistributorEntryForm, DistributorForm } from '@/types/distributor.type';
+
 import { CustomRadio } from '@/components/CustomRadio';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import InputGroup from '@/components/EntryForm/InputGroup';
@@ -10,19 +28,7 @@ import CityModal from '@/components/Location/CityModal';
 import CountryModal from '@/components/Location/CountryModal';
 import StateModal from '@/components/Location/StateModal';
 import { Title } from '@/components/Typography';
-import { MESSAGE_ERROR } from '@/constants/message';
-import {
-  emailMessageError,
-  emailMessageErrorType,
-  isEmptySpace,
-  messageError,
-  messageErrorType,
-  validatePostalCode,
-} from '@/helper/utils';
-import { useAppSelector } from '@/reducers';
-import { DistributorEntryForm, DistributorForm } from '@/types/distributor.type';
-import { trimStart } from 'lodash';
-import { FC, useEffect, useState } from 'react';
+
 import styles from '../styles/DistributorsEntryForm.less';
 import AuthorizedCountryModal from './AuthorizedCountryModal';
 import DistributionTerritoryModal from './DistributionTerritoryModal';
@@ -124,8 +130,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
       <EntryFormWrapper
         handleSubmit={handleSubmit}
         handleCancel={onCancel}
-        submitButtonStatus={submitButtonStatus}
-      >
+        submitButtonStatus={submitButtonStatus}>
         <div className="form">
           <div className="company information">
             <div className={styles.title}>
@@ -220,8 +225,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               label="Address"
               required
               layout="vertical"
-              formClass={styles.customShowCount}
-            >
+              formClass={styles.customShowCount}>
               <CustomTextArea
                 maxLength={120}
                 showCount
@@ -347,8 +351,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
                   authorCountry: false,
                   territory: true,
                 })
-              }
-            >
+              }>
               <Title level={8}>C - DISTIBUTION TERRITORY</Title>
               <WarningIcon />
             </div>

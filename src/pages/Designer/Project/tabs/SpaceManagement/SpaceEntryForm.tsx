@@ -1,17 +1,21 @@
 import React from 'react';
+
+import { DefaultProjectArea, DefaultProjectRoom } from '../../constants/form';
+
+import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
+import { ReactComponent as ActionUpDown } from '@/assets/icons/action-up-icon.svg';
+import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
+import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
+
+import { validateFloatNumber, validateNumber } from '@/helper/utils';
+
+import { ProjectSpaceRoom, ProjectSpaceZone } from '@/types';
+
+import CustomCollapse from '@/components/Collapse';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { CustomInput } from '@/components/Form/CustomInput';
-import { ProjectSpaceZone, ProjectSpaceRoom } from '@/types';
-import { DefaultProjectArea, DefaultProjectRoom } from '../../constants/form';
-import CustomCollapse from '@/components/Collapse';
 import { BodyText } from '@/components/Typography';
-import { validateNumber, validateFloatNumber } from '@/helper/utils';
-
-import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
-import { ReactComponent as ActionUpDown } from '@/assets/icons/action-up-icon.svg';
-import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
-import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 
 import styles from '../../styles/space-management.less';
 
@@ -64,8 +68,7 @@ const AreaRoomCollapse: React.FC<AreaRoomCollapseProps> = ({
             }}
           />
         </>
-      }
-    >
+      }>
       <table>
         <tbody>
           <tr>
@@ -200,8 +203,7 @@ const SpaceEntryForm: React.FC<SpaceEntryFormProps> = (props) => {
       handleCancel={handleCancel}
       submitButtonStatus={submitButtonStatus}
       customClass={styles.spaceEntryForm}
-      contentClass="space-form-content-wrapper"
-    >
+      contentClass="space-form-content-wrapper">
       <FormNameInput
         placeholder="type zone name"
         title="Zone"
@@ -227,8 +229,7 @@ const SpaceEntryForm: React.FC<SpaceEntryFormProps> = (props) => {
                 onClick={(e: any) => addMoreRoom(e, areaIndex)}
               />
             </>
-          }
-        >
+          }>
           <div className={styles.areaInputGroup}>
             <CustomInput
               value={area.name}

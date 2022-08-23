@@ -8,9 +8,14 @@ import { ReactComponent as ConfigurationIcon } from '@/assets/icons/configuratio
 import { ReactComponent as DesignFirmIcon } from '@/assets/icons/design-firm-icon.svg';
 import { ReactComponent as DistributorIcon } from '@/assets/icons/distributor.svg';
 import { ReactComponent as DocumentationIcon } from '@/assets/icons/documentation-icon.svg';
+import { ReactComponent as GeneralInquireIcon } from '@/assets/icons/general-inquire-icon.svg';
 import { ReactComponent as ListingIcon } from '@/assets/icons/listing-icon.svg';
 import { ReactComponent as LocationIcon } from '@/assets/icons/location-icon.svg';
+import { ReactComponent as MatketAvailability } from '@/assets/icons/market-availability-icon.svg';
+import { ReactComponent as MaterialProductCode } from '@/assets/icons/material-product-code-icon.svg';
 import { ReactComponent as MessageIcon } from '@/assets/icons/messages-icon.svg';
+import { ReactComponent as MyFavouriteIcon } from '@/assets/icons/my-favourite-icon.svg';
+import { ReactComponent as OfficeProfile } from '@/assets/icons/office-profile-icon.svg';
 import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
 import { ReactComponent as ProjectIcon } from '@/assets/icons/project-icon.svg';
 import { ReactComponent as ProjectTrackingIcon } from '@/assets/icons/project-tracking.svg';
@@ -19,11 +24,6 @@ import { ReactComponent as SubscriptionIcon } from '@/assets/icons/subscription.
 import { ReactComponent as TeamProfileIcon } from '@/assets/icons/team-profile-icon.svg';
 import { ReactComponent as UserGroupIcon } from '@/assets/icons/user-group-icon.svg';
 import { ReactComponent as WorkspaceIcon } from '@/assets/icons/workspace-icon.svg';
-import { ReactComponent as MyFavouriteIcon } from '@/assets/icons/my-favourite-icon.svg';
-import { ReactComponent as GeneralInquireIcon } from '@/assets/icons/general-inquire-icon.svg';
-import { ReactComponent as MatketAvailability } from '@/assets/icons/market-availability-icon.svg';
-import { ReactComponent as OfficeProfile } from '@/assets/icons/office-profile-icon.svg';
-import { ReactComponent as MaterialProductCode } from '@/assets/icons/material-product-code-icon.svg';
 
 const IconList = {
   'adminstration-icon.svg': <AdminstrationIcon className="anticon" />,

@@ -1,16 +1,20 @@
-import CustomTable from '@/components/Table';
-import { TableColumnItem } from '@/components/Table/types';
-import { OrderMethod, SpecifiedProductByMaterial } from '@/features/project/types';
 import { FC, useRef } from 'react';
-import { showImageUrl } from '@/helper/utils';
-import { getSpecifiedProductByMaterial } from '@/features/project/services';
+
 import { useParams } from 'umi';
+
 import {
   onCellCancelled,
   renderActionCell,
   renderStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
+import { getSpecifiedProductByMaterial } from '@/features/project/services';
+import { showImageUrl } from '@/helper/utils';
+
+import { TableColumnItem } from '@/components/Table/types';
+import { OrderMethod, SpecifiedProductByMaterial } from '@/features/project/types';
+
+import CustomTable from '@/components/Table';
 
 const COL_WIDTH_MATERIAL = {
   material: 141,

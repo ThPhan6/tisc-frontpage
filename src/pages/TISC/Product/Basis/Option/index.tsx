@@ -1,15 +1,19 @@
 import React, { useRef } from 'react';
-import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import type { TableColumnItem } from '@/components/Table/types';
-import { getProductBasisOptionPagination, deleteBasisOption } from '@/services';
-import { showImageUrl } from '@/helper/utils';
-import type { BasisOptionListResponse, SubBasisOption } from '@/types';
-import { pushTo } from '@/helper/history';
+
 import { PATH } from '@/constants/path';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { confirmDelete } from '@/helper/common';
+
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
+import { confirmDelete } from '@/helper/common';
+import { pushTo } from '@/helper/history';
+import { showImageUrl } from '@/helper/utils';
+import { deleteBasisOption, getProductBasisOptionPagination } from '@/services';
+
+import type { TableColumnItem } from '@/components/Table/types';
+import type { BasisOptionListResponse, SubBasisOption } from '@/types';
+
 import { ActionMenu } from '@/components/Action';
+import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const MAIN_COL_WIDTH = 253;
 const SUB_COL_WIDTH = 135;

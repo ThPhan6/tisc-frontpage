@@ -1,18 +1,24 @@
-import { CustomModal } from '@/components/Modal';
 import type { FC } from 'react';
 import { useState } from 'react';
-import styles from './ResetPasswordModal.less';
-import type { ResetPasswordInput, CreatePasswordRequestBody } from '../types';
-import { CustomInput } from '@/components/Form/CustomInput';
-import { BodyText, MainTitle } from '@/components/Typography';
-import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';
-import { ReactComponent as LockedIcon } from '@/assets/icons/circle-pass-icon.svg';
-import CustomButton from '@/components/Button';
-import { isShowErrorMessage, validatePassword } from '@/helper/utils';
+
 import { MESSAGE_ERROR } from '@/constants/message';
-import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 import { PATH } from '@/constants/path';
+
+import { ReactComponent as LockedIcon } from '@/assets/icons/circle-pass-icon.svg';
+import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';
+import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
+
 import { pushTo } from '@/helper/history';
+import { isShowErrorMessage, validatePassword } from '@/helper/utils';
+
+import type { CreatePasswordRequestBody, ResetPasswordInput } from '../types';
+
+import CustomButton from '@/components/Button';
+import { CustomInput } from '@/components/Form/CustomInput';
+import { CustomModal } from '@/components/Modal';
+import { BodyText, MainTitle } from '@/components/Typography';
+
+import styles from './ResetPasswordModal.less';
 
 interface CreatePasswordModalProps {
   data: {
@@ -91,8 +97,7 @@ export const CreatePasswordModal: FC<CreatePasswordModalProps> = ({
         visible.setValue(false);
         pushTo(PATH.landingPage);
       }}
-      footer={false}
-    >
+      footer={false}>
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={2} customClass={styles.body}>
@@ -163,8 +168,7 @@ export const CreatePasswordModal: FC<CreatePasswordModalProps> = ({
             disabled={handleDisableButton()}
             buttonClass={styles.submit}
             width={'128px'}
-            onClick={handleOnSubmit}
-          >
+            onClick={handleOnSubmit}>
             Save
           </CustomButton>
         </div>

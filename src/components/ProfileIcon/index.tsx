@@ -1,5 +1,7 @@
-import { getLetterAvatarBackgroundColor } from '@/helper/utils';
 import { FC } from 'react';
+
+import { getLetterAvatarBackgroundColor } from '@/helper/utils';
+
 import style from './index.less';
 
 interface ProfileUserProps {
@@ -14,8 +16,7 @@ export const ProfileIcon: FC<ProfileUserProps> = ({ name, customClass }) => {
   return (
     <div
       style={{ backgroundColor: backgroundColor }}
-      className={`${style.nameIcon} ${customClass}`}
-    >
+      className={`${style.nameIcon} ${customClass}`}>
       {firstUserCharacter}
     </div>
   );

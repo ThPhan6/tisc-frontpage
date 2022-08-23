@@ -1,11 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Title, BodyText } from '@/components/Typography';
-import { ReactComponent as SortIcon } from '@/assets/icons/sort-icon.svg';
+
+import type { ColumnType } from 'antd/lib/table';
+
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
-import styles from '../styles/table.less';
-import type { ColumnType } from 'antd/lib/table';
+import { ReactComponent as SortIcon } from '@/assets/icons/sort-icon.svg';
+
 import type { TableColumnItem } from '../types';
+
+import { BodyText, Title } from '@/components/Typography';
+
+import styles from '../styles/table.less';
 
 type Expanded = number | undefined | string;
 
@@ -29,8 +34,7 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
         onClick={() =>
           setExpanded((prevState) => (expandedKey === prevState ? undefined : expandedKey))
         }
-        className={styles.expandedCell}
-      >
+        className={styles.expandedCell}>
         <span className={isExpanding ? styles.expandedColumn : ''}>{value}</span>
         <DropDownIcon width="18" height="18" />
       </div>
@@ -49,8 +53,7 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
                 : column.align === 'right'
                 ? 'flex-end'
                 : undefined,
-          }}
-        >
+          }}>
           {column.lightHeading ? (
             <BodyText fontFamily="Roboto" level={5}>
               {column.title}

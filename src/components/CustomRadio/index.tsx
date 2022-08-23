@@ -1,10 +1,14 @@
-import { Radio, Space } from 'antd';
 import { FC } from 'react';
 import { useState } from 'react';
-import type { CustomRadioProps, RadioValue } from './types';
-import style from './styles/index.less';
-import { CustomInput } from '../Form/CustomInput';
+
+import { Radio, Space } from 'antd';
+
 import { uniqueId } from 'lodash';
+
+import type { CustomRadioProps, RadioValue } from './types';
+
+import { CustomInput } from '../Form/CustomInput';
+import style from './styles/index.less';
 
 export const CustomRadio: FC<CustomRadioProps> = ({
   direction = 'horizontal',
@@ -55,18 +59,15 @@ export const CustomRadio: FC<CustomRadioProps> = ({
       } ${isRadioList ? style['radio-list'] : ''} ${noPaddingLeft ? style.noPaddingLeft : ''} ${
         containerClass || ''
       }`}
-      style={containerStyle}
-    >
+      style={containerStyle}>
       <Radio.Group
         {...props}
         onChange={onChangeValue}
         value={value}
-        defaultValue={defaultValue?.value}
-      >
+        defaultValue={defaultValue?.value}>
         <Space
           direction={isRadioList ? 'vertical' : direction}
-          className={`${otherStickyBottom ? style.stickyBottom : ''}`}
-        >
+          className={`${otherStickyBottom ? style.stickyBottom : ''}`}>
           {options.map((option, index) => (
             <label
               key={index}
@@ -75,8 +76,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
                 ${option.customClass ? option.customClass : ''}
                 radio-label
               `}
-              htmlFor={`${randomID}_${option.value}_${index}`}
-            >
+              htmlFor={`${randomID}_${option.value}_${index}`}>
               <div style={{ width: '100%' }}>
                 {isRadioList ? (
                   <div className={style['item-wrapper']}>

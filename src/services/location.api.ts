@@ -1,23 +1,24 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import type {
-  City,
-  Country,
-  State,
-  LocationDetail,
-  FunctionalTypeData,
-  LocationForm,
-  LocationGroupedByCountry,
-  Regions,
-  DistributorProductMarket,
-} from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
+
 import type {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
+import type {
+  City,
+  Country,
+  DistributorProductMarket,
+  FunctionalTypeData,
+  LocationDetail,
+  LocationForm,
+  LocationGroupedByCountry,
+  Regions,
+  State,
+} from '@/types';
 
 interface LocationPaginationResponse {
   data: {

@@ -1,9 +1,11 @@
 import { FC } from 'react';
-import CollapseRadioList from './CollapseRadioList';
+
 import { RadioValue } from './types';
-import { FormGroup } from '../Form';
-import styles from './styles/collapseRadioFormGroup.less';
 import { FormGroupProps } from '@/components/Form/types/index';
+
+import { FormGroup } from '../Form';
+import CollapseRadioList from './CollapseRadioList';
+import styles from './styles/collapseRadioFormGroup.less';
 
 interface CollapseRadioFormGroupProps extends FormGroupProps {
   label: string;
@@ -36,8 +38,7 @@ const CollapseRadioFormGroup: FC<CollapseRadioFormGroupProps> = ({
       required={true}
       layout="vertical"
       formClass={`${styles.group} ${placeholder !== '' ? styles.activeLabel : ''} ${formClass}`}
-      {...props}
-    >
+      {...props}>
       <CollapseRadioList
         containerClass={`${styles.radioGroup} ${radioListClass}`}
         options={optionData}

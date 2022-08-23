@@ -1,17 +1,19 @@
 import { message } from 'antd';
 import { request } from 'umi';
+
+import { getResponseMessage } from '@/helper/common';
+
 import type {
   DataTableResponse,
-  PaginationRequestParams,
   GetDataListResponse,
+  PaginationRequestParams,
 } from '@/components/Table/types';
 import {
-  ProjectSummaryData,
+  AssigningStatus,
   ConsideredProduct,
   ProjectSpaceListProps,
-  AssigningStatus,
+  ProjectSummaryData,
 } from '@/features/project/types';
-import { getResponseMessage } from '@/helper/common';
 
 export async function getProductAssignSpaceByProject(
   projectId: string,

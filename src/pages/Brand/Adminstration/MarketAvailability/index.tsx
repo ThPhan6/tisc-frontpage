@@ -1,16 +1,22 @@
-import CustomTable from '@/components/Table';
-import { TableColumnItem } from '@/components/Table/types';
-import { getMarketAvailabilityList } from '@/services';
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
-import { pushTo } from '@/helper/history';
+import { useState } from 'react';
+
 import { PATH } from '@/constants/path';
+
+import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
+import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
+
+import { pushTo } from '@/helper/history';
+import { getMarketAvailabilityList } from '@/services';
+
+import { TableColumnItem } from '@/components/Table/types';
 import { useAppSelector } from '@/reducers';
 import type { MarketAvailabilityDataList } from '@/types';
-import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
-import styles from '../MarketAvailability/styles/index.less';
-import { useState } from 'react';
+
 import InformationMarketAvailability from './components/InformationMarketAvailability';
 import { ActionForm } from '@/components/Action';
+import CustomTable from '@/components/Table';
+
+import styles from '../MarketAvailability/styles/index.less';
 
 const MarketAvailabilityList = () => {
   const user = useAppSelector((state) => state.user.user);

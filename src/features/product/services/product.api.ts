@@ -1,8 +1,7 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import store from '@/reducers';
-import type { BrandDetail } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
+
 import {
   setProductDetail,
   setProductList,
@@ -10,15 +9,17 @@ import {
   setRelatedProduct,
 } from '../reducers/slices';
 import {
+  BrandSummary,
+  GetListProductForDesignerRequestParams,
   GroupProductList,
   ProductFormData,
   ProductGetListParameter,
+  ProductItem,
   ProductSummary,
   RelatedCollection,
-  ProductItem,
-  GetListProductForDesignerRequestParams,
-  BrandSummary,
 } from '../types';
+import store from '@/reducers';
+import type { BrandDetail } from '@/types';
 
 export async function getProductSummary(brandId: string) {
   return request<{ data: ProductSummary }>(`/api/product/brand-product-summary/${brandId}`, {

@@ -1,3 +1,9 @@
+import React, { useEffect, useState } from 'react';
+
+import { getFavouriteProductSummary } from '../services';
+
+import type { FavouriteProductSummary } from '../types';
+
 import {
   CustomDropDown,
   FilterItem,
@@ -8,9 +14,7 @@ import {
   SORTER_DROPDOWN_DATA,
   useProductListFilterAndSorter,
 } from '@/features/product/components/FilterAndSorter';
-import { getFavouriteProductSummary } from './services';
-import type { FavouriteProductSummary } from './types';
-import React, { useEffect, useState } from 'react';
+
 import './topBar.less';
 
 export interface ProductSummaryTopBarProps {
@@ -80,8 +84,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
                   items={brands}
                   menuStyle={{ width: 240 }}
                   disabled={activeBrands ? false : true}
-                  placement="bottomRight"
-                >
+                  placement="bottomRight">
                   Brands
                 </CustomDropDown>
               }
@@ -105,8 +108,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
                 <CustomDropDown
                   items={categories}
                   position="left"
-                  disabled={activeCategories ? false : true}
-                >
+                  disabled={activeCategories ? false : true}>
                   Categories
                 </CustomDropDown>
               }
@@ -133,8 +135,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
                 <CustomDropDown
                   items={SORTER_DROPDOWN_DATA}
                   menuStyle={{ width: 160, height: 'auto' }}
-                  disabled={isFavouriteRetrieved ? false : true}
-                >
+                  disabled={isFavouriteRetrieved ? false : true}>
                   Sort By
                 </CustomDropDown>
               }

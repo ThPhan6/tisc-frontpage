@@ -1,29 +1,33 @@
-import CustomButton from '@/components/Button';
-import { CustomModal } from '@/components/Modal';
-import { CustomTabPane, CustomTabs } from '@/components/Tabs';
-import { MainTitle } from '@/components/Typography';
 import { FC, useEffect } from 'react';
 import { useState } from 'react';
+
 import {
   ProjectSpecifyTabKeys,
-  ProjectSpecifyTabs,
   ProjectSpecifyTabValue,
+  ProjectSpecifyTabs,
 } from '../../../constants/tab';
+
+import { getProductByIdAndReturn } from '@/features/product/services';
+import { getProductSpecifying, updateProductSpecifying } from '@/features/project/services';
+import { useBoolean } from '@/helper/hook';
+import { pick } from 'lodash';
+
+import { OnChangeSpecifyingProductFnc, SpecifyingProductRequestBody } from './types';
+import { ProductAttributeFormInput, ProductItem } from '@/features/product/types';
+import { SpecificationAttributeGroup } from '@/features/project/types';
+
+import BrandProductBasicHeader from '@/components/BrandProductBasicHeader';
+import CustomButton from '@/components/Button';
+import { CustomModal } from '@/components/Modal';
+import popoverStyles from '@/components/Modal/styles/Popover.less';
+import { CustomTabPane, CustomTabs } from '@/components/Tabs';
+import { MainTitle } from '@/components/Typography';
+
 import AllocationTab from './AllocationTab';
 import CodeOrderTab from './CodeOrderTab';
 import SpecificationTab from './SpecificationTab';
 import VendorTab from './VendorTab';
-
-import BrandProductBasicHeader from '@/components/BrandProductBasicHeader';
-import popoverStyles from '@/components/Modal/styles/Popover.less';
-import { ProductAttributeFormInput, ProductItem } from '@/features/product/types';
 import styles from './styles/specifying-modal.less';
-import { OnChangeSpecifyingProductFnc, SpecifyingProductRequestBody } from './types';
-import { SpecificationAttributeGroup } from '@/features/project/types';
-import { getProductSpecifying, updateProductSpecifying } from '@/features/project/services';
-import { pick } from 'lodash';
-import { getProductByIdAndReturn } from '@/features/product/services';
-import { useBoolean } from '@/helper/hook';
 
 const DEFAULT_STATE: SpecifyingProductRequestBody = {
   considered_product_id: '',
@@ -248,12 +252,10 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           variant="primary"
           properties="rounded"
           buttonClass="done-btn"
-          onClick={onSubmit}
-        >
+          onClick={onSubmit}>
           Done
         </CustomButton>
-      }
-    >
+      }>
       <BrandProductBasicHeader
         image={product.image}
         logo={product.brand_logo}

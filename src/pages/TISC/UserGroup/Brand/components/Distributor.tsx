@@ -1,12 +1,17 @@
-import TextForm from '@/components/Form/TextForm';
-import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
+import { useEffect, useState } from 'react';
+
+import { Col, Collapse, Row } from 'antd';
+
 import { useGetParamId } from '@/helper/hook';
 import { getListDistributorGroupCountryByBrandId } from '@/services';
-import { DistributorResponseForm } from '@/types/distributor.type';
-import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
-import { useEffect, useState } from 'react';
+
+import { DistributorResponseForm } from '@/types/distributor.type';
+
 import GeneralData from '../../components/GeneralData';
+import TextForm from '@/components/Form/TextForm';
+import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
+
 import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
 import styles from '../../styles/index.less';
 
@@ -41,8 +46,7 @@ const BrandDistributorDetail = () => {
                     key={index}
                     collapsible={
                       isEmpty(location.country_name) || location.count == 0 ? 'disabled' : undefined
-                    }
-                  >
+                    }>
                     <Collapse {...CollapseLevel2Props}>
                       {location.distributors?.map((distributor, idx) => (
                         <Collapse.Panel
@@ -50,8 +54,7 @@ const BrandDistributorDetail = () => {
                             <RenderLabelHeader header={distributor.name} isSubHeader={true} />
                           }
                           key={`${index}-${idx}`}
-                          collapsible={isEmpty(distributor.name) ? 'disabled' : undefined}
-                        >
+                          collapsible={isEmpty(distributor.name) ? 'disabled' : undefined}>
                           <div className={styles.info}>
                             <TextForm label="Address">{distributor.address ?? ''}</TextForm>
                             <TextForm label="Person in charge">{distributor.person ?? ''}</TextForm>

@@ -1,18 +1,16 @@
+import React, { useRef, useState } from 'react';
+
+import { MESSAGE_ERROR } from '@/constants/message';
+import { PATH } from '@/constants/path';
+import { USER_STATUSES } from '@/constants/util';
+import { PageContainer } from '@ant-design/pro-layout';
+import { message } from 'antd';
+
 import { ReactComponent as ActionUnreadedIcon } from '@/assets/icons/action-unreaded-icon.svg';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
-import { ActionForm } from '@/components/Action';
-import AssignTeam from '@/components/AssignTeam';
-import { CheckboxValue } from '@/components/CustomCheckbox/types';
-import CustomTable from '@/components/Table';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import type { TableColumnItem } from '@/components/Table/types';
-import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
-import { BodyText } from '@/components/Typography';
-import { MESSAGE_ERROR } from '@/constants/message';
-import { PATH } from '@/constants/path';
-import { USER_STATUSES } from '@/constants/util';
+
 import { pushTo } from '@/helper/history';
 import { showImageUrl } from '@/helper/utils';
 import {
@@ -21,17 +19,25 @@ import {
   getListAssignTeamByBrandId,
   inviteUser,
 } from '@/services';
+import { isEmpty, isEqual } from 'lodash';
+
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import type { TableColumnItem } from '@/components/Table/types';
 import type {
   AssignTeamForm,
   BrandListItem,
   MemberAssignTeam,
   TeamProfileBrandAssignMember,
 } from '@/types';
-import { PageContainer } from '@ant-design/pro-layout';
-import { message } from 'antd';
-import { isEmpty, isEqual } from 'lodash';
-import React, { useRef, useState } from 'react';
+
 import BrandMenuSummary from './components/BrandMenuSummary';
+import { ActionForm } from '@/components/Action';
+import AssignTeam from '@/components/AssignTeam';
+import CustomTable from '@/components/Table';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
+import { BodyText } from '@/components/Typography';
+
 import styles from './styles/index.less';
 
 const BrandList: React.FC = () => {

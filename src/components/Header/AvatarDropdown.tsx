@@ -1,16 +1,20 @@
+import { PATH } from '@/constants/path';
 import { Avatar, Spin } from 'antd';
 import { useModel } from 'umi';
-import { HeaderDropdown } from '../HeaderDropdown';
-import styles from './styles/AvatarDropdown.less';
+
 import DefaultAvatarIcon from '@/assets/icons/ic-user-white.svg';
-import { PATH } from '@/constants/path';
-import { pushTo } from '@/helper/history';
-import { BodyText } from '../Typography';
 import { ReactComponent as LogOutIcon } from '@/assets/icons/outside-icon.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon.svg';
-import { MenuHeaderDropdown } from '@/components/HeaderDropdown';
-import { getFullName, showImageUrl } from '@/helper/utils';
+
+import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
+import { getFullName, showImageUrl } from '@/helper/utils';
+
+import { MenuHeaderDropdown } from '@/components/HeaderDropdown';
+
+import { HeaderDropdown } from '../HeaderDropdown';
+import { BodyText } from '../Typography';
+import styles from './styles/AvatarDropdown.less';
 
 export const AvatarDropdown = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
@@ -71,8 +75,7 @@ export const AvatarDropdown = () => {
       align={{ offset: [0, 11] }}
       placement="topLeft"
       trigger={['click']}
-      getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}
-    >
+      getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}>
       <span className={`${styles.container}`}>
         <Avatar
           size="small"

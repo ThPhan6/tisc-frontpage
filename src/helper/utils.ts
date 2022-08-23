@@ -1,7 +1,10 @@
-import { PhoneInputValueProp } from '@/components/Form/types';
 import { PATH } from '@/constants/path';
-import { isUndefined, isNumber, toNumber, isNaN } from 'lodash';
 import { history } from 'umi';
+
+import { isNaN, isNumber, isUndefined, toNumber } from 'lodash';
+
+import { PhoneInputValueProp } from '@/components/Form/types';
+
 import { pushTo } from './history';
 
 export const REGEX_PASSWORD =

@@ -1,11 +1,16 @@
+import { FC } from 'react';
+
+import { MEASUREMENT_UNIT } from '@/constants/util';
+import { Col, Collapse, Row } from 'antd';
+
+import { isEmpty } from 'lodash';
+
+import { ProjectDetail, ProjectsDesignFirm } from '@/features/project/types';
+
+import GeneralData from '../../components/GeneralData';
 import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
-import { MEASUREMENT_UNIT } from '@/constants/util';
-import { ProjectDetail, ProjectsDesignFirm } from '@/features/project/types';
-import { Col, Collapse, Row } from 'antd';
-import { isEmpty } from 'lodash';
-import { FC } from 'react';
-import GeneralData from '../../components/GeneralData';
+
 import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
 import indexStyles from '../../styles/index.less';
 import styles from '../styles/ComponentViewDesign.less';
@@ -22,8 +27,7 @@ const ProjectDesign: FC<ProjectDesignProp> = ({ projectData }) => {
           <span
             style={{
               marginLeft: 8,
-            }}
-          >
+            }}>
             {project.name}
           </span>
         </span>
@@ -49,15 +53,13 @@ const ProjectDesign: FC<ProjectDesignProp> = ({ projectData }) => {
                       />
                     }
                     key={index}
-                    collapsible={listProject.count === 0 ? 'disabled' : undefined}
-                  >
+                    collapsible={listProject.count === 0 ? 'disabled' : undefined}>
                     <Collapse {...CollapseLevel2Props}>
                       {listProject.projects.map((project, projectIndex) => (
                         <Collapse.Panel
                           header={renderProjectHeader(project)}
                           key={`${index}-${projectIndex}`}
-                          collapsible={isEmpty(project.code) ? 'disabled' : undefined}
-                        >
+                          collapsible={isEmpty(project.code) ? 'disabled' : undefined}>
                           <div className={`${indexStyles.info} ${styles.teamInfo}`}>
                             <TextForm label="Project Location">{project.location}</TextForm>
                             <TextForm label="Building Type">{project.building_type}</TextForm>

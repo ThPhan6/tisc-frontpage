@@ -1,28 +1,19 @@
-import { BodyText, MainTitle, Title } from '@/components/Typography';
-import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
-import styles from '../DesignFirm/styles/index.less';
-import { CustomTabPane, CustomTabs } from '@/components/Tabs';
-import { TabItem } from '@/components/Tabs/types';
-import { ReactComponent as ProfileIcon } from '@/assets/icons/design-firm-icon.svg';
-import { ReactComponent as LocationIcon } from '@/assets/icons/location-icon.svg';
-import { ReactComponent as TeamIcon } from '@/assets/icons/team-profile-icon.svg';
-import { ReactComponent as ProjectIcon } from '@/assets/icons/project-icon.svg';
-import { ReactComponent as MaterialIcon } from '@/assets/icons/material-product-code-icon.svg';
-import { ReactComponent as CustomIcon } from '@/assets/icons/custom-icon.svg';
-import { Tooltip } from 'antd';
-import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
-import { CustomRadio } from '@/components/CustomRadio';
-import ProfileDesign from './components/ProfileDesign';
-import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
-import LocationDesign from './components/LocationDesign';
 import { FC, useEffect, useState } from 'react';
-import {
-  DesignFirmDetail,
-  LocationGroupedByCountry,
-  MaterialCodeDesignFirm,
-  TeamsDesignFirm,
-} from '@/types';
+
+import { PATH } from '@/constants/path';
+import { Tooltip } from 'antd';
+
+import { ReactComponent as CustomIcon } from '@/assets/icons/custom-icon.svg';
+import { ReactComponent as ProfileIcon } from '@/assets/icons/design-firm-icon.svg';
+import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
+import { ReactComponent as LocationIcon } from '@/assets/icons/location-icon.svg';
+import { ReactComponent as MaterialIcon } from '@/assets/icons/material-product-code-icon.svg';
+import { ReactComponent as ProjectIcon } from '@/assets/icons/project-icon.svg';
+import { ReactComponent as TeamIcon } from '@/assets/icons/team-profile-icon.svg';
+import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
+
+import { pushTo } from '@/helper/history';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 import {
   getLocationsByDesignFirm,
   getMaterialCodeByDesignFirm,
@@ -31,15 +22,30 @@ import {
   getTeamsByDesignFirm,
   updateStatusDesignFirm,
 } from '@/services';
-import TeamsDesign from './components/TeamsDesign';
-import MaterialCode from './components/MaterialCode';
-import ProjectDesign from './components/ProjectDesign';
+
+import { TabItem } from '@/components/Tabs/types';
+import { ProjectsDesignFirm } from '@/features/project/types';
+import {
+  DesignFirmDetail,
+  LocationGroupedByCountry,
+  MaterialCodeDesignFirm,
+  TeamsDesignFirm,
+} from '@/types';
+
 import CustomDesign from './components/CustomDesign';
 import DesignFirmSummary from './components/DesignFirmSummary';
-import { useBoolean, useGetParamId } from '@/helper/hook';
-import LoadingPageCustomize from '@/components/LoadingPage';
+import LocationDesign from './components/LocationDesign';
+import MaterialCode from './components/MaterialCode';
+import ProfileDesign from './components/ProfileDesign';
+import ProjectDesign from './components/ProjectDesign';
+import TeamsDesign from './components/TeamsDesign';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
-import { ProjectsDesignFirm } from '@/features/project/types';
+import { CustomRadio } from '@/components/CustomRadio';
+import LoadingPageCustomize from '@/components/LoadingPage';
+import { CustomTabPane, CustomTabs } from '@/components/Tabs';
+import { BodyText, MainTitle, Title } from '@/components/Typography';
+
+import styles from '../DesignFirm/styles/index.less';
 
 export enum DesignTabKeys {
   profile = 'profile',
@@ -216,8 +222,7 @@ const ViewDesignFirmPage = () => {
                   }
                   align={{
                     offset: [-14, -9],
-                  }}
-                >
+                  }}>
                   <WarningIcon />
                 </Tooltip>
               </div>
