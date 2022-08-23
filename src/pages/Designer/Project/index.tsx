@@ -24,7 +24,7 @@ import ProjectListHeader from './components/ProjectListHeader';
 import { ActionMenu } from '@/components/Action';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
+import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
 
 import styles from './styles/project-list.less';

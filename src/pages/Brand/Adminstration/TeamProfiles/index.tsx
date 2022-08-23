@@ -3,10 +3,10 @@ import { useRef } from 'react';
 import { PATH } from '@/constants/path';
 import { USER_STATUS_TEXTS } from '@/constants/util';
 
+import { deleteTeamProfile, getTeamProfileList } from '@/features/team-profiles/services/api';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { formatPhoneCode, getFullName, showImageUrl } from '@/helper/utils';
-import { deleteTeamProfile, getTeamProfileList } from '@/services';
 
 import { TableColumnItem } from '@/components/Table/types';
 import { useAppSelector } from '@/reducers';

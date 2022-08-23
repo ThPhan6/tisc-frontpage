@@ -1,20 +1,24 @@
 import { useEffect, useState } from 'react';
 
-import { BrandAccessLevelDataRole } from './constants/role';
-import { DEFAULT_TEAMPROFILE } from '@/components/TeamProfile/constants/entryForm';
 import { PATH } from '@/constants/path';
+import { DEFAULT_TEAMPROFILE } from '@/features/team-profiles/constants/entryForm';
+import { BrandAccessLevelDataRole } from '@/features/team-profiles/constants/role';
 import { useParams } from 'umi';
 
+import {
+  getOneTeamProfile,
+  inviteUser,
+  updateTeamProfile,
+} from '@/features/team-profiles/services/api';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { getOneTeamProfile, inviteUser, updateTeamProfile } from '@/services';
 
 import { TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
 
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { TeamProfilesEntryForm } from '@/components/TeamProfile/components/TeamProfilesEntryForm';
+import { TeamProfilesEntryForm } from '@/features/team-profiles/components/TeamProfilesEntryForm';
 
 const UpdateTeamProfilesPage = () => {
   const submitButtonStatus = useBoolean(false);

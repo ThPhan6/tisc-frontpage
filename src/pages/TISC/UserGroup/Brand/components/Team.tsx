@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import { USER_STATUS_TEXTS } from '@/constants/util';
 import { Col, Collapse, Row } from 'antd';
 
+import { getListTeamProfileUserGroupByBrandId } from '@/features/team-profiles/services/api';
 import { useGetParamId } from '@/helper/hook';
-import { getListTeamProfileUserGroupByBrandId } from '@/services';
 import { isEmpty } from 'lodash';
 
 import { TeamProfileGroupCountry } from '@/types';

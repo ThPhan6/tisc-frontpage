@@ -1,19 +1,19 @@
 import { useState } from 'react';
 
-import { TISCAccessLevelDataRole } from './constants/role';
-import { DEFAULT_TEAMPROFILE } from '@/components/TeamProfile/constants/entryForm';
 import { PATH } from '@/constants/path';
+import { DEFAULT_TEAMPROFILE } from '@/features/team-profiles/constants/entryForm';
+import { TISCAccessLevelDataRole } from '@/features/team-profiles/constants/role';
 
+import { createTeamProfile, inviteUser } from '@/features/team-profiles/services/api';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { createTeamProfile, inviteUser } from '@/services';
 
 import { TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
 
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { TeamProfilesEntryForm } from '@/components/TeamProfile/components/TeamProfilesEntryForm';
+import { TeamProfilesEntryForm } from '@/features/team-profiles/components/TeamProfilesEntryForm';
 
 const CreateTeamProfilesPage = () => {
   const submitButtonStatus = useBoolean(false);

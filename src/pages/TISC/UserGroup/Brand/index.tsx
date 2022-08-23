@@ -11,13 +11,13 @@ import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-i
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 
+import { inviteUser } from '@/features/team-profiles/services/api';
 import { pushTo } from '@/helper/history';
 import { showImageUrl } from '@/helper/utils';
 import {
   createAssignTeamByBrandId,
   getBrandPagination,
   getListAssignTeamByBrandId,
-  inviteUser,
 } from '@/services';
 import { isEmpty, isEqual } from 'lodash';
 
@@ -35,7 +35,7 @@ import { ActionForm } from '@/components/Action';
 import AssignTeam from '@/components/AssignTeam';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
+import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
 
 import styles from './styles/index.less';

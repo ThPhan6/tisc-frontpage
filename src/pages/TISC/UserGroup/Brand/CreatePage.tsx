@@ -1,10 +1,10 @@
-import { TISCAccessLevelDataRole } from '../../Adminstration/TeamProfiles/constants/role';
 import { PATH } from '@/constants/path';
+import { TISCAccessLevelDataRole } from '@/features/team-profiles/constants/role';
 import { PageContainer } from '@ant-design/pro-layout';
 
+import { inviteUser } from '@/features/team-profiles/services/api';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { inviteUser } from '@/services';
 
 import BrandEntryForm from './components/BrandEntryForm';
 import BrandMenuSummary from './components/BrandMenuSummary';
