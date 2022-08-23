@@ -1,12 +1,18 @@
-import { BodyText } from '@/components/Typography';
-import { ReactComponent as PlusIcon } from '@/assets/icons/action-plus-icon.svg';
-import { ReactComponent as ExtendIcon } from '@/assets/icons/action-extend.svg';
-import styles from '../index.less';
 import { FC, useState } from 'react';
+
 import { Collapse } from 'antd';
-import { QnAItem } from './QnAItem';
-import { FaqItem, CollapsingProps } from '../types';
+
+import { ReactComponent as ExtendIcon } from '@/assets/icons/action-extend.svg';
+import { ReactComponent as PlusIcon } from '@/assets/icons/action-plus-icon.svg';
+
 import { showImageUrl } from '@/helper/utils';
+
+import { CollapsingProps, FaqItem } from '../types';
+
+import { BodyText } from '@/components/Typography';
+
+import styles from '../index.less';
+import { QnAItem } from './QnAItem';
 
 export interface FaqItemProps extends CollapsingProps {
   value: FaqItem;
@@ -20,8 +26,7 @@ const RenderHeader: FC<FaqItemProps> = (props) => {
     <div className={styles.panel_header}>
       <div
         className={`${styles.panel_header__field} ${customClass}`}
-        onClick={() => handleActiveCollapse(value.document ? index : -1)}
-      >
+        onClick={() => handleActiveCollapse(value.document ? index : -1)}>
         <div className={styles.titleIcon}>
           {value?.icon && <img src={showImageUrl(value.icon)} className={styles.icon} />}
           <div>
@@ -30,8 +35,7 @@ const RenderHeader: FC<FaqItemProps> = (props) => {
               fontFamily="Roboto"
               customClass={
                 String(index) !== activeKey ? styles.font_weight_300 : styles.font_weight_500
-              }
-            >
+              }>
               {value.title}
             </BodyText>
           </div>
@@ -79,8 +83,7 @@ export const FaqComponent: FC<FaqItemProps> = ({
           }
           key={index}
           showArrow={false}
-          className={value.id !== activeKey ? styles['bottomMedium'] : styles['bottomBlack']}
-        >
+          className={value.id !== activeKey ? styles['bottomMedium'] : styles['bottomBlack']}>
           <div className={styles.text}>
             <BodyText level={5} fontFamily="Roboto">
               {value.document}

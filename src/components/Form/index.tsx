@@ -1,9 +1,13 @@
 import type { FC } from 'react';
+
+import { Tooltip } from 'antd';
+
+import { ReactComponent as QuestionIcon } from '@/assets/icons/question-icon.svg';
+
+import type { FormGroupProps } from './types';
+
 import { BodyText } from '../Typography';
 import style from './styles/Form.less';
-import type { FormGroupProps } from './types';
-import { ReactComponent as QuestionIcon } from '../../assets/icons/question-icon.svg';
-import { Tooltip } from 'antd';
 
 export const FormGroup: FC<FormGroupProps> = ({
   layout = 'horizontal',
@@ -33,8 +37,7 @@ export const FormGroup: FC<FormGroupProps> = ({
         className={`${style.label} ${
           layout === 'horizontal' && style['label-margin']
         } ${labelColor}`}
-        onClick={onClick}
-      >
+        onClick={onClick}>
         <BodyText fontFamily="Cormorant-Garamond" level={3} customClass={labelColor}>
           {label}
         </BodyText>
@@ -42,8 +45,7 @@ export const FormGroup: FC<FormGroupProps> = ({
           <BodyText
             customClass={`${style.optional} ${labelColor}`}
             fontFamily="Cormorant-Garamond"
-            level={3}
-          >
+            level={3}>
             (optional)
           </BodyText>
         )}
@@ -58,8 +60,7 @@ export const FormGroup: FC<FormGroupProps> = ({
                     width: placementBottomWidth ? placementBottomWidth : '160px',
                   }
                 : {}
-            }
-          >
+            }>
             {iconTooltip ? (
               iconTooltip
             ) : (

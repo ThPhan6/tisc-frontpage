@@ -1,16 +1,21 @@
-import styles from './SignupModal.less';
+import { FC, useState } from 'react';
+
+import { Checkbox } from 'antd';
+
+import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
+import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
+import { ReactComponent as InternetIcon } from '@/assets/icons/internet-icon.svg';
+import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
+
+import { ModalProps } from '../types';
+
+import CustomButton from '@/components/Button';
+import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomModal } from '@/components/Modal';
 import { MainTitle } from '@/components/Typography';
-import { CustomInput } from '@/components/Form/CustomInput';
-import CustomButton from '@/components/Button';
-import { FC, useState } from 'react';
-import { ModalProps } from '../types';
-import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
-import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
-import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
-import { ReactComponent as InternetIcon } from '@/assets/icons/internet-icon.svg';
-import { Checkbox } from 'antd';
+
 import { PoliciesModal } from './PoliciesModal';
+import styles from './SignupModal.less';
 
 export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
@@ -25,8 +30,7 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
         backgroundColor: theme === 'dark' ? '#000' : '',
       }}
       closeIconClass={theme === 'dark' && styles.closeIcon}
-      onCancel={onClose}
-    >
+      onCancel={onClose}>
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={2} customClass={styles[`body${themeStyle()}`]}>

@@ -1,8 +1,11 @@
 import { FC, ReactNode } from 'react';
-import { CustomRadio } from '@/components/CustomRadio';
+
 import { RadioValue } from '@/components/CustomRadio/types';
-import { BodyText } from '@/components/Typography';
+
 import CustomCollapse from '@/components/Collapse';
+import { CustomRadio } from '@/components/CustomRadio';
+import { BodyText } from '@/components/Typography';
+
 import styles from './styles/collapseRadioList.less';
 
 interface CollapseRadioListProps {
@@ -39,8 +42,7 @@ const CollapseRadioList: FC<CollapseRadioListProps> = ({
           </BodyText>
         )
       }
-      className={`${styles.functionTypeDropdown} ${containerClass}`}
-    >
+      className={`${styles.functionTypeDropdown} ${containerClass}`}>
       <CustomRadio
         options={options}
         isRadioList

@@ -1,14 +1,19 @@
-import { CustomTabPane } from '@/components/Tabs';
-import React, { useState, useEffect } from 'react';
-import GeneralInformation from './tabs/BasicInformation';
-import ProjectDetailHeader from './components/ProjectDetailHeader';
-import SpaceManagement from './tabs/SpaceManagement';
+import React, { useEffect, useState } from 'react';
+
 import { ProjectTabKeys } from './constants/tab';
+import { useParams } from 'umi';
+
+import { getProjectById } from '@/features/project/services';
+
+import type { ProjectDetailProps } from '@/features/project/types';
+
+import ProjectDetailHeader from './components/ProjectDetailHeader';
+import { CustomTabPane } from '@/components/Tabs';
+
+import GeneralInformation from './tabs/BasicInformation';
 import ProductConsidered from './tabs/ProductConsidered';
 import ProductSpecification from './tabs/ProductSpecification';
-import type { ProjectDetailProps } from '@/features/project/types';
-import { useParams } from 'umi';
-import { getProjectById } from '@/features/project/services';
+import SpaceManagement from './tabs/SpaceManagement';
 
 const ProjectCreatePage: React.FC = () => {
   const params = useParams<{ id: string }>();

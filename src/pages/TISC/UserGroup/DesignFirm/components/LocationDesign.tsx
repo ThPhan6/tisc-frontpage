@@ -1,12 +1,17 @@
+import { FC } from 'react';
+
+import { Col, Collapse, Row } from 'antd';
+
+import { isEmpty } from 'lodash';
+
+import { LocationGroupedByCountry } from '@/types';
+
+import GeneralData from '../../components/GeneralData';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
-import { LocationGroupedByCountry } from '@/types';
-import { Col, Collapse, Row } from 'antd';
-import { isEmpty } from 'lodash';
-import { FC } from 'react';
-import GeneralData from '../../components/GeneralData';
+
 import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
 import indexStyles from '../../styles/index.less';
 import styles from '../styles/ComponentViewDesign.less';
@@ -34,8 +39,7 @@ const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
                       />
                     }
                     key={index}
-                    collapsible={country.count === 0 ? 'disabled' : undefined}
-                  >
+                    collapsible={country.count === 0 ? 'disabled' : undefined}>
                     <Collapse {...CollapseLevel2Props}>
                       {country.locations.map((location, locationIndex) => (
                         <Collapse.Panel
@@ -43,8 +47,7 @@ const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
                             <RenderLabelHeader header={location.business_name} isSubHeader={true} />
                           }
                           key={`${index}-${locationIndex}`}
-                          collapsible={isEmpty(location.business_name) ? 'disabled' : undefined}
-                        >
+                          collapsible={isEmpty(location.business_name) ? 'disabled' : undefined}>
                           <div className={`${indexStyles.info} ${styles.teamInfo}`}>
                             <TextForm label="Location Function">
                               {location.functional_types.map((type) => type.name).join(',')}
@@ -53,8 +56,7 @@ const LocationDesign: FC<LocationDesignProp> = ({ locationData }) => {
                             <FormGroup
                               label="General Phone"
                               layout="vertical"
-                              formClass={styles.formGroup}
-                            >
+                              formClass={styles.formGroup}>
                               <PhoneInput
                                 codeReadOnly
                                 containerClass={styles.phoneInputCustom}

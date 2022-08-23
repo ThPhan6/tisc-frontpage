@@ -1,18 +1,24 @@
-import { ProductItem } from '@/features/product/types';
 import { useState } from 'react';
-import { useParams } from 'umi';
-import { SpecifyingModal } from './tabs/ProductConsidered/SpecifyingModal';
-import { CustomDropDown } from '@/features/product/components';
+
 import { ItemType } from 'antd/es/menu/hooks/useItems';
-import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
-import { ActionMenu } from '@/components/Action';
+import { useParams } from 'umi';
+
 import { ReactComponent as CancelIcon } from '@/assets/icons/ic-circle-cancel.svg';
-import { SpecifyStatus } from '@/features/project/types';
+import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
+
 import {
   removeSpecifiedPromConsider,
   updateProductSpecifiedStatus,
 } from '@/features/project/services';
 import { confirmDelete } from '@/helper/common';
+
+import { ProductItem } from '@/features/product/types';
+import { SpecifyStatus } from '@/features/project/types';
+
+import { ActionMenu } from '@/components/Action';
+import { CustomDropDown } from '@/features/product/components';
+
+import { SpecifyingModal } from './tabs/ProductConsidered/SpecifyingModal';
 
 export const useSpecifyingModal = (tableRef: any) => {
   const params = useParams<{ id: string }>();
@@ -69,8 +75,7 @@ export const renderStatusDropdown =
         textCapitalize={false}
         items={menuItems}
         menuStyle={{ width: 160, height: 'auto' }}
-        labelProps={{ className: 'flex-between' }}
-      >
+        labelProps={{ className: 'flex-between' }}>
         {record.status === SpecifyStatus.Specified
           ? 'Specified'
           : record.status === SpecifyStatus['Re-specified']

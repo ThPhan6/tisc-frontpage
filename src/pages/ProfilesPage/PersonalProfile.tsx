@@ -1,24 +1,30 @@
+import { FC, useEffect, useState } from 'react';
+
+import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constants/message';
+import { AVATAR_ACCEPT_TYPES, STATUS_RESPONSE } from '@/constants/util';
+import { Tooltip, Upload, UploadProps, message } from 'antd';
+
+import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
+import UserIcon from '@/assets/icons/ic-user.svg';
+import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
+import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
+
+import { updateAvatarTeamProfile, updateTeamProfile } from './services/api';
+import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
+import { isShowErrorMessage, showImageUrl, validateEmail } from '@/helper/utils';
+import { isEqual } from 'lodash';
+
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { PhoneInputValueProp } from '@/components/Form/types';
+
 import CustomButton from '@/components/Button';
+import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
-import { BodyText, Title } from '@/components/Typography';
-import { message, Tooltip, Upload, UploadProps } from 'antd';
-import styles from './styles/PersonalProfile.less';
-import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
-import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
-import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
-import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constants/message';
-import UserIcon from '@/assets/icons/ic-user.svg';
-import { FC, useEffect, useState } from 'react';
-import { isShowErrorMessage, showImageUrl, validateEmail } from '@/helper/utils';
-import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
 import { PhoneInput } from '@/components/Form/PhoneInput';
-import { updateAvatarTeamProfile, updateTeamProfile } from './services/api';
-import { AVATAR_ACCEPT_TYPES, STATUS_RESPONSE } from '@/constants/util';
-import { PhoneInputValueProp } from '@/components/Form/types';
-import { isEqual } from 'lodash';
-import { CustomCheckbox } from '@/components/CustomCheckbox';
-import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { BodyText, Title } from '@/components/Typography';
+
+import styles from './styles/PersonalProfile.less';
 
 export type PersonalProfileState = {
   backupEmail: string;
@@ -200,8 +206,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
           overlayInnerStyle={{
             width: '240px',
             padding: '8px 19.5px',
-          }}
-        >
+          }}>
           <WarningIcon className={styles['warning-icon']} />
         </Tooltip>
       </div>
@@ -232,8 +237,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
             messageType="error"
             label="Backup email"
             layout="vertical"
-            formClass={styles.form}
-          >
+            formClass={styles.form}>
             <CustomInput
               name="backupEmail"
               status={isShowErrorMessage('email', inputValue.backupEmail) ? '' : 'error'}
@@ -296,8 +300,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
               size="small"
               width="64px"
               onClick={handleSubmit}
-              disabled={checkSaveDisabled()}
-            >
+              disabled={checkSaveDisabled()}>
               <BodyText level={6} fontFamily="Roboto">
                 Save
               </BodyText>

@@ -1,9 +1,10 @@
-import { request } from 'umi';
-import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { message } from 'antd';
+import { request } from 'umi';
+
+import { setProductCatelogue } from '../reducers';
 import type { ProductCatelogue } from '../types';
 import store from '@/reducers';
-import { setProductCatelogue } from '../reducers';
 
 export const getProductCatelogueByProductID = async (productId: string) => {
   return request<{ data: ProductCatelogue }>(

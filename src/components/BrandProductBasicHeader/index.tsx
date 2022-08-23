@@ -1,5 +1,7 @@
-import { showImageUrl } from '@/helper/utils';
 import { FC } from 'react';
+
+import { showImageUrl } from '@/helper/utils';
+
 import { RobotoBodyText } from '../Typography';
 import ProductPlaceHolderImage from '@/assets/images/product-placeholder.png';
 

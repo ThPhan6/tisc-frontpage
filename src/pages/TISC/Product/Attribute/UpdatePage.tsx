@@ -1,15 +1,19 @@
-import { TableHeader } from '@/components/Table/TableHeader';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import AttributeEntryForm from './components/AttributeEntryForm';
+import { useEffect, useState } from 'react';
+
 import { useParams } from 'umi';
+
 import { useAttributeLocation } from './hooks/location';
-import { useBoolean } from '@/helper/hook';
-import { useState, useEffect } from 'react';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { pushTo } from '@/helper/history';
+import { useBoolean } from '@/helper/hook';
+import { getOneAttribute, updateAttribute } from '@/services';
 
 import type { AttributeForm } from '@/types';
-import { updateAttribute, getOneAttribute } from '@/services';
+
+import AttributeEntryForm from './components/AttributeEntryForm';
+import LoadingPageCustomize from '@/components/LoadingPage';
+import { TableHeader } from '@/components/Table/TableHeader';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+
 const DEFAULT_ATTRIBUTE: AttributeForm = {
   name: '',
   subs: [],

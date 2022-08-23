@@ -1,9 +1,13 @@
 import type { FC } from 'react';
-import { MainTitle } from '@/components/Typography';
-import { CustomInput } from '@/components/Form/CustomInput';
+
 import type { InputProps } from 'antd';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
+
+import { CustomInput } from '@/components/Form/CustomInput';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { MainTitle } from '@/components/Typography';
+
 import styles from './styles/DynamicFormInput.less';
 
 interface DynamicFormInputData {

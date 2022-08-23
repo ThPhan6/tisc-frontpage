@@ -1,16 +1,21 @@
 // import { useState } from 'react';
+import { FC, useEffect, useState } from 'react';
+
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
-import CustomCollapse from '@/components/Collapse';
+
+import { getBrandLocation, getDistributorLocation } from '@/services';
+
+import { OnChangeSpecifyingProductFnc } from './types';
 import { RadioValue } from '@/components/CustomRadio/types';
+import { DistributorProductMarket, LocationDetail, LocationGroupedByCountry } from '@/types';
+
+import CustomCollapse from '@/components/Collapse';
 import Popover from '@/components/Modal/Popover';
 import { RenderEntireProjectLabel } from '@/components/RenderHeaderLabel';
 import { BodyText, RobotoBodyText } from '@/components/Typography';
 import { BusinessDetail } from '@/features/product/components/BrandContact';
-import { getBrandLocation, getDistributorLocation } from '@/services';
-import { LocationDetail, LocationGroupedByCountry, DistributorProductMarket } from '@/types';
-import { FC, useEffect, useState } from 'react';
+
 import styles from './styles/vendor-tab.less';
-import { OnChangeSpecifyingProductFnc } from './types';
 
 const activeKey = '1';
 
@@ -199,8 +204,7 @@ const VendorTab: FC<VendorTabProps> = ({
             level={6}
             fontFamily="Roboto"
             color={country ? 'mono-color' : 'mono-color-medium'}
-            customClass="country-name"
-          >
+            customClass="country-name">
             {country || 'select location'}
           </BodyText>
           <SingleRightIcon className={country ? 'icon-active' : 'icon-unActive'} />
@@ -227,8 +231,7 @@ const VendorTab: FC<VendorTabProps> = ({
             brandActiveKey === activeKey && chosenBrand.value
               ? styles.collapsed
               : styles.notCollapsed
-          } `}
-        >
+          } `}>
           <div className={styles.address}>
             <CustomCollapse
               header={renderCollapseHeader(
@@ -243,8 +246,7 @@ const VendorTab: FC<VendorTabProps> = ({
               collapsible={chosenBrand.value ? 'header' : 'disabled'}
               onChange={(key) => handleCollapse('brand', key)}
               activeKey={brandActiveKey}
-              customHeaderClass={styles.collapseHeader}
-            >
+              customHeaderClass={styles.collapseHeader}>
               {renderBusinessAdressDetail(selectedLocationBrand)}
             </CustomCollapse>
           </div>
@@ -256,8 +258,7 @@ const VendorTab: FC<VendorTabProps> = ({
             distributorActiveKey === activeKey && chosenDistributor.value
               ? styles.collapsed
               : styles.notCollapsed
-          } `}
-        >
+          } `}>
           <div className={styles.address}>
             <CustomCollapse
               header={renderCollapseHeader(
@@ -272,8 +273,7 @@ const VendorTab: FC<VendorTabProps> = ({
               collapsible={chosenDistributor.value ? 'header' : 'disabled'}
               onChange={(key) => handleCollapse('distributor', key)}
               activeKey={distributorActiveKey}
-              customHeaderClass={styles.collapseHeader}
-            >
+              customHeaderClass={styles.collapseHeader}>
               {renderDistributorBusinessAdressDetail(selectedLocationDistributor)}
             </CustomCollapse>
           </div>

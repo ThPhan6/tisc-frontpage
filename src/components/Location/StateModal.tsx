@@ -1,7 +1,10 @@
-import Popover from '@/components/Modal/Popover';
-import { getStatesByCountryId } from '@/services/location.api';
-import { State } from '@/types';
 import { FC, useEffect, useState } from 'react';
+
+import { getStatesByCountryId } from '@/services/location.api';
+
+import { State } from '@/types';
+
+import Popover from '@/components/Modal/Popover';
 
 const StateModal: FC<{
   countryId: string;

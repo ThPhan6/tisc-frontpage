@@ -1,10 +1,13 @@
+import { FC } from 'react';
+
+import { Quotation } from '@/types';
+
 import { EntryFormWrapper } from '@/components/EntryForm';
+import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
-import { FC } from 'react';
+
 import styles from '../styles/InspirationalQuotationEntryForm.less';
-import { Quotation } from '@/types';
-import InputGroup from '@/components/EntryForm/InputGroup';
 
 interface QuotationEntryFormProps {
   value: Quotation;
@@ -48,8 +51,7 @@ export const InspirationalQuotationEntryForm: FC<QuotationEntryFormProps> = ({
       <EntryFormWrapper
         handleCancel={onCancel}
         handleSubmit={handleSubmitData}
-        submitButtonStatus={submitButtonStatus}
-      >
+        submitButtonStatus={submitButtonStatus}>
         {/* author */}
         <InputGroup
           label="Author"

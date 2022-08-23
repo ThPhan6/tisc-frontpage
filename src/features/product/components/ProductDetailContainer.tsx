@@ -1,6 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { MESSAGE_ERROR } from '@/constants/message';
+import { PATH } from '@/constants/path';
+import { Col, Row, message } from 'antd';
 import { useHistory, useParams } from 'umi';
-import { Row, Col, message } from 'antd';
+
+import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
+
 import {
   createProductCard,
   createProductCatelogue,
@@ -12,25 +19,24 @@ import {
   getRelatedCollectionProducts,
   updateProductCard,
 } from '@/features/product/services';
-import { setBrand } from '@/features/product/reducers';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '@/reducers';
-import styles from './detail.less';
-import { TableHeader } from '@/components/Table/TableHeader';
-import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
-import { ProductInfoTab } from './ProductAttributeComponent/types';
-import { ProductBasicInfo } from './ProductBasicInfo';
-import { ProductAttributeComponent } from './ProductAttributeComponent';
-import { ProductDetailFooter } from './ProductDetailFooter';
-import ProductImagePreview from './ProductImagePreview';
-import { getBrandById } from '@/services';
-import { isValidURL } from '@/helper/utils';
-import { ProductFormData, ProductKeyword } from '../types';
 import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
-import { MESSAGE_ERROR } from '@/constants/message';
 import { useCheckPermission } from '@/helper/hook';
+import { isValidURL } from '@/helper/utils';
+import { getBrandById } from '@/services';
+
+import { ProductFormData, ProductKeyword } from '../types';
+import { ProductInfoTab } from './ProductAttributeComponent/types';
+import { setBrand } from '@/features/product/reducers';
+import { useAppSelector } from '@/reducers';
+
+import { TableHeader } from '@/components/Table/TableHeader';
+
+import { ProductAttributeComponent } from './ProductAttributeComponent';
+import { ProductBasicInfo } from './ProductBasicInfo';
+import { ProductDetailFooter } from './ProductDetailFooter';
 import ProductDetailHeader from './ProductDetailHeader';
+import ProductImagePreview from './ProductImagePreview';
+import styles from './detail.less';
 
 const ProductDetailContainer: React.FC = () => {
   const dispatch = useDispatch();

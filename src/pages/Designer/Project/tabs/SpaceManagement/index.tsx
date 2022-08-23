@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
-import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
-import SpaceList from './SpaceList';
-import SpaceEntryForm from './SpaceEntryForm';
-import { MainTitle } from '@/components/Typography';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+
 import { DefaultProjectZone } from '../../constants/form';
-import { useBoolean } from '@/helper/hook';
-import LoadingPageCustomize from '@/components/LoadingPage';
+
 import { createProjectSpace, updateProjectSpace } from '@/features/project/services';
+import { useBoolean } from '@/helper/hook';
+
 import type { ProjectSpaceZone } from '@/features/project/types';
+
+import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
+import LoadingPageCustomize from '@/components/LoadingPage';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { MainTitle } from '@/components/Typography';
+
 import styles from '../../styles/space-management.less';
+import SpaceEntryForm from './SpaceEntryForm';
+import SpaceList from './SpaceList';
 
 interface SpaceManagementProps {
   projectId?: string;
@@ -62,8 +67,7 @@ const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
       <ProjectTabContentHeader>
         <div
           className={`${styles.createSpaceButton} ${space ? 'disabled' : ''}`}
-          onClick={() => displaySpaceForm()}
-        >
+          onClick={() => displaySpaceForm()}>
           <MainTitle level={3} customClass="button-name">
             {' '}
             Create Space{' '}

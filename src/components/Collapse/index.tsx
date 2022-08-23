@@ -1,8 +1,11 @@
 import { FC, ReactNode } from 'react';
+
 import { Collapse } from 'antd';
 import type { CollapseProps } from 'antd';
+
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
+
 import styles from './styles/collapse.less';
 
 interface CustomCollapseProps extends CollapseProps {
@@ -31,13 +34,11 @@ const CustomCollapse: FC<CustomCollapseProps> = ({
       className={`${styles.customCollapse} ${className || ''} ${
         showActiveBoxShadow ? styles.activeBoxShadow : ''
       } ${noBorder ? styles.noBorder : ''} ${arrowAlignRight ? styles.arrowAlignRight : ''}`}
-      {...props}
-    >
+      {...props}>
       <Collapse.Panel
         key="1"
         className={`${styles.customHeaderCollapse} ${customHeaderClass || ''}`}
-        header={header}
-      >
+        header={header}>
         {children}
       </Collapse.Panel>
     </Collapse>

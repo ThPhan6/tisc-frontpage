@@ -1,12 +1,16 @@
-import { TableHeader } from '@/components/Table/TableHeader';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import OptionEntryForm from './components/OptionsEntryForm';
+import { useState } from 'react';
+
 import { PATH } from '@/constants/path';
+
 import { pushTo } from '@/helper/history';
-import { BasisOptionForm } from '@/types';
 import { useBoolean } from '@/helper/hook';
 import { createOptionMiddleWare } from '@/services';
-import { useState } from 'react';
+
+import { BasisOptionForm } from '@/types';
+
+import OptionEntryForm from './components/OptionsEntryForm';
+import { TableHeader } from '@/components/Table/TableHeader';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const CreateOptionPage = () => {
   const isLoading = useBoolean();

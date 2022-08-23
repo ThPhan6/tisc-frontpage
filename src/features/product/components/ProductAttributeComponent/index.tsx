@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import styles from '../detail.less';
-import { CustomTabPane, CustomTabs } from '@/components/Tabs';
-import { ProductAttributeContainer } from './ProductAttributeContainer';
-import { ProductInfoTab } from './types';
-import { ProductVendor } from './ProductVendor';
+
 import { getAllAttribute } from '@/services';
+
+import { ProductInfoTab } from './types';
 import { ProductAttributeByType } from '@/types';
+
+import { CustomTabPane, CustomTabs } from '@/components/Tabs';
+
+import styles from '../detail.less';
+import { ProductAttributeContainer } from './ProductAttributeContainer';
+import { ProductVendor } from './ProductVendor';
 
 const LIST_TAB = [
   { tab: 'GENERAL', key: 'general' },
@@ -55,15 +59,18 @@ export const ProductAttributeComponent: React.FC<ProductAttributeComponentProps>
       />
 
       <CustomTabPane active={activeKey === 'general'}>
-        <ProductAttributeContainer attributes={attribute[activeKey]} activeKey={'general'} />
+        <ProductAttributeContainer attributes={attribute.general} activeKey={'general'} />
       </CustomTabPane>
 
       <CustomTabPane active={activeKey === 'feature'}>
-        <ProductAttributeContainer attributes={attribute[activeKey]} activeKey={'feature'} />
+        <ProductAttributeContainer attributes={attribute.feature} activeKey={'feature'} />
       </CustomTabPane>
 
       <CustomTabPane active={activeKey === 'specification'}>
-        <ProductAttributeContainer attributes={attribute[activeKey]} activeKey={'specification'} />
+        <ProductAttributeContainer
+          attributes={attribute.specification}
+          activeKey={'specification'}
+        />
       </CustomTabPane>
 
       <CustomTabPane active={activeKey === 'vendor'}>

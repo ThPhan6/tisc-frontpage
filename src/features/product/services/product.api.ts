@@ -1,9 +1,7 @@
-import { ShareViaEmailForm } from '@/components/ShareViaEmail/types';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import store from '@/reducers';
-import type { BrandDetail } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
+
 import {
   setProductDetail,
   setProductList,
@@ -14,13 +12,16 @@ import {
   GroupProductList,
   ProductFormData,
   ProductGetListParameter,
+  ProductItem,
   ProductSummary,
   RelatedCollection,
-  ProductItem,
   GetListProductForDesignerRequestParams,
   BrandSummary,
   ProductItemValue,
 } from '../types';
+import store from '@/reducers';
+import type { BrandDetail } from '@/types';
+import { ShareViaEmailForm } from '@/components/ShareViaEmail';
 
 export async function getProductSummary(brandId: string) {
   return request<{ data: ProductSummary }>(`/api/product/brand-product-summary/${brandId}`, {

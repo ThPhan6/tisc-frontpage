@@ -1,12 +1,16 @@
+import { FC } from 'react';
+
+import { Col, Row } from 'antd';
+import { useHistory } from 'umi';
+
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
-import { Col, Row } from 'antd';
-import { FC } from 'react';
-import { useHistory } from 'umi';
+
+import { EntryFormWrapperProps } from './types';
+
 import CustomButton from '../Button';
 import { BodyText, MainTitle } from '../Typography';
 import styles from './styles/index.less';
-import { EntryFormWrapperProps } from './types';
 
 export const contentId = `entry-form-wrapper--children-${Date.now()}`;
 
@@ -50,8 +54,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
                 size="small"
                 buttonClass={styles.footer__cancel_bt}
                 onClick={handleCancel || history.goBack}
-                disabled={disableCancelButton}
-              >
+                disabled={disableCancelButton}>
                 Cancel
               </CustomButton>
 
@@ -69,8 +72,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
                     size="small"
                     width="64px"
                     onClick={handleSubmit}
-                    disabled={disableSubmitButton}
-                  >
+                    disabled={disableSubmitButton}>
                     <BodyText level={6} fontFamily="Roboto">
                       Save
                     </BodyText>

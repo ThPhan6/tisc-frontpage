@@ -1,10 +1,15 @@
-import type { ReactNode, FC } from 'react';
-import { BodyText } from '@/components/Typography';
-import { CustomInput } from '@/components/Form/CustomInput';
-import { Row, Col } from 'antd';
+import type { FC, ReactNode } from 'react';
+
+import { Col, Row } from 'antd';
+
 import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
-import styles from './styles/InputGroup.less';
+
 import type { SubBasisConversion } from '@/types';
+
+import { CustomInput } from '@/components/Form/CustomInput';
+import { BodyText } from '@/components/Typography';
+
+import styles from './styles/InputGroup.less';
 
 interface ConversionValue {
   firstValue: string;
@@ -45,8 +50,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
       className={styles.inputGroupContainer}
       gutter={0}
       align="middle"
-      wrap={noWrap ? false : true}
-    >
+      wrap={noWrap ? false : true}>
       <Col span={horizontal ? (noWrap ? undefined : 4) : 24} className="input-label-container">
         <BodyText level={fontLevel ?? 5} customClass="input-label">
           {label}
@@ -56,8 +60,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
       </Col>
       <Col
         className={styles.doubleinputGroupContent}
-        span={horizontal ? (noWrap ? undefined : 20) : 24}
-      >
+        span={horizontal ? (noWrap ? undefined : 20) : 24}>
         <div className="double-input-group-wrapper">
           <div className="double-input-group">
             <CustomInput
@@ -80,8 +83,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
             <BodyText
               level={fontLevel ? ((fontLevel + 2) as 7) : 7}
               fontFamily="Roboto"
-              customClass="unit-input-label"
-            >
+              customClass="unit-input-label">
               {conversionData.unit_1}
             </BodyText>
           </div>
@@ -106,8 +108,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
             <BodyText
               level={fontLevel ? ((fontLevel + 2) as 7) : 7}
               fontFamily="Roboto"
-              customClass="unit-input-label"
-            >
+              customClass="unit-input-label">
               {conversionData.unit_2}
             </BodyText>
           </div>

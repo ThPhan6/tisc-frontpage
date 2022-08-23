@@ -1,7 +1,11 @@
-import { RenderMemberHeader } from '@/components/RenderHeaderLabel';
-import { AssignTeamForm } from '@/types';
-import { map } from 'lodash';
 import { FC } from 'react';
+
+import { map } from 'lodash';
+
+import { AssignTeamForm } from '@/types';
+
+import { RenderMemberHeader } from '@/components/RenderHeaderLabel';
+
 import Popover from '../Modal/Popover';
 import styles from './index.less';
 

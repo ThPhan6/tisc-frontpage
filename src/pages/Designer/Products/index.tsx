@@ -1,4 +1,16 @@
+import React, { useEffect, useRef } from 'react';
+
+import { PageContainer } from '@ant-design/pro-layout';
+import { InputRef } from 'antd';
+
 import { ReactComponent as SearchIcon } from '@/assets/icons/ic-search.svg';
+
+import { getProductListForDesigner } from '@/features/product/services';
+import { showImageUrl } from '@/helper/utils';
+import { debounce } from 'lodash';
+
+import { setProductList, setProductListSearchValue } from '@/features/product/reducers';
+
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText, Title } from '@/components/Typography';
 import {
@@ -9,16 +21,10 @@ import {
   TopBarItem,
 } from '@/features/product/components';
 import {
-  useProductListFilterAndSorter,
   SORTER_DROPDOWN_DATA,
+  useProductListFilterAndSorter,
 } from '@/features/product/components/FilterAndSorter';
-import { setProductList, setProductListSearchValue } from '@/features/product/reducers';
-import { getProductListForDesigner } from '@/features/product/services';
-import { showImageUrl } from '@/helper/utils';
-import { PageContainer } from '@ant-design/pro-layout';
-import { InputRef } from 'antd';
-import { debounce } from 'lodash';
-import React, { useEffect, useRef } from 'react';
+
 import styles from './styles.less';
 
 const BrandProductListPage: React.FC = () => {
@@ -122,8 +128,7 @@ const BrandProductListPage: React.FC = () => {
             bottomValue={
               <CustomDropDown
                 items={SORTER_DROPDOWN_DATA}
-                menuStyle={{ width: 160, height: 'auto' }}
-              >
+                menuStyle={{ width: 160, height: 'auto' }}>
                 Sort By
               </CustomDropDown>
             }
@@ -145,8 +150,7 @@ const BrandProductListPage: React.FC = () => {
             bottomValue={
               <span
                 style={{ display: 'flex', alignItems: 'center' }}
-                onClick={() => searchInputRef.current?.focus()}
-              >
+                onClick={() => searchInputRef.current?.focus()}>
                 Keywords <SearchIcon />
               </span>
             }

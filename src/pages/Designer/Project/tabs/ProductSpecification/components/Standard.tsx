@@ -1,7 +1,9 @@
+import { Switch } from 'antd';
+
 import CustomButton from '@/components/Button';
 import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
 import { FormGroup } from '@/components/Form';
-import { Switch } from 'antd';
+
 import styles from '../index.less';
 
 const data = {

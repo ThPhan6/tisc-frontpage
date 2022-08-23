@@ -1,4 +1,5 @@
-import { ProjectBodyRequest, ProjectSpaceZone, ProjectSpaceArea, ProjectSpaceRoom } from '@/types';
+import { ProjectBodyRequest, ProjectSpaceArea, ProjectSpaceRoom, ProjectSpaceZone } from '@/types';
+
 import { FilterValues } from './filter';
 
 export const DefaultProjectRequest: ProjectBodyRequest = {

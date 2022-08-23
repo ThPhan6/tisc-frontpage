@@ -1,16 +1,20 @@
-import CustomTable from '@/components/Table';
-import { TableColumnItem } from '@/components/Table/types';
-import { deleteTeamProfile, getTeamProfileList } from '@/services';
-import { TeamProfileTableProps } from '@/types';
+import { useRef } from 'react';
+
+import { PATH } from '@/constants/path';
+import { USER_STATUS_TEXTS } from '@/constants/util';
+
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
-import { useRef } from 'react';
-import { showImageUrl, formatPhoneCode, getFullName } from '@/helper/utils';
-import { ProfileIcon } from '@/components/ProfileIcon';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { USER_STATUS_TEXTS } from '@/constants/util';
+import { formatPhoneCode, getFullName, showImageUrl } from '@/helper/utils';
+import { deleteTeamProfile, getTeamProfileList } from '@/services';
+
+import { TableColumnItem } from '@/components/Table/types';
+import { TeamProfileTableProps } from '@/types';
+
 import { ActionMenu } from '@/components/Action';
+import { ProfileIcon } from '@/components/ProfileIcon';
+import CustomTable from '@/components/Table';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const TeamProfilesList = () => {
   const tableRef = useRef<any>();

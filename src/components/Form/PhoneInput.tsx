@@ -1,11 +1,16 @@
-import { Input } from 'antd';
 import { FC, useEffect, useState } from 'react';
+
+import { Input } from 'antd';
+
+import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
+
+import { formatPhoneCode, validatePhoneNumber } from '@/helper/utils';
+import { trimStart } from 'lodash';
+
+import { PhoneInputProps } from './types';
+
 import { BodyText } from '../Typography';
 import styles from './styles/PhoneInput.less';
-import { formatPhoneCode, validatePhoneNumber } from '@/helper/utils';
-import { PhoneInputProps } from './types';
-import { trimStart } from 'lodash';
-import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 
 export const PhoneInput: FC<PhoneInputProps> = ({
   codePlaceholder,
@@ -73,8 +78,7 @@ export const PhoneInput: FC<PhoneInputProps> = ({
     <div
       className={`${styles['phone-input-container']} ${
         status ? styles[`${status}-status`] : ''
-      } ${containerClass} `}
-    >
+      } ${containerClass} `}>
       <div className={styles['wrapper-code-input']}>
         <BodyText level={5} fontFamily="Roboto">
           +

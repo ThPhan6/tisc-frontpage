@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+
 import { Collapse } from 'antd';
-import { CustomRadio } from '@/components/CustomRadio';
-import type { RadioValue } from '@/components/CustomRadio/types';
+
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
+
 import { isEmpty } from 'lodash';
+
+import type { RadioValue } from '@/components/CustomRadio/types';
+
+import { CustomRadio } from '@/components/CustomRadio';
+
 import styles from './styles/dropdownList.less';
 
 export interface DropdownRadioItem {
@@ -47,8 +53,7 @@ const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
             className={styles.dropdownCount}
             style={{
               marginLeft: item.margin ? item.margin : 8,
-            }}
-          >
+            }}>
             ({item.options.length})
           </span>
         </span>
@@ -64,15 +69,13 @@ const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
       expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
       className={styles.dropdownList}
       onChange={setActiveKey}
-      activeKey={activeKey}
-    >
+      activeKey={activeKey}>
       {data.map((item, index) => (
         <Collapse.Panel
           header={renderHeader(item, index)}
           key={index}
           collapsible={isEmpty(item.options) ? 'disabled' : undefined}
-          className="site-collapse-custom-panel"
-        >
+          className="site-collapse-custom-panel">
           <CustomRadio
             options={item.options}
             value={selected?.value}

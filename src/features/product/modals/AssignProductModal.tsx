@@ -1,14 +1,19 @@
 import { FC, useEffect, useState } from 'react';
-import Popover, { PopoverProps } from '@/components/Modal/Popover';
-import { FormGroup } from '@/components/Form';
-import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
+
+import { message } from 'antd';
+
+import { getSelectedRoomIds, useAssignProductToSpaceForm } from './hooks';
 import { assignProductToProject, getAllProjects } from '@/features/project/services';
+
 import { RadioValue } from '@/components/CustomRadio/types';
 import { useAppSelector } from '@/reducers';
+
+import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
+import { FormGroup } from '@/components/Form';
+import Popover, { PopoverProps } from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
-import { message } from 'antd';
+
 import styles from './AssignProductModal.less';
-import { getSelectedRoomIds, useAssignProductToSpaceForm } from './hooks';
 
 interface AssignProductModalProps extends Omit<PopoverProps, 'title'> {
   productId: string;
@@ -31,8 +36,7 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
           fontFamily="Roboto"
           level={5}
           className="text-overflow"
-          style={{ marginRight: 16, width: 60 }}
-        >
+          style={{ marginRight: 16, width: 60 }}>
           {el.code}
         </BodyText>
         <BodyText fontFamily="Roboto" level={5}>
@@ -89,8 +93,7 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
         label="Assigning To"
         layout="vertical"
         style={{ marginTop: 24 }}
-        formClass={`${styles.zonesContainer} ${selectedProject ? '' : styles.disabled}`}
-      >
+        formClass={`${styles.zonesContainer} ${selectedProject ? '' : styles.disabled}`}>
         <AssignProductToSpaceForm />
       </FormGroup>
     </Popover>

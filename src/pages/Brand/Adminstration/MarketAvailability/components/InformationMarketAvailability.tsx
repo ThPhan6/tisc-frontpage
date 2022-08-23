@@ -1,6 +1,8 @@
+import { FC } from 'react';
+
 import Popover from '@/components/Modal/Popover';
 import { BodyText, Title } from '@/components/Typography';
-import { FC } from 'react';
+
 import styles from '../styles/InformationMarketAvailability.less';
 
 const InformationMarketAvailability: FC<{

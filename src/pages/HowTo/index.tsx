@@ -1,10 +1,15 @@
-import { Title } from '@/components/Typography';
-import { getFAQCurrent } from '@/services/faq.api';
-import { Col, Row } from 'antd';
 import { useEffect, useState } from 'react';
-import { FaqComponent } from './components/FaqComponent';
-import styles from './index.less';
+
+import { Col, Row } from 'antd';
+
+import { getFAQCurrent } from '@/services/faq.api';
+
 import type { FaqItem } from './types';
+
+import { FaqComponent } from './components/FaqComponent';
+import { Title } from '@/components/Typography';
+
+import styles from './index.less';
 
 const HowTo = () => {
   const [activeKey, setActiveKey] = useState<string>('');

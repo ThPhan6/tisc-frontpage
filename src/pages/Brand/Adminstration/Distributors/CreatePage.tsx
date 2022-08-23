@@ -1,13 +1,17 @@
-import LoadingPageCustomize from '@/components/LoadingPage';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { TableHeader } from '@/components/Table/TableHeader';
+import { useState } from 'react';
+
 import { PATH } from '@/constants/path';
+
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
 import { createDistributor } from '@/services/distributor.api';
+
 import { DistributorForm } from '@/types/distributor.type';
-import { useState } from 'react';
+
 import { DistributorsEntryForm } from './components/DistributorsEntryForm';
+import LoadingPageCustomize from '@/components/LoadingPage';
+import { TableHeader } from '@/components/Table/TableHeader';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const DEFAULT_DISTRIBUTOR: DistributorForm = {
   brand_id: '',

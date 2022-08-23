@@ -1,17 +1,17 @@
+import React, { useState } from 'react';
+
+import { Tooltip, TooltipProps, message } from 'antd';
+
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.svg';
+import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign.svg';
+import { ReactComponent as CommentIcon } from '@/assets/icons/ic-comment.svg';
+import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
 import { ReactComponent as ShareIcon } from '@/assets/icons/ic-share.svg';
 import { ReactComponent as TabIcon } from '@/assets/icons/tabs-icon.svg';
-import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign.svg';
-import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
-import { ReactComponent as CommentIcon } from '@/assets/icons/ic-comment.svg';
 import SampleProductImage from '@/assets/images/sample-product-img.png';
-import { BodyText } from '@/components/Typography';
-import { confirmDelete } from '@/helper/common';
-import { pushTo } from '@/helper/history';
-import { showImageUrl } from '@/helper/utils';
-import { useAppSelector } from '@/reducers';
+
 import {
   deleteProductById,
   duplicateProductById,
@@ -19,17 +19,23 @@ import {
   getProductSummary,
   likeProductById,
 } from '@/features/product/services';
-import { message, Tooltip, TooltipProps } from 'antd';
-import React, { useState } from 'react';
+import { confirmDelete } from '@/helper/common';
+import { pushTo } from '@/helper/history';
 import { useBoolean, useCheckPermission, useGetUserRoleFromPathname } from '@/helper/hook';
-import styles from './ProductCard.less';
-import ShareViaEmail from '@/components/ShareViaEmail';
-import { getProductDetailPathname } from '../utils';
-import CustomCollapse from '@/components/Collapse';
-import { truncate, capitalize } from 'lodash';
+import { showImageUrl } from '@/helper/utils';
+import { capitalize, truncate } from 'lodash';
+
 import { ProductGetListParameter, ProductItem } from '../types';
-import AssignProductModal from '../modals/AssignProductModal';
 import { AssigningStatus } from '@/features/project/types';
+import { useAppSelector } from '@/reducers';
+
+import CustomCollapse from '@/components/Collapse';
+import ShareViaEmail from '@/components/ShareViaEmail';
+import { BodyText } from '@/components/Typography';
+
+import AssignProductModal from '../modals/AssignProductModal';
+import { getProductDetailPathname } from '../utils';
+import styles from './ProductCard.less';
 
 interface ProductCardProps {
   product: ProductItem;
@@ -160,8 +166,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     <div
       className={`${styles.productCardItem} ${hasBorder ? styles.border : ''} ${
         unlistedDisabled ? styles.disabled : ''
-      }`}
-    >
+      }`}>
       <div className={styles.imageWrapper} onClick={hanldeRedirectURL}>
         <div
           style={{
@@ -264,8 +269,7 @@ export const CollapseProductList: React.FC<{ showBrandLogo?: boolean }> = ({ sho
                 <span className="product-count">({group.count})</span>
               </BodyText>
             </div>
-          }
-        >
+          }>
           <div className={styles.productCardContainer}>
             {group.products.map((productItem, productKey) => (
               <div className={styles.productCardItemWrapper} key={productKey}>

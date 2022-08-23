@@ -1,18 +1,24 @@
-import styles from './ContactModal.less';
-import { CustomModal } from '@/components/Modal';
-import { BodyText, MainTitle } from '@/components/Typography';
-import { CustomInput } from '@/components/Form/CustomInput';
-import CustomButton from '@/components/Button';
 import { FC, useState } from 'react';
-import { ContactRequestBody, ModalProps } from '../types';
+
+import { MESSAGE_ERROR } from '@/constants/message';
+import { message } from 'antd';
+
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
-import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { ReactComponent as MessageIcon } from '@/assets/icons/message-icon-18px.svg';
-import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
+
 import { contact } from '../services/api';
 import { validateEmail } from '@/helper/utils';
-import { message } from 'antd';
-import { MESSAGE_ERROR } from '@/constants/message';
+
+import { ContactRequestBody, ModalProps } from '../types';
+
+import CustomButton from '@/components/Button';
+import { CustomInput } from '@/components/Form/CustomInput';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import { CustomModal } from '@/components/Modal';
+import { BodyText, MainTitle } from '@/components/Typography';
+
+import styles from './ContactModal.less';
 
 export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
@@ -53,8 +59,7 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
         backgroundColor: theme === 'dark' ? '#000' : '',
       }}
       closeIconClass={theme === 'dark' && styles.closeIcon}
-      onCancel={onClose}
-    >
+      onCancel={onClose}>
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={1} customClass={styles[`body${themeStyle()}`]}>

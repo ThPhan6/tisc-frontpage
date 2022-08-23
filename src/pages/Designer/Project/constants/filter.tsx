@@ -1,6 +1,7 @@
+import { ReactComponent as ProjectArchivedIcon } from '@/assets/icons/project-archived-icon.svg';
 import { ReactComponent as ProjectLiveIcon } from '@/assets/icons/project-live-icon.svg';
 import { ReactComponent as ProjectOnHoldIcon } from '@/assets/icons/project-on-hold-icon.svg';
-import { ReactComponent as ProjectArchivedIcon } from '@/assets/icons/project-archived-icon.svg';
+
 import { ProjectFilterValueProps } from '@/features/project/types';
 
 export const FilterValues = {

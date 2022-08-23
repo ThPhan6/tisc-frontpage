@@ -1,8 +1,9 @@
 import { useLocation } from 'umi';
+
 import {
   ATTRIBUTE_PATH_TO_TYPE,
-  GENERAL_URL_PATH,
   FEATURE_URL_PATH,
+  GENERAL_URL_PATH,
   SPECIFICATION_URL_PATH,
 } from '../utils';
 

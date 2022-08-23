@@ -1,8 +1,10 @@
-import styles from './styles/index.less';
-import { WorkplaceProfile } from './WorkplaceProfile';
-import { PersonalProfile } from './PersonalProfile';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { useBoolean } from '@/helper/hook';
+
+import LoadingPageCustomize from '@/components/LoadingPage';
+
+import { PersonalProfile } from './PersonalProfile';
+import { WorkplaceProfile } from './WorkplaceProfile';
+import styles from './styles/index.less';
 
 const ProfilesPage = () => {
   const isLoading = useBoolean();

@@ -1,5 +1,7 @@
-import { RobotoBodyText } from '@/components/Typography';
 import { FC } from 'react';
+
+import { RobotoBodyText } from '@/components/Typography';
+
 import styles from './BrandContact.less';
 
 export interface BusinessDetailProps {

@@ -1,18 +1,8 @@
-import { EntryFormWrapper } from '@/components/EntryForm';
 import type { FC } from 'react';
-import React, { useState, useEffect } from 'react';
-import InputGroup from '@/components/EntryForm/InputGroup';
-import CountryModal from '@/components/Location/CountryModal';
-import StateModal from '@/components/Location/StateModal';
-import CityModal from '@/components/Location/CityModal';
-import { FormGroup } from '@/components/Form';
-import { PhoneInput } from '@/components/Form/PhoneInput';
-import { CustomTextArea } from '@/components/Form/CustomTextArea';
-import type { LocationForm, FunctionalTypeData } from '@/types';
-import styles from './styles/LocationEntryForm.less';
-import CollapseCheckboxList from '@/components/CustomCheckbox/CollapseCheckboxList';
-import { CheckboxValue } from '@/components/CustomCheckbox/types';
-import { getListFunctionalType } from '@/services';
+import React, { useEffect, useState } from 'react';
+
+import { MESSAGE_ERROR } from '@/constants/message';
+
 import {
   emailMessageError,
   emailMessageErrorType,
@@ -21,8 +11,23 @@ import {
   messageErrorType,
   validatePostalCode,
 } from '@/helper/utils';
-import { MESSAGE_ERROR } from '@/constants/message';
+import { getListFunctionalType } from '@/services';
 import { trimStart } from 'lodash';
+
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import type { FunctionalTypeData, LocationForm } from '@/types';
+
+import CollapseCheckboxList from '@/components/CustomCheckbox/CollapseCheckboxList';
+import { EntryFormWrapper } from '@/components/EntryForm';
+import InputGroup from '@/components/EntryForm/InputGroup';
+import { FormGroup } from '@/components/Form';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import { PhoneInput } from '@/components/Form/PhoneInput';
+import CityModal from '@/components/Location/CityModal';
+import CountryModal from '@/components/Location/CountryModal';
+import StateModal from '@/components/Location/StateModal';
+
+import styles from './styles/LocationEntryForm.less';
 
 interface LocationEntryFormProps {
   submitButtonStatus: any;
@@ -131,8 +136,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     <EntryFormWrapper
       handleSubmit={handleSubmit}
       handleCancel={onCancel}
-      submitButtonStatus={submitButtonStatus}
-    >
+      submitButtonStatus={submitButtonStatus}>
       <InputGroup
         label="Business Name"
         required

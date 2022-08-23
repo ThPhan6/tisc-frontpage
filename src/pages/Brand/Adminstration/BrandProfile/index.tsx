@@ -1,23 +1,29 @@
-import { FormGroup } from '@/components/Form';
-import { CustomInput } from '@/components/Form/CustomInput';
-import { BodyText, Title } from '@/components/Typography';
-import { Col, message, Row, Upload, UploadProps } from 'antd';
-import styles from './styles/index.less';
-import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
-import { CustomTextArea } from '@/components/Form/CustomTextArea';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { useEffect, useState } from 'react';
-import { UpdateBrandProfileRequestBody, websiteValueDefautl } from './types';
-import { ItemWebsite } from './components/ItemWebsite';
-import { getBase64, showImageUrl } from '@/helper/utils';
-import Logo from '@/assets/image-logo.png';
-import { useBoolean, useCustomInitialState } from '@/helper/hook';
+
+import { MESSAGE_ERROR } from '@/constants/message';
+import { Col, Row, Upload, UploadProps, message } from 'antd';
+
+import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-icon.svg';
-import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
+import Logo from '@/assets/image-logo.png';
+
+import { useBoolean, useCustomInitialState } from '@/helper/hook';
+import { getBase64, showImageUrl } from '@/helper/utils';
 import { updateBrandProfile, updateLogoBrandProfile } from '@/services/brand-profile';
+
+import { UpdateBrandProfileRequestBody, websiteValueDefautl } from './types';
 import { useAppSelector } from '@/reducers';
 import { WebsiteUrlItem } from '@/types/user.type';
-import { MESSAGE_ERROR } from '@/constants/message';
+
+import { ItemWebsite } from './components/ItemWebsite';
+import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
+import { FormGroup } from '@/components/Form';
+import { CustomInput } from '@/components/Form/CustomInput';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { BodyText, Title } from '@/components/Typography';
+
+import styles from './styles/index.less';
 
 const initialBrandProfileState: UpdateBrandProfileRequestBody = {
   mission_n_vision: '',
@@ -168,8 +174,7 @@ const BrandProfilePage = () => {
                   label="Brand Name"
                   layout="vertical"
                   required
-                  formClass={styles.customFormGroup}
-                >
+                  formClass={styles.customFormGroup}>
                   <CustomInput
                     borderBottomColor="mono-medium"
                     placeholder="registered name/trademark"
@@ -182,8 +187,7 @@ const BrandProfilePage = () => {
               <FormGroup
                 label="Parent Company"
                 layout="vertical"
-                formClass={styles.customFormGroup}
-              >
+                formClass={styles.customFormGroup}>
                 <CustomInput
                   borderBottomColor="mono-medium"
                   placeholder="holding company name, if any"
@@ -203,8 +207,7 @@ const BrandProfilePage = () => {
                   placement="bottom"
                   required
                   formClass={styles.customLabel}
-                  iconTooltip={<WarningIcon className={styles.customWarningIcon} />}
-                >
+                  iconTooltip={<WarningIcon className={styles.customWarningIcon} />}>
                   <div className={styles['wrapper-upload']}>
                     <Upload maxCount={1} showUploadList={false} {...props} accept=".png">
                       <UploadIcon className={styles.icon} />
@@ -225,8 +228,7 @@ const BrandProfilePage = () => {
                 label="Mission & Vision"
                 layout="vertical"
                 required
-                formClass={styles.customFormArea}
-              >
+                formClass={styles.customFormArea}>
                 <CustomTextArea
                   placeholder="maximum 250 words of brand history, story, and unique product/service offerings"
                   showCount

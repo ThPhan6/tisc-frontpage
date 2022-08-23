@@ -1,6 +1,9 @@
 import type { FC } from 'react';
+
 import type { BodyTextProps, CustomTypography, MainTitleProps } from './types';
+
 import Style from './styles/index.less';
+
 export const Title: FC<CustomTypography> = ({
   color = 'mono-color',
   customClass = '',
@@ -17,8 +20,7 @@ export const Title: FC<CustomTypography> = ({
     <p
       {...props}
       className={`${classNameTitle} ${customClass} ${color}`}
-      style={{ color, ...style }}
-    >
+      style={{ color, ...style }}>
       {children}
     </p>
   );
@@ -74,8 +76,7 @@ export const MainTitle: FC<MainTitleProps> = ({
       style={{
         color: color,
         textAlign: textAlign,
-      }}
-    >
+      }}>
       {children}
     </p>
   );

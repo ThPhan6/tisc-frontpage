@@ -1,12 +1,14 @@
+import { message } from 'antd';
+import { request } from 'umi';
+
+import { getResponseMessage } from '@/helper/common';
+
+import { CreateDocumentationResquestBody, Documentation } from './types';
 import {
   DataTableResponse,
   GetDataListResponse,
   PaginationRequestParams,
 } from '@/components/Table/types';
-import { getResponseMessage } from '@/helper/common';
-import { message } from 'antd';
-import { request } from 'umi';
-import { CreateDocumentationResquestBody, Documentation } from './types';
 
 export enum DocumentType {
   policy = 1,

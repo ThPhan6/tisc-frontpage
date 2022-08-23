@@ -1,22 +1,25 @@
-import { ReactComponent as PlusIcon } from '@/assets/icons/action-plus-icon.svg';
-import { ReactComponent as ExtendIcon } from '@/assets/icons/action-extend.svg';
-import { BodyText } from '@/components/Typography';
-import { Collapse } from 'antd';
 import { FC } from 'react';
-import styles from '../index.less';
+
+import { Collapse } from 'antd';
+
+import { ReactComponent as ExtendIcon } from '@/assets/icons/action-extend.svg';
+import { ReactComponent as PlusIcon } from '@/assets/icons/action-plus-icon.svg';
+
 import { CollapsingProps, QnA, QuestionProps } from '../types';
+
+import { BodyText } from '@/components/Typography';
+
+import styles from '../index.less';
 
 const RenderQuestion: FC<QuestionProps> = (props) => {
   const { index, question, activeKey, handleActiveCollapse } = props;
   return (
     <div
       onClick={() => handleActiveCollapse(question ? index : -1)}
-      className={styles.itemQuestion}
-    >
+      className={styles.itemQuestion}>
       <BodyText
         level={3}
-        customClass={String(index) !== activeKey ? styles.font_weight_300 : styles.font_weight_600}
-      >
+        customClass={String(index) !== activeKey ? styles.font_weight_300 : styles.font_weight_600}>
         {question}
       </BodyText>
       <div className={styles.addIcon}>
@@ -45,8 +48,7 @@ export const QnAItem: FC<QnAItemProps> = ({ index, item, activeKey, handleActive
               activeKey={activeKey}
               handleActiveCollapse={handleActiveCollapse}
             />
-          }
-        >
+          }>
           <div className={styles.textAnswer}>
             <BodyText level={5} fontFamily="Roboto">
               {item.answer}

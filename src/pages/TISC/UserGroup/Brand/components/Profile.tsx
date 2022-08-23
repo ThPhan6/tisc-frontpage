@@ -1,11 +1,16 @@
-import TextForm from '@/components/Form/TextForm';
-import { BodyText } from '@/components/Typography';
+import { useEffect, useState } from 'react';
+
+import { Col, Row } from 'antd';
+
 import { useGetParamId } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
 import { getBrandById } from '@/services';
+
 import { BrandDetail } from '@/types';
-import { Col, Row } from 'antd';
-import { useEffect, useState } from 'react';
+
+import TextForm from '@/components/Form/TextForm';
+import { BodyText } from '@/components/Typography';
+
 import indexStyles from '../../styles/index.less';
 import styles from '../styles/profile.less';
 

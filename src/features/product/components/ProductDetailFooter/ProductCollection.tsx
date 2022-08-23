@@ -1,11 +1,17 @@
 import { FC, memo } from 'react';
-import SampleProductImage from '@/assets/images/sample-product-img.png';
-import { getMaxLengthText, showImageUrl } from '@/helper/utils';
-import { useAppSelector } from '@/reducers';
-import { useGetUserRoleFromPathname } from '@/helper/hook';
-import { getProductDetailPathname } from '../../utils';
-import { EmptyOne } from '@/components/Empty';
+
 import { USER_ROLE } from '@/constants/userRoles';
+
+import SampleProductImage from '@/assets/images/sample-product-img.png';
+
+import { useGetUserRoleFromPathname } from '@/helper/hook';
+import { getMaxLengthText, showImageUrl } from '@/helper/utils';
+
+import { useAppSelector } from '@/reducers';
+
+import { EmptyOne } from '@/components/Empty';
+
+import { getProductDetailPathname } from '../../utils';
 
 const ProductPlaceHolder = () => {
   return (
@@ -35,8 +41,7 @@ export const ProductCollection: FC = memo(() => {
               key={key}
               target="_blank"
               rel="noreferrer"
-              href={getProductDetailPathname(userRole, item.id)}
-            >
+              href={getProductDetailPathname(userRole, item.id)}>
               <div className="relative-product">
                 <img src={item.images?.[0] ? showImageUrl(item.images[0]) : SampleProductImage} />
                 <div className="placeholder-text">
