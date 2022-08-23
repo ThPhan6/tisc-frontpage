@@ -1,12 +1,15 @@
-import { showImageUrl } from '@/helper/utils';
-import store, { useAppSelector } from '@/reducers';
-import { getBrandPagination, getProductCategoryPagination } from '@/services';
-import { BrandListItem, CategoryListResponse } from '@/types';
-import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+
+import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { useLocation } from 'umi';
+
+import { showImageUrl } from '@/helper/utils';
+import { getBrandPagination, getProductCategoryPagination } from '@/services';
+
 import { setProductList, setProductListSorter } from '../reducers';
+import store, { useAppSelector } from '@/reducers';
+import { BrandListItem, CategoryListResponse } from '@/types';
 
 export const formatCategoriesToDropDownData = (
   categories: CategoryListResponse[],

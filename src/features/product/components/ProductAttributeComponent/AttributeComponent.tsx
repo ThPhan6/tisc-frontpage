@@ -1,13 +1,18 @@
 import { FC, ReactNode, useState } from 'react';
-import type { SpecificationAttributeBasisOptionProps } from '../../types';
-import { BodyText } from '@/components/Typography';
-import Popover from '@/components/Modal/Popover';
+
 import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
+
 import { showImageUrl } from '@/helper/utils';
-import styles from './ProductAttributeContainer.less';
-import CustomCollapse from '@/components/Collapse';
+
+import type { SpecificationAttributeBasisOptionProps } from '../../types';
 import type { RadioValue } from '@/components/CustomRadio/types';
 import { ConversionSubValueProps } from '@/types';
+
+import CustomCollapse from '@/components/Collapse';
+import Popover from '@/components/Modal/Popover';
+import { BodyText } from '@/components/Typography';
+
+import styles from './ProductAttributeContainer.less';
 
 interface AttributeOptionProps {
   title: string;
@@ -67,14 +72,12 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
     <>
       <div
         className={`${styles.content} product-attribute-option-wrapper`}
-        onClick={() => setVisible(true)}
-      >
+        onClick={() => setVisible(true)}>
         <BodyText
           level={6}
           fontFamily="Roboto"
           customClass={styles.content_select}
-          color={chosenOption?.label ? 'primary-color-dark' : 'mono-color'}
-        >
+          color={chosenOption?.label ? 'primary-color-dark' : 'mono-color'}>
           {chosenOption ? chosenOption.label : 'select'}
         </BodyText>
         <ActionRightIcon className={styles.singlerRighIcon} />
@@ -102,8 +105,7 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
         `}
         chosenValue={chosenOption}
         setChosenValue={setChosenOptions}
-        clearOnClose={clearOnClose}
-      ></Popover>
+        clearOnClose={clearOnClose}></Popover>
     </>
   );
 };
@@ -137,8 +139,7 @@ export const AttributeCollapse: FC<AttributeCollapseProps> = ({ name, index, chi
                 {name}
               </BodyText>
             </div>
-          }
-        >
+          }>
           {children}
         </CustomCollapse>
       </div>

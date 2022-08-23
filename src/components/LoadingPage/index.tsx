@@ -1,4 +1,5 @@
 import { Spin } from 'antd';
+
 import styles from './styles/index.less';
 
 const LoadingPageCustomize = () => {

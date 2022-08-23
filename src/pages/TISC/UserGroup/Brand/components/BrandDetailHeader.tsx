@@ -1,3 +1,8 @@
+import { FC, useEffect, useState } from 'react';
+
+import { PATH } from '@/constants/path';
+import { Tooltip } from 'antd';
+
 import { ReactComponent as ProfileIcon } from '@/assets/icons/brand-icon.svg';
 import { ReactComponent as DistributorIcon } from '@/assets/icons/distributor-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
@@ -5,23 +10,25 @@ import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 import { ReactComponent as LocationIcon } from '@/assets/icons/location-icon.svg';
 import { ReactComponent as AvailabilityIcon } from '@/assets/icons/market-availability-icon.svg';
 import { ReactComponent as TeamIcon } from '@/assets/icons/team-profile-icon.svg';
+
+import { pushTo } from '@/helper/history';
+import { useBoolean, useGetParamId } from '@/helper/hook';
+import { getBrandById, getBrandStatuses } from '@/services';
+import { updateBrandStatus } from '@/services/brand-profile';
+
+import { BrandTabKeys } from '../types';
+import { TabItem } from '@/components/Tabs/types';
+import { BrandDetail, BrandStatuses } from '@/types';
+
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { CustomRadio } from '@/components/CustomRadio';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabs } from '@/components/Tabs';
-import { TabItem } from '@/components/Tabs/types';
 import { BodyText, MainTitle } from '@/components/Typography';
-import { PATH } from '@/constants/path';
-import { pushTo } from '@/helper/history';
-import { useBoolean, useGetParamId } from '@/helper/hook';
-import { getBrandById, getBrandStatuses } from '@/services';
-import { updateBrandStatus } from '@/services/brand-profile';
-import { BrandDetail, BrandStatuses } from '@/types';
-import { Tooltip } from 'antd';
-import { FC, useEffect, useState } from 'react';
+
 import styles from '../styles/index.less';
-import { BrandTabKeys } from '../types';
+
 // import ScrollBar from '@/components/ScrollBar';
 
 export const BrandTabs: TabItem[] = [
@@ -142,8 +149,7 @@ const BrandDetailHeader: FC<BrandDetailHeaderProps> = ({ selectedTab, setSelecte
                   <RenderLabelToolTip statusText="Active" plainText="Full activated" />
                   <RenderLabelToolTip statusText="Inactive" plainText="Temporarily removed" />
                 </table>
-              }
-            >
+              }>
               <InfoIcon className={styles.info_icon} />
             </Tooltip>
             <CustomRadio

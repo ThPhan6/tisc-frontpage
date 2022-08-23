@@ -1,7 +1,11 @@
-import Popover from '@/components/Modal/Popover';
-import { getCitiesByCountryIdAndStateId } from '@/services/location.api';
-import { City } from '@/types';
 import { FC, useEffect, useState } from 'react';
+
+import { getCitiesByCountryIdAndStateId } from '@/services/location.api';
+
+import { City } from '@/types';
+
+import Popover from '@/components/Modal/Popover';
+
 // import styles from './styles/CountryModal.less';
 
 const CityModal: FC<{

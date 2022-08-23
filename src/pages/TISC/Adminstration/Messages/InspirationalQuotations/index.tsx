@@ -1,13 +1,17 @@
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import CustomTable from '@/components/Table';
-import { pushTo } from '@/helper/history';
 import { useRef } from 'react';
-import { deleteQuotation, getQuotationPagination } from '@/services';
-import { Quotation } from '@/types';
-import { TableColumnItem } from '@/components/Table/types';
+
 import { PATH } from '@/constants/path';
+
 import { confirmDelete } from '@/helper/common';
+import { pushTo } from '@/helper/history';
+import { deleteQuotation, getQuotationPagination } from '@/services';
+
+import { TableColumnItem } from '@/components/Table/types';
+import { Quotation } from '@/types';
+
 import { ActionMenu } from '@/components/Action';
+import CustomTable from '@/components/Table';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const InspirationalQuotationsList: React.FC = () => {
   const tableRef = useRef<any>();

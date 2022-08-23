@@ -1,8 +1,11 @@
-import { CustomTabPane } from '@/components/Tabs';
 import React, { useState } from 'react';
-import GeneralInformation from './tabs/BasicInformation';
-import ProjectDetailHeader from './components/ProjectDetailHeader';
+
 import { ProjectTabKeys } from './constants/tab';
+
+import ProjectDetailHeader from './components/ProjectDetailHeader';
+import { CustomTabPane } from '@/components/Tabs';
+
+import GeneralInformation from './tabs/BasicInformation';
 
 const ProjectCreatePage: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<ProjectTabKeys>(ProjectTabKeys.basicInformation);

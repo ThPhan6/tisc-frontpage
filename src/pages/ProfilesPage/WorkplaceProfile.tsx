@@ -1,9 +1,12 @@
+import { getFullName } from '@/helper/utils';
+
+import { useAppSelector } from '@/reducers';
+
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { Title } from '@/components/Typography';
+
 import styles from './styles/WorkplaceProfile.less';
-import { useAppSelector } from '@/reducers';
-import { getFullName } from '@/helper/utils';
 
 export const WorkplaceProfile = () => {
   const user = useAppSelector((state) => state.user.user);

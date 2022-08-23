@@ -1,7 +1,9 @@
 import { FC } from 'react';
+
+import { TextFormProps } from './types';
+
 import { BodyText } from '../Typography';
 import { FormGroup } from './index';
-import { TextFormProps } from './types';
 import styles from './styles/textForm.less';
 
 const TextForm: FC<TextFormProps> = ({
@@ -22,13 +24,11 @@ const TextForm: FC<TextFormProps> = ({
       labelColor={labelColor}
       layout={layout}
       formClass={formClass}
-      {...props}
-    >
+      {...props}>
       <BodyText
         level={fontLevel}
         fontFamily={fontFamily}
-        customClass={`${styles.content} ${bodyTextClass} ${boxShadow ? styles.boxShadow : ''}`}
-      >
+        customClass={`${styles.content} ${bodyTextClass} ${boxShadow ? styles.boxShadow : ''}`}>
         {children}
       </BodyText>
     </FormGroup>

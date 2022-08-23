@@ -1,10 +1,15 @@
-import { Col, Row } from 'antd';
-import styles from '../styles/ProfileDesign.less';
-import { DesignFirmDetail } from '@/types';
 import { FC } from 'react';
+
+import { Col, Row } from 'antd';
+
 import { showImageUrl } from '@/helper/utils';
-import indexStyles from '../../styles/index.less';
+
+import { DesignFirmDetail } from '@/types';
+
 import TextForm from '@/components/Form/TextForm';
+
+import indexStyles from '../../styles/index.less';
+import styles from '../styles/ProfileDesign.less';
 
 interface ProfileDesignProp {
   data: DesignFirmDetail;

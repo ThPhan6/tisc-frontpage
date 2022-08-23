@@ -1,14 +1,18 @@
 import React, { useRef } from 'react';
-import CustomTable from '@/components/Table';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+
+import { PATH } from '@/constants/path';
+
+import { confirmDelete } from '@/helper/common';
+import { pushTo } from '@/helper/history';
+import { formatPhoneCode } from '@/helper/utils';
+import { deleteLocationById, getLocationPagination } from '@/services';
+
 import { TableColumnItem } from '@/components/Table/types';
 import { LocationDetail } from '@/types';
-import { getLocationPagination, deleteLocationById } from '@/services';
-import { confirmDelete } from '@/helper/common';
-import { PATH } from '@/constants/path';
-import { pushTo } from '@/helper/history';
+
 import { ActionMenu } from '@/components/Action';
-import { formatPhoneCode } from '@/helper/utils';
+import CustomTable from '@/components/Table';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const BrandLocation: React.FC = () => {
   const tableRef = useRef<any>();

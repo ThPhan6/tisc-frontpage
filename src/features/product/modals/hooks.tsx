@@ -1,15 +1,20 @@
 import { FC, useEffect, useState } from 'react';
-import { CustomRadio } from '@/components/CustomRadio';
-import { BodyText } from '@/components/Typography';
-import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
+
 import { Tooltip } from 'antd';
-import { useBoolean, useNumber } from '@/helper/hook';
-import { ProjectSpaceListProps } from '@/features/project/types';
-import CustomCollapse from '@/components/Collapse';
-import { CustomCheckbox } from '@/components/CustomCheckbox';
-import { CheckboxValue } from '@/components/CustomCheckbox/types';
+
+import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
+
 import { getProductAssignSpaceByProject } from '@/features/project/services';
 import { confirmDelete } from '@/helper/common';
+import { useBoolean, useNumber } from '@/helper/hook';
+
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { ProjectSpaceListProps } from '@/features/project/types';
+
+import CustomCollapse from '@/components/Collapse';
+import { CustomCheckbox } from '@/components/CustomCheckbox';
+import { CustomRadio } from '@/components/CustomRadio';
+import { BodyText } from '@/components/Typography';
 
 type RoomsState = { [areaId: string]: CheckboxValue[] };
 
@@ -115,8 +120,7 @@ export const useAssignProductToSpaceForm = (
         fontFamily="Roboto"
         level={5}
         className="text-overflow"
-        style={{ marginRight: 12, width: 60 }}
-      >
+        style={{ marginRight: 12, width: 60 }}>
         {roomId}
       </BodyText>
       <BodyText fontFamily="Roboto" level={5}>
@@ -136,8 +140,7 @@ export const useAssignProductToSpaceForm = (
         onChange={() =>
           expandingZone.setValue((prevIndex: number) => (prevIndex === index ? -1 : index))
         }
-        customHeaderClass="collapse-header"
-      >
+        customHeaderClass="collapse-header">
         {zone.areas.map((area) => {
           return (
             <div key={area.id} style={{ paddingBottom: 8, paddingLeft: 16 }}>
@@ -167,8 +170,7 @@ export const useAssignProductToSpaceForm = (
         <BodyText
           fontFamily="Roboto"
           level={specifyingModal ? 6 : 5}
-          style={{ fontWeight: specifyingModal ? '500' : undefined }}
-        >
+          style={{ fontWeight: specifyingModal ? '500' : undefined }}>
           {specifyingModal ? 'Entire Project' : 'ENTIRE PROJECT'}
         </BodyText>
         <Tooltip
@@ -177,8 +179,7 @@ export const useAssignProductToSpaceForm = (
             (E.g. paint/surface coating, etc)`}
           overlayInnerStyle={{
             width: 199,
-          }}
-        >
+          }}>
           <InfoIcon style={{ width: 18, height: 18, marginLeft: 8 }} />
         </Tooltip>
       </div>

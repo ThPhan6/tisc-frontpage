@@ -1,8 +1,11 @@
-import styles from './AboutModal.less';
+import { FC } from 'react';
+
+import { ModalProps } from '../types';
+
 import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
-import { FC } from 'react';
-import { ModalProps } from '../types';
+
+import styles from './AboutModal.less';
 
 export const AboutModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
@@ -16,8 +19,7 @@ export const AboutModal: FC<ModalProps> = ({ visible, onClose, theme = 'default'
         backgroundColor: theme === 'dark' ? '#000' : '',
       }}
       closeIconClass={theme === 'dark' && styles.closeIcon}
-      onCancel={onClose}
-    >
+      onCancel={onClose}>
       <div className={styles.content}>
         <div className={styles.intro}>
           <div className={styles.vision}>

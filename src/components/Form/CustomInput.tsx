@@ -1,10 +1,14 @@
-import { Input, InputRef } from 'antd';
 import { FC, forwardRef } from 'react';
-import { useState, useRef, useEffect } from 'react';
-import styles from './styles/Input.less';
-import type { CustomInputProps } from './types';
+import { useEffect, useRef, useState } from 'react';
+
+import { Input, InputRef } from 'antd';
+
 import { isUndefined, trimStart } from 'lodash';
+
+import type { CustomInputProps } from './types';
+
 import { RobotoBodyText } from '../Typography';
+import styles from './styles/Input.less';
 
 export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInputProps>(
   (
@@ -95,15 +99,13 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
         {type === 'password' ? (
           <div
             style={{ width: '100%' }}
-            className={required && !(props.prefix || props.suffix) ? styles['required-input'] : ''}
-          >
+            className={required && !(props.prefix || props.suffix) ? styles['required-input'] : ''}>
             <Input.Password type={type} {...props} />
           </div>
         ) : (
           <div
             style={{ width: '100%' }}
-            className={required && !(props.prefix || props.suffix) ? styles['required-input'] : ''}
-          >
+            className={required && !(props.prefix || props.suffix) ? styles['required-input'] : ''}>
             {autoWidth ? (
               <span className={`${styles.hiddenSpan} ${setFontLevel()}`} ref={span}>
                 {props.value}

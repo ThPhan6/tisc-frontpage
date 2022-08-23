@@ -1,9 +1,13 @@
+import { FC, useState } from 'react';
+
 import { ReactComponent as ActionLeftIcon } from '@/assets/icons/action-left.svg';
 import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
-import { FC, useState } from 'react';
-import style from './index.less';
-import { ElementSummaryProps, MenuSummaryProps, SummaryProps } from './types';
+
 import { checkUndefined } from '@/helper/utils';
+
+import { ElementSummaryProps, MenuSummaryProps, SummaryProps } from './types';
+
+import style from './index.less';
 
 interface ItemSummaryProps {
   sub: SummaryProps;
@@ -30,14 +34,12 @@ const ElementSummary: FC<ElementSummaryProps> = ({
       className={`
         ${style['element-container']}
         ${toggle ? style['menuActive'] : style['menuUnactive']}`}
-      key={dataElementSummary.id}
-    >
+      key={dataElementSummary.id}>
       <div
         className={style['element']}
         onClick={() => {
           handleActiveTab(dataElementSummary.id);
-        }}
-      >
+        }}>
         <span>{checkUndefined(dataElementSummary?.quantity)}</span>
         <div className={style['button-wrapper']}>
           <label> {checkUndefined(dataElementSummary?.label)}</label>

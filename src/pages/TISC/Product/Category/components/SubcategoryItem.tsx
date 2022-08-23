@@ -1,13 +1,19 @@
-import { Collapse } from 'antd';
-import styles from '../styles/SubcategoryItem.less';
-import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
-import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
-import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
-import { BodyText } from '@/components/Typography';
-import { CustomInput } from '@/components/Form/CustomInput';
 import { FC, useEffect, useState } from 'react';
+
+import { Collapse } from 'antd';
+
+import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
+import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
+import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
+
 import { isEmpty, isEqual } from 'lodash';
-import { SubcategoryItemProps, subcategoryValueDefault, SubcategoryValueProp } from '@/types';
+
+import { SubcategoryItemProps, SubcategoryValueProp, subcategoryValueDefault } from '@/types';
+
+import { CustomInput } from '@/components/Form/CustomInput';
+import { BodyText } from '@/components/Typography';
+
+import styles from '../styles/SubcategoryItem.less';
 
 const ElementInput: FC<{
   value: string;
@@ -86,12 +92,10 @@ export const SubcategoryItem: FC<SubcategoryItemProps> = ({
             className={styles.panel_header__field_title}
             onClick={() => {
               setActiveKey(isEmpty(activeKey) ? ['1'] : []);
-            }}
-          >
+            }}>
             <BodyText
               level={3}
-              customClass={isEmpty(activeKey) ? styles.font_weight_300 : styles.font_weight_600}
-            >
+              customClass={isEmpty(activeKey) ? styles.font_weight_300 : styles.font_weight_600}>
               Subcategory
             </BodyText>
             <ArrowIcon
@@ -133,8 +137,7 @@ export const SubcategoryItem: FC<SubcategoryItemProps> = ({
           }}
           header={PanelHeader()}
           key="1"
-          showArrow={false}
-        >
+          showArrow={false}>
           <div className={styles.sub_wrapper}>
             {subcategoryValue.subs.map((category, index: number) => (
               <ElementInput

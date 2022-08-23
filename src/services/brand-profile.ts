@@ -1,10 +1,11 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { message } from 'antd';
+import { request } from 'umi';
+
 import {
   LogoBrandProfile,
   UpdateBrandProfileRequestBody,
 } from '@/pages/Brand/Adminstration/BrandProfile/types';
-import { message } from 'antd';
-import { request } from 'umi';
 
 export async function updateBrandProfile(data: UpdateBrandProfileRequestBody) {
   return request<boolean>(`/api/brand/update-profile`, { method: 'PUT', data })

@@ -1,9 +1,14 @@
-import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
+import { FC, ReactNode } from 'react';
+
 import { Tooltip } from 'antd';
 import { TooltipPlacement } from 'antd/lib/tooltip';
+
 import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
+
 import { isNaN, isNumber } from 'lodash';
-import { FC, ReactNode } from 'react';
+
+import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
+
 import { BodyText } from '../Typography';
 import styles from './index.less';
 
@@ -32,16 +37,14 @@ export const RenderLabelHeader: FC<RenderLabelHeaderProps> = ({
       style={{
         textTransform: isUpperCase ? 'uppercase' : 'capitalize',
         color: '@mono-color',
-      }}
-    >
+      }}>
       {header}
       {isNumber(quantity) && !isNaN(quantity) ? (
         <span
           className={styles.quantity}
           style={{
             marginLeft: 8,
-          }}
-        >
+          }}>
           ({quantity ?? '0'})
         </span>
       ) : null}
@@ -95,8 +98,7 @@ export const RenderEntireProjectLabel: FC<RenderEntireProjectLabelProps> = ({
         overlayClassName={`${styles.overlay} ${overlayClassName}`}
         overlayInnerStyle={{
           width: overLayWidth ? overLayWidth : 'auto',
-        }}
-      >
+        }}>
         {icon ? icon : <InfoIcon style={{ width: 18, height: 18, marginLeft: 8 }} />}
       </Tooltip>
     </div>

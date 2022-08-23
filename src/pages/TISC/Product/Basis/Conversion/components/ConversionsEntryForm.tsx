@@ -1,8 +1,11 @@
+import { FC } from 'react';
+
+import { ConversionValueProp, ConversionsEntryFormProps, conversionValueDefault } from '@/types';
+
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import { FC } from 'react';
+
 import { ConversionItem } from './ConversionItem';
-import { ConversionsEntryFormProps, conversionValueDefault, ConversionValueProp } from '@/types';
 
 export const ConversionsEntryForm: FC<ConversionsEntryFormProps> = ({
   conversionValue,
@@ -73,8 +76,7 @@ export const ConversionsEntryForm: FC<ConversionsEntryFormProps> = ({
     <EntryFormWrapper
       handleSubmit={handleSubmit}
       handleCancel={handleCancel}
-      submitButtonStatus={submitButtonStatus}
-    >
+      submitButtonStatus={submitButtonStatus}>
       <FormNameInput
         placeholder="type group name"
         title="Conversion Group"

@@ -1,13 +1,18 @@
-import TextForm from '@/components/Form/TextForm';
-import { RenderLabelHeader, RenderMemberHeader } from '@/components/RenderHeaderLabel';
+import { useEffect, useState } from 'react';
+
 import { USER_STATUS_TEXTS } from '@/constants/util';
+import { Col, Collapse, Row } from 'antd';
+
 import { useGetParamId } from '@/helper/hook';
 import { getListTeamProfileUserGroupByBrandId } from '@/services';
-import { TeamProfileGroupCountry } from '@/types';
-import { Col, Collapse, Row } from 'antd';
 import { isEmpty } from 'lodash';
-import { useEffect, useState } from 'react';
+
+import { TeamProfileGroupCountry } from '@/types';
+
 import GeneralData from '../../components/GeneralData';
+import TextForm from '@/components/Form/TextForm';
+import { RenderLabelHeader, RenderMemberHeader } from '@/components/RenderHeaderLabel';
+
 import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
 import indexStyles from '../../styles/index.less';
 
@@ -42,8 +47,7 @@ const BrandTeamDetail = () => {
                     key={index}
                     collapsible={
                       isEmpty(team.country_name) || team.count == 0 ? 'disabled' : undefined
-                    }
-                  >
+                    }>
                     <Collapse {...CollapseLevel2Props}>
                       {team.users?.map((user, userIndex) => (
                         <Collapse.Panel
@@ -55,8 +59,7 @@ const BrandTeamDetail = () => {
                             />
                           }
                           key={`${index}-${userIndex}`}
-                          collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}
-                        >
+                          collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}>
                           <div className={indexStyles.info}>
                             <TextForm label="Gender">
                               {user.gender === true ? 'Male' : 'Female'}

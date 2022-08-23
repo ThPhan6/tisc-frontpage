@@ -1,16 +1,17 @@
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { STATUS_RESPONSE } from '@/constants/util';
+import { message } from 'antd';
+import { request } from 'umi';
+
 import type {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { STATUS_RESPONSE } from '@/constants/util';
 import store from '@/reducers';
 import { setList } from '@/reducers/category';
 import type { CategoryBodyProp, CategoryListResponse } from '@/types';
-import { message } from 'antd';
-import { request } from 'umi';
 
 interface CategoryPaginationResponse {
   data: {

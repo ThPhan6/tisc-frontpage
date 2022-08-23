@@ -1,6 +1,7 @@
-import { request } from 'umi';
-import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { message } from 'antd';
+import { request } from 'umi';
+
 import type { ProductDownload } from '../types';
 import { setProductDownload } from '@/features/product/reducers';
 import store from '@/reducers';

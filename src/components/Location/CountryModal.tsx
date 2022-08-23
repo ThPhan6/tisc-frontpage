@@ -1,8 +1,12 @@
-import Popover from '@/components/Modal/Popover';
-import { getCountries } from '@/services/location.api';
-import { Country } from '@/types';
 import { FC, useEffect, useState } from 'react';
+
 import { formatPhoneCode } from '@/helper/utils';
+import { getCountries } from '@/services/location.api';
+
+import { Country } from '@/types';
+
+import Popover from '@/components/Modal/Popover';
+
 import styles from './styles/CountryModal.less';
 
 const CountryModal: FC<{

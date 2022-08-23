@@ -1,6 +1,9 @@
-import { BodyText } from '@/components/Typography';
-import { Empty } from 'antd';
 import { FC } from 'react';
+
+import { Empty } from 'antd';
+
+import { BodyText } from '@/components/Typography';
+
 import styles from './GeneralData.less';
 
 const GeneralData: FC = ({ children }) => {

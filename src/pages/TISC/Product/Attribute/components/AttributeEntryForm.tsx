@@ -1,11 +1,15 @@
+import type { FC } from 'react';
+import { useEffect, useState } from 'react';
+
+import { getProductAttributeContentType } from '@/services';
+
+import type { AttributeContentType, AttributeForm, AttributeSubForm } from '@/types';
+
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import type { FC } from 'react';
-import { useState, useEffect } from 'react';
+
 import { AttributeItem } from './AttributeItem';
 import ContentTypeModal from './ContentTypeModal';
-import { getProductAttributeContentType } from '@/services';
-import type { AttributeForm, AttributeSubForm, AttributeContentType } from '@/types';
 
 interface AttributeEntryFormProps {
   type: number;
@@ -141,8 +145,7 @@ const AttributeEntryForm: FC<AttributeEntryFormProps> = (props) => {
     <EntryFormWrapper
       handleSubmit={handleSubmit}
       handleCancel={onCancel}
-      submitButtonStatus={submitButtonStatus}
-    >
+      submitButtonStatus={submitButtonStatus}>
       <FormNameInput
         placeholder="type group name"
         title="Attribute Group"

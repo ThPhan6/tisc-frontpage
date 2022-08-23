@@ -1,20 +1,22 @@
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { message } from 'antd';
 import { request } from 'umi';
+
+import { getUserInfoMiddleware } from '@/pages/LandingPage/services/api';
+
 import type {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import {
-  TeamProfileTableProps,
-  TeamProfileDetailProps,
-  TeamProfileRequestBody,
-  TeamProfileGroupCountry,
-} from '@/types';
-import { message } from 'antd';
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import store from '@/reducers';
-import { getUserInfoMiddleware } from '@/pages/LandingPage/services/api';
+import {
+  TeamProfileDetailProps,
+  TeamProfileGroupCountry,
+  TeamProfileRequestBody,
+  TeamProfileTableProps,
+} from '@/types';
 
 interface TeamProfilePaginationResponse {
   data: {

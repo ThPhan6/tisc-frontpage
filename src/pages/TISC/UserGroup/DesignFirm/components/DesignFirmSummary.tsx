@@ -1,7 +1,11 @@
-import { MenuSummary } from '@/components/MenuSummary';
-import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
-import { getSummary } from '@/services';
 import { useEffect, useState } from 'react';
+
+import { getSummary } from '@/services';
+
+import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
+
+import { MenuSummary } from '@/components/MenuSummary';
+
 import styles from '../styles/index.less';
 
 const DesignFirmSummary = () => {

@@ -1,22 +1,26 @@
 import { FC } from 'react';
-import styles from '../detail.less';
-import { useAppSelector } from '@/reducers';
 import { useDispatch } from 'react-redux';
-import { ProductAttributes } from '@/types';
+
+import { useCheckPermission } from '@/helper/hook';
+
+import { setPartialProductDetail } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
+import { ProductInfoTab } from './types';
+import { useAppSelector } from '@/reducers';
+import { ProductAttributes } from '@/types';
+
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { MainTitle } from '@/components/Typography';
+
+import styles from '../detail.less';
 import {
   AttributeCollapse,
+  AttributeOption,
   ConversionText,
   GeneralText,
   ProductAttributeLine,
-  AttributeOption,
 } from './AttributeComponent';
-import { useCheckPermission } from '@/helper/hook';
-import { MainTitle } from '@/components/Typography';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import ProductAttributeItem from './ProductAttributeItem';
-import { setPartialProductDetail } from '../../reducers';
-import { ProductInfoTab } from './types';
 
 interface CollapseProductAttributeProps {
   group: ProductAttributeFormInput;

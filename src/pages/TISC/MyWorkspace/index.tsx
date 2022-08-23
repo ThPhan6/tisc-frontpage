@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import styles from './styles/index.less';
-import { BodyText } from '@/components/Typography';
-import { ProfileIcon } from '@/components/ProfileIcon';
-import { getBrandCards } from '@/services';
-import LoadingPage from '@/components/LoadingPage';
-import { BrandCard, BrandCardTeam } from '@/types';
+
 import { getFullName } from '@/helper/utils';
+import { getBrandCards } from '@/services';
+
+import { BrandCard, BrandCardTeam } from '@/types';
+
+import LoadingPage from '@/components/LoadingPage';
+import { ProfileIcon } from '@/components/ProfileIcon';
+import { BodyText } from '@/components/Typography';
+
+import styles from './styles/index.less';
 
 const MyWorkspace: React.FC = () => {
   const [loading, setLoading] = useState(false);

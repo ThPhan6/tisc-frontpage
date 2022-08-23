@@ -1,10 +1,11 @@
-import { FC, useEffect, useState } from 'react';
 import {
   CKEditor,
   CKEditorEventHandlerProp,
   CKEditorEventPayload,
   CKEditorProps,
 } from 'ckeditor4-react';
+import { FC, useEffect, useState } from 'react';
+
 import { loadPlugins } from './plugins/load-plugins';
 
 type CustomEditorInputProps = Partial<CKEditorProps<CKEditorEventHandlerProp>> & {

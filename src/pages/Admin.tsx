@@ -1,7 +1,8 @@
 import React from 'react';
+
 import { HeartTwoTone, SmileTwoTone } from '@ant-design/icons';
-import { Card, Typography, Alert } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { Alert, Card, Typography } from 'antd';
 import { useIntl } from 'umi';
 
 const Admin: React.FC = () => {
@@ -11,8 +12,7 @@ const Admin: React.FC = () => {
       content={intl.formatMessage({
         id: 'pages.admin.subPage.title',
         defaultMessage: 'This page can only be viewed by admin',
-      })}
-    >
+      })}>
       <Card>
         <Alert
           message={intl.formatMessage({

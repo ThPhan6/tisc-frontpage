@@ -1,14 +1,19 @@
-import { useAppSelector } from '@/reducers';
 import { FC } from 'react';
-import { ReactComponent as DownloadIconV2 } from '@/assets/icons/download-2-icon.svg';
-import styles from './ProductDownloadFooter.less';
 import { useDispatch } from 'react-redux';
+
+import { ReactComponent as DownloadIconV2 } from '@/assets/icons/download-2-icon.svg';
+
+import { useCheckPermission } from '@/helper/hook';
+import { isEmpty } from 'lodash';
+
 import { setProductDownload } from '@/features/product/reducers';
+import { useAppSelector } from '@/reducers';
+
+import { EmptyOne } from '@/components/Empty';
 import DynamicFormInput from '@/components/EntryForm/DynamicFormInput';
 import { BodyText } from '@/components/Typography';
-import { useCheckPermission } from '@/helper/hook';
-import { EmptyOne } from '@/components/Empty';
-import { isEmpty } from 'lodash';
+
+import styles from './ProductDownloadFooter.less';
 
 const ProductDownloadFooter: FC = () => {
   const dispatch = useDispatch();

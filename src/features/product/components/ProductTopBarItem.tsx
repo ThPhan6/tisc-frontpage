@@ -1,18 +1,24 @@
-import styles from './ProductTopBarItem.less';
 import { CSSProperties, FC, useEffect, useState } from 'react';
-import { BodyText } from '@/components/Typography';
-import { capitalize, truncate } from 'lodash';
+
+import { DropDownProps, Menu } from 'antd';
+import Dropdown from 'antd/es/dropdown';
+import { ItemType } from 'antd/lib/menu/hooks/useItems';
+
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
-import Dropdown from 'antd/es/dropdown';
-import { DropDownProps, Menu } from 'antd';
-import { ItemType } from 'antd/lib/menu/hooks/useItems';
+
 import { useBoolean } from '@/helper/hook';
-import { GeneralData } from '@/types';
-import { HeaderDropdown } from '@/components/HeaderDropdown';
-import store from '@/reducers';
+import { capitalize, truncate } from 'lodash';
+
 import { setProductList } from '@/features/product/reducers';
 import { ProductFilterType } from '@/features/product/types';
+import store from '@/reducers';
+import { GeneralData } from '@/types';
+
+import { HeaderDropdown } from '@/components/HeaderDropdown';
+import { BodyText } from '@/components/Typography';
+
+import styles from './ProductTopBarItem.less';
 
 interface ProductTopBarProps {
   topValue?: string | number | React.ReactNode;
@@ -52,8 +58,7 @@ export const TopBarItem: React.FC<ProductTopBarProps> = (props) => {
         level={6}
         fontFamily="Roboto"
         customClass={`topbar-group-btn ${disabled && !bottomEnable ? 'disabled' : ''}`}
-        style={{ cursor: cursor }}
-      >
+        style={{ cursor: cursor }}>
         <span>{bottomValue}</span>
         {icon ? icon : null}
       </BodyText>
@@ -139,8 +144,7 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
           overflow: 'hidden auto',
           padding: 0,
           ...menuStyle,
-        }}
-      >
+        }}>
         {items.map((item, index) => {
           const hasChildren = item?.children?.length > 0;
 
@@ -158,8 +162,7 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
                 textCapitalize ? styles.textCapitalize : ''
               } ${selectedItem === index ? styles.active : ''} ${hasChildren ? '' : styles.noSub}`}
               disabled={item.disabled}
-              icon={item?.icon || (hasChildren ? <DropdownIcon /> : undefined)}
-            >
+              icon={item?.icon || (hasChildren ? <DropdownIcon /> : undefined)}>
               {item.label}
             </Menu.Item>
           );
@@ -224,8 +227,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
             position={position}
           />
         )
-      }
-    >
+      }>
       <span {...labelProps}>
         {children}
         {hideDropdownIcon ? null : <DropdownIcon />}
@@ -265,8 +267,7 @@ export const renderDropDownList = (
           label: item.name,
         };
       })}
-      trigger={['click']}
-    >
+      trigger={['click']}>
       <span>
         {title}
         <DropdownIcon />

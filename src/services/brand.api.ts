@@ -1,20 +1,21 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import type {
-  BrandListItem,
-  BrandAlphabet,
-  BrandDetail,
-  BrandCard,
-  BrandStatuses,
-  AssignTeamForm,
-} from '@/types';
+import { message } from 'antd';
+import { request } from 'umi';
+
+import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import type {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
-import { message } from 'antd';
-import { request } from 'umi';
-import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
+import type {
+  AssignTeamForm,
+  BrandAlphabet,
+  BrandCard,
+  BrandDetail,
+  BrandListItem,
+  BrandStatuses,
+} from '@/types';
 
 interface BrandListResponse {
   brands: BrandListItem[];

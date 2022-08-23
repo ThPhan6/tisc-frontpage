@@ -1,15 +1,19 @@
+import { useState } from 'react';
+
+import { BrandAccessLevelDataRole } from './constants/role';
+import { DEFAULT_TEAMPROFILE } from '@/components/TeamProfile/constants/entryForm';
+import { PATH } from '@/constants/path';
+
+import { pushTo } from '@/helper/history';
+import { useBoolean } from '@/helper/hook';
+import { createTeamProfile, inviteUser } from '@/services';
+
+import { TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
+
+import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { TeamProfilesEntryForm } from '@/components/TeamProfile/components/TeamProfilesEntryForm';
-import { useBoolean } from '@/helper/hook';
-import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
-import { createTeamProfile, inviteUser } from '@/services';
-import { TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
-import { useState } from 'react';
-import LoadingPageCustomize from '@/components/LoadingPage';
-import { BrandAccessLevelDataRole } from './constants/role';
-import { DEFAULT_TEAMPROFILE } from '@/components/TeamProfile/constants/entryForm';
 
 const CreateTeamProfilesPage = () => {
   const submitButtonStatus = useBoolean(false);

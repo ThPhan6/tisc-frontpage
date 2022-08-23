@@ -1,7 +1,8 @@
-import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import type { PermissionData } from '@/types';
+import { message } from 'antd';
 import { request } from 'umi';
+
+import type { PermissionData } from '@/types';
 
 export async function getPermission() {
   return request<{ data: PermissionData[] }>('/api/permission/get-list', {

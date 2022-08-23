@@ -1,5 +1,7 @@
 import type { FC } from 'react';
+
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-icon.svg';
+
 import styles from '@/components/Table/styles/TableHeader.less';
 
 interface CustomPlusButtonProps {
@@ -20,8 +22,7 @@ const CustomPlusButton: FC<CustomPlusButtonProps> = ({ onClick, disabled, size }
               height: size,
             }
           : undefined
-      }
-    >
+      }>
       <PlusIcon />
     </div>
   );

@@ -1,19 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import styles from './detail.less';
-import { useBoolean, useCheckPermission } from '@/helper/hook';
-import { BodyText, MainTitle } from '@/components/Typography';
-import Popover from '@/components/Modal/Popover';
-import InputGroup from '@/components/EntryForm/InputGroup';
-import { CustomInput } from '@/components/Form/CustomInput';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+
 import { ReactComponent as RightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
-import CustomCollapse from '@/components/Collapse';
+
+import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
 import { createCollection, getCollectionByBrandId } from '@/services';
-import type { Collection } from '@/types';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '@/reducers';
+
 import { setPartialProductDetail } from '@/features/product/reducers';
+import { useAppSelector } from '@/reducers';
+import type { Collection } from '@/types';
+
+import CustomCollapse from '@/components/Collapse';
+import InputGroup from '@/components/EntryForm/InputGroup';
+import { CustomInput } from '@/components/Form/CustomInput';
+import Popover from '@/components/Modal/Popover';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { BodyText, MainTitle } from '@/components/Typography';
+
+import styles from './detail.less';
 
 export const ProductBasicInfo: React.FC = () => {
   const dispatch = useDispatch();
@@ -76,8 +81,7 @@ export const ProductBasicInfo: React.FC = () => {
             {product.brand?.logo ? <img src={showImageUrl(product.brand.logo)} /> : null}
           </div>
         }
-        customHeaderClass={styles.productHeaderCollapse}
-      >
+        customHeaderClass={styles.productHeaderCollapse}>
         {/* Collection */}
         <InputGroup
           horizontal
@@ -182,8 +186,7 @@ export const ProductBasicInfo: React.FC = () => {
                 />
                 <div
                   className="extra-custom-button"
-                  onClick={disabled.value ? undefined : handleCreateCollection}
-                >
+                  onClick={disabled.value ? undefined : handleCreateCollection}>
                   <MainTitle level={4} customClass="extra-custom-button-label">
                     Add
                   </MainTitle>

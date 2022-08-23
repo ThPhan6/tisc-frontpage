@@ -1,11 +1,16 @@
 // import {useState, useEffect} from 'react';
-import type { ReactNode, FC } from 'react';
-import { BodyText } from '@/components/Typography';
-import { CustomInput } from '@/components/Form/CustomInput';
-import type { CustomInputProps } from '@/components/Form/types';
-import { Row, Col } from 'antd';
-import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
+import type { FC, ReactNode } from 'react';
+
+import { Col, Row } from 'antd';
+
 import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
+import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
+
+import type { CustomInputProps } from '@/components/Form/types';
+
+import { CustomInput } from '@/components/Form/CustomInput';
+import { BodyText } from '@/components/Typography';
+
 import styles from './styles/InputGroup.less';
 
 interface InputGroupProps extends CustomInputProps {
@@ -59,8 +64,7 @@ const InputGroup: FC<InputGroupProps> = ({
       `}
       gutter={0}
       align="middle"
-      wrap={noWrap ? false : true}
-    >
+      wrap={noWrap ? false : true}>
       <Col span={horizontal ? (noWrap ? undefined : 4) : 24} className="input-label-container">
         <BodyText level={fontLevel ?? 5} customClass="input-label">
           {label}
@@ -71,8 +75,7 @@ const InputGroup: FC<InputGroupProps> = ({
                   ? styles.requiredColorTertiary
                   : styles.requiredColorPrimaryDark
               }
-              ${styles.required}`}
-            >
+              ${styles.required}`}>
               *
             </span>
           ) : (
@@ -86,8 +89,7 @@ const InputGroup: FC<InputGroupProps> = ({
           ${styles.inputGroupContent}
           ${hasBoxShadow ? styles.boxShadow : ''}
         `}
-        span={horizontal ? (noWrap ? undefined : 20) : 24}
-      >
+        span={horizontal ? (noWrap ? undefined : 20) : 24}>
         <CustomInput
           {...props}
           value={value}

@@ -1,21 +1,24 @@
-import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import { TableColumnItem } from '@/components/Table/types';
 import { FC, useEffect, useRef } from 'react';
-import { showImageUrl } from '@/helper/utils';
-import { getSpecifiedProductBySpace } from '@/features/project/services';
-import {
-  ProductItemSpace,
-  SpecifiedProductArea,
-  SpecifiedProductRoom,
-  SpecifiedProductBySpace,
-} from '@/features/project/types';
-import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
+
 import {
   onCellCancelled,
   renderActionCell,
   renderStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
+import { getSpecifiedProductBySpace } from '@/features/project/services';
+import { showImageUrl } from '@/helper/utils';
+
+import { TableColumnItem } from '@/components/Table/types';
+import {
+  ProductItemSpace,
+  SpecifiedProductArea,
+  SpecifiedProductBySpace,
+  SpecifiedProductRoom,
+} from '@/features/project/types';
+
+import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 
 const COL_WIDTH_SPACE = {
   zones: 165,

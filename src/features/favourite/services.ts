@@ -1,4 +1,8 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { message } from 'antd';
+import { request } from 'umi';
+
+import { FavouriteProductSummary, FavouriteRetrieve } from './types';
 import { setProductList } from '@/features/product/reducers';
 import {
   BrandSummary,
@@ -6,9 +10,6 @@ import {
   GroupProductList,
 } from '@/features/product/types';
 import store from '@/reducers';
-import { message } from 'antd';
-import { request } from 'umi';
-import { FavouriteProductSummary, FavouriteRetrieve } from './types';
 
 export async function getFavouriteProductList(params: GetListProductForDesignerRequestParams) {
   return request<{ data: GroupProductList[]; brand_summary?: BrandSummary }>(

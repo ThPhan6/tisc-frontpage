@@ -1,16 +1,20 @@
-import { TableHeader } from '@/components/Table/TableHeader';
+import { useEffect, useState } from 'react';
+
 import { PATH } from '@/constants/path';
+import { useParams } from 'umi';
+
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { useState, useEffect } from 'react';
-import LoadingPageCustomize from '@/components/LoadingPage';
-import { MarketAvailabilityEntryForm } from './components/MarketAvailabilityEntryForm';
 import {
   getMarketAvailabilityByCollectionId,
   updateMarketAvailabilityByCollectionId,
 } from '@/services';
+
 import { MarketAvailabilityDetails } from '@/types';
-import { useParams } from 'umi';
+
+import { MarketAvailabilityEntryForm } from './components/MarketAvailabilityEntryForm';
+import LoadingPageCustomize from '@/components/LoadingPage';
+import { TableHeader } from '@/components/Table/TableHeader';
 
 const UpdateMarketAvailabilityPage = () => {
   const submitButtonStatus = useBoolean(false);

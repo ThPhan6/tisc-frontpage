@@ -1,18 +1,19 @@
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { message } from 'antd';
+import { request } from 'umi';
+
 import {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import {
   Distributor,
-  DistributorForm,
   DistributorDetail,
+  DistributorForm,
   DistributorResponseForm,
 } from '@/types/distributor.type';
-import { message } from 'antd';
-import { request } from 'umi';
 
 interface DistributorPaginationResponse {
   data: {

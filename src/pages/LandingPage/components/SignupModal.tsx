@@ -1,21 +1,27 @@
-import styles from './SignupModal.less';
-import { CustomModal } from '@/components/Modal';
-import { BodyText, MainTitle } from '@/components/Typography';
-import { CustomInput } from '@/components/Form/CustomInput';
-import CustomButton from '@/components/Button';
 import { FC, useEffect, useState } from 'react';
-import { ModalProps } from '../types';
-import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
-import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
-import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
-import { Checkbox, message } from 'antd';
-import { PoliciesModal } from './PoliciesModal';
+
 import { MESSAGE_ERROR } from '@/constants/message';
-import { isShowErrorMessage, validateEmail } from '@/helper/utils';
+import { Checkbox, message } from 'antd';
+
+import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
+import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
+import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
+
 import { checkEmailAlreadyUsed, signUpDesigner } from '../services/api';
 import { useBoolean } from '@/helper/hook';
+import { isShowErrorMessage, validateEmail } from '@/helper/utils';
 import { debounce } from 'lodash';
+
+import { ModalProps } from '../types';
+
+import CustomButton from '@/components/Button';
+import { CustomInput } from '@/components/Form/CustomInput';
+import { CustomModal } from '@/components/Modal';
+import { BodyText, MainTitle } from '@/components/Typography';
+
+import { PoliciesModal } from './PoliciesModal';
+import styles from './SignupModal.less';
 
 interface SignUpFormState {
   firstname: string;
@@ -110,8 +116,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
         backgroundColor: theme === 'dark' ? '#000' : '',
       }}
       closeIconClass={theme === 'dark' && styles.closeIcon}
-      onCancel={onClose}
-    >
+      onCancel={onClose}>
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={2} customClass={styles[`body${themeStyle()}`]}>
@@ -184,8 +189,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
           <div
             className={
               agreeTisc === true && formInput.agree_tisc === false ? styles.errorStatus : ''
-            }
-          >
+            }>
             <Checkbox onChange={handleAgreeTisc}>
               By clicking and continuing, we agree TISC’s
             </Checkbox>

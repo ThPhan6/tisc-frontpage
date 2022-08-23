@@ -1,16 +1,17 @@
 import type {
   ProductCatelogue,
   ProductDownload,
+  ProductItem,
   ProductList,
   ProductSummary,
   ProductTip,
   RelatedCollection,
-  ProductItem,
   SortParams,
 } from '../types';
+import { BrandDetail } from '@/types';
+
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import { BrandDetail } from '@/types';
 
 interface ProductState {
   brand?: BrandDetail;

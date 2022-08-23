@@ -1,12 +1,17 @@
+import type { FC } from 'react';
+
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
-import { CustomInput } from '@/components/Form/CustomInput';
-import { MainTitle, BodyText } from '@/components/Typography';
+
 import { lowerCase } from 'lodash';
-import type { FC } from 'react';
-import styles from '../styles/attributeItem.less';
+
 import type { AttributeSubForm } from '@/types';
+
+import { CustomInput } from '@/components/Form/CustomInput';
+import { BodyText, MainTitle } from '@/components/Typography';
+
+import styles from '../styles/attributeItem.less';
 
 interface AttributeItemProps {
   item: AttributeSubForm;
@@ -36,8 +41,7 @@ export const AttributeItem: FC<AttributeItemProps> = ({
         </div>
         <div
           className={`${styles.form_input__element} ${styles.form_input__cursor}`}
-          onClick={handleSelectContentType}
-        >
+          onClick={handleSelectContentType}>
           <div className="group-content-type">
             <BodyText level={4}>Content Type :</BodyText>
             <BodyText level={5} fontFamily="Roboto" customClass="group-type-placeholder">

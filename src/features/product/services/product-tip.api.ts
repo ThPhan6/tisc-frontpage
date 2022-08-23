@@ -1,9 +1,10 @@
-import { request } from 'umi';
-import { message } from 'antd';
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { message } from 'antd';
+import { request } from 'umi';
+
+import { setProductTip } from '../reducers';
 import type { ProductTip } from '../types';
 import store from '@/reducers';
-import { setProductTip } from '../reducers';
 
 export const getProductTipByProductID = async (productId: string) => {
   return request<{ data: ProductTip }>(`/api/product-tip/get-one/${productId}`, {

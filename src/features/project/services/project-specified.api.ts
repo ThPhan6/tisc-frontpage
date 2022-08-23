@@ -1,3 +1,8 @@
+import { message } from 'antd';
+import { request } from 'umi';
+
+import { getResponseMessage } from '@/helper/common';
+
 import {
   DataTableResponse,
   GetDataListResponse,
@@ -9,9 +14,6 @@ import {
   SpecifiedProductBySpace,
   SpecifyStatus,
 } from '@/features/project/types';
-import { getResponseMessage } from '@/helper/common';
-import { message } from 'antd';
-import { request } from 'umi';
 
 export async function getSpecifiedProductsByBrand(
   { projectId, ...params }: PaginationRequestParams,

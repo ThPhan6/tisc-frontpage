@@ -15,7 +15,7 @@ import BrandProductBasicHeader from '../BrandProductBasicHeader';
 import CollapseRadioFormGroup from '../CustomRadio/CollapseRadioFormGroup';
 import styles from './index.less';
 
-interface ShareViaEmailForm {
+export interface ShareViaEmailForm {
   product_id: string;
   sharing_group: string;
   sharing_purpose: string;
@@ -95,8 +95,7 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
       title="Share Via Email"
       visible={visible}
       setVisible={setVisible}
-      onFormSubmit={handleSubmit}
-    >
+      onFormSubmit={handleSubmit}>
       <BrandProductBasicHeader
         image={product.images?.[0] || product.image}
         logo={product.brand?.logo}

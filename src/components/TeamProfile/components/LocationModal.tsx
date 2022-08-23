@@ -1,9 +1,13 @@
-import { RadioValue } from '@/components/CustomRadio/types';
-import Popover from '@/components/Modal/Popover';
-import { getWorkLocations } from '@/services';
-import { LocationGroupedByCountry, LocationDetail } from '@/types';
 import { FC, useEffect, useState } from 'react';
+
+import { getWorkLocations } from '@/services';
 import { upperCase } from 'lodash';
+
+import { RadioValue } from '@/components/CustomRadio/types';
+import { LocationDetail, LocationGroupedByCountry } from '@/types';
+
+import Popover from '@/components/Modal/Popover';
+
 import styles from '../styles/LocationModal.less';
 
 interface WorkLocationData {

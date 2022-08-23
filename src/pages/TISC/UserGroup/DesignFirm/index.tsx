@@ -1,18 +1,24 @@
 import React, { useRef } from 'react';
-import CustomTable from '@/components/Table';
-import type { TableColumnItem } from '@/components/Table/types';
-import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
+
+import { PATH } from '@/constants/path';
+import { DESIGN_STATUSES } from '@/constants/util';
+import { PageContainer } from '@ant-design/pro-layout';
+
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
-import { getDesignFirmPagination } from '@/services';
-import { showImageUrl } from '@/helper/utils';
-import type { DesignFirm } from '@/types';
-import styles from './styles/index.less';
-import { PageContainer } from '@ant-design/pro-layout';
-import { PATH } from '@/constants/path';
+
 import { pushTo } from '@/helper/history';
+import { showImageUrl } from '@/helper/utils';
+import { getDesignFirmPagination } from '@/services';
+
+import type { TableColumnItem } from '@/components/Table/types';
+import type { DesignFirm } from '@/types';
+
 import DesignFirmSummary from './components/DesignFirmSummary';
-import { DESIGN_STATUSES } from '@/constants/util';
+import { HeaderDropdown, MenuHeaderDropdown } from '@/components/HeaderDropdown';
+import CustomTable from '@/components/Table';
+
+import styles from './styles/index.less';
 
 const DesignFirmList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -84,8 +90,7 @@ const DesignFirmList: React.FC = () => {
                 ]}
               />
             }
-            trigger={['click']}
-          >
+            trigger={['click']}>
             <ActionIcon />
           </HeaderDropdown>
         );

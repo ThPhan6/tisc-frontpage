@@ -1,6 +1,8 @@
 import React from 'react';
-import TopBar from './components/TopBar';
+
 import { PageContainer } from '@ant-design/pro-layout';
+
+import TopBar from './components/TopBar';
 import { CollapseProductList } from '@/features/product/components';
 
 const ProductConfiguration: React.FC = () => {

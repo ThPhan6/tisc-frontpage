@@ -1,20 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { BodyText, Title } from '@/components/Typography';
-import InputGroup from '@/components/EntryForm/InputGroup';
-import ConversionInput from '@/components/EntryForm/ConversionInput';
-import Popover from '@/components/Modal/Popover';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
+
+import { showImageUrl } from '@/helper/utils';
+import { truncate } from 'lodash';
+
+import { ProductInfoTab } from './types';
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import type { RadioValue } from '@/components/CustomRadio/types';
+import { setPartialProductDetail } from '@/features/product/reducers';
 import type { ProductAttributeFormInput, ProductAttributeProps } from '@/features/product/types';
 import type { ProductAttributes, SubBasisOption } from '@/types';
-import { useDispatch } from 'react-redux';
-import { setPartialProductDetail } from '@/features/product/reducers';
-import type { RadioValue } from '@/components/CustomRadio/types';
-import { truncate } from 'lodash';
-import { ProductInfoTab } from './types';
-import { AttributeGroupKey } from './ProductAttributeItem';
-import { CheckboxValue } from '@/components/CustomCheckbox/types';
+
+import ConversionInput from '@/components/EntryForm/ConversionInput';
+import InputGroup from '@/components/EntryForm/InputGroup';
 import { CustomInput } from '@/components/Form/CustomInput';
-import { showImageUrl } from '@/helper/utils';
+import Popover from '@/components/Modal/Popover';
+import { BodyText, Title } from '@/components/Typography';
+
+import { AttributeGroupKey } from './ProductAttributeItem';
 import styles from './ProductAttributeSubItem.less';
 
 interface ProductAttributeSubItemProps {
