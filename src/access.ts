@@ -30,7 +30,6 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
 
   const isAccessableForBrand = (name: string, subname?: string) =>
     isBrand && getAccessable(name, subname);
-
   return {
     canAdmin: currentUser && currentUser.access === 'admin',
     tisc_workspace: isAccessableForTisc('workspace'),
@@ -40,7 +39,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     tisc_project: isAccessableForTisc('project'),
     tisc_project_list: isAccessableForTisc('project', 'list'),
     tisc_product: isAccessableForTisc('product'),
-    tisc_product_category: isAccessableForTisc('product', 'category'),
+    tisc_product_category: isAccessableForTisc('product', 'categories'),
     tisc_product_basis: isAccessableForTisc('product', 'basis'),
     tisc_product_attribute: isAccessableForTisc('product', 'attribute'),
     tisc_product_configuration: isAccessableForTisc('product', 'configuration'),
