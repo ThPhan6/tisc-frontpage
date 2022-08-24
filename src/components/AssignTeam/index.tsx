@@ -45,6 +45,7 @@ const AssignTeam: FC<AssignTeamProps> = ({ visible, setVisible, selected, setSel
           }),
         };
       })}
+      combinableCheckbox
     />
   );
 };
