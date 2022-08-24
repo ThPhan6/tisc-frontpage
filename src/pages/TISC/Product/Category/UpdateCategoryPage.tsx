@@ -6,11 +6,11 @@ import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
 import { useParams } from 'umi';
 
+import { getOneCategoryMiddleware, updateCategoryMiddleware } from '@/features/categories/services';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { getOneCategoryMiddleware, updateCategoryMiddleware } from '@/services';
 
-import { CategoryBodyProp, SubcategoryValueProp } from '@/types';
+import { CategoryBodyProps, SubcategoryValueProps } from '@/features/categories/types';
 
 import { CategoryEntryForm } from './components/CategoryEntryForm';
 import LoadingPageCustomize from '@/components/LoadingPage';
@@ -21,7 +21,7 @@ const UpdateCategoryPage = () => {
   const [categoryValue, setCategoryValue] = useState<{
     id?: string;
     name: string;
-    subs: SubcategoryValueProp[];
+    subs: SubcategoryValueProps[];
   }>({
     name: '',
     subs: [],
@@ -40,7 +40,7 @@ const UpdateCategoryPage = () => {
       isLoading.setValue(true);
       getOneCategoryMiddleware(
         idCategory,
-        (dataRes: CategoryBodyProp) => {
+        (dataRes: CategoryBodyProps) => {
           setCategoryValue(dataRes);
           isLoading.setValue(false);
         },
@@ -53,7 +53,7 @@ const UpdateCategoryPage = () => {
     pushTo(PATH.categories);
   }, []);
 
-  const handleUpdateCategory = (data: CategoryBodyProp) => {
+  const handleUpdateCategory = (data: CategoryBodyProps) => {
     if (!idCategory) {
       pushTo(PATH.categories);
     }

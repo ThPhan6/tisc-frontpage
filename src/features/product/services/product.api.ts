@@ -9,18 +9,19 @@ import {
   setRelatedProduct,
 } from '../reducers/slices';
 import {
+  BrandSummary,
+  GetListProductForDesignerRequestParams,
   GroupProductList,
   ProductFormData,
   ProductGetListParameter,
   ProductItem,
+  ProductItemValue,
   ProductSummary,
   RelatedCollection,
-  GetListProductForDesignerRequestParams,
-  BrandSummary,
-  ProductItemValue,
 } from '../types';
 import store from '@/reducers';
 import type { BrandDetail } from '@/types';
+
 import { ShareViaEmailForm } from '@/components/ShareViaEmail';
 
 export async function getProductSummary(brandId: string) {
@@ -88,6 +89,7 @@ export const getProductListByBrandId = async (params: ProductGetListParameter) =
 
 //
 export const getProductListForDesigner = async (params: GetListProductForDesignerRequestParams) => {
+  console.log('params', params);
   return request<{ data: GroupProductList[]; brand_summary?: BrandSummary }>(
     `/api/product/design/get-list`,
     {

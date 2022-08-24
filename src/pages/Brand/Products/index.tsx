@@ -66,92 +66,93 @@ const BrandProductListPage: React.FC = () => {
     }
   }, [filter]);
 
+  const renderPageHeader = () => (
+    <TopBarContainer
+      LeftSideContent={
+        <>
+          <TopBarItem
+            topValue={summary?.category_count ?? '0'}
+            disabled={summary ? false : true}
+            bottomValue="Categories"
+            customClass={`category ${summary?.category_count ? 'bold' : ''}`}
+          />
+          <TopBarItem
+            topValue={summary?.collection_count ?? '0'}
+            disabled={summary ? false : true}
+            bottomValue="Collections"
+            customClass={`left-divider ${summary?.collection_count ? 'bold' : ''}`}
+          />
+          <TopBarItem
+            topValue={summary?.card_count ?? '0'}
+            disabled={summary ? false : true}
+            bottomValue="Cards"
+            customClass={`left-divider ${summary?.card_count ? 'bold' : ''}`}
+          />
+          <TopBarItem
+            topValue={summary?.product_count ?? '0'}
+            disabled={summary ? false : true}
+            bottomValue="Products"
+            customClass={`left-divider ${summary?.product_count ? 'bold' : ''}`}
+          />
+        </>
+      }
+      RightSideContent={
+        <>
+          <TopBarItem
+            topValue={
+              filter?.name === 'category_id' ? (
+                <FilterItem title={filter.title} onDelete={resetProductList} />
+              ) : userBrand ? (
+                'view'
+              ) : (
+                <span style={{ opacity: 0 }}>.</span>
+              )
+            }
+            disabled
+            bottomEnable={summary ? true : false}
+            bottomValue={
+              !userBrand
+                ? 'Categories'
+                : renderDropDownList(
+                    'Categories',
+                    'category_id',
+                    summary?.categories ?? [],
+                    summary ? false : true,
+                  )
+            }
+            customClass="left-divider"
+          />
+          <TopBarItem
+            topValue={
+              filter?.name === 'collection_id' ? (
+                <FilterItem title={filter.title} onDelete={resetProductList} />
+              ) : userBrand ? (
+                'view'
+              ) : (
+                <span style={{ opacity: 0 }}>.</span>
+              )
+            }
+            disabled
+            bottomEnable={summary ? true : false}
+            bottomValue={
+              !userBrand
+                ? 'Collections'
+                : renderDropDownList(
+                    'Collections',
+                    'collection_id',
+                    summary?.collections ?? [],
+                    summary ? false : true,
+                  )
+            }
+            customClass="left-divider collection"
+          />
+        </>
+      }
+    />
+  );
+
   return (
-    <PageContainer
-      pageHeaderRender={() => (
-        <TopBarContainer
-          LeftSideContent={
-            <>
-              <TopBarItem
-                topValue={summary?.category_count ?? '0'}
-                disabled={summary ? false : true}
-                bottomValue="Categories"
-                customClass={`category ${summary?.category_count ? 'bold' : ''}`}
-              />
-              <TopBarItem
-                topValue={summary?.collection_count ?? '0'}
-                disabled={summary ? false : true}
-                bottomValue="Collections"
-                customClass={`left-divider ${summary?.collection_count ? 'bold' : ''}`}
-              />
-              <TopBarItem
-                topValue={summary?.card_count ?? '0'}
-                disabled={summary ? false : true}
-                bottomValue="Cards"
-                customClass={`left-divider ${summary?.card_count ? 'bold' : ''}`}
-              />
-              <TopBarItem
-                topValue={summary?.product_count ?? '0'}
-                disabled={summary ? false : true}
-                bottomValue="Products"
-                customClass={`left-divider ${summary?.product_count ? 'bold' : ''}`}
-              />
-            </>
-          }
-          RightSideContent={
-            <>
-              <TopBarItem
-                topValue={
-                  filter?.name === 'category_id' ? (
-                    <FilterItem title={filter.title} onDelete={resetProductList} />
-                  ) : userBrand ? (
-                    'view'
-                  ) : (
-                    <span style={{ opacity: 0 }}>.</span>
-                  )
-                }
-                disabled
-                bottomEnable={summary ? true : false}
-                bottomValue={
-                  !userBrand
-                    ? 'Categories'
-                    : renderDropDownList(
-                        'Categories',
-                        'category_id',
-                        summary?.categories ?? [],
-                        summary ? false : true,
-                      )
-                }
-                customClass="left-divider"
-              />
-              <TopBarItem
-                topValue={
-                  filter?.name === 'collection_id' ? (
-                    <FilterItem title={filter.title} onDelete={resetProductList} />
-                  ) : userBrand ? (
-                    'view'
-                  ) : (
-                    <span style={{ opacity: 0 }}>.</span>
-                  )
-                }
-                disabled
-                bottomEnable={summary ? true : false}
-                bottomValue={
-                  !userBrand
-                    ? 'Collections'
-                    : renderDropDownList(
-                        'Collections',
-                        'collection_id',
-                        summary?.collections ?? [],
-                        summary ? false : true,
-                      )
-                }
-                customClass="left-divider collection"
-              />
-            </>
-          }
-        />
-      )}>
+    <PageContainer pageHeaderRender={renderPageHeader}>
       <CollapseProductList />
     </PageContainer>
   );

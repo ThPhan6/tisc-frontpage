@@ -1,7 +1,6 @@
 export * from './brand.type';
 export * from './design.type';
 export * from './attribute.type';
-export * from './category.type';
 export * from './basis-conversion.type';
 export * from './basis-preset.type';
 export * from './basis-option.type';

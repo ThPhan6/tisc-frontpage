@@ -1,10 +1,10 @@
-import type { CategoryListResponse } from '@/types';
+import { CategoryNestedList } from './types';
 
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 interface CategoryState {
-  list: CategoryListResponse[];
+  list: CategoryNestedList[];
 }
 
 const initialState: CategoryState = {
@@ -15,11 +15,12 @@ const categorySlice = createSlice({
   name: 'category',
   initialState,
   reducers: {
-    setList(state, action: PayloadAction<CategoryListResponse[]>) {
+    setCategoryList(state, action: PayloadAction<CategoryNestedList[]>) {
       state.list = action.payload;
     },
   },
 });
 
-export const { setList } = categorySlice.actions;
-export default categorySlice.reducer;
+export const { setCategoryList } = categorySlice.actions;
+
+export const categoryReducer = categorySlice.reducer;

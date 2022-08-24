@@ -26,6 +26,7 @@ interface ProductState {
 
 const initialState: ProductState = {
   details: {
+    id: '',
     name: '',
     description: '',
     keywords: ['', '', '', ''],
