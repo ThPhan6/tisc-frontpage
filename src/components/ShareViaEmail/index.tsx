@@ -7,6 +7,7 @@ import {
   getSharingGroups,
   getSharingPurposes,
 } from '@/features/product/services';
+import { useBoolean } from '@/helper/hook';
 import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
 
 import { ProductItem, ProductItemValue } from '@/features/product/types';
@@ -47,6 +48,7 @@ const DEFAULT_STATE = {
 };
 
 const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible }) => {
+  const submitButtonStatus = useBoolean();
   const [shareViaEmailData, setShareViaEmailData] = useState<ShareViaEmailForm>({
     ...DEFAULT_STATE,
     product_id: product.id,
@@ -94,13 +96,17 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
   const handleSubmit = () => {
     createShareViaEmail(shareViaEmailData).then((isSuccess) => {
       if (isSuccess) {
-        setVisible(false);
+        submitButtonStatus.setValue(true);
 
-        // clear data after submited
-        setShareViaEmailData({
-          ...DEFAULT_STATE,
-          product_id: product.id,
-        });
+        setTimeout(() => {
+          setVisible(false);
+
+          // clear data after submited
+          setShareViaEmailData({
+            ...DEFAULT_STATE,
+            product_id: product.id,
+          });
+        }, 200);
       }
     });
   };
@@ -110,6 +116,7 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
       title="Share Via Email"
       visible={visible}
       setVisible={setVisible}
+      submitButtonStatus={submitButtonStatus.value}
       onFormSubmit={handleSubmit}>
       <BrandProductBasicHeader
         image={product.images?.[0] || product.image}
@@ -119,7 +126,6 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
         text_3={product.description}
         customClass={styles.header}
       />
-
       {/* Sharing Group */}
       <CollapseRadioFormGroup
         label="Sharing Group"
@@ -140,7 +146,6 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
           }
         }}
       />
-
       {/* Sharing Purpose */}
       <CollapseRadioFormGroup
         label="Sharing Purpose"
@@ -161,7 +166,6 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
           }
         }}
       />
-
       {/* Email To */}
       <InputGroup
         label="Email To"
@@ -181,7 +185,6 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
         message={emailMessageError(shareViaEmailData.to_email, MESSAGE_ERROR.EMAIL_UNVALID)}
         messageType={emailMessageErrorType(shareViaEmailData.to_email, 'error', 'normal')}
       />
-
       {/* Title */}
       <InputGroup
         label="Title"
@@ -199,7 +202,6 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
         }}
         onDelete={() => onChangeData('title', '')}
       />
-
       {/* Message */}
       <FormGroup label="Message" required layout="vertical">
         <CustomTextArea
