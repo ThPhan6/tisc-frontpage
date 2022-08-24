@@ -17,28 +17,24 @@ import {
   createAssignTeamByBrandId,
   getBrandPagination,
   getListAssignTeamByBrandId,
-  inviteUser,
 } from '@/services';
 import { isEmpty, isEqual } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import type { TableColumnItem } from '@/components/Table/types';
-import type {
-  AssignTeamForm,
-  BrandListItem,
-  MemberAssignTeam,
-  TeamProfileBrandAssignMember,
-} from '@/types';
+import { TeamProfileBrandAssignMember } from '@/features/team-profiles/type';
+import type { AssignTeamForm, BrandListItem, MemberAssignTeam } from '@/types';
 
 import BrandMenuSummary from './components/BrandMenuSummary';
 import { ActionForm } from '@/components/Action';
 import AssignTeam from '@/components/AssignTeam';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
+import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
 
 import styles from './styles/index.less';
+import { inviteUser } from '@/features/team-profiles/api';
 
 const BrandList: React.FC = () => {
   const tableRef = useRef<any>();

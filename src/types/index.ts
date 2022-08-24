@@ -7,7 +7,6 @@ export * from './basis-preset.type';
 export * from './basis-option.type';
 export * from './collection.type';
 export * from './general.type';
-export * from './team-profile.type';
 export * from './inspiration-quotation';
 export * from './email-auto.type';
 export * from './location.type';

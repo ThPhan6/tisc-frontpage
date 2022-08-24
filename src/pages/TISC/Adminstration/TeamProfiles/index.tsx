@@ -6,15 +6,16 @@ import { USER_STATUS_TEXTS } from '@/constants/util';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { formatPhoneCode, getFullName, showImageUrl } from '@/helper/utils';
-import { deleteTeamProfile, getTeamProfileList } from '@/services';
 
 import { TableColumnItem } from '@/components/Table/types';
-import { TeamProfileTableProps } from '@/types';
+import { TeamProfileTableProps } from '@/features/team-profiles/type';
 
 import { ActionMenu } from '@/components/Action';
 import { ProfileIcon } from '@/components/ProfileIcon';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+
+import { deleteTeamProfile, getTeamProfileList } from '@/features/team-profiles/api';
 
 const TeamProfilesList = () => {
   const tableRef = useRef<any>();

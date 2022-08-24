@@ -1,16 +1,17 @@
-import { TISCAccessLevelDataRole } from '../../Adminstration/TeamProfiles/constants/role';
 import { PATH } from '@/constants/path';
+import { TISCAccessLevelDataRole } from '@/features/team-profiles/constants/role';
 import { PageContainer } from '@ant-design/pro-layout';
 
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { inviteUser } from '@/services';
 
 import BrandEntryForm from './components/BrandEntryForm';
 import BrandMenuSummary from './components/BrandMenuSummary';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+
+import { inviteUser } from '@/features/team-profiles/api';
 
 const BrandCreatePage = () => {
   const submitButtonStatus = useBoolean(false);

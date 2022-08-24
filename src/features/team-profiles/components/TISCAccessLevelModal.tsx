@@ -2,6 +2,10 @@ import { FC, Fragment, useEffect, useState } from 'react';
 
 import { ReactComponent as AccessableMinusIcon } from '@/assets/icons/accessable-minus-icon.svg';
 import { ReactComponent as AccessableTickIcon } from '@/assets/icons/accessable-tick-icon.svg';
+// for future data
+import { ReactComponent as FeebBackIcon } from '@/assets/icons/feedback.svg';
+import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/ic-share.svg';
+import { ReactComponent as RecommendationIcon } from '@/assets/icons/recommendation.svg';
 
 import { showImageUrl } from '@/helper/utils';
 import { getPermission, updatePermission } from '@/services/permission.api';
@@ -11,14 +15,29 @@ import { AccessLevelModalItemProps, AccessLevelModalProps } from '@/components/T
 import TISCModal from '@/components/TISCModal';
 import { BodyText, MainTitle } from '@/components/Typography';
 
-import styles from '../styles/AccessLevelModal.less';
+import styles from './AccessLevelModal.less';
 
-interface BrandAccessLevelModalProps {
+const furturePermissionData = [
+  {
+    logo: <FeebBackIcon className={styles.menu_item__logo} />,
+    name: 'Feedback(future)',
+  },
+  {
+    logo: <RecommendationIcon className={styles.menu_item__logo} />,
+    name: 'Recommendation(future)',
+  },
+  {
+    logo: <ShareViaEmailIcon className={styles.menu_item__logo} />,
+    name: 'Share via Email(future)',
+  },
+];
+
+interface TISCAccessLevelModalProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
 }
 
-const BrandAccessLevelModal: FC<BrandAccessLevelModalProps> = ({ visible, setVisible }) => {
+const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisible }) => {
   const [data, setData] = useState<AccessLevelModalProps[]>([]);
 
   // load permission data
@@ -87,7 +106,7 @@ const BrandAccessLevelModal: FC<BrandAccessLevelModalProps> = ({ visible, setVis
   };
 
   return (
-    <TISCModal title="BRAND ACCESS LEVEL" visible={visible} setVisible={setVisible}>
+    <TISCModal title="TISC ACCESS LEVEL" visible={visible} setVisible={setVisible}>
       <table className={styles.table} style={{ width: '100%' }}>
         {/* header */}
         <thead className={styles.header}>
@@ -98,19 +117,19 @@ const BrandAccessLevelModal: FC<BrandAccessLevelModalProps> = ({ visible, setVis
             {/* another */}
             <th>
               <MainTitle textAlign="center" level={4}>
-                Brand Admin
+                TISC Admin
               </MainTitle>
             </th>
             {/* future data header, can delete */}
             <th className={styles.furture_data_header}>
               <MainTitle textAlign="center" level={4}>
-                Brand Lead
+                TISC Team
               </MainTitle>
             </th>
             {/* ---------- */}
             <th>
               <MainTitle textAlign="center" level={4}>
-                Brand Team
+                Consultant Team
               </MainTitle>
             </th>
           </tr>
@@ -119,8 +138,41 @@ const BrandAccessLevelModal: FC<BrandAccessLevelModalProps> = ({ visible, setVis
         {/* body */}
         <tbody className={styles.body}>
           <>
+            <tr>
+              <td>
+                <BodyText fontFamily="Roboto" level={6} customClass={styles.my_dashboard}>
+                  MY DASHBOARD (future)
+                </BodyText>
+              </td>
+              {[1, 2].map((item) => (
+                <td key={`icon_${item}`} style={{ textAlign: 'center' }}>
+                  <AccessableTickIcon className={styles.menu_accessable_null} />
+                </td>
+              ))}
+              <td style={{ textAlign: 'center' }}>
+                <AccessableMinusIcon className={styles.menu_accessable_null} />
+              </td>
+            </tr>
+
             {/* main content */}
             {data.map((menu) => renderPermission(menu))}
+
+            {/* future data, can delete */}
+            {furturePermissionData.map((fData, index) => (
+              <tr key={`futureData_${index}`}>
+                <td className={`${styles.furture_data_name} ${styles.menu_item}`}>
+                  {fData.logo}
+                  <BodyText fontFamily="Roboto" level={6}>
+                    {fData.name}
+                  </BodyText>
+                </td>
+                {[1, 2, 3].map((_, i) => (
+                  <td key={`${index}_${i}`} style={{ textAlign: 'center' }}>
+                    <AccessableTickIcon className={styles.menu_accessable_null} />
+                  </td>
+                ))}
+              </tr>
+            ))}
             <tr>
               <td></td>
               <td></td>
@@ -135,4 +187,4 @@ const BrandAccessLevelModal: FC<BrandAccessLevelModalProps> = ({ visible, setVis
   );
 };
 
-export default BrandAccessLevelModal;
+export default TISCAccessLevelModal;
