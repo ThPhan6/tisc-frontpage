@@ -11,7 +11,7 @@ import { AccessLevelModalItemProps, AccessLevelModalProps } from '@/components/T
 import TISCModal from '@/components/TISCModal';
 import { BodyText, MainTitle } from '@/components/Typography';
 
-import styles from '../styles/AccessLevelModal.less';
+import styles from './AccessLevelModal.less';
 
 interface BrandAccessLevelModalProps {
   visible: boolean;

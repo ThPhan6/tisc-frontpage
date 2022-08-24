@@ -11,7 +11,6 @@ import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-i
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 
-import { inviteUser } from '@/features/team-profiles/services/api';
 import { pushTo } from '@/helper/history';
 import { showImageUrl } from '@/helper/utils';
 import {
@@ -23,12 +22,8 @@ import { isEmpty, isEqual } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import type { TableColumnItem } from '@/components/Table/types';
-import type {
-  AssignTeamForm,
-  BrandListItem,
-  MemberAssignTeam,
-  TeamProfileBrandAssignMember,
-} from '@/types';
+import { TeamProfileBrandAssignMember } from '@/features/team-profiles/type';
+import type { AssignTeamForm, BrandListItem, MemberAssignTeam } from '@/types';
 
 import BrandMenuSummary from './components/BrandMenuSummary';
 import { ActionForm } from '@/components/Action';
@@ -39,6 +34,7 @@ import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
 
 import styles from './styles/index.less';
+import { inviteUser } from '@/features/team-profiles/api';
 
 const BrandList: React.FC = () => {
   const tableRef = useRef<any>();

@@ -3,11 +3,10 @@ import { useEffect, useState } from 'react';
 import { USER_STATUS_TEXTS } from '@/constants/util';
 import { Col, Collapse, Row } from 'antd';
 
-import { getListTeamProfileUserGroupByBrandId } from '@/features/team-profiles/services/api';
 import { useGetParamId } from '@/helper/hook';
 import { isEmpty } from 'lodash';
 
-import { TeamProfileGroupCountry } from '@/types';
+import { TeamProfileGroupCountry } from '@/features/team-profiles/type';
 
 import GeneralData from '../../components/GeneralData';
 import TextForm from '@/components/Form/TextForm';
@@ -15,6 +14,7 @@ import { RenderLabelHeader, RenderMemberHeader } from '@/components/RenderHeader
 
 import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
 import indexStyles from '../../styles/index.less';
+import { getListTeamProfileUserGroupByBrandId } from '@/features/team-profiles/api';
 
 const BrandTeamDetail = () => {
   const [teamData, setTeamData] = useState<TeamProfileGroupCountry[]>([]);

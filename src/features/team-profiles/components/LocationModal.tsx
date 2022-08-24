@@ -8,7 +8,7 @@ import { LocationDetail, LocationGroupedByCountry } from '@/types';
 
 import Popover from '@/components/Modal/Popover';
 
-import styles from '../styles/LocationModal.less';
+import styles from './LocationModal.less';
 
 interface WorkLocationData {
   label: string;

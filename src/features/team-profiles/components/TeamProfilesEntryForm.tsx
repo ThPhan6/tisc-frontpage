@@ -7,8 +7,9 @@ import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
 import { getDepartmentList } from '@/services';
 
+import { TeamProfileDetailProps, TeamProfileRequestBody } from '../type';
 import type { RadioValue } from '@/components/CustomRadio/types';
-import { DepartmentData, TeamProfileDetailProps, TeamProfileRequestBody } from '@/types';
+import { DepartmentData } from '@/types';
 
 import { CustomRadio } from '@/components/CustomRadio';
 import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
@@ -18,10 +19,10 @@ import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { Status } from '@/components/Form/Status';
 
-import styles from '../styles/TeamProfilesEntryForm.less';
 import BrandAccessLevelModal from './BrandAccessLevelModal';
 import LocationModal from './LocationModal';
 import TISCAccessLevelModal from './TISCAccessLevelModal';
+import styles from './TeamProfilesEntryForm.less';
 
 const GenderRadio = [
   { label: 'Male', value: '1' },
