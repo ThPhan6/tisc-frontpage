@@ -37,14 +37,19 @@ interface ShareViaEmailProps {
 
 type FieldName = keyof ShareViaEmailForm;
 
+const DEFAULT_STATE = {
+  product_id: '',
+  sharing_group: '',
+  sharing_purpose: '',
+  to_email: '',
+  title: '',
+  message: '',
+};
+
 const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible }) => {
   const [shareViaEmailData, setShareViaEmailData] = useState<ShareViaEmailForm>({
+    ...DEFAULT_STATE,
     product_id: product.id,
-    sharing_group: '',
-    sharing_purpose: '',
-    to_email: '',
-    title: '',
-    message: '',
   });
 
   // for Sharing Group
@@ -93,12 +98,8 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
 
         // clear data after submited
         setShareViaEmailData({
+          ...DEFAULT_STATE,
           product_id: product.id,
-          sharing_group: '',
-          sharing_purpose: '',
-          to_email: '',
-          title: '',
-          message: '',
         });
       }
     });
