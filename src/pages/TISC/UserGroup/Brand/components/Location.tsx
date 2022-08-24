@@ -3,10 +3,9 @@ import { useEffect, useState } from 'react';
 import { Col, Collapse, Row } from 'antd';
 
 import { useGetParamId } from '@/helper/hook';
-import { getLocationByBrandId } from '@/services';
 import { isEmpty } from 'lodash';
 
-import { LocationGroupedByCountry } from '@/types';
+import { LocationGroupedByCountry } from '@/features/locations/type';
 
 import GeneralData from '../../components/GeneralData';
 import TextForm from '@/components/Form/TextForm';
@@ -14,6 +13,7 @@ import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 
 import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
 import styles from '../../styles/index.less';
+import { getLocationByBrandId } from '@/features/locations/api';
 
 const BrandLocationDetail = () => {
   const [locations, setLocations] = useState<LocationGroupedByCountry[]>([]);

@@ -1,12 +1,12 @@
 import { FC, useEffect, useState } from 'react';
 
-import { getRegions } from '@/services/location.api';
-
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
-import { Country, Regions } from '@/types';
+import { Country, Regions } from '@/features/locations/type';
 
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
+
+import { getRegions } from '@/features/locations/api';
 
 const AuthorizedCountryModal: FC<{
   visible: boolean;

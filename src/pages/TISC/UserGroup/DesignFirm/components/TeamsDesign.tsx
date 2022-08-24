@@ -5,7 +5,7 @@ import { Col, Collapse, Row } from 'antd';
 
 import { isEmpty } from 'lodash';
 
-import { TeamsDesignFirm } from '@/types';
+import { TeamsDesignFirm } from '@/features/team-profiles/type';
 
 import GeneralData from '../../components/GeneralData';
 import { FormGroup } from '@/components/Form';

@@ -4,7 +4,7 @@ import { Col, Collapse, Row } from 'antd';
 
 import { isEmpty } from 'lodash';
 
-import { LocationGroupedByCountry } from '@/types';
+import { LocationGroupedByCountry } from '@/features/locations/type';
 
 import GeneralData from '../../components/GeneralData';
 import { FormGroup } from '@/components/Form';
