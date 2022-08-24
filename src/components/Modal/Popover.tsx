@@ -5,6 +5,7 @@ import { Modal } from 'antd';
 import { Empty } from 'antd';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
+import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
 
 import { isEmpty } from 'lodash';
 
@@ -57,6 +58,7 @@ export interface PopoverProps {
   combinableCheckbox?: boolean;
 
   onFormSubmit?: () => void;
+  submitButtonStatus?: boolean;
 
   // clear select on close
   clearOnClose?: boolean;
@@ -81,6 +83,7 @@ const Popover: FC<PopoverProps> = ({
   combinableCheckbox,
   children,
   onFormSubmit,
+  submitButtonStatus,
   clearOnClose,
 }) => {
   const [currentValue, setCurrentValue] = useState<any>(chosenValue);
@@ -213,7 +216,15 @@ const Popover: FC<PopoverProps> = ({
         width={576}
         closeIcon={<CloseIcon />}
         footer={
-          noFooter ? null : (
+          noFooter ? null : submitButtonStatus ? (
+            <CustomButton
+              size="small"
+              variant="primary"
+              properties="rounded"
+              buttonClass={styles.submitButton}
+              icon={<CheckSuccessIcon />}
+            />
+          ) : (
             <CustomButton
               size="small"
               variant="primary"

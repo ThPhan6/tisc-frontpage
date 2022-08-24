@@ -4,6 +4,12 @@ import { request } from 'umi';
 
 import { getUserInfoMiddleware } from '@/pages/LandingPage/services/api';
 
+import {
+  TeamProfileDetailProps,
+  TeamProfileGroupCountry,
+  TeamProfileRequestBody,
+  TeamProfileTableProps,
+} from './type';
 import type {
   DataTableResponse,
   PaginationRequestParams,
@@ -11,12 +17,6 @@ import type {
   SummaryResponse,
 } from '@/components/Table/types';
 import store from '@/reducers';
-import {
-  TeamProfileDetailProps,
-  TeamProfileGroupCountry,
-  TeamProfileRequestBody,
-  TeamProfileTableProps,
-} from '@/types';
 
 interface TeamProfilePaginationResponse {
   data: {

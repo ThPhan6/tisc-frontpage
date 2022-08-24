@@ -7,8 +7,7 @@ import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 
 import { isNaN, isNumber } from 'lodash';
 
-import TeamIcon from '@/components/TeamProfile/components/TeamIcon';
-
+import TeamIcon from '../TeamIcon/TeamIcon';
 import { BodyText } from '../Typography';
 import styles from './index.less';
 

@@ -20,7 +20,7 @@ export interface TeamProfileDetailProps {
   firstname: string;
   lastname: string;
   fullname: string;
-  gender: boolean;
+  gender: boolean | null;
   location_id: string;
   department_id: string;
   position: string;

@@ -86,6 +86,7 @@ export interface ProductItem {
 export interface ProductItemValue {
   id: string;
   name: string;
+  logo?: string;
 }
 
 export interface ProductFormData {

@@ -17,6 +17,7 @@ export interface City {
 export interface LocationDetail {
   id: string;
   business_name: string;
+  business_number: string;
   functional_types: {
     id: string;
     name: string;

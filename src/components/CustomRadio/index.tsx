@@ -23,6 +23,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
   containerStyle,
   noPaddingLeft,
   otherStickyBottom,
+  stickyTopItem,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -32,15 +33,14 @@ export const CustomRadio: FC<CustomRadioProps> = ({
       value: e.target.value,
       label: e.target.value === 'other' ? inputValue : e.target?.label || 'label ' + e.target.value,
     };
-    if (onChange) {
-      onChange({ ...newValue });
+    onChange?.({ ...newValue });
+    if (isRadioList) {
+      setInputValue('');
     }
   };
 
   const onChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (onChange) {
-      onChange({ ...selected, value: 'other', label: e.target.value });
-    }
+    onChange?.({ ...selected, value: 'other', label: e.target.value });
     setInputValue(e.target.value);
   };
 
@@ -49,6 +49,30 @@ export const CustomRadio: FC<CustomRadioProps> = ({
       return 'item-option-checked';
     }
     return '';
+  };
+
+  const renderOption = (option: RadioValue, index: number) => {
+    return (
+      <label
+        key={index}
+        className={`${style.panel_radio} ${
+          option.customClass ? option.customClass : ''
+        } radio-label`}
+        htmlFor={`${randomID}_${option.value}_${index}`}>
+        <div style={{ width: '100%' }}>
+          {isRadioList ? (
+            <div className={style['item-wrapper']}>
+              <span className={getActiveClass(option)}>{option.label}</span>
+              <Radio id={`${randomID}_${option.value}_${index}`} {...option} />
+            </div>
+          ) : (
+            <Radio id={`${randomID}_${option.value}_${index}`} {...option}>
+              <span className={getActiveClass(option)}>{option.label}</span>
+            </Radio>
+          )}
+        </div>
+      </label>
+    );
   };
 
   return (
@@ -66,30 +90,17 @@ export const CustomRadio: FC<CustomRadioProps> = ({
         defaultValue={defaultValue?.value}>
         <Space
           direction={isRadioList ? 'vertical' : direction}
-          className={`${otherStickyBottom ? style.stickyBottom : ''}`}>
-          {options.map((option, index) => (
-            <label
-              key={index}
-              className={`
-                ${style.panel_radio}
-                ${option.customClass ? option.customClass : ''}
-                radio-label
-              `}
-              htmlFor={`${randomID}_${option.value}_${index}`}>
-              <div style={{ width: '100%' }}>
-                {isRadioList ? (
-                  <div className={style['item-wrapper']}>
-                    <span className={getActiveClass(option)}>{option.label}</span>
-                    <Radio id={`${randomID}_${option.value}_${index}`} {...option} />
-                  </div>
-                ) : (
-                  <Radio id={`${randomID}_${option.value}_${index}`} {...option}>
-                    <span className={getActiveClass(option)}>{option.label}</span>
-                  </Radio>
-                )}
-              </div>
-            </label>
-          ))}
+          className={`${otherStickyBottom ? style.stickyBottom : ''} ${
+            stickyTopItem ? style.stickyTopItem : ''
+          }`}>
+          {options.map((option, index) => {
+            if (stickyTopItem && index === 0) {
+              return (
+                <div className={`${style.topItem} flex-center`}>{renderOption(option, index)}</div>
+              );
+            }
+            return renderOption(option, index);
+          })}
 
           {otherInput && (
             <div className={`${isRadioList ? style['other-field-radio-list'] : ''}`}>

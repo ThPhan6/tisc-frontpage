@@ -269,19 +269,20 @@ const ProductImagePreview: React.FC = () => {
 
         {renderBottomPreview()}
 
-        <ShareViaEmail
-          visible={showShareEmailModal.value}
-          setVisible={showShareEmailModal.setValue}
-          product={product}
-        />
-
-        {product.id && (
+        {product.id ? (
+          <ShareViaEmail
+            visible={showShareEmailModal.value}
+            setVisible={showShareEmailModal.setValue}
+            product={product}
+          />
+        ) : null}
+        {product.id ? (
           <AssignProductModal
             visible={showAssignProductModal.value}
             setVisible={showAssignProductModal.setValue}
             productId={product.id}
           />
-        )}
+        ) : null}
       </div>
     </Col>
   );

@@ -1,14 +1,14 @@
 import { FC, useEffect, useState } from 'react';
 
-import { getWorkLocations } from '@/services';
 import { upperCase } from 'lodash';
 
 import { RadioValue } from '@/components/CustomRadio/types';
-import { LocationDetail, LocationGroupedByCountry } from '@/types';
+import { LocationDetail, LocationGroupedByCountry } from '@/features/locations/type';
 
 import Popover from '@/components/Modal/Popover';
 
-import styles from '../styles/LocationModal.less';
+import styles from './LocationModal.less';
+import { getWorkLocations } from '@/features/locations/api';
 
 interface WorkLocationData {
   label: string;

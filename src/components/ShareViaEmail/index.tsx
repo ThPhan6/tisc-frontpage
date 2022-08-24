@@ -1,16 +1,22 @@
-import InputGroup from '@/components/EntryForm/InputGroup';
-import { FormGroup } from '@/components/Form';
-import { CustomTextArea } from '@/components/Form/CustomTextArea';
-import Popover from '@/components/Modal/Popover';
+import { FC, useEffect, useState } from 'react';
+
 import { MESSAGE_ERROR } from '@/constants/message';
+
 import {
   createShareViaEmail,
   getSharingGroups,
   getSharingPurposes,
 } from '@/features/product/services';
-import { ProductItem, ProductItemValue } from '@/features/product/types';
+import { useBoolean } from '@/helper/hook';
 import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
-import { FC, useEffect, useState } from 'react';
+
+import { ProductItem, ProductItemValue } from '@/features/product/types';
+
+import InputGroup from '@/components/EntryForm/InputGroup';
+import { FormGroup } from '@/components/Form';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import Popover from '@/components/Modal/Popover';
+
 import BrandProductBasicHeader from '../BrandProductBasicHeader';
 import CollapseRadioFormGroup from '../CustomRadio/CollapseRadioFormGroup';
 import styles from './index.less';
@@ -32,14 +38,20 @@ interface ShareViaEmailProps {
 
 type FieldName = keyof ShareViaEmailForm;
 
+const DEFAULT_STATE = {
+  product_id: '',
+  sharing_group: '',
+  sharing_purpose: '',
+  to_email: '',
+  title: '',
+  message: '',
+};
+
 const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible }) => {
+  const submitButtonStatus = useBoolean();
   const [shareViaEmailData, setShareViaEmailData] = useState<ShareViaEmailForm>({
+    ...DEFAULT_STATE,
     product_id: product.id,
-    sharing_group: '',
-    sharing_purpose: '',
-    to_email: '',
-    title: '',
-    message: '',
   });
 
   // for Sharing Group
@@ -82,12 +94,21 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
   };
 
   const handleSubmit = () => {
-    createShareViaEmail(shareViaEmailData);
-    // .then((isSuccess) => {
-    //   if (isSuccess) {
-    //     setVisible(false);
-    //   }
-    // });
+    createShareViaEmail(shareViaEmailData).then((isSuccess) => {
+      if (isSuccess) {
+        submitButtonStatus.setValue(true);
+
+        setTimeout(() => {
+          setVisible(false);
+
+          // clear data after submited
+          setShareViaEmailData({
+            ...DEFAULT_STATE,
+            product_id: product.id,
+          });
+        }, 200);
+      }
+    });
   };
 
   return (
@@ -95,6 +116,7 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
       title="Share Via Email"
       visible={visible}
       setVisible={setVisible}
+      submitButtonStatus={submitButtonStatus.value}
       onFormSubmit={handleSubmit}>
       <BrandProductBasicHeader
         image={product.images?.[0] || product.image}
@@ -104,7 +126,6 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
         text_3={product.description}
         customClass={styles.header}
       />
-
       {/* Sharing Group */}
       <CollapseRadioFormGroup
         label="Sharing Group"
@@ -125,7 +146,6 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
           }
         }}
       />
-
       {/* Sharing Purpose */}
       <CollapseRadioFormGroup
         label="Sharing Purpose"
@@ -146,7 +166,6 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
           }
         }}
       />
-
       {/* Email To */}
       <InputGroup
         label="Email To"
@@ -166,7 +185,6 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
         message={emailMessageError(shareViaEmailData.to_email, MESSAGE_ERROR.EMAIL_UNVALID)}
         messageType={emailMessageErrorType(shareViaEmailData.to_email, 'error', 'normal')}
       />
-
       {/* Title */}
       <InputGroup
         label="Title"
@@ -184,7 +202,6 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
         }}
         onDelete={() => onChangeData('title', '')}
       />
-
       {/* Message */}
       <FormGroup label="Message" required layout="vertical">
         <CustomTextArea

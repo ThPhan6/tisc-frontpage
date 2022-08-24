@@ -2,11 +2,9 @@ import { FC, useEffect, useState } from 'react';
 
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
-import { getBrandLocation, getDistributorLocation } from '@/services';
-
 import { OnChangeSpecifyingProductFnc } from './types';
 import { RadioValue } from '@/components/CustomRadio/types';
-import { LocationDetail, LocationGroupedByCountry } from '@/types';
+import { LocationDetail, LocationGroupedByCountry } from '@/features/locations/type';
 import { DistributorProductMarket } from '@/types/distributor.type';
 
 import CustomCollapse from '@/components/Collapse';
@@ -16,6 +14,7 @@ import { BodyText, RobotoBodyText } from '@/components/Typography';
 import { BusinessDetail } from '@/features/product/components/BrandContact';
 
 import styles from './styles/vendor-tab.less';
+import { getBrandLocation, getDistributorLocation } from '@/features/locations/api';
 
 const activeKey = '1';
 
