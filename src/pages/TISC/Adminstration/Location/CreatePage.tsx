@@ -4,14 +4,15 @@ import { PATH } from '@/constants/path';
 
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { createLocation } from '@/services';
 
-import { LocationForm } from '@/types';
+import { LocationForm } from '@/features/locations/type';
 
 import LoadingPageCustomize from '@/components/LoadingPage';
-import LocationEntryForm from '@/components/Location/LocationEntryForm';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import LocationEntryForm from '@/features/locations/components/LocationEntryForm';
+
+import { createLocation } from '@/features/locations/api';
 
 const TISCLocationCreatePage: React.FC = () => {
   const submitButtonStatus = useBoolean(false);

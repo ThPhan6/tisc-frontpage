@@ -1,23 +1,22 @@
 import { FC, useEffect, useState } from 'react';
 
-import { getCitiesByCountryIdAndStateId } from '@/services/location.api';
-
-import { City } from '@/types';
+import { State } from '../type';
 
 import Popover from '@/components/Modal/Popover';
 
-const CityModal: FC<{
-  stateId: string;
+import { getStatesByCountryId } from '../api';
+
+const StateModal: FC<{
   countryId: string;
   visible: boolean;
   setVisible: (visible: boolean) => void;
   chosenValue?: any;
   setChosenValue: (value: any) => void;
-}> = ({ visible, setVisible, chosenValue, setChosenValue, stateId, countryId }) => {
-  const [cities, setCities] = useState<City[]>([]);
+}> = ({ visible, setVisible, chosenValue, setChosenValue, countryId }) => {
+  const [states, setStates] = useState<State[]>([]);
 
-  const getCityList = () => {
-    getCitiesByCountryIdAndStateId(countryId, stateId).then((res) => {
+  const getStateList = () => {
+    getStatesByCountryId(countryId).then((res) => {
       if (res) {
         const checked = res.find((item) => item.id === chosenValue.value);
         if (!checked) {
@@ -25,32 +24,32 @@ const CityModal: FC<{
         } else {
           setChosenValue({ value: checked.id, label: checked.name });
         }
-        setCities(res);
+        setStates(res);
       }
     });
   };
 
   useEffect(() => {
-    if (stateId) {
-      getCityList();
+    if (countryId) {
+      getStateList();
     } else {
       setChosenValue({ value: '', label: '' });
     }
-  }, [stateId, countryId]);
+  }, [countryId]);
 
   return (
     <Popover
-      title="SELECT CITY / TOWN"
+      title="SELECT STATE / PROVINCE"
       visible={visible}
       setVisible={setVisible}
       chosenValue={chosenValue}
       setChosenValue={setChosenValue}
       groupRadioList={[
         {
-          options: cities.map((city) => {
+          options: states.map((state) => {
             return {
-              label: city.name,
-              value: city.id,
+              label: state.name,
+              value: state.id,
             };
           }),
         },
@@ -58,4 +57,5 @@ const CityModal: FC<{
     />
   );
 };
-export default CityModal;
+
+export default StateModal;

@@ -20,9 +20,9 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import DateInput from '@/components/Form/DateInput';
-import CityModal from '@/components/Location/CityModal';
-import CountryModal from '@/components/Location/CountryModal';
-import StateModal from '@/components/Location/StateModal';
+import CityModal from '@/features/locations/components/CityModal';
+import CountryModal from '@/features/locations/components/CountryModal';
+import StateModal from '@/features/locations/components/StateModal';
 
 import styles from '../../styles/basic-information.less';
 

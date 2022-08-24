@@ -1,13 +1,13 @@
 import { FC, useEffect, useState } from 'react';
 
 import { formatPhoneCode } from '@/helper/utils';
-import { getCountries } from '@/services/location.api';
 
-import { Country } from '@/types';
+import { Country } from '../type';
 
 import Popover from '@/components/Modal/Popover';
 
-import styles from './styles/CountryModal.less';
+import { getCountries } from '../api';
+import styles from './CountryModal.less';
 
 const CountryModal: FC<{
   visible: boolean;

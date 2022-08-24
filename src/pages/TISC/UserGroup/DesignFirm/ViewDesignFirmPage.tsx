@@ -24,13 +24,10 @@ import {
 } from '@/services';
 
 import { TabItem } from '@/components/Tabs/types';
+import { LocationGroupedByCountry } from '@/features/locations/type';
 import { ProjectsDesignFirm } from '@/features/project/types';
-import {
-  DesignFirmDetail,
-  LocationGroupedByCountry,
-  MaterialCodeDesignFirm,
-  TeamsDesignFirm,
-} from '@/types';
+import { TeamsDesignFirm } from '@/features/team-profiles/type';
+import { DesignFirmDetail, MaterialCodeDesignFirm } from '@/types';
 
 import CustomDesign from './components/CustomDesign';
 import DesignFirmSummary from './components/DesignFirmSummary';

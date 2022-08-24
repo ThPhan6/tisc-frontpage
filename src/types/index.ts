@@ -9,7 +9,6 @@ export * from './collection.type';
 export * from './general.type';
 export * from './inspiration-quotation';
 export * from './email-auto.type';
-export * from './location.type';
 export * from './department.type';
 export * from './market-availability.type';
 export * from './permission.type';
