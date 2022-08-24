@@ -1,16 +1,21 @@
-import InputGroup from '@/components/EntryForm/InputGroup';
-import { FormGroup } from '@/components/Form';
-import { CustomTextArea } from '@/components/Form/CustomTextArea';
-import Popover from '@/components/Modal/Popover';
+import { FC, useEffect, useState } from 'react';
+
 import { MESSAGE_ERROR } from '@/constants/message';
+
 import {
   createShareViaEmail,
   getSharingGroups,
   getSharingPurposes,
 } from '@/features/product/services';
-import { ProductItem, ProductItemValue } from '@/features/product/types';
 import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
-import { FC, useEffect, useState } from 'react';
+
+import { ProductItem, ProductItemValue } from '@/features/product/types';
+
+import InputGroup from '@/components/EntryForm/InputGroup';
+import { FormGroup } from '@/components/Form';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import Popover from '@/components/Modal/Popover';
+
 import BrandProductBasicHeader from '../BrandProductBasicHeader';
 import CollapseRadioFormGroup from '../CustomRadio/CollapseRadioFormGroup';
 import styles from './index.less';
@@ -32,14 +37,19 @@ interface ShareViaEmailProps {
 
 type FieldName = keyof ShareViaEmailForm;
 
+const DEFAULT_STATE = {
+  product_id: '',
+  sharing_group: '',
+  sharing_purpose: '',
+  to_email: '',
+  title: '',
+  message: '',
+};
+
 const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible }) => {
   const [shareViaEmailData, setShareViaEmailData] = useState<ShareViaEmailForm>({
+    ...DEFAULT_STATE,
     product_id: product.id,
-    sharing_group: '',
-    sharing_purpose: '',
-    to_email: '',
-    title: '',
-    message: '',
   });
 
   // for Sharing Group
@@ -82,12 +92,17 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
   };
 
   const handleSubmit = () => {
-    createShareViaEmail(shareViaEmailData);
-    // .then((isSuccess) => {
-    //   if (isSuccess) {
-    //     setVisible(false);
-    //   }
-    // });
+    createShareViaEmail(shareViaEmailData).then((isSuccess) => {
+      if (isSuccess) {
+        setVisible(false);
+
+        // clear data after submited
+        setShareViaEmailData({
+          ...DEFAULT_STATE,
+          product_id: product.id,
+        });
+      }
+    });
   };
 
   return (
