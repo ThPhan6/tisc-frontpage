@@ -4,12 +4,14 @@ import { useDispatch } from 'react-redux';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { useLocation } from 'umi';
 
+import { getBrandPagination } from '@/features/user-group/services';
 import { showImageUrl } from '@/helper/utils';
-import { getBrandPagination, getProductCategoryPagination } from '@/services';
+import { getProductCategoryPagination } from '@/services';
 
 import { setProductList, setProductListSorter } from '../reducers';
+import { BrandListItem } from '@/features/user-group/types';
 import store, { useAppSelector } from '@/reducers';
-import { BrandListItem, CategoryListResponse } from '@/types';
+import { CategoryListResponse } from '@/types';
 
 export const formatCategoriesToDropDownData = (
   categories: CategoryListResponse[],

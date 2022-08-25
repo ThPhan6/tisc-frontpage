@@ -1,5 +1,3 @@
-export * from './brand.type';
-export * from './design.type';
 export * from './attribute.type';
 export * from './category.type';
 export * from './basis-conversion.type';
@@ -13,4 +11,4 @@ export * from './department.type';
 export * from './market-availability.type';
 export * from './permission.type';
 export * from './material-code.type';
-export * from './tisc-user-group-brand.type';
+export * from './distributor.type';

@@ -1,5 +1,3 @@
-export * from './brand.api';
-export * from './design.api';
 export * from './attribute.api';
 export * from './category.api';
 export * from './basis-conversion.api';

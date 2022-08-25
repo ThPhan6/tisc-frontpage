@@ -5,11 +5,11 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
 
-import BrandEntryForm from './components/BrandEntryForm';
-import BrandMenuSummary from './components/BrandMenuSummary';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import BrandEntryForm from '@/features/user-group/components/BrandEntryForm';
+import HeaderMenuSummary from '@/features/user-group/components/HeaderMenuSummary';
 
 import { inviteUser } from '@/features/team-profiles/api';
 
@@ -45,7 +45,7 @@ const BrandCreatePage = () => {
     };
 
   return (
-    <PageContainer pageHeaderRender={() => <BrandMenuSummary />}>
+    <PageContainer pageHeaderRender={() => <HeaderMenuSummary type="brand" />}>
       <TableHeader title="BRANDS" rightAction={<CustomPlusButton disabled />} />
       <BrandEntryForm
         onCancel={handleCancel}

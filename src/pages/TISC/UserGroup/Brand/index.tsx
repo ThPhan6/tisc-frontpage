@@ -11,30 +11,34 @@ import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-i
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 
-import { pushTo } from '@/helper/history';
-import { showImageUrl } from '@/helper/utils';
 import {
   createAssignTeamByBrandId,
   getBrandPagination,
   getListAssignTeamByBrandId,
-} from '@/services';
+} from '@/features/user-group/services';
+import { pushTo } from '@/helper/history';
+import { showImageUrl } from '@/helper/utils';
 import { isEmpty, isEqual } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import type { TableColumnItem } from '@/components/Table/types';
 import { TeamProfileBrandAssignMember } from '@/features/team-profiles/type';
-import type { AssignTeamForm, BrandListItem, MemberAssignTeam } from '@/types';
+import {
+  AssignTeamForm,
+  BrandListItem,
+  MemberAssignTeam,
+} from '@/features/user-group/types/brand.types';
 
-import BrandMenuSummary from './components/BrandMenuSummary';
 import { ActionForm } from '@/components/Action';
 import AssignTeam from '@/components/AssignTeam';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
+import HeaderMenuSummary from '@/features/user-group/components/HeaderMenuSummary';
 
-import styles from './styles/index.less';
 import { inviteUser } from '@/features/team-profiles/api';
+import styles from '@/features/user-group/styles/brand.less';
 
 const BrandList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -234,7 +238,7 @@ const BrandList: React.FC = () => {
 
   return (
     <div>
-      <PageContainer pageHeaderRender={() => <BrandMenuSummary />}>
+      <PageContainer pageHeaderRender={() => <HeaderMenuSummary type="brand" />}>
         <CustomTable
           title="BRANDS"
           rightAction={

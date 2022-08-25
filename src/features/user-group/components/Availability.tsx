@@ -1,29 +1,27 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { Col, Collapse, Row } from 'antd';
 
-import { useGetParamId } from '@/helper/hook';
 import { getAvailabilityListCountryGroupByBrandId } from '@/services';
 import { isEmpty } from 'lodash';
 
+import { UserGroupProps } from '../types';
 import { AvailabilityCollectionGroup } from '@/types';
 
-import GeneralData from '../../components/GeneralData';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { BodyText } from '@/components/Typography';
 
-import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
-import styles from '../../styles/index.less';
+import styles from '../styles/index.less';
+import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
+import GeneralData from './GeneralData';
 
-const BrandAvailabilityDetail = () => {
+const BrandAvailabilityDetail: FC<UserGroupProps> = ({ id }) => {
   const [availability, setAvailability] = useState<AvailabilityCollectionGroup[]>([]);
 
-  const brandId = useGetParamId();
-
   useEffect(() => {
-    if (brandId) {
-      getAvailabilityListCountryGroupByBrandId(brandId).then(setAvailability);
-    }
+    if (!id) return;
+
+    getAvailabilityListCountryGroupByBrandId(id).then(setAvailability);
   }, []);
 
   return (

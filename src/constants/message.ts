@@ -129,6 +129,17 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_BRAND_STATUS_SUCCESS: 'Update brand status successfully',
   UPDATE_BRAND_STATUS_ERROR: 'Update brand status error',
 
+  //user-group / design firms
+  GET_ONE_DESIGN_FIRM_ERROR: 'Failed to get one design firm',
+  GET_SUMMARY: 'Failed to get summary',
+  GET_LOCATIONS_BY_DESIGN_FIRM: 'Failed to get locations by design firm',
+  GET_TEAMS_BY_DESIGN_FIRM: 'Failed to get teams by design firm',
+  GET_PROJECTS_BY_DESIGN_FIRM: 'Failed to get projects by design firm',
+  GET_MATERIAL_CODE_BY_DESIGN_FIRM: 'Failed to get material code by design firm',
+  GET_DESIGN_STATUSES_ERROR: 'Failed to get statuses',
+  UPDATE_STATUS_DESIGN_FIRM_SUCCESS: 'Update status design firm successfully',
+  UPDATE_STATUS_DESIGN_FIRM_ERROR: 'Update status design firm error',
+
   // team profile
   GET_LIST_TEAM_PROFILE_ERROR: 'Get list team profile error',
   GET_ONE_TEAM_PROFILE_ERROR: 'Get one team profile error',
@@ -236,16 +247,6 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_PROJECT_SUCCESS: 'Delete project successfully',
   GET_PROJECT_DATA_FAILED: 'Failed to get project data',
   GET_PROJECT_SUMMARY_DATA_FAILED: 'Failed to get project summary data',
-
-  //user-group / design firms
-  GET_ONE_DESIGN_FIRM_ERROR: 'Failed to get one design firm',
-  GET_SUMMARY: 'Failed to get summary',
-  GET_LOCATIONS_BY_DESIGN_FIRM: 'Failed to get locations by design firm',
-  GET_TEAMS_BY_DESIGN_FIRM: 'Failed to get teams by design firm',
-  GET_PROJECTS_BY_DESIGN_FIRM: 'Failed to get projects by design firm',
-  GET_MATERIAL_CODE_BY_DESIGN_FIRM: 'Failed to get material code by design firm',
-  UPDATE_STATUS_DESIGN_FIRM_SUCCESS: 'Update status design firm successfully',
-  UPDATE_STATUS_DESIGN_FIRM_ERROR: 'Update status design firm error',
 
   GET_PROJECT_SPACE_DATA_FAILED: 'Failed to get project space data',
   CREATE_PROJECT_SPACE_FAILED: 'Failed to create project space',

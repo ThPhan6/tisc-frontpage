@@ -83,7 +83,7 @@ export default [
           {
             path: PATH.tiscUserGroupViewDesigner,
             hideInMenu: true,
-            component: './TISC/UserGroup/DesignFirm/ViewDesignFirmPage',
+            component: './TISC/UserGroup/DesignFirm/UpdatePage',
           },
         ],
       },

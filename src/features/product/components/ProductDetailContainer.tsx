@@ -19,10 +19,10 @@ import {
   getRelatedCollectionProducts,
   updateProductCard,
 } from '@/features/product/services';
+import { getBrandById } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
 import { useCheckPermission } from '@/helper/hook';
 import { isValidURL } from '@/helper/utils';
-import { getBrandById } from '@/services';
 
 import { ProductFormData, ProductKeyword } from '../types';
 import { ProductInfoTab } from './ProductAttributeComponent/types';

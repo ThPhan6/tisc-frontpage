@@ -7,18 +7,18 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 
+import { getDesignFirmPagination } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
 import { showImageUrl } from '@/helper/utils';
-import { getDesignFirmPagination } from '@/services';
 
 import type { TableColumnItem } from '@/components/Table/types';
-import type { DesignFirm } from '@/types';
+import { DesignFirm } from '@/features/user-group/types';
 
-import DesignFirmSummary from './components/DesignFirmSummary';
 import { HeaderDropdown, MenuHeaderDropdown } from '@/components/HeaderDropdown';
 import CustomTable from '@/components/Table';
+import HeaderMenuSummary from '@/features/user-group/components/HeaderMenuSummary';
 
-import styles from './styles/index.less';
+import styles from './index.less';
 
 const DesignFirmList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -99,7 +99,7 @@ const DesignFirmList: React.FC = () => {
   ];
 
   return (
-    <PageContainer pageHeaderRender={() => <DesignFirmSummary />}>
+    <PageContainer pageHeaderRender={() => <HeaderMenuSummary type="design" />}>
       <CustomTable
         title="DESIGN FIRMS"
         columns={TableColumns}

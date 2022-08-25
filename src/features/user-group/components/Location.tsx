@@ -1,28 +1,35 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { Col, Collapse, Row } from 'antd';
 
-import { useGetParamId } from '@/helper/hook';
+import { getLocationsByDesignFirm } from '../services';
 import { isEmpty } from 'lodash';
 
+import { UserGroupProps } from '../types/common.types';
 import { LocationGroupedByCountry } from '@/features/locations/type';
 
-import GeneralData from '../../components/GeneralData';
+import { FormGroup } from '@/components/Form';
+import { PhoneInput } from '@/components/Form/PhoneInput';
 import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 
-import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
-import styles from '../../styles/index.less';
+import styles from '../styles/index.less';
+import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
+import GeneralData from './GeneralData';
 import { getLocationByBrandId } from '@/features/locations/api';
 
-const BrandLocationDetail = () => {
+const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
   const [locations, setLocations] = useState<LocationGroupedByCountry[]>([]);
 
-  const brandId = useGetParamId();
-
   useEffect(() => {
-    if (brandId) {
-      getLocationByBrandId(brandId).then(setLocations);
+    if (!id) return;
+
+    if (type === 'brand') {
+      getLocationByBrandId(id).then(setLocations);
+    }
+
+    if (type === 'design') {
+      getLocationsByDesignFirm(id).then(setLocations);
     }
   }, []);
 
@@ -56,16 +63,32 @@ const BrandLocationDetail = () => {
                           key={`${index}-${locationIndex}`}
                           collapsible={isEmpty(location.business_name) ? 'disabled' : undefined}>
                           <div className={styles.info}>
-                            <TextForm label="Registered Number">
-                              {location.business_number ?? ''}
-                            </TextForm>
+                            {type === 'brand' ? (
+                              <TextForm label="Registered Number">
+                                {location.business_number ?? ''}
+                              </TextForm>
+                            ) : (
+                              ''
+                            )}
                             <TextForm label="Location Function">
-                              {location.functional_types.map((type) => type.name).join(', ') ?? ''}
+                              {location.functional_types
+                                .map((fncType) => fncType.name)
+                                .join(', ') ?? ''}
                             </TextForm>
                             <TextForm label="Address">{location.address ?? ''}</TextForm>
-                            <TextForm label="General Phone">
-                              {location.general_phone ?? ''}
-                            </TextForm>
+                            <FormGroup
+                              label="General Phone"
+                              layout="vertical"
+                              formClass={styles.formGroup}>
+                              <PhoneInput
+                                codeReadOnly
+                                containerClass={styles.phoneInputCustom}
+                                value={{
+                                  zoneCode: location.phone_code,
+                                  phoneNumber: location.general_phone,
+                                }}
+                              />
+                            </FormGroup>
                             <TextForm label="General Email">
                               {location.general_email ?? ''}
                             </TextForm>
@@ -84,4 +107,4 @@ const BrandLocationDetail = () => {
   );
 };
 
-export default BrandLocationDetail;
+export default LocationDetail;

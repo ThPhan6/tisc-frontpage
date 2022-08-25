@@ -1,6 +1,6 @@
 import { Col, Row } from 'antd';
 
-import indexStyles from '../../styles/index.less';
+import indexStyles from '../styles/index.less';
 
 const CustomDesign = () => {
   return (
