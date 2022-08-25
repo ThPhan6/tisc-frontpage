@@ -118,23 +118,3 @@ export interface Distributor {
   authorized_country_name: string;
   coverage_beyond: true;
 }
-
-export const DEFAULT_DISTRIBUTOR: DistributorForm = {
-  brand_id: '',
-  name: '',
-  country_id: '',
-  state_id: '',
-  city_id: '',
-  address: '',
-  phone_code: '',
-  postal_code: '',
-  first_name: '',
-  last_name: '',
-  gender: true,
-  email: '',
-  phone: '',
-  mobile: '',
-  authorized_country_ids: [],
-  authorized_countries: [],
-  coverage_beyond: true,
-};

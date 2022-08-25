@@ -6,13 +6,14 @@ import { useParams } from 'umi';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
 
-import { DEFAULT_DISTRIBUTOR, DistributorForm } from '@/features/distributors/type';
+import { DistributorForm } from '@/features/distributors/type';
 
-import { DistributorsEntryForm } from '../../../../features/distributors/components/DistributorsEntryForm';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { DistributorsEntryForm } from '@/features/distributors/components/DistributorsEntryForm';
 
+import { DEFAULT_DISTRIBUTOR } from './CreatePage';
 import { getOneDistributor, updateDistributor } from '@/features/distributors/api';
 
 const UpdatePage = () => {
