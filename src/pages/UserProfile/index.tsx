@@ -1,12 +1,12 @@
 import { useBoolean } from '@/helper/hook';
 
 import LoadingPageCustomize from '@/components/LoadingPage';
+import { PersonalProfile } from '@/features/user-profile/components/PersonalProfile';
+import { WorkplaceProfile } from '@/features/user-profile/components/WorkplaceProfile';
 
-import { PersonalProfile } from './PersonalProfile';
-import { WorkplaceProfile } from './WorkplaceProfile';
-import styles from './styles/index.less';
+import styles from './index.less';
 
-const ProfilesPage = () => {
+const UserProfile = () => {
   const isLoading = useBoolean();
   return (
     <div className={styles['profile-container']}>
@@ -17,4 +17,4 @@ const ProfilesPage = () => {
   );
 };
 
-export default ProfilesPage;
+export default UserProfile;

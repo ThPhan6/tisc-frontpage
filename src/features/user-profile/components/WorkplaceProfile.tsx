@@ -6,7 +6,7 @@ import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { Title } from '@/components/Typography';
 
-import styles from './styles/WorkplaceProfile.less';
+import styles from './WorkplaceProfile.less';
 
 export const WorkplaceProfile = () => {
   const user = useAppSelector((state) => state.user.user);
@@ -17,12 +17,7 @@ export const WorkplaceProfile = () => {
       </div>
       <div className={styles.content}>
         <FormGroup label="Full Name" layout="vertical" formClass={styles.form}>
-          <CustomInput
-            readOnly
-            borderBottomColor="mono-medium"
-            // value={`${user?.lastname} ${user?.firstname}`}
-            value={getFullName(user)}
-          />
+          <CustomInput readOnly borderBottomColor="mono-medium" value={getFullName(user)} />
         </FormGroup>
         <FormGroup label="Work Location" layout="vertical" formClass={styles.form}>
           <CustomInput
