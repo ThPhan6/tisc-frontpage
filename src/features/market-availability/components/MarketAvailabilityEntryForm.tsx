@@ -3,14 +3,14 @@ import type { FC } from 'react';
 import { formatPhoneCode } from '@/helper/utils';
 import { upperCase } from 'lodash';
 
+import { MarketAvailabilityDetailRegionCountry, MarketAvailabilityDetails } from '../type';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
-import type { MarketAvailabilityDetailRegionCountry, MarketAvailabilityDetails } from '@/types';
 
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { BodyText, Title } from '@/components/Typography';
 
-import styles from '../styles/MarketAvailabilityEntryForm.less';
+import styles from './MarketAvailabilityEntryForm.less';
 
 interface MarketAvailabilityEntryFormProps {
   data: MarketAvailabilityDetails;
@@ -72,7 +72,7 @@ export const MarketAvailabilityEntryForm: FC<MarketAvailabilityEntryFormProps> =
   };
 
   const handleSubmitData = () => {
-    onSubmit(checked.map((item) => item.value));
+    onSubmit(checked.map((item) => item.value as string));
   };
 
   return (
