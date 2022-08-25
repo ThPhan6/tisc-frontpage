@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 
 import { Col, Row } from 'antd';
 
-import { getFAQCurrent } from '@/services/faq.api';
-
 import { FaqItem } from '@/features/how-to/type';
 
 import { Title } from '@/components/Typography';
 import { FaqComponent } from '@/features/how-to/components/FaqComponent';
 import styles from '@/features/how-to/components/index.less';
+
+import { getFAQCurrent } from '@/features/how-to/api';
 
 const HowTo = () => {
   const [activeKey, setActiveKey] = useState<string>('');

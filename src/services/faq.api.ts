@@ -31,16 +31,3 @@ export const updateFAQ = async (data: FaqItem[]) => {
       return [] as FaqItem[];
     });
 };
-
-export const getFAQCurrent = async () => {
-  return request<{ data: FaqItem[] }>(`/api/documentation/howto/get-current`, {
-    method: 'GET',
-  })
-    .then((res) => {
-      return res.data;
-    })
-    .catch((error) => {
-      message.error(error.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_FAQ_ERROR);
-      return [] as FaqItem[];
-    });
-};
