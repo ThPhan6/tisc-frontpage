@@ -12,7 +12,7 @@ import { MarketAvailabilityDataList } from '@/features/market-availability/type'
 import { useAppSelector } from '@/reducers';
 
 import CustomTable from '@/components/Table';
-import { ActionForm } from '@/components/TableAction';
+import { ActionMenu } from '@/components/TableAction';
 import InformationMarketAvailability from '@/features/market-availability/components/InformationMarketAvailability';
 
 import styles from './index.less';
@@ -73,14 +73,12 @@ const MarketAvailabilityList = () => {
       width: '5%',
       render: (_value, record) => {
         return (
-          <ActionForm
-            actionItems={[
-              {
-                onClick: () => handleUpdateMarketAvailability(record.collection_id),
-                icon: <EditIcon />,
-                label: 'Edit',
-              },
-            ]}
+          <ActionMenu
+            updated={{
+              onClick: () => handleUpdateMarketAvailability(record.collection_id),
+              icon: <EditIcon />,
+              label: 'Edit',
+            }}
           />
         );
       },

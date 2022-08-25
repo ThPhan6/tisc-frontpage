@@ -9,7 +9,7 @@ import { TableColumnItem } from '@/components/Table/types';
 import { EmailTemplate } from '@/types';
 
 import CustomTable from '@/components/Table';
-import { ActionForm } from '@/components/TableAction';
+import { ActionMenu } from '@/components/TableAction';
 
 import styles from './styles/index.less';
 
@@ -45,14 +45,12 @@ const EmailAutoList = () => {
       align: 'center',
       render: (_value: any, record: any) => {
         return (
-          <ActionForm
-            actionItems={[
-              {
-                onClick: () => handleUpdateEmailAuto(record.id),
-                icon: <EditIcon />,
-                label: 'Edit',
-              },
-            ]}
+          <ActionMenu
+            updated={{
+              onClick: () => handleUpdateEmailAuto(record.collection_id),
+              icon: <EditIcon />,
+              label: 'Edit',
+            }}
           />
         );
       },

@@ -11,7 +11,7 @@ import { Documentation } from './types';
 import { TableColumnItem } from '@/components/Table/types';
 
 import CustomTable from '@/components/Table';
-import { ActionForm } from '@/components/TableAction';
+import { ActionMenu } from '@/components/TableAction';
 
 import { getPolicyTemplates } from './api';
 import moment from 'moment';
@@ -48,14 +48,12 @@ const PolicyTemplatePage: React.FC = () => {
       width: '5%',
       render: (_value: any, record: any) => {
         return (
-          <ActionForm
-            actionItems={[
-              {
-                onClick: () => pushTo(PATH.policyUpdate.replace(':id', record.id)),
-                icon: <EditIcon />,
-                label: 'Edit',
-              },
-            ]}
+          <ActionMenu
+            updated={{
+              onClick: () => pushTo(PATH.policyUpdate.replace(':id', record.id)),
+              icon: <EditIcon />,
+              label: 'Edit',
+            }}
           />
         );
       },
