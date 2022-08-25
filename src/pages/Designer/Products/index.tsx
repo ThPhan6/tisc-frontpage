@@ -1,12 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 
+import { QUERY_KEY } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
 import { InputRef } from 'antd';
 
 import { ReactComponent as SearchIcon } from '@/assets/icons/ic-search.svg';
 
 import { getProductListForDesigner } from '@/features/product/services';
-import { showImageUrl } from '@/helper/utils';
+import { useBoolean, useQuery } from '@/helper/hook';
+import { removeUrlParams, setUrlParams, showImageUrl } from '@/helper/utils';
 import { debounce } from 'lodash';
 
 import { setProductList, setProductListSearchValue } from '@/features/product/reducers';
@@ -29,6 +31,12 @@ import styles from './styles.less';
 
 const BrandProductListPage: React.FC = () => {
   const searchInputRef = useRef<InputRef>(null);
+  const query = useQuery();
+  const cate_id = query.get(QUERY_KEY.cate_id);
+  const brand_id = query.get(QUERY_KEY.brand_id);
+  const sort_order = query.get(QUERY_KEY.sort_order);
+  const searchParam = query.get(QUERY_KEY.search);
+  const firstLoad = useBoolean(true);
 
   const {
     filter,
@@ -37,27 +45,38 @@ const BrandProductListPage: React.FC = () => {
     search,
     categories,
     brandSummary,
-    resetProductListFilter,
     resetProductListSorter,
-    resetAllProductList,
     dispatch,
+    removeFilter,
   } = useProductListFilterAndSorter();
 
   const searchProductByKeyword = debounce((e) => {
+    const value = e.target.value;
+    if (value) {
+      setUrlParams([
+        {
+          key: 'search',
+          value: e.target.value,
+        },
+      ]);
+    } else {
+      removeUrlParams('search');
+    }
     dispatch(setProductListSearchValue(e.target.value));
   }, 300);
 
-  // clear all on first loading
   useEffect(() => {
-    resetAllProductList();
-  }, []);
+    firstLoad.setValue(false);
 
-  useEffect(() => {
-    dispatch(
-      setProductList({
-        data: [],
-      }),
-    );
+    dispatch(setProductList({ data: [] }));
+
+    const noFiltering = !filter && !sort && !search;
+
+    // Prevent first laod call both no-filter api and have-filter api
+    if ((cate_id || brand_id || sort_order || searchParam) && noFiltering && firstLoad.value) {
+      return;
+    }
+
     getProductListForDesigner({
       category_id:
         filter?.name === 'category_id' && filter.value !== 'all' ? filter.value : undefined,
@@ -84,7 +103,7 @@ const BrandProductListPage: React.FC = () => {
           <TopBarItem
             topValue={
               filter?.name === 'category_id' ? (
-                <FilterItem title={filter.title} onDelete={resetProductListFilter} />
+                <FilterItem title={filter.title} onDelete={removeFilter} />
               ) : (
                 'select'
               )
@@ -98,7 +117,7 @@ const BrandProductListPage: React.FC = () => {
           <TopBarItem
             topValue={
               filter?.name === 'brand_id' ? (
-                <FilterItem title={filter.title} onDelete={resetProductListFilter} />
+                <FilterItem title={filter.title} onDelete={removeFilter} />
               ) : (
                 'select'
               )
@@ -144,6 +163,7 @@ const BrandProductListPage: React.FC = () => {
                 ref={searchInputRef}
                 placeholder="search"
                 className={styles.searchInput}
+                defaultValue={searchParam || undefined}
                 onChange={searchProductByKeyword}
               />
             }

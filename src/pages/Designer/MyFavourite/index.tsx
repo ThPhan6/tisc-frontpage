@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
 
+import { QUERY_KEY } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
 
 import { getFavouriteProductList } from '@/features/favourite/services';
+import { useBoolean, useQuery } from '@/helper/hook';
 
 import { setProductList } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
@@ -15,14 +17,15 @@ import { useProductListFilterAndSorter } from '@/features/product/components/Fil
 import './index.less';
 
 const MyFavourite = () => {
-  const { filter, sort, resetAllProductList, dispatch } = useProductListFilterAndSorter();
+  const query = useQuery();
+  const cate_id = query.get(QUERY_KEY.cate_id);
+  const brand_id = query.get(QUERY_KEY.brand_id);
+  const sort_order = query.get(QUERY_KEY.sort_order);
+  const firstLoad = useBoolean(true);
+
+  const { filter, sort, dispatch } = useProductListFilterAndSorter();
 
   const retrievedFavourite = useAppSelector((state) => state.user.user?.retrieve_favourite);
-
-  // clear all on first loading
-  useEffect(() => {
-    resetAllProductList();
-  }, [retrievedFavourite]);
 
   useEffect(() => {
     if (retrievedFavourite) {
@@ -31,10 +34,15 @@ const MyFavourite = () => {
           data: [],
         }),
       );
+
+      const noFiltering = !filter && !sort;
+
+      if ((cate_id || brand_id || sort_order) && noFiltering && firstLoad.value) {
+        return;
+      }
       getFavouriteProductList({
         category_id: filter?.name === 'category_id' ? filter.value : undefined,
         brand_id: filter?.name === 'brand_id' ? filter.value : undefined,
-        // sort: sort?.sort,
         order: sort?.order,
       });
     }

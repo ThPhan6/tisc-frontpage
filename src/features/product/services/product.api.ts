@@ -56,7 +56,6 @@ export const createProductCard = async (data: ProductFormData) => {
     });
 };
 
-//
 export const getProductListByBrandId = async (params: ProductGetListParameter) => {
   return request<{ data: { data: GroupProductList[]; brand: BrandDetail } }>(
     `/api/product/get-list`,
@@ -87,9 +86,7 @@ export const getProductListByBrandId = async (params: ProductGetListParameter) =
     });
 };
 
-//
 export const getProductListForDesigner = async (params: GetListProductForDesignerRequestParams) => {
-  console.log('params', params);
   return request<{ data: GroupProductList[]; brand_summary?: BrandSummary }>(
     `/api/product/design/get-list`,
     {

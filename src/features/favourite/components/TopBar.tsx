@@ -24,7 +24,7 @@ export interface ProductSummaryTopBarProps {
 const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavouriteRetrieved }) => {
   const [productSummary, setProductSummary] = useState<FavouriteProductSummary>();
 
-  const { filter, sort, brands, categories, resetProductListFilter, resetProductListSorter } =
+  const { filter, sort, brands, categories, removeFilter, resetProductListSorter } =
     useProductListFilterAndSorter();
 
   const activeBrands = brands.length && isFavouriteRetrieved;
@@ -73,7 +73,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
               customClass={`left-divider ${activeBrands ? 'cursor-pointer' : 'cursor-default'} `}
               topValue={
                 filter?.name === 'brand_id' ? (
-                  <FilterItem title={filter.title} onDelete={resetProductListFilter} />
+                  <FilterItem title={filter.title} onDelete={removeFilter} />
                 ) : (
                   'select'
                 )
@@ -98,7 +98,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
               } `}
               topValue={
                 filter?.name === 'category_id' ? (
-                  <FilterItem title={filter.title} onDelete={resetProductListFilter} />
+                  <FilterItem title={filter.title} onDelete={removeFilter} />
                 ) : (
                   'select'
                 )

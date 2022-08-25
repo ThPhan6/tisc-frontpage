@@ -5,53 +5,45 @@ import { PageContainer } from '@ant-design/pro-layout';
 
 import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
 
-import { resetProductState, setProductList } from '@/features/product/reducers';
+import { setProductList } from '@/features/product/reducers';
 import type { ProductGetListParameter } from '@/features/product/types';
 import { useAppSelector } from '@/reducers';
 
 import {
   CollapseProductList,
+  CustomDropDown,
   FilterItem,
   TopBarContainer,
   TopBarItem,
-  renderDropDownList,
 } from '@/features/product/components';
+import {
+  formatAllCategoriesToDropDownData,
+  formatAllCollectionsToDropDownData,
+  resetProductFilter,
+  useSyncQueryToState,
+} from '@/features/product/components/FilterAndSorter';
 
 const BrandProductListPage: React.FC = () => {
+  useSyncQueryToState();
+
   const dispatch = useDispatch();
+
   const filter = useAppSelector((state) => state.product.list.filter);
   const summary = useAppSelector((state) => state.product.summary);
   const userBrand = useAppSelector((state) => state.user.user?.brand);
-
-  const resetProductList = () => {
-    dispatch(
-      setProductList({
-        filter: undefined,
-        data: [],
-      }),
-    );
-  };
-
-  useEffect(() => {
-    return resetProductList;
-  }, []);
 
   // brand product summary
   useEffect(() => {
     if (userBrand?.id) {
       // get product summary
-      getProductSummary(userBrand.id).then(() => {
-        // reset filter
-        resetProductList();
-      });
+      getProductSummary(userBrand.id);
     }
-
-    return () => {
-      dispatch(resetProductState());
-    };
   }, []);
 
   useEffect(() => {
+    if (!filter) {
+      dispatch(setProductList({ data: [] }));
+    }
     if (userBrand?.id && filter) {
       const params = {
         brand_id: userBrand.id,
@@ -101,7 +93,7 @@ const BrandProductListPage: React.FC = () => {
           <TopBarItem
             topValue={
               filter?.name === 'category_id' ? (
-                <FilterItem title={filter.title} onDelete={resetProductList} />
+                <FilterItem title={filter.title} onDelete={resetProductFilter} />
               ) : userBrand ? (
                 'view'
               ) : (
@@ -111,21 +103,24 @@ const BrandProductListPage: React.FC = () => {
             disabled
             bottomEnable={summary ? true : false}
             bottomValue={
-              !userBrand
-                ? 'Categories'
-                : renderDropDownList(
-                    'Categories',
-                    'category_id',
-                    summary?.categories ?? [],
-                    summary ? false : true,
-                  )
+              summary?.categories ? (
+                <CustomDropDown
+                  items={formatAllCategoriesToDropDownData(summary.categories)}
+                  viewAllTop
+                  placement="bottomRight"
+                  menuStyle={{ height: 'auto', width: 240 }}>
+                  Categories
+                </CustomDropDown>
+              ) : (
+                'Categories'
+              )
             }
             customClass="left-divider"
           />
           <TopBarItem
             topValue={
               filter?.name === 'collection_id' ? (
-                <FilterItem title={filter.title} onDelete={resetProductList} />
+                <FilterItem title={filter.title} onDelete={resetProductFilter} />
               ) : userBrand ? (
                 'view'
               ) : (
@@ -135,14 +130,17 @@ const BrandProductListPage: React.FC = () => {
             disabled
             bottomEnable={summary ? true : false}
             bottomValue={
-              !userBrand
-                ? 'Collections'
-                : renderDropDownList(
-                    'Collections',
-                    'collection_id',
-                    summary?.collections ?? [],
-                    summary ? false : true,
-                  )
+              summary?.collections ? (
+                <CustomDropDown
+                  items={formatAllCollectionsToDropDownData(summary.collections)}
+                  viewAllTop
+                  placement="bottomRight"
+                  menuStyle={{ height: 'auto', width: 240 }}>
+                  Collections
+                </CustomDropDown>
+              ) : (
+                'Collections'
+              )
             }
             customClass="left-divider collection"
           />
