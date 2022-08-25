@@ -124,8 +124,8 @@ export const MESSAGE_NOTIFICATION = {
   GET_LIST_BRAND_SUMMARY_ERROR: 'Get list brand summary error',
   GET_LIST_ASSIGN_TEAM_ERROR: 'Get list assign team error',
   GET_BRAND_STATUSES_ERROR: 'Get brand statuses error',
-  CREATE_LIST_ASSIGN_TEAM_ERROR: 'Create list assign team error',
-  CREATE_LIST_ASSIGN_TEAM_SUCCESS: 'Create list assign team successfully',
+  UPDATE_LIST_ASSIGN_TEAM_ERROR: 'Update list assign team error',
+  UPDATE_LIST_ASSIGN_TEAM_SUCCESS: 'Update list assign team successfully',
   UPDATE_BRAND_STATUS_SUCCESS: 'Update brand status successfully',
   UPDATE_BRAND_STATUS_ERROR: 'Update brand status error',
 
