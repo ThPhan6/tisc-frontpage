@@ -2,11 +2,10 @@ import { FC, useEffect, useState } from 'react';
 
 import { Col, Collapse, Row } from 'antd';
 
-import { getAvailabilityListCountryGroupByBrandId } from '@/services';
 import { isEmpty } from 'lodash';
 
 import { RequiredValueProps } from '../types';
-import { AvailabilityCollectionGroup } from '@/types';
+import { AvailabilityCollectionGroup } from '@/features/market-availability/type';
 
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { BodyText } from '@/components/Typography';
@@ -14,6 +13,7 @@ import { BodyText } from '@/components/Typography';
 import styles from '../styles/index.less';
 import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
 import GeneralData from './GeneralData';
+import { getAvailabilityListCountryGroupByBrandId } from '@/features/market-availability/api';
 
 const AvailabilityDetail: FC<RequiredValueProps> = ({ id }) => {
   const [availability, setAvailability] = useState<AvailabilityCollectionGroup[]>([]);

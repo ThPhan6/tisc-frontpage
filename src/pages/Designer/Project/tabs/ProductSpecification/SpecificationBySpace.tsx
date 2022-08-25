@@ -65,7 +65,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     },
     {
       title: 'Product',
-      dataIndex: 'product_id',
+      dataIndex: 'product_name',
       onCell: onCellCancelled,
     },
     {

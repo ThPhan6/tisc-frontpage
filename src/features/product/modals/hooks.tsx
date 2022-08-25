@@ -46,6 +46,19 @@ export const useAssignProductToSpaceForm = (
     if (projectId) {
       getProductAssignSpaceByProject(projectId, productId, (isEntireProject, data) => {
         entireProject.setValue(isEntireProject);
+        specifyOptions?.onChangeEntireProjectCallback(isEntireProject);
+        if (isEntireProject === false && specifyOptions) {
+          const selectedRoomIds: string[] = [];
+          data.forEach((zone) =>
+            zone.areas.forEach((area) =>
+              area.rooms.forEach((room) =>
+                room.is_assigned ? selectedRoomIds.push(room.id || '') : {},
+              ),
+            ),
+          );
+          specifyOptions?.onChangeSelectedRoomsCallback(selectedRoomIds);
+        }
+
         setZones(data);
 
         const curSelectedRooms: { [areaId: string]: CheckboxValue[] } = {};
