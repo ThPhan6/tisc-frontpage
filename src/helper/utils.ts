@@ -217,3 +217,56 @@ export const emailMessageErrorType = (
 
   return email !== '' ? (checkValidEmail ? normal : error) : undefined;
 };
+
+export const setUrlParams = (params: { key: string; value: string }[]) => {
+  const url = new URL(window.location.href);
+  params.forEach(({ key, value }) => {
+    url.searchParams.set(key, value);
+  });
+  window.history.pushState(null, '', url.toString());
+};
+
+export const removeUrlParams = (key: string | string[]) => {
+  const url = new URL(window.location.href);
+  if (typeof key === 'string') {
+    url.searchParams.delete(key);
+  } else {
+    key.forEach((k) => url.searchParams.delete(k));
+  }
+  window.history.pushState(null, '', url.toString());
+};
+
+export const updateUrlParams = (params: {
+  set?: { key: string; value: string }[];
+  remove?: string | string[];
+  removeAll?: boolean;
+}) => {
+  const { set, remove, removeAll } = params;
+  if (!set && !remove) {
+    return;
+  }
+
+  const url = new URL(window.location.href);
+
+  if (removeAll) {
+    url.search = '';
+  } else if (remove) {
+    if (typeof remove === 'string') {
+      url.searchParams.delete(remove);
+    } else {
+      remove.forEach((k) => url.searchParams.delete(k));
+    }
+  }
+
+  if (set) {
+    set.forEach(({ key, value }) => {
+      url.searchParams.set(key, value);
+    });
+  }
+
+  window.history.pushState(null, '', url.toString());
+};
+
+export const removeAllUrlParams = () => {
+  window.history.pushState(null, '', window.location.pathname);
+};

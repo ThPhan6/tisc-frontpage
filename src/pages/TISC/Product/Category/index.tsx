@@ -3,12 +3,15 @@ import React, { useRef } from 'react';
 import { PATH } from '@/constants/path';
 
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
+import {
+  deleteCategoryMiddleware,
+  getProductCategoryPagination,
+} from '@/features/categories/services';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { deleteCategoryMiddleware, getProductCategoryPagination } from '@/services';
 
 import type { TableColumnItem } from '@/components/Table/types';
-import type { CategoryListResponse } from '@/types';
+import { CategoryNestedList } from '@/features/categories/types';
 
 import { ActionMenu } from '@/components/Action';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
@@ -35,7 +38,7 @@ const CategoryList: React.FC = () => {
     });
   };
 
-  const MainColumns: TableColumnItem<CategoryListResponse>[] = [
+  const MainColumns: TableColumnItem<CategoryNestedList>[] = [
     {
       title: 'Main Category',
       dataIndex: 'name',
@@ -79,7 +82,7 @@ const CategoryList: React.FC = () => {
       },
     },
   ];
-  const SubColumns: TableColumnItem<CategoryListResponse>[] = [
+  const SubColumns: TableColumnItem<CategoryNestedList>[] = [
     {
       title: 'Main Category',
       dataIndex: 'maincategory',
@@ -109,7 +112,7 @@ const CategoryList: React.FC = () => {
       width: '5%',
     },
   ];
-  const ChildColumns: TableColumnItem<CategoryListResponse>[] = [
+  const ChildColumns: TableColumnItem<CategoryNestedList>[] = [
     {
       title: 'Main Category',
       dataIndex: 'maincategory',

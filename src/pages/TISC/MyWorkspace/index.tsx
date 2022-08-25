@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
+import { getBrandCards } from '@/features/user-group/services';
 import { getFullName } from '@/helper/utils';
-import { getBrandCards } from '@/services';
 
-import { BrandCard, BrandCardTeam } from '@/types';
+import { BrandCard, BrandCardTeam } from '@/features/user-group/types';
 
 import LoadingPage from '@/components/LoadingPage';
 import { ProfileIcon } from '@/components/ProfileIcon';

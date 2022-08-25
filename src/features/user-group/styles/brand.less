@@ -1,0 +1,100 @@
+.customBrandName {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  svg {
+    margin-left: 12px;
+  }
+}
+.customAction {
+  cursor: pointer;
+}
+
+.container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.member {
+  display: inline-block;
+  align-items: center;
+  margin-right: 2px;
+  cursor: pointer;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.avatar {
+  display: inline-flex;
+
+  > img,
+  div {
+    cursor: pointer !important;
+  }
+}
+
+.menuTab {
+  background: #fff;
+  box-shadow: inset 0 -0.7px 0 #000;
+
+  .tabs {
+    display: flex;
+    align-items: center;
+    overflow: auto hidden;
+
+    :global(.ant-tabs-top > .ant-tabs-nav) {
+      margin-bottom: 0;
+    }
+
+    :global(.tab-list .ant-tabs-top > .ant-tabs-nav::before),
+    :global(.ant-tabs-top > .ant-tabs-nav::before) {
+      border-bottom: none !important;
+    }
+
+    :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
+      width: 100%;
+    }
+
+    :global(.ant-tabs-tab-btn) {
+      padding: 0 24px;
+    }
+  }
+}
+
+.info_icon {
+  margin-left: 4px;
+}
+
+.basicToolbarForm {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: flex-end;
+  height: 40px;
+  margin-left: 60px;
+  padding-bottom: 2px;
+  .projectStatusLabel {
+    display: flex;
+    align-items: center;
+    svg {
+      margin-left: 4px;
+    }
+  }
+  :global(.ant-space) {
+    gap: 0 !important;
+    :global(.ant-radio) {
+      + * {
+        padding-right: 0;
+      }
+    }
+  }
+  :global(.ant-radio-wrapper) {
+    margin-right: 0;
+  }
+  button {
+    margin: 0 8px 0 24px;
+  }
+}

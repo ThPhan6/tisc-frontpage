@@ -10,12 +10,6 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { useBoolean } from '@/helper/hook';
 import { capitalize, truncate } from 'lodash';
 
-import { setProductList } from '@/features/product/reducers';
-import { ProductFilterType } from '@/features/product/types';
-import store from '@/reducers';
-import { GeneralData } from '@/types';
-
-import { HeaderDropdown } from '@/components/HeaderDropdown';
 import { BodyText } from '@/components/Typography';
 
 import styles from './ProductTopBarItem.less';
@@ -191,6 +185,7 @@ export interface CustomDropDownProps extends Omit<DropDownProps, 'overlay'> {
   hideDropdownIcon?: boolean;
   alignRight?: boolean;
   textCapitalize?: boolean;
+  viewAllTop?: boolean;
   position?: 'left' | 'right';
 }
 export const CustomDropDown: FC<CustomDropDownProps> = ({
@@ -200,6 +195,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
   labelProps,
   hideDropdownIcon,
   overlay,
+  viewAllTop,
   alignRight = true,
   textCapitalize = true,
   position = 'right',
@@ -215,6 +211,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
       onVisibleChange={(visible) => {
         dropdownVisible.setValue(visible);
       }}
+      overlayClassName={viewAllTop ? styles.viewAllTop : undefined}
       overlay={
         overlay ?? (
           <CascadingMenu
@@ -233,45 +230,5 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
         {hideDropdownIcon ? null : <DropdownIcon />}
       </span>
     </Dropdown>
-  );
-};
-
-export const renderDropDownList = (
-  title: string,
-  filterName: ProductFilterType,
-  data: GeneralData[],
-  disabled: boolean,
-) => {
-  // merge view small
-  const items = [{ id: 'all', name: 'VIEW ALL' }, ...data];
-  ///
-  return (
-    <HeaderDropdown
-      align={{ offset: [26, 7] }}
-      placement="bottomRight"
-      containerClass={styles.topbarDropdown}
-      disabled={disabled}
-      items={items.map((item) => {
-        return {
-          onClick: () => {
-            store.dispatch(
-              setProductList({
-                filter: {
-                  name: filterName,
-                  title: item.name,
-                  value: item.id,
-                },
-              }),
-            );
-          },
-          label: item.name,
-        };
-      })}
-      trigger={['click']}>
-      <span>
-        {title}
-        <DropdownIcon />
-      </span>
-    </HeaderDropdown>
   );
 };

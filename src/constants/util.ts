@@ -137,3 +137,17 @@ export const IMAGE_ACCEPT_TYPES = {
 };
 
 export const AVATAR_ACCEPT_TYPES = ['png', 'jpeg', 'jpg', 'webp', 'svg'];
+
+export const QUERY_KEY = {
+  cate_id: 'cate_id',
+  cate_name: 'cate_name',
+  brand_id: 'brand_id',
+  brand_name: 'brand_name',
+  b_id: 'b_id',
+  b_name: 'b_name',
+  coll_id: 'coll_id',
+  coll_name: 'coll_name',
+  sort_order: 'sort_order',
+  sort_name: 'sort_name',
+  search: 'search',
+};

@@ -1,10 +1,10 @@
 import type { TypedUseSelectorHook } from 'react-redux';
 import { useSelector } from 'react-redux';
 
+import { categoryReducer } from '@/features/categories/reducers';
 import { productReducer } from '@/features/product/reducers';
 import { projectReducer } from '@/features/project/reducers';
 
-import categoryReducer from './category';
 import userReducer from './user';
 import { combineReducers, configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import { persistReducer, persistStore } from 'redux-persist';

@@ -8,7 +8,7 @@ import type {
   RelatedCollection,
   SortParams,
 } from '../types';
-import { BrandDetail } from '@/types';
+import { BrandDetail } from '@/features/user-group/types';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
@@ -26,6 +26,7 @@ interface ProductState {
 
 const initialState: ProductState = {
   details: {
+    id: '',
     name: '',
     description: '',
     keywords: ['', '', '', ''],

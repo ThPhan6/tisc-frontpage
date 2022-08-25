@@ -4,8 +4,8 @@ import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-f
 
 import { OnChangeSpecifyingProductFnc } from './types';
 import { RadioValue } from '@/components/CustomRadio/types';
+import { DistributorProductMarket } from '@/features/distributors/type';
 import { LocationDetail, LocationGroupedByCountry } from '@/features/locations/type';
-import { DistributorProductMarket } from '@/types/distributor.type';
 
 import CustomCollapse from '@/components/Collapse';
 import Popover from '@/components/Modal/Popover';

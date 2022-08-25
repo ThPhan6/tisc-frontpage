@@ -2,13 +2,13 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
+import type { ProjectSpaceListProps, ProjectSpaceZone } from '../types';
 import type {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import { ProjectSpaceListProps, ProjectSpaceZone } from '@/types';
 
 interface ProjectSpacePaginationResponse {
   data: {

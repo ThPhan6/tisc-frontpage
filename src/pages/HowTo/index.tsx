@@ -2,23 +2,22 @@ import { useEffect, useState } from 'react';
 
 import { Col, Row } from 'antd';
 
-import { getFAQCurrent } from '@/services/faq.api';
+import { getCurrentFAQ } from '@/features/how-to/services';
 
-import type { FaqItem } from './types';
+import { Faq } from '@/features/how-to/types';
 
-import { FaqComponent } from './components/FaqComponent';
 import { Title } from '@/components/Typography';
-
-import styles from './index.less';
+import { FaqComponent } from '@/features/how-to/components/HowTo/FaqComponent';
+import styles from '@/features/how-to/components/HowTo/index.less';
 
 const HowTo = () => {
   const [activeKey, setActiveKey] = useState<string>('');
-  const [howTo, setHowTo] = useState<FaqItem[]>([]);
+  const [howTo, setHowTo] = useState<Faq[]>([]);
   const handleActiveCollapse = (index: number) => {
     setActiveKey(activeKey === String(index) ? '' : String(index));
   };
   const getFAQList = () => {
-    getFAQCurrent().then((res) => {
+    getCurrentFAQ().then((res) => {
       const data = res.map((item) => {
         return {
           id: item.id,

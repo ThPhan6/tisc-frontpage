@@ -7,12 +7,12 @@ import { ReactComponent as DropupV2Icon } from '@/assets/icons/action-up-icon.sv
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
-import { getAllProductCategory } from '@/services';
+import { getAllProductCategory } from '@/features/categories/services';
 import { capitalize, isEmpty, upperCase } from 'lodash';
 
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { CategoryNestedList } from '@/features/categories/types';
 import { useAppSelector } from '@/reducers';
-import { CategoryListResponse } from '@/types';
 
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 
@@ -49,7 +49,7 @@ export const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props)
     getAllProductCategory();
   }, []);
 
-  const renderHeader = (item: CategoryListResponse) => {
+  const renderHeader = (item: CategoryNestedList) => {
     return (
       <span>
         {upperCase(item.name)}
@@ -63,7 +63,7 @@ export const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props)
       </span>
     );
   };
-  const renderSubHeader = (item: CategoryListResponse) => {
+  const renderSubHeader = (item: CategoryNestedList) => {
     return (
       <span>
         {capitalize(item.name)}
