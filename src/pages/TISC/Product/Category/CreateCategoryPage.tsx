@@ -11,10 +11,10 @@ import { useBoolean } from '@/helper/hook';
 
 import { CategoryBodyProps, SubcategoryValueProps } from '@/features/categories/types';
 
-import { CategoryEntryForm } from './components/CategoryEntryForm';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { CategoryEntryForm } from '@/features/categories/components/CategoryEntryForm';
 
 const CreateCategoryPage = () => {
   const [categoryValue, setCategoryValue] = useState<{

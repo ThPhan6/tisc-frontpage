@@ -6,15 +6,16 @@ import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { useHistory } from 'umi';
 
 import { getProductCategoryPagination } from '@/features/categories/services';
+import { getBrandPagination } from '@/features/user-group/services';
 import { useQuery } from '@/helper/hook';
 import { removeUrlParams, setUrlParams, showImageUrl, updateUrlParams } from '@/helper/utils';
-import { getBrandPagination } from '@/services';
 
 import { setProductList, setProductListSorter } from '../reducers';
 import { SortOrder } from '../types';
 import { CategoryNestedList } from '@/features/categories/types';
+import { BrandListItem } from '@/features/user-group/types';
 import store, { useAppSelector } from '@/reducers';
-import { BrandListItem, GeneralData } from '@/types';
+import { GeneralData } from '@/types';
 
 export const onCategoryFilterClick = (id: string, name: string) => {
   updateUrlParams({
