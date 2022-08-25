@@ -7,6 +7,7 @@ import {
   ProjectSpecifyTabs,
 } from '../../../constants/tab';
 
+import { useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
 import { getProductByIdAndReturn } from '@/features/product/services';
 import { getProductSpecifying, updateProductSpecifying } from '@/features/project/services';
 import { useBoolean } from '@/helper/hook';
@@ -23,7 +24,6 @@ import popoverStyles from '@/components/Modal/styles/Popover.less';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 import { MainTitle } from '@/components/Typography';
 
-import AllocationTab from './AllocationTab';
 import CodeOrderTab from './CodeOrderTab';
 import SpecificationTab from './SpecificationTab';
 import VendorTab from './VendorTab';
@@ -70,15 +70,21 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   );
   const [specifyingState, setSpecifyingState] =
     useState<SpecifyingProductRequestBody>(DEFAULT_STATE);
-  // console.log('specifyingState', specifyingState);
   const [specifyingGroups, setSpecifyingGroups] = useState<ProductAttributeFormInput[]>([]);
-  // console.log('specifyingGroups', specifyingGroups);
   const dataLoaded = useBoolean();
 
   const onChangeSpecifyingState: OnChangeSpecifyingProductFnc = (newStateParts) =>
     setSpecifyingState(
       (prevState) => ({ ...prevState, ...newStateParts } as SpecifyingProductRequestBody),
     );
+
+  const { AssignProductToSpaceForm } = useAssignProductToSpaceForm(product.id, projectId, {
+    onChangeEntireProjectCallback: (is_entire) => onChangeSpecifyingState({ is_entire }),
+    onChangeSelectedRoomsCallback: (selectedRooms) =>
+      onChangeSpecifyingState({ project_zone_ids: selectedRooms }),
+    roomId: product.project_zone_id,
+    isEntire: product.is_entire,
+  });
 
   useEffect(() => {
     if (product.considered_id) {
@@ -297,13 +303,9 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.allocation}>
-        <AllocationTab
-          projectId={projectId}
-          productId={product.id}
-          roomId={product.project_zone_id}
-          isEntire={product.is_entire}
-          onChangeSpecifyingState={onChangeSpecifyingState}
-        />
+        <div className={styles.allocationTab}>
+          <AssignProductToSpaceForm specifyingModal noPaddingLeft />
+        </div>
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.codeAndOrder}>
