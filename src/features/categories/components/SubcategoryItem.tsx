@@ -8,7 +8,11 @@ import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 
 import { isEmpty, isEqual } from 'lodash';
 
-import { SubcategoryItemProps, SubcategoryValueProp, subcategoryValueDefault } from '@/types';
+import {
+  SubcategoryItemProps,
+  SubcategoryValueProps,
+  subcategoryValueDefault,
+} from '@/features/categories/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
@@ -46,7 +50,7 @@ export const SubcategoryItem: FC<SubcategoryItemProps> = ({
 }) => {
   const [activeKey, setActiveKey] = useState<string[]>([]);
   const [subcategoryValue, setSubcategoryValue] =
-    useState<SubcategoryValueProp>(subcategoryValueDefault);
+    useState<SubcategoryValueProps>(subcategoryValueDefault);
 
   useEffect(() => {
     if (value) {

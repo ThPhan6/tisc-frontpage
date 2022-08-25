@@ -9,18 +9,19 @@ import {
   setRelatedProduct,
 } from '../reducers/slices';
 import {
+  BrandSummary,
+  GetListProductForDesignerRequestParams,
   GroupProductList,
   ProductFormData,
   ProductGetListParameter,
   ProductItem,
+  ProductItemValue,
   ProductSummary,
   RelatedCollection,
-  GetListProductForDesignerRequestParams,
-  BrandSummary,
-  ProductItemValue,
 } from '../types';
 import store from '@/reducers';
 import type { BrandDetail } from '@/types';
+
 import { ShareViaEmailForm } from '@/components/ShareViaEmail';
 
 export async function getProductSummary(brandId: string) {
@@ -55,7 +56,6 @@ export const createProductCard = async (data: ProductFormData) => {
     });
 };
 
-//
 export const getProductListByBrandId = async (params: ProductGetListParameter) => {
   return request<{ data: { data: GroupProductList[]; brand: BrandDetail } }>(
     `/api/product/get-list`,
@@ -86,7 +86,6 @@ export const getProductListByBrandId = async (params: ProductGetListParameter) =
     });
 };
 
-//
 export const getProductListForDesigner = async (params: GetListProductForDesignerRequestParams) => {
   return request<{ data: GroupProductList[]; brand_summary?: BrandSummary }>(
     `/api/product/design/get-list`,

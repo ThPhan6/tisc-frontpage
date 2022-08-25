@@ -6,9 +6,7 @@ import { getFavouriteProductSummary } from '../services';
 import { showImageUrl } from '@/helper/utils';
 
 import type { FavouriteProductSummary } from '../types';
-import { setProductList } from '@/features/product/reducers';
 import { ProductItemValue } from '@/features/product/types';
-import store from '@/reducers';
 
 import {
   CustomDropDown,
@@ -18,6 +16,8 @@ import {
 } from '@/features/product/components';
 import {
   SORTER_DROPDOWN_DATA,
+  onBrandFilterClick,
+  onCategoryFilterClick,
   useProductListFilterAndSorter,
 } from '@/features/product/components/FilterAndSorter';
 
@@ -34,16 +34,7 @@ export const formatCategoriesFavouriteToDropDownData = (
   return categories.map((el) => ({
     key: el.id,
     label: el.name || '',
-    onClick: () =>
-      store.dispatch(
-        setProductList({
-          filter: {
-            name: 'category_id',
-            title: el.name || '',
-            value: el.id,
-          },
-        }),
-      ),
+    onClick: () => onCategoryFilterClick(el.id, el.name),
   }));
 };
 
@@ -53,24 +44,16 @@ export const formatBrandsFavouriteToDropDownData = (brands?: ProductItemValue[])
     key: el.id,
     label: el.name || '',
     icon: <img src={showImageUrl(el.logo)} style={{ width: 18, height: 18 }} />,
-    onClick: () =>
-      store.dispatch(
-        setProductList({
-          filter: {
-            name: 'brand_id',
-            title: el.name || '',
-            value: el.id,
-          },
-        }),
-      ),
+    onClick: () => onBrandFilterClick(el.id, el.name),
   }));
 };
 
 const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavouriteRetrieved }) => {
   const [productSummary, setProductSummary] = useState<FavouriteProductSummary>();
 
-  const { filter, sort, resetProductListFilter, resetProductListSorter } =
-    useProductListFilterAndSorter();
+  const { filter, sort, removeFilter, resetProductListSorter } = useProductListFilterAndSorter({
+    noFetchData: true,
+  });
 
   const activeBrands = productSummary?.brands.length && isFavouriteRetrieved;
   const activeCategories = productSummary?.categories.length && isFavouriteRetrieved;
@@ -118,7 +101,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
               customClass={`left-divider ${activeBrands ? 'cursor-pointer' : 'cursor-default'} `}
               topValue={
                 filter?.name === 'brand_id' ? (
-                  <FilterItem title={filter.title} onDelete={resetProductListFilter} />
+                  <FilterItem title={filter.title} onDelete={removeFilter} />
                 ) : (
                   'select'
                 )
@@ -143,7 +126,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
               } `}
               topValue={
                 filter?.name === 'category_id' ? (
-                  <FilterItem title={filter.title} onDelete={resetProductListFilter} />
+                  <FilterItem title={filter.title} onDelete={removeFilter} />
                 ) : (
                   'select'
                 )
@@ -151,8 +134,9 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
               bottomEnable={activeCategories ? true : false}
               bottomValue={
                 <CustomDropDown
+                  placement="bottomRight"
+                  menuStyle={{ width: 240 }}
                   items={formatCategoriesFavouriteToDropDownData(productSummary?.categories)}
-                  position="left"
                   disabled={activeCategories ? false : true}>
                   Categories
                 </CustomDropDown>
@@ -179,6 +163,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
               bottomValue={
                 <CustomDropDown
                   items={SORTER_DROPDOWN_DATA}
+                  placement="bottomRight"
                   menuStyle={{ width: 160, height: 'auto' }}
                   disabled={isFavouriteRetrieved ? false : true}>
                   Sort By

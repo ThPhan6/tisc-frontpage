@@ -5,16 +5,17 @@ import { useParams } from 'umi';
 
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
+
+import { MarketAvailabilityDetails } from '@/features/market-availability/type';
+
+import LoadingPageCustomize from '@/components/LoadingPage';
+import { TableHeader } from '@/components/Table/TableHeader';
+import { MarketAvailabilityEntryForm } from '@/features/market-availability/components/MarketAvailabilityEntryForm';
+
 import {
   getMarketAvailabilityByCollectionId,
   updateMarketAvailabilityByCollectionId,
-} from '@/services';
-
-import { MarketAvailabilityDetails } from '@/types';
-
-import { MarketAvailabilityEntryForm } from './components/MarketAvailabilityEntryForm';
-import LoadingPageCustomize from '@/components/LoadingPage';
-import { TableHeader } from '@/components/Table/TableHeader';
+} from '@/features/market-availability/api';
 
 const UpdateMarketAvailabilityPage = () => {
   const submitButtonStatus = useBoolean(false);

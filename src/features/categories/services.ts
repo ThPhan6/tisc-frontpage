@@ -3,26 +3,26 @@ import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
+import { CategoryBodyProps, CategoryNestedList } from './types';
 import type {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
+import { setCategoryList } from '@/features/categories/reducers';
 import store from '@/reducers';
-import { setList } from '@/reducers/category';
-import type { CategoryBodyProp, CategoryListResponse } from '@/types';
 
 interface CategoryPaginationResponse {
   data: {
-    categories: CategoryListResponse[];
+    categories: CategoryNestedList[];
     pagination: PaginationResponse;
     summary: SummaryResponse[];
   };
 }
 export async function getProductCategoryPagination(
   params: PaginationRequestParams,
-  callback: (data: DataTableResponse<CategoryListResponse[]>) => void,
+  callback: (data: DataTableResponse<CategoryNestedList[]>) => void,
 ) {
   request(`/api/category/get-list`, {
     method: 'GET',
@@ -44,7 +44,13 @@ export async function getProductCategoryPagination(
       message.error(error?.data?.message || MESSAGE_NOTIFICATION.GET_LIST_CATEGORY_ERROR);
     });
 }
+
 export async function getAllProductCategory() {
+  // Don't call again
+  if (store.getState().category.list.length) {
+    return;
+  }
+
   request(`/api/category/get-list`, {
     method: 'GET',
     params: {
@@ -53,7 +59,7 @@ export async function getAllProductCategory() {
     },
   })
     .then((response: CategoryPaginationResponse) => {
-      store.dispatch(setList(response.data.categories));
+      store.dispatch(setCategoryList(response.data.categories));
     })
     .catch((error) => {
       message.error(error?.data?.message || MESSAGE_NOTIFICATION.GET_LIST_CATEGORY_ERROR);
@@ -61,7 +67,7 @@ export async function getAllProductCategory() {
 }
 
 export async function createCategoryMiddleware(
-  data: CategoryBodyProp,
+  data: CategoryBodyProps,
   callback: (type: STATUS_RESPONSE, message?: string) => void,
 ) {
   request(`/api/category/create`, {
@@ -81,7 +87,7 @@ export async function createCategoryMiddleware(
 
 export async function updateCategoryMiddleware(
   id: string,
-  data: CategoryBodyProp,
+  data: CategoryBodyProps,
   callback: (type: STATUS_RESPONSE, message?: string) => void,
 ) {
   request(`/api/category/update/${id}`, {
@@ -115,13 +121,13 @@ export async function deleteCategoryMiddleware(id: string) {
 
 export async function getOneCategoryMiddleware(
   id: string,
-  callbackSuccess: (dataRes: CategoryBodyProp) => void,
+  callbackSuccess: (dataRes: CategoryBodyProps) => void,
   callbackError: (message?: string) => void,
 ) {
   request(`/api/category/get-one/${id}`, {
     method: 'get',
   })
-    .then((response: { data: CategoryBodyProp }) => {
+    .then((response: { data: CategoryBodyProps }) => {
       callbackSuccess(response?.data);
     })
     .catch((error) => {

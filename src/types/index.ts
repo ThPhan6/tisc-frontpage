@@ -1,5 +1,4 @@
 export * from './attribute.type';
-export * from './category.type';
 export * from './basis-conversion.type';
 export * from './basis-preset.type';
 export * from './basis-option.type';
@@ -8,6 +7,5 @@ export * from './general.type';
 export * from './inspiration-quotation';
 export * from './email-auto.type';
 export * from './department.type';
-export * from './market-availability.type';
 export * from './permission.type';
 export * from './material-code.type';

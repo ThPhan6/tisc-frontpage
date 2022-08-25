@@ -26,6 +26,7 @@ interface ProductState {
 
 const initialState: ProductState = {
   details: {
+    id: '',
     name: '',
     description: '',
     keywords: ['', '', '', ''],
@@ -114,6 +115,9 @@ const productSlice = createSlice({
     setProductListSorter(state, action: PayloadAction<SortParams>) {
       state.list.sort = action.payload;
     },
+    resetProductDetailState(state) {
+      return { ...initialState, list: state.list, brand: state.brand };
+    },
     resetProductState() {
       return initialState;
     },
@@ -134,6 +138,7 @@ export const {
   setRelatedProduct,
   setProductListSearchValue,
   setProductListSorter,
+  resetProductDetailState,
 } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;

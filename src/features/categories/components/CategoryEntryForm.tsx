@@ -1,11 +1,23 @@
 import { FC } from 'react';
 
-import { CategoryEntryFormProps, SubcategoryValueProp, subcategoryValueDefault } from '@/types';
+import type {
+  CategoryBodyProps,
+  SubcategoryValueProps,
+  subcategoryValueDefault,
+} from '@/features/categories/types';
 
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 
 import { SubcategoryItem } from './SubcategoryItem';
+
+export interface CategoryEntryFormProps {
+  onCancel?: () => void;
+  onSubmit?: (data: CategoryBodyProps) => void;
+  categoryValue: CategoryBodyProps;
+  setCategoryValue: (value: CategoryBodyProps) => void;
+  submitButtonStatus?: boolean;
+}
 
 export const CategoryEntryForm: FC<CategoryEntryFormProps> = ({
   onCancel,
@@ -41,7 +53,7 @@ export const CategoryEntryForm: FC<CategoryEntryFormProps> = ({
     }
   };
 
-  const handleOnChange = (value: SubcategoryValueProp, index: number) => {
+  const handleOnChange = (value: SubcategoryValueProps, index: number) => {
     const newSubcategory = [...categoryValue.subs];
     newSubcategory[index] = value;
     setCategoryValue({ ...categoryValue, subs: newSubcategory });
