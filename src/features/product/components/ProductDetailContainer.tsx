@@ -26,7 +26,7 @@ import { isValidURL } from '@/helper/utils';
 
 import { ProductFormData, ProductKeyword } from '../types';
 import { ProductInfoTab } from './ProductAttributeComponent/types';
-import { setBrand } from '@/features/product/reducers';
+import { resetProductDetailState, setBrand } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
 
 import { TableHeader } from '@/components/Table/TableHeader';
@@ -59,6 +59,9 @@ const ProductDetailContainer: React.FC = () => {
     if (brandId) {
       getBrandById(brandId).then((res) => dispatch(setBrand(res)));
     }
+    return () => {
+      dispatch(resetProductDetailState());
+    };
   }, [brandId]);
 
   useEffect(() => {
