@@ -9,9 +9,9 @@ import { TableColumnItem } from '@/components/Table/types';
 import { Distributor } from '@/features/distributors/type';
 import { useAppSelector } from '@/reducers';
 
-import { ActionMenu } from '@/components/Action';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ActionMenu } from '@/components/TableAction';
 
 import { deleteDistributor, getDistributorPagination } from '@/features/distributors/api';
 
@@ -90,8 +90,8 @@ const Distributors = () => {
       render: (_value, record) => {
         return (
           <ActionMenu
-            handleUpdate={() => handleUpdateDistributor(record.id)}
-            handleDelete={() => handleDeleteDistributor(record.id)}
+            updated={{ onClick: () => handleUpdateDistributor(record.id) }}
+            deleted={{ onClick: () => handleDeleteDistributor(record.id) }}
           />
         );
       },

@@ -9,9 +9,9 @@ import { formatPhoneCode } from '@/helper/utils';
 import { TableColumnItem } from '@/components/Table/types';
 import { LocationDetail } from '@/features/locations/type';
 
-import { ActionMenu } from '@/components/Action';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ActionMenu } from '@/components/TableAction';
 
 import { deleteLocationById, getLocationPagination } from '@/features/locations/api';
 
@@ -79,8 +79,8 @@ const BrandLocation: React.FC = () => {
       render: (_value: any, record: any) => {
         return (
           <ActionMenu
-            handleUpdate={() => handleUpdateLocation(record.id)}
-            handleDelete={() => handleDeleteLocation(record.id)}
+            updated={{ onClick: () => handleUpdateLocation(record.id) }}
+            deleted={{ onClick: () => handleDeleteLocation(record.id) }}
           />
         );
       },

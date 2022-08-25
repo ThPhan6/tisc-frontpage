@@ -7,8 +7,6 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { message } from 'antd';
 
 import { ReactComponent as ActionUnreadedIcon } from '@/assets/icons/action-unreaded-icon.svg';
-import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
-import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 
 import {
@@ -29,10 +27,10 @@ import {
   MemberAssignTeam,
 } from '@/features/user-group/types/brand.types';
 
-import { ActionForm } from '@/components/Action';
 import AssignTeam from '@/components/AssignTeam';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ActionMenu } from '@/components/TableAction';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
 import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
@@ -218,20 +216,17 @@ const BrandList: React.FC = () => {
       align: 'center',
       //  @typescript-eslint/no-unused-vars
       render: (_v, record: any) => {
-        const actionItems = [];
-        actionItems.push({
-          onClick: () => pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', record.id)),
-          icon: <ViewIcon />,
-          label: 'View',
-        });
-        if (record.status === 3) {
-          actionItems.push({
-            onClick: () => handleEmailInvite(record.assign_team),
-            icon: <EmailInviteIcon />,
-            label: 'Email Invite',
-          });
-        }
-        return <ActionForm actionItems={actionItems} />;
+        return (
+          <ActionMenu
+            view={{
+              onClick: () => pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', record.id)),
+            }}
+            invite={{
+              onClick: () => handleEmailInvite(record.assign_team),
+              disabled: record.status !== 3,
+            }}
+          />
+        );
       },
     },
   ];

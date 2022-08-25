@@ -8,8 +8,8 @@ import { getEmailTemplatePagination } from '@/services';
 import { TableColumnItem } from '@/components/Table/types';
 import { EmailTemplate } from '@/types';
 
-import { ActionForm } from '@/components/Action';
 import CustomTable from '@/components/Table';
+import { ActionForm } from '@/components/TableAction';
 
 import styles from './styles/index.less';
 

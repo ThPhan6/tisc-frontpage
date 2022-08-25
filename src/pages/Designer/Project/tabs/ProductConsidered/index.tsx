@@ -29,9 +29,9 @@ import {
 } from '@/features/project/types';
 
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
-import { ActionMenu } from '@/components/Action';
 import ActionButton from '@/components/Button/ActionButton';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
+import { ActionMenu } from '@/components/TableAction';
 import { BodyText } from '@/components/Typography';
 import { CustomDropDown } from '@/features/product/components';
 import ProductCard from '@/features/product/components/ProductCard';
@@ -108,15 +108,16 @@ const ProductConsidered: React.FC = () => {
       <ActionMenu
         specify={{
           disabled: record.status === AssigningStatus.Unlisted,
-          handleSpecify: () => setSpecifyingProduct(record),
+          onClick: () => setSpecifyingProduct(record),
         }}
-        handleDelete={() =>
-          confirmDelete(() => {
-            removeProductFromProject(record.considered_id).then((success) =>
-              success ? tableRef.current?.reload() : undefined,
-            );
-          })
-        }
+        deleted={{
+          onClick: () =>
+            confirmDelete(() => {
+              removeProductFromProject(record.considered_id).then((success) =>
+                success ? tableRef.current?.reload() : undefined,
+              );
+            }),
+        }}
       />
     );
   };

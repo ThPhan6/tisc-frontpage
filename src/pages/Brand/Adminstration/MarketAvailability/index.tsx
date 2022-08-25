@@ -13,8 +13,8 @@ import { useAppSelector } from '@/reducers';
 import type { MarketAvailabilityDataList } from '@/types';
 
 import InformationMarketAvailability from './components/InformationMarketAvailability';
-import { ActionForm } from '@/components/Action';
 import CustomTable from '@/components/Table';
+import { ActionForm } from '@/components/TableAction';
 
 import styles from '../MarketAvailability/styles/index.less';
 

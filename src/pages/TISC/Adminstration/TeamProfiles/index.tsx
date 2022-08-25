@@ -10,10 +10,10 @@ import { formatPhoneCode, getFullName, showImageUrl } from '@/helper/utils';
 import { TableColumnItem } from '@/components/Table/types';
 import { TeamProfileTableProps } from '@/features/team-profiles/type';
 
-import { ActionMenu } from '@/components/Action';
 import { ProfileIcon } from '@/components/ProfileIcon';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ActionMenu } from '@/components/TableAction';
 
 import { deleteTeamProfile, getTeamProfileList } from '@/features/team-profiles/api';
 
@@ -99,8 +99,8 @@ const TeamProfilesList = () => {
       render: (_value: any, record: any) => {
         return (
           <ActionMenu
-            handleUpdate={() => handleUpdateTeamProfile(record.id)}
-            handleDelete={() => handleDeleteTeamProfile(record.id)}
+            updated={{ onClick: () => handleUpdateTeamProfile(record.id) }}
+            deleted={{ onClick: () => handleDeleteTeamProfile(record.id) }}
           />
         );
       },

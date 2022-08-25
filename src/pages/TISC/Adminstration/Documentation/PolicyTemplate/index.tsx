@@ -10,8 +10,8 @@ import { getFullName } from '@/helper/utils';
 import { Documentation } from './types';
 import { TableColumnItem } from '@/components/Table/types';
 
-import { ActionForm } from '@/components/Action';
 import CustomTable from '@/components/Table';
+import { ActionForm } from '@/components/TableAction';
 
 import { getPolicyTemplates } from './api';
 import moment from 'moment';

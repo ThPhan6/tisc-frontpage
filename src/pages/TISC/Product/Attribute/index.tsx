@@ -11,9 +11,9 @@ import { deleteAttribute, getProductAttributePagination } from '@/services';
 import type { TableColumnItem } from '@/components/Table/types';
 import type { AttributeListResponse, SubAttribute } from '@/types';
 
-import { ActionMenu } from '@/components/Action';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ActionMenu } from '@/components/TableAction';
 
 const MAIN_COL_WIDTH = 200;
 const AttributeList: React.FC = () => {
@@ -76,8 +76,8 @@ const AttributeList: React.FC = () => {
       render: (_value, record) => {
         return (
           <ActionMenu
-            handleUpdate={() => handleUpdateAttribute(record.id)}
-            handleDelete={() => handleDeleteAttribute(record.id)}
+            updated={{ onClick: () => handleUpdateAttribute(record.id) }}
+            deleted={{ onClick: () => handleDeleteAttribute(record.id) }}
           />
         );
       },

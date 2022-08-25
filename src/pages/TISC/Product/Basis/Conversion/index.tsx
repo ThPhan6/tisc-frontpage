@@ -10,9 +10,9 @@ import { deleteConversionMiddleware, getProductBasisConversionPagination } from 
 import type { TableColumnItem } from '@/components/Table/types';
 import type { BasisConversionListResponse, SubBasisConversion } from '@/types';
 
-import { ActionMenu } from '@/components/Action';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ActionMenu } from '@/components/TableAction';
 
 const MAIN_COL_WIDTH = 167;
 const BasisConversionList: React.FC = () => {
@@ -72,8 +72,8 @@ const BasisConversionList: React.FC = () => {
       render: (_value, record) => {
         return (
           <ActionMenu
-            handleUpdate={() => handleUpdateConversion(record.id)}
-            handleDelete={() => handleDeleteConversion(record.id)}
+            updated={{ onClick: () => handleUpdateConversion(record.id) }}
+            deleted={{ onClick: () => handleDeleteConversion(record.id) }}
           />
         );
       },

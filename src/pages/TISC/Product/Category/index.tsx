@@ -10,9 +10,9 @@ import { deleteCategoryMiddleware, getProductCategoryPagination } from '@/servic
 import type { TableColumnItem } from '@/components/Table/types';
 import type { CategoryListResponse } from '@/types';
 
-import { ActionMenu } from '@/components/Action';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ActionMenu } from '@/components/TableAction';
 
 const MAIN_COL_WIDTH = 343;
 const SUB_COL_WIDTH = 160;
@@ -72,8 +72,8 @@ const CategoryList: React.FC = () => {
       render: (_value, record) => {
         return (
           <ActionMenu
-            handleUpdate={() => handleUpdateCategory(record.id)}
-            handleDelete={() => handleDeleteCategory(record.id)}
+            updated={{ onClick: () => handleUpdateCategory(record.id) }}
+            deleted={{ onClick: () => handleDeleteCategory(record.id) }}
           />
         );
       },

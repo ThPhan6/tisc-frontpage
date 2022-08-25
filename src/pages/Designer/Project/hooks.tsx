@@ -15,7 +15,7 @@ import { confirmDelete } from '@/helper/common';
 import { ProductItem } from '@/features/product/types';
 import { SpecifyStatus } from '@/features/project/types';
 
-import { ActionMenu } from '@/components/Action';
+import { ActionMenu } from '@/components/TableAction';
 import { CustomDropDown } from '@/features/product/components';
 
 import { SpecifyingModal } from './tabs/ProductConsidered/SpecifyingModal';
@@ -95,16 +95,17 @@ export const renderActionCell =
       <ActionMenu
         specify={{
           disabled: record.status === SpecifyStatus.Cancelled,
-          handleSpecify: () => setSpecifyingProduct(record),
+          onClick: () => setSpecifyingProduct(record),
           label: 'Edit',
         }}
-        handleDelete={() =>
-          confirmDelete(() => {
-            removeSpecifiedPromConsider(record.specified_product_id).then((success) =>
-              success ? tableRef.current.reload() : undefined,
-            );
-          })
-        }
+        deleted={{
+          onClick: () =>
+            confirmDelete(() => {
+              removeSpecifiedPromConsider(record.specified_product_id).then((success) =>
+                success ? tableRef.current.reload() : undefined,
+              );
+            }),
+        }}
       />
     );
   };
