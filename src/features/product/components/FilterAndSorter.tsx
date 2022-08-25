@@ -16,6 +16,44 @@ import { CategoryNestedList } from '@/features/categories/types';
 import store, { useAppSelector } from '@/reducers';
 import { BrandListItem, GeneralData } from '@/types';
 
+export const onCategoryFilterClick = (id: string, name: string) => {
+  updateUrlParams({
+    set: [
+      { key: QUERY_KEY.cate_id, value: id },
+      { key: QUERY_KEY.cate_name, value: name || '' },
+    ],
+    remove: [QUERY_KEY.coll_id, QUERY_KEY.coll_name],
+  });
+  store.dispatch(
+    setProductList({
+      filter: {
+        name: 'category_id',
+        title: name,
+        value: id,
+      },
+    }),
+  );
+};
+
+export const onBrandFilterClick = (id: string, name: string) => {
+  updateUrlParams({
+    set: [
+      { key: QUERY_KEY.brand_id, value: id },
+      { key: QUERY_KEY.brand_name, value: name || '' },
+    ],
+    remove: [QUERY_KEY.cate_id, QUERY_KEY.cate_name],
+  });
+  store.dispatch(
+    setProductList({
+      filter: {
+        name: 'brand_id',
+        title: name || '',
+        value: id,
+      },
+    }),
+  );
+};
+
 export const formatCategoriesToDropDownData = (
   categories: CategoryNestedList[],
   level: number,
@@ -25,81 +63,27 @@ export const formatCategoriesToDropDownData = (
     label: el.name || '',
     children: el.subs ? formatCategoriesToDropDownData(el.subs, level + 1) : undefined,
     disabled: (el.subs || []).length === 0 && level < 3,
-    onClick: el.subs?.length
-      ? undefined
-      : () => {
-          updateUrlParams({
-            set: [
-              { key: QUERY_KEY.cate_id, value: el.id },
-              { key: QUERY_KEY.cate_name, value: el.name || '' },
-            ],
-            remove: [QUERY_KEY.brand_id, QUERY_KEY.brand_name],
-          });
-          store.dispatch(
-            setProductList({
-              filter: {
-                name: 'category_id',
-                title: el.name || '',
-                value: el.id,
-              },
-            }),
-          );
-        },
+    onClick: el.subs?.length ? undefined : () => onCategoryFilterClick(el.id, el.name || ''),
   }));
 };
 
-export const formatBrandsToDropDownData = (categories: BrandListItem[]): ItemType[] => {
-  return categories.map((el) => ({
+export const formatBrandsToDropDownData = (items: BrandListItem[]): ItemType[] => {
+  return items.map((el) => ({
     key: el.id,
     label: el.name || '',
     icon: <img src={showImageUrl(el.logo)} style={{ width: 18, height: 18 }} />,
-    onClick: () => {
-      updateUrlParams({
-        set: [
-          { key: QUERY_KEY.brand_id, value: el.id },
-          { key: QUERY_KEY.brand_name, value: el.name || '' },
-        ],
-        remove: [QUERY_KEY.cate_id, QUERY_KEY.cate_name],
-      });
-      store.dispatch(
-        setProductList({
-          filter: {
-            name: 'brand_id',
-            title: el.name || '',
-            value: el.id,
-          },
-        }),
-      );
-    },
+    onClick: () => onBrandFilterClick(el.id, el.name),
   }));
 };
-
-export const formatAllCategoriesToDropDownData = (categories: GeneralData[]) =>
-  [{ id: 'all', name: 'VIEW ALL' }, ...categories].map((el) => ({
+export const formatAllCategoriesToDropDownData = (items: GeneralData[]) =>
+  [{ id: 'all', name: 'VIEW ALL' }, ...items].map((el) => ({
     key: el.id,
     label: el.name || '',
-    onClick: () => {
-      updateUrlParams({
-        set: [
-          { key: QUERY_KEY.cate_id, value: el.id },
-          { key: QUERY_KEY.cate_name, value: el.name || '' },
-        ],
-        remove: [QUERY_KEY.coll_id, QUERY_KEY.coll_name],
-      });
-      store.dispatch(
-        setProductList({
-          filter: {
-            name: 'category_id',
-            title: el.name || '',
-            value: el.id,
-          },
-        }),
-      );
-    },
+    onClick: () => onCategoryFilterClick(el.id, el.name),
   }));
 
-export const formatAllCollectionsToDropDownData = (collections: GeneralData[]) =>
-  [{ id: 'all', name: 'VIEW ALL' }, ...collections].map((el) => ({
+export const formatAllCollectionsToDropDownData = (items: GeneralData[]) =>
+  [{ id: 'all', name: 'VIEW ALL' }, ...items].map((el) => ({
     key: el.id,
     label: el.name || '',
     onClick: () => {
@@ -226,7 +210,6 @@ export const useSyncQueryToState = () => {
     });
 
     history.listen((location) => {
-      console.log('location', location);
       if (!location.query) {
         return;
       }
@@ -238,10 +221,11 @@ export const useSyncQueryToState = () => {
   }, []);
 };
 
-export const useProductListFilterAndSorter = () => {
+export const useProductListFilterAndSorter = (props?: { noFetchData?: boolean }) => {
   const dispatch = useDispatch();
   const [categories, setCategories] = useState<ItemType[]>([]);
   const [brands, setBrands] = useState<ItemType[]>([]);
+
   const filter = useAppSelector((state) => state.product.list.filter);
   const sort = useAppSelector((state) => state.product.list.sort);
   const search = useAppSelector((state) => state.product.list.search);
@@ -277,6 +261,8 @@ export const useProductListFilterAndSorter = () => {
   };
 
   useEffect(() => {
+    if (props?.noFetchData) return;
+
     getProductCategoryPagination(
       {
         page: 1,
