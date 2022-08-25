@@ -4,7 +4,7 @@ import { request } from 'umi';
 
 import { FaqItem } from '../types/type';
 
-export const getFAQCurrent = async () => {
+export const getCurrentFAQ = async () => {
   return request<{ data: FaqItem[] }>(`/api/documentation/howto/get-current`, {
     method: 'GET',
   })

@@ -5,7 +5,7 @@ import { Collapse } from 'antd';
 import { ReactComponent as ExtendIcon } from '@/assets/icons/action-extend.svg';
 import { ReactComponent as PlusIcon } from '@/assets/icons/action-plus-icon.svg';
 
-import { CollapsingProps, QnA, QuestionProps } from '../../types/faq.type';
+import { CollapsingProps, QnA, QuestionProps } from '../../types';
 
 import { BodyText } from '@/components/Typography';
 

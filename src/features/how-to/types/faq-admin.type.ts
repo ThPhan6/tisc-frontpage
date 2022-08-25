@@ -1,5 +1,3 @@
-import { FaqItem } from './type';
-
 export interface FaqInput {
   question: string;
   answer: string;
@@ -18,8 +16,3 @@ export interface FaqPanel {
   };
   created_at: string;
 }
-
-export type FaqState = {
-  value: FaqItem[];
-  expandedIndex: number;
-};

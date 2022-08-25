@@ -9,8 +9,7 @@ import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 import { showImageUrl } from '@/helper/utils';
 import { isEmpty } from 'lodash';
 
-import { FaqInput, FaqPanel, FaqState } from '../../types/faq-administration.type';
-import { FaqItem } from '../../types/type';
+import { FaqInput, FaqItem, FaqPanel, FaqState } from '../../types';
 
 import CustomButton from '@/components/Button';
 import { FormGroup } from '@/components/Form';
