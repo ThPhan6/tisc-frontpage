@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { getAllFAQ, updateFAQ } from '@/features/how-to/services';
 
 import type { TabItem } from '@/components/Tabs/types';
-import { AllFaqState, FaqState } from '@/features/how-to/types/type';
+import { AllFaqState, FaqState } from '@/features/how-to/types';
 
 import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabs } from '@/components/Tabs';

@@ -2,7 +2,7 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
-import { FaqItem } from '../types/type';
+import { FaqItem } from '../types';
 
 export const getCurrentFAQ = async () => {
   return request<{ data: FaqItem[] }>(`/api/documentation/howto/get-current`, {

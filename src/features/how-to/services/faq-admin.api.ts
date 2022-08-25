@@ -2,7 +2,7 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
-import { AllFaq, FaqItem } from '../types/type';
+import { AllFaq, FaqItem } from '../types';
 
 export const getAllFAQ = async () => {
   return request<{ data: AllFaq }>(`/api/documentation/howto/get-all`, {
