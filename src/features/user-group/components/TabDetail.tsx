@@ -5,8 +5,9 @@ import { Tooltip } from 'antd';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
-import { BrandDesignProfile, BrandStatuses, TabKeys } from '../types';
+import { BrandDesignProfile, TabKeys } from '../types';
 import { TabItem } from '@/components/Tabs/types';
+import { KeyValueData } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { CustomRadio } from '@/components/CustomRadio';
@@ -27,7 +28,7 @@ interface TabDetailProps {
   setData: (data: BrandDesignProfile) => void;
   buttonStatus: boolean;
   isLoading: boolean;
-  statuses: BrandStatuses[];
+  statuses: KeyValueData[];
   toolTipTitle: string | React.ReactNode;
 }
 

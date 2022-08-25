@@ -32,8 +32,3 @@ export interface DesignFirmDetail {
   project_ids: [];
   status: number;
 }
-
-export interface DesignStatuses {
-  key: string;
-  value: string | number;
-}

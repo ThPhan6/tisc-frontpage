@@ -2,7 +2,7 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
-import { BrandDesignProfile, DesignFirm, DesignStatuses } from '../types';
+import { BrandDesignProfile, DesignFirm } from '../types';
 import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import type {
   DataTableResponse,
@@ -13,7 +13,7 @@ import { LocationGroupedByCountry } from '@/features/locations/type';
 import { ProjectsDesignFirm } from '@/features/project/types';
 import { MaterialCode } from '@/features/project/types/project-specifying.type';
 import { TeamProfileGroupCountry } from '@/features/team-profiles/type';
-import { MaterialCodeDesignFirm } from '@/types';
+import { KeyValueData, MaterialCodeDesignFirm } from '@/types';
 
 interface DesignFirmListResponse {
   designers: DesignFirm;
@@ -58,7 +58,7 @@ export async function getOneDesignFirm(id: string) {
 }
 
 export async function getDesignStatuses() {
-  return request<DesignStatuses[]>(`/api/design/statuses`, {
+  return request<KeyValueData[]>(`/api/design/statuses`, {
     method: 'GET',
   })
     .then((response) => {
@@ -66,7 +66,7 @@ export async function getDesignStatuses() {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_DESIGN_STATUSES_ERROR);
-      return [] as DesignStatuses[];
+      return [] as KeyValueData[];
     });
 }
 

@@ -15,7 +15,7 @@ import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
 import GeneralData from './GeneralData';
 import { getListDistributorGroupCountryByBrandId } from '@/features/distributors/api';
 
-const BrandDistributorDetail: FC<RequiredValueProps> = ({ id }) => {
+const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
   const [distributors, setDistributors] = useState<DistributorResponseForm[]>([]);
 
   useEffect(() => {
@@ -83,4 +83,4 @@ const BrandDistributorDetail: FC<RequiredValueProps> = ({ id }) => {
   );
 };
 
-export default BrandDistributorDetail;
+export default DistributorDetail;

@@ -9,7 +9,6 @@ import {
   BrandDesignProfile,
   BrandDetail,
   BrandListItem,
-  BrandStatuses,
 } from '../types';
 import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import type {
@@ -17,6 +16,7 @@ import type {
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
+import { KeyValueData } from '@/types';
 
 interface BrandListResponse {
   brands: BrandListItem[];
@@ -102,7 +102,7 @@ export async function getBrandSummary() {
 }
 
 export async function getBrandStatuses() {
-  return request<BrandStatuses[]>(`/api/brand/statuses`, {
+  return request<KeyValueData[]>(`/api/brand/statuses`, {
     method: 'GET',
   })
     .then((response) => {
@@ -110,7 +110,7 @@ export async function getBrandStatuses() {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_STATUSES_ERROR);
-      return [] as BrandStatuses[];
+      return [] as KeyValueData[];
     });
 }
 

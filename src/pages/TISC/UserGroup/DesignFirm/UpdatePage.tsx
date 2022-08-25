@@ -22,10 +22,10 @@ import { TabItem } from '@/components/Tabs/types';
 import {
   BrandDesignProfile,
   DEFAULT_BRAND_DESIGN_PROFILE,
-  DesignStatuses,
   DesignTabKeys,
   TabKeys,
 } from '@/features/user-group/types';
+import { KeyValueData } from '@/types';
 
 import { CustomTabPane } from '@/components/Tabs';
 import CustomDesign from '@/features/user-group/components/CustomDesign';
@@ -54,7 +54,7 @@ const ViewDesignFirmPage = () => {
   const [selectedTab, setSelectedTab] = useState<TabKeys>(DesignTabKeys.profile);
   const buttonStatus = useBoolean(false);
   const isLoading = useBoolean();
-  const [statuses, setStatuses] = useState<DesignStatuses[]>([]);
+  const [statuses, setStatuses] = useState<KeyValueData[]>([]);
   const [data, setData] = useState<BrandDesignProfile>(DEFAULT_BRAND_DESIGN_PROFILE);
 
   // get statuses

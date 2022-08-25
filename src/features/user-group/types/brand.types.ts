@@ -64,11 +64,6 @@ export interface BrandCardTeam {
   avatar: any;
 }
 
-export interface BrandStatuses {
-  key: string;
-  value: string | number;
-}
-
 export interface MemberAssignTeam {
   id: string;
   avatar: string;

@@ -15,7 +15,7 @@ import styles from '../styles/index.less';
 import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
 import GeneralData from './GeneralData';
 
-const BrandAvailabilityDetail: FC<RequiredValueProps> = ({ id }) => {
+const AvailabilityDetail: FC<RequiredValueProps> = ({ id }) => {
   const [availability, setAvailability] = useState<AvailabilityCollectionGroup[]>([]);
 
   useEffect(() => {
@@ -75,4 +75,4 @@ const BrandAvailabilityDetail: FC<RequiredValueProps> = ({ id }) => {
   );
 };
 
-export default BrandAvailabilityDetail;
+export default AvailabilityDetail;

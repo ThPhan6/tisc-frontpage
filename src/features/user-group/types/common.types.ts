@@ -42,7 +42,7 @@ export const DEFAULT_BRAND_DESIGN_PROFILE: BrandDesignProfile = {
   official_websites: [],
   team_profile_ids: [],
   location_ids: [],
-  status: 2 /* inactive */,
+  status: 0 /* null */,
   name: '',
   profile_n_philosophy: '',
   official_website: '',

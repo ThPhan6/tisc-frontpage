@@ -17,11 +17,11 @@ import { updateBrandStatus } from '@/services/brand-profile';
 import { TabItem } from '@/components/Tabs/types';
 import {
   BrandDesignProfile,
-  BrandStatuses,
   BrandTabKeys,
   DEFAULT_BRAND_DESIGN_PROFILE,
   TabKeys,
 } from '@/features/user-group/types';
+import { KeyValueData } from '@/types';
 
 import { CustomTabPane } from '@/components/Tabs';
 import BrandAvailabilityDetail from '@/features/user-group/components/Availability';
@@ -47,7 +47,7 @@ const UpdatePage = () => {
   const [selectedTab, setSelectedTab] = useState<TabKeys>(BrandTabKeys.profile);
   const buttonStatus = useBoolean();
   const isLoading = useBoolean();
-  const [statuses, setStatuses] = useState<BrandStatuses[]>([]);
+  const [statuses, setStatuses] = useState<KeyValueData[]>([]);
   const [data, setData] = useState<BrandDesignProfile>(DEFAULT_BRAND_DESIGN_PROFILE);
 
   const brandId = useGetParamId();
