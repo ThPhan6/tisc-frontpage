@@ -13,7 +13,7 @@ export interface QuestionProps extends CollapsingProps {
   question: string;
 }
 
-export type FaqItem = {
+export type Faq = {
   id: string;
   icon?: string;
   title: string;
