@@ -9,7 +9,7 @@ import UserIcon from '@/assets/icons/ic-user.svg';
 import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
-import { updateAvatarTeamProfile, updateTeamProfile } from './services/api';
+import { updateAvatarTeamProfile, updateTeamProfile } from '../services';
 import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
 import { isShowErrorMessage, showImageUrl, validateEmail } from '@/helper/utils';
 import { isEqual } from 'lodash';
@@ -24,7 +24,7 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { BodyText, Title } from '@/components/Typography';
 
-import styles from './styles/PersonalProfile.less';
+import styles from './PersonalProfile.less';
 
 export type PersonalProfileState = {
   backupEmail: string;
@@ -110,7 +110,6 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
 
   const uploadProps: UploadProps = {
     beforeUpload: (file) => {
-      // console.log('file', file);
       const isValid = AVATAR_ACCEPT_TYPES.some((imgType) => file.type.includes(imgType));
       if (!isValid) {
         message.error(

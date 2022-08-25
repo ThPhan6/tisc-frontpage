@@ -13,7 +13,7 @@ import { SubcategoryItemProps, SubcategoryValueProp, subcategoryValueDefault } f
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
-import styles from '../styles/SubcategoryItem.less';
+import styles from './SubcategoryItem.less';
 
 const ElementInput: FC<{
   value: string;

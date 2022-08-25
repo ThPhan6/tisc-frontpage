@@ -25,7 +25,7 @@ export default [
   // REQUIRED AUTHENTICATION
   {
     path: PATH.profiles,
-    component: './ProfilesPage',
+    component: './UserProfile',
   },
   {
     path: PATH.howTo,
