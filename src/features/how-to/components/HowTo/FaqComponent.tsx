@@ -7,15 +7,15 @@ import { ReactComponent as PlusIcon } from '@/assets/icons/action-plus-icon.svg'
 
 import { showImageUrl } from '@/helper/utils';
 
-import { CollapsingProps, FaqItem } from '../types';
+import { CollapsingProps, Faq } from '../../types';
 
 import { BodyText } from '@/components/Typography';
 
-import styles from '../index.less';
 import { QnAItem } from './QnAItem';
+import styles from './index.less';
 
 export interface FaqItemProps extends CollapsingProps {
-  value: FaqItem;
+  value: Faq;
   index: number;
   customClass?: string;
 }

@@ -1,16 +1,15 @@
 import { FC, useEffect, useState } from 'react';
 
-import { getAllFAQ, updateFAQ } from '@/services/faq.api';
+import { getAllFAQ, updateFAQ } from '@/features/how-to/services';
 
-import { FaqState } from './types';
 import type { TabItem } from '@/components/Tabs/types';
-import { AllFaqState } from '@/types/faq.type';
+import { AllFaqState, FaqState } from '@/features/how-to/types';
 
-import { HowToEntryForm } from './components/HowToEntryForm';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabs } from '@/components/Tabs';
+import { HowToEntryForm } from '@/features/how-to/components/HowToAdministration/HowToEntryForm';
 
-import styles from './styles/index.less';
+import styles from './index.less';
 
 interface HowToPageProps {
   containerClass?: string;
