@@ -3,7 +3,7 @@ import { FC } from 'react';
 import Popover from '@/components/Modal/Popover';
 import { BodyText, MainTitle } from '@/components/Typography';
 
-import styles from '../styles/DistributionTerritoryModal.less';
+import styles from './DistributionTerritoryModal.less';
 
 const DistributionTerritoryModal: FC<{
   visible: boolean;

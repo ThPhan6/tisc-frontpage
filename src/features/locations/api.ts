@@ -2,6 +2,7 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
+import { DistributorProductMarket } from '../distributors/type';
 import {
   City,
   Country,
@@ -18,7 +19,6 @@ import type {
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import { DistributorProductMarket } from '@/types/distributor.type';
 
 interface LocationPaginationResponse {
   data: {

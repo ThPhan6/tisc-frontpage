@@ -2,11 +2,10 @@ import { FC, useEffect, useState } from 'react';
 
 import { Col, Collapse, Row } from 'antd';
 
-import { getListDistributorGroupCountryByBrandId } from '@/services';
 import { isEmpty } from 'lodash';
 
 import { RequiredValueProps } from '../types';
-import { DistributorResponseForm } from '@/types/distributor.type';
+import { DistributorResponseForm } from '@/features/distributors/type';
 
 import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
@@ -14,6 +13,7 @@ import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import styles from '../styles/index.less';
 import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
 import GeneralData from './GeneralData';
+import { getListDistributorGroupCountryByBrandId } from '@/features/distributors/api';
 
 const BrandDistributorDetail: FC<RequiredValueProps> = ({ id }) => {
   const [distributors, setDistributors] = useState<DistributorResponseForm[]>([]);
