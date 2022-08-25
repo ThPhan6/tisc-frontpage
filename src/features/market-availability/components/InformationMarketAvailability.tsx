@@ -3,7 +3,7 @@ import { FC } from 'react';
 import Popover from '@/components/Modal/Popover';
 import { BodyText, Title } from '@/components/Typography';
 
-import styles from '../styles/InformationMarketAvailability.less';
+import styles from './InformationMarketAvailability.less';
 
 const InformationMarketAvailability: FC<{
   visible: boolean;
