@@ -132,13 +132,11 @@ export async function createAssignTeamByBrandId(brandId: string, data: string[])
     data: { user_ids: data },
   })
     .then(() => {
-      if (data.length > 0) {
-        message.success(MESSAGE_NOTIFICATION.CREATE_LIST_ASSIGN_TEAM_SUCCESS);
-      }
+      message.success(MESSAGE_NOTIFICATION.UPDATE_LIST_ASSIGN_TEAM_SUCCESS);
       return true;
     })
     .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_LIST_ASSIGN_TEAM_ERROR);
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_LIST_ASSIGN_TEAM_ERROR);
       return false;
     });
 }
