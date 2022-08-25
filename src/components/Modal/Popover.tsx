@@ -19,7 +19,7 @@ import type { DropdownRadioItem } from '@/components/CustomRadio/DropdownRadioLi
 import GroupRadioList from '@/components/CustomRadio/RadioList';
 import type { RadioListOption } from '@/components/CustomRadio/RadioList';
 import { BodyText, MainTitle } from '@/components/Typography';
-import { DropdownCategoryList } from '@/features/categories/components';
+import { DropdownCategoryList } from '@/features/categories/components/CategoryDropdown';
 
 import styles from './styles/Popover.less';
 
