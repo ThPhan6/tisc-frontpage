@@ -3,10 +3,9 @@ import { useEffect, useState } from 'react';
 import { Col, Collapse, Row } from 'antd';
 
 import { useGetParamId } from '@/helper/hook';
-import { getListDistributorGroupCountryByBrandId } from '@/services';
 import { isEmpty } from 'lodash';
 
-import { DistributorResponseForm } from '@/types/distributor.type';
+import { DistributorResponseForm } from '@/features/distributors/type';
 
 import GeneralData from '../../components/GeneralData';
 import TextForm from '@/components/Form/TextForm';
@@ -14,6 +13,7 @@ import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 
 import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
 import styles from '../../styles/index.less';
+import { getListDistributorGroupCountryByBrandId } from '@/features/distributors/api';
 
 const BrandDistributorDetail = () => {
   const [distributors, setDistributors] = useState<DistributorResponseForm[]>([]);

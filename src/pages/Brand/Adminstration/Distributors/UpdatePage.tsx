@@ -5,37 +5,18 @@ import { useParams } from 'umi';
 
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { getOneDistributor, updateDistributor } from '@/services';
 
-import { DistributorDetail, DistributorForm } from '@/types/distributor.type';
+import { DEFAULT_DISTRIBUTOR, DistributorForm } from '@/features/distributors/type';
 
-import { DistributorsEntryForm } from './components/DistributorsEntryForm';
+import { DistributorsEntryForm } from '../../../../features/distributors/components/DistributorsEntryForm';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
-const DEFAULT_DISTRIBUTOR: DistributorDetail = {
-  brand_id: '',
-  name: '',
-  country_id: '',
-  state_id: '',
-  city_id: '',
-  address: '',
-  phone_code: '',
-  postal_code: '',
-  first_name: '',
-  last_name: '',
-  gender: true,
-  email: '',
-  phone: '',
-  mobile: '',
-  authorized_country_ids: [],
-  authorized_countries: [],
-  coverage_beyond: true,
-};
+import { getOneDistributor, updateDistributor } from '@/features/distributors/api';
 
 const UpdatePage = () => {
-  const [data, setData] = useState<DistributorDetail>(DEFAULT_DISTRIBUTOR);
+  const [data, setData] = useState<DistributorForm>(DEFAULT_DISTRIBUTOR);
   const submitButtonStatus = useBoolean(false);
   const isLoading = useBoolean();
   const params = useParams<{ id: string }>();

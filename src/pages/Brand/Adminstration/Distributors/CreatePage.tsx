@@ -4,38 +4,15 @@ import { PATH } from '@/constants/path';
 
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { createDistributor } from '@/services/distributor.api';
 
-import { DistributorForm } from '@/types/distributor.type';
+import { DEFAULT_DISTRIBUTOR, DistributorForm } from '@/features/distributors/type';
 
-import { DistributorsEntryForm } from './components/DistributorsEntryForm';
 import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { DistributorsEntryForm } from '@/features/distributors/components/DistributorsEntryForm';
 
-const DEFAULT_DISTRIBUTOR: DistributorForm = {
-  brand_id: '',
-  name: '',
-  country_name: '',
-  country_id: '',
-  state_name: '',
-  state_id: '',
-  city_name: '',
-  city_id: '',
-  address: '',
-  phone_code: '',
-  postal_code: '',
-  first_name: '',
-  last_name: '',
-  gender: true,
-  email: '',
-  phone: '',
-  mobile: '',
-  authorized_country_ids: [],
-  authorized_country_name: '',
-  authorized_countries: [],
-  coverage_beyond: true,
-};
+import { createDistributor } from '@/features/distributors/api';
 
 const CreatePage = () => {
   const isLoading = useBoolean();
