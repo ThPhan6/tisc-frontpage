@@ -4,7 +4,6 @@ import { PATH } from '@/constants/path';
 import { DESIGN_STATUSES } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
 
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 
 import { getDesignFirmPagination } from '@/features/user-group/services';
@@ -14,11 +13,9 @@ import { showImageUrl } from '@/helper/utils';
 import type { TableColumnItem } from '@/components/Table/types';
 import { DesignFirm } from '@/features/user-group/types';
 
-import { HeaderDropdown, MenuHeaderDropdown } from '@/components/HeaderDropdown';
+import { ActionForm } from '@/components/Action';
 import CustomTable from '@/components/Table';
 import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
-
-import styles from './index.less';
 
 const DesignFirmList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -74,25 +71,15 @@ const DesignFirmList: React.FC = () => {
       align: 'center',
       render: (_value, record) => {
         return (
-          <HeaderDropdown
-            containerClass={styles.customAction}
-            arrow
-            align={{ offset: [13, -10] }}
-            placement="bottomRight"
-            overlay={
-              <MenuHeaderDropdown
-                items={[
-                  {
-                    onClick: () => handleViewDesignFirm(record.id),
-                    icon: <ViewIcon />,
-                    label: 'View',
-                  },
-                ]}
-              />
-            }
-            trigger={['click']}>
-            <ActionIcon />
-          </HeaderDropdown>
+          <ActionForm
+            actionItems={[
+              {
+                onClick: () => handleViewDesignFirm(record.id),
+                icon: <ViewIcon />,
+                label: 'View',
+              },
+            ]}
+          />
         );
       },
     },
