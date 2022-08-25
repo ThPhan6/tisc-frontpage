@@ -260,7 +260,7 @@ export const useProductListFilterAndSorter = () => {
   };
 
   const resetProductListSorter = () => {
-    removeUrlParams([QUERY_KEY.sort_order]);
+    removeUrlParams([QUERY_KEY.sort_order, QUERY_KEY.sort_name]);
     dispatch(setProductList({ sort: undefined }));
   };
 

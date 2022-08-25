@@ -11,11 +11,10 @@ import {
   messageErrorType,
   validatePostalCode,
 } from '@/helper/utils';
-import { getListFunctionalType } from '@/services';
 import { trimStart } from 'lodash';
 
+import { FunctionalTypeData, LocationForm } from '../type';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
-import type { FunctionalTypeData, LocationForm } from '@/types';
 
 import CollapseCheckboxList from '@/components/CustomCheckbox/CollapseCheckboxList';
 import { EntryFormWrapper } from '@/components/EntryForm';
@@ -23,11 +22,12 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { PhoneInput } from '@/components/Form/PhoneInput';
-import CityModal from '@/components/Location/CityModal';
-import CountryModal from '@/components/Location/CountryModal';
-import StateModal from '@/components/Location/StateModal';
+import CityModal from '@/features/locations/components/CityModal';
+import CountryModal from '@/features/locations/components/CountryModal';
+import StateModal from '@/features/locations/components/StateModal';
 
-import styles from './styles/LocationEntryForm.less';
+import { getListFunctionalType } from '../api';
+import styles from './LocationEntryForm.less';
 
 interface LocationEntryFormProps {
   submitButtonStatus: any;

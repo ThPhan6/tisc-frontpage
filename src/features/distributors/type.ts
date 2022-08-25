@@ -1,4 +1,38 @@
-export interface DistributorDetail {
+export interface DistributorsProp {
+  distributorName: string;
+  country: string;
+  province: string;
+  city: string;
+  address: string;
+  zipCode: string;
+  firstName: string;
+  lastName: string;
+  gender: string;
+  email: string;
+  phone: string;
+  mobile: string;
+  authorizedCountry: string;
+  coverageBeyond: string;
+}
+
+export const distributorsValueProp = {
+  distributorName: '',
+  country: '',
+  province: '',
+  city: '',
+  address: '',
+  zipCode: '',
+  firstName: '',
+  lastName: '',
+  gender: 'male',
+  email: '',
+  phone: '',
+  mobile: '',
+  authorizedCountry: '',
+  coverageBeyond: 'not allow',
+};
+
+export interface DistributorForm {
   brand_id: string;
   name: string;
   country_id: string;
@@ -19,29 +53,9 @@ export interface DistributorDetail {
     name: string;
   }[];
   coverage_beyond: true;
-  id?: string;
 }
 
-export interface DistributorForm {
-  brand_id: string;
-  name: string;
-  country_id: string;
-  state_id: string;
-  city_id: string;
-  address: string;
-  phone_code: string;
-  postal_code: string;
-  first_name: string;
-  last_name: string;
-  gender: true;
-  email: string;
-  phone: string;
-  mobile: string;
-  authorized_country_ids: string[];
-  coverage_beyond: true;
-}
-
-export interface DistributorExtraForm extends DistributorDetail {
+export interface DistributorExtraForm extends DistributorForm {
   id: string;
   country_name: string;
   person: string;
@@ -87,8 +101,8 @@ export interface DistributorEntryForm {
   submitButtonStatus: any;
   onSubmit: (data: DistributorForm) => void;
   onCancel: () => void;
-  data: DistributorDetail;
-  setData: (data: DistributorDetail) => void;
+  data: DistributorForm;
+  setData: (data: DistributorForm) => void;
 }
 
 export interface Distributor {

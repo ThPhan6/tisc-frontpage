@@ -14,9 +14,9 @@ import {
 } from '@/helper/utils';
 import { trimStart } from 'lodash';
 
+import { DistributorEntryForm, DistributorForm } from '../type';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { useAppSelector } from '@/reducers';
-import { DistributorEntryForm, DistributorForm } from '@/types/distributor.type';
 
 import { CustomRadio } from '@/components/CustomRadio';
 import { EntryFormWrapper } from '@/components/EntryForm';
@@ -24,14 +24,14 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { PhoneInput } from '@/components/Form/PhoneInput';
-import CityModal from '@/components/Location/CityModal';
-import CountryModal from '@/components/Location/CountryModal';
-import StateModal from '@/components/Location/StateModal';
 import { Title } from '@/components/Typography';
+import CityModal from '@/features/locations/components/CityModal';
+import CountryModal from '@/features/locations/components/CountryModal';
+import StateModal from '@/features/locations/components/StateModal';
 
-import styles from '../styles/DistributorsEntryForm.less';
 import AuthorizedCountryModal from './AuthorizedCountryModal';
 import DistributionTerritoryModal from './DistributionTerritoryModal';
+import styles from './DistributorsEntryForm.less';
 
 const optionsGender = [
   { label: 'Male', value: true },

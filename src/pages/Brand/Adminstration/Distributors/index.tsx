@@ -4,15 +4,16 @@ import { PATH } from '@/constants/path';
 
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { deleteDistributor, getDistributorPagination } from '@/services/distributor.api';
 
 import { TableColumnItem } from '@/components/Table/types';
+import { Distributor } from '@/features/distributors/type';
 import { useAppSelector } from '@/reducers';
-import { Distributor } from '@/types/distributor.type';
 
 import { ActionMenu } from '@/components/Action';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+
+import { deleteDistributor, getDistributorPagination } from '@/features/distributors/api';
 
 const Distributors = () => {
   const tableRef = useRef<any>();

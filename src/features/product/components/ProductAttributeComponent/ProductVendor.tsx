@@ -10,10 +10,10 @@ import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-f
 
 import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { formatPhoneCode } from '@/helper/utils';
-import { getBrandLocation, getDistributorLocation } from '@/services';
 
+import { LocationGroupedByCountry } from '@/features/locations/type';
 import { useAppSelector } from '@/reducers';
-import { DistributorProductMarket, LocationGroupedByCountry } from '@/types';
+import { DistributorProductMarket } from '@/types/distributor.type';
 
 import CustomCollapse from '@/components/Collapse';
 import Popover from '@/components/Modal/Popover';
@@ -21,6 +21,7 @@ import { BodyText } from '@/components/Typography';
 
 import { CatelogueDownload } from './CatelogueDownload';
 import styles from './ProductVendor.less';
+import { getBrandLocation, getDistributorLocation } from '@/features/locations/api';
 
 interface BusinessDetailProps {
   business: string;

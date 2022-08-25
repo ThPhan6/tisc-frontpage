@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
+import { ItemType } from 'antd/lib/menu/hooks/useItems';
+
 import { getFavouriteProductSummary } from '../services';
+import { showImageUrl } from '@/helper/utils';
 
 import type { FavouriteProductSummary } from '../types';
+import { setProductList } from '@/features/product/reducers';
+import { ProductItemValue } from '@/features/product/types';
+import store from '@/reducers';
 
 import {
   CustomDropDown,
@@ -21,14 +27,52 @@ export interface ProductSummaryTopBarProps {
   isFavouriteRetrieved: boolean;
 }
 
+export const formatCategoriesFavouriteToDropDownData = (
+  categories?: ProductItemValue[],
+): ItemType[] => {
+  if (!categories) return [];
+  return categories.map((el) => ({
+    key: el.id,
+    label: el.name || '',
+    onClick: () =>
+      store.dispatch(
+        setProductList({
+          filter: {
+            name: 'category_id',
+            title: el.name || '',
+            value: el.id,
+          },
+        }),
+      ),
+  }));
+};
+
+export const formatBrandsFavouriteToDropDownData = (brands?: ProductItemValue[]): ItemType[] => {
+  if (!brands) return [];
+  return brands.map((el) => ({
+    key: el.id,
+    label: el.name || '',
+    icon: <img src={showImageUrl(el.logo)} style={{ width: 18, height: 18 }} />,
+    onClick: () =>
+      store.dispatch(
+        setProductList({
+          filter: {
+            name: 'brand_id',
+            title: el.name || '',
+            value: el.id,
+          },
+        }),
+      ),
+  }));
+};
+
 const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavouriteRetrieved }) => {
   const [productSummary, setProductSummary] = useState<FavouriteProductSummary>();
 
-  const { filter, sort, brands, categories, removeFilter, resetProductListSorter } =
-    useProductListFilterAndSorter();
+  const { filter, sort, removeFilter, resetProductListSorter } = useProductListFilterAndSorter();
 
-  const activeBrands = brands.length && isFavouriteRetrieved;
-  const activeCategories = categories.length && isFavouriteRetrieved;
+  const activeBrands = productSummary?.brands.length && isFavouriteRetrieved;
+  const activeCategories = productSummary?.categories.length && isFavouriteRetrieved;
 
   // show product summary when user already has retrieved favourite
   useEffect(() => {
@@ -81,7 +125,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
               bottomEnable={activeBrands ? true : false}
               bottomValue={
                 <CustomDropDown
-                  items={brands}
+                  items={formatBrandsFavouriteToDropDownData(productSummary?.brands)}
                   menuStyle={{ width: 240 }}
                   disabled={activeBrands ? false : true}
                   placement="bottomRight">
@@ -106,7 +150,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
               bottomEnable={activeCategories ? true : false}
               bottomValue={
                 <CustomDropDown
-                  items={categories}
+                  items={formatCategoriesFavouriteToDropDownData(productSummary?.categories)}
                   position="left"
                   disabled={activeCategories ? false : true}>
                   Categories

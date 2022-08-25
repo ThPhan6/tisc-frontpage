@@ -6,7 +6,7 @@ import { ReactComponent as LeftIcon } from '@/assets/icons/pagination-right-18px
 import { WebsiteUrl } from '../types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
-import CountryModal from '@/components/Location/CountryModal';
+import CountryModal from '@/features/locations/components/CountryModal';
 import styles from '@/pages/Brand/Adminstration/BrandProfile/styles/index.less';
 
 export const ItemWebsite: FC<WebsiteUrl> = ({ websiteValue, onChange, onDeleteWebsiteItem }) => {
