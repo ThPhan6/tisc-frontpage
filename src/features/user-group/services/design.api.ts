@@ -2,21 +2,18 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
+import { BrandDesignProfile, DesignFirm } from '../types';
 import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import type {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
+import { LocationGroupedByCountry } from '@/features/locations/type';
 import { ProjectsDesignFirm } from '@/features/project/types';
 import { MaterialCode } from '@/features/project/types/project-specifying.type';
-import {
-  DesignFirm,
-  DesignFirmDetail,
-  LocationGroupedByCountry,
-  MaterialCodeDesignFirm,
-  TeamsDesignFirm,
-} from '@/types';
+import { TeamProfileGroupCountry } from '@/features/team-profiles/type';
+import { KeyValueData, MaterialCodeDesignFirm } from '@/types';
 
 interface DesignFirmListResponse {
   designers: DesignFirm;
@@ -49,12 +46,27 @@ export async function getDesignFirmPagination(
 }
 
 export async function getOneDesignFirm(id: string) {
-  return request<{ data: DesignFirmDetail }>(`/api/design/get-one/${id}`, { method: 'GET' })
+  return request<{ data: BrandDesignProfile }>(`/api/design/get-one/${id}`, {
+    method: 'GET',
+  })
     .then((response) => {
       return response.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_DESIGN_FIRM_ERROR);
+    });
+}
+
+export async function getDesignStatuses() {
+  return request<KeyValueData[]>(`/api/design/statuses`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_DESIGN_STATUSES_ERROR);
+      return [] as KeyValueData[];
     });
 }
 
@@ -77,16 +89,20 @@ export async function getLocationsByDesignFirm(id: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LOCATIONS_BY_DESIGN_FIRM);
+      return [] as LocationGroupedByCountry[];
     });
 }
 
 export async function getTeamsByDesignFirm(id: string) {
-  return request<{ data: TeamsDesignFirm[] }>(`/api/team-profile/design/${id}`, { method: 'GET' })
+  return request<{ data: TeamProfileGroupCountry[] }>(`/api/team-profile/design/${id}`, {
+    method: 'GET',
+  })
     .then((response) => {
       return response.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_TEAMS_BY_DESIGN_FIRM);
+      return [] as TeamProfileGroupCountry[];
     });
 }
 

@@ -1,3 +1,14 @@
+export interface TISCUserGroupBrandForm {
+  brandname: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  status: string | number;
+  role_id: string;
+}
+
+export type entryFormInput = 'brandname' | 'firstname' | 'lastname' | 'email' | 'role_id';
+
 export interface BrandListItem {
   id: string;
   assign_team: any[];
@@ -17,9 +28,7 @@ export interface BrandListItem {
 }
 
 export interface BrandDetail {
-  created_at: string;
   id: string;
-  is_deleted: boolean;
   location_ids: any;
   logo: string;
   mission_n_vision: string;
@@ -33,7 +42,6 @@ export interface BrandDetail {
   slogan: string | null;
   status: number;
   team_profile_ids: any;
-  updated_at: string | null;
 }
 
 export interface BrandAlphabet {
@@ -54,11 +62,6 @@ export interface BrandCardTeam {
   firstname: string;
   lastname: string;
   avatar: any;
-}
-
-export interface BrandStatuses {
-  key: string;
-  value: string | number;
 }
 
 export interface MemberAssignTeam {

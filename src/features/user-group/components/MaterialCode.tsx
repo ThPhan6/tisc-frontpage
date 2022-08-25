@@ -1,22 +1,33 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { Col, Collapse, Row } from 'antd';
 
+import { getMaterialCodeByDesignFirm } from '../services';
+
+import { RequiredValueProps } from '../types';
 import { MaterialCodeDesignFirm } from '@/types';
 
-import GeneralData from '../../components/GeneralData';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { BodyText, Title } from '@/components/Typography';
 
-import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
-import indexStyles from '../../styles/index.less';
-import styles from '../styles/ComponentViewDesign.less';
+import styles from '../styles/design.less';
+import indexStyles from '../styles/index.less';
+import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
+import GeneralData from './GeneralData';
 
-interface MaterialCodeProp {
-  materialCodeData: MaterialCodeDesignFirm[];
-}
+const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
+  const [materialCodeData, setMaterialCodeData] = useState<MaterialCodeDesignFirm[]>([]);
 
-const MaterialCode: FC<MaterialCodeProp> = ({ materialCodeData }) => {
+  useEffect(() => {
+    if (!id) return;
+
+    getMaterialCodeByDesignFirm(id).then((data) => {
+      if (data) {
+        setMaterialCodeData(data);
+      }
+    });
+  }, []);
+
   return (
     <Row className={indexStyles.container}>
       <Col span={12}>

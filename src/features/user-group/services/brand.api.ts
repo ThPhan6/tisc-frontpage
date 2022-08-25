@@ -2,20 +2,21 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
+import {
+  AssignTeamForm,
+  BrandAlphabet,
+  BrandCard,
+  BrandDesignProfile,
+  BrandDetail,
+  BrandListItem,
+} from '../types';
 import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import type {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
-import type {
-  AssignTeamForm,
-  BrandAlphabet,
-  BrandCard,
-  BrandDetail,
-  BrandListItem,
-  BrandStatuses,
-} from '@/types';
+import { KeyValueData } from '@/types';
 
 interface BrandListResponse {
   brands: BrandListItem[];
@@ -73,7 +74,7 @@ export async function getBrandCards() {
 }
 
 export async function getBrandById(brandId: string) {
-  return request<{ data: BrandDetail }>(`/api/brand/get-one/${brandId}`, {
+  return request<{ data: BrandDesignProfile }>(`/api/brand/get-one/${brandId}`, {
     method: 'GET',
   })
     .then((response) => {
@@ -81,7 +82,7 @@ export async function getBrandById(brandId: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
-      return {} as BrandDetail;
+      return {} as BrandDesignProfile;
     });
 }
 
@@ -101,7 +102,7 @@ export async function getBrandSummary() {
 }
 
 export async function getBrandStatuses() {
-  return request<BrandStatuses[]>(`/api/brand/statuses`, {
+  return request<KeyValueData[]>(`/api/brand/statuses`, {
     method: 'GET',
   })
     .then((response) => {
@@ -109,7 +110,7 @@ export async function getBrandStatuses() {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_STATUSES_ERROR);
-      return [] as BrandStatuses[];
+      return [] as KeyValueData[];
     });
 }
 

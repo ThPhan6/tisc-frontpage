@@ -7,7 +7,7 @@ import {
   getRequirementTypeList,
   getUnitTypeList,
 } from '@/features/project/services';
-import { getAllMaterialCode } from '@/services';
+import { getAllMaterialCode } from '@/features/user-group/services';
 
 import { CodeOrderRequestParams, OnChangeSpecifyingProductFnc } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';

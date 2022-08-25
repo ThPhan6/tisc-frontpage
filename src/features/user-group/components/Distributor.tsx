@@ -1,29 +1,27 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { Col, Collapse, Row } from 'antd';
 
-import { useGetParamId } from '@/helper/hook';
 import { isEmpty } from 'lodash';
 
+import { RequiredValueProps } from '../types';
 import { DistributorResponseForm } from '@/features/distributors/type';
 
-import GeneralData from '../../components/GeneralData';
 import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 
-import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
-import styles from '../../styles/index.less';
+import styles from '../styles/index.less';
+import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
+import GeneralData from './GeneralData';
 import { getListDistributorGroupCountryByBrandId } from '@/features/distributors/api';
 
-const BrandDistributorDetail = () => {
+const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
   const [distributors, setDistributors] = useState<DistributorResponseForm[]>([]);
 
-  const brandId = useGetParamId();
-
   useEffect(() => {
-    if (brandId) {
-      getListDistributorGroupCountryByBrandId(brandId).then(setDistributors);
-    }
+    if (!id) return;
+
+    getListDistributorGroupCountryByBrandId(id).then(setDistributors);
   }, []);
 
   return (
@@ -85,4 +83,4 @@ const BrandDistributorDetail = () => {
   );
 };
 
-export default BrandDistributorDetail;
+export default DistributorDetail;

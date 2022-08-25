@@ -11,9 +11,9 @@ import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-f
 import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { formatPhoneCode } from '@/helper/utils';
 
+import { DistributorProductMarket } from '@/features/distributors/type';
 import { LocationGroupedByCountry } from '@/features/locations/type';
 import { useAppSelector } from '@/reducers';
-import { DistributorProductMarket } from '@/types/distributor.type';
 
 import CustomCollapse from '@/components/Collapse';
 import Popover from '@/components/Modal/Popover';
@@ -175,8 +175,7 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
 };
 
 export const ProductVendor: FC = () => {
-  const product = useAppSelector((state) => state.product);
-  const { brand } = product;
+  const brand = useAppSelector((state) => state.product.brand);
 
   return (
     <div className={styles.productVendorContainer}>

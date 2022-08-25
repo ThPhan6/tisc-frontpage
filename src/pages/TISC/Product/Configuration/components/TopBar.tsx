@@ -7,15 +7,15 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as SmallPlusIcon } from '@/assets/icons/small-plus-icon.svg';
 
 import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
+import { getBrandAlphabet } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
 import { showImageUrl } from '@/helper/utils';
-import { getBrandAlphabet } from '@/services';
 import { forEach, map } from 'lodash';
 
 import { resetProductState, setBrand, setProductList } from '@/features/product/reducers';
 import { ProductGetListParameter } from '@/features/product/types';
+import { BrandAlphabet, BrandDetail } from '@/features/user-group/types';
 import { useAppSelector } from '@/reducers';
-import type { BrandAlphabet, BrandDetail } from '@/types';
 
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';

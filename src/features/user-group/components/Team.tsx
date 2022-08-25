@@ -1,29 +1,34 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { USER_STATUS_TEXTS } from '@/constants/util';
 import { Col, Collapse, Row } from 'antd';
 
-import { useGetParamId } from '@/helper/hook';
+import { getTeamsByDesignFirm } from '../services';
 import { isEmpty } from 'lodash';
 
+import { UserGroupProps } from '../types/common.types';
 import { TeamProfileGroupCountry } from '@/features/team-profiles/type';
 
-import GeneralData from '../../components/GeneralData';
 import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader, RenderMemberHeader } from '@/components/RenderHeaderLabel';
 
-import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
-import indexStyles from '../../styles/index.less';
+import indexStyles from '../styles/index.less';
+import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
+import GeneralData from './GeneralData';
 import { getListTeamProfileUserGroupByBrandId } from '@/features/team-profiles/api';
 
-const BrandTeamDetail = () => {
+const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
   const [teamData, setTeamData] = useState<TeamProfileGroupCountry[]>([]);
 
-  const brandId = useGetParamId();
-
   useEffect(() => {
-    if (brandId) {
-      getListTeamProfileUserGroupByBrandId(brandId).then(setTeamData);
+    if (!id) return;
+
+    if (type === 'brand') {
+      getListTeamProfileUserGroupByBrandId(id).then(setTeamData);
+    }
+
+    if (type === 'design') {
+      getTeamsByDesignFirm(id).then(setTeamData);
     }
   }, []);
 
@@ -89,4 +94,4 @@ const BrandTeamDetail = () => {
   );
 };
 
-export default BrandTeamDetail;
+export default TeamDetail;

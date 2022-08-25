@@ -1,24 +1,35 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { MEASUREMENT_UNIT } from '@/constants/util';
 import { Col, Collapse, Row } from 'antd';
 
+import { getProjectsByDesignFirm } from '../services';
 import { isEmpty } from 'lodash';
 
+import { RequiredValueProps } from '../types';
 import { ProjectDetail, ProjectsDesignFirm } from '@/features/project/types';
 
-import GeneralData from '../../components/GeneralData';
 import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 
-import { CollapseLevel1Props, CollapseLevel2Props } from '../../icons';
-import indexStyles from '../../styles/index.less';
-import styles from '../styles/ComponentViewDesign.less';
+import styles from '../styles/design.less';
+import indexStyles from '../styles/index.less';
+import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
+import GeneralData from './GeneralData';
 
-interface ProjectDesignProp {
-  projectData: ProjectsDesignFirm[];
-}
-const ProjectDesign: FC<ProjectDesignProp> = ({ projectData }) => {
+const ProjectDesign: FC<RequiredValueProps> = ({ id }) => {
+  const [projectData, setProjectData] = useState<ProjectsDesignFirm[]>([]);
+
+  useEffect(() => {
+    if (!id) return;
+
+    getProjectsByDesignFirm(id).then((res) => {
+      if (res) {
+        setProjectData(res);
+      }
+    });
+  }, []);
+
   const renderProjectHeader = (project: ProjectDetail) => {
     return (
       <div className={styles.userName}>

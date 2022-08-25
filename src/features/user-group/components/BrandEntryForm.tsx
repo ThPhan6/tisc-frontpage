@@ -2,8 +2,8 @@ import React, { FC, useState } from 'react';
 
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
+import { TISCUserGroupBrandForm, entryFormInput } from '../types/brand.types';
 import { RadioValue } from '@/components/CustomRadio/types';
-import { TISCUserGroupBrandForm, entryFormInput } from '@/types';
 
 import { CustomRadio } from '@/components/CustomRadio';
 import { EntryFormWrapper } from '@/components/EntryForm';
@@ -12,7 +12,7 @@ import { FormGroup } from '@/components/Form';
 import { Status } from '@/components/Form/Status';
 import { BodyText } from '@/components/Typography';
 
-import styles from '../styles/brandEntryForm.less';
+import styles from './BrandEntryForm.less';
 
 interface BrandEntryFormValue {
   onCancel: () => void;
@@ -30,6 +30,7 @@ const DEFAULT_BRAND = {
   lastname: '',
   email: '',
   role_id: '',
+  status: '',
 };
 
 const BrandEntryForm: FC<BrandEntryFormValue> = ({
@@ -64,6 +65,7 @@ const BrandEntryForm: FC<BrandEntryFormValue> = ({
         firstname: data.firstname?.trim() ?? '',
         lastname: data.lastname?.trim() ?? '',
         email: data.email?.trim() ?? '',
+        status: data.status ?? '',
         role_id: data.role_id,
       },
       callBack,
