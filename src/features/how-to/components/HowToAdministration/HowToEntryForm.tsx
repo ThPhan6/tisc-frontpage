@@ -9,8 +9,8 @@ import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 import { showImageUrl } from '@/helper/utils';
 import { isEmpty } from 'lodash';
 
-import { FaqInput, FaqPanel } from '../types';
-import { FaqItem, FaqState } from '@/types/faq.type';
+import { FaqInput, FaqPanel, FaqState } from '../../types/faq-administration.type';
+import { FaqItem } from '../../types/type';
 
 import CustomButton from '@/components/Button';
 import { FormGroup } from '@/components/Form';
@@ -18,7 +18,7 @@ import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
 
-import styles from '../styles/HowToEntryForm.less';
+import styles from './HowToEntryForm.less';
 
 interface FAQFieldProps {
   index: number;

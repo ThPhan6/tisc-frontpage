@@ -1,4 +1,4 @@
-import { FaqItem } from '@/types/faq.type';
+import { FaqItem } from './type';
 
 export interface FaqInput {
   question: string;

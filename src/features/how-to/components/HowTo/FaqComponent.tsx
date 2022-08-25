@@ -7,7 +7,7 @@ import { ReactComponent as PlusIcon } from '@/assets/icons/action-plus-icon.svg'
 
 import { showImageUrl } from '@/helper/utils';
 
-import { CollapsingProps, FaqItem } from '../type';
+import { CollapsingProps, FaqItem } from '../../types/faq.type';
 
 import { BodyText } from '@/components/Typography';
 
