@@ -2,7 +2,7 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
-import { DesignFirm, DesignStatuses, ProfileBrandDesign } from '../types';
+import { BrandDesignProfile, DesignFirm, DesignStatuses } from '../types';
 import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import type {
   DataTableResponse,
@@ -46,7 +46,7 @@ export async function getDesignFirmPagination(
 }
 
 export async function getOneDesignFirm(id: string) {
-  return request<{ data: ProfileBrandDesign }>(`/api/design/get-one/${id}`, {
+  return request<{ data: BrandDesignProfile }>(`/api/design/get-one/${id}`, {
     method: 'GET',
   })
     .then((response) => {

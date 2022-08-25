@@ -16,7 +16,7 @@ import { DesignFirm } from '@/features/user-group/types';
 
 import { HeaderDropdown, MenuHeaderDropdown } from '@/components/HeaderDropdown';
 import CustomTable from '@/components/Table';
-import HeaderMenuSummary from '@/features/user-group/components/HeaderMenuSummary';
+import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
 
 import styles from './index.less';
 
@@ -99,7 +99,7 @@ const DesignFirmList: React.FC = () => {
   ];
 
   return (
-    <PageContainer pageHeaderRender={() => <HeaderMenuSummary type="design" />}>
+    <PageContainer pageHeaderRender={() => <MenuHeaderSummary type="design" />}>
       <CustomTable
         title="DESIGN FIRMS"
         columns={TableColumns}

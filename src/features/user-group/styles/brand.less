@@ -45,10 +45,6 @@
     align-items: center;
     overflow: auto hidden;
 
-    &_items {
-      flex: 1;
-    }
-
     :global(.ant-tabs-top > .ant-tabs-nav) {
       margin-bottom: 0;
     }
@@ -62,8 +58,8 @@
       width: 100%;
     }
 
-    :global(.ant-tabs-tab) {
-      width: 125px;
+    :global(.ant-tabs-tab-btn) {
+      padding: 0 24px;
     }
   }
 }
@@ -74,8 +70,11 @@
 
 .basicToolbarForm {
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: flex-end;
+  height: 40px;
+  margin-left: 60px;
   padding-bottom: 2px;
   .projectStatusLabel {
     display: flex;

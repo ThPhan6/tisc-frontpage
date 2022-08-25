@@ -4,7 +4,7 @@ import { Col, Collapse, Row } from 'antd';
 
 import { getMaterialCodeByDesignFirm } from '../services';
 
-import { UserGroupProps } from '../types';
+import { RequiredValueProps } from '../types';
 import { MaterialCodeDesignFirm } from '@/types';
 
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
@@ -15,7 +15,7 @@ import indexStyles from '../styles/index.less';
 import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
 import GeneralData from './GeneralData';
 
-const MaterialCode: FC<UserGroupProps> = ({ id }) => {
+const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
   const [materialCodeData, setMaterialCodeData] = useState<MaterialCodeDesignFirm[]>([]);
 
   useEffect(() => {

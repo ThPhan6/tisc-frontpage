@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { BodyText } from '@/components/Typography';
 
-const LabelToolTip: FC<{ statusText: string; plainText: string }> = ({ statusText, plainText }) => {
+const TooltipLabel: FC<{ statusText: string; plainText: string }> = ({ statusText, plainText }) => {
   return (
     <tr>
       <td>
@@ -16,4 +16,4 @@ const LabelToolTip: FC<{ statusText: string; plainText: string }> = ({ statusTex
     </tr>
   );
 };
-export default LabelToolTip;
+export default TooltipLabel;

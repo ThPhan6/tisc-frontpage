@@ -5,7 +5,7 @@ import { Col, Collapse, Row } from 'antd';
 import { getAvailabilityListCountryGroupByBrandId } from '@/services';
 import { isEmpty } from 'lodash';
 
-import { UserGroupProps } from '../types';
+import { RequiredValueProps } from '../types';
 import { AvailabilityCollectionGroup } from '@/types';
 
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
@@ -15,7 +15,7 @@ import styles from '../styles/index.less';
 import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
 import GeneralData from './GeneralData';
 
-const BrandAvailabilityDetail: FC<UserGroupProps> = ({ id }) => {
+const BrandAvailabilityDetail: FC<RequiredValueProps> = ({ id }) => {
   const [availability, setAvailability] = useState<AvailabilityCollectionGroup[]>([]);
 
   useEffect(() => {

@@ -5,7 +5,7 @@ import { Col, Collapse, Row } from 'antd';
 import { getListDistributorGroupCountryByBrandId } from '@/services';
 import { isEmpty } from 'lodash';
 
-import { UserGroupProps } from '../types';
+import { RequiredValueProps } from '../types';
 import { DistributorResponseForm } from '@/types/distributor.type';
 
 import TextForm from '@/components/Form/TextForm';
@@ -15,7 +15,7 @@ import styles from '../styles/index.less';
 import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
 import GeneralData from './GeneralData';
 
-const BrandDistributorDetail: FC<UserGroupProps> = ({ id }) => {
+const BrandDistributorDetail: FC<RequiredValueProps> = ({ id }) => {
   const [distributors, setDistributors] = useState<DistributorResponseForm[]>([]);
 
   useEffect(() => {

@@ -9,7 +9,7 @@ import { MenuSummary } from '@/components/MenuSummary';
 
 import styles from '../styles/index.less';
 
-const HeaderMenuSummary: FC<UserGroupProps> = ({ type }) => {
+const MenuHeaderSummary: FC<UserGroupProps> = ({ type }) => {
   const [summaryData, setSummaryData] = useState<DataMenuSummaryProps[]>([]);
 
   useEffect(() => {
@@ -38,4 +38,4 @@ const HeaderMenuSummary: FC<UserGroupProps> = ({ type }) => {
   );
 };
 
-export default HeaderMenuSummary;
+export default MenuHeaderSummary;

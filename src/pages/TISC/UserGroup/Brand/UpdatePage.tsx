@@ -16,22 +16,22 @@ import { updateBrandStatus } from '@/services/brand-profile';
 
 import { TabItem } from '@/components/Tabs/types';
 import {
+  BrandDesignProfile,
   BrandStatuses,
   BrandTabKeys,
   DEFAULT_BRAND_DESIGN_PROFILE,
-  ProfileBrandDesign,
   TabKeys,
 } from '@/features/user-group/types';
 
 import { CustomTabPane } from '@/components/Tabs';
 import BrandAvailabilityDetail from '@/features/user-group/components/Availability';
 import BrandDistributorDetail from '@/features/user-group/components/Distributor';
-import HeaderMenuSummary from '@/features/user-group/components/HeaderMenuSummary';
-import LabelToolTip from '@/features/user-group/components/LabelToolTip';
 import LocationDetail from '@/features/user-group/components/Location';
+import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
 import ProfileDetail from '@/features/user-group/components/Profile';
 import TabDetail from '@/features/user-group/components/TabDetail';
 import TeamDetail from '@/features/user-group/components/Team';
+import TooltipLabel from '@/features/user-group/components/TooltipLabel';
 
 import styles from '@/features/user-group/styles/index.less';
 
@@ -48,7 +48,7 @@ const UpdatePage = () => {
   const buttonStatus = useBoolean();
   const isLoading = useBoolean();
   const [statuses, setStatuses] = useState<BrandStatuses[]>([]);
-  const [data, setData] = useState<ProfileBrandDesign>(DEFAULT_BRAND_DESIGN_PROFILE);
+  const [data, setData] = useState<BrandDesignProfile>(DEFAULT_BRAND_DESIGN_PROFILE);
 
   const brandId = useGetParamId();
 
@@ -88,7 +88,7 @@ const UpdatePage = () => {
   };
 
   return (
-    <PageContainer pageHeaderRender={() => <HeaderMenuSummary type="brand" />}>
+    <PageContainer pageHeaderRender={() => <MenuHeaderSummary type="brand" />}>
       <TabDetail
         selectedTab={selectedTab}
         setSelectedTab={setSelectedTab}
@@ -102,9 +102,9 @@ const UpdatePage = () => {
         statuses={statuses}
         toolTipTitle={
           <table className={styles.tooltip}>
-            <LabelToolTip statusText="Pending" plainText="Waiting user activate" />
-            <LabelToolTip statusText="Active" plainText="Full activated" />
-            <LabelToolTip statusText="Inactive" plainText="Temporarily removed" />
+            <TooltipLabel statusText="Pending" plainText="Waiting user activate" />
+            <TooltipLabel statusText="Active" plainText="Full activated" />
+            <TooltipLabel statusText="Inactive" plainText="Temporarily removed" />
           </table>
         }
       />

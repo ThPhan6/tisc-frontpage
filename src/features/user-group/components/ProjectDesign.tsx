@@ -6,7 +6,7 @@ import { Col, Collapse, Row } from 'antd';
 import { getProjectsByDesignFirm } from '../services';
 import { isEmpty } from 'lodash';
 
-import { UserGroupProps } from '../types';
+import { RequiredValueProps } from '../types';
 import { ProjectDetail, ProjectsDesignFirm } from '@/features/project/types';
 
 import TextForm from '@/components/Form/TextForm';
@@ -17,7 +17,7 @@ import indexStyles from '../styles/index.less';
 import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
 import GeneralData from './GeneralData';
 
-const ProjectDesign: FC<UserGroupProps> = ({ id }) => {
+const ProjectDesign: FC<RequiredValueProps> = ({ id }) => {
   const [projectData, setProjectData] = useState<ProjectsDesignFirm[]>([]);
 
   useEffect(() => {

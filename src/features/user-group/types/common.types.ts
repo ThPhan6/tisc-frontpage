@@ -1,7 +1,5 @@
 import { BrandDetail } from './brand.types';
 
-export type ActiveKeyType = string | number | (string | number)[];
-
 export enum BrandTabKeys {
   profile = 'PROFILE',
   locations = 'LOCATIONS',
@@ -13,26 +11,29 @@ export enum DesignTabKeys {
   profile = 'PROFILE',
   locations = 'LOCATIONS',
   teams = 'TEAMS',
-  materialCode = 'MATERIAL CODE',
+  materialCode = 'Marterial Code',
   projects = 'PROJECTS',
   custom = 'CUSTOM',
 }
 export type TabKeys = BrandTabKeys | DesignTabKeys;
 
+export interface RequiredValueProps {
+  id: string;
+}
 export interface UserGroupProps {
-  type?: 'brand' | 'design';
-  data?: ProfileBrandDesign;
+  type: 'brand' | 'design';
+  data?: BrandDesignProfile;
   id?: string;
 }
 
-export interface ProfileBrandDesign extends BrandDetail {
+export interface BrandDesignProfile extends BrandDetail {
   profile_n_philosophy: string;
   official_website: string;
   design_capabilities: string;
   material_code_ids: [];
   project_ids: [];
 }
-export const DEFAULT_BRAND_DESIGN_PROFILE: ProfileBrandDesign = {
+export const DEFAULT_BRAND_DESIGN_PROFILE: BrandDesignProfile = {
   id: '',
   parent_company: null,
   logo: '',

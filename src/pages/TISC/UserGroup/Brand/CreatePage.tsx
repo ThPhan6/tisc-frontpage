@@ -9,7 +9,7 @@ import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import BrandEntryForm from '@/features/user-group/components/BrandEntryForm';
-import HeaderMenuSummary from '@/features/user-group/components/HeaderMenuSummary';
+import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
 
 import { inviteUser } from '@/features/team-profiles/api';
 
@@ -45,7 +45,7 @@ const BrandCreatePage = () => {
     };
 
   return (
-    <PageContainer pageHeaderRender={() => <HeaderMenuSummary type="brand" />}>
+    <PageContainer pageHeaderRender={() => <MenuHeaderSummary type="brand" />}>
       <TableHeader title="BRANDS" rightAction={<CustomPlusButton disabled />} />
       <BrandEntryForm
         onCancel={handleCancel}

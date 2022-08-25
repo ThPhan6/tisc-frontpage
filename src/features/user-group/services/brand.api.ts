@@ -6,10 +6,10 @@ import {
   AssignTeamForm,
   BrandAlphabet,
   BrandCard,
+  BrandDesignProfile,
   BrandDetail,
   BrandListItem,
   BrandStatuses,
-  ProfileBrandDesign,
 } from '../types';
 import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import type {
@@ -74,7 +74,7 @@ export async function getBrandCards() {
 }
 
 export async function getBrandById(brandId: string) {
-  return request<{ data: ProfileBrandDesign }>(`/api/brand/get-one/${brandId}`, {
+  return request<{ data: BrandDesignProfile }>(`/api/brand/get-one/${brandId}`, {
     method: 'GET',
   })
     .then((response) => {
@@ -82,7 +82,7 @@ export async function getBrandById(brandId: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
-      return {} as ProfileBrandDesign;
+      return {} as BrandDesignProfile;
     });
 }
 

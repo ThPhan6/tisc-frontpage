@@ -35,7 +35,7 @@ import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
-import HeaderMenuSummary from '@/features/user-group/components/HeaderMenuSummary';
+import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
 
 import { inviteUser } from '@/features/team-profiles/api';
 import styles from '@/features/user-group/styles/brand.less';
@@ -238,7 +238,7 @@ const BrandList: React.FC = () => {
 
   return (
     <div>
-      <PageContainer pageHeaderRender={() => <HeaderMenuSummary type="brand" />}>
+      <PageContainer pageHeaderRender={() => <MenuHeaderSummary type="brand" />}>
         <CustomTable
           title="BRANDS"
           rightAction={

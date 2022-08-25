@@ -20,23 +20,23 @@ import { useBoolean, useGetParamId } from '@/helper/hook';
 
 import { TabItem } from '@/components/Tabs/types';
 import {
+  BrandDesignProfile,
   DEFAULT_BRAND_DESIGN_PROFILE,
   DesignStatuses,
   DesignTabKeys,
-  ProfileBrandDesign,
   TabKeys,
 } from '@/features/user-group/types';
 
 import { CustomTabPane } from '@/components/Tabs';
 import CustomDesign from '@/features/user-group/components/CustomDesign';
-import HeaderMenuSummary from '@/features/user-group/components/HeaderMenuSummary';
-import LabelToolTip from '@/features/user-group/components/LabelToolTip';
 import LocationDetail from '@/features/user-group/components/Location';
 import MaterialCode from '@/features/user-group/components/MaterialCode';
+import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
 import ProfileDetail from '@/features/user-group/components/Profile';
 import ProjectDesign from '@/features/user-group/components/ProjectDesign';
 import TabDetail from '@/features/user-group/components/TabDetail';
 import TeamDetail from '@/features/user-group/components/Team';
+import LabelToolTip from '@/features/user-group/components/TooltipLabel';
 
 import styles from './index.less';
 
@@ -55,7 +55,7 @@ const ViewDesignFirmPage = () => {
   const buttonStatus = useBoolean(false);
   const isLoading = useBoolean();
   const [statuses, setStatuses] = useState<DesignStatuses[]>([]);
-  const [data, setData] = useState<ProfileBrandDesign>(DEFAULT_BRAND_DESIGN_PROFILE);
+  const [data, setData] = useState<BrandDesignProfile>(DEFAULT_BRAND_DESIGN_PROFILE);
 
   // get statuses
   useEffect(() => {
@@ -92,7 +92,7 @@ const ViewDesignFirmPage = () => {
 
   return (
     <>
-      <PageContainer pageHeaderRender={() => <HeaderMenuSummary type="design" />}>
+      <PageContainer pageHeaderRender={() => <MenuHeaderSummary type="design" />}>
         <TabDetail
           selectedTab={selectedTab}
           setSelectedTab={setSelectedTab}

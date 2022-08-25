@@ -5,7 +5,7 @@ import { Tooltip } from 'antd';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
-import { BrandStatuses, ProfileBrandDesign, TabKeys } from '../types';
+import { BrandDesignProfile, BrandStatuses, TabKeys } from '../types';
 import { TabItem } from '@/components/Tabs/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
@@ -23,8 +23,8 @@ interface TabDetailProps {
   listTab: TabItem[];
   handleGoBackToTable: () => void;
   handleSaveButton: () => void;
-  data: ProfileBrandDesign;
-  setData: (data: ProfileBrandDesign) => void;
+  data: BrandDesignProfile;
+  setData: (data: BrandDesignProfile) => void;
   buttonStatus: boolean;
   isLoading: boolean;
   statuses: BrandStatuses[];
@@ -54,12 +54,9 @@ const TabDetail: FC<TabDetailProps> = ({
         <div className={styles.tabs}>
           <CustomTabs
             listTab={listTab}
-            tabPosition="top"
-            tabDisplay="start"
+            widthItem="auto"
             onChange={(changedKey) => setSelectedTab(changedKey as TabKeys)}
             activeKey={String(selectedTab)}
-            widthItem={'125px'}
-            customClass={styles.tabs_items}
           />
           <div className={styles.basicToolbarForm}>
             <MainTitle level={3}>Status:</MainTitle>
