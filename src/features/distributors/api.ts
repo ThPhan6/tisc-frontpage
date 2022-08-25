@@ -2,18 +2,13 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
+import { Distributor, DistributorForm, DistributorResponseForm } from './type';
 import {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import {
-  Distributor,
-  DistributorDetail,
-  DistributorForm,
-  DistributorResponseForm,
-} from '@/types/distributor.type';
 
 interface DistributorPaginationResponse {
   data: {
@@ -84,7 +79,7 @@ export async function updateDistributor(id: string, data: DistributorForm) {
 }
 
 export async function getOneDistributor(id: string) {
-  return request<{ data: DistributorDetail }>(`/api/distributor/get-one/${id}`, { method: 'GET' })
+  return request<{ data: DistributorForm }>(`/api/distributor/get-one/${id}`, { method: 'GET' })
     .then((response) => {
       return response.data;
     })
