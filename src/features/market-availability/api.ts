@@ -2,17 +2,17 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
+import {
+  AvailabilityCollectionGroup,
+  MarketAvailabilityDataList,
+  MarketAvailabilityDetails,
+} from './type';
 import type {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import {
-  AvailabilityCollectionGroup,
-  MarketAvailabilityDataList,
-  MarketAvailabilityDetails,
-} from '@/types';
 
 interface CategoryPaginationResponse {
   data: {

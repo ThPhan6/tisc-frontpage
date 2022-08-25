@@ -6,17 +6,17 @@ import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg'
 import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 
 import { pushTo } from '@/helper/history';
-import { getMarketAvailabilityList } from '@/services';
 
 import { TableColumnItem } from '@/components/Table/types';
+import { MarketAvailabilityDataList } from '@/features/market-availability/type';
 import { useAppSelector } from '@/reducers';
-import type { MarketAvailabilityDataList } from '@/types';
 
-import InformationMarketAvailability from './components/InformationMarketAvailability';
+import InformationMarketAvailability from '../../../../features/market-availability/components/InformationMarketAvailability';
 import { ActionForm } from '@/components/Action';
 import CustomTable from '@/components/Table';
 
-import styles from '../MarketAvailability/styles/index.less';
+import styles from './index.less';
+import { getMarketAvailabilityList } from '@/features/market-availability/api';
 
 const MarketAvailabilityList = () => {
   const user = useAppSelector((state) => state.user.user);
