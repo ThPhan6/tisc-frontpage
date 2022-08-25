@@ -4,12 +4,11 @@ import { Col, Row } from 'antd';
 
 import { getFAQCurrent } from '@/services/faq.api';
 
-import type { FaqItem } from './types';
+import { FaqItem } from '@/features/how-to/type';
 
-import { FaqComponent } from './components/FaqComponent';
 import { Title } from '@/components/Typography';
-
-import styles from './index.less';
+import { FaqComponent } from '@/features/how-to/components/FaqComponent';
+import styles from '@/features/how-to/components/index.less';
 
 const HowTo = () => {
   const [activeKey, setActiveKey] = useState<string>('');

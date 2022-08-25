@@ -5,11 +5,11 @@ import { Collapse } from 'antd';
 import { ReactComponent as ExtendIcon } from '@/assets/icons/action-extend.svg';
 import { ReactComponent as PlusIcon } from '@/assets/icons/action-plus-icon.svg';
 
-import { CollapsingProps, QnA, QuestionProps } from '../types';
+import { CollapsingProps, QnA, QuestionProps } from '../type';
 
 import { BodyText } from '@/components/Typography';
 
-import styles from '../index.less';
+import styles from './index.less';
 
 const RenderQuestion: FC<QuestionProps> = (props) => {
   const { index, question, activeKey, handleActiveCollapse } = props;
