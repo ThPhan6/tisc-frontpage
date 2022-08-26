@@ -134,3 +134,17 @@ export async function inviteUser(userId: string) {
       return false;
     });
 }
+
+export async function inviteBrand(brandId: string) {
+  return request(`/api/brand/invite/${brandId}`, {
+    method: 'POST',
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.SEND_INVITE_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.SEND_INVITE_ERROR);
+      return false;
+    });
+}
