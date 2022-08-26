@@ -342,11 +342,13 @@ const LandingPage = () => {
         onClose={handleCloseModal}
         theme="dark"
       />
-      <SignupModal
-        visible={openModal === 'Designer Signup'}
-        onClose={handleCloseModal}
-        theme="default"
-      />
+      {openModal === 'Designer Signup' && (
+        <SignupModal
+          visible={openModal === 'Designer Signup'}
+          onClose={handleCloseModal}
+          theme="default"
+        />
+      )}
       <BrandInterestedModal
         visible={openModal === 'Brand Interested'}
         onClose={handleCloseModal}
