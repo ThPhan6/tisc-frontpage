@@ -6,6 +6,7 @@ import {
   ProjectSpecifyTabValue,
   ProjectSpecifyTabs,
 } from '../../../constants/tab';
+import { message } from 'antd';
 
 import { useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
 import { getProductByIdAndReturn } from '@/features/product/services';
@@ -32,7 +33,7 @@ import styles from './styles/specifying-modal.less';
 const DEFAULT_STATE: SpecifyingProductRequestBody = {
   considered_product_id: '',
   specification: {
-    is_refer_document: false,
+    is_refer_document: true,
     specification_attribute_groups: [],
   },
   brand_location_id: '',
@@ -195,6 +196,11 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     );
 
   const onSubmit = () => {
+    if (!Number(specifyingState.quantity)) {
+      message.error('Quantity much be greater than 0');
+      return;
+    }
+
     let variant = '';
     if (specifyingState.specification.is_refer_document) {
       variant = 'Refer to Document';
