@@ -55,6 +55,7 @@ const SpecificationBySpace: React.FC<SpaceListProps> = ({ handleUpdateSpace, pro
       title: 'Room Size',
       dataIndex: 'room_size',
       width: 106,
+      noBoxShadow: true,
       render: (value, record) => {
         if (value) {
           return `${formatNumberDisplay(value)} ${record.room_size_unit ?? ''}`;
@@ -67,10 +68,12 @@ const SpecificationBySpace: React.FC<SpaceListProps> = ({ handleUpdateSpace, pro
       dataIndex: 'quantity',
       width: '5%',
       align: 'center',
+      noBoxShadow: true,
     },
     {
       title: 'Sub-total',
       dataIndex: 'room_size',
+      noBoxShadow: true,
       render: (value, record) => {
         if (value && record.quantity) {
           return `${formatNumberDisplay(value * record.quantity)} ${record.room_size_unit ?? ''}`;
@@ -78,7 +81,7 @@ const SpecificationBySpace: React.FC<SpaceListProps> = ({ handleUpdateSpace, pro
         return '';
       },
     },
-    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
+    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center', noBoxShadow: true },
   ];
 
   const ZoneColumns: TableColumnItem<ProjectSpaceZone>[] = [
@@ -182,17 +185,20 @@ const SpecificationBySpace: React.FC<SpaceListProps> = ({ handleUpdateSpace, pro
       title: 'Room',
       dataIndex: 'room_name',
       width: 106,
+      noBoxShadow: true,
     },
     {
       title: 'Room ID',
       dataIndex: 'room_id',
       width: 106,
+      noBoxShadow: true,
     },
     ...GeneralColumns,
     {
       title: 'Action',
       dataIndex: 'action',
       width: '5%',
+      noBoxShadow: true,
     },
   ];
 
@@ -212,7 +218,28 @@ const SpecificationBySpace: React.FC<SpaceListProps> = ({ handleUpdateSpace, pro
         return <span className="text-capitalize">{value}</span>;
       },
     },
-    ...SubGeneralColumns,
+    {
+      title: 'Room',
+    },
+    {
+      title: 'Room ID',
+    },
+    {
+      title: 'Room Size',
+    },
+    {
+      title: 'Quantity',
+      width: '5%',
+      align: 'center',
+    },
+    {
+      title: 'Sub-total',
+    },
+    { title: 'Count', width: '5%', align: 'center' },
+    {
+      title: 'Action',
+      width: '5%',
+    },
   ];
 
   const RoomColumns: TableColumnItem<ProjectSpaceRoom>[] = [
