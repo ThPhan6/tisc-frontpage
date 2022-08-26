@@ -48,10 +48,10 @@ const BrandProductListPage: React.FC = () => {
       const params = {
         brand_id: userBrand.id,
       } as ProductGetListParameter;
-      if (filter?.name === 'category_id' && filter.value !== 'all') {
+      if (filter?.name === 'category_id') {
         params.category_id = filter.value;
       }
-      if (filter?.name === 'collection_id' && filter.value !== 'all') {
+      if (filter?.name === 'collection_id') {
         params.collection_id = filter.value;
       }
       getProductListByBrandId(params);

@@ -197,7 +197,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
 
   const onSubmit = () => {
     if (!Number(specifyingState.quantity)) {
-      message.error('Quantity much be greater than 0');
+      message.error('Quantity must be greater than 0');
       return;
     }
 
