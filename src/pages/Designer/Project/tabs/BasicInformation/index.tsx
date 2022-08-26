@@ -65,6 +65,13 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
     }
   };
 
+  const onChangeData = (newData: Partial<ProjectBodyRequest>) => {
+    setData((prevState) => ({
+      ...prevState,
+      ...newData,
+    }));
+  };
+
   useEffect(() => {
     if (project) {
       setProjectId(project.id);
@@ -104,7 +111,7 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
 
       <Row className={styles.basicInformationWrapper}>
         <Col span={12}>
-          <EntryForm data={data} setData={setData} />
+          <EntryForm data={data} onChangeData={onChangeData} />
         </Col>
       </Row>
       {isLoading.value && <LoadingPageCustomize />}
