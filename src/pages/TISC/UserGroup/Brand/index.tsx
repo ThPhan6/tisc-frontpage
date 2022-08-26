@@ -242,7 +242,8 @@ const BrandList: React.FC = () => {
           title="BRANDS"
           rightAction={
             <CustomPlusButton
-              /* onClick={() => pushTo(PATH.tiscUserGroupBrandEntryFrom)} */ disabled
+              /* onClick={() => pushTo(PATH.tiscUserGroupBrandEntryFrom)} */
+              onClick={() => alert('comming soon')}
             />
           }
           columns={TableColumns}
