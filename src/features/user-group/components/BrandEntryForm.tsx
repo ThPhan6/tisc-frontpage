@@ -1,82 +1,92 @@
 import React, { FC, useState } from 'react';
 
+import { MESSAGE_ERROR } from '@/constants/message';
+import { PATH } from '@/constants/path';
+import { BrandAccessLevelDataRole } from '@/features/team-profiles/constants/role';
+import { useHistory } from 'umi';
+
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
-import { TISCUserGroupBrandForm, entryFormInput } from '../types/brand.types';
-import { RadioValue } from '@/components/CustomRadio/types';
+import { createBrand } from '../services';
+import { useBoolean } from '@/helper/hook';
+import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+
+import { TISCUserGroupBrandForm } from '../types/brand.types';
 
 import { CustomRadio } from '@/components/CustomRadio';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { Status } from '@/components/Form/Status';
-import { BodyText } from '@/components/Typography';
+import LoadingPageCustomize from '@/components/LoadingPage';
 
 import styles from './BrandEntryForm.less';
+import { inviteBrand } from '@/features/team-profiles/api';
 
-interface BrandEntryFormValue {
-  onCancel: () => void;
-  handleInvite: (userId: string) => void;
-  userId?: string;
-  onSubmit: (value: TISCUserGroupBrandForm, callBack?: (userId: string) => void) => void;
-  submitButtonStatus: boolean;
-  AccessLevelDataRole: RadioValue[];
-  //   role: 'TISC' | 'BRAND' | 'DESIGNER';
-}
+interface BrandEntryFormValue {}
 
-const DEFAULT_BRAND = {
-  brandname: '',
-  firstname: '',
-  lastname: '',
+const DEFAULT_BRAND: TISCUserGroupBrandForm = {
+  name: '',
+  first_name: '',
+  last_name: '',
   email: '',
-  role_id: '',
-  status: '',
 };
+type EntryFormInput = keyof typeof DEFAULT_BRAND;
 
-const BrandEntryForm: FC<BrandEntryFormValue> = ({
-  onCancel,
-  onSubmit,
-  handleInvite,
-  userId,
-  submitButtonStatus,
-  AccessLevelDataRole,
-  //   role,
-}) => {
-  // for entry form
+const BrandEntryForm: FC<BrandEntryFormValue> = ({}) => {
   const [data, setData] = useState<TISCUserGroupBrandForm>(DEFAULT_BRAND);
+  const history = useHistory();
+  const isLoading = useBoolean(false);
 
-  const onChangeData = (fieldName: entryFormInput) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeData = (fieldName: EntryFormInput) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setData((prevState) => ({
       ...prevState,
       [fieldName]: e.target.value,
     }));
   };
-  const handleDeleteData = (fieldName: entryFormInput) => () => {
+
+  const handleDeleteData = (fieldName: EntryFormInput) => () => {
     setData((prevState) => ({
       ...prevState,
       [fieldName]: '',
     }));
   };
 
-  const handleSubmit = (callBack?: (id: string) => void) => {
-    onSubmit(
-      {
-        brandname: data.brandname?.trim() ?? '',
-        firstname: data.firstname?.trim() ?? '',
-        lastname: data.lastname?.trim() ?? '',
-        email: data.email?.trim() ?? '',
-        status: data.status ?? '',
-        role_id: data.role_id,
-      },
-      callBack,
-    );
+  const handleSubmit = (callback?: (brandId: string) => void) => {
+    isLoading.setValue(true);
+    createBrand({
+      name: data.name?.trim() ?? '',
+      first_name: data.first_name?.trim() ?? '',
+      last_name: data.last_name?.trim() ?? '',
+      email: data.email?.trim() ?? '',
+    }).then((newBrand) => {
+      isLoading.setValue(false);
+      if (!newBrand) {
+        return;
+      }
+      if (callback) {
+        callback(newBrand.id);
+      } else {
+        history.replace(PATH.tiscUserGroupBrandList);
+      }
+    });
+  };
+
+  const handleSendInvite = () => {
+    isLoading.setValue(true);
+    handleSubmit((brandId) => {
+      inviteBrand(brandId).then(() => {
+        isLoading.setValue(false);
+        history.replace(PATH.tiscUserGroupBrandList);
+      });
+    });
   };
 
   return (
     <EntryFormWrapper
-      handleCancel={onCancel}
-      handleSubmit={handleSubmit}
-      submitButtonStatus={submitButtonStatus}
+      handleCancel={history.goBack}
+      handleSubmit={() => handleSubmit()}
+      submitButtonStatus={false}
       contentClass={styles.contentEntryForm}>
       {/* brand - company name */}
       <InputGroup
@@ -90,9 +100,9 @@ const BrandEntryForm: FC<BrandEntryFormValue> = ({
         colorPrimaryDark
         hasBoxShadow
         hasHeight
-        value={data.brandname}
-        onChange={onChangeData('brandname')}
-        onDelete={handleDeleteData('brandname')}
+        value={data.name}
+        onChange={onChangeData('name')}
+        onDelete={handleDeleteData('name')}
       />
       {/* first name */}
       <InputGroup
@@ -106,9 +116,9 @@ const BrandEntryForm: FC<BrandEntryFormValue> = ({
         colorPrimaryDark
         hasBoxShadow
         hasHeight
-        value={data.firstname}
-        onChange={onChangeData('firstname')}
-        onDelete={handleDeleteData('firstname')}
+        value={data.first_name}
+        onChange={onChangeData('first_name')}
+        onDelete={handleDeleteData('first_name')}
       />
       {/* last name */}
       <InputGroup
@@ -122,9 +132,9 @@ const BrandEntryForm: FC<BrandEntryFormValue> = ({
         colorPrimaryDark
         hasBoxShadow
         hasHeight
-        value={data.lastname}
-        onChange={onChangeData('lastname')}
-        onDelete={handleDeleteData('lastname')}
+        value={data.last_name}
+        onChange={onChangeData('last_name')}
+        onDelete={handleDeleteData('last_name')}
       />
       {/* work email */}
       <InputGroup
@@ -141,6 +151,8 @@ const BrandEntryForm: FC<BrandEntryFormValue> = ({
         value={data.email}
         onChange={onChangeData('email')}
         onDelete={handleDeleteData('email')}
+        message={emailMessageError(data.email, MESSAGE_ERROR.EMAIL_UNVALID)}
+        messageType={emailMessageErrorType(data.email, 'error', 'normal')}
       />
       {/* Access Level */}
       <FormGroup
@@ -148,44 +160,25 @@ const BrandEntryForm: FC<BrandEntryFormValue> = ({
         required={true}
         iconTooltip={<InfoIcon />}
         layout="vertical"
-        formClass={styles.access_label}
-        // onClick={() =>
-        //   setVisible({
-        //     accessModal: true,
-        //     workLocationModal: false,
-        //   })
-        // }
-      >
+        formClass={styles.access_label}>
         <CustomRadio
-          options={AccessLevelDataRole}
-          value={data.role_id}
-          onChange={(radioValue) =>
-            setData((prevState) => ({ ...prevState, role_id: radioValue.value as string }))
-          }
+          options={BrandAccessLevelDataRole.map((el) => ({ ...el, disabled: true }))}
+          value={BrandAccessLevelDataRole[0].value}
         />
       </FormGroup>
       {/* Status */}
       <Status
-        value={data.status}
+        value={''}
         label="Status"
-        toolTipTitle={
-          <BodyText level={6} fontFamily="Roboto" style={{ color: '#fff' }}>
-            Send email invite
-          </BodyText>
-        }
         alignOffset={[0, 6]}
         buttonName="Send Invite"
         text_1="Activated"
         text_2="pending invite"
         formClass={styles.status}
-        onClick={() => {
-          if (!userId) {
-            handleSubmit(handleInvite);
-          } else {
-            handleInvite(userId);
-          }
-        }}
+        onClick={handleSendInvite}
       />
+
+      {isLoading.value && <LoadingPageCustomize />}
     </EntryFormWrapper>
   );
 };

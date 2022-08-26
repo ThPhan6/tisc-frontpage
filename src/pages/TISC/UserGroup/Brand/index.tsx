@@ -207,25 +207,21 @@ const BrandList: React.FC = () => {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
-      //  @typescript-eslint/no-unused-vars
-      render: (_v, record: any) => {
-        console.log('record', record);
-        return (
-          <ActionMenu
-            actionItems={[
-              {
-                type: 'view',
-                onClick: () => pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', record.id)),
-              },
-              {
-                type: 'invite',
-                disabled: record.status !== 3,
-                onClick: () => handleEmailInvite(record.id),
-              },
-            ]}
-          />
-        );
-      },
+      render: (_v, record: any) => (
+        <ActionMenu
+          actionItems={[
+            {
+              type: 'view',
+              onClick: () => pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', record.id)),
+            },
+            {
+              type: 'invite',
+              disabled: record.status !== 3,
+              onClick: () => handleEmailInvite(record.id),
+            },
+          ]}
+        />
+      ),
     },
   ];
 
