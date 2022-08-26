@@ -4,6 +4,7 @@ import { PATH } from '@/constants/path';
 
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
+import { getFullName } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import { Distributor } from '@/features/distributors/type';
@@ -57,11 +58,7 @@ const Distributors = () => {
       dataIndex: 'first_name',
       width: 125,
       render: (_value, record) => {
-        return (
-          <span>
-            {record.first_name} {record.last_name}
-          </span>
-        );
+        return <span>{getFullName(record)}</span>;
       },
     },
     {
