@@ -17,7 +17,7 @@ import {
   getListAssignTeamByBrandId,
 } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
-import { showImageUrl } from '@/helper/utils';
+import { getFullName, showImageUrl } from '@/helper/utils';
 import { isEmpty, isEqual } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -113,7 +113,7 @@ const BrandList: React.FC = () => {
           // set member selected for next display
           if (memberAssignTeam.length > 0) {
             newAssignTeamSelected = memberAssignTeam.map((member) => ({
-              label: `${member.first_name} ${member.last_name}`,
+              label: getFullName(member),
               value: member.id,
             }));
           }
@@ -187,7 +187,7 @@ const BrandList: React.FC = () => {
                 <TeamIcon
                   key={user.id ?? key}
                   avatar={user.avatar}
-                  name={`${user.firstname} ${user.lastname}`}
+                  name={getFullName(user)}
                   customClass={styles.member}
                 />
               );
