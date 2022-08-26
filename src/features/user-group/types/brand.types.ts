@@ -1,13 +1,9 @@
 export interface TISCUserGroupBrandForm {
-  brandname: string;
-  firstname: string;
-  lastname: string;
+  name: string;
+  first_name: string;
+  last_name: string;
   email: string;
-  status: string | number;
-  role_id: string;
 }
-
-export type entryFormInput = 'brandname' | 'firstname' | 'lastname' | 'email' | 'role_id';
 
 export interface BrandListItem {
   id: string;

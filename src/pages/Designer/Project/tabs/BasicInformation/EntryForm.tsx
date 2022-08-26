@@ -28,31 +28,34 @@ import styles from '../../styles/basic-information.less';
 
 interface LocationEntryFormProps {
   data: ProjectBodyRequest;
-  setData: (data: ProjectBodyRequest) => void;
+  onChangeData: (newDate: Partial<ProjectBodyRequest>) => void;
 }
-type FieldName = keyof ProjectBodyRequest;
 
-const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
-  const { data, setData } = props;
+const LocationEntryForm: FC<LocationEntryFormProps> = ({ data, onChangeData }) => {
   // for content type modal
   const [visible, setVisible] = useState({
     country: false,
     state: false,
     city: false,
   });
-  const [countryLabel, setCountryLabel] = useState('');
-  const [stateLabel, setStateLabel] = useState('');
-  const [cityLabel, setCityLabel] = useState('');
 
   const [buildingTypes, setBuildingTypes] = useState<GeneralData[]>([]);
   const [projectTypes, setProjectTypes] = useState<GeneralData[]>([]);
   const [measurementUnits, setMeasurementUnits] = useState<RadioValue[]>([]);
 
-  const onChangeData = (fieldName: FieldName, fieldValue: any) => {
-    setData({
-      ...data,
-      [fieldName]: fieldValue,
-    });
+  const countryData: RadioValue = {
+    label: data.country_name,
+    value: data.country_id,
+  };
+
+  const stateData: RadioValue = {
+    label: data.state_name,
+    value: data.state_id,
+  };
+
+  const cityData: RadioValue = {
+    label: data.city_name,
+    value: data.city_id,
   };
 
   // handle onchange postal code
@@ -61,8 +64,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     if (!validatePostalCode(e.target.value) || !isEmptySpace(e.target.value)) {
       return;
     }
-    setData({
-      ...data,
+    onChangeData({
       postal_code: e.target.value,
     });
   };
@@ -108,10 +110,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         colorPrimaryDark
         hasBoxShadow
         hasHeight
-        onChange={(e) => {
-          onChangeData('code', e.target.value);
-        }}
-        onDelete={() => onChangeData('code', '')}
+        onChange={(e) => onChangeData({ code: e.target.value })}
+        onDelete={() => onChangeData({ code: '' })}
         placeholder="type here"
       />
       <InputGroup
@@ -124,10 +124,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         colorPrimaryDark
         hasBoxShadow
         hasHeight
-        onChange={(e) => {
-          onChangeData('name', e.target.value);
-        }}
-        onDelete={() => onChangeData('name', '')}
+        onChange={(e) => onChangeData({ name: e.target.value })}
+        onDelete={() => onChangeData({ name: '' })}
         placeholder="type here"
       />
 
@@ -135,7 +133,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         label="Country Location"
         required
         fontLevel={3}
-        value={countryLabel || data.country_name}
+        value={countryData.label?.toString()}
         hasPadding
         colorPrimaryDark
         hasBoxShadow
@@ -154,7 +152,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         label="State / Province"
         required
         fontLevel={3}
-        value={stateLabel}
+        value={stateData.label?.toString()}
         hasPadding
         colorPrimaryDark
         hasBoxShadow
@@ -174,7 +172,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         label="City / Town"
         required
         fontLevel={3}
-        value={cityLabel}
+        value={cityData.label?.toString()}
         hasPadding
         colorPrimaryDark
         hasBoxShadow
@@ -198,7 +196,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
           showCount
           placeholder="type here"
           borderBottomColor="mono-medium"
-          onChange={(e) => onChangeData('address', e.target.value)}
+          onChange={(e) => onChangeData({ address: e.target.value })}
           value={data.address}
           boxShadow
         />
@@ -214,10 +212,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         colorPrimaryDark
         hasBoxShadow
         hasHeight
-        onChange={(e) => {
-          onChangePostalCode(e);
-        }}
-        onDelete={() => onChangeData('postal_code', '')}
+        onChange={onChangePostalCode}
+        onDelete={() => onChangeData({ postal_code: '' })}
         message={messageError(data.postal_code, 10, MESSAGE_ERROR.POSTAL_CODE)}
         messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
       />
@@ -236,11 +232,11 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
           })}
           checked={data.project_type_id}
           onChange={(checkedItem) => {
-            if (checkedItem.value === 'other') {
-              onChangeData('project_type_id', checkedItem.label);
-            } else {
-              onChangeData('project_type_id', checkedItem.value);
-            }
+            onChangeData({
+              project_type_id: String(
+                checkedItem.value === 'other' ? checkedItem.label : checkedItem.value,
+              ),
+            });
           }}
           placeholder={projectTypeData.name === '' ? 'select from list' : projectTypeData.name}
           otherInput
@@ -260,11 +256,11 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
           })}
           checked={data.building_type_id}
           onChange={(checkedItem) => {
-            if (checkedItem.value === 'other') {
-              onChangeData('building_type_id', checkedItem.label);
-            } else {
-              onChangeData('building_type_id', checkedItem.value);
-            }
+            onChangeData({
+              building_type_id: String(
+                checkedItem.value === 'other' ? checkedItem.label : checkedItem.value,
+              ),
+            });
           }}
           placeholder={buildingTypeData.name === '' ? 'select from list' : buildingTypeData.name}
           otherInput
@@ -279,20 +275,24 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         <CustomRadio
           options={measurementUnits}
           value={data.measurement_unit}
-          onChange={(selectedValue) => onChangeData('measurement_unit', selectedValue.value)}
+          onChange={(selectedValue) =>
+            onChangeData({ measurement_unit: Number(selectedValue.value) })
+          }
         />
       </FormGroup>
 
       <FormGroup label="Design Due" required layout="vertical" formClass={styles.formGroup}>
         <DateInput
           value={data.design_due}
-          onChange={(date) => onChangeData('design_due', date?.format('YYYY-MM-DD') ?? '')}
+          onChange={(date) => onChangeData({ design_due: date?.format('YYYY-MM-DD') ?? '' })}
         />
       </FormGroup>
       <FormGroup label="Construction Start" required layout="vertical" formClass={styles.formGroup}>
         <DateInput
           value={data.construction_start}
-          onChange={(date) => onChangeData('construction_start', date?.format('YYYY-MM-DD') ?? '')}
+          onChange={(date) =>
+            onChangeData({ construction_start: date?.format('YYYY-MM-DD') ?? '' })
+          }
         />
       </FormGroup>
 
@@ -305,14 +305,13 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
             country: status,
           })
         }
-        chosenValue={{
-          label: '',
-          value: data.country_id,
-        }}
-        setChosenValue={(chosenData) => {
-          onChangeData('country_id', chosenData.value);
-          setCountryLabel(chosenData.label);
-        }}
+        chosenValue={countryData}
+        setChosenValue={(v) =>
+          onChangeData({
+            country_id: v.value,
+            country_name: String(v.label),
+          })
+        }
         withPhoneCode
         hasGlobal={false}
       />
@@ -326,14 +325,13 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
             country: false,
           })
         }
-        chosenValue={{
-          label: '',
-          value: data.state_id,
-        }}
-        setChosenValue={(chosenData) => {
-          onChangeData('state_id', chosenData.value);
-          setStateLabel(chosenData.label);
-        }}
+        chosenValue={stateData}
+        setChosenValue={(v) =>
+          onChangeData({
+            state_id: v.value,
+            state_name: String(v.label),
+          })
+        }
       />
 
       <CityModal
@@ -347,14 +345,13 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
             country: false,
           })
         }
-        chosenValue={{
-          label: '',
-          value: data.city_id,
-        }}
-        setChosenValue={(chosenData) => {
-          onChangeData('city_id', chosenData.value);
-          setCityLabel(chosenData.label);
-        }}
+        chosenValue={cityData}
+        setChosenValue={(v) =>
+          onChangeData({
+            city_id: v.value,
+            city_name: String(v.label),
+          })
+        }
       />
     </div>
   );
