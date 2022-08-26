@@ -41,7 +41,7 @@ export const SpecificationByMaterial: FC = () => {
     },
     {
       title: 'Description',
-      dataIndex: 'description',
+      dataIndex: 'specified_description',
       onCell: onCellCancelled,
     },
     {

@@ -116,8 +116,8 @@ const ProductConsidered: React.FC = () => {
             type: 'deleted',
             onClick: () =>
               confirmDelete(() => {
-                removeProductFromProject(record.specified_product_id).then((success) =>
-                  success ? tableRef.current.reload() : undefined,
+                removeProductFromProject(record.considered_id).then((success) =>
+                  success ? tableRef.current?.reload() : undefined,
                 );
               }),
           },
