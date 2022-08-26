@@ -169,7 +169,7 @@ const UpdateEmailAutoPage = () => {
                     key={item.value}
                     direction="horizontal"
                     value={formState.topic}
-                    onChange={(radioValue) => onChangeState('topic', radioValue.value)}
+                    onChange={(radioValue) => onChangeState('topic', String(radioValue.value))}
                     options={[{ value: item.value, label: item.key }]}
                     containerClass={styles.radio_container}
                   />
@@ -195,7 +195,9 @@ const UpdateEmailAutoPage = () => {
                     key={item.value}
                     direction="horizontal"
                     value={formState.targeted_for}
-                    onChange={(radioValue) => handleOnChangeRadio('targeted_for', radioValue.value)}
+                    onChange={(radioValue) =>
+                      handleOnChangeRadio('targeted_for', String(radioValue.value))
+                    }
                     options={[{ value: item.value, label: item.key }]}
                     containerClass={styles.radio_container}
                   />

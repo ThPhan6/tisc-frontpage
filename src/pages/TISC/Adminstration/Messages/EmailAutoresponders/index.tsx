@@ -48,7 +48,7 @@ const EmailAutoList = () => {
               {
                 type: 'updated',
                 label: 'Edit',
-                onClick: () => handleUpdateEmailAuto(record.collection_id),
+                onClick: () => handleUpdateEmailAuto(record.id),
               },
             ]}
           />
