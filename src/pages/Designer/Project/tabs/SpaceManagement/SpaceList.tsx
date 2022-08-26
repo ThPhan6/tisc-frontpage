@@ -12,9 +12,9 @@ import type {
   ProjectSpaceZone,
 } from '@/features/project/types';
 
-import { ActionMenu } from '@/components/Action';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ActionMenu } from '@/components/TableAction';
 
 const MAIN_COL_WIDTH = 200;
 const SUB_COL_WIDTH = 150;
@@ -160,8 +160,16 @@ const SpecificationBySpace: React.FC<SpaceListProps> = ({ handleUpdateSpace, pro
       render: (zoneId, record) => {
         return (
           <ActionMenu
-            handleUpdate={() => handleUpdateSpace(record)}
-            handleDelete={() => handleDeleteZone(zoneId)}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateSpace(record),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteZone(zoneId),
+              },
+            ]}
           />
         );
       },

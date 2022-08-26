@@ -13,9 +13,9 @@ import { pushTo } from '@/helper/history';
 import type { TableColumnItem } from '@/components/Table/types';
 import { CategoryNestedList } from '@/features/categories/types';
 
-import { ActionMenu } from '@/components/Action';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ActionMenu } from '@/components/TableAction';
 
 const MAIN_COL_WIDTH = 343;
 const SUB_COL_WIDTH = 160;
@@ -75,8 +75,16 @@ const CategoryList: React.FC = () => {
       render: (_value, record) => {
         return (
           <ActionMenu
-            handleUpdate={() => handleUpdateCategory(record.id)}
-            handleDelete={() => handleDeleteCategory(record.id)}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateCategory(record.id),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteCategory(record.id),
+              },
+            ]}
           />
         );
       },

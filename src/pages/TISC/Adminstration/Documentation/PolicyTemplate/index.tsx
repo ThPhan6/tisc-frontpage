@@ -2,16 +2,14 @@ import { useRef } from 'react';
 
 import { PATH } from '@/constants/path';
 
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
-
 import { pushTo } from '@/helper/history';
 import { getFullName } from '@/helper/utils';
 
 import { Documentation } from './types';
 import { TableColumnItem } from '@/components/Table/types';
 
-import { ActionForm } from '@/components/Action';
 import CustomTable from '@/components/Table';
+import { ActionMenu } from '@/components/TableAction';
 
 import { getPolicyTemplates } from './api';
 import moment from 'moment';
@@ -48,12 +46,12 @@ const PolicyTemplatePage: React.FC = () => {
       width: '5%',
       render: (_value: any, record: any) => {
         return (
-          <ActionForm
+          <ActionMenu
             actionItems={[
               {
-                onClick: () => pushTo(PATH.policyUpdate.replace(':id', record.id)),
-                icon: <EditIcon />,
+                type: 'updated',
                 label: 'Edit',
+                onClick: () => pushTo(PATH.policyUpdate.replace(':id', record.id)),
               },
             ]}
           />
