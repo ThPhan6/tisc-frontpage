@@ -8,6 +8,7 @@ import {
   getUnitTypeList,
 } from '@/features/project/services';
 import { getAllMaterialCode } from '@/features/user-group/services';
+import { validateFloatNumber } from '@/helper/utils';
 
 import { CodeOrderRequestParams, OnChangeSpecifyingProductFnc } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -180,11 +181,9 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
           <FormGroup label="Quantity/Unit Type" {...formGroupProps}>
             <CustomInput
               borderBottomColor="light"
-              type="number"
-              step={1}
-              min={1}
-              value={quantity || 1}
-              onChange={(e) => onChangeSpecifyingState({ quantity: Number(e.target.value) })}
+              value={quantity}
+              onChange={(e) => onChangeSpecifyingState({ quantity: e.target.value })}
+              inputValidation={validateFloatNumber}
             />
           </FormGroup>
         </Col>

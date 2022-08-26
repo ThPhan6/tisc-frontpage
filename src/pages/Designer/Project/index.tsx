@@ -21,9 +21,9 @@ import type { TableColumnItem } from '@/components/Table/types';
 import type { ProjectListProps, ProjectSummaryData } from '@/features/project/types';
 
 import ProjectListHeader from './components/ProjectListHeader';
-import { ActionMenu } from '@/components/Action';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ActionMenu } from '@/components/TableAction';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
 
@@ -150,8 +150,16 @@ const ProjectList: React.FC = () => {
       render: (projectId) => {
         return (
           <ActionMenu
-            handleUpdate={() => goToUpdateProject(projectId)}
-            handleDelete={() => handleDeleteProject(projectId)}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => goToUpdateProject(projectId),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteProject(projectId),
+              },
+            ]}
           />
         );
       },

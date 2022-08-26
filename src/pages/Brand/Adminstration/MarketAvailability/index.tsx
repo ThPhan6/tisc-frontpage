@@ -2,7 +2,6 @@ import { useState } from 'react';
 
 import { PATH } from '@/constants/path';
 
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 
 import { pushTo } from '@/helper/history';
@@ -11,8 +10,8 @@ import { TableColumnItem } from '@/components/Table/types';
 import { MarketAvailabilityDataList } from '@/features/market-availability/type';
 import { useAppSelector } from '@/reducers';
 
-import { ActionForm } from '@/components/Action';
 import CustomTable from '@/components/Table';
+import { ActionMenu } from '@/components/TableAction';
 import InformationMarketAvailability from '@/features/market-availability/components/InformationMarketAvailability';
 
 import styles from './index.less';
@@ -73,12 +72,12 @@ const MarketAvailabilityList = () => {
       width: '5%',
       render: (_value, record) => {
         return (
-          <ActionForm
+          <ActionMenu
             actionItems={[
               {
-                onClick: () => handleUpdateMarketAvailability(record.collection_id),
-                icon: <EditIcon />,
+                type: 'updated',
                 label: 'Edit',
+                onClick: () => handleUpdateMarketAvailability(record.collection_id),
               },
             ]}
           />

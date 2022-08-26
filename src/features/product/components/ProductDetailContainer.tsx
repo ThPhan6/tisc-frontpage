@@ -20,7 +20,6 @@ import {
   updateProductCard,
 } from '@/features/product/services';
 import { getBrandById } from '@/features/user-group/services';
-import { pushTo } from '@/helper/history';
 import { useCheckPermission } from '@/helper/hook';
 import { isValidURL } from '@/helper/utils';
 
@@ -87,6 +86,23 @@ const ProductDetailContainer: React.FC = () => {
     }
   }, [details.id, details.brand]);
 
+  const updateBottomBasicInfo = (id?: string) => {
+    if (id) {
+      createProductTip({
+        product_id: id,
+        contents: tip.contents,
+      });
+      createProductDownload({
+        product_id: id,
+        contents: download.contents,
+      });
+      createProductCatelogue({
+        product_id: id,
+        contents: catelogue.contents,
+      });
+    }
+  };
+
   const onSave = () => {
     // check urls is valid
     const haveInvaliDownloadURL = download.contents.some(
@@ -119,41 +135,18 @@ const ProductDetailContainer: React.FC = () => {
     };
 
     if (productId) {
-      updateProductCard(productId, data).then((productDetail) => {
-        if (productDetail) {
-          createProductTip({
-            product_id: productDetail.id,
-            contents: tip.contents,
-          });
-          createProductDownload({
-            product_id: productDetail.id,
-            contents: download.contents,
-          });
-          createProductCatelogue({
-            product_id: productDetail.id,
-            contents: catelogue.contents,
-          });
-        }
-      });
+      updateProductCard(productId, data).then((productDetail) =>
+        updateBottomBasicInfo(productDetail?.id),
+      );
       return;
     }
 
     createProductCard(data).then((productDetail) => {
       if (productDetail) {
-        createProductTip({
-          product_id: productDetail.id,
-          contents: tip.contents,
-        });
-        createProductDownload({
-          product_id: productDetail.id,
-          contents: download.contents,
-        });
-        createProductCatelogue({
-          product_id: productDetail.id,
-          contents: catelogue.contents,
-        });
+        updateBottomBasicInfo(productDetail.id);
+
         /// push to product update, 100% have product detail id
-        pushTo(PATH.productConfigurationUpdate.replace(':id', productDetail.id ?? ''));
+        history.replace(PATH.productConfigurationUpdate.replace(':id', productDetail.id ?? ''));
       }
     });
   };
@@ -166,11 +159,7 @@ const ProductDetailContainer: React.FC = () => {
     <Row gutter={8}>
       <Col span={24}>
         {isTiscAdmin ? (
-          <ProductDetailHeader
-            title={'CATEGORY'}
-            onSave={onSave}
-            onCancel={() => pushTo(PATH.productConfiguration)}
-          />
+          <ProductDetailHeader title={'CATEGORY'} onSave={onSave} onCancel={history.goBack} />
         ) : (
           <TableHeader
             title={title}

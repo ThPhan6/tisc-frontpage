@@ -181,6 +181,7 @@ export const updateProductCard = async (productId: string, data: ProductFormData
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_PRODUCT_ERROR);
+      return undefined;
     });
 };
 

@@ -11,9 +11,9 @@ import { deleteBasisOption, getProductBasisOptionPagination } from '@/services';
 import type { TableColumnItem } from '@/components/Table/types';
 import type { BasisOptionListResponse, SubBasisOption } from '@/types';
 
-import { ActionMenu } from '@/components/Action';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ActionMenu } from '@/components/TableAction';
 
 const MAIN_COL_WIDTH = 253;
 const SUB_COL_WIDTH = 135;
@@ -105,8 +105,16 @@ const BasisOptionList: React.FC = () => {
       render: (_value: any, record: any) => {
         return (
           <ActionMenu
-            handleUpdate={() => handleUpdateBasisOption(record.id)}
-            handleDelete={() => handleDeleteBasisOption(record.id)}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateBasisOption(record.id),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteBasisOption(record.id),
+              },
+            ]}
           />
         );
       },

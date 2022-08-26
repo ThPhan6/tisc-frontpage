@@ -66,7 +66,7 @@ export async function updateProductSpecifying(
 ) {
   await request(`/api/specified-product/specify`, {
     method: 'POST',
-    data,
+    data: { ...data, quantity: Number(data.quantity) },
   })
     .then(() => {
       message.success(getResponseMessage('update', 'product specifying'));
