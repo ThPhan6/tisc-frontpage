@@ -83,9 +83,15 @@ export async function resetPasswordMiddleware(
     });
 }
 
+export enum ForgotType {
+  TISC = 1,
+  OTHER = 2,
+}
+
 export async function forgotPasswordMiddleware(
   data: {
     email: string;
+    type: ForgotType;
   },
   callback: (type: STATUS_RESPONSE, message?: string) => void,
 ) {

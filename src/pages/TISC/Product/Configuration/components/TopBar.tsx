@@ -261,7 +261,6 @@ const ProductTopBar: React.FC = () => {
         setChosenValue={(v) => {
           const chosenBrand = brandFlatList.find((el) => el.id === v.value);
           if (chosenBrand) {
-            console.log('chosenBrand', chosenBrand);
             updateUrlParams({
               set: [
                 { key: QUERY_KEY.b_id, value: chosenBrand.id },
