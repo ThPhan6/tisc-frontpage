@@ -30,16 +30,19 @@ interface SignUpFormState {
   confirmed_password: string;
   agree_tisc: boolean;
 }
+
+const DEFAULT_STATE: SignUpFormState = {
+  email: '',
+  password: '',
+  firstname: '',
+  confirmed_password: '',
+  agree_tisc: false,
+};
+
 export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
   const [openModalPolicies, setOpenModalPolicies] = useState('');
-  const [formInput, setFormInput] = useState<SignUpFormState>({
-    email: '',
-    password: '',
-    firstname: '',
-    confirmed_password: '',
-    agree_tisc: false,
-  });
+  const [formInput, setFormInput] = useState<SignUpFormState>(DEFAULT_STATE);
   const [agreeTisc, setAgreeTisc] = useState(false);
   const isLoading = useBoolean();
   const [emailExisted, setEmailExisted] = useState(false);
@@ -102,6 +105,9 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
     }).then((res) => {
       if (res) {
         onClose();
+        setFormInput(DEFAULT_STATE);
+        setAgreeTisc(false);
+        setEmailExisted(false);
       }
       isLoading.setValue(false);
     });
