@@ -17,6 +17,7 @@ import { ReactComponent as TargetMoneyIcon } from '@/assets/icons/target-money-i
 import { ReactComponent as TimeMoney } from '@/assets/icons/time-money-icon.svg';
 
 import {
+  ForgotType,
   createPasswordVerify,
   forgotPasswordMiddleware,
   loginByBrandOrDesigner,
@@ -145,15 +146,18 @@ const LandingPage = () => {
 
   const handleForgotPassword = (email: string) => {
     isLoading.setValue(true);
-    forgotPasswordMiddleware({ email: email }, async (type: STATUS_RESPONSE, msg?: string) => {
-      if (type === STATUS_RESPONSE.SUCCESS) {
-        setOpenModal('');
-        message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD);
-      } else {
-        message.error(msg);
-      }
-      isLoading.setValue(false);
-    });
+    forgotPasswordMiddleware(
+      { email: email, type: openModal === 'Tisc Login' ? ForgotType.TISC : ForgotType.OTHER },
+      async (type: STATUS_RESPONSE, msg?: string) => {
+        if (type === STATUS_RESPONSE.SUCCESS) {
+          setOpenModal('');
+          message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD);
+        } else {
+          message.error(msg);
+        }
+        isLoading.setValue(false);
+      },
+    );
   };
 
   const handleResetPassword = (data: ResetPasswordRequestBody) => {
