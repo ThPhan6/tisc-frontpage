@@ -40,7 +40,7 @@ const DEFAULT_ACTION_INFO: {
   },
   updated: {
     icon: <EditIcon />,
-    label: 'Update',
+    label: 'Edit',
   },
   deleted: {
     icon: <DeleteIcon />,

@@ -110,7 +110,7 @@ const ProjectList: React.FC = () => {
       title: 'Design Due',
       dataIndex: 'design_due',
       render: (value) => {
-        const dueDay = moment(value).diff(moment(), 'days') ?? 0;
+        const dueDay = moment(value).diff(moment(moment().format('YYYY-MM-DD')), 'days') ?? 0;
         let suffix = 'day';
         if (dueDay > 1 || dueDay < -1) {
           suffix += 's';
