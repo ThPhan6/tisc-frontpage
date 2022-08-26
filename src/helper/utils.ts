@@ -162,7 +162,8 @@ export const getPathName = (pathName: string) => {
   return false;
 };
 export const getFullName = (data: any) => {
-  return `${data?.lastname ?? ''} ${data?.firstname ?? ''}`;
+  // return `${data?.lastname ?? ''} ${data?.firstname ?? ''}`;
+  return `${data?.firstname || data?.first_name || ''} ${data?.lastname || data?.last_name || ''}`;
 };
 
 export const isValidURL = (url: string) => {
