@@ -146,10 +146,16 @@
   margin-bottom: 8px;
   background-color: @mono-color-light !important;
   border: 0 !important;
+
+  :global(.ant-collapse-item.ant-collapse-item-disabled > .ant-collapse-header) {
+    cursor: default;
+  }
+  :global(.ant-collapse-item .ant-collapse-header-collapsible-only) {
+    cursor: pointer;
+  }
   .productCardHeaderCollapse {
     :global(.ant-collapse-header) {
       box-shadow: @border-bottom-light;
-      cursor: default;
       transition: all 0.3s;
     }
     &:global(.ant-collapse-item-active) {
@@ -163,6 +169,7 @@
         }
       }
     }
+
     :global(.ant-collapse-content) {
       background-color: @mono-color-light;
     }
