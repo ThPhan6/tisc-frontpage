@@ -90,8 +90,16 @@ const Distributors = () => {
       render: (_value, record) => {
         return (
           <ActionMenu
-            updated={{ onClick: () => handleUpdateDistributor(record.id) }}
-            deleted={{ onClick: () => handleDeleteDistributor(record.id) }}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateDistributor(record.id),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteDistributor(record.id),
+              },
+            ]}
           />
         );
       },

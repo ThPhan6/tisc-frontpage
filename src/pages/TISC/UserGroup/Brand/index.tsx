@@ -218,13 +218,17 @@ const BrandList: React.FC = () => {
       render: (_v, record: any) => {
         return (
           <ActionMenu
-            view={{
-              onClick: () => pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', record.id)),
-            }}
-            invite={{
-              onClick: () => handleEmailInvite(record.assign_team),
-              disabled: record.status !== 3,
-            }}
+            actionItems={[
+              {
+                type: 'view',
+                onClick: () => pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', record.id)),
+              },
+              {
+                type: 'invite',
+                disabled: record.status !== 3,
+                onClick: () => handleEmailInvite(record.assign_team),
+              },
+            ]}
           />
         );
       },

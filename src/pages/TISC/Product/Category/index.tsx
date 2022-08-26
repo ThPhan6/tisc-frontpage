@@ -75,8 +75,16 @@ const CategoryList: React.FC = () => {
       render: (_value, record) => {
         return (
           <ActionMenu
-            updated={{ onClick: () => handleUpdateCategory(record.id) }}
-            deleted={{ onClick: () => handleDeleteCategory(record.id) }}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateCategory(record.id),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteCategory(record.id),
+              },
+            ]}
           />
         );
       },

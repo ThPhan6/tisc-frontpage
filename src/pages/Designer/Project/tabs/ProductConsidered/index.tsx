@@ -106,18 +106,22 @@ const ProductConsidered: React.FC = () => {
     }
     return (
       <ActionMenu
-        specify={{
-          disabled: record.status === AssigningStatus.Unlisted,
-          onClick: () => setSpecifyingProduct(record),
-        }}
-        deleted={{
-          onClick: () =>
-            confirmDelete(() => {
-              removeProductFromProject(record.considered_id).then((success) =>
-                success ? tableRef.current?.reload() : undefined,
-              );
-            }),
-        }}
+        actionItems={[
+          {
+            type: 'specify',
+            disabled: record.status === AssigningStatus.Unlisted,
+            onClick: () => setSpecifyingProduct(record),
+          },
+          {
+            type: 'deleted',
+            onClick: () =>
+              confirmDelete(() => {
+                removeProductFromProject(record.specified_product_id).then((success) =>
+                  success ? tableRef.current.reload() : undefined,
+                );
+              }),
+          },
+        ]}
       />
     );
   };

@@ -105,8 +105,16 @@ const BasisOptionList: React.FC = () => {
       render: (_value: any, record: any) => {
         return (
           <ActionMenu
-            updated={{ onClick: () => handleUpdateBasisOption(record.id) }}
-            deleted={{ onClick: () => handleDeleteBasisOption(record.id) }}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateBasisOption(record.id),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteBasisOption(record.id),
+              },
+            ]}
           />
         );
       },

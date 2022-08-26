@@ -76,8 +76,16 @@ const AttributeList: React.FC = () => {
       render: (_value, record) => {
         return (
           <ActionMenu
-            updated={{ onClick: () => handleUpdateAttribute(record.id) }}
-            deleted={{ onClick: () => handleDeleteAttribute(record.id) }}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateAttribute(record.id),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteAttribute(record.id),
+              },
+            ]}
           />
         );
       },

@@ -2,7 +2,6 @@ import { useState } from 'react';
 
 import { PATH } from '@/constants/path';
 
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 
 import { pushTo } from '@/helper/history';
@@ -74,11 +73,13 @@ const MarketAvailabilityList = () => {
       render: (_value, record) => {
         return (
           <ActionMenu
-            updated={{
-              onClick: () => handleUpdateMarketAvailability(record.collection_id),
-              icon: <EditIcon />,
-              label: 'Edit',
-            }}
+            actionItems={[
+              {
+                type: 'updated',
+                label: 'Edit',
+                onClick: () => handleUpdateMarketAvailability(record.collection_id),
+              },
+            ]}
           />
         );
       },

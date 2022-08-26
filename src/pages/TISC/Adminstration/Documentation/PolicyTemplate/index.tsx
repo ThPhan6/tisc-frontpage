@@ -2,8 +2,6 @@ import { useRef } from 'react';
 
 import { PATH } from '@/constants/path';
 
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
-
 import { pushTo } from '@/helper/history';
 import { getFullName } from '@/helper/utils';
 
@@ -49,11 +47,13 @@ const PolicyTemplatePage: React.FC = () => {
       render: (_value: any, record: any) => {
         return (
           <ActionMenu
-            updated={{
-              onClick: () => pushTo(PATH.policyUpdate.replace(':id', record.id)),
-              icon: <EditIcon />,
-              label: 'Edit',
-            }}
+            actionItems={[
+              {
+                type: 'updated',
+                label: 'Edit',
+                onClick: () => pushTo(PATH.policyUpdate.replace(':id', record.id)),
+              },
+            ]}
           />
         );
       },

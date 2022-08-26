@@ -72,8 +72,16 @@ const BasisConversionList: React.FC = () => {
       render: (_value, record) => {
         return (
           <ActionMenu
-            updated={{ onClick: () => handleUpdateConversion(record.id) }}
-            deleted={{ onClick: () => handleDeleteConversion(record.id) }}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateConversion(record.id),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteConversion(record.id),
+              },
+            ]}
           />
         );
       },

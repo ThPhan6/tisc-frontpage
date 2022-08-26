@@ -79,8 +79,16 @@ const TISCLocation: React.FC = () => {
       render: (_value: any, record: any) => {
         return (
           <ActionMenu
-            updated={{ onClick: () => handleUpdateLocation(record.id) }}
-            deleted={{ onClick: () => handleDeleteLocation(record.id) }}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateLocation(record.id),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteLocation(record.id),
+              },
+            ]}
           />
         );
       },

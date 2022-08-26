@@ -160,8 +160,16 @@ const SpecificationBySpace: React.FC<SpaceListProps> = ({ handleUpdateSpace, pro
       render: (zoneId, record) => {
         return (
           <ActionMenu
-            updated={{ onClick: () => handleUpdateSpace(record) }}
-            deleted={{ onClick: () => handleDeleteZone(zoneId) }}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateSpace(record),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteZone(zoneId),
+              },
+            ]}
           />
         );
       },

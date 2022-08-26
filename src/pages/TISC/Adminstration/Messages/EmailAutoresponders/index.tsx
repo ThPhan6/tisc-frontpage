@@ -1,7 +1,5 @@
 import { PATH } from '@/constants/path';
 
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
-
 import { pushTo } from '@/helper/history';
 import { getEmailTemplatePagination } from '@/services';
 
@@ -46,11 +44,13 @@ const EmailAutoList = () => {
       render: (_value: any, record: any) => {
         return (
           <ActionMenu
-            updated={{
-              onClick: () => handleUpdateEmailAuto(record.collection_id),
-              icon: <EditIcon />,
-              label: 'Edit',
-            }}
+            actionItems={[
+              {
+                type: 'updated',
+                label: 'Edit',
+                onClick: () => handleUpdateEmailAuto(record.collection_id),
+              },
+            ]}
           />
         );
       },

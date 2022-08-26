@@ -68,7 +68,16 @@ const DesignFirmList: React.FC = () => {
       dataIndex: 'action',
       align: 'center',
       render: (_value, record) => {
-        return <ActionMenu view={{ onClick: () => handleViewDesignFirm(record.id) }} />;
+        return (
+          <ActionMenu
+            actionItems={[
+              {
+                type: 'view',
+                onClick: () => handleViewDesignFirm(record.id),
+              },
+            ]}
+          />
+        );
       },
     },
   ];

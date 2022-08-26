@@ -89,8 +89,16 @@ const BasisPresetList: React.FC = () => {
       render: (_value, record) => {
         return (
           <ActionMenu
-            updated={{ onClick: () => handleUpdatePreset(record.id) }}
-            deleted={{ onClick: () => handleDeletePreset(record.id) }}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdatePreset(record.id),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeletePreset(record.id),
+              },
+            ]}
           />
         );
       },

@@ -93,19 +93,23 @@ export const renderActionCell =
     }
     return (
       <ActionMenu
-        specify={{
-          disabled: record.status === SpecifyStatus.Cancelled,
-          onClick: () => setSpecifyingProduct(record),
-          label: 'Edit',
-        }}
-        deleted={{
-          onClick: () =>
-            confirmDelete(() => {
-              removeSpecifiedPromConsider(record.specified_product_id).then((success) =>
-                success ? tableRef.current.reload() : undefined,
-              );
-            }),
-        }}
+        actionItems={[
+          {
+            type: 'updated',
+            label: 'Edit',
+            disabled: record.status === SpecifyStatus.Cancelled,
+            onClick: () => setSpecifyingProduct(record),
+          },
+          {
+            type: 'deleted',
+            onClick: () =>
+              confirmDelete(() => {
+                removeSpecifiedPromConsider(record.specified_product_id).then((success) =>
+                  success ? tableRef.current.reload() : undefined,
+                );
+              }),
+          },
+        ]}
       />
     );
   };

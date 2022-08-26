@@ -54,8 +54,16 @@ const InspirationalQuotationsList: React.FC = () => {
       render: (_value: any, record: any) => {
         return (
           <ActionMenu
-            updated={{ onClick: () => handleUpdateQuotation(record.id) }}
-            deleted={{ onClick: () => handleDeleteQuotation(record.id) }}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateQuotation(record.id),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteQuotation(record.id),
+              },
+            ]}
           />
         );
       },

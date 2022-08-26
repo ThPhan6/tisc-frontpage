@@ -150,8 +150,16 @@ const ProjectList: React.FC = () => {
       render: (projectId) => {
         return (
           <ActionMenu
-            updated={{ onClick: () => goToUpdateProject(projectId) }}
-            deleted={{ onClick: () => handleDeleteProject(projectId) }}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => goToUpdateProject(projectId),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteProject(projectId),
+              },
+            ]}
           />
         );
       },

@@ -101,12 +101,18 @@ const TeamProfilesList = () => {
       render: (_value: any, record: any) => {
         return (
           <ActionMenu
-            updated={{ onClick: () => handleUpdateTeamProfile(record.id) }}
-            deleted={{
-              disabled: userId === record.id,
-              onClick: () =>
-                userId === record.id ? undefined : handleDeleteTeamProfile(record.id),
-            }}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateTeamProfile(record.id),
+              },
+              {
+                type: 'deleted',
+                disabled: userId === record.id,
+                onClick: () =>
+                  userId === record.id ? undefined : handleDeleteTeamProfile(record.id),
+              },
+            ]}
           />
         );
       },
