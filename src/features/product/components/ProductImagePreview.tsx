@@ -11,6 +11,7 @@ import { ReactComponent as LikedIcon } from '@/assets/icons/action-liked-icon.sv
 import { ReactComponent as UploadIcon } from '@/assets/icons/action-upload-icon.svg';
 import { ReactComponent as AddMoreIcon } from '@/assets/icons/circle-plus-48.svg';
 import { ReactComponent as AssignIcon } from '@/assets/icons/ic-assign-2.svg';
+import { ReactComponent as CommentIcon } from '@/assets/icons/ic-comment.svg';
 import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/ic-share.svg';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/trash-icon-12.svg';
 import ProductPlaceHolderImage from '@/assets/images/product-placeholder.png';
@@ -162,12 +163,21 @@ const ProductImagePreview: React.FC = () => {
           ) : (
             <LikeIcon className={styles.actionIcon} onClick={likeProduct} />
           )}
-          <BodyText level={6} fontFamily="Roboto" customClass="action-like">
-            {`${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
-          </BodyText>
+          {isDesignerUser ? null : (
+            <BodyText level={6} fontFamily="Roboto" customClass="action-like">
+              {`${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
+            </BodyText>
+          )}
         </div>
 
         <div className={styles.actionRight}>
+          {isDesignerUser && (
+            <ActionItem
+              label="Inquiry/Request"
+              icon={<CommentIcon />}
+              onClick={() => message.info('Coming soon!')}
+            />
+          )}
           {isDesignerUser && (
             <ActionItem
               label="Assign Product"

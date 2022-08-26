@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import type {
+import {
   CategoryBodyProps,
   SubcategoryValueProps,
   subcategoryValueDefault,

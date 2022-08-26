@@ -38,7 +38,7 @@ const ProductSpecification: FC = () => {
         </BodyText>
         <ActionButton
           active={viewBy === 'brand'}
-          icon={<BrandIcon />}
+          icon={<BrandIcon style={{ width: 16, height: 16 }} />}
           onClick={() => setViewBy('brand')}
           title="Brand"
         />
