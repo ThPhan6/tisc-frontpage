@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { map } from 'lodash';
 
-import { AssignTeamForm } from '@/types';
+import { AssignTeamForm } from '@/features/user-group/types';
 
 import { RenderMemberHeader } from '@/components/RenderHeaderLabel';
 

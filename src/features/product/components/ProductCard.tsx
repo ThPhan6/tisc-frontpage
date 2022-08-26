@@ -260,7 +260,7 @@ export const CollapseProductList: React.FC<{ showBrandLogo?: boolean }> = ({ sho
           className={styles.productCardCollapse}
           customHeaderClass={styles.productCardHeaderCollapse}
           key={index}
-          collapsible={group.count === 0 ? 'disabled' : 'header'}
+          collapsible={group.count === 0 ? 'disabled' : undefined}
           header={
             <div className="header-text">
               <BodyText level={5} fontFamily="Roboto">
