@@ -1,47 +1,43 @@
-import { Collapse, Modal } from 'antd';
 import React, { useState } from 'react';
-import { CustomTabs } from '@/components/Tabs';
-import { CustomRadio } from '@/components/CustomRadio';
-import CustomButton from '@/components/Button';
+
+import { Collapse, Modal } from 'antd';
+
+import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
-import { snakeCase, isEmpty, isUndefined, lowerCase } from 'lodash';
-import { SPECIFICATION_TYPE } from '../utils';
-import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
+
+import { isEmpty, isUndefined, lowerCase, snakeCase } from 'lodash';
 
 import type { RadioValue } from '@/components/CustomRadio/types';
 import type { TabItem } from '@/components/Tabs/types';
 import type {
+  AttributeContentType,
+  AttributeSubForm,
   BasisConvention,
   BasisConventionOption,
-  AttributeContentType,
   BasisPresetOption,
   BasisText,
-  AttributeSubForm,
 } from '@/types';
 
-import type { ISelectedItem } from './AttributeEntryForm';
+import CustomButton from '@/components/Button';
+import { CustomRadio } from '@/components/CustomRadio';
+import { CustomTabs } from '@/components/Tabs';
 
 import styles from '../styles/contentTypeModal.less';
+import { SPECIFICATION_TYPE } from '../utils';
+import type { SelectedItem } from './AttributeEntryForm';
 
-interface IContentTypeModal {
-  setVisible: (value: boolean) => void;
-  contentType: AttributeContentType | undefined;
-  selectedItem: ISelectedItem;
-  onSubmit: (data: Omit<AttributeSubForm, 'id' | 'name'>) => void;
-  type: number;
-}
 type ACTIVE_TAB = 'conversions' | 'presets' | 'options' | 'text';
 
-interface IContentTypeOption {
+interface ContentTypeOptionProps {
   data: BasisConvention[] | BasisPresetOption[] | BasisText[];
   type: ACTIVE_TAB;
   selectedOption: Omit<AttributeSubForm, 'id' | 'name'>;
   setSelectedOption: (selected: Omit<AttributeSubForm, 'id' | 'name'>) => void;
 }
 
-const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
+const ContentTypeOption: React.FC<ContentTypeOptionProps> = (props) => {
   const { data, type, selectedOption, setSelectedOption } = props;
   /// default open content type dropdown
   let selectedKeys: string | string[] = [];
@@ -177,8 +173,7 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
       expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
       className={styles.contentTypeCollapse}
       onChange={setActiveKey}
-      activeKey={activeKey}
-    >
+      activeKey={activeKey}>
       {[...data]
         .filter((item: any) => !isEmpty(item.subs))
         .map((option: any) => (
@@ -190,8 +185,7 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
               </span>
             }
             key={snakeCase(option.name)}
-            className="site-collapse-custom-panel"
-          >
+            className="site-collapse-custom-panel">
             <CustomRadio
               options={
                 type === 'conversions'
@@ -213,7 +207,14 @@ const ContentTypeOption: React.FC<IContentTypeOption> = (props) => {
   );
 };
 
-const ContentTypeModal: React.FC<IContentTypeModal> = (props) => {
+interface ContentTypeModalProps {
+  setVisible: (value: boolean) => void;
+  contentType: AttributeContentType | undefined;
+  selectedItem: SelectedItem;
+  onSubmit: (data: Omit<AttributeSubForm, 'id' | 'name'>) => void;
+  type: number;
+}
+const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
   const { setVisible, contentType, selectedItem, onSubmit, type } = props;
   const { subAttribute } = selectedItem;
   let listTab: TabItem[] = [
@@ -265,14 +266,12 @@ const ContentTypeModal: React.FC<IContentTypeModal> = (props) => {
             <CustomButton
               size="small"
               buttonClass={styles.contentTypeSubmitBtn}
-              onClick={() => onSubmit(selectedOption)}
-            >
+              onClick={() => onSubmit(selectedOption)}>
               Done
             </CustomButton>
           </div>
         }
-        className={styles.contentTypeModalWrapper}
-      >
+        className={styles.contentTypeModalWrapper}>
         <div>
           <CustomTabs
             listTab={listTab}

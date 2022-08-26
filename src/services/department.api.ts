@@ -1,7 +1,8 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { DepartmentData } from '@/types';
 import { message } from 'antd';
 import { request } from 'umi';
+
+import { DepartmentData } from '@/types';
 
 export async function getDepartmentList() {
   return request<{ data: DepartmentData[] }>(`/api/department/get-list`)

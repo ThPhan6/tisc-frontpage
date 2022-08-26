@@ -1,25 +1,31 @@
-import LoadingPageCustomize from '@/components/LoadingPage';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { TableHeader } from '@/components/Table/TableHeader';
+import { useEffect, useState } from 'react';
+import { ScrollMenu } from 'react-horizontal-scrolling-menu';
+
+import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
+import { message } from 'antd';
+import { useParams } from 'umi';
+
+import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
+
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { useEffect, useState } from 'react';
-import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
 import { getOneEmailAuto, getTargetedForList, getTopicList, updateEmailAuto } from '@/services';
-import { RadioItem, EmailTemplate } from '@/types';
-import { useParams } from 'umi';
-import { contentId, EntryFormWrapper } from '@/components/EntryForm';
-import { FormGroup } from '@/components/Form';
-import styles from './styles/EmailAutorespondersEntryForm.less';
-import { ScrollMenu } from 'react-horizontal-scrolling-menu';
-import { useDrag } from './utils/useDrag';
-import { CustomRadio } from '@/components/CustomRadio';
-import { CustomInput } from '@/components/Form/CustomInput';
-import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
 import { isEmpty, trimStart } from 'lodash';
-import { message } from 'antd';
-import { MESSAGE_ERROR } from '@/constants/message';
+
+import { EmailTemplate, RadioItem } from '@/types';
+
+import { CustomRadio } from '@/components/CustomRadio';
+import { EntryFormWrapper, contentId } from '@/components/EntryForm';
+import { FormGroup } from '@/components/Form';
+import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
+import { CustomInput } from '@/components/Form/CustomInput';
+import LoadingPageCustomize from '@/components/LoadingPage';
+import { useDrag } from '@/components/ScrollBar/useDrag';
+import { TableHeader } from '@/components/Table/TableHeader';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+
+import styles from './styles/EmailAutorespondersEntryForm.less';
 
 const DEFAULT_EMAILAUTORESPONDERS_VALUE: EmailTemplate = {
   topic: '',
@@ -149,8 +155,7 @@ const UpdateEmailAutoPage = () => {
         <EntryFormWrapper
           handleCancel={handleCancel}
           handleSubmit={handleUpdateEmailAuto}
-          submitButtonStatus={submitButtonStatus.value}
-        >
+          submitButtonStatus={submitButtonStatus.value}>
           {/* Topic */}
           <FormGroup label="Topic" required={true} layout="vertical" formClass={styles.radio_form}>
             <div onMouseLeave={() => dragStop}>
@@ -158,14 +163,13 @@ const UpdateEmailAutoPage = () => {
                 onWheel={onWheel}
                 onMouseDown={() => dragStart}
                 onMouseMove={handleDrag}
-                onMouseUp={() => dragStop}
-              >
+                onMouseUp={() => dragStop}>
                 {topicList.map((item) => (
                   <CustomRadio
                     key={item.value}
                     direction="horizontal"
                     value={formState.topic}
-                    onChange={(radioValue) => onChangeState('topic', radioValue.value)}
+                    onChange={(radioValue) => onChangeState('topic', String(radioValue.value))}
                     options={[{ value: item.value, label: item.key }]}
                     containerClass={styles.radio_container}
                   />
@@ -179,21 +183,21 @@ const UpdateEmailAutoPage = () => {
             label="Targeted For"
             required={true}
             layout="vertical"
-            formClass={styles.radio_form}
-          >
+            formClass={styles.radio_form}>
             <div onMouseLeave={() => dragStop}>
               <ScrollMenu
                 onWheel={onWheel}
                 onMouseDown={() => dragStart}
                 onMouseMove={handleDrag}
-                onMouseUp={() => dragStop}
-              >
+                onMouseUp={() => dragStop}>
                 {targetedForList.map((item) => (
                   <CustomRadio
                     key={item.value}
                     direction="horizontal"
                     value={formState.targeted_for}
-                    onChange={(radioValue) => handleOnChangeRadio('targeted_for', radioValue.value)}
+                    onChange={(radioValue) =>
+                      handleOnChangeRadio('targeted_for', String(radioValue.value))
+                    }
                     options={[{ value: item.value, label: item.key }]}
                     containerClass={styles.radio_container}
                   />

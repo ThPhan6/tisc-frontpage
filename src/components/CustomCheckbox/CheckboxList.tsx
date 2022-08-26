@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { CustomRadio } from '@/components/CustomRadio';
-import { CustomCheckbox } from '@/components/CustomCheckbox';
+
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
-import { Title, MainTitle } from '@/components/Typography';
-// import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
-// import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
+
+import { CustomCheckbox } from '@/components/CustomCheckbox';
+import { CustomRadio } from '@/components/CustomRadio';
+import { MainTitle, Title } from '@/components/Typography';
+
 import styles from './styles/checkboxList.less';
 
 export interface CheckboxOption {
@@ -35,7 +36,10 @@ const CheckboxList: React.FC<CheckboxListProps> = (props) => {
           className={`${styles.checkedAllRadio} selected-all-option-radio`}
           onClick={(e) => {
             e.preventDefault();
-            const checkedAll = !selectAll;
+            let checkedAll = !selectAll;
+            if (selected?.length === data.options.length) {
+              checkedAll = false;
+            }
             if (onChange) {
               if (checkedAll) {
                 onChange(data.options);
@@ -44,8 +48,7 @@ const CheckboxList: React.FC<CheckboxListProps> = (props) => {
               }
             }
             setSelectAll(checkedAll);
-          }}
-        >
+          }}>
           <CustomRadio
             options={[
               {

@@ -37,4 +37,10 @@ export default {
   'menu.adminstration.brand.market_availability': 'Market Availability',
   'menu.adminstration.brand.subscription': 'Subscription',
   'menu.adminstration.brand.profile': 'Brand Profile',
+
+  'menu.favourite': 'MY FAVOURITE',
+  'menu.product.brand.product': 'Brand Products',
+  'menu.product.custom.library': 'Custom Library',
+  'menu.adminstration.office.profile': 'Office Profile',
+  'menu.adminstration.material/product.code': 'Material/Product Code',
 };

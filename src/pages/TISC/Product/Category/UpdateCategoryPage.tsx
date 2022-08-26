@@ -1,23 +1,27 @@
-import { TableHeader } from '@/components/Table/TableHeader';
-import { CategoryEntryForm } from './components/CategoryEntryForm';
-import { CategoryBodyProp, SubcategoryValueProp } from '@/types';
-import { getOneCategoryMiddleware, updateCategoryMiddleware } from '@/services';
+import { useEffect, useState } from 'react';
+
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { PATH } from '@/constants/path';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { useBoolean } from '@/helper/hook';
-import LoadingPageCustomize from '@/components/LoadingPage';
-import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
 import { useParams } from 'umi';
-import { useEffect, useState } from 'react';
+
+import { getOneCategoryMiddleware, updateCategoryMiddleware } from '@/features/categories/services';
+import { pushTo } from '@/helper/history';
+import { useBoolean } from '@/helper/hook';
+
+import { CategoryBodyProps, SubcategoryValueProps } from '@/features/categories/types';
+
+import LoadingPageCustomize from '@/components/LoadingPage';
+import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { CategoryEntryForm } from '@/features/categories/components/CategoryEntryForm';
 
 const UpdateCategoryPage = () => {
   const [categoryValue, setCategoryValue] = useState<{
     id?: string;
     name: string;
-    subs: SubcategoryValueProp[];
+    subs: SubcategoryValueProps[];
   }>({
     name: '',
     subs: [],
@@ -36,7 +40,7 @@ const UpdateCategoryPage = () => {
       isLoading.setValue(true);
       getOneCategoryMiddleware(
         idCategory,
-        (dataRes: CategoryBodyProp) => {
+        (dataRes: CategoryBodyProps) => {
           setCategoryValue(dataRes);
           isLoading.setValue(false);
         },
@@ -49,7 +53,7 @@ const UpdateCategoryPage = () => {
     pushTo(PATH.categories);
   }, []);
 
-  const handleUpdateCategory = (data: CategoryBodyProp) => {
+  const handleUpdateCategory = (data: CategoryBodyProps) => {
     if (!idCategory) {
       pushTo(PATH.categories);
     }

@@ -1,14 +1,20 @@
+import { useRef } from 'react';
+
+import { PATH } from '@/constants/path';
+
+import { confirmDelete } from '@/helper/common';
+import { pushTo } from '@/helper/history';
+import { getFullName } from '@/helper/utils';
+
+import { TableColumnItem } from '@/components/Table/types';
+import { Distributor } from '@/features/distributors/type';
+import { useAppSelector } from '@/reducers';
+
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { TableColumnItem } from '@/components/Table/types';
-import { PATH } from '@/constants/path';
-import { pushTo } from '@/helper/history';
-import { Distributor } from '@/types/distributor.type';
-import { useRef } from 'react';
-import { deleteDistributor, getDistributorPagination } from '@/services/distributor.api';
-import { confirmDelete } from '@/helper/common';
-import { useAppSelector } from '@/reducers';
-import { ActionMenu } from '@/components/Action';
+import { ActionMenu } from '@/components/TableAction';
+
+import { deleteDistributor, getDistributorPagination } from '@/features/distributors/api';
 
 const Distributors = () => {
   const tableRef = useRef<any>();
@@ -52,11 +58,7 @@ const Distributors = () => {
       dataIndex: 'first_name',
       width: 125,
       render: (_value, record) => {
-        return (
-          <span>
-            {record.first_name} {record.last_name}
-          </span>
-        );
+        return <span>{getFullName(record)}</span>;
       },
     },
     {
@@ -85,8 +87,16 @@ const Distributors = () => {
       render: (_value, record) => {
         return (
           <ActionMenu
-            handleUpdate={() => handleUpdateDistributor(record.id)}
-            handleDelete={() => handleDeleteDistributor(record.id)}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateDistributor(record.id),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteDistributor(record.id),
+              },
+            ]}
           />
         );
       },

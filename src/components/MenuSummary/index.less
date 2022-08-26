@@ -21,13 +21,14 @@
   padding-left: 12px;
 }
 
-.boder-left {
-  box-shadow: @border-top-light;
+.border-left {
+  box-shadow: @border-left-light;
 }
 
 .header-summary {
   justify-content: space-between;
   padding: 0 24px;
+  white-space: nowrap;
   .d-flex;
 
   .element-container {
@@ -107,7 +108,7 @@
       }
 
       &:not(:first-of-type) {
-        .boder-left;
+        .border-left;
       }
     }
 
@@ -174,7 +175,7 @@
   .subscription-container {
     .element-right {
       &:first-child {
-        .boder-left;
+        .border-left;
       }
     }
   }
@@ -197,7 +198,7 @@
       }
 
       &:first-child {
-        .boder-left;
+        .border-left;
       }
     }
   }
@@ -230,3 +231,14 @@
     opacity: 1;
   }
 }
+
+// @keyframes slideToLeft {
+//   100% {
+//     transform: translateX(0);
+//     opacity: 1;
+//   }
+//   0% {
+//     transform: translateX(-5%);
+//     opacity: 0.3;
+//   }
+// }

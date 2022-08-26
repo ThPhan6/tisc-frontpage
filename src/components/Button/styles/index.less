@@ -19,7 +19,20 @@
   color: @color;
   background-color: @bg-color;
   border: 0.5px solid @border-color;
-  &:hover {
+
+  svg path {
+    fill: @color;
+  }
+  p {
+    color: @color;
+  }
+
+  &.active {
+    font-weight: 500;
+  }
+
+  &:hover,
+  &.active {
     color: @h-color;
     background-color: @h-bg-color;
     border-color: @h-border-color;
@@ -29,12 +42,6 @@
     p {
       color: @color;
     }
-  }
-  svg path {
-    fill: @color;
-  }
-  p {
-    color: @color;
   }
 }
 
@@ -207,4 +214,28 @@
 .sizeButton {
   .font-size-custom(12px, 20px);
   .size(24px, 64px, 16px, 16px, 0);
+}
+
+.actionButton {
+  box-sizing: border-box;
+  width: 80px;
+  padding: 8px 0;
+  background-color: #fff;
+  &:hover {
+    background-color: @mono-color-light;
+  }
+
+  &.active {
+    p {
+      color: @primary-color-dark;
+      font-weight: 500;
+    }
+    svg path {
+      fill: @primary-color-dark;
+    }
+  }
+  p {
+    margin-left: 9.33px;
+    line-height: 20px;
+  }
 }

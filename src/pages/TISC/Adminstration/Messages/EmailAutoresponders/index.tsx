@@ -1,12 +1,15 @@
-import CustomTable from '@/components/Table';
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
+import { PATH } from '@/constants/path';
+
+import { pushTo } from '@/helper/history';
+import { getEmailTemplatePagination } from '@/services';
+
 import { TableColumnItem } from '@/components/Table/types';
 import { EmailTemplate } from '@/types';
-import { getEmailTemplatePagination } from '@/services';
+
+import CustomTable from '@/components/Table';
+import { ActionMenu } from '@/components/TableAction';
+
 import styles from './styles/index.less';
-import { PATH } from '@/constants/path';
-import { pushTo } from '@/helper/history';
-import { ActionForm } from '@/components/Action';
 
 const EmailAutoList = () => {
   const handleUpdateEmailAuto = (id: string) => {
@@ -40,12 +43,12 @@ const EmailAutoList = () => {
       align: 'center',
       render: (_value: any, record: any) => {
         return (
-          <ActionForm
+          <ActionMenu
             actionItems={[
               {
-                onClick: () => handleUpdateEmailAuto(record.id),
-                icon: <EditIcon />,
+                type: 'updated',
                 label: 'Edit',
+                onClick: () => handleUpdateEmailAuto(record.id),
               },
             ]}
           />

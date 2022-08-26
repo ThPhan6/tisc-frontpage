@@ -1,14 +1,17 @@
-import { Modal } from 'antd';
 import type { FC } from 'react';
-import styles from './styles/index.less';
-import { ReactComponent as CloseIcon } from '../../assets/icons/close-icon.svg';
+
+import { Modal } from 'antd';
+
+import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
+
 import type { CustomModalProps } from './types';
+
+import styles from './styles/index.less';
 
 export const CustomModal: FC<CustomModalProps> = ({
   centered,
   width,
   children,
-  title,
   closeIconClass,
   containerClass,
   closeIcon,
@@ -20,8 +23,7 @@ export const CustomModal: FC<CustomModalProps> = ({
         centered={centered ? centered : true}
         width={width ? width : 576}
         closeIcon={closeIcon ? closeIcon : <CloseIcon className={closeIconClass} />}
-        {...props}
-      >
+        {...props}>
         {children}
       </Modal>
     </div>

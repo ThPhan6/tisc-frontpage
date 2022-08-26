@@ -3,68 +3,100 @@
 export default [
   // NO REQUIRE AUTHENTICATION
   {
-    path: '/',
+    path: PATH.landingPage,
     component: './LandingPage',
     layout: false,
   },
   {
-    path: '/reset-password',
+    path: PATH.resetPassword,
     component: './LandingPage',
     layout: false,
   },
   {
-    path: '/create-password',
+    path: PATH.createPassword,
+    component: './LandingPage',
+    layout: false,
+  },
+  {
+    path: PATH.verifyAccount,
     component: './LandingPage',
     layout: false,
   },
   // REQUIRED AUTHENTICATION
   {
-    path: '/profiles',
-    component: './ProfilesPage',
+    path: PATH.profiles,
+    component: './UserProfile',
   },
   {
-    path: '/howTo',
+    path: PATH.howTo,
     component: './HowTo',
   },
 
   // TISC MENU - ADMIN ACCESS ONLY
   {
-    path: '/tisc/dashboard',
+    path: PATH.tiscHomePage,
     name: 'workspace',
     icon: 'workspace-icon.svg',
     component: './TISC/MyWorkspace',
     access: 'tisc_workspace',
   },
   {
-    path: '/tisc/user-groups',
+    path: PATH.tiscUserGroupList,
     name: 'usergroup',
     icon: 'user-group-icon.svg',
     access: 'tisc_user_group',
     routes: [
       {
-        path: '/tisc/user-groups/brands',
+        path: PATH.tiscUserGroupBrandList,
         name: 'brand',
         icon: 'brand-icon.svg',
-        component: './TISC/UserGroup/Brand',
         access: 'tisc_user_group_brand',
+        routes: [
+          {
+            hideInMenu: true,
+            path: PATH.tiscUserGroupBrandList,
+            component: './TISC/UserGroup/Brand',
+          },
+          {
+            hideInMenu: true,
+            path: PATH.tiscUserGroupBrandEntryFrom,
+            component: './TISC/UserGroup/Brand/CreatePage',
+          },
+          {
+            hideInMenu: true,
+            path: PATH.tiscUserGroupBrandViewDetail,
+            component: './TISC/UserGroup/Brand/UpdatePage',
+          },
+        ],
       },
       {
-        path: '/tisc/user-groups/design-firms',
+        path: PATH.tiscUserGroupDesignerList,
         name: 'designfirm',
         icon: 'design-firm-icon.svg',
-        component: './TISC/UserGroup/DesignFirm',
         access: 'tisc_user_group_design',
+        routes: [
+          {
+            path: PATH.tiscUserGroupDesignerList,
+            hideInMenu: true,
+            component: './TISC/UserGroup/DesignFirm',
+          },
+          {
+            path: PATH.tiscUserGroupViewDesigner,
+            hideInMenu: true,
+            component: './TISC/UserGroup/DesignFirm/UpdatePage',
+          },
+        ],
       },
     ],
   },
   {
-    path: '/tisc/projects',
+    path: PATH.tiscProject,
     name: 'project',
     icon: 'project-icon.svg',
     access: 'tisc_project',
     routes: [
       {
-        path: '/tisc/projects/listing',
+        path: PATH.tiscProjectListing,
         name: 'listing',
         icon: 'listing-icon.svg',
         component: './Admin',
@@ -73,56 +105,56 @@ export default [
     ],
   },
   {
-    path: '/tisc/products',
+    path: PATH.tiscProduct,
     name: 'product',
     icon: 'product-icon.svg',
     access: 'tisc_product',
     routes: [
       {
-        path: '/tisc/products/categories',
+        path: PATH.categories,
         name: 'category',
         icon: 'category-icon.svg',
         access: 'tisc_product_category',
         routes: [
           {
-            path: '/tisc/products/categories',
+            path: PATH.categories,
             component: './TISC/Product/Category',
             hideInMenu: true,
           },
           {
-            path: '/tisc/products/categories/create',
+            path: PATH.createCategories,
             hideInMenu: true,
             component: './TISC/Product/Category/CreateCategoryPage',
           },
           {
-            path: '/tisc/products/categories/update/:id',
+            path: PATH.updateCategories,
             hideInMenu: true,
             component: './TISC/Product/Category/UpdateCategoryPage',
           },
         ],
       },
       {
-        path: '/tisc/products/basis',
+        path: PATH.tiscBasis,
         name: 'basis',
         icon: 'basis-icon.svg',
         access: 'tisc_product_basis',
         routes: [
           {
-            path: '/tisc/products/basis/conversions',
+            path: PATH.conversions,
             name: 'conversion',
             routes: [
               {
-                path: '/tisc/products/basis/conversions',
+                path: PATH.conversions,
                 component: './TISC/Product/Basis/Conversion',
                 hideInMenu: true,
               },
               {
-                path: '/tisc/products/basis/conversions/create',
+                path: PATH.createConversions,
                 hideInMenu: true,
                 component: './TISC/Product/Basis/Conversion/CreateConversionPage',
               },
               {
-                path: '/tisc/products/basis/conversions/:id',
+                path: PATH.updateConversions,
                 hideInMenu: true,
                 component: './TISC/Product/Basis/Conversion/UpdateConversionPage',
               },
@@ -130,42 +162,42 @@ export default [
           },
 
           {
-            path: '/tisc/products/basis/presets',
+            path: PATH.presets,
             name: 'preset',
             routes: [
               {
-                path: '/tisc/products/basis/presets',
+                path: PATH.presets,
                 component: './TISC/Product/Basis/Preset',
                 hideInMenu: true,
               },
               {
-                path: '/tisc/products/basis/presets/create',
+                path: PATH.createPresets,
                 hideInMenu: true,
                 component: './TISC/Product/Basis/Preset/CreatePresetPage',
               },
               {
-                path: '/tisc/products/basis/presets/:id',
+                path: PATH.updatePresets,
                 hideInMenu: true,
                 component: './TISC/Product/Basis/Preset/UpdatePresetPage',
               },
             ],
           },
           {
-            path: '/tisc/products/basis/options',
+            path: PATH.options,
             name: 'option',
             routes: [
               {
-                path: '/tisc/products/basis/options',
+                path: PATH.options,
                 component: './TISC/Product/Basis/Option',
                 hideInMenu: true,
               },
               {
-                path: '/tisc/products/basis/options/create',
+                path: PATH.createOptions,
                 hideInMenu: true,
                 component: './TISC/Product/Basis/Option/CreateOptionPage',
               },
               {
-                path: '/tisc/products/basis/options/:id',
+                path: PATH.updateOptions,
                 hideInMenu: true,
                 component: './TISC/Product/Basis/Option/UpdateOptionPage',
               },
@@ -174,69 +206,69 @@ export default [
         ],
       },
       {
-        path: '/tisc/products/attributes',
+        path: PATH.attribute,
         name: 'attribute',
         icon: 'attributes-icon.svg',
         access: 'tisc_product_attribute',
         routes: [
           {
-            path: '/tisc/products/attributes/general',
+            path: PATH.attributeGeneral,
             name: 'general',
             routes: [
               {
-                path: '/tisc/products/attributes/general',
+                path: PATH.attributeGeneral,
                 component: './TISC/Product/Attribute',
                 hideInMenu: true,
               },
               {
-                path: '/tisc/products/attributes/general/create',
+                path: PATH.attributeGeneralCreate,
                 hideInMenu: true,
                 component: './TISC/Product/Attribute/CreatePage',
               },
               {
-                path: '/tisc/products/attributes/general/:id',
+                path: PATH.attributeGeneralUpdate,
                 hideInMenu: true,
                 component: './TISC/Product/Attribute/UpdatePage',
               },
             ],
           },
           {
-            path: '/tisc/products/attributes/feature',
+            path: PATH.attributeFeature,
             name: 'feature',
             routes: [
               {
-                path: '/tisc/products/attributes/feature',
+                path: PATH.attributeFeature,
                 component: './TISC/Product/Attribute',
                 hideInMenu: true,
               },
               {
-                path: '/tisc/products/attributes/feature/create',
+                path: PATH.attributeFeatureCreate,
                 hideInMenu: true,
                 component: './TISC/Product/Attribute/CreatePage',
               },
               {
-                path: '/tisc/products/attributes/feature/:id',
+                path: PATH.attributeFeatureUpdate,
                 hideInMenu: true,
                 component: './TISC/Product/Attribute/UpdatePage',
               },
             ],
           },
           {
-            path: '/tisc/products/attributes/specification',
+            path: PATH.attributeSpecification,
             name: 'specification',
             routes: [
               {
-                path: '/tisc/products/attributes/specification',
+                path: PATH.attributeSpecification,
                 component: './TISC/Product/Attribute',
                 hideInMenu: true,
               },
               {
-                path: '/tisc/products/attributes/specification/create',
+                path: PATH.attributeSpecificationCreate,
                 hideInMenu: true,
                 component: './TISC/Product/Attribute/CreatePage',
               },
               {
-                path: '/tisc/products/attributes/specification/:id',
+                path: PATH.attributeSpecificationUpdate,
                 hideInMenu: true,
                 component: './TISC/Product/Attribute/UpdatePage',
               },
@@ -245,23 +277,23 @@ export default [
         ],
       },
       {
-        path: '/tisc/products/configuration',
+        path: PATH.productConfiguration,
         name: 'configuration',
         icon: 'configuration-icon.svg',
         access: 'tisc_product_configuration',
         routes: [
           {
-            path: '/tisc/products/configuration',
+            path: PATH.productConfiguration,
             component: './TISC/Product/Configuration',
             hideInMenu: true,
           },
           {
-            path: '/tisc/products/configuration/create/:brandId',
+            path: PATH.productConfigurationCreate,
             component: './TISC/Product/Configuration/Create',
             hideInMenu: true,
           },
           {
-            path: '/tisc/products/configuration/:id',
+            path: PATH.productConfigurationUpdate,
             component: './TISC/Product/Configuration/Update',
             hideInMenu: true,
           },
@@ -270,19 +302,19 @@ export default [
     ],
   },
   {
-    path: '/tisc/adminstration',
+    path: PATH.tiscAdministration,
     name: 'adminstration',
     icon: 'adminstration-icon.svg',
     access: 'tisc_administration',
     routes: [
       {
-        path: '/tisc/adminstration/documentation',
+        path: PATH.tiscDocumentation,
         name: 'documentation',
         icon: 'documentation-icon.svg',
         access: 'tisc_administration_documentation',
         routes: [
           {
-            path: '/tisc/adminstration/documentation/agreement-policy-terms',
+            path: PATH.policy,
             name: 'terms.policy',
             routes: [
               {
@@ -298,97 +330,97 @@ export default [
             ],
           },
           {
-            path: '/tisc/adminstration/documentation/how-to',
+            path: PATH.tiscDocumentationHowTo,
             name: 'how.to',
             component: './TISC/Adminstration/Documentation/HowTo',
           },
         ],
       },
       {
-        path: '/tisc/adminstration/locations',
+        path: PATH.tiscLocation,
         name: 'location',
         icon: 'location-icon.svg',
         access: 'tisc_administration_location',
         routes: [
           {
-            path: '/tisc/adminstration/locations',
+            path: PATH.tiscLocation,
             component: './TISC/Adminstration/Location',
             hideInMenu: true,
           },
           {
-            path: '/tisc/adminstration/locations/create',
+            path: PATH.tiscLocationCreate,
             hideInMenu: true,
             component: './TISC/Adminstration/Location/CreatePage',
           },
           {
-            path: '/tisc/adminstration/locations/:id',
+            path: PATH.tiscLocationUpdate,
             hideInMenu: true,
             component: './TISC/Adminstration/Location/UpdatePage',
           },
         ],
       },
       {
-        path: '/tisc/adminstration/team-profiles',
+        path: PATH.teamProfile,
         name: 'team.profile',
         icon: 'team-profile-icon.svg',
         access: 'tisc_administration_team_profile',
         routes: [
           {
-            path: '/tisc/adminstration/team-profiles',
+            path: PATH.teamProfile,
             component: './TISC/Adminstration/TeamProfiles',
             hideInMenu: true,
           },
           {
-            path: '/tisc/adminstration/team-profiles/create',
+            path: PATH.createTeamProfile,
             component: './TISC/Adminstration/TeamProfiles/CreatePage',
             hideInMenu: true,
           },
           {
-            path: '/tisc/adminstration/team-profiles/update/:id',
+            path: PATH.updateTeamProfile,
             component: './TISC/Adminstration/TeamProfiles/UpdatePage',
             hideInMenu: true,
           },
         ],
       },
       {
-        path: '/tisc/adminstration/messages',
+        path: PATH.tiscAdministrationMessage,
         name: 'messages',
         icon: 'messages-icon.svg',
         access: 'tisc_administration_message',
         routes: [
           {
-            path: '/tisc/adminstration/messages/email-autoresponders',
+            path: PATH.emailAuto,
             name: 'email',
             routes: [
               {
-                path: '/tisc/adminstration/messages/email-autoresponders',
+                path: PATH.emailAuto,
                 component: './TISC/Adminstration/Messages/EmailAutoresponders/',
                 hideInMenu: true,
               },
               {
-                path: '/tisc/adminstration/messages/email-autoresponders/update/:id',
+                path: PATH.updateEmailAuto,
                 component: './TISC/Adminstration/Messages/EmailAutoresponders/UpdateEmailAutoPage',
                 hideInMenu: true,
               },
             ],
           },
           {
-            path: '/tisc/adminstration/messages/quotation',
+            path: PATH.quotation,
             name: 'quotation',
             routes: [
               {
-                path: '/tisc/adminstration/messages/quotation',
+                path: PATH.quotation,
                 component: './TISC/Adminstration/Messages/InspirationalQuotations',
                 hideInMenu: true,
               },
               {
-                path: '/tisc/adminstration/messages/quotation/create',
+                path: PATH.createQuotation,
                 component:
                   './TISC/Adminstration/Messages/InspirationalQuotations/CreateQuotationPage',
                 hideInMenu: true,
               },
               {
-                path: '/tisc/adminstration/messages/quotation/update/:id',
+                path: PATH.updateQuotation,
                 component:
                   './TISC/Adminstration/Messages/InspirationalQuotations/UpdateQuotationPage',
                 hideInMenu: true,
@@ -398,18 +430,18 @@ export default [
         ],
       },
       {
-        path: '/tisc/adminstration/revenues',
+        path: PATH.tiscRevenue,
         name: 'revenue',
         icon: 'revenue-icon.svg',
         access: 'tisc_administration_revenue',
         routes: [
           {
-            path: '/tisc/adminstration/revenues/services',
+            path: PATH.tiscRevenueService,
             name: 'service',
             component: './Admin',
           },
           {
-            path: '/tisc/adminstration/revenues/subscription',
+            path: PATH.tiscRevenueSubscription,
             name: 'subscription',
             component: './Admin',
           },
@@ -418,64 +450,75 @@ export default [
     ],
   },
   {
-    path: '/brand/dashboard',
+    path: PATH.brandHomePage,
     name: 'workspace',
     icon: 'workspace-icon.svg',
     component: './Admin',
     access: 'brand_workspace',
   },
   {
-    path: '/brand/product',
+    path: PATH.brandProduct,
     name: 'product',
     icon: 'product-icon.svg',
-    component: './Admin',
     access: 'brand_product',
+    routes: [
+      {
+        path: '/brand/product',
+        component: './Brand/Products',
+        hideInMenu: true,
+      },
+      {
+        path: '/brand/product/:id',
+        component: './Brand/Products/ViewPage',
+        hideInMenu: true,
+      },
+    ],
   },
   {
-    path: '/brand/general-inquiry',
+    path: PATH.brandGeneralInquiry,
     name: 'general_inquiry',
     icon: 'general-inquiry-icon.svg',
     component: './Admin',
     access: 'brand_genenral_inquiry',
   },
   {
-    path: '/brand/project-tracking',
+    path: PATH.brandProjectTracking,
     name: 'project_tracking',
     icon: 'project-tracking-icon.svg',
     component: './Admin',
     access: 'brand_project_tracking',
   },
   {
-    path: '/brand/adminstration',
+    path: PATH.brandAdministration,
     name: 'adminstration',
     icon: 'adminstration-icon.svg',
     access: 'brand_administration',
     routes: [
       {
-        path: '/brand/adminstration/brand-profile',
+        path: PATH.brandAdministrationProfile,
         name: 'brand.profile',
         icon: 'brand-icon.svg',
         access: 'brand_administration_brand_profile',
         component: './Brand/Adminstration/BrandProfile',
       },
       {
-        path: '/brand/adminstration/locations',
+        path: PATH.brandLocation,
         name: 'location',
         icon: 'location-icon.svg',
         access: 'brand_administration_location',
         routes: [
           {
-            path: '/brand/adminstration/locations',
+            path: PATH.brandLocation,
             component: './Brand/Adminstration/Location',
             hideInMenu: true,
           },
           {
-            path: '/brand/adminstration/locations/create',
+            path: PATH.brandLocationCreate,
             hideInMenu: true,
             component: './Brand/Adminstration/Location/CreatePage',
           },
           {
-            path: '/brand/adminstration/locations/:id',
+            path: PATH.brandLocationUpdate,
             hideInMenu: true,
             component: './Brand/Adminstration/Location/UpdatePage',
           },
@@ -485,43 +528,43 @@ export default [
         name: 'team.profile',
         icon: 'team-profile-icon.svg',
         access: 'brand_administration_team_profile',
-        path: '/brand/adminstration/team-profiles',
+        path: PATH.brandTeamProfile,
         routes: [
           {
-            path: '/brand/adminstration/team-profiles',
+            path: PATH.brandTeamProfile,
             component: './Brand/Adminstration/TeamProfiles',
             hideInMenu: true,
           },
           {
-            path: '/brand/adminstration/team-profiles/create',
+            path: PATH.brandCreateTeamProfile,
             component: './Brand/Adminstration/TeamProfiles/CreatePage',
             hideInMenu: true,
           },
           {
-            path: '/brand/adminstration/team-profiles/update/:id',
+            path: PATH.brandUpdateTeamProfile,
             component: './Brand/Adminstration/TeamProfiles/UpdatePage',
             hideInMenu: true,
           },
         ],
       },
       {
-        path: '/brand/adminstration/distributors',
+        path: PATH.distributors,
         name: 'brand.distributor',
         icon: 'distributor-icon.svg',
         access: 'brand_administration_distributor',
         routes: [
           {
-            path: '/brand/adminstration/distributors',
+            path: PATH.distributors,
             component: './Brand/Adminstration/Distributors',
             hideInMenu: true,
           },
           {
-            path: '/brand/adminstration/distributors/create',
+            path: PATH.createDistributor,
             component: './Brand/Adminstration/Distributors/CreatePage',
             hideInMenu: true,
           },
           {
-            path: '/brand/adminstration/distributors/:id',
+            path: PATH.updateDistributor,
             component: './Brand/Adminstration/Distributors/UpdatePage',
             hideInMenu: true,
           },
@@ -531,22 +574,22 @@ export default [
         name: 'brand.market_availability',
         icon: 'market-availability-icon.svg',
         access: 'brand_administration_market_availability',
-        path: '/brand/adminstration/market-availability',
+        path: PATH.marketAvailability,
         routes: [
           {
-            path: '/brand/adminstration/market-availability',
+            path: PATH.marketAvailability,
             component: './Brand/Adminstration/MarketAvailability',
             hideInMenu: true,
           },
           {
-            path: '/brand/adminstration/market-availability/:id',
+            path: PATH.updateMarketAvailability,
             component: './Brand/Adminstration/MarketAvailability/UpdatePage',
             hideInMenu: true,
           },
         ],
       },
       {
-        path: '/brand/adminstration/subscription',
+        path: PATH.brandSubscription,
         name: 'brand.subscription',
         icon: 'subscription-icon.svg',
         component: './Admin',
@@ -554,11 +597,118 @@ export default [
       },
     ],
   },
+  {
+    path: PATH.designerHomePage,
+    name: 'workspace',
+    icon: 'workspace-icon.svg',
+    component: './Admin',
+    access: 'design_workspace',
+  },
+  {
+    path: PATH.designerFavourite,
+    name: 'favourite',
+    icon: 'my-favourite-icon.svg',
+    component: './Designer/MyFavourite',
+    access: 'design_my_favourite',
+  },
+  {
+    path: PATH.designerProduct,
+    name: 'product',
+    icon: 'product-icon.svg',
+    access: 'design_product',
+    routes: [
+      {
+        path: PATH.designerBrandProduct,
+        name: 'brand.product',
+        icon: 'brand-icon.svg',
+        access: 'design_product_brand_product',
+        routes: [
+          {
+            path: PATH.designerBrandProduct,
+            component: './Designer/Products',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerBrandProductDetail,
+            component: './Brand/Products/ViewPage',
+            hideInMenu: true,
+          },
+        ],
+      },
+      {
+        path: PATH.designerCustomLibrary,
+        name: 'custom.library',
+        icon: 'design-firm-icon.svg',
+        component: './Admin',
+        access: 'design_product_custom_library',
+      },
+    ],
+  },
+  {
+    path: PATH.designerProject,
+    name: 'project',
+    icon: 'project-icon.svg',
+    access: 'design_project',
+    routes: [
+      {
+        path: PATH.designerProject,
+        component: './Designer/Project',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.designerCreateProject,
+        hideInMenu: true,
+        component: './Designer/Project/CreatePage',
+      },
+      {
+        path: PATH.designerUpdateProject,
+        hideInMenu: true,
+        component: './Designer/Project/UpdatePage',
+      },
+    ],
+  },
+  {
+    path: PATH.designerAdminstration,
+    name: 'adminstration',
+    icon: 'adminstration-icon.svg',
+    component: './Admin',
+    access: 'design_administration',
+    routes: [
+      {
+        path: PATH.designerOfficeProfile,
+        name: 'office.profile',
+        icon: 'office-profile-icon.svg',
+        component: './Admin',
+        access: 'design_administration_office_profile',
+      },
+      {
+        path: PATH.designerOfficeLocation,
+        name: 'location',
+        icon: 'location-icon.svg',
+        component: './Admin',
+        access: 'design_administration_location',
+      },
+      {
+        path: PATH.designerOfficeTeamProfile,
+        name: 'team.profile',
+        icon: 'team-profile-icon.svg',
+        component: './Admin',
+        access: 'design_administration_team_profile',
+      },
+      {
+        path: PATH.designerMaterialProductCode,
+        name: 'material/product.code',
+        icon: 'material-product-code.svg',
+        component: './Admin',
+        access: 'design_administration_material_product_code',
+      },
+    ],
+  },
   // {
   //   name: 'list.table-list',
   //   icon: 'table',
-  //   path: '/list',
-  //   component: './TableList',
+  //   path: '/welcome',
+  //   component: './Welcome',
   // },
   // GENERAL PAGE
   {

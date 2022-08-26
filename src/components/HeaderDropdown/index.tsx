@@ -1,8 +1,10 @@
-import type { DropDownProps } from 'antd/es/dropdown';
-import { Dropdown } from 'antd';
 import React, { FC, useState } from 'react';
-import styles from './index.less';
+
+import { Dropdown } from 'antd';
+import type { DropDownProps } from 'antd/es/dropdown';
+
 import { BodyText } from '../Typography';
+import styles from './index.less';
 
 export type HeaderDropdownProps = {
   arrow?: boolean;
@@ -16,9 +18,10 @@ export type HeaderDropdownProps = {
 
 export type MenuIconProps = {
   containerClass?: string;
-  label: string;
+  label?: string | React.ReactNode;
   icon?: JSX.Element;
   onClick: () => void;
+  disabled?: boolean;
 };
 
 type MenuHeaderDropdownProps = {
@@ -27,16 +30,16 @@ type MenuHeaderDropdownProps = {
 };
 
 export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParentClick }) => {
-  const MenuItem = ({ label, icon, onClick, containerClass }: MenuIconProps) => (
+  const MenuItem = ({ label, icon, onClick, containerClass, disabled }: MenuIconProps) => (
     <div
       onClick={() => {
-        if (onParentClick) {
-          onParentClick();
+        if (disabled) {
+          return;
         }
+        onParentClick?.();
         onClick();
       }}
-      className={`${styles.item} ${containerClass}`}
-    >
+      className={`${styles.item} ${containerClass} ${disabled ? styles.disabled : ''}`}>
       {icon ? <div className={styles.icon}>{icon}</div> : null}
       <BodyText fontFamily="Roboto" level={6}>
         {label}
@@ -53,6 +56,7 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParen
           onClick={item.onClick}
           label={item.label}
           icon={item.icon}
+          disabled={item.disabled}
         />
       ))}
     </div>
@@ -82,11 +86,10 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
       visible={visible}
       onVisibleChange={(value) => setVisible(value)}
       overlay={
-        overlay ? (
-          overlay
-        ) : items ? (
+        overlay ||
+        (items ? (
           <MenuHeaderDropdown items={items} onParentClick={() => setVisible(false)} />
-        ) : null
+        ) : null)
       }
       {...restProps}
     />

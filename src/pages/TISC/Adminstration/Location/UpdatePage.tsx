@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import LocationEntryForm from '@/components/Location/LocationEntryForm';
-import { useBoolean } from '@/helper/hook';
-import LoadingPageCustomize from '@/components/LoadingPage';
-import { LocationForm } from '@/types';
-import { updateLocation, getLocationById } from '@/services';
-import { useParams } from 'umi';
+import React, { useEffect, useState } from 'react';
+
 import { PATH } from '@/constants/path';
+import { useParams } from 'umi';
+
 import { pushTo } from '@/helper/history';
+import { useBoolean } from '@/helper/hook';
+
+import { LocationForm } from '@/features/locations/type';
+
+import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import LocationEntryForm from '@/features/locations/components/LocationEntryForm';
+
+import { getLocationById, updateLocation } from '@/features/locations/api';
 
 const TISCLocationUpdatePage: React.FC = () => {
   const submitButtonStatus = useBoolean(false);

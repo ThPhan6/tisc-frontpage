@@ -1,9 +1,13 @@
 import type { FC } from 'react';
+
+import { Tooltip } from 'antd';
+
+import { ReactComponent as QuestionIcon } from '@/assets/icons/question-icon.svg';
+
+import type { FormGroupProps } from './types';
+
 import { BodyText } from '../Typography';
 import style from './styles/Form.less';
-import type { FormGroupProps } from './types';
-import { ReactComponent as QuestionIcon } from '../../assets/icons/question-icon.svg';
-import { Tooltip } from 'antd';
 
 export const FormGroup: FC<FormGroupProps> = ({
   layout = 'horizontal',
@@ -17,8 +21,10 @@ export const FormGroup: FC<FormGroupProps> = ({
   customIcon,
   placement = 'top',
   label,
+  labelColor = 'mono-color',
   onClick,
   messageType = 'normal',
+  placementBottomWidth,
   ...props
 }) => {
   const setFormLayout = () => {
@@ -29,18 +35,22 @@ export const FormGroup: FC<FormGroupProps> = ({
   return (
     <div className={classNameForm} {...props}>
       <label
-        className={`${style.label} ${layout === 'horizontal' && style['label-margin']}`}
-        onClick={onClick}
-      >
-        <BodyText fontFamily="Cormorant-Garamond" level={3}>
+        className={`${style.label} ${
+          layout === 'horizontal' && style['label-margin']
+        } ${labelColor}`}
+        onClick={onClick}>
+        <BodyText fontFamily="Cormorant-Garamond" level={3} customClass={labelColor}>
           {label}
         </BodyText>
         {optional && (
-          <BodyText customClass={style.optional} fontFamily="Cormorant-Garamond" level={3}>
+          <BodyText
+            customClass={`${style.optional} ${labelColor}`}
+            fontFamily="Cormorant-Garamond"
+            level={3}>
             (optional)
           </BodyText>
         )}
-        {required && <span className={style.required}>*</span>}
+        {required && <span className={`${style.required} ${labelColor}`}>*</span>}
         {tooltip && (
           <Tooltip
             placement={placement}
@@ -48,23 +58,19 @@ export const FormGroup: FC<FormGroupProps> = ({
             overlayInnerStyle={
               placement === 'bottom'
                 ? {
-                    width: '160px',
-                    height: 'auto',
-                    padding: '6px 12px',
-                    fontWeight: '300',
-                    fontSize: '12px',
-                    lineHeight: '20px',
-                    letterSpacing: '0.02em',
-                    fontFamily: 'Roboto',
+                    width: placementBottomWidth ? placementBottomWidth : '160px',
                   }
                 : {}
-            }
-          >
-            {iconTooltip ? iconTooltip : <QuestionIcon className={style['question-icon']} />}
+            }>
+            {iconTooltip ? (
+              iconTooltip
+            ) : (
+              <QuestionIcon className={`${style['question-icon']} ${labelColor}`} />
+            )}
           </Tooltip>
         )}
         {customIcon ? customIcon : null}
-        <span className={style.colon}>:</span>
+        <span className={`${style.colon} ${labelColor}`}>:</span>
       </label>
       <div className={style['children-wrapper']}>
         {children}

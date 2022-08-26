@@ -1,6 +1,8 @@
 import React from 'react';
-import styles from './styles/index.less';
+
 import type { CustomButtonProps } from './types';
+
+import styles from './styles/index.less';
 
 const CustomButton: React.FC<CustomButtonProps> = ({
   properties = 'standard',
@@ -11,6 +13,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   height,
   width,
   icon,
+  active,
   ...props
 }) => {
   const setProperties = () => {
@@ -57,7 +60,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
 
   const classNameButton = `${
     styles.container
-  } ${setSize()} ${setProperties()} ${setDisabled()} ${buttonClass}`;
+  } ${setSize()} ${setProperties()} ${setDisabled()} ${buttonClass} ${active ? styles.active : ''}`;
 
   return (
     <button {...props} className={classNameButton} style={{ width: width, height: height }}>

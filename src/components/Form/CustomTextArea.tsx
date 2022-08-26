@@ -1,11 +1,12 @@
+import { FC, useEffect, useRef, useState } from 'react';
+
 import { Input } from 'antd';
-import type { FC } from 'react';
-import type { CustomTextAreaProps } from './types';
-import style from './styles/TextArea.less';
-import { useEffect } from 'react';
-import { useRef } from 'react';
-import { useState } from 'react';
+
 import { trimStart } from 'lodash';
+
+import type { CustomTextAreaProps } from './types';
+
+import style from './styles/TextArea.less';
 
 export const CustomTextArea: FC<CustomTextAreaProps> = ({
   borderBottomColor = 'mono',
@@ -44,8 +45,7 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
         ${style['textarea-container']}
         ${style[`${borderBottomColor}-border-bottom-color`]}
         ${boxShadow ? style.boxShadow : ''}
-      `}
-    >
+      `}>
       <Input.TextArea
         ref={textarea}
         style={{ height: height /* , overflow: checkedOverflow  */ }}

@@ -3,6 +3,12 @@
   :global(.ant-table) {
     color: black;
   }
+
+  &.sub-grid {
+    :global(td[colspan]) {
+      box-shadow: none !important;
+    }
+  }
   :global(.ant-table-ping-right) {
     :global(.ant-table-container) {
       &::after {
@@ -72,7 +78,10 @@
     }
     :global(.ant-table-expanded-row) {
       > td:global(.ant-table-cell) {
-        &(:first-child) {
+        padding-top: 0;
+        padding-bottom: 0;
+
+        &:first-child {
           border-bottom: 1px solid #d8d8d8;
           :global(.ant-table-expanded-row) {
             > td:global(.ant-table-cell) {
@@ -101,20 +110,30 @@
         background-color: #fff !important;
         border-top: 8px solid @mono-color-light;
         border-bottom: 0;
+        :global(.icon-align) {
+          margin-top: 4px;
+        }
         // box-shadow: @border-bottom-light;
+        &:global(.light-content) {
+          color: @mono-color-medium;
+        }
+        &:global(.strike-through) {
+          text-decoration: line-through;
+        }
       }
-      &:global(.custom-expanded-level-2) {
-        &(:nth-child(1)) {
-          :global(.ant-table-cell) {
-            box-shadow: none;
-          }
+      &:global(.custom-expanded-level-2):nth-child(1) {
+        :global(.ant-table-cell) {
+          box-shadow: none;
         }
       }
       &:global(.ant-table-expanded-row) {
+        tr[data-row-key]:not(:first-child) :global(.ant-table-cell:not(.no-box-shadow)) {
+          box-shadow: @border-top-light;
+        }
+
         :global(.ant-table-cell) {
           padding: 0;
           border-top: 0;
-          box-shadow: @border-top-light;
           &:global(.no-box-shadow) {
             // &:not(:last-child) {
             box-shadow: none;
@@ -143,7 +162,8 @@
               }
             }
             :global(.ant-table-cell) {
-              padding: 8px 12px;
+              height: 36px;
+              padding: 0 12px;
             }
             :global(.ant-table-expanded-row) {
               :global(.ant-table-cell) {
@@ -157,8 +177,8 @@
                 }
                 :global(.ant-table) {
                   margin: 0;
-                  :global(.ant-table-cell) {
-                    padding: 8px 12px;
+                  :global(td.ant-table-cell:not([colspan])) {
+                    padding: 0 12px;
                   }
                 }
               }
@@ -168,7 +188,16 @@
       }
     }
   }
+
+  :global(.ant-table-expanded-row.ant-table-expanded-row-level-1 td[colspan]) {
+    height: 36px;
+  }
+
+  :global(.ant-empty-normal) {
+    margin: 8px 0;
+  }
 }
+
 .customPaginator {
   position: absolute;
   bottom: -24px;
@@ -234,4 +263,13 @@ tr[class^='ant-table-expanded-row'] tbody > tr > td {
 
 .ant-table-tbody > tr > td {
   transition: all 0.3s;
+}
+
+:global(.ant-table-cell.disabled) {
+  cursor: not-allowed;
+  pointer-events: none;
+  p,
+  svg {
+    color: @mono-color-light;
+  }
 }

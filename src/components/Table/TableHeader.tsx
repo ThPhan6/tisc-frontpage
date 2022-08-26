@@ -1,4 +1,5 @@
 import { FC } from 'react';
+
 import { Title } from '../Typography';
 import styles from './styles/TableHeader.less';
 

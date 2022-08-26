@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
-import LocationEntryForm from '@/components/Location/LocationEntryForm';
-import { useBoolean } from '@/helper/hook';
-import LoadingPageCustomize from '@/components/LoadingPage';
-import { LocationForm } from '@/types';
-import { createLocation } from '@/services';
+
 import { PATH } from '@/constants/path';
+
 import { pushTo } from '@/helper/history';
+import { useBoolean } from '@/helper/hook';
+
+import { LocationForm } from '@/features/locations/type';
+
+import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import LocationEntryForm from '@/features/locations/components/LocationEntryForm';
+
+import { createLocation } from '@/features/locations/api';
 
 const BrandLocationCreatePage: React.FC = () => {
   const submitButtonStatus = useBoolean(false);

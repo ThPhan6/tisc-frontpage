@@ -123,13 +123,20 @@ button {
   border: none;
 }
 .ant-tooltip-inner {
+  padding: 6px 12px;
+  font-weight: 300;
+  font-size: 12px;
+  line-height: 20px;
+  letter-spacing: 0.02em;
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5) !important;
+
   .anticon {
     margin-right: 12px;
   }
 }
 .ant-collapse-header-text {
-  display: block;
+  display: flex;
+  align-items: center;
   width: 100%;
 }
 
@@ -177,4 +184,48 @@ button {
 }
 .tertiary-color-light {
   color: @tertiary-color-light;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.flex-start {
+  display: flex;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.text-overflow {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ant-checkbox-group,
+.ant-radio-group,
+.ant-collapse-header,
+li.ant-menu-submenu {
+  user-select: none;
+}
+
+.ant-dropdown-trigger {
+  cursor: pointer;
+
+  svg {
+    margin-left: 8px;
+  }
 }

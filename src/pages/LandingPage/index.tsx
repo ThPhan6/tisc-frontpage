@@ -1,47 +1,61 @@
-import CustomButton from '@/components/Button';
-import LoadingPageCustomize from '@/components/LoadingPage';
-import { BodyText, MainTitle, Title } from '@/components/Typography';
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { useEffect, useState } from 'react';
+
+import { MESSAGE_ERROR, MESSAGE_NOTIFICATION } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { STATUS_RESPONSE } from '@/constants/util';
-import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
-import { redirectAfterBrandOrDesignLogin, redirectAfterLogin } from '@/helper/utils';
-import { Col, message, Row } from 'antd';
-import { useEffect, useState } from 'react';
+import { Col, Row, message } from 'antd';
 import { history } from 'umi';
-import graphic from '../../assets/graphic.png';
-import { ReactComponent as BinocularsIcon } from '../../assets/icons/binoculars-icon.svg';
-import { ReactComponent as CheckAllIcon } from '../../assets/icons/check-all-icon.svg';
-import { ReactComponent as GraphicTabletIcon } from '../../assets/icons/graphic-tablet-icon.svg';
-import { ReactComponent as LogoBeta } from '../../assets/icons/logo-beta.svg';
-import { ReactComponent as PiggyBankIcon } from '../../assets/icons/piggy-bank-icon.svg';
-import { ReactComponent as SingleRight } from '../../assets/icons/single-right.svg';
-import { ReactComponent as TargetMoneyIcon } from '../../assets/icons/target-money-icon.svg';
-import { ReactComponent as TimeMoney } from '../../assets/icons/time-money-icon.svg';
+
+import graphic from '@/assets/graphic.png';
+import { ReactComponent as BinocularsIcon } from '@/assets/icons/binoculars-icon.svg';
+import { ReactComponent as CheckAllIcon } from '@/assets/icons/check-all-icon.svg';
+import { ReactComponent as GraphicTabletIcon } from '@/assets/icons/graphic-tablet-icon.svg';
+import { ReactComponent as LogoBeta } from '@/assets/icons/logo-beta.svg';
+import { ReactComponent as PiggyBankIcon } from '@/assets/icons/piggy-bank-icon.svg';
+import { ReactComponent as SingleRight } from '@/assets/icons/single-right.svg';
+import { ReactComponent as TargetMoneyIcon } from '@/assets/icons/target-money-icon.svg';
+import { ReactComponent as TimeMoney } from '@/assets/icons/time-money-icon.svg';
+
+import {
+  ForgotType,
+  createPasswordVerify,
+  forgotPasswordMiddleware,
+  loginByBrandOrDesigner,
+  loginMiddleware,
+  resetPasswordMiddleware,
+  validateResetToken,
+  verifyAccount,
+} from './services/api';
+import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
+import {
+  redirectAfterBrandLogin,
+  redirectAfterDesignerLogin,
+  redirectAfterLogin,
+} from '@/helper/utils';
+
+import type {
+  CreatePasswordRequestBody,
+  LoginInput,
+  LoginResponseProp,
+  ModalOpen,
+  ResetPasswordRequestBody,
+} from './types';
+
 import { AboutModal } from './components/AboutModal';
 import { BrandInterestedModal } from './components/BrandInterestedModal';
 import { ContactModal } from './components/ContactModal';
+import { CreatePasswordModal } from './components/CreatePasswordModal';
 import { LoginModal } from './components/LoginModal';
 import { NoticeModal } from './components/NoticeModal';
 import { PoliciesModal } from './components/PoliciesModal';
 import { ResetPasswordModal } from './components/ResetPasswordModal';
-import { CreatePasswordModal } from './components/CreatePasswordModal';
 import { SignupModal } from './components/SignupModal';
+import { VerifyAccount } from './components/VerifyAccount';
+import CustomButton from '@/components/Button';
+import LoadingPageCustomize from '@/components/LoadingPage';
+import { BodyText, MainTitle, Title } from '@/components/Typography';
+
 import styles from './index.less';
-import {
-  brandLoginMiddleware,
-  forgotPasswordMiddleware,
-  loginMiddleware,
-  resetPasswordMiddleware,
-  validateResetToken,
-  createPasswordVerify,
-} from './services/api';
-import type {
-  LoginInput,
-  ModalOpen,
-  ResetPasswordRequestBody,
-  CreatePasswordRequestBody,
-} from './types';
 
 const LandingPage = () => {
   const userEmail = useQuery().get('email');
@@ -54,6 +68,7 @@ const LandingPage = () => {
   const isLoading = useBoolean();
   const [openModal, setOpenModal] = useState<ModalOpen>('');
   const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
+  const openVerifyAccountModal = useBoolean();
 
   const handleCloseModal = () => {
     setOpenModal('');
@@ -77,13 +92,21 @@ const LandingPage = () => {
   }, [userEmail]);
 
   useEffect(() => {
-    if (!tokenVerification && history.location.pathname === PATH.createPassword) {
-      history.push(PATH.landingPage);
+    if (tokenVerification && history.location.pathname !== PATH.createPassword) {
+      verifyAccount(tokenVerification).then((success) => {
+        if (success) {
+          openVerifyAccountModal.setValue(success);
+        } else {
+          history.replace(PATH.landingPage);
+          message.error(MESSAGE_ERROR.VERIFY_TOKEN_EXPIRED);
+        }
+      });
       return;
-    } else {
-      if (tokenVerification) {
-        openVerificationModal.setValue(true);
-      }
+    } else if (tokenVerification && history.location.pathname === PATH.createPassword) {
+      openVerificationModal.setValue(true);
+    }
+    if (history.location.pathname === PATH.verifyAccount) {
+      history.push(PATH.landingPage);
     }
   }, [tokenVerification]);
 
@@ -94,7 +117,6 @@ const LandingPage = () => {
         if (type === STATUS_RESPONSE.SUCCESS) {
           message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
           await fetchUserInfo();
-
           redirectAfterLogin();
         } else {
           message.error(msg);
@@ -102,31 +124,40 @@ const LandingPage = () => {
         isLoading.setValue(false);
       });
     } else {
-      brandLoginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
-        if (type === STATUS_RESPONSE.SUCCESS) {
-          message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
-          await fetchUserInfo();
-
-          redirectAfterBrandOrDesignLogin();
-        } else {
-          message.error(msg);
-        }
-        isLoading.setValue(false);
-      });
+      loginByBrandOrDesigner(
+        data,
+        async (type: STATUS_RESPONSE, msg?: string, response?: LoginResponseProp) => {
+          if (type === STATUS_RESPONSE.SUCCESS) {
+            message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
+            await fetchUserInfo();
+            if (response?.type === 'design') {
+              redirectAfterDesignerLogin();
+            } else if (response?.type === 'brand') {
+              redirectAfterBrandLogin();
+            }
+          } else {
+            message.error(msg);
+          }
+          isLoading.setValue(false);
+        },
+      );
     }
   };
 
   const handleForgotPassword = (email: string) => {
     isLoading.setValue(true);
-    forgotPasswordMiddleware({ email: email }, async (type: STATUS_RESPONSE, msg?: string) => {
-      if (type === STATUS_RESPONSE.SUCCESS) {
-        setOpenModal('');
-        message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD);
-      } else {
-        message.error(msg);
-      }
-      isLoading.setValue(false);
-    });
+    forgotPasswordMiddleware(
+      { email: email, type: openModal === 'Tisc Login' ? ForgotType.TISC : ForgotType.OTHER },
+      async (type: STATUS_RESPONSE, msg?: string) => {
+        if (type === STATUS_RESPONSE.SUCCESS) {
+          setOpenModal('');
+          message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD);
+        } else {
+          message.error(msg);
+        }
+        isLoading.setValue(false);
+      },
+    );
   };
 
   const handleResetPassword = (data: ResetPasswordRequestBody) => {
@@ -153,6 +184,10 @@ const LandingPage = () => {
     });
   };
 
+  const handleActiveAccount = () => {
+    setOpenModal('Login');
+  };
+
   return (
     <div className={styles.login}>
       <div className={styles.container}>
@@ -164,8 +199,7 @@ const LandingPage = () => {
                 icon={<SingleRight />}
                 width="104px"
                 buttonClass={styles['login-button']}
-                onClick={() => setOpenModal('Login')}
-              >
+                onClick={() => setOpenModal('Login')}>
                 Log in
               </CustomButton>
             </div>
@@ -213,8 +247,7 @@ const LandingPage = () => {
                       properties="warning"
                       size="large"
                       buttonClass={styles['action-button']}
-                      onClick={() => setOpenModal('Brand Interested')}
-                    >
+                      onClick={() => setOpenModal('Brand Interested')}>
                       INTERESTED
                     </CustomButton>
                   </div>
@@ -253,8 +286,7 @@ const LandingPage = () => {
                       properties="warning"
                       size="large"
                       buttonClass={styles['action-button']}
-                      onClick={() => setOpenModal('Designer Signup')}
-                    >
+                      onClick={() => setOpenModal('Designer Signup')}>
                       SIGN ME UP
                     </CustomButton>
                   </div>
@@ -279,8 +311,7 @@ const LandingPage = () => {
                       level={5}
                       fontFamily="Roboto"
                       customClass={styles.item}
-                      onClick={() => setOpenModal(item)}
-                    >
+                      onClick={() => setOpenModal(item)}>
                       {item}
                     </BodyText>
                   ))}
@@ -290,8 +321,7 @@ const LandingPage = () => {
                   level={5}
                   fontFamily="Roboto"
                   customClass={styles['tisc-login']}
-                  onClick={() => setOpenModal('Tisc Login')}
-                >
+                  onClick={() => setOpenModal('Tisc Login')}>
                   TISC Log in
                 </BodyText>
               </div>
@@ -316,11 +346,13 @@ const LandingPage = () => {
         onClose={handleCloseModal}
         theme="dark"
       />
-      <SignupModal
-        visible={openModal === 'Designer Signup'}
-        onClose={handleCloseModal}
-        theme="default"
-      />
+      {openModal === 'Designer Signup' && (
+        <SignupModal
+          visible={openModal === 'Designer Signup'}
+          onClose={handleCloseModal}
+          theme="default"
+        />
+      )}
       <BrandInterestedModal
         visible={openModal === 'Brand Interested'}
         onClose={handleCloseModal}
@@ -344,6 +376,14 @@ const LandingPage = () => {
           token: tokenVerification || '',
         }}
       />
+      {openVerifyAccountModal.value === true && (
+        <VerifyAccount
+          visible={openVerifyAccountModal}
+          handleSubmit={handleActiveAccount}
+          openLogin={() => setOpenModal('Login')}
+        />
+      )}
+
       {isLoading.value && <LoadingPageCustomize />}
     </div>
   );

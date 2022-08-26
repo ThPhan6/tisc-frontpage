@@ -1,13 +1,17 @@
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import CustomTable from '@/components/Table';
-import { pushTo } from '@/helper/history';
 import { useRef } from 'react';
-import { deleteQuotation, getQuotationPagination } from '@/services';
-import { Quotation } from '@/types';
-import { TableColumnItem } from '@/components/Table/types';
+
 import { PATH } from '@/constants/path';
+
 import { confirmDelete } from '@/helper/common';
-import { ActionMenu } from '@/components/Action';
+import { pushTo } from '@/helper/history';
+import { deleteQuotation, getQuotationPagination } from '@/services';
+
+import { TableColumnItem } from '@/components/Table/types';
+import { Quotation } from '@/types';
+
+import CustomTable from '@/components/Table';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ActionMenu } from '@/components/TableAction';
 
 const InspirationalQuotationsList: React.FC = () => {
   const tableRef = useRef<any>();
@@ -50,8 +54,16 @@ const InspirationalQuotationsList: React.FC = () => {
       render: (_value: any, record: any) => {
         return (
           <ActionMenu
-            handleUpdate={() => handleUpdateQuotation(record.id)}
-            handleDelete={() => handleDeleteQuotation(record.id)}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateQuotation(record.id),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteQuotation(record.id),
+              },
+            ]}
           />
         );
       },

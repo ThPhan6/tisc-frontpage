@@ -1,0 +1,30 @@
+.specifyingModal {
+  :global(.ant-collapse-content-box) {
+    padding: 0;
+  }
+  :global(.ant-collapse-arrow) {
+    right: 0 !important;
+  }
+}
+
+.projectTabInfo {
+  :global(.ant-tabs-nav) {
+    margin: 0;
+    box-shadow: @border-bottom-light;
+    &::before {
+      border-bottom: 0 !important;
+    }
+  }
+}
+
+.allocationTab {
+  :global(.collapse-header > .ant-collapse-header) {
+    justify-content: start;
+    height: 36px;
+    margin: 8px 0;
+    padding: 0 !important;
+  }
+  :global(.ant-collapse-item:last-child > .ant-collapse-content) {
+    box-shadow: 0 0.7px @mono-color;
+  }
+}

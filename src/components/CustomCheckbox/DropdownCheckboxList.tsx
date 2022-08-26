@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+
 import { Collapse } from 'antd';
-import { CustomCheckbox } from '@/components/CustomCheckbox';
-import type { CheckboxValue } from '@/components/CustomCheckbox/types';
+
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
+
 import { isEmpty } from 'lodash';
+
+import type { CheckboxValue } from '@/components/CustomCheckbox/types';
+
+import { CustomCheckbox } from '@/components/CustomCheckbox';
+
 import styles from './styles/dropdownList.less';
 
 export interface DropdownCheckboxItem {
@@ -55,8 +61,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
             className={styles.dropdownCount}
             style={{
               marginLeft: item.margin ? item.margin : 8,
-            }}
-          >
+            }}>
             ({item.options.length})
           </span>
         </span>
@@ -72,15 +77,13 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
       expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
       className={styles.dropdownList}
       onChange={setActiveKey}
-      activeKey={activeKey}
-    >
+      activeKey={activeKey}>
       {data.map((item, index) => (
         <Collapse.Panel
           header={renderHeader(item, index)}
           key={index}
           collapsible={isEmpty(item.options) ? 'disabled' : undefined}
-          className="site-collapse-custom-panel"
-        >
+          className="site-collapse-custom-panel">
           <CustomCheckbox
             options={item.options}
             selected={

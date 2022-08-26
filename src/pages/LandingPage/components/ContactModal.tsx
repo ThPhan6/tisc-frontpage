@@ -1,18 +1,55 @@
-import styles from './ContactModal.less';
+import { FC, useState } from 'react';
+
+import { MESSAGE_ERROR } from '@/constants/message';
+import { message } from 'antd';
+
+import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
+import { ReactComponent as MessageIcon } from '@/assets/icons/message-icon-18px.svg';
+import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
+
+import { contact } from '../services/api';
+import { validateEmail } from '@/helper/utils';
+
+import { ContactRequestBody, ModalProps } from '../types';
+
+import CustomButton from '@/components/Button';
+import { CustomInput } from '@/components/Form/CustomInput';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
-import { CustomInput } from '@/components/Form/CustomInput';
-import CustomButton from '@/components/Button';
-import { FC } from 'react';
-import { ModalProps } from '../types';
-import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
-import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
-import { ReactComponent as MessageIcon } from '@/assets/icons/message-icon-18px.svg';
-import { CustomTextArea } from '@/components/Form/CustomTextArea';
+
+import styles from './ContactModal.less';
 
 export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
 
+  const [valueForm, setValueForm] = useState<ContactRequestBody>({
+    name: '',
+    email: '',
+    inquiry: '',
+  });
+
+  const handleOnChangeValueForm = (
+    e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>,
+  ) => {
+    setValueForm({ ...valueForm, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmitContact = () => {
+    if (!validateEmail(valueForm.email)) {
+      return message.error(MESSAGE_ERROR.EMAIL_UNVALID);
+    }
+    contact(valueForm).then((res) => {
+      if (res) {
+        onClose();
+        setValueForm({
+          name: '',
+          email: '',
+          inquiry: '',
+        });
+      }
+    });
+  };
   return (
     <CustomModal
       visible={visible}
@@ -22,8 +59,7 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
         backgroundColor: theme === 'dark' ? '#000' : '',
       }}
       closeIconClass={theme === 'dark' && styles.closeIcon}
-      onCancel={onClose}
-    >
+      onCancel={onClose}>
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={1} customClass={styles[`body${themeStyle()}`]}>
@@ -40,9 +76,11 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
             focusColor="secondary"
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
             containerClass={styles.user}
-            name="user"
+            name="name"
             type={'text'}
             required={true}
+            onChange={handleOnChangeValueForm}
+            value={valueForm.name}
           />
           <CustomInput
             fromLandingPage
@@ -56,6 +94,8 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
             name="email"
             required={true}
+            onChange={handleOnChangeValueForm}
+            value={valueForm.email}
           />
           <div className={styles.wrapper}>
             <MessageIcon />
@@ -67,13 +107,18 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
             <CustomTextArea
               showCount
               placeholder="type here..."
-              maxLength={125}
+              maxLength={250}
               borderBottomColor="mono-medium"
+              name="inquiry"
+              onChange={handleOnChangeValueForm}
+              value={valueForm.inquiry}
             />
           </div>
         </div>
         <div className={styles.button}>
-          <CustomButton buttonClass={styles.submit}>Thank you</CustomButton>
+          <CustomButton buttonClass={styles.submit} onClick={handleSubmitContact}>
+            Thank you
+          </CustomButton>
         </div>
       </div>
     </CustomModal>

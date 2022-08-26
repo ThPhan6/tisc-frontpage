@@ -1,19 +1,23 @@
-import { TableHeader } from '@/components/Table/TableHeader';
-import { useBoolean } from '@/helper/hook';
 import { useEffect, useState } from 'react';
-import { getOnePolicyTemplete, updatePolicyTemplate } from './api';
-import { AgreementPoliciesProps } from './types';
 
-import styles from './styles/AgreementPoliciesEntryForm.less';
-import { contentId, EntryFormWrapper } from '@/components/EntryForm';
-import { FormGroup } from '@/components/Form';
-import { CustomInput } from '@/components/Form/CustomInput';
+import { PATH } from '@/constants/path';
+import { useParams } from 'umi';
 
 import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
-import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
-import { useParams } from 'umi';
+
 import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
+import { useBoolean } from '@/helper/hook';
+
+import { AgreementPoliciesProps } from './types';
+
+import { EntryFormWrapper, contentId } from '@/components/EntryForm';
+import { FormGroup } from '@/components/Form';
+import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
+import { CustomInput } from '@/components/Form/CustomInput';
+import { TableHeader } from '@/components/Table/TableHeader';
+
+import { getOnePolicyTemplete, updatePolicyTemplate } from './api';
+import styles from './styles/AgreementPoliciesEntryForm.less';
 
 const DEFAULT_AGREEMENTPOLICIES_VALUE = {
   title: '',
@@ -86,8 +90,7 @@ const CreateAgreementPoliciesPage = () => {
         <EntryFormWrapper
           handleCancel={handleCancel}
           handleSubmit={handleSubmit}
-          submitButtonStatus={submitButtonStatus.value}
-        >
+          submitButtonStatus={submitButtonStatus.value}>
           <FormGroup label="Title" required={true} layout="vertical" formClass={styles.title}>
             <div className={styles.title_field}>
               <CustomInput

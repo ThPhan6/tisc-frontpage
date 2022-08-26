@@ -1,17 +1,34 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { STATUS_RESPONSE } from '@/constants/util';
+import { message } from 'antd';
 import { request } from 'umi';
+
 import type {
+  ContactRequestBody,
+  CreatePasswordRequestBody,
   LoginInput,
   LoginResponseProp,
+  Quotation,
   ResetPasswordRequestBody,
-  CreatePasswordRequestBody,
+  SignUpDesignerRequestBody,
 } from '../types';
-import { UserDetail } from '@/types';
-import { message } from 'antd';
-import { setUserProfile } from '@/reducers/user';
+import {
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
+  SummaryResponse,
+} from '@/components/Table/types';
 import store from '@/reducers';
+import { setUserProfile } from '@/reducers/user';
+import { UserDetail } from '@/types/user.type';
 
+interface QuotationPaginationResponse {
+  data: {
+    pagination: PaginationResponse;
+    quotations: Quotation[];
+    summary: SummaryResponse[];
+  };
+}
 export async function loginMiddleware(
   data: LoginInput,
   callback: (type: STATUS_RESPONSE, message?: string) => void,
@@ -29,17 +46,17 @@ export async function loginMiddleware(
     });
 }
 
-export async function brandLoginMiddleware(
+export async function loginByBrandOrDesigner(
   data: LoginInput,
-  callback: (type: STATUS_RESPONSE, message?: string) => void,
+  callback: (type: STATUS_RESPONSE, message?: string, dataResponse?: LoginResponseProp) => void,
 ) {
-  request(`/api/auth/login/brand`, {
+  request(`/api/auth/brand-design/login`, {
     method: 'POST',
     data,
   })
     .then((response: LoginResponseProp) => {
       localStorage.setItem('access_token', response.token);
-      callback(STATUS_RESPONSE.SUCCESS);
+      callback(STATUS_RESPONSE.SUCCESS, '', response);
     })
     .catch((error) => {
       callback(STATUS_RESPONSE.ERROR, error?.data?.message || MESSAGE_NOTIFICATION.LOGIN_ERROR);
@@ -66,9 +83,15 @@ export async function resetPasswordMiddleware(
     });
 }
 
+export enum ForgotType {
+  TISC = 1,
+  OTHER = 2,
+}
+
 export async function forgotPasswordMiddleware(
   data: {
     email: string;
+    type: ForgotType;
   },
   callback: (type: STATUS_RESPONSE, message?: string) => void,
 ) {
@@ -117,5 +140,83 @@ export async function createPasswordVerify(token: string, data: CreatePasswordRe
         error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_PASSSWORD_VERIFICATION_FAILED,
       );
       return false;
+    });
+}
+
+export async function signUpDesigner(data: SignUpDesignerRequestBody) {
+  return request(`/api/auth/register`, { method: 'POST', data })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.SIGN_UP_DESIGNER_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.SIGN_UP_DESIGNER_ERROR);
+      return false;
+    });
+}
+
+export async function verifyAccount(verification_token: string | null) {
+  return request<{ data: boolean }>(`/api/auth/verify/${verification_token ?? ''}`, {
+    method: 'POST',
+  })
+    .then(() => {
+      return true;
+    })
+    .catch(() => {
+      return false;
+    });
+}
+
+export async function checkEmailAlreadyUsed(email: string) {
+  return request(`/api/auth/check-email/${email}`, { method: 'GET' })
+    .then(() => {
+      return true;
+    })
+    .catch(() => {
+      return false;
+    });
+}
+
+export async function contact(data: ContactRequestBody) {
+  return request<boolean>(`/api/contact/create`, { method: 'POST', data })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.CONTACT_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CONTACT_ERROR);
+      return false;
+    });
+}
+
+export async function getListPolicy() {
+  return request(`/api/documentation/get-list-policy`, { method: 'GET' })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_POLICY);
+    });
+}
+
+export async function getListQuotation(
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
+) {
+  request(`/api/quotation/landing-page/get-list`, { method: 'GET', params })
+    .then((response: QuotationPaginationResponse) => {
+      const { quotations, pagination, summary } = response.data;
+      callback({
+        data: quotations,
+        pagination: {
+          current: pagination.page,
+          pageSize: pagination.page_size,
+          total: pagination.total,
+        },
+        summary,
+      });
+    })
+    .catch((error) => {
+      message.error(error.message);
     });
 }

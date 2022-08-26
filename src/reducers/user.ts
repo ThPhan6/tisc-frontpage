@@ -1,5 +1,6 @@
 import { UserDetail } from '@/types/user.type';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface UserState {
   user?: UserDetail;

@@ -1,14 +1,18 @@
 import React, { useRef } from 'react';
-import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import type { TableColumnItem } from '@/components/Table/types';
-import { deleteConversionMiddleware, getProductBasisConversionPagination } from '@/services';
-import type { BasisConversionListResponse, SubBasisConversion } from '@/types';
-import { pushTo } from '@/helper/history';
+
 import { PATH } from '@/constants/path';
-import { confirmDelete } from '@/helper/common';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
-import { ActionMenu } from '@/components/Action';
+import { confirmDelete } from '@/helper/common';
+import { pushTo } from '@/helper/history';
+import { deleteConversionMiddleware, getProductBasisConversionPagination } from '@/services';
+
+import type { TableColumnItem } from '@/components/Table/types';
+import type { BasisConversionListResponse, SubBasisConversion } from '@/types';
+
+import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ActionMenu } from '@/components/TableAction';
 
 const MAIN_COL_WIDTH = 167;
 const BasisConversionList: React.FC = () => {
@@ -68,8 +72,16 @@ const BasisConversionList: React.FC = () => {
       render: (_value, record) => {
         return (
           <ActionMenu
-            handleUpdate={() => handleUpdateConversion(record.id)}
-            handleDelete={() => handleDeleteConversion(record.id)}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateConversion(record.id),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteConversion(record.id),
+              },
+            ]}
           />
         );
       },

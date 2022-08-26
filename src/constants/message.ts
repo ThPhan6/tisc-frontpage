@@ -9,6 +9,15 @@ export const MESSAGE_ERROR = {
   GENERAL_EMAIL: 'General email is required',
   EMAIL_AUTO: 'Message is required',
   EMAIL_UNVALID: 'Email is not valid',
+  EMAIL_INVALID_INCORRECT: 'Email invalid is not incorrect',
+  URL_INVALID: 'Some download urls are not valid',
+  AGREE_TISC: 'Click to proceed',
+  VERIFY_TOKEN_EXPIRED: 'Verification link has expired',
+  PASSWORD_CHARACTER: 'Password must be more than 8 characters',
+  FIRST_NAME: 'First name is required',
+  EMAIL_REQUIRED: 'Email is required',
+  EMAIL_ALREADY_USED: 'Email already taken',
+  NO_TEAMPROFILE: 'Add member to invite',
 };
 
 export const MESSAGE_NOTIFICATION = {
@@ -23,6 +32,12 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PERSONAL_PROFILE_ERROR: 'Update personal profile error',
   CREATE_PASSSWORD_VERIFICATION_SUCCESS: 'Create account password successfully',
   CREATE_PASSSWORD_VERIFICATION_FAILED: 'Failed to create account password',
+  SIGN_UP_DESIGNER_SUCCESS:
+    'Sign up designer successfully and please check your email to verify account',
+  SIGN_UP_DESIGNER_ERROR: 'Sign up designer error',
+  CONTACT_SUCCESS: 'Contact successfully',
+  CONTACT_ERROR: 'Contact error',
+  GET_LIST_POLICY: 'Get list policy error',
 
   // Category
   CREATE_CATEGORY_SUCCESS: 'Create the category successfully',
@@ -44,6 +59,10 @@ export const MESSAGE_NOTIFICATION = {
   DUPLICATE_PRODUCT_SUCCESS: 'Duplicate product successfully',
   DUPLICATE_PRODUCT_ERROR: 'Failed to duplicate product',
   GET_ONE_PRODUCT_ERROR: 'Failed to get product information',
+  GET_SHARING_GROUPS_ERROR: 'Failed to get sharing groups',
+  GET_SHARING_PURPOSES_ERROR: 'Failed to get sharing purposes',
+  CREATE_SHARE_VIA_EMAIL_SUCCESS: 'Shared via email successfully',
+  CREATE_SHARE_VIA_EMAIL_ERROR: 'Failed to share via email',
 
   // product catelogue
   CREATE_PRODUCT_CATELOGUE_SUCCESS: 'Create product catelogue successfully',
@@ -100,6 +119,27 @@ export const MESSAGE_NOTIFICATION = {
   // department
   GET_LIST_DEPARTMENT_ERROR: 'Get list department error',
 
+  /// user group
+  // brand
+  GET_LIST_BRAND_SUMMARY_ERROR: 'Get list brand summary error',
+  GET_LIST_ASSIGN_TEAM_ERROR: 'Get list assign team error',
+  GET_BRAND_STATUSES_ERROR: 'Get brand statuses error',
+  UPDATE_LIST_ASSIGN_TEAM_ERROR: 'Update list assign team error',
+  UPDATE_LIST_ASSIGN_TEAM_SUCCESS: 'Update list assign team successfully',
+  UPDATE_BRAND_STATUS_SUCCESS: 'Update brand status successfully',
+  UPDATE_BRAND_STATUS_ERROR: 'Update brand status error',
+
+  //user-group / design firms
+  GET_ONE_DESIGN_FIRM_ERROR: 'Failed to get one design firm',
+  GET_SUMMARY: 'Failed to get summary',
+  GET_LOCATIONS_BY_DESIGN_FIRM: 'Failed to get locations by design firm',
+  GET_TEAMS_BY_DESIGN_FIRM: 'Failed to get teams by design firm',
+  GET_PROJECTS_BY_DESIGN_FIRM: 'Failed to get projects by design firm',
+  GET_MATERIAL_CODE_BY_DESIGN_FIRM: 'Failed to get material code by design firm',
+  GET_DESIGN_STATUSES_ERROR: 'Failed to get statuses',
+  UPDATE_STATUS_DESIGN_FIRM_SUCCESS: 'Update status design firm successfully',
+  UPDATE_STATUS_DESIGN_FIRM_ERROR: 'Update status design firm error',
+
   // team profile
   GET_LIST_TEAM_PROFILE_ERROR: 'Get list team profile error',
   GET_ONE_TEAM_PROFILE_ERROR: 'Get one team profile error',
@@ -134,6 +174,7 @@ export const MESSAGE_NOTIFICATION = {
 
   // market availability
   GET_LIST_MARKET_AVAILABILITY_ERROR: 'Get list market availability error',
+  GET_LIST_AVAILABILITY_GROUP_COLLECTION_ERROR: 'Get list group availability collection error',
   GET_ONE_MARKET_AVAILABILITY_ERROR: 'Get one market availability error',
   UPDATE_MARKET_AVAILABILITY_SUCCESS: 'Update market availability successfully',
   UPDATE_MARKET_AVAILABILITY_ERROR: 'Failed to update market availability',
@@ -168,6 +209,8 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_LOCATION_FAILED: 'Failed to delete location',
   GET_LOCATION_FAILED: 'Failed to get location data',
   GET_REGIONS_ERROR: 'Failed to get regions',
+  GET_LOCATION_DISTRIBUTOR_ERROR: 'Failed to get distributor location',
+  GET_LOCATION_BRAND_ERROR: 'Failed to get brand location',
 
   //distributor
   CREATE_DISTRIBUTOR_SUCCESS: 'Create distributor successfully',
@@ -177,6 +220,7 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_DISTRIBUTOR_SUCCESS: 'Update distributor successfully',
   UPDATE_DISTRIBUTOR_ERROR: 'Update distributor error',
   GET_ONE_DISTRIBUTOR_ERROR: 'Get one distributor error',
+  GET_LIST_DISTRIBUTOR_GROUP_COUNTRY_ERROR: 'Get list group distributor country error',
 
   //brand-profile
   UPDATE_BRAND_PROFILE_SUCCESS: 'Update profile successfully',
@@ -189,9 +233,46 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_FAQ_SUCCESS: 'Update FAQ successfully',
   UPDATE_FAQ_ERROR: 'Update FAQ error',
   GET_ONE_FAQ_ERROR: 'Get one FAQ error',
+
+  //project_type
+  GET_PROJECT_LIST_FAILED: 'Failed to get projects data',
+  GET_PROJECT_BUILDING_TYPE_FAILED: 'Failed to get project building types',
+  GET_PROJECT_TYPE_FAILED: 'Failed to get project types',
+  GET_PROJECT_MEASUREMENT_UNIT_FAILED: 'Failed to get project measurement units',
+  CREATE_PROJECT_FAILED: 'Failed to create project',
+  CREATE_PROJECT_SUCCESS: 'Create project successfully',
+  UPDATE_PROJECT_FAILED: 'Failed to update project',
+  UPDATE_PROJECT_SUCCESS: 'Update project successfully',
+  DELETE_PROJECT_FAILED: 'Failed to delete project',
+  DELETE_PROJECT_SUCCESS: 'Delete project successfully',
+  GET_PROJECT_DATA_FAILED: 'Failed to get project data',
+  GET_PROJECT_SUMMARY_DATA_FAILED: 'Failed to get project summary data',
+
+  GET_PROJECT_SPACE_DATA_FAILED: 'Failed to get project space data',
+  CREATE_PROJECT_SPACE_FAILED: 'Failed to create project space',
+  CREATE_PROJECT_SPACE_SUCCESS: 'Create project space successfully',
+  UPDATE_PROJECT_SPACE_FAILED: 'Failed to update project space',
+  UPDATE_PROJECT_SPACE_SUCCESS: 'Update project space successfully',
+  DELETE_PROJECT_SPACE_FAILED: 'Failed to delete project space',
+  DELETE_PROJECT_SPACE_SUCCESS: 'Delete project space successfully',
+
+  // favourite
+  GET_FAVOURITE_PRODUCT_SUMMARY_ERROR: 'Get product summary error',
+  GET_FAVOURITE_BRAND_PRODUCT_LIST_ERROR: 'Get favourite brand product error',
+  GET_FAVOURITE_CATEGORY_PRODUCT_SUMMARY_ERROR: 'Get favourite category product error',
+  CREATE_FAVOURITE_RETRIEVE_SUCCESS: 'Now you can have your own favourite product',
+  CREATE_FAVOURITE_RETRIEVE_ERROR: 'Failed to create your favourite product',
+  RETRIEVE_FAVOURITE_PRODUCT_SUCCESS: 'Retrieve favourite product successfully',
+  RETRIEVE_FAVOURITE_PRODUCT_ERROR: 'Retrieve favourite product error',
+  SKIP_FAVOURITE_SUCCESS: 'Skipped Successfully',
+  SKIP_FAVOURITE_ERROR: 'Failed to skip',
 };
 
 export const MESSAGE_TOOLTIP = {
   PERSONAL_PROFILE:
     'We value user personal privacy. However, the platform will require individual information for verification purpose from time to time.',
+};
+
+export const EMPTY_DATA_MESSAGE = {
+  product: 'No product data yet',
 };

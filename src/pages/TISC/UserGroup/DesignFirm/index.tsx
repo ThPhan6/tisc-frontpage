@@ -1,22 +1,25 @@
 import React, { useRef } from 'react';
-import CustomTable from '@/components/Table';
-import type { TableColumnItem } from '@/components/Table/types';
-import { MenuHeaderDropdown, HeaderDropdown } from '@/components/HeaderDropdown';
-import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
-import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
-import { getDesignFirmPagination } from '@/services';
-import { showImageUrl } from '@/helper/utils';
-import type { DesignFirm } from '@/types';
-import styles from './styles/index.less';
+
+import { PATH } from '@/constants/path';
+import { DESIGN_STATUSES } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
-import { MenuSummary } from '@/components/MenuSummary';
-import { dataMenuFirm } from '@/constants/util';
+
+import { getDesignFirmPagination } from '@/features/user-group/services';
+import { pushTo } from '@/helper/history';
+import { showImageUrl } from '@/helper/utils';
+
+import type { TableColumnItem } from '@/components/Table/types';
+import { DesignFirm } from '@/features/user-group/types';
+
+import CustomTable from '@/components/Table';
+import { ActionMenu } from '@/components/TableAction';
+import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
 
 const DesignFirmList: React.FC = () => {
   const tableRef = useRef<any>();
 
-  const comingSoon = () => {
-    alert('Coming Soon!');
+  const handleViewDesignFirm = (id: string) => {
+    pushTo(PATH.tiscUserGroupViewDesigner.replace(':id', id));
   };
 
   const TableColumns: TableColumnItem<DesignFirm>[] = [
@@ -45,48 +48,42 @@ const DesignFirmList: React.FC = () => {
     { title: 'Live', dataIndex: 'live', lightHeading: true },
     { title: 'On Hold', dataIndex: 'on_hold', lightHeading: true },
     { title: 'Archived', dataIndex: 'archived', lightHeading: true },
-    { title: 'Status', dataIndex: 'status' },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render: (value) => {
+        return (
+          <span>
+            {value === DESIGN_STATUSES.ACTIVE
+              ? 'Active'
+              : value === DESIGN_STATUSES.INACTIVE
+              ? 'Inactive'
+              : ''}
+          </span>
+        );
+      },
+    },
     {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
-      render: () => {
+      render: (_value, record) => {
         return (
-          <HeaderDropdown
-            containerClass={styles.customAction}
-            arrow
-            align={{ offset: [13, -10] }}
-            placement="bottomRight"
-            overlay={
-              <MenuHeaderDropdown
-                items={[
-                  {
-                    onClick: comingSoon,
-                    icon: <ViewIcon />,
-                    label: 'View',
-                  },
-                ]}
-              />
-            }
-            trigger={['click']}
-          >
-            <ActionIcon />
-          </HeaderDropdown>
+          <ActionMenu
+            actionItems={[
+              {
+                type: 'view',
+                onClick: () => handleViewDesignFirm(record.id),
+              },
+            ]}
+          />
         );
       },
     },
   ];
 
   return (
-    <PageContainer
-      pageHeaderRender={() => (
-        <MenuSummary
-          containerClass={styles.customMenuSummary}
-          menuSummaryData={dataMenuFirm.leftData}
-          typeMenu="subscription"
-        />
-      )}
-    >
+    <PageContainer pageHeaderRender={() => <MenuHeaderSummary type="design" />}>
       <CustomTable
         title="DESIGN FIRMS"
         columns={TableColumns}

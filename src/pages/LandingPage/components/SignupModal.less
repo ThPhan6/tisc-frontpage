@@ -2,7 +2,7 @@
   margin-bottom: 8px;
   font-weight: 300;
   font-size: 16px;
-  font-family: 'Roboto';
+  font-family: @font-primary;
   font-style: normal;
   line-height: 24px;
 }
@@ -28,11 +28,13 @@
       .customFont;
     }
   }
+  .errorStatus {
+    border: 0.5px solid @secondary-color;
+  }
   :global(.ant-checkbox-wrapper) {
     display: flex;
     align-items: center;
     height: 40px;
-    margin-bottom: 8px;
     padding-left: 18px;
   }
   :global(.ant-checkbox-inner) {
@@ -43,42 +45,49 @@
     border-color: @primary-color-dark;
   }
   :global(.ant-checkbox + span) {
+    padding-left: 12px;
     color: @mono-color;
     font-weight: 300;
     font-size: 14px;
-    font-family: 'Roboto';
+    font-family: @font-primary;
     font-style: normal;
     line-height: 22px;
   }
   :global(.ant-checkbox) {
-    margin-bottom: 4px;
-  }
-  .submit {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    float: right;
-    margin-top: 40px;
-    padding: 0 20px;
-    color: '#fff';
-    font-weight: 300;
-    font-size: 14px;
-    font-family: 'Roboto';
-    font-style: normal;
-    line-height: 22px;
-    text-align: right;
-    background: @primary-color;
-    border: 1px solid @primary-color;
-    border-radius: 16px;
+    top: auto;
+    // margin-bottom: 4px;
   }
   .customLink {
+    margin-top: 8px;
     padding-left: 46px;
     color: @primary-color-dark;
     font-weight: 300;
     font-size: 14px;
-    font-family: 'Roboto';
+    font-family: @font-primary;
     font-style: normal;
     line-height: 22px;
     cursor: pointer;
+  }
+  .button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 42px;
+    .warning {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 32px;
+      padding: 0 16px;
+      background-color: @secondary-color;
+      p {
+        margin-left: 12px;
+        color: #fff;
+      }
+    }
+    .submit {
+      padding: 0 20px;
+      border-radius: 16px;
+    }
   }
 }

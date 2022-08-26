@@ -1,0 +1,71 @@
+.profile {
+  @space: 16px;
+  &_label {
+    margin-bottom: @space;
+  }
+
+  .designName {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: @space;
+    .brandName {
+      flex: 1;
+      margin: 0 12px 0 0;
+    }
+    .brandNameInfo {
+      flex: 1;
+      margin: 0;
+    }
+    .logo {
+      width: 56px;
+      height: 56px;
+      object-fit: cover;
+    }
+  }
+
+  .officalWebsite {
+    margin-bottom: 16px;
+    box-shadow: @border-bottom-light;
+
+    .label {
+      display: flex;
+      align-items: center;
+      height: 24px;
+      color: @mono-color-dark;
+
+      .colon {
+        margin-left: 4px;
+      }
+    }
+
+    .table {
+      width: 100%;
+      height: auto;
+      min-height: 32px;
+      white-space: nowrap;
+      table-layout: fixed;
+
+      td {
+        height: 32px;
+        padding: 0;
+
+        p {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .text {
+        width: 30%;
+        padding: 0 24px 0 16px;
+        text-transform: capitalize;
+      }
+
+      .url {
+        width: 70%;
+      }
+    }
+  }
+}

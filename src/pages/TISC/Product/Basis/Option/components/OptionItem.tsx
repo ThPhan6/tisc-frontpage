@@ -1,22 +1,22 @@
+import React, { FC } from 'react';
+
+import { Col, Collapse, Radio, Row } from 'antd';
+
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
-import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 import DefaultImage from '@/assets/icons/default-option-icon.png';
+import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
+
+import { getBase64, showImageUrl } from '@/helper/utils';
+import { isEmpty } from 'lodash';
+
+import { BasisOptionSubForm, SubBasisOption } from '@/types';
+
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
-import { isEmpty } from 'lodash';
-import React, { FC } from 'react';
-import styles from '../styles/OptionItem.less';
-import { SubBasisOption, BasisOptionSubForm } from '@/types';
-import { Collapse, Radio, Row, Col } from 'antd';
-import { getBase64, showImageUrl } from '@/helper/utils';
 
-interface IOptionItem {
-  subOption: BasisOptionSubForm;
-  handleChangeSubItem: (changedSubs: BasisOptionSubForm) => void;
-  handleDeleteSubOption: () => void;
-  optionIndex: number;
-}
+import styles from '../styles/OptionItem.less';
+
 interface SubItemOptionProps {
   is_have_image?: boolean;
   subItemOption: SubBasisOption;
@@ -121,7 +121,14 @@ const SubItemOption: FC<SubItemOptionProps> = ({
   );
 };
 
-export const OptionItem: FC<IOptionItem> = (props) => {
+interface OptionItemProps {
+  subOption: BasisOptionSubForm;
+  handleChangeSubItem: (changedSubs: BasisOptionSubForm) => void;
+  handleDeleteSubOption: () => void;
+  optionIndex: number;
+}
+
+export const OptionItem: FC<OptionItemProps> = (props) => {
   const { subOption, handleChangeSubItem, handleDeleteSubOption, optionIndex } = props;
 
   const handleActiveKeyToCollapse = () => {
@@ -194,8 +201,7 @@ export const OptionItem: FC<IOptionItem> = (props) => {
                 level={3}
                 customClass={
                   isEmpty(subOption.is_collapse) ? styles.font_weight_300 : styles.font_weight_600
-                }
-              >
+                }>
                 Option Name
               </BodyText>
               <ArrowIcon
@@ -213,8 +219,7 @@ export const OptionItem: FC<IOptionItem> = (props) => {
                     ? styles['set-checked-color']
                     : styles['set-unchecked-color']
                 }`}
-              onClick={handleOnClickUsingImage}
-            >
+              onClick={handleOnClickUsingImage}>
               <BodyText fontFamily="Roboto" level={5}>
                 Image
               </BodyText>
@@ -254,8 +259,7 @@ export const OptionItem: FC<IOptionItem> = (props) => {
           }
           header={PanelHeader()}
           key={subOption.is_collapse!}
-          showArrow={false}
-        >
+          showArrow={false}>
           <div className={styles.sub_wrapper}>
             {subOption.subs.map((subItemOption, index) => (
               <div key={index} className={styles.element_input}>

@@ -1,0 +1,40 @@
+.customRadioList {
+  :global(.ant-collapse-item-active .ant-collapse-content-box) {
+    box-shadow: none;
+  }
+
+  :global(.ant-space-item) {
+    padding-left: 16px;
+  }
+
+  :global(.ant-collapse-header .selected-item) {
+    p {
+      color: @primary-color-dark;
+    }
+  }
+}
+
+.zonesContainer {
+  :global(.ant-space-item),
+  :global(.ant-collapse) {
+    margin-left: 16px !important;
+  }
+
+  :global(.ant-collapse-content > .ant-collapse-content-box) {
+    padding: 8px 0 0 16px;
+  }
+  :global(.ant-collapse-content-active > .ant-collapse-content-box) {
+    box-shadow: @border-bottom;
+  }
+  :global(.ant-space-item) {
+    margin-bottom: 4;
+    box-shadow: @border-bottom-light;
+  }
+
+  > label > * {
+    font-weight: 600;
+  }
+  &.disabled > label > * {
+    color: @mono-color-medium;
+  }
+}

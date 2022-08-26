@@ -1,14 +1,18 @@
-import CustomTable from '@/components/Table';
-import { pushTo } from '@/helper/history';
 import { useRef } from 'react';
-import { TableColumnItem } from '@/components/Table/types';
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
+
 import { PATH } from '@/constants/path';
+
+import { pushTo } from '@/helper/history';
+import { getFullName } from '@/helper/utils';
+
+import { Documentation } from './types';
+import { TableColumnItem } from '@/components/Table/types';
+
+import CustomTable from '@/components/Table';
+import { ActionMenu } from '@/components/TableAction';
+
 import { getPolicyTemplates } from './api';
 import moment from 'moment';
-import { ActionForm } from '@/components/Action';
-import { getFullName } from '@/helper/utils';
-import { Documentation } from './types';
 
 const PolicyTemplatePage: React.FC = () => {
   const tableRef = useRef<any>();
@@ -42,12 +46,12 @@ const PolicyTemplatePage: React.FC = () => {
       width: '5%',
       render: (_value: any, record: any) => {
         return (
-          <ActionForm
+          <ActionMenu
             actionItems={[
               {
-                onClick: () => pushTo(PATH.policyUpdate.replace(':id', record.id)),
-                icon: <EditIcon />,
+                type: 'updated',
                 label: 'Edit',
+                onClick: () => pushTo(PATH.policyUpdate.replace(':id', record.id)),
               },
             ]}
           />

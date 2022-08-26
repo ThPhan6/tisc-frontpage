@@ -1,140 +1,117 @@
-import React, { useState, useEffect } from 'react';
-import { BodyText } from '@/components/Typography';
-import Popover from '@/components/Modal/Popover';
-import { HeaderDropdown } from '@/components/HeaderDropdown';
-import { getBrandAlphabet, getProductSummary, getProductListByBrandId } from '@/services';
-import type {
-  IBrandAlphabet,
-  IBrandDetail,
-  GeneralData,
-  ProductGetListParameter,
-  IFilterType,
-} from '@/types';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { PATH } from '@/constants/path';
+import { QUERY_KEY } from '@/constants/util';
+
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SmallPlusIcon } from '@/assets/icons/small-plus-icon.svg';
-import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
-import { showImageUrl } from '@/helper/utils';
-import { map, forEach, capitalize, truncate } from 'lodash';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '@/reducers';
-import { setBrand, setProductList, reset } from '@/reducers/product';
+
+import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
+import { getBrandAlphabet } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
-import styles from '../styles/topbar.less';
+import { useQuery } from '@/helper/hook';
+import { showImageUrl, updateUrlParams } from '@/helper/utils';
+import { flatMap, forEach, map } from 'lodash';
 
-interface ProductTopBarProps {
-  topValue?: string | React.ReactNode;
-  disabled?: boolean;
-  bottomValue?: string | React.ReactNode;
-  bottomEnable?: boolean;
-  icon?: React.ReactNode;
-  customClass?: string;
-  onClick?: () => void;
-}
+import { resetProductState, setBrand } from '@/features/product/reducers';
+import { ProductGetListParameter } from '@/features/product/types';
+import { BrandAlphabet, BrandDetail } from '@/features/user-group/types';
+import { useAppSelector } from '@/reducers';
 
-const TopBarItem: React.FC<ProductTopBarProps> = (props) => {
-  const { topValue, bottomValue, icon, disabled, bottomEnable, customClass, onClick } = props;
-  return (
-    <div className={`item ${customClass ?? ''}`} onClick={onClick}>
-      <BodyText level={5} fontFamily="Roboto" customClass={disabled ? 'disabled ' : ''}>
-        {topValue}
-      </BodyText>
-      <BodyText
-        level={6}
-        fontFamily="Roboto"
-        customClass={`topbar-group-btn ${disabled && !bottomEnable ? 'disabled' : ''}`}
-      >
-        <span>{bottomValue}</span>
-        {icon ? icon : null}
-      </BodyText>
-    </div>
-  );
-};
-interface IFilterItem {
-  title: string;
-  onDelete?: () => void;
-}
-const FilterItem: React.FC<IFilterItem> = ({ title, onDelete }) => {
-  return (
-    <span className={styles.filterItem}>
-      {truncate(capitalize(title), { length: 25 })}
-      <DeleteIcon onClick={onDelete} />
-    </span>
-  );
-};
+import Popover from '@/components/Modal/Popover';
+import { BodyText } from '@/components/Typography';
+import {
+  CustomDropDown,
+  FilterItem,
+  TopBarContainer,
+  TopBarItem,
+} from '@/features/product/components';
+import {
+  formatAllCategoriesToDropDownData,
+  formatAllCollectionsToDropDownData,
+  resetProductFilter,
+  useSyncQueryToState,
+} from '@/features/product/components/FilterAndSorter';
+
+import styles from './TopBar.less';
 
 const ProductTopBar: React.FC = () => {
-  const [visible, setVisible] = useState(false);
-  const [brandAlphabet, setBrandAlphabet] = useState<IBrandAlphabet>({});
-  const [brandData, setBrandData] = useState<any>();
-  const product = useAppSelector((state) => state.product);
-  const { filter } = product.list;
+  useSyncQueryToState();
+
   const dispatch = useDispatch();
 
-  const resetProductList = () => {
-    dispatch(
-      setProductList({
-        filter: undefined,
-        data: [],
-      }),
-    );
-  };
+  const [visible, setVisible] = useState(false);
+  const [brandAlphabet, setBrandAlphabet] = useState<BrandAlphabet>({});
+  const [brandData, setBrandData] = useState<any>();
+  const brand = useAppSelector((state) => state.product.brand);
+  const filter = useAppSelector((state) => state.product.list.filter);
+  const productSummary = useAppSelector((state) => state.product.summary);
+  const brandFlatList = flatMap(brandAlphabet);
+
+  const query = useQuery();
+  const brandId = query.get(QUERY_KEY.b_id);
+  const brandName = query.get(QUERY_KEY.b_name);
+
+  /// load brand by alphabet from API
+  useEffect(() => {
+    getBrandAlphabet().then((data) => {
+      setBrandAlphabet(data);
+      if (brandId && brandName) {
+        setBrandData({ value: brandId });
+      }
+    });
+  }, []);
 
   /// set brand to product reducer
   useEffect(() => {
     if (brandData) {
-      let brand: IBrandDetail | undefined;
+      let curBrand: BrandDetail | undefined;
       forEach(brandAlphabet, (brands) => {
         const foundedBrand = brands.find((item) => item.id === brandData.value);
         if (foundedBrand) {
-          brand = foundedBrand;
+          curBrand = foundedBrand;
         }
       });
-      //
-      dispatch(setBrand(brand));
+      dispatch(setBrand(curBrand));
     }
   }, [brandData]);
 
-  /// load brand by alphabet from API
-  useEffect(() => {
-    getBrandAlphabet().then(setBrandAlphabet);
-  }, []);
-
   // brand product summary
   useEffect(() => {
-    if (product.brand && product.brand.id && product.summary?.brandId !== product.brand.id) {
+    if (brand && brand.id && productSummary?.brandId !== brand.id) {
       // get product summary
-      getProductSummary(product.brand.id).then(() => {
+      getProductSummary(brand.id).then(() => {
         // reset filter
-        resetProductList();
+        // resetFilter();
       });
     }
-  }, [product.brand]);
+  }, [brand, productSummary]);
 
   useEffect(() => {
-    if (product.brand && product.brand.id && filter) {
-      const params = {
-        brand_id: product.brand.id,
-      } as ProductGetListParameter;
-      if (filter.name === 'category_id' && filter.value !== 'all') {
-        params.category_id = filter.value;
+    if (brand && brand.id && filter) {
+      const params: ProductGetListParameter = {
+        brand_id: brand.id,
+      };
+      if (filter.name === 'category_id') {
+        params.category_id = filter.value === 'all' ? 'all' : filter.value;
       }
-      if (filter.name === 'collection_id' && filter.value !== 'all') {
-        params.collection_id = filter.value;
+      if (filter.name === 'collection_id') {
+        params.collection_id = filter.value === 'all' ? 'all' : filter.value;
       }
       getProductListByBrandId(params);
     }
-  }, [filter]);
+  }, [filter, brand]);
 
   const gotoProductForm = () => {
-    dispatch(reset());
-    if (product.brand && product.brand.id) {
-      pushTo(PATH.productConfigurationCreate.replace(':brandId', product.brand.id));
+    dispatch(resetProductState());
+    if (brand && brand.id) {
+      pushTo(PATH.productConfigurationCreate.replace(':brandId', brand.id));
     }
   };
 
   /// render custom radio brand list label
-  const renderLabel = (item: IBrandDetail) => {
+  const renderLabel = (item: BrandDetail) => {
     return (
       <BodyText level={5} fontFamily="Roboto">
         <img src={showImageUrl(item.logo ?? '')} className={styles.brandLogo} />
@@ -143,139 +120,126 @@ const ProductTopBar: React.FC = () => {
     );
   };
 
-  const renderDropDownList = (title: string, filterName: IFilterType, data: GeneralData[]) => {
-    // merge view small
-    const items = [{ id: 'all', name: 'VIEW ALL' }, ...data];
-    ///
-    return (
-      <HeaderDropdown
-        align={{ offset: [26, 7] }}
-        placement="bottomRight"
-        containerClass={styles.topbarDropdown}
-        disabled={product.summary ? false : true}
-        items={items.map((item) => {
-          return {
-            onClick: () => {
-              dispatch(
-                setProductList({
-                  filter: {
-                    name: filterName,
-                    title: item.name,
-                    value: item.id,
-                  },
-                }),
-              );
-            },
-            label: item.name,
-          };
-        })}
-        trigger={['click']}
-      >
-        <span>
-          {title}
-          <DropdownIcon />
-        </span>
-      </HeaderDropdown>
-    );
-  };
   return (
     <>
-      <div className={styles.topbarContainer}>
-        <div className="left-side">
-          <TopBarItem
-            topValue={
-              product.brand?.name ? <span className="bold">{product.brand.name}</span> : 'select'
-            }
-            disabled={product.brand?.name ? false : true}
-            bottomEnable
-            bottomValue="Brands"
-            customClass="brand-dropdown right-divider"
-            icon={<DropdownIcon />}
-            onClick={() => setVisible(true)}
-          />
-          <TopBarItem
-            topValue={product.summary?.category_count ?? ''}
-            disabled={product.summary ? false : true}
-            bottomValue="Categories"
-          />
-          <TopBarItem
-            topValue={product.summary?.collection_count ?? ''}
-            disabled={product.summary ? false : true}
-            bottomValue="Collections"
-          />
-          <TopBarItem
-            topValue={product.summary?.card_count ?? ''}
-            disabled={product.summary ? false : true}
-            bottomValue="Cards"
-          />
-          <TopBarItem
-            topValue={product.summary?.product_count ?? ''}
-            disabled={product.summary ? false : true}
-            bottomValue="Products"
-          />
-        </div>
-        <div className="right-side">
-          <TopBarItem
-            topValue={
-              filter?.name === 'category_id' ? (
-                <FilterItem title={filter.title} onDelete={resetProductList} />
-              ) : product.brand ? (
-                'view'
-              ) : (
-                <span style={{ opacity: 0 }}>.</span>
-              )
-            }
-            disabled
-            bottomEnable={product.summary ? true : false}
-            bottomValue={
-              !product.brand
-                ? 'View By Category'
-                : renderDropDownList('Categories', 'category_id', product.summary?.categories ?? [])
-            }
-            customClass="left-divider"
-          />
-          <TopBarItem
-            topValue={
-              filter?.name === 'collection_id' ? (
-                <FilterItem title={filter.title} onDelete={resetProductList} />
-              ) : product.brand ? (
-                'view'
-              ) : (
-                <span style={{ opacity: 0 }}>.</span>
-              )
-            }
-            disabled
-            bottomEnable={product.summary ? true : false}
-            bottomValue={
-              !product.brand
-                ? 'View By Collection'
-                : renderDropDownList(
-                    'Collections',
-                    'collection_id',
-                    product.summary?.collections ?? [],
-                  )
-            }
-            customClass="left-divider"
-          />
-          <TopBarItem
-            topValue={<span style={{ opacity: 0 }}>.</span>}
-            disabled
-            bottomEnable={product.summary ? true : false}
-            bottomValue="New Card"
-            customClass="left-divider"
-            onClick={product.summary ? gotoProductForm : undefined}
-            icon={
-              <span
-                className={`
-                  ${styles.newCardIcon}
-                  ${product.summary ? styles.activeNewCard : styles.disabledNewCard}`}
-              >
-                <SmallPlusIcon />
-              </span>
-            }
-          />
-        </div>
-      </div>
+      <TopBarContainer
+        LeftSideContent={
+          <>
+            <TopBarItem
+              topValue={brand?.name ? brand.name : 'select'}
+              disabled={brand?.name ? false : true}
+              bottomEnable
+              bottomValue="Brands"
+              customClass="brand-dropdown right-divider"
+              icon={<DropdownIcon />}
+              onClick={() => setVisible(true)}
+            />
+            <TopBarItem
+              topValue={productSummary?.category_count ?? ''}
+              disabled={productSummary ? false : true}
+              bottomValue="Categories"
+              cursor="default"
+            />
+            <TopBarItem
+              topValue={productSummary?.collection_count ?? ''}
+              disabled={productSummary ? false : true}
+              bottomValue="Collections"
+              cursor="default"
+            />
+            <TopBarItem
+              topValue={productSummary?.card_count ?? ''}
+              disabled={productSummary ? false : true}
+              bottomValue="Cards"
+              cursor="default"
+            />
+            <TopBarItem
+              topValue={productSummary?.product_count ?? ''}
+              disabled={productSummary ? false : true}
+              bottomValue="Products"
+              cursor="default"
+            />
+          </>
+        }
+        RightSideContent={
+          <>
+            <TopBarItem
+              topValue={
+                filter?.name === 'category_id' ? (
+                  <FilterItem title={filter.title} onDelete={resetProductFilter} />
+                ) : brand ? (
+                  'view'
+                ) : (
+                  <span style={{ opacity: 0 }}>.</span>
+                )
+              }
+              disabled
+              bottomEnable={productSummary ? true : false}
+              bottomValue={
+                !brand ? (
+                  'View By Category'
+                ) : productSummary?.categories ? (
+                  <CustomDropDown
+                    items={formatAllCategoriesToDropDownData(productSummary.categories)}
+                    viewAllTop
+                    placement="bottomRight"
+                    menuStyle={{ height: 'auto', width: 240 }}>
+                    Categories
+                  </CustomDropDown>
+                ) : (
+                  'Collections'
+                )
+              }
+              customClass="left-divider"
+            />
+            <TopBarItem
+              topValue={
+                filter?.name === 'collection_id' ? (
+                  <FilterItem title={filter.title} onDelete={resetProductFilter} />
+                ) : brand ? (
+                  'view'
+                ) : (
+                  <span style={{ opacity: 0 }}>.</span>
+                )
+              }
+              disabled
+              bottomEnable={productSummary ? true : false}
+              bottomValue={
+                !brand ? (
+                  'View By Collection'
+                ) : productSummary?.collections ? (
+                  <CustomDropDown
+                    items={formatAllCollectionsToDropDownData(productSummary.collections)}
+                    viewAllTop
+                    placement="bottomRight"
+                    menuStyle={{ height: 'auto', width: 240 }}>
+                    Collections
+                  </CustomDropDown>
+                ) : (
+                  'Collections'
+                )
+              }
+              customClass="left-divider"
+            />
+            <TopBarItem
+              topValue={<span style={{ opacity: 0 }}>.</span>}
+              disabled
+              bottomEnable={productSummary ? true : false}
+              bottomValue="New Card"
+              customClass="left-divider"
+              onClick={productSummary ? gotoProductForm : undefined}
+              icon={
+                <span
+                  className={`
+                ${styles.newCardIcon}
+                ${productSummary ? styles.activeNewCard : styles.disabledNewCard}`}>
+                  <SmallPlusIcon />
+                </span>
+              }
+            />
+          </>
+        }
+      />
+
       <Popover
         visible={visible}
         setVisible={setVisible}
@@ -294,7 +258,19 @@ const ProductTopBar: React.FC = () => {
         })}
         dropDownRadioTitle={(data) => data.key.split('').join(' / ')}
         chosenValue={brandData}
-        setChosenValue={setBrandData}
+        setChosenValue={(v) => {
+          const chosenBrand = brandFlatList.find((el) => el.id === v.value);
+          if (chosenBrand) {
+            updateUrlParams({
+              set: [
+                { key: QUERY_KEY.b_id, value: chosenBrand.id },
+                { key: QUERY_KEY.b_name, value: chosenBrand.name },
+              ],
+              removeAll: true,
+            });
+          }
+          setBrandData(v);
+        }}
       />
     </>
   );

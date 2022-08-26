@@ -1,11 +1,15 @@
+import type { FC } from 'react';
+import { useEffect, useState } from 'react';
+
+import { getProductAttributeContentType } from '@/services';
+
+import type { AttributeContentType, AttributeForm, AttributeSubForm } from '@/types';
+
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import type { FC } from 'react';
-import { useState, useEffect } from 'react';
+
 import { AttributeItem } from './AttributeItem';
 import ContentTypeModal from './ContentTypeModal';
-import { getProductAttributeContentType } from '@/services';
-import type { AttributeForm, AttributeSubForm, AttributeContentType } from '@/types';
 
 interface AttributeEntryFormProps {
   type: number;
@@ -15,7 +19,7 @@ interface AttributeEntryFormProps {
   data: AttributeForm;
   setData: (data: AttributeForm) => void;
 }
-export interface ISelectedItem {
+export interface SelectedItem {
   subAttribute: AttributeSubForm;
   index: number;
 }
@@ -24,7 +28,7 @@ const DEFAULT_SUB_ATTRIBUTE: AttributeSubForm = {
   name: '',
   basis_id: '',
 };
-const DEFAULT_SELECTED_ATTRIBUTE: ISelectedItem = {
+const DEFAULT_SELECTED_ATTRIBUTE: SelectedItem = {
   index: 0,
   subAttribute: DEFAULT_SUB_ATTRIBUTE,
 };
@@ -41,7 +45,7 @@ const AttributeEntryForm: FC<AttributeEntryFormProps> = (props) => {
   // for content type data
   const [contentType, setContentType] = useState<AttributeContentType>();
   // selected content types
-  const [selectedItem, setSelectedItem] = useState<ISelectedItem>(DEFAULT_SELECTED_ATTRIBUTE);
+  const [selectedItem, setSelectedItem] = useState<SelectedItem>(DEFAULT_SELECTED_ATTRIBUTE);
   // load data content type
   useEffect(() => {
     getProductAttributeContentType().then((contentTypeData) => {
@@ -141,8 +145,7 @@ const AttributeEntryForm: FC<AttributeEntryFormProps> = (props) => {
     <EntryFormWrapper
       handleSubmit={handleSubmit}
       handleCancel={onCancel}
-      submitButtonStatus={submitButtonStatus}
-    >
+      submitButtonStatus={submitButtonStatus}>
       <FormNameInput
         placeholder="type group name"
         title="Attribute Group"

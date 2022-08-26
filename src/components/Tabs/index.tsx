@@ -1,7 +1,10 @@
+import { FC, HTMLAttributes, memo } from 'react';
+
 import TabPane from '@ant-design/pro-card/lib/components/TabPane';
 import { Tabs } from 'antd';
-import { FC } from 'react';
+
 import { CustomTabsProps } from './types';
+
 import style from './styles/index.less';
 
 export const CustomTabs: FC<CustomTabsProps> = ({
@@ -10,6 +13,7 @@ export const CustomTabs: FC<CustomTabsProps> = ({
   tabPosition = 'top',
   heightItem = '40px',
   widthItem = '128px',
+  customClass = '',
   ...props
 }) => {
   return (
@@ -18,8 +22,8 @@ export const CustomTabs: FC<CustomTabsProps> = ({
         ${style[`tabs-${tabPosition}`]}
         ${style['tab-list']}
         ${style[`tabs-${tabDisplay}`]}
-      `}
-    >
+        ${customClass}
+      `}>
       <Tabs {...props} tabPosition={tabPosition}>
         {listTab.map((tab) => (
           <TabPane
@@ -29,8 +33,7 @@ export const CustomTabs: FC<CustomTabsProps> = ({
                   height: heightItem,
                   width: tabDisplay !== 'space' ? widthItem : '',
                 }}
-                className={`${style['item-tab']} ${tab?.disable && style['custom-color']}`}
-              >
+                className={`${style['item-tab']} ${tab?.disable && style['custom-color']}`}>
                 {tab?.icon && <span className={style['custom-icon']}>{tab.icon}</span>}
                 {tab.tab}
               </div>
@@ -43,3 +46,14 @@ export const CustomTabs: FC<CustomTabsProps> = ({
     </div>
   );
 };
+
+interface TabPaneProps extends HTMLAttributes<HTMLDivElement> {
+  active: boolean;
+  lazyLoad?: boolean;
+}
+export const CustomTabPane: FC<TabPaneProps> = memo(({ active, lazyLoad, ...props }) => {
+  if (lazyLoad && active === false) {
+    return null;
+  }
+  return <div {...props} style={{ display: !active ? 'none' : undefined }} />;
+});

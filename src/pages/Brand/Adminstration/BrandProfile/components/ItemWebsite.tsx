@@ -1,10 +1,13 @@
-import { CustomInput } from '@/components/Form/CustomInput';
 import { FC, useEffect, useState } from 'react';
-import { WebsiteUrl } from '../types';
-import { ReactComponent as LeftIcon } from '@/assets/icons/pagination-right-18px.svg';
-import styles from '@/pages/Brand/Adminstration/BrandProfile/styles/index.less';
-import CountryModal from '@/components/Location/CountryModal';
+
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
+import { ReactComponent as LeftIcon } from '@/assets/icons/pagination-right-18px.svg';
+
+import { WebsiteUrl } from '../types';
+
+import { CustomInput } from '@/components/Form/CustomInput';
+import CountryModal from '@/features/locations/components/CountryModal';
+import styles from '@/pages/Brand/Adminstration/BrandProfile/styles/index.less';
 
 export const ItemWebsite: FC<WebsiteUrl> = ({ websiteValue, onChange, onDeleteWebsiteItem }) => {
   const [countryVisible, setCountryVisible] = useState(false);

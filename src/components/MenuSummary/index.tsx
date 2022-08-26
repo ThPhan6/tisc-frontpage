@@ -1,15 +1,23 @@
 import { FC, useState } from 'react';
-import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
+
 import { ReactComponent as ActionLeftIcon } from '@/assets/icons/action-left.svg';
-import style from './index.less';
-import { ElementSummaryProps, ItemSummaryProps, MenuSummaryProps } from './types';
+import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
+
 import { checkUndefined } from '@/helper/utils';
 
-const ItemSummary: FC<ItemSummaryProps> = ({ brand }) => {
+import { ElementSummaryProps, MenuSummaryProps, SummaryProps } from './types';
+
+import style from './index.less';
+
+interface ItemSummaryProps {
+  sub: SummaryProps;
+}
+
+const ItemSummary: FC<ItemSummaryProps> = ({ sub }) => {
   return (
     <div className={style['item-container']}>
-      <span>{checkUndefined(brand?.quantity)}</span>
-      <label>{checkUndefined(brand?.label)}</label>
+      <span>{checkUndefined(sub?.quantity)}</span>
+      <label>{checkUndefined(sub?.label)}</label>
     </div>
   );
 };
@@ -26,14 +34,12 @@ const ElementSummary: FC<ElementSummaryProps> = ({
       className={`
         ${style['element-container']}
         ${toggle ? style['menuActive'] : style['menuUnactive']}`}
-      key={dataElementSummary.id}
-    >
+      key={dataElementSummary.id}>
       <div
         className={style['element']}
         onClick={() => {
           handleActiveTab(dataElementSummary.id);
-        }}
-      >
+        }}>
         <span>{checkUndefined(dataElementSummary?.quantity)}</span>
         <div className={style['button-wrapper']}>
           <label> {checkUndefined(dataElementSummary?.label)}</label>
@@ -42,14 +48,13 @@ const ElementSummary: FC<ElementSummaryProps> = ({
       </div>
       {toggle && (
         <div className={style['item-wrapper']}>
-          {dataElementSummary?.brands &&
-            dataElementSummary.brands.map((brand) => {
-              return (
-                <div className={style['item']} key={brand?.id}>
-                  <ItemSummary brand={brand} />
-                </div>
-              );
-            })}
+          {dataElementSummary?.subs?.map((sub, index) => {
+            return (
+              <div className={style['item']} key={index}>
+                <ItemSummary sub={sub} />
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
@@ -74,13 +79,18 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
   };
 
   const typeCircumstance = (type: MenuSummaryProps['typeMenu']) => {
+    /// 100% have type
+    if (!type) {
+      return;
+    }
+
     switch (type) {
       case 'subscription':
         return (
           <div className={style[`${type}-container`]}>
-            {typeMenuData?.map((data) => {
+            {typeMenuData?.map((data, index) => {
               return (
-                <div className={style[`element-right`]}>
+                <div className={style[`element-right`]} key={index}>
                   <span>{data.quantity}</span>
                   <label>{data.label}</label>
                 </div>
@@ -92,9 +102,9 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
       case 'project':
         return (
           <div className={style[`${type}-container`]}>
-            {typeMenuData?.map((data) => {
+            {typeMenuData?.map((data, index) => {
               return (
-                <div className={style[`element-right`]}>
+                <div className={style[`element-right`]} key={index}>
                   <span>{data.quantity}</span>
                   <label>{data.label}</label>
                 </div>
@@ -111,9 +121,9 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
   return (
     <div className={`${style['header-summary']} ${containerClass}`} style={{ height: height }}>
       <div className={style['brand-container']}>
-        {menuSummaryData.map((data) => {
+        {menuSummaryData.map((data, index) => {
           return (
-            <div className={style['wrapper']} key={data.id}>
+            <div className={style['wrapper']} key={index}>
               <ElementSummary
                 dataElementSummary={data}
                 activeId={activeId}

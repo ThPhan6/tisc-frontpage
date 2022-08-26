@@ -1,19 +1,23 @@
-import { Title } from '@/components/Typography';
-import { getFAQCurrent } from '@/services/faq.api';
-import { Col, Row } from 'antd';
 import { useEffect, useState } from 'react';
-import { FaqComponent } from './components/FaqComponent';
-import styles from './index.less';
-import type { FaqItem } from './types';
+
+import { Col, Row } from 'antd';
+
+import { getCurrentFAQ } from '@/features/how-to/services';
+
+import { Faq } from '@/features/how-to/types';
+
+import { Title } from '@/components/Typography';
+import { FaqComponent } from '@/features/how-to/components/HowTo/FaqComponent';
+import styles from '@/features/how-to/components/HowTo/index.less';
 
 const HowTo = () => {
   const [activeKey, setActiveKey] = useState<string>('');
-  const [howTo, setHowTo] = useState<FaqItem[]>([]);
+  const [howTo, setHowTo] = useState<Faq[]>([]);
   const handleActiveCollapse = (index: number) => {
     setActiveKey(activeKey === String(index) ? '' : String(index));
   };
   const getFAQList = () => {
-    getFAQCurrent().then((res) => {
+    getCurrentFAQ().then((res) => {
       const data = res.map((item) => {
         return {
           id: item.id,
@@ -45,6 +49,7 @@ const HowTo = () => {
                   value={item}
                   activeKey={activeKey}
                   handleActiveCollapse={handleActiveCollapse}
+                  customClass={item.question_and_answer?.length === 0 ? styles.customCursor : ''}
                 />
               ))}
             </div>

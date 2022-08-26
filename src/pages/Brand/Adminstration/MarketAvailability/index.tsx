@@ -1,16 +1,21 @@
-import CustomTable from '@/components/Table';
-import { TableColumnItem } from '@/components/Table/types';
-import { getMarketAvailabilityList } from '@/services';
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
-import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
-import { useAppSelector } from '@/reducers';
-import type { MarketAvailabilityDataList } from '@/types';
-import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
-import styles from '../MarketAvailability/styles/index.less';
 import { useState } from 'react';
-import InformationMarketAvailability from './components/InformationMarketAvailability';
-import { ActionForm } from '@/components/Action';
+
+import { PATH } from '@/constants/path';
+
+import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
+
+import { pushTo } from '@/helper/history';
+
+import { TableColumnItem } from '@/components/Table/types';
+import { MarketAvailabilityDataList } from '@/features/market-availability/type';
+import { useAppSelector } from '@/reducers';
+
+import CustomTable from '@/components/Table';
+import { ActionMenu } from '@/components/TableAction';
+import InformationMarketAvailability from '@/features/market-availability/components/InformationMarketAvailability';
+
+import styles from './index.less';
+import { getMarketAvailabilityList } from '@/features/market-availability/api';
 
 const MarketAvailabilityList = () => {
   const user = useAppSelector((state) => state.user.user);
@@ -67,12 +72,12 @@ const MarketAvailabilityList = () => {
       width: '5%',
       render: (_value, record) => {
         return (
-          <ActionForm
+          <ActionMenu
             actionItems={[
               {
-                onClick: () => handleUpdateMarketAvailability(record.collection_id),
-                icon: <EditIcon />,
+                type: 'updated',
                 label: 'Edit',
+                onClick: () => handleUpdateMarketAvailability(record.collection_id),
               },
             ]}
           />

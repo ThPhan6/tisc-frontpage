@@ -1,14 +1,19 @@
 import React, { useRef } from 'react';
+
+import { PATH } from '@/constants/path';
+
+import { confirmDelete } from '@/helper/common';
+import { pushTo } from '@/helper/history';
+import { formatPhoneCode } from '@/helper/utils';
+
+import { TableColumnItem } from '@/components/Table/types';
+import { LocationDetail } from '@/features/locations/type';
+
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { TableColumnItem } from '@/components/Table/types';
-import { ILocationDetail } from '@/types';
-import { getLocationPagination, deleteLocationById } from '@/services';
-import { confirmDelete } from '@/helper/common';
-import { PATH } from '@/constants/path';
-import { pushTo } from '@/helper/history';
-import { ActionMenu } from '@/components/Action';
-import { formatPhoneCode } from '@/helper/utils';
+import { ActionMenu } from '@/components/TableAction';
+
+import { deleteLocationById, getLocationPagination } from '@/features/locations/api';
 
 const BrandLocation: React.FC = () => {
   const tableRef = useRef<any>();
@@ -30,7 +35,7 @@ const BrandLocation: React.FC = () => {
     });
   };
 
-  const mainColumns: TableColumnItem<ILocationDetail>[] = [
+  const mainColumns: TableColumnItem<LocationDetail>[] = [
     {
       title: 'Name',
       dataIndex: 'business_name',
@@ -74,8 +79,16 @@ const BrandLocation: React.FC = () => {
       render: (_value: any, record: any) => {
         return (
           <ActionMenu
-            handleUpdate={() => handleUpdateLocation(record.id)}
-            handleDelete={() => handleDeleteLocation(record.id)}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateLocation(record.id),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteLocation(record.id),
+              },
+            ]}
           />
         );
       },

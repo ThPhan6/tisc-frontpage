@@ -9,6 +9,7 @@ export type LoginResponseProp = {
   message: STATUS_RESPONSE;
   statusCode: number;
   token: string;
+  type: string;
 };
 
 export type UserInfoDataProp = {
@@ -30,6 +31,8 @@ export type UserInfoDataProp = {
   personal_mobile: string;
   linkedin: string;
   type: number;
+  interested: number[];
+  retrieve_favourite: boolean;
 };
 
 export type ResetPasswordInput = {
@@ -63,3 +66,31 @@ export type ModalOpen =
   | 'Tisc Login'
   | 'Login'
   | '';
+
+export type SignUpDesignerRequestBody = {
+  firstname: string;
+  email: string;
+  password: string;
+  confirmed_password: string;
+};
+
+export type ContactRequestBody = {
+  name: string;
+  email: string;
+  inquiry: string;
+};
+
+export type Policy = {
+  id: string;
+  title: string;
+  document: {
+    document: '';
+  };
+};
+
+export type Quotation = {
+  id: string;
+  author: string;
+  identity: string;
+  quotation: string;
+};

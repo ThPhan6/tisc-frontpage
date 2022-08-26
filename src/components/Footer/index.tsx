@@ -1,5 +1,5 @@
-import { useIntl } from 'umi';
 import { DefaultFooter } from '@ant-design/pro-layout';
+import { useIntl } from 'umi';
 
 const Footer: React.FC = () => {
   const intl = useIntl();

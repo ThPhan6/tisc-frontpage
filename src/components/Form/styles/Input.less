@@ -57,6 +57,14 @@
     }
   }
 }
+.light-border-bottom-color {
+  :global(.ant-input) {
+    border-bottom-color: rgba(0, 0, 0, 0.3);
+    &:hover {
+      border-bottom-color: rgba(0, 0, 0, 0.3);
+    }
+  }
+}
 .dark-focus-normal {
   :global(.ant-input) {
     &:focus {
@@ -240,6 +248,23 @@
   font-family: @font-family;
   line-height: @line-height;
   letter-spacing: 0.02em;
+}
+
+.message {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  min-height: 24px;
+  :global(.normal) {
+    color: @mono-color;
+  }
+  :global(.error) {
+    color: @tertiary-color;
+  }
+  :global(.warning) {
+    color: @secondary-color;
+  }
 }
 
 .bodyText1 {

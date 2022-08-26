@@ -1,14 +1,21 @@
 import React, { useRef } from 'react';
-import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-import type { TableColumnItem } from '@/components/Table/types';
-import { deleteCategoryMiddleware, getProductCategoryPagination } from '@/services';
-import type { CategoryListResponse } from '@/types';
-import { pushTo } from '@/helper/history';
+
 import { PATH } from '@/constants/path';
-import { confirmDelete } from '@/helper/common';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
-import { ActionMenu } from '@/components/Action';
+import {
+  deleteCategoryMiddleware,
+  getProductCategoryPagination,
+} from '@/features/categories/services';
+import { confirmDelete } from '@/helper/common';
+import { pushTo } from '@/helper/history';
+
+import type { TableColumnItem } from '@/components/Table/types';
+import { CategoryNestedList } from '@/features/categories/types';
+
+import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ActionMenu } from '@/components/TableAction';
 
 const MAIN_COL_WIDTH = 343;
 const SUB_COL_WIDTH = 160;
@@ -31,7 +38,7 @@ const CategoryList: React.FC = () => {
     });
   };
 
-  const MainColumns: TableColumnItem<CategoryListResponse>[] = [
+  const MainColumns: TableColumnItem<CategoryNestedList>[] = [
     {
       title: 'Main Category',
       dataIndex: 'name',
@@ -68,14 +75,22 @@ const CategoryList: React.FC = () => {
       render: (_value, record) => {
         return (
           <ActionMenu
-            handleUpdate={() => handleUpdateCategory(record.id)}
-            handleDelete={() => handleDeleteCategory(record.id)}
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateCategory(record.id),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteCategory(record.id),
+              },
+            ]}
           />
         );
       },
     },
   ];
-  const SubColumns: TableColumnItem<CategoryListResponse>[] = [
+  const SubColumns: TableColumnItem<CategoryNestedList>[] = [
     {
       title: 'Main Category',
       dataIndex: 'maincategory',
@@ -105,7 +120,7 @@ const CategoryList: React.FC = () => {
       width: '5%',
     },
   ];
-  const ChildColumns: TableColumnItem<CategoryListResponse>[] = [
+  const ChildColumns: TableColumnItem<CategoryNestedList>[] = [
     {
       title: 'Main Category',
       dataIndex: 'maincategory',

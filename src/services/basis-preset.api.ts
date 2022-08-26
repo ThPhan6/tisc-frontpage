@@ -1,16 +1,17 @@
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { STATUS_RESPONSE } from '@/constants/util';
+import { message } from 'antd';
+import { request } from 'umi';
+
 import type {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { STATUS_RESPONSE } from '@/constants/util';
 import type { BasisPresetListResponse, PresetsValueProp } from '@/types';
-import { message } from 'antd';
-import { request } from 'umi';
 
-interface ICategoryPaginationResponse {
+interface CategoryPaginationResponse {
   data: {
     basis_presets: BasisPresetListResponse[];
     pagination: PaginationResponse;
@@ -25,7 +26,7 @@ export async function getProductBasisPresetPagination(
     method: 'GET',
     params,
   })
-    .then((response: ICategoryPaginationResponse) => {
+    .then((response: CategoryPaginationResponse) => {
       const { basis_presets, pagination, summary } = response.data;
       callback({
         data: basis_presets,

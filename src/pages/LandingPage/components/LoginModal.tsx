@@ -1,18 +1,26 @@
-import styles from './LoginModal.less';
-import { CustomModal } from '@/components/Modal';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
-import type { LoginInput, ModalProps } from '../types';
-import { BodyText, MainTitle } from '@/components/Typography';
-import { CustomInput } from '@/components/Form/CustomInput';
-import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';
-import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
-import { ReactComponent as LockedForgotIcon } from '@/assets/icons/lock-forgot-icon.svg';
-import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
-import { useBoolean, useString } from '@/helper/hook';
-import CustomButton from '@/components/Button';
+
 import { MESSAGE_ERROR } from '@/constants/message';
+
+import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';
+import { ReactComponent as LockedForgotIcon } from '@/assets/icons/lock-forgot-icon.svg';
+import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
+import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
+
+import { getListQuotation } from '../services/api';
+import { useBoolean, useString } from '@/helper/hook';
 import { isShowErrorMessage, validateEmail } from '@/helper/utils';
+
+import type { LoginInput, ModalProps, Quotation } from '../types';
+import { DataTableResponse } from '@/components/Table/types';
+
+import CustomButton from '@/components/Button';
+import { CustomInput } from '@/components/Form/CustomInput';
+import { CustomModal } from '@/components/Modal';
+import { BodyText, MainTitle } from '@/components/Typography';
+
+import styles from './LoginModal.less';
 
 export interface LoginModalProps extends ModalProps {
   handleSubmitLogin: (data: { email: string; password: string }) => void;
@@ -34,6 +42,7 @@ export const LoginModal: FC<LoginModalProps> = ({
   });
   const verifyEmail = useString('');
   const showForgotPassword = useBoolean(false);
+  const [quotation, setQuotation] = useState<Quotation>();
 
   useEffect(() => {
     if (!showForgotPassword.value) {
@@ -104,6 +113,18 @@ export const LoginModal: FC<LoginModalProps> = ({
 
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
 
+  useEffect(() => {
+    getListQuotation(
+      {
+        page: 1,
+        pageSize: 99999,
+      },
+      (data: DataTableResponse) => {
+        setQuotation(data.data[Math.floor(Math.random() * data.data.length)]);
+      },
+    );
+  }, []);
+
   return (
     <CustomModal
       visible={visible}
@@ -114,17 +135,14 @@ export const LoginModal: FC<LoginModalProps> = ({
       bodyStyle={{
         backgroundColor: theme === 'dark' ? '#000' : '',
       }}
-      closeIconClass={theme === 'dark' ? styles.closeIcon : ''}
-    >
+      closeIconClass={theme === 'dark' ? styles.closeIcon : ''}>
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={2} customClass={styles[`body${themeStyle()}`]}>
-            {type === 'Tisc Login'
-              ? 'Your most unhappy customers are your greatest source of learning.'
-              : 'Do or do not. There is no try.'}
+            &quot;{quotation?.quotation}&quot;
           </MainTitle>
           <BodyText level={2} customClass={styles[`title${themeStyle()}`]}>
-            {type === 'Tisc Login' ? 'Bill Gate, Microsoft co-founder' : 'Yoda, Jedi Master'}
+            {quotation?.author}, {quotation?.identity}
           </BodyText>
         </div>
         <div className={styles.form}>
@@ -172,8 +190,7 @@ export const LoginModal: FC<LoginModalProps> = ({
                 ${theme === 'dark' ? styles['wrapper-dark'] : ''}
                 ${showForgotPassword.value ? styles[`wrapper-active${themeStyle()}`] : ''}
               `}
-              onClick={() => showForgotPassword.setValue(!showForgotPassword.value)}
-            >
+              onClick={() => showForgotPassword.setValue(!showForgotPassword.value)}>
               <LockedForgotIcon className={styles.icon} />
               <BodyText fontFamily="Roboto" level={4} customClass={styles.text}>
                 Forgot password?
@@ -214,8 +231,7 @@ export const LoginModal: FC<LoginModalProps> = ({
             disabled={handleDisableButton()}
             buttonClass={styles.submit}
             width={showForgotPassword.value ? '216px' : theme === 'dark' ? '120px' : '112px'}
-            onClick={handleSubmit}
-          >
+            onClick={handleSubmit}>
             {showForgotPassword.value
               ? 'Submit & Check your email'
               : theme === 'dark'

@@ -1,0 +1,52 @@
+.specificationTab {
+  .referText {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+    color: #000 !important;
+    svg {
+      margin-left: 8px;
+    }
+  }
+}
+.referTooltipText {
+  color: #fff;
+}
+
+.specificationItem {
+  margin-top: 8px;
+  border: 0;
+  border-radius: 0;
+}
+
+.specificationHeaderItem {
+  width: 100%;
+}
+.attributeOptionWrapper {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  :global(.attribute-type) {
+    margin-right: 12px;
+    white-space: nowrap;
+    text-transform: capitalize;
+  }
+  :global(.product-attribute-option-wrapper) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    cursor: pointer;
+    p:not([class*='primary-color']) {
+      color: @mono-color-medium;
+    }
+  }
+}
+:global(.attribute-group-option-popover) {
+  :global(.item-option-checked) {
+    :global(.product-id-value) {
+      color: @primary-color-dark;
+    }
+  }
+}

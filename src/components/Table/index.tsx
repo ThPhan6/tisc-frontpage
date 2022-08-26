@@ -1,30 +1,99 @@
-import { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
+import { ReactNode, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+
 import { Table } from 'antd';
+import type { TablePaginationConfig } from 'antd/lib/table';
+import type { ExpandableConfig, FilterValue, SorterResult } from 'antd/lib/table/interface';
+
 import { useCustomTable } from './hooks';
 import { forEach, isArray, isEmpty } from 'lodash';
-import CustomPaginator from './components/CustomPaginator';
-import TableSummary from './components/TableSummary';
-import type { TablePaginationConfig } from 'antd/lib/table';
-import type { SorterResult, ExpandableConfig, FilterValue } from 'antd/lib/table/interface';
+
 import type {
+  DataTableResponse,
   PaginationParams,
   PaginationRequestParams,
   SummaryResponse,
   TableColumnItem,
-  DataTableResponse,
 } from './types';
-import styles from './styles/table.less';
+
+import CustomPaginator from './components/CustomPaginator';
+import TableSummary from './components/TableSummary';
+
 import { TableHeader } from './TableHeader';
+import styles from './styles/table.less';
+
+// start expandable table
+interface ExpandableTableConfig {
+  columns: TableColumnItem<any>[];
+  childrenColumnName: string;
+  subtituteChildrenColumnName?: string;
+  expandable?: ExpandableConfig<any>;
+  level?: number;
+  rowKey?: string;
+  gridView?: boolean | string;
+  gridViewContentIndex?: string;
+  renderGridContent?: (data: any) => ReactNode;
+}
+
+export const GetExpandableTableConfig = (props: ExpandableTableConfig): ExpandableConfig<any> => {
+  const {
+    expandable,
+    childrenColumnName,
+    subtituteChildrenColumnName,
+    level,
+    rowKey = 'id',
+    gridView,
+    gridViewContentIndex,
+    renderGridContent,
+  } = props;
+  const { columns, expanded } = useCustomTable(props.columns);
+  return {
+    expandRowByClick: false,
+    showExpandColumn: false,
+    expandedRowRender: (record: any) => {
+      if (
+        gridView &&
+        renderGridContent &&
+        gridViewContentIndex &&
+        record?.[gridViewContentIndex]?.length
+      ) {
+        return renderGridContent(record[gridViewContentIndex]);
+      }
+
+      return (
+        <Table
+          pagination={false}
+          columns={columns}
+          rowKey={rowKey}
+          rowClassName={level === 2 ? 'custom-expanded-level-2' : ''}
+          tableLayout="auto"
+          expandable={
+            subtituteChildrenColumnName && record[subtituteChildrenColumnName]
+              ? undefined
+              : {
+                  ...expandable,
+                  expandedRowKeys: expanded ? [expanded] : undefined,
+                }
+          }
+          dataSource={
+            record[childrenColumnName] ||
+            (subtituteChildrenColumnName ? record[subtituteChildrenColumnName] : [])
+          }
+        />
+      );
+    },
+  };
+};
 
 export interface CustomTableProps {
   columns: TableColumnItem<any>[];
   expandable?: ExpandableConfig<any>;
+  expandableConfig?: ExpandableTableConfig;
   rightAction?: React.ReactNode;
   fetchDataFunc: (
     params: PaginationRequestParams,
     callback: (data: DataTableResponse) => void,
   ) => void;
-  title: string;
+  title?: string;
   multiSort?: {
     [key: string]: any;
   };
@@ -34,6 +103,8 @@ export interface CustomTableProps {
   };
   customClass?: string;
   rowKey?: string;
+  autoLoad?: boolean;
+  onFilterLoad?: boolean;
 }
 
 const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
@@ -47,6 +118,8 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     extraParams,
     customClass,
     rowKey = 'id',
+    autoLoad = true,
+    onFilterLoad = true,
   } = props;
 
   const DEFAULT_PAGE_NUMBER = 1;
@@ -62,6 +135,10 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     pageSize: DEFAULT_PAGESIZE,
     total: 0,
   });
+  const customExpandable = props.expandableConfig
+    ? GetExpandableTableConfig(props.expandableConfig)
+    : undefined;
+  // console.log('customExpandable', props.expandableConfig, customExpandable);
 
   const formatPaginationParams = (params: PaginationParams) => {
     const { sorter, filter } = params;
@@ -90,8 +167,10 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
           paginationParams[multiSort[sortName]] = sortOrder;
         } else {
           forEach(sorter, (item: any) => {
-            paginationParams[multiSort[item['field']]] =
-              item['order'] === 'descend' ? 'DESC' : 'ASC';
+            const multiSortName = multiSort[item['field']];
+            if (multiSortName) {
+              paginationParams[multiSortName] = item['order'] === 'descend' ? 'DESC' : 'ASC';
+            }
           });
         }
         return paginationParams;
@@ -110,12 +189,16 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       setData(response.data ?? []);
       setSummary(response.summary ?? []);
       setLoading(false);
-      setPagination(response.pagination);
+      if (response.pagination) {
+        setPagination(response.pagination);
+      }
     });
   };
 
   useEffect(() => {
-    fetchData({ pagination, sorter: currentSorter });
+    if (autoLoad) {
+      fetchData({ pagination, sorter: currentSorter });
+    }
     // react-hooks/exhaustive-deps
   }, []);
 
@@ -125,11 +208,13 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     sorter: SorterResult<any> | SorterResult<any>[],
   ) => {
     setCurrentSorter(sorter);
-    fetchData({
-      pagination: newPagination,
-      sorter,
-      ...filters,
-    });
+    if (onFilterLoad) {
+      fetchData({
+        pagination: newPagination,
+        sorter,
+        ...filters,
+      });
+    }
   };
 
   // The component instance will be extended
@@ -140,13 +225,16 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       fetchData({ pagination, sorter: currentSorter });
     },
   }));
+
   return (
-    <div className={styles.customTable}>
-      <TableHeader
-        title={title}
-        rightAction={rightAction}
-        customClass={customClass ? customClass : ''}
-      />
+    <div className={`${styles.customTable} ${customExpandable ? styles['sub-grid'] : ''}`}>
+      {title && (
+        <TableHeader
+          title={title}
+          rightAction={rightAction}
+          customClass={customClass ? customClass : ''}
+        />
+      )}
 
       <Table
         columns={columns}
@@ -167,10 +255,11 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
           x: 'max-content',
         }}
         expandable={{
-          ...expandable,
+          ...(customExpandable ?? expandable),
           expandedRowKeys: expanded ? [expanded] : undefined,
         }}
       />
+
       {hasPagination && pagination ? (
         <CustomPaginator
           fetchData={fetchData}
@@ -184,40 +273,5 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     </div>
   );
 });
-
-// start expandable table
-interface ExpandableTableProps {
-  columns: TableColumnItem<any>[];
-  childrenColumnName: string;
-  expandable?: ExpandableConfig<any>;
-  level?: number;
-  rowKey?: string;
-}
-
-export const GetExpandableTableConfig = (props: ExpandableTableProps): ExpandableConfig<any> => {
-  const { expandable, childrenColumnName, level, rowKey = 'id' } = props;
-  const { columns, expanded } = useCustomTable(props.columns);
-
-  return {
-    expandRowByClick: false,
-    showExpandColumn: false,
-    expandedRowRender: (record: any) => {
-      return (
-        <Table
-          pagination={false}
-          columns={columns}
-          rowKey={rowKey}
-          rowClassName={level === 2 ? 'custom-expanded-level-2' : ''}
-          tableLayout="auto"
-          expandable={{
-            ...expandable,
-            expandedRowKeys: expanded ? [expanded] : undefined,
-          }}
-          dataSource={record[childrenColumnName]}
-        />
-      );
-    },
-  };
-};
 
 export default CustomTable;

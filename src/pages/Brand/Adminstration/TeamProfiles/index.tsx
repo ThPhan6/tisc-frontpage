@@ -1,17 +1,22 @@
-import CustomTable from '@/components/Table';
-import { TableColumnItem } from '@/components/Table/types';
-import { deleteTeamProfile, getTeamProfileList } from '@/services';
-import { TeamProfileTableProps } from '@/types';
+import { useRef } from 'react';
+
+import { PATH } from '@/constants/path';
+import { USER_STATUS_TEXTS } from '@/constants/util';
+
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
-import { useRef } from 'react';
-import { showImageUrl, formatPhoneCode, getFullName } from '@/helper/utils';
-import { ProfileIcon } from '@/components/ProfileIcon';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { USER_STATUS_TEXTS } from '@/constants/util';
-import { ActionMenu } from '@/components/Action';
+import { formatPhoneCode, getFullName, showImageUrl } from '@/helper/utils';
+
+import { TableColumnItem } from '@/components/Table/types';
+import { TeamProfileTableProps } from '@/features/team-profiles/type';
 import { useAppSelector } from '@/reducers';
+
+import { ProfileIcon } from '@/components/ProfileIcon';
+import CustomTable from '@/components/Table';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { ActionMenu } from '@/components/TableAction';
+
+import { deleteTeamProfile, getTeamProfileList } from '@/features/team-profiles/api';
 
 const TeamProfilesList = () => {
   const tableRef = useRef<any>();
@@ -96,10 +101,18 @@ const TeamProfilesList = () => {
       render: (_value: any, record: any) => {
         return (
           <ActionMenu
-            handleUpdate={() => handleUpdateTeamProfile(record.id)}
-            handleDelete={
-              userId === record.id ? undefined : () => handleDeleteTeamProfile(record.id)
-            }
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => handleUpdateTeamProfile(record.id),
+              },
+              {
+                type: 'deleted',
+                disabled: userId === record.id,
+                onClick: () =>
+                  userId === record.id ? undefined : handleDeleteTeamProfile(record.id),
+              },
+            ]}
           />
         );
       },

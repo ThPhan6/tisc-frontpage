@@ -1,15 +1,19 @@
-import type { HeaderViewProps } from '@ant-design/pro-layout/lib/Header';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Layout, Menu } from 'antd';
-import React, { useState, useEffect } from 'react';
+
 import type { MenuDataItem } from '@ant-design/pro-layout';
-import styles from './styles/aside.less';
-import { ReactComponent as DropdownIcon } from '../../assets/icons/drop-down-icon.svg';
-import { ReactComponent as DropupIcon } from '../../assets/icons/drop-up-icon.svg';
-import { ReactComponent as AlignLeftIcon } from '../../assets/icons/align-left-icon.svg';
-import { ReactComponent as AlignRightIcon } from '../../assets/icons/align-right-icon.svg';
-import { renderIconByName } from './Icon/index';
+import type { HeaderViewProps } from '@ant-design/pro-layout/lib/Header';
+import { Layout, Menu } from 'antd';
+
+import { ReactComponent as AlignLeftIcon } from '@/assets/icons/align-left-icon.svg';
+import { ReactComponent as AlignRightIcon } from '@/assets/icons/align-right-icon.svg';
+import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
+import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
+
 import { isEmpty } from 'lodash';
+
+import { renderIconByName } from './Icon/index';
+import styles from './styles/aside.less';
 
 const renderMenuItem = (menu: MenuDataItem) => {
   return (
@@ -35,8 +39,7 @@ const renderSubMenu = (menu: MenuDataItem) => {
       title={menu.name}
       key={menu.key}
       icon={renderIconByName(menu.icon)}
-      className={styles.customAsideSubMenu}
-    >
+      className={styles.customAsideSubMenu}>
       {children &&
         children.map((child) => {
           const childrenLevel2 =
@@ -106,44 +109,49 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
   };
 
   return (
-    <Layout.Sider
-      width={props.siderWidth ?? 240}
-      breakpoint={'md'}
-      style={{
-        paddingTop: 48,
-        overflow: 'auto',
-      }}
-      collapsible
-      collapsedWidth={60}
-      collapsed={collapsed}
-      onCollapse={(value) => setCollapsed(value)}
-      className={styles.customAsideSider}
-      trigger={collapsed ? <AlignRightIcon /> : <AlignLeftIcon />}
-    >
-      <div className="menu-sider-wrapper">
-        <Menu
-          theme={props.headerTheme}
-          selectedKeys={openKeys}
-          openKeys={openKeys}
-          onOpenChange={onOpenChange}
-          style={{ height: '100%' }}
-          mode={'inline'}
-          onClick={onClick}
-          inlineIndent={16}
-          expandIcon={customExpandIcon}
-          triggerSubMenuAction={'click'}
-        >
-          {menuData?.map((menu) => {
-            const children = menu.children && menu.children.filter((item) => !item.hideInMenu);
-            if (children) {
-              return renderSubMenu(menu);
-            } else {
-              return renderMenuItem(menu);
-            }
-          })}
-        </Menu>
-      </div>
-    </Layout.Sider>
+    <>
+      <div
+        style={{
+          overflow: 'hidden',
+          width: collapsed ? 60 : '16.66666667%',
+          flex: `0 0 ${collapsed ? '60px' : '16.66666667%'}`,
+          maxWidth: collapsed ? 60 : '16.66666667%',
+          transition:
+            'background-color 0.3s ease 0s, min-width 0.3s ease 0s, max-width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) 0s',
+        }}
+      />
+      <Layout.Sider
+        breakpoint={'md'}
+        collapsible
+        collapsedWidth={60}
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+        className={styles.customAsideSider}
+        trigger={collapsed ? <AlignRightIcon /> : <AlignLeftIcon />}>
+        <div className="menu-sider-wrapper">
+          <Menu
+            theme={props.headerTheme}
+            selectedKeys={openKeys}
+            openKeys={openKeys}
+            onOpenChange={onOpenChange}
+            style={{ height: '100%' }}
+            mode={'inline'}
+            onClick={onClick}
+            inlineIndent={16}
+            expandIcon={customExpandIcon}
+            triggerSubMenuAction={'click'}>
+            {menuData?.map((menu) => {
+              const children = menu.children && menu.children.filter((item) => !item.hideInMenu);
+              if (children) {
+                return renderSubMenu(menu);
+              } else {
+                return renderMenuItem(menu);
+              }
+            })}
+          </Menu>
+        </div>
+      </Layout.Sider>
+    </>
   );
 };
 

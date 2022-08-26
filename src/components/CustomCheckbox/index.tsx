@@ -1,9 +1,12 @@
-import { Checkbox } from 'antd';
 import { FC, useState } from 'react';
-import { CustomCheckboxProps, CheckboxValue } from './types';
-import style from './styles/index.less';
-import { CustomInput } from '../Form/CustomInput';
+
+import { Checkbox } from 'antd';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
+
+import { CheckboxValue, CustomCheckboxProps } from './types';
+
+import { CustomInput } from '../Form/CustomInput';
+import style from './styles/index.less';
 
 export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   direction,
@@ -18,41 +21,45 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
-  const [randomId] = useState(
-    Math.random()
-      .toString()
-      .replace(/[^0-9]+/g, ''),
-  );
+  const [randomId] = useState(Math.random().toString().replace(/[\D]+/g, ''));
 
   const onChangeValue = (checkedValues: CheckboxValueType[]) => {
+    const haveOtherInput = checkedValues.some((checkbox) => checkbox === 'other');
+
     const newCheckboxValue = checkedValues.map((value) =>
       value === 'other'
         ? { label: inputValue, value: 'other' }
         : options.filter((item) => item.value === value)[0],
     );
+    if (inputValue && !haveOtherInput) {
+      newCheckboxValue.push({ label: inputValue, value: 'other' });
+    }
     if (onChange) {
       onChange(newCheckboxValue);
     }
   };
 
-  const handleClickInput = () => {
-    const checkOtherInput = selected?.filter((checkbox) => checkbox.value === 'other').length === 0;
-    if (onChange && checkOtherInput) {
-      onChange([...selected, { label: inputValue, value: 'other' }]);
-    }
-  };
-
   const onChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-    const newData = selected?.map((itemCheckbox) => {
-      if (itemCheckbox.value === 'other') {
-        return { ...itemCheckbox, label: e.target.value };
-      }
-      return itemCheckbox;
-    });
-    if (onChange) {
-      onChange(newData ?? []);
+    const newValue = e.target.value;
+    setInputValue(newValue);
+
+    const haveOtherInput = selected?.some((checkbox) => checkbox.value === 'other') || false;
+
+    let newData: CheckboxValue[] = selected || [];
+
+    if (newValue && !haveOtherInput) {
+      newData.push({ label: newValue, value: 'other' });
+    } else {
+      newData =
+        selected?.map((itemCheckbox) => {
+          if (itemCheckbox.value === 'other') {
+            return { ...itemCheckbox, label: newValue };
+          }
+          return itemCheckbox;
+        }) || [];
     }
+
+    onChange?.(newData ?? []);
   };
 
   const renderActiveClass = (option: CheckboxValue) => {
@@ -70,21 +77,18 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
         ${isCheckboxList && style['item-list-checkbox']}
         ${style['color-checkbox-checked']}
         ${checkboxClass}
-      `}
-    >
+      `}>
       <Checkbox.Group
         {...props}
         value={selected?.map((item) => item.value) ?? []}
-        onChange={onChangeValue}
-      >
+        onChange={onChangeValue}>
         {options.map((option, index) => (
           <div key={index}>
             {isCheckboxList ? (
               <label
                 className={`${style['item-wrapper']} ${'item-wrapper-custom'}`}
                 style={{ minHeight: heightItem }}
-                htmlFor={`${option.value}_${index}_${randomId}`}
-              >
+                htmlFor={`${option.value}_${index}_${randomId}`}>
                 <div style={{ width: '100%' }} className={renderActiveClass(option)}>
                   {option.label}
                 </div>
@@ -93,8 +97,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
             ) : (
               <div
                 className={`${style['item-checkbox']} ${'item-wrapper-checkbox'}`}
-                style={{ minHeight: heightItem }}
-              >
+                style={{ minHeight: heightItem }}>
                 <Checkbox {...option}>
                   <span className={renderActiveClass(option)}>{option.label}</span>
                 </Checkbox>
@@ -112,7 +115,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   placeholder={inputPlaceholder}
                   value={inputValue}
                   onChange={onChangeInputValue}
-                  onClick={handleClickInput}
+                  // onClick={handleClickInput}
                 />
               </div>
             </Checkbox>

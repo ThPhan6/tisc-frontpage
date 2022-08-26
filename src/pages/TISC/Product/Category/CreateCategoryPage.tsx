@@ -1,22 +1,26 @@
-import { TableHeader } from '@/components/Table/TableHeader';
-import { CategoryEntryForm } from './components/CategoryEntryForm';
-import { CategoryBodyProp, SubcategoryValueProp } from '@/types';
-import { createCategoryMiddleware } from '@/services';
+import { useState } from 'react';
+
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { PATH } from '@/constants/path';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
-import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { useBoolean } from '@/helper/hook';
-import LoadingPageCustomize from '@/components/LoadingPage';
+
+import { createCategoryMiddleware } from '@/features/categories/services';
 import { pushTo } from '@/helper/history';
-import { PATH } from '@/constants/path';
-import { useState } from 'react';
+import { useBoolean } from '@/helper/hook';
+
+import { CategoryBodyProps, SubcategoryValueProps } from '@/features/categories/types';
+
+import LoadingPageCustomize from '@/components/LoadingPage';
+import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { CategoryEntryForm } from '@/features/categories/components/CategoryEntryForm';
 
 const CreateCategoryPage = () => {
   const [categoryValue, setCategoryValue] = useState<{
     id?: string;
     name: string;
-    subs: SubcategoryValueProp[];
+    subs: SubcategoryValueProps[];
   }>({
     name: '',
     subs: [],
@@ -25,7 +29,7 @@ const CreateCategoryPage = () => {
 
   const submitButtonStatus = useBoolean(false);
 
-  const handleCreateCategory = (data: CategoryBodyProp) => {
+  const handleCreateCategory = (data: CategoryBodyProps) => {
     isLoading.setValue(true);
     createCategoryMiddleware(data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
