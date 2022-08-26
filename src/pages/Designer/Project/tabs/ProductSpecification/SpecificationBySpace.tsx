@@ -44,43 +44,54 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
   const tableRef = useRef<any>();
   const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
-  const SameColummnsSpace: TableColumnItem<any>[] = [
-    {
-      title: 'Image',
-      dataIndex: 'image',
-      width: COL_WIDTH_SPACE.image,
-      align: 'center',
-      render: (value) =>
-        value ? (
-          <img src={showImageUrl(value)} style={{ width: 18, height: 18, objectFit: 'contain' }} />
-        ) : null,
-    },
-    {
-      title: 'Brand',
-      dataIndex: 'brand_order',
-      width: COL_WIDTH_SPACE.brand,
-      sorter: { multiple: 4 },
-      render: (_value, record) => record.brand_name,
-      onCell: onCellCancelled,
-    },
-    {
-      title: 'Product',
-      dataIndex: 'product_name',
-      onCell: onCellCancelled,
-    },
-    {
-      title: 'Material Code',
-      dataIndex: 'material_code',
-      width: COL_WIDTH_SPACE.material,
-      onCell: onCellCancelled,
-    },
-    {
-      title: 'Desciption',
-      dataIndex: 'description',
-      width: COL_WIDTH_SPACE.description,
-      onCell: onCellCancelled,
-    },
-  ];
+  const getSameColumns = (noBoxShadow?: boolean) => {
+    const SameColummnsSpace: TableColumnItem<any>[] = [
+      {
+        title: 'Image',
+        dataIndex: 'image',
+        width: COL_WIDTH_SPACE.image,
+        noBoxShadow: noBoxShadow,
+        align: 'center',
+        render: (value) =>
+          value ? (
+            <img
+              src={showImageUrl(value)}
+              style={{ width: 18, height: 18, objectFit: 'contain' }}
+            />
+          ) : null,
+      },
+      {
+        title: 'Brand',
+        dataIndex: 'brand_order',
+        width: COL_WIDTH_SPACE.brand,
+        noBoxShadow: noBoxShadow,
+        sorter: { multiple: 4 },
+        render: (_value, record) => record.brand_name,
+        onCell: onCellCancelled,
+      },
+      {
+        title: 'Product',
+        dataIndex: 'product_name',
+        onCell: onCellCancelled,
+        noBoxShadow: noBoxShadow,
+      },
+      {
+        title: 'Material Code',
+        dataIndex: 'material_code',
+        width: COL_WIDTH_SPACE.material,
+        noBoxShadow: noBoxShadow,
+        onCell: onCellCancelled,
+      },
+      {
+        title: 'Desciption',
+        dataIndex: 'description',
+        width: COL_WIDTH_SPACE.description,
+        noBoxShadow: noBoxShadow,
+        onCell: onCellCancelled,
+      },
+    ];
+    return SameColummnsSpace;
+  };
 
   const ZoneColumns: TableColumnItem<SpecifiedProductBySpace>[] = [
     {
@@ -103,7 +114,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       width: COL_WIDTH_SPACE.rooms,
       sorter: { multiple: 3 },
     },
-    ...SameColummnsSpace,
+    ...getSameColumns(false),
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
@@ -130,7 +141,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       title: 'Rooms',
       width: COL_WIDTH_SPACE.rooms,
     },
-    ...SameColummnsSpace,
+    ...getSameColumns(false),
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
@@ -165,7 +176,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       isExpandable: true,
       render: (_value, record) => <span className="text-uppercase">{record.room_name}</span>,
     },
-    ...SameColummnsSpace,
+    ...getSameColumns(false),
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
@@ -188,18 +199,21 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     {
       title: 'Areas',
       width: COL_WIDTH_SPACE.areas,
+      noBoxShadow: true,
     },
     {
       title: 'Rooms',
       width: COL_WIDTH_SPACE.rooms,
+      noBoxShadow: true,
     },
-    ...SameColummnsSpace,
+    ...getSameColumns(true),
     { title: 'Count', width: '5%', align: 'center' },
     {
       title: 'Status',
       dataIndex: 'status',
       width: COL_WIDTH_SPACE.status,
       align: 'center',
+      noBoxShadow: true,
       render: renderStatusDropdown(tableRef, true),
       onCell: onCellCancelled,
     },
@@ -207,6 +221,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       title: 'Action',
       align: 'center',
       width: '5%',
+      noBoxShadow: true,
       render: renderActionCell(setSpecifyingProduct, tableRef, true),
     },
   ];

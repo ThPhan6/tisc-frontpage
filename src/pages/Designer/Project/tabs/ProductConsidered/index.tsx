@@ -132,37 +132,46 @@ const ProductConsidered: React.FC = () => {
     className: data.status === AssigningStatus.Unlisted ? 'light-content' : undefined,
   });
 
-  const SameColumn: TableColumnItem<any>[] = [
-    {
-      title: 'Image',
-      dataIndex: 'image',
-      width: COL_WIDTH.image,
-      align: 'center',
-      className: disabledClassname,
-      render: (value) =>
-        value ? (
-          <img src={showImageUrl(value)} style={{ width: 18, height: 18, objectFit: 'contain' }} />
-        ) : null,
-    },
-    {
-      title: 'Brand',
-      dataIndex: 'brand_order',
-      width: COL_WIDTH.brand,
-      className: disabledClassname,
-      sorter: {
-        multiple: 4,
+  const getSameColumns = (noBoxShadow?: boolean) => {
+    const SameColumn: TableColumnItem<any>[] = [
+      {
+        title: 'Image',
+        dataIndex: 'image',
+        width: COL_WIDTH.image,
+        align: 'center',
+        noBoxShadow: noBoxShadow,
+        className: disabledClassname,
+        render: (value) =>
+          value ? (
+            <img
+              src={showImageUrl(value)}
+              style={{ width: 18, height: 18, objectFit: 'contain' }}
+            />
+          ) : null,
       },
-      render: (v, record) => record.brand_name,
-      onCell: onCellUnlisted,
-    },
-    {
-      title: 'Collection',
-      className: disabledClassname,
-      dataIndex: 'collection_name',
-      width: COL_WIDTH.collection,
-      onCell: onCellUnlisted,
-    },
-  ];
+      {
+        title: 'Brand',
+        dataIndex: 'brand_order',
+        width: COL_WIDTH.brand,
+        noBoxShadow: noBoxShadow,
+        className: disabledClassname,
+        sorter: {
+          multiple: 4,
+        },
+        render: (v, record) => record.brand_name,
+        onCell: onCellUnlisted,
+      },
+      {
+        title: 'Collection',
+        className: disabledClassname,
+        dataIndex: 'collection_name',
+        width: COL_WIDTH.collection,
+        noBoxShadow: noBoxShadow,
+        onCell: onCellUnlisted,
+      },
+    ];
+    return SameColumn;
+  };
 
   const ZoneColumns: TableColumnItem<ConsideredProduct>[] = [
     {
@@ -189,7 +198,7 @@ const ProductConsidered: React.FC = () => {
         multiple: 4,
       },
     },
-    ...SameColumn,
+    ...getSameColumns(false),
     {
       title: 'Product',
       className: disabledClassname,
@@ -241,7 +250,7 @@ const ProductConsidered: React.FC = () => {
         colSpan: data.rooms ? 1 : 0,
       }),
     },
-    ...SameColumn,
+    ...getSameColumns(false),
     {
       title: 'Product',
       dataIndex: 'name',
@@ -288,7 +297,7 @@ const ProductConsidered: React.FC = () => {
       isExpandable: true,
       render: (value, record) => <span>{record.room_name}</span>,
     },
-    ...SameColumn,
+    ...getSameColumns(false),
     {
       title: 'Product',
     },
@@ -321,34 +330,40 @@ const ProductConsidered: React.FC = () => {
     {
       title: 'Areas',
       width: COL_WIDTH.areas,
+      noBoxShadow: true,
     },
     {
       title: 'Rooms',
       width: COL_WIDTH.rooms,
+      noBoxShadow: true,
     },
-    ...SameColumn,
+    ...getSameColumns(true),
     {
       title: 'Product',
       dataIndex: 'name',
+      noBoxShadow: true,
       onCell: onCellUnlisted,
     },
     {
       title: 'Assigned By',
       dataIndex: 'assigned_name',
       width: COL_WIDTH.assignedBy,
+      noBoxShadow: true,
       onCell: onCellUnlisted,
     },
-    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
+    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center', noBoxShadow: true },
     {
       title: 'Status',
       width: COL_WIDTH.status,
       hidden: gridView.value,
+      noBoxShadow: true,
       render: renderStatusDropdown,
     },
     {
       title: 'Action',
       align: 'center',
       width: '5%',
+      noBoxShadow: true,
       render: renderActionCell,
     },
   ];
