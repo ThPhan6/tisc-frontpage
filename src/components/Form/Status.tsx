@@ -51,6 +51,7 @@ export const Status: FC<StatusProps> = ({
                 </span>
               )
             }
+            overlayStyle={{ width: 244 }}
             placement="topRight"
             align={{ offset: alignOffset }}>
             <CustomButton

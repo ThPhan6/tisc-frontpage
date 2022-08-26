@@ -1,10 +1,8 @@
 import React, { useRef, useState } from 'react';
 
-import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { USER_STATUSES } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
-import { message } from 'antd';
 
 import { ReactComponent as ActionUnreadedIcon } from '@/assets/icons/action-unreaded-icon.svg';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
@@ -20,7 +18,6 @@ import { isEmpty, isEqual } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import type { TableColumnItem } from '@/components/Table/types';
-import { TeamProfileBrandAssignMember } from '@/features/team-profiles/type';
 import {
   AssignTeamForm,
   BrandListItem,
@@ -35,7 +32,7 @@ import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
 import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
 
-import { inviteUser } from '@/features/team-profiles/api';
+import { inviteBrand } from '@/features/team-profiles/api';
 import styles from '@/features/user-group/styles/brand.less';
 
 const BrandList: React.FC = () => {
@@ -124,12 +121,8 @@ const BrandList: React.FC = () => {
     }
   };
 
-  const handleEmailInvite = (teams: TeamProfileBrandAssignMember[]) => {
-    if (teams.length === 0) {
-      return message.error(MESSAGE_ERROR.NO_TEAMPROFILE);
-    }
-
-    return teams.map((team) => inviteUser(team.id));
+  const handleEmailInvite = (brandId: string) => {
+    if (brandId) inviteBrand(brandId);
   };
 
   const TableColumns: TableColumnItem<BrandListItem>[] = [
@@ -214,24 +207,21 @@ const BrandList: React.FC = () => {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
-      //  @typescript-eslint/no-unused-vars
-      render: (_v, record: any) => {
-        return (
-          <ActionMenu
-            actionItems={[
-              {
-                type: 'view',
-                onClick: () => pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', record.id)),
-              },
-              {
-                type: 'invite',
-                disabled: record.status !== 3,
-                onClick: () => handleEmailInvite(record.assign_team),
-              },
-            ]}
-          />
-        );
-      },
+      render: (_v, record: any) => (
+        <ActionMenu
+          actionItems={[
+            {
+              type: 'view',
+              onClick: () => pushTo(PATH.tiscUserGroupBrandViewDetail.replace(':id', record.id)),
+            },
+            {
+              type: 'invite',
+              disabled: record.status !== 3,
+              onClick: () => handleEmailInvite(record.id),
+            },
+          ]}
+        />
+      ),
     },
   ];
 
@@ -242,8 +232,8 @@ const BrandList: React.FC = () => {
           title="BRANDS"
           rightAction={
             <CustomPlusButton
-              /* onClick={() => pushTo(PATH.tiscUserGroupBrandEntryFrom)} */
-              onClick={() => alert('comming soon')}
+              onClick={() => pushTo(PATH.tiscUserGroupBrandEntryFrom)}
+              // onClick={() => alert('comming soon')}
             />
           }
           columns={TableColumns}

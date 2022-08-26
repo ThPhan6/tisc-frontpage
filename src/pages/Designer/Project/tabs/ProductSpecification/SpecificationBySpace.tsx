@@ -76,7 +76,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     },
     {
       title: 'Desciption',
-      dataIndex: 'description',
+      dataIndex: 'specified_description',
       width: COL_WIDTH_SPACE.description,
       onCell: onCellCancelled,
     },

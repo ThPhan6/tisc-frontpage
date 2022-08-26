@@ -2,6 +2,8 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
+import { getResponseMessage } from '@/helper/common';
+
 import {
   AssignTeamForm,
   BrandAlphabet,
@@ -9,6 +11,7 @@ import {
   BrandDesignProfile,
   BrandDetail,
   BrandListItem,
+  TISCUserGroupBrandForm,
 } from '../types';
 import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import type {
@@ -142,15 +145,17 @@ export async function createAssignTeamByBrandId(brandId: string, data: string[])
     });
 }
 
-export async function createBrand() {
+export async function createBrand(data: TISCUserGroupBrandForm) {
   return request<{ data: BrandDetail }>(`/api/brand/create`, {
     method: 'POST',
+    data,
   })
-    .then(() => {
-      return true;
+    .then((res) => {
+      message.success(getResponseMessage('create', 'brand', 'success'));
+      return res.data;
     })
     .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
-      return false;
+      message.error(getResponseMessage('create', 'brand', 'failed', error));
+      return undefined;
     });
 }
