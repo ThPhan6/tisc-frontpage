@@ -16,6 +16,7 @@ interface CollapseCheckboxListProps {
   placeholder?: string;
   containerClass?: string;
   checkboxItemHeight?: string;
+  inputPlaceholder?: string;
 }
 
 const CollapseCheckboxList: FC<CollapseCheckboxListProps> = ({
@@ -24,6 +25,7 @@ const CollapseCheckboxList: FC<CollapseCheckboxListProps> = ({
   onChange,
   otherInput,
   placeholder = 'select all relevance',
+  inputPlaceholder,
   containerClass = '',
   checkboxItemHeight = '36px',
 }) => {
@@ -42,6 +44,7 @@ const CollapseCheckboxList: FC<CollapseCheckboxListProps> = ({
         otherInput={otherInput}
         selected={checked}
         onChange={onChange}
+        inputPlaceholder={inputPlaceholder}
       />
     </CustomCollapse>
   );
