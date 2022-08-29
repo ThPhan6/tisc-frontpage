@@ -33,7 +33,7 @@ const DEFAULT_BRAND: TISCUserGroupBrandForm = {
 };
 type EntryFormInput = keyof typeof DEFAULT_BRAND;
 
-const BrandEntryForm: FC<BrandEntryFormValue> = ({}) => {
+const BrandEntryForm: FC<BrandEntryFormValue> = () => {
   const [data, setData] = useState<TISCUserGroupBrandForm>(DEFAULT_BRAND);
   const history = useHistory();
   const isLoading = useBoolean(false);

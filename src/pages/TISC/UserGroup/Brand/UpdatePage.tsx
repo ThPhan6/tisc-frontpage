@@ -88,52 +88,54 @@ const UpdatePage = () => {
   };
 
   return (
-    <PageContainer pageHeaderRender={() => <MenuHeaderSummary type="brand" />}>
-      <TabDetail
-        selectedTab={selectedTab}
-        setSelectedTab={setSelectedTab}
-        handleGoBackToTable={goBackToBrandList}
-        handleSaveButton={handleSaveButton}
-        listTab={BrandTabs}
-        data={data}
-        setData={setData}
-        buttonStatus={buttonStatus.value}
-        isLoading={isLoading.value}
-        statuses={statuses}
-        toolTipTitle={
-          <table className={styles.tooltip}>
-            <TooltipLabel statusText="Pending" plainText="Waiting user activate" />
-            <TooltipLabel statusText="Active" plainText="Full activated" />
-            <TooltipLabel statusText="Inactive" plainText="Temporarily removed" />
-          </table>
-        }
-      />
+    <div className={styles.userGroup}>
+      <PageContainer pageHeaderRender={() => <MenuHeaderSummary type="brand" />}>
+        <TabDetail
+          selectedTab={selectedTab}
+          setSelectedTab={setSelectedTab}
+          handleGoBackToTable={goBackToBrandList}
+          handleSaveButton={handleSaveButton}
+          listTab={BrandTabs}
+          data={data}
+          setData={setData}
+          buttonStatus={buttonStatus.value}
+          isLoading={isLoading.value}
+          statuses={statuses}
+          toolTipTitle={
+            <table className={styles.tooltip}>
+              <TooltipLabel statusText="Pending" plainText="Waiting user activate" />
+              <TooltipLabel statusText="Active" plainText="Full activated" />
+              <TooltipLabel statusText="Inactive" plainText="Temporarily removed" />
+            </table>
+          }
+        />
 
-      {/* profile */}
-      <CustomTabPane active={selectedTab === BrandTabKeys.profile}>
-        <ProfileDetail type="brand" data={data} />
-      </CustomTabPane>
+        {/* profile */}
+        <CustomTabPane active={selectedTab === BrandTabKeys.profile}>
+          <ProfileDetail type="brand" data={data} />
+        </CustomTabPane>
 
-      {/* location */}
-      <CustomTabPane active={selectedTab === BrandTabKeys.locations}>
-        <LocationDetail type="brand" id={brandId} />
-      </CustomTabPane>
+        {/* location */}
+        <CustomTabPane active={selectedTab === BrandTabKeys.locations}>
+          <LocationDetail type="brand" id={brandId} />
+        </CustomTabPane>
 
-      {/* team */}
-      <CustomTabPane active={selectedTab === BrandTabKeys.teams}>
-        <TeamDetail type="brand" id={brandId} />
-      </CustomTabPane>
+        {/* team */}
+        <CustomTabPane active={selectedTab === BrandTabKeys.teams}>
+          <TeamDetail type="brand" id={brandId} />
+        </CustomTabPane>
 
-      {/* distributors */}
-      <CustomTabPane active={selectedTab === BrandTabKeys.distributors}>
-        <BrandDistributorDetail id={brandId} />
-      </CustomTabPane>
+        {/* distributors */}
+        <CustomTabPane active={selectedTab === BrandTabKeys.distributors}>
+          <BrandDistributorDetail id={brandId} />
+        </CustomTabPane>
 
-      {/* availability */}
-      <CustomTabPane active={selectedTab === BrandTabKeys.availability}>
-        <BrandAvailabilityDetail id={brandId} />
-      </CustomTabPane>
-    </PageContainer>
+        {/* availability */}
+        <CustomTabPane active={selectedTab === BrandTabKeys.availability}>
+          <BrandAvailabilityDetail id={brandId} />
+        </CustomTabPane>
+      </PageContainer>
+    </div>
   );
 };
 
