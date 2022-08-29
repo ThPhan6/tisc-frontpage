@@ -28,6 +28,8 @@ export interface ProjectBodyRequest {
   construction_start: string;
   status: number;
   country_name?: string;
+  state_name?: string;
+  city_name?: string;
 }
 
 export interface ProjectDetailProps extends ProjectBodyRequest {
