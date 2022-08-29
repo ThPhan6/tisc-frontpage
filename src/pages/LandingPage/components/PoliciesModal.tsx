@@ -69,16 +69,18 @@ export const PoliciesModal: FC<ModalProps> = ({ visible, onClose, theme = 'defau
           <CustomTabPane active={selectedTab === PolicyTabKeys.terms}>
             <div
               dangerouslySetInnerHTML={{
-                __html: `${termsOfService?.document.document || ''}`,
+                __html: `${termsOfService?.document.document || 'N/A'}`,
               }}></div>
           </CustomTabPane>
           {/* privacy policy */}
           <CustomTabPane active={selectedTab === PolicyTabKeys.privacy_policy}>
-            <div dangerouslySetInnerHTML={{ __html: `${privacy?.document.document || ''}` }}></div>
+            <div
+              dangerouslySetInnerHTML={{ __html: `${privacy?.document.document || 'N/A'}` }}></div>
           </CustomTabPane>
           {/* cookie policy */}
           <CustomTabPane active={selectedTab === PolicyTabKeys.cookie_policy}>
-            <div dangerouslySetInnerHTML={{ __html: `${cookie?.document.document || ''}` }}></div>
+            <div
+              dangerouslySetInnerHTML={{ __html: `${cookie?.document.document || 'N/A'}` }}></div>
           </CustomTabPane>
         </div>
       </div>
