@@ -24,9 +24,9 @@ export const PoliciesModal: FC<ModalProps> = ({ visible, onClose, theme = 'defau
     getListPolicy().then((res) => {
       if (res) {
         res.data.forEach((item: any) => {
-          if (item['terms_of_services']?.title === 'TERMS OF SERVICES') {
+          if (item['terms_of_services']?.document) {
             setTermOfService(item['terms_of_services']);
-          } else if (item['privacy_policy']?.title === 'PRIVACY POLICY') {
+          } else if (item['privacy_policy']?.document) {
             setPrivacy(item['privacy_policy']);
           } else {
             setCookie(item['cookie_policy']);
@@ -67,15 +67,18 @@ export const PoliciesModal: FC<ModalProps> = ({ visible, onClose, theme = 'defau
         <div className={styles.body}>
           {/* terms of services */}
           <CustomTabPane active={selectedTab === PolicyTabKeys.terms}>
-            <div dangerouslySetInnerHTML={{ __html: `${termsOfService?.document.document}` }}></div>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: `${termsOfService?.document.document || ''}`,
+              }}></div>
           </CustomTabPane>
           {/* privacy policy */}
           <CustomTabPane active={selectedTab === PolicyTabKeys.privacy_policy}>
-            <div dangerouslySetInnerHTML={{ __html: `${privacy?.document.document}` }}></div>
+            <div dangerouslySetInnerHTML={{ __html: `${privacy?.document.document || ''}` }}></div>
           </CustomTabPane>
           {/* cookie policy */}
           <CustomTabPane active={selectedTab === PolicyTabKeys.cookie_policy}>
-            <div dangerouslySetInnerHTML={{ __html: `${cookie?.document.document}` }}></div>
+            <div dangerouslySetInnerHTML={{ __html: `${cookie?.document.document || ''}` }}></div>
           </CustomTabPane>
         </div>
       </div>
