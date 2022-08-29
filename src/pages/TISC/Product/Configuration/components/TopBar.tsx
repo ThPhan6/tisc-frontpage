@@ -259,7 +259,7 @@ const ProductTopBar: React.FC = () => {
         dropDownRadioTitle={(data) => data.key.split('').join(' / ')}
         chosenValue={brandData}
         setChosenValue={(v) => {
-          const chosenBrand = brandFlatList.find((el) => el.id === v.value);
+          const chosenBrand = brandFlatList.find((el) => v?.value && el.id === v.value);
           if (chosenBrand) {
             updateUrlParams({
               set: [
