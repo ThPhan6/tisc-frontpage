@@ -8,10 +8,13 @@ import type { CustomTextAreaProps } from './types';
 
 import style from './styles/TextArea.less';
 
+const minRows = 5;
+const maxRows = 10;
+
 export const CustomTextArea: FC<CustomTextAreaProps> = ({
   borderBottomColor = 'mono',
   maxLength,
-  maxHeight,
+  // maxHeight,
   defaultHeight,
   children,
   boxShadow,
@@ -19,25 +22,36 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
 }) => {
   const textarea: any = useRef();
   const [height, setHeight] = useState<string | number | undefined>(defaultHeight);
-  // const [checkedOverflow, setCheckedOverflow] = useState<string>('hidden');
 
   useEffect(() => {
     let contentHeight = textarea.current.resizableTextArea.textArea.scrollHeight;
 
-    if (!maxHeight || !defaultHeight || props.value === '') {
+    if (props.value === '') {
       contentHeight = defaultHeight;
     }
-    // if (maxHeight && contentHeight < maxHeight) {
-    // contentHeight = contentHeight;
-    // setCheckedOverflow('hidden');
-    // }
-    // else {
-    // contentHeight = maxHeight;
-    // setCheckedOverflow('hidden auto');
-    // }
 
     setHeight(contentHeight);
   }, [props.value]);
+
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const textareaLineHeight = 24;
+
+    const previousRows = event.target.rows;
+    event.target.rows = minRows; // reset number of rows in textarea
+
+    const currentRows = ~~(event.target.scrollHeight / textareaLineHeight);
+
+    if (currentRows === previousRows) {
+      event.target.rows = currentRows;
+    }
+
+    if (currentRows >= maxRows) {
+      event.target.rows = maxRows;
+      event.target.scrollTop = event.target.scrollHeight;
+    }
+
+    setHeight(currentRows < maxRows ? currentRows : maxRows);
+  };
 
   return (
     <div
@@ -53,6 +67,7 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
         {...props}
         onChange={(e) => {
           e.target.value = trimStart(e.target.value);
+          handleChange(e);
           if (props.onChange) {
             props.onChange(e);
           }
