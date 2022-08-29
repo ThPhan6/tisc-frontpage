@@ -91,7 +91,7 @@ const ViewDesignFirmPage = () => {
   };
 
   return (
-    <>
+    <div className={styles.userGroup}>
       <PageContainer pageHeaderRender={() => <MenuHeaderSummary type="design" />}>
         <TabDetail
           selectedTab={selectedTab}
@@ -142,7 +142,7 @@ const ViewDesignFirmPage = () => {
           <CustomDesign />
         </CustomTabPane>
       </PageContainer>
-    </>
+    </div>
   );
 };
 export default ViewDesignFirmPage;
