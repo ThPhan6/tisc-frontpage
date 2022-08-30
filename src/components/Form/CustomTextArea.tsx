@@ -14,10 +14,9 @@ const maxRows = 10;
 export const CustomTextArea: FC<CustomTextAreaProps> = ({
   borderBottomColor = 'mono',
   maxLength,
-  // maxHeight,
-  defaultHeight,
-  children,
+  defaultHeight = 54,
   boxShadow,
+  autoResize,
   ...props
 }) => {
   const textarea: any = useRef();
@@ -33,13 +32,13 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
     setHeight(contentHeight);
   }, [props.value]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const textareaLineHeight = 24;
+  const handleResize = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!autoResize) return;
 
     const previousRows = event.target.rows;
     event.target.rows = minRows; // reset number of rows in textarea
 
-    const currentRows = ~~(event.target.scrollHeight / textareaLineHeight);
+    const currentRows = ~~(event.target.scrollHeight / defaultHeight);
 
     if (currentRows === previousRows) {
       event.target.rows = currentRows;
@@ -61,13 +60,13 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
         ${boxShadow ? style.boxShadow : ''}
       `}>
       <Input.TextArea
-        ref={textarea}
-        style={{ height: height /* , overflow: checkedOverflow  */ }}
-        maxLength={maxLength ? maxLength : 100}
         {...props}
+        ref={textarea}
+        maxLength={maxLength}
+        style={{ height: autoResize ? height : 'auto', minHeight: defaultHeight }}
         onChange={(e) => {
           e.target.value = trimStart(e.target.value);
-          handleChange(e);
+          handleResize(e);
           if (props.onChange) {
             props.onChange(e);
           }

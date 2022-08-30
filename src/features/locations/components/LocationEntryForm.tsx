@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import React, { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
+import { Col, Row } from 'antd';
 
 import {
   emailMessageError,
@@ -245,18 +246,22 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         placeholder="select city / town"
       />
 
-      <FormGroup label="Address" required layout="vertical">
-        <CustomTextArea
-          className={styles.address}
-          maxLength={120}
-          showCount
-          placeholder="unit #, street / road name"
-          borderBottomColor="mono-medium"
-          onChange={(e) => onChangeData('address', e.target.value)}
-          value={data.address}
-          boxShadow
-        />
-      </FormGroup>
+      <Row>
+        <Col span={24} className={styles.addressForm}>
+          <FormGroup label="Address" required layout="vertical">
+            <CustomTextArea
+              className={styles.address}
+              maxLength={120}
+              showCount
+              placeholder="unit #, street / road name"
+              borderBottomColor="mono-medium"
+              onChange={(e) => onChangeData('address', e.target.value)}
+              value={data.address}
+              boxShadow
+            />
+          </FormGroup>
+        </Col>
+      </Row>
       <InputGroup
         label="Postal / Zip Code"
         placeholder="postal / zip code"
