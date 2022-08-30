@@ -57,6 +57,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
 
   const activeBrands = productSummary?.brands.length && isFavouriteRetrieved;
   const activeCategories = productSummary?.categories.length && isFavouriteRetrieved;
+  const activeSort = activeBrands || activeCategories;
 
   // show product summary when user already has retrieved favourite
   useEffect(() => {
@@ -146,10 +147,8 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
             {/* sort */}
             <TopBarItem
               disabled
-              customClass={`left-divider ${
-                isFavouriteRetrieved ? 'cursor-pointer' : 'cursor-default'
-              } `}
-              bottomEnable={isFavouriteRetrieved ? true : false}
+              customClass={`left-divider ${activeSort ? 'cursor-pointer' : 'cursor-default'} `}
+              bottomEnable={activeSort ? true : false}
               topValue={
                 sort ? (
                   <FilterItem
@@ -165,7 +164,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
                   items={SORTER_DROPDOWN_DATA}
                   placement="bottomRight"
                   menuStyle={{ width: 160, height: 'auto' }}
-                  disabled={isFavouriteRetrieved ? false : true}>
+                  disabled={activeSort ? false : true}>
                   Sort By
                 </CustomDropDown>
               }
