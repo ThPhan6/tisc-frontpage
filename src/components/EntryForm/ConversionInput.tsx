@@ -45,22 +45,28 @@ const ConversionInput: FC<ConversionInputProps> = ({
   conversionValue,
   setConversionValue,
 }) => {
+  const span_4 = noWrap ? undefined : 4;
+  const span_20 = noWrap ? undefined : 20;
+  const hasFontLevel = fontLevel ? ((fontLevel + 2) as 7) : 7;
+  const isDeletedIcon = true ? (
+    <RemoveIcon onClick={onDelete} className="delete-action-input-group" />
+  ) : (
+    deleteIcon
+  );
   return (
     <Row
       className={styles.inputGroupContainer}
       gutter={0}
       align="middle"
       wrap={noWrap ? false : true}>
-      <Col span={horizontal ? (noWrap ? undefined : 4) : 24} className="input-label-container">
+      <Col span={horizontal ? span_4 : 24} className="input-label-container">
         <BodyText level={fontLevel ?? 5} customClass="input-label">
           {label}
           {required ? <span className={styles.required}>*</span> : ''}
           {required ? <span>:</span> : ''}
         </BodyText>
       </Col>
-      <Col
-        className={styles.doubleinputGroupContent}
-        span={horizontal ? (noWrap ? undefined : 20) : 24}>
+      <Col className={styles.doubleinputGroupContent} span={horizontal ? span_20 : 24}>
         <div className="double-input-group-wrapper">
           <div className="double-input-group">
             <CustomInput
@@ -74,16 +80,13 @@ const ConversionInput: FC<ConversionInputProps> = ({
                   secondValue: isNaN(secondValue) ? '' : secondValue.toString(),
                 });
               }}
-              fontLevel={fontLevel ? ((fontLevel + 2) as 7) : 7}
+              fontLevel={hasFontLevel}
               className="first-input-box"
               onClick={(e) => e.stopPropagation()}
               autoWidth
               defaultWidth={30}
             />
-            <BodyText
-              level={fontLevel ? ((fontLevel + 2) as 7) : 7}
-              fontFamily="Roboto"
-              customClass="unit-input-label">
+            <BodyText level={hasFontLevel} fontFamily="Roboto" customClass="unit-input-label">
               {conversionData.unit_1}
             </BodyText>
           </div>
@@ -99,27 +102,18 @@ const ConversionInput: FC<ConversionInputProps> = ({
                   secondValue: secondValue,
                 });
               }}
-              fontLevel={fontLevel ? ((fontLevel + 2) as 7) : 7}
+              fontLevel={hasFontLevel}
               className="first-input-box"
               onClick={(e) => e.stopPropagation()}
               autoWidth
               defaultWidth={30}
             />
-            <BodyText
-              level={fontLevel ? ((fontLevel + 2) as 7) : 7}
-              fontFamily="Roboto"
-              customClass="unit-input-label">
+            <BodyText level={hasFontLevel} fontFamily="Roboto" customClass="unit-input-label">
               {conversionData.unit_2}
             </BodyText>
           </div>
         </div>
-        {deleteIcon ? (
-          deleteIcon === true ? (
-            <RemoveIcon onClick={onDelete} className="delete-action-input-group" />
-          ) : (
-            deleteIcon
-          )
-        ) : null}
+        {deleteIcon ? isDeletedIcon : null}
       </Col>
     </Row>
   );
