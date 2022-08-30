@@ -56,7 +56,7 @@ const QuestionAndAnswerField: FC<FAQFieldProps> = ({
             name="question"
             value={value.question}
             onChange={handleOnChangeInput}
-            defaultHeight={24}
+            autoResize
           />
           <ActionDeleteIcon
             className={styles.question_delete_icon}
@@ -69,7 +69,7 @@ const QuestionAndAnswerField: FC<FAQFieldProps> = ({
             name="answer"
             value={value.answer}
             onChange={handleOnChangeInput}
-            defaultHeight={32}
+            autoResize
           />
           {!isEmpty(value.answer) && (
             <ActionRemoveIcon
@@ -217,7 +217,6 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
                         value={panel.document.document}
                         onChange={(e) => handleOnChangeDescription(e, panelIndex)}
                         className={styles.description}
-                        defaultHeight={32}
                         autoResize
                       />
                     </FormGroup>

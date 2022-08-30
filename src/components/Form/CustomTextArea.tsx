@@ -10,11 +10,11 @@ import style from './styles/TextArea.less';
 
 const minRows = 5;
 const maxRows = 10;
+const defaultHeight = 32;
 
 export const CustomTextArea: FC<CustomTextAreaProps> = ({
   borderBottomColor = 'mono',
   maxLength,
-  defaultHeight = 54,
   boxShadow,
   autoResize,
   ...props
@@ -63,7 +63,7 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
         {...props}
         ref={textarea}
         maxLength={maxLength}
-        style={{ height: autoResize ? height : 'auto', minHeight: defaultHeight }}
+        style={{ height: autoResize ? height : undefined }}
         onChange={(e) => {
           e.target.value = trimStart(e.target.value);
           handleResize(e);
