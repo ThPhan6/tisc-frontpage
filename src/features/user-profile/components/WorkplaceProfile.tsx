@@ -4,6 +4,7 @@ import { useAppSelector } from '@/reducers';
 
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
+import { PhoneInput } from '@/components/Form/PhoneInput';
 import { Title } from '@/components/Typography';
 
 import styles from './WorkplaceProfile.less';
@@ -33,10 +34,26 @@ export const WorkplaceProfile = () => {
           <CustomInput readOnly borderBottomColor="mono-medium" value={user?.email ?? 'N/A'} />
         </FormGroup>
         <FormGroup label="Work Phone" layout="vertical" formClass={styles.form}>
-          <CustomInput readOnly borderBottomColor="mono-medium" value={user?.phone ?? 'N/A'} />
+          {/* <CustomInput readOnly borderBottomColor="mono-medium" value={user?.phone ?? 'N/A'} /> */}
+          <PhoneInput
+            codeReadOnly
+            phoneNumberReadOnly
+            value={{
+              zoneCode: user?.phone_code || '00',
+              phoneNumber: user?.phone || 'N/A',
+            }}
+          />
         </FormGroup>
         <FormGroup label="Work Mobile" layout="vertical" formClass={styles.form}>
-          <CustomInput readOnly borderBottomColor="mono-medium" value={user?.mobile ?? 'N/A'} />
+          {/* <CustomInput readOnly borderBottomColor="mono-medium" value={user?.mobile ?? 'N/A'} /> */}
+          <PhoneInput
+            codeReadOnly
+            phoneNumberReadOnly
+            value={{
+              zoneCode: user?.phone_code || '00',
+              phoneNumber: user?.mobile || 'N/A',
+            }}
+          />
         </FormGroup>
       </div>
     </div>
