@@ -2,14 +2,13 @@ import type { FC, ReactNode } from 'react';
 
 import { Col, Row } from 'antd';
 
-import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
-
 import type { SubBasisConversion } from '@/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
 import styles from './styles/InputGroup.less';
+import { useGeneralFeature } from './utils';
 
 interface ConversionValue {
   firstValue: string;
@@ -45,20 +44,14 @@ const ConversionInput: FC<ConversionInputProps> = ({
   conversionValue,
   setConversionValue,
 }) => {
-  const span_4 = noWrap ? undefined : 4;
-  const span_20 = noWrap ? undefined : 20;
-  const hasFontLevel = fontLevel ? ((fontLevel + 2) as 7) : 7;
-  const isDeletedIcon = true ? (
-    <RemoveIcon onClick={onDelete} className="delete-action-input-group" />
-  ) : (
-    deleteIcon
+  const { span_4, span_20, hasFontLevel, hasDeleteIcon } = useGeneralFeature(
+    noWrap,
+    fontLevel,
+    deleteIcon,
+    onDelete,
   );
   return (
-    <Row
-      className={styles.inputGroupContainer}
-      gutter={0}
-      align="middle"
-      wrap={noWrap ? false : true}>
+    <Row className={styles.inputGroupContainer} gutter={0} align="middle" wrap={noWrap}>
       <Col span={horizontal ? span_4 : 24} className="input-label-container">
         <BodyText level={fontLevel ?? 5} customClass="input-label">
           {label}
@@ -113,7 +106,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
             </BodyText>
           </div>
         </div>
-        {deleteIcon ? isDeletedIcon : null}
+        {deleteIcon ? hasDeleteIcon : null}
       </Col>
     </Row>
   );
