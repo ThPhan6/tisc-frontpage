@@ -62,9 +62,8 @@ export interface CustomInputProps extends InputProps {
 
 export interface CustomTextAreaProps extends TextAreaProps {
   borderBottomColor?: 'mono' | 'mono-medium' | 'light';
-  maxHeight?: number;
-  defaultHeight?: number;
   boxShadow?: boolean;
+  autoResize?: boolean;
 }
 
 export interface PhoneInputProps {
