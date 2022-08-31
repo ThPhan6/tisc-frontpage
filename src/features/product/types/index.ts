@@ -1,5 +1,6 @@
 import { AssigningStatus, AssigningStatusName } from '@/features/project/types';
-import { BrandDetail, ConversionSubValueProps, GeneralData } from '@/types';
+import { BrandDetail } from '@/features/user-group/types';
+import { ConversionSubValueProps, GeneralData } from '@/types';
 
 export interface ProductSummary {
   categories: GeneralData[];

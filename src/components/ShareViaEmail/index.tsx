@@ -111,6 +111,7 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
     });
   };
 
+  console.log(product);
   return (
     <Popover
       title="Share Via Email"
@@ -120,7 +121,7 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
       onFormSubmit={handleSubmit}>
       <BrandProductBasicHeader
         image={product.images?.[0] || product.image}
-        logo={product.brand?.logo}
+        logo={product.brand_logo || product.brand?.logo}
         text_1={product.brand_name || product.brand?.name}
         text_2={product.name}
         text_3={product.description}
