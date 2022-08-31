@@ -15,7 +15,7 @@ import { useGeneralFeature } from './utils';
 interface InputGroupProps extends CustomInputProps {
   horizontal?: boolean;
   rightIcon?: boolean | ReactNode;
-  deleteIcon?: boolean | ReactNode;
+  deleteIcon?: boolean;
   onDelete?: () => void;
   onRightIconClick?: () => void;
   required?: boolean;
@@ -55,7 +55,7 @@ const InputGroup: FC<InputGroupProps> = ({
   forceDisplayDeleteIcon,
   ...props
 }) => {
-  const { span_4, span_20, hasFontLevel, hasDeleteIcon } = useGeneralFeature(
+  const { span_4, span_20, fontLevels, iconDelete } = useGeneralFeature(
     noWrap,
     fontLevel,
     deleteIcon,
@@ -98,7 +98,7 @@ const InputGroup: FC<InputGroupProps> = ({
         <CustomInput
           {...props}
           value={value}
-          fontLevel={hasFontLevel}
+          fontLevel={fontLevels}
           readOnly={rightIcon || readOnly ? true : false}
           className={`input-box ${hasPadding ? 'has-padding' : ''} ${
             colorPrimaryDark ? 'color-primary-dark' : ''
@@ -123,7 +123,7 @@ const InputGroup: FC<InputGroupProps> = ({
             rightIcon
           )
         ) : null}
-        {(forceDisplayDeleteIcon || value) && deleteIcon ? hasDeleteIcon : null}
+        {(forceDisplayDeleteIcon || value) && iconDelete}
       </Col>
       {message ? (
         <div className={styles.message}>

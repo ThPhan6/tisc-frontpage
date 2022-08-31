@@ -24,7 +24,7 @@ interface ConversionInputProps {
   conversionData: SubBasisConversion;
   placeholder1?: string;
   placeholder2?: string;
-  deleteIcon?: boolean | ReactNode;
+  deleteIcon?: boolean;
   onDelete?: () => void;
   conversionValue: ConversionValue;
   setConversionValue: (data: ConversionValue) => void;
@@ -44,7 +44,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
   conversionValue,
   setConversionValue,
 }) => {
-  const { span_4, span_20, hasFontLevel, hasDeleteIcon } = useGeneralFeature(
+  const { span_4, span_20, fontLevels, iconDelete } = useGeneralFeature(
     noWrap,
     fontLevel,
     deleteIcon,
@@ -73,13 +73,13 @@ const ConversionInput: FC<ConversionInputProps> = ({
                   secondValue: isNaN(secondValue) ? '' : secondValue.toString(),
                 });
               }}
-              fontLevel={hasFontLevel}
+              fontLevel={fontLevels}
               className="first-input-box"
               onClick={(e) => e.stopPropagation()}
               autoWidth
               defaultWidth={30}
             />
-            <BodyText level={hasFontLevel} fontFamily="Roboto" customClass="unit-input-label">
+            <BodyText level={fontLevels} fontFamily="Roboto" customClass="unit-input-label">
               {conversionData.unit_1}
             </BodyText>
           </div>
@@ -95,18 +95,18 @@ const ConversionInput: FC<ConversionInputProps> = ({
                   secondValue: secondValue,
                 });
               }}
-              fontLevel={hasFontLevel}
+              fontLevel={fontLevels}
               className="first-input-box"
               onClick={(e) => e.stopPropagation()}
               autoWidth
               defaultWidth={30}
             />
-            <BodyText level={hasFontLevel} fontFamily="Roboto" customClass="unit-input-label">
+            <BodyText level={fontLevels} fontFamily="Roboto" customClass="unit-input-label">
               {conversionData.unit_2}
             </BodyText>
           </div>
         </div>
-        {deleteIcon ? hasDeleteIcon : null}
+        {iconDelete}
       </Col>
     </Row>
   );
