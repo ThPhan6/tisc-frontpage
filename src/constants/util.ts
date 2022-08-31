@@ -151,3 +151,8 @@ export const QUERY_KEY = {
   sort_name: 'sort_name',
   search: 'search',
 };
+
+export const COVERAGE_BEYOND = {
+  NOT_ALLOW: true,
+  ALLOW: false,
+};
