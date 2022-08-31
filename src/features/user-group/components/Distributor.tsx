@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 
+import { COVERAGE_BEYOND } from '@/constants/util';
 import { Col, Collapse, Row } from 'antd';
 
 import { isEmpty } from 'lodash';
@@ -66,7 +67,11 @@ const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
                               {distributor.authorized_country_name ?? ''}
                             </TextForm>
                             <TextForm label="Coverage Beyond">
-                              {String(distributor.coverage_beyond) ?? ''}
+                              {distributor.coverage_beyond === COVERAGE_BEYOND.NOT_ALLOW
+                                ? 'Not Allow'
+                                : distributor.coverage_beyond === COVERAGE_BEYOND.ALLOW
+                                ? 'Allow'
+                                : ''}
                             </TextForm>
                           </div>
                         </Collapse.Panel>
