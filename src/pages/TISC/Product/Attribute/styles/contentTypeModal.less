@@ -1,0 +1,118 @@
+.contentTypeModalWrapper {
+  @height: 48px;
+  .contentTypeFooter {
+    display: flex;
+    justify-content: right;
+    .contentTypeSubmitBtn {
+      border-radius: 12px;
+    }
+  }
+
+  :global(.ant-modal-close-x) {
+    height: @height;
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  :global(.ant-modal-body) {
+    padding: 0;
+  }
+
+  :global(.ant-modal-header),
+  :global(.ant-modal-footer) {
+    height: @height;
+    padding: 12px 16px;
+    box-shadow: @border-top;
+  }
+  :global(.ant-modal-footer) {
+    border: 0;
+  }
+  :global(.ant-modal-header) {
+    border-bottom: 0;
+    box-shadow: @border-bottom;
+  }
+  :global(.ant-tabs-nav) {
+    margin: 0;
+    &::before {
+      height: 1px;
+      border-bottom: 0 !important;
+      box-shadow: @border-bottom;
+    }
+  }
+  .contentTypeOption {
+    height: 600px;
+    max-height: calc(100vh - 200px);
+    padding: 16px;
+    overflow: hidden auto;
+    :global(.ant-space-item) {
+      min-height: 40px;
+      margin-left: 0;
+      box-shadow: @border-bottom-light;
+    }
+  }
+  .contentTypeCollapse {
+    background-color: #fff;
+    :global(.ant-collapse-item) {
+      border-bottom: 0;
+      box-shadow: @border-bottom-light;
+      &:global(.ant-collapse-item-active) {
+        box-shadow: @border-bottom;
+        :global(.ant-collapse-content-box) {
+          padding: 0 0 8px 16px;
+        }
+      }
+      :global(.ant-collapse-content-box) {
+        padding-right: 0;
+        padding-left: 16px;
+      }
+      :global(.ant-collapse-arrow) {
+        right: 0;
+      }
+    }
+
+    :global(.ant-collapse-header) {
+      display: flex;
+      align-items: center;
+      padding: 9px 0 !important;
+      font-weight: 300;
+      font-size: 14px;
+      font-family: @font-primary;
+      font-style: normal;
+      line-height: 22px;
+      letter-spacing: 0.02em;
+    }
+    :global(.ant-space-item) {
+      box-shadow: none;
+    }
+    :global(.basis-preset-option-group) {
+      display: flex;
+      align-items: center;
+      font-weight: 300;
+      font-size: 14px;
+      font-family: @font-primary;
+      font-style: normal;
+      line-height: 22px;
+      letter-spacing: 0.02em;
+      :global(.count-number) {
+        margin-left: 12px;
+      }
+    }
+    :global(.count-number) {
+      margin-left: 8px;
+      font-weight: 300;
+    }
+    :global(.activated) {
+      font-weight: 500;
+    }
+    :global(.basis-conversion-group) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      svg {
+        margin: 0 12px;
+      }
+    }
+  }
+}

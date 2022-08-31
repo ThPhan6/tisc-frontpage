@@ -1,0 +1,180 @@
+.topbarContainer {
+  position: sticky;
+  top: 48px;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: max-content;
+  height: 56px;
+  padding: 0 24px;
+  overflow: auto;
+  background-color: #fff;
+  :global(.left-side > .category) {
+    padding-left: 0;
+  }
+  :global(.left-side),
+  :global(.right-side) {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  :global(.item) {
+    margin-right: 12px;
+    padding: 0 12px;
+    transition: width 0.3s;
+    &:global(.right-divider) {
+      box-shadow: @border-right-light;
+    }
+    &:global(.left-divider) {
+      box-shadow: @border-left-light;
+    }
+    :global(.disabled) {
+      color: @mono-color-medium;
+    }
+    &:global(.bold > p:first-child) {
+      font-weight: 500;
+    }
+    &:global(.brand-dropdown) {
+      margin-right: 0;
+      padding-right: 24px;
+      padding-left: 0;
+      &:first-child {
+        font-weight: 500;
+      }
+    }
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+  :global(.topbar-group-btn) {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    &:global(.disabled) {
+      cursor: default;
+    }
+    svg {
+      margin-left: 8px;
+    }
+    :global(.ant-dropdown-trigger) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0;
+    }
+  }
+}
+
+.topbarDropdown {
+  width: 240px;
+  :global(.tisc-dropdown-item) {
+    & > div {
+      &:not(:first-child) {
+        box-shadow: none;
+      }
+      &:hover {
+        background-color: @primary-color-light;
+      }
+
+      > p {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}
+.viewAllTop {
+  :global(li.ant-dropdown-menu-item):first-child {
+    box-shadow: @border-bottom-light;
+  }
+}
+
+.flexBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filterItem {
+  display: flex;
+  align-items: center;
+  // justify-content: center;
+  color: #000;
+  text-transform: capitalize;
+  svg {
+    margin-left: 8px;
+    color: @mono-color-medium;
+    cursor: pointer;
+    &:hover {
+      color: @primary-color-dark;
+    }
+  }
+}
+
+:global(.ant-dropdown-menu-vertical) {
+  border-radius: 0;
+}
+
+:global(.ant-dropdown) {
+  :global(li.ant-dropdown-menu-item) {
+    padding: 8px 36.5px 8px 12px;
+    user-select: none;
+
+    span {
+      max-width: 211.5px;
+      overflow: hidden;
+      font-weight: 300;
+      font-size: 12px;
+      font-family: @font-primary;
+      font-style: normal;
+      line-height: 20px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    &.alignRight svg {
+      position: absolute;
+      right: 0;
+      width: 15px;
+      margin-right: 13.5px;
+      // transition: transform 0.1s;
+    }
+    &.textCapitalize {
+      text-transform: uppercase;
+    }
+
+    &.active svg {
+      transform: rotate(180deg);
+    }
+    &.active span {
+      font-weight: 500;
+    }
+
+    &.noSub span {
+      max-width: 231.5px;
+    }
+    &.noSub {
+      padding-right: 16.5px;
+    }
+
+    :global(.ant-dropdown-menu-item-icon) {
+      margin-right: 12px;
+    }
+  }
+
+  :global(.ant-dropdown-menu) {
+    background-clip: border-box;
+  }
+}
+
+.topbarBottomContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding: 0 24px;
+  background-color: #fff;
+  box-shadow: @border-top-light;
+}

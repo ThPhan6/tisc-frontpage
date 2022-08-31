@@ -1,9 +1,58 @@
-@import (reference) '~antd/es/style/themes/index';
+@import '~antd/es/style/variable.less';
 
 .container > * {
   background-color: @popover-bg;
-  border-radius: 4px;
   box-shadow: @shadow-1-down;
+}
+
+.container {
+  :global(.ant-dropdown-arrow) {
+    top: 11.5px;
+  }
+}
+.dropdownWrapper {
+  margin-top: 8px;
+  cursor: pointer;
+}
+
+.arrow-center {
+  :global(.ant-dropdown-arrow) {
+    left: 50%;
+    transform: translateX(-50%) rotate(-135deg) translateY(-0.5px);
+  }
+}
+
+.menu-header {
+  min-width: 120px;
+  box-shadow: 1px 1px 3px 0 #00000080;
+  .border {
+    box-shadow: @border-bottom-light;
+  }
+  .item {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 12px;
+    text-transform: capitalize;
+    cursor: pointer;
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+    }
+
+    &.disabled {
+      cursor: not-allowed;
+      user-select: none;
+      p {
+        color: @mono-color-medium;
+      }
+      path {
+        fill: @mono-color-medium;
+      }
+    }
+  }
 }
 
 @media screen and (max-width: @screen-xs) {

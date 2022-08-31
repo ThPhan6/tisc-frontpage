@@ -1,0 +1,91 @@
+.team_form {
+  :global(.ant-collapse-borderless) {
+    background: #fff !important;
+  }
+  :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
+    padding: 8px 0;
+  }
+  :global(.ant-collapse-icon-position-end
+      > .ant-collapse-item
+      > .ant-collapse-header
+      .ant-collapse-arrow) {
+    right: 0;
+  }
+  :global(.ant-collapse > .ant-collapse-item) {
+    border-bottom: 0;
+  }
+  .teamInfo {
+    :last-child {
+      margin-bottom: 0;
+    }
+    .formGroup {
+      margin-bottom: 16px;
+      label {
+        p {
+          color: @mono-color-dark !important;
+        }
+      }
+      .phoneInputCustom {
+        border: none;
+        p {
+          color: @mono-color !important;
+        }
+      }
+    }
+    .list_material {
+      display: flex;
+      align-items: center;
+      box-shadow: @border-bottom-light;
+      &_table {
+        width: 100%;
+        white-space: nowrap;
+        table-layout: fixed;
+        tr {
+          height: 36px;
+        }
+
+        td {
+          height: 36px;
+          padding: 0;
+
+          p {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+        }
+        .code {
+          width: 10%;
+          padding-right: 12px;
+          text-transform: capitalize;
+          .colorMaterial {
+            color: @mono-color !important;
+            font-weight: 500 !important;
+          }
+        }
+        .material {
+          width: 90%;
+          .colorMaterial {
+            color: @mono-color !important;
+          }
+        }
+      }
+    }
+  }
+  .team_name {
+    margin-bottom: 16px;
+  }
+
+  .userName {
+    display: flex;
+    align-items: center;
+
+    .icon {
+      margin-right: 8px;
+    }
+    .dropdownCount {
+      font-weight: 300 !important;
+      text-transform: capitalize;
+    }
+  }
+}

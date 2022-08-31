@@ -1,22 +1,49 @@
-import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
-import { PageLoading } from '@ant-design/pro-layout';
-import type { RunTimeLayoutConfig } from 'umi';
-import { history } from 'umi';
-import RightContent from '@/components/RightContent';
-import Footer from '@/components/Footer';
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
-import defaultSettings from '../config/defaultSettings';
 import React from 'react';
 import { Provider } from 'react-redux';
-import store, { persistor } from './reducers';
 import { PersistGate } from 'redux-persist/integration/react';
+
+import { PATH, PUBLIC_PATH } from './constants/path';
+import { UserHomePagePaths } from '@/constants/user.constant';
+import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import { PageLoading } from '@ant-design/pro-layout';
 import { ConfigProvider } from 'antd';
+import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
+import { history } from 'umi';
 
-const loginPath = '/user/login';
+import { getUserInfoMiddleware } from './pages/LandingPage/services/api';
 
-/** 获取用户信息比较慢的时候会展示一个 loading */
-export const initialStateConfig = {
-  loading: <PageLoading />,
+import type { UserInfoDataProp } from './pages/LandingPage/types';
+import store, { persistor } from './reducers';
+
+import AsideMenu from './components/Menu/AsideMenu';
+import Header from '@/components/Header';
+
+import defaultSettings from '../config/defaultSettings';
+
+// config request umi
+const errorHandler = function (error: any) {
+  throw error;
+};
+
+const authHeaderInterceptor = (url: string, options: any) => {
+  const token = localStorage.getItem('access_token') || '';
+  const authHeader = { Authorization: `Bearer ${token}` };
+  if (token) {
+    return {
+      url: `${url}`,
+      options: { ...options, interceptors: true, headers: authHeader },
+    };
+  }
+  return {
+    url: `${url}`,
+    options: { ...options, interceptors: true },
+  };
+};
+
+export const request: RequestConfig = {
+  prefix: API_URL,
+  errorHandler,
+  requestInterceptors: [authHeaderInterceptor],
 };
 
 /**
@@ -24,21 +51,20 @@ export const initialStateConfig = {
  * */
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
-  currentUser?: API.CurrentUser;
+  currentUser?: UserInfoDataProp;
   loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
+  const token = localStorage.getItem('access_token') || '';
   const fetchUserInfo = async () => {
     try {
-      const msg = await queryCurrentUser();
-      return msg.data;
+      return await getUserInfoMiddleware();
     } catch (error) {
-      history.push(loginPath);
+      localStorage.clear();
     }
     return undefined;
   };
-  // 如果不是登录页面，执行
-  if (history.location.pathname !== loginPath) {
+  if (token) {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
@@ -53,48 +79,44 @@ export async function getInitialState(): Promise<{
 }
 
 ConfigProvider.config({
+  // prefixCls: 'custom',
   theme: {
     primaryColor: '#2B39D4',
   },
 });
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
-export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
+export const layout: RunTimeLayoutConfig = ({ initialState }) => {
+  console.log('initialState', initialState);
   return {
-    rightContentRender: () => <RightContent />,
+    title: 'TISC',
+    logo: false,
     disableContentMargin: false,
-    footerRender: () => <Footer />,
+    headerRender: () => <Header />,
     onPageChange: () => {
       const { location } = history;
-      // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
-        history.push(loginPath);
+      const token = localStorage.getItem('access_token') || '';
+      if (PUBLIC_PATH.includes(location.pathname)) {
+        if (token) {
+          const user = store.getState().user.user;
+          if (user) {
+            history.push(UserHomePagePaths[user.type]);
+          }
+        } else {
+          history.push(`${location.pathname}${location.search}`);
+        }
+        return;
+      }
+      if (!token) {
+        history.push(PATH.landingPage);
       }
     },
     menuHeaderRender: undefined,
-    // 自定义 403 页面
-    // unAccessible: <div>unAccessible</div>,
-    // 增加一个 loading 的状态
-    childrenRender: (children, props) => {
-      // if (initialState?.loading) return <PageLoading />;
-      return (
-        <>
-          {children}
-          {/* {!props.location?.pathname?.includes('/login') && (
-            <SettingDrawer
-              disableUrlParams
-              enableDarkTheme
-              settings={initialState?.settings}
-              onSettingChange={(settings) => {
-                setInitialState((preInitialState) => ({
-                  ...preInitialState,
-                  settings,
-                }));
-              }}
-            />
-          )} */}
-        </>
-      );
+    menuRender: (props) => <AsideMenu {...props} />,
+    /* eslint-disable @typescript-eslint/no-var-requires */
+    childrenRender: (children) => {
+      if (initialState?.loading) return <PageLoading />;
+      return <>{children}</>;
     },
     ...initialState?.settings,
   };

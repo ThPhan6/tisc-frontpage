@@ -1,0 +1,61 @@
+.textarea-container {
+  :global(.ant-input) {
+    color: @primary-color-dark;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 22px;
+    border: 1px solid transparent;
+    border-radius: 0;
+    &:hover {
+      border: 1px solid transparent;
+    }
+    &:focus {
+      box-shadow: none;
+    }
+  }
+  :global(.ant-input-textarea-show-count) {
+    &::after {
+      color: #000;
+    }
+  }
+}
+
+.mono-border-bottom-color {
+  :global(.ant-input) {
+    border-bottom-color: @mono-color;
+    &:hover {
+      border-bottom-color: @mono-color;
+    }
+  }
+}
+.mono-medium-border-bottom-color {
+  :global(.ant-input) {
+    border-bottom-color: @mono-color-medium;
+    &:hover {
+      border-bottom-color: @mono-color-medium;
+    }
+  }
+}
+.light-border-bottom-color {
+  :global(.ant-input) {
+    border-bottom-color: rgba(0, 0, 0, 0.3);
+    &:hover {
+      border-bottom-color: rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+.boxShadow {
+  :global(.ant-input) {
+    border-bottom-color: transparent;
+    box-shadow: @border-bottom-light;
+    transition: all 0.3s;
+    &:hover {
+      border-bottom-color: transparent;
+      box-shadow: @border-bottom-light;
+    }
+    &:focus {
+      border-bottom-color: transparent;
+      box-shadow: @border-bottom-light;
+    }
+  }
+}

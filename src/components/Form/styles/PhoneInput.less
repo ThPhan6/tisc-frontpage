@@ -1,0 +1,58 @@
+.phone-input-container {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 32px;
+  padding: 0 0 0 16px;
+  border: 0.5px solid transparent;
+  border-bottom-color: @mono-color-medium;
+  transition: all 0.3s;
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    margin: 0;
+    -webkit-appearance: none;
+  }
+  .removePhoneInputText {
+    color: @mono-color-medium;
+    cursor: pointer;
+    &:hover {
+      color: @primary-color-dark;
+    }
+  }
+  :global(.ant-input) {
+    padding: 0;
+    color: @mono-color;
+    font-weight: 300;
+    // font-weight: 300px;
+    font-size: 14px;
+    border: none;
+    outline: none;
+    &:focus {
+      box-shadow: none;
+    }
+  }
+  .wrapper-code-input {
+    display: flex;
+    align-items: center;
+    margin-right: 12px;
+  }
+  .phone-input {
+    flex: 1;
+    padding-right: 16px;
+  }
+  .color-placeholder {
+    ::placeholder {
+      color: @mono-color;
+    }
+    :global(.ant-input) {
+      color: @mono-color;
+    }
+  }
+}
+
+.warning-status {
+  border: 0.5px solid @secondary-color;
+}
+.error-status {
+  border: 0.5px solid @tertiary-color;
+}

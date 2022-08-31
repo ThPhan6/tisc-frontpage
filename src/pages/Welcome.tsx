@@ -1,13 +1,493 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+import { dataMenuSummary } from '@/constants/util';
+import { UserOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Card, Alert } from 'antd';
+import { Card } from 'antd';
+
+import { ReactComponent as SingleRightIcon } from '../assets/icons/single-right.svg';
+import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
+
+import { PresetsEntryForm } from './TISC/Product/Basis/Preset/components/PresetsEntryForm';
+import CustomButton from '@/components/Button';
+import { CustomCheckbox } from '@/components/CustomCheckbox';
+import { CustomRadio } from '@/components/CustomRadio';
+import { FormGroup } from '@/components/Form';
+import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
+import { CustomInput } from '@/components/Form/CustomInput';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import { PhoneInput } from '@/components/Form/PhoneInput';
+import { MenuSummary } from '@/components/MenuSummary';
+import { ProfileIcon } from '@/components/ProfileIcon';
+import { CustomTabs } from '@/components/Tabs';
+import { BodyText, MainTitle, Title } from '@/components/Typography';
+
+import BrandProfile from './Brand/Adminstration/BrandProfile';
 import styles from './Welcome.less';
 
 const Welcome: React.FC = () => {
+  const optionsRadio = [
+    { label: 'radio button 1', value: '1' },
+    { label: 'radio button 2', value: '2' },
+  ];
+
+  const optionsCheckbox = [
+    { label: 'checkbox 1', value: '1' },
+    { label: 'checkbox 2', value: '2' },
+  ];
+
+  const listTab = [
+    { tab: '1st tab', key: '1', icon: <ProductIcon /> },
+    { tab: '2nd tab', key: '2' },
+    { tab: '3rd tab', key: '3', disable: true },
+    { tab: '4th tab', key: '4' },
+  ];
+
+  const [activeTab, setActiveTab] = useState('1');
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case '1':
+        return <div>tab 1</div>;
+      case '2':
+        return <div>tab 2</div>;
+      case '3':
+        return <div>tab 3</div>;
+      case '4':
+        return <div>tab 4</div>;
+      default:
+        return '1';
+    }
+  };
+
   return (
     <PageContainer>
+      <FormGroup label="Editor">
+        <CustomEditorInput
+          onChangeText={(html) => {
+            console.log('html', html);
+          }}
+          containerClass={`${styles.mb}`}
+          initData={`<p>This is <strong>some</strong> of <strong>our text</strong></p>
+
+          <p><strong><a class="simple-button-plugin" href="" style="display:inline-block;background-color:#27AE61;border:1px solid #27AE61;color:#fff !important;padding:5px 10px;border-radius:5px;font-size:14px;text-decoration: none !important; cursor: pointer;" target="_blank">Unsubscribe</a>​​​​​​​</strong></p>
+          
+          <p>&nbsp;</p>
+          
+          <p>&nbsp;</p>`}
+        />
+      </FormGroup>
       <Card>
-        <Alert message={'welcome'} type="success" banner />
+        <BrandProfile />
+        {/* Profile icon */}
+        <div className={styles.profile_icon}>
+          <ProfileIcon name="Adele" />
+          <ProfileIcon name="Black Panther" />
+          <ProfileIcon name="Black Panther" />
+          <ProfileIcon name="Black Adam" />
+          <ProfileIcon name="Tony Start" />
+          <ProfileIcon name="Thor" />
+        </div>
+
+        <PresetsEntryForm />
+        {/*Tabs*/}
+        <div>
+          <CustomTabs
+            listTab={listTab}
+            tabPosition="top"
+            tabDisplay="space"
+            onChange={setActiveTab}
+            activeKey={activeTab}
+          />
+        </div>
+        {renderTabContent()}
+        <br />
+        <div>
+          <CustomTabs listTab={listTab} tabPosition="left" activeKey={activeTab} />
+          <br />
+        </div>
+        <div>
+          <CustomTabs
+            listTab={listTab}
+            tabPosition="top"
+            tabDisplay="start"
+            activeKey={activeTab}
+          />
+          <br />
+        </div>
+        {/* Menu Summary */}
+        <div className={styles.mb}>
+          <MenuSummary menuSummaryData={dataMenuSummary.leftData} typeMenu="brand" />
+        </div>
+        <div className={styles.mb}>
+          <MenuSummary
+            menuSummaryData={dataMenuSummary.leftData}
+            typeMenuData={dataMenuSummary.subscriptionData}
+            typeMenu="subscription"
+          />
+        </div>
+        <div className={styles.mb}>
+          <MenuSummary
+            menuSummaryData={dataMenuSummary.leftData}
+            typeMenuData={dataMenuSummary.projectData}
+            typeMenu="project"
+          />
+        </div>
+
+        <PhoneInput phonePlaceholder="personal mobile" />
+        {/* checkbox */}
+        <FormGroup label="Test Checkbox horizontal">
+          <CustomCheckbox
+            options={optionsCheckbox}
+            direction="horizontal"
+            defaultValue={optionsCheckbox[0]}
+          />
+        </FormGroup>
+        <FormGroup label="Checkbox horizontal - other input" tooltip="How are you">
+          <CustomCheckbox
+            direction="horizontal"
+            otherInput
+            options={optionsCheckbox}
+            defaultValue={optionsCheckbox[0]}
+          />
+        </FormGroup>
+        <FormGroup label="Checkbox vertical" tooltip="How are you" layout="vertical">
+          <CustomCheckbox
+            direction="vertical"
+            options={optionsCheckbox}
+            defaultValue={optionsCheckbox[0]}
+          />
+        </FormGroup>
+        <FormGroup label="Checkbox vertical - other input" tooltip="How are you" layout="vertical">
+          <CustomCheckbox
+            direction="vertical"
+            otherInput
+            options={optionsCheckbox}
+            defaultValue={optionsCheckbox[0]}
+          />
+        </FormGroup>
+        <FormGroup label="Checkbox list" tooltip="How are you" layout="vertical">
+          <CustomCheckbox
+            direction="vertical"
+            isCheckboxList
+            options={optionsCheckbox}
+            defaultValue={optionsCheckbox[0]}
+          />
+        </FormGroup>
+        <FormGroup label="Checkbox list - other input" tooltip="How are you" layout="vertical">
+          <CustomCheckbox
+            direction="vertical"
+            otherInput
+            isCheckboxList
+            options={optionsCheckbox}
+            defaultValue={optionsCheckbox[0]}
+          />
+        </FormGroup>
+
+        {/* radio */}
+        <FormGroup label="Test Radio horizontal" tooltip="How are you">
+          <CustomRadio options={optionsRadio} defaultValue={optionsRadio[0]} />
+        </FormGroup>
+        <FormGroup label="Radio horizontal - other input" tooltip="How are you" layout="vertical">
+          <CustomRadio
+            direction="horizontal"
+            options={optionsRadio}
+            defaultValue={optionsRadio[0]}
+            otherInput
+          />
+        </FormGroup>
+        <FormGroup label="Radio vertical" tooltip="How are you" layout="vertical">
+          <CustomRadio defaultValue={optionsRadio[0]} options={optionsRadio} direction="vertical" />
+        </FormGroup>
+        <FormGroup label="Radio vertical - other input" tooltip="How are you" layout="vertical">
+          <CustomRadio
+            otherInput
+            defaultValue={optionsRadio[0]}
+            options={optionsRadio}
+            direction="vertical"
+          />
+        </FormGroup>
+        <FormGroup label="Radio list" tooltip="How are you" layout="vertical">
+          <CustomRadio options={optionsRadio} isRadioList />
+        </FormGroup>
+        <FormGroup label="Radio list - other input" tooltip="How are you" layout="vertical">
+          <CustomRadio options={optionsRadio} isRadioList otherInput />
+        </FormGroup>
+
+        {/* input */}
+        <FormGroup
+          label="FormGroup horizontal"
+          tooltip="How are you"
+          message="message"
+          messageType="error">
+          <CustomInput focusColor="tertiary" borderBottomColor="mono-medium" />
+        </FormGroup>
+        <FormGroup
+          label="FormGroup vertical"
+          tooltip="How are you"
+          message="message"
+          messageType="warning"
+          layout="vertical">
+          <CustomInput borderBottomColor="mono-medium" focusColor="secondary" />
+        </FormGroup>
+
+        <CustomInput placeholder="input" focusColor="primary" />
+        <CustomInput placeholder="input" prefix={<UserOutlined />} focusColor="primary" />
+        <CustomInput placeholder="input" disabled />
+        <CustomInput placeholder="input" prefix={<UserOutlined />} disabled focusColor="primary" />
+
+        <CustomInput theme="dark" placeholder="input" focusColor="primary" />
+        <CustomInput
+          theme="dark"
+          placeholder="input"
+          prefix={<UserOutlined />}
+          focusColor="primary"
+        />
+        <CustomInput theme="dark" disabled placeholder="input" focusColor="primary" />
+        <CustomInput
+          theme="dark"
+          disabled
+          placeholder="input"
+          prefix={<UserOutlined />}
+          focusColor="primary"
+        />
+        <FormGroup label="Textarea horizontal" tooltip="How are you" layout="vertical">
+          <CustomTextArea showCount placeholder="Type text..." />
+        </FormGroup>
+        <FormGroup label="Textarea vertical" tooltip="How are you">
+          <CustomTextArea showCount placeholder="Type text..." />
+        </FormGroup>
+
+        <div className={styles.card}>
+          <CustomButton size="large">Button</CustomButton>
+          <CustomButton size="large" icon={<SingleRightIcon />}>
+            Button
+          </CustomButton>
+          <CustomButton size="large" variant="secondary">
+            Button
+          </CustomButton>
+          <CustomButton size="large" icon={<SingleRightIcon />} variant="secondary">
+            Button
+          </CustomButton>
+          <CustomButton size="large" variant="dashed">
+            Button
+          </CustomButton>
+          <CustomButton size="large" icon={<SingleRightIcon />} variant="dashed">
+            Button
+          </CustomButton>
+          <CustomButton size="large" variant="link">
+            Button
+          </CustomButton>
+          <CustomButton size="large" icon={<SingleRightIcon />} variant="link">
+            Button
+          </CustomButton>
+          <CustomButton size="large" variant="text">
+            Button
+          </CustomButton>
+          <CustomButton size="large" icon={<SingleRightIcon />} variant="text">
+            Button
+          </CustomButton>
+        </div>
+        <div className={styles.card}>
+          <CustomButton>Button</CustomButton>
+          <CustomButton icon={<SingleRightIcon />}>Button</CustomButton>
+          <CustomButton variant="secondary">Button</CustomButton>
+          <CustomButton icon={<SingleRightIcon />} variant="secondary">
+            Button
+          </CustomButton>
+          <CustomButton variant="dashed">Button</CustomButton>
+          <CustomButton icon={<SingleRightIcon />} variant="dashed">
+            Button
+          </CustomButton>
+          <CustomButton variant="link">Button</CustomButton>
+          <CustomButton icon={<SingleRightIcon />} variant="link">
+            Button
+          </CustomButton>
+          <CustomButton variant="text">Button</CustomButton>
+          <CustomButton icon={<SingleRightIcon />} variant="text">
+            Button
+          </CustomButton>
+        </div>
+        <div className={styles.card}>
+          <CustomButton size="small">Button</CustomButton>
+          <CustomButton size="small" icon={<SingleRightIcon />}>
+            Button
+          </CustomButton>
+          <CustomButton size="small" variant="secondary">
+            Button
+          </CustomButton>
+          <CustomButton size="small" icon={<SingleRightIcon />} variant="secondary">
+            Button
+          </CustomButton>
+          <CustomButton size="small" variant="dashed">
+            Button
+          </CustomButton>
+          <CustomButton size="small" icon={<SingleRightIcon />} variant="dashed">
+            Button
+          </CustomButton>
+          <CustomButton size="small" variant="link">
+            Button
+          </CustomButton>
+          <CustomButton size="small" icon={<SingleRightIcon />} variant="link">
+            Button
+          </CustomButton>
+          <CustomButton size="small" variant="text">
+            Button
+          </CustomButton>
+          <CustomButton size="small" icon={<SingleRightIcon />} variant="text">
+            Button
+          </CustomButton>
+        </div>
+        <div className={styles.card}>
+          <CustomButton properties="warning">Button</CustomButton>
+          <CustomButton properties="warning" icon={<SingleRightIcon />}>
+            Button
+          </CustomButton>
+          <CustomButton properties="warning" variant="secondary">
+            Button
+          </CustomButton>
+          <CustomButton properties="warning" icon={<SingleRightIcon />} variant="secondary">
+            Button
+          </CustomButton>
+          <CustomButton properties="warning" variant="dashed">
+            Button
+          </CustomButton>
+          <CustomButton properties="warning" icon={<SingleRightIcon />} variant="dashed">
+            Button
+          </CustomButton>
+          <CustomButton properties="warning" variant="link">
+            Button
+          </CustomButton>
+          <CustomButton properties="warning" icon={<SingleRightIcon />} variant="link">
+            Button
+          </CustomButton>
+          <CustomButton properties="warning" variant="text">
+            Button
+          </CustomButton>
+          <CustomButton properties="warning" icon={<SingleRightIcon />} variant="text">
+            Button
+          </CustomButton>
+        </div>
+        <div className={styles.card}>
+          <CustomButton disabled>Button</CustomButton>
+          <CustomButton disabled icon={<SingleRightIcon />}>
+            Button
+          </CustomButton>
+          <CustomButton disabled variant="secondary">
+            Button
+          </CustomButton>
+          <CustomButton disabled icon={<SingleRightIcon />} variant="secondary">
+            Button
+          </CustomButton>
+          <CustomButton disabled variant="dashed">
+            Button
+          </CustomButton>
+          <CustomButton disabled icon={<SingleRightIcon />} variant="dashed">
+            Button
+          </CustomButton>
+          <CustomButton disabled variant="link">
+            Button
+          </CustomButton>
+          <CustomButton disabled icon={<SingleRightIcon />} variant="link">
+            Button
+          </CustomButton>
+          <CustomButton disabled variant="text">
+            Button
+          </CustomButton>
+          <CustomButton disabled icon={<SingleRightIcon />} variant="text">
+            Button
+          </CustomButton>
+        </div>
+        <div className={styles.card}>
+          <CustomButton properties="square">A</CustomButton>
+          <CustomButton properties="square" icon={<SingleRightIcon />} />
+          <CustomButton properties="square" variant="secondary">
+            A
+          </CustomButton>
+          <CustomButton properties="square" icon={<SingleRightIcon />} variant="secondary" />
+          <CustomButton properties="square" variant="dashed">
+            A
+          </CustomButton>
+          <CustomButton properties="square" icon={<SingleRightIcon />} variant="dashed" />
+        </div>
+        <div className={styles.card}>
+          <CustomButton disabled properties="square">
+            A
+          </CustomButton>
+          <CustomButton disabled properties="square" icon={<SingleRightIcon />} />
+          <CustomButton disabled properties="square" variant="secondary">
+            A
+          </CustomButton>
+          <CustomButton
+            disabled
+            properties="square"
+            icon={<SingleRightIcon />}
+            variant="secondary"
+          />
+          <CustomButton disabled properties="square" variant="dashed">
+            A
+          </CustomButton>
+          <CustomButton disabled properties="square" icon={<SingleRightIcon />} variant="dashed" />
+        </div>
+        <div className={styles.card}>
+          <CustomButton properties="circle">A</CustomButton>
+          <CustomButton properties="circle" icon={<SingleRightIcon />} />
+          <CustomButton properties="circle" variant="secondary">
+            A
+          </CustomButton>
+          <CustomButton properties="circle" icon={<SingleRightIcon />} variant="secondary" />
+          <CustomButton properties="circle" variant="dashed">
+            A
+          </CustomButton>
+          <CustomButton properties="circle" icon={<SingleRightIcon />} variant="dashed" />
+        </div>
+        <div className={styles.card}>
+          <CustomButton disabled properties="circle">
+            A
+          </CustomButton>
+          <CustomButton disabled properties="circle" icon={<SingleRightIcon />} />
+          <CustomButton disabled properties="circle" variant="secondary">
+            A
+          </CustomButton>
+          <CustomButton
+            disabled
+            properties="circle"
+            icon={<SingleRightIcon />}
+            variant="secondary"
+          />
+          <CustomButton disabled properties="circle" variant="dashed">
+            A
+          </CustomButton>
+          <CustomButton disabled properties="circle" icon={<SingleRightIcon />} variant="dashed" />
+        </div>
+        <div>
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i: any, index) => (
+            <Title key={index} level={i}>
+              Header {i}
+            </Title>
+          ))}
+        </div>
+        <div>
+          {[1, 2, 3, 4, 5, 6, 7].map((i: any, index) => (
+            <BodyText fontFamily="Roboto" key={index} level={i}>
+              BodyText {i}
+            </BodyText>
+          ))}
+        </div>
+        <div>
+          {[1, 2, 3, 4].map((i: any, index) => (
+            <MainTitle key={index} level={i}>
+              MainTitle {i}
+            </MainTitle>
+          ))}
+        </div>
+        <div>
+          {[1, 2, 3, 4].map((i: any, index) => (
+            <BodyText key={index} level={i}>
+              BodyText {i}
+            </BodyText>
+          ))}
+        </div>
       </Card>
     </PageContainer>
   );

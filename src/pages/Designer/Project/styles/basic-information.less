@@ -1,0 +1,50 @@
+.basicInformationWrapper {
+  margin-top: 8px;
+  .entryFormWrapper {
+    height: calc(100vh - 232px);
+    padding: 16px;
+    overflow: hidden auto;
+    background-color: #fff;
+    .formGroup {
+      margin-bottom: 16px;
+      &.activeText {
+        :global(.function-type-placeholder) {
+          overflow: hidden;
+          color: @primary-color-dark;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+  }
+}
+.basicToolbarForm {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  .projectStatusLabel {
+    display: flex;
+    align-items: cener;
+    svg {
+      margin-left: 4px;
+    }
+  }
+  :global(.ant-space) {
+    gap: 0 !important;
+    :global(.ant-radio) {
+      + * {
+        padding-right: 0;
+      }
+    }
+  }
+  :global(.ant-radio-wrapper) {
+    margin-right: 0;
+  }
+  button {
+    margin-left: 24px;
+  }
+}
+.projectStatusRadio {
+  :global(.ant-space-item) {
+    margin: 0 16px;
+  }
+}

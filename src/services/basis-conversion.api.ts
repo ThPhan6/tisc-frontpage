@@ -1,0 +1,114 @@
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { STATUS_RESPONSE } from '@/constants/util';
+import { message } from 'antd';
+import { request } from 'umi';
+
+import type {
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
+  SummaryResponse,
+} from '@/components/Table/types';
+import type { BasisConversionListResponse, ConversionBodyProp } from '@/types';
+
+interface CategoryPaginationResponse {
+  data: {
+    basis_conversions: BasisConversionListResponse[];
+    pagination: PaginationResponse;
+    summary: SummaryResponse[];
+  };
+}
+export async function getProductBasisConversionPagination(
+  params: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
+) {
+  request(`/api/basis-conversion/get-list`, {
+    method: 'GET',
+    params,
+  })
+    .then((response: CategoryPaginationResponse) => {
+      const { basis_conversions, pagination, summary } = response.data;
+      callback({
+        data: basis_conversions,
+        pagination: {
+          current: pagination.page,
+          pageSize: pagination.page_size,
+          total: pagination.total,
+        },
+        summary,
+      });
+    })
+    .catch((error) => {
+      console.log('error', error);
+      message.error(error.message);
+    });
+}
+
+export async function getOneConversionMiddleware(
+  id: string,
+  callbackSuccess: (dataRes: ConversionBodyProp) => void,
+  callbackError: (message?: string) => void,
+) {
+  request(`/api/basis-conversion/get-one/${id}`, {
+    method: 'get',
+  })
+    .then((response: { data: ConversionBodyProp }) => {
+      callbackSuccess(response?.data);
+    })
+    .catch((error) => {
+      callbackError(error?.data?.message || MESSAGE_NOTIFICATION.DELETE_CATEGORY_ERROR);
+    });
+}
+
+export async function createConversionMiddleware(
+  data: ConversionBodyProp,
+  callback: (type: STATUS_RESPONSE, message?: string) => void,
+) {
+  request(`/api/basis-conversion/create`, {
+    method: 'POST',
+    data,
+  })
+    .then(() => {
+      callback(STATUS_RESPONSE.SUCCESS);
+    })
+    .catch((error) => {
+      callback(
+        STATUS_RESPONSE.ERROR,
+        error?.data?.message || MESSAGE_NOTIFICATION.CREATE_CONVERSION_ERROR,
+      );
+    });
+}
+
+export async function updateConversionMiddleware(
+  id: string,
+  data: ConversionBodyProp,
+  callback: (type: STATUS_RESPONSE, message?: string) => void,
+) {
+  request(`/api/basis-conversion/update/${id}`, {
+    method: 'PUT',
+    data,
+  })
+    .then(() => {
+      callback(STATUS_RESPONSE.SUCCESS);
+    })
+    .catch((error) => {
+      callback(
+        STATUS_RESPONSE.ERROR,
+        error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_CATEGORY_ERROR,
+      );
+    });
+}
+
+export async function deleteConversionMiddleware(id: string) {
+  return request<boolean>(`/api/basis-conversion/delete/${id}`, {
+    method: 'DELETE',
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.DELETE_CONVERSION_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.DELETE_CONVERSION_ERROR);
+      return false;
+    });
+}

@@ -1,15 +1,26 @@
+import type { TypedUseSelectorHook } from 'react-redux';
+import { useSelector } from 'react-redux';
+
+import { categoryReducer } from '@/features/categories/reducers';
+import { productReducer } from '@/features/product/reducers';
+import { projectReducer } from '@/features/project/reducers';
+
+import userReducer from './user';
 import { combineReducers, configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
-import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-const reducers = combineReducers({});
+const reducers = combineReducers({
+  product: productReducer,
+  category: categoryReducer,
+  user: userReducer,
+  project: projectReducer,
+});
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: [],
-  blacklist: [],
+  whitelist: ['user'],
 };
 
 const persistedReducers = persistReducer(persistConfig, reducers);
