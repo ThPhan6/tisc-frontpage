@@ -34,30 +34,43 @@ const BasisPresetList: React.FC = () => {
     });
   };
 
-  const SameColumns: TableColumnItem<any>[] = [
-    {
-      title: '1st Value',
-      dataIndex: 'value_1',
-      width: 100,
-    },
-    {
-      title: 'Unit',
-      dataIndex: 'unit_1',
-      width: '5%',
-      lightHeading: true,
-    },
-    {
-      title: '2nd Value',
-      dataIndex: 'value_2',
-      width: 100,
-    },
-    {
-      title: 'Unit',
-      dataIndex: 'unit_2',
-      lightHeading: true,
-    },
-    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
-  ];
+  const getSameColumns = (noBoxShadow?: boolean) => {
+    const SameColumns: TableColumnItem<any>[] = [
+      {
+        title: '1st Value',
+        dataIndex: 'value_1',
+        width: 100,
+        noBoxShadow: noBoxShadow,
+      },
+      {
+        title: 'Unit',
+        dataIndex: 'unit_1',
+        width: '5%',
+        lightHeading: true,
+        noBoxShadow: noBoxShadow,
+      },
+      {
+        title: '2nd Value',
+        dataIndex: 'value_2',
+        width: 100,
+        noBoxShadow: noBoxShadow,
+      },
+      {
+        title: 'Unit',
+        dataIndex: 'unit_2',
+        lightHeading: true,
+        noBoxShadow: noBoxShadow,
+      },
+      {
+        title: 'Count',
+        dataIndex: 'count',
+        width: '5%',
+        align: 'center',
+        noBoxShadow: noBoxShadow,
+      },
+    ];
+    return SameColumns;
+  };
 
   const MainColumns: TableColumnItem<BasisPresetListResponse>[] = [
     {
@@ -80,7 +93,7 @@ const BasisPresetList: React.FC = () => {
         multiple: 2,
       },
     },
-    ...SameColumns,
+    ...getSameColumns(false),
     {
       title: 'Action',
       dataIndex: 'action',
@@ -121,7 +134,7 @@ const BasisPresetList: React.FC = () => {
         return <span className="text-capitalize">{value}</span>;
       },
     },
-    ...SameColumns,
+    ...getSameColumns(false),
     {
       title: 'Action',
       dataIndex: 'action',
@@ -141,13 +154,15 @@ const BasisPresetList: React.FC = () => {
       title: 'Preset Name',
       dataIndex: 'preset_name',
       width: SUB_COL_WIDTH,
+      noBoxShadow: true,
     },
-    ...SameColumns,
+    ...getSameColumns(true),
     {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
       width: '5%',
+      noBoxShadow: true,
     },
   ];
 
