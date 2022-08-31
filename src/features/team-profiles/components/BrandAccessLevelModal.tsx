@@ -40,11 +40,11 @@ const BrandAccessLevelModal: FC<BrandAccessLevelModalProps> = ({ visible, setVis
     });
   };
 
-  const renderPermission: any = (menu: AccessLevelModalProps) => {
+  const renderPermission: any = (menu: AccessLevelModalProps, type: string) => {
     return (
       <Fragment key={menu.name}>
         <tr className={styles.menu}>
-          <td className={`${styles.menu_item} ${!menu.subs && styles.sub_menu}`}>
+          <td className={`${styles.menu_item} ${type === 'sub-item' ? styles.sub_menu : ''}`}>
             <img src={showImageUrl(menu.logo!)} className={styles.menu_item__logo} />
             <BodyText fontFamily="Roboto" level={6} customClass={styles.menu_item__name}>
               {menu.name}
@@ -81,7 +81,7 @@ const BrandAccessLevelModal: FC<BrandAccessLevelModalProps> = ({ visible, setVis
           ))}
         </tr>
         {/* render subs */}
-        {menu.subs?.map((sub) => renderPermission(sub))}
+        {menu.subs?.map((sub) => renderPermission(sub, 'sub-item'))}
       </Fragment>
     );
   };
@@ -120,7 +120,7 @@ const BrandAccessLevelModal: FC<BrandAccessLevelModalProps> = ({ visible, setVis
         <tbody className={styles.body}>
           <>
             {/* main content */}
-            {data.map((menu) => renderPermission(menu))}
+            {data.map((menu) => renderPermission(menu, ''))}
             <tr>
               <td></td>
               <td></td>
