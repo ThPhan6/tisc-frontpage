@@ -171,7 +171,7 @@ const ProductAttributeItem: React.FC<ProductAttributeItemProps> = ({
         /// only conversion don't have name
         description = `${basis.name_1} - ${basis.name_2}`;
       }
-      if (basis && basis.type !== 'Conversions' && basis.type !== 'Text') {
+      if (basis.type !== 'Conversions' && basis.type !== 'Text') {
         /// count subs
         description += ` (${basis.subs?.length ?? 0})`;
       }
