@@ -133,18 +133,20 @@ const CategoryList: React.FC = () => {
       dataIndex: 'Subcategory',
       width: SUB_COL_WIDTH,
       sorter: true,
+      noBoxShadow: true,
     },
     {
       title: 'Category',
       dataIndex: 'name',
-
+      noBoxShadow: true,
       sorter: true,
     },
-    { title: 'Count', dataIndex: 'count', width: '5%' },
+    { title: 'Count', dataIndex: 'count', width: '5%', noBoxShadow: true },
     {
       title: 'Action',
       dataIndex: 'action2',
       width: '5%',
+      noBoxShadow: true,
     },
   ];
 
