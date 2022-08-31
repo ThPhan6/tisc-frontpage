@@ -20,6 +20,9 @@ export interface FaqItemProps extends CollapsingProps {
   customClass?: string;
 }
 
+export const renderIcon = (index: number, activeKey?: string) =>
+  String(index) !== activeKey ? <PlusIcon /> : <ExtendIcon />;
+
 const RenderHeader: FC<FaqItemProps> = (props) => {
   const { value, activeKey, handleActiveCollapse, index, customClass } = props;
   return (
@@ -42,11 +45,7 @@ const RenderHeader: FC<FaqItemProps> = (props) => {
         </div>
         <div className={styles.addIcon}>
           {value.document ? (
-            String(index) !== activeKey ? (
-              <PlusIcon />
-            ) : (
-              <ExtendIcon />
-            )
+            renderIcon(index, activeKey)
           ) : (
             <PlusIcon className={styles.disablePlusIcon} />
           )}

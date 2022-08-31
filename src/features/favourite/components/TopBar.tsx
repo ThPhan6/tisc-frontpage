@@ -59,6 +59,9 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
   const activeCategories = productSummary?.categories.length && isFavouriteRetrieved;
   const activeSort = activeBrands || activeCategories;
 
+  const topBarStyles = (activeKey: any) =>
+    `left-divider ${activeKey ? 'cursor-pointer' : 'cursor-default'}`;
+
   // show product summary when user already has retrieved favourite
   useEffect(() => {
     if (isFavouriteRetrieved) {
@@ -99,7 +102,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
             {/* brands */}
             <TopBarItem
               disabled
-              customClass={`left-divider ${activeBrands ? 'cursor-pointer' : 'cursor-default'} `}
+              customClass={topBarStyles(activeBrands)}
               topValue={
                 filter?.name === 'brand_id' ? (
                   <FilterItem title={filter.title} onDelete={removeFilter} />
@@ -122,9 +125,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
             {/* categories */}
             <TopBarItem
               disabled
-              customClass={`left-divider ${
-                activeCategories ? 'cursor-pointer' : 'cursor-default'
-              } `}
+              customClass={topBarStyles(activeCategories)}
               topValue={
                 filter?.name === 'category_id' ? (
                   <FilterItem title={filter.title} onDelete={removeFilter} />
@@ -147,7 +148,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
             {/* sort */}
             <TopBarItem
               disabled
-              customClass={`left-divider ${activeSort ? 'cursor-pointer' : 'cursor-default'} `}
+              customClass={topBarStyles(activeSort)}
               bottomEnable={activeSort ? true : false}
               topValue={
                 sort ? (
