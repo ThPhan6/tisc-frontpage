@@ -31,6 +31,12 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
     },
     ref,
   ) => {
+    // styles
+    const themeName = props.prefix || props.suffix ? '-affix' : '';
+    const landingPageStatus = fromLandingPage ? (status === 'error' ? 'warning' : 'error') : status;
+    const requiredInput =
+      required && !(props.prefix || props.suffix) ? styles['required-input'] : '';
+
     const [width, setWidth] = useState(defaultWidth);
     const span: any = useRef();
     useEffect(() => {
@@ -49,9 +55,9 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
       if (props.disabled) {
         switch (theme) {
           case 'dark':
-            return styles[`disabled-dark-theme${props.prefix || props.suffix ? '-affix' : ''}`];
+            return styles[`disabled-dark-theme${themeName}`];
           default:
-            return styles[`disabled-default-theme${props.prefix || props.suffix ? '-affix' : ''}`];
+            return styles[`disabled-default-theme${themeName}`];
         }
       }
     };
@@ -66,10 +72,7 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
     ${styles.input}
     ${borderBottomColor ? styles[`${borderBottomColor}-border-bottom-color`] : ''}
     ${fromLandingPage ? styles[`${theme}-focus-normal`] : ''}
-    ${
-      status &&
-      styles[`${fromLandingPage ? (status === 'error' ? 'warning' : 'error') : status}-status`]
-    }
+    ${status ? styles[`${landingPageStatus}-status`] : ''}
     ${styles[`${theme}-theme`]}
     ${setDisabled()}
   `;
@@ -79,13 +82,7 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
     ${required && styles['required-input-affix']}
     ${borderBottomColor ? styles[`${borderBottomColor}-border-bottom-color-affix`] : ''}
     ${fromLandingPage ? styles[`${theme}-focus-normal-affix`] : ''}
-    ${
-      status
-        ? styles[
-            `${fromLandingPage ? (status === 'error' ? 'warning' : 'error') : status}-status-affix`
-          ]
-        : ''
-    }
+    ${status ? styles[`${landingPageStatus}-status-affix`] : ''}
     ${styles[`${theme}-theme-affix`]}
     ${setDisabled()}
   `;
@@ -96,15 +93,11 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
     return (
       <div className={`${classNameInput}  ${containerClass}`} style={{ width: '100%' }}>
         {type === 'password' ? (
-          <div
-            style={{ width: '100%' }}
-            className={required && !(props.prefix || props.suffix) ? styles['required-input'] : ''}>
+          <div style={{ width: '100%' }} className={requiredInput}>
             <Input.Password type={type} {...props} />
           </div>
         ) : (
-          <div
-            style={{ width: '100%' }}
-            className={required && !(props.prefix || props.suffix) ? styles['required-input'] : ''}>
+          <div style={{ width: '100%' }} className={requiredInput}>
             {autoWidth ? (
               <span className={`${styles.hiddenSpan} ${setFontLevel()}`} ref={span}>
                 {props.value}
