@@ -20,7 +20,7 @@ export interface FaqItemProps extends CollapsingProps {
   customClass?: string;
 }
 
-const RenderHeader: FC<FaqItemProps> = (props) => {
+const FaqHeader: FC<FaqItemProps> = (props) => {
   const { value, activeKey, handleActiveCollapse, index, customClass } = props;
   return (
     <div className={styles.panel_header}>
@@ -73,7 +73,7 @@ export const FaqComponent: FC<FaqItemProps> = ({
       <Collapse ghost activeKey={activeKey}>
         <Collapse.Panel
           header={
-            <RenderHeader
+            <FaqHeader
               index={index}
               value={value}
               activeKey={activeKey}
@@ -85,9 +85,13 @@ export const FaqComponent: FC<FaqItemProps> = ({
           showArrow={false}
           className={value.id !== activeKey ? styles['bottomMedium'] : styles['bottomBlack']}>
           <div className={styles.text}>
-            <BodyText level={5} fontFamily="Roboto">
-              {value.document}
-            </BodyText>
+            <BodyText
+              level={5}
+              fontFamily="Roboto"
+              dangerouslySetInnerHTML={{
+                __html: value.document?.replaceAll('\n', '<br/>') || '',
+              }}
+            />
           </div>
           <div className={styles.qa}>
             {value.question_and_answer?.map((item, idx) => {
