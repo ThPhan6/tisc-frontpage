@@ -69,6 +69,8 @@ export interface ProductSubAttributes extends SubAttribute {
     id: string;
     type: ProductAttributeType;
     name: string;
+    name_1: string;
+    name_2: string;
     subs: SubBasisConversion[] & SubBasisPreset[] & BasisText[];
   };
 }

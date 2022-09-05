@@ -99,9 +99,9 @@ export const useAssignProductToSpaceForm = (
   const onSelectRooms = (areaId: string) => (value: CheckboxValue[]) => {
     const handleSelectRooms = () => {
       setSelectedRooms((prevRooms) => {
-        const nextRooms = { ...prevRooms, [areaId]: value };
-        specifyOptions?.onChangeSelectedRoomsCallback(getSelectedRoomIds(nextRooms));
-        return nextRooms;
+        const nextRoomState = { ...prevRooms, [areaId]: value };
+        specifyOptions?.onChangeSelectedRoomsCallback(getSelectedRoomIds(nextRoomState));
+        return nextRoomState;
       });
       entireProject.setValue(false); // not entire project anymore
       specifyOptions?.onChangeEntireProjectCallback(false);

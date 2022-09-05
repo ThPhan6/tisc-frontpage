@@ -232,6 +232,27 @@ export const ProductAttributeSubItem: React.FC<ProductAttributeSubItemProps> = (
     );
   };
 
+  const renderSubBasisOption = (index: number, option: SubBasisOption) => (
+    <>
+      <span className="product-id-label">Product ID:</span>
+      <CustomInput
+        placeholder="type here"
+        className="product-id-input"
+        fontLevel={6}
+        value={basisOptions[index]?.option_code ?? ''}
+        onChange={(e) => {
+          const newBasisOptions = [...basisOptions];
+          newBasisOptions[index] = {
+            id: option.id as string,
+            option_code: e.target.value,
+          };
+          setBasisOptions(newBasisOptions);
+        }}
+        tabIndex={index}
+      />
+    </>
+  );
+
   const renderOptionLabel = (option: SubBasisOption, index: number) => {
     if (!option.image || option.image == '') {
       return (
@@ -244,22 +265,7 @@ export const ProductAttributeSubItem: React.FC<ProductAttributeSubItemProps> = (
             <span className="value">{option.value_2}</span>
             <span>{option.unit_2}</span>
           </div>
-          <span className="product-id-label">Product ID:</span>
-          <CustomInput
-            placeholder="type here"
-            className="product-id-input"
-            fontLevel={6}
-            value={basisOptions[index]?.option_code ?? ''}
-            onChange={(e) => {
-              const newBasisOptions = [...basisOptions];
-              newBasisOptions[index] = {
-                id: option.id as string,
-                option_code: e.target.value,
-              };
-              setBasisOptions(newBasisOptions);
-            }}
-            tabIndex={index}
-          />
+          {renderSubBasisOption(index, option)}
         </div>
       );
     }
@@ -270,24 +276,7 @@ export const ProductAttributeSubItem: React.FC<ProductAttributeSubItemProps> = (
           <BodyText level={6} fontFamily="Roboto" customClass="heading-option-group">
             {option.value_1} - {option.value_2}
           </BodyText>
-          <div className="product-input-group">
-            <span className="product-id-label">Product ID:</span>
-            <CustomInput
-              placeholder="type here"
-              className="product-id-input"
-              fontLevel={6}
-              value={basisOptions[index]?.option_code ?? ''}
-              onChange={(e) => {
-                const newBasisOptions = [...basisOptions];
-                newBasisOptions[index] = {
-                  id: option.id as string,
-                  option_code: e.target.value,
-                };
-                setBasisOptions(newBasisOptions);
-              }}
-              tabIndex={index}
-            />
-          </div>
+          <div className="product-input-group">{renderSubBasisOption(index, option)}</div>
         </div>
       </div>
     );

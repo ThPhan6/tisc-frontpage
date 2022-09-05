@@ -18,7 +18,7 @@ import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
 import GeneralData from './GeneralData';
 import { getLocationByBrandId } from '@/features/locations/api';
 
-const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
+const Location: FC<UserGroupProps> = ({ type, id }) => {
   const [locations, setLocations] = useState<LocationGroupedByCountry[]>([]);
 
   useEffect(() => {
@@ -107,4 +107,4 @@ const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
   );
 };
 
-export default LocationDetail;
+export default Location;

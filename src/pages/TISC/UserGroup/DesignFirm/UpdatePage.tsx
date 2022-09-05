@@ -29,7 +29,7 @@ import { KeyValueData } from '@/types';
 
 import { CustomTabPane } from '@/components/Tabs';
 import CustomDesign from '@/features/user-group/components/CustomDesign';
-import LocationDetail from '@/features/user-group/components/Location';
+import LocationDetail from '@/features/user-group/components/LocationDetail';
 import MaterialCode from '@/features/user-group/components/MaterialCode';
 import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
 import ProfileDetail from '@/features/user-group/components/Profile';
