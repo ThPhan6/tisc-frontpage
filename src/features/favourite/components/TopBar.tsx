@@ -55,8 +55,8 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
     noFetchData: true,
   });
 
-  const activeBrand = productSummary?.brands.length !== 0 && isFavouriteRetrieved;
-  const activeCategory = productSummary?.categories.length !== 0 && isFavouriteRetrieved;
+  const activeBrand = productSummary?.brands?.length !== 0 && isFavouriteRetrieved;
+  const activeCategory = productSummary?.categories?.length !== 0 && isFavouriteRetrieved;
   const activeSort = activeBrand || activeCategory;
 
   // show product summary when user already has retrieved favourite
