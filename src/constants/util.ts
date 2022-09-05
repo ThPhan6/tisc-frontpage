@@ -20,6 +20,23 @@ export const DESIGN_STATUSES = {
   INACTIVE: 2,
 };
 
+export const DESIGN_STATUSES_TEXTS = {
+  [DESIGN_STATUSES.ACTIVE]: 'Active',
+  [DESIGN_STATUSES.INACTIVE]: 'Inactive',
+};
+
+export const BRAND_STATUSES = {
+  ACTIVE: 1,
+  INACTIVE: 2,
+  PENDING: 3,
+};
+
+export const BRAND_STATUSES_TEXTS = {
+  [BRAND_STATUSES.ACTIVE]: 'Active',
+  [BRAND_STATUSES.INACTIVE]: 'Inactive',
+  [BRAND_STATUSES.PENDING]: 'Pending',
+};
+
 export const MEASUREMENT_UNIT = {
   IMPERIAL: 1,
   METRIC: 2,
