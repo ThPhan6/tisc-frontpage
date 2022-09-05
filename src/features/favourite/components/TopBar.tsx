@@ -55,9 +55,9 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
     noFetchData: true,
   });
 
-  const activeBrands = productSummary?.brands.length && isFavouriteRetrieved;
-  const activeCategories = productSummary?.categories.length && isFavouriteRetrieved;
-  const activeSort = activeBrands || activeCategories;
+  const activeBrand = productSummary?.brands.length && isFavouriteRetrieved;
+  const activeCategorie = productSummary?.categories.length && isFavouriteRetrieved;
+  const activeSort = activeBrand || activeCategorie;
 
   // show product summary when user already has retrieved favourite
   useEffect(() => {
@@ -99,7 +99,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
             {/* brands */}
             <TopBarItem
               disabled
-              customClass={`left-divider ${activeBrands ? 'cursor-pointer' : 'cursor-default'} `}
+              customClass={`left-divider ${activeBrand ? 'cursor-pointer' : 'cursor-default'} `}
               topValue={
                 filter?.name === 'brand_id' ? (
                   <FilterItem title={filter.title} onDelete={removeFilter} />
@@ -107,12 +107,12 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
                   'select'
                 )
               }
-              bottomEnable={activeBrands ? true : false}
+              bottomEnable={activeBrand ? true : false}
               bottomValue={
                 <CustomDropDown
                   items={formatBrandsFavouriteToDropDownData(productSummary?.brands)}
                   menuStyle={{ width: 240 }}
-                  disabled={activeBrands ? false : true}
+                  disabled={activeBrand ? false : true}
                   placement="bottomRight">
                   Brands
                 </CustomDropDown>
@@ -122,9 +122,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
             {/* categories */}
             <TopBarItem
               disabled
-              customClass={`left-divider ${
-                activeCategories ? 'cursor-pointer' : 'cursor-default'
-              } `}
+              customClass={`left-divider ${activeCategorie ? 'cursor-pointer' : 'cursor-default'} `}
               topValue={
                 filter?.name === 'category_id' ? (
                   <FilterItem title={filter.title} onDelete={removeFilter} />
@@ -132,13 +130,13 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
                   'select'
                 )
               }
-              bottomEnable={activeCategories ? true : false}
+              bottomEnable={activeCategorie ? true : false}
               bottomValue={
                 <CustomDropDown
                   placement="bottomRight"
                   menuStyle={{ width: 240 }}
                   items={formatCategoriesFavouriteToDropDownData(productSummary?.categories)}
-                  disabled={activeCategories ? false : true}>
+                  disabled={activeCategorie ? false : true}>
                   Categories
                 </CustomDropDown>
               }

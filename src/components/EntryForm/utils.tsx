@@ -6,12 +6,12 @@ export const useGeneralFeature = (
   deleteIcon?: boolean,
   onDelete?: () => void,
 ) => {
-  const span_4 = noWrap ? undefined : 4;
-  const span_20 = noWrap ? undefined : 20;
-  const fontLevels = fontLevel ? ((fontLevel + 2) as 7) : 7;
+  const labelSpan = noWrap ? undefined : 4;
+  const inputSpan = noWrap ? undefined : 20;
+  const fontSize = fontLevel ? ((fontLevel + 2) as 7) : 7;
   const iconDelete = deleteIcon ? (
     <RemoveIcon onClick={onDelete} className="delete-action-input-group" />
   ) : null;
 
-  return { span_4, span_20, fontLevels, iconDelete };
+  return { labelSpan, inputSpan, fontSize, iconDelete };
 };
