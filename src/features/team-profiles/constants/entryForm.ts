@@ -1,4 +1,6 @@
-export const DEFAULT_TEAMPROFILE = {
+import { TeamProfileDetailProps } from '../type';
+
+export const DEFAULT_TEAMPROFILE: TeamProfileDetailProps = {
   role_id: '',
   firstname: '',
   lastname: '',
@@ -22,4 +24,9 @@ export const DEFAULT_TEAMPROFILE = {
   type: '',
   relation_id: '',
   permissions: '',
+};
+
+export const DEFAULT_TEAMPROFILE_WITH_GENDER = {
+  ...DEFAULT_TEAMPROFILE,
+  gender: true,
 };
