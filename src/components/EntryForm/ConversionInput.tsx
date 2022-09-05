@@ -2,14 +2,13 @@ import type { FC, ReactNode } from 'react';
 
 import { Col, Row } from 'antd';
 
-import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
-
 import type { SubBasisConversion } from '@/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
 import styles from './styles/InputGroup.less';
+import { useGeneralFeature } from './utils';
 
 interface ConversionValue {
   firstValue: string;
@@ -25,7 +24,7 @@ interface ConversionInputProps {
   conversionData: SubBasisConversion;
   placeholder1?: string;
   placeholder2?: string;
-  deleteIcon?: boolean | ReactNode;
+  deleteIcon?: boolean;
   onDelete?: () => void;
   conversionValue: ConversionValue;
   setConversionValue: (data: ConversionValue) => void;
@@ -45,22 +44,23 @@ const ConversionInput: FC<ConversionInputProps> = ({
   conversionValue,
   setConversionValue,
 }) => {
+  const { labelSpan, inputSpan, fontSize, iconDelete } = useGeneralFeature(
+    noWrap,
+    fontLevel,
+    deleteIcon,
+    onDelete,
+    horizontal,
+  );
   return (
-    <Row
-      className={styles.inputGroupContainer}
-      gutter={0}
-      align="middle"
-      wrap={noWrap ? false : true}>
-      <Col span={horizontal ? (noWrap ? undefined : 4) : 24} className="input-label-container">
+    <Row className={styles.inputGroupContainer} gutter={0} align="middle" wrap={noWrap}>
+      <Col span={labelSpan} className="input-label-container">
         <BodyText level={fontLevel ?? 5} customClass="input-label">
           {label}
           {required ? <span className={styles.required}>*</span> : ''}
           {required ? <span>:</span> : ''}
         </BodyText>
       </Col>
-      <Col
-        className={styles.doubleinputGroupContent}
-        span={horizontal ? (noWrap ? undefined : 20) : 24}>
+      <Col className={styles.doubleinputGroupContent} span={inputSpan}>
         <div className="double-input-group-wrapper">
           <div className="double-input-group">
             <CustomInput
@@ -74,16 +74,13 @@ const ConversionInput: FC<ConversionInputProps> = ({
                   secondValue: isNaN(secondValue) ? '' : secondValue.toString(),
                 });
               }}
-              fontLevel={fontLevel ? ((fontLevel + 2) as 7) : 7}
+              fontLevel={fontSize}
               className="first-input-box"
               onClick={(e) => e.stopPropagation()}
               autoWidth
               defaultWidth={30}
             />
-            <BodyText
-              level={fontLevel ? ((fontLevel + 2) as 7) : 7}
-              fontFamily="Roboto"
-              customClass="unit-input-label">
+            <BodyText level={fontSize} fontFamily="Roboto" customClass="unit-input-label">
               {conversionData.unit_1}
             </BodyText>
           </div>
@@ -99,27 +96,18 @@ const ConversionInput: FC<ConversionInputProps> = ({
                   secondValue: secondValue,
                 });
               }}
-              fontLevel={fontLevel ? ((fontLevel + 2) as 7) : 7}
+              fontLevel={fontSize}
               className="first-input-box"
               onClick={(e) => e.stopPropagation()}
               autoWidth
               defaultWidth={30}
             />
-            <BodyText
-              level={fontLevel ? ((fontLevel + 2) as 7) : 7}
-              fontFamily="Roboto"
-              customClass="unit-input-label">
+            <BodyText level={fontSize} fontFamily="Roboto" customClass="unit-input-label">
               {conversionData.unit_2}
             </BodyText>
           </div>
         </div>
-        {deleteIcon ? (
-          deleteIcon === true ? (
-            <RemoveIcon onClick={onDelete} className="delete-action-input-group" />
-          ) : (
-            deleteIcon
-          )
-        ) : null}
+        {iconDelete}
       </Col>
     </Row>
   );

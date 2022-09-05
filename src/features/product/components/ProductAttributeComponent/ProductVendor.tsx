@@ -217,7 +217,7 @@ export const ProductVendor: FC = () => {
                 {brand?.official_websites?.map((website, index: number) => (
                   <tr key={index}>
                     <td>
-                      <BodyText level={6} fontFamily="Roboto">
+                      <BodyText level={6} fontFamily="Roboto" customClass={styles.countryName}>
                         {website.country_name ?? 'N/A'}
                       </BodyText>
                     </td>
