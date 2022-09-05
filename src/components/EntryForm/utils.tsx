@@ -5,13 +5,14 @@ export const useGeneralFeature = (
   fontLevel?: 1 | 2 | 3 | 4 | 5,
   deleteIcon?: boolean,
   onDelete?: () => void,
+  horizontal?: boolean,
 ) => {
-  const span_4 = noWrap ? undefined : 4;
-  const span_20 = noWrap ? undefined : 20;
-  const fontLevels = fontLevel ? ((fontLevel + 2) as 7) : 7;
+  const labelSpan = horizontal ? (noWrap ? undefined : 4) : 24;
+  const inputSpan = horizontal ? (noWrap ? undefined : 20) : 24;
+  const fontSize = fontLevel ? ((fontLevel + 2) as 7) : 7;
   const iconDelete = deleteIcon ? (
     <RemoveIcon onClick={onDelete} className="delete-action-input-group" />
   ) : null;
 
-  return { span_4, span_20, fontLevels, iconDelete };
+  return { labelSpan, inputSpan, fontSize, iconDelete };
 };

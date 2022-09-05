@@ -55,12 +55,9 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
     noFetchData: true,
   });
 
-  const activeBrands = productSummary?.brands.length && isFavouriteRetrieved;
-  const activeCategories = productSummary?.categories.length && isFavouriteRetrieved;
-  const activeSort = activeBrands || activeCategories;
-
-  const topBarStyles = (activeKey: any) =>
-    `left-divider ${activeKey ? 'cursor-pointer' : 'cursor-default'}`;
+  const activeBrand = productSummary?.brands?.length !== 0 && isFavouriteRetrieved;
+  const activeCategory = productSummary?.categories?.length !== 0 && isFavouriteRetrieved;
+  const activeSort = activeBrand || activeCategory;
 
   // show product summary when user already has retrieved favourite
   useEffect(() => {
@@ -102,7 +99,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
             {/* brands */}
             <TopBarItem
               disabled
-              customClass={topBarStyles(activeBrands)}
+              customClass={`left-divider ${activeBrand ? 'cursor-pointer' : 'cursor-default'} `}
               topValue={
                 filter?.name === 'brand_id' ? (
                   <FilterItem title={filter.title} onDelete={removeFilter} />
@@ -110,12 +107,12 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
                   'select'
                 )
               }
-              bottomEnable={activeBrands ? true : false}
+              bottomEnable={activeBrand}
               bottomValue={
                 <CustomDropDown
                   items={formatBrandsFavouriteToDropDownData(productSummary?.brands)}
                   menuStyle={{ width: 240 }}
-                  disabled={activeBrands ? false : true}
+                  disabled={!activeBrand}
                   placement="bottomRight">
                   Brands
                 </CustomDropDown>
@@ -125,7 +122,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
             {/* categories */}
             <TopBarItem
               disabled
-              customClass={topBarStyles(activeCategories)}
+              customClass={`left-divider ${activeCategory ? 'cursor-pointer' : 'cursor-default'} `}
               topValue={
                 filter?.name === 'category_id' ? (
                   <FilterItem title={filter.title} onDelete={removeFilter} />
@@ -133,13 +130,13 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
                   'select'
                 )
               }
-              bottomEnable={activeCategories ? true : false}
+              bottomEnable={activeCategory}
               bottomValue={
                 <CustomDropDown
                   placement="bottomRight"
                   menuStyle={{ width: 240 }}
                   items={formatCategoriesFavouriteToDropDownData(productSummary?.categories)}
-                  disabled={activeCategories ? false : true}>
+                  disabled={!activeCategory}>
                   Categories
                 </CustomDropDown>
               }
@@ -148,8 +145,8 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
             {/* sort */}
             <TopBarItem
               disabled
-              customClass={topBarStyles(activeSort)}
-              bottomEnable={activeSort ? true : false}
+              customClass={`left-divider ${activeSort ? 'cursor-pointer' : 'cursor-default'} `}
+              bottomEnable={activeSort}
               topValue={
                 sort ? (
                   <FilterItem
@@ -165,7 +162,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
                   items={SORTER_DROPDOWN_DATA}
                   placement="bottomRight"
                   menuStyle={{ width: 160, height: 'auto' }}
-                  disabled={activeSort ? false : true}>
+                  disabled={!activeSort}>
                   Sort By
                 </CustomDropDown>
               }

@@ -55,11 +55,12 @@ const InputGroup: FC<InputGroupProps> = ({
   forceDisplayDeleteIcon,
   ...props
 }) => {
-  const { span_4, span_20, fontLevels, iconDelete } = useGeneralFeature(
+  const { labelSpan, inputSpan, fontSize, iconDelete } = useGeneralFeature(
     noWrap,
     fontLevel,
     deleteIcon,
     onDelete,
+    horizontal,
   );
   return (
     <Row
@@ -70,7 +71,7 @@ const InputGroup: FC<InputGroupProps> = ({
       gutter={0}
       align="middle"
       wrap={noWrap ? false : true}>
-      <Col span={horizontal ? span_4 : 24} className="input-label-container">
+      <Col span={labelSpan} className="input-label-container">
         <BodyText level={fontLevel ?? 5} customClass="input-label">
           {label}
           {required ? (
@@ -94,11 +95,11 @@ const InputGroup: FC<InputGroupProps> = ({
           ${styles.inputGroupContent}
           ${hasBoxShadow ? styles.boxShadow : ''}
         `}
-        span={horizontal ? span_20 : 24}>
+        span={inputSpan}>
         <CustomInput
           {...props}
           value={value}
-          fontLevel={fontLevels}
+          fontLevel={fontSize}
           readOnly={rightIcon || readOnly ? true : false}
           className={`input-box ${hasPadding ? 'has-padding' : ''} ${
             colorPrimaryDark ? 'color-primary-dark' : ''
