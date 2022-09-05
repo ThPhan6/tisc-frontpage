@@ -117,14 +117,14 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
 
   return (
     <>
-      {isTiscAdmin && (
+      {isTiscAdmin ? (
         <div className={styles.addAttributeBtn} onClick={addNewProductAttribute}>
           <MainTitle level={4} customClass="add-attribute-text">
             Add Attribute
           </MainTitle>
           <CustomPlusButton size={18} />
         </div>
-      )}
+      ) : null}
 
       {attributeGroup.map((group, index) => {
         if (isTiscAdmin === false) {
