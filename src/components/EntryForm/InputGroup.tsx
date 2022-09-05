@@ -60,6 +60,7 @@ const InputGroup: FC<InputGroupProps> = ({
     fontLevel,
     deleteIcon,
     onDelete,
+    horizontal,
   );
   return (
     <Row
@@ -70,7 +71,7 @@ const InputGroup: FC<InputGroupProps> = ({
       gutter={0}
       align="middle"
       wrap={noWrap ? false : true}>
-      <Col span={horizontal ? labelSpan : 24} className="input-label-container">
+      <Col span={labelSpan} className="input-label-container">
         <BodyText level={fontLevel ?? 5} customClass="input-label">
           {label}
           {required ? (
@@ -94,7 +95,7 @@ const InputGroup: FC<InputGroupProps> = ({
           ${styles.inputGroupContent}
           ${hasBoxShadow ? styles.boxShadow : ''}
         `}
-        span={horizontal ? inputSpan : 24}>
+        span={inputSpan}>
         <CustomInput
           {...props}
           value={value}

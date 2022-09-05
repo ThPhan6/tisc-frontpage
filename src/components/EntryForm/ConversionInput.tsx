@@ -49,17 +49,18 @@ const ConversionInput: FC<ConversionInputProps> = ({
     fontLevel,
     deleteIcon,
     onDelete,
+    horizontal,
   );
   return (
     <Row className={styles.inputGroupContainer} gutter={0} align="middle" wrap={noWrap}>
-      <Col span={horizontal ? labelSpan : 24} className="input-label-container">
+      <Col span={labelSpan} className="input-label-container">
         <BodyText level={fontLevel ?? 5} customClass="input-label">
           {label}
           {required ? <span className={styles.required}>*</span> : ''}
           {required ? <span>:</span> : ''}
         </BodyText>
       </Col>
-      <Col className={styles.doubleinputGroupContent} span={horizontal ? inputSpan : 24}>
+      <Col className={styles.doubleinputGroupContent} span={inputSpan}>
         <div className="double-input-group-wrapper">
           <div className="double-input-group">
             <CustomInput
