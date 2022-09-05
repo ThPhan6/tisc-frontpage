@@ -17,8 +17,8 @@ const TeamIcon: React.FC<TeamIconProps> = ({ avatar, name, customClass = '' }) =
         src={showImageUrl(avatar)}
         alt="avatar"
         style={{
-          height: '18px',
-          width: '18px',
+          height: '20px',
+          width: '20px',
           borderRadius: '50%',
           boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
           border: '1px solid #fff',
