@@ -9,7 +9,7 @@ import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 
 import { validateFloatNumber, validateNumber } from '@/helper/utils';
 
-import { ProjectSpaceRoom, ProjectSpaceZone } from '@/types';
+import { ProjectSpaceRoom, ProjectSpaceZone } from '@/features/project/types';
 
 import CustomCollapse from '@/components/Collapse';
 import { EntryFormWrapper } from '@/components/EntryForm';

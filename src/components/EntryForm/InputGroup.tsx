@@ -2,7 +2,6 @@ import type { FC, ReactNode } from 'react';
 
 import { Col, Row } from 'antd';
 
-import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import type { CustomInputProps } from '@/components/Form/types';
@@ -11,11 +10,12 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
 import styles from './styles/InputGroup.less';
+import { useGeneralFeature } from './utils';
 
 interface InputGroupProps extends CustomInputProps {
   horizontal?: boolean;
   rightIcon?: boolean | ReactNode;
-  deleteIcon?: boolean | ReactNode;
+  deleteIcon?: boolean;
   onDelete?: () => void;
   onRightIconClick?: () => void;
   required?: boolean;
@@ -55,6 +55,13 @@ const InputGroup: FC<InputGroupProps> = ({
   forceDisplayDeleteIcon,
   ...props
 }) => {
+  const { labelSpan, inputSpan, fontSize, iconDelete } = useGeneralFeature(
+    noWrap,
+    fontLevel,
+    deleteIcon,
+    onDelete,
+    horizontal,
+  );
   return (
     <Row
       className={`
@@ -64,7 +71,7 @@ const InputGroup: FC<InputGroupProps> = ({
       gutter={0}
       align="middle"
       wrap={noWrap ? false : true}>
-      <Col span={horizontal ? (noWrap ? undefined : 4) : 24} className="input-label-container">
+      <Col span={labelSpan} className="input-label-container">
         <BodyText level={fontLevel ?? 5} customClass="input-label">
           {label}
           {required ? (
@@ -88,11 +95,11 @@ const InputGroup: FC<InputGroupProps> = ({
           ${styles.inputGroupContent}
           ${hasBoxShadow ? styles.boxShadow : ''}
         `}
-        span={horizontal ? (noWrap ? undefined : 20) : 24}>
+        span={inputSpan}>
         <CustomInput
           {...props}
           value={value}
-          fontLevel={fontLevel ? ((fontLevel + 2) as 7) : 7}
+          fontLevel={fontSize}
           readOnly={rightIcon || readOnly ? true : false}
           className={`input-box ${hasPadding ? 'has-padding' : ''} ${
             colorPrimaryDark ? 'color-primary-dark' : ''
@@ -117,13 +124,7 @@ const InputGroup: FC<InputGroupProps> = ({
             rightIcon
           )
         ) : null}
-        {(forceDisplayDeleteIcon || value) && deleteIcon ? (
-          deleteIcon === true ? (
-            <RemoveIcon onClick={onDelete} className="delete-action-input-group" />
-          ) : (
-            deleteIcon
-          )
-        ) : null}
+        {(forceDisplayDeleteIcon || value) && iconDelete}
       </Col>
       {message ? (
         <div className={styles.message}>
