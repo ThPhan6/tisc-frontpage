@@ -70,7 +70,7 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
     };
 
     const classNameInputDefault = `
-    ${styles.input}
+    ${styles.inputDefault}
     ${borderBottomColor ? styles[`${borderBottomColor}-border-bottom-color`] : ''}
     ${fromLandingPage ? styles[`${theme}-focus-normal`] : ''}
     ${status ? styles[`${landingPageStatus}-status`] : ''}
