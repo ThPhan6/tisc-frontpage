@@ -69,7 +69,7 @@ const Header = () => {
     overlay: React.ReactElement | (() => React.ReactNode),
     visible: {
       value: boolean;
-      setValue: React.Dispatch<any>;
+      setValue: React.Dispatch<boolean>;
     },
     icon: React.ReactNode,
   ) => (

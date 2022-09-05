@@ -60,6 +60,7 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
             return styles[`disabled-default-theme${themeName}`];
         }
       }
+      return '';
     };
     const setFontLevel = () => {
       if (fontLevel) {
@@ -79,7 +80,7 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
 
     const classNameInputAffix = `
     ${styles['input-affix']}
-    ${required && styles['required-input-affix']}
+    ${required ? styles['required-input-affix'] : ''}
     ${borderBottomColor ? styles[`${borderBottomColor}-border-bottom-color-affix`] : ''}
     ${fromLandingPage ? styles[`${theme}-focus-normal-affix`] : ''}
     ${status ? styles[`${landingPageStatus}-status-affix`] : ''}

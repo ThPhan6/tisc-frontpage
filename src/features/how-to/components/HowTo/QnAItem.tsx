@@ -6,7 +6,7 @@ import { CollapsingProps, QnA, QuestionProps } from '../../types';
 
 import { BodyText } from '@/components/Typography';
 
-import { renderIcon } from './FaqComponent';
+import { renderExtendIcon } from './FaqComponent';
 import styles from './index.less';
 
 const RenderQuestion: FC<QuestionProps> = (props) => {
@@ -20,7 +20,7 @@ const RenderQuestion: FC<QuestionProps> = (props) => {
         customClass={String(index) !== activeKey ? styles.font_weight_300 : styles.font_weight_600}>
         {question}
       </BodyText>
-      <div className={styles.addIcon}>{question ? renderIcon(index, activeKey) : ''}</div>
+      <div className={styles.addIcon}>{question ? renderExtendIcon(index, activeKey) : ''}</div>
     </div>
   );
 };
