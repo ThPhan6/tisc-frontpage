@@ -17,7 +17,7 @@ export const ProfileIcon: FC<ProfileUserProps> = ({ name, customClass }) => {
     <div
       style={{ backgroundColor: backgroundColor }}
       className={`${style.nameIcon} ${customClass}`}>
-      {firstUserCharacter}
+      <span className={style.textIcon}>{firstUserCharacter}</span>
     </div>
   );
 };
