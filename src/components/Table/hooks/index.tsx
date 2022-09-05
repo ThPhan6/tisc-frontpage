@@ -80,12 +80,6 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
         ...column,
         title: formatTitleColumn(column),
         render: (value: any, record: any, index: any) => {
-          // console.log(
-          //   'record[column.noExpandIfEmptyData]',
-          //   column.noExpandIfEmptyData,
-          //   record[column.noExpandIfEmptyData],
-          // );
-
           if (column.isExpandable) {
             const noExpand =
               column.noExpandIfEmptyData && record[column.noExpandIfEmptyData] === undefined
@@ -129,7 +123,6 @@ const onCellLvl2Click = (expandableCellLvl2: Element, colWidthLvl3?: number) => 
   const isExpanding = expandableCellLvl2.querySelector('span[class^="expandedColumn"]')
     ? true
     : false;
-  // console.log('isExpanding', isExpanding);
 
   if (isExpanding === false) {
     styleLvl2.innerHTML = '';
@@ -160,7 +153,6 @@ const onCellLvl2Click = (expandableCellLvl2: Element, colWidthLvl3?: number) => 
 
   // Insert styles
   const newWidth = expandableCellLvl2.clientWidth;
-  // console.log('newWidth', newWidth);
 
   styleLvl2.innerHTML = `tr[data-row-key] td:nth-child(2) { width: ${newWidth}px; }`;
 };
@@ -182,7 +174,6 @@ const onLvl1CellClick = async (
   const nestedSubColumns = document.querySelectorAll(
     'tr[class*="ant-table-expanded-row"]:not([style*="display: none;"]) tbody tr:not([class*="custom-expanded-level-"]):first-child td',
   );
-  // console.log('expandedColumns', expandedColumns);
 
   if (expandedColumns && expandedColumns.length >= 4) {
     expandedColumns.forEach((dataCell, index) => {
@@ -191,7 +182,6 @@ const onLvl1CellClick = async (
         return;
       }
       const newCellWidth = nestedSubColumns?.[index]?.clientWidth;
-      // console.log('newCellWidth', newCellWidth);
 
       if (newCellWidth) {
         style.innerHTML += ` tr[data-row-key] td:nth-child(${
@@ -209,7 +199,6 @@ const onLvl1CellClick = async (
   const expandableCellsLvl2 = document.querySelectorAll(
     'tr.ant-table-row-level-0.custom-expanded-level-2 td:nth-child(2)',
   );
-  // console.log('expandableCellsLvl2', { expandableCellsLvl2 });
   if (expandableCellsLvl2.length === 0) {
     return;
   }
@@ -248,7 +237,6 @@ export const useAutoExpandNestedTableColumn = (
       const expandableCellsLvl1 = document.querySelectorAll(
         'tr.ant-table-row-level-0 td:first-child',
       );
-      // console.log('expandableCellsLvl1', expandableCellsLvl1);
 
       // Recall until injected
       if (expandableCellsLvl1.length === 0) {

@@ -2,13 +2,11 @@ import { FC } from 'react';
 
 import { Collapse } from 'antd';
 
-import { ReactComponent as ExtendIcon } from '@/assets/icons/action-extend.svg';
-import { ReactComponent as PlusIcon } from '@/assets/icons/action-plus-icon.svg';
-
 import { CollapsingProps, QnA, QuestionProps } from '../../types';
 
 import { BodyText } from '@/components/Typography';
 
+import { renderExtendIcon } from './FaqComponent';
 import styles from './index.less';
 
 const RenderQuestion: FC<QuestionProps> = (props) => {
@@ -22,9 +20,7 @@ const RenderQuestion: FC<QuestionProps> = (props) => {
         customClass={String(index) !== activeKey ? styles.font_weight_300 : styles.font_weight_600}>
         {question}
       </BodyText>
-      <div className={styles.addIcon}>
-        {question ? String(index) !== activeKey ? <PlusIcon /> : <ExtendIcon /> : ''}
-      </div>
+      <div className={styles.addIcon}>{question ? renderExtendIcon(index, activeKey) : ''}</div>
     </div>
   );
 };
