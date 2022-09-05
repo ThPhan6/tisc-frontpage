@@ -160,7 +160,7 @@ const ProductAttributeItem: React.FC<ProductAttributeItemProps> = ({
     );
   };
 
-  const renderCheckBoxLabel = (item: any) => {
+  const renderCheckBoxLabel = (item: ProductSubAttributes) => {
     const { basis } = item;
     ///
     let description = '';

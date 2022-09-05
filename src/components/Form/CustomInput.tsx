@@ -34,7 +34,7 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
     // styles
     const themeName = props.prefix || props.suffix ? '-affix' : '';
     const landingPageStatus = fromLandingPage ? (status === 'error' ? 'warning' : 'error') : status;
-    const requiredInput =
+    const requiredClassname =
       required && !(props.prefix || props.suffix) ? styles['required-input'] : '';
 
     const [width, setWidth] = useState(defaultWidth);
@@ -51,7 +51,7 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
       }
     }, [props.value]);
 
-    const setDisabled = () => {
+    const getDisabledTheme = () => {
       if (props.disabled) {
         switch (theme) {
           case 'dark':
@@ -74,7 +74,7 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
     ${fromLandingPage ? styles[`${theme}-focus-normal`] : ''}
     ${status ? styles[`${landingPageStatus}-status`] : ''}
     ${styles[`${theme}-theme`]}
-    ${setDisabled()}
+    ${getDisabledTheme()}
   `;
 
     const classNameInputAffix = `
@@ -84,7 +84,7 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
     ${fromLandingPage ? styles[`${theme}-focus-normal-affix`] : ''}
     ${status ? styles[`${landingPageStatus}-status-affix`] : ''}
     ${styles[`${theme}-theme-affix`]}
-    ${setDisabled()}
+    ${getDisabledTheme()}
   `;
 
     const classNameInput =
@@ -93,11 +93,11 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
     return (
       <div className={`${classNameInput}  ${containerClass}`} style={{ width: '100%' }}>
         {type === 'password' ? (
-          <div style={{ width: '100%' }} className={requiredInput}>
+          <div style={{ width: '100%' }} className={requiredClassname}>
             <Input.Password type={type} {...props} />
           </div>
         ) : (
-          <div style={{ width: '100%' }} className={requiredInput}>
+          <div style={{ width: '100%' }} className={requiredClassname}>
             {autoWidth ? (
               <span className={`${styles.hiddenSpan} ${setFontLevel()}`} ref={span}>
                 {props.value}

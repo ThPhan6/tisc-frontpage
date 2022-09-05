@@ -66,9 +66,9 @@ const Header = () => {
   };
 
   const renderHeaderDropDown = (
-    overlay: any,
+    overlay: React.ReactElement | (() => React.ReactNode),
     visible: {
-      value: any;
+      value: boolean;
       setValue: React.Dispatch<any>;
     },
     icon: React.ReactNode,
