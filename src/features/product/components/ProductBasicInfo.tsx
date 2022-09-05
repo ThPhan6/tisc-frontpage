@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as RightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 
+import { confirmDelete } from '@/helper/common';
 import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
-import { createCollection, getCollectionByBrandId } from '@/services';
+import { createCollection, deleteCollection, getCollectionByBrandId } from '@/services';
 
 import { setPartialProductDetail } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
@@ -55,6 +57,20 @@ export const ProductBasicInfo: React.FC = () => {
         /// reload collection list
         getCollectionList();
       }
+    });
+  };
+
+  const handleRemoveCollection = (e: React.ChangeEvent<any>, id: string) => {
+    /// prevent checked radio value
+    e.stopPropagation();
+    e.preventDefault();
+    // call API
+    confirmDelete(() => {
+      deleteCollection(id).then((isSuccess) => {
+        if (isSuccess) {
+          getCollectionList();
+        }
+      });
     });
   };
 
@@ -151,14 +167,17 @@ export const ProductBasicInfo: React.FC = () => {
           }
           setChosenValue={(selected) => {
             if (selected) {
-              dispatch(
-                setPartialProductDetail({
-                  collection: {
-                    name: selected.label,
-                    id: selected.value,
-                  },
-                }),
-              );
+              const selectedCollection = collections.find((col) => col.id === selected.value);
+              if (selectedCollection) {
+                dispatch(
+                  setPartialProductDetail({
+                    collection: {
+                      name: selectedCollection.name,
+                      id: selectedCollection.id,
+                    },
+                  }),
+                );
+              }
             }
           }}
           groupRadioList={[
@@ -166,7 +185,12 @@ export const ProductBasicInfo: React.FC = () => {
               heading: 'Assign bellow Collection',
               options: collections.map((item) => {
                 return {
-                  label: item.name,
+                  label: (
+                    <span className={styles.collectionLabel}>
+                      {item.name}
+                      <RemoveIcon onClick={(e: any) => handleRemoveCollection(e, item.id)} />
+                    </span>
+                  ),
                   value: item.id,
                 };
               }),
