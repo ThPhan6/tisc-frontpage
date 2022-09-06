@@ -52,7 +52,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
     horizontal,
   );
   return (
-    <Row className={styles.inputGroupContainer} gutter={0} align="middle" wrap={noWrap}>
+    <Row className={styles.inputGroupContainer} gutter={0} align="middle" wrap={!noWrap}>
       <Col span={labelSpan} className="input-label-container">
         <BodyText level={fontLevel ?? 5} customClass="input-label">
           {label}

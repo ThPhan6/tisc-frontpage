@@ -70,7 +70,7 @@ const InputGroup: FC<InputGroupProps> = ({
       `}
       gutter={0}
       align="middle"
-      wrap={noWrap ? false : true}>
+      wrap={!noWrap}>
       <Col span={labelSpan} className="input-label-container">
         <BodyText level={fontLevel ?? 5} customClass="input-label">
           {label}
