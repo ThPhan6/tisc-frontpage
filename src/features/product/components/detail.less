@@ -13,7 +13,7 @@
     height: 0 !important;
     padding-top: 100%;
     background: @mono-color-medium !important;
-    border: none !important;
+    border: 0.3px solid #000 !important;
     border-radius: 0;
     cursor: default !important;
     .uploadZoneContent {
@@ -62,8 +62,8 @@
       }
     }
   }
-  .tiscUploadImage {
-    border: 0.3px solid #000 !important;
+  .frameBorder {
+    border: none !important;
   }
   .photoList {
     margin-top: 8px;
@@ -109,7 +109,7 @@
         height: 100%;
         overflow: hidden;
         background: @mono-color-medium;
-        border: 0.3px solid @mono-color-medium;
+        border: 0.3px solid #000 !important;
         img {
           width: 100%;
           height: 100%;
@@ -127,8 +127,8 @@
           }
         }
       }
-      .tiscFilePreview {
-        border: 0.3px solid #000 !important;
+      .squareBoder {
+        border: 0.3px solid @mono-color-medium !important;
       }
     }
   }

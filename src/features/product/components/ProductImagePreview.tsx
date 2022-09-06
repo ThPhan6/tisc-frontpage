@@ -87,7 +87,7 @@ const ProductImagePreview: React.FC = () => {
     },
     showUploadList: false,
     disabled: isTiscAdmin === false,
-    className: `${styles.uploadZone} ${isTiscAdmin ? styles.tiscUploadImage : ''} `,
+    className: `${styles.uploadZone} ${isTiscAdmin ? '' : styles.frameBorder} `,
   };
 
   const subProps: UploadProps = {
@@ -245,7 +245,7 @@ const ProductImagePreview: React.FC = () => {
                     <div className={styles.fileItem}>
                       <div
                         className={`${styles.filePreview}  ${
-                          isTiscAdmin ? styles.tiscFilePreview : ''
+                          !isTiscAdmin ? styles.squareBoder : ''
                         }`}>
                         <img src={showImageUrl(image) ?? ProductPlaceHolderImage} />
                         {isTiscAdmin && (
