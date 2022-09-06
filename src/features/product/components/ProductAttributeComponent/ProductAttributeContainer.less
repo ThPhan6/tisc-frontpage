@@ -1,3 +1,9 @@
+.textOverFlow {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .attributes {
   // margin-top: 8px;
   // transition: all 0.3s;
@@ -16,6 +22,16 @@
   .brandProfileHeader {
     padding-left: 16px;
     text-transform: capitalize;
+
+    .name {
+      .textOverFlow();
+    }
+  }
+}
+
+.content {
+  :global(.ant-modal-header) {
+    box-shadow: none;
   }
 }
 
@@ -32,8 +48,10 @@
     }
 
     &_text {
-      padding-top: 1px;
+      padding-top: 2px;
+      overflow: hidden;
       text-transform: capitalize;
+      text-overflow: ellipsis;
     }
   }
 }
@@ -56,8 +74,9 @@
         text-transform: capitalize;
       }
       &_text {
+        .textOverFlow();
+
         margin-right: 12px;
-        white-space: nowrap;
         text-transform: capitalize;
       }
 
