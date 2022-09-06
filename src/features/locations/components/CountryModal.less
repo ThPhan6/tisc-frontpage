@@ -34,6 +34,10 @@
     font-family: @font-primary;
   }
 }
+.phone_code {
+  margin-left: 8px;
+}
+
 .headingClass {
   width: calc(100% + 16px) !important;
   height: 40px !important;
@@ -41,6 +45,18 @@
   margin-left: -16px;
   box-shadow: @border-bottom-light;
 }
-.phone_code {
-  margin-left: 8px;
+.muteGlobal {
+  .headingClass();
+  @mono-color: @mono-color-medium;
+
+  color: @mono-color;
+  pointer-events: none;
+
+  :global(.ant-radio-wrapper .ant-radio .ant-radio-inner::after) {
+    background-color: @mono-color;
+  }
+  :global(.ant-radio-wrapper .ant-radio .ant-radio-inner) {
+    color: @mono-color;
+    border-color: @mono-color;
+  }
 }

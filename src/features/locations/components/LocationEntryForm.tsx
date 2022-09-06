@@ -323,6 +323,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         chosenValue={countryData}
         setChosenValue={setCountryData}
         withPhoneCode
+        hasGlobal={false}
       />
       <StateModal
         countryId={data.country_id}

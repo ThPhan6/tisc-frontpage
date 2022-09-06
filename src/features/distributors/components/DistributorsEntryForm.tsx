@@ -407,6 +407,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
         }
         chosenValue={countryData}
         setChosenValue={setCountryData}
+        hasGlobal={false}
       />
 
       <StateModal
