@@ -22,10 +22,7 @@ const CountryModal: FC<{
   const getCountryList = () => {
     getCountries().then((res) => {
       let newCountries: Country[] = [];
-      if (hasGlobal) {
-        newCountries = [GlobalItem];
-      }
-      newCountries = [...newCountries, ...res];
+      newCountries = [GlobalItem, ...res];
       setCountries(newCountries);
       if (chosenValue.value) {
         const checked = newCountries.find((item) => item.id === chosenValue.value);
@@ -77,7 +74,9 @@ const CountryModal: FC<{
                 </span>
               ),
               value: country.id,
-              customClass: country.id === '-1' ? styles.headingClass : '',
+              customClass: `${
+                country.id === '-1' ? (hasGlobal ? styles.headingClass : styles.muteGlobal) : ''
+              } `,
             };
           }),
         },
