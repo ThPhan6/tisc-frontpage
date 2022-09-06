@@ -206,7 +206,7 @@ const Popover: FC<PopoverProps> = ({
     <div>
       <Modal
         title={
-          <MainTitle level={3} customClass="text-uppercase">
+          <MainTitle level={3} customClass={`text-uppercase text-overflow ${styles.headingTitle} `}>
             {title}
           </MainTitle>
         }
