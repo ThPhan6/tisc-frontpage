@@ -41,7 +41,19 @@
     }
 
     .radio_container {
+      color: @mono-color;
       box-shadow: 0 0.7px 0 @mono-color-medium;
+      pointer-events: none;
+
+      @mono-color: @mono-color-medium;
+
+      :global(.ant-radio-wrapper .ant-radio .ant-radio-inner::after) {
+        background-color: @mono-color;
+      }
+      :global(.ant-radio-wrapper .ant-radio .ant-radio-inner) {
+        color: @mono-color;
+        border-color: @mono-color;
+      }
     }
   }
 
