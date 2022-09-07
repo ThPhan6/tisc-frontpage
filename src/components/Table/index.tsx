@@ -64,7 +64,7 @@ export const GetExpandableTableConfig = (props: ExpandableTableConfig): Expandab
           pagination={false}
           columns={columns}
           rowKey={rowKey}
-          rowClassName={level === 2 ? 'custom-expanded-level-2' : ''}
+          rowClassName={level && level > 1 ? `custom-expanded-level-${level}` : ''}
           tableLayout="auto"
           expandable={
             subtituteChildrenColumnName && record[subtituteChildrenColumnName]

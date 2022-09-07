@@ -1,3 +1,20 @@
+.delete-action-icon {
+  svg {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+  }
+  :global(.delete-action-input-group) {
+    z-index: 999999;
+    margin-left: 4px;
+    color: @mono-color-medium;
+    transition: all 0.2s;
+    &:hover {
+      color: @primary-color-dark;
+    }
+  }
+}
+
 .inputGroupContainer {
   width: 100%;
   min-height: 32px;
@@ -16,6 +33,8 @@
     margin: 0 4px;
   }
   .doubleinputGroupContent {
+    .delete-action-icon();
+
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -24,6 +43,9 @@
       display: flex;
       align-items: center;
       width: 100%;
+      margin-right: 8px;
+      overflow-x: auto;
+
       :global(.double-input-group) {
         display: flex;
         align-items: center;
@@ -31,6 +53,7 @@
           margin-right: 24px;
         }
         input {
+          width: auto !important;
           margin-right: 4px;
           padding: 0;
         }
@@ -39,21 +62,10 @@
         margin-top: 2px;
       }
     }
-    svg {
-      width: 18px;
-      height: 18px;
-      cursor: pointer;
-    }
-    :global(.delete-action-input-group) {
-      margin-left: 4px;
-      color: @mono-color-medium;
-      transition: all 0.2s;
-      &:hover {
-        color: @primary-color-dark;
-      }
-    }
   }
   .inputGroupContent {
+    .delete-action-icon();
+
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -68,19 +80,6 @@
         cursor: not-allowed;
       }
       &:global(.color-primary-dark) {
-        color: @primary-color-dark;
-      }
-    }
-    svg {
-      width: 18px;
-      height: 18px;
-      cursor: pointer;
-    }
-    :global(.delete-action-input-group) {
-      margin-left: 4px;
-      color: @mono-color-medium;
-      transition: all 0.2s;
-      &:hover {
         color: @primary-color-dark;
       }
     }

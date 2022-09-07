@@ -22,6 +22,12 @@
 
 .specificationHeaderItem {
   width: 100%;
+
+  :global(label.ant-checkbox-wrapper > span:not(.ant-checkbox)) {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }
 .attributeOptionWrapper {
   display: flex;
@@ -49,4 +55,8 @@
       color: @primary-color-dark;
     }
   }
+}
+
+:global(.ant-collapse-content.ant-collapse-content-active) {
+  box-shadow: @border-bottom;
 }
