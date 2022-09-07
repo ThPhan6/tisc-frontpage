@@ -6,7 +6,7 @@ import { getFullName } from '@/helper/utils';
 import { BrandCard, BrandCardTeam } from '@/features/user-group/types';
 
 import LoadingPage from '@/components/LoadingPage';
-import { ProfileIcon } from '@/components/ProfileIcon';
+import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
 
 import styles from './styles/index.less';
@@ -79,7 +79,8 @@ const MyWorkspace: React.FC = () => {
                   Teams:
                 </BodyText>
                 {brand.teams.map((user: BrandCardTeam) => {
-                  return <ProfileIcon key={user.id} name={getFullName(user)} />;
+                  /*   return <ProfileIcon key={user.id} name={getFullName(user)} />; */
+                  return <TeamIcon key={user.id} avatar={user.avatar} name={getFullName(user)} />;
                 })}
               </div>
             </div>
