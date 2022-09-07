@@ -125,25 +125,21 @@ const ConversionInput: FC<ConversionInputProps> = ({
     </Col>
   );
 
-  const renderChilren = () => {
-    if (isTableFormat) {
-      return (
-        <TableContent
-          textLeft={<ConversionContent noWrap={noWrap}>{renderLabel()}</ConversionContent>}
-          textRight={<ConversionContent noWrap={noWrap}>{renderInput()}</ConversionContent>}
-        />
-      );
-    }
-
+  if (isTableFormat) {
     return (
-      <ConversionContent noWrap={noWrap}>
-        {renderLabel()}
-        {renderInput()}
-      </ConversionContent>
+      <TableContent
+        textLeft={<ConversionContent noWrap={noWrap}>{renderLabel()}</ConversionContent>}
+        textRight={<ConversionContent noWrap={noWrap}>{renderInput()}</ConversionContent>}
+      />
     );
-  };
+  }
 
-  return renderChilren();
+  return (
+    <ConversionContent noWrap={noWrap}>
+      {renderLabel()}
+      {renderInput()}
+    </ConversionContent>
+  );
 };
 
 export default ConversionInput;

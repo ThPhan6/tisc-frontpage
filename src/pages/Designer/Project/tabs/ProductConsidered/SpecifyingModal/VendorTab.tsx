@@ -230,6 +230,7 @@ const VendorTab: FC<VendorTabProps> = ({
     <div>
       <RenderEntireProjectLabel
         title="Contact & Address"
+        overLayWidth={'193px'}
         toolTiptitle={
           <RobotoBodyText level={6}>
             Confirm project location-based or your prefered vendor contact/address information.

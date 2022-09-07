@@ -16,10 +16,7 @@ import { useGeneralFeature } from './utils';
 
 const InputGroupContent: FC<MainContentProps> = ({ children, hasHeight, noWrap }) => (
   <Row
-    className={`
-  ${styles.inputGroupContainer}
-  ${hasHeight ? styles.heightInputGroup : ''}
-  `}
+    className={`${styles.inputGroupContainer} ${hasHeight ? styles.heightInputGroup : ''}`}
     gutter={0}
     align="middle"
     wrap={!noWrap}>
@@ -155,34 +152,30 @@ const InputGroup: FC<InputGroupProps> = ({
     ) : null;
   };
 
-  const renderChildren = () => {
-    if (isTableFormat) {
-      return (
-        <TableContent
-          textLeft={
-            <InputGroupContent hasHeight={hasHeight} noWrap={noWrap}>
-              {renderLabel()}
-            </InputGroupContent>
-          }
-          textRight={
-            <InputGroupContent hasHeight={hasHeight} noWrap={noWrap}>
-              {renderInput()}
-            </InputGroupContent>
-          }
-        />
-      );
-    }
-
+  if (isTableFormat) {
     return (
-      <InputGroupContent hasHeight={hasHeight} noWrap={noWrap}>
-        {renderLabel()}
-        {renderInput()}
-        {renderMessage()}
-      </InputGroupContent>
+      <TableContent
+        textLeft={
+          <InputGroupContent hasHeight={hasHeight} noWrap={noWrap}>
+            {renderLabel()}
+          </InputGroupContent>
+        }
+        textRight={
+          <InputGroupContent hasHeight={hasHeight} noWrap={noWrap}>
+            {renderInput()}
+          </InputGroupContent>
+        }
+      />
     );
-  };
+  }
 
-  return renderChildren();
+  return (
+    <InputGroupContent hasHeight={hasHeight} noWrap={noWrap}>
+      {renderLabel()}
+      {renderInput()}
+      {renderMessage()}
+    </InputGroupContent>
+  );
 };
 
 export default InputGroup;

@@ -27,7 +27,7 @@ interface BrandListProps {
 }
 
 const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
-  useAutoExpandNestedTableColumn(COL_WIDTH_BRAND.brand);
+  useAutoExpandNestedTableColumn([COL_WIDTH_BRAND.brand]);
   const tableRef = useRef<any>();
   const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 

@@ -25,7 +25,7 @@ interface SpaceListProps {
 }
 
 const SpecificationBySpace: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) => {
-  useAutoExpandNestedTableColumn(MAIN_COL_WIDTH, SUB_COL_WIDTH);
+  useAutoExpandNestedTableColumn([MAIN_COL_WIDTH, SUB_COL_WIDTH]);
   const tableRef = useRef<any>();
   const [combinableSorter, setCombinableSorter] = useState<{ key: string; value: string }>({
     key: '',
