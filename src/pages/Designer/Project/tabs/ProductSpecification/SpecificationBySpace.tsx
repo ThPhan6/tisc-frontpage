@@ -36,11 +36,11 @@ export interface SpaceListProps {
   projectId?: string;
 }
 const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
-  useAutoExpandNestedTableColumn(
+  useAutoExpandNestedTableColumn([
     COL_WIDTH_SPACE.zones,
     COL_WIDTH_SPACE.areas,
     COL_WIDTH_SPACE.rooms,
-  );
+  ]);
   const tableRef = useRef<any>();
   const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
