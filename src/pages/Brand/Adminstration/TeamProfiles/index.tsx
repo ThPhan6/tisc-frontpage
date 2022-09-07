@@ -38,8 +38,10 @@ const TeamProfilesList = () => {
     {
       title: '',
       dataIndex: 'avatar',
-      width: '3%',
-      render: (_, record) => <TeamIcon avatar={record.avatar} name={getFullName(record)} />,
+      width: '50',
+      render: (_, record) => (
+        <TeamIcon avatar={record.avatar} name={getFullName(record)} size={20} />
+      ),
     },
     {
       title: 'Full Name',
