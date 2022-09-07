@@ -225,13 +225,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       {/* Keep condition to show Modals for better performance */}
-      {showShareEmailModal.value && (
+      {showShareEmailModal.value ? (
         <ShareViaEmail
           visible={showShareEmailModal.value}
           setVisible={showShareEmailModal.setValue}
           product={product}
         />
-      )}
+      ) : null}
 
       {showAssignProductModal.value && product.id ? (
         <AssignProductModal
