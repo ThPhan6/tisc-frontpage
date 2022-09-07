@@ -72,7 +72,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
           return (
             <img
               src={showImageUrl(value)}
-              style={{ width: 18, height: 18, objectFit: 'contain' }}
+              style={{ width: 24, height: 24, objectFit: 'contain' }}
             />
           );
         }

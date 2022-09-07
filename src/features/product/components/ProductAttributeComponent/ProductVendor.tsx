@@ -106,7 +106,9 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
         <BodyText level={4} customClass="contact-item-title">
           {title}
         </BodyText>
-        <div className="contact-select-box" onClick={() => handleShowPopup(title)}>
+        <div
+          className={`contact-select-box ${showPopUp ? 'cursor-pointer' : 'cursor-default'} `}
+          onClick={() => handleShowPopup(title)}>
           <BodyText level={6} fontFamily="Roboto">
             select
           </BodyText>

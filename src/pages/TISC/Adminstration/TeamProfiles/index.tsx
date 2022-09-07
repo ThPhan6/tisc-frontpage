@@ -5,16 +5,16 @@ import { USER_STATUS_TEXTS } from '@/constants/util';
 
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { formatPhoneCode, getFullName, showImageUrl } from '@/helper/utils';
+import { formatPhoneCode, getFullName } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import { TeamProfileTableProps } from '@/features/team-profiles/type';
 import { useAppSelector } from '@/reducers';
 
-import { ProfileIcon } from '@/components/ProfileIcon';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
+import TeamIcon from '@/components/TeamIcon/TeamIcon';
 
 import { deleteTeamProfile, getTeamProfileList } from '@/features/team-profiles/api';
 
@@ -22,7 +22,7 @@ const TeamProfilesList = () => {
   const tableRef = useRef<any>();
   const userId = useAppSelector((state) => state.user.user?.id);
   const handleUpdateTeamProfile = (id: string) => {
-    pushTo(PATH.updateTeamProfile.replace(':id', id));
+    pushTo(PATH.tiscUpdateTeamProfile.replace(':id', id));
   };
 
   const handleDeleteTeamProfile = (id: string) => {
@@ -38,23 +38,10 @@ const TeamProfilesList = () => {
     {
       title: '',
       dataIndex: 'avatar',
-      width: '3%',
-      render: (_, record) =>
-        record.avatar ? (
-          <img
-            src={showImageUrl(record.avatar)}
-            alt="avatar"
-            style={{
-              height: '18px',
-              width: '18px',
-              borderRadius: '50%',
-              boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
-              border: '1px solid #fff',
-            }}
-          />
-        ) : (
-          <ProfileIcon name={getFullName(record)} />
-        ),
+      width: '50',
+      render: (_, record) => (
+        <TeamIcon avatar={record.avatar} name={getFullName(record)} size={20} />
+      ),
     },
     {
       title: 'Full Name',
@@ -122,7 +109,7 @@ const TeamProfilesList = () => {
   return (
     <CustomTable
       title="TEAM PROFILES"
-      rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createTeamProfile)} />}
+      rightAction={<CustomPlusButton onClick={() => pushTo(PATH.tiscCreateTeamProfile)} />}
       columns={mainColumns}
       fetchDataFunc={getTeamProfileList}
       ref={tableRef}

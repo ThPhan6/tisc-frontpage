@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useState } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { IMAGE_ACCEPT_TYPES } from '@/constants/util';
@@ -21,7 +21,11 @@ import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { getBase64, showImageUrl } from '@/helper/utils';
 
 import { ProductKeyword } from '../types';
-import { setPartialProductDetail, setProductDetailImage } from '@/features/product/reducers';
+import {
+  setPartialProductDetail,
+  setProductDetail,
+  setProductDetailImage,
+} from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
 
 import SmallIconButton from '@/components/Button/SmallIconButton';
@@ -55,9 +59,10 @@ const ProductImagePreview: React.FC = () => {
   const isDesignerUser = useCheckPermission('Design Admin');
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
-  const [liked, setLiked] = useState(product.is_liked);
-  const likeCount = (product.favorites ?? 0) + (liked ? 1 : 0);
-
+  // const [liked, setLiked] = useState(product.is_liked);
+  const liked = product.is_liked;
+  // const likeCount = (product.favorites ?? 0) + (liked ? 1 : 0);
+  const likeCount = product.favorites ?? 0;
   const handleLoadPhoto = async (file: UploadFile<any>, type: 'first' | 'last' = 'first') => {
     const imageBase64 = await getBase64(file.originFileObj);
     dispatch(
@@ -87,7 +92,7 @@ const ProductImagePreview: React.FC = () => {
     },
     showUploadList: false,
     disabled: isTiscAdmin === false,
-    className: styles.uploadZone,
+    className: `${styles.uploadZone} ${isTiscAdmin ? '' : styles.noBorder} `,
   };
 
   const subProps: UploadProps = {
@@ -122,7 +127,15 @@ const ProductImagePreview: React.FC = () => {
   const likeProduct = () => {
     likeProductById(product.id ?? '').then((isSuccess) => {
       if (isSuccess) {
-        setLiked(!liked);
+        // setLiked(!liked);
+        const newLiked = !liked;
+        dispatch(
+          setProductDetail({
+            ...product,
+            is_liked: newLiked,
+            favorites: likeCount + (newLiked ? 1 : -1),
+          }),
+        );
       }
     });
   };
@@ -243,7 +256,10 @@ const ProductImagePreview: React.FC = () => {
                 .map((image, key) => (
                   <Col span={8} key={key}>
                     <div className={styles.fileItem}>
-                      <div className={styles.filePreview}>
+                      <div
+                        className={`${styles.filePreview}  ${
+                          !isTiscAdmin ? styles.lightBorder : ''
+                        }`}>
                         <img src={showImageUrl(image) ?? ProductPlaceHolderImage} />
                         {isTiscAdmin && (
                           <div className={styles.subPhotoAction}>

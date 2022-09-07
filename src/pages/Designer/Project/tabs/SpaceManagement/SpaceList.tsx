@@ -235,7 +235,7 @@ const SpecificationBySpace: React.FC<SpaceListProps> = ({ handleUpdateSpace, pro
     {
       title: 'Sub-total',
     },
-    { title: 'Count', width: '5%', align: 'center' },
+    { title: 'Count', width: '5%', align: 'center', dataIndex: 'count' },
     {
       title: 'Action',
       width: '5%',

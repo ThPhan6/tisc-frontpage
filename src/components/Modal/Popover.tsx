@@ -207,7 +207,7 @@ const Popover: FC<PopoverProps> = ({
         title={
           <MainTitle
             level={3}
-            customClass="text-uppercase text-overflow"
+            customClass={`text-uppercase text-overflow ${styles.headingTitle}`}
             style={{ maxWidth: '95%' }}>
             {title}
           </MainTitle>
