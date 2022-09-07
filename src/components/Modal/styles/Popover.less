@@ -7,6 +7,9 @@
   :global(.ant-modal-header) {
     box-shadow: @border-bottom;
   }
+  :global(.ant-modal-close:hover) {
+    color: #000;
+  }
   :global(.ant-modal-footer) {
     box-shadow: @border-top;
     :global(.done-btn) {
@@ -20,6 +23,9 @@
       width: 24px;
       height: 24px;
       line-height: normal;
+      svg path {
+        fill: #000;
+      }
     }
   }
   :global(.ant-modal-body) {

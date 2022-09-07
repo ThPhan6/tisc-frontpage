@@ -1,8 +1,7 @@
 import type { FC, ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 
-import { Modal } from 'antd';
-import { Empty } from 'antd';
+import { Empty, Modal } from 'antd';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
@@ -206,7 +205,10 @@ const Popover: FC<PopoverProps> = ({
     <div>
       <Modal
         title={
-          <MainTitle level={3} customClass="text-uppercase">
+          <MainTitle
+            level={3}
+            customClass="text-uppercase text-overflow"
+            style={{ maxWidth: '95%' }}>
             {title}
           </MainTitle>
         }
@@ -214,7 +216,7 @@ const Popover: FC<PopoverProps> = ({
         visible={visible}
         onCancel={onCancel}
         width={576}
-        closeIcon={<CloseIcon />}
+        closeIcon={<CloseIcon style={{ color: '#000' }} />}
         footer={
           noFooter ? null : submitButtonStatus ? (
             <CustomButton
