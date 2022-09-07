@@ -360,23 +360,23 @@ export default [
         ],
       },
       {
-        path: PATH.teamProfile,
+        path: PATH.tiscTeamProfile,
         name: 'team.profile',
         icon: 'team-profile-icon.svg',
         access: 'tisc_administration_team_profile',
         routes: [
           {
-            path: PATH.teamProfile,
+            path: PATH.tiscTeamProfile,
             component: './TISC/Adminstration/TeamProfiles',
             hideInMenu: true,
           },
           {
-            path: PATH.createTeamProfile,
+            path: PATH.tiscCreateTeamProfile,
             component: '../features/team-profiles/components/TeamProfilesEntryForm',
             hideInMenu: true,
           },
           {
-            path: PATH.updateTeamProfile,
+            path: PATH.tiscUpdateTeamProfile,
             component: '../features/team-profiles/components/TeamProfilesEntryForm',
             hideInMenu: true,
           },

@@ -22,7 +22,7 @@ const TeamProfilesList = () => {
   const tableRef = useRef<any>();
   const userId = useAppSelector((state) => state.user.user?.id);
   const handleUpdateTeamProfile = (id: string) => {
-    pushTo(PATH.updateTeamProfile.replace(':id', id));
+    pushTo(PATH.tiscUpdateTeamProfile.replace(':id', id));
   };
 
   const handleDeleteTeamProfile = (id: string) => {
@@ -122,7 +122,7 @@ const TeamProfilesList = () => {
   return (
     <CustomTable
       title="TEAM PROFILES"
-      rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createTeamProfile)} />}
+      rightAction={<CustomPlusButton onClick={() => pushTo(PATH.tiscCreateTeamProfile)} />}
       columns={mainColumns}
       fetchDataFunc={getTeamProfileList}
       ref={tableRef}

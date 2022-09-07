@@ -54,11 +54,18 @@ const TeamProfilesEntryForm = () => {
 
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
+  /// for access level
   const accessLevelDataRole = isTISCAdmin
     ? TISCAccessLevelDataRole
     : isBrandAdmin
     ? BrandAccessLevelDataRole
     : [];
+  /// for user role path
+  const userRolePath = isTISCAdmin
+    ? PATH.tiscTeamProfile
+    : isBrandAdmin
+    ? PATH.brandTeamProfile
+    : '';
 
   const submitButtonStatus = useBoolean(false);
   const isLoading = useBoolean(false);
@@ -119,13 +126,11 @@ const TeamProfilesEntryForm = () => {
         if (callBack) {
           callBack(teamProfile.id ?? '');
         } else {
-          history.replace(PATH.teamProfile);
+          history.replace(userRolePath);
         }
       }
     });
   };
-  console.log('userProfileId', userProfileId);
-  console.log('userIdParam', userIdParam);
 
   const handleUpdateData = (submitData: TeamProfileRequestBody) => {
     isLoading.setValue(true);
@@ -168,7 +173,7 @@ const TeamProfilesEntryForm = () => {
   const handleInvite = (usrId: string) => {
     inviteUser(usrId);
     if (!isUpdate) {
-      history.replace(PATH.teamProfile);
+      history.replace(userRolePath);
     }
   };
 
