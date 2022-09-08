@@ -143,6 +143,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
           columns: CollectionColumns,
           childrenColumnName: 'products',
           rowKey: 'specified_product_id',
+          level: 2,
         })}
       />
 

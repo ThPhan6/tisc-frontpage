@@ -62,18 +62,18 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
   });
 
   const [functionalTypes, setFunctionalTypes] = useState<FunctionalTypeData[]>([]);
+  const [selectedFunctionalTypes, setSelectedFunctionTypes] = useState<CheckboxValue[]>([]);
 
-  const selectedFunctionalTypes = data.functional_type_ids.map((typeId) => {
-    return {
-      label: functionalTypes.find((type) => type.id === typeId)?.name,
-      value: typeId,
-    };
-  });
-
-  const handleOnChangeFunctionalTypes = (types: CheckboxValue[]) => {
-    setData({ ...data, functional_type_ids: types.map((item) => item.value as string) });
+  const getFunctionTypeIds = (types: CheckboxValue[]) => {
+    const newFunctionTypeIds = types
+      .filter((type) => type.value !== 'other')
+      .map((type) => type.value as string);
+    const otherFuntionType = types.find((type) => type.value === 'other');
+    if (otherFuntionType) {
+      newFunctionTypeIds.push(otherFuntionType.label as string);
+    }
+    return newFunctionTypeIds;
   };
-
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({
       ...data,
@@ -95,6 +95,17 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
   useEffect(() => {
     getListFunctionalType().then(setFunctionalTypes);
   }, []);
+
+  useEffect(() => {
+    setSelectedFunctionTypes(
+      data.functional_type_ids.map((typeId) => {
+        return {
+          label: functionalTypes.find((type) => type.id === typeId)?.name,
+          value: typeId,
+        };
+      }),
+    );
+  }, [data.functional_type_ids, functionalTypes]);
 
   useEffect(() => {
     if (countryData.value !== '') {
@@ -121,17 +132,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       postal_code: data.postal_code?.trim() ?? '',
       general_phone: data.general_phone?.trim() ?? '',
       general_email: data.general_email?.trim() ?? '',
-      functional_type_ids: selectedFunctionalTypes.reduce((newTypes, selected) => {
-        if (selected.value === 'other') {
-          const otherValue = (selected.label as string)?.trim() ?? '';
-          if (otherValue !== '') {
-            newTypes.push(otherValue);
-          }
-        } else {
-          newTypes.push(selected.value as string);
-        }
-        return newTypes;
-      }, [] as string[]),
+      functional_type_ids: getFunctionTypeIds(selectedFunctionalTypes),
     });
   };
   return (
@@ -187,7 +188,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
             };
           })}
           checked={selectedFunctionalTypes}
-          onChange={(checkboxValue) => handleOnChangeFunctionalTypes(checkboxValue)}
+          onChange={setSelectedFunctionTypes}
           placeholder={
             selectedFunctionalTypes.length === 0
               ? 'select all relevance'

@@ -74,17 +74,10 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
   ) => {
     const newState = specification_attribute_groups;
     const attributeIndex = newState[groupIndex].attributes.findIndex((el) => el.id === attributeId);
-    console.log('newState[groupIndex]', newState[groupIndex]);
-    console.log('newState[groupIndex].attributes', newState[groupIndex].attributes);
-    console.log('groupIndex', groupIndex);
-    console.log('optionId', optionId);
-    console.log('attributeIndex', attributeIndex);
+
     if (!optionId) {
       // Uncheck
       newState[groupIndex].attributes.splice(attributeIndex, 1);
-      // if (newState[groupIndex].attributes.length === 0) {
-      //   onCheckedSpecification(groupIndex, false);
-      // }
     } else if (attributeIndex === -1) {
       // push new one
       newState[groupIndex].attributes.push({
