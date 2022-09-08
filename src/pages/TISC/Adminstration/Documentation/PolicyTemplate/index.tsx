@@ -24,7 +24,7 @@ const PolicyTemplatePage: React.FC = () => {
       sorter: true,
       width: '15%',
       render: (value) => {
-        return moment(value).format('YYYY-DD-MM');
+        return moment(value).format('YYYY-MM-DD');
       },
     },
     {
