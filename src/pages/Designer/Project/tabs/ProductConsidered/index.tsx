@@ -252,8 +252,8 @@ const ProductConsidered: React.FC = () => {
     ...getSameColumns(false),
     {
       title: 'Product',
-      dataIndex: 'name',
-      render: (value, record) => (record.rooms ? null : value), // For Entire project
+      // dataIndex: 'name',
+      render: (_v, record) => (record.rooms ? null : record.name), // For Entire project
       onCell: onCellUnlisted,
     },
     {
