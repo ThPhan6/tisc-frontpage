@@ -50,6 +50,7 @@ const CheckboxList: React.FC<CheckboxListProps> = (props) => {
             setSelectAll(checkedAll);
           }}>
           <CustomRadio
+            noPaddingLeft
             options={[
               {
                 label: <MainTitle level={3}>Select All Options</MainTitle>,

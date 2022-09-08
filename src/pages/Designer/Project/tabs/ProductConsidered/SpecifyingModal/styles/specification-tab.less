@@ -9,6 +9,9 @@
       margin-left: 8px;
     }
   }
+  :global(.ant-collapse-content.ant-collapse-content-active) {
+    box-shadow: @border-bottom;
+  }
 }
 .referTooltipText {
   color: #fff;
@@ -55,8 +58,4 @@
       color: @primary-color-dark;
     }
   }
-}
-
-:global(.ant-collapse-content.ant-collapse-content-active) {
-  box-shadow: @border-bottom;
 }
