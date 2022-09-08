@@ -29,25 +29,34 @@ interface CollapseProductAttributeProps {
 const CollapseProductAttribute: React.FC<CollapseProductAttributeProps> = ({ group, index }) => {
   return (
     <AttributeCollapse name={group.name} index={index}>
-      {group.attributes.map((attribute, key) => (
-        <ProductAttributeLine name={attribute.name} key={key}>
-          {attribute.conversion ? (
-            <ConversionText
-              conversion={attribute.conversion}
-              firstValue={attribute.conversion_value_1}
-              secondValue={attribute.conversion_value_2}
-            />
-          ) : attribute.type === 'Options' ? (
-            <AttributeOption
-              title={group.name}
-              attributeName={attribute.name}
-              options={attribute.basis_options ?? []}
-            />
-          ) : (
-            <GeneralText text={attribute.text} />
-          )}
-        </ProductAttributeLine>
-      ))}
+      <table className={styles.table}>
+        <tbody>
+          {group.attributes.map((attribute, key) => (
+            <tr key={key}>
+              <td className={styles.attributeName}>
+                <ProductAttributeLine name={attribute.name} />
+              </td>
+              <td className={styles.attributeDescription}>
+                {attribute.conversion ? (
+                  <ConversionText
+                    conversion={attribute.conversion}
+                    firstValue={attribute.conversion_value_1}
+                    secondValue={attribute.conversion_value_2}
+                  />
+                ) : attribute.type === 'Options' ? (
+                  <AttributeOption
+                    title={group.name}
+                    attributeName={attribute.name}
+                    options={attribute.basis_options ?? []}
+                  />
+                ) : (
+                  <GeneralText text={attribute.text} />
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </AttributeCollapse>
   );
 };
@@ -117,14 +126,14 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
 
   return (
     <>
-      {isTiscAdmin && (
+      {isTiscAdmin ? (
         <div className={styles.addAttributeBtn} onClick={addNewProductAttribute}>
           <MainTitle level={4} customClass="add-attribute-text">
             Add Attribute
           </MainTitle>
           <CustomPlusButton size={18} />
         </div>
-      )}
+      ) : null}
 
       {attributeGroup.map((group, index) => {
         if (isTiscAdmin === false) {

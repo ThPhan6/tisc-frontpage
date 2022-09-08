@@ -49,7 +49,11 @@ const HowTo = () => {
                   value={item}
                   activeKey={activeKey}
                   handleActiveCollapse={handleActiveCollapse}
-                  customClass={item.question_and_answer?.length === 0 ? styles.customCursor : ''}
+                  customClass={
+                    item.question_and_answer?.length === 0 && !item.document
+                      ? styles.customCursor
+                      : ''
+                  }
                 />
               ))}
             </div>

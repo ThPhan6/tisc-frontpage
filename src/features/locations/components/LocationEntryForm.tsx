@@ -61,15 +61,18 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     value: data.city_id,
   });
 
-  const [selectedFunctionalTypes, setSelectedFunctionalTypes] = useState<CheckboxValue[]>(
-    data.functional_type_ids.map((typeId) => {
-      return {
-        label: '',
-        value: typeId,
-      };
-    }),
-  );
   const [functionalTypes, setFunctionalTypes] = useState<FunctionalTypeData[]>([]);
+
+  const selectedFunctionalTypes = data.functional_type_ids.map((typeId) => {
+    return {
+      label: functionalTypes.find((type) => type.id === typeId)?.name,
+      value: typeId,
+    };
+  });
+
+  const handleOnChangeFunctionalTypes = (types: CheckboxValue[]) => {
+    setData({ ...data, functional_type_ids: types.map((item) => item.value as string) });
+  };
 
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({
@@ -77,7 +80,6 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       [fieldName]: trimStart(fieldValue),
     });
   };
-
   // handle onchange postal code
   const onChangePostalCode = (e: React.ChangeEvent<HTMLInputElement>) => {
     // only 10 chars and cannot type space
@@ -170,7 +172,13 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         placeholder="registered business number for verification"
       />
 
-      <FormGroup label="Functional Type" required layout="vertical" formClass={styles.formGroup}>
+      <FormGroup
+        label="Functional Type"
+        required
+        layout="vertical"
+        formClass={`${styles.formGroup} ${
+          selectedFunctionalTypes.length > 0 ? styles.activeFunctionType : ''
+        }`}>
         <CollapseCheckboxList
           options={functionalTypes.map((functionalType) => {
             return {
@@ -179,8 +187,12 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
             };
           })}
           checked={selectedFunctionalTypes}
-          onChange={setSelectedFunctionalTypes}
-          placeholder="select all relevance"
+          onChange={(checkboxValue) => handleOnChangeFunctionalTypes(checkboxValue)}
+          placeholder={
+            selectedFunctionalTypes.length === 0
+              ? 'select all relevance'
+              : selectedFunctionalTypes.map((item) => item.label).join(', ')
+          }
           otherInput
         />
       </FormGroup>
@@ -323,6 +335,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         chosenValue={countryData}
         setChosenValue={setCountryData}
         withPhoneCode
+        hasGlobal={false}
       />
       <StateModal
         countryId={data.country_id}

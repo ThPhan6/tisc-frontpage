@@ -24,9 +24,9 @@ import {
 import { KeyValueData } from '@/types';
 
 import { CustomTabPane } from '@/components/Tabs';
-import BrandAvailabilityDetail from '@/features/user-group/components/Availability';
-import BrandDistributorDetail from '@/features/user-group/components/Distributor';
-import LocationDetail from '@/features/user-group/components/Location';
+import BrandAvailabilityDetail from '@/features/user-group/components/AvailabilityDetail';
+import BrandDistributorDetail from '@/features/user-group/components/DistributorDetail';
+import LocationDetail from '@/features/user-group/components/LocationDetail';
 import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
 import ProfileDetail from '@/features/user-group/components/Profile';
 import TabDetail from '@/features/user-group/components/TabDetail';

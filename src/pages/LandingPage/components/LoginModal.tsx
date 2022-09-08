@@ -11,6 +11,7 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-whi
 import { getListQuotation } from '../services/api';
 import { useBoolean, useString } from '@/helper/hook';
 import { isShowErrorMessage, validateEmail } from '@/helper/utils';
+import { sample } from 'lodash';
 
 import type { LoginInput, ModalProps, Quotation } from '../types';
 import { DataTableResponse } from '@/components/Table/types';
@@ -42,13 +43,36 @@ export const LoginModal: FC<LoginModalProps> = ({
   });
   const verifyEmail = useString('');
   const showForgotPassword = useBoolean(false);
-  const [quotation, setQuotation] = useState<Quotation>();
+  const [quotation, setQuotation] = useState<Quotation[]>([]);
+  const [randomQuotation, setRandomQuotation] = useState<Quotation>();
+
+  const pickRandomQuotation = (quotes: Quotation[]) => {
+    const randomQuote = sample(quotes);
+    if (randomQuote === randomQuotation && quotes.length > 1) {
+      pickRandomQuotation(quotes);
+    } else {
+      setRandomQuotation(randomQuote);
+    }
+  };
+
+  useEffect(() => {
+    getListQuotation({ page: 1, pageSize: 99999 }, (data: DataTableResponse<Quotation[]>) => {
+      setQuotation(data.data);
+      pickRandomQuotation(data.data);
+    });
+  }, []);
 
   useEffect(() => {
     if (!showForgotPassword.value) {
       verifyEmail.setValue('');
     }
   }, [showForgotPassword.value]);
+
+  useEffect(() => {
+    if (!visible && quotation.length) {
+      pickRandomQuotation(quotation);
+    }
+  }, [visible, quotation]);
 
   const handleDisableButton = () => {
     if (showForgotPassword.value) {
@@ -113,18 +137,6 @@ export const LoginModal: FC<LoginModalProps> = ({
 
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
 
-  useEffect(() => {
-    getListQuotation(
-      {
-        page: 1,
-        pageSize: 99999,
-      },
-      (data: DataTableResponse) => {
-        setQuotation(data.data[Math.floor(Math.random() * data.data.length)]);
-      },
-    );
-  }, []);
-
   return (
     <CustomModal
       visible={visible}
@@ -139,10 +151,10 @@ export const LoginModal: FC<LoginModalProps> = ({
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={2} customClass={styles[`body${themeStyle()}`]}>
-            &quot;{quotation?.quotation}&quot;
+            {randomQuotation ? `"${randomQuotation.quotation}"` : ''}
           </MainTitle>
           <BodyText level={2} customClass={styles[`title${themeStyle()}`]}>
-            {quotation?.author}, {quotation?.identity}
+            {randomQuotation ? `${randomQuotation.author}, ${randomQuotation.identity}` : ''}
           </BodyText>
         </div>
         <div className={styles.form}>

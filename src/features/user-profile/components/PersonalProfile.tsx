@@ -4,8 +4,8 @@ import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constant
 import { AVATAR_ACCEPT_TYPES, STATUS_RESPONSE } from '@/constants/util';
 import { Tooltip, Upload, UploadProps, message } from 'antd';
 
+import UserIcon from '@/assets/icons/avatar-default.svg';
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
-import UserIcon from '@/assets/icons/ic-user.svg';
 import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
@@ -215,11 +215,11 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
             <div className={`${styles.avatarContainer}`}>
               <div>
                 <img src={setPreviewAvatar()} alt="avatar-upload" />
-                <div className={styles.avatarHover}>
+                {/* <div className={styles.avatarHover}>
                   <BodyText fontFamily="Roboto" level={7} color="mono-color-dark">
                     Drag & drop profile photo
                   </BodyText>
-                </div>
+                </div> */}
               </div>
             </div>
           </Upload>

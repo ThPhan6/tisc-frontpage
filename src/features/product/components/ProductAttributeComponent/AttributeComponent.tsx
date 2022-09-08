@@ -135,7 +135,7 @@ export const AttributeCollapse: FC<AttributeCollapseProps> = ({ name, index, chi
           customHeaderClass={styles.vendorCustomPanelBox}
           header={
             <div className={styles.brandProfileHeader}>
-              <BodyText level={6} fontFamily="Roboto" className={styles.name}>
+              <BodyText level={6} fontFamily="Roboto" customClass={styles.name}>
                 {name}
               </BodyText>
             </div>
