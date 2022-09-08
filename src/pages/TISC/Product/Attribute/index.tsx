@@ -164,6 +164,7 @@ const AttributeList: React.FC = () => {
         expandable={GetExpandableTableConfig({
           columns: SubColumns,
           childrenColumnName: 'subs',
+          level: 2,
         })}
       />
     </>
