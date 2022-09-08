@@ -170,6 +170,7 @@ const CategoryList: React.FC = () => {
           expandable: GetExpandableTableConfig({
             columns: ChildColumns,
             childrenColumnName: 'subs',
+            level: 3,
           }),
         })}
       />

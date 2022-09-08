@@ -6,6 +6,8 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as SortIcon } from '@/assets/icons/sort-icon.svg';
 
+import { snakeCase } from 'lodash';
+
 import type { TableColumnItem } from '../types';
 
 import { BodyText, Title } from '@/components/Typography';
@@ -118,6 +120,7 @@ const injectScriptToExpandableCellByLevel = (
   level: number,
   cellStyles: HTMLStyleElement[],
   expandColWidths: number[],
+  firstCellName?: string,
 ) => {
   const expandableCells = document.querySelectorAll(
     `tr[data-row-key] td:nth-child(${level}) div[class^='expandedCell']`,
@@ -132,16 +135,66 @@ const injectScriptToExpandableCellByLevel = (
     if (!expandableCell) {
       return;
     }
+    let cellName = '';
+    if (level === 1) {
+      cellName = snakeCase(cell.querySelector('span span')?.innerHTML || '');
+    }
+    const currentCellName = cellName || firstCellName || '';
 
     const onExpandableCellClick = () => {
+      const isExpanding = cell.querySelector('span[class^="expandedColumn"]') ? true : false;
+
       cellStyles[level - 1].innerHTML = '';
-      cellStyles[
-        level - 1
-      ].innerHTML = `tr[data-row-key] td:nth-child(${level}) { width: ${expandableCell.clientWidth}px; }`;
+      cellStyles[level - 1].className = isExpanding ? 'expanding' : '';
+
+      if (isExpanding === false) {
+        cellStyles.forEach((cellStl, stlIndex) => {
+          if (stlIndex > level - 2) {
+            cellStl.media = 'not-all';
+          }
+        });
+      } else {
+        cellStyles[level - 1].id = currentCellName + '_' + level;
+        cellStyles[
+          level - 1
+        ].innerHTML = `tr[data-row-key] td:nth-child(${level}) { width: ${expandableCell.clientWidth}px; }`;
+
+        const notExpandingStyleIndex = cellStyles.findIndex(
+          (cellStl) => cellStl.className.includes('expanding') === false,
+        );
+
+        cellStyles.forEach((cellStl, stlIndex) => {
+          if (stlIndex <= level - 2) {
+            return;
+          }
+
+          cellStl.media =
+            cellStl.id.includes(cellName) === false ||
+            (cellStl.id.includes(cellName) &&
+              notExpandingStyleIndex !== -1 &&
+              stlIndex >= notExpandingStyleIndex)
+              ? 'not-all'
+              : '';
+        });
+      }
 
       // still have children
       if (expandColWidths[level]) {
-        injectScriptToExpandableCellByLevel(level + 1, cellStyles, expandColWidths);
+        injectScriptToExpandableCellByLevel(
+          level + 1,
+          cellStyles,
+          expandColWidths,
+          currentCellName,
+        );
+      }
+
+      const haveExpandSub = document.querySelector(
+        `tr[class*="ant-table-expanded-row"]:not([style*="display: none;"]) tbody tr[class$="custom-expanded-level-${
+          level + 1
+        }"]:first-child div[class^="expandedCell"]`,
+      );
+
+      if (haveExpandSub) {
         return;
       }
 
@@ -171,7 +224,7 @@ const injectScriptToExpandableCellByLevel = (
       });
     };
 
-    expandableCell.addEventListener('click', () => {
+    cell.addEventListener('click', () => {
       setTimeout(onExpandableCellClick, EXPANDED_DELAY);
     });
   });
