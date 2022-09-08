@@ -312,7 +312,9 @@ export const ProductAttributeSubItem: React.FC<ProductAttributeSubItemProps> = (
             : [
                 {
                   heading: (
-                    <Title level={8} customClass="preset-option-heading">
+                    <Title
+                      level={8}
+                      customClass={`preset-option-heading ${styles.presetOptionTitle}`}>
                       {basis?.name ?? 'N/A'}
                     </Title>
                   ),
