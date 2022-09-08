@@ -251,14 +251,14 @@ const ProductConsidered: React.FC = () => {
     ...getSameColumns(false),
     {
       title: 'Product',
-      render: (_value, record) => (typeof record.rooms === 'object' ? null : record.name), // For Entire project
+      render: (_value, record) => (record.rooms ? null : record.name), // For Entire project
       onCell: onCellUnlisted,
     },
     {
       title: 'Assigned By',
       dataIndex: 'assigned_name',
       width: COL_WIDTH.assignedBy,
-      render: (value, record) => (typeof record.rooms === 'object' ? null : value), // For Entire project
+      render: (value, record) => (record.rooms ? null : value), // For Entire project
       onCell: onCellUnlisted,
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
@@ -292,7 +292,7 @@ const ProductConsidered: React.FC = () => {
       title: 'Rooms',
       width: COL_WIDTH.rooms,
       isExpandable: true,
-      render: (value, record) => <span>{record.room_name}</span>,
+      render: (_value, record) => <span>{record.room_name}</span>,
     },
     ...getSameColumns(false),
     {

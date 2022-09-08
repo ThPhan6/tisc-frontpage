@@ -23,6 +23,7 @@ const TeamIcon: React.FC<TeamIconProps> = ({ avatar, name, customClass = '', siz
           borderRadius: '50%',
           boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
           border: '1px solid #fff',
+          objectFit: 'cover',
         }}
         className={customClass}
       />

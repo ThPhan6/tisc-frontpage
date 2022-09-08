@@ -176,6 +176,7 @@ export const ProductAttributeSubItem: React.FC<ProductAttributeSubItemProps> = (
       return (
         <ConversionInput
           horizontal
+          isTableFormat
           noWrap
           fontLevel={4}
           label={currentAttribute?.name ? truncate(currentAttribute.name, { length: 20 }) : 'N/A'}
@@ -199,6 +200,7 @@ export const ProductAttributeSubItem: React.FC<ProductAttributeSubItemProps> = (
     return (
       <InputGroup
         horizontal
+        isTableFormat
         fontLevel={4}
         label={currentAttribute?.name ? truncate(currentAttribute.name, { length: 20 }) : 'N/A'}
         placeholder={placeholder}
@@ -310,7 +312,9 @@ export const ProductAttributeSubItem: React.FC<ProductAttributeSubItemProps> = (
             : [
                 {
                   heading: (
-                    <Title level={8} customClass="preset-option-heading">
+                    <Title
+                      level={8}
+                      customClass={`preset-option-heading ${styles.presetOptionTitle}`}>
                       {basis?.name ?? 'N/A'}
                     </Title>
                   ),
