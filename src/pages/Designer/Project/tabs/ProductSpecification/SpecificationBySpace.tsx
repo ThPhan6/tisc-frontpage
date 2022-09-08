@@ -36,11 +36,11 @@ export interface SpaceListProps {
   projectId?: string;
 }
 const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
-  useAutoExpandNestedTableColumn(
+  useAutoExpandNestedTableColumn([
     COL_WIDTH_SPACE.zones,
     COL_WIDTH_SPACE.areas,
     COL_WIDTH_SPACE.rooms,
-  );
+  ]);
   const tableRef = useRef<any>();
   const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
@@ -56,7 +56,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
           value ? (
             <img
               src={showImageUrl(value)}
-              style={{ width: 18, height: 18, objectFit: 'contain' }}
+              style={{ width: 24, height: 24, objectFit: 'contain' }}
             />
           ) : null,
       },
@@ -207,7 +207,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       noBoxShadow: true,
     },
     ...getSameColumns(true),
-    { title: 'Count', width: '5%', align: 'center' },
+    { title: 'Count', width: '5%', align: 'center', noBoxShadow: true },
     {
       title: 'Status',
       dataIndex: 'status',

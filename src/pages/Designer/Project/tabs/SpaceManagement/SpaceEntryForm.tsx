@@ -9,7 +9,7 @@ import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 
 import { validateFloatNumber, validateNumber } from '@/helper/utils';
 
-import { ProjectSpaceRoom, ProjectSpaceZone } from '@/types';
+import { ProjectSpaceRoom, ProjectSpaceZone } from '@/features/project/types';
 
 import CustomCollapse from '@/components/Collapse';
 import { EntryFormWrapper } from '@/components/EntryForm';
@@ -61,7 +61,7 @@ const AreaRoomCollapse: React.FC<AreaRoomCollapseProps> = ({
             />
           </div>
           <ActionDeleteIcon
-            className="action-icon"
+            className="remove-icon"
             onClick={(e: any) => {
               preventCollapseAction(e);
               onDeleteRoom();
@@ -237,7 +237,7 @@ const SpaceEntryForm: React.FC<SpaceEntryFormProps> = (props) => {
               placeholder="type area name"
               containerClass={styles.areaInputName}
             />
-            <ActionDeleteIcon className="action-icon" onClick={() => onDeleteArea(areaIndex)} />
+            <ActionDeleteIcon className="remove-icon" onClick={() => onDeleteArea(areaIndex)} />
           </div>
           {area.rooms.map((room, roomIndex) => (
             <AreaRoomCollapse

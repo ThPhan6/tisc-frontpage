@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { PATH } from '@/constants/path';
 import { UserHomePagePaths } from '@/constants/user.constant';
 
@@ -63,6 +65,28 @@ const Header = () => {
     return pushTo(UserHomePagePaths[user.type]);
   };
 
+  const renderHeaderDropDown = (
+    overlay: React.ReactElement | (() => React.ReactNode),
+    visible: {
+      value: boolean;
+      setValue: React.Dispatch<boolean>;
+    },
+    icon: React.ReactNode,
+  ) => (
+    <HeaderDropdown
+      containerClass={styles['dropdown']}
+      overlay={overlay}
+      arrow
+      visible={visible.value}
+      onVisibleChange={visible.setValue}
+      align={{ offset: [0, -4] }}
+      placement="topRight"
+      trigger={['click']}
+      getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}>
+      {icon}
+    </HeaderDropdown>
+  );
+
   return (
     <div className={styles.container}>
       <div className={styles['logo-icon']} onClick={handleRedirectHomePage}>
@@ -72,30 +96,16 @@ const Header = () => {
         <AvatarDropdown />
         {/* <SelectLang className={styles.action} /> */}
         <span className={styles.action}>
-          <HeaderDropdown
-            containerClass={styles['dropdown']}
-            overlay={menuQuestionDropdown}
-            arrow
-            visible={showQuestionDropdown.value}
-            onVisibleChange={showQuestionDropdown.setValue}
-            align={{ offset: [0, 11] }}
-            placement="topRight"
-            trigger={['click']}
-            getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}>
-            <QuestionWhiteIcon className={styles.icon} />
-          </HeaderDropdown>
-          <HeaderDropdown
-            containerClass={styles['dropdown']}
-            overlay={menuLanguageDropdown}
-            arrow
-            visible={showLanguageDropdown.value}
-            onVisibleChange={showLanguageDropdown.setValue}
-            align={{ offset: [0, 11] }}
-            placement="topRight"
-            trigger={['click']}
-            getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}>
-            <LanguageWhiteIcon className={styles.icon} />
-          </HeaderDropdown>
+          {renderHeaderDropDown(
+            menuQuestionDropdown,
+            showQuestionDropdown,
+            <QuestionWhiteIcon className={styles.icon} />,
+          )}
+          {renderHeaderDropDown(
+            menuLanguageDropdown,
+            showLanguageDropdown,
+            <LanguageWhiteIcon className={styles.icon} />,
+          )}
         </span>
       </div>
     </div>

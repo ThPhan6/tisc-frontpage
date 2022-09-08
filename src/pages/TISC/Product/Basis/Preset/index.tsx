@@ -17,7 +17,7 @@ import { ActionMenu } from '@/components/TableAction';
 const MAIN_COL_WIDTH = 236;
 const SUB_COL_WIDTH = 138;
 const BasisPresetList: React.FC = () => {
-  useAutoExpandNestedTableColumn(MAIN_COL_WIDTH, SUB_COL_WIDTH);
+  useAutoExpandNestedTableColumn([MAIN_COL_WIDTH, SUB_COL_WIDTH]);
   const tableRef = useRef<any>();
 
   const handleUpdatePreset = (id: string) => {
