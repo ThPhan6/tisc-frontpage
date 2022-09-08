@@ -1,0 +1,26 @@
+.table {
+  width: 100%;
+  height: auto;
+  min-height: 36px;
+  white-space: nowrap;
+  table-layout: fixed;
+
+  td {
+    padding: 0;
+
+    *:not('input') {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .textLeft {
+    width: 25%;
+    text-transform: capitalize;
+  }
+
+  .textRight {
+    width: 75%;
+  }
+}

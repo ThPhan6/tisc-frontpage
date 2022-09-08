@@ -63,6 +63,7 @@ export const MainTitle: FC<MainTitleProps> = ({
   level = 1,
   children,
   textAlign,
+  style,
   ...props
 }) => {
   const setLevel = () => {
@@ -74,6 +75,7 @@ export const MainTitle: FC<MainTitleProps> = ({
       {...props}
       className={`${classNameMainTitle} ${customClass}`}
       style={{
+        ...style,
         color: color,
         textAlign: textAlign,
       }}>

@@ -16,7 +16,7 @@ import { ActionMenu } from '@/components/TableAction';
 
 const MAIN_COL_WIDTH = 167;
 const BasisConversionList: React.FC = () => {
-  useAutoExpandNestedTableColumn(MAIN_COL_WIDTH);
+  useAutoExpandNestedTableColumn([MAIN_COL_WIDTH]);
   const tableRef = useRef<any>();
 
   const handleUpdateConversion = (id: string) => {

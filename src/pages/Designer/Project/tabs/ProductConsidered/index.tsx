@@ -50,14 +50,13 @@ const COL_WIDTH = {
 };
 
 const ProductConsidered: React.FC = () => {
-  useAutoExpandNestedTableColumn(COL_WIDTH.zones, COL_WIDTH.areas, COL_WIDTH.rooms);
+  useAutoExpandNestedTableColumn([COL_WIDTH.zones, COL_WIDTH.areas, COL_WIDTH.rooms]);
   const params = useParams<{ id: string }>();
   const tableRef = useRef<any>();
   const gridView = useBoolean();
   const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
   const renderStatusDropdown = (v: any, record: any) => {
-    // console.log('record', record);
     if (record.rooms) {
       return null;
     }
@@ -145,7 +144,7 @@ const ProductConsidered: React.FC = () => {
           value ? (
             <img
               src={showImageUrl(value)}
-              style={{ width: 18, height: 18, objectFit: 'contain' }}
+              style={{ width: 24, height: 24, objectFit: 'contain' }}
             />
           ) : null,
       },
@@ -369,7 +368,6 @@ const ProductConsidered: React.FC = () => {
   ];
 
   const renderGridContent = (products: ProductItem[]) => {
-    // console.log('products', products);
     if (!products) {
       return;
     }

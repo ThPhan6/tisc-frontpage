@@ -106,7 +106,9 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
         <BodyText level={4} customClass="contact-item-title">
           {title}
         </BodyText>
-        <div className="contact-select-box" onClick={() => handleShowPopup(title)}>
+        <div
+          className={`contact-select-box ${showPopUp ? 'cursor-pointer' : 'cursor-default'} `}
+          onClick={() => handleShowPopup(title)}>
           <BodyText level={6} fontFamily="Roboto">
             select
           </BodyText>
@@ -217,7 +219,7 @@ export const ProductVendor: FC = () => {
                 {brand?.official_websites?.map((website, index: number) => (
                   <tr key={index}>
                     <td>
-                      <BodyText level={6} fontFamily="Roboto">
+                      <BodyText level={6} fontFamily="Roboto" customClass={styles.countryName}>
                         {website.country_name ?? 'N/A'}
                       </BodyText>
                     </td>

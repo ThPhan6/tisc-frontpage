@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { DEFAULT_TEAMPROFILE, DEFAULT_TEAMPROFILE_WITH_GENDER } from '../constants/entryForm';
+import { BrandAccessLevelDataRole, TISCAccessLevelDataRole } from '../constants/role';
 import { MESSAGE_ERROR } from '@/constants/message';
+import { PATH } from '@/constants/path';
+import { useHistory, useParams } from 'umi';
 
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
+import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
 import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
 import { getDepartmentList } from '@/services';
 
 import { TeamProfileDetailProps, TeamProfileRequestBody } from '../type';
-import type { RadioValue } from '@/components/CustomRadio/types';
+import { useAppSelector } from '@/reducers';
 import { DepartmentData } from '@/types';
 
 import { CustomRadio } from '@/components/CustomRadio';
@@ -18,7 +23,11 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { Status } from '@/components/Form/Status';
+import LoadingPageCustomize from '@/components/LoadingPage';
+import { TableHeader } from '@/components/Table/TableHeader';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
+import { createTeamProfile, getOneTeamProfile, inviteUser, updateTeamProfile } from '../api';
 import BrandAccessLevelModal from './BrandAccessLevelModal';
 import LocationModal from './LocationModal';
 import TISCAccessLevelModal from './TISCAccessLevelModal';
@@ -29,31 +38,42 @@ const GenderRadio = [
   { label: 'Female', value: '0' },
 ];
 
-interface TeamProfilesEntryFormValue {
-  data: TeamProfileDetailProps;
-  setData: (value: TeamProfileDetailProps) => void;
-  onCancel: () => void;
-  handleInvite: (userId: string) => void;
-  userId?: string;
-  onSubmit: (value: TeamProfileRequestBody, callBack?: (userId: string) => void) => void;
-  submitButtonStatus: boolean;
-  AccessLevelDataRole: RadioValue[];
-  role: 'TISC' | 'BRAND' | 'DESIGNER';
-}
-
 type FieldName = keyof TeamProfileDetailProps;
 
-export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
-  data,
-  setData,
-  onCancel,
-  onSubmit,
-  submitButtonStatus,
-  handleInvite,
-  userId,
-  AccessLevelDataRole,
-  role,
-}) => {
+const TeamProfilesEntryForm = () => {
+  const history = useHistory();
+  const params = useParams<{
+    id: string;
+  }>();
+  const userIdParam = params?.id || '';
+  const isUpdate = userIdParam ? true : false;
+
+  const { fetchUserInfo } = useCustomInitialState();
+
+  const userProfileId = useAppSelector((state) => state.user.user?.id);
+
+  const isTISCAdmin = useCheckPermission('TISC Admin');
+  const isBrandAdmin = useCheckPermission('Brand Admin');
+  /// for access level
+  const accessLevelDataRole = isTISCAdmin
+    ? TISCAccessLevelDataRole
+    : isBrandAdmin
+    ? BrandAccessLevelDataRole
+    : [];
+  /// for user role path
+  const userRolePath = isTISCAdmin
+    ? PATH.tiscTeamProfile
+    : isBrandAdmin
+    ? PATH.brandTeamProfile
+    : '';
+
+  const submitButtonStatus = useBoolean(false);
+  const isLoading = useBoolean(false);
+  const [loadedData, setLoadedData] = useState(false);
+  const [data, setData] = useState<TeamProfileDetailProps>(
+    isUpdate ? DEFAULT_TEAMPROFILE : DEFAULT_TEAMPROFILE_WITH_GENDER,
+  );
+
   /// for department
   const [departments, setDepartments] = useState<DepartmentData[]>([]);
   const [visible, setVisible] = useState({
@@ -75,28 +95,94 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
   };
 
   useEffect(() => {
+    if (userIdParam) {
+      getOneTeamProfile(userIdParam).then((res) => {
+        if (res) {
+          setData(res);
+          setLoadedData(true);
+        }
+      });
+    }
     getDepartmentList().then(setDepartments);
   }, []);
+
+  useEffect(() => {
+    setWorkLocation((prevState) => ({ ...prevState, value: data.location_id }));
+  }, [data.location_id]);
+
   useEffect(() => {
     onChangeData('location_id', workLocation.value);
   }, [workLocation]);
 
+  const handleCreateData = (
+    submitData: TeamProfileRequestBody,
+    callBack?: (userIdParam: string) => void,
+  ) => {
+    isLoading.setValue(true);
+    createTeamProfile(submitData).then((teamProfile) => {
+      isLoading.setValue(false);
+      if (teamProfile) {
+        submitButtonStatus.setValue(true);
+        if (callBack) {
+          callBack(teamProfile.id ?? '');
+        } else {
+          history.replace(userRolePath);
+        }
+      }
+    });
+  };
+
+  const handleUpdateData = (submitData: TeamProfileRequestBody) => {
+    isLoading.setValue(true);
+    updateTeamProfile(userIdParam, submitData).then((isSuccess) => {
+      isLoading.setValue(false);
+      if (isSuccess) {
+        submitButtonStatus.setValue(true);
+        const isUpdateCurrentUser = userIdParam === userProfileId;
+        if (isUpdateCurrentUser) {
+          fetchUserInfo();
+        }
+        setTimeout(() => {
+          submitButtonStatus.setValue(false);
+        }, 1000);
+      }
+    });
+  };
+
   const handleSubmit = (callBack?: (id: string) => void) => {
-    onSubmit(
-      {
-        firstname: data.firstname?.trim() ?? '',
-        lastname: data.lastname?.trim() ?? '',
-        gender: data.gender === true ? true : false,
-        location_id: data.location_id,
-        department_id: data.department_id?.trim() ?? '',
-        position: data.position?.trim() ?? '',
-        email: data.email?.trim() ?? '',
-        phone: data.phone?.trim() ?? '',
-        mobile: data.mobile?.trim() ?? '',
-        role_id: data.role_id,
-      },
-      callBack,
-    );
+    const body: TeamProfileRequestBody = {
+      firstname: data.firstname?.trim() ?? '',
+      lastname: data.lastname?.trim() ?? '',
+      gender: Boolean(data.gender),
+      location_id: data.location_id,
+      department_id: data.department_id?.trim() ?? '',
+      position: data.position?.trim() ?? '',
+      email: data.email?.trim() ?? '',
+      phone: data.phone?.trim() ?? '',
+      mobile: data.mobile?.trim() ?? '',
+      role_id: data.role_id,
+    };
+
+    if (isUpdate) {
+      handleUpdateData(body);
+    } else {
+      handleCreateData(body, callBack);
+    }
+  };
+
+  const handleInvite = (usrId: string) => {
+    inviteUser(usrId);
+    if (!isUpdate) {
+      history.replace(userRolePath);
+    }
+  };
+
+  const handleSendInvite = () => {
+    if (userIdParam) {
+      handleInvite(userIdParam);
+    } else {
+      handleSubmit(handleInvite);
+    }
   };
 
   // format data
@@ -105,12 +191,18 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
     id: '',
   };
 
+  if (isUpdate && !loadedData) {
+    return null;
+  }
+
   return (
-    <>
+    <div>
+      <TableHeader title="TEAM PROFILES" rightAction={<CustomPlusButton disabled />} />
+
       <EntryFormWrapper
-        handleCancel={onCancel}
+        handleCancel={history.goBack}
         handleSubmit={() => handleSubmit()}
-        submitButtonStatus={submitButtonStatus}
+        submitButtonStatus={submitButtonStatus.value}
         customClass={styles.entry_form}>
         {/* First Name */}
         <InputGroup
@@ -150,10 +242,8 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
         <FormGroup label="Gender" required={true} layout="vertical" formClass={styles.form_group}>
           <CustomRadio
             options={GenderRadio}
-            value={data.gender === true ? '1' : '0'}
-            onChange={(radioValue) =>
-              onChangeData('gender', radioValue.value === '1' ? true : false)
-            }
+            value={data.gender ? '1' : '0'}
+            onChange={(radioValue) => onChangeData('gender', radioValue.value === '1')}
           />
         </FormGroup>
 
@@ -291,7 +381,7 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
             })
           }>
           <CustomRadio
-            options={AccessLevelDataRole}
+            options={accessLevelDataRole}
             value={data.role_id}
             onChange={(radioValue) => onChangeData('role_id', radioValue.value)}
           />
@@ -300,13 +390,7 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
         {/* Status */}
         <Status
           value={data.status}
-          onClick={() => {
-            if (!userId) {
-              handleSubmit(handleInvite);
-            } else {
-              handleInvite(userId);
-            }
-          }}
+          onClick={handleSendInvite}
           label="Status"
           buttonName="Send Invite"
           text_1="Activated"
@@ -315,7 +399,7 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
         />
       </EntryFormWrapper>
 
-      {role === 'TISC' ? (
+      {isTISCAdmin ? (
         <TISCAccessLevelModal
           visible={visible.accessModal}
           setVisible={(visibled) =>
@@ -325,7 +409,9 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
             })
           }
         />
-      ) : role === 'BRAND' ? (
+      ) : null}
+
+      {isBrandAdmin ? (
         <BrandAccessLevelModal
           visible={visible.accessModal}
           setVisible={(visibled) =>
@@ -349,6 +435,10 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
         workLocation={workLocation}
         setWorkLocation={setWorkLocation}
       />
-    </>
+
+      {isLoading.value && <LoadingPageCustomize />}
+    </div>
   );
 };
+
+export default TeamProfilesEntryForm;

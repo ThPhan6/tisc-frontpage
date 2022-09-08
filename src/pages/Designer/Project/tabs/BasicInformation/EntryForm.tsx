@@ -271,7 +271,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = ({ data, onChangeData }) =
         label="Measurement Unit"
         required={true}
         layout="vertical"
-        formClass={styles.form_group}>
+        formClass={`${styles.form_group} ${styles.border_bottom}`}>
         <CustomRadio
           options={measurementUnits}
           value={data.measurement_unit}

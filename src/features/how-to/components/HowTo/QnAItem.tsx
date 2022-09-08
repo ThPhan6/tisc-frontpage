@@ -2,16 +2,14 @@ import { FC } from 'react';
 
 import { Collapse } from 'antd';
 
-import { ReactComponent as ExtendIcon } from '@/assets/icons/action-extend.svg';
-import { ReactComponent as PlusIcon } from '@/assets/icons/action-plus-icon.svg';
-
 import { CollapsingProps, QnA, QuestionProps } from '../../types';
 
 import { BodyText } from '@/components/Typography';
 
+import { renderExtendIcon } from './FaqComponent';
 import styles from './index.less';
 
-const RenderQuestion: FC<QuestionProps> = (props) => {
+const QuestionItem: FC<QuestionProps> = (props) => {
   const { index, question, activeKey, handleActiveCollapse } = props;
   return (
     <div
@@ -19,12 +17,10 @@ const RenderQuestion: FC<QuestionProps> = (props) => {
       className={styles.itemQuestion}>
       <BodyText
         level={3}
-        customClass={String(index) !== activeKey ? styles.font_weight_300 : styles.font_weight_600}>
-        {question}
-      </BodyText>
-      <div className={styles.addIcon}>
-        {question ? String(index) !== activeKey ? <PlusIcon /> : <ExtendIcon /> : ''}
-      </div>
+        customClass={String(index) !== activeKey ? styles.font_weight_300 : styles.font_weight_600}
+        dangerouslySetInnerHTML={{ __html: question.replaceAll('\n', '<br/>') }}
+      />
+      <div className={styles.addIcon}>{question ? renderExtendIcon(index, activeKey) : ''}</div>
     </div>
   );
 };
@@ -42,7 +38,7 @@ export const QnAItem: FC<QnAItemProps> = ({ index, item, activeKey, handleActive
           key={index}
           showArrow={false}
           header={
-            <RenderQuestion
+            <QuestionItem
               index={index}
               question={item.question}
               activeKey={activeKey}

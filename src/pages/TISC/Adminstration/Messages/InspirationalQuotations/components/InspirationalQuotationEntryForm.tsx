@@ -67,6 +67,7 @@ export const InspirationalQuotationEntryForm: FC<QuotationEntryFormProps> = ({
           hasPadding
           hasHeight
           fontLevel={3}
+          hasBoxShadow
         />
 
         {/* identity */}
@@ -84,6 +85,7 @@ export const InspirationalQuotationEntryForm: FC<QuotationEntryFormProps> = ({
           hasPadding
           hasHeight
           fontLevel={3}
+          hasBoxShadow
         />
 
         {/* quotation */}

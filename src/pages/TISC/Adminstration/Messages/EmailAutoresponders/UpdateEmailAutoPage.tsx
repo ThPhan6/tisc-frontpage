@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { ScrollMenu } from 'react-horizontal-scrolling-menu';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
@@ -21,7 +20,7 @@ import { FormGroup } from '@/components/Form';
 import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
 import { CustomInput } from '@/components/Form/CustomInput';
 import LoadingPageCustomize from '@/components/LoadingPage';
-import { useDrag } from '@/components/ScrollBar/useDrag';
+import ScrollBar from '@/components/ScrollBar';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
@@ -39,7 +38,6 @@ const UpdateEmailAutoPage = () => {
   const isLoading = useBoolean();
   const params = useParams<{ id: string }>();
   const idEmailAuto = params?.id || '';
-  const { dragStart, dragStop, onWheel, handleDrag } = useDrag();
 
   /// email auto form
   const [formState, setFormState] = useState<EmailTemplate>(DEFAULT_EMAILAUTORESPONDERS_VALUE);
@@ -100,16 +98,6 @@ const UpdateEmailAutoPage = () => {
     }));
   };
 
-  const handleOnChangeRadio = (
-    typeRadio: 'topic' | 'targeted_for',
-    valueRadio: string | boolean,
-  ) => {
-    setFormState((state) => ({
-      ...state,
-      [typeRadio]: valueRadio,
-    }));
-  };
-
   const handleCancel = () => {
     pushTo(PATH.emailAuto);
   };
@@ -158,24 +146,17 @@ const UpdateEmailAutoPage = () => {
           submitButtonStatus={submitButtonStatus.value}>
           {/* Topic */}
           <FormGroup label="Topic" required={true} layout="vertical" formClass={styles.radio_form}>
-            <div onMouseLeave={() => dragStop}>
-              <ScrollMenu
-                onWheel={onWheel}
-                onMouseDown={() => dragStart}
-                onMouseMove={handleDrag}
-                onMouseUp={() => dragStop}>
-                {topicList.map((item) => (
-                  <CustomRadio
-                    key={item.value}
-                    direction="horizontal"
-                    value={formState.topic}
-                    onChange={(radioValue) => onChangeState('topic', String(radioValue.value))}
-                    options={[{ value: item.value, label: item.key }]}
-                    containerClass={styles.radio_container}
-                  />
-                ))}
-              </ScrollMenu>
-            </div>
+            <ScrollBar>
+              {topicList.map((item) => (
+                <CustomRadio
+                  key={item.value}
+                  direction="horizontal"
+                  value={formState.topic}
+                  options={[{ value: item.value, label: item.key }]}
+                  containerClass={styles.radio_container}
+                />
+              ))}
+            </ScrollBar>
           </FormGroup>
 
           {/* Targeted For */}
@@ -184,26 +165,17 @@ const UpdateEmailAutoPage = () => {
             required={true}
             layout="vertical"
             formClass={styles.radio_form}>
-            <div onMouseLeave={() => dragStop}>
-              <ScrollMenu
-                onWheel={onWheel}
-                onMouseDown={() => dragStart}
-                onMouseMove={handleDrag}
-                onMouseUp={() => dragStop}>
-                {targetedForList.map((item) => (
-                  <CustomRadio
-                    key={item.value}
-                    direction="horizontal"
-                    value={formState.targeted_for}
-                    onChange={(radioValue) =>
-                      handleOnChangeRadio('targeted_for', String(radioValue.value))
-                    }
-                    options={[{ value: item.value, label: item.key }]}
-                    containerClass={styles.radio_container}
-                  />
-                ))}
-              </ScrollMenu>
-            </div>
+            <ScrollBar>
+              {targetedForList.map((item) => (
+                <CustomRadio
+                  key={item.value}
+                  direction="horizontal"
+                  value={formState.targeted_for}
+                  options={[{ value: item.value, label: item.key }]}
+                  containerClass={styles.radio_container}
+                />
+              ))}
+            </ScrollBar>
           </FormGroup>
 
           {/* Title */}

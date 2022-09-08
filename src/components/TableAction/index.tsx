@@ -6,10 +6,12 @@ import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
+import { ReactComponent as LogOutIcon } from '@/assets/icons/outside-icon.svg';
+import { ReactComponent as UserIcon } from '@/assets/icons/user-icon.svg';
 
 import { HeaderDropdown, MenuIconProps } from '../HeaderDropdown';
 
-type ActionType = 'specify' | 'updated' | 'deleted' | 'view' | 'invite';
+type ActionType = 'specify' | 'updated' | 'deleted' | 'view' | 'invite' | 'user' | 'logout';
 
 interface ActionFormProps {
   actionItems?: (MenuIconProps & { type: ActionType })[];
@@ -45,6 +47,14 @@ const DEFAULT_ACTION_INFO: {
   deleted: {
     icon: <DeleteIcon />,
     label: 'Delete',
+  },
+  user: {
+    icon: <UserIcon />,
+    label: 'User profiles',
+  },
+  logout: {
+    icon: <LogOutIcon />,
+    label: 'Logout',
   },
 };
 

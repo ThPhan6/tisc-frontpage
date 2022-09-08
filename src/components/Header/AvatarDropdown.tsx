@@ -50,7 +50,6 @@ export const AvatarDropdown = () => {
         {
           onClick: () => {
             pushTo(PATH.profiles);
-            showHeaderDropdown.setValue(false);
           },
           icon: <UserIcon />,
           label: 'User profiles',
@@ -72,7 +71,7 @@ export const AvatarDropdown = () => {
       arrowPositionCenter
       visible={showHeaderDropdown.value}
       onVisibleChange={showHeaderDropdown.setValue}
-      align={{ offset: [0, 11] }}
+      align={{ offset: [0, -2] }}
       placement="topLeft"
       trigger={['click']}
       getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}>
@@ -84,7 +83,6 @@ export const AvatarDropdown = () => {
           alt="avatar"
         />
         <BodyText fontFamily="Roboto" level={4} customClass={styles['user-name']}>
-          {/* {`${currentUser?.lastname} ${currentUser?.firstname}`} */}
           {getFullName(currentUser)}
         </BodyText>
       </span>

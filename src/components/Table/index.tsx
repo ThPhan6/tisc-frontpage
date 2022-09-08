@@ -64,7 +64,7 @@ export const GetExpandableTableConfig = (props: ExpandableTableConfig): Expandab
           pagination={false}
           columns={columns}
           rowKey={rowKey}
-          rowClassName={level === 2 ? 'custom-expanded-level-2' : ''}
+          rowClassName={level && level > 1 ? `custom-expanded-level-${level}` : ''}
           tableLayout="auto"
           expandable={
             subtituteChildrenColumnName && record[subtituteChildrenColumnName]
@@ -138,7 +138,6 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const customExpandable = props.expandableConfig
     ? GetExpandableTableConfig(props.expandableConfig)
     : undefined;
-  // console.log('customExpandable', props.expandableConfig, customExpandable);
 
   const formatPaginationParams = (params: PaginationParams) => {
     const { sorter, filter } = params;
@@ -228,13 +227,9 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
 
   return (
     <div className={`${styles.customTable} ${customExpandable ? styles['sub-grid'] : ''}`}>
-      {title && (
-        <TableHeader
-          title={title}
-          rightAction={rightAction}
-          customClass={customClass ? customClass : ''}
-        />
-      )}
+      {title ? (
+        <TableHeader title={title} rightAction={rightAction} customClass={customClass || ''} />
+      ) : null}
 
       <Table
         columns={columns}
