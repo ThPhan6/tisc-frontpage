@@ -56,7 +56,7 @@ const ProductConsidered: React.FC = () => {
   const gridView = useBoolean();
   const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
-  const renderStatusDropdown = (v: any, record: any) => {
+  const renderStatusDropdown = (_value: any, record: any) => {
     if (record.rooms) {
       return null;
     }
@@ -99,7 +99,7 @@ const ProductConsidered: React.FC = () => {
     );
   };
 
-  const renderActionCell = (v: any, record: any) => {
+  const renderActionCell = (_value: any, record: any) => {
     if (record.rooms) {
       return null;
     }
@@ -228,8 +228,7 @@ const ProductConsidered: React.FC = () => {
       width: COL_WIDTH.zones,
       noBoxShadow: true,
       onCell: (data) => ({
-        colSpan: data.rooms ? 1 : 3,
-        color: 'red',
+        className: data.rooms ? '' : 'no-box-shadow',
       }),
     },
     {
@@ -237,30 +236,29 @@ const ProductConsidered: React.FC = () => {
       noExpandIfEmptyData: 'rooms',
       width: COL_WIDTH.areas,
       isExpandable: true,
-      render: (value, record) => <span>{record.name}</span>,
+      render: (_value, record) => <span>{record.name}</span>,
       onCell: (data) => ({
-        colSpan: data.rooms ? 1 : 0,
+        className: data.rooms ? '' : 'no-box-shadow',
       }),
     },
     {
       title: 'Rooms',
       width: COL_WIDTH.rooms,
       onCell: (data) => ({
-        colSpan: data.rooms ? 1 : 0,
+        className: data.rooms ? '' : 'no-box-shadow',
       }),
     },
     ...getSameColumns(false),
     {
       title: 'Product',
-      dataIndex: 'name',
-      render: (value, record) => (record.rooms ? null : value), // For Entire project
+      render: (_value, record) => (typeof record.rooms === 'object' ? null : record.name), // For Entire project
       onCell: onCellUnlisted,
     },
     {
       title: 'Assigned By',
       dataIndex: 'assigned_name',
       width: COL_WIDTH.assignedBy,
-      render: (value, record) => (record.rooms ? null : value), // For Entire project
+      render: (value, record) => (typeof record.rooms === 'object' ? null : value), // For Entire project
       onCell: onCellUnlisted,
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
