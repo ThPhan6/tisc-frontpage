@@ -229,16 +229,18 @@ export const LoginModal: FC<LoginModalProps> = ({
           </div>
         </div>
         <div className={styles.action}>
-          <div>
-            {setErrorMessage() && (
-              <div className={styles.warning}>
-                <WarningIcon />
-                <BodyText level={4} fontFamily="Roboto">
-                  {setErrorMessage()}
-                </BodyText>
-              </div>
-            )}
-          </div>
+          {/* <div> */}
+          {setErrorMessage() ? (
+            <div className={styles.warning}>
+              <WarningIcon />
+              <BodyText level={4} fontFamily="Roboto">
+                {setErrorMessage()}
+              </BodyText>
+            </div>
+          ) : (
+            ''
+          )}
+          {/* </div> */}
           <CustomButton
             disabled={handleDisableButton()}
             buttonClass={styles.submit}
