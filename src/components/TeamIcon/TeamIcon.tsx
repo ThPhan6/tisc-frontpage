@@ -11,7 +11,7 @@ interface TeamIconProps {
   size?: number;
 }
 
-const TeamIcon: React.FC<TeamIconProps> = ({ avatar, name, customClass = '', size = 18 }) => {
+const TeamIcon: React.FC<TeamIconProps> = ({ avatar, name, customClass = '', size = 20 }) => {
   if (avatar) {
     return (
       <img
