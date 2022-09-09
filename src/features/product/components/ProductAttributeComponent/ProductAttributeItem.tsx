@@ -54,7 +54,7 @@ const ProductAttributeItem: React.FC<ProductAttributeItemProps> = ({
   const dispatch = useDispatch();
 
   const attributeItem = attributeGroup[index];
-  const isSpecification = activeKey === 'specification';
+  // const isSpecification = activeKey === 'specification';
 
   const [visible, setVisible] = useState(false);
   const [selected, setSelected] = useState<CheckboxValue[]>(
@@ -97,9 +97,7 @@ const ProductAttributeItem: React.FC<ProductAttributeItemProps> = ({
           activeData.text = previousData.text;
           activeData.conversion_value_1 = previousData.conversion_value_1;
           activeData.conversion_value_2 = previousData.conversion_value_2;
-          if (isSpecification) {
-            activeData.basis_options = previousData.basis_options;
-          }
+          activeData.basis_options = previousData.basis_options;
         }
 
         const newAttribute: ProductAttributeProps = {

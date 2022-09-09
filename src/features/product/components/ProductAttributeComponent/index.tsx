@@ -7,8 +7,8 @@ import { ProductAttributeByType } from '@/types';
 
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
+import { ProductAttributeContainer } from '../ProductAttributes';
 import styles from '../detail.less';
-import { ProductAttributeContainer } from './ProductAttributeContainer';
 import { ProductVendor } from './ProductVendor';
 
 const LIST_TAB = [
