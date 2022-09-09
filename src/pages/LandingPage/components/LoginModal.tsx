@@ -146,6 +146,7 @@ export const LoginModal: FC<LoginModalProps> = ({
       containerClass={theme === 'dark' ? styles.modal : ''}
       bodyStyle={{
         backgroundColor: theme === 'dark' ? '#000' : '',
+        height: '576px',
       }}
       closeIconClass={theme === 'dark' ? styles.closeIcon : ''}>
       <div className={styles.content}>

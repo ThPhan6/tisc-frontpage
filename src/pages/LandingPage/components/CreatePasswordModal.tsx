@@ -97,6 +97,7 @@ export const CreatePasswordModal: FC<CreatePasswordModalProps> = ({
         visible.setValue(false);
         pushTo(PATH.landingPage);
       }}
+      bodyStyle={{ height: '576px' }}
       footer={false}>
       <div className={styles.content}>
         <div className={styles.intro}>

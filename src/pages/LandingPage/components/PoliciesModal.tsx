@@ -51,6 +51,7 @@ export const PoliciesModal: FC<ModalProps> = ({ visible, onClose, theme = 'defau
       containerClass={theme === 'dark' && styles.modal}
       bodyStyle={{
         backgroundColor: theme === 'dark' ? '#000' : '',
+        height: '576px',
       }}
       closeIconClass={theme === 'dark' && styles.closeIcon}
       onCancel={onClose}>
