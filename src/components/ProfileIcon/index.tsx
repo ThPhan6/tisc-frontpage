@@ -10,7 +10,7 @@ interface ProfileUserProps {
   size?: number;
 }
 
-export const ProfileIcon: FC<ProfileUserProps> = ({ name, customClass, size = 18 }) => {
+export const ProfileIcon: FC<ProfileUserProps> = ({ name, customClass, size = 20 }) => {
   const firstUserCharacter = name.charAt(0);
   const backgroundColor = getLetterAvatarBackgroundColor(name);
 
