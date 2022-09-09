@@ -11,8 +11,8 @@
   line-height: 24px;
 }
 .content {
-  height: 512px;
-  padding: 32px 0;
+  // height: 512px;
+  padding: 32px 0 0 0;
   .intro {
     .body-dark {
       padding-bottom: 48px;
@@ -21,7 +21,6 @@
     }
   }
   .form {
-    height: 296px;
     ::placeholder {
       color: @mono-color-dark;
     }
@@ -69,11 +68,9 @@
   }
 
   .submit {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    float: right;
-    margin-top: 32px;
+    position: absolute;
+    right: 48px;
+    bottom: 32px;
     padding: 0 20px;
     font-weight: 500;
     font-size: 14px;
