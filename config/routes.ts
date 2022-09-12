@@ -223,12 +223,12 @@ export default [
               {
                 path: PATH.attributeGeneralCreate,
                 hideInMenu: true,
-                component: './TISC/Product/Attribute/CreatePage',
+                component: './TISC/Product/Attribute/components/AttributeEntryForm',
               },
               {
                 path: PATH.attributeGeneralUpdate,
                 hideInMenu: true,
-                component: './TISC/Product/Attribute/UpdatePage',
+                component: './TISC/Product/Attribute/components/AttributeEntryForm',
               },
             ],
           },
@@ -244,12 +244,12 @@ export default [
               {
                 path: PATH.attributeFeatureCreate,
                 hideInMenu: true,
-                component: './TISC/Product/Attribute/CreatePage',
+                component: './TISC/Product/Attribute/components/AttributeEntryForm',
               },
               {
                 path: PATH.attributeFeatureUpdate,
                 hideInMenu: true,
-                component: './TISC/Product/Attribute/UpdatePage',
+                component: './TISC/Product/Attribute/components/AttributeEntryForm',
               },
             ],
           },
@@ -265,12 +265,12 @@ export default [
               {
                 path: PATH.attributeSpecificationCreate,
                 hideInMenu: true,
-                component: './TISC/Product/Attribute/CreatePage',
+                component: './TISC/Product/Attribute/components/AttributeEntryForm',
               },
               {
                 path: PATH.attributeSpecificationUpdate,
                 hideInMenu: true,
-                component: './TISC/Product/Attribute/UpdatePage',
+                component: './TISC/Product/Attribute/components/AttributeEntryForm',
               },
             ],
           },
