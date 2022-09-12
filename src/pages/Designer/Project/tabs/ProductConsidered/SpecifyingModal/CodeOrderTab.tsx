@@ -52,11 +52,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
   const [unitTypeOtps, setUnitTypeOtps] = useState<CheckboxValue[]>([]);
   const [requirements, setRequirements] = useState<CheckboxValue[]>([]);
   const [instructions, setInstructions] = useState<CheckboxValue[]>([]);
-
-  // for show data
   const [finishSchedules, setFinishSchedule] = useState<CheckboxValue[]>([]);
-  /// get option selected
-  const [selectedFinishSchedules, setSelectedFinishSchedule] = useState<CheckboxValue[]>([]);
 
   const [selectedUnit, setSelectedUnit] = useState<RadioValue | null>(null);
 
@@ -75,7 +71,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
 
   const selectedInstructions = getSelectedOptions(instructions, instruction_type_ids);
   const selectedRequirements = getSelectedOptions(requirements, requirement_type_ids);
-  const selectedFinishScheduleOpts = getSelectedOptions(finishSchedules, finish_schedules);
+  const selectedFinishSchedules = getSelectedOptions(finishSchedules, finish_schedules);
 
   const unitType = unit_type_id
     ? unitTypeOtps.find((el) => el.value === unit_type_id) || selectedUnit
@@ -84,6 +80,11 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
   const materialCode = material_code_id
     ? materialCodeOpts.find((el) => el.value === material_code_id)
     : undefined;
+
+  const scheduleValues = finish_schedules
+    .filter((item, index) => finish_schedules.indexOf(item) === index)
+    ?.map((schId) => finishSchedules.find((el) => el.value === schId)?.label || schId)
+    .join(', ');
 
   const renderDualLabel = (firstTxt: string, secTxt: string) => {
     return (
@@ -135,7 +136,9 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
         })),
       );
     });
+  }, []);
 
+  useEffect(() => {
     getFinishScheduleList().then((res) => {
       setFinishSchedule(
         res.map((el) => ({
@@ -144,21 +147,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
         })),
       );
     });
-  }, []);
-
-  const getFinishSchedules = (opts: CheckboxValue[]) => {
-    const newSelectedSchedules = opts.filter((type) => type.value !== 'other').map((type) => type);
-
-    const otherFinishSchedules = opts.find((type) => type.value === 'other');
-    if (otherFinishSchedules) {
-      newSelectedSchedules.push({
-        label: otherFinishSchedules.label,
-        value: otherFinishSchedules.value,
-      });
-    }
-
-    return newSelectedSchedules;
-  };
+  }, [finish_schedules]);
 
   const formGroupProps: Partial<FormGroupProps> = {
     layout: 'vertical',
@@ -223,15 +212,9 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
               containerClass={styles.color}
               overlayClass={styles.overlayForm}
               placement="bottomRight"
-              placeholder={
-                selectedFinishScheduleOpts?.length === 0
-                  ? 'e.g. Wall, base, ceiling, door...'
-                  : selectedFinishScheduleOpts?.map((opt) => opt.label).join(', ')
-              }
-              value={selectedFinishSchedules?.map((opt) =>
-                String(opt.value === 'other' ? opt.value : opt.label),
-              )}
-              overlayStyle={{ minWidth: 'auto' }}
+              placeholder={'e.g. Wall, base, ceiling, door...'}
+              value={scheduleValues}
+              overlayStyle={{ minWidth: 'unset' }}
               overlay={
                 <CustomCheckbox
                   options={finishSchedules}
@@ -239,9 +222,8 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
                   isCheckboxList
                   otherInput
                   checkboxClass={styles.color}
-                  selected={selectedFinishScheduleOpts}
+                  selected={selectedFinishSchedules}
                   onChange={(option) => {
-                    setSelectedFinishSchedule(getFinishSchedules(option));
                     onChangeSpecifyingState({
                       finish_schedules: option?.map((opt) =>
                         String(opt.value === 'other' ? opt.label : opt.value),
