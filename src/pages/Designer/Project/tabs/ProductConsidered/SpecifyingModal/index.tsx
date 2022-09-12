@@ -45,9 +45,10 @@ const DEFAULT_STATE: SpecifyingProductRequestBody = {
   description: '',
   quantity: 0,
   unit_type_id: '',
-  order_method: 0,
+  order_method: 1,
   requirement_type_ids: [],
   instruction_type_ids: [],
+  finish_schedules: [],
   special_instructions: '',
 };
 
@@ -78,6 +79,8 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     setSpecifyingState(
       (prevState) => ({ ...prevState, ...newStateParts } as SpecifyingProductRequestBody),
     );
+
+  console.log('specifyingState', specifyingState);
 
   const { AssignProductToSpaceForm } = useAssignProductToSpaceForm(product.id, projectId, {
     onChangeEntireProjectCallback: (is_entire) => onChangeSpecifyingState({ is_entire }),
@@ -113,6 +116,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
               'specification',
               'suffix_code',
               'unit_type_id',
+              'finish_schedules',
             ]),
           );
         }
@@ -326,6 +330,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
             suffix_code: specifyingState.suffix_code,
             unit_type_id: specifyingState.unit_type_id,
             special_instructions: specifyingState.special_instructions,
+            finish_schedules: specifyingState.finish_schedules,
           }}
           onChangeSpecifyingState={onChangeSpecifyingState}
         />

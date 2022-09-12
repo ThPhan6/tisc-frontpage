@@ -1,0 +1,37 @@
+.color {
+  :global(.ant-input) {
+    color: @primary-color-dark;
+  }
+  :global(.ant-input[disabled]) {
+    overflow: hidden;
+    color: @primary-color-dark;
+    text-overflow: ellipsis;
+    background: transparent;
+    border-bottom-color: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+  }
+}
+.overlayForm {
+  .color {
+    padding: 8px 16px 0;
+
+    :global(.ant-checkbox-group) {
+      :global(.item-wrapper-custom) {
+        height: 36px;
+        min-height: 36px !important;
+      }
+
+      > div:last-child {
+        position: sticky;
+        bottom: 0;
+        padding-bottom: 8px;
+        background: #fff;
+        box-shadow: @border-top-light;
+
+        :global(.ant-checkbox-wrapper) {
+          height: 40px;
+        }
+      }
+    }
+  }
+}
