@@ -111,7 +111,6 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
     });
   };
 
-  console.log(product);
   return (
     <Popover
       title="Share Via Email"
