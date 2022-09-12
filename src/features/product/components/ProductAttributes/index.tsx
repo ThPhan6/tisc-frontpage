@@ -10,6 +10,7 @@ import { ProductInfoTab } from '../ProductAttributeComponent/types';
 import { ProductAttributes } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
+import { CustomCheckbox } from '@/components/CustomCheckbox';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText, MainTitle } from '@/components/Typography';
@@ -19,37 +20,69 @@ import {
   ConversionText,
   GeneralText,
 } from '../ProductAttributeComponent/AttributeComponent';
-import styles from '../detail.less';
 import { AttributeItem } from './AttributeItem';
-import { SelectAttributesToGroupRow } from './AttributesToGroupSelection';
+import { SelectAttributesToGroupRow } from './SelectAttributesToGroupRow';
+import styles from './index.less';
 
 interface Props {
   attributes?: ProductAttributes[];
   activeKey: ProductInfoTab;
+  specifying?: boolean;
+  noBorder?: boolean;
 }
 
-export const ProductAttributeContainer: FC<Props> = ({ activeKey, attributes }) => {
+export const ProductAttributeContainer: FC<Props> = ({
+  activeKey,
+  attributes,
+  specifying,
+  noBorder,
+}) => {
   const isTiscAdmin = useCheckPermission('TISC Admin');
   const {
     onChangeAttributeItem,
     addNewProductAttribute,
     onChangeAttributeName,
     deleteAttributeItem,
+    onCheckedSpecification,
     attributeGroup,
     attributeGroupKey,
+    onSelectSpecificationOption,
   } = useProductAttributeForm(activeKey);
 
   const renderCollapseHeader = (groupIndex: number) => {
+    const group = attributeGroup[groupIndex];
+    if (isTiscAdmin) {
+      return (
+        <InputGroup
+          horizontal
+          fontLevel={4}
+          label={<ScrollIcon />}
+          placeholder="type title"
+          noWrap
+          defaultValue={group.name}
+          onChange={onChangeAttributeName(groupIndex)}
+        />
+      );
+    }
+
     return (
-      <InputGroup
-        horizontal
-        fontLevel={4}
-        label={<ScrollIcon />}
-        placeholder="type title"
-        noWrap
-        defaultValue={attributeGroup[groupIndex].name}
-        onChange={onChangeAttributeName(groupIndex)}
-      />
+      <div className={styles.attrGroupTitle}>
+        {activeKey === 'specification' ? (
+          <CustomCheckbox
+            options={[{ label: group.name, value: groupIndex }]}
+            selected={
+              attributeGroup.some((gr) => gr.isChecked && gr.id === group.id)
+                ? [{ label: group.name, value: groupIndex }]
+                : []
+            }
+            onChange={() => onCheckedSpecification(groupIndex)}
+          />
+        ) : (
+          <BodyText level={6} fontFamily="Roboto">
+            {group.name}
+          </BodyText>
+        )}
+      </div>
     );
   };
 
@@ -61,7 +94,7 @@ export const ProductAttributeContainer: FC<Props> = ({ activeKey, attributes }) 
   ) => {
     if (isTiscAdmin) {
       if (!attributes) {
-        return;
+        return null;
       }
       return (
         <div className={styles.attributeSubItem} key={attribute.id}>
@@ -81,34 +114,56 @@ export const ProductAttributeContainer: FC<Props> = ({ activeKey, attributes }) 
       );
     }
 
-    return (
-      <tr key={attribute.id}>
-        <td className={styles.attributeName}>
-          <div className={`${styles.content} ${styles.attribute} attribute-type`}>
-            <BodyText level={4} customClass={styles.content_type}>
-              {attribute.name}
-            </BodyText>
-          </div>
-        </td>
+    const curAttribute = attributeGroup[groupIndex]?.attributes?.[attrIndex];
+    const chosenOption = curAttribute.basis_options?.find((el) => el.isChecked === true);
 
-        <td className={styles.attributeDescription}>
-          {attribute.conversion ? (
-            <ConversionText
-              conversion={attribute.conversion}
-              firstValue={attribute.conversion_value_1}
-              secondValue={attribute.conversion_value_2}
-            />
-          ) : attribute.type === 'Options' ? (
-            <AttributeOption
-              title={groupName}
-              attributeName={attribute.name}
-              options={attribute.basis_options ?? []}
-            />
-          ) : (
-            <GeneralText text={attribute.text} />
-          )}
-        </td>
-      </tr>
+    return (
+      <div className={styles.attributeSubItem} key={attribute.id}>
+        <div style={{ width: '100%' }}>
+          <tr className={styles.attributeSubItem}>
+            <td className={styles.attributeName}>
+              <div className={`${styles.content} ${styles.attribute} attribute-type`}>
+                <BodyText level={4} customClass={styles.content_type}>
+                  {attribute.name}
+                </BodyText>
+              </div>
+            </td>
+
+            <td className={styles.attributeDescription}>
+              {attribute.conversion ? (
+                <ConversionText
+                  conversion={attribute.conversion}
+                  firstValue={attribute.conversion_value_1}
+                  secondValue={attribute.conversion_value_2}
+                />
+              ) : attribute.type === 'Options' ? (
+                <AttributeOption
+                  title={groupName}
+                  attributeName={attribute.name}
+                  options={attribute.basis_options ?? []}
+                  chosenOption={
+                    chosenOption
+                      ? {
+                          label: `${chosenOption.value_1} ${chosenOption.unit_1} - ${chosenOption.value_2} ${chosenOption.unit_2}`,
+                          value: chosenOption?.id,
+                        }
+                      : undefined
+                  }
+                  setChosenOptions={(option) => {
+                    onSelectSpecificationOption(
+                      groupIndex,
+                      attribute.id,
+                      option?.value?.toString() || undefined,
+                    );
+                  }}
+                />
+              ) : (
+                <GeneralText text={attribute.text} />
+              )}
+            </td>
+          </tr>
+        </div>
+      </div>
     );
   };
 
@@ -123,34 +178,47 @@ export const ProductAttributeContainer: FC<Props> = ({ activeKey, attributes }) 
         </div>
       ) : null}
 
-      {attributeGroup.map((group, groupIndex) => {
+      {attributeGroup.map((_group, groupIndex) => {
         const attrGroupItem = attributeGroup[groupIndex];
-        console.log('render', attributeGroup);
         return (
-          <div style={{ marginBottom: 8 }}>
-            <CustomCollapse
-              defaultActiveKey={'1'}
-              customHeaderClass={styles.productAttributeItem}
-              header={renderCollapseHeader(groupIndex)}>
-              {isTiscAdmin && attributes ? (
-                <SelectAttributesToGroupRow
-                  activeKey={activeKey}
-                  attributes={attributes}
-                  groupItem={attrGroupItem}
-                  groupIndex={groupIndex}
-                />
-              ) : null}
+          <div style={{ marginBottom: 8, marginTop: isTiscAdmin ? undefined : 8 }}>
+            <div className={styles.attributes}>
+              <div className={styles.specification}>
+                <CustomCollapse
+                  defaultActiveKey={'1'}
+                  showActiveBoxShadow={!specifying}
+                  noBorder={noBorder}
+                  className={isTiscAdmin ? undefined : styles.vendorSection}
+                  customHeaderClass={`${styles.productAttributeItem} ${
+                    specifying ? styles.specifying : ''
+                  }`}
+                  header={renderCollapseHeader(groupIndex)}>
+                  {isTiscAdmin && attributes ? (
+                    <SelectAttributesToGroupRow
+                      activeKey={activeKey}
+                      attributes={attributes}
+                      groupItem={attrGroupItem}
+                      groupIndex={groupIndex}
+                    />
+                  ) : null}
 
-              {attrGroupItem.attributes.length ? (
-                <table className={styles.table}>
-                  <tbody>
-                    {attrGroupItem.attributes.map((attribute, attrIndex) =>
-                      renderAttributeRowItem(attribute, attrIndex, groupIndex, attrGroupItem.name),
-                    )}
-                  </tbody>
-                </table>
-              ) : null}
-            </CustomCollapse>
+                  {attrGroupItem.attributes.length ? (
+                    <table className={styles.table}>
+                      <tbody>
+                        {attrGroupItem.attributes.map((attribute, attrIndex) =>
+                          renderAttributeRowItem(
+                            attribute,
+                            attrIndex,
+                            groupIndex,
+                            attrGroupItem.name,
+                          ),
+                        )}
+                      </tbody>
+                    </table>
+                  ) : null}
+                </CustomCollapse>
+              </div>
+            </div>
           </div>
         );
       })}

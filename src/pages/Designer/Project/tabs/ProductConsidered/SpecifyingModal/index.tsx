@@ -1,5 +1,4 @@
-import { FC, useEffect } from 'react';
-import { useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import {
   ProjectSpecifyTabKeys,
@@ -9,7 +8,7 @@ import {
 import { message } from 'antd';
 
 import { useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
-import { getProductByIdAndReturn } from '@/features/product/services';
+import { getProductById } from '@/features/product/services';
 import { getProductSpecifying, updateProductSpecifying } from '@/features/project/services';
 import { useBoolean } from '@/helper/hook';
 import { pick } from 'lodash';
@@ -43,7 +42,7 @@ const DEFAULT_STATE: SpecifyingProductRequestBody = {
   material_code_id: '',
   suffix_code: '',
   description: '',
-  quantity: 0,
+  quantity: '0',
   unit_type_id: '',
   order_method: 0,
   requirement_type_ids: [],
@@ -121,13 +120,8 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   }, [product.considered_id]);
 
   useEffect(() => {
-    getProductByIdAndReturn(product.id).then((res) => {
-      if (res) {
-        const specGroups = res.specification_attribute_groups;
-        // console.log('specGroups', specGroups);
-        setSpecifyingGroups(specGroups);
-        dataLoaded.setValue(true);
-      }
+    getProductById(product.id).then(() => {
+      dataLoaded.setValue(true);
     });
   }, []);
 

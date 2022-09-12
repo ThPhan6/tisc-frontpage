@@ -1,7 +1,12 @@
 .productAttributeItem {
   border-bottom: 0 !important;
   &:global(.ant-collapse-item-active) {
-    box-shadow: none;
+    .attrGroupTitle {
+      span,
+      p {
+        font-weight: 500;
+      }
+    }
   }
   :global(.delete-icon) {
     color: @mono-color-medium;
@@ -14,11 +19,11 @@
       padding: 0;
     }
   }
-  :global(.ant-collapse-header) {
+  &:global(.ant-collapse-item) :global(.ant-collapse-header) {
     display: flex !important;
     align-items: center !important;
     height: 40px;
-    padding: 0 48px 0 16px !important;
+    padding-left: 16px !important;
     background: #fff;
     border-radius: 0;
     :global(.input-label) {
@@ -52,17 +57,17 @@
     }
   }
   .attributeSubItem {
-    display: flex;
-    align-items: center;
     height: 36px;
     padding: 0 16px;
-    box-shadow: @border-top;
     :global(.input-label) {
       width: auto;
       margin-right: 12px;
       white-space: nowrap;
       text-transform: capitalize;
     }
+  }
+  &.specifying :global(.ant-collapse-header) {
+    padding-left: 0 !important;
   }
 }
 
@@ -78,6 +83,7 @@
     padding: 0;
 
     p {
+      min-width: auto;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -124,16 +130,15 @@
 }
 
 .attributes {
-  // margin-top: 8px;
-  // transition: all 0.3s;
+  // :global(.ant-collapse-content > .ant-collapse-content-box) {
+  //   padding: 8px 0;
+  // }
+  // .productAttributeItem.specifying {
+  //   :global(.ant-collapse-content > .ant-collapse-content-box) {
+  //     padding: 8px 0;
+  //   }
+  // }
 
-  :global(.ant-collapse-item-active) {
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-  }
-
-  :global(.ant-collapse-content > .ant-collapse-content-box) {
-    padding: 8px 16px;
-  }
   :global(.ant-collapse) {
     margin-top: 8px;
   }
