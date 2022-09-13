@@ -46,7 +46,7 @@ const DEFAULT_STATE: SpecifyingProductRequestBody = {
   description: '',
   quantity: 0,
   unit_type_id: '',
-  order_method: ORDER_METHOD['DIRECT_PURCHASE'],
+  order_method: ORDER_METHOD['directPurchase'],
   requirement_type_ids: [],
   instruction_type_ids: [],
   finish_schedules: [],
@@ -201,10 +201,22 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     );
 
   const onSubmit = () => {
-    if (!Number(specifyingState.quantity)) {
-      message.error('Quantity must be greater than 0');
+    if (!specifyingState.material_code_id) {
+      message.error('Material/Product Code is required');
       return;
     }
+    if (!specifyingState.suffix_code) {
+      message.error('Suffix Code is required');
+      return;
+    }
+    if (!specifyingState.description) {
+      message.error('Description is required');
+      return;
+    }
+    // if (!Number(specifyingState.quantity)) {
+    //   message.error('Quantity must be greater than 0');
+    //   return;
+    // }
 
     let variant = '';
     if (specifyingState.specification.is_refer_document) {

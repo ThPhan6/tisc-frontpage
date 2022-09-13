@@ -158,7 +158,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
     <div style={{ padding: '16px 0' }}>
       <Row gutter={[24, 8]} align="bottom">
         <Col span={12}>
-          <FormGroup label="Material/Product Code" {...formGroupProps}>
+          <FormGroup label="Material/Product Code" required {...formGroupProps}>
             <DropdownSelectInput
               placeholder="select from the list"
               borderBottomColor="light"
@@ -192,7 +192,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
         </Col>
 
         <Col span={24}>
-          <FormGroup label="Description" {...formGroupProps}>
+          <FormGroup label="Description" required {...formGroupProps}>
             <CustomInput
               placeholder="e.g. Living room coffee table..."
               borderBottomColor="light"

@@ -9,8 +9,8 @@ export enum STATUS_RESPONSE_CODE {
 }
 
 export const ORDER_METHOD = {
-  DIRECT_PURCHASE: 1,
-  CUSTOM_ORDER: 2,
+  directPurchase: 1,
+  customOrder: 2,
 };
 
 export const USER_STATUSES = {
