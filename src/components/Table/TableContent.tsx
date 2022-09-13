@@ -8,7 +8,6 @@ interface TableContentProps {
   customClass?: string;
   textRightWidth?: string;
   textLeftWidth?: string;
-  rightClass?: string;
 }
 
 const TableContent: FC<TableContentProps> = ({
@@ -19,18 +18,14 @@ const TableContent: FC<TableContentProps> = ({
   textLeftWidth,
 }) => {
   return (
-    <table className={`${styles.table} ${customClass} `}>
-      <tbody>
-        <tr>
-          <td className={styles.textLeft} style={{ width: textLeftWidth }}>
-            {textLeft}
-          </td>
-          <td className={styles.textRight} style={{ width: textRightWidth }}>
-            {textRight}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <tr className={`${styles.content} ${customClass}`}>
+      <td className={styles.textLeft} style={{ width: textLeftWidth }}>
+        {textLeft}
+      </td>
+      <td className={styles.textRight} style={{ width: textRightWidth }}>
+        {textRight}
+      </td>
+    </tr>
   );
 };
 
