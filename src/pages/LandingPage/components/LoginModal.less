@@ -37,83 +37,99 @@
       line-height: 30px;
     }
   }
-  .form {
-    .email {
-      margin-bottom: 8px;
+  .main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .form {
+      .email {
+        margin-bottom: 8px;
+      }
+      .disabled {
+        :global(.ant-input-affix-wrapper-disabled) {
+          background-color: transparent;
+        }
+        :global(.ant-input) {
+          color: @mono-color-medium;
+        }
+        svg path {
+          fill: @mono-color-medium;
+        }
+      }
+      .forgot-password {
+        margin: 8px 0;
+        cursor: pointer;
+        .wrapper {
+          display: flex;
+          align-items: center;
+          height: 40px;
+          padding-left: 16px;
+          .setForgotWrapper(@primary-color-dark);
+        }
+        .wrapper-dark {
+          .setForgotWrapper(@primary-color-medium);
+        }
+        .wrapper-active {
+          .setForgotWrapper(@mono-color);
+        }
+        .wrapper-active-dark {
+          .setForgotWrapper(#fff);
+        }
+        .forgot-input {
+          div {
+            &::before {
+              left: 32px;
+            }
+            input {
+              padding-left: 44px;
+              color: @mono-color;
+            }
+          }
+        }
+        .forgot-input-dark {
+          color: #fff;
+          div {
+            &::before {
+              left: 32px;
+            }
+            input {
+              padding-left: 44px;
+              color: #fff;
+            }
+          }
+        }
+      }
     }
-    .disabled {
-      :global(.ant-input-affix-wrapper-disabled) {
-        background-color: transparent;
-      }
-      :global(.ant-input) {
-        color: @mono-color-medium;
-      }
-      svg path {
-        fill: @mono-color-medium;
-      }
-    }
-    .forgot-password {
-      margin: 8px 0;
-      cursor: pointer;
-      .wrapper {
+    .action {
+      position: absolute;
+      right: 48px;
+      bottom: 32px;
+      width: calc(576px - 96px);
+      &_between {
         display: flex;
         align-items: center;
-        height: 40px;
-        padding-left: 16px;
-        .setForgotWrapper(@primary-color-dark);
+        justify-content: space-between;
       }
-      .wrapper-dark {
-        .setForgotWrapper(@primary-color-medium);
+      &_right {
+        display: flex;
+        align-items: center;
+        justify-content: right;
       }
-      .wrapper-active {
-        .setForgotWrapper(@mono-color);
-      }
-      .wrapper-active-dark {
-        .setForgotWrapper(#fff);
-      }
-      .forgot-input {
-        div {
-          &::before {
-            left: 32px;
-          }
-          input {
-            padding-left: 44px;
-            color: @mono-color;
-          }
+      .warning {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 32px;
+        padding: 0 16px;
+        background-color: @secondary-color;
+        p {
+          margin-left: 12px;
+          color: #fff;
         }
       }
-      .forgot-input-dark {
-        color: #fff;
-        div {
-          &::before {
-            left: 32px;
-          }
-          input {
-            padding-left: 44px;
-            color: #fff;
-          }
-        }
+      .submit {
+        border-radius: 16px;
       }
-    }
-  }
-  .action {
-    position: absolute;
-    right: 48px;
-    bottom: 32px;
-    .warning {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 32px;
-      padding: 0 16px;
-      background-color: @secondary-color;
-      p {
-        margin-left: 12px;
-        color: #fff;
-      }
-    }
-    .submit {
-      border-radius: 16px;
     }
   }
 }
