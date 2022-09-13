@@ -6,6 +6,7 @@ import {
   ProjectSpecifyTabValue,
   ProjectSpecifyTabs,
 } from '../../../constants/tab';
+import { ORDER_METHOD } from '@/constants/util';
 import { message } from 'antd';
 
 import { useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
@@ -45,9 +46,10 @@ const DEFAULT_STATE: SpecifyingProductRequestBody = {
   description: '',
   quantity: 0,
   unit_type_id: '',
-  order_method: 0,
+  order_method: ORDER_METHOD['directPurchase'],
   requirement_type_ids: [],
   instruction_type_ids: [],
+  finish_schedules: [],
   special_instructions: '',
 };
 
@@ -78,6 +80,8 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     setSpecifyingState(
       (prevState) => ({ ...prevState, ...newStateParts } as SpecifyingProductRequestBody),
     );
+
+  console.log('specifyingState', specifyingState);
 
   const { AssignProductToSpaceForm } = useAssignProductToSpaceForm(product.id, projectId, {
     onChangeEntireProjectCallback: (is_entire) => onChangeSpecifyingState({ is_entire }),
@@ -113,6 +117,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
               'specification',
               'suffix_code',
               'unit_type_id',
+              'finish_schedules',
             ]),
           );
         }
@@ -196,10 +201,22 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     );
 
   const onSubmit = () => {
-    if (!Number(specifyingState.quantity)) {
-      message.error('Quantity must be greater than 0');
+    if (!specifyingState.material_code_id) {
+      message.error('Material/Product Code is required');
       return;
     }
+    if (!specifyingState.suffix_code) {
+      message.error('Suffix Code is required');
+      return;
+    }
+    if (!specifyingState.description) {
+      message.error('Description is required');
+      return;
+    }
+    // if (!Number(specifyingState.quantity)) {
+    //   message.error('Quantity must be greater than 0');
+    //   return;
+    // }
 
     let variant = '';
     if (specifyingState.specification.is_refer_document) {
@@ -326,6 +343,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
             suffix_code: specifyingState.suffix_code,
             unit_type_id: specifyingState.unit_type_id,
             special_instructions: specifyingState.special_instructions,
+            finish_schedules: specifyingState.finish_schedules,
           }}
           onChangeSpecifyingState={onChangeSpecifyingState}
         />
