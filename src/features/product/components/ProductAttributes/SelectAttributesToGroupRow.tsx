@@ -1,10 +1,10 @@
-import { FC, memo, useState } from 'react';
+import { FC, memo, useEffect, useState } from 'react';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { useProductAttributeForm } from './hooks';
-import { upperCase } from 'lodash';
+import { cloneDeep, upperCase } from 'lodash';
 
 import { setPartialProductDetail } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
@@ -34,14 +34,19 @@ interface Props {
 export const SelectAttributesToGroupRow: FC<Props> = memo(
   ({ activeKey, groupItem, attributes, groupIndex }) => {
     const [visible, setVisible] = useState(false);
-    const [selected, setSelected] = useState<CheckboxValue[]>(
-      groupItem.attributes.map((attr) => {
-        return {
-          label: '',
-          value: attr.id,
-        };
-      }),
-    );
+    const [selected, setSelected] = useState<CheckboxValue[]>([]);
+
+    useEffect(() => {
+      setSelected(
+        groupItem.attributes.map((attr) => {
+          return {
+            label: '',
+            value: attr.id,
+          };
+        }),
+      );
+    }, [groupItem]);
+
     const { onDeleteProductAttribute, attributeGroupKey, attributeGroup } =
       useProductAttributeForm(activeKey);
 
@@ -50,10 +55,16 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
       if (!selected) {
         return;
       }
-      const newAttributes = [...attributeGroup];
-      newAttributes[groupIndex] = {
-        ...newAttributes[groupIndex],
-        attributes: value.map((item, key: number) => {
+
+      const newAttrGroup = cloneDeep(attributeGroup);
+
+      if (value.length < newAttrGroup[groupIndex].attributes.length) {
+        const selectedAttrIds = value.map((v) => v.value);
+        newAttrGroup[groupIndex].attributes = newAttrGroup[groupIndex].attributes.filter((attr) =>
+          selectedAttrIds.includes(attr.id),
+        );
+      } else {
+        newAttrGroup[groupIndex].attributes = value.map((item, key: number) => {
           /// radio value
           let selectedAttribute: ProductSubAttributes | undefined;
           attributes.forEach((attr) => {
@@ -64,7 +75,7 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
             });
           });
 
-          const previousData = newAttributes[groupIndex].attributes[key];
+          const previousData = newAttrGroup[groupIndex].attributes[key];
 
           const activeData: any = {
             text: '',
@@ -88,12 +99,12 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
           };
 
           return newAttribute;
-        }),
-      };
+        });
+      }
 
       store.dispatch(
         setPartialProductDetail({
-          [attributeGroupKey]: newAttributes,
+          [attributeGroupKey]: newAttrGroup,
         }),
       );
     };
