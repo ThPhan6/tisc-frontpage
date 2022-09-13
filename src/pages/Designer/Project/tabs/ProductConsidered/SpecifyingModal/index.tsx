@@ -6,6 +6,7 @@ import {
   ProjectSpecifyTabValue,
   ProjectSpecifyTabs,
 } from '../../../constants/tab';
+import { ORDER_METHOD } from '@/constants/util';
 import { message } from 'antd';
 
 import { useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
@@ -45,7 +46,7 @@ const DEFAULT_STATE: SpecifyingProductRequestBody = {
   description: '',
   quantity: 0,
   unit_type_id: '',
-  order_method: 1,
+  order_method: ORDER_METHOD['DIRECT_PURCHASE'],
   requirement_type_ids: [],
   instruction_type_ids: [],
   finish_schedules: [],

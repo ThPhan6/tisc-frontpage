@@ -164,7 +164,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
               borderBottomColor="light"
               value={materialCode?.labelText}
               disabled
-              containerClass={styles.color}
+              containerClass={styles.inputColor}
               overlay={
                 <CustomRadio
                   options={materialCodeOpts}
@@ -187,7 +187,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
             borderBottomColor="light"
             value={suffix_code}
             onChange={(e) => onChangeSpecifyingState({ suffix_code: e.target.value })}
-            containerClass={styles.color}
+            containerClass={styles.inputColor}
           />
         </Col>
 
@@ -198,7 +198,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
               borderBottomColor="light"
               value={description}
               onChange={(e) => onChangeSpecifyingState({ description: e.target.value })}
-              containerClass={styles.color}
+              containerClass={styles.inputColor}
             />
           </FormGroup>
         </Col>
@@ -209,7 +209,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
               borderBottomColor="light"
               noPadding
               disabled
-              containerClass={styles.color}
+              containerClass={styles.inputColor}
               overlayClass={styles.overlayForm}
               placement="bottomRight"
               placeholder={'e.g. Wall, base, ceiling, door...'}
@@ -221,7 +221,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
                   inputPlaceholder="please specify"
                   isCheckboxList
                   otherInput
-                  checkboxClass={styles.color}
+                  checkboxClass={styles.inputColor}
                   selected={selectedFinishSchedules}
                   onChange={(option) => {
                     onChangeSpecifyingState({
@@ -243,7 +243,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
               value={quantity}
               onChange={(e) => onChangeSpecifyingState({ quantity: e.target.value })}
               inputValidation={validateFloatNumber}
-              containerClass={styles.color}
+              containerClass={styles.inputColor}
             />
           </FormGroup>
         </Col>
@@ -254,7 +254,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
             value={unitType?.label ? String(unitType?.label) : ''}
             noPadding
             disabled
-            containerClass={styles.color}
+            containerClass={styles.inputColor}
             overlay={
               <CustomRadio
                 options={unitTypeOtps}
@@ -262,7 +262,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
                 inputPlaceholder="please specify"
                 value={unit_type_id}
                 otherInput
-                containerClass={styles.color}
+                containerClass={styles.inputColor}
                 otherStickyBottom
                 stickyTopItem
                 containerStyle={{ padding: 0 }}
@@ -306,7 +306,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
                 });
               }}
               otherInput
-              checkboxClass={styles.color}
+              checkboxClass={styles.inputColor}
               isCheckboxList
               inputPlaceholder="please specify"
               heightItem="36px"

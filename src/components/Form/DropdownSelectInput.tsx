@@ -1,5 +1,7 @@
 import { CSSProperties, FC } from 'react';
 
+import { DropdownProps } from 'antd/es/dropdown';
+
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 
 import { CustomInputProps } from './types';
@@ -14,15 +16,7 @@ interface DropdownSelectInputProps extends CustomInputProps {
   overlayStyle?: CSSProperties;
   overlayClass?: CSSProperties;
   noPadding?: boolean;
-  placement?:
-    | 'bottom'
-    | 'topLeft'
-    | 'topCenter'
-    | 'topRight'
-    | 'bottomLeft'
-    | 'bottomCenter'
-    | 'bottomRight'
-    | 'top';
+  placement?: DropdownProps['placement'];
 }
 
 export const DropdownSelectInput: FC<DropdownSelectInputProps> = ({
