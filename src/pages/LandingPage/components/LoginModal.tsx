@@ -158,101 +158,103 @@ export const LoginModal: FC<LoginModalProps> = ({
             {randomQuotation ? `${randomQuotation.author}, ${randomQuotation.identity}` : ''}
           </BodyText>
         </div>
-        <div className={styles.form}>
-          <div onClick={() => showForgotPassword.setValue(false)}>
-            <CustomInput
-              fromLandingPage
-              status={isShowErrorMessage('email', inputValue.email) ? '' : 'error'}
-              theme={theme}
-              size="large"
-              containerClass={`
+        <div className={styles.main}>
+          <div className={styles.form}>
+            <div onClick={() => showForgotPassword.setValue(false)}>
+              <CustomInput
+                fromLandingPage
+                status={isShowErrorMessage('email', inputValue.email) ? '' : 'error'}
+                theme={theme}
+                size="large"
+                containerClass={`
                 ${styles.email}
                 ${showForgotPassword.value ? styles.disabled : ''}`}
-              placeholder="work email"
-              prefix={<EmailIcon />}
-              focusColor="secondary"
-              borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-              disabled={showForgotPassword.value}
-              onChange={handleOnChange}
-              onPressEnter={onKeyPress}
-              name="email"
-            />
-            <CustomInput
-              fromLandingPage
-              status={inputValue.password ? (inputValue.password.length < 8 ? 'error' : '') : ''}
-              theme={theme}
-              type={'password'}
-              containerClass={`
+                placeholder="work email"
+                prefix={<EmailIcon />}
+                focusColor="secondary"
+                borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
+                disabled={showForgotPassword.value}
+                onChange={handleOnChange}
+                onPressEnter={onKeyPress}
+                name="email"
+              />
+              <CustomInput
+                fromLandingPage
+                status={inputValue.password ? (inputValue.password.length < 8 ? 'error' : '') : ''}
+                theme={theme}
+                type={'password'}
+                containerClass={`
                 ${styles.password}
                 ${showForgotPassword.value ? styles.disabled : ''}`}
-              size="large"
-              placeholder="password"
-              prefix={<LockedIcon />}
-              focusColor="secondary"
-              borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-              disabled={showForgotPassword.value}
-              onChange={handleOnChange}
-              onPressEnter={onKeyPress}
-              name="password"
-            />
-          </div>
-          <div className={styles['forgot-password']}>
-            <div
-              className={`
+                size="large"
+                placeholder="password"
+                prefix={<LockedIcon />}
+                focusColor="secondary"
+                borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
+                disabled={showForgotPassword.value}
+                onChange={handleOnChange}
+                onPressEnter={onKeyPress}
+                name="password"
+              />
+            </div>
+            <div className={styles['forgot-password']}>
+              <div
+                className={`
                 ${styles.wrapper}
                 ${theme === 'dark' ? styles['wrapper-dark'] : ''}
                 ${showForgotPassword.value ? styles[`wrapper-active${themeStyle()}`] : ''}
               `}
-              onClick={() => showForgotPassword.setValue(!showForgotPassword.value)}>
-              <LockedForgotIcon className={styles.icon} />
-              <BodyText fontFamily="Roboto" level={4} customClass={styles.text}>
-                Forgot password?
-              </BodyText>
+                onClick={() => showForgotPassword.setValue(!showForgotPassword.value)}>
+                <LockedForgotIcon className={styles.icon} />
+                <BodyText fontFamily="Roboto" level={4} customClass={styles.text}>
+                  Forgot password?
+                </BodyText>
+              </div>
+              {showForgotPassword.value && (
+                <CustomInput
+                  required
+                  fromLandingPage
+                  status={isShowErrorMessage('email', verifyEmail.value) ? '' : 'error'}
+                  theme={theme}
+                  size="large"
+                  containerClass={
+                    type === 'Tisc Login' ? styles['forgot-input-dark'] : styles['forgot-input']
+                  }
+                  placeholder="type your work email to verify"
+                  focusColor="secondary"
+                  borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
+                  value={verifyEmail.value}
+                  onChange={(e) => verifyEmail.setValue(e.target.value)}
+                  onPressEnter={onKeyPress}
+                />
+              )}
             </div>
-            {showForgotPassword.value && (
-              <CustomInput
-                required
-                fromLandingPage
-                status={isShowErrorMessage('email', verifyEmail.value) ? '' : 'error'}
-                theme={theme}
-                size="large"
-                containerClass={
-                  type === 'Tisc Login' ? styles['forgot-input-dark'] : styles['forgot-input']
-                }
-                placeholder="type your work email to verify"
-                focusColor="secondary"
-                borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-                value={verifyEmail.value}
-                onChange={(e) => verifyEmail.setValue(e.target.value)}
-                onPressEnter={onKeyPress}
-              />
-            )}
           </div>
-        </div>
-        <div className={styles.action}>
-          {/* <div> */}
-          {setErrorMessage() ? (
-            <div className={styles.warning}>
-              <WarningIcon />
-              <BodyText level={4} fontFamily="Roboto">
-                {setErrorMessage()}
-              </BodyText>
+          <div className={styles.action}>
+            <div className={setErrorMessage() ? styles.action_between : styles.action_right}>
+              {setErrorMessage() ? (
+                <div className={styles.warning}>
+                  <WarningIcon />
+                  <BodyText level={4} fontFamily="Roboto">
+                    {setErrorMessage()}
+                  </BodyText>
+                </div>
+              ) : (
+                ''
+              )}
+              <CustomButton
+                disabled={handleDisableButton()}
+                buttonClass={styles.submit}
+                width={showForgotPassword.value ? '216px' : theme === 'dark' ? '120px' : '112px'}
+                onClick={handleSubmit}>
+                {showForgotPassword.value
+                  ? 'Submit & Check your email'
+                  : theme === 'dark'
+                  ? 'Let’s do this'
+                  : 'Get started'}
+              </CustomButton>
             </div>
-          ) : (
-            ''
-          )}
-          {/* </div> */}
-          <CustomButton
-            disabled={handleDisableButton()}
-            buttonClass={styles.submit}
-            width={showForgotPassword.value ? '216px' : theme === 'dark' ? '120px' : '112px'}
-            onClick={handleSubmit}>
-            {showForgotPassword.value
-              ? 'Submit & Check your email'
-              : theme === 'dark'
-              ? 'Let’s do this'
-              : 'Get started'}
-          </CustomButton>
+          </div>
         </div>
       </div>
     </CustomModal>
