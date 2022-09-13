@@ -1,5 +1,13 @@
 .productAttributeItem {
   border-bottom: 0 !important;
+  :global(.ant-checkbox + span) {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+  }
   &:global(.ant-collapse-item-active) {
     .attrGroupTitle {
       span,
@@ -15,9 +23,6 @@
     background: #fff;
     border-top: 0 !important;
     border-radius: 0 !important;
-    :global(.ant-collapse-content-box) {
-      padding: 0;
-    }
   }
   &:global(.ant-collapse-item) :global(.ant-collapse-header) {
     display: flex !important;
@@ -37,8 +42,6 @@
     align-items: center;
     justify-content: space-between;
     height: 36px;
-    padding: 0 16px;
-    // box-shadow: @border-top-light;
     :global(.attribute-select-group-left) {
       display: flex;
       align-items: center;
@@ -54,16 +57,6 @@
       &:hover {
         color: @primary-color-dark;
       }
-    }
-  }
-  .attributeSubItem {
-    height: 36px;
-    padding: 0 16px;
-    :global(.input-label) {
-      width: auto;
-      margin-right: 12px;
-      white-space: nowrap;
-      text-transform: capitalize;
     }
   }
   &.specifying :global(.ant-collapse-header) {

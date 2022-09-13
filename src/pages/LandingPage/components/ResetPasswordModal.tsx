@@ -93,6 +93,7 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
   return (
     <CustomModal
       visible={visible.value}
+      bodyStyle={{ height: '576px' }}
       onOk={() => visible.setValue(false)}
       onCancel={() => {
         visible.setValue(false);
@@ -108,70 +109,74 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
             (Strong password mixes characters, numbers and upper & lower case letters.)
           </BodyText>
         </div>
-        <div className={styles.form}>
-          <CustomInput
-            size="large"
-            containerClass={styles.email}
-            placeholder="work email"
-            prefix={<EmailIcon />}
-            name="email"
-            borderBottomColor="mono"
-            readOnly
-            value={resetData.email}
-          />
-          <CustomInput
-            required
-            fromLandingPage
-            containerClass={styles.password}
-            type={'password'}
-            size="large"
-            placeholder="password"
-            prefix={<LockedIcon />}
-            focusColor="secondary"
-            name="password"
-            borderBottomColor="mono"
-            onChange={handleOnChange}
-            onPressEnter={onKeyPress}
-            status={isShowErrorMessage('password', resetInputValue.password) ? '' : 'error'}
-          />
-          <CustomInput
-            required
-            fromLandingPage
-            type={'password'}
-            size="large"
-            placeholder="Confirm password"
-            prefix={<LockedIcon />}
-            focusColor="secondary"
-            name="confirmPassword"
-            borderBottomColor="mono"
-            onChange={handleOnChange}
-            onPressEnter={onKeyPress}
-            status={
-              resetInputValue.confirmPassword &&
-              resetInputValue.confirmPassword !== resetInputValue.password
-                ? 'error'
-                : ''
-            }
-          />
-        </div>
-        <div className={styles.action}>
-          <div>
-            {setErrorMessage() && (
-              <div className={styles.warning}>
-                <WarningIcon />
-                <BodyText level={4} fontFamily="Roboto">
-                  {setErrorMessage()}
-                </BodyText>
-              </div>
-            )}
+        <div className={styles.main}>
+          <div className={styles.form}>
+            <CustomInput
+              size="large"
+              containerClass={styles.email}
+              placeholder="work email"
+              prefix={<EmailIcon />}
+              name="email"
+              borderBottomColor="mono"
+              readOnly
+              value={resetData.email}
+            />
+            <CustomInput
+              required
+              fromLandingPage
+              containerClass={styles.password}
+              type={'password'}
+              size="large"
+              placeholder="password"
+              prefix={<LockedIcon />}
+              focusColor="secondary"
+              name="password"
+              borderBottomColor="mono"
+              onChange={handleOnChange}
+              onPressEnter={onKeyPress}
+              status={isShowErrorMessage('password', resetInputValue.password) ? '' : 'error'}
+            />
+            <CustomInput
+              required
+              fromLandingPage
+              type={'password'}
+              size="large"
+              placeholder="Confirm password"
+              prefix={<LockedIcon />}
+              focusColor="secondary"
+              name="confirmPassword"
+              borderBottomColor="mono"
+              onChange={handleOnChange}
+              onPressEnter={onKeyPress}
+              status={
+                resetInputValue.confirmPassword &&
+                resetInputValue.confirmPassword !== resetInputValue.password
+                  ? 'error'
+                  : ''
+              }
+            />
           </div>
-          <CustomButton
-            disabled={handleDisableButton()}
-            buttonClass={styles.submit}
-            width={'128px'}
-            onClick={handleOnSubmit}>
-            Save / Log in
-          </CustomButton>
+          <div className={styles.action}>
+            <div className={setErrorMessage() ? styles.action_between : styles.action_right}>
+              {setErrorMessage() ? (
+                <div className={styles.warning}>
+                  <WarningIcon />
+                  <BodyText level={4} fontFamily="Roboto">
+                    {setErrorMessage()}
+                  </BodyText>
+                </div>
+              ) : (
+                ''
+              )}
+              <CustomButton
+                disabled={handleDisableButton()}
+                buttonClass={styles.submit}
+                width={'128px'}
+                onClick={handleOnSubmit}>
+                Save / Log in
+              </CustomButton>
+            </div>
+          </div>
         </div>
       </div>
     </CustomModal>

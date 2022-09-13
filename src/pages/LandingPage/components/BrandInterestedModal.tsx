@@ -28,6 +28,7 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
       containerClass={theme === 'dark' && styles.modal}
       bodyStyle={{
         backgroundColor: theme === 'dark' ? '#000' : '',
+        height: '576px',
       }}
       closeIconClass={theme === 'dark' && styles.closeIcon}
       onCancel={onClose}>
