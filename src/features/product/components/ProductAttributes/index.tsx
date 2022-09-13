@@ -76,6 +76,7 @@ export const ProductAttributeContainer: FC<Props> = ({
                 : []
             }
             onChange={() => onCheckedSpecification(groupIndex)}
+            checkboxClass={styles.customLabel}
           />
         ) : (
           <BodyText level={6} fontFamily="Roboto">
@@ -97,20 +98,19 @@ export const ProductAttributeContainer: FC<Props> = ({
         return null;
       }
       return (
-        <div className={styles.attributeSubItem} key={attribute.id}>
-          <AttributeItem
-            item={attribute}
-            attributeItemIndex={attrIndex}
-            attributeIndex={groupIndex}
-            attributes={attributes}
-            itemAttributes={attributeGroup[groupIndex].attributes}
-            onItemChange={onChangeAttributeItem(groupIndex)}
-            onDelete={deleteAttributeItem(groupIndex, attrIndex)}
-            activeKey={activeKey}
-            attributeGroup={attributeGroup}
-            attributeGroupKey={attributeGroupKey}
-          />
-        </div>
+        <AttributeItem
+          item={attribute}
+          attributeItemIndex={attrIndex}
+          attributeIndex={groupIndex}
+          attributes={attributes}
+          itemAttributes={attributeGroup[groupIndex].attributes}
+          onItemChange={onChangeAttributeItem(groupIndex)}
+          onDelete={deleteAttributeItem(groupIndex, attrIndex)}
+          activeKey={activeKey}
+          attributeGroup={attributeGroup}
+          attributeGroupKey={attributeGroupKey}
+          key={attribute.id}
+        />
       );
     }
 
@@ -118,52 +118,48 @@ export const ProductAttributeContainer: FC<Props> = ({
     const chosenOption = curAttribute.basis_options?.find((el) => el.isChecked === true);
 
     return (
-      <div className={styles.attributeSubItem} key={attribute.id}>
-        <div style={{ width: '100%' }}>
-          <tr className={styles.attributeSubItem}>
-            <td className={styles.attributeName}>
-              <div className={`${styles.content} ${styles.attribute} attribute-type`}>
-                <BodyText level={4} customClass={styles.content_type}>
-                  {attribute.name}
-                </BodyText>
-              </div>
-            </td>
+      <tr className={styles.attributeSubItem} key={attribute.id}>
+        <td className={styles.attributeName}>
+          <div className={`${styles.content} ${styles.attribute} attribute-type`}>
+            <BodyText level={4} customClass={styles.content_type}>
+              {attribute.name}
+            </BodyText>
+          </div>
+        </td>
 
-            <td className={styles.attributeDescription}>
-              {attribute.conversion ? (
-                <ConversionText
-                  conversion={attribute.conversion}
-                  firstValue={attribute.conversion_value_1}
-                  secondValue={attribute.conversion_value_2}
-                />
-              ) : attribute.type === 'Options' ? (
-                <AttributeOption
-                  title={groupName}
-                  attributeName={attribute.name}
-                  options={attribute.basis_options ?? []}
-                  chosenOption={
-                    chosenOption
-                      ? {
-                          label: `${chosenOption.value_1} ${chosenOption.unit_1} - ${chosenOption.value_2} ${chosenOption.unit_2}`,
-                          value: chosenOption?.id,
-                        }
-                      : undefined
-                  }
-                  setChosenOptions={(option) => {
-                    onSelectSpecificationOption(
-                      groupIndex,
-                      attribute.id,
-                      option?.value?.toString() || undefined,
-                    );
-                  }}
-                />
-              ) : (
-                <GeneralText text={attribute.text} />
-              )}
-            </td>
-          </tr>
-        </div>
-      </div>
+        <td className={styles.attributeDescription}>
+          {attribute.conversion ? (
+            <ConversionText
+              conversion={attribute.conversion}
+              firstValue={attribute.conversion_value_1}
+              secondValue={attribute.conversion_value_2}
+            />
+          ) : attribute.type === 'Options' ? (
+            <AttributeOption
+              title={groupName}
+              attributeName={attribute.name}
+              options={attribute.basis_options ?? []}
+              chosenOption={
+                chosenOption
+                  ? {
+                      label: `${chosenOption.value_1} ${chosenOption.unit_1} - ${chosenOption.value_2} ${chosenOption.unit_2}`,
+                      value: chosenOption?.id,
+                    }
+                  : undefined
+              }
+              setChosenOptions={(option) => {
+                onSelectSpecificationOption(
+                  groupIndex,
+                  attribute.id,
+                  option?.value?.toString() || undefined,
+                );
+              }}
+            />
+          ) : (
+            <GeneralText text={attribute.text} />
+          )}
+        </td>
+      </tr>
     );
   };
 
