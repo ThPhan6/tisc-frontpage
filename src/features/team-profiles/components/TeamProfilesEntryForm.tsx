@@ -4,11 +4,16 @@ import { DEFAULT_TEAMPROFILE, DEFAULT_TEAMPROFILE_WITH_GENDER } from '../constan
 import { BrandAccessLevelDataRole, TISCAccessLevelDataRole } from '../constants/role';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
-import { useHistory, useParams } from 'umi';
+import { useHistory } from 'umi';
 
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
-import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
+import {
+  useBoolean,
+  useCheckPermission,
+  useCustomInitialState,
+  useGetParamId,
+} from '@/helper/hook';
 import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
 import { getDepartmentList } from '@/services';
 
@@ -42,10 +47,9 @@ type FieldName = keyof TeamProfileDetailProps;
 
 const TeamProfilesEntryForm = () => {
   const history = useHistory();
-  const params = useParams<{
-    id: string;
-  }>();
-  const userIdParam = params?.id || '';
+
+  const userIdParam = useGetParamId();
+
   const isUpdate = userIdParam ? true : false;
 
   const { fetchUserInfo } = useCustomInitialState();

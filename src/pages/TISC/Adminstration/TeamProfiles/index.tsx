@@ -1,121 +1,12 @@
-import { useRef } from 'react';
-
 import { PATH } from '@/constants/path';
-import { USER_STATUS_TEXTS } from '@/constants/util';
 
-import { confirmDelete } from '@/helper/common';
-import { pushTo } from '@/helper/history';
-import { formatPhoneCode, getFullName } from '@/helper/utils';
+import TeamProfilesTable from '@/features/team-profiles/components/TeamProfileTable';
 
-import { TableColumnItem } from '@/components/Table/types';
-import { TeamProfileTableProps } from '@/features/team-profiles/type';
-import { useAppSelector } from '@/reducers';
+const TISCTeamProfile = () => (
+  <TeamProfilesTable
+    createLink={PATH.tiscCreateTeamProfile}
+    updateLink={PATH.tiscUpdateTeamProfile}
+  />
+);
 
-import CustomTable from '@/components/Table';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { ActionMenu } from '@/components/TableAction';
-import TeamIcon from '@/components/TeamIcon/TeamIcon';
-
-import { deleteTeamProfile, getTeamProfileList } from '@/features/team-profiles/api';
-
-const TeamProfilesList = () => {
-  const tableRef = useRef<any>();
-  const userId = useAppSelector((state) => state.user.user?.id);
-  const handleUpdateTeamProfile = (id: string) => {
-    pushTo(PATH.tiscUpdateTeamProfile.replace(':id', id));
-  };
-
-  const handleDeleteTeamProfile = (id: string) => {
-    confirmDelete(() => {
-      deleteTeamProfile(id).then((isSuccess) => {
-        if (isSuccess) {
-          tableRef.current?.reload();
-        }
-      });
-    });
-  };
-  const mainColumns: TableColumnItem<TeamProfileTableProps>[] = [
-    {
-      title: '',
-      dataIndex: 'avatar',
-      width: '50',
-      render: (_, record) => (
-        <TeamIcon avatar={record.avatar} name={getFullName(record)} size={20} />
-      ),
-    },
-    {
-      title: 'Full Name',
-      dataIndex: 'firstname',
-      render: (_v, record) => getFullName(record),
-      sorter: true,
-    },
-    {
-      title: 'Work Location',
-      dataIndex: 'work_location',
-      sorter: true,
-    },
-    {
-      title: 'Position/Role',
-      dataIndex: 'position',
-    },
-    {
-      title: 'Work Email',
-      dataIndex: 'email',
-    },
-    {
-      title: 'Work Phone',
-      dataIndex: 'phone',
-      render: (value, record) => {
-        return `${formatPhoneCode(record.phone_code)} ${value ?? ''}`;
-      },
-    },
-    {
-      title: 'Access Level',
-      dataIndex: 'access_level',
-      sorter: true,
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      sorter: true,
-      render: (value) => USER_STATUS_TEXTS[value] ?? 'N/A',
-    },
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      width: '5%',
-      align: 'center',
-      render: (_value: any, record: any) => {
-        return (
-          <ActionMenu
-            actionItems={[
-              {
-                type: 'updated',
-                onClick: () => handleUpdateTeamProfile(record.id),
-              },
-              {
-                type: 'deleted',
-                disabled: userId === record.id,
-                onClick: () =>
-                  userId === record.id ? undefined : handleDeleteTeamProfile(record.id),
-              },
-            ]}
-          />
-        );
-      },
-    },
-  ];
-
-  return (
-    <CustomTable
-      title="TEAM PROFILES"
-      rightAction={<CustomPlusButton onClick={() => pushTo(PATH.tiscCreateTeamProfile)} />}
-      columns={mainColumns}
-      fetchDataFunc={getTeamProfileList}
-      ref={tableRef}
-      hasPagination
-    />
-  );
-};
-
-export default TeamProfilesList;
+export default TISCTeamProfile;
