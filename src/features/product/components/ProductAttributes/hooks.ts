@@ -1,5 +1,7 @@
 import { useDispatch } from 'react-redux';
 
+import { cloneDeep } from 'lodash';
+
 import { setPartialProductDetail } from '../../reducers';
 import { ProductAttributeProps } from '../../types';
 import { ProductInfoTab } from '../ProductAttributeComponent/types';
@@ -99,6 +101,35 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab) => {
       );
     };
 
+  const onSelectSpecificationOption = (
+    groupIndex: number,
+    attributeId: string,
+    optionId?: string,
+  ) => {
+    const newState = cloneDeep(specification_attribute_groups);
+    const attributeIndex = newState[groupIndex].attributes.findIndex((el) => el.id === attributeId);
+    console.log('newState', newState);
+    console.log('attributeIndex', attributeIndex);
+
+    if (attributeIndex !== -1) {
+      newState[groupIndex].attributes[attributeIndex].basis_options = newState[
+        groupIndex
+      ].attributes[attributeIndex].basis_options?.map((el) => ({
+        ...el,
+        isChecked: el.id === optionId ? true : false,
+      }));
+    }
+    console.log('newState', newState);
+    dispatch(setPartialProductDetail({ specification_attribute_groups: newState }));
+  };
+
+  const onCheckedSpecification = (groupIndex: number, checked?: boolean) => {
+    const newState = cloneDeep(specification_attribute_groups);
+    newState[groupIndex].isChecked =
+      checked === undefined ? !newState[groupIndex].isChecked : checked;
+    dispatch(setPartialProductDetail({ specification_attribute_groups: newState }));
+  };
+
   return {
     onDeleteProductAttribute,
     onChangeAttributeItem,
@@ -107,5 +138,7 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab) => {
     deleteAttributeItem,
     attributeGroupKey,
     attributeGroup,
+    onCheckedSpecification,
+    onSelectSpecificationOption,
   };
 };

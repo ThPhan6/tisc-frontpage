@@ -158,17 +158,6 @@ export const getProductById = async (productId: string) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_PRODUCT_ERROR);
     });
 };
-export const getProductByIdAndReturn = async (productId: string) => {
-  return request<{ data: ProductItem }>(`/api/product/get-one/${productId}`, {
-    method: 'GET',
-  })
-    .then((res) => {
-      return res.data;
-    })
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_PRODUCT_ERROR);
-    });
-};
 
 export const updateProductCard = async (productId: string, data: ProductFormData) => {
   return request<{ data: ProductItem }>(`/api/product/update/${productId}`, {

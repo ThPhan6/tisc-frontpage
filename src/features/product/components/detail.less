@@ -257,9 +257,6 @@
   }
   .productAttributeItem {
     border-bottom: 0 !important;
-    &:global(.ant-collapse-item-active) {
-      box-shadow: none;
-    }
     :global(.delete-icon) {
       color: @mono-color-medium;
     }
@@ -526,6 +523,7 @@
     padding: 0;
 
     p {
+      min-width: 30px;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;

@@ -8,16 +8,9 @@ import type { RadioValue } from '@/components/CustomRadio/types';
 import { ProductAttributeFormInput } from '@/features/product/types';
 import type { SpecificationAttributeGroup } from '@/features/project/types';
 
-import CustomCollapse from '@/components/Collapse';
-import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { CustomRadio } from '@/components/CustomRadio';
 import { Title } from '@/components/Typography';
-import {
-  AttributeOption,
-  ConversionText,
-  GeneralText,
-  ProductAttributeLine,
-} from '@/features/product/components/ProductAttributeComponent/AttributeComponent';
+import { ProductAttributeContainer } from '@/features/product/components/ProductAttributes';
 
 import styles from './styles/specification-tab.less';
 
@@ -50,49 +43,11 @@ interface SpecificationTabProps {
 const SpecificationTab: FC<SpecificationTabProps> = ({
   onChangeReferToDocument,
   onChangeSpecification,
-  specification_attribute_groups = [],
   is_refer_document = false,
-  specifyingGroups,
 }) => {
   const onCheckReferDocument = () => {
     onChangeReferToDocument(true);
     onChangeSpecification([]);
-  };
-
-  const onCheckedSpecification = (index: number, checked?: boolean) => {
-    onChangeReferToDocument(false);
-    const newState = specification_attribute_groups;
-    specification_attribute_groups[index].isChecked =
-      checked === undefined ? !specification_attribute_groups[index].isChecked : checked;
-    onChangeSpecification(newState);
-  };
-
-  const onSelectSpecificationOption = (
-    groupIndex: number,
-    attributeId: string,
-    optionId?: string,
-  ) => {
-    const newState = specification_attribute_groups;
-    const attributeIndex = newState[groupIndex].attributes.findIndex((el) => el.id === attributeId);
-
-    if (!optionId) {
-      // Uncheck
-      newState[groupIndex].attributes.splice(attributeIndex, 1);
-    } else if (attributeIndex === -1) {
-      // push new one
-      newState[groupIndex].attributes.push({
-        basis_option_id: optionId,
-        id: attributeId,
-      });
-      onCheckedSpecification(groupIndex, true);
-    } else {
-      // update existed one
-      newState[groupIndex].attributes[attributeIndex] = {
-        basis_option_id: optionId,
-        id: attributeId,
-      };
-    }
-    onChangeSpecification(newState);
   };
 
   const ReferToDesignRadio: RadioValue = {
@@ -111,75 +66,7 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
         noPaddingLeft
       />
 
-      <div>
-        {specifyingGroups.map((group, groupIndex) => (
-          <CustomCollapse
-            key={groupIndex}
-            // defaultActiveKey={['1']}
-            className={styles.specificationItem}
-            noBorder
-            header={
-              <div className={styles.specificationHeaderItem}>
-                <CustomCheckbox
-                  options={[{ label: group.name, value: groupIndex }]}
-                  selected={
-                    specification_attribute_groups.some((gr) => gr.isChecked && gr.id === group.id)
-                      ? [{ label: group.name, value: groupIndex }]
-                      : []
-                  }
-                  onChange={() => onCheckedSpecification(groupIndex)}
-                />
-              </div>
-            }>
-            {group.attributes.map((attribute, attributeIndex) => {
-              const curAttribute = specification_attribute_groups[groupIndex]?.attributes?.find(
-                (el) => el.id === attribute.id,
-              );
-
-              const chosenOption = curAttribute
-                ? attribute.basis_options?.find((el) => el.id === curAttribute.basis_option_id)
-                : undefined;
-
-              return (
-                <div className={styles.attributeOptionWrapper} key={attributeIndex}>
-                  <ProductAttributeLine name={attribute.name} />
-                  {attribute.conversion ? (
-                    <ConversionText
-                      conversion={attribute.conversion}
-                      firstValue={attribute.conversion_value_1}
-                      secondValue={attribute.conversion_value_2}
-                    />
-                  ) : attribute.type === 'Options' ? (
-                    <AttributeOption
-                      title={group.name}
-                      attributeName={attribute.name}
-                      options={attribute.basis_options ?? []}
-                      chosenOption={
-                        chosenOption
-                          ? {
-                              label: `${chosenOption.value_1} ${chosenOption.unit_1} - ${chosenOption.value_2} ${chosenOption.unit_2}`,
-                              value: chosenOption?.id,
-                            }
-                          : undefined
-                      }
-                      setChosenOptions={(option) => {
-                        onSelectSpecificationOption(
-                          groupIndex,
-                          attribute.id,
-                          option?.value?.toString() || undefined,
-                        );
-                      }}
-                      clearOnClose
-                    />
-                  ) : (
-                    <GeneralText text={attribute.text} />
-                  )}
-                </div>
-              );
-            })}
-          </CustomCollapse>
-        ))}
-      </div>
+      <ProductAttributeContainer activeKey="specification" specifying noBorder />
     </div>
   );
 };
