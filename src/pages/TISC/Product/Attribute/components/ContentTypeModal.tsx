@@ -252,6 +252,8 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
   }
   const [activeTab, setActiveTab] = useState<string>(selectedTab.key);
 
+  const tab = activeTab === 'text' ? 'texts' : activeTab;
+
   return (
     <>
       <Modal
@@ -283,7 +285,7 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
           <div className={styles.contentTypeOption}>
             <ContentTypeOption
               type={activeTab as ACTIVE_TAB}
-              data={contentType ? contentType[activeTab === 'text' ? 'texts' : activeTab] : []}
+              data={contentType ? contentType[tab] : []}
               selectedOption={selectedOption}
               setSelectedOption={setSelectedOption}
             />

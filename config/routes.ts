@@ -60,7 +60,7 @@ export default [
           {
             hideInMenu: true,
             path: PATH.tiscUserGroupBrandEntryFrom,
-            component: './TISC/UserGroup/Brand/CreatePage',
+            component: './TISC/UserGroup/Brand/BrandCreatePage',
           },
           {
             hideInMenu: true,
@@ -83,7 +83,7 @@ export default [
           {
             path: PATH.tiscUserGroupViewDesigner,
             hideInMenu: true,
-            component: './TISC/UserGroup/DesignFirm/UpdatePage',
+            component: './TISC/UserGroup/DesignFirm/DesignFirmUpdatePage',
           },
         ],
       },
@@ -223,12 +223,12 @@ export default [
               {
                 path: PATH.attributeGeneralCreate,
                 hideInMenu: true,
-                component: './TISC/Product/Attribute/CreatePage',
+                component: './TISC/Product/Attribute/components/AttributeEntryForm',
               },
               {
                 path: PATH.attributeGeneralUpdate,
                 hideInMenu: true,
-                component: './TISC/Product/Attribute/UpdatePage',
+                component: './TISC/Product/Attribute/components/AttributeEntryForm',
               },
             ],
           },
@@ -244,12 +244,12 @@ export default [
               {
                 path: PATH.attributeFeatureCreate,
                 hideInMenu: true,
-                component: './TISC/Product/Attribute/CreatePage',
+                component: './TISC/Product/Attribute/components/AttributeEntryForm',
               },
               {
                 path: PATH.attributeFeatureUpdate,
                 hideInMenu: true,
-                component: './TISC/Product/Attribute/UpdatePage',
+                component: './TISC/Product/Attribute/components/AttributeEntryForm',
               },
             ],
           },
@@ -265,12 +265,12 @@ export default [
               {
                 path: PATH.attributeSpecificationCreate,
                 hideInMenu: true,
-                component: './TISC/Product/Attribute/CreatePage',
+                component: './TISC/Product/Attribute/components/AttributeEntryForm',
               },
               {
                 path: PATH.attributeSpecificationUpdate,
                 hideInMenu: true,
-                component: './TISC/Product/Attribute/UpdatePage',
+                component: './TISC/Product/Attribute/components/AttributeEntryForm',
               },
             ],
           },
