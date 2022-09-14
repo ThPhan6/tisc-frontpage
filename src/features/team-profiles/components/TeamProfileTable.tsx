@@ -1,15 +1,16 @@
-import { FC, useRef } from 'react';
+import { useRef } from 'react';
 
+import { PATH } from '@/constants/path';
 import { USER_STATUS_TEXTS } from '@/constants/util';
 
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
+import { useCheckPermission } from '@/helper/hook';
 import { formatPhoneCode, getFullName } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import { TeamProfileTableProps } from '@/features/team-profiles/type';
 import { useAppSelector } from '@/reducers';
-import { CreateUpdateLink } from '@/types';
 
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
@@ -18,11 +19,26 @@ import TeamIcon from '@/components/TeamIcon/TeamIcon';
 
 import { deleteTeamProfile, getTeamProfileList } from '@/features/team-profiles/api';
 
-const TeamProfilesTable: FC<CreateUpdateLink> = ({ createLink, updateLink }) => {
+const TeamProfilesTable = () => {
   const tableRef = useRef<any>();
   const userId = useAppSelector((state) => state.user.user?.id);
+
+  const isTISCAdmin = useCheckPermission('TISC Admin');
+  const isBrandAdmin = useCheckPermission('Brand Admin');
+  /// for user role path
+  const userCreateRolePath = isTISCAdmin
+    ? PATH.tiscCreateTeamProfile
+    : isBrandAdmin
+    ? PATH.brandCreateTeamProfile
+    : '';
+  const userUpdateRolePath = isTISCAdmin
+    ? PATH.tiscUpdateTeamProfile
+    : isBrandAdmin
+    ? PATH.brandUpdateTeamProfile
+    : '';
+
   const handleUpdateTeamProfile = (id: string) => {
-    pushTo(updateLink.replace(':id', id));
+    pushTo(userUpdateRolePath.replace(':id', id));
   };
 
   const handleDeleteTeamProfile = (id: string) => {
@@ -109,7 +125,7 @@ const TeamProfilesTable: FC<CreateUpdateLink> = ({ createLink, updateLink }) => 
   return (
     <CustomTable
       title="TEAM PROFILES"
-      rightAction={<CustomPlusButton onClick={() => pushTo(createLink)} />}
+      rightAction={<CustomPlusButton onClick={() => pushTo(userCreateRolePath)} />}
       columns={mainColumns}
       fetchDataFunc={getTeamProfileList}
       ref={tableRef}
