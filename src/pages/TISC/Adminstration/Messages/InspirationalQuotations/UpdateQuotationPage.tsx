@@ -20,7 +20,7 @@ const DEFAULT_INPUT = {
   quotation: '',
 };
 
-const UpdateInspirationalQuotationsPage = () => {
+const UpdateQuotationsPage = () => {
   const isLoading = useBoolean();
   const submitButtonStatus = useBoolean(false);
   const params = useParams<{ id: string }>();
@@ -81,4 +81,4 @@ const UpdateInspirationalQuotationsPage = () => {
   );
 };
 
-export default UpdateInspirationalQuotationsPage;
+export default UpdateQuotationsPage;

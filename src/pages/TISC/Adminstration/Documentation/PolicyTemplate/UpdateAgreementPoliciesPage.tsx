@@ -24,7 +24,7 @@ const DEFAULT_AGREEMENTPOLICIES_VALUE = {
   message: '',
 };
 
-const CreateAgreementPoliciesPage = () => {
+const UpdateAgreementPoliciesPage = () => {
   const isLoading = useBoolean();
   const submitButtonStatus = useBoolean();
   const loadingEmail = useBoolean(true);
@@ -121,4 +121,4 @@ const CreateAgreementPoliciesPage = () => {
   );
 };
 
-export default CreateAgreementPoliciesPage;
+export default UpdateAgreementPoliciesPage;

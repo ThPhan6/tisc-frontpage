@@ -4,6 +4,7 @@ import { PATH } from '@/constants/path';
 
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
+import { useCheckPermission } from '@/helper/hook';
 import { formatPhoneCode } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
@@ -15,14 +16,28 @@ import { ActionMenu } from '@/components/TableAction';
 
 import { deleteLocationById, getLocationPagination } from '@/features/locations/api';
 
-const BrandLocation: React.FC = () => {
+const LocationTable: React.FC = () => {
   const tableRef = useRef<any>();
 
+  const isTISCAdmin = useCheckPermission('TISC Admin');
+  const isBrandAdmin = useCheckPermission('Brand Admin');
+  /// for user role path
+  const userCreateRolePath = isTISCAdmin
+    ? PATH.tiscLocationCreate
+    : isBrandAdmin
+    ? PATH.brandLocationCreate
+    : '';
+  const userUpdateRolePath = isTISCAdmin
+    ? PATH.tiscLocationUpdate
+    : isBrandAdmin
+    ? PATH.brandLocationUpdate
+    : '';
+
   const handleUpdateLocation = (id: string) => {
-    pushTo(PATH.brandLocationUpdate.replace(':id', id));
+    pushTo(userUpdateRolePath.replace(':id', id));
   };
   const handleCreateLocation = () => {
-    pushTo(PATH.brandLocationCreate);
+    pushTo(userCreateRolePath);
   };
 
   const handleDeleteLocation = (id: string) => {
@@ -64,7 +79,6 @@ const BrandLocation: React.FC = () => {
     {
       title: 'General Email',
       dataIndex: 'general_email',
-      // width: '30%',
     },
     {
       title: 'Teams',
@@ -94,6 +108,7 @@ const BrandLocation: React.FC = () => {
       },
     },
   ];
+
   return (
     <div>
       <CustomTable
@@ -108,4 +123,4 @@ const BrandLocation: React.FC = () => {
   );
 };
 
-export default BrandLocation;
+export default LocationTable;
