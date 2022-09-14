@@ -32,7 +32,6 @@ const CreateAttributePage = () => {
         setTimeout(() => {
           pushTo(activePath);
         }, 1000);
-        return;
       }
     });
   };
@@ -54,7 +53,7 @@ const CreateAttributePage = () => {
           onCancel={handleCancel}
         />
       </div>
-      {isLoading.value && <LoadingPageCustomize />}
+      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

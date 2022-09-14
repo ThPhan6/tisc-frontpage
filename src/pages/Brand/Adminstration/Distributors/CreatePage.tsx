@@ -48,7 +48,6 @@ const CreatePage = () => {
         setTimeout(() => {
           pushTo(PATH.distributors);
         }, 1000);
-        return;
       }
     });
   };
@@ -69,7 +68,7 @@ const CreatePage = () => {
           onCancel={handleCancel}
         />
       </div>
-      {isLoading.value && <LoadingPageCustomize />}
+      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

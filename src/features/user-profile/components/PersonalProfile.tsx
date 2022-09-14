@@ -74,7 +74,6 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
   const handleUpdateAvatar = (avtFile: File) => {
     const formData = new FormData();
     formData.append('avatar', avtFile);
-    console.log('avtFile', avtFile);
     isLoading.setValue(true);
     updateAvatarTeamProfile(formData, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
@@ -119,7 +118,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
       }
       setFileInput(file);
       handleUpdateAvatar(file);
-      return false;
+      return true;
     },
     multiple: false,
     showUploadList: false,
