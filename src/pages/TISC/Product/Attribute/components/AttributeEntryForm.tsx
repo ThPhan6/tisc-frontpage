@@ -177,7 +177,9 @@ const AttributeEntryForm = () => {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = isUpdate ? handleUpdateData : handleCreateData;
+
+  const onHandleSubmit = () => {
     const newSubs: AttributeSubForm[] = data.subs.map((sub) => {
       if (sub.id) {
         return {
@@ -191,18 +193,14 @@ const AttributeEntryForm = () => {
         basis_id: sub.basis_id,
       };
     });
-    if (isUpdate) {
-      handleUpdateData({ ...data, type: attributeLocation.TYPE, subs: newSubs });
-    } else {
-      handleCreateData({ ...data, type: attributeLocation.TYPE, subs: newSubs });
-    }
+    handleSubmit({ ...data, type: attributeLocation.TYPE, subs: newSubs });
   };
 
   return (
     <div>
       <TableHeader title={attributeLocation.NAME} rightAction={<CustomPlusButton disabled />} />
       <EntryFormWrapper
-        handleSubmit={handleSubmit}
+        handleSubmit={onHandleSubmit}
         handleCancel={history.goBack}
         submitButtonStatus={submitButtonStatus.value}>
         <FormNameInput
