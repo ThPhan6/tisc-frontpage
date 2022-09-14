@@ -19,7 +19,7 @@ const DEFAULT_INPUT = {
   quotation: '',
 };
 
-const CreateInspirationalQuotationsPage = () => {
+const CreateQuotationsPage = () => {
   const isLoading = useBoolean();
   const submitButtonStatus = useBoolean(false);
   const [input, setInput] = useState<Quotation>(DEFAULT_INPUT);
@@ -61,4 +61,4 @@ const CreateInspirationalQuotationsPage = () => {
   );
 };
 
-export default CreateInspirationalQuotationsPage;
+export default CreateQuotationsPage;

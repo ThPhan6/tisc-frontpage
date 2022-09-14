@@ -105,7 +105,6 @@ const UpdateEmailAutoPage = () => {
   const handleUpdateEmailAuto = () => {
     if (isEmpty(formState.message)) {
       message.error(MESSAGE_ERROR.EMAIL_AUTO);
-      return;
     } else {
       isLoading.setValue(true);
       updateEmailAuto(idEmailAuto, {
@@ -118,7 +117,6 @@ const UpdateEmailAutoPage = () => {
           setTimeout(() => {
             submitButtonStatus.setValue(false);
           }, 1000);
-          return;
         }
       });
     }
