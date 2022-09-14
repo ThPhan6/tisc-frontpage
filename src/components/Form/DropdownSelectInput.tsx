@@ -1,5 +1,7 @@
 import { CSSProperties, FC } from 'react';
 
+import { DropdownProps } from 'antd/es/dropdown';
+
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 
 import { CustomInputProps } from './types';
@@ -12,22 +14,29 @@ import styles from './DropdownSelectInput.less';
 interface DropdownSelectInputProps extends CustomInputProps {
   overlay: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
   overlayStyle?: CSSProperties;
+  overlayClass?: CSSProperties;
   noPadding?: boolean;
+  placement?: DropdownProps['placement'];
 }
 
 export const DropdownSelectInput: FC<DropdownSelectInputProps> = ({
   overlay,
   value,
   overlayStyle,
+  overlayClass = '',
   noPadding,
+  placement = 'bottom',
   ...props
 }) => {
   return (
     <CustomDropDown
-      placement="bottom"
+      placement={placement}
       hideDropdownIcon
       overlay={
-        <div className={`${styles.overlayContainer} ${noPadding ? styles.noPadding : ''}`}>
+        <div
+          className={`${styles.overlayContainer} ${
+            noPadding ? styles.noPadding : ''
+          } ${overlayClass} `}>
           {overlay}
         </div>
       }

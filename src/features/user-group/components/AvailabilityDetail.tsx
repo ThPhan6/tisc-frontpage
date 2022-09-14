@@ -29,7 +29,7 @@ const AvailabilityDetail: FC<RequiredValueProps> = ({ id }) => {
       <Col span={12}>
         <div className={styles.form}>
           <GeneralData>
-            {availability.length && (
+            {availability.length ? (
               <Collapse {...CollapseLevel1Props}>
                 {availability.map((collections, index) => (
                   <Collapse.Panel
@@ -67,7 +67,7 @@ const AvailabilityDetail: FC<RequiredValueProps> = ({ id }) => {
                   </Collapse.Panel>
                 ))}
               </Collapse>
-            )}
+            ) : null}
           </GeneralData>
         </div>
       </Col>

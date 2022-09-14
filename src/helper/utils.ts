@@ -56,19 +56,18 @@ export const getLetterAvatarBackgroundColor = (name: string) => {
   let digitString = '';
 
   /// convert character string to integer string
-  for (let i = 0; i < name.length; i++) {
-    digitString += name[i].charCodeAt(0);
+  for (const person of name) {
+    digitString += person.charCodeAt(0);
   }
 
   const number = Number(digitString) * 9999;
-  const backgroundColor =
+  return (
     '#' +
     number
       .toString()
       .replace(/\D/g, '')
-      .substring(number.toString().length - 6, number.toString().length);
-
-  return backgroundColor;
+      .substring(number.toString().length - 6, number.toString().length)
+  );
 };
 
 export const getBase64 = (file: any): Promise<string> =>
@@ -162,7 +161,6 @@ export const getPathName = (pathName: string) => {
   return false;
 };
 export const getFullName = (data: any) => {
-  // return `${data?.lastname ?? ''} ${data?.firstname ?? ''}`;
   return `${data?.firstname || data?.first_name || ''} ${data?.lastname || data?.last_name || ''}`;
 };
 

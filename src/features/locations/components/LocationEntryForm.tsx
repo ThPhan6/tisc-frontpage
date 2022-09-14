@@ -30,7 +30,7 @@ import { getListFunctionalType } from '../api';
 import styles from './LocationEntryForm.less';
 
 interface LocationEntryFormProps {
-  submitButtonStatus: any;
+  submitButtonStatus: boolean;
   onSubmit: (data: LocationForm) => void;
   onCancel: () => void;
   data: LocationForm;
