@@ -1,37 +1,15 @@
 import React, { useEffect, useState } from 'react';
 
 import useLocationInfo from './hook';
-import { useBoolean, useGetParamId } from '@/helper/hook';
 
-import { LocationForm, LocationTable } from '@/features/locations/type';
+import { TableLink } from '@/types';
 
-import { getLocationById, updateLocation } from '@/features/locations/api';
+import { getLocationById } from '@/features/locations/api';
 
-const LocationUpdatePage: React.FC<LocationTable> = ({ tableLink }) => {
-  const submitButtonStatus = useBoolean(false);
-  const isLoading = useBoolean();
+const LocationUpdatePage: React.FC<TableLink> = ({ tableLink }) => {
   const [loadedData, setLoadedData] = useState(false);
-  const locationId = useGetParamId();
 
-  const onSubmit = (submitData: LocationForm) => {
-    isLoading.setValue(true);
-    updateLocation(locationId, submitData).then((isSuccess) => {
-      isLoading.setValue(false);
-      if (isSuccess) {
-        submitButtonStatus.setValue(true);
-        setTimeout(() => {
-          submitButtonStatus.setValue(false);
-        }, 1000);
-      }
-    });
-  };
-
-  const { renderLocationTable, setData } = useLocationInfo(
-    tableLink,
-    submitButtonStatus.value,
-    isLoading.value,
-    onSubmit,
-  );
+  const { renderLocationTable, setData, locationId } = useLocationInfo(tableLink, 'update');
 
   useEffect(() => {
     getLocationById(locationId).then((res) => {

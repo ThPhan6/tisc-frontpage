@@ -6,6 +6,7 @@ import { formatPhoneCode } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import { LocationDetail } from '@/features/locations/type';
+import { CreateUpdateLink } from '@/types';
 
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
@@ -13,12 +14,7 @@ import { ActionMenu } from '@/components/TableAction';
 
 import { deleteLocationById, getLocationPagination } from '@/features/locations/api';
 
-interface LocationTableProps {
-  createLink: string;
-  updateLink: string;
-}
-
-const LocationTable: React.FC<LocationTableProps> = ({ createLink, updateLink }) => {
+const LocationTable: React.FC<CreateUpdateLink> = ({ createLink, updateLink }) => {
   const tableRef = useRef<any>();
 
   const handleUpdateLocation = (id: string) => {

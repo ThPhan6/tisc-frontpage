@@ -66,7 +66,3 @@ export interface Regions {
   count: number;
   countries: Country[];
 }
-
-export interface LocationTable {
-  tableLink: string;
-}
