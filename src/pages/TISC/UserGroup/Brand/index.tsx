@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 
 import { PATH } from '@/constants/path';
-import { USER_STATUSES } from '@/constants/util';
+import { BRAND_STATUSES_TEXTS } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
 
 import { ReactComponent as ActionUnreadedIcon } from '@/assets/icons/action-unreaded-icon.svg';
@@ -194,11 +194,7 @@ const BrandList: React.FC = () => {
       render: (_v, record) => {
         return (
           <BodyText level={5} fontFamily="Roboto">
-            {record.status === USER_STATUSES.ACTIVE
-              ? 'Active'
-              : record.status === USER_STATUSES.INACTIVE
-              ? 'Inactive'
-              : 'Pending'}
+            {BRAND_STATUSES_TEXTS[record.status]}
           </BodyText>
         );
       },

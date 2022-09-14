@@ -49,7 +49,7 @@ const DesignTabs: TabItem[] = [
   { tab: DesignTabKeys.custom, key: DesignTabKeys.custom, icon: <CustomIcon /> },
 ];
 
-const ViewDesignFirmPage = () => {
+const DesignFirmUpdatePage = () => {
   const designId = useGetParamId();
   const [selectedTab, setSelectedTab] = useState<TabKeys>(DesignTabKeys.profile);
   const buttonStatus = useBoolean(false);
@@ -145,4 +145,4 @@ const ViewDesignFirmPage = () => {
     </div>
   );
 };
-export default ViewDesignFirmPage;
+export default DesignFirmUpdatePage;
