@@ -15,10 +15,6 @@ export enum DocumentType {
   // howTo = 2, 3, 4
 }
 
-// interface GetDocumentRequestParams extends PaginationRequestParams {
-//   type: DocumentType;
-// }
-
 export async function getPolicyTemplates(
   params: PaginationRequestParams,
   callback: (data: DataTableResponse) => void,
@@ -63,12 +59,10 @@ export async function getOnePolicyTemplete(id: string) {
 export async function updatePolicyTemplate(id: string, data: CreateDocumentationResquestBody) {
   return request<boolean>(`/api/documentation/update/${id}`, { method: 'PUT', data })
     .then(() => {
-      // console.log('updatePolicyTemplate success');
       message.success(getResponseMessage('update', 'documentation'));
       return true;
     })
     .catch((error) => {
-      console.log('updatePolicyTemplate error', error);
       message.error(getResponseMessage('update', 'documentation', 'failed', error));
       return false;
     });
