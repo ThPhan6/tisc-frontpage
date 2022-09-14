@@ -5,7 +5,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import BrandEntryForm from '@/features/user-group/components/BrandEntryForm';
 import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
 
-const CreatePage = () => {
+const BrandCreatePage = () => {
   return (
     <PageContainer pageHeaderRender={() => <MenuHeaderSummary type="brand" />}>
       <TableHeader title="BRANDS" rightAction={<CustomPlusButton disabled />} />
@@ -14,4 +14,4 @@ const CreatePage = () => {
   );
 };
 
-export default CreatePage;
+export default BrandCreatePage;

@@ -60,7 +60,7 @@ export default [
           {
             hideInMenu: true,
             path: PATH.tiscUserGroupBrandEntryFrom,
-            component: './TISC/UserGroup/Brand/CreatePage',
+            component: './TISC/UserGroup/Brand/BrandCreatePage',
           },
           {
             hideInMenu: true,
@@ -83,7 +83,7 @@ export default [
           {
             path: PATH.tiscUserGroupViewDesigner,
             hideInMenu: true,
-            component: './TISC/UserGroup/DesignFirm/UpdatePage',
+            component: './TISC/UserGroup/DesignFirm/DesignFirmUpdatePage',
           },
         ],
       },

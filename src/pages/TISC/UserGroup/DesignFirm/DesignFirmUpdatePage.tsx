@@ -49,7 +49,7 @@ const DesignTabs: TabItem[] = [
   { tab: DesignTabKeys.custom, key: DesignTabKeys.custom, icon: <CustomIcon /> },
 ];
 
-const UpdatePage = () => {
+const DesignFirmUpdatePage = () => {
   const designId = useGetParamId();
   const [selectedTab, setSelectedTab] = useState<TabKeys>(DesignTabKeys.profile);
   const buttonStatus = useBoolean(false);
@@ -145,4 +145,4 @@ const UpdatePage = () => {
     </div>
   );
 };
-export default UpdatePage;
+export default DesignFirmUpdatePage;
