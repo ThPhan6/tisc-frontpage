@@ -324,7 +324,8 @@ export default [
               },
               {
                 path: PATH.policyUpdate,
-                component: './TISC/Adminstration/Documentation/PolicyTemplate/Update',
+                component:
+                  './TISC/Adminstration/Documentation/PolicyTemplate/UpdateAgreementPoliciesPage',
                 hideInMenu: true,
               },
             ],
