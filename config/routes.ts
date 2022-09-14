@@ -344,18 +344,18 @@ export default [
         routes: [
           {
             path: PATH.tiscLocation,
-            component: './TISC/Adminstration/Location',
+            component: '../features/locations/components/LocationTable',
             hideInMenu: true,
           },
           {
             path: PATH.tiscLocationCreate,
             hideInMenu: true,
-            component: './TISC/Adminstration/Location/CreatePage',
+            component: '../features/locations/components/LocationDetail',
           },
           {
             path: PATH.tiscLocationUpdate,
             hideInMenu: true,
-            component: './TISC/Adminstration/Location/UpdatePage',
+            component: '../features/locations/components/LocationDetail',
           },
         ],
       },
@@ -509,18 +509,19 @@ export default [
         routes: [
           {
             path: PATH.brandLocation,
-            component: './Brand/Adminstration/Location',
+            component: '../features/locations/components/LocationTable',
+
             hideInMenu: true,
           },
           {
             path: PATH.brandLocationCreate,
             hideInMenu: true,
-            component: './Brand/Adminstration/Location/CreatePage',
+            component: '../features/locations/components/LocationDetail',
           },
           {
             path: PATH.brandLocationUpdate,
             hideInMenu: true,
-            component: './Brand/Adminstration/Location/UpdatePage',
+            component: '../features/locations/components/LocationDetail',
           },
         ],
       },
