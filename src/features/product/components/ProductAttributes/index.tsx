@@ -65,9 +65,11 @@ export const ProductAttributeContainer: FC<Props> = ({
       );
     }
 
+    const haveOptionAttr = group.attributes.some((el) => el.type === 'Options');
+
     return (
       <div className={styles.attrGroupTitle}>
-        {activeKey === 'specification' ? (
+        {activeKey === 'specification' && haveOptionAttr ? (
           <CustomCheckbox
             options={[{ label: group.name, value: groupIndex }]}
             selected={
@@ -79,7 +81,7 @@ export const ProductAttributeContainer: FC<Props> = ({
             checkboxClass={styles.customLabel}
           />
         ) : (
-          <BodyText level={6} fontFamily="Roboto">
+          <BodyText level={6} fontFamily="Roboto" customClass="text-overflow">
             {group.name}
           </BodyText>
         )}

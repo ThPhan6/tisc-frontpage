@@ -13,10 +13,9 @@ import { getProductSpecifying, updateProductSpecifying } from '@/features/projec
 import { pick } from 'lodash';
 
 import { OnChangeSpecifyingProductFnc, SpecifyingProductRequestBody } from './types';
-import { setPartialProductDetail } from '@/features/product/reducers';
 import { ProductAttributeProps, ProductItem } from '@/features/product/types';
 import { SelectedSpecAttributte, SpecificationAttributeGroup } from '@/features/project/types';
-import store, { useAppSelector } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 
 import BrandProductBasicHeader from '@/components/BrandProductBasicHeader';
 import CustomButton from '@/components/Button';
@@ -119,11 +118,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
               'suffix_code',
               'unit_type_id',
             ]),
-          );
-          store.dispatch(
-            setPartialProductDetail({
-              referToDesignDocument: res.specification.is_refer_document,
-            }),
           );
         }
       });

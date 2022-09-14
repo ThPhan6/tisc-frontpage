@@ -8,6 +8,9 @@
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
   }
+  .attrGroupTitle {
+    max-width: 100%;
+  }
   &:global(.ant-collapse-item-active) {
     .attrGroupTitle {
       span,
@@ -59,8 +62,21 @@
       }
     }
   }
-  &.specifying :global(.ant-collapse-header) {
-    padding-left: 0 !important;
+  &.specifying {
+    :global(.ant-collapse-header) {
+      padding-left: 0 !important;
+    }
+    :global(.ant-collapse-content > .ant-collapse-content-box) {
+      padding: 0;
+    }
+  }
+
+  .customLabel span {
+    font-size: 12px;
+  }
+
+  :global(.ant-collapse-content > .ant-collapse-content-box) {
+    padding: 8px 16px;
   }
 }
 
@@ -123,15 +139,6 @@
 }
 
 .attributes {
-  // :global(.ant-collapse-content > .ant-collapse-content-box) {
-  //   padding: 8px 0;
-  // }
-  // .productAttributeItem.specifying {
-  //   :global(.ant-collapse-content > .ant-collapse-content-box) {
-  //     padding: 8px 0;
-  //   }
-  // }
-
   :global(.ant-collapse) {
     margin-top: 8px;
   }

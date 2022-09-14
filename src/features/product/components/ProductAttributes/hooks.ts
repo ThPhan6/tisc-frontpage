@@ -112,8 +112,6 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab) => {
   ) => {
     const newState = cloneDeep(specification_attribute_groups);
     const attributeIndex = newState[groupIndex].attributes.findIndex((el) => el.id === attributeId);
-    console.log('newState', newState);
-    console.log('attributeIndex', attributeIndex);
 
     if (attributeIndex === -1) {
       return;
@@ -126,29 +124,25 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab) => {
       isChecked: el.id === optionId ? true : false,
     }));
 
-    const haveUncheckOptionAttribute = newState[groupIndex].attributes.some((attr) => {
-      if (attr.type !== 'Options') {
-        return false;
-      }
+    const haveCheckedOptionAttribute = newState[groupIndex].attributes.some(
+      (attr) => attr.type === 'Options' && attr.basis_options?.some((opt) => opt.isChecked),
+    );
 
-      const haveCheckOption = attr.basis_options?.some((opt) => opt.isChecked);
-      return !haveCheckOption;
-    });
+    newState[groupIndex].isChecked = haveCheckedOptionAttribute;
 
-    if (!haveUncheckOptionAttribute) {
-      // All option attribute have selected then auto check their spec group
-      newState[groupIndex].isChecked = true;
-    }
+    const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
 
-    dispatch(setPartialProductDetail({ specification_attribute_groups: newState }));
+    dispatch(
+      setPartialProductDetail({
+        specification_attribute_groups: newState,
+        referToDesignDocument: !haveCheckedAttributeGroup,
+      }),
+    );
   };
 
   const onCheckedSpecification = (groupIndex: number) => {
     const newState = cloneDeep(specification_attribute_groups);
     const haveOptionAttr = newState[groupIndex].attributes.some((el) => el.type === 'Options');
-
-    console.log('specification_attribute_groups', specification_attribute_groups);
-    console.log('haveOptionAttr', haveOptionAttr);
 
     if (newState[groupIndex].isChecked && haveOptionAttr) {
       // UNCHECK group and clear all selected option
@@ -164,10 +158,12 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab) => {
       newState[groupIndex].isChecked = !newState[groupIndex].isChecked;
     }
 
+    const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
+
     dispatch(
       setPartialProductDetail({
         specification_attribute_groups: newState,
-        referToDesignDocument: newState[groupIndex].isChecked ? false : referToDesignDocument,
+        referToDesignDocument: newState[groupIndex].isChecked ? false : !haveCheckedAttributeGroup,
       }),
     );
   };
