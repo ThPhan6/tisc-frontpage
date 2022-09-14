@@ -18,7 +18,7 @@ import LoadingPageCustomize from '@/components/LoadingPage';
 import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from '../../styles/basic-information.less';
-import EntryForm from './EntryForm';
+import { EntryForm } from './EntryForm';
 
 interface GeneralInformationProps {
   project?: ProjectDetailProps;
@@ -114,7 +114,7 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
           <EntryForm data={data} onChangeData={onChangeData} />
         </Col>
       </Row>
-      {isLoading.value && <LoadingPageCustomize />}
+      {isLoading.value ? <LoadingPageCustomize /> : null}
     </>
   );
 };

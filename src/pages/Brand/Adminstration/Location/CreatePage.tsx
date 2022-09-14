@@ -43,7 +43,6 @@ const BrandLocationCreatePage: React.FC = () => {
         setTimeout(() => {
           goBackToLocationList();
         }, 1000);
-        return;
       }
     });
   };
@@ -58,7 +57,7 @@ const BrandLocationCreatePage: React.FC = () => {
         data={data}
         setData={setData}
       />
-      {isLoading.value && <LoadingPageCustomize />}
+      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

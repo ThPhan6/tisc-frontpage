@@ -231,10 +231,7 @@ const BrandList: React.FC = () => {
         <CustomTable
           title="BRANDS"
           rightAction={
-            <CustomPlusButton
-              onClick={() => pushTo(PATH.tiscUserGroupBrandEntryFrom)}
-              // onClick={() => alert('comming soon')}
-            />
+            <CustomPlusButton onClick={() => pushTo(PATH.tiscUserGroupBrandEntryFrom)} />
           }
           columns={TableColumns}
           ref={tableRef}

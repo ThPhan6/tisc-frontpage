@@ -71,7 +71,7 @@ const UpdatePage = () => {
           submitButtonStatus={submitButtonStatus.value}
         />
       </div>
-      {isLoading.value && <LoadingPageCustomize />}
+      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

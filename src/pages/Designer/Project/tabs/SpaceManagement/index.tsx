@@ -86,7 +86,7 @@ const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
       ) : projectId ? (
         <SpaceList handleUpdateSpace={(record) => displaySpaceForm(record)} projectId={projectId} />
       ) : null}
-      {isLoading.value && <LoadingPageCustomize />}
+      {isLoading.value ? <LoadingPageCustomize /> : null}
     </>
   );
 };

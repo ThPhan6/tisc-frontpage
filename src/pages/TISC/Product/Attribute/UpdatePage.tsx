@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { useParams } from 'umi';
-
 import { useAttributeLocation } from './hooks/location';
 import { pushTo } from '@/helper/history';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 import { getOneAttribute, updateAttribute } from '@/services';
 
 import type { AttributeForm } from '@/types';
@@ -24,10 +22,8 @@ const UpdateAttributePage = () => {
   const isLoading = useBoolean();
   const submitButtonStatus = useBoolean(false);
   const [data, setData] = useState<AttributeForm>(DEFAULT_ATTRIBUTE);
-  const params = useParams<{
-    id: string;
-  }>();
-  const idAttribute = params?.id || '';
+
+  const idAttribute = useGetParamId();
 
   const getAttributeData = () => {
     getOneAttribute(idAttribute).then((res) => {
@@ -72,7 +68,7 @@ const UpdateAttributePage = () => {
           onCancel={handleCancel}
         />
       </div>
-      {isLoading.value && <LoadingPageCustomize />}
+      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

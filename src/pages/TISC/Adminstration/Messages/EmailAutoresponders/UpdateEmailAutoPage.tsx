@@ -207,7 +207,7 @@ const UpdateEmailAutoPage = () => {
         </EntryFormWrapper>
       </div>
 
-      {isLoading.value && <LoadingPageCustomize />}
+      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

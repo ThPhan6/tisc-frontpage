@@ -29,10 +29,10 @@ import { KeyValueData } from '@/types';
 
 import { CustomTabPane } from '@/components/Tabs';
 import CustomDesign from '@/features/user-group/components/CustomDesign';
-import LocationDetail from '@/features/user-group/components/LocationDetail';
+import { LocationDetail } from '@/features/user-group/components/LocationDetail';
 import MaterialCode from '@/features/user-group/components/MaterialCode';
 import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
-import ProfileDetail from '@/features/user-group/components/Profile';
+import { ProfileDetail } from '@/features/user-group/components/ProfileDetail';
 import ProjectDesign from '@/features/user-group/components/ProjectDesign';
 import TabDetail from '@/features/user-group/components/TabDetail';
 import TeamDetail from '@/features/user-group/components/Team';

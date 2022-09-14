@@ -358,7 +358,7 @@ const LandingPage = () => {
         onClose={handleCloseModal}
         theme="default"
       />
-      {userEmail && (
+      {userEmail ? (
         <ResetPasswordModal
           visible={openResetPwd}
           handleSubmit={handleResetPassword}
@@ -367,7 +367,7 @@ const LandingPage = () => {
             token: tokenResetPwd || '',
           }}
         />
-      )}
+      ) : null}
       <CreatePasswordModal
         visible={openVerificationModal}
         handleSubmit={handleVerifyAccount}
@@ -376,15 +376,15 @@ const LandingPage = () => {
           token: tokenVerification || '',
         }}
       />
-      {openVerifyAccountModal.value === true && (
+      {openVerifyAccountModal.value === true ? (
         <VerifyAccount
           visible={openVerifyAccountModal}
           handleSubmit={handleActiveAccount}
           openLogin={() => setOpenModal('Login')}
         />
-      )}
+      ) : null}
 
-      {isLoading.value && <LoadingPageCustomize />}
+      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

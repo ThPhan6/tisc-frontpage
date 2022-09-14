@@ -56,7 +56,7 @@ const CreateInspirationalQuotationsPage = () => {
         onSubmit={handleCreateData}
         submitButtonStatus={submitButtonStatus.value}
       />
-      {isLoading.value && <LoadingPageCustomize />}
+      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };
