@@ -82,6 +82,7 @@ export interface ProductItem {
   is_entire?: boolean;
   project_zone_id?: string;
   considered_id?: string;
+  referToDesignDocument?: boolean;
 }
 
 export interface ProductItemValue {

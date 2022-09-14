@@ -4,9 +4,9 @@ import { Tooltip } from 'antd';
 
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
+import { useProductAttributeForm } from '@/features/product/components/ProductAttributes/hooks';
+
 import type { RadioValue } from '@/components/CustomRadio/types';
-import { ProductAttributeFormInput } from '@/features/product/types';
-import type { SpecificationAttributeGroup } from '@/features/project/types';
 
 import { CustomRadio } from '@/components/CustomRadio';
 import { Title } from '@/components/Typography';
@@ -32,23 +32,9 @@ const ReferToDesignLabel = () => {
   );
 };
 
-interface SpecificationTabProps {
-  onChangeSpecification: (specification_attribute_groups: SpecificationAttributeGroup[]) => void;
-  onChangeReferToDocument: (isRefer: boolean) => void;
-  specification_attribute_groups: SpecificationAttributeGroup[];
-  is_refer_document: boolean;
-  specifyingGroups: ProductAttributeFormInput[];
-}
-
-const SpecificationTab: FC<SpecificationTabProps> = ({
-  onChangeReferToDocument,
-  onChangeSpecification,
-  is_refer_document = false,
-}) => {
-  const onCheckReferDocument = () => {
-    onChangeReferToDocument(true);
-    onChangeSpecification([]);
-  };
+const SpecificationTab: FC = () => {
+  const { checkReferToDesignDocument, referToDesignDocument } =
+    useProductAttributeForm('specification');
 
   const ReferToDesignRadio: RadioValue = {
     value: true,
@@ -60,8 +46,8 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
       <CustomRadio
         options={[ReferToDesignRadio]}
         isRadioList
-        value={is_refer_document}
-        onChange={onCheckReferDocument}
+        value={referToDesignDocument}
+        onChange={checkReferToDesignDocument}
         containerStyle={{ boxShadow: 'inset 0 -.7px 0 #000' }}
         noPaddingLeft
       />

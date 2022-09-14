@@ -10,12 +10,13 @@ import { message } from 'antd';
 import { useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
 import { getProductById } from '@/features/product/services';
 import { getProductSpecifying, updateProductSpecifying } from '@/features/project/services';
-import { useBoolean } from '@/helper/hook';
 import { pick } from 'lodash';
 
 import { OnChangeSpecifyingProductFnc, SpecifyingProductRequestBody } from './types';
-import { ProductAttributeFormInput, ProductItem } from '@/features/product/types';
-import { SpecificationAttributeGroup } from '@/features/project/types';
+import { setPartialProductDetail } from '@/features/product/reducers';
+import { ProductAttributeProps, ProductItem } from '@/features/product/types';
+import { SelectedSpecAttributte, SpecificationAttributeGroup } from '@/features/project/types';
+import store, { useAppSelector } from '@/reducers';
 
 import BrandProductBasicHeader from '@/components/BrandProductBasicHeader';
 import CustomButton from '@/components/Button';
@@ -65,13 +66,18 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   projectId,
   reloadTable,
 }) => {
+  const referToDesignDocument = useAppSelector(
+    (state) => state.product.details.referToDesignDocument,
+  );
+  const specification_attribute_groups = useAppSelector(
+    (state) => state.product.details.specification_attribute_groups,
+  );
+
   const [selectedTab, setSelectedTab] = useState<ProjectSpecifyTabValue>(
     ProjectSpecifyTabKeys.specification,
   );
   const [specifyingState, setSpecifyingState] =
     useState<SpecifyingProductRequestBody>(DEFAULT_STATE);
-  const [specifyingGroups, setSpecifyingGroups] = useState<ProductAttributeFormInput[]>([]);
-  const dataLoaded = useBoolean();
 
   const onChangeSpecifyingState: OnChangeSpecifyingProductFnc = (newStateParts) =>
     setSpecifyingState(
@@ -114,80 +120,47 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
               'unit_type_id',
             ]),
           );
+          store.dispatch(
+            setPartialProductDetail({
+              referToDesignDocument: res.specification.is_refer_document,
+            }),
+          );
         }
       });
     }
   }, [product.considered_id]);
 
   useEffect(() => {
-    getProductById(product.id).then(() => {
-      dataLoaded.setValue(true);
-    });
+    getProductById(product.id);
   }, []);
 
-  useEffect(() => {
-    if (!dataLoaded.value) {
-      return;
-    }
-    // Update checked status
-    setSpecifyingGroups((prevState) => {
-      if (prevState.length === 0) {
-        return [];
+  const getSelectedAttributeAndOption = (attrs: ProductAttributeProps[]) => {
+    const selectedAttributes: SelectedSpecAttributte[] = [];
+
+    attrs.forEach((attr) => {
+      const selectedOption = attr.basis_options?.find((opt) => opt.isChecked);
+      if (selectedOption) {
+        selectedAttributes.push({
+          id: attr.id,
+          basis_option_id: selectedOption.id,
+        });
       }
-
-      const specGroups = specifyingState.specification.specification_attribute_groups;
-
-      // Initial
-      if (specGroups.length === 0) {
-        specifyingState.specification.specification_attribute_groups = prevState.map((el) => ({
-          id: el.id || '',
-          attributes: [],
-          isChecked: false,
-        }));
-      }
-
-      // Update checked status
-      const newState = prevState.map((group, groupIndex) => ({
-        ...group,
-        isChecked: specGroups[groupIndex]?.attributes.length > 0,
-        attributes: group?.attributes.map((attr, attrIndex) => ({
-          ...attr,
-          basis_options:
-            attr.basis_options?.map((option) => ({
-              ...option,
-              isChecked:
-                option.id === specGroups[groupIndex]?.attributes[attrIndex]?.basis_option_id,
-            })) || [],
-        })),
-      }));
-
-      return newState;
     });
-  }, [specifyingState.specification.specification_attribute_groups, dataLoaded.value]);
+    return selectedAttributes;
+  };
 
-  const onChangeReferToDocument = (isRefer: boolean) =>
-    setSpecifyingState(
-      (prevState) =>
-        ({
-          ...prevState,
-          specification: {
-            ...prevState?.specification,
-            is_refer_document: isRefer,
-          },
-        } as SpecifyingProductRequestBody),
-    );
-
-  const onChangeSpecification = (specification_attribute_groups: SpecificationAttributeGroup[]) =>
-    setSpecifyingState(
-      (prevState) =>
-        ({
-          ...prevState,
-          specification: {
-            ...prevState?.specification,
-            specification_attribute_groups,
-          },
-        } as SpecifyingProductRequestBody),
-    );
+  const getSpecificationRequest = () => {
+    const specState: SpecificationAttributeGroup[] = [];
+    specification_attribute_groups.forEach((gr) => {
+      if (gr.isChecked) {
+        specState.push({
+          id: gr.id || '',
+          attributes: getSelectedAttributeAndOption(gr.attributes),
+        });
+      }
+    });
+    return specState;
+  };
 
   const onSubmit = () => {
     if (!Number(specifyingState.quantity)) {
@@ -195,41 +168,12 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       return;
     }
 
-    let variant = '';
-    if (specifyingState.specification.is_refer_document) {
-      variant = 'Refer to Document';
-    } else {
-      specifyingState.specification.specification_attribute_groups.forEach((group, groupIndex) => {
-        if (!group.isChecked) {
-          return;
-        }
-        group.attributes.forEach((attr) => {
-          const attribute = specifyingGroups[groupIndex]?.attributes?.find(
-            (stateAttr) => stateAttr.id === attr.id,
-          );
-          const basisOption = attribute?.basis_options?.find(
-            (el) => el.id === attr.basis_option_id,
-          );
-          // console.log('basisOption', basisOption);
-          if (basisOption) {
-            variant += `${attribute?.name}: ${basisOption.value_1} ${basisOption.unit_1} - ${basisOption.value_2} ${basisOption.unit_2}; `;
-          }
-        });
-      });
-      variant = variant.slice(0, -2);
-    }
-
     updateProductSpecifying(
       {
         ...specifyingState,
-        variant,
         specification: {
-          ...specifyingState.specification,
-          specification_attribute_groups:
-            specifyingState.specification.specification_attribute_groups.map((el) => ({
-              ...el,
-              attributes: el.isChecked ? el.attributes : [],
-            })),
+          is_refer_document: referToDesignDocument ?? false,
+          specification_attribute_groups: getSpecificationRequest(),
         },
       },
       () => {
@@ -281,15 +225,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       />
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.specification}>
-        <SpecificationTab
-          onChangeReferToDocument={onChangeReferToDocument}
-          onChangeSpecification={onChangeSpecification}
-          specifyingGroups={specifyingGroups}
-          specification_attribute_groups={
-            specifyingState.specification?.specification_attribute_groups
-          }
-          is_refer_document={specifyingState?.specification?.is_refer_document || false}
-        />
+        <SpecificationTab />
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.vendor}>

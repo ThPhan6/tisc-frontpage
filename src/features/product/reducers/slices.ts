@@ -35,6 +35,7 @@ const initialState: ProductState = {
     feature_attribute_groups: [],
     specification_attribute_groups: [],
     categories: [],
+    referToDesignDocument: true,
   },
   tip: {
     contents: [],

@@ -11,8 +11,12 @@ import { AttributeGroupKey } from '../ProductAttributeComponent/ProductAttribute
 
 export const useProductAttributeForm = (attributeType: ProductInfoTab) => {
   const dispatch = useDispatch();
-  const { feature_attribute_groups, general_attribute_groups, specification_attribute_groups } =
-    useAppSelector((state) => state.product.details);
+  const {
+    feature_attribute_groups,
+    general_attribute_groups,
+    specification_attribute_groups,
+    referToDesignDocument,
+  } = useAppSelector((state) => state.product.details);
 
   const attributeGroup =
     attributeType === 'general'
@@ -111,23 +115,77 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab) => {
     console.log('newState', newState);
     console.log('attributeIndex', attributeIndex);
 
-    if (attributeIndex !== -1) {
-      newState[groupIndex].attributes[attributeIndex].basis_options = newState[
-        groupIndex
-      ].attributes[attributeIndex].basis_options?.map((el) => ({
-        ...el,
-        isChecked: el.id === optionId ? true : false,
-      }));
+    if (attributeIndex === -1) {
+      return;
     }
-    console.log('newState', newState);
+
+    newState[groupIndex].attributes[attributeIndex].basis_options = newState[groupIndex].attributes[
+      attributeIndex
+    ].basis_options?.map((el) => ({
+      ...el,
+      isChecked: el.id === optionId ? true : false,
+    }));
+
+    const haveUncheckOptionAttribute = newState[groupIndex].attributes.some((attr) => {
+      if (attr.type !== 'Options') {
+        return false;
+      }
+
+      const haveCheckOption = attr.basis_options?.some((opt) => opt.isChecked);
+      return !haveCheckOption;
+    });
+
+    if (!haveUncheckOptionAttribute) {
+      // All option attribute have selected then auto check their spec group
+      newState[groupIndex].isChecked = true;
+    }
+
     dispatch(setPartialProductDetail({ specification_attribute_groups: newState }));
   };
 
-  const onCheckedSpecification = (groupIndex: number, checked?: boolean) => {
+  const onCheckedSpecification = (groupIndex: number) => {
     const newState = cloneDeep(specification_attribute_groups);
-    newState[groupIndex].isChecked =
-      checked === undefined ? !newState[groupIndex].isChecked : checked;
-    dispatch(setPartialProductDetail({ specification_attribute_groups: newState }));
+    const haveOptionAttr = newState[groupIndex].attributes.some((el) => el.type === 'Options');
+
+    console.log('specification_attribute_groups', specification_attribute_groups);
+    console.log('haveOptionAttr', haveOptionAttr);
+
+    if (newState[groupIndex].isChecked && haveOptionAttr) {
+      // UNCHECK group and clear all selected option
+      newState[groupIndex].attributes = newState[groupIndex].attributes.map((attr) => ({
+        ...attr,
+        basis_options: attr?.basis_options?.map((otp) => ({ ...otp, isChecked: false })),
+      }));
+    }
+
+    if (newState[groupIndex].isChecked || !haveOptionAttr) {
+      // CHECK group but only allow change for group don't have any option attribute
+      // If have option attribute user have to chose option
+      newState[groupIndex].isChecked = !newState[groupIndex].isChecked;
+    }
+
+    dispatch(
+      setPartialProductDetail({
+        specification_attribute_groups: newState,
+        referToDesignDocument: newState[groupIndex].isChecked ? false : referToDesignDocument,
+      }),
+    );
+  };
+
+  const checkReferToDesignDocument = () => {
+    dispatch(
+      setPartialProductDetail({
+        referToDesignDocument: true,
+        specification_attribute_groups: specification_attribute_groups.map((group) => ({
+          ...group,
+          isChecked: false,
+          attributes: group.attributes.map((attr) => ({
+            ...attr,
+            basis_options: attr?.basis_options?.map((otp) => ({ ...otp, isChecked: false })),
+          })),
+        })),
+      }),
+    );
   };
 
   return {
@@ -140,5 +198,7 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab) => {
     attributeGroup,
     onCheckedSpecification,
     onSelectSpecificationOption,
+    checkReferToDesignDocument,
+    referToDesignDocument,
   };
 };
