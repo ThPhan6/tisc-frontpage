@@ -30,7 +30,7 @@ const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
       <Col span={12}>
         <div className={styles.form}>
           <GeneralData>
-            {distributors.length && (
+            {distributors.length ? (
               <Collapse {...CollapseLevel1Props}>
                 {distributors.map((location, index) => (
                   <Collapse.Panel
@@ -80,7 +80,7 @@ const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
                   </Collapse.Panel>
                 ))}
               </Collapse>
-            )}
+            ) : null}
           </GeneralData>
         </div>
       </Col>

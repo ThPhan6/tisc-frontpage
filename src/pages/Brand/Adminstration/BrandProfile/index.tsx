@@ -108,7 +108,7 @@ const BrandProfilePage = () => {
 
   const setPreviewAvatar = () => {
     if (brandAppState?.logo) {
-      return showImageUrl(brandAppState?.logo as string);
+      return showImageUrl(brandAppState?.logo);
     }
     return Logo;
   };
@@ -127,7 +127,7 @@ const BrandProfilePage = () => {
         .catch((err) => {
           console.log(err);
         });
-      return false;
+      return true;
     },
   };
 

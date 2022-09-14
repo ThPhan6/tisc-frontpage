@@ -436,7 +436,7 @@ const TeamProfilesEntryForm = () => {
         setWorkLocation={setWorkLocation}
       />
 
-      {isLoading.value && <LoadingPageCustomize />}
+      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

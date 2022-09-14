@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { FilterStatusIcons } from './constants/filter';
-import { FilterValues, GlobalFilter } from './constants/filter';
+import { FilterStatusIcons, FilterValues, GlobalFilter } from './constants/filter';
 import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
 import { message } from 'antd';
