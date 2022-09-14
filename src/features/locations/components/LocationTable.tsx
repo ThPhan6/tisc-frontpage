@@ -1,12 +1,14 @@
 import React, { useRef } from 'react';
 
+import { PATH } from '@/constants/path';
+
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
+import { useCheckPermission } from '@/helper/hook';
 import { formatPhoneCode } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import { LocationDetail } from '@/features/locations/type';
-import { CreateUpdateLink } from '@/types';
 
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
@@ -14,14 +16,28 @@ import { ActionMenu } from '@/components/TableAction';
 
 import { deleteLocationById, getLocationPagination } from '@/features/locations/api';
 
-const LocationTable: React.FC<CreateUpdateLink> = ({ createLink, updateLink }) => {
+const LocationTable: React.FC = () => {
   const tableRef = useRef<any>();
 
+  const isTISCAdmin = useCheckPermission('TISC Admin');
+  const isBrandAdmin = useCheckPermission('Brand Admin');
+  /// for user role path
+  const userCreateRolePath = isTISCAdmin
+    ? PATH.tiscLocationCreate
+    : isBrandAdmin
+    ? PATH.brandLocationCreate
+    : '';
+  const userUpdateRolePath = isTISCAdmin
+    ? PATH.tiscLocationUpdate
+    : isBrandAdmin
+    ? PATH.brandLocationUpdate
+    : '';
+
   const handleUpdateLocation = (id: string) => {
-    pushTo(updateLink.replace(':id', id));
+    pushTo(userUpdateRolePath.replace(':id', id));
   };
   const handleCreateLocation = () => {
-    pushTo(createLink);
+    pushTo(userCreateRolePath);
   };
 
   const handleDeleteLocation = (id: string) => {
