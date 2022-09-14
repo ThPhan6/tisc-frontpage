@@ -9,6 +9,7 @@ export type CodeOrderRequestParams = {
   order_method: number;
   requirement_type_ids: string[];
   instruction_type_ids: string[];
+  finish_schedules: string[];
   special_instructions: string;
 };
 

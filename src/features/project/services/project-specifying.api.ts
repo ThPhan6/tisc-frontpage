@@ -46,6 +46,19 @@ export async function getRequirementTypeList() {
     });
 }
 
+export async function getFinishScheduleList() {
+  return request<{ data: GeneralData[] }>(`/api/finish-schedule-for/get-list`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log('getFinishScheduleList error', error);
+      return [] as GeneralData[];
+    });
+}
+
 export async function getProductSpecifying(consider_id: string) {
   return request<{ data: SpecifyingProductRequestBody }>(
     `/api/specified-product/get-one/${consider_id}`,

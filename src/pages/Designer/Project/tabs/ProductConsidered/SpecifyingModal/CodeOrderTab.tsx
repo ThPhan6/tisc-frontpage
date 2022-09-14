@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { Col, Row } from 'antd';
 
 import {
+  getFinishScheduleList,
   getInstructionTypeList,
   getRequirementTypeList,
   getUnitTypeList,
@@ -22,6 +23,8 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { DropdownSelectInput } from '@/components/Form/DropdownSelectInput';
 import { BodyText, Title } from '@/components/Typography';
+
+import styles from './styles/code-order.less';
 
 const ORDER_METHODS: RadioValue[] = [
   {
@@ -49,6 +52,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
   const [unitTypeOtps, setUnitTypeOtps] = useState<CheckboxValue[]>([]);
   const [requirements, setRequirements] = useState<CheckboxValue[]>([]);
   const [instructions, setInstructions] = useState<CheckboxValue[]>([]);
+  const [finishSchedules, setFinishSchedule] = useState<CheckboxValue[]>([]);
 
   const [selectedUnit, setSelectedUnit] = useState<RadioValue | null>(null);
 
@@ -62,10 +66,12 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
     special_instructions,
     instruction_type_ids,
     requirement_type_ids,
+    finish_schedules,
   } = codeOrderState;
 
   const selectedInstructions = getSelectedOptions(instructions, instruction_type_ids);
   const selectedRequirements = getSelectedOptions(requirements, requirement_type_ids);
+  const selectedFinishSchedules = getSelectedOptions(finishSchedules, finish_schedules);
 
   const unitType = unit_type_id
     ? unitTypeOtps.find((el) => el.value === unit_type_id) || selectedUnit
@@ -74,6 +80,11 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
   const materialCode = material_code_id
     ? materialCodeOpts.find((el) => el.value === material_code_id)
     : undefined;
+
+  const scheduleValues = finish_schedules
+    .filter((item, index) => finish_schedules.indexOf(item) === index)
+    ?.map((schId) => finishSchedules.find((el) => el.value === schId)?.label || schId)
+    .join(', ');
 
   const renderDualLabel = (firstTxt: string, secTxt: string) => {
     return (
@@ -94,7 +105,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
         res.map((el) => ({
           label: renderDualLabel(el.code, el.description),
           value: el.id,
-          labelText: `${el.description} (${el.code})`,
+          labelText: `${el.code}`,
         })),
       );
     });
@@ -127,6 +138,17 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
     });
   }, []);
 
+  useEffect(() => {
+    getFinishScheduleList().then((res) => {
+      setFinishSchedule(
+        res.map((el) => ({
+          label: el.name,
+          value: el.id,
+        })),
+      );
+    });
+  }, [finish_schedules]);
+
   const formGroupProps: Partial<FormGroupProps> = {
     layout: 'vertical',
     style: { marginBottom: 0 },
@@ -136,11 +158,13 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
     <div style={{ padding: '16px 0' }}>
       <Row gutter={[24, 8]} align="bottom">
         <Col span={12}>
-          <FormGroup label="Material/Product Code" {...formGroupProps}>
+          <FormGroup label="Material/Product Code" required {...formGroupProps}>
             <DropdownSelectInput
               placeholder="select from the list"
               borderBottomColor="light"
               value={materialCode?.labelText}
+              disabled
+              containerClass={styles.inputColor}
               overlay={
                 <CustomRadio
                   options={materialCodeOpts}
@@ -163,16 +187,51 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
             borderBottomColor="light"
             value={suffix_code}
             onChange={(e) => onChangeSpecifyingState({ suffix_code: e.target.value })}
+            containerClass={styles.inputColor}
           />
         </Col>
 
         <Col span={24}>
-          <FormGroup label="Description" {...formGroupProps}>
+          <FormGroup label="Description" required {...formGroupProps}>
             <CustomInput
               placeholder="e.g. Living room coffee table..."
               borderBottomColor="light"
               value={description}
               onChange={(e) => onChangeSpecifyingState({ description: e.target.value })}
+              containerClass={styles.inputColor}
+            />
+          </FormGroup>
+        </Col>
+
+        <Col span={24}>
+          <FormGroup label="Finish Schedule For (if appliable)" {...formGroupProps}>
+            <DropdownSelectInput
+              borderBottomColor="light"
+              noPadding
+              disabled
+              containerClass={styles.inputColor}
+              overlayClass={styles.overlayForm}
+              placement="bottomRight"
+              placeholder={'e.g. Wall, base, ceiling, door...'}
+              value={scheduleValues}
+              overlayStyle={{ minWidth: 'unset' }}
+              overlay={
+                <CustomCheckbox
+                  options={finishSchedules}
+                  inputPlaceholder="please specify"
+                  isCheckboxList
+                  otherInput
+                  checkboxClass={styles.inputColor}
+                  selected={selectedFinishSchedules}
+                  onChange={(option) => {
+                    onChangeSpecifyingState({
+                      finish_schedules: option?.map((opt) =>
+                        String(opt.value === 'other' ? opt.label : opt.value),
+                      ),
+                    });
+                  }}
+                />
+              }
             />
           </FormGroup>
         </Col>
@@ -184,6 +243,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
               value={quantity}
               onChange={(e) => onChangeSpecifyingState({ quantity: e.target.value })}
               inputValidation={validateFloatNumber}
+              containerClass={styles.inputColor}
             />
           </FormGroup>
         </Col>
@@ -193,6 +253,8 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
             borderBottomColor="light"
             value={unitType?.label ? String(unitType?.label) : ''}
             noPadding
+            disabled
+            containerClass={styles.inputColor}
             overlay={
               <CustomRadio
                 options={unitTypeOtps}
@@ -200,6 +262,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
                 inputPlaceholder="please specify"
                 value={unit_type_id}
                 otherInput
+                containerClass={styles.inputColor}
                 otherStickyBottom
                 stickyTopItem
                 containerStyle={{ padding: 0 }}
@@ -214,6 +277,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
           />
         </Col>
 
+        {/* Default value is Direct Purchase */}
         <Col span={24}>
           <FormGroup label="Order Method" {...formGroupProps}>
             <CustomRadio
@@ -242,6 +306,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
                 });
               }}
               otherInput
+              checkboxClass={styles.inputColor}
               isCheckboxList
               inputPlaceholder="please specify"
               heightItem="36px"

@@ -8,6 +8,11 @@ export enum STATUS_RESPONSE_CODE {
   SUCCESS = 200,
 }
 
+export const ORDER_METHOD = {
+  directPurchase: 1,
+  customOrder: 2,
+};
+
 export const USER_STATUSES = {
   ACTIVE: 1,
   BLOCKED: 2,
