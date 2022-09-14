@@ -15,9 +15,10 @@ import { showImageUrl, updateUrlParams } from '@/helper/utils';
 import { flatMap, forEach, map } from 'lodash';
 
 import { resetProductState, setBrand } from '@/features/product/reducers';
-import { ProductGetListParameter } from '@/features/product/types';
+import { ProductGetListParameter, ProductTopBarFilter } from '@/features/product/types';
 import { BrandAlphabet, BrandDetail } from '@/features/user-group/types';
 import { useAppSelector } from '@/reducers';
+import { GeneralData } from '@/types';
 
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
@@ -120,6 +121,44 @@ const ProductTopBar: React.FC = () => {
     );
   };
 
+  const renderItemTopBar = (type: 'Category' | 'Collection') => {
+    const valueItem: GeneralData[] | undefined =
+      type === 'Category' ? productSummary?.categories : productSummary?.collections;
+    if (!brand) {
+      return `View By ${type} `;
+    }
+
+    if (valueItem) {
+      return (
+        <CustomDropDown
+          items={
+            type === 'Category'
+              ? formatAllCategoriesToDropDownData(valueItem)
+              : formatAllCollectionsToDropDownData(valueItem)
+          }
+          viewAllTop
+          placement="bottomRight"
+          menuStyle={{ height: 'auto', width: 240 }}>
+          {type === 'Category' ? 'Categories' : 'Collection'}
+        </CustomDropDown>
+      );
+    } else {
+      return `${type === 'Category' ? 'Categories' : 'Collections'}`;
+    }
+  };
+
+  const showBrand = brand ? 'view' : <span style={{ opacity: 0 }}>.</span>;
+
+  const renderFilterDropdown = (
+    topBarFilter: ProductTopBarFilter,
+    value: 'category_id' | 'collection_id',
+  ) => {
+    return topBarFilter?.name === value ? (
+      <FilterItem title={topBarFilter.title} onDelete={resetProductFilter} />
+    ) : (
+      showBrand
+    );
+  };
   return (
     <>
       <TopBarContainer
@@ -163,61 +202,17 @@ const ProductTopBar: React.FC = () => {
         RightSideContent={
           <>
             <TopBarItem
-              topValue={
-                filter?.name === 'category_id' ? (
-                  <FilterItem title={filter.title} onDelete={resetProductFilter} />
-                ) : brand ? (
-                  'view'
-                ) : (
-                  <span style={{ opacity: 0 }}>.</span>
-                )
-              }
+              topValue={renderFilterDropdown(filter as ProductTopBarFilter, 'category_id')}
               disabled
               bottomEnable={productSummary ? true : false}
-              bottomValue={
-                !brand ? (
-                  'View By Category'
-                ) : productSummary?.categories ? (
-                  <CustomDropDown
-                    items={formatAllCategoriesToDropDownData(productSummary.categories)}
-                    viewAllTop
-                    placement="bottomRight"
-                    menuStyle={{ height: 'auto', width: 240 }}>
-                    Categories
-                  </CustomDropDown>
-                ) : (
-                  'Collections'
-                )
-              }
+              bottomValue={renderItemTopBar('Category')}
               customClass="left-divider"
             />
             <TopBarItem
-              topValue={
-                filter?.name === 'collection_id' ? (
-                  <FilterItem title={filter.title} onDelete={resetProductFilter} />
-                ) : brand ? (
-                  'view'
-                ) : (
-                  <span style={{ opacity: 0 }}>.</span>
-                )
-              }
+              topValue={renderFilterDropdown(filter as ProductTopBarFilter, 'collection_id')}
               disabled
               bottomEnable={productSummary ? true : false}
-              bottomValue={
-                !brand ? (
-                  'View By Collection'
-                ) : productSummary?.collections ? (
-                  <CustomDropDown
-                    items={formatAllCollectionsToDropDownData(productSummary.collections)}
-                    viewAllTop
-                    placement="bottomRight"
-                    menuStyle={{ height: 'auto', width: 240 }}>
-                    Collections
-                  </CustomDropDown>
-                ) : (
-                  'Collections'
-                )
-              }
+              bottomValue={renderItemTopBar('Collection')}
               customClass="left-divider"
             />
             <TopBarItem
