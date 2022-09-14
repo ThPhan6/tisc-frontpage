@@ -33,7 +33,7 @@ const ProductSpecification: FC = () => {
           level={4}
           fontFamily="Cormorant-Garamond"
           color="mono-color"
-          style={{ fontWeight: '600', marginRight: 4 }}>
+          style={{ fontWeight: '600' }}>
           View By:
         </BodyText>
         <ActionButton
@@ -41,18 +41,21 @@ const ProductSpecification: FC = () => {
           icon={<BrandIcon style={{ width: 16, height: 16 }} />}
           onClick={() => setViewBy('brand')}
           title="Brand"
+          className={styles.customActionButton}
         />
         <ActionButton
           active={viewBy === 'material'}
           icon={<MaterialIcon />}
           onClick={() => setViewBy('material')}
           title="Material"
+          className={styles.customActionButton}
         />
         <ActionButton
           active={viewBy === 'space'}
           icon={<SpaceIcon />}
           onClick={() => setViewBy('space')}
           title="Space"
+          className={styles.customActionButton}
         />
         <CustomButton
           properties="rounded"

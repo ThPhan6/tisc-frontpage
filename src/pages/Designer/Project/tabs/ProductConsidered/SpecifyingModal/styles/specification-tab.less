@@ -9,6 +9,9 @@
       margin-left: 8px;
     }
   }
+  :global(.ant-collapse-content.ant-collapse-content-active) {
+    box-shadow: @border-bottom;
+  }
 }
 .referTooltipText {
   color: #fff;
@@ -22,6 +25,12 @@
 
 .specificationHeaderItem {
   width: 100%;
+
+  :global(label.ant-checkbox-wrapper > span:not(.ant-checkbox)) {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }
 .attributeOptionWrapper {
   display: flex;
@@ -48,5 +57,8 @@
     :global(.product-id-value) {
       color: @primary-color-dark;
     }
+  }
+  :global(.radio-list-heading) {
+    padding-left: 16px;
   }
 }

@@ -34,6 +34,12 @@
         color: @primary-color-dark;
       }
     }
+    &:global(.remove-icon) {
+      color: @mono-color-medium;
+      &:hover {
+        color: @primary-color-dark;
+      }
+    }
   }
   input {
     color: @primary-color-dark !important;
@@ -118,9 +124,9 @@
         }
       }
     }
-    :global(.ant-collapse-content-active) {
-      transition: none !important;
-    }
+    // :global(.ant-collapse-content-active) {
+    //   transition: none !important;
+    // }
     :global(.ant-collapse-content-box) {
       padding: 0 32px;
       table {

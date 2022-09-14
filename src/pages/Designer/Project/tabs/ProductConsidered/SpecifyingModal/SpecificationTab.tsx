@@ -14,6 +14,8 @@ import { CustomRadio } from '@/components/CustomRadio';
 import { Title } from '@/components/Typography';
 import {
   AttributeOption,
+  ConversionText,
+  GeneralText,
   ProductAttributeLine,
 } from '@/features/product/components/ProductAttributeComponent/AttributeComponent';
 
@@ -52,19 +54,16 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
   is_refer_document = false,
   specifyingGroups,
 }) => {
-  // console.log('specification_attribute_groups', specification_attribute_groups);
-  // console.log('specifyingGroups', specifyingGroups);
-
   const onCheckReferDocument = () => {
     onChangeReferToDocument(true);
     onChangeSpecification([]);
   };
 
-  const onCheckedSpecification = (index: number) => {
+  const onCheckedSpecification = (index: number, checked?: boolean) => {
     onChangeReferToDocument(false);
     const newState = specification_attribute_groups;
     specification_attribute_groups[index].isChecked =
-      !specification_attribute_groups[index].isChecked;
+      checked === undefined ? !specification_attribute_groups[index].isChecked : checked;
     onChangeSpecification(newState);
   };
 
@@ -85,6 +84,7 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
         basis_option_id: optionId,
         id: attributeId,
       });
+      onCheckedSpecification(groupIndex, true);
     } else {
       // update existed one
       newState[groupIndex].attributes[attributeIndex] = {
@@ -115,8 +115,9 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
         {specifyingGroups.map((group, groupIndex) => (
           <CustomCollapse
             key={groupIndex}
-            defaultActiveKey={['1']}
+            // defaultActiveKey={['1']}
             className={styles.specificationItem}
+            noBorder
             header={
               <div className={styles.specificationHeaderItem}>
                 <CustomCheckbox
@@ -138,33 +139,41 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
               const chosenOption = curAttribute
                 ? attribute.basis_options?.find((el) => el.id === curAttribute.basis_option_id)
                 : undefined;
-              // console.log('curAttribute', curAttribute);
-              // console.log('chosenOption', chosenOption);
 
               return (
                 <div className={styles.attributeOptionWrapper} key={attributeIndex}>
                   <ProductAttributeLine name={attribute.name} />
-                  <AttributeOption
-                    title={group.name}
-                    attributeName={attribute.name}
-                    options={attribute.basis_options ?? []}
-                    chosenOption={
-                      chosenOption
-                        ? {
-                            label: `${chosenOption.value_1} ${chosenOption.unit_1} - ${chosenOption.value_2} ${chosenOption.unit_2}`,
-                            value: chosenOption?.id,
-                          }
-                        : undefined
-                    }
-                    setChosenOptions={(option) => {
-                      onSelectSpecificationOption(
-                        groupIndex,
-                        attribute.id,
-                        option?.value?.toString() || undefined,
-                      );
-                    }}
-                    clearOnClose
-                  />
+                  {attribute.conversion ? (
+                    <ConversionText
+                      conversion={attribute.conversion}
+                      firstValue={attribute.conversion_value_1}
+                      secondValue={attribute.conversion_value_2}
+                    />
+                  ) : attribute.type === 'Options' ? (
+                    <AttributeOption
+                      title={group.name}
+                      attributeName={attribute.name}
+                      options={attribute.basis_options ?? []}
+                      chosenOption={
+                        chosenOption
+                          ? {
+                              label: `${chosenOption.value_1} ${chosenOption.unit_1} - ${chosenOption.value_2} ${chosenOption.unit_2}`,
+                              value: chosenOption?.id,
+                            }
+                          : undefined
+                      }
+                      setChosenOptions={(option) => {
+                        onSelectSpecificationOption(
+                          groupIndex,
+                          attribute.id,
+                          option?.value?.toString() || undefined,
+                        );
+                      }}
+                      clearOnClose
+                    />
+                  ) : (
+                    <GeneralText text={attribute.text} />
+                  )}
                 </div>
               );
             })}

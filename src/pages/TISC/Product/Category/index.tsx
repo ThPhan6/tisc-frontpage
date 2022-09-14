@@ -21,7 +21,7 @@ const MAIN_COL_WIDTH = 343;
 const SUB_COL_WIDTH = 160;
 
 const CategoryList: React.FC = () => {
-  useAutoExpandNestedTableColumn(MAIN_COL_WIDTH, SUB_COL_WIDTH);
+  useAutoExpandNestedTableColumn([MAIN_COL_WIDTH, SUB_COL_WIDTH]);
   const tableRef = useRef<any>();
 
   const handleUpdateCategory = (id: string) => {
@@ -170,6 +170,7 @@ const CategoryList: React.FC = () => {
           expandable: GetExpandableTableConfig({
             columns: ChildColumns,
             childrenColumnName: 'subs',
+            level: 3,
           }),
         })}
       />

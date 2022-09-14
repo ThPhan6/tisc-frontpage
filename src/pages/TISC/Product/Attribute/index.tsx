@@ -17,7 +17,7 @@ import { ActionMenu } from '@/components/TableAction';
 
 const MAIN_COL_WIDTH = 200;
 const AttributeList: React.FC = () => {
-  useAutoExpandNestedTableColumn(MAIN_COL_WIDTH);
+  useAutoExpandNestedTableColumn([MAIN_COL_WIDTH]);
   const tableRef = useRef<any>();
   const { activePath, attributeLocation } = useAttributeLocation();
 
@@ -164,6 +164,7 @@ const AttributeList: React.FC = () => {
         expandable={GetExpandableTableConfig({
           columns: SubColumns,
           childrenColumnName: 'subs',
+          level: 2,
         })}
       />
     </>

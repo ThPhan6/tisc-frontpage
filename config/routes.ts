@@ -360,24 +360,24 @@ export default [
         ],
       },
       {
-        path: PATH.teamProfile,
+        path: PATH.tiscTeamProfile,
         name: 'team.profile',
         icon: 'team-profile-icon.svg',
         access: 'tisc_administration_team_profile',
         routes: [
           {
-            path: PATH.teamProfile,
+            path: PATH.tiscTeamProfile,
             component: './TISC/Adminstration/TeamProfiles',
             hideInMenu: true,
           },
           {
-            path: PATH.createTeamProfile,
-            component: './TISC/Adminstration/TeamProfiles/CreatePage',
+            path: PATH.tiscCreateTeamProfile,
+            component: '../features/team-profiles/components/TeamProfilesEntryForm',
             hideInMenu: true,
           },
           {
-            path: PATH.updateTeamProfile,
-            component: './TISC/Adminstration/TeamProfiles/UpdatePage',
+            path: PATH.tiscUpdateTeamProfile,
+            component: '../features/team-profiles/components/TeamProfilesEntryForm',
             hideInMenu: true,
           },
         ],
@@ -537,12 +537,12 @@ export default [
           },
           {
             path: PATH.brandCreateTeamProfile,
-            component: './Brand/Adminstration/TeamProfiles/CreatePage',
+            component: '../features/team-profiles/components/TeamProfilesEntryForm',
             hideInMenu: true,
           },
           {
             path: PATH.brandUpdateTeamProfile,
-            component: './Brand/Adminstration/TeamProfiles/UpdatePage',
+            component: '../features/team-profiles/components/TeamProfilesEntryForm',
             hideInMenu: true,
           },
         ],

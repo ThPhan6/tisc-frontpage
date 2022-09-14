@@ -33,11 +33,11 @@ export const ProductDetailFooter: React.FC<{ visible: boolean }> = memo(({ visib
         tabDisplay="space"
         onChange={(tab) => setActiveKey(tab as ProductFooterTabs)}
         activeKey={activeKey}
-        // onTabClick={(currentKey) => {
-        //   if (currentKey == activeKey) {
-        //     setActiveKey('');
-        //   }
-        // }}
+        onTabClick={(currentKey) => {
+          if (currentKey == activeKey) {
+            setActiveKey('');
+          }
+        }}
       />
       <div className={`footer-content ${activeKey}`}>
         <CustomTabPane active={activeKey === 'collection'}>

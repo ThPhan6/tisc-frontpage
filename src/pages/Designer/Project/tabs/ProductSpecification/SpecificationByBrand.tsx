@@ -27,7 +27,7 @@ interface BrandListProps {
 }
 
 const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
-  useAutoExpandNestedTableColumn(COL_WIDTH_BRAND.brand);
+  useAutoExpandNestedTableColumn([COL_WIDTH_BRAND.brand]);
   const tableRef = useRef<any>();
   const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
@@ -72,7 +72,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
           return (
             <img
               src={showImageUrl(value)}
-              style={{ width: 18, height: 18, objectFit: 'contain' }}
+              style={{ width: 24, height: 24, objectFit: 'contain' }}
             />
           );
         }
@@ -143,6 +143,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
           columns: CollectionColumns,
           childrenColumnName: 'products',
           rowKey: 'specified_product_id',
+          level: 2,
         })}
       />
 

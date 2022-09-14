@@ -12,7 +12,9 @@ interface TableHeaderProps {
 export const TableHeader: FC<TableHeaderProps> = ({ title, rightAction, customClass }) => {
   return (
     <div className={`${styles.tableHeader} ${customClass}`}>
-      <Title level={7}>{title}</Title>
+      <Title level={7} customClass="text-overflow">
+        {title}
+      </Title>
       <div className={styles.tableHeader__iconWrapper}>{rightAction}</div>
     </div>
   );

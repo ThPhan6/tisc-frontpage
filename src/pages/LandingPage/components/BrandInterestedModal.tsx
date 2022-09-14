@@ -28,6 +28,7 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
       containerClass={theme === 'dark' && styles.modal}
       bodyStyle={{
         backgroundColor: theme === 'dark' ? '#000' : '',
+        height: '576px',
       }}
       closeIconClass={theme === 'dark' && styles.closeIcon}
       onCancel={onClose}>
@@ -93,9 +94,7 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
             </span>
           </div>
         </div>
-        <div className={styles.button}>
-          <CustomButton buttonClass={styles.submit}>Book a Demo</CustomButton>
-        </div>
+        <CustomButton buttonClass={styles.submitBtn}>Book a Demo</CustomButton>
       </div>
       <PoliciesModal
         visible={openModalPolicies === 'Policies'}

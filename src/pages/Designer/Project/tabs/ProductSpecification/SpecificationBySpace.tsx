@@ -36,11 +36,11 @@ export interface SpaceListProps {
   projectId?: string;
 }
 const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
-  useAutoExpandNestedTableColumn(
+  useAutoExpandNestedTableColumn([
     COL_WIDTH_SPACE.zones,
     COL_WIDTH_SPACE.areas,
     COL_WIDTH_SPACE.rooms,
-  );
+  ]);
   const tableRef = useRef<any>();
   const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
@@ -56,7 +56,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
           value ? (
             <img
               src={showImageUrl(value)}
-              style={{ width: 18, height: 18, objectFit: 'contain' }}
+              style={{ width: 24, height: 24, objectFit: 'contain' }}
             />
           ) : null,
       },
@@ -129,6 +129,9 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       title: 'Zones',
       width: COL_WIDTH_SPACE.zones,
       noBoxShadow: true,
+      onCell: (data) => ({
+        className: data.rooms ? '' : 'no-box-shadow',
+      }),
     },
     {
       title: 'Areas',
@@ -136,10 +139,16 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       width: COL_WIDTH_SPACE.areas,
       isExpandable: true,
       render: (_value, record) => <span className="text-uppercase">{record.name}</span>,
+      onCell: (data) => ({
+        className: data.rooms ? '' : 'no-box-shadow',
+      }),
     },
     {
       title: 'Rooms',
       width: COL_WIDTH_SPACE.rooms,
+      onCell: (data) => ({
+        className: data.rooms ? '' : 'no-box-shadow',
+      }),
     },
     ...getSameColumns(false),
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
@@ -207,7 +216,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       noBoxShadow: true,
     },
     ...getSameColumns(true),
-    { title: 'Count', width: '5%', align: 'center' },
+    { title: 'Count', width: '5%', align: 'center', noBoxShadow: true },
     {
       title: 'Status',
       dataIndex: 'status',
