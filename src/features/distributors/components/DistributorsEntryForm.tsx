@@ -91,10 +91,6 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
     setData({ ...data, [fieldName]: fieldValue });
   };
 
-  const handleOnChangeGenderAndCoverageBeyond = (radioValue: boolean, name: string) => {
-    setData({ ...data, [name]: radioValue });
-  };
-
   useEffect(() => {
     if (countryData.value !== '') {
       onChangeData('country_id', countryData.value);
@@ -122,6 +118,19 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
     return onSubmit({
       ...data,
       brand_id: user?.brand?.id as string,
+    });
+  };
+
+  const getPopUpVisible = (
+    type: 'city' | 'state' | 'country' | 'authorCountry' | 'territory',
+    status: boolean,
+  ) => {
+    setVisible({
+      city: status && type === 'city' ? true : false,
+      state: status && type === 'state' ? true : false,
+      country: status && type === 'country' ? true : false,
+      authorCountry: status && type === 'authorCountry' ? true : false,
+      territory: status && type === 'territory' ? true : false,
     });
   };
 
@@ -291,9 +300,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               <CustomRadio
                 options={optionsGender}
                 value={data.gender}
-                onChange={(radioValue) =>
-                  handleOnChangeGenderAndCoverageBeyond(radioValue.value as boolean, 'gender')
-                }
+                onChange={(radioValue) => onChangeData('gender', radioValue.value)}
               />
             </FormGroup>
             <InputGroup
@@ -343,15 +350,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
           <div className="distribution">
             <div
               className={styles.titleDistribution}
-              onClick={() =>
-                setVisible({
-                  city: false,
-                  state: false,
-                  country: false,
-                  authorCountry: false,
-                  territory: true,
-                })
-              }>
+              onClick={() => getPopUpVisible('territory', true)}>
               <Title level={8}>C - DISTIBUTION TERRITORY</Title>
               <WarningIcon />
             </div>
@@ -368,26 +367,13 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               hasHeight
               colorPrimaryDark
               colorRequired="tertiary"
-              onRightIconClick={() =>
-                setVisible({
-                  city: false,
-                  state: false,
-                  country: false,
-                  authorCountry: true,
-                  territory: false,
-                })
-              }
+              onRightIconClick={() => getPopUpVisible('authorCountry', true)}
             />
             <FormGroup label="Coverage Beyond" required layout="vertical">
               <CustomRadio
                 options={optionsCoverageBeyond}
                 value={data.coverage_beyond}
-                onChange={(radioValue) =>
-                  handleOnChangeGenderAndCoverageBeyond(
-                    radioValue.value as boolean,
-                    'coverage_beyond',
-                  )
-                }
+                onChange={(radioValue) => onChangeData('coverage_beyond', radioValue.value)}
               />
             </FormGroup>
           </div>
@@ -396,15 +382,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
 
       <CountryModal
         visible={visible.country}
-        setVisible={(status) =>
-          setVisible({
-            city: false,
-            state: false,
-            country: status,
-            authorCountry: false,
-            territory: false,
-          })
-        }
+        setVisible={(status) => getPopUpVisible('country', status)}
         chosenValue={countryData}
         setChosenValue={setCountryData}
         hasGlobal={false}
@@ -413,15 +391,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
       <StateModal
         countryId={data.country_id}
         visible={visible.state}
-        setVisible={(status) =>
-          setVisible({
-            city: false,
-            state: status,
-            country: false,
-            authorCountry: false,
-            territory: false,
-          })
-        }
+        setVisible={(status) => getPopUpVisible('state', status)}
         chosenValue={stateData}
         setChosenValue={setStateData}
       />
@@ -430,45 +400,21 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
         stateId={data.state_id}
         countryId={data.country_id}
         visible={visible.city}
-        setVisible={(status) =>
-          setVisible({
-            city: status,
-            state: false,
-            country: false,
-            authorCountry: false,
-            territory: false,
-          })
-        }
+        setVisible={(status) => getPopUpVisible('city', status)}
         chosenValue={cityData}
         setChosenValue={setCityData}
       />
 
       <AuthorizedCountryModal
         visible={visible.authorCountry}
-        setVisible={(status) =>
-          setVisible({
-            city: false,
-            state: false,
-            country: false,
-            authorCountry: status,
-            territory: false,
-          })
-        }
+        setVisible={(status) => getPopUpVisible('authorCountry', status)}
         chosenValue={authorCountryData}
         setChosenValue={setAuthorCountryData}
       />
 
       <DistributionTerritoryModal
         visible={visible.territory}
-        setVisible={(status) =>
-          setVisible({
-            city: false,
-            state: false,
-            country: false,
-            authorCountry: false,
-            territory: status,
-          })
-        }
+        setVisible={(status) => getPopUpVisible('territory', status)}
       />
     </>
   );
