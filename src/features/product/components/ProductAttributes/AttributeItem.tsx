@@ -285,7 +285,7 @@ export const AttributeItem: React.FC<Props> = ({
   };
 
   return (
-    <div style={{ width: '100%' }}>
+    <>
       {renderProductAttributeItem()}
 
       <Popover
@@ -333,6 +333,6 @@ export const AttributeItem: React.FC<Props> = ({
         setChosenValue={setSelectedItem}
         className={styles.specificationOptionCheckbox}
       />
-    </div>
+    </>
   );
 };
