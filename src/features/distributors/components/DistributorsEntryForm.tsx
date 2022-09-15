@@ -45,12 +45,12 @@ const optionsCoverageBeyond = [
 
 type FieldName = keyof DistributorForm;
 
-type ModalStatus = '' | 'city' | 'state' | 'country' | 'authorCountry' | 'territory';
+type ModalType = '' | 'city' | 'state' | 'country' | 'authorCountry' | 'territory';
 
 export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
   const { submitButtonStatus, onSubmit, onCancel, data, setData } = props;
 
-  const [visible, setVisible] = useState<ModalStatus>('');
+  const [openModal, setOpenModal] = useState<ModalType>('');
 
   const [countryData, setCountryData] = useState({
     label: '',
@@ -157,7 +157,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               hasHeight
               colorPrimaryDark
               colorRequired="tertiary"
-              onRightIconClick={() => setVisible('country')}
+              onRightIconClick={() => setOpenModal('country')}
             />
             <InputGroup
               label="State / Province"
@@ -168,7 +168,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               hasBoxShadow
               hasPadding
               disabled={countryData.value === '-1' || countryData.value === ''}
-              onRightIconClick={() => setVisible('state')}
+              onRightIconClick={() => setOpenModal('state')}
               rightIcon
               hasHeight
               colorPrimaryDark
@@ -184,7 +184,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               hasPadding
               rightIcon
               disabled={stateData.value === ''}
-              onRightIconClick={() => setVisible('city')}
+              onRightIconClick={() => setOpenModal('city')}
               hasHeight
               colorPrimaryDark
               colorRequired="tertiary"
@@ -307,7 +307,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
             </FormGroup>
           </div>
           <div className="distribution">
-            <div className={styles.titleDistribution} onClick={() => setVisible('territory')}>
+            <div className={styles.titleDistribution} onClick={() => setOpenModal('territory')}>
               <Title level={8}>C - DISTIBUTION TERRITORY</Title>
               <WarningIcon />
             </div>
@@ -324,7 +324,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               hasHeight
               colorPrimaryDark
               colorRequired="tertiary"
-              onRightIconClick={() => setVisible('authorCountry')}
+              onRightIconClick={() => setOpenModal('authorCountry')}
             />
             <FormGroup label="Coverage Beyond" required layout="vertical">
               <CustomRadio
@@ -338,8 +338,8 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
       </EntryFormWrapper>
 
       <CountryModal
-        visible={visible === 'country'}
-        setVisible={(status) => (status ? undefined : setVisible(''))}
+        visible={openModal === 'country'}
+        setVisible={(status) => (status ? undefined : setOpenModal(''))}
         chosenValue={countryData}
         setChosenValue={setCountryData}
         hasGlobal={false}
@@ -347,8 +347,8 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
 
       <StateModal
         countryId={data.country_id}
-        visible={visible === 'state'}
-        setVisible={(status) => (status ? undefined : setVisible(''))}
+        visible={openModal === 'state'}
+        setVisible={(status) => (status ? undefined : setOpenModal(''))}
         chosenValue={stateData}
         setChosenValue={setStateData}
       />
@@ -356,22 +356,22 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
       <CityModal
         stateId={data.state_id}
         countryId={data.country_id}
-        visible={visible === 'city'}
-        setVisible={(status) => (status ? undefined : setVisible(''))}
+        visible={openModal === 'city'}
+        setVisible={(status) => (status ? undefined : setOpenModal(''))}
         chosenValue={cityData}
         setChosenValue={setCityData}
       />
 
       <AuthorizedCountryModal
-        visible={visible === 'authorCountry'}
-        setVisible={(status) => (status ? undefined : setVisible(''))}
+        visible={openModal === 'authorCountry'}
+        setVisible={(status) => (status ? undefined : setOpenModal(''))}
         chosenValue={authorCountryData}
         setChosenValue={setAuthorCountryData}
       />
 
       <DistributionTerritoryModal
-        visible={visible === 'territory'}
-        setVisible={(status) => (status ? undefined : setVisible(''))}
+        visible={openModal === 'territory'}
+        setVisible={(status) => (status ? undefined : setOpenModal(''))}
       />
     </>
   );
