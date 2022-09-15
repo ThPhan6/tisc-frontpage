@@ -45,16 +45,14 @@ const optionsCoverageBeyond = [
 
 type FieldName = keyof DistributorForm;
 
+type ModalStatus = '' | 'city' | 'state' | 'country' | 'authorCountry' | 'territory';
+
 export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
   const { submitButtonStatus, onSubmit, onCancel, data, setData } = props;
 
-  const [visible, setVisible] = useState({
-    country: false,
-    state: false,
-    city: false,
-    authorCountry: false,
-    territory: false,
-  });
+  const [visible, setVisible] = useState<ModalStatus>('');
+
+  console.log('visible', visible);
 
   const [countryData, setCountryData] = useState({
     label: '',
@@ -121,16 +119,6 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
     });
   };
 
-  const getPopUpVisible = (
-    type: 'city' | 'state' | 'country' | 'authorCountry' | 'territory',
-    status: boolean,
-  ) => {
-    setVisible((prevState) => ({
-      ...prevState,
-      [type]: status && type ? true : false,
-    }));
-  };
-
   return (
     <>
       <EntryFormWrapper
@@ -171,15 +159,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               hasHeight
               colorPrimaryDark
               colorRequired="tertiary"
-              onRightIconClick={() =>
-                setVisible({
-                  city: false,
-                  state: false,
-                  country: true,
-                  authorCountry: false,
-                  territory: false,
-                })
-              }
+              onRightIconClick={() => setVisible('country')}
             />
             <InputGroup
               label="State / Province"
@@ -190,15 +170,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               hasBoxShadow
               hasPadding
               disabled={countryData.value === '-1' || countryData.value === ''}
-              onRightIconClick={() =>
-                setVisible({
-                  city: false,
-                  state: true,
-                  country: false,
-                  authorCountry: false,
-                  territory: false,
-                })
-              }
+              onRightIconClick={() => setVisible('state')}
               rightIcon
               hasHeight
               colorPrimaryDark
@@ -214,15 +186,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               hasPadding
               rightIcon
               disabled={stateData.value === ''}
-              onRightIconClick={() =>
-                setVisible({
-                  city: true,
-                  state: false,
-                  country: false,
-                  authorCountry: false,
-                  territory: false,
-                })
-              }
+              onRightIconClick={() => setVisible('city')}
               hasHeight
               colorPrimaryDark
               colorRequired="tertiary"
@@ -345,9 +309,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
             </FormGroup>
           </div>
           <div className="distribution">
-            <div
-              className={styles.titleDistribution}
-              onClick={() => getPopUpVisible('territory', true)}>
+            <div className={styles.titleDistribution} onClick={() => setVisible('territory')}>
               <Title level={8}>C - DISTIBUTION TERRITORY</Title>
               <WarningIcon />
             </div>
@@ -364,7 +326,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               hasHeight
               colorPrimaryDark
               colorRequired="tertiary"
-              onRightIconClick={() => getPopUpVisible('authorCountry', true)}
+              onRightIconClick={() => setVisible('authorCountry')}
             />
             <FormGroup label="Coverage Beyond" required layout="vertical">
               <CustomRadio
@@ -378,8 +340,8 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
       </EntryFormWrapper>
 
       <CountryModal
-        visible={visible.country}
-        setVisible={(status) => getPopUpVisible('country', status)}
+        visible={visible === 'country'}
+        setVisible={(status) => (status ? undefined : setVisible(''))}
         chosenValue={countryData}
         setChosenValue={setCountryData}
         hasGlobal={false}
@@ -387,8 +349,8 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
 
       <StateModal
         countryId={data.country_id}
-        visible={visible.state}
-        setVisible={(status) => getPopUpVisible('state', status)}
+        visible={visible === 'state'}
+        setVisible={(status) => (status ? undefined : setVisible(''))}
         chosenValue={stateData}
         setChosenValue={setStateData}
       />
@@ -396,22 +358,22 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
       <CityModal
         stateId={data.state_id}
         countryId={data.country_id}
-        visible={visible.city}
-        setVisible={(status) => getPopUpVisible('city', status)}
+        visible={visible === 'city'}
+        setVisible={(status) => (status ? undefined : setVisible(''))}
         chosenValue={cityData}
         setChosenValue={setCityData}
       />
 
       <AuthorizedCountryModal
-        visible={visible.authorCountry}
-        setVisible={(status) => getPopUpVisible('authorCountry', status)}
+        visible={visible === 'authorCountry'}
+        setVisible={(status) => (status ? undefined : setVisible(''))}
         chosenValue={authorCountryData}
         setChosenValue={setAuthorCountryData}
       />
 
       <DistributionTerritoryModal
-        visible={visible.territory}
-        setVisible={(status) => getPopUpVisible('territory', status)}
+        visible={visible === 'territory'}
+        setVisible={(status) => (status ? undefined : setVisible(''))}
       />
     </>
   );
