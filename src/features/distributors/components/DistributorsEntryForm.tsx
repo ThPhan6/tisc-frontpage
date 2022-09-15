@@ -125,13 +125,10 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
     type: 'city' | 'state' | 'country' | 'authorCountry' | 'territory',
     status: boolean,
   ) => {
-    setVisible({
-      city: status && type === 'city' ? true : false,
-      state: status && type === 'state' ? true : false,
-      country: status && type === 'country' ? true : false,
-      authorCountry: status && type === 'authorCountry' ? true : false,
-      territory: status && type === 'territory' ? true : false,
-    });
+    setVisible((prevState) => ({
+      ...prevState,
+      [type]: status && type ? true : false,
+    }));
   };
 
   return (
