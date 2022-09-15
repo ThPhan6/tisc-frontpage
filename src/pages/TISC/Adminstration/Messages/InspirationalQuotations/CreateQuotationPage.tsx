@@ -19,7 +19,7 @@ const DEFAULT_INPUT = {
   quotation: '',
 };
 
-const CreateQuotationsPage = () => {
+const CreateQuotationPage = () => {
   const isLoading = useBoolean();
   const submitButtonStatus = useBoolean(false);
   const [input, setInput] = useState<Quotation>(DEFAULT_INPUT);
@@ -61,4 +61,4 @@ const CreateQuotationsPage = () => {
   );
 };
 
-export default CreateQuotationsPage;
+export default CreateQuotationPage;

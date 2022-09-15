@@ -20,7 +20,7 @@ const DEFAULT_INPUT = {
   quotation: '',
 };
 
-const UpdateQuotationsPage = () => {
+const UpdateQuotationPage = () => {
   const isLoading = useBoolean();
   const submitButtonStatus = useBoolean(false);
   const params = useParams<{ id: string }>();
@@ -81,4 +81,4 @@ const UpdateQuotationsPage = () => {
   );
 };
 
-export default UpdateQuotationsPage;
+export default UpdateQuotationPage;
