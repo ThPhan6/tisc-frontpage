@@ -61,16 +61,19 @@ const SubItemOption: FC<SubItemOptionProps> = ({
       });
   };
 
-  const getURLImage = subItemOption.isBase64
-    ? subItemOption.image
-    : showImageUrl(subItemOption.image);
+  const getURLImage = () => {
+    if (subItemOption.image) {
+      return subItemOption.isBase64 ? subItemOption.image : showImageUrl(subItemOption.image);
+    }
+    return DefaultImage;
+  };
 
   return (
     <div className={styles.element}>
       {is_have_image && (
         <div className={styles.image_upload}>
           <label htmlFor={`input_${optionIndex}_${index}`}>
-            <img className={styles.image} src={subItemOption.image ? getURLImage : DefaultImage} />
+            <img className={styles.image} src={getURLImage()} />
           </label>
 
           <div className={styles.image__file_input}>

@@ -180,7 +180,7 @@ const LandingPage = () => {
     setOpenModal('Login');
   };
 
-  const renderFeature = (data: any[]) => {
+  const renderFeatures = (data: any[]) => {
     return (
       <div className={styles.feature}>
         {data.map((feature, index) => (
@@ -234,7 +234,7 @@ const LandingPage = () => {
                     A dedicated platform assists the company in managing the product lines,
                     monetizing the projects, generating intelligence, and growing your business.
                   </BodyText>
-                  {renderFeature([
+                  {renderFeatures([
                     { icon: BinocularsIcon, content: 'Obtain project visibility & updates' },
                     { icon: TargetMoneyIcon, content: 'Generate potential sales leads' },
                     { icon: PiggyBankIcon, content: 'Save operational cost & resources' },
@@ -261,7 +261,7 @@ const LandingPage = () => {
                     An always up-to-date material library that helps the team search, select and
                     specify the products for their next project while automating the workflow.
                   </BodyText>
-                  {renderFeature([
+                  {renderFeatures([
                     {
                       icon: GraphicTabletIcon,
                       content: 'Convenience to specify & easy to track',

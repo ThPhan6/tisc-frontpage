@@ -137,9 +137,15 @@ export const LoginModal: FC<LoginModalProps> = ({
 
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
 
-  const widthButtonThemeDark = theme === 'dark' ? '120px' : '112px';
+  const getSubmitButtonWidth = () => {
+    if (showForgotPassword.value) return '216px';
+    return theme === 'dark' ? '120px' : '112px';
+  };
 
-  const contentButtonThemeDark = theme === 'dark' ? 'Let’s do this' : 'Get started';
+  const getSubmitButtonTitle = () => {
+    if (showForgotPassword.value) return 'Submit & Check your email';
+    return theme === 'dark' ? 'Let’s do this' : 'Get started';
+  };
 
   return (
     <CustomModal
@@ -249,9 +255,9 @@ export const LoginModal: FC<LoginModalProps> = ({
               <CustomButton
                 disabled={handleDisableButton()}
                 buttonClass={styles.submit}
-                width={showForgotPassword.value ? '216px' : widthButtonThemeDark}
+                width={getSubmitButtonWidth()}
                 onClick={handleSubmit}>
-                {showForgotPassword.value ? 'Submit & Check your email' : contentButtonThemeDark}
+                {getSubmitButtonTitle()}
               </CustomButton>
             </div>
           </div>
