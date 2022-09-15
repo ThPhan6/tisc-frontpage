@@ -147,15 +147,13 @@ const ProductTopBar: React.FC = () => {
     }
   };
 
-  const showBrand = brand ? 'view' : <span style={{ opacity: 0 }}>.</span>;
-
   const renderFilterDropdown = (value: 'category_id' | 'collection_id') => {
-    return filter?.name === value ? (
-      <FilterItem title={filter.title} onDelete={resetProductFilter} />
-    ) : (
-      showBrand
-    );
+    if (filter?.name === value) {
+      return <FilterItem title={filter.title} onDelete={resetProductFilter} />;
+    }
+    return brand ? 'view' : <span style={{ opacity: 0 }}>.</span>;
   };
+
   return (
     <>
       <TopBarContainer
