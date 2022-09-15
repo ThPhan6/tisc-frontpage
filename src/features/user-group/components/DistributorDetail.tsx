@@ -67,9 +67,9 @@ const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
                               {distributor.authorized_country_name ?? ''}
                             </TextForm>
                             <TextForm label="Coverage Beyond">
-                              {distributor.coverage_beyond === COVERAGE_BEYOND.NOT_ALLOW
+                              {distributor.coverage_beyond === COVERAGE_BEYOND.notAllow
                                 ? 'Not Allow'
-                                : distributor.coverage_beyond === COVERAGE_BEYOND.ALLOW
+                                : distributor.coverage_beyond === COVERAGE_BEYOND.allow
                                 ? 'Allow'
                                 : ''}
                             </TextForm>

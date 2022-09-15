@@ -169,6 +169,10 @@ export const QUERY_KEY = {
 };
 
 export const COVERAGE_BEYOND = {
-  NOT_ALLOW: true,
-  ALLOW: false,
+  notAllow: true,
+  allow: false,
+};
+export const GENDER = {
+  male: true,
+  female: false,
 };

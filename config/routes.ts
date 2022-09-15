@@ -562,12 +562,12 @@ export default [
           },
           {
             path: PATH.createDistributor,
-            component: './Brand/Adminstration/Distributors/CreatePage',
+            component: '../features/distributors/components/DistributorDetail',
             hideInMenu: true,
           },
           {
             path: PATH.updateDistributor,
-            component: './Brand/Adminstration/Distributors/UpdatePage',
+            component: '../features/distributors/components/DistributorDetail',
             hideInMenu: true,
           },
         ],
