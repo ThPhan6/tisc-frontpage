@@ -23,7 +23,7 @@ const DEFAULT_SUB_OPTION: BasisOptionSubForm = {
   subs: [],
 };
 
-const OptionEntryForm: FC<OptionEntryFormProps> = (props) => {
+const OptionsEntryForm: FC<OptionEntryFormProps> = (props) => {
   const { onCancel, onSubmit, option, setOption, submitButtonStatus } = props;
 
   /// handle change name
@@ -121,4 +121,4 @@ const OptionEntryForm: FC<OptionEntryFormProps> = (props) => {
   );
 };
 
-export default OptionEntryForm;
+export default OptionsEntryForm;

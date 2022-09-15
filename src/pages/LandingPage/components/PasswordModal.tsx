@@ -1,5 +1,4 @@
-import type { FC } from 'react';
-import { useState } from 'react';
+import { FC, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
@@ -11,17 +10,17 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-whi
 import { pushTo } from '@/helper/history';
 import { isShowErrorMessage, validatePassword } from '@/helper/utils';
 
-import type { ResetPasswordInput, ResetPasswordRequestBody } from '../types';
+import { PasswordInput, PasswordRequestBody } from '../types';
 
 import CustomButton from '@/components/Button';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
 
-import styles from './ResetPasswordModal.less';
+import styles from './PasswordModal.less';
 
-interface ResetPasswordModalProps {
-  resetData: {
+interface PasswordModalProps {
+  data: {
     email: string;
     token: string;
   };
@@ -29,15 +28,12 @@ interface ResetPasswordModalProps {
     value: boolean;
     setValue: (value: boolean) => void;
   };
-  handleSubmit: (data: ResetPasswordRequestBody) => void;
+  handleSubmit: (data: PasswordRequestBody) => void;
+  type: 'reset' | 'create';
 }
 
-export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
-  visible,
-  resetData,
-  handleSubmit,
-}) => {
-  const [resetInputValue, setResetInputValue] = useState<ResetPasswordInput>({
+export const PasswordModal: FC<PasswordModalProps> = ({ visible, data, handleSubmit, type }) => {
+  const [resetInputValue, setResetInputValue] = useState<PasswordInput>({
     password: '',
     confirmPassword: '',
   });
@@ -73,11 +69,18 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
   };
 
   const handleOnSubmit = () => {
-    handleSubmit({
-      password: resetInputValue.password,
-      confirmed_password: resetInputValue.confirmPassword,
-      reset_password_token: resetData.token,
-    });
+    if (type === 'create') {
+      handleSubmit({
+        password: resetInputValue.password,
+        confirmed_password: resetInputValue.confirmPassword,
+      });
+    } else {
+      handleSubmit({
+        password: resetInputValue.password,
+        confirmed_password: resetInputValue.confirmPassword,
+        reset_password_token: data.token,
+      });
+    }
   };
 
   const onKeyPress = (event: React.KeyboardEvent<HTMLDivElement>): void => {
@@ -93,12 +96,12 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
   return (
     <CustomModal
       visible={visible.value}
-      bodyStyle={{ height: '576px' }}
       onOk={() => visible.setValue(false)}
       onCancel={() => {
         visible.setValue(false);
         pushTo(PATH.landingPage);
       }}
+      bodyStyle={{ height: '576px' }}
       footer={false}>
       <div className={styles.content}>
         <div className={styles.intro}>
@@ -119,7 +122,7 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
               name="email"
               borderBottomColor="mono"
               readOnly
-              value={resetData.email}
+              value={data.email}
             />
             <CustomInput
               required
@@ -173,7 +176,7 @@ export const ResetPasswordModal: FC<ResetPasswordModalProps> = ({
                 buttonClass={styles.submit}
                 width={'128px'}
                 onClick={handleOnSubmit}>
-                Save / Log in
+                {type === 'create' ? 'Save' : 'Save / Log in'}
               </CustomButton>
             </div>
           </div>

@@ -5,11 +5,10 @@ import { request } from 'umi';
 
 import type {
   ContactRequestBody,
-  CreatePasswordRequestBody,
   LoginInput,
   LoginResponseProp,
+  PasswordRequestBody,
   Quotation,
-  ResetPasswordRequestBody,
   SignUpDesignerRequestBody,
 } from '../types';
 import {
@@ -64,7 +63,7 @@ export async function loginByBrandOrDesigner(
 }
 
 export async function resetPasswordMiddleware(
-  data: ResetPasswordRequestBody,
+  data: PasswordRequestBody,
   callback: (type: STATUS_RESPONSE, message?: string) => void,
 ) {
   request(`/api/auth/reset-password-and-login`, {
@@ -126,7 +125,7 @@ export async function validateResetToken(token: string | null) {
       return false;
     });
 }
-export async function createPasswordVerify(token: string, data: CreatePasswordRequestBody) {
+export async function createPasswordVerify(token: string, data: PasswordRequestBody) {
   return request(`/api/auth/create-password-verify/${token}`, {
     method: 'POST',
     data,
