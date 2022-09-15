@@ -10,6 +10,7 @@ import {
 import { useBoolean } from '@/helper/hook';
 import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
 
+import { RadioValue } from '../CustomRadio/types';
 import { ProductItem, ProductItemValue } from '@/features/product/types';
 
 import InputGroup from '@/components/EntryForm/InputGroup';
@@ -93,6 +94,23 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
     });
   };
 
+  const handleOnChangeRadioForm = (fieldKey: FieldName, radioValue: RadioValue) => {
+    if (radioValue.value === 'other') {
+      onChangeData(fieldKey, radioValue.label);
+    } else {
+      onChangeData(fieldKey, radioValue.value);
+    }
+  };
+
+  const returnOptionData = (data: ProductItemValue[]) => {
+    return data.map((item) => {
+      return {
+        label: item.name,
+        value: item.id,
+      };
+    });
+  };
+
   const handleSubmit = () => {
     createShareViaEmail(shareViaEmailData).then((isSuccess) => {
       if (isSuccess) {
@@ -111,7 +129,6 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
     });
   };
 
-  console.log(product);
   return (
     <Popover
       title="Share Via Email"
@@ -133,19 +150,8 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
         checked={shareViaEmailData.sharing_group}
         placeholder={sharingGroupLabel.name}
         otherInput
-        optionData={sharingGroup.map((item) => {
-          return {
-            label: item.name,
-            value: item.id,
-          };
-        })}
-        onChange={(radioValue) => {
-          if (radioValue.value === 'other') {
-            onChangeData('sharing_group', radioValue.label);
-          } else {
-            onChangeData('sharing_group', radioValue.value);
-          }
-        }}
+        optionData={returnOptionData(sharingGroup)}
+        onChange={(radioValue) => handleOnChangeRadioForm('sharing_group', radioValue)}
       />
       {/* Sharing Purpose */}
       <CollapseRadioFormGroup
@@ -153,19 +159,8 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
         checked={shareViaEmailData.sharing_purpose}
         placeholder={sharingPurposeLabel.name}
         otherInput
-        optionData={sharingPurpose.map((item) => {
-          return {
-            label: item.name,
-            value: item.id,
-          };
-        })}
-        onChange={(radioValue) => {
-          if (radioValue.value === 'other') {
-            onChangeData('sharing_purpose', radioValue.label);
-          } else {
-            onChangeData('sharing_purpose', radioValue.value);
-          }
-        }}
+        optionData={returnOptionData(sharingPurpose)}
+        onChange={(radioValue) => handleOnChangeRadioForm('sharing_purpose', radioValue)}
       />
       {/* Email To */}
       <InputGroup

@@ -15,6 +15,7 @@ import { debounce } from 'lodash';
 import { setProductList, setProductListSearchValue } from '@/features/product/reducers';
 
 import { CustomInput } from '@/components/Form/CustomInput';
+import SortOrderPanel from '@/components/SortOrder';
 import { BodyText, Title } from '@/components/Typography';
 import {
   CollapseProductList,
@@ -23,10 +24,7 @@ import {
   TopBarContainer,
   TopBarItem,
 } from '@/features/product/components';
-import {
-  SORTER_DROPDOWN_DATA,
-  useProductListFilterAndSorter,
-} from '@/features/product/components/FilterAndSorter';
+import { useProductListFilterAndSorter } from '@/features/product/components/FilterAndSorter';
 
 import styles from './styles.less';
 
@@ -40,17 +38,8 @@ const BrandProductListPage: React.FC = () => {
   const firstLoad = useBoolean(true);
   const [searchCount, setSearchCount] = useState(0);
 
-  const {
-    filter,
-    sort,
-    brands,
-    search,
-    categories,
-    brandSummary,
-    resetProductListSorter,
-    dispatch,
-    removeFilter,
-  } = useProductListFilterAndSorter();
+  const { filter, sort, brands, search, categories, brandSummary, dispatch, removeFilter } =
+    useProductListFilterAndSorter();
 
   const debouceSearch = useCallback(
     debounce((value: string) => {
@@ -148,28 +137,8 @@ const BrandProductListPage: React.FC = () => {
             customClass="right-divider"
             style={{ paddingLeft: 0 }}
           />
-          <TopBarItem
-            topValue={
-              sort ? (
-                <FilterItem
-                  title={sort.order === 'ASC' ? 'A - Z' : 'Z - A'}
-                  onDelete={resetProductListSorter}
-                />
-              ) : (
-                'select'
-              )
-            }
-            bottomEnable={true}
-            disabled
-            bottomValue={
-              <CustomDropDown
-                items={SORTER_DROPDOWN_DATA}
-                menuStyle={{ width: 160, height: 'auto' }}>
-                Sort By
-              </CustomDropDown>
-            }
-            style={{ paddingLeft: 0 }}
-          />
+
+          <SortOrderPanel order={sort?.order} sort={sort} style={{ paddingLeft: 0 }} />
         </>
       }
       RightSideContent={
