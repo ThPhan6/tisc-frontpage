@@ -178,7 +178,7 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
         onClick={handleSendInvite}
       />
 
-      {isLoading.value && <LoadingPageCustomize />}
+      {isLoading.value ? <LoadingPageCustomize /> : null}
     </EntryFormWrapper>
   );
 };

@@ -12,7 +12,7 @@ const UserProfile = () => {
     <div className={styles['profile-container']}>
       <WorkplaceProfile />
       <PersonalProfile isLoading={isLoading} />
-      {isLoading.value && <LoadingPageCustomize />}
+      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

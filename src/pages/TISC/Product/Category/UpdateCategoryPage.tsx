@@ -4,11 +4,10 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
-import { useParams } from 'umi';
 
 import { getOneCategoryMiddleware, updateCategoryMiddleware } from '@/features/categories/services';
 import { pushTo } from '@/helper/history';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 
 import { CategoryBodyProps, SubcategoryValueProps } from '@/features/categories/types';
 
@@ -28,12 +27,9 @@ const UpdateCategoryPage = () => {
   });
 
   const isLoading = useBoolean();
-  const params = useParams<{
-    id: string;
-  }>();
-  const idCategory = params?.id || '';
-
   const submitButtonStatus = useBoolean(false);
+
+  const idCategory = useGetParamId();
 
   useEffect(() => {
     if (idCategory) {
@@ -88,7 +84,7 @@ const UpdateCategoryPage = () => {
           onCancel={handleCancel}
         />
       </div>
-      {isLoading.value && <LoadingPageCustomize />}
+      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };
