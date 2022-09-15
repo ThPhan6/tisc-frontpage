@@ -117,7 +117,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
     });
   };
 
-  const setModalVisible = () => (status: boolean) => status ? undefined : setOpenModal('');
+  const setModalVisible = (visible: boolean) => (visible ? undefined : setOpenModal(''));
 
   return (
     <>
@@ -341,7 +341,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
 
       <CountryModal
         visible={openModal === 'country'}
-        setVisible={setModalVisible()}
+        setVisible={setModalVisible}
         chosenValue={countryData}
         setChosenValue={setCountryData}
         hasGlobal={false}
@@ -350,7 +350,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
       <StateModal
         countryId={data.country_id}
         visible={openModal === 'state'}
-        setVisible={setModalVisible()}
+        setVisible={setModalVisible}
         chosenValue={stateData}
         setChosenValue={setStateData}
       />
@@ -359,21 +359,21 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
         stateId={data.state_id}
         countryId={data.country_id}
         visible={openModal === 'city'}
-        setVisible={setModalVisible()}
+        setVisible={setModalVisible}
         chosenValue={cityData}
         setChosenValue={setCityData}
       />
 
       <AuthorizedCountryModal
         visible={openModal === 'authorCountry'}
-        setVisible={setModalVisible()}
+        setVisible={setModalVisible}
         chosenValue={authorCountryData}
         setChosenValue={setAuthorCountryData}
       />
 
       <DistributionTerritoryModal
         visible={openModal === 'territory'}
-        setVisible={setModalVisible()}
+        setVisible={setModalVisible}
       />
     </>
   );
