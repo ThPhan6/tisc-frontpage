@@ -25,14 +25,22 @@ import { getBrandLocation, getDistributorLocation } from '@/features/locations/a
 
 type BrandContactTitle = 'Brand Locations' | 'Distributor Locations';
 type ModalTypes = '' | BrandContactTitle;
-interface BrandContactProps {
-  title: BrandContactTitle;
-}
 
 export const BRAND_CONTACT_TITLE: BrandContactTitle[] = [
   'Brand Locations',
   'Distributor Locations',
 ];
+
+interface PopupForm {
+  title: string;
+  className?: string;
+  dropDownRadioTitle: (dropdownData: DropdownRadioItem) => void;
+  setVisible: (visible: boolean) => void;
+}
+
+interface BrandContactProps {
+  title: BrandContactTitle;
+}
 
 export const BrandContact: FC<BrandContactProps> = ({ title }) => {
   const [openModal, setOpenModal] = useState<ModalTypes>('');
@@ -62,8 +70,6 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
     }
   };
 
-  const setPopupOpen = (visible: boolean) => (visible ? undefined : setOpenModal(''));
-
   useEffect(() => {
     if (productID) {
       getDistributorLocation(productID).then((data) => {
@@ -84,10 +90,11 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
     }
   }, [brandID]);
 
-  const popupProps = {
+  const popupProps: PopupForm = {
     title: 'SELECT LOCATION',
     className: styles.customLocationModal,
     dropDownRadioTitle: (dropdownData: DropdownRadioItem) => dropdownData.country_name,
+    setVisible: (visible: boolean) => (visible ? undefined : setOpenModal('')),
   };
 
   return (
@@ -110,7 +117,6 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
       <Popover
         {...popupProps}
         visible={openModal === 'Distributor Locations'}
-        setVisible={setPopupOpen}
         dropdownRadioList={distributorLocation.map((country) => {
           return {
             country_name: country.country_name,
@@ -138,7 +144,6 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
       <Popover
         {...popupProps}
         visible={openModal === 'Brand Locations'}
-        setVisible={setPopupOpen}
         dropdownRadioList={brandLocation.map((country) => {
           return {
             country_name: country.country_name,
