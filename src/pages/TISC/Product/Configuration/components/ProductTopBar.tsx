@@ -15,7 +15,7 @@ import { showImageUrl, updateUrlParams } from '@/helper/utils';
 import { flatMap, forEach, map } from 'lodash';
 
 import { resetProductState, setBrand } from '@/features/product/reducers';
-import { ProductGetListParameter, ProductTopBarFilter } from '@/features/product/types';
+import { ProductGetListParameter } from '@/features/product/types';
 import { BrandAlphabet, BrandDetail } from '@/features/user-group/types';
 import { useAppSelector } from '@/reducers';
 import { GeneralData } from '@/types';
@@ -149,12 +149,9 @@ const ProductTopBar: React.FC = () => {
 
   const showBrand = brand ? 'view' : <span style={{ opacity: 0 }}>.</span>;
 
-  const renderFilterDropdown = (
-    topBarFilter: ProductTopBarFilter,
-    value: 'category_id' | 'collection_id',
-  ) => {
-    return topBarFilter?.name === value ? (
-      <FilterItem title={topBarFilter.title} onDelete={resetProductFilter} />
+  const renderFilterDropdown = (value: 'category_id' | 'collection_id') => {
+    return filter?.name === value ? (
+      <FilterItem title={filter.title} onDelete={resetProductFilter} />
     ) : (
       showBrand
     );
@@ -202,14 +199,14 @@ const ProductTopBar: React.FC = () => {
         RightSideContent={
           <>
             <TopBarItem
-              topValue={renderFilterDropdown(filter as ProductTopBarFilter, 'category_id')}
+              topValue={renderFilterDropdown('category_id')}
               disabled
               bottomEnable={productSummary ? true : false}
               bottomValue={renderItemTopBar('Category')}
               customClass="left-divider"
             />
             <TopBarItem
-              topValue={renderFilterDropdown(filter as ProductTopBarFilter, 'collection_id')}
+              topValue={renderFilterDropdown('collection_id')}
               disabled
               bottomEnable={productSummary ? true : false}
               bottomValue={renderItemTopBar('Collection')}
