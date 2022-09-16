@@ -82,9 +82,7 @@ const UpdatePage = () => {
         isLoading.setValue(false);
         if (isSuccess) {
           submitButtonStatus.setValue(true);
-          setTimeout(() => {
-            goBackToDistributorList();
-          }, 1000);
+          setTimeout(goBackToDistributorList, 1000);
         }
       });
     }
