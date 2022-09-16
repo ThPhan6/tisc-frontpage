@@ -9,7 +9,6 @@ import {
 } from '@/features/product/services';
 import { useBoolean } from '@/helper/hook';
 import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
-import { debounce } from 'lodash';
 
 import { RadioValue } from '../CustomRadio/types';
 import { ProductItem, ProductItemValue } from '@/features/product/types';
@@ -88,12 +87,12 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
     id: '',
   };
 
-  const onChangeData = debounce((fieldName: FieldName, fieldValue: any) => {
+  const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setShareViaEmailData({
       ...shareViaEmailData,
       [fieldName]: fieldValue,
     });
-  }, 300);
+  };
 
   const handleOnChangeRadioForm = (fieldKey: FieldName, radioValue: RadioValue) => {
     onChangeData(fieldKey, radioValue.value === 'other' ? radioValue.label : radioValue.value);
