@@ -289,12 +289,12 @@ export default [
           },
           {
             path: PATH.productConfigurationCreate,
-            component: './TISC/Product/Configuration/Create',
+            component: '../features/product/components/ProductDetailContainer',
             hideInMenu: true,
           },
           {
             path: PATH.productConfigurationUpdate,
-            component: './TISC/Product/Configuration/Update',
+            component: '../features/product/components/ProductDetailContainer',
             hideInMenu: true,
           },
         ],

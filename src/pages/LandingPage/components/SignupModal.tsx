@@ -187,10 +187,8 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
               required={true}
               onChange={handleOnChange}
               status={
-                formInput.confirmed_password
-                  ? formInput.password !== formInput.confirmed_password
-                    ? 'error'
-                    : ''
+                formInput.confirmed_password && formInput.password !== formInput.confirmed_password
+                  ? 'error'
                   : ''
               }
             />

@@ -1,52 +1,60 @@
 import { FC } from 'react';
 
-import { getFullName } from '@/helper/utils';
-
 import { RobotoBodyText } from '@/components/Typography';
 
 import styles from './BrandContact.less';
 
 export interface BusinessDetailProps {
-  data?: any;
-  customClass?: string;
+  business: string;
   type?: string;
+  address: string;
+  country?: string;
+  phone_code?: string;
+  general_phone?: string;
+  genernal_email?: string;
+  first_name?: string;
+  last_name?: string;
+  customClass?: string;
 }
-export const BusinessDetail: FC<BusinessDetailProps> = ({ data = '', customClass = '', type }) => {
-  const getBusinessAddress = (businessAddress: any) => {
-    const city = businessAddress.city_name !== '' ? `${businessAddress.city_name},` : '';
-    const state = businessAddress.state_name !== '' ? `${businessAddress.state_name},` : '';
-    return `${businessAddress.address}, ${city} ${state} ${businessAddress.country_name}`;
-  };
+export const BusinessDetail: FC<BusinessDetailProps> = ({
+  business = '',
+  type = '',
+  address = '',
+  phone_code = '',
+  general_phone = '',
+  genernal_email = '',
+  first_name = '',
+  last_name = '',
+  customClass = '',
+}) => {
   return (
     <div className={`${styles.detail} ${customClass}`}>
       <div className={styles.detail_business}>
         <RobotoBodyText level={6} customClass={styles.name}>
-          {data.business_name || data.name || ''}
+          {business}
         </RobotoBodyText>
         <RobotoBodyText level={6} customClass={styles.type}>
           {type ? `(${type})` : ''}
         </RobotoBodyText>
       </div>
       <RobotoBodyText level={6} customClass={styles.detail_address}>
-        {getBusinessAddress(data)}
+        {address}
       </RobotoBodyText>
       <div className={styles.detail_phoneEmail}>
-        {data.general_phone || data.phone ? (
+        {general_phone ? (
           <RobotoBodyText level={6} customClass={styles.phone}>
-            T: {`${data.phone_code} ${data.general_phone || data.phone}`}
+            T: {`${phone_code} ${general_phone}`}
           </RobotoBodyText>
         ) : (
           ''
         )}
-        {data.genernal_email || data.email ? (
-          <RobotoBodyText level={6}>E: {data.genernal_email || data.email}</RobotoBodyText>
-        ) : (
-          ''
-        )}
+        {genernal_email ? <RobotoBodyText level={6}>E: {genernal_email}</RobotoBodyText> : ''}
       </div>
       <span className={styles.detail_contact}>
-        {data.first_name ? (
-          <RobotoBodyText level={6}>Contact: {getFullName(data)}</RobotoBodyText>
+        {first_name ? (
+          <RobotoBodyText level={6}>
+            Contact: {first_name} {last_name}
+          </RobotoBodyText>
         ) : (
           ''
         )}

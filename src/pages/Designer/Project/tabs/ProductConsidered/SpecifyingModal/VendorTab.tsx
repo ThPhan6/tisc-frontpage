@@ -18,6 +18,12 @@ import { getBrandLocation, getDistributorLocation } from '@/features/locations/a
 
 const activeKey = '1';
 
+const getBusinessAddress = (businessAddress: any) => {
+  const city = businessAddress.city_name !== '' ? `${businessAddress.city_name},` : '';
+  const state = businessAddress.state_name !== '' ? `${businessAddress.state_name},` : '';
+  return `${businessAddress.address}, ${city} ${state} ${businessAddress.country_name}`;
+};
+
 const getSelectedLocation = (locationGroup: LocationGroupedByCountry[], selectedId: string) => {
   const allLocations = locationGroup.flatMap((el) => el.locations);
 
@@ -25,7 +31,15 @@ const getSelectedLocation = (locationGroup: LocationGroupedByCountry[], selected
   const locationOption: RadioValue = {
     value: selectedId || '',
     label: selectedLocation ? (
-      <BusinessDetail data={selectedLocation} type={selectedLocation.functional_types[0]?.name} />
+      <BusinessDetail
+        business={selectedLocation.business_name}
+        type={selectedLocation.functional_types[0]?.name}
+        address={getBusinessAddress(selectedLocation)}
+        country={selectedLocation.country_name.toUpperCase()}
+        phone_code={selectedLocation.phone_code}
+        general_phone={selectedLocation.general_phone}
+        genernal_email={selectedLocation.general_email}
+      />
     ) : (
       ''
     ),
@@ -44,7 +58,20 @@ const getSelectedDistributors = (locationGroup: DistributorProductMarket[], sele
   const selectedLocation = allLocations.find((el) => el.id === selectedId);
   const locationOption: RadioValue = {
     value: selectedId || '',
-    label: selectedLocation ? <BusinessDetail data={selectedLocation} /> : '',
+    label: selectedLocation ? (
+      <BusinessDetail
+        business={selectedLocation.name}
+        address={getBusinessAddress(selectedLocation)}
+        country={selectedLocation.country_name.toUpperCase()}
+        phone_code={selectedLocation.phone_code}
+        general_phone={selectedLocation.phone}
+        genernal_email={selectedLocation.email}
+        first_name={selectedLocation.first_name}
+        last_name={selectedLocation.last_name}
+      />
+    ) : (
+      ''
+    ),
   };
 
   return {
@@ -147,15 +174,31 @@ const VendorTab: FC<VendorTabProps> = ({
   const renderBusinessAdressDetail = (location?: LocationDetail) =>
     location ? (
       <BusinessDetail
-        data={location}
+        business={location?.business_name ?? ''}
         type={location?.functional_types?.[0]?.name ?? ''}
+        address={getBusinessAddress(location)}
+        phone_code={location?.phone_code ?? ''}
+        general_phone={location?.general_phone ?? ''}
+        genernal_email={location?.general_email ?? ''}
         customClass={styles.businessDetail}
       />
     ) : null;
 
   const renderDistributorBusinessAdressDetail = (
     location?: DistributorProductMarket['distributors'][0],
-  ) => (location ? <BusinessDetail data={location} customClass={styles.businessDetail} /> : null);
+  ) =>
+    location ? (
+      <BusinessDetail
+        business={location?.name ?? ''}
+        address={getBusinessAddress(location)}
+        phone_code={location?.phone_code ?? ''}
+        general_phone={location?.phone ?? ''}
+        genernal_email={location?.email ?? ''}
+        customClass={styles.businessDetail}
+        first_name={location.first_name}
+        last_name={location.last_name}
+      />
+    ) : null;
 
   const renderCollapseHeader = (
     title: string,
@@ -267,7 +310,17 @@ const VendorTab: FC<VendorTabProps> = ({
             options: country.locations.map((location) => {
               return {
                 value: location.id,
-                label: <BusinessDetail data={location} type={location.functional_types[0]?.name} />,
+                label: (
+                  <BusinessDetail
+                    business={location.business_name}
+                    type={location.functional_types[0]?.name}
+                    address={getBusinessAddress(location)}
+                    country={location.country_name.toUpperCase()}
+                    phone_code={location.phone_code}
+                    general_phone={location.general_phone}
+                    genernal_email={location.general_email}
+                  />
+                ),
               };
             }),
           };
@@ -290,7 +343,18 @@ const VendorTab: FC<VendorTabProps> = ({
             options: country.distributors.map((distributor) => {
               return {
                 value: distributor.id,
-                label: <BusinessDetail data={distributor} />,
+                label: (
+                  <BusinessDetail
+                    business={distributor.name}
+                    address={getBusinessAddress(distributor)}
+                    country={distributor.country_name.toUpperCase()}
+                    phone_code={distributor.phone_code}
+                    general_phone={distributor.phone}
+                    genernal_email={distributor.email}
+                    first_name={distributor.first_name}
+                    last_name={distributor.last_name}
+                  />
+                ),
               };
             }),
           };
