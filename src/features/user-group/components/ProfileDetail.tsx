@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { Col, Row } from 'antd';
 
-import { showImageUrl } from '@/helper/utils';
+import { getCompared, showImageUrl } from '@/helper/utils';
 
 import { UserGroupProps } from '../types/common.types';
 
@@ -14,6 +14,20 @@ import styles from './Profile.less';
 
 export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
   if (!data) return null;
+
+  const renderProfileLabel = () =>
+    getCompared(
+      [type === 'brand', 'Mission & Vision'],
+      [type === 'design', 'Profile & Philosophy'],
+      '',
+    );
+
+  const renderProfileData = () =>
+    getCompared(
+      [type === 'brand', data.mission_n_vision],
+      [type === 'design', data.profile_n_philosophy],
+      '',
+    );
 
   return (
     <Row className={indexStyles.container}>
@@ -35,21 +49,8 @@ export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
           <TextForm formClass={styles.profile_label} boxShadow label="Slogan">
             {data.slogan ?? ''}
           </TextForm>
-          <TextForm
-            formClass={styles.profile_label}
-            boxShadow
-            label={
-              type === 'brand'
-                ? 'Mission & Vision'
-                : type === 'design'
-                ? 'Profile & Philosophy'
-                : ''
-            }>
-            {type === 'brand'
-              ? data.mission_n_vision
-              : type === 'design'
-              ? data.profile_n_philosophy
-              : ''}
+          <TextForm formClass={styles.profile_label} boxShadow label={renderProfileLabel()}>
+            {renderProfileData()}
           </TextForm>
 
           {type !== 'brand' ? null : (

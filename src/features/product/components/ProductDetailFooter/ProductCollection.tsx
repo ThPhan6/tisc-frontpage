@@ -5,7 +5,7 @@ import { USER_ROLE } from '@/constants/userRoles';
 import SampleProductImage from '@/assets/images/sample-product-img.png';
 
 import { useGetUserRoleFromPathname } from '@/helper/hook';
-import { getMaxLengthText, showImageUrl } from '@/helper/utils';
+import { getCompared, getMaxLengthText, showImageUrl } from '@/helper/utils';
 
 import { useAppSelector } from '@/reducers';
 
@@ -31,29 +31,35 @@ export const ProductCollection: FC = memo(() => {
   if (relatedProduct.length === 0 && userRole !== USER_ROLE.tisc) {
     return <EmptyOne customClass="product-collection" />;
   }
+
+  const renderRelatedProduct = () => {
+    return getCompared(
+      [
+        relatedProduct.length > 0,
+        relatedProduct.map((item, key) => (
+          <a
+            className="relative-product-item"
+            key={key}
+            target="_blank"
+            rel="noreferrer"
+            href={getProductDetailPathname(userRole, item.id)}>
+            <div className="relative-product">
+              <img src={item.images?.[0] ? showImageUrl(item.images[0]) : SampleProductImage} />
+              <div className="placeholder-text">
+                <span>{getMaxLengthText(item.name, 40)}</span>
+              </div>
+            </div>
+          </a>
+        )),
+      ],
+      [userRole === USER_ROLE.tisc, <ProductPlaceHolder />],
+      null,
+    );
+  };
+
   return (
     <div className="relative-product-wrapper">
-      <div className="relative-product-list">
-        {relatedProduct.length > 0 ? (
-          relatedProduct.map((item, key) => (
-            <a
-              className="relative-product-item"
-              key={key}
-              target="_blank"
-              rel="noreferrer"
-              href={getProductDetailPathname(userRole, item.id)}>
-              <div className="relative-product">
-                <img src={item.images?.[0] ? showImageUrl(item.images[0]) : SampleProductImage} />
-                <div className="placeholder-text">
-                  <span>{getMaxLengthText(item.name, 40)}</span>
-                </div>
-              </div>
-            </a>
-          ))
-        ) : userRole === USER_ROLE.tisc ? (
-          <ProductPlaceHolder />
-        ) : null}
-      </div>
+      <div className="relative-product-list">{renderRelatedProduct()}</div>
     </div>
   );
 });
