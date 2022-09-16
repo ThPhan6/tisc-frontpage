@@ -209,7 +209,8 @@ const ProductImagePreview: React.FC = () => {
   const renderMainImage = () => {
     if (product.images[0]) {
       return <img src={showImageUrl(product.images[0])} className={styles.primaryPhoto} />;
-    } else if (isTiscAdmin) {
+    }
+    if (isTiscAdmin) {
       return (
         <div className={styles.dropzoneNote}>
           <BodyText level={3}>
