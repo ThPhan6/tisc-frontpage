@@ -50,7 +50,11 @@ const COL_WIDTH = {
 };
 
 const ProductConsidered: React.FC = () => {
-  useAutoExpandNestedTableColumn([COL_WIDTH.zones, COL_WIDTH.areas, COL_WIDTH.rooms]);
+  useAutoExpandNestedTableColumn(3, {
+    autoWidthColIndex: 6, // Product column
+    rightColumnExcluded: 3,
+  });
+
   const params = useParams<{ id: string }>();
   const tableRef = useRef<any>();
   const gridView = useBoolean();
@@ -179,7 +183,7 @@ const ProductConsidered: React.FC = () => {
       sorter: { multiple: 1 },
       width: COL_WIDTH.zones,
       isExpandable: true,
-      render: (value, record) => <span>{record.name}</span>,
+      render: (_value, record) => <span>{record.name}</span>,
     },
     {
       title: 'Areas',
