@@ -44,7 +44,7 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
     );
   };
 
-  const getColumnAlign = (columnAlign?: 'center' | 'right' | 'left') => {
+  const getColumnJustifyContent = (columnAlign?: 'center' | 'right' | 'left') => {
     if (columnAlign === 'center') return 'center';
 
     return columnAlign === 'right' ? 'flex-end' : undefined;
@@ -56,7 +56,7 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
         <div
           className={styles.titleTable}
           style={{
-            justifyContent: getColumnAlign(column.align),
+            justifyContent: getColumnJustifyContent(column.align),
           }}>
           {column.lightHeading ? (
             <BodyText fontFamily="Roboto" level={5}>

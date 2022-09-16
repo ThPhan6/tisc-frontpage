@@ -95,21 +95,11 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
   };
 
   const handleOnChangeRadioForm = (fieldKey: FieldName, radioValue: RadioValue) => {
-    if (radioValue.value === 'other') {
-      onChangeData(fieldKey, radioValue.label);
-    } else {
-      onChangeData(fieldKey, radioValue.value);
-    }
+    onChangeData(fieldKey, radioValue.value === 'other' ? radioValue.label : radioValue.value);
   };
 
-  const returnOptionData = (data: ProductItemValue[]) => {
-    return data.map((item) => {
-      return {
-        label: item.name,
-        value: item.id,
-      };
-    });
-  };
+  const returnOptionData = (data: ProductItemValue[]) =>
+    data.map((item) => ({ label: item.name, value: item.id }));
 
   const handleSubmit = () => {
     createShareViaEmail(shareViaEmailData).then((isSuccess) => {
