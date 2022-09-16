@@ -9,6 +9,7 @@ import {
 } from '@/features/product/services';
 import { useBoolean } from '@/helper/hook';
 import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+import { debounce } from 'lodash';
 
 import { RadioValue } from '../CustomRadio/types';
 import { ProductItem, ProductItemValue } from '@/features/product/types';
@@ -87,18 +88,18 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
     id: '',
   };
 
-  const onChangeData = (fieldName: FieldName, fieldValue: any) => {
+  const onChangeData = debounce((fieldName: FieldName, fieldValue: any) => {
     setShareViaEmailData({
       ...shareViaEmailData,
       [fieldName]: fieldValue,
     });
-  };
+  }, 300);
 
   const handleOnChangeRadioForm = (fieldKey: FieldName, radioValue: RadioValue) => {
     onChangeData(fieldKey, radioValue.value === 'other' ? radioValue.label : radioValue.value);
   };
 
-  const returnOptionData = (data: ProductItemValue[]) =>
+  const getOptionData = (data: ProductItemValue[]) =>
     data.map((item) => ({ label: item.name, value: item.id }));
 
   const handleSubmit = () => {
@@ -140,7 +141,7 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
         checked={shareViaEmailData.sharing_group}
         placeholder={sharingGroupLabel.name}
         otherInput
-        optionData={returnOptionData(sharingGroup)}
+        optionData={getOptionData(sharingGroup)}
         onChange={(radioValue) => handleOnChangeRadioForm('sharing_group', radioValue)}
       />
       {/* Sharing Purpose */}
@@ -149,7 +150,7 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
         checked={shareViaEmailData.sharing_purpose}
         placeholder={sharingPurposeLabel.name}
         otherInput
-        optionData={returnOptionData(sharingPurpose)}
+        optionData={getOptionData(sharingPurpose)}
         onChange={(radioValue) => handleOnChangeRadioForm('sharing_purpose', radioValue)}
       />
       {/* Email To */}
