@@ -206,7 +206,11 @@ const ProductImagePreview: React.FC = () => {
     );
   };
 
-  const renderImagePrimary = () => {
+  const renderMainImage = () => {
+    if (product.images[0]) {
+      return <img src={showImageUrl(product.images[0])} className={styles.primaryPhoto} />;
+    }
+
     if (isTiscAdmin) {
       return (
         <div className={styles.dropzoneNote}>
@@ -232,11 +236,7 @@ const ProductImagePreview: React.FC = () => {
       <div className={styles.productImageWrapper}>
         <Upload.Dragger {...primaryProps}>
           <div className={styles.uploadZoneContent}>
-            {product.images[0] ? (
-              <img src={showImageUrl(product.images[0])} className={styles.primaryPhoto} />
-            ) : (
-              renderImagePrimary()
-            )}
+            {renderMainImage()}
 
             {isTiscAdmin ? (
               <div className={styles.primaryAction}>

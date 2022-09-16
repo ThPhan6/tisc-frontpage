@@ -12,18 +12,14 @@ import styles from '../styles/index.less';
 const MenuHeaderSummary: FC<UserGroupProps> = ({ type }) => {
   const [summaryData, setSummaryData] = useState<DataMenuSummaryProps[]>([]);
 
-  const getDataFromAPI = (APIFnc: Promise<DataMenuSummaryProps[]>) => {
-    APIFnc.then((data) => {
+  const fetchSummary = type === 'brand' ? getBrandSummary : getDesignFirmSummary;
+
+  useEffect(() => {
+    fetchSummary().then((data) => {
       if (data) {
         setSummaryData(data);
       }
     });
-  };
-
-  useEffect(() => {
-    if (type === 'brand') getDataFromAPI(getBrandSummary());
-
-    if (type === 'design') getDataFromAPI(getDesignFirmSummary());
   }, []);
 
   return (

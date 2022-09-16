@@ -78,16 +78,14 @@ const MyWorkspace: React.FC = () => {
                 <BodyText level={5} customClass={styles.team}>
                   Teams:
                 </BodyText>
-                {brand.teams.map((user: BrandCardTeam) => {
-                  return (
-                    <TeamIcon
-                      key={user.id}
-                      avatar={user.avatar}
-                      name={getFullName(user)}
-                      customClass={styles.avatar}
-                    />
-                  );
-                })}
+                {brand.teams.map((user: BrandCardTeam) => (
+                  <TeamIcon
+                    key={user.id}
+                    avatar={user.avatar}
+                    name={getFullName(user)}
+                    customClass={styles.avatar}
+                  />
+                ))}
               </div>
             </div>
           </div>
