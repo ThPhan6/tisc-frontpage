@@ -35,19 +35,14 @@ export type UserInfoDataProp = {
   retrieve_favourite: boolean;
 };
 
-export type ResetPasswordInput = {
+export type PasswordInput = {
   password: string;
   confirmPassword: string;
 };
-
-export type ResetPasswordRequestBody = {
+export type PasswordRequestBody = {
   password: string;
   confirmed_password: string;
-  reset_password_token: string;
-};
-export type CreatePasswordRequestBody = {
-  password: string;
-  confirmed_password: string;
+  reset_password_token?: string;
 };
 
 export interface ModalProps {

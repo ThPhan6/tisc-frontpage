@@ -93,7 +93,7 @@ const TabDetail: FC<TabDetailProps> = ({
         </div>
       </div>
 
-      {isLoading && <LoadingPageCustomize />}
+      {isLoading ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

@@ -137,6 +137,16 @@ export const LoginModal: FC<LoginModalProps> = ({
 
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
 
+  const getSubmitButtonWidth = () => {
+    if (showForgotPassword.value) return '216px';
+    return theme === 'dark' ? '120px' : '112px';
+  };
+
+  const getSubmitButtonTitle = () => {
+    if (showForgotPassword.value) return 'Submit & Check your email';
+    return theme === 'dark' ? 'Let’s do this' : 'Get started';
+  };
+
   return (
     <CustomModal
       visible={visible}
@@ -180,7 +190,7 @@ export const LoginModal: FC<LoginModalProps> = ({
               />
               <CustomInput
                 fromLandingPage
-                status={inputValue.password ? (inputValue.password.length < 8 ? 'error' : '') : ''}
+                status={inputValue.password && inputValue.password.length < 8 ? 'error' : ''}
                 theme={theme}
                 type={'password'}
                 containerClass={`
@@ -245,13 +255,9 @@ export const LoginModal: FC<LoginModalProps> = ({
               <CustomButton
                 disabled={handleDisableButton()}
                 buttonClass={styles.submit}
-                width={showForgotPassword.value ? '216px' : theme === 'dark' ? '120px' : '112px'}
+                width={getSubmitButtonWidth()}
                 onClick={handleSubmit}>
-                {showForgotPassword.value
-                  ? 'Submit & Check your email'
-                  : theme === 'dark'
-                  ? 'Let’s do this'
-                  : 'Get started'}
+                {getSubmitButtonTitle()}
               </CustomButton>
             </div>
           </div>

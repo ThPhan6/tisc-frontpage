@@ -12,7 +12,7 @@ import { BodyText } from '@/components/Typography';
 import indexStyles from '../styles/index.less';
 import styles from './Profile.less';
 
-const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
+export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
   if (!data) return null;
 
   return (
@@ -91,4 +91,3 @@ const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
     </Row>
   );
 };
-export default ProfileDetail;

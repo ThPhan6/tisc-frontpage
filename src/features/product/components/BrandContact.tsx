@@ -6,8 +6,8 @@ import styles from './BrandContact.less';
 
 export interface BusinessDetailProps {
   business: string;
-  type?: string;
   address: string;
+  type?: string;
   country?: string;
   phone_code?: string;
   general_phone?: string;

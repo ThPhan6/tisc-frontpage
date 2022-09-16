@@ -20,7 +20,7 @@ const DEFAULT_INPUT = {
   quotation: '',
 };
 
-const UpdateInspirationalQuotationsPage = () => {
+const UpdateQuotationPage = () => {
   const isLoading = useBoolean();
   const submitButtonStatus = useBoolean(false);
   const params = useParams<{ id: string }>();
@@ -76,9 +76,9 @@ const UpdateInspirationalQuotationsPage = () => {
         onSubmit={handleUpdateData}
         submitButtonStatus={submitButtonStatus.value}
       />
-      {isLoading.value && <LoadingPageCustomize />}
+      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };
 
-export default UpdateInspirationalQuotationsPage;
+export default UpdateQuotationPage;
