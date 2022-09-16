@@ -24,7 +24,7 @@ interface SpaceListProps {
   projectId?: string;
 }
 
-const SpecificationBySpace: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) => {
+const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) => {
   useAutoExpandNestedTableColumn([MAIN_COL_WIDTH, SUB_COL_WIDTH]);
   const tableRef = useRef<any>();
   const [combinableSorter, setCombinableSorter] = useState<{ key: string; value: string }>({
@@ -84,6 +84,12 @@ const SpecificationBySpace: React.FC<SpaceListProps> = ({ handleUpdateSpace, pro
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center', noBoxShadow: true },
   ];
 
+  const handleHeaderCell = () => {
+    return {
+      onClick: reUpdateCombinableSorterState,
+    };
+  };
+
   const ZoneColumns: TableColumnItem<ProjectSpaceZone>[] = [
     {
       title: 'Zone',
@@ -96,11 +102,7 @@ const SpecificationBySpace: React.FC<SpaceListProps> = ({ handleUpdateSpace, pro
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
       },
-      onHeaderCell: () => {
-        return {
-          onClick: reUpdateCombinableSorterState,
-        };
-      },
+      onHeaderCell: handleHeaderCell,
     },
     {
       title: 'Areas',
@@ -109,11 +111,7 @@ const SpecificationBySpace: React.FC<SpaceListProps> = ({ handleUpdateSpace, pro
       sorter: {
         multiple: 2,
       },
-      onHeaderCell: () => {
-        return {
-          onClick: reUpdateCombinableSorterState,
-        };
-      },
+      onHeaderCell: handleHeaderCell,
     },
     {
       title: 'Rooms',
@@ -292,4 +290,4 @@ const SpecificationBySpace: React.FC<SpaceListProps> = ({ handleUpdateSpace, pro
   );
 };
 
-export default SpecificationBySpace;
+export default SpaceList;

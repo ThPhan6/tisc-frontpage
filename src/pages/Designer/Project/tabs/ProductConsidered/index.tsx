@@ -157,7 +157,7 @@ const ProductConsidered: React.FC = () => {
         sorter: {
           multiple: 4,
         },
-        render: (v, record) => record.brand_name,
+        render: (_value, record) => record.brand_name,
         onCell: onCellUnlisted,
       },
       {
@@ -179,7 +179,7 @@ const ProductConsidered: React.FC = () => {
       sorter: { multiple: 1 },
       width: COL_WIDTH.zones,
       isExpandable: true,
-      render: (value, record) => <span>{record.name}</span>,
+      render: (_value, record) => <span>{record.name}</span>,
     },
     {
       title: 'Areas',

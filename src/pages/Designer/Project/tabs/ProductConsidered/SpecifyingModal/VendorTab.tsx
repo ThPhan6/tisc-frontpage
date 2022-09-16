@@ -25,19 +25,7 @@ const getSelectedLocation = (locationGroup: LocationGroupedByCountry[], selected
   const locationOption: RadioValue = {
     value: selectedId || '',
     label: selectedLocation ? (
-      <BusinessDetail
-        business={selectedLocation.business_name}
-        type={selectedLocation.functional_types[0]?.name}
-        address={`${selectedLocation.address}, ${
-          selectedLocation.city_name !== '' ? `${selectedLocation.city_name},` : ''
-        } ${selectedLocation.state_name !== '' ? `${selectedLocation.state_name},` : ''} ${
-          selectedLocation.country_name
-        }`}
-        country={selectedLocation.country_name.toUpperCase()}
-        phone_code={selectedLocation.phone_code}
-        general_phone={selectedLocation.general_phone}
-        genernal_email={selectedLocation.general_email}
-      />
+      <BusinessDetail data={selectedLocation} type={selectedLocation.functional_types[0]?.name} />
     ) : (
       ''
     ),
@@ -56,24 +44,7 @@ const getSelectedDistributors = (locationGroup: DistributorProductMarket[], sele
   const selectedLocation = allLocations.find((el) => el.id === selectedId);
   const locationOption: RadioValue = {
     value: selectedId || '',
-    label: selectedLocation ? (
-      <BusinessDetail
-        business={selectedLocation.name}
-        address={`${selectedLocation.address}, ${
-          selectedLocation.city_name !== '' ? `${selectedLocation.city_name},` : ''
-        } ${selectedLocation.state_name !== '' ? `${selectedLocation.state_name},` : ''} ${
-          selectedLocation.country_name
-        }`}
-        country={selectedLocation.country_name.toUpperCase()}
-        phone_code={selectedLocation.phone_code}
-        general_phone={selectedLocation.phone}
-        genernal_email={selectedLocation.email}
-        first_name={selectedLocation.first_name}
-        last_name={selectedLocation.last_name}
-      />
-    ) : (
-      ''
-    ),
+    label: selectedLocation ? <BusinessDetail data={selectedLocation} /> : '',
   };
 
   return {
@@ -120,13 +91,12 @@ const VendorTab: FC<VendorTabProps> = ({
 
   const [locationPopup, setLocationPopup] = useState<'' | 'brand' | 'distributor'>('');
 
-  // get data
-  const chosenValue =
-    locationPopup === 'brand'
-      ? chosenBrand
-      : locationPopup === 'distributor'
-      ? chosenDistributor
-      : undefined;
+  const getChosenValue = () => {
+    if (locationPopup === 'brand') {
+      return chosenBrand;
+    }
+    return locationPopup === 'distributor' ? chosenDistributor : undefined;
+  };
 
   useEffect(() => {
     getBrandLocation(brandId).then((data) => {
@@ -142,13 +112,20 @@ const VendorTab: FC<VendorTabProps> = ({
     });
   }, []);
 
+  const getActiveKey = (key: string | string[]) => {
+    if (key === activeKey) {
+      return '';
+    }
+    return typeof key !== 'string' ? key[0] : key;
+  };
+
   const handleCollapse = (field: 'brand' | 'distributor', key: string | string[]) => {
     if (field === 'brand') {
-      setBrandActiveKey(key === activeKey ? '' : typeof key !== 'string' ? key[0] : key);
+      setBrandActiveKey(getActiveKey(key));
 
       setDistributorActiveKey([]);
     } else if (field === 'distributor') {
-      setDistributorActiveKey(key === activeKey ? '' : typeof key !== 'string' ? key[0] : key);
+      setDistributorActiveKey(getActiveKey(key));
 
       setBrandActiveKey([]);
     }
@@ -170,35 +147,15 @@ const VendorTab: FC<VendorTabProps> = ({
   const renderBusinessAdressDetail = (location?: LocationDetail) =>
     location ? (
       <BusinessDetail
-        business={location?.business_name ?? ''}
+        data={location}
         type={location?.functional_types?.[0]?.name ?? ''}
-        address={`${location.address}, ${
-          location.city_name !== '' ? `${location.city_name},` : ''
-        } ${location.state_name !== '' ? `${location.state_name},` : ''} ${location.country_name}`}
-        phone_code={location?.phone_code ?? ''}
-        general_phone={location?.general_phone ?? ''}
-        genernal_email={location?.general_email ?? ''}
         customClass={styles.businessDetail}
       />
     ) : null;
 
   const renderDistributorBusinessAdressDetail = (
     location?: DistributorProductMarket['distributors'][0],
-  ) =>
-    location ? (
-      <BusinessDetail
-        business={location?.name ?? ''}
-        address={`${location.address}, ${
-          location.city_name !== '' ? `${location.city_name},` : ''
-        } ${location.state_name !== '' ? `${location.state_name},` : ''} ${location.country_name}`}
-        phone_code={location?.phone_code ?? ''}
-        general_phone={location?.phone ?? ''}
-        genernal_email={location?.email ?? ''}
-        customClass={styles.businessDetail}
-        first_name={location.first_name}
-        last_name={location.last_name}
-      />
-    ) : null;
+  ) => (location ? <BusinessDetail data={location} customClass={styles.businessDetail} /> : null);
 
   const renderCollapseHeader = (
     title: string,
@@ -299,7 +256,7 @@ const VendorTab: FC<VendorTabProps> = ({
         className={styles.customLocationModal}
         visible={locationPopup === 'brand'}
         setVisible={(visible) => (visible ? undefined : setLocationPopup(''))}
-        chosenValue={chosenValue}
+        chosenValue={getChosenValue()}
         setChosenValue={(checked) =>
           locationPopup ? handleOnChangeSpecifying(checked) : undefined
         }
@@ -310,21 +267,7 @@ const VendorTab: FC<VendorTabProps> = ({
             options: country.locations.map((location) => {
               return {
                 value: location.id,
-                label: (
-                  <BusinessDetail
-                    business={location.business_name}
-                    type={location.functional_types[0]?.name}
-                    address={`${location.address}, ${
-                      location.city_name !== '' ? `${location.city_name},` : ''
-                    } ${location.state_name !== '' ? `${location.state_name},` : ''} ${
-                      location.country_name
-                    }`}
-                    country={location.country_name.toUpperCase()}
-                    phone_code={location.phone_code}
-                    general_phone={location.general_phone}
-                    genernal_email={location.general_email}
-                  />
-                ),
+                label: <BusinessDetail data={location} type={location.functional_types[0]?.name} />,
               };
             }),
           };
@@ -336,7 +279,7 @@ const VendorTab: FC<VendorTabProps> = ({
         className={styles.customLocationModal}
         visible={locationPopup === 'distributor'}
         setVisible={(visible) => (visible ? undefined : setLocationPopup(''))}
-        chosenValue={chosenValue}
+        chosenValue={getChosenValue()}
         setChosenValue={(checked) =>
           locationPopup ? handleOnChangeSpecifying(checked) : undefined
         }
@@ -347,22 +290,7 @@ const VendorTab: FC<VendorTabProps> = ({
             options: country.distributors.map((distributor) => {
               return {
                 value: distributor.id,
-                label: (
-                  <BusinessDetail
-                    business={distributor.name}
-                    address={`${distributor.address}, ${
-                      distributor.city_name !== '' ? `${distributor.city_name},` : ''
-                    } ${distributor.state_name !== '' ? `${distributor.state_name},` : ''} ${
-                      distributor.country_name
-                    }`}
-                    country={distributor.country_name.toUpperCase()}
-                    phone_code={distributor.phone_code}
-                    general_phone={distributor.phone}
-                    genernal_email={distributor.email}
-                    first_name={distributor.first_name}
-                    last_name={distributor.last_name}
-                  />
-                ),
+                label: <BusinessDetail data={distributor} />,
               };
             }),
           };

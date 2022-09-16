@@ -38,7 +38,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       sorter: true,
       width: COL_WIDTH_BRAND.brand,
       isExpandable: true,
-      render: (value, record) => <span>{record.name}</span>,
+      render: (_value, record) => <span>{record.name}</span>,
     },
     {
       title: 'Collection',
