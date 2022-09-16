@@ -1,12 +1,10 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { useParams } from 'umi';
-
 import { ReactComponent as DownloadIconV2 } from '@/assets/icons/download-2-icon.svg';
 
 import { getProductCatelogueByProductID } from '@/features/product/services';
-import { useCheckPermission } from '@/helper/hook';
+import { useCheckPermission, useGetParamId } from '@/helper/hook';
 
 import { setProductCatelogue } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
@@ -38,8 +36,7 @@ const DownloadContent = () => {
 };
 
 export const CatelogueDownload = () => {
-  const params = useParams<{ id: string }>();
-  const productId = params?.id || '';
+  const productId = useGetParamId();
   const catelogue = useAppSelector((state) => state.product.catelogue);
   const dispatch = useDispatch();
   const isTiscAdmin = useCheckPermission('TISC Admin');
