@@ -17,16 +17,7 @@ import { BodyText } from '@/components/Typography';
 import styles from './CatelogueDownload.less';
 
 const DownloadContent = () => {
-  const params = useParams<{ id: string }>();
-  const productId = params?.id || '';
   const contents = useAppSelector((state) => state.product.catelogue.contents);
-
-  useEffect(() => {
-    if (productId) {
-      /// load product detail catelogues
-      getProductCatelogueByProductID(productId);
-    }
-  }, [productId]);
 
   return (
     <div className={styles.download}>
@@ -47,9 +38,17 @@ const DownloadContent = () => {
 };
 
 export const CatelogueDownload = () => {
+  const params = useParams<{ id: string }>();
+  const productId = params?.id || '';
   const catelogue = useAppSelector((state) => state.product.catelogue);
   const dispatch = useDispatch();
   const isTiscAdmin = useCheckPermission('TISC Admin');
+
+  useEffect(() => {
+    if (productId) {
+      getProductCatelogueByProductID(productId);
+    }
+  }, [productId]);
 
   if (isTiscAdmin) {
     return (
