@@ -9,7 +9,7 @@ import LoadingPage from '@/components/LoadingPage';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
 
-import styles from './styles/index.less';
+import styles from './index.less';
 
 const MyWorkspace: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -79,7 +79,14 @@ const MyWorkspace: React.FC = () => {
                   Teams:
                 </BodyText>
                 {brand.teams.map((user: BrandCardTeam) => {
-                  return <TeamIcon key={user.id} avatar={user.avatar} name={getFullName(user)} />;
+                  return (
+                    <TeamIcon
+                      key={user.id}
+                      avatar={user.avatar}
+                      name={getFullName(user)}
+                      customClass={styles.avatar}
+                    />
+                  );
                 })}
               </div>
             </div>
