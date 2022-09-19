@@ -470,7 +470,7 @@ export default [
       },
       {
         path: '/brand/product/:id',
-        component: './Brand/Products/ViewPage',
+        component: './Brand/Products/ProductBrandViewPage',
         hideInMenu: true,
       },
     ],
@@ -585,7 +585,7 @@ export default [
           },
           {
             path: PATH.updateMarketAvailability,
-            component: './Brand/Adminstration/MarketAvailability/UpdatePage',
+            component: './Brand/Adminstration/MarketAvailability/UpdateMarketAvailabilityPage',
             hideInMenu: true,
           },
         ],
@@ -632,7 +632,7 @@ export default [
           },
           {
             path: PATH.designerBrandProductDetail,
-            component: './Brand/Products/ViewPage',
+            component: './Brand/Products/ProductBrandViewPage',
             hideInMenu: true,
           },
         ],
