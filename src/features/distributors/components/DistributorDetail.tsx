@@ -60,7 +60,7 @@ const UpdatePage = () => {
     }
   }, []);
 
-  const handleCancel = () => {
+  const goBackToDistributorList = () => {
     pushTo(PATH.distributors);
   };
 
@@ -69,8 +69,8 @@ const UpdatePage = () => {
 
     if (isUpdate) {
       updateDistributor(idDistributor, submitData).then((isSuccess) => {
+        isLoading.setValue(false);
         if (isSuccess) {
-          isLoading.setValue(false);
           submitButtonStatus.setValue(true);
           setTimeout(() => {
             submitButtonStatus.setValue(false);
@@ -82,9 +82,7 @@ const UpdatePage = () => {
         isLoading.setValue(false);
         if (isSuccess) {
           submitButtonStatus.setValue(true);
-          setTimeout(() => {
-            pushTo(PATH.distributors);
-          }, 1000);
+          setTimeout(goBackToDistributorList, 1000);
         }
       });
     }
@@ -102,7 +100,7 @@ const UpdatePage = () => {
           data={data}
           setData={setData}
           onSubmit={onSubmit}
-          onCancel={handleCancel}
+          onCancel={goBackToDistributorList}
           submitButtonStatus={submitButtonStatus.value}
         />
       </div>

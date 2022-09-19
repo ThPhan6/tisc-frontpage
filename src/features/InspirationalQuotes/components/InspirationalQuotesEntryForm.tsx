@@ -7,7 +7,7 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 
-import styles from '../styles/InspirationalQuotationEntryForm.less';
+import styles from './InspirationalQuotesEntryForm.less';
 
 interface QuotationEntryFormProps {
   value: Quotation;

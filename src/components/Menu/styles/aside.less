@@ -109,12 +109,14 @@
   right: 16px;
   transform: translateY(-50%);
   transition: transform cubic-bezier(0.39, 0.575, 0.565, 1) 0.3s;
-
   &.item-open {
     transform: translateY(-50%) rotate(180deg);
-    path {
-      fill: @primary-color-dark;
-    }
+  }
+}
+:global(.ant-menu-submenu-selected) .ant-menu-expand-icon,
+:global(.ant-menu-submenu-active) .ant-menu-expand-icon {
+  path {
+    fill: @primary-color-dark;
   }
 }
 
