@@ -18,6 +18,7 @@ type Expanded = number | undefined | string;
 
 export const useCustomTable = (columns: TableColumnItem<any>[]) => {
   const [expanded, setExpanded] = useState<Expanded>();
+
   const renderExpandedColumn = (value: any, record: any, noExpand?: boolean) => {
     if (!value) {
       return null;
@@ -43,18 +44,19 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
     );
   };
 
+  const getColumnJustifyContent = (columnAlign?: 'center' | 'right' | 'left') => {
+    if (columnAlign === 'center') return 'center';
+
+    return columnAlign === 'right' ? 'flex-end' : undefined;
+  };
+
   const formatTitleColumn = (column: TableColumnItem<any>) => {
     return () => {
       return (
         <div
           className={styles.titleTable}
           style={{
-            justifyContent:
-              column.align === 'center'
-                ? 'center'
-                : column.align === 'right'
-                ? 'flex-end'
-                : undefined,
+            justifyContent: getColumnJustifyContent(column.align),
           }}>
           {column.lightHeading ? (
             <BodyText fontFamily="Roboto" level={5}>
@@ -114,13 +116,99 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
 
 const EXPANDED_DELAY = 50; // ms
 const RETRY_INTERVAL = 100; // ms
-const OTHER_ELEMENTS_WIDTH = 50; // two padding and arrow icon width
+
+const removeAllCollGroup = () => {
+  const allCollGroup = document.querySelectorAll('colgroup');
+  allCollGroup.forEach((el) => el.remove());
+};
+
+const syncColWidthFollowingTheDeepestDataRow = (
+  level: number,
+  curCellStyle: Element,
+  rightColumnExcluded: number = 2,
+) => {
+  const expandedColumns = document.querySelectorAll('tr[class$="custom-expanded"] td');
+
+  let nestedSubColumns = document.querySelectorAll(
+    `tr[class*="ant-table-expanded-row"]:not([style*="display: none;"]):first-child tbody tr[class$="custom-expanded-level-${
+      level + 1
+    }"]:first-child td`,
+  );
+  if (nestedSubColumns.length === 0) {
+    nestedSubColumns = document.querySelectorAll(
+      `tr[class*="ant-table-expanded-row"]:not([style*="display: none;"]) tbody tr[class$="custom-expanded-level-${
+        level + 1
+      }"]:first-child td`,
+    );
+  }
+
+  if (!expandedColumns || expandedColumns.length < 4) {
+    return;
+  }
+
+  setTimeout(() => {
+    let cellWidthStyles = '';
+    expandedColumns.forEach((_dataCell, index) => {
+      const newCellWidth = nestedSubColumns?.[index]?.clientWidth;
+
+      // Avoid resize expandable column cells and last col cells (Count and Account column) and one auto width column
+      if (
+        index < level ||
+        index > expandedColumns.length - 1 - rightColumnExcluded - 1 ||
+        !newCellWidth
+      ) {
+        return;
+      }
+
+      // Update style for each column from this data row to their relevant column of expandable column
+      // Remember to add enter key
+      cellWidthStyles += `
+      tr[data-row-key] td:nth-child(${index + 1}) { width: ${newCellWidth}px }`;
+    });
+    curCellStyle.innerHTML += cellWidthStyles;
+  }, 300);
+};
+
+const openFullWidthCellByLevel = (level: number, style: Element, width: number) =>
+  (style.innerHTML = `tr[data-row-key] td:nth-child(${level}) { width: ${width}px; }`);
+
+const updateStyleStatus = (
+  level: number,
+  cellStyles: HTMLStyleElement[],
+  currentCellName: string,
+  cellIndex: number,
+) => {
+  const notExpandingStyleIndex = cellStyles.findIndex(
+    (cellStl) => cellStl.className.includes('expanding') === false,
+  );
+
+  cellStyles.forEach((cellStl, stlIndex) => {
+    if (stlIndex <= level - 2) {
+      return;
+    }
+
+    const nameParts = cellStl.id.split('_');
+    const styleCellIndex = Number(nameParts[nameParts.length - 1]);
+
+    const cellStyleFromOtherFirstColId =
+      cellStl.id.includes(currentCellName) === false || styleCellIndex !== cellIndex;
+
+    // Disable style from level to all its sub levels below (stlIndex >= notExpandingStyleIndex)
+    const cellIsNotExpanding =
+      cellStl.id.includes(currentCellName) &&
+      notExpandingStyleIndex !== -1 &&
+      stlIndex >= notExpandingStyleIndex;
+
+    cellStl.media = cellStyleFromOtherFirstColId || cellIsNotExpanding ? 'not-all' : '';
+  });
+};
 
 const injectScriptToExpandableCellByLevel = (
   level: number,
+  totalNestedLevel: number,
   cellStyles: HTMLStyleElement[],
-  expandColWidths: number[],
   firstCellName?: string,
+  rightColumnExcluded?: number,
 ) => {
   // Get expandable column cells by level
   const expandableCells = document.querySelectorAll(
@@ -131,141 +219,112 @@ const injectScriptToExpandableCellByLevel = (
     return;
   }
 
-  expandableCells.forEach((cell) => {
-    // Get parentElement for full width
+  const onExpandableCellClick = (cell: Element, cellIndex: number) => {
     const expandableCell = cell?.parentElement;
     if (!expandableCell) {
       return;
     }
 
     // Get first collumn cell name to use as an id for its sub level cols
-    let cellName = '';
-    if (level === 1) {
-      cellName = snakeCase(cell.querySelector('span span')?.innerHTML || '');
-    }
+    const cellName = level === 1 ? snakeCase(cell.querySelector('span span')?.innerHTML || '') : '';
+
     const currentCellName = cellName || firstCellName || '';
 
-    // Handle when click on expandable cell (by level)
-    const onExpandableCellClick = () => {
-      const isExpanding = cell.querySelector('span[class^="expandedColumn"]') ? true : false;
+    const curCellStyle = cellStyles[level - 1];
 
-      // Clear style before inject
-      cellStyles[level - 1].innerHTML = '';
+    removeAllCollGroup();
 
-      // Use className to check expanding status
-      cellStyles[level - 1].className = isExpanding ? 'expanding' : '';
+    const isExpanding = cell.querySelector('span[class^="expandedColumn"]') ? true : false;
 
-      // When click to close
-      if (isExpanding === false) {
-        // Disable style for sub children styles
-        cellStyles.forEach((cellStl, stlIndex) => {
-          if (stlIndex > level - 2) {
-            cellStl.media = 'not-all';
-          }
-        });
-      } else {
-        // When click to open
+    // Clear style before inject
+    curCellStyle.innerHTML = '';
 
-        // Set id following the first level cell name
-        cellStyles[level - 1].id = currentCellName + '_' + level;
+    // Use className to check expanding status
+    curCellStyle.className = isExpanding ? 'expanding' : '';
 
-        // Open full width for expandable cell
-        cellStyles[
-          level - 1
-        ].innerHTML = `tr[data-row-key] td:nth-child(${level}) { width: ${expandableCell.clientWidth}px; }`;
+    // When click to close
+    if (isExpanding === false) {
+      // Disable style for sub children styles
+      cellStyles.forEach((cellStl, stlIndex) => {
+        if (stlIndex > level - 2) {
+          cellStl.media = 'not-all';
+        }
+      });
+    } else {
+      // When click to open
+      // Update clicking cell width & Check disable style for the nested level
 
-        // When re-open a col level, checking if its sub levels have closed status
-        const notExpandingStyleIndex = cellStyles.findIndex(
-          (cellStl) => cellStl.className.includes('expanding') === false,
-        );
+      // Set id following the first level cell name
+      curCellStyle.id = currentCellName + '_' + level + '_' + cellIndex;
 
-        cellStyles.forEach((cellStl, stlIndex) => {
-          if (stlIndex <= level - 2) {
-            return;
-          }
+      // Open full width for expandable cell
+      setTimeout(() => {
+        openFullWidthCellByLevel(level, curCellStyle, expandableCell.clientWidth);
+      }, EXPANDED_DELAY);
 
-          const cellStyleFromOtherFirstColId = cellStl.id.includes(cellName) === false;
+      // When re-open a col level, checking if its sub levels have closed status
+      updateStyleStatus(level, cellStyles, currentCellName, cellIndex);
+    }
 
-          // Disable style from level to all its sub levels below (stlIndex >= notExpandingStyleIndex)
-          const cellIsNotExpanding =
-            cellStl.id.includes(cellName) &&
-            notExpandingStyleIndex !== -1 &&
-            stlIndex >= notExpandingStyleIndex;
-
-          cellStl.media = cellStyleFromOtherFirstColId || cellIsNotExpanding ? 'not-all' : '';
-        });
-      }
-
-      // still have children
-      if (expandColWidths[level]) {
-        injectScriptToExpandableCellByLevel(
-          level + 1,
-          cellStyles,
-          expandColWidths,
-          currentCellName,
-        );
-      }
-
-      const haveExpandSub = document.querySelector(
-        `tr[class*="ant-table-expanded-row"]:not([style*="display: none;"]) tbody tr[class$="custom-expanded-level-${
-          level + 1
-        }"]:first-child div[class^="expandedCell"]`,
+    // still have children
+    if (level < totalNestedLevel) {
+      // Recursive call this function for the next level + 1
+      injectScriptToExpandableCellByLevel(
+        level + 1,
+        totalNestedLevel,
+        cellStyles,
+        currentCellName,
+        rightColumnExcluded,
       );
+    }
 
-      if (haveExpandSub) {
-        return;
-      }
+    const expandableSubCell = document.querySelector(
+      `tr[class*="ant-table-expanded-row"]:not([style*="display: none;"]) tbody tr[class$="custom-expanded-level-${
+        level + 1
+      }"]:first-child div[class^="expandedCell"]`,
+    );
 
+    if (!expandableSubCell) {
       // This is the data row, don't have sub level anymore
       // Update style for each column from this data row to their relevant column of expandable column
 
-      const expandedColumns = document.querySelectorAll('tr[class$="custom-expanded"] td');
+      return syncColWidthFollowingTheDeepestDataRow(level, curCellStyle, rightColumnExcluded);
+    }
 
-      const nestedSubColumns = document.querySelectorAll(
-        `tr[class*="ant-table-expanded-row"]:not([style*="display: none;"]) tbody tr[class$="custom-expanded-level-${
-          level + 1
-        }"]:first-child td`,
-      );
-
-      if (!expandedColumns || expandedColumns.length < 4) {
-        return;
+    // Open full width for sub-level expandable cell
+    setTimeout(() => {
+      const expandableSubFullCell = expandableSubCell.parentElement;
+      if (expandableSubFullCell?.clientWidth) {
+        openFullWidthCellByLevel(level + 1, curCellStyle, expandableSubFullCell.clientWidth);
       }
+    }, 300);
+  };
 
-      expandedColumns.forEach((_dataCell, index) => {
-        const newCellWidth = nestedSubColumns?.[index]?.clientWidth;
+  expandableCells.forEach((cell: Element, cellIndex: number) => {
+    // Get parentElement for full width
+    // Handle when click on expandable cell (by level)
 
-        // Avoid resize expandable column cells and last col cells (Count and Account column)
-        if (index < level || index > expandedColumns.length - 3 || !newCellWidth) {
-          return;
-        }
+    const deplayOnExpandableCellClick = () =>
+      setTimeout(() => onExpandableCellClick(cell, cellIndex), EXPANDED_DELAY);
 
-        // Update style for each column from this data row to their relevant column of expandable column
-        cellStyles[level - 1].innerHTML += ` tr[data-row-key] td:nth-child(${
-          index + 1
-        }) { width: ${newCellWidth}px }`;
-      });
-    };
-
-    cell.addEventListener('click', () => {
-      setTimeout(onExpandableCellClick, EXPANDED_DELAY);
-    });
+    cell.removeEventListener('click', deplayOnExpandableCellClick);
+    cell.addEventListener('click', deplayOnExpandableCellClick);
   });
 };
 
-export const useAutoExpandNestedTableColumn = (expandColWidths: number[]) => {
+export const useAutoExpandNestedTableColumn = (
+  totalNestedLevel: number,
+  options?: {
+    autoWidthColIndex?: number; // Start from 0
+    rightColumnExcluded?: number;
+  },
+) => {
+  const rightColumnExcluded = options?.rightColumnExcluded || 2;
   useEffect(() => {
     const defaultStyle = document.createElement('style');
     document.getElementsByTagName('head')[0].appendChild(defaultStyle);
-    let colStyles = '';
-    expandColWidths.forEach((colWidth, colIndex) => {
-      colStyles += `tr[data-row-key] td:nth-child(${
-        colIndex + 1
-      }) div[class^='expandedCell'] span span { max-width: ${colWidth - OTHER_ELEMENTS_WIDTH}px; }
-      `;
-    });
-    defaultStyle.innerHTML = colStyles;
 
-    const cellStyles = expandColWidths.map(() => {
+    const cellStyles = new Array(3).fill(null).map(() => {
       const celstyles = document.createElement('style');
       document.getElementsByTagName('head')[0].appendChild(celstyles);
       return celstyles;
@@ -282,7 +341,24 @@ export const useAutoExpandNestedTableColumn = (expandColWidths: number[]) => {
         return;
       }
 
-      injectScriptToExpandableCellByLevel(1, cellStyles, expandColWidths);
+      let colStyles = '';
+      const firstRow = document.querySelector('tr[data-row-key]');
+      const allCells = firstRow?.querySelectorAll('td');
+      allCells?.forEach((cell, index) => {
+        const newWidth =
+          index === allCells.length - 1 - rightColumnExcluded ? 'auto' : cell.clientWidth + 'px';
+        colStyles += `tr[data-row-key] td:nth-child(${index + 1}) { width: ${newWidth}; }
+        `;
+      });
+      defaultStyle.innerHTML = colStyles;
+
+      injectScriptToExpandableCellByLevel(
+        1,
+        totalNestedLevel,
+        cellStyles,
+        undefined,
+        rightColumnExcluded,
+      );
     };
 
     setTimeout(injectClickToAdjustTableCellWidth, RETRY_INTERVAL);

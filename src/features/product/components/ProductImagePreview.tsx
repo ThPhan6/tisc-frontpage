@@ -59,9 +59,7 @@ const ProductImagePreview: React.FC = () => {
   const isDesignerUser = useCheckPermission('Design Admin');
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
-  // const [liked, setLiked] = useState(product.is_liked);
   const liked = product.is_liked;
-  // const likeCount = (product.favorites ?? 0) + (liked ? 1 : 0);
   const likeCount = product.favorites ?? 0;
   const handleLoadPhoto = async (file: UploadFile<any>, type: 'first' | 'last' = 'first') => {
     const imageBase64 = await getBase64(file.originFileObj);
@@ -127,7 +125,6 @@ const ProductImagePreview: React.FC = () => {
   const likeProduct = () => {
     likeProductById(product.id ?? '').then((isSuccess) => {
       if (isSuccess) {
-        // setLiked(!liked);
         const newLiked = !liked;
         dispatch(
           setProductDetail({
@@ -184,20 +181,20 @@ const ProductImagePreview: React.FC = () => {
         </div>
 
         <div className={styles.actionRight}>
-          {isDesignerUser && (
+          {isDesignerUser ? (
             <ActionItem
               label="Inquiry/Request"
               icon={<CommentIcon />}
               onClick={() => message.info('Coming soon!')}
             />
-          )}
-          {isDesignerUser && (
+          ) : null}
+          {isDesignerUser ? (
             <ActionItem
               label="Assign Product"
               icon={<AssignIcon />}
               onClick={() => showAssignProductModal.setValue(true)}
             />
-          )}
+          ) : null}
 
           <ActionItem
             label="Share via Email"
@@ -209,29 +206,38 @@ const ProductImagePreview: React.FC = () => {
     );
   };
 
+  const renderMainImage = () => {
+    if (product.images[0]) {
+      return <img src={showImageUrl(product.images[0])} className={styles.primaryPhoto} />;
+    }
+    if (isTiscAdmin) {
+      return (
+        <div className={styles.dropzoneNote}>
+          <BodyText level={3}>
+            Drag & drop the image into the frame
+            <br />
+            or click the upload button below
+          </BodyText>
+          <img src={ProductPlaceHolderImage} className={styles.placeholderPhoto} />
+        </div>
+      );
+    }
+
+    return (
+      <div className={styles.dropzoneNote}>
+        <img src={ProductPlaceHolderImage} className={styles.placeholderPhoto} />
+      </div>
+    );
+  };
+
   return (
     <Col span={12} className={styles.productContent}>
       <div className={styles.productImageWrapper}>
         <Upload.Dragger {...primaryProps}>
           <div className={styles.uploadZoneContent}>
-            {product.images[0] ? (
-              <img src={showImageUrl(product.images[0])} className={styles.primaryPhoto} />
-            ) : isTiscAdmin ? (
-              <div className={styles.dropzoneNote}>
-                <BodyText level={3}>
-                  Drag & drop the image into the frame
-                  <br />
-                  or click the upload button below
-                </BodyText>
-                <img src={ProductPlaceHolderImage} className={styles.placeholderPhoto} />
-              </div>
-            ) : (
-              <div className={styles.dropzoneNote}>
-                <img src={ProductPlaceHolderImage} className={styles.placeholderPhoto} />
-              </div>
-            )}
+            {renderMainImage()}
 
-            {isTiscAdmin && (
+            {isTiscAdmin ? (
               <div className={styles.primaryAction}>
                 <SmallIconButton
                   icon={<UploadIcon />}
@@ -244,7 +250,7 @@ const ProductImagePreview: React.FC = () => {
                   className={styles.actionIcon}
                 />
               </div>
-            )}
+            ) : null}
           </div>
         </Upload.Dragger>
 
@@ -261,14 +267,14 @@ const ProductImagePreview: React.FC = () => {
                           !isTiscAdmin ? styles.lightBorder : ''
                         }`}>
                         <img src={showImageUrl(image) ?? ProductPlaceHolderImage} />
-                        {isTiscAdmin && (
+                        {isTiscAdmin ? (
                           <div className={styles.subPhotoAction}>
                             <SmallIconButton
                               icon={<DeleteIcon />}
                               onClick={(e) => deletePhoto(e, key + 1)}
                             />
                           </div>
-                        )}
+                        ) : null}
                       </div>
                     </div>
                   </Col>
@@ -276,7 +282,7 @@ const ProductImagePreview: React.FC = () => {
             </Row>
           </Col>
 
-          {isTiscAdmin && (
+          {isTiscAdmin ? (
             <Col span={6}>
               <Upload {...subProps}>
                 <div className={styles.addMorePhotocontent}>
@@ -290,7 +296,7 @@ const ProductImagePreview: React.FC = () => {
                 </div>
               </Upload>
             </Col>
-          )}
+          ) : null}
         </Row>
 
         {renderBottomPreview()}

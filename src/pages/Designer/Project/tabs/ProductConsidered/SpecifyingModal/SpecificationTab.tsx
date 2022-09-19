@@ -5,7 +5,11 @@ import { Tooltip } from 'antd';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import type { RadioValue } from '@/components/CustomRadio/types';
-import { ProductAttributeFormInput } from '@/features/product/types';
+import {
+  ProductAttributeFormInput,
+  ProductAttributeProps,
+  SpecificationAttributeBasisOptionProps,
+} from '@/features/product/types';
 import type { SpecificationAttributeGroup } from '@/features/project/types';
 
 import CustomCollapse from '@/components/Collapse';
@@ -100,6 +104,49 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
     label: <ReferToDesignLabel />,
   };
 
+  const renderProductAttributeContent = (
+    group: ProductAttributeFormInput,
+    groupIndex: number,
+    attribute: ProductAttributeProps,
+    chosenOption?: SpecificationAttributeBasisOptionProps,
+  ) => {
+    if (attribute.conversion) {
+      return (
+        <ConversionText
+          conversion={attribute.conversion}
+          firstValue={attribute.conversion_value_1}
+          secondValue={attribute.conversion_value_2}
+        />
+      );
+    }
+    if (attribute.type === 'Options') {
+      return (
+        <AttributeOption
+          title={group.name}
+          attributeName={attribute.name}
+          options={attribute.basis_options ?? []}
+          chosenOption={
+            chosenOption
+              ? {
+                  label: `${chosenOption.value_1} ${chosenOption.unit_1} - ${chosenOption.value_2} ${chosenOption.unit_2}`,
+                  value: chosenOption?.id,
+                }
+              : undefined
+          }
+          setChosenOptions={(option) => {
+            onSelectSpecificationOption(
+              groupIndex,
+              attribute.id,
+              option?.value?.toString() || undefined,
+            );
+          }}
+          clearOnClose
+        />
+      );
+    }
+    return <GeneralText text={attribute.text} />;
+  };
+
   return (
     <div className={styles.specificationTab}>
       <CustomRadio
@@ -143,37 +190,7 @@ const SpecificationTab: FC<SpecificationTabProps> = ({
               return (
                 <div className={styles.attributeOptionWrapper} key={attributeIndex}>
                   <ProductAttributeLine name={attribute.name} />
-                  {attribute.conversion ? (
-                    <ConversionText
-                      conversion={attribute.conversion}
-                      firstValue={attribute.conversion_value_1}
-                      secondValue={attribute.conversion_value_2}
-                    />
-                  ) : attribute.type === 'Options' ? (
-                    <AttributeOption
-                      title={group.name}
-                      attributeName={attribute.name}
-                      options={attribute.basis_options ?? []}
-                      chosenOption={
-                        chosenOption
-                          ? {
-                              label: `${chosenOption.value_1} ${chosenOption.unit_1} - ${chosenOption.value_2} ${chosenOption.unit_2}`,
-                              value: chosenOption?.id,
-                            }
-                          : undefined
-                      }
-                      setChosenOptions={(option) => {
-                        onSelectSpecificationOption(
-                          groupIndex,
-                          attribute.id,
-                          option?.value?.toString() || undefined,
-                        );
-                      }}
-                      clearOnClose
-                    />
-                  ) : (
-                    <GeneralText text={attribute.text} />
-                  )}
+                  {renderProductAttributeContent(group, groupIndex, attribute, chosenOption)}
                 </div>
               );
             })}

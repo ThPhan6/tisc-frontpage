@@ -1,12 +1,10 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { useParams } from 'umi';
-
 import { ReactComponent as DownloadIconV2 } from '@/assets/icons/download-2-icon.svg';
 
 import { getProductCatelogueByProductID } from '@/features/product/services';
-import { useCheckPermission } from '@/helper/hook';
+import { useCheckPermission, useGetParamId } from '@/helper/hook';
 
 import { setProductCatelogue } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
@@ -17,16 +15,7 @@ import { BodyText } from '@/components/Typography';
 import styles from './CatelogueDownload.less';
 
 const DownloadContent = () => {
-  const params = useParams<{ id: string }>();
-  const productId = params?.id || '';
   const contents = useAppSelector((state) => state.product.catelogue.contents);
-
-  useEffect(() => {
-    if (productId) {
-      /// load product detail catelogues
-      getProductCatelogueByProductID(productId);
-    }
-  }, [productId]);
 
   return (
     <div className={styles.download}>
@@ -47,9 +36,16 @@ const DownloadContent = () => {
 };
 
 export const CatelogueDownload = () => {
+  const productId = useGetParamId();
   const catelogue = useAppSelector((state) => state.product.catelogue);
   const dispatch = useDispatch();
   const isTiscAdmin = useCheckPermission('TISC Admin');
+
+  useEffect(() => {
+    if (productId) {
+      getProductCatelogueByProductID(productId);
+    }
+  }, [productId]);
 
   if (isTiscAdmin) {
     return (

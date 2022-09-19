@@ -30,6 +30,12 @@ const ProjectDesign: FC<RequiredValueProps> = ({ id }) => {
     });
   }, []);
 
+  const getMeasurementUnit = (project: ProjectDetail) => {
+    if (project.measurement_unit === MEASUREMENT_UNIT.IMPERIAL) return 'Imperial';
+
+    return project.measurement_unit === MEASUREMENT_UNIT.METRIC ? 'Metric' : '';
+  };
+
   const renderProjectHeader = (project: ProjectDetail) => {
     return (
       <div className={styles.userName}>
@@ -51,7 +57,7 @@ const ProjectDesign: FC<RequiredValueProps> = ({ id }) => {
       <Col span={12}>
         <div className={`${indexStyles.form} ${styles.team_form}`}>
           <GeneralData>
-            {projectData.length && (
+            {projectData.length ? (
               <Collapse {...CollapseLevel1Props}>
                 {projectData.map((listProject, index) => (
                   <Collapse.Panel
@@ -76,11 +82,7 @@ const ProjectDesign: FC<RequiredValueProps> = ({ id }) => {
                             <TextForm label="Building Type">{project.building_type}</TextForm>
                             <TextForm label="Project Type">{project.type}</TextForm>
                             <TextForm label="Measurement Unit">
-                              {project.measurement_unit === MEASUREMENT_UNIT.IMPERIAL
-                                ? 'Imperial'
-                                : project.measurement_unit === MEASUREMENT_UNIT.METRIC
-                                ? 'Metric'
-                                : ''}
+                              {getMeasurementUnit(project)}
                             </TextForm>
                             <TextForm label="Design Due">{project.design_due}</TextForm>
                             <TextForm label="Construction Start">
@@ -93,7 +95,7 @@ const ProjectDesign: FC<RequiredValueProps> = ({ id }) => {
                   </Collapse.Panel>
                 ))}
               </Collapse>
-            )}
+            ) : null}
           </GeneralData>
         </div>
       </Col>
