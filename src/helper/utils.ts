@@ -277,8 +277,8 @@ export const setSortOrder = (order?: string) => {
   return order === SORT_ORDER.increase ? SORT_ORDER.headerFollow : SORT_ORDER.footerFollow;
 };
 
-export const getCompared = (a: [any, any], b: [any, any], c: any) => {
-  if (a[0]) return a[1];
+export const getCompared = (value_1: [any, any], value_2: [any, any], value_3: any) => {
+  if (value_1[0]) return value_1[1];
 
-  return b[0] ? b[1] : c;
+  return value_2[0] ? value_2[1] : value_3;
 };
