@@ -178,10 +178,6 @@ const updateStyleStatus = (
   currentCellName: string,
   cellIndex: number,
 ) => {
-  const notExpandingStyleIndex = cellStyles.findIndex(
-    (cellStl) => cellStl.className.includes('expanding') === false,
-  );
-
   cellStyles.forEach((cellStl, stlIndex) => {
     if (stlIndex <= level - 2) {
       return;
@@ -190,16 +186,12 @@ const updateStyleStatus = (
     const nameParts = cellStl.id.split('_');
     const styleCellIndex = Number(nameParts[nameParts.length - 1]);
 
-    const cellStyleFromOtherFirstColId =
-      cellStl.id.includes(currentCellName) === false || styleCellIndex !== cellIndex;
-
-    // Disable style from level to all its sub levels below (stlIndex >= notExpandingStyleIndex)
-    const cellIsNotExpanding =
+    const styleActive =
       cellStl.id.includes(currentCellName) &&
-      notExpandingStyleIndex !== -1 &&
-      stlIndex >= notExpandingStyleIndex;
+      cellStl.className.includes('expanding') &&
+      styleCellIndex === cellIndex;
 
-    cellStl.media = cellStyleFromOtherFirstColId || cellIsNotExpanding ? 'not-all' : '';
+    cellStl.media = styleActive ? '' : 'not-all';
   });
 };
 
