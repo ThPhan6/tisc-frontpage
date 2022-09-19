@@ -151,12 +151,12 @@ export default [
               {
                 path: PATH.createConversions,
                 hideInMenu: true,
-                component: './TISC/Product/Basis/Conversion/CreateConversionPage',
+                component: './TISC/Product/Basis/Conversion/components/ConversionsEntryForm',
               },
               {
                 path: PATH.updateConversions,
                 hideInMenu: true,
-                component: './TISC/Product/Basis/Conversion/UpdateConversionPage',
+                component: './TISC/Product/Basis/Conversion/components/ConversionsEntryForm',
               },
             ],
           },
@@ -173,12 +173,12 @@ export default [
               {
                 path: PATH.createPresets,
                 hideInMenu: true,
-                component: './TISC/Product/Basis/Preset/CreatePresetPage',
+                component: './TISC/Product/Basis/Preset/components/PresetsEntryForm',
               },
               {
                 path: PATH.updatePresets,
                 hideInMenu: true,
-                component: './TISC/Product/Basis/Preset/UpdatePresetPage',
+                component: './TISC/Product/Basis/Preset/components/PresetsEntryForm',
               },
             ],
           },
@@ -194,12 +194,12 @@ export default [
               {
                 path: PATH.createOptions,
                 hideInMenu: true,
-                component: './TISC/Product/Basis/Option/CreateOptionPage',
+                component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
               },
               {
                 path: PATH.updateOptions,
                 hideInMenu: true,
-                component: './TISC/Product/Basis/Option/UpdateOptionPage',
+                component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
               },
             ],
           },
