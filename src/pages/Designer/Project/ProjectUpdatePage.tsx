@@ -15,7 +15,7 @@ import ProductConsidered from './tabs/ProductConsidered';
 import ProductSpecification from './tabs/ProductSpecification';
 import SpaceManagement from './tabs/SpaceManagement';
 
-const ProjectCreatePage: React.FC = () => {
+const ProjectUpdatePage: React.FC = () => {
   const params = useParams<{ id: string }>();
   const projectId = params?.id || '';
   const [selectedTab, setSelectedTab] = useState<ProjectTabKeys>(ProjectTabKeys.basicInformation);
@@ -54,4 +54,4 @@ const ProjectCreatePage: React.FC = () => {
   );
 };
 
-export default ProjectCreatePage;
+export default ProjectUpdatePage;

@@ -139,7 +139,7 @@ const ProductTopBar: React.FC = () => {
           viewAllTop
           placement="bottomRight"
           menuStyle={{ height: 'auto', width: 240 }}>
-          {type === 'Category' ? 'Categories' : 'Collection'}
+          {type === 'Category' ? 'Categories' : 'Collections'}
         </CustomDropDown>
       );
     } else {

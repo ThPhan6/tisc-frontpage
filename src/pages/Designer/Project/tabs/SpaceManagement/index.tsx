@@ -62,6 +62,23 @@ const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
     });
   };
 
+  const renderSpaceContent = () => {
+    if (space) {
+      return (
+        <SpaceEntryForm
+          data={space}
+          setData={setSpace}
+          handleCancel={hideSpaceForm}
+          handleSubmit={handleSubmitSpaceForm}
+          submitButtonStatus={submitButtonStatus.value}
+        />
+      );
+    }
+    return projectId ? (
+      <SpaceList handleUpdateSpace={(record) => displaySpaceForm(record)} projectId={projectId} />
+    ) : null;
+  };
+
   return (
     <>
       <ProjectTabContentHeader>
@@ -75,17 +92,7 @@ const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
           <CustomPlusButton size={18} disabled={space !== undefined} />
         </div>
       </ProjectTabContentHeader>
-      {space ? (
-        <SpaceEntryForm
-          data={space}
-          setData={setSpace}
-          handleCancel={hideSpaceForm}
-          handleSubmit={handleSubmitSpaceForm}
-          submitButtonStatus={submitButtonStatus.value}
-        />
-      ) : projectId ? (
-        <SpaceList handleUpdateSpace={(record) => displaySpaceForm(record)} projectId={projectId} />
-      ) : null}
+      {renderSpaceContent()}
       {isLoading.value ? <LoadingPageCustomize /> : null}
     </>
   );

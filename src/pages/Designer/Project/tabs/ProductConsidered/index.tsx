@@ -161,7 +161,7 @@ const ProductConsidered: React.FC = () => {
         sorter: {
           multiple: 4,
         },
-        render: (v, record) => record.brand_name,
+        render: (_value, record) => record.brand_name,
         onCell: onCellUnlisted,
       },
       {
