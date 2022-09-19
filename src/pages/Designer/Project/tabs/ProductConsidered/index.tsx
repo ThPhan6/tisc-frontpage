@@ -42,7 +42,7 @@ const COL_WIDTH = {
   areas: 88,
   rooms: 96,
   image: 65,
-  brand: 180,
+  brand: 100,
   collection: 128,
   product: 171,
   assignedBy: 169,
@@ -205,10 +205,10 @@ const ProductConsidered: React.FC = () => {
     {
       title: 'Product',
       className: disabledClassname,
+      width: COL_WIDTH.product,
     },
     {
       title: 'Assigned By',
-      width: COL_WIDTH.assignedBy,
       className: disabledClassname,
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
@@ -255,13 +255,13 @@ const ProductConsidered: React.FC = () => {
     ...getSameColumns(false),
     {
       title: 'Product',
+      width: COL_WIDTH.product,
       render: (_value, record) => (record.rooms ? null : record.name), // For Entire project
       onCell: onCellUnlisted,
     },
     {
       title: 'Assigned By',
       dataIndex: 'assigned_name',
-      width: COL_WIDTH.assignedBy,
       render: (value, record) => (record.rooms ? null : value), // For Entire project
       onCell: onCellUnlisted,
     },
@@ -301,10 +301,10 @@ const ProductConsidered: React.FC = () => {
     ...getSameColumns(false),
     {
       title: 'Product',
+      width: COL_WIDTH.product,
     },
     {
       title: 'Assigned By',
-      width: COL_WIDTH.assignedBy,
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
@@ -342,13 +342,13 @@ const ProductConsidered: React.FC = () => {
     {
       title: 'Product',
       dataIndex: 'name',
+      width: COL_WIDTH.product,
       noBoxShadow: true,
       onCell: onCellUnlisted,
     },
     {
       title: 'Assigned By',
       dataIndex: 'assigned_name',
-      width: COL_WIDTH.assignedBy,
       noBoxShadow: true,
       onCell: onCellUnlisted,
     },

@@ -220,12 +220,15 @@ const SpecificationBySpace: React.FC<SpaceListProps> = ({ handleUpdateSpace, pro
     },
     {
       title: 'Room',
+      width: 106,
     },
     {
       title: 'Room ID',
+      width: 106,
     },
     {
       title: 'Room Size',
+      width: 106,
     },
     {
       title: 'Quantity',
@@ -277,9 +280,12 @@ const SpecificationBySpace: React.FC<SpaceListProps> = ({ handleUpdateSpace, pro
         expandable={GetExpandableTableConfig({
           columns: AreaColumns,
           childrenColumnName: 'areas',
+          level: 2,
+
           expandable: GetExpandableTableConfig({
             columns: RoomColumns,
             childrenColumnName: 'rooms',
+            level: 3,
           }),
         })}
         extraParams={{
