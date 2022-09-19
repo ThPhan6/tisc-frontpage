@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useCheckPermission } from '@/helper/hook';
+import { getValueByCondition } from '@/helper/utils';
 
 import { setPartialProductDetail } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
@@ -67,12 +68,6 @@ const CollapseProductAttribute: React.FC<CollapseProductAttributeProps> = ({ gro
   );
 };
 
-const getCompared = (value_1: [boolean, any], value_2: [boolean, any], value_3: any) => {
-  if (value_1[0]) return value_1[1];
-
-  return value_2[0] ? value_2[1] : value_3;
-};
-
 interface ProductAttributeContainerProps {
   attributes?: ProductAttributes[];
   activeKey: ProductInfoTab;
@@ -86,15 +81,19 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
   const { feature_attribute_groups, general_attribute_groups, specification_attribute_groups } =
     useAppSelector((state) => state.product.details);
 
-  const attributeGroup = getCompared(
-    [activeKey === 'general', general_attribute_groups],
-    [activeKey === 'feature', feature_attribute_groups],
+  const attributeGroup = getValueByCondition(
+    [
+      [activeKey === 'general', general_attribute_groups],
+      [activeKey === 'feature', feature_attribute_groups],
+    ],
     specification_attribute_groups,
   ) as ProductAttributeFormInput[];
 
-  const attributeGroupKey = getCompared(
-    [activeKey === 'general', 'general_attribute_groups'],
-    [activeKey === 'feature', 'feature_attribute_groups'],
+  const attributeGroupKey = getValueByCondition(
+    [
+      [activeKey === 'general', 'general_attribute_groups'],
+      [activeKey === 'feature', 'feature_attribute_groups'],
+    ],
     'specification_attribute_groups',
   );
 

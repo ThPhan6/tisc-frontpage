@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { COVERAGE_BEYOND } from '@/constants/util';
 import { Col, Collapse, Row } from 'antd';
 
+import { getValueByCondition } from '@/helper/utils';
 import { isEmpty } from 'lodash';
 
 import { RequiredValueProps } from '../types';
@@ -25,13 +26,14 @@ const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
     getListDistributorGroupCountryByBrandId(id).then(setDistributors);
   }, []);
 
-  const renderCoverageBeyon = (coverageBeyond: boolean) => {
-    if (coverageBeyond === COVERAGE_BEYOND.notAllow) {
-      return 'Not Allow';
-    }
-
-    return coverageBeyond === COVERAGE_BEYOND.allow ? 'Allow' : '';
-  };
+  const renderCoverageBeyon = (coverageBeyond: boolean) =>
+    getValueByCondition(
+      [
+        [coverageBeyond === COVERAGE_BEYOND.notAllow, 'Not Allow'],
+        [coverageBeyond === COVERAGE_BEYOND.allow, 'Allow'],
+      ],
+      '',
+    );
 
   return (
     <Row className={styles.container}>

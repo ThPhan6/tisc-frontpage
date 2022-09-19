@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { Col, Row } from 'antd';
 
-import { showImageUrl } from '@/helper/utils';
+import { getValueByCondition, showImageUrl } from '@/helper/utils';
 
 import { UserGroupProps } from '../types/common.types';
 
@@ -15,21 +15,22 @@ import styles from './Profile.less';
 export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
   if (!data) return null;
 
-  const renderProfileLabel = () => {
-    if (type === 'brand') {
-      return 'Mission & Vision';
-    }
-
-    return type === 'design' ? 'Profile & Philosophy' : '';
-  };
-
-  const renderProfileData = () => {
-    if (type === 'brand') {
-      return data.mission_n_vision;
-    }
-
-    return type === 'design' ? data.profile_n_philosophy : '';
-  };
+  const renderProfileLabel = () =>
+    getValueByCondition(
+      [
+        [type === 'brand', 'Mission & Vision'],
+        [type === 'design', 'Profile & Philosophy'],
+      ],
+      '',
+    );
+  const renderProfileData = () =>
+    getValueByCondition(
+      [
+        [type === 'brand', data.mission_n_vision],
+        [type === 'design', data.profile_n_philosophy],
+      ],
+      '',
+    );
 
   return (
     <Row className={indexStyles.container}>
