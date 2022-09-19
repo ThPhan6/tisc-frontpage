@@ -25,7 +25,7 @@ interface SpaceListProps {
 }
 
 const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) => {
-  useAutoExpandNestedTableColumn([MAIN_COL_WIDTH, SUB_COL_WIDTH]);
+  useAutoExpandNestedTableColumn(2);
   const tableRef = useRef<any>();
   const [combinableSorter, setCombinableSorter] = useState<{ key: string; value: string }>({
     key: '',
@@ -218,12 +218,15 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
     },
     {
       title: 'Room',
+      width: 106,
     },
     {
       title: 'Room ID',
+      width: 106,
     },
     {
       title: 'Room Size',
+      width: 106,
     },
     {
       title: 'Quantity',
@@ -275,9 +278,12 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
         expandable={GetExpandableTableConfig({
           columns: AreaColumns,
           childrenColumnName: 'areas',
+          level: 2,
+
           expandable: GetExpandableTableConfig({
             columns: RoomColumns,
             childrenColumnName: 'rooms',
+            level: 3,
           }),
         })}
         extraParams={{

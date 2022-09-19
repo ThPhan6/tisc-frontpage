@@ -25,7 +25,7 @@ const COL_WIDTH_SPACE = {
   areas: 88,
   rooms: 96,
   image: 65,
-  brand: 180,
+  brand: 100,
   product: 171,
   material: 115,
   description: 266,
@@ -36,11 +36,10 @@ export interface SpaceListProps {
   projectId?: string;
 }
 const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
-  useAutoExpandNestedTableColumn([
-    COL_WIDTH_SPACE.zones,
-    COL_WIDTH_SPACE.areas,
-    COL_WIDTH_SPACE.rooms,
-  ]);
+  useAutoExpandNestedTableColumn(3, {
+    autoWidthColIndex: 5, // Product column
+    rightColumnExcluded: 3,
+  });
   const tableRef = useRef<any>();
   const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
