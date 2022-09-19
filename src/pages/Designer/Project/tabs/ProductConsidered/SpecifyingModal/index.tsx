@@ -1,5 +1,4 @@
-import { FC, useEffect } from 'react';
-import { useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import {
   ProjectSpecifyTabKeys,
@@ -158,7 +157,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       }
 
       // Update checked status
-      const newState = prevState.map((group, groupIndex) => ({
+      return prevState.map((group, groupIndex) => ({
         ...group,
         isChecked: specGroups[groupIndex]?.attributes.length > 0,
         attributes: group?.attributes.map((attr, attrIndex) => ({
@@ -171,8 +170,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
             })) || [],
         })),
       }));
-
-      return newState;
     });
   }, [specifyingState.specification.specification_attribute_groups, dataLoaded.value]);
 

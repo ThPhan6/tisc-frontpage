@@ -660,12 +660,12 @@ export default [
       {
         path: PATH.designerCreateProject,
         hideInMenu: true,
-        component: './Designer/Project/CreatePage',
+        component: './Designer/Project/ProjectCreatePage',
       },
       {
         path: PATH.designerUpdateProject,
         hideInMenu: true,
-        component: './Designer/Project/UpdatePage',
+        component: './Designer/Project/ProjectUpdatePage',
       },
     ],
   },
