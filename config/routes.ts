@@ -416,14 +416,12 @@ export default [
               },
               {
                 path: PATH.createQuotation,
-                component:
-                  './TISC/Adminstration/Messages/InspirationalQuotations/CreateQuotationPage',
+                component: '../features/InspirationalQuotes/components/InspirationalQuotesDetail',
                 hideInMenu: true,
               },
               {
                 path: PATH.updateQuotation,
-                component:
-                  './TISC/Adminstration/Messages/InspirationalQuotations/UpdateQuotationPage',
+                component: '../features/InspirationalQuotes/components/InspirationalQuotesDetail',
                 hideInMenu: true,
               },
             ],
