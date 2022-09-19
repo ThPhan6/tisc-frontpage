@@ -18,6 +18,7 @@ type Expanded = number | undefined | string;
 
 export const useCustomTable = (columns: TableColumnItem<any>[]) => {
   const [expanded, setExpanded] = useState<Expanded>();
+
   const renderExpandedColumn = (value: any, record: any, noExpand?: boolean) => {
     if (!value) {
       return null;
@@ -43,18 +44,19 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
     );
   };
 
+  const getColumnJustifyContent = (columnAlign?: 'center' | 'right' | 'left') => {
+    if (columnAlign === 'center') return 'center';
+
+    return columnAlign === 'right' ? 'flex-end' : undefined;
+  };
+
   const formatTitleColumn = (column: TableColumnItem<any>) => {
     return () => {
       return (
         <div
           className={styles.titleTable}
           style={{
-            justifyContent:
-              column.align === 'center'
-                ? 'center'
-                : column.align === 'right'
-                ? 'flex-end'
-                : undefined,
+            justifyContent: getColumnJustifyContent(column.align),
           }}>
           {column.lightHeading ? (
             <BodyText fontFamily="Roboto" level={5}>

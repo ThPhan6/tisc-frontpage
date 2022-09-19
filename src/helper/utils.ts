@@ -1,4 +1,5 @@
 import { PATH } from '@/constants/path';
+import { SORT_ORDER } from '@/constants/util';
 import { history } from 'umi';
 
 import { isNaN, isNumber, isUndefined, toNumber } from 'lodash';
@@ -268,4 +269,10 @@ export const updateUrlParams = (params: {
 
 export const removeAllUrlParams = () => {
   window.history.pushState(null, '', window.location.pathname);
+};
+
+export const setSortOrder = (order?: string) => {
+  if (!order) return '';
+
+  return order === SORT_ORDER.increase ? SORT_ORDER.headerFollow : SORT_ORDER.footerFollow;
 };

@@ -45,7 +45,7 @@ const BrandAccessLevelModal: FC<BrandAccessLevelModalProps> = ({ visible, setVis
       <Fragment key={menu.name}>
         <tr className={styles.menu}>
           <td className={`${styles.menu_item} ${type === 'sub-item' ? styles.sub_menu : ''}`}>
-            <img src={showImageUrl(menu.logo!)} className={styles.menu_item__logo} />
+            <img src={showImageUrl(menu.logo)} className={styles.menu_item__logo} />
             <BodyText fontFamily="Roboto" level={6} customClass={styles.menu_item__name}>
               {menu.name}
             </BodyText>
