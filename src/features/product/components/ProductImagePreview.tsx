@@ -18,7 +18,7 @@ import ProductPlaceHolderImage from '@/assets/images/product-placeholder.png';
 
 import { likeProductById } from '@/features/product/services';
 import { useBoolean, useCheckPermission } from '@/helper/hook';
-import { getBase64, getCompared, showImageUrl } from '@/helper/utils';
+import { getBase64, showImageUrl } from '@/helper/utils';
 
 import { ProductKeyword } from '../types';
 import {
@@ -207,25 +207,23 @@ const ProductImagePreview: React.FC = () => {
   };
 
   const renderMainImage = () => {
-    return getCompared(
-      [
-        product.images[0],
-        <img src={showImageUrl(product.images[0])} className={styles.primaryPhoto} />,
-      ],
-      [
-        isTiscAdmin,
-        <div className={styles.dropzoneNote}>
-          <BodyText level={3}>
-            Drag & drop the image into the frame
-            <br />
-            or click the upload button below
-          </BodyText>
-          <img src={ProductPlaceHolderImage} className={styles.placeholderPhoto} />
-        </div>,
-      ],
+    if (product.images[0]) {
+      return <img src={showImageUrl(product.images[0])} className={styles.primaryPhoto} />;
+    }
+
+    return isTiscAdmin ? (
+      <div className={styles.dropzoneNote}>
+        <BodyText level={3}>
+          Drag & drop the image into the frame
+          <br />
+          or click the upload button below
+        </BodyText>
+        <img src={ProductPlaceHolderImage} className={styles.placeholderPhoto} />
+      </div>
+    ) : (
       <div className={styles.dropzoneNote}>
         <img src={ProductPlaceHolderImage} className={styles.placeholderPhoto} />
-      </div>,
+      </div>
     );
   };
 

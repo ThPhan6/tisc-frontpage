@@ -5,7 +5,7 @@ import { USER_ROLE } from '@/constants/userRoles';
 import SampleProductImage from '@/assets/images/sample-product-img.png';
 
 import { useGetUserRoleFromPathname } from '@/helper/hook';
-import { getCompared, getMaxLengthText, showImageUrl } from '@/helper/utils';
+import { getMaxLengthText, showImageUrl } from '@/helper/utils';
 
 import { useAppSelector } from '@/reducers';
 
@@ -33,28 +33,25 @@ export const ProductCollection: FC = memo(() => {
   }
 
   const renderRelatedProduct = () => {
-    return getCompared(
-      [
-        relatedProduct.length > 0,
-        relatedProduct.map((item, key) => (
-          <a
-            className="relative-product-item"
-            key={key}
-            target="_blank"
-            rel="noreferrer"
-            href={getProductDetailPathname(userRole, item.id)}>
-            <div className="relative-product">
-              <img src={item.images?.[0] ? showImageUrl(item.images[0]) : SampleProductImage} />
-              <div className="placeholder-text">
-                <span>{getMaxLengthText(item.name, 40)}</span>
-              </div>
+    if (relatedProduct.length) {
+      return relatedProduct.map((item, key) => (
+        <a
+          className="relative-product-item"
+          key={key}
+          target="_blank"
+          rel="noreferrer"
+          href={getProductDetailPathname(userRole, item.id)}>
+          <div className="relative-product">
+            <img src={item.images?.[0] ? showImageUrl(item.images[0]) : SampleProductImage} />
+            <div className="placeholder-text">
+              <span>{getMaxLengthText(item.name, 40)}</span>
             </div>
-          </a>
-        )),
-      ],
-      [userRole === USER_ROLE.tisc, <ProductPlaceHolder />],
-      null,
-    );
+          </div>
+        </a>
+      ));
+    }
+
+    return userRole === USER_ROLE.tisc ? <ProductPlaceHolder /> : null;
   };
 
   return (

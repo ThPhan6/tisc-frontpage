@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { Col, Row } from 'antd';
 
-import { getCompared, showImageUrl } from '@/helper/utils';
+import { showImageUrl } from '@/helper/utils';
 
 import { UserGroupProps } from '../types/common.types';
 
@@ -15,19 +15,21 @@ import styles from './Profile.less';
 export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
   if (!data) return null;
 
-  const renderProfileLabel = () =>
-    getCompared(
-      [type === 'brand', 'Mission & Vision'],
-      [type === 'design', 'Profile & Philosophy'],
-      '',
-    );
+  const renderProfileLabel = () => {
+    if (type === 'brand') {
+      return 'Mission & Vision';
+    }
 
-  const renderProfileData = () =>
-    getCompared(
-      [type === 'brand', data.mission_n_vision],
-      [type === 'design', data.profile_n_philosophy],
-      '',
-    );
+    return type === 'design' ? 'Profile & Philosophy' : '';
+  };
+
+  const renderProfileData = () => {
+    if (type === 'brand') {
+      return data.mission_n_vision;
+    }
+
+    return type === 'design' ? data.profile_n_philosophy : '';
+  };
 
   return (
     <Row className={indexStyles.container}>

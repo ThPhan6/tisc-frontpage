@@ -2,7 +2,6 @@ import { FC } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useCheckPermission } from '@/helper/hook';
-import { getCompared } from '@/helper/utils';
 
 import { setPartialProductDetail } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
@@ -29,24 +28,24 @@ interface CollapseProductAttributeProps {
 }
 const CollapseProductAttribute: React.FC<CollapseProductAttributeProps> = ({ group, index }) => {
   const renderAttributeOption = (attribute: ProductAttributeProps) => {
-    return getCompared(
-      [
-        attribute.conversion,
+    if (attribute.conversion) {
+      return (
         <ConversionText
           conversion={attribute.conversion}
           firstValue={attribute.conversion_value_1}
           secondValue={attribute.conversion_value_2}
-        />,
-      ],
-      [
-        attribute.type === 'Options',
-        <AttributeOption
-          title={group.name}
-          attributeName={attribute.name}
-          options={attribute.basis_options ?? []}
-        />,
-      ],
-      <GeneralText text={attribute.text} />,
+        />
+      );
+    }
+
+    return attribute.type === 'Options' ? (
+      <AttributeOption
+        title={group.name}
+        attributeName={attribute.name}
+        options={attribute.basis_options ?? []}
+      />
+    ) : (
+      <GeneralText text={attribute.text} />
     );
   };
 
@@ -66,6 +65,12 @@ const CollapseProductAttribute: React.FC<CollapseProductAttributeProps> = ({ gro
       </table>
     </AttributeCollapse>
   );
+};
+
+const getCompared = (value_1: [boolean, any], value_2: [boolean, any], value_3: any) => {
+  if (value_1[0]) return value_1[1];
+
+  return value_2[0] ? value_2[1] : value_3;
 };
 
 interface ProductAttributeContainerProps {
