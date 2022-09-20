@@ -144,10 +144,10 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     const pageNumber =
       Number(params.pagination.total) % DEFAULT_PAGESIZE === 1 && params.pagination.current !== 1
         ? Number(params.pagination.current) - 1
-        : params.pagination.current ?? DEFAULT_PAGE_NUMBER;
+        : params.pagination.current;
 
     const paginationParams: PaginationRequestParams = {
-      page: pageNumber,
+      page: pageNumber ?? DEFAULT_PAGE_NUMBER,
       pageSize: params.pagination.pageSize ?? DEFAULT_PAGESIZE,
       ...extraParams,
     };
