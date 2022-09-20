@@ -15,23 +15,6 @@ export interface DistributorsProp {
   coverageBeyond: string;
 }
 
-export const distributorsValueProp = {
-  distributorName: '',
-  country: '',
-  province: '',
-  city: '',
-  address: '',
-  zipCode: '',
-  firstName: '',
-  lastName: '',
-  gender: 'male',
-  email: '',
-  phone: '',
-  mobile: '',
-  authorizedCountry: '',
-  coverageBeyond: 'not allow',
-};
-
 export interface DistributorForm {
   brand_id: string;
   name: string;
@@ -43,7 +26,7 @@ export interface DistributorForm {
   postal_code: string;
   first_name: string;
   last_name: string;
-  gender: true;
+  gender: boolean;
   email: string;
   phone: string;
   mobile: string;
@@ -52,7 +35,7 @@ export interface DistributorForm {
     id: string;
     name: string;
   }[];
-  coverage_beyond: true;
+  coverage_beyond: boolean;
 }
 
 export interface DistributorExtraForm extends DistributorForm {
@@ -116,5 +99,5 @@ export interface Distributor {
   last_name: string;
   email: string;
   authorized_country_name: string;
-  coverage_beyond: true;
+  coverage_beyond: boolean;
 }

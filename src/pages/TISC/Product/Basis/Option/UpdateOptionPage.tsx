@@ -13,7 +13,7 @@ import OptionEntryForm from './components/OptionsEntryForm';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
-const CreateOptionPage = () => {
+const UpdateOptionPage = () => {
   const isLoading = useBoolean();
   const submitButtonStatus = useBoolean(false);
   const [option, setOption] = useState<BasisOptionForm>({
@@ -69,4 +69,4 @@ const CreateOptionPage = () => {
   );
 };
 
-export default CreateOptionPage;
+export default UpdateOptionPage;

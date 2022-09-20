@@ -30,7 +30,7 @@ const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
       <Col span={12}>
         <div className={styles.form}>
           <GeneralData>
-            {distributors.length && (
+            {distributors.length ? (
               <Collapse {...CollapseLevel1Props}>
                 {distributors.map((location, index) => (
                   <Collapse.Panel
@@ -67,9 +67,9 @@ const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
                               {distributor.authorized_country_name ?? ''}
                             </TextForm>
                             <TextForm label="Coverage Beyond">
-                              {distributor.coverage_beyond === COVERAGE_BEYOND.NOT_ALLOW
+                              {distributor.coverage_beyond === COVERAGE_BEYOND.notAllow
                                 ? 'Not Allow'
-                                : distributor.coverage_beyond === COVERAGE_BEYOND.ALLOW
+                                : distributor.coverage_beyond === COVERAGE_BEYOND.allow
                                 ? 'Allow'
                                 : ''}
                             </TextForm>
@@ -80,7 +80,7 @@ const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
                   </Collapse.Panel>
                 ))}
               </Collapse>
-            )}
+            ) : null}
           </GeneralData>
         </div>
       </Col>

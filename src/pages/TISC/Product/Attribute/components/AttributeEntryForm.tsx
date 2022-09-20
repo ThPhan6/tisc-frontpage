@@ -1,24 +1,27 @@
-import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 
-import { getProductAttributeContentType } from '@/services';
+import { useHistory, useParams } from 'umi';
+
+import { useAttributeLocation } from '../hooks/location';
+import { pushTo } from '@/helper/history';
+import { useBoolean } from '@/helper/hook';
+import {
+  createAttribute,
+  getOneAttribute,
+  getProductAttributeContentType,
+  updateAttribute,
+} from '@/services';
 
 import type { AttributeContentType, AttributeForm, AttributeSubForm } from '@/types';
 
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
+import { TableHeader } from '@/components/Table/TableHeader';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { AttributeItem } from './AttributeItem';
 import ContentTypeModal from './ContentTypeModal';
 
-interface AttributeEntryFormProps {
-  type: number;
-  submitButtonStatus: any;
-  onSubmit: (data: AttributeForm) => void;
-  onCancel: () => void;
-  data: AttributeForm;
-  setData: (data: AttributeForm) => void;
-}
 export interface SelectedItem {
   subAttribute: AttributeSubForm;
   index: number;
@@ -38,14 +41,38 @@ const DEFAULT_SELECTED_ATTRIBUTE: SelectedItem = {
 // onSubmit,
 // submitButtonStatus,
 
-const AttributeEntryForm: FC<AttributeEntryFormProps> = (props) => {
-  const { type, submitButtonStatus, onSubmit, onCancel, data, setData } = props;
+const DEFAULT_ATTRIBUTE: AttributeForm = {
+  name: '',
+  subs: [],
+};
+
+const AttributeEntryForm = () => {
   // for content type modal
   const [visible, setVisible] = useState(false);
   // for content type data
   const [contentType, setContentType] = useState<AttributeContentType>();
   // selected content types
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(DEFAULT_SELECTED_ATTRIBUTE);
+
+  const history = useHistory();
+  const [data, setData] = useState<AttributeForm>(DEFAULT_ATTRIBUTE);
+  const { activePath, attributeLocation } = useAttributeLocation();
+  const isLoading = useBoolean();
+  const params = useParams<{
+    id: string;
+  }>();
+  const idAttribute = params?.id || '';
+  const isUpdate = idAttribute ? true : false;
+  const submitButtonStatus = useBoolean(false);
+
+  const getAttributeData = () => {
+    getOneAttribute(idAttribute).then((res) => {
+      if (res) {
+        setData(res);
+      }
+    });
+  };
+
   // load data content type
   useEffect(() => {
     getProductAttributeContentType().then((contentTypeData) => {
@@ -53,6 +80,9 @@ const AttributeEntryForm: FC<AttributeEntryFormProps> = (props) => {
         setContentType(contentTypeData);
       }
     });
+    if (idAttribute) {
+      getAttributeData();
+    }
   }, []);
 
   const handleOnChangeGroupName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,7 +150,36 @@ const AttributeEntryForm: FC<AttributeEntryFormProps> = (props) => {
     setVisible(false);
   };
 
-  const handleSubmit = () => {
+  const handleCreateData = (submitData: AttributeForm) => {
+    isLoading.setValue(true);
+    createAttribute(submitData).then((isSuccess) => {
+      isLoading.setValue(false);
+      if (isSuccess) {
+        submitButtonStatus.setValue(true);
+        setTimeout(() => {
+          pushTo(activePath);
+        }, 1000);
+      }
+    });
+  };
+
+  const handleUpdateData = (submitData: AttributeForm) => {
+    isLoading.setValue(true);
+    updateAttribute(idAttribute, submitData).then((isSuccess) => {
+      isLoading.setValue(false);
+      submitButtonStatus.setValue(true);
+      setTimeout(() => {
+        submitButtonStatus.setValue(false);
+      }, 2000);
+      if (isSuccess) {
+        return getAttributeData();
+      }
+    });
+  };
+
+  const handleSubmit = isUpdate ? handleUpdateData : handleCreateData;
+
+  const onHandleSubmit = () => {
     const newSubs: AttributeSubForm[] = data.subs.map((sub) => {
       if (sub.id) {
         return {
@@ -134,46 +193,45 @@ const AttributeEntryForm: FC<AttributeEntryFormProps> = (props) => {
         basis_id: sub.basis_id,
       };
     });
-    onSubmit({
-      ...data,
-      type: type,
-      subs: newSubs,
-    });
+    handleSubmit({ ...data, type: attributeLocation.TYPE, subs: newSubs });
   };
 
   return (
-    <EntryFormWrapper
-      handleSubmit={handleSubmit}
-      handleCancel={onCancel}
-      submitButtonStatus={submitButtonStatus}>
-      <FormNameInput
-        placeholder="type group name"
-        title="Attribute Group"
-        onChangeInput={handleOnChangeGroupName}
-        HandleOnClickAddIcon={addSubAttribute}
-        inputValue={data.name}
-      />
-      <div>
-        {data.subs.map((subAttribute, index) => (
-          <AttributeItem
-            key={index}
-            item={subAttribute}
-            onChangeItemName={(e) => handleOnChangeName(e, index)}
-            handleSelectContentType={() => handleSelectContentType(subAttribute, index)}
-            handleOnClickDelete={() => handleOnClickDelete(index)}
-          />
-        ))}
-      </div>
-      {visible ? (
-        <ContentTypeModal
-          setVisible={setVisible}
-          selectedItem={selectedItem}
-          contentType={contentType}
-          onSubmit={onContentTypeSubmit}
-          type={type}
+    <div>
+      <TableHeader title={attributeLocation.NAME} rightAction={<CustomPlusButton disabled />} />
+      <EntryFormWrapper
+        handleSubmit={onHandleSubmit}
+        handleCancel={history.goBack}
+        submitButtonStatus={submitButtonStatus.value}>
+        <FormNameInput
+          placeholder="type group name"
+          title="Attribute Group"
+          onChangeInput={handleOnChangeGroupName}
+          HandleOnClickAddIcon={addSubAttribute}
+          inputValue={data.name}
         />
-      ) : null}
-    </EntryFormWrapper>
+        <div>
+          {data.subs.map((subAttribute, index) => (
+            <AttributeItem
+              key={index}
+              item={subAttribute}
+              onChangeItemName={(e) => handleOnChangeName(e, index)}
+              handleSelectContentType={() => handleSelectContentType(subAttribute, index)}
+              handleOnClickDelete={() => handleOnClickDelete(index)}
+            />
+          ))}
+        </div>
+        {visible ? (
+          <ContentTypeModal
+            setVisible={setVisible}
+            selectedItem={selectedItem}
+            contentType={contentType}
+            onSubmit={onContentTypeSubmit}
+            type={attributeLocation.TYPE}
+          />
+        ) : null}
+      </EntryFormWrapper>
+    </div>
   );
 };
 

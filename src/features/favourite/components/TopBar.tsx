@@ -8,6 +8,7 @@ import { showImageUrl } from '@/helper/utils';
 import type { FavouriteProductSummary } from '../types';
 import { ProductItemValue } from '@/features/product/types';
 
+import SortOrderPanel from '@/components/SortOrder';
 import {
   CustomDropDown,
   FilterItem,
@@ -15,7 +16,6 @@ import {
   TopBarItem,
 } from '@/features/product/components';
 import {
-  SORTER_DROPDOWN_DATA,
   onBrandFilterClick,
   onCategoryFilterClick,
   useProductListFilterAndSorter,
@@ -51,7 +51,7 @@ export const formatBrandsFavouriteToDropDownData = (brands?: ProductItemValue[])
 const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavouriteRetrieved }) => {
   const [productSummary, setProductSummary] = useState<FavouriteProductSummary>();
 
-  const { filter, sort, removeFilter, resetProductListSorter } = useProductListFilterAndSorter({
+  const { filter, sort, removeFilter } = useProductListFilterAndSorter({
     noFetchData: true,
   });
 
@@ -143,29 +143,12 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
             />
 
             {/* sort */}
-            <TopBarItem
-              disabled
-              customClass={`left-divider ${activeSort ? 'cursor-pointer' : 'cursor-default'} `}
+            <SortOrderPanel
+              order={sort?.order}
+              sort={sort}
               bottomEnable={activeSort}
-              topValue={
-                sort ? (
-                  <FilterItem
-                    title={sort.order === 'ASC' ? 'A - Z' : 'Z - A'}
-                    onDelete={resetProductListSorter}
-                  />
-                ) : (
-                  'select'
-                )
-              }
-              bottomValue={
-                <CustomDropDown
-                  items={SORTER_DROPDOWN_DATA}
-                  placement="bottomRight"
-                  menuStyle={{ width: 160, height: 'auto' }}
-                  disabled={!activeSort}>
-                  Sort By
-                </CustomDropDown>
-              }
+              dropDownDisabled={!activeSort}
+              customClass={`left-divider ${activeSort ? 'cursor-pointer' : 'cursor-default'} `}
             />
           </>
         }

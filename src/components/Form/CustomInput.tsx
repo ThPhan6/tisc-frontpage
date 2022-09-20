@@ -69,24 +69,19 @@ export const CustomInput: FC<CustomInputProps> = forwardRef<InputRef, CustomInpu
       return '';
     };
 
-    const classNameInputDefault = `
-    ${styles.inputDefault}
-    ${borderBottomColor ? styles[`${borderBottomColor}-border-bottom-color`] : ''}
-    ${fromLandingPage ? styles[`${theme}-focus-normal`] : ''}
-    ${status ? styles[`${landingPageStatus}-status`] : ''}
-    ${styles[`${theme}-theme`]}
-    ${getDisabledTheme()}
-  `;
+    const classNameInputDefault = `${styles.inputDefault} ${
+      borderBottomColor ? styles[`${borderBottomColor}-border-bottom-color`] : ''
+    } ${fromLandingPage ? styles[`${theme}-focus-normal`] : ''} ${
+      status ? styles[`${landingPageStatus}-status`] : ''
+    } ${styles[`${theme}-theme`]} ${getDisabledTheme()}`;
 
-    const classNameInputAffix = `
-    ${styles['input-affix']}
-    ${required ? styles['required-input-affix'] : ''}
-    ${borderBottomColor ? styles[`${borderBottomColor}-border-bottom-color-affix`] : ''}
-    ${fromLandingPage ? styles[`${theme}-focus-normal-affix`] : ''}
-    ${status ? styles[`${landingPageStatus}-status-affix`] : ''}
-    ${styles[`${theme}-theme-affix`]}
-    ${getDisabledTheme()}
-  `;
+    const classNameInputAffix = `${styles['input-affix']} ${
+      required ? styles['required-input-affix'] : ''
+    } ${borderBottomColor ? styles[`${borderBottomColor}-border-bottom-color-affix`] : ''} ${
+      fromLandingPage ? styles[`${theme}-focus-normal-affix`] : ''
+    } ${status ? styles[`${landingPageStatus}-status-affix`] : ''} ${
+      styles[`${theme}-theme-affix`]
+    } ${getDisabledTheme()}`;
 
     const classNameInput =
       props.prefix || props.suffix ? classNameInputAffix : classNameInputDefault;
