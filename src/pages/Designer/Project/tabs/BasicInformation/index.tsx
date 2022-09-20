@@ -14,11 +14,11 @@ import type { ProjectBodyRequest, ProjectDetailProps } from '@/features/project/
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { CustomRadio } from '@/components/CustomRadio';
-import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from '../../styles/basic-information.less';
 import { EntryForm } from './EntryForm';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 interface GeneralInformationProps {
   project?: ProjectDetailProps;

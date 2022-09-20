@@ -22,10 +22,10 @@ import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { PhoneInput } from '@/components/Form/PhoneInput';
-import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { BodyText, Title } from '@/components/Typography';
 
 import styles from './PersonalProfile.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 export type PersonalProfileState = {
   backupEmail: string;

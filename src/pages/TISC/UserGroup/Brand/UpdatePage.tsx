@@ -23,7 +23,6 @@ import {
 } from '@/features/user-group/types';
 import { KeyValueData } from '@/types';
 
-import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { CustomTabPane } from '@/components/Tabs';
 import BrandAvailabilityDetail from '@/features/user-group/components/AvailabilityDetail';
 import BrandDistributorDetail from '@/features/user-group/components/DistributorDetail';
@@ -34,6 +33,7 @@ import TabDetail from '@/features/user-group/components/TabDetail';
 import TeamDetail from '@/features/user-group/components/Team';
 import TooltipLabel from '@/features/user-group/components/TooltipLabel';
 
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import styles from '@/features/user-group/styles/index.less';
 
 const BrandTabs: TabItem[] = [

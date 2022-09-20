@@ -18,12 +18,12 @@ import { EntryFormWrapper, contentId } from '@/components/EntryForm';
 import { FormGroup } from '@/components/Form';
 import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
 import { CustomInput } from '@/components/Form/CustomInput';
-import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import ScrollBar from '@/components/ScrollBar';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import styles from './styles/EmailAutorespondersEntryForm.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const DEFAULT_EMAILAUTORESPONDERS_VALUE: EmailTemplate = {
   topic: '',

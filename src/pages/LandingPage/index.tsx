@@ -45,10 +45,10 @@ import { PoliciesModal } from './components/PoliciesModal';
 import { SignupModal } from './components/SignupModal';
 import { VerifyAccount } from './components/VerifyAccount';
 import CustomButton from '@/components/Button';
-import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
 import styles from './index.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const LandingPage = () => {
   const userEmail = useQuery().get('email');

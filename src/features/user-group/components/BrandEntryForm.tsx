@@ -17,9 +17,9 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { Status } from '@/components/Form/Status';
-import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 
 import styles from './BrandEntryForm.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import { inviteBrand } from '@/features/team-profiles/api';
 
 interface BrandEntryFormValue {}

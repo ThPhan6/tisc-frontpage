@@ -7,10 +7,10 @@ import { useBoolean, useGetParamId } from '@/helper/hook';
 
 import { MarketAvailabilityDetails } from '@/features/market-availability/type';
 
-import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { MarketAvailabilityEntryForm } from '@/features/market-availability/components/MarketAvailabilityEntryForm';
 
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import {
   getMarketAvailabilityByCollectionId,
   updateMarketAvailabilityByCollectionId,

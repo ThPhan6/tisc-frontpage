@@ -17,10 +17,10 @@ import type {
 
 import CustomPaginator from './components/CustomPaginator';
 import TableSummary from './components/TableSummary';
-import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 
 import { TableHeader } from './TableHeader';
 import styles from './styles/table.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 // start expandable table
 interface ExpandableTableConfig {

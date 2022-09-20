@@ -8,13 +8,13 @@ import { useBoolean } from '@/helper/hook';
 import type { ProjectSpaceZone } from '@/features/project/types';
 
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
-import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { MainTitle } from '@/components/Typography';
 
 import styles from '../../styles/space-management.less';
 import SpaceEntryForm from './SpaceEntryForm';
 import SpaceList from './SpaceList';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 interface SpaceManagementProps {
   projectId?: string;

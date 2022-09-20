@@ -12,9 +12,10 @@ import { getOnePresetMiddleware, updatePresetMiddleware } from '@/services';
 import { PresetsValueProp, presetsValueDefault } from '@/types';
 
 import { PresetsEntryForm } from './components/PresetsEntryForm';
-import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const UpdatePresetPage = () => {
   const [presetValue, setPresetValue] = useState<PresetsValueProp>(presetsValueDefault);

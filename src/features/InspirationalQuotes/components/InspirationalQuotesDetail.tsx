@@ -8,11 +8,11 @@ import { createQuotation, getOneQuotation, updateQuotation } from '@/services';
 
 import { Quotation } from '@/types';
 
-import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { InspirationalQuotationEntryForm } from './InspirationalQuotesEntryForm';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const DEFAULT_INPUT: Quotation = {
   author: '',

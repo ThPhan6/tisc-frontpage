@@ -27,7 +27,6 @@ import {
 } from '@/features/user-group/types';
 import { KeyValueData } from '@/types';
 
-import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { CustomTabPane } from '@/components/Tabs';
 import CustomDesign from '@/features/user-group/components/CustomDesign';
 import { LocationDetail } from '@/features/user-group/components/LocationDetail';
@@ -40,6 +39,7 @@ import TeamDetail from '@/features/user-group/components/Team';
 import LabelToolTip from '@/features/user-group/components/TooltipLabel';
 
 import styles from './index.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const DesignTabs: TabItem[] = [
   { tab: DesignTabKeys.profile, key: DesignTabKeys.profile, icon: <ProfileIcon /> },

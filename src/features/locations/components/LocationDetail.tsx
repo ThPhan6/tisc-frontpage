@@ -7,12 +7,12 @@ import { useBoolean, useCheckPermission, useGetParamId } from '@/helper/hook';
 
 import { LocationForm } from '../type';
 
-import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { createLocation, getLocationById, updateLocation } from '../api';
 import LocationEntryForm from './LocationEntryForm';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const LocationDetail = () => {
   const submitButtonStatus = useBoolean(false);

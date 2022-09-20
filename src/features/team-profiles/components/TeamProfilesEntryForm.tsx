@@ -28,7 +28,6 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { Status } from '@/components/Form/Status';
-import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
@@ -37,6 +36,7 @@ import BrandAccessLevelModal from './BrandAccessLevelModal';
 import LocationModal from './LocationModal';
 import TISCAccessLevelModal from './TISCAccessLevelModal';
 import styles from './TeamProfilesEntryForm.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const GenderRadio = [
   { label: 'Male', value: '1' },

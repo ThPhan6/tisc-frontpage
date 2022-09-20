@@ -8,7 +8,6 @@ import { useBoolean, useGetParamId } from '@/helper/hook';
 
 import { DistributorForm } from '@/features/distributors/type';
 
-import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { DistributorsEntryForm } from '@/features/distributors/components/DistributorsEntryForm';
@@ -18,6 +17,7 @@ import {
   getOneDistributor,
   updateDistributor,
 } from '@/features/distributors/api';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const DEFAULT_DISTRIBUTOR: DistributorForm = {
   brand_id: '',
