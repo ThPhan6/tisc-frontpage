@@ -2,18 +2,13 @@ import { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 
+import { ProductBasicEntryForm } from '../../hook';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
 import { createOptionMiddleWare, getOneBasisOption, updateBasisOption } from '@/services';
 import { merge } from 'lodash';
 
 import type { BasisOptionForm, BasisOptionSubForm, SubBasisOption } from '@/types';
-
-import { EntryFormWrapper } from '@/components/EntryForm';
-import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import LoadingPageCustomize from '@/components/LoadingPage';
-import { TableHeader } from '@/components/Table/TableHeader';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { OptionItem } from './OptionItem';
 
@@ -149,33 +144,25 @@ const OptionsEntryForm = () => {
   };
 
   return (
-    <div>
-      <TableHeader title={'OPTIONS'} rightAction={<CustomPlusButton disabled />} />
-      <EntryFormWrapper
-        handleSubmit={onHandleSubmit}
-        handleCancel={handleCancel}
-        submitButtonStatus={submitButtonStatus.value}>
-        <FormNameInput
-          placeholder="type group name"
-          title="Option Group"
-          HandleOnClickAddIcon={handleClickAddOption}
-          onChangeInput={handleChangeGroupName}
-          inputValue={option.name}
+    <ProductBasicEntryForm
+      type="OPTIONS"
+      handleSubmit={onHandleSubmit}
+      handleCancel={handleCancel}
+      submitButtonStatus={submitButtonStatus.value}
+      onChangeInput={handleChangeGroupName}
+      handleOnClickAddIcon={handleClickAddOption}
+      inputValue={option.name}
+      isLoading={isLoading.value}>
+      {option.subs.map((subOption, index) => (
+        <OptionItem
+          key={index}
+          optionIndex={index}
+          subOption={subOption}
+          handleChangeSubItem={(changedSubs) => handleChangeSubItem(changedSubs, index)}
+          handleDeleteSubOption={() => handleDeleteSubOption(index)}
         />
-        <div>
-          {option.subs.map((subOption, index) => (
-            <OptionItem
-              key={index}
-              optionIndex={index}
-              subOption={subOption}
-              handleChangeSubItem={(changedSubs) => handleChangeSubItem(changedSubs, index)}
-              handleDeleteSubOption={() => handleDeleteSubOption(index)}
-            />
-          ))}
-        </div>
-      </EntryFormWrapper>
-      {isLoading.value ? <LoadingPageCustomize /> : null}
-    </div>
+      ))}
+    </ProductBasicEntryForm>
   );
 };
 

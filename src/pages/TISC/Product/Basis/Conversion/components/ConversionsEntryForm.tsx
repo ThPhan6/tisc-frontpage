@@ -5,6 +5,7 @@ import { PATH } from '@/constants/path';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
 
+import { ProductBasicEntryForm } from '../../hook';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
 import {
@@ -14,12 +15,6 @@ import {
 } from '@/services';
 
 import { ConversionValueProp, conversionValueDefault } from '@/types';
-
-import { EntryFormWrapper } from '@/components/EntryForm';
-import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import LoadingPageCustomize from '@/components/LoadingPage';
-import { TableHeader } from '@/components/Table/TableHeader';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { ConversionItem } from './ConversionItem';
 
@@ -142,34 +137,26 @@ const ConversionsEntryForm = () => {
   };
 
   return (
-    <div>
-      <TableHeader title={'CONVERSIONS'} rightAction={<CustomPlusButton disabled />} />
-      <EntryFormWrapper
-        handleSubmit={onHandleSubmit}
-        handleCancel={handleCancel}
-        submitButtonStatus={submitButtonStatus.value}>
-        <FormNameInput
-          placeholder="type group name"
-          title="Conversion Group"
-          onChangeInput={handleOnChangeConversionGroupName}
-          HandleOnClickAddIcon={HandleOnClickAddIcon}
-          inputValue={conversionValue.name}
+    <ProductBasicEntryForm
+      type="CONVERSIONS"
+      handleSubmit={onHandleSubmit}
+      handleCancel={handleCancel}
+      submitButtonStatus={submitButtonStatus.value}
+      onChangeInput={handleOnChangeConversionGroupName}
+      handleOnClickAddIcon={HandleOnClickAddIcon}
+      inputValue={conversionValue.name}
+      isLoading={isLoading.value}>
+      {conversionValue.subs.map((conversion, index) => (
+        <ConversionItem
+          key={index}
+          value={conversion}
+          onChangeValue={(value) => {
+            handleOnChangeValue(value, index);
+          }}
+          handleOnClickDelete={() => handleOnClickDelete(index)}
         />
-        <div>
-          {conversionValue.subs.map((conversion, index) => (
-            <ConversionItem
-              key={index}
-              value={conversion}
-              onChangeValue={(value) => {
-                handleOnChangeValue(value, index);
-              }}
-              handleOnClickDelete={() => handleOnClickDelete(index)}
-            />
-          ))}
-        </div>
-      </EntryFormWrapper>
-      {isLoading.value ? <LoadingPageCustomize /> : null}
-    </div>
+      ))}
+    </ProductBasicEntryForm>
   );
 };
 

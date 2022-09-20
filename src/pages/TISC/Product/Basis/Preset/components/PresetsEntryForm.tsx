@@ -5,17 +5,12 @@ import { PATH } from '@/constants/path';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
 
+import { ProductBasicEntryForm } from '../../hook';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
 import { createPresetMiddleware, getOnePresetMiddleware, updatePresetMiddleware } from '@/services';
 
 import { PresetItemValueProp, PresetsValueProp, presetsValueDefault } from '@/types';
-
-import { EntryFormWrapper } from '@/components/EntryForm';
-import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import LoadingPageCustomize from '@/components/LoadingPage';
-import { TableHeader } from '@/components/Table/TableHeader';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { PresetItem } from './PresetItem';
 
@@ -129,34 +124,26 @@ const PresetsEntryForm = () => {
   };
 
   return (
-    <div>
-      <TableHeader title={'PRESETS'} rightAction={<CustomPlusButton disabled />} />
-      <EntryFormWrapper
-        handleSubmit={onHandleSubmit}
-        handleCancel={handleCancel}
-        submitButtonStatus={submitButtonStatus.value}>
-        <FormNameInput
-          placeholder="type group name"
-          title="Preset group"
-          onChangeInput={handleOnChangePresetGroupName}
-          HandleOnClickAddIcon={HandleOnClickAddIcon}
-          inputValue={presetsValue.name}
+    <ProductBasicEntryForm
+      type="PRESETS"
+      handleSubmit={onHandleSubmit}
+      handleCancel={handleCancel}
+      submitButtonStatus={submitButtonStatus.value}
+      onChangeInput={handleOnChangePresetGroupName}
+      handleOnClickAddIcon={HandleOnClickAddIcon}
+      inputValue={presetsValue.name}
+      isLoading={isLoading.value}>
+      {presetsValue.subs.map((presetItem, index) => (
+        <PresetItem
+          key={index}
+          handleOnClickDelete={() => handleOnClickDelete(index)}
+          onChangeValue={(value: PresetItemValueProp) => {
+            handleOnChangeValue(value, index);
+          }}
+          value={presetItem}
         />
-        <div>
-          {presetsValue.subs.map((presetItem, index) => (
-            <PresetItem
-              key={index}
-              handleOnClickDelete={() => handleOnClickDelete(index)}
-              onChangeValue={(value: PresetItemValueProp) => {
-                handleOnChangeValue(value, index);
-              }}
-              value={presetItem}
-            />
-          ))}
-        </div>
-      </EntryFormWrapper>
-      {isLoading.value ? <LoadingPageCustomize /> : null}
-    </div>
+      ))}
+    </ProductBasicEntryForm>
   );
 };
 
