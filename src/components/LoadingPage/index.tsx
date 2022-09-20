@@ -5,7 +5,7 @@ import { useAppSelector } from '@/reducers';
 import styles from './styles/index.less';
 
 const LoadingPageCustomize = () => {
-  const loading = useAppSelector((state) => state.loading.spninning);
+  const loading = useAppSelector((state) => state.loading.spinning);
 
   if (loading) {
     return (
