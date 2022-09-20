@@ -26,7 +26,7 @@ const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
     getListDistributorGroupCountryByBrandId(id).then(setDistributors);
   }, []);
 
-  const renderCoverageBeyon = (coverageBeyond: boolean) =>
+  const renderCoverageBeyond = (coverageBeyond: boolean) =>
     getValueByCondition(
       [
         [coverageBeyond === COVERAGE_BEYOND.notAllow, 'Not Allow'],
@@ -77,7 +77,7 @@ const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
                               {distributor.authorized_country_name ?? ''}
                             </TextForm>
                             <TextForm label="Coverage Beyond">
-                              {renderCoverageBeyon(distributor.coverage_beyond)}
+                              {renderCoverageBeyond(distributor.coverage_beyond)}
                             </TextForm>
                           </div>
                         </Collapse.Panel>

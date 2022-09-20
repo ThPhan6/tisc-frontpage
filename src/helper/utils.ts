@@ -277,7 +277,6 @@ export const setSortOrder = (order?: string) => {
   return order === SORT_ORDER.increase ? SORT_ORDER.headerFollow : SORT_ORDER.footerFollow;
 };
 
-type ConditionType = boolean | string | number | Element;
-export const getValueByCondition = (valueByCondition: [ConditionType, any][], finalValue?: any) => {
-  return valueByCondition.find((condition) => condition[0])?.[1] ?? finalValue;
+export const getValueByCondition = (valueByCondition: [any, any][], finalValue?: any) => {
+  return valueByCondition.find((condition) => (condition[0] ? true : false))?.[1] ?? finalValue;
 };
