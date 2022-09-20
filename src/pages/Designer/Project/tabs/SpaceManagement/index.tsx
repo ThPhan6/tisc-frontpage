@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { DefaultProjectZone } from '../../constants/form';
 
 import { createProjectSpace, updateProjectSpace } from '@/features/project/services';
-import { useBoolean, useLoadingAction } from '@/helper/hook';
+import { useBoolean } from '@/helper/hook';
+import { hidePageLoading, showPageLoading } from '@/helper/utils';
 
 import type { ProjectSpaceZone } from '@/features/project/types';
 
@@ -20,8 +21,6 @@ interface SpaceManagementProps {
 }
 
 const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
-  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
-
   const [space, setSpace] = useState<ProjectSpaceZone>();
   const submitButtonStatus = useBoolean();
   const displaySpaceForm = (spaceData: ProjectSpaceZone = DefaultProjectZone) => {
@@ -36,11 +35,11 @@ const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
     if (!space) {
       return false;
     }
-    setSpinningActive();
+    showPageLoading();
     space.project_id = projectId;
     if (space.id) {
       return updateProjectSpace(space.id, space).then((data) => {
-        setSpinningInActive();
+        hidePageLoading();
         if (data) {
           setSpace(data);
           submitButtonStatus.setValue(true);
@@ -51,7 +50,7 @@ const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
       });
     }
     return createProjectSpace(space).then((isSuccess) => {
-      setSpinningInActive();
+      hidePageLoading();
       if (isSuccess) {
         submitButtonStatus.setValue(true);
         setTimeout(() => {
@@ -93,7 +92,6 @@ const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
         </div>
       </ProjectTabContentHeader>
       {renderSpaceContent()}
-      {loadingAction}
     </>
   );
 };

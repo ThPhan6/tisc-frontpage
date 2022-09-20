@@ -17,6 +17,7 @@ import {
 } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
+import { hidePageLoading, showPageLoading } from '@/helper/utils';
 
 import { TabItem } from '@/components/Tabs/types';
 import {
@@ -53,7 +54,6 @@ const DesignFirmUpdatePage = () => {
   const designId = useGetParamId();
   const [selectedTab, setSelectedTab] = useState<TabKeys>(DesignTabKeys.profile);
   const buttonStatus = useBoolean(false);
-  const isLoading = useBoolean();
   const [statuses, setStatuses] = useState<KeyValueData[]>([]);
   const [data, setData] = useState<BrandDesignProfile>(DEFAULT_BRAND_DESIGN_PROFILE);
 
@@ -79,8 +79,9 @@ const DesignFirmUpdatePage = () => {
   };
 
   const handleSaveButton = () => {
+    showPageLoading();
     updateStatusDesignFirm(designId, { status: data.status }).then((isSuccess) => {
-      isLoading.setValue(false);
+      hidePageLoading();
       if (isSuccess) {
         buttonStatus.setValue(true);
         setTimeout(() => {
@@ -102,7 +103,6 @@ const DesignFirmUpdatePage = () => {
           data={data}
           setData={setData}
           buttonStatus={buttonStatus.value}
-          isLoading={isLoading.value}
           statuses={statuses}
           toolTipTitle={
             <table className={styles.tooltip}>

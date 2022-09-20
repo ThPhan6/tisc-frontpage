@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { PATH } from '@/constants/path';
 
 import { pushTo } from '@/helper/history';
-import { useBoolean, useCheckPermission, useGetParamId, useLoadingAction } from '@/helper/hook';
+import { useBoolean, useCheckPermission, useGetParamId } from '@/helper/hook';
+import { hidePageLoading, showPageLoading } from '@/helper/utils';
 
 import { LocationForm } from '../type';
 
@@ -14,7 +15,6 @@ import { createLocation, getLocationById, updateLocation } from '../api';
 import LocationEntryForm from './LocationEntryForm';
 
 const LocationDetail = () => {
-  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
   const submitButtonStatus = useBoolean(false);
 
   const locationId = useGetParamId();
@@ -46,11 +46,11 @@ const LocationDetail = () => {
   };
 
   const onSubmit = (submitData: LocationForm) => {
-    setSpinningActive();
+    showPageLoading();
 
     if (isUpdate) {
       updateLocation(locationId, submitData).then((isSuccess) => {
-        setSpinningInActive();
+        hidePageLoading();
         if (isSuccess) {
           submitButtonStatus.setValue(true);
           setTimeout(() => {
@@ -60,7 +60,7 @@ const LocationDetail = () => {
       });
     } else {
       createLocation(submitData).then((isSuccess) => {
-        setSpinningInActive();
+        hidePageLoading();
         if (isSuccess) {
           submitButtonStatus.setValue(true);
           setTimeout(() => {
@@ -107,7 +107,6 @@ const LocationDetail = () => {
         data={data}
         setData={setData}
       />
-      {loadingAction}
     </div>
   );
 };

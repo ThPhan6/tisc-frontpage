@@ -6,7 +6,8 @@ import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
 
 import { pushTo } from '@/helper/history';
-import { useBoolean, useGetParamId, useLoadingAction } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
+import { hidePageLoading, showPageLoading } from '@/helper/utils';
 import { getOnePresetMiddleware, updatePresetMiddleware } from '@/services';
 
 import { PresetsValueProp, presetsValueDefault } from '@/types';
@@ -17,24 +18,23 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const UpdatePresetPage = () => {
   const [presetValue, setPresetValue] = useState<PresetsValueProp>(presetsValueDefault);
-  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
   const idPreset = useGetParamId();
   const submitButtonStatus = useBoolean(false);
 
   useEffect(() => {
     if (idPreset) {
       //get data of preset
-      setSpinningActive();
+      showPageLoading();
       getOnePresetMiddleware(
         idPreset,
         (dataRes: PresetsValueProp) => {
           if (dataRes) {
             setPresetValue(dataRes);
           }
-          setSpinningInActive();
+          hidePageLoading();
         },
         () => {
-          setSpinningInActive();
+          hidePageLoading();
         },
       );
       return;
@@ -50,7 +50,7 @@ const UpdatePresetPage = () => {
     if (!idPreset) {
       pushTo(PATH.presets);
     }
-    setSpinningActive();
+    showPageLoading();
     updatePresetMiddleware(idPreset, data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.UPDATE_PRESET_SUCCESS);
@@ -61,7 +61,7 @@ const UpdatePresetPage = () => {
       } else {
         message.error(msg);
       }
-      setSpinningInActive();
+      hidePageLoading();
     });
   };
 
@@ -76,7 +76,6 @@ const UpdatePresetPage = () => {
           submitButtonStatus={submitButtonStatus.value}
         />
       </div>
-      {loadingAction}
     </div>
   );
 };

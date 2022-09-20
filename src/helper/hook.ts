@@ -3,9 +3,7 @@ import React from 'react';
 import { USER_ROLE } from '@/constants/userRoles';
 import { useLocation, useModel, useParams } from 'umi';
 
-import store, { useAppSelector } from '@/reducers';
-
-import { setLoadingAction } from '@/components/LoadingPage/slices';
+import { useAppSelector } from '@/reducers';
 
 export function useDefault(defaultValue: any) {
   const [value, setValue] = React.useState(defaultValue);
@@ -82,17 +80,4 @@ export const useGetUserRoleFromPathname = () => {
 export const useGetParamId = () => {
   const params = useParams<{ id: string }>();
   return params?.id ?? '';
-};
-
-export const useLoadingAction = () => {
-  const loadingAction = useAppSelector((state) => state.loading.spinning);
-
-  const setSpinningActive = () => {
-    store.dispatch(setLoadingAction(true));
-  };
-  const setSpinningInActive = () => {
-    store.dispatch(setLoadingAction(false));
-  };
-
-  return { loadingAction, setSpinningActive, setSpinningInActive };
 };

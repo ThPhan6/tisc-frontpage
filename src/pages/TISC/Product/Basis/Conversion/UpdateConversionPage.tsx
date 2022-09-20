@@ -6,7 +6,7 @@ import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
 
 import { pushTo } from '@/helper/history';
-import { useBoolean, useGetParamId, useLoadingAction } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 import { getOneConversionMiddleware, updateConversionMiddleware } from '@/services';
 
 import { ConversionValueProp } from '@/types';
@@ -20,7 +20,6 @@ const UpdateConversionPage = () => {
     name: '',
     subs: [],
   });
-  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
 
   const idConversion = useGetParamId();
 
@@ -28,17 +27,17 @@ const UpdateConversionPage = () => {
 
   useEffect(() => {
     if (idConversion) {
-      setSpinningActive();
+      showPageLoading();
       getOneConversionMiddleware(
         idConversion,
         (dataRes: ConversionValueProp) => {
           if (dataRes) {
             setConversionValue(dataRes);
           }
-          setSpinningInActive();
+          hidePageLoading();
         },
         () => {
-          setSpinningInActive();
+          hidePageLoading();
         },
       );
       return;
@@ -50,7 +49,7 @@ const UpdateConversionPage = () => {
     if (!idConversion) {
       pushTo(PATH.conversions);
     }
-    setSpinningActive();
+    showPageLoading();
     updateConversionMiddleware(idConversion, data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.UPDATE_CONVERSION_SUCCESS);
@@ -61,7 +60,7 @@ const UpdateConversionPage = () => {
       } else {
         message.error(msg);
       }
-      setSpinningInActive();
+      hidePageLoading();
     });
   };
 
@@ -81,7 +80,6 @@ const UpdateConversionPage = () => {
           submitButtonStatus={submitButtonStatus.value}
         />
       </div>
-      {loadingAction}
     </div>
   );
 };

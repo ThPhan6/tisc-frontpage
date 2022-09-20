@@ -5,6 +5,7 @@ import type { TablePaginationConfig } from 'antd/lib/table';
 import type { ExpandableConfig, FilterValue, SorterResult } from 'antd/lib/table/interface';
 
 import { useCustomTable } from './hooks';
+import { hidePageLoading, showPageLoading } from '@/helper/utils';
 import { forEach, isArray, isEmpty } from 'lodash';
 
 import type {
@@ -14,12 +15,10 @@ import type {
   SummaryResponse,
   TableColumnItem,
 } from './types';
-import store, { useAppSelector } from '@/reducers';
 
 import CustomPaginator from './components/CustomPaginator';
 import TableSummary from './components/TableSummary';
 
-import { setLoadingActionForTable } from '../LoadingPage/slices';
 import { TableHeader } from './TableHeader';
 import styles from './styles/table.less';
 
@@ -131,7 +130,6 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const [data, setData] = useState<any>([]);
   const [summary, setSummary] = useState<SummaryResponse[]>([]);
   const [currentSorter, setCurrentSorter] = useState<SorterResult<any> | SorterResult<any>[]>([]);
-  const loading = useAppSelector((state) => state.loading.whirling);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: DEFAULT_PAGE_NUMBER,
     pageSize: DEFAULT_PAGESIZE,
@@ -185,11 +183,11 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   };
 
   const fetchData = (params: PaginationParams) => {
-    store.dispatch(setLoadingActionForTable(true));
+    showPageLoading();
     fetchDataFunc(formatPaginationParams(params), (response) => {
       setData(response.data ?? []);
       setSummary(response.summary ?? []);
-      store.dispatch(setLoadingActionForTable(false));
+      hidePageLoading();
 
       if (response.pagination) {
         setPagination(response.pagination);
@@ -244,7 +242,6 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         }}
         dataSource={data}
         pagination={pagination}
-        loading={loading}
         onChange={handleTableChange}
         showSorterTooltip={false}
         sortDirections={['ascend', 'descend', 'ascend']}

@@ -7,7 +7,8 @@ import { message } from 'antd';
 
 import { getOneCategoryMiddleware, updateCategoryMiddleware } from '@/features/categories/services';
 import { pushTo } from '@/helper/history';
-import { useBoolean, useGetParamId, useLoadingAction } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
+import { hidePageLoading, showPageLoading } from '@/helper/utils';
 
 import { CategoryBodyProps, SubcategoryValueProps } from '@/features/categories/types';
 
@@ -16,8 +17,6 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { CategoryEntryForm } from '@/features/categories/components/CategoryEntryForm';
 
 const UpdateCategoryPage = () => {
-  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
-
   const submitButtonStatus = useBoolean(false);
   const idCategory = useGetParamId();
 
@@ -32,15 +31,15 @@ const UpdateCategoryPage = () => {
 
   useEffect(() => {
     if (idCategory) {
-      setSpinningActive();
+      showPageLoading();
       getOneCategoryMiddleware(
         idCategory,
         (dataRes: CategoryBodyProps) => {
           setCategoryValue(dataRes);
-          setSpinningInActive();
+          hidePageLoading();
         },
         () => {
-          setSpinningInActive();
+          hidePageLoading();
         },
       );
       return;
@@ -52,7 +51,7 @@ const UpdateCategoryPage = () => {
     if (!idCategory) {
       pushTo(PATH.categories);
     }
-    setSpinningActive();
+    showPageLoading();
 
     updateCategoryMiddleware(idCategory, data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
@@ -64,7 +63,7 @@ const UpdateCategoryPage = () => {
       } else {
         message.error(msg);
       }
-      setSpinningInActive();
+      hidePageLoading();
     });
   };
 
@@ -84,7 +83,6 @@ const UpdateCategoryPage = () => {
           onCancel={handleCancel}
         />
       </div>
-      {loadingAction}
     </div>
   );
 };

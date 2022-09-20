@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { PATH } from '@/constants/path';
 
 import { pushTo } from '@/helper/history';
-import { useBoolean, useGetParamId, useLoadingAction } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
+import { hidePageLoading, showPageLoading } from '@/helper/utils';
 
 import { MarketAvailabilityDetails } from '@/features/market-availability/type';
 
@@ -16,7 +17,6 @@ import {
 } from '@/features/market-availability/api';
 
 const UpdateMarketAvailabilityPage = () => {
-  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
   const submitButtonStatus = useBoolean(false);
   const collectionId = useGetParamId();
   // using as temprorary variable, waitting data to set state
@@ -33,9 +33,9 @@ const UpdateMarketAvailabilityPage = () => {
   };
 
   const onSubmit = (submitData: string[]) => {
-    setSpinningActive();
+    showPageLoading();
     updateMarketAvailabilityByCollectionId(collectionId, submitData).then((isSuccess) => {
-      setSpinningInActive();
+      hidePageLoading();
       if (isSuccess) {
         submitButtonStatus.setValue(true);
         setTimeout(() => {
@@ -46,11 +46,11 @@ const UpdateMarketAvailabilityPage = () => {
   };
 
   useEffect(() => {
-    setSpinningActive();
+    showPageLoading();
     getMarketAvailabilityByCollectionId(collectionId).then((res) => {
       if (res) {
         setData(res);
-        setSpinningInActive();
+        hidePageLoading();
       }
     });
   }, []);
@@ -65,7 +65,6 @@ const UpdateMarketAvailabilityPage = () => {
         onSubmit={onSubmit}
         submitButtonStatus={submitButtonStatus.value}
       />
-      {loadingAction}
     </div>
   );
 };

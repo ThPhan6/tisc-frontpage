@@ -26,11 +26,13 @@ import {
   validateResetToken,
   verifyAccount,
 } from './services/api';
-import { useBoolean, useCustomInitialState, useLoadingAction, useQuery } from '@/helper/hook';
+import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
 import {
+  hidePageLoading,
   redirectAfterBrandLogin,
   redirectAfterDesignerLogin,
   redirectAfterLogin,
+  showPageLoading,
 } from '@/helper/utils';
 
 import type { LoginInput, LoginResponseProp, ModalOpen, PasswordRequestBody } from './types';
@@ -57,7 +59,6 @@ const LandingPage = () => {
   const { fetchUserInfo } = useCustomInitialState();
   const openResetPwd = useBoolean();
   const openVerificationModal = useBoolean();
-  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
 
   const [openModal, setOpenModal] = useState<ModalOpen>('');
   const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
@@ -103,7 +104,7 @@ const LandingPage = () => {
   }, [tokenVerification]);
 
   const handleSubmitLogin = (data: LoginInput) => {
-    setSpinningActive();
+    showPageLoading();
     if (openModal === 'Tisc Login') {
       loginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
         if (type === STATUS_RESPONSE.SUCCESS) {
@@ -113,7 +114,7 @@ const LandingPage = () => {
         } else {
           message.error(msg);
         }
-        setSpinningInActive();
+        hidePageLoading();
       });
     } else {
       loginByBrandOrDesigner(
@@ -130,14 +131,14 @@ const LandingPage = () => {
           } else {
             message.error(msg);
           }
-          setSpinningInActive();
+          hidePageLoading();
         },
       );
     }
   };
 
   const handleForgotPassword = (email: string) => {
-    setSpinningActive();
+    showPageLoading();
     forgotPasswordMiddleware(
       { email: email, type: openModal === 'Tisc Login' ? ForgotType.TISC : ForgotType.OTHER },
       async (type: STATUS_RESPONSE, msg?: string) => {
@@ -147,13 +148,13 @@ const LandingPage = () => {
         } else {
           message.error(msg);
         }
-        setSpinningInActive();
+        hidePageLoading();
       },
     );
   };
 
   const handleResetPassword = (data: PasswordRequestBody) => {
-    setSpinningActive();
+    showPageLoading();
     resetPasswordMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD_SUCCESS);
@@ -162,14 +163,14 @@ const LandingPage = () => {
       } else {
         message.error(msg);
       }
-      setSpinningInActive();
+      hidePageLoading();
     });
   };
 
   const handleVerifyAccount = (data: PasswordRequestBody) => {
-    setSpinningActive();
+    showPageLoading();
     createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
-      setSpinningInActive();
+      hidePageLoading();
       if (isSuccess) {
         redirectAfterLogin();
       }
@@ -374,8 +375,6 @@ const LandingPage = () => {
           openLogin={() => setOpenModal('Login')}
         />
       ) : null}
-
-      {loadingAction}
     </div>
   );
 };

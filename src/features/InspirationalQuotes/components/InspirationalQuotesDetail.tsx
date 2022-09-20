@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { PATH } from '@/constants/path';
 
 import { pushTo } from '@/helper/history';
-import { useBoolean, useGetParamId, useLoadingAction } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
+import { hidePageLoading, showPageLoading } from '@/helper/utils';
 import { createQuotation, getOneQuotation, updateQuotation } from '@/services';
 
 import { Quotation } from '@/types';
@@ -20,8 +21,6 @@ const DEFAULT_INPUT: Quotation = {
 };
 
 const UpdateQuotationPage = () => {
-  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
-
   const submitButtonStatus = useBoolean(false);
   const idQuotation = useGetParamId();
   const isUpdate = idQuotation ? true : false;
@@ -53,11 +52,11 @@ const UpdateQuotationPage = () => {
   };
 
   const onSubmit = (data: Quotation) => {
-    setSpinningActive();
+    showPageLoading();
 
     if (isUpdate) {
       updateQuotation(idQuotation, data).then((isSuccess) => {
-        setSpinningInActive();
+        hidePageLoading();
         if (isSuccess) {
           submitButtonStatus.setValue(true);
           setTimeout(() => {
@@ -67,7 +66,7 @@ const UpdateQuotationPage = () => {
       });
     } else {
       createQuotation(data).then((isSuccess) => {
-        setSpinningInActive();
+        hidePageLoading();
         if (isSuccess) {
           submitButtonStatus.setValue(true);
           setTimeout(() => {
@@ -88,7 +87,6 @@ const UpdateQuotationPage = () => {
         onSubmit={onSubmit}
         submitButtonStatus={submitButtonStatus.value}
       />
-      {loadingAction}
     </div>
   );
 };

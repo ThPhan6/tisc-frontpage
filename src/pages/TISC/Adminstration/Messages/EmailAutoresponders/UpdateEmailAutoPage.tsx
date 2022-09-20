@@ -7,7 +7,8 @@ import { message } from 'antd';
 import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
 
 import { pushTo } from '@/helper/history';
-import { useBoolean, useGetParamId, useLoadingAction } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
+import { hidePageLoading, showPageLoading } from '@/helper/utils';
 import { getOneEmailAuto, getTargetedForList, getTopicList, updateEmailAuto } from '@/services';
 import { isEmpty, trimStart } from 'lodash';
 
@@ -32,7 +33,6 @@ const DEFAULT_EMAILAUTORESPONDERS_VALUE: EmailTemplate = {
 };
 
 const UpdateEmailAutoPage = () => {
-  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
   const submitButtonStatus = useBoolean(false);
   const idEmailAuto = useGetParamId();
 
@@ -103,13 +103,13 @@ const UpdateEmailAutoPage = () => {
     if (isEmpty(formState.message)) {
       message.error(MESSAGE_ERROR.EMAIL_AUTO);
     } else {
-      setSpinningActive();
+      showPageLoading();
 
       updateEmailAuto(idEmailAuto, {
         ...formState,
         title: formState.title.trim(),
       }).then((isSuccess) => {
-        setSpinningInActive();
+        hidePageLoading();
 
         if (isSuccess) {
           submitButtonStatus.setValue(true);
@@ -201,8 +201,6 @@ const UpdateEmailAutoPage = () => {
           />
         </EntryFormWrapper>
       </div>
-
-      {loadingAction}
     </div>
   );
 };

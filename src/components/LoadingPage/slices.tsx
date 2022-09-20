@@ -1,30 +1,22 @@
-import LoadingPageCustomize from './index';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface LoadingAction {
-  whirling: boolean;
-  spinning: Element | null;
+  spninning: boolean;
 }
 
-const initialState: LoadingAction = {
-  whirling: false,
-  spinning: null,
-};
+const initialState: LoadingAction = { spninning: false };
 
 const loadingPageSlice = createSlice({
   name: 'loading',
   initialState,
   reducers: {
-    setLoadingActionForTable(state, action: PayloadAction<boolean>) {
-      state.whirling = action.payload;
-    },
     setLoadingAction(state, action: PayloadAction<boolean>) {
-      state.spinning = action.payload ? <LoadingPageCustomize /> : null;
+      state.spninning = action.payload;
     },
   },
 });
 
-export const { setLoadingActionForTable, setLoadingAction } = loadingPageSlice.actions;
+export const { setLoadingAction } = loadingPageSlice.actions;
 
 export const loadingActionReducer = loadingPageSlice.reducer;

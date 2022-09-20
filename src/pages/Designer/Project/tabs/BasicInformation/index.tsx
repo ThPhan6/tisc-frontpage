@@ -7,7 +7,8 @@ import { Col, Row } from 'antd';
 import { useHistory } from 'umi';
 
 import { createProject, updateProject } from '@/features/project/services';
-import { useBoolean, useLoadingAction } from '@/helper/hook';
+import { useBoolean } from '@/helper/hook';
+import { hidePageLoading, showPageLoading } from '@/helper/utils';
 
 import type { ProjectBodyRequest, ProjectDetailProps } from '@/features/project/types';
 
@@ -25,19 +26,17 @@ interface GeneralInformationProps {
 }
 
 const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setProject }) => {
-  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
-
   const [data, setData] = useState<ProjectBodyRequest>(DefaultProjectRequest);
   const buttonStatus = useBoolean();
   const [projectId, setProjectId] = useState<string>();
   const history = useHistory();
 
   const handleSubmitForm = () => {
-    setSpinningActive();
+    showPageLoading();
     if (projectId) {
       /// update project
       updateProject(projectId, data).then((isSuccess) => {
-        setSpinningInActive();
+        hidePageLoading();
         if (isSuccess) {
           buttonStatus.setValue(true);
           setTimeout(() => {
@@ -54,7 +53,7 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
     } else {
       /// create
       createProject(data).then((newProjectId) => {
-        setSpinningInActive();
+        hidePageLoading();
         if (newProjectId) {
           buttonStatus.setValue(true);
           setTimeout(() => {
@@ -114,7 +113,6 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
           <EntryForm data={data} onChangeData={onChangeData} />
         </Col>
       </Row>
-      {loadingAction}
     </>
   );
 };

@@ -4,7 +4,8 @@ import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
 
 import { pushTo } from '@/helper/history';
-import { useBoolean, useLoadingAction } from '@/helper/hook';
+import { useBoolean } from '@/helper/hook';
+import { hidePageLoading, showPageLoading } from '@/helper/utils';
 import { createPresetMiddleware } from '@/services';
 
 import { PresetsValueProp } from '@/types';
@@ -14,8 +15,6 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 const CreatePresetPage = () => {
-  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
-
   const submitButtonStatus = useBoolean(false);
 
   const handleCancel = () => {
@@ -23,7 +22,7 @@ const CreatePresetPage = () => {
   };
 
   const handleCreatePreset = (data: PresetsValueProp) => {
-    setSpinningActive();
+    showPageLoading();
     createPresetMiddleware(data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.CREATE_PRESET_SUCCESS);
@@ -35,7 +34,7 @@ const CreatePresetPage = () => {
       } else {
         message.error(msg);
       }
-      setSpinningInActive();
+      hidePageLoading();
     });
   };
 
@@ -49,7 +48,6 @@ const CreatePresetPage = () => {
           submitButtonStatus={submitButtonStatus.value}
         />
       </div>
-      {loadingAction}
     </div>
   );
 };

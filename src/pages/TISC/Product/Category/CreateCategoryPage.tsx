@@ -7,7 +7,8 @@ import { message } from 'antd';
 
 import { createCategoryMiddleware } from '@/features/categories/services';
 import { pushTo } from '@/helper/history';
-import { useBoolean, useLoadingAction } from '@/helper/hook';
+import { useBoolean } from '@/helper/hook';
+import { hidePageLoading, showPageLoading } from '@/helper/utils';
 
 import { CategoryBodyProps, SubcategoryValueProps } from '@/features/categories/types';
 
@@ -24,12 +25,11 @@ const CreateCategoryPage = () => {
     name: '',
     subs: [],
   });
-  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
 
   const submitButtonStatus = useBoolean(false);
 
   const handleCreateCategory = (data: CategoryBodyProps) => {
-    setSpinningActive();
+    showPageLoading();
     createCategoryMiddleware(data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.CREATE_CATEGORY_SUCCESS);
@@ -41,7 +41,7 @@ const CreateCategoryPage = () => {
       } else {
         message.error(msg);
       }
-      setSpinningInActive();
+      hidePageLoading();
     });
   };
 
@@ -61,7 +61,6 @@ const CreateCategoryPage = () => {
           onCancel={handleCancel}
         />
       </div>
-      {loadingAction}
     </div>
   );
 };

@@ -8,8 +8,12 @@ import { useHistory } from 'umi';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
 import { createBrand } from '../services';
-import { useLoadingAction } from '@/helper/hook';
-import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+import {
+  emailMessageError,
+  emailMessageErrorType,
+  hidePageLoading,
+  showPageLoading,
+} from '@/helper/utils';
 
 import { TISCUserGroupBrandForm } from '../types/brand.types';
 
@@ -33,7 +37,6 @@ const DEFAULT_BRAND: TISCUserGroupBrandForm = {
 type EntryFormInput = keyof typeof DEFAULT_BRAND;
 
 const BrandEntryForm: FC<BrandEntryFormValue> = () => {
-  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
   const [data, setData] = useState<TISCUserGroupBrandForm>(DEFAULT_BRAND);
   const history = useHistory();
 
@@ -52,14 +55,14 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
   };
 
   const handleSubmit = (callback?: (brandId: string) => void) => {
-    setSpinningActive();
+    showPageLoading();
     createBrand({
       name: data.name?.trim() ?? '',
       first_name: data.first_name?.trim() ?? '',
       last_name: data.last_name?.trim() ?? '',
       email: data.email?.trim() ?? '',
     }).then((newBrand) => {
-      setSpinningInActive();
+      hidePageLoading();
       if (!newBrand) {
         return;
       }
@@ -72,10 +75,10 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
   };
 
   const handleSendInvite = () => {
-    // setSpinningActive();
+    // showPageLoading();
     handleSubmit((brandId) => {
       inviteBrand(brandId).then(() => {
-        setSpinningInActive();
+        hidePageLoading();
         history.replace(PATH.tiscUserGroupBrandList);
       });
     });
@@ -176,8 +179,6 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
         formClass={styles.status}
         onClick={handleSendInvite}
       />
-
-      {loadingAction}
     </EntryFormWrapper>
   );
 };

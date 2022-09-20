@@ -13,9 +13,13 @@ import {
   useCheckPermission,
   useCustomInitialState,
   useGetParamId,
-  useLoadingAction,
 } from '@/helper/hook';
-import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+import {
+  emailMessageError,
+  emailMessageErrorType,
+  hidePageLoading,
+  showPageLoading,
+} from '@/helper/utils';
 import { getDepartmentList } from '@/services';
 
 import { TeamProfileDetailProps, TeamProfileRequestBody } from '../type';
@@ -46,8 +50,6 @@ const GenderRadio = [
 type FieldName = keyof TeamProfileDetailProps;
 
 const TeamProfilesEntryForm = () => {
-  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
-
   const userProfileId = useAppSelector((state) => state.user.user?.id);
   const { fetchUserInfo } = useCustomInitialState();
   const history = useHistory();
@@ -120,7 +122,7 @@ const TeamProfilesEntryForm = () => {
     callBack?: (userIdParam: string) => void,
   ) => {
     createTeamProfile(submitData).then((teamProfile) => {
-      setSpinningInActive();
+      hidePageLoading();
       if (teamProfile) {
         submitButtonStatus.setValue(true);
         if (callBack) {
@@ -134,7 +136,7 @@ const TeamProfilesEntryForm = () => {
 
   const handleUpdateData = (submitData: TeamProfileRequestBody) => {
     updateTeamProfile(userIdParam, submitData).then((isSuccess) => {
-      setSpinningInActive();
+      hidePageLoading();
       if (isSuccess) {
         submitButtonStatus.setValue(true);
         const isUpdateCurrentUser = userIdParam === userProfileId;
@@ -149,7 +151,7 @@ const TeamProfilesEntryForm = () => {
   };
 
   const handleSubmit = (callBack?: (id: string) => void) => {
-    setSpinningActive();
+    showPageLoading();
 
     const body: TeamProfileRequestBody = {
       firstname: data.firstname?.trim() ?? '',
@@ -436,8 +438,6 @@ const TeamProfilesEntryForm = () => {
         workLocation={workLocation}
         setWorkLocation={setWorkLocation}
       />
-
-      {loadingAction}
     </div>
   );
 };
