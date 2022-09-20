@@ -128,7 +128,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     getProductByIdAndReturn(product.id).then((res) => {
       if (res) {
         const specGroups = res.specification_attribute_groups;
-        // console.log('specGroups', specGroups);
         setSpecifyingGroups(specGroups);
         dataLoaded.setValue(true);
       }
@@ -230,7 +229,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           const basisOption = attribute?.basis_options?.find(
             (el) => el.id === attr.basis_option_id,
           );
-          // console.log('basisOption', basisOption);
           if (basisOption) {
             variant += `${attribute?.name}: ${basisOption.value_1} ${basisOption.unit_1} - ${basisOption.value_2} ${basisOption.unit_2}; `;
           }
