@@ -277,6 +277,7 @@ export const setSortOrder = (order?: string) => {
   return order === SORT_ORDER.increase ? SORT_ORDER.headerFollow : SORT_ORDER.footerFollow;
 };
 
+/// Don't use to return component
 export const getValueByCondition = (valueByCondition: [any, any][], finalValue?: any) => {
   return valueByCondition.find((condition) => (condition[0] ? true : false))?.[1] ?? finalValue;
 };

@@ -15,7 +15,7 @@ import styles from './Profile.less';
 export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
   if (!data) return null;
 
-  const renderProfileLabel = () =>
+  const getProfileLabel = () =>
     getValueByCondition(
       [
         [type === 'brand', 'Mission & Vision'],
@@ -23,7 +23,7 @@ export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
       ],
       '',
     );
-  const renderProfileData = () =>
+  const getProfileData = () =>
     getValueByCondition(
       [
         [type === 'brand', data.mission_n_vision],
@@ -52,8 +52,8 @@ export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
           <TextForm formClass={styles.profile_label} boxShadow label="Slogan">
             {data.slogan ?? ''}
           </TextForm>
-          <TextForm formClass={styles.profile_label} boxShadow label={renderProfileLabel()}>
-            {renderProfileData()}
+          <TextForm formClass={styles.profile_label} boxShadow label={getProfileLabel()}>
+            {getProfileData()}
           </TextForm>
 
           {type !== 'brand' ? null : (
