@@ -26,7 +26,7 @@ import {
   validateResetToken,
   verifyAccount,
 } from './services/api';
-import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
+import { useBoolean, useCustomInitialState, useLoadingAction, useQuery } from '@/helper/hook';
 import {
   redirectAfterBrandLogin,
   redirectAfterDesignerLogin,
@@ -45,7 +45,6 @@ import { PoliciesModal } from './components/PoliciesModal';
 import { SignupModal } from './components/SignupModal';
 import { VerifyAccount } from './components/VerifyAccount';
 import CustomButton from '@/components/Button';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
 import styles from './index.less';
@@ -58,7 +57,8 @@ const LandingPage = () => {
   const { fetchUserInfo } = useCustomInitialState();
   const openResetPwd = useBoolean();
   const openVerificationModal = useBoolean();
-  const isLoading = useBoolean();
+  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
+
   const [openModal, setOpenModal] = useState<ModalOpen>('');
   const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
   const openVerifyAccountModal = useBoolean();
@@ -103,7 +103,7 @@ const LandingPage = () => {
   }, [tokenVerification]);
 
   const handleSubmitLogin = (data: LoginInput) => {
-    isLoading.setValue(true);
+    setSpinningActive();
     if (openModal === 'Tisc Login') {
       loginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
         if (type === STATUS_RESPONSE.SUCCESS) {
@@ -113,7 +113,7 @@ const LandingPage = () => {
         } else {
           message.error(msg);
         }
-        isLoading.setValue(false);
+        setSpinningInActive();
       });
     } else {
       loginByBrandOrDesigner(
@@ -130,14 +130,14 @@ const LandingPage = () => {
           } else {
             message.error(msg);
           }
-          isLoading.setValue(false);
+          setSpinningInActive();
         },
       );
     }
   };
 
   const handleForgotPassword = (email: string) => {
-    isLoading.setValue(true);
+    setSpinningActive();
     forgotPasswordMiddleware(
       { email: email, type: openModal === 'Tisc Login' ? ForgotType.TISC : ForgotType.OTHER },
       async (type: STATUS_RESPONSE, msg?: string) => {
@@ -147,13 +147,13 @@ const LandingPage = () => {
         } else {
           message.error(msg);
         }
-        isLoading.setValue(false);
+        setSpinningInActive();
       },
     );
   };
 
   const handleResetPassword = (data: PasswordRequestBody) => {
-    isLoading.setValue(true);
+    setSpinningActive();
     resetPasswordMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD_SUCCESS);
@@ -162,14 +162,14 @@ const LandingPage = () => {
       } else {
         message.error(msg);
       }
-      isLoading.setValue(false);
+      setSpinningInActive();
     });
   };
 
   const handleVerifyAccount = (data: PasswordRequestBody) => {
-    isLoading.setValue(true);
+    setSpinningActive();
     createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
-      isLoading.setValue(false);
+      setSpinningInActive();
       if (isSuccess) {
         redirectAfterLogin();
       }
@@ -375,7 +375,7 @@ const LandingPage = () => {
         />
       ) : null}
 
-      {isLoading.value ? <LoadingPageCustomize /> : null}
+      {loadingAction}
     </div>
   );
 };

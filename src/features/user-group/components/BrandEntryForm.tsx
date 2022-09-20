@@ -8,7 +8,7 @@ import { useHistory } from 'umi';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
 import { createBrand } from '../services';
-import { useBoolean } from '@/helper/hook';
+import { useLoadingAction } from '@/helper/hook';
 import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
 
 import { TISCUserGroupBrandForm } from '../types/brand.types';
@@ -18,7 +18,6 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { Status } from '@/components/Form/Status';
-import LoadingPageCustomize from '@/components/LoadingPage';
 
 import styles from './BrandEntryForm.less';
 import { inviteBrand } from '@/features/team-profiles/api';
@@ -34,9 +33,9 @@ const DEFAULT_BRAND: TISCUserGroupBrandForm = {
 type EntryFormInput = keyof typeof DEFAULT_BRAND;
 
 const BrandEntryForm: FC<BrandEntryFormValue> = () => {
+  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
   const [data, setData] = useState<TISCUserGroupBrandForm>(DEFAULT_BRAND);
   const history = useHistory();
-  const isLoading = useBoolean(false);
 
   const onChangeData = (fieldName: EntryFormInput) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setData((prevState) => ({
@@ -53,14 +52,14 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
   };
 
   const handleSubmit = (callback?: (brandId: string) => void) => {
-    isLoading.setValue(true);
+    setSpinningActive();
     createBrand({
       name: data.name?.trim() ?? '',
       first_name: data.first_name?.trim() ?? '',
       last_name: data.last_name?.trim() ?? '',
       email: data.email?.trim() ?? '',
     }).then((newBrand) => {
-      isLoading.setValue(false);
+      setSpinningInActive();
       if (!newBrand) {
         return;
       }
@@ -73,10 +72,10 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
   };
 
   const handleSendInvite = () => {
-    isLoading.setValue(true);
+    // setSpinningActive();
     handleSubmit((brandId) => {
       inviteBrand(brandId).then(() => {
-        isLoading.setValue(false);
+        setSpinningInActive();
         history.replace(PATH.tiscUserGroupBrandList);
       });
     });
@@ -178,7 +177,7 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
         onClick={handleSendInvite}
       />
 
-      {isLoading.value ? <LoadingPageCustomize /> : null}
+      {loadingAction}
     </EntryFormWrapper>
   );
 };

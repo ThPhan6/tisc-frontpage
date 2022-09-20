@@ -11,7 +11,7 @@ import { ReactComponent as TeamIcon } from '@/assets/icons/team-profile-icon.svg
 
 import { getBrandById, getBrandStatuses } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
-import { useBoolean, useGetParamId } from '@/helper/hook';
+import { useBoolean, useGetParamId, useLoadingAction } from '@/helper/hook';
 import { updateBrandStatus } from '@/services/brand-profile';
 
 import { TabItem } from '@/components/Tabs/types';
@@ -46,7 +46,8 @@ const BrandTabs: TabItem[] = [
 const UpdatePage = () => {
   const [selectedTab, setSelectedTab] = useState<TabKeys>(BrandTabKeys.profile);
   const buttonStatus = useBoolean();
-  const isLoading = useBoolean();
+  const { setSpinningActive, setSpinningInActive } = useLoadingAction();
+
   const [statuses, setStatuses] = useState<KeyValueData[]>([]);
   const [data, setData] = useState<BrandDesignProfile>(DEFAULT_BRAND_DESIGN_PROFILE);
 
@@ -75,9 +76,9 @@ const UpdatePage = () => {
   };
 
   const handleSaveButton = () => {
-    isLoading.setValue(true);
+    setSpinningActive();
     updateBrandStatus(brandId, { status: data.status }).then((isSuccess) => {
-      isLoading.setValue(false);
+      setSpinningInActive();
       if (isSuccess) {
         buttonStatus.setValue(true);
         setTimeout(() => {
@@ -99,7 +100,6 @@ const UpdatePage = () => {
           data={data}
           setData={setData}
           buttonStatus={buttonStatus.value}
-          isLoading={isLoading.value}
           statuses={statuses}
           toolTipTitle={
             <table className={styles.tooltip}>

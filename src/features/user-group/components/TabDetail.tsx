@@ -5,13 +5,14 @@ import { Tooltip } from 'antd';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
+import { useLoadingAction } from '@/helper/hook';
+
 import { BrandDesignProfile, TabKeys } from '../types';
 import { TabItem } from '@/components/Tabs/types';
 import { KeyValueData } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { CustomRadio } from '@/components/CustomRadio';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabs } from '@/components/Tabs';
 import { BodyText, MainTitle } from '@/components/Typography';
@@ -27,7 +28,6 @@ interface TabDetailProps {
   data: BrandDesignProfile;
   setData: (data: BrandDesignProfile) => void;
   buttonStatus: boolean;
-  isLoading: boolean;
   statuses: KeyValueData[];
   toolTipTitle: string | React.ReactNode;
 }
@@ -41,10 +41,11 @@ const TabDetail: FC<TabDetailProps> = ({
   setData,
   buttonStatus,
   statuses,
-  isLoading,
   toolTipTitle,
   listTab,
 }) => {
+  const { loadingAction } = useLoadingAction();
+
   return (
     <div>
       <TableHeader
@@ -93,7 +94,7 @@ const TabDetail: FC<TabDetailProps> = ({
         </div>
       </div>
 
-      {isLoading ? <LoadingPageCustomize /> : null}
+      {loadingAction}
     </div>
   );
 };

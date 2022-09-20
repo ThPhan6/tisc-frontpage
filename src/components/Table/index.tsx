@@ -14,10 +14,12 @@ import type {
   SummaryResponse,
   TableColumnItem,
 } from './types';
+import store, { useAppSelector } from '@/reducers';
 
 import CustomPaginator from './components/CustomPaginator';
 import TableSummary from './components/TableSummary';
 
+import { setLoadingActionForTable } from '../LoadingPage/slices';
 import { TableHeader } from './TableHeader';
 import styles from './styles/table.less';
 
@@ -129,7 +131,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const [data, setData] = useState<any>([]);
   const [summary, setSummary] = useState<SummaryResponse[]>([]);
   const [currentSorter, setCurrentSorter] = useState<SorterResult<any> | SorterResult<any>[]>([]);
-  const [loading, setLoading] = useState(false);
+  const loading = useAppSelector((state) => state.loading.whirling);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: DEFAULT_PAGE_NUMBER,
     pageSize: DEFAULT_PAGESIZE,
@@ -183,11 +185,12 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   };
 
   const fetchData = (params: PaginationParams) => {
-    setLoading(true);
+    store.dispatch(setLoadingActionForTable(true));
     fetchDataFunc(formatPaginationParams(params), (response) => {
       setData(response.data ?? []);
       setSummary(response.summary ?? []);
-      setLoading(false);
+      store.dispatch(setLoadingActionForTable(false));
+
       if (response.pagination) {
         setPagination(response.pagination);
       }

@@ -7,16 +7,20 @@ import { message } from 'antd';
 
 import { getOneCategoryMiddleware, updateCategoryMiddleware } from '@/features/categories/services';
 import { pushTo } from '@/helper/history';
-import { useBoolean, useGetParamId } from '@/helper/hook';
+import { useBoolean, useGetParamId, useLoadingAction } from '@/helper/hook';
 
 import { CategoryBodyProps, SubcategoryValueProps } from '@/features/categories/types';
 
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { CategoryEntryForm } from '@/features/categories/components/CategoryEntryForm';
 
 const UpdateCategoryPage = () => {
+  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
+
+  const submitButtonStatus = useBoolean(false);
+  const idCategory = useGetParamId();
+
   const [categoryValue, setCategoryValue] = useState<{
     id?: string;
     name: string;
@@ -26,22 +30,17 @@ const UpdateCategoryPage = () => {
     subs: [],
   });
 
-  const isLoading = useBoolean();
-  const submitButtonStatus = useBoolean(false);
-
-  const idCategory = useGetParamId();
-
   useEffect(() => {
     if (idCategory) {
-      isLoading.setValue(true);
+      setSpinningActive();
       getOneCategoryMiddleware(
         idCategory,
         (dataRes: CategoryBodyProps) => {
           setCategoryValue(dataRes);
-          isLoading.setValue(false);
+          setSpinningInActive();
         },
         () => {
-          isLoading.setValue(false);
+          setSpinningInActive();
         },
       );
       return;
@@ -53,7 +52,8 @@ const UpdateCategoryPage = () => {
     if (!idCategory) {
       pushTo(PATH.categories);
     }
-    isLoading.setValue(true);
+    setSpinningActive();
+
     updateCategoryMiddleware(idCategory, data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.UPDATE_CATEGORY_SUCCESS);
@@ -64,7 +64,7 @@ const UpdateCategoryPage = () => {
       } else {
         message.error(msg);
       }
-      isLoading.setValue(false);
+      setSpinningInActive();
     });
   };
 
@@ -84,7 +84,7 @@ const UpdateCategoryPage = () => {
           onCancel={handleCancel}
         />
       </div>
-      {isLoading.value ? <LoadingPageCustomize /> : null}
+      {loadingAction}
     </div>
   );
 };

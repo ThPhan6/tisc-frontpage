@@ -7,11 +7,10 @@ import { message } from 'antd';
 
 import { createCategoryMiddleware } from '@/features/categories/services';
 import { pushTo } from '@/helper/history';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useLoadingAction } from '@/helper/hook';
 
 import { CategoryBodyProps, SubcategoryValueProps } from '@/features/categories/types';
 
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { CategoryEntryForm } from '@/features/categories/components/CategoryEntryForm';
@@ -25,12 +24,12 @@ const CreateCategoryPage = () => {
     name: '',
     subs: [],
   });
-  const isLoading = useBoolean();
+  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
 
   const submitButtonStatus = useBoolean(false);
 
   const handleCreateCategory = (data: CategoryBodyProps) => {
-    isLoading.setValue(true);
+    setSpinningActive();
     createCategoryMiddleware(data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.CREATE_CATEGORY_SUCCESS);
@@ -42,7 +41,7 @@ const CreateCategoryPage = () => {
       } else {
         message.error(msg);
       }
-      isLoading.setValue(false);
+      setSpinningInActive();
     });
   };
 
@@ -62,7 +61,7 @@ const CreateCategoryPage = () => {
           onCancel={handleCancel}
         />
       </div>
-      {isLoading.value ? <LoadingPageCustomize /> : null}
+      {loadingAction}
     </div>
   );
 };

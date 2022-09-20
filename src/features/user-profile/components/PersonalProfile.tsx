@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constants/message';
 import { AVATAR_ACCEPT_TYPES, STATUS_RESPONSE } from '@/constants/util';
@@ -10,7 +10,12 @@ import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { updateAvatarTeamProfile, updateTeamProfile } from '../services';
-import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
+import {
+  useBoolean,
+  useCheckPermission,
+  useCustomInitialState,
+  useLoadingAction,
+} from '@/helper/hook';
 import { isShowErrorMessage, showImageUrl, validateEmail } from '@/helper/utils';
 import { isEqual } from 'lodash';
 
@@ -32,13 +37,6 @@ export type PersonalProfileState = {
   linkedin: string;
 };
 
-export interface PersonalProfileProps {
-  isLoading: {
-    value: boolean;
-    setValue: (value: boolean) => void;
-  };
-}
-
 const interestedData = [
   { label: 'Brand Factory/Showroom Visits', value: 0 },
   { label: 'Design Conferences/Events/Seminars', value: 1 },
@@ -50,7 +48,9 @@ const interestedData = [
   { label: 'Product Recommendations/Updates', value: 4 },
 ];
 
-export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
+export const PersonalProfile = () => {
+  const { setSpinningActive, setSpinningInActive } = useLoadingAction();
+
   const [fileInput, setFileInput] = useState<any>();
   const { fetchUserInfo, currentUser } = useCustomInitialState();
   const submitButtonStatus = useBoolean();
@@ -74,7 +74,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
   const handleUpdateAvatar = (avtFile: File) => {
     const formData = new FormData();
     formData.append('avatar', avtFile);
-    isLoading.setValue(true);
+    setSpinningActive();
     updateAvatarTeamProfile(formData, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.UPDATE_AVATAR_SUCCESS);
@@ -83,7 +83,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
         message.error(msg || MESSAGE_NOTIFICATION.UPDATE_AVATAR_ERROR);
         setFileInput(undefined);
       }
-      isLoading.setValue(false);
+      setSpinningInActive();
     });
   };
 
@@ -126,7 +126,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
   };
 
   const handleSubmit = () => {
-    isLoading.setValue(true);
+    setSpinningActive();
     updateTeamProfile(
       {
         backup_email: inputValue.backupEmail.trim(),
@@ -147,7 +147,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
         } else {
           message.error(msg || MESSAGE_NOTIFICATION.UPDATE_PERSONAL_PROFILE_ERROR);
         }
-        isLoading.setValue(false);
+        setSpinningInActive();
       },
     );
   };

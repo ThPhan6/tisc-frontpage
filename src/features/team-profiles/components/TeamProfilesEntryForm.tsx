@@ -4,11 +4,17 @@ import { DEFAULT_TEAMPROFILE, DEFAULT_TEAMPROFILE_WITH_GENDER } from '../constan
 import { BrandAccessLevelDataRole, TISCAccessLevelDataRole } from '../constants/role';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
-import { useHistory, useParams } from 'umi';
+import { useHistory } from 'umi';
 
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
-import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
+import {
+  useBoolean,
+  useCheckPermission,
+  useCustomInitialState,
+  useGetParamId,
+  useLoadingAction,
+} from '@/helper/hook';
 import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
 import { getDepartmentList } from '@/services';
 
@@ -23,7 +29,6 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { Status } from '@/components/Form/Status';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
@@ -41,16 +46,13 @@ const GenderRadio = [
 type FieldName = keyof TeamProfileDetailProps;
 
 const TeamProfilesEntryForm = () => {
-  const history = useHistory();
-  const params = useParams<{
-    id: string;
-  }>();
-  const userIdParam = params?.id || '';
-  const isUpdate = userIdParam ? true : false;
-
-  const { fetchUserInfo } = useCustomInitialState();
+  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
 
   const userProfileId = useAppSelector((state) => state.user.user?.id);
+  const { fetchUserInfo } = useCustomInitialState();
+  const history = useHistory();
+  const userIdParam = useGetParamId();
+  const isUpdate = userIdParam ? true : false;
 
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
@@ -68,7 +70,6 @@ const TeamProfilesEntryForm = () => {
     : '';
 
   const submitButtonStatus = useBoolean(false);
-  const isLoading = useBoolean(false);
   const [loadedData, setLoadedData] = useState(false);
   const [data, setData] = useState<TeamProfileDetailProps>(
     isUpdate ? DEFAULT_TEAMPROFILE : DEFAULT_TEAMPROFILE_WITH_GENDER,
@@ -118,9 +119,8 @@ const TeamProfilesEntryForm = () => {
     submitData: TeamProfileRequestBody,
     callBack?: (userIdParam: string) => void,
   ) => {
-    isLoading.setValue(true);
     createTeamProfile(submitData).then((teamProfile) => {
-      isLoading.setValue(false);
+      setSpinningInActive();
       if (teamProfile) {
         submitButtonStatus.setValue(true);
         if (callBack) {
@@ -133,9 +133,8 @@ const TeamProfilesEntryForm = () => {
   };
 
   const handleUpdateData = (submitData: TeamProfileRequestBody) => {
-    isLoading.setValue(true);
     updateTeamProfile(userIdParam, submitData).then((isSuccess) => {
-      isLoading.setValue(false);
+      setSpinningInActive();
       if (isSuccess) {
         submitButtonStatus.setValue(true);
         const isUpdateCurrentUser = userIdParam === userProfileId;
@@ -150,6 +149,8 @@ const TeamProfilesEntryForm = () => {
   };
 
   const handleSubmit = (callBack?: (id: string) => void) => {
+    setSpinningActive();
+
     const body: TeamProfileRequestBody = {
       firstname: data.firstname?.trim() ?? '',
       lastname: data.lastname?.trim() ?? '',
@@ -436,7 +437,7 @@ const TeamProfilesEntryForm = () => {
         setWorkLocation={setWorkLocation}
       />
 
-      {isLoading.value ? <LoadingPageCustomize /> : null}
+      {loadingAction}
     </div>
   );
 };

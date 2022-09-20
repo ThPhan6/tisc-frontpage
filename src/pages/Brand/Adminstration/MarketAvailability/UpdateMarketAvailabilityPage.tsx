@@ -3,11 +3,10 @@ import { useEffect, useState } from 'react';
 import { PATH } from '@/constants/path';
 
 import { pushTo } from '@/helper/history';
-import { useBoolean, useGetParamId } from '@/helper/hook';
+import { useBoolean, useGetParamId, useLoadingAction } from '@/helper/hook';
 
 import { MarketAvailabilityDetails } from '@/features/market-availability/type';
 
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { MarketAvailabilityEntryForm } from '@/features/market-availability/components/MarketAvailabilityEntryForm';
 
@@ -17,8 +16,8 @@ import {
 } from '@/features/market-availability/api';
 
 const UpdateMarketAvailabilityPage = () => {
+  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
   const submitButtonStatus = useBoolean(false);
-  const isLoading = useBoolean(false);
   const collectionId = useGetParamId();
   // using as temprorary variable, waitting data to set state
   const [data, setData] = useState<MarketAvailabilityDetails>({
@@ -34,9 +33,9 @@ const UpdateMarketAvailabilityPage = () => {
   };
 
   const onSubmit = (submitData: string[]) => {
-    isLoading.setValue(true);
+    setSpinningActive();
     updateMarketAvailabilityByCollectionId(collectionId, submitData).then((isSuccess) => {
-      isLoading.setValue(false);
+      setSpinningInActive();
       if (isSuccess) {
         submitButtonStatus.setValue(true);
         setTimeout(() => {
@@ -47,11 +46,11 @@ const UpdateMarketAvailabilityPage = () => {
   };
 
   useEffect(() => {
-    isLoading.setValue(true);
+    setSpinningActive();
     getMarketAvailabilityByCollectionId(collectionId).then((res) => {
       if (res) {
         setData(res);
-        isLoading.setValue(false);
+        setSpinningInActive();
       }
     });
   }, []);
@@ -66,7 +65,7 @@ const UpdateMarketAvailabilityPage = () => {
         onSubmit={onSubmit}
         submitButtonStatus={submitButtonStatus.value}
       />
-      {isLoading.value ? <LoadingPageCustomize /> : null}
+      {loadingAction}
     </div>
   );
 };

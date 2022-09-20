@@ -3,12 +3,11 @@ import React, { useState } from 'react';
 import { DefaultProjectZone } from '../../constants/form';
 
 import { createProjectSpace, updateProjectSpace } from '@/features/project/services';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useLoadingAction } from '@/helper/hook';
 
 import type { ProjectSpaceZone } from '@/features/project/types';
 
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { MainTitle } from '@/components/Typography';
 
@@ -21,8 +20,9 @@ interface SpaceManagementProps {
 }
 
 const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
+  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
+
   const [space, setSpace] = useState<ProjectSpaceZone>();
-  const isLoading = useBoolean();
   const submitButtonStatus = useBoolean();
   const displaySpaceForm = (spaceData: ProjectSpaceZone = DefaultProjectZone) => {
     setSpace(spaceData);
@@ -36,11 +36,11 @@ const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
     if (!space) {
       return false;
     }
-    isLoading.setValue(true);
+    setSpinningActive();
     space.project_id = projectId;
     if (space.id) {
       return updateProjectSpace(space.id, space).then((data) => {
-        isLoading.setValue(false);
+        setSpinningInActive();
         if (data) {
           setSpace(data);
           submitButtonStatus.setValue(true);
@@ -51,7 +51,7 @@ const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
       });
     }
     return createProjectSpace(space).then((isSuccess) => {
-      isLoading.setValue(false);
+      setSpinningInActive();
       if (isSuccess) {
         submitButtonStatus.setValue(true);
         setTimeout(() => {
@@ -93,7 +93,7 @@ const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
         </div>
       </ProjectTabContentHeader>
       {renderSpaceContent()}
-      {isLoading.value ? <LoadingPageCustomize /> : null}
+      {loadingAction}
     </>
   );
 };

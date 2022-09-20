@@ -4,11 +4,10 @@ import { PATH } from '@/constants/path';
 import { COVERAGE_BEYOND, GENDER } from '@/constants/util';
 
 import { pushTo } from '@/helper/history';
-import { useBoolean, useGetParamId } from '@/helper/hook';
+import { useBoolean, useGetParamId, useLoadingAction } from '@/helper/hook';
 
 import { DistributorForm } from '@/features/distributors/type';
 
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { DistributorsEntryForm } from '@/features/distributors/components/DistributorsEntryForm';
@@ -40,11 +39,11 @@ const DEFAULT_DISTRIBUTOR: DistributorForm = {
 };
 
 const UpdatePage = () => {
+  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
   const [data, setData] = useState<DistributorForm>(DEFAULT_DISTRIBUTOR);
   const [loadedData, setLoadedData] = useState(false);
 
   const submitButtonStatus = useBoolean(false);
-  const isLoading = useBoolean();
 
   const idDistributor = useGetParamId();
   const isUpdate = idDistributor ? true : false;
@@ -65,11 +64,11 @@ const UpdatePage = () => {
   };
 
   const onSubmit = (submitData: DistributorForm) => {
-    isLoading.setValue(true);
+    setSpinningActive();
 
     if (isUpdate) {
       updateDistributor(idDistributor, submitData).then((isSuccess) => {
-        isLoading.setValue(false);
+        setSpinningInActive();
         if (isSuccess) {
           submitButtonStatus.setValue(true);
           setTimeout(() => {
@@ -79,7 +78,7 @@ const UpdatePage = () => {
       });
     } else {
       createDistributor(submitData).then((isSuccess) => {
-        isLoading.setValue(false);
+        setSpinningInActive();
         if (isSuccess) {
           submitButtonStatus.setValue(true);
           setTimeout(goBackToDistributorList, 1000);
@@ -104,7 +103,7 @@ const UpdatePage = () => {
           submitButtonStatus={submitButtonStatus.value}
         />
       </div>
-      {isLoading.value ? <LoadingPageCustomize /> : null}
+      {loadingAction}
     </div>
   );
 };

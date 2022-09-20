@@ -7,14 +7,13 @@ import { Col, Row } from 'antd';
 import { useHistory } from 'umi';
 
 import { createProject, updateProject } from '@/features/project/services';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useLoadingAction } from '@/helper/hook';
 
 import type { ProjectBodyRequest, ProjectDetailProps } from '@/features/project/types';
 
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { CustomRadio } from '@/components/CustomRadio';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from '../../styles/basic-information.less';
@@ -26,18 +25,19 @@ interface GeneralInformationProps {
 }
 
 const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setProject }) => {
+  const { loadingAction, setSpinningActive, setSpinningInActive } = useLoadingAction();
+
   const [data, setData] = useState<ProjectBodyRequest>(DefaultProjectRequest);
   const buttonStatus = useBoolean();
-  const isLoading = useBoolean();
   const [projectId, setProjectId] = useState<string>();
   const history = useHistory();
 
   const handleSubmitForm = () => {
-    isLoading.setValue(true);
+    setSpinningActive();
     if (projectId) {
       /// update project
       updateProject(projectId, data).then((isSuccess) => {
-        isLoading.setValue(false);
+        setSpinningInActive();
         if (isSuccess) {
           buttonStatus.setValue(true);
           setTimeout(() => {
@@ -54,7 +54,7 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
     } else {
       /// create
       createProject(data).then((newProjectId) => {
-        isLoading.setValue(false);
+        setSpinningInActive();
         if (newProjectId) {
           buttonStatus.setValue(true);
           setTimeout(() => {
@@ -114,7 +114,7 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
           <EntryForm data={data} onChangeData={onChangeData} />
         </Col>
       </Row>
-      {isLoading.value ? <LoadingPageCustomize /> : null}
+      {loadingAction}
     </>
   );
 };
