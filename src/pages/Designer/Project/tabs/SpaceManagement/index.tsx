@@ -4,11 +4,11 @@ import { DefaultProjectZone } from '../../constants/form';
 
 import { createProjectSpace, updateProjectSpace } from '@/features/project/services';
 import { useBoolean } from '@/helper/hook';
-import { hidePageLoading, showPageLoading } from '@/helper/utils';
 
 import type { ProjectSpaceZone } from '@/features/project/types';
 
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
+import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { MainTitle } from '@/components/Typography';
 

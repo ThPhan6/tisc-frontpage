@@ -12,7 +12,6 @@ import { ReactComponent as TeamIcon } from '@/assets/icons/team-profile-icon.svg
 import { getBrandById, getBrandStatuses } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
-import { hidePageLoading, showPageLoading } from '@/helper/utils';
 import { updateBrandStatus } from '@/services/brand-profile';
 
 import { TabItem } from '@/components/Tabs/types';
@@ -24,6 +23,7 @@ import {
 } from '@/features/user-group/types';
 import { KeyValueData } from '@/types';
 
+import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { CustomTabPane } from '@/components/Tabs';
 import BrandAvailabilityDetail from '@/features/user-group/components/AvailabilityDetail';
 import BrandDistributorDetail from '@/features/user-group/components/DistributorDetail';

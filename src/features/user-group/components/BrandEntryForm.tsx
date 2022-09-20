@@ -8,12 +8,7 @@ import { useHistory } from 'umi';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
 import { createBrand } from '../services';
-import {
-  emailMessageError,
-  emailMessageErrorType,
-  hidePageLoading,
-  showPageLoading,
-} from '@/helper/utils';
+import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
 
 import { TISCUserGroupBrandForm } from '../types/brand.types';
 
@@ -22,6 +17,7 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { Status } from '@/components/Form/Status';
+import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 
 import styles from './BrandEntryForm.less';
 import { inviteBrand } from '@/features/team-profiles/api';
@@ -75,7 +71,6 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
   };
 
   const handleSendInvite = () => {
-    // showPageLoading();
     handleSubmit((brandId) => {
       inviteBrand(brandId).then(() => {
         hidePageLoading();

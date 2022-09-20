@@ -17,7 +17,6 @@ import {
 } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
-import { hidePageLoading, showPageLoading } from '@/helper/utils';
 
 import { TabItem } from '@/components/Tabs/types';
 import {
@@ -28,6 +27,7 @@ import {
 } from '@/features/user-group/types';
 import { KeyValueData } from '@/types';
 
+import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { CustomTabPane } from '@/components/Tabs';
 import CustomDesign from '@/features/user-group/components/CustomDesign';
 import { LocationDetail } from '@/features/user-group/components/LocationDetail';

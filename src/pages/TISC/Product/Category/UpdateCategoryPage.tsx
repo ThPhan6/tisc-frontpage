@@ -8,10 +8,10 @@ import { message } from 'antd';
 import { getOneCategoryMiddleware, updateCategoryMiddleware } from '@/features/categories/services';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
-import { hidePageLoading, showPageLoading } from '@/helper/utils';
 
 import { CategoryBodyProps, SubcategoryValueProps } from '@/features/categories/types';
 
+import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { CategoryEntryForm } from '@/features/categories/components/CategoryEntryForm';

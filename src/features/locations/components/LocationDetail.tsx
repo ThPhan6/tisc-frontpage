@@ -4,10 +4,10 @@ import { PATH } from '@/constants/path';
 
 import { pushTo } from '@/helper/history';
 import { useBoolean, useCheckPermission, useGetParamId } from '@/helper/hook';
-import { hidePageLoading, showPageLoading } from '@/helper/utils';
 
 import { LocationForm } from '../type';
 
+import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 

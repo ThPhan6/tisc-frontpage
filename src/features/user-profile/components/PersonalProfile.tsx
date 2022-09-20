@@ -11,13 +11,7 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-ico
 
 import { updateAvatarTeamProfile, updateTeamProfile } from '../services';
 import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
-import {
-  hidePageLoading,
-  isShowErrorMessage,
-  showImageUrl,
-  showPageLoading,
-  validateEmail,
-} from '@/helper/utils';
+import { isShowErrorMessage, showImageUrl, validateEmail } from '@/helper/utils';
 import { isEqual } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -28,6 +22,7 @@ import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { PhoneInput } from '@/components/Form/PhoneInput';
+import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { BodyText, Title } from '@/components/Typography';
 
 import styles from './PersonalProfile.less';

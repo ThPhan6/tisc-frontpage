@@ -7,12 +7,12 @@ import { message } from 'antd';
 
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
-import { hidePageLoading, showPageLoading } from '@/helper/utils';
 import { getOnePresetMiddleware, updatePresetMiddleware } from '@/services';
 
 import { PresetsValueProp, presetsValueDefault } from '@/types';
 
 import { PresetsEntryForm } from './components/PresetsEntryForm';
+import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 

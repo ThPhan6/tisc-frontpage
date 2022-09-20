@@ -14,12 +14,7 @@ import {
   useCustomInitialState,
   useGetParamId,
 } from '@/helper/hook';
-import {
-  emailMessageError,
-  emailMessageErrorType,
-  hidePageLoading,
-  showPageLoading,
-} from '@/helper/utils';
+import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
 import { getDepartmentList } from '@/services';
 
 import { TeamProfileDetailProps, TeamProfileRequestBody } from '../type';
@@ -33,6 +28,7 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { Status } from '@/components/Form/Status';
+import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 

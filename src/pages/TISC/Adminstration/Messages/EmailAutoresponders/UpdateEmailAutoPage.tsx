@@ -8,7 +8,6 @@ import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove
 
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
-import { hidePageLoading, showPageLoading } from '@/helper/utils';
 import { getOneEmailAuto, getTargetedForList, getTopicList, updateEmailAuto } from '@/services';
 import { isEmpty, trimStart } from 'lodash';
 
@@ -19,6 +18,7 @@ import { EntryFormWrapper, contentId } from '@/components/EntryForm';
 import { FormGroup } from '@/components/Form';
 import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
 import { CustomInput } from '@/components/Form/CustomInput';
+import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import ScrollBar from '@/components/ScrollBar';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';

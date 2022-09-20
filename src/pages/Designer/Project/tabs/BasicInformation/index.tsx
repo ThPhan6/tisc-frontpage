@@ -8,13 +8,13 @@ import { useHistory } from 'umi';
 
 import { createProject, updateProject } from '@/features/project/services';
 import { useBoolean } from '@/helper/hook';
-import { hidePageLoading, showPageLoading } from '@/helper/utils';
 
 import type { ProjectBodyRequest, ProjectDetailProps } from '@/features/project/types';
 
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { CustomRadio } from '@/components/CustomRadio';
+import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from '../../styles/basic-information.less';

@@ -5,7 +5,6 @@ import type { TablePaginationConfig } from 'antd/lib/table';
 import type { ExpandableConfig, FilterValue, SorterResult } from 'antd/lib/table/interface';
 
 import { useCustomTable } from './hooks';
-import { hidePageLoading, showPageLoading } from '@/helper/utils';
 import { forEach, isArray, isEmpty } from 'lodash';
 
 import type {
@@ -18,6 +17,7 @@ import type {
 
 import CustomPaginator from './components/CustomPaginator';
 import TableSummary from './components/TableSummary';
+import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 
 import { TableHeader } from './TableHeader';
 import styles from './styles/table.less';

@@ -5,9 +5,6 @@ import { history } from 'umi';
 import { isNaN, isNumber, isUndefined, toNumber } from 'lodash';
 
 import { PhoneInputValueProp } from '@/components/Form/types';
-import store from '@/reducers';
-
-import { setLoadingAction } from '@/components/LoadingPage/slices';
 
 import { pushTo } from './history';
 
@@ -284,7 +281,3 @@ export const setSortOrder = (order?: string) => {
 export const getValueByCondition = (valueByCondition: [any, any][], finalValue?: any) => {
   return valueByCondition.find((condition) => (condition[0] ? true : false))?.[1] ?? finalValue;
 };
-
-export const showPageLoading = () => store.dispatch(setLoadingAction(true));
-
-export const hidePageLoading = () => store.dispatch(setLoadingAction(false));

@@ -15,7 +15,7 @@ import { getUserInfoMiddleware } from './pages/LandingPage/services/api';
 import type { UserInfoDataProp } from './pages/LandingPage/types';
 import store, { persistor } from './reducers';
 
-import LoadingPageCustomize from './components/LoadingPage';
+import { LoadingPageCustomize } from './components/LoadingPage';
 import AsideMenu from './components/Menu/AsideMenu';
 import Header from '@/components/Header';
 

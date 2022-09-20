@@ -28,11 +28,9 @@ import {
 } from './services/api';
 import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
 import {
-  hidePageLoading,
   redirectAfterBrandLogin,
   redirectAfterDesignerLogin,
   redirectAfterLogin,
-  showPageLoading,
 } from '@/helper/utils';
 
 import type { LoginInput, LoginResponseProp, ModalOpen, PasswordRequestBody } from './types';
@@ -47,6 +45,7 @@ import { PoliciesModal } from './components/PoliciesModal';
 import { SignupModal } from './components/SignupModal';
 import { VerifyAccount } from './components/VerifyAccount';
 import CustomButton from '@/components/Button';
+import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
 import styles from './index.less';

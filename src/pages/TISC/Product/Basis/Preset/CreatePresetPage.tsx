@@ -5,12 +5,12 @@ import { message } from 'antd';
 
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { hidePageLoading, showPageLoading } from '@/helper/utils';
 import { createPresetMiddleware } from '@/services';
 
 import { PresetsValueProp } from '@/types';
 
 import { PresetsEntryForm } from './components/PresetsEntryForm';
+import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 

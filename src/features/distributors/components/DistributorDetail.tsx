@@ -5,10 +5,10 @@ import { COVERAGE_BEYOND, GENDER } from '@/constants/util';
 
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
-import { hidePageLoading, showPageLoading } from '@/helper/utils';
 
 import { DistributorForm } from '@/features/distributors/type';
 
+import { hidePageLoading, showPageLoading } from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { DistributorsEntryForm } from '@/features/distributors/components/DistributorsEntryForm';
