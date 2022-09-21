@@ -1,88 +1,95 @@
-.table {
-  @logo-space: 8px;
-  @logo-size: 18px;
-  @item-space: 16px;
+.accessModal {
+  :global(.ant-modal-body) {
+    height: auto;
+    min-height: 656px;
+    padding: 16px;
+  }
+  .table {
+    @logo-space: 8px;
+    @logo-size: 18px;
+    @item-space: 16px;
 
-  th {
-    height: 36px;
-    padding: 0;
-    text-align: center;
-  }
-
-  td {
-    height: 28px;
-    padding: 0;
-  }
-
-  .body > tr:nth-child(2) > td:first-child {
-    padding-left: 0;
-  }
-  .body > tr:last-child > td {
-    margin-bottom: 0;
-  }
-  .body > tr:first-child > td {
-    padding-left: 0;
-  }
-
-  // delete these if already have real data
-  // last column
-  .body > tr > td:nth-child(5) {
-    display: none;
-  }
-  // future data
-  .furture_data_header,
-  .furture_data_name {
-    p {
-      color: @mono-color-medium;
-      text-transform: capitalize;
-    }
-  }
-  .furture_data_header {
-    text-align: center;
-  }
-  .furture_data_name {
-    display: flex;
-    padding-left: @item-space;
-  }
-  //----------------------
-
-  .my_dashboard {
-    color: @mono-color-medium;
-  }
-
-  .sub_menu {
-    padding-left: @item-space;
-    p {
-      text-transform: capitalize;
-    }
-  }
-  .menu {
-    &_item {
-      display: flex;
-      align-items: center;
-
-      &__name {
-        text-transform: uppercase;
-      }
-      &__logo {
-        width: @logo-size;
-        height: @logo-size;
-        margin-right: @logo-space;
-      }
+    .body > tr:first-child > td {
+      padding: 0;
     }
 
-    &_accessable {
+    th {
+      height: 36px;
+      padding: 0;
       text-align: center;
+    }
 
-      &_null {
-        path {
-          fill: @mono-color-medium;
+    td {
+      height: 24px;
+      padding: 4px 0 0;
+    }
+
+    // delete these if already have real data
+    // last column
+    .body > tr > td:nth-child(5) {
+      display: none;
+    }
+    // future data
+    .furture_data_header,
+    .furture_data_name {
+      p {
+        color: @mono-color-medium;
+        text-transform: capitalize;
+      }
+    }
+    .furture_data_header {
+      text-align: center;
+    }
+    .furture_data_name {
+      display: flex;
+      padding-left: @item-space;
+    }
+    //----------------------
+
+    .my_dashboard {
+      color: @mono-color-medium;
+      user-select: none;
+    }
+
+    .sub_menu {
+      padding-left: @item-space;
+      p {
+        text-transform: capitalize;
+      }
+    }
+    .menu {
+      &_item {
+        display: flex;
+        align-items: center;
+        user-select: none;
+
+        &__name {
+          text-transform: uppercase;
+        }
+        &__logo {
+          width: @logo-size;
+          height: @logo-size;
+          margin-right: @logo-space;
+
+          path {
+            fill: @mono-color-medium;
+          }
         }
       }
 
-      &_true,
-      &_false {
-        cursor: pointer;
+      &_accessable {
+        text-align: center;
+
+        &_null {
+          path {
+            fill: @mono-color-medium;
+          }
+        }
+
+        &_true,
+        &_false {
+          cursor: pointer;
+        }
       }
     }
   }

@@ -12,7 +12,7 @@ import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/
 import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
 import { getDepartmentList } from '@/services';
 
-import { TeamProfileDetailProps, TeamProfileRequestBody } from '../type';
+import { TeamProfileDetailProps, TeamProfileRequestBody } from '../types';
 import { useAppSelector } from '@/reducers';
 import { DepartmentData } from '@/types';
 

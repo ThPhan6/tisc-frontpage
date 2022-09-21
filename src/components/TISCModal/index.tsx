@@ -6,7 +6,7 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-ic
 
 import { MainTitle } from '@/components/Typography';
 
-import styles from './styles/index.less';
+import styles from './index.less';
 
 interface TiscModalProps {
   title: string;
@@ -16,10 +16,10 @@ interface TiscModalProps {
 }
 
 const TISCModal: FC<TiscModalProps> = ({ title, visible, setVisible, children, ...props }) => {
-  const onCancel = () => {
-    /// hide modal
-    setVisible(false);
-  };
+  // const onCancel = () => {
+  //   /// hide modal
+  //   setVisible(false);
+  // };
 
   return (
     <div>
@@ -35,7 +35,7 @@ const TISCModal: FC<TiscModalProps> = ({ title, visible, setVisible, children, .
         closeIcon={<CloseIcon />}
         className={styles.customModal}
         footer={false}
-        onCancel={onCancel}
+        onCancel={() => setVisible(false)}
         {...props}>
         {children}
       </Modal>
