@@ -58,7 +58,6 @@ const CategoryEntryForm = () => {
   }, []);
 
   const handleCreateCategory = (data: CategoryBodyProps) => {
-    isLoading.setValue(true);
     createCategoryMiddleware(data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.CREATE_CATEGORY_SUCCESS);
@@ -75,7 +74,6 @@ const CategoryEntryForm = () => {
   };
 
   const handleUpdateCategory = (data: CategoryBodyProps) => {
-    isLoading.setValue(true);
     updateCategoryMiddleware(idCategory, data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.UPDATE_CATEGORY_SUCCESS);
@@ -93,6 +91,7 @@ const CategoryEntryForm = () => {
   const handleSubmit = isUpdate ? handleUpdateCategory : handleCreateCategory;
 
   const onHandleSubmit = () => {
+    isLoading.setValue(true);
     handleSubmit({
       ...categoryValue,
       name: categoryValue.name.trim(),
