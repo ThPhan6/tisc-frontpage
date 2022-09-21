@@ -17,8 +17,8 @@ export const contentId = `entry-form-wrapper--children-${Date.now()}`;
 export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   handleSubmit,
   handleCancel,
-  customClass,
-  contentClass,
+  customClass = '',
+  contentClass = '',
   textAlignTitle = 'center',
   children,
   title = 'ENTRY FORM',
@@ -33,6 +33,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
     <Row>
       <Col className={styles.entry_form_wrapper} span={12}>
         <div className={`${styles.entry_form_container} ${customClass}`}>
+          {/* header */}
           <div className={styles.header_main}>
             <div className={styles.header}>
               <MainTitle level={3} textAlign={textAlignTitle} customClass={styles.header__title}>
@@ -40,15 +41,18 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
               </MainTitle>
               <CloseIcon className={styles.header__icon} onClick={handleCancel} />
             </div>
-            <div className={styles.header_content}>{headerContent}</div>
+            {headerContent ? <div className={styles.header_content}>{headerContent}</div> : null}
           </div>
+
+          {/* main content */}
           <div id={contentId} className={`${styles.content} ${contentClass}`}>
             {children}
           </div>
-          <div className={styles.footer_main}>
-            <div className={styles.footer_content}>{footerContent}</div>
 
-            {/* footer */}
+          {/* footer */}
+          <div className={styles.footer_main}>
+            {footerContent ? <div className={styles.footer_content}>{footerContent}</div> : null}
+
             <div className={styles.footer}>
               <CustomButton
                 size="small"
