@@ -4,6 +4,7 @@ import { DEFAULT_TEAMPROFILE, DEFAULT_TEAMPROFILE_WITH_GENDER } from '../constan
 import { BrandAccessLevelDataRole, TISCAccessLevelDataRole } from '../constants/role';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
+import { message } from 'antd';
 import { useHistory, useParams } from 'umi';
 
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
@@ -150,6 +151,14 @@ const TeamProfilesEntryForm = () => {
   };
 
   const handleSubmit = (callBack?: (id: string) => void) => {
+    /// check email
+    const invalidEmail = emailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID);
+
+    if (invalidEmail) {
+      message.error(invalidEmail);
+      return;
+    }
+
     const body: TeamProfileRequestBody = {
       firstname: data.firstname?.trim() ?? '',
       lastname: data.lastname?.trim() ?? '',
@@ -328,7 +337,7 @@ const TeamProfilesEntryForm = () => {
           }}
           onDelete={() => onChangeData('email', '')}
           placeholder="user work email"
-          message={emailMessageError(data.email, MESSAGE_ERROR.EMAIL_UNVALID)}
+          message={emailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
           messageType={emailMessageErrorType(data.email, 'error', 'normal')}
         />
 

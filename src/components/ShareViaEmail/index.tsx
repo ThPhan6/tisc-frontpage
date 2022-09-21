@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
+import { message } from 'antd';
 
 import {
   createShareViaEmail,
@@ -102,6 +103,14 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
     data.map((item) => ({ label: item.name, value: item.id }));
 
   const handleSubmit = () => {
+    /// check email
+    const invalidEmail = emailMessageError(shareViaEmailData.to_email, MESSAGE_ERROR.EMAIL_INVALID);
+
+    if (invalidEmail) {
+      message.error(invalidEmail);
+      return;
+    }
+
     createShareViaEmail(shareViaEmailData).then((isSuccess) => {
       if (isSuccess) {
         submitButtonStatus.setValue(true);
@@ -168,7 +177,7 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
           onChangeData('to_email', e.target.value);
         }}
         onDelete={() => onChangeData('to_email', '')}
-        message={emailMessageError(shareViaEmailData.to_email, MESSAGE_ERROR.EMAIL_UNVALID)}
+        message={emailMessageError(shareViaEmailData.to_email, MESSAGE_ERROR.EMAIL_INVALID)}
         messageType={emailMessageErrorType(shareViaEmailData.to_email, 'error', 'normal')}
       />
       {/* Title */}

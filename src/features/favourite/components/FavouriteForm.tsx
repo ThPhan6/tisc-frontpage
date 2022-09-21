@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
-import { Col, Row } from 'antd';
+import { Col, Row, message } from 'antd';
 
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 
@@ -35,6 +35,13 @@ const FavouriteForm = () => {
   };
 
   const onSubmitForm = () => {
+    /// check email
+    const invalidEmail = emailMessageError(valueForm.personal_email, MESSAGE_ERROR.EMAIL_INVALID);
+    if (invalidEmail) {
+      message.error(invalidEmail);
+      return;
+    }
+
     retrieveFavouriteProduct(valueForm).then((res) => {
       if (res) {
         getUserInfoMiddleware();
@@ -87,7 +94,7 @@ const FavouriteForm = () => {
               onChange={(e) => handleOnChangeValueForm('personal_email', e.target.value)}
               name=" personal_email"
               value={valueForm.personal_email}
-              message={emailMessageError(valueForm.personal_email, MESSAGE_ERROR.EMAIL_UNVALID)}
+              message={emailMessageError(valueForm.personal_email, MESSAGE_ERROR.EMAIL_INVALID)}
               messageType={emailMessageErrorType(valueForm.personal_email, 'error', 'normal')}
             />
             <PhoneInput

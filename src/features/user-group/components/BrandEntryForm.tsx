@@ -3,6 +3,7 @@ import React, { FC, useState } from 'react';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { BrandAccessLevelDataRole } from '@/features/team-profiles/constants/role';
+import { message } from 'antd';
 import { useHistory } from 'umi';
 
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
@@ -53,7 +54,15 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
   };
 
   const handleSubmit = (callback?: (brandId: string) => void) => {
+    /// check email
+    const invalidEmail = emailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID);
+    if (invalidEmail) {
+      message.error(invalidEmail);
+      return;
+    }
+
     isLoading.setValue(true);
+
     createBrand({
       name: data.name?.trim() ?? '',
       first_name: data.first_name?.trim() ?? '',
@@ -151,7 +160,7 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
         value={data.email}
         onChange={onChangeData('email')}
         onDelete={handleDeleteData('email')}
-        message={emailMessageError(data.email, MESSAGE_ERROR.EMAIL_UNVALID)}
+        message={emailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
         messageType={emailMessageErrorType(data.email, 'error', 'normal')}
       />
       {/* Access Level */}
