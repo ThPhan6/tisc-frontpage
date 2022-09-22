@@ -4,6 +4,7 @@ import { DEFAULT_TEAMPROFILE, DEFAULT_TEAMPROFILE_WITH_GENDER } from '../constan
 import { BrandAccessLevelDataRole, TISCAccessLevelDataRole } from '../constants/role';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
+import { message } from 'antd';
 import { useHistory } from 'umi';
 
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
@@ -14,7 +15,7 @@ import {
   useCustomInitialState,
   useGetParamId,
 } from '@/helper/hook';
-import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+import { getEmailMessageError, getEmailMessageErrorType } from '@/helper/utils';
 import { getDepartmentList } from '@/services';
 
 import { TeamProfileDetailProps, TeamProfileRequestBody } from '../types';
@@ -147,6 +148,14 @@ const TeamProfilesEntryForm = () => {
   };
 
   const handleSubmit = (callBack?: (id: string) => void) => {
+    /// check email
+    const invalidEmail = getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID);
+
+    if (invalidEmail) {
+      message.error(invalidEmail);
+      return;
+    }
+
     showPageLoading();
 
     const body: TeamProfileRequestBody = {
@@ -327,8 +336,8 @@ const TeamProfilesEntryForm = () => {
           }}
           onDelete={() => onChangeData('email', '')}
           placeholder="user work email"
-          message={emailMessageError(data.email, MESSAGE_ERROR.EMAIL_UNVALID)}
-          messageType={emailMessageErrorType(data.email, 'error', 'normal')}
+          message={getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
+          messageType={getEmailMessageErrorType(data.email, 'error', 'normal')}
         />
 
         {/* Work Phone */}
