@@ -32,6 +32,22 @@ export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
       '',
     );
 
+  const renderOfficialWebsites = () =>
+    data.official_websites.length
+      ? data.official_websites.map((web, index) => (
+          <tr key={index}>
+            <td className={styles.text}>
+              <BodyText level={3}>{web.country_name ?? 'N/A'}</BodyText>
+            </td>
+            <td className={styles.url}>
+              <BodyText level={5} fontFamily="Roboto">
+                {web.url ?? ''}
+              </BodyText>
+            </td>
+          </tr>
+        ))
+      : null;
+
   return (
     <Row className={indexStyles.container}>
       <Col span={12}>
@@ -65,22 +81,7 @@ export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
                 <span className={styles.colon}>:</span>
               </div>
               <table className={styles.table}>
-                <tbody>
-                  {data.official_websites.length
-                    ? data.official_websites.map((web, index) => (
-                        <tr key={index}>
-                          <td className={styles.text}>
-                            <BodyText level={3}>{web.country_name ?? 'N/A'}</BodyText>
-                          </td>
-                          <td className={styles.url}>
-                            <BodyText level={5} fontFamily="Roboto">
-                              {web.url ?? ''}
-                            </BodyText>
-                          </td>
-                        </tr>
-                      ))
-                    : null}
-                </tbody>
+                <tbody>{renderOfficialWebsites()}</tbody>
               </table>
             </div>
           )}
