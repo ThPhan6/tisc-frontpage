@@ -5,7 +5,7 @@ import { PATH } from '@/constants/path';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useCheckPermission } from '@/helper/hook';
-import { formatPhoneCode } from '@/helper/utils';
+import { formatPhoneCode, getValueByCondition } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import { LocationDetail } from '@/features/locations/type';
@@ -22,16 +22,20 @@ const LocationTable: React.FC = () => {
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
   /// for user role path
-  const userCreateRolePath = isTISCAdmin
-    ? PATH.tiscLocationCreate
-    : isBrandAdmin
-    ? PATH.brandLocationCreate
-    : '';
-  const userUpdateRolePath = isTISCAdmin
-    ? PATH.tiscLocationUpdate
-    : isBrandAdmin
-    ? PATH.brandLocationUpdate
-    : '';
+  const userCreateRolePath = getValueByCondition(
+    [
+      [isTISCAdmin, PATH.tiscLocationCreate],
+      [isBrandAdmin, PATH.brandLocationCreate],
+    ],
+    '',
+  );
+  const userUpdateRolePath = getValueByCondition(
+    [
+      [isTISCAdmin, PATH.tiscLocationUpdate],
+      [isBrandAdmin, PATH.brandLocationUpdate],
+    ],
+    '',
+  );
 
   const handleUpdateLocation = (id: string) => {
     pushTo(userUpdateRolePath.replace(':id', id));

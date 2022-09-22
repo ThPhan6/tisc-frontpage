@@ -203,12 +203,12 @@ export const formatNumberDisplay = (
 };
 
 // for email
-export const emailMessageError = (email: string, errorMessage: string) => {
+export const getEmailMessageError = (email: string, errorMessage: string) => {
   const checkValidEmail = validateEmail(email);
 
   return email !== '' ? (checkValidEmail ? '' : errorMessage) : undefined;
 };
-export const emailMessageErrorType = (
+export const getEmailMessageErrorType = (
   email: string,
   error: 'error' | 'warning',
   normal: 'normal',

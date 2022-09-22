@@ -3,12 +3,13 @@ import React, { FC, useState } from 'react';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { BrandAccessLevelDataRole } from '@/features/team-profiles/constants/role';
+import { message } from 'antd';
 import { useHistory } from 'umi';
 
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
 import { createBrand } from '../services';
-import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+import { getEmailMessageError, getEmailMessageErrorType } from '@/helper/utils';
 
 import { TISCUserGroupBrandForm } from '../types/brand.types';
 
@@ -51,7 +52,15 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
   };
 
   const handleSubmit = (callback?: (brandId: string) => void) => {
+    /// check email
+    const invalidEmail = getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID);
+    if (invalidEmail) {
+      message.error(invalidEmail);
+      return;
+    }
+
     showPageLoading();
+
     createBrand({
       name: data.name?.trim() ?? '',
       first_name: data.first_name?.trim() ?? '',
@@ -148,8 +157,8 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
         value={data.email}
         onChange={onChangeData('email')}
         onDelete={handleDeleteData('email')}
-        message={emailMessageError(data.email, MESSAGE_ERROR.EMAIL_UNVALID)}
-        messageType={emailMessageErrorType(data.email, 'error', 'normal')}
+        message={getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
+        messageType={getEmailMessageErrorType(data.email, 'error', 'normal')}
       />
       {/* Access Level */}
       <FormGroup
