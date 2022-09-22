@@ -90,7 +90,6 @@ const FORM_CONFIG = {
 
 export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   const idItem = useGetParamId();
-  const isUpdate = idItem ? true : false;
 
   const submitButtonStatus = useBoolean(false);
 
@@ -191,13 +190,20 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
     });
   };
 
-  const handleSubmit = isUpdate ? handleUpdate : handleCreate;
+  const handleSubmit = idItem ? handleUpdate : handleCreate;
+
+  const getSubItemValue = (valueItem: any) => {
+    return {
+      value_1: valueItem.value_1.trim(),
+      value_2: valueItem.value_2.trim(),
+      unit_1: valueItem.unit_1.trim(),
+      unit_2: valueItem.unit_2.trim(),
+    };
+  };
 
   const onHandleSubmit = () => {
-    let newSubs: any[] = [];
-
-    if (type === 'conversions') {
-      newSubs = data.subs.map((sub) => {
+    const newSubs = data.subs.map((sub) => {
+      if (type === 'conversions') {
         return {
           ...sub,
           name_1: sub.name_1.trim(),
@@ -207,38 +213,28 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           formula_1: sub.formula_1.trim(),
           formula_2: sub.formula_2.trim(),
         };
-      });
-    } else if (type === 'presets') {
-      newSubs = data.subs.map((sub) => {
+      } else if (type === 'presets') {
         return {
           ...sub,
           name: sub.name.trim(),
           subs: sub.subs?.map((subItem: SubPresetValueProp) => {
             return {
               ...subItem,
-              value_1: subItem.value_1.trim(),
-              value_2: subItem.value_2.trim(),
-              unit_1: subItem.unit_1.trim(),
-              unit_2: subItem.unit_2.trim(),
+              ...getSubItemValue(subItem),
             };
           }),
         };
-      });
-    } else {
-      newSubs = data.subs.map((subOption) => {
-        const itemOptions: SubBasisOption[] = subOption.subs.map((optionItem: SubBasisOption) => {
+      } else {
+        const itemOptions: SubBasisOption[] = sub.subs.map((optionItem: SubBasisOption) => {
           let requiredValue = {
-            value_1: optionItem.value_1.trim(),
-            value_2: optionItem.value_2.trim(),
-            unit_1: optionItem.unit_1.trim(),
-            unit_2: optionItem.unit_2.trim(),
+            ...getSubItemValue(optionItem),
           };
           /// if it has ID, include ID
           if (optionItem.id) {
             requiredValue = merge(requiredValue, { id: optionItem.id });
           }
           /// send image data if using image otherwise remove it
-          if (subOption.is_have_image && optionItem.image) {
+          if (sub.is_have_image && optionItem.image) {
             const imageData = optionItem.isBase64
               ? optionItem.image.split(',')[1]
               : optionItem.image;
@@ -247,16 +243,16 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           return requiredValue;
         });
         let newSubOption = {
-          name: subOption.name.trim(),
+          name: sub.name.trim(),
           subs: itemOptions,
-          is_have_image: subOption.is_have_image ? true : false,
+          is_have_image: sub.is_have_image ? true : false,
         };
-        if (subOption.id) {
-          newSubOption = merge(newSubOption, { id: subOption.id });
+        if (sub.id) {
+          newSubOption = merge(newSubOption, { id: sub.id });
         }
         return newSubOption;
-      });
-    }
+      }
+    });
 
     handleSubmit({
       ...data,
