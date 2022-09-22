@@ -281,3 +281,9 @@ export const setSortOrder = (order?: string) => {
 export const getValueByCondition = (valueByCondition: [any, any][], finalValue?: any) => {
   return valueByCondition.find((condition) => (condition[0] ? true : false))?.[1] ?? finalValue;
 };
+
+export const getBusinessAddress = (businessAddress: any) => {
+  const city = businessAddress.city_name !== '' ? `${businessAddress.city_name},` : '';
+  const state = businessAddress.state_name !== '' ? `${businessAddress.state_name},` : '';
+  return `${businessAddress.address}, ${city} ${state} ${businessAddress.country_name}`;
+};
