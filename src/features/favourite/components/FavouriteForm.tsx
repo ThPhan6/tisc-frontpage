@@ -34,23 +34,26 @@ const FavouriteForm = () => {
     setValueForm({ ...valueForm, [fieldName1]: fieldValue1, [fieldName2 as string]: fieldValue2 });
   };
 
-  const onSelectForm = (type: 'submit' | 'skip') => () => {
-    const handleClick =
-      type === 'submit' ? retrieveFavouriteProduct(valueForm) : skipFavouriteProduct();
-
-    if (type === 'submit') {
-      /// check email
-      const invalidEmail = getEmailMessageError(
-        valueForm.personal_email,
-        MESSAGE_ERROR.EMAIL_INVALID,
-      );
-      if (invalidEmail) {
-        message.error(invalidEmail);
-        return;
-      }
+  const onSubmitForm = () => {
+    /// check email
+    const invalidEmail = getEmailMessageError(
+      valueForm.personal_email,
+      MESSAGE_ERROR.EMAIL_INVALID,
+    );
+    if (invalidEmail) {
+      message.error(invalidEmail);
+      return;
     }
 
-    handleClick.then((res) => {
+    retrieveFavouriteProduct(valueForm).then((res) => {
+      if (res) {
+        getUserInfoMiddleware();
+      }
+    });
+  };
+
+  const onSkipForm = () => {
+    skipFavouriteProduct().then((res) => {
       if (res) {
         getUserInfoMiddleware();
       }
@@ -111,14 +114,14 @@ const FavouriteForm = () => {
             />
 
             <div className={styles.action}>
-              <CustomButton size="small" properties="rounded" onClick={onSelectForm('submit')}>
+              <CustomButton size="small" properties="rounded" onClick={onSubmitForm}>
                 Submit
               </CustomButton>
               <CustomButton
                 size="small"
                 properties="rounded"
                 buttonClass={styles.skipButton}
-                onClick={onSelectForm('skip')}>
+                onClick={onSkipForm}>
                 Skip
               </CustomButton>
             </div>
