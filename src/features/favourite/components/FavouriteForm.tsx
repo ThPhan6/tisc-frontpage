@@ -45,8 +45,6 @@ const FavouriteForm = () => {
       return;
     }
 
-    console.log('invalidEmail', invalidEmail);
-
     retrieveFavouriteProduct(valueForm).then((res) => {
       if (res) {
         getUserInfoMiddleware();

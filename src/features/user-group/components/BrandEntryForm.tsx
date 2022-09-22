@@ -9,7 +9,6 @@ import { useHistory } from 'umi';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
 import { createBrand } from '../services';
-import { useBoolean } from '@/helper/hook';
 import { getEmailMessageError, getEmailMessageErrorType } from '@/helper/utils';
 
 import { TISCUserGroupBrandForm } from '../types/brand.types';
@@ -19,9 +18,9 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { Status } from '@/components/Form/Status';
-import LoadingPageCustomize from '@/components/LoadingPage';
 
 import styles from './BrandEntryForm.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import { inviteBrand } from '@/features/team-profiles/api';
 
 interface BrandEntryFormValue {}
@@ -37,7 +36,6 @@ type EntryFormInput = keyof typeof DEFAULT_BRAND;
 const BrandEntryForm: FC<BrandEntryFormValue> = () => {
   const [data, setData] = useState<TISCUserGroupBrandForm>(DEFAULT_BRAND);
   const history = useHistory();
-  const isLoading = useBoolean(false);
 
   const onChangeData = (fieldName: EntryFormInput) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setData((prevState) => ({
@@ -61,7 +59,7 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
       return;
     }
 
-    isLoading.setValue(true);
+    showPageLoading();
 
     createBrand({
       name: data.name?.trim() ?? '',
@@ -69,7 +67,7 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
       last_name: data.last_name?.trim() ?? '',
       email: data.email?.trim() ?? '',
     }).then((newBrand) => {
-      isLoading.setValue(false);
+      hidePageLoading();
       if (!newBrand) {
         return;
       }
@@ -82,10 +80,9 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
   };
 
   const handleSendInvite = () => {
-    isLoading.setValue(true);
     handleSubmit((brandId) => {
       inviteBrand(brandId).then(() => {
-        isLoading.setValue(false);
+        hidePageLoading();
         history.replace(PATH.tiscUserGroupBrandList);
       });
     });
@@ -186,8 +183,6 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
         formClass={styles.status}
         onClick={handleSendInvite}
       />
-
-      {isLoading.value ? <LoadingPageCustomize /> : null}
     </EntryFormWrapper>
   );
 };

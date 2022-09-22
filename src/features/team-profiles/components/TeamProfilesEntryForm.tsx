@@ -5,15 +5,20 @@ import { BrandAccessLevelDataRole, TISCAccessLevelDataRole } from '../constants/
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { message } from 'antd';
-import { useHistory, useParams } from 'umi';
+import { useHistory } from 'umi';
 
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
-import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
+import {
+  useBoolean,
+  useCheckPermission,
+  useCustomInitialState,
+  useGetParamId,
+} from '@/helper/hook';
 import { getEmailMessageError, getEmailMessageErrorType } from '@/helper/utils';
 import { getDepartmentList } from '@/services';
 
-import { TeamProfileDetailProps, TeamProfileRequestBody } from '../type';
+import { TeamProfileDetailProps, TeamProfileRequestBody } from '../types';
 import { useAppSelector } from '@/reducers';
 import { DepartmentData } from '@/types';
 
@@ -24,7 +29,6 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { Status } from '@/components/Form/Status';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
@@ -33,6 +37,7 @@ import BrandAccessLevelModal from './BrandAccessLevelModal';
 import LocationModal from './LocationModal';
 import TISCAccessLevelModal from './TISCAccessLevelModal';
 import styles from './TeamProfilesEntryForm.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const GenderRadio = [
   { label: 'Male', value: '1' },
@@ -42,16 +47,11 @@ const GenderRadio = [
 type FieldName = keyof TeamProfileDetailProps;
 
 const TeamProfilesEntryForm = () => {
-  const history = useHistory();
-  const params = useParams<{
-    id: string;
-  }>();
-  const userIdParam = params?.id || '';
-  const isUpdate = userIdParam ? true : false;
-
-  const { fetchUserInfo } = useCustomInitialState();
-
   const userProfileId = useAppSelector((state) => state.user.user?.id);
+  const { fetchUserInfo } = useCustomInitialState();
+  const history = useHistory();
+  const userIdParam = useGetParamId();
+  const isUpdate = userIdParam ? true : false;
 
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
@@ -69,7 +69,6 @@ const TeamProfilesEntryForm = () => {
     : '';
 
   const submitButtonStatus = useBoolean(false);
-  const isLoading = useBoolean(false);
   const [loadedData, setLoadedData] = useState(false);
   const [data, setData] = useState<TeamProfileDetailProps>(
     isUpdate ? DEFAULT_TEAMPROFILE : DEFAULT_TEAMPROFILE_WITH_GENDER,
@@ -119,9 +118,8 @@ const TeamProfilesEntryForm = () => {
     submitData: TeamProfileRequestBody,
     callBack?: (userIdParam: string) => void,
   ) => {
-    isLoading.setValue(true);
     createTeamProfile(submitData).then((teamProfile) => {
-      isLoading.setValue(false);
+      hidePageLoading();
       if (teamProfile) {
         submitButtonStatus.setValue(true);
         if (callBack) {
@@ -134,9 +132,8 @@ const TeamProfilesEntryForm = () => {
   };
 
   const handleUpdateData = (submitData: TeamProfileRequestBody) => {
-    isLoading.setValue(true);
     updateTeamProfile(userIdParam, submitData).then((isSuccess) => {
-      isLoading.setValue(false);
+      hidePageLoading();
       if (isSuccess) {
         submitButtonStatus.setValue(true);
         const isUpdateCurrentUser = userIdParam === userProfileId;
@@ -158,6 +155,8 @@ const TeamProfilesEntryForm = () => {
       message.error(invalidEmail);
       return;
     }
+
+    showPageLoading();
 
     const body: TeamProfileRequestBody = {
       firstname: data.firstname?.trim() ?? '',
@@ -444,8 +443,6 @@ const TeamProfilesEntryForm = () => {
         workLocation={workLocation}
         setWorkLocation={setWorkLocation}
       />
-
-      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };
