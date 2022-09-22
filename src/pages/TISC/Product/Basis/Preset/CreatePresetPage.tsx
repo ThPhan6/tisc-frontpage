@@ -10,12 +10,12 @@ import { createPresetMiddleware } from '@/services';
 import { PresetsValueProp } from '@/types';
 
 import { PresetsEntryForm } from './components/PresetsEntryForm';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+
 const CreatePresetPage = () => {
-  const isLoading = useBoolean();
   const submitButtonStatus = useBoolean(false);
 
   const handleCancel = () => {
@@ -23,7 +23,7 @@ const CreatePresetPage = () => {
   };
 
   const handleCreatePreset = (data: PresetsValueProp) => {
-    isLoading.setValue(true);
+    showPageLoading();
     createPresetMiddleware(data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.CREATE_PRESET_SUCCESS);
@@ -35,7 +35,7 @@ const CreatePresetPage = () => {
       } else {
         message.error(msg);
       }
-      isLoading.setValue(false);
+      hidePageLoading();
     });
   };
 
@@ -49,7 +49,6 @@ const CreatePresetPage = () => {
           submitButtonStatus={submitButtonStatus.value}
         />
       </div>
-      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

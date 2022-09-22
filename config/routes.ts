@@ -416,14 +416,12 @@ export default [
               },
               {
                 path: PATH.createQuotation,
-                component:
-                  './TISC/Adminstration/Messages/InspirationalQuotations/CreateQuotationPage',
+                component: '../features/InspirationalQuotes/components/InspirationalQuotesDetail',
                 hideInMenu: true,
               },
               {
                 path: PATH.updateQuotation,
-                component:
-                  './TISC/Adminstration/Messages/InspirationalQuotations/UpdateQuotationPage',
+                component: '../features/InspirationalQuotes/components/InspirationalQuotesDetail',
                 hideInMenu: true,
               },
             ],
@@ -470,7 +468,7 @@ export default [
       },
       {
         path: '/brand/product/:id',
-        component: './Brand/Products/ViewPage',
+        component: './Brand/Products/ProductBrandViewPage',
         hideInMenu: true,
       },
     ],
@@ -585,7 +583,7 @@ export default [
           },
           {
             path: PATH.updateMarketAvailability,
-            component: './Brand/Adminstration/MarketAvailability/UpdatePage',
+            component: './Brand/Adminstration/MarketAvailability/UpdateMarketAvailabilityPage',
             hideInMenu: true,
           },
         ],
@@ -632,7 +630,7 @@ export default [
           },
           {
             path: PATH.designerBrandProductDetail,
-            component: './Brand/Products/ViewPage',
+            component: './Brand/Products/ProductBrandViewPage',
             hideInMenu: true,
           },
         ],
@@ -660,12 +658,12 @@ export default [
       {
         path: PATH.designerCreateProject,
         hideInMenu: true,
-        component: './Designer/Project/CreatePage',
+        component: './Designer/Project/ProjectCreatePage',
       },
       {
         path: PATH.designerUpdateProject,
         hideInMenu: true,
-        component: './Designer/Project/UpdatePage',
+        component: './Designer/Project/ProjectUpdatePage',
       },
     ],
   },

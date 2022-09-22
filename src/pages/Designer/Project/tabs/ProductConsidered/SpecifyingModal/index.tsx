@@ -1,5 +1,4 @@
-import { FC, useEffect } from 'react';
-import { useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import {
   ProjectSpecifyTabKeys,
@@ -129,7 +128,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     getProductByIdAndReturn(product.id).then((res) => {
       if (res) {
         const specGroups = res.specification_attribute_groups;
-        // console.log('specGroups', specGroups);
         setSpecifyingGroups(specGroups);
         dataLoaded.setValue(true);
       }
@@ -158,7 +156,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       }
 
       // Update checked status
-      const newState = prevState.map((group, groupIndex) => ({
+      return prevState.map((group, groupIndex) => ({
         ...group,
         isChecked: specGroups[groupIndex]?.attributes.length > 0,
         attributes: group?.attributes.map((attr, attrIndex) => ({
@@ -171,8 +169,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
             })) || [],
         })),
       }));
-
-      return newState;
     });
   }, [specifyingState.specification.specification_attribute_groups, dataLoaded.value]);
 
@@ -233,7 +229,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           const basisOption = attribute?.basis_options?.find(
             (el) => el.id === attr.basis_option_id,
           );
-          // console.log('basisOption', basisOption);
           if (basisOption) {
             variant += `${attribute?.name}: ${basisOption.value_1} ${basisOption.unit_1} - ${basisOption.value_2} ${basisOption.unit_2}; `;
           }

@@ -20,6 +20,7 @@ import TableSummary from './components/TableSummary';
 
 import { TableHeader } from './TableHeader';
 import styles from './styles/table.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 // start expandable table
 interface ExpandableTableConfig {
@@ -129,7 +130,6 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const [data, setData] = useState<any>([]);
   const [summary, setSummary] = useState<SummaryResponse[]>([]);
   const [currentSorter, setCurrentSorter] = useState<SorterResult<any> | SorterResult<any>[]>([]);
-  const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: DEFAULT_PAGE_NUMBER,
     pageSize: DEFAULT_PAGESIZE,
@@ -183,11 +183,12 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   };
 
   const fetchData = (params: PaginationParams) => {
-    setLoading(true);
+    showPageLoading();
     fetchDataFunc(formatPaginationParams(params), (response) => {
       setData(response.data ?? []);
       setSummary(response.summary ?? []);
-      setLoading(false);
+      hidePageLoading();
+
       if (response.pagination) {
         setPagination(response.pagination);
       }
@@ -241,7 +242,6 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         }}
         dataSource={data}
         pagination={pagination}
-        loading={loading}
         onChange={handleTableChange}
         showSorterTooltip={false}
         sortDirections={['ascend', 'descend', 'ascend']}

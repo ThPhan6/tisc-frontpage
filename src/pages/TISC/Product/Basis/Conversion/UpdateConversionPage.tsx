@@ -4,16 +4,14 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
-import { useParams } from 'umi';
 
 import { pushTo } from '@/helper/history';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 import { getOneConversionMiddleware, updateConversionMiddleware } from '@/services';
 
 import { ConversionValueProp } from '@/types';
 
 import { ConversionsEntryForm } from './components/ConversionsEntryForm';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
@@ -22,27 +20,24 @@ const UpdateConversionPage = () => {
     name: '',
     subs: [],
   });
-  const isLoading = useBoolean();
-  const params = useParams<{
-    id: string;
-  }>();
-  const idConversion = params?.id || '';
+
+  const idConversion = useGetParamId();
 
   const submitButtonStatus = useBoolean(false);
 
   useEffect(() => {
     if (idConversion) {
-      isLoading.setValue(true);
+      showPageLoading();
       getOneConversionMiddleware(
         idConversion,
         (dataRes: ConversionValueProp) => {
           if (dataRes) {
             setConversionValue(dataRes);
           }
-          isLoading.setValue(false);
+          hidePageLoading();
         },
         () => {
-          isLoading.setValue(false);
+          hidePageLoading();
         },
       );
       return;
@@ -54,7 +49,7 @@ const UpdateConversionPage = () => {
     if (!idConversion) {
       pushTo(PATH.conversions);
     }
-    isLoading.setValue(true);
+    showPageLoading();
     updateConversionMiddleware(idConversion, data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.UPDATE_CONVERSION_SUCCESS);
@@ -65,7 +60,7 @@ const UpdateConversionPage = () => {
       } else {
         message.error(msg);
       }
-      isLoading.setValue(false);
+      hidePageLoading();
     });
   };
 
@@ -85,7 +80,6 @@ const UpdateConversionPage = () => {
           submitButtonStatus={submitButtonStatus.value}
         />
       </div>
-      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };
