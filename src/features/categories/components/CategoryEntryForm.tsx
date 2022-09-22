@@ -21,11 +21,11 @@ import {
 
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { SubcategoryItem } from './SubcategoryItem';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const CategoryEntryForm = () => {
   const [categoryValue, setCategoryValue] = useState<{
@@ -36,22 +36,21 @@ const CategoryEntryForm = () => {
     name: '',
     subs: [],
   });
-  const isLoading = useBoolean();
   const submitButtonStatus = useBoolean(false);
   const idCategory = useGetParamId();
   const isUpdate = idCategory ? true : false;
 
   useEffect(() => {
     if (idCategory) {
-      isLoading.setValue(true);
+      showPageLoading();
       getOneCategoryMiddleware(
         idCategory,
         (dataRes: CategoryBodyProps) => {
           setCategoryValue(dataRes);
-          isLoading.setValue(false);
+          hidePageLoading();
         },
         () => {
-          isLoading.setValue(false);
+          hidePageLoading();
         },
       );
     }
@@ -69,7 +68,7 @@ const CategoryEntryForm = () => {
       } else {
         message.error(msg);
       }
-      isLoading.setValue(false);
+      hidePageLoading();
     });
   };
 
@@ -84,14 +83,14 @@ const CategoryEntryForm = () => {
       } else {
         message.error(msg);
       }
-      isLoading.setValue(false);
+      hidePageLoading();
     });
   };
 
   const handleSubmit = isUpdate ? handleUpdateCategory : handleCreateCategory;
 
   const onHandleSubmit = () => {
-    isLoading.setValue(true);
+    showPageLoading();
     handleSubmit({
       ...categoryValue,
       name: categoryValue.name.trim(),
@@ -158,7 +157,6 @@ const CategoryEntryForm = () => {
           ))}
         </div>
       </EntryFormWrapper>
-      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };
