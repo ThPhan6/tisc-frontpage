@@ -96,6 +96,7 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_CONVERSION_ERROR: 'Delete conversion error',
   UPDATE_CONVERSION_SUCCESS: 'Update conversion successfully',
   UPDATE_CONVERSION_ERROR: 'Update conversion error',
+  GET_ONE_CONVERSION_ERROR: 'Get one conversion error',
 
   // option
   GETLIST_OPTION_ERROR: 'Error when get basis option data',

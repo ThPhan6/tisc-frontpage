@@ -1,9 +1,9 @@
 import { useProductBasicEntryForm } from '../../hook';
 
 const PresetsEntryForm = () => {
-  const { ProductBasicEntryForm } = useProductBasicEntryForm('PRESETS');
+  const { renderProductBasicEntryForm } = useProductBasicEntryForm('presets');
 
-  return <ProductBasicEntryForm />;
+  return renderProductBasicEntryForm();
 };
 
 export default PresetsEntryForm;

@@ -1,9 +1,9 @@
 import { useProductBasicEntryForm } from '../../hook';
 
 const ConversionsEntryForm = () => {
-  const { ProductBasicEntryForm } = useProductBasicEntryForm('CONVERSIONS');
+  const { renderProductBasicEntryForm } = useProductBasicEntryForm('conversions');
 
-  return <ProductBasicEntryForm />;
+  return renderProductBasicEntryForm();
 };
 
 export default ConversionsEntryForm;

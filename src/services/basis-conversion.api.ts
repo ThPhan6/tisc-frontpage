@@ -1,5 +1,4 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -44,58 +43,45 @@ export async function getProductBasisConversionPagination(
     });
 }
 
-export async function getOneConversionMiddleware(
-  id: string,
-  callbackSuccess: (dataRes: ConversionBodyProp) => void,
-  callbackError: (message?: string) => void,
-) {
-  request(`/api/basis-conversion/get-one/${id}`, {
+export async function getOneConversionMiddleware(id: string) {
+  return request<{ data: ConversionBodyProp }>(`/api/basis-conversion/get-one/${id}`, {
     method: 'get',
   })
-    .then((response: { data: ConversionBodyProp }) => {
-      callbackSuccess(response?.data);
+    .then((response) => {
+      return response.data;
     })
     .catch((error) => {
-      callbackError(error?.data?.message || MESSAGE_NOTIFICATION.DELETE_CATEGORY_ERROR);
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_CONVERSION_ERROR);
     });
 }
 
-export async function createConversionMiddleware(
-  data: ConversionBodyProp,
-  callback: (type: STATUS_RESPONSE, message?: string) => void,
-) {
-  request(`/api/basis-conversion/create`, {
+export async function createConversionMiddleware(data: ConversionBodyProp) {
+  return request<boolean>(`/api/basis-conversion/create`, {
     method: 'POST',
     data,
   })
     .then(() => {
-      callback(STATUS_RESPONSE.SUCCESS);
+      message.success(MESSAGE_NOTIFICATION.CREATE_CONVERSION_SUCCESS);
+      return true;
     })
     .catch((error) => {
-      callback(
-        STATUS_RESPONSE.ERROR,
-        error?.data?.message || MESSAGE_NOTIFICATION.CREATE_CONVERSION_ERROR,
-      );
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.CREATE_CONVERSION_ERROR);
+      return false;
     });
 }
 
-export async function updateConversionMiddleware(
-  id: string,
-  data: ConversionBodyProp,
-  callback: (type: STATUS_RESPONSE, message?: string) => void,
-) {
-  request(`/api/basis-conversion/update/${id}`, {
+export async function updateConversionMiddleware(id: string, data: ConversionBodyProp) {
+  return request<boolean>(`/api/basis-conversion/update/${id}`, {
     method: 'PUT',
     data,
   })
     .then(() => {
-      callback(STATUS_RESPONSE.SUCCESS);
+      message.success(MESSAGE_NOTIFICATION.UPDATE_CONVERSION_SUCCESS);
+      return true;
     })
     .catch((error) => {
-      callback(
-        STATUS_RESPONSE.ERROR,
-        error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_CATEGORY_ERROR,
-      );
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_CONVERSION_ERROR);
+      return false;
     });
 }
 
