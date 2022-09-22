@@ -10,7 +10,7 @@ import { useHistory, useParams } from 'umi';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
 import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
-import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+import { getEmailMessageError, getEmailMessageErrorType } from '@/helper/utils';
 import { getDepartmentList } from '@/services';
 
 import { TeamProfileDetailProps, TeamProfileRequestBody } from '../type';
@@ -152,7 +152,7 @@ const TeamProfilesEntryForm = () => {
 
   const handleSubmit = (callBack?: (id: string) => void) => {
     /// check email
-    const invalidEmail = emailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID);
+    const invalidEmail = getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID);
 
     if (invalidEmail) {
       message.error(invalidEmail);
@@ -337,8 +337,8 @@ const TeamProfilesEntryForm = () => {
           }}
           onDelete={() => onChangeData('email', '')}
           placeholder="user work email"
-          message={emailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
-          messageType={emailMessageErrorType(data.email, 'error', 'normal')}
+          message={getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
+          messageType={getEmailMessageErrorType(data.email, 'error', 'normal')}
         />
 
         {/* Work Phone */}

@@ -5,8 +5,8 @@ import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
 
 import {
-  emailMessageError,
-  emailMessageErrorType,
+  getEmailMessageError,
+  getEmailMessageErrorType,
   isEmptySpace,
   messageError,
   messageErrorType,
@@ -124,7 +124,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
 
   const handleSubmit = () => {
     /// check email
-    const invalidEmail = emailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_INVALID);
+    const invalidEmail = getEmailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_INVALID);
     if (invalidEmail) {
       message.error(invalidEmail);
       return;
@@ -329,8 +329,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         }}
         onDelete={() => onChangeData('general_email', '')}
         placeholder="general email address"
-        message={emailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_INVALID)}
-        messageType={emailMessageErrorType(data.general_email, 'error', 'normal')}
+        message={getEmailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_INVALID)}
+        messageType={getEmailMessageErrorType(data.general_email, 'error', 'normal')}
       />
       <CountryModal
         visible={visible.country}

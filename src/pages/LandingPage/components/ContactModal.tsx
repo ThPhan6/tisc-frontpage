@@ -8,7 +8,7 @@ import { ReactComponent as MessageIcon } from '@/assets/icons/message-icon-18px.
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 
 import { contact } from '../services/api';
-import { emailMessageError } from '@/helper/utils';
+import { getEmailMessageError } from '@/helper/utils';
 
 import { ContactRequestBody, ModalProps } from '../types';
 
@@ -37,7 +37,7 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
 
   const handleSubmitContact = () => {
     /// check email
-    const invalidEmail = emailMessageError(valueForm.email, MESSAGE_ERROR.EMAIL_INVALID);
+    const invalidEmail = getEmailMessageError(valueForm.email, MESSAGE_ERROR.EMAIL_INVALID);
     if (invalidEmail) {
       message.error(invalidEmail);
       return;

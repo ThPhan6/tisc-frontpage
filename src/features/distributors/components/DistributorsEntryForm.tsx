@@ -6,8 +6,8 @@ import { message } from 'antd';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import {
-  emailMessageError,
-  emailMessageErrorType,
+  getEmailMessageError,
+  getEmailMessageErrorType,
   isEmptySpace,
   messageError,
   messageErrorType,
@@ -113,7 +113,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
 
   const handleSubmit = () => {
     /// check email
-    const invalidEmail = emailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID);
+    const invalidEmail = getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID);
     if (invalidEmail) {
       message.error(invalidEmail);
       return;
@@ -286,8 +286,8 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               colorRequired="tertiary"
               onDelete={() => onChangeData('email', '')}
               deleteIcon
-              message={emailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
-              messageType={emailMessageErrorType(data.email, 'error', 'normal')}
+              message={getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
+              messageType={getEmailMessageErrorType(data.email, 'error', 'normal')}
             />
             <FormGroup label="Work Phone" required layout="vertical" formClass={styles.formGroup}>
               <PhoneInput

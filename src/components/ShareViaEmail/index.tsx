@@ -9,7 +9,7 @@ import {
   getSharingPurposes,
 } from '@/features/product/services';
 import { useBoolean } from '@/helper/hook';
-import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+import { getEmailMessageError, getEmailMessageErrorType } from '@/helper/utils';
 
 import { RadioValue } from '../CustomRadio/types';
 import { ProductItem, ProductItemValue } from '@/features/product/types';
@@ -104,7 +104,10 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
 
   const handleSubmit = () => {
     /// check email
-    const invalidEmail = emailMessageError(shareViaEmailData.to_email, MESSAGE_ERROR.EMAIL_INVALID);
+    const invalidEmail = getEmailMessageError(
+      shareViaEmailData.to_email,
+      MESSAGE_ERROR.EMAIL_INVALID,
+    );
 
     if (invalidEmail) {
       message.error(invalidEmail);
@@ -177,8 +180,8 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
           onChangeData('to_email', e.target.value);
         }}
         onDelete={() => onChangeData('to_email', '')}
-        message={emailMessageError(shareViaEmailData.to_email, MESSAGE_ERROR.EMAIL_INVALID)}
-        messageType={emailMessageErrorType(shareViaEmailData.to_email, 'error', 'normal')}
+        message={getEmailMessageError(shareViaEmailData.to_email, MESSAGE_ERROR.EMAIL_INVALID)}
+        messageType={getEmailMessageErrorType(shareViaEmailData.to_email, 'error', 'normal')}
       />
       {/* Title */}
       <InputGroup

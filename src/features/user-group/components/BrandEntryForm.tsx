@@ -10,7 +10,7 @@ import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
 import { createBrand } from '../services';
 import { useBoolean } from '@/helper/hook';
-import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+import { getEmailMessageError, getEmailMessageErrorType } from '@/helper/utils';
 
 import { TISCUserGroupBrandForm } from '../types/brand.types';
 
@@ -55,7 +55,7 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
 
   const handleSubmit = (callback?: (brandId: string) => void) => {
     /// check email
-    const invalidEmail = emailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID);
+    const invalidEmail = getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID);
     if (invalidEmail) {
       message.error(invalidEmail);
       return;
@@ -160,8 +160,8 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
         value={data.email}
         onChange={onChangeData('email')}
         onDelete={handleDeleteData('email')}
-        message={emailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
-        messageType={emailMessageErrorType(data.email, 'error', 'normal')}
+        message={getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
+        messageType={getEmailMessageErrorType(data.email, 'error', 'normal')}
       />
       {/* Access Level */}
       <FormGroup
