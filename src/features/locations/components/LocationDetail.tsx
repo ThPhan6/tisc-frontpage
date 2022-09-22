@@ -4,6 +4,7 @@ import { PATH } from '@/constants/path';
 
 import { pushTo } from '@/helper/history';
 import { useBoolean, useCheckPermission, useGetParamId } from '@/helper/hook';
+import { getValueByCondition } from '@/helper/utils';
 
 import { LocationForm } from '../type';
 
@@ -24,7 +25,13 @@ const LocationDetail = () => {
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
   /// for user role path
-  const userRolePath = isTISCAdmin ? PATH.tiscLocation : isBrandAdmin ? PATH.brandLocation : '';
+  const userRolePath = getValueByCondition(
+    [
+      [isTISCAdmin, PATH.tiscLocation],
+      [isBrandAdmin, PATH.brandLocation],
+    ],
+    '',
+  );
 
   const [loadedData, setLoadedData] = useState(false);
 

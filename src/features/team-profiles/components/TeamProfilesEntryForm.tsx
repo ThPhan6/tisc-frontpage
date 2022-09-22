@@ -15,7 +15,11 @@ import {
   useCustomInitialState,
   useGetParamId,
 } from '@/helper/hook';
-import { getEmailMessageError, getEmailMessageErrorType } from '@/helper/utils';
+import {
+  getEmailMessageError,
+  getEmailMessageErrorType,
+  getValueByCondition,
+} from '@/helper/utils';
 import { getDepartmentList } from '@/services';
 
 import { TeamProfileDetailProps, TeamProfileRequestBody } from '../types';
@@ -56,17 +60,21 @@ const TeamProfilesEntryForm = () => {
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
   /// for access level
-  const accessLevelDataRole = isTISCAdmin
-    ? TISCAccessLevelDataRole
-    : isBrandAdmin
-    ? BrandAccessLevelDataRole
-    : [];
+  const accessLevelDataRole = getValueByCondition(
+    [
+      [isTISCAdmin, TISCAccessLevelDataRole],
+      [isBrandAdmin, BrandAccessLevelDataRole],
+    ],
+    [],
+  );
   /// for user role path
-  const userRolePath = isTISCAdmin
-    ? PATH.tiscTeamProfile
-    : isBrandAdmin
-    ? PATH.brandTeamProfile
-    : '';
+  const userRolePath = getValueByCondition(
+    [
+      [isTISCAdmin, PATH.tiscTeamProfile],
+      [isBrandAdmin, PATH.brandTeamProfile],
+    ],
+    '',
+  );
 
   const submitButtonStatus = useBoolean(false);
   const [loadedData, setLoadedData] = useState(false);
@@ -76,16 +84,15 @@ const TeamProfilesEntryForm = () => {
 
   /// for department
   const [departments, setDepartments] = useState<DepartmentData[]>([]);
-  const [visible, setVisible] = useState({
-    workLocationModal: false,
-    accessModal: false,
-  });
+  const [openModal, setOpenModal] = useState<'' | 'workLocationModal' | 'accessModal'>('');
 
   const [workLocation, setWorkLocation] = useState({
     label: '',
     value: data.location_id,
     phoneCode: '00',
   });
+
+  const setVisibleModal = (visible: boolean) => (visible ? undefined : setOpenModal(''));
 
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({
@@ -266,12 +273,7 @@ const TeamProfilesEntryForm = () => {
           hasBoxShadow
           hasHeight
           rightIcon
-          onRightIconClick={() =>
-            setVisible({
-              workLocationModal: true,
-              accessModal: false,
-            })
-          }
+          onRightIconClick={() => setOpenModal('workLocationModal')}
           placeholder="select from list"
         />
         {/* Department */}
@@ -382,12 +384,7 @@ const TeamProfilesEntryForm = () => {
           customIcon={<InfoIcon className={styles.warning_icon} />}
           layout="vertical"
           formClass={`${styles.form_group} ${styles.access_label}`}
-          onClick={() =>
-            setVisible({
-              accessModal: true,
-              workLocationModal: false,
-            })
-          }>
+          onClick={() => setOpenModal('accessModal')}>
           <CustomRadio
             options={accessLevelDataRole}
             value={data.role_id}
@@ -408,38 +405,17 @@ const TeamProfilesEntryForm = () => {
       </EntryFormWrapper>
 
       {isTISCAdmin ? (
-        <TISCAccessLevelModal
-          visible={visible.accessModal}
-          setVisible={(visibled) =>
-            setVisible({
-              accessModal: visibled,
-              workLocationModal: false,
-            })
-          }
-        />
+        <TISCAccessLevelModal visible={openModal === 'accessModal'} setVisible={setVisibleModal} />
       ) : null}
 
       {isBrandAdmin ? (
-        <BrandAccessLevelModal
-          visible={visible.accessModal}
-          setVisible={(visibled) =>
-            setVisible({
-              accessModal: visibled,
-              workLocationModal: false,
-            })
-          }
-        />
+        <BrandAccessLevelModal visible={openModal === 'accessModal'} setVisible={setVisibleModal} />
       ) : null}
 
       {/* Location Modal */}
       <LocationModal
-        visible={visible.workLocationModal}
-        setVisible={(visibled) =>
-          setVisible({
-            accessModal: false,
-            workLocationModal: visibled,
-          })
-        }
+        visible={openModal === 'workLocationModal'}
+        setVisible={setVisibleModal}
         workLocation={workLocation}
         setWorkLocation={setWorkLocation}
       />
