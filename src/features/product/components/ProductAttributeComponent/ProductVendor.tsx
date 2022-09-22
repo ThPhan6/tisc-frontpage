@@ -7,7 +7,7 @@ import { ReactComponent as LocationIcon } from '@/assets/icons/location-icon.svg
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { useCheckPermission, useGetParamId } from '@/helper/hook';
-import { formatPhoneCode, getFullName } from '@/helper/utils';
+import { formatPhoneCode, getBusinessAddress, getFullName } from '@/helper/utils';
 
 import { DistributorProductMarket } from '@/features/distributors/type';
 import { LocationGroupedByCountry } from '@/features/locations/type';
@@ -129,7 +129,7 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
                       ${getFullName(distributor)},
                       ${formatPhoneCode(distributor.phone_code)} ${distributor.phone}
                     `}
-                    address={`${distributor.address}, ${distributor.city_name}`}
+                    address={getBusinessAddress(distributor)}
                     country={country.country_name.toUpperCase()}
                   />
                 ),
@@ -153,7 +153,7 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
                   <BusinessDetail
                     business={location.business_name}
                     type={location.functional_types[0]?.name}
-                    address={location.address}
+                    address={getBusinessAddress(location)}
                     country={location.country_name.toUpperCase()}
                   />
                 ),
