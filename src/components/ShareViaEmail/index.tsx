@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
+import { message } from 'antd';
 
 import {
   createShareViaEmail,
@@ -8,7 +9,7 @@ import {
   getSharingPurposes,
 } from '@/features/product/services';
 import { useBoolean } from '@/helper/hook';
-import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+import { getEmailMessageError, getEmailMessageErrorType } from '@/helper/utils';
 
 import { RadioValue } from '../CustomRadio/types';
 import { ProductItem, ProductItemValue } from '@/features/product/types';
@@ -102,6 +103,17 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
     data.map((item) => ({ label: item.name, value: item.id }));
 
   const handleSubmit = () => {
+    /// check email
+    const invalidEmail = getEmailMessageError(
+      shareViaEmailData.to_email,
+      MESSAGE_ERROR.EMAIL_INVALID,
+    );
+
+    if (invalidEmail) {
+      message.error(invalidEmail);
+      return;
+    }
+
     createShareViaEmail(shareViaEmailData).then((isSuccess) => {
       if (isSuccess) {
         submitButtonStatus.setValue(true);
@@ -168,8 +180,8 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
           onChangeData('to_email', e.target.value);
         }}
         onDelete={() => onChangeData('to_email', '')}
-        message={emailMessageError(shareViaEmailData.to_email, MESSAGE_ERROR.EMAIL_UNVALID)}
-        messageType={emailMessageErrorType(shareViaEmailData.to_email, 'error', 'normal')}
+        message={getEmailMessageError(shareViaEmailData.to_email, MESSAGE_ERROR.EMAIL_INVALID)}
+        messageType={getEmailMessageErrorType(shareViaEmailData.to_email, 'error', 'normal')}
       />
       {/* Title */}
       <InputGroup

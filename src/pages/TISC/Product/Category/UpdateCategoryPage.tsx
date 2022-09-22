@@ -11,12 +11,16 @@ import { useBoolean, useGetParamId } from '@/helper/hook';
 
 import { CategoryBodyProps, SubcategoryValueProps } from '@/features/categories/types';
 
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { CategoryEntryForm } from '@/features/categories/components/CategoryEntryForm';
 
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+
 const UpdateCategoryPage = () => {
+  const submitButtonStatus = useBoolean(false);
+  const idCategory = useGetParamId();
+
   const [categoryValue, setCategoryValue] = useState<{
     id?: string;
     name: string;
@@ -26,22 +30,17 @@ const UpdateCategoryPage = () => {
     subs: [],
   });
 
-  const isLoading = useBoolean();
-  const submitButtonStatus = useBoolean(false);
-
-  const idCategory = useGetParamId();
-
   useEffect(() => {
     if (idCategory) {
-      isLoading.setValue(true);
+      showPageLoading();
       getOneCategoryMiddleware(
         idCategory,
         (dataRes: CategoryBodyProps) => {
           setCategoryValue(dataRes);
-          isLoading.setValue(false);
+          hidePageLoading();
         },
         () => {
-          isLoading.setValue(false);
+          hidePageLoading();
         },
       );
       return;
@@ -53,7 +52,8 @@ const UpdateCategoryPage = () => {
     if (!idCategory) {
       pushTo(PATH.categories);
     }
-    isLoading.setValue(true);
+    showPageLoading();
+
     updateCategoryMiddleware(idCategory, data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.UPDATE_CATEGORY_SUCCESS);
@@ -64,7 +64,7 @@ const UpdateCategoryPage = () => {
       } else {
         message.error(msg);
       }
-      isLoading.setValue(false);
+      hidePageLoading();
     });
   };
 
@@ -84,7 +84,6 @@ const UpdateCategoryPage = () => {
           onCancel={handleCancel}
         />
       </div>
-      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

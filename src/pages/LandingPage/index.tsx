@@ -45,10 +45,10 @@ import { PoliciesModal } from './components/PoliciesModal';
 import { SignupModal } from './components/SignupModal';
 import { VerifyAccount } from './components/VerifyAccount';
 import CustomButton from '@/components/Button';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
 import styles from './index.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const LandingPage = () => {
   const userEmail = useQuery().get('email');
@@ -58,7 +58,7 @@ const LandingPage = () => {
   const { fetchUserInfo } = useCustomInitialState();
   const openResetPwd = useBoolean();
   const openVerificationModal = useBoolean();
-  const isLoading = useBoolean();
+
   const [openModal, setOpenModal] = useState<ModalOpen>('');
   const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
   const openVerifyAccountModal = useBoolean();
@@ -103,7 +103,7 @@ const LandingPage = () => {
   }, [tokenVerification]);
 
   const handleSubmitLogin = (data: LoginInput) => {
-    isLoading.setValue(true);
+    showPageLoading();
     if (openModal === 'Tisc Login') {
       loginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
         if (type === STATUS_RESPONSE.SUCCESS) {
@@ -113,7 +113,7 @@ const LandingPage = () => {
         } else {
           message.error(msg);
         }
-        isLoading.setValue(false);
+        hidePageLoading();
       });
     } else {
       loginByBrandOrDesigner(
@@ -130,14 +130,14 @@ const LandingPage = () => {
           } else {
             message.error(msg);
           }
-          isLoading.setValue(false);
+          hidePageLoading();
         },
       );
     }
   };
 
   const handleForgotPassword = (email: string) => {
-    isLoading.setValue(true);
+    showPageLoading();
     forgotPasswordMiddleware(
       { email: email, type: openModal === 'Tisc Login' ? ForgotType.TISC : ForgotType.OTHER },
       async (type: STATUS_RESPONSE, msg?: string) => {
@@ -147,13 +147,13 @@ const LandingPage = () => {
         } else {
           message.error(msg);
         }
-        isLoading.setValue(false);
+        hidePageLoading();
       },
     );
   };
 
   const handleResetPassword = (data: PasswordRequestBody) => {
-    isLoading.setValue(true);
+    showPageLoading();
     resetPasswordMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD_SUCCESS);
@@ -162,14 +162,14 @@ const LandingPage = () => {
       } else {
         message.error(msg);
       }
-      isLoading.setValue(false);
+      hidePageLoading();
     });
   };
 
   const handleVerifyAccount = (data: PasswordRequestBody) => {
-    isLoading.setValue(true);
+    showPageLoading();
     createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
-      isLoading.setValue(false);
+      hidePageLoading();
       if (isSuccess) {
         redirectAfterLogin();
       }
@@ -374,8 +374,6 @@ const LandingPage = () => {
           openLogin={() => setOpenModal('Login')}
         />
       ) : null}
-
-      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

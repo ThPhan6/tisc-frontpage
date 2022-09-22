@@ -31,9 +31,10 @@ import { OptionItem } from './Option/components/OptionItem';
 import { PresetItem } from './Preset/components/PresetItem';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const conversionValueDefault: ConversionSubValueProps = {
   name_1: '',
@@ -88,7 +89,6 @@ const FORM_CONFIG = {
 };
 
 export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
-  const isLoading = useBoolean();
   const idItem = useGetParamId();
   const isUpdate = idItem ? true : false;
 
@@ -98,14 +98,14 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
 
   useEffect(() => {
     if (idItem) {
-      isLoading.setValue(true);
+      showPageLoading();
       const getOneFunction = FORM_CONFIG[type].getOneFunction;
       getOneFunction(idItem).then((res) => {
         if (res) {
           setData(res);
         }
       });
-      isLoading.setValue(false);
+      hidePageLoading();
     }
   }, []);
 
@@ -164,7 +164,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   };
 
   const handleCreate = (dataSubmit: any) => {
-    isLoading.setValue(true);
+    showPageLoading();
     const createFunction = FORM_CONFIG[type].createFunction;
     createFunction(dataSubmit).then((isSuccess) => {
       if (isSuccess) {
@@ -173,12 +173,12 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           pushTo(FORM_CONFIG[type].path);
         }, 1000);
       }
-      isLoading.setValue(false);
+      hidePageLoading();
     });
   };
 
   const handleUpdate = (dataSubmit: any) => {
-    isLoading.setValue(true);
+    showPageLoading();
     const updateFunction = FORM_CONFIG[type].updateFunction;
     updateFunction(idItem, dataSubmit).then((isSuccess) => {
       if (isSuccess) {
@@ -187,7 +187,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           submitButtonStatus.setValue(false);
         }, 2000);
       }
-      isLoading.setValue(false);
+      hidePageLoading();
     });
   };
 
@@ -282,7 +282,6 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           />
           {data.subs.map(renderEntryFormItem)}
         </EntryFormWrapper>
-        {isLoading.value ? <LoadingPageCustomize /> : null}
       </div>
     );
   }, [submitButtonStatus.value, data.subs, data.name]);

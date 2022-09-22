@@ -8,7 +8,7 @@ export const MESSAGE_ERROR = {
   WORK_EMAIL: 'Work email is required',
   GENERAL_EMAIL: 'General email is required',
   EMAIL_AUTO: 'Message is required',
-  EMAIL_UNVALID: 'Email is not valid',
+  EMAIL_INVALID: 'Invalid Email',
   EMAIL_INVALID_INCORRECT: 'Email invalid is not incorrect',
   URL_INVALID: 'Some download urls are not valid',
   AGREE_TISC: 'Click to proceed',
