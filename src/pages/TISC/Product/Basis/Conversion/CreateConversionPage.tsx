@@ -12,7 +12,6 @@ import { createConversionMiddleware } from '@/services';
 import { ConversionValueProp } from '@/types';
 
 import { ConversionsEntryForm } from './components/ConversionsEntryForm';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
@@ -21,12 +20,11 @@ const CreateConversionPage = () => {
     name: '',
     subs: [],
   });
-  const isLoading = useBoolean();
 
   const submitButtonStatus = useBoolean(false);
 
   const handleCreateConversion = (data: ConversionValueProp) => {
-    isLoading.setValue(true);
+    showPageLoading();
     createConversionMiddleware(data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.CREATE_CONVERSION_SUCCESS);
@@ -38,7 +36,7 @@ const CreateConversionPage = () => {
       } else {
         message.error(msg);
       }
-      isLoading.setValue(false);
+      hidePageLoading();
     });
   };
 
@@ -58,7 +56,6 @@ const CreateConversionPage = () => {
           onCancel={handleCancel}
         />
       </div>
-      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };
