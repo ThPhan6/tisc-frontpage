@@ -15,7 +15,7 @@ import { BasisOptionSubForm, SubBasisOption } from '@/types';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
-import styles from '../styles/OptionItem.less';
+import styles from './OptionItem.less';
 
 interface SubItemOptionProps {
   is_have_image?: boolean;
