@@ -28,11 +28,7 @@ import { SubcategoryItem } from './SubcategoryItem';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const CategoryEntryForm = () => {
-  const [categoryValue, setCategoryValue] = useState<{
-    id?: string;
-    name: string;
-    subs: SubcategoryValueProps[];
-  }>({
+  const [categoryValue, setCategoryValue] = useState<CategoryBodyProps>({
     name: '',
     subs: [],
   });
@@ -56,57 +52,46 @@ const CategoryEntryForm = () => {
     }
   }, []);
 
-  const handleCreateCategory = (data: CategoryBodyProps) => {
-    createCategoryMiddleware(data, (type: STATUS_RESPONSE, msg?: string) => {
+  const callBackFunctionHandle =
+    (functionHandleType: 'create' | 'update') => (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
-        message.success(MESSAGE_NOTIFICATION.CREATE_CATEGORY_SUCCESS);
+        if (functionHandleType === 'create') {
+          message.success(MESSAGE_NOTIFICATION.CREATE_CATEGORY_SUCCESS);
+        } else {
+          message.success(MESSAGE_NOTIFICATION.UPDATE_CATEGORY_SUCCESS);
+        }
         submitButtonStatus.setValue(true);
         setTimeout(() => {
-          pushTo(PATH.categories);
+          if (functionHandleType === 'create') {
+            pushTo(PATH.categories);
+          }
           submitButtonStatus.setValue(false);
         }, 1000);
       } else {
         message.error(msg);
       }
       hidePageLoading();
-    });
+    };
+
+  const handleCreateCategory = (data: CategoryBodyProps) => {
+    createCategoryMiddleware(data, callBackFunctionHandle('create'));
   };
 
   const handleUpdateCategory = (data: CategoryBodyProps) => {
-    updateCategoryMiddleware(idCategory, data, (type: STATUS_RESPONSE, msg?: string) => {
-      if (type === STATUS_RESPONSE.SUCCESS) {
-        message.success(MESSAGE_NOTIFICATION.UPDATE_CATEGORY_SUCCESS);
-        submitButtonStatus.setValue(true);
-        setTimeout(() => {
-          submitButtonStatus.setValue(false);
-        }, 1000);
-      } else {
-        message.error(msg);
-      }
-      hidePageLoading();
-    });
+    updateCategoryMiddleware(idCategory, data, callBackFunctionHandle('update'));
   };
 
   const handleSubmit = isUpdate ? handleUpdateCategory : handleCreateCategory;
 
+  const trimName = (value: any) => ({
+    ...value,
+    name: value.name.trim(),
+    subs: value.subs?.map((sub: any) => trimName(sub)),
+  });
+
   const onHandleSubmit = () => {
     showPageLoading();
-    handleSubmit({
-      ...categoryValue,
-      name: categoryValue.name.trim(),
-      subs: categoryValue.subs.map((sub) => {
-        return {
-          ...sub,
-          name: sub.name.trim(),
-          subs: sub.subs?.map((subItem) => {
-            return {
-              ...subItem,
-              name: subItem.name.trim(),
-            };
-          }),
-        };
-      }),
-    });
+    handleSubmit(trimName(categoryValue) as CategoryBodyProps);
   };
 
   const handleCancel = () => {
