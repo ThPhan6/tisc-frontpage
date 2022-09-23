@@ -5,6 +5,8 @@ import { categoryReducer } from '@/features/categories/reducers';
 import { productReducer } from '@/features/product/reducers';
 import { projectReducer } from '@/features/project/reducers';
 
+import { loadingActionReducer } from '@/components/LoadingPage/slices';
+
 import userReducer from './user';
 import { combineReducers, configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import { persistReducer, persistStore } from 'redux-persist';
@@ -15,6 +17,7 @@ const reducers = combineReducers({
   category: categoryReducer,
   user: userReducer,
   project: projectReducer,
+  loading: loadingActionReducer,
 });
 
 const persistConfig = {

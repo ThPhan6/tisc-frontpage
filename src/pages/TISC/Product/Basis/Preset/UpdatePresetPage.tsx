@@ -4,40 +4,38 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
-import { useParams } from 'umi';
 
 import { pushTo } from '@/helper/history';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 import { getOnePresetMiddleware, updatePresetMiddleware } from '@/services';
 
 import { PresetsValueProp, presetsValueDefault } from '@/types';
 
 import { PresetsEntryForm } from './components/PresetsEntryForm';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+
 const UpdatePresetPage = () => {
   const [presetValue, setPresetValue] = useState<PresetsValueProp>(presetsValueDefault);
-  const isLoading = useBoolean();
-  const params = useParams<{ id: string }>();
-  const idPreset = params?.id || '';
+  const idPreset = useGetParamId();
   const submitButtonStatus = useBoolean(false);
 
   useEffect(() => {
     if (idPreset) {
       //get data of preset
-      isLoading.setValue(true);
+      showPageLoading();
       getOnePresetMiddleware(
         idPreset,
         (dataRes: PresetsValueProp) => {
           if (dataRes) {
             setPresetValue(dataRes);
           }
-          isLoading.setValue(false);
+          hidePageLoading();
         },
         () => {
-          isLoading.setValue(false);
+          hidePageLoading();
         },
       );
       return;
@@ -53,7 +51,7 @@ const UpdatePresetPage = () => {
     if (!idPreset) {
       pushTo(PATH.presets);
     }
-    isLoading.setValue(true);
+    showPageLoading();
     updatePresetMiddleware(idPreset, data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.UPDATE_PRESET_SUCCESS);
@@ -64,7 +62,7 @@ const UpdatePresetPage = () => {
       } else {
         message.error(msg);
       }
-      isLoading.setValue(false);
+      hidePageLoading();
     });
   };
 
@@ -79,7 +77,6 @@ const UpdatePresetPage = () => {
           submitButtonStatus={submitButtonStatus.value}
         />
       </div>
-      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

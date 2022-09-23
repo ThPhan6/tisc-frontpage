@@ -203,12 +203,12 @@ export const formatNumberDisplay = (
 };
 
 // for email
-export const emailMessageError = (email: string, errorMessage: string) => {
+export const getEmailMessageError = (email: string, errorMessage: string) => {
   const checkValidEmail = validateEmail(email);
 
   return email !== '' ? (checkValidEmail ? '' : errorMessage) : undefined;
 };
-export const emailMessageErrorType = (
+export const getEmailMessageErrorType = (
   email: string,
   error: 'error' | 'warning',
   normal: 'normal',
@@ -275,4 +275,15 @@ export const setSortOrder = (order?: string) => {
   if (!order) return '';
 
   return order === SORT_ORDER.increase ? SORT_ORDER.headerFollow : SORT_ORDER.footerFollow;
+};
+
+/// Don't use to return component
+export const getValueByCondition = (valueByCondition: [any, any][], finalValue?: any) => {
+  return valueByCondition.find((condition) => (condition[0] ? true : false))?.[1] ?? finalValue;
+};
+
+export const getBusinessAddress = (businessAddress: any) => {
+  const city = businessAddress.city_name !== '' ? `${businessAddress.city_name},` : '';
+  const state = businessAddress.state_name !== '' ? `${businessAddress.state_name},` : '';
+  return `${businessAddress.address}, ${city} ${state} ${businessAddress.country_name}`;
 };

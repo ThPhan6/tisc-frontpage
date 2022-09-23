@@ -39,6 +39,7 @@ import TeamDetail from '@/features/user-group/components/Team';
 import LabelToolTip from '@/features/user-group/components/TooltipLabel';
 
 import styles from './index.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const DesignTabs: TabItem[] = [
   { tab: DesignTabKeys.profile, key: DesignTabKeys.profile, icon: <ProfileIcon /> },
@@ -53,7 +54,6 @@ const DesignFirmUpdatePage = () => {
   const designId = useGetParamId();
   const [selectedTab, setSelectedTab] = useState<TabKeys>(DesignTabKeys.profile);
   const buttonStatus = useBoolean(false);
-  const isLoading = useBoolean();
   const [statuses, setStatuses] = useState<KeyValueData[]>([]);
   const [data, setData] = useState<BrandDesignProfile>(DEFAULT_BRAND_DESIGN_PROFILE);
 
@@ -79,8 +79,9 @@ const DesignFirmUpdatePage = () => {
   };
 
   const handleSaveButton = () => {
+    showPageLoading();
     updateStatusDesignFirm(designId, { status: data.status }).then((isSuccess) => {
-      isLoading.setValue(false);
+      hidePageLoading();
       if (isSuccess) {
         buttonStatus.setValue(true);
         setTimeout(() => {
@@ -102,7 +103,6 @@ const DesignFirmUpdatePage = () => {
           data={data}
           setData={setData}
           buttonStatus={buttonStatus.value}
-          isLoading={isLoading.value}
           statuses={statuses}
           toolTipTitle={
             <table className={styles.tooltip}>
