@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Tooltip, TooltipProps, message } from 'antd';
+import { Tooltip, TooltipProps } from 'antd';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
@@ -30,6 +30,7 @@ import { AssigningStatus } from '@/features/project/types';
 import { useAppSelector } from '@/reducers';
 
 import CustomCollapse from '@/components/Collapse';
+import InquiryRequest from '@/components/InquiryRequest';
 import ShareViaEmail from '@/components/ShareViaEmail';
 import { BodyText } from '@/components/Typography';
 
@@ -61,6 +62,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const [liked, setLiked] = useState(product.is_liked);
   const showShareEmailModal = useBoolean();
   const showAssignProductModal = useBoolean();
+  const showInquiryRequestModal = useBoolean();
 
   const unlistedDisabled = product.status === AssigningStatus.Unlisted;
 
@@ -152,7 +154,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       tooltipText: 'Inquiry/Request',
       show: Boolean(showInquiryRequest && isDesignerUser),
       Icon: CommentIcon,
-      onClick: () => message.info('Feature is coming in Phase 4'),
+      onClick: () => showInquiryRequestModal.setValue(true),
     },
     {
       tooltipText: 'Share via Email',
@@ -224,7 +226,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </div>
       </div>
 
-      {/* Keep condition to show Modals for better performance */}
       {showShareEmailModal.value ? (
         <ShareViaEmail
           visible={showShareEmailModal.value}
@@ -238,6 +239,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
           visible={showAssignProductModal.value}
           setVisible={showAssignProductModal.setValue}
           productId={product.id}
+        />
+      ) : null}
+
+      {showInquiryRequestModal.value ? (
+        <InquiryRequest
+          visible={showInquiryRequestModal.value}
+          setVisible={showInquiryRequestModal.setValue}
+          product={product}
         />
       ) : null}
     </div>

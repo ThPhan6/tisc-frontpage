@@ -1,18 +1,24 @@
 import { FC, useEffect, useState } from 'react';
 
+import { getSharingGroups } from '@/features/product/services';
+import { getFinishScheduleList, getRequirementTypeList } from '@/features/project/services';
 import { useBoolean } from '@/helper/hook';
+import { getSelectedOptions } from '@/helper/utils';
+import { snakeCase } from 'lodash';
 
+import { CheckboxValue } from '../CustomCheckbox/types';
+import { CustomRadioValue, RadioValue } from '../CustomRadio/types';
 import { TabItem } from '../Tabs/types';
 import { ProductItem } from '@/features/product/types';
-import { GeneralData } from '@/types';
 
 import BrandProductBasicHeader from '../BrandProductBasicHeader';
-import CollapseCheckBoxListFormGroup from '../CustomCheckbox/CollapseCheckboxListFromGroup';
+import CollapseCheckboxList from '../CustomCheckbox/CollapseCheckboxList';
 import CollapseRadioFormGroup from '../CustomRadio/CollapseRadioFormGroup';
 import InputGroup from '../EntryForm/InputGroup';
 import { FormGroup } from '../Form';
 import { CustomTextArea } from '../Form/CustomTextArea';
 import Popover from '../Modal/Popover';
+import { renderDualLabel } from '../RenderHeaderLabel';
 import { CustomTabs } from '../Tabs';
 import styles from './index.less';
 
@@ -28,7 +34,7 @@ const Tabs: TabItem[] = [
 
 export interface InquiryRequestForm {
   product_id: string;
-  project_name: string;
+  project_name_id: string;
   inquiry_for: string[];
   inquiry_title: string;
   inquiry_message: string;
@@ -37,17 +43,12 @@ export interface InquiryRequestForm {
   request_message: string;
 }
 
-// interface ProjectNameProps {
-//   code: string;
-//   project_name: string;
-//   project_id: string;
-// }
-
-// type FieldName = keyof InquiryRequestForm;
+type FieldName = keyof InquiryRequestForm;
+type checkboxDataTypes = 'inquiry_for' | 'request_for';
 
 const DEFAULT_STATE = {
   product_id: '',
-  project_name: '',
+  project_name_id: '',
   inquiry_for: [],
   inquiry_title: '',
   inquiry_message: '',
@@ -71,52 +72,139 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
     product_id: product.id,
   });
 
-  const [inquiryData, setInquiryData] = useState<GeneralData[]>([]);
-  // const [requestData, setRequestData] = useState([]);
-  // const [projectNameData, setProjectNameData] = useState<ProjectNameProps[]>([]);
+  const [projectNameData, setProjectNameData] = useState<CustomRadioValue[]>([]);
+  // for handle selected item to show on label
+  const [selectedProjectName, setSelectedProjectName] = useState<RadioValue | null>(null);
+  const projectName = projectNameData.find(
+    (project) => project.value === selectedProjectName?.value,
+  )?.labelText;
+
+  //
+  const [inquiryForData, setInquiryForData] = useState<CheckboxValue[]>([]);
+  const selectedInquiryFor = getSelectedOptions(inquiryForData, data.inquiry_for);
+
+  //
+  const [requestForData, setRequestForData] = useState<CheckboxValue[]>([]);
+  const selectedRequestFor = getSelectedOptions(requestForData, data.request_for);
 
   useEffect(() => {
-    setInquiryData([]);
-  });
+    getRequirementTypeList().then((res) => {
+      setInquiryForData(
+        res.map((el) => ({
+          label: el.name,
+          value: el.id,
+        })),
+      );
+    });
+  }, [selectedTab === TabKeys.inquiry]);
 
-  const onChangeData = (newData: Partial<InquiryRequestForm> /* fieldValue: any */) => {
-    // setData({
-    //   ...data,
-    //   [fieldName]: fieldValue,
-    // });
+  useEffect(() => {
+    getFinishScheduleList().then((res) => {
+      setRequestForData(
+        res.map((el) => ({
+          label: el.name,
+          value: el.id,
+        })),
+      );
+    });
+
+    getSharingGroups().then((res) => {
+      if (res) {
+        setProjectNameData(
+          res.map((el) => ({
+            label: renderDualLabel(el.name, el.name),
+            value: el.id,
+            labelText: `${el.name} ${el.name}`,
+          })),
+        );
+      }
+    });
+  }, [selectedTab === TabKeys.request]);
+
+  // handle onChange title and message
+  const onChangeData = (newData: FieldName, fieldValue: any) => {
     setData((prevState) => ({
       ...prevState,
-      ...newData,
+      [newData]: fieldValue,
     }));
   };
 
-  // format data
-  const Inquiry = inquiryData.find((item) => item.id === data.inquiry_for) ?? {
-    name: data.inquiry_for,
-    id: '',
-  };
-  const sharingPurposeLabel = sharingPurpose.find((item) => item.id === data.sharing_purpose) ?? {
-    name: data.sharing_purpose,
-    id: '',
+  // handle onChange Inquiry-For and Request-For
+  const onChangeCheckboxListData = (type: checkboxDataTypes) => (option: CheckboxValue[]) => {
+    console.log(type, option);
+    setData((prevState) => ({
+      ...prevState,
+      [type]: option?.map((opt) => String(opt.value === 'other' ? opt.label : opt.value)),
+    }));
   };
 
-  console.log('Inquiry', Inquiry);
-
-  const handleSubmit = () => {
-    // createShareViaEmail(data).then((isSuccess) => {
-    //   if (isSuccess) {
-    //     submitButtonStatus.setValue(true);
-    //     setTimeout(() => {
-    //       setVisible(false);
-    //       // clear data after submited
-    //       setdata({
-    //         ...DEFAULT_STATE,
-    //         product_id: product.id,
-    //       });
-    //     }, 200);
-    //   }
-    // });
+  // handle onChange Project-Name
+  const onChangeProjectNameData = (selectedItem: RadioValue) => {
+    setData((prevState) => ({
+      ...prevState,
+      project_name_id: String(selectedItem.value),
+    }));
   };
+
+  const handleSubmit = () => {};
+
+  // render Inquiry For and Request For data
+  const renderFor = (
+    labelContent: 'Inquiry For' | 'Request For',
+    option: CheckboxValue[],
+    selectedOpt: CheckboxValue[],
+  ) => (
+    <FormGroup
+      label={labelContent}
+      required
+      layout="vertical"
+      formClass={`${styles.formGroup} ${selectedOpt.length ? styles.showSelectedItem : ''}`}>
+      <CollapseCheckboxList
+        checked={selectedOpt}
+        onChange={onChangeCheckboxListData(snakeCase(labelContent) as checkboxDataTypes)}
+        containerClass={selectedOpt.length ? styles.inputColor : undefined}
+        otherInput
+        options={option}
+        placeholder={
+          selectedOpt.length
+            ? selectedOpt.map((item) => item.label).join(', ')
+            : 'select from the list'
+        }
+      />
+    </FormGroup>
+  );
+
+  const renderTitle = (title: 'inquiry_title' | 'request_title') => (
+    <InputGroup
+      label="Title"
+      required
+      deleteIcon
+      fontLevel={3}
+      hasPadding
+      colorPrimaryDark
+      hasBoxShadow
+      hasHeight
+      placeholder="type message title"
+      value={data.inquiry_title}
+      onChange={(e) => onChangeData(title, e.target.value)}
+      onDelete={() => onChangeData(title, '')}
+    />
+  );
+
+  const renderMessage = (message: 'inquiry_message' | 'request_message') => (
+    <FormGroup label="Message" required layout="vertical">
+      <CustomTextArea
+        className={styles.message}
+        maxLength={250}
+        showCount
+        placeholder="type message here..."
+        borderBottomColor="mono-medium"
+        boxShadow
+        onChange={(e) => onChangeData(message, e.target.value)}
+        value={data.inquiry_message}
+      />
+    </FormGroup>
+  );
 
   return (
     <Popover
@@ -132,97 +220,53 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
         text_2={product.name}
         text_3={product.description}
         hasBoxShadow={true}
-        // customClass={styles.header}
+        customClass={styles.header}
       />
 
       {/* Tabs */}
       <CustomTabs
         listTab={Tabs}
-        widthItem="auto"
+        centered={true}
+        tabPosition="top"
+        tabDisplay="space"
         activeKey={selectedTab}
         onChange={(key) => setSelectedTab(key as TabKeys)}
       />
 
       {/* GENERAL INQUIRY */}
-      <div>
-        {/* Inquiry For */}
-        <CollapseCheckBoxListFormGroup
-          label="Inquiry For"
-          checked={data.inquiry_for}
-          placeholder={data}
-          otherInput
-          optionData={inquiryData.map((item) => {
-            return {
-              label: item.name,
-              value: item.id,
-            };
-          })}
-          onChange={(checkboxs) => {
-            checkboxs.forEach((checkbox) => {
-              if (checkbox.value === 'other') {
-                onChangeData({ inquiry_for: data.inquiry_for.push(checkbox.value) });
-              } else {
-                onChangeData({ inquiry_for: checkbox.label });
-              }
-            });
-          }}
-        />
-
-        {/* Title */}
-        <InputGroup
-          label="Title"
-          required
-          deleteIcon
-          fontLevel={3}
-          hasPadding
-          colorPrimaryDark
-          hasBoxShadow
-          hasHeight
-          placeholder="type message title"
-          value={data.inquiry_title}
-          onChange={(e) => {
-            onChangeData('inquiry_title', e.target.value);
-          }}
-          onDelete={() => onChangeData('inquiry_title', '')}
-        />
-        {/* Message */}
-        <FormGroup label="Message" required layout="vertical">
-          <CustomTextArea
-            className={styles.message}
-            maxLength={250}
-            showCount
-            placeholder="type message here..."
-            borderBottomColor="mono-medium"
-            boxShadow
-            onChange={(e) => onChangeData('message', e.target.value)}
-            value={data.message}
-          />
-        </FormGroup>
-      </div>
+      {selectedTab === TabKeys.inquiry ? (
+        <div>
+          {/* Inquiry For */}
+          {renderFor('Inquiry For', inquiryForData, selectedInquiryFor)}
+          {renderTitle('inquiry_title')}
+          {renderMessage('inquiry_message')}
+        </div>
+      ) : null}
 
       {/* PROJECT REQUEST */}
-      <div>
-        {/* Sharing Purpose */}
-        <CollapseRadioFormGroup
-          label="Sharing Purpose"
-          checked={data.sharing_purpose}
-          placeholder={sharingPurposeLabel.name}
-          otherInput
-          optionData={sharingPurpose.map((item) => {
-            return {
-              label: item.name,
-              value: item.id,
-            };
-          })}
-          onChange={(radioValue) => {
-            if (radioValue.value === 'other') {
-              onChangeData('sharing_purpose', radioValue.label);
-            } else {
-              onChangeData('sharing_purpose', radioValue.value);
-            }
-          }}
-        />
-      </div>
+      {selectedTab === TabKeys.request ? (
+        <div>
+          {/* Project Name */}
+          <CollapseRadioFormGroup
+            label="Project Name"
+            checked={data.project_name_id}
+            defaultPlaceHolder="select from My Workspace"
+            placeholder={projectName}
+            onChange={(radioValue) => {
+              /// to show on label
+              setSelectedProjectName(radioValue);
+              // update data
+              onChangeProjectNameData(radioValue);
+            }}
+            optionData={projectNameData}
+          />
+
+          {/* Request For */}
+          {renderFor('Request For', requestForData, selectedRequestFor)}
+          {renderTitle('request_title')}
+          {renderMessage('request_message')}
+        </div>
+      ) : null}
     </Popover>
   );
 };

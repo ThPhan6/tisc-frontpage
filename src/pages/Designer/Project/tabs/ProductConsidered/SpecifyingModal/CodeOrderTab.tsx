@@ -9,11 +9,11 @@ import {
   getUnitTypeList,
 } from '@/features/project/services';
 import { getAllMaterialCode } from '@/features/user-group/services';
-import { validateFloatNumber } from '@/helper/utils';
+import { getSelectedOptions, validateFloatNumber } from '@/helper/utils';
 
 import { CodeOrderRequestParams, OnChangeSpecifyingProductFnc } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
-import { RadioValue } from '@/components/CustomRadio/types';
+import { CustomRadioValue, RadioValue } from '@/components/CustomRadio/types';
 import { FormGroupProps } from '@/components/Form/types';
 
 import { CustomCheckbox } from '@/components/CustomCheckbox';
@@ -22,7 +22,7 @@ import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { DropdownSelectInput } from '@/components/Form/DropdownSelectInput';
-import { BodyText, Title } from '@/components/Typography';
+import { renderDualLabel } from '@/components/RenderHeaderLabel';
 
 import styles from './styles/code-order.less';
 
@@ -37,15 +37,10 @@ const ORDER_METHODS: RadioValue[] = [
   },
 ];
 
-type CustomRadioValue = RadioValue & { labelText: string };
-
 interface CodeOrderTabProps {
   codeOrderState: CodeOrderRequestParams;
   onChangeSpecifyingState: OnChangeSpecifyingProductFnc;
 }
-
-const getSelectedOptions = (options: CheckboxValue[], selectedIds: string[]) =>
-  options.filter((opt) => selectedIds.includes(String(opt.value)) || opt.value === 'other');
 
 const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyingState }) => {
   const [materialCodeOpts, setMaterialCodeOtps] = useState<CustomRadioValue[]>([]);
@@ -85,19 +80,6 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
     .filter((item, index) => finish_schedules.indexOf(item) === index)
     ?.map((schId) => finishSchedules.find((el) => el.value === schId)?.label || schId)
     .join(', ');
-
-  const renderDualLabel = (firstTxt: string, secTxt: string) => {
-    return (
-      <span className="flex-center">
-        <Title level={9} style={{ width: 32, marginRight: 12 }}>
-          {firstTxt}
-        </Title>
-        <BodyText fontFamily="Roboto" level={6}>
-          {secTxt}
-        </BodyText>
-      </span>
-    );
-  };
 
   useEffect(() => {
     getAllMaterialCode().then((res) => {

@@ -8,7 +8,7 @@ import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 import { isNaN, isNumber } from 'lodash';
 
 import TeamIcon from '../TeamIcon/TeamIcon';
-import { BodyText } from '../Typography';
+import { BodyText, Title } from '../Typography';
 import styles from './index.less';
 
 interface RenderLabelHeaderProps {
@@ -103,3 +103,14 @@ export const RenderEntireProjectLabel: FC<RenderEntireProjectLabelProps> = ({
     </div>
   );
 };
+
+export const renderDualLabel = (firstTxt: string, secTxt: string) => (
+  <span className="flex-center">
+    <Title level={9} style={{ marginRight: 12 }}>
+      {firstTxt}
+    </Title>
+    <BodyText fontFamily="Roboto" level={6}>
+      {secTxt}
+    </BodyText>
+  </span>
+);

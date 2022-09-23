@@ -4,6 +4,7 @@ import { history } from 'umi';
 
 import { isNaN, isNumber, isUndefined, toNumber } from 'lodash';
 
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { PhoneInputValueProp } from '@/components/Form/types';
 
 import { pushTo } from './history';
@@ -287,3 +288,6 @@ export const getBusinessAddress = (businessAddress: any) => {
   const state = businessAddress.state_name !== '' ? `${businessAddress.state_name},` : '';
   return `${businessAddress.address}, ${city} ${state} ${businessAddress.country_name}`;
 };
+
+export const getSelectedOptions = (options: CheckboxValue[], selectedIds: string[]) =>
+  options.filter((opt) => selectedIds.includes(String(opt.value)) || opt.value === 'other');
