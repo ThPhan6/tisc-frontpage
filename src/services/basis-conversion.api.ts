@@ -52,6 +52,7 @@ export async function getOneConversionMiddleware(id: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_CONVERSION_ERROR);
+      return {} as ConversionBodyProp;
     });
 }
 

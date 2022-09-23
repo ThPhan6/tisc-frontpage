@@ -89,5 +89,6 @@ export async function getOnePresetMiddleware(id: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_PRESET_ERROR);
+      return {} as PresetsValueProp;
     });
 }

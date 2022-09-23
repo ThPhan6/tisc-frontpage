@@ -88,6 +88,13 @@ const FORM_CONFIG = {
   },
 };
 
+const getSubItemValue = (valueItem: SubPresetValueProp | SubBasisOption) => ({
+  value_1: valueItem.value_1.trim(),
+  value_2: valueItem.value_2.trim(),
+  unit_1: valueItem.unit_1.trim(),
+  unit_2: valueItem.unit_2.trim(),
+});
+
 export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   const idItem = useGetParamId();
 
@@ -142,16 +149,19 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
         />
       );
     }
-    return type === 'presets' ? (
-      <PresetItem
-        key={index}
-        handleOnClickDelete={() => handleOnClickDelete(index)}
-        onChangeValue={(value) => {
-          handleOnChangeValue(value, index);
-        }}
-        value={item}
-      />
-    ) : (
+    if (type === 'presets') {
+      return (
+        <PresetItem
+          key={index}
+          handleOnClickDelete={() => handleOnClickDelete(index)}
+          onChangeValue={(value) => {
+            handleOnChangeValue(value, index);
+          }}
+          value={item}
+        />
+      );
+    }
+    return (
       <OptionItem
         key={index}
         optionIndex={index}
@@ -190,17 +200,6 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
     });
   };
 
-  const handleSubmit = idItem ? handleUpdate : handleCreate;
-
-  const getSubItemValue = (valueItem: any) => {
-    return {
-      value_1: valueItem.value_1.trim(),
-      value_2: valueItem.value_2.trim(),
-      unit_1: valueItem.unit_1.trim(),
-      unit_2: valueItem.unit_2.trim(),
-    };
-  };
-
   const onHandleSubmit = () => {
     const newSubs = data.subs.map((sub) => {
       if (type === 'conversions') {
@@ -213,7 +212,8 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           formula_1: sub.formula_1.trim(),
           formula_2: sub.formula_2.trim(),
         };
-      } else if (type === 'presets') {
+      }
+      if (type === 'presets') {
         return {
           ...sub,
           name: sub.name.trim(),
@@ -224,38 +224,37 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
             };
           }),
         };
-      } else {
-        const itemOptions: SubBasisOption[] = sub.subs.map((optionItem: SubBasisOption) => {
-          let requiredValue = {
-            ...getSubItemValue(optionItem),
-          };
-          /// if it has ID, include ID
-          if (optionItem.id) {
-            requiredValue = merge(requiredValue, { id: optionItem.id });
-          }
-          /// send image data if using image otherwise remove it
-          if (sub.is_have_image && optionItem.image) {
-            const imageData = optionItem.isBase64
-              ? optionItem.image.split(',')[1]
-              : optionItem.image;
-            requiredValue = merge(requiredValue, { image: imageData });
-          }
-          return requiredValue;
-        });
-        let newSubOption = {
-          name: sub.name.trim(),
-          subs: itemOptions,
-          is_have_image: sub.is_have_image ? true : false,
-        };
-        if (sub.id) {
-          newSubOption = merge(newSubOption, { id: sub.id });
-        }
-        return newSubOption;
       }
+
+      const itemOptions: SubBasisOption[] = sub.subs.map((optionItem: SubBasisOption) => {
+        let requiredValue = {
+          ...getSubItemValue(optionItem),
+        };
+        /// if it has ID, include ID
+        if (optionItem.id) {
+          requiredValue = merge(requiredValue, { id: optionItem.id });
+        }
+        /// send image data if using image otherwise remove it
+        if (sub.is_have_image && optionItem.image) {
+          const imageData = optionItem.isBase64 ? optionItem.image.split(',')[1] : optionItem.image;
+          requiredValue = merge(requiredValue, { image: imageData });
+        }
+        return requiredValue;
+      });
+      let newSubOption = {
+        name: sub.name.trim(),
+        subs: itemOptions,
+        is_have_image: sub.is_have_image ? true : false,
+      };
+      if (sub.id) {
+        newSubOption = merge(newSubOption, { id: sub.id });
+      }
+      return newSubOption;
     });
 
+    const handleSubmit = idItem ? handleUpdate : handleCreate;
+
     handleSubmit({
-      ...data,
       name: data.name.trim(),
       subs: newSubs,
     });
