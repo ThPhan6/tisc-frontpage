@@ -11,10 +11,11 @@ import { useBoolean } from '@/helper/hook';
 
 import { CategoryBodyProps, SubcategoryValueProps } from '@/features/categories/types';
 
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { CategoryEntryForm } from '@/features/categories/components/CategoryEntryForm';
+
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const CreateCategoryPage = () => {
   const [categoryValue, setCategoryValue] = useState<{
@@ -25,12 +26,11 @@ const CreateCategoryPage = () => {
     name: '',
     subs: [],
   });
-  const isLoading = useBoolean();
 
   const submitButtonStatus = useBoolean(false);
 
   const handleCreateCategory = (data: CategoryBodyProps) => {
-    isLoading.setValue(true);
+    showPageLoading();
     createCategoryMiddleware(data, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.CREATE_CATEGORY_SUCCESS);
@@ -42,7 +42,7 @@ const CreateCategoryPage = () => {
       } else {
         message.error(msg);
       }
-      isLoading.setValue(false);
+      hidePageLoading();
     });
   };
 
@@ -62,7 +62,6 @@ const CreateCategoryPage = () => {
           onCancel={handleCancel}
         />
       </div>
-      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

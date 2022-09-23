@@ -4,9 +4,17 @@
   margin-top: 8px;
   background-color: #fff;
   .header_main {
+    position: relative;
     .header_content {
       padding: 0 16px;
-      box-shadow: 0 0.7px 0 @mono-color;
+    }
+    .header_content::after {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 0.7px;
+      background: @mono-color;
+      content: '';
     }
     .header {
       display: flex;
@@ -34,7 +42,7 @@
   }
   .footer_content {
     padding: 0 16px;
-    box-shadow: @border-bottom;
+    box-shadow: 0 -0.7px 0 @mono-color;
   }
   .footer {
     display: flex;

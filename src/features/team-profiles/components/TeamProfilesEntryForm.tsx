@@ -4,15 +4,25 @@ import { DEFAULT_TEAMPROFILE, DEFAULT_TEAMPROFILE_WITH_GENDER } from '../constan
 import { BrandAccessLevelDataRole, TISCAccessLevelDataRole } from '../constants/role';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
-import { useHistory, useParams } from 'umi';
+import { message } from 'antd';
+import { useHistory } from 'umi';
 
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
-import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
-import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+import {
+  useBoolean,
+  useCheckPermission,
+  useCustomInitialState,
+  useGetParamId,
+} from '@/helper/hook';
+import {
+  getEmailMessageError,
+  getEmailMessageErrorType,
+  getValueByCondition,
+} from '@/helper/utils';
 import { getDepartmentList } from '@/services';
 
-import { TeamProfileDetailProps, TeamProfileRequestBody } from '../type';
+import { TeamProfileDetailProps, TeamProfileRequestBody } from '../types';
 import { useAppSelector } from '@/reducers';
 import { DepartmentData } from '@/types';
 
@@ -23,7 +33,6 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { Status } from '@/components/Form/Status';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
@@ -32,6 +41,7 @@ import BrandAccessLevelModal from './BrandAccessLevelModal';
 import LocationModal from './LocationModal';
 import TISCAccessLevelModal from './TISCAccessLevelModal';
 import styles from './TeamProfilesEntryForm.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const GenderRadio = [
   { label: 'Male', value: '1' },
@@ -41,34 +51,32 @@ const GenderRadio = [
 type FieldName = keyof TeamProfileDetailProps;
 
 const TeamProfilesEntryForm = () => {
-  const history = useHistory();
-  const params = useParams<{
-    id: string;
-  }>();
-  const userIdParam = params?.id || '';
-  const isUpdate = userIdParam ? true : false;
-
-  const { fetchUserInfo } = useCustomInitialState();
-
   const userProfileId = useAppSelector((state) => state.user.user?.id);
+  const { fetchUserInfo } = useCustomInitialState();
+  const history = useHistory();
+  const userIdParam = useGetParamId();
+  const isUpdate = userIdParam ? true : false;
 
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
   /// for access level
-  const accessLevelDataRole = isTISCAdmin
-    ? TISCAccessLevelDataRole
-    : isBrandAdmin
-    ? BrandAccessLevelDataRole
-    : [];
+  const accessLevelDataRole = getValueByCondition(
+    [
+      [isTISCAdmin, TISCAccessLevelDataRole],
+      [isBrandAdmin, BrandAccessLevelDataRole],
+    ],
+    [],
+  );
   /// for user role path
-  const userRolePath = isTISCAdmin
-    ? PATH.tiscTeamProfile
-    : isBrandAdmin
-    ? PATH.brandTeamProfile
-    : '';
+  const userRolePath = getValueByCondition(
+    [
+      [isTISCAdmin, PATH.tiscTeamProfile],
+      [isBrandAdmin, PATH.brandTeamProfile],
+    ],
+    '',
+  );
 
   const submitButtonStatus = useBoolean(false);
-  const isLoading = useBoolean(false);
   const [loadedData, setLoadedData] = useState(false);
   const [data, setData] = useState<TeamProfileDetailProps>(
     isUpdate ? DEFAULT_TEAMPROFILE : DEFAULT_TEAMPROFILE_WITH_GENDER,
@@ -76,16 +84,15 @@ const TeamProfilesEntryForm = () => {
 
   /// for department
   const [departments, setDepartments] = useState<DepartmentData[]>([]);
-  const [visible, setVisible] = useState({
-    workLocationModal: false,
-    accessModal: false,
-  });
+  const [openModal, setOpenModal] = useState<'' | 'workLocationModal' | 'accessModal'>('');
 
   const [workLocation, setWorkLocation] = useState({
     label: '',
     value: data.location_id,
     phoneCode: '00',
   });
+
+  const setVisibleModal = (visible: boolean) => (visible ? undefined : setOpenModal(''));
 
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({
@@ -118,9 +125,8 @@ const TeamProfilesEntryForm = () => {
     submitData: TeamProfileRequestBody,
     callBack?: (userIdParam: string) => void,
   ) => {
-    isLoading.setValue(true);
     createTeamProfile(submitData).then((teamProfile) => {
-      isLoading.setValue(false);
+      hidePageLoading();
       if (teamProfile) {
         submitButtonStatus.setValue(true);
         if (callBack) {
@@ -133,9 +139,8 @@ const TeamProfilesEntryForm = () => {
   };
 
   const handleUpdateData = (submitData: TeamProfileRequestBody) => {
-    isLoading.setValue(true);
     updateTeamProfile(userIdParam, submitData).then((isSuccess) => {
-      isLoading.setValue(false);
+      hidePageLoading();
       if (isSuccess) {
         submitButtonStatus.setValue(true);
         const isUpdateCurrentUser = userIdParam === userProfileId;
@@ -150,6 +155,16 @@ const TeamProfilesEntryForm = () => {
   };
 
   const handleSubmit = (callBack?: (id: string) => void) => {
+    /// check email
+    const invalidEmail = getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID);
+
+    if (invalidEmail) {
+      message.error(invalidEmail);
+      return;
+    }
+
+    showPageLoading();
+
     const body: TeamProfileRequestBody = {
       firstname: data.firstname?.trim() ?? '',
       lastname: data.lastname?.trim() ?? '',
@@ -258,12 +273,7 @@ const TeamProfilesEntryForm = () => {
           hasBoxShadow
           hasHeight
           rightIcon
-          onRightIconClick={() =>
-            setVisible({
-              workLocationModal: true,
-              accessModal: false,
-            })
-          }
+          onRightIconClick={() => setOpenModal('workLocationModal')}
           placeholder="select from list"
         />
         {/* Department */}
@@ -328,8 +338,8 @@ const TeamProfilesEntryForm = () => {
           }}
           onDelete={() => onChangeData('email', '')}
           placeholder="user work email"
-          message={emailMessageError(data.email, MESSAGE_ERROR.EMAIL_UNVALID)}
-          messageType={emailMessageErrorType(data.email, 'error', 'normal')}
+          message={getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
+          messageType={getEmailMessageErrorType(data.email, 'error', 'normal')}
         />
 
         {/* Work Phone */}
@@ -374,12 +384,7 @@ const TeamProfilesEntryForm = () => {
           customIcon={<InfoIcon className={styles.warning_icon} />}
           layout="vertical"
           formClass={`${styles.form_group} ${styles.access_label}`}
-          onClick={() =>
-            setVisible({
-              accessModal: true,
-              workLocationModal: false,
-            })
-          }>
+          onClick={() => setOpenModal('accessModal')}>
           <CustomRadio
             options={accessLevelDataRole}
             value={data.role_id}
@@ -400,43 +405,20 @@ const TeamProfilesEntryForm = () => {
       </EntryFormWrapper>
 
       {isTISCAdmin ? (
-        <TISCAccessLevelModal
-          visible={visible.accessModal}
-          setVisible={(visibled) =>
-            setVisible({
-              accessModal: visibled,
-              workLocationModal: false,
-            })
-          }
-        />
+        <TISCAccessLevelModal visible={openModal === 'accessModal'} setVisible={setVisibleModal} />
       ) : null}
 
       {isBrandAdmin ? (
-        <BrandAccessLevelModal
-          visible={visible.accessModal}
-          setVisible={(visibled) =>
-            setVisible({
-              accessModal: visibled,
-              workLocationModal: false,
-            })
-          }
-        />
+        <BrandAccessLevelModal visible={openModal === 'accessModal'} setVisible={setVisibleModal} />
       ) : null}
 
       {/* Location Modal */}
       <LocationModal
-        visible={visible.workLocationModal}
-        setVisible={(visibled) =>
-          setVisible({
-            accessModal: false,
-            workLocationModal: visibled,
-          })
-        }
+        visible={openModal === 'workLocationModal'}
+        setVisible={setVisibleModal}
         workLocation={workLocation}
         setWorkLocation={setWorkLocation}
       />
-
-      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

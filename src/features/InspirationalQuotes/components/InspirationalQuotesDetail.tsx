@@ -8,11 +8,11 @@ import { createQuotation, getOneQuotation, updateQuotation } from '@/services';
 
 import { Quotation } from '@/types';
 
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { InspirationalQuotationEntryForm } from './InspirationalQuotesEntryForm';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const DEFAULT_INPUT: Quotation = {
   author: '',
@@ -21,7 +21,6 @@ const DEFAULT_INPUT: Quotation = {
 };
 
 const UpdateQuotationPage = () => {
-  const isLoading = useBoolean();
   const submitButtonStatus = useBoolean(false);
   const idQuotation = useGetParamId();
   const isUpdate = idQuotation ? true : false;
@@ -53,11 +52,11 @@ const UpdateQuotationPage = () => {
   };
 
   const onSubmit = (data: Quotation) => {
-    isLoading.setValue(true);
+    showPageLoading();
 
     if (isUpdate) {
       updateQuotation(idQuotation, data).then((isSuccess) => {
-        isLoading.setValue(false);
+        hidePageLoading();
         if (isSuccess) {
           submitButtonStatus.setValue(true);
           setTimeout(() => {
@@ -67,7 +66,7 @@ const UpdateQuotationPage = () => {
       });
     } else {
       createQuotation(data).then((isSuccess) => {
-        isLoading.setValue(false);
+        hidePageLoading();
         if (isSuccess) {
           submitButtonStatus.setValue(true);
           setTimeout(() => {
@@ -88,7 +87,6 @@ const UpdateQuotationPage = () => {
         onSubmit={onSubmit}
         submitButtonStatus={submitButtonStatus.value}
       />
-      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

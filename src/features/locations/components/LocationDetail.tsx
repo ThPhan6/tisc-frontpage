@@ -4,28 +4,34 @@ import { PATH } from '@/constants/path';
 
 import { pushTo } from '@/helper/history';
 import { useBoolean, useCheckPermission, useGetParamId } from '@/helper/hook';
+import { getValueByCondition } from '@/helper/utils';
 
 import { LocationForm } from '../type';
 
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { createLocation, getLocationById, updateLocation } from '../api';
 import LocationEntryForm from './LocationEntryForm';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const LocationDetail = () => {
+  const submitButtonStatus = useBoolean(false);
+
   const locationId = useGetParamId();
   // for checking updating action
   const isUpdate = locationId ? true : false;
 
-  const submitButtonStatus = useBoolean(false);
-  const isLoading = useBoolean();
-
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
   /// for user role path
-  const userRolePath = isTISCAdmin ? PATH.tiscLocation : isBrandAdmin ? PATH.brandLocation : '';
+  const userRolePath = getValueByCondition(
+    [
+      [isTISCAdmin, PATH.tiscLocation],
+      [isBrandAdmin, PATH.brandLocation],
+    ],
+    '',
+  );
 
   const [loadedData, setLoadedData] = useState(false);
 
@@ -47,11 +53,11 @@ const LocationDetail = () => {
   };
 
   const onSubmit = (submitData: LocationForm) => {
-    isLoading.setValue(true);
+    showPageLoading();
 
     if (isUpdate) {
       updateLocation(locationId, submitData).then((isSuccess) => {
-        isLoading.setValue(false);
+        hidePageLoading();
         if (isSuccess) {
           submitButtonStatus.setValue(true);
           setTimeout(() => {
@@ -61,7 +67,7 @@ const LocationDetail = () => {
       });
     } else {
       createLocation(submitData).then((isSuccess) => {
-        isLoading.setValue(false);
+        hidePageLoading();
         if (isSuccess) {
           submitButtonStatus.setValue(true);
           setTimeout(() => {
@@ -108,7 +114,6 @@ const LocationDetail = () => {
         data={data}
         setData={setData}
       />
-      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

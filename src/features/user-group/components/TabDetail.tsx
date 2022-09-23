@@ -11,7 +11,6 @@ import { KeyValueData } from '@/types';
 
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { CustomRadio } from '@/components/CustomRadio';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabs } from '@/components/Tabs';
 import { BodyText, MainTitle } from '@/components/Typography';
@@ -27,7 +26,6 @@ interface TabDetailProps {
   data: BrandDesignProfile;
   setData: (data: BrandDesignProfile) => void;
   buttonStatus: boolean;
-  isLoading: boolean;
   statuses: KeyValueData[];
   toolTipTitle: string | React.ReactNode;
 }
@@ -41,7 +39,6 @@ const TabDetail: FC<TabDetailProps> = ({
   setData,
   buttonStatus,
   statuses,
-  isLoading,
   toolTipTitle,
   listTab,
 }) => {
@@ -92,8 +89,6 @@ const TabDetail: FC<TabDetailProps> = ({
           </div>
         </div>
       </div>
-
-      {isLoading ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

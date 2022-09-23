@@ -2,6 +2,8 @@ import { FC, useEffect, useState } from 'react';
 
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
+import { getBusinessAddress } from '@/helper/utils';
+
 import { OnChangeSpecifyingProductFnc } from './types';
 import { RadioValue } from '@/components/CustomRadio/types';
 import { DistributorProductMarket } from '@/features/distributors/type';
@@ -17,12 +19,6 @@ import styles from './styles/vendor-tab.less';
 import { getBrandLocation, getDistributorLocation } from '@/features/locations/api';
 
 const activeKey = '1';
-
-const getBusinessAddress = (businessAddress: any) => {
-  const city = businessAddress.city_name !== '' ? `${businessAddress.city_name},` : '';
-  const state = businessAddress.state_name !== '' ? `${businessAddress.state_name},` : '';
-  return `${businessAddress.address}, ${city} ${state} ${businessAddress.country_name}`;
-};
 
 const getSelectedLocation = (locationGroup: LocationGroupedByCountry[], selectedId: string) => {
   const allLocations = locationGroup.flatMap((el) => el.locations);
