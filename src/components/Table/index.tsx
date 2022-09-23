@@ -141,9 +141,10 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
 
   const formatPaginationParams = (params: PaginationParams) => {
     const { sorter, filter } = params;
-    //show page number and return prev page when deleted last item in current page
+    //show page number and return prev page when deleted last item in last page
+    const haveOneRowLeft = Number(params.pagination.total) % DEFAULT_PAGESIZE === 1;
     const pageNumber =
-      Number(params.pagination.total) % DEFAULT_PAGESIZE === 1 && params.pagination.current !== 1
+      haveOneRowLeft && params.pagination.current !== 1
         ? Number(params.pagination.current) - 1
         : params.pagination.current ?? DEFAULT_PAGE_NUMBER;
 
