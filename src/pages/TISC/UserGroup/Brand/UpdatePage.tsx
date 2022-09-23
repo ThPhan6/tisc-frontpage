@@ -24,15 +24,16 @@ import {
 import { KeyValueData } from '@/types';
 
 import { CustomTabPane } from '@/components/Tabs';
-import BrandAvailabilityDetail from '@/features/user-group/components/Availability';
-import BrandDistributorDetail from '@/features/user-group/components/Distributor';
-import LocationDetail from '@/features/user-group/components/Location';
+import BrandAvailabilityDetail from '@/features/user-group/components/AvailabilityDetail';
+import BrandDistributorDetail from '@/features/user-group/components/DistributorDetail';
+import { LocationDetail } from '@/features/user-group/components/LocationDetail';
 import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
-import ProfileDetail from '@/features/user-group/components/Profile';
+import { ProfileDetail } from '@/features/user-group/components/ProfileDetail';
 import TabDetail from '@/features/user-group/components/TabDetail';
 import TeamDetail from '@/features/user-group/components/Team';
 import TooltipLabel from '@/features/user-group/components/TooltipLabel';
 
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import styles from '@/features/user-group/styles/index.less';
 
 const BrandTabs: TabItem[] = [
@@ -46,7 +47,7 @@ const BrandTabs: TabItem[] = [
 const UpdatePage = () => {
   const [selectedTab, setSelectedTab] = useState<TabKeys>(BrandTabKeys.profile);
   const buttonStatus = useBoolean();
-  const isLoading = useBoolean();
+
   const [statuses, setStatuses] = useState<KeyValueData[]>([]);
   const [data, setData] = useState<BrandDesignProfile>(DEFAULT_BRAND_DESIGN_PROFILE);
 
@@ -75,9 +76,9 @@ const UpdatePage = () => {
   };
 
   const handleSaveButton = () => {
-    isLoading.setValue(true);
+    showPageLoading();
     updateBrandStatus(brandId, { status: data.status }).then((isSuccess) => {
-      isLoading.setValue(false);
+      hidePageLoading();
       if (isSuccess) {
         buttonStatus.setValue(true);
         setTimeout(() => {
@@ -88,52 +89,53 @@ const UpdatePage = () => {
   };
 
   return (
-    <PageContainer pageHeaderRender={() => <MenuHeaderSummary type="brand" />}>
-      <TabDetail
-        selectedTab={selectedTab}
-        setSelectedTab={setSelectedTab}
-        handleGoBackToTable={goBackToBrandList}
-        handleSaveButton={handleSaveButton}
-        listTab={BrandTabs}
-        data={data}
-        setData={setData}
-        buttonStatus={buttonStatus.value}
-        isLoading={isLoading.value}
-        statuses={statuses}
-        toolTipTitle={
-          <table className={styles.tooltip}>
-            <TooltipLabel statusText="Pending" plainText="Waiting user activate" />
-            <TooltipLabel statusText="Active" plainText="Full activated" />
-            <TooltipLabel statusText="Inactive" plainText="Temporarily removed" />
-          </table>
-        }
-      />
+    <div className={styles.userGroup}>
+      <PageContainer pageHeaderRender={() => <MenuHeaderSummary type="brand" />}>
+        <TabDetail
+          selectedTab={selectedTab}
+          setSelectedTab={setSelectedTab}
+          handleGoBackToTable={goBackToBrandList}
+          handleSaveButton={handleSaveButton}
+          listTab={BrandTabs}
+          data={data}
+          setData={setData}
+          buttonStatus={buttonStatus.value}
+          statuses={statuses}
+          toolTipTitle={
+            <table className={styles.tooltip}>
+              <TooltipLabel statusText="Pending" plainText="Waiting user activate" />
+              <TooltipLabel statusText="Active" plainText="Full activated" />
+              <TooltipLabel statusText="Inactive" plainText="Temporarily removed" />
+            </table>
+          }
+        />
 
-      {/* profile */}
-      <CustomTabPane active={selectedTab === BrandTabKeys.profile}>
-        <ProfileDetail type="brand" data={data} />
-      </CustomTabPane>
+        {/* profile */}
+        <CustomTabPane active={selectedTab === BrandTabKeys.profile}>
+          <ProfileDetail type="brand" data={data} />
+        </CustomTabPane>
 
-      {/* location */}
-      <CustomTabPane active={selectedTab === BrandTabKeys.locations}>
-        <LocationDetail type="brand" id={brandId} />
-      </CustomTabPane>
+        {/* location */}
+        <CustomTabPane active={selectedTab === BrandTabKeys.locations}>
+          <LocationDetail type="brand" id={brandId} />
+        </CustomTabPane>
 
-      {/* team */}
-      <CustomTabPane active={selectedTab === BrandTabKeys.teams}>
-        <TeamDetail type="brand" id={brandId} />
-      </CustomTabPane>
+        {/* team */}
+        <CustomTabPane active={selectedTab === BrandTabKeys.teams}>
+          <TeamDetail type="brand" id={brandId} />
+        </CustomTabPane>
 
-      {/* distributors */}
-      <CustomTabPane active={selectedTab === BrandTabKeys.distributors}>
-        <BrandDistributorDetail id={brandId} />
-      </CustomTabPane>
+        {/* distributors */}
+        <CustomTabPane active={selectedTab === BrandTabKeys.distributors}>
+          <BrandDistributorDetail id={brandId} />
+        </CustomTabPane>
 
-      {/* availability */}
-      <CustomTabPane active={selectedTab === BrandTabKeys.availability}>
-        <BrandAvailabilityDetail id={brandId} />
-      </CustomTabPane>
-    </PageContainer>
+        {/* availability */}
+        <CustomTabPane active={selectedTab === BrandTabKeys.availability}>
+          <BrandAvailabilityDetail id={brandId} />
+        </CustomTabPane>
+      </PageContainer>
+    </div>
   );
 };
 

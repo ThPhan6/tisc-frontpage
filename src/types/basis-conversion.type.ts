@@ -55,12 +55,4 @@ export const conversionValueDefault: ConversionSubValueProps = {
   unit_2: '',
 };
 
-export interface ConversionsEntryFormProps {
-  onCancel?: () => void;
-  onSubmit?: (data: ConversionValueProp) => void;
-  conversionValue: ConversionValueProp;
-  setConversionValue: (value: ConversionValueProp) => void;
-  submitButtonStatus?: boolean;
-}
-
 export interface ConversionBodyProp extends ConversionValueProp {}

@@ -8,36 +8,49 @@ import type { CustomTextAreaProps } from './types';
 
 import style from './styles/TextArea.less';
 
+const minRows = 5;
+const maxRows = 10;
+const defaultHeight = 32;
+
 export const CustomTextArea: FC<CustomTextAreaProps> = ({
   borderBottomColor = 'mono',
   maxLength,
-  maxHeight,
-  defaultHeight,
-  children,
   boxShadow,
+  autoResize,
   ...props
 }) => {
   const textarea: any = useRef();
   const [height, setHeight] = useState<string | number | undefined>(defaultHeight);
-  // const [checkedOverflow, setCheckedOverflow] = useState<string>('hidden');
 
   useEffect(() => {
     let contentHeight = textarea.current.resizableTextArea.textArea.scrollHeight;
 
-    if (!maxHeight || !defaultHeight || props.value === '') {
+    if (props.value === '') {
       contentHeight = defaultHeight;
     }
-    // if (maxHeight && contentHeight < maxHeight) {
-    // contentHeight = contentHeight;
-    // setCheckedOverflow('hidden');
-    // }
-    // else {
-    // contentHeight = maxHeight;
-    // setCheckedOverflow('hidden auto');
-    // }
 
     setHeight(contentHeight);
   }, [props.value]);
+
+  const handleResize = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!autoResize) return;
+
+    const previousRows = event.target.rows;
+    event.target.rows = minRows; // reset number of rows in textarea
+
+    const currentRows = ~~(event.target.scrollHeight / defaultHeight);
+
+    if (currentRows === previousRows) {
+      event.target.rows = currentRows;
+    }
+
+    if (currentRows >= maxRows) {
+      event.target.rows = maxRows;
+      event.target.scrollTop = event.target.scrollHeight;
+    }
+
+    setHeight(currentRows < maxRows ? currentRows : maxRows);
+  };
 
   return (
     <div
@@ -47,12 +60,13 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
         ${boxShadow ? style.boxShadow : ''}
       `}>
       <Input.TextArea
-        ref={textarea}
-        style={{ height: height /* , overflow: checkedOverflow  */ }}
-        maxLength={maxLength ? maxLength : 100}
         {...props}
+        ref={textarea}
+        maxLength={maxLength}
+        style={{ height: autoResize ? height : undefined }}
         onChange={(e) => {
           e.target.value = trimStart(e.target.value);
+          handleResize(e);
           if (props.onChange) {
             props.onChange(e);
           }

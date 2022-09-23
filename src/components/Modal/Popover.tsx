@@ -1,8 +1,7 @@
 import type { FC, ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 
-import { Modal } from 'antd';
-import { Empty } from 'antd';
+import { Empty, Modal } from 'antd';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
@@ -202,11 +201,35 @@ const Popover: FC<PopoverProps> = ({
     setVisible(false);
   };
 
+  const renderButtonFooter = () => {
+    return submitButtonStatus ? (
+      <CustomButton
+        size="small"
+        variant="primary"
+        properties="rounded"
+        buttonClass={styles.submitButton}
+        icon={<CheckSuccessIcon />}
+      />
+    ) : (
+      <CustomButton
+        size="small"
+        variant="primary"
+        properties="rounded"
+        buttonClass="done-btn"
+        onClick={handleDone}>
+        Done
+      </CustomButton>
+    );
+  };
+
   return (
     <div>
       <Modal
         title={
-          <MainTitle level={3} customClass="text-uppercase">
+          <MainTitle
+            level={3}
+            customClass={`text-uppercase text-overflow ${styles.headingTitle}`}
+            style={{ maxWidth: '95%' }}>
             {title}
           </MainTitle>
         }
@@ -214,27 +237,8 @@ const Popover: FC<PopoverProps> = ({
         visible={visible}
         onCancel={onCancel}
         width={576}
-        closeIcon={<CloseIcon />}
-        footer={
-          noFooter ? null : submitButtonStatus ? (
-            <CustomButton
-              size="small"
-              variant="primary"
-              properties="rounded"
-              buttonClass={styles.submitButton}
-              icon={<CheckSuccessIcon />}
-            />
-          ) : (
-            <CustomButton
-              size="small"
-              variant="primary"
-              properties="rounded"
-              buttonClass="done-btn"
-              onClick={handleDone}>
-              Done
-            </CustomButton>
-          )
-        }
+        closeIcon={<CloseIcon style={{ color: '#000' }} />}
+        footer={noFooter ? null : renderButtonFooter()}
         className={`${styles.customPopover} ${className ?? ''}`}>
         {extraTopAction}
         {renderChildren()}

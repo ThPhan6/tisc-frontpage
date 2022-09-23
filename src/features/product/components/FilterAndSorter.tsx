@@ -8,7 +8,13 @@ import { useHistory } from 'umi';
 import { getProductCategoryPagination } from '@/features/categories/services';
 import { getBrandPagination } from '@/features/user-group/services';
 import { useQuery } from '@/helper/hook';
-import { removeUrlParams, setUrlParams, showImageUrl, updateUrlParams } from '@/helper/utils';
+import {
+  getValueByCondition,
+  removeUrlParams,
+  setUrlParams,
+  showImageUrl,
+  updateUrlParams,
+} from '@/helper/utils';
 
 import { setProductList, setProductListSorter } from '../reducers';
 import { SortOrder } from '../types';
@@ -154,13 +160,14 @@ const updateQueryToState = (query: {
 }) => {
   if (!query) return;
 
-  const name = query.cate_id
-    ? 'category_id'
-    : query.coll_id
-    ? 'collection_id'
-    : query.brand_id
-    ? 'brand_id'
-    : undefined;
+  const name = getValueByCondition(
+    [
+      [query.cate_id, 'category_id'],
+      [query.coll_id, 'collection_id'],
+      [query.brand_id, 'brand_id'],
+    ],
+    undefined,
+  );
 
   store.dispatch(
     setProductList({

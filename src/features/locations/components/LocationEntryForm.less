@@ -1,13 +1,31 @@
 .formGroup {
   margin-bottom: 16px;
+  :global(.ant-collapse-header) {
+    height: 32px !important;
+  }
+  &.activeFunctionType {
+    :global(.function-type-placeholder) {
+      display: -webkit-box;
+      overflow: hidden;
+      color: @primary-color-dark;
+      text-overflow: ellipsis;
+      word-break: break-all;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+    }
+  }
 }
 .phoneInputCustom {
   :global(.phone-input-custom-text) {
     color: @primary-color-dark;
   }
 }
-.address {
-  :global(.ant-input) {
-    padding: 0 16px;
+
+.addressForm {
+  margin-bottom: 40px;
+  .address {
+    :global(.ant-input) {
+      padding: 0 16px;
+    }
   }
 }

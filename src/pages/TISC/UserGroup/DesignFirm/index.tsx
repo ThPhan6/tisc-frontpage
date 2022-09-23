@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 
 import { PATH } from '@/constants/path';
-import { DESIGN_STATUSES } from '@/constants/util';
+import { DESIGN_STATUSES_TEXTS } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
 
 import { getDesignFirmPagination } from '@/features/user-group/services';
@@ -52,15 +52,7 @@ const DesignFirmList: React.FC = () => {
       title: 'Status',
       dataIndex: 'status',
       render: (value) => {
-        return (
-          <span>
-            {value === DESIGN_STATUSES.ACTIVE
-              ? 'Active'
-              : value === DESIGN_STATUSES.INACTIVE
-              ? 'Inactive'
-              : ''}
-          </span>
-        );
+        return <span>{DESIGN_STATUSES_TEXTS[value]}</span>;
       },
     },
     {

@@ -18,7 +18,8 @@ import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 const COL_WIDTH_BRAND = {
   brand: 124,
   collection: 143,
-  productId: 93,
+  productName: 93,
+  variant: 150,
   status: 130,
 };
 
@@ -27,7 +28,9 @@ interface BrandListProps {
 }
 
 const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
-  useAutoExpandNestedTableColumn(COL_WIDTH_BRAND.brand);
+  useAutoExpandNestedTableColumn(1, {
+    rightColumnExcluded: 3,
+  });
   const tableRef = useRef<any>();
   const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
@@ -38,17 +41,19 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       sorter: true,
       width: COL_WIDTH_BRAND.brand,
       isExpandable: true,
-      render: (value, record) => <span>{record.name}</span>,
+      render: (_value, record) => <span>{record.name}</span>,
     },
     {
       title: 'Collection',
       width: COL_WIDTH_BRAND.collection,
     },
-    { title: 'Product' },
-    { title: 'Option/Variant' },
+    {
+      title: 'Product',
+      width: COL_WIDTH_BRAND.productName,
+    },
+    { title: 'Option/Variant', width: COL_WIDTH_BRAND.variant },
     {
       title: 'Product ID',
-      width: COL_WIDTH_BRAND.productId,
     },
     {
       title: 'Count',
@@ -72,7 +77,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
           return (
             <img
               src={showImageUrl(value)}
-              style={{ width: 18, height: 18, objectFit: 'contain' }}
+              style={{ width: 24, height: 24, objectFit: 'contain' }}
             />
           );
         }
@@ -83,25 +88,26 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       title: 'Collection',
       dataIndex: 'collection_name',
       noBoxShadow: true,
-      width: COL_WIDTH_BRAND.collection,
       onCell: onCellCancelled,
+      width: COL_WIDTH_BRAND.collection,
     },
     {
       title: 'Product',
       dataIndex: 'name',
       noBoxShadow: true,
       onCell: onCellCancelled,
+      width: COL_WIDTH_BRAND.productName,
     },
     {
       title: 'Option/Variant',
       dataIndex: 'variant',
       noBoxShadow: true,
       onCell: onCellCancelled,
+      width: COL_WIDTH_BRAND.variant,
     },
     {
       title: 'ProductID',
       noBoxShadow: true,
-      width: COL_WIDTH_BRAND.productId,
       dataIndex: 'product_id',
       onCell: onCellCancelled,
     },
@@ -143,6 +149,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
           columns: CollectionColumns,
           childrenColumnName: 'products',
           rowKey: 'specified_product_id',
+          level: 2,
         })}
       />
 

@@ -40,4 +40,5 @@ export interface UserDetail {
   work_location: string;
   type: number;
   retrieve_favourite: boolean;
+  phone_code: string;
 }

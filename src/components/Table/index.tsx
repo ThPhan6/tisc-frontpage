@@ -20,6 +20,7 @@ import TableSummary from './components/TableSummary';
 
 import { TableHeader } from './TableHeader';
 import styles from './styles/table.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 // start expandable table
 interface ExpandableTableConfig {
@@ -64,7 +65,7 @@ export const GetExpandableTableConfig = (props: ExpandableTableConfig): Expandab
           pagination={false}
           columns={columns}
           rowKey={rowKey}
-          rowClassName={level === 2 ? 'custom-expanded-level-2' : ''}
+          rowClassName={level && level > 1 ? `custom-expanded-level-${level}` : ''}
           tableLayout="auto"
           expandable={
             subtituteChildrenColumnName && record[subtituteChildrenColumnName]
@@ -129,7 +130,6 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const [data, setData] = useState<any>([]);
   const [summary, setSummary] = useState<SummaryResponse[]>([]);
   const [currentSorter, setCurrentSorter] = useState<SorterResult<any> | SorterResult<any>[]>([]);
-  const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: DEFAULT_PAGE_NUMBER,
     pageSize: DEFAULT_PAGESIZE,
@@ -138,12 +138,18 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const customExpandable = props.expandableConfig
     ? GetExpandableTableConfig(props.expandableConfig)
     : undefined;
-  // console.log('customExpandable', props.expandableConfig, customExpandable);
 
   const formatPaginationParams = (params: PaginationParams) => {
     const { sorter, filter } = params;
+    //show page number and return prev page when deleted last item in last page
+    const haveOneRowLeft = Number(params.pagination.total) % DEFAULT_PAGESIZE === 1;
+    const pageNumber =
+      haveOneRowLeft && params.pagination.current !== 1
+        ? Number(params.pagination.current) - 1
+        : params.pagination.current ?? DEFAULT_PAGE_NUMBER;
+
     const paginationParams: PaginationRequestParams = {
-      page: params.pagination.current ?? DEFAULT_PAGE_NUMBER,
+      page: pageNumber,
       pageSize: params.pagination.pageSize ?? DEFAULT_PAGESIZE,
       ...extraParams,
     };
@@ -184,11 +190,12 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   };
 
   const fetchData = (params: PaginationParams) => {
-    setLoading(true);
+    showPageLoading();
     fetchDataFunc(formatPaginationParams(params), (response) => {
       setData(response.data ?? []);
       setSummary(response.summary ?? []);
-      setLoading(false);
+      hidePageLoading();
+
       if (response.pagination) {
         setPagination(response.pagination);
       }
@@ -228,13 +235,9 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
 
   return (
     <div className={`${styles.customTable} ${customExpandable ? styles['sub-grid'] : ''}`}>
-      {title && (
-        <TableHeader
-          title={title}
-          rightAction={rightAction}
-          customClass={customClass ? customClass : ''}
-        />
-      )}
+      {title ? (
+        <TableHeader title={title} rightAction={rightAction} customClass={customClass || ''} />
+      ) : null}
 
       <Table
         columns={columns}
@@ -246,7 +249,6 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         }}
         dataSource={data}
         pagination={pagination}
-        loading={loading}
         onChange={handleTableChange}
         showSorterTooltip={false}
         sortDirections={['ascend', 'descend', 'ascend']}

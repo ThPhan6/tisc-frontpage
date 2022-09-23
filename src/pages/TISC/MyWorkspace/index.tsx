@@ -6,10 +6,10 @@ import { getFullName } from '@/helper/utils';
 import { BrandCard, BrandCardTeam } from '@/features/user-group/types';
 
 import LoadingPage from '@/components/LoadingPage';
-import { ProfileIcon } from '@/components/ProfileIcon';
+import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
 
-import styles from './styles/index.less';
+import styles from './index.less';
 
 const MyWorkspace: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -78,9 +78,14 @@ const MyWorkspace: React.FC = () => {
                 <BodyText level={5} customClass={styles.team}>
                   Teams:
                 </BodyText>
-                {brand.teams.map((user: BrandCardTeam) => {
-                  return <ProfileIcon key={user.id} name={getFullName(user)} />;
-                })}
+                {brand.teams.map((user: BrandCardTeam) => (
+                  <TeamIcon
+                    key={user.id}
+                    avatar={user.avatar}
+                    name={getFullName(user)}
+                    customClass={styles.avatar}
+                  />
+                ))}
               </div>
             </div>
           </div>

@@ -68,6 +68,13 @@ export const renderStatusDropdown =
       },
     ];
 
+    const renderStatus = () => {
+      if (record.status === SpecifyStatus.Specified) {
+        return 'Specified';
+      }
+      return record.status === SpecifyStatus['Re-specified'] ? 'Re-specified' : 'Cancelled';
+    };
+
     return (
       <CustomDropDown
         arrow
@@ -76,11 +83,7 @@ export const renderStatusDropdown =
         items={menuItems}
         menuStyle={{ width: 160, height: 'auto' }}
         labelProps={{ className: 'flex-between' }}>
-        {record.status === SpecifyStatus.Specified
-          ? 'Specified'
-          : record.status === SpecifyStatus['Re-specified']
-          ? 'Re-specified'
-          : 'Cancelled'}
+        {renderStatus()}
       </CustomDropDown>
     );
   };

@@ -8,6 +8,7 @@ import { getProductListByBrandId, getProductSummary } from '@/features/product/s
 import { setProductList } from '@/features/product/reducers';
 import type { ProductGetListParameter } from '@/features/product/types';
 import { useAppSelector } from '@/reducers';
+import { GeneralData } from '@/types';
 
 import {
   CollapseProductList,
@@ -58,6 +59,33 @@ const BrandProductListPage: React.FC = () => {
     }
   }, [filter]);
 
+  const renderFilterDropdown = (value: 'category_id' | 'collection_id') => {
+    if (filter?.name === value) {
+      return <FilterItem title={filter.title} onDelete={resetProductFilter} />;
+    }
+    return userBrand ? 'view' : <span style={{ opacity: 0 }}>.</span>;
+  };
+
+  const renderItemTopBar = (type: 'Categories' | 'Collections') => {
+    const valueItem: GeneralData[] | undefined =
+      type === 'Categories' ? summary?.categories : summary?.collections;
+    return valueItem ? (
+      <CustomDropDown
+        items={
+          type === 'Categories'
+            ? formatAllCategoriesToDropDownData(valueItem)
+            : formatAllCollectionsToDropDownData(valueItem)
+        }
+        viewAllTop
+        placement="bottomRight"
+        menuStyle={{ height: 'auto', width: 240 }}>
+        {type}
+      </CustomDropDown>
+    ) : (
+      `${type}`
+    );
+  };
+
   const renderPageHeader = () => (
     <TopBarContainer
       LeftSideContent={
@@ -91,57 +119,17 @@ const BrandProductListPage: React.FC = () => {
       RightSideContent={
         <>
           <TopBarItem
-            topValue={
-              filter?.name === 'category_id' ? (
-                <FilterItem title={filter.title} onDelete={resetProductFilter} />
-              ) : userBrand ? (
-                'view'
-              ) : (
-                <span style={{ opacity: 0 }}>.</span>
-              )
-            }
+            topValue={renderFilterDropdown('category_id')}
             disabled
             bottomEnable={summary ? true : false}
-            bottomValue={
-              summary?.categories ? (
-                <CustomDropDown
-                  items={formatAllCategoriesToDropDownData(summary.categories)}
-                  viewAllTop
-                  placement="bottomRight"
-                  menuStyle={{ height: 'auto', width: 240 }}>
-                  Categories
-                </CustomDropDown>
-              ) : (
-                'Categories'
-              )
-            }
+            bottomValue={renderItemTopBar('Categories')}
             customClass="left-divider"
           />
           <TopBarItem
-            topValue={
-              filter?.name === 'collection_id' ? (
-                <FilterItem title={filter.title} onDelete={resetProductFilter} />
-              ) : userBrand ? (
-                'view'
-              ) : (
-                <span style={{ opacity: 0 }}>.</span>
-              )
-            }
+            topValue={renderFilterDropdown('collection_id')}
             disabled
             bottomEnable={summary ? true : false}
-            bottomValue={
-              summary?.collections ? (
-                <CustomDropDown
-                  items={formatAllCollectionsToDropDownData(summary.collections)}
-                  viewAllTop
-                  placement="bottomRight"
-                  menuStyle={{ height: 'auto', width: 240 }}>
-                  Collections
-                </CustomDropDown>
-              ) : (
-                'Collections'
-              )
-            }
+            bottomValue={renderItemTopBar('Collections')}
             customClass="left-divider collection"
           />
         </>

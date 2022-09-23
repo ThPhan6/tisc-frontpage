@@ -62,7 +62,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     onChange?.(newData ?? []);
   };
 
-  const renderActiveClass = (option: CheckboxValue) => {
+  const getActiveClass = (option: CheckboxValue) => {
     if (selected?.find((itemSelected) => itemSelected.value == option.value)) {
       return 'item-option-checked';
     }
@@ -89,7 +89,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                 className={`${style['item-wrapper']} ${'item-wrapper-custom'}`}
                 style={{ minHeight: heightItem }}
                 htmlFor={`${option.value}_${index}_${randomId}`}>
-                <div style={{ width: '100%' }} className={renderActiveClass(option)}>
+                <div style={{ width: '100%' }} className={getActiveClass(option)}>
                   {option.label}
                 </div>
                 <Checkbox id={`${option.value}_${index}_${randomId}`} {...option} />
@@ -98,8 +98,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
               <div
                 className={`${style['item-checkbox']} ${'item-wrapper-checkbox'}`}
                 style={{ minHeight: heightItem }}>
-                <Checkbox {...option}>
-                  <span className={renderActiveClass(option)}>{option.label}</span>
+                <Checkbox {...option} style={{ maxWidth: '100%' }}>
+                  <span className={getActiveClass(option)}>{option.label}</span>
                 </Checkbox>
               </div>
             )}

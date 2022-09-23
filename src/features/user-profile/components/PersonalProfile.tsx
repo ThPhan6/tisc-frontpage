@@ -1,11 +1,11 @@
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constants/message';
 import { AVATAR_ACCEPT_TYPES, STATUS_RESPONSE } from '@/constants/util';
 import { Tooltip, Upload, UploadProps, message } from 'antd';
 
+import UserIcon from '@/assets/icons/avatar-default.svg';
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
-import UserIcon from '@/assets/icons/ic-user.svg';
 import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
@@ -25,19 +25,13 @@ import { PhoneInput } from '@/components/Form/PhoneInput';
 import { BodyText, Title } from '@/components/Typography';
 
 import styles from './PersonalProfile.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 export type PersonalProfileState = {
   backupEmail: string;
   phoneNumber: string;
   linkedin: string;
 };
-
-export interface PersonalProfileProps {
-  isLoading: {
-    value: boolean;
-    setValue: (value: boolean) => void;
-  };
-}
 
 const interestedData = [
   { label: 'Brand Factory/Showroom Visits', value: 0 },
@@ -50,7 +44,7 @@ const interestedData = [
   { label: 'Product Recommendations/Updates', value: 4 },
 ];
 
-export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
+export const PersonalProfile = () => {
   const [fileInput, setFileInput] = useState<any>();
   const { fetchUserInfo, currentUser } = useCustomInitialState();
   const submitButtonStatus = useBoolean();
@@ -74,8 +68,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
   const handleUpdateAvatar = (avtFile: File) => {
     const formData = new FormData();
     formData.append('avatar', avtFile);
-    console.log('avtFile', avtFile);
-    isLoading.setValue(true);
+    showPageLoading();
     updateAvatarTeamProfile(formData, (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.UPDATE_AVATAR_SUCCESS);
@@ -84,7 +77,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
         message.error(msg || MESSAGE_NOTIFICATION.UPDATE_AVATAR_ERROR);
         setFileInput(undefined);
       }
-      isLoading.setValue(false);
+      hidePageLoading();
     });
   };
 
@@ -119,7 +112,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
       }
       setFileInput(file);
       handleUpdateAvatar(file);
-      return false;
+      return true;
     },
     multiple: false,
     showUploadList: false,
@@ -127,7 +120,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
   };
 
   const handleSubmit = () => {
-    isLoading.setValue(true);
+    showPageLoading();
     updateTeamProfile(
       {
         backup_email: inputValue.backupEmail.trim(),
@@ -148,7 +141,7 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
         } else {
           message.error(msg || MESSAGE_NOTIFICATION.UPDATE_PERSONAL_PROFILE_ERROR);
         }
-        isLoading.setValue(false);
+        hidePageLoading();
       },
     );
   };
@@ -215,11 +208,11 @@ export const PersonalProfile: FC<PersonalProfileProps> = ({ isLoading }) => {
             <div className={`${styles.avatarContainer}`}>
               <div>
                 <img src={setPreviewAvatar()} alt="avatar-upload" />
-                <div className={styles.avatarHover}>
+                {/* <div className={styles.avatarHover}>
                   <BodyText fontFamily="Roboto" level={7} color="mono-color-dark">
                     Drag & drop profile photo
                   </BodyText>
-                </div>
+                </div> */}
               </div>
             </div>
           </Upload>

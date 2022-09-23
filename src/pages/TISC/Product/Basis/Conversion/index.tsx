@@ -16,7 +16,7 @@ import { ActionMenu } from '@/components/TableAction';
 
 const MAIN_COL_WIDTH = 167;
 const BasisConversionList: React.FC = () => {
-  useAutoExpandNestedTableColumn(MAIN_COL_WIDTH);
+  useAutoExpandNestedTableColumn(1);
   const tableRef = useRef<any>();
 
   const handleUpdateConversion = (id: string) => {
@@ -145,6 +145,7 @@ const BasisConversionList: React.FC = () => {
         expandable={GetExpandableTableConfig({
           columns: SubColumns,
           childrenColumnName: 'subs',
+          level: 2,
         })}
       />
     </>

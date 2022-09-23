@@ -1,14 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { DEFAULT_TEAMPROFILE, DEFAULT_TEAMPROFILE_WITH_GENDER } from '../constants/entryForm';
+import { BrandAccessLevelDataRole, TISCAccessLevelDataRole } from '../constants/role';
 import { MESSAGE_ERROR } from '@/constants/message';
+import { PATH } from '@/constants/path';
+import { message } from 'antd';
+import { useHistory } from 'umi';
 
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
-import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+import {
+  useBoolean,
+  useCheckPermission,
+  useCustomInitialState,
+  useGetParamId,
+} from '@/helper/hook';
+import {
+  getEmailMessageError,
+  getEmailMessageErrorType,
+  getValueByCondition,
+} from '@/helper/utils';
 import { getDepartmentList } from '@/services';
 
-import { TeamProfileDetailProps, TeamProfileRequestBody } from '../type';
-import type { RadioValue } from '@/components/CustomRadio/types';
+import { TeamProfileDetailProps, TeamProfileRequestBody } from '../types';
+import { useAppSelector } from '@/reducers';
 import { DepartmentData } from '@/types';
 
 import { CustomRadio } from '@/components/CustomRadio';
@@ -18,54 +33,66 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import { Status } from '@/components/Form/Status';
+import { TableHeader } from '@/components/Table/TableHeader';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
+import { createTeamProfile, getOneTeamProfile, inviteUser, updateTeamProfile } from '../api';
 import BrandAccessLevelModal from './BrandAccessLevelModal';
 import LocationModal from './LocationModal';
 import TISCAccessLevelModal from './TISCAccessLevelModal';
 import styles from './TeamProfilesEntryForm.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const GenderRadio = [
   { label: 'Male', value: '1' },
   { label: 'Female', value: '0' },
 ];
 
-interface TeamProfilesEntryFormValue {
-  data: TeamProfileDetailProps;
-  setData: (value: TeamProfileDetailProps) => void;
-  onCancel: () => void;
-  handleInvite: (userId: string) => void;
-  userId?: string;
-  onSubmit: (value: TeamProfileRequestBody, callBack?: (userId: string) => void) => void;
-  submitButtonStatus: boolean;
-  AccessLevelDataRole: RadioValue[];
-  role: 'TISC' | 'BRAND' | 'DESIGNER';
-}
-
 type FieldName = keyof TeamProfileDetailProps;
 
-export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
-  data,
-  setData,
-  onCancel,
-  onSubmit,
-  submitButtonStatus,
-  handleInvite,
-  userId,
-  AccessLevelDataRole,
-  role,
-}) => {
+const TeamProfilesEntryForm = () => {
+  const userProfileId = useAppSelector((state) => state.user.user?.id);
+  const { fetchUserInfo } = useCustomInitialState();
+  const history = useHistory();
+  const userIdParam = useGetParamId();
+  const isUpdate = userIdParam ? true : false;
+
+  const isTISCAdmin = useCheckPermission('TISC Admin');
+  const isBrandAdmin = useCheckPermission('Brand Admin');
+  /// for access level
+  const accessLevelDataRole = getValueByCondition(
+    [
+      [isTISCAdmin, TISCAccessLevelDataRole],
+      [isBrandAdmin, BrandAccessLevelDataRole],
+    ],
+    [],
+  );
+  /// for user role path
+  const userRolePath = getValueByCondition(
+    [
+      [isTISCAdmin, PATH.tiscTeamProfile],
+      [isBrandAdmin, PATH.brandTeamProfile],
+    ],
+    '',
+  );
+
+  const submitButtonStatus = useBoolean(false);
+  const [loadedData, setLoadedData] = useState(false);
+  const [data, setData] = useState<TeamProfileDetailProps>(
+    isUpdate ? DEFAULT_TEAMPROFILE : DEFAULT_TEAMPROFILE_WITH_GENDER,
+  );
+
   /// for department
   const [departments, setDepartments] = useState<DepartmentData[]>([]);
-  const [visible, setVisible] = useState({
-    workLocationModal: false,
-    accessModal: false,
-  });
+  const [openModal, setOpenModal] = useState<'' | 'workLocationModal' | 'accessModal'>('');
 
   const [workLocation, setWorkLocation] = useState({
     label: '',
     value: data.location_id,
     phoneCode: '00',
   });
+
+  const setVisibleModal = (visible: boolean) => (visible ? undefined : setOpenModal(''));
 
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({
@@ -75,28 +102,102 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
   };
 
   useEffect(() => {
+    if (userIdParam) {
+      getOneTeamProfile(userIdParam).then((res) => {
+        if (res) {
+          setData(res);
+          setLoadedData(true);
+        }
+      });
+    }
     getDepartmentList().then(setDepartments);
   }, []);
+
+  useEffect(() => {
+    setWorkLocation((prevState) => ({ ...prevState, value: data.location_id }));
+  }, [data.location_id]);
+
   useEffect(() => {
     onChangeData('location_id', workLocation.value);
   }, [workLocation]);
 
+  const handleCreateData = (
+    submitData: TeamProfileRequestBody,
+    callBack?: (userIdParam: string) => void,
+  ) => {
+    createTeamProfile(submitData).then((teamProfile) => {
+      hidePageLoading();
+      if (teamProfile) {
+        submitButtonStatus.setValue(true);
+        if (callBack) {
+          callBack(teamProfile.id ?? '');
+        } else {
+          history.replace(userRolePath);
+        }
+      }
+    });
+  };
+
+  const handleUpdateData = (submitData: TeamProfileRequestBody) => {
+    updateTeamProfile(userIdParam, submitData).then((isSuccess) => {
+      hidePageLoading();
+      if (isSuccess) {
+        submitButtonStatus.setValue(true);
+        const isUpdateCurrentUser = userIdParam === userProfileId;
+        if (isUpdateCurrentUser) {
+          fetchUserInfo();
+        }
+        setTimeout(() => {
+          submitButtonStatus.setValue(false);
+        }, 1000);
+      }
+    });
+  };
+
   const handleSubmit = (callBack?: (id: string) => void) => {
-    onSubmit(
-      {
-        firstname: data.firstname?.trim() ?? '',
-        lastname: data.lastname?.trim() ?? '',
-        gender: data.gender === true ? true : false,
-        location_id: data.location_id,
-        department_id: data.department_id?.trim() ?? '',
-        position: data.position?.trim() ?? '',
-        email: data.email?.trim() ?? '',
-        phone: data.phone?.trim() ?? '',
-        mobile: data.mobile?.trim() ?? '',
-        role_id: data.role_id,
-      },
-      callBack,
-    );
+    /// check email
+    const invalidEmail = getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID);
+
+    if (invalidEmail) {
+      message.error(invalidEmail);
+      return;
+    }
+
+    showPageLoading();
+
+    const body: TeamProfileRequestBody = {
+      firstname: data.firstname?.trim() ?? '',
+      lastname: data.lastname?.trim() ?? '',
+      gender: Boolean(data.gender),
+      location_id: data.location_id,
+      department_id: data.department_id?.trim() ?? '',
+      position: data.position?.trim() ?? '',
+      email: data.email?.trim() ?? '',
+      phone: data.phone?.trim() ?? '',
+      mobile: data.mobile?.trim() ?? '',
+      role_id: data.role_id,
+    };
+
+    if (isUpdate) {
+      handleUpdateData(body);
+    } else {
+      handleCreateData(body, callBack);
+    }
+  };
+
+  const handleInvite = (usrId: string) => {
+    inviteUser(usrId);
+    if (!isUpdate) {
+      history.replace(userRolePath);
+    }
+  };
+
+  const handleSendInvite = () => {
+    if (userIdParam) {
+      handleInvite(userIdParam);
+    } else {
+      handleSubmit(handleInvite);
+    }
   };
 
   // format data
@@ -105,12 +206,18 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
     id: '',
   };
 
+  if (isUpdate && !loadedData) {
+    return null;
+  }
+
   return (
-    <>
+    <div>
+      <TableHeader title="TEAM PROFILES" rightAction={<CustomPlusButton disabled />} />
+
       <EntryFormWrapper
-        handleCancel={onCancel}
+        handleCancel={history.goBack}
         handleSubmit={() => handleSubmit()}
-        submitButtonStatus={submitButtonStatus}
+        submitButtonStatus={submitButtonStatus.value}
         customClass={styles.entry_form}>
         {/* First Name */}
         <InputGroup
@@ -150,10 +257,8 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
         <FormGroup label="Gender" required={true} layout="vertical" formClass={styles.form_group}>
           <CustomRadio
             options={GenderRadio}
-            value={data.gender === true ? '1' : '0'}
-            onChange={(radioValue) =>
-              onChangeData('gender', radioValue.value === '1' ? true : false)
-            }
+            value={data.gender ? '1' : '0'}
+            onChange={(radioValue) => onChangeData('gender', radioValue.value === '1')}
           />
         </FormGroup>
 
@@ -168,12 +273,7 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
           hasBoxShadow
           hasHeight
           rightIcon
-          onRightIconClick={() =>
-            setVisible({
-              workLocationModal: true,
-              accessModal: false,
-            })
-          }
+          onRightIconClick={() => setOpenModal('workLocationModal')}
           placeholder="select from list"
         />
         {/* Department */}
@@ -238,8 +338,8 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
           }}
           onDelete={() => onChangeData('email', '')}
           placeholder="user work email"
-          message={emailMessageError(data.email, MESSAGE_ERROR.EMAIL_UNVALID)}
-          messageType={emailMessageErrorType(data.email, 'error', 'normal')}
+          message={getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
+          messageType={getEmailMessageErrorType(data.email, 'error', 'normal')}
         />
 
         {/* Work Phone */}
@@ -284,14 +384,9 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
           customIcon={<InfoIcon className={styles.warning_icon} />}
           layout="vertical"
           formClass={`${styles.form_group} ${styles.access_label}`}
-          onClick={() =>
-            setVisible({
-              accessModal: true,
-              workLocationModal: false,
-            })
-          }>
+          onClick={() => setOpenModal('accessModal')}>
           <CustomRadio
-            options={AccessLevelDataRole}
+            options={accessLevelDataRole}
             value={data.role_id}
             onChange={(radioValue) => onChangeData('role_id', radioValue.value)}
           />
@@ -300,13 +395,7 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
         {/* Status */}
         <Status
           value={data.status}
-          onClick={() => {
-            if (!userId) {
-              handleSubmit(handleInvite);
-            } else {
-              handleInvite(userId);
-            }
-          }}
+          onClick={handleSendInvite}
           label="Status"
           buttonName="Send Invite"
           text_1="Activated"
@@ -315,40 +404,23 @@ export const TeamProfilesEntryForm: React.FC<TeamProfilesEntryFormValue> = ({
         />
       </EntryFormWrapper>
 
-      {role === 'TISC' ? (
-        <TISCAccessLevelModal
-          visible={visible.accessModal}
-          setVisible={(visibled) =>
-            setVisible({
-              accessModal: visibled,
-              workLocationModal: false,
-            })
-          }
-        />
-      ) : role === 'BRAND' ? (
-        <BrandAccessLevelModal
-          visible={visible.accessModal}
-          setVisible={(visibled) =>
-            setVisible({
-              accessModal: visibled,
-              workLocationModal: false,
-            })
-          }
-        />
+      {isTISCAdmin ? (
+        <TISCAccessLevelModal visible={openModal === 'accessModal'} setVisible={setVisibleModal} />
+      ) : null}
+
+      {isBrandAdmin ? (
+        <BrandAccessLevelModal visible={openModal === 'accessModal'} setVisible={setVisibleModal} />
       ) : null}
 
       {/* Location Modal */}
       <LocationModal
-        visible={visible.workLocationModal}
-        setVisible={(visibled) =>
-          setVisible({
-            accessModal: false,
-            workLocationModal: visibled,
-          })
-        }
+        visible={openModal === 'workLocationModal'}
+        setVisible={setVisibleModal}
         workLocation={workLocation}
         setWorkLocation={setWorkLocation}
       />
-    </>
+    </div>
   );
 };
+
+export default TeamProfilesEntryForm;

@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { QUERY_KEY } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
 import { InputRef } from 'antd';
 
+import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as SearchIcon } from '@/assets/icons/ic-search.svg';
 
 import { getProductListForDesigner } from '@/features/product/services';
@@ -14,6 +15,7 @@ import { debounce } from 'lodash';
 import { setProductList, setProductListSearchValue } from '@/features/product/reducers';
 
 import { CustomInput } from '@/components/Form/CustomInput';
+import SortOrderPanel from '@/components/SortOrder';
 import { BodyText, Title } from '@/components/Typography';
 import {
   CollapseProductList,
@@ -22,10 +24,7 @@ import {
   TopBarContainer,
   TopBarItem,
 } from '@/features/product/components';
-import {
-  SORTER_DROPDOWN_DATA,
-  useProductListFilterAndSorter,
-} from '@/features/product/components/FilterAndSorter';
+import { useProductListFilterAndSorter } from '@/features/product/components/FilterAndSorter';
 
 import styles from './styles.less';
 
@@ -37,33 +36,39 @@ const BrandProductListPage: React.FC = () => {
   const sort_order = query.get(QUERY_KEY.sort_order);
   const searchParam = query.get(QUERY_KEY.search);
   const firstLoad = useBoolean(true);
+  const [searchCount, setSearchCount] = useState(0);
 
-  const {
-    filter,
-    sort,
-    brands,
-    search,
-    categories,
-    brandSummary,
-    resetProductListSorter,
-    dispatch,
-    removeFilter,
-  } = useProductListFilterAndSorter();
+  const { filter, sort, brands, search, categories, brandSummary, dispatch, removeFilter } =
+    useProductListFilterAndSorter();
 
-  const searchProductByKeyword = debounce((e) => {
-    const value = e.target.value;
-    if (value) {
-      setUrlParams([
-        {
-          key: 'search',
-          value: e.target.value,
-        },
-      ]);
-    } else {
-      removeUrlParams('search');
-    }
-    dispatch(setProductListSearchValue(e.target.value));
-  }, 300);
+  const debouceSearch = useCallback(
+    debounce((value: string) => {
+      if (value) {
+        setUrlParams([
+          {
+            key: 'search',
+            value: value,
+          },
+        ]);
+      } else {
+        removeUrlParams('search');
+      }
+      setSearchCount((prev) => prev + 1);
+    }, 300),
+    [setSearchCount],
+  );
+
+  const searchProductByKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value ?? '';
+    dispatch(setProductListSearchValue(value));
+    debouceSearch(value);
+  };
+
+  const clearSearchInput = () => {
+    dispatch(setProductListSearchValue(''));
+    removeUrlParams('search');
+    setSearchCount((prev) => prev + 1);
+  };
 
   useEffect(() => {
     firstLoad.setValue(false);
@@ -85,7 +90,7 @@ const BrandProductListPage: React.FC = () => {
       sort: sort?.sort,
       order: sort?.order,
     });
-  }, [filter, search, sort]);
+  }, [filter, searchCount, sort]);
 
   const renderInfoItem = (info: string, count: number, lastOne?: boolean) => (
     <div className="flex-start" style={{ marginRight: lastOne ? undefined : 24 }}>
@@ -102,20 +107,6 @@ const BrandProductListPage: React.FC = () => {
         <>
           <TopBarItem
             topValue={
-              filter?.name === 'category_id' ? (
-                <FilterItem title={filter.title} onDelete={removeFilter} />
-              ) : (
-                'select'
-              )
-            }
-            bottomEnable={categories.length ? true : false}
-            disabled
-            bottomValue={<CustomDropDown items={categories}>Categories</CustomDropDown>}
-            customClass="right-divider"
-            style={{ paddingLeft: 0 }}
-          />
-          <TopBarItem
-            topValue={
               filter?.name === 'brand_id' ? (
                 <FilterItem title={filter.title} onDelete={removeFilter} />
               ) : (
@@ -129,43 +120,54 @@ const BrandProductListPage: React.FC = () => {
                 Brands
               </CustomDropDown>
             }
+            customClass="right-divider"
             style={{ paddingLeft: 0 }}
           />
           <TopBarItem
             topValue={
-              sort ? (
-                <FilterItem
-                  title={sort.order === 'ASC' ? 'A - Z' : 'Z - A'}
-                  onDelete={resetProductListSorter}
-                />
+              filter?.name === 'category_id' ? (
+                <FilterItem title={filter.title} onDelete={removeFilter} />
               ) : (
                 'select'
               )
             }
-            bottomEnable={true}
+            bottomEnable={categories.length ? true : false}
             disabled
-            bottomValue={
-              <CustomDropDown
-                items={SORTER_DROPDOWN_DATA}
-                menuStyle={{ width: 160, height: 'auto' }}>
-                Sort By
-              </CustomDropDown>
-            }
+            bottomValue={<CustomDropDown items={categories}>Categories</CustomDropDown>}
+            customClass="right-divider"
             style={{ paddingLeft: 0 }}
           />
+
+          <SortOrderPanel order={sort?.order} sort={sort} style={{ paddingLeft: 0 }} />
         </>
       }
       RightSideContent={
         <>
           <TopBarItem
             topValue={
-              <CustomInput
-                ref={searchInputRef}
-                placeholder="search"
-                className={styles.searchInput}
-                defaultValue={searchParam || undefined}
-                onChange={searchProductByKeyword}
-              />
+              // <CustomInput
+              //
+              //   fontLevel={3}
+              //   deleteIcon
+              //   onDelete={() => {
+              //     // searchInputRef.current?.input?.set = '';
+              //     searchProductByKeyword({target:{value: ''}});
+              //   }}
+              //   forceDisplayDeleteIcon
+              // />
+              <div className={styles.searchInputWrapper}>
+                <CustomInput
+                  ref={searchInputRef}
+                  placeholder="search"
+                  defaultValue={searchParam || undefined}
+                  onChange={searchProductByKeyword}
+                  value={search}
+                  className={styles.searchInput}
+                />
+                {search && search !== '' ? (
+                  <DeleteIcon onClick={clearSearchInput} className={styles.clearSearchBtn} />
+                ) : null}
+              </div>
             }
             bottomValue={
               <span

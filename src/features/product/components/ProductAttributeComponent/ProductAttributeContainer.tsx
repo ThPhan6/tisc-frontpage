@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useCheckPermission } from '@/helper/hook';
+import { getValueByCondition } from '@/helper/utils';
 
 import { setPartialProductDetail } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
@@ -27,27 +28,42 @@ interface CollapseProductAttributeProps {
   index: number;
 }
 const CollapseProductAttribute: React.FC<CollapseProductAttributeProps> = ({ group, index }) => {
+  const renderAttributeOption = (attribute: ProductAttributeProps) => {
+    if (attribute.conversion) {
+      return (
+        <ConversionText
+          conversion={attribute.conversion}
+          firstValue={attribute.conversion_value_1}
+          secondValue={attribute.conversion_value_2}
+        />
+      );
+    }
+
+    return attribute.type === 'Options' ? (
+      <AttributeOption
+        title={group.name}
+        attributeName={attribute.name}
+        options={attribute.basis_options ?? []}
+      />
+    ) : (
+      <GeneralText text={attribute.text} />
+    );
+  };
+
   return (
     <AttributeCollapse name={group.name} index={index}>
-      {group.attributes.map((attribute, key) => (
-        <ProductAttributeLine name={attribute.name} key={key}>
-          {attribute.conversion ? (
-            <ConversionText
-              conversion={attribute.conversion}
-              firstValue={attribute.conversion_value_1}
-              secondValue={attribute.conversion_value_2}
-            />
-          ) : attribute.type === 'Options' ? (
-            <AttributeOption
-              title={group.name}
-              attributeName={attribute.name}
-              options={attribute.basis_options ?? []}
-            />
-          ) : (
-            <GeneralText text={attribute.text} />
-          )}
-        </ProductAttributeLine>
-      ))}
+      <table className={styles.table}>
+        <tbody>
+          {group.attributes.map((attribute, key) => (
+            <tr key={key}>
+              <td className={styles.attributeName}>
+                <ProductAttributeLine name={attribute.name} />
+              </td>
+              <td className={styles.attributeDescription}>{renderAttributeOption(attribute)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </AttributeCollapse>
   );
 };
@@ -65,19 +81,21 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
   const { feature_attribute_groups, general_attribute_groups, specification_attribute_groups } =
     useAppSelector((state) => state.product.details);
 
-  const attributeGroup =
-    activeKey === 'general'
-      ? general_attribute_groups
-      : activeKey === 'feature'
-      ? feature_attribute_groups
-      : specification_attribute_groups;
+  const attributeGroup = getValueByCondition(
+    [
+      [activeKey === 'general', general_attribute_groups],
+      [activeKey === 'feature', feature_attribute_groups],
+    ],
+    specification_attribute_groups,
+  ) as ProductAttributeFormInput[];
 
-  const attributeGroupKey =
-    activeKey === 'general'
-      ? 'general_attribute_groups'
-      : activeKey === 'feature'
-      ? 'feature_attribute_groups'
-      : 'specification_attribute_groups';
+  const attributeGroupKey = getValueByCondition(
+    [
+      [activeKey === 'general', 'general_attribute_groups'],
+      [activeKey === 'feature', 'feature_attribute_groups'],
+    ],
+    'specification_attribute_groups',
+  );
 
   const addNewProductAttribute = () => {
     dispatch(
@@ -117,14 +135,14 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
 
   return (
     <>
-      {isTiscAdmin && (
+      {isTiscAdmin ? (
         <div className={styles.addAttributeBtn} onClick={addNewProductAttribute}>
           <MainTitle level={4} customClass="add-attribute-text">
             Add Attribute
           </MainTitle>
           <CustomPlusButton size={18} />
         </div>
-      )}
+      ) : null}
 
       {attributeGroup.map((group, index) => {
         if (isTiscAdmin === false) {

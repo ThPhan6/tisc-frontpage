@@ -1,68 +1,58 @@
 import { FC, useEffect, useState } from 'react';
 
-import { useParams } from 'umi';
-
 import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
 import { ReactComponent as CatelogueIcon } from '@/assets/icons/catelogue-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as LocationIcon } from '@/assets/icons/location-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
-import { useBoolean, useCheckPermission } from '@/helper/hook';
-import { formatPhoneCode, getFullName } from '@/helper/utils';
+import { useCheckPermission, useGetParamId } from '@/helper/hook';
+import { formatPhoneCode, getBusinessAddress, getFullName } from '@/helper/utils';
 
 import { DistributorProductMarket } from '@/features/distributors/type';
 import { LocationGroupedByCountry } from '@/features/locations/type';
 import { useAppSelector } from '@/reducers';
 
 import CustomCollapse from '@/components/Collapse';
+import { DropdownRadioItem } from '@/components/CustomRadio/DropdownRadioList';
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
 
+import { BusinessDetail } from '../BrandContact';
 import { CatelogueDownload } from './CatelogueDownload';
 import styles from './ProductVendor.less';
 import { getBrandLocation, getDistributorLocation } from '@/features/locations/api';
 
-interface BusinessDetailProps {
-  business: string;
-  type: string;
-  address: string;
-  country?: string;
-}
-const BusinessDetail: FC<BusinessDetailProps> = ({ business, type = '', address }) => {
-  return (
-    <div className={styles.detail}>
-      <div className={styles.detail_business}>
-        <span className={styles.name}> {business} </span>
-        <span className={styles.type}> {type && `(${type})`} </span>
-      </div>
-      <span className={styles.detail_address}>{address}</span>
-    </div>
-  );
-};
-
 type BrandContactTitle = 'Brand Locations' | 'Distributor Locations';
-interface BrandContactProps {
-  title: BrandContactTitle;
-}
+type ModalTypes = '' | BrandContactTitle;
 
 export const BRAND_CONTACT_TITLE: BrandContactTitle[] = [
   'Brand Locations',
   'Distributor Locations',
 ];
 
+interface PopupForm {
+  title: string;
+  className?: string;
+  dropDownRadioTitle: (dropdownData: DropdownRadioItem) => void;
+  setVisible: (visible: boolean) => void;
+}
+
+interface BrandContactProps {
+  title: BrandContactTitle;
+}
+
 export const BrandContact: FC<BrandContactProps> = ({ title }) => {
+  const [openModal, setOpenModal] = useState<ModalTypes>('');
+
   /// for distributor location
-  const showDistributeSelection = useBoolean();
   const [distributorLocation, setDistributorLocation] = useState<DistributorProductMarket[]>([]);
 
   /// for brand location
-  const showBrandSelection = useBoolean();
   const [brandLocation, setBrandLocation] = useState<LocationGroupedByCountry[]>([]);
 
   /// get productID
-  const params = useParams<{ id: string }>();
-  const productID = params?.id || '';
+  const productID = useGetParamId();
 
   /// check user permission
   const showPopUp = useCheckPermission(['Brand Admin', 'Design Admin']);
@@ -74,9 +64,9 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
       return;
     }
     if (locationTitle === 'Brand Locations') {
-      showBrandSelection.setValue(true);
+      setOpenModal('Brand Locations');
     } else if (locationTitle === 'Distributor Locations') {
-      showDistributeSelection.setValue(true);
+      setOpenModal('Distributor Locations');
     }
   };
 
@@ -100,13 +90,22 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
     }
   }, [brandID]);
 
+  const popupProps: PopupForm = {
+    title: 'SELECT LOCATION',
+    className: styles.customLocationModal,
+    dropDownRadioTitle: (dropdownData: DropdownRadioItem) => dropdownData.country_name,
+    setVisible: (visible: boolean) => (visible ? undefined : setOpenModal('')),
+  };
+
   return (
     <div className="contact-item-wrapper">
       <div className="contact-item">
         <BodyText level={4} customClass="contact-item-title">
           {title}
         </BodyText>
-        <div className="contact-select-box" onClick={() => handleShowPopup(title)}>
+        <div
+          className={`contact-select-box ${showPopUp ? 'cursor-pointer' : 'cursor-default'} `}
+          onClick={() => handleShowPopup(title)}>
           <BodyText level={6} fontFamily="Roboto">
             select
           </BodyText>
@@ -116,11 +115,8 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
 
       {/* distributor location */}
       <Popover
-        title="SELECT LOCATION"
-        className={styles.customLocationModal}
-        visible={showDistributeSelection.value}
-        setVisible={showDistributeSelection.setValue}
-        dropDownRadioTitle={(dropdownData) => dropdownData.country_name}
+        {...popupProps}
+        visible={openModal === 'Distributor Locations'}
         dropdownRadioList={distributorLocation.map((country) => {
           return {
             country_name: country.country_name,
@@ -133,7 +129,7 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
                       ${getFullName(distributor)},
                       ${formatPhoneCode(distributor.phone_code)} ${distributor.phone}
                     `}
-                    address={`${distributor.address}, ${distributor.city_name}`}
+                    address={getBusinessAddress(distributor)}
                     country={country.country_name.toUpperCase()}
                   />
                 ),
@@ -146,11 +142,8 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
 
       {/* brand location */}
       <Popover
-        title="SELECT LOCATION"
-        className={styles.customLocationModal}
-        visible={showBrandSelection.value}
-        setVisible={showBrandSelection.setValue}
-        dropDownRadioTitle={(dropdownData) => dropdownData.country_name}
+        {...popupProps}
+        visible={openModal === 'Brand Locations'}
         dropdownRadioList={brandLocation.map((country) => {
           return {
             country_name: country.country_name,
@@ -160,7 +153,7 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
                   <BusinessDetail
                     business={location.business_name}
                     type={location.functional_types[0]?.name}
-                    address={location.address}
+                    address={getBusinessAddress(location)}
                     country={location.country_name.toUpperCase()}
                   />
                 ),
@@ -217,7 +210,7 @@ export const ProductVendor: FC = () => {
                 {brand?.official_websites?.map((website, index: number) => (
                   <tr key={index}>
                     <td>
-                      <BodyText level={6} fontFamily="Roboto">
+                      <BodyText level={6} fontFamily="Roboto" customClass={styles.countryName}>
                         {website.country_name ?? 'N/A'}
                       </BodyText>
                     </td>

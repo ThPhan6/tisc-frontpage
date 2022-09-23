@@ -72,7 +72,6 @@
           :global(.contact-select-box) {
             display: flex;
             align-items: center;
-            cursor: pointer;
             p {
               margin-right: 12px;
               color: @mono-color-medium;
@@ -127,33 +126,23 @@
     td {
       height: 36px;
       padding: 0 16px;
+      .countryName {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
       a {
+        display: -webkit-box;
+        overflow: hidden;
         color: #000;
+        word-break: break-all;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
       }
     }
   }
 }
-.detail {
-  &_business .name,
-  &_business .type,
-  &_address {
-    font-family: @font-primary;
-    font-style: normal;
-    line-height: 20px;
-  }
 
-  &_business {
-    .name {
-      font-weight: 500;
-      font-size: 12px;
-    }
-  }
-  &_address,
-  .type {
-    font-weight: 300;
-    font-size: 12px;
-  }
-}
 .customLocationModal {
   :global(.ant-collapse-item) {
     :global(.ant-collapse-content-box) {

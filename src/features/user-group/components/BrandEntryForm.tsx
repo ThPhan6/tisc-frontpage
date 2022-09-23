@@ -3,13 +3,13 @@ import React, { FC, useState } from 'react';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { BrandAccessLevelDataRole } from '@/features/team-profiles/constants/role';
+import { message } from 'antd';
 import { useHistory } from 'umi';
 
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
 import { createBrand } from '../services';
-import { useBoolean } from '@/helper/hook';
-import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+import { getEmailMessageError, getEmailMessageErrorType } from '@/helper/utils';
 
 import { TISCUserGroupBrandForm } from '../types/brand.types';
 
@@ -18,9 +18,9 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { Status } from '@/components/Form/Status';
-import LoadingPageCustomize from '@/components/LoadingPage';
 
 import styles from './BrandEntryForm.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import { inviteBrand } from '@/features/team-profiles/api';
 
 interface BrandEntryFormValue {}
@@ -33,10 +33,9 @@ const DEFAULT_BRAND: TISCUserGroupBrandForm = {
 };
 type EntryFormInput = keyof typeof DEFAULT_BRAND;
 
-const BrandEntryForm: FC<BrandEntryFormValue> = ({}) => {
+const BrandEntryForm: FC<BrandEntryFormValue> = () => {
   const [data, setData] = useState<TISCUserGroupBrandForm>(DEFAULT_BRAND);
   const history = useHistory();
-  const isLoading = useBoolean(false);
 
   const onChangeData = (fieldName: EntryFormInput) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setData((prevState) => ({
@@ -53,14 +52,22 @@ const BrandEntryForm: FC<BrandEntryFormValue> = ({}) => {
   };
 
   const handleSubmit = (callback?: (brandId: string) => void) => {
-    isLoading.setValue(true);
+    /// check email
+    const invalidEmail = getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID);
+    if (invalidEmail) {
+      message.error(invalidEmail);
+      return;
+    }
+
+    showPageLoading();
+
     createBrand({
       name: data.name?.trim() ?? '',
       first_name: data.first_name?.trim() ?? '',
       last_name: data.last_name?.trim() ?? '',
       email: data.email?.trim() ?? '',
     }).then((newBrand) => {
-      isLoading.setValue(false);
+      hidePageLoading();
       if (!newBrand) {
         return;
       }
@@ -73,10 +80,9 @@ const BrandEntryForm: FC<BrandEntryFormValue> = ({}) => {
   };
 
   const handleSendInvite = () => {
-    isLoading.setValue(true);
     handleSubmit((brandId) => {
       inviteBrand(brandId).then(() => {
-        isLoading.setValue(false);
+        hidePageLoading();
         history.replace(PATH.tiscUserGroupBrandList);
       });
     });
@@ -151,8 +157,8 @@ const BrandEntryForm: FC<BrandEntryFormValue> = ({}) => {
         value={data.email}
         onChange={onChangeData('email')}
         onDelete={handleDeleteData('email')}
-        message={emailMessageError(data.email, MESSAGE_ERROR.EMAIL_UNVALID)}
-        messageType={emailMessageErrorType(data.email, 'error', 'normal')}
+        message={getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
+        messageType={getEmailMessageErrorType(data.email, 'error', 'normal')}
       />
       {/* Access Level */}
       <FormGroup
@@ -177,8 +183,6 @@ const BrandEntryForm: FC<BrandEntryFormValue> = ({}) => {
         formClass={styles.status}
         onClick={handleSendInvite}
       />
-
-      {isLoading.value && <LoadingPageCustomize />}
     </EntryFormWrapper>
   );
 };

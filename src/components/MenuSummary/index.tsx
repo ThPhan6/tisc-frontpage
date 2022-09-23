@@ -84,38 +84,22 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
       return;
     }
 
-    switch (type) {
-      case 'subscription':
-        return (
-          <div className={style[`${type}-container`]}>
-            {typeMenuData?.map((data, index) => {
-              return (
-                <div className={style[`element-right`]} key={index}>
-                  <span>{data.quantity}</span>
-                  <label>{data.label}</label>
-                </div>
-              );
-            })}
-          </div>
-        );
-
-      case 'project':
-        return (
-          <div className={style[`${type}-container`]}>
-            {typeMenuData?.map((data, index) => {
-              return (
-                <div className={style[`element-right`]} key={index}>
-                  <span>{data.quantity}</span>
-                  <label>{data.label}</label>
-                </div>
-              );
-            })}
-          </div>
-        );
-
-      default:
-        break;
+    if (type === 'subscription' || type === 'project') {
+      return (
+        <div className={style[`${type}-container`]}>
+          {typeMenuData?.map((data, index) => {
+            return (
+              <div className={style[`element-right`]} key={index}>
+                <span>{data.quantity}</span>
+                <label>{data.label}</label>
+              </div>
+            );
+          })}
+        </div>
+      );
     }
+
+    return null;
   };
 
   return (

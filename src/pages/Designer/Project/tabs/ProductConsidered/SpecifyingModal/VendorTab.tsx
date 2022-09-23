@@ -2,6 +2,8 @@ import { FC, useEffect, useState } from 'react';
 
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
+import { getBusinessAddress } from '@/helper/utils';
+
 import { OnChangeSpecifyingProductFnc } from './types';
 import { RadioValue } from '@/components/CustomRadio/types';
 import { DistributorProductMarket } from '@/features/distributors/type';
@@ -28,11 +30,7 @@ const getSelectedLocation = (locationGroup: LocationGroupedByCountry[], selected
       <BusinessDetail
         business={selectedLocation.business_name}
         type={selectedLocation.functional_types[0]?.name}
-        address={`${selectedLocation.address}, ${
-          selectedLocation.city_name !== '' ? `${selectedLocation.city_name},` : ''
-        } ${selectedLocation.state_name !== '' ? `${selectedLocation.state_name},` : ''} ${
-          selectedLocation.country_name
-        }`}
+        address={getBusinessAddress(selectedLocation)}
         country={selectedLocation.country_name.toUpperCase()}
         phone_code={selectedLocation.phone_code}
         general_phone={selectedLocation.general_phone}
@@ -59,11 +57,7 @@ const getSelectedDistributors = (locationGroup: DistributorProductMarket[], sele
     label: selectedLocation ? (
       <BusinessDetail
         business={selectedLocation.name}
-        address={`${selectedLocation.address}, ${
-          selectedLocation.city_name !== '' ? `${selectedLocation.city_name},` : ''
-        } ${selectedLocation.state_name !== '' ? `${selectedLocation.state_name},` : ''} ${
-          selectedLocation.country_name
-        }`}
+        address={getBusinessAddress(selectedLocation)}
         country={selectedLocation.country_name.toUpperCase()}
         phone_code={selectedLocation.phone_code}
         general_phone={selectedLocation.phone}
@@ -120,13 +114,12 @@ const VendorTab: FC<VendorTabProps> = ({
 
   const [locationPopup, setLocationPopup] = useState<'' | 'brand' | 'distributor'>('');
 
-  // get data
-  const chosenValue =
-    locationPopup === 'brand'
-      ? chosenBrand
-      : locationPopup === 'distributor'
-      ? chosenDistributor
-      : undefined;
+  const getChosenValue = () => {
+    if (locationPopup === 'brand') {
+      return chosenBrand;
+    }
+    return locationPopup === 'distributor' ? chosenDistributor : undefined;
+  };
 
   useEffect(() => {
     getBrandLocation(brandId).then((data) => {
@@ -142,13 +135,20 @@ const VendorTab: FC<VendorTabProps> = ({
     });
   }, []);
 
+  const getActiveKey = (key: string | string[]) => {
+    if (key === activeKey) {
+      return '';
+    }
+    return typeof key !== 'string' ? key[0] : key;
+  };
+
   const handleCollapse = (field: 'brand' | 'distributor', key: string | string[]) => {
     if (field === 'brand') {
-      setBrandActiveKey(key === activeKey ? '' : typeof key !== 'string' ? key[0] : key);
+      setBrandActiveKey(getActiveKey(key));
 
       setDistributorActiveKey([]);
     } else if (field === 'distributor') {
-      setDistributorActiveKey(key === activeKey ? '' : typeof key !== 'string' ? key[0] : key);
+      setDistributorActiveKey(getActiveKey(key));
 
       setBrandActiveKey([]);
     }
@@ -172,9 +172,7 @@ const VendorTab: FC<VendorTabProps> = ({
       <BusinessDetail
         business={location?.business_name ?? ''}
         type={location?.functional_types?.[0]?.name ?? ''}
-        address={`${location.address}, ${
-          location.city_name !== '' ? `${location.city_name},` : ''
-        } ${location.state_name !== '' ? `${location.state_name},` : ''} ${location.country_name}`}
+        address={getBusinessAddress(location)}
         phone_code={location?.phone_code ?? ''}
         general_phone={location?.general_phone ?? ''}
         genernal_email={location?.general_email ?? ''}
@@ -188,9 +186,7 @@ const VendorTab: FC<VendorTabProps> = ({
     location ? (
       <BusinessDetail
         business={location?.name ?? ''}
-        address={`${location.address}, ${
-          location.city_name !== '' ? `${location.city_name},` : ''
-        } ${location.state_name !== '' ? `${location.state_name},` : ''} ${location.country_name}`}
+        address={getBusinessAddress(location)}
         phone_code={location?.phone_code ?? ''}
         general_phone={location?.phone ?? ''}
         genernal_email={location?.email ?? ''}
@@ -230,6 +226,7 @@ const VendorTab: FC<VendorTabProps> = ({
     <div>
       <RenderEntireProjectLabel
         title="Contact & Address"
+        overLayWidth={'193px'}
         toolTiptitle={
           <RobotoBodyText level={6}>
             Confirm project location-based or your prefered vendor contact/address information.
@@ -298,7 +295,7 @@ const VendorTab: FC<VendorTabProps> = ({
         className={styles.customLocationModal}
         visible={locationPopup === 'brand'}
         setVisible={(visible) => (visible ? undefined : setLocationPopup(''))}
-        chosenValue={chosenValue}
+        chosenValue={getChosenValue()}
         setChosenValue={(checked) =>
           locationPopup ? handleOnChangeSpecifying(checked) : undefined
         }
@@ -313,11 +310,7 @@ const VendorTab: FC<VendorTabProps> = ({
                   <BusinessDetail
                     business={location.business_name}
                     type={location.functional_types[0]?.name}
-                    address={`${location.address}, ${
-                      location.city_name !== '' ? `${location.city_name},` : ''
-                    } ${location.state_name !== '' ? `${location.state_name},` : ''} ${
-                      location.country_name
-                    }`}
+                    address={getBusinessAddress(location)}
                     country={location.country_name.toUpperCase()}
                     phone_code={location.phone_code}
                     general_phone={location.general_phone}
@@ -335,7 +328,7 @@ const VendorTab: FC<VendorTabProps> = ({
         className={styles.customLocationModal}
         visible={locationPopup === 'distributor'}
         setVisible={(visible) => (visible ? undefined : setLocationPopup(''))}
-        chosenValue={chosenValue}
+        chosenValue={getChosenValue()}
         setChosenValue={(checked) =>
           locationPopup ? handleOnChangeSpecifying(checked) : undefined
         }
@@ -349,11 +342,7 @@ const VendorTab: FC<VendorTabProps> = ({
                 label: (
                   <BusinessDetail
                     business={distributor.name}
-                    address={`${distributor.address}, ${
-                      distributor.city_name !== '' ? `${distributor.city_name},` : ''
-                    } ${distributor.state_name !== '' ? `${distributor.state_name},` : ''} ${
-                      distributor.country_name
-                    }`}
+                    address={getBusinessAddress(distributor)}
                     country={distributor.country_name.toUpperCase()}
                     phone_code={distributor.phone_code}
                     general_phone={distributor.phone}

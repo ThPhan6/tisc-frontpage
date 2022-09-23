@@ -8,6 +8,7 @@ import { showImageUrl } from '@/helper/utils';
 import type { FavouriteProductSummary } from '../types';
 import { ProductItemValue } from '@/features/product/types';
 
+import SortOrderPanel from '@/components/SortOrder';
 import {
   CustomDropDown,
   FilterItem,
@@ -15,7 +16,6 @@ import {
   TopBarItem,
 } from '@/features/product/components';
 import {
-  SORTER_DROPDOWN_DATA,
   onBrandFilterClick,
   onCategoryFilterClick,
   useProductListFilterAndSorter,
@@ -51,12 +51,13 @@ export const formatBrandsFavouriteToDropDownData = (brands?: ProductItemValue[])
 const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavouriteRetrieved }) => {
   const [productSummary, setProductSummary] = useState<FavouriteProductSummary>();
 
-  const { filter, sort, removeFilter, resetProductListSorter } = useProductListFilterAndSorter({
+  const { filter, sort, removeFilter } = useProductListFilterAndSorter({
     noFetchData: true,
   });
 
-  const activeBrands = productSummary?.brands.length && isFavouriteRetrieved;
-  const activeCategories = productSummary?.categories.length && isFavouriteRetrieved;
+  const activeBrand = productSummary?.brands?.length !== 0 && isFavouriteRetrieved;
+  const activeCategory = productSummary?.categories?.length !== 0 && isFavouriteRetrieved;
+  const activeSort = activeBrand || activeCategory;
 
   // show product summary when user already has retrieved favourite
   useEffect(() => {
@@ -98,7 +99,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
             {/* brands */}
             <TopBarItem
               disabled
-              customClass={`left-divider ${activeBrands ? 'cursor-pointer' : 'cursor-default'} `}
+              customClass={`left-divider ${activeBrand ? 'cursor-pointer' : 'cursor-default'} `}
               topValue={
                 filter?.name === 'brand_id' ? (
                   <FilterItem title={filter.title} onDelete={removeFilter} />
@@ -106,12 +107,12 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
                   'select'
                 )
               }
-              bottomEnable={activeBrands ? true : false}
+              bottomEnable={activeBrand}
               bottomValue={
                 <CustomDropDown
                   items={formatBrandsFavouriteToDropDownData(productSummary?.brands)}
                   menuStyle={{ width: 240 }}
-                  disabled={activeBrands ? false : true}
+                  disabled={!activeBrand}
                   placement="bottomRight">
                   Brands
                 </CustomDropDown>
@@ -121,9 +122,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
             {/* categories */}
             <TopBarItem
               disabled
-              customClass={`left-divider ${
-                activeCategories ? 'cursor-pointer' : 'cursor-default'
-              } `}
+              customClass={`left-divider ${activeCategory ? 'cursor-pointer' : 'cursor-default'} `}
               topValue={
                 filter?.name === 'category_id' ? (
                   <FilterItem title={filter.title} onDelete={removeFilter} />
@@ -131,44 +130,25 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
                   'select'
                 )
               }
-              bottomEnable={activeCategories ? true : false}
+              bottomEnable={activeCategory}
               bottomValue={
                 <CustomDropDown
                   placement="bottomRight"
                   menuStyle={{ width: 240 }}
                   items={formatCategoriesFavouriteToDropDownData(productSummary?.categories)}
-                  disabled={activeCategories ? false : true}>
+                  disabled={!activeCategory}>
                   Categories
                 </CustomDropDown>
               }
             />
 
             {/* sort */}
-            <TopBarItem
-              disabled
-              customClass={`left-divider ${
-                isFavouriteRetrieved ? 'cursor-pointer' : 'cursor-default'
-              } `}
-              bottomEnable={isFavouriteRetrieved ? true : false}
-              topValue={
-                sort ? (
-                  <FilterItem
-                    title={sort.order === 'ASC' ? 'A - Z' : 'Z - A'}
-                    onDelete={resetProductListSorter}
-                  />
-                ) : (
-                  'select'
-                )
-              }
-              bottomValue={
-                <CustomDropDown
-                  items={SORTER_DROPDOWN_DATA}
-                  placement="bottomRight"
-                  menuStyle={{ width: 160, height: 'auto' }}
-                  disabled={isFavouriteRetrieved ? false : true}>
-                  Sort By
-                </CustomDropDown>
-              }
+            <SortOrderPanel
+              order={sort?.order}
+              sort={sort}
+              bottomEnable={activeSort}
+              dropDownDisabled={!activeSort}
+              customClass={`left-divider ${activeSort ? 'cursor-pointer' : 'cursor-default'} `}
             />
           </>
         }

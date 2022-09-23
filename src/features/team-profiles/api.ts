@@ -9,7 +9,7 @@ import {
   TeamProfileGroupCountry,
   TeamProfileRequestBody,
   TeamProfileTableProps,
-} from './type';
+} from './types';
 import type {
   DataTableResponse,
   PaginationRequestParams,
@@ -85,6 +85,7 @@ export async function createTeamProfile(data: TeamProfileRequestBody) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_TEAM_PROFILE_ERROR);
+      return undefined;
     });
 }
 

@@ -8,7 +8,7 @@ import { ReactComponent as MessageIcon } from '@/assets/icons/message-icon-18px.
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 
 import { contact } from '../services/api';
-import { validateEmail } from '@/helper/utils';
+import { getEmailMessageError } from '@/helper/utils';
 
 import { ContactRequestBody, ModalProps } from '../types';
 
@@ -36,9 +36,13 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
   };
 
   const handleSubmitContact = () => {
-    if (!validateEmail(valueForm.email)) {
-      return message.error(MESSAGE_ERROR.EMAIL_UNVALID);
+    /// check email
+    const invalidEmail = getEmailMessageError(valueForm.email, MESSAGE_ERROR.EMAIL_INVALID);
+    if (invalidEmail) {
+      message.error(invalidEmail);
+      return;
     }
+
     contact(valueForm).then((res) => {
       if (res) {
         onClose();
@@ -57,6 +61,7 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
       containerClass={theme === 'dark' && styles.modal}
       bodyStyle={{
         backgroundColor: theme === 'dark' ? '#000' : '',
+        height: '576px',
       }}
       closeIconClass={theme === 'dark' && styles.closeIcon}
       onCancel={onClose}>

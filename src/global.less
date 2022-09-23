@@ -215,6 +215,14 @@ button {
   text-overflow: ellipsis;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-default {
+  cursor: default;
+}
+
 .ant-checkbox-group,
 .ant-radio-group,
 .ant-collapse-header,
@@ -228,4 +236,13 @@ li.ant-menu-submenu {
   svg {
     margin-left: 8px;
   }
+}
+
+.ant-table tr > td,
+.ant-table tr > th {
+  white-space: nowrap;
+}
+
+.ant-table .ant-table-tbody > tr > td {
+  transition: width 0.3s;
 }

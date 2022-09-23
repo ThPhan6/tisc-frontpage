@@ -4,11 +4,12 @@ export type CodeOrderRequestParams = {
   material_code_id: string;
   suffix_code: string;
   description: string;
-  quantity: string;
+  quantity: number;
   unit_type_id: string;
   order_method: number;
   requirement_type_ids: string[];
   instruction_type_ids: string[];
+  finish_schedules: string[];
   special_instructions: string;
 };
 

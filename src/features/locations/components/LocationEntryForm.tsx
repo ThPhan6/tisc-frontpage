@@ -2,10 +2,11 @@ import type { FC } from 'react';
 import React, { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
+import { message } from 'antd';
 
 import {
-  emailMessageError,
-  emailMessageErrorType,
+  getEmailMessageError,
+  getEmailMessageErrorType,
   isEmptySpace,
   messageError,
   messageErrorType,
@@ -30,7 +31,7 @@ import { getListFunctionalType } from '../api';
 import styles from './LocationEntryForm.less';
 
 interface LocationEntryFormProps {
-  submitButtonStatus: any;
+  submitButtonStatus: boolean;
   onSubmit: (data: LocationForm) => void;
   onCancel: () => void;
   data: LocationForm;
@@ -61,23 +62,25 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     value: data.city_id,
   });
 
-  const [selectedFunctionalTypes, setSelectedFunctionalTypes] = useState<CheckboxValue[]>(
-    data.functional_type_ids.map((typeId) => {
-      return {
-        label: '',
-        value: typeId,
-      };
-    }),
-  );
   const [functionalTypes, setFunctionalTypes] = useState<FunctionalTypeData[]>([]);
+  const [selectedFunctionalTypes, setSelectedFunctionTypes] = useState<CheckboxValue[]>([]);
 
+  const getFunctionTypeIds = (types: CheckboxValue[]) => {
+    const newFunctionTypeIds = types
+      .filter((type) => type.value !== 'other')
+      .map((type) => type.value as string);
+    const otherFuntionType = types.find((type) => type.value === 'other');
+    if (otherFuntionType) {
+      newFunctionTypeIds.push(otherFuntionType.label as string);
+    }
+    return newFunctionTypeIds;
+  };
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({
       ...data,
       [fieldName]: trimStart(fieldValue),
     });
   };
-
   // handle onchange postal code
   const onChangePostalCode = (e: React.ChangeEvent<HTMLInputElement>) => {
     // only 10 chars and cannot type space
@@ -95,6 +98,17 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
   }, []);
 
   useEffect(() => {
+    setSelectedFunctionTypes(
+      data.functional_type_ids.map((typeId) => {
+        return {
+          label: functionalTypes.find((type) => type.id === typeId)?.name,
+          value: typeId,
+        };
+      }),
+    );
+  }, [data.functional_type_ids, functionalTypes]);
+
+  useEffect(() => {
     if (countryData.value !== '') {
       onChangeData('country_id', countryData.value);
     }
@@ -109,6 +123,13 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
   }, [cityData]);
 
   const handleSubmit = () => {
+    /// check email
+    const invalidEmail = getEmailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_INVALID);
+    if (invalidEmail) {
+      message.error(invalidEmail);
+      return;
+    }
+
     return onSubmit({
       business_name: data.business_name?.trim() ?? '',
       business_number: data.business_number?.trim() ?? '',
@@ -119,17 +140,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       postal_code: data.postal_code?.trim() ?? '',
       general_phone: data.general_phone?.trim() ?? '',
       general_email: data.general_email?.trim() ?? '',
-      functional_type_ids: selectedFunctionalTypes.reduce((newTypes, selected) => {
-        if (selected.value === 'other') {
-          const otherValue = (selected.label as string)?.trim() ?? '';
-          if (otherValue !== '') {
-            newTypes.push(otherValue);
-          }
-        } else {
-          newTypes.push(selected.value as string);
-        }
-        return newTypes;
-      }, [] as string[]),
+      functional_type_ids: getFunctionTypeIds(selectedFunctionalTypes),
     });
   };
   return (
@@ -170,7 +181,13 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         placeholder="registered business number for verification"
       />
 
-      <FormGroup label="Functional Type" required layout="vertical" formClass={styles.formGroup}>
+      <FormGroup
+        label="Functional Type"
+        required
+        layout="vertical"
+        formClass={`${styles.formGroup} ${
+          selectedFunctionalTypes.length > 0 ? styles.activeFunctionType : ''
+        }`}>
         <CollapseCheckboxList
           options={functionalTypes.map((functionalType) => {
             return {
@@ -179,8 +196,12 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
             };
           })}
           checked={selectedFunctionalTypes}
-          onChange={setSelectedFunctionalTypes}
-          placeholder="select all relevance"
+          onChange={setSelectedFunctionTypes}
+          placeholder={
+            selectedFunctionalTypes.length === 0
+              ? 'select all relevance'
+              : selectedFunctionalTypes.map((item) => item.label).join(', ')
+          }
           otherInput
         />
       </FormGroup>
@@ -245,18 +266,20 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         placeholder="select city / town"
       />
 
-      <FormGroup label="Address" required layout="vertical">
-        <CustomTextArea
-          className={styles.address}
-          maxLength={120}
-          showCount
-          placeholder="unit #, street / road name"
-          borderBottomColor="mono-medium"
-          onChange={(e) => onChangeData('address', e.target.value)}
-          value={data.address}
-          boxShadow
-        />
-      </FormGroup>
+      <div className={styles.addressForm}>
+        <FormGroup label="Address" required layout="vertical">
+          <CustomTextArea
+            className={styles.address}
+            maxLength={120}
+            showCount
+            placeholder="unit #, street / road name"
+            borderBottomColor="mono-medium"
+            onChange={(e) => onChangeData('address', e.target.value)}
+            value={data.address}
+            boxShadow
+          />
+        </FormGroup>
+      </div>
       <InputGroup
         label="Postal / Zip Code"
         placeholder="postal / zip code"
@@ -306,8 +329,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         }}
         onDelete={() => onChangeData('general_email', '')}
         placeholder="general email address"
-        message={emailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_UNVALID)}
-        messageType={emailMessageErrorType(data.general_email, 'error', 'normal')}
+        message={getEmailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_INVALID)}
+        messageType={getEmailMessageErrorType(data.general_email, 'error', 'normal')}
       />
       <CountryModal
         visible={visible.country}
@@ -321,6 +344,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         chosenValue={countryData}
         setChosenValue={setCountryData}
         withPhoneCode
+        hasGlobal={false}
       />
       <StateModal
         countryId={data.country_id}

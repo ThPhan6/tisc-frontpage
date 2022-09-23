@@ -18,7 +18,7 @@ import { ActionMenu } from '@/components/TableAction';
 const MAIN_COL_WIDTH = 253;
 const SUB_COL_WIDTH = 135;
 const BasisOptionList: React.FC = () => {
-  useAutoExpandNestedTableColumn(MAIN_COL_WIDTH, SUB_COL_WIDTH);
+  useAutoExpandNestedTableColumn(2);
   const tableRef = useRef<any>();
 
   const handleUpdateBasisOption = (id: string) => {
@@ -33,47 +33,60 @@ const BasisOptionList: React.FC = () => {
       });
     });
   };
-
-  const SameColumn: TableColumnItem<any>[] = [
-    {
-      title: 'Image',
-      dataIndex: 'image',
-      width: '5%',
-      render: (value) => {
-        if (value) {
-          return (
-            <img
-              src={showImageUrl(value)}
-              style={{ width: 18, height: 18, objectFit: 'contain' }}
-            />
-          );
-        }
-        return null;
+  const getSameColumns = (noBoxShadow?: boolean) => {
+    const SameColumn: TableColumnItem<any>[] = [
+      {
+        title: 'Image',
+        dataIndex: 'image',
+        width: '5%',
+        noBoxShadow: noBoxShadow,
+        render: (value) => {
+          if (value) {
+            return (
+              <img
+                src={showImageUrl(value)}
+                style={{ width: 18, height: 18, objectFit: 'contain' }}
+              />
+            );
+          }
+          return null;
+        },
       },
-    },
-    {
-      title: '1st Value',
-      dataIndex: 'value_1',
-      width: '10%',
-    },
-    {
-      title: 'Unit',
-      dataIndex: 'unit_1',
-      width: '5%',
-      lightHeading: true,
-    },
-    {
-      title: '2nd Value',
-      dataIndex: 'value_2',
-      width: '10%',
-    },
-    {
-      title: 'Unit',
-      dataIndex: 'unit_2',
-      lightHeading: true,
-    },
-    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
-  ];
+      {
+        title: '1st Value',
+        dataIndex: 'value_1',
+        width: '10%',
+        noBoxShadow: noBoxShadow,
+      },
+      {
+        title: 'Unit',
+        dataIndex: 'unit_1',
+        width: '5%',
+        lightHeading: true,
+        noBoxShadow: noBoxShadow,
+      },
+      {
+        title: '2nd Value',
+        dataIndex: 'value_2',
+        width: '10%',
+        noBoxShadow: noBoxShadow,
+      },
+      {
+        title: 'Unit',
+        dataIndex: 'unit_2',
+        lightHeading: true,
+        noBoxShadow: noBoxShadow,
+      },
+      {
+        title: 'Count',
+        dataIndex: 'count',
+        width: '5%',
+        align: 'center',
+        noBoxShadow: noBoxShadow,
+      },
+    ];
+    return SameColumn;
+  };
 
   const MainColumns: TableColumnItem<BasisOptionListResponse>[] = [
     {
@@ -96,7 +109,7 @@ const BasisOptionList: React.FC = () => {
         multiple: 2,
       },
     },
-    ...SameColumn,
+    ...getSameColumns(false),
     {
       title: 'Action',
       dataIndex: 'action',
@@ -137,7 +150,7 @@ const BasisOptionList: React.FC = () => {
         return <span className="text-capitalize">{value}</span>;
       },
     },
-    ...SameColumn,
+    ...getSameColumns(false),
     {
       title: 'Action',
       dataIndex: 'action',
@@ -157,13 +170,15 @@ const BasisOptionList: React.FC = () => {
       title: 'Option Name',
       dataIndex: 'option_name',
       width: SUB_COL_WIDTH,
+      noBoxShadow: true,
     },
-    ...SameColumn,
+    ...getSameColumns(true),
     {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
       width: '5%',
+      noBoxShadow: true,
     },
   ];
 
@@ -186,6 +201,7 @@ const BasisOptionList: React.FC = () => {
           expandable: GetExpandableTableConfig({
             columns: ChildColumns,
             childrenColumnName: 'subs',
+            level: 3,
           }),
         })}
       />

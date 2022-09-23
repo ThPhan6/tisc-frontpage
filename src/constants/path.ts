@@ -69,9 +69,9 @@ export const PATH = {
   tiscAdministration: '/tisc/adminstration',
 
   // team profile
-  teamProfile: '/tisc/adminstration/team-profiles',
-  createTeamProfile: '/tisc/adminstration/team-profiles/create',
-  updateTeamProfile: '/tisc/adminstration/team-profiles/update/:id',
+  tiscTeamProfile: '/tisc/adminstration/team-profiles',
+  tiscCreateTeamProfile: '/tisc/adminstration/team-profiles/create',
+  tiscUpdateTeamProfile: '/tisc/adminstration/team-profiles/update/:id',
 
   // inspirational quotes
   tiscAdministrationMessage: '/tisc/adminstration/messages',

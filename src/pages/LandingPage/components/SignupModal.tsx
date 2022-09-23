@@ -120,6 +120,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
       containerClass={theme === 'dark' && styles.modal}
       bodyStyle={{
         backgroundColor: theme === 'dark' ? '#000' : '',
+        height: '576px',
       }}
       closeIconClass={theme === 'dark' && styles.closeIcon}
       onCancel={onClose}>
@@ -129,98 +130,100 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             Please fill out the below information, and check your email for verification.
           </MainTitle>
         </div>
-        <div className={styles.form}>
-          <CustomInput
-            fromLandingPage
-            theme={theme}
-            size="large"
-            placeholder="first name / last name"
-            prefix={<UserIcon />}
-            borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-            containerClass={styles.brand}
-            name="firstname"
-            type={'text'}
-            required={true}
-            onChange={handleOnChange}
-          />
-          <CustomInput
-            autoComplete={'' + Math.random()}
-            fromLandingPage
-            theme={theme}
-            size="large"
-            placeholder="work email"
-            prefix={<EmailIcon />}
-            borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-            containerClass={styles.website}
-            name="email"
-            type="email"
-            required={true}
-            onChange={handleOnChange}
-            status={isShowErrorMessage('email', formInput.email) ? '' : 'error'}
-          />
-          <CustomInput
-            autoComplete={'' + Math.random()}
-            fromLandingPage
-            theme={theme}
-            size="large"
-            placeholder="password"
-            prefix={<LockedIcon />}
-            borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-            containerClass={styles.user}
-            name="password"
-            type="password"
-            required={true}
-            onChange={handleOnChange}
-          />
-          <CustomInput
-            fromLandingPage
-            theme={theme}
-            type="password"
-            name="confirmed_password"
-            containerClass={styles.email}
-            size="large"
-            placeholder="confirm password"
-            prefix={<LockedIcon />}
-            borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-            required={true}
-            onChange={handleOnChange}
-            status={
-              formInput.confirmed_password
-                ? formInput.password !== formInput.confirmed_password
+        <div className={styles.main}>
+          <div className={styles.form}>
+            <CustomInput
+              fromLandingPage
+              theme={theme}
+              size="large"
+              placeholder="first name / last name"
+              prefix={<UserIcon />}
+              borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
+              containerClass={styles.brand}
+              name="firstname"
+              type={'text'}
+              required={true}
+              onChange={handleOnChange}
+            />
+            <CustomInput
+              autoComplete={'' + Math.random()}
+              fromLandingPage
+              theme={theme}
+              size="large"
+              placeholder="work email"
+              prefix={<EmailIcon />}
+              borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
+              containerClass={styles.website}
+              name="email"
+              type="email"
+              required={true}
+              onChange={handleOnChange}
+              status={isShowErrorMessage('email', formInput.email) ? '' : 'error'}
+            />
+            <CustomInput
+              autoComplete={'' + Math.random()}
+              fromLandingPage
+              theme={theme}
+              size="large"
+              placeholder="password"
+              prefix={<LockedIcon />}
+              borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
+              containerClass={styles.user}
+              name="password"
+              type="password"
+              required={true}
+              onChange={handleOnChange}
+            />
+            <CustomInput
+              fromLandingPage
+              theme={theme}
+              type="password"
+              name="confirmed_password"
+              containerClass={styles.email}
+              size="large"
+              placeholder="confirm password"
+              prefix={<LockedIcon />}
+              borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
+              required={true}
+              onChange={handleOnChange}
+              status={
+                formInput.confirmed_password && formInput.password !== formInput.confirmed_password
                   ? 'error'
                   : ''
-                : ''
-            }
-          />
-          <div
-            className={
-              agreeTisc === true && formInput.agree_tisc === false ? styles.errorStatus : ''
-            }>
-            <Checkbox onChange={handleAgreeTisc}>
-              By clicking and continuing, we agree TISC’s
-            </Checkbox>
-          </div>
+              }
+            />
+            <div
+              className={
+                agreeTisc === true && formInput.agree_tisc === false ? styles.errorStatus : ''
+              }>
+              <Checkbox onChange={handleAgreeTisc}>
+                By clicking and continuing, we agree TISC’s
+              </Checkbox>
+            </div>
 
-          <div className={styles.customLink}>
-            <span onClick={() => setOpenModalPolicies('Policies')}>
-              Terms of Services, Privacy Policy and Cookie Policy
-            </span>
+            <div className={styles.customLink}>
+              <span onClick={() => setOpenModalPolicies('Policies')}>
+                Terms of Services, Privacy Policy and Cookie Policy
+              </span>
+            </div>
           </div>
-        </div>
-        <div className={styles.button}>
-          <div>
-            {getErrorMessage() && (
-              <div className={styles.warning}>
-                <WarningIcon />
-                <BodyText level={4} fontFamily="Roboto">
-                  {getErrorMessage()}
-                </BodyText>
-              </div>
-            )}
+          <div className={styles.action}>
+            <div className={getErrorMessage() ? styles.action_between : styles.action_right}>
+              {getErrorMessage() ? (
+                <div className={styles.warning}>
+                  <WarningIcon />
+                  <BodyText level={4} fontFamily="Roboto">
+                    {getErrorMessage()}
+                  </BodyText>
+                </div>
+              ) : (
+                ''
+              )}
+              <CustomButton buttonClass={styles.submit} onClick={handleSubmit}>
+                Let’s be productive
+              </CustomButton>
+            </div>
           </div>
-          <CustomButton buttonClass={styles.submit} onClick={handleSubmit}>
-            Let’s be productive
-          </CustomButton>
         </div>
       </div>
       <PoliciesModal
