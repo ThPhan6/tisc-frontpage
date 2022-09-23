@@ -52,38 +52,37 @@ const CategoryEntryForm = () => {
     }
   }, []);
 
-  const callBackFunctionHandle =
+  const handleCallbackFunction =
     (functionHandleType: 'create' | 'update') => (type: STATUS_RESPONSE, msg?: string) => {
-      if (type === STATUS_RESPONSE.SUCCESS) {
-        if (functionHandleType === 'create') {
-          message.success(MESSAGE_NOTIFICATION.CREATE_CATEGORY_SUCCESS);
-        } else {
-          message.success(MESSAGE_NOTIFICATION.UPDATE_CATEGORY_SUCCESS);
-        }
-        submitButtonStatus.setValue(true);
-        setTimeout(() => {
-          if (functionHandleType === 'create') {
-            pushTo(PATH.categories);
-          }
-          submitButtonStatus.setValue(false);
-        }, 1000);
-      } else {
-        message.error(msg);
-      }
       hidePageLoading();
+      if (type !== STATUS_RESPONSE.SUCCESS) {
+        return message.error(msg);
+      }
+      message.success(
+        functionHandleType === 'create'
+          ? MESSAGE_NOTIFICATION.CREATE_CATEGORY_SUCCESS
+          : MESSAGE_NOTIFICATION.UPDATE_CATEGORY_SUCCESS,
+      );
+      submitButtonStatus.setValue(true);
+      setTimeout(() => {
+        if (functionHandleType === 'create') {
+          pushTo(PATH.categories);
+        }
+        submitButtonStatus.setValue(false);
+      }, 1000);
     };
 
   const handleCreateCategory = (data: CategoryBodyProps) => {
-    createCategoryMiddleware(data, callBackFunctionHandle('create'));
+    createCategoryMiddleware(data, handleCallbackFunction('create'));
   };
 
   const handleUpdateCategory = (data: CategoryBodyProps) => {
-    updateCategoryMiddleware(idCategory, data, callBackFunctionHandle('update'));
+    updateCategoryMiddleware(idCategory, data, handleCallbackFunction('update'));
   };
 
   const handleSubmit = isUpdate ? handleUpdateCategory : handleCreateCategory;
 
-  const trimName = (value: any) => ({
+  const trimName = (value: any): CategoryBodyProps => ({
     ...value,
     name: value.name.trim(),
     subs: value.subs?.map((sub: any) => trimName(sub)),
@@ -91,7 +90,7 @@ const CategoryEntryForm = () => {
 
   const onHandleSubmit = () => {
     showPageLoading();
-    handleSubmit(trimName(categoryValue) as CategoryBodyProps);
+    handleSubmit(trimName(categoryValue));
   };
 
   const handleCancel = () => {
