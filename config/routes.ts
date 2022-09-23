@@ -124,12 +124,12 @@ export default [
           {
             path: PATH.createCategories,
             hideInMenu: true,
-            component: './TISC/Product/Category/CreateCategoryPage',
+            component: '../features/categories/components/CategoryEntryForm',
           },
           {
             path: PATH.updateCategories,
             hideInMenu: true,
-            component: './TISC/Product/Category/UpdateCategoryPage',
+            component: '../features/categories/components/CategoryEntryForm',
           },
         ],
       },

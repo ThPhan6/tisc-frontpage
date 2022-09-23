@@ -1,4 +1,17 @@
-import { FC } from 'react';
+import { useEffect, useState } from 'react';
+
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { PATH } from '@/constants/path';
+import { STATUS_RESPONSE } from '@/constants/util';
+import { message } from 'antd';
+
+import {
+  createCategoryMiddleware,
+  getOneCategoryMiddleware,
+  updateCategoryMiddleware,
+} from '../services';
+import { pushTo } from '@/helper/history';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 
 import {
   CategoryBodyProps,
@@ -8,49 +21,80 @@ import {
 
 import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
+import { TableHeader } from '@/components/Table/TableHeader';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { SubcategoryItem } from './SubcategoryItem';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
-export interface CategoryEntryFormProps {
-  onCancel?: () => void;
-  onSubmit?: (data: CategoryBodyProps) => void;
-  categoryValue: CategoryBodyProps;
-  setCategoryValue: (value: CategoryBodyProps) => void;
-  submitButtonStatus?: boolean;
-}
+const CategoryEntryForm = () => {
+  const [categoryValue, setCategoryValue] = useState<CategoryBodyProps>({
+    name: '',
+    subs: [],
+  });
+  const submitButtonStatus = useBoolean(false);
+  const idCategory = useGetParamId();
+  const isUpdate = idCategory ? true : false;
 
-export const CategoryEntryForm: FC<CategoryEntryFormProps> = ({
-  onCancel,
-  onSubmit,
-  categoryValue,
-  setCategoryValue,
-  submitButtonStatus,
-}) => {
-  const handleSubmit = () => {
-    if (onSubmit) {
-      onSubmit({
-        ...categoryValue,
-        name: categoryValue.name.trim(),
-        subs: categoryValue.subs.map((sub) => {
-          return {
-            ...sub,
-            name: sub.name.trim(),
-            subs: sub.subs?.map((subItem) => {
-              return {
-                ...subItem,
-                name: subItem.name.trim(),
-              };
-            }),
-          };
-        }),
-      });
+  useEffect(() => {
+    if (idCategory) {
+      showPageLoading();
+      getOneCategoryMiddleware(
+        idCategory,
+        (dataRes: CategoryBodyProps) => {
+          setCategoryValue(dataRes);
+          hidePageLoading();
+        },
+        () => {
+          hidePageLoading();
+        },
+      );
     }
+  }, []);
+
+  const handleCallbackFunction =
+    (functionHandleType: 'create' | 'update') => (type: STATUS_RESPONSE, msg?: string) => {
+      hidePageLoading();
+      if (type !== STATUS_RESPONSE.SUCCESS) {
+        return message.error(msg);
+      }
+      message.success(
+        functionHandleType === 'create'
+          ? MESSAGE_NOTIFICATION.CREATE_CATEGORY_SUCCESS
+          : MESSAGE_NOTIFICATION.UPDATE_CATEGORY_SUCCESS,
+      );
+      submitButtonStatus.setValue(true);
+      setTimeout(() => {
+        if (functionHandleType === 'create') {
+          pushTo(PATH.categories);
+        }
+        submitButtonStatus.setValue(false);
+      }, 1000);
+    };
+
+  const handleCreateCategory = (data: CategoryBodyProps) => {
+    createCategoryMiddleware(data, handleCallbackFunction('create'));
+  };
+
+  const handleUpdateCategory = (data: CategoryBodyProps) => {
+    updateCategoryMiddleware(idCategory, data, handleCallbackFunction('update'));
+  };
+
+  const handleSubmit = isUpdate ? handleUpdateCategory : handleCreateCategory;
+
+  const trimName = (value: any): CategoryBodyProps => ({
+    ...value,
+    name: value.name.trim(),
+    subs: value.subs?.map((sub: any) => trimName(sub)),
+  });
+
+  const onHandleSubmit = () => {
+    showPageLoading();
+    handleSubmit(trimName(categoryValue));
   };
 
   const handleCancel = () => {
-    if (onCancel) {
-      onCancel();
-    }
+    pushTo(PATH.categories);
   };
 
   const handleOnChange = (value: SubcategoryValueProps, index: number) => {
@@ -66,34 +110,39 @@ export const CategoryEntryForm: FC<CategoryEntryFormProps> = ({
   };
 
   return (
-    <EntryFormWrapper
-      handleSubmit={handleSubmit}
-      handleCancel={handleCancel}
-      submitButtonStatus={submitButtonStatus}>
-      <FormNameInput
-        HandleOnClickAddIcon={() => {
-          setCategoryValue({
-            ...categoryValue,
-            subs: [...categoryValue.subs, subcategoryValueDefault],
-          });
-        }}
-        placeholder="type main category name"
-        title="main category"
-        onChangeInput={(e) => {
-          setCategoryValue({ ...categoryValue, name: e.target.value });
-        }}
-        inputValue={categoryValue.name}
-      />
-      <div>
-        {categoryValue.subs.map((category, index) => (
-          <SubcategoryItem
-            onChange={(value) => handleOnChange(value, index)}
-            key={index}
-            onClickDeleteSubcategory={() => handleOnClickDeleteSubcategory(index)}
-            value={category}
-          />
-        ))}
-      </div>
-    </EntryFormWrapper>
+    <div>
+      <TableHeader title={'CATEGORIES'} rightAction={<CustomPlusButton disabled />} />
+      <EntryFormWrapper
+        handleSubmit={onHandleSubmit}
+        handleCancel={handleCancel}
+        submitButtonStatus={submitButtonStatus.value}>
+        <FormNameInput
+          HandleOnClickAddIcon={() => {
+            setCategoryValue({
+              ...categoryValue,
+              subs: [...categoryValue.subs, subcategoryValueDefault],
+            });
+          }}
+          placeholder="type main category name"
+          title="main category"
+          onChangeInput={(e) => {
+            setCategoryValue({ ...categoryValue, name: e.target.value });
+          }}
+          inputValue={categoryValue.name}
+        />
+        <div>
+          {categoryValue.subs.map((category, index) => (
+            <SubcategoryItem
+              onChange={(value) => handleOnChange(value, index)}
+              key={index}
+              onClickDeleteSubcategory={() => handleOnClickDeleteSubcategory(index)}
+              value={category}
+            />
+          ))}
+        </div>
+      </EntryFormWrapper>
+    </div>
   );
 };
+
+export default CategoryEntryForm;
