@@ -6,10 +6,10 @@ import { USER_STATUS_TEXTS } from '@/constants/util';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useCheckPermission } from '@/helper/hook';
-import { formatPhoneCode, getFullName } from '@/helper/utils';
+import { formatPhoneCode, getFullName, getValueByCondition } from '@/helper/utils';
 
+import { TeamProfileTableProps } from '../types';
 import { TableColumnItem } from '@/components/Table/types';
-import { TeamProfileTableProps } from '@/features/team-profiles/type';
 import { useAppSelector } from '@/reducers';
 
 import CustomTable from '@/components/Table';
@@ -26,16 +26,21 @@ const TeamProfilesTable = () => {
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
   /// for user role path
-  const userCreateRolePath = isTISCAdmin
-    ? PATH.tiscCreateTeamProfile
-    : isBrandAdmin
-    ? PATH.brandCreateTeamProfile
-    : '';
-  const userUpdateRolePath = isTISCAdmin
-    ? PATH.tiscUpdateTeamProfile
-    : isBrandAdmin
-    ? PATH.brandUpdateTeamProfile
-    : '';
+  const userCreateRolePath = getValueByCondition(
+    [
+      [isTISCAdmin, PATH.tiscCreateTeamProfile],
+      [isBrandAdmin, PATH.brandCreateTeamProfile],
+    ],
+    '',
+  );
+
+  const userUpdateRolePath = getValueByCondition(
+    [
+      [isTISCAdmin, PATH.tiscUpdateTeamProfile],
+      [isBrandAdmin, PATH.brandUpdateTeamProfile],
+    ],
+    '',
+  );
 
   const handleUpdateTeamProfile = (id: string) => {
     pushTo(userUpdateRolePath.replace(':id', id));
