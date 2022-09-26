@@ -104,12 +104,17 @@ export const RenderEntireProjectLabel: FC<RenderEntireProjectLabelProps> = ({
   );
 };
 
-export const renderDualLabel = (firstTxt: string, secTxt: string) => (
-  <span className="flex-center">
-    <Title level={9} style={{ marginRight: 12 }}>
+export const renderDualLabel = (
+  firstTxt: string,
+  secTxt: string,
+  fontSize: 12 | 14 = 12,
+  fontWeight: 300 | 500 = 500,
+) => (
+  <span className="flex-center" style={{ paddingRight: '16px' }}>
+    <Title level={9} style={{ marginRight: 12, fontWeight: fontWeight, fontSize: fontSize }}>
       {firstTxt}
     </Title>
-    <BodyText fontFamily="Roboto" level={6}>
+    <BodyText fontFamily="Roboto" level={6} style={{ fontSize: fontSize }}>
       {secTxt}
     </BodyText>
   </span>
