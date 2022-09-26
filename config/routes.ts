@@ -124,12 +124,12 @@ export default [
           {
             path: PATH.createCategories,
             hideInMenu: true,
-            component: './TISC/Product/Category/CreateCategoryPage',
+            component: '../features/categories/components/CategoryEntryForm',
           },
           {
             path: PATH.updateCategories,
             hideInMenu: true,
-            component: './TISC/Product/Category/UpdateCategoryPage',
+            component: '../features/categories/components/CategoryEntryForm',
           },
         ],
       },
@@ -151,12 +151,12 @@ export default [
               {
                 path: PATH.createConversions,
                 hideInMenu: true,
-                component: './TISC/Product/Basis/Conversion/CreateConversionPage',
+                component: './TISC/Product/Basis/Conversion/components/ConversionsEntryForm',
               },
               {
                 path: PATH.updateConversions,
                 hideInMenu: true,
-                component: './TISC/Product/Basis/Conversion/UpdateConversionPage',
+                component: './TISC/Product/Basis/Conversion/components/ConversionsEntryForm',
               },
             ],
           },
@@ -173,12 +173,12 @@ export default [
               {
                 path: PATH.createPresets,
                 hideInMenu: true,
-                component: './TISC/Product/Basis/Preset/CreatePresetPage',
+                component: './TISC/Product/Basis/Preset/components/PresetsEntryForm',
               },
               {
                 path: PATH.updatePresets,
                 hideInMenu: true,
-                component: './TISC/Product/Basis/Preset/UpdatePresetPage',
+                component: './TISC/Product/Basis/Preset/components/PresetsEntryForm',
               },
             ],
           },
@@ -194,12 +194,12 @@ export default [
               {
                 path: PATH.createOptions,
                 hideInMenu: true,
-                component: './TISC/Product/Basis/Option/CreateOptionPage',
+                component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
               },
               {
                 path: PATH.updateOptions,
                 hideInMenu: true,
-                component: './TISC/Product/Basis/Option/UpdateOptionPage',
+                component: './TISC/Product/Basis/Option/components/OptionsEntryForm',
               },
             ],
           },
@@ -416,14 +416,12 @@ export default [
               },
               {
                 path: PATH.createQuotation,
-                component:
-                  './TISC/Adminstration/Messages/InspirationalQuotations/CreateQuotationPage',
+                component: '../features/InspirationalQuotes/components/InspirationalQuotesDetail',
                 hideInMenu: true,
               },
               {
                 path: PATH.updateQuotation,
-                component:
-                  './TISC/Adminstration/Messages/InspirationalQuotations/UpdateQuotationPage',
+                component: '../features/InspirationalQuotes/components/InspirationalQuotesDetail',
                 hideInMenu: true,
               },
             ],
@@ -470,7 +468,7 @@ export default [
       },
       {
         path: '/brand/product/:id',
-        component: './Brand/Products/ViewPage',
+        component: './Brand/Products/ProductBrandViewPage',
         hideInMenu: true,
       },
     ],
@@ -585,7 +583,7 @@ export default [
           },
           {
             path: PATH.updateMarketAvailability,
-            component: './Brand/Adminstration/MarketAvailability/UpdatePage',
+            component: './Brand/Adminstration/MarketAvailability/UpdateMarketAvailabilityPage',
             hideInMenu: true,
           },
         ],
@@ -632,7 +630,7 @@ export default [
           },
           {
             path: PATH.designerBrandProductDetail,
-            component: './Brand/Products/ViewPage',
+            component: './Brand/Products/ProductBrandViewPage',
             hideInMenu: true,
           },
         ],
@@ -660,12 +658,12 @@ export default [
       {
         path: PATH.designerCreateProject,
         hideInMenu: true,
-        component: './Designer/Project/CreatePage',
+        component: './Designer/Project/ProjectCreatePage',
       },
       {
         path: PATH.designerUpdateProject,
         hideInMenu: true,
-        component: './Designer/Project/UpdatePage',
+        component: './Designer/Project/ProjectUpdatePage',
       },
     ],
   },

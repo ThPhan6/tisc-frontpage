@@ -19,7 +19,7 @@ import {
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
-import styles from '../styles/PresetItem.less';
+import styles from './PresetItem.less';
 
 const PresetElementInput: FC<PresetElementInputProp> = ({ order, onChange, value }) => {
   return (

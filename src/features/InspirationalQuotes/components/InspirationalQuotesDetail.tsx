@@ -1,30 +1,29 @@
 import { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
-import { useParams } from 'umi';
 
 import { pushTo } from '@/helper/history';
-import { useBoolean } from '@/helper/hook';
-import { getOneQuotation, updateQuotation } from '@/services';
+import { useBoolean, useGetParamId } from '@/helper/hook';
+import { createQuotation, getOneQuotation, updateQuotation } from '@/services';
 
 import { Quotation } from '@/types';
 
-import { InspirationalQuotationEntryForm } from './components/InspirationalQuotationEntryForm';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
-const DEFAULT_INPUT = {
+import { InspirationalQuotationEntryForm } from './InspirationalQuotesEntryForm';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+
+const DEFAULT_INPUT: Quotation = {
   author: '',
   identity: '',
   quotation: '',
 };
 
 const UpdateQuotationPage = () => {
-  const isLoading = useBoolean();
   const submitButtonStatus = useBoolean(false);
-  const params = useParams<{ id: string }>();
-  const idQuotation = params?.id || '';
+  const idQuotation = useGetParamId();
+  const isUpdate = idQuotation ? true : false;
   const [input, setInput] = useState<Quotation>(DEFAULT_INPUT);
 
   /// get data to update
@@ -36,9 +35,11 @@ const UpdateQuotationPage = () => {
     });
   };
 
+  /// for update data
   useEffect(() => {
-    /// firstly, load data
-    getOneQuotationData();
+    if (isUpdate) {
+      getOneQuotationData();
+    }
   }, []);
 
   /// rewrite data
@@ -50,20 +51,30 @@ const UpdateQuotationPage = () => {
     pushTo(PATH.quotation);
   };
 
-  const handleUpdateData = (data: Quotation) => {
-    isLoading.setValue(true);
+  const onSubmit = (data: Quotation) => {
+    showPageLoading();
 
-    updateQuotation(idQuotation, data).then((isSuccess) => {
-      if (isSuccess) {
-        /// change button icon
-        submitButtonStatus.setValue(true);
-
-        setTimeout(() => {
-          pushTo(PATH.quotation);
-        }, 1000);
-      }
-      isLoading.setValue(false);
-    });
+    if (isUpdate) {
+      updateQuotation(idQuotation, data).then((isSuccess) => {
+        hidePageLoading();
+        if (isSuccess) {
+          submitButtonStatus.setValue(true);
+          setTimeout(() => {
+            submitButtonStatus.setValue(false);
+          }, 1000);
+        }
+      });
+    } else {
+      createQuotation(data).then((isSuccess) => {
+        hidePageLoading();
+        if (isSuccess) {
+          submitButtonStatus.setValue(true);
+          setTimeout(() => {
+            handleCancel();
+          }, 1000);
+        }
+      });
+    }
   };
 
   return (
@@ -73,10 +84,9 @@ const UpdateQuotationPage = () => {
         value={input}
         onChange={handleOnChangeInput}
         onCancel={handleCancel}
-        onSubmit={handleUpdateData}
+        onSubmit={onSubmit}
         submitButtonStatus={submitButtonStatus.value}
       />
-      {isLoading.value ? <LoadingPageCustomize /> : null}
     </div>
   );
 };

@@ -1,5 +1,4 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { STATUS_RESPONSE } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -44,22 +43,18 @@ export async function getProductBasisPresetPagination(
     });
 }
 
-export async function createPresetMiddleware(
-  data: PresetsValueProp,
-  callback: (type: STATUS_RESPONSE, message?: string) => void,
-) {
-  request(`/api/basis-preset/create`, {
+export async function createPresetMiddleware(data: PresetsValueProp) {
+  return request<boolean>(`/api/basis-preset/create`, {
     method: 'POST',
     data,
   })
     .then(() => {
-      callback(STATUS_RESPONSE.SUCCESS);
+      message.success(MESSAGE_NOTIFICATION.CREATE_PRESET_SUCCESS);
+      return true;
     })
     .catch((error) => {
-      callback(
-        STATUS_RESPONSE.ERROR,
-        error?.data?.message || MESSAGE_NOTIFICATION.CREATE_PRESET_ERROR,
-      );
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.CREATE_PRESET_ERROR);
+      return false;
     });
 }
 
@@ -75,33 +70,25 @@ export async function deletePresetMiddleware(id: string) {
     });
 }
 
-export async function updatePresetMiddleware(
-  id: string,
-  data: PresetsValueProp,
-  callback: (type: STATUS_RESPONSE, message?: string) => void,
-) {
-  request(`/api/basis-preset/update/${id}`, { method: 'PUT', data })
+export async function updatePresetMiddleware(id: string, data: PresetsValueProp) {
+  return request<boolean>(`/api/basis-preset/update/${id}`, { method: 'PUT', data })
     .then(() => {
-      callback(STATUS_RESPONSE.SUCCESS);
+      message.success(MESSAGE_NOTIFICATION.UPDATE_PRESET_SUCCESS);
+      return true;
     })
     .catch((error) => {
-      callback(
-        STATUS_RESPONSE.ERROR,
-        error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_PRESET_ERROR,
-      );
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_PRESET_ERROR);
+      return false;
     });
 }
 
-export async function getOnePresetMiddleware(
-  id: string,
-  callbackSuccess: (dataRes: PresetsValueProp) => void,
-  callbackError: (message?: string) => void,
-) {
-  request(`/api/basis-preset/get-one/${id}`, { method: 'GET' })
-    .then((response: { data: PresetsValueProp }) => {
-      callbackSuccess(response?.data);
+export async function getOnePresetMiddleware(id: string) {
+  return request<{ data: PresetsValueProp }>(`/api/basis-preset/get-one/${id}`, { method: 'GET' })
+    .then((response) => {
+      return response.data;
     })
     .catch((error) => {
-      callbackError(error?.data?.message || MESSAGE_NOTIFICATION.GET_ONE_PRESET_ERROR);
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_PRESET_ERROR);
+      return {} as PresetsValueProp;
     });
 }

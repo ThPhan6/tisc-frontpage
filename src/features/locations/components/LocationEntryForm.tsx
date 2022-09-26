@@ -2,10 +2,11 @@ import type { FC } from 'react';
 import React, { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
+import { message } from 'antd';
 
 import {
-  emailMessageError,
-  emailMessageErrorType,
+  getEmailMessageError,
+  getEmailMessageErrorType,
   isEmptySpace,
   messageError,
   messageErrorType,
@@ -122,6 +123,13 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
   }, [cityData]);
 
   const handleSubmit = () => {
+    /// check email
+    const invalidEmail = getEmailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_INVALID);
+    if (invalidEmail) {
+      message.error(invalidEmail);
+      return;
+    }
+
     return onSubmit({
       business_name: data.business_name?.trim() ?? '',
       business_number: data.business_number?.trim() ?? '',
@@ -321,8 +329,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         }}
         onDelete={() => onChangeData('general_email', '')}
         placeholder="general email address"
-        message={emailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_UNVALID)}
-        messageType={emailMessageErrorType(data.general_email, 'error', 'normal')}
+        message={getEmailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_INVALID)}
+        messageType={getEmailMessageErrorType(data.general_email, 'error', 'normal')}
       />
       <CountryModal
         visible={visible.country}
