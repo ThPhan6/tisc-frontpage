@@ -368,7 +368,7 @@ export default [
         routes: [
           {
             path: PATH.tiscTeamProfile,
-            component: '../features/team-profiles/components/TeamProfileTable',
+            component: '../features/team-profiles/components/TeamProfilesTable',
             hideInMenu: true,
           },
           {
@@ -532,7 +532,7 @@ export default [
         routes: [
           {
             path: PATH.brandTeamProfile,
-            component: '../features/team-profiles/components/TeamProfileTable',
+            component: '../features/team-profiles/components/TeamProfilesTable',
             hideInMenu: true,
           },
           {

@@ -30,7 +30,7 @@ import { LocationDetail } from '@/features/user-group/components/LocationDetail'
 import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
 import { ProfileDetail } from '@/features/user-group/components/ProfileDetail';
 import TabDetail from '@/features/user-group/components/TabDetail';
-import TeamDetail from '@/features/user-group/components/Team';
+import TeamDetail from '@/features/user-group/components/TeamDetail';
 import TooltipLabel from '@/features/user-group/components/TooltipLabel';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';

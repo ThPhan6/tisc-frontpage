@@ -295,7 +295,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
           onChangePostalCode(e);
         }}
         onDelete={() => onChangeData('postal_code', '')}
-        message={messageError(data.postal_code, 10, MESSAGE_ERROR.POSTAL_CODE)}
+        message={messageError(data.postal_code, MESSAGE_ERROR.POSTAL_CODE, 10)}
         messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
       />
       <FormGroup label="General Phone" required layout="vertical" formClass={styles.formGroup}>

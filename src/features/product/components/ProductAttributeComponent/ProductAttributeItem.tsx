@@ -57,14 +57,15 @@ const ProductAttributeItem: React.FC<ProductAttributeItemProps> = ({
   const isSpecification = activeKey === 'specification';
 
   const [visible, setVisible] = useState(false);
-  const [selected, setSelected] = useState<CheckboxValue[]>(
-    attributeItem.attributes.map((attr) => {
+  const getSelectedItem = (item: any) => {
+    return item.attributes.map((attr: any) => {
       return {
         label: '',
         value: attr.id,
       };
-    }),
-  );
+    });
+  };
+  const [selected, setSelected] = useState<CheckboxValue[]>(getSelectedItem(attributeItem));
 
   useEffect(() => {
     if (!selected) {
@@ -131,14 +132,7 @@ const ProductAttributeItem: React.FC<ProductAttributeItemProps> = ({
     };
 
     /// reset selected
-    setSelected(
-      newAttributes[index].attributes.map((attr) => {
-        return {
-          label: '',
-          value: attr.id,
-        };
-      }),
-    );
+    setSelected(getSelectedItem(newAttributes[index]));
     dispatch(
       setPartialProductDetail({
         [attributeGroupKey]: newAttributes,
