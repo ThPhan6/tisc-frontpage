@@ -9,7 +9,7 @@ import {
   getUnitTypeList,
 } from '@/features/project/services';
 import { getAllMaterialCode } from '@/features/user-group/services';
-import { validateFloatNumber } from '@/helper/utils';
+import { getSelectedOptions, validateFloatNumber } from '@/helper/utils';
 
 import { CodeOrderRequestParams, OnChangeSpecifyingProductFnc } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -43,9 +43,6 @@ interface CodeOrderTabProps {
   codeOrderState: CodeOrderRequestParams;
   onChangeSpecifyingState: OnChangeSpecifyingProductFnc;
 }
-
-const getSelectedOptions = (options: CheckboxValue[], selectedIds: string[]) =>
-  options.filter((opt) => selectedIds.includes(String(opt.value)) || opt.value === 'other');
 
 const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyingState }) => {
   const [materialCodeOpts, setMaterialCodeOtps] = useState<CustomRadioValue[]>([]);
