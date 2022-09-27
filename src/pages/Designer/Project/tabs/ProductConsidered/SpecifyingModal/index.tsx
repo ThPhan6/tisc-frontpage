@@ -8,14 +8,14 @@ import {
 import { ORDER_METHOD } from '@/constants/util';
 import { message } from 'antd';
 
+import { getSpecificationRequest } from '@/features/product/components/ProductAttributes/hooks';
 import { useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
 import { getProductById } from '@/features/product/services';
 import { getProductSpecifying, updateProductSpecifying } from '@/features/project/services';
 import { pick } from 'lodash';
 
 import { OnChangeSpecifyingProductFnc, SpecifyingProductRequestBody } from './types';
-import { ProductAttributeProps, ProductItem } from '@/features/product/types';
-import { SelectedSpecAttributte, SpecificationAttributeGroup } from '@/features/project/types';
+import { ProductItem } from '@/features/product/types';
 import { useAppSelector } from '@/reducers';
 
 import BrandProductBasicHeader from '@/components/BrandProductBasicHeader';
@@ -133,34 +133,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     getProductById(product.id);
   }, []);
 
-  const getSelectedAttributeAndOption = (attrs: ProductAttributeProps[]) => {
-    const selectedAttributes: SelectedSpecAttributte[] = [];
-
-    attrs.forEach((attr) => {
-      const selectedOption = attr.basis_options?.find((opt) => opt.isChecked);
-      if (selectedOption) {
-        selectedAttributes.push({
-          id: attr.id,
-          basis_option_id: selectedOption.id,
-        });
-      }
-    });
-    return selectedAttributes;
-  };
-
-  const getSpecificationRequest = () => {
-    const specState: SpecificationAttributeGroup[] = [];
-    specification_attribute_groups.forEach((gr) => {
-      if (gr.isChecked) {
-        specState.push({
-          id: gr.id || '',
-          attributes: getSelectedAttributeAndOption(gr.attributes),
-        });
-      }
-    });
-    return specState;
-  };
-
   const onSubmit = () => {
     if (!specifyingState.material_code_id) {
       message.error('Material/Product Code is required');
@@ -184,7 +156,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         ...specifyingState,
         specification: {
           is_refer_document: referToDesignDocument ?? false,
-          specification_attribute_groups: getSpecificationRequest(),
+          specification_attribute_groups: getSpecificationRequest(specification_attribute_groups),
         },
       },
       () => {

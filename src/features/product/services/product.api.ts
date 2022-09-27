@@ -19,8 +19,9 @@ import {
   ProductSummary,
   RelatedCollection,
 } from '../types';
+import { SelectSpecificationBodyRequest } from '@/features/project/types';
+import { BrandDetail } from '@/features/user-group/types';
 import store from '@/reducers';
-import type { BrandDetail } from '@/types';
 
 import { ShareViaEmailForm } from '@/components/ShareViaEmail';
 
@@ -216,5 +217,39 @@ export async function createShareViaEmail(data: ShareViaEmailForm) {
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_SHARE_VIA_EMAIL_ERROR);
       return false;
+    });
+}
+
+export async function selectProductSpecification(
+  productId: string,
+  data: Partial<SelectSpecificationBodyRequest>,
+) {
+  return request<boolean>(`/api/product/${productId}/select-specification/update`, {
+    method: 'POST',
+    data,
+  })
+    .then(() => {
+      console.log('success');
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? 'Select Specification failed!');
+      return false;
+    });
+}
+
+export async function getSelectedProductSpecification(productId: string) {
+  return request<{ data: SelectSpecificationBodyRequest }>(
+    `/api/product/${productId}/select-specification/get-list`,
+    {
+      method: 'GET',
+    },
+  )
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      console.log('getSelectedProductSpecification error', error);
+      return undefined;
     });
 }

@@ -83,6 +83,8 @@ export interface ProductItem {
   project_zone_id?: string;
   considered_id?: string;
   referToDesignDocument?: boolean;
+  brandLocationId?: string;
+  distributorLocationId?: string;
 }
 
 export interface ProductItemValue {
