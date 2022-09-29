@@ -23,6 +23,8 @@ interface AttributeOptionProps {
   clearOnClose?: boolean;
 }
 const AttributeOptionLabel = (option: SpecificationAttributeBasisOptionProps) => {
+  console.log('AttributeOptionLabel', option);
+
   if (!option.image || option.image == '') {
     return (
       <div className={styles.defaultOptionList}>
@@ -68,6 +70,9 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
     options.findIndex((option) => {
       return option.image !== null && option.image !== '';
     }) > -1;
+
+  console.log('AttributeOption', options);
+
   return (
     <>
       <div
