@@ -8,12 +8,16 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as LocationIcon } from '@/assets/icons/location-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
+import { selectProductSpecification } from '../../services';
 import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { formatPhoneCode, getFullName } from '@/helper/utils';
+import { flatMap } from 'lodash';
 
+import { setPartialProductDetail } from '../../reducers';
+import { RadioValue } from '@/components/CustomRadio/types';
 import { DistributorProductMarket } from '@/features/distributors/type';
 import { LocationGroupedByCountry } from '@/features/locations/type';
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
 
 import CustomCollapse from '@/components/Collapse';
 import Popover from '@/components/Modal/Popover';
@@ -51,7 +55,7 @@ export const BRAND_CONTACT_TITLE: BrandContactTitle[] = [
   'Distributor Locations',
 ];
 
-export const BrandContact: FC<BrandContactProps> = ({ title }) => {
+const BrandContact: FC<BrandContactProps> = ({ title }) => {
   /// for distributor location
   const showDistributeSelection = useBoolean();
   const [distributorLocation, setDistributorLocation] = useState<DistributorProductMarket[]>([]);
@@ -59,6 +63,9 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
   /// for brand location
   const showBrandSelection = useBoolean();
   const [brandLocation, setBrandLocation] = useState<LocationGroupedByCountry[]>([]);
+
+  const [selectedBrand, setSelectedBrand] = useState<RadioValue>();
+  const [selectedDistributor, setSelectedDistributor] = useState<RadioValue>();
 
   /// get productID
   const params = useParams<{ id: string }>();
@@ -68,6 +75,36 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
   const showPopUp = useCheckPermission(['Brand Admin', 'Design Admin']);
 
   const brandID = useAppSelector((state) => state.product.brand?.id) || '';
+  const brandLocationId = useAppSelector((state) => state.product.details.brandLocationId);
+  const distributorLocationId = useAppSelector(
+    (state) => state.product.details.distributorLocationId,
+  );
+
+  useEffect(() => {
+    if (brandLocationId) {
+      const locations = flatMap(brandLocation, 'locations');
+      const curLocation = locations.find((el) => el.id === brandLocationId);
+      if (curLocation) {
+        setSelectedBrand({
+          value: curLocation.id,
+          label: curLocation.business_name,
+        });
+      }
+    }
+  }, [brandLocationId, brandLocation]);
+
+  useEffect(() => {
+    if (distributorLocationId) {
+      const distributors = flatMap(distributorLocation, 'distributors');
+      const curDistributor = distributors.find((el) => el.id === distributorLocationId);
+      if (curDistributor) {
+        setSelectedDistributor({
+          value: curDistributor.id,
+          label: curDistributor.name,
+        });
+      }
+    }
+  }, [distributorLocationId, distributorLocation]);
 
   const handleShowPopup = (locationTitle: BrandContactTitle) => {
     if (!showPopUp) {
@@ -110,7 +147,8 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
           className={`contact-select-box ${showPopUp ? 'cursor-pointer' : 'cursor-default'} `}
           onClick={() => handleShowPopup(title)}>
           <BodyText level={6} fontFamily="Roboto">
-            select
+            {(title === 'Brand Locations' ? selectedBrand?.label : selectedDistributor?.label) ||
+              'select'}
           </BodyText>
           {showPopUp ? <SingleRightIcon className="single-right-icon" /> : <DropdownIcon />}
         </div>
@@ -122,26 +160,38 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
         className={styles.customLocationModal}
         visible={showDistributeSelection.value}
         setVisible={showDistributeSelection.setValue}
+        chosenValue={selectedDistributor}
+        setChosenValue={(data) => {
+          if (data) {
+            setSelectedDistributor({
+              value: data.value,
+              label: data.label?.props?.business,
+            });
+            store.dispatch(setPartialProductDetail({ distributorLocationId: data.value }));
+          }
+        }}
+        onFormSubmit={(data) => {
+          selectProductSpecification(productID, { distributor_location_id: data.value });
+          showBrandSelection.setValue(false);
+        }}
         dropDownRadioTitle={(dropdownData) => dropdownData.country_name}
         dropdownRadioList={distributorLocation.map((country) => {
           return {
             country_name: country.country_name,
-            options: country.distributors.map((distributor) => {
-              return {
-                label: (
-                  <BusinessDetail
-                    business={distributor.name}
-                    type={`
-                      ${getFullName(distributor)},
-                      ${formatPhoneCode(distributor.phone_code)} ${distributor.phone}
-                    `}
-                    address={`${distributor.address}, ${distributor.city_name}`}
-                    country={country.country_name.toUpperCase()}
-                  />
-                ),
-                value: distributor.id,
-              };
-            }),
+            options: country.distributors.map((distributor) => ({
+              label: (
+                <BusinessDetail
+                  business={distributor.name}
+                  type={`
+                    ${getFullName(distributor)},
+                    ${formatPhoneCode(distributor.phone_code)} ${distributor.phone}
+                  `}
+                  address={`${distributor.address}, ${distributor.city_name}`}
+                  country={country.country_name.toUpperCase()}
+                />
+              ),
+              value: distributor.id,
+            })),
           };
         })}
       />
@@ -152,23 +202,35 @@ export const BrandContact: FC<BrandContactProps> = ({ title }) => {
         className={styles.customLocationModal}
         visible={showBrandSelection.value}
         setVisible={showBrandSelection.setValue}
+        chosenValue={selectedBrand}
+        setChosenValue={(data) => {
+          if (data) {
+            setSelectedBrand({
+              value: data.value,
+              label: data.label,
+            });
+            store.dispatch(setPartialProductDetail({ brandLocationId: data.value }));
+          }
+        }}
+        onFormSubmit={(data) => {
+          selectProductSpecification(productID, { brand_location_id: data.value });
+          showBrandSelection.setValue(false);
+        }}
         dropDownRadioTitle={(dropdownData) => dropdownData.country_name}
         dropdownRadioList={brandLocation.map((country) => {
           return {
             country_name: country.country_name,
-            options: country.locations.map((location) => {
-              return {
-                label: (
-                  <BusinessDetail
-                    business={location.business_name}
-                    type={location.functional_types[0]?.name}
-                    address={location.address}
-                    country={location.country_name.toUpperCase()}
-                  />
-                ),
-                value: location.id,
-              };
-            }),
+            options: country.locations.map((location) => ({
+              label: (
+                <BusinessDetail
+                  business={location.business_name}
+                  type={location.functional_types[0]?.name}
+                  address={location.address}
+                  country={location.country_name.toUpperCase()}
+                />
+              ),
+              value: location.id,
+            })),
           };
         })}
       />

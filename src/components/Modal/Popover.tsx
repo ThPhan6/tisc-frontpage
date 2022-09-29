@@ -56,7 +56,7 @@ export interface PopoverProps {
   // combinable checkbox value ?
   combinableCheckbox?: boolean;
 
-  onFormSubmit?: () => void;
+  onFormSubmit?: (v?: any) => void;
   submitButtonStatus?: boolean;
 
   // clear select on close
@@ -189,9 +189,7 @@ const Popover: FC<PopoverProps> = ({
   };
 
   const handleDone = () => {
-    if (onFormSubmit) {
-      return onFormSubmit();
-    }
+    onFormSubmit?.(currentValue);
 
     // onchange selected Value
     if (setChosenValue) {

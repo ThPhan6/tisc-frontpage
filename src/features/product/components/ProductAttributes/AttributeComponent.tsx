@@ -63,6 +63,9 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
     options.findIndex((option) => {
       return option.image !== null && option.image !== '';
     }) > -1;
+
+  console.log('AttributeOption', options);
+
   return (
     <>
       <div
