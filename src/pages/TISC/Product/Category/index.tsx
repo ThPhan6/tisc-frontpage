@@ -155,6 +155,7 @@ const CategoryList: React.FC = () => {
       <CustomTable
         rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createCategories)} />}
         title="CATEGORIES"
+        // columns={setDefaultWidthForEachColumn(MainColumns, 2)}
         columns={MainColumns}
         ref={tableRef}
         fetchDataFunc={getProductCategoryPagination}
@@ -164,10 +165,12 @@ const CategoryList: React.FC = () => {
           category: 'category_order',
         }}
         expandable={GetExpandableTableConfig({
+          // columns: setDefaultWidthForEachColumn(SubColumns, 2),
           columns: SubColumns,
           childrenColumnName: 'subs',
           level: 2,
           expandable: GetExpandableTableConfig({
+            // columns: setDefaultWidthForEachColumn(ChildColumns, 2),
             columns: ChildColumns,
             childrenColumnName: 'subs',
             level: 3,

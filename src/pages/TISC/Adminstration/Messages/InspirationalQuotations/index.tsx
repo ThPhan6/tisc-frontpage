@@ -2,8 +2,10 @@ import { useRef } from 'react';
 
 import { PATH } from '@/constants/path';
 
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
+import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { deleteQuotation, getQuotationPagination } from '@/services';
 
 import { TableColumnItem } from '@/components/Table/types';
@@ -14,6 +16,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 
 const InspirationalQuotationsList: React.FC = () => {
+  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
   const tableRef = useRef<any>();
 
   const handleUpdateQuotation = (id: string) => {
@@ -35,12 +38,10 @@ const InspirationalQuotationsList: React.FC = () => {
       title: 'Author',
       dataIndex: 'author',
       sorter: true,
-      width: '10%',
     },
     {
       title: 'Indentity ',
       dataIndex: 'identity',
-      width: '15%',
     },
     {
       title: 'Quotes',
@@ -74,7 +75,7 @@ const InspirationalQuotationsList: React.FC = () => {
     <CustomTable
       rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createQuotation)} />}
       ref={tableRef}
-      columns={mainColumns}
+      columns={setDefaultWidthForEachColumn(mainColumns, 2)}
       fetchDataFunc={getQuotationPagination}
       title="INSPIRATIONAL QUOTES"
       hasPagination

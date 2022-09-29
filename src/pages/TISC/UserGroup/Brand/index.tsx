@@ -7,6 +7,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { ReactComponent as ActionUnreadedIcon } from '@/assets/icons/action-unreaded-icon.svg';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import {
   createAssignTeamByBrandId,
   getBrandPagination,
@@ -36,6 +37,8 @@ import { inviteBrand } from '@/features/team-profiles/api';
 import styles from '@/features/user-group/styles/brand.less';
 
 const BrandList: React.FC = () => {
+  // set width for each cell
+  useAutoExpandNestedTableColumn(0);
   const tableRef = useRef<any>();
 
   // get each assign team

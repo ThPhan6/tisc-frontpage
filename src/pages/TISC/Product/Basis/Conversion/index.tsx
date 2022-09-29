@@ -49,7 +49,6 @@ const BasisConversionList: React.FC = () => {
     {
       title: 'Conversion Between',
       dataIndex: 'conversion_between',
-      width: 200,
       sorter: {
         multiple: 2,
       },
@@ -57,7 +56,6 @@ const BasisConversionList: React.FC = () => {
     {
       title: '1st Formula',
       dataIndex: 'first_formula',
-      width: 200,
     },
     {
       title: '2nd Formula',
@@ -97,7 +95,6 @@ const BasisConversionList: React.FC = () => {
     {
       title: 'Conversion Between',
       dataIndex: 'conversion_between',
-      width: 200,
       noBoxShadow: true,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
@@ -106,7 +103,6 @@ const BasisConversionList: React.FC = () => {
     {
       title: '1st Formula',
       dataIndex: 'first_formula',
-      width: 200,
       noBoxShadow: true,
     },
     {
