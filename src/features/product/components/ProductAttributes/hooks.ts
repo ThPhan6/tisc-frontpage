@@ -4,10 +4,8 @@ import { cloneDeep } from 'lodash';
 
 import { setPartialProductDetail } from '../../reducers';
 import { ProductAttributeProps } from '../../types';
-import { ProductInfoTab } from '../ProductAttributeComponent/types';
+import { AttributeGroupKey, ProductInfoTab } from './types';
 import { useAppSelector } from '@/reducers';
-
-import { AttributeGroupKey } from '../ProductAttributeComponent/ProductAttributeItem';
 
 export const useProductAttributeForm = (attributeType: ProductInfoTab) => {
   const dispatch = useDispatch();

@@ -1,4 +1,4 @@
-import { FC, ReactNode, useState } from 'react';
+import { FC, useState } from 'react';
 
 import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
 
@@ -8,11 +8,10 @@ import type { SpecificationAttributeBasisOptionProps } from '../../types';
 import type { RadioValue } from '@/components/CustomRadio/types';
 import { ConversionSubValueProps } from '@/types';
 
-import CustomCollapse from '@/components/Collapse';
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
 
-import styles from './ProductAttributeContainer.less';
+import styles from './AttributeItem.less';
 
 interface AttributeOptionProps {
   title: string;
@@ -22,7 +21,7 @@ interface AttributeOptionProps {
   setChosenOptions?: (value: RadioValue) => void;
   clearOnClose?: boolean;
 }
-const AttributeOptionLabel = (option: SpecificationAttributeBasisOptionProps) => {
+export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) => {
   if (!option.image || option.image == '') {
     return (
       <div className={styles.defaultOptionList}>
@@ -34,8 +33,7 @@ const AttributeOptionLabel = (option: SpecificationAttributeBasisOptionProps) =>
           <span className="value">{option.value_2}</span>
           <span>{option.unit_2}</span>
         </div>
-        <span className="product-id-label">Product ID:</span>
-        <span className="product-id-value">{option.option_code}</span>
+        {children}
       </div>
     );
   }
@@ -46,10 +44,7 @@ const AttributeOptionLabel = (option: SpecificationAttributeBasisOptionProps) =>
         <BodyText level={6} fontFamily="Roboto" customClass="heading-option-group">
           {option.value_1} - {option.value_2}
         </BodyText>
-        <div className="product-input-group">
-          <span className="product-id-label">Product ID:</span>
-          <span className="product-id-value">{option.option_code}</span>
-        </div>
+        <div className="product-input-group">{children}</div>
       </div>
     </div>
   );
@@ -92,7 +87,12 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
             options:
               options.map((option, index: number) => {
                 return {
-                  label: <AttributeOptionLabel {...option} key={index} />,
+                  label: (
+                    <AttributeOptionLabel option={option} key={index}>
+                      <span className="product-id-label">Product ID:</span>
+                      <span className="product-id-value">{option.option_code}</span>
+                    </AttributeOptionLabel>
+                  ),
                   value: option.id,
                 };
               }) ?? [],
@@ -118,35 +118,6 @@ export const GeneralText: FC<{ text?: string }> = ({ text = '' }) => {
   );
 };
 
-interface AttributeCollapseProps {
-  name: string;
-  index: number;
-  children?: ReactNode;
-}
-
-export const AttributeCollapse: FC<AttributeCollapseProps> = ({ name, index, children }) => {
-  return (
-    <div className={styles.attributes}>
-      <div className={styles.specification}>
-        <CustomCollapse
-          showActiveBoxShadow
-          key={`${name}_${index}`}
-          className={styles.vendorSection}
-          customHeaderClass={styles.vendorCustomPanelBox}
-          header={
-            <div className={styles.brandProfileHeader}>
-              <BodyText level={6} fontFamily="Roboto" customClass={styles.name}>
-                {name}
-              </BodyText>
-            </div>
-          }>
-          {children}
-        </CustomCollapse>
-      </div>
-    </div>
-  );
-};
-
 interface ConversionTextProps {
   conversion: ConversionSubValueProps;
   firstValue: string;
@@ -167,30 +138,5 @@ export const ConversionText: FC<ConversionTextProps> = ({
         {secondValue} {conversion.unit_2}
       </span>
     </BodyText>
-  );
-};
-
-export const AttributeCollapseHeader: FC<{ name: string }> = ({ name = '' }) => {
-  return (
-    <div className={styles.brandProfileHeader}>
-      <BodyText level={6} fontFamily="Roboto" className={styles.name}>
-        {name}
-      </BodyText>
-    </div>
-  );
-};
-
-interface ProductAttributeLineProps {
-  name: string;
-  children?: ReactNode;
-}
-export const ProductAttributeLine: FC<ProductAttributeLineProps> = ({ name = '', children }) => {
-  return (
-    <div className={`${styles.content} ${styles.attribute} attribute-type`}>
-      <BodyText level={4} customClass={styles.content_type}>
-        {name}
-      </BodyText>
-      {children}
-    </div>
   );
 };
