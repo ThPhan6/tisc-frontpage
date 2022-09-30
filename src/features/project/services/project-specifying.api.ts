@@ -1,3 +1,4 @@
+import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -8,7 +9,7 @@ import { SpecifyingProductRequestBody } from '@/pages/Designer/Project/tabs/Prod
 import { GeneralData } from '@/types';
 
 export async function getUnitTypeList() {
-  return request<{ data: UnitType[] }>(`/api/unit-type/get-list`, {
+  return request<{ data: UnitType[] }>(`/api/setting/common-type/${COMMON_TYPES.PROJECT_UNIT}`, {
     method: 'GET',
   })
     .then((response) => {
@@ -21,9 +22,12 @@ export async function getUnitTypeList() {
 }
 
 export async function getInstructionTypeList() {
-  return request<{ data: GeneralData[] }>(`/api/instruction-type/get-list`, {
-    method: 'GET',
-  })
+  return request<{ data: GeneralData[] }>(
+    `/api/setting/common-type/${COMMON_TYPES.PROJECT_INSTRUCTION}`,
+    {
+      method: 'GET',
+    },
+  )
     .then((response) => {
       return response.data;
     })
@@ -34,9 +38,12 @@ export async function getInstructionTypeList() {
 }
 
 export async function getRequirementTypeList() {
-  return request<{ data: GeneralData[] }>(`/api/requirement-type/get-list`, {
-    method: 'GET',
-  })
+  return request<{ data: GeneralData[] }>(
+    `/api/setting/common-type/${COMMON_TYPES.PROJECT_REQUIREMENT}`,
+    {
+      method: 'GET',
+    },
+  )
     .then((response) => {
       return response.data;
     })
@@ -47,9 +54,12 @@ export async function getRequirementTypeList() {
 }
 
 export async function getFinishScheduleList() {
-  return request<{ data: GeneralData[] }>(`/api/finish-schedule-for/get-list`, {
-    method: 'GET',
-  })
+  return request<{ data: GeneralData[] }>(
+    `/api/setting/common-type/${COMMON_TYPES.FINISH_SCHEDULES}`,
+    {
+      method: 'GET',
+    },
+  )
     .then((response) => {
       return response.data;
     })

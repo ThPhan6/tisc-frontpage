@@ -1,4 +1,5 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -191,7 +192,10 @@ export async function getRelatedCollectionProducts(productId: string) {
 }
 
 export async function getSharingGroups() {
-  return request<{ data: ProductItemValue[] }>(`/api/product/sharing-groups`, { method: 'GET' })
+  return request<{ data: ProductItemValue[] }>(
+    `/api/setting/common-type/${COMMON_TYPES.SHARING_GROUP}`,
+    { method: 'GET' },
+  )
     .then((res) => res.data)
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_SHARING_GROUPS_ERROR);
@@ -200,7 +204,10 @@ export async function getSharingGroups() {
 }
 
 export async function getSharingPurposes() {
-  return request<{ data: ProductItemValue[] }>(`/api/product/sharing-purposes`, { method: 'GET' })
+  return request<{ data: ProductItemValue[] }>(
+    `/api/setting/common-type/${COMMON_TYPES.SHARING_PURPOSE}`,
+    { method: 'GET' },
+  )
     .then((res) => res.data)
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_SHARING_PURPOSES_ERROR);
