@@ -5,6 +5,7 @@ import { PATH } from '@/constants/path';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
+import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { deleteConversionMiddleware, getProductBasisConversionPagination } from '@/services';
 
 import type { TableColumnItem } from '@/components/Table/types';
@@ -14,7 +15,6 @@ import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 
-const MAIN_COL_WIDTH = 167;
 const BasisConversionList: React.FC = () => {
   useAutoExpandNestedTableColumn(1);
   const tableRef = useRef<any>();
@@ -40,7 +40,6 @@ const BasisConversionList: React.FC = () => {
       sorter: {
         multiple: 1,
       },
-      width: MAIN_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-uppercase">{value}</span>;
@@ -90,7 +89,6 @@ const BasisConversionList: React.FC = () => {
       title: 'Conversion Group',
       dataIndex: 'name',
       noBoxShadow: true,
-      width: MAIN_COL_WIDTH,
     },
     {
       title: 'Conversion Between',
@@ -131,7 +129,7 @@ const BasisConversionList: React.FC = () => {
       <CustomTable
         rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createConversions)} />}
         title="CONVERSIONS"
-        columns={MainColumns}
+        columns={setDefaultWidthForEachColumn(MainColumns, 3)}
         ref={tableRef}
         fetchDataFunc={getProductBasisConversionPagination}
         multiSort={{
