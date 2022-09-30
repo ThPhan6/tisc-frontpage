@@ -1,4 +1,4 @@
-import { AssigningStatus, AssigningStatusName } from '@/features/project/types';
+import { ProductConsiderStatus, ProductConsiderStatusName } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
 import { ConversionSubValueProps, GeneralData } from '@/types';
 
@@ -77,10 +77,10 @@ export interface ProductItem {
   brand_name?: string;
   brand_logo?: string;
   collection_name?: string;
-  status?: AssigningStatus;
-  status_name?: AssigningStatusName;
-  is_entire?: boolean;
-  project_zone_id?: string;
+  consider_status?: ProductConsiderStatus;
+  consider_status_name?: ProductConsiderStatusName;
+  entire_allocation?: boolean;
+  allocation?: string;
   considered_id?: string;
   referToDesignDocument?: boolean;
   brandLocationId?: string;

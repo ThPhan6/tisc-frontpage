@@ -22,10 +22,10 @@ import { showImageUrl } from '@/helper/utils';
 import { TableColumnItem } from '@/components/Table/types';
 import { ProductItem } from '@/features/product/types';
 import {
-  AssigningStatus,
   ConsideredProduct,
   ConsideredProjectArea,
   ConsideredProjectRoom,
+  ProductConsiderStatus,
 } from '@/features/project/types';
 
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
@@ -63,24 +63,24 @@ const ProductConsidered: React.FC = () => {
 
     const menuItems: ItemType[] = [
       {
-        key: AssigningStatus['Re-considered'],
+        key: ProductConsiderStatus['Re-considered'],
         label: 'Re-consider',
         icon: <CheckIcon style={{ width: 16, height: 16 }} />,
-        disabled: record.status !== AssigningStatus.Unlisted,
+        disabled: record.consider_status !== ProductConsiderStatus.Unlisted,
         onClick: () => {
           updateProductConsiderStatus(record.considered_id, {
-            status: AssigningStatus['Re-considered'],
+            consider_status: ProductConsiderStatus['Re-Considered'],
           }).then((success) => (success ? tableRef.current?.reload() : undefined));
         },
       },
       {
-        key: AssigningStatus.Unlisted,
+        key: ProductConsiderStatus.Unlisted,
         label: 'Unlist',
         icon: <CancelIcon style={{ width: 16, height: 16 }} />,
-        disabled: record.status === AssigningStatus.Unlisted,
+        disabled: record.consider_status === ProductConsiderStatus.Unlisted,
         onClick: () => {
           updateProductConsiderStatus(record.considered_id, {
-            status: AssigningStatus.Unlisted,
+            consider_status: ProductConsiderStatus.Unlisted,
           }).then((success) => (success ? tableRef.current?.reload() : undefined));
         },
       },
@@ -94,7 +94,7 @@ const ProductConsidered: React.FC = () => {
         items={menuItems}
         menuStyle={{ width: 160, height: 'auto' }}
         labelProps={{ className: 'flex-between' }}>
-        {record.status_name}
+        {record.consider_status_name}
       </CustomDropDown>
     );
   };
@@ -108,7 +108,7 @@ const ProductConsidered: React.FC = () => {
         actionItems={[
           {
             type: 'specify',
-            disabled: record.status === AssigningStatus.Unlisted,
+            disabled: record.status === ProductConsiderStatus.Unlisted,
             onClick: () => setSpecifyingProduct(record),
           },
           {
@@ -128,7 +128,8 @@ const ProductConsidered: React.FC = () => {
   const disabledClassname = gridView.value ? 'disabled' : undefined;
 
   const onCellUnlisted = (data: any) => ({
-    className: data.status === AssigningStatus.Unlisted ? 'light-content' : undefined,
+    className:
+      data.consider_status === ProductConsiderStatus.Unlisted ? 'light-content' : undefined,
   });
 
   const getSameColumns = (noBoxShadow?: boolean) => {
@@ -264,7 +265,7 @@ const ProductConsidered: React.FC = () => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
-      dataIndex: 'status_name',
+      dataIndex: 'consider_status_name',
       width: COL_WIDTH.status,
       hidden: gridView.value,
       render: renderStatusDropdown, // For Entire project

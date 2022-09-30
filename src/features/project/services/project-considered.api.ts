@@ -9,8 +9,8 @@ import type {
   PaginationRequestParams,
 } from '@/components/Table/types';
 import {
-  AssigningStatus,
   ConsideredProduct,
+  ProductConsiderStatus,
   ProjectSpaceListProps,
   ProjectSummaryData,
 } from '@/features/project/types';
@@ -80,10 +80,10 @@ export async function assignProductToProject(data: {
 export async function updateProductConsiderStatus(
   consider_id: string,
   data: {
-    status: AssigningStatus;
+    consider_status: ProductConsiderStatus;
   },
 ) {
-  return request(`/api/considered-product/update-status/${consider_id}`, {
+  return request(`/api/project-product/${consider_id}/update-status`, {
     method: 'PATCH',
     data,
   })
@@ -99,7 +99,7 @@ export async function updateProductConsiderStatus(
 }
 
 export async function removeProductFromProject(consider_id: string) {
-  return request(`/api/considered-product/delete/${consider_id}`, {
+  return request(`/api/project-product/${consider_id}/delete`, {
     method: 'DELETE',
   })
     .then(() => {

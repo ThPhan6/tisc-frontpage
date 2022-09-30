@@ -21,8 +21,8 @@ export type SpecifyingProductRequestBody = {
   };
   brand_location_id: string;
   distributor_location_id: string;
-  is_entire: boolean;
-  project_zone_ids: string[];
+  entire_allocation: boolean;
+  allocation: string[];
 } & CodeOrderRequestParams;
 
 export type OnChangeSpecifyingProductFnc = (
