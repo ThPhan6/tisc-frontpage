@@ -56,11 +56,6 @@ export interface LocationForm {
   general_email: string;
 }
 
-export interface FunctionalTypeData {
-  id: string;
-  name: string;
-}
-
 export interface Regions {
   name: string;
   count: number;

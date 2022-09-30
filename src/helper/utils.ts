@@ -2,9 +2,11 @@ import { PATH } from '@/constants/path';
 import { SORT_ORDER } from '@/constants/util';
 import { history } from 'umi';
 
-import { isNaN, isNumber, isUndefined, toNumber } from 'lodash';
+import { isNaN, isNumber, isUndefined, lowerCase, toNumber } from 'lodash';
 
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { PhoneInputValueProp } from '@/components/Form/types';
+import { TableColumnItem } from '@/components/Table/types';
 
 import { pushTo } from './history';
 
@@ -297,3 +299,37 @@ export const getBusinessAddress = (businessAddress: any) => {
   const state = businessAddress.state_name !== '' ? `${businessAddress.state_name},` : '';
   return `${businessAddress.address}, ${city} ${state} ${businessAddress.country_name}`;
 };
+
+export const getSelectedOptions = (options: CheckboxValue[], selectedIds: string[]) =>
+  options.filter((opt) => selectedIds.includes(String(opt.value)) || opt.value === 'other');
+
+export const setDefaultWidthForEachColumn = (
+  table: TableColumnItem<any>[],
+  // excluding column setted width
+  excludedColIndex?: number,
+  // set same width for each column
+  // default columns are action/status/count
+  // default witdh for these columns are its width have been setted(e.width)
+  setWidthFor?: { columns?: string[]; colWidth?: number },
+  // default width for each columns(default number is 10)
+  defaultWidth?: number,
+) =>
+  table.map((e, index) => ({
+    ...e,
+    width: getValueByCondition([
+      // set column width auto by index
+      [excludedColIndex === index, 'auto'],
+      // set custom column with its width
+      [setWidthFor?.columns?.includes(String(e.dataIndex)), setWidthFor?.colWidth || e.width],
+      // default columns with its width have been setted
+      [
+        !setWidthFor &&
+          ['action', 'status', 'count'].includes(lowerCase(String(e.dataIndex || e.title))),
+        e.width,
+      ],
+      // set custom default width for each column
+      [defaultWidth, defaultWidth],
+      // default width for each column is 10
+      [!defaultWidth, 10],
+    ]),
+  }));
