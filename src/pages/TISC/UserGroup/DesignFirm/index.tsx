@@ -4,9 +4,10 @@ import { PATH } from '@/constants/path';
 import { DESIGN_STATUSES_TEXTS } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
 
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { getDesignFirmPagination } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
-import { showImageUrl } from '@/helper/utils';
+import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import type { TableColumnItem } from '@/components/Table/types';
 import { DesignFirm } from '@/features/user-group/types';
@@ -16,6 +17,7 @@ import { ActionMenu } from '@/components/TableAction';
 import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
 
 const DesignFirmList: React.FC = () => {
+  useAutoExpandNestedTableColumn(0);
   const tableRef = useRef<any>();
 
   const handleViewDesignFirm = (id: string) => {
@@ -26,7 +28,6 @@ const DesignFirmList: React.FC = () => {
     {
       title: '',
       dataIndex: 'logo',
-      width: 36,
       render: (value) => {
         if (value) {
           return <img src={showImageUrl(value)} style={{ width: 18 }} />;
@@ -51,6 +52,7 @@ const DesignFirmList: React.FC = () => {
     {
       title: 'Status',
       dataIndex: 'status',
+      width: '5%',
       render: (value) => {
         return <span>{DESIGN_STATUSES_TEXTS[value]}</span>;
       },
@@ -59,6 +61,7 @@ const DesignFirmList: React.FC = () => {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
+      width: '5%',
       render: (_value, record) => {
         return (
           <ActionMenu
@@ -78,7 +81,7 @@ const DesignFirmList: React.FC = () => {
     <PageContainer pageHeaderRender={() => <MenuHeaderSummary type="design" />}>
       <CustomTable
         title="DESIGN FIRMS"
-        columns={TableColumns}
+        columns={setDefaultWidthForEachColumn(TableColumns, 10)}
         ref={tableRef}
         fetchDataFunc={getDesignFirmPagination}
         hasPagination

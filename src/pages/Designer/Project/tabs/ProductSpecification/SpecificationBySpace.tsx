@@ -8,7 +8,7 @@ import {
 } from '../../hooks';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { getSpecifiedProductBySpace } from '@/features/project/services';
-import { showImageUrl } from '@/helper/utils';
+import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import {
@@ -19,18 +19,6 @@ import {
 } from '@/features/project/types';
 
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-
-const COL_WIDTH_SPACE = {
-  zones: 165,
-  areas: 88,
-  rooms: 96,
-  image: 65,
-  brand: 100,
-  product: 171,
-  material: 115,
-  description: 266,
-  status: 130,
-};
 
 export interface SpaceListProps {
   projectId?: string;
@@ -48,7 +36,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       {
         title: 'Image',
         dataIndex: 'image',
-        width: COL_WIDTH_SPACE.image,
+        width: '5%',
         noBoxShadow: noBoxShadow,
         align: 'center',
         render: (value) =>
@@ -62,7 +50,6 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       {
         title: 'Brand',
         dataIndex: 'brand_order',
-        width: COL_WIDTH_SPACE.brand,
         noBoxShadow: noBoxShadow,
         sorter: { multiple: 4 },
         render: (_value, record) => record.brand_name,
@@ -77,14 +64,12 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       {
         title: 'Material Code',
         dataIndex: 'material_code',
-        width: COL_WIDTH_SPACE.material,
         noBoxShadow: noBoxShadow,
         onCell: onCellCancelled,
       },
       {
         title: 'Description',
         dataIndex: 'specified_description',
-        width: COL_WIDTH_SPACE.description,
         noBoxShadow: noBoxShadow,
         onCell: onCellCancelled,
       },
@@ -97,7 +82,6 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       title: 'Zones',
       dataIndex: 'zone_order',
       sorter: { multiple: 1 },
-      width: COL_WIDTH_SPACE.zones,
       isExpandable: true,
       render: (_value, record) => <span className="text-uppercase">{record.name}</span>,
     },
@@ -105,19 +89,17 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       title: 'Areas',
       dataIndex: 'area_order',
       sorter: { multiple: 2 },
-      width: COL_WIDTH_SPACE.areas,
     },
     {
       title: 'Rooms',
       dataIndex: 'room_order',
-      width: COL_WIDTH_SPACE.rooms,
       sorter: { multiple: 3 },
     },
     ...getSameColumns(false),
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
-      width: COL_WIDTH_SPACE.status,
+      width: '8%',
       align: 'center',
     },
     { title: 'Action', align: 'center', width: '5%' },
@@ -126,7 +108,6 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
   const AreaColumns: TableColumnItem<SpecifiedProductArea>[] = [
     {
       title: 'Zones',
-      width: COL_WIDTH_SPACE.zones,
       noBoxShadow: true,
       onCell: (data) => ({
         className: data.rooms ? '' : 'no-box-shadow',
@@ -135,7 +116,6 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     {
       title: 'Areas',
       noExpandIfEmptyData: 'rooms',
-      width: COL_WIDTH_SPACE.areas,
       isExpandable: true,
       render: (_value, record) => <span className="text-uppercase">{record.name}</span>,
       onCell: (data) => ({
@@ -144,7 +124,6 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     },
     {
       title: 'Rooms',
-      width: COL_WIDTH_SPACE.rooms,
       onCell: (data) => ({
         className: data.rooms ? '' : 'no-box-shadow',
       }),
@@ -153,8 +132,8 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
+      width: '8%',
       dataIndex: 'status',
-      width: COL_WIDTH_SPACE.status,
       align: 'center',
       render: renderStatusDropdown(tableRef, true),
       onCell: onCellCancelled,
@@ -170,17 +149,14 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
   const RoomColumns: TableColumnItem<SpecifiedProductRoom>[] = [
     {
       title: 'Zones',
-      width: COL_WIDTH_SPACE.zones,
       noBoxShadow: true,
     },
     {
       title: 'Areas',
-      width: COL_WIDTH_SPACE.areas,
       noBoxShadow: true,
     },
     {
       title: 'Rooms',
-      width: COL_WIDTH_SPACE.rooms,
       isExpandable: true,
       render: (_value, record) => <span className="text-uppercase">{record.room_name}</span>,
     },
@@ -188,7 +164,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
-      width: COL_WIDTH_SPACE.status,
+      width: '8%',
       align: 'center',
     },
     {
@@ -202,24 +178,21 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     {
       title: 'Zones',
       noBoxShadow: true,
-      width: COL_WIDTH_SPACE.zones,
     },
     {
       title: 'Areas',
-      width: COL_WIDTH_SPACE.areas,
       noBoxShadow: true,
     },
     {
       title: 'Rooms',
-      width: COL_WIDTH_SPACE.rooms,
       noBoxShadow: true,
     },
     ...getSameColumns(true),
     { title: 'Count', width: '5%', align: 'center', noBoxShadow: true },
     {
       title: 'Status',
+      width: '8%',
       dataIndex: 'status',
-      width: COL_WIDTH_SPACE.status,
       align: 'center',
       noBoxShadow: true,
       render: renderStatusDropdown(tableRef, true),
@@ -241,7 +214,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
   return (
     <>
       <CustomTable
-        columns={ZoneColumns}
+        columns={setDefaultWidthForEachColumn(ZoneColumns, 7)}
         extraParams={{ projectId }}
         ref={tableRef}
         hasPagination={false}
@@ -253,18 +226,18 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
         }}
         fetchDataFunc={getSpecifiedProductBySpace}
         expandableConfig={{
-          columns: AreaColumns,
+          columns: setDefaultWidthForEachColumn(AreaColumns, 7),
           childrenColumnName: 'areas',
           subtituteChildrenColumnName: 'products',
           level: 2,
 
           expandable: GetExpandableTableConfig({
-            columns: RoomColumns,
+            columns: setDefaultWidthForEachColumn(RoomColumns, 7),
             childrenColumnName: 'rooms',
             level: 3,
 
             expandable: GetExpandableTableConfig({
-              columns: ProductColumns,
+              columns: setDefaultWidthForEachColumn(ProductColumns, 7),
               childrenColumnName: 'products',
               level: 4,
               rowKey: 'specified_product_id',

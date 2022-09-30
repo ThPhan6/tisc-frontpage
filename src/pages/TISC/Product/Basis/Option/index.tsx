@@ -5,7 +5,7 @@ import { PATH } from '@/constants/path';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { showImageUrl } from '@/helper/utils';
+import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 import { deleteBasisOption, getProductBasisOptionPagination } from '@/services';
 
 import type { TableColumnItem } from '@/components/Table/types';
@@ -15,8 +15,6 @@ import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 
-const MAIN_COL_WIDTH = 253;
-const SUB_COL_WIDTH = 135;
 const BasisOptionList: React.FC = () => {
   useAutoExpandNestedTableColumn(2);
   const tableRef = useRef<any>();
@@ -55,20 +53,17 @@ const BasisOptionList: React.FC = () => {
       {
         title: '1st Value',
         dataIndex: 'value_1',
-        width: '10%',
         noBoxShadow: noBoxShadow,
       },
       {
         title: 'Unit',
         dataIndex: 'unit_1',
-        width: '5%',
         lightHeading: true,
         noBoxShadow: noBoxShadow,
       },
       {
         title: '2nd Value',
         dataIndex: 'value_2',
-        width: '10%',
         noBoxShadow: noBoxShadow,
       },
       {
@@ -95,7 +90,6 @@ const BasisOptionList: React.FC = () => {
       sorter: {
         multiple: 1,
       },
-      width: MAIN_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-uppercase">{value}</span>;
@@ -104,7 +98,6 @@ const BasisOptionList: React.FC = () => {
     {
       title: 'Option Name',
       dataIndex: 'option_name',
-      width: SUB_COL_WIDTH,
       sorter: {
         multiple: 2,
       },
@@ -138,13 +131,11 @@ const BasisOptionList: React.FC = () => {
     {
       title: 'Option Group',
       dataIndex: 'option_group',
-      width: MAIN_COL_WIDTH,
       noBoxShadow: true,
     },
     {
       title: 'Option Name',
       dataIndex: 'name',
-      width: SUB_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
@@ -163,13 +154,11 @@ const BasisOptionList: React.FC = () => {
     {
       title: 'Option Group',
       dataIndex: 'option_group',
-      width: MAIN_COL_WIDTH,
       noBoxShadow: true,
     },
     {
       title: 'Option Name',
       dataIndex: 'option_name',
-      width: SUB_COL_WIDTH,
       noBoxShadow: true,
     },
     ...getSameColumns(true),
@@ -187,7 +176,7 @@ const BasisOptionList: React.FC = () => {
       <CustomTable
         rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createOptions)} />}
         title="OPTIONS"
-        columns={MainColumns}
+        columns={setDefaultWidthForEachColumn(MainColumns, 6)}
         ref={tableRef}
         fetchDataFunc={getProductBasisOptionPagination}
         multiSort={{

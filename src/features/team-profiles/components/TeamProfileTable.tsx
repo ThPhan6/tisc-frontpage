@@ -3,10 +3,16 @@ import { useRef } from 'react';
 import { PATH } from '@/constants/path';
 import { USER_STATUS_TEXTS } from '@/constants/util';
 
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useCheckPermission } from '@/helper/hook';
-import { formatPhoneCode, getFullName, getValueByCondition } from '@/helper/utils';
+import {
+  formatPhoneCode,
+  getFullName,
+  getValueByCondition,
+  setDefaultWidthForEachColumn,
+} from '@/helper/utils';
 
 import { TeamProfileTableProps } from '../types';
 import { TableColumnItem } from '@/components/Table/types';
@@ -20,6 +26,7 @@ import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { deleteTeamProfile, getTeamProfileList } from '@/features/team-profiles/api';
 
 const TeamProfilesTable = () => {
+  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 3 });
   const tableRef = useRef<any>();
   const userId = useAppSelector((state) => state.user.user?.id);
 
@@ -98,6 +105,7 @@ const TeamProfilesTable = () => {
     {
       title: 'Status',
       dataIndex: 'status',
+      width: '5%',
       sorter: true,
       render: (value) => USER_STATUS_TEXTS[value] ?? 'N/A',
     },
@@ -131,7 +139,7 @@ const TeamProfilesTable = () => {
     <CustomTable
       title="TEAM PROFILES"
       rightAction={<CustomPlusButton onClick={() => pushTo(userCreateRolePath)} />}
-      columns={mainColumns}
+      columns={setDefaultWidthForEachColumn(mainColumns, 5)}
       fetchDataFunc={getTeamProfileList}
       ref={tableRef}
       hasPagination
