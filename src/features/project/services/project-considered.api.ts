@@ -20,7 +20,7 @@ export async function getProductAssignSpaceByProject(
   productId: string,
   callback: (isEntire: boolean, data: ProjectSpaceListProps[]) => void,
 ) {
-  request(`/api/considered-product/get-list-assigned/${projectId}/${productId}`, {
+  request(`/api/project/${projectId}/product/${productId}/assign-zones`, {
     method: 'GET',
   })
     .then((response: { data: ProjectSpaceListProps[] }) => {
@@ -36,7 +36,7 @@ export async function getConsideredProducts(
   { projectId, ...params }: PaginationRequestParams,
   callback: (data: DataTableResponse) => void,
 ) {
-  request(`/api/considered-product/get-list/${projectId}`, {
+  request(`/api/project/${projectId}/considered-product/get-list`, {
     method: 'GET',
     params,
   })
@@ -57,13 +57,12 @@ export async function getConsideredProducts(
 }
 
 export async function assignProductToProject(data: {
-  is_entire: boolean;
   product_id: string;
   project_id: string;
-  project_zone_ids: string[];
-  considered_product_id?: string;
+  entire_allocation: boolean;
+  allocation: string[];
 }) {
-  return request<ProjectSummaryData>(`/api/product/assign`, {
+  return request<ProjectSummaryData>(`/api/project/assign-product`, {
     method: 'POST',
     data,
   })

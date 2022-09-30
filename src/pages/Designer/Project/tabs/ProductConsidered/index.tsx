@@ -135,15 +135,15 @@ const ProductConsidered: React.FC = () => {
     const SameColumn: TableColumnItem<any>[] = [
       {
         title: 'Image',
-        dataIndex: 'image',
+        dataIndex: 'images',
         width: COL_WIDTH.image,
         align: 'center',
         noBoxShadow: noBoxShadow,
         className: disabledClassname,
         render: (value) =>
-          value ? (
+          value?.[0] ? (
             <img
-              src={showImageUrl(value)}
+              src={showImageUrl(value[0])}
               style={{ width: 24, height: 24, objectFit: 'contain' }}
             />
           ) : null,
