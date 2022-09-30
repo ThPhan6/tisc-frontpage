@@ -8,24 +8,17 @@ import {
   renderStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { getSpecifiedProductByMaterial } from '@/features/project/services';
-import { showImageUrl } from '@/helper/utils';
+import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import { OrderMethod, SpecifiedProductByMaterial } from '@/features/project/types';
 
 import CustomTable from '@/components/Table';
 
-const COL_WIDTH_MATERIAL = {
-  material: 141,
-  image: 65,
-  quantity: 91,
-  unit: 52,
-  method: 125,
-  status: 130,
-};
-
 export const SpecificationByMaterial: FC = () => {
+  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
   const tableRef = useRef<any>();
   const params = useParams<{ id: string }>();
   const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
@@ -35,7 +28,6 @@ export const SpecificationByMaterial: FC = () => {
       title: 'Material Code',
       dataIndex: 'material_order',
       sorter: true,
-      width: COL_WIDTH_MATERIAL.material,
       render: (_value, record) => <span>{record.material_code}</span>,
       onCell: onCellCancelled,
     },
@@ -47,7 +39,7 @@ export const SpecificationByMaterial: FC = () => {
     {
       title: 'Image',
       dataIndex: 'image',
-      width: COL_WIDTH_MATERIAL.image,
+      width: '5%',
       align: 'center',
       render: (value) => {
         if (value) {
@@ -76,20 +68,17 @@ export const SpecificationByMaterial: FC = () => {
     {
       title: 'Quantities',
       dataIndex: 'quantity',
-      width: COL_WIDTH_MATERIAL.quantity,
       align: 'center',
       onCell: onCellCancelled,
     },
     {
       title: 'Unit',
       dataIndex: 'unit',
-      width: COL_WIDTH_MATERIAL.unit,
       onCell: onCellCancelled,
     },
     {
       title: 'Order Method',
       dataIndex: 'order_method',
-      width: COL_WIDTH_MATERIAL.method,
       render: (_value, record) => (
         <span>
           {record.order_method === OrderMethod['Direct Purchase']
@@ -103,7 +92,7 @@ export const SpecificationByMaterial: FC = () => {
       title: 'Status',
       dataIndex: 'status',
       align: 'center',
-      width: COL_WIDTH_MATERIAL.status,
+      width: '8%',
       render: renderStatusDropdown(tableRef),
       onCell: onCellCancelled,
     },
@@ -118,7 +107,7 @@ export const SpecificationByMaterial: FC = () => {
   return (
     <>
       <CustomTable
-        columns={MaterialColumns}
+        columns={setDefaultWidthForEachColumn(MaterialColumns, 7)}
         rowKey="specified_product_id"
         ref={tableRef}
         hasPagination={false}

@@ -1,6 +1,8 @@
 import { PATH } from '@/constants/path';
 
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { pushTo } from '@/helper/history';
+import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { getEmailTemplatePagination } from '@/services';
 
 import { TableColumnItem } from '@/components/Table/types';
@@ -12,6 +14,7 @@ import { ActionMenu } from '@/components/TableAction';
 import styles from './styles/index.less';
 
 const EmailAutoList = () => {
+  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
   const handleUpdateEmailAuto = (id: string) => {
     pushTo(PATH.updateEmailAuto.replace(':id', id));
   };
@@ -20,14 +23,12 @@ const EmailAutoList = () => {
     {
       title: 'Topic',
       dataIndex: 'topic',
-      width: '8%',
       sorter: true,
       render: (_value, record: any) => record.topic_key,
     },
     {
       title: 'Targeted For',
       dataIndex: 'targeted_for',
-      width: '10%',
       sorter: true,
       render: (_value, record: any) => record.targeted_for_key,
     },
@@ -60,7 +61,7 @@ const EmailAutoList = () => {
     <div className={styles.email_table}>
       <CustomTable
         title={'EMAIL AUTORESPONDER'}
-        columns={mainColumns}
+        columns={setDefaultWidthForEachColumn(mainColumns, 2)}
         fetchDataFunc={getEmailTemplatePagination}
         hasPagination
       />

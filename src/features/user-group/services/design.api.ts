@@ -70,13 +70,14 @@ export async function getDesignStatuses() {
     });
 }
 
-export async function getSummary() {
+export async function getDesignFirmSummary() {
   return request<{ data: DataMenuSummaryProps[] }>(`/api/design/summary`, { method: 'GET' })
     .then((response) => {
       return response.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_SUMMARY);
+      return [] as DataMenuSummaryProps[];
     });
 }
 

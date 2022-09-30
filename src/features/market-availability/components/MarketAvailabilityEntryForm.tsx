@@ -84,6 +84,7 @@ export const MarketAvailabilityEntryForm: FC<MarketAvailabilityEntryFormProps> =
         title={upperCase(data.collection_name)}
         textAlignTitle="left"
         customClass={styles.entry_form}
+        contentClass={styles.mainContent}
         headerContent={
           <div className={styles.header}>
             <div className={styles.header_content}>

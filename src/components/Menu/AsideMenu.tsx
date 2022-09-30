@@ -1,58 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { MenuDataItem } from '@ant-design/pro-layout';
 import type { HeaderViewProps } from '@ant-design/pro-layout/lib/Header';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, MenuProps } from 'antd';
+import { ItemType } from 'antd/lib/menu/hooks/useItems';
 
 import { ReactComponent as AlignLeftIcon } from '@/assets/icons/align-left-icon.svg';
 import { ReactComponent as AlignRightIcon } from '@/assets/icons/align-right-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
-import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
-import { isEmpty } from 'lodash';
+import { pushTo } from '@/helper/history';
 
 import { renderIconByName } from './Icon/index';
 import styles from './styles/aside.less';
 
-const renderMenuItem = (menu: MenuDataItem) => {
-  return (
-    <Menu.Item key={menu.key} className={styles.customAsideMenu}>
-      <Link to={menu.path}>
-        <span className="ant-pro-menu-item">
-          {renderIconByName(menu.icon)}
-          <span className="ant-pro-menu-item-title">{menu.name}</span>
-        </span>
-      </Link>
-    </Menu.Item>
-  );
-};
+type MenuItem = Required<MenuProps>['items'][number];
 
-const renderSubMenu = (menu: MenuDataItem) => {
-  const children =
-    menu.children && menu.children.filter((item) => !item.hideInMenu && !item.unaccessible);
-  if (isEmpty(children)) {
-    return renderMenuItem(menu);
+const getMenuItems = (menuItems?: MenuDataItem[]): ItemType[] | undefined => {
+  if (!menuItems) {
+    return undefined;
   }
-  return (
-    <Menu.SubMenu
-      title={menu.name}
-      key={menu.key}
-      icon={renderIconByName(menu.icon)}
-      className={styles.customAsideSubMenu}>
-      {children &&
-        children.map((child) => {
-          const childrenLevel2 =
-            child.children &&
-            child.children.filter((item) => !item.hideInMenu && !item.unaccessible);
-
-          if (childrenLevel2) {
-            return renderSubMenu(child);
-          }
-          return renderMenuItem(child);
-        })}
-    </Menu.SubMenu>
-  );
+  const showedMenuItems = menuItems.filter((el) => !el.hideInMenu);
+  if (showedMenuItems.length) {
+    return showedMenuItems.map((item) => {
+      const children = getMenuItems(item.children);
+      return {
+        key: item.key,
+        children,
+        icon: renderIconByName(item.icon),
+        label: item.name,
+        onClick: () => (children ? undefined : pushTo(item.path || '')),
+        title: '',
+      } as MenuItem;
+    });
+  }
+  return undefined;
 };
 
 const AsideMenu: React.FC = (props: HeaderViewProps) => {
@@ -66,7 +48,6 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
   ]);
 
   const [collapsed, setCollapsed] = useState(false);
-
   /// get menu data
   const menuData = props.menuData?.filter((menu) => {
     if (menu.children && menu.key) {
@@ -77,6 +58,8 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
       menu.name !== undefined
     );
   });
+
+  const menuItems = getMenuItems(menuData);
 
   useEffect(() => {
     setOpenKeys([
@@ -98,15 +81,17 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
   const onClick = (item: any) => {
     setOpenKeys(item.keyPath);
   };
-  const customExpandIcon = (data: any) => {
+
+  const customExpandIcon = useCallback((data: any) => {
     if (data.isSubMenu) {
-      if (data.isOpen) {
-        return <DropupIcon />;
-      }
-      return <DropdownIcon />;
+      return (
+        <DropdownIcon
+          className={`${styles['ant-menu-expand-icon']} ${data.isOpen ? styles['item-open'] : ''}`}
+        />
+      );
     }
-    return undefined;
-  };
+    return null;
+  }, []);
 
   return (
     <>
@@ -129,26 +114,23 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
         className={styles.customAsideSider}
         trigger={collapsed ? <AlignRightIcon /> : <AlignLeftIcon />}>
         <div className="menu-sider-wrapper">
-          <Menu
-            theme={props.headerTheme}
-            selectedKeys={openKeys}
-            openKeys={openKeys}
-            onOpenChange={onOpenChange}
-            style={{ height: '100%' }}
-            mode={'inline'}
-            onClick={onClick}
-            inlineIndent={16}
-            expandIcon={customExpandIcon}
-            triggerSubMenuAction={'click'}>
-            {menuData?.map((menu) => {
-              const children = menu.children && menu.children.filter((item) => !item.hideInMenu);
-              if (children) {
-                return renderSubMenu(menu);
-              } else {
-                return renderMenuItem(menu);
-              }
-            })}
-          </Menu>
+          {useMemo(
+            () => (
+              <Menu
+                theme={props.headerTheme}
+                defaultOpenKeys={openKeys}
+                defaultSelectedKeys={openKeys}
+                onOpenChange={onOpenChange}
+                style={{ height: '100%' }}
+                mode={'inline'}
+                onClick={onClick}
+                inlineIndent={16}
+                expandIcon={customExpandIcon}
+                items={menuItems}
+              />
+            ),
+            [openKeys, menuItems],
+          )}
         </div>
       </Layout.Sider>
     </>

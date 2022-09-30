@@ -15,7 +15,7 @@ import { BasisOptionSubForm, SubBasisOption } from '@/types';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
-import styles from '../styles/OptionItem.less';
+import styles from './OptionItem.less';
 
 interface SubItemOptionProps {
   is_have_image?: boolean;
@@ -61,21 +61,19 @@ const SubItemOption: FC<SubItemOptionProps> = ({
       });
   };
 
+  const getURLImage = () => {
+    if (subItemOption.image) {
+      return subItemOption.isBase64 ? subItemOption.image : showImageUrl(subItemOption.image);
+    }
+    return DefaultImage;
+  };
+
   return (
     <div className={styles.element}>
       {is_have_image && (
         <div className={styles.image_upload}>
           <label htmlFor={`input_${optionIndex}_${index}`}>
-            <img
-              className={styles.image}
-              src={
-                subItemOption.image
-                  ? subItemOption.isBase64
-                    ? subItemOption.image
-                    : showImageUrl(subItemOption.image)
-                  : DefaultImage
-              }
-            />
+            <img className={styles.image} src={getURLImage()} />
           </label>
 
           <div className={styles.image__file_input}>

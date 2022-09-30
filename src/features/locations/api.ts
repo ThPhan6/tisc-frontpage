@@ -6,7 +6,6 @@ import { DistributorProductMarket } from '../distributors/type';
 import {
   City,
   Country,
-  FunctionalTypeData,
   LocationDetail,
   LocationForm,
   LocationGroupedByCountry,
@@ -19,6 +18,7 @@ import type {
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
+import { GeneralData } from '@/types';
 
 interface LocationPaginationResponse {
   data: {
@@ -149,12 +149,10 @@ export async function getLocationPagination(
 }
 
 export async function getListFunctionalType() {
-  return request<{ data: FunctionalTypeData[] }>(`/api/functional-type/get-list`)
-    .then((res) => {
-      return res.data;
-    })
+  return request<{ data: GeneralData[] }>(`/api/functional-type/get-list`)
+    .then((res) => res.data)
     .catch(() => {
-      return [] as FunctionalTypeData[];
+      return [] as GeneralData[];
     });
 }
 

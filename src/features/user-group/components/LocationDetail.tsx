@@ -18,7 +18,7 @@ import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
 import GeneralData from './GeneralData';
 import { getLocationByBrandId } from '@/features/locations/api';
 
-const Location: FC<UserGroupProps> = ({ type, id }) => {
+export const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
   const [locations, setLocations] = useState<LocationGroupedByCountry[]>([]);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const Location: FC<UserGroupProps> = ({ type, id }) => {
       <Col span={12}>
         <div className={styles.form}>
           <GeneralData>
-            {locations.length && (
+            {locations.length ? (
               <Collapse {...CollapseLevel1Props}>
                 {locations.map((country, index) => (
                   <Collapse.Panel
@@ -99,12 +99,10 @@ const Location: FC<UserGroupProps> = ({ type, id }) => {
                   </Collapse.Panel>
                 ))}
               </Collapse>
-            )}
+            ) : null}
           </GeneralData>
         </div>
       </Col>
     </Row>
   );
 };
-
-export default Location;
