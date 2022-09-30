@@ -3,7 +3,7 @@ import { FC } from 'react';
 import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 
 import { useProductAttributeForm } from './hooks';
-import { useCheckPermission } from '@/helper/hook';
+import { useCheckPermission, useGetParamId } from '@/helper/hook';
 
 import { ProductAttributeProps } from '../../types';
 import { ProductInfoTab } from './types';
@@ -33,6 +33,7 @@ export const ProductAttributeContainer: FC<Props> = ({
   specifying,
   noBorder,
 }) => {
+  const productId = useGetParamId();
   const isTiscAdmin = useCheckPermission('TISC Admin');
   const {
     onChangeAttributeItem,
@@ -43,7 +44,7 @@ export const ProductAttributeContainer: FC<Props> = ({
     attributeGroup,
     attributeGroupKey,
     onSelectSpecificationOption,
-  } = useProductAttributeForm(activeKey);
+  } = useProductAttributeForm(activeKey, productId);
 
   const renderCollapseHeader = (groupIndex: number) => {
     const group = attributeGroup[groupIndex];
@@ -73,7 +74,7 @@ export const ProductAttributeContainer: FC<Props> = ({
                 ? [{ label: group.name, value: groupIndex }]
                 : []
             }
-            onChange={() => onCheckedSpecification(groupIndex)}
+            onChange={() => onCheckedSpecification(groupIndex, false)}
             checkboxClass={styles.customLabel}
           />
         ) : (
@@ -149,6 +150,7 @@ export const ProductAttributeContainer: FC<Props> = ({
                 onSelectSpecificationOption(
                   groupIndex,
                   attribute.id,
+                  false,
                   option?.value?.toString() || undefined,
                 );
               }}

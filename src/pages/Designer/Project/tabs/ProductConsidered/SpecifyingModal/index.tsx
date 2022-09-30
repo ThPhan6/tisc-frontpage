@@ -173,7 +173,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       />
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.specification}>
-        <SpecificationTab />
+        <SpecificationTab productId={product.id} />
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.vendor}>

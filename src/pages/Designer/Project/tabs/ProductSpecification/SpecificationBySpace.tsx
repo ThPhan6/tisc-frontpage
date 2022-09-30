@@ -1,5 +1,7 @@
 import { FC, useEffect, useRef } from 'react';
 
+import { COLUMN_WIDTH } from '@/constants/util';
+
 import {
   onCellCancelled,
   renderActionCell,
@@ -99,7 +101,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       align: 'center',
     },
     { title: 'Action', align: 'center', width: '5%' },
@@ -132,7 +134,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       dataIndex: 'status',
       align: 'center',
       render: renderStatusDropdown(tableRef, true),
@@ -164,7 +166,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       align: 'center',
     },
     {
@@ -191,7 +193,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     { title: 'Count', width: '5%', align: 'center', noBoxShadow: true },
     {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       dataIndex: 'status',
       align: 'center',
       noBoxShadow: true,

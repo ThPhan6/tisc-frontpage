@@ -1,5 +1,7 @@
 import { FC, useRef } from 'react';
 
+import { COLUMN_WIDTH } from '@/constants/util';
+
 import {
   onCellCancelled,
   renderActionCell,
@@ -50,7 +52,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       width: '5%',
       align: 'center',
     },
-    { title: 'Status', align: 'center', width: '8%' },
+    { title: 'Status', align: 'center', width: COLUMN_WIDTH.status },
     { title: 'Action', width: '5%', align: 'center' },
   ];
 
@@ -106,7 +108,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       noBoxShadow: true,
       dataIndex: 'status',
       align: 'center',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       render: renderStatusDropdown(tableRef),
       onCell: onCellCancelled,
     },

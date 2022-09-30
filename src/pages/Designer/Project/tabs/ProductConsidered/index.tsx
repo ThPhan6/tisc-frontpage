@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 
+import { COLUMN_WIDTH } from '@/constants/util';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { useParams } from 'umi';
 
@@ -20,6 +21,7 @@ import { useBoolean } from '@/helper/hook';
 import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
+import { setPartialProductDetail } from '@/features/product/reducers';
 import { ProductItem } from '@/features/product/types';
 import {
   ConsideredProduct,
@@ -27,6 +29,7 @@ import {
   ConsideredProjectRoom,
   ProductConsiderStatus,
 } from '@/features/project/types';
+import store from '@/reducers';
 
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
 import ActionButton from '@/components/Button/ActionButton';
@@ -101,7 +104,14 @@ const ProductConsidered: React.FC = () => {
           {
             type: 'specify',
             disabled: record.status === ProductConsiderStatus.Unlisted,
-            onClick: () => setSpecifyingProduct(record),
+            onClick: () => {
+              setSpecifyingProduct(record);
+              store.dispatch(
+                setPartialProductDetail({
+                  specification_attribute_groups: record.specification_attribute_groups,
+                }),
+              );
+            },
           },
           {
             type: 'deleted',
@@ -197,7 +207,7 @@ const ProductConsidered: React.FC = () => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       hidden: gridView.value,
       align: 'center',
     },
@@ -247,7 +257,7 @@ const ProductConsidered: React.FC = () => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       dataIndex: 'status_name',
       hidden: gridView.value,
       render: renderStatusDropdown, // For Entire project
@@ -284,7 +294,7 @@ const ProductConsidered: React.FC = () => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       hidden: gridView.value,
     },
     {
@@ -326,7 +336,7 @@ const ProductConsidered: React.FC = () => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center', noBoxShadow: true },
     {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       hidden: gridView.value,
       noBoxShadow: true,
       render: renderStatusDropdown,

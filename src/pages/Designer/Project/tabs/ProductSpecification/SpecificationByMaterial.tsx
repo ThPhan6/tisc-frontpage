@@ -1,5 +1,6 @@
 import { FC, useRef } from 'react';
 
+import { COLUMN_WIDTH } from '@/constants/util';
 import { useParams } from 'umi';
 
 import {
@@ -92,7 +93,7 @@ export const SpecificationByMaterial: FC = () => {
       title: 'Status',
       dataIndex: 'status',
       align: 'center',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       render: renderStatusDropdown(tableRef),
       onCell: onCellCancelled,
     },

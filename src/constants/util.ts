@@ -83,3 +83,7 @@ export const SORT_ORDER = {
   headerFollow: 'A - Z',
   footerFollow: 'Z - A',
 };
+
+export const COLUMN_WIDTH = {
+  status: 130,
+};
