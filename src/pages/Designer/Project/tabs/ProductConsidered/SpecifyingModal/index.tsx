@@ -36,8 +36,8 @@ const DEFAULT_STATE: SpecifyingProductRequestBody = {
   },
   brand_location_id: '',
   distributor_location_id: '',
-  is_entire: true,
-  project_zone_ids: [],
+  entire_allocation: true,
+  allocation: [],
   material_code_id: '',
   suffix_code: '',
   description: '',
@@ -86,11 +86,10 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   console.log('specifyingState', specifyingState);
 
   const { AssignProductToSpaceForm } = useAssignProductToSpaceForm(product.id, projectId, {
-    onChangeEntireProjectCallback: (is_entire) => onChangeSpecifyingState({ is_entire }),
+    onChangeEntireProjectCallback: (entire_allocation) =>
+      onChangeSpecifyingState({ entire_allocation }),
     onChangeSelectedRoomsCallback: (selectedRooms) =>
-      onChangeSpecifyingState({ project_zone_ids: selectedRooms }),
-    roomId: product.project_zone_id,
-    isEntire: product.is_entire,
+      onChangeSpecifyingState({ allocation: selectedRooms }),
   });
 
   useEffect(() => {

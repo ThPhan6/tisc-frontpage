@@ -7,11 +7,9 @@ import { cloneDeep } from 'lodash';
 
 import { setPartialProductDetail } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
-import { ProductInfoTab } from '../ProductAttributeComponent/types';
+import { AttributeGroupKey, ProductInfoTab } from './types';
 import { SelectedSpecAttributte, SpecificationAttributeGroup } from '@/features/project/types';
 import { useAppSelector } from '@/reducers';
-
-import { AttributeGroupKey } from '../ProductAttributeComponent/ProductAttributeItem';
 
 const getSelectedAttributeAndOption = (attrs: ProductAttributeProps[]) => {
   const selectedAttributes: SelectedSpecAttributte[] = [];

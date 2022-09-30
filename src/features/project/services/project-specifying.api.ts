@@ -74,10 +74,10 @@ export async function getProductSpecifying(consider_id: string) {
 }
 
 export async function updateProductSpecifying(
-  data: SpecifyingProductRequestBody,
+  { considered_product_id, ...data }: SpecifyingProductRequestBody,
   callback: () => void,
 ) {
-  await request(`/api/specified-product/specify`, {
+  await request(`/api/project-product/${considered_product_id}/update-specify`, {
     method: 'POST',
     data: { ...data, quantity: Number(data.quantity) },
   })

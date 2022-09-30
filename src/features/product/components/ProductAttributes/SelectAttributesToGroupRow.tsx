@@ -8,7 +8,7 @@ import { cloneDeep, upperCase } from 'lodash';
 
 import { setPartialProductDetail } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
-import { ProductInfoTab } from '../ProductAttributeComponent/types';
+import { ProductInfoTab } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import store from '@/reducers';
 import { ProductAttributes, ProductSubAttributes } from '@/types';

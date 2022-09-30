@@ -26,7 +26,7 @@ import { showImageUrl } from '@/helper/utils';
 import { capitalize, truncate } from 'lodash';
 
 import { ProductGetListParameter, ProductItem } from '../types';
-import { AssigningStatus } from '@/features/project/types';
+import { ProductConsiderStatus } from '@/features/project/types';
 import { useAppSelector } from '@/reducers';
 
 import CustomCollapse from '@/components/Collapse';
@@ -62,7 +62,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const showShareEmailModal = useBoolean();
   const showAssignProductModal = useBoolean();
 
-  const unlistedDisabled = product.status === AssigningStatus.Unlisted;
+  const unlistedDisabled = product.consider_status === ProductConsiderStatus.Unlisted;
 
   // check user role to redirect
   const userRole = useGetUserRoleFromPathname();

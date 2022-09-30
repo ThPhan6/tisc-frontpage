@@ -189,7 +189,10 @@ const Popover: FC<PopoverProps> = ({
   };
 
   const handleDone = () => {
-    onFormSubmit?.(currentValue);
+    if (onFormSubmit) {
+      onFormSubmit(currentValue);
+      return;
+    }
 
     // onchange selected Value
     if (setChosenValue) {

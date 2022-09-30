@@ -93,10 +93,10 @@ export interface ConsideredProduct {
   area?: ConsideredProjectArea[];
 }
 
-export enum AssigningStatus {
-  'Considered' = 1,
-  'Re-considered' = 2,
-  'Unlisted' = 3,
+export enum ProductConsiderStatus {
+  'Considered',
+  'Re-Considered',
+  'Unlisted',
 }
 
 export enum SpecifyStatus {
@@ -110,7 +110,7 @@ export enum OrderMethod {
   'Custom Order' = 2,
 }
 
-export type AssigningStatusName = keyof typeof AssigningStatus;
+export type ProductConsiderStatusName = keyof typeof ProductConsiderStatus;
 
 export interface FindProductConsiderRequest {
   project_id: string;
