@@ -14,7 +14,7 @@ import {
   getListAssignTeamByBrandId,
 } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
-import { getFullName, showImageUrl } from '@/helper/utils';
+import { getFullName, setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 import { isEmpty, isEqual } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -132,7 +132,7 @@ const BrandList: React.FC = () => {
     {
       title: '',
       dataIndex: 'logo',
-      width: 36,
+      width: '5%',
       render: (value) => {
         if (value) {
           return <img src={showImageUrl(value)} style={{ width: 18 }} />;
@@ -193,6 +193,7 @@ const BrandList: React.FC = () => {
     {
       title: 'Status',
       dataIndex: 'status',
+      width: '5%',
       sorter: true,
       render: (_v, record) => {
         return (
@@ -205,6 +206,7 @@ const BrandList: React.FC = () => {
     {
       title: 'Action',
       dataIndex: 'action',
+      width: '5%',
       align: 'center',
       render: (_v, record: any) => (
         <ActionMenu
@@ -232,7 +234,7 @@ const BrandList: React.FC = () => {
           rightAction={
             <CustomPlusButton onClick={() => pushTo(PATH.tiscUserGroupBrandEntryFrom)} />
           }
-          columns={TableColumns}
+          columns={setDefaultWidthForEachColumn(TableColumns, 11)}
           ref={tableRef}
           fetchDataFunc={getBrandPagination}
           hasPagination
