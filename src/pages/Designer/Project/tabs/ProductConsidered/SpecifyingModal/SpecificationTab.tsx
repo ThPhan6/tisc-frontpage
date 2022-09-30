@@ -10,7 +10,7 @@ import type { RadioValue } from '@/components/CustomRadio/types';
 
 import { CustomRadio } from '@/components/CustomRadio';
 import { Title } from '@/components/Typography';
-import { ProductAttributeContainer } from '@/features/product/components/ProductAttributes';
+import { ProductAttributeContainer } from '@/features/product/components/ProductAttributes/ProductAttributeContainer';
 
 import styles from './styles/specification-tab.less';
 

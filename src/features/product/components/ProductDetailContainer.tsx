@@ -24,13 +24,13 @@ import { useCheckPermission } from '@/helper/hook';
 import { isValidURL } from '@/helper/utils';
 
 import { ProductFormData, ProductKeyword } from '../types';
-import { ProductInfoTab } from './ProductAttributeComponent/types';
+import { ProductInfoTab } from './ProductAttributes/types';
 import { resetProductDetailState, setBrand } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
 
 import { TableHeader } from '@/components/Table/TableHeader';
 
-import { ProductAttributeComponent } from './ProductAttributeComponent';
+import { ProductAttributeComponent } from './ProductAttributes';
 import { ProductBasicInfo } from './ProductBasicInfo';
 import { ProductDetailFooter } from './ProductDetailFooter';
 import ProductDetailHeader from './ProductDetailHeader';
