@@ -7,7 +7,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { getDesignFirmPagination } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
-import { showImageUrl } from '@/helper/utils';
+import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import type { TableColumnItem } from '@/components/Table/types';
 import { DesignFirm } from '@/features/user-group/types';
@@ -40,7 +40,7 @@ const DesignFirmList: React.FC = () => {
       dataIndex: 'name',
       sorter: true,
     },
-    { title: 'Origin', dataIndex: 'origin', sorter: true, width: 10 },
+    { title: 'Origin', dataIndex: 'origin', sorter: true },
     { title: 'Main Office', dataIndex: 'main_office', sorter: true },
     { title: 'Satellites', dataIndex: 'satellites' },
     { title: 'Designers', dataIndex: 'designers' },
@@ -81,7 +81,7 @@ const DesignFirmList: React.FC = () => {
     <PageContainer pageHeaderRender={() => <MenuHeaderSummary type="design" />}>
       <CustomTable
         title="DESIGN FIRMS"
-        columns={TableColumns}
+        columns={setDefaultWidthForEachColumn(TableColumns, 10)}
         ref={tableRef}
         fetchDataFunc={getDesignFirmPagination}
         hasPagination
