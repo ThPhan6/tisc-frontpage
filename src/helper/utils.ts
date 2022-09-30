@@ -2,7 +2,7 @@ import { PATH } from '@/constants/path';
 import { SORT_ORDER } from '@/constants/util';
 import { history } from 'umi';
 
-import { isNaN, isNumber, isUndefined, toNumber } from 'lodash';
+import { isNaN, isNumber, isUndefined, lowerCase, toNumber } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { PhoneInputValueProp } from '@/components/Form/types';
@@ -310,9 +310,13 @@ export const setDefaultWidthForEachColumn = (
       // set column width auto by index
       [excludedColIndex === index, 'auto'],
       // set custom column with its width
-      [setWidthFor?.columns?.includes(String(e.dataIndex)), setWidthFor?.colWidth],
-      // default column with its width have been setted
-      [!setWidthFor && ['action', 'status', 'count'].includes(String(e.dataIndex)), e.width],
+      [setWidthFor?.columns?.includes(String(e.dataIndex)), setWidthFor?.colWidth || e.width],
+      // default columns with its width have been setted
+      [
+        !setWidthFor &&
+          ['action', 'status', 'count'].includes(lowerCase(String(e.dataIndex || e.title))),
+        e.width,
+      ],
       // set custom default width for each column
       [defaultWidth, defaultWidth],
       // default width for each column is 10

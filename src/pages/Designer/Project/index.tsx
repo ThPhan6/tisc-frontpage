@@ -80,6 +80,7 @@ const ProjectList: React.FC = () => {
     {
       title: 'Status',
       dataIndex: 'status',
+      width: '5%',
       align: 'center',
       render: (value) => FilterStatusIcons[value] ?? '',
     },
