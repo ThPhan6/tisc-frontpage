@@ -1,4 +1,5 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -149,8 +150,13 @@ export async function getLocationPagination(
 }
 
 export async function getListFunctionalType() {
-  return request<{ data: GeneralData[] }>(`/api/functional-type/get-list`)
-    .then((res) => res.data)
+  return request<{ data: GeneralData[] }>(
+    `/api/setting/common-type/${COMMON_TYPES.COMPANY_FUNCTIONAL}`,
+    { method: 'GET' },
+  )
+    .then((res) => {
+      return res.data;
+    })
     .catch(() => {
       return [] as GeneralData[];
     });
