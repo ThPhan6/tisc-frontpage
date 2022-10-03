@@ -223,17 +223,17 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
     { tab: 'PRESETS', key: 'presets' },
     { tab: 'OPTIONS', key: 'options' },
   ];
-  listTab = listTab.map((tab) => {
+  listTab = listTab.map((itemTab) => {
     if (type === SPECIFICATION_TYPE) {
-      if (tab.key == 'presets') {
-        tab.disable = true;
+      if (itemTab.key == 'presets') {
+        itemTab.disable = true;
       }
     } else {
-      if (tab.key == 'options') {
-        tab.disable = true;
+      if (itemTab.key == 'options') {
+        itemTab.disable = true;
       }
     }
-    return tab;
+    return itemTab;
   });
 
   /// default selected option

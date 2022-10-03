@@ -9,6 +9,7 @@ import {
 } from '@/features/categories/services';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
+import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import type { TableColumnItem } from '@/components/Table/types';
 import { CategoryNestedList } from '@/features/categories/types';
@@ -16,9 +17,6 @@ import { CategoryNestedList } from '@/features/categories/types';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
-
-const MAIN_COL_WIDTH = 343;
-const SUB_COL_WIDTH = 160;
 
 const CategoryList: React.FC = () => {
   useAutoExpandNestedTableColumn(2);
@@ -45,7 +43,6 @@ const CategoryList: React.FC = () => {
       sorter: {
         multiple: 1,
       },
-      width: MAIN_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-uppercase">{value}</span>;
@@ -54,7 +51,6 @@ const CategoryList: React.FC = () => {
     {
       title: 'Subcategory',
       dataIndex: 'subcategory',
-      width: SUB_COL_WIDTH,
       sorter: {
         multiple: 2,
       },
@@ -94,14 +90,12 @@ const CategoryList: React.FC = () => {
     {
       title: 'Main Category',
       dataIndex: 'maincategory',
-      width: MAIN_COL_WIDTH,
       sorter: true,
       noBoxShadow: true,
     },
     {
       title: 'Subcategory',
       dataIndex: 'name',
-      width: SUB_COL_WIDTH,
       sorter: true,
       isExpandable: true,
       render: (value) => {
@@ -124,14 +118,12 @@ const CategoryList: React.FC = () => {
     {
       title: 'Main Category',
       dataIndex: 'maincategory',
-      width: MAIN_COL_WIDTH,
       sorter: true,
       noBoxShadow: true,
     },
     {
       title: 'Subcategory',
       dataIndex: 'Subcategory',
-      width: SUB_COL_WIDTH,
       sorter: true,
       noBoxShadow: true,
     },
@@ -155,7 +147,7 @@ const CategoryList: React.FC = () => {
       <CustomTable
         rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createCategories)} />}
         title="CATEGORIES"
-        columns={MainColumns}
+        columns={setDefaultWidthForEachColumn(MainColumns, 2)}
         ref={tableRef}
         fetchDataFunc={getProductCategoryPagination}
         multiSort={{
@@ -164,11 +156,11 @@ const CategoryList: React.FC = () => {
           category: 'category_order',
         }}
         expandable={GetExpandableTableConfig({
-          columns: SubColumns,
+          columns: setDefaultWidthForEachColumn(SubColumns, 2),
           childrenColumnName: 'subs',
           level: 2,
           expandable: GetExpandableTableConfig({
-            columns: ChildColumns,
+            columns: setDefaultWidthForEachColumn(ChildColumns, 2),
             childrenColumnName: 'subs',
             level: 3,
           }),

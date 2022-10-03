@@ -4,7 +4,9 @@ import { PATH } from '@/constants/path';
 
 import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { pushTo } from '@/helper/history';
+import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import { MarketAvailabilityDataList } from '@/features/market-availability/type';
@@ -18,6 +20,7 @@ import styles from './index.less';
 import { getMarketAvailabilityList } from '@/features/market-availability/api';
 
 const MarketAvailabilityList = () => {
+  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
   const user = useAppSelector((state) => state.user.user);
 
   const handleUpdateMarketAvailability = (id: string) => {
@@ -96,7 +99,7 @@ const MarketAvailabilityList = () => {
           <InfoIcon className={styles.iconInfor} onClick={() => setInformationVisible(true)} />
         }
         fetchDataFunc={getMarketAvailabilityList}
-        columns={mainColumns}
+        columns={setDefaultWidthForEachColumn(mainColumns, 7)}
         extraParams={{
           brand_id: user.brand.id,
         }}

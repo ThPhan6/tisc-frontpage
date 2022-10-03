@@ -35,6 +35,13 @@ interface ProductAttributeSubItemProps {
   attributeGroupKey: AttributeGroupKey;
 }
 
+const getBasisOptionsText = (activeBasisOptions: { id: string; option_code: string }[]) => {
+  if (activeBasisOptions.length > 0) {
+    return `Selected ${activeBasisOptions.length} item${activeBasisOptions.length > 1 ? 's' : ''}`;
+  }
+  return '';
+};
+
 export const ProductAttributeSubItem: React.FC<ProductAttributeSubItemProps> = ({
   itemAttributes,
   attributes,
@@ -136,10 +143,7 @@ export const ProductAttributeSubItem: React.FC<ProductAttributeSubItemProps> = (
     newItemAttributes[attributeItemIndex] = {
       ...newItemAttributes[attributeItemIndex],
       basis_options: activeBasisOptions,
-      text:
-        activeBasisOptions.length > 0
-          ? `Selected ${activeBasisOptions.length} item${activeBasisOptions.length > 1 ? 's' : ''}`
-          : '',
+      text: getBasisOptionsText(activeBasisOptions),
     };
     newAttributes[attributeIndex] = {
       ...newAttributes[attributeIndex],

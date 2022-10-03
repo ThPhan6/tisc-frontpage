@@ -125,6 +125,13 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
     setSelectedItem(DEFAULT_INDEX);
   }, [items, visible]);
 
+  const getPositionLeftMenu = () => {
+    if (subLevel) {
+      return subLevel * DEFAULT_WIDTH * (position === 'right' ? 1 : -1);
+    }
+    return undefined;
+  };
+
   return (
     <>
       <Menu
@@ -132,7 +139,7 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
           width: DEFAULT_WIDTH,
           position: subLevel ? 'absolute' : 'relative',
           top: subLevel ? 0 : undefined,
-          left: subLevel ? subLevel * DEFAULT_WIDTH * (position === 'right' ? 1 : -1) : undefined,
+          left: getPositionLeftMenu(),
           boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
           height: 432,
           overflow: 'hidden auto',
