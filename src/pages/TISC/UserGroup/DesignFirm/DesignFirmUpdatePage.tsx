@@ -29,16 +29,17 @@ import { KeyValueData } from '@/types';
 
 import { CustomTabPane } from '@/components/Tabs';
 import CustomDesign from '@/features/user-group/components/CustomDesign';
-import LocationDetail from '@/features/user-group/components/LocationDetail';
+import { LocationDetail } from '@/features/user-group/components/LocationDetail';
 import MaterialCode from '@/features/user-group/components/MaterialCode';
 import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
-import ProfileDetail from '@/features/user-group/components/Profile';
+import { ProfileDetail } from '@/features/user-group/components/ProfileDetail';
 import ProjectDesign from '@/features/user-group/components/ProjectDesign';
 import TabDetail from '@/features/user-group/components/TabDetail';
 import TeamDetail from '@/features/user-group/components/Team';
 import LabelToolTip from '@/features/user-group/components/TooltipLabel';
 
 import styles from './index.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const DesignTabs: TabItem[] = [
   { tab: DesignTabKeys.profile, key: DesignTabKeys.profile, icon: <ProfileIcon /> },
@@ -49,11 +50,10 @@ const DesignTabs: TabItem[] = [
   { tab: DesignTabKeys.custom, key: DesignTabKeys.custom, icon: <CustomIcon /> },
 ];
 
-const ViewDesignFirmPage = () => {
+const DesignFirmUpdatePage = () => {
   const designId = useGetParamId();
   const [selectedTab, setSelectedTab] = useState<TabKeys>(DesignTabKeys.profile);
   const buttonStatus = useBoolean(false);
-  const isLoading = useBoolean();
   const [statuses, setStatuses] = useState<KeyValueData[]>([]);
   const [data, setData] = useState<BrandDesignProfile>(DEFAULT_BRAND_DESIGN_PROFILE);
 
@@ -79,8 +79,9 @@ const ViewDesignFirmPage = () => {
   };
 
   const handleSaveButton = () => {
+    showPageLoading();
     updateStatusDesignFirm(designId, { status: data.status }).then((isSuccess) => {
-      isLoading.setValue(false);
+      hidePageLoading();
       if (isSuccess) {
         buttonStatus.setValue(true);
         setTimeout(() => {
@@ -102,7 +103,6 @@ const ViewDesignFirmPage = () => {
           data={data}
           setData={setData}
           buttonStatus={buttonStatus.value}
-          isLoading={isLoading.value}
           statuses={statuses}
           toolTipTitle={
             <table className={styles.tooltip}>
@@ -145,4 +145,4 @@ const ViewDesignFirmPage = () => {
     </div>
   );
 };
-export default ViewDesignFirmPage;
+export default DesignFirmUpdatePage;

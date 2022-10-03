@@ -31,7 +31,7 @@ interface LocationEntryFormProps {
   onChangeData: (newDate: Partial<ProjectBodyRequest>) => void;
 }
 
-const LocationEntryForm: FC<LocationEntryFormProps> = ({ data, onChangeData }) => {
+export const EntryForm: FC<LocationEntryFormProps> = ({ data, onChangeData }) => {
   // for content type modal
   const [visible, setVisible] = useState({
     country: false,
@@ -356,5 +356,3 @@ const LocationEntryForm: FC<LocationEntryFormProps> = ({ data, onChangeData }) =
     </div>
   );
 };
-
-export default LocationEntryForm;

@@ -2,10 +2,12 @@ import type { FC } from 'react';
 import React, { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
+import { message } from 'antd';
 
 import {
-  emailMessageError,
-  emailMessageErrorType,
+  getEmailMessageError,
+  getEmailMessageErrorType,
+  getSelectedOptions,
   isEmptySpace,
   messageError,
   messageErrorType,
@@ -13,7 +15,7 @@ import {
 } from '@/helper/utils';
 import { trimStart } from 'lodash';
 
-import { FunctionalTypeData, LocationForm } from '../type';
+import { LocationForm } from '../type';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 
 import CollapseCheckboxList from '@/components/CustomCheckbox/CollapseCheckboxList';
@@ -61,19 +63,20 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     value: data.city_id,
   });
 
-  const [functionalTypes, setFunctionalTypes] = useState<FunctionalTypeData[]>([]);
-  const [selectedFunctionalTypes, setSelectedFunctionTypes] = useState<CheckboxValue[]>([]);
+  /// for show data
+  const [functionalTypes, setFunctionalTypes] = useState<CheckboxValue[]>([]);
+  /// for item selected
+  const [checkedOpt, setCheckedOpt] = useState<CheckboxValue[]>([]);
+  /// for show items have been already selected to show on first loading
+  const selectedFunctionType = getSelectedOptions(functionalTypes, data.functional_type_ids);
+  /// for show on placeholder
+  const onShowPlaceholder =
+    /// current select
+    checkedOpt.map((el) => el.label).join(', ') ||
+    /// has been selected
+    selectedFunctionType.map((el) => el.label).join(', ') ||
+    'select all relevance';
 
-  const getFunctionTypeIds = (types: CheckboxValue[]) => {
-    const newFunctionTypeIds = types
-      .filter((type) => type.value !== 'other')
-      .map((type) => type.value as string);
-    const otherFuntionType = types.find((type) => type.value === 'other');
-    if (otherFuntionType) {
-      newFunctionTypeIds.push(otherFuntionType.label as string);
-    }
-    return newFunctionTypeIds;
-  };
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({
       ...data,
@@ -93,19 +96,17 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
   };
 
   useEffect(() => {
-    getListFunctionalType().then(setFunctionalTypes);
+    getListFunctionalType().then((res) => {
+      if (res) {
+        setFunctionalTypes(
+          res.map((el) => ({
+            label: el.name,
+            value: el.id,
+          })),
+        );
+      }
+    });
   }, []);
-
-  useEffect(() => {
-    setSelectedFunctionTypes(
-      data.functional_type_ids.map((typeId) => {
-        return {
-          label: functionalTypes.find((type) => type.id === typeId)?.name,
-          value: typeId,
-        };
-      }),
-    );
-  }, [data.functional_type_ids, functionalTypes]);
 
   useEffect(() => {
     if (countryData.value !== '') {
@@ -122,6 +123,13 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
   }, [cityData]);
 
   const handleSubmit = () => {
+    /// check email
+    const invalidEmail = getEmailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_INVALID);
+    if (invalidEmail) {
+      message.error(invalidEmail);
+      return;
+    }
+
     return onSubmit({
       business_name: data.business_name?.trim() ?? '',
       business_number: data.business_number?.trim() ?? '',
@@ -132,9 +140,12 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       postal_code: data.postal_code?.trim() ?? '',
       general_phone: data.general_phone?.trim() ?? '',
       general_email: data.general_email?.trim() ?? '',
-      functional_type_ids: getFunctionTypeIds(selectedFunctionalTypes),
+      functional_type_ids: checkedOpt.length
+        ? checkedOpt.map((el) => String(el.value === 'other' ? el.label : el.value))
+        : selectedFunctionType.map((el) => String(el.value)),
     });
   };
+
   return (
     <EntryFormWrapper
       handleSubmit={handleSubmit}
@@ -178,22 +189,23 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         required
         layout="vertical"
         formClass={`${styles.formGroup} ${
-          selectedFunctionalTypes.length > 0 ? styles.activeFunctionType : ''
+          selectedFunctionType.length || checkedOpt.length ? styles.activeFunctionType : ''
         }`}>
         <CollapseCheckboxList
-          options={functionalTypes.map((functionalType) => {
-            return {
-              label: functionalType.name,
-              value: functionalType.id,
-            };
-          })}
-          checked={selectedFunctionalTypes}
-          onChange={setSelectedFunctionTypes}
-          placeholder={
-            selectedFunctionalTypes.length === 0
-              ? 'select all relevance'
-              : selectedFunctionalTypes.map((item) => item.label).join(', ')
-          }
+          options={functionalTypes}
+          checked={selectedFunctionType}
+          onChange={(checkedItem) => {
+            // to show on placeholer and handle submit
+            setCheckedOpt(checkedItem);
+
+            setData({
+              ...data,
+              functional_type_ids: checkedItem?.map((opt) =>
+                String(opt.value === 'other' ? opt.label : opt.value),
+              ),
+            });
+          }}
+          placeholder={onShowPlaceholder}
           otherInput
         />
       </FormGroup>
@@ -321,8 +333,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         }}
         onDelete={() => onChangeData('general_email', '')}
         placeholder="general email address"
-        message={emailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_UNVALID)}
-        messageType={emailMessageErrorType(data.general_email, 'error', 'normal')}
+        message={getEmailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_INVALID)}
+        messageType={getEmailMessageErrorType(data.general_email, 'error', 'normal')}
       />
       <CountryModal
         visible={visible.country}

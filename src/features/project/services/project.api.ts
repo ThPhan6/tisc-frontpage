@@ -103,7 +103,6 @@ export async function createProject(data: ProjectBodyRequest) {
   })
     .then((res: { data: { id: string } }) => {
       message.success(MESSAGE_NOTIFICATION.CREATE_PROJECT_SUCCESS);
-      // console.log('res', res);
       return res.data.id;
     })
     .catch((error) => {

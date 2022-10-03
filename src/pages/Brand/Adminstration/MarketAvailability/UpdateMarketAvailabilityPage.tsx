@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
-import { useParams } from 'umi';
 
 import { pushTo } from '@/helper/history';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 
 import { MarketAvailabilityDetails } from '@/features/market-availability/type';
 
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { MarketAvailabilityEntryForm } from '@/features/market-availability/components/MarketAvailabilityEntryForm';
 
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import {
   getMarketAvailabilityByCollectionId,
   updateMarketAvailabilityByCollectionId,
@@ -19,11 +18,7 @@ import {
 
 const UpdateMarketAvailabilityPage = () => {
   const submitButtonStatus = useBoolean(false);
-  const isLoading = useBoolean(false);
-  const params = useParams<{
-    id: string;
-  }>();
-  const collectionId = params?.id || '';
+  const collectionId = useGetParamId();
   // using as temprorary variable, waitting data to set state
   const [data, setData] = useState<MarketAvailabilityDetails>({
     collection_id: collectionId,
@@ -38,25 +33,24 @@ const UpdateMarketAvailabilityPage = () => {
   };
 
   const onSubmit = (submitData: string[]) => {
-    isLoading.setValue(true);
+    showPageLoading();
     updateMarketAvailabilityByCollectionId(collectionId, submitData).then((isSuccess) => {
-      isLoading.setValue(false);
+      hidePageLoading();
       if (isSuccess) {
         submitButtonStatus.setValue(true);
         setTimeout(() => {
           submitButtonStatus.setValue(false);
         }, 1000);
-        return;
       }
     });
   };
 
   useEffect(() => {
-    isLoading.setValue(true);
+    showPageLoading();
     getMarketAvailabilityByCollectionId(collectionId).then((res) => {
       if (res) {
         setData(res);
-        isLoading.setValue(false);
+        hidePageLoading();
       }
     });
   }, []);
@@ -71,7 +65,6 @@ const UpdateMarketAvailabilityPage = () => {
         onSubmit={onSubmit}
         submitButtonStatus={submitButtonStatus.value}
       />
-      {isLoading.value && <LoadingPageCustomize />}
     </div>
   );
 };

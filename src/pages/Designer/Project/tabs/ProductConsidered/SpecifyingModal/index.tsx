@@ -10,9 +10,7 @@ import { message } from 'antd';
 
 import { getSpecificationRequest } from '@/features/product/components/ProductAttributes/hooks';
 import { useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
-import { getProductById } from '@/features/product/services';
-import { getProductSpecifying, updateProductSpecifying } from '@/features/project/services';
-import { pick } from 'lodash';
+import { updateProductSpecifying } from '@/features/project/services';
 
 import { OnChangeSpecifyingProductFnc, SpecifyingProductRequestBody } from './types';
 import { ProductItem } from '@/features/product/types';
@@ -38,12 +36,12 @@ const DEFAULT_STATE: SpecifyingProductRequestBody = {
   },
   brand_location_id: '',
   distributor_location_id: '',
-  is_entire: true,
-  project_zone_ids: [],
+  entire_allocation: true,
+  allocation: [],
   material_code_id: '',
   suffix_code: '',
   description: '',
-  quantity: '0',
+  quantity: 0,
   unit_type_id: '',
   order_method: ORDER_METHOD['directPurchase'],
   requirement_type_ids: [],
@@ -88,50 +86,17 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   console.log('specifyingState', specifyingState);
 
   const { AssignProductToSpaceForm } = useAssignProductToSpaceForm(product.id, projectId, {
-    onChangeEntireProjectCallback: (is_entire) => onChangeSpecifyingState({ is_entire }),
+    onChangeEntireProjectCallback: (entire_allocation) =>
+      onChangeSpecifyingState({ entire_allocation }),
     onChangeSelectedRoomsCallback: (selectedRooms) =>
-      onChangeSpecifyingState({ project_zone_ids: selectedRooms }),
-    roomId: product.project_zone_id,
-    isEntire: product.is_entire,
+      onChangeSpecifyingState({ allocation: selectedRooms }),
   });
 
   useEffect(() => {
     if (product.considered_id) {
       onChangeSpecifyingState({ considered_product_id: product.considered_id });
-      getProductSpecifying(product.considered_id).then((res) => {
-        if (res) {
-          res.specification.specification_attribute_groups =
-            res.specification.specification_attribute_groups.map((el) => ({
-              ...el,
-              isChecked: el.attributes.length > 0,
-            }));
-          onChangeSpecifyingState(
-            pick(res, [
-              'brand_location_id',
-              'considered_product_id',
-              'description',
-              'distributor_location_id',
-              'instruction_type_ids',
-              'is_entire',
-              'material_code_id',
-              'order_method',
-              'quantity',
-              'requirement_type_ids',
-              'special_instructions',
-              'specification',
-              'suffix_code',
-              'unit_type_id',
-              'finish_schedules',
-            ]),
-          );
-        }
-      });
     }
   }, [product.considered_id]);
-
-  useEffect(() => {
-    getProductById(product.id);
-  }, []);
 
   const onSubmit = () => {
     if (!specifyingState.material_code_id) {
@@ -208,7 +173,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       />
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.specification}>
-        <SpecificationTab />
+        <SpecificationTab productId={product.id} />
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.vendor}>

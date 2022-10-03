@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { FilterStatusIcons } from './constants/filter';
-import { FilterValues, GlobalFilter } from './constants/filter';
+import { FilterStatusIcons, FilterValues, GlobalFilter } from './constants/filter';
 import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
 import { message } from 'antd';
 
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import {
   deleteProject,
   getProjectPagination,
@@ -15,6 +15,7 @@ import {
 } from '@/features/project/services';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
+import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { isEmpty } from 'lodash';
 
 import type { TableColumnItem } from '@/components/Table/types';
@@ -31,6 +32,7 @@ import styles from './styles/project-list.less';
 import moment from 'moment';
 
 const ProjectList: React.FC = () => {
+  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
   const tableRef = useRef<any>();
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
   const [summaryData, setSummaryData] = useState<ProjectSummaryData>();
@@ -78,6 +80,7 @@ const ProjectList: React.FC = () => {
     {
       title: 'Status',
       dataIndex: 'status',
+      width: '5%',
       align: 'center',
       render: (value) => FilterStatusIcons[value] ?? '',
     },
@@ -180,7 +183,7 @@ const ProjectList: React.FC = () => {
       <CustomTable
         rightAction={<CustomPlusButton onClick={goToCreatePage} />}
         title={'PROJECTS'}
-        columns={MainColumns}
+        columns={setDefaultWidthForEachColumn(MainColumns, 7)}
         fetchDataFunc={getProjectPagination}
         extraParams={
           selectedFilter && selectedFilter.id !== FilterValues.global

@@ -4,7 +4,7 @@ export type CodeOrderRequestParams = {
   material_code_id: string;
   suffix_code: string;
   description: string;
-  quantity: string;
+  quantity: number;
   unit_type_id: string;
   order_method: number;
   requirement_type_ids: string[];
@@ -21,8 +21,8 @@ export type SpecifyingProductRequestBody = {
   };
   brand_location_id: string;
   distributor_location_id: string;
-  is_entire: boolean;
-  project_zone_ids: string[];
+  entire_allocation: boolean;
+  allocation: string[];
 } & CodeOrderRequestParams;
 
 export type OnChangeSpecifyingProductFnc = (

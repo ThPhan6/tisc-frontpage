@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
-import { Col, Row } from 'antd';
+import { Col, Row, message } from 'antd';
 
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 
 import { retrieveFavouriteProduct, skipFavouriteProduct } from '../services';
-import { emailMessageError, emailMessageErrorType } from '@/helper/utils';
+import { getEmailMessageError, getEmailMessageErrorType } from '@/helper/utils';
 import { getUserInfoMiddleware } from '@/pages/LandingPage/services/api';
 
 import { FavouriteRetrieve } from '../types';
@@ -35,6 +35,16 @@ const FavouriteForm = () => {
   };
 
   const onSubmitForm = () => {
+    /// check email
+    const invalidEmail = getEmailMessageError(
+      valueForm.personal_email,
+      MESSAGE_ERROR.EMAIL_INVALID,
+    );
+    if (invalidEmail) {
+      message.error(invalidEmail);
+      return;
+    }
+
     retrieveFavouriteProduct(valueForm).then((res) => {
       if (res) {
         getUserInfoMiddleware();
@@ -87,8 +97,8 @@ const FavouriteForm = () => {
               onChange={(e) => handleOnChangeValueForm('personal_email', e.target.value)}
               name=" personal_email"
               value={valueForm.personal_email}
-              message={emailMessageError(valueForm.personal_email, MESSAGE_ERROR.EMAIL_UNVALID)}
-              messageType={emailMessageErrorType(valueForm.personal_email, 'error', 'normal')}
+              message={getEmailMessageError(valueForm.personal_email, MESSAGE_ERROR.EMAIL_INVALID)}
+              messageType={getEmailMessageErrorType(valueForm.personal_email, 'error', 'normal')}
             />
             <PhoneInput
               codePlaceholder="00"

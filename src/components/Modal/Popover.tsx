@@ -202,6 +202,27 @@ const Popover: FC<PopoverProps> = ({
     setVisible(false);
   };
 
+  const renderButtonFooter = () => {
+    return submitButtonStatus ? (
+      <CustomButton
+        size="small"
+        variant="primary"
+        properties="rounded"
+        buttonClass={styles.submitButton}
+        icon={<CheckSuccessIcon />}
+      />
+    ) : (
+      <CustomButton
+        size="small"
+        variant="primary"
+        properties="rounded"
+        buttonClass="done-btn"
+        onClick={handleDone}>
+        Done
+      </CustomButton>
+    );
+  };
+
   return (
     <div>
       <Modal
@@ -218,26 +239,7 @@ const Popover: FC<PopoverProps> = ({
         onCancel={onCancel}
         width={576}
         closeIcon={<CloseIcon style={{ color: '#000' }} />}
-        footer={
-          noFooter ? null : submitButtonStatus ? (
-            <CustomButton
-              size="small"
-              variant="primary"
-              properties="rounded"
-              buttonClass={styles.submitButton}
-              icon={<CheckSuccessIcon />}
-            />
-          ) : (
-            <CustomButton
-              size="small"
-              variant="primary"
-              properties="rounded"
-              buttonClass="done-btn"
-              onClick={handleDone}>
-              Done
-            </CustomButton>
-          )
-        }
+        footer={noFooter ? null : renderButtonFooter()}
         className={`${styles.customPopover} ${className ?? ''}`}>
         {extraTopAction}
         {renderChildren()}

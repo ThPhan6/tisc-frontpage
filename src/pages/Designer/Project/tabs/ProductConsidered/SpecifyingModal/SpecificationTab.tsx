@@ -32,9 +32,11 @@ const ReferToDesignLabel = () => {
   );
 };
 
-const SpecificationTab: FC = () => {
-  const { checkReferToDesignDocument, referToDesignDocument } =
-    useProductAttributeForm('specification');
+const SpecificationTab: FC<{ productId: string }> = ({ productId }) => {
+  const { checkReferToDesignDocument, referToDesignDocument } = useProductAttributeForm(
+    'specification',
+    productId,
+  );
 
   const ReferToDesignRadio: RadioValue = {
     value: true,
