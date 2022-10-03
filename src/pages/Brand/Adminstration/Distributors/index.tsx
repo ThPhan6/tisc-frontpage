@@ -2,9 +2,10 @@ import { useRef } from 'react';
 
 import { PATH } from '@/constants/path';
 
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { getFullName } from '@/helper/utils';
+import { getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import { Distributor } from '@/features/distributors/type';
@@ -17,6 +18,7 @@ import { ActionMenu } from '@/components/TableAction';
 import { deleteDistributor, getDistributorPagination } from '@/features/distributors/api';
 
 const Distributors = () => {
+  useAutoExpandNestedTableColumn(0);
   const tableRef = useRef<any>();
   const user = useAppSelector((state) => state.user.user);
 
@@ -34,29 +36,25 @@ const Distributors = () => {
     });
   };
 
-  const MainColumns: TableColumnItem<Distributor>[] = [
+  const mainColumns: TableColumnItem<Distributor>[] = [
     {
       title: 'Name',
       dataIndex: 'name',
       sorter: true,
-      width: 168,
     },
     {
       title: 'Country',
       dataIndex: 'country_name',
       sorter: true,
-      width: 101,
     },
     {
       title: 'City',
       dataIndex: 'city_name',
       sorter: true,
-      width: 113,
     },
     {
       title: 'Contact Person',
       dataIndex: 'first_name',
-      width: 125,
       render: (_value, record) => {
         return <span>{getFullName(record)}</span>;
       },
@@ -64,17 +62,14 @@ const Distributors = () => {
     {
       title: 'Work email',
       dataIndex: 'email',
-      width: 206,
     },
     {
       title: 'Authorised Country',
       dataIndex: 'authorized_country_name',
-      width: 235,
     },
     {
       title: 'Coverage Beyond',
       dataIndex: 'coverage_beyond',
-      width: 138,
       render: (value) => {
         return <span>{value === true ? 'Not Allow' : 'Allow'}</span>;
       },
@@ -111,7 +106,7 @@ const Distributors = () => {
       <CustomTable
         rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createDistributor)} />}
         title="DISTRIBUTORS"
-        columns={MainColumns}
+        columns={setDefaultWidthForEachColumn(mainColumns, 5)}
         ref={tableRef}
         fetchDataFunc={getDistributorPagination}
         extraParams={{
