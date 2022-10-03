@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { getSelectedProductSpecification, selectProductSpecification } from '../../services';
-import { useBoolean, useGetParamId } from '@/helper/hook';
+import { useBoolean } from '@/helper/hook';
 import { cloneDeep } from 'lodash';
 
 import { setPartialProductDetail } from '../../reducers';
@@ -64,7 +64,7 @@ export const getSpecificationWithSelectedValue = (
   return checkedSpecGroup;
 };
 
-export const useProductAttributeForm = (attributeType: ProductInfoTab) => {
+export const useProductAttributeForm = (attributeType: ProductInfoTab, productId: string) => {
   const dispatch = useDispatch();
   const {
     feature_attribute_groups,
@@ -73,7 +73,6 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab) => {
     referToDesignDocument,
     id,
   } = useAppSelector((state) => state.product.details);
-  const productId = useGetParamId();
   const loaded = useBoolean();
 
   const attributeGroup =
@@ -191,6 +190,7 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab) => {
   const onSelectSpecificationOption = (
     groupIndex: number,
     attributeId: string,
+    updatedOnchange: boolean = true,
     optionId?: string,
   ) => {
     const newState = cloneDeep(specification_attribute_groups);
@@ -215,21 +215,23 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab) => {
 
     const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
 
-    selectProductSpecification(id, {
-      specification: {
-        is_refer_document: referToDesignDocument || false,
-        attribute_groups: getSpecificationRequest(newState),
-      },
-    });
-    dispatch(
-      setPartialProductDetail({
-        specification_attribute_groups: newState,
-        referToDesignDocument: !haveCheckedAttributeGroup,
-      }),
-    );
+    if (updatedOnchange) {
+      selectProductSpecification(id, {
+        specification: {
+          is_refer_document: referToDesignDocument || false,
+          attribute_groups: getSpecificationRequest(newState),
+        },
+      });
+      dispatch(
+        setPartialProductDetail({
+          specification_attribute_groups: newState,
+          referToDesignDocument: !haveCheckedAttributeGroup,
+        }),
+      );
+    }
   };
 
-  const onCheckedSpecification = (groupIndex: number) => {
+  const onCheckedSpecification = (groupIndex: number, updatedOnchange: boolean = true) => {
     const newState = cloneDeep(specification_attribute_groups);
     const haveOptionAttr = newState[groupIndex].attributes.some((el) => el.type === 'Options');
 
@@ -240,14 +242,16 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab) => {
         basis_options: attr?.basis_options?.map((otp) => ({ ...otp, isChecked: false })),
       }));
 
-      selectProductSpecification(id, {
-        specification: {
-          is_refer_document: referToDesignDocument || false,
-          attribute_groups: getSpecificationRequest(newState),
-        },
-        brand_location_id: '',
-        distributor_location_id: '',
-      });
+      if (updatedOnchange) {
+        selectProductSpecification(id, {
+          specification: {
+            is_refer_document: referToDesignDocument || false,
+            attribute_groups: getSpecificationRequest(newState),
+          },
+          brand_location_id: '',
+          distributor_location_id: '',
+        });
+      }
     }
 
     if (newState[groupIndex].isChecked || !haveOptionAttr) {

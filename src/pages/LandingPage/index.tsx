@@ -33,29 +33,22 @@ import {
   redirectAfterLogin,
 } from '@/helper/utils';
 
-import type {
-  CreatePasswordRequestBody,
-  LoginInput,
-  LoginResponseProp,
-  ModalOpen,
-  ResetPasswordRequestBody,
-} from './types';
+import type { LoginInput, LoginResponseProp, ModalOpen, PasswordRequestBody } from './types';
 
 import { AboutModal } from './components/AboutModal';
 import { BrandInterestedModal } from './components/BrandInterestedModal';
 import { ContactModal } from './components/ContactModal';
-import { CreatePasswordModal } from './components/CreatePasswordModal';
 import { LoginModal } from './components/LoginModal';
 import { NoticeModal } from './components/NoticeModal';
+import { PasswordModal } from './components/PasswordModal';
 import { PoliciesModal } from './components/PoliciesModal';
-import { ResetPasswordModal } from './components/ResetPasswordModal';
 import { SignupModal } from './components/SignupModal';
 import { VerifyAccount } from './components/VerifyAccount';
 import CustomButton from '@/components/Button';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
 import styles from './index.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const LandingPage = () => {
   const userEmail = useQuery().get('email');
@@ -65,7 +58,7 @@ const LandingPage = () => {
   const { fetchUserInfo } = useCustomInitialState();
   const openResetPwd = useBoolean();
   const openVerificationModal = useBoolean();
-  const isLoading = useBoolean();
+
   const [openModal, setOpenModal] = useState<ModalOpen>('');
   const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
   const openVerifyAccountModal = useBoolean();
@@ -77,7 +70,6 @@ const LandingPage = () => {
   useEffect(() => {
     if ((!userEmail || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
       history.push(PATH.landingPage);
-      return;
     } else {
       if (tokenResetPwd) {
         validateResetToken(tokenResetPwd).then((res) => {
@@ -111,7 +103,7 @@ const LandingPage = () => {
   }, [tokenVerification]);
 
   const handleSubmitLogin = (data: LoginInput) => {
-    isLoading.setValue(true);
+    showPageLoading();
     if (openModal === 'Tisc Login') {
       loginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
         if (type === STATUS_RESPONSE.SUCCESS) {
@@ -121,7 +113,7 @@ const LandingPage = () => {
         } else {
           message.error(msg);
         }
-        isLoading.setValue(false);
+        hidePageLoading();
       });
     } else {
       loginByBrandOrDesigner(
@@ -138,14 +130,14 @@ const LandingPage = () => {
           } else {
             message.error(msg);
           }
-          isLoading.setValue(false);
+          hidePageLoading();
         },
       );
     }
   };
 
   const handleForgotPassword = (email: string) => {
-    isLoading.setValue(true);
+    showPageLoading();
     forgotPasswordMiddleware(
       { email: email, type: openModal === 'Tisc Login' ? ForgotType.TISC : ForgotType.OTHER },
       async (type: STATUS_RESPONSE, msg?: string) => {
@@ -155,13 +147,13 @@ const LandingPage = () => {
         } else {
           message.error(msg);
         }
-        isLoading.setValue(false);
+        hidePageLoading();
       },
     );
   };
 
-  const handleResetPassword = (data: ResetPasswordRequestBody) => {
-    isLoading.setValue(true);
+  const handleResetPassword = (data: PasswordRequestBody) => {
+    showPageLoading();
     resetPasswordMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD_SUCCESS);
@@ -170,14 +162,14 @@ const LandingPage = () => {
       } else {
         message.error(msg);
       }
-      isLoading.setValue(false);
+      hidePageLoading();
     });
   };
 
-  const handleVerifyAccount = (data: CreatePasswordRequestBody) => {
-    isLoading.setValue(true);
+  const handleVerifyAccount = (data: PasswordRequestBody) => {
+    showPageLoading();
     createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
-      isLoading.setValue(false);
+      hidePageLoading();
       if (isSuccess) {
         redirectAfterLogin();
       }
@@ -186,6 +178,21 @@ const LandingPage = () => {
 
   const handleActiveAccount = () => {
     setOpenModal('Login');
+  };
+
+  const renderFeatures = (data: any[]) => {
+    return (
+      <div className={styles.feature}>
+        {data.map((feature, index) => (
+          <div className={styles.item} key={index}>
+            <feature.icon className={styles.icon} />
+            <BodyText level={4} fontFamily="Roboto">
+              {feature.content}
+            </BodyText>
+          </div>
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -227,20 +234,11 @@ const LandingPage = () => {
                     A dedicated platform assists the company in managing the product lines,
                     monetizing the projects, generating intelligence, and growing your business.
                   </BodyText>
-                  <div className={styles.feature}>
-                    {[
-                      { icon: BinocularsIcon, content: 'Obtain project visibility & updates' },
-                      { icon: TargetMoneyIcon, content: 'Generate potential sales leads' },
-                      { icon: PiggyBankIcon, content: 'Save operational cost & resources' },
-                    ].map((feature, index) => (
-                      <div className={styles.item} key={index}>
-                        <feature.icon className={styles.icon} />
-                        <BodyText level={4} fontFamily="Roboto">
-                          {feature.content}
-                        </BodyText>
-                      </div>
-                    ))}
-                  </div>
+                  {renderFeatures([
+                    { icon: BinocularsIcon, content: 'Obtain project visibility & updates' },
+                    { icon: TargetMoneyIcon, content: 'Generate potential sales leads' },
+                    { icon: PiggyBankIcon, content: 'Save operational cost & resources' },
+                  ])}
                   <div className={styles['button-wrapper']}>
                     <CustomButton
                       width="144px"
@@ -263,23 +261,14 @@ const LandingPage = () => {
                     An always up-to-date material library that helps the team search, select and
                     specify the products for their next project while automating the workflow.
                   </BodyText>
-                  <div className={styles.feature}>
-                    {[
-                      {
-                        icon: GraphicTabletIcon,
-                        content: 'Convenience to specify & easy to track',
-                      },
-                      { icon: CheckAllIcon, content: 'Product accuracy & completeness' },
-                      { icon: TimeMoney, content: 'Increase team productivity at no cost' },
-                    ].map((feature, index) => (
-                      <div className={styles.item} key={index}>
-                        <feature.icon className={styles.icon} />
-                        <BodyText level={4} fontFamily="Roboto">
-                          {feature.content}
-                        </BodyText>
-                      </div>
-                    ))}
-                  </div>
+                  {renderFeatures([
+                    {
+                      icon: GraphicTabletIcon,
+                      content: 'Convenience to specify & easy to track',
+                    },
+                    { icon: CheckAllIcon, content: 'Product accuracy & completeness' },
+                    { icon: TimeMoney, content: 'Increase team productivity at no cost' },
+                  ])}
                   <div className={styles['button-wrapper']}>
                     <CustomButton
                       width="144px"
@@ -358,33 +347,33 @@ const LandingPage = () => {
         onClose={handleCloseModal}
         theme="default"
       />
-      {userEmail && (
-        <ResetPasswordModal
+      {userEmail ? (
+        <PasswordModal
           visible={openResetPwd}
           handleSubmit={handleResetPassword}
-          resetData={{
+          data={{
             email: userEmail,
             token: tokenResetPwd || '',
           }}
+          type="reset"
         />
-      )}
-      <CreatePasswordModal
+      ) : null}
+      <PasswordModal
         visible={openVerificationModal}
         handleSubmit={handleVerifyAccount}
         data={{
           email: userEmail ?? '',
           token: tokenVerification || '',
         }}
+        type="create"
       />
-      {openVerifyAccountModal.value === true && (
+      {openVerifyAccountModal.value === true ? (
         <VerifyAccount
           visible={openVerifyAccountModal}
           handleSubmit={handleActiveAccount}
           openLogin={() => setOpenModal('Login')}
         />
-      )}
-
-      {isLoading.value && <LoadingPageCustomize />}
+      ) : null}
     </div>
   );
 };

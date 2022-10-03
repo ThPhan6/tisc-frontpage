@@ -9,7 +9,7 @@ import {
   TeamProfileGroupCountry,
   TeamProfileRequestBody,
   TeamProfileTableProps,
-} from './type';
+} from './types';
 import type {
   DataTableResponse,
   PaginationRequestParams,

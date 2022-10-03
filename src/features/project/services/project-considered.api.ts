@@ -83,7 +83,7 @@ export async function updateProductConsiderStatus(
     consider_status: ProductConsiderStatus;
   },
 ) {
-  return request(`/api/project-product/${consider_id}/update-status`, {
+  return request(`/api/project-product/${consider_id}/update-consider-status`, {
     method: 'PATCH',
     data,
   })

@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { Col, Row } from 'antd';
 
-import { showImageUrl } from '@/helper/utils';
+import { getValueByCondition, showImageUrl } from '@/helper/utils';
 
 import { UserGroupProps } from '../types/common.types';
 
@@ -12,8 +12,41 @@ import { BodyText } from '@/components/Typography';
 import indexStyles from '../styles/index.less';
 import styles from './Profile.less';
 
-const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
+export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
   if (!data) return null;
+
+  const getProfileLabel = () =>
+    getValueByCondition(
+      [
+        [type === 'brand', 'Mission & Vision'],
+        [type === 'design', 'Profile & Philosophy'],
+      ],
+      '',
+    );
+  const getProfileData = () =>
+    getValueByCondition(
+      [
+        [type === 'brand', data.mission_n_vision],
+        [type === 'design', data.profile_n_philosophy],
+      ],
+      '',
+    );
+
+  const renderOfficialWebsites = () =>
+    data.official_websites.length
+      ? data.official_websites.map((web, index) => (
+          <tr key={index}>
+            <td className={styles.text}>
+              <BodyText level={3}>{web.country_name ?? 'N/A'}</BodyText>
+            </td>
+            <td className={styles.url}>
+              <BodyText level={5} fontFamily="Roboto">
+                {web.url ?? ''}
+              </BodyText>
+            </td>
+          </tr>
+        ))
+      : null;
 
   return (
     <Row className={indexStyles.container}>
@@ -35,21 +68,8 @@ const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
           <TextForm formClass={styles.profile_label} boxShadow label="Slogan">
             {data.slogan ?? ''}
           </TextForm>
-          <TextForm
-            formClass={styles.profile_label}
-            boxShadow
-            label={
-              type === 'brand'
-                ? 'Mission & Vision'
-                : type === 'design'
-                ? 'Profile & Philosophy'
-                : ''
-            }>
-            {type === 'brand'
-              ? data.mission_n_vision
-              : type === 'design'
-              ? data.profile_n_philosophy
-              : ''}
+          <TextForm formClass={styles.profile_label} boxShadow label={getProfileLabel()}>
+            {getProfileData()}
           </TextForm>
 
           {type !== 'brand' ? null : (
@@ -61,22 +81,7 @@ const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
                 <span className={styles.colon}>:</span>
               </div>
               <table className={styles.table}>
-                <tbody>
-                  {data.official_websites.length
-                    ? data.official_websites.map((web, index) => (
-                        <tr key={index}>
-                          <td className={styles.text}>
-                            <BodyText level={3}>{web.country_name ?? 'N/A'}</BodyText>
-                          </td>
-                          <td className={styles.url}>
-                            <BodyText level={5} fontFamily="Roboto">
-                              {web.url ?? ''}
-                            </BodyText>
-                          </td>
-                        </tr>
-                      ))
-                    : null}
-                </tbody>
+                <tbody>{renderOfficialWebsites()}</tbody>
               </table>
             </div>
           )}
@@ -91,4 +96,3 @@ const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
     </Row>
   );
 };
-export default ProfileDetail;

@@ -3,12 +3,11 @@ import { useEffect, useState } from 'react';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { message } from 'antd';
-import { useParams } from 'umi';
 
 import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove.svg';
 
 import { pushTo } from '@/helper/history';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 import { getOneEmailAuto, getTargetedForList, getTopicList, updateEmailAuto } from '@/services';
 import { isEmpty, trimStart } from 'lodash';
 
@@ -19,12 +18,12 @@ import { EntryFormWrapper, contentId } from '@/components/EntryForm';
 import { FormGroup } from '@/components/Form';
 import { CustomEditorInput } from '@/components/Form/CustomEditorInput';
 import { CustomInput } from '@/components/Form/CustomInput';
-import LoadingPageCustomize from '@/components/LoadingPage';
 import ScrollBar from '@/components/ScrollBar';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import styles from './styles/EmailAutorespondersEntryForm.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const DEFAULT_EMAILAUTORESPONDERS_VALUE: EmailTemplate = {
   topic: '',
@@ -35,9 +34,7 @@ const DEFAULT_EMAILAUTORESPONDERS_VALUE: EmailTemplate = {
 
 const UpdateEmailAutoPage = () => {
   const submitButtonStatus = useBoolean(false);
-  const isLoading = useBoolean();
-  const params = useParams<{ id: string }>();
-  const idEmailAuto = params?.id || '';
+  const idEmailAuto = useGetParamId();
 
   /// email auto form
   const [formState, setFormState] = useState<EmailTemplate>(DEFAULT_EMAILAUTORESPONDERS_VALUE);
@@ -106,12 +103,14 @@ const UpdateEmailAutoPage = () => {
     if (isEmpty(formState.message)) {
       message.error(MESSAGE_ERROR.EMAIL_AUTO);
     } else {
-      isLoading.setValue(true);
+      showPageLoading();
+
       updateEmailAuto(idEmailAuto, {
         ...formState,
         title: formState.title.trim(),
       }).then((isSuccess) => {
-        isLoading.setValue(false);
+        hidePageLoading();
+
         if (isSuccess) {
           submitButtonStatus.setValue(true);
           setTimeout(() => {
@@ -192,20 +191,16 @@ const UpdateEmailAutoPage = () => {
             </div>
           </FormGroup>
 
-          <FormGroup label="Message" required={true} layout="vertical" formClass={styles.editor} />
           {/* Message */}
-          {
-            <CustomEditorInput
-              loading={loadingEmail}
-              onChangeText={handleOnChangeMessageInput}
-              initData={formState.message}
-              containerSelector={`#${contentId}`}
-            />
-          }
+          <FormGroup label="Message" required={true} layout="vertical" formClass={styles.editor} />
+          <CustomEditorInput
+            loading={loadingEmail}
+            onChangeText={handleOnChangeMessageInput}
+            initData={formState.message}
+            containerSelector={`#${contentId}`}
+          />
         </EntryFormWrapper>
       </div>
-
-      {isLoading.value && <LoadingPageCustomize />}
     </div>
   );
 };
