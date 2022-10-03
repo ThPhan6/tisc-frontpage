@@ -1,0 +1,21 @@
+.IQ_container {
+  .input_form {
+    margin-bottom: 16px;
+  }
+
+  :global(.ant-input) {
+    color: @primary-color-dark;
+  }
+  :global(.ant-input-textarea-show-count::after) {
+    color: @mono-color;
+  }
+
+  .quotation {
+    :global(.ant-input) {
+      width: 100%;
+      min-height: 54px;
+      padding: 4px 16px;
+      border-bottom-color: @mono-color-medium;
+    }
+  }
+}

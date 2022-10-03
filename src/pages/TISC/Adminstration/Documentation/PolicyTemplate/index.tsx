@@ -2,8 +2,9 @@ import { useRef } from 'react';
 
 import { PATH } from '@/constants/path';
 
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { pushTo } from '@/helper/history';
-import { getFullName } from '@/helper/utils';
+import { getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import { Documentation } from './types';
 import { TableColumnItem } from '@/components/Table/types';
@@ -15,6 +16,7 @@ import { getPolicyTemplates } from './api';
 import moment from 'moment';
 
 const PolicyTemplatePage: React.FC = () => {
+  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
   const tableRef = useRef<any>();
 
   const mainColumns: TableColumnItem<Documentation>[] = [
@@ -22,7 +24,6 @@ const PolicyTemplatePage: React.FC = () => {
       title: 'Last Updated',
       dataIndex: 'updated_at',
       sorter: true,
-      width: '15%',
       render: (value) => {
         return moment(value).format('YYYY-MM-DD');
       },
@@ -30,7 +31,6 @@ const PolicyTemplatePage: React.FC = () => {
     {
       title: 'Author',
       dataIndex: 'author',
-      width: '15%',
       sorter: true,
       render: (_value, record) => getFullName(record.author),
     },
@@ -63,7 +63,7 @@ const PolicyTemplatePage: React.FC = () => {
   return (
     <CustomTable
       ref={tableRef}
-      columns={mainColumns}
+      columns={setDefaultWidthForEachColumn(mainColumns, 2)}
       fetchDataFunc={getPolicyTemplates}
       title="AGREEMENT / POLICIES / TERMS"
       hasPagination

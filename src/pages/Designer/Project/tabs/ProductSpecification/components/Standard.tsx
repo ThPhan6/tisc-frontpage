@@ -21,6 +21,19 @@ const data = {
 };
 
 const Standard = () => {
+  const renderRadioListData = () => (
+    <CollapseRadioList
+      options={data.subs.map((item) => {
+        return {
+          label: item.label,
+          value: item.value,
+        };
+      })}
+      placeholder={data.name}
+      containerClass={styles.marginBottom}
+    />
+  );
+
   return (
     <div>
       <div className={styles.standard}>
@@ -32,36 +45,9 @@ const Standard = () => {
             className={styles.switch}
           />
         </FormGroup>
-        <CollapseRadioList
-          options={data.subs.map((item) => {
-            return {
-              label: item.label,
-              value: item.value,
-            };
-          })}
-          placeholder={data.name}
-          containerClass={styles.marginBottom}
-        />
-        <CollapseRadioList
-          options={data.subs.map((item) => {
-            return {
-              label: item.label,
-              value: item.value,
-            };
-          })}
-          placeholder={data.name}
-          containerClass={styles.marginBottom}
-        />
-        <CollapseRadioList
-          options={data.subs.map((item) => {
-            return {
-              label: item.label,
-              value: item.value,
-            };
-          })}
-          placeholder={data.name}
-          containerClass={styles.marginBottom}
-        />
+        {renderRadioListData()}
+        {renderRadioListData()}
+        {renderRadioListData()}
       </div>
       <div className={styles.actionButton}>
         <CustomButton size="small" properties="rounded">

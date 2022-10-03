@@ -223,17 +223,17 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
     { tab: 'PRESETS', key: 'presets' },
     { tab: 'OPTIONS', key: 'options' },
   ];
-  listTab = listTab.map((tab) => {
+  listTab = listTab.map((itemTab) => {
     if (type === SPECIFICATION_TYPE) {
-      if (tab.key == 'presets') {
-        tab.disable = true;
+      if (itemTab.key == 'presets') {
+        itemTab.disable = true;
       }
     } else {
-      if (tab.key == 'options') {
-        tab.disable = true;
+      if (itemTab.key == 'options') {
+        itemTab.disable = true;
       }
     }
-    return tab;
+    return itemTab;
   });
 
   /// default selected option
@@ -243,14 +243,16 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
   /// set active tab
   let selectedTab = listTab[0];
   if (!isUndefined(subAttribute.content_type)) {
-    const selected = listTab.find((tab) => {
-      return tab.key.indexOf(lowerCase(subAttribute.content_type!)) >= 0;
+    const selected = listTab.find((item) => {
+      return item.key.indexOf(lowerCase(subAttribute.content_type!)) >= 0;
     });
     if (selected) {
       selectedTab = selected;
     }
   }
   const [activeTab, setActiveTab] = useState<string>(selectedTab.key);
+
+  const tab = activeTab === 'text' ? 'texts' : activeTab;
 
   return (
     <>
@@ -283,7 +285,7 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
           <div className={styles.contentTypeOption}>
             <ContentTypeOption
               type={activeTab as ACTIVE_TAB}
-              data={contentType ? contentType[activeTab === 'text' ? 'texts' : activeTab] : []}
+              data={contentType ? contentType[tab] : []}
               selectedOption={selectedOption}
               setSelectedOption={setSelectedOption}
             />

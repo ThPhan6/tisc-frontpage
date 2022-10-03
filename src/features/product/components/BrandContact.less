@@ -1,35 +1,3 @@
-.contactContent {
-  padding: 0 16px;
-  background-color: #fff;
-  :global(.contact-item-wrapper) {
-    box-shadow: @border-bottom-light;
-    // &:last-child {
-    //   box-shadow: none;
-    // }
-    :global(.contact-item) {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 40px;
-      :global(.contact-select-box) {
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-        p {
-          margin-right: 12px;
-          color: @mono-color-medium;
-        }
-        svg {
-          color: @mono-color-medium;
-        }
-        :global(.single-right-icon) {
-          color: @mono-color;
-        }
-      }
-    }
-  }
-}
-
 .detail {
   &_business {
     display: flex;
@@ -46,18 +14,5 @@
     .phone {
       margin-right: 12px;
     }
-  }
-}
-.customLocationModal {
-  :global(.ant-collapse-item) {
-    :global(.ant-collapse-content-box) {
-      padding: 16px 0 0 16px !important;
-    }
-  }
-  :global(.radio-label) {
-    margin-bottom: 16px;
-  }
-  :global(.ant-space-item) {
-    padding-left: 0;
   }
 }

@@ -5,6 +5,7 @@ import { PATH } from '@/constants/path';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
+import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { deletePresetMiddleware, getProductBasisPresetPagination } from '@/services';
 
 import type { TableColumnItem } from '@/components/Table/types';
@@ -14,10 +15,8 @@ import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 
-const MAIN_COL_WIDTH = 236;
-const SUB_COL_WIDTH = 138;
 const BasisPresetList: React.FC = () => {
-  useAutoExpandNestedTableColumn([MAIN_COL_WIDTH, SUB_COL_WIDTH]);
+  useAutoExpandNestedTableColumn(2);
   const tableRef = useRef<any>();
 
   const handleUpdatePreset = (id: string) => {
@@ -39,20 +38,17 @@ const BasisPresetList: React.FC = () => {
       {
         title: '1st Value',
         dataIndex: 'value_1',
-        width: 100,
         noBoxShadow: noBoxShadow,
       },
       {
         title: 'Unit',
         dataIndex: 'unit_1',
-        width: '5%',
         lightHeading: true,
         noBoxShadow: noBoxShadow,
       },
       {
         title: '2nd Value',
         dataIndex: 'value_2',
-        width: 100,
         noBoxShadow: noBoxShadow,
       },
       {
@@ -79,7 +75,6 @@ const BasisPresetList: React.FC = () => {
       sorter: {
         multiple: 1,
       },
-      width: MAIN_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-uppercase">{value}</span>;
@@ -88,7 +83,6 @@ const BasisPresetList: React.FC = () => {
     {
       title: 'Preset Name',
       dataIndex: 'preset_name',
-      width: SUB_COL_WIDTH,
       sorter: {
         multiple: 2,
       },
@@ -122,13 +116,11 @@ const BasisPresetList: React.FC = () => {
     {
       title: 'Preset Group',
       dataIndex: 'preset_group',
-      width: MAIN_COL_WIDTH,
       noBoxShadow: true,
     },
     {
       title: 'Preset Name',
       dataIndex: 'name',
-      width: SUB_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
@@ -147,13 +139,11 @@ const BasisPresetList: React.FC = () => {
     {
       title: 'Preset Group',
       dataIndex: 'preset_group',
-      width: MAIN_COL_WIDTH,
       noBoxShadow: true,
     },
     {
       title: 'Preset Name',
       dataIndex: 'preset_name',
-      width: SUB_COL_WIDTH,
       noBoxShadow: true,
     },
     ...getSameColumns(true),
@@ -171,7 +161,7 @@ const BasisPresetList: React.FC = () => {
       <CustomTable
         rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createPresets)} />}
         title="PRESETS"
-        columns={MainColumns}
+        columns={setDefaultWidthForEachColumn(MainColumns, 5)}
         ref={tableRef}
         fetchDataFunc={getProductBasisPresetPagination}
         multiSort={{

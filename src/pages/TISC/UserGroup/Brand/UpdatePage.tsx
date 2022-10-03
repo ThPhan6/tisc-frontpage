@@ -26,13 +26,14 @@ import { KeyValueData } from '@/types';
 import { CustomTabPane } from '@/components/Tabs';
 import BrandAvailabilityDetail from '@/features/user-group/components/AvailabilityDetail';
 import BrandDistributorDetail from '@/features/user-group/components/DistributorDetail';
-import LocationDetail from '@/features/user-group/components/LocationDetail';
+import { LocationDetail } from '@/features/user-group/components/LocationDetail';
 import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
-import ProfileDetail from '@/features/user-group/components/Profile';
+import { ProfileDetail } from '@/features/user-group/components/ProfileDetail';
 import TabDetail from '@/features/user-group/components/TabDetail';
-import TeamDetail from '@/features/user-group/components/Team';
+import TeamDetail from '@/features/user-group/components/TeamDetail';
 import TooltipLabel from '@/features/user-group/components/TooltipLabel';
 
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import styles from '@/features/user-group/styles/index.less';
 
 const BrandTabs: TabItem[] = [
@@ -46,7 +47,7 @@ const BrandTabs: TabItem[] = [
 const UpdatePage = () => {
   const [selectedTab, setSelectedTab] = useState<TabKeys>(BrandTabKeys.profile);
   const buttonStatus = useBoolean();
-  const isLoading = useBoolean();
+
   const [statuses, setStatuses] = useState<KeyValueData[]>([]);
   const [data, setData] = useState<BrandDesignProfile>(DEFAULT_BRAND_DESIGN_PROFILE);
 
@@ -75,9 +76,9 @@ const UpdatePage = () => {
   };
 
   const handleSaveButton = () => {
-    isLoading.setValue(true);
+    showPageLoading();
     updateBrandStatus(brandId, { status: data.status }).then((isSuccess) => {
-      isLoading.setValue(false);
+      hidePageLoading();
       if (isSuccess) {
         buttonStatus.setValue(true);
         setTimeout(() => {
@@ -99,7 +100,6 @@ const UpdatePage = () => {
           data={data}
           setData={setData}
           buttonStatus={buttonStatus.value}
-          isLoading={isLoading.value}
           statuses={statuses}
           toolTipTitle={
             <table className={styles.tooltip}>

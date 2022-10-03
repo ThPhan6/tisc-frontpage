@@ -1,4 +1,4 @@
-import { TeamProfileDetailProps } from '../type';
+import { TeamProfileDetailProps } from '../types';
 
 export const DEFAULT_TEAMPROFILE: TeamProfileDetailProps = {
   role_id: '',

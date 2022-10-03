@@ -1,12 +1,13 @@
 import { FC, useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
+import { message } from 'antd';
 
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import {
-  emailMessageError,
-  emailMessageErrorType,
+  getEmailMessageError,
+  getEmailMessageErrorType,
   isEmptySpace,
   messageError,
   messageErrorType,
@@ -45,16 +46,12 @@ const optionsCoverageBeyond = [
 
 type FieldName = keyof DistributorForm;
 
+type ModalType = '' | 'city' | 'state' | 'country' | 'authorCountry' | 'territory';
+
 export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
   const { submitButtonStatus, onSubmit, onCancel, data, setData } = props;
 
-  const [visible, setVisible] = useState({
-    country: false,
-    state: false,
-    city: false,
-    authorCountry: false,
-    territory: false,
-  });
+  const [openModal, setOpenModal] = useState<ModalType>('');
 
   const [countryData, setCountryData] = useState({
     label: '',
@@ -91,10 +88,6 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
     setData({ ...data, [fieldName]: fieldValue });
   };
 
-  const handleOnChangeGenderAndCoverageBeyond = (radioValue: boolean, name: string) => {
-    setData({ ...data, [name]: radioValue });
-  };
-
   useEffect(() => {
     if (countryData.value !== '') {
       onChangeData('country_id', countryData.value);
@@ -119,11 +112,20 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
   }, [authorCountryData]);
 
   const handleSubmit = () => {
+    /// check email
+    const invalidEmail = getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID);
+    if (invalidEmail) {
+      message.error(invalidEmail);
+      return;
+    }
+
     return onSubmit({
       ...data,
       brand_id: user?.brand?.id as string,
     });
   };
+
+  const setModalVisible = (visible: boolean) => (visible ? undefined : setOpenModal(''));
 
   return (
     <>
@@ -165,15 +167,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               hasHeight
               colorPrimaryDark
               colorRequired="tertiary"
-              onRightIconClick={() =>
-                setVisible({
-                  city: false,
-                  state: false,
-                  country: true,
-                  authorCountry: false,
-                  territory: false,
-                })
-              }
+              onRightIconClick={() => setOpenModal('country')}
             />
             <InputGroup
               label="State / Province"
@@ -184,15 +178,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               hasBoxShadow
               hasPadding
               disabled={countryData.value === '-1' || countryData.value === ''}
-              onRightIconClick={() =>
-                setVisible({
-                  city: false,
-                  state: true,
-                  country: false,
-                  authorCountry: false,
-                  territory: false,
-                })
-              }
+              onRightIconClick={() => setOpenModal('state')}
               rightIcon
               hasHeight
               colorPrimaryDark
@@ -208,15 +194,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               hasPadding
               rightIcon
               disabled={stateData.value === ''}
-              onRightIconClick={() =>
-                setVisible({
-                  city: true,
-                  state: false,
-                  country: false,
-                  authorCountry: false,
-                  territory: false,
-                })
-              }
+              onRightIconClick={() => setOpenModal('city')}
               hasHeight
               colorPrimaryDark
               colorRequired="tertiary"
@@ -249,7 +227,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               colorRequired="tertiary"
               onDelete={() => onChangeData('postal_code', '')}
               deleteIcon
-              message={messageError(data.postal_code, 10, MESSAGE_ERROR.POSTAL_CODE)}
+              message={messageError(data.postal_code, MESSAGE_ERROR.POSTAL_CODE, 10)}
               messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
             />
           </div>
@@ -291,9 +269,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               <CustomRadio
                 options={optionsGender}
                 value={data.gender}
-                onChange={(radioValue) =>
-                  handleOnChangeGenderAndCoverageBeyond(radioValue.value as boolean, 'gender')
-                }
+                onChange={(radioValue) => onChangeData('gender', radioValue.value)}
               />
             </FormGroup>
             <InputGroup
@@ -310,8 +286,8 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               colorRequired="tertiary"
               onDelete={() => onChangeData('email', '')}
               deleteIcon
-              message={emailMessageError(data.email, MESSAGE_ERROR.EMAIL_UNVALID)}
-              messageType={emailMessageErrorType(data.email, 'error', 'normal')}
+              message={getEmailMessageError(data.email, MESSAGE_ERROR.EMAIL_INVALID)}
+              messageType={getEmailMessageErrorType(data.email, 'error', 'normal')}
             />
             <FormGroup label="Work Phone" required layout="vertical" formClass={styles.formGroup}>
               <PhoneInput
@@ -341,17 +317,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
             </FormGroup>
           </div>
           <div className="distribution">
-            <div
-              className={styles.titleDistribution}
-              onClick={() =>
-                setVisible({
-                  city: false,
-                  state: false,
-                  country: false,
-                  authorCountry: false,
-                  territory: true,
-                })
-              }>
+            <div className={styles.titleDistribution} onClick={() => setOpenModal('territory')}>
               <Title level={8}>C - DISTIBUTION TERRITORY</Title>
               <WarningIcon />
             </div>
@@ -368,26 +334,13 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               hasHeight
               colorPrimaryDark
               colorRequired="tertiary"
-              onRightIconClick={() =>
-                setVisible({
-                  city: false,
-                  state: false,
-                  country: false,
-                  authorCountry: true,
-                  territory: false,
-                })
-              }
+              onRightIconClick={() => setOpenModal('authorCountry')}
             />
             <FormGroup label="Coverage Beyond" required layout="vertical">
               <CustomRadio
                 options={optionsCoverageBeyond}
                 value={data.coverage_beyond}
-                onChange={(radioValue) =>
-                  handleOnChangeGenderAndCoverageBeyond(
-                    radioValue.value as boolean,
-                    'coverage_beyond',
-                  )
-                }
+                onChange={(radioValue) => onChangeData('coverage_beyond', radioValue.value)}
               />
             </FormGroup>
           </div>
@@ -395,16 +348,8 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
       </EntryFormWrapper>
 
       <CountryModal
-        visible={visible.country}
-        setVisible={(status) =>
-          setVisible({
-            city: false,
-            state: false,
-            country: status,
-            authorCountry: false,
-            territory: false,
-          })
-        }
+        visible={openModal === 'country'}
+        setVisible={setModalVisible}
         chosenValue={countryData}
         setChosenValue={setCountryData}
         hasGlobal={false}
@@ -412,16 +357,8 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
 
       <StateModal
         countryId={data.country_id}
-        visible={visible.state}
-        setVisible={(status) =>
-          setVisible({
-            city: false,
-            state: status,
-            country: false,
-            authorCountry: false,
-            territory: false,
-          })
-        }
+        visible={openModal === 'state'}
+        setVisible={setModalVisible}
         chosenValue={stateData}
         setChosenValue={setStateData}
       />
@@ -429,46 +366,22 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
       <CityModal
         stateId={data.state_id}
         countryId={data.country_id}
-        visible={visible.city}
-        setVisible={(status) =>
-          setVisible({
-            city: status,
-            state: false,
-            country: false,
-            authorCountry: false,
-            territory: false,
-          })
-        }
+        visible={openModal === 'city'}
+        setVisible={setModalVisible}
         chosenValue={cityData}
         setChosenValue={setCityData}
       />
 
       <AuthorizedCountryModal
-        visible={visible.authorCountry}
-        setVisible={(status) =>
-          setVisible({
-            city: false,
-            state: false,
-            country: false,
-            authorCountry: status,
-            territory: false,
-          })
-        }
+        visible={openModal === 'authorCountry'}
+        setVisible={setModalVisible}
         chosenValue={authorCountryData}
         setChosenValue={setAuthorCountryData}
       />
 
       <DistributionTerritoryModal
-        visible={visible.territory}
-        setVisible={(status) =>
-          setVisible({
-            city: false,
-            state: false,
-            country: false,
-            authorCountry: false,
-            territory: status,
-          })
-        }
+        visible={openModal === 'territory'}
+        setVisible={setModalVisible}
       />
     </>
   );

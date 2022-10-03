@@ -5,6 +5,7 @@ import { PATH } from '@/constants/path';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
+import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { deleteConversionMiddleware, getProductBasisConversionPagination } from '@/services';
 
 import type { TableColumnItem } from '@/components/Table/types';
@@ -14,9 +15,8 @@ import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 
-const MAIN_COL_WIDTH = 167;
 const BasisConversionList: React.FC = () => {
-  useAutoExpandNestedTableColumn([MAIN_COL_WIDTH]);
+  useAutoExpandNestedTableColumn(1);
   const tableRef = useRef<any>();
 
   const handleUpdateConversion = (id: string) => {
@@ -40,7 +40,6 @@ const BasisConversionList: React.FC = () => {
       sorter: {
         multiple: 1,
       },
-      width: MAIN_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-uppercase">{value}</span>;
@@ -49,7 +48,6 @@ const BasisConversionList: React.FC = () => {
     {
       title: 'Conversion Between',
       dataIndex: 'conversion_between',
-      width: 200,
       sorter: {
         multiple: 2,
       },
@@ -57,7 +55,6 @@ const BasisConversionList: React.FC = () => {
     {
       title: '1st Formula',
       dataIndex: 'first_formula',
-      width: 200,
     },
     {
       title: '2nd Formula',
@@ -92,12 +89,10 @@ const BasisConversionList: React.FC = () => {
       title: 'Conversion Group',
       dataIndex: 'name',
       noBoxShadow: true,
-      width: MAIN_COL_WIDTH,
     },
     {
       title: 'Conversion Between',
       dataIndex: 'conversion_between',
-      width: 200,
       noBoxShadow: true,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
@@ -106,7 +101,6 @@ const BasisConversionList: React.FC = () => {
     {
       title: '1st Formula',
       dataIndex: 'first_formula',
-      width: 200,
       noBoxShadow: true,
     },
     {
@@ -135,7 +129,7 @@ const BasisConversionList: React.FC = () => {
       <CustomTable
         rightAction={<CustomPlusButton onClick={() => pushTo(PATH.createConversions)} />}
         title="CONVERSIONS"
-        columns={MainColumns}
+        columns={setDefaultWidthForEachColumn(MainColumns, 3)}
         ref={tableRef}
         fetchDataFunc={getProductBasisConversionPagination}
         multiSort={{

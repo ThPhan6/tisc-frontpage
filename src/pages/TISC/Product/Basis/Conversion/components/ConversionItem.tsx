@@ -10,7 +10,7 @@ import { ConversionItemProps, ElementInputProp } from '@/types';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
-import styles from '../styles/ConversionItem.less';
+import styles from './ConversionItem.less';
 
 const ElementInput: FC<ElementInputProp> = ({ order, onChange, value }) => {
   return (
