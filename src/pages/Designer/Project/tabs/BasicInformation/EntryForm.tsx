@@ -214,7 +214,7 @@ export const EntryForm: FC<LocationEntryFormProps> = ({ data, onChangeData }) =>
         hasHeight
         onChange={onChangePostalCode}
         onDelete={() => onChangeData({ postal_code: '' })}
-        message={messageError(data.postal_code, 10, MESSAGE_ERROR.POSTAL_CODE)}
+        message={messageError(data.postal_code, MESSAGE_ERROR.POSTAL_CODE, 10)}
         messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
       />
 
