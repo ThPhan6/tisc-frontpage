@@ -29,10 +29,11 @@ interface Props {
   groupItem: ProductAttributeFormInput;
   groupIndex: number;
   attributes: ProductAttributes[];
+  productId: string;
 }
 
 export const SelectAttributesToGroupRow: FC<Props> = memo(
-  ({ activeKey, groupItem, attributes, groupIndex }) => {
+  ({ activeKey, groupItem, attributes, groupIndex, productId }) => {
     const [visible, setVisible] = useState(false);
     const [selected, setSelected] = useState<CheckboxValue[]>([]);
 
@@ -47,8 +48,10 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
       );
     }, [groupItem]);
 
-    const { onDeleteProductAttribute, attributeGroupKey, attributeGroup } =
-      useProductAttributeForm(activeKey);
+    const { onDeleteProductAttribute, attributeGroupKey, attributeGroup } = useProductAttributeForm(
+      activeKey,
+      productId,
+    );
 
     const onSelectValue = (value: CheckboxValue[]) => {
       setSelected(value);

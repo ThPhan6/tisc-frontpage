@@ -157,6 +157,7 @@ export const getProductById = async (productId: string) => {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_PRODUCT_ERROR);
+      return {} as ProductItem;
     });
 };
 
@@ -229,7 +230,6 @@ export async function selectProductSpecification(
     data,
   })
     .then(() => {
-      console.log('success');
       return true;
     })
     .catch((error) => {
@@ -249,7 +249,7 @@ export async function getSelectedProductSpecification(productId: string) {
       return res.data;
     })
     .catch((error) => {
-      console.log('getSelectedProductSpecification error', error);
+      message.error(error?.data?.message ?? 'getSelectedProductSpecification error!');
       return undefined;
     });
 }

@@ -64,8 +64,6 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
       return option.image !== null && option.image !== '';
     }) > -1;
 
-  console.log('AttributeOption', options);
-
   return (
     <>
       <div
@@ -122,7 +120,7 @@ export const GeneralText: FC<{ text?: string }> = ({ text = '' }) => {
 };
 
 interface ConversionTextProps {
-  conversion: ConversionSubValueProps;
+  conversion?: ConversionSubValueProps;
   firstValue: string;
   secondValue: string;
 }
@@ -135,10 +133,10 @@ export const ConversionText: FC<ConversionTextProps> = ({
   return (
     <BodyText level={6} customClass={styles.content_text} fontFamily="Roboto">
       <span className={styles.converstionText}>
-        {firstValue} {conversion.unit_1}
+        {firstValue || ''} {conversion?.unit_1 || ''}
       </span>
       <span className={styles.converstionText}>
-        {secondValue} {conversion.unit_2}
+        {secondValue || ''} {conversion?.unit_2 || ''}
       </span>
     </BodyText>
   );

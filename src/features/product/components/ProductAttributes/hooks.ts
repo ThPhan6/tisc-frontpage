@@ -93,7 +93,8 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab, productId
     if (
       attributeType === 'specification' &&
       specification_attribute_groups.length &&
-      loaded.value === false
+      loaded.value === false &&
+      productId
     ) {
       getSelectedProductSpecification(productId).then((res) => {
         loaded.setValue(true);

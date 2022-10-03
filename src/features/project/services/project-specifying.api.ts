@@ -78,7 +78,7 @@ export async function updateProductSpecifying(
   callback: () => void,
 ) {
   await request(`/api/project-product/${considered_product_id}/update-specify`, {
-    method: 'POST',
+    method: 'PATCH',
     data: { ...data, quantity: Number(data.quantity) },
   })
     .then(() => {

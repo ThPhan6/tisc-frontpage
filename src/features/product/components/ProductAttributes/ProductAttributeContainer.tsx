@@ -150,7 +150,7 @@ export const ProductAttributeContainer: FC<Props> = ({
                 onSelectSpecificationOption(
                   groupIndex,
                   attribute.id,
-                  false,
+                  isTiscAdmin ? false : true,
                   option?.value?.toString() || undefined,
                 );
               }}
@@ -195,6 +195,7 @@ export const ProductAttributeContainer: FC<Props> = ({
                       attributes={attributes}
                       groupItem={attrGroupItem}
                       groupIndex={groupIndex}
+                      productId={productId}
                     />
                   ) : null}
 

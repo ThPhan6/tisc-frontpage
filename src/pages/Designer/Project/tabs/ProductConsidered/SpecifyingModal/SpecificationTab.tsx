@@ -1,10 +1,11 @@
-import type { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 import { Tooltip } from 'antd';
 
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { useProductAttributeForm } from '@/features/product/components/ProductAttributes/hooks';
+import { getProductById } from '@/features/product/services';
 
 import type { RadioValue } from '@/components/CustomRadio/types';
 
@@ -42,6 +43,12 @@ const SpecificationTab: FC<{ productId: string }> = ({ productId }) => {
     value: true,
     label: <ReferToDesignLabel />,
   };
+
+  useEffect(() => {
+    if (productId) {
+      getProductById(productId);
+    }
+  }, [productId]);
 
   return (
     <div className={styles.specificationTab}>
