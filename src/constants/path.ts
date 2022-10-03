@@ -145,6 +145,8 @@ export const PATH = {
   designerOfficeLocation: '/design-firms/administration/locations',
   designerOfficeTeamProfile: '/design-firms/administration/team-profiles',
   designerMaterialProductCode: '/design-firms/administration/material-product-code',
+  designerMaterialProductCodeCreate: '/design-firms/administration/material-product-code/create',
+  designerMaterialProductCodeUpdate: '/design-firms/administration/material-product-code/:id',
 };
 
 export const PUBLIC_PATH = [
