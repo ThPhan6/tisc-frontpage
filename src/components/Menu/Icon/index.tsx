@@ -53,8 +53,8 @@ const IconList = {
   'office-profile-icon.svg': <OfficeProfile className="anticon" />,
   'material-product-code.svg': <MaterialProductCode className="anticon" />,
 };
-export const renderIconByName = (key: any): React.ReactNode => {
-  if (key && IconList[key]) {
+export const renderIconByName = (key: any, unaccessible: boolean): React.ReactNode => {
+  if (key && IconList[key] && !unaccessible) {
     return IconList[key];
   }
   return null;

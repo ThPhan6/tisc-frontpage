@@ -27,7 +27,7 @@ const getMenuItems = (menuItems?: MenuDataItem[]): ItemType[] | undefined => {
       return {
         key: item.key,
         children,
-        icon: renderIconByName(item.icon),
+        icon: renderIconByName(item.icon, item.unaccessible),
         label: item.name,
         onClick: () => (children ? undefined : pushTo(item.path || '')),
         title: '',
