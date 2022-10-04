@@ -138,7 +138,7 @@ const ProductConsidered: React.FC = () => {
     const SameColumn: TableColumnItem<any>[] = [
       {
         title: 'Image',
-        dataIndex: 'image',
+        dataIndex: 'images',
         width: '5%',
         align: 'center',
         noBoxShadow: noBoxShadow,

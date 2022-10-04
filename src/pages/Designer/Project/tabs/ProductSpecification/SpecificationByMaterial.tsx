@@ -6,7 +6,7 @@ import { useParams } from 'umi';
 import {
   onCellCancelled,
   renderActionCell,
-  renderStatusDropdown,
+  renderSpecifiedStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
@@ -34,7 +34,7 @@ export const SpecificationByMaterial: FC = () => {
     },
     {
       title: 'Description',
-      dataIndex: 'specified_description',
+      dataIndex: 'description',
       onCell: onCellCancelled,
     },
     {
@@ -63,7 +63,7 @@ export const SpecificationByMaterial: FC = () => {
     },
     {
       title: 'Product',
-      dataIndex: 'product_name',
+      dataIndex: 'name',
       onCell: onCellCancelled,
     },
     {
@@ -74,7 +74,7 @@ export const SpecificationByMaterial: FC = () => {
     },
     {
       title: 'Unit',
-      dataIndex: 'unit',
+      dataIndex: 'unit_type',
       onCell: onCellCancelled,
     },
     {
@@ -94,7 +94,7 @@ export const SpecificationByMaterial: FC = () => {
       dataIndex: 'status',
       align: 'center',
       width: COLUMN_WIDTH.status,
-      render: renderStatusDropdown(tableRef),
+      render: renderSpecifiedStatusDropdown(tableRef),
       onCell: onCellCancelled,
     },
     {

@@ -5,7 +5,7 @@ import { COLUMN_WIDTH } from '@/constants/util';
 import {
   onCellCancelled,
   renderActionCell,
-  renderStatusDropdown,
+  renderSpecifiedStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
@@ -137,7 +137,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       width: COLUMN_WIDTH.status,
       dataIndex: 'status',
       align: 'center',
-      render: renderStatusDropdown(tableRef, true),
+      render: renderSpecifiedStatusDropdown(tableRef, true),
       onCell: onCellCancelled,
     },
     {
@@ -197,7 +197,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       dataIndex: 'status',
       align: 'center',
       noBoxShadow: true,
-      render: renderStatusDropdown(tableRef, true),
+      render: renderSpecifiedStatusDropdown(tableRef, true),
       onCell: onCellCancelled,
     },
     {

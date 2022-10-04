@@ -99,10 +99,10 @@ export enum ProductConsiderStatus {
   'Unlisted',
 }
 
-export enum SpecifyStatus {
-  'Cancelled' = 1,
-  'Re-specified' = 2,
-  'Specified' = 3,
+export enum ProductSpecifyStatus {
+  'Specified',
+  'Re-specified',
+  'Cancelled',
 }
 
 export enum OrderMethod {

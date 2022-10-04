@@ -5,7 +5,7 @@ import { COLUMN_WIDTH } from '@/constants/util';
 import {
   onCellCancelled,
   renderActionCell,
-  renderStatusDropdown,
+  renderSpecifiedStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
@@ -60,7 +60,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     {
       title: 'Brand',
       noBoxShadow: true,
-      dataIndex: 'image',
+      dataIndex: 'brand_logo',
       align: 'right',
       render: (value) => {
         if (value) {
@@ -106,10 +106,10 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     {
       title: 'Status',
       noBoxShadow: true,
-      dataIndex: 'status',
+      dataIndex: 'specified_status',
       align: 'center',
       width: COLUMN_WIDTH.status,
-      render: renderStatusDropdown(tableRef),
+      render: renderSpecifiedStatusDropdown(tableRef),
       onCell: onCellCancelled,
     },
     {
