@@ -1,7 +1,8 @@
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
-import { MaterialProductCodeMain } from './type';
+import { MaterialProductCodeMain, MaterialProductForm } from './type';
 import {
   DataTableResponse,
   PaginationRequestParams,
@@ -39,5 +40,62 @@ export async function getMaterialProductCodeList(
     })
     .catch((error) => {
       message.error(error.message);
+    });
+}
+
+export async function createMaterialProductCode(data: MaterialProductForm) {
+  return request<boolean>(`/api/material-code/create`, { method: 'POST', data })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.CREATE_MATERIAL_PRODUCT_CODE_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(
+        error?.data?.message || MESSAGE_NOTIFICATION.CREATE_MATERIAL_PRODUCT_CODE_ERROR,
+      );
+      return false;
+    });
+}
+
+export async function getOneMaterialProductCode(id: string) {
+  return request<{ data: MaterialProductForm }>(`/api/material-code/get-one/${id}`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(
+        error?.data?.message || MESSAGE_NOTIFICATION.GET_ONE_MATERIAL_PRODUCT_CODE_ERROR,
+      );
+      return {} as MaterialProductForm;
+    });
+}
+
+export async function deleteMaterialProductCode(id: string) {
+  return request<boolean>(`/api/material-code/delete/${id}`, { method: 'DELETE' })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.DELETE_MATERIAL_PRODUCT_CODE_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(
+        error?.data?.message || MESSAGE_NOTIFICATION.DELETE_MATERIAL_PRODUCT_CODE_ERROR,
+      );
+      return false;
+    });
+}
+
+export async function updateMaterialProductCode(id: string, data: MaterialProductForm) {
+  return request<boolean>(`/api/material-code/update/${id}`, { method: 'PUT', data })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.UPDATE_MATERIAL_PRODUCT_CODE_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(
+        error?.data?.message || MESSAGE_NOTIFICATION.DELETE_MATERIAL_PRODUCT_CODE_ERROR,
+      );
+      return false;
     });
 }

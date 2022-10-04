@@ -13,9 +13,13 @@ export interface MaterialProductCodeSub {
 }
 
 export interface MaterialProductCodeItem {
-  id: string;
   code: string;
   description: string;
+}
+export interface MaterialProductSubForm {
+  name: string;
+  codes: MaterialProductCodeItem[];
+  is_collapse?: string;
 }
 
 export interface MaterialProductForm {
@@ -23,21 +27,10 @@ export interface MaterialProductForm {
   subs: MaterialProductSubForm[];
 }
 
-export interface MaterialProductSubForm {
-  name: string;
-  codes: MaterialProductDetail[];
-  is_collapse?: string;
-}
-
-export interface MaterialProductDetail {
-  code: string;
-  description: string;
-}
-
 export interface MaterialProductItemProps {
   value: MaterialProductSubForm;
   onChangeValue: (value: MaterialProductSubForm) => void;
-  handleOnClickDeleteItem: () => void;
+  handleOnClickDelete: () => void;
 }
 
 export const DEFAULT_MATERIAL_PRODUCT: MaterialProductForm = {
@@ -49,4 +42,9 @@ export const DEFAULT_SUB_MATERIAL_PRODUCT: MaterialProductSubForm = {
   name: '',
   codes: [],
   is_collapse: '',
+};
+
+export const DEFAULT_ITEM_MATERIAL_PRODUCT: MaterialProductCodeItem = {
+  code: '',
+  description: '',
 };

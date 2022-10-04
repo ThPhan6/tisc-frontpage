@@ -20,6 +20,8 @@ import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 
+import { deleteMaterialProductCode } from '@/features/material-product-code/api';
+
 // import { getMaterialProductCodeList } from '@/features/material-product-code/api';
 
 const MaterialProductCode = () => {
@@ -32,8 +34,13 @@ const MaterialProductCode = () => {
   };
 
   const handleDeleteMaterialProductCode = (id: string) => {
-    console.log(id);
-    confirmDelete(() => {});
+    confirmDelete(() => {
+      deleteMaterialProductCode(id).then((isSuccess) => {
+        if (isSuccess) {
+          tableRef.current.reload();
+        }
+      });
+    });
   };
 
   const SameColumns: TableColumnItem<any>[] = [
@@ -107,16 +114,16 @@ const MaterialProductCode = () => {
           <CustomPlusButton onClick={() => pushTo(PATH.designerMaterialProductCodeCreate)} />
         }
         title="MATERIAL/PRODUCT CODE"
-        columns={setDefaultWidthForEachColumn(MainColumns, 3)}
+        columns={setDefaultWidthForEachColumn(MainColumns, 2)}
         ref={tableRef}
         fetchDataFunc={getProductBasisPresetPagination}
         multiSort={{}}
         expandable={GetExpandableTableConfig({
-          columns: SubColumns,
+          columns: setDefaultWidthForEachColumn(SubColumns, 2),
           childrenColumnName: 'subs',
           level: 2,
           expandable: GetExpandableTableConfig({
-            columns: CodeColumns,
+            columns: setDefaultWidthForEachColumn(CodeColumns, 2),
             childrenColumnName: 'subs',
             level: 3,
           }),
