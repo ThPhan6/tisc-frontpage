@@ -49,7 +49,7 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
       }
     });
   };
-
+  console.log('title', titleColumnData);
   const renderPermission: any = (menu: AccessLevelModalProps, type: string) => {
     return (
       <Fragment key={menu.name}>
@@ -62,33 +62,32 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
           </td>
 
           {/* render icon */}
-          {menu.items.map((item, key) => (
-            <Fragment key={key}>
-              <td className={styles.menu_accessable} key={item.id}>
-                {item.accessable === true ? (
-                  <AccessableTickIcon
-                    className={styles.menu_accessable_true}
-                    onClick={() => handleClickAccessable(item)}
-                  />
-                ) : (
-                  item.accessable !== null && (
+          {!menu.subs?.length &&
+            menu.items.map((item, key) => (
+              <Fragment key={key}>
+                <td className={styles.menu_accessable} key={item.id}>
+                  {item.accessable === true ? (
+                    <AccessableTickIcon
+                      className={styles.menu_accessable_true}
+                      onClick={() => handleClickAccessable(item)}
+                    />
+                  ) : (
                     <AccessableMinusIcon
                       className={styles.menu_accessable_false}
                       onClick={() => handleClickAccessable(item)}
                     />
-                  )
-                )}
-              </td>
+                  )}
+                </td>
 
-              {/* for future data */}
-              <td
-                key={`fData_${item.id}`}
-                style={{ textAlign: 'center', display: menu.subs ? 'none' : '' }}>
-                <AccessableTickIcon className={styles.menu_accessable_null} />
-              </td>
-              {/* --------- */}
-            </Fragment>
-          ))}
+                {/* for future data */}
+                <td
+                  key={`fData_${item.id}`}
+                  style={{ textAlign: 'center', display: !menu.subs ? 'none' : '' }}>
+                  <AccessableTickIcon className={styles.menu_accessable_null} />
+                </td>
+                {/* --------- */}
+              </Fragment>
+            ))}
         </tr>
 
         {/* render subs */}

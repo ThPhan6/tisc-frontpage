@@ -14,10 +14,10 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       if (subname) {
         const foundsub = found.subs.find((sub: any) => sub.name.toLowerCase().includes(subname));
         if (foundsub) {
-          return foundsub.accessable;
+          return foundsub.items[0].accessable;
         }
       }
-      return found.accessable;
+      return found.items[0].accessable;
     }
     return false;
   };
