@@ -49,7 +49,7 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
       }
     });
   };
-  console.log('title', titleColumnData);
+
   const renderPermission: any = (menu: AccessLevelModalProps, type: string) => {
     return (
       <Fragment key={menu.name}>
