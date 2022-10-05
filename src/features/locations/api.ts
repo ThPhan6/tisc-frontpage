@@ -82,7 +82,7 @@ export async function getCountries() {
 }
 
 export async function getStatesByCountryId(countryId: string) {
-  return request<{ data: State[] }>(`/api/location/get-states`, {
+  return request<{ data: State[] }>(`/api/setting/states`, {
     method: 'GET',
     params: { country_id: countryId },
   })
@@ -96,7 +96,7 @@ export async function getStatesByCountryId(countryId: string) {
 }
 
 export async function getCitiesByCountryIdAndStateId(countryId: string, stateId: string) {
-  return request<{ data: City[] }>(`/api/location/get-cities`, {
+  return request<{ data: City[] }>(`/api/setting/cities`, {
     method: 'GET',
     params: { country_id: countryId, state_id: stateId },
   })

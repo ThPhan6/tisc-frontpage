@@ -226,7 +226,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         {isDesignAdmin ? (
           <CustomRadio
             options={functionalTypeForDesign}
-            value={String(data.functional_type_ids[0])}
+            value={data.functional_type_ids[0]}
             onChange={(radioValue) => {
               setData({
                 ...data,
