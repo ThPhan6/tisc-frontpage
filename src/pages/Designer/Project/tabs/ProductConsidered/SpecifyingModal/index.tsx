@@ -5,14 +5,13 @@ import {
   ProjectSpecifyTabValue,
   ProjectSpecifyTabs,
 } from '../../../constants/tab';
-import { ORDER_METHOD } from '@/constants/util';
 import { message } from 'antd';
 
 import { getSpecificationRequest } from '@/features/product/components/ProductAttributes/hooks';
 import { useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
 import { updateProductSpecifying } from '@/features/project/services';
 
-import { OnChangeSpecifyingProductFnc, SpecifyingProductRequestBody } from './types';
+import { DEFAULT_STATE, OnChangeSpecifyingProductFnc, SpecifyingProductRequestBody } from './types';
 import { ProductItem } from '@/features/product/types';
 import { useAppSelector } from '@/reducers';
 
@@ -28,34 +27,13 @@ import SpecificationTab from './SpecificationTab';
 import VendorTab from './VendorTab';
 import styles from './styles/specifying-modal.less';
 
-const DEFAULT_STATE: SpecifyingProductRequestBody = {
-  considered_product_id: '',
-  specification: {
-    is_refer_document: true,
-    specification_attribute_groups: [],
-  },
-  brand_location_id: '',
-  distributor_location_id: '',
-  entire_allocation: true,
-  allocation: [],
-  material_code_id: '',
-  suffix_code: '',
-  description: '',
-  quantity: 0,
-  unit_type_id: '',
-  order_method: ORDER_METHOD['directPurchase'],
-  requirement_type_ids: [],
-  instruction_type_ids: [],
-  finish_schedules: [],
-  special_instructions: '',
-};
-
 interface SpecifyingModalProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
   projectId: string;
   product: ProductItem;
   reloadTable: () => void;
+  isProductSpecified?: boolean;
 }
 
 export const SpecifyingModal: FC<SpecifyingModalProps> = ({
@@ -64,9 +42,10 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   product,
   projectId,
   reloadTable,
+  isProductSpecified,
 }) => {
   const referToDesignDocument = useAppSelector(
-    (state) => state.product.details.referToDesignDocument,
+    (state) => state.product.details.specifiedDetail?.specification.is_refer_document,
   );
   const specification_attribute_groups = useAppSelector(
     (state) => state.product.details.specification_attribute_groups,
@@ -83,6 +62,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       (prevState) => ({ ...prevState, ...newStateParts } as SpecifyingProductRequestBody),
     );
 
+  console.log('product', product);
   console.log('specifyingState', specifyingState);
 
   const { AssignProductToSpaceForm } = useAssignProductToSpaceForm(product.id, projectId, {
@@ -93,10 +73,31 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   });
 
   useEffect(() => {
-    if (product.considered_id) {
-      onChangeSpecifyingState({ considered_product_id: product.considered_id });
+    if (product.specifiedDetail?.id) {
+      onChangeSpecifyingState({
+        considered_product_id: product.specifiedDetail?.id,
+      });
+
+      if (isProductSpecified) {
+        onChangeSpecifyingState({
+          ...specifyingState,
+          brand_location_id: product.specifiedDetail?.brand_location_id,
+          distributor_location_id: product.specifiedDetail?.distributor_location_id,
+          suffix_code: product.specifiedDetail?.suffix_code,
+          description: product.specifiedDetail?.description,
+          instruction_type_ids: product.specifiedDetail?.instruction_type_ids,
+          material_code_id: product.specifiedDetail?.material_code_id,
+          order_method: product.specifiedDetail?.order_method,
+          quantity: product.specifiedDetail?.quantity,
+          requirement_type_ids: product.specifiedDetail?.requirement_type_ids,
+          special_instructions: product.specifiedDetail?.special_instruction,
+          unit_type_id: product.specifiedDetail?.unit_type_id,
+          finish_schedules: product.specifiedDetail?.finish_schedules,
+          allocation: product.specifiedDetail?.allocation,
+        });
+      }
     }
-  }, [product.considered_id]);
+  }, [product.specifiedDetail?.id]);
 
   const onSubmit = () => {
     if (!specifyingState.material_code_id) {
@@ -116,20 +117,23 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     //   return;
     // }
 
-    updateProductSpecifying(
-      {
-        ...specifyingState,
-        specification: {
-          is_refer_document: referToDesignDocument ?? false,
-          specification_attribute_groups: getSpecificationRequest(specification_attribute_groups),
+    if (product.specifiedDetail?.id) {
+      updateProductSpecifying(
+        {
+          ...specifyingState,
+          considered_product_id: product.specifiedDetail.id,
+          specification: {
+            is_refer_document: referToDesignDocument ?? false,
+            specification_attribute_groups: getSpecificationRequest(specification_attribute_groups),
+          },
         },
-      },
-      () => {
-        reloadTable();
-        setVisible(false);
-        setSpecifyingState(DEFAULT_STATE);
-      },
-    );
+        () => {
+          reloadTable();
+          setVisible(false);
+          setSpecifyingState(DEFAULT_STATE);
+        },
+      );
+    }
   };
 
   return (
@@ -155,10 +159,10 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         </CustomButton>
       }>
       <BrandProductBasicHeader
-        image={product.image}
-        logo={product.brand_logo}
-        text_1={product.brand_name}
-        text_2={product.collection_name}
+        image={product.images[0]}
+        logo={product.brand?.logo}
+        text_1={product.brand?.name}
+        text_2={product.collection?.name}
         text_3={product.description}
       />
 
@@ -179,7 +183,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.vendor}>
         <VendorTab
           productId={product.id}
-          brandId={product.brand_id ?? ''}
+          brandId={product.brand?.id ?? ''}
           onChangeSpecifyingState={onChangeSpecifyingState}
           brandAddressId={specifyingState.brand_location_id}
           distributorAddressId={specifyingState.distributor_location_id}

@@ -1,4 +1,10 @@
-import { ProductConsiderStatus, ProductConsiderStatusName } from '@/features/project/types';
+import {
+  OrderMethod,
+  ProductConsiderStatus,
+  ProductSpecifyStatus,
+  ProjectProductStatus,
+  SpecificationBodyRequest,
+} from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
 import { ConversionSubValueProps, GeneralData } from '@/types';
 
@@ -47,6 +53,40 @@ export interface ProductAttributeFormInput {
 
 export type ProductKeyword = [string, string, string, string];
 
+export interface SpecifiedDetail {
+  // basic information
+  id: string;
+  project_id: string;
+  product_id: string;
+  status: ProjectProductStatus; // consider || specified
+  consider_status: ProductConsiderStatus; // considered - default || re-considered || unlist
+  specified_status: ProductSpecifyStatus; // specified - default || re-specify || cancel
+  // vendor
+  brand_location_id: string;
+  distributor_location_id: string;
+  /// order
+  material_code_id: string;
+  material_code: string;
+  suffix_code: string;
+  description: string;
+  quantity: number;
+  order_method: OrderMethod;
+  requirement_type_ids: string[];
+  instruction_type_ids: string[];
+  finish_schedules: string[];
+  unit_type_id: string;
+  special_instruction: string;
+  /// specification
+  specification: SpecificationBodyRequest;
+  /// allocation
+  allocation: string[]; // room_id
+  entire_allocation: boolean;
+  ///
+  created_at: string; // datetime
+  created_by: string; // user_id
+  updated_at: string;
+}
+
 export interface ProductItem {
   id: string;
   brand?: BrandDetail;
@@ -70,22 +110,11 @@ export interface ProductItem {
   keywords: ProductKeyword;
   created_at?: string;
   created_by?: string;
-
-  // consider data
-  image?: string;
-  brand_id?: string;
-  brand_name?: string;
-  brand_logo?: string;
-  collection_name?: string;
-  consider_status?: ProductConsiderStatus;
-  consider_status_name?: ProductConsiderStatusName;
-  entire_allocation?: boolean;
-  allocation?: string;
-  considered_id?: string;
-  referToDesignDocument?: boolean;
-  brandLocationId?: string;
-  distributorLocationId?: string;
+  // specifying
+  specifiedDetail?: SpecifiedDetail;
 }
+
+export type ProjectProductItem = ProductItem & { rooms: any };
 
 export interface ProductItemValue {
   id: string;

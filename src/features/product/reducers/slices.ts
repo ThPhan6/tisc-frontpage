@@ -19,7 +19,7 @@ interface ProductState {
   tip: ProductTip;
   download: ProductDownload;
   catelogue: ProductCatelogue;
-  details: ProductItem;
+  details: ProductItem & { referToDesignDocument?: boolean };
   relatedProduct: RelatedCollection[];
   list: ProductList;
 }
@@ -122,6 +122,21 @@ const productSlice = createSlice({
     resetProductState() {
       return initialState;
     },
+    setReferToDesignDocument(state, action: PayloadAction<boolean>) {
+      state.details.referToDesignDocument = action.payload;
+    },
+    onCheckReferToDesignDocument: (state) => {
+      state.details.referToDesignDocument = true;
+      state.details.specification_attribute_groups =
+        state.details.specification_attribute_groups.map((group) => ({
+          ...group,
+          isChecked: false,
+          attributes: group.attributes.map((attr) => ({
+            ...attr,
+            basis_options: attr?.basis_options?.map((otp) => ({ ...otp, isChecked: false })),
+          })),
+        }));
+    },
   },
 });
 
@@ -140,6 +155,8 @@ export const {
   setProductListSearchValue,
   setProductListSorter,
   resetProductDetailState,
+  setReferToDesignDocument,
+  onCheckReferToDesignDocument,
 } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;

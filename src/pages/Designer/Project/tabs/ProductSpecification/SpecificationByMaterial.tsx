@@ -14,7 +14,8 @@ import { getSpecifiedProductByMaterial } from '@/features/project/services';
 import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
-import { OrderMethod, SpecifiedProductByMaterial } from '@/features/project/types';
+import { ProjectProductItem } from '@/features/product/types';
+import { OrderMethod } from '@/features/project/types';
 
 import CustomTable from '@/components/Table';
 
@@ -22,14 +23,14 @@ export const SpecificationByMaterial: FC = () => {
   useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
   const tableRef = useRef<any>();
   const params = useParams<{ id: string }>();
-  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
+  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef, true);
 
-  const MaterialColumns: TableColumnItem<SpecifiedProductByMaterial>[] = [
+  const MaterialColumns: TableColumnItem<ProjectProductItem>[] = [
     {
       title: 'Material Code',
       dataIndex: 'material_order',
       sorter: true,
-      render: (_value, record) => <span>{record.material_code}</span>,
+      render: (_value, record) => <span>{record.specifiedDetail?.material_code}</span>,
       onCell: onCellCancelled,
     },
     {
@@ -58,7 +59,7 @@ export const SpecificationByMaterial: FC = () => {
       title: 'Brand',
       dataIndex: 'brand_order',
       sorter: true,
-      render: (_value, record) => <span>{record.brand_name}</span>,
+      render: (_value, record) => <span>{record.brand?.name}</span>,
       onCell: onCellCancelled,
     },
     {
@@ -82,7 +83,7 @@ export const SpecificationByMaterial: FC = () => {
       dataIndex: 'order_method',
       render: (_value, record) => (
         <span>
-          {record.order_method === OrderMethod['Direct Purchase']
+          {record.specifiedDetail?.order_method === OrderMethod['Direct Purchase']
             ? 'Direct Purchase'
             : 'Custom Order'}
         </span>

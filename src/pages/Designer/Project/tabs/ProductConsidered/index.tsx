@@ -21,7 +21,7 @@ import { useBoolean } from '@/helper/hook';
 import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
-import { setPartialProductDetail } from '@/features/product/reducers';
+import { setReferToDesignDocument } from '@/features/product/reducers';
 import { ProductItem } from '@/features/product/types';
 import {
   ConsideredProduct,
@@ -49,7 +49,7 @@ const ProductConsidered: React.FC = () => {
   const params = useParams<{ id: string }>();
   const tableRef = useRef<any>();
   const gridView = useBoolean();
-  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
+  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef, false);
 
   const renderStatusDropdown = (_value: any, record: any) => {
     if (record.rooms) {
@@ -63,7 +63,7 @@ const ProductConsidered: React.FC = () => {
         icon: <CheckIcon style={{ width: 16, height: 16 }} />,
         disabled: record.consider_status !== ProductConsiderStatus.Unlisted,
         onClick: () => {
-          updateProductConsiderStatus(record.considered_id, {
+          updateProductConsiderStatus(record.specifiedDetail?.id, {
             consider_status: ProductConsiderStatus['Re-Considered'],
           }).then((success) => (success ? tableRef.current?.reload() : undefined));
         },
@@ -74,7 +74,7 @@ const ProductConsidered: React.FC = () => {
         icon: <CancelIcon style={{ width: 16, height: 16 }} />,
         disabled: record.consider_status === ProductConsiderStatus.Unlisted,
         onClick: () => {
-          updateProductConsiderStatus(record.considered_id, {
+          updateProductConsiderStatus(record.specifiedDetail?.id, {
             consider_status: ProductConsiderStatus.Unlisted,
           }).then((success) => (success ? tableRef.current?.reload() : undefined));
         },
@@ -94,7 +94,7 @@ const ProductConsidered: React.FC = () => {
     );
   };
 
-  const renderActionCell = (_value: any, record: any) => {
+  const renderActionCell = (_value: any, record: ProductItem & { rooms?: any }) => {
     if (record.rooms) {
       return null;
     }
@@ -103,13 +103,20 @@ const ProductConsidered: React.FC = () => {
         actionItems={[
           {
             type: 'specify',
-            disabled: record.status === ProductConsiderStatus.Unlisted,
+            disabled:
+              record.specifiedDetail?.status[1] &&
+              record.specifiedDetail.consider_status === ProductConsiderStatus.Unlisted,
             onClick: () => {
               setSpecifyingProduct(record);
+              // store.dispatch(
+              //   setPartialProductDetail({
+              //     specification_attribute_groups: record.specifiedDetail?.specification.attribute_groups,
+              //   }),
+              // );
               store.dispatch(
-                setPartialProductDetail({
-                  specification_attribute_groups: record.specification_attribute_groups,
-                }),
+                setReferToDesignDocument(
+                  record.specifiedDetail?.specification?.is_refer_document ? true : false,
+                ),
               );
             },
           },
@@ -117,7 +124,7 @@ const ProductConsidered: React.FC = () => {
             type: 'deleted',
             onClick: () =>
               confirmDelete(() => {
-                removeProductFromProject(record.considered_id).then((success) =>
+                removeProductFromProject(record.specifiedDetail?.id ?? '').then((success) =>
                   success ? tableRef.current?.reload() : undefined,
                 );
               }),

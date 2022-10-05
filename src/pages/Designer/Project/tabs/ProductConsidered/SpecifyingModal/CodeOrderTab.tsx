@@ -238,7 +238,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
             <CustomInput
               borderBottomColor="light"
               value={quantity}
-              onChange={(e) => onChangeSpecifyingState({ quantity: e.target.value })}
+              onChange={(e) => onChangeSpecifyingState({ quantity: Number(e.target.value) })}
               inputValidation={validateFloatNumber}
               containerClass={styles.inputColor}
             />

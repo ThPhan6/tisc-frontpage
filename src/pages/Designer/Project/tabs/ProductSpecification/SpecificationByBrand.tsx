@@ -13,7 +13,7 @@ import { getSpecifiedProductsByBrand } from '@/features/project/services';
 import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
-import { ProductItemBrand, SpecifiedProductByBrand } from '@/features/project/types';
+import { ProjectProductItem } from '@/features/product/types';
 
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 
@@ -26,9 +26,9 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     rightColumnExcluded: 3,
   });
   const tableRef = useRef<any>();
-  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
+  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef, true);
 
-  const BrandColumns: TableColumnItem<SpecifiedProductByBrand>[] = [
+  const BrandColumns: TableColumnItem<ProjectProductItem>[] = [
     {
       title: 'Brand',
       dataIndex: 'brand_order',
@@ -56,7 +56,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     { title: 'Action', width: '5%', align: 'center' },
   ];
 
-  const CollectionColumns: TableColumnItem<ProductItemBrand>[] = [
+  const CollectionColumns: TableColumnItem<ProjectProductItem>[] = [
     {
       title: 'Brand',
       noBoxShadow: true,

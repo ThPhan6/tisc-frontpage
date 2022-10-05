@@ -8,6 +8,7 @@ import { cloneDeep } from 'lodash';
 import { setPartialProductDetail } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
 import { AttributeGroupKey, ProductInfoTab } from './types';
+import { setReferToDesignDocument } from '@/features/product/reducers';
 import { SelectedSpecAttributte, SpecificationAttributeGroup } from '@/features/project/types';
 import { useAppSelector } from '@/reducers';
 
@@ -66,13 +67,11 @@ export const getSpecificationWithSelectedValue = (
 
 export const useProductAttributeForm = (attributeType: ProductInfoTab, productId: string) => {
   const dispatch = useDispatch();
-  const {
-    feature_attribute_groups,
-    general_attribute_groups,
-    specification_attribute_groups,
-    referToDesignDocument,
-    id,
-  } = useAppSelector((state) => state.product.details);
+  const { feature_attribute_groups, general_attribute_groups, specification_attribute_groups, id } =
+    useAppSelector((state) => state.product.details);
+  const referToDesignDocument = useAppSelector(
+    (state) => state.product.details.specifiedDetail?.specification.is_refer_document,
+  );
   const loaded = useBoolean();
 
   const attributeGroup =
@@ -191,11 +190,13 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab, productId
   const onSelectSpecificationOption = (
     groupIndex: number,
     attributeId: string,
-    updatedOnchange: boolean = true,
+    updatedOnchange: boolean = true, // disabled TISC
     optionId?: string,
   ) => {
     const newState = cloneDeep(specification_attribute_groups);
     const attributeIndex = newState[groupIndex].attributes.findIndex((el) => el.id === attributeId);
+
+    // console.log('onSelectSpecificationOption', updatedOnchange);
 
     if (attributeIndex === -1) {
       return;
@@ -226,9 +227,10 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab, productId
       dispatch(
         setPartialProductDetail({
           specification_attribute_groups: newState,
-          referToDesignDocument: !haveCheckedAttributeGroup,
         }),
       );
+
+      dispatch(setReferToDesignDocument(!haveCheckedAttributeGroup));
     }
   };
 
@@ -266,24 +268,11 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab, productId
     dispatch(
       setPartialProductDetail({
         specification_attribute_groups: newState,
-        referToDesignDocument: newState[groupIndex].isChecked ? false : !haveCheckedAttributeGroup,
       }),
     );
-  };
 
-  const checkReferToDesignDocument = () => {
     dispatch(
-      setPartialProductDetail({
-        referToDesignDocument: true,
-        specification_attribute_groups: specification_attribute_groups.map((group) => ({
-          ...group,
-          isChecked: false,
-          attributes: group.attributes.map((attr) => ({
-            ...attr,
-            basis_options: attr?.basis_options?.map((otp) => ({ ...otp, isChecked: false })),
-          })),
-        })),
-      }),
+      setReferToDesignDocument(newState[groupIndex].isChecked ? false : !haveCheckedAttributeGroup),
     );
   };
 
@@ -297,7 +286,6 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab, productId
     attributeGroup,
     onCheckedSpecification,
     onSelectSpecificationOption,
-    checkReferToDesignDocument,
     referToDesignDocument,
   };
 };

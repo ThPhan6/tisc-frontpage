@@ -25,6 +25,7 @@ interface Props {
   activeKey: ProductInfoTab;
   specifying?: boolean;
   noBorder?: boolean;
+  productId?: string;
 }
 
 export const ProductAttributeContainer: FC<Props> = ({
@@ -32,9 +33,11 @@ export const ProductAttributeContainer: FC<Props> = ({
   attributes,
   specifying,
   noBorder,
+  productId,
 }) => {
-  const productId = useGetParamId();
+  const productIdParam = useGetParamId();
   const isTiscAdmin = useCheckPermission('TISC Admin');
+  const curProductId = productId ?? productIdParam;
   const {
     onChangeAttributeItem,
     addNewProductAttribute,
@@ -44,7 +47,7 @@ export const ProductAttributeContainer: FC<Props> = ({
     attributeGroup,
     attributeGroupKey,
     onSelectSpecificationOption,
-  } = useProductAttributeForm(activeKey, productId);
+  } = useProductAttributeForm(activeKey, curProductId);
 
   const renderCollapseHeader = (groupIndex: number) => {
     const group = attributeGroup[groupIndex];
@@ -74,7 +77,7 @@ export const ProductAttributeContainer: FC<Props> = ({
                 ? [{ label: group.name, value: groupIndex }]
                 : []
             }
-            onChange={() => onCheckedSpecification(groupIndex, false)}
+            onChange={() => onCheckedSpecification(groupIndex, isTiscAdmin ? false : true)}
             checkboxClass={styles.customLabel}
           />
         ) : (
@@ -141,7 +144,9 @@ export const ProductAttributeContainer: FC<Props> = ({
               chosenOption={
                 chosenOption
                   ? {
-                      label: `${chosenOption.value_1} ${chosenOption.unit_1} - ${chosenOption.value_2} ${chosenOption.unit_2}`,
+                      label: `${chosenOption.value_1 ?? ''} ${chosenOption.unit_1 ?? ''} - ${
+                        chosenOption.value_2 ?? ''
+                      } ${chosenOption.unit_2 ?? ''}`,
                       value: chosenOption?.id,
                     }
                   : undefined
@@ -195,7 +200,7 @@ export const ProductAttributeContainer: FC<Props> = ({
                       attributes={attributes}
                       groupItem={attrGroupItem}
                       groupIndex={groupIndex}
-                      productId={productId}
+                      productId={curProductId}
                     />
                   ) : null}
 

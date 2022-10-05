@@ -12,7 +12,7 @@ import {
 } from '@/features/project/services';
 import { confirmDelete } from '@/helper/common';
 
-import { ProductItem } from '@/features/product/types';
+import { ProductItem, ProjectProductItem } from '@/features/product/types';
 import { ProductSpecifyStatus } from '@/features/project/types';
 
 import { ActionMenu } from '@/components/TableAction';
@@ -20,7 +20,7 @@ import { CustomDropDown } from '@/features/product/components';
 
 import { SpecifyingModal } from './tabs/ProductConsidered/SpecifyingModal';
 
-export const useSpecifyingModal = (tableRef: any) => {
+export const useSpecifyingModal = (tableRef: any, isProductSpecified: boolean) => {
   const params = useParams<{ id: string }>();
   const [specifyingProduct, setSpecifyingProduct] = useState<ProductItem>();
 
@@ -32,6 +32,7 @@ export const useSpecifyingModal = (tableRef: any) => {
         projectId={params.id}
         setVisible={(visible) => (visible ? undefined : setSpecifyingProduct(undefined))}
         reloadTable={tableRef.current?.reload}
+        isProductSpecified={isProductSpecified}
       />
     ) : null;
 
@@ -39,7 +40,7 @@ export const useSpecifyingModal = (tableRef: any) => {
 };
 
 export const renderSpecifiedStatusDropdown =
-  (tableRef: any, checkRoom?: boolean) => (_value: any, record: any) => {
+  (tableRef: any, checkRoom?: boolean) => (_value: any, record: ProjectProductItem) => {
     if (record.rooms && checkRoom) {
       return null;
     }
@@ -48,9 +49,9 @@ export const renderSpecifiedStatusDropdown =
         key: ProductSpecifyStatus['Re-specified'],
         label: 'Re-specify',
         icon: <DispatchIcon style={{ width: 16, height: 16 }} />,
-        disabled: record.specified_status !== ProductSpecifyStatus.Cancelled,
+        disabled: record.specifiedDetail?.specified_status !== ProductSpecifyStatus.Cancelled,
         onClick: () => {
-          updateProductSpecifiedStatus(record.considered_id, {
+          updateProductSpecifiedStatus(record.specifiedDetail?.id ?? '', {
             specified_status: ProductSpecifyStatus['Re-specified'],
           }).then((success) => (success ? tableRef.current.reload() : undefined));
         },
@@ -59,9 +60,9 @@ export const renderSpecifiedStatusDropdown =
         key: ProductSpecifyStatus.Cancelled,
         label: 'Cancel',
         icon: <CancelIcon style={{ width: 16, height: 16 }} />,
-        disabled: record.specified_status === ProductSpecifyStatus.Cancelled,
+        disabled: record.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled,
         onClick: () => {
-          updateProductSpecifiedStatus(record.considered_id, {
+          updateProductSpecifiedStatus(record.specifiedDetail?.id ?? '', {
             specified_status: ProductSpecifyStatus.Cancelled,
           }).then((success) => (success ? tableRef.current.reload() : undefined));
         },
@@ -69,10 +70,10 @@ export const renderSpecifiedStatusDropdown =
     ];
 
     const renderStatus = () => {
-      if (record.specified_status === ProductSpecifyStatus.Specified) {
+      if (record.specifiedDetail?.specified_status === ProductSpecifyStatus.Specified) {
         return 'Specified';
       }
-      return record.specified_status === ProductSpecifyStatus['Re-specified']
+      return record.specifiedDetail?.specified_status === ProductSpecifyStatus['Re-specified']
         ? 'Re-specified'
         : 'Cancelled';
     };
@@ -109,7 +110,7 @@ export const renderActionCell =
             type: 'deleted',
             onClick: () =>
               confirmDelete(() => {
-                removeProductFromProject(record.considered_id).then((success) =>
+                removeProductFromProject(record.specifiedDetail?.id).then((success) =>
                   success ? tableRef.current.reload() : undefined,
                 );
               }),

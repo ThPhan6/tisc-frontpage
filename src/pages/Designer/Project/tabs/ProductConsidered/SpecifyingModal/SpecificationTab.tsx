@@ -4,10 +4,11 @@ import { Tooltip } from 'antd';
 
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
-import { useProductAttributeForm } from '@/features/product/components/ProductAttributes/hooks';
 import { getProductById } from '@/features/product/services';
 
 import type { RadioValue } from '@/components/CustomRadio/types';
+import { onCheckReferToDesignDocument } from '@/features/product/reducers';
+import store, { useAppSelector } from '@/reducers';
 
 import { CustomRadio } from '@/components/CustomRadio';
 import { Title } from '@/components/Typography';
@@ -34,10 +35,15 @@ const ReferToDesignLabel = () => {
 };
 
 const SpecificationTab: FC<{ productId: string }> = ({ productId }) => {
-  const { checkReferToDesignDocument, referToDesignDocument } = useProductAttributeForm(
-    'specification',
-    productId,
+  const referToDesignDocument = useAppSelector(
+    (state) => state.product.details.referToDesignDocument,
   );
+
+  console.log('referToDesignDocument', referToDesignDocument);
+
+  const checkReferToDesignDocument = () => {
+    store.dispatch(onCheckReferToDesignDocument());
+  };
 
   const ReferToDesignRadio: RadioValue = {
     value: true,
@@ -61,7 +67,12 @@ const SpecificationTab: FC<{ productId: string }> = ({ productId }) => {
         noPaddingLeft
       />
 
-      <ProductAttributeContainer activeKey="specification" specifying noBorder />
+      <ProductAttributeContainer
+        activeKey="specification"
+        specifying
+        noBorder
+        productId={productId}
+      />
     </div>
   );
 };

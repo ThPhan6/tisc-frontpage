@@ -105,9 +105,14 @@ export enum ProductSpecifyStatus {
   'Cancelled',
 }
 
+export enum ProjectProductStatus {
+  consider,
+  specify,
+}
+
 export enum OrderMethod {
-  'Direct Purchase' = 1,
-  'Custom Order' = 2,
+  'Direct Purchase',
+  'Custom Order',
 }
 
 export type ProductConsiderStatusName = keyof typeof ProductConsiderStatus;

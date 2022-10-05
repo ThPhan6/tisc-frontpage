@@ -31,7 +31,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     rightColumnExcluded: 3,
   });
   const tableRef = useRef<any>();
-  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
+  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef, true);
 
   const getSameColumns = (noBoxShadow?: boolean) => {
     const SameColummnsSpace: TableColumnItem<any>[] = [
