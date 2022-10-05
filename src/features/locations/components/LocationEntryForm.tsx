@@ -108,7 +108,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
           setFunctionalTypeForDesign(
             res.map((el) => ({
               label: el.key,
-              value: el.value,
+              value: String(el.value),
             })),
           );
         }
@@ -149,6 +149,16 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     return selectedFunctionType.length || checkedOpt.length ? styles.activeFunctionType : '';
   };
 
+  const getFunctionalTypes = () => {
+    if (isDesignAdmin) {
+      return data.functional_type_ids;
+    }
+
+    return checkedOpt.length
+      ? checkedOpt.map((el) => String(el.value === 'other' ? el.label : el.value))
+      : selectedFunctionType.map((el) => String(el.value));
+  };
+
   const handleSubmit = () => {
     /// check email
     const invalidEmail = getEmailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_INVALID);
@@ -167,9 +177,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       postal_code: data.postal_code?.trim() ?? '',
       general_phone: data.general_phone?.trim() ?? '',
       general_email: data.general_email?.trim() ?? '',
-      functional_type_ids: checkedOpt.length
-        ? checkedOpt.map((el) => String(el.value === 'other' ? el.label : el.value))
-        : selectedFunctionType.map((el) => String(el.value)),
+      functional_type_ids: getFunctionalTypes(),
     });
   };
 
@@ -226,7 +234,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         {isDesignAdmin ? (
           <CustomRadio
             options={functionalTypeForDesign}
-            value={data.functional_type_ids[0]}
+            value={String(data.functional_type_ids[0])}
             onChange={(radioValue) => {
               setData({
                 ...data,
