@@ -60,13 +60,13 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     {
       title: 'Brand',
       noBoxShadow: true,
-      dataIndex: 'brand_logo',
+      dataIndex: 'brand',
       align: 'right',
       render: (value) => {
         if (value) {
           return (
             <img
-              src={showImageUrl(value)}
+              src={showImageUrl(value?.logo)}
               style={{ width: 24, height: 24, objectFit: 'contain' }}
             />
           );
@@ -79,6 +79,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       dataIndex: 'collection_name',
       noBoxShadow: true,
       onCell: onCellCancelled,
+      render: (_value, record) => record.collection?.name,
     },
     {
       title: 'Product',

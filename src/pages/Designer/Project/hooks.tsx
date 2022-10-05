@@ -69,15 +69,6 @@ export const renderSpecifiedStatusDropdown =
       },
     ];
 
-    const renderStatus = () => {
-      if (record.specifiedDetail?.specified_status === ProductSpecifyStatus.Specified) {
-        return 'Specified';
-      }
-      return record.specifiedDetail?.specified_status === ProductSpecifyStatus['Re-specified']
-        ? 'Re-specified'
-        : 'Cancelled';
-    };
-
     return (
       <CustomDropDown
         arrow
@@ -86,7 +77,9 @@ export const renderSpecifiedStatusDropdown =
         items={menuItems}
         menuStyle={{ width: 160, height: 'auto' }}
         labelProps={{ className: 'flex-between' }}>
-        {renderStatus()}
+        {record.specifiedDetail
+          ? ProductSpecifyStatus[record.specifiedDetail.specified_status]
+          : ''}
       </CustomDropDown>
     );
   };
@@ -103,7 +96,7 @@ export const renderActionCell =
           {
             type: 'updated',
             label: 'Edit',
-            disabled: record.status === ProductSpecifyStatus.Cancelled,
+            disabled: record.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled,
             onClick: () => setSpecifyingProduct(record),
           },
           {
@@ -121,5 +114,8 @@ export const renderActionCell =
   };
 
 export const onCellCancelled = (data: any) => ({
-  className: data.status === ProductSpecifyStatus.Cancelled ? 'strike-through' : undefined,
+  className:
+    data.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled
+      ? 'strike-through'
+      : undefined,
 });

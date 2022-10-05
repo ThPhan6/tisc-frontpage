@@ -75,6 +75,7 @@ export interface SpecifiedDetail {
   instruction_type_ids: string[];
   finish_schedules: string[];
   unit_type_id: string;
+  unit_type?: string;
   special_instruction: string;
   /// specification
   specification: SpecificationBodyRequest;

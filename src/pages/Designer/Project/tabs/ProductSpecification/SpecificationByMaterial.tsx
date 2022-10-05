@@ -37,17 +37,18 @@ export const SpecificationByMaterial: FC = () => {
       title: 'Description',
       dataIndex: 'description',
       onCell: onCellCancelled,
+      render: (_value, record) => record.specifiedDetail?.description,
     },
     {
       title: 'Image',
-      dataIndex: 'image',
+      dataIndex: 'images',
       width: '5%',
       align: 'center',
       render: (value) => {
         if (value) {
           return (
             <img
-              src={showImageUrl(value)}
+              src={showImageUrl(value[0])}
               style={{ width: 24, height: 24, objectFit: 'contain' }}
             />
           );
@@ -72,11 +73,13 @@ export const SpecificationByMaterial: FC = () => {
       dataIndex: 'quantity',
       align: 'center',
       onCell: onCellCancelled,
+      render: (_value, record) => <span>{record.specifiedDetail?.quantity}</span>,
     },
     {
       title: 'Unit',
       dataIndex: 'unit_type',
       onCell: onCellCancelled,
+      render: (_value, record) => record.specifiedDetail?.unit_type,
     },
     {
       title: 'Order Method',

@@ -25,7 +25,6 @@ import { setReferToDesignDocument } from '@/features/product/reducers';
 import { ProductItem } from '@/features/product/types';
 import {
   ConsideredProduct,
-  ConsideredProjectArea,
   ConsideredProjectRoom,
   ProductConsiderStatus,
 } from '@/features/project/types';
@@ -61,7 +60,7 @@ const ProductConsidered: React.FC = () => {
         key: ProductConsiderStatus['Re-considered'],
         label: 'Re-consider',
         icon: <CheckIcon style={{ width: 16, height: 16 }} />,
-        disabled: record.consider_status !== ProductConsiderStatus.Unlisted,
+        disabled: record.specifiedDetail?.consider_status !== ProductConsiderStatus.Unlisted,
         onClick: () => {
           updateProductConsiderStatus(record.specifiedDetail?.id, {
             consider_status: ProductConsiderStatus['Re-Considered'],
@@ -72,7 +71,7 @@ const ProductConsidered: React.FC = () => {
         key: ProductConsiderStatus.Unlisted,
         label: 'Unlist',
         icon: <CancelIcon style={{ width: 16, height: 16 }} />,
-        disabled: record.consider_status === ProductConsiderStatus.Unlisted,
+        disabled: record.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted,
         onClick: () => {
           updateProductConsiderStatus(record.specifiedDetail?.id, {
             consider_status: ProductConsiderStatus.Unlisted,
@@ -89,7 +88,7 @@ const ProductConsidered: React.FC = () => {
         items={menuItems}
         menuStyle={{ width: 160, height: 'auto' }}
         labelProps={{ className: 'flex-between' }}>
-        {record.consider_status_name}
+        {ProductConsiderStatus[record.specifiedDetail.consider_status]}
       </CustomDropDown>
     );
   };
@@ -103,9 +102,7 @@ const ProductConsidered: React.FC = () => {
         actionItems={[
           {
             type: 'specify',
-            disabled:
-              record.specifiedDetail?.status[1] &&
-              record.specifiedDetail.consider_status === ProductConsiderStatus.Unlisted,
+            disabled: record.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted,
             onClick: () => {
               setSpecifyingProduct(record);
               // store.dispatch(
@@ -138,7 +135,9 @@ const ProductConsidered: React.FC = () => {
 
   const onCellUnlisted = (data: any) => ({
     className:
-      data.consider_status === ProductConsiderStatus.Unlisted ? 'light-content' : undefined,
+      data.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted
+        ? 'light-content'
+        : undefined,
   });
 
   const getSameColumns = (noBoxShadow?: boolean) => {
@@ -166,14 +165,14 @@ const ProductConsidered: React.FC = () => {
         sorter: {
           multiple: 4,
         },
-        render: (_value, record) => record.brand_name,
+        render: (_value, record) => record.brand?.name,
         onCell: onCellUnlisted,
       },
       {
         title: 'Collection',
         className: disabledClassname,
-        dataIndex: 'collection_name',
         noBoxShadow: noBoxShadow,
+        render: (_value, record) => record.collection?.name,
         onCell: onCellUnlisted,
       },
     ];
@@ -226,7 +225,7 @@ const ProductConsidered: React.FC = () => {
     },
   ];
 
-  const AreaColumns: TableColumnItem<ConsideredProjectArea>[] = [
+  const AreaColumns: TableColumnItem<any>[] = [
     {
       title: 'Zones',
       noBoxShadow: true,
