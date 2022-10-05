@@ -8,6 +8,7 @@ export const PATH = {
   profiles: '/profile-settings',
   tiscHomePage: '/tisc/dashboard',
   brandHomePage: '/brand/dashboard',
+  brandViewDetailDashboard: '/brand/dashboard/:id',
 
   //how-to
   howTo: '/howTo',
