@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 
 import { DEFAULT_TEAMPROFILE, DEFAULT_TEAMPROFILE_WITH_GENDER } from '../constants/entryForm';
-import { BrandAccessLevelDataRole, TISCAccessLevelDataRole } from '../constants/role';
+import {
+  BrandAccessLevelDataRole,
+  DesignAccessLevelDataRole,
+  TISCAccessLevelDataRole,
+} from '../constants/role';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { message } from 'antd';
@@ -38,6 +42,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { createTeamProfile, getOneTeamProfile, inviteUser, updateTeamProfile } from '../api';
 import BrandAccessLevelModal from './BrandAccessLevelModal';
+import DesignAccessLevelModal from './DesignAccessLevelModal';
 import LocationModal from './LocationModal';
 import TISCAccessLevelModal from './TISCAccessLevelModal';
 import styles from './TeamProfilesEntryForm.less';
@@ -59,13 +64,14 @@ const TeamProfilesEntryForm = () => {
 
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
+  const isDesignAdmin = useCheckPermission('Design Admin');
   /// for access level
   const accessLevelDataRole = getValueByCondition(
     [
       [isTISCAdmin, TISCAccessLevelDataRole],
       [isBrandAdmin, BrandAccessLevelDataRole],
     ],
-    [],
+    DesignAccessLevelDataRole,
   );
   /// for user role path
   const userRolePath = getValueByCondition(
@@ -73,7 +79,7 @@ const TeamProfilesEntryForm = () => {
       [isTISCAdmin, PATH.tiscTeamProfile],
       [isBrandAdmin, PATH.brandTeamProfile],
     ],
-    '',
+    PATH.designerOfficeTeamProfile,
   );
 
   const submitButtonStatus = useBoolean(false);
@@ -410,6 +416,13 @@ const TeamProfilesEntryForm = () => {
 
       {isBrandAdmin ? (
         <BrandAccessLevelModal visible={openModal === 'accessModal'} setVisible={setVisibleModal} />
+      ) : null}
+
+      {isDesignAdmin ? (
+        <DesignAccessLevelModal
+          visible={openModal === 'accessModal'}
+          setVisible={setVisibleModal}
+        />
       ) : null}
 
       {/* Location Modal */}
