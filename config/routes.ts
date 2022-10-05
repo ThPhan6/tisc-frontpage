@@ -671,7 +671,7 @@ export default [
     path: PATH.designerAdminstration,
     name: 'adminstration',
     icon: 'adminstration-icon.svg',
-    component: './Admin',
+    // component: './Admin',
     access: 'design_administration',
     routes: [
       {
@@ -689,11 +689,27 @@ export default [
         access: 'design_administration_location',
       },
       {
-        path: PATH.designerOfficeTeamProfile,
+        path: PATH.designTeamProfile,
         name: 'team.profile',
         icon: 'team-profile-icon.svg',
-        component: './Admin',
         access: 'design_administration_team_profile',
+        routes: [
+          {
+            path: PATH.designTeamProfile,
+            component: '../features/team-profiles/components/TeamProfileTable',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designCreateTeamProfile,
+            component: '../features/team-profiles/components/TeamProfilesEntryForm',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designUpdateTeamProfile,
+            component: '../features/team-profiles/components/TeamProfilesEntryForm',
+            hideInMenu: true,
+          },
+        ],
       },
       {
         path: PATH.designerMaterialProductCode,

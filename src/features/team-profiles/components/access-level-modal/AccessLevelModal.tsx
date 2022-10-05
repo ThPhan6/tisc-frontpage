@@ -6,7 +6,7 @@ import { ReactComponent as AccessableTickIcon } from '@/assets/icons/accessable-
 import { showImageUrl } from '@/helper/utils';
 import { getPermission, updatePermission } from '@/services/permission.api';
 
-import { AccessLevelModalItemProps, AccessLevelModalProps } from '../types';
+import { AccessLevelModalItemProps, AccessLevelModalProps } from '../../types';
 
 import Popover from '@/components/Modal/Popover';
 import { BodyText, MainTitle } from '@/components/Typography';

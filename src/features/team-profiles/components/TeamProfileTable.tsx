@@ -32,11 +32,14 @@ const TeamProfilesTable = () => {
 
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
+  const isDesignAdmin = useCheckPermission('Design Admin');
+
   /// for user role path
   const userCreateRolePath = getValueByCondition(
     [
       [isTISCAdmin, PATH.tiscCreateTeamProfile],
       [isBrandAdmin, PATH.brandCreateTeamProfile],
+      [isDesignAdmin, PATH.designCreateTeamProfile],
     ],
     '',
   );
@@ -45,6 +48,7 @@ const TeamProfilesTable = () => {
     [
       [isTISCAdmin, PATH.tiscUpdateTeamProfile],
       [isBrandAdmin, PATH.brandUpdateTeamProfile],
+      [isDesignAdmin, PATH.designUpdateTeamProfile],
     ],
     '',
   );
