@@ -124,7 +124,7 @@ const LocationTable: React.FC = () => {
         ref={tableRef}
         rightAction={<CustomPlusButton onClick={handleCreateLocation} />}
         title={'LOCATIONS'}
-        columns={setDefaultWidthForEachColumn(mainColumns, 6)}
+        columns={setDefaultWidthForEachColumn(mainColumns, 5)}
         fetchDataFunc={getLocationPagination}
         hasPagination
       />

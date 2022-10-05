@@ -18,6 +18,7 @@ import { trimStart } from 'lodash';
 
 import { LocationForm } from '../type';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { RadioValue } from '@/components/CustomRadio/types';
 
 import CollapseCheckboxList from '@/components/CustomCheckbox/CollapseCheckboxList';
 import { CustomRadio } from '@/components/CustomRadio';
@@ -63,6 +64,9 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     value: data.city_id,
   });
 
+  /// functional type for design-firm
+  const [functionalTypeForDesign, setFunctionalTypeForDesign] = useState<RadioValue[]>([]);
+
   /// for show data
   const [functionalTypes, setFunctionalTypes] = useState<CheckboxValue[]>([]);
   /// for item selected
@@ -101,10 +105,10 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     if (isDesignAdmin) {
       getListFunctionalTypeForDesign().then((res) => {
         if (res) {
-          setFunctionalTypes(
+          setFunctionalTypeForDesign(
             res.map((el) => ({
-              label: el.name,
-              value: el.id,
+              label: el.key,
+              value: el.value,
             })),
           );
         }
@@ -188,7 +192,11 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
           onChangeData('business_name', e.target.value);
         }}
         onDelete={() => onChangeData('business_name', '')}
-        placeholder="registered business / company name"
+        placeholder={
+          isDesignAdmin
+            ? 'e.g. office name + country/city name'
+            : 'registered business / company name'
+        }
       />
 
       {isDesignAdmin ? null : (
@@ -217,13 +225,14 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         formClass={`${styles.formGroup} ${setStylesForFunctionType()}`}>
         {isDesignAdmin ? (
           <CustomRadio
-            options={[
-              { label: 'Main office', value: '0' },
-              { label: 'Satellite office', value: '1' },
-              { label: 'Other', value: '2' },
-            ]}
-            value={String(data.functional_type_ids)}
-            onChange={(radioValue) => onChangeData('functional_type_ids', radioValue.value)}
+            options={functionalTypeForDesign}
+            value={String(data.functional_type_ids[0])}
+            onChange={(radioValue) => {
+              setData({
+                ...data,
+                functional_type_ids: [String(radioValue.value)],
+              });
+            }}
           />
         ) : (
           <CollapseCheckboxList

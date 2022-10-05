@@ -18,7 +18,7 @@ import type {
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import { GeneralData } from '@/types';
+import { GeneralData, KeyValueData } from '@/types';
 
 interface LocationPaginationResponse {
   data: {
@@ -69,7 +69,7 @@ export async function getLocationByBrandId(brandId: string) {
 }
 
 export async function getCountries() {
-  return request<{ data: Country[] }>(`/api/location/get-countries`, {
+  return request<{ data: Country[] }>(`/api/setting/countries`, {
     method: 'GET',
   })
     .then((response) => {
@@ -155,11 +155,13 @@ export async function getListFunctionalType() {
       return [] as GeneralData[];
     });
 }
+
+/// for design-firms
 export async function getListFunctionalTypeForDesign() {
-  return request<{ data: GeneralData[] }>(`/api/functional-type-for-design/get-list`)
-    .then((res) => res.data)
+  return request<KeyValueData[]>(`/api/setting/functional-type`)
+    .then((res) => res)
     .catch(() => {
-      return [] as GeneralData[];
+      return [] as KeyValueData[];
     });
 }
 
