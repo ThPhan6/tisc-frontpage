@@ -681,23 +681,23 @@ export default [
         access: 'design_administration_office_profile',
       },
       {
-        path: PATH.designLocation,
+        path: PATH.designFirmLocation,
         name: 'location',
         icon: 'location-icon.svg',
         access: 'design_administration_location',
         routes: [
           {
-            path: PATH.designLocation,
+            path: PATH.designFirmLocation,
             component: '../features/locations/components/LocationTable',
             hideInMenu: true,
           },
           {
-            path: PATH.designLocationCreate,
+            path: PATH.designFirmLocationCreate,
             component: '../features/locations/components/LocationDetail',
             hideInMenu: true,
           },
           {
-            path: PATH.designLocationUpdate,
+            path: PATH.designFirmLocationUpdate,
             component: '../features/locations/components/LocationDetail',
             hideInMenu: true,
           },

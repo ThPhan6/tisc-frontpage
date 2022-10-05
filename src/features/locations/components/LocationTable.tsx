@@ -29,7 +29,7 @@ const LocationTable: React.FC = () => {
     [
       [isTISCAdmin, PATH.tiscLocationCreate],
       [isBrandAdmin, PATH.brandLocationCreate],
-      [isDesignAdmin, PATH.designLocationCreate],
+      [isDesignAdmin, PATH.designFirmLocationCreate],
     ],
     '',
   );
@@ -37,7 +37,7 @@ const LocationTable: React.FC = () => {
     [
       [isTISCAdmin, PATH.tiscLocationUpdate],
       [isBrandAdmin, PATH.brandLocationUpdate],
-      [isDesignAdmin, PATH.designLocationUpdate],
+      [isDesignAdmin, PATH.designFirmLocationUpdate],
     ],
     '',
   );

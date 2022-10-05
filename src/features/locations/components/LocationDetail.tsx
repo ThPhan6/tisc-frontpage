@@ -31,7 +31,7 @@ const LocationDetail = () => {
     [
       [isTISCAdmin, PATH.tiscLocation],
       [isBrandAdmin, PATH.brandLocation],
-      [isDesignAdmin, PATH.designLocation],
+      [isDesignAdmin, PATH.designFirmLocation],
     ],
     '',
   );
@@ -85,20 +85,18 @@ const LocationDetail = () => {
     if (locationId) {
       getLocationById(locationId).then((res) => {
         if (res) {
-          if (isDesignAdmin) {
-            setData({
-              business_name: res.business_name,
-              business_number: isDesignAdmin ? '' : res.business_number,
-              country_id: res.country_id,
-              state_id: res.state_id,
-              city_id: res.city_id,
-              address: res.address,
-              postal_code: res.postal_code,
-              general_phone: res.general_phone,
-              general_email: res.general_email,
-              functional_type_ids: res.functional_types.map((type) => type.id),
-            });
-          }
+          setData({
+            business_name: res.business_name,
+            business_number: isDesignAdmin ? '' : res.business_number,
+            country_id: res.country_id,
+            state_id: res.state_id,
+            city_id: res.city_id,
+            address: res.address,
+            postal_code: res.postal_code,
+            general_phone: res.general_phone,
+            general_email: res.general_email,
+            functional_type_ids: res.functional_types.map((type) => type.id),
+          });
           setLoadedData(true);
         }
       });
