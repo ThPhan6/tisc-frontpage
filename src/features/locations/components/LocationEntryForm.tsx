@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
 
+import { useCheckPermission } from '@/helper/hook';
 import {
   getEmailMessageError,
   getEmailMessageErrorType,
@@ -19,6 +20,7 @@ import { LocationForm } from '../type';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 
 import CollapseCheckboxList from '@/components/CustomCheckbox/CollapseCheckboxList';
+import { CustomRadio } from '@/components/CustomRadio';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
@@ -28,7 +30,7 @@ import CityModal from '@/features/locations/components/CityModal';
 import CountryModal from '@/features/locations/components/CountryModal';
 import StateModal from '@/features/locations/components/StateModal';
 
-import { getListFunctionalType } from '../api';
+import { getListFunctionalType, getListFunctionalTypeForDesign } from '../api';
 import styles from './LocationEntryForm.less';
 
 interface LocationEntryFormProps {
@@ -43,11 +45,9 @@ type FieldName = keyof LocationForm;
 const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
   const { submitButtonStatus, onSubmit, onCancel, data, setData } = props;
   // for content type modal
-  const [visible, setVisible] = useState({
-    country: false,
-    state: false,
-    city: false,
-  });
+  const [visible, setVisible] = useState<'' | 'country' | 'state' | 'city'>('');
+
+  const isDesignAdmin = useCheckPermission('Design Admin');
 
   const [countryData, setCountryData] = useState({
     label: '',
@@ -95,7 +95,23 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     });
   };
 
+  const handleCloseModal = (isClose: boolean) => (isClose ? undefined : setVisible(''));
+
   useEffect(() => {
+    if (isDesignAdmin) {
+      getListFunctionalTypeForDesign().then((res) => {
+        if (res) {
+          setFunctionalTypes(
+            res.map((el) => ({
+              label: el.name,
+              value: el.id,
+            })),
+          );
+        }
+      });
+      return;
+    }
+
     getListFunctionalType().then((res) => {
       if (res) {
         setFunctionalTypes(
@@ -121,6 +137,13 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
   useEffect(() => {
     onChangeData('city_id', cityData.value);
   }, [cityData]);
+
+  const setStylesForFunctionType = () => {
+    if (isDesignAdmin) {
+      return styles.borderBottom;
+    }
+    return selectedFunctionType.length || checkedOpt.length ? styles.activeFunctionType : '';
+  };
 
   const handleSubmit = () => {
     /// check email
@@ -167,47 +190,60 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         onDelete={() => onChangeData('business_name', '')}
         placeholder="registered business / company name"
       />
-      <InputGroup
-        label="Business Number"
-        required
-        deleteIcon
-        fontLevel={3}
-        value={data.business_number}
-        hasPadding
-        colorPrimaryDark
-        hasBoxShadow
-        hasHeight
-        onChange={(e) => {
-          onChangeData('business_number', e.target.value);
-        }}
-        onDelete={() => onChangeData('business_number', '')}
-        placeholder="registered business number for verification"
-      />
+
+      {isDesignAdmin ? null : (
+        <InputGroup
+          label="Business Number"
+          required
+          deleteIcon
+          fontLevel={3}
+          value={data.business_number}
+          hasPadding
+          colorPrimaryDark
+          hasBoxShadow
+          hasHeight
+          onChange={(e) => {
+            onChangeData('business_number', e.target.value);
+          }}
+          onDelete={() => onChangeData('business_number', '')}
+          placeholder="registered business number for verification"
+        />
+      )}
 
       <FormGroup
         label="Functional Type"
         required
         layout="vertical"
-        formClass={`${styles.formGroup} ${
-          selectedFunctionType.length || checkedOpt.length ? styles.activeFunctionType : ''
-        }`}>
-        <CollapseCheckboxList
-          options={functionalTypes}
-          checked={selectedFunctionType}
-          onChange={(checkedItem) => {
-            // to show on placeholer and handle submit
-            setCheckedOpt(checkedItem);
+        formClass={`${styles.formGroup} ${setStylesForFunctionType()}`}>
+        {isDesignAdmin ? (
+          <CustomRadio
+            options={[
+              { label: 'Main office', value: '0' },
+              { label: 'Satellite office', value: '1' },
+              { label: 'Other', value: '2' },
+            ]}
+            value={String(data.functional_type_ids)}
+            onChange={(radioValue) => onChangeData('functional_type_ids', radioValue.value)}
+          />
+        ) : (
+          <CollapseCheckboxList
+            options={functionalTypes}
+            checked={selectedFunctionType}
+            onChange={(checkedItem) => {
+              // to show on placeholer and handle submit
+              setCheckedOpt(checkedItem);
 
-            setData({
-              ...data,
-              functional_type_ids: checkedItem?.map((opt) =>
-                String(opt.value === 'other' ? opt.label : opt.value),
-              ),
-            });
-          }}
-          placeholder={onShowPlaceholder}
-          otherInput
-        />
+              setData({
+                ...data,
+                functional_type_ids: checkedItem?.map((opt) =>
+                  String(opt.value === 'other' ? opt.label : opt.value),
+                ),
+              });
+            }}
+            placeholder={onShowPlaceholder}
+            otherInput
+          />
+        )}
       </FormGroup>
 
       <InputGroup
@@ -220,13 +256,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         hasBoxShadow
         hasHeight
         rightIcon
-        onRightIconClick={() =>
-          setVisible({
-            city: false,
-            state: false,
-            country: true,
-          })
-        }
+        onRightIconClick={() => setVisible('country')}
         placeholder="select country"
       />
       <InputGroup
@@ -240,13 +270,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         hasHeight
         rightIcon
         disabled={countryData.value === '-1' || countryData.value === ''}
-        onRightIconClick={() =>
-          setVisible({
-            city: false,
-            state: true,
-            country: false,
-          })
-        }
+        onRightIconClick={() => setVisible('state')}
         placeholder="select state / province"
       />
       <InputGroup
@@ -260,13 +284,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         hasHeight
         rightIcon
         disabled={stateData.value === ''}
-        onRightIconClick={() =>
-          setVisible({
-            city: true,
-            state: false,
-            country: false,
-          })
-        }
+        onRightIconClick={() => setVisible('city')}
         placeholder="select city / town"
       />
 
@@ -337,14 +355,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         messageType={getEmailMessageErrorType(data.general_email, 'error', 'normal')}
       />
       <CountryModal
-        visible={visible.country}
-        setVisible={(status) =>
-          setVisible({
-            city: false,
-            state: false,
-            country: status,
-          })
-        }
+        visible={visible === 'country'}
+        setVisible={handleCloseModal}
         chosenValue={countryData}
         setChosenValue={setCountryData}
         withPhoneCode
@@ -352,14 +364,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       />
       <StateModal
         countryId={data.country_id}
-        visible={visible.state}
-        setVisible={(status) =>
-          setVisible({
-            city: false,
-            state: status,
-            country: false,
-          })
-        }
+        visible={visible === 'state'}
+        setVisible={handleCloseModal}
         chosenValue={stateData}
         setChosenValue={setStateData}
       />
@@ -367,14 +373,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       <CityModal
         stateId={data.state_id}
         countryId={data.country_id}
-        visible={visible.city}
-        setVisible={(status) =>
-          setVisible({
-            city: status,
-            state: false,
-            country: false,
-          })
-        }
+        visible={visible === 'city'}
+        setVisible={handleCloseModal}
         chosenValue={cityData}
         setChosenValue={setCityData}
       />

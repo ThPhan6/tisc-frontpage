@@ -671,7 +671,6 @@ export default [
     path: PATH.designerAdminstration,
     name: 'adminstration',
     icon: 'adminstration-icon.svg',
-    component: './Admin',
     access: 'design_administration',
     routes: [
       {
@@ -682,11 +681,27 @@ export default [
         access: 'design_administration_office_profile',
       },
       {
-        path: PATH.designerOfficeLocation,
+        path: PATH.designLocation,
         name: 'location',
         icon: 'location-icon.svg',
-        component: './Admin',
         access: 'design_administration_location',
+        routes: [
+          {
+            path: PATH.designLocation,
+            component: '../features/locations/components/LocationTable',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designLocationCreate,
+            component: '../features/locations/components/LocationDetail',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designLocationUpdate,
+            component: '../features/locations/components/LocationDetail',
+            hideInMenu: true,
+          },
+        ],
       },
       {
         path: PATH.designerOfficeTeamProfile,

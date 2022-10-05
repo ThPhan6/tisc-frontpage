@@ -46,7 +46,7 @@ export interface LocationGroupedByCountry {
 export interface LocationForm {
   business_name: string;
   business_number: string;
-  functional_type_ids: string[];
+  functional_type_ids: string[] | string;
   country_id: string;
   state_id: string;
   city_id: string;

@@ -24,11 +24,14 @@ const LocationDetail = () => {
 
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
+  const isDesignAdmin = useCheckPermission('Design Admin');
+
   /// for user role path
   const userRolePath = getValueByCondition(
     [
       [isTISCAdmin, PATH.tiscLocation],
       [isBrandAdmin, PATH.brandLocation],
+      [isDesignAdmin, PATH.designLocation],
     ],
     '',
   );

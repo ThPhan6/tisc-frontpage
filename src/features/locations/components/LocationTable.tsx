@@ -23,11 +23,13 @@ const LocationTable: React.FC = () => {
 
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
+  const isDesignAdmin = useCheckPermission('Design Admin');
   /// for user role path
   const userCreateRolePath = getValueByCondition(
     [
       [isTISCAdmin, PATH.tiscLocationCreate],
       [isBrandAdmin, PATH.brandLocationCreate],
+      [isDesignAdmin, PATH.designLocationCreate],
     ],
     '',
   );
@@ -35,6 +37,7 @@ const LocationTable: React.FC = () => {
     [
       [isTISCAdmin, PATH.tiscLocationUpdate],
       [isBrandAdmin, PATH.brandLocationUpdate],
+      [isDesignAdmin, PATH.designLocationUpdate],
     ],
     '',
   );

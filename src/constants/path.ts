@@ -142,9 +142,13 @@ export const PATH = {
   designerProjectUpdate: '/design-firms/projects/update/:id',
   designerAdminstration: '/design-firms/administration',
   designerOfficeProfile: '/design-firms/administration/office-profile',
-  designerOfficeLocation: '/design-firms/administration/locations',
   designerOfficeTeamProfile: '/design-firms/administration/team-profiles',
   designerMaterialProductCode: '/design-firms/administration/material-product-code',
+
+  // location
+  designLocation: '/design-firms/administration/locations',
+  designLocationCreate: '/design-firms/administration/locations/create',
+  designLocationUpdate: '/design-firms/administration/locations/:id',
 };
 
 export const PUBLIC_PATH = [

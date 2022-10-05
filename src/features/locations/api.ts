@@ -155,6 +155,13 @@ export async function getListFunctionalType() {
       return [] as GeneralData[];
     });
 }
+export async function getListFunctionalTypeForDesign() {
+  return request<{ data: GeneralData[] }>(`/api/functional-type-for-design/get-list`)
+    .then((res) => res.data)
+    .catch(() => {
+      return [] as GeneralData[];
+    });
+}
 
 export async function createLocation(data: LocationForm) {
   return request(`/api/location/create`, {
