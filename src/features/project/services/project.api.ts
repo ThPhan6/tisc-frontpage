@@ -81,7 +81,7 @@ export async function getProjectTypes() {
     });
 }
 export async function getProjectMeasurementUnits() {
-  return request<KeyValueData[]>(`/api/project/measurement-units`)
+  return request<KeyValueData[]>(`/api/setting/measurement-units`)
     .then((res) => {
       return res;
     })

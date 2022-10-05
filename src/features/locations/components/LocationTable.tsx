@@ -18,16 +18,18 @@ import { ActionMenu } from '@/components/TableAction';
 import { deleteLocationById, getLocationPagination } from '@/features/locations/api';
 
 const LocationTable: React.FC = () => {
-  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
+  useAutoExpandNestedTableColumn(0);
   const tableRef = useRef<any>();
 
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
+  const isDesignAdmin = useCheckPermission('Design Admin');
   /// for user role path
   const userCreateRolePath = getValueByCondition(
     [
       [isTISCAdmin, PATH.tiscLocationCreate],
       [isBrandAdmin, PATH.brandLocationCreate],
+      [isDesignAdmin, PATH.designFirmLocationCreate],
     ],
     '',
   );
@@ -35,6 +37,7 @@ const LocationTable: React.FC = () => {
     [
       [isTISCAdmin, PATH.tiscLocationUpdate],
       [isBrandAdmin, PATH.brandLocationUpdate],
+      [isDesignAdmin, PATH.designFirmLocationUpdate],
     ],
     '',
   );
@@ -121,7 +124,7 @@ const LocationTable: React.FC = () => {
         ref={tableRef}
         rightAction={<CustomPlusButton onClick={handleCreateLocation} />}
         title={'LOCATIONS'}
-        columns={setDefaultWidthForEachColumn(mainColumns, 6)}
+        columns={setDefaultWidthForEachColumn(mainColumns, 5)}
         fetchDataFunc={getLocationPagination}
         hasPagination
       />
