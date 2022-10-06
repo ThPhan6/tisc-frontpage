@@ -12,8 +12,13 @@ import {
 } from '@/features/project/services';
 import { confirmDelete } from '@/helper/common';
 
+import {
+  setPartialProductSpecifiedData,
+  setReferToDesignDocument,
+} from '@/features/product/reducers';
 import { ProductItem, ProjectProductItem } from '@/features/product/types';
 import { ProductSpecifyStatus } from '@/features/project/types';
+import store from '@/reducers';
 
 import { ActionMenu } from '@/components/TableAction';
 import { CustomDropDown } from '@/features/product/components';
@@ -96,7 +101,19 @@ export const renderActionCell =
             type: 'updated',
             label: 'Edit',
             disabled: record.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled,
-            onClick: () => setSpecifyingProduct(record),
+            onClick: () => {
+              setSpecifyingProduct(record);
+              if (record.specifiedDetail) {
+                store.dispatch(setPartialProductSpecifiedData(record.specifiedDetail));
+              }
+              store.dispatch(
+                setReferToDesignDocument(
+                  typeof record.specifiedDetail?.specification?.is_refer_document === 'boolean'
+                    ? record.specifiedDetail?.specification?.is_refer_document
+                    : true,
+                ),
+              );
+            },
           },
           {
             type: 'deleted',

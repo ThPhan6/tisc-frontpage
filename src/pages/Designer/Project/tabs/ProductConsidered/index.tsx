@@ -21,7 +21,10 @@ import { useBoolean } from '@/helper/hook';
 import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
-import { setPartialProductDetail, setReferToDesignDocument } from '@/features/product/reducers';
+import {
+  setPartialProductSpecifiedData,
+  setReferToDesignDocument,
+} from '@/features/product/reducers';
 import { ProductItem } from '@/features/product/types';
 import {
   ConsideredProduct,
@@ -48,7 +51,7 @@ const ProductConsidered: React.FC = () => {
   const params = useParams<{ id: string }>();
   const tableRef = useRef<any>();
   const gridView = useBoolean();
-  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef, false);
+  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
   const renderStatusDropdown = (_value: any, record: any) => {
     if (record.rooms) {
@@ -105,11 +108,9 @@ const ProductConsidered: React.FC = () => {
             disabled: record.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted,
             onClick: () => {
               setSpecifyingProduct(record);
-              store.dispatch(
-                setPartialProductDetail({
-                  specifiedDetail: record.specifiedDetail,
-                }),
-              );
+              if (record.specifiedDetail) {
+                store.dispatch(setPartialProductSpecifiedData(record.specifiedDetail));
+              }
               store.dispatch(
                 setReferToDesignDocument(
                   typeof record.specifiedDetail?.specification?.is_refer_document === 'boolean'

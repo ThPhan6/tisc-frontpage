@@ -83,14 +83,13 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       message.error('Distributor location is required');
       return;
     }
-
     if (product.specifiedDetail?.id) {
       updateProductSpecifying(
         {
           considered_product_id: product.specifiedDetail.id,
           specification: {
             is_refer_document: referToDesignDocument ?? false,
-            specification_attribute_groups: getSpecificationRequest(specification_attribute_groups),
+            attribute_groups: getSpecificationRequest(specification_attribute_groups),
           },
           entire_allocation: isEntire,
           allocation: getSelectedRoomIds(selectedRooms),

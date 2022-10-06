@@ -17,7 +17,7 @@ export type SpecifyingProductRequestBody = {
   considered_product_id: string;
   specification: {
     is_refer_document: boolean;
-    specification_attribute_groups: SpecificationAttributeGroup[];
+    attribute_groups: SpecificationAttributeGroup[];
   };
   brand_location_id: string;
   distributor_location_id: string;

@@ -16,7 +16,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText, MainTitle } from '@/components/Typography';
 
 import { AttributeOption, ConversionText, GeneralText } from './AttributeComponent';
-import { AttributeItem } from './AttributeItem';
+import { ProductAttributeSubItem } from './AttributeItem';
 import { SelectAttributesToGroupRow } from './SelectAttributesToGroupRow';
 import styles from './index.less';
 
@@ -102,7 +102,7 @@ export const ProductAttributeContainer: FC<Props> = ({
         return null;
       }
       return (
-        <AttributeItem
+        <ProductAttributeSubItem
           item={attribute}
           attributeItemIndex={attrIndex}
           attributeIndex={groupIndex}
