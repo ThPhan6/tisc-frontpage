@@ -2,10 +2,14 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { getSelectedProductSpecification, selectProductSpecification } from '../../services';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { cloneDeep } from 'lodash';
 
-import { setPartialProductDetail } from '../../reducers';
+import {
+  resetProductState,
+  setDefaultSelectionFromSpecifiedData,
+  setPartialProductDetail,
+} from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
 import { AttributeGroupKey, ProductInfoTab } from './types';
 import { setReferToDesignDocument } from '@/features/product/reducers';
@@ -65,14 +69,19 @@ export const getSpecificationWithSelectedValue = (
   return checkedSpecGroup;
 };
 
-export const useProductAttributeForm = (attributeType: ProductInfoTab, productId: string) => {
+export const useProductAttributeForm = (
+  attributeType: ProductInfoTab,
+  productId: string,
+  isSpecifiedModal?: boolean,
+) => {
   const dispatch = useDispatch();
   const { feature_attribute_groups, general_attribute_groups, specification_attribute_groups, id } =
     useAppSelector((state) => state.product.details);
   const referToDesignDocument = useAppSelector(
-    (state) => state.product.details.specifiedDetail?.specification.is_refer_document,
+    (state) => state.product.details.specifiedDetail?.specification?.is_refer_document,
   );
   const loaded = useBoolean();
+  const isTiscAdmin = useCheckPermission('TISC Admin');
 
   const attributeGroup =
     attributeType === 'general'
@@ -91,28 +100,39 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab, productId
   useEffect(() => {
     if (
       attributeType === 'specification' &&
-      specification_attribute_groups.length &&
+      specification_attribute_groups.length && // Wait for all specification attributes loaded
       loaded.value === false &&
-      productId
+      productId &&
+      isTiscAdmin === false
     ) {
-      getSelectedProductSpecification(productId).then((res) => {
+      if (isSpecifiedModal) {
+        dispatch(setDefaultSelectionFromSpecifiedData());
         loaded.setValue(true);
-        if (res) {
-          dispatch(
-            setPartialProductDetail({
-              specification_attribute_groups: getSpecificationWithSelectedValue(
-                res.specification.attribute_groups,
-                attributeGroup,
-              ),
-              referToDesignDocument: res.specification.is_refer_document,
-              brandLocationId: res.brand_location_id,
-              distributorLocationId: res.distributor_location_id,
-            }),
-          );
-        }
-      });
+      } else {
+        getSelectedProductSpecification(productId).then((res) => {
+          loaded.setValue(true);
+          if (res) {
+            dispatch(
+              setPartialProductDetail({
+                specification_attribute_groups: getSpecificationWithSelectedValue(
+                  res.specification.attribute_groups,
+                  attributeGroup,
+                ),
+                brand_location_id: res.brand_location_id,
+                distributor_location_id: res.distributor_location_id,
+              }),
+            );
+          }
+        });
+      }
     }
-  }, [attributeType, specification_attribute_groups, loaded.value]);
+  }, [isSpecifiedModal, attributeType, specification_attribute_groups, loaded.value]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetProductState());
+    };
+  }, []);
 
   const onDeleteProductAttribute = (index: number) => () => {
     const newProductAttribute = attributeGroup.filter((_item, key) => index !== key);
@@ -196,8 +216,6 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab, productId
     const newState = cloneDeep(specification_attribute_groups);
     const attributeIndex = newState[groupIndex].attributes.findIndex((el) => el.id === attributeId);
 
-    // console.log('onSelectSpecificationOption', updatedOnchange);
-
     if (attributeIndex === -1) {
       return;
     }
@@ -218,12 +236,15 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab, productId
     const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
 
     if (updatedOnchange) {
-      selectProductSpecification(id, {
-        specification: {
-          is_refer_document: referToDesignDocument || false,
-          attribute_groups: getSpecificationRequest(newState),
-        },
-      });
+      if (!isSpecifiedModal) {
+        selectProductSpecification(id, {
+          specification: {
+            is_refer_document: referToDesignDocument || false,
+            attribute_groups: getSpecificationRequest(newState),
+          },
+        });
+      }
+
       dispatch(
         setPartialProductDetail({
           specification_attribute_groups: newState,
@@ -245,7 +266,7 @@ export const useProductAttributeForm = (attributeType: ProductInfoTab, productId
         basis_options: attr?.basis_options?.map((otp) => ({ ...otp, isChecked: false })),
       }));
 
-      if (updatedOnchange) {
+      if (updatedOnchange && !isSpecifiedModal) {
         selectProductSpecification(id, {
           specification: {
             is_refer_document: referToDesignDocument || false,

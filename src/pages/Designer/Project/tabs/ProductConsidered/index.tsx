@@ -21,7 +21,7 @@ import { useBoolean } from '@/helper/hook';
 import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
-import { setReferToDesignDocument } from '@/features/product/reducers';
+import { setPartialProductDetail, setReferToDesignDocument } from '@/features/product/reducers';
 import { ProductItem } from '@/features/product/types';
 import {
   ConsideredProduct,
@@ -105,14 +105,16 @@ const ProductConsidered: React.FC = () => {
             disabled: record.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted,
             onClick: () => {
               setSpecifyingProduct(record);
-              // store.dispatch(
-              //   setPartialProductDetail({
-              //     specification_attribute_groups: record.specifiedDetail?.specification.attribute_groups,
-              //   }),
-              // );
+              store.dispatch(
+                setPartialProductDetail({
+                  specifiedDetail: record.specifiedDetail,
+                }),
+              );
               store.dispatch(
                 setReferToDesignDocument(
-                  record.specifiedDetail?.specification?.is_refer_document ? true : false,
+                  typeof record.specifiedDetail?.specification?.is_refer_document === 'boolean'
+                    ? record.specifiedDetail?.specification?.is_refer_document
+                    : true,
                 ),
               );
             },

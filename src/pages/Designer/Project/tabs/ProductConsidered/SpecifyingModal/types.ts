@@ -1,5 +1,3 @@
-import { ORDER_METHOD } from '@/constants/util';
-
 import { SpecificationAttributeGroup } from '@/features/project/types';
 
 export type CodeOrderRequestParams = {
@@ -30,25 +28,3 @@ export type SpecifyingProductRequestBody = {
 export type OnChangeSpecifyingProductFnc = (
   newStateParts: Partial<SpecifyingProductRequestBody>,
 ) => void;
-
-export const DEFAULT_STATE: SpecifyingProductRequestBody = {
-  considered_product_id: '',
-  specification: {
-    is_refer_document: true,
-    specification_attribute_groups: [],
-  },
-  brand_location_id: '',
-  distributor_location_id: '',
-  entire_allocation: true,
-  allocation: [],
-  material_code_id: '',
-  suffix_code: '',
-  description: '',
-  quantity: 0,
-  unit_type_id: '',
-  order_method: ORDER_METHOD['directPurchase'],
-  requirement_type_ids: [],
-  instruction_type_ids: [],
-  finish_schedules: [],
-  special_instructions: '',
-};

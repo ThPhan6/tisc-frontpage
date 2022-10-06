@@ -20,7 +20,7 @@ import { CustomDropDown } from '@/features/product/components';
 
 import { SpecifyingModal } from './tabs/ProductConsidered/SpecifyingModal';
 
-export const useSpecifyingModal = (tableRef: any, isProductSpecified: boolean) => {
+export const useSpecifyingModal = (tableRef: any) => {
   const params = useParams<{ id: string }>();
   const [specifyingProduct, setSpecifyingProduct] = useState<ProductItem>();
 
@@ -32,7 +32,6 @@ export const useSpecifyingModal = (tableRef: any, isProductSpecified: boolean) =
         projectId={params.id}
         setVisible={(visible) => (visible ? undefined : setSpecifyingProduct(undefined))}
         reloadTable={tableRef.current?.reload}
-        isProductSpecified={isProductSpecified}
       />
     ) : null;
 
@@ -77,7 +76,7 @@ export const renderSpecifiedStatusDropdown =
         items={menuItems}
         menuStyle={{ width: 160, height: 'auto' }}
         labelProps={{ className: 'flex-between' }}>
-        {record.specifiedDetail
+        {record.specifiedDetail?.specified_status
           ? ProductSpecifyStatus[record.specifiedDetail.specified_status]
           : ''}
       </CustomDropDown>

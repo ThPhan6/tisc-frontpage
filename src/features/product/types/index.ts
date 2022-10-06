@@ -58,9 +58,9 @@ export interface SpecifiedDetail {
   id: string;
   project_id: string;
   product_id: string;
-  status: ProjectProductStatus; // consider || specified
-  consider_status: ProductConsiderStatus; // considered - default || re-considered || unlist
-  specified_status: ProductSpecifyStatus; // specified - default || re-specify || cancel
+  status?: ProjectProductStatus; // consider || specified
+  consider_status?: ProductConsiderStatus; // considered - default || re-considered || unlist
+  specified_status?: ProductSpecifyStatus; // specified - default || re-specify || cancel
   // vendor
   brand_location_id: string;
   distributor_location_id: string;
@@ -76,16 +76,12 @@ export interface SpecifiedDetail {
   finish_schedules: string[];
   unit_type_id: string;
   unit_type?: string;
-  special_instruction: string;
+  special_instructions: string;
   /// specification
   specification: SpecificationBodyRequest;
   /// allocation
   allocation: string[]; // room_id
   entire_allocation: boolean;
-  ///
-  created_at: string; // datetime
-  created_by: string; // user_id
-  updated_at: string;
 }
 
 export interface ProductItem {
@@ -113,6 +109,8 @@ export interface ProductItem {
   created_by?: string;
   // specifying
   specifiedDetail?: SpecifiedDetail;
+  brand_location_id: string;
+  distributor_location_id: string;
 }
 
 export type ProjectProductItem = ProductItem & { rooms: any };

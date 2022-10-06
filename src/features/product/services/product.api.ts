@@ -4,7 +4,7 @@ import { message } from 'antd';
 import { request } from 'umi';
 
 import {
-  setProductDetail,
+  setPartialProductDetail,
   setProductList,
   setProductSummary,
   setRelatedProduct,
@@ -148,7 +148,7 @@ export const getProductById = async (productId: string) => {
   })
     .then((res) => {
       store.dispatch(
-        setProductDetail({
+        setPartialProductDetail({
           ...res.data,
           keywords: [0, 1, 2, 3].map((index) => {
             return res.data.keywords[index] ?? '';

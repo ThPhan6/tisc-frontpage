@@ -29,12 +29,7 @@ export const getSelectedRoomIds = (selectedRooms: RoomsState) => {
 export const useAssignProductToSpaceForm = (
   productId: string,
   projectId: string,
-  specifyOptions?: {
-    onChangeEntireProjectCallback: (isEntire: boolean) => void;
-    onChangeSelectedRoomsCallback: (selectedRooms: string[]) => void;
-    isEntire?: boolean;
-    roomId?: string;
-  },
+  specifiedModal?: boolean,
 ) => {
   const entireProject = useBoolean();
   const haveConfirmed = useBoolean();
@@ -46,19 +41,6 @@ export const useAssignProductToSpaceForm = (
     if (projectId) {
       getProductAssignSpaceByProject(projectId, productId, (isEntireProject, data) => {
         entireProject.setValue(isEntireProject);
-        specifyOptions?.onChangeEntireProjectCallback(isEntireProject);
-        if (isEntireProject === false && specifyOptions) {
-          const selectedRoomIds: string[] = [];
-          data.forEach((zone) =>
-            zone.areas.forEach((area) =>
-              area.rooms.forEach((room) =>
-                room.is_assigned ? selectedRoomIds.push(room.id || '') : {},
-              ),
-            ),
-          );
-          specifyOptions?.onChangeSelectedRoomsCallback(selectedRoomIds);
-        }
-
         setZones(data);
 
         const curSelectedRooms: { [areaId: string]: CheckboxValue[] } = {};
@@ -79,13 +61,11 @@ export const useAssignProductToSpaceForm = (
 
   const onChangeEntireProject = () => {
     const handleChooseEntireProject = () => {
-      specifyOptions?.onChangeEntireProjectCallback(true);
-      specifyOptions?.onChangeSelectedRoomsCallback([]);
       entireProject.setValue(true);
       setSelectedRooms({}); // clear rooms
       haveConfirmed.setValue(true);
     };
-    if (specifyOptions?.roomId && haveConfirmed.value === false) {
+    if (specifiedModal && haveConfirmed.value === false) {
       return confirmDelete(handleChooseEntireProject, {
         title: 'Are you sure to re-allocate?',
         content:
@@ -100,28 +80,23 @@ export const useAssignProductToSpaceForm = (
     const handleSelectRooms = () => {
       setSelectedRooms((prevRooms) => {
         const nextRoomState = { ...prevRooms, [areaId]: value };
-        specifyOptions?.onChangeSelectedRoomsCallback(getSelectedRoomIds(nextRoomState));
         return nextRoomState;
       });
       entireProject.setValue(false); // not entire project anymore
-      specifyOptions?.onChangeEntireProjectCallback(false);
       haveConfirmed.setValue(true);
     };
 
-    const nextRooms = { ...selectedRooms, [areaId]: value };
-    const roomIds = getSelectedRoomIds(nextRooms);
+    // const nextRooms = { ...selectedRooms, [areaId]: value };
+    // const roomIds = getSelectedRoomIds(nextRooms);
 
-    const isSelectedRoomBeRemoved =
-      specifyOptions?.roomId && roomIds.length && roomIds.includes(specifyOptions.roomId) === false;
-
-    if (haveConfirmed.value === false && (specifyOptions?.isEntire || isSelectedRoomBeRemoved)) {
-      return confirmDelete(handleSelectRooms, {
-        title: 'Are you sure to re-allocate?',
-        content: isSelectedRoomBeRemoved
-          ? 'Your are removing this consider by uncheck its room. All of your specifying data will be remove along with this consider after submitting.'
-          : 'You are re-allocating product from entire project to some specific rooms. All of specifying data will be move to new assigned rooms - considers.',
-      });
-    }
+    // if (haveConfirmed.value === false && (specifyOptions?.isEntire || isSelectedRoomBeRemoved)) {
+    //   return confirmDelete(handleSelectRooms, {
+    //     title: 'Are you sure to re-allocate?',
+    //     content: isSelectedRoomBeRemoved
+    //       ? 'Your are removing this consider by uncheck its room. All of your specifying data will be remove along with this consider after submitting.'
+    //       : 'You are re-allocating product from entire project to some specific rooms. All of specifying data will be move to new assigned rooms - considers.',
+    //   });
+    // }
 
     handleSelectRooms();
   };

@@ -1,3 +1,5 @@
+import { getSpecificationWithSelectedValue } from '../components/ProductAttributes/hooks';
+
 import type {
   ProductCatelogue,
   ProductDownload,
@@ -7,7 +9,9 @@ import type {
   ProductTip,
   RelatedCollection,
   SortParams,
+  SpecifiedDetail,
 } from '../types';
+import { OrderMethod } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
@@ -36,6 +40,32 @@ const initialState: ProductState = {
     specification_attribute_groups: [],
     categories: [],
     referToDesignDocument: true,
+    brand_location_id: '',
+    distributor_location_id: '',
+    specifiedDetail: {
+      id: '',
+      material_code: '',
+      product_id: '',
+      project_id: '',
+      specification: {
+        is_refer_document: true,
+        attribute_groups: [],
+      },
+      brand_location_id: '',
+      distributor_location_id: '',
+      entire_allocation: true,
+      allocation: [],
+      material_code_id: '',
+      suffix_code: '',
+      description: '',
+      quantity: 0,
+      unit_type_id: '',
+      order_method: OrderMethod['Direct Purchase'],
+      requirement_type_ids: [],
+      instruction_type_ids: [],
+      finish_schedules: [],
+      special_instructions: '',
+    },
   },
   tip: {
     contents: [],
@@ -137,6 +167,25 @@ const productSlice = createSlice({
           })),
         }));
     },
+    setDefaultSelectionFromSpecifiedData: (state) => {
+      const specifiedDetail = state.details.specifiedDetail;
+      if (specifiedDetail) {
+        state.details.specification_attribute_groups = getSpecificationWithSelectedValue(
+          specifiedDetail.specification.attribute_groups,
+          state.details.specification_attribute_groups,
+        );
+        state.details.brand_location_id = specifiedDetail.brand_location_id;
+        state.details.distributor_location_id = specifiedDetail.distributor_location_id;
+      }
+    },
+    setPartialProductSpecifiedData: (state, action: PayloadAction<Partial<SpecifiedDetail>>) => {
+      if (state.details.specifiedDetail) {
+        state.details.specifiedDetail = {
+          ...state.details.specifiedDetail,
+          ...action.payload,
+        };
+      }
+    },
   },
 });
 
@@ -157,6 +206,8 @@ export const {
   resetProductDetailState,
   setReferToDesignDocument,
   onCheckReferToDesignDocument,
+  setDefaultSelectionFromSpecifiedData,
+  setPartialProductSpecifiedData,
 } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;

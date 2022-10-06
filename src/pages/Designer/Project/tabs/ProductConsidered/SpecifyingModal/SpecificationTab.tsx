@@ -39,8 +39,6 @@ const SpecificationTab: FC<{ productId: string }> = ({ productId }) => {
     (state) => state.product.details.referToDesignDocument,
   );
 
-  console.log('referToDesignDocument', referToDesignDocument);
-
   const checkReferToDesignDocument = () => {
     store.dispatch(onCheckReferToDesignDocument());
   };
@@ -52,6 +50,7 @@ const SpecificationTab: FC<{ productId: string }> = ({ productId }) => {
 
   useEffect(() => {
     if (productId) {
+      // This is where we set specification_attribute_groups data
       getProductById(productId);
     }
   }, [productId]);
@@ -72,6 +71,7 @@ const SpecificationTab: FC<{ productId: string }> = ({ productId }) => {
         specifying
         noBorder
         productId={productId}
+        isSpecifiedModal
       />
     </div>
   );

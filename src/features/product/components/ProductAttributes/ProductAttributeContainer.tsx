@@ -25,6 +25,7 @@ interface Props {
   activeKey: ProductInfoTab;
   specifying?: boolean;
   noBorder?: boolean;
+  isSpecifiedModal?: boolean;
   productId?: string;
 }
 
@@ -34,6 +35,7 @@ export const ProductAttributeContainer: FC<Props> = ({
   specifying,
   noBorder,
   productId,
+  isSpecifiedModal,
 }) => {
   const productIdParam = useGetParamId();
   const isTiscAdmin = useCheckPermission('TISC Admin');
@@ -47,7 +49,7 @@ export const ProductAttributeContainer: FC<Props> = ({
     attributeGroup,
     attributeGroupKey,
     onSelectSpecificationOption,
-  } = useProductAttributeForm(activeKey, curProductId);
+  } = useProductAttributeForm(activeKey, curProductId, isSpecifiedModal);
 
   const renderCollapseHeader = (groupIndex: number) => {
     const group = attributeGroup[groupIndex];
@@ -182,7 +184,7 @@ export const ProductAttributeContainer: FC<Props> = ({
       {attributeGroup.map((_group, groupIndex) => {
         const attrGroupItem = attributeGroup[groupIndex];
         return (
-          <div style={{ marginBottom: 8, marginTop: isTiscAdmin ? undefined : 8 }}>
+          <div key={groupIndex} style={{ marginBottom: 8, marginTop: isTiscAdmin ? undefined : 8 }}>
             <div className={styles.attributes}>
               <div className={styles.specification}>
                 <CustomCollapse

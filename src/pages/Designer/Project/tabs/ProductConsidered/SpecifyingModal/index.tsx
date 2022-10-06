@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 
 import {
   ProjectSpecifyTabKeys,
@@ -8,12 +8,12 @@ import {
 import { message } from 'antd';
 
 import { getSpecificationRequest } from '@/features/product/components/ProductAttributes/hooks';
-import { useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
+import { getSelectedRoomIds, useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
 import { updateProductSpecifying } from '@/features/project/services';
 
-import { DEFAULT_STATE, OnChangeSpecifyingProductFnc, SpecifyingProductRequestBody } from './types';
+import { resetProductDetailState } from '@/features/product/reducers';
 import { ProductItem } from '@/features/product/types';
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
 
 import BrandProductBasicHeader from '@/components/BrandProductBasicHeader';
 import CustomButton from '@/components/Button';
@@ -33,7 +33,6 @@ interface SpecifyingModalProps {
   projectId: string;
   product: ProductItem;
   reloadTable: () => void;
-  isProductSpecified?: boolean;
 }
 
 export const SpecifyingModal: FC<SpecifyingModalProps> = ({
@@ -42,11 +41,11 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   product,
   projectId,
   reloadTable,
-  isProductSpecified,
 }) => {
   const referToDesignDocument = useAppSelector(
-    (state) => state.product.details.specifiedDetail?.specification.is_refer_document,
+    (state) => state.product.details.referToDesignDocument,
   );
+  const specifiedDetail = useAppSelector((state) => state.product.details.specifiedDetail);
   const specification_attribute_groups = useAppSelector(
     (state) => state.product.details.specification_attribute_groups,
   );
@@ -54,83 +53,63 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   const [selectedTab, setSelectedTab] = useState<ProjectSpecifyTabValue>(
     ProjectSpecifyTabKeys.specification,
   );
-  const [specifyingState, setSpecifyingState] =
-    useState<SpecifyingProductRequestBody>(DEFAULT_STATE);
 
-  const onChangeSpecifyingState: OnChangeSpecifyingProductFnc = (newStateParts) =>
-    setSpecifyingState(
-      (prevState) => ({ ...prevState, ...newStateParts } as SpecifyingProductRequestBody),
-    );
-
-  console.log('product', product);
-  console.log('specifyingState', specifyingState);
-
-  const { AssignProductToSpaceForm } = useAssignProductToSpaceForm(product.id, projectId, {
-    onChangeEntireProjectCallback: (entire_allocation) =>
-      onChangeSpecifyingState({ entire_allocation }),
-    onChangeSelectedRoomsCallback: (selectedRooms) =>
-      onChangeSpecifyingState({ allocation: selectedRooms }),
-  });
-
-  useEffect(() => {
-    if (product.specifiedDetail?.id) {
-      onChangeSpecifyingState({
-        considered_product_id: product.specifiedDetail?.id,
-      });
-
-      if (isProductSpecified) {
-        onChangeSpecifyingState({
-          ...specifyingState,
-          brand_location_id: product.specifiedDetail?.brand_location_id,
-          distributor_location_id: product.specifiedDetail?.distributor_location_id,
-          suffix_code: product.specifiedDetail?.suffix_code,
-          description: product.specifiedDetail?.description,
-          instruction_type_ids: product.specifiedDetail?.instruction_type_ids,
-          material_code_id: product.specifiedDetail?.material_code_id,
-          order_method: product.specifiedDetail?.order_method,
-          quantity: product.specifiedDetail?.quantity,
-          requirement_type_ids: product.specifiedDetail?.requirement_type_ids,
-          special_instructions: product.specifiedDetail?.special_instruction,
-          unit_type_id: product.specifiedDetail?.unit_type_id,
-          finish_schedules: product.specifiedDetail?.finish_schedules,
-          allocation: product.specifiedDetail?.allocation,
-        });
-      }
-    }
-  }, [product.specifiedDetail?.id]);
+  const { AssignProductToSpaceForm, isEntire, selectedRooms } = useAssignProductToSpaceForm(
+    product.id,
+    projectId,
+  );
 
   const onSubmit = () => {
-    if (!specifyingState.material_code_id) {
+    if (!specifiedDetail) {
+      return;
+    }
+    if (!specifiedDetail.material_code_id) {
       message.error('Material/Product Code is required');
       return;
     }
-    if (!specifyingState.suffix_code) {
+    if (!specifiedDetail.suffix_code) {
       message.error('Suffix Code is required');
       return;
     }
-    if (!specifyingState.description) {
+    if (!specifiedDetail.description) {
       message.error('Description is required');
       return;
     }
-    // if (!Number(specifyingState.quantity)) {
-    //   message.error('Quantity must be greater than 0');
-    //   return;
-    // }
+    if (!specifiedDetail.brand_location_id) {
+      message.error('Brand location is required');
+      return;
+    }
+    if (!specifiedDetail.distributor_location_id) {
+      message.error('Distributor location is required');
+      return;
+    }
 
     if (product.specifiedDetail?.id) {
       updateProductSpecifying(
         {
-          ...specifyingState,
           considered_product_id: product.specifiedDetail.id,
           specification: {
             is_refer_document: referToDesignDocument ?? false,
             specification_attribute_groups: getSpecificationRequest(specification_attribute_groups),
           },
+          entire_allocation: isEntire,
+          allocation: getSelectedRoomIds(selectedRooms),
+          brand_location_id: specifiedDetail.brand_location_id,
+          distributor_location_id: specifiedDetail.distributor_location_id,
+          description: specifiedDetail.description,
+          finish_schedules: specifiedDetail.finish_schedules,
+          instruction_type_ids: specifiedDetail.instruction_type_ids,
+          material_code_id: specifiedDetail.material_code_id,
+          order_method: specifiedDetail.order_method,
+          quantity: specifiedDetail.quantity,
+          requirement_type_ids: specifiedDetail.requirement_type_ids,
+          special_instructions: specifiedDetail.special_instructions,
+          suffix_code: specifiedDetail.suffix_code,
+          unit_type_id: specifiedDetail.unit_type_id,
         },
         () => {
           reloadTable();
           setVisible(false);
-          setSpecifyingState(DEFAULT_STATE);
         },
       );
     }
@@ -140,7 +119,11 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     <CustomModal
       className={`${popoverStyles.customPopover} ${styles.specifyingModal}`}
       visible={visible}
-      onCancel={() => setVisible(false)}
+      onCancel={() => {
+        console.log('onCancel');
+        setVisible(false);
+        store.dispatch(resetProductDetailState());
+      }}
       title={
         <MainTitle level={3} customClass="text-uppercase">
           Specifying
@@ -181,13 +164,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.vendor}>
-        <VendorTab
-          productId={product.id}
-          brandId={product.brand?.id ?? ''}
-          onChangeSpecifyingState={onChangeSpecifyingState}
-          brandAddressId={specifyingState.brand_location_id}
-          distributorAddressId={specifyingState.distributor_location_id}
-        />
+        <VendorTab productId={product.id} brandId={product.brand?.id ?? ''} />
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.allocation}>
@@ -197,21 +174,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.codeAndOrder}>
-        <CodeOrderTab
-          codeOrderState={{
-            description: specifyingState.description,
-            instruction_type_ids: specifyingState.instruction_type_ids,
-            material_code_id: specifyingState.material_code_id,
-            order_method: specifyingState.order_method,
-            quantity: specifyingState.quantity,
-            requirement_type_ids: specifyingState.requirement_type_ids,
-            suffix_code: specifyingState.suffix_code,
-            unit_type_id: specifyingState.unit_type_id,
-            special_instructions: specifyingState.special_instructions,
-            finish_schedules: specifyingState.finish_schedules,
-          }}
-          onChangeSpecifyingState={onChangeSpecifyingState}
-        />
+        <CodeOrderTab />
       </CustomTabPane>
     </CustomModal>
   );
