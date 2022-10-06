@@ -81,7 +81,7 @@ export const renderSpecifiedStatusDropdown =
         items={menuItems}
         menuStyle={{ width: 160, height: 'auto' }}
         labelProps={{ className: 'flex-between' }}>
-        {record.specifiedDetail?.specified_status
+        {typeof record.specifiedDetail?.specified_status === 'number'
           ? ProductSpecifyStatus[record.specifiedDetail.specified_status]
           : ''}
       </CustomDropDown>

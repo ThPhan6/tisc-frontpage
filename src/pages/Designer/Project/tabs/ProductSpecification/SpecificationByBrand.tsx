@@ -26,7 +26,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     rightColumnExcluded: 3,
   });
   const tableRef = useRef<any>();
-  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef, true);
+  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
   const BrandColumns: TableColumnItem<ProjectProductItem>[] = [
     {

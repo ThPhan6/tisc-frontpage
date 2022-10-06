@@ -5,7 +5,6 @@ import { Tooltip } from 'antd';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 
 import { getProductAssignSpaceByProject } from '@/features/project/services';
-import { confirmDelete } from '@/helper/common';
 import { useBoolean, useNumber } from '@/helper/hook';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -26,13 +25,8 @@ export const getSelectedRoomIds = (selectedRooms: RoomsState) => {
   return selectedRoomIds;
 };
 
-export const useAssignProductToSpaceForm = (
-  productId: string,
-  projectId: string,
-  specifiedModal?: boolean,
-) => {
+export const useAssignProductToSpaceForm = (productId: string, projectId: string) => {
   const entireProject = useBoolean();
-  const haveConfirmed = useBoolean();
   const [selectedRooms, setSelectedRooms] = useState<RoomsState>({});
   const expandingZone = useNumber(-1);
   const [zones, setZones] = useState<ProjectSpaceListProps[]>([]);
@@ -63,42 +57,17 @@ export const useAssignProductToSpaceForm = (
     const handleChooseEntireProject = () => {
       entireProject.setValue(true);
       setSelectedRooms({}); // clear rooms
-      haveConfirmed.setValue(true);
     };
-    if (specifiedModal && haveConfirmed.value === false) {
-      return confirmDelete(handleChooseEntireProject, {
-        title: 'Are you sure to re-allocate?',
-        content:
-          'You are re-allocating product from current room to entire project along with all of your specifying data after submitting.',
-      });
-    }
-
     handleChooseEntireProject();
   };
 
   const onSelectRooms = (areaId: string) => (value: CheckboxValue[]) => {
-    const handleSelectRooms = () => {
-      setSelectedRooms((prevRooms) => {
-        const nextRoomState = { ...prevRooms, [areaId]: value };
-        return nextRoomState;
-      });
-      entireProject.setValue(false); // not entire project anymore
-      haveConfirmed.setValue(true);
-    };
-
-    // const nextRooms = { ...selectedRooms, [areaId]: value };
-    // const roomIds = getSelectedRoomIds(nextRooms);
-
-    // if (haveConfirmed.value === false && (specifyOptions?.isEntire || isSelectedRoomBeRemoved)) {
-    //   return confirmDelete(handleSelectRooms, {
-    //     title: 'Are you sure to re-allocate?',
-    //     content: isSelectedRoomBeRemoved
-    //       ? 'Your are removing this consider by uncheck its room. All of your specifying data will be remove along with this consider after submitting.'
-    //       : 'You are re-allocating product from entire project to some specific rooms. All of specifying data will be move to new assigned rooms - considers.',
-    //   });
-    // }
-
-    handleSelectRooms();
+    setSelectedRooms((prevRooms) => {
+      const nextRoomState = { ...prevRooms, [areaId]: value };
+      const haveSelectedRoom = Object.values(nextRoomState).some((area) => area.length);
+      entireProject.setValue(haveSelectedRoom ? false : true);
+      return nextRoomState;
+    });
   };
 
   const renderRoomLabel = (key: string, roomId: string, roomName: string) => (
