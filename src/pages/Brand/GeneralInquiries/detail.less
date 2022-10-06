@@ -1,0 +1,64 @@
+.tableHeader {
+  margin-bottom: 8px;
+}
+
+.container {
+  background: #fff;
+
+  .tabs {
+    :global(.ant-tabs-top > .ant-tabs-nav) {
+      margin: 0;
+    }
+  }
+
+  .mainContent {
+    height: calc(100vh - 296px);
+    padding: 0 16px 16px 16px;
+    overflow: hidden auto;
+
+    /// design-firm
+    .nameDesignFirm {
+      padding-top: 16px;
+    }
+
+    /// inquiry-message
+    .actionTask {
+      display: flex;
+      align-items: center;
+      justify-content: right;
+      height: 40px;
+      box-shadow: @border-bottom-light;
+
+      .text {
+        padding-right: 12px;
+        cursor: pointer;
+      }
+    }
+
+    .taskDropDown {
+      display: flex;
+      align-items: center;
+    }
+
+    .brandProduct {
+      margin: 8px 0;
+      padding: 0;
+    }
+
+    .messageForm {
+      margin-bottom: 0;
+      :global(.ant-input[disabled]) {
+        color: @mono-color;
+        background: transparent;
+        cursor: default;
+      }
+    }
+  }
+}
+
+.header {
+  > p {
+    font-weight: 600;
+    font-family: 'Cormorant Garamond';
+  }
+}

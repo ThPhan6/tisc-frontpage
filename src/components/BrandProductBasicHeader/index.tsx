@@ -1,10 +1,10 @@
 import { FC } from 'react';
 
+import ProductPlaceHolderImage from '@/assets/images/product-placeholder.png';
+
 import { showImageUrl } from '@/helper/utils';
 
 import { RobotoBodyText } from '../Typography';
-import ProductPlaceHolderImage from '@/assets/images/product-placeholder.png';
-
 import styles from './index.less';
 
 interface BrandProductBasicHeaderProps {
@@ -34,9 +34,11 @@ const BrandProductBasicHeader: FC<BrandProductBasicHeaderProps> = ({
           <RobotoBodyText level={6}> {text_3} </RobotoBodyText>
         </div>
       </div>
-      <div className={styles.brandLogo}>
-        <img src={showImageUrl(logo) || ProductPlaceHolderImage} />
-      </div>
+      {logo ? (
+        <div className={styles.brandLogo}>
+          <img src={showImageUrl(logo) || ProductPlaceHolderImage} />
+        </div>
+      ) : null}
     </div>
   );
 };

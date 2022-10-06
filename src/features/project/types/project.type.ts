@@ -1,11 +1,5 @@
 import { ProductItem } from '@/features/product/types';
 
-export interface ProjectFilterValueProps {
-  id: number;
-  name: string;
-  icon?: React.ReactNode;
-}
-
 export interface ProjectSummaryData {
   projects: number;
   live: number;

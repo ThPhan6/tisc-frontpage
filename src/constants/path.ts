@@ -105,7 +105,12 @@ export const PATH = {
   //brand
   brandProduct: '/brand/product',
   updateProductBrand: '/brand/product/:id',
+
+  /// general inquiries
   brandGeneralInquiry: '/brand/general-inquiry',
+  brandGeneralInquiryDetail: '/brand/general-inquiry/detail',
+
+  /// project tracking
   brandProjectTracking: '/brand/project-tracking',
   //adminstration
   brandAdministration: '/brand/adminstration',

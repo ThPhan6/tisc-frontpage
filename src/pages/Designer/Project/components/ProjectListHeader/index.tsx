@@ -1,21 +1,36 @@
 import React from 'react';
 
+import { GlobalFilter, ProjectFilters } from '../../constants/filter';
+
+import { DropDownFilterProps } from '@/components/TopBar/types';
 import type { ProjectSummaryData } from '@/features/project/types';
 
-import styles from '../../styles/project-list-header.less';
-import ProjectFilter from './ProjectFilter';
-import type { ProjectFilterProps } from './ProjectFilter';
+import TopBarSummaryHasFilter from '@/components/TopBar';
+import TopBarDropDownFilter from '@/components/TopBar/TopBarDropDownFilter';
+
 import ProjectSummary from './ProjectSummary';
 
-interface ProjectListHeaderProps extends ProjectFilterProps {
+interface ProjectListHeaderProps extends DropDownFilterProps {
   summaryData?: ProjectSummaryData;
 }
-const ProjectListHeader: React.FC<ProjectListHeaderProps> = ({ summaryData, ...props }) => {
+
+const ProjectListHeader: React.FC<ProjectListHeaderProps> = ({
+  summaryData,
+  selectedFilter,
+  setSelectedFilter,
+}) => {
   return (
-    <div className={styles.projectHeader}>
+    <TopBarSummaryHasFilter>
       <ProjectSummary summaryData={summaryData} />
-      <ProjectFilter {...props} />
-    </div>
+      <TopBarDropDownFilter
+        selectedFilter={selectedFilter}
+        setSelectedFilter={setSelectedFilter}
+        filterLabel="Project Status"
+        globalFilter={GlobalFilter}
+        dynamicFilter={ProjectFilters}
+        isShowFilter
+      />
+    </TopBarSummaryHasFilter>
   );
 };
 export default ProjectListHeader;
