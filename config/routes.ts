@@ -681,18 +681,50 @@ export default [
         access: 'design_administration_office_profile',
       },
       {
-        path: PATH.designerOfficeLocation,
+        path: PATH.designFirmLocation,
         name: 'location',
         icon: 'location-icon.svg',
-        component: './Admin',
         access: 'design_administration_location',
+        routes: [
+          {
+            path: PATH.designFirmLocation,
+            component: '../features/locations/components/LocationTable',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designFirmLocationCreate,
+            component: '../features/locations/components/LocationDetail',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designFirmLocationUpdate,
+            component: '../features/locations/components/LocationDetail',
+            hideInMenu: true,
+          },
+        ],
       },
       {
         path: PATH.designerOfficeTeamProfile,
         name: 'team.profile',
         icon: 'team-profile-icon.svg',
-        component: './Admin',
         access: 'design_administration_team_profile',
+        routes: [
+          {
+            path: PATH.designerOfficeTeamProfile,
+            component: '../features/team-profiles/components/TeamProfilesTable',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerOfficeTeamProfileCreate,
+            component: '../features/team-profiles/components/TeamProfilesEntryForm',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerOfficeTeamProfileUpdate,
+            component: '../features/team-profiles/components/TeamProfilesEntryForm',
+            hideInMenu: true,
+          },
+        ],
       },
       {
         path: PATH.designerMaterialProductCode,
