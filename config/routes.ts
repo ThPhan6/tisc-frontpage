@@ -498,7 +498,7 @@ export default [
         name: 'brand.profile',
         icon: 'brand-icon.svg',
         access: 'brand_administration_brand_profile',
-        component: './Brand/Adminstration/BrandProfile',
+        component: '../features/brand-office-profile',
       },
       {
         path: PATH.brandLocation,
@@ -677,7 +677,7 @@ export default [
         path: PATH.designerOfficeProfile,
         name: 'office.profile',
         icon: 'office-profile-icon.svg',
-        component: './Admin',
+        component: '../features/brand-office-profile',
         access: 'design_administration_office_profile',
       },
       {

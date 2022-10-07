@@ -16,7 +16,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   onChange,
   isCheckboxList,
   selected,
-  checkboxClass,
+  checkboxClass = '',
   heightItem = '32px',
   ...props
 }) => {
@@ -71,13 +71,9 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
 
   return (
     <div
-      className={`
-        ${style[`checkbox-${direction}`]}
-        ${style['checkbox-list']}
-        ${isCheckboxList && style['item-list-checkbox']}
-        ${style['color-checkbox-checked']}
-        ${checkboxClass}
-      `}>
+      className={`${style[`checkbox-${direction}`]} ${style['checkbox-list']} ${
+        isCheckboxList && style['item-list-checkbox']
+      } ${style['color-checkbox-checked']} ${checkboxClass}`}>
       <Checkbox.Group
         {...props}
         value={selected?.map((item) => item.value) ?? []}

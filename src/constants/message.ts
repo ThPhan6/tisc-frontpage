@@ -223,11 +223,11 @@ export const MESSAGE_NOTIFICATION = {
   GET_ONE_DISTRIBUTOR_ERROR: 'Get one distributor error',
   GET_LIST_DISTRIBUTOR_GROUP_COUNTRY_ERROR: 'Get list group distributor country error',
 
-  //brand-profile
-  UPDATE_BRAND_PROFILE_SUCCESS: 'Update profile successfully',
-  UPDATE_BRAND_PROFILE_ERROR: 'Update profile error',
-  UPDATE_LOGO_BRAND_PROFILE_SUCCESS: 'Update logo brand profile successfully',
-  UPDATE_LOGO_BRAND_PROFILE_ERROR: 'Update logo brand profile error',
+  //brand-profile // office profile
+  UPDATE_PROFILE_SUCCESS: 'Update profile successfully',
+  UPDATE_PROFILE_ERROR: 'Update profile error',
+  UPDATE_LOGO_PROFILE_SUCCESS: 'Update logo profile successfully',
+  UPDATE_LOGO_PROFILE_ERROR: 'Update logo profile error',
 
   //FAQ
   GET_FAQ_ERROR: 'Failed to get FAQ data',

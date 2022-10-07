@@ -1,7 +1,4 @@
-export interface WebsiteUrlItem {
-  country_id: string;
-  url: string;
-}
+import { WebsiteUrlItem } from '@/features/brand-office-profile/types';
 
 export interface BrandProfile {
   created_at: string;
@@ -18,7 +15,6 @@ export interface BrandProfile {
   team_profile_ids: any;
   updated_at: string | null;
 }
-
 export interface UserDetail {
   access_level: string;
   avatar: string;
