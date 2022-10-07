@@ -730,8 +730,24 @@ export default [
         path: PATH.designerMaterialProductCode,
         name: 'material/product.code',
         icon: 'material-product-code.svg',
-        component: './Admin',
         access: 'design_administration_material_product_code',
+        routes: [
+          {
+            path: PATH.designerMaterialProductCode,
+            component: './Designer/Adminstration/MaterialProductCode',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerMaterialProductCodeCreate,
+            hideInMenu: true,
+            component: '../features/material-product-code/components/MaterialProductEntryForm',
+          },
+          {
+            path: PATH.designerMaterialProductCodeUpdate,
+            hideInMenu: true,
+            component: '../features/material-product-code/components/MaterialProductEntryForm',
+          },
+        ],
       },
     ],
   },
