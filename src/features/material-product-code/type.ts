@@ -30,7 +30,7 @@ export interface MaterialProductForm {
 export interface MaterialProductItemProps {
   value: MaterialProductSubForm;
   onChangeValue: (value: MaterialProductSubForm) => void;
-  handleOnClickDelete: () => void;
+  handleClickDelete: () => void;
 }
 
 export const DEFAULT_MATERIAL_PRODUCT: MaterialProductForm = {

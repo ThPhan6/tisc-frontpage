@@ -23,7 +23,7 @@ import styles from './MaterialProductItem.less';
 export const MaterialProductItem: FC<MaterialProductItemProps> = ({
   value,
   onChangeValue,
-  handleOnClickDelete,
+  handleClickDelete,
 }) => {
   const [materialItem, setMaterialItem] = useState<MaterialProductSubForm>(
     DEFAULT_SUB_MATERIAL_PRODUCT,
@@ -42,16 +42,16 @@ export const MaterialProductItem: FC<MaterialProductItemProps> = ({
     });
   };
 
-  const handleOnChangeSubList = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeSubList = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChangeValue({ ...materialItem, name: e.target.value });
   };
 
-  const handleOnClickAddItem = () => {
+  const handleClickAddItem = () => {
     const newCodes = [...materialItem.codes, DEFAULT_ITEM_MATERIAL_PRODUCT];
     onChangeValue({ ...materialItem, is_collapse: '1', codes: newCodes });
   };
 
-  const handleOnClickDeleteItem = (index: number) => {
+  const handleClickDeleteItem = (index: number) => {
     const newCodes = [...materialItem.codes];
     newCodes.splice(index, 1);
     onChangeValue({ ...materialItem, codes: newCodes });
@@ -60,7 +60,7 @@ export const MaterialProductItem: FC<MaterialProductItemProps> = ({
     }
   };
 
-  const handleOnChangeItem = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleChangeItem = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const newCodes = [...materialItem.codes];
     newCodes[index] = { ...newCodes[index], [e.target.name]: e.target.value };
     onChangeValue({ ...materialItem, codes: newCodes });
@@ -85,22 +85,19 @@ export const MaterialProductItem: FC<MaterialProductItemProps> = ({
               }}
             />
           </div>
-          <CirclePlusIcon
-            className={styles.panel_header__field_add}
-            onClick={handleOnClickAddItem}
-          />
+          <CirclePlusIcon className={styles.panel_header__field_add} onClick={handleClickAddItem} />
         </div>
         <div className={styles.panel_header__input}>
           <CustomInput
             placeholder="type sub-list name"
             size="small"
             containerClass={styles.panel_header__input_value}
-            onChange={handleOnChangeSubList}
+            onChange={handleChangeSubList}
             value={materialItem.name}
           />
           <ActionDeleteIcon
             className={styles.panel_header__input_delete_icon}
-            onClick={handleOnClickDelete}
+            onClick={handleClickDelete}
           />
         </div>
       </div>
@@ -130,7 +127,7 @@ export const MaterialProductItem: FC<MaterialProductItemProps> = ({
                       defaultWidth={68}
                       value={item.code}
                       name="code"
-                      onChange={(e) => handleOnChangeItem(e, index)}
+                      onChange={(e) => handleChangeItem(e, index)}
                     />
                   </div>
                   <div className={styles.form__element_item}>
@@ -140,13 +137,13 @@ export const MaterialProductItem: FC<MaterialProductItemProps> = ({
                       size="small"
                       value={item.description}
                       name="description"
-                      onChange={(e) => handleOnChangeItem(e, index)}
+                      onChange={(e) => handleChangeItem(e, index)}
                     />
                   </div>
                 </div>
                 <ActionDeleteIcon
                   className={styles.form__delete_icon}
-                  onClick={() => handleOnClickDeleteItem(index)}
+                  onClick={() => handleClickDeleteItem(index)}
                 />
               </div>
             ))}

@@ -44,27 +44,27 @@ const MaterialProductEntryForm = () => {
     }
   }, []);
 
-  const handleOnChangeGroupName = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeGroupName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({
       ...data,
       name: e.target.value,
     });
   };
 
-  const handleOnClickAddItem = () => {
+  const handleClickAddItem = () => {
     setData({
       ...data,
       subs: [...data.subs, DEFAULT_SUB_MATERIAL_PRODUCT],
     });
   };
 
-  const handleOnChangeValue = (value: MaterialProductSubForm, index: number) => {
+  const handleChangeValue = (value: MaterialProductSubForm, index: number) => {
     const newSubs = [...data['subs']];
     newSubs[index] = value;
     setData({ ...data, subs: newSubs });
   };
 
-  const handleOnClickDelete = (index: number) => {
+  const handleClickDelete = (index: number) => {
     const newSubs = [...data['subs']];
     newSubs.splice(index, 1);
     setData({ ...data, subs: newSubs });
@@ -126,8 +126,8 @@ const MaterialProductEntryForm = () => {
         <FormNameInput
           placeholder="type main list name"
           title="Main List"
-          onChangeInput={handleOnChangeGroupName}
-          HandleOnClickAddIcon={handleOnClickAddItem}
+          onChangeInput={handleChangeGroupName}
+          HandleOnClickAddIcon={handleClickAddItem}
           inputValue={data.name}
         />
         {data.subs.map((sub, index) => (
@@ -135,9 +135,9 @@ const MaterialProductEntryForm = () => {
             key={index}
             value={sub}
             onChangeValue={(value) => {
-              handleOnChangeValue(value, index);
+              handleChangeValue(value, index);
             }}
-            handleOnClickDelete={() => handleOnClickDelete(index)}
+            handleClickDelete={() => handleClickDelete(index)}
           />
         ))}
       </EntryFormWrapper>
