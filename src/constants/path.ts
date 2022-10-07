@@ -143,6 +143,8 @@ export const PATH = {
   designerAdminstration: '/design-firms/administration',
   designerOfficeProfile: '/design-firms/administration/office-profile',
   designerOfficeTeamProfile: '/design-firms/administration/team-profiles',
+  designerOfficeTeamProfileCreate: '/design-firms/administration/team-profiles/create',
+  designerOfficeTeamProfileUpdate: '/design-firms/administration/team-profiles/:id',
   designerMaterialProductCode: '/design-firms/administration/material-product-code',
 
   // location
