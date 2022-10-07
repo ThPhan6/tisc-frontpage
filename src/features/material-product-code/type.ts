@@ -1,11 +1,11 @@
-export interface MaterialProductCodeMain {
+export interface MaterialProductCodeMainList {
   id: string;
   name: string;
   count: 0;
-  subs: MaterialProductCodeSub[];
+  subs: MaterialProductCodeSubList[];
 }
 
-export interface MaterialProductCodeSub {
+export interface MaterialProductCodeSubList {
   id: string;
   name: string;
   count: 0;

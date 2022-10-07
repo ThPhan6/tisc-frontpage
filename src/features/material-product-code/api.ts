@@ -2,39 +2,31 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
-import { MaterialProductCodeMain, MaterialProductForm } from './type';
+import { MaterialProductForm } from './type';
 import {
   DataTableResponse,
   PaginationRequestParams,
-  PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
 
 interface MaterialProductCodePaginationResponse {
   data: {
-    material_product_code: MaterialProductCodeMain[];
-    pagination: PaginationResponse;
+    material_codes: MaterialProductForm[];
     summary: SummaryResponse[];
   };
 }
 export async function getMaterialProductCodeList(
   params: PaginationRequestParams,
   callback: (data: DataTableResponse) => void,
-  design_id: string,
 ) {
-  request(`/api/material-code/get-list-group/${design_id}`, {
+  request(`/api/material-code/get-list`, {
     method: 'GET',
     params,
   })
     .then((response: MaterialProductCodePaginationResponse) => {
-      const { material_product_code, pagination, summary } = response.data;
+      const { material_codes, summary } = response.data;
       callback({
-        data: material_product_code,
-        pagination: {
-          current: pagination.page,
-          pageSize: pagination.page_size,
-          total: pagination.total,
-        },
+        data: material_codes,
         summary,
       });
     })

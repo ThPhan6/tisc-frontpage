@@ -97,24 +97,23 @@ const MaterialProductEntryForm = () => {
   };
 
   const onHandleSubmit = () => {
-    // const newSubs = data.subs.map((sub) => {
-    //   return {
-    //     ...sub,
-    //     name: sub.name.trim(),
-    //     codes: sub.codes.map((subItem) => {
-    //       return {
-    //         ...subItem,
-    //         code: subItem.code.trim(),
-    //         description: subItem.description.trim(),
-    //       };
-    //     }),
-    //   };
-    // });
+    const newSubs = data.subs.map((sub) => {
+      return {
+        ...sub,
+        name: sub.name.trim(),
+        codes: sub.codes.map((subItem) => {
+          return {
+            ...subItem,
+            code: subItem.code.trim(),
+            description: subItem.description.trim(),
+          };
+        }),
+      };
+    });
 
     const handleSubmit = idMaterialProductCode ? handleUpdate : handleCreate;
 
-    // handleSubmit({ name: data.name.trim(), subs: newSubs });
-    handleSubmit(data);
+    handleSubmit({ name: data.name.trim(), subs: newSubs });
   };
 
   return (

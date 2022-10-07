@@ -6,27 +6,25 @@ import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
-import { getProductBasisPresetPagination } from '@/services';
 
 import { TableColumnItem } from '@/components/Table/types';
 import {
   MaterialProductCodeItem,
-  MaterialProductCodeMain,
-  MaterialProductCodeSub,
+  MaterialProductCodeMainList,
+  MaterialProductCodeSubList,
 } from '@/features/material-product-code/type';
 
-// import { useAppSelector } from '@/reducers';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 
-import { deleteMaterialProductCode } from '@/features/material-product-code/api';
-
-// import { getMaterialProductCodeList } from '@/features/material-product-code/api';
+import {
+  deleteMaterialProductCode,
+  getMaterialProductCodeList,
+} from '@/features/material-product-code/api';
 
 const MaterialProductCode = () => {
   useAutoExpandNestedTableColumn(2);
-  //   const user = useAppSelector((state) => state.user.user);
   const tableRef = useRef<any>();
 
   const handleUpdateMaterialProductCode = (id: string) => {
@@ -43,23 +41,38 @@ const MaterialProductCode = () => {
     });
   };
 
-  const SameColumns: TableColumnItem<any>[] = [
-    { title: 'Code', sorter: { multiple: 3 }, dataIndex: 'code' },
-    { title: 'Description', dataIndex: 'description' },
-    { title: 'Count', dataIndex: 'count', align: 'center', width: '5%' },
-  ];
-  const MainColumns: TableColumnItem<MaterialProductCodeMain>[] = [
+  const getSameColumns = (noBoxShadow?: boolean) => {
+    const SameColumns: TableColumnItem<any>[] = [
+      {
+        title: 'Code',
+        sorter: true,
+        dataIndex: 'code',
+        noBoxShadow: noBoxShadow,
+      },
+      { title: 'Description', dataIndex: 'description', noBoxShadow: noBoxShadow },
+      {
+        title: 'Count',
+        dataIndex: 'count',
+        align: 'center',
+        width: '5%',
+        noBoxShadow: noBoxShadow,
+      },
+    ];
+    return SameColumns;
+  };
+
+  const MainColumns: TableColumnItem<MaterialProductCodeMainList>[] = [
     {
       title: 'Main List',
       dataIndex: 'name',
-      sorter: { multiple: 1 },
+      sorter: true,
       isExpandable: true,
     },
     {
       title: 'Sub-List',
-      sorter: { multiple: 2 },
+      sorter: true,
     },
-    ...SameColumns,
+    ...getSameColumns(false),
 
     {
       title: 'Action',
@@ -83,15 +96,17 @@ const MaterialProductCode = () => {
       },
     },
   ];
-  const SubColumns: TableColumnItem<MaterialProductCodeSub>[] = [
+  const SubColumns: TableColumnItem<MaterialProductCodeSubList>[] = [
     {
       title: 'Main List',
+      noBoxShadow: true,
     },
     {
       title: 'Sub-List',
       dataIndex: 'name',
+      isExpandable: true,
     },
-    ...SameColumns,
+    ...getSameColumns(false),
 
     { title: 'Action', align: 'center', width: '5%' },
   ];
@@ -99,13 +114,16 @@ const MaterialProductCode = () => {
   const CodeColumns: TableColumnItem<MaterialProductCodeItem>[] = [
     {
       title: 'Main List',
+      noBoxShadow: true,
     },
     {
       title: 'Sub-List',
+      noBoxShadow: true,
     },
-    ...SameColumns,
 
-    { title: 'Action', align: 'center', width: '5%' },
+    ...getSameColumns(true),
+
+    { title: 'Action', align: 'center', width: '5%', noBoxShadow: true },
   ];
   return (
     <>
@@ -114,17 +132,21 @@ const MaterialProductCode = () => {
           <CustomPlusButton onClick={() => pushTo(PATH.designerMaterialProductCodeCreate)} />
         }
         title="MATERIAL/PRODUCT CODE"
-        columns={setDefaultWidthForEachColumn(MainColumns, 2)}
+        columns={setDefaultWidthForEachColumn(MainColumns, 3)}
         ref={tableRef}
-        fetchDataFunc={getProductBasisPresetPagination}
-        multiSort={{}}
+        fetchDataFunc={getMaterialProductCodeList}
+        multiSort={{
+          name: 'main_material_code_order',
+          sub_list: 'sub_material_code_order',
+          code: 'material_code_order',
+        }}
         expandable={GetExpandableTableConfig({
           columns: setDefaultWidthForEachColumn(SubColumns, 2),
           childrenColumnName: 'subs',
           level: 2,
           expandable: GetExpandableTableConfig({
             columns: setDefaultWidthForEachColumn(CodeColumns, 2),
-            childrenColumnName: 'subs',
+            childrenColumnName: 'codes',
             level: 3,
           }),
         })}
