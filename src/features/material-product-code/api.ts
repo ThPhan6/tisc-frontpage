@@ -2,7 +2,7 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
-import { MaterialProductForm } from './type';
+import { MaterialProductCodeMainList, MaterialProductForm } from './type';
 import {
   DataTableResponse,
   PaginationRequestParams,
@@ -11,7 +11,7 @@ import {
 
 interface MaterialProductCodePaginationResponse {
   data: {
-    material_codes: MaterialProductForm[];
+    material_codes: MaterialProductCodeMainList[];
     summary: SummaryResponse[];
   };
 }
