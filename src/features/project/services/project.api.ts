@@ -152,3 +152,18 @@ export async function getProjectSummary() {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_SUMMARY_DATA_FAILED);
     });
 }
+
+export async function createAssignTeamByProjectId(projectId: string, data: string[]) {
+  return request<boolean>(`/api/project/${projectId}/assign`, {
+    method: 'GET',
+    data: { team_profile_ids: data },
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.UPDATE_LIST_ASSIGN_TEAM_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_LIST_ASSIGN_TEAM_ERROR);
+      return false;
+    });
+}

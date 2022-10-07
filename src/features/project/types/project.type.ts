@@ -45,6 +45,7 @@ export interface ProjectListProps {
   project_type: string;
   building_type: string;
   design_due: number;
+  design_id: string;
   assign_teams: {
     id: string;
     name: string;
