@@ -68,8 +68,10 @@ export const MESSAGE_NOTIFICATION = {
   GET_INQUIRY_FOR_ERROR: 'Failed to get inquiry for',
   GET_REQUEST_FOR_ERROR: 'Failed to get request for',
   GET_PROJECT_NAME_ERROR: 'Failed to get project name',
-  CREATE_INQUIRY_REQUEST_SUCCESS: 'Create inquiry/request successfully',
-  CREATE_INQUIRY_REQUEST_ERROR: 'Failed to create inquiry/request',
+  CREATE_GENERAL_INQUIRY_SUCCESS: 'Create general inquiry successfully',
+  CREATE_GENERAL_INQUIRY_ERROR: 'Failed to create general inquiry',
+  CREATE_PROJECT_REQUEST_SUCCESS: 'Create project request successfully',
+  CREATE_PROJECT_REQUEST_ERROR: 'Failed to create project request',
 
   // product catelogue
   CREATE_PRODUCT_CATELOGUE_SUCCESS: 'Create product catelogue successfully',

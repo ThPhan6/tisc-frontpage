@@ -197,3 +197,18 @@ export interface ProductTip {
   contents: ProductTipData[];
   created_at?: string;
 }
+
+/// inquiry-request
+export interface GeneralInquiryForm {
+  product_id: string;
+  title: string;
+  message: string;
+  inquiry_for_ids: string[];
+}
+export interface ProjectRequestForm {
+  project_id: string;
+  product_id: string;
+  title: string;
+  message: string;
+  request_for_ids: string[];
+}

@@ -21,9 +21,7 @@ import {
 } from '../types';
 import { BrandDetail } from '@/features/user-group/types';
 import store from '@/reducers';
-import { GeneralData } from '@/types';
 
-import { InquiryRequestForm, ProjectName } from '@/components/InquiryRequest';
 import { ShareViaEmailForm } from '@/components/ShareViaEmail';
 
 export async function getProductSummary(brandId: string) {
@@ -229,46 +227,6 @@ export async function createShareViaEmail(data: ShareViaEmailForm) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_SHARE_VIA_EMAIL_ERROR);
-      return false;
-    });
-}
-
-/// INQUIRY/REQUEST
-export async function getInquiryFor() {
-  return request<{ data: GeneralData[] }>(`/api/product/inquiry-for`, { method: 'GET' })
-    .then((res) => res.data)
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_INQUIRY_FOR_ERROR);
-      return [] as GeneralData[];
-    });
-}
-
-export async function getRequestFor() {
-  return request<{ data: GeneralData[] }>(`/api/product/request-for`, { method: 'GET' })
-    .then((res) => res.data)
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_REQUEST_FOR_ERROR);
-      return [] as GeneralData[];
-    });
-}
-
-export async function getProjectName() {
-  return request<{ data: ProjectName[] }>(`/api/product/project-name`, { method: 'GET' })
-    .then((res) => res.data)
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_NAME_ERROR);
-      return [] as ProjectName[];
-    });
-}
-
-export async function createInquiryRequest(data: InquiryRequestForm) {
-  return request<boolean>(`/api/product/inquiry-request`, { method: 'POST', data })
-    .then(() => {
-      message.success(MESSAGE_NOTIFICATION.CREATE_INQUIRY_REQUEST_SUCCESS);
-      return true;
-    })
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_INQUIRY_REQUEST_ERROR);
       return false;
     });
 }

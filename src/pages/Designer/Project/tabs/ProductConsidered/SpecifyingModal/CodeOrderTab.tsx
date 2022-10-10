@@ -22,7 +22,7 @@ import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { DropdownSelectInput } from '@/components/Form/DropdownSelectInput';
-import { renderDualLabel } from '@/components/RenderHeaderLabel';
+import { DualLabel } from '@/components/RenderHeaderLabel';
 
 import styles from './styles/code-order.less';
 
@@ -88,7 +88,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
     getAllMaterialCode().then((res) => {
       setMaterialCodeOtps(
         res.map((el) => ({
-          label: renderDualLabel(el.code, el.description),
+          label: <DualLabel firstTxt={el.code} secTxt={el.description} />,
           value: el.id,
           labelText: `${el.code}`,
         })),

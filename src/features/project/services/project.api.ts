@@ -7,10 +7,11 @@ import type {
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
-import { ProjectItem, setProjectList } from '@/features/project/reducers';
+import { setProjectList } from '@/features/project/reducers';
 import {
   ProjectBodyRequest,
   ProjectDetailProps,
+  ProjectItem,
   ProjectListProps,
   ProjectSummaryData,
 } from '@/features/project/types';
@@ -56,7 +57,7 @@ export async function getAllProjects() {
       store.dispatch(setProjectList(response.data));
     })
     .catch((error) => {
-      console.log('getAllProjects', error);
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_LIST_FAILED);
     });
 }
 

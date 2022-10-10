@@ -1,18 +1,22 @@
 import { FC, useEffect, useState } from 'react';
 
+import { message } from 'antd';
+
+import { getAllProjects } from '@/features/project/services';
 import {
-  createInquiryRequest,
+  createGeneralInquiry,
+  createProjectRequest,
   getInquiryFor,
-  getProjectName,
   getRequestFor,
-} from '@/features/product/services';
+} from '@/features/project/services/project-related.api';
 import { useBoolean } from '@/helper/hook';
 import { getValueByCondition } from '@/helper/utils';
 
 import { CheckboxValue } from '../CustomCheckbox/types';
-import { CustomRadioValue, RadioValue } from '../CustomRadio/types';
 import { TabItem } from '../Tabs/types';
-import { ProductItem } from '@/features/product/types';
+import { GeneralInquiryForm, ProductItem, ProjectRequestForm } from '@/features/product/types';
+import { ProjectItem } from '@/features/project/types';
+import { useAppSelector } from '@/reducers';
 
 import BrandProductBasicHeader from '../BrandProductBasicHeader';
 import CollapseCheckboxList from '../CustomCheckbox/CollapseCheckboxList';
@@ -21,7 +25,7 @@ import InputGroup from '../EntryForm/InputGroup';
 import { FormGroup } from '../Form';
 import { CustomTextArea } from '../Form/CustomTextArea';
 import Popover from '../Modal/Popover';
-import { renderDualLabel } from '../RenderHeaderLabel';
+import { DualLabel } from '../RenderHeaderLabel';
 import { CustomTabs } from '../Tabs';
 import styles from './index.less';
 
@@ -35,35 +39,19 @@ const Tabs: TabItem[] = [
   { tab: TabKeys.request, key: TabKeys.request },
 ];
 
-export interface InquiryRequestForm {
-  product_id: string;
-  project_name_id: string;
-  inquiry_for: string[];
-  inquiry_title: string;
-  inquiry_message: string;
-  request_for: string[];
-  request_title: string;
-  request_message: string;
-}
-
-export interface ProjectName {
-  id: string;
-  code: string;
-  name: string;
-}
-
-type FieldName = keyof InquiryRequestForm;
-type checkboxDataTypes = 'inquiry_for' | 'request_for';
-
-const DEFAULT_STATE = {
+const GENERAL_INQUIRY_DEFAULT_STATE = {
   product_id: '',
-  project_name_id: '',
-  inquiry_for: [],
-  inquiry_title: '',
-  inquiry_message: '',
-  request_for: [],
-  request_title: '',
-  request_message: '',
+  title: '',
+  message: '',
+  inquiry_for_ids: [],
+};
+
+const PROJECT_REQUEST_DEFAULT_STATE = {
+  product_id: '',
+  project_id: '',
+  title: '',
+  message: '',
+  request_for_ids: [],
 };
 
 interface InquiryRequestProps {
@@ -73,22 +61,25 @@ interface InquiryRequestProps {
 }
 
 const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible }) => {
-  const submitButtonStatus = useBoolean();
+  const submitButtonStatus = useBoolean(false);
   const [selectedTab, setSelectedTab] = useState<TabKeys>(TabKeys.inquiry);
 
-  const [data, setData] = useState<InquiryRequestForm>({
-    ...DEFAULT_STATE,
+  const projectData = useAppSelector((state) => state.project.list);
+
+  const [generalInquirydata, setGeneralInquiryData] = useState<GeneralInquiryForm>({
+    ...GENERAL_INQUIRY_DEFAULT_STATE,
+    product_id: product.id,
+  });
+  const [projectRequestData, setProjectRequestData] = useState<ProjectRequestForm>({
+    ...PROJECT_REQUEST_DEFAULT_STATE,
     product_id: product.id,
   });
 
-  const [projectNameData, setProjectNameData] = useState<CustomRadioValue[]>([]);
   // to show on label
-  const [selectedProjectName, setSelectedProjectName] = useState<RadioValue | null>(null);
-  const projectNameLabel = projectNameData.find(
-    (project) => project.value === selectedProjectName?.value,
-  )?.labelText;
+  const [projectChosen, setProjectChosen] = useState<ProjectItem>();
 
-  console.log('data', data);
+  // console.log('generalInquirydata', generalInquirydata);
+  // console.log('projectRequestData', projectRequestData);
 
   //
   const [inquiryForData, setInquiryForData] = useState<CheckboxValue[]>([]);
@@ -98,15 +89,15 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
   const [selectedRequestFor, setSelectedRequestFor] = useState<CheckboxValue[]>([]); // for show on placeholder
 
   /// handle to show on placeholder
-  const selectedItem = (onPlaceholder: checkboxDataTypes) => {
+  const selectedItem = () => {
     return getValueByCondition(
       [
         [
-          onPlaceholder === 'inquiry_for' && selectedInquiryFor.length,
+          selectedTab === TabKeys.inquiry && selectedInquiryFor.length,
           selectedInquiryFor.map((item) => item.label).join(', '),
         ],
         [
-          onPlaceholder === 'request_for' && selectedRequestFor.length,
+          selectedTab === TabKeys.request && selectedRequestFor.length,
           selectedRequestFor.map((item) => item.label).join(', '),
         ],
       ],
@@ -114,14 +105,18 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
     );
   };
 
-  const setStyleOnContainerClass = (onStyle: checkboxDataTypes) =>
+  const setStyleOnContainerClass = () =>
     getValueByCondition([
-      [onStyle === 'inquiry_for' && selectedInquiryFor.length, styles.inputColor],
-      [onStyle === 'request_for' && selectedRequestFor.length, styles.inputColor],
+      [selectedTab === TabKeys.inquiry && selectedInquiryFor.length, styles.inputColor],
+      [selectedTab === TabKeys.request && selectedRequestFor.length, styles.inputColor],
     ]);
 
-  // get Inquiry For data
+  /// get inquiry/request data
   useEffect(() => {
+    if (!visible) {
+      return;
+    }
+
     getInquiryFor().then((res) => {
       setInquiryForData(
         res.map((el) => ({
@@ -130,10 +125,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
         })),
       );
     });
-  }, []);
 
-  useEffect(() => {
-    // get Resquest For data
     getRequestFor().then((res) => {
       setRequestForData(
         res.map((el) => ({
@@ -144,95 +136,147 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
     });
 
     // get Project Name data
-    getProjectName().then((res) => {
-      if (res) {
-        setProjectNameData(
-          res.map(
-            (el) =>
-              ({
-                value: el.id,
-                label: renderDualLabel(el.name, el.name, 14, 300),
-                labelText: `${el.name} ${el.name}`,
-              } as CustomRadioValue),
-          ),
-        );
-      }
-    });
-  }, []);
+    getAllProjects();
+  }, [visible]);
 
   // handle onChange title and message
-  const onChangeData = (newData: FieldName, fieldValue: any) => {
-    setData((prevState) => ({
-      ...prevState,
-      [newData]: fieldValue,
-    }));
+  const onChangeValueInput = (newData: 'title' | 'message', fieldValue: any) => {
+    if (selectedTab === TabKeys.inquiry) {
+      setGeneralInquiryData((prevState) => ({
+        ...prevState,
+        [newData]: fieldValue,
+      }));
+    } else {
+      setProjectRequestData((prevState) => ({
+        ...prevState,
+        [newData]: fieldValue,
+      }));
+    }
   };
 
   // handle onChange Inquiry-For and Request-For
-  const onChangeCheckboxListData =
-    (type: checkboxDataTypes) => (selectedOption: CheckboxValue[]) => {
-      // delete other-input has empty value
-      const selectedOpt = selectedOption.filter((el) => el.label !== '');
+  const onChangeCheckboxListData = (selectedOption: CheckboxValue[]) => {
+    // delete other-input has empty value
+    const selectedOpt = selectedOption.filter((el) => el.label !== '');
 
-      setData((prevState) => ({
+    if (selectedTab === TabKeys.inquiry) {
+      setSelectedInquiryFor(selectedOpt);
+      setGeneralInquiryData((prevState) => ({
         ...prevState,
-        [type]: selectedOpt?.map((opt) => String(opt.value === 'other' ? opt.label : opt.value)),
+        inquiry_for_ids: selectedOpt?.map((opt) =>
+          String(opt.value === 'other' ? opt.label : opt.value),
+        ),
       }));
+    } else {
+      setSelectedRequestFor(selectedOpt);
+      setProjectRequestData((prevState) => ({
+        ...prevState,
+        request_for_ids: selectedOpt?.map((opt) =>
+          String(opt.value === 'other' ? opt.label : opt.value),
+        ),
+      }));
+    }
+  };
 
-      if (type === 'inquiry_for') {
-        setSelectedInquiryFor(selectedOpt);
-      } else {
-        setSelectedRequestFor(selectedOpt);
-      }
-    };
+  const getProjectName = (projectId: string) => () => {
+    setProjectChosen(projectData.find((el) => el.id === projectId));
+  };
 
   // handle onChange Project-Name
-  const onChangeProjectNameData = (selectedEl: RadioValue) => {
-    setData((prevState) => ({
+  const handleProjectName = (projectId: string, callback: (projectSelected: string) => void) => {
+    setProjectRequestData((prevState) => ({
       ...prevState,
-      project_name_id: String(selectedEl.value),
+      project_id: projectId,
     }));
+
+    callback(projectId);
   };
 
   const handleSubmit = () => {
-    createInquiryRequest(data).then((isSuccess) => {
+    switch (selectedTab === TabKeys.inquiry) {
+      case generalInquirydata.inquiry_for_ids.length === 0:
+        message.error('Inquiry For is required');
+        return;
+      case !generalInquirydata.title:
+        message.error('Title is required');
+        return;
+      case !generalInquirydata.title:
+        message.error('Message is required');
+        return;
+      default:
+        break;
+    }
+
+    switch (selectedTab === TabKeys.request) {
+      case !projectRequestData.project_id:
+        message.error('Project is required');
+        return;
+      case projectRequestData.request_for_ids.length === 0:
+        message.error('Request For is required');
+        return;
+      case !projectRequestData.title:
+        message.error('Title is required');
+        return;
+      case !projectRequestData.message:
+        message.error('Message is required');
+        return;
+      default:
+        break;
+    }
+
+    const submitForm =
+      selectedTab === TabKeys.inquiry
+        ? createGeneralInquiry(generalInquirydata)
+        : createProjectRequest(projectRequestData);
+
+    submitForm.then((isSuccess) => {
       if (isSuccess) {
+        // change button icon
         submitButtonStatus.setValue(true);
 
         setTimeout(() => {
           submitButtonStatus.setValue(false);
 
           // clear data
-          setData({
-            ...DEFAULT_STATE,
-            product_id: product.id,
-          });
-          // close popup
-          setVisible(false);
+          if (selectedTab === TabKeys.inquiry) {
+            setSelectedInquiryFor([]);
+            setGeneralInquiryData({
+              ...GENERAL_INQUIRY_DEFAULT_STATE,
+              product_id: product.id,
+            });
+          } else {
+            setProjectChosen(undefined);
+            setSelectedRequestFor([]);
+            setProjectRequestData({
+              ...PROJECT_REQUEST_DEFAULT_STATE,
+              product_id: product.id,
+            });
+          }
         }, 300);
       }
     });
   };
 
   // render Inquiry For and Request For data
-  const renderFor = (labelContent: checkboxDataTypes, option: CheckboxValue[]) => (
-    <FormGroup
-      label={labelContent === 'inquiry_for' ? 'Inquiry For' : 'Request For'}
-      required
-      layout="vertical"
-      formClass={styles.formGroup}>
-      <CollapseCheckboxList
-        checked={labelContent === 'inquiry_for' ? selectedInquiryFor : selectedRequestFor}
-        onChange={onChangeCheckboxListData(labelContent)}
-        containerClass={setStyleOnContainerClass(labelContent)}
-        otherInput
-        options={option}
-        placeholder={selectedItem(labelContent)}
-      />
-    </FormGroup>
-  );
+  const renderFor = (option: CheckboxValue[]) => {
+    const labelContent = selectedTab === TabKeys.inquiry ? 'Inquiry For' : 'Request For';
+    const valueSelected = selectedTab === TabKeys.inquiry ? selectedInquiryFor : selectedRequestFor;
 
-  const renderTitle = (title: 'inquiry_title' | 'request_title') => (
+    return (
+      <FormGroup label={labelContent} required layout="vertical" formClass={styles.formGroup}>
+        <CollapseCheckboxList
+          checked={valueSelected}
+          onChange={onChangeCheckboxListData}
+          containerClass={setStyleOnContainerClass()}
+          otherInput
+          options={option}
+          placeholder={selectedItem()}
+        />
+      </FormGroup>
+    );
+  };
+
+  const renderTitle = () => (
     <InputGroup
       label="Title"
       required
@@ -243,13 +287,13 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
       hasBoxShadow
       hasHeight
       placeholder="type message title"
-      value={title === 'inquiry_title' ? data.inquiry_title : data.request_title}
-      onChange={(e) => onChangeData(title, e.target.value)}
-      onDelete={() => onChangeData(title, '')}
+      value={selectedTab === TabKeys.inquiry ? generalInquirydata.title : projectRequestData.title}
+      onChange={(e) => onChangeValueInput('title', e.target.value)}
+      onDelete={() => onChangeValueInput('title', '')}
     />
   );
 
-  const renderMessage = (message: 'inquiry_message' | 'request_message') => (
+  const renderMessage = () => (
     <FormGroup label="Message" required layout="vertical">
       <CustomTextArea
         className={styles.message}
@@ -258,8 +302,10 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
         placeholder="type message here..."
         borderBottomColor="mono-medium"
         boxShadow
-        onChange={(e) => onChangeData(message, e.target.value)}
-        value={message === 'inquiry_message' ? data.inquiry_message : data.request_message}
+        onChange={(e) => onChangeValueInput('message', e.target.value)}
+        value={
+          selectedTab === TabKeys.inquiry ? generalInquirydata.message : projectRequestData.message
+        }
       />
     </FormGroup>
   );
@@ -295,9 +341,9 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
       {selectedTab === TabKeys.inquiry ? (
         <div>
           {/* Inquiry For */}
-          {renderFor('inquiry_for', inquiryForData)}
-          {renderTitle('inquiry_title')}
-          {renderMessage('inquiry_message')}
+          {renderFor(inquiryForData)}
+          {renderTitle()}
+          {renderMessage()}
         </div>
       ) : null}
 
@@ -307,22 +353,28 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
           {/* Project Name */}
           <CollapseRadioFormGroup
             label="Project Name"
-            checked={data.project_name_id}
+            checked={projectRequestData.project_id}
             defaultPlaceHolder="select from My Workspace"
-            placeholder={projectNameLabel}
-            optionData={projectNameData}
-            onChange={(radioValue) => {
-              /// to show on label
-              setSelectedProjectName(radioValue);
-              // update data
-              onChangeProjectNameData(radioValue);
-            }}
+            placeholder={projectChosen?.name}
+            radioListClass={styles.projectNameInfo}
+            optionData={projectData.map((el) => ({
+              value: el.id,
+              label: (
+                <DualLabel firstTxt={el.code} secTxt={el.name} fontSize={14} fontWeight={300} />
+              ),
+            }))}
+            onChange={(itemSelected) =>
+              handleProjectName(
+                String(itemSelected.value),
+                getProjectName(String(itemSelected.value)),
+              )
+            }
           />
 
           {/* Request For */}
-          {renderFor('request_for', requestForData)}
-          {renderTitle('request_title')}
-          {renderMessage('request_message')}
+          {renderFor(requestForData)}
+          {renderTitle()}
+          {renderMessage()}
         </div>
       ) : null}
     </Popover>
