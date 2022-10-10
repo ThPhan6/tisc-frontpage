@@ -1,27 +1,21 @@
 import { FC, useRef } from 'react';
 
+import { COLUMN_WIDTH } from '@/constants/util';
+
 import {
   onCellCancelled,
   renderActionCell,
-  renderStatusDropdown,
+  renderSpecifiedStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { getSpecifiedProductsByBrand } from '@/features/project/services';
-import { showImageUrl } from '@/helper/utils';
+import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
-import { ProductItemBrand, SpecifiedProductByBrand } from '@/features/project/types';
+import { ProjectProductItem } from '@/features/product/types';
 
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
-
-const COL_WIDTH_BRAND = {
-  brand: 124,
-  collection: 143,
-  productName: 93,
-  variant: 150,
-  status: 130,
-};
 
 interface BrandListProps {
   projectId?: string;
@@ -34,24 +28,21 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
   const tableRef = useRef<any>();
   const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
-  const BrandColumns: TableColumnItem<SpecifiedProductByBrand>[] = [
+  const BrandColumns: TableColumnItem<ProjectProductItem>[] = [
     {
       title: 'Brand',
       dataIndex: 'brand_order',
       sorter: true,
-      width: COL_WIDTH_BRAND.brand,
       isExpandable: true,
       render: (_value, record) => <span>{record.name}</span>,
     },
     {
       title: 'Collection',
-      width: COL_WIDTH_BRAND.collection,
     },
     {
       title: 'Product',
-      width: COL_WIDTH_BRAND.productName,
     },
-    { title: 'Option/Variant', width: COL_WIDTH_BRAND.variant },
+    { title: 'Option/Variant' },
     {
       title: 'Product ID',
     },
@@ -61,22 +52,21 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       width: '5%',
       align: 'center',
     },
-    { title: 'Status', align: 'center', width: COL_WIDTH_BRAND.status },
+    { title: 'Status', align: 'center', width: COLUMN_WIDTH.status },
     { title: 'Action', width: '5%', align: 'center' },
   ];
 
-  const CollectionColumns: TableColumnItem<ProductItemBrand>[] = [
+  const CollectionColumns: TableColumnItem<ProjectProductItem>[] = [
     {
       title: 'Brand',
-      width: COL_WIDTH_BRAND.brand,
       noBoxShadow: true,
-      dataIndex: 'image',
+      dataIndex: 'brand',
       align: 'right',
       render: (value) => {
         if (value) {
           return (
             <img
-              src={showImageUrl(value)}
+              src={showImageUrl(value?.logo)}
               style={{ width: 24, height: 24, objectFit: 'contain' }}
             />
           );
@@ -89,21 +79,19 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       dataIndex: 'collection_name',
       noBoxShadow: true,
       onCell: onCellCancelled,
-      width: COL_WIDTH_BRAND.collection,
+      render: (_value, record) => record.collection?.name,
     },
     {
       title: 'Product',
       dataIndex: 'name',
       noBoxShadow: true,
       onCell: onCellCancelled,
-      width: COL_WIDTH_BRAND.productName,
     },
     {
       title: 'Option/Variant',
       dataIndex: 'variant',
       noBoxShadow: true,
       onCell: onCellCancelled,
-      width: COL_WIDTH_BRAND.variant,
     },
     {
       title: 'ProductID',
@@ -119,10 +107,10 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     {
       title: 'Status',
       noBoxShadow: true,
-      dataIndex: 'status',
+      dataIndex: 'specified_status',
       align: 'center',
-      width: COL_WIDTH_BRAND.status,
-      render: renderStatusDropdown(tableRef),
+      width: COLUMN_WIDTH.status,
+      render: renderSpecifiedStatusDropdown(tableRef),
       onCell: onCellCancelled,
     },
     {
@@ -137,7 +125,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
   return (
     <>
       <CustomTable
-        columns={BrandColumns}
+        columns={setDefaultWidthForEachColumn(BrandColumns, 4)}
         extraParams={{ projectId }}
         ref={tableRef}
         hasPagination={false}
@@ -146,7 +134,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
         }}
         fetchDataFunc={getSpecifiedProductsByBrand}
         expandable={GetExpandableTableConfig({
-          columns: CollectionColumns,
+          columns: setDefaultWidthForEachColumn(CollectionColumns, 4),
           childrenColumnName: 'products',
           rowKey: 'specified_product_id',
           level: 2,

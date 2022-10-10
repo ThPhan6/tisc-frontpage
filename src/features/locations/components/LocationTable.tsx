@@ -2,10 +2,11 @@ import React, { useRef } from 'react';
 
 import { PATH } from '@/constants/path';
 
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useCheckPermission } from '@/helper/hook';
-import { formatPhoneCode, getValueByCondition } from '@/helper/utils';
+import { formatPhoneCode, getValueByCondition, setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import { LocationDetail } from '@/features/locations/type';
@@ -17,15 +18,18 @@ import { ActionMenu } from '@/components/TableAction';
 import { deleteLocationById, getLocationPagination } from '@/features/locations/api';
 
 const LocationTable: React.FC = () => {
+  useAutoExpandNestedTableColumn(0);
   const tableRef = useRef<any>();
 
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
+  const isDesignAdmin = useCheckPermission('Design Admin');
   /// for user role path
   const userCreateRolePath = getValueByCondition(
     [
       [isTISCAdmin, PATH.tiscLocationCreate],
       [isBrandAdmin, PATH.brandLocationCreate],
+      [isDesignAdmin, PATH.designFirmLocationCreate],
     ],
     '',
   );
@@ -33,6 +37,7 @@ const LocationTable: React.FC = () => {
     [
       [isTISCAdmin, PATH.tiscLocationUpdate],
       [isBrandAdmin, PATH.brandLocationUpdate],
+      [isDesignAdmin, PATH.designFirmLocationUpdate],
     ],
     '',
   );
@@ -119,7 +124,7 @@ const LocationTable: React.FC = () => {
         ref={tableRef}
         rightAction={<CustomPlusButton onClick={handleCreateLocation} />}
         title={'LOCATIONS'}
-        columns={mainColumns}
+        columns={setDefaultWidthForEachColumn(mainColumns, 5)}
         fetchDataFunc={getLocationPagination}
         hasPagination
       />

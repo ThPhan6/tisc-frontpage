@@ -3,12 +3,19 @@ import { useRef } from 'react';
 import { PATH } from '@/constants/path';
 import { USER_STATUS_TEXTS } from '@/constants/util';
 
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { formatPhoneCode, getFullName } from '@/helper/utils';
+import { useCheckPermission } from '@/helper/hook';
+import {
+  formatPhoneCode,
+  getFullName,
+  getValueByCondition,
+  setDefaultWidthForEachColumn,
+} from '@/helper/utils';
 
+import { TeamProfileTableProps } from '../types';
 import { TableColumnItem } from '@/components/Table/types';
-import { TeamProfileTableProps } from '@/features/team-profiles/type';
 import { useAppSelector } from '@/reducers';
 
 import CustomTable from '@/components/Table';
@@ -18,11 +25,33 @@ import TeamIcon from '@/components/TeamIcon/TeamIcon';
 
 import { deleteTeamProfile, getTeamProfileList } from '@/features/team-profiles/api';
 
-const TeamProfilesList = () => {
+const TeamProfilesTable = () => {
+  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 3 });
   const tableRef = useRef<any>();
   const userId = useAppSelector((state) => state.user.user?.id);
+
+  const isTISCAdmin = useCheckPermission('TISC Admin');
+  const isBrandAdmin = useCheckPermission('Brand Admin');
+  const isDesignAdmin = useCheckPermission('Design Admin');
+  /// for user role path
+  const userCreateRolePath = getValueByCondition(
+    [
+      [isTISCAdmin, PATH.tiscCreateTeamProfile],
+      [isBrandAdmin, PATH.brandCreateTeamProfile],
+    ],
+    PATH.designerOfficeTeamProfileCreate,
+  );
+
+  const userUpdateRolePath = getValueByCondition(
+    [
+      [isTISCAdmin, PATH.tiscUpdateTeamProfile],
+      [isBrandAdmin, PATH.brandUpdateTeamProfile],
+    ],
+    PATH.designerOfficeTeamProfileUpdate,
+  );
+
   const handleUpdateTeamProfile = (id: string) => {
-    pushTo(PATH.tiscUpdateTeamProfile.replace(':id', id));
+    pushTo(userUpdateRolePath.replace(':id', id));
   };
 
   const handleDeleteTeamProfile = (id: string) => {
@@ -62,13 +91,16 @@ const TeamProfilesList = () => {
       title: 'Work Email',
       dataIndex: 'email',
     },
-    {
-      title: 'Work Phone',
-      dataIndex: 'phone',
-      render: (value, record) => {
-        return `${formatPhoneCode(record.phone_code)} ${value ?? ''}`;
-      },
-    },
+
+    !isDesignAdmin
+      ? {
+          title: 'Work Phone',
+          dataIndex: 'phone',
+          render: (value, record) => {
+            return `${formatPhoneCode(record.phone_code)} ${value ?? ''}`;
+          },
+        }
+      : {},
     {
       title: 'Access Level',
       dataIndex: 'access_level',
@@ -77,6 +109,7 @@ const TeamProfilesList = () => {
     {
       title: 'Status',
       dataIndex: 'status',
+      width: '5%',
       sorter: true,
       render: (value) => USER_STATUS_TEXTS[value] ?? 'N/A',
     },
@@ -109,8 +142,8 @@ const TeamProfilesList = () => {
   return (
     <CustomTable
       title="TEAM PROFILES"
-      rightAction={<CustomPlusButton onClick={() => pushTo(PATH.tiscCreateTeamProfile)} />}
-      columns={mainColumns}
+      rightAction={<CustomPlusButton onClick={() => pushTo(userCreateRolePath)} />}
+      columns={setDefaultWidthForEachColumn(mainColumns, 5)}
       fetchDataFunc={getTeamProfileList}
       ref={tableRef}
       hasPagination
@@ -118,4 +151,4 @@ const TeamProfilesList = () => {
   );
 };
 
-export default TeamProfilesList;
+export default TeamProfilesTable;

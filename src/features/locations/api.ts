@@ -1,4 +1,5 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -6,7 +7,6 @@ import { DistributorProductMarket } from '../distributors/type';
 import {
   City,
   Country,
-  FunctionalTypeData,
   LocationDetail,
   LocationForm,
   LocationGroupedByCountry,
@@ -19,6 +19,7 @@ import type {
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
+import { GeneralData, KeyValueData } from '@/types';
 
 interface LocationPaginationResponse {
   data: {
@@ -69,7 +70,7 @@ export async function getLocationByBrandId(brandId: string) {
 }
 
 export async function getCountries() {
-  return request<{ data: Country[] }>(`/api/location/get-countries`, {
+  return request<{ data: Country[] }>(`/api/setting/countries`, {
     method: 'GET',
   })
     .then((response) => {
@@ -82,7 +83,7 @@ export async function getCountries() {
 }
 
 export async function getStatesByCountryId(countryId: string) {
-  return request<{ data: State[] }>(`/api/location/get-states`, {
+  return request<{ data: State[] }>(`/api/setting/states`, {
     method: 'GET',
     params: { country_id: countryId },
   })
@@ -96,7 +97,7 @@ export async function getStatesByCountryId(countryId: string) {
 }
 
 export async function getCitiesByCountryIdAndStateId(countryId: string, stateId: string) {
-  return request<{ data: City[] }>(`/api/location/get-cities`, {
+  return request<{ data: City[] }>(`/api/setting/cities`, {
     method: 'GET',
     params: { country_id: countryId, state_id: stateId },
   })
@@ -110,7 +111,7 @@ export async function getCitiesByCountryIdAndStateId(countryId: string, stateId:
 }
 
 export async function getCountryById(id: string) {
-  return request(`/api/location/get-country/${id}`, { method: 'GET' })
+  return request(`/api/setting/countries/${id}`, { method: 'GET' })
     .then((response) => {
       return response.data;
     })
@@ -149,12 +150,24 @@ export async function getLocationPagination(
 }
 
 export async function getListFunctionalType() {
-  return request<{ data: FunctionalTypeData[] }>(`/api/functional-type/get-list`)
+  return request<{ data: GeneralData[] }>(
+    `/api/setting/common-type/${COMMON_TYPES.COMPANY_FUNCTIONAL}`,
+    { method: 'GET' },
+  )
     .then((res) => {
       return res.data;
     })
     .catch(() => {
-      return [] as FunctionalTypeData[];
+      return [] as GeneralData[];
+    });
+}
+
+/// for design-firms
+export async function getListFunctionalTypeForDesign() {
+  return request<KeyValueData[]>(`/api/setting/functional-type`)
+    .then((res) => res)
+    .catch(() => {
+      return [] as KeyValueData[];
     });
 }
 
@@ -225,7 +238,7 @@ export async function getWorkLocations() {
 }
 
 export async function getRegions() {
-  return request<{ data: Regions[] }>(`/api/location/regions`, { method: 'GET' })
+  return request<{ data: Regions[] }>(`/api/setting/regions`, { method: 'GET' })
     .then((response) => {
       return response.data;
     })

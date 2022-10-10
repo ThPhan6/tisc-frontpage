@@ -52,7 +52,7 @@ const MyFavourite = () => {
     <div>
       <PageContainer
         pageHeaderRender={() => (
-          <ProductSummaryTopBar isFavouriteRetrieved={retrievedFavourite!} />
+          <ProductSummaryTopBar isFavouriteRetrieved={retrievedFavourite as boolean} />
         )}>
         {retrievedFavourite ? <CollapseProductList /> : <FavouriteForm />}
       </PageContainer>

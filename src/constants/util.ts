@@ -84,7 +84,11 @@ export const SORT_ORDER = {
   footerFollow: 'Z - A',
 };
 
-export const COMMON_TYPE = {
+export const COLUMN_WIDTH = {
+  status: 130,
+};
+
+export const COMMON_TYPES = {
   SHARING_GROUP: 1,
   SHARING_PURPOSE: 2,
   PROJECT_BUILDING: 3,

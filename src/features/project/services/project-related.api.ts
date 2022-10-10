@@ -1,5 +1,5 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { COMMON_TYPE } from '@/constants/util';
+import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -17,7 +17,7 @@ export async function getInquiryFor() {
 }
 
 export async function getRequestFor() {
-  return request<{ data: GeneralData[] }>(`/api/setting/common-type/${COMMON_TYPE.REQUEST_FOR}`, {
+  return request<{ data: GeneralData[] }>(`/api/setting/common-type/${COMMON_TYPES.REQUEST_FOR}`, {
     method: 'GET',
   })
     .then((res) => res.data)

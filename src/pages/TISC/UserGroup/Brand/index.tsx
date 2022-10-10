@@ -7,13 +7,14 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { ReactComponent as ActionUnreadedIcon } from '@/assets/icons/action-unreaded-icon.svg';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import {
   createAssignTeamByBrandId,
   getBrandPagination,
   getListAssignTeamByBrandId,
 } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
-import { getFullName, showImageUrl } from '@/helper/utils';
+import { getFullName, setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 import { isEmpty, isEqual } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -36,6 +37,8 @@ import { inviteBrand } from '@/features/team-profiles/api';
 import styles from '@/features/user-group/styles/brand.less';
 
 const BrandList: React.FC = () => {
+  // set width for each cell
+  useAutoExpandNestedTableColumn(0);
   const tableRef = useRef<any>();
 
   // get each assign team
@@ -129,7 +132,7 @@ const BrandList: React.FC = () => {
     {
       title: '',
       dataIndex: 'logo',
-      width: 36,
+      width: '5%',
       render: (value) => {
         if (value) {
           return <img src={showImageUrl(value)} style={{ width: 18 }} />;
@@ -190,6 +193,7 @@ const BrandList: React.FC = () => {
     {
       title: 'Status',
       dataIndex: 'status',
+      width: '5%',
       sorter: true,
       render: (_v, record) => {
         return (
@@ -202,6 +206,7 @@ const BrandList: React.FC = () => {
     {
       title: 'Action',
       dataIndex: 'action',
+      width: '5%',
       align: 'center',
       render: (_v, record: any) => (
         <ActionMenu
@@ -229,7 +234,7 @@ const BrandList: React.FC = () => {
           rightAction={
             <CustomPlusButton onClick={() => pushTo(PATH.tiscUserGroupBrandEntryFrom)} />
           }
-          columns={TableColumns}
+          columns={setDefaultWidthForEachColumn(TableColumns, 11)}
           ref={tableRef}
           fetchDataFunc={getBrandPagination}
           hasPagination

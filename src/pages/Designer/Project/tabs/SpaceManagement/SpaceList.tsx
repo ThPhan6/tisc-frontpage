@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { deleteProjectSpace, getProjectSpaceListPagination } from '@/features/project/services';
 import { confirmDelete } from '@/helper/common';
-import { formatNumberDisplay } from '@/helper/utils';
+import { formatNumberDisplay, setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import type { TableColumnItem } from '@/components/Table/types';
 import type {
@@ -15,9 +15,6 @@ import type {
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
-
-const MAIN_COL_WIDTH = 200;
-const SUB_COL_WIDTH = 150;
 
 interface SpaceListProps {
   handleUpdateSpace: (record: ProjectSpaceZone) => void;
@@ -54,7 +51,6 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
     {
       title: 'Room Size',
       dataIndex: 'room_size',
-      width: 106,
       noBoxShadow: true,
       render: (value, record) => {
         if (value) {
@@ -66,7 +62,6 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
     {
       title: 'Quantity',
       dataIndex: 'quantity',
-      width: '5%',
       align: 'center',
       noBoxShadow: true,
     },
@@ -97,7 +92,6 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
       sorter: {
         multiple: 1,
       },
-      width: MAIN_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
@@ -107,7 +101,6 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
     {
       title: 'Areas',
       dataIndex: 'area_coumn',
-      width: SUB_COL_WIDTH,
       sorter: {
         multiple: 2,
       },
@@ -116,7 +109,6 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
     {
       title: 'Rooms',
       dataIndex: 'room_column',
-      width: 106,
       sorter: {
         multiple: 3,
       },
@@ -136,7 +128,6 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
     {
       title: 'Room ID',
       dataIndex: 'room_id_column',
-      width: 106,
       sorter: {
         multiple: 4,
       },
@@ -182,13 +173,11 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
     {
       title: 'Room',
       dataIndex: 'room_name',
-      width: 106,
       noBoxShadow: true,
     },
     {
       title: 'Room ID',
       dataIndex: 'room_id',
-      width: 106,
       noBoxShadow: true,
     },
     ...GeneralColumns,
@@ -204,13 +193,11 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
     {
       title: 'Zone',
       dataIndex: 'zone',
-      width: MAIN_COL_WIDTH,
       noBoxShadow: true,
     },
     {
       title: 'Areas',
       dataIndex: 'name',
-      width: SUB_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
@@ -218,19 +205,15 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
     },
     {
       title: 'Room',
-      width: 106,
     },
     {
       title: 'Room ID',
-      width: 106,
     },
     {
       title: 'Room Size',
-      width: 106,
     },
     {
       title: 'Quantity',
-      width: '5%',
       align: 'center',
     },
     {
@@ -247,13 +230,11 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
     {
       title: 'Zone',
       dataIndex: 'zone',
-      width: MAIN_COL_WIDTH,
       noBoxShadow: true,
     },
     {
       title: 'Areas',
       dataIndex: 'name',
-      width: SUB_COL_WIDTH,
       noBoxShadow: true,
     },
     ...SubGeneralColumns,
@@ -267,7 +248,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
     <>
       <CustomTable
         rightAction={<CustomPlusButton />}
-        columns={ZoneColumns}
+        columns={setDefaultWidthForEachColumn(ZoneColumns, 6)}
         ref={tableRef}
         fetchDataFunc={getProjectSpaceListPagination}
         multiSort={{
@@ -276,12 +257,12 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
           [combinableSorter.key]: combinableSorter.value,
         }}
         expandable={GetExpandableTableConfig({
-          columns: AreaColumns,
+          columns: setDefaultWidthForEachColumn(AreaColumns, 6),
           childrenColumnName: 'areas',
           level: 2,
 
           expandable: GetExpandableTableConfig({
-            columns: RoomColumns,
+            columns: setDefaultWidthForEachColumn(RoomColumns, 6),
             childrenColumnName: 'rooms',
             level: 3,
           }),

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Col, Row } from 'antd';
 
@@ -9,12 +9,15 @@ import {
   getUnitTypeList,
 } from '@/features/project/services';
 import { getAllMaterialCode } from '@/features/user-group/services';
-import { validateFloatNumber } from '@/helper/utils';
+import { getSelectedOptions, validateFloatNumber } from '@/helper/utils';
 
-import { CodeOrderRequestParams, OnChangeSpecifyingProductFnc } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { CustomRadioValue, RadioValue } from '@/components/CustomRadio/types';
 import { FormGroupProps } from '@/components/Form/types';
+import { setPartialProductSpecifiedData } from '@/features/product/reducers';
+import { SpecifiedDetail } from '@/features/product/types';
+import { OrderMethod } from '@/features/project/types';
+import store, { useAppSelector } from '@/reducers';
 
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { CustomRadio } from '@/components/CustomRadio';
@@ -29,23 +32,15 @@ import styles from './styles/code-order.less';
 const ORDER_METHODS: RadioValue[] = [
   {
     label: 'Direct Purchase',
-    value: 1,
+    value: OrderMethod['Direct Purchase'],
   },
   {
     label: 'Custom Order',
-    value: 2,
+    value: OrderMethod['Custom Order'],
   },
 ];
 
-interface CodeOrderTabProps {
-  codeOrderState: CodeOrderRequestParams;
-  onChangeSpecifyingState: OnChangeSpecifyingProductFnc;
-}
-
-export const getSelectedOptions = (options: CheckboxValue[], selectedIds: string[]) =>
-  options.filter((opt) => selectedIds.includes(String(opt.value)) || opt.value === 'other');
-
-const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyingState }) => {
+const CodeOrderTab = () => {
   const [materialCodeOpts, setMaterialCodeOtps] = useState<CustomRadioValue[]>([]);
   const [unitTypeOtps, setUnitTypeOtps] = useState<CheckboxValue[]>([]);
   const [requirements, setRequirements] = useState<CheckboxValue[]>([]);
@@ -54,35 +49,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
 
   const [selectedUnit, setSelectedUnit] = useState<RadioValue | null>(null);
 
-  const {
-    description,
-    material_code_id,
-    order_method,
-    quantity,
-    suffix_code,
-    unit_type_id,
-    special_instructions,
-    instruction_type_ids,
-    requirement_type_ids,
-    finish_schedules,
-  } = codeOrderState;
-
-  const selectedInstructions = getSelectedOptions(instructions, instruction_type_ids);
-  const selectedRequirements = getSelectedOptions(requirements, requirement_type_ids);
-  const selectedFinishSchedules = getSelectedOptions(finishSchedules, finish_schedules);
-
-  const unitType = unit_type_id
-    ? unitTypeOtps.find((el) => el.value === unit_type_id) || selectedUnit
-    : undefined;
-
-  const materialCode = material_code_id
-    ? materialCodeOpts.find((el) => el.value === material_code_id)
-    : undefined;
-
-  const scheduleValues = finish_schedules
-    .filter((item, index) => finish_schedules.indexOf(item) === index)
-    ?.map((schId) => finishSchedules.find((el) => el.value === schId)?.label || schId)
-    .join(', ');
+  const specifiedDetail = useAppSelector((state) => state.product.details.specifiedDetail);
 
   useEffect(() => {
     getAllMaterialCode().then((res) => {
@@ -121,9 +88,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
         })),
       );
     });
-  }, []);
 
-  useEffect(() => {
     getFinishScheduleList().then((res) => {
       setFinishSchedule(
         res.map((el) => ({
@@ -132,7 +97,45 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
         })),
       );
     });
-  }, [finish_schedules]);
+  }, []);
+
+  if (!specifiedDetail) {
+    return null;
+  }
+
+  const {
+    description,
+    material_code_id,
+    order_method,
+    quantity,
+    suffix_code,
+    unit_type_id,
+    special_instructions = [],
+    instruction_type_ids = [],
+    requirement_type_ids = [],
+    finish_schedules = [],
+  } = specifiedDetail;
+
+  const selectedInstructions = getSelectedOptions(instructions, instruction_type_ids);
+  const selectedRequirements = getSelectedOptions(requirements, requirement_type_ids);
+  const selectedFinishSchedules = getSelectedOptions(finishSchedules, finish_schedules);
+
+  const unitType = unit_type_id
+    ? unitTypeOtps.find((el) => el.value === unit_type_id) || selectedUnit
+    : undefined;
+
+  const materialCode = material_code_id
+    ? materialCodeOpts.find((el) => el.value === material_code_id)
+    : undefined;
+
+  const scheduleValues = finish_schedules
+    .filter((item, index) => finish_schedules.indexOf(item) === index)
+    ?.map((schId) => finishSchedules.find((el) => el.value === schId)?.label || schId)
+    .join(', ');
+
+  const onChangeState = (newState: Partial<SpecifiedDetail>) => {
+    store.dispatch(setPartialProductSpecifiedData(newState));
+  };
 
   const formGroupProps: Partial<FormGroupProps> = {
     layout: 'vertical',
@@ -156,7 +159,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
                   isRadioList
                   value={material_code_id}
                   onChange={(e) =>
-                    onChangeSpecifyingState({
+                    onChangeState({
                       material_code_id: String(e.value),
                     })
                   }
@@ -171,7 +174,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
             placeholder="suffix e.g.1,2../a,b.."
             borderBottomColor="light"
             value={suffix_code}
-            onChange={(e) => onChangeSpecifyingState({ suffix_code: e.target.value })}
+            onChange={(e) => onChangeState({ suffix_code: e.target.value })}
             containerClass={styles.inputColor}
           />
         </Col>
@@ -182,7 +185,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
               placeholder="e.g. Living room coffee table..."
               borderBottomColor="light"
               value={description}
-              onChange={(e) => onChangeSpecifyingState({ description: e.target.value })}
+              onChange={(e) => onChangeState({ description: e.target.value })}
               containerClass={styles.inputColor}
             />
           </FormGroup>
@@ -209,7 +212,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
                   checkboxClass={styles.inputColor}
                   selected={selectedFinishSchedules}
                   onChange={(option) => {
-                    onChangeSpecifyingState({
+                    onChangeState({
                       finish_schedules: option?.map((opt) =>
                         String(opt.value === 'other' ? opt.label : opt.value),
                       ),
@@ -226,7 +229,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
             <CustomInput
               borderBottomColor="light"
               value={quantity}
-              onChange={(e) => onChangeSpecifyingState({ quantity: e.target.value })}
+              onChange={(e) => onChangeState({ quantity: Number(e.target.value) })}
               inputValidation={validateFloatNumber}
               containerClass={styles.inputColor}
             />
@@ -253,7 +256,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
                 containerStyle={{ padding: 0 }}
                 onChange={(e) => {
                   setSelectedUnit(e);
-                  onChangeSpecifyingState({
+                  onChangeState({
                     unit_type_id: String(e.value === 'other' ? e.label : e.value),
                   });
                 }}
@@ -270,7 +273,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
               options={ORDER_METHODS}
               value={order_method}
               onChange={(e) =>
-                onChangeSpecifyingState({
+                onChangeState({
                   order_method: Number(e.value),
                 })
               }
@@ -284,7 +287,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
               options={requirements}
               selected={selectedRequirements}
               onChange={(options) => {
-                onChangeSpecifyingState({
+                onChangeState({
                   requirement_type_ids: options.map((opt) =>
                     String(opt.value === 'other' ? opt.label : opt.value),
                   ),
@@ -307,7 +310,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
               options={instructions}
               selected={selectedInstructions}
               onChange={(options) => {
-                onChangeSpecifyingState({
+                onChangeState({
                   instruction_type_ids: options.map((opt) =>
                     String(opt.value === 'other' ? opt.label : opt.value),
                   ),
@@ -327,7 +330,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ codeOrderState, onChangeSpecifyin
               showCount
               maxLength={250}
               value={special_instructions}
-              onChange={(e) => onChangeSpecifyingState({ special_instructions: e.target.value })}
+              onChange={(e) => onChangeState({ special_instructions: e.target.value })}
             />
           </FormGroup>
         </Col>

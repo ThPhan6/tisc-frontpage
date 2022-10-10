@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 
+import { COLUMN_WIDTH } from '@/constants/util';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { useParams } from 'umi';
 
@@ -17,16 +18,20 @@ import {
 } from '@/features/project/services';
 import { confirmDelete } from '@/helper/common';
 import { useBoolean } from '@/helper/hook';
-import { showImageUrl } from '@/helper/utils';
+import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
+import {
+  setPartialProductSpecifiedData,
+  setReferToDesignDocument,
+} from '@/features/product/reducers';
 import { ProductItem } from '@/features/product/types';
 import {
-  AssigningStatus,
   ConsideredProduct,
-  ConsideredProjectArea,
   ConsideredProjectRoom,
+  ProductConsiderStatus,
 } from '@/features/project/types';
+import store from '@/reducers';
 
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
 import ActionButton from '@/components/Button/ActionButton';
@@ -36,18 +41,6 @@ import { BodyText } from '@/components/Typography';
 import { CustomDropDown } from '@/features/product/components';
 import ProductCard from '@/features/product/components/ProductCard';
 import cardStyles from '@/features/product/components/ProductCard.less';
-
-const COL_WIDTH = {
-  zones: 165,
-  areas: 88,
-  rooms: 96,
-  image: 65,
-  brand: 100,
-  collection: 128,
-  product: 171,
-  assignedBy: 169,
-  status: 130,
-};
 
 const ProductConsidered: React.FC = () => {
   useAutoExpandNestedTableColumn(3, {
@@ -67,24 +60,24 @@ const ProductConsidered: React.FC = () => {
 
     const menuItems: ItemType[] = [
       {
-        key: AssigningStatus['Re-considered'],
+        key: ProductConsiderStatus['Re-considered'],
         label: 'Re-consider',
         icon: <CheckIcon style={{ width: 16, height: 16 }} />,
-        disabled: record.status !== AssigningStatus.Unlisted,
+        disabled: record.specifiedDetail?.consider_status !== ProductConsiderStatus.Unlisted,
         onClick: () => {
-          updateProductConsiderStatus(record.considered_id, {
-            status: AssigningStatus['Re-considered'],
+          updateProductConsiderStatus(record.specifiedDetail?.id, {
+            consider_status: ProductConsiderStatus['Re-Considered'],
           }).then((success) => (success ? tableRef.current?.reload() : undefined));
         },
       },
       {
-        key: AssigningStatus.Unlisted,
+        key: ProductConsiderStatus.Unlisted,
         label: 'Unlist',
         icon: <CancelIcon style={{ width: 16, height: 16 }} />,
-        disabled: record.status === AssigningStatus.Unlisted,
+        disabled: record.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted,
         onClick: () => {
-          updateProductConsiderStatus(record.considered_id, {
-            status: AssigningStatus.Unlisted,
+          updateProductConsiderStatus(record.specifiedDetail?.id, {
+            consider_status: ProductConsiderStatus.Unlisted,
           }).then((success) => (success ? tableRef.current?.reload() : undefined));
         },
       },
@@ -98,12 +91,12 @@ const ProductConsidered: React.FC = () => {
         items={menuItems}
         menuStyle={{ width: 160, height: 'auto' }}
         labelProps={{ className: 'flex-between' }}>
-        {record.status_name}
+        {ProductConsiderStatus[record.specifiedDetail.consider_status]}
       </CustomDropDown>
     );
   };
 
-  const renderActionCell = (_value: any, record: any) => {
+  const renderActionCell = (_value: any, record: ProductItem & { rooms?: any }) => {
     if (record.rooms) {
       return null;
     }
@@ -112,14 +105,26 @@ const ProductConsidered: React.FC = () => {
         actionItems={[
           {
             type: 'specify',
-            disabled: record.status === AssigningStatus.Unlisted,
-            onClick: () => setSpecifyingProduct(record),
+            disabled: record.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted,
+            onClick: () => {
+              setSpecifyingProduct(record);
+              if (record.specifiedDetail) {
+                store.dispatch(setPartialProductSpecifiedData(record.specifiedDetail));
+              }
+              store.dispatch(
+                setReferToDesignDocument(
+                  typeof record.specifiedDetail?.specification?.is_refer_document === 'boolean'
+                    ? record.specifiedDetail?.specification?.is_refer_document
+                    : true,
+                ),
+              );
+            },
           },
           {
             type: 'deleted',
             onClick: () =>
               confirmDelete(() => {
-                removeProductFromProject(record.considered_id).then((success) =>
+                removeProductFromProject(record.specifiedDetail?.id ?? '').then((success) =>
                   success ? tableRef.current?.reload() : undefined,
                 );
               }),
@@ -132,22 +137,25 @@ const ProductConsidered: React.FC = () => {
   const disabledClassname = gridView.value ? 'disabled' : undefined;
 
   const onCellUnlisted = (data: any) => ({
-    className: data.status === AssigningStatus.Unlisted ? 'light-content' : undefined,
+    className:
+      data.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted
+        ? 'light-content'
+        : undefined,
   });
 
   const getSameColumns = (noBoxShadow?: boolean) => {
     const SameColumn: TableColumnItem<any>[] = [
       {
         title: 'Image',
-        dataIndex: 'image',
-        width: COL_WIDTH.image,
+        dataIndex: 'images',
+        width: '5%',
         align: 'center',
         noBoxShadow: noBoxShadow,
         className: disabledClassname,
         render: (value) =>
-          value ? (
+          value?.[0] ? (
             <img
-              src={showImageUrl(value)}
+              src={showImageUrl(value[0])}
               style={{ width: 24, height: 24, objectFit: 'contain' }}
             />
           ) : null,
@@ -155,21 +163,19 @@ const ProductConsidered: React.FC = () => {
       {
         title: 'Brand',
         dataIndex: 'brand_order',
-        width: COL_WIDTH.brand,
         noBoxShadow: noBoxShadow,
         className: disabledClassname,
         sorter: {
           multiple: 4,
         },
-        render: (_value, record) => record.brand_name,
+        render: (_value, record) => record.brand?.name,
         onCell: onCellUnlisted,
       },
       {
         title: 'Collection',
         className: disabledClassname,
-        dataIndex: 'collection_name',
-        width: COL_WIDTH.collection,
         noBoxShadow: noBoxShadow,
+        render: (_value, record) => record.collection?.name,
         onCell: onCellUnlisted,
       },
     ];
@@ -181,7 +187,6 @@ const ProductConsidered: React.FC = () => {
       title: 'Zones',
       dataIndex: 'zone_order',
       sorter: { multiple: 1 },
-      width: COL_WIDTH.zones,
       isExpandable: true,
       render: (_value, record) => <span>{record.name}</span>,
     },
@@ -191,12 +196,10 @@ const ProductConsidered: React.FC = () => {
       sorter: {
         multiple: 2,
       },
-      width: COL_WIDTH.areas,
     },
     {
       title: 'Rooms',
       dataIndex: 'room_order',
-      width: COL_WIDTH.rooms,
       sorter: {
         multiple: 4,
       },
@@ -205,7 +208,6 @@ const ProductConsidered: React.FC = () => {
     {
       title: 'Product',
       className: disabledClassname,
-      width: COL_WIDTH.product,
     },
     {
       title: 'Assigned By',
@@ -214,7 +216,7 @@ const ProductConsidered: React.FC = () => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
-      width: COL_WIDTH.status,
+      width: COLUMN_WIDTH.status,
       hidden: gridView.value,
       align: 'center',
     },
@@ -226,10 +228,9 @@ const ProductConsidered: React.FC = () => {
     },
   ];
 
-  const AreaColumns: TableColumnItem<ConsideredProjectArea>[] = [
+  const AreaColumns: TableColumnItem<any>[] = [
     {
       title: 'Zones',
-      width: COL_WIDTH.zones,
       noBoxShadow: true,
       onCell: (data) => ({
         className: data.rooms ? '' : 'no-box-shadow',
@@ -238,7 +239,6 @@ const ProductConsidered: React.FC = () => {
     {
       title: 'Areas',
       noExpandIfEmptyData: 'rooms',
-      width: COL_WIDTH.areas,
       isExpandable: true,
       render: (_value, record) => <span>{record.name}</span>,
       onCell: (data) => ({
@@ -247,7 +247,6 @@ const ProductConsidered: React.FC = () => {
     },
     {
       title: 'Rooms',
-      width: COL_WIDTH.rooms,
       onCell: (data) => ({
         className: data.rooms ? '' : 'no-box-shadow',
       }),
@@ -255,7 +254,6 @@ const ProductConsidered: React.FC = () => {
     ...getSameColumns(false),
     {
       title: 'Product',
-      width: COL_WIDTH.product,
       render: (_value, record) => (record.rooms ? null : record.name), // For Entire project
       onCell: onCellUnlisted,
     },
@@ -268,8 +266,8 @@ const ProductConsidered: React.FC = () => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
+      width: COLUMN_WIDTH.status,
       dataIndex: 'status_name',
-      width: COL_WIDTH.status,
       hidden: gridView.value,
       render: renderStatusDropdown, // For Entire project
     },
@@ -284,24 +282,20 @@ const ProductConsidered: React.FC = () => {
   const RoomColumns: TableColumnItem<ConsideredProjectRoom>[] = [
     {
       title: 'Zones',
-      width: COL_WIDTH.zones,
       noBoxShadow: true,
     },
     {
       title: 'Areas',
-      width: COL_WIDTH.areas,
       noBoxShadow: true,
     },
     {
       title: 'Rooms',
-      width: COL_WIDTH.rooms,
       isExpandable: true,
       render: (_value, record) => <span>{record.room_name}</span>,
     },
     ...getSameColumns(false),
     {
       title: 'Product',
-      width: COL_WIDTH.product,
     },
     {
       title: 'Assigned By',
@@ -309,7 +303,7 @@ const ProductConsidered: React.FC = () => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
-      width: COL_WIDTH.status,
+      width: COLUMN_WIDTH.status,
       hidden: gridView.value,
     },
     {
@@ -323,26 +317,22 @@ const ProductConsidered: React.FC = () => {
     {
       title: 'Zones',
       noBoxShadow: true,
-      width: COL_WIDTH.zones,
       onCell: () => ({
         colSpan: gridView.value ? 9 : 1,
       }),
     },
     {
       title: 'Areas',
-      width: COL_WIDTH.areas,
       noBoxShadow: true,
     },
     {
       title: 'Rooms',
-      width: COL_WIDTH.rooms,
       noBoxShadow: true,
     },
     ...getSameColumns(true),
     {
       title: 'Product',
       dataIndex: 'name',
-      width: COL_WIDTH.product,
       noBoxShadow: true,
       onCell: onCellUnlisted,
     },
@@ -355,7 +345,7 @@ const ProductConsidered: React.FC = () => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center', noBoxShadow: true },
     {
       title: 'Status',
-      width: COL_WIDTH.status,
+      width: COLUMN_WIDTH.status,
       hidden: gridView.value,
       noBoxShadow: true,
       render: renderStatusDropdown,
@@ -423,7 +413,7 @@ const ProductConsidered: React.FC = () => {
       </ProjectTabContentHeader>
 
       <CustomTable
-        columns={filteredColumns(ZoneColumns)}
+        columns={filteredColumns(setDefaultWidthForEachColumn(ZoneColumns, 7))}
         ref={tableRef}
         fetchDataFunc={getConsideredProducts}
         extraParams={{ projectId: params.id }}
@@ -435,7 +425,7 @@ const ProductConsidered: React.FC = () => {
           brand_order: 'brand_order',
         }}
         expandable={GetExpandableTableConfig({
-          columns: filteredColumns(AreaColumns),
+          columns: filteredColumns(setDefaultWidthForEachColumn(AreaColumns, 7)),
           childrenColumnName: 'areas',
           subtituteChildrenColumnName: 'products',
           level: 2,
@@ -445,12 +435,12 @@ const ProductConsidered: React.FC = () => {
           renderGridContent,
 
           expandable: GetExpandableTableConfig({
-            columns: filteredColumns(RoomColumns),
+            columns: filteredColumns(setDefaultWidthForEachColumn(RoomColumns, 7)),
             childrenColumnName: 'rooms',
             level: 3,
 
             expandable: GetExpandableTableConfig({
-              columns: filteredColumns(ProductColumns),
+              columns: filteredColumns(setDefaultWidthForEachColumn(ProductColumns, 7)),
               childrenColumnName: 'products',
               level: 4,
 

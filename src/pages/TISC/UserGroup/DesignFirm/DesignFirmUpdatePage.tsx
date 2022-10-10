@@ -35,7 +35,7 @@ import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummar
 import { ProfileDetail } from '@/features/user-group/components/ProfileDetail';
 import ProjectDesign from '@/features/user-group/components/ProjectDesign';
 import TabDetail from '@/features/user-group/components/TabDetail';
-import TeamDetail from '@/features/user-group/components/Team';
+import TeamDetail from '@/features/user-group/components/TeamDetail';
 import LabelToolTip from '@/features/user-group/components/TooltipLabel';
 
 import styles from './index.less';

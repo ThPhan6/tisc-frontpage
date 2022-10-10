@@ -276,6 +276,15 @@ export const MESSAGE_NOTIFICATION = {
   RETRIEVE_FAVOURITE_PRODUCT_ERROR: 'Retrieve favourite product error',
   SKIP_FAVOURITE_SUCCESS: 'Skipped Successfully',
   SKIP_FAVOURITE_ERROR: 'Failed to skip',
+
+  //material/product code
+  CREATE_MATERIAL_PRODUCT_CODE_SUCCESS: 'Create material product code successfully',
+  CREATE_MATERIAL_PRODUCT_CODE_ERROR: 'Create material product code error',
+  GET_ONE_MATERIAL_PRODUCT_CODE_ERROR: 'Get one material product code error',
+  DELETE_MATERIAL_PRODUCT_CODE_SUCCESS: 'Delete material product code successfully',
+  DELETE_MATERIAL_PRODUCT_CODE_ERROR: 'Delete material product code error',
+  UPDATE_MATERIAL_PRODUCT_CODE_SUCCESS: 'Update material product code successfully',
+  UPDATE_MATERIAL_PRODUCT_CODE_ERROR: 'Update material product code error',
 };
 
 export const MESSAGE_TOOLTIP = {

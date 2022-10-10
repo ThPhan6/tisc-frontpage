@@ -6,6 +6,7 @@ import { useAttributeLocation } from './hooks/location';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
+import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { deleteAttribute, getProductAttributePagination } from '@/services';
 
 import type { TableColumnItem } from '@/components/Table/types';
@@ -15,7 +16,6 @@ import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 
-const MAIN_COL_WIDTH = 200;
 const AttributeList: React.FC = () => {
   useAutoExpandNestedTableColumn(1);
   const tableRef = useRef<any>();
@@ -41,7 +41,6 @@ const AttributeList: React.FC = () => {
       sorter: {
         multiple: 1,
       },
-      width: MAIN_COL_WIDTH,
       isExpandable: true,
       render: (value) => {
         return <span className="text-uppercase">{value}</span>;
@@ -50,7 +49,6 @@ const AttributeList: React.FC = () => {
     {
       title: 'Attribute Name',
       dataIndex: 'attribute_name',
-      width: 150,
       sorter: {
         multiple: 2,
       },
@@ -58,7 +56,6 @@ const AttributeList: React.FC = () => {
     {
       title: 'Content Type',
       dataIndex: 'content_type',
-      width: 136,
       sorter: {
         multiple: 3,
       },
@@ -95,13 +92,11 @@ const AttributeList: React.FC = () => {
     {
       title: 'Attribute Group',
       dataIndex: 'attribute_group',
-      width: MAIN_COL_WIDTH,
       noBoxShadow: true,
     },
     {
       title: 'Attribute Name',
       dataIndex: 'name',
-      width: 150,
       noBoxShadow: true,
       render: (value) => {
         return <span className="text-capitalize">{value}</span>;
@@ -110,7 +105,6 @@ const AttributeList: React.FC = () => {
     {
       title: 'Content Type',
       dataIndex: 'content_type',
-      width: 136,
       noBoxShadow: true,
     },
     {
@@ -150,7 +144,7 @@ const AttributeList: React.FC = () => {
       <CustomTable
         rightAction={<CustomPlusButton onClick={() => pushTo(`${activePath}/create`)} />}
         title={attributeLocation.NAME}
-        columns={MainColumns}
+        columns={setDefaultWidthForEachColumn(MainColumns, 3)}
         ref={tableRef}
         fetchDataFunc={getProductAttributePagination}
         extraParams={{
@@ -162,7 +156,7 @@ const AttributeList: React.FC = () => {
           content_type: 'content_type_order',
         }}
         expandable={GetExpandableTableConfig({
-          columns: SubColumns,
+          columns: setDefaultWidthForEachColumn(SubColumns, 3),
           childrenColumnName: 'subs',
           level: 2,
         })}
