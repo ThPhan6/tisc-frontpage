@@ -4,6 +4,7 @@ import {
   FilterStatusIcons,
   FilterValues,
   GlobalFilter,
+  ProjectTrackingFilters,
 } from '@/pages/Designer/Project/constants/filter';
 import { PageContainer } from '@ant-design/pro-layout';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
@@ -16,6 +17,7 @@ import { ReactComponent as MidPriorityIcon } from '@/assets/icons/mid-priority-i
 import { ReactComponent as NonPriorityIcon } from '@/assets/icons/non-priority-icon.svg';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 
+import { useAssignTeam } from '@/components/AssignTeam/hook';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { getProjectPagination } from '@/features/project/services';
 import { getBrandSummary } from '@/features/user-group/services';
@@ -24,10 +26,9 @@ import { isEmpty } from 'lodash';
 
 import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import { TableColumnItem } from '@/components/Table/types';
-import { ProjecTrackingList, ProjectPriority } from '@/types/project-tracking.type';
+import { ProjecTrackingList } from '@/types/project-tracking.type';
 
 import { LegendModal } from '../../../components/LegendModal/LegendModal';
-// import AssignTeam from '@/components/AssignTeam';
 import { MenuSummary } from '@/components/MenuSummary';
 import CustomTable from '@/components/Table';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
@@ -52,6 +53,7 @@ const PriorityIcons = {
 const ProjectTracking = () => {
   useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
   const tableRef = useRef<any>();
+  const { AssignTeam, showAssignTeams } = useAssignTeam(tableRef);
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
   const [openInformationModal, setOpenInformationModal] = useState(false);
   const [summaryData, setSummaryData] = useState<DataMenuSummaryProps[]>([]);
@@ -64,28 +66,32 @@ const ProjectTracking = () => {
     });
   }, []);
 
+  useEffect(() => {
+    tableRef.current.reload();
+  }, [selectedFilter]);
+
   const renderPriorityDropdown = (_value: any, record: any) => {
     const menuItems: ItemType[] = [
       {
-        key: ProjectPriority['Non'],
+        key: Priority['Non'],
         label: 'Non',
         icon: <NonPriorityIcon />,
         onClick: () => {},
       },
       {
-        key: ProjectPriority['High priority'],
+        key: Priority['High priority'],
         label: 'High priority',
         icon: <HighPriorityIcon />,
         onClick: () => {},
       },
       {
-        key: ProjectPriority['Mid priority'],
+        key: Priority['Mid priority'],
         label: 'Mid priority',
         icon: <MidPriorityIcon />,
         onClick: () => {},
       },
       {
-        key: ProjectPriority['Low priority'],
+        key: Priority['Low priority'],
         label: 'Low priority',
         icon: <LowPriorityIcon />,
         onClick: () => {},
@@ -169,10 +175,10 @@ const ProjectTracking = () => {
       align: 'center',
       render: (_value, record) => {
         if (isEmpty(record.assign_teams)) {
-          return <UserAddIcon className="icon-align" />;
+          return <UserAddIcon className="icon-align" onClick={showAssignTeams(record)} />;
         }
         return (
-          <div className={styles.asignTeamMember}>
+          <div className={styles.asignTeamMember} onClick={showAssignTeams(record)}>
             {record.assign_teams.map((teamProfile, key) => (
               <TeamIcon key={key} avatar={teamProfile.avatar} name={teamProfile.name} />
             ))}
@@ -198,6 +204,7 @@ const ProjectTracking = () => {
               <ProjectFilter
                 selectedFilter={selectedFilter}
                 setSelectedFilter={setSelectedFilter}
+                data={ProjectTrackingFilters}
               />
             </div>
           );
@@ -225,13 +232,7 @@ const ProjectTracking = () => {
         />
       </PageContainer>
       <LegendModal visible={openInformationModal} setVisible={setOpenInformationModal} />
-      {/* <AssignTeam
-        visible={openAssignTeam}
-        setVisible={setOpenAssignTeam}
-        selected={selected}
-        setSelected={handleSubmitAssignTeam}
-        teams={assignTeam}
-      /> */}
+      <AssignTeam />
     </div>
   );
 };

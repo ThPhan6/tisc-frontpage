@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { FilterStatusIcons, FilterValues, GlobalFilter } from './constants/filter';
+import { FilterStatusIcons, FilterValues, GlobalFilter, ProjectFilters } from './constants/filter';
 import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
 import { message } from 'antd';
@@ -177,6 +177,7 @@ const ProjectList: React.FC = () => {
             selectedFilter={selectedFilter}
             setSelectedFilter={setSelectedFilter}
             summaryData={summaryData}
+            data={ProjectFilters}
           />
         );
       }}>

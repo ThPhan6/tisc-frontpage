@@ -16,10 +16,3 @@ export interface ProjecTrackingList {
   }[];
   subscription: number;
 }
-
-export enum ProjectPriority {
-  'Non',
-  'High priority',
-  'Mid priority',
-  'Low priority',
-}

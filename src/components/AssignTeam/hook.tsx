@@ -8,7 +8,7 @@ import { getFullName } from '@/helper/utils';
 import { isEqual, map } from 'lodash';
 
 import { CheckboxValue } from '../CustomCheckbox/types';
-import { AssignTeamForm, BrandListItem, MemberAssignTeam } from '@/features/user-group/types';
+import { AssignTeamForm, MemberAssignTeam } from '@/features/user-group/types';
 
 import Popover from '../Modal/Popover';
 import { RenderMemberHeader } from '../RenderHeaderLabel';
@@ -16,7 +16,7 @@ import styles from './index.less';
 
 export const useAssignTeam = (tableRef: any) => {
   // get each assign team
-  const [recordAssignTeam, setRecordAssignTeam] = useState<BrandListItem>();
+  const [recordAssignTeam, setRecordAssignTeam] = useState<any>();
 
   const [visible, setVisible] = useState<boolean>(false);
   // get list assign team to display inside popup
@@ -24,16 +24,16 @@ export const useAssignTeam = (tableRef: any) => {
   // seleted member
   const [selected, setSelected] = useState<CheckboxValue[]>([]);
 
-  const showAssignTeams = (brandInfo: BrandListItem) => () => {
+  const showAssignTeams = (brandInfo: any) => async () => {
     // get list team
-    getListAssignTeamByBrandId(brandInfo.id).then((res) => {
+    await getListAssignTeamByBrandId(brandInfo.id).then((res) => {
       if (res) {
         /// set assignTeam state to display
         setAssignTeam(res);
 
         // show user selected
         setSelected(
-          brandInfo.assign_team.map((member) => {
+          brandInfo.assign_team.map((member: any) => {
             return {
               label: '',
               value: member.id,
@@ -68,7 +68,7 @@ export const useAssignTeam = (tableRef: any) => {
     if (recordAssignTeam?.id) {
       // dont call api if havent changed
       const checkedIds = checkedData.map((check) => check.value);
-      const assignedTeamIds = recordAssignTeam.assign_team.map((team) => team.id);
+      const assignedTeamIds = recordAssignTeam.assign_team.map((team: any) => team.id);
       const noSelectionChange = isEqual(checkedIds, assignedTeamIds);
       if (noSelectionChange) return;
 
@@ -96,7 +96,6 @@ export const useAssignTeam = (tableRef: any) => {
       });
     }
   };
-  console.log('visible', visible);
   const AssignTeam = () => (
     <Popover
       title="ASSIGN TEAM"

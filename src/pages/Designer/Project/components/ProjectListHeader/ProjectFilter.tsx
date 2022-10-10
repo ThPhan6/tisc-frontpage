@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { GlobalFilter, ProjectFilters } from '../../constants/filter';
+import { GlobalFilter } from '../../constants/filter';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
@@ -15,9 +15,14 @@ import styles from '../../styles/project-filter.less';
 export interface ProjectFilterProps {
   selectedFilter: ProjectFilterValueProps;
   setSelectedFilter: (filter: ProjectFilterValueProps) => void;
+  data: ProjectFilterValueProps[];
 }
 
-const ProjectFilter: React.FC<ProjectFilterProps> = ({ selectedFilter, setSelectedFilter }) => {
+const ProjectFilter: React.FC<ProjectFilterProps> = ({
+  selectedFilter,
+  setSelectedFilter,
+  data,
+}) => {
   const handleOnChangeFilter = (changedFilter: ProjectFilterValueProps) => {
     setSelectedFilter(changedFilter);
   };
@@ -43,7 +48,7 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({ selectedFilter, setSelect
         align={{ offset: [0, 7] }}
         placement="bottomRight"
         containerClass={styles.filterDropdown}
-        items={ProjectFilters.map((item) => {
+        items={data.map((item) => {
           return {
             onClick: () => handleOnChangeFilter(item),
             label: (
