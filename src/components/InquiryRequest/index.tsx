@@ -6,8 +6,7 @@ import { getAllProjects } from '@/features/project/services';
 import {
   createGeneralInquiry,
   createProjectRequest,
-  getInquiryFor,
-  getRequestFor,
+  getInquiryRequestFor,
 } from '@/features/project/services/project-related.api';
 import { useBoolean } from '@/helper/hook';
 import { getValueByCondition } from '@/helper/utils';
@@ -117,16 +116,13 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
       return;
     }
 
-    getInquiryFor().then((res) => {
+    getInquiryRequestFor().then((res) => {
       setInquiryForData(
         res.map((el) => ({
           label: el.name,
           value: el.id,
         })),
       );
-    });
-
-    getRequestFor().then((res) => {
       setRequestForData(
         res.map((el) => ({
           label: el.name,
@@ -318,11 +314,11 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
       submitButtonStatus={submitButtonStatus.value}
       onFormSubmit={handleSubmit}>
       <BrandProductBasicHeader
-        image={product.images?.[0] || product.image}
+        image={product.images?.[0] || ''}
         logo={product.brand?.logo}
-        text_1={product.brand_name || product.brand?.name}
-        text_2={product.name}
-        text_3={product.description}
+        text_1={product.brand?.name || ''}
+        text_2={product.name || ''}
+        text_3={product.description || ''}
         hasBoxShadow={true}
         customClass={styles.header}
       />

@@ -7,22 +7,13 @@ import { GeneralInquiryForm, ProjectRequestForm } from '../../product/types';
 import { GeneralData } from '@/types';
 
 /// INQUIRY/REQUEST
-export async function getInquiryFor() {
-  return request<{ data: GeneralData[] }>(`/api/product/inquiry-for`, { method: 'GET' })
-    .then((res) => res.data)
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_INQUIRY_FOR_ERROR);
-      return [] as GeneralData[];
-    });
-}
-
-export async function getRequestFor() {
+export async function getInquiryRequestFor() {
   return request<{ data: GeneralData[] }>(`/api/setting/common-type/${COMMON_TYPES.REQUEST_FOR}`, {
     method: 'GET',
   })
     .then((res) => res.data)
     .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_REQUEST_FOR_ERROR);
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_INQUIRY_REQUEST_FOR_ERROR);
       return [] as GeneralData[];
     });
 }

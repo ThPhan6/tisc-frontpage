@@ -65,8 +65,7 @@ export const MESSAGE_NOTIFICATION = {
   CREATE_SHARE_VIA_EMAIL_SUCCESS: 'Shared via email successfully',
   CREATE_SHARE_VIA_EMAIL_ERROR: 'Failed to share via email',
   /// inquiry/request
-  GET_INQUIRY_FOR_ERROR: 'Failed to get inquiry for',
-  GET_REQUEST_FOR_ERROR: 'Failed to get request for',
+  GET_INQUIRY_REQUEST_FOR_ERROR: 'Failed to get inquiry/request for list',
   GET_PROJECT_NAME_ERROR: 'Failed to get project name',
   CREATE_GENERAL_INQUIRY_SUCCESS: 'Create general inquiry successfully',
   CREATE_GENERAL_INQUIRY_ERROR: 'Failed to create general inquiry',
