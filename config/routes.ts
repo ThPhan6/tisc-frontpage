@@ -462,7 +462,7 @@ export default [
       },
       {
         path: PATH.brandViewDetailDashboard,
-        component: './Brand/MyWorkspace/ProjectDetailCard',
+        component: './Brand/MyWorkspace',
         hideInMenu: true,
       },
     ],

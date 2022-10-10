@@ -10,20 +10,40 @@ import styles from './DesignFirm.less';
 
 export const BrandRequests = () => {
   const [showDetail, setShowDetail] = useState(true);
+  const [detailItem, setDetailItem] = useState('');
+  const data = [
+    {
+      id: '1',
+      date: '2021-04-04',
+      name: 'Project RFP',
+      icon: <Icon />,
+    },
+    {
+      id: '2',
+      date: '2021-04-24',
+      name: 'Project A',
+      icon: <Icon />,
+    },
+  ];
+  const showDetailItem = (id: string) => {
+    setShowDetail(false);
+    setDetailItem(id);
+  };
+
   return (
     <div className={styles.content}>
       {showDetail ? (
         <table className={styles.table}>
           <tbody>
-            <tr onClick={() => setShowDetail(false)}>
-              <td className={styles.date}>2021-04-04</td>
-              <td className={styles.projectName}>
-                Project RFP <UnreadIcon />
-              </td>
-              <td className={styles.action}>
-                <Icon />
-              </td>
-            </tr>
+            {data.map((item) => (
+              <tr onClick={() => showDetailItem(item.id)}>
+                <td className={styles.date}>{item.date}</td>
+                <td className={styles.projectName}>
+                  {item.name} <UnreadIcon />
+                </td>
+                <td className={styles.action}>{item.icon}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       ) : (
@@ -35,7 +55,7 @@ export const BrandRequests = () => {
             }
             customClass={styles.customHeader}
           />
-          content
+          {detailItem}
         </>
       )}
     </div>
