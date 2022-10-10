@@ -16,7 +16,7 @@ import {
   ProjectSummaryData,
 } from '@/features/project/types';
 import store from '@/reducers';
-import { GeneralData, KeyValueData } from '@/types';
+import { GeneralData } from '@/types';
 
 interface ProjectPaginationResponse {
   data: {
@@ -84,7 +84,7 @@ export async function getProjectTypes() {
     });
 }
 export async function getProjectMeasurementUnits() {
-  return request<KeyValueData[]>(`/api/setting/measurement-units`)
+  return request<GeneralData[]>(`/api/setting/measurement-units`)
     .then((res) => {
       return res;
     })
@@ -92,7 +92,7 @@ export async function getProjectMeasurementUnits() {
       message.error(
         error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_MEASUREMENT_UNIT_FAILED,
       );
-      return [] as KeyValueData[];
+      return [] as GeneralData[];
     });
 }
 
