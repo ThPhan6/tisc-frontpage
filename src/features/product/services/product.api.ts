@@ -192,6 +192,7 @@ export async function getRelatedCollectionProducts(productId: string) {
     });
 }
 
+/// Share Via Email
 export async function getSharingGroups() {
   return request<{ data: ProductItemValue[] }>(
     `/api/setting/common-type/${COMMON_TYPES.SHARING_GROUP}`,

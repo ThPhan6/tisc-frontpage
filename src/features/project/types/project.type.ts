@@ -1,5 +1,11 @@
 import { ProductItem } from '@/features/product/types';
 
+export interface ProjectItem {
+  id: string;
+  code: string;
+  name: string;
+}
+
 export interface ProjectFilterValueProps {
   id: number;
   name: string;
