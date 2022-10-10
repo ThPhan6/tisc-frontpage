@@ -12,7 +12,7 @@ import type {
 import { LocationGroupedByCountry } from '@/features/locations/type';
 import { ProjectsDesignFirm } from '@/features/project/types';
 import { MaterialCode } from '@/features/project/types/project-specifying.type';
-import { TeamProfileGroupCountry } from '@/features/team-profiles/type';
+import { TeamProfileGroupCountry } from '@/features/team-profiles/types';
 import { KeyValueData, MaterialCodeDesignFirm } from '@/types';
 
 interface DesignFirmListResponse {

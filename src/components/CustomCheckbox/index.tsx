@@ -77,7 +77,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
         ${isCheckboxList && style['item-list-checkbox']}
         ${style['color-checkbox-checked']}
         ${checkboxClass}
-      `}>
+      `}
+      onClick={(e) => e.stopPropagation()}>
       <Checkbox.Group
         {...props}
         value={selected?.map((item) => item.value) ?? []}
