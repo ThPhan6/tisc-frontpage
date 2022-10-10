@@ -38,6 +38,9 @@ export interface BrandDetail {
   slogan: string | null;
   status: number;
   team_profile_ids: any;
+  // image?: string;
+  // collection_name?: string;
+  // description?: string;
 }
 
 export interface BrandAlphabet {

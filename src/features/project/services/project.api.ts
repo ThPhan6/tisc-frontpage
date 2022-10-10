@@ -1,4 +1,5 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -61,7 +62,9 @@ export async function getAllProjects() {
 }
 
 export async function getProjectBuildingTypes() {
-  return request<{ data: GeneralData[] }>(`/api/project/building-types`)
+  return request<{ data: GeneralData[] }>(
+    `/api/setting/common-type/${COMMON_TYPES.PROJECT_BUILDING}`,
+  )
     .then((res) => {
       return res.data;
     })
@@ -71,7 +74,7 @@ export async function getProjectBuildingTypes() {
     });
 }
 export async function getProjectTypes() {
-  return request<{ data: GeneralData[] }>(`/api/project/project-types`)
+  return request<{ data: GeneralData[] }>(`/api/setting/common-type/${COMMON_TYPES.PROJECT_TYPE}`)
     .then((res) => {
       return res.data;
     })
@@ -81,7 +84,7 @@ export async function getProjectTypes() {
     });
 }
 export async function getProjectMeasurementUnits() {
-  return request<KeyValueData[]>(`/api/project/measurement-units`)
+  return request<KeyValueData[]>(`/api/setting/measurement-units`)
     .then((res) => {
       return res;
     })

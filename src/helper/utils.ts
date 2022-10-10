@@ -138,8 +138,11 @@ export const validatePostalCode = (postalCode: string) => {
   return false;
 };
 // for postal code
-export const messageError = (input: string, length: number = 10, message: string) => {
-  return input !== '' ? (input.length === length ? message : '') : undefined;
+export const messageError = (input: string, message: string, length: number = 10) => {
+  if (input === '') {
+    return undefined;
+  }
+  return input.length === length ? message : '';
 };
 export const messageErrorType = (
   input: string,
@@ -147,7 +150,10 @@ export const messageErrorType = (
   error: 'error' | 'warning',
   normal: 'normal',
 ) => {
-  return input !== '' ? (input.length === length ? error : normal) : undefined;
+  if (input === '') {
+    return undefined;
+  }
+  return input.length === length ? error : normal;
 };
 
 export const isEmptySpace = (input: string) => {
@@ -207,8 +213,10 @@ export const formatNumberDisplay = (
 // for email
 export const getEmailMessageError = (email: string, errorMessage: string) => {
   const checkValidEmail = validateEmail(email);
-
-  return email !== '' ? (checkValidEmail ? '' : errorMessage) : undefined;
+  if (email === '') {
+    return undefined;
+  }
+  return checkValidEmail ? '' : errorMessage;
 };
 export const getEmailMessageErrorType = (
   email: string,
@@ -216,8 +224,10 @@ export const getEmailMessageErrorType = (
   normal: 'normal',
 ) => {
   const checkValidEmail = validateEmail(email);
-
-  return email !== '' ? (checkValidEmail ? normal : error) : undefined;
+  if (email === '') {
+    return undefined;
+  }
+  return checkValidEmail ? normal : error;
 };
 
 export const setUrlParams = (params: { key: string; value: string }[]) => {

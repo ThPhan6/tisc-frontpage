@@ -7,9 +7,9 @@ import { ProductAttributeByType } from '@/types';
 
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
-import styles from '../detail.less';
 import { ProductAttributeContainer } from './ProductAttributeContainer';
 import { ProductVendor } from './ProductVendor';
+import styles from './index.less';
 
 const LIST_TAB = [
   { tab: 'GENERAL', key: 'general' },

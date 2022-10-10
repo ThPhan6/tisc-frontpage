@@ -1,9 +1,10 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
 import {
-  setProductDetail,
+  setPartialProductDetail,
   setProductList,
   setProductSummary,
   setRelatedProduct,
@@ -19,8 +20,9 @@ import {
   ProductSummary,
   RelatedCollection,
 } from '../types';
+import { SelectSpecificationBodyRequest } from '@/features/project/types';
+import { BrandDetail } from '@/features/user-group/types';
 import store from '@/reducers';
-import type { BrandDetail } from '@/types';
 
 import { ShareViaEmailForm } from '@/components/ShareViaEmail';
 
@@ -146,7 +148,7 @@ export const getProductById = async (productId: string) => {
   })
     .then((res) => {
       store.dispatch(
-        setProductDetail({
+        setPartialProductDetail({
           ...res.data,
           keywords: [0, 1, 2, 3].map((index) => {
             return res.data.keywords[index] ?? '';
@@ -156,17 +158,7 @@ export const getProductById = async (productId: string) => {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_PRODUCT_ERROR);
-    });
-};
-export const getProductByIdAndReturn = async (productId: string) => {
-  return request<{ data: ProductItem }>(`/api/product/get-one/${productId}`, {
-    method: 'GET',
-  })
-    .then((res) => {
-      return res.data;
-    })
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_PRODUCT_ERROR);
+      return {} as ProductItem;
     });
 };
 
@@ -201,7 +193,10 @@ export async function getRelatedCollectionProducts(productId: string) {
 }
 
 export async function getSharingGroups() {
-  return request<{ data: ProductItemValue[] }>(`/api/product/sharing-groups`, { method: 'GET' })
+  return request<{ data: ProductItemValue[] }>(
+    `/api/setting/common-type/${COMMON_TYPES.SHARING_GROUP}`,
+    { method: 'GET' },
+  )
     .then((res) => res.data)
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_SHARING_GROUPS_ERROR);
@@ -210,7 +205,10 @@ export async function getSharingGroups() {
 }
 
 export async function getSharingPurposes() {
-  return request<{ data: ProductItemValue[] }>(`/api/product/sharing-purposes`, { method: 'GET' })
+  return request<{ data: ProductItemValue[] }>(
+    `/api/setting/common-type/${COMMON_TYPES.SHARING_PURPOSE}`,
+    { method: 'GET' },
+  )
     .then((res) => res.data)
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_SHARING_PURPOSES_ERROR);
@@ -227,5 +225,38 @@ export async function createShareViaEmail(data: ShareViaEmailForm) {
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_SHARE_VIA_EMAIL_ERROR);
       return false;
+    });
+}
+
+export async function selectProductSpecification(
+  productId: string,
+  data: Partial<SelectSpecificationBodyRequest>,
+) {
+  return request<boolean>(`/api/product/${productId}/select-specification/update`, {
+    method: 'POST',
+    data,
+  })
+    .then(() => {
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? 'Select Specification failed!');
+      return false;
+    });
+}
+
+export async function getSelectedProductSpecification(productId: string) {
+  return request<{ data: SelectSpecificationBodyRequest }>(
+    `/api/product/${productId}/select-specification/get-list`,
+    {
+      method: 'GET',
+    },
+  )
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? 'getSelectedProductSpecification error!');
+      return undefined;
     });
 }
