@@ -42,7 +42,7 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
       <img src={showImageUrl(option.image)} />
       <div className="option-image-list-wrapper">
         <BodyText level={6} fontFamily="Roboto" customClass="heading-option-group">
-          {option.value_1} - {option.value_2}
+          {option.value_1} {option.unit_1} - {option.value_2} {option.unit_2}
         </BodyText>
         <div className="product-input-group">{children}</div>
       </div>
