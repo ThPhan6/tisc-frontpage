@@ -37,7 +37,7 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
       <Col span={12}>
         <div className={indexStyles.form}>
           <GeneralData>
-            {teamData.length && (
+            {teamData.length > 0 && (
               <Collapse {...CollapseLevel1Props}>
                 {teamData.map((team, index) => (
                   <Collapse.Panel

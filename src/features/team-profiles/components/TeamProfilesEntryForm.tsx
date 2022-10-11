@@ -72,16 +72,16 @@ const TeamProfilesEntryForm = () => {
       [isBrandAdmin, BrandAccessLevelDataRole],
       [isDesignAdmin, DesignAccessLevelDataRole],
     ],
-    [],
+    DesignAccessLevelDataRole,
   );
   /// for user role path
   const userRolePath = getValueByCondition(
     [
       [isTISCAdmin, PATH.tiscTeamProfile],
       [isBrandAdmin, PATH.brandTeamProfile],
-      [isDesignAdmin, PATH.designTeamProfile],
+      [isDesignAdmin, PATH.designerOfficeTeamProfile],
     ],
-    '',
+    PATH.designerOfficeTeamProfile,
   );
 
   const submitButtonStatus = useBoolean(false);

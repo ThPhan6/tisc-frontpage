@@ -1,4 +1,5 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -7,15 +8,16 @@ import type {
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
-import { ProjectItem, setProjectList } from '@/features/project/reducers';
+import { setProjectList } from '@/features/project/reducers';
 import {
   ProjectBodyRequest,
   ProjectDetailProps,
+  ProjectItem,
   ProjectListProps,
   ProjectSummaryData,
 } from '@/features/project/types';
 import store from '@/reducers';
-import { GeneralData, KeyValueData } from '@/types';
+import { GeneralData } from '@/types';
 
 interface ProjectPaginationResponse {
   data: {
@@ -56,12 +58,14 @@ export async function getAllProjects() {
       store.dispatch(setProjectList(response.data));
     })
     .catch((error) => {
-      console.log('getAllProjects', error);
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_LIST_FAILED);
     });
 }
 
 export async function getProjectBuildingTypes() {
-  return request<{ data: GeneralData[] }>(`/api/project/building-types`)
+  return request<{ data: GeneralData[] }>(
+    `/api/setting/common-type/${COMMON_TYPES.PROJECT_BUILDING}`,
+  )
     .then((res) => {
       return res.data;
     })
@@ -71,7 +75,7 @@ export async function getProjectBuildingTypes() {
     });
 }
 export async function getProjectTypes() {
-  return request<{ data: GeneralData[] }>(`/api/project/project-types`)
+  return request<{ data: GeneralData[] }>(`/api/setting/common-type/${COMMON_TYPES.PROJECT_TYPE}`)
     .then((res) => {
       return res.data;
     })
@@ -81,7 +85,7 @@ export async function getProjectTypes() {
     });
 }
 export async function getProjectMeasurementUnits() {
-  return request<KeyValueData[]>(`/api/project/measurement-units`)
+  return request<GeneralData[]>(`/api/setting/measurement-units`)
     .then((res) => {
       return res;
     })
@@ -89,7 +93,7 @@ export async function getProjectMeasurementUnits() {
       message.error(
         error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_MEASUREMENT_UNIT_FAILED,
       );
-      return [] as KeyValueData[];
+      return [] as GeneralData[];
     });
 }
 

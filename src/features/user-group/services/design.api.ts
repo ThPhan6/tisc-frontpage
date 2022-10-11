@@ -123,9 +123,12 @@ export async function getProjectsByDesignFirm(id: string) {
 }
 
 export async function getMaterialCodeByDesignFirm(id: string) {
-  return request<{ data: MaterialCodeDesignFirm[] }>(`/api/material-code/get-list-group/${id}`, {
-    method: 'GET',
-  })
+  return request<{ data: MaterialCodeDesignFirm[] }>(
+    `/api/material-code/get-list?design_id=${id}`,
+    {
+      method: 'GET',
+    },
+  )
     .then((response) => {
       return response.data;
     })

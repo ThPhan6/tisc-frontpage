@@ -1,9 +1,11 @@
 import { FC, useEffect, useRef } from 'react';
 
+import { COLUMN_WIDTH } from '@/constants/util';
+
 import {
   onCellCancelled,
   renderActionCell,
-  renderStatusDropdown,
+  renderSpecifiedStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
@@ -11,12 +13,7 @@ import { getSpecifiedProductBySpace } from '@/features/project/services';
 import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
-import {
-  ProductItemSpace,
-  SpecifiedProductArea,
-  SpecifiedProductBySpace,
-  SpecifiedProductRoom,
-} from '@/features/project/types';
+import { SpecifiedProductBySpace } from '@/features/project/types';
 
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 
@@ -29,20 +26,20 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     rightColumnExcluded: 3,
   });
   const tableRef = useRef<any>();
-  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
+  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef, true);
 
-  const getSameColumns = (noBoxShadow?: boolean) => {
+  const getSameColumns = (noBoxShadow: boolean, hideProductName?: boolean) => {
     const SameColummnsSpace: TableColumnItem<any>[] = [
       {
         title: 'Image',
-        dataIndex: 'image',
+        dataIndex: 'images',
         width: '5%',
         noBoxShadow: noBoxShadow,
         align: 'center',
         render: (value) =>
           value ? (
             <img
-              src={showImageUrl(value)}
+              src={showImageUrl(value[0])}
               style={{ width: 24, height: 24, objectFit: 'contain' }}
             />
           ) : null,
@@ -52,7 +49,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
         dataIndex: 'brand_order',
         noBoxShadow: noBoxShadow,
         sorter: { multiple: 4 },
-        render: (_value, record) => record.brand_name,
+        render: (_value, record) => record.brand?.name,
         onCell: onCellCancelled,
       },
       {
@@ -60,18 +57,21 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
         dataIndex: 'product_name',
         onCell: onCellCancelled,
         noBoxShadow: noBoxShadow,
+        render: (_value, record) => (record.rooms || hideProductName ? null : record.name),
       },
       {
         title: 'Material Code',
         dataIndex: 'material_code',
         noBoxShadow: noBoxShadow,
         onCell: onCellCancelled,
+        render: (_value, record) => record.specifiedDetail?.material_code,
       },
       {
         title: 'Description',
         dataIndex: 'specified_description',
         noBoxShadow: noBoxShadow,
         onCell: onCellCancelled,
+        render: (_value, record) => record.specifiedDetail?.description,
       },
     ];
     return SameColummnsSpace;
@@ -95,17 +95,17 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       dataIndex: 'room_order',
       sorter: { multiple: 3 },
     },
-    ...getSameColumns(false),
+    ...getSameColumns(false, true),
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       align: 'center',
     },
     { title: 'Action', align: 'center', width: '5%' },
   ];
 
-  const AreaColumns: TableColumnItem<SpecifiedProductArea>[] = [
+  const AreaColumns: TableColumnItem<any>[] = [
     {
       title: 'Zones',
       noBoxShadow: true,
@@ -132,10 +132,10 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       dataIndex: 'status',
       align: 'center',
-      render: renderStatusDropdown(tableRef, true),
+      render: renderSpecifiedStatusDropdown(tableRef, true),
       onCell: onCellCancelled,
     },
     {
@@ -146,7 +146,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     },
   ];
 
-  const RoomColumns: TableColumnItem<SpecifiedProductRoom>[] = [
+  const RoomColumns: TableColumnItem<any>[] = [
     {
       title: 'Zones',
       noBoxShadow: true,
@@ -164,7 +164,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       align: 'center',
     },
     {
@@ -174,7 +174,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     },
   ];
 
-  const ProductColumns: TableColumnItem<ProductItemSpace>[] = [
+  const ProductColumns: TableColumnItem<any>[] = [
     {
       title: 'Zones',
       noBoxShadow: true,
@@ -191,11 +191,11 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     { title: 'Count', width: '5%', align: 'center', noBoxShadow: true },
     {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       dataIndex: 'status',
       align: 'center',
       noBoxShadow: true,
-      render: renderStatusDropdown(tableRef, true),
+      render: renderSpecifiedStatusDropdown(tableRef, true),
       onCell: onCellCancelled,
     },
     {

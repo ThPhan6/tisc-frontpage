@@ -30,6 +30,7 @@ import { useAppSelector } from '@/reducers';
 
 import SmallIconButton from '@/components/Button/SmallIconButton';
 import { CustomInput } from '@/components/Form/CustomInput';
+import InquiryRequest from '@/components/InquiryRequest';
 import ShareViaEmail from '@/components/ShareViaEmail/index';
 import { BodyText } from '@/components/Typography';
 
@@ -56,6 +57,7 @@ const ProductImagePreview: React.FC = () => {
   const product = useAppSelector((state) => state.product.details);
   const showShareEmailModal = useBoolean();
   const showAssignProductModal = useBoolean();
+  const showInquiryRequestModal = useBoolean();
   const isDesignerUser = useCheckPermission('Design Admin');
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
@@ -185,7 +187,7 @@ const ProductImagePreview: React.FC = () => {
             <ActionItem
               label="Inquiry/Request"
               icon={<CommentIcon />}
-              onClick={() => message.info('Coming soon!')}
+              onClick={() => showInquiryRequestModal.setValue(true)}
             />
           ) : null}
           {isDesignerUser ? (
@@ -313,6 +315,13 @@ const ProductImagePreview: React.FC = () => {
             visible={showAssignProductModal.value}
             setVisible={showAssignProductModal.setValue}
             productId={product.id}
+          />
+        ) : null}
+        {product.id ? (
+          <InquiryRequest
+            visible={showInquiryRequestModal.value}
+            setVisible={showInquiryRequestModal.setValue}
+            product={product}
           />
         ) : null}
       </div>

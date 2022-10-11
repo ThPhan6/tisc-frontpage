@@ -227,7 +227,7 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               colorRequired="tertiary"
               onDelete={() => onChangeData('postal_code', '')}
               deleteIcon
-              message={messageError(data.postal_code, 10, MESSAGE_ERROR.POSTAL_CODE)}
+              message={messageError(data.postal_code, MESSAGE_ERROR.POSTAL_CODE, 10)}
               messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
             />
           </div>

@@ -28,7 +28,7 @@ export const ProductCollection: FC = memo(() => {
   const relatedProduct = useAppSelector((state) => state.product.relatedProduct);
   const userRole = useGetUserRoleFromPathname();
 
-  if (relatedProduct.length === 0 && userRole !== USER_ROLE.tisc) {
+  if (relatedProduct.length === 0) {
     return <EmptyOne customClass="product-collection" />;
   }
 

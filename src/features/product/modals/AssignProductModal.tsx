@@ -65,10 +65,10 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
     }
 
     assignProductToProject({
-      is_entire: isEntire,
+      entire_allocation: isEntire,
       product_id: productId,
       project_id: String(selectedProject?.value),
-      project_zone_ids: selectedRoomIds,
+      allocation: selectedRoomIds,
     }).then((success) => {
       if (success) {
         props.setVisible(false);

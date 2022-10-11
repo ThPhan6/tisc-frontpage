@@ -35,23 +35,17 @@ const TeamProfilesTable = () => {
   const isDesignAdmin = useCheckPermission('Design Admin');
 
   /// for user role path
-  const userCreateRolePath = getValueByCondition(
-    [
-      [isTISCAdmin, PATH.tiscCreateTeamProfile],
-      [isBrandAdmin, PATH.brandCreateTeamProfile],
-      [isDesignAdmin, PATH.designCreateTeamProfile],
-    ],
-    '',
-  );
+  const userCreateRolePath = getValueByCondition([
+    [isTISCAdmin, PATH.tiscCreateTeamProfile],
+    [isBrandAdmin, PATH.brandCreateTeamProfile],
+    [isDesignAdmin, PATH.designerOfficeTeamProfileCreate],
+  ]);
 
-  const userUpdateRolePath = getValueByCondition(
-    [
-      [isTISCAdmin, PATH.tiscUpdateTeamProfile],
-      [isBrandAdmin, PATH.brandUpdateTeamProfile],
-      [isDesignAdmin, PATH.designUpdateTeamProfile],
-    ],
-    '',
-  );
+  const userUpdateRolePath = getValueByCondition([
+    [isTISCAdmin, PATH.tiscUpdateTeamProfile],
+    [isBrandAdmin, PATH.brandUpdateTeamProfile],
+    [isDesignAdmin, PATH.designerOfficeTeamProfileUpdate],
+  ]);
 
   const handleUpdateTeamProfile = (id: string) => {
     pushTo(userUpdateRolePath.replace(':id', id));
@@ -94,13 +88,16 @@ const TeamProfilesTable = () => {
       title: 'Work Email',
       dataIndex: 'email',
     },
-    {
-      title: 'Work Phone',
-      dataIndex: 'phone',
-      render: (value, record) => {
-        return `${formatPhoneCode(record.phone_code)} ${value ?? ''}`;
-      },
-    },
+
+    !isDesignAdmin
+      ? {
+          title: 'Work Phone',
+          dataIndex: 'phone',
+          render: (value, record) => {
+            return `${formatPhoneCode(record.phone_code)} ${value ?? ''}`;
+          },
+        }
+      : {},
     {
       title: 'Access Level',
       dataIndex: 'access_level',

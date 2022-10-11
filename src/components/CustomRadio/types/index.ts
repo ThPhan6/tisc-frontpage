@@ -7,6 +7,8 @@ export type RadioValue = {
   customClass?: string;
 };
 
+export type CustomRadioValue = RadioValue & { labelText: string };
+
 export interface CustomRadioProps {
   direction?: 'horizontal' | 'vertical';
   options: RadioValue[];

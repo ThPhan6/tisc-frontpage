@@ -59,10 +59,18 @@ export const MESSAGE_NOTIFICATION = {
   DUPLICATE_PRODUCT_SUCCESS: 'Duplicate product successfully',
   DUPLICATE_PRODUCT_ERROR: 'Failed to duplicate product',
   GET_ONE_PRODUCT_ERROR: 'Failed to get product information',
+  /// share via email
   GET_SHARING_GROUPS_ERROR: 'Failed to get sharing groups',
   GET_SHARING_PURPOSES_ERROR: 'Failed to get sharing purposes',
   CREATE_SHARE_VIA_EMAIL_SUCCESS: 'Shared via email successfully',
   CREATE_SHARE_VIA_EMAIL_ERROR: 'Failed to share via email',
+  /// inquiry/request
+  GET_INQUIRY_REQUEST_FOR_ERROR: 'Failed to get inquiry/request for list',
+  GET_PROJECT_NAME_ERROR: 'Failed to get project name',
+  CREATE_GENERAL_INQUIRY_SUCCESS: 'Create general inquiry successfully',
+  CREATE_GENERAL_INQUIRY_ERROR: 'Failed to create general inquiry',
+  CREATE_PROJECT_REQUEST_SUCCESS: 'Create project request successfully',
+  CREATE_PROJECT_REQUEST_ERROR: 'Failed to create project request',
 
   // product catelogue
   CREATE_PRODUCT_CATELOGUE_SUCCESS: 'Create product catelogue successfully',
@@ -267,6 +275,15 @@ export const MESSAGE_NOTIFICATION = {
   RETRIEVE_FAVOURITE_PRODUCT_ERROR: 'Retrieve favourite product error',
   SKIP_FAVOURITE_SUCCESS: 'Skipped Successfully',
   SKIP_FAVOURITE_ERROR: 'Failed to skip',
+
+  //material/product code
+  CREATE_MATERIAL_PRODUCT_CODE_SUCCESS: 'Create material product code successfully',
+  CREATE_MATERIAL_PRODUCT_CODE_ERROR: 'Create material product code error',
+  GET_ONE_MATERIAL_PRODUCT_CODE_ERROR: 'Get one material product code error',
+  DELETE_MATERIAL_PRODUCT_CODE_SUCCESS: 'Delete material product code successfully',
+  DELETE_MATERIAL_PRODUCT_CODE_ERROR: 'Delete material product code error',
+  UPDATE_MATERIAL_PRODUCT_CODE_SUCCESS: 'Update material product code successfully',
+  UPDATE_MATERIAL_PRODUCT_CODE_ERROR: 'Update material product code error',
 };
 
 export const MESSAGE_TOOLTIP = {

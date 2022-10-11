@@ -368,7 +368,7 @@ export default [
         routes: [
           {
             path: PATH.tiscTeamProfile,
-            component: '../features/team-profiles/components/TeamProfileTable',
+            component: '../features/team-profiles/components/TeamProfilesTable',
             hideInMenu: true,
           },
           {
@@ -532,7 +532,7 @@ export default [
         routes: [
           {
             path: PATH.brandTeamProfile,
-            component: '../features/team-profiles/components/TeamProfileTable',
+            component: '../features/team-profiles/components/TeamProfilesTable',
             hideInMenu: true,
           },
           {
@@ -671,7 +671,6 @@ export default [
     path: PATH.designerAdminstration,
     name: 'adminstration',
     icon: 'adminstration-icon.svg',
-    // component: './Admin',
     access: 'design_administration',
     routes: [
       {
@@ -682,30 +681,46 @@ export default [
         access: 'design_administration_office_profile',
       },
       {
-        path: PATH.designerOfficeLocation,
+        path: PATH.designFirmLocation,
         name: 'location',
         icon: 'location-icon.svg',
-        component: './Admin',
         access: 'design_administration_location',
+        routes: [
+          {
+            path: PATH.designFirmLocation,
+            component: '../features/locations/components/LocationTable',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designFirmLocationCreate,
+            component: '../features/locations/components/LocationDetail',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designFirmLocationUpdate,
+            component: '../features/locations/components/LocationDetail',
+            hideInMenu: true,
+          },
+        ],
       },
       {
-        path: PATH.designTeamProfile,
+        path: PATH.designerOfficeTeamProfile,
         name: 'team.profile',
         icon: 'team-profile-icon.svg',
         access: 'design_administration_team_profile',
         routes: [
           {
-            path: PATH.designTeamProfile,
-            component: '../features/team-profiles/components/TeamProfileTable',
+            path: PATH.designerOfficeTeamProfile,
+            component: '../features/team-profiles/components/TeamProfilesTable',
             hideInMenu: true,
           },
           {
-            path: PATH.designCreateTeamProfile,
+            path: PATH.designerOfficeTeamProfileCreate,
             component: '../features/team-profiles/components/TeamProfilesEntryForm',
             hideInMenu: true,
           },
           {
-            path: PATH.designUpdateTeamProfile,
+            path: PATH.designerOfficeTeamProfileUpdate,
             component: '../features/team-profiles/components/TeamProfilesEntryForm',
             hideInMenu: true,
           },
@@ -715,8 +730,24 @@ export default [
         path: PATH.designerMaterialProductCode,
         name: 'material/product.code',
         icon: 'material-product-code.svg',
-        component: './Admin',
         access: 'design_administration_material_product_code',
+        routes: [
+          {
+            path: PATH.designerMaterialProductCode,
+            component: './Designer/Adminstration/MaterialProductCode',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerMaterialProductCodeCreate,
+            hideInMenu: true,
+            component: '../features/material-product-code/components/MaterialProductEntryForm',
+          },
+          {
+            path: PATH.designerMaterialProductCodeUpdate,
+            hideInMenu: true,
+            component: '../features/material-product-code/components/MaterialProductEntryForm',
+          },
+        ],
       },
     ],
   },

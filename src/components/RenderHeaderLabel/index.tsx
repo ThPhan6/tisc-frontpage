@@ -8,7 +8,7 @@ import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 import { isNaN, isNumber } from 'lodash';
 
 import TeamIcon from '../TeamIcon/TeamIcon';
-import { BodyText } from '../Typography';
+import { BodyText, Title } from '../Typography';
 import styles from './index.less';
 
 interface RenderLabelHeaderProps {
@@ -103,3 +103,28 @@ export const RenderEntireProjectLabel: FC<RenderEntireProjectLabelProps> = ({
     </div>
   );
 };
+
+interface DualLabelProps {
+  firstTxt: string;
+  secTxt: string;
+  customClass?: string;
+  fontSize?: 12 | 14;
+  fontWeight?: 300 | 500;
+}
+
+export const DualLabel: FC<DualLabelProps> = ({
+  firstTxt = '',
+  secTxt = '',
+  fontSize = 12,
+  fontWeight = 500,
+  customClass = '',
+}) => (
+  <span className={`flex-center ${customClass}`} style={{ paddingRight: '16px' }}>
+    <Title level={9} style={{ marginRight: 12, fontWeight: fontWeight, fontSize: fontSize }}>
+      {firstTxt}
+    </Title>
+    <BodyText fontFamily="Roboto" level={6} style={{ fontSize: fontSize }}>
+      {secTxt}
+    </BodyText>
+  </span>
+);
