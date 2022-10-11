@@ -59,10 +59,18 @@ export const MESSAGE_NOTIFICATION = {
   DUPLICATE_PRODUCT_SUCCESS: 'Duplicate product successfully',
   DUPLICATE_PRODUCT_ERROR: 'Failed to duplicate product',
   GET_ONE_PRODUCT_ERROR: 'Failed to get product information',
+  /// share via email
   GET_SHARING_GROUPS_ERROR: 'Failed to get sharing groups',
   GET_SHARING_PURPOSES_ERROR: 'Failed to get sharing purposes',
   CREATE_SHARE_VIA_EMAIL_SUCCESS: 'Shared via email successfully',
   CREATE_SHARE_VIA_EMAIL_ERROR: 'Failed to share via email',
+  /// inquiry/request
+  GET_INQUIRY_REQUEST_FOR_ERROR: 'Failed to get inquiry/request for list',
+  GET_PROJECT_NAME_ERROR: 'Failed to get project name',
+  CREATE_GENERAL_INQUIRY_SUCCESS: 'Create general inquiry successfully',
+  CREATE_GENERAL_INQUIRY_ERROR: 'Failed to create general inquiry',
+  CREATE_PROJECT_REQUEST_SUCCESS: 'Create project request successfully',
+  CREATE_PROJECT_REQUEST_ERROR: 'Failed to create project request',
 
   // product catelogue
   CREATE_PRODUCT_CATELOGUE_SUCCESS: 'Create product catelogue successfully',

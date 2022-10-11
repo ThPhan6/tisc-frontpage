@@ -12,7 +12,7 @@ import { getAllMaterialCode } from '@/features/user-group/services';
 import { getSelectedOptions, validateFloatNumber } from '@/helper/utils';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
-import { RadioValue } from '@/components/CustomRadio/types';
+import { CustomRadioValue, RadioValue } from '@/components/CustomRadio/types';
 import { FormGroupProps } from '@/components/Form/types';
 import { setPartialProductSpecifiedData } from '@/features/product/reducers';
 import { SpecifiedDetail } from '@/features/product/types';
@@ -25,7 +25,7 @@ import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { DropdownSelectInput } from '@/components/Form/DropdownSelectInput';
-import { BodyText, Title } from '@/components/Typography';
+import { DualLabel } from '@/components/RenderHeaderLabel';
 
 import styles from './styles/code-order.less';
 
@@ -40,8 +40,6 @@ const ORDER_METHODS: RadioValue[] = [
   },
 ];
 
-type CustomRadioValue = RadioValue & { labelText: string };
-
 const CodeOrderTab = () => {
   const [materialCodeOpts, setMaterialCodeOtps] = useState<CustomRadioValue[]>([]);
   const [unitTypeOtps, setUnitTypeOtps] = useState<CheckboxValue[]>([]);
@@ -53,24 +51,11 @@ const CodeOrderTab = () => {
 
   const specifiedDetail = useAppSelector((state) => state.product.details.specifiedDetail);
 
-  const renderDualLabel = (firstTxt: string, secTxt: string) => {
-    return (
-      <span className="flex-center">
-        <Title level={9} style={{ width: 32, marginRight: 12 }}>
-          {firstTxt}
-        </Title>
-        <BodyText fontFamily="Roboto" level={6}>
-          {secTxt}
-        </BodyText>
-      </span>
-    );
-  };
-
   useEffect(() => {
     getAllMaterialCode().then((res) => {
       setMaterialCodeOtps(
         res.map((el) => ({
-          label: renderDualLabel(el.code, el.description),
+          label: <DualLabel firstTxt={el.code} secTxt={el.description} />,
           value: el.id,
           labelText: `${el.code}`,
         })),
