@@ -20,7 +20,7 @@ const getMenuItems = (menuItems?: MenuDataItem[]): ItemType[] | undefined => {
   if (!menuItems) {
     return undefined;
   }
-  const showedMenuItems = menuItems.filter((el) => !el.hideInMenu);
+  const showedMenuItems = menuItems.filter((el) => !el.unaccessible && !el.hideInMenu);
   if (showedMenuItems.length) {
     return showedMenuItems.map((item) => {
       const children = getMenuItems(item.children);
