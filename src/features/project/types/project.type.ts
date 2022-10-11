@@ -1,3 +1,4 @@
+import { MemberAssignedForm } from '@/components/AssignTeam/type';
 import { ProductItem } from '@/features/product/types';
 
 export interface ProjectFilterValueProps {
@@ -46,11 +47,7 @@ export interface ProjectListProps {
   building_type: string;
   design_due: number;
   design_id: string;
-  assign_teams: {
-    id: string;
-    name: string;
-    avatar: string;
-  }[];
+  assign_teams: MemberAssignedForm[];
 }
 
 export interface ProjectsDesignFirm {

@@ -22,7 +22,7 @@ import { isEmpty, isEqual } from 'lodash';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import type { TableColumnItem } from '@/components/Table/types';
 import type { ProjectListProps, ProjectSummaryData } from '@/features/project/types';
-import { BrandTeam, TeamProfileGroupCountry } from '@/features/team-profiles/types';
+import { TeamProfileGroupCountry, TeamProfileMemberProps } from '@/features/team-profiles/types';
 
 import ProjectListHeader from './components/ProjectListHeader';
 import AssignTeam from '@/components/AssignTeam';
@@ -41,49 +41,32 @@ const ProjectList: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
   const [summaryData, setSummaryData] = useState<ProjectSummaryData>();
 
+  // assign team modal
   const [visible, setVisible] = useState<boolean>(false);
-
-  // get each assign team
+  // for each member assigned
   const [recordAssignTeam, setRecordAssignTeam] = useState<ProjectListProps>();
   // get list assign team to display inside popup
   const [assignTeam, setAssignTeam] = useState<TeamProfileGroupCountry[]>([]);
-  // seleted member
-  const [selected, setSelected] = useState<CheckboxValue[]>([]);
 
   const showAssignTeams = (projectInfo: ProjectListProps) => () => {
-    // get list team
-    getTeamsByDesignFirm(projectInfo.design_id).then((res) => {
-      console.log(res);
+    /// get brand info
+    setRecordAssignTeam(projectInfo);
 
+    // get list team by design id(user's relation_id)
+    getTeamsByDesignFirm(projectInfo.design_id).then((res) => {
       if (res) {
         /// set assignTeam state to display
         setAssignTeam(res);
-
-        // show user selected
-        setSelected(
-          projectInfo.assign_teams?.map((member) => {
-            return {
-              label: '',
-              value: member.id,
-            };
-          }),
-        );
-        /// get brand info
-        setRecordAssignTeam(projectInfo);
+        // open popup
+        setVisible(true);
       }
     });
-
-    // open popup
-    setVisible(true);
   };
 
   // update assign team
   const handleSubmitAssignTeam = (checkedData: CheckboxValue[]) => {
     // new assign team
-    const memberAssignTeam: BrandTeam[] = [];
-
-    // for reset member selected
-    let newAssignTeamSelected: CheckboxValue[] = [];
+    const memberAssignTeam: TeamProfileMemberProps[] = [];
 
     checkedData?.forEach((checked) => {
       assignTeam.forEach((team) => {
@@ -110,16 +93,6 @@ const ProjectList: React.FC = () => {
         if (isSuccess) {
           // reload table after updating
           tableRef.current.reload();
-
-          // set member selected for next display
-          if (memberAssignTeam.length > 0) {
-            newAssignTeamSelected = memberAssignTeam.map((member) => ({
-              label: getFullName(member),
-              value: member.id,
-            }));
-          }
-          setSelected(newAssignTeamSelected);
-
           // close popup
           setVisible(false);
         }
@@ -219,15 +192,13 @@ const ProjectList: React.FC = () => {
       dataIndex: 'assign_teams',
       align: 'center',
       render: (_value, record) => {
-        console.log(record);
-
         if (isEmpty(record.assign_teams)) {
           return <UserAddIcon onClick={showAssignTeams(record)} className="icon-align" />;
         }
         return (
           <div onClick={showAssignTeams(record)} className={styles.asignTeamMember}>
             {record.assign_teams.map((teamProfile, key) => (
-              <TeamIcon key={key} avatar={teamProfile.avatar} name={teamProfile.name} />
+              <TeamIcon key={key} avatar={teamProfile.avatar} name={getFullName(teamProfile)} />
             ))}
           </div>
         );
@@ -291,8 +262,8 @@ const ProjectList: React.FC = () => {
       <AssignTeam
         visible={visible}
         setVisible={setVisible}
-        selected={selected}
-        setSelected={handleSubmitAssignTeam}
+        onChange={handleSubmitAssignTeam}
+        memberAssigned={recordAssignTeam}
         teams={assignTeam}
       />
     </div>

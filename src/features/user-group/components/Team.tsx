@@ -7,7 +7,7 @@ import { getTeamsByDesignFirm } from '../services';
 import { isEmpty } from 'lodash';
 
 import { UserGroupProps } from '../types/common.types';
-import { TeamProfileGroupCountry } from '@/features/team-profiles/type';
+import { TeamProfileGroupCountry } from '@/features/team-profiles/types';
 
 import TextForm from '@/components/Form/TextForm';
 import { RenderLabelHeader, RenderMemberHeader } from '@/components/RenderHeaderLabel';

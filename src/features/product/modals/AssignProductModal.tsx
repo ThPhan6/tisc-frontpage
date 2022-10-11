@@ -31,7 +31,7 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
   const projectOptions: RadioValue[] = projects.map((el) => ({
     value: el.id,
     label: (
-      <span className="selected-item flex-start">
+      <span className="selected-item flex-start text-overflow">
         <BodyText
           fontFamily="Roboto"
           level={5}

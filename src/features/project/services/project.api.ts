@@ -154,8 +154,8 @@ export async function getProjectSummary() {
 }
 
 export async function createAssignTeamByProjectId(projectId: string, data: string[]) {
-  return request<boolean>(`/api/project/${projectId}/assign`, {
-    method: 'GET',
+  return request<boolean>(`/api/project/${projectId}/assign-team`, {
+    method: 'PATCH',
     data: { team_profile_ids: data },
   })
     .then(() => {
