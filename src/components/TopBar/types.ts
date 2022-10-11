@@ -13,5 +13,5 @@ export interface TopBarSummaryProps {
   state: any;
   setState: (state: any) => void;
   summaryData: any;
-  summaryType: 'projects' | 'inquiries';
+  summaryType: 'projects' | 'inquires';
 }

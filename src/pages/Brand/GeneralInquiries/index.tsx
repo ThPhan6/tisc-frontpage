@@ -1,15 +1,16 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { FilterValues, GlobalFilter } from '@/pages/Designer/Project/constants/filter';
+import { FilterValues, GlobalFilter } from './constants/filters';
 
 import { ReactComponent as NotificationIcon } from '@/assets/icons/action-unreaded-icon.svg';
+import { ReactComponent as PendingIcon } from '@/assets/icons/pending-icon.svg';
+import { ReactComponent as RespondedIcon } from '@/assets/icons/responded-icon.svg';
 
-// import { getGeneralInquiryPagination } from './services';
+import { getGeneralInquiryPagination } from './services';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
-import { getProjectPagination } from '@/features/project/services';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
-import { GeneralInquiryProps } from './types';
+import { GeneralInquiryListProps } from './types';
 import { TableColumnItem } from '@/components/Table/types';
 
 import { GeneralInquiryContainer } from './components/GeneralInquiryContainer';
@@ -23,15 +24,21 @@ const GeneralInquiries = () => {
   const tableRef = useRef<any>();
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
 
-  const mainColumns: TableColumnItem<GeneralInquiryProps>[] = [
+  /// reload table depends on filter
+  useEffect(() => {
+    tableRef.current.reload();
+  }, [selectedFilter]);
+
+  const mainColumns: TableColumnItem<GeneralInquiryListProps>[] = [
     {
       title: 'Date',
-      dataIndex: 'date',
+      dataIndex: 'created_at',
       width: '70',
+      sorter: true,
       render: (value, record) => (
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <RobotoBodyText>{moment(value).format('YYYY-MM-DD')}</RobotoBodyText>
-          {record.unreaded ? <NotificationIcon style={{ marginLeft: '14px' }} /> : null}
+          <RobotoBodyText level={5}>{moment(value).format('YYYY-MM-DD')}</RobotoBodyText>
+          {record.read ? <NotificationIcon style={{ marginLeft: '14px' }} /> : null}
         </div>
       ),
     },
@@ -46,8 +53,8 @@ const GeneralInquiries = () => {
       sorter: true,
     },
     {
-      title: 'Inquier',
-      dataIndex: 'inquier',
+      title: 'Inquirer',
+      dataIndex: 'inquirer',
     },
     {
       title: 'Inquiry For',
@@ -62,6 +69,12 @@ const GeneralInquiries = () => {
       title: 'Status',
       dataIndex: 'status',
       width: '5%',
+      render: (_v, record) =>
+        record.status === FilterValues.pending ? (
+          <PendingIcon className="flex-center" style={{ width: '100%' }} />
+        ) : (
+          <RespondedIcon className="flex-center" style={{ width: '100%' }} />
+        ),
     },
   ];
   return (
@@ -72,8 +85,9 @@ const GeneralInquiries = () => {
       <CustomTable
         title="GENERAL INQUIRIES"
         columns={setDefaultWidthForEachColumn(mainColumns, 5)}
-        fetchDataFunc={getProjectPagination}
+        fetchDataFunc={getGeneralInquiryPagination}
         ref={tableRef}
+        // onRow={}
         hasPagination
         extraParams={
           selectedFilter && selectedFilter.id !== FilterValues.global

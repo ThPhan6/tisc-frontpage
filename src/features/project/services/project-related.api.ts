@@ -19,7 +19,7 @@ export async function getInquiryRequestFor() {
 }
 
 export async function createGeneralInquiry(data: GeneralInquiryForm) {
-  return request<boolean>(`/api/product/general-inquiry`, { method: 'POST', data })
+  return request<boolean>(`/api/general-inquiry`, { method: 'POST', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CREATE_GENERAL_INQUIRY_SUCCESS);
       return true;

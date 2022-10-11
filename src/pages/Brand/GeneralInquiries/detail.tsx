@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { Col, Row } from 'antd';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 
+import { getOneGeneralInquiry } from './services';
 import { pushTo } from '@/helper/history';
+
+import { GeneralInquiryResponse } from './types';
 
 import { DesignFirm } from './components/DesignFirm';
 import { GeneralInquiryContainer } from './components/GeneralInquiryContainer';
@@ -22,8 +25,44 @@ const LIST_TAB = [
 
 type GeneralInquiriesTab = 'design-firm' | 'inquiry-message';
 
-const GeneralInquiryDetail = () => {
-  const [activeTab, setActiveTab] = useState<GeneralInquiriesTab>('inquiry-message');
+const DEFAULT_STATE: GeneralInquiryResponse = {
+  product_name: '',
+  design_firm: {
+    name: '',
+    official_website: '',
+    inquirer: '',
+    role: '',
+    work_email: '',
+    work_phone: '',
+    address: '',
+  },
+  inquiry_message: {
+    inquiry_for: '',
+    title: '',
+    message: '',
+    product_collection: '',
+    product_description: '',
+    product_image: '',
+    official_website: '',
+  },
+};
+
+interface GeneralInquiriesDetailProps {
+  designFirmId: string;
+}
+
+const GeneralInquiryDetail: FC<GeneralInquiriesDetailProps> = ({ designFirmId }) => {
+  const [activeTab, setActiveTab] = useState<GeneralInquiriesTab>('design-firm');
+
+  const [data, setData] = useState<GeneralInquiryResponse>(DEFAULT_STATE);
+
+  useEffect(() => {
+    getOneGeneralInquiry(designFirmId ?? '').then((res) => {
+      if (res) {
+        setData(res);
+      }
+    });
+  }, []);
 
   return (
     <GeneralInquiryContainer>
@@ -31,7 +70,7 @@ const GeneralInquiryDetail = () => {
       <Row>
         <Col span={12} className={styles.container}>
           <TableHeader
-            title="Product Demostration"
+            title={data.product_name}
             customClass={styles.header}
             rightAction={
               <CloseIcon
@@ -52,11 +91,27 @@ const GeneralInquiryDetail = () => {
 
           <div className={styles.mainContent}>
             <CustomTabPane active={activeTab === 'design-firm'}>
-              <DesignFirm />
+              <DesignFirm
+                name={data.design_firm.name}
+                official_website={data.design_firm.official_website}
+                inquirer={data.design_firm.inquirer}
+                role={data.design_firm.role}
+                work_email={data.design_firm.work_email}
+                work_phone={data.design_firm.work_phone}
+                address={data.design_firm.address}
+              />
             </CustomTabPane>
 
             <CustomTabPane active={activeTab === 'inquiry-message'}>
-              <InquiryMessage />
+              <InquiryMessage
+                inquiry_for={data.inquiry_message.inquiry_for}
+                title={data.inquiry_message.title}
+                message={data.inquiry_message.message}
+                official_website={data.inquiry_message.official_website}
+                product_collection={data.inquiry_message.product_collection}
+                product_description={data.inquiry_message.product_description}
+                product_image={data.inquiry_message.product_image}
+              />
             </CustomTabPane>
           </div>
         </Col>

@@ -1,10 +1,6 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
-import {
-  getActionTaskPagination,
-  getInquiryMessageActionTask,
-  getInquiryMessageForGeneralInquiry,
-} from '../services';
+import { getActionTaskPagination, getInquiryMessageActionTask } from '../services';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { useBoolean } from '@/helper/hook';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
@@ -26,19 +22,17 @@ import styles from '../detail.less';
 import { StatusDropDown } from './StatusDropDown';
 import moment from 'moment';
 
-const DEFAULT_STATE = {
-  inquiry_for: '',
-  title: '',
-  message: '',
-  role: '',
-  tasks: [],
-};
-
-export const InquiryMessage = () => {
+export const InquiryMessage: FC<InquiryMessageOfGeneralInquiry> = ({
+  title,
+  inquiry_for,
+  message,
+  product_collection,
+  product_description,
+  product_image,
+  official_website,
+}) => {
   useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
   const openModal = useBoolean(false);
-  const [inquiryMessageData, setInquiryMessageData] =
-    useState<InquiryMessageOfGeneralInquiry>(DEFAULT_STATE);
   const [actionTasks, setActionTasks] = useState<CheckboxValue[]>([
     { label: 'con', value: 0 },
     { label: 'con 1', value: 1 },
@@ -47,12 +41,6 @@ export const InquiryMessage = () => {
   ]);
 
   useEffect(() => {
-    getInquiryMessageForGeneralInquiry().then((res) => {
-      if (res) {
-        setInquiryMessageData(res);
-      }
-    });
-
     getInquiryMessageActionTask().then((res) => {
       if (res) {
         setActionTasks(
@@ -94,19 +82,19 @@ export const InquiryMessage = () => {
   return (
     <div>
       <BrandProductBasicHeader
-        image=""
-        text_1=""
-        text_2=""
-        text_3=""
+        image={product_image}
+        text_1={product_collection}
+        text_2={product_description}
+        text_3={official_website}
         customClass={styles.brandProduct}
       />
 
       <TextForm boxShadow label="Inquiry For">
-        {inquiryMessageData.inquiry_for}
+        {inquiry_for}
       </TextForm>
 
       <TextForm boxShadow label="Title">
-        {inquiryMessageData.title}
+        {title}
       </TextForm>
 
       <FormGroup
@@ -114,11 +102,7 @@ export const InquiryMessage = () => {
         layout="vertical"
         labelColor="mono-color-dark"
         formClass={styles.messageForm}>
-        <CustomTextArea
-          value={inquiryMessageData.message}
-          borderBottomColor="mono-medium"
-          disabled
-        />
+        <CustomTextArea value={message} borderBottomColor="mono-medium" disabled />
       </FormGroup>
 
       <div className={styles.actionTask} onClick={() => openModal.setValue(true)}>

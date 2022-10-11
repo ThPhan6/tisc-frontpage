@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react';
-
-import { getGeneralInquiryDesignFirm } from '../services';
+import { FC } from 'react';
 
 import { GeneralInquiryDesignFirm } from '../types';
 
@@ -8,49 +6,37 @@ import TextForm from '@/components/Form/TextForm';
 
 import styles from '../detail.less';
 
-const DEFAULT_STATE = {
-  name: '',
-  official_website: '',
-  inquirer: '',
-  role: '',
-  work_email: '',
-  work_phone: '',
-  address: '',
-};
-
-export const DesignFirm = () => {
-  const [designFirmData, setDesignFirmData] = useState<GeneralInquiryDesignFirm>(DEFAULT_STATE);
-
-  useEffect(() => {
-    getGeneralInquiryDesignFirm().then((res) => {
-      if (res) {
-        setDesignFirmData(res);
-      }
-    });
-  }, []);
-
+export const DesignFirm: FC<GeneralInquiryDesignFirm> = ({
+  name,
+  official_website,
+  inquirer,
+  role,
+  work_email,
+  work_phone,
+  address,
+}) => {
   return (
     <>
       <TextForm boxShadow label="Name" formClass={styles.nameDesignFirm}>
-        {designFirmData.name}
+        {name}
       </TextForm>
       <TextForm boxShadow label="Official Website">
-        {designFirmData.official_website}
+        {official_website}
       </TextForm>
       <TextForm boxShadow label="Address">
-        {designFirmData.address}
+        {address}
       </TextForm>
       <TextForm boxShadow label="Inquirer">
-        {designFirmData.inquirer}
+        {inquirer}
       </TextForm>
       <TextForm boxShadow label="Position/Role">
-        {designFirmData.role}
+        {role}
       </TextForm>
       <TextForm boxShadow label="Work Email">
-        {designFirmData.work_email}
+        {work_email}
       </TextForm>
       <TextForm boxShadow label="Work Phone">
-        {designFirmData.work_phone}
+        {work_phone}
       </TextForm>
     </>
   );

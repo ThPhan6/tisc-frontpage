@@ -1,5 +1,5 @@
 import { ReactComponent as PendingIcon } from '@/assets/icons/pending-icon.svg';
-import { ReactComponent as RespondedIcon } from '@/assets/icons/responsed-icon.svg';
+import { ReactComponent as RespondedIcon } from '@/assets/icons/responded-icon.svg';
 
 export interface TopBarFilterValueProps {
   id: number;
@@ -9,19 +9,19 @@ export interface TopBarFilterValueProps {
 
 export const FilterValues = {
   global: -1,
-  pending: 1,
-  responded: 2,
+  pending: 0,
+  Responded: 1,
 };
 
 export const FilterNames = {
   [FilterValues.global]: 'VIEW ALL',
   [FilterValues.pending]: 'Pending',
-  [FilterValues.responded]: 'Responded',
+  [FilterValues.Responded]: 'Responded',
 };
 
 export const FilterStatusIcons = {
-  [FilterValues.pending]: <PendingIcon className="icon-align" />,
-  [FilterValues.responded]: <RespondedIcon className="icon-align" />,
+  [FilterValues.pending]: <PendingIcon />,
+  [FilterValues.Responded]: <RespondedIcon />,
 };
 
 export const GlobalFilter: TopBarFilterValueProps = {
@@ -36,9 +36,9 @@ export const GeneralInquiryStatuses: TopBarFilterValueProps[] = [
     icon: FilterStatusIcons[FilterValues.pending],
   },
   {
-    id: FilterValues.responded,
-    name: FilterNames[FilterValues.responded],
-    icon: FilterStatusIcons[FilterValues.responded],
+    id: FilterValues.Responded,
+    name: FilterNames[FilterValues.Responded],
+    icon: FilterStatusIcons[FilterValues.Responded],
   },
 ];
 

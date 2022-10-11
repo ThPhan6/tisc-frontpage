@@ -60,19 +60,19 @@ const TopBarDropDownFilter: React.FC<TopBarDropDownFilterProps> = ({
         align={{ offset: [0, 7] }}
         placement="bottomRight"
         containerClass={styles.filterDropdown}
+        trigger={['click']}
         items={dynamicFilter.map((item) => {
           return {
             onClick: () => handleOnChangeFilter(item),
             label: (
               <span className={styles.filterItemLabel}>
-                {item.icon ? item.icon : ''} {item.name}
+                {item.icon ?? ''} {item.name ?? ''}
               </span>
             ),
           };
-        })}
-        trigger={['click']}>
+        })}>
         <BodyText level={6} fontFamily="Roboto" customClass={styles.projectFilterLabel}>
-          <span>{filterLabel ?? ''}</span>
+          <span style={{ userSelect: 'none' }}>{filterLabel ?? ''}</span>
           <DropdownIcon />
         </BodyText>
       </HeaderDropdown>

@@ -1,21 +1,16 @@
-export enum GeneralInquiryStatus {
-  pending,
-  responded,
-}
-
-export interface GeneralInquiryProps {
+export interface GeneralInquiryListProps {
   date: string;
   design_firm: string;
   firm_location: string;
   inquier: string;
   inquiry_for: string;
   title: string;
-  status: GeneralInquiryStatus;
-  unreaded: boolean;
+  status: number;
+  read: boolean;
 }
 
 export interface GeneralInquirySummaryData {
-  inquiries: number;
+  inquires: number;
   pending: number;
   responded: number;
 }
@@ -30,13 +25,20 @@ export interface GeneralInquiryDesignFirm {
   address: string;
 }
 
-export interface GeneralInquiryDesignFirm {
-  name: string;
+export interface InquiryMessageOfGeneralInquiry {
+  inquiry_for: string;
+  title: string;
+  message: string;
+  product_collection: string;
+  product_description: string;
+  product_image: string;
   official_website: string;
-  inquirer: string;
-  role: string;
-  work_email: string;
-  work_phone: string;
+}
+
+export interface GeneralInquiryResponse {
+  product_name: string;
+  design_firm: GeneralInquiryDesignFirm;
+  inquiry_message: InquiryMessageOfGeneralInquiry;
 }
 
 export interface InquiryMessageTask {
@@ -45,11 +47,4 @@ export interface InquiryMessageTask {
   actions: string;
   teams: string;
   status: string;
-}
-
-export interface InquiryMessageOfGeneralInquiry {
-  inquiry_for: string;
-  title: string;
-  message: string;
-  tasks: InquiryMessageTask[];
 }

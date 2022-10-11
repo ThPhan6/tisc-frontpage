@@ -3,8 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { GeneralInquiryFilters, GlobalFilter } from '../constants/filters';
 import { PageContainer } from '@ant-design/pro-layout';
 
-// import { getGeneralInquirySummary } from '../services';
-import { getProjectSummary } from '@/features/project/services';
+import { getGeneralInquirySummary } from '../services';
 
 import { GeneralInquirySummaryData } from '../types';
 import { DropDownFilterProps, DropDownFilterValueProps } from '@/components/TopBar/types';
@@ -19,7 +18,7 @@ interface GeneralInquirySummaryProps {
 
 const GeneralInquirySummary: React.FC<GeneralInquirySummaryProps> = ({ summaryData }) => {
   const [state, setState] = useState<GeneralInquirySummaryData>({
-    inquiries: 0,
+    inquires: 0,
     pending: 0,
     responded: 0,
   });
@@ -29,7 +28,7 @@ const GeneralInquirySummary: React.FC<GeneralInquirySummaryProps> = ({ summaryDa
       state={state}
       setState={setState}
       summaryData={summaryData}
-      summaryType="inquiries"
+      summaryType="inquires"
     />
   );
 };
@@ -47,12 +46,12 @@ export const GeneralInquiryContainer: FC<GeneralInquiryContainerProps> = ({
   const [summaryData, setSummaryData] = useState<GeneralInquirySummaryData>();
 
   useEffect(() => {
-    /* getGeneralInquirySummary */ getProjectSummary().then((res) => {
+    getGeneralInquirySummary().then((res) => {
       if (res) {
         setSummaryData(res);
       }
     });
-  }, [selectedFilter]);
+  }, []);
 
   return (
     <PageContainer
