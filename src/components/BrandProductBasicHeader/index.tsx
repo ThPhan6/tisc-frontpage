@@ -13,6 +13,7 @@ interface BrandProductBasicHeaderProps {
   text_1?: string;
   text_2?: string;
   text_3?: string;
+  hasBoxShadow?: boolean;
   customClass?: string;
 }
 
@@ -22,10 +23,14 @@ const BrandProductBasicHeader: FC<BrandProductBasicHeaderProps> = ({
   text_1 = '',
   text_2 = '',
   text_3 = '',
+  hasBoxShadow = false,
   customClass = '',
 }) => {
   return (
-    <div className={`${styles.productInformationWrapper} ${customClass}`}>
+    <div
+      className={`${styles.productInformationWrapper} ${
+        hasBoxShadow ? styles.boxShadow : ''
+      } ${customClass}`}>
       <div className={styles.productInformationContainer}>
         <img src={showImageUrl(image) || ProductPlaceHolderImage} className={styles.productImage} />
         <div className={styles.productInformation}>

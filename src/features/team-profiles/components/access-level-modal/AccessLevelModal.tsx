@@ -6,7 +6,7 @@ import { ReactComponent as AccessableTickIcon } from '@/assets/icons/accessable-
 import { showImageUrl } from '@/helper/utils';
 import { getPermission, updatePermission } from '@/services/permission.api';
 
-import { AccessLevelModalItemProps, AccessLevelModalProps } from '../types';
+import { AccessLevelModalItemProps, AccessLevelModalProps } from '../../types';
 
 import Popover from '@/components/Modal/Popover';
 import { BodyText, MainTitle } from '@/components/Typography';
@@ -62,33 +62,32 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
           </td>
 
           {/* render icon */}
-          {menu.items.map((item, key) => (
-            <Fragment key={key}>
-              <td className={styles.menu_accessable} key={item.id}>
-                {item.accessable === true ? (
-                  <AccessableTickIcon
-                    className={styles.menu_accessable_true}
-                    onClick={() => handleClickAccessable(item)}
-                  />
-                ) : (
-                  item.accessable !== null && (
+          {!menu.subs?.length &&
+            menu.items.map((item, key) => (
+              <Fragment key={key}>
+                <td className={styles.menu_accessable} key={item.id}>
+                  {item.accessable === true ? (
+                    <AccessableTickIcon
+                      className={styles.menu_accessable_true}
+                      onClick={() => handleClickAccessable(item)}
+                    />
+                  ) : (
                     <AccessableMinusIcon
                       className={styles.menu_accessable_false}
                       onClick={() => handleClickAccessable(item)}
                     />
-                  )
-                )}
-              </td>
+                  )}
+                </td>
 
-              {/* for future data */}
-              <td
-                key={`fData_${item.id}`}
-                style={{ textAlign: 'center', display: menu.subs ? 'none' : '' }}>
-                <AccessableTickIcon className={styles.menu_accessable_null} />
-              </td>
-              {/* --------- */}
-            </Fragment>
-          ))}
+                {/* for future data */}
+                <td
+                  key={`fData_${item.id}`}
+                  style={{ textAlign: 'center', display: !menu.subs ? 'none' : '' }}>
+                  <AccessableTickIcon className={styles.menu_accessable_null} />
+                </td>
+                {/* --------- */}
+              </Fragment>
+            ))}
         </tr>
 
         {/* render subs */}

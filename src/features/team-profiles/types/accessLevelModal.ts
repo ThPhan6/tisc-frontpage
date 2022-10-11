@@ -12,3 +12,8 @@ export interface AccessLevelModalProps {
   parent_number: number | null;
   subs?: AccessLevelModalProps[];
 }
+
+export interface ModalVisible {
+  visible: boolean;
+  setVisible: (visible: boolean) => void;
+}

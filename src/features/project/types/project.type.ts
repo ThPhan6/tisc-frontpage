@@ -1,4 +1,11 @@
+import { MemberAssignedForm } from '@/components/AssignTeam/type';
 import { ProductItem } from '@/features/product/types';
+
+export interface ProjectItem {
+  id: string;
+  code: string;
+  name: string;
+}
 
 export interface ProjectSummaryData {
   projects: number;
@@ -39,11 +46,8 @@ export interface ProjectListProps {
   project_type: string;
   building_type: string;
   design_due: number;
-  assign_teams: {
-    id: string;
-    name: string;
-    avatar: string;
-  }[];
+  design_id: string;
+  assign_teams: MemberAssignedForm[];
 }
 
 export interface ProjectsDesignFirm {
@@ -87,24 +91,29 @@ export interface ConsideredProduct {
   area?: ConsideredProjectArea[];
 }
 
-export enum AssigningStatus {
-  'Considered' = 1,
-  'Re-considered' = 2,
-  'Unlisted' = 3,
+export enum ProductConsiderStatus {
+  'Considered',
+  'Re-Considered',
+  'Unlisted',
 }
 
-export enum SpecifyStatus {
-  'Cancelled' = 1,
-  'Re-specified' = 2,
-  'Specified' = 3,
+export enum ProductSpecifyStatus {
+  'Specified',
+  'Re-specified',
+  'Cancelled',
+}
+
+export enum ProjectProductStatus {
+  consider,
+  specify,
 }
 
 export enum OrderMethod {
-  'Direct Purchase' = 1,
-  'Custom Order' = 2,
+  'Direct Purchase',
+  'Custom Order',
 }
 
-export type AssigningStatusName = keyof typeof AssigningStatus;
+export type ProductConsiderStatusName = keyof typeof ProductConsiderStatus;
 
 export interface FindProductConsiderRequest {
   project_id: string;

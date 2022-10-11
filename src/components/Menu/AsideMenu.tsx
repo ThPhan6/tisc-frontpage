@@ -20,14 +20,14 @@ const getMenuItems = (menuItems?: MenuDataItem[]): ItemType[] | undefined => {
   if (!menuItems) {
     return undefined;
   }
-  const showedMenuItems = menuItems.filter((el) => !el.hideInMenu);
+  const showedMenuItems = menuItems.filter((el) => !el.unaccessible && !el.hideInMenu);
   if (showedMenuItems.length) {
     return showedMenuItems.map((item) => {
       const children = getMenuItems(item.children);
       return {
         key: item.key,
         children,
-        icon: renderIconByName(item.icon),
+        icon: renderIconByName(item.icon, item.unaccessible),
         label: item.name,
         onClick: () => (children ? undefined : pushTo(item.path || '')),
         title: '',

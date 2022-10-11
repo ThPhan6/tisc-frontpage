@@ -3,10 +3,9 @@ import { useDispatch } from 'react-redux';
 
 import { ReactComponent as ActionRightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 
-import { showImageUrl } from '@/helper/utils';
 import { truncate } from 'lodash';
 
-import { ProductInfoTab } from './types';
+import { AttributeGroupKey, ProductInfoTab } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import type { RadioValue } from '@/components/CustomRadio/types';
 import { setPartialProductDetail } from '@/features/product/reducers';
@@ -17,12 +16,12 @@ import ConversionInput from '@/components/EntryForm/ConversionInput';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { CustomInput } from '@/components/Form/CustomInput';
 import Popover from '@/components/Modal/Popover';
-import { BodyText, Title } from '@/components/Typography';
+import { Title } from '@/components/Typography';
 
-import { AttributeGroupKey } from './ProductAttributeItem';
-import styles from './ProductAttributeSubItem.less';
+import { AttributeOptionLabel } from './AttributeComponent';
+import styles from './AttributeItem.less';
 
-interface ProductAttributeSubItemProps {
+interface Props {
   attributes: ProductAttributes[];
   itemAttributes: ProductAttributeProps[];
   item: ProductAttributeProps;
@@ -42,7 +41,7 @@ const getBasisOptionsText = (activeBasisOptions: { id: string; option_code: stri
   return '';
 };
 
-export const ProductAttributeSubItem: React.FC<ProductAttributeSubItemProps> = ({
+export const ProductAttributeSubItem: React.FC<Props> = ({
   itemAttributes,
   attributes,
   item,
@@ -259,38 +258,10 @@ export const ProductAttributeSubItem: React.FC<ProductAttributeSubItemProps> = (
     </>
   );
 
-  const renderOptionLabel = (option: SubBasisOption, index: number) => {
-    if (!option.image || option.image == '') {
-      return (
-        <div className={styles.defaultOptionList}>
-          <div className="group-option-name">
-            <span className="value">{option.value_1}</span>
-            <span>{option.unit_1}</span>
-          </div>
-          <div className="group-option-name">
-            <span className="value">{option.value_2}</span>
-            <span>{option.unit_2}</span>
-          </div>
-          {renderSubBasisOption(index, option)}
-        </div>
-      );
-    }
-    return (
-      <div className={styles.defaultOptionImageList}>
-        <img src={showImageUrl(option.image)} />
-        <div className="option-image-list-wrapper">
-          <BodyText level={6} fontFamily="Roboto" customClass="heading-option-group">
-            {option.value_1} - {option.value_2}
-          </BodyText>
-          <div className="product-input-group">{renderSubBasisOption(index, option)}</div>
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <div style={{ width: '100%' }}>
+    <>
       {renderProductAttributeItem()}
+
       <Popover
         title={isSpecification ? 'OPTION' : 'PRESET'}
         visible={visible}
@@ -303,7 +274,11 @@ export const ProductAttributeSubItem: React.FC<ProductAttributeSubItemProps> = (
                 options:
                   currentAttribute?.basis?.subs?.map((sub: any, index: number) => {
                     return {
-                      label: renderOptionLabel(sub, index),
+                      label: (
+                        <AttributeOptionLabel option={sub} key={index}>
+                          {renderSubBasisOption(index, sub)}
+                        </AttributeOptionLabel>
+                      ),
                       value: sub.id,
                     };
                   }) ?? [],
@@ -336,6 +311,6 @@ export const ProductAttributeSubItem: React.FC<ProductAttributeSubItemProps> = (
         setChosenValue={setSelectedItem}
         className={styles.specificationOptionCheckbox}
       />
-    </div>
+    </>
   );
 };

@@ -12,7 +12,7 @@ import type {
 import { LocationGroupedByCountry } from '@/features/locations/type';
 import { ProjectsDesignFirm } from '@/features/project/types';
 import { MaterialCode } from '@/features/project/types/project-specifying.type';
-import { TeamProfileGroupCountry } from '@/features/team-profiles/type';
+import { TeamProfileGroupCountry } from '@/features/team-profiles/types';
 import { KeyValueData, MaterialCodeDesignFirm } from '@/types';
 
 interface DesignFirmListResponse {
@@ -123,9 +123,12 @@ export async function getProjectsByDesignFirm(id: string) {
 }
 
 export async function getMaterialCodeByDesignFirm(id: string) {
-  return request<{ data: MaterialCodeDesignFirm[] }>(`/api/material-code/get-list-group/${id}`, {
-    method: 'GET',
-  })
+  return request<{ data: MaterialCodeDesignFirm[] }>(
+    `/api/material-code/get-list?design_id=${id}`,
+    {
+      method: 'GET',
+    },
+  )
     .then((response) => {
       return response.data;
     })

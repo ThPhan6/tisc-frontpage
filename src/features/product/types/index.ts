@@ -1,4 +1,10 @@
-import { AssigningStatus, AssigningStatusName } from '@/features/project/types';
+import {
+  OrderMethod,
+  ProductConsiderStatus,
+  ProductSpecifyStatus,
+  ProjectProductStatus,
+  SpecificationBodyRequest,
+} from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
 import { ConversionSubValueProps, GeneralData } from '@/types';
 
@@ -47,6 +53,37 @@ export interface ProductAttributeFormInput {
 
 export type ProductKeyword = [string, string, string, string];
 
+export interface SpecifiedDetail {
+  // basic information
+  id: string;
+  project_id: string;
+  product_id: string;
+  status?: ProjectProductStatus; // consider || specified
+  consider_status?: ProductConsiderStatus; // considered - default || re-considered || unlist
+  specified_status?: ProductSpecifyStatus; // specified - default || re-specify || cancel
+  // vendor
+  brand_location_id: string;
+  distributor_location_id: string;
+  /// order
+  material_code_id: string;
+  material_code: string;
+  suffix_code: string;
+  description: string;
+  quantity: number;
+  order_method: OrderMethod;
+  requirement_type_ids: string[];
+  instruction_type_ids: string[];
+  finish_schedules: string[];
+  unit_type_id: string;
+  unit_type?: string;
+  special_instructions: string;
+  /// specification
+  specification: SpecificationBodyRequest;
+  /// allocation
+  allocation: string[]; // room_id
+  entire_allocation: boolean;
+}
+
 export interface ProductItem {
   id: string;
   brand?: BrandDetail;
@@ -70,19 +107,13 @@ export interface ProductItem {
   keywords: ProductKeyword;
   created_at?: string;
   created_by?: string;
-
-  // consider data
-  image?: string;
-  brand_id?: string;
-  brand_name?: string;
-  brand_logo?: string;
-  collection_name?: string;
-  status?: AssigningStatus;
-  status_name?: AssigningStatusName;
-  is_entire?: boolean;
-  project_zone_id?: string;
-  considered_id?: string;
+  // specifying
+  specifiedDetail?: SpecifiedDetail;
+  brand_location_id: string;
+  distributor_location_id: string;
 }
+
+export type ProjectProductItem = ProductItem & { rooms: any };
 
 export interface ProductItemValue {
   id: string;
@@ -196,4 +227,19 @@ export interface ProductTip {
   product_id?: string;
   contents: ProductTipData[];
   created_at?: string;
+}
+
+/// inquiry-request
+export interface GeneralInquiryForm {
+  product_id: string;
+  title: string;
+  message: string;
+  inquiry_for_ids: string[];
+}
+export interface ProjectRequestForm {
+  project_id: string;
+  product_id: string;
+  title: string;
+  message: string;
+  request_for_ids: string[];
 }
