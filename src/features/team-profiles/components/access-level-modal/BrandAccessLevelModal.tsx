@@ -1,13 +1,10 @@
 import { FC } from 'react';
 
+import { ModalVisible } from '../../types';
+
 import AccessLevelModal from './AccessLevelModal';
 
-interface BrandAccessLevelModalProps {
-  visible: boolean;
-  setVisible: (visible: boolean) => void;
-}
-
-const BrandAccessLevelModal: FC<BrandAccessLevelModalProps> = ({ visible, setVisible }) => {
+const BrandAccessLevelModal: FC<ModalVisible> = ({ visible, setVisible }) => {
   return (
     <AccessLevelModal
       visible={visible}

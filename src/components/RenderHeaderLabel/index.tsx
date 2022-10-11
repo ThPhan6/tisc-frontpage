@@ -18,12 +18,6 @@ interface RenderLabelHeaderProps {
   isSubHeader: boolean;
 }
 
-interface RenderMemberHeaderProps {
-  firstName: string;
-  lastName?: string;
-  avatar?: string;
-}
-
 export const RenderLabelHeader: FC<RenderLabelHeaderProps> = ({
   header,
   quantity,
@@ -51,7 +45,13 @@ export const RenderLabelHeader: FC<RenderLabelHeaderProps> = ({
   );
 };
 
-export const RenderMemberHeader: FC<RenderMemberHeaderProps> = ({
+interface MemberHeaderLabelProps {
+  firstName: string;
+  lastName?: string;
+  avatar?: string;
+}
+
+export const MemberHeaderLabel: FC<MemberHeaderLabelProps> = ({
   firstName = '',
   lastName = '',
   avatar,

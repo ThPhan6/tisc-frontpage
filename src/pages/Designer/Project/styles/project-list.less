@@ -4,5 +4,17 @@
   }
 }
 .asignTeamMember {
-  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > img,
+  div {
+    margin-right: 2px;
+    cursor: pointer;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
 }

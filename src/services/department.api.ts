@@ -11,7 +11,7 @@ export async function getDepartmentList() {
   )
     .then((response) => response.data)
     .catch((error) => {
-      message.error(error.data || MESSAGE_NOTIFICATION.GET_LIST_DEPARTMENT_ERROR);
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.GET_LIST_DEPARTMENT_ERROR);
       return [] as DepartmentData[];
     });
 }

@@ -6,6 +6,8 @@ import { ReactComponent as FeebBackIcon } from '@/assets/icons/feedback.svg';
 import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/ic-share.svg';
 import { ReactComponent as RecommendationIcon } from '@/assets/icons/recommendation.svg';
 
+import { ModalVisible } from '../../types';
+
 import { BodyText } from '@/components/Typography';
 
 import AccessLevelModal from './AccessLevelModal';
@@ -26,12 +28,7 @@ const furturePermissionData = [
   },
 ];
 
-interface TISCAccessLevelModalProps {
-  visible: boolean;
-  setVisible: (visible: boolean) => void;
-}
-
-const TISCAccessLevelModal: FC<TISCAccessLevelModalProps> = ({ visible, setVisible }) => {
+const TISCAccessLevelModal: FC<ModalVisible> = ({ visible, setVisible }) => {
   return (
     <AccessLevelModal
       visible={visible}
