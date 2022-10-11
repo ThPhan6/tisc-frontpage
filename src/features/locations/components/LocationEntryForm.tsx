@@ -107,8 +107,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         if (res) {
           setFunctionalTypeForDesign(
             res.map((el) => ({
-              label: el.key,
-              value: String(el.value),
+              label: el.name,
+              value: String(el.id),
             })),
           );
         }
