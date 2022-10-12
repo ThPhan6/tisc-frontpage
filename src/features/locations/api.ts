@@ -19,7 +19,7 @@ import type {
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import { GeneralData, KeyValueData } from '@/types';
+import { GeneralData } from '@/types';
 
 interface LocationPaginationResponse {
   data: {
@@ -164,10 +164,10 @@ export async function getListFunctionalType() {
 
 /// for design-firms
 export async function getListFunctionalTypeForDesign() {
-  return request<KeyValueData[]>(`/api/setting/functional-type`)
+  return request<GeneralData[]>(`/api/setting/functional-type`)
     .then((res) => res)
     .catch(() => {
-      return [] as KeyValueData[];
+      return [] as GeneralData[];
     });
 }
 

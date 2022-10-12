@@ -1,15 +1,10 @@
+import { MemberAssignedForm } from '@/components/AssignTeam/type';
 import { ProductItem } from '@/features/product/types';
 
 export interface ProjectItem {
   id: string;
   code: string;
   name: string;
-}
-
-export interface ProjectFilterValueProps {
-  id: number;
-  name: string;
-  icon?: React.ReactNode;
 }
 
 export interface ProjectSummaryData {
@@ -51,11 +46,8 @@ export interface ProjectListProps {
   project_type: string;
   building_type: string;
   design_due: number;
-  assign_teams: {
-    id: string;
-    name: string;
-    avatar: string;
-  }[];
+  design_id: string;
+  assign_teams: MemberAssignedForm[];
 }
 
 export interface ProjectsDesignFirm {

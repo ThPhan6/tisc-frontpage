@@ -248,6 +248,9 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
               product_id: product.id,
             });
           }
+
+          // close popup
+          setVisible(false);
         }, 300);
       }
     });

@@ -41,11 +41,11 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { createTeamProfile, getOneTeamProfile, inviteUser, updateTeamProfile } from '../api';
-import BrandAccessLevelModal from './BrandAccessLevelModal';
-import DesignAccessLevelModal from './DesignAccessLevelModal';
 import LocationModal from './LocationModal';
-import TISCAccessLevelModal from './TISCAccessLevelModal';
 import styles from './TeamProfilesEntryForm.less';
+import BrandAccessLevelModal from './access-level-modal/BrandAccessLevelModal';
+import DesignAccessLevelModal from './access-level-modal/DesignAccessLevelModal';
+import TISCAccessLevelModal from './access-level-modal/TISCAccessLevelModal';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const GenderRadio = [
@@ -70,6 +70,7 @@ const TeamProfilesEntryForm = () => {
     [
       [isTISCAdmin, TISCAccessLevelDataRole],
       [isBrandAdmin, BrandAccessLevelDataRole],
+      [isDesignAdmin, DesignAccessLevelDataRole],
     ],
     DesignAccessLevelDataRole,
   );
@@ -78,6 +79,7 @@ const TeamProfilesEntryForm = () => {
     [
       [isTISCAdmin, PATH.tiscTeamProfile],
       [isBrandAdmin, PATH.brandTeamProfile],
+      [isDesignAdmin, PATH.designerOfficeTeamProfile],
     ],
     PATH.designerOfficeTeamProfile,
   );

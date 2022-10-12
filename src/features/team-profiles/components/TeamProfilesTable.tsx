@@ -33,22 +33,19 @@ const TeamProfilesTable = () => {
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
   const isDesignAdmin = useCheckPermission('Design Admin');
-  /// for user role path
-  const userCreateRolePath = getValueByCondition(
-    [
-      [isTISCAdmin, PATH.tiscCreateTeamProfile],
-      [isBrandAdmin, PATH.brandCreateTeamProfile],
-    ],
-    PATH.designerOfficeTeamProfileCreate,
-  );
 
-  const userUpdateRolePath = getValueByCondition(
-    [
-      [isTISCAdmin, PATH.tiscUpdateTeamProfile],
-      [isBrandAdmin, PATH.brandUpdateTeamProfile],
-    ],
-    PATH.designerOfficeTeamProfileUpdate,
-  );
+  /// for user role path
+  const userCreateRolePath = getValueByCondition([
+    [isTISCAdmin, PATH.tiscCreateTeamProfile],
+    [isBrandAdmin, PATH.brandCreateTeamProfile],
+    [isDesignAdmin, PATH.designerOfficeTeamProfileCreate],
+  ]);
+
+  const userUpdateRolePath = getValueByCondition([
+    [isTISCAdmin, PATH.tiscUpdateTeamProfile],
+    [isBrandAdmin, PATH.brandUpdateTeamProfile],
+    [isDesignAdmin, PATH.designerOfficeTeamProfileUpdate],
+  ]);
 
   const handleUpdateTeamProfile = (id: string) => {
     pushTo(userUpdateRolePath.replace(':id', id));

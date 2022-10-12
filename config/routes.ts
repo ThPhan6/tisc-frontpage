@@ -477,14 +477,25 @@ export default [
     path: PATH.brandGeneralInquiry,
     name: 'general_inquiry',
     icon: 'general-inquiry-icon.svg',
-    component: './Admin',
     access: 'brand_genenral_inquiry',
+    routes: [
+      {
+        path: PATH.brandGeneralInquiry,
+        component: './Brand/GeneralInquiries',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.brandGeneralInquiryDetail,
+        component: './Brand/GeneralInquiries/detail.tsx',
+        hideInMenu: true,
+      },
+    ],
   },
   {
     path: PATH.brandProjectTracking,
     name: 'project_tracking',
     icon: 'project-tracking-icon.svg',
-    component: './Admin',
+    component: './Brand/ProjectTracking',
     access: 'brand_project_tracking',
   },
   {

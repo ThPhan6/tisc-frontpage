@@ -10,7 +10,7 @@ import { UserGroupProps } from '../types/common.types';
 import { TeamProfileGroupCountry } from '@/features/team-profiles/types';
 
 import TextForm from '@/components/Form/TextForm';
-import { RenderLabelHeader, RenderMemberHeader } from '@/components/RenderHeaderLabel';
+import { MemberHeaderLabel, RenderLabelHeader } from '@/components/RenderHeaderLabel';
 
 import indexStyles from '../styles/index.less';
 import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
@@ -57,7 +57,7 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
                       {team.users?.map((user, userIndex) => (
                         <Collapse.Panel
                           header={
-                            <RenderMemberHeader
+                            <MemberHeaderLabel
                               firstName={user.firstname}
                               lastName={user.lastname}
                               avatar={user.logo}

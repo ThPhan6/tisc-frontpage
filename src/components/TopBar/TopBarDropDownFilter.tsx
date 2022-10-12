@@ -1,28 +1,45 @@
 import React from 'react';
 
-import { GlobalFilter, ProjectFilters } from '../../constants/filter';
+import { GlobalFilter } from '@/pages/Designer/Project/constants/filter';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 
-import { ProjectFilterValueProps } from '@/features/project/types';
+import { DropDownFilterValueProps } from '@/components/TopBar/types';
 
 import { HeaderDropdown } from '@/components/HeaderDropdown';
 import { BodyText } from '@/components/Typography';
 
-import styles from '../../styles/project-filter.less';
+import styles from './index.less';
 
-export interface ProjectFilterProps {
-  selectedFilter: ProjectFilterValueProps;
-  setSelectedFilter: (filter: ProjectFilterValueProps) => void;
+export interface TopBarDropDownFilterProps {
+  isShowFilter?: boolean;
+  selectedFilter: DropDownFilterValueProps;
+  setSelectedFilter: (filter: DropDownFilterValueProps) => void;
+  filterLabel: string;
+  globalFilter: DropDownFilterValueProps;
+  dynamicFilter: DropDownFilterValueProps[];
 }
 
-const ProjectFilter: React.FC<ProjectFilterProps> = ({ selectedFilter, setSelectedFilter }) => {
-  const handleOnChangeFilter = (changedFilter: ProjectFilterValueProps) => {
-    setSelectedFilter(changedFilter);
-  };
+const TopBarDropDownFilter: React.FC<TopBarDropDownFilterProps> = ({
+  filterLabel,
+  selectedFilter,
+  setSelectedFilter,
+  globalFilter,
+  dynamicFilter,
+  isShowFilter,
+}) => {
+  if (!isShowFilter) {
+    return null;
+  }
 
-  const isGlobalFilter = selectedFilter.id === GlobalFilter.id;
+  const isGlobalFilter = selectedFilter?.id === globalFilter.id;
+
+  const handleOnChangeFilter = (changedFilter: DropDownFilterValueProps) => {
+    if (setSelectedFilter) {
+      setSelectedFilter(changedFilter);
+    }
+  };
 
   return (
     <div className={styles.projectFilter}>
@@ -34,7 +51,7 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({ selectedFilter, setSelect
           'view'
         ) : (
           <>
-            {selectedFilter.name}
+            {selectedFilter?.name}
             <DeleteIcon onClick={() => handleOnChangeFilter(GlobalFilter)} />
           </>
         )}
@@ -43,23 +60,23 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({ selectedFilter, setSelect
         align={{ offset: [0, 7] }}
         placement="bottomRight"
         containerClass={styles.filterDropdown}
-        items={ProjectFilters.map((item) => {
+        trigger={['click']}
+        items={dynamicFilter.map((item) => {
           return {
             onClick: () => handleOnChangeFilter(item),
             label: (
               <span className={styles.filterItemLabel}>
-                {item.icon ? item.icon : ''} {item.name}
+                {item.icon ?? ''} {item.name ?? ''}
               </span>
             ),
           };
-        })}
-        trigger={['click']}>
+        })}>
         <BodyText level={6} fontFamily="Roboto" customClass={styles.projectFilterLabel}>
-          <span>Project Status</span>
+          <span style={{ userSelect: 'none' }}>{filterLabel ?? ''}</span>
           <DropdownIcon />
         </BodyText>
       </HeaderDropdown>
     </div>
   );
 };
-export default ProjectFilter;
+export default TopBarDropDownFilter;

@@ -12,5 +12,6 @@ export const BrandAccessLevelDataRole = [
 
 export const DesignAccessLevelDataRole = [
   { label: 'Design Admin', value: '68fdf6d0-464e-404b-90e8-5d02a48ac498' },
+  { label: 'Design Lead', value: '222', disabled: true },
   { label: 'Design Team', value: '1493b47a-1118-43e2-9bd8-1a3c3adc3f13' },
 ];

@@ -3,25 +3,29 @@ import React, { useEffect, useRef, useState } from 'react';
 import { FilterStatusIcons, FilterValues, GlobalFilter } from './constants/filter';
 import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
-import { message } from 'antd';
 
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import {
+  createAssignTeamByProjectId,
   deleteProject,
   getProjectPagination,
   getProjectSummary,
 } from '@/features/project/services';
+import { getTeamsByDesignFirm } from '@/features/user-group/services';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { setDefaultWidthForEachColumn } from '@/helper/utils';
-import { isEmpty } from 'lodash';
+import { getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
+import { isEmpty, isEqual } from 'lodash';
 
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import type { TableColumnItem } from '@/components/Table/types';
 import type { ProjectListProps, ProjectSummaryData } from '@/features/project/types';
+import { TeamProfileGroupCountry, TeamProfileMemberProps } from '@/features/team-profiles/types';
 
 import ProjectListHeader from './components/ProjectListHeader';
+import AssignTeam from '@/components/AssignTeam';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
@@ -36,6 +40,65 @@ const ProjectList: React.FC = () => {
   const tableRef = useRef<any>();
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
   const [summaryData, setSummaryData] = useState<ProjectSummaryData>();
+
+  // assign team modal
+  const [visible, setVisible] = useState<boolean>(false);
+  // for each member assigned
+  const [recordAssignTeam, setRecordAssignTeam] = useState<ProjectListProps>();
+  // get list assign team to display inside popup
+  const [assignTeam, setAssignTeam] = useState<TeamProfileGroupCountry[]>([]);
+
+  const showAssignTeams = (projectInfo: ProjectListProps) => () => {
+    /// get brand info
+    setRecordAssignTeam(projectInfo);
+
+    // get list team by design id(user's relation_id)
+    getTeamsByDesignFirm(projectInfo.design_id).then((res) => {
+      if (res) {
+        /// set assignTeam state to display
+        setAssignTeam(res);
+        // open popup
+        setVisible(true);
+      }
+    });
+  };
+
+  // update assign team
+  const handleSubmitAssignTeam = (checkedData: CheckboxValue[]) => {
+    // new assign team
+    const memberAssignTeam: TeamProfileMemberProps[] = [];
+
+    checkedData?.forEach((checked) => {
+      assignTeam.forEach((team) => {
+        const member = team.users.find((user) => user.id === checked.value);
+
+        if (member) {
+          memberAssignTeam.push(member);
+        }
+      });
+    });
+
+    if (recordAssignTeam?.id) {
+      // dont call api if havent changed
+      const checkedIds = checkedData?.map((check) => check.value);
+      const assignedTeamIds = recordAssignTeam.assign_teams?.map((team) => team.id);
+      const noSelectionChange = isEqual(checkedIds, assignedTeamIds);
+      if (noSelectionChange) return;
+
+      // add member selected to data
+      createAssignTeamByProjectId(
+        recordAssignTeam.id,
+        memberAssignTeam.map((member) => member.id),
+      ).then((isSuccess) => {
+        if (isSuccess) {
+          // reload table after updating
+          tableRef.current.reload();
+          // close popup
+          setVisible(false);
+        }
+      });
+    }
+  };
   const goToCreatePage = () => {
     pushTo(PATH.designerCreateProject);
   };
@@ -61,10 +124,6 @@ const ProjectList: React.FC = () => {
         }
       });
     });
-  };
-
-  const handleAssignTeams = () => {
-    message.info('This feature will coming at Phase 4!');
   };
 
   /// reload table depends on filter
@@ -134,12 +193,14 @@ const ProjectList: React.FC = () => {
       align: 'center',
       render: (_value, record) => {
         if (isEmpty(record.assign_teams)) {
-          return <UserAddIcon onClick={handleAssignTeams} className="icon-align" />;
+          return (
+            <UserAddIcon onClick={showAssignTeams(record)} className="icon-align cursor-pointer" />
+          );
         }
         return (
-          <div onClick={handleAssignTeams} className={styles.asignTeamMember}>
+          <div onClick={showAssignTeams(record)} className={styles.asignTeamMember}>
             {record.assign_teams.map((teamProfile, key) => (
-              <TeamIcon key={key} avatar={teamProfile.avatar} name={teamProfile.name} />
+              <TeamIcon key={key} avatar={teamProfile.avatar} name={getFullName(teamProfile)} />
             ))}
           </div>
         );
@@ -170,35 +231,44 @@ const ProjectList: React.FC = () => {
   ];
 
   return (
-    <PageContainer
-      pageHeaderRender={() => {
-        return (
-          <ProjectListHeader
-            selectedFilter={selectedFilter}
-            setSelectedFilter={setSelectedFilter}
-            summaryData={summaryData}
-          />
-        );
-      }}>
-      <CustomTable
-        rightAction={<CustomPlusButton onClick={goToCreatePage} />}
-        title={'PROJECTS'}
-        columns={setDefaultWidthForEachColumn(MainColumns, 7)}
-        fetchDataFunc={getProjectPagination}
-        extraParams={
-          selectedFilter && selectedFilter.id !== FilterValues.global
-            ? {
-                filter: {
-                  status: selectedFilter.id,
-                },
-              }
-            : undefined
-        }
-        ref={tableRef}
-        hasPagination
-        autoLoad={false}
+    <div>
+      <PageContainer
+        pageHeaderRender={() => {
+          return (
+            <ProjectListHeader
+              selectedFilter={selectedFilter}
+              setSelectedFilter={setSelectedFilter}
+              summaryData={summaryData}
+            />
+          );
+        }}>
+        <CustomTable
+          rightAction={<CustomPlusButton onClick={goToCreatePage} />}
+          title={'PROJECTS'}
+          columns={setDefaultWidthForEachColumn(MainColumns, 7)}
+          fetchDataFunc={getProjectPagination}
+          extraParams={
+            selectedFilter && selectedFilter.id !== FilterValues.global
+              ? {
+                  filter: {
+                    status: selectedFilter.id,
+                  },
+                }
+              : undefined
+          }
+          ref={tableRef}
+          hasPagination
+          autoLoad={false}
+        />
+      </PageContainer>
+      <AssignTeam
+        visible={visible}
+        setVisible={setVisible}
+        onChange={handleSubmitAssignTeam}
+        memberAssigned={recordAssignTeam}
+        teams={assignTeam}
       />
-    </PageContainer>
+    </div>
   );
 };
 

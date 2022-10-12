@@ -1,43 +1,12 @@
-import { useEffect, useState } from 'react';
-
-import { capitalize, map, startCase, upperCase } from 'lodash';
+import { useState } from 'react';
 
 import { ProjectSummaryData } from '@/features/project/types';
 
-import { BodyText, Title } from '@/components/Typography';
-
-import styles from '../../styles/project-summary.less';
-
-interface ProjectSummaryItemProps {
-  label: string;
-  value?: number;
-  isBold?: boolean;
-}
+import { TopBarMenuSummary } from '@/components/TopBar/TopBarMenuSummary';
 
 interface ProjectSummaryProps {
   summaryData?: ProjectSummaryData;
 }
-
-const ProjectSummaryItem = ({ label, value, isBold }: ProjectSummaryItemProps) => {
-  return (
-    <div className={styles.summaryItem}>
-      {isBold ? (
-        <Title level={8}>{value}</Title>
-      ) : (
-        <BodyText level={5} fontFamily="Roboto">
-          {value}
-        </BodyText>
-      )}
-      {isBold ? (
-        <Title level={9}>{label}</Title>
-      ) : (
-        <BodyText level={6} fontFamily="Roboto">
-          {label}
-        </BodyText>
-      )}
-    </div>
-  );
-};
 
 const ProjectSummary: React.FC<ProjectSummaryProps> = ({ summaryData }) => {
   const [state, setState] = useState<ProjectSummaryData>({
@@ -47,26 +16,13 @@ const ProjectSummary: React.FC<ProjectSummaryProps> = ({ summaryData }) => {
     archived: 0,
   });
 
-  const data: ProjectSummaryItemProps[] = map(state, (value, label) => {
-    return {
-      label: label === 'projects' ? upperCase(label) : capitalize(startCase(label)),
-      value: value ?? 0,
-      isBold: label === 'projects',
-    };
-  });
-
-  useEffect(() => {
-    if (summaryData) {
-      setState(summaryData);
-    }
-  }, [summaryData]);
-
   return (
-    <div className={styles.projectSummaryWrapper}>
-      {data.map((summaryItem, index) => (
-        <ProjectSummaryItem key={index} {...summaryItem} />
-      ))}
-    </div>
+    <TopBarMenuSummary
+      state={state}
+      setState={setState}
+      summaryData={summaryData}
+      summaryType="projects"
+    />
   );
 };
 export default ProjectSummary;
