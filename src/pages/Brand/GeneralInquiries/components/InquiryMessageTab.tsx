@@ -22,7 +22,7 @@ import styles from '../detail.less';
 import { StatusDropDown } from './StatusDropDown';
 import moment from 'moment';
 
-export const InquiryMessage: FC<InquiryMessageOfGeneralInquiry> = ({
+export const InquiryMessageTab: FC<InquiryMessageOfGeneralInquiry> = ({
   title,
   inquiry_for,
   message,

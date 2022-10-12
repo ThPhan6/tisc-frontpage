@@ -6,7 +6,7 @@ import TextForm from '@/components/Form/TextForm';
 
 import styles from '../detail.less';
 
-export const DesignFirm: FC<GeneralInquiryDesignFirm> = ({
+export const DesignFirmTab: FC<GeneralInquiryDesignFirm> = ({
   name,
   official_website,
   inquirer,

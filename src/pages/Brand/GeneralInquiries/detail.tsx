@@ -10,9 +10,9 @@ import { pushTo } from '@/helper/history';
 
 import { GeneralInquiryResponse } from './types';
 
-import { DesignFirm } from './components/DesignFirm';
+import { DesignFirmTab } from './components/DesignFirmTab';
 import { GeneralInquiryContainer } from './components/GeneralInquiryContainer';
-import { InquiryMessage } from './components/InquiryMessage';
+import { InquiryMessageTab } from './components/InquiryMessageTab';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
@@ -91,7 +91,7 @@ const GeneralInquiryDetail: FC<GeneralInquiriesDetailProps> = ({ designFirmId })
 
           <div className={styles.mainContent}>
             <CustomTabPane active={activeTab === 'design-firm'}>
-              <DesignFirm
+              <DesignFirmTab
                 name={data.design_firm.name}
                 official_website={data.design_firm.official_website}
                 inquirer={data.design_firm.inquirer}
@@ -103,7 +103,7 @@ const GeneralInquiryDetail: FC<GeneralInquiriesDetailProps> = ({ designFirmId })
             </CustomTabPane>
 
             <CustomTabPane active={activeTab === 'inquiry-message'}>
-              <InquiryMessage
+              <InquiryMessageTab
                 inquiry_for={data.inquiry_message.inquiry_for}
                 title={data.inquiry_message.title}
                 message={data.inquiry_message.message}
