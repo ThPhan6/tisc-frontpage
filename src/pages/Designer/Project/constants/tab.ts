@@ -18,14 +18,14 @@ export const ProjectTabs: TabItem[] = [
 
 export enum ProductSpecifiedTabKeys {
   issuingInformation = 'information',
-  standardSpecSheet = 'standard',
-  customSpecSheet = 'custom',
+  coverAndPreamble = 'cover',
+  standardSpecification = 'standard',
 }
 
 export const ProductSpecifiedTabs: TabItem[] = [
   { tab: 'issuing information', key: ProductSpecifiedTabKeys.issuingInformation },
-  { tab: 'standard spec sheet', key: ProductSpecifiedTabKeys.standardSpecSheet },
-  { tab: 'custom spec sheet', key: ProductSpecifiedTabKeys.customSpecSheet, disable: true },
+  { tab: 'cover & preamble', key: ProductSpecifiedTabKeys.coverAndPreamble },
+  { tab: 'standard specification', key: ProductSpecifiedTabKeys.standardSpecification },
 ];
 
 // specifiy tab

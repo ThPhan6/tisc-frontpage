@@ -1,6 +1,5 @@
 import { FC, useState } from 'react';
 
-import { message } from 'antd';
 import { useParams } from 'umi';
 
 import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
@@ -62,7 +61,7 @@ const ProductSpecification: FC = () => {
           size="small"
           variant="secondary"
           buttonClass={styles.button}
-          onClick={() => message.info('cooming soon!')}
+          onClick={() => setViewBy('pdf')}
           active={viewBy === 'pdf'}>
           <PrintIcon />
           PDF
