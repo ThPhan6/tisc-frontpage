@@ -106,6 +106,7 @@ export interface CustomTableProps {
   rowKey?: string;
   autoLoad?: boolean;
   onFilterLoad?: boolean;
+  onRow?: any;
 }
 
 const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
@@ -118,6 +119,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     hasPagination,
     extraParams,
     customClass,
+    onRow,
     rowKey = 'id',
     autoLoad = true,
     onFilterLoad = true,
@@ -247,6 +249,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
             return 'custom-expanded' as any;
           }
         }}
+        onRow={onRow}
         dataSource={data}
         pagination={pagination}
         onChange={handleTableChange}

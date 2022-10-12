@@ -39,9 +39,11 @@ const BrandProductBasicHeader: FC<BrandProductBasicHeaderProps> = ({
           <RobotoBodyText level={6}> {text_3} </RobotoBodyText>
         </div>
       </div>
-      <div className={styles.brandLogo}>
-        <img src={showImageUrl(logo) || ProductPlaceHolderImage} />
-      </div>
+      {logo ? (
+        <div className={styles.brandLogo}>
+          <img src={showImageUrl(logo) || ProductPlaceHolderImage} />
+        </div>
+      ) : null}
     </div>
   );
 };

@@ -8,6 +8,8 @@ import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success
 
 import { isEmpty } from 'lodash';
 
+import { CheckboxValue } from '../CustomCheckbox/types';
+
 import CustomButton from '@/components/Button';
 import CheckboxList from '@/components/CustomCheckbox/CheckboxList';
 import type { CheckboxOption } from '@/components/CustomCheckbox/CheckboxList';
@@ -20,6 +22,7 @@ import type { RadioListOption } from '@/components/CustomRadio/RadioList';
 import { BodyText, MainTitle } from '@/components/Typography';
 import { DropdownCategoryList } from '@/features/categories/components/CategoryDropdown';
 
+import { CustomCheckbox } from '../CustomCheckbox';
 import styles from './styles/Popover.less';
 
 export interface PopoverProps {
@@ -32,6 +35,9 @@ export interface PopoverProps {
 
   /// group radio list
   groupRadioList?: RadioListOption[];
+
+  /// group checkbox list
+  groupCheckboxList?: CheckboxValue[];
 
   /// dropdown checkbox list
   dropdownCheckboxList?: DropdownCheckboxItem[];
@@ -72,6 +78,7 @@ const Popover: FC<PopoverProps> = ({
   dropdownCheckboxList,
   dropdownCheckboxTitle,
   groupRadioList,
+  groupCheckboxList,
   checkboxList,
   categoryDropdown,
   chosenValue,
@@ -145,6 +152,20 @@ const Popover: FC<PopoverProps> = ({
         />
       );
     }
+
+    /// group checkbox list
+    if (groupCheckboxList) {
+      return (
+        <CustomCheckbox
+          options={groupCheckboxList}
+          isCheckboxList
+          otherInput
+          selected={currentValue}
+          onChange={setCurrentValue}
+        />
+      );
+    }
+
     if (checkboxList) {
       if (isEmpty(checkboxList)) {
         return renderEmptyData();

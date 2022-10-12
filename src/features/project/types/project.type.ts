@@ -7,12 +7,6 @@ export interface ProjectItem {
   name: string;
 }
 
-export interface ProjectFilterValueProps {
-  id: number;
-  name: string;
-  icon?: React.ReactNode;
-}
-
 export interface ProjectSummaryData {
   projects: number;
   live: number;
