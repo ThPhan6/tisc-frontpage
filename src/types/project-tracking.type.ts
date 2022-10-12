@@ -1,18 +1,22 @@
 export interface ProjecTrackingList {
   id: string;
-  created: string;
-  name: string;
-  location: string;
-  project_type: string;
-  design_firm: string;
-  status: number;
-  requests: number;
-  notifications: number;
+  created_at: string;
+  projectName: string;
+  projectLocation: string;
+  projectType: string;
+  designFirm: string;
+  projectStatus: string;
   priority: number;
-  assign_teams: {
+  priorityName: string;
+  assignedTeams: {
     id: string;
-    name: string;
+    firstname: string;
+    lastname: string;
     avatar: string;
   }[];
-  subscription: number;
+  requestCount: number;
+  newRequest: boolean;
+  notificationCount: number;
+  newNotification: boolean;
+  newTracking: boolean;
 }

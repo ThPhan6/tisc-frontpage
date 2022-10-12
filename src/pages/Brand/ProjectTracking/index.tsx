@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 
 import {
-  FilterStatusIcons,
-  FilterValues,
+  Global,
   GlobalFilter,
-  ProjectTrackingFilters,
-} from '@/pages/Designer/Project/constants/filter';
+  PriorityIcons,
+  ProjectPriorityFilters,
+  ProjectStatusFilters,
+  ProjectTrackingPriority,
+} from './constant';
 import { PageContainer } from '@ant-design/pro-layout';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 
@@ -15,51 +17,108 @@ import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 import { ReactComponent as LowPriorityIcon } from '@/assets/icons/low-priority-icon.svg';
 import { ReactComponent as MidPriorityIcon } from '@/assets/icons/mid-priority-icon.svg';
 import { ReactComponent as NonPriorityIcon } from '@/assets/icons/non-priority-icon.svg';
+import { ReactComponent as ProjectArchivedIcon } from '@/assets/icons/project-archived-icon.svg';
+import { ReactComponent as ProjectLiveIcon } from '@/assets/icons/project-live-icon.svg';
+import { ReactComponent as ProjectOnHoldIcon } from '@/assets/icons/project-on-hold-icon.svg';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 
-import { useAssignTeam } from '@/components/AssignTeam/hook';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
-import { getProjectPagination } from '@/features/project/services';
-import { getBrandSummary } from '@/features/user-group/services';
-import { setDefaultWidthForEachColumn } from '@/helper/utils';
-import { isEmpty } from 'lodash';
+import { getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
+import {
+  getProjectTrackingPagination,
+  getProjectTrackingSummary,
+  updateProjectTrackingPriority,
+} from '@/services/project-tracking.api';
+import { isEmpty, isEqual } from 'lodash';
 
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import { TableColumnItem } from '@/components/Table/types';
+import { TeamProfileGroupCountry, TeamProfileMemberProps } from '@/features/team-profiles/types';
+import { useAppSelector } from '@/reducers';
 import { ProjecTrackingList } from '@/types/project-tracking.type';
 
 import { LegendModal } from '../../../components/LegendModal/LegendModal';
+import AssignTeam from '@/components/AssignTeam';
 import { MenuSummary } from '@/components/MenuSummary';
 import CustomTable from '@/components/Table';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
+import TopBarDropDownFilter from '@/components/TopBar/TopBarDropDownFilter';
 import { CustomDropDown } from '@/features/product/components';
-import ProjectFilter from '@/pages/Designer/Project/components/ProjectListHeader/ProjectFilter';
 
 import styles from './index.less';
+import { getListTeamProfileUserGroupByBrandId } from '@/features/team-profiles/api';
 import moment from 'moment';
 
-const Priority = {
-  non: 4,
-  high: 5,
-  mid: 6,
-  low: 7,
-};
-const PriorityIcons = {
-  [Priority.non]: <NonPriorityIcon className="icon-align" />,
-  [Priority.high]: <HighPriorityIcon className="icon-align" />,
-  [Priority.mid]: <MidPriorityIcon className="icon-align" />,
-  [Priority.low]: <LowPriorityIcon className="icon-align" />,
-};
 const ProjectTracking = () => {
   useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
   const tableRef = useRef<any>();
-  const { AssignTeam, showAssignTeams } = useAssignTeam(tableRef);
+  const userInfo = useAppSelector((state) => state.user.user);
+
+  // assign team modal
+  const [visible, setVisible] = useState<boolean>(false);
+  // for each member assigned
+  const [recordAssignTeam, setRecordAssignTeam] = useState<ProjecTrackingList>();
+  // get list assign team to display inside popup
+  const [assignTeam, setAssignTeam] = useState<TeamProfileGroupCountry[]>([]);
+
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
+  const [selectedPriority, setSelectedPriority] = useState(GlobalFilter);
   const [openInformationModal, setOpenInformationModal] = useState(false);
   const [summaryData, setSummaryData] = useState<DataMenuSummaryProps[]>([]);
 
+  const showAssignTeams = (projectInfo: ProjecTrackingList) => () => {
+    /// get brand info
+    setRecordAssignTeam(projectInfo);
+
+    getListTeamProfileUserGroupByBrandId(userInfo?.brand?.id as string).then((res) => {
+      if (res) {
+        /// set assignTeam state to display
+        setAssignTeam(res);
+        // open popup
+        setVisible(true);
+      }
+    });
+  };
+
+  // update assign team
+  const handleSubmitAssignTeam = (checkedData: CheckboxValue[]) => {
+    // new assign team
+    const memberAssignTeam: TeamProfileMemberProps[] = [];
+
+    checkedData?.forEach((checked) => {
+      assignTeam.forEach((team) => {
+        const member = team.users.find((user) => user.id === checked.value);
+
+        if (member) {
+          memberAssignTeam.push(member);
+        }
+      });
+    });
+
+    if (recordAssignTeam?.id) {
+      // dont call api if havent changed
+      const checkedIds = checkedData?.map((check) => check.value);
+      const assignedTeamIds = recordAssignTeam.assignedTeams?.map((team) => team.id);
+      const noSelectionChange = isEqual(checkedIds, assignedTeamIds);
+      if (noSelectionChange) return;
+
+      // add member selected to data
+      updateProjectTrackingPriority(recordAssignTeam.id, {
+        assigned_teams: memberAssignTeam.map((member) => member.id),
+      }).then((isSuccess) => {
+        if (isSuccess) {
+          // reload table after updating
+          tableRef.current.reload();
+          // close popup
+          setVisible(false);
+        }
+      });
+    }
+  };
+
   useEffect(() => {
-    getBrandSummary().then((data) => {
+    getProjectTrackingSummary().then((data) => {
       if (data) {
         setSummaryData(data);
       }
@@ -68,98 +127,141 @@ const ProjectTracking = () => {
 
   useEffect(() => {
     tableRef.current.reload();
-  }, [selectedFilter]);
+  }, [selectedFilter, selectedPriority]);
+
+  const renderStatus = (value: string) => {
+    if (value === 'On Hold') {
+      return <ProjectOnHoldIcon className="icon-align" />;
+    }
+    return value === 'Live' ? (
+      <ProjectLiveIcon className="icon-align" />
+    ) : (
+      <ProjectArchivedIcon className="icon-align" />
+    );
+  };
 
   const renderPriorityDropdown = (_value: any, record: any) => {
     const menuItems: ItemType[] = [
       {
-        key: Priority['Non'],
+        key: ProjectTrackingPriority['Non'],
         label: 'Non',
         icon: <NonPriorityIcon />,
-        onClick: () => {},
+        onClick: () => {
+          updateProjectTrackingPriority(record.id, {
+            priority: ProjectTrackingPriority['Non'],
+          }).then((success) => (success ? tableRef.current?.reload() : undefined));
+        },
       },
       {
-        key: Priority['High priority'],
+        key: ProjectTrackingPriority['High priority'],
         label: 'High priority',
         icon: <HighPriorityIcon />,
-        onClick: () => {},
+        onClick: () => {
+          updateProjectTrackingPriority(record.id, {
+            priority: ProjectTrackingPriority['High priority'],
+          }).then((success) => (success ? tableRef.current?.reload() : undefined));
+        },
       },
       {
-        key: Priority['Mid priority'],
+        key: ProjectTrackingPriority['Mid priority'],
         label: 'Mid priority',
         icon: <MidPriorityIcon />,
-        onClick: () => {},
+        onClick: () => {
+          updateProjectTrackingPriority(record.id, {
+            priority: ProjectTrackingPriority['Mid priority'],
+          }).then((success) => (success ? tableRef.current?.reload() : undefined));
+        },
       },
       {
-        key: Priority['Low priority'],
+        key: ProjectTrackingPriority['Low priority'],
         label: 'Low priority',
         icon: <LowPriorityIcon />,
-        onClick: () => {},
+        onClick: () => {
+          updateProjectTrackingPriority(record.id, {
+            priority: ProjectTrackingPriority['Low priority'],
+          }).then((success) => (success ? tableRef.current?.reload() : undefined));
+        },
       },
     ];
 
     return (
-      <CustomDropDown items={menuItems}>{PriorityIcons[record.priority] ?? 'n.a'}</CustomDropDown>
+      <CustomDropDown
+        items={menuItems}
+        menuStyle={{ width: 160, height: 'auto' }}
+        labelProps={{ className: 'flex-between' }}
+        hideDropdownIcon
+        alignRight={false}
+        textCapitalize={false}
+        placement="bottomRight">
+        {PriorityIcons[record.priority] ?? 'n.a'}
+      </CustomDropDown>
     );
   };
   const MainColumns: TableColumnItem<ProjecTrackingList>[] = [
     {
       title: 'Created',
-      dataIndex: 'created',
+      dataIndex: 'created_at',
       sorter: true,
-      render: (value) => {
+      render: (_value, record) => {
         return (
-          <div>
-            {moment(value).format('YYYY-MM-DD')} <UnreadIcon style={{ marginLeft: '8px' }} />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {moment(record.created_at).format('YYYY-MM-DD')}{' '}
+            {record.newTracking ? <UnreadIcon style={{ marginLeft: '8px' }} /> : ''}
           </div>
         );
       },
     },
     {
       title: 'Project Name',
-      dataIndex: 'name',
+      dataIndex: 'project_name',
       sorter: true,
+      render: (_value, record) => record.projectName,
     },
     {
       title: 'Project Location',
-      dataIndex: 'location',
+      dataIndex: 'project_location',
       sorter: true,
+      render: (_value, record) => record.projectLocation,
     },
     {
       title: 'Project Type',
       dataIndex: 'project_type',
       sorter: true,
+      render: (_value, record) => record.projectType,
     },
     {
       title: 'Design Firm',
       dataIndex: 'design_firm',
       sorter: true,
+      render: (_value, record) => record.designFirm,
     },
     {
       title: 'Status',
-      dataIndex: 'status',
+      dataIndex: 'projectStatus',
       width: '5%',
       align: 'center',
-      render: (value) => FilterStatusIcons[value] ?? 'n.a',
+      render: (value) => renderStatus(value) ?? 'n.a',
     },
     {
       title: 'Requests',
-      dataIndex: 'requests',
+      dataIndex: 'requestCount',
       render: (_value, record) => {
         return (
-          <div>
-            {record.requests} <UnreadIcon style={{ marginLeft: '8px' }} />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {record.requestCount}{' '}
+            {record.newRequest ? <UnreadIcon style={{ marginLeft: '8px' }} /> : ''}
           </div>
         );
       },
     },
     {
       title: 'Notifications',
-      dataIndex: 'notifications',
+      dataIndex: 'notificationCount',
       render: (_value, record) => {
         return (
-          <div>
-            {record.requests} <UnreadIcon style={{ marginLeft: '8px' }} />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {record.notificationCount}{' '}
+            {record.newNotification ? <UnreadIcon style={{ marginLeft: '8px' }} /> : ''}
           </div>
         );
       },
@@ -171,26 +273,26 @@ const ProjectTracking = () => {
     },
     {
       title: 'Assign Team',
-      dataIndex: 'assign_teams',
+      dataIndex: 'assignedTeams',
       align: 'center',
       render: (_value, record) => {
-        if (isEmpty(record.assign_teams)) {
-          return <UserAddIcon className="icon-align" onClick={showAssignTeams(record)} />;
+        if (isEmpty(record.assignedTeams)) {
+          return (
+            <UserAddIcon
+              className="icon-align"
+              onClick={showAssignTeams(record)}
+              style={{ cursor: 'pointer' }}
+            />
+          );
         }
         return (
           <div className={styles.asignTeamMember} onClick={showAssignTeams(record)}>
-            {record.assign_teams.map((teamProfile, key) => (
-              <TeamIcon key={key} avatar={teamProfile.avatar} name={teamProfile.name} />
+            {record.assignedTeams.map((teamProfile, key) => (
+              <TeamIcon key={key} avatar={teamProfile.avatar} name={getFullName(teamProfile)} />
             ))}
           </div>
         );
       },
-    },
-    {
-      title: 'Subscription',
-      dataIndex: 'subscription',
-      align: 'center',
-      width: '5%',
     },
   ];
 
@@ -201,11 +303,24 @@ const ProjectTracking = () => {
           return (
             <div className={styles.customHeader}>
               <MenuSummary typeMenu={'brand'} menuSummaryData={summaryData} />
-              <ProjectFilter
-                selectedFilter={selectedFilter}
-                setSelectedFilter={setSelectedFilter}
-                data={ProjectTrackingFilters}
-              />
+              <div style={{ display: 'flex' }}>
+                <TopBarDropDownFilter
+                  selectedFilter={selectedFilter}
+                  setSelectedFilter={setSelectedFilter}
+                  filterLabel="Project Status"
+                  globalFilter={GlobalFilter}
+                  dynamicFilter={ProjectStatusFilters}
+                  isShowFilter
+                />
+                <TopBarDropDownFilter
+                  selectedFilter={selectedPriority}
+                  setSelectedFilter={setSelectedPriority}
+                  filterLabel="Project Priority"
+                  globalFilter={GlobalFilter}
+                  dynamicFilter={ProjectPriorityFilters}
+                  isShowFilter
+                />
+              </div>
             </div>
           );
         }}>
@@ -215,13 +330,19 @@ const ProjectTracking = () => {
             <InfoIcon className={styles.iconInfor} onClick={() => setOpenInformationModal(true)} />
           }
           columns={setDefaultWidthForEachColumn(MainColumns, 4)}
-          fetchDataFunc={getProjectPagination}
+          fetchDataFunc={getProjectTrackingPagination}
           extraParams={
-            selectedFilter && selectedFilter.id !== FilterValues.global
+            (selectedFilter && selectedFilter.id !== Global['VIEW ALL']) ||
+            (selectedPriority && selectedPriority.id !== Global['VIEW ALL']) ||
+            (selectedFilter &&
+              selectedFilter.id !== Global['VIEW ALL'] &&
+              selectedPriority &&
+              selectedPriority.id !== Global['VIEW ALL'])
               ? {
-                  filter: {
-                    status: selectedFilter.id,
-                  },
+                  project_status:
+                    selectedFilter.id === Global['VIEW ALL'] ? undefined : selectedFilter.id,
+                  priority:
+                    selectedPriority.id === Global['VIEW ALL'] ? undefined : selectedPriority.id,
                 }
               : undefined
           }
@@ -232,7 +353,13 @@ const ProjectTracking = () => {
         />
       </PageContainer>
       <LegendModal visible={openInformationModal} setVisible={setOpenInformationModal} />
-      <AssignTeam />
+      <AssignTeam
+        visible={visible}
+        setVisible={setVisible}
+        onChange={handleSubmitAssignTeam}
+        memberAssigned={recordAssignTeam}
+        teams={assignTeam}
+      />
     </div>
   );
 };
