@@ -85,6 +85,11 @@ export const GetExpandableTableConfig = (props: ExpandableTableConfig): Expandab
   };
 };
 
+type GetComponentProps<DataType> = (
+  data: DataType,
+  index?: number,
+) => React.HTMLAttributes<any> | React.TdHTMLAttributes<any>;
+
 export interface CustomTableProps {
   columns: TableColumnItem<any>[];
   expandable?: ExpandableConfig<any>;
@@ -106,7 +111,7 @@ export interface CustomTableProps {
   rowKey?: string;
   autoLoad?: boolean;
   onFilterLoad?: boolean;
-  onRow?: any;
+  onRow?: GetComponentProps<any>;
 }
 
 const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {

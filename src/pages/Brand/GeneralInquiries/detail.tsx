@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { Col, Row } from 'antd';
@@ -7,6 +7,7 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-ic
 
 import { getOneGeneralInquiry } from './services';
 import { pushTo } from '@/helper/history';
+import { useGetParamId } from '@/helper/hook';
 
 import { GeneralInquiryResponse } from './types';
 
@@ -47,17 +48,14 @@ const DEFAULT_STATE: GeneralInquiryResponse = {
   },
 };
 
-interface GeneralInquiriesDetailProps {
-  designFirmId: string;
-}
-
-const GeneralInquiryDetail: FC<GeneralInquiriesDetailProps> = ({ designFirmId }) => {
+const GeneralInquiryDetail = () => {
+  const designFirmId = useGetParamId();
   const [activeTab, setActiveTab] = useState<GeneralInquiriesTab>('design-firm');
 
   const [data, setData] = useState<GeneralInquiryResponse>(DEFAULT_STATE);
 
   useEffect(() => {
-    getOneGeneralInquiry(designFirmId ?? '').then((res) => {
+    getOneGeneralInquiry(designFirmId).then((res) => {
       if (res) {
         setData(res);
       }

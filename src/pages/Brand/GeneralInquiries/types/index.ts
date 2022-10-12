@@ -1,12 +1,14 @@
 export interface GeneralInquiryListProps {
-  date: string;
+  id: string;
+  created_at: string;
+  created_by: string;
   design_firm: string;
   firm_location: string;
   inquier: string;
   inquiry_for: string;
   title: string;
   status: number;
-  read: boolean;
+  read: string[];
 }
 
 export interface GeneralInquirySummaryData {
