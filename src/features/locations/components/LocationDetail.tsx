@@ -24,11 +24,14 @@ const LocationDetail = () => {
 
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
+  const isDesignAdmin = useCheckPermission('Design Admin');
+
   /// for user role path
   const userRolePath = getValueByCondition(
     [
       [isTISCAdmin, PATH.tiscLocation],
       [isBrandAdmin, PATH.brandLocation],
+      [isDesignAdmin, PATH.designFirmLocation],
     ],
     '',
   );
@@ -84,7 +87,7 @@ const LocationDetail = () => {
         if (res) {
           setData({
             business_name: res.business_name,
-            business_number: res.business_number,
+            business_number: isDesignAdmin ? '' : res.business_number,
             country_id: res.country_id,
             state_id: res.state_id,
             city_id: res.city_id,
@@ -99,6 +102,8 @@ const LocationDetail = () => {
       });
     }
   }, []);
+
+  console.log(data);
 
   if (isUpdate && !loadedData) {
     return null;

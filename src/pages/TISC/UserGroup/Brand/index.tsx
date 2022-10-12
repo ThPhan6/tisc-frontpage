@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { BRAND_STATUSES_TEXTS } from '@/constants/util';
@@ -7,16 +7,25 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { ReactComponent as ActionUnreadedIcon } from '@/assets/icons/action-unreaded-icon.svg';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 
-import { useAssignTeam } from '@/components/AssignTeam/hook';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
-import { getBrandPagination } from '@/features/user-group/services';
+import {
+  createAssignTeamByBrandId,
+  getBrandPagination,
+  getListAssignTeamByBrandId,
+} from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
 import { getFullName, setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
-import { isEmpty } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import type { TableColumnItem } from '@/components/Table/types';
-import { BrandListItem } from '@/features/user-group/types/brand.types';
+import {
+  BrandAssignTeamForm,
+  BrandListItem,
+  BrandMemberAssigned,
+} from '@/features/user-group/types/brand.types';
 
+import AssignTeam from '@/components/AssignTeam';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
@@ -31,7 +40,65 @@ const BrandList: React.FC = () => {
   // set width for each cell
   useAutoExpandNestedTableColumn(0);
   const tableRef = useRef<any>();
-  const { AssignTeam, showAssignTeams } = useAssignTeam(tableRef);
+
+  /// for assign team modal
+  const [visible, setVisible] = useState<boolean>(false);
+  // get each member assigned
+  const [recordAssignTeam, setRecordAssignTeam] = useState<BrandListItem>();
+  // get list assign team to display inside popup
+  const [assignTeam, setAssignTeam] = useState<BrandAssignTeamForm[]>([]);
+
+  const showAssignTeams = (brandInfo: BrandListItem) => () => {
+    /// get each brand member has already assgined
+    setRecordAssignTeam(brandInfo);
+
+    // get list team
+    getListAssignTeamByBrandId(brandInfo.id).then((res) => {
+      if (res) {
+        /// set assignTeam state to display
+        setAssignTeam(res);
+        // open popup
+        setVisible(true);
+      }
+    });
+  };
+
+  // update assign team
+  const handleSubmitAssignTeam = (checkedData: CheckboxValue[]) => {
+    // new assign team
+    const memberAssignTeam: BrandMemberAssigned[] = [];
+
+    checkedData.forEach((checked) => {
+      assignTeam.forEach((team) => {
+        const member = team.users.find((user) => user.id === checked.value);
+
+        if (member) {
+          memberAssignTeam.push(member);
+        }
+      });
+    });
+
+    if (recordAssignTeam?.id) {
+      // dont call api if havent changed
+      const checkedIds = checkedData.map((check) => check.value);
+      const assignedTeamIds = recordAssignTeam.assign_team.map((team) => team.id);
+      const noSelectionChange = isEqual(checkedIds, assignedTeamIds);
+      if (noSelectionChange) return;
+
+      // add member selected to data
+      createAssignTeamByBrandId(
+        recordAssignTeam.id,
+        memberAssignTeam.map((member) => member.id),
+      ).then((isSuccess) => {
+        if (isSuccess) {
+          // reload table after updating
+          tableRef.current.reload();
+          // close popup
+          setVisible(false);
+        }
+      });
+    }
+  };
 
   const handleEmailInvite = (brandId: string) => {
     if (brandId) inviteBrand(brandId);
@@ -149,7 +216,13 @@ const BrandList: React.FC = () => {
           hasPagination
         />
       </PageContainer>
-      <AssignTeam />
+      <AssignTeam
+        visible={visible}
+        setVisible={setVisible}
+        onChange={handleSubmitAssignTeam}
+        memberAssigned={recordAssignTeam}
+        teams={assignTeam}
+      />
     </div>
   );
 };

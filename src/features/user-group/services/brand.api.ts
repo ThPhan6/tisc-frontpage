@@ -5,8 +5,8 @@ import { request } from 'umi';
 import { getResponseMessage } from '@/helper/common';
 
 import {
-  AssignTeamForm,
   BrandAlphabet,
+  BrandAssignTeamForm,
   BrandCard,
   BrandDesignProfile,
   BrandDetail,
@@ -118,15 +118,18 @@ export async function getBrandStatuses() {
 }
 
 export async function getListAssignTeamByBrandId(brandId: string) {
-  return request<{ data: AssignTeamForm[] }>(`/api/team/get-list-group-team-profile/${brandId}`, {
-    method: 'GET',
-  })
+  return request<{ data: BrandAssignTeamForm[] }>(
+    `/api/team/get-list-group-team-profile/${brandId}`,
+    {
+      method: 'GET',
+    },
+  )
     .then((response) => {
       return response.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_ASSIGN_TEAM_ERROR);
-      return [] as AssignTeamForm[];
+      return [] as BrandAssignTeamForm[];
     });
 }
 

@@ -18,12 +18,9 @@ export const CustomTabs: FC<CustomTabsProps> = ({
 }) => {
   return (
     <div
-      className={`
-        ${style[`tabs-${tabPosition}`]}
-        ${style['tab-list']}
-        ${style[`tabs-${tabDisplay}`]}
-        ${customClass}
-      `}>
+      className={`${style[`tabs-${tabPosition}`]} ${style['tab-list']} ${
+        style[`tabs-${tabDisplay}`]
+      } ${customClass}`}>
       <Tabs {...props} tabPosition={tabPosition}>
         {listTab.map((tab) => (
           <TabPane

@@ -76,8 +76,8 @@ export const EntryForm: FC<LocationEntryFormProps> = ({ data, onChangeData }) =>
       setMeasurementUnits(
         res.map((item) => {
           return {
-            label: item.key,
-            value: item.value,
+            label: item.name,
+            value: item.id,
           };
         }),
       );

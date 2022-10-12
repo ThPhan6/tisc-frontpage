@@ -5,7 +5,7 @@ import { ReactComponent as ProjectArchivedIcon } from '@/assets/icons/project-ar
 import { ReactComponent as ProjectLiveIcon } from '@/assets/icons/project-live-icon.svg';
 import { ReactComponent as ProjectOnHoldIcon } from '@/assets/icons/project-on-hold-icon.svg';
 
-import { ProjectFilterValueProps } from '@/features/project/types';
+import { DropDownFilterValueProps } from '@/components/TopBar/types';
 
 export const FilterValues = {
   global: -1,
@@ -36,12 +36,12 @@ export const FilterStatusIcons = {
   [FilterValues.lowPriority]: <LowPriorityIcon className="icon-align" />,
 };
 
-export const GlobalFilter: ProjectFilterValueProps = {
+export const GlobalFilter: DropDownFilterValueProps = {
   id: FilterValues.global,
   name: FilterNames[FilterValues.global],
 };
 
-export const ProjectStatuses: ProjectFilterValueProps[] = [
+export const ProjectStatuses: DropDownFilterValueProps[] = [
   {
     id: FilterValues.live,
     name: FilterNames[FilterValues.live],
@@ -59,28 +59,4 @@ export const ProjectStatuses: ProjectFilterValueProps[] = [
   },
 ];
 
-export const ProjectFilters: ProjectFilterValueProps[] = [GlobalFilter, ...ProjectStatuses];
-
-export const ProjectPriority: ProjectFilterValueProps[] = [
-  {
-    id: FilterValues.highPriority,
-    name: FilterNames[FilterValues.highPriority],
-    icon: FilterStatusIcons[FilterValues.highPriority],
-  },
-  {
-    id: FilterValues.midPriority,
-    name: FilterNames[FilterValues.midPriority],
-    icon: FilterStatusIcons[FilterValues.midPriority],
-  },
-  {
-    id: FilterValues.lowPriority,
-    name: FilterNames[FilterValues.lowPriority],
-    icon: FilterStatusIcons[FilterValues.lowPriority],
-  },
-];
-
-export const ProjectTrackingFilters: ProjectFilterValueProps[] = [
-  GlobalFilter,
-  ...ProjectStatuses,
-  ...ProjectPriority,
-];
+export const ProjectFilters: DropDownFilterValueProps[] = [GlobalFilter, ...ProjectStatuses];
