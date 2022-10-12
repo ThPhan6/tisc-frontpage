@@ -2,13 +2,16 @@ import { useEffect, useState } from 'react';
 
 import { Col, Row } from 'antd';
 
+import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
+
 import {
-  getFinishScheduleList,
+  // getFinishScheduleList,
   getInstructionTypeList,
   getRequirementTypeList,
   getUnitTypeList,
 } from '@/features/project/services';
 import { getAllMaterialCode } from '@/features/user-group/services';
+import { useBoolean } from '@/helper/hook';
 import { getSelectedOptions, validateFloatNumber } from '@/helper/utils';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -26,7 +29,9 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { DropdownSelectInput } from '@/components/Form/DropdownSelectInput';
 import { DualLabel } from '@/components/RenderHeaderLabel';
+import { RobotoBodyText } from '@/components/Typography';
 
+import { ScheduleModal } from './ScheduleModal';
 import styles from './styles/code-order.less';
 
 const ORDER_METHODS: RadioValue[] = [
@@ -41,11 +46,13 @@ const ORDER_METHODS: RadioValue[] = [
 ];
 
 const CodeOrderTab = () => {
+  const scheduleModal = useBoolean(false);
+
   const [materialCodeOpts, setMaterialCodeOtps] = useState<CustomRadioValue[]>([]);
   const [unitTypeOtps, setUnitTypeOtps] = useState<CheckboxValue[]>([]);
   const [requirements, setRequirements] = useState<CheckboxValue[]>([]);
   const [instructions, setInstructions] = useState<CheckboxValue[]>([]);
-  const [finishSchedules, setFinishSchedule] = useState<CheckboxValue[]>([]);
+  // const [finishSchedules, setFinishSchedule] = useState<CheckboxValue[]>([]);
 
   const [selectedUnit, setSelectedUnit] = useState<RadioValue | null>(null);
 
@@ -89,14 +96,14 @@ const CodeOrderTab = () => {
       );
     });
 
-    getFinishScheduleList().then((res) => {
-      setFinishSchedule(
-        res.map((el) => ({
-          label: el.name,
-          value: el.id,
-        })),
-      );
-    });
+    // getFinishScheduleList().then((res) => {
+    //   setFinishSchedule(
+    //     res.map((el) => ({
+    //       label: el.name,
+    //       value: el.id,
+    //     })),
+    //   );
+    // });
   }, []);
 
   if (!specifiedDetail) {
@@ -113,12 +120,12 @@ const CodeOrderTab = () => {
     special_instructions = [],
     instruction_type_ids = [],
     requirement_type_ids = [],
-    finish_schedules = [],
+    // finish_schedules = [],
   } = specifiedDetail;
 
   const selectedInstructions = getSelectedOptions(instructions, instruction_type_ids);
   const selectedRequirements = getSelectedOptions(requirements, requirement_type_ids);
-  const selectedFinishSchedules = getSelectedOptions(finishSchedules, finish_schedules);
+  // const selectedFinishSchedules = getSelectedOptions(finishSchedules, finish_schedules);
 
   const unitType = unit_type_id
     ? unitTypeOtps.find((el) => el.value === unit_type_id) || selectedUnit
@@ -128,10 +135,10 @@ const CodeOrderTab = () => {
     ? materialCodeOpts.find((el) => el.value === material_code_id)
     : undefined;
 
-  const scheduleValues = finish_schedules
-    .filter((item, index) => finish_schedules.indexOf(item) === index)
-    ?.map((schId) => finishSchedules.find((el) => el.value === schId)?.label || schId)
-    .join(', ');
+  // const scheduleValues = finish_schedules
+  //   .filter((item, index) => finish_schedules.indexOf(item) === index)
+  //   ?.map((schId) => finishSchedules.find((el) => el.value === schId)?.label || schId)
+  //   .join(', ');
 
   const onChangeState = (newState: Partial<SpecifiedDetail>) => {
     store.dispatch(setPartialProductSpecifiedData(newState));
@@ -192,35 +199,19 @@ const CodeOrderTab = () => {
         </Col>
 
         <Col span={24}>
-          <FormGroup label="Finish Schedule For (if appliable)" {...formGroupProps}>
-            <DropdownSelectInput
-              borderBottomColor="light"
-              noPadding
-              disabled
-              containerClass={styles.inputColor}
-              overlayClass={styles.overlayForm}
-              placement="bottomRight"
-              placeholder={'e.g. Wall, base, ceiling, door...'}
-              value={scheduleValues}
-              overlayStyle={{ minWidth: 'unset' }}
-              overlay={
-                <CustomCheckbox
-                  options={finishSchedules}
-                  inputPlaceholder="please specify"
-                  isCheckboxList
-                  otherInput
-                  checkboxClass={styles.inputColor}
-                  selected={selectedFinishSchedules}
-                  onChange={(option) => {
-                    onChangeState({
-                      finish_schedules: option?.map((opt) =>
-                        String(opt.value === 'other' ? opt.label : opt.value),
-                      ),
-                    });
-                  }}
-                />
-              }
-            />
+          <FormGroup
+            label="Define Finish Schedule (appliable for Room Schedule only)"
+            {...formGroupProps}>
+            <div
+              className={`flex-between cursor-pointer ${styles.schedule}`}
+              onClick={() => {
+                scheduleModal.setValue(true);
+              }}>
+              <RobotoBodyText level={5} color="mono-color-medium">
+                e.g. Floor, base, wall, ceiling, door, cabinet...
+              </RobotoBodyText>
+              <SingleRightFormIcon />
+            </div>
           </FormGroup>
         </Col>
 
@@ -335,6 +326,10 @@ const CodeOrderTab = () => {
           </FormGroup>
         </Col>
       </Row>
+      <ScheduleModal
+        visible={scheduleModal.value}
+        setVisible={(visible) => (visible ? undefined : scheduleModal.setValue(false))}
+      />
     </div>
   );
 };

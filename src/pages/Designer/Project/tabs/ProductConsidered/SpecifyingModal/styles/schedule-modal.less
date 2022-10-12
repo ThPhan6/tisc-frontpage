@@ -1,0 +1,46 @@
+.modal {
+  :global(.ant-modal-content) {
+    height: 752px;
+  }
+  :global(.ant-modal-body) {
+    padding: 16px;
+  }
+}
+
+.description,
+.mainInfo {
+  width: 100%;
+  height: auto;
+  table-layout: fixed;
+
+  td,
+  th,
+  tr {
+    min-height: 24px;
+    padding: 0;
+  }
+
+  td {
+    p {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.description {
+  margin-bottom: 24px;
+}
+
+.mainInfo {
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 44px;
+    color: #fff;
+    font-weight: 500;
+    text-align: center;
+    background-color: #000;
+  }
+}
