@@ -290,6 +290,12 @@ export const MESSAGE_NOTIFICATION = {
   DELETE_MATERIAL_PRODUCT_CODE_ERROR: 'Delete material product code error',
   UPDATE_MATERIAL_PRODUCT_CODE_SUCCESS: 'Update material product code successfully',
   UPDATE_MATERIAL_PRODUCT_CODE_ERROR: 'Update material product code error',
+
+  //project tracking
+  GET_PROJECT_TRACKING_LIST_FAILED: 'Failed to get project tracking data',
+  UPDATE_PROJECT_TRACKING_INFO_SUCCESS: 'Update project tracking information successfully',
+  UPDATE_PROJECT_TRACKING_INFO_ERROR: 'Update project tracking info error',
+  GET_PROJECT_TRACKING_SUMMARY_ERROR: 'Get project tracking summary error',
 };
 
 export const MESSAGE_TOOLTIP = {
