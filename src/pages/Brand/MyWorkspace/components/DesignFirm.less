@@ -1,0 +1,38 @@
+.content {
+  padding: 0 16px 16px 16px;
+  .customLabel {
+    p {
+      color: @mono-color-dark;
+    }
+  }
+  .table {
+    width: 100%;
+    tr {
+      width: 100%;
+      box-shadow: @border-bottom-light;
+      cursor: pointer;
+    }
+    td {
+      height: 36px;
+    }
+    .date {
+      width: 15%;
+    }
+    .projectName {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .action {
+      width: 5%;
+      text-align: right;
+      svg {
+        margin-top: 8px;
+      }
+    }
+  }
+  .customHeader {
+    height: 36px;
+    padding: 0;
+  }
+}

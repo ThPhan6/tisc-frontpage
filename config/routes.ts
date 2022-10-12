@@ -452,8 +452,20 @@ export default [
     path: PATH.brandHomePage,
     name: 'workspace',
     icon: 'workspace-icon.svg',
-    component: './Admin',
+    // component: './Brand/MyWorkspace',
     access: 'brand_workspace',
+    routes: [
+      {
+        path: PATH.brandHomePage,
+        component: './Brand/MyWorkspace',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.brandViewDetailDashboard,
+        component: './Brand/MyWorkspace',
+        hideInMenu: true,
+      },
+    ],
   },
   {
     path: PATH.brandProduct,
