@@ -1,34 +1,44 @@
+import { FC } from 'react';
+
+import { MEASUREMENT_UNIT } from '@/constants/util';
+
+import { Project } from '@/types/project-tracking.type';
+
 import TextForm from '@/components/Form/TextForm';
 
 import styles from './DesignFirm.less';
+import moment from 'moment';
 
-export const BrandProject = () => {
+interface BrandProjectProps {
+  project: Project;
+}
+export const BrandProject: FC<BrandProjectProps> = ({ project }) => {
   return (
     <div className={styles.content}>
       <TextForm label="Created Date" boxShadow>
-        a
+        {moment(project.created_at).format('YYYY-MM-DD')}
       </TextForm>
 
       <TextForm boxShadow label="Project Name">
-        a
+        {project.name}
       </TextForm>
       <TextForm boxShadow label="Project Location">
-        a
+        {project.location}
       </TextForm>
       <TextForm boxShadow label="Project Type">
-        a
+        {project.project_type}
       </TextForm>
       <TextForm boxShadow label="Building Type">
-        a
+        {project.building_type}
       </TextForm>
       <TextForm boxShadow label="Measurement Unit">
-        a
+        {project.measurement_unit === MEASUREMENT_UNIT.IMPERIAL ? 'Imperial' : 'Metric'}
       </TextForm>
       <TextForm boxShadow label="Design Due">
-        a
+        {project.design_due}
       </TextForm>
       <TextForm boxShadow label="Construction Start">
-        a
+        {project.construction_start}
       </TextForm>
     </div>
   );

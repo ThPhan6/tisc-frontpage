@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { GlobalFilter } from '@/pages/Designer/Project/constants/filter';
+// import { GlobalFilter } from '@/pages/Designer/Project/constants/filter';
 import { PageContainer } from '@ant-design/pro-layout';
 
 import { getBrandSummary } from '@/features/user-group/services';
@@ -8,17 +8,16 @@ import { useGetParamId } from '@/helper/hook';
 
 import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 
+import { Detail } from './components/Detail';
 import { ProjectCard } from './components/ProjectCard';
-import { ProjectTrackingDetai } from './components/ProjectTrackingDetail';
 import { MenuSummary } from '@/components/MenuSummary';
-import ProjectFilter from '@/pages/Designer/Project/components/ProjectListHeader/ProjectFilter';
 
 import styles from './index.less';
 
 const MyWorkspace = () => {
   const [summaryData, setSummaryData] = useState<DataMenuSummaryProps[]>([]);
   const idProject = useGetParamId();
-  const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
+  // const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
   useEffect(() => {
     getBrandSummary().then((data) => {
       if (data) {
@@ -65,15 +64,15 @@ const MyWorkspace = () => {
           return (
             <div className={styles.customHeader}>
               <MenuSummary typeMenu={'brand'} menuSummaryData={summaryData} />
-              <ProjectFilter
+              {/* <ProjectFilter
                 selectedFilter={selectedFilter}
                 setSelectedFilter={setSelectedFilter}
-              />
+              /> */}
             </div>
           );
         }}>
         {idProject ? (
-          <ProjectTrackingDetai idProject={idProject} activeOnlyDesignFirm />
+          <Detail projectId={idProject} activeOnlyDesignFirm />
         ) : (
           <ProjectCard data={data} />
         )}

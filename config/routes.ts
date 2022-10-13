@@ -507,8 +507,20 @@ export default [
     path: PATH.brandProjectTracking,
     name: 'project_tracking',
     icon: 'project-tracking-icon.svg',
-    component: './Brand/ProjectTracking',
+
     access: 'brand_project_tracking',
+    routes: [
+      {
+        path: PATH.brandProjectTracking,
+        component: './Brand/ProjectTracking',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.brandProjectTrackingDetail,
+        component: './Brand/ProjectTracking/ProjectTrackingDetail',
+        hideInMenu: true,
+      },
+    ],
   },
   {
     path: PATH.brandAdministration,

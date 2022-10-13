@@ -6,9 +6,9 @@ import { DropDownFilterValueProps } from '@/components/TopBar/types';
 
 export const FilterValues = {
   global: -1,
-  live: 2,
-  onHold: 3,
-  archived: 1,
+  live: 0,
+  onHold: 1,
+  archived: 2,
 };
 
 export const FilterNames = {

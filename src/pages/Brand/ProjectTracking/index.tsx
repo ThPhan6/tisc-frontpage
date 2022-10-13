@@ -8,6 +8,7 @@ import {
   ProjectStatusFilters,
   ProjectTrackingPriority,
 } from './constant';
+import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 
@@ -23,6 +24,7 @@ import { ReactComponent as ProjectOnHoldIcon } from '@/assets/icons/project-on-h
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
+import { pushTo } from '@/helper/history';
 import { getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
 import {
   getProjectTrackingPagination,
@@ -67,7 +69,8 @@ const ProjectTracking = () => {
   const [openInformationModal, setOpenInformationModal] = useState(false);
   const [summaryData, setSummaryData] = useState<DataMenuSummaryProps[]>([]);
 
-  const showAssignTeams = (projectInfo: ProjecTrackingList) => () => {
+  const showAssignTeams = (projectInfo: ProjecTrackingList) => (event: any) => {
+    event?.stopPropagation();
     /// get brand info
     setRecordAssignTeam(projectInfo);
 
@@ -350,6 +353,11 @@ const ProjectTracking = () => {
           hasPagination
           autoLoad={false}
           customClass={styles.customTitle}
+          onRow={(rowRecord: ProjecTrackingList) => ({
+            onClick: () => {
+              pushTo(PATH.brandProjectTrackingDetail.replace(':id', rowRecord.id));
+            },
+          })}
         />
       </PageContainer>
       <LegendModal visible={openInformationModal} setVisible={setOpenInformationModal} />
