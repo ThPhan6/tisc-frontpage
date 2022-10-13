@@ -1,4 +1,5 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -61,11 +62,17 @@ export async function getActionTaskPagination(
 ) {
   request(`/api/inquiry-message/action-task`, {
     method: 'GET',
-    params,
+    params: {
+      page: params.page ?? 1,
+      pageSize: params.pageSize ?? 99999999,
+    },
   })
     .then((response: ActionTaskPaginationResponse) => {
       callback({
-        data: response.data,
+        data: response.data ?? {
+          generalInquiries: [] as InquiryMessageTask[],
+          pagination: { page: 1, pageSize: 9999999 },
+        },
       });
     })
     .catch((error) => {
@@ -97,15 +104,13 @@ export async function getOneGeneralInquiry(designFirmId: string) {
     });
 }
 
-export async function getInquiryMessageActionTask() {
-  return request<GeneralData[]>(`/api/general-inquiry/action-task`, {
+export async function getActionTask() {
+  return request<{ data: GeneralData[] }>(`/api/setting/common-type/${COMMON_TYPES.ACTION_TASK}`, {
     method: 'GET',
   })
-    .then((res) => res)
+    .then((res) => res.data)
     .catch((error) => {
-      message.error(
-        error?.data?.message ?? MESSAGE_NOTIFICATION.GET_GENERAL_INQUIRY_INQUIRY_MESSAGE_ERROR,
-      );
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ACTION_TASK_LIST_ERROR);
       return [] as GeneralData[];
     });
 }

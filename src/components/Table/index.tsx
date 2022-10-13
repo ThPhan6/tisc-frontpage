@@ -253,6 +253,9 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
           if (record[rowKey] === expanded) {
             return 'custom-expanded' as any;
           }
+          if (onRow) {
+            return 'cursor-pointer';
+          }
         }}
         onRow={onRow}
         dataSource={data}

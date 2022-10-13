@@ -18,25 +18,25 @@ export const DesignFirmTab: FC<GeneralInquiryDesignFirm> = ({
   return (
     <>
       <TextForm boxShadow label="Name" formClass={styles.nameDesignFirm}>
-        {name}
+        {name || ''}
       </TextForm>
       <TextForm boxShadow label="Official Website">
-        {official_website}
+        {official_website || ''}
       </TextForm>
       <TextForm boxShadow label="Address">
-        {address}
+        {address || ''}
       </TextForm>
       <TextForm boxShadow label="Inquirer">
-        {inquirer}
+        {inquirer || ''}
       </TextForm>
       <TextForm boxShadow label="Position/Role">
-        {role}
+        {role || ''}
       </TextForm>
       <TextForm boxShadow label="Work Email">
-        {work_email}
+        {work_email || ''}
       </TextForm>
       <TextForm boxShadow label="Work Phone">
-        {work_phone}
+        {work_phone || ''}
       </TextForm>
     </>
   );

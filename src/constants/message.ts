@@ -128,7 +128,7 @@ export const MESSAGE_NOTIFICATION = {
   /// general inquiry
   GET_GENERAL_INQUIRY_SUMMARY_ERROR: 'Failed to get general inquiry summary',
   GET_GENERAL_INQUIRY_LIST_FAILED: 'Failed to get general inquiry data',
-  GET_GENERAL_INQUIRY_INQUIRY_MESSAGE_ERROR: 'Failed to get inquiry message data',
+  GET_ACTION_TASK_LIST_ERROR: 'Failed to get action task data',
   GET_INQUIRY_MESSAGE_ACTION_TASK_ERROR: 'Failed to get action task data',
 
   // department

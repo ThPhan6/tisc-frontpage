@@ -24,14 +24,18 @@
     /// inquiry-message
     .actionTask {
       display: flex;
-      align-items: center;
       justify-content: right;
-      height: 40px;
       box-shadow: @border-bottom-light;
 
-      .text {
-        padding-right: 12px;
+      &_content {
+        display: flex;
+        align-items: center;
+        height: 40px;
         cursor: pointer;
+      }
+
+      &_text {
+        padding-right: 12px;
       }
     }
 
@@ -59,6 +63,29 @@
 .header {
   > p {
     font-weight: 600;
-    font-family: 'Cormorant Garamond';
+    font-family: @font-secondary;
+  }
+}
+
+.actionTaskList {
+  :global(.ant-modal-body) {
+    > div:first-child {
+      height: 100%;
+    }
+  }
+  :global(.ant-checkbox-group) {
+    position: relative;
+    height: 100%;
+    > div:last-child {
+      position: sticky;
+      bottom: -16px;
+      background: transparent;
+    }
+    label {
+      height: 40px;
+    }
+    :global(.ant-input) {
+      color: @primary-color-dark;
+    }
   }
 }

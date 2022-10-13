@@ -4,6 +4,7 @@ import { FilterValues, GlobalFilter } from './constants/filters';
 import { PATH } from '@/constants/path';
 
 import { ReactComponent as NotificationIcon } from '@/assets/icons/action-unreaded-icon.svg';
+import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 import { ReactComponent as PendingIcon } from '@/assets/icons/pending-icon.svg';
 import { ReactComponent as RespondedIcon } from '@/assets/icons/responded-icon.svg';
 
@@ -20,11 +21,13 @@ import { GeneralInquiryContainer } from './components/GeneralInquiryContainer';
 import CustomTable from '@/components/Table';
 import { RobotoBodyText } from '@/components/Typography';
 
+import styles from './index.less';
 import moment from 'moment';
 
 const GeneralInquiries = () => {
   useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
   const tableRef = useRef<any>();
+  const [legendModalVisible, setLegendModalVisible] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
   const userId = useAppSelector((state) => state.user.user?.id);
 
@@ -86,6 +89,8 @@ const GeneralInquiries = () => {
   ];
   return (
     <GeneralInquiryContainer
+      visible={legendModalVisible}
+      setVisible={setLegendModalVisible}
       selectedFilter={selectedFilter}
       setSelectedFilter={setSelectedFilter}
       isShowFilter>
@@ -94,6 +99,10 @@ const GeneralInquiries = () => {
         columns={setDefaultWidthForEachColumn(mainColumns, 5)}
         fetchDataFunc={getGeneralInquiryPagination}
         ref={tableRef}
+        customClass={styles.customHeader}
+        rightAction={
+          <InfoIcon className={styles.iconInfor} onClick={() => setLegendModalVisible(true)} />
+        }
         onRow={(rowRecord: GeneralInquiryListProps) => ({
           onClick: () => {
             // add userId to know that user is readed
