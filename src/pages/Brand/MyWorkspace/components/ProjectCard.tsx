@@ -8,6 +8,7 @@ import { pushTo } from '@/helper/history';
 import { getFullName } from '@/helper/utils';
 
 import { BrandCardTeam } from '@/features/user-group/types';
+import { ProjecTrackingList } from '@/types/project-tracking.type';
 
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
@@ -15,7 +16,7 @@ import { BodyText } from '@/components/Typography';
 import styles from './ProjectCard.less';
 
 interface ProjectCardProps {
-  data: any;
+  data: ProjecTrackingList[];
 }
 export const ProjectCard: FC<ProjectCardProps> = ({ data }) => {
   const handleClickItem = (id: string) => {
@@ -23,7 +24,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({ data }) => {
   };
   return (
     <div className={styles.productCardContainer}>
-      {data.map((brand: any) => (
+      {data.map((brand) => (
         <div
           key={brand.id}
           className={styles.productCardItemWrapper}
@@ -32,11 +33,11 @@ export const ProjectCard: FC<ProjectCardProps> = ({ data }) => {
             <div className={styles.top}>
               <div className={styles.brandName}>
                 <BodyText level={6} customClass={styles.bold} fontFamily="Roboto">
-                  {brand.name}
+                  {brand.projectName}
                 </BodyText>
               </div>
               <BodyText level={6} fontFamily="Roboto">
-                {brand.country}
+                {brand.projectLocation}
               </BodyText>
             </div>
             <div className={styles.middle}>
@@ -45,10 +46,14 @@ export const ProjectCard: FC<ProjectCardProps> = ({ data }) => {
               </div>
               <div className={styles.middleValue}>
                 <BodyText level={6} fontFamily="Roboto">
-                  {brand.request}
+                  {brand.requestCount}
                 </BodyText>
               </div>
-              {brand.unread ? <UnreadIcon /> : ''}
+              {brand.newRequest ? (
+                <UnreadIcon />
+              ) : (
+                <span style={{ width: '18px', height: '18px' }}></span>
+              )}
             </div>
             <div className={styles.middle}>
               <div className={styles.middleKey}>
@@ -56,16 +61,20 @@ export const ProjectCard: FC<ProjectCardProps> = ({ data }) => {
               </div>
               <div className={styles.middleValue}>
                 <BodyText level={6} fontFamily="Roboto">
-                  {brand.notifi}
+                  {brand.notificationCount}
                 </BodyText>
               </div>
-              {brand.unread ? <UnreadIcon /> : ''}
+              {brand.newNotification ? (
+                <UnreadIcon />
+              ) : (
+                <span style={{ width: '18px', height: '18px' }}></span>
+              )}
             </div>
 
             <div className={styles.profile_icon}>
               <BodyText level={5}>Teams:</BodyText>
               <div className={styles.team}>
-                {brand.teams.map((user: BrandCardTeam) => (
+                {brand.assignedTeams.map((user: BrandCardTeam) => (
                   <TeamIcon
                     key={user.id}
                     avatar={user.avatar}

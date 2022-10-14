@@ -1,19 +1,19 @@
 import { FC, useEffect, useState } from 'react';
 
-// import { PATH } from '@/constants/path';
 import { Col, Row } from 'antd';
-import { history } from 'umi';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 
-// import { pushTo } from '@/helper/history';
 import { getOneProjectTracking } from '@/services/project-tracking.api';
 
-import { BrandProject } from '../../ProjectTracking/components/BrandProject';
-import { BrandRequests } from '../../ProjectTracking/components/BrandRequests';
-import { DesignFirm } from '../../ProjectTracking/components/DesignFirm';
+import { DEFAULT_PROJECT_DETAIL, ProjectDetail } from '@/types/project-tracking.type';
+
 import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
+
+import { BrandProject } from './BrandProject';
+import { BrandRequests } from './BrandRequests';
+import { DesignFirm } from './DesignFirm';
 
 const LIST_TAB = [
   { tab: 'DESIGN FIRM', key: 'design_firm' },
@@ -27,10 +27,12 @@ type Tab = 'design_firm' | 'project' | 'requests' | 'notification';
 interface ProjectTrackingDetail {
   projectId: string;
   activeOnlyDesignFirm?: boolean;
+  height?: string;
 }
-export const Detail: FC<ProjectTrackingDetail> = ({ projectId, activeOnlyDesignFirm }) => {
+
+export const Detail: FC<ProjectTrackingDetail> = ({ projectId, activeOnlyDesignFirm, height }) => {
   const [activeKey, setActiveKey] = useState<Tab>('design_firm');
-  const [data, setData] = useState<ProjectTrackingDetail>();
+  const [data, setData] = useState<ProjectDetail>(DEFAULT_PROJECT_DETAIL);
   const listTab = activeOnlyDesignFirm
     ? LIST_TAB.map((el) => ({
         ...el,
@@ -46,16 +48,15 @@ export const Detail: FC<ProjectTrackingDetail> = ({ projectId, activeOnlyDesignF
         }
       });
     }
-  });
+  }, []);
+
   return (
-    <Row>
+    <Row style={{ marginTop: '8px' }}>
       <Col span={12}>
-        <div style={{ background: '#fff', height: 'calc(100vh - 152px)' }}>
+        <div style={{ background: '#fff', height: `${height}` }}>
           <TableHeader
-            title={''}
-            rightAction={
-              <CloseIcon onClick={() => history.goBack()} style={{ cursor: 'pointer' }} />
-            }
+            title={data.projects.name}
+            rightAction={<CloseIcon onClick={() => history.back()} style={{ cursor: 'pointer' }} />}
           />
           <CustomTabs
             listTab={listTab}
@@ -71,14 +72,16 @@ export const Detail: FC<ProjectTrackingDetail> = ({ projectId, activeOnlyDesignF
           </CustomTabPane>
 
           <CustomTabPane active={activeKey === 'project'}>
-            <BrandProject />
+            <BrandProject project={data.projects} />
           </CustomTabPane>
 
           <CustomTabPane active={activeKey === 'requests'}>
-            <BrandRequests />
+            <BrandRequests requests={data.projectRequests} />
           </CustomTabPane>
 
-          <CustomTabPane active={activeKey === 'notification'}></CustomTabPane>
+          <CustomTabPane active={activeKey === 'notification'}>
+            {/* <BrandRequests requests={data.notifications} type="notification" /> */}
+          </CustomTabPane>
         </div>
       </Col>
     </Row>

@@ -1,62 +1,47 @@
 import { useEffect, useState } from 'react';
 
-// import { GlobalFilter } from '@/pages/Designer/Project/constants/filter';
+import { ProjectStatusFilters } from '../ProjectTracking/constant';
+import { GlobalFilter } from '@/pages/Designer/Project/constants/filter';
 import { PageContainer } from '@ant-design/pro-layout';
 
-import { getBrandSummary } from '@/features/user-group/services';
 import { useGetParamId } from '@/helper/hook';
+import {
+  getProjectTrackingPagination,
+  getProjectTrackingSummary,
+} from '@/services/project-tracking.api';
 
 import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
+import { DEFAULT_PROJECT_LIST, ProjecTrackingList } from '@/types/project-tracking.type';
 
-import { Detail } from './components/Detail';
+import { Detail } from '../ProjectTracking/components/Detail';
 import { ProjectCard } from './components/ProjectCard';
 import { MenuSummary } from '@/components/MenuSummary';
+import TopBarDropDownFilter from '@/components/TopBar/TopBarDropDownFilter';
 
 import styles from './index.less';
 
 const MyWorkspace = () => {
   const [summaryData, setSummaryData] = useState<DataMenuSummaryProps[]>([]);
-  const idProject = useGetParamId();
-  // const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
+  const projectId = useGetParamId();
+  const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
+
+  const [listCard, setListCard] = useState<ProjecTrackingList[]>(DEFAULT_PROJECT_LIST);
   useEffect(() => {
-    getBrandSummary().then((data) => {
+    getProjectTrackingSummary().then((data) => {
       if (data) {
         setSummaryData(data);
       }
     });
+    getProjectTrackingPagination({ page: 1, pageSize: 99999 }, (response) => {
+      setListCard(response.data);
+    });
   }, []);
-  //   const [data, setData] = useState<>
-  const data = [
-    {
-      id: '1',
-      name: 'test',
-      country: 'Da Nang',
-      request: '3',
-      notifi: '3',
-      unread: true,
-      teams: [
-        {
-          id: 'f805b4e0-9b55-41a0-8cea-d43b02e14bc1',
-          firstname: 'Tisc',
-          lastname: 'consultant',
-          avatar: null,
-        },
-        {
-          id: '3089fad1-943e-420c-bd4d-aa945a7e3631',
-          firstname: 'Loc',
-          lastname: 'Nguyen',
-          avatar: null,
-        },
-        {
-          id: '19419580-4a0c-41a0-9b23-fe2ff63c8973',
-          firstname: 'Loc',
-          lastname: 'Nguyen',
-          avatar: null,
-        },
-      ],
-    },
-  ];
 
+  // useEffect(() => {
+  //   window.location.reload();
+  // }, []);
+
+  console.log(listCard);
   return (
     <div>
       <PageContainer
@@ -64,17 +49,21 @@ const MyWorkspace = () => {
           return (
             <div className={styles.customHeader}>
               <MenuSummary typeMenu={'brand'} menuSummaryData={summaryData} />
-              {/* <ProjectFilter
+              <TopBarDropDownFilter
                 selectedFilter={selectedFilter}
                 setSelectedFilter={setSelectedFilter}
-              /> */}
+                filterLabel="Project Status"
+                globalFilter={GlobalFilter}
+                dynamicFilter={ProjectStatusFilters}
+                isShowFilter
+              />
             </div>
           );
         }}>
-        {idProject ? (
-          <Detail projectId={idProject} activeOnlyDesignFirm />
+        {projectId ? (
+          <Detail projectId={projectId} activeOnlyDesignFirm height="calc(100vh - 152px)" />
         ) : (
-          <ProjectCard data={data} />
+          <ProjectCard data={listCard} />
         )}
       </PageContainer>
     </div>

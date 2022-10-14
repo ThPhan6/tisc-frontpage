@@ -130,3 +130,30 @@ export const DEFAULT_PROJECT_DETAIL: ProjectDetail = {
     address: '',
   },
 };
+
+export const DEFAULT_PROJECT_LIST: ProjecTrackingList[] = [
+  {
+    id: '',
+    created_at: '',
+    projectName: '',
+    projectLocation: '',
+    projectType: '',
+    designFirm: '',
+    projectStatus: '',
+    priority: 0,
+    priorityName: '',
+    assignedTeams: [
+      {
+        id: '',
+        firstname: '',
+        lastname: '',
+        avatar: '',
+      },
+    ],
+    requestCount: 0,
+    newRequest: false,
+    notificationCount: 0,
+    newNotification: false,
+    newTracking: false,
+  },
+];
