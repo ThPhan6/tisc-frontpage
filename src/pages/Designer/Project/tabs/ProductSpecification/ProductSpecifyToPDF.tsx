@@ -9,7 +9,6 @@ import CoverAndPreamble from './components/CoverAndPreamble';
 import IssuingInformation from './components/IssuingInformation';
 import { StandardSpecification } from './components/StandardSpecification';
 import CustomButton from '@/components/Button';
-import CustomPaginator from '@/components/Table/components/CustomPaginator';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
 import styles from './index.less';
@@ -53,36 +52,6 @@ const data = {
             preview_url: '/templates/introduction/Principals-and-Definitions.jpg',
             sequence: 3,
             updated_at: '2022-10-12T02:27:04.290Z',
-          },
-          {
-            created_at: '2022-10-12T02:27:04.290Z',
-            group: 1,
-            id: '268f8018-8c1e-4268-a028-ac76ab6f5741',
-            name: 'Submittal & Review',
-            pdf_url: '/templates/introduction/Submittal-and-Review.pdf',
-            preview_url: '/templates/introduction/Submittal-and-Review.jpg',
-            sequence: 4,
-            updated_at: '2022-10-12T02:27:04.290Z',
-          },
-          {
-            created_at: '2022-10-12T02:27:04.290Z',
-            group: 1,
-            id: 'e3396f7e-16b1-4386-875e-0d9812490b7a',
-            name: 'Copyright & Protocol',
-            pdf_url: '/templates/introduction/Copyright-and-Protocol.pdf',
-            preview_url: '/templates/introduction/Copyright-and-Protocol.jpg',
-            sequence: 2,
-            updated_at: '2022-10-12T02:27:04.290Z',
-          },
-          {
-            created_at: '2022-10-12T02:27:04.287Z',
-            group: 1,
-            id: 'd4d05f5f-4b71-4f4c-a27c-aee3b4eaffc7',
-            name: 'Guideline',
-            pdf_url: '/templates/introduction/Guideline.pdf',
-            preview_url: '/templates/introduction/Guideline.jpg',
-            sequence: 1,
-            updated_at: '2022-10-12T02:27:04.287Z',
           },
         ],
       },
@@ -212,15 +181,16 @@ const ProductSpecifyToPDF = () => {
               className={styles.projectTabInfo}
               onChange={(changedKey) => setSelectedTab(changedKey as ProductSpecifiedTabKeys)}
               activeKey={selectedTab}
+              style={{ padding: '16px 16px 0 16px' }}
             />
             <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.issuingInformation}>
               <IssuingInformation />
             </CustomTabPane>
             <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.coverAndPreamble}>
-              <CoverAndPreamble data={data} />
+              <CoverAndPreamble coverAndPreamble={data.templates.cover} />
             </CustomTabPane>
             <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.standardSpecification}>
-              <StandardSpecification data={data} />
+              <StandardSpecification standardSpecification={data.templates.specification} />
             </CustomTabPane>
           </div>
         </Col>
@@ -229,13 +199,11 @@ const ProductSpecifyToPDF = () => {
             <div className={styles.pdf}>
               <img src={PageTemplate} />
             </div>
-            <div className={styles.customPagination}>
-              <CustomPaginator fetchData={() => {}} pagination={{}} dataLength={0} sorter={{}} />
-              <div className={styles.action}>
-                <CustomButton size="small" properties="rounded">
-                  Download
-                </CustomButton>
-              </div>
+
+            <div className={styles.action}>
+              <CustomButton size="small" properties="rounded">
+                Download
+              </CustomButton>
             </div>
           </div>
         </Col>

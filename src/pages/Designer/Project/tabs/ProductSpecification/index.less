@@ -6,52 +6,54 @@
   &_left {
     height: calc(100vh - 232px);
     margin-right: 8px;
-    padding: 16px;
     background-color: #fff;
   }
   &_right {
-    display: flex;
-    // align-items: center;
     justify-content: space-between;
-    padding: 16px;
+    height: calc(100vh - 232px);
+    padding-top: 16px;
     background-color: #fff;
     .action {
-      position: relative;
-      z-index: 2;
-      margin-top: calc(100vh - 288px);
+      display: flex;
+      justify-content: center;
+      height: 48px;
+      padding: 12px 16px;
+      box-shadow: @border-top;
     }
     .pdf {
-      margin-right: 16px;
-    }
-    .customPagination {
-      :global(.customPaginator___1cy6q) {
-        bottom: auto;
-        left: auto;
-        width: 80px;
-        height: calc(100vh - 304px);
-        background-color: #fff;
-        box-shadow: none;
-      }
+      height: calc(100vh - 296px);
     }
   }
 }
 .formInformation {
+  padding: 0 16px;
   overflow: auto;
   :global(.ant-input) {
     color: @primary-color-dark;
   }
 }
-.standard {
-  :global(.function-type-placeholder) {
-    padding-left: 0;
-    color: @mono-color;
+.cover {
+  padding: 0 16px;
+  .customHeader {
+    margin-top: 16px;
+    :global(.function-type-placeholder) {
+      padding-left: 0;
+    }
   }
-
+  .customCollapse {
+    :global(.function-type-placeholder) {
+      color: @mono-color;
+    }
+  }
+  .disable {
+    cursor: not-allowed;
+  }
   .customTitle {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 40px;
+    margin-bottom: 8px;
     box-shadow: @border-bottom;
     :global(.ant-switch-checked) {
       background: @primary-color-dark !important;
@@ -66,6 +68,12 @@
       box-shadow: none;
     }
   }
+
+  .customForm {
+    height: 36px;
+    margin-bottom: 0;
+    border-bottom: 0.5px solid @mono-color;
+  }
 }
 
 .customActionButton {
@@ -75,6 +83,8 @@
 
 .specification {
   height: calc(100vh - 352px);
+  padding: 0 16px;
+  overflow: auto;
   :global(.function-type-placeholder) {
     padding-left: 0;
     color: @mono-color;
@@ -85,12 +95,11 @@
       height: 36px;
     }
   }
-  .actionButton {
-    z-index: 99;
-    display: flex;
-    justify-content: right;
-    height: 48px;
-    padding: 12px 16px;
-    box-shadow: @border-top;
-  }
+}
+.actionButton {
+  display: flex;
+  justify-content: right;
+  height: 48px;
+  padding: 12px 16px;
+  box-shadow: @border-top;
 }

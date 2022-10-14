@@ -2,15 +2,19 @@ import { FC } from 'react';
 
 import { ReactComponent as FileSearchIcon } from '@/assets/icons/file-search-icon.svg';
 
+import { TemplatesItem } from '../type';
+
 import CustomButton from '@/components/Button';
 import CollapseCheckboxList from '@/components/CustomCheckbox/CollapseCheckboxList';
 
 import styles from '../index.less';
 
 interface StandardSpecificationProps {
-  data: any;
+  standardSpecification: TemplatesItem[];
 }
-export const StandardSpecification: FC<StandardSpecificationProps> = ({ data }) => {
+export const StandardSpecification: FC<StandardSpecificationProps> = ({
+  standardSpecification,
+}) => {
   const renderLabelHeader = (label: string) => {
     return (
       <div
@@ -28,7 +32,7 @@ export const StandardSpecification: FC<StandardSpecificationProps> = ({ data }) 
   return (
     <>
       <div className={styles.specification}>
-        {data.templates.specification.map((specification: any) => (
+        {standardSpecification.map((specification: any) => (
           <CollapseCheckboxList
             options={specification.items.map((item: any) => {
               return {
