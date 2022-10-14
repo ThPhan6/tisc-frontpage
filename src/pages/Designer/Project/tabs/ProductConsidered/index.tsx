@@ -22,6 +22,7 @@ import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import {
+  setPartialProductDetail,
   setPartialProductSpecifiedData,
   setReferToDesignDocument,
 } from '@/features/product/reducers';
@@ -110,6 +111,12 @@ const ProductConsidered: React.FC = () => {
               setSpecifyingProduct(record);
               if (record.specifiedDetail) {
                 store.dispatch(setPartialProductSpecifiedData(record.specifiedDetail));
+                store.dispatch(
+                  setPartialProductDetail({
+                    distributor_location_id: record.specifiedDetail.distributor_location_id,
+                    brand_location_id: record.specifiedDetail.brand_location_id,
+                  }),
+                );
               }
               store.dispatch(
                 setReferToDesignDocument(
