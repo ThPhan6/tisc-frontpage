@@ -46,7 +46,7 @@ const GeneralInquiries = () => {
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <RobotoBodyText level={5}>{moment(value).format('YYYY-MM-DD')}</RobotoBodyText>
           {/* check if user has readed or hasn't readed*/}
-          {record.read.some((el) => el === userId) ? null : (
+          {record.read_by.some((el) => el === userId) ? null : (
             <NotificationIcon style={{ marginLeft: '14px' }} />
           )}
         </div>
@@ -106,9 +106,9 @@ const GeneralInquiries = () => {
         onRow={(rowRecord: GeneralInquiryListProps) => ({
           onClick: () => {
             // add userId to know that user is readed
-            const userHasReaded = rowRecord.read.some((el) => el === userId);
+            const userHasReaded = rowRecord.read_by.some((el) => el === userId);
             if (!userHasReaded && userId) {
-              rowRecord.read.push(userId);
+              rowRecord.read_by.push(userId);
             }
             pushTo(PATH.brandGeneralInquiryDetail.replace(':id', rowRecord.id));
           },

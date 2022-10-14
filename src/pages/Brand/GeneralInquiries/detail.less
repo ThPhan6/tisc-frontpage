@@ -2,6 +2,13 @@
   margin-bottom: 8px;
 }
 
+.header {
+  > p {
+    font-weight: 600;
+    font-family: @font-secondary;
+  }
+}
+
 .container {
   background: #fff;
 
@@ -12,9 +19,10 @@
   }
 
   .mainContent {
+    width: 100%;
     height: calc(100vh - 296px);
     padding: 0 16px 16px 16px;
-    overflow: hidden auto;
+    overflow: auto;
 
     /// design-firm
     .nameDesignFirm {
@@ -22,28 +30,6 @@
     }
 
     /// inquiry-message
-    .actionTask {
-      display: flex;
-      justify-content: right;
-      box-shadow: @border-bottom-light;
-
-      &_content {
-        display: flex;
-        align-items: center;
-        height: 40px;
-        cursor: pointer;
-      }
-
-      &_text {
-        padding-right: 12px;
-      }
-    }
-
-    .taskDropDown {
-      display: flex;
-      align-items: center;
-    }
-
     .brandProduct {
       margin: 8px 0;
       padding: 0;
@@ -56,36 +42,6 @@
         background: transparent;
         cursor: default;
       }
-    }
-  }
-}
-
-.header {
-  > p {
-    font-weight: 600;
-    font-family: @font-secondary;
-  }
-}
-
-.actionTaskList {
-  :global(.ant-modal-body) {
-    > div:first-child {
-      height: 100%;
-    }
-  }
-  :global(.ant-checkbox-group) {
-    position: relative;
-    height: 100%;
-    > div:last-child {
-      position: sticky;
-      bottom: -16px;
-      background: transparent;
-    }
-    label {
-      height: 40px;
-    }
-    :global(.ant-input) {
-      color: @primary-color-dark;
     }
   }
 }

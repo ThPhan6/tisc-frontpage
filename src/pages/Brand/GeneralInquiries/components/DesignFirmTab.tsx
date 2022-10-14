@@ -10,9 +10,9 @@ export const DesignFirmTab: FC<GeneralInquiryDesignFirm> = ({
   name,
   official_website,
   inquirer,
-  role,
-  work_email,
-  work_phone,
+  position,
+  email,
+  phone,
   address,
 }) => {
   return (
@@ -30,13 +30,13 @@ export const DesignFirmTab: FC<GeneralInquiryDesignFirm> = ({
         {inquirer || ''}
       </TextForm>
       <TextForm boxShadow label="Position/Role">
-        {role || ''}
+        {position || ''}
       </TextForm>
       <TextForm boxShadow label="Work Email">
-        {work_email || ''}
+        {email || ''}
       </TextForm>
       <TextForm boxShadow label="Work Phone">
-        {work_phone || ''}
+        {phone || ''}
       </TextForm>
     </>
   );

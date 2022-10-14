@@ -102,3 +102,9 @@ export const COMMON_TYPES = {
   REQUEST_FOR: 11,
   ACTION_TASK: 12,
 };
+
+export const ACTION_TASK_MODEL = {
+  notification: 'notification',
+  request: 'request',
+  inquiry: 'inquiry',
+};
