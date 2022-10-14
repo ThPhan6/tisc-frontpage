@@ -79,9 +79,11 @@ export const ActionTaskTable: FC<ActionTaskModelParams> = ({ model_id, model_nam
         alignRight={false}
         textCapitalize={false}
         items={menuItems}
+        viewAllTop
+        placement="bottomRight"
         menuStyle={{ width: 160, height: 'auto' }}
         labelProps={{ className: 'flex-start' }}>
-        {ActionTaskStatus[record.status]}
+        <RobotoBodyText level={6}>{ActionTaskStatus[record.status]}</RobotoBodyText>
       </CustomDropDown>
     );
   };
