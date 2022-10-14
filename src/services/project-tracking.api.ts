@@ -21,7 +21,7 @@ export async function getProjectTrackingPagination(
   params: PaginationRequestParams,
   callback: (data: DataTableResponse) => void,
 ) {
-  request(`/api/project-tracking/request/get-list`, { method: 'GET', params })
+  request(`/api/project-tracking/get-list`, { method: 'GET', params })
     .then((response: ProjectTrackingPaginationRespone) => {
       const { projectTrackings, pagination } = response.data;
       callback({
