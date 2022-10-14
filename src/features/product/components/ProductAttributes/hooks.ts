@@ -115,7 +115,7 @@ export const useProductAttributeForm = (
             dispatch(
               setPartialProductDetail({
                 specification_attribute_groups: getSpecificationWithSelectedValue(
-                  res.specification.attribute_groups,
+                  res.specification?.attribute_groups || [],
                   attributeGroup,
                 ),
                 brand_location_id: res.brand_location_id,
