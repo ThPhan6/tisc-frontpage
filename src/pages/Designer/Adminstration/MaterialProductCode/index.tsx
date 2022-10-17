@@ -67,9 +67,13 @@ const MaterialProductCode = () => {
       dataIndex: 'name',
       sorter: true,
       isExpandable: true,
+      render: (value) => {
+        return <span className="text-uppercase">{value}</span>;
+      },
     },
     {
       title: 'Sub-List',
+      dataIndex: 'sub_list',
       sorter: true,
     },
     ...getSameColumns(false),
