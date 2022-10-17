@@ -8,13 +8,10 @@ import { ReactComponent as ProjectOnHoldIcon } from '@/assets/icons/project-on-h
 
 import { DropDownFilterValueProps } from '@/components/TopBar/types';
 
-export type ProjectStatusValue = 1 | 2 | 3;
-export type ProjectStatusKey = 'Live' | 'On Hold' | 'Archive';
-
 export enum ProjectStatus {
-  'Live' = 1,
-  'On Hold' = 2,
-  'Archive' = 3,
+  'Live',
+  'On Hold',
+  'Archive',
 }
 
 export enum ProjectTrackingPriority {
