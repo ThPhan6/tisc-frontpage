@@ -8,6 +8,7 @@ import { getGeneralInquirySummary } from '../services';
 import { GeneralInquirySummaryData } from '../types';
 import { DropDownFilterProps, DropDownFilterValueProps } from '@/components/TopBar/types';
 
+import { LegendModal } from '@/components/LegendModal/LegendModal';
 import TopBarSummaryHasFilter from '@/components/TopBar';
 import TopBarDropDownFilter from '@/components/TopBar/TopBarDropDownFilter';
 import { TopBarMenuSummary } from '@/components/TopBar/TopBarMenuSummary';
@@ -35,12 +36,16 @@ const GeneralInquirySummary: React.FC<GeneralInquirySummaryProps> = ({ summaryDa
 
 interface GeneralInquiryContainerProps extends Partial<DropDownFilterProps> {
   isShowFilter?: boolean;
+  visible: boolean;
+  setVisible: (visible: boolean) => void;
 }
 
 export const GeneralInquiryContainer: FC<GeneralInquiryContainerProps> = ({
   selectedFilter,
   setSelectedFilter,
   isShowFilter,
+  visible,
+  setVisible,
   children,
 }) => {
   const [summaryData, setSummaryData] = useState<GeneralInquirySummaryData>();
@@ -54,21 +59,24 @@ export const GeneralInquiryContainer: FC<GeneralInquiryContainerProps> = ({
   }, []);
 
   return (
-    <PageContainer
-      pageHeaderRender={() => (
-        <TopBarSummaryHasFilter>
-          <GeneralInquirySummary summaryData={summaryData} />
-          <TopBarDropDownFilter
-            selectedFilter={selectedFilter ?? ({} as DropDownFilterValueProps)}
-            setSelectedFilter={setSelectedFilter}
-            filterLabel="Inquiry Status"
-            globalFilter={GlobalFilter}
-            dynamicFilter={GeneralInquiryFilters}
-            isShowFilter={isShowFilter}
-          />
-        </TopBarSummaryHasFilter>
-      )}>
-      {children}
-    </PageContainer>
+    <>
+      <PageContainer
+        pageHeaderRender={() => (
+          <TopBarSummaryHasFilter>
+            <GeneralInquirySummary summaryData={summaryData} />
+            <TopBarDropDownFilter
+              selectedFilter={selectedFilter ?? ({} as DropDownFilterValueProps)}
+              setSelectedFilter={setSelectedFilter!}
+              filterLabel="Inquiry Status"
+              globalFilter={GlobalFilter}
+              dynamicFilter={GeneralInquiryFilters}
+              isShowFilter={isShowFilter}
+            />
+          </TopBarSummaryHasFilter>
+        )}>
+        {children}
+      </PageContainer>
+      <LegendModal visible={visible} setVisible={setVisible} />
+    </>
   );
 };

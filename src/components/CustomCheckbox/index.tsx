@@ -11,12 +11,13 @@ import style from './styles/index.less';
 export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   direction,
   otherInput,
+  clearOtherInput,
   inputPlaceholder = 'type here',
   options,
   onChange,
   isCheckboxList,
   selected,
-  checkboxClass,
+  checkboxClass = '',
   heightItem = '32px',
   ...props
 }) => {
@@ -60,6 +61,12 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     }
 
     onChange?.(newData ?? []);
+
+    console.log('clearOtherInput', clearOtherInput);
+
+    if (otherInput && clearOtherInput) {
+      setInputValue('');
+    }
   };
 
   const getActiveClass = (option: CheckboxValue) => {
@@ -71,13 +78,9 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
 
   return (
     <div
-      className={`
-        ${style[`checkbox-${direction}`]}
-        ${style['checkbox-list']}
-        ${isCheckboxList && style['item-list-checkbox']}
-        ${style['color-checkbox-checked']}
-        ${checkboxClass}
-      `}
+      className={`${style[`checkbox-${direction}`]} ${style['checkbox-list']} ${
+        isCheckboxList && style['item-list-checkbox']
+      } ${style['color-checkbox-checked']} ${checkboxClass}`}
       onClick={(e) => e.stopPropagation()}>
       <Checkbox.Group
         {...props}
@@ -90,7 +93,9 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                 className={`${style['item-wrapper']} ${'item-wrapper-custom'}`}
                 style={{ minHeight: heightItem }}
                 htmlFor={`${option.value}_${index}_${randomId}`}>
-                <div style={{ width: '100%' }} className={getActiveClass(option)}>
+                <div
+                  style={{ width: '100%', paddingRight: '16px' }}
+                  className={getActiveClass(option)}>
                   {option.label}
                 </div>
                 <Checkbox id={`${option.value}_${index}_${randomId}`} {...option} />
