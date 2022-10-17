@@ -62,7 +62,7 @@ interface InquiryRequestProps {
 const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible }) => {
   const isSubmitted = useBoolean(false);
   const [selectedTab, setSelectedTab] = useState<TabKeys>(TabKeys.inquiry);
-  const InquiryTab = selectedTab === TabKeys.inquiry;
+  const inquiryTab = selectedTab === TabKeys.inquiry;
 
   const projectData = useAppSelector((state) => state.project.list);
 
@@ -104,7 +104,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
 
   const setStyleOnContainerClass = () =>
     getValueByCondition([
-      [InquiryTab && selectedInquiryFor.length, styles.inputColor],
+      [inquiryTab && selectedInquiryFor.length, styles.inputColor],
       [selectedTab === TabKeys.request && selectedRequestFor.length, styles.inputColor],
     ]);
 
@@ -135,7 +135,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
 
   // handle onChange title and message
   const onChangeValueInput = (newData: 'title' | 'message', fieldValue: any) => {
-    if (InquiryTab) {
+    if (inquiryTab) {
       setGeneralInquiryData((prevState) => ({
         ...prevState,
         [newData]: fieldValue,
@@ -153,7 +153,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
     // delete other-input has empty value
     const selectedOpt = selectedOption.filter((el) => el.label !== '');
 
-    if (InquiryTab) {
+    if (inquiryTab) {
       setSelectedInquiryFor(selectedOpt);
       setGeneralInquiryData((prevState) => ({
         ...prevState,
@@ -187,7 +187,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
   };
 
   const handleSubmit = () => {
-    if (InquiryTab) {
+    if (inquiryTab) {
       switch (true) {
         case generalInquirydata.inquiry_for_ids.length === 0:
           message.error('Inquiry For is required');
@@ -220,7 +220,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
       }
     }
 
-    const submitForm = InquiryTab
+    const submitForm = inquiryTab
       ? createGeneralInquiry(generalInquirydata)
       : createProjectRequest(projectRequestData);
 
@@ -231,7 +231,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
         setTimeout(() => {
           isSubmitted.setValue(false);
           // clear data
-          if (InquiryTab) {
+          if (inquiryTab) {
             setSelectedInquiryFor([]);
             setGeneralInquiryData({
               ...GENERAL_INQUIRY_DEFAULT_STATE,
@@ -252,58 +252,6 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
       }
     });
   };
-
-  // render Inquiry For and Request For data
-  const renderFor = () => {
-    const labelContent = InquiryTab ? 'Inquiry For' : 'Request For';
-    const valueSelected = InquiryTab ? selectedInquiryFor : selectedRequestFor;
-    const option = InquiryTab ? inquiryForData : requestForData;
-    return (
-      <FormGroup label={labelContent} required layout="vertical" formClass={styles.formGroup}>
-        <CollapseCheckboxList
-          checked={valueSelected}
-          onChange={onChangeCheckboxListData}
-          containerClass={setStyleOnContainerClass()}
-          otherInput
-          clearOtherInput={isSubmitted.value}
-          options={option}
-          placeholder={selectedItem()}
-        />
-      </FormGroup>
-    );
-  };
-
-  const renderTitle = () => (
-    <InputGroup
-      label="Title"
-      required
-      deleteIcon
-      fontLevel={3}
-      hasPadding
-      colorPrimaryDark
-      hasBoxShadow
-      hasHeight
-      placeholder="type message title"
-      value={InquiryTab ? generalInquirydata.title : projectRequestData.title}
-      onChange={(e) => onChangeValueInput('title', e.target.value)}
-      onDelete={() => onChangeValueInput('title', '')}
-    />
-  );
-
-  const renderMessage = () => (
-    <FormGroup label="Message" required layout="vertical">
-      <CustomTextArea
-        className={styles.message}
-        maxLength={250}
-        showCount
-        placeholder="type message here..."
-        borderBottomColor="mono-medium"
-        boxShadow
-        onChange={(e) => onChangeValueInput('message', e.target.value)}
-        value={InquiryTab ? generalInquirydata.message : projectRequestData.message}
-      />
-    </FormGroup>
-  );
 
   return (
     <Popover
@@ -353,9 +301,49 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
         />
       ) : null}
 
-      {renderFor()}
-      {renderTitle()}
-      {renderMessage()}
+      <FormGroup
+        label={inquiryTab ? 'Inquiry For' : 'Request For'}
+        required
+        layout="vertical"
+        formClass={styles.formGroup}>
+        <CollapseCheckboxList
+          checked={inquiryTab ? selectedInquiryFor : selectedRequestFor}
+          onChange={onChangeCheckboxListData}
+          containerClass={setStyleOnContainerClass()}
+          otherInput
+          clearOtherInput={isSubmitted.value}
+          options={inquiryTab ? inquiryForData : requestForData}
+          placeholder={selectedItem()}
+        />
+      </FormGroup>
+
+      <InputGroup
+        label="Title"
+        required
+        deleteIcon
+        fontLevel={3}
+        hasPadding
+        colorPrimaryDark
+        hasBoxShadow
+        hasHeight
+        placeholder="type message title"
+        value={inquiryTab ? generalInquirydata.title : projectRequestData.title}
+        onChange={(e) => onChangeValueInput('title', e.target.value)}
+        onDelete={() => onChangeValueInput('title', '')}
+      />
+
+      <FormGroup label="Message" required layout="vertical">
+        <CustomTextArea
+          className={styles.message}
+          maxLength={250}
+          showCount
+          placeholder="type message here..."
+          borderBottomColor="mono-medium"
+          boxShadow
+          onChange={(e) => onChangeValueInput('message', e.target.value)}
+          value={inquiryTab ? generalInquirydata.message : projectRequestData.message}
+        />
+      </FormGroup>
     </Popover>
   );
 };
