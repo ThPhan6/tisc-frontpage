@@ -109,7 +109,7 @@ export const PATH = {
 
   /// general inquiries
   brandGeneralInquiry: '/brand/general-inquiry',
-  brandGeneralInquiryDetail: '/brand/general-inquiry/detail',
+  brandGeneralInquiryDetail: '/brand/general-inquiry/:id',
 
   /// project tracking
   brandProjectTracking: '/brand/project-tracking',

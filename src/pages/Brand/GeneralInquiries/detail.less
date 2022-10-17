@@ -2,6 +2,13 @@
   margin-bottom: 8px;
 }
 
+.header {
+  > p {
+    font-weight: 600;
+    font-family: @font-secondary;
+  }
+}
+
 .container {
   background: #fff;
 
@@ -12,9 +19,10 @@
   }
 
   .mainContent {
+    width: 100%;
     height: calc(100vh - 296px);
     padding: 0 16px 16px 16px;
-    overflow: hidden auto;
+    overflow: auto;
 
     /// design-firm
     .nameDesignFirm {
@@ -22,24 +30,6 @@
     }
 
     /// inquiry-message
-    .actionTask {
-      display: flex;
-      align-items: center;
-      justify-content: right;
-      height: 40px;
-      box-shadow: @border-bottom-light;
-
-      .text {
-        padding-right: 12px;
-        cursor: pointer;
-      }
-    }
-
-    .taskDropDown {
-      display: flex;
-      align-items: center;
-    }
-
     .brandProduct {
       margin: 8px 0;
       padding: 0;
@@ -53,12 +43,5 @@
         cursor: default;
       }
     }
-  }
-}
-
-.header {
-  > p {
-    font-weight: 600;
-    font-family: 'Cormorant Garamond';
   }
 }

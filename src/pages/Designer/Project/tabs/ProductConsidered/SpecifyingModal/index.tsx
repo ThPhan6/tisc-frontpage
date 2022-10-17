@@ -49,6 +49,10 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   const specification_attribute_groups = useAppSelector(
     (state) => state.product.details.specification_attribute_groups,
   );
+  const brandLocationId = useAppSelector((state) => state.product.details.brand_location_id);
+  const distributorLocationId = useAppSelector(
+    (state) => state.product.details.distributor_location_id,
+  );
 
   const [selectedTab, setSelectedTab] = useState<ProjectSpecifyTabValue>(
     ProjectSpecifyTabKeys.specification,
@@ -75,11 +79,11 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       message.error('Description is required');
       return;
     }
-    if (!specifiedDetail.brand_location_id) {
+    if (!brandLocationId) {
       message.error('Brand location is required');
       return;
     }
-    if (!specifiedDetail.distributor_location_id) {
+    if (!distributorLocationId) {
       message.error('Distributor location is required');
       return;
     }
@@ -93,8 +97,8 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           },
           entire_allocation: isEntire,
           allocation: getSelectedRoomIds(selectedRooms),
-          brand_location_id: specifiedDetail.brand_location_id,
-          distributor_location_id: specifiedDetail.distributor_location_id,
+          brand_location_id: brandLocationId,
+          distributor_location_id: distributorLocationId,
           description: specifiedDetail.description,
           finish_schedules: specifiedDetail.finish_schedules,
           instruction_type_ids: specifiedDetail.instruction_type_ids,
