@@ -10,6 +10,7 @@ export interface CustomCheckboxProps {
   direction?: 'horizontal' | 'vertical';
   options: CheckboxValue[];
   otherInput?: boolean;
+  clearOtherInput?: boolean;
   inputPlaceholder?: string;
   onChange?: (value: CheckboxValue[]) => void;
   isCheckboxList?: boolean;
