@@ -19,6 +19,7 @@ interface CollapseRadioListProps {
   onCollapseChange?: (key: string | string[]) => void;
   Header?: ReactNode;
   inputPlaceholder?: string;
+  noDataMessage?: string;
 }
 
 const CollapseRadioList: FC<CollapseRadioListProps> = ({
@@ -31,6 +32,7 @@ const CollapseRadioList: FC<CollapseRadioListProps> = ({
   onCollapseChange,
   Header,
   inputPlaceholder,
+  noDataMessage = 'No options',
 }) => {
   return (
     <CustomCollapse
@@ -43,14 +45,18 @@ const CollapseRadioList: FC<CollapseRadioListProps> = ({
         )
       }
       className={`${styles.functionTypeDropdown} ${containerClass}`}>
-      <CustomRadio
-        options={options}
-        isRadioList
-        otherInput={otherInput}
-        inputPlaceholder={inputPlaceholder}
-        value={checked}
-        onChange={onChange}
-      />
+      {options.length ? (
+        <CustomRadio
+          options={options}
+          isRadioList
+          otherInput={otherInput}
+          inputPlaceholder={inputPlaceholder}
+          value={checked}
+          onChange={onChange}
+        />
+      ) : (
+        <span className="ant-collapse-header-text">{noDataMessage}</span>
+      )}
     </CustomCollapse>
   );
 };
