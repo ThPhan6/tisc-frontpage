@@ -86,6 +86,7 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
           placeholder={selectedProject ? selectedProject.label : 'select from My Workspace'}
           Header={selectedProject?.label}
           containerClass={styles.customRadioList}
+          noDataMessage={'No project yet'}
         />
       </FormGroup>
 
