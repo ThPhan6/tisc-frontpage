@@ -1,173 +1,65 @@
-import { useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { ProductSpecifiedTabKeys, ProductSpecifiedTabs } from '../../constants/tab';
 import { Col, Row } from 'antd';
 
 import PageTemplate from '@/assets/images/page.png';
 
-import CoverAndPreamble from './components/CoverAndPreamble';
+import { getSpecifiedProductByPDF } from '@/features/project/services';
+
+import { DEFAULT_VALUE, DetailPDF } from './type';
+
+import CoverStandard from './components/CoverStandard';
 import IssuingInformation from './components/IssuingInformation';
-import { StandardSpecification } from './components/StandardSpecification';
 import CustomButton from '@/components/Button';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
 import styles from './index.less';
 
-const data = {
-  config: {
-    created_at: '2022-10-12 11:27:55',
-    created_by: '1110813b-8422-4e94-8d2a-8fdef644480e',
-    document_title: '',
-    has_cover: false,
-    id: '7b3db8c8-b9c8-4fe1-81cd-784226ffc17e',
-    issuing_date: '',
-    issuing_for_id: '',
-    location_id: '',
-    project_id: '1',
-    revision: '',
-    template_ids: [],
-    updated_at: null,
-  },
-  templates: {
-    cover: [
-      {
-        name: 'Standard Preambles (select relevant ones)',
-        items: [
-          {
-            created_at: '2022-10-12T02:27:04.290Z',
-            group: 1,
-            id: 'b10e1c5d-2ddf-4f9d-b3d6-504de51dd44f',
-            name: 'General Conditions',
-            pdf_url: '/templates/introduction/General-Conditions.pdf',
-            preview_url: '/templates/introduction/General-Conditions.jpg',
-            sequence: 5,
-            updated_at: '2022-10-12T02:27:04.290Z',
-          },
-          {
-            created_at: '2022-10-12T02:27:04.290Z',
-            group: 1,
-            id: '79848e8c-ef1f-4fc3-b6c2-3540000cb306',
-            name: 'Principals & Definitions',
-            pdf_url: '/templates/introduction/Principals-and-Definitions.pdf',
-            preview_url: '/templates/introduction/Principals-and-Definitions.jpg',
-            sequence: 3,
-            updated_at: '2022-10-12T02:27:04.290Z',
-          },
-        ],
-      },
-    ],
-    specification: [
-      {
-        name: 'Brands & Distributors',
-        items: [
-          {
-            created_at: '2022-10-12T02:27:04.291Z',
-            group: 2,
-            id: 'c948de8d-68a9-4100-8247-a7f96fe062fb',
-            name: 'Wallcovering',
-            pdf_url: '/templates/preambles/Wallcovering.pdf',
-            preview_url: '/templates/preambles/Wallcovering.jpg',
-            sequence: 24,
-            updated_at: '2022-10-12T02:27:04.291Z',
-          },
-          {
-            created_at: '2022-10-12T02:27:04.291Z',
-            group: 2,
-            id: 'c3789410-8668-49df-8f4f-85bdd7135e2f',
-            name: 'Stone & Tile',
-            pdf_url: '/templates/preambles/Stone-And-Tile.pdf',
-            preview_url: '/templates/preambles/Stone-And-Tile.jpg',
-            sequence: 22,
-            updated_at: '2022-10-12T02:27:04.291Z',
-          },
-        ],
-      },
-      {
-        name: 'Finishes, Materials & Products',
-        items: [
-          {
-            created_at: '2022-10-12T02:27:04.291Z',
-            group: 3,
-            id: '3f46d04f-fbb8-406a-8028-06338dd443f2',
-            name: 'Distributor Contact Reference by Category',
-            pdf_url: '',
-            preview_url:
-              '/templates/specification/brand-distributor/Distributor-Contact-Reference-By-Category.jpg',
-            sequence: 27,
-            updated_at: '2022-10-12T02:27:04.291Z',
-          },
-          {
-            created_at: '2022-10-12T02:27:04.291Z',
-            group: 3,
-            id: '41b4b646-1051-40f9-841a-bf193f3f5c13',
-            name: 'Brand Contact Reference by Category',
-            pdf_url: '',
-            preview_url:
-              '/templates/specification/brand-distributor/Brand-Contact-Reference-By-Category.jpg',
-            sequence: 26,
-            updated_at: '2022-10-12T02:27:04.291Z',
-          },
-        ],
-      },
-      {
-        name: 'Schedules & Specifications',
-        items: [
-          {
-            created_at: '2022-10-12T02:27:04.291Z',
-            group: 4,
-            id: '6af239fe-5ff1-4587-b71c-4026f8c8dbd4',
-            name: 'Finished, Materials & Products Reference by Code',
-            pdf_url: '',
-            preview_url: '/templates/specification/finish-material-product/Listing-By-Code.jpg',
-            sequence: 31,
-            updated_at: '2022-10-12T02:27:04.291Z',
-          },
-          {
-            created_at: '2022-10-12T02:27:04.291Z',
-            group: 4,
-            id: '264010de-b990-49c1-8113-29a48662b84d',
-            name: 'Finished, Materials & Products Reference by Brand',
-            pdf_url: '',
-            preview_url: '/templates/specification/finish-material-product/Reference-By-Brand.jpg',
-            sequence: 30,
-            updated_at: '2022-10-12T02:27:04.291Z',
-          },
-        ],
-      },
-      {
-        name: 'Zones / Areas / Rooms',
-        items: [
-          {
-            created_at: '2022-10-12T02:27:04.291Z',
-            group: 5,
-            id: 'a3bbfc2c-b7c5-4ca8-9bbe-563329ec4c56',
-            name: 'Finishes, Materials & Products Specification',
-            pdf_url: '',
-            preview_url:
-              '/templates/specification/schedule-specification/Finishes-Materials-And-Products-Specification.jpg',
-            sequence: 33,
-            updated_at: '2022-10-12T02:27:04.291Z',
-          },
-          {
-            created_at: '2022-10-12T02:27:04.291Z',
-            group: 5,
-            id: 'fe618a97-af93-410a-87ae-5b688682407c',
-            name: 'Finish Schedule by Room',
-            pdf_url: '',
-            preview_url:
-              '/templates/specification/schedule-specification/Finish-Schedule-By-Room.jpg',
-            sequence: 32,
-            updated_at: '2022-10-12T02:27:04.291Z',
-          },
-        ],
-      },
-    ],
-  },
-};
-const ProductSpecifyToPDF = () => {
+interface ProductSpecififyPDF {
+  projectId: string;
+}
+const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
   const [selectedTab, setSelectedTab] = useState<ProductSpecifiedTabKeys>(
     ProductSpecifiedTabKeys.issuingInformation,
   );
+  const [data, setData] = useState<DetailPDF>(DEFAULT_VALUE);
+
+  useEffect(() => {
+    if (projectId) {
+      getSpecifiedProductByPDF(projectId).then((res) => {
+        if (res) {
+          setData({
+            config: {
+              created_at: res.config.created_at,
+              created_by: res.config.created_by,
+              document_title: res.config.document_title,
+              has_cover: res.config.has_cover,
+              id: res.config.id,
+              issuing_date: res.config.issuing_date,
+              issuing_for_id: res.config.issuing_for_id,
+              location_id: res.config.location_id,
+              project_id: res.config.project_id,
+              revision: res.config.revision,
+              template_ids: res.config.template_ids,
+              updated_at: res.config.updated_at,
+              template_cover_ids: [],
+              template_standard_ids: [],
+            },
+            templates: res.templates,
+          });
+        }
+      });
+    }
+  }, []);
+
+  const onChangeData = (newData: DetailPDF) => {
+    setData((prevState) => ({
+      ...prevState,
+      ...newData,
+    }));
+  };
+
   return (
     <div className={styles.content}>
       <Row>
@@ -184,13 +76,13 @@ const ProductSpecifyToPDF = () => {
               style={{ padding: '16px 16px 0 16px' }}
             />
             <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.issuingInformation}>
-              <IssuingInformation />
+              <IssuingInformation data={data} onChangeData={onChangeData} />
             </CustomTabPane>
             <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.coverAndPreamble}>
-              <CoverAndPreamble coverAndPreamble={data.templates.cover} />
+              <CoverStandard data={data} onChangeData={onChangeData} type="cover" />
             </CustomTabPane>
             <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.standardSpecification}>
-              <StandardSpecification standardSpecification={data.templates.specification} />
+              <CoverStandard data={data} onChangeData={onChangeData} type="standard" />
             </CustomTabPane>
           </div>
         </Col>
@@ -199,7 +91,6 @@ const ProductSpecifyToPDF = () => {
             <div className={styles.pdf}>
               <img src={PageTemplate} />
             </div>
-
             <div className={styles.action}>
               <CustomButton size="small" properties="rounded">
                 Download
@@ -211,5 +102,4 @@ const ProductSpecifyToPDF = () => {
     </div>
   );
 };
-
 export default ProductSpecifyToPDF;

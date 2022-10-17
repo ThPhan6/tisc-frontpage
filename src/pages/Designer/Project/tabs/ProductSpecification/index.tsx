@@ -81,7 +81,7 @@ const ProductSpecification: FC = () => {
       </CustomTabPane>
 
       <CustomTabPane active={viewBy === 'pdf'}>
-        <ProductSpecifyToPDF />
+        <ProductSpecifyToPDF projectId={params.id} />
       </CustomTabPane>
     </div>
   );

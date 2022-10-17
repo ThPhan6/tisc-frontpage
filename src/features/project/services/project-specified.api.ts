@@ -1,3 +1,4 @@
+import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -14,6 +15,7 @@ import {
   SpecifiedProductByMaterial,
   SpecifiedProductBySpace,
 } from '@/features/project/types';
+import { DetailPDF } from '@/pages/Designer/Project/tabs/ProductSpecification/type';
 
 export async function getSpecifiedProductsByBrand(
   { projectId, ...params }: PaginationRequestParams,
@@ -89,5 +91,30 @@ export async function updateProductSpecifiedStatus(
       console.log('updateProductSpecifiedStatus error', error);
       message.error(getResponseMessage('update', 'specified status', 'failed', error));
       return false;
+    });
+}
+
+export async function getSpecifiedProductByPDF(id: string) {
+  return request<{ data: DetailPDF }>(`/api/pdf/project/config/${id}`, { method: 'POST' })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(getResponseMessage('get-one', 'product specified', 'failed', error));
+      return {} as DetailPDF;
+    });
+}
+
+export async function getIssuingFor() {
+  return request<{ data: { id: string; name: string }[] }>(
+    `/api/setting/common-type/${COMMON_TYPES.ISSUING_FOR}`,
+    { method: 'GET' },
+  )
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(getResponseMessage('get-list', 'issuing for', 'failed', error));
+      return [] as { id: string; name: string }[];
     });
 }
