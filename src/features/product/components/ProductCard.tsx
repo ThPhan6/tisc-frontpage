@@ -146,16 +146,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
       onClick: handleDeleteProduct,
     },
     {
-      tooltipText: 'Assign Product',
-      show: isDesignerUser && !hideAssign,
-      Icon: AssignIcon,
-      onClick: () => showAssignProductModal.setValue(true),
-    },
-    {
       tooltipText: 'Inquiry/Request',
       show: Boolean(showInquiryRequest && isDesignerUser),
       Icon: CommentIcon,
       onClick: () => showInquiryRequestModal.setValue(true),
+    },
+    {
+      tooltipText: 'Assign Product',
+      show: isDesignerUser && !hideAssign,
+      Icon: AssignIcon,
+      onClick: () => showAssignProductModal.setValue(true),
     },
     {
       tooltipText: 'Share via Email',

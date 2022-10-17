@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { Checkbox } from 'antd';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
@@ -23,6 +23,12 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
 }) => {
   const [inputValue, setInputValue] = useState('');
   const [randomId] = useState(Math.random().toString().replace(/[\D]+/g, ''));
+
+  useEffect(() => {
+    if (otherInput && clearOtherInput) {
+      setInputValue('');
+    }
+  }, [otherInput && clearOtherInput]);
 
   const onChangeValue = (checkedValues: CheckboxValueType[]) => {
     const haveOtherInput = checkedValues.some((checkbox) => checkbox === 'other');
@@ -63,10 +69,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     onChange?.(newData ?? []);
 
     console.log('clearOtherInput', clearOtherInput);
-
-    if (otherInput && clearOtherInput) {
-      setInputValue('');
-    }
   };
 
   const getActiveClass = (option: CheckboxValue) => {
