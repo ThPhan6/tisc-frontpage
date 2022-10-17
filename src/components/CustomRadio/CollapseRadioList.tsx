@@ -55,7 +55,7 @@ const CollapseRadioList: FC<CollapseRadioListProps> = ({
           onChange={onChange}
         />
       ) : (
-        <span className="ant-collapse-header-text">{noDataMessage}</span>
+        <span style={{ paddingLeft: 16 }}>{noDataMessage}</span>
       )}
     </CustomCollapse>
   );

@@ -186,35 +186,37 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
   };
 
   const handleSubmit = () => {
-    switch (selectedTab === TabKeys.inquiry) {
-      case generalInquirydata.inquiry_for_ids.length === 0:
-        message.error('Inquiry For is required');
-        return;
-      case !generalInquirydata.title:
-        message.error('Title is required');
-        return;
-      case !generalInquirydata.title:
-        message.error('Message is required');
-        return;
-      default:
-        break;
-    }
-
-    switch (selectedTab === TabKeys.request) {
-      case !projectRequestData.project_id:
-        message.error('Project is required');
-        return;
-      case projectRequestData.request_for_ids.length === 0:
-        message.error('Request For is required');
-        return;
-      case !projectRequestData.title:
-        message.error('Title is required');
-        return;
-      case !projectRequestData.message:
-        message.error('Message is required');
-        return;
-      default:
-        break;
+    if (selectedTab === TabKeys.inquiry) {
+      switch (true) {
+        case generalInquirydata.inquiry_for_ids.length === 0:
+          message.error('Inquiry For is required');
+          return;
+        case !generalInquirydata.title:
+          message.error('Title is required');
+          return;
+        case !generalInquirydata.title:
+          message.error('Message is required');
+          return;
+        default:
+          break;
+      }
+    } else {
+      switch (true) {
+        case !projectRequestData.project_id:
+          message.error('Project is required');
+          return;
+        case projectRequestData.request_for_ids.length === 0:
+          message.error('Request For is required');
+          return;
+        case !projectRequestData.title:
+          message.error('Title is required');
+          return;
+        case !projectRequestData.message:
+          message.error('Message is required');
+          return;
+        default:
+          break;
+      }
     }
 
     const submitForm =
@@ -254,10 +256,10 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
   };
 
   // render Inquiry For and Request For data
-  const renderFor = (option: CheckboxValue[]) => {
+  const renderFor = () => {
     const labelContent = selectedTab === TabKeys.inquiry ? 'Inquiry For' : 'Request For';
     const valueSelected = selectedTab === TabKeys.inquiry ? selectedInquiryFor : selectedRequestFor;
-
+    const option = selectedTab === TabKeys.inquiry ? inquiryForData : requestForData;
     return (
       <FormGroup label={labelContent} required layout="vertical" formClass={styles.formGroup}>
         <CollapseCheckboxList
@@ -333,17 +335,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
         onChange={(key) => setSelectedTab(key as TabKeys)}
       />
 
-      {/* GENERAL INQUIRY */}
-      <div>
-        {/* Inquiry For */}
-        {renderFor(inquiryForData)}
-        {renderTitle()}
-        {renderMessage()}
-      </div>
-
-      {/* PROJECT REQUEST */}
-      <div>
-        {/* Project Name */}
+      {selectedTab === TabKeys.request && (
         <CollapseRadioFormGroup
           label="Project Name"
           checked={projectRequestData.project_id}
@@ -360,13 +352,13 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
               getProjectName(String(itemSelected.value)),
             )
           }
+          noDataMessage="No project yet"
         />
+      )}
 
-        {/* Request For */}
-        {renderFor(requestForData)}
-        {renderTitle()}
-        {renderMessage()}
-      </div>
+      {renderFor()}
+      {renderTitle()}
+      {renderMessage()}
     </Popover>
   );
 };
