@@ -100,4 +100,11 @@ export const COMMON_TYPES = {
   PROJECT_UNIT: 9,
   TEAM_DEPARTMENT: 10,
   REQUEST_FOR: 11,
+  ACTION_TASK: 12,
+};
+
+export const ACTION_TASK_MODEL = {
+  notification: 'notification',
+  request: 'request',
+  inquiry: 'inquiry',
 };

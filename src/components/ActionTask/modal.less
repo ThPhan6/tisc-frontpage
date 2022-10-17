@@ -1,0 +1,22 @@
+.actionTask {
+  :global(.ant-modal-body) {
+    > div:first-child {
+      height: 100%;
+    }
+  }
+  :global(.ant-checkbox-group) {
+    position: relative;
+    height: 100%;
+    > div:last-child {
+      position: sticky;
+      bottom: -16px;
+      background: #fff;
+    }
+    label {
+      height: 40px;
+    }
+    :global(.ant-input) {
+      color: @primary-color-dark;
+    }
+  }
+}

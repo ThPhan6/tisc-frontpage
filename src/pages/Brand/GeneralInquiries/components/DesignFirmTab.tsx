@@ -10,33 +10,33 @@ export const DesignFirmTab: FC<GeneralInquiryDesignFirm> = ({
   name,
   official_website,
   inquirer,
-  role,
-  work_email,
-  work_phone,
+  position,
+  email,
+  phone,
   address,
 }) => {
   return (
     <>
       <TextForm boxShadow label="Name" formClass={styles.nameDesignFirm}>
-        {name}
+        {name || ''}
       </TextForm>
       <TextForm boxShadow label="Official Website">
-        {official_website}
+        {official_website || ''}
       </TextForm>
       <TextForm boxShadow label="Address">
-        {address}
+        {address || ''}
       </TextForm>
       <TextForm boxShadow label="Inquirer">
-        {inquirer}
+        {inquirer || ''}
       </TextForm>
       <TextForm boxShadow label="Position/Role">
-        {role}
+        {position || ''}
       </TextForm>
       <TextForm boxShadow label="Work Email">
-        {work_email}
+        {email || ''}
       </TextForm>
       <TextForm boxShadow label="Work Phone">
-        {work_phone}
+        {phone || ''}
       </TextForm>
     </>
   );
