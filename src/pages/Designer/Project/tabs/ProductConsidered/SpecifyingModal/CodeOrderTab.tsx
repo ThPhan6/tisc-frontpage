@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { Col, Row } from 'antd';
 
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import {
-  // getFinishScheduleList,
   getInstructionTypeList,
   getRequirementTypeList,
   getUnitTypeList,
@@ -45,14 +44,18 @@ const ORDER_METHODS: RadioValue[] = [
   },
 ];
 
-const CodeOrderTab = () => {
+export interface CodeOrderTabProps {
+  projectProductId: string;
+  roomIds: string[];
+}
+
+const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
   const scheduleModal = useBoolean(false);
 
   const [materialCodeOpts, setMaterialCodeOtps] = useState<CustomRadioValue[]>([]);
   const [unitTypeOtps, setUnitTypeOtps] = useState<CheckboxValue[]>([]);
   const [requirements, setRequirements] = useState<CheckboxValue[]>([]);
   const [instructions, setInstructions] = useState<CheckboxValue[]>([]);
-  // const [finishSchedules, setFinishSchedule] = useState<CheckboxValue[]>([]);
 
   const [selectedUnit, setSelectedUnit] = useState<RadioValue | null>(null);
 
@@ -95,15 +98,6 @@ const CodeOrderTab = () => {
         })),
       );
     });
-
-    // getFinishScheduleList().then((res) => {
-    //   setFinishSchedule(
-    //     res.map((el) => ({
-    //       label: el.name,
-    //       value: el.id,
-    //     })),
-    //   );
-    // });
   }, []);
 
   if (!specifiedDetail) {
@@ -120,12 +114,10 @@ const CodeOrderTab = () => {
     special_instructions = [],
     instruction_type_ids = [],
     requirement_type_ids = [],
-    // finish_schedules = [],
   } = specifiedDetail;
 
   const selectedInstructions = getSelectedOptions(instructions, instruction_type_ids);
   const selectedRequirements = getSelectedOptions(requirements, requirement_type_ids);
-  // const selectedFinishSchedules = getSelectedOptions(finishSchedules, finish_schedules);
 
   const unitType = unit_type_id
     ? unitTypeOtps.find((el) => el.value === unit_type_id) || selectedUnit
@@ -134,11 +126,6 @@ const CodeOrderTab = () => {
   const materialCode = material_code_id
     ? materialCodeOpts.find((el) => el.value === material_code_id)
     : undefined;
-
-  // const scheduleValues = finish_schedules
-  //   .filter((item, index) => finish_schedules.indexOf(item) === index)
-  //   ?.map((schId) => finishSchedules.find((el) => el.value === schId)?.label || schId)
-  //   .join(', ');
 
   const onChangeState = (newState: Partial<SpecifiedDetail>) => {
     store.dispatch(setPartialProductSpecifiedData(newState));
@@ -329,6 +316,15 @@ const CodeOrderTab = () => {
       <ScheduleModal
         visible={scheduleModal.value}
         setVisible={(visible) => (visible ? undefined : scheduleModal.setValue(false))}
+        materialCode={materialCode?.labelText}
+        projectProductId={projectProductId}
+        roomIds={roomIds}
+        description={description}
+        onChange={(e) => {
+          onChangeState({
+            finish_schedules: e,
+          });
+        }}
       />
     </div>
   );

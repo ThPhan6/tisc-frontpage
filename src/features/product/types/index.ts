@@ -6,6 +6,7 @@ import {
   SpecificationBodyRequest,
 } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
+import { FinishScheduleRequestBody } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
 import { ConversionSubValueProps, GeneralData } from '@/types';
 
 export interface ProductSummary {
@@ -73,7 +74,7 @@ export interface SpecifiedDetail {
   order_method: OrderMethod;
   requirement_type_ids: string[];
   instruction_type_ids: string[];
-  finish_schedules: string[];
+  finish_schedules: FinishScheduleRequestBody[];
   unit_type_id: string;
   unit_type?: string;
   special_instructions: string;
@@ -113,7 +114,17 @@ export interface ProductItem {
   distributor_location_id: string;
 }
 
-export type ProjectProductItem = ProductItem & { rooms: any };
+export interface RoomItem {
+  id: string;
+  room_id: string;
+  room_name: string;
+  room_size: number;
+  quantity: number;
+  sub_total: number;
+  products: ProductItem[];
+}
+
+export type ProjectProductItem = ProductItem & { rooms?: RoomItem[] };
 
 export interface ProductItemValue {
   id: string;

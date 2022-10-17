@@ -42,10 +42,14 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   projectId,
   reloadTable,
 }) => {
+  const [selectedTab, setSelectedTab] = useState<ProjectSpecifyTabValue>(
+    ProjectSpecifyTabKeys.specification,
+  );
+
+  const specifiedDetail = useAppSelector((state) => state.product.details.specifiedDetail);
   const referToDesignDocument = useAppSelector(
     (state) => state.product.details.referToDesignDocument,
   );
-  const specifiedDetail = useAppSelector((state) => state.product.details.specifiedDetail);
   const specification_attribute_groups = useAppSelector(
     (state) => state.product.details.specification_attribute_groups,
   );
@@ -54,14 +58,11 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     (state) => state.product.details.distributor_location_id,
   );
 
-  const [selectedTab, setSelectedTab] = useState<ProjectSpecifyTabValue>(
-    ProjectSpecifyTabKeys.specification,
-  );
-
   const { AssignProductToSpaceForm, isEntire, selectedRooms } = useAssignProductToSpaceForm(
     product.id,
     projectId,
   );
+  const selectedRoomIds = getSelectedRoomIds(selectedRooms);
 
   const onSubmit = () => {
     if (!specifiedDetail) {
@@ -96,7 +97,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
             attribute_groups: getSpecificationRequest(specification_attribute_groups),
           },
           entire_allocation: isEntire,
-          allocation: getSelectedRoomIds(selectedRooms),
+          allocation: selectedRoomIds,
           brand_location_id: brandLocationId,
           distributor_location_id: distributorLocationId,
           description: specifiedDetail.description,
@@ -177,7 +178,10 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.codeAndOrder}>
-        <CodeOrderTab />
+        <CodeOrderTab
+          projectProductId={product.specifiedDetail?.id ?? ''}
+          roomIds={selectedRoomIds}
+        />
       </CustomTabPane>
     </CustomModal>
   );

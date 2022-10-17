@@ -35,21 +35,29 @@ const ProjectUpdatePage: React.FC = () => {
     <div>
       <ProjectDetailHeader activeKey={selectedTab} onChangeTab={setSelectedTab} project={project} />
 
-      <CustomTabPane active={selectedTab === ProjectTabKeys.basicInformation} lazyLoad>
-        <GeneralInformation project={project} setProject={setProject} />
-      </CustomTabPane>
+      {selectedTab === ProjectTabKeys.basicInformation ? (
+        <CustomTabPane active={selectedTab === ProjectTabKeys.basicInformation} lazyLoad>
+          <GeneralInformation project={project} setProject={setProject} />
+        </CustomTabPane>
+      ) : null}
 
-      <CustomTabPane active={selectedTab === ProjectTabKeys.zoneAreaRoom} lazyLoad>
-        <SpaceManagement projectId={projectId} />
-      </CustomTabPane>
+      {selectedTab === ProjectTabKeys.zoneAreaRoom ? (
+        <CustomTabPane active={selectedTab === ProjectTabKeys.zoneAreaRoom} lazyLoad>
+          <SpaceManagement projectId={projectId} />
+        </CustomTabPane>
+      ) : null}
 
-      <CustomTabPane active={selectedTab === ProjectTabKeys.productConsidered} lazyLoad>
-        <ProductConsidered />
-      </CustomTabPane>
+      {selectedTab === ProjectTabKeys.productConsidered ? (
+        <CustomTabPane active={selectedTab === ProjectTabKeys.productConsidered} lazyLoad>
+          <ProductConsidered />
+        </CustomTabPane>
+      ) : null}
 
-      <CustomTabPane active={selectedTab === ProjectTabKeys.productSpecified} lazyLoad>
-        <ProductSpecification />
-      </CustomTabPane>
+      {selectedTab === ProjectTabKeys.productSpecified ? (
+        <CustomTabPane active={selectedTab === ProjectTabKeys.productSpecified} lazyLoad>
+          <ProductSpecification />
+        </CustomTabPane>
+      ) : null}
     </div>
   );
 };

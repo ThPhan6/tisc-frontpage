@@ -334,39 +334,45 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
       />
 
       {/* GENERAL INQUIRY */}
-      <div>
-        {/* Inquiry For */}
-        {renderFor(inquiryForData)}
-        {renderTitle()}
-        {renderMessage()}
-      </div>
+      {selectedTab === TabKeys.inquiry ? (
+        <div>
+          {/* Inquiry For */}
+          {renderFor(inquiryForData)}
+          {renderTitle()}
+          {renderMessage()}
+        </div>
+      ) : null}
 
       {/* PROJECT REQUEST */}
-      <div>
-        {/* Project Name */}
-        <CollapseRadioFormGroup
-          label="Project Name"
-          checked={projectRequestData.project_id}
-          defaultPlaceHolder="select from My Workspace"
-          placeholder={projectChosen?.name}
-          radioListClass={styles.projectNameInfo}
-          optionData={projectData.map((el) => ({
-            value: el.id,
-            label: <DualLabel firstTxt={el.code} secTxt={el.name} fontSize={14} fontWeight={300} />,
-          }))}
-          onChange={(itemSelected) =>
-            handleProjectName(
-              String(itemSelected.value),
-              getProjectName(String(itemSelected.value)),
-            )
-          }
-        />
+      {selectedTab === TabKeys.request ? (
+        <div>
+          {/* Project Name */}
+          <CollapseRadioFormGroup
+            label="Project Name"
+            checked={projectRequestData.project_id}
+            defaultPlaceHolder="select from My Workspace"
+            placeholder={projectChosen?.name}
+            radioListClass={styles.projectNameInfo}
+            optionData={projectData.map((el) => ({
+              value: el.id,
+              label: (
+                <DualLabel firstTxt={el.code} secTxt={el.name} fontSize={14} fontWeight={300} />
+              ),
+            }))}
+            onChange={(itemSelected) =>
+              handleProjectName(
+                String(itemSelected.value),
+                getProjectName(String(itemSelected.value)),
+              )
+            }
+          />
 
-        {/* Request For */}
-        {renderFor(requestForData)}
-        {renderTitle()}
-        {renderMessage()}
-      </div>
+          {/* Request For */}
+          {renderFor(requestForData)}
+          {renderTitle()}
+          {renderMessage()}
+        </div>
+      ) : null}
     </Popover>
   );
 };
