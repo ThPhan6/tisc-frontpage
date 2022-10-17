@@ -495,7 +495,7 @@ export default [
     path: PATH.brandProjectTracking,
     name: 'project_tracking',
     icon: 'project-tracking-icon.svg',
-    component: './Admin',
+    component: './Brand/ProjectTracking',
     access: 'brand_project_tracking',
   },
   {

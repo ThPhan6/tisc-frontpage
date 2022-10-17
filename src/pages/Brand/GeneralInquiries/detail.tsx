@@ -1,12 +1,14 @@
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { Col, Row } from 'antd';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
+import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 
 import { getOneGeneralInquiry } from './services';
 import { pushTo } from '@/helper/history';
+import { useGetParamId } from '@/helper/hook';
 
 import { GeneralInquiryResponse } from './types';
 
@@ -17,6 +19,7 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
 import styles from './detail.less';
+import indexStyles from './index.less';
 
 const LIST_TAB = [
   { tab: 'DESIGN FIRM', key: 'design-firm' },
@@ -31,9 +34,9 @@ const DEFAULT_STATE: GeneralInquiryResponse = {
     name: '',
     official_website: '',
     inquirer: '',
-    role: '',
-    work_email: '',
-    work_phone: '',
+    position: '',
+    email: '',
+    phone: '',
     address: '',
   },
   inquiry_message: {
@@ -47,26 +50,32 @@ const DEFAULT_STATE: GeneralInquiryResponse = {
   },
 };
 
-interface GeneralInquiriesDetailProps {
-  designFirmId: string;
-}
-
-const GeneralInquiryDetail: FC<GeneralInquiriesDetailProps> = ({ designFirmId }) => {
+const GeneralInquiryDetail = () => {
+  const designFirmId = useGetParamId();
+  const [legendModalVisible, setLegendModalVisible] = useState(false);
   const [activeTab, setActiveTab] = useState<GeneralInquiriesTab>('design-firm');
 
   const [data, setData] = useState<GeneralInquiryResponse>(DEFAULT_STATE);
 
   useEffect(() => {
-    getOneGeneralInquiry(designFirmId ?? '').then((res) => {
-      if (res) {
-        setData(res);
-      }
-    });
+    if (designFirmId) {
+      getOneGeneralInquiry(designFirmId).then((res) => {
+        if (res) {
+          setData(res);
+        }
+      });
+    }
   }, []);
 
   return (
-    <GeneralInquiryContainer>
-      <TableHeader title="GENERAL INQUIRES" customClass={styles.tableHeader} />
+    <GeneralInquiryContainer visible={legendModalVisible} setVisible={setLegendModalVisible}>
+      <TableHeader
+        title="GENERAL INQUIRES"
+        customClass={`${styles.tableHeader} ${indexStyles.customHeader}`}
+        rightAction={
+          <InfoIcon className={indexStyles.iconInfor} onClick={() => setLegendModalVisible(true)} />
+        }
+      />
       <Row>
         <Col span={12} className={styles.container}>
           <TableHeader
@@ -95,9 +104,9 @@ const GeneralInquiryDetail: FC<GeneralInquiriesDetailProps> = ({ designFirmId })
                 name={data.design_firm.name}
                 official_website={data.design_firm.official_website}
                 inquirer={data.design_firm.inquirer}
-                role={data.design_firm.role}
-                work_email={data.design_firm.work_email}
-                work_phone={data.design_firm.work_phone}
+                position={data.design_firm.position}
+                email={data.design_firm.email}
+                phone={data.design_firm.phone}
                 address={data.design_firm.address}
               />
             </CustomTabPane>
@@ -111,6 +120,7 @@ const GeneralInquiryDetail: FC<GeneralInquiriesDetailProps> = ({ designFirmId })
                 product_collection={data.inquiry_message.product_collection}
                 product_description={data.inquiry_message.product_description}
                 product_image={data.inquiry_message.product_image}
+                modelId={designFirmId}
               />
             </CustomTabPane>
           </div>

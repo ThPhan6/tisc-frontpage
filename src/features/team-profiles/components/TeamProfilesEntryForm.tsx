@@ -28,7 +28,7 @@ import { getDepartmentList } from '@/services';
 
 import { TeamProfileDetailProps, TeamProfileRequestBody } from '../types';
 import { useAppSelector } from '@/reducers';
-import { DepartmentData } from '@/types';
+import { GeneralData } from '@/types';
 
 import { CustomRadio } from '@/components/CustomRadio';
 import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
@@ -91,7 +91,7 @@ const TeamProfilesEntryForm = () => {
   );
 
   /// for department
-  const [departments, setDepartments] = useState<DepartmentData[]>([]);
+  const [departments, setDepartments] = useState<GeneralData[]>([]);
   const [openModal, setOpenModal] = useState<'' | 'workLocationModal' | 'accessModal'>('');
 
   const [workLocation, setWorkLocation] = useState({

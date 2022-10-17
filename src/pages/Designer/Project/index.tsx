@@ -193,7 +193,9 @@ const ProjectList: React.FC = () => {
       align: 'center',
       render: (_value, record) => {
         if (isEmpty(record.assign_teams)) {
-          return <UserAddIcon onClick={showAssignTeams(record)} className="icon-align" />;
+          return (
+            <UserAddIcon onClick={showAssignTeams(record)} className="icon-align cursor-pointer" />
+          );
         }
         return (
           <div onClick={showAssignTeams(record)} className={styles.asignTeamMember}>

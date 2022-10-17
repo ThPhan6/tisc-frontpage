@@ -27,7 +27,8 @@ const AssignTeam: FC<AssignTeamProps> = ({
 }) => {
   const [selected, setSelected] = useState<CheckboxValue[]>([]);
 
-  const memberAssignedTeam: [] = memberAssigned?.assign_team ?? memberAssigned?.assign_teams;
+  const memberAssignedTeam: [] =
+    memberAssigned?.assign_team ?? memberAssigned?.assign_teams ?? memberAssigned?.assignedTeams;
 
   useEffect(() => {
     setSelected(

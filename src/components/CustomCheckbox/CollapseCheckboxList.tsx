@@ -1,7 +1,5 @@
 import type { FC } from 'react';
 
-import { CollapsibleType } from 'antd/lib/collapse/CollapsePanel';
-
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 
 import CustomCollapse from '@/components/Collapse';
@@ -19,7 +17,6 @@ interface CollapseCheckboxListProps {
   containerClass?: string;
   checkboxItemHeight?: string;
   inputPlaceholder?: string;
-  collapsible?: CollapsibleType;
 }
 
 const CollapseCheckboxList: FC<CollapseCheckboxListProps> = ({
@@ -31,7 +28,6 @@ const CollapseCheckboxList: FC<CollapseCheckboxListProps> = ({
   inputPlaceholder,
   containerClass = '',
   checkboxItemHeight = '36px',
-  collapsible,
 }) => {
   return (
     <CustomCollapse
@@ -40,7 +36,6 @@ const CollapseCheckboxList: FC<CollapseCheckboxListProps> = ({
           {placeholder}
         </BodyText>
       }
-      collapsible={collapsible}
       className={`${styles.functionTypeDropdown} ${containerClass}`}>
       <CustomCheckbox
         options={options}

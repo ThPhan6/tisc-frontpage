@@ -77,9 +77,6 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
   // to show on label
   const [projectChosen, setProjectChosen] = useState<ProjectItem>();
 
-  // console.log('generalInquirydata', generalInquirydata);
-  // console.log('projectRequestData', projectRequestData);
-
   //
   const [inquiryForData, setInquiryForData] = useState<CheckboxValue[]>([]);
   const [selectedInquiryFor, setSelectedInquiryFor] = useState<CheckboxValue[]>([]); // for show on placeholder
@@ -337,45 +334,39 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
       />
 
       {/* GENERAL INQUIRY */}
-      {selectedTab === TabKeys.inquiry ? (
-        <div>
-          {/* Inquiry For */}
-          {renderFor(inquiryForData)}
-          {renderTitle()}
-          {renderMessage()}
-        </div>
-      ) : null}
+      <div>
+        {/* Inquiry For */}
+        {renderFor(inquiryForData)}
+        {renderTitle()}
+        {renderMessage()}
+      </div>
 
       {/* PROJECT REQUEST */}
-      {selectedTab === TabKeys.request ? (
-        <div>
-          {/* Project Name */}
-          <CollapseRadioFormGroup
-            label="Project Name"
-            checked={projectRequestData.project_id}
-            defaultPlaceHolder="select from My Workspace"
-            placeholder={projectChosen?.name}
-            radioListClass={styles.projectNameInfo}
-            optionData={projectData.map((el) => ({
-              value: el.id,
-              label: (
-                <DualLabel firstTxt={el.code} secTxt={el.name} fontSize={14} fontWeight={300} />
-              ),
-            }))}
-            onChange={(itemSelected) =>
-              handleProjectName(
-                String(itemSelected.value),
-                getProjectName(String(itemSelected.value)),
-              )
-            }
-          />
+      <div>
+        {/* Project Name */}
+        <CollapseRadioFormGroup
+          label="Project Name"
+          checked={projectRequestData.project_id}
+          defaultPlaceHolder="select from My Workspace"
+          placeholder={projectChosen?.name}
+          radioListClass={styles.projectNameInfo}
+          optionData={projectData.map((el) => ({
+            value: el.id,
+            label: <DualLabel firstTxt={el.code} secTxt={el.name} fontSize={14} fontWeight={300} />,
+          }))}
+          onChange={(itemSelected) =>
+            handleProjectName(
+              String(itemSelected.value),
+              getProjectName(String(itemSelected.value)),
+            )
+          }
+        />
 
-          {/* Request For */}
-          {renderFor(requestForData)}
-          {renderTitle()}
-          {renderMessage()}
-        </div>
-      ) : null}
+        {/* Request For */}
+        {renderFor(requestForData)}
+        {renderTitle()}
+        {renderMessage()}
+      </div>
     </Popover>
   );
 };
