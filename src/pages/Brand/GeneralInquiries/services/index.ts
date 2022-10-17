@@ -1,12 +1,15 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
 import {
+  ActionTaskModelParams,
+  ActionTaskProps,
+  ActionTaskRequestBody,
   GeneralInquiryListProps,
   GeneralInquiryResponse,
   GeneralInquirySummaryData,
-  InquiryMessageTask,
 } from '../types';
 import {
   DataTableResponse,
@@ -48,33 +51,6 @@ export async function getGeneralInquiryPagination(
     });
 }
 
-interface ActionTaskPaginationResponse {
-  data: {
-    generalInquiries: InquiryMessageTask[];
-    pagination: PaginationResponse;
-  };
-}
-
-export async function getActionTaskPagination(
-  params: PaginationRequestParams,
-  callback: (data: DataTableResponse) => void,
-) {
-  request(`/api/inquiry-message/action-task`, {
-    method: 'GET',
-    params,
-  })
-    .then((response: ActionTaskPaginationResponse) => {
-      callback({
-        data: response.data,
-      });
-    })
-    .catch((error) => {
-      message.error(
-        error?.data?.message ?? MESSAGE_NOTIFICATION.GET_INQUIRY_MESSAGE_ACTION_TASK_ERROR,
-      );
-    });
-}
-
 export async function getGeneralInquirySummary() {
   return request<GeneralInquirySummaryData>(`/api/general-inquiry/summary`, { method: 'GET' })
     .then((res) => res)
@@ -97,15 +73,46 @@ export async function getOneGeneralInquiry(designFirmId: string) {
     });
 }
 
-export async function getInquiryMessageActionTask() {
-  return request<GeneralData[]>(`/api/general-inquiry/action-task`, {
+export async function getActionTaskList(params: ActionTaskModelParams) {
+  return request<{ data: ActionTaskProps[] }>(`/api/action-task`, {
+    method: 'GET',
+    params,
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ACTION_TASK_LIST_ERROR);
+      return [] as ActionTaskProps[];
+    });
+}
+
+export async function createActionTask(data: ActionTaskRequestBody) {
+  return request<boolean>(`/api/action-task`, { method: 'POST', data })
+    .then(() => true)
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_ACTION_TASK_STATUS_ERROR);
+      return false;
+    });
+}
+
+export async function updateActionTaskStatus(actionTaskId: string, status: number) {
+  return request<boolean>(`/api/action-task/${actionTaskId}`, {
+    method: 'PATCH',
+    data: { status },
+  })
+    .then(() => true)
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_ACTION_TASK_STATUS_ERROR);
+      return false;
+    });
+}
+
+export async function getActionTask() {
+  return request<{ data: GeneralData[] }>(`/api/setting/common-type/${COMMON_TYPES.ACTION_TASK}`, {
     method: 'GET',
   })
-    .then((res) => res)
+    .then((res) => res.data)
     .catch((error) => {
-      message.error(
-        error?.data?.message ?? MESSAGE_NOTIFICATION.GET_GENERAL_INQUIRY_INQUIRY_MESSAGE_ERROR,
-      );
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ACTION_TASK_DATA_ERROR);
       return [] as GeneralData[];
     });
 }

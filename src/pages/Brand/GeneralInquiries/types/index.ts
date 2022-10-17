@@ -1,12 +1,14 @@
 export interface GeneralInquiryListProps {
-  date: string;
+  id: string;
+  created_at: string;
+  created_by: string;
   design_firm: string;
   firm_location: string;
   inquier: string;
   inquiry_for: string;
   title: string;
   status: number;
-  read: boolean;
+  read_by: string[];
 }
 
 export interface GeneralInquirySummaryData {
@@ -19,9 +21,9 @@ export interface GeneralInquiryDesignFirm {
   name: string;
   official_website: string;
   inquirer: string;
-  role: string;
-  work_email: string;
-  work_phone: string;
+  position: string;
+  email: string;
+  phone: string;
   address: string;
 }
 
@@ -47,4 +49,25 @@ export interface InquiryMessageTask {
   actions: string;
   teams: string;
   status: string;
+}
+
+export interface ActionTaskProps {
+  id: string;
+  created_at: string;
+  created_by: string;
+  model_id: string;
+  model_name: string;
+  lastname: string;
+  firstname: string;
+  action_name: string;
+  status: number;
+}
+
+export interface ActionTaskModelParams {
+  model_id: string;
+  model_name: 'notification' | 'request' | 'inquiry';
+}
+
+export interface ActionTaskRequestBody extends ActionTaskModelParams {
+  common_type_ids: string[];
 }
