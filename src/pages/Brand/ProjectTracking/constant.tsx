@@ -1,3 +1,7 @@
+import { ReactComponent as PendingIcon } from '@/assets/icons/action-pending-icon.svg';
+import { ReactComponent as RespondedIcon } from '@/assets/icons/action-responded-icon.svg';
+import { ReactComponent as KeepInViewIcon } from '@/assets/icons/eye-icon.svg';
+import { ReactComponent as FollowedIcon } from '@/assets/icons/followed-icon.svg';
 import { ReactComponent as HighPriorityIcon } from '@/assets/icons/high-priority-icon.svg';
 import { ReactComponent as LowPriorityIcon } from '@/assets/icons/low-priority-icon.svg';
 import { ReactComponent as MidPriorityIcon } from '@/assets/icons/mid-priority-icon.svg';
@@ -90,3 +94,33 @@ export const ProjectPriorityFilters: DropDownFilterValueProps[] = [
   GlobalFilter,
   ...ProjectPriority,
 ];
+
+export enum ProjectRequestStatus {
+  'Pending',
+  'Responded',
+}
+
+export const RequestsIcons = {
+  [ProjectRequestStatus.Pending]: <PendingIcon />,
+  [ProjectRequestStatus.Responded]: <RespondedIcon />,
+};
+
+export enum ProjectTrackingNotificationType {
+  'Deleted',
+  'Considered',
+  'Re-Considered',
+  'Unlisted',
+  'Specified',
+  'Re-Specified',
+  'Cancelled',
+}
+
+export enum ProjectTrackingNotificationStatus {
+  'Keep-in-view',
+  'Followed-up',
+}
+
+export const NotificationsIcons = {
+  [ProjectTrackingNotificationStatus['Keep-in-view']]: <KeepInViewIcon />,
+  [ProjectTrackingNotificationStatus['Followed-up']]: <FollowedIcon />,
+};
