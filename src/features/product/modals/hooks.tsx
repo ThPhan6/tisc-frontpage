@@ -147,7 +147,7 @@ export const useAssignProductToSpaceForm = (productId: string, projectId: string
     noPaddingLeft,
   }) => (
     <>
-      {projectId && (
+      {projectId ? (
         <CustomRadio
           options={[
             {
@@ -161,7 +161,7 @@ export const useAssignProductToSpaceForm = (productId: string, projectId: string
           containerStyle={{ boxShadow: 'inset 0 -.7px 0 #000' }}
           noPaddingLeft={noPaddingLeft}
         />
-      )}
+      ) : null}
 
       {projectId && zones.length ? zones.map((el, index) => renderCollapseZone(el, index)) : null}
     </>
