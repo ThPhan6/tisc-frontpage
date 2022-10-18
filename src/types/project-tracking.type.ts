@@ -35,6 +35,7 @@ export interface LocationDetail {
   country_name: string;
   general_email: string;
   general_phone: string;
+  phone_code: string;
   teamMembers: {
     firstname: string;
     lastname: string;

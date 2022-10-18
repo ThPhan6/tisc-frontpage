@@ -87,7 +87,7 @@ export const DesignFirm: FC<DesignFirmProp> = ({ designFirm }) => {
                 codeReadOnly
                 phoneNumberReadOnly
                 value={{
-                  zoneCode: '00',
+                  zoneCode: location.phone_code,
                   phoneNumber: location.general_phone,
                 }}
                 containerClass={styles.customPhoneCode}
