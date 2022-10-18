@@ -26,7 +26,7 @@ import {
   setPartialProductSpecifiedData,
   setReferToDesignDocument,
 } from '@/features/product/reducers';
-import { ProductItem } from '@/features/product/types';
+import { ProductItem, ProjectProductItem } from '@/features/product/types';
 import {
   ConsideredProduct,
   ConsideredProjectRoom,
@@ -97,7 +97,7 @@ const ProductConsidered: React.FC = () => {
     );
   };
 
-  const renderActionCell = (_value: any, record: ProductItem & { rooms?: any }) => {
+  const renderActionCell = (_value: any, record: ProjectProductItem) => {
     if (record.rooms) {
       return null;
     }

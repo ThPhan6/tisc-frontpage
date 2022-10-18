@@ -10,7 +10,7 @@ import { ActionTaskModelParams, ActionTaskProps } from '@/pages/Brand/GeneralInq
 import CustomPlusButton from '../Table/components/CustomPlusButton';
 import { CustomDropDown } from '@/features/product/components';
 
-import { BodyText, RobotoBodyText } from '../Typography';
+import { MainTitle, RobotoBodyText } from '../Typography';
 import { ActionTaskModal } from './modal';
 import styles from './table.less';
 import moment from 'moment';
@@ -92,9 +92,9 @@ export const ActionTaskTable: FC<ActionTaskModelParams> = ({ model_id, model_nam
     <div>
       <div className={styles.actionTask}>
         <div className={styles.actionTask_content} onClick={() => setModalVisible(true)}>
-          <BodyText level={3} customClass={styles.actionTask_text}>
+          <MainTitle level={4} customClass={styles.actionTask_text}>
             Actions/Tasks
-          </BodyText>
+          </MainTitle>
           <CustomPlusButton size={18} />
         </div>
       </div>
@@ -102,16 +102,16 @@ export const ActionTaskTable: FC<ActionTaskModelParams> = ({ model_id, model_nam
         <thead>
           <tr className={styles.title}>
             <th>
-              <RobotoBodyText level={5}>Date</RobotoBodyText>
+              <RobotoBodyText level={6}>Date</RobotoBodyText>
             </th>
             <th>
-              <RobotoBodyText level={5}>Actions</RobotoBodyText>
+              <RobotoBodyText level={6}>Actions</RobotoBodyText>
             </th>
             <th>
-              <RobotoBodyText level={5}>Teams</RobotoBodyText>
+              <RobotoBodyText level={6}>Teams</RobotoBodyText>
             </th>
             <th>
-              <RobotoBodyText level={5}>Status</RobotoBodyText>
+              <RobotoBodyText level={6}>Status</RobotoBodyText>
             </th>
           </tr>
         </thead>

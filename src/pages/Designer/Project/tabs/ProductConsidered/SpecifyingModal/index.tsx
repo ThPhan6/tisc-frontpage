@@ -11,6 +11,7 @@ import { getSpecificationRequest } from '@/features/product/components/ProductAt
 import { getSelectedRoomIds, useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
 import { updateProductSpecifying } from '@/features/project/services';
 
+import { FinishScheduleRequestBody } from './types';
 import { resetProductDetailState } from '@/features/product/reducers';
 import { ProductItem } from '@/features/product/types';
 import store, { useAppSelector } from '@/reducers';
@@ -42,10 +43,14 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   projectId,
   reloadTable,
 }) => {
+  const [selectedTab, setSelectedTab] = useState<ProjectSpecifyTabValue>(
+    ProjectSpecifyTabKeys.specification,
+  );
+
+  const specifiedDetail = useAppSelector((state) => state.product.details.specifiedDetail);
   const referToDesignDocument = useAppSelector(
     (state) => state.product.details.referToDesignDocument,
   );
-  const specifiedDetail = useAppSelector((state) => state.product.details.specifiedDetail);
   const specification_attribute_groups = useAppSelector(
     (state) => state.product.details.specification_attribute_groups,
   );
@@ -54,14 +59,35 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     (state) => state.product.details.distributor_location_id,
   );
 
-  const [selectedTab, setSelectedTab] = useState<ProjectSpecifyTabValue>(
-    ProjectSpecifyTabKeys.specification,
+  const finishSchedulesData = useAppSelector(
+    (state) => state.product.details.specifiedDetail?.finish_schedules,
   );
+  const finishSchedulesRequestData = finishSchedulesData?.map((el) => ({
+    floor: el.floor,
+    base: {
+      ceiling: el.base.ceiling,
+      floor: el.base.floor,
+    },
+    front_wall: el.front_wall,
+    left_wall: el.left_wall,
+    back_wall: el.back_wall,
+    right_wall: el.right_wall,
+    ceiling: el.ceiling,
+    door: {
+      frame: el.door.frame,
+      panel: el.door.panel,
+    },
+    cabinet: {
+      carcass: el.cabinet.carcass,
+      door: el.cabinet.door,
+    },
+  }));
 
   const { AssignProductToSpaceForm, isEntire, selectedRooms } = useAssignProductToSpaceForm(
     product.id,
     projectId,
   );
+  const selectedRoomIds = getSelectedRoomIds(selectedRooms);
 
   const onSubmit = () => {
     if (!specifiedDetail) {
@@ -96,12 +122,12 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
             attribute_groups: getSpecificationRequest(specification_attribute_groups),
           },
           entire_allocation: isEntire,
-          allocation: getSelectedRoomIds(selectedRooms),
+          allocation: selectedRoomIds,
           brand_location_id: brandLocationId,
           distributor_location_id: distributorLocationId,
           description: specifiedDetail.description,
-          finish_schedules: specifiedDetail.finish_schedules,
           instruction_type_ids: specifiedDetail.instruction_type_ids,
+          finish_schedules: finishSchedulesRequestData as FinishScheduleRequestBody[],
           material_code_id: specifiedDetail.material_code_id,
           order_method: specifiedDetail.order_method,
           quantity: specifiedDetail.quantity,
@@ -177,7 +203,10 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.codeAndOrder}>
-        <CodeOrderTab />
+        <CodeOrderTab
+          projectProductId={product.specifiedDetail?.id ?? ''}
+          roomIds={selectedRoomIds}
+        />
       </CustomTabPane>
     </CustomModal>
   );

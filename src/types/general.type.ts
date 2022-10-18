@@ -6,3 +6,8 @@ export interface KeyValueData {
   key: string;
   value: string | number;
 }
+
+export enum RespondedOrPendingStatus {
+  'Pending',
+  'Responded',
+}

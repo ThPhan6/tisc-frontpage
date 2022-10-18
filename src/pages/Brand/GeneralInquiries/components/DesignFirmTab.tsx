@@ -6,15 +6,8 @@ import TextForm from '@/components/Form/TextForm';
 
 import styles from '../detail.less';
 
-export const DesignFirmTab: FC<GeneralInquiryDesignFirm> = ({
-  name,
-  official_website,
-  inquirer,
-  position,
-  email,
-  phone,
-  address,
-}) => {
+export const DesignFirmTab: FC<{ data: GeneralInquiryDesignFirm }> = ({ data }) => {
+  const { name, official_website, address, general_email, general_phone, phone_code } = data;
   return (
     <>
       <TextForm boxShadow label="Name" formClass={styles.nameDesignFirm}>
@@ -26,17 +19,11 @@ export const DesignFirmTab: FC<GeneralInquiryDesignFirm> = ({
       <TextForm boxShadow label="Address">
         {address || ''}
       </TextForm>
-      <TextForm boxShadow label="Inquirer">
-        {inquirer || ''}
+      <TextForm boxShadow label="General Phone">
+        {phone_code} {general_phone}
       </TextForm>
-      <TextForm boxShadow label="Position/Role">
-        {position || ''}
-      </TextForm>
-      <TextForm boxShadow label="Work Email">
-        {email || ''}
-      </TextForm>
-      <TextForm boxShadow label="Work Phone">
-        {phone || ''}
+      <TextForm boxShadow label="General Email">
+        {general_email}
       </TextForm>
     </>
   );
