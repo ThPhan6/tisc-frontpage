@@ -16,7 +16,7 @@ import { BodyText } from '@/components/Typography';
 import styles from './ProjectCard.less';
 
 interface ProjectCardProps {
-  data: ProjecTrackingList[];
+  data?: ProjecTrackingList[];
 }
 export const ProjectCard: FC<ProjectCardProps> = ({ data }) => {
   const handleClickItem = (id: string) => {
@@ -24,7 +24,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({ data }) => {
   };
   return (
     <div className={styles.productCardContainer}>
-      {data.map((brand) => (
+      {data?.map((brand) => (
         <div
           key={brand.id}
           className={styles.productCardItemWrapper}

@@ -29,20 +29,33 @@ export interface ProductDetail {
   collection_name: string;
 }
 
-export interface ProjectDetail {
-  projects: Project;
-  projectRequests: Requests[];
-  notifications: Notifications[];
-  designFirm: DesignFirmDetail;
+export interface LocationDetail {
+  address: string;
+  city_name: string;
+  country_name: string;
+  general_email: string;
+  general_phone: string;
+  teamMembers: {
+    firstname: string;
+    lastname: string;
+    position: string;
+  }[];
 }
 
 export interface DesignFirmDetail {
   name: string;
   official_website: string;
+  locations: LocationDetail[];
+}
+
+export interface DesignerInfo {
+  location_id: string;
+  firstname: string;
+  lastname: string;
+  position: string;
+  email: string;
   phone: string;
   phone_code: string;
-  email: string;
-  address: string;
 }
 
 export interface Project {
@@ -55,45 +68,34 @@ export interface Project {
   design_due: string;
   construction_start: string;
 }
-
-export interface Requests {
-  created_at: string;
-  title: string;
-  message: string;
-  status: number;
-  created_by: string;
-  product: ProductDetail;
-  newRequest: boolean;
-  requestFor: string;
+export interface ProjectTrackingDetail {
+  projects: Project;
+  projectRequests: {
+    id: string;
+    created_at: string;
+    title: string;
+    message: string;
+    status: number;
+    created_by: string;
+    product: ProductDetail;
+    newRequest: boolean;
+    requestFor: string;
+    designer: DesignerInfo;
+  }[];
+  notifications: {
+    created_at: string;
+    type: number;
+    status: number;
+    created_by: string;
+    product: ProductDetail;
+    newNotification: boolean;
+    designer: DesignerInfo;
+    id: string;
+  }[];
+  designFirm: DesignFirmDetail;
 }
 
-export interface Notifications {
-  created_at: string;
-  type: number;
-  status: number;
-  created_by: string;
-  product: ProductDetail;
-  newNotification: boolean;
-}
-
-export const DEFAULT_REQUESTS: Requests = {
-  created_at: '',
-  title: '',
-  message: '',
-  status: 0,
-  created_by: '',
-  product: {
-    id: '',
-    name: '',
-    description: '',
-    images: [],
-    collection_name: '',
-  },
-  newRequest: true,
-  requestFor: '',
-};
-
-export const DEFAULT_PROJECT_DETAIL: ProjectDetail = {
+export const DEFAULT_PROJECT_TRACKING_DETAIL: ProjectTrackingDetail = {
   projects: {
     created_at: '',
     name: '',
@@ -104,56 +106,27 @@ export const DEFAULT_PROJECT_DETAIL: ProjectDetail = {
     design_due: '',
     construction_start: '',
   },
-  projectRequests: [DEFAULT_REQUESTS],
-  notifications: [
-    {
-      created_at: '',
-      type: 0,
-      status: 0,
-      created_by: '',
-      product: {
-        id: '',
-        name: '',
-        description: '',
-        images: [],
-        collection_name: '',
-      },
-      newNotification: true,
-    },
-  ],
+  projectRequests: [],
+  notifications: [],
   designFirm: {
     name: '',
     official_website: '',
-    phone: '',
-    phone_code: '',
-    email: '',
-    address: '',
+    locations: [],
   },
 };
 
-export const DEFAULT_PROJECT_LIST: ProjecTrackingList[] = [
-  {
-    id: '',
-    created_at: '',
-    projectName: '',
-    projectLocation: '',
-    projectType: '',
-    designFirm: '',
-    projectStatus: '',
-    priority: 0,
-    priorityName: '',
-    assignedTeams: [
-      {
-        id: '',
-        firstname: '',
-        lastname: '',
-        avatar: '',
-      },
-    ],
-    requestCount: 0,
-    newRequest: false,
-    notificationCount: 0,
-    newNotification: false,
-    newTracking: false,
-  },
-];
+export interface RequestAndNotificationDetail {
+  read: boolean;
+  product: ProductDetail;
+  designer: DesignerInfo;
+  id: string;
+  title: {
+    created_at: string;
+    name: string | number;
+  };
+  status: number;
+  request?: {
+    title: string;
+    message: string;
+  };
+}

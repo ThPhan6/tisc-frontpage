@@ -1,5 +1,7 @@
 .content {
+  height: calc(100vh - 312px);
   padding: 0 16px 16px 16px;
+  overflow: auto;
   .customLabel {
     p {
       color: @mono-color-dark;
@@ -27,6 +29,8 @@
       width: 5%;
       text-align: right;
       svg {
+        width: 18px;
+        height: 18px;
         margin-top: 8px;
       }
     }
@@ -46,6 +50,7 @@
     }
   }
   .brandProduct {
+    margin-bottom: 8px;
     padding: 0;
   }
   .customTextArea {
@@ -126,15 +131,33 @@
       }
     }
   }
-  .customHeadleCollapse {
-    :global(.ant-collapse > .ant-collapse-item.ant-collapse-no-arrow > .ant-collapse-header) {
-      padding-left: 0;
-    }
-    :global(.ant-collapse-content > .ant-collapse-content-box) {
-      padding: 0;
-    }
-    :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
-      padding: 0;
-    }
+  :global(.ant-collapse > .ant-collapse-item.ant-collapse-no-arrow > .ant-collapse-header) {
+    padding-left: 0;
+  }
+  :global(.ant-collapse-content > .ant-collapse-content-box) {
+    padding: 0;
+  }
+  :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
+    padding: 0;
+  }
+  :global(.ant-collapse-ghost
+      > .ant-collapse-item
+      > .ant-collapse-content
+      > .ant-collapse-content-box) {
+    padding-top: 0;
+  }
+  .bottomMedium {
+    border-radius: 0;
+    box-shadow: @border-bottom-light;
+  }
+  .bottomBlack {
+    border-radius: 0;
+    box-shadow: @border-bottom;
+  }
+  .font_weight_500 {
+    font-weight: 500;
+  }
+  .font_weight_300 {
+    font-weight: 300;
   }
 }

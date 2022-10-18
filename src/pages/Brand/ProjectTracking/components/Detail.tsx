@@ -6,40 +6,35 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-ico
 
 import { getOneProjectTracking } from '@/services/project-tracking.api';
 
-import { DEFAULT_PROJECT_DETAIL, ProjectDetail } from '@/types/project-tracking.type';
+import {
+  DEFAULT_PROJECT_TRACKING_DETAIL,
+  ProjectTrackingDetail,
+} from '@/types/project-tracking.type';
 
 import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
 import { BrandProject } from './BrandProject';
-import { BrandRequests } from './BrandRequests';
 import { DesignFirm } from './DesignFirm';
+import { RequestsAndNotifications } from './RequestsAndNotifications';
 
 const LIST_TAB = [
   { tab: 'DESIGN FIRM', key: 'design_firm' },
   { tab: 'PROJECT', key: 'project' },
-  { tab: 'REQUESTS', key: 'requests' },
+  { tab: 'REQUESTS', key: 'request' },
   { tab: 'NOTIFICATIONS', key: 'notification' },
 ];
 
-type Tab = 'design_firm' | 'project' | 'requests' | 'notification';
+type Tab = 'design_firm' | 'project' | 'request' | 'notification';
 
-interface ProjectTrackingDetail {
+interface ProjectTrackingDetailProps {
   projectId: string;
-  activeOnlyDesignFirm?: boolean;
-  height?: string;
+  height: string;
 }
 
-export const Detail: FC<ProjectTrackingDetail> = ({ projectId, activeOnlyDesignFirm, height }) => {
+export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId, height }) => {
   const [activeKey, setActiveKey] = useState<Tab>('design_firm');
-  const [data, setData] = useState<ProjectDetail>(DEFAULT_PROJECT_DETAIL);
-  const listTab = activeOnlyDesignFirm
-    ? LIST_TAB.map((el) => ({
-        ...el,
-        disable: el.key === 'design_firm' ? undefined : true,
-      }))
-    : LIST_TAB;
-
+  const [data, setData] = useState<ProjectTrackingDetail>(DEFAULT_PROJECT_TRACKING_DETAIL);
   useEffect(() => {
     if (projectId) {
       getOneProjectTracking(projectId).then((res) => {
@@ -59,7 +54,7 @@ export const Detail: FC<ProjectTrackingDetail> = ({ projectId, activeOnlyDesignF
             rightAction={<CloseIcon onClick={() => history.back()} style={{ cursor: 'pointer' }} />}
           />
           <CustomTabs
-            listTab={listTab}
+            listTab={LIST_TAB}
             centered={true}
             tabPosition="top"
             tabDisplay="space"
@@ -75,12 +70,37 @@ export const Detail: FC<ProjectTrackingDetail> = ({ projectId, activeOnlyDesignF
             <BrandProject project={data.projects} />
           </CustomTabPane>
 
-          <CustomTabPane active={activeKey === 'requests'}>
-            <BrandRequests requests={data.projectRequests} />
+          <CustomTabPane active={activeKey === 'request'}>
+            <RequestsAndNotifications
+              requestAndNotification={data.projectRequests.map((el) => ({
+                ...el,
+                read: el.newRequest,
+                title: { created_at: el.created_at, name: el.requestFor },
+                product: el.product,
+                designer: el.designer,
+                request: { title: el.title, message: el.message },
+                id: el.id,
+                status: el.status,
+              }))}
+              type="request"
+              setData={setData}
+            />
           </CustomTabPane>
 
           <CustomTabPane active={activeKey === 'notification'}>
-            {/* <BrandRequests requests={data.notifications} type="notification" /> */}
+            <RequestsAndNotifications
+              requestAndNotification={data.notifications.map((el) => ({
+                ...el,
+                read: el.newNotification,
+                product: el.product,
+                designer: el.designer,
+                title: { created_at: el.created_at, name: el.type },
+                status: el.status,
+                id: el.id,
+              }))}
+              type="notification"
+              setData={setData}
+            />
           </CustomTabPane>
         </div>
       </Col>
