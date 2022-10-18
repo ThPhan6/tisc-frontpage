@@ -299,6 +299,7 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PROJECT_TRACKING_INFO_SUCCESS: 'Update project tracking information successfully',
   UPDATE_PROJECT_TRACKING_INFO_ERROR: 'Update project tracking info error',
   GET_PROJECT_TRACKING_SUMMARY_ERROR: 'Get project tracking summary error',
+  GET_ONE_PROJECT_TRACKING_ERROR: 'Get one project tracking error',
 };
 
 export const MESSAGE_TOOLTIP = {
