@@ -5,10 +5,12 @@ import { request } from 'umi';
 import { getResponseMessage } from '@/helper/common';
 
 import { UnitType } from '../types/project-specifying.type';
+import { setFinishScheduleData } from '@/features/product/reducers';
 import {
   FinishScheduleResponse,
   SpecifyingProductRequestBody,
 } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
+import store from '@/reducers';
 import { GeneralData } from '@/types';
 
 export async function getUnitTypeList() {
@@ -57,7 +59,7 @@ export async function getRequirementTypeList() {
 }
 
 export async function getFinishScheduleList(projectProductId: string, roomIds: string[] | string) {
-  return request<{ data: FinishScheduleResponse[] }>(
+  request<{ data: FinishScheduleResponse[] }>(
     `/api/project-product/${projectProductId}/finish-schedules`,
     {
       method: 'GET',
@@ -65,7 +67,7 @@ export async function getFinishScheduleList(projectProductId: string, roomIds: s
     },
   )
     .then((response) => {
-      return response.data;
+      store.dispatch(setFinishScheduleData(response.data));
     })
     .catch((error) => {
       console.log('getFinishScheduleList error', error);

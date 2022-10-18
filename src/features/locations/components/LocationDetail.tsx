@@ -95,7 +95,7 @@ const LocationDetail = () => {
             postal_code: res.postal_code,
             general_phone: res.general_phone,
             general_email: res.general_email,
-            functional_type_ids: res.functional_types.map((type) => type.id),
+            functional_type_ids: res.functional_type_ids.map((id) => id),
           });
           setLoadedData(true);
         }

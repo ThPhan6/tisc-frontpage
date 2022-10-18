@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 
-import { Col, Row } from 'antd';
+import { Col, Row, message } from 'antd';
 
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 
@@ -134,6 +134,32 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
   const formGroupProps: Partial<FormGroupProps> = {
     layout: 'vertical',
     style: { marginBottom: 0 },
+  };
+
+  const renderScheduleModal = () => {
+    if (scheduleModal.value) {
+      if (!materialCode) {
+        message.error('Material Code is required');
+        scheduleModal.setValue(false);
+        return null;
+      }
+      if (!description) {
+        scheduleModal.setValue(false);
+        message.error('Description is required');
+        return null;
+      }
+    }
+
+    return (
+      <ScheduleModal
+        visible={scheduleModal.value}
+        setVisible={(visible) => (visible ? undefined : scheduleModal.setValue(false))}
+        materialCode={materialCode?.labelText}
+        description={description}
+        projectProductId={projectProductId}
+        roomIds={roomIds}
+      />
+    );
   };
 
   return (
@@ -313,19 +339,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
           </FormGroup>
         </Col>
       </Row>
-      <ScheduleModal
-        visible={scheduleModal.value}
-        setVisible={(visible) => (visible ? undefined : scheduleModal.setValue(false))}
-        materialCode={materialCode?.labelText}
-        projectProductId={projectProductId}
-        roomIds={roomIds}
-        description={description}
-        onChange={(e) => {
-          onChangeState({
-            finish_schedules: e,
-          });
-        }}
-      />
+      {renderScheduleModal()}
     </div>
   );
 };

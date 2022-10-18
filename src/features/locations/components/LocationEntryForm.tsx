@@ -72,7 +72,10 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
   /// for item selected
   const [checkedOpt, setCheckedOpt] = useState<CheckboxValue[]>([]);
   /// for show items have been already selected to show on first loading
-  const selectedFunctionType = getSelectedOptions(functionalTypes, data.functional_type_ids);
+  const selectedFunctionType = getSelectedOptions(
+    functionalTypes,
+    data.functional_type_ids as string[],
+  );
   /// for show on placeholder
   const onShowPlaceholder =
     /// current select
@@ -234,7 +237,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         {isDesignAdmin ? (
           <CustomRadio
             options={functionalTypeForDesign}
-            value={String(data.functional_type_ids[0])}
+            value={data.functional_type_ids[0] ?? functionalTypeForDesign[0]?.value}
             onChange={(radioValue) => {
               setData({
                 ...data,

@@ -11,6 +11,7 @@ import { getSpecificationRequest } from '@/features/product/components/ProductAt
 import { getSelectedRoomIds, useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
 import { updateProductSpecifying } from '@/features/project/services';
 
+import { FinishScheduleRequestBody } from './types';
 import { resetProductDetailState } from '@/features/product/reducers';
 import { ProductItem } from '@/features/product/types';
 import store, { useAppSelector } from '@/reducers';
@@ -58,6 +59,30 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     (state) => state.product.details.distributor_location_id,
   );
 
+  const finishSchedulesData = useAppSelector(
+    (state) => state.product.details.specifiedDetail?.finish_schedules,
+  );
+  const finishSchedulesRequestData = finishSchedulesData?.map((el) => ({
+    floor: el.floor,
+    base: {
+      ceiling: el.base.ceiling,
+      floor: el.base.floor,
+    },
+    front_wall: el.front_wall,
+    left_wall: el.left_wall,
+    back_wall: el.back_wall,
+    right_wall: el.right_wall,
+    ceiling: el.ceiling,
+    door: {
+      frame: el.door.frame,
+      panel: el.door.panel,
+    },
+    cabinet: {
+      carcass: el.cabinet.carcass,
+      door: el.cabinet.door,
+    },
+  }));
+
   const { AssignProductToSpaceForm, isEntire, selectedRooms } = useAssignProductToSpaceForm(
     product.id,
     projectId,
@@ -101,8 +126,8 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           brand_location_id: brandLocationId,
           distributor_location_id: distributorLocationId,
           description: specifiedDetail.description,
-          finish_schedules: specifiedDetail.finish_schedules,
           instruction_type_ids: specifiedDetail.instruction_type_ids,
+          finish_schedules: finishSchedulesRequestData as FinishScheduleRequestBody[],
           material_code_id: specifiedDetail.material_code_id,
           order_method: specifiedDetail.order_method,
           quantity: specifiedDetail.quantity,

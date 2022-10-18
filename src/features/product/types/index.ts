@@ -6,7 +6,7 @@ import {
   SpecificationBodyRequest,
 } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
-import { FinishScheduleRequestBody } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
+import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
 import { ConversionSubValueProps, GeneralData } from '@/types';
 
 export interface ProductSummary {
@@ -74,7 +74,7 @@ export interface SpecifiedDetail {
   order_method: OrderMethod;
   requirement_type_ids: string[];
   instruction_type_ids: string[];
-  finish_schedules: FinishScheduleRequestBody[];
+  finish_schedules: FinishScheduleResponse[];
   unit_type_id: string;
   unit_type?: string;
   special_instructions: string;

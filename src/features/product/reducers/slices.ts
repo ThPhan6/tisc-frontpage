@@ -13,6 +13,7 @@ import type {
 } from '../types';
 import { OrderMethod } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
+import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
@@ -186,6 +187,11 @@ const productSlice = createSlice({
         };
       }
     },
+    setFinishScheduleData: (state, action: PayloadAction<FinishScheduleResponse[]>) => {
+      if (state.details.specifiedDetail) {
+        state.details.specifiedDetail.finish_schedules = [...action.payload];
+      }
+    },
   },
 });
 
@@ -208,6 +214,7 @@ export const {
   onCheckReferToDesignDocument,
   setDefaultSelectionFromSpecifiedData,
   setPartialProductSpecifiedData,
+  setFinishScheduleData,
 } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;
