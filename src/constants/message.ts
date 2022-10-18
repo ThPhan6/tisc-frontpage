@@ -241,6 +241,7 @@ export const MESSAGE_NOTIFICATION = {
   GET_LIST_DISTRIBUTOR_GROUP_COUNTRY_ERROR: 'Get list group distributor country error',
 
   //brand-profile // office profile
+  GET_PROFILE_ERROR: 'Get profile error',
   UPDATE_PROFILE_SUCCESS: 'Update profile successfully',
   UPDATE_PROFILE_ERROR: 'Update profile error',
   UPDATE_LOGO_PROFILE_SUCCESS: 'Update logo profile successfully',

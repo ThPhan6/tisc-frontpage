@@ -1,2 +1,2 @@
-export * from './brand-profile';
-export * from './design-firm';
+export * from './brand-profile.types';
+export * from './design-firm.types';

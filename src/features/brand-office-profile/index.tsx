@@ -7,13 +7,18 @@ import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-icon.svg';
 import Logo from '@/assets/image-logo.png';
 
-import { updateBrandProfile, updateLogoBrandProfile, updateOfficeProfile } from './services';
+import {
+  getListCapabilities,
+  updateBrandProfile,
+  updateDesignFirmOfficeProfile,
+  updateLogoBrandProfile,
+} from './services';
 import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
-import { getBase64, showImageUrl } from '@/helper/utils';
+import { getBase64, getSelectedOptions, showImageUrl } from '@/helper/utils';
+import { isEqual } from 'lodash';
 
 import {
   UpdateBrandProfileRequestBody,
-  UpdateOfficeProfileRequestBody,
   WebsiteUrlItem,
   initialBrandProfileState,
   initialOfficeProfileState,
@@ -21,6 +26,7 @@ import {
 } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { useAppSelector } from '@/reducers';
+import { DesignFirmProfile } from '@/types/user.type';
 
 import { ItemWebsite } from './components/ItemWebsite';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
@@ -31,37 +37,53 @@ import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText, Title } from '@/components/Typography';
 
-import { getListFunctionalType } from '../locations/api';
 import styles from './index.less';
 
 const LOGO_SIZE_LIMIT = 240 * 1024; // 240 KB
 
 const BrandProfilePage = () => {
-  const brandAppState = useAppSelector((state) => state.user.user?.brand);
-  const submitButtonStatus = useBoolean(false);
-
-  const isLoading = useBoolean(false);
-  const [fileInput, setFileInput] = useState<any>();
   const { fetchUserInfo } = useCustomInitialState();
-  const [logoBrandProfile, setLogoBrandProfile] = useState<string>('');
+
+  const isBrandAdmin = useCheckPermission('Brand Admin');
+  const isDesignAdmin = useCheckPermission('Design Admin');
+
+  const brandAppState = useAppSelector((state) => state.user.user?.brand);
+  const designAppState = useAppSelector((state) => state.user.user?.design);
+
+  const isSubmitted = useBoolean(false);
+  const isLoading = useBoolean(false);
   const [loadedData, setLoadedData] = useState(false);
+
+  const [fileInput, setFileInput] = useState<any>();
+  const [logoBrandProfile, setLogoBrandProfile] = useState<string>('');
 
   /// for brand profile
   const [brandProfile, setBrandProfile] =
     useState<UpdateBrandProfileRequestBody>(initialBrandProfileState);
 
   /// for design-firm office profile
-  const [designFirm, setDesignFirm] =
-    useState<UpdateOfficeProfileRequestBody>(initialOfficeProfileState);
+  const [designFirmProfile, setDesignFirmProfile] =
+    useState<Partial<DesignFirmProfile>>(initialOfficeProfileState);
   const [designCapability, setDesignCapability] = useState<CheckboxValue[]>([]);
-  const [capabilitySelected, setCapabilitySelected] = useState<CheckboxValue[]>([]);
+
+  const selectedCapability = getSelectedOptions(
+    designCapability,
+    designAppState?.capabilities ?? ([] as string[]),
+  );
+  const [curSelectCapability, setCurSelectCapability] = useState<CheckboxValue[]>([]);
+
+  // re-set selected capabilities
+  useEffect(() => {
+    if (isDesignAdmin) {
+      if (!isEqual(selectedCapability, curSelectCapability)) {
+        setCurSelectCapability(selectedCapability);
+      }
+    }
+  }, [isSubmitted.value === true]);
 
   useEffect(() => {
     fetchUserInfo();
   }, []);
-
-  const isBrandAdmin = useCheckPermission('Brand Admin');
-  const isDesignAdmin = useCheckPermission('Design Admin');
 
   useEffect(() => {
     if (isBrandAdmin) {
@@ -76,27 +98,43 @@ const BrandProfilePage = () => {
       }
       setLoadedData(true);
     }
-
-    if (isDesignAdmin) {
-      getListFunctionalType().then((res) => {
-        if (res) {
-          setDesignCapability(
-            res.map((el) => ({
-              label: el.name,
-              value: el.id,
-            })),
-          );
-        }
-      });
-    }
   }, [brandAppState]);
+
+  useEffect(() => {
+    if (isDesignAdmin) {
+      if (designAppState) {
+        setDesignFirmProfile({
+          name: designAppState.name ?? '',
+          logo: designAppState.logo ?? '',
+          parent_company: designAppState.parent_company ?? '',
+          slogan: designAppState.slogan ?? '',
+          profile_n_philosophy: designAppState.profile_n_philosophy ?? '',
+          office_website: designAppState.office_website ?? '',
+          capabilities: designAppState.capabilities ?? [],
+        });
+
+        getListCapabilities().then((res) => {
+          if (res) {
+            setDesignCapability(
+              res.map((el) => ({
+                label: el.name,
+                value: el.id,
+              })),
+            );
+          }
+        });
+      }
+
+      setLoadedData(true);
+    }
+  }, [designAppState]);
 
   const onChangeValueForm = (e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) => {
     if (isBrandAdmin) {
       setBrandProfile({ ...brandProfile, [e.target.name]: e.target.value });
     }
 
-    setDesignFirm({ ...designFirm, [e.target.name]: e.target.value });
+    setDesignFirmProfile({ ...designFirmProfile, [e.target.name]: e.target.value });
   };
 
   /// for brand profile
@@ -121,12 +159,17 @@ const BrandProfilePage = () => {
     const formData = new FormData();
     formData.append('logo', fileInput);
     isLoading.setValue(true);
-    updateLogoBrandProfile(formData as any).then((isSuccess) => {
-      if (isSuccess) {
-        fetchUserInfo();
-      }
-      isLoading.setValue(false);
-    });
+    if (isBrandAdmin) {
+      updateLogoBrandProfile(formData as any).then((isSuccess) => {
+        if (isSuccess) {
+          fetchUserInfo();
+        }
+        isLoading.setValue(false);
+      });
+    }
+    if (isDesignAdmin) {
+      setDesignFirmProfile({ ...designFirmProfile, logo: formData as any });
+    }
   };
 
   useEffect(() => {
@@ -135,9 +178,12 @@ const BrandProfilePage = () => {
     }
   }, [fileInput]);
 
-  const setPreviewAvatar = () => {
+  const setPreviewLogo = () => {
     if (brandAppState?.logo) {
-      return showImageUrl(brandAppState?.logo);
+      return showImageUrl(brandAppState.logo);
+    }
+    if (designAppState?.logo) {
+      return showImageUrl(designAppState.logo);
     }
     return Logo;
   };
@@ -151,7 +197,12 @@ const BrandProfilePage = () => {
       setFileInput(file);
       getBase64(file)
         .then((base64Image) => {
-          setLogoBrandProfile(base64Image);
+          if (isBrandAdmin) {
+            setLogoBrandProfile(base64Image);
+          }
+          if (isDesignAdmin) {
+            setDesignFirmProfile({ ...designFirmProfile, logo: base64Image.split(',')[1] });
+          }
         })
         .catch(() => {
           message.error('Upload Failed');
@@ -162,6 +213,47 @@ const BrandProfilePage = () => {
 
   const onSubmitForm = () => {
     isLoading.setValue(true);
+
+    if (isBrandAdmin) {
+      switch (true) {
+        case !brandProfile.name:
+          message.error('Brand Name is required');
+          return;
+        case !logoBrandProfile:
+          message.error('Logo is required');
+          return;
+        case !brandProfile.mission_n_vision:
+          message.error('Mission & Vision is required');
+          return;
+        case !brandProfile.official_websites.length:
+          message.error('Offical Websites is required');
+          return;
+        default:
+          break;
+      }
+    }
+
+    if (isDesignAdmin) {
+      switch (true) {
+        case !designFirmProfile.name:
+          message.error('Design Firm Name is required');
+          return;
+        case !designFirmProfile.logo:
+          message.error('Logo is required');
+          return;
+        case !designFirmProfile.profile_n_philosophy:
+          message.error('Profile & Philosophy is required');
+          return;
+        case !designFirmProfile.office_website:
+          message.error('Offical Website is required');
+          return;
+        case !designFirmProfile.capabilities?.length:
+          message.error('Design Capabilities are required');
+          return;
+        default:
+          break;
+      }
+    }
 
     const updateData = isBrandAdmin
       ? updateBrandProfile({
@@ -174,22 +266,23 @@ const BrandProfilePage = () => {
             url: website.url?.trim() ?? '',
           })),
         })
-      : updateOfficeProfile({
-          name: designFirm.name?.trim() ?? '',
-          parent_company: designFirm.parent_company?.trim() ?? '',
-          slogan: designFirm.slogan?.trim() ?? '',
-          profile_n_philosophy: designFirm.profile_n_philosophy?.trim() ?? '',
-          official_website: designFirm.official_website?.trim() ?? '',
-          design_capabilities: designFirm.design_capabilities ?? [],
+      : updateDesignFirmOfficeProfile(designAppState?.id ?? '', {
+          name: designFirmProfile.name?.trim() ?? '',
+          logo: designFirmProfile.logo ?? designAppState?.logo,
+          parent_company: designFirmProfile.parent_company?.trim() ?? '',
+          slogan: designFirmProfile.slogan?.trim() ?? '',
+          profile_n_philosophy: designFirmProfile.profile_n_philosophy?.trim() ?? '',
+          office_website: designFirmProfile.office_website?.trim() ?? '',
+          capabilities: designFirmProfile.capabilities ?? [],
         });
 
     updateData.then((isSuccess) => {
       isLoading.setValue(false);
       if (isSuccess) {
         fetchUserInfo();
-        submitButtonStatus.setValue(true);
+        isSubmitted.setValue(true);
         setTimeout(() => {
-          submitButtonStatus.setValue(false);
+          isSubmitted.setValue(false);
         }, 1000);
       }
     });
@@ -221,7 +314,7 @@ const BrandProfilePage = () => {
                   }
                   name="name"
                   onChange={onChangeValueForm}
-                  value={isBrandAdmin ? brandProfile.name : designFirm.name}
+                  value={isBrandAdmin ? brandProfile.name : designFirmProfile.name}
                 />
               </FormGroup>
 
@@ -234,12 +327,14 @@ const BrandProfilePage = () => {
                   placeholder="holding company name, if any"
                   name="parent_company"
                   onChange={onChangeValueForm}
-                  value={isBrandAdmin ? brandProfile.parent_company : designFirm.parent_company}
+                  value={
+                    isBrandAdmin ? brandProfile.parent_company : designFirmProfile.parent_company
+                  }
                 />
               </FormGroup>
 
               <div className={styles.logo}>
-                <img src={logoBrandProfile || setPreviewAvatar()} />
+                <img src={logoBrandProfile || setPreviewLogo()} />
               </div>
 
               <div className={styles.customFormLogo}>
@@ -265,7 +360,7 @@ const BrandProfilePage = () => {
                   placeholder={isBrandAdmin ? 'brand slogan, if any' : 'design slogan, if any'}
                   name="slogan"
                   onChange={onChangeValueForm}
-                  value={isBrandAdmin ? brandProfile.slogan : designFirm.slogan}
+                  value={isBrandAdmin ? brandProfile.slogan : designFirmProfile.slogan}
                 />
               </FormGroup>
 
@@ -286,7 +381,9 @@ const BrandProfilePage = () => {
                   name={isBrandAdmin ? 'mission_n_vision' : 'profile_n_philosophy'}
                   onChange={onChangeValueForm}
                   value={
-                    isBrandAdmin ? brandProfile.mission_n_vision : designFirm.profile_n_philosophy
+                    isBrandAdmin
+                      ? brandProfile.mission_n_vision
+                      : designFirmProfile.profile_n_philosophy
                   }
                 />
               </FormGroup>
@@ -323,7 +420,7 @@ const BrandProfilePage = () => {
                       placeholder="paste URL link here"
                       name="office_website"
                       onChange={onChangeValueForm}
-                      value={designFirm.official_website}
+                      value={designFirmProfile.office_website}
                     />
                   </FormGroup>
 
@@ -335,19 +432,25 @@ const BrandProfilePage = () => {
                     <CustomCheckbox
                       checkboxClass={styles.capability}
                       options={designCapability}
-                      selected={capabilitySelected}
+                      selected={
+                        curSelectCapability.length ? curSelectCapability : selectedCapability
+                      }
                       heightItem="36px"
                       inputPlaceholder="please specify"
                       isCheckboxList
+                      clearOtherInput={isSubmitted.value}
                       otherInput
                       onChange={(checkboxSelected) => {
+                        // filter other input value has empty value
+                        const result = checkboxSelected.filter((el) => el.label !== '');
+
                         /// for show item selected
-                        setCapabilitySelected(checkboxSelected);
+                        setCurSelectCapability(result);
 
                         /// onChange data
-                        setDesignFirm({
-                          ...designFirm,
-                          design_capabilities: checkboxSelected.map((el) =>
+                        setDesignFirmProfile({
+                          ...designFirmProfile,
+                          capabilities: result.map((el) =>
                             String(el.value === 'other' ? el.label : el.value),
                           ),
                         });
@@ -359,7 +462,7 @@ const BrandProfilePage = () => {
             </div>
 
             <div className={styles.actionButton}>
-              <CustomSaveButton isSuccess={submitButtonStatus.value} onClick={onSubmitForm} />
+              <CustomSaveButton isSuccess={isSubmitted.value} onClick={onSubmitForm} />
             </div>
           </div>
         </Col>

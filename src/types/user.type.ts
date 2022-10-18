@@ -15,12 +15,30 @@ export interface BrandProfile {
   team_profile_ids: any;
   updated_at: string | null;
 }
+
+export interface DesignFirmProfile {
+  created_at: string;
+  id: string;
+  name: string;
+  parent_company: string;
+  logo: string;
+  slogan: string;
+  profile_n_philosophy: string;
+  office_website: string;
+  updated_at: string;
+  capabilities: string[];
+  team_profile_ids: [];
+  status: number;
+}
+
 export interface UserDetail {
   access_level: string;
   avatar: string;
   backup_email: string;
   brand?: BrandProfile;
+  design?: DesignFirmProfile;
   id: string;
+  relation_id: string;
   role_id: string;
   permissions: any;
   firstname: string;
