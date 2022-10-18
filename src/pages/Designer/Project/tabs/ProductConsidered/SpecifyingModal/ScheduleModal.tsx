@@ -15,6 +15,18 @@ import { RobotoBodyText, Title } from '@/components/Typography';
 import { CodeOrderTabProps } from './CodeOrderTab';
 import styles from './styles/schedule-modal.less';
 
+const mainTitle = [
+  'FLOOR',
+  'BASE',
+  'FRONT WALL',
+  'LEFT WALL',
+  'BACK WALL',
+  'RIGHT WALL',
+  'CEILING',
+  'DOOR',
+  'CABINET',
+];
+
 type KeyField = 'ceiling' | 'floor' | 'frame' | 'panel' | 'carcass' | 'door';
 
 interface ScheduleModalProps extends CodeOrderTabProps {
@@ -107,17 +119,7 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
       <table className={styles.mainInfo}>
         <thead>
           <tr>
-            {[
-              'FLOOR',
-              'BASE',
-              'FRONT WALL',
-              'LEFT WALL',
-              'BACK WALL',
-              'RIGHT WALL',
-              'CEILING',
-              'DOOR',
-              'CABINET',
-            ].map((el) => (
+            {mainTitle.map((el) => (
               <th>
                 <RobotoBodyText level={5} customClass={styles.title}>
                   {el}
