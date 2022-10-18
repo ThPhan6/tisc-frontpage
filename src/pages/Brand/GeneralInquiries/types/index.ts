@@ -1,14 +1,15 @@
+import { RespondedOrPendingStatus } from '@/types';
+
 export interface GeneralInquiryListProps {
   id: string;
   created_at: string;
-  created_by: string;
   design_firm: string;
   firm_location: string;
-  inquier: string;
+  inquirer: string;
   inquiry_for: string;
   title: string;
-  status: number;
-  read_by: string[];
+  status: RespondedOrPendingStatus;
+  read: boolean;
 }
 
 export interface GeneralInquirySummaryData {
@@ -19,26 +20,35 @@ export interface GeneralInquirySummaryData {
 
 export interface GeneralInquiryDesignFirm {
   name: string;
-  official_website: string;
-  inquirer: string;
-  position: string;
-  email: string;
-  phone: string;
+  phone_code: string;
+  general_email: string;
+  general_phone: string;
   address: string;
+  official_website: string;
 }
 
 export interface InquiryMessageOfGeneralInquiry {
+  id: string;
   inquiry_for: string;
   title: string;
   message: string;
-  product_collection: string;
-  product_description: string;
-  product_image: string;
-  official_website: string;
+  product: {
+    id: string;
+    name: string;
+    description: string;
+    collection: string;
+    image: string;
+  };
+  designer: {
+    name: string;
+    position: string;
+    email: string;
+    phone: string;
+    phone_code: string;
+  };
 }
 
 export interface GeneralInquiryResponse {
-  product_name: string;
   design_firm: GeneralInquiryDesignFirm;
   inquiry_message: InquiryMessageOfGeneralInquiry;
 }
