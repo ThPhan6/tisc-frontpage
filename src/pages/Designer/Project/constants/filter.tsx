@@ -1,3 +1,5 @@
+import { ProjectStatus } from '@/pages/Brand/ProjectTracking/constant';
+
 import { ReactComponent as ProjectArchivedIcon } from '@/assets/icons/project-archived-icon.svg';
 import { ReactComponent as ProjectLiveIcon } from '@/assets/icons/project-live-icon.svg';
 import { ReactComponent as ProjectOnHoldIcon } from '@/assets/icons/project-on-hold-icon.svg';
@@ -6,9 +8,9 @@ import { DropDownFilterValueProps } from '@/components/TopBar/types';
 
 export const FilterValues = {
   global: -1,
-  live: 0,
-  onHold: 1,
-  archived: 2,
+  live: ProjectStatus.Live,
+  onHold: ProjectStatus['On Hold'],
+  archived: ProjectStatus.Archive,
 };
 
 export const FilterNames = {
