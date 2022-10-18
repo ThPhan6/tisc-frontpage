@@ -77,12 +77,12 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
         <thead>
           <tr style={{ height: '24px', boxShadow: '0 0.7px #000' }}>
             <th className={styles.borderBottom} style={{ width: '30%' }}>
-              <RobotoBodyText level={5} style={{ fontWeight: 500 }}>
+              <RobotoBodyText level={7} style={{ fontSize: '8px', fontWeight: '500' }}>
                 Code
               </RobotoBodyText>
             </th>
             <th style={{ width: '70%' }}>
-              <RobotoBodyText level={5} style={{ fontWeight: 500 }}>
+              <RobotoBodyText level={7} style={{ fontSize: '8px', fontWeight: '500' }}>
                 Description
               </RobotoBodyText>
             </th>
@@ -91,12 +91,14 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
         <tbody>
           <tr style={{ minHeight: '18px' }}>
             <td>
-              <RobotoBodyText level={5} style={{ paddingRight: '16px' }}>
+              <RobotoBodyText level={7} style={{ paddingRight: '16px', fontSize: '8px' }}>
                 {materialCode ?? ''}
               </RobotoBodyText>
             </td>
             <td>
-              <RobotoBodyText level={5}>{description ?? ''}</RobotoBodyText>
+              <RobotoBodyText level={7} style={{ fontSize: '8px' }}>
+                {description ?? ''}
+              </RobotoBodyText>
             </td>
           </tr>
         </tbody>
