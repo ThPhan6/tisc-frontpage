@@ -59,10 +59,18 @@ export const MESSAGE_NOTIFICATION = {
   DUPLICATE_PRODUCT_SUCCESS: 'Duplicate product successfully',
   DUPLICATE_PRODUCT_ERROR: 'Failed to duplicate product',
   GET_ONE_PRODUCT_ERROR: 'Failed to get product information',
+  /// share via email
   GET_SHARING_GROUPS_ERROR: 'Failed to get sharing groups',
   GET_SHARING_PURPOSES_ERROR: 'Failed to get sharing purposes',
   CREATE_SHARE_VIA_EMAIL_SUCCESS: 'Shared via email successfully',
   CREATE_SHARE_VIA_EMAIL_ERROR: 'Failed to share via email',
+  /// inquiry/request
+  GET_INQUIRY_REQUEST_FOR_ERROR: 'Failed to get inquiry/request for list',
+  GET_PROJECT_NAME_ERROR: 'Failed to get project name',
+  CREATE_GENERAL_INQUIRY_SUCCESS: 'Create general inquiry successfully',
+  CREATE_GENERAL_INQUIRY_ERROR: 'Failed to create general inquiry',
+  CREATE_PROJECT_REQUEST_SUCCESS: 'Create project request successfully',
+  CREATE_PROJECT_REQUEST_ERROR: 'Failed to create project request',
 
   // product catelogue
   CREATE_PRODUCT_CATELOGUE_SUCCESS: 'Create product catelogue successfully',
@@ -116,6 +124,15 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PRESET_SUCCESS: 'Update preset successfully',
   UPDATE_PRESET_ERROR: 'Update preset error',
   GET_ONE_PRESET_ERROR: 'Get one preset error',
+
+  /// general inquiry
+  GET_GENERAL_INQUIRY_SUMMARY_ERROR: 'Failed to get general inquiry summary',
+  GET_GENERAL_INQUIRY_LIST_FAILED: 'Failed to get general inquiry data',
+
+  // actions/tasks
+  GET_ACTION_TASK_DATA_ERROR: 'Failed to get action task data',
+  GET_ACTION_TASK_LIST_ERROR: 'Failed to get action task list',
+  UPDATE_ACTION_TASK_STATUS_ERROR: 'Failed to update action task status',
 
   // department
   GET_LIST_DEPARTMENT_ERROR: 'Get list department error',
@@ -267,6 +284,21 @@ export const MESSAGE_NOTIFICATION = {
   RETRIEVE_FAVOURITE_PRODUCT_ERROR: 'Retrieve favourite product error',
   SKIP_FAVOURITE_SUCCESS: 'Skipped Successfully',
   SKIP_FAVOURITE_ERROR: 'Failed to skip',
+
+  //material/product code
+  CREATE_MATERIAL_PRODUCT_CODE_SUCCESS: 'Create material product code successfully',
+  CREATE_MATERIAL_PRODUCT_CODE_ERROR: 'Create material product code error',
+  GET_ONE_MATERIAL_PRODUCT_CODE_ERROR: 'Get one material product code error',
+  DELETE_MATERIAL_PRODUCT_CODE_SUCCESS: 'Delete material product code successfully',
+  DELETE_MATERIAL_PRODUCT_CODE_ERROR: 'Delete material product code error',
+  UPDATE_MATERIAL_PRODUCT_CODE_SUCCESS: 'Update material product code successfully',
+  UPDATE_MATERIAL_PRODUCT_CODE_ERROR: 'Update material product code error',
+
+  //project tracking
+  GET_PROJECT_TRACKING_LIST_FAILED: 'Failed to get project tracking data',
+  UPDATE_PROJECT_TRACKING_INFO_SUCCESS: 'Update project tracking information successfully',
+  UPDATE_PROJECT_TRACKING_INFO_ERROR: 'Update project tracking info error',
+  GET_PROJECT_TRACKING_SUMMARY_ERROR: 'Get project tracking summary error',
 };
 
 export const MESSAGE_TOOLTIP = {

@@ -477,14 +477,25 @@ export default [
     path: PATH.brandGeneralInquiry,
     name: 'general_inquiry',
     icon: 'general-inquiry-icon.svg',
-    component: './Admin',
     access: 'brand_genenral_inquiry',
+    routes: [
+      {
+        path: PATH.brandGeneralInquiry,
+        component: './Brand/GeneralInquiries',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.brandGeneralInquiryDetail,
+        component: './Brand/GeneralInquiries/detail.tsx',
+        hideInMenu: true,
+      },
+    ],
   },
   {
     path: PATH.brandProjectTracking,
     name: 'project_tracking',
     icon: 'project-tracking-icon.svg',
-    component: './Admin',
+    component: './Brand/ProjectTracking',
     access: 'brand_project_tracking',
   },
   {
@@ -730,8 +741,24 @@ export default [
         path: PATH.designerMaterialProductCode,
         name: 'material/product.code',
         icon: 'material-product-code.svg',
-        component: './Admin',
         access: 'design_administration_material_product_code',
+        routes: [
+          {
+            path: PATH.designerMaterialProductCode,
+            component: './Designer/Adminstration/MaterialProductCode',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerMaterialProductCodeCreate,
+            hideInMenu: true,
+            component: '../features/material-product-code/components/MaterialProductEntryForm',
+          },
+          {
+            path: PATH.designerMaterialProductCodeUpdate,
+            hideInMenu: true,
+            component: '../features/material-product-code/components/MaterialProductEntryForm',
+          },
+        ],
       },
     ],
   },

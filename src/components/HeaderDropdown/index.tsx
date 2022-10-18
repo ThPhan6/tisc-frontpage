@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 
 import { Dropdown } from 'antd';
-import type { DropDownProps } from 'antd/es/dropdown';
+import type { DropDownProps, DropdownProps } from 'antd/es/dropdown';
 
 import { BodyText } from '../Typography';
 import styles from './index.less';
@@ -13,7 +13,7 @@ export type HeaderDropdownProps = {
   overlayClassName?: string;
   overlay?: React.ReactNode | (() => React.ReactNode) | any;
   items?: MenuIconProps[];
-  placement?: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topCenter' | 'topRight' | 'bottomCenter';
+  placement?: DropdownProps['placement'];
 } & Omit<DropDownProps, 'overlay'>;
 
 export type MenuIconProps = {
@@ -77,11 +77,9 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   return (
     <Dropdown
       className={styles.dropdownWrapper}
-      overlayClassName={`
-        ${styles.container}
-        ${arrowPositionCenter && styles[`arrow-center`]}
-        ${cls}
-        ${containerClass}`}
+      overlayClassName={`${styles.container} ${
+        arrowPositionCenter && styles[`arrow-center`]
+      } ${cls} ${containerClass}`}
       arrow={arrow}
       visible={visible}
       onVisibleChange={(value) => setVisible(value)}

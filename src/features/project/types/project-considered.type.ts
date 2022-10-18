@@ -9,5 +9,10 @@ export interface SpecificationAttributeGroup {
 }
 export interface SpecificationBodyRequest {
   is_refer_document: boolean;
-  specification_attribute_groups: SpecificationAttributeGroup[];
+  attribute_groups: SpecificationAttributeGroup[];
+}
+export interface SelectSpecificationBodyRequest {
+  specification: SpecificationBodyRequest;
+  brand_location_id: string;
+  distributor_location_id: string;
 }

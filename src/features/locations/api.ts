@@ -1,4 +1,5 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -18,7 +19,7 @@ import type {
   PaginationResponse,
   SummaryResponse,
 } from '@/components/Table/types';
-import { GeneralData, KeyValueData } from '@/types';
+import { GeneralData } from '@/types';
 
 interface LocationPaginationResponse {
   data: {
@@ -110,7 +111,7 @@ export async function getCitiesByCountryIdAndStateId(countryId: string, stateId:
 }
 
 export async function getCountryById(id: string) {
-  return request(`/api/location/get-country/${id}`, { method: 'GET' })
+  return request(`/api/setting/countries/${id}`, { method: 'GET' })
     .then((response) => {
       return response.data;
     })
@@ -149,8 +150,13 @@ export async function getLocationPagination(
 }
 
 export async function getListFunctionalType() {
-  return request<{ data: GeneralData[] }>(`/api/functional-type/get-list`)
-    .then((res) => res.data)
+  return request<{ data: GeneralData[] }>(
+    `/api/setting/common-type/${COMMON_TYPES.COMPANY_FUNCTIONAL}`,
+    { method: 'GET' },
+  )
+    .then((res) => {
+      return res.data;
+    })
     .catch(() => {
       return [] as GeneralData[];
     });
@@ -158,10 +164,10 @@ export async function getListFunctionalType() {
 
 /// for design-firms
 export async function getListFunctionalTypeForDesign() {
-  return request<KeyValueData[]>(`/api/setting/functional-type`)
+  return request<GeneralData[]>(`/api/setting/functional-type`)
     .then((res) => res)
     .catch(() => {
-      return [] as KeyValueData[];
+      return [] as GeneralData[];
     });
 }
 
@@ -232,7 +238,7 @@ export async function getWorkLocations() {
 }
 
 export async function getRegions() {
-  return request<{ data: Regions[] }>(`/api/location/regions`, { method: 'GET' })
+  return request<{ data: Regions[] }>(`/api/setting/regions`, { method: 'GET' })
     .then((response) => {
       return response.data;
     })

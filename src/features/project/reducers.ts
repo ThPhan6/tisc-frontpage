@@ -1,10 +1,6 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { ProjectItem } from './types';
 
-export interface ProjectItem {
-  id: string;
-  code: string;
-  name: string;
-}
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface ProjectState {
   list: ProjectItem[];

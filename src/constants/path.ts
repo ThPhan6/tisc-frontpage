@@ -105,7 +105,12 @@ export const PATH = {
   //brand
   brandProduct: '/brand/product',
   updateProductBrand: '/brand/product/:id',
+
+  /// general inquiries
   brandGeneralInquiry: '/brand/general-inquiry',
+  brandGeneralInquiryDetail: '/brand/general-inquiry/:id',
+
+  /// project tracking
   brandProjectTracking: '/brand/project-tracking',
   //adminstration
   brandAdministration: '/brand/adminstration',
@@ -146,6 +151,8 @@ export const PATH = {
   designerOfficeTeamProfileCreate: '/design-firms/administration/team-profiles/create',
   designerOfficeTeamProfileUpdate: '/design-firms/administration/team-profiles/:id',
   designerMaterialProductCode: '/design-firms/administration/material-product-code',
+  designerMaterialProductCodeCreate: '/design-firms/administration/material-product-code/create',
+  designerMaterialProductCodeUpdate: '/design-firms/administration/material-product-code/:id',
 
   // location
   designFirmLocation: '/design-firms/administration/locations',

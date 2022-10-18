@@ -1,9 +1,11 @@
 import { FC, useRef } from 'react';
 
+import { COLUMN_WIDTH } from '@/constants/util';
+
 import {
   onCellCancelled,
   renderActionCell,
-  renderStatusDropdown,
+  renderSpecifiedStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
@@ -11,7 +13,7 @@ import { getSpecifiedProductsByBrand } from '@/features/project/services';
 import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
-import { ProductItemBrand, SpecifiedProductByBrand } from '@/features/project/types';
+import { ProjectProductItem } from '@/features/product/types';
 
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 
@@ -26,7 +28,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
   const tableRef = useRef<any>();
   const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
-  const BrandColumns: TableColumnItem<SpecifiedProductByBrand>[] = [
+  const BrandColumns: TableColumnItem<ProjectProductItem>[] = [
     {
       title: 'Brand',
       dataIndex: 'brand_order',
@@ -50,21 +52,21 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       width: '5%',
       align: 'center',
     },
-    { title: 'Status', align: 'center', width: '8%' },
+    { title: 'Status', align: 'center', width: COLUMN_WIDTH.status },
     { title: 'Action', width: '5%', align: 'center' },
   ];
 
-  const CollectionColumns: TableColumnItem<ProductItemBrand>[] = [
+  const CollectionColumns: TableColumnItem<ProjectProductItem>[] = [
     {
       title: 'Brand',
       noBoxShadow: true,
-      dataIndex: 'image',
+      dataIndex: 'brand',
       align: 'right',
       render: (value) => {
         if (value) {
           return (
             <img
-              src={showImageUrl(value)}
+              src={showImageUrl(value?.logo)}
               style={{ width: 24, height: 24, objectFit: 'contain' }}
             />
           );
@@ -77,6 +79,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       dataIndex: 'collection_name',
       noBoxShadow: true,
       onCell: onCellCancelled,
+      render: (_value, record) => record.collection?.name,
     },
     {
       title: 'Product',
@@ -104,10 +107,10 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     {
       title: 'Status',
       noBoxShadow: true,
-      dataIndex: 'status',
+      dataIndex: 'specified_status',
       align: 'center',
-      width: '8%',
-      render: renderStatusDropdown(tableRef),
+      width: COLUMN_WIDTH.status,
+      render: renderSpecifiedStatusDropdown(tableRef),
       onCell: onCellCancelled,
     },
     {

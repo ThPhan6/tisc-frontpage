@@ -57,7 +57,7 @@ export const PersonalProfile = () => {
   });
 
   const [selectedInterested, setSelectedIntersted] = useState<CheckboxValue[]>(
-    currentUser?.interested.map((interestedId) => {
+    currentUser?.interested?.map((interestedId) => {
       return {
         label: '',
         value: interestedId,
@@ -170,7 +170,7 @@ export const PersonalProfile = () => {
       phoneNumber: currentUser.personal_mobile,
     };
     if (
-      (currentUser.interested.length ===
+      (currentUser?.interested?.length ===
         selectedInterested.map((item) => {
           return item.value;
         }).length &&

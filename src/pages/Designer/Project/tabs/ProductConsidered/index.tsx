@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 
+import { COLUMN_WIDTH } from '@/constants/util';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { useParams } from 'umi';
 
@@ -20,13 +21,18 @@ import { useBoolean } from '@/helper/hook';
 import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
+import {
+  setPartialProductDetail,
+  setPartialProductSpecifiedData,
+  setReferToDesignDocument,
+} from '@/features/product/reducers';
 import { ProductItem } from '@/features/product/types';
 import {
-  AssigningStatus,
   ConsideredProduct,
-  ConsideredProjectArea,
   ConsideredProjectRoom,
+  ProductConsiderStatus,
 } from '@/features/project/types';
+import store from '@/reducers';
 
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
 import ActionButton from '@/components/Button/ActionButton';
@@ -55,24 +61,24 @@ const ProductConsidered: React.FC = () => {
 
     const menuItems: ItemType[] = [
       {
-        key: AssigningStatus['Re-considered'],
+        key: ProductConsiderStatus['Re-considered'],
         label: 'Re-consider',
         icon: <CheckIcon style={{ width: 16, height: 16 }} />,
-        disabled: record.status !== AssigningStatus.Unlisted,
+        disabled: record.specifiedDetail?.consider_status !== ProductConsiderStatus.Unlisted,
         onClick: () => {
-          updateProductConsiderStatus(record.considered_id, {
-            status: AssigningStatus['Re-considered'],
+          updateProductConsiderStatus(record.specifiedDetail?.id, {
+            consider_status: ProductConsiderStatus['Re-Considered'],
           }).then((success) => (success ? tableRef.current?.reload() : undefined));
         },
       },
       {
-        key: AssigningStatus.Unlisted,
+        key: ProductConsiderStatus.Unlisted,
         label: 'Unlist',
         icon: <CancelIcon style={{ width: 16, height: 16 }} />,
-        disabled: record.status === AssigningStatus.Unlisted,
+        disabled: record.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted,
         onClick: () => {
-          updateProductConsiderStatus(record.considered_id, {
-            status: AssigningStatus.Unlisted,
+          updateProductConsiderStatus(record.specifiedDetail?.id, {
+            consider_status: ProductConsiderStatus.Unlisted,
           }).then((success) => (success ? tableRef.current?.reload() : undefined));
         },
       },
@@ -86,12 +92,12 @@ const ProductConsidered: React.FC = () => {
         items={menuItems}
         menuStyle={{ width: 160, height: 'auto' }}
         labelProps={{ className: 'flex-between' }}>
-        {record.status_name}
+        {ProductConsiderStatus[record.specifiedDetail.consider_status]}
       </CustomDropDown>
     );
   };
 
-  const renderActionCell = (_value: any, record: any) => {
+  const renderActionCell = (_value: any, record: ProductItem & { rooms?: any }) => {
     if (record.rooms) {
       return null;
     }
@@ -100,14 +106,32 @@ const ProductConsidered: React.FC = () => {
         actionItems={[
           {
             type: 'specify',
-            disabled: record.status === AssigningStatus.Unlisted,
-            onClick: () => setSpecifyingProduct(record),
+            disabled: record.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted,
+            onClick: () => {
+              setSpecifyingProduct(record);
+              if (record.specifiedDetail) {
+                store.dispatch(setPartialProductSpecifiedData(record.specifiedDetail));
+                store.dispatch(
+                  setPartialProductDetail({
+                    distributor_location_id: record.specifiedDetail.distributor_location_id,
+                    brand_location_id: record.specifiedDetail.brand_location_id,
+                  }),
+                );
+              }
+              store.dispatch(
+                setReferToDesignDocument(
+                  typeof record.specifiedDetail?.specification?.is_refer_document === 'boolean'
+                    ? record.specifiedDetail?.specification?.is_refer_document
+                    : true,
+                ),
+              );
+            },
           },
           {
             type: 'deleted',
             onClick: () =>
               confirmDelete(() => {
-                removeProductFromProject(record.considered_id).then((success) =>
+                removeProductFromProject(record.specifiedDetail?.id ?? '').then((success) =>
                   success ? tableRef.current?.reload() : undefined,
                 );
               }),
@@ -120,22 +144,25 @@ const ProductConsidered: React.FC = () => {
   const disabledClassname = gridView.value ? 'disabled' : undefined;
 
   const onCellUnlisted = (data: any) => ({
-    className: data.status === AssigningStatus.Unlisted ? 'light-content' : undefined,
+    className:
+      data.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted
+        ? 'light-content'
+        : undefined,
   });
 
   const getSameColumns = (noBoxShadow?: boolean) => {
     const SameColumn: TableColumnItem<any>[] = [
       {
         title: 'Image',
-        dataIndex: 'image',
+        dataIndex: 'images',
         width: '5%',
         align: 'center',
         noBoxShadow: noBoxShadow,
         className: disabledClassname,
         render: (value) =>
-          value ? (
+          value?.[0] ? (
             <img
-              src={showImageUrl(value)}
+              src={showImageUrl(value[0])}
               style={{ width: 24, height: 24, objectFit: 'contain' }}
             />
           ) : null,
@@ -148,14 +175,14 @@ const ProductConsidered: React.FC = () => {
         sorter: {
           multiple: 4,
         },
-        render: (_value, record) => record.brand_name,
+        render: (_value, record) => record.brand?.name,
         onCell: onCellUnlisted,
       },
       {
         title: 'Collection',
         className: disabledClassname,
-        dataIndex: 'collection_name',
         noBoxShadow: noBoxShadow,
+        render: (_value, record) => record.collection?.name,
         onCell: onCellUnlisted,
       },
     ];
@@ -196,7 +223,7 @@ const ProductConsidered: React.FC = () => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       hidden: gridView.value,
       align: 'center',
     },
@@ -208,7 +235,7 @@ const ProductConsidered: React.FC = () => {
     },
   ];
 
-  const AreaColumns: TableColumnItem<ConsideredProjectArea>[] = [
+  const AreaColumns: TableColumnItem<any>[] = [
     {
       title: 'Zones',
       noBoxShadow: true,
@@ -246,7 +273,7 @@ const ProductConsidered: React.FC = () => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       dataIndex: 'status_name',
       hidden: gridView.value,
       render: renderStatusDropdown, // For Entire project
@@ -283,7 +310,7 @@ const ProductConsidered: React.FC = () => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       hidden: gridView.value,
     },
     {
@@ -325,7 +352,7 @@ const ProductConsidered: React.FC = () => {
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center', noBoxShadow: true },
     {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       hidden: gridView.value,
       noBoxShadow: true,
       render: renderStatusDropdown,

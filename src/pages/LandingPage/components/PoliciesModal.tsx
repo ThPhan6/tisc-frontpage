@@ -22,6 +22,8 @@ export const PoliciesModal: FC<ModalProps> = ({ visible, onClose, theme = 'defau
 
   useEffect(() => {
     getListPolicy().then((res) => {
+      console.log('getListPolicy', res);
+
       if (res) {
         res.data.forEach((item: any) => {
           if (item['terms_of_services']?.document) {
