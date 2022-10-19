@@ -39,7 +39,7 @@ export const InquiryMessageTab: FC<{
       </TextForm>
 
       <TextForm boxShadow label="Work Phone">
-        {designer.phone_code} {designer.phone}
+        +{designer.phone_code} {designer.phone}
       </TextForm>
 
       <TextForm boxShadow label="Inquiry For">

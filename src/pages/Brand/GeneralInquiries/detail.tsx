@@ -88,7 +88,7 @@ const GeneralInquiryDetail = () => {
       <Row>
         <Col span={12} className={styles.container}>
           <TableHeader
-            title={data.inquiry_message.product.name}
+            title={data.inquiry_message.inquiry_for}
             customClass={styles.header}
             rightAction={
               <CloseIcon

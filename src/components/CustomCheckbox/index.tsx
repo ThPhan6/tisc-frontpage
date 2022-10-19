@@ -66,7 +66,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
         }) || [];
     }
 
-    onChange?.(newData ?? []);
+    onChange?.(newData.filter((el) => el.label !== '') ?? []);
   };
 
   const getActiveClass = (option: CheckboxValue) => {
@@ -121,7 +121,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   placeholder={inputPlaceholder}
                   value={inputValue}
                   onChange={onChangeInputValue}
-                  // onClick={handleClickInput}
                 />
               </div>
             </Checkbox>

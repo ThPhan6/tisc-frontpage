@@ -1,4 +1,4 @@
-import { WebsiteUrlItem } from '@/features/brand-office-profile/types';
+import { WebsiteUrlItem } from '@/features/office-profile/types';
 
 export interface BrandProfile {
   created_at: string;

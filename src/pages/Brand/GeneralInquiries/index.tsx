@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import { FilterValues, GlobalFilter } from './constants/filters';
 import { PATH } from '@/constants/path';
 
+import { ReactComponent as PendingIcon } from '@/assets/icons/action-pending-icon.svg';
+import { ReactComponent as RespondedIcon } from '@/assets/icons/action-responded-icon.svg';
 import { ReactComponent as NotificationIcon } from '@/assets/icons/action-unreaded-icon.svg';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
-import { ReactComponent as PendingIcon } from '@/assets/icons/pending-icon.svg';
-import { ReactComponent as RespondedIcon } from '@/assets/icons/responded-icon.svg';
 
 import { getGeneralInquiryPagination } from './services';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
