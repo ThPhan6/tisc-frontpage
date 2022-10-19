@@ -1,5 +1,5 @@
-import { ReactComponent as PendingIcon } from '@/assets/icons/pending-icon.svg';
-import { ReactComponent as RespondedIcon } from '@/assets/icons/responded-icon.svg';
+import { ReactComponent as PendingIcon } from '@/assets/icons/action-pending-icon.svg';
+import { ReactComponent as RespondedIcon } from '@/assets/icons/action-responded-icon.svg';
 
 export interface TopBarFilterValueProps {
   id: number;

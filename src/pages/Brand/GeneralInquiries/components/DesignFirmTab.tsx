@@ -20,7 +20,7 @@ export const DesignFirmTab: FC<{ data: GeneralInquiryDesignFirm }> = ({ data }) 
         {address || ''}
       </TextForm>
       <TextForm boxShadow label="General Phone">
-        {phone_code} {general_phone}
+        +{phone_code} {general_phone}
       </TextForm>
       <TextForm boxShadow label="General Email">
         {general_email}
