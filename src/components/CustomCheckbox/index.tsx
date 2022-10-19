@@ -67,8 +67,6 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
     }
 
     onChange?.(newData ?? []);
-
-    console.log('clearOtherInput', clearOtherInput);
   };
 
   const getActiveClass = (option: CheckboxValue) => {
@@ -113,7 +111,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
             )}
           </div>
         ))}
-        {otherInput && (
+        {otherInput ? (
           <div className={isCheckboxList && style['other-field-checkbox-list']}>
             <Checkbox value={'other'}>
               <div className={style['input-wrapper']} style={{ height: heightItem }}>
@@ -128,7 +126,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
               </div>
             </Checkbox>
           </div>
-        )}
+        ) : null}
       </Checkbox.Group>
     </div>
   );

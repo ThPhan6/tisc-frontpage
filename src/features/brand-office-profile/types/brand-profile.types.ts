@@ -1,6 +1,9 @@
-import { WebsiteUrlItem } from '@/types/user.type';
+export interface WebsiteUrlItem {
+  country_id: string;
+  url: string;
+}
 
-export const websiteValueDefautl = {
+export const websiteValueDefautl: WebsiteUrlItem = {
   country_id: '',
   url: '',
 };
@@ -13,6 +16,14 @@ export interface UpdateBrandProfileRequestBody {
   official_websites: WebsiteUrlItem[];
 }
 
+export const initialBrandProfileState: UpdateBrandProfileRequestBody = {
+  mission_n_vision: '',
+  name: '',
+  parent_company: '',
+  slogan: '',
+  official_websites: [],
+};
+
 export interface WebsiteUrl {
   websiteValue: WebsiteUrlItem;
   onChange: (value: WebsiteUrlItem) => void;
@@ -22,7 +33,3 @@ export interface WebsiteUrl {
 export interface LogoBrandProfile {
   logo: string;
 }
-
-export const logoValueDefault = {
-  logo: '',
-};
