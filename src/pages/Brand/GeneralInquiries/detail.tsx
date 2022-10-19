@@ -36,6 +36,9 @@ const DEFAULT_STATE: GeneralInquiryResponse = {
     general_email: '',
     general_phone: '',
     phone_code: '',
+    city_name: '',
+    country_name: '',
+    state_name: '',
   },
   inquiry_message: {
     id: '',
@@ -88,7 +91,7 @@ const GeneralInquiryDetail = () => {
       <Row>
         <Col span={12} className={styles.container}>
           <TableHeader
-            title={data.inquiry_message.product.name}
+            title={data.inquiry_message.inquiry_for}
             customClass={styles.header}
             rightAction={
               <CloseIcon

@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 
+import { getSelectedOptions } from '@/helper/utils';
 import { createActionTask, getActionTask } from '@/pages/Brand/GeneralInquiries/services';
 
 import { CheckboxValue } from '../CustomCheckbox/types';
@@ -32,6 +33,8 @@ export const ActionTaskModal: FC<ActionTaskModalProps> = ({
     model_name: model_name,
   });
 
+  const selectedActionTask = getSelectedOptions(actionTaskData, actionTaskModal.common_type_ids);
+
   const [clearOtherInput, setClearOtherInput] = useState<boolean>(false);
 
   useEffect(() => {
@@ -48,11 +51,11 @@ export const ActionTaskModal: FC<ActionTaskModalProps> = ({
   }, []);
 
   const onChangeActionTask = (selectedOption: CheckboxValue[]) => {
-    const selectedOpt = selectedOption.filter((el) => el.label !== '');
-
     setActionTaskModal((prevState) => ({
       ...prevState,
-      common_type_ids: selectedOpt.map((el) => String(el.value === 'other' ? el.label : el.value)),
+      common_type_ids: selectedOption.map((el) =>
+        String(el.value === 'other' ? el.label : el.value),
+      ),
     }));
   };
 
@@ -92,14 +95,11 @@ export const ActionTaskModal: FC<ActionTaskModalProps> = ({
       onFormSubmit={handleSubmitActionTask}>
       <CustomCheckbox
         options={actionTaskData}
+        selected={selectedActionTask}
         isCheckboxList
         otherInput
         clearOtherInput={clearOtherInput}
         onChange={onChangeActionTask}
-        selected={actionTaskModal.common_type_ids.map((el) => ({
-          label: '',
-          value: el,
-        }))}
       />
     </Popover>
   );
