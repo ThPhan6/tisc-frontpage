@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 
 import { PATH } from '@/constants/path';
-import { DESIGN_STATUSES_TEXTS } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
 
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
@@ -11,6 +10,7 @@ import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import type { TableColumnItem } from '@/components/Table/types';
 import { DesignFirm } from '@/features/user-group/types';
+import { ActiveStatus } from '@/types';
 
 import CustomTable from '@/components/Table';
 import { ActionMenu } from '@/components/TableAction';
@@ -44,7 +44,7 @@ const DesignFirmList: React.FC = () => {
     { title: 'Main Office', dataIndex: 'main_office', sorter: true },
     { title: 'Satellites', dataIndex: 'satellites' },
     { title: 'Designers', dataIndex: 'designers' },
-    { title: 'Capacities', dataIndex: 'capacities' },
+    { title: 'Capacity', dataIndex: 'capacities' },
     { title: 'Projects', dataIndex: 'projects' },
     { title: 'Live', dataIndex: 'live', lightHeading: true },
     { title: 'On Hold', dataIndex: 'on_hold', lightHeading: true },
@@ -54,7 +54,7 @@ const DesignFirmList: React.FC = () => {
       dataIndex: 'status',
       width: '5%',
       render: (value) => {
-        return <span>{DESIGN_STATUSES_TEXTS[value]}</span>;
+        return <span>{ActiveStatus[value]}</span>;
       },
     },
     {
