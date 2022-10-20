@@ -7,7 +7,7 @@ import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 import { useGetParamId } from '@/helper/hook';
 import { getProjectTrackingSummary } from '@/services/project-tracking.api';
 
-import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
+import { useAppSelector } from '@/reducers';
 
 import { Detail } from './components/Detail';
 import { LegendModal } from '@/components/LegendModal/LegendModal';
@@ -18,15 +18,11 @@ import styles from './index.less';
 
 const ProjectTrackingDetail = () => {
   const [openInformationModal, setOpenInformationModal] = useState(false);
-  const [summaryData, setSummaryData] = useState<DataMenuSummaryProps[]>([]);
   const idProject = useGetParamId();
+  const summary = useAppSelector((state) => state.summary.summaryProjectTracking);
 
   useEffect(() => {
-    getProjectTrackingSummary().then((summary) => {
-      if (summary) {
-        setSummaryData(summary);
-      }
-    });
+    getProjectTrackingSummary();
   }, []);
 
   return (
@@ -35,7 +31,7 @@ const ProjectTrackingDetail = () => {
         pageHeaderRender={() => {
           return (
             <div className={styles.customHeader}>
-              <MenuSummary typeMenu={'brand'} menuSummaryData={summaryData} />
+              <MenuSummary typeMenu={'brand'} menuSummaryData={summary} />
             </div>
           );
         }}>

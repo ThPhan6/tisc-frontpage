@@ -3,7 +3,12 @@ import { FC, useEffect, useState } from 'react';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 
 import { getFullName } from '@/helper/utils';
-import { getActionTaskList, updateActionTaskStatus } from '@/pages/Brand/GeneralInquiries/services';
+import {
+  getActionTaskList,
+  getGeneralInquirySummary,
+  updateActionTaskStatus,
+} from '@/pages/Brand/GeneralInquiries/services';
+import { getProjectTrackingSummary } from '@/services/project-tracking.api';
 
 import { ActionTaskModelParams, ActionTaskProps } from '@/pages/Brand/GeneralInquiries/types';
 
@@ -30,6 +35,11 @@ export const ActionTaskTable: FC<ActionTaskModelParams> = ({ model_id, model_nam
 
   useEffect(() => {
     getActionTaskList({ model_id: model_id, model_name: model_name }).then(setActionTaskList);
+    if (model_name === 'inquiry') {
+      getGeneralInquirySummary();
+    } else {
+      getProjectTrackingSummary();
+    }
   }, [reloadTable === true && modalVisible === false]);
 
   const renderStatusDropdown = (record: ActionTaskProps) => {
