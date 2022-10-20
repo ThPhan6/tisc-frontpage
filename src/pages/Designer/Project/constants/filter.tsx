@@ -10,7 +10,7 @@ export const FilterValues = {
   global: -1,
   live: ProjectStatus.Live,
   onHold: ProjectStatus['On Hold'],
-  archived: ProjectStatus.Archive,
+  archived: ProjectStatus.Archived,
 };
 
 export const FilterNames = {

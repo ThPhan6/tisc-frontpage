@@ -15,7 +15,7 @@ import { DropDownFilterValueProps } from '@/components/TopBar/types';
 export enum ProjectStatus {
   'Live',
   'On Hold',
-  'Archive',
+  'Archived',
 }
 
 export enum ProjectTrackingPriority {
@@ -37,7 +37,7 @@ export const GlobalFilter: DropDownFilterValueProps = {
 export const FilterStatusIcons = {
   [ProjectStatus.Live]: <ProjectLiveIcon className="icon-align" />,
   [ProjectStatus['On Hold']]: <ProjectOnHoldIcon className="icon-align" />,
-  [ProjectStatus.Archive]: <ProjectArchivedIcon className="icon-align" />,
+  [ProjectStatus.Archived]: <ProjectArchivedIcon className="icon-align" />,
 };
 
 export const ProjectStatuses: DropDownFilterValueProps[] = [
@@ -52,9 +52,9 @@ export const ProjectStatuses: DropDownFilterValueProps[] = [
     icon: FilterStatusIcons[ProjectStatus['On Hold']],
   },
   {
-    id: ProjectStatus.Archive,
-    name: ProjectStatus[ProjectStatus.Archive],
-    icon: FilterStatusIcons[ProjectStatus.Archive],
+    id: ProjectStatus.Archived,
+    name: ProjectStatus[ProjectStatus.Archived],
+    icon: FilterStatusIcons[ProjectStatus.Archived],
   },
 ];
 
