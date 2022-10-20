@@ -20,6 +20,10 @@ export interface GeneralInquirySummaryData {
 
 export interface GeneralInquiryDesignFirm {
   name: string;
+  address: string;
+  country_name: string;
+  city_name: string;
+  state_name: string;
   phone_code: string;
   general_email: string;
   general_phone: string;
