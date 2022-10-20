@@ -36,6 +36,9 @@ const DEFAULT_STATE: GeneralInquiryResponse = {
     general_email: '',
     general_phone: '',
     phone_code: '',
+    city_name: '',
+    country_name: '',
+    state_name: '',
   },
   inquiry_message: {
     id: '',

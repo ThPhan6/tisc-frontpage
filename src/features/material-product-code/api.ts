@@ -16,10 +16,10 @@ interface MaterialProductCodePaginationResponse {
   };
 }
 export async function getMaterialProductCodeList(
-  params: PaginationRequestParams,
+  { designId, ...params }: PaginationRequestParams,
   callback: (data: DataTableResponse) => void,
 ) {
-  request(`/api/material-code/get-list`, {
+  request(`/api/material-code/get-list?design_id=${designId}`, {
     method: 'GET',
     params,
   })
