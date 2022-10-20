@@ -83,12 +83,12 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     'select all relevance';
 
   useEffect(() => {
-    if (!isEqual(selectedFunctionType, curSelectFuncType) && curSelectFuncType.length) {
-      setCurSelectFuncType(selectedFunctionType);
+    if (!isDesignAdmin) {
+      if (!isEqual(selectedFunctionType, curSelectFuncType) && curSelectFuncType.length) {
+        setCurSelectFuncType(selectedFunctionType);
+      }
     }
   }, [isSubmitted === true]);
-
-  console.log();
 
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({

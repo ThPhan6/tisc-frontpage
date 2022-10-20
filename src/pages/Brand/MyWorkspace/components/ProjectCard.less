@@ -53,13 +53,9 @@
           text-align: left;
         }
         .middleValue {
-          // display: flex;
-          // align-items: center;
-          // justify-content: space-between;
           width: 64px;
+          margin-left: 24px;
           text-align: center;
-
-          // margin-right: 8px;
         }
       }
 
@@ -72,12 +68,15 @@
         padding: 0 16px;
         box-shadow: @border-top-light;
         .team {
-          display: flex;
+          display: -webkit-inline-box;
           align-items: center;
-          text-align: right;
+          overflow: auto;
           .avatar:not(:last-child) {
             margin-right: 2px;
           }
+        }
+        .team::-webkit-scrollbar {
+          display: none;
         }
       }
     }

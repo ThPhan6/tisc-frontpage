@@ -5,11 +5,17 @@ export type LoginInput = {
   password: string;
 };
 
-export type LoginResponseProp = {
+export enum UserType {
+  TISC = 1,
+  Brand = 2,
+  Designer = 3,
+}
+
+export type LoginResponseProps = {
   message: STATUS_RESPONSE;
   statusCode: number;
   token: string;
-  type: string;
+  type: UserType;
 };
 
 export type UserInfoDataProp = {

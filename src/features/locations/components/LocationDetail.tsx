@@ -60,10 +60,13 @@ const LocationDetail = () => {
 
   const [functionalTypes, setFunctionalTypes] = useState<CheckboxValue[] | RadioValue[]>([]);
   /// for show items have been already selected to show on first loading
-  const selectedFunctionType: CheckboxValue[] = getSelectedOptions(
-    functionalTypes as CheckboxValue[],
-    data.functional_type_ids as string[],
-  );
+  let selectedFunctionType: CheckboxValue[] = [];
+  if (!isDesignAdmin) {
+    selectedFunctionType = getSelectedOptions(
+      functionalTypes as CheckboxValue[],
+      data.functional_type_ids as string[],
+    );
+  }
 
   const goBackToLocationList = () => {
     pushTo(userRolePath);

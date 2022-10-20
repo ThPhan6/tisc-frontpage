@@ -25,12 +25,9 @@ export const ProjectCard: FC<ProjectCardProps> = ({ data }) => {
   return (
     <div className={styles.productCardContainer}>
       {data?.map((brand) => (
-        <div
-          key={brand.id}
-          className={styles.productCardItemWrapper}
-          onClick={() => handleClickItem(brand.id)}>
+        <div key={brand.id} className={styles.productCardItemWrapper}>
           <div className={styles.productCardItem}>
-            <div className={styles.top}>
+            <div className={styles.top} onClick={() => handleClickItem(brand.id)}>
               <div className={styles.brandName}>
                 <BodyText level={6} customClass={styles.bold} fontFamily="Roboto">
                   {brand.projectName}
@@ -72,7 +69,9 @@ export const ProjectCard: FC<ProjectCardProps> = ({ data }) => {
             </div>
 
             <div className={styles.profile_icon}>
-              <BodyText level={5}>Teams:</BodyText>
+              <BodyText level={5} style={{ marginRight: '24px' }}>
+                Teams:
+              </BodyText>
               <div className={styles.team}>
                 {brand.assignedTeams.map((user: BrandCardTeam) => (
                   <TeamIcon

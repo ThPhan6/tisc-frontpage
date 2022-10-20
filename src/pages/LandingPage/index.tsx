@@ -33,7 +33,7 @@ import {
   redirectAfterLogin,
 } from '@/helper/utils';
 
-import type { LoginInput, LoginResponseProp, ModalOpen, PasswordRequestBody } from './types';
+import { LoginInput, LoginResponseProps, ModalOpen, PasswordRequestBody, UserType } from './types';
 
 import { AboutModal } from './components/AboutModal';
 import { BrandInterestedModal } from './components/BrandInterestedModal';
@@ -118,13 +118,13 @@ const LandingPage = () => {
     } else {
       loginByBrandOrDesigner(
         data,
-        async (type: STATUS_RESPONSE, msg?: string, response?: LoginResponseProp) => {
+        async (type: STATUS_RESPONSE, msg?: string, response?: LoginResponseProps) => {
           if (type === STATUS_RESPONSE.SUCCESS) {
             message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
             await fetchUserInfo();
-            if (response?.type === 'design') {
+            if (response?.type === UserType.Designer) {
               redirectAfterDesignerLogin();
-            } else if (response?.type === 'brand') {
+            } else if (response?.type === UserType.Brand) {
               redirectAfterBrandLogin();
             }
           } else {
