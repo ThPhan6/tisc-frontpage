@@ -1,5 +1,7 @@
 import { FC } from 'react';
 
+import { getBusinessAddress } from '@/helper/utils';
+
 import { GeneralInquiryDesignFirm } from '../types';
 
 import TextForm from '@/components/Form/TextForm';
@@ -7,7 +9,7 @@ import TextForm from '@/components/Form/TextForm';
 import styles from '../detail.less';
 
 export const DesignFirmTab: FC<{ data: GeneralInquiryDesignFirm }> = ({ data }) => {
-  const { name, official_website, address, general_email, general_phone, phone_code } = data;
+  const { name, official_website, general_email, general_phone, phone_code } = data;
   return (
     <>
       <TextForm boxShadow label="Name" formClass={styles.nameDesignFirm}>
@@ -17,7 +19,7 @@ export const DesignFirmTab: FC<{ data: GeneralInquiryDesignFirm }> = ({ data }) 
         {official_website || ''}
       </TextForm>
       <TextForm boxShadow label="Address">
-        {address || ''}
+        {getBusinessAddress(data)}
       </TextForm>
       <TextForm boxShadow label="General Phone">
         +{phone_code} {general_phone}

@@ -4,16 +4,16 @@ export interface BrandProfile {
   created_at: string;
   id: string;
   is_deleted: boolean;
-  location_ids: any;
+  location_ids: string;
   logo: string;
   mission_n_vision: string;
   name: string;
-  official_websites: WebsiteUrlItem[] | null;
-  parent_company: string | null;
-  slogan: string | null;
+  official_websites: WebsiteUrlItem[];
+  parent_company: string;
+  slogan: string;
   status: number;
-  team_profile_ids: any;
-  updated_at: string | null;
+  team_profile_ids: string[];
+  updated_at: string;
 }
 
 export interface DesignFirmProfile {
