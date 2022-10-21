@@ -114,6 +114,7 @@ const GeneralInquiries = () => {
               }
             : undefined
         }
+        autoLoad={false}
       />
     </GeneralInquiryContainer>
   );
