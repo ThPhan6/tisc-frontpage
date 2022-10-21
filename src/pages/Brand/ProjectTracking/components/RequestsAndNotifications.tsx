@@ -32,6 +32,7 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
   setData,
 }) => {
   const [detailItem, setDetailItem] = useState<RequestAndNotificationDetail>();
+  const [indexItem, setIndexItem] = useState<number>(0);
   return (
     <div className={styles.content}>
       {detailItem === undefined ? (
@@ -41,6 +42,7 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
               <tr
                 onClick={() => {
                   setDetailItem(item);
+                  setIndexItem(index);
                   setData((prevData) => {
                     const newData = cloneDeep(prevData);
                     if (type === 'request') {
@@ -138,7 +140,12 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
             </>
           )}
 
-          <ActionTaskTable model_id={detailItem.id} model_name={type} />
+          <ActionTaskTable
+            model_id={detailItem.id}
+            model_name={type}
+            setData={setData}
+            indexItem={indexItem}
+          />
         </>
       )}
     </div>

@@ -1,4 +1,5 @@
 import { RespondedOrPendingStatus } from '@/types';
+import { ProjectTrackingDetail } from '@/types/project-tracking.type';
 
 export interface GeneralInquiryListProps {
   id: string;
@@ -87,4 +88,9 @@ export interface ActionTaskModelParams {
 
 export interface ActionTaskRequestBody extends ActionTaskModelParams {
   common_type_ids: string[];
+}
+
+export interface ActionTaskModelProps extends ActionTaskModelParams {
+  setData: (setState: (prevState: ProjectTrackingDetail) => ProjectTrackingDetail) => void;
+  indexItem: number;
 }
