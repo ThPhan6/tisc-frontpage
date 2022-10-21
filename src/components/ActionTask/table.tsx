@@ -43,23 +43,27 @@ export const ActionTaskTable: FC<ActionTaskModelProps> = ({
 
   const [actionTaskList, setActionTaskList] = useState<ActionTaskProps[]>([]);
 
+  const updateData = () => {
+    setData((prevData) => {
+      const newData = cloneDeep(prevData);
+      if (model_name === 'request') {
+        newData.projectRequests[indexItem as number].status = ProjectRequestStatus.Responded;
+      } else {
+        newData.notifications[indexItem as number].status =
+          ProjectTrackingNotificationStatus['Followed-up'];
+      }
+      return newData;
+    });
+  };
+
   useEffect(() => {
     getActionTaskList({ model_id: model_id, model_name: model_name }).then(setActionTaskList);
-    if (reloadTable === true) {
+    if (reloadTable) {
       if (model_name === 'inquiry') {
         getGeneralInquirySummary();
       } else {
         getProjectTrackingSummary();
-        setData((prevData) => {
-          const newData = cloneDeep(prevData);
-          if (model_name === 'request') {
-            newData.projectRequests[indexItem as number].status = ProjectRequestStatus.Responded;
-          } else {
-            newData.notifications[indexItem as number].status =
-              ProjectTrackingNotificationStatus['Followed-up'];
-          }
-          return newData;
-        });
+        updateData();
       }
     }
   }, [reloadTable === true && modalVisible === false]);
