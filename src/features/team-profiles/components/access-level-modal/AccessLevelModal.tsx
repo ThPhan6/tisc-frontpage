@@ -6,7 +6,7 @@ import { ReactComponent as AccessableTickIcon } from '@/assets/icons/accessable-
 import { showImageUrl } from '@/helper/utils';
 import { getPermission, updatePermission } from '@/services/permission.api';
 
-import { AccessLevelModalItemProps, AccessLevelModalProps } from '../../types';
+import { PermissionData, PermissionItem } from '@/types';
 
 import Popover from '@/components/Modal/Popover';
 import { BodyText, MainTitle } from '@/components/Typography';
@@ -29,28 +29,34 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
   showMyDashboard,
   children,
 }) => {
-  const [data, setData] = useState<AccessLevelModalProps[]>([]);
+  const [data, setData] = useState<PermissionData[]>([]);
 
   // load permission data
   useEffect(() => {
     getPermission().then(setData);
   }, []);
 
-  const handleClickAccessable = (accessItem: AccessLevelModalItemProps) => {
-    accessItem.accessable = accessItem.accessable === true ? false : true;
+  const handleClickAccessable = (accessItem: PermissionItem) => {
+    accessItem.accessable = !accessItem.accessable;
+
+    console.log('accessItem', accessItem);
+
     /// overwrite data
     setData([...data]);
     /// update to server
     updatePermission(accessItem.id).then((isSuccess) => {
+      // if failed to update
       if (!isSuccess) {
         /// revert changes
-        accessItem.accessable = accessItem.accessable === true ? false : true;
+        accessItem.accessable = !accessItem.accessable;
         setData([...data]);
       }
     });
   };
 
-  const renderPermission: any = (menu: AccessLevelModalProps, type: string) => {
+  console.log(data);
+
+  const renderPermission: any = (menu: PermissionData, type: string) => {
     return (
       <Fragment key={menu.name}>
         <tr className={styles.menu}>
@@ -65,34 +71,35 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
               {menu.name}
             </BodyText>
           </td>
-
           {/* render icon */}
           {!menu.subs?.length &&
-            menu.items.map((item, key) => (
-              <Fragment key={key}>
-                <td className={styles.menu_accessable} key={item.id}>
-                  {item.accessable === true ? (
-                    <AccessableTickIcon
-                      className={styles.menu_accessable_true}
-                      onClick={() => handleClickAccessable(item)}
-                    />
-                  ) : (
-                    <AccessableMinusIcon
-                      className={styles.menu_accessable_false}
-                      onClick={() => handleClickAccessable(item)}
-                    />
-                  )}
-                </td>
+            menu.items.map((item, key) => {
+              return (
+                <Fragment key={key}>
+                  <td className={styles.menu_accessable} key={item.id}>
+                    {item.accessable === true ? (
+                      <AccessableTickIcon
+                        className={'cursor-pointer'}
+                        onClick={() => handleClickAccessable(item)}
+                      />
+                    ) : (
+                      <AccessableMinusIcon
+                        className={`cursor-pointer`}
+                        onClick={() => handleClickAccessable(item)}
+                      />
+                    )}
+                  </td>
 
-                {/* for future data */}
-                <td
-                  key={`fData_${item.id}`}
-                  style={{ textAlign: 'center', display: !menu.subs ? 'none' : '' }}>
-                  <AccessableTickIcon className={styles.menu_accessable_null} />
-                </td>
-                {/* --------- */}
-              </Fragment>
-            ))}
+                  {/* for future data */}
+                  <td
+                    key={`fData_${item.id}`}
+                    style={{ textAlign: 'center', display: !menu.subs ? 'none' : '' }}>
+                    <AccessableTickIcon className={styles.menu_accessable_null} />
+                  </td>
+                  {/* --------- */}
+                </Fragment>
+              );
+            })}
         </tr>
 
         {/* render subs */}
