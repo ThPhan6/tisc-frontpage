@@ -152,7 +152,7 @@ export async function getAllMaterialCode() {
 }
 
 export async function updateStatusDesignFirm(id: string, data: { status: number }) {
-  return request<boolean>(`/api/design/update-status/${id}`, { method: 'PUT', data })
+  return request<boolean>(`/api/design/update-status/${id}`, { method: 'PATCH', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_STATUS_DESIGN_FIRM_SUCCESS);
       return true;
