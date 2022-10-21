@@ -71,9 +71,7 @@ export const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
                               ''
                             )}
                             <TextForm label="Location Function">
-                              {location.functional_types
-                                .map((fncType) => fncType.name)
-                                .join(', ') ?? ''}
+                              {location.functional_type}
                             </TextForm>
                             <TextForm label="Address">{location.address ?? ''}</TextForm>
                             <FormGroup
