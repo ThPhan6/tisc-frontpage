@@ -67,7 +67,7 @@ const ProductConsidered: React.FC = () => {
         disabled: record.specifiedDetail?.consider_status !== ProductConsiderStatus.Unlisted,
         onClick: () => {
           updateProductConsiderStatus(record.specifiedDetail?.id, {
-            consider_status: ProductConsiderStatus['Re-Considered'],
+            consider_status: ProductConsiderStatus['Re-considered'],
           }).then((success) => (success ? tableRef.current?.reload() : undefined));
         },
       },

@@ -108,10 +108,10 @@ export const RequestsIcons = {
 export enum ProjectTrackingNotificationType {
   'Deleted',
   'Considered',
-  'Re-Considered',
+  'Re-considered',
   'Unlisted',
   'Specified',
-  'Re-Specified',
+  'Re-specified',
   'Cancelled',
 }
 
