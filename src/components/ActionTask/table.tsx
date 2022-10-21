@@ -1,11 +1,21 @@
 import { FC, useEffect, useState } from 'react';
 
+import {
+  ProjectRequestStatus,
+  ProjectTrackingNotificationStatus,
+} from '@/pages/Brand/ProjectTracking/constant';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 
 import { getFullName } from '@/helper/utils';
-import { getActionTaskList, updateActionTaskStatus } from '@/pages/Brand/GeneralInquiries/services';
+import {
+  getActionTaskList,
+  getGeneralInquirySummary,
+  updateActionTaskStatus,
+} from '@/pages/Brand/GeneralInquiries/services';
+import { getProjectTrackingSummary } from '@/services/project-tracking.api';
+import { cloneDeep } from 'lodash';
 
-import { ActionTaskModelParams, ActionTaskProps } from '@/pages/Brand/GeneralInquiries/types';
+import { ActionTaskModelProps, ActionTaskProps } from '@/pages/Brand/GeneralInquiries/types';
 
 import CustomPlusButton from '../Table/components/CustomPlusButton';
 import { CustomDropDown } from '@/features/product/components';
@@ -22,14 +32,40 @@ enum ActionTaskStatus {
   'Completed',
 }
 
-export const ActionTaskTable: FC<ActionTaskModelParams> = ({ model_id, model_name }) => {
+export const ActionTaskTable: FC<ActionTaskModelProps> = ({
+  model_id,
+  model_name,
+  setData,
+  indexItem,
+}) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [reloadTable, setReloadTable] = useState<boolean>(false);
 
   const [actionTaskList, setActionTaskList] = useState<ActionTaskProps[]>([]);
 
+  const updateData = () => {
+    setData((prevData) => {
+      const newData = cloneDeep(prevData);
+      if (model_name === 'request') {
+        newData.projectRequests[indexItem as number].status = ProjectRequestStatus.Responded;
+      } else {
+        newData.notifications[indexItem as number].status =
+          ProjectTrackingNotificationStatus['Followed-up'];
+      }
+      return newData;
+    });
+  };
+
   useEffect(() => {
     getActionTaskList({ model_id: model_id, model_name: model_name }).then(setActionTaskList);
+    if (reloadTable) {
+      if (model_name === 'inquiry') {
+        getGeneralInquirySummary();
+      } else {
+        getProjectTrackingSummary();
+        updateData();
+      }
+    }
   }, [reloadTable === true && modalVisible === false]);
 
   const renderStatusDropdown = (record: ActionTaskProps) => {

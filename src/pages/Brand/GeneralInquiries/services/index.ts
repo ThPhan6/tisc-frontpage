@@ -16,6 +16,8 @@ import {
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
+import store from '@/reducers';
+import { setSummaryGeneralInquiry } from '@/reducers/summary';
 import { GeneralData } from '@/types';
 
 interface GeneralInquiryPaginationResponse {
@@ -53,7 +55,7 @@ export async function getGeneralInquiryPagination(
 
 export async function getGeneralInquirySummary() {
   return request<GeneralInquirySummaryData>(`/api/general-inquiry/summary`, { method: 'GET' })
-    .then((res) => res)
+    .then((res) => store.dispatch(setSummaryGeneralInquiry(res)))
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_GENERAL_INQUIRY_SUMMARY_ERROR);
       return {} as GeneralInquirySummaryData;

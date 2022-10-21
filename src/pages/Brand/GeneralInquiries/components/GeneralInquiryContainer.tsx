@@ -7,6 +7,7 @@ import { getGeneralInquirySummary } from '../services';
 
 import { GeneralInquirySummaryData } from '../types';
 import { DropDownFilterProps, DropDownFilterValueProps } from '@/components/TopBar/types';
+import { useAppSelector } from '@/reducers';
 
 import { LegendModal } from '@/components/LegendModal/LegendModal';
 import TopBarSummaryHasFilter from '@/components/TopBar';
@@ -48,14 +49,10 @@ export const GeneralInquiryContainer: FC<GeneralInquiryContainerProps> = ({
   setVisible,
   children,
 }) => {
-  const [summaryData, setSummaryData] = useState<GeneralInquirySummaryData>();
+  const summaryData = useAppSelector((state) => state.summary.summaryGeneralInquiry);
 
   useEffect(() => {
-    getGeneralInquirySummary().then((res) => {
-      if (res) {
-        setSummaryData(res);
-      }
-    });
+    getGeneralInquirySummary();
   }, []);
 
   return (

@@ -136,7 +136,6 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
         expandable={GetExpandableTableConfig({
           columns: setDefaultWidthForEachColumn(CollectionColumns, 4),
           childrenColumnName: 'products',
-          rowKey: 'specified_product_id',
           level: 2,
         })}
       />

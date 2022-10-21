@@ -1,11 +1,11 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 
 import { GlobalFilter, ProjectStatusFilters } from '../constant';
 
 import { getProjectTrackingSummary } from '@/services/project-tracking.api';
 
-import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import { DropDownFilterValueProps } from '@/components/TopBar/types';
+import { useAppSelector } from '@/reducers';
 
 import { MenuSummary } from '@/components/MenuSummary';
 import TopBarDropDownFilter from '@/components/TopBar/TopBarDropDownFilter';
@@ -21,17 +21,15 @@ export const ProjectTrackingHeader: FC<ProjectTrackingHeaderProps> = ({
   setSelectedFilter,
   children,
 }) => {
-  const [summaryData, setSummaryData] = useState<DataMenuSummaryProps[]>([]);
+  const summary = useAppSelector((state) => state.summary.summaryProjectTracking);
+
   useEffect(() => {
-    getProjectTrackingSummary().then((data) => {
-      if (data) {
-        setSummaryData(data);
-      }
-    });
+    getProjectTrackingSummary();
   }, []);
+
   return (
     <div className={styles.customHeader}>
-      <MenuSummary typeMenu={'brand'} menuSummaryData={summaryData} />
+      <MenuSummary typeMenu={'brand'} menuSummaryData={summary} />
       <div style={{ display: 'flex' }}>
         <TopBarDropDownFilter
           selectedFilter={selectedFilter}

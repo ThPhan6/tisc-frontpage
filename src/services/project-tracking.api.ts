@@ -9,6 +9,8 @@ import {
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
+import store from '@/reducers';
+import { setSummaryProjectTracking } from '@/reducers/summary';
 import { ProjecTrackingList, ProjectTrackingDetail } from '@/types/project-tracking.type';
 
 interface ProjectTrackingPaginationRespone {
@@ -60,7 +62,7 @@ export async function getProjectTrackingSummary() {
     method: 'GET',
   })
     .then((response) => {
-      return response.data;
+      store.dispatch(setSummaryProjectTracking(response.data));
     })
     .catch((error) => {
       message.error(
