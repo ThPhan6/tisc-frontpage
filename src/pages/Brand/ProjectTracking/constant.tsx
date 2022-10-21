@@ -86,7 +86,7 @@ export const ProjectPriority: DropDownFilterValueProps[] = [
   {
     id: ProjectTrackingPriority['Low priority'],
     name: ProjectTrackingPriority[ProjectTrackingPriority['Low priority']],
-    icon: PriorityIcons[ProjectTrackingPriority['Mid priority']],
+    icon: PriorityIcons[ProjectTrackingPriority['Low priority']],
   },
 ];
 
