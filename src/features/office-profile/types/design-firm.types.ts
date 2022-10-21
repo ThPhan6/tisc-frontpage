@@ -6,6 +6,6 @@ export const initialOfficeProfileState: Partial<DesignFirmProfile> = {
   logo: '',
   slogan: '',
   profile_n_philosophy: '',
-  office_website: '',
+  official_website: '',
   capabilities: [],
 };
