@@ -24,7 +24,7 @@ export interface DesignFirmProfile {
   logo: string;
   slogan: string;
   profile_n_philosophy: string;
-  office_website: string;
+  official_website: string;
   updated_at: string;
   capabilities: string[];
   team_profile_ids: [];

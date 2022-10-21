@@ -86,7 +86,7 @@ const BrandProfilePage = () => {
           parent_company: designAppState.parent_company ?? '',
           slogan: designAppState.slogan ?? '',
           profile_n_philosophy: designAppState.profile_n_philosophy ?? '',
-          office_website: designAppState.office_website ?? '',
+          official_website: designAppState.official_website ?? '',
           capabilities: designAppState.capabilities ?? [],
         });
       }
@@ -230,7 +230,7 @@ const BrandProfilePage = () => {
         case !designFirmProfile.profile_n_philosophy:
           message.error('Profile & Philosophy is required');
           return;
-        case !designFirmProfile.office_website:
+        case !designFirmProfile.official_website:
           message.error('Offical Website is required');
           return;
         case !designFirmProfile.capabilities?.length:
@@ -258,7 +258,7 @@ const BrandProfilePage = () => {
           parent_company: designFirmProfile.parent_company?.trim() ?? '',
           slogan: designFirmProfile.slogan?.trim() ?? '',
           profile_n_philosophy: designFirmProfile.profile_n_philosophy?.trim() ?? '',
-          office_website: designFirmProfile.office_website?.trim() ?? '',
+          official_website: designFirmProfile.official_website?.trim() ?? '',
           capabilities: designFirmProfile.capabilities ?? [],
         });
 
@@ -403,9 +403,9 @@ const BrandProfilePage = () => {
                     <CustomInput
                       borderBottomColor="mono-medium"
                       placeholder="paste URL link here"
-                      name="office_website"
+                      name="official_website"
                       onChange={onChangeValueForm}
-                      value={designFirmProfile.office_website}
+                      value={designFirmProfile.official_website}
                     />
                   </FormGroup>
 
