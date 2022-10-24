@@ -7,6 +7,7 @@ import { projectReducer } from '@/features/project/reducers';
 
 import { loadingActionReducer } from '@/components/LoadingPage/slices';
 
+import summaryReducer from './summary';
 import userReducer from './user';
 import { combineReducers, configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import { persistReducer, persistStore } from 'redux-persist';
@@ -18,6 +19,7 @@ const reducers = combineReducers({
   user: userReducer,
   project: projectReducer,
   loading: loadingActionReducer,
+  summary: summaryReducer,
 });
 
 const persistConfig = {

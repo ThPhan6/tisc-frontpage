@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Tooltip, TooltipProps, message } from 'antd';
+import { Tooltip, TooltipProps } from 'antd';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
@@ -26,10 +26,11 @@ import { showImageUrl } from '@/helper/utils';
 import { capitalize, truncate } from 'lodash';
 
 import { ProductGetListParameter, ProductItem } from '../types';
-import { AssigningStatus } from '@/features/project/types';
+import { ProductConsiderStatus } from '@/features/project/types';
 import { useAppSelector } from '@/reducers';
 
 import CustomCollapse from '@/components/Collapse';
+import InquiryRequest from '@/components/InquiryRequest';
 import ShareViaEmail from '@/components/ShareViaEmail';
 import { BodyText } from '@/components/Typography';
 
@@ -61,8 +62,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const [liked, setLiked] = useState(product.is_liked);
   const showShareEmailModal = useBoolean();
   const showAssignProductModal = useBoolean();
+  const showInquiryRequestModal = useBoolean();
 
-  const unlistedDisabled = product.status === AssigningStatus.Unlisted;
+  const unlistedDisabled =
+    product.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted;
 
   // check user role to redirect
   const userRole = useGetUserRoleFromPathname();
@@ -143,16 +146,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
       onClick: handleDeleteProduct,
     },
     {
+      tooltipText: 'Inquiry/Request',
+      show: Boolean(showInquiryRequest && isDesignerUser),
+      Icon: CommentIcon,
+      onClick: () => showInquiryRequestModal.setValue(true),
+    },
+    {
       tooltipText: 'Assign Product',
       show: isDesignerUser && !hideAssign,
       Icon: AssignIcon,
       onClick: () => showAssignProductModal.setValue(true),
-    },
-    {
-      tooltipText: 'Inquiry/Request',
-      show: Boolean(showInquiryRequest && isDesignerUser),
-      Icon: CommentIcon,
-      onClick: () => message.info('Feature is coming in Phase 4'),
     },
     {
       tooltipText: 'Share via Email',
@@ -171,9 +174,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <div
           style={{
             backgroundImage: `url(${
-              product.images?.[0] || product.image
-                ? showImageUrl(product.images?.[0] ?? product.image)
-                : SampleProductImage
+              product.images?.[0] ? showImageUrl(product.images?.[0]) : SampleProductImage
             }`,
           }}
           className={styles.imageWrapper_image}
@@ -189,7 +190,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           {product.name}
         </BodyText>
         <BodyText level={7} fontFamily="Roboto" customClass="text-uppercase">
-          {product.brand?.name ?? product.brand_name ?? 'N/A'}
+          {product.brand?.name ?? 'N/A'}
         </BodyText>
       </div>
       <div className={styles.productAction}>
@@ -224,7 +225,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </div>
       </div>
 
-      {/* Keep condition to show Modals for better performance */}
       {showShareEmailModal.value ? (
         <ShareViaEmail
           visible={showShareEmailModal.value}
@@ -238,6 +238,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
           visible={showAssignProductModal.value}
           setVisible={showAssignProductModal.setValue}
           productId={product.id}
+        />
+      ) : null}
+
+      {showInquiryRequestModal.value ? (
+        <InquiryRequest
+          visible={showInquiryRequestModal.value}
+          setVisible={showInquiryRequestModal.setValue}
+          product={product}
         />
       ) : null}
     </div>
@@ -274,7 +282,7 @@ export const CollapseProductList: React.FC<{ showBrandLogo?: boolean }> = ({ sho
           <div className={styles.productCardContainer}>
             {group.products.map((productItem, productKey) => (
               <div className={styles.productCardItemWrapper} key={productKey}>
-                <ProductCard product={productItem} />
+                <ProductCard product={productItem} showInquiryRequest />
               </div>
             ))}
           </div>

@@ -14,10 +14,10 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       if (subname) {
         const foundsub = found.subs.find((sub: any) => sub.name.toLowerCase().includes(subname));
         if (foundsub) {
-          return foundsub.accessable;
+          return foundsub.items[0].accessable;
         }
       }
-      return found.accessable;
+      return found.items[0].accessable;
     }
     return false;
   };
@@ -70,7 +70,14 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     design_product: isAccessableForDesigner('product'),
     design_product_brand_product: isAccessableForDesigner('product', 'brand product'),
     design_product_custom_library: isAccessableForDesigner('product', 'custom library'),
-    design_project: isAccessableForDesigner('project'),
+    // for access to project
+    design_project_overal_listing: isAccessableForDesigner('project', 'overal listing'),
+    // project tabs
+    design_project_basic_information: isAccessableForDesigner('project', 'basic information'),
+    design_project_zone_area_zoom: isAccessableForDesigner('project', 'zone/area/room'),
+    design_project_product_considered: isAccessableForDesigner('project', 'product considered'),
+    design_project_product_specified: isAccessableForDesigner('project', 'product specified'),
+    ///
     design_administration: isAccessableForDesigner('administration'),
     design_administration_office_profile: isAccessableForDesigner(
       'administration',

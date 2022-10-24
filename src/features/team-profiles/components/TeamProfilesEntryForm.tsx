@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 
 import { DEFAULT_TEAMPROFILE, DEFAULT_TEAMPROFILE_WITH_GENDER } from '../constants/entryForm';
-import { BrandAccessLevelDataRole, TISCAccessLevelDataRole } from '../constants/role';
+import {
+  BrandAccessLevelDataRole,
+  DesignAccessLevelDataRole,
+  TISCAccessLevelDataRole,
+} from '../constants/role';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { message } from 'antd';
@@ -24,7 +28,7 @@ import { getDepartmentList } from '@/services';
 
 import { TeamProfileDetailProps, TeamProfileRequestBody } from '../types';
 import { useAppSelector } from '@/reducers';
-import { DepartmentData } from '@/types';
+import { GeneralData } from '@/types';
 
 import { CustomRadio } from '@/components/CustomRadio';
 import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
@@ -37,10 +41,11 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { createTeamProfile, getOneTeamProfile, inviteUser, updateTeamProfile } from '../api';
-import BrandAccessLevelModal from './BrandAccessLevelModal';
 import LocationModal from './LocationModal';
-import TISCAccessLevelModal from './TISCAccessLevelModal';
 import styles from './TeamProfilesEntryForm.less';
+import BrandAccessLevelModal from './access-level-modal/BrandAccessLevelModal';
+import DesignAccessLevelModal from './access-level-modal/DesignAccessLevelModal';
+import TISCAccessLevelModal from './access-level-modal/TISCAccessLevelModal';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const GenderRadio = [
@@ -59,21 +64,24 @@ const TeamProfilesEntryForm = () => {
 
   const isTISCAdmin = useCheckPermission('TISC Admin');
   const isBrandAdmin = useCheckPermission('Brand Admin');
+  const isDesignAdmin = useCheckPermission('Design Admin');
   /// for access level
   const accessLevelDataRole = getValueByCondition(
     [
       [isTISCAdmin, TISCAccessLevelDataRole],
       [isBrandAdmin, BrandAccessLevelDataRole],
+      [isDesignAdmin, DesignAccessLevelDataRole],
     ],
-    [],
+    DesignAccessLevelDataRole,
   );
   /// for user role path
   const userRolePath = getValueByCondition(
     [
       [isTISCAdmin, PATH.tiscTeamProfile],
       [isBrandAdmin, PATH.brandTeamProfile],
+      [isDesignAdmin, PATH.designerOfficeTeamProfile],
     ],
-    '',
+    PATH.designerOfficeTeamProfile,
   );
 
   const submitButtonStatus = useBoolean(false);
@@ -83,7 +91,7 @@ const TeamProfilesEntryForm = () => {
   );
 
   /// for department
-  const [departments, setDepartments] = useState<DepartmentData[]>([]);
+  const [departments, setDepartments] = useState<GeneralData[]>([]);
   const [openModal, setOpenModal] = useState<'' | 'workLocationModal' | 'accessModal'>('');
 
   const [workLocation, setWorkLocation] = useState({
@@ -410,6 +418,13 @@ const TeamProfilesEntryForm = () => {
 
       {isBrandAdmin ? (
         <BrandAccessLevelModal visible={openModal === 'accessModal'} setVisible={setVisibleModal} />
+      ) : null}
+
+      {isDesignAdmin ? (
+        <DesignAccessLevelModal
+          visible={openModal === 'accessModal'}
+          setVisible={setVisibleModal}
+        />
       ) : null}
 
       {/* Location Modal */}

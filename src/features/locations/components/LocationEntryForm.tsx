@@ -4,21 +4,23 @@ import React, { useEffect, useState } from 'react';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
 
+import { useCheckPermission } from '@/helper/hook';
 import {
   getEmailMessageError,
   getEmailMessageErrorType,
-  getSelectedOptions,
   isEmptySpace,
   messageError,
   messageErrorType,
   validatePostalCode,
 } from '@/helper/utils';
-import { trimStart } from 'lodash';
+import { isEqual, trimStart } from 'lodash';
 
 import { LocationForm } from '../type';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { RadioValue } from '@/components/CustomRadio/types';
 
 import CollapseCheckboxList from '@/components/CustomCheckbox/CollapseCheckboxList';
+import { CustomRadio } from '@/components/CustomRadio';
 import { EntryFormWrapper } from '@/components/EntryForm';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
@@ -28,26 +30,33 @@ import CityModal from '@/features/locations/components/CityModal';
 import CountryModal from '@/features/locations/components/CountryModal';
 import StateModal from '@/features/locations/components/StateModal';
 
-import { getListFunctionalType } from '../api';
 import styles from './LocationEntryForm.less';
 
 interface LocationEntryFormProps {
-  submitButtonStatus: boolean;
   onSubmit: (data: LocationForm) => void;
   onCancel: () => void;
   data: LocationForm;
   setData: (data: LocationForm) => void;
+  isSubmitted: boolean;
+  functionalTypeData: CheckboxValue[] | RadioValue[];
+  selectedFunctionType: CheckboxValue[];
 }
 
 type FieldName = keyof LocationForm;
 const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
-  const { submitButtonStatus, onSubmit, onCancel, data, setData } = props;
+  const {
+    isSubmitted,
+    onSubmit,
+    onCancel,
+    data,
+    setData,
+    functionalTypeData,
+    selectedFunctionType,
+  } = props;
   // for content type modal
-  const [visible, setVisible] = useState({
-    country: false,
-    state: false,
-    city: false,
-  });
+  const [visible, setVisible] = useState<'' | 'country' | 'state' | 'city'>('');
+
+  const isDesignAdmin = useCheckPermission('Design Admin');
 
   const [countryData, setCountryData] = useState({
     label: '',
@@ -63,19 +72,23 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     value: data.city_id,
   });
 
-  /// for show data
-  const [functionalTypes, setFunctionalTypes] = useState<CheckboxValue[]>([]);
   /// for item selected
-  const [checkedOpt, setCheckedOpt] = useState<CheckboxValue[]>([]);
-  /// for show items have been already selected to show on first loading
-  const selectedFunctionType = getSelectedOptions(functionalTypes, data.functional_type_ids);
+  const [curSelectFuncType, setCurSelectFuncType] = useState<CheckboxValue[]>([]);
   /// for show on placeholder
   const onShowPlaceholder =
     /// current select
-    checkedOpt.map((el) => el.label).join(', ') ||
+    curSelectFuncType.map((el) => el.label).join(', ') ||
     /// has been selected
     selectedFunctionType.map((el) => el.label).join(', ') ||
     'select all relevance';
+
+  useEffect(() => {
+    if (!isDesignAdmin) {
+      if (!isEqual(selectedFunctionType, curSelectFuncType) && curSelectFuncType.length) {
+        setCurSelectFuncType(selectedFunctionType);
+      }
+    }
+  }, [isSubmitted === true]);
 
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({
@@ -95,18 +108,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     });
   };
 
-  useEffect(() => {
-    getListFunctionalType().then((res) => {
-      if (res) {
-        setFunctionalTypes(
-          res.map((el) => ({
-            label: el.name,
-            value: el.id,
-          })),
-        );
-      }
-    });
-  }, []);
+  const handleCloseModal = (isClose: boolean) => (isClose ? undefined : setVisible(''));
 
   useEffect(() => {
     if (countryData.value !== '') {
@@ -121,6 +123,23 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
   useEffect(() => {
     onChangeData('city_id', cityData.value);
   }, [cityData]);
+
+  const setStylesForFunctionType = () => {
+    if (isDesignAdmin) {
+      return styles.borderBottom;
+    }
+    return selectedFunctionType.length || curSelectFuncType.length ? styles.activeFunctionType : '';
+  };
+
+  const getFunctionalTypes = () => {
+    if (isDesignAdmin) {
+      return data.functional_type_ids;
+    }
+
+    return curSelectFuncType.length
+      ? curSelectFuncType.map((el) => String(el.value === 'other' ? el.label : el.value))
+      : selectedFunctionType.map((el) => String(el.value));
+  };
 
   const handleSubmit = () => {
     /// check email
@@ -140,9 +159,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       postal_code: data.postal_code?.trim() ?? '',
       general_phone: data.general_phone?.trim() ?? '',
       general_email: data.general_email?.trim() ?? '',
-      functional_type_ids: checkedOpt.length
-        ? checkedOpt.map((el) => String(el.value === 'other' ? el.label : el.value))
-        : selectedFunctionType.map((el) => String(el.value)),
+      functional_type_ids: getFunctionalTypes(),
     });
   };
 
@@ -150,7 +167,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     <EntryFormWrapper
       handleSubmit={handleSubmit}
       handleCancel={onCancel}
-      submitButtonStatus={submitButtonStatus}>
+      submitButtonStatus={isSubmitted}>
       <InputGroup
         label="Business Name"
         required
@@ -165,49 +182,68 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
           onChangeData('business_name', e.target.value);
         }}
         onDelete={() => onChangeData('business_name', '')}
-        placeholder="registered business / company name"
+        placeholder={
+          isDesignAdmin
+            ? 'e.g. office name + country/city name'
+            : 'registered business / company name'
+        }
       />
-      <InputGroup
-        label="Business Number"
-        required
-        deleteIcon
-        fontLevel={3}
-        value={data.business_number}
-        hasPadding
-        colorPrimaryDark
-        hasBoxShadow
-        hasHeight
-        onChange={(e) => {
-          onChangeData('business_number', e.target.value);
-        }}
-        onDelete={() => onChangeData('business_number', '')}
-        placeholder="registered business number for verification"
-      />
+
+      {isDesignAdmin ? null : (
+        <InputGroup
+          label="Business Number"
+          required
+          deleteIcon
+          fontLevel={3}
+          value={data.business_number}
+          hasPadding
+          colorPrimaryDark
+          hasBoxShadow
+          hasHeight
+          onChange={(e) => {
+            onChangeData('business_number', e.target.value);
+          }}
+          onDelete={() => onChangeData('business_number', '')}
+          placeholder="registered business number for verification"
+        />
+      )}
 
       <FormGroup
         label="Functional Type"
         required
         layout="vertical"
-        formClass={`${styles.formGroup} ${
-          selectedFunctionType.length || checkedOpt.length ? styles.activeFunctionType : ''
-        }`}>
-        <CollapseCheckboxList
-          options={functionalTypes}
-          checked={selectedFunctionType}
-          onChange={(checkedItem) => {
-            // to show on placeholer and handle submit
-            setCheckedOpt(checkedItem);
+        formClass={`${styles.formGroup} ${setStylesForFunctionType()}`}>
+        {isDesignAdmin ? (
+          <CustomRadio
+            options={functionalTypeData as RadioValue[]}
+            value={data.functional_type_ids[0] ?? functionalTypeData[0]?.value}
+            onChange={(radioValue) => {
+              setData({
+                ...data,
+                functional_type_ids: [String(radioValue.value)],
+              });
+            }}
+          />
+        ) : (
+          <CollapseCheckboxList
+            options={functionalTypeData as CheckboxValue[]}
+            placeholder={onShowPlaceholder}
+            otherInput
+            clearOtherInput={isSubmitted}
+            checked={curSelectFuncType.length ? curSelectFuncType : selectedFunctionType}
+            onChange={(checkedItem) => {
+              // to show on placeholer and handle submit
+              setCurSelectFuncType(checkedItem);
 
-            setData({
-              ...data,
-              functional_type_ids: checkedItem?.map((opt) =>
-                String(opt.value === 'other' ? opt.label : opt.value),
-              ),
-            });
-          }}
-          placeholder={onShowPlaceholder}
-          otherInput
-        />
+              setData({
+                ...data,
+                functional_type_ids: checkedItem?.map((opt) =>
+                  String(opt.value === 'other' ? opt.label : opt.value),
+                ),
+              });
+            }}
+          />
+        )}
       </FormGroup>
 
       <InputGroup
@@ -220,13 +256,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         hasBoxShadow
         hasHeight
         rightIcon
-        onRightIconClick={() =>
-          setVisible({
-            city: false,
-            state: false,
-            country: true,
-          })
-        }
+        onRightIconClick={() => setVisible('country')}
         placeholder="select country"
       />
       <InputGroup
@@ -240,13 +270,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         hasHeight
         rightIcon
         disabled={countryData.value === '-1' || countryData.value === ''}
-        onRightIconClick={() =>
-          setVisible({
-            city: false,
-            state: true,
-            country: false,
-          })
-        }
+        onRightIconClick={() => setVisible('state')}
         placeholder="select state / province"
       />
       <InputGroup
@@ -260,13 +284,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         hasHeight
         rightIcon
         disabled={stateData.value === ''}
-        onRightIconClick={() =>
-          setVisible({
-            city: true,
-            state: false,
-            country: false,
-          })
-        }
+        onRightIconClick={() => setVisible('city')}
         placeholder="select city / town"
       />
 
@@ -337,14 +355,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         messageType={getEmailMessageErrorType(data.general_email, 'error', 'normal')}
       />
       <CountryModal
-        visible={visible.country}
-        setVisible={(status) =>
-          setVisible({
-            city: false,
-            state: false,
-            country: status,
-          })
-        }
+        visible={visible === 'country'}
+        setVisible={handleCloseModal}
         chosenValue={countryData}
         setChosenValue={setCountryData}
         withPhoneCode
@@ -352,14 +364,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       />
       <StateModal
         countryId={data.country_id}
-        visible={visible.state}
-        setVisible={(status) =>
-          setVisible({
-            city: false,
-            state: status,
-            country: false,
-          })
-        }
+        visible={visible === 'state'}
+        setVisible={handleCloseModal}
         chosenValue={stateData}
         setChosenValue={setStateData}
       />
@@ -367,14 +373,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       <CityModal
         stateId={data.state_id}
         countryId={data.country_id}
-        visible={visible.city}
-        setVisible={(status) =>
-          setVisible({
-            city: status,
-            state: false,
-            country: false,
-          })
-        }
+        visible={visible === 'city'}
+        setVisible={handleCloseModal}
         chosenValue={cityData}
         setChosenValue={setCityData}
       />

@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 
 import { PATH } from '@/constants/path';
-import { BRAND_STATUSES_TEXTS } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
 
 import { ReactComponent as ActionUnreadedIcon } from '@/assets/icons/action-unreaded-icon.svg';
@@ -20,10 +19,11 @@ import { isEmpty, isEqual } from 'lodash';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import type { TableColumnItem } from '@/components/Table/types';
 import {
-  AssignTeamForm,
+  BrandAssignTeamForm,
   BrandListItem,
-  MemberAssignTeam,
+  BrandMemberAssigned,
 } from '@/features/user-group/types/brand.types';
+import { ActiveStatus } from '@/types';
 
 import AssignTeam from '@/components/AssignTeam';
 import CustomTable from '@/components/Table';
@@ -41,46 +41,32 @@ const BrandList: React.FC = () => {
   useAutoExpandNestedTableColumn(0);
   const tableRef = useRef<any>();
 
-  // get each assign team
-  const [recordAssignTeam, setRecordAssignTeam] = useState<BrandListItem>();
-
+  /// for assign team modal
   const [visible, setVisible] = useState<boolean>(false);
+  // get each member assigned
+  const [recordAssignTeam, setRecordAssignTeam] = useState<BrandListItem>();
   // get list assign team to display inside popup
-  const [assignTeam, setAssignTeam] = useState<AssignTeamForm[]>([]);
-  // seleted member
-  const [selected, setSelected] = useState<CheckboxValue[]>([]);
+  const [assignTeam, setAssignTeam] = useState<BrandAssignTeamForm[]>([]);
 
   const showAssignTeams = (brandInfo: BrandListItem) => () => {
+    /// get each brand member has already assgined
+    setRecordAssignTeam(brandInfo);
+
     // get list team
     getListAssignTeamByBrandId(brandInfo.id).then((res) => {
       if (res) {
         /// set assignTeam state to display
         setAssignTeam(res);
-
-        // show user selected
-        setSelected(
-          brandInfo.assign_team.map((member) => {
-            return {
-              label: '',
-              value: member.id,
-            };
-          }),
-        );
-        /// get brand info
-        setRecordAssignTeam(brandInfo);
+        // open popup
+        setVisible(true);
       }
     });
-    // open popup
-    setVisible(true);
   };
 
   // update assign team
   const handleSubmitAssignTeam = (checkedData: CheckboxValue[]) => {
     // new assign team
-    const memberAssignTeam: MemberAssignTeam[] = [];
-
-    // for reset member selected
-    let newAssignTeamSelected: CheckboxValue[] = [];
+    const memberAssignTeam: BrandMemberAssigned[] = [];
 
     checkedData.forEach((checked) => {
       assignTeam.forEach((team) => {
@@ -107,16 +93,6 @@ const BrandList: React.FC = () => {
         if (isSuccess) {
           // reload table after updating
           tableRef.current.reload();
-
-          // set member selected for next display
-          if (memberAssignTeam.length > 0) {
-            newAssignTeamSelected = memberAssignTeam.map((member) => ({
-              label: getFullName(member),
-              value: member.id,
-            }));
-          }
-          setSelected(newAssignTeamSelected);
-
           // close popup
           setVisible(false);
         }
@@ -198,7 +174,7 @@ const BrandList: React.FC = () => {
       render: (_v, record) => {
         return (
           <BodyText level={5} fontFamily="Roboto">
-            {BRAND_STATUSES_TEXTS[record.status]}
+            {ActiveStatus[record.status]}
           </BodyText>
         );
       },
@@ -243,8 +219,8 @@ const BrandList: React.FC = () => {
       <AssignTeam
         visible={visible}
         setVisible={setVisible}
-        selected={selected}
-        setSelected={handleSubmitAssignTeam}
+        onChange={handleSubmitAssignTeam}
+        memberAssigned={recordAssignTeam}
         teams={assignTeam}
       />
     </div>

@@ -12,8 +12,8 @@ import type {
 import { LocationGroupedByCountry } from '@/features/locations/type';
 import { ProjectsDesignFirm } from '@/features/project/types';
 import { MaterialCode } from '@/features/project/types/project-specifying.type';
-import { TeamProfileGroupCountry } from '@/features/team-profiles/type';
-import { KeyValueData, MaterialCodeDesignFirm } from '@/types';
+import { TeamProfileGroupCountry } from '@/features/team-profiles/types';
+import { KeyValueData } from '@/types';
 
 interface DesignFirmListResponse {
   designers: DesignFirm;
@@ -122,19 +122,6 @@ export async function getProjectsByDesignFirm(id: string) {
     });
 }
 
-export async function getMaterialCodeByDesignFirm(id: string) {
-  return request<{ data: MaterialCodeDesignFirm[] }>(`/api/material-code/get-list-group/${id}`, {
-    method: 'GET',
-  })
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_MATERIAL_CODE_BY_DESIGN_FIRM);
-      return [] as MaterialCodeDesignFirm[];
-    });
-}
-
 export async function getAllMaterialCode() {
   return request<{ data: MaterialCode[] }>(`/api/material-code/get-list-code`, {
     method: 'GET',
@@ -149,7 +136,7 @@ export async function getAllMaterialCode() {
 }
 
 export async function updateStatusDesignFirm(id: string, data: { status: number }) {
-  return request<boolean>(`/api/design/update-status/${id}`, { method: 'PUT', data })
+  return request<boolean>(`/api/design/update-status/${id}`, { method: 'PATCH', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_STATUS_DESIGN_FIRM_SUCCESS);
       return true;

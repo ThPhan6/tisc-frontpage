@@ -1,14 +1,20 @@
+import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
 import { getResponseMessage } from '@/helper/common';
 
 import { UnitType } from '../types/project-specifying.type';
-import { SpecifyingProductRequestBody } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
+import { setFinishScheduleData } from '@/features/product/reducers';
+import {
+  FinishScheduleResponse,
+  SpecifyingProductRequestBody,
+} from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
+import store from '@/reducers';
 import { GeneralData } from '@/types';
 
 export async function getUnitTypeList() {
-  return request<{ data: UnitType[] }>(`/api/unit-type/get-list`, {
+  return request<{ data: UnitType[] }>(`/api/setting/common-type/${COMMON_TYPES.PROJECT_UNIT}`, {
     method: 'GET',
   })
     .then((response) => {
@@ -21,9 +27,12 @@ export async function getUnitTypeList() {
 }
 
 export async function getInstructionTypeList() {
-  return request<{ data: GeneralData[] }>(`/api/instruction-type/get-list`, {
-    method: 'GET',
-  })
+  return request<{ data: GeneralData[] }>(
+    `/api/setting/common-type/${COMMON_TYPES.PROJECT_INSTRUCTION}`,
+    {
+      method: 'GET',
+    },
+  )
     .then((response) => {
       return response.data;
     })
@@ -34,9 +43,12 @@ export async function getInstructionTypeList() {
 }
 
 export async function getRequirementTypeList() {
-  return request<{ data: GeneralData[] }>(`/api/requirement-type/get-list`, {
-    method: 'GET',
-  })
+  return request<{ data: GeneralData[] }>(
+    `/api/setting/common-type/${COMMON_TYPES.PROJECT_REQUIREMENT}`,
+    {
+      method: 'GET',
+    },
+  )
     .then((response) => {
       return response.data;
     })
@@ -46,16 +58,20 @@ export async function getRequirementTypeList() {
     });
 }
 
-export async function getFinishScheduleList() {
-  return request<{ data: GeneralData[] }>(`/api/finish-schedule-for/get-list`, {
-    method: 'GET',
-  })
+export async function getFinishScheduleList(projectProductId: string, roomIds: string[] | string) {
+  request<{ data: FinishScheduleResponse[] }>(
+    `/api/project-product/${projectProductId}/finish-schedules`,
+    {
+      method: 'GET',
+      params: { roomIds },
+    },
+  )
     .then((response) => {
-      return response.data;
+      store.dispatch(setFinishScheduleData(response.data));
     })
     .catch((error) => {
       console.log('getFinishScheduleList error', error);
-      return [] as GeneralData[];
+      return [] as FinishScheduleResponse[];
     });
 }
 
@@ -74,19 +90,21 @@ export async function getProductSpecifying(consider_id: string) {
 }
 
 export async function updateProductSpecifying(
-  data: SpecifyingProductRequestBody & { variant: string },
+  { considered_product_id, ...data }: SpecifyingProductRequestBody,
   callback: () => void,
 ) {
-  await request(`/api/specified-product/specify`, {
-    method: 'POST',
+  await request(`/api/project-product/${considered_product_id}/update-specify`, {
+    method: 'PATCH',
     data: { ...data, quantity: Number(data.quantity) },
   })
     .then(() => {
+      console.log('updateProductSpecifying', data);
+
       message.success(getResponseMessage('update', 'product specifying'));
       callback();
     })
     .catch((error) => {
       message.error(getResponseMessage('update', 'product specifying', 'failed', error));
-      console.log('getRequirementTypeList error', error);
+      console.log('updateProductSpecifying error', error);
     });
 }

@@ -31,7 +31,7 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
   const projectOptions: RadioValue[] = projects.map((el) => ({
     value: el.id,
     label: (
-      <span className="selected-item flex-start">
+      <span className="selected-item flex-start text-overflow">
         <BodyText
           fontFamily="Roboto"
           level={5}
@@ -65,10 +65,10 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
     }
 
     assignProductToProject({
-      is_entire: isEntire,
+      entire_allocation: isEntire,
       product_id: productId,
       project_id: String(selectedProject?.value),
-      project_zone_ids: selectedRoomIds,
+      allocation: selectedRoomIds,
     }).then((success) => {
       if (success) {
         props.setVisible(false);
@@ -86,6 +86,7 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
           placeholder={selectedProject ? selectedProject.label : 'select from My Workspace'}
           Header={selectedProject?.label}
           containerClass={styles.customRadioList}
+          noDataMessage={'No project yet'}
         />
       </FormGroup>
 

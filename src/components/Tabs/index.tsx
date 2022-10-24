@@ -18,12 +18,9 @@ export const CustomTabs: FC<CustomTabsProps> = ({
 }) => {
   return (
     <div
-      className={`
-        ${style[`tabs-${tabPosition}`]}
-        ${style['tab-list']}
-        ${style[`tabs-${tabDisplay}`]}
-        ${customClass}
-      `}>
+      className={`${style[`tabs-${tabPosition}`]} ${style['tab-list']} ${
+        style[`tabs-${tabDisplay}`]
+      } ${customClass}`}>
       <Tabs {...props} tabPosition={tabPosition}>
         {listTab.map((tab) => (
           <TabPane
@@ -50,9 +47,10 @@ export const CustomTabs: FC<CustomTabsProps> = ({
 interface TabPaneProps extends HTMLAttributes<HTMLDivElement> {
   active: boolean;
   lazyLoad?: boolean;
+  disable?: boolean;
 }
-export const CustomTabPane: FC<TabPaneProps> = memo(({ active, lazyLoad, ...props }) => {
-  if (lazyLoad && active === false) {
+export const CustomTabPane: FC<TabPaneProps> = memo(({ active, lazyLoad, disable, ...props }) => {
+  if ((lazyLoad && active === false) || disable) {
     return null;
   }
   return <div {...props} style={{ display: !active ? 'none' : undefined }} />;

@@ -2,8 +2,6 @@ import { FC, useEffect, useState } from 'react';
 
 import { Col, Collapse, Row } from 'antd';
 
-import { getMaterialCodeByDesignFirm } from '../services';
-
 import { RequiredValueProps } from '../types';
 import { MaterialCodeDesignFirm } from '@/types';
 
@@ -14,6 +12,7 @@ import styles from '../styles/design.less';
 import indexStyles from '../styles/index.less';
 import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
 import GeneralData from './GeneralData';
+import { getMaterialProductCodeList } from '@/features/material-product-code/api';
 
 const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
   const [materialCodeData, setMaterialCodeData] = useState<MaterialCodeDesignFirm[]>([]);
@@ -21,10 +20,8 @@ const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
   useEffect(() => {
     if (!id) return;
 
-    getMaterialCodeByDesignFirm(id).then((data) => {
-      if (data) {
-        setMaterialCodeData(data);
-      }
+    getMaterialProductCodeList({ designId: id, page: 1, pageSize: 9999 }, (response) => {
+      setMaterialCodeData(response.data);
     });
   }, []);
 

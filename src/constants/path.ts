@@ -8,6 +8,7 @@ export const PATH = {
   profiles: '/profile-settings',
   tiscHomePage: '/tisc/dashboard',
   brandHomePage: '/brand/dashboard',
+  brandViewDetailDashboard: '/brand/dashboard/:id',
 
   //how-to
   howTo: '/howTo',
@@ -105,8 +106,14 @@ export const PATH = {
   //brand
   brandProduct: '/brand/product',
   updateProductBrand: '/brand/product/:id',
+
+  /// general inquiries
   brandGeneralInquiry: '/brand/general-inquiry',
+  brandGeneralInquiryDetail: '/brand/general-inquiry/:id',
+
+  /// project tracking
   brandProjectTracking: '/brand/project-tracking',
+  brandProjectTrackingDetail: '/brand/project-tracking/:id',
   //adminstration
   brandAdministration: '/brand/adminstration',
   brandAdministrationProfile: '/brand/adminstration/brand-profile',
@@ -142,9 +149,17 @@ export const PATH = {
   designerProjectUpdate: '/design-firms/projects/update/:id',
   designerAdminstration: '/design-firms/administration',
   designerOfficeProfile: '/design-firms/administration/office-profile',
-  designerOfficeLocation: '/design-firms/administration/locations',
   designerOfficeTeamProfile: '/design-firms/administration/team-profiles',
+  designerOfficeTeamProfileCreate: '/design-firms/administration/team-profiles/create',
+  designerOfficeTeamProfileUpdate: '/design-firms/administration/team-profiles/:id',
   designerMaterialProductCode: '/design-firms/administration/material-product-code',
+  designerMaterialProductCodeCreate: '/design-firms/administration/material-product-code/create',
+  designerMaterialProductCodeUpdate: '/design-firms/administration/material-product-code/:id',
+
+  // location
+  designFirmLocation: '/design-firms/administration/locations',
+  designFirmLocationCreate: '/design-firms/administration/locations/create',
+  designFirmLocationUpdate: '/design-firms/administration/locations/:id',
 };
 
 export const PUBLIC_PATH = [

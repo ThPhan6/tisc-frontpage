@@ -25,17 +25,6 @@ export const DESIGN_STATUSES = {
   INACTIVE: 2,
 };
 
-export const DESIGN_STATUSES_TEXTS = {
-  [DESIGN_STATUSES.ACTIVE]: 'Active',
-  [DESIGN_STATUSES.INACTIVE]: 'Inactive',
-};
-
-export const BRAND_STATUSES_TEXTS = {
-  [USER_STATUSES.ACTIVE]: 'Active',
-  [USER_STATUSES.INACTIVE]: 'Inactive',
-  [USER_STATUSES.PENDING]: 'Pending',
-};
-
 export const MEASUREMENT_UNIT = {
   IMPERIAL: 1,
   METRIC: 2,
@@ -82,4 +71,31 @@ export const SORT_ORDER = {
   decrease: 'DESC',
   headerFollow: 'A - Z',
   footerFollow: 'Z - A',
+};
+
+export const COLUMN_WIDTH = {
+  status: 130,
+};
+
+export const COMMON_TYPES = {
+  SHARING_GROUP: 1,
+  SHARING_PURPOSE: 2,
+  PROJECT_BUILDING: 3,
+  FINISH_SCHEDULES: 4,
+  COMPANY_FUNCTIONAL: 5,
+  PROJECT_INSTRUCTION: 6,
+  PROJECT_TYPE: 7,
+  PROJECT_REQUIREMENT: 8,
+  PROJECT_UNIT: 9,
+  TEAM_DEPARTMENT: 10,
+  REQUEST_FOR: 11,
+  ACTION_TASK: 12,
+  ISSUE_FOR: 13,
+  CAPABILITIES: 14,
+};
+
+export const ACTION_TASK_MODEL = {
+  notification: 'notification',
+  request: 'request',
+  inquiry: 'inquiry',
 };

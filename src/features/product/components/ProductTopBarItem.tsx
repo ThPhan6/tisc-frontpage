@@ -152,7 +152,8 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
           return (
             <Menu.Item
               key={item?.id || index}
-              onClick={() => {
+              onClick={(e) => {
+                e.domEvent.stopPropagation();
                 setSelectedItem((curIndex) => (curIndex === index ? DEFAULT_INDEX : index));
                 if (hasChildren === false) {
                   item?.onClick?.();
@@ -232,7 +233,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
           />
         )
       }>
-      <span {...labelProps}>
+      <span {...labelProps} onClick={(e) => e.stopPropagation()}>
         {children}
         {hideDropdownIcon ? null : <DropdownIcon />}
       </span>

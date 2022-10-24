@@ -85,6 +85,11 @@ export const GetExpandableTableConfig = (props: ExpandableTableConfig): Expandab
   };
 };
 
+type GetComponentProps<DataType> = (
+  data: DataType,
+  index?: number,
+) => React.HTMLAttributes<any> | React.TdHTMLAttributes<any>;
+
 export interface CustomTableProps {
   columns: TableColumnItem<any>[];
   expandable?: ExpandableConfig<any>;
@@ -106,6 +111,7 @@ export interface CustomTableProps {
   rowKey?: string;
   autoLoad?: boolean;
   onFilterLoad?: boolean;
+  onRow?: GetComponentProps<any>;
 }
 
 const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
@@ -118,6 +124,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     hasPagination,
     extraParams,
     customClass,
+    onRow,
     rowKey = 'id',
     autoLoad = true,
     onFilterLoad = true,
@@ -246,7 +253,11 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
           if (record[rowKey] === expanded) {
             return 'custom-expanded' as any;
           }
+          if (onRow) {
+            return 'cursor-pointer';
+          }
         }}
+        onRow={onRow}
         dataSource={data}
         pagination={pagination}
         onChange={handleTableChange}

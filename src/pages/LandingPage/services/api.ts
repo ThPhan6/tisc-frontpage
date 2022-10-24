@@ -6,7 +6,7 @@ import { request } from 'umi';
 import type {
   ContactRequestBody,
   LoginInput,
-  LoginResponseProp,
+  LoginResponseProps,
   PasswordRequestBody,
   Quotation,
   SignUpDesignerRequestBody,
@@ -36,7 +36,7 @@ export async function loginMiddleware(
     method: 'POST',
     data,
   })
-    .then((response: LoginResponseProp) => {
+    .then((response: LoginResponseProps) => {
       localStorage.setItem('access_token', response.token);
       callback(STATUS_RESPONSE.SUCCESS);
     })
@@ -47,13 +47,13 @@ export async function loginMiddleware(
 
 export async function loginByBrandOrDesigner(
   data: LoginInput,
-  callback: (type: STATUS_RESPONSE, message?: string, dataResponse?: LoginResponseProp) => void,
+  callback: (type: STATUS_RESPONSE, message?: string, dataResponse?: LoginResponseProps) => void,
 ) {
   request(`/api/auth/brand-design/login`, {
     method: 'POST',
     data,
   })
-    .then((response: LoginResponseProp) => {
+    .then((response: LoginResponseProps) => {
       localStorage.setItem('access_token', response.token);
       callback(STATUS_RESPONSE.SUCCESS, '', response);
     })
@@ -70,7 +70,7 @@ export async function resetPasswordMiddleware(
     method: 'POST',
     data,
   })
-    .then((response: LoginResponseProp) => {
+    .then((response: LoginResponseProps) => {
       localStorage.setItem('access_token', response.token);
       callback(STATUS_RESPONSE.SUCCESS);
     })

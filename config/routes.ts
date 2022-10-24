@@ -1,5 +1,7 @@
 ﻿import { PATH } from '../src/constants/path';
 
+import accessToProject from '@/accessToProject';
+
 export default [
   // NO REQUIRE AUTHENTICATION
   {
@@ -452,8 +454,20 @@ export default [
     path: PATH.brandHomePage,
     name: 'workspace',
     icon: 'workspace-icon.svg',
-    component: './Admin',
+    // component: './Brand/MyWorkspace',
     access: 'brand_workspace',
+    routes: [
+      {
+        path: PATH.brandHomePage,
+        component: './Brand/MyWorkspace',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.brandViewDetailDashboard,
+        component: './Brand/MyWorkspace',
+        hideInMenu: true,
+      },
+    ],
   },
   {
     path: PATH.brandProduct,
@@ -477,15 +491,38 @@ export default [
     path: PATH.brandGeneralInquiry,
     name: 'general_inquiry',
     icon: 'general-inquiry-icon.svg',
-    component: './Admin',
     access: 'brand_genenral_inquiry',
+    routes: [
+      {
+        path: PATH.brandGeneralInquiry,
+        component: './Brand/GeneralInquiries',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.brandGeneralInquiryDetail,
+        component: './Brand/GeneralInquiries/detail.tsx',
+        hideInMenu: true,
+      },
+    ],
   },
   {
     path: PATH.brandProjectTracking,
     name: 'project_tracking',
     icon: 'project-tracking-icon.svg',
-    component: './Admin',
+
     access: 'brand_project_tracking',
+    routes: [
+      {
+        path: PATH.brandProjectTracking,
+        component: './Brand/ProjectTracking',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.brandProjectTrackingDetail,
+        component: './Brand/ProjectTracking/ProjectTrackingDetail',
+        hideInMenu: true,
+      },
+    ],
   },
   {
     path: PATH.brandAdministration,
@@ -498,7 +535,7 @@ export default [
         name: 'brand.profile',
         icon: 'brand-icon.svg',
         access: 'brand_administration_brand_profile',
-        component: './Brand/Adminstration/BrandProfile',
+        component: '../features/office-profile',
       },
       {
         path: PATH.brandLocation,
@@ -648,7 +685,7 @@ export default [
     path: PATH.designerProject,
     name: 'project',
     icon: 'project-icon.svg',
-    access: 'design_project',
+    access: 'design_project_overal_listing',
     routes: [
       {
         path: PATH.designerProject,
@@ -671,36 +708,83 @@ export default [
     path: PATH.designerAdminstration,
     name: 'adminstration',
     icon: 'adminstration-icon.svg',
-    component: './Admin',
     access: 'design_administration',
     routes: [
       {
         path: PATH.designerOfficeProfile,
         name: 'office.profile',
         icon: 'office-profile-icon.svg',
-        component: './Admin',
+        component: '../features/office-profile',
         access: 'design_administration_office_profile',
       },
       {
-        path: PATH.designerOfficeLocation,
+        path: PATH.designFirmLocation,
         name: 'location',
         icon: 'location-icon.svg',
-        component: './Admin',
         access: 'design_administration_location',
+        routes: [
+          {
+            path: PATH.designFirmLocation,
+            component: '../features/locations/components/LocationTable',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designFirmLocationCreate,
+            component: '../features/locations/components/LocationDetail',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designFirmLocationUpdate,
+            component: '../features/locations/components/LocationDetail',
+            hideInMenu: true,
+          },
+        ],
       },
       {
         path: PATH.designerOfficeTeamProfile,
         name: 'team.profile',
         icon: 'team-profile-icon.svg',
-        component: './Admin',
         access: 'design_administration_team_profile',
+        routes: [
+          {
+            path: PATH.designerOfficeTeamProfile,
+            component: '../features/team-profiles/components/TeamProfilesTable',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerOfficeTeamProfileCreate,
+            component: '../features/team-profiles/components/TeamProfilesEntryForm',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerOfficeTeamProfileUpdate,
+            component: '../features/team-profiles/components/TeamProfilesEntryForm',
+            hideInMenu: true,
+          },
+        ],
       },
       {
         path: PATH.designerMaterialProductCode,
         name: 'material/product.code',
         icon: 'material-product-code.svg',
-        component: './Admin',
         access: 'design_administration_material_product_code',
+        routes: [
+          {
+            path: PATH.designerMaterialProductCode,
+            component: './Designer/Adminstration/MaterialProductCode',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerMaterialProductCodeCreate,
+            hideInMenu: true,
+            component: '../features/material-product-code/components/MaterialProductEntryForm',
+          },
+          {
+            path: PATH.designerMaterialProductCodeUpdate,
+            hideInMenu: true,
+            component: '../features/material-product-code/components/MaterialProductEntryForm',
+          },
+        ],
       },
     ],
   },
