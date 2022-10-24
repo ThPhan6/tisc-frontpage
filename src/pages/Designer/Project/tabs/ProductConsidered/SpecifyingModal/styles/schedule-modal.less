@@ -1,9 +1,12 @@
 .modal {
+  @modalHeight: 752px;
+
   :global(.ant-modal-content) {
-    height: 752px;
+    height: @modalHeight;
   }
   :global(.ant-modal-body) {
-    padding: 16px;
+    height: calc(@modalHeight - 48px);
+    padding: 32px 64px;
   }
 }
 
@@ -23,6 +26,12 @@
 
 .description {
   margin-bottom: 24px;
+
+  .text {
+    font-weight: 500;
+    font-size: 8px;
+    text-transform: uppercase;
+  }
 }
 
 .mainInfo {
@@ -34,18 +43,35 @@
     font-size: @fs;
   }
 
+  th:nth-child(3) > .title {
+    padding-left: 14px;
+  }
+  th:nth-child(4) > .title {
+    padding-left: 14px;
+  }
+  th:nth-child(5) > .title {
+    padding-left: 14px;
+  }
+  th:nth-child(6) > .title {
+    padding-left: 14px;
+  }
+
   .roomInfo {
     white-space: nowrap;
+  }
+
+  .backgroundDark {
+    background: @mono-color;
   }
 
   .title {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    height: 44px;
+    height: 28px;
+    padding-left: 8px;
     color: #fff;
     line-height: 10px;
-    text-align: center;
     text-transform: uppercase;
     background-color: #000;
   }
@@ -57,17 +83,32 @@
 
   .groupRoom {
     box-shadow: @border-bottom-light;
+
+    :global(.ant-checkbox-checked::after) {
+      border: none;
+    }
+
+    :global(.ant-checkbox-inner) {
+      border-color: @mono-color;
+      border-radius: 0;
+    }
   }
 
   .checkBoxCenter {
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    width: 100%;
+    margin-bottom: 5px;
+
+    :global(.ant-checkbox) {
+      margin: 0 auto;
+    }
   }
 
   .rowInfo {
     display: flex;
     flex-direction: row-reverse;
+    align-items: stretch;
 
     :global(.ant-checkbox + span) {
       padding: 0 2px 0 0;
