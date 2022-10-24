@@ -155,8 +155,8 @@ export const MESSAGE_NOTIFICATION = {
   GET_PROJECTS_BY_DESIGN_FIRM: 'Failed to get projects by design firm',
   GET_MATERIAL_CODE_BY_DESIGN_FIRM: 'Failed to get material code by design firm',
   GET_DESIGN_STATUSES_ERROR: 'Failed to get statuses',
-  UPDATE_STATUS_DESIGN_FIRM_SUCCESS: 'Update status design firm successfully',
-  UPDATE_STATUS_DESIGN_FIRM_ERROR: 'Update status design firm error',
+  UPDATE_STATUS_DESIGN_FIRM_SUCCESS: 'Update design firm status successfully',
+  UPDATE_STATUS_DESIGN_FIRM_ERROR: 'Update design firm status error',
 
   // team profile
   GET_LIST_TEAM_PROFILE_ERROR: 'Get list team profile error',

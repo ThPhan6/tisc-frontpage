@@ -37,6 +37,9 @@
       color: @mono-color !important;
     }
   }
+  :global(.ant-collapse-borderless > .ant-collapse-item) {
+    border-bottom: none;
+  }
   .form {
     height: calc(100vh - 248px);
     padding: 16px;
@@ -46,6 +49,9 @@
       :last-child {
         margin-bottom: 0;
       }
+    }
+    .phoneInputCustom {
+      border: none;
     }
   }
 }

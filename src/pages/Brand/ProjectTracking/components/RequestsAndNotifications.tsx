@@ -1,6 +1,7 @@
 import { FC, useState } from 'react';
 
 import { NotificationsIcons, ProjectTrackingNotificationType, RequestsIcons } from '../constant';
+import { Empty } from 'antd';
 
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
@@ -17,6 +18,7 @@ import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import TextForm from '@/components/Form/TextForm';
 import { TableHeader } from '@/components/Table/TableHeader';
+import { BodyText } from '@/components/Typography';
 
 import styles from './DesignFirm.less';
 import moment from 'moment';
@@ -38,38 +40,45 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
       {detailItem === undefined ? (
         <table className={styles.table}>
           <tbody>
-            {requestAndNotification.map((item, index) => (
-              <tr
-                onClick={() => {
-                  setDetailItem(item);
-                  setIndexItem(index);
-                  setData((prevData) => {
-                    const newData = cloneDeep(prevData);
-                    if (type === 'request') {
-                      newData.projectRequests[index].newRequest = false;
-                    } else {
-                      newData.notifications[index].newNotification = false;
-                    }
-                    return newData;
-                  });
-                }}
-                key={index}>
-                <td className={styles.date}>
-                  {moment(item.title.created_at).format('YYYY-MM-DD')}
-                </td>
-                <td className={styles.projectName}>
-                  {type === 'request'
-                    ? item.title.name
-                    : ProjectTrackingNotificationType[item.title.name]}
-                  {item.read ? <UnreadIcon /> : ''}
-                </td>
-                <td className={styles.action}>
-                  {type === 'request'
-                    ? RequestsIcons[item.status]
-                    : NotificationsIcons[item.status]}
-                </td>
-              </tr>
-            ))}
+            {requestAndNotification.length > 0 ? (
+              requestAndNotification.map((item, index) => (
+                <tr
+                  onClick={() => {
+                    setDetailItem(item);
+                    setIndexItem(index);
+                    setData((prevData) => {
+                      const newData = cloneDeep(prevData);
+                      if (type === 'request') {
+                        newData.projectRequests[index].newRequest = false;
+                      } else {
+                        newData.notifications[index].newNotification = false;
+                      }
+                      return newData;
+                    });
+                  }}
+                  key={index}>
+                  <td className={styles.date}>
+                    {moment(item.title.created_at).format('YYYY-MM-DD')}
+                  </td>
+                  <td className={styles.projectName}>
+                    {type === 'request'
+                      ? item.title.name
+                      : ProjectTrackingNotificationType[item.title.name]}
+                    {item.read ? <UnreadIcon /> : ''}
+                  </td>
+                  <td className={styles.action}>
+                    {type === 'request'
+                      ? RequestsIcons[item.status]
+                      : NotificationsIcons[item.status]}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <Empty
+                description={<BodyText level={3}>No Data</BodyText>}
+                className={styles.empty}
+              />
+            )}
           </tbody>
         </table>
       ) : (
