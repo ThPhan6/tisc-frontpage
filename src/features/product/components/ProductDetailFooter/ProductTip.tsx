@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useCheckPermission } from '@/helper/hook';
 import { isEmpty } from 'lodash';
 
-import { setProductTip } from '@/features/product/reducers';
+import { setPartialProductDetail } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
 
 import { EmptyOne } from '@/components/Empty';
@@ -16,13 +16,13 @@ import styles from './ProductTip.less';
 const ProductTip: FC = () => {
   const dispatch = useDispatch();
 
-  const tip = useAppSelector((state) => state.product.tip);
+  const tips = useAppSelector((state) => state.product.details.tips);
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
   if (isTiscAdmin) {
     return (
       <DynamicFormInput
-        data={tip.contents.map((value) => {
+        data={tips.map((value) => {
           return {
             title: value.title,
             value: value.content,
@@ -30,11 +30,10 @@ const ProductTip: FC = () => {
         })}
         setData={(data) =>
           dispatch(
-            setProductTip({
-              ...tip,
-              contents: data.map((item, index) => {
+            setPartialProductDetail({
+              tips: data.map((item, index) => {
                 return {
-                  ...tip.contents[index],
+                  ...tips[index],
                   title: item.title,
                   content: item.value,
                 };
@@ -49,14 +48,14 @@ const ProductTip: FC = () => {
     );
   }
 
-  if (isEmpty(tip.contents)) {
+  if (isEmpty(tips)) {
     return <EmptyOne />;
   }
 
   return (
     <div className={styles.tipFooter}>
       <table>
-        {tip.contents.map((content, index) => {
+        {tips.map((content, index) => {
           return (
             <tr key={content.id || index}>
               <td className={styles.title}>
