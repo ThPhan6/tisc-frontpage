@@ -79,7 +79,9 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
       className={styles.modal}
       noFooter>
       <div className="flex-start" style={{ height: '24px', marginBottom: '8px' }}>
-        <Title level={8}>Finish Schedule by Room</Title>
+        <Title level={8} style={{ textTransform: 'uppercase' }}>
+          Finish Schedule by Room
+        </Title>
         <RobotoBodyText level={5} style={{ paddingLeft: '16px' }}>
           (select all relevant areas)
         </RobotoBodyText>
@@ -88,13 +90,13 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
       <table className={styles.description}>
         <thead>
           <tr style={{ height: '24px', boxShadow: '0 0.7px #000' }}>
-            <th className={styles.borderBottom} style={{ width: '30%' }}>
-              <RobotoBodyText level={7} style={{ fontSize: '8px', fontWeight: '500' }}>
+            <th style={{ width: '30%' }}>
+              <RobotoBodyText level={7} customClass={styles.text}>
                 Code
               </RobotoBodyText>
             </th>
             <th style={{ width: '70%' }}>
-              <RobotoBodyText level={7} style={{ fontSize: '8px', fontWeight: '500' }}>
+              <RobotoBodyText level={7} customClass={styles.text}>
                 Description
               </RobotoBodyText>
             </th>
@@ -120,7 +122,7 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
         <thead>
           <tr>
             {mainTitle.map((el) => (
-              <th>
+              <th className={styles.backgroundDark}>
                 <RobotoBodyText level={5} customClass={styles.title}>
                   {el}
                 </RobotoBodyText>
