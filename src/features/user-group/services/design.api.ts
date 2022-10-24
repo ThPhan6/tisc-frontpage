@@ -13,7 +13,7 @@ import { LocationGroupedByCountry } from '@/features/locations/type';
 import { ProjectsDesignFirm } from '@/features/project/types';
 import { MaterialCode } from '@/features/project/types/project-specifying.type';
 import { TeamProfileGroupCountry } from '@/features/team-profiles/types';
-import { KeyValueData, MaterialCodeDesignFirm } from '@/types';
+import { KeyValueData } from '@/types';
 
 interface DesignFirmListResponse {
   designers: DesignFirm;
@@ -119,22 +119,6 @@ export async function getProjectsByDesignFirm(id: string) {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECTS_BY_DESIGN_FIRM);
-    });
-}
-
-export async function getMaterialCodeByDesignFirm(id: string) {
-  return request<{ data: MaterialCodeDesignFirm[] }>(
-    `/api/material-code/get-list?design_id=${id}`,
-    {
-      method: 'GET',
-    },
-  )
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_MATERIAL_CODE_BY_DESIGN_FIRM);
-      return [] as MaterialCodeDesignFirm[];
     });
 }
 

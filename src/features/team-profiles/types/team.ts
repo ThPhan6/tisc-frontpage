@@ -77,6 +77,7 @@ export interface TeamProfileMemberProps {
   mobile: string | null;
   access_level: string;
   status: number;
+  phone_code: string;
 }
 
 export interface TeamProfileGroupCountry {
