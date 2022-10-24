@@ -1,5 +1,7 @@
 ﻿import { PATH } from '../src/constants/path';
 
+import accessToProject from '@/accessToProject';
+
 export default [
   // NO REQUIRE AUTHENTICATION
   {
@@ -683,7 +685,7 @@ export default [
     path: PATH.designerProject,
     name: 'project',
     icon: 'project-icon.svg',
-    access: 'design_project',
+    access: 'design_project_overal_listing',
     routes: [
       {
         path: PATH.designerProject,

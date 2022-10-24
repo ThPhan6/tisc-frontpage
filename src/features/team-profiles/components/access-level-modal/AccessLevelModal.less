@@ -64,6 +64,16 @@
       p {
         text-transform: capitalize;
       }
+      span {
+        width: 2px;
+        height: 2px;
+        margin: 0 8px;
+        background: @mono-color;
+        border-radius: 50%;
+      }
+    }
+    .body tr:nth-child(5) .sub_menu span {
+      display: none;
     }
     .menu {
       &_item {
@@ -89,14 +99,10 @@
         text-align: center;
 
         &_null {
+          pointer-events: none;
           path {
             fill: @mono-color-medium;
           }
-        }
-
-        &_true,
-        &_false {
-          cursor: pointer;
         }
       }
     }

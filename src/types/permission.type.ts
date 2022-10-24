@@ -1,15 +1,14 @@
 export interface PermissionItem {
-  accessable: null | boolean;
+  accessable: boolean;
   name: string;
   id: string;
 }
 
 export interface PermissionData {
+  id: string;
   logo: string;
-  accessable: null | boolean;
   name: string;
-  number: number;
-  parent_number: number | null;
+  parent_id: number;
   items: PermissionItem[];
   subs?: PermissionData[];
 }
