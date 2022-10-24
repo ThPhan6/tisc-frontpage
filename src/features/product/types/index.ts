@@ -112,6 +112,9 @@ export interface ProductItem {
   specifiedDetail?: SpecifiedDetail;
   brand_location_id: string;
   distributor_location_id: string;
+  tips: ProductTipData[];
+  downloads: ProductDownloadData[];
+  catelogue_downloads: ProductCatelogueData[];
 }
 
 export interface RoomItem {
@@ -143,6 +146,9 @@ export interface ProductFormData {
   specification_attribute_groups: ProductAttributeFormInput[];
   images: string[];
   keywords: ProductKeyword;
+  tips: ProductTipData[];
+  downloads: ProductDownloadData[];
+  catelogue_downloads: ProductCatelogueData[];
 }
 export interface RelatedCollection {
   id: string;

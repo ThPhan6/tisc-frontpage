@@ -10,12 +10,7 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-ico
 
 import {
   createProductCard,
-  createProductCatelogue,
-  createProductDownload,
-  createProductTip,
   getProductById,
-  getProductDownloadByProductID,
-  getProductTipByProductID,
   getRelatedCollectionProducts,
   updateProductCard,
 } from '@/features/product/services';
@@ -47,9 +42,6 @@ const ProductDetailContainer: React.FC = () => {
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
   const details = useAppSelector((state) => state.product.details);
-  const tip = useAppSelector((state) => state.product.tip);
-  const download = useAppSelector((state) => state.product.download);
-  const catelogue = useAppSelector((state) => state.product.catelogue);
 
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('general');
   const [title, setTitle] = useState<string>('');
@@ -77,38 +69,17 @@ const ProductDetailContainer: React.FC = () => {
       setTitle(details?.name);
     }
     if (details.id) {
-      /// load product detail downloads
-      getProductDownloadByProductID(details.id);
-      /// load product detail tips
-      getProductTipByProductID(details.id);
       /// load product related
       getRelatedCollectionProducts(details.id);
     }
   }, [details.id, details.brand]);
 
-  const updateBottomBasicInfo = (id?: string) => {
-    if (id) {
-      createProductTip({
-        product_id: id,
-        contents: tip.contents,
-      });
-      createProductDownload({
-        product_id: id,
-        contents: download.contents,
-      });
-      createProductCatelogue({
-        product_id: id,
-        contents: catelogue.contents,
-      });
-    }
-  };
-
   const onSave = () => {
     // check urls is valid
-    const haveInvaliDownloadURL = download.contents.some(
+    const haveInvaliDownloadURL = details.downloads.some(
       (content) => isValidURL(content.url) === false,
     );
-    const haveInvaliCatelogueURL = catelogue.contents.some(
+    const haveInvaliCatelogueURL = details.downloads.some(
       (content) => isValidURL(content.url) === false,
     );
     if (haveInvaliDownloadURL || haveInvaliCatelogueURL) {
@@ -132,19 +103,18 @@ const ProductDetailContainer: React.FC = () => {
         }
         return image;
       }),
+      tips: details.tips,
+      downloads: details.downloads,
+      catelogue_downloads: details.catelogue_downloads,
     };
 
     if (productId) {
-      updateProductCard(productId, data).then((productDetail) =>
-        updateBottomBasicInfo(productDetail?.id),
-      );
+      updateProductCard(productId, data);
       return;
     }
 
     createProductCard(data).then((productDetail) => {
       if (productDetail) {
-        updateBottomBasicInfo(productDetail.id);
-
         /// push to product update, 100% have product detail id
         history.replace(PATH.productConfigurationUpdate.replace(':id', productDetail.id ?? ''));
       }

@@ -6,7 +6,7 @@ import { ReactComponent as DownloadIconV2 } from '@/assets/icons/download-2-icon
 import { useCheckPermission } from '@/helper/hook';
 import { isEmpty } from 'lodash';
 
-import { setProductDownload } from '@/features/product/reducers';
+import { setPartialProductDetail } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
 
 import { EmptyOne } from '@/components/Empty';
@@ -18,13 +18,13 @@ import styles from './ProductDownloadFooter.less';
 const ProductDownloadFooter: FC = () => {
   const dispatch = useDispatch();
 
-  const download = useAppSelector((state) => state.product.download);
+  const downloads = useAppSelector((state) => state.product.details.downloads);
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
   if (isTiscAdmin) {
     return (
       <DynamicFormInput
-        data={download.contents.map((item) => {
+        data={downloads.map((item) => {
           return {
             title: item.title,
             value: item.url,
@@ -32,11 +32,10 @@ const ProductDownloadFooter: FC = () => {
         })}
         setData={(data) => {
           dispatch(
-            setProductDownload({
-              ...download,
-              contents: data.map((item, index) => {
+            setPartialProductDetail({
+              downloads: data.map((item, index) => {
                 return {
-                  ...download.contents[index],
+                  ...downloads[index],
                   title: item.title,
                   url: item.value,
                 };
@@ -49,13 +48,13 @@ const ProductDownloadFooter: FC = () => {
       />
     );
   }
-  if (isEmpty(download.contents)) {
+  if (isEmpty(downloads)) {
     return <EmptyOne />;
   }
   return (
     <div className={styles.downloadFooter}>
       <table>
-        {download.contents.map((content, index) => {
+        {downloads.map((content, index) => {
           return (
             <tr key={content.id || index}>
               <td className={styles.title}>
