@@ -47,9 +47,10 @@ export const CustomTabs: FC<CustomTabsProps> = ({
 interface TabPaneProps extends HTMLAttributes<HTMLDivElement> {
   active: boolean;
   lazyLoad?: boolean;
+  disable?: boolean;
 }
-export const CustomTabPane: FC<TabPaneProps> = memo(({ active, lazyLoad, ...props }) => {
-  if (lazyLoad && active === false) {
+export const CustomTabPane: FC<TabPaneProps> = memo(({ active, lazyLoad, disable, ...props }) => {
+  if ((lazyLoad && active === false) || disable) {
     return null;
   }
   return <div {...props} style={{ display: !active ? 'none' : undefined }} />;

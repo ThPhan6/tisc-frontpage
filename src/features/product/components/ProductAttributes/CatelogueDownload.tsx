@@ -1,12 +1,10 @@
-import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { ReactComponent as DownloadIconV2 } from '@/assets/icons/download-2-icon.svg';
 
-import { getProductCatelogueByProductID } from '@/features/product/services';
-import { useCheckPermission, useGetParamId } from '@/helper/hook';
+import { useCheckPermission } from '@/helper/hook';
 
-import { setProductCatelogue } from '@/features/product/reducers';
+import { setPartialProductDetail } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
 
 import DynamicFormInput from '@/components/EntryForm/DynamicFormInput';
@@ -36,21 +34,14 @@ const DownloadContent = () => {
 };
 
 export const CatelogueDownload = () => {
-  const productId = useGetParamId();
-  const catelogue = useAppSelector((state) => state.product.catelogue);
+  const catelogue_downloads = useAppSelector((state) => state.product.details.catelogue_downloads);
   const dispatch = useDispatch();
   const isTiscAdmin = useCheckPermission('TISC Admin');
-
-  useEffect(() => {
-    if (productId) {
-      getProductCatelogueByProductID(productId);
-    }
-  }, [productId]);
 
   if (isTiscAdmin) {
     return (
       <DynamicFormInput
-        data={catelogue.contents.map((item) => {
+        data={catelogue_downloads.map((item) => {
           return {
             title: item.title,
             value: item.url,
@@ -58,11 +49,10 @@ export const CatelogueDownload = () => {
         })}
         setData={(data) => {
           dispatch(
-            setProductCatelogue({
-              ...catelogue,
-              contents: data.map((item, index) => {
+            setPartialProductDetail({
+              catelogue_downloads: data.map((item, index) => {
                 return {
-                  ...catelogue.contents[index],
+                  ...catelogue_downloads[index],
                   title: item.title,
                   url: item.value,
                 };

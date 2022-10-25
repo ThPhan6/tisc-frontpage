@@ -6,6 +6,7 @@ import {
   SpecificationBodyRequest,
 } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
+import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
 import { ConversionSubValueProps, GeneralData } from '@/types';
 
 export interface ProductSummary {
@@ -73,7 +74,7 @@ export interface SpecifiedDetail {
   order_method: OrderMethod;
   requirement_type_ids: string[];
   instruction_type_ids: string[];
-  finish_schedules: string[];
+  finish_schedules: FinishScheduleResponse[];
   unit_type_id: string;
   unit_type?: string;
   special_instructions: string;
@@ -111,9 +112,22 @@ export interface ProductItem {
   specifiedDetail?: SpecifiedDetail;
   brand_location_id: string;
   distributor_location_id: string;
+  tips: ProductTipData[];
+  downloads: ProductDownloadData[];
+  catelogue_downloads: ProductCatelogueData[];
 }
 
-export type ProjectProductItem = ProductItem & { rooms: any };
+export interface RoomItem {
+  id: string;
+  room_id: string;
+  room_name: string;
+  room_size: number;
+  quantity: number;
+  sub_total: number;
+  products: ProductItem[];
+}
+
+export type ProjectProductItem = ProductItem & { rooms?: RoomItem[] };
 
 export interface ProductItemValue {
   id: string;
@@ -132,6 +146,9 @@ export interface ProductFormData {
   specification_attribute_groups: ProductAttributeFormInput[];
   images: string[];
   keywords: ProductKeyword;
+  tips: ProductTipData[];
+  downloads: ProductDownloadData[];
+  catelogue_downloads: ProductCatelogueData[];
 }
 export interface RelatedCollection {
   id: string;

@@ -1,18 +1,16 @@
 import { getSpecificationWithSelectedValue } from '../components/ProductAttributes/hooks';
 
 import type {
-  ProductCatelogue,
-  ProductDownload,
   ProductItem,
   ProductList,
   ProductSummary,
-  ProductTip,
   RelatedCollection,
   SortParams,
   SpecifiedDetail,
 } from '../types';
 import { OrderMethod } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
+import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
@@ -20,9 +18,6 @@ import { createSlice } from '@reduxjs/toolkit';
 interface ProductState {
   brand?: BrandDetail;
   summary?: ProductSummary;
-  tip: ProductTip;
-  download: ProductDownload;
-  catelogue: ProductCatelogue;
   details: ProductItem & { referToDesignDocument?: boolean };
   relatedProduct: RelatedCollection[];
   list: ProductList;
@@ -66,15 +61,9 @@ const initialState: ProductState = {
       finish_schedules: [],
       special_instructions: '',
     },
-  },
-  tip: {
-    contents: [],
-  },
-  download: {
-    contents: [],
-  },
-  catelogue: {
-    contents: [],
+    tips: [],
+    downloads: [],
+    catelogue_downloads: [],
   },
   relatedProduct: [],
   list: {
@@ -111,24 +100,6 @@ const productSlice = createSlice({
       state.details = {
         ...state.details,
         images: newImages,
-      };
-    },
-    setProductTip(state, action: PayloadAction<Partial<ProductTip>>) {
-      state.tip = {
-        ...state.tip,
-        ...action.payload,
-      };
-    },
-    setProductDownload(state, action: PayloadAction<Partial<ProductDownload>>) {
-      state.download = {
-        ...state.download,
-        ...action.payload,
-      };
-    },
-    setProductCatelogue(state, action: PayloadAction<Partial<ProductCatelogue>>) {
-      state.catelogue = {
-        ...state.catelogue,
-        ...action.payload,
       };
     },
     setProductList(state, action: PayloadAction<Partial<ProductList>>) {
@@ -186,6 +157,11 @@ const productSlice = createSlice({
         };
       }
     },
+    setFinishScheduleData: (state, action: PayloadAction<FinishScheduleResponse[]>) => {
+      if (state.details.specifiedDetail) {
+        state.details.specifiedDetail.finish_schedules = [...action.payload];
+      }
+    },
   },
 });
 
@@ -196,9 +172,6 @@ export const {
   setProductDetail,
   setPartialProductDetail,
   setProductDetailImage,
-  setProductTip,
-  setProductCatelogue,
-  setProductDownload,
   setProductList,
   setRelatedProduct,
   setProductListSearchValue,
@@ -208,6 +181,7 @@ export const {
   onCheckReferToDesignDocument,
   setDefaultSelectionFromSpecifiedData,
   setPartialProductSpecifiedData,
+  setFinishScheduleData,
 } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;

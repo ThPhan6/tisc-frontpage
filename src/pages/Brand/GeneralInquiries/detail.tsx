@@ -29,37 +29,49 @@ const LIST_TAB = [
 type GeneralInquiriesTab = 'design-firm' | 'inquiry-message';
 
 const DEFAULT_STATE: GeneralInquiryResponse = {
-  product_name: '',
   design_firm: {
     name: '',
     official_website: '',
-    inquirer: '',
-    position: '',
-    email: '',
-    phone: '',
     address: '',
+    general_email: '',
+    general_phone: '',
+    phone_code: '',
+    city_name: '',
+    country_name: '',
+    state_name: '',
   },
   inquiry_message: {
+    id: '',
     inquiry_for: '',
     title: '',
     message: '',
-    product_collection: '',
-    product_description: '',
-    product_image: '',
-    official_website: '',
+    designer: {
+      email: '',
+      name: '',
+      phone: '',
+      phone_code: '',
+      position: '',
+    },
+    product: {
+      id: '',
+      collection: '',
+      description: '',
+      image: '',
+      name: '',
+    },
   },
 };
 
 const GeneralInquiryDetail = () => {
-  const designFirmId = useGetParamId();
+  const inquiryId = useGetParamId();
   const [legendModalVisible, setLegendModalVisible] = useState(false);
   const [activeTab, setActiveTab] = useState<GeneralInquiriesTab>('design-firm');
 
   const [data, setData] = useState<GeneralInquiryResponse>(DEFAULT_STATE);
 
   useEffect(() => {
-    if (designFirmId) {
-      getOneGeneralInquiry(designFirmId).then((res) => {
+    if (inquiryId) {
+      getOneGeneralInquiry(inquiryId).then((res) => {
         if (res) {
           setData(res);
         }
@@ -79,7 +91,7 @@ const GeneralInquiryDetail = () => {
       <Row>
         <Col span={12} className={styles.container}>
           <TableHeader
-            title={data.product_name}
+            title={data.inquiry_message.inquiry_for}
             customClass={styles.header}
             rightAction={
               <CloseIcon
@@ -100,28 +112,11 @@ const GeneralInquiryDetail = () => {
 
           <div className={styles.mainContent}>
             <CustomTabPane active={activeTab === 'design-firm'}>
-              <DesignFirmTab
-                name={data.design_firm.name}
-                official_website={data.design_firm.official_website}
-                inquirer={data.design_firm.inquirer}
-                position={data.design_firm.position}
-                email={data.design_firm.email}
-                phone={data.design_firm.phone}
-                address={data.design_firm.address}
-              />
+              <DesignFirmTab data={data.design_firm} />
             </CustomTabPane>
 
             <CustomTabPane active={activeTab === 'inquiry-message'}>
-              <InquiryMessageTab
-                inquiry_for={data.inquiry_message.inquiry_for}
-                title={data.inquiry_message.title}
-                message={data.inquiry_message.message}
-                official_website={data.inquiry_message.official_website}
-                product_collection={data.inquiry_message.product_collection}
-                product_description={data.inquiry_message.product_description}
-                product_image={data.inquiry_message.product_image}
-                modelId={designFirmId}
-              />
+              <InquiryMessageTab data={data.inquiry_message} modelId={inquiryId} />
             </CustomTabPane>
           </div>
         </Col>

@@ -1,5 +1,7 @@
 ﻿import { PATH } from '../src/constants/path';
 
+import accessToProject from '@/accessToProject';
+
 export default [
   // NO REQUIRE AUTHENTICATION
   {
@@ -452,8 +454,20 @@ export default [
     path: PATH.brandHomePage,
     name: 'workspace',
     icon: 'workspace-icon.svg',
-    component: './Admin',
+    // component: './Brand/MyWorkspace',
     access: 'brand_workspace',
+    routes: [
+      {
+        path: PATH.brandHomePage,
+        component: './Brand/MyWorkspace',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.brandViewDetailDashboard,
+        component: './Brand/MyWorkspace',
+        hideInMenu: true,
+      },
+    ],
   },
   {
     path: PATH.brandProduct,
@@ -495,8 +509,20 @@ export default [
     path: PATH.brandProjectTracking,
     name: 'project_tracking',
     icon: 'project-tracking-icon.svg',
-    component: './Brand/ProjectTracking',
+
     access: 'brand_project_tracking',
+    routes: [
+      {
+        path: PATH.brandProjectTracking,
+        component: './Brand/ProjectTracking',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.brandProjectTrackingDetail,
+        component: './Brand/ProjectTracking/ProjectTrackingDetail',
+        hideInMenu: true,
+      },
+    ],
   },
   {
     path: PATH.brandAdministration,
@@ -509,7 +535,7 @@ export default [
         name: 'brand.profile',
         icon: 'brand-icon.svg',
         access: 'brand_administration_brand_profile',
-        component: './Brand/Adminstration/BrandProfile',
+        component: '../features/office-profile',
       },
       {
         path: PATH.brandLocation,
@@ -659,7 +685,7 @@ export default [
     path: PATH.designerProject,
     name: 'project',
     icon: 'project-icon.svg',
-    access: 'design_project',
+    access: 'design_project_overal_listing',
     routes: [
       {
         path: PATH.designerProject,
@@ -688,7 +714,7 @@ export default [
         path: PATH.designerOfficeProfile,
         name: 'office.profile',
         icon: 'office-profile-icon.svg',
-        component: './Admin',
+        component: '../features/office-profile',
         access: 'design_administration_office_profile',
       },
       {

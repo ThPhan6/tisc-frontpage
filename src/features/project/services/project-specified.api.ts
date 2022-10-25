@@ -107,7 +107,7 @@ export async function getSpecifiedProductByPDF(id: string) {
 
 export async function getIssuingFor() {
   return request<{ data: { id: string; name: string }[] }>(
-    `/api/setting/common-type/${COMMON_TYPES.ISSUING_FOR}`,
+    `/api/setting/common-type/${COMMON_TYPES.ISSUE_FOR}`,
     { method: 'GET' },
   )
     .then((response) => {

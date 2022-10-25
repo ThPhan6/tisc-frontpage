@@ -64,7 +64,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const showAssignProductModal = useBoolean();
   const showInquiryRequestModal = useBoolean();
 
-  const unlistedDisabled = product.consider_status === ProductConsiderStatus.Unlisted;
+  const unlistedDisabled =
+    product.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted;
 
   // check user role to redirect
   const userRole = useGetUserRoleFromPathname();
@@ -145,16 +146,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
       onClick: handleDeleteProduct,
     },
     {
-      tooltipText: 'Assign Product',
-      show: isDesignerUser && !hideAssign,
-      Icon: AssignIcon,
-      onClick: () => showAssignProductModal.setValue(true),
-    },
-    {
       tooltipText: 'Inquiry/Request',
       show: Boolean(showInquiryRequest && isDesignerUser),
       Icon: CommentIcon,
       onClick: () => showInquiryRequestModal.setValue(true),
+    },
+    {
+      tooltipText: 'Assign Product',
+      show: isDesignerUser && !hideAssign,
+      Icon: AssignIcon,
+      onClick: () => showAssignProductModal.setValue(true),
     },
     {
       tooltipText: 'Share via Email',
@@ -173,9 +174,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <div
           style={{
             backgroundImage: `url(${
-              product.images?.[0] || product.image
-                ? showImageUrl(product.images?.[0] ?? product.image)
-                : SampleProductImage
+              product.images?.[0] ? showImageUrl(product.images?.[0]) : SampleProductImage
             }`,
           }}
           className={styles.imageWrapper_image}
@@ -191,7 +190,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           {product.name}
         </BodyText>
         <BodyText level={7} fontFamily="Roboto" customClass="text-uppercase">
-          {product.brand?.name ?? product.brand_name ?? 'N/A'}
+          {product.brand?.name ?? 'N/A'}
         </BodyText>
       </div>
       <div className={styles.productAction}>
@@ -283,7 +282,7 @@ export const CollapseProductList: React.FC<{ showBrandLogo?: boolean }> = ({ sho
           <div className={styles.productCardContainer}>
             {group.products.map((productItem, productKey) => (
               <div className={styles.productCardItemWrapper} key={productKey}>
-                <ProductCard product={productItem} />
+                <ProductCard product={productItem} showInquiryRequest />
               </div>
             ))}
           </div>

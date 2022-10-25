@@ -1,3 +1,7 @@
+import { ReactComponent as PendingIcon } from '@/assets/icons/action-pending-icon.svg';
+import { ReactComponent as RespondedIcon } from '@/assets/icons/action-responded-icon.svg';
+import { ReactComponent as KeepInViewIcon } from '@/assets/icons/eye-icon.svg';
+import { ReactComponent as FollowedIcon } from '@/assets/icons/followed-icon.svg';
 import { ReactComponent as HighPriorityIcon } from '@/assets/icons/high-priority-icon.svg';
 import { ReactComponent as LowPriorityIcon } from '@/assets/icons/low-priority-icon.svg';
 import { ReactComponent as MidPriorityIcon } from '@/assets/icons/mid-priority-icon.svg';
@@ -11,7 +15,7 @@ import { DropDownFilterValueProps } from '@/components/TopBar/types';
 export enum ProjectStatus {
   'Live',
   'On Hold',
-  'Archive',
+  'Archived',
 }
 
 export enum ProjectTrackingPriority {
@@ -33,7 +37,7 @@ export const GlobalFilter: DropDownFilterValueProps = {
 export const FilterStatusIcons = {
   [ProjectStatus.Live]: <ProjectLiveIcon className="icon-align" />,
   [ProjectStatus['On Hold']]: <ProjectOnHoldIcon className="icon-align" />,
-  [ProjectStatus.Archive]: <ProjectArchivedIcon className="icon-align" />,
+  [ProjectStatus.Archived]: <ProjectArchivedIcon className="icon-align" />,
 };
 
 export const ProjectStatuses: DropDownFilterValueProps[] = [
@@ -48,9 +52,9 @@ export const ProjectStatuses: DropDownFilterValueProps[] = [
     icon: FilterStatusIcons[ProjectStatus['On Hold']],
   },
   {
-    id: ProjectStatus.Archive,
-    name: ProjectStatus[ProjectStatus.Archive],
-    icon: FilterStatusIcons[ProjectStatus.Archive],
+    id: ProjectStatus.Archived,
+    name: ProjectStatus[ProjectStatus.Archived],
+    icon: FilterStatusIcons[ProjectStatus.Archived],
   },
 ];
 
@@ -82,7 +86,7 @@ export const ProjectPriority: DropDownFilterValueProps[] = [
   {
     id: ProjectTrackingPriority['Low priority'],
     name: ProjectTrackingPriority[ProjectTrackingPriority['Low priority']],
-    icon: PriorityIcons[ProjectTrackingPriority['Mid priority']],
+    icon: PriorityIcons[ProjectTrackingPriority['Low priority']],
   },
 ];
 
@@ -90,3 +94,33 @@ export const ProjectPriorityFilters: DropDownFilterValueProps[] = [
   GlobalFilter,
   ...ProjectPriority,
 ];
+
+export enum ProjectRequestStatus {
+  'Pending',
+  'Responded',
+}
+
+export const RequestsIcons = {
+  [ProjectRequestStatus.Pending]: <PendingIcon />,
+  [ProjectRequestStatus.Responded]: <RespondedIcon />,
+};
+
+export enum ProjectTrackingNotificationType {
+  'Deleted',
+  'Considered',
+  'Re-considered',
+  'Unlisted',
+  'Specified',
+  'Re-specified',
+  'Cancelled',
+}
+
+export enum ProjectTrackingNotificationStatus {
+  'Keep-in-view',
+  'Followed-up',
+}
+
+export const NotificationsIcons = {
+  [ProjectTrackingNotificationStatus['Keep-in-view']]: <KeepInViewIcon />,
+  [ProjectTrackingNotificationStatus['Followed-up']]: <FollowedIcon />,
+};

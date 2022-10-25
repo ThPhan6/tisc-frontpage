@@ -60,8 +60,9 @@ interface InquiryRequestProps {
 }
 
 const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible }) => {
-  const submitButtonStatus = useBoolean(false);
+  const isSubmitted = useBoolean(false);
   const [selectedTab, setSelectedTab] = useState<TabKeys>(TabKeys.inquiry);
+  const inquiryTab = selectedTab === TabKeys.inquiry;
 
   const projectData = useAppSelector((state) => state.project.list);
 
@@ -103,7 +104,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
 
   const setStyleOnContainerClass = () =>
     getValueByCondition([
-      [selectedTab === TabKeys.inquiry && selectedInquiryFor.length, styles.inputColor],
+      [inquiryTab && selectedInquiryFor.length, styles.inputColor],
       [selectedTab === TabKeys.request && selectedRequestFor.length, styles.inputColor],
     ]);
 
@@ -134,7 +135,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
 
   // handle onChange title and message
   const onChangeValueInput = (newData: 'title' | 'message', fieldValue: any) => {
-    if (selectedTab === TabKeys.inquiry) {
+    if (inquiryTab) {
       setGeneralInquiryData((prevState) => ({
         ...prevState,
         [newData]: fieldValue,
@@ -152,7 +153,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
     // delete other-input has empty value
     const selectedOpt = selectedOption.filter((el) => el.label !== '');
 
-    if (selectedTab === TabKeys.inquiry) {
+    if (inquiryTab) {
       setSelectedInquiryFor(selectedOpt);
       setGeneralInquiryData((prevState) => ({
         ...prevState,
@@ -186,52 +187,51 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
   };
 
   const handleSubmit = () => {
-    switch (selectedTab === TabKeys.inquiry) {
-      case generalInquirydata.inquiry_for_ids.length === 0:
-        message.error('Inquiry For is required');
-        return;
-      case !generalInquirydata.title:
-        message.error('Title is required');
-        return;
-      case !generalInquirydata.title:
-        message.error('Message is required');
-        return;
-      default:
-        break;
+    if (inquiryTab) {
+      switch (true) {
+        case generalInquirydata.inquiry_for_ids.length === 0:
+          message.error('Inquiry For is required');
+          return;
+        case !generalInquirydata.title:
+          message.error('Title is required');
+          return;
+        case !generalInquirydata.title:
+          message.error('Message is required');
+          return;
+        default:
+          break;
+      }
+    } else {
+      switch (true) {
+        case !projectRequestData.project_id:
+          message.error('Project is required');
+          return;
+        case projectRequestData.request_for_ids.length === 0:
+          message.error('Request For is required');
+          return;
+        case !projectRequestData.title:
+          message.error('Title is required');
+          return;
+        case !projectRequestData.message:
+          message.error('Message is required');
+          return;
+        default:
+          break;
+      }
     }
 
-    switch (selectedTab === TabKeys.request) {
-      case !projectRequestData.project_id:
-        message.error('Project is required');
-        return;
-      case projectRequestData.request_for_ids.length === 0:
-        message.error('Request For is required');
-        return;
-      case !projectRequestData.title:
-        message.error('Title is required');
-        return;
-      case !projectRequestData.message:
-        message.error('Message is required');
-        return;
-      default:
-        break;
-    }
-
-    const submitForm =
-      selectedTab === TabKeys.inquiry
-        ? createGeneralInquiry(generalInquirydata)
-        : createProjectRequest(projectRequestData);
+    const submitForm = inquiryTab
+      ? createGeneralInquiry(generalInquirydata)
+      : createProjectRequest(projectRequestData);
 
     submitForm.then((isSuccess) => {
       if (isSuccess) {
-        // change button icon
-        submitButtonStatus.setValue(true);
+        isSubmitted.setValue(true);
 
         setTimeout(() => {
-          submitButtonStatus.setValue(false);
-
+          isSubmitted.setValue(false);
           // clear data
-          if (selectedTab === TabKeys.inquiry) {
+          if (inquiryTab) {
             setSelectedInquiryFor([]);
             setGeneralInquiryData({
               ...GENERAL_INQUIRY_DEFAULT_STATE,
@@ -253,71 +253,18 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
     });
   };
 
-  // render Inquiry For and Request For data
-  const renderFor = (option: CheckboxValue[]) => {
-    const labelContent = selectedTab === TabKeys.inquiry ? 'Inquiry For' : 'Request For';
-    const valueSelected = selectedTab === TabKeys.inquiry ? selectedInquiryFor : selectedRequestFor;
-
-    return (
-      <FormGroup label={labelContent} required layout="vertical" formClass={styles.formGroup}>
-        <CollapseCheckboxList
-          checked={valueSelected}
-          onChange={onChangeCheckboxListData}
-          containerClass={setStyleOnContainerClass()}
-          otherInput
-          options={option}
-          placeholder={selectedItem()}
-        />
-      </FormGroup>
-    );
-  };
-
-  const renderTitle = () => (
-    <InputGroup
-      label="Title"
-      required
-      deleteIcon
-      fontLevel={3}
-      hasPadding
-      colorPrimaryDark
-      hasBoxShadow
-      hasHeight
-      placeholder="type message title"
-      value={selectedTab === TabKeys.inquiry ? generalInquirydata.title : projectRequestData.title}
-      onChange={(e) => onChangeValueInput('title', e.target.value)}
-      onDelete={() => onChangeValueInput('title', '')}
-    />
-  );
-
-  const renderMessage = () => (
-    <FormGroup label="Message" required layout="vertical">
-      <CustomTextArea
-        className={styles.message}
-        maxLength={250}
-        showCount
-        placeholder="type message here..."
-        borderBottomColor="mono-medium"
-        boxShadow
-        onChange={(e) => onChangeValueInput('message', e.target.value)}
-        value={
-          selectedTab === TabKeys.inquiry ? generalInquirydata.message : projectRequestData.message
-        }
-      />
-    </FormGroup>
-  );
-
   return (
     <Popover
       title="INQUIRY/REQUEST"
       visible={visible}
       setVisible={setVisible}
-      submitButtonStatus={submitButtonStatus.value}
+      submitButtonStatus={isSubmitted.value}
       onFormSubmit={handleSubmit}>
       <BrandProductBasicHeader
         image={product.images?.[0] || ''}
         logo={product.brand?.logo}
         text_1={product.brand?.name || ''}
-        text_2={product.name || ''}
+        text_2={product.collection?.name || ''}
         text_3={product.description || ''}
         hasBoxShadow={true}
         customClass={styles.header}
@@ -333,17 +280,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
         onChange={(key) => setSelectedTab(key as TabKeys)}
       />
 
-      {/* GENERAL INQUIRY */}
-      <div>
-        {/* Inquiry For */}
-        {renderFor(inquiryForData)}
-        {renderTitle()}
-        {renderMessage()}
-      </div>
-
-      {/* PROJECT REQUEST */}
-      <div>
-        {/* Project Name */}
+      {selectedTab === TabKeys.request ? (
         <CollapseRadioFormGroup
           label="Project Name"
           checked={projectRequestData.project_id}
@@ -360,13 +297,53 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
               getProjectName(String(itemSelected.value)),
             )
           }
+          noDataMessage="No project yet"
         />
+      ) : null}
 
-        {/* Request For */}
-        {renderFor(requestForData)}
-        {renderTitle()}
-        {renderMessage()}
-      </div>
+      <FormGroup
+        label={inquiryTab ? 'Inquiry For' : 'Request For'}
+        required
+        layout="vertical"
+        formClass={styles.formGroup}>
+        <CollapseCheckboxList
+          checked={inquiryTab ? selectedInquiryFor : selectedRequestFor}
+          onChange={onChangeCheckboxListData}
+          containerClass={setStyleOnContainerClass()}
+          otherInput
+          clearOtherInput={isSubmitted.value}
+          options={inquiryTab ? inquiryForData : requestForData}
+          placeholder={selectedItem()}
+        />
+      </FormGroup>
+
+      <InputGroup
+        label="Title"
+        required
+        deleteIcon
+        fontLevel={3}
+        hasPadding
+        colorPrimaryDark
+        hasBoxShadow
+        hasHeight
+        placeholder="type message title"
+        value={inquiryTab ? generalInquirydata.title : projectRequestData.title}
+        onChange={(e) => onChangeValueInput('title', e.target.value)}
+        onDelete={() => onChangeValueInput('title', '')}
+      />
+
+      <FormGroup label="Message" required layout="vertical">
+        <CustomTextArea
+          className={styles.message}
+          maxLength={250}
+          showCount
+          placeholder="type message here..."
+          borderBottomColor="mono-medium"
+          boxShadow
+          onChange={(e) => onChangeValueInput('message', e.target.value)}
+          value={inquiryTab ? generalInquirydata.message : projectRequestData.message}
+        />
+      </FormGroup>
     </Popover>
   );
 };

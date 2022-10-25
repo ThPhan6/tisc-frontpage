@@ -1,16 +1,26 @@
 import { FC, useEffect, useState } from 'react';
 
+import {
+  ProjectRequestStatus,
+  ProjectTrackingNotificationStatus,
+} from '@/pages/Brand/ProjectTracking/constant';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 
 import { getFullName } from '@/helper/utils';
-import { getActionTaskList, updateActionTaskStatus } from '@/pages/Brand/GeneralInquiries/services';
+import {
+  getActionTaskList,
+  getGeneralInquirySummary,
+  updateActionTaskStatus,
+} from '@/pages/Brand/GeneralInquiries/services';
+import { getProjectTrackingSummary } from '@/services/project-tracking.api';
+import { cloneDeep } from 'lodash';
 
-import { ActionTaskModelParams, ActionTaskProps } from '@/pages/Brand/GeneralInquiries/types';
+import { ActionTaskModelProps, ActionTaskProps } from '@/pages/Brand/GeneralInquiries/types';
 
 import CustomPlusButton from '../Table/components/CustomPlusButton';
 import { CustomDropDown } from '@/features/product/components';
 
-import { BodyText, RobotoBodyText } from '../Typography';
+import { MainTitle, RobotoBodyText } from '../Typography';
 import { ActionTaskModal } from './modal';
 import styles from './table.less';
 import moment from 'moment';
@@ -22,14 +32,40 @@ enum ActionTaskStatus {
   'Completed',
 }
 
-export const ActionTaskTable: FC<ActionTaskModelParams> = ({ model_id, model_name }) => {
+export const ActionTaskTable: FC<ActionTaskModelProps> = ({
+  model_id,
+  model_name,
+  setData,
+  indexItem,
+}) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [reloadTable, setReloadTable] = useState<boolean>(false);
 
   const [actionTaskList, setActionTaskList] = useState<ActionTaskProps[]>([]);
 
+  const updateData = () => {
+    setData((prevData) => {
+      const newData = cloneDeep(prevData);
+      if (model_name === 'request') {
+        newData.projectRequests[indexItem as number].status = ProjectRequestStatus.Responded;
+      } else {
+        newData.notifications[indexItem as number].status =
+          ProjectTrackingNotificationStatus['Followed-up'];
+      }
+      return newData;
+    });
+  };
+
   useEffect(() => {
     getActionTaskList({ model_id: model_id, model_name: model_name }).then(setActionTaskList);
+    if (reloadTable) {
+      if (model_name === 'inquiry') {
+        getGeneralInquirySummary();
+      } else {
+        getProjectTrackingSummary();
+        updateData();
+      }
+    }
   }, [reloadTable === true && modalVisible === false]);
 
   const renderStatusDropdown = (record: ActionTaskProps) => {
@@ -92,9 +128,9 @@ export const ActionTaskTable: FC<ActionTaskModelParams> = ({ model_id, model_nam
     <div>
       <div className={styles.actionTask}>
         <div className={styles.actionTask_content} onClick={() => setModalVisible(true)}>
-          <BodyText level={3} customClass={styles.actionTask_text}>
+          <MainTitle level={4} customClass={styles.actionTask_text}>
             Actions/Tasks
-          </BodyText>
+          </MainTitle>
           <CustomPlusButton size={18} />
         </div>
       </div>
@@ -102,16 +138,16 @@ export const ActionTaskTable: FC<ActionTaskModelParams> = ({ model_id, model_nam
         <thead>
           <tr className={styles.title}>
             <th>
-              <RobotoBodyText level={5}>Date</RobotoBodyText>
+              <RobotoBodyText level={6}>Date</RobotoBodyText>
             </th>
             <th>
-              <RobotoBodyText level={5}>Actions</RobotoBodyText>
+              <RobotoBodyText level={6}>Actions</RobotoBodyText>
             </th>
             <th>
-              <RobotoBodyText level={5}>Teams</RobotoBodyText>
+              <RobotoBodyText level={6}>Teams</RobotoBodyText>
             </th>
             <th>
-              <RobotoBodyText level={5}>Status</RobotoBodyText>
+              <RobotoBodyText level={6}>Status</RobotoBodyText>
             </th>
           </tr>
         </thead>

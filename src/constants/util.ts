@@ -25,17 +25,6 @@ export const DESIGN_STATUSES = {
   INACTIVE: 2,
 };
 
-export const DESIGN_STATUSES_TEXTS = {
-  [DESIGN_STATUSES.ACTIVE]: 'Active',
-  [DESIGN_STATUSES.INACTIVE]: 'Inactive',
-};
-
-export const BRAND_STATUSES_TEXTS = {
-  [USER_STATUSES.ACTIVE]: 'Active',
-  [USER_STATUSES.INACTIVE]: 'Inactive',
-  [USER_STATUSES.PENDING]: 'Pending',
-};
-
 export const MEASUREMENT_UNIT = {
   IMPERIAL: 1,
   METRIC: 2,
@@ -101,7 +90,8 @@ export const COMMON_TYPES = {
   TEAM_DEPARTMENT: 10,
   REQUEST_FOR: 11,
   ACTION_TASK: 12,
-  ISSUING_FOR: 13,
+  ISSUE_FOR: 13,
+  CAPABILITIES: 14,
 };
 
 export const ACTION_TASK_MODEL = {

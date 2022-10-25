@@ -93,7 +93,7 @@ export interface ConsideredProduct {
 
 export enum ProductConsiderStatus {
   'Considered',
-  'Re-Considered',
+  'Re-considered',
   'Unlisted',
 }
 

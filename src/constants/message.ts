@@ -155,8 +155,8 @@ export const MESSAGE_NOTIFICATION = {
   GET_PROJECTS_BY_DESIGN_FIRM: 'Failed to get projects by design firm',
   GET_MATERIAL_CODE_BY_DESIGN_FIRM: 'Failed to get material code by design firm',
   GET_DESIGN_STATUSES_ERROR: 'Failed to get statuses',
-  UPDATE_STATUS_DESIGN_FIRM_SUCCESS: 'Update status design firm successfully',
-  UPDATE_STATUS_DESIGN_FIRM_ERROR: 'Update status design firm error',
+  UPDATE_STATUS_DESIGN_FIRM_SUCCESS: 'Update design firm status successfully',
+  UPDATE_STATUS_DESIGN_FIRM_ERROR: 'Update design firm status error',
 
   // team profile
   GET_LIST_TEAM_PROFILE_ERROR: 'Get list team profile error',
@@ -240,11 +240,12 @@ export const MESSAGE_NOTIFICATION = {
   GET_ONE_DISTRIBUTOR_ERROR: 'Get one distributor error',
   GET_LIST_DISTRIBUTOR_GROUP_COUNTRY_ERROR: 'Get list group distributor country error',
 
-  //brand-profile
-  UPDATE_BRAND_PROFILE_SUCCESS: 'Update profile successfully',
-  UPDATE_BRAND_PROFILE_ERROR: 'Update profile error',
-  UPDATE_LOGO_BRAND_PROFILE_SUCCESS: 'Update logo brand profile successfully',
-  UPDATE_LOGO_BRAND_PROFILE_ERROR: 'Update logo brand profile error',
+  //brand-profile // office profile
+  GET_PROFILE_ERROR: 'Get profile error',
+  UPDATE_PROFILE_SUCCESS: 'Update profile successfully',
+  UPDATE_PROFILE_ERROR: 'Update profile error',
+  UPDATE_LOGO_PROFILE_SUCCESS: 'Update logo profile successfully',
+  UPDATE_LOGO_PROFILE_ERROR: 'Update logo profile error',
 
   //FAQ
   GET_FAQ_ERROR: 'Failed to get FAQ data',
@@ -299,6 +300,7 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PROJECT_TRACKING_INFO_SUCCESS: 'Update project tracking information successfully',
   UPDATE_PROJECT_TRACKING_INFO_ERROR: 'Update project tracking info error',
   GET_PROJECT_TRACKING_SUMMARY_ERROR: 'Get project tracking summary error',
+  GET_ONE_PROJECT_TRACKING_ERROR: 'Get one project tracking error',
 };
 
 export const MESSAGE_TOOLTIP = {

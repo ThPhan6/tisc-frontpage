@@ -17,6 +17,7 @@ interface CollapseRadioFormGroupProps extends FormGroupProps {
   radioListClass?: string;
   defaultPlaceHolder?: string | number;
   inputPlaceholder?: string;
+  noDataMessage?: string;
 }
 
 const CollapseRadioFormGroup: FC<CollapseRadioFormGroupProps> = ({
@@ -30,6 +31,7 @@ const CollapseRadioFormGroup: FC<CollapseRadioFormGroupProps> = ({
   formClass = '',
   defaultPlaceHolder = 'select from list',
   inputPlaceholder = 'please specify',
+  noDataMessage,
   ...props
 }) => {
   return (
@@ -47,6 +49,7 @@ const CollapseRadioFormGroup: FC<CollapseRadioFormGroupProps> = ({
         placeholder={placeholder || defaultPlaceHolder}
         otherInput={otherInput}
         inputPlaceholder={inputPlaceholder}
+        noDataMessage={noDataMessage}
       />
     </FormGroup>
   );

@@ -3,11 +3,12 @@ import { FC, useEffect, useState } from 'react';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as LeftIcon } from '@/assets/icons/pagination-right-18px.svg';
 
-import { WebsiteUrl } from '../types';
+import { WebsiteUrl } from '@/features/office-profile/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 import CountryModal from '@/features/locations/components/CountryModal';
-import styles from '@/pages/Brand/Adminstration/BrandProfile/styles/index.less';
+
+import styles from '../index.less';
 
 export const ItemWebsite: FC<WebsiteUrl> = ({ websiteValue, onChange, onDeleteWebsiteItem }) => {
   const [countryVisible, setCountryVisible] = useState(false);

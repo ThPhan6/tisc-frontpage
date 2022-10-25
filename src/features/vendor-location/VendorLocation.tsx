@@ -82,9 +82,15 @@ interface VendorTabProps {
   productId: string;
   brandId: string;
   userSelection?: boolean;
+  borderBottomNone?: boolean;
 }
 
-export const VendorLocation: FC<VendorTabProps> = ({ productId, brandId, userSelection }) => {
+export const VendorLocation: FC<VendorTabProps> = ({
+  productId,
+  brandId,
+  userSelection,
+  borderBottomNone,
+}) => {
   // for brand
   const [brandActiveKey, setBrandActiveKey] = useState<string | string[]>();
   const [brandAddresses, setBrandAddresses] = useState<LocationGroupedByCountry[]>([]);
@@ -225,14 +231,14 @@ export const VendorLocation: FC<VendorTabProps> = ({ productId, brandId, userSel
 
   return (
     <>
-      <div>
+      <div className={borderBottomNone ? styles.borderBottomNone : ''}>
         {/* Brand Address */}
         <div
           className={`${
             brandActiveKey === activeKey && chosenBrand.value
               ? styles.collapsed
               : styles.notCollapsed
-          } `}>
+          }`}>
           <div className={styles.address}>
             <CustomCollapse
               header={renderCollapseHeader(

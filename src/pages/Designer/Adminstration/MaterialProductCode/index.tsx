@@ -13,6 +13,7 @@ import {
   MaterialProductCodeMainList,
   MaterialProductCodeSubList,
 } from '@/features/material-product-code/type';
+import { useAppSelector } from '@/reducers';
 
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
@@ -26,6 +27,8 @@ import {
 const MaterialProductCode = () => {
   useAutoExpandNestedTableColumn(2);
   const tableRef = useRef<any>();
+
+  const user = useAppSelector((state) => state.user.user);
 
   const handleUpdateMaterialProductCode = (id: string) => {
     pushTo(PATH.designerMaterialProductCodeUpdate.replace(':id', id));
@@ -139,6 +142,7 @@ const MaterialProductCode = () => {
         columns={setDefaultWidthForEachColumn(MainColumns, 3)}
         ref={tableRef}
         fetchDataFunc={getMaterialProductCodeList}
+        extraParams={{ designId: user?.relation_id }}
         multiSort={{
           name: 'main_material_code_order',
           sub_list: 'sub_material_code_order',

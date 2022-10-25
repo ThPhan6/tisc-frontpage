@@ -9,7 +9,9 @@ import {
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
-import { ProjecTrackingList } from '@/types/project-tracking.type';
+import store from '@/reducers';
+import { setSummaryProjectTracking } from '@/reducers/summary';
+import { ProjecTrackingList, ProjectTrackingDetail } from '@/types/project-tracking.type';
 
 interface ProjectTrackingPaginationRespone {
   data: {
@@ -60,12 +62,25 @@ export async function getProjectTrackingSummary() {
     method: 'GET',
   })
     .then((response) => {
-      return response.data;
+      store.dispatch(setSummaryProjectTracking(response.data));
     })
     .catch((error) => {
       message.error(
         error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_TRACKING_SUMMARY_ERROR,
       );
       return [] as DataMenuSummaryProps[];
+    });
+}
+
+export async function getOneProjectTracking(id: string) {
+  return request<{ data: ProjectTrackingDetail }>(`/api/project-tracking/${id}/get-one`, {
+    method: 'GET',
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_PROJECT_TRACKING_ERROR);
+      return {} as ProjectTrackingDetail;
     });
 }

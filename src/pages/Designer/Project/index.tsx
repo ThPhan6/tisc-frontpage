@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { FilterStatusIcons, FilterValues, GlobalFilter } from './constants/filter';
 import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
+import { useAccess } from 'umi';
 
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 
@@ -38,8 +39,17 @@ import moment from 'moment';
 const ProjectList: React.FC = () => {
   useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
   const tableRef = useRef<any>();
+  const accessPermission = useAccess();
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
   const [summaryData, setSummaryData] = useState<ProjectSummaryData>();
+
+  const inAccessAllTab: boolean =
+    accessPermission.design_project_basic_information === false &&
+    accessPermission.design_project_zone_area_zoom === false &&
+    accessPermission.design_project_product_considered === false &&
+    accessPermission.design_project_product_specified === false
+      ? true
+      : false;
 
   // assign team modal
   const [visible, setVisible] = useState<boolean>(false);
@@ -218,6 +228,7 @@ const ProjectList: React.FC = () => {
               {
                 type: 'updated',
                 onClick: () => goToUpdateProject(projectId),
+                disabled: inAccessAllTab,
               },
               {
                 type: 'deleted',

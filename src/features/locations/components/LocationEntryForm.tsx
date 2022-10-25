@@ -8,13 +8,12 @@ import { useCheckPermission } from '@/helper/hook';
 import {
   getEmailMessageError,
   getEmailMessageErrorType,
-  getSelectedOptions,
   isEmptySpace,
   messageError,
   messageErrorType,
   validatePostalCode,
 } from '@/helper/utils';
-import { trimStart } from 'lodash';
+import { isEqual, trimStart } from 'lodash';
 
 import { LocationForm } from '../type';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -31,20 +30,29 @@ import CityModal from '@/features/locations/components/CityModal';
 import CountryModal from '@/features/locations/components/CountryModal';
 import StateModal from '@/features/locations/components/StateModal';
 
-import { getListFunctionalType, getListFunctionalTypeForDesign } from '../api';
 import styles from './LocationEntryForm.less';
 
 interface LocationEntryFormProps {
-  submitButtonStatus: boolean;
   onSubmit: (data: LocationForm) => void;
   onCancel: () => void;
   data: LocationForm;
   setData: (data: LocationForm) => void;
+  isSubmitted: boolean;
+  functionalTypeData: CheckboxValue[] | RadioValue[];
+  selectedFunctionType: CheckboxValue[];
 }
 
 type FieldName = keyof LocationForm;
 const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
-  const { submitButtonStatus, onSubmit, onCancel, data, setData } = props;
+  const {
+    isSubmitted,
+    onSubmit,
+    onCancel,
+    data,
+    setData,
+    functionalTypeData,
+    selectedFunctionType,
+  } = props;
   // for content type modal
   const [visible, setVisible] = useState<'' | 'country' | 'state' | 'city'>('');
 
@@ -64,22 +72,23 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     value: data.city_id,
   });
 
-  /// functional type for design-firm
-  const [functionalTypeForDesign, setFunctionalTypeForDesign] = useState<RadioValue[]>([]);
-
-  /// for show data
-  const [functionalTypes, setFunctionalTypes] = useState<CheckboxValue[]>([]);
   /// for item selected
-  const [checkedOpt, setCheckedOpt] = useState<CheckboxValue[]>([]);
-  /// for show items have been already selected to show on first loading
-  const selectedFunctionType = getSelectedOptions(functionalTypes, data.functional_type_ids);
+  const [curSelectFuncType, setCurSelectFuncType] = useState<CheckboxValue[]>([]);
   /// for show on placeholder
   const onShowPlaceholder =
     /// current select
-    checkedOpt.map((el) => el.label).join(', ') ||
+    curSelectFuncType.map((el) => el.label).join(', ') ||
     /// has been selected
     selectedFunctionType.map((el) => el.label).join(', ') ||
     'select all relevance';
+
+  useEffect(() => {
+    if (!isDesignAdmin) {
+      if (!isEqual(selectedFunctionType, curSelectFuncType) && curSelectFuncType.length) {
+        setCurSelectFuncType(selectedFunctionType);
+      }
+    }
+  }, [isSubmitted === true]);
 
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({
@@ -102,33 +111,6 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
   const handleCloseModal = (isClose: boolean) => (isClose ? undefined : setVisible(''));
 
   useEffect(() => {
-    if (isDesignAdmin) {
-      getListFunctionalTypeForDesign().then((res) => {
-        if (res) {
-          setFunctionalTypeForDesign(
-            res.map((el) => ({
-              label: el.name,
-              value: String(el.id),
-            })),
-          );
-        }
-      });
-      return;
-    }
-
-    getListFunctionalType().then((res) => {
-      if (res) {
-        setFunctionalTypes(
-          res.map((el) => ({
-            label: el.name,
-            value: el.id,
-          })),
-        );
-      }
-    });
-  }, []);
-
-  useEffect(() => {
     if (countryData.value !== '') {
       onChangeData('country_id', countryData.value);
     }
@@ -146,7 +128,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     if (isDesignAdmin) {
       return styles.borderBottom;
     }
-    return selectedFunctionType.length || checkedOpt.length ? styles.activeFunctionType : '';
+    return selectedFunctionType.length || curSelectFuncType.length ? styles.activeFunctionType : '';
   };
 
   const getFunctionalTypes = () => {
@@ -154,8 +136,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       return data.functional_type_ids;
     }
 
-    return checkedOpt.length
-      ? checkedOpt.map((el) => String(el.value === 'other' ? el.label : el.value))
+    return curSelectFuncType.length
+      ? curSelectFuncType.map((el) => String(el.value === 'other' ? el.label : el.value))
       : selectedFunctionType.map((el) => String(el.value));
   };
 
@@ -185,7 +167,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     <EntryFormWrapper
       handleSubmit={handleSubmit}
       handleCancel={onCancel}
-      submitButtonStatus={submitButtonStatus}>
+      submitButtonStatus={isSubmitted}>
       <InputGroup
         label="Business Name"
         required
@@ -233,8 +215,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         formClass={`${styles.formGroup} ${setStylesForFunctionType()}`}>
         {isDesignAdmin ? (
           <CustomRadio
-            options={functionalTypeForDesign}
-            value={String(data.functional_type_ids[0])}
+            options={functionalTypeData as RadioValue[]}
+            value={data.functional_type_ids[0] ?? functionalTypeData[0]?.value}
             onChange={(radioValue) => {
               setData({
                 ...data,
@@ -244,11 +226,14 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
           />
         ) : (
           <CollapseCheckboxList
-            options={functionalTypes}
-            checked={selectedFunctionType}
+            options={functionalTypeData as CheckboxValue[]}
+            placeholder={onShowPlaceholder}
+            otherInput
+            clearOtherInput={isSubmitted}
+            checked={curSelectFuncType.length ? curSelectFuncType : selectedFunctionType}
             onChange={(checkedItem) => {
               // to show on placeholer and handle submit
-              setCheckedOpt(checkedItem);
+              setCurSelectFuncType(checkedItem);
 
               setData({
                 ...data,
@@ -257,8 +242,6 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
                 ),
               });
             }}
-            placeholder={onShowPlaceholder}
-            otherInput
           />
         )}
       </FormGroup>

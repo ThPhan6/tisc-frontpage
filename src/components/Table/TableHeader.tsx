@@ -4,7 +4,7 @@ import { Title } from '../Typography';
 import styles from './styles/TableHeader.less';
 
 interface TableHeaderProps {
-  title: string;
+  title: string | React.ReactNode;
   rightAction?: React.ReactNode;
   customClass?: string;
 }

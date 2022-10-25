@@ -5,9 +5,9 @@ import {
   GlobalFilter,
   PriorityIcons,
   ProjectPriorityFilters,
-  ProjectStatusFilters,
   ProjectTrackingPriority,
 } from './constant';
+import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 
@@ -23,24 +23,23 @@ import { ReactComponent as ProjectOnHoldIcon } from '@/assets/icons/project-on-h
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
+import { pushTo } from '@/helper/history';
 import { getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
 import {
   getProjectTrackingPagination,
-  getProjectTrackingSummary,
   updateProjectTrackingPriority,
 } from '@/services/project-tracking.api';
 import { isEmpty, isEqual } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
-import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import { TableColumnItem } from '@/components/Table/types';
 import { TeamProfileGroupCountry, TeamProfileMemberProps } from '@/features/team-profiles/types';
 import { useAppSelector } from '@/reducers';
 import { ProjecTrackingList } from '@/types/project-tracking.type';
 
 import { LegendModal } from '../../../components/LegendModal/LegendModal';
+import { ProjectTrackingHeader } from './components/ProjectTrackingHeader';
 import AssignTeam from '@/components/AssignTeam';
-import { MenuSummary } from '@/components/MenuSummary';
 import CustomTable from '@/components/Table';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import TopBarDropDownFilter from '@/components/TopBar/TopBarDropDownFilter';
@@ -65,9 +64,9 @@ const ProjectTracking = () => {
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
   const [selectedPriority, setSelectedPriority] = useState(GlobalFilter);
   const [openInformationModal, setOpenInformationModal] = useState(false);
-  const [summaryData, setSummaryData] = useState<DataMenuSummaryProps[]>([]);
 
-  const showAssignTeams = (projectInfo: ProjecTrackingList) => () => {
+  const showAssignTeams = (projectInfo: ProjecTrackingList) => (event: any) => {
+    event?.stopPropagation();
     /// get brand info
     setRecordAssignTeam(projectInfo);
 
@@ -116,14 +115,6 @@ const ProjectTracking = () => {
       });
     }
   };
-
-  useEffect(() => {
-    getProjectTrackingSummary().then((data) => {
-      if (data) {
-        setSummaryData(data);
-      }
-    });
-  }, []);
 
   useEffect(() => {
     tableRef.current.reload();
@@ -301,27 +292,18 @@ const ProjectTracking = () => {
       <PageContainer
         pageHeaderRender={() => {
           return (
-            <div className={styles.customHeader}>
-              <MenuSummary typeMenu={'brand'} menuSummaryData={summaryData} />
-              <div style={{ display: 'flex' }}>
-                <TopBarDropDownFilter
-                  selectedFilter={selectedFilter}
-                  setSelectedFilter={setSelectedFilter}
-                  filterLabel="Project Status"
-                  globalFilter={GlobalFilter}
-                  dynamicFilter={ProjectStatusFilters}
-                  isShowFilter
-                />
-                <TopBarDropDownFilter
-                  selectedFilter={selectedPriority}
-                  setSelectedFilter={setSelectedPriority}
-                  filterLabel="Project Priority"
-                  globalFilter={GlobalFilter}
-                  dynamicFilter={ProjectPriorityFilters}
-                  isShowFilter
-                />
-              </div>
-            </div>
+            <ProjectTrackingHeader
+              selectedFilter={selectedFilter}
+              setSelectedFilter={setSelectedFilter}>
+              <TopBarDropDownFilter
+                selectedFilter={selectedPriority}
+                setSelectedFilter={setSelectedPriority}
+                filterLabel="Project Priority"
+                globalFilter={GlobalFilter}
+                dynamicFilter={ProjectPriorityFilters}
+                isShowFilter
+              />
+            </ProjectTrackingHeader>
           );
         }}>
         <CustomTable
@@ -350,6 +332,11 @@ const ProjectTracking = () => {
           hasPagination
           autoLoad={false}
           customClass={styles.customTitle}
+          onRow={(rowRecord: ProjecTrackingList) => ({
+            onClick: () => {
+              pushTo(PATH.brandProjectTrackingDetail.replace(':id', rowRecord.id));
+            },
+          })}
         />
       </PageContainer>
       <LegendModal visible={openInformationModal} setVisible={setOpenInformationModal} />

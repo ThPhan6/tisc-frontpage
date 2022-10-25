@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { Checkbox } from 'antd';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
@@ -23,6 +23,12 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
 }) => {
   const [inputValue, setInputValue] = useState('');
   const [randomId] = useState(Math.random().toString().replace(/[\D]+/g, ''));
+
+  useEffect(() => {
+    if (otherInput && clearOtherInput) {
+      setInputValue('');
+    }
+  }, [otherInput && clearOtherInput]);
 
   const onChangeValue = (checkedValues: CheckboxValueType[]) => {
     const haveOtherInput = checkedValues.some((checkbox) => checkbox === 'other');
@@ -60,13 +66,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
         }) || [];
     }
 
-    onChange?.(newData ?? []);
-
-    console.log('clearOtherInput', clearOtherInput);
-
-    if (otherInput && clearOtherInput) {
-      setInputValue('');
-    }
+    onChange?.(newData.filter((el) => el.label !== '') ?? []);
   };
 
   const getActiveClass = (option: CheckboxValue) => {
@@ -111,7 +111,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
             )}
           </div>
         ))}
-        {otherInput && (
+        {otherInput ? (
           <div className={isCheckboxList && style['other-field-checkbox-list']}>
             <Checkbox value={'other'}>
               <div className={style['input-wrapper']} style={{ height: heightItem }}>
@@ -121,12 +121,11 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   placeholder={inputPlaceholder}
                   value={inputValue}
                   onChange={onChangeInputValue}
-                  // onClick={handleClickInput}
                 />
               </div>
             </Checkbox>
           </div>
-        )}
+        ) : null}
       </Checkbox.Group>
     </div>
   );

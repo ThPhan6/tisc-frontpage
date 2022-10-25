@@ -4,19 +4,28 @@ import { PATH } from '@/constants/path';
 
 import { pushTo } from '@/helper/history';
 import { useBoolean, useCheckPermission, useGetParamId } from '@/helper/hook';
-import { getValueByCondition } from '@/helper/utils';
+import { getSelectedOptions, getValueByCondition } from '@/helper/utils';
 
 import { LocationForm } from '../type';
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { RadioValue } from '@/components/CustomRadio/types';
 
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
-import { createLocation, getLocationById, updateLocation } from '../api';
+import {
+  createLocation,
+  getListFunctionalType,
+  getListFunctionalTypeForDesign,
+  getLocationById,
+  updateLocation,
+} from '../api';
 import LocationEntryForm from './LocationEntryForm';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const LocationDetail = () => {
-  const submitButtonStatus = useBoolean(false);
+  const isSubmitted = useBoolean(false);
+  const loadedData = useBoolean(false);
 
   const locationId = useGetParamId();
   // for checking updating action
@@ -36,8 +45,6 @@ const LocationDetail = () => {
     '',
   );
 
-  const [loadedData, setLoadedData] = useState(false);
-
   const [data, setData] = useState<LocationForm>({
     business_name: '',
     business_number: '',
@@ -51,8 +58,67 @@ const LocationDetail = () => {
     general_email: '',
   });
 
+  const [functionalTypes, setFunctionalTypes] = useState<CheckboxValue[] | RadioValue[]>([]);
+  /// for show items have been already selected to show on first loading
+  let selectedFunctionType: CheckboxValue[] = [];
+  if (!isDesignAdmin) {
+    selectedFunctionType = getSelectedOptions(
+      functionalTypes as CheckboxValue[],
+      data.functional_type_ids as string[],
+    );
+  }
+
   const goBackToLocationList = () => {
     pushTo(userRolePath);
+  };
+
+  const getOneLocation = () =>
+    getLocationById(locationId).then((res) => {
+      if (res) {
+        setData({
+          business_name: res.business_name,
+          business_number: isDesignAdmin ? '' : res.business_number,
+          country_id: res.country_id,
+          state_id: res.state_id,
+          city_id: res.city_id,
+          address: res.address,
+          postal_code: res.postal_code,
+          general_phone: res.general_phone,
+          general_email: res.general_email,
+          functional_type_ids: res.functional_type_ids.map((id) => id),
+        });
+        loadedData.setValue(true);
+      }
+    });
+
+  const getListFuncType = () => {
+    if (isDesignAdmin) {
+      return getListFunctionalTypeForDesign().then((res) => {
+        if (res) {
+          setFunctionalTypes(
+            res.map((el) => ({
+              label: el.name,
+              value: String(el.id),
+            })),
+          );
+          // set default functional type value is 'main office' when create a new location
+          if (!isUpdate) {
+            setData({ ...data, functional_type_ids: [String(res[0]?.id)] });
+          }
+        }
+      });
+    }
+
+    return getListFunctionalType().then((res) => {
+      if (res) {
+        setFunctionalTypes(
+          res.map((el) => ({
+            label: el.name,
+            value: el.id,
+          })),
+        );
+      }
+    });
   };
 
   const onSubmit = (submitData: LocationForm) => {
@@ -62,9 +128,13 @@ const LocationDetail = () => {
       updateLocation(locationId, submitData).then((isSuccess) => {
         hidePageLoading();
         if (isSuccess) {
-          submitButtonStatus.setValue(true);
+          isSubmitted.setValue(true);
+
+          getOneLocation();
+          getListFuncType();
+
           setTimeout(() => {
-            submitButtonStatus.setValue(false);
+            isSubmitted.setValue(false);
           }, 1000);
         }
       });
@@ -72,7 +142,7 @@ const LocationDetail = () => {
       createLocation(submitData).then((isSuccess) => {
         hidePageLoading();
         if (isSuccess) {
-          submitButtonStatus.setValue(true);
+          isSubmitted.setValue(true);
           setTimeout(() => {
             goBackToLocationList();
           }, 1000);
@@ -82,30 +152,13 @@ const LocationDetail = () => {
   };
 
   useEffect(() => {
+    getListFuncType();
     if (locationId) {
-      getLocationById(locationId).then((res) => {
-        if (res) {
-          setData({
-            business_name: res.business_name,
-            business_number: isDesignAdmin ? '' : res.business_number,
-            country_id: res.country_id,
-            state_id: res.state_id,
-            city_id: res.city_id,
-            address: res.address,
-            postal_code: res.postal_code,
-            general_phone: res.general_phone,
-            general_email: res.general_email,
-            functional_type_ids: res.functional_types.map((type) => type.id),
-          });
-          setLoadedData(true);
-        }
-      });
+      getOneLocation();
     }
   }, []);
 
-  console.log(data);
-
-  if (isUpdate && !loadedData) {
+  if (isUpdate && !loadedData.value) {
     return null;
   }
 
@@ -113,11 +166,13 @@ const LocationDetail = () => {
     <div>
       <TableHeader title="LOCATIONS" rightAction={<CustomPlusButton disabled />} />
       <LocationEntryForm
-        submitButtonStatus={submitButtonStatus.value}
+        isSubmitted={isSubmitted.value}
         onSubmit={onSubmit}
         onCancel={goBackToLocationList}
         data={data}
         setData={setData}
+        functionalTypeData={functionalTypes}
+        selectedFunctionType={selectedFunctionType}
       />
     </div>
   );
