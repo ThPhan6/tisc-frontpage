@@ -31,7 +31,7 @@ const GeneralInquiries = () => {
 
   /// reload table depends on filter
   useEffect(() => {
-    tableRef.current.reload();
+    tableRef.current.reloadWithFilter();
   }, [selectedFilter]);
 
   const mainColumns: TableColumnItem<GeneralInquiryListProps>[] = [
