@@ -3,9 +3,8 @@ import { useDispatch } from 'react-redux';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
-import { PageContainer } from '@ant-design/pro-layout';
 import { Col, Row, message } from 'antd';
-import { useHistory, useLocation, useParams } from 'umi';
+import { useHistory, useParams } from 'umi';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 import { ReactComponent as HomeButton } from '@/assets/icons/home-icon.svg';
@@ -19,7 +18,7 @@ import {
 } from '@/features/product/services';
 import { getBrandById } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
-import { useCheckPermission } from '@/helper/hook';
+import { useCheckPermission, useQuery } from '@/helper/hook';
 import { isValidURL } from '@/helper/utils';
 
 import { ProductFormData, ProductKeyword } from '../types';
@@ -40,10 +39,15 @@ import { ProductDetailFooter } from './ProductDetailFooter';
 import ProductDetailHeader from './ProductDetailHeader';
 import ProductImagePreview from './ProductImagePreview';
 import styles from './detail.less';
+import Cookies from 'js-cookie';
 
 const ProductDetailContainer: React.FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const signature = useQuery().get('signature') || '';
+  // set signature  to cookies
+  Cookies.set('signature', signature);
 
   const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact'];
   const [openModal, setOpenModal] = useState<ModalOpen>('');
@@ -51,7 +55,6 @@ const ProductDetailContainer: React.FC = () => {
   const params = useParams<{ id: string; brandId: string }>();
   const productId = params?.id || '';
   const brandId = params?.brandId || '';
-  const signature = useLocation().query?.signature || '';
 
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
@@ -150,7 +153,7 @@ const ProductDetailContainer: React.FC = () => {
           title={'CATEGORY'}
           onSave={onSave}
           onCancel={history.goBack}
-          customClass={styles.roundSpace}
+          customClass={styles.marginBottomSpace}
         />
       );
     }
@@ -177,49 +180,54 @@ const ProductDetailContainer: React.FC = () => {
     return (
       <TableHeader
         title={title}
-        customClass={styles.roundSpace}
+        customClass={styles.marginBottomSpace}
         rightAction={<CloseIcon className="closeIcon" onClick={history.goBack} />}
       />
     );
   };
 
   return (
-    <div className={signature ? styles.marginNone : styles.marginTopNone}>
-      <PageContainer pageHeaderRender={() => renderHeader()}>
-        <Row>
-          <ProductImagePreview isPublicPage={signature} />
+    <Row className={styles.container}>
+      <div className={styles.backgroundLight}>
+        <Col span={24}>{renderHeader()}</Col>
 
-          <Col span={12} className={styles.productContent}>
-            <Row style={{ flexDirection: 'column', height: '100%' }}>
-              <Col>
-                <ProductBasicInfo />
-              </Col>
+        <Col span={24}>
+          <Row className={signature ? styles.marginRounded : ''}>
+            <Col span={12}>
+              <ProductImagePreview isPublicPage={signature} />
+            </Col>
 
-              <Col style={{ marginBottom: activeKey !== 'vendor' ? 24 : 0 }}>
-                <ProductAttributeComponent activeKey={activeKey} setActiveKey={setActiveKey} />
-              </Col>
+            <Col span={12} className={styles.productContent}>
+              <Row style={{ flexDirection: 'column', height: '100%' }}>
+                <Col>
+                  <ProductBasicInfo />
+                </Col>
 
-              <Col style={{ marginTop: 'auto' }}>
-                <ProductDetailFooter visible={activeKey !== 'vendor'} />
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-      </PageContainer>
+                <Col style={{ marginBottom: activeKey !== 'vendor' ? 24 : 0 }}>
+                  <ProductAttributeComponent activeKey={activeKey} setActiveKey={setActiveKey} />
+                </Col>
+
+                <Col style={{ marginTop: 'auto' }}>
+                  <ProductDetailFooter visible={activeKey !== 'vendor'} />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </Col>
+      </div>
 
       {signature ? (
-        <div>
+        <Col span={24} className={styles.footerContent}>
           <LandingPageFooter
-            customClass={styles.footerContent}
             setOpenModal={setOpenModal}
             listMenuFooter={listMenuFooter}
             isPublicPage
           />
 
           <AboutPoliciesContactModal visible={openModal} onClose={handleCloseModal} />
-        </div>
+        </Col>
       ) : null}
-    </div>
+    </Row>
   );
 };
 

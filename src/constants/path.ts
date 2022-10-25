@@ -4,6 +4,7 @@ export const PATH = {
   resetPassword: '/reset-password',
   createPassword: '/create-password',
   verifyAccount: '/verify',
+  sharedProduct: '/shared-product/:id',
   // private path
   profiles: '/profile-settings',
   tiscHomePage: '/tisc/dashboard',
@@ -167,4 +168,5 @@ export const PUBLIC_PATH = [
   PATH.resetPassword,
   PATH.createPassword,
   PATH.verifyAccount,
+  PATH.sharedProduct,
 ];

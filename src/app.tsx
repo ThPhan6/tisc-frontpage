@@ -28,22 +28,27 @@ const errorHandler = function (error: any) {
 
 const authHeaderInterceptor = (url: string, options: any) => {
   const token = localStorage.getItem('access_token') || '';
-  const authHeader = { Authorization: `Bearer ${token}` };
 
-  const signature = new URLSearchParams(window.location.search).get('signature') || '';
-  /// set signature from url to cookies
-  Cookies.set('signature', signature);
+  // get signature from cookies
+  const signature = Cookies.get('signature') || '';
 
-  if (token) {
-    return {
-      url: `${url}`,
-      options: { ...options, interceptors: true, headers: authHeader },
-    };
-  }
-  return {
+  const axiosHeader: any = {
     url: `${url}`,
     options: { ...options, interceptors: true },
   };
+
+  if (token) {
+    axiosHeader.options.headers = { Authorization: `Bearer ${token}` };
+  }
+
+  if (signature) {
+    axiosHeader.options.headers = {
+      ...axiosHeader.options.headers,
+      signature,
+    };
+  }
+
+  return axiosHeader;
 };
 
 export const request: RequestConfig = {
@@ -102,7 +107,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     onPageChange: () => {
       const { location } = history;
       const token = localStorage.getItem('access_token') || '';
-      if (PUBLIC_PATH.includes(location.pathname)) {
+
+      if (
+        PUBLIC_PATH.includes(location.pathname) ||
+        location.pathname.indexOf('shared-product') !== -1
+      ) {
         if (token) {
           const user = store.getState().user.user;
           if (user) {

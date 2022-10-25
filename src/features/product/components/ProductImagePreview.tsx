@@ -238,8 +238,8 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({ isPublicPage 
   };
 
   return (
-    <Col span={12} className={styles.productContent}>
-      <div className={`${styles.productImageWrapper} ${isPublicPage ? styles.paddingSpace : ''} `}>
+    <div className={styles.productContent}>
+      <div className={styles.productImageWrapper}>
         <Upload.Dragger {...primaryProps}>
           <div className={styles.uploadZoneContent}>
             {renderMainImage()}
@@ -330,7 +330,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({ isPublicPage 
           />
         ) : null}
       </div>
-    </Col>
+    </div>
   );
 };
 

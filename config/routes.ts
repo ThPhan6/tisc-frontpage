@@ -3,7 +3,7 @@
 export default [
   // NO REQUIRE AUTHENTICATION
   {
-    path: '/shared-product/:id',
+    path: PATH.sharedProduct,
     component: '../features/product/components/ProductDetailContainer',
     layout: false,
   },

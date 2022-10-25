@@ -16,23 +16,27 @@
   }
 }
 
-.roundSpace {
-  margin: 24px 24px 8px 24px;
+.marginBottomSpace {
+  margin-bottom: 8px;
 }
 
-.marginNone {
-  position: relative;
+.container {
+  flex-flow: column;
+  justify-content: space-between;
+  height: 100%;
   background: @mono-color-light;
-}
 
-.marginTopNone {
-  :global(.ant-pro-page-container-children-content) {
-    margin: 0 24px 24px 24px;
+  .backgroundLight {
+    background: @mono-color-light;
   }
-}
 
-.footerContent {
-  margin-top: 24px;
+  .marginRounded {
+    margin: 24px;
+  }
+
+  .footerContent {
+    flex: none;
+  }
 }
 
 .productContent {
