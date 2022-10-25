@@ -49,45 +49,13 @@ export const DEFAULT_VALUE = {
     location_id: '',
     project_id: '',
     revision: '',
-    template_ids: [''],
-    template_cover_ids: [''],
-    template_standard_ids: [''],
+    template_ids: [],
+    template_cover_ids: [],
+    template_standard_ids: [],
     updated_at: '',
   },
   templates: {
-    cover: [
-      {
-        name: '',
-        items: [
-          {
-            created_at: '',
-            group: 0,
-            id: '',
-            name: '',
-            pdf_url: '',
-            preview_url: '',
-            sequence: 0,
-            updated_at: '',
-          },
-        ],
-      },
-    ],
-    specification: [
-      {
-        name: '',
-        items: [
-          {
-            created_at: '',
-            group: 0,
-            id: '',
-            name: '',
-            pdf_url: '',
-            preview_url: '',
-            sequence: 0,
-            updated_at: '',
-          },
-        ],
-      },
-    ],
+    cover: [],
+    specification: [],
   },
 };

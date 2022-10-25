@@ -15,18 +15,19 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import { MainTitle } from '@/components/Typography';
 
 import styles from '../index.less';
-import { Modal } from './Modal';
+import { PreviewModal } from './PreviewModal';
 
 interface CoverStandardProps {
   data: DetailPDF;
   onChangeData: (newData: DetailPDF) => void;
   type: 'cover' | 'standard';
+  onPreview?: () => void;
 }
-
-const CoverStandard: FC<CoverStandardProps> = ({ data, onChangeData, type }) => {
+const CoverStandard: FC<CoverStandardProps> = ({ data, onChangeData, type, onPreview }) => {
   const openModal = useBoolean();
   const [checkedCover, setCheckedCover] = useState<string[]>([]);
   const [documentTitle, setDocumentTitle] = useState<string>('');
+  const [previewURL, setPreviewURL] = useState<string>('');
 
   const onChangeCoverPage = (checked: boolean) => {
     onChangeData({
@@ -40,7 +41,7 @@ const CoverStandard: FC<CoverStandardProps> = ({ data, onChangeData, type }) => 
     });
   };
 
-  const renderLabelHeader = (label: string) => {
+  const renderLabelHeader = (label: string, url: string) => {
     return (
       <div
         style={{
@@ -50,23 +51,16 @@ const CoverStandard: FC<CoverStandardProps> = ({ data, onChangeData, type }) => 
           marginRight: '24px',
         }}>
         {label}
-        <FileSearchIcon onClick={() => openModal.setValue(true)} />
+        <FileSearchIcon
+          onClick={() => {
+            setPreviewURL(url);
+            openModal.setValue(true);
+          }}
+        />
       </div>
     );
   };
 
-  const onPreview = () => {
-    onChangeData({
-      ...data,
-      config: {
-        ...data.config,
-        template_ids: data.config.has_cover
-          ? [...data.config.template_cover_ids, ...data.config.template_standard_ids]
-          : data.config.template_standard_ids,
-      },
-    });
-    console.log('data', data);
-  };
   return (
     <>
       {type === 'cover' ? (
@@ -76,7 +70,7 @@ const CoverStandard: FC<CoverStandardProps> = ({ data, onChangeData, type }) => 
             <Switch
               checkedChildren="Yes"
               unCheckedChildren="No"
-              defaultChecked={data.config.has_cover}
+              checked={data.config.has_cover}
               className={styles.switch}
               onChange={onChangeCoverPage}
             />
@@ -107,7 +101,7 @@ const CoverStandard: FC<CoverStandardProps> = ({ data, onChangeData, type }) => 
               return {
                 name: cover.name,
                 options: cover.items.map((item) => ({
-                  label: renderLabelHeader(item.name),
+                  label: renderLabelHeader(item.name, item.preview_url),
                   value: item.id,
                 })),
               };
@@ -130,6 +124,7 @@ const CoverStandard: FC<CoverStandardProps> = ({ data, onChangeData, type }) => 
             }}
             noCollapse={data.config.has_cover ? false : true}
             showCount={false}
+            combinable
           />
         </div>
       ) : (
@@ -140,7 +135,7 @@ const CoverStandard: FC<CoverStandardProps> = ({ data, onChangeData, type }) => 
                 return {
                   name: specification.name,
                   options: specification.items.map((item) => ({
-                    label: renderLabelHeader(item.name),
+                    label: renderLabelHeader(item.name, item.preview_url),
                     value: item.id,
                   })),
                 };
@@ -160,6 +155,7 @@ const CoverStandard: FC<CoverStandardProps> = ({ data, onChangeData, type }) => 
                 });
               }}
               showCount={false}
+              combinable
             />
           </div>
           <div className={styles.actionButton}>
@@ -169,7 +165,7 @@ const CoverStandard: FC<CoverStandardProps> = ({ data, onChangeData, type }) => 
           </div>
         </div>
       )}
-      <Modal visible={openModal} />
+      <PreviewModal visible={openModal} previewURL={previewURL} />
     </>
   );
 };

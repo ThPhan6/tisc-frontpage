@@ -118,3 +118,28 @@ export async function getIssuingFor() {
       return [] as { id: string; name: string }[];
     });
 }
+
+export async function createPDF(
+  id: string,
+  data: {
+    location_id: string;
+    issuing_for_id: string;
+    revision: string;
+    has_cover: boolean;
+    document_title: string;
+    template_ids: string[];
+  },
+) {
+  return request(`/api/pdf/project/${id}/generate`, {
+    method: 'POST',
+    data,
+    responseType: 'arrayBuffer',
+  })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      message.error(getResponseMessage('create', 'PDF', 'failed', error));
+      return '';
+    });
+}

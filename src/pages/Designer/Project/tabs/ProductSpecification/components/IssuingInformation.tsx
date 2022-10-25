@@ -136,6 +136,7 @@ const IssuingInformation: FC<IssuingInformationProps> = ({ data, onChangeData })
               },
             })
           }
+          containerClass={styles.revision}
         />
       </FormGroup>
     </div>

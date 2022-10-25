@@ -3,15 +3,13 @@ import { FC, useEffect, useState } from 'react';
 import { ProductSpecifiedTabKeys, ProductSpecifiedTabs } from '../../constants/tab';
 import { Col, Row } from 'antd';
 
-import PageTemplate from '@/assets/images/page.png';
+import { createPDF, getSpecifiedProductByPDF } from '@/features/project/services';
 
-import { getSpecifiedProductByPDF } from '@/features/project/services';
-
-import { DEFAULT_VALUE, DetailPDF } from './type';
+import { DEFAULT_VALUE, DetailPDF, TemplatesItem } from './type';
 
 import CoverStandard from './components/CoverStandard';
 import IssuingInformation from './components/IssuingInformation';
-import CustomButton from '@/components/Button';
+import { RenderPDF } from './components/RenderPDF';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
 import styles from './index.less';
@@ -19,12 +17,29 @@ import styles from './index.less';
 interface ProductSpecififyPDF {
   projectId: string;
 }
+
 const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
   const [selectedTab, setSelectedTab] = useState<ProductSpecifiedTabKeys>(
     ProductSpecifiedTabKeys.issuingInformation,
   );
   const [data, setData] = useState<DetailPDF>(DEFAULT_VALUE);
+  const [generatepdf, setGeneratePDF] = useState<any>();
 
+  const getCoverStandardIds = (templateIds: string[], coverAndStandard: TemplatesItem[]) => {
+    const ids: string[] = [];
+    let coverIds = undefined;
+    templateIds.forEach((template) => {
+      coverAndStandard.forEach((coverStandard) => {
+        const result = coverStandard.items.find((item) => item.id === template);
+        if (result) {
+          coverIds = result;
+          ids.push(coverIds.id);
+        }
+      });
+    });
+    return ids;
+  };
+  console.log('index', generatepdf);
   useEffect(() => {
     if (projectId) {
       getSpecifiedProductByPDF(projectId).then((res) => {
@@ -43,8 +58,11 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
               revision: res.config.revision,
               template_ids: res.config.template_ids,
               updated_at: res.config.updated_at,
-              template_cover_ids: [],
-              template_standard_ids: [],
+              template_cover_ids: getCoverStandardIds(res.config.template_ids, res.templates.cover),
+              template_standard_ids: getCoverStandardIds(
+                res.config.template_ids,
+                res.templates.specification,
+              ),
             },
             templates: res.templates,
           });
@@ -58,6 +76,21 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
       ...prevState,
       ...newData,
     }));
+  };
+
+  const onPreview = () => {
+    createPDF(data.config.project_id, {
+      location_id: data.config.location_id,
+      issuing_for_id: data.config.issuing_for_id,
+      revision: data.config.revision,
+      has_cover: data.config.has_cover,
+      document_title: data.config.document_title,
+      template_ids: data.config.has_cover
+        ? [...data.config.template_cover_ids, ...data.config.template_standard_ids]
+        : data.config.template_standard_ids,
+    }).then((res) => {
+      setGeneratePDF(res);
+    });
   };
 
   return (
@@ -82,20 +115,18 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
               <CoverStandard data={data} onChangeData={onChangeData} type="cover" />
             </CustomTabPane>
             <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.standardSpecification}>
-              <CoverStandard data={data} onChangeData={onChangeData} type="standard" />
+              <CoverStandard
+                data={data}
+                onChangeData={onChangeData}
+                type="standard"
+                onPreview={onPreview}
+              />
             </CustomTabPane>
           </div>
         </Col>
         <Col span={12}>
           <div className={styles.content_right}>
-            <div className={styles.pdf}>
-              <img src={PageTemplate} />
-            </div>
-            <div className={styles.action}>
-              <CustomButton size="small" properties="rounded">
-                Download
-              </CustomButton>
-            </div>
+            <RenderPDF generatePDF={generatepdf} data={data} setGeneratePDF={setGeneratePDF} />
           </div>
         </Col>
       </Row>
