@@ -1,9 +1,12 @@
 ﻿import { PATH } from '../src/constants/path';
 
-import accessToProject from '@/accessToProject';
-
 export default [
   // NO REQUIRE AUTHENTICATION
+  {
+    path: '/shared-product/:id',
+    component: '../features/product/components/ProductDetailContainer',
+    layout: false,
+  },
   {
     path: PATH.landingPage,
     component: './LandingPage',

@@ -7,8 +7,7 @@ import { UserHomePagePaths } from '@/constants/user.constant';
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { PageLoading } from '@ant-design/pro-layout';
 import { ConfigProvider } from 'antd';
-import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
-import { history } from 'umi';
+import { RequestConfig, RunTimeLayoutConfig, history } from 'umi';
 
 import { getUserInfoMiddleware } from './pages/LandingPage/services/api';
 
@@ -20,6 +19,7 @@ import AsideMenu from './components/Menu/AsideMenu';
 import Header from '@/components/Header';
 
 import defaultSettings from '../config/defaultSettings';
+import Cookies from 'js-cookie';
 
 // config request umi
 const errorHandler = function (error: any) {
@@ -29,6 +29,11 @@ const errorHandler = function (error: any) {
 const authHeaderInterceptor = (url: string, options: any) => {
   const token = localStorage.getItem('access_token') || '';
   const authHeader = { Authorization: `Bearer ${token}` };
+
+  const signature = new URLSearchParams(window.location.search).get('signature') || '';
+  /// set signature from url to cookies
+  Cookies.set('signature', signature);
+
   if (token) {
     return {
       url: `${url}`,

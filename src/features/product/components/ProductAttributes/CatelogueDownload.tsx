@@ -12,27 +12,6 @@ import { BodyText } from '@/components/Typography';
 
 import styles from './CatelogueDownload.less';
 
-const DownloadContent = () => {
-  const contents = useAppSelector((state) => state.product.catelogue.contents);
-
-  return (
-    <div className={styles.download}>
-      {contents.map((content, index) => {
-        return (
-          <div className={styles.download_content} key={content.id || index}>
-            <BodyText level={6} fontFamily="Roboto">
-              {content.title}
-            </BodyText>
-            <a href={content.url} download>
-              <DownloadIconV2 className={styles.download_icon} />
-            </a>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
 export const CatelogueDownload = () => {
   const catelogue_downloads = useAppSelector((state) => state.product.details.catelogue_downloads);
   const dispatch = useDispatch();
@@ -66,5 +45,20 @@ export const CatelogueDownload = () => {
     );
   }
 
-  return <DownloadContent />;
+  return (
+    <div className={styles.download}>
+      {catelogue_downloads.map((content, index) => {
+        return (
+          <div className={styles.download_content} key={content.id || index}>
+            <BodyText level={6} fontFamily="Roboto">
+              {content.title}
+            </BodyText>
+            <a href={content.url} download>
+              <DownloadIconV2 className={styles.download_icon} />
+            </a>
+          </div>
+        );
+      })}
+    </div>
+  );
 };
