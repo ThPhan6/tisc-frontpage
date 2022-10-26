@@ -6,15 +6,18 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { getDesignFirmPagination } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
-import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
+import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import type { TableColumnItem } from '@/components/Table/types';
 import { DesignFirm } from '@/features/user-group/types';
 import { ActiveStatus } from '@/types';
 
+import { ShowLogo } from '@/components/ShowLogo';
 import CustomTable from '@/components/Table';
 import { ActionMenu } from '@/components/TableAction';
 import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
+
+import styles from './index.less';
 
 const DesignFirmList: React.FC = () => {
   useAutoExpandNestedTableColumn(0);
@@ -30,7 +33,7 @@ const DesignFirmList: React.FC = () => {
       dataIndex: 'logo',
       render: (value) => {
         if (value) {
-          return <img src={showImageUrl(value)} style={{ width: 18 }} />;
+          return <ShowLogo logo={value} className={styles.img} />;
         }
         return null;
       },
