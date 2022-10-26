@@ -30,10 +30,44 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
   children,
 }) => {
   const [data, setData] = useState<PermissionData[]>([]);
+  const [unclickableData, setUnclickableData] = useState<string[]>([]);
 
   // load permission data
   useEffect(() => {
-    getPermission().then(setData);
+    getPermission()
+      .then((res) => {
+        if (res) {
+          setData(res);
+          return res;
+        }
+
+        return [] as PermissionData[];
+      })
+      .then((res) => {
+        // set unlickable if Overal Listing of Project has accessable false
+        const projectFound = res?.find(
+          (projectPermission) =>
+            projectPermission.id === 'permission_13' && projectPermission.subs?.length,
+        );
+
+        if (projectFound && projectFound.subs?.[0]) {
+          projectFound.subs[0].items.forEach((item) => {
+            if (item.accessable === false) {
+              const newSubs = projectFound.subs?.slice(1);
+              const subItemId: string[] = [];
+
+              newSubs?.forEach((sub) => {
+                sub.items.forEach((el) => {
+                  if (el.accessable === false) {
+                    subItemId.push(el.id);
+                    setUnclickableData([...subItemId]);
+                  }
+                });
+              });
+            }
+          });
+        }
+      });
   }, []);
 
   const handleClickAccessable = (accessItem: PermissionItem) => {
@@ -62,8 +96,11 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
             projectSubPermission.accessable = false;
             // for update UI
             subItemId.push(projectSubPermission.id);
+            setUnclickableData([...subItemId]);
           }
         });
+      } else {
+        setUnclickableData([]);
       }
     }
 
@@ -80,7 +117,7 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
     });
   };
 
-  console.log(data);
+  // console.log(data);
 
   const renderPermission: any = (menu: PermissionData, type: string) => {
     return (
@@ -100,6 +137,9 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
           {/* render icon */}
           {!menu.subs?.length
             ? menu.items.map((item, key) => {
+                // check for update UI
+                const unClickable = unclickableData?.includes(item.id);
+
                 return (
                   <Fragment key={key}>
                     <td className={styles.menu_accessable} key={item.id}>
@@ -110,7 +150,9 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
                         />
                       ) : (
                         <AccessableMinusIcon
-                          className={`cursor-pointer`}
+                          className={`cursor-pointer ${
+                            unClickable ? styles.menu_accessable_null : styles.menu_accessable_true
+                          }`}
                           onClick={() => handleClickAccessable(item)}
                         />
                       )}
