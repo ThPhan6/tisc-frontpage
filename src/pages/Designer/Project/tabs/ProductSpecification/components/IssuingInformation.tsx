@@ -39,7 +39,7 @@ const IssuingInformation: FC<IssuingInformationProps> = ({ data, onChangeData })
     return (
       <BusinessDetail
         business={value.business_name}
-        type={value.functional_types[0]?.name}
+        type={value.functional_type}
         address={getBusinessAddress(value)}
         country={value.country_name.toUpperCase()}
         phone_code={value.phone_code}

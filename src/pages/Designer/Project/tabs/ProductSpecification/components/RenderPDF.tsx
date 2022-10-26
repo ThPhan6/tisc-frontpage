@@ -20,9 +20,8 @@ pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.js`;
 interface RenderPDFProps {
   generatePDF: any;
   data: DetailPDF;
-  setGeneratePDF: (generatePDF: any) => void;
 }
-export const RenderPDF: React.FC<RenderPDFProps> = ({ generatePDF, data, setGeneratePDF }) => {
+export const RenderPDF: React.FC<RenderPDFProps> = ({ generatePDF, data }) => {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
 
@@ -40,18 +39,16 @@ export const RenderPDF: React.FC<RenderPDFProps> = ({ generatePDF, data, setGene
       template_ids: data.config.has_cover
         ? [...data.config.template_cover_ids, ...data.config.template_standard_ids]
         : data.config.template_standard_ids,
-    }).then((res) => {
-      setGeneratePDF(res);
+    }).then((result) => {
+      const linkSoure = new Blob([result], { type: 'application/pdf' });
+      const downloadLink = document.createElement('a');
+      const fileName = `${moment().format('YYYY-MM-DD')}.pdf`;
+      downloadLink.href = window.URL.createObjectURL(linkSoure);
+      downloadLink.download = fileName;
+      downloadLink.click();
     });
-    const linkSoure = new Blob([generatePDF], { type: 'application/pdf' });
-    const downloadLink = document.createElement('a');
-    const fileName = `${moment().format('YYYY-MM-DD')}.pdf`;
-    downloadLink.href = window.URL.createObjectURL(linkSoure);
-    downloadLink.download = fileName;
-    downloadLink.click();
   };
 
-  console.log('pre', generatePDF);
   return (
     <div className={styles.pdf}>
       <div style={{ height: 'calc(100vh - 296px)' }}>
@@ -63,7 +60,10 @@ export const RenderPDF: React.FC<RenderPDFProps> = ({ generatePDF, data, setGene
             <Page key={`page_${pageNumber + 1}`} pageNumber={pageNumber} />
           </Document>
         ) : (
-          <img src={TemplatePDF} style={{ display: 'flex', margin: 'auto' }} />
+          <img
+            src={TemplatePDF}
+            style={{ display: 'flex', margin: 'auto', height: 'calc(100vh - 312px)' }}
+          />
         )}
       </div>
       <div className={styles.action}>

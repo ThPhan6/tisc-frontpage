@@ -13,6 +13,7 @@ import { RenderPDF } from './components/RenderPDF';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
 import styles from './index.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 interface ProductSpecififyPDF {
   projectId: string;
@@ -39,7 +40,7 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
     });
     return ids;
   };
-  console.log('index', generatepdf);
+
   useEffect(() => {
     if (projectId) {
       getSpecifiedProductByPDF(projectId).then((res) => {
@@ -79,6 +80,7 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
   };
 
   const onPreview = () => {
+    showPageLoading();
     createPDF(data.config.project_id, {
       location_id: data.config.location_id,
       issuing_for_id: data.config.issuing_for_id,
@@ -90,47 +92,44 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
         : data.config.template_standard_ids,
     }).then((res) => {
       setGeneratePDF(res);
+      hidePageLoading();
     });
   };
 
   return (
-    <div className={styles.content}>
-      <Row>
-        <Col span={12}>
-          <div className={styles.content_left}>
-            <CustomTabs
-              listTab={ProductSpecifiedTabs}
-              centered={true}
-              tabPosition="top"
-              tabDisplay="space"
-              className={styles.projectTabInfo}
-              onChange={(changedKey) => setSelectedTab(changedKey as ProductSpecifiedTabKeys)}
-              activeKey={selectedTab}
-              style={{ padding: '16px 16px 0 16px' }}
+    <Row className={styles.content}>
+      <Col span={12}>
+        <div className={styles.content_left}>
+          <CustomTabs
+            listTab={ProductSpecifiedTabs}
+            centered={true}
+            tabPosition="top"
+            tabDisplay="space"
+            className={styles.projectTabInfo}
+            onChange={(changedKey) => setSelectedTab(changedKey as ProductSpecifiedTabKeys)}
+            activeKey={selectedTab}
+            style={{ padding: '16px 16px 0 16px' }}
+          />
+          <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.issuingInformation}>
+            <IssuingInformation data={data} onChangeData={onChangeData} />
+          </CustomTabPane>
+          <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.coverAndPreamble}>
+            <CoverStandard data={data} onChangeData={onChangeData} type="cover" />
+          </CustomTabPane>
+          <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.standardSpecification}>
+            <CoverStandard
+              data={data}
+              onChangeData={onChangeData}
+              type="standard"
+              onPreview={onPreview}
             />
-            <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.issuingInformation}>
-              <IssuingInformation data={data} onChangeData={onChangeData} />
-            </CustomTabPane>
-            <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.coverAndPreamble}>
-              <CoverStandard data={data} onChangeData={onChangeData} type="cover" />
-            </CustomTabPane>
-            <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.standardSpecification}>
-              <CoverStandard
-                data={data}
-                onChangeData={onChangeData}
-                type="standard"
-                onPreview={onPreview}
-              />
-            </CustomTabPane>
-          </div>
-        </Col>
-        <Col span={12}>
-          <div className={styles.content_right}>
-            <RenderPDF generatePDF={generatepdf} data={data} setGeneratePDF={setGeneratePDF} />
-          </div>
-        </Col>
-      </Row>
-    </div>
+          </CustomTabPane>
+        </div>
+      </Col>
+      <Col span={12} className={styles.content_right}>
+        <RenderPDF generatePDF={generatepdf} data={data} />
+      </Col>
+    </Row>
   );
 };
 export default ProductSpecifyToPDF;

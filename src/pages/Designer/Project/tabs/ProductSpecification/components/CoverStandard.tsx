@@ -25,8 +25,6 @@ interface CoverStandardProps {
 }
 const CoverStandard: FC<CoverStandardProps> = ({ data, onChangeData, type, onPreview }) => {
   const openModal = useBoolean();
-  const [checkedCover, setCheckedCover] = useState<string[]>([]);
-  const [documentTitle, setDocumentTitle] = useState<string>('');
   const [previewURL, setPreviewURL] = useState<string>('');
 
   const onChangeCoverPage = (checked: boolean) => {
@@ -35,8 +33,6 @@ const CoverStandard: FC<CoverStandardProps> = ({ data, onChangeData, type, onPre
       config: {
         ...data.config,
         has_cover: checked,
-        document_title: checked ? documentTitle : '',
-        template_cover_ids: checked ? checkedCover : [],
       },
     });
   };
@@ -81,7 +77,6 @@ const CoverStandard: FC<CoverStandardProps> = ({ data, onChangeData, type, onPre
                 placeholder="e.g. Room Schedule (max.50.characters) "
                 value={data.config.document_title}
                 onChange={(e) => {
-                  setDocumentTitle(e.target.value);
                   onChangeData({
                     ...data,
                     config: {
@@ -108,10 +103,11 @@ const CoverStandard: FC<CoverStandardProps> = ({ data, onChangeData, type, onPre
             })}
             renderTitle={(dropdownData) => dropdownData.name}
             selected={
-              data.config.has_cover ? checkedCover.map((item) => ({ label: '', value: item })) : []
+              data.config.has_cover
+                ? data.config.template_cover_ids.map((item) => ({ label: '', value: item }))
+                : []
             }
             onChange={(checkedItem) => {
-              setCheckedCover(checkedItem.map((opt) => String(opt.value)));
               if (data.config.has_cover) {
                 onChangeData({
                   ...data,
