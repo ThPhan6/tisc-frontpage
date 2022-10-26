@@ -39,7 +39,33 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
   const handleClickAccessable = (accessItem: PermissionItem) => {
     accessItem.accessable = !accessItem.accessable;
 
-    console.log('accessItem', accessItem);
+    // set unlickable if Overal Listing of Project has accessable false
+    const projectFound = data.find(
+      (projectPermission) =>
+        projectPermission.id === 'permission_13' && projectPermission.subs?.length,
+    );
+
+    if (projectFound && projectFound.subs?.[0]) {
+      const isOveralListingFalse = projectFound.subs[0].items.some(
+        (item) => item.id === accessItem.id && item.accessable === false,
+      );
+
+      if (isOveralListingFalse) {
+        // get the rest of project permission to set its accessable false
+        const newSubs = projectFound.subs.slice(1);
+        const subItemId: string[] = [];
+
+        newSubs?.forEach((sub) => {
+          const projectSubPermission = sub.items.find((el) => el.name === accessItem.name);
+
+          if (projectSubPermission) {
+            projectSubPermission.accessable = false;
+            // for update UI
+            subItemId.push(projectSubPermission.id);
+          }
+        });
+      }
+    }
 
     /// overwrite data
     setData([...data]);
@@ -72,34 +98,35 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
             </BodyText>
           </td>
           {/* render icon */}
-          {!menu.subs?.length &&
-            menu.items.map((item, key) => {
-              return (
-                <Fragment key={key}>
-                  <td className={styles.menu_accessable} key={item.id}>
-                    {item.accessable === true ? (
-                      <AccessableTickIcon
-                        className={'cursor-pointer'}
-                        onClick={() => handleClickAccessable(item)}
-                      />
-                    ) : (
-                      <AccessableMinusIcon
-                        className={`cursor-pointer`}
-                        onClick={() => handleClickAccessable(item)}
-                      />
-                    )}
-                  </td>
+          {!menu.subs?.length
+            ? menu.items.map((item, key) => {
+                return (
+                  <Fragment key={key}>
+                    <td className={styles.menu_accessable} key={item.id}>
+                      {item.accessable === true ? (
+                        <AccessableTickIcon
+                          className={'cursor-pointer'}
+                          onClick={() => handleClickAccessable(item)}
+                        />
+                      ) : (
+                        <AccessableMinusIcon
+                          className={`cursor-pointer`}
+                          onClick={() => handleClickAccessable(item)}
+                        />
+                      )}
+                    </td>
 
-                  {/* for future data */}
-                  <td
-                    key={`fData_${item.id}`}
-                    style={{ textAlign: 'center', display: !menu.subs ? 'none' : '' }}>
-                    <AccessableTickIcon className={styles.menu_accessable_null} />
-                  </td>
-                  {/* --------- */}
-                </Fragment>
-              );
-            })}
+                    {/* for future data */}
+                    <td
+                      key={`fData_${item.id}`}
+                      style={{ textAlign: 'center', display: !menu.subs ? 'none' : '' }}>
+                      <AccessableTickIcon className={styles.menu_accessable_null} />
+                    </td>
+                    {/* --------- */}
+                  </Fragment>
+                );
+              })
+            : null}
         </tr>
 
         {/* render subs */}
