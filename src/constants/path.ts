@@ -4,11 +4,13 @@ export const PATH = {
   resetPassword: '/reset-password',
   createPassword: '/create-password',
   verifyAccount: '/verify',
+  sharedProduct: '/shared-product/:id',
   // private path
   profiles: '/profile-settings',
   tiscHomePage: '/tisc/dashboard',
   brandHomePage: '/brand/dashboard',
   brandViewDetailDashboard: '/brand/dashboard/:id',
+  designerHomePage: '/design-firms/dashboard',
 
   //how-to
   howTo: '/howTo',
@@ -136,7 +138,6 @@ export const PATH = {
   brandSubscription: '/brand/adminstration/subscription',
 
   // design-firms
-  designerHomePage: '/design-firms/dashboard',
   designerFavourite: '/design-firms/my-favorites',
   designerProduct: '/design-firms/products',
   designerBrandProduct: '/design-firms/products/brand-products',
@@ -167,4 +168,5 @@ export const PUBLIC_PATH = [
   PATH.resetPassword,
   PATH.createPassword,
   PATH.verifyAccount,
+  PATH.sharedProduct,
 ];

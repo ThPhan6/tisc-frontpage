@@ -52,7 +52,11 @@ const ActionItem: FC<{ onClick: () => void; label: string; icon: ReactNode }> = 
   );
 };
 
-const ProductImagePreview: React.FC = () => {
+interface ProductImagePreviewProps {
+  isPublicPage: string;
+}
+
+const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({ isPublicPage }) => {
   const dispatch = useDispatch();
   const product = useAppSelector((state) => state.product.details);
   const showShareEmailModal = useBoolean();
@@ -166,21 +170,20 @@ const ProductImagePreview: React.FC = () => {
       );
     }
 
+    const renderActionLeft = () => {
+      if (isPublicPage) return null;
+
+      if (liked) {
+        return <LikedIcon className={styles.actionIcon} onClick={likeProduct} />;
+      }
+
+      return <LikeIcon className={styles.actionIcon} onClick={likeProduct} />;
+    };
+
     // For Brand & Designer role
     return (
       <div className={styles.productBrandAction}>
-        <div className={styles.actionLeft}>
-          {liked ? (
-            <LikedIcon className={styles.actionIcon} onClick={likeProduct} />
-          ) : (
-            <LikeIcon className={styles.actionIcon} onClick={likeProduct} />
-          )}
-          {isDesignerUser ? null : (
-            <BodyText level={6} fontFamily="Roboto" customClass="action-like">
-              {`${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
-            </BodyText>
-          )}
-        </div>
+        <div className={styles.actionLeft}>{renderActionLeft()}</div>
 
         <div className={styles.actionRight}>
           {isDesignerUser ? (
@@ -198,11 +201,13 @@ const ProductImagePreview: React.FC = () => {
             />
           ) : null}
 
-          <ActionItem
-            label="Share via Email"
-            icon={<ShareViaEmailIcon />}
-            onClick={() => showShareEmailModal.setValue(true)}
-          />
+          {isPublicPage ? null : (
+            <ActionItem
+              label="Share via Email"
+              icon={<ShareViaEmailIcon />}
+              onClick={() => showShareEmailModal.setValue(true)}
+            />
+          )}
         </div>
       </div>
     );
@@ -233,7 +238,7 @@ const ProductImagePreview: React.FC = () => {
   };
 
   return (
-    <Col span={12} className={styles.productContent}>
+    <div className={styles.productContent}>
       <div className={styles.productImageWrapper}>
         <Upload.Dragger {...primaryProps}>
           <div className={styles.uploadZoneContent}>
@@ -325,7 +330,7 @@ const ProductImagePreview: React.FC = () => {
           />
         ) : null}
       </div>
-    </Col>
+    </div>
   );
 };
 
