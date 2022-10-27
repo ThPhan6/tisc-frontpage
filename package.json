@@ -57,6 +57,7 @@
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-horizontal-scrolling-menu": "^3.1.0",
+    "react-pdf": "^5.7.2",
     "redux-persist": "^6.0.0",
     "umi": "^3.5.0"
   },
@@ -81,7 +82,6 @@
     "husky": "^7.0.4",
     "lint-staged": "^10.0.0",
     "prettier": "^2.5.0",
-    "react-pdf": "^5.7.2",
     "stylelint": "^13.0.0",
     "typescript": "^4.5.0",
     "umi-serve": "^1.9.10"

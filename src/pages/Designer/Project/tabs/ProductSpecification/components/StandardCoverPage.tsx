@@ -23,7 +23,7 @@ interface CoverStandardProps {
   type: 'cover' | 'standard';
   onPreview?: () => void;
 }
-const CoverStandard: FC<CoverStandardProps> = ({ data, onChangeData, type, onPreview }) => {
+const CoverStandardPage: FC<CoverStandardProps> = ({ data, onChangeData, type, onPreview }) => {
   const openModal = useBoolean();
   const [previewURL, setPreviewURL] = useState<string>('');
 
@@ -165,4 +165,4 @@ const CoverStandard: FC<CoverStandardProps> = ({ data, onChangeData, type, onPre
     </>
   );
 };
-export default CoverStandard;
+export default CoverStandardPage;

@@ -5,11 +5,11 @@ import { Col, Row } from 'antd';
 
 import { createPDF, getSpecifiedProductByPDF } from '@/features/project/services';
 
-import { DEFAULT_VALUE, DetailPDF, TemplatesItem } from './type';
+import { DEFAULT_VALUE_DETAIL_PDF, DetailPDF, TemplatesItem } from './type';
 
-import CoverStandard from './components/CoverStandard';
 import IssuingInformation from './components/IssuingInformation';
-import { RenderPDF } from './components/RenderPDF';
+import { PreviewPDF } from './components/PreviewPDF';
+import CoverStandardPage from './components/StandardCoverPage';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
 import styles from './index.less';
@@ -23,7 +23,7 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
   const [selectedTab, setSelectedTab] = useState<ProductSpecifiedTabKeys>(
     ProductSpecifiedTabKeys.issuingInformation,
   );
-  const [data, setData] = useState<DetailPDF>(DEFAULT_VALUE);
+  const [data, setData] = useState<DetailPDF>(DEFAULT_VALUE_DETAIL_PDF);
   const [generatepdf, setGeneratePDF] = useState<any>();
 
   const getCoverStandardIds = (templateIds: string[], coverAndStandard: TemplatesItem[]) => {
@@ -114,10 +114,10 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
             <IssuingInformation data={data} onChangeData={onChangeData} />
           </CustomTabPane>
           <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.coverAndPreamble}>
-            <CoverStandard data={data} onChangeData={onChangeData} type="cover" />
+            <CoverStandardPage data={data} onChangeData={onChangeData} type="cover" />
           </CustomTabPane>
           <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.standardSpecification}>
-            <CoverStandard
+            <CoverStandardPage
               data={data}
               onChangeData={onChangeData}
               type="standard"
@@ -127,7 +127,7 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
         </div>
       </Col>
       <Col span={12} className={styles.content_right}>
-        <RenderPDF generatePDF={generatepdf} data={data} />
+        <PreviewPDF generatePDF={generatepdf} data={data} />
       </Col>
     </Row>
   );

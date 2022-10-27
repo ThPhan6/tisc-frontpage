@@ -17,11 +17,11 @@ import moment from 'moment';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.js`;
 
-interface RenderPDFProps {
+interface PreviewPDFProps {
   generatePDF: any;
   data: DetailPDF;
 }
-export const RenderPDF: React.FC<RenderPDFProps> = ({ generatePDF, data }) => {
+export const PreviewPDF: React.FC<PreviewPDFProps> = ({ generatePDF, data }) => {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
 

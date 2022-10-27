@@ -37,7 +37,7 @@ export interface DetailPDF {
   };
 }
 
-export const DEFAULT_VALUE = {
+export const DEFAULT_VALUE_DETAIL_PDF = {
   config: {
     created_at: '',
     created_by: '',
