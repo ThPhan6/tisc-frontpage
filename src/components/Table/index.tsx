@@ -238,6 +238,13 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     reload() {
       fetchData({ pagination, sorter: currentSorter });
     },
+    reloadWithFilter() {
+      fetchData({ pagination: {
+        ...pagination,
+        current: DEFAULT_PAGE_NUMBER,
+        pageSize: DEFAULT_PAGESIZE
+      }, sorter: currentSorter });
+    },
   }));
 
   return (

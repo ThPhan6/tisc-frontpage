@@ -13,7 +13,7 @@ import {
   getListAssignTeamByBrandId,
 } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
-import { getFullName, setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
+import { getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
 import { isEmpty, isEqual } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -26,6 +26,7 @@ import {
 import { ActiveStatus } from '@/types';
 
 import AssignTeam from '@/components/AssignTeam';
+import { LogoIcon } from '@/components/LogoIcon';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
@@ -110,10 +111,7 @@ const BrandList: React.FC = () => {
       dataIndex: 'logo',
       width: '5%',
       render: (value) => {
-        if (value) {
-          return <img src={showImageUrl(value)} style={{ width: 18 }} />;
-        }
-        return null;
+        return <LogoIcon logo={value} className={styles.img} />;
       },
     },
     {

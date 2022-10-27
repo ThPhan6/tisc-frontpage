@@ -5,11 +5,7 @@ import { getSelectedProductSpecification, selectProductSpecification } from '../
 import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { cloneDeep } from 'lodash';
 
-import {
-  resetProductState,
-  setDefaultSelectionFromSpecifiedData,
-  setPartialProductDetail,
-} from '../../reducers';
+import { setDefaultSelectionFromSpecifiedData, setPartialProductDetail } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
 import { AttributeGroupKey, ProductInfoTab } from './types';
 import { setReferToDesignDocument } from '@/features/product/reducers';
@@ -128,11 +124,11 @@ export const useProductAttributeForm = (
     }
   }, [isSpecifiedModal, attributeType, specification_attribute_groups, loaded.value]);
 
-  useEffect(() => {
-    return () => {
-      dispatch(resetProductState());
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     dispatch(resetProductState());
+  //   };
+  // }, []);
 
   const onDeleteProductAttribute = (index: number) => () => {
     const newProductAttribute = attributeGroup.filter((_item, key) => index !== key);
@@ -239,7 +235,7 @@ export const useProductAttributeForm = (
       if (!isSpecifiedModal) {
         selectProductSpecification(id, {
           specification: {
-            is_refer_document: referToDesignDocument || false,
+            is_refer_document: !haveCheckedAttributeGroup || false,
             attribute_groups: getSpecificationRequest(newState),
           },
         });

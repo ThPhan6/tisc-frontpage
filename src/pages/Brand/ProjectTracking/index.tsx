@@ -108,7 +108,7 @@ const ProjectTracking = () => {
       }).then((isSuccess) => {
         if (isSuccess) {
           // reload table after updating
-          tableRef.current.reload();
+          reloadWithFilter();
           // close popup
           setVisible(false);
         }
@@ -116,8 +116,12 @@ const ProjectTracking = () => {
     }
   };
 
+  const reloadWithFilter = () => {
+    tableRef.current?.reload();
+  }
+
   useEffect(() => {
-    tableRef.current.reload();
+    reloadWithFilter();
   }, [selectedFilter, selectedPriority]);
 
   const renderStatus = (value: string) => {
@@ -140,7 +144,7 @@ const ProjectTracking = () => {
         onClick: () => {
           updateProjectTrackingPriority(record.id, {
             priority: ProjectTrackingPriority['Non'],
-          }).then((success) => (success ? tableRef.current?.reload() : undefined));
+          }).then((success) => (success ? reloadWithFilter() : undefined));
         },
       },
       {
@@ -150,7 +154,7 @@ const ProjectTracking = () => {
         onClick: () => {
           updateProjectTrackingPriority(record.id, {
             priority: ProjectTrackingPriority['High priority'],
-          }).then((success) => (success ? tableRef.current?.reload() : undefined));
+          }).then((success) => (success ? reloadWithFilter() : undefined));
         },
       },
       {
@@ -160,7 +164,7 @@ const ProjectTracking = () => {
         onClick: () => {
           updateProjectTrackingPriority(record.id, {
             priority: ProjectTrackingPriority['Mid priority'],
-          }).then((success) => (success ? tableRef.current?.reload() : undefined));
+          }).then((success) => (success ? reloadWithFilter() : undefined));
         },
       },
       {
@@ -170,7 +174,7 @@ const ProjectTracking = () => {
         onClick: () => {
           updateProjectTrackingPriority(record.id, {
             priority: ProjectTrackingPriority['Low priority'],
-          }).then((success) => (success ? tableRef.current?.reload() : undefined));
+          }).then((success) => (success ? reloadWithFilter() : undefined));
         },
       },
     ];
