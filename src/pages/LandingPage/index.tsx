@@ -27,13 +27,8 @@ import {
   verifyAccount,
 } from './services/api';
 import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
-import {
-  redirectAfterBrandLogin,
-  redirectAfterDesignerLogin,
-  redirectAfterLogin,
-} from '@/helper/utils';
 
-import { LoginInput, LoginResponseProps, ModalOpen, PasswordRequestBody, UserType } from './types';
+import { LoginInput, ModalOpen, PasswordRequestBody } from './types';
 
 import { BrandInterestedModal } from './components/BrandInterestedModal';
 import { LoginModal } from './components/LoginModal';
@@ -108,30 +103,21 @@ const LandingPage = () => {
         if (type === STATUS_RESPONSE.SUCCESS) {
           message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
           await fetchUserInfo();
-          redirectAfterLogin();
         } else {
           message.error(msg);
         }
         hidePageLoading();
       });
     } else {
-      loginByBrandOrDesigner(
-        data,
-        async (type: STATUS_RESPONSE, msg?: string, response?: LoginResponseProps) => {
-          if (type === STATUS_RESPONSE.SUCCESS) {
-            message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
-            await fetchUserInfo();
-            if (response?.type === UserType.Designer) {
-              redirectAfterDesignerLogin();
-            } else if (response?.type === UserType.Brand) {
-              redirectAfterBrandLogin();
-            }
-          } else {
-            message.error(msg);
-          }
-          hidePageLoading();
-        },
-      );
+      loginByBrandOrDesigner(data, async (type: STATUS_RESPONSE, msg?: string) => {
+        if (type === STATUS_RESPONSE.SUCCESS) {
+          message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
+          await fetchUserInfo();
+        } else {
+          message.error(msg);
+        }
+        hidePageLoading();
+      });
     }
   };
 
@@ -157,7 +143,6 @@ const LandingPage = () => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD_SUCCESS);
         await fetchUserInfo();
-        redirectAfterLogin();
       } else {
         message.error(msg);
       }
@@ -168,9 +153,9 @@ const LandingPage = () => {
   const handleVerifyAccount = (data: PasswordRequestBody) => {
     showPageLoading();
     createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
-      hidePageLoading();
       if (isSuccess) {
-        redirectAfterLogin();
+        fetchUserInfo();
+        hidePageLoading();
       }
     });
   };

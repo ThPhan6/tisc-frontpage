@@ -1,13 +1,13 @@
-import { PATH } from '@/constants/path';
 import { SORT_ORDER } from '@/constants/util';
-import { history } from 'umi';
 
 import { isNaN, isNumber, isUndefined, lowerCase, toNumber } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { PhoneInputValueProp } from '@/components/Form/types';
 import { TableColumnItem } from '@/components/Table/types';
+import { UserType } from '@/pages/LandingPage/types';
 
+import routes from '../../config/routes';
 import { pushTo } from './history';
 
 export const REGEX_PASSWORD =
@@ -40,19 +40,40 @@ export const validatePassword = (password: string) => {
   return REGEX_PASSWORD.test(password);
 };
 
-export const redirectAfterLogin = () => {
-  if (!history) return;
-  const { query } = history.location;
-  const { redirect } = query as { redirect: string };
-  pushTo(redirect || PATH.tiscHomePage);
+const findFirstAccessibleMenu = (
+  index: number,
+  routeList: any[],
+  access: any,
+): undefined | string => {
+  const routeItem = routeList[index];
+  if (!routeItem) {
+    return;
+  }
+  if (!routeItem.access) {
+    return findFirstAccessibleMenu(index + 1, routeList, access);
+  }
+  const haveSubRoutes = routeItem.access && routeItem.routes?.some((route: any) => route.access);
+  if (haveSubRoutes) {
+    return findFirstAccessibleMenu(0, routeItem.routes, access);
+  }
+  if (access[routeItem.access] === true) {
+    return routeItem.path;
+  }
+  return findFirstAccessibleMenu(index + 1, routeList, access);
 };
 
-export const redirectAfterBrandLogin = () => {
-  pushTo(PATH.brandHomePage);
+const ACCESS_BY_TYPE: { [key in UserType]: string } = {
+  1: 'tisc',
+  2: 'brand',
+  3: 'design',
 };
 
-export const redirectAfterDesignerLogin = () => {
-  pushTo(PATH.designerHomePage);
+export const redirectAfterLogin = (access: any, userType: UserType) => {
+  const routesByUserType = routes.filter((el) => el.access?.includes(ACCESS_BY_TYPE[userType]));
+
+  const accessableMenu = findFirstAccessibleMenu(0, routesByUserType, access) || '/404';
+
+  pushTo(accessableMenu);
 };
 
 export const getLetterAvatarBackgroundColor = (name: string) => {
