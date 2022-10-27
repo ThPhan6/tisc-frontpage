@@ -20,6 +20,7 @@ interface AttributeOptionProps {
   chosenOption?: RadioValue;
   setChosenOptions?: (value: RadioValue) => void;
   clearOnClose?: boolean;
+  isPublicPage: boolean;
 }
 export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) => {
   if (!option.image || option.image == '') {
@@ -57,6 +58,7 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
   chosenOption,
   setChosenOptions,
   clearOnClose,
+  isPublicPage,
 }) => {
   const [visible, setVisible] = useState<boolean>(false);
   const isOptionWithImage =
@@ -64,49 +66,64 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
       return option.image !== null && option.image !== '';
     }) > -1;
 
+  const showChosenOption = () => {
+    if (chosenOption) {
+      return chosenOption.label;
+    }
+
+    if (isPublicPage) {
+      return '';
+    }
+
+    return 'select';
+  };
+
   return (
     <>
       <div
-        className={`${styles.content} product-attribute-option-wrapper`}
+        className={`${styles.content}  product-attribute-option-wrapper`}
+        style={{ cursor: isPublicPage ? 'text' : undefined }}
         onClick={() => setVisible(true)}>
         <BodyText
           level={6}
           fontFamily="Roboto"
-          customClass={styles.content_select}
+          customClass={isPublicPage ? styles.content_select : ''}
           color={chosenOption?.label ? 'primary-color-dark' : 'mono-color'}>
-          {chosenOption ? chosenOption.label : 'select'}
+          {showChosenOption()}
         </BodyText>
-        <ActionRightIcon className={styles.singlerRighIcon} />
+        {isPublicPage ? null : <ActionRightIcon className={styles.singlerRighIcon} />}
       </div>
-      <Popover
-        title={title}
-        visible={visible}
-        setVisible={setVisible}
-        groupRadioList={[
-          {
-            heading: attributeName,
-            options:
-              options.map((option, index: number) => {
-                return {
-                  label: (
-                    <AttributeOptionLabel option={option} key={index}>
-                      <span className="product-id-label">Product ID:</span>
-                      <span className="product-id-value">{option.option_code}</span>
-                    </AttributeOptionLabel>
-                  ),
-                  value: option.id,
-                };
-              }) ?? [],
-          },
-        ]}
-        className={`
-          ${styles.specificationAttributeOption}
-          ${isOptionWithImage ? styles.specificationAttributeImageOption : ''}
-          attribute-group-option-popover
+      {isPublicPage ? null : (
+        <Popover
+          title={title}
+          visible={visible}
+          setVisible={setVisible}
+          groupRadioList={[
+            {
+              heading: attributeName,
+              options:
+                options.map((option, index: number) => {
+                  return {
+                    label: (
+                      <AttributeOptionLabel option={option} key={index}>
+                        <span className="product-id-label">Product ID:</span>
+                        <span className="product-id-value">{option.option_code}</span>
+                      </AttributeOptionLabel>
+                    ),
+                    value: option.id,
+                  };
+                }) ?? [],
+            },
+          ]}
+          className={`${styles.specificationAttributeOption} ${
+            isOptionWithImage ? styles.specificationAttributeImageOption : ''
+          }
+        attribute-group-option-popover
         `}
-        chosenValue={chosenOption}
-        setChosenValue={setChosenOptions}
-        clearOnClose={clearOnClose}></Popover>
+          chosenValue={chosenOption}
+          setChosenValue={setChosenOptions}
+          clearOnClose={clearOnClose}></Popover>
+      )}
     </>
   );
 };

@@ -60,11 +60,13 @@ type AccessLevelType =
   | 'Design Team';
 
 export const useCheckPermission = (allowRoles: AccessLevelType | AccessLevelType[]) => {
+  const isPublicPage = useQuery().get('signature') || '';
+
   const access_level = useAppSelector(
     (state) => state.user.user?.access_level,
   )?.toLocaleLowerCase();
 
-  if (!access_level) {
+  if (isPublicPage || !access_level) {
     return false;
   }
 
