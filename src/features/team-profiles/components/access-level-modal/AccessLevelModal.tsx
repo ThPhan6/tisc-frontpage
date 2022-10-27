@@ -85,10 +85,10 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
         (item) => item.id === accessItem.id && item.accessable === false,
       );
 
+      const subItemId: string[] = [];
       if (isOveralListingFalse) {
         // get the rest of project permission to set its accessable false
         const newSubs = projectFound.subs.slice(1);
-        const subItemId: string[] = [];
 
         newSubs?.forEach((sub) => {
           const projectSubPermission = sub.items.find((el) => el.name === accessItem.name);
@@ -99,11 +99,8 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
             subItemId.push(projectSubPermission.id);
           }
         });
-
-        setUnclickableData(subItemId);
-      } else {
-        setUnclickableData([]);
       }
+      setUnclickableData(subItemId);
     }
 
     /// overwrite data
