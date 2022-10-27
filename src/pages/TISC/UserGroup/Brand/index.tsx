@@ -26,7 +26,7 @@ import {
 import { ActiveStatus } from '@/types';
 
 import AssignTeam from '@/components/AssignTeam';
-import { ShowLogo } from '@/components/ShowLogo';
+import { LogoIcon } from '@/components/LogoIcon';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
@@ -111,7 +111,7 @@ const BrandList: React.FC = () => {
       dataIndex: 'logo',
       width: '5%',
       render: (value) => {
-        return <ShowLogo logo={value} className={styles.img} />;
+        return <LogoIcon logo={value} className={styles.img} />;
       },
     },
     {

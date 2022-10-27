@@ -12,7 +12,7 @@ import type { TableColumnItem } from '@/components/Table/types';
 import { DesignFirm } from '@/features/user-group/types';
 import { ActiveStatus } from '@/types';
 
-import { ShowLogo } from '@/components/ShowLogo';
+import { LogoIcon } from '@/components/LogoIcon';
 import CustomTable from '@/components/Table';
 import { ActionMenu } from '@/components/TableAction';
 import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
@@ -32,7 +32,7 @@ const DesignFirmList: React.FC = () => {
       title: '',
       dataIndex: 'logo',
       render: (value) => {
-        return <ShowLogo logo={value} className={styles.img} />;
+        return <LogoIcon logo={value} className={styles.img} />;
       },
     },
     {

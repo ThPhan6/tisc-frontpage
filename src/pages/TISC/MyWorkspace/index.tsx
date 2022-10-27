@@ -6,7 +6,7 @@ import { getFullName } from '@/helper/utils';
 import { BrandCard, BrandCardTeam } from '@/features/user-group/types';
 
 import LoadingPage from '@/components/LoadingPage';
-import { ShowLogo } from '@/components/ShowLogo';
+import { LogoIcon } from '@/components/LogoIcon';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
 
@@ -39,7 +39,7 @@ const MyWorkspace: React.FC = () => {
                   {brand.name}
                 </BodyText>
               </div>
-              <ShowLogo logo={brand.logo} className={styles.img} />
+              <LogoIcon logo={brand.logo} className={styles.img} />
               <BodyText level={6} fontFamily="Roboto">
                 {brand.country}
               </BodyText>
