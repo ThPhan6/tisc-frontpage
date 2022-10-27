@@ -1,4 +1,4 @@
-export interface DetailItem {
+export interface PdfTemplateItem {
   created_at: string;
   group: number;
   id: string;
@@ -11,10 +11,10 @@ export interface DetailItem {
 
 export interface TemplatesItem {
   name: string;
-  items: DetailItem[];
+  items: PdfTemplateItem[];
 }
 
-export interface DetailPDF {
+export interface PdfDetail {
   config: {
     created_at: string;
     created_by: string;
@@ -36,26 +36,3 @@ export interface DetailPDF {
     specification: TemplatesItem[];
   };
 }
-
-export const DEFAULT_VALUE_DETAIL_PDF = {
-  config: {
-    created_at: '',
-    created_by: '',
-    document_title: '',
-    has_cover: false,
-    id: '',
-    issuing_date: '',
-    issuing_for_id: '',
-    location_id: '',
-    project_id: '',
-    revision: '',
-    template_ids: [],
-    template_cover_ids: [],
-    template_standard_ids: [],
-    updated_at: '',
-  },
-  templates: {
-    cover: [],
-    specification: [],
-  },
-};

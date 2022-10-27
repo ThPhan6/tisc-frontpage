@@ -6,7 +6,7 @@ import { ReactComponent as FileSearchIcon } from '@/assets/icons/file-search-ico
 
 import { useBoolean } from '@/helper/hook';
 
-import { DetailPDF } from '../type';
+import { PdfDetail } from '../type';
 
 import CustomButton from '@/components/Button';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
@@ -18,8 +18,8 @@ import styles from '../index.less';
 import { PreviewModal } from './PreviewModal';
 
 interface CoverStandardProps {
-  data: DetailPDF;
-  onChangeData: (newData: DetailPDF) => void;
+  data: PdfDetail;
+  onChangeData: (newData: PdfDetail) => void;
   type: 'cover' | 'standard';
   onPreview?: () => void;
 }

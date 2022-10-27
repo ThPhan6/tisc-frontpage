@@ -7,7 +7,7 @@ import TemplatePDF from '@/assets/images/page.png';
 
 import { createPDF } from '@/features/project/services';
 
-import { DetailPDF } from '../type';
+import { PdfDetail } from '../type';
 
 import CustomButton from '@/components/Button';
 import { BodyText } from '@/components/Typography';
@@ -15,13 +15,13 @@ import { BodyText } from '@/components/Typography';
 import styles from '../index.less';
 import moment from 'moment';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.js`;
 
-interface PreviewPDFProps {
+interface PdfPreviewProps {
   generatePDF: any;
-  data: DetailPDF;
+  data: PdfDetail;
 }
-export const PreviewPDF: React.FC<PreviewPDFProps> = ({ generatePDF, data }) => {
+export const PdfPreview: React.FC<PdfPreviewProps> = ({ generatePDF, data }) => {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
 

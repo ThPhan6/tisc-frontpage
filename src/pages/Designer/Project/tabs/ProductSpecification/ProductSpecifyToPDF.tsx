@@ -5,10 +5,10 @@ import { Col, Row } from 'antd';
 
 import { createPDF, getSpecifiedProductByPDF } from '@/features/project/services';
 
-import { DEFAULT_VALUE_DETAIL_PDF, DetailPDF, TemplatesItem } from './type';
+import { PdfDetail, TemplatesItem } from './type';
 
 import IssuingInformation from './components/IssuingInformation';
-import { PreviewPDF } from './components/PreviewPDF';
+import { PdfPreview } from './components/PdfPreview';
 import CoverStandardPage from './components/StandardCoverPage';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
@@ -23,7 +23,28 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
   const [selectedTab, setSelectedTab] = useState<ProductSpecifiedTabKeys>(
     ProductSpecifiedTabKeys.issuingInformation,
   );
-  const [data, setData] = useState<DetailPDF>(DEFAULT_VALUE_DETAIL_PDF);
+  const [data, setData] = useState<PdfDetail>({
+    config: {
+      created_at: '',
+      created_by: '',
+      document_title: '',
+      has_cover: false,
+      id: '',
+      issuing_date: '',
+      issuing_for_id: '',
+      location_id: '',
+      project_id: '',
+      revision: '',
+      template_ids: [],
+      template_cover_ids: [],
+      template_standard_ids: [],
+      updated_at: '',
+    },
+    templates: {
+      cover: [],
+      specification: [],
+    },
+  });
   const [generatepdf, setGeneratePDF] = useState<any>();
 
   const getCoverStandardIds = (templateIds: string[], coverAndStandard: TemplatesItem[]) => {
@@ -72,7 +93,7 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
     }
   }, []);
 
-  const onChangeData = (newData: DetailPDF) => {
+  const onChangeData = (newData: PdfDetail) => {
     setData((prevState) => ({
       ...prevState,
       ...newData,
@@ -127,7 +148,7 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
         </div>
       </Col>
       <Col span={12} className={styles.content_right}>
-        <PreviewPDF generatePDF={generatepdf} data={data} />
+        <PdfPreview generatePDF={generatepdf} data={data} />
       </Col>
     </Row>
   );

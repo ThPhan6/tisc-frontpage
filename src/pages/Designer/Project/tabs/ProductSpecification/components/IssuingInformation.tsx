@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { getIssuingFor } from '@/features/project/services';
 import { getBusinessAddress } from '@/helper/utils';
 
-import { DetailPDF } from '../type';
+import { PdfDetail } from '../type';
 import { LocationDetail } from '@/features/locations/type';
 
 import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
@@ -16,8 +16,8 @@ import styles from '../index.less';
 import { getLocationPagination } from '@/features/locations/api';
 
 interface IssuingInformationProps {
-  data: DetailPDF;
-  onChangeData: (newData: DetailPDF) => void;
+  data: PdfDetail;
+  onChangeData: (newData: PdfDetail) => void;
 }
 const IssuingInformation: FC<IssuingInformationProps> = ({ data, onChangeData }) => {
   const [location, setLocation] = useState<LocationDetail[]>([]);
