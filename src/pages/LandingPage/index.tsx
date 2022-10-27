@@ -154,9 +154,9 @@ const LandingPage = () => {
   const handleVerifyAccount = (data: PasswordRequestBody) => {
     showPageLoading();
     createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
-      hidePageLoading();
       if (isSuccess) {
         fetchUserInfo();
+        hidePageLoading();
       }
     });
   };
