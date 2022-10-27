@@ -39,7 +39,7 @@ const RenderHeader: FC<LocationProps> = (props) => {
             customClass={
               String(index) !== activeKey ? styles.font_weight_300 : styles.font_weight_500
             }>
-            {item.city_name}, {item.country_name}
+            {item.city_name !== '' ? `${item.city_name},` : ''} {item.country_name}
           </BodyText>
         </div>
         <div className={styles.icon}>
