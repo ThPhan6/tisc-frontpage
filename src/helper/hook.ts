@@ -5,6 +5,9 @@ import { useLocation, useModel, useParams } from 'umi';
 
 import { useAppSelector } from '@/reducers';
 
+import { redirectAfterLogin } from './utils';
+import access from '@/access';
+
 export function useDefault(defaultValue: any) {
   const [value, setValue] = React.useState(defaultValue);
   return { value, setValue };
@@ -28,11 +31,18 @@ export const useCustomInitialState = () => {
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
+      const newInitialState = {
+        ...initialState,
+        currentUser: userInfo,
+      };
       await setInitialState((s: any) => ({
         ...s,
         currentUser: userInfo,
       }));
+      redirectAfterLogin(access(newInitialState), userInfo.type);
+      return newInitialState;
     }
+    return undefined;
   };
 
   const currentUser = initialState?.currentUser;
