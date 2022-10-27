@@ -7,8 +7,7 @@ import { UserHomePagePaths } from '@/constants/user.constant';
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { PageLoading } from '@ant-design/pro-layout';
 import { ConfigProvider } from 'antd';
-import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
-import { history } from 'umi';
+import { RequestConfig, RunTimeLayoutConfig, history } from 'umi';
 
 import { getUserInfoMiddleware } from './pages/LandingPage/services/api';
 
@@ -20,6 +19,7 @@ import AsideMenu from './components/Menu/AsideMenu';
 import Header from '@/components/Header';
 
 import defaultSettings from '../config/defaultSettings';
+import Cookies from 'js-cookie';
 
 // config request umi
 const errorHandler = function (error: any) {
@@ -28,17 +28,27 @@ const errorHandler = function (error: any) {
 
 const authHeaderInterceptor = (url: string, options: any) => {
   const token = localStorage.getItem('access_token') || '';
-  const authHeader = { Authorization: `Bearer ${token}` };
-  if (token) {
-    return {
-      url: `${url}`,
-      options: { ...options, interceptors: true, headers: authHeader },
-    };
-  }
-  return {
+
+  // get signature from cookies
+  const signature = Cookies.get('signature') || '';
+
+  const axiosHeader: any = {
     url: `${url}`,
     options: { ...options, interceptors: true },
   };
+
+  if (token) {
+    axiosHeader.options.headers = { Authorization: `Bearer ${token}` };
+  }
+
+  if (signature) {
+    axiosHeader.options.headers = {
+      ...axiosHeader.options.headers,
+      signature,
+    };
+  }
+
+  return axiosHeader;
 };
 
 export const request: RequestConfig = {
@@ -97,14 +107,21 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     onPageChange: () => {
       const { location } = history;
       const token = localStorage.getItem('access_token') || '';
-      if (PUBLIC_PATH.includes(location.pathname)) {
+      const signature = Cookies.get('signature') || '';
+      const publicPage = location.pathname.indexOf('shared-product') !== -1;
+
+      if (publicPage || PUBLIC_PATH.includes(location.pathname)) {
+        if (signature) {
+          history.push(`${location.pathname}${location.search}`);
+          return;
+        }
+
         if (token) {
           const user = store.getState().user.user;
-          if (user) {
+          if (user && !publicPage) {
             history.push(UserHomePagePaths[user.type]);
+            return;
           }
-        } else {
-          history.push(`${location.pathname}${location.search}`);
         }
         return;
       }

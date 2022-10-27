@@ -27,26 +27,20 @@ import {
   verifyAccount,
 } from './services/api';
 import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
-import {
-  redirectAfterBrandLogin,
-  redirectAfterDesignerLogin,
-  redirectAfterLogin,
-} from '@/helper/utils';
 
-import { LoginInput, LoginResponseProps, ModalOpen, PasswordRequestBody, UserType } from './types';
+import { LoginInput, ModalOpen, PasswordRequestBody } from './types';
 
-import { AboutModal } from './components/AboutModal';
 import { BrandInterestedModal } from './components/BrandInterestedModal';
-import { ContactModal } from './components/ContactModal';
 import { LoginModal } from './components/LoginModal';
 import { NoticeModal } from './components/NoticeModal';
 import { PasswordModal } from './components/PasswordModal';
-import { PoliciesModal } from './components/PoliciesModal';
 import { SignupModal } from './components/SignupModal';
 import { VerifyAccount } from './components/VerifyAccount';
 import CustomButton from '@/components/Button';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
+import { AboutPoliciesContactModal } from './AboutPolicesContactModal';
+import { LandingPageFooter } from './footer';
 import styles from './index.less';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
@@ -59,8 +53,8 @@ const LandingPage = () => {
   const openResetPwd = useBoolean();
   const openVerificationModal = useBoolean();
 
-  const [openModal, setOpenModal] = useState<ModalOpen>('');
   const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
+  const [openModal, setOpenModal] = useState<ModalOpen>('');
   const openVerifyAccountModal = useBoolean();
 
   const handleCloseModal = () => {
@@ -109,30 +103,21 @@ const LandingPage = () => {
         if (type === STATUS_RESPONSE.SUCCESS) {
           message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
           await fetchUserInfo();
-          redirectAfterLogin();
         } else {
           message.error(msg);
         }
         hidePageLoading();
       });
     } else {
-      loginByBrandOrDesigner(
-        data,
-        async (type: STATUS_RESPONSE, msg?: string, response?: LoginResponseProps) => {
-          if (type === STATUS_RESPONSE.SUCCESS) {
-            message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
-            await fetchUserInfo();
-            if (response?.type === UserType.Designer) {
-              redirectAfterDesignerLogin();
-            } else if (response?.type === UserType.Brand) {
-              redirectAfterBrandLogin();
-            }
-          } else {
-            message.error(msg);
-          }
-          hidePageLoading();
-        },
-      );
+      loginByBrandOrDesigner(data, async (type: STATUS_RESPONSE, msg?: string) => {
+        if (type === STATUS_RESPONSE.SUCCESS) {
+          message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
+          await fetchUserInfo();
+        } else {
+          message.error(msg);
+        }
+        hidePageLoading();
+      });
     }
   };
 
@@ -158,7 +143,6 @@ const LandingPage = () => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD_SUCCESS);
         await fetchUserInfo();
-        redirectAfterLogin();
       } else {
         message.error(msg);
       }
@@ -169,9 +153,9 @@ const LandingPage = () => {
   const handleVerifyAccount = (data: PasswordRequestBody) => {
     showPageLoading();
     createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
-      hidePageLoading();
       if (isSuccess) {
-        redirectAfterLogin();
+        fetchUserInfo();
+        hidePageLoading();
       }
     });
   };
@@ -285,39 +269,8 @@ const LandingPage = () => {
           </Col>
         </Row>
       </div>
-      <div className={styles['footer-container']}>
-        <Row justify="center">
-          <Col span={22}>
-            <div className={styles.footer}>
-              <BodyText level={5} fontFamily="Roboto">
-                © TISC 2022
-              </BodyText>
-              <div className={styles['menu-wrapper']}>
-                <div className={styles.menu}>
-                  {listMenuFooter.map((item, index) => (
-                    <BodyText
-                      key={index}
-                      level={5}
-                      fontFamily="Roboto"
-                      customClass={styles.item}
-                      onClick={() => setOpenModal(item)}>
-                      {item}
-                    </BodyText>
-                  ))}
-                </div>
 
-                <BodyText
-                  level={5}
-                  fontFamily="Roboto"
-                  customClass={styles['tisc-login']}
-                  onClick={() => setOpenModal('Tisc Login')}>
-                  TISC Log in
-                </BodyText>
-              </div>
-            </div>
-          </Col>
-        </Row>
-      </div>
+      <LandingPageFooter setOpenModal={setOpenModal} listMenuFooter={listMenuFooter} />
 
       <LoginModal
         visible={openModal === 'Login' || openModal === 'Tisc Login'}
@@ -327,21 +280,21 @@ const LandingPage = () => {
         handleForgotPassword={handleForgotPassword}
         type={openModal}
       />
-      <AboutModal visible={openModal === 'About'} onClose={handleCloseModal} theme="dark" />
-      <PoliciesModal visible={openModal === 'Policies'} onClose={handleCloseModal} theme="dark" />
-      <ContactModal visible={openModal === 'Contact'} onClose={handleCloseModal} theme="dark" />
+
+      <AboutPoliciesContactModal visible={openModal} onClose={handleCloseModal} />
+
       <NoticeModal
         visible={openModal === 'Browser Compatibility'}
         onClose={handleCloseModal}
         theme="dark"
       />
-      {openModal === 'Designer Signup' && (
+      {openModal === 'Designer Signup' ? (
         <SignupModal
           visible={openModal === 'Designer Signup'}
           onClose={handleCloseModal}
           theme="default"
         />
-      )}
+      ) : null}
       <BrandInterestedModal
         visible={openModal === 'Brand Interested'}
         onClose={handleCloseModal}
