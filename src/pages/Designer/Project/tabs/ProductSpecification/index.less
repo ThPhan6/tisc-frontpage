@@ -1,39 +1,42 @@
 .button {
   margin-left: 48px;
 }
-
 .content {
-  display: flex;
-  height: calc(100vh - 232px);
-
   &_left {
-    width: 572px;
+    height: calc(100vh - 232px);
     margin-right: 8px;
+    overflow: auto;
     background-color: #fff;
   }
   &_right {
-    display: flex;
-    // align-items: center;
     justify-content: space-between;
-    width: 572px;
-    padding: 16px;
+    height: calc(100vh - 232px);
+    padding-top: 16px;
     background-color: #fff;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     .action {
-      position: relative;
-      z-index: 2;
-      margin-top: calc(100vh - 288px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 48px;
+      padding: 12px 16px;
+      box-shadow: @border-top;
+      svg {
+        margin: 0 8px;
+        cursor: pointer;
+        &:global(.disabled) {
+          cursor: not-allowed;
+        }
+      }
     }
     .pdf {
-      margin-right: 16px;
-    }
-    .customPagination {
-      :global(.customPaginator___1cy6q) {
-        bottom: auto;
-        left: auto;
-        width: 80px;
-        height: calc(100vh - 304px);
-        background-color: #fff;
-        box-shadow: none;
+      :global(.react-pdf__Page__canvas) {
+        width: auto !important;
+        height: calc(100vh - 312px) !important;
+        margin: auto;
+        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
       }
     }
   }
@@ -41,23 +44,40 @@
 .formInformation {
   padding: 0 16px;
   overflow: auto;
-  :global(.ant-input) {
-    color: @primary-color-dark;
+  .business {
+    margin-bottom: 8px;
+  }
+  .activeText {
+    :global(.function-type-placeholder) {
+      overflow: hidden;
+      color: @primary-color-dark;
+      text-overflow: ellipsis;
+    }
+  }
+  .revision {
+    :global(.ant-input) {
+      color: @primary-color-dark;
+    }
   }
 }
-.standard {
-  height: calc(100vh - 336px);
+.cover {
   padding: 0 16px;
-  :global(.function-type-placeholder) {
-    padding-left: 0;
-    color: @mono-color;
+  :global(.ant-collapse-item .ant-collapse-header) {
+    text-transform: capitalize !important;
   }
-  .marginBottom {
-    margin-bottom: 16px;
+  .customHeader {
+    margin-top: 16px;
+    :global(.function-type-placeholder) {
+      padding-left: 0;
+    }
   }
+
   .customTitle {
+    display: flex;
+    align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
+    height: 40px;
+    margin-bottom: 8px;
     box-shadow: @border-bottom;
     :global(.ant-switch-checked) {
       background: @primary-color-dark !important;
@@ -72,9 +92,40 @@
       box-shadow: none;
     }
   }
+  .customForm {
+    height: 36px;
+    margin-bottom: 0;
+    border-bottom: 0.5px solid @mono-color;
+    .document {
+      :global(.ant-input) {
+        color: @primary-color-dark;
+      }
+    }
+  }
+}
+.customActionButton {
+  width: auto;
+  padding: 8px 16px;
+}
+.specification {
+  height: calc(100vh - 352px);
+  padding: 0 16px;
+  overflow: auto;
+  :global(.ant-collapse-item .ant-collapse-header) {
+    text-transform: capitalize !important;
+  }
+  :global(.function-type-placeholder) {
+    padding-left: 0;
+    color: @mono-color;
+  }
+  .customTitle {
+    margin-bottom: 16px;
+    :global(.ant-collapse-header) {
+      height: 36px;
+    }
+  }
 }
 .actionButton {
-  z-index: 99;
   display: flex;
   justify-content: right;
   height: 48px;
@@ -82,7 +133,8 @@
   box-shadow: @border-top;
 }
 
-.customActionButton {
-  width: auto;
-  padding: 8px 16px;
+.modal {
+  :global(.ant-modal-body) {
+    padding: 48px;
+  }
 }
