@@ -60,10 +60,11 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
                 sub.items.forEach((el) => {
                   if (el.accessable === false) {
                     subItemId.push(el.id);
-                    setUnclickableData([...subItemId]);
                   }
                 });
               });
+
+              setUnclickableData(subItemId);
             }
           });
         }
@@ -96,9 +97,10 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
             projectSubPermission.accessable = false;
             // for update UI
             subItemId.push(projectSubPermission.id);
-            setUnclickableData([...subItemId]);
           }
         });
+
+        setUnclickableData(subItemId);
       } else {
         setUnclickableData([]);
       }
@@ -116,8 +118,6 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
       }
     });
   };
-
-  // console.log(data);
 
   const renderPermission: any = (menu: PermissionData, type: string) => {
     return (
