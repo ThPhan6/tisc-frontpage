@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { selectProductSpecification } from '../product/services';
+import { useCheckPermission } from '@/helper/hook';
 import { getBusinessAddress } from '@/helper/utils';
 
 import { RadioValue } from '@/components/CustomRadio/types';
@@ -104,6 +105,8 @@ export const VendorLocation: FC<VendorTabProps> = ({
     (state) => state.product.details.distributor_location_id,
   );
 
+  const isTiscAdmin = useCheckPermission('TISC Admin');
+
   // get location selected
   const {
     locationOption: chosenBrand,
@@ -126,17 +129,23 @@ export const VendorLocation: FC<VendorTabProps> = ({
   };
 
   useEffect(() => {
-    getBrandLocation(brandId).then((data) => {
-      if (data) {
-        setBrandAddresses(data);
+    if (!isTiscAdmin) {
+      if (brandId) {
+        getBrandLocation(brandId).then((data) => {
+          if (data) {
+            setBrandAddresses(data);
+          }
+        });
       }
-    });
 
-    getDistributorLocation(productId).then((data) => {
-      if (data) {
-        setDistributorAddresses(data);
+      if (productId) {
+        getDistributorLocation(productId).then((data) => {
+          if (data) {
+            setDistributorAddresses(data);
+          }
+        });
       }
-    });
+    }
   }, []);
 
   const getActiveKey = (key: string | string[]) => {
@@ -215,7 +224,9 @@ export const VendorLocation: FC<VendorTabProps> = ({
           {title}
         </BodyText>
 
-        <div className="contact-select-box" onClick={onSelect}>
+        <div
+          className={`contact-select-box ${isTiscAdmin ? 'cursor-disabled' : 'cursor-pointer'}`}
+          onClick={isTiscAdmin ? undefined : onSelect}>
           <BodyText
             level={6}
             fontFamily="Roboto"
@@ -250,7 +261,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
                   setBrandActiveKey(activeKey);
                 },
               )}
-              collapsible={chosenBrand.value ? 'header' : 'disabled'}
+              collapsible={chosenBrand.value || !isTiscAdmin ? 'header' : 'disabled'}
               onChange={(key) => handleCollapse('brand', key)}
               activeKey={brandActiveKey}
               customHeaderClass={styles.collapseHeader}>
