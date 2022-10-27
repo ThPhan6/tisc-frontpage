@@ -81,7 +81,8 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
   return (
     <>
       <div
-        className={`${styles.content} product-attribute-option-wrapper`}
+        className={`${styles.content}  product-attribute-option-wrapper`}
+        style={{ cursor: isPublicPage ? 'text' : undefined }}
         onClick={() => setVisible(true)}>
         <BodyText
           level={6}

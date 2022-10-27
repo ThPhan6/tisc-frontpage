@@ -44,7 +44,7 @@ const authHeaderInterceptor = (url: string, options: any) => {
   if (signature) {
     axiosHeader.options.headers = {
       ...axiosHeader.options.headers,
-      Signature: signature,
+      signature,
     };
   }
 
@@ -108,18 +108,20 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       const { location } = history;
       const token = localStorage.getItem('access_token') || '';
       const signature = Cookies.get('signature') || '';
+      const publicPage = location.pathname.indexOf('shared-product') !== -1;
 
-      if (
-        PUBLIC_PATH.includes(location.pathname) ||
-        location.pathname.indexOf('shared-product') !== -1
-      ) {
-        if (token && !signature) {
-          const user = store.getState().user.user;
-          if (user) {
-            history.push(UserHomePagePaths[user.type]);
-          }
-        } else {
+      if (publicPage || PUBLIC_PATH.includes(location.pathname)) {
+        if (signature) {
           history.push(`${location.pathname}${location.search}`);
+          return;
+        }
+
+        if (token) {
+          const user = store.getState().user.user;
+          if (user && !publicPage) {
+            history.push(UserHomePagePaths[user.type]);
+            return;
+          }
         }
         return;
       }
