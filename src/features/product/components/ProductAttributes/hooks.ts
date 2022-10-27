@@ -235,7 +235,7 @@ export const useProductAttributeForm = (
       if (!isSpecifiedModal) {
         selectProductSpecification(id, {
           specification: {
-            is_refer_document: referToDesignDocument || false,
+            is_refer_document: !haveCheckedAttributeGroup || false,
             attribute_groups: getSpecificationRequest(newState),
           },
         });
