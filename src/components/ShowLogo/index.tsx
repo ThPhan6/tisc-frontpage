@@ -8,6 +8,7 @@ interface ShowLogoProps {
 }
 
 export const ShowLogo: FC<ShowLogoProps> = ({ logo, className }) => {
+  console.log(logo);
   return (
     <img
       src={showImageUrl(logo)}

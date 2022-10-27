@@ -111,10 +111,7 @@ const BrandList: React.FC = () => {
       dataIndex: 'logo',
       width: '5%',
       render: (value) => {
-        if (value) {
-          return <ShowLogo logo={value} className={styles.img} />;
-        }
-        return null;
+        return <ShowLogo logo={value} className={styles.img} />;
       },
     },
     {
