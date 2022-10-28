@@ -5,11 +5,7 @@ import { getSelectedProductSpecification, selectProductSpecification } from '../
 import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { cloneDeep } from 'lodash';
 
-import {
-  resetProductState,
-  setDefaultSelectionFromSpecifiedData,
-  setPartialProductDetail,
-} from '../../reducers';
+import { setDefaultSelectionFromSpecifiedData, setPartialProductDetail } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
 import { AttributeGroupKey, ProductInfoTab } from './types';
 import { setReferToDesignDocument } from '@/features/product/reducers';
@@ -128,11 +124,11 @@ export const useProductAttributeForm = (
     }
   }, [isSpecifiedModal, attributeType, specification_attribute_groups, loaded.value]);
 
-  useEffect(() => {
-    return () => {
-      dispatch(resetProductState());
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     dispatch(resetProductState());
+  //   };
+  // }, []);
 
   const onDeleteProductAttribute = (index: number) => () => {
     const newProductAttribute = attributeGroup.filter((_item, key) => index !== key);
@@ -213,7 +209,7 @@ export const useProductAttributeForm = (
     updatedOnchange: boolean = true, // disabled TISC
     optionId?: string,
   ) => {
-    const newState = cloneDeep(specification_attribute_groups);
+    const newState = cloneDeep(attributeGroup);
     const attributeIndex = newState[groupIndex].attributes.findIndex((el) => el.id === attributeId);
 
     if (attributeIndex === -1) {
@@ -239,7 +235,7 @@ export const useProductAttributeForm = (
       if (!isSpecifiedModal) {
         selectProductSpecification(id, {
           specification: {
-            is_refer_document: referToDesignDocument || false,
+            is_refer_document: !haveCheckedAttributeGroup || false,
             attribute_groups: getSpecificationRequest(newState),
           },
         });
@@ -256,20 +252,23 @@ export const useProductAttributeForm = (
   };
 
   const onCheckedSpecification = (groupIndex: number, updatedOnchange: boolean = true) => {
-    const newState = cloneDeep(specification_attribute_groups);
+    const newState = cloneDeep(attributeGroup);
     const haveOptionAttr = newState[groupIndex].attributes.some((el) => el.type === 'Options');
 
     if (newState[groupIndex].isChecked && haveOptionAttr) {
       // UNCHECK group and clear all selected option
+      newState[groupIndex].isChecked = false;
       newState[groupIndex].attributes = newState[groupIndex].attributes.map((attr) => ({
         ...attr,
         basis_options: attr?.basis_options?.map((otp) => ({ ...otp, isChecked: false })),
       }));
 
+      const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
+
       if (updatedOnchange && !isSpecifiedModal) {
         selectProductSpecification(id, {
           specification: {
-            is_refer_document: referToDesignDocument || false,
+            is_refer_document: !haveCheckedAttributeGroup || false,
             attribute_groups: getSpecificationRequest(newState),
           },
           brand_location_id: '',

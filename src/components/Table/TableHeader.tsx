@@ -9,7 +9,7 @@ interface TableHeaderProps {
   customClass?: string;
 }
 
-export const TableHeader: FC<TableHeaderProps> = ({ title, rightAction, customClass }) => {
+export const TableHeader: FC<TableHeaderProps> = ({ title, rightAction, customClass = '' }) => {
   return (
     <div className={`${styles.tableHeader} ${customClass}`}>
       <Title level={7} customClass="text-overflow">

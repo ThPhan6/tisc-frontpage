@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { selectProductSpecification } from '../product/services';
+import { useCheckPermission, useQuery } from '@/helper/hook';
 import { getBusinessAddress } from '@/helper/utils';
 
 import { RadioValue } from '@/components/CustomRadio/types';
@@ -104,6 +105,11 @@ export const VendorLocation: FC<VendorTabProps> = ({
     (state) => state.product.details.distributor_location_id,
   );
 
+  const isTiscAdmin = useCheckPermission('TISC Admin');
+
+  const signature = useQuery().get('signature');
+  const isPublicPage = signature ? true : false;
+
   // get location selected
   const {
     locationOption: chosenBrand,
@@ -126,17 +132,23 @@ export const VendorLocation: FC<VendorTabProps> = ({
   };
 
   useEffect(() => {
-    getBrandLocation(brandId).then((data) => {
-      if (data) {
-        setBrandAddresses(data);
+    if (!isTiscAdmin) {
+      if (brandId) {
+        getBrandLocation(brandId).then((data) => {
+          if (data) {
+            setBrandAddresses(data);
+          }
+        });
       }
-    });
 
-    getDistributorLocation(productId).then((data) => {
-      if (data) {
-        setDistributorAddresses(data);
+      if (productId) {
+        getDistributorLocation(productId).then((data) => {
+          if (data) {
+            setDistributorAddresses(data);
+          }
+        });
       }
-    });
+    }
   }, []);
 
   const getActiveKey = (key: string | string[]) => {
@@ -215,15 +227,21 @@ export const VendorLocation: FC<VendorTabProps> = ({
           {title}
         </BodyText>
 
-        <div className="contact-select-box" onClick={onSelect}>
+        <div
+          className={`contact-select-box ${isTiscAdmin ? 'cursor-disabled' : 'cursor-pointer'}`}
+          onClick={isTiscAdmin ? undefined : onSelect}>
           <BodyText
             level={6}
             fontFamily="Roboto"
-            color={country ? 'mono-color' : 'mono-color-medium'}
-            customClass="country-name">
+            color={country ? 'mono-color' : 'mono-color-medium'}>
             {country || 'select location'}
           </BodyText>
-          <SingleRightIcon className={country ? 'icon-active' : 'icon-unActive'} />
+          {isPublicPage ? null : (
+            <SingleRightIcon
+              className={country ? 'mono-color' : 'mono-color-medium'}
+              style={{ marginLeft: '12px' }}
+            />
+          )}
         </div>
       </div>
     );
@@ -250,7 +268,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
                   setBrandActiveKey(activeKey);
                 },
               )}
-              collapsible={chosenBrand.value ? 'header' : 'disabled'}
+              collapsible={chosenBrand.value || !isTiscAdmin ? 'header' : 'disabled'}
               onChange={(key) => handleCollapse('brand', key)}
               activeKey={brandActiveKey}
               customHeaderClass={styles.collapseHeader}>
@@ -277,7 +295,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
                   setDistributorActiveKey(activeKey);
                 },
               )}
-              collapsible={chosenDistributor.value ? 'header' : 'disabled'}
+              collapsible={chosenDistributor.value || !isTiscAdmin ? 'header' : 'disabled'}
               onChange={(key) => handleCollapse('distributor', key)}
               activeKey={distributorActiveKey}
               customHeaderClass={styles.collapseHeader}>
@@ -287,72 +305,76 @@ export const VendorLocation: FC<VendorTabProps> = ({
         </div>
       </div>
 
-      <Popover
-        title="SELECT LOCATION"
-        className={styles.customLocationModal}
-        visible={locationPopup === 'brand'}
-        setVisible={(visible) => (visible ? undefined : setLocationPopup(''))}
-        chosenValue={getChosenValue()}
-        setChosenValue={(checked) =>
-          locationPopup ? handleOnChangeSpecifying(checked) : undefined
-        }
-        dropDownRadioTitle={(dropdownData) => dropdownData.country_name}
-        dropdownRadioList={brandAddresses.map((country) => {
-          return {
-            country_name: country.country_name,
-            options: country.locations.map((location) => {
+      {isPublicPage || isTiscAdmin ? null : (
+        <>
+          <Popover
+            title="SELECT LOCATION"
+            className={styles.customLocationModal}
+            visible={locationPopup === 'brand'}
+            setVisible={(visible) => (visible ? undefined : setLocationPopup(''))}
+            chosenValue={getChosenValue()}
+            setChosenValue={(checked) =>
+              locationPopup ? handleOnChangeSpecifying(checked) : undefined
+            }
+            dropDownRadioTitle={(dropdownData) => dropdownData.country_name}
+            dropdownRadioList={brandAddresses.map((country) => {
               return {
-                value: location.id,
-                label: (
-                  <BusinessDetail
-                    business={location.business_name}
-                    type={location.functional_types[0]?.name}
-                    address={getBusinessAddress(location)}
-                    country={location.country_name.toUpperCase()}
-                    phone_code={location.phone_code}
-                    general_phone={location.general_phone}
-                    genernal_email={location.general_email}
-                  />
-                ),
+                country_name: country.country_name,
+                options: country.locations.map((location) => {
+                  return {
+                    value: location.id,
+                    label: (
+                      <BusinessDetail
+                        business={location.business_name}
+                        type={location.functional_types[0]?.name}
+                        address={getBusinessAddress(location)}
+                        country={location.country_name.toUpperCase()}
+                        phone_code={location.phone_code}
+                        general_phone={location.general_phone}
+                        genernal_email={location.general_email}
+                      />
+                    ),
+                  };
+                }),
               };
-            }),
-          };
-        })}
-      />
+            })}
+          />
 
-      <Popover
-        title="SELECT LOCATION"
-        className={styles.customLocationModal}
-        visible={locationPopup === 'distributor'}
-        setVisible={(visible) => (visible ? undefined : setLocationPopup(''))}
-        chosenValue={getChosenValue()}
-        setChosenValue={(checked) =>
-          locationPopup ? handleOnChangeSpecifying(checked) : undefined
-        }
-        dropDownRadioTitle={(dropdownData) => dropdownData.country_name}
-        dropdownRadioList={distributorAddresses.map((country) => {
-          return {
-            country_name: country.country_name,
-            options: country.distributors.map((distributor) => {
+          <Popover
+            title="SELECT LOCATION"
+            className={styles.customLocationModal}
+            visible={locationPopup === 'distributor'}
+            setVisible={(visible) => (visible ? undefined : setLocationPopup(''))}
+            chosenValue={getChosenValue()}
+            setChosenValue={(checked) =>
+              locationPopup ? handleOnChangeSpecifying(checked) : undefined
+            }
+            dropDownRadioTitle={(dropdownData) => dropdownData.country_name}
+            dropdownRadioList={distributorAddresses.map((country) => {
               return {
-                value: distributor.id,
-                label: (
-                  <BusinessDetail
-                    business={distributor.name}
-                    address={getBusinessAddress(distributor)}
-                    country={distributor.country_name.toUpperCase()}
-                    phone_code={distributor.phone_code}
-                    general_phone={distributor.phone}
-                    genernal_email={distributor.email}
-                    first_name={distributor.first_name}
-                    last_name={distributor.last_name}
-                  />
-                ),
+                country_name: country.country_name,
+                options: country.distributors.map((distributor) => {
+                  return {
+                    value: distributor.id,
+                    label: (
+                      <BusinessDetail
+                        business={distributor.name}
+                        address={getBusinessAddress(distributor)}
+                        country={distributor.country_name.toUpperCase()}
+                        phone_code={distributor.phone_code}
+                        general_phone={distributor.phone}
+                        genernal_email={distributor.email}
+                        first_name={distributor.first_name}
+                        last_name={distributor.last_name}
+                      />
+                    ),
+                  };
+                }),
               };
-            }),
-          };
-        })}
-      />
+            })}
+          />
+        </>
+      )}
     </>
   );
 };
