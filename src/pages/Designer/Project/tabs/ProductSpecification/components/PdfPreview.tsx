@@ -39,13 +39,16 @@ export const PdfPreview: React.FC<PdfPreviewProps> = ({ generatePDF, data }) => 
       template_ids: data.config.has_cover
         ? [...data.config.template_cover_ids, ...data.config.template_standard_ids]
         : data.config.template_standard_ids,
+      issuing_date: data.config.issuing_date,
     }).then((result) => {
-      const linkSoure = new Blob([result], { type: 'application/pdf' });
-      const downloadLink = document.createElement('a');
-      const fileName = `${moment().format('YYYY-MM-DD')}.pdf`;
-      downloadLink.href = window.URL.createObjectURL(linkSoure);
-      downloadLink.download = fileName;
-      downloadLink.click();
+      if (result) {
+        const linkSoure = new Blob([result], { type: 'application/pdf' });
+        const downloadLink = document.createElement('a');
+        const fileName = `${moment().format('YYYY-MM-DD')}.pdf`;
+        downloadLink.href = window.URL.createObjectURL(linkSoure);
+        downloadLink.download = fileName;
+        downloadLink.click();
+      }
     });
   };
 
