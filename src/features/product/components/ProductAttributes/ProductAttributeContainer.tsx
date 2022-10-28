@@ -3,7 +3,7 @@ import { FC } from 'react';
 import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 
 import { useProductAttributeForm } from './hooks';
-import { useCheckPermission, useGetParamId } from '@/helper/hook';
+import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
 
 import { ProductAttributeProps } from '../../types';
 import { ProductInfoTab } from './types';
@@ -39,6 +39,10 @@ export const ProductAttributeContainer: FC<Props> = ({
 }) => {
   const productIdParam = useGetParamId();
   const isTiscAdmin = useCheckPermission('TISC Admin');
+
+  const signature = useQuery().get('signature') ?? '';
+  const isPublicPage = signature ? true : false;
+
   const curProductId = productId ?? productIdParam;
   const {
     onChangeAttributeItem,
@@ -71,7 +75,7 @@ export const ProductAttributeContainer: FC<Props> = ({
 
     return (
       <div className={styles.attrGroupTitle}>
-        {activeKey === 'specification' && haveOptionAttr ? (
+        {!isPublicPage && activeKey === 'specification' && haveOptionAttr ? (
           <CustomCheckbox
             options={[{ label: group.name, value: groupIndex }]}
             selected={
@@ -141,6 +145,7 @@ export const ProductAttributeContainer: FC<Props> = ({
           ) : attribute.type === 'Options' ? (
             <AttributeOption
               title={groupName}
+              isPublicPage={isPublicPage}
               attributeName={attribute.name}
               options={attribute.basis_options ?? []}
               chosenOption={
