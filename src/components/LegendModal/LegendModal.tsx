@@ -18,9 +18,9 @@ import styles from './LegendModal.less';
 
 const dataLegend = [
   {
-    tille: 'GENERAL INQUIRES',
+    tille: 'GENERAL INQUIRIES',
     content:
-      '  General Inquires are non-project-related inquiries. This free service is accessible by the entire team',
+      '  General Inquiries are non-project-related inquiries. This free service is accessible by the entire team',
     subs: [
       {
         icon: <UnreadIcon />,

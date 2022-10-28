@@ -44,12 +44,12 @@ export const ActionTaskTable: FC<ActionTaskModelProps> = ({
   const [actionTaskList, setActionTaskList] = useState<ActionTaskProps[]>([]);
 
   const updateData = () => {
-    setData((prevData) => {
+    setData?.((prevData) => {
       const newData = cloneDeep(prevData);
       if (model_name === 'request') {
-        newData.projectRequests[indexItem as number].status = ProjectRequestStatus.Responded;
+        newData.projectRequests[Number(indexItem)].status = ProjectRequestStatus.Responded;
       } else {
-        newData.notifications[indexItem as number].status =
+        newData.notifications[Number(indexItem)].status =
           ProjectTrackingNotificationStatus['Followed-up'];
       }
       return newData;
@@ -118,7 +118,7 @@ export const ActionTaskTable: FC<ActionTaskModelProps> = ({
         viewAllTop
         placement="bottomRight"
         menuStyle={{ width: 160, height: 'auto' }}
-        labelProps={{ className: 'flex-start' }}>
+        labelProps={{ className: 'flex-between' }}>
         <RobotoBodyText level={6}>{ActionTaskStatus[record.status]}</RobotoBodyText>
       </CustomDropDown>
     );

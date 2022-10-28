@@ -303,6 +303,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
                   setDistributorActiveKey(activeKey);
                 },
               )}
+              defaultActiveKey={'1'}
               collapsible={chosenDistributor.value || !isTiscAdmin ? 'header' : 'disabled'}
               onChange={(key) => handleCollapse('distributor', key)}
               activeKey={distributorActiveKey}

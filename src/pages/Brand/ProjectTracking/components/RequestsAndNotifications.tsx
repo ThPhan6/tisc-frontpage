@@ -123,7 +123,11 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
           <TextForm boxShadow label="Work Email">
             {detailItem.designer.email}
           </TextForm>
-          <FormGroup label="Work Phone" layout="vertical" labelColor="mono-color-dark">
+          <FormGroup
+            label="Work Phone"
+            layout="vertical"
+            labelColor="mono-color-dark"
+            formClass={type === 'request' ? '' : styles.marginBottomNone}>
             <PhoneInput
               codeReadOnly
               phoneNumberReadOnly
@@ -134,12 +138,16 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
               containerClass={styles.customPhoneCode}
             />
           </FormGroup>
-          {type === 'request' && (
+          {type === 'request' ? (
             <>
               <TextForm boxShadow label="Title">
                 {detailItem.request?.title}
               </TextForm>
-              <FormGroup label="Message" layout="vertical" labelColor="mono-color-dark">
+              <FormGroup
+                label="Message"
+                layout="vertical"
+                labelColor="mono-color-dark"
+                formClass={styles.marginBottomNone}>
                 <CustomTextArea
                   value={detailItem.request?.message}
                   className={styles.customTextArea}
@@ -147,7 +155,7 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
                 />
               </FormGroup>
             </>
-          )}
+          ) : null}
 
           <ActionTaskTable
             model_id={detailItem.id}
