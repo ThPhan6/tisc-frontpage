@@ -33,7 +33,10 @@ const IssuingInformation: FC<IssuingInformationProps> = ({ data, onChangeData })
   }, []);
 
   const issuingOffice = location.find((item) => item.id === data.config.location_id);
-  const issuingForValue = issuingFor.find((item) => item.id === data.config.issuing_for_id);
+  const issuingForValue = issuingFor.find((item) => item.id === data.config.issuing_for_id) ?? {
+    name: data.config.issuing_for_id,
+    id: '',
+  };
 
   const renderLabelHeader = (value: LocationDetail) => {
     return (

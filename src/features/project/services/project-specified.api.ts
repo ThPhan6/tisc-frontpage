@@ -15,7 +15,7 @@ import {
   SpecifiedProductByMaterial,
   SpecifiedProductBySpace,
 } from '@/features/project/types';
-import { DetailPDF } from '@/pages/Designer/Project/tabs/ProductSpecification/type';
+import { PdfDetail } from '@/pages/Designer/Project/tabs/ProductSpecification/type';
 
 export async function getSpecifiedProductsByBrand(
   { projectId, ...params }: PaginationRequestParams,
@@ -95,13 +95,13 @@ export async function updateProductSpecifiedStatus(
 }
 
 export async function getSpecifiedProductByPDF(id: string) {
-  return request<{ data: DetailPDF }>(`/api/pdf/project/config/${id}`, { method: 'POST' })
+  return request<{ data: PdfDetail }>(`/api/pdf/project/config/${id}`, { method: 'GET' })
     .then((response) => {
       return response.data;
     })
     .catch((error) => {
       message.error(getResponseMessage('get-one', 'product specified', 'failed', error));
-      return {} as DetailPDF;
+      return {} as PdfDetail;
     });
 }
 
@@ -128,6 +128,7 @@ export async function createPDF(
     has_cover: boolean;
     document_title: string;
     template_ids: string[];
+    issuing_date: string;
   },
 ) {
   return request(`/api/pdf/project/${id}/generate`, {
@@ -139,7 +140,13 @@ export async function createPDF(
       return response;
     })
     .catch((error) => {
-      message.error(getResponseMessage('create', 'PDF', 'failed', error));
-      return '';
+      const errorBodyText = String.fromCharCode.apply(null, new Uint8Array(error.data) as any);
+      let errorMessage = {
+        message: 'Generate project specify PDF failed',
+      };
+      try {
+        errorMessage = JSON.parse(errorBodyText);
+      } catch {}
+      message.error(errorMessage.message);
     });
 }
