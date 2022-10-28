@@ -23,7 +23,7 @@ interface CoverStandardProps {
   type: 'cover' | 'standard';
   onPreview?: () => void;
 }
-const CoverStandardPage: FC<CoverStandardProps> = ({ data, onChangeData, type, onPreview }) => {
+const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, onPreview }) => {
   const openModal = useBoolean();
   const [previewURL, setPreviewURL] = useState<string>('');
 
@@ -121,6 +121,7 @@ const CoverStandardPage: FC<CoverStandardProps> = ({ data, onChangeData, type, o
             noCollapse={data.config.has_cover ? false : true}
             showCount={false}
             combinable
+            customClass={data.config.has_cover ? '' : styles.customHeaderText}
           />
         </div>
       ) : (
@@ -165,4 +166,4 @@ const CoverStandardPage: FC<CoverStandardProps> = ({ data, onChangeData, type, o
     </>
   );
 };
-export default CoverStandardPage;
+export default StandardCoverPage;

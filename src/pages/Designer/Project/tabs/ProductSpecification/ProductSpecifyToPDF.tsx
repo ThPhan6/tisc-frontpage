@@ -9,7 +9,7 @@ import { PdfDetail, TemplatesItem } from './type';
 
 import IssuingInformation from './components/IssuingInformation';
 import { PdfPreview } from './components/PdfPreview';
-import CoverStandardPage from './components/StandardCoverPage';
+import StandardCoverPage from './components/StandardCoverPage';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
 import styles from './index.less';
@@ -111,6 +111,7 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
       template_ids: data.config.has_cover
         ? [...data.config.template_cover_ids, ...data.config.template_standard_ids]
         : data.config.template_standard_ids,
+      issuing_date: data.config.issuing_date,
     }).then((res) => {
       setGeneratePDF(res);
       hidePageLoading();
@@ -135,10 +136,10 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
             <IssuingInformation data={data} onChangeData={onChangeData} />
           </CustomTabPane>
           <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.coverAndPreamble}>
-            <CoverStandardPage data={data} onChangeData={onChangeData} type="cover" />
+            <StandardCoverPage data={data} onChangeData={onChangeData} type="cover" />
           </CustomTabPane>
           <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.standardSpecification}>
-            <CoverStandardPage
+            <StandardCoverPage
               data={data}
               onChangeData={onChangeData}
               type="standard"
