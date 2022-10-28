@@ -11,11 +11,13 @@ import {
   ProjectTrackingDetail,
 } from '@/types/project-tracking.type';
 
+import CustomButton from '@/components/Button';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
 import { BrandProject } from './BrandProject';
 import { DesignFirm } from './DesignFirm';
+import styles from './DesignFirm.less';
 import { RequestsAndNotifications } from './RequestsAndNotifications';
 
 const LIST_TAB = [
@@ -102,6 +104,16 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId, height }) =>
               setData={setData}
             />
           </CustomTabPane>
+
+          <div className={styles.cancelButton}>
+            <CustomButton
+              size="small"
+              variant="primary"
+              properties="rounded"
+              onClick={() => history.back()}>
+              Cancel
+            </CustomButton>
+          </div>
         </div>
       </Col>
     </Row>

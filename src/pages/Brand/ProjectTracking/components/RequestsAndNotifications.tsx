@@ -35,6 +35,7 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
 }) => {
   const [detailItem, setDetailItem] = useState<RequestAndNotificationDetail>();
   const [indexItem, setIndexItem] = useState<number>(0);
+
   return (
     <div className={styles.content}>
       {detailItem === undefined ? (
@@ -110,7 +111,15 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
             image={detailItem.product.images[0]}
             text_1={detailItem.product.collection_name}
             text_2={detailItem.product.description}
-            text_3={`http://tisc.global/public/product?id=${detailItem.product.id}`}
+            text_3={
+              <a
+                href={`${window.location.host}/brand/product/${detailItem.product.id}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: '#000' }}>
+                {window.location.host}/brand/product/{detailItem.product.id}
+              </a>
+            }
             customClass={styles.brandProduct}
           />
           <TextForm boxShadow label={type === 'request' ? 'Requester' : 'Modifier'}>
@@ -123,7 +132,11 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
           <TextForm boxShadow label="Work Email">
             {detailItem.designer.email}
           </TextForm>
-          <FormGroup label="Work Phone" layout="vertical" labelColor="mono-color-dark">
+          <FormGroup
+            label="Work Phone"
+            layout="vertical"
+            labelColor="mono-color-dark"
+            formClass={type === 'request' ? '' : styles.marginBottomNone}>
             <PhoneInput
               codeReadOnly
               phoneNumberReadOnly
@@ -134,12 +147,16 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
               containerClass={styles.customPhoneCode}
             />
           </FormGroup>
-          {type === 'request' && (
+          {type === 'request' ? (
             <>
               <TextForm boxShadow label="Title">
                 {detailItem.request?.title}
               </TextForm>
-              <FormGroup label="Message" layout="vertical" labelColor="mono-color-dark">
+              <FormGroup
+                label="Message"
+                layout="vertical"
+                labelColor="mono-color-dark"
+                formClass={styles.marginBottomNone}>
                 <CustomTextArea
                   value={detailItem.request?.message}
                   className={styles.customTextArea}
@@ -147,7 +164,7 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
                 />
               </FormGroup>
             </>
-          )}
+          ) : null}
 
           <ActionTaskTable
             model_id={detailItem.id}
