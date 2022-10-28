@@ -2,7 +2,6 @@ import { FC, useState } from 'react';
 
 import { NotificationsIcons, ProjectTrackingNotificationType, RequestsIcons } from '../constant';
 import { Empty } from 'antd';
-import { useHistory } from 'umi';
 
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
@@ -36,9 +35,6 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
 }) => {
   const [detailItem, setDetailItem] = useState<RequestAndNotificationDetail>();
   const [indexItem, setIndexItem] = useState<number>(0);
-  const history = useHistory().location.pathname;
-
-  console.log(history);
 
   return (
     <div className={styles.content}>
