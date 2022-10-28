@@ -25,6 +25,8 @@ export const ActionTaskModal: FC<ActionTaskModalProps> = ({
 }) => {
   /// for show data
   const [actionTaskData, setActionTaskData] = useState<CheckboxValue[]>([]);
+  /// for set styles
+  const lengthOfItem = actionTaskData?.length >= 16;
 
   /// for update data
   const [actionTaskModal, setActionTaskModal] = useState<ActionTaskRequestBody>({
@@ -91,7 +93,7 @@ export const ActionTaskModal: FC<ActionTaskModalProps> = ({
       title="SELECT ACTIONS/TASKS"
       visible={visible}
       setVisible={(isClose) => (isClose ? undefined : setVisible(false))}
-      className={styles.actionTask}
+      className={`${styles.actionTask} ${lengthOfItem ? styles.stickyPosition : ''}`}
       onFormSubmit={handleSubmitActionTask}>
       <CustomCheckbox
         options={actionTaskData}

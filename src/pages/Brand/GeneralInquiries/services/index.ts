@@ -89,9 +89,12 @@ export async function getActionTaskList(params: ActionTaskModelParams) {
 
 export async function createActionTask(data: ActionTaskRequestBody) {
   return request<boolean>(`/api/action-task`, { method: 'POST', data })
-    .then(() => true)
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.CREATE_ACTION_TASK_SUCCESS);
+      return true;
+    })
     .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_ACTION_TASK_STATUS_ERROR);
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_ACTION_TASK_ERROR);
       return false;
     });
 }
