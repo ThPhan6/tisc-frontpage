@@ -102,7 +102,7 @@ const LandingPage = () => {
       loginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
         if (type === STATUS_RESPONSE.SUCCESS) {
           message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
-          await fetchUserInfo();
+          await fetchUserInfo(true);
         } else {
           message.error(msg);
         }
@@ -112,7 +112,7 @@ const LandingPage = () => {
       loginByBrandOrDesigner(data, async (type: STATUS_RESPONSE, msg?: string) => {
         if (type === STATUS_RESPONSE.SUCCESS) {
           message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
-          await fetchUserInfo();
+          await fetchUserInfo(true);
         } else {
           message.error(msg);
         }
@@ -142,7 +142,7 @@ const LandingPage = () => {
     resetPasswordMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD_SUCCESS);
-        await fetchUserInfo();
+        await fetchUserInfo(true);
       } else {
         message.error(msg);
       }
@@ -154,7 +154,7 @@ const LandingPage = () => {
     showPageLoading();
     createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
       if (isSuccess) {
-        fetchUserInfo();
+        fetchUserInfo(true);
         hidePageLoading();
       }
     });
