@@ -22,7 +22,15 @@ export const InquiryMessageTab: FC<{
         image={product.image}
         text_1={product.collection}
         text_2={product.description}
-        text_3={product.id}
+        text_3={
+          <a
+            href={`${window.location.host}/brand/product/${product.id}`}
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: '#000' }}>
+            {window.location.host}/brand/product/{product.id}
+          </a>
+        }
         customClass={styles.brandProduct}
       />
 

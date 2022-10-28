@@ -2,6 +2,7 @@ import { FC, useState } from 'react';
 
 import { NotificationsIcons, ProjectTrackingNotificationType, RequestsIcons } from '../constant';
 import { Empty } from 'antd';
+import { useHistory } from 'umi';
 
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
@@ -35,6 +36,10 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
 }) => {
   const [detailItem, setDetailItem] = useState<RequestAndNotificationDetail>();
   const [indexItem, setIndexItem] = useState<number>(0);
+  const history = useHistory().location.pathname;
+
+  console.log(history);
+
   return (
     <div className={styles.content}>
       {detailItem === undefined ? (
@@ -110,7 +115,15 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
             image={detailItem.product.images[0]}
             text_1={detailItem.product.collection_name}
             text_2={detailItem.product.description}
-            text_3={`http://tisc.global/public/product?id=${detailItem.product.id}`}
+            text_3={
+              <a
+                href={`${window.location.host}/brand/product/${detailItem.product.id}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: '#000' }}>
+                {window.location.host}/brand/product/{detailItem.product.id}
+              </a>
+            }
             customClass={styles.brandProduct}
           />
           <TextForm boxShadow label={type === 'request' ? 'Requester' : 'Modifier'}>

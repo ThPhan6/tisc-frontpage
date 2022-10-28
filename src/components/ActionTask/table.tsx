@@ -134,44 +134,47 @@ export const ActionTaskTable: FC<ActionTaskModelProps> = ({
           <CustomPlusButton size={18} />
         </div>
       </div>
-      <table className={styles.tableActionTask}>
-        <thead>
-          <tr className={styles.title}>
-            <th>
-              <RobotoBodyText level={6}>Date</RobotoBodyText>
-            </th>
-            <th>
-              <RobotoBodyText level={6}>Actions</RobotoBodyText>
-            </th>
-            <th>
-              <RobotoBodyText level={6}>Teams</RobotoBodyText>
-            </th>
-            <th>
-              <RobotoBodyText level={6}>Status</RobotoBodyText>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {actionTaskList.map((el: ActionTaskProps, index) => {
-            return (
-              <tr key={el.id ?? index}>
-                <td>
-                  <RobotoBodyText level={6}>
-                    {moment(el.created_at).format('YYYY-MM-DD')}
-                  </RobotoBodyText>
-                </td>
-                <td>
-                  <RobotoBodyText level={6}>{el.action_name}</RobotoBodyText>
-                </td>
-                <td>
-                  <RobotoBodyText level={6}>{getFullName(el)}</RobotoBodyText>
-                </td>
-                <td>{renderStatusDropdown(el)}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+
+      {!actionTaskList.length ? null : (
+        <table className={styles.tableActionTask}>
+          <thead>
+            <tr className={styles.title}>
+              <th>
+                <RobotoBodyText level={6}>Date</RobotoBodyText>
+              </th>
+              <th>
+                <RobotoBodyText level={6}>Actions</RobotoBodyText>
+              </th>
+              <th>
+                <RobotoBodyText level={6}>Teams</RobotoBodyText>
+              </th>
+              <th>
+                <RobotoBodyText level={6}>Status</RobotoBodyText>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {actionTaskList.map((el: ActionTaskProps, index) => {
+              return (
+                <tr key={el.id ?? index}>
+                  <td>
+                    <RobotoBodyText level={6}>
+                      {moment(el.created_at).format('YYYY-MM-DD')}
+                    </RobotoBodyText>
+                  </td>
+                  <td>
+                    <RobotoBodyText level={6}>{el.action_name}</RobotoBodyText>
+                  </td>
+                  <td>
+                    <RobotoBodyText level={6}>{getFullName(el)}</RobotoBodyText>
+                  </td>
+                  <td>{renderStatusDropdown(el)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
       {modalVisible ? (
         <ActionTaskModal
           visible={modalVisible}
