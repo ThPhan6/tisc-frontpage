@@ -28,6 +28,7 @@ interface DropdownCheckboxListProps {
   noCollapse?: boolean;
   combinable?: boolean;
   showCount?: boolean;
+  customClass?: string;
 }
 const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
   const {
@@ -39,6 +40,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
     combinable,
     noCollapse,
     showCount = true,
+    customClass,
   } = props;
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
   useEffect(() => {
@@ -83,7 +85,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
       bordered={false}
       expandIconPosition="right"
       expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
-      className={styles.dropdownList}
+      className={`${styles.dropdownList} ${customClass}`}
       onChange={setActiveKey}
       activeKey={activeKey}>
       {data.map((item, index) => (
