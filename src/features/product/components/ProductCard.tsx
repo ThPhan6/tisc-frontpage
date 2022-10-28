@@ -70,7 +70,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   // check user role to redirect
   const userRole = useGetUserRoleFromPathname();
   const hanldeRedirectURL = () => {
-    const path = getProductDetailPathname(userRole, product.id!);
+    const path = getProductDetailPathname(userRole, product.id);
     pushTo(path);
   };
 

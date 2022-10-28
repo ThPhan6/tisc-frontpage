@@ -1,6 +1,7 @@
 import { FC, memo } from 'react';
 
 import { USER_ROLE } from '@/constants/userRoles';
+import { useHistory } from 'umi';
 
 import SampleProductImage from '@/assets/images/sample-product-img.png';
 
@@ -28,6 +29,8 @@ export const ProductCollection: FC = memo(() => {
   const relatedProduct = useAppSelector((state) => state.product.relatedProduct);
   const userRole = useGetUserRoleFromPathname();
 
+  const signature = useHistory().location.search || '';
+
   if (relatedProduct.length === 0) {
     return <EmptyOne customClass="product-collection" />;
   }
@@ -38,9 +41,8 @@ export const ProductCollection: FC = memo(() => {
         <a
           className="relative-product-item"
           key={key}
-          target="_blank"
           rel="noreferrer"
-          href={getProductDetailPathname(userRole, item.id)}>
+          href={getProductDetailPathname(userRole, item.id, signature)}>
           <div className="relative-product">
             <img src={item.images?.[0] ? showImageUrl(item.images[0]) : SampleProductImage} />
             <div className="placeholder-text">
