@@ -25,15 +25,18 @@ export const ProjectCard: FC<ProjectCardProps> = ({ data }) => {
   return (
     <div className={styles.productCardContainer}>
       {data?.map((brand) => (
-        <div key={brand.id} className={styles.productCardItemWrapper}>
+        <div
+          key={brand.id}
+          className={styles.productCardItemWrapper}
+          onClick={() => handleClickItem(brand.id)}>
           <div className={styles.productCardItem}>
-            <div className={styles.top} onClick={() => handleClickItem(brand.id)}>
+            <div className={styles.top}>
               <div className={styles.brandName}>
                 <BodyText level={6} customClass={styles.bold} fontFamily="Roboto">
                   {brand.projectName}
                 </BodyText>
               </div>
-              <BodyText level={6} fontFamily="Roboto">
+              <BodyText level={6} fontFamily="Roboto" customClass={styles.location}>
                 {brand.projectLocation}
               </BodyText>
             </div>
