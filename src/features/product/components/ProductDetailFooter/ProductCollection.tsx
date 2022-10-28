@@ -41,6 +41,7 @@ export const ProductCollection: FC = memo(() => {
         <a
           className="relative-product-item"
           key={key}
+          target="_blank"
           rel="noreferrer"
           href={getProductDetailPathname(userRole, item.id, signature)}>
           <div className="relative-product">

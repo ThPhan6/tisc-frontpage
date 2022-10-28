@@ -84,12 +84,14 @@ export const ProductVendor: FC = () => {
           </BodyText>
         </div>
         <div className={styles.contactContent}>
-          <VendorLocation
-            brandId={brand?.id ?? ''}
-            productId={productId ?? ''}
-            userSelection
-            borderBottomNone
-          />
+          {brand?.id && productId ? (
+            <VendorLocation
+              brandId={brand.id}
+              productId={productId}
+              userSelection
+              borderBottomNone
+            />
+          ) : null}
         </div>
       </div>
 
