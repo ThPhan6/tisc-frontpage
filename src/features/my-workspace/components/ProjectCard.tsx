@@ -30,7 +30,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
   isBrandUser,
   isDesignerUser,
 }) => {
-  const pathDetail = getValueByCondition([
+  const detailPath = getValueByCondition([
     [isTiscUser, PATH.tiscUserGroupBrandViewDetail],
     [isBrandUser, PATH.brandViewDetailDashboard],
     [isDesignerUser, PATH.designerUpdateProject],
@@ -38,7 +38,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
 
   const handleClickItem = (id: string) => {
     if (id) {
-      pushTo(pathDetail.replace(':id', id));
+      pushTo(detailPath.replace(':id', id));
     }
   };
 
