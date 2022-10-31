@@ -17,7 +17,7 @@ import {
 import { getTeamsByDesignFirm } from '@/features/user-group/services';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
+import { getDesignDueDay, getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
 import { isEmpty, isEqual } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -183,16 +183,12 @@ const ProjectList: React.FC = () => {
       dataIndex: 'design_due',
       render: (value) => {
         const dueDay = moment(value).diff(moment(moment().format('YYYY-MM-DD')), 'days') ?? 0;
-        let suffix = 'day';
-        if (dueDay > 1 || dueDay < -1) {
-          suffix += 's';
-        }
         return (
           <BodyText
             level={5}
             fontFamily="Roboto"
             customClass={`${styles.dueDayText} ${dueDay < 0 ? 'late' : ''}`}>
-            {dueDay === 0 ? 'Today' : `${dueDay} ${suffix}`}
+            {getDesignDueDay(value)}
           </BodyText>
         );
       },
