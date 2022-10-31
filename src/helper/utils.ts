@@ -354,3 +354,10 @@ export const setDefaultWidthForEachColumn = (
       [!defaultWidth, 10],
     ]),
   }));
+
+export const validateDocumentTitle = (title: string) => {
+  if (title.length <= 50) {
+    return true;
+  }
+  return false;
+};
