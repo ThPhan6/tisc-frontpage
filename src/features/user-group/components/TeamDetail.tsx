@@ -78,6 +78,7 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
                             <FormGroup label="Work Phone" layout="vertical">
                               <PhoneInput
                                 codeReadOnly
+                                phoneNumberReadOnly
                                 value={{
                                   zoneCode: user.phone_code,
                                   phoneNumber: String(user.phone),
@@ -88,6 +89,7 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
                             <FormGroup label="Work Mobile" layout="vertical">
                               <PhoneInput
                                 codeReadOnly
+                                phoneNumberReadOnly
                                 value={{
                                   zoneCode: user.phone_code,
                                   phoneNumber: String(user.mobile),
