@@ -1,38 +1,16 @@
-.productCardContainer {
+.cardContainer {
   display: flex;
   flex-flow: row wrap;
   margin-right: -4px;
   margin-left: -4px;
-  cursor: pointer;
-  .productCardItemWrapper {
+  .cardItemWrapper {
+    position: relative;
     display: block;
-    flex: 0 0 100%;
-    max-width: 100%;
-    margin-bottom: 8px;
+    width: 224px;
+    height: 224px;
     padding-right: 4px;
     padding-left: 4px;
-    @media (min-width: 576px) {
-      position: relative;
-      flex: 0 0 33.33333333%;
-      max-width: 33.33333333%;
-      height: 0;
-      padding-top: 33.33333333%;
-    }
-    @media (min-width: 768px) {
-      position: relative;
-      flex: 0 0 25%;
-      max-width: 25%;
-      height: 0;
-      padding-top: 25%;
-    }
-    @media (min-width: 992px) {
-      position: relative;
-      flex: 0 0 20%;
-      max-width: 20%;
-      height: 0;
-      padding-top: 20%;
-    }
-    .productCardItem {
+    .cardItem {
       position: absolute;
       top: 0;
       left: 0;
@@ -62,13 +40,20 @@
           max-height: 56px;
           margin-bottom: 4px;
           overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
+          word-break: break-word;
         }
         .location {
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
+        }
+        .img {
+          position: absolute;
+          top: 8px;
+          right: 12px;
+          width: 24px;
+          height: 24px;
+          object-fit: cover;
         }
       }
       .middle {
@@ -77,15 +62,20 @@
         justify-content: space-between;
         height: 32px;
         padding: 0 16px;
+
         .middleKey {
-          width: calc(100% - 112px);
-          max-width: 88px;
+          // width: calc(100% - 112px);
+          width: 100px;
           text-align: left;
+
+          p {
+            white-space: nowrap;
+          }
         }
         .middleValue {
           width: 64px;
           margin-left: 24px;
-          text-align: center;
+          text-align: left;
         }
       }
 
@@ -103,6 +93,10 @@
           overflow: auto;
           .avatar:not(:last-child) {
             margin-right: 2px;
+          }
+
+          > div {
+            margin-top: 2px;
           }
         }
         .team::-webkit-scrollbar {

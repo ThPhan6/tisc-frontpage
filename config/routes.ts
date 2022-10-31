@@ -42,7 +42,7 @@ export default [
     path: PATH.tiscHomePage,
     name: 'workspace',
     icon: 'workspace-icon.svg',
-    component: './TISC/MyWorkspace',
+    component: '../features/my-workspace',
     access: 'tisc_workspace',
   },
   {
@@ -457,17 +457,16 @@ export default [
     path: PATH.brandHomePage,
     name: 'workspace',
     icon: 'workspace-icon.svg',
-    // component: './Brand/MyWorkspace',
     access: 'brand_workspace',
     routes: [
       {
         path: PATH.brandHomePage,
-        component: './Brand/MyWorkspace',
+        component: '../features/my-workspace',
         hideInMenu: true,
       },
       {
         path: PATH.brandViewDetailDashboard,
-        component: './Brand/MyWorkspace',
+        component: '../features/my-workspace',
         hideInMenu: true,
       },
     ],
@@ -641,7 +640,7 @@ export default [
     path: PATH.designerHomePage,
     name: 'workspace',
     icon: 'workspace-icon.svg',
-    component: './Admin',
+    component: '../features/my-workspace',
     access: 'design_workspace',
   },
   {

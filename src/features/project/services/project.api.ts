@@ -154,6 +154,7 @@ export async function getProjectSummary() {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_SUMMARY_DATA_FAILED);
+      return {} as ProjectSummaryData;
     });
 }
 
