@@ -41,7 +41,6 @@ const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
       return updateProjectSpace(space.id, space).then((data) => {
         hidePageLoading();
         if (data) {
-          setSpace(data);
           submitButtonStatus.setValue(true);
           setTimeout(() => {
             submitButtonStatus.setValue(false);
