@@ -12,7 +12,7 @@ interface BrandProductBasicHeaderProps {
   logo?: string;
   text_1?: string;
   text_2?: string;
-  text_3?: string;
+  text_3?: string | React.ReactNode;
   hasBoxShadow?: boolean;
   customClass?: string;
 }

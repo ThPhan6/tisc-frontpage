@@ -236,7 +236,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
 
           <div
             className={`contact-select-box ${isTiscAdmin ? 'cursor-disabled' : 'cursor-pointer'}`}
-            onClick={isTiscAdmin ? undefined : onSelect}>
+            onClick={isTiscAdmin || !country ? undefined : onSelect}>
             <BodyText
               level={6}
               fontFamily="Roboto"

@@ -11,7 +11,7 @@ import { getProductListByBrandId, getProductSummary } from '@/features/product/s
 import { getBrandAlphabet } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
 import { useQuery } from '@/helper/hook';
-import { showImageUrl, updateUrlParams } from '@/helper/utils';
+import { updateUrlParams } from '@/helper/utils';
 import { flatMap, forEach, map } from 'lodash';
 
 import { resetProductState, setBrand } from '@/features/product/reducers';
@@ -20,6 +20,7 @@ import { BrandAlphabet, BrandDetail } from '@/features/user-group/types';
 import { useAppSelector } from '@/reducers';
 import { GeneralData } from '@/types';
 
+import { LogoIcon } from '@/components/LogoIcon';
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
 import {
@@ -115,7 +116,7 @@ const ProductTopBar: React.FC = () => {
   const renderLabel = (item: BrandDetail) => {
     return (
       <BodyText level={5} fontFamily="Roboto">
-        <img src={showImageUrl(item.logo ?? '')} className={styles.brandLogo} />
+        <LogoIcon logo={item.logo} className={styles.brandLogo} />
         <span className="brand-name">{item.name}</span>
       </BodyText>
     );

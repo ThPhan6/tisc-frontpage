@@ -28,7 +28,7 @@ export function useString(defaultValue = '') {
 export const useCustomInitialState = () => {
   const { initialState, setInitialState, loading } = useModel('@@initialState');
 
-  const fetchUserInfo = async () => {
+  const fetchUserInfo = async (hasRedirect?: boolean) => {
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
       const newInitialState = {
@@ -39,7 +39,9 @@ export const useCustomInitialState = () => {
         ...s,
         currentUser: userInfo,
       }));
-      redirectAfterLogin(access(newInitialState), userInfo.type);
+      if (hasRedirect) {
+        redirectAfterLogin(access(newInitialState), userInfo.type);
+      }
       return newInitialState;
     }
     return undefined;

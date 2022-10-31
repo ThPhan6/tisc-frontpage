@@ -71,7 +71,11 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
       });
   }, []);
 
-  const handleClickAccessable = (accessItem: PermissionItem) => {
+  const handleClickAccessable = (accessItem: PermissionItem, unClickable: boolean) => () => {
+    if (unClickable) {
+      return undefined;
+    }
+
     accessItem.accessable = !accessItem.accessable;
 
     // set unlickable if Overal Listing of Project has accessable false
@@ -81,26 +85,36 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
     );
 
     if (projectFound && projectFound.subs?.[0]) {
-      const isOveralListingFalse = projectFound.subs[0].items.some(
-        (item) => item.id === accessItem.id && item.accessable === false,
+      const overalListingPermission = projectFound.subs[0].items;
+
+      // check click to Overal Listing
+      const isClickToOveralListing = overalListingPermission.some(
+        (item) => item.id === accessItem.id,
       );
 
-      const subItemId: string[] = [];
-      if (isOveralListingFalse) {
-        // get the rest of project permission to set its accessable false
-        const newSubs = projectFound.subs.slice(1);
+      if (isClickToOveralListing) {
+        // check Overal Listing is false
+        const isOveralListingFalse = overalListingPermission.some(
+          (item) => item.id === accessItem.id && item.accessable === false,
+        );
 
-        newSubs?.forEach((sub) => {
-          const projectSubPermission = sub.items.find((el) => el.name === accessItem.name);
+        const subItemId: string[] = [];
+        if (isOveralListingFalse) {
+          // get the rest of project permission to set its accessable false
+          const newSubs = projectFound.subs.slice(1);
 
-          if (projectSubPermission) {
-            projectSubPermission.accessable = false;
-            // for update UI
-            subItemId.push(projectSubPermission.id);
-          }
-        });
+          newSubs?.forEach((sub) => {
+            const projectSubPermission = sub.items.find((el) => el.name === accessItem.name);
+
+            if (projectSubPermission) {
+              projectSubPermission.accessable = false;
+              // for update UI
+              subItemId.push(projectSubPermission.id);
+            }
+          });
+        }
+        setUnclickableData(subItemId);
       }
-      setUnclickableData(subItemId);
     }
 
     /// overwrite data
@@ -115,6 +129,8 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
       }
     });
   };
+
+  console.log('unClickableData', unclickableData);
 
   const renderPermission: any = (menu: PermissionData, type: string) => {
     return (
@@ -136,21 +152,22 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
             ? menu.items.map((item, key) => {
                 // check for update UI
                 const unClickable = unclickableData?.includes(item.id);
+                const adminPermission = item.name.toLocaleLowerCase().indexOf('admin') !== -1;
 
                 return (
                   <Fragment key={key}>
                     <td className={styles.menu_accessable} key={item.id}>
                       {item.accessable === true ? (
                         <AccessableTickIcon
-                          className={'cursor-pointer'}
-                          onClick={() => handleClickAccessable(item)}
+                          className={` ${adminPermission ? 'cursor-disabled' : 'cursor-pointer'}`}
+                          onClick={handleClickAccessable(item, adminPermission)}
                         />
                       ) : (
                         <AccessableMinusIcon
                           className={`cursor-pointer ${
                             unClickable ? styles.menu_accessable_null : styles.menu_accessable_true
                           }`}
-                          onClick={() => handleClickAccessable(item)}
+                          onClick={handleClickAccessable(item, adminPermission)}
                         />
                       )}
                     </td>

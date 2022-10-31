@@ -15,6 +15,7 @@ import { GeneralInquiryResponse } from './types';
 import { DesignFirmTab } from './components/DesignFirmTab';
 import { GeneralInquiryContainer } from './components/GeneralInquiryContainer';
 import { InquiryMessageTab } from './components/InquiryMessageTab';
+import CustomButton from '@/components/Button';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
@@ -79,6 +80,8 @@ const GeneralInquiryDetail = () => {
     }
   }, []);
 
+  const goBackToTable = () => pushTo(PATH.brandGeneralInquiry);
+
   return (
     <GeneralInquiryContainer visible={legendModalVisible} setVisible={setLegendModalVisible}>
       <TableHeader
@@ -93,12 +96,7 @@ const GeneralInquiryDetail = () => {
           <TableHeader
             title={data.inquiry_message.inquiry_for}
             customClass={styles.header}
-            rightAction={
-              <CloseIcon
-                className="cursor-pointer"
-                onClick={() => pushTo(PATH.brandGeneralInquiry)}
-              />
-            }
+            rightAction={<CloseIcon className="cursor-pointer" onClick={goBackToTable} />}
           />
           <CustomTabs
             listTab={LIST_TAB}
@@ -118,6 +116,16 @@ const GeneralInquiryDetail = () => {
             <CustomTabPane active={activeTab === 'inquiry-message'}>
               <InquiryMessageTab data={data.inquiry_message} modelId={inquiryId} />
             </CustomTabPane>
+          </div>
+
+          <div className={styles.cancelButton}>
+            <CustomButton
+              size="small"
+              variant="primary"
+              properties="rounded"
+              onClick={goBackToTable}>
+              Cancel
+            </CustomButton>
           </div>
         </Col>
       </Row>

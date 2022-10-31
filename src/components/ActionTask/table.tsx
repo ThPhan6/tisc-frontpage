@@ -44,12 +44,12 @@ export const ActionTaskTable: FC<ActionTaskModelProps> = ({
   const [actionTaskList, setActionTaskList] = useState<ActionTaskProps[]>([]);
 
   const updateData = () => {
-    setData((prevData) => {
+    setData?.((prevData) => {
       const newData = cloneDeep(prevData);
       if (model_name === 'request') {
-        newData.projectRequests[indexItem as number].status = ProjectRequestStatus.Responded;
+        newData.projectRequests[Number(indexItem)].status = ProjectRequestStatus.Responded;
       } else {
-        newData.notifications[indexItem as number].status =
+        newData.notifications[Number(indexItem)].status =
           ProjectTrackingNotificationStatus['Followed-up'];
       }
       return newData;
@@ -118,7 +118,7 @@ export const ActionTaskTable: FC<ActionTaskModelProps> = ({
         viewAllTop
         placement="bottomRight"
         menuStyle={{ width: 160, height: 'auto' }}
-        labelProps={{ className: 'flex-start' }}>
+        labelProps={{ className: 'flex-between' }}>
         <RobotoBodyText level={6}>{ActionTaskStatus[record.status]}</RobotoBodyText>
       </CustomDropDown>
     );
@@ -134,13 +134,14 @@ export const ActionTaskTable: FC<ActionTaskModelProps> = ({
           <CustomPlusButton size={18} />
         </div>
       </div>
+
       <table className={styles.tableActionTask}>
         <thead>
           <tr className={styles.title}>
-            <th>
+            <th style={{ minWidth: '75px' }}>
               <RobotoBodyText level={6}>Date</RobotoBodyText>
             </th>
-            <th>
+            <th style={{ minWidth: '110px' }}>
               <RobotoBodyText level={6}>Actions</RobotoBodyText>
             </th>
             <th>
@@ -172,6 +173,13 @@ export const ActionTaskTable: FC<ActionTaskModelProps> = ({
           })}
         </tbody>
       </table>
+
+      {!actionTaskList.length ? (
+        <div className={styles.noContent}>
+          <RobotoBodyText level={6}>no actions/tasks yet</RobotoBodyText>
+        </div>
+      ) : null}
+
       {modalVisible ? (
         <ActionTaskModal
           visible={modalVisible}

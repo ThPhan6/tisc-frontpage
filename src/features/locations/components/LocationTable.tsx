@@ -92,6 +92,7 @@ const LocationTable: React.FC = () => {
     {
       title: 'Teams',
       dataIndex: 'teams',
+      align: 'center',
       width: '5%',
     },
     {
