@@ -29,10 +29,6 @@ export interface GeneralInquiryDesignFirm {
   general_email: string;
   general_phone: string;
   official_website: string;
-  address: string;
-  city_name: string;
-  state_name: string;
-  country_name: string;
 }
 
 export interface InquiryMessageOfGeneralInquiry {
@@ -91,6 +87,6 @@ export interface ActionTaskRequestBody extends ActionTaskModelParams {
 }
 
 export interface ActionTaskModelProps extends ActionTaskModelParams {
-  setData: (setState: (prevState: ProjectTrackingDetail) => ProjectTrackingDetail) => void;
-  indexItem: number;
+  setData?: (setState: (prevState: ProjectTrackingDetail) => ProjectTrackingDetail) => void;
+  indexItem?: number;
 }

@@ -32,6 +32,31 @@
     padding: 0;
   }
 }
+.addressPanel {
+  :global(.contact-item-none) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 36px !important;
+    cursor: default;
+  }
+  :global(.contact-select-box) {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+  :global(.contact-item-selected) {
+    cursor: pointer;
+    :global(.active-title) {
+      flex: 1;
+      font-weight: 600;
+    }
+    :global(.inActive-title) {
+      flex: 1;
+      font-weight: 300;
+    }
+  }
+}
 
 .businessDetail {
   padding: 8px 0 8px 16px;
@@ -46,29 +71,6 @@
 
   :global(.ant-collapse-header-text) {
     display: inline-block;
-  }
-}
-
-:global(.contact-item-not-selected),
-:global(.contact-item-selected) {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 36px !important;
-
-  :global(.active-title) {
-    flex: 1;
-    font-weight: 600;
-  }
-  :global(.inActive-title) {
-    flex: 1;
-    font-weight: 300;
-  }
-
-  :global(.contact-select-box) {
-    display: flex;
-    align-items: center;
-    height: 100%;
   }
 }
 

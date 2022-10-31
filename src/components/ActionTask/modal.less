@@ -1,22 +1,33 @@
 .actionTask {
   :global(.ant-modal-body) {
-    > div:first-child {
-      height: 100%;
-    }
+    position: relative;
+    padding: 16px 19px 0 16px;
   }
   :global(.ant-checkbox-group) {
-    position: relative;
-    height: 100%;
+    @modalWidth: 576px;
+    @paddingSpace: 36px;
+
     > div:last-child {
-      position: sticky;
-      bottom: -16px;
+      position: absolute;
+      bottom: 0;
+      width: calc(@modalWidth - @paddingSpace);
       background: #fff;
+      box-shadow: @border-top-light;
     }
     label {
       height: 40px;
     }
     :global(.ant-input) {
       color: @primary-color-dark;
+    }
+  }
+}
+
+.stickyPosition {
+  :global(.ant-checkbox-group) {
+    position: relative;
+    > div:last-child {
+      position: sticky !important;
     }
   }
 }

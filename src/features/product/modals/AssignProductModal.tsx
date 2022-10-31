@@ -31,15 +31,19 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
   const projectOptions: RadioValue[] = projects.map((el) => ({
     value: el.id,
     label: (
-      <span className="selected-item flex-start text-overflow">
+      <span className="selected-item flex-start">
         <BodyText
           fontFamily="Roboto"
           level={5}
-          className="text-overflow"
+          customClass="text-overflow"
           style={{ marginRight: 16, width: 60 }}>
           {el.code}
         </BodyText>
-        <BodyText fontFamily="Roboto" level={5}>
+        <BodyText
+          fontFamily="Roboto"
+          level={5}
+          customClass="text-overflow"
+          style={{ maxWidth: 430 }}>
           {el.name}
         </BodyText>
       </span>

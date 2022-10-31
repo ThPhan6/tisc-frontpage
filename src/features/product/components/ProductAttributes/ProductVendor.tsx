@@ -42,7 +42,7 @@ export const ProductVendor: FC = () => {
           </div>
           <div className="info-group">
             <BodyText level={4} customClass="brand-text-info-label">
-              Mission & Vison :
+              Mission & Vision :
             </BodyText>
             <BodyText level={6} fontFamily="Roboto" customClass="brand-text-info">
               {brand?.mission_n_vision ?? ''}
@@ -84,12 +84,14 @@ export const ProductVendor: FC = () => {
           </BodyText>
         </div>
         <div className={styles.contactContent}>
-          <VendorLocation
-            brandId={brand?.id ?? ''}
-            productId={productId ?? ''}
-            userSelection
-            borderBottomNone
-          />
+          {brand?.id && productId ? (
+            <VendorLocation
+              brandId={brand.id}
+              productId={productId}
+              userSelection
+              borderBottomNone
+            />
+          ) : null}
         </div>
       </div>
 

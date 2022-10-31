@@ -221,27 +221,35 @@ export const VendorLocation: FC<VendorTabProps> = ({
     activeCollapse: boolean,
     onSelect: () => void,
   ) => {
-    return (
-      <div className={country ? 'contact-item-selected' : 'contact-item-not-selected'}>
-        <BodyText level={4} customClass={`${activeCollapse ? 'active-title' : 'inActive-title'}`}>
-          {title}
-        </BodyText>
+    const getCountryName = () => {
+      if (country) return country;
 
-        <div
-          className={`contact-select-box ${isTiscAdmin ? 'cursor-disabled' : 'cursor-pointer'}`}
-          onClick={isTiscAdmin ? undefined : onSelect}>
-          <BodyText
-            level={6}
-            fontFamily="Roboto"
-            color={country ? 'mono-color' : 'mono-color-medium'}>
-            {country || 'select location'}
+      return isPublicPage ? '' : 'select location';
+    };
+
+    return (
+      <div className={styles.addressPanel}>
+        <div className={`contact-item-none ${country ? 'contact-item-selected' : ''}`}>
+          <BodyText level={4} customClass={`${activeCollapse ? 'active-title' : 'inActive-title'}`}>
+            {title}
           </BodyText>
-          {isPublicPage ? null : (
-            <SingleRightIcon
-              className={country ? 'mono-color' : 'mono-color-medium'}
-              style={{ marginLeft: '12px' }}
-            />
-          )}
+
+          <div
+            className={`contact-select-box ${isTiscAdmin ? 'cursor-disabled' : 'cursor-pointer'}`}
+            onClick={isTiscAdmin || !country ? undefined : onSelect}>
+            <BodyText
+              level={6}
+              fontFamily="Roboto"
+              color={country ? 'mono-color' : 'mono-color-medium'}>
+              {getCountryName()}
+            </BodyText>
+            {isPublicPage ? null : (
+              <SingleRightIcon
+                className={country ? 'mono-color' : 'mono-color-medium'}
+                style={{ marginLeft: '12px' }}
+              />
+            )}
+          </div>
         </div>
       </div>
     );

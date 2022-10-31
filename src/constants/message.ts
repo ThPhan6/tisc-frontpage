@@ -132,6 +132,8 @@ export const MESSAGE_NOTIFICATION = {
   // actions/tasks
   GET_ACTION_TASK_DATA_ERROR: 'Failed to get action task data',
   GET_ACTION_TASK_LIST_ERROR: 'Failed to get action task list',
+  CREATE_ACTION_TASK_SUCCESS: 'Create action task successfully',
+  CREATE_ACTION_TASK_ERROR: 'Failed to create action task',
   UPDATE_ACTION_TASK_STATUS_ERROR: 'Failed to update action task status',
 
   // department
