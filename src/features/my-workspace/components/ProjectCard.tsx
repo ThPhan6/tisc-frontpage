@@ -31,12 +31,13 @@ export const ProjectCard: FC<ProjectCardProps> = ({
   isDesignerUser,
 }) => {
   const pathDetail = getValueByCondition([
+    [isTiscUser, PATH.tiscUserGroupBrandViewDetail],
     [isBrandUser, PATH.brandViewDetailDashboard],
     [isDesignerUser, PATH.designerUpdateProject],
   ]);
 
   const handleClickItem = (id: string) => {
-    if (id && !isTiscUser) {
+    if (id) {
       pushTo(pathDetail.replace(':id', id));
     }
   };
@@ -161,7 +162,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
   };
 
   return (
-    <div className={styles.cardContainer} style={{ cursor: isTiscUser ? 'default' : 'pointer' }}>
+    <div className={styles.cardContainer}>
       {data?.map((item: any, index) => (
         <div
           key={item.id ?? index}
