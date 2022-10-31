@@ -117,16 +117,17 @@ const GeneralInquiryDetail = () => {
               <InquiryMessageTab data={data.inquiry_message} modelId={inquiryId} />
             </CustomTabPane>
           </div>
-
-          <div className={styles.cancelButton}>
-            <CustomButton
-              size="small"
-              variant="primary"
-              properties="rounded"
-              onClick={goBackToTable}>
-              Cancel
-            </CustomButton>
-          </div>
+          {activeTab === 'inquiry-message' && (
+            <div className={styles.cancelButton}>
+              <CustomButton
+                size="small"
+                variant="primary"
+                properties="rounded"
+                onClick={goBackToTable}>
+                Cancel
+              </CustomButton>
+            </div>
+          )}
         </Col>
       </Row>
     </GeneralInquiryContainer>

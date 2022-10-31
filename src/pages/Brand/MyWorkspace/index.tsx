@@ -43,7 +43,11 @@ const MyWorkspace = () => {
           );
         }}>
         {projectId ? (
-          <Detail projectId={projectId} height="calc(100vh - 152px)" />
+          <Detail
+            projectId={projectId}
+            height="calc(100vh - 152px)"
+            contentHeight="calc(100vh - 304px)"
+          />
         ) : (
           <ProjectCard data={listCard} />
         )}
