@@ -71,7 +71,11 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
       });
   }, []);
 
-  const handleClickAccessable = (accessItem: PermissionItem) => {
+  const handleClickAccessable = (accessItem: PermissionItem, unClickable: boolean) => () => {
+    if (unClickable) {
+      return undefined;
+    }
+
     accessItem.accessable = !accessItem.accessable;
 
     // set unlickable if Overal Listing of Project has accessable false
@@ -136,21 +140,22 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
             ? menu.items.map((item, key) => {
                 // check for update UI
                 const unClickable = unclickableData?.includes(item.id);
+                const adminPermission = item.name.toLocaleLowerCase().indexOf('admin') !== -1;
 
                 return (
                   <Fragment key={key}>
                     <td className={styles.menu_accessable} key={item.id}>
                       {item.accessable === true ? (
                         <AccessableTickIcon
-                          className={'cursor-pointer'}
-                          onClick={() => handleClickAccessable(item)}
+                          className={` ${adminPermission ? 'cursor-disabled' : 'cursor-pointer'}`}
+                          onClick={handleClickAccessable(item, adminPermission)}
                         />
                       ) : (
                         <AccessableMinusIcon
                           className={`cursor-pointer ${
                             unClickable ? styles.menu_accessable_null : styles.menu_accessable_true
                           }`}
-                          onClick={() => handleClickAccessable(item)}
+                          onClick={handleClickAccessable(item, adminPermission)}
                         />
                       )}
                     </td>

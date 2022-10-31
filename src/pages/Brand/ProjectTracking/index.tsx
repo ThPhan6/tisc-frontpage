@@ -80,6 +80,10 @@ const ProjectTracking = () => {
     });
   };
 
+  const reloadWithFilter = () => {
+    tableRef.current?.reload();
+  };
+
   // update assign team
   const handleSubmitAssignTeam = (checkedData: CheckboxValue[]) => {
     // new assign team
@@ -115,10 +119,6 @@ const ProjectTracking = () => {
       });
     }
   };
-
-  const reloadWithFilter = () => {
-    tableRef.current?.reload();
-  }
 
   useEffect(() => {
     reloadWithFilter();
@@ -242,7 +242,7 @@ const ProjectTracking = () => {
       dataIndex: 'requestCount',
       render: (_value, record) => {
         return (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
             {record.requestCount}{' '}
             {record.newRequest ? <UnreadIcon style={{ marginLeft: '8px' }} /> : ''}
           </div>
@@ -254,7 +254,7 @@ const ProjectTracking = () => {
       dataIndex: 'notificationCount',
       render: (_value, record) => {
         return (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
             {record.notificationCount}{' '}
             {record.newNotification ? <UnreadIcon style={{ marginLeft: '8px' }} /> : ''}
           </div>
