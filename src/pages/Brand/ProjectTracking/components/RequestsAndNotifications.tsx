@@ -28,8 +28,66 @@ interface RequestsAndNotificationsProps {
   requestAndNotification: RequestAndNotificationDetail[];
   type: 'request' | 'notification';
   setData: (setState: (prevState: ProjectTrackingDetail) => ProjectTrackingDetail) => void;
-  contentHeight: string;
+  contentHeight?: string;
 }
+interface RequestAndNotificationListProps extends RequestsAndNotificationsProps {
+  setDetailItem: (item: RequestAndNotificationDetail) => void;
+  setIndexItem: (index: number) => void;
+}
+
+const RequestAndNotificationList: FC<RequestAndNotificationListProps> = ({
+  requestAndNotification,
+  type,
+  setData,
+  setDetailItem,
+  setIndexItem,
+}) => {
+  return (
+    <div className={styles.content}>
+      <table className={styles.table}>
+        <tbody>
+          {requestAndNotification.length > 0 ? (
+            requestAndNotification.map((item, index) => (
+              <tr
+                onClick={() => {
+                  setDetailItem(item);
+                  setIndexItem(index);
+                  setData((prevData) => {
+                    const newData = cloneDeep(prevData);
+                    if (type === 'request') {
+                      newData.projectRequests[index].newRequest = false;
+                    } else {
+                      newData.notifications[index].newNotification = false;
+                    }
+                    return newData;
+                  });
+                }}
+                key={index}>
+                <td className={styles.date}>
+                  {moment(item.title.created_at).format('YYYY-MM-DD')}
+                </td>
+                <td className={styles.projectName}>
+                  {type === 'request'
+                    ? item.title.name
+                    : ProjectTrackingNotificationType[item.title.name]}
+                  {item.read ? <UnreadIcon /> : ''}
+                </td>
+                <td className={styles.action}>
+                  {type === 'request'
+                    ? RequestsIcons[item.status]
+                    : NotificationsIcons[item.status]}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <Empty description={<BodyText level={3}>No Data</BodyText>} className={styles.empty} />
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
 export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
   requestAndNotification,
   type,
@@ -42,51 +100,13 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
   return (
     <>
       {detailItem === undefined ? (
-        <div className={styles.content}>
-          <table className={styles.table}>
-            <tbody>
-              {requestAndNotification.length > 0 ? (
-                requestAndNotification.map((item, index) => (
-                  <tr
-                    onClick={() => {
-                      setDetailItem(item);
-                      setIndexItem(index);
-                      setData((prevData) => {
-                        const newData = cloneDeep(prevData);
-                        if (type === 'request') {
-                          newData.projectRequests[index].newRequest = false;
-                        } else {
-                          newData.notifications[index].newNotification = false;
-                        }
-                        return newData;
-                      });
-                    }}
-                    key={index}>
-                    <td className={styles.date}>
-                      {moment(item.title.created_at).format('YYYY-MM-DD')}
-                    </td>
-                    <td className={styles.projectName}>
-                      {type === 'request'
-                        ? item.title.name
-                        : ProjectTrackingNotificationType[item.title.name]}
-                      {item.read ? <UnreadIcon /> : ''}
-                    </td>
-                    <td className={styles.action}>
-                      {type === 'request'
-                        ? RequestsIcons[item.status]
-                        : NotificationsIcons[item.status]}
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <Empty
-                  description={<BodyText level={3}>No Data</BodyText>}
-                  className={styles.empty}
-                />
-              )}
-            </tbody>
-          </table>
-        </div>
+        <RequestAndNotificationList
+          requestAndNotification={requestAndNotification}
+          type={type}
+          setData={setData}
+          setDetailItem={setDetailItem}
+          setIndexItem={setIndexItem}
+        />
       ) : (
         <>
           <div
@@ -128,7 +148,7 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
                   target="_blank"
                   rel="noreferrer"
                   style={{ color: '#000' }}>
-                  {window.location.host}/brand/product/{detailItem.product.id}
+                  {window.location.origin}/brand/product/{detailItem.product.id}
                 </a>
               }
               customClass={styles.brandProduct}
