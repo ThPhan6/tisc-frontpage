@@ -34,7 +34,6 @@ import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
 
 import styles from './styles/project-list.less';
-import moment from 'moment';
 
 const ProjectList: React.FC = () => {
   useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
@@ -182,13 +181,13 @@ const ProjectList: React.FC = () => {
       title: 'Design Due',
       dataIndex: 'design_due',
       render: (value) => {
-        const dueDay = moment(value).diff(moment(moment().format('YYYY-MM-DD')), 'days') ?? 0;
+        const dueDay = getDesignDueDay(value);
         return (
           <BodyText
             level={5}
             fontFamily="Roboto"
-            customClass={`${styles.dueDayText} ${dueDay < 0 ? 'late' : ''}`}>
-            {getDesignDueDay(value)}
+            customClass={`${styles.dueDayText} ${dueDay.value < 0 ? 'late' : ''}`}>
+            {dueDay.text}
           </BodyText>
         );
       },
