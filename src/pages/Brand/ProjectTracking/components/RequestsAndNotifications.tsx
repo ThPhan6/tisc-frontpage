@@ -31,8 +31,13 @@ interface RequestsAndNotificationsProps {
   contentHeight?: string;
 }
 interface RequestAndNotificationListProps extends RequestsAndNotificationsProps {
-  setDetailItem: (item: RequestAndNotificationDetail) => void;
+  setDetailItem: (item: RequestAndNotificationDetail | undefined) => void;
   setIndexItem: (index: number) => void;
+}
+
+interface DetaiItemProps extends RequestAndNotificationListProps {
+  detailItem: RequestAndNotificationDetail;
+  indexItem: number;
 }
 
 const RequestAndNotificationList: FC<RequestAndNotificationListProps> = ({
@@ -88,6 +93,113 @@ const RequestAndNotificationList: FC<RequestAndNotificationListProps> = ({
   );
 };
 
+const DetaiItem: FC<DetaiItemProps> = ({
+  detailItem,
+  type,
+  setDetailItem,
+  setData,
+  contentHeight,
+  indexItem,
+}) => {
+  return (
+    <div
+      style={{
+        height: `${contentHeight}`,
+        overflow: 'auto',
+        padding: '0 16px 16px 16px',
+      }}>
+      <TableHeader
+        title={
+          <>
+            <span style={{ marginRight: '12px' }}>
+              {moment(detailItem.title.created_at).format('YYYY-MM-DD')}{' '}
+            </span>
+            <span>
+              {type === 'request'
+                ? detailItem.title.name
+                : ProjectTrackingNotificationType[detailItem.title.name]}
+            </span>
+          </>
+        }
+        rightAction={
+          <CloseIcon
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              setDetailItem(undefined);
+            }}
+          />
+        }
+        customClass={styles.customHeader}
+      />
+      <BrandProductBasicHeader
+        image={detailItem.product.images[0]}
+        text_1={detailItem.product.collection_name}
+        text_2={detailItem.product.description}
+        text_3={
+          <a
+            href={`${window.location.origin}/brand/product/${detailItem.product.id}`}
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: '#000' }}>
+            {window.location.origin}/brand/product/{detailItem.product.id}
+          </a>
+        }
+        customClass={styles.brandProduct}
+      />
+      <TextForm boxShadow label={type === 'request' ? 'Requester' : 'Modifier'}>
+        {getFullName(detailItem.designer)}
+      </TextForm>
+
+      <TextForm boxShadow label="Position/Role">
+        {detailItem.designer.position}
+      </TextForm>
+      <TextForm boxShadow label="Work Email">
+        {detailItem.designer.email}
+      </TextForm>
+      <FormGroup
+        label="Work Phone"
+        layout="vertical"
+        labelColor="mono-color-dark"
+        formClass={type === 'request' ? '' : styles.marginBottomNone}>
+        <PhoneInput
+          codeReadOnly
+          phoneNumberReadOnly
+          value={{
+            zoneCode: detailItem.designer.phone_code,
+            phoneNumber: detailItem.designer.phone,
+          }}
+          containerClass={styles.customPhoneCode}
+        />
+      </FormGroup>
+      {type === 'request' ? (
+        <>
+          <TextForm boxShadow label="Title">
+            {detailItem.request?.title}
+          </TextForm>
+          <FormGroup
+            label="Message"
+            layout="vertical"
+            labelColor="mono-color-dark"
+            formClass={styles.marginBottomNone}>
+            <CustomTextArea
+              value={detailItem.request?.message}
+              className={styles.customTextArea}
+              readOnly
+            />
+          </FormGroup>
+        </>
+      ) : null}
+
+      <ActionTaskTable
+        model_id={detailItem.id}
+        model_name={type}
+        setData={setData}
+        indexItem={indexItem}
+      />
+    </div>
+  );
+};
+
 export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
   requestAndNotification,
   type,
@@ -109,101 +221,14 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
         />
       ) : (
         <>
-          <div
-            style={{
-              height: `${contentHeight}`,
-              overflow: 'auto',
-              padding: '0 16px 16px 16px',
-            }}>
-            <TableHeader
-              title={
-                <>
-                  <span style={{ marginRight: '12px' }}>
-                    {moment(detailItem.title.created_at).format('YYYY-MM-DD')}{' '}
-                  </span>
-                  <span>
-                    {type === 'request'
-                      ? detailItem.title.name
-                      : ProjectTrackingNotificationType[detailItem.title.name]}
-                  </span>
-                </>
-              }
-              rightAction={
-                <CloseIcon
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => {
-                    setDetailItem(undefined);
-                  }}
-                />
-              }
-              customClass={styles.customHeader}
-            />
-            <BrandProductBasicHeader
-              image={detailItem.product.images[0]}
-              text_1={detailItem.product.collection_name}
-              text_2={detailItem.product.description}
-              text_3={
-                <a
-                  href={`${window.location.origin}/brand/product/${detailItem.product.id}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ color: '#000' }}>
-                  {window.location.origin}/brand/product/{detailItem.product.id}
-                </a>
-              }
-              customClass={styles.brandProduct}
-            />
-            <TextForm boxShadow label={type === 'request' ? 'Requester' : 'Modifier'}>
-              {getFullName(detailItem.designer)}
-            </TextForm>
-
-            <TextForm boxShadow label="Position/Role">
-              {detailItem.designer.position}
-            </TextForm>
-            <TextForm boxShadow label="Work Email">
-              {detailItem.designer.email}
-            </TextForm>
-            <FormGroup
-              label="Work Phone"
-              layout="vertical"
-              labelColor="mono-color-dark"
-              formClass={type === 'request' ? '' : styles.marginBottomNone}>
-              <PhoneInput
-                codeReadOnly
-                phoneNumberReadOnly
-                value={{
-                  zoneCode: detailItem.designer.phone_code,
-                  phoneNumber: detailItem.designer.phone,
-                }}
-                containerClass={styles.customPhoneCode}
-              />
-            </FormGroup>
-            {type === 'request' ? (
-              <>
-                <TextForm boxShadow label="Title">
-                  {detailItem.request?.title}
-                </TextForm>
-                <FormGroup
-                  label="Message"
-                  layout="vertical"
-                  labelColor="mono-color-dark"
-                  formClass={styles.marginBottomNone}>
-                  <CustomTextArea
-                    value={detailItem.request?.message}
-                    className={styles.customTextArea}
-                    readOnly
-                  />
-                </FormGroup>
-              </>
-            ) : null}
-
-            <ActionTaskTable
-              model_id={detailItem.id}
-              model_name={type}
-              setData={setData}
-              indexItem={indexItem}
-            />
-          </div>
+          <DetaiItem
+            detailItem={detailItem}
+            indexItem={indexItem}
+            type={type}
+            setDetailItem={setDetailItem}
+            contentHeight={contentHeight}
+            setData={setData}
+          />
           <div className={styles.cancelButton}>
             <CustomButton
               size="small"
