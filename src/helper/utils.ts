@@ -361,3 +361,12 @@ export const validateDocumentTitle = (title: string) => {
   }
   return false;
 };
+
+export const bufferToArrayBufferCycle = (buffer: Buffer) => {
+  const result = new ArrayBuffer(buffer.length);
+  const view = new Uint8Array(result);
+  for (let i = 0; i < buffer.length; ++i) {
+    view[i] = buffer[i];
+  }
+  return result;
+};
