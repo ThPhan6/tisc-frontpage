@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
+import { history } from 'umi';
 
 import { ReactComponent as ProfileIcon } from '@/assets/icons/brand-icon.svg';
 import { ReactComponent as DistributorIcon } from '@/assets/icons/distributor-icon.svg';
@@ -10,7 +10,6 @@ import { ReactComponent as AvailabilityIcon } from '@/assets/icons/market-availa
 import { ReactComponent as TeamIcon } from '@/assets/icons/team-profile-icon.svg';
 
 import { getBrandById, getBrandStatuses } from '@/features/user-group/services';
-import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
 import { updateBrandStatus } from '@/services/brand-profile';
 
@@ -71,10 +70,6 @@ const UpdatePage = () => {
     });
   }, []);
 
-  const goBackToBrandList = () => {
-    pushTo(PATH.tiscUserGroupBrandList);
-  };
-
   const handleSaveButton = () => {
     showPageLoading();
     updateBrandStatus(brandId, { status: data.status }).then((isSuccess) => {
@@ -94,7 +89,7 @@ const UpdatePage = () => {
         <TabDetail
           selectedTab={selectedTab}
           setSelectedTab={setSelectedTab}
-          handleGoBackToTable={goBackToBrandList}
+          handleGoBackToTable={history.goBack}
           handleSaveButton={handleSaveButton}
           listTab={BrandTabs}
           data={data}
