@@ -14,7 +14,7 @@ import { useQuery } from '@/helper/hook';
 import { updateUrlParams } from '@/helper/utils';
 import { flatMap, forEach, map } from 'lodash';
 
-import { resetProductState, setBrand } from '@/features/product/reducers';
+import { resetProductState, setBrand, setProductList } from '@/features/product/reducers';
 import { ProductGetListParameter } from '@/features/product/types';
 import { BrandAlphabet, BrandDetail } from '@/features/user-group/types';
 import { useAppSelector } from '@/reducers';
@@ -63,6 +63,11 @@ const ProductTopBar: React.FC = () => {
         setBrandData({ value: brandId });
       }
     });
+
+    return () => {
+      dispatch(setBrand());
+      dispatch(setProductList({ data: [] }));
+    };
   }, []);
 
   /// set brand to product reducer
@@ -256,9 +261,20 @@ const ProductTopBar: React.FC = () => {
               set: [
                 { key: QUERY_KEY.b_id, value: chosenBrand.id },
                 { key: QUERY_KEY.b_name, value: chosenBrand.name },
+                { key: QUERY_KEY.cate_id, value: 'all' },
+                { key: QUERY_KEY.cate_name, value: 'VIEW ALL' },
               ],
               removeAll: true,
             });
+            dispatch(
+              setProductList({
+                filter: {
+                  name: 'category_id',
+                  title: 'VIEW ALL',
+                  value: 'all',
+                },
+              }),
+            );
           }
           setBrandData(v);
         }}
