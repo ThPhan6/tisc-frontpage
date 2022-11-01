@@ -32,7 +32,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
 }) => {
   const detailPath = getValueByCondition([
     [isTiscUser, PATH.tiscUserGroupBrandViewDetail],
-    [isBrandUser, PATH.brandViewDetailDashboard],
+    [isBrandUser, PATH.brandProjectTrackingDetail],
     [isDesignerUser, PATH.designerUpdateProject],
   ]);
 

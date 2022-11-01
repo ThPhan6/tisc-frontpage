@@ -218,7 +218,7 @@ const BrandList: React.FC = () => {
         visible={visible}
         setVisible={setVisible}
         onChange={handleSubmitAssignTeam}
-        memberAssigned={recordAssignTeam}
+        memberAssigned={recordAssignTeam?.assign_team}
         teams={assignTeam}
       />
     </div>

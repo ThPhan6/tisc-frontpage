@@ -271,7 +271,7 @@ const ProjectList: React.FC = () => {
         visible={visible}
         setVisible={setVisible}
         onChange={handleSubmitAssignTeam}
-        memberAssigned={recordAssignTeam}
+        memberAssigned={recordAssignTeam?.assign_teams}
         teams={assignTeam}
       />
     </div>
