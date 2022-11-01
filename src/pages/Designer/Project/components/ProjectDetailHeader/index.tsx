@@ -87,10 +87,6 @@ const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({
       }))
     : ProjectTabs;
 
-  const goBackToProjectList = () => {
-    pushTo(PATH.designerProject);
-  };
-
   return (
     <div className={styles.projectDetaiHeaderWrapper}>
       <div className={styles.projectDetailTitle}>
@@ -100,7 +96,7 @@ const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({
           <EmptyProductDataTitle />
         )}
 
-        <CloseIcon onClick={goBackToProjectList} />
+        <CloseIcon onClick={() => pushTo(PATH.designerProject)} />
       </div>
       <CustomTabs
         listTab={listTab}

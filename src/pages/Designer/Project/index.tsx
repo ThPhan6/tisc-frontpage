@@ -17,7 +17,7 @@ import {
 import { getTeamsByDesignFirm } from '@/features/user-group/services';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
+import { getDesignDueDay, getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
 import { isEmpty, isEqual } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -34,7 +34,6 @@ import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
 
 import styles from './styles/project-list.less';
-import moment from 'moment';
 
 const ProjectList: React.FC = () => {
   useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
@@ -182,17 +181,13 @@ const ProjectList: React.FC = () => {
       title: 'Design Due',
       dataIndex: 'design_due',
       render: (value) => {
-        const dueDay = moment(value).diff(moment(moment().format('YYYY-MM-DD')), 'days') ?? 0;
-        let suffix = 'day';
-        if (dueDay > 1 || dueDay < -1) {
-          suffix += 's';
-        }
+        const dueDay = getDesignDueDay(value);
         return (
           <BodyText
             level={5}
             fontFamily="Roboto"
-            customClass={`${styles.dueDayText} ${dueDay < 0 ? 'late' : ''}`}>
-            {dueDay === 0 ? 'Today' : `${dueDay} ${suffix}`}
+            customClass={`${styles.dueDayText} ${dueDay.value < 0 ? 'late' : ''}`}>
+            {dueDay.text}
           </BodyText>
         );
       },
@@ -276,7 +271,7 @@ const ProjectList: React.FC = () => {
         visible={visible}
         setVisible={setVisible}
         onChange={handleSubmitAssignTeam}
-        memberAssigned={recordAssignTeam}
+        memberAssigned={recordAssignTeam?.assign_teams}
         teams={assignTeam}
       />
     </div>

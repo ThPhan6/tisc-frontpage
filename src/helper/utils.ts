@@ -9,6 +9,7 @@ import { UserType } from '@/pages/LandingPage/types';
 
 import routes from '../../config/routes';
 import { pushTo } from './history';
+import moment from 'moment';
 
 export const REGEX_PASSWORD =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d][\w~@#$%^&*+=`|{}:;!.?\"()\[\]-]{7,}$/;
@@ -354,3 +355,31 @@ export const setDefaultWidthForEachColumn = (
       [!defaultWidth, 10],
     ]),
   }));
+
+export const getDesignDueDay = (designDue: number) => {
+  const dueDay = moment(designDue).diff(moment(moment().format('YYYY-MM-DD')), 'days') ?? 0;
+  let suffix = 'day';
+  if (dueDay > 1 || dueDay < -1) {
+    suffix += 's';
+  }
+  return {
+    value: dueDay,
+    text: dueDay === 0 ? 'Today' : `${dueDay} ${suffix}`,
+  };
+};
+
+export const validateDocumentTitle = (title: string) => {
+  if (title.length <= 50) {
+    return true;
+  }
+  return false;
+};
+
+export const bufferToArrayBufferCycle = (buffer: Buffer) => {
+  const result = new ArrayBuffer(buffer.length);
+  const view = new Uint8Array(result);
+  for (let i = 0; i < buffer.length; ++i) {
+    view[i] = buffer[i];
+  }
+  return result;
+};

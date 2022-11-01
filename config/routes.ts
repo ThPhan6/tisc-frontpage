@@ -42,7 +42,7 @@ export default [
     path: PATH.tiscHomePage,
     name: 'workspace',
     icon: 'workspace-icon.svg',
-    component: './TISC/MyWorkspace',
+    component: '../features/my-workspace',
     access: 'tisc_workspace',
   },
   {
@@ -457,20 +457,8 @@ export default [
     path: PATH.brandHomePage,
     name: 'workspace',
     icon: 'workspace-icon.svg',
-    // component: './Brand/MyWorkspace',
     access: 'brand_workspace',
-    routes: [
-      {
-        path: PATH.brandHomePage,
-        component: './Brand/MyWorkspace',
-        hideInMenu: true,
-      },
-      {
-        path: PATH.brandViewDetailDashboard,
-        component: './Brand/MyWorkspace',
-        hideInMenu: true,
-      },
-    ],
+    component: '../features/my-workspace',
   },
   {
     path: PATH.brandProduct,
@@ -479,12 +467,12 @@ export default [
     access: 'brand_product',
     routes: [
       {
-        path: '/brand/product',
+        path: PATH.brandProduct,
         component: './Brand/Products',
         hideInMenu: true,
       },
       {
-        path: '/brand/product/:id',
+        path: PATH.updateProductBrand,
         component: './Brand/Products/ProductBrandViewPage',
         hideInMenu: true,
       },
@@ -512,7 +500,6 @@ export default [
     path: PATH.brandProjectTracking,
     name: 'project_tracking',
     icon: 'project-tracking-icon.svg',
-
     access: 'brand_project_tracking',
     routes: [
       {
@@ -641,7 +628,7 @@ export default [
     path: PATH.designerHomePage,
     name: 'workspace',
     icon: 'workspace-icon.svg',
-    component: './Admin',
+    component: '../features/my-workspace',
     access: 'design_workspace',
   },
   {

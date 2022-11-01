@@ -113,7 +113,9 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
         : data.config.template_standard_ids,
       issuing_date: data.config.issuing_date,
     }).then((res) => {
-      setGeneratePDF(res);
+      if (res) {
+        setGeneratePDF(res.fileBuffer);
+      }
       hidePageLoading();
     });
   };

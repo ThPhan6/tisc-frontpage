@@ -1,10 +1,12 @@
 import { FC, useState } from 'react';
 
+import { MESSAGE_ERROR } from '@/constants/message';
 import { Switch } from 'antd';
 
 import { ReactComponent as FileSearchIcon } from '@/assets/icons/file-search-icon.svg';
 
 import { useBoolean } from '@/helper/hook';
+import { messageError, messageErrorType, validateDocumentTitle } from '@/helper/utils';
 
 import { PdfDetail } from '../type';
 
@@ -37,6 +39,19 @@ const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, o
     });
   };
 
+  const onChangeDocumentTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!validateDocumentTitle(e.target.value)) {
+      return;
+    }
+    onChangeData({
+      ...data,
+      config: {
+        ...data.config,
+        document_title: e.target.value,
+      },
+    });
+  };
+
   const renderLabelHeader = (label: string, url: string) => {
     return (
       <div
@@ -48,7 +63,8 @@ const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, o
         }}>
         {label}
         <FileSearchIcon
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             setPreviewURL(url);
             openModal.setValue(true);
           }}
@@ -76,16 +92,10 @@ const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, o
               <CustomInput
                 placeholder="e.g. Room Schedule (max.50.characters) "
                 value={data.config.document_title}
-                onChange={(e) => {
-                  onChangeData({
-                    ...data,
-                    config: {
-                      ...data.config,
-                      document_title: e.target.value,
-                    },
-                  });
-                }}
+                onChange={onChangeDocumentTitle}
                 containerClass={styles.document}
+                message={messageError(data.config.document_title, MESSAGE_ERROR.DOCUMENT_TITLE, 50)}
+                messageType={messageErrorType(data.config.document_title, 50, 'error', 'normal')}
               />
             </FormGroup>
           ) : (

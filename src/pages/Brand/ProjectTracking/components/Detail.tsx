@@ -11,13 +11,11 @@ import {
   ProjectTrackingDetail,
 } from '@/types/project-tracking.type';
 
-import CustomButton from '@/components/Button';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
 import { BrandProject } from './BrandProject';
 import { DesignFirm } from './DesignFirm';
-import styles from './DesignFirm.less';
 import { RequestsAndNotifications } from './RequestsAndNotifications';
 
 const LIST_TAB = [
@@ -32,9 +30,10 @@ type Tab = 'design_firm' | 'project' | 'request' | 'notification';
 interface ProjectTrackingDetailProps {
   projectId: string;
   height: string;
+  contentHeight: string;
 }
 
-export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId, height }) => {
+export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId, height, contentHeight }) => {
   const [activeKey, setActiveKey] = useState<Tab>('design_firm');
   const [data, setData] = useState<ProjectTrackingDetail>(DEFAULT_PROJECT_TRACKING_DETAIL);
   useEffect(() => {
@@ -86,6 +85,7 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId, height }) =>
               }))}
               type="request"
               setData={setData}
+              contentHeight={contentHeight}
             />
           </CustomTabPane>
 
@@ -102,18 +102,9 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId, height }) =>
               }))}
               type="notification"
               setData={setData}
+              contentHeight={contentHeight}
             />
           </CustomTabPane>
-
-          <div className={styles.cancelButton}>
-            <CustomButton
-              size="small"
-              variant="primary"
-              properties="rounded"
-              onClick={() => history.back()}>
-              Cancel
-            </CustomButton>
-          </div>
         </div>
       </Col>
     </Row>
