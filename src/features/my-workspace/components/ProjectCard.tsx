@@ -67,7 +67,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
           </BodyText>
         </div>
         <BodyText level={6} fontFamily="Roboto" customClass={styles.location}>
-          {isBrandUser ? info.location : `Code ${info.code}`}
+          {isBrandUser ? info.projectLocation : `Code ${info.code}`}
         </BodyText>
       </>
     );
@@ -111,6 +111,8 @@ export const ProjectCard: FC<ProjectCardProps> = ({
       );
     }
 
+    const dueDay = getDesignDueDay(info.design_due);
+
     return (
       <>
         <div className={styles.middle}>
@@ -129,9 +131,10 @@ export const ProjectCard: FC<ProjectCardProps> = ({
           <div className={styles.middleKey}>
             <BodyText level={5}>{isBrandUser ? 'Notifications' : 'Design due'}:</BodyText>
           </div>
-          <div className={styles.middleValue}>
+          <div
+            className={`${styles.middleValue} ${!isBrandUser && dueDay.value < 0 ? 'late' : ''}`}>
             <BodyText level={6} fontFamily="Roboto">
-              {isBrandUser ? info.notificationCount : getDesignDueDay(info.design_due)}
+              {isBrandUser ? info.notificationCount : dueDay.text}
             </BodyText>
           </div>
           {info.newNotification ? (

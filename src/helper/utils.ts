@@ -362,5 +362,8 @@ export const getDesignDueDay = (designDue: number) => {
   if (dueDay > 1 || dueDay < -1) {
     suffix += 's';
   }
-  return dueDay === 0 ? 'Today' : `${dueDay} ${suffix}`;
+  return {
+    value: dueDay,
+    text: dueDay === 0 ? 'Today' : `${dueDay} ${suffix}`,
+  };
 };
