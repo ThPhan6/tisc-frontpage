@@ -3,6 +3,7 @@ import { message } from 'antd';
 import { request } from 'umi';
 
 import { getResponseMessage } from '@/helper/common';
+import { bufferToArrayBufferCycle } from '@/helper/utils';
 
 import {
   DataTableResponse,
@@ -131,22 +132,17 @@ export async function createPDF(
     issuing_date: string;
   },
 ) {
-  return request(`/api/pdf/project/${id}/generate`, {
+  return request(`/api/pdf/project/${id}/generate?responseType=base64`, {
     method: 'POST',
     data,
-    responseType: 'arrayBuffer',
   })
     .then((response) => {
-      return response;
+      return {
+        filename: response.filename,
+        fileBuffer: bufferToArrayBufferCycle(Buffer.from(response.data, 'base64')),
+      };
     })
     .catch((error) => {
-      const errorBodyText = String.fromCharCode.apply(null, new Uint8Array(error.data) as any);
-      let errorMessage = {
-        message: 'Generate project specify PDF failed',
-      };
-      try {
-        errorMessage = JSON.parse(errorBodyText);
-      } catch {}
-      message.error(errorMessage.message);
+      message.error(error.data.message);
     });
 }
