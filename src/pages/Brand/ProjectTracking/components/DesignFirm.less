@@ -44,31 +44,7 @@
       transform: translate(-50%, -50%);
     }
   }
-  .customHeader {
-    height: 36px;
-    padding: 0;
-    text-transform: capitalize;
-    p {
-      width: 100%;
-      font-size: 14px;
-    }
-  }
-  .marginBottomNone {
-    margin-bottom: 0;
-  }
-  .customPhoneCode {
-    ::placeholder {
-      color: @mono-color;
-    }
-  }
-  .brandProduct {
-    margin-bottom: 8px;
-    padding: 0;
-  }
-  .customTextArea {
-    color: @mono-color;
-    border-bottom-color: @mono-color-medium;
-  }
+
   .requests {
     display: flex;
     align-items: center;
@@ -182,4 +158,30 @@
   height: 48px;
   padding-right: 16px;
   box-shadow: @border-top;
+}
+
+.customHeader {
+  height: 36px;
+  padding: 0;
+  text-transform: capitalize;
+  p {
+    width: 100%;
+    font-size: 14px;
+  }
+}
+.brandProduct {
+  margin-bottom: 8px;
+  padding: 0;
+}
+.customTextArea {
+  color: @mono-color !important;
+  border-bottom-color: @mono-color-medium !important;
+}
+.customPhoneCode {
+  ::placeholder {
+    color: @mono-color;
+  }
+}
+.marginBottomNone {
+  margin-bottom: 0;
 }
