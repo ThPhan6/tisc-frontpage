@@ -113,9 +113,6 @@ export const VendorLocation: FC<VendorTabProps> = ({
   const signature = useQuery().get('signature');
   const isPublicPage = signature ? true : false;
 
-  console.log('brandLocationId', brandLocationId);
-  console.log('distributorLocationId', distributorLocationId);
-
   // get location selected
   const {
     locationOption: chosenBrand,
@@ -256,7 +253,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
 
           <div
             className={`contact-select-box ${isTiscAdmin ? 'cursor-disabled' : 'cursor-pointer'}`}
-            onClick={isTiscAdmin && !country ? undefined : onSelect}>
+            onClick={isTiscAdmin || isPublicPage ? undefined : onSelect}>
             <BodyText
               level={6}
               fontFamily="Roboto"
@@ -288,7 +285,6 @@ export const VendorLocation: FC<VendorTabProps> = ({
                 brandActiveKey === activeKey && chosenBrand.value ? true : false,
                 () => {
                   setLocationPopup('brand');
-                  setBrandActiveKey(activeKey);
                 },
               )}
               collapsible={chosenBrand.value || !isTiscAdmin ? 'header' : 'disabled'}
@@ -315,7 +311,6 @@ export const VendorLocation: FC<VendorTabProps> = ({
                 distributorActiveKey === activeKey && chosenDistributor.value ? true : false,
                 () => {
                   setLocationPopup('distributor');
-                  setDistributorActiveKey(activeKey);
                 },
               )}
               collapsible={chosenDistributor.value || !isTiscAdmin ? 'header' : 'disabled'}

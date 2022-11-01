@@ -17,8 +17,9 @@
 }
 
 .marginBottomNone:last-child {
-  :global(.ant-collapse-header-text) {
-    box-shadow: @border-top-light;
+  // :global(.ant-collapse-header-text)
+  :global(.ant-collapse-header) {
+    box-shadow: @border-top-light !important;
   }
 }
 
@@ -31,7 +32,7 @@
     justify-content: start !important;
     height: auto !important;
     padding: 0 !important;
-    box-shadow: none !important;
+    box-shadow: none;
   }
 
   :global(.ant-collapse) {
