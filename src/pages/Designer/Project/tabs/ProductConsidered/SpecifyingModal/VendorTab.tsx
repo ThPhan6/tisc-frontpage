@@ -23,7 +23,7 @@ const VendorTab: FC<VendorTabProps> = ({ productId, brandId }) => {
         }
       />
 
-      <VendorLocation brandId={brandId} productId={productId} />
+      <VendorLocation brandId={brandId} productId={productId} isSpecifying />
     </div>
   );
 };
