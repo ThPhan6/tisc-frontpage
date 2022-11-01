@@ -42,7 +42,11 @@ const ProjectTrackingDetail = () => {
           }
           customClass={styles.customTitle}
         />
-        <Detail projectId={idProject} height="calc(100vh - 208px)" />
+        <Detail
+          projectId={idProject}
+          height="calc(100vh - 208px)"
+          contentHeight="calc(100vh - 360px)"
+        />
       </PageContainer>
       <LegendModal visible={openInformationModal} setVisible={setOpenInformationModal} />
     </div>
