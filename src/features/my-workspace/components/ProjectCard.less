@@ -40,8 +40,13 @@
           height: calc(100% - 20px);
           max-height: 56px;
           margin-bottom: 4px;
-          overflow: hidden;
-          word-break: break-word;
+          p {
+            display: -webkit-box;
+            overflow: hidden;
+            word-break: break-word;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+          }
         }
         .location {
           overflow: hidden;
@@ -76,6 +81,11 @@
           width: 64px;
           margin-left: 24px;
           text-align: left;
+          &:global(.late) {
+            p {
+              color: @tertiary-color;
+            }
+          }
         }
       }
 
@@ -90,6 +100,7 @@
         .team {
           display: -webkit-inline-box;
           align-items: center;
+          padding: 2px;
           overflow: auto;
           .avatar:not(:last-child) {
             margin-right: 2px;

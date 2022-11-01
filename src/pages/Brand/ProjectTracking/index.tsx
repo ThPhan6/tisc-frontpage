@@ -348,7 +348,7 @@ const ProjectTracking = () => {
         visible={visible}
         setVisible={setVisible}
         onChange={handleSubmitAssignTeam}
-        memberAssigned={recordAssignTeam}
+        memberAssigned={recordAssignTeam?.assignedTeams}
         teams={assignTeam}
       />
     </div>

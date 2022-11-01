@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 
 import { ReactComponent as PaginationLeftIcon } from '@/assets/icons/pagination-left.svg';
@@ -13,7 +13,6 @@ import CustomButton from '@/components/Button';
 import { BodyText } from '@/components/Typography';
 
 import styles from '../index.less';
-import moment from 'moment';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.js`;
 
@@ -29,6 +28,10 @@ export const PdfPreview: React.FC<PdfPreviewProps> = ({ generatePDF, data }) => 
     setNumPages(response.numPages);
   };
 
+  useEffect(() => {
+    setPageNumber(1);
+  }, [generatePDF]);
+
   const handleDownloadPDF = async () => {
     await createPDF(data.config.project_id, {
       location_id: data.config.location_id,
@@ -42,11 +45,10 @@ export const PdfPreview: React.FC<PdfPreviewProps> = ({ generatePDF, data }) => 
       issuing_date: data.config.issuing_date,
     }).then((result) => {
       if (result) {
-        const linkSoure = new Blob([result], { type: 'application/pdf' });
+        const linkSoure = new Blob([result.fileBuffer], { type: 'application/pdf' });
         const downloadLink = document.createElement('a');
-        const fileName = `${moment().format('YYYY-MM-DD')}.pdf`;
         downloadLink.href = window.URL.createObjectURL(linkSoure);
-        downloadLink.download = fileName;
+        downloadLink.download = result.filename;
         downloadLink.click();
       }
     });

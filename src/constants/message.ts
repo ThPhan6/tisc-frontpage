@@ -18,6 +18,7 @@ export const MESSAGE_ERROR = {
   EMAIL_REQUIRED: 'Email is required',
   EMAIL_ALREADY_USED: 'Email already taken',
   NO_TEAMPROFILE: 'Add member to invite',
+  DOCUMENT_TITLE: 'You are allowed to enter 50 characters only',
 };
 
 export const MESSAGE_NOTIFICATION = {

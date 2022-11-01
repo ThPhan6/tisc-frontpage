@@ -362,5 +362,24 @@ export const getDesignDueDay = (designDue: number) => {
   if (dueDay > 1 || dueDay < -1) {
     suffix += 's';
   }
-  return dueDay === 0 ? 'Today' : `${dueDay} ${suffix}`;
+  return {
+    value: dueDay,
+    text: dueDay === 0 ? 'Today' : `${dueDay} ${suffix}`,
+  };
+};
+
+export const validateDocumentTitle = (title: string) => {
+  if (title.length <= 50) {
+    return true;
+  }
+  return false;
+};
+
+export const bufferToArrayBufferCycle = (buffer: Buffer) => {
+  const result = new ArrayBuffer(buffer.length);
+  const view = new Uint8Array(result);
+  for (let i = 0; i < buffer.length; ++i) {
+    view[i] = buffer[i];
+  }
+  return result;
 };
