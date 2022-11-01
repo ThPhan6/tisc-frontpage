@@ -113,11 +113,11 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
             text_2={detailItem.product.description}
             text_3={
               <a
-                href={`${window.location.host}/brand/product/${detailItem.product.id}`}
+                href={`${window.location.origin}/brand/product/${detailItem.product.id}`}
                 target="_blank"
                 rel="noreferrer"
                 style={{ color: '#000' }}>
-                {window.location.host}/brand/product/{detailItem.product.id}
+                {window.location.origin}/brand/product/{detailItem.product.id}
               </a>
             }
             customClass={styles.brandProduct}

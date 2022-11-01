@@ -1,3 +1,5 @@
+import { BrandCardTeam } from '@/features/user-group/types';
+
 export interface ProjecTrackingList {
   id: string;
   created_at: string;
@@ -8,12 +10,7 @@ export interface ProjecTrackingList {
   projectStatus: string;
   priority: number;
   priorityName: string;
-  assignedTeams: {
-    id: string;
-    firstname: string;
-    lastname: string;
-    avatar: string;
-  }[];
+  assignedTeams: BrandCardTeam[];
   requestCount: number;
   newRequest: boolean;
   notificationCount: number;
