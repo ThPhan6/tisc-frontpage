@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 
+import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { selectProductSpecification } from '../product/services';
@@ -84,6 +85,7 @@ interface VendorTabProps {
   brandId: string;
   userSelection?: boolean;
   borderBottomNone?: boolean;
+  isSpecifying?: boolean;
 }
 
 export const VendorLocation: FC<VendorTabProps> = ({
@@ -91,6 +93,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
   brandId,
   userSelection,
   borderBottomNone,
+  isSpecifying,
 }) => {
   // for brand
   const [brandActiveKey, setBrandActiveKey] = useState<string | string[]>();
@@ -109,6 +112,9 @@ export const VendorLocation: FC<VendorTabProps> = ({
 
   const signature = useQuery().get('signature');
   const isPublicPage = signature ? true : false;
+
+  console.log('brandLocationId', brandLocationId);
+  console.log('distributorLocationId', distributorLocationId);
 
   // get location selected
   const {
@@ -224,11 +230,25 @@ export const VendorLocation: FC<VendorTabProps> = ({
     const getCountryName = () => {
       if (country) return country;
 
-      return isPublicPage ? '' : 'select location';
+      if (isPublicPage) return null;
+
+      if (isSpecifying) return 'select location';
+
+      return 'select';
+    };
+
+    const renderRightIcon = () => {
+      if (isPublicPage) return null;
+
+      if (isTiscAdmin) {
+        return <DropDownIcon className="mono-color-medium" style={{ marginLeft: '12px' }} />;
+      }
+
+      return <SingleRightIcon className="mono-color" style={{ marginLeft: '12px' }} />;
     };
 
     return (
-      <div className={styles.addressPanel}>
+      <div className={`${styles.addressPanel} ${isSpecifying ? styles.customHeight : ''}`}>
         <div className={`contact-item-none ${country ? 'contact-item-selected' : ''}`}>
           <BodyText level={4} customClass={`${activeCollapse ? 'active-title' : 'inActive-title'}`}>
             {title}
@@ -236,19 +256,14 @@ export const VendorLocation: FC<VendorTabProps> = ({
 
           <div
             className={`contact-select-box ${isTiscAdmin ? 'cursor-disabled' : 'cursor-pointer'}`}
-            onClick={isTiscAdmin || !country ? undefined : onSelect}>
+            onClick={isTiscAdmin && !country ? undefined : onSelect}>
             <BodyText
               level={6}
               fontFamily="Roboto"
               color={country ? 'mono-color' : 'mono-color-medium'}>
               {getCountryName()}
             </BodyText>
-            {isPublicPage ? null : (
-              <SingleRightIcon
-                className={country ? 'mono-color' : 'mono-color-medium'}
-                style={{ marginLeft: '12px' }}
-              />
-            )}
+            {renderRightIcon()}
           </div>
         </div>
       </div>
@@ -264,7 +279,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
             brandActiveKey === activeKey && chosenBrand.value
               ? styles.collapsed
               : styles.notCollapsed
-          }`}>
+          } ${isSpecifying ? '' : styles.marginBottomNone}`}>
           <div className={styles.address}>
             <CustomCollapse
               header={renderCollapseHeader(
@@ -291,7 +306,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
             distributorActiveKey === activeKey && chosenDistributor.value
               ? styles.collapsed
               : styles.notCollapsed
-          } `}>
+          } ${isSpecifying ? '' : styles.marginBottomNone}`}>
           <div className={styles.address}>
             <CustomCollapse
               header={renderCollapseHeader(

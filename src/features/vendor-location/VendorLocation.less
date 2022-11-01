@@ -12,6 +12,16 @@
   box-shadow: none;
 }
 
+.marginBottomNone {
+  margin-bottom: 0 !important;
+}
+
+.marginBottomNone:last-child {
+  :global(.ant-collapse-header-text) {
+    box-shadow: @border-top-light;
+  }
+}
+
 .address {
   display: flex;
   justify-content: space-between;
@@ -37,7 +47,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 36px !important;
+    height: 40px;
     cursor: default;
   }
   :global(.contact-select-box) {
@@ -55,6 +65,12 @@
       flex: 1;
       font-weight: 300;
     }
+  }
+}
+
+.customHeight {
+  :global(.contact-item-none) {
+    height: 36px !important;
   }
 }
 
