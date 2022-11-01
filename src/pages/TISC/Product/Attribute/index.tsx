@@ -150,6 +150,7 @@ const AttributeList: React.FC = () => {
         extraParams={{
           type: attributeLocation.TYPE,
         }}
+        sortDirections="descend"
         multiSort={{
           name: 'group_order',
           attribute_name: 'attribute_order',

@@ -5,6 +5,7 @@ import type { TablePaginationConfig } from 'antd/lib/table';
 import type { ExpandableConfig, FilterValue, SorterResult } from 'antd/lib/table/interface';
 
 import { useCustomTable } from './hooks';
+import { getValueByCondition } from '@/helper/utils';
 import { forEach, isArray, isEmpty } from 'lodash';
 
 import type {
@@ -112,6 +113,7 @@ export interface CustomTableProps {
   autoLoad?: boolean;
   onFilterLoad?: boolean;
   onRow?: GetComponentProps<any>;
+  sortDirections?: 'descend' | 'ascend';
 }
 
 const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
@@ -128,6 +130,7 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     rowKey = 'id',
     autoLoad = true,
     onFilterLoad = true,
+    sortDirections = 'ascend',
   } = props;
 
   const DEFAULT_PAGE_NUMBER = 1;
@@ -145,6 +148,11 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const customExpandable = props.expandableConfig
     ? GetExpandableTableConfig(props.expandableConfig)
     : undefined;
+
+  const sortGuidance = getValueByCondition([
+    [sortDirections === 'ascend', ['ascend', 'descend', 'ascend']],
+    [sortDirections === 'descend', ['descend', 'ascend', 'descend']],
+  ]);
 
   const formatPaginationParams = (params: PaginationParams) => {
     const { sorter, filter } = params;
@@ -239,11 +247,14 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
       fetchData({ pagination, sorter: currentSorter });
     },
     reloadWithFilter() {
-      fetchData({ pagination: {
-        ...pagination,
-        current: DEFAULT_PAGE_NUMBER,
-        pageSize: DEFAULT_PAGESIZE
-      }, sorter: currentSorter });
+      fetchData({
+        pagination: {
+          ...pagination,
+          current: DEFAULT_PAGE_NUMBER,
+          pageSize: DEFAULT_PAGESIZE,
+        },
+        sorter: currentSorter,
+      });
     },
   }));
 
@@ -269,7 +280,8 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
         pagination={pagination}
         onChange={handleTableChange}
         showSorterTooltip={false}
-        sortDirections={['ascend', 'descend', 'ascend']}
+        // sortDirections={['ascend', 'descend', 'ascend']}
+        sortDirections={sortGuidance}
         tableLayout="auto"
         scroll={{
           x: 'max-content',

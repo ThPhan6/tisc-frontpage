@@ -168,6 +168,7 @@ const BasisPresetList: React.FC = () => {
           name: 'group_order',
           preset_name: 'preset_order',
         }}
+        sortDirections="descend"
         expandable={GetExpandableTableConfig({
           columns: SubColumns,
           childrenColumnName: 'subs',

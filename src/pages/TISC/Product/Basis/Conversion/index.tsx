@@ -132,6 +132,7 @@ const BasisConversionList: React.FC = () => {
         columns={setDefaultWidthForEachColumn(MainColumns, 3)}
         ref={tableRef}
         fetchDataFunc={getProductBasisConversionPagination}
+        sortDirections="descend"
         multiSort={{
           name: 'conversion_group_order',
           conversion_between: 'conversion_between_order',

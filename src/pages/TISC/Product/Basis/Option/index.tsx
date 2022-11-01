@@ -183,6 +183,7 @@ const BasisOptionList: React.FC = () => {
           name: 'group_order',
           option_name: 'option_order',
         }}
+        sortDirections="descend"
         expandable={GetExpandableTableConfig({
           columns: SubColumns,
           childrenColumnName: 'subs',

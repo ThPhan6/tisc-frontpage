@@ -150,6 +150,7 @@ const CategoryList: React.FC = () => {
         columns={setDefaultWidthForEachColumn(MainColumns, 2)}
         ref={tableRef}
         fetchDataFunc={getProductCategoryPagination}
+        sortDirections="descend"
         multiSort={{
           name: 'main_category_order',
           subcategory: 'sub_category_order',
