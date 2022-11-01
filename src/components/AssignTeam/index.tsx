@@ -15,7 +15,7 @@ interface AssignTeamProps {
   setVisible: (visible: boolean) => void;
   onChange: (selected: any) => void;
   teams: any[];
-  memberAssigned: any;
+  memberAssigned?: any[];
 }
 
 const AssignTeam: FC<AssignTeamProps> = ({
@@ -27,15 +27,12 @@ const AssignTeam: FC<AssignTeamProps> = ({
 }) => {
   const [selected, setSelected] = useState<CheckboxValue[]>([]);
 
-  const memberAssignedTeam: [] =
-    memberAssigned?.assign_team ?? memberAssigned?.assign_teams ?? memberAssigned?.assignedTeams;
-
   useEffect(() => {
     setSelected(
-      memberAssignedTeam?.map((member: MemberAssignedForm) => ({
+      memberAssigned?.map((member: MemberAssignedForm) => ({
         label: '',
         value: member.id,
-      })),
+      })) as CheckboxValue[],
     );
   }, [memberAssigned]);
 
@@ -57,8 +54,8 @@ const AssignTeam: FC<AssignTeamProps> = ({
               value: member.id,
               label: (
                 <MemberHeaderLabel
-                  firstName={member.first_name || member.firstname || ''}
-                  lastName={member.last_name || member.lastname || ''}
+                  firstName={member.first_name || ''}
+                  lastName={member.last_name || ''}
                   avatar={member.avatar}
                   key={member.id ?? index}
                 />

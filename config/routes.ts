@@ -465,7 +465,7 @@ export default [
         hideInMenu: true,
       },
       {
-        path: PATH.brandViewDetailDashboard,
+        path: PATH.brandProjectTrackingDetail,
         component: '../features/my-workspace',
         hideInMenu: true,
       },
