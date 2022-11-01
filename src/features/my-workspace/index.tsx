@@ -6,21 +6,19 @@ import { PageContainer } from '@ant-design/pro-layout';
 
 import { getProjectPagination, getProjectSummary } from '../project/services';
 import { getBrandCards } from '../user-group/services';
-import { useGetParamId, useGetUserRoleFromPathname } from '@/helper/hook';
+import { useGetUserRoleFromPathname } from '@/helper/hook';
 import { getProjectTrackingPagination } from '@/services/project-tracking.api';
 
 import { ProjectListProps, ProjectSummaryData } from '../project/types';
 import { BrandCard } from '../user-group/types';
 import { ProjecTrackingList } from '@/types/project-tracking.type';
 
-import { Detail } from '../../pages/Brand/ProjectTracking/components/Detail';
 import { ProjectTrackingHeader } from '../../pages/Brand/ProjectTracking/components/ProjectTrackingHeader';
 import { ProjectCard } from './components/ProjectCard';
 import { setLoadingAction } from '@/components/LoadingPage/slices';
 import ProjectListHeader from '@/pages/Designer/Project/components/ProjectListHeader';
 
 const MyWorkspace = () => {
-  const projectId = useGetParamId();
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
 
   const [summaryData, setSummaryData] = useState<ProjectSummaryData>();
@@ -116,20 +114,14 @@ const MyWorkspace = () => {
   };
 
   return (
-    <div>
-      <PageContainer pageHeaderRender={renderHeader}>
-        {projectId ? (
-          <Detail projectId={projectId} height="calc(100vh - 152px)" />
-        ) : (
-          <ProjectCard
-            data={listCard}
-            isTiscUser={isTiscUser}
-            isBrandUser={isBrandUser}
-            isDesignerUser={isDesignerUser}
-          />
-        )}
-      </PageContainer>
-    </div>
+    <PageContainer pageHeaderRender={renderHeader}>
+      <ProjectCard
+        data={listCard}
+        isTiscUser={isTiscUser}
+        isBrandUser={isBrandUser}
+        isDesignerUser={isDesignerUser}
+      />
+    </PageContainer>
   );
 };
 export default MyWorkspace;
