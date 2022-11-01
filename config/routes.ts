@@ -458,18 +458,7 @@ export default [
     name: 'workspace',
     icon: 'workspace-icon.svg',
     access: 'brand_workspace',
-    routes: [
-      {
-        path: PATH.brandHomePage,
-        component: '../features/my-workspace',
-        hideInMenu: true,
-      },
-      {
-        path: PATH.brandProjectTrackingDetail,
-        component: '../features/my-workspace',
-        hideInMenu: true,
-      },
-    ],
+    component: '../features/my-workspace',
   },
   {
     path: PATH.brandProduct,
@@ -478,12 +467,12 @@ export default [
     access: 'brand_product',
     routes: [
       {
-        path: '/brand/product',
+        path: PATH.brandProduct,
         component: './Brand/Products',
         hideInMenu: true,
       },
       {
-        path: '/brand/product/:id',
+        path: PATH.updateProductBrand,
         component: './Brand/Products/ProductBrandViewPage',
         hideInMenu: true,
       },
@@ -511,7 +500,6 @@ export default [
     path: PATH.brandProjectTracking,
     name: 'project_tracking',
     icon: 'project-tracking-icon.svg',
-
     access: 'brand_project_tracking',
     routes: [
       {
