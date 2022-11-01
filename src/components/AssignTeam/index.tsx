@@ -54,8 +54,8 @@ const AssignTeam: FC<AssignTeamProps> = ({
               value: member.id,
               label: (
                 <MemberHeaderLabel
-                  firstName={member.first_name || ''}
-                  lastName={member.last_name || ''}
+                  firstName={member.firstname || ''}
+                  lastName={member.lastname || ''}
                   avatar={member.avatar}
                   key={member.id ?? index}
                 />

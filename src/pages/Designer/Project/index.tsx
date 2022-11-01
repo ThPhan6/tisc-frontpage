@@ -273,15 +273,7 @@ const ProjectList: React.FC = () => {
         setVisible={setVisible}
         onChange={handleSubmitAssignTeam}
         memberAssigned={recordAssignTeam?.assign_teams}
-        teams={assignTeam.map((team) => ({
-          ...team,
-          users: team.users.map((user) => ({
-            ...user,
-            avatar: user.logo,
-            first_name: user.firstname,
-            last_name: user.lastname,
-          })),
-        }))}
+        teams={assignTeam}
       />
     </div>
   );

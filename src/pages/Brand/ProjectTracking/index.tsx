@@ -349,15 +349,7 @@ const ProjectTracking = () => {
         setVisible={setVisible}
         onChange={handleSubmitAssignTeam}
         memberAssigned={recordAssignTeam?.assignedTeams}
-        teams={assignTeam.map((team) => ({
-          ...team,
-          users: team.users.map((user) => ({
-            ...user,
-            avatar: user.logo,
-            first_name: user.firstname,
-            last_name: user.lastname,
-          })),
-        }))}
+        teams={assignTeam}
       />
     </div>
   );
