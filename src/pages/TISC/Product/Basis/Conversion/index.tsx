@@ -51,6 +51,7 @@ const BasisConversionList: React.FC = () => {
       sorter: {
         multiple: 2,
       },
+      defaultSortOrder: 'ascend',
     },
     {
       title: '1st Formula',
@@ -132,7 +133,7 @@ const BasisConversionList: React.FC = () => {
         columns={setDefaultWidthForEachColumn(MainColumns, 3)}
         ref={tableRef}
         fetchDataFunc={getProductBasisConversionPagination}
-        sortDirections="descend"
+        // sortDirections="descend"
         multiSort={{
           name: 'conversion_group_order',
           conversion_between: 'conversion_between_order',

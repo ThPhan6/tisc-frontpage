@@ -86,6 +86,7 @@ const BasisPresetList: React.FC = () => {
       sorter: {
         multiple: 2,
       },
+      defaultSortOrder: 'ascend',
     },
     ...getSameColumns(false),
     {
@@ -168,7 +169,6 @@ const BasisPresetList: React.FC = () => {
           name: 'group_order',
           preset_name: 'preset_order',
         }}
-        sortDirections="descend"
         expandable={GetExpandableTableConfig({
           columns: SubColumns,
           childrenColumnName: 'subs',

@@ -54,6 +54,7 @@ const CategoryList: React.FC = () => {
       sorter: {
         multiple: 2,
       },
+      defaultSortOrder: 'ascend',
     },
     {
       title: 'Category',
@@ -61,6 +62,7 @@ const CategoryList: React.FC = () => {
       sorter: {
         multiple: 3,
       },
+      defaultSortOrder: 'ascend',
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
@@ -150,7 +152,6 @@ const CategoryList: React.FC = () => {
         columns={setDefaultWidthForEachColumn(MainColumns, 2)}
         ref={tableRef}
         fetchDataFunc={getProductCategoryPagination}
-        sortDirections="descend"
         multiSort={{
           name: 'main_category_order',
           subcategory: 'sub_category_order',

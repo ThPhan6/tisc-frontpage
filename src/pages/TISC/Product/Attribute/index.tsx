@@ -52,6 +52,7 @@ const AttributeList: React.FC = () => {
       sorter: {
         multiple: 2,
       },
+      defaultSortOrder: 'ascend',
     },
     {
       title: 'Content Type',
@@ -59,6 +60,7 @@ const AttributeList: React.FC = () => {
       sorter: {
         multiple: 3,
       },
+      defaultSortOrder: 'ascend',
     },
     {
       title: 'Description',
@@ -150,7 +152,6 @@ const AttributeList: React.FC = () => {
         extraParams={{
           type: attributeLocation.TYPE,
         }}
-        sortDirections="descend"
         multiSort={{
           name: 'group_order',
           attribute_name: 'attribute_order',
