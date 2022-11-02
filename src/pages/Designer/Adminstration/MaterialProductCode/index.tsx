@@ -50,6 +50,7 @@ const MaterialProductCode = () => {
         title: 'Code',
         sorter: true,
         dataIndex: 'code',
+        defaultSortOrder: 'ascend',
         noBoxShadow: noBoxShadow,
       },
       { title: 'Description', dataIndex: 'description', noBoxShadow: noBoxShadow },
@@ -78,6 +79,7 @@ const MaterialProductCode = () => {
       title: 'Sub-List',
       dataIndex: 'sub_list',
       sorter: true,
+      defaultSortOrder: 'ascend',
     },
     ...getSameColumns(false),
 

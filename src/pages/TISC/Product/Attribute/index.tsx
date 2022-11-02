@@ -52,6 +52,7 @@ const AttributeList: React.FC = () => {
       sorter: {
         multiple: 2,
       },
+      defaultSortOrder: 'ascend',
     },
     {
       title: 'Content Type',
@@ -59,6 +60,7 @@ const AttributeList: React.FC = () => {
       sorter: {
         multiple: 2,
       },
+      defaultSortOrder: 'ascend',
     },
     {
       title: 'Description',

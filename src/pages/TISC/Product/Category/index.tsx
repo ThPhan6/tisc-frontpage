@@ -54,6 +54,7 @@ const CategoryList: React.FC = () => {
       sorter: {
         multiple: 2,
       },
+      defaultSortOrder: 'ascend',
     },
     {
       title: 'Category',
@@ -61,6 +62,7 @@ const CategoryList: React.FC = () => {
       sorter: {
         multiple: 3,
       },
+      defaultSortOrder: 'ascend',
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
