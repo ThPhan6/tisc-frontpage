@@ -154,21 +154,14 @@ export const VendorLocation: FC<VendorTabProps> = ({
     }
   }, []);
 
-  const getActiveKey = (key: string | string[]) => {
-    if (key === activeKey) {
-      return '';
-    }
-    return typeof key !== 'string' ? key[0] : key;
-  };
-
   const handleCollapse = (field: 'brand' | 'distributor', key: string | string[]) => {
-    if (field === 'brand') {
-      setBrandActiveKey(getActiveKey(key));
+    const collapseKey = typeof key === 'string' ? key : key[0];
 
+    if (field === 'brand') {
+      setBrandActiveKey(collapseKey);
       setDistributorActiveKey([]);
     } else if (field === 'distributor') {
-      setDistributorActiveKey(getActiveKey(key));
-
+      setDistributorActiveKey(collapseKey);
       setBrandActiveKey([]);
     }
   };
@@ -224,6 +217,16 @@ export const VendorLocation: FC<VendorTabProps> = ({
     activeCollapse: boolean,
     onSelect: () => void,
   ) => {
+    const handleShowAddress = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      if (brandActiveKey === activeKey || distributorActiveKey === activeKey) {
+        e.stopPropagation();
+      }
+
+      if (onSelect) {
+        onSelect();
+      }
+    };
+
     const getCountryName = () => {
       if (country) return country;
 
@@ -253,7 +256,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
 
           <div
             className={`contact-select-box ${isTiscAdmin ? 'cursor-disabled' : 'cursor-pointer'}`}
-            onClick={isTiscAdmin || isPublicPage ? undefined : onSelect}>
+            onClick={isTiscAdmin || isPublicPage ? undefined : (e) => handleShowAddress(e)}>
             <BodyText
               level={6}
               fontFamily="Roboto"
@@ -285,9 +288,9 @@ export const VendorLocation: FC<VendorTabProps> = ({
                 brandActiveKey === activeKey && chosenBrand.value ? true : false,
                 () => {
                   setLocationPopup('brand');
+                  handleCollapse('brand', activeKey);
                 },
               )}
-              collapsible={chosenBrand.value || !isTiscAdmin ? 'header' : 'disabled'}
               onChange={(key) => handleCollapse('brand', key)}
               activeKey={brandActiveKey}
               customHeaderClass={styles.collapseHeader}>
@@ -311,9 +314,9 @@ export const VendorLocation: FC<VendorTabProps> = ({
                 distributorActiveKey === activeKey && chosenDistributor.value ? true : false,
                 () => {
                   setLocationPopup('distributor');
+                  handleCollapse('distributor', activeKey);
                 },
               )}
-              collapsible={chosenDistributor.value || !isTiscAdmin ? 'header' : 'disabled'}
               onChange={(key) => handleCollapse('distributor', key)}
               activeKey={distributorActiveKey}
               customHeaderClass={styles.collapseHeader}>
