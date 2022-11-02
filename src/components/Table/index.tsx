@@ -2,10 +2,15 @@ import { ReactNode, forwardRef, useEffect, useImperativeHandle, useState } from 
 
 import { Table } from 'antd';
 import type { TablePaginationConfig } from 'antd/lib/table';
-import type { ExpandableConfig, FilterValue, SorterResult } from 'antd/lib/table/interface';
+import type {
+  ExpandableConfig,
+  FilterValue,
+  SortOrder,
+  SorterResult,
+} from 'antd/lib/table/interface';
 
 import { useCustomTable } from './hooks';
-import { forEach, isArray, isEmpty } from 'lodash';
+import { isArray, isEmpty, isNumber, reverse, uniqBy } from 'lodash';
 
 import type {
   DataTableResponse,
@@ -114,6 +119,9 @@ export interface CustomTableProps {
   onRow?: GetComponentProps<any>;
 }
 
+const converseOrder = (order: SortOrder | undefined) =>
+  order ? (order === 'descend' ? 'DESC' : 'ASC') : undefined;
+
 const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const {
     expandable,
@@ -164,35 +172,31 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     if (filter) {
       paginationParams.filter = filter;
     }
-    if (sorter && !isEmpty(sorter)) {
-      // if enable sorter
-      let sortName: any = '';
-      let sortOrder: any = '';
-      ///
-      if (!isArray(sorter)) {
-        sortName = sorter.field;
-        sortOrder = sorter.order === 'descend' ? 'DESC' : 'ASC';
-      }
-      ///
-      if (multiSort) {
-        // if enable multiple sorter
-        if (!isArray(sorter)) {
-          paginationParams[multiSort[sortName]] = sortOrder;
-        } else {
-          forEach(sorter, (item: any) => {
-            const multiSortName = multiSort[item['field']];
-            if (multiSortName) {
-              paginationParams[multiSortName] = item['order'] === 'descend' ? 'DESC' : 'ASC';
-            }
-          });
-        }
-        return paginationParams;
-      }
-      /// normal case
-      paginationParams.sort = sortName;
-      paginationParams.order = sortOrder;
+
+    if (isEmpty(sorter)) {
       return paginationParams;
     }
+
+    // Multiple sort
+    if (isArray(sorter)) {
+      const reverseSorter = uniqBy(reverse(sorter), 'column.sorter.multiple');
+
+      reverseSorter.forEach((sort) => {
+        if (sort?.field && multiSort) {
+          paginationParams[multiSort[sort.field.toString()]] = converseOrder(sort?.order);
+        }
+      });
+    } else {
+      // Multiple sort for the first one but it is an object, not array
+      if (isNumber(sorter?.column?.sorter?.multiple) && sorter?.field && multiSort) {
+        paginationParams[multiSort[sorter.field.toString()]] = converseOrder(sorter?.order);
+      } else {
+        // Normal sort
+        paginationParams.sort = sorter?.field?.toString();
+        paginationParams.order = converseOrder(sorter?.order);
+      }
+    }
+
     return paginationParams;
   };
 
