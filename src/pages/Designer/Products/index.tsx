@@ -181,7 +181,7 @@ const BrandProductListPage: React.FC = () => {
         </>
       }
       BottomContent={
-        brandSummary && (
+        brandSummary ? (
           <>
             <div className="flex-center">
               <img
@@ -197,7 +197,7 @@ const BrandProductListPage: React.FC = () => {
               {renderInfoItem('Products', brandSummary.product_count, true)}
             </div>
           </>
-        )
+        ) : undefined
       }
     />
   );
