@@ -86,6 +86,7 @@ const BasisPresetList: React.FC = () => {
       sorter: {
         multiple: 2,
       },
+      defaultSortOrder: 'ascend',
     },
     ...getSameColumns(false),
     {

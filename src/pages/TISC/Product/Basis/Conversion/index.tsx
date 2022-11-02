@@ -51,6 +51,7 @@ const BasisConversionList: React.FC = () => {
       sorter: {
         multiple: 2,
       },
+      defaultSortOrder: 'ascend',
     },
     {
       title: '1st Formula',
