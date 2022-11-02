@@ -57,7 +57,7 @@ const AttributeList: React.FC = () => {
       title: 'Content Type',
       dataIndex: 'content_type',
       sorter: {
-        multiple: 3,
+        multiple: 2,
       },
     },
     {
