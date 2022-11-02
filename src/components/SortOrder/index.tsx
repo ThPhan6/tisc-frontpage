@@ -37,7 +37,7 @@ const SortOrderPanel: FC<SortOrderProps> = ({
   topValueTitle = 'select',
   customClass = '',
 }) => {
-  const { resetProductListSorter } = useProductListFilterAndSorter();
+  const { resetProductListSorter } = useProductListFilterAndSorter({ noFetchData: true });
   const resetSorter = () => {
     if (onDelete) {
       onDelete();
