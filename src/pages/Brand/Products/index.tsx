@@ -39,10 +39,10 @@ const BrandProductListPage: React.FC = () => {
 
   useEffect(() => {
     if (userBrand?.id) {
-      /// show product list default by collection
+      /// show product list default by categories
       const params = {
         brand_id: userBrand.id,
-        collection_id: 'all',
+        category_id: 'all',
       } as ProductGetListParameter;
 
       if (filter) {
