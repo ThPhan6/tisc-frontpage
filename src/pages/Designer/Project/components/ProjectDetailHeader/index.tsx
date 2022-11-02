@@ -1,9 +1,12 @@
 import React from 'react';
 
 import { ProjectTabKeys } from '../../constants/tab';
-import { history, useAccess } from 'umi';
+import { PATH } from '@/constants/path';
+import { useAccess } from 'umi';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
+
+import { pushTo } from '@/helper/history';
 
 import { TabItem } from '@/components/Tabs/types';
 import { ProjectDetailProps } from '@/features/project/types';
@@ -93,7 +96,7 @@ const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({
           <EmptyProductDataTitle />
         )}
 
-        <CloseIcon onClick={history.goBack} />
+        <CloseIcon onClick={() => pushTo(PATH.designerProject)} />
       </div>
       <CustomTabs
         listTab={listTab}

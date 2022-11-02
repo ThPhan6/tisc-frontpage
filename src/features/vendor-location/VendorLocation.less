@@ -12,6 +12,17 @@
   box-shadow: none;
 }
 
+.marginBottomNone {
+  margin-bottom: 0 !important;
+}
+
+.marginBottomNone:last-child {
+  // :global(.ant-collapse-header-text)
+  :global(.ant-collapse-header) {
+    box-shadow: @border-top-light !important;
+  }
+}
+
 .address {
   display: flex;
   justify-content: space-between;
@@ -21,7 +32,7 @@
     justify-content: start !important;
     height: auto !important;
     padding: 0 !important;
-    box-shadow: none !important;
+    box-shadow: none;
   }
 
   :global(.ant-collapse) {
@@ -37,7 +48,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 36px !important;
+    height: 40px;
     cursor: default;
   }
   :global(.contact-select-box) {
@@ -55,6 +66,12 @@
       flex: 1;
       font-weight: 300;
     }
+  }
+}
+
+.customHeight {
+  :global(.contact-item-none) {
+    height: 36px !important;
   }
 }
 

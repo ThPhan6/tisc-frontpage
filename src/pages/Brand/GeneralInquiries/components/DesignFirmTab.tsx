@@ -19,7 +19,7 @@ export const DesignFirmTab: FC<{ data: GeneralInquiryDesignFirm }> = ({ data }) 
     state_name,
   } = data;
   return (
-    <>
+    <div style={{ height: 'calc(100vh - 312px)' }}>
       <TextForm boxShadow label="Name" formClass={styles.nameDesignFirm}>
         {name}
       </TextForm>
@@ -38,6 +38,6 @@ export const DesignFirmTab: FC<{ data: GeneralInquiryDesignFirm }> = ({ data }) 
       <TextForm boxShadow label="General Email">
         {general_email}
       </TextForm>
-    </>
+    </div>
   );
 };
