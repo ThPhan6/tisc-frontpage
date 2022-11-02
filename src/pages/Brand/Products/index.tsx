@@ -1,11 +1,9 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { PageContainer } from '@ant-design/pro-layout';
 
 import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
 
-import { setProductList } from '@/features/product/reducers';
 import type { ProductGetListParameter } from '@/features/product/types';
 import { useAppSelector } from '@/reducers';
 import { GeneralData } from '@/types';
@@ -27,8 +25,6 @@ import {
 const BrandProductListPage: React.FC = () => {
   useSyncQueryToState();
 
-  const dispatch = useDispatch();
-
   const filter = useAppSelector((state) => state.product.list.filter);
   const summary = useAppSelector((state) => state.product.summary);
   const userBrand = useAppSelector((state) => state.user.user?.brand);
@@ -42,19 +38,22 @@ const BrandProductListPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!filter) {
-      dispatch(setProductList({ data: [] }));
-    }
-    if (userBrand?.id && filter) {
+    if (userBrand?.id) {
+      /// show product list default by collection
       const params = {
         brand_id: userBrand.id,
+        collection_id: 'all',
       } as ProductGetListParameter;
-      if (filter?.name === 'category_id') {
-        params.category_id = filter.value;
+
+      if (filter) {
+        if (filter.name === 'category_id') {
+          params.category_id = filter.value;
+        }
+        if (filter.name === 'collection_id') {
+          params.collection_id = filter.value;
+        }
       }
-      if (filter?.name === 'collection_id') {
-        params.collection_id = filter.value;
-      }
+
       getProductListByBrandId(params);
     }
   }, [filter]);

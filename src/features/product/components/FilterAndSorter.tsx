@@ -275,6 +275,7 @@ export const useProductListFilterAndSorter = (props?: { noFetchData?: boolean })
       {
         page: 1,
         pageSize: 99999,
+        haveProduct: true,
       },
       (data) => {
         setCategories(formatCategoriesToDropDownData(data.data, 1));
@@ -284,6 +285,7 @@ export const useProductListFilterAndSorter = (props?: { noFetchData?: boolean })
       {
         page: 1,
         pageSize: 99999,
+        haveProduct: true,
       },
       (data) => {
         setBrands(formatBrandsToDropDownData(data.data));
