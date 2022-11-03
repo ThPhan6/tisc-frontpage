@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 
+import { QUERY_KEY } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
 
 import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
+import { updateUrlParams } from '@/helper/utils';
 
+import { setProductList } from '@/features/product/reducers';
 import type { ProductGetListParameter } from '@/features/product/types';
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
 import { GeneralData } from '@/types';
 
 import {
@@ -38,20 +41,38 @@ const BrandProductListPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (userBrand?.id) {
+    /// make sure have filter to call api
+    if (!filter) {
+      updateUrlParams({
+        set: [
+          { key: QUERY_KEY.cate_id, value: 'all' },
+          { key: QUERY_KEY.cate_name, value: 'VIEW ALL' },
+        ],
+        removeAll: true,
+      });
+      store.dispatch(
+        setProductList({
+          filter: {
+            name: 'category_id',
+            title: 'VIEW ALL',
+            value: 'all',
+          },
+        }),
+      );
+    }
+
+    if (userBrand?.id && filter) {
       /// show product list default by categories
-      const params = {
+      const params: ProductGetListParameter = {
         brand_id: userBrand.id,
         category_id: 'all',
-      } as ProductGetListParameter;
+      };
 
-      if (filter) {
-        if (filter.name === 'category_id') {
-          params.category_id = filter.value;
-        }
-        if (filter.name === 'collection_id') {
-          params.collection_id = filter.value;
-        }
+      if (filter.name === 'category_id') {
+        params.category_id = filter.value;
+      }
+      if (filter.name === 'collection_id') {
+        params.collection_id = filter.value;
       }
 
       getProductListByBrandId(params);
@@ -60,7 +81,13 @@ const BrandProductListPage: React.FC = () => {
 
   const renderFilterDropdown = (value: 'category_id' | 'collection_id') => {
     if (filter?.name === value) {
-      return <FilterItem title={filter.title} onDelete={resetProductFilter} />;
+      return (
+        <FilterItem
+          title={filter.title}
+          disabledDelete={filter.name === 'category_id' && filter.value === 'all'}
+          onDelete={resetProductFilter}
+        />
+      );
     }
     return userBrand ? 'view' : <span style={{ opacity: 0 }}>.</span>;
   };
