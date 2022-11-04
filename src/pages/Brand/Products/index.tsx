@@ -4,7 +4,6 @@ import { PageContainer } from '@ant-design/pro-layout';
 
 import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
 
-import type { ProductGetListParameter } from '@/features/product/types';
 import { useAppSelector } from '@/reducers';
 import { GeneralData } from '@/types';
 
@@ -39,22 +38,11 @@ const BrandProductListPage: React.FC = () => {
 
   useEffect(() => {
     if (userBrand?.id) {
-      /// show product list default by categories
-      const params = {
+      getProductListByBrandId({
         brand_id: userBrand.id,
-        category_id: 'all',
-      } as ProductGetListParameter;
-
-      if (filter) {
-        if (filter.name === 'category_id') {
-          params.category_id = filter.value;
-        }
-        if (filter.name === 'collection_id') {
-          params.collection_id = filter.value;
-        }
-      }
-
-      getProductListByBrandId(params);
+        category_id: !filter || filter?.name === 'category_id' ? filter?.value || 'all' : undefined,
+        collection_id: filter?.name === 'collection_id' ? filter?.value : undefined,
+      });
     }
   }, [filter]);
 
