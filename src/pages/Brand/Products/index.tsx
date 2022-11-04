@@ -1,14 +1,10 @@
 import React, { useEffect } from 'react';
 
-import { QUERY_KEY } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
 
 import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
-import { updateUrlParams } from '@/helper/utils';
 
-import { setProductList } from '@/features/product/reducers';
-import type { ProductGetListParameter } from '@/features/product/types';
-import store, { useAppSelector } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 import { GeneralData } from '@/types';
 
 import {
@@ -41,40 +37,12 @@ const BrandProductListPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    /// make sure have filter to call api
-    if (!filter) {
-      updateUrlParams({
-        set: [
-          { key: QUERY_KEY.cate_id, value: 'all' },
-          { key: QUERY_KEY.cate_name, value: 'VIEW ALL' },
-        ],
-        removeAll: true,
-      });
-      /// show default product list by categories
-      store.dispatch(
-        setProductList({
-          filter: {
-            name: 'category_id',
-            title: 'VIEW ALL',
-            value: 'all',
-          },
-        }),
-      );
-    }
-
-    if (userBrand?.id && filter) {
-      const params: ProductGetListParameter = {
+    if (userBrand?.id) {
+      getProductListByBrandId({
         brand_id: userBrand.id,
-      };
-
-      if (filter.name === 'category_id') {
-        params.category_id = filter.value;
-      }
-      if (filter.name === 'collection_id') {
-        params.collection_id = filter.value;
-      }
-
-      getProductListByBrandId(params);
+        category_id: filter?.name === 'collection_id' ? undefined : filter?.value || 'all',
+        collection_id: filter?.name === 'category_id' ? undefined : filter?.value,
+      });
     }
   }, [filter]);
 
