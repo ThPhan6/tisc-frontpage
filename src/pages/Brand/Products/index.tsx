@@ -50,6 +50,7 @@ const BrandProductListPage: React.FC = () => {
         ],
         removeAll: true,
       });
+      /// show default product list by categories
       store.dispatch(
         setProductList({
           filter: {
@@ -62,10 +63,8 @@ const BrandProductListPage: React.FC = () => {
     }
 
     if (userBrand?.id && filter) {
-      /// show product list default by categories
       const params: ProductGetListParameter = {
         brand_id: userBrand.id,
-        category_id: 'all',
       };
 
       if (filter.name === 'category_id') {
@@ -81,13 +80,7 @@ const BrandProductListPage: React.FC = () => {
 
   const renderFilterDropdown = (value: 'category_id' | 'collection_id') => {
     if (filter?.name === value) {
-      return (
-        <FilterItem
-          title={filter.title}
-          disabledDelete={filter.name === 'category_id' && filter.value === 'all'}
-          onDelete={resetProductFilter}
-        />
-      );
+      return <FilterItem title={filter.title} onDelete={resetProductFilter} />;
     }
     return userBrand ? 'view' : <span style={{ opacity: 0 }}>.</span>;
   };
