@@ -82,6 +82,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
     {
       title: 'Areas',
       dataIndex: 'area_column',
+      defaultSortOrder: 'ascend',
       sorter: {
         multiple: 2,
       },
@@ -89,6 +90,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
     {
       title: 'Rooms',
       dataIndex: 'room_column',
+      defaultSortOrder: 'ascend',
       sorter: {
         multiple: 3,
       },
