@@ -40,8 +40,8 @@ const BrandProductListPage: React.FC = () => {
     if (userBrand?.id) {
       getProductListByBrandId({
         brand_id: userBrand.id,
-        category_id: filter?.name === 'collection_id' ? undefined : filter?.value || 'all',
-        collection_id: filter?.name === 'category_id' ? undefined : filter?.value,
+        category_id: !filter || filter?.name === 'category_id' ? filter?.value || 'all' : undefined,
+        collection_id: filter?.name === 'collection_id' ? filter?.value : undefined,
       });
     }
   }, [filter]);
