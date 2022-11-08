@@ -304,6 +304,11 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PROJECT_TRACKING_INFO_ERROR: 'Update project tracking info error',
   GET_PROJECT_TRACKING_SUMMARY_ERROR: 'Get project tracking summary error',
   GET_ONE_PROJECT_TRACKING_ERROR: 'Get one project tracking error',
+
+  //project listing
+  GET_PROJECT_LISTING_FAILED: 'Failed to get project listing data',
+  GET_PROJECT_LISTING_SUMMARY_ERROR: 'Get project listing summary error',
+  GET_ONE_PROJECT_LISTING_ERROR: 'Get one project listing error',
 };
 
 export const MESSAGE_TOOLTIP = {
