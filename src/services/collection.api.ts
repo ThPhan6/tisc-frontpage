@@ -2,15 +2,16 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
-import type { Collection } from '@/types';
+import type { Collection, CollectionAddPayload, CollectionRelationType } from '@/types';
 
-export async function getCollectionByBrandId(brandId: string) {
+export async function getCollections(relationId: string, relationType: CollectionRelationType) {
   return request<{ data: { collections: Collection[] } }>(`/api/collection/get-list`, {
     method: 'GET',
     params: {
       page: 1,
       pageSize: 99999999,
-      brand_id: brandId,
+      relation_id: relationId,
+      relation_type: relationType,
     },
   })
     .then((response) => {
@@ -22,7 +23,7 @@ export async function getCollectionByBrandId(brandId: string) {
     });
 }
 
-export async function createCollection(data: { name: string; brand_id: string }) {
+export async function createCollection(data: CollectionAddPayload) {
   return request(`/api/collection/create`, {
     method: 'POST',
     data,
