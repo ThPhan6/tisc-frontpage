@@ -65,21 +65,20 @@ const RenderHeader: FC<ProductProps> = (props) => {
           className={`${styles.titleIcon} ${
             String(index) !== activeKey ? styles.font_weight_300 : styles.font_weight_500
           }`}>
-          {type === 'productConsider' || type === 'productSpecified' ? (
-            <LogoIcon logo={item.image} className={styles.customLogo} />
-          ) : (
+          {type === 'project' ? (
             <TeamIcon avatar={item.image} size={18} name={item.title} />
+          ) : (
+            <LogoIcon logo={item.image} className={styles.customLogo} />
           )}
 
           <BodyText level={5} fontFamily="Roboto" style={{ marginLeft: '12px' }}>
             {item.title}
           </BodyText>
-          {type === 'productConsider' ||
-            (type === 'productSpecified' && (
-              <BodyText level={5} fontFamily="Roboto" style={{ marginLeft: '12px' }}>
-                ({item.content.length})
-              </BodyText>
-            ))}
+          {type !== 'project' && (
+            <BodyText level={5} fontFamily="Roboto" style={{ marginLeft: '12px' }}>
+              ({item.content.length})
+            </BodyText>
+          )}
         </div>
         <div className={styles.icon}>
           {String(index) !== activeKey ? <DropdownIcon /> : <DropupIcon />}
@@ -92,29 +91,7 @@ const RenderHeader: FC<ProductProps> = (props) => {
 const renderContent = (type: TabKey, item: any) => {
   return (
     <div style={{ paddingBottom: '8px' }}>
-      {type === 'productConsider' || type === 'productSpecified' ? (
-        item?.map((product: any, index: number) => (
-          <div
-            className={`${styles.contentItem} ${
-              product.productConsiderdStatus === ProductConsiderStatus['Unlisted']
-                ? styles.unlisted
-                : undefined
-            } ${
-              product.productSpecifiedStatus === ProductSpecifyStatus['Cancelled']
-                ? styles.cancelled
-                : undefined
-            }`}
-            key={index}>
-            <img
-              src={showImageUrl(product.image)}
-              style={{ width: '24px', height: '24px', marginRight: '12px' }}
-            />
-            <BodyText level={5} fontFamily="Roboto">
-              {product.name}
-            </BodyText>
-          </div>
-        ))
-      ) : (
+      {type === 'project' ? (
         <div style={{ padding: '0 16px' }}>
           <TextForm label={'Gender'}>{item.gender === true ? 'Male' : 'Female'}</TextForm>
           <TextForm label={'Work Location'}>{item.work_location}</TextForm>
@@ -146,6 +123,28 @@ const renderContent = (type: TabKey, item: any) => {
           <TextForm label="Access Level">{item.access_level}</TextForm>
           <TextForm label="Status">{USER_STATUS_TEXTS[item.status]}</TextForm>
         </div>
+      ) : (
+        item?.map((product: any, index: number) => (
+          <div
+            className={`${styles.contentItem} ${
+              product.productConsiderdStatus === ProductConsiderStatus['Unlisted']
+                ? styles.unlisted
+                : undefined
+            } ${
+              product.productSpecifiedStatus === ProductSpecifyStatus['Cancelled']
+                ? styles.cancelled
+                : undefined
+            }`}
+            key={index}>
+            <img
+              src={showImageUrl(product.image)}
+              style={{ width: '24px', height: '24px', marginRight: '12px' }}
+            />
+            <BodyText level={5} fontFamily="Roboto">
+              {product.name}
+            </BodyText>
+          </div>
+        ))
       )}
     </div>
   );
@@ -188,7 +187,14 @@ export const ProductAndProjectTab: FC<ProductAndProjectTabProps> = ({ type, data
           </GeneralData>
         </div>
         <div className={styles.bottom}>
-          {type === 'productConsider' || type === 'productSpecified' ? (
+          {type === 'project' ? (
+            <>
+              <BodyText level={6} fontFamily="Roboto" style={{ marginRight: '8px' }}>
+                Team Member:
+              </BodyText>
+              <Title level={9}>{summary.team}</Title>
+            </>
+          ) : (
             <>
               <div style={{ marginRight: '32px', display: 'flex', alignItems: 'center' }}>
                 <BodyText level={6} fontFamily="Roboto" style={{ marginRight: '8px' }}>
@@ -212,13 +218,6 @@ export const ProductAndProjectTab: FC<ProductAndProjectTabProps> = ({ type, data
                 </BodyText>
                 <Title level={9}>{summary.deleted}</Title>
               </div>
-            </>
-          ) : (
-            <>
-              <BodyText level={6} fontFamily="Roboto" style={{ marginRight: '8px' }}>
-                Team Member:
-              </BodyText>
-              <Title level={9}>{summary.team}</Title>
             </>
           )}
         </div>
