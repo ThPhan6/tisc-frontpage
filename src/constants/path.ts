@@ -33,6 +33,7 @@ export const PATH = {
   // tisc project_tracking
   tiscProject: '/tisc/projects',
   tiscProjectListing: '/tisc/projects/listing',
+  tiscProjectListingDetail: '/tisc/projects/listing/:id',
   tiscProduct: '/tisc/products',
 
   // basic

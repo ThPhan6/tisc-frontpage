@@ -1,0 +1,77 @@
+import { FC } from 'react';
+
+import { MEASUREMENT_UNIT } from '@/constants/util';
+import { ProjectStatus } from '@/pages/Brand/ProjectTracking/constant';
+import { Col, Row } from 'antd';
+
+import { showImageUrl } from '@/helper/utils';
+
+import { ProjectInformation } from '../type';
+
+import TextForm from '@/components/Form/TextForm';
+import { BodyText, Title } from '@/components/Typography';
+
+import styles from './Component.less';
+import moment from 'moment';
+
+interface BasicInformationProps {
+  basicInformation?: ProjectInformation;
+}
+
+export const BasicInformation: FC<BasicInformationProps> = ({ basicInformation }) => {
+  return (
+    <Row>
+      <Col span={12} className={styles.container}>
+        <div className={styles.content}>
+          <div className={styles.designInfo}>
+            <TextForm
+              label={'Designed By'}
+              boxShadow
+              formClass={
+                basicInformation?.designFirm.logo ? styles.designName : styles.designNameInfo
+              }>
+              {basicInformation?.designFirm.name}
+            </TextForm>
+            {basicInformation?.designFirm.logo ? (
+              <img src={showImageUrl(basicInformation?.designFirm.logo)} className={styles.logo} />
+            ) : (
+              ''
+            )}
+          </div>
+          <TextForm label="Project Code/Name" boxShadow>
+            {basicInformation?.code} {basicInformation?.name}
+          </TextForm>
+          <TextForm label="Project Status" boxShadow>
+            {ProjectStatus[basicInformation?.status as number]}
+          </TextForm>
+          <TextForm label="Address" boxShadow>
+            {basicInformation?.address}
+          </TextForm>
+          <TextForm label="Project Type" boxShadow>
+            {basicInformation?.project_type}
+          </TextForm>
+          <TextForm label="Building Type" boxShadow>
+            {basicInformation?.building_type}
+          </TextForm>
+          <TextForm label="Measurement Unit" boxShadow>
+            {basicInformation?.measurement_unit === MEASUREMENT_UNIT.IMPERIAL
+              ? 'Imperial'
+              : 'Metric'}
+          </TextForm>
+          <TextForm label="Design Due" boxShadow>
+            {basicInformation?.design_due}
+          </TextForm>
+          <TextForm label="Construction Start" boxShadow>
+            {basicInformation?.construction_start}
+          </TextForm>
+        </div>
+        <div className={styles.bottom}>
+          <BodyText level={6} fontFamily="Roboto" style={{ marginRight: '8px' }}>
+            Last Updated:
+          </BodyText>
+          <Title level={9}>{moment(basicInformation?.updated_at).format('YYYY-MM-DD')}</Title>
+        </div>
+      </Col>
+    </Row>
+  );
+};

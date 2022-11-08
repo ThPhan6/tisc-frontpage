@@ -104,8 +104,19 @@ export default [
         path: PATH.tiscProjectListing,
         name: 'listing',
         icon: 'listing-icon.svg',
-        component: './Admin',
         access: 'tisc_project_list',
+        routes: [
+          {
+            path: PATH.tiscProjectListing,
+            component: './TISC/ProjectListing',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.tiscProjectListingDetail,
+            component: './TISC/ProjectListing/detail.tsx',
+            hideInMenu: true,
+          },
+        ],
       },
     ],
   },
