@@ -1,3 +1,6 @@
+import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
+import { ProjectSpaceZone } from '@/features/project/types';
+
 export interface ProjectListingResponse {
   id: string;
   created_at: string;
@@ -20,16 +23,7 @@ export interface ProjectListingResponse {
 }
 
 export interface ProjectListingSummary {
-  data: {
-    id: string;
-    quantity: number;
-    label: string;
-    subs: {
-      id: string;
-      quantity: number;
-      label: string;
-    }[];
-  }[];
+  data: DataMenuSummaryProps[];
   area: {
     metric: number;
     imperial: number;
@@ -68,24 +62,7 @@ export interface ProjectInformation {
 export interface SpaceDetail {
   imperialArea: number;
   metricArea: number;
-  zones: {
-    id: string;
-    name: string;
-    areas: {
-      id: string;
-      name: string;
-      count: number;
-      rooms: {
-        id: string;
-        room_name: string;
-        room_id: string;
-        room_size: number;
-        quantity: number;
-        sub_total: number;
-        room_size_unit: string;
-      }[];
-    }[];
-  }[];
+  zones: ProjectSpaceZone[];
 }
 
 export interface TeamDetail {
