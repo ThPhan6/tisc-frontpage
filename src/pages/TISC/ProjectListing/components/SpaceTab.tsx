@@ -5,7 +5,6 @@ import { Col, Collapse, Row } from 'antd';
 import { SpaceDetail } from '../type';
 import { ProjectSpaceArea } from '@/features/project/types';
 
-import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { BodyText, Title } from '@/components/Typography';
 import {
   CollapseLevel1Props,
@@ -15,6 +14,11 @@ import GeneralData from '@/features/user-group/components/GeneralData';
 
 import styles from './Component.less';
 
+interface LabelHeaderProps {
+  header: string;
+  quantity?: number | string;
+  isSubHeader: boolean;
+}
 interface SpaceTabProps {
   space?: SpaceDetail;
 }
@@ -23,13 +27,28 @@ interface ListAreaProps {
   index: number;
 }
 
-const RenderListArea: FC<ListAreaProps> = ({ areas, index }) => {
+const LabelHeader: FC<LabelHeaderProps> = ({ header, quantity, isSubHeader }) => {
+  return (
+    <span className={isSubHeader ? styles.dropdownCount : ''}>
+      {header}
+      <span
+        className={styles.quantity}
+        style={{
+          marginLeft: 8,
+        }}>
+        ({quantity ?? '0'})
+      </span>
+    </span>
+  );
+};
+
+const ProjectSpaceAreas: FC<ListAreaProps> = ({ areas, index }) => {
   return (
     <Collapse {...CollapseLevel2Props}>
       {areas.map((area, areaIndex) => (
         <Collapse.Panel
           header={
-            <RenderLabelHeader header={area.name} quantity={area.rooms.length} isSubHeader={true} />
+            <LabelHeader header={area.name} quantity={area.rooms.length} isSubHeader={true} />
           }
           key={`${index}-${areaIndex}`}
           collapsible={area.rooms.length === 0 ? 'disabled' : undefined}>
@@ -66,7 +85,7 @@ export const SpaceTab: FC<SpaceTabProps> = ({ space }) => {
                   <Collapse {...CollapseLevel1Props}>
                     <Collapse.Panel
                       header={
-                        <RenderLabelHeader
+                        <LabelHeader
                           header={zone.name}
                           quantity={zone.areas.length}
                           isSubHeader={false}
@@ -74,7 +93,7 @@ export const SpaceTab: FC<SpaceTabProps> = ({ space }) => {
                       }
                       key={index}
                       collapsible={zone.areas.length === 0 ? 'disabled' : undefined}>
-                      <RenderListArea areas={zone.areas} index={index} />
+                      <ProjectSpaceAreas areas={zone.areas} index={index} />
                     </Collapse.Panel>
                   </Collapse>
                 ))

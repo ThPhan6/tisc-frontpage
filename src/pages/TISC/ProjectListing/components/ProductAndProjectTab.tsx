@@ -54,7 +54,7 @@ interface ProductAndProjectTabProps {
   };
 }
 
-const RenderHeader: FC<ProductProps> = (props) => {
+const ProductAndProjectHeader: FC<ProductProps> = (props) => {
   const { item, activeKey, handleActiveCollapse, index, type } = props;
   return (
     <div className={styles.panel_header}>
@@ -166,7 +166,7 @@ export const ProductAndProjectTab: FC<ProductAndProjectTabProps> = ({ type, data
                   <Collapse ghost activeKey={activeKey}>
                     <Collapse.Panel
                       header={
-                        <RenderHeader
+                        <ProductAndProjectHeader
                           index={index}
                           item={item}
                           activeKey={activeKey}
