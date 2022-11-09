@@ -58,7 +58,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onSpecifyClick,
 }) => {
   const filter = useAppSelector((state) => state.product.list.filter);
-
+  const isDesignAdmin = useCheckPermission('Design Admin');
   const [liked, setLiked] = useState(product.is_liked);
   const showShareEmailModal = useBoolean();
   const showAssignProductModal = useBoolean();
@@ -199,7 +199,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <Tooltip title="Favourite" {...tooltipProps}>
               <BodyText level={6} fontFamily="Roboto" customClass="action-like">
                 {liked ? <LikedIcon onClick={likeProduct} /> : <LikeIcon onClick={likeProduct} />}
-                {`${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
+                {!isDesignAdmin &&
+                  `${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
               </BodyText>
             </Tooltip>
           )}
