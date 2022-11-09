@@ -14,7 +14,6 @@
 .mainInfo {
   width: 100%;
   height: auto;
-  table-layout: fixed;
 
   td,
   th,
@@ -28,6 +27,7 @@
   @fs: 10px;
 
   margin-bottom: 24px;
+  table-layout: auto;
 
   .textBold {
     font-weight: 500;
@@ -43,13 +43,16 @@
 .mainInfo {
   @fs: 8px;
 
+  table-layout: fixed;
   user-select: none;
 
-  th:nth-child(3) > .title,
-  th:nth-child(4) > .title,
-  th:nth-child(5) > .title,
-  th:nth-child(6) > .title {
-    padding-left: 20px;
+  th:nth-child(3),
+  th:nth-child(4),
+  th:nth-child(5),
+  th:nth-child(6) {
+    > .title {
+      padding-left: 20px;
+    }
   }
 
   .backgroundDark {
@@ -77,11 +80,11 @@
   }
 
   .groupRoomInfo {
-    box-shadow: @border-bottom;
+    border-bottom: 0.7px solid @mono-color;
   }
 
   .groupRoom {
-    box-shadow: @border-bottom-light;
+    border-bottom: 0.7px solid @mono-color-medium;
 
     td {
       position: relative;
