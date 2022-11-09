@@ -31,6 +31,7 @@ export const DropdownSelectInput: FC<DropdownSelectInputProps> = ({
   return (
     <CustomDropDown
       placement={placement}
+      align={window.safari ? { offset: [24, 0] } : {}}
       hideDropdownIcon
       overlay={
         <div
