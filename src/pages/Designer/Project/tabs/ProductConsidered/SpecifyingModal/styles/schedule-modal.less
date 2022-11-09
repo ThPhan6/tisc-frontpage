@@ -45,11 +45,13 @@
 
   user-select: none;
 
-  th:nth-child(3) > .title,
-  th:nth-child(4) > .title,
-  th:nth-child(5) > .title,
-  th:nth-child(6) > .title {
-    padding-left: 20px;
+  th:nth-child(3),
+  th:nth-child(4),
+  th:nth-child(5),
+  th:nth-child(6) {
+    > .title {
+      padding-left: 20px;
+    }
   }
 
   .backgroundDark {
