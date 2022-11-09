@@ -80,13 +80,13 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
       noFooter>
       <table className={styles.description}>
         <thead>
-          <tr style={{ height: '24px', boxShadow: '0 0.7px #000' }}>
-            <th style={{ width: '30%' }}>
-              <RobotoBodyText level={7} customClass={styles.textBold}>
+          <tr style={{ height: '24px', borderBottom: 'solid 0.7px #000' }}>
+            <th>
+              <RobotoBodyText level={7} customClass={styles.textBold} style={{ paddingRight: 16 }}>
                 Code
               </RobotoBodyText>
             </th>
-            <th style={{ width: '70%' }}>
+            <th>
               <RobotoBodyText level={7} customClass={styles.textBold}>
                 Description
               </RobotoBodyText>
@@ -95,7 +95,7 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
         </thead>
         <tbody>
           <tr style={{ minHeight: '18px' }}>
-            <td>
+            <td style={{ whiteSpace: 'nowrap', width: 1 }}>
               <RobotoBodyText
                 level={7}
                 customClass={styles.textThick}
@@ -135,7 +135,7 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
                       {el.room_id_text}
                     </RobotoBodyText>
                   </td>
-                  <td>
+                  <td colSpan={8}>
                     <RobotoBodyText level={6} customClass={styles.roomInfo}>
                       {el.room_name}
                     </RobotoBodyText>
