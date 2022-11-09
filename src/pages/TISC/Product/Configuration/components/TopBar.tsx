@@ -14,31 +14,27 @@ import { useQuery } from '@/helper/hook';
 import { updateUrlParams } from '@/helper/utils';
 import { flatMap, forEach, map } from 'lodash';
 
-import { resetProductState, setBrand, setProductList } from '@/features/product/reducers';
+import {
+  resetProductState,
+  setBrand,
+  setProductList,
+  setProductSummary,
+} from '@/features/product/reducers';
 import { ProductGetListParameter } from '@/features/product/types';
 import { BrandAlphabet, BrandDetail } from '@/features/user-group/types';
-import { useAppSelector } from '@/reducers';
-import { GeneralData } from '@/types';
 
 import { LogoIcon } from '@/components/LogoIcon';
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
+import { TopBarContainer, TopBarItem } from '@/features/product/components';
 import {
-  CustomDropDown,
-  FilterItem,
-  TopBarContainer,
-  TopBarItem,
-} from '@/features/product/components';
-import {
-  formatAllCategoriesToDropDownData,
-  formatAllCollectionsToDropDownData,
-  resetProductFilter,
+  useProductListFilterAndSorter,
   useSyncQueryToState,
 } from '@/features/product/components/FilterAndSorter';
 
 import styles from './TopBar.less';
 
-const ProductTopBar: React.FC = () => {
+export const TopBar: React.FC = () => {
   useSyncQueryToState();
 
   const dispatch = useDispatch();
@@ -46,14 +42,16 @@ const ProductTopBar: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [brandAlphabet, setBrandAlphabet] = useState<BrandAlphabet>({});
   const [brandData, setBrandData] = useState<any>();
-  const brand = useAppSelector((state) => state.product.brand);
-  const filter = useAppSelector((state) => state.product.list.filter);
-  const productSummary = useAppSelector((state) => state.product.summary);
   const brandFlatList = flatMap(brandAlphabet);
 
   const query = useQuery();
   const brandId = query.get(QUERY_KEY.b_id);
   const brandName = query.get(QUERY_KEY.b_name);
+
+  const { renderFilterDropdown, renderItemTopBar, productSummary, filter, productBrand } =
+    useProductListFilterAndSorter({
+      noFetchData: true,
+    });
 
   /// load brand by alphabet from API
   useEffect(() => {
@@ -67,6 +65,7 @@ const ProductTopBar: React.FC = () => {
     return () => {
       dispatch(setBrand());
       dispatch(setProductList({ data: [] }));
+      dispatch(setProductSummary(undefined));
     };
   }, []);
 
@@ -86,19 +85,19 @@ const ProductTopBar: React.FC = () => {
 
   // brand product summary
   useEffect(() => {
-    if (brand && brand.id && productSummary?.brandId !== brand.id) {
+    if (productBrand && productBrand.id && productSummary?.brandId !== productBrand.id) {
       // get product summary
-      getProductSummary(brand.id).then(() => {
+      getProductSummary(productBrand.id).then(() => {
         // reset filter
         // resetFilter();
       });
     }
-  }, [brand, productSummary]);
+  }, [productBrand, productSummary]);
 
   useEffect(() => {
-    if (brand && brand.id && filter) {
+    if (productBrand && productBrand.id && filter) {
       const params: ProductGetListParameter = {
-        brand_id: brand.id,
+        brand_id: productBrand.id,
       };
       if (filter.name === 'category_id') {
         params.category_id = filter.value === 'all' ? 'all' : filter.value;
@@ -108,12 +107,12 @@ const ProductTopBar: React.FC = () => {
       }
       getProductListByBrandId(params);
     }
-  }, [filter, brand]);
+  }, [filter, productBrand]);
 
   const gotoProductForm = () => {
     dispatch(resetProductState());
-    if (brand && brand.id) {
-      pushTo(PATH.productConfigurationCreate.replace(':brandId', brand.id));
+    if (productBrand && productBrand.id) {
+      pushTo(PATH.productConfigurationCreate.replace(':brandId', productBrand.id));
     }
   };
 
@@ -127,47 +126,14 @@ const ProductTopBar: React.FC = () => {
     );
   };
 
-  const renderItemTopBar = (type: 'Category' | 'Collection') => {
-    const valueItem: GeneralData[] | undefined =
-      type === 'Category' ? productSummary?.categories : productSummary?.collections;
-    if (!brand) {
-      return `View By ${type} `;
-    }
-
-    if (valueItem) {
-      return (
-        <CustomDropDown
-          items={
-            type === 'Category'
-              ? formatAllCategoriesToDropDownData(valueItem)
-              : formatAllCollectionsToDropDownData(valueItem)
-          }
-          viewAllTop
-          placement="bottomRight"
-          menuStyle={{ height: 'auto', width: 240 }}>
-          {type === 'Category' ? 'Categories' : 'Collections'}
-        </CustomDropDown>
-      );
-    } else {
-      return `${type === 'Category' ? 'Categories' : 'Collections'}`;
-    }
-  };
-
-  const renderFilterDropdown = (value: 'category_id' | 'collection_id') => {
-    if (filter?.name === value) {
-      return <FilterItem title={filter.title} onDelete={resetProductFilter} />;
-    }
-    return brand ? 'view' : <span style={{ opacity: 0 }}>.</span>;
-  };
-
   return (
     <>
       <TopBarContainer
         LeftSideContent={
           <>
             <TopBarItem
-              topValue={brand?.name ? brand.name : 'select'}
-              disabled={brand?.name ? false : true}
+              topValue={productBrand?.name ? productBrand.name : 'select'}
+              disabled={productBrand?.name ? false : true}
               bottomEnable
               bottomValue="Brands"
               customClass="brand-dropdown right-divider"
@@ -206,14 +172,14 @@ const ProductTopBar: React.FC = () => {
               topValue={renderFilterDropdown('category_id')}
               disabled
               bottomEnable={productSummary ? true : false}
-              bottomValue={renderItemTopBar('Category')}
+              bottomValue={renderItemTopBar('Categories')}
               customClass="left-divider"
             />
             <TopBarItem
               topValue={renderFilterDropdown('collection_id')}
               disabled
               bottomEnable={productSummary ? true : false}
-              bottomValue={renderItemTopBar('Collection')}
+              bottomValue={renderItemTopBar('Collections')}
               customClass="left-divider"
             />
             <TopBarItem
@@ -282,5 +248,3 @@ const ProductTopBar: React.FC = () => {
     </>
   );
 };
-
-export default ProductTopBar;

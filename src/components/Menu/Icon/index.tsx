@@ -15,6 +15,7 @@ import { ReactComponent as MatketAvailability } from '@/assets/icons/market-avai
 import { ReactComponent as MaterialProductCode } from '@/assets/icons/material-product-code-icon.svg';
 import { ReactComponent as MessageIcon } from '@/assets/icons/messages-icon.svg';
 import { ReactComponent as MyFavouriteIcon } from '@/assets/icons/my-favourite-icon.svg';
+import { ReactComponent as OfficeLibrary } from '@/assets/icons/office-library-icon.svg';
 import { ReactComponent as OfficeProfile } from '@/assets/icons/office-profile-icon.svg';
 import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
 import { ReactComponent as ProjectIcon } from '@/assets/icons/project-icon.svg';
@@ -33,6 +34,7 @@ const IconList = {
   'category-icon.svg': <CategoryIcon className="anticon" />,
   'configuration-icon.svg': <ConfigurationIcon className="anticon" />,
   'design-firm-icon.svg': <DesignFirmIcon className="anticon" />,
+  'office-library-icon.svg': <OfficeLibrary className="anticon" />,
   'documentation-icon.svg': <DocumentationIcon className="anticon" />,
   'listing-icon.svg': <ListingIcon className="anticon" />,
   'location-icon.svg': <LocationIcon className="anticon" />,

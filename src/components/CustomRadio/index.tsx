@@ -48,7 +48,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
     if (option.value == value) {
       return 'item-option-checked';
     }
-    return '';
+    return 'item-option-uncheck';
   };
 
   const renderOption = (option: RadioValue, index: number) => {

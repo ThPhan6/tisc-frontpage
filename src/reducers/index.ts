@@ -6,6 +6,7 @@ import { productReducer } from '@/features/product/reducers';
 import { projectReducer } from '@/features/project/reducers';
 
 import { loadingActionReducer } from '@/components/LoadingPage/slices';
+import { officeProductReducer } from '@/pages/Designer/Products/CustomLibrary/slice';
 
 import summaryReducer from './summary';
 import userReducer from './user';
@@ -15,6 +16,7 @@ import storage from 'redux-persist/lib/storage';
 
 const reducers = combineReducers({
   product: productReducer,
+  officeProduct: officeProductReducer, // using for office library
   category: categoryReducer,
   user: userReducer,
   project: projectReducer,

@@ -1,0 +1,58 @@
+.dimensionCollapse {
+  :global(.ant-collapse-header) {
+    :global(.header) {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding-left: 16px;
+    }
+  }
+
+  &:global(.ant-collapse-item-active) {
+    :global(.header) {
+      :global(.label) {
+        font-weight: 500;
+      }
+      :global(.slice) {
+        display: flex;
+        align-items: center;
+        transition: all 0.3s;
+        animation: slideToRight 0.4s ease-out forwards;
+      }
+      :global(.text) {
+        padding: 0 12px 0 24px;
+      }
+    }
+  }
+
+  :global(.ant-collapse-content) {
+    :global(.ant-collapse-content-box) {
+      :global(.ant-row):not(:last-child) {
+        margin-bottom: 16px;
+      }
+
+      :global(.input-label-container) {
+        width: 25%;
+        padding-right: 26px;
+        white-space: nowrap;
+      }
+      :global(.double-input-group-wrapper) {
+        :global(.double-input-group) {
+          width: 50%;
+          border-bottom: 0.7px solid @mono-color-medium;
+        }
+      }
+    }
+  }
+}
+
+@keyframes slideToRight {
+  0% {
+    transform: translateX(-5%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

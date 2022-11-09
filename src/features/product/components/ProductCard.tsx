@@ -32,18 +32,25 @@ import { useAppSelector } from '@/reducers';
 import CustomCollapse from '@/components/Collapse';
 import InquiryRequest from '@/components/InquiryRequest';
 import ShareViaEmail from '@/components/ShareViaEmail';
+import { ActionMenu } from '@/components/TableAction';
 import { BodyText } from '@/components/Typography';
 
 import AssignProductModal from '../modals/AssignProductModal';
 import { getProductDetailPathname } from '../utils';
 import styles from './ProductCard.less';
 
-interface ProductCardProps {
+interface CollapseProductListProps {
+  showBrandLogo?: boolean;
+  showActionMenu?: boolean;
+  showInquiryRequest?: boolean;
+  hideFavorite?: boolean;
+}
+
+interface ProductCardProps extends Omit<CollapseProductListProps, 'showBrandLogo'> {
   product: ProductItem;
   hasBorder?: boolean;
   hideFavorite?: boolean;
   hideAssign?: boolean;
-  showInquiryRequest?: boolean;
   showSpecify?: boolean;
   onSpecifyClick?: () => void;
 }
@@ -55,6 +62,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   hideAssign,
   showInquiryRequest,
   showSpecify,
+  showActionMenu,
   onSpecifyClick,
 }) => {
   const filter = useAppSelector((state) => state.product.list.filter);
@@ -211,16 +219,38 @@ const ProductCard: React.FC<ProductCardProps> = ({
               />
             </Tooltip>
           ) : null}
+          {showActionMenu && isDesignerUser ? (
+            <ActionMenu
+              placement="bottomLeft"
+              offsetAlign={[-12, -6]}
+              actionItems={[
+                {
+                  type: 'copy',
+                  label: 'Copy',
+                  onClick: () => {},
+                },
+                {
+                  type: 'updated',
+                  label: 'Edit',
+                  onClick: () => {},
+                },
+                {
+                  type: 'deleted',
+                  label: 'Delete',
+                  onClick: () => {},
+                },
+              ]}
+            />
+          ) : null}
         </div>
 
         <div className={`${styles.rightAction} flex-center`}>
-          {rightActions.map(
-            ({ Icon, onClick, show, tooltipText }, index) =>
-              show && (
-                <Tooltip key={index} title={tooltipText} {...tooltipProps}>
-                  <Icon onClick={onClick} />
-                </Tooltip>
-              ),
+          {rightActions.map(({ Icon, onClick, show, tooltipText }, index) =>
+            show ? (
+              <Tooltip key={index} title={tooltipText} {...tooltipProps}>
+                <Icon onClick={onClick} />
+              </Tooltip>
+            ) : null,
           )}
         </div>
       </div>
@@ -254,7 +284,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
 export default ProductCard;
 
-export const CollapseProductList: React.FC<{ showBrandLogo?: boolean }> = ({ showBrandLogo }) => {
+export const CollapseProductList: React.FC<CollapseProductListProps> = ({
+  showBrandLogo,
+  showActionMenu = false,
+  showInquiryRequest = false,
+  hideFavorite = false,
+}) => {
   const list = useAppSelector((state) => state.product.list);
 
   // if (!product.list.data.length) {
@@ -282,7 +317,12 @@ export const CollapseProductList: React.FC<{ showBrandLogo?: boolean }> = ({ sho
           <div className={styles.productCardContainer}>
             {group.products.map((productItem, productKey) => (
               <div className={styles.productCardItemWrapper} key={productKey}>
-                <ProductCard product={productItem} showInquiryRequest />
+                <ProductCard
+                  product={productItem}
+                  showInquiryRequest={showInquiryRequest}
+                  showActionMenu={showActionMenu}
+                  hideFavorite={hideFavorite}
+                />
               </div>
             ))}
           </div>

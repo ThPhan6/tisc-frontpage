@@ -26,7 +26,7 @@ import {
 } from '@/features/product/components';
 import { useProductListFilterAndSorter } from '@/features/product/components/FilterAndSorter';
 
-import styles from './styles.less';
+import styles from './index.less';
 
 const BrandProductListPage: React.FC = () => {
   const searchInputRef = useRef<InputRef>(null);
@@ -95,7 +95,7 @@ const BrandProductListPage: React.FC = () => {
   const renderInfoItem = (info: string, count: number, lastOne?: boolean) => (
     <div className="flex-start" style={{ marginRight: lastOne ? undefined : 24 }}>
       <BodyText level={5} fontFamily="Roboto" style={{ marginRight: 8 }}>
-        {info}:{' '}
+        {info}:
       </BodyText>
       <Title level={8}>{count}</Title>
     </div>
@@ -205,7 +205,8 @@ const BrandProductListPage: React.FC = () => {
   return (
     <PageContainer pageHeaderRender={PageHeader}>
       <CollapseProductList
-      // showBrandLogo={filter?.name === 'category_id'}
+        // showBrandLogo={filter?.name === 'category_id'}
+        showInquiryRequest
       />
     </PageContainer>
   );

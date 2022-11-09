@@ -5,28 +5,18 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
 
 import { useAppSelector } from '@/reducers';
-import { GeneralData } from '@/types';
 
-import {
-  CollapseProductList,
-  CustomDropDown,
-  FilterItem,
-  TopBarContainer,
-  TopBarItem,
-} from '@/features/product/components';
-import {
-  formatAllCategoriesToDropDownData,
-  formatAllCollectionsToDropDownData,
-  resetProductFilter,
-  useSyncQueryToState,
-} from '@/features/product/components/FilterAndSorter';
+import { CollapseProductList, TopBarContainer, TopBarItem } from '@/features/product/components';
+import { useProductListFilterAndSorter } from '@/features/product/components/FilterAndSorter';
 
 const BrandProductListPage: React.FC = () => {
-  useSyncQueryToState();
-
   const filter = useAppSelector((state) => state.product.list.filter);
   const summary = useAppSelector((state) => state.product.summary);
   const userBrand = useAppSelector((state) => state.user.user?.brand);
+
+  const { renderFilterDropdown, renderItemTopBar } = useProductListFilterAndSorter({
+    noFetchData: true,
+  });
 
   // brand product summary
   useEffect(() => {
@@ -45,33 +35,6 @@ const BrandProductListPage: React.FC = () => {
       });
     }
   }, [filter]);
-
-  const renderFilterDropdown = (value: 'category_id' | 'collection_id') => {
-    if (filter?.name === value) {
-      return <FilterItem title={filter.title} onDelete={resetProductFilter} />;
-    }
-    return userBrand ? 'view' : <span style={{ opacity: 0 }}>.</span>;
-  };
-
-  const renderItemTopBar = (type: 'Categories' | 'Collections') => {
-    const valueItem: GeneralData[] | undefined =
-      type === 'Categories' ? summary?.categories : summary?.collections;
-    return valueItem ? (
-      <CustomDropDown
-        items={
-          type === 'Categories'
-            ? formatAllCategoriesToDropDownData(valueItem)
-            : formatAllCollectionsToDropDownData(valueItem)
-        }
-        viewAllTop
-        placement="bottomRight"
-        menuStyle={{ height: 'auto', width: 240 }}>
-        {type}
-      </CustomDropDown>
-    ) : (
-      `${type}`
-    );
-  };
 
   const renderPageHeader = () => (
     <TopBarContainer

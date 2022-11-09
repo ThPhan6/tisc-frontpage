@@ -136,27 +136,34 @@ export const PATH = {
   // brand subscription
   brandSubscription: '/brand/adminstration/subscription',
 
-  // design-firms
+  /// design-firms
+  // My Favourite
   designerFavourite: '/design-firms/my-favorites',
+  // Brand Product
   designerProduct: '/design-firms/products',
   designerBrandProduct: '/design-firms/products/brand-products',
   designerBrandProductDetail: '/design-firms/products/brand-products/:id',
-  designerCustomLibrary: '/design-firms/products/custom-library',
+  // Office Library
+  designerOfficeLibrary: '/design-firms/products/office-library',
+  designerOfficeLibraryCreate: '/design-firms/products/office-library/create/:brandId',
+  designerOfficeLibraryUpdate: '/design-firms/products/office-library/:id',
+  // Project
   designerProject: '/design-firms/projects',
-  designerCreateProject: '/design-firms/projects/create',
   designerUpdateProject: '/design-firms/projects/:id',
   designerProjectCreate: '/design-firms/projects/create',
-  designerProjectUpdate: '/design-firms/projects/update/:id',
+  // Adminstration
   designerAdminstration: '/design-firms/administration',
+  // Office Profile
   designerOfficeProfile: '/design-firms/administration/office-profile',
+  // Team Profile
   designerOfficeTeamProfile: '/design-firms/administration/team-profiles',
   designerOfficeTeamProfileCreate: '/design-firms/administration/team-profiles/create',
   designerOfficeTeamProfileUpdate: '/design-firms/administration/team-profiles/:id',
+  // Material Product Code
   designerMaterialProductCode: '/design-firms/administration/material-product-code',
   designerMaterialProductCodeCreate: '/design-firms/administration/material-product-code/create',
   designerMaterialProductCodeUpdate: '/design-firms/administration/material-product-code/:id',
-
-  // location
+  // Location
   designFirmLocation: '/design-firms/administration/locations',
   designFirmLocationCreate: '/design-firms/administration/locations/create',
   designFirmLocationUpdate: '/design-firms/administration/locations/:id',

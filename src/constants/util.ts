@@ -1,3 +1,5 @@
+export const LOGO_SIZE_LIMIT = 240 * 1024; // 240 KB
+
 export enum STATUS_RESPONSE {
   SUCCESS = 'SUCCESS',
   ERROR = 'ERROR',
@@ -52,6 +54,8 @@ export const QUERY_KEY = {
   b_name: 'b_name',
   coll_id: 'coll_id',
   coll_name: 'coll_name',
+  company_id: 'company_id',
+  company_name: 'company_name',
   sort_order: 'sort_order',
   sort_name: 'sort_name',
   search: 'search',

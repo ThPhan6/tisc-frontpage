@@ -53,10 +53,16 @@ const ActionItem: FC<{ onClick: () => void; label: string; icon: ReactNode }> = 
 };
 
 interface ProductImagePreviewProps {
-  isPublicPage: string;
+  isPublicPage?: boolean;
+  hideInquiryRequest?: boolean;
+  isOfficeLibrary?: boolean;
 }
 
-const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({ isPublicPage }) => {
+const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
+  isPublicPage,
+  hideInquiryRequest,
+  isOfficeLibrary,
+}) => {
   const dispatch = useDispatch();
   const product = useAppSelector((state) => state.product.details);
   const showShareEmailModal = useBoolean();
@@ -64,6 +70,8 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({ isPublicPage 
   const showInquiryRequestModal = useBoolean();
   const isDesignerUser = useCheckPermission('Design Admin');
   const isTiscAdmin = useCheckPermission('TISC Admin');
+
+  const isEditable = isTiscAdmin || isOfficeLibrary; // currently, uploading image
 
   const liked = product.is_liked;
   const likeCount = product.favorites ?? 0;
@@ -95,8 +103,8 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({ isPublicPage 
       return true;
     },
     showUploadList: false,
-    disabled: isTiscAdmin === false,
-    className: `${styles.uploadZone} ${isTiscAdmin ? '' : styles.noBorder} `,
+    disabled: isEditable === false,
+    className: `${styles.uploadZone} ${isEditable ? '' : styles.noBorder} `,
   };
 
   const subProps: UploadProps = {
@@ -171,7 +179,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({ isPublicPage 
     }
 
     const renderActionLeft = () => {
-      if (isPublicPage) return null;
+      if (isPublicPage || isOfficeLibrary) return null;
 
       if (liked) {
         return <LikedIcon className={styles.actionIcon} onClick={likeProduct} />;
@@ -186,7 +194,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({ isPublicPage 
         <div className={styles.actionLeft}>{renderActionLeft()}</div>
 
         <div className={styles.actionRight}>
-          {isDesignerUser ? (
+          {isDesignerUser && !hideInquiryRequest ? (
             <ActionItem
               label="Inquiry/Request"
               icon={<CommentIcon />}
@@ -217,7 +225,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({ isPublicPage 
     if (product.images[0]) {
       return <img src={showImageUrl(product.images[0])} className={styles.primaryPhoto} />;
     }
-    if (isTiscAdmin) {
+    if (isEditable) {
       return (
         <div className={styles.dropzoneNote}>
           <BodyText level={3}>
@@ -244,7 +252,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({ isPublicPage 
           <div className={styles.uploadZoneContent}>
             {renderMainImage()}
 
-            {isTiscAdmin ? (
+            {isEditable ? (
               <div className={styles.primaryAction}>
                 <SmallIconButton
                   icon={<UploadIcon />}
@@ -262,7 +270,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({ isPublicPage 
         </Upload.Dragger>
 
         <Row className={styles.photoList} gutter={8}>
-          <Col span={isTiscAdmin ? 18 : 24}>
+          <Col span={isEditable ? 18 : 24}>
             <Row gutter={8} className={styles.listWrapper}>
               {product.images
                 .filter((_item, index) => index !== 0)
@@ -271,10 +279,10 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({ isPublicPage 
                     <div className={styles.fileItem}>
                       <div
                         className={`${styles.filePreview}  ${
-                          !isTiscAdmin ? styles.lightBorder : ''
+                          !isEditable ? styles.lightBorder : ''
                         }`}>
                         <img src={showImageUrl(image) ?? ProductPlaceHolderImage} />
-                        {isTiscAdmin ? (
+                        {isEditable ? (
                           <div className={styles.subPhotoAction}>
                             <SmallIconButton
                               icon={<DeleteIcon />}
@@ -289,7 +297,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({ isPublicPage 
             </Row>
           </Col>
 
-          {isTiscAdmin ? (
+          {isEditable ? (
             <Col span={6}>
               <Upload {...subProps}>
                 <div className={styles.addMorePhotocontent}>
@@ -298,7 +306,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({ isPublicPage 
                   </BodyText>
                   <AddMoreIcon />
                   <BodyText level={6} fontFamily="Roboto">
-                    (min.3 and max.9)
+                    {isOfficeLibrary ? '(min.4 and max.9)' : '(min.3 and max.9)'}
                   </BodyText>
                 </div>
               </Upload>

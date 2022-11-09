@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { USER_ROLE } from '@/constants/userRoles';
 import { QUERY_KEY } from '@/constants/util';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { useHistory } from 'umi';
 
 import { getProductCategoryPagination } from '@/features/categories/services';
 import { getBrandPagination } from '@/features/user-group/services';
-import { useQuery } from '@/helper/hook';
+import { useGetUserRoleFromPathname, useQuery } from '@/helper/hook';
 import {
   getValueByCondition,
   removeUrlParams,
@@ -17,17 +18,19 @@ import {
 } from '@/helper/utils';
 
 import { setProductList, setProductListSorter } from '../reducers';
-import { SortOrder } from '../types';
+import { ProductFilterType, SortOrder } from '../types';
 import { CategoryNestedList } from '@/features/categories/types';
 import { BrandListItem } from '@/features/user-group/types';
 import store, { useAppSelector } from '@/reducers';
 import { GeneralData } from '@/types';
 
-export const onCategoryFilterClick = (id: string, name: string) => {
+import { CustomDropDown, FilterItem } from './ProductTopBarItem';
+
+export const onCategoryFilterClick = (id: string, name: string = '') => {
   updateUrlParams({
     set: [
       { key: QUERY_KEY.cate_id, value: id },
-      { key: QUERY_KEY.cate_name, value: name || '' },
+      { key: QUERY_KEY.cate_name, value: name },
     ],
     remove: [QUERY_KEY.coll_id, QUERY_KEY.coll_name],
   });
@@ -42,11 +45,11 @@ export const onCategoryFilterClick = (id: string, name: string) => {
   );
 };
 
-export const onBrandFilterClick = (id: string, name: string) => {
+export const onBrandFilterClick = (id: string, name: string = '') => {
   updateUrlParams({
     set: [
       { key: QUERY_KEY.brand_id, value: id },
-      { key: QUERY_KEY.brand_name, value: name || '' },
+      { key: QUERY_KEY.brand_name, value: name },
     ],
     remove: [QUERY_KEY.cate_id, QUERY_KEY.cate_name],
   });
@@ -54,11 +57,62 @@ export const onBrandFilterClick = (id: string, name: string) => {
     setProductList({
       filter: {
         name: 'brand_id',
-        title: name || '',
+        title: name,
         value: id,
       },
     }),
   );
+};
+
+export const onCollectionFilterClick = (id: string, name: string = '') => {
+  updateUrlParams({
+    set: [
+      { key: QUERY_KEY.coll_id, value: id },
+      { key: QUERY_KEY.coll_name, value: name },
+    ],
+    remove: [QUERY_KEY.cate_id, QUERY_KEY.cate_name],
+  });
+  store.dispatch(
+    setProductList({
+      filter: {
+        name: 'collection_id',
+        value: id,
+        title: name,
+      },
+    }),
+  );
+};
+
+export const onCompanyFilterClick = (id: string, name: string = '') => {
+  updateUrlParams({
+    set: [
+      { key: QUERY_KEY.company_id, value: id },
+      { key: QUERY_KEY.company_name, value: name },
+    ],
+    remove: [QUERY_KEY.coll_id, QUERY_KEY.coll_name],
+  });
+  store.dispatch(
+    setProductList({
+      filter: {
+        name: 'company_id',
+        title: name,
+        value: id,
+      },
+    }),
+  );
+};
+
+export const getFormatFilterForDropDown = (
+  items: GeneralData[],
+  onFilter: (id: string, name?: string) => void,
+): ItemType[] => {
+  if (!items || !items.length) return [];
+
+  return [{ id: 'all', name: 'VIEW ALL' }, ...items].map((el) => ({
+    key: el.id,
+    label: el.name || '',
+    onClick: () => onFilter(el.id, el.name),
+  }));
 };
 
 export const formatCategoriesToDropDownData = (
@@ -82,36 +136,6 @@ export const formatBrandsToDropDownData = (items: BrandListItem[]): ItemType[] =
     onClick: () => onBrandFilterClick(el.id, el.name),
   }));
 };
-export const formatAllCategoriesToDropDownData = (items: GeneralData[]) =>
-  [{ id: 'all', name: 'VIEW ALL' }, ...items].map((el) => ({
-    key: el.id,
-    label: el.name || '',
-    onClick: () => onCategoryFilterClick(el.id, el.name),
-  }));
-
-export const formatAllCollectionsToDropDownData = (items: GeneralData[]) =>
-  [{ id: 'all', name: 'VIEW ALL' }, ...items].map((el) => ({
-    key: el.id,
-    label: el.name || '',
-    onClick: () => {
-      updateUrlParams({
-        set: [
-          { key: QUERY_KEY.coll_id, value: el.id },
-          { key: QUERY_KEY.coll_name, value: el.name || '' },
-        ],
-        remove: [QUERY_KEY.cate_id, QUERY_KEY.cate_name],
-      });
-      store.dispatch(
-        setProductList({
-          filter: {
-            name: 'collection_id',
-            title: el.name || '',
-            value: el.id,
-          },
-        }),
-      );
-    },
-  }));
 
 export const SORTER_DROPDOWN_DATA: ItemType[] = [
   {
@@ -155,19 +179,19 @@ const updateQueryToState = (query: {
   brand_name?: string | null;
   coll_id?: string | null;
   coll_name?: string | null;
+  company_id?: string | null;
+  company_name?: string | null;
   search?: string;
   sort_order?: string;
 }) => {
   if (!query) return;
 
-  const name = getValueByCondition(
-    [
-      [query.cate_id, 'category_id'],
-      [query.coll_id, 'collection_id'],
-      [query.brand_id, 'brand_id'],
-    ],
-    undefined,
-  );
+  const name = getValueByCondition([
+    [query.cate_id, 'category_id'],
+    [query.coll_id, 'collection_id'],
+    [query.brand_id, 'brand_id'],
+    [query.company_id, 'company_id'],
+  ]);
 
   store.dispatch(
     setProductList({
@@ -187,6 +211,11 @@ const updateQueryToState = (query: {
       search: query.search,
     }),
   );
+};
+
+export const resetProductFilter = () => {
+  removeUrlParams([QUERY_KEY.cate_id, QUERY_KEY.cate_name, QUERY_KEY.coll_id, QUERY_KEY.coll_name]);
+  store.dispatch(setProductList({ filter: undefined, data: [] }));
 };
 
 export const useSyncQueryToState = () => {
@@ -230,6 +259,7 @@ export const useSyncQueryToState = () => {
 };
 
 export const useProductListFilterAndSorter = (props?: { noFetchData?: boolean }) => {
+  useSyncQueryToState();
   const dispatch = useDispatch();
   const [categories, setCategories] = useState<ItemType[]>([]);
   const [brands, setBrands] = useState<ItemType[]>([]);
@@ -238,23 +268,11 @@ export const useProductListFilterAndSorter = (props?: { noFetchData?: boolean })
   const sort = useAppSelector((state) => state.product.list.sort);
   const search = useAppSelector((state) => state.product.list.search);
   const brandSummary = useAppSelector((state) => state.product.list.brandSummary);
+  const productBrand = useAppSelector((state) => state.product.brand);
+  const productSummary = useAppSelector((state) => state.product.summary);
 
-  useSyncQueryToState();
-
-  const removeFilter = () => {
-    removeUrlParams([
-      QUERY_KEY.cate_id,
-      QUERY_KEY.cate_name,
-      QUERY_KEY.brand_id,
-      QUERY_KEY.brand_name,
-    ]);
-    dispatch(setProductList({ filter: undefined, brandSummary: undefined }));
-  };
-
-  const resetProductListSorter = () => {
-    removeUrlParams([QUERY_KEY.sort_order, QUERY_KEY.sort_name]);
-    dispatch(setProductList({ sort: undefined }));
-  };
+  const currentUser = useGetUserRoleFromPathname();
+  const isTiscAdmin = currentUser === USER_ROLE.tisc;
 
   const resetAllProductList = () => {
     dispatch(
@@ -266,6 +284,11 @@ export const useProductListFilterAndSorter = (props?: { noFetchData?: boolean })
         data: [],
       }),
     );
+  };
+
+  const resetProductListSorter = () => {
+    removeUrlParams([QUERY_KEY.sort_order, QUERY_KEY.sort_name]);
+    dispatch(setProductList({ sort: undefined }));
   };
 
   useEffect(() => {
@@ -296,6 +319,65 @@ export const useProductListFilterAndSorter = (props?: { noFetchData?: boolean })
     return resetAllProductList;
   }, []);
 
+  const removeFilter = () => {
+    removeUrlParams([
+      QUERY_KEY.cate_id,
+      QUERY_KEY.cate_name,
+      QUERY_KEY.brand_id,
+      QUERY_KEY.brand_name,
+    ]);
+    dispatch(setProductList({ filter: undefined, brandSummary: undefined }));
+  };
+
+  const renderFilterDropdown = (value: ProductFilterType) => {
+    if (filter?.name === value) {
+      return <FilterItem title={filter.title} onDelete={resetProductFilter} />;
+    }
+    return productBrand ? 'view' : <span style={{ opacity: 0 }}>.</span>;
+  };
+
+  const renderItemTopBar = (type: 'Categories' | 'Collections' | 'Companies') => {
+    const filterValue: GeneralData[] = getValueByCondition([
+      [type === 'Categories', productSummary?.categories],
+      [type === 'Collections', productSummary?.collections],
+      [type === 'Companies', productSummary?.company],
+    ]);
+
+    if (isTiscAdmin && !filterValue) {
+      return `View by ${type}`;
+    }
+
+    if (!filterValue) {
+      return type;
+    }
+
+    const dropDownItem = () => {
+      if (type === 'Categories') {
+        return getFormatFilterForDropDown(filterValue, onCategoryFilterClick);
+      }
+
+      if (type === 'Collections') {
+        return getFormatFilterForDropDown(filterValue, onCollectionFilterClick);
+      }
+
+      if (type === 'Companies') {
+        return getFormatFilterForDropDown(filterValue, onCompanyFilterClick);
+      }
+
+      return undefined;
+    };
+
+    return (
+      <CustomDropDown
+        items={dropDownItem()}
+        viewAllTop
+        placement="bottomRight"
+        menuStyle={{ height: 'auto', width: 240 }}>
+        {type}
+      </CustomDropDown>
+    );
+  };
+
   return {
     filter,
     sort,
@@ -303,14 +385,13 @@ export const useProductListFilterAndSorter = (props?: { noFetchData?: boolean })
     categories,
     search,
     brandSummary,
+    productBrand,
+    productSummary,
+    renderItemTopBar,
+    renderFilterDropdown,
     resetProductListSorter,
     resetAllProductList,
     removeFilter,
     dispatch,
   };
-};
-
-export const resetProductFilter = () => {
-  removeUrlParams([QUERY_KEY.cate_id, QUERY_KEY.cate_name, QUERY_KEY.coll_id, QUERY_KEY.coll_name]);
-  store.dispatch(setProductList({ filter: undefined, data: [] }));
 };
