@@ -315,7 +315,7 @@ const ProjectTracking = () => {
           rightAction={
             <InfoIcon className={styles.iconInfor} onClick={() => setOpenInformationModal(true)} />
           }
-          columns={setDefaultWidthForEachColumn(MainColumns, 4)}
+          columns={setDefaultWidthForEachColumn(MainColumns, 9)}
           fetchDataFunc={getProjectTrackingPagination}
           extraParams={
             (selectedFilter && selectedFilter.id !== Global['VIEW ALL']) ||
