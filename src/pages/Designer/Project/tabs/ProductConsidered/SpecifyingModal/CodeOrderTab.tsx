@@ -240,33 +240,35 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
           </FormGroup>
         </Col>
         <Col span={12}>
-          <DropdownSelectInput
-            placeholder="unit type"
-            borderBottomColor="light"
-            value={unitType?.label ? String(unitType?.label) : ''}
-            noPadding
-            disabled
-            containerClass={styles.inputColor}
-            overlay={
-              <CustomRadio
-                options={unitTypeOtps}
-                isRadioList
-                inputPlaceholder="please specify"
-                value={unit_type_id}
-                otherInput
-                containerClass={styles.inputColor}
-                otherStickyBottom
-                stickyTopItem
-                containerStyle={{ padding: 0 }}
-                onChange={(e) => {
-                  setSelectedUnit(e);
-                  onChangeState({
-                    unit_type_id: String(e.value === 'other' ? e.label : e.value),
-                  });
-                }}
-              />
-            }
-          />
+          <div style={{ position: 'relative' }}>
+            <DropdownSelectInput
+              placeholder="unit type"
+              borderBottomColor="light"
+              value={unitType?.label ? String(unitType?.label) : ''}
+              noPadding
+              disabled
+              containerClass={styles.inputColor}
+              overlay={
+                <CustomRadio
+                  options={unitTypeOtps}
+                  isRadioList
+                  inputPlaceholder="please specify"
+                  value={unit_type_id}
+                  otherInput
+                  containerClass={styles.inputColor}
+                  otherStickyBottom
+                  stickyTopItem
+                  containerStyle={{ padding: 0 }}
+                  onChange={(e) => {
+                    setSelectedUnit(e);
+                    onChangeState({
+                      unit_type_id: String(e.value === 'other' ? e.label : e.value),
+                    });
+                  }}
+                />
+              }
+            />
+          </div>
         </Col>
 
         {/* Default value is Direct Purchase */}
