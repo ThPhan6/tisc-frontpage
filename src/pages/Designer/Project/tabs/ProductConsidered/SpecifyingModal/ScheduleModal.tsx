@@ -10,7 +10,7 @@ import { setFinishScheduleData } from '@/features/product/reducers';
 import store, { useAppSelector } from '@/reducers';
 
 import Popover from '@/components/Modal/Popover';
-import { RobotoBodyText, Title } from '@/components/Typography';
+import { RobotoBodyText } from '@/components/Typography';
 
 import { CodeOrderTabProps } from './CodeOrderTab';
 import styles from './styles/schedule-modal.less';
@@ -73,30 +73,21 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
 
   return (
     <Popover
-      title="FINISH SCHEDULE"
+      title="FINISH ROOM SCHEDULE"
       visible={visible}
       setVisible={setVisible}
       className={styles.modal}
       noFooter>
-      <div className="flex-start" style={{ height: '24px', marginBottom: '8px' }}>
-        <Title level={8} style={{ textTransform: 'uppercase' }}>
-          Finish Schedule by Room
-        </Title>
-        <RobotoBodyText level={5} style={{ paddingLeft: '16px' }}>
-          (select all relevant areas)
-        </RobotoBodyText>
-      </div>
-
       <table className={styles.description}>
         <thead>
-          <tr style={{ height: '24px', boxShadow: '0 0.7px #000' }}>
-            <th style={{ width: '30%' }}>
-              <RobotoBodyText level={7} customClass={styles.text}>
+          <tr style={{ height: '24px', borderBottom: 'solid 0.7px #000' }}>
+            <th>
+              <RobotoBodyText level={7} customClass={styles.textBold} style={{ paddingRight: 16 }}>
                 Code
               </RobotoBodyText>
             </th>
-            <th style={{ width: '70%' }}>
-              <RobotoBodyText level={7} customClass={styles.text}>
+            <th>
+              <RobotoBodyText level={7} customClass={styles.textBold}>
                 Description
               </RobotoBodyText>
             </th>
@@ -104,13 +95,16 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
         </thead>
         <tbody>
           <tr style={{ minHeight: '18px' }}>
-            <td>
-              <RobotoBodyText level={7} style={{ paddingRight: '16px', fontSize: '8px' }}>
+            <td style={{ whiteSpace: 'nowrap', width: 1 }}>
+              <RobotoBodyText
+                level={7}
+                customClass={styles.textThick}
+                style={{ paddingRight: '16px' }}>
                 {materialCode ?? ''}
               </RobotoBodyText>
             </td>
             <td>
-              <RobotoBodyText level={7} style={{ fontSize: '8px' }}>
+              <RobotoBodyText level={7} customClass={styles.textThick}>
                 {description ?? ''}
               </RobotoBodyText>
             </td>
@@ -119,10 +113,10 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
       </table>
 
       <table className={styles.mainInfo}>
-        <thead>
+        <thead className={styles.backgroundDark}>
           <tr>
             {mainTitle.map((el) => (
-              <th className={styles.backgroundDark}>
+              <th>
                 <RobotoBodyText level={5} customClass={styles.title}>
                   {el}
                 </RobotoBodyText>
@@ -141,7 +135,7 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
                       {el.room_id_text}
                     </RobotoBodyText>
                   </td>
-                  <td>
+                  <td colSpan={8}>
                     <RobotoBodyText level={6} customClass={styles.roomInfo}>
                       {el.room_name}
                     </RobotoBodyText>
@@ -157,30 +151,23 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
                     />
                   </td>
                   <td>
-                    <tr>
-                      <td>
-                        <Checkbox
-                          className={styles.rowInfo}
-                          checked={el.base.ceiling}
-                          onChange={onChangeData(index, 'base', 'ceiling')}>
-                          <RobotoBodyText level={7} customClass={styles.text}>
-                            Ceiling
-                          </RobotoBodyText>
-                        </Checkbox>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <Checkbox
-                          className={styles.rowInfo}
-                          checked={el.base.floor}
-                          onChange={onChangeData(index, 'base', 'floor')}>
-                          <RobotoBodyText level={7} customClass={styles.text}>
-                            Floor
-                          </RobotoBodyText>
-                        </Checkbox>
-                      </td>
-                    </tr>
+                    <Checkbox
+                      className={styles.rowInfo}
+                      checked={el.base.ceiling}
+                      onChange={onChangeData(index, 'base', 'ceiling')}>
+                      <RobotoBodyText level={7} customClass={styles.text}>
+                        Ceiling
+                      </RobotoBodyText>
+                    </Checkbox>
+
+                    <Checkbox
+                      className={styles.rowInfo}
+                      checked={el.base.floor}
+                      onChange={onChangeData(index, 'base', 'floor')}>
+                      <RobotoBodyText level={7} customClass={styles.text}>
+                        Floor
+                      </RobotoBodyText>
+                    </Checkbox>
                   </td>
                   <td>
                     <Checkbox
@@ -218,56 +205,42 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
                     />
                   </td>
                   <td>
-                    <tr>
-                      <td>
-                        <Checkbox
-                          className={styles.rowInfo}
-                          checked={el.door.frame}
-                          onChange={onChangeData(index, 'door', 'frame')}>
-                          <RobotoBodyText level={7} customClass={styles.text}>
-                            Frame
-                          </RobotoBodyText>
-                        </Checkbox>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <Checkbox
-                          className={styles.rowInfo}
-                          checked={el.door.panel}
-                          onChange={onChangeData(index, 'door', 'panel')}>
-                          <RobotoBodyText level={7} customClass={styles.text}>
-                            Panel
-                          </RobotoBodyText>
-                        </Checkbox>
-                      </td>
-                    </tr>
+                    <Checkbox
+                      className={styles.rowInfo}
+                      checked={el.door.frame}
+                      onChange={onChangeData(index, 'door', 'frame')}>
+                      <RobotoBodyText level={7} customClass={styles.text}>
+                        Frame
+                      </RobotoBodyText>
+                    </Checkbox>
+
+                    <Checkbox
+                      className={styles.rowInfo}
+                      checked={el.door.panel}
+                      onChange={onChangeData(index, 'door', 'panel')}>
+                      <RobotoBodyText level={7} customClass={styles.text}>
+                        Panel
+                      </RobotoBodyText>
+                    </Checkbox>
                   </td>
                   <td>
-                    <tr>
-                      <td>
-                        <Checkbox
-                          className={styles.rowInfo}
-                          checked={el.cabinet.carcass}
-                          onChange={onChangeData(index, 'cabinet', 'carcass')}>
-                          <RobotoBodyText level={7} customClass={styles.text}>
-                            Carcass
-                          </RobotoBodyText>
-                        </Checkbox>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <Checkbox
-                          className={styles.rowInfo}
-                          checked={el.cabinet.door}
-                          onChange={onChangeData(index, 'cabinet', 'door')}>
-                          <RobotoBodyText level={7} customClass={styles.text}>
-                            Door
-                          </RobotoBodyText>
-                        </Checkbox>
-                      </td>
-                    </tr>
+                    <Checkbox
+                      className={styles.rowInfo}
+                      checked={el.cabinet.carcass}
+                      onChange={onChangeData(index, 'cabinet', 'carcass')}>
+                      <RobotoBodyText level={7} customClass={styles.text}>
+                        Carcass
+                      </RobotoBodyText>
+                    </Checkbox>
+
+                    <Checkbox
+                      className={styles.rowInfo}
+                      checked={el.cabinet.door}
+                      onChange={onChangeData(index, 'cabinet', 'door')}>
+                      <RobotoBodyText level={7} customClass={styles.text}>
+                        Door
+                      </RobotoBodyText>
+                    </Checkbox>
                   </td>
                 </tr>
 

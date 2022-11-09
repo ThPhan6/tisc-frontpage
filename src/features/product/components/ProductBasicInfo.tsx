@@ -7,11 +7,12 @@ import { ReactComponent as RightLeftIcon } from '@/assets/icons/action-right-lef
 import { confirmDelete } from '@/helper/common';
 import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
-import { createCollection, deleteCollection, getCollectionByBrandId } from '@/services';
+import { createCollection, deleteCollection, getCollections } from '@/services';
 
 import { setPartialProductDetail } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
 import type { Collection } from '@/types';
+import { CollectionRelation } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
 import InputGroup from '@/components/EntryForm/InputGroup';
@@ -35,7 +36,7 @@ export const ProductBasicInfo: React.FC = () => {
 
   const getCollectionList = () => {
     if (product.brand?.id) {
-      getCollectionByBrandId(product.brand.id).then(setCollections);
+      getCollections(product.brand.id, CollectionRelation.Brand).then(setCollections);
     }
   };
 
@@ -47,7 +48,8 @@ export const ProductBasicInfo: React.FC = () => {
     disabled.setValue(true);
     createCollection({
       name: newCollection,
-      brand_id: product.brand.id,
+      relation_id: product.brand.id,
+      relation_type: CollectionRelation.Brand,
     }).then((res) => {
       /// disable loading
       disabled.setValue(false);
