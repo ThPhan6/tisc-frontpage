@@ -1,3 +1,4 @@
+import { ProductDimensionWeight } from '@/features/dimension-weight/types';
 import {
   OrderMethod,
   ProductConsiderStatus,
@@ -103,6 +104,7 @@ export interface ProductItem {
   general_attribute_groups: ProductAttributeFormInput[];
   feature_attribute_groups: ProductAttributeFormInput[];
   specification_attribute_groups: ProductAttributeFormInput[];
+  dimension_and_weight: ProductDimensionWeight;
   favorites?: number;
   images: string[];
   keywords: ProductKeyword;
@@ -144,6 +146,7 @@ export interface ProductFormData {
   general_attribute_groups: ProductAttributeFormInput[];
   feature_attribute_groups: ProductAttributeFormInput[];
   specification_attribute_groups: ProductAttributeFormInput[];
+  dimension_n_weight: ProductDimensionWeight;
   images: string[];
   keywords: ProductKeyword;
   tips: ProductTipData[];

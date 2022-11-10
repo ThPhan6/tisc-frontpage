@@ -12,7 +12,7 @@ import { setPartialProductDetail } from '@/features/product/reducers';
 import type { ProductAttributeFormInput, ProductAttributeProps } from '@/features/product/types';
 import type { ProductAttributes, SubBasisOption } from '@/types';
 
-import ConversionInput from '@/components/EntryForm/ConversionInput';
+import ConversionInput, { ConversionItemValue } from '@/components/EntryForm/ConversionInput';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { CustomInput } from '@/components/Form/CustomInput';
 import Popover from '@/components/Modal/Popover';
@@ -176,14 +176,25 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
       placeholder = basis.name;
     }
     if (basis?.type === 'Conversions') {
+      const conversionItem: ConversionItemValue = {
+        formula_1: Number(basis.formula_1),
+        formula_2: Number(basis.formula_2),
+        unit_1: basis.unit_1,
+        unit_2: basis.unit_2,
+      };
+
       return (
         <ConversionInput
           horizontal
           isTableFormat
           noWrap
+          autoWidth
+          defaultWidth={
+            item.conversion_value_1.length * 10 || item.conversion_value_2.length * 10 || 50
+          }
           fontLevel={4}
           label={currentAttribute?.name ? truncate(currentAttribute.name, { length: 20 }) : 'N/A'}
-          conversionData={basis}
+          conversionData={conversionItem}
           deleteIcon
           onDelete={onDelete}
           conversionValue={{

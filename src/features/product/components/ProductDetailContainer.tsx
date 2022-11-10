@@ -116,6 +116,7 @@ const ProductDetailContainer: React.FC = () => {
       description: details.description.trim(),
       general_attribute_groups: details.general_attribute_groups,
       feature_attribute_groups: details.feature_attribute_groups,
+      dimension_n_weight: details.dimension_n_weight,
       specification_attribute_groups: details.specification_attribute_groups,
       keywords: details.keywords.map((keyword) => keyword.trim()) as ProductKeyword,
       images: details.images.map((image) => {

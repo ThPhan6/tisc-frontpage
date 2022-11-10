@@ -19,6 +19,7 @@ import { AttributeOption, ConversionText, GeneralText } from './AttributeCompone
 import { ProductAttributeSubItem } from './AttributeItem';
 import { SelectAttributesToGroupRow } from './SelectAttributesToGroupRow';
 import styles from './index.less';
+import { DimensionWeight } from '@/features/dimension-weight';
 
 interface Props {
   attributes?: ProductAttributes[];
@@ -185,6 +186,8 @@ export const ProductAttributeContainer: FC<Props> = ({
           <CustomPlusButton size={18} />
         </div>
       ) : null}
+
+      {activeKey === 'specification' ? <DimensionWeight /> : null}
 
       {attributeGroup.map((_group, groupIndex) => {
         const attrGroupItem = attributeGroup[groupIndex];

@@ -124,12 +124,6 @@ export const useProductAttributeForm = (
     }
   }, [isSpecifiedModal, attributeType, specification_attribute_groups, loaded.value]);
 
-  // useEffect(() => {
-  //   return () => {
-  //     dispatch(resetProductState());
-  //   };
-  // }, []);
-
   const onDeleteProductAttribute = (index: number) => () => {
     const newProductAttribute = attributeGroup.filter((_item, key) => index !== key);
     dispatch(
