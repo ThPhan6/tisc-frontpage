@@ -1,11 +1,8 @@
 .modal {
-  @modalHeight: 752px;
-
   :global(.ant-modal-content) {
-    height: @modalHeight;
+    height: 752px;
   }
   :global(.ant-modal-body) {
-    height: calc(@modalHeight - 48px);
     padding: 16px;
   }
 }
@@ -81,16 +78,23 @@
 
   .groupRoomInfo {
     border-bottom: 0.7px solid @mono-color;
+
+    td {
+      height: 24px;
+      margin-bottom: 0.5px;
+    }
   }
 
   .groupRoom {
-    border-bottom: 0.7px solid @mono-color-medium;
-
     td {
       position: relative;
-
+      height: 48px;
       &:nth-last-child(2) {
         padding-right: 10px;
+      }
+
+      :global(.ant-checkbox-wrapper) {
+        height: 23px;
       }
     }
 
@@ -102,6 +106,11 @@
       border-color: @mono-color;
       border-radius: 0;
     }
+  }
+
+  .borderTop {
+    height: 18px;
+    border-top: 0.7px solid @mono-color-medium;
   }
 
   .checkBoxCenter {

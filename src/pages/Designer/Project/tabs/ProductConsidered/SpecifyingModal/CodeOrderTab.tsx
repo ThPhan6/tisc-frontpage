@@ -166,7 +166,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
     <div style={{ padding: '16px 0' }}>
       <Row gutter={[24, 8]} align="bottom">
         <Col span={12}>
-          <FormGroup label="Material/Product Code" required {...formGroupProps}>
+          <FormGroup label="Material/Product Code" lableFontSize={4} required {...formGroupProps}>
             <DropdownSelectInput
               placeholder="select from the list"
               borderBottomColor="light"
@@ -200,7 +200,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         </Col>
 
         <Col span={24}>
-          <FormGroup label="Description" required {...formGroupProps}>
+          <FormGroup label="Description" lableFontSize={4} required {...formGroupProps}>
             <CustomInput
               placeholder="e.g. Living room coffee table..."
               borderBottomColor="light"
@@ -214,13 +214,14 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         <Col span={24}>
           <FormGroup
             label="Define Finish Schedule (appliable for Room Schedule only)"
+            lableFontSize={4}
             {...formGroupProps}>
             <div
               className={`flex-between cursor-pointer ${styles.schedule}`}
               onClick={() => {
                 scheduleModal.setValue(true);
               }}>
-              <RobotoBodyText level={5} color="mono-color-medium">
+              <RobotoBodyText level={6} color="mono-color-medium">
                 e.g. Floor, base, wall, ceiling, door, cabinet...
               </RobotoBodyText>
               <SingleRightFormIcon />
@@ -229,7 +230,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         </Col>
 
         <Col span={12}>
-          <FormGroup label="Quantity/Unit Type" {...formGroupProps}>
+          <FormGroup label="Quantity/Unit Type" lableFontSize={4} {...formGroupProps}>
             <CustomInput
               borderBottomColor="light"
               value={quantity}
@@ -273,7 +274,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
 
         {/* Default value is Direct Purchase */}
         <Col span={24}>
-          <FormGroup label="Order Method" {...formGroupProps}>
+          <FormGroup label="Order Method" lableFontSize={4} {...formGroupProps}>
             <CustomRadio
               direction="horizontal"
               options={ORDER_METHODS}
@@ -288,7 +289,10 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         </Col>
 
         <Col span={24}>
-          <FormGroup label="Approval requirements prior to fabrication" {...formGroupProps}>
+          <FormGroup
+            label="Approval requirements prior to fabrication"
+            lableFontSize={4}
+            {...formGroupProps}>
             <CustomCheckbox
               options={requirements}
               selected={selectedRequirements}
@@ -310,7 +314,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         </Col>
 
         <Col span={24}>
-          <FormGroup label="General Instructions" {...formGroupProps}>
+          <FormGroup label="General Instructions" lableFontSize={4} {...formGroupProps}>
             <CustomCheckbox
               isCheckboxList
               options={instructions}
@@ -329,8 +333,9 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         </Col>
 
         <Col span={24}>
-          <FormGroup label="Special Instructions" {...formGroupProps}>
+          <FormGroup label="Special Instructions" lableFontSize={4} {...formGroupProps}>
             <CustomTextArea
+              customClass={styles.inputColor}
               placeholder="type here..."
               borderBottomColor="light"
               showCount
