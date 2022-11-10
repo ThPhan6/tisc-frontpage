@@ -13,6 +13,7 @@ export interface SubBasisConversion {
 export interface BasisConversionListResponse {
   id: string;
   name: string;
+  master: boolean;
   count: number;
   subs: SubBasisConversion[];
   created_at: string;
