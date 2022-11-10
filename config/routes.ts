@@ -453,7 +453,23 @@ export default [
           {
             path: PATH.tiscRevenueService,
             name: 'service',
-            component: './Admin',
+            routes: [
+              {
+                path: PATH.tiscRevenueService,
+                component: './TISC/Adminstration/Revenue/Services',
+                hideInMenu: true,
+              },
+              {
+                path: PATH.tiscRevenueServiceCreate,
+                component: './TISC/Adminstration/Revenue/Services/ServiceCreatePage',
+                hideInMenu: true,
+              },
+              {
+                path: PATH.tiscRevenueServiceDetail,
+                component: './TISC/Adminstration/Revenue/Services/ServiceViewPage',
+                hideInMenu: true,
+              },
+            ],
           },
           {
             path: PATH.tiscRevenueSubscription,
