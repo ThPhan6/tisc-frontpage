@@ -25,6 +25,12 @@
     border-bottom-color: transparent;
     cursor: pointer;
   }
+  :global(.ant-input:hover) {
+    border-bottom-color: transparent;
+  }
+  :global(.ant-input:focus) {
+    .borderBottom();
+  }
 }
 .schedule {
   .borderBottom();
