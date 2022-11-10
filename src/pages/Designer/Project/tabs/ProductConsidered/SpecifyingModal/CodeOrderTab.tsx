@@ -163,7 +163,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
   };
 
   return (
-    <div style={{ padding: '16px 0' }}>
+    <div style={{ paddingTop: '16px' }}>
       <Row gutter={[24, 8]} align="bottom">
         <Col span={12}>
           <FormGroup label="Material/Product Code" lableFontSize={4} required {...formGroupProps}>
@@ -256,7 +256,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
                   inputPlaceholder="please specify"
                   value={unit_type_id}
                   otherInput
-                  containerClass={styles.inputColor}
+                  containerClass={`${styles.inputColor} ${styles.fontSizeSmall} ${styles.inputBorderBottom}`}
                   otherStickyBottom
                   stickyTopItem
                   containerStyle={{ padding: 0 }}
@@ -274,9 +274,14 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
 
         {/* Default value is Direct Purchase */}
         <Col span={24}>
-          <FormGroup label="Order Method" lableFontSize={4} {...formGroupProps}>
+          <FormGroup
+            label="Order Method"
+            lableFontSize={4}
+            formClass={styles.borderBottom}
+            {...formGroupProps}>
             <CustomRadio
               direction="horizontal"
+              containerClass={styles.fontSizeSmall}
               options={ORDER_METHODS}
               value={order_method}
               onChange={(e) =>
@@ -291,6 +296,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         <Col span={24}>
           <FormGroup
             label="Approval requirements prior to fabrication"
+            formClass={`${styles.fontSizeSmall} ${styles.borderBottom} ${styles.inputBorderBottom}`}
             lableFontSize={4}
             {...formGroupProps}>
             <CustomCheckbox
@@ -314,7 +320,11 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         </Col>
 
         <Col span={24}>
-          <FormGroup label="General Instructions" lableFontSize={4} {...formGroupProps}>
+          <FormGroup
+            label="General Instructions"
+            formClass={`${styles.fontSizeSmall} ${styles.borderBottom}`}
+            lableFontSize={4}
+            {...formGroupProps}>
             <CustomCheckbox
               isCheckboxList
               options={instructions}
