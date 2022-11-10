@@ -96,7 +96,7 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
         </thead>
         <tbody>
           <tr style={{ minHeight: '18px' }}>
-            <td style={{ whiteSpace: 'nowrap', width: 1 }}>
+            <td style={{ whiteSpace: 'nowrap', width: '60px' }}>
               <RobotoBodyText
                 level={7}
                 customClass={styles.textThick}
@@ -245,7 +245,9 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
                   </td>
                 </tr>
 
-                <tr className={styles.borderTop}></tr>
+                <tr className={styles.borderTop}>
+                  <td colSpan={9}></td>
+                </tr>
               </Fragment>
             );
           })}
