@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
-import { LOGO_SIZE_LIMIT } from '@/constants/util';
 import { Col, Row, Upload, UploadProps, message } from 'antd';
 
 import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
@@ -38,6 +37,8 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText, Title } from '@/components/Typography';
 
 import styles from './index.less';
+
+const LOGO_SIZE_LIMIT = 240 * 1024; // 240 KB
 
 const BrandProfilePage = () => {
   const { fetchUserInfo } = useCustomInitialState();

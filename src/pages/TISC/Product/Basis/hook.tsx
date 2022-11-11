@@ -20,10 +20,10 @@ import { merge } from 'lodash';
 
 import {
   BasisOptionSubForm,
+  ConversionSubValueProps,
   PresetItemValueProp,
   SubBasisOption,
   SubPresetValueProp,
-  conversionValueDefault,
 } from '@/types';
 
 import { ConversionItem } from './Conversion/components/ConversionItem';
@@ -35,6 +35,15 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+
+const conversionValueDefault: ConversionSubValueProps = {
+  name_1: '',
+  name_2: '',
+  formula_1: 0,
+  formula_2: 0,
+  unit_1: '',
+  unit_2: '',
+};
 
 const presetsValueDefault: PresetItemValueProp = {
   name: '',
