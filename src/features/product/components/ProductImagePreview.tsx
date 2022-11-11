@@ -53,9 +53,9 @@ const ActionItem: FC<{ onClick: () => void; label: string; icon: ReactNode }> = 
 };
 
 interface ProductImagePreviewProps {
-  isPublicPage?: boolean;
   hideInquiryRequest?: boolean;
   isOfficeLibrary?: boolean;
+  isPublicPage?: boolean;
 }
 
 const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({

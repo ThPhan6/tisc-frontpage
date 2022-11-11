@@ -110,6 +110,9 @@ const BasisOptionList: React.FC = () => {
       align: 'center',
       width: '5%',
       render: (_value: any, record: any) => {
+        if (record.master) {
+          return null;
+        }
         return (
           <ActionMenu
             actionItems={[

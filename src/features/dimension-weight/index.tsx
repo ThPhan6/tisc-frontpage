@@ -1,138 +1,172 @@
-import { useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
+import { USER_ROLE } from '@/constants/userRoles';
 import { Switch } from 'antd';
 
-import { DimensionWeightConversion } from './types';
+import { getDimensionWeightList } from './services';
+import { useGetUserRoleFromPathname } from '@/helper/hook';
+import { validateFloatNumber } from '@/helper/utils';
+
+import { DimensionWeightItem, ProductDimensionWeight } from './types';
 
 import CustomCollapse from '@/components/Collapse';
-import ConversionInput from '@/components/EntryForm/ConversionInput';
+import ConversionInput, {
+  ConversionValue,
+  ConversionValueItemProps,
+} from '@/components/EntryForm/ConversionInput';
 import { RobotoBodyText } from '@/components/Typography';
 
 import styles from './index.less';
 
-export const productWithDiameterData: DimensionWeightConversion[] = [
-  {
-    id: '1',
-    name: 'Overal Length : ',
-    formula_1: 1,
-    formula_2: 22222222222222222222,
-    unit_1: 'mm',
-    unit_2: 'in',
-  },
-  {
-    id: '2',
-    name: 'Overal Diameter : ',
-    formula_1: 11111111111111111111111111111,
-    formula_2: 22,
-    unit_1: 'mm',
-    unit_2: 'in',
-  },
-  {
-    id: '3',
-    name: 'Total Weight : ',
-    formula_1: 11,
-    formula_2: 22,
-    unit_1: 'kg',
-    unit_2: 'lb',
-  },
-];
+interface DimensionWeightProps {
+  data: ProductDimensionWeight;
+  setData?: (data: ProductDimensionWeight) => void;
+  onChange?: (index: number, value: ConversionValue) => void;
+  collapseStyles?: boolean;
+  customClass?: string;
+}
 
-export const productWithNoneDiameterData: DimensionWeightConversion[] = [
-  {
-    id: '1',
-    name: 'Overal Length : ',
-    formula_1: 1,
-    formula_2: 2,
-    unit_1: 'mm',
-    unit_2: 'in',
-  },
-  {
-    id: '2',
-    name: 'Overal Width : ',
-    formula_1: 1,
-    formula_2: 2,
-    unit_1: 'mm',
-    unit_2: 'in',
-  },
-  {
-    id: '3',
-    name: 'Overal Height : ',
-    formula_1: 11,
-    formula_2: 22,
-    unit_1: 'mm',
-    unit_2: 'in',
-  },
-  {
-    id: '4',
-    name: 'Total Weight : ',
-    formula_1: 11,
-    formula_2: 22,
-    unit_1: 'kg',
-    unit_2: 'lb',
-  },
-];
+export const DimensionWeight: FC<DimensionWeightProps> = ({
+  data,
+  setData,
+  onChange,
+  collapseStyles = true,
+  customClass,
+}) => {
+  const currentUser = useGetUserRoleFromPathname();
+  const editable = currentUser === USER_ROLE.tisc;
 
-export const DimensionWeight = () => {
-  const [diameterToogle, setDiameterToogle] = useState<boolean>(true);
+  const [diameterToggle, setDiameterToggle] = useState<boolean | undefined>(undefined);
   const [activeCollapse, setActiveCollapse] = useState<boolean>(true);
 
-  const renderConversionIpout = (basisData: DimensionWeightConversion) => {
+  useEffect(() => {
+    if (!editable) {
+      setDiameterToggle(data?.with_diameter);
+      return;
+    }
+
+    getDimensionWeightList().then((res) => {
+      if (res) {
+        let newData: ProductDimensionWeight = {
+          id: res.id,
+          name: res.name,
+          with_diameter: res.with_diameter,
+          attributes: res.attributes,
+        };
+
+        /// mapping data of attributes selected
+        const newAttribute: DimensionWeightItem[] = res.attributes;
+        if (data?.attributes?.length) {
+          for (const elements of newAttribute) {
+            const selectedAttribute = data.attributes.find(
+              (item) =>
+                item.id === elements.id && item.conversion_value_1 && item.conversion_value_2,
+            );
+
+            if (selectedAttribute) {
+              elements.conversion_value_1 = selectedAttribute.conversion_value_1;
+              elements.conversion_value_2 = selectedAttribute.conversion_value_2;
+            }
+          }
+
+          newData = {
+            ...newData,
+            id: data.id,
+            with_diameter: data.with_diameter,
+            attributes: newAttribute,
+          };
+        }
+
+        // update data
+        setData?.(newData);
+        ///
+        setDiameterToggle(newData.with_diameter);
+      }
+    });
+  }, []);
+
+  const renderAttributeConversion = (conversionItem: DimensionWeightItem, index: number) => {
+    const conversionValue: ConversionValueItemProps = {
+      formula_1: conversionItem.conversion?.formula_1 || 0,
+      formula_2: conversionItem.conversion?.formula_2 || 0,
+      unit_1: conversionItem.conversion?.unit_1 || '',
+      unit_2: conversionItem.conversion?.unit_2 || '',
+    };
+
     return (
       <ConversionInput
+        key={conversionItem.id || index}
         noWrap
         horizontal
+        isTableFormat
         fontLevel={4}
-        label={basisData.name}
-        conversionData={basisData}
+        label={<RobotoBodyText level={6}>{conversionItem.name} :</RobotoBodyText>}
+        conversionData={conversionValue}
+        inputValidation={validateFloatNumber}
         placeholder1="type number"
         placeholder2="type number"
+        disabled={!onChange || !editable}
         conversionValue={{
-          firstValue: String(basisData.formula_1),
-          secondValue: String(basisData.formula_1),
+          firstValue: String(conversionItem.conversion_value_1),
+          secondValue: String(conversionItem.conversion_value_2),
         }}
-        setConversionValue={() => {
-          // onChangeAttributeItem(attributeItemIndex, {
-          //   conversion_value_1: data.firstValue,
-          //   conversion_value_2: data.secondValue,
-          // });
-        }}
+        setConversionValue={(value) => onChange?.(index, value)}
       />
     );
   };
 
+  if (!data || diameterToggle === undefined) {
+    return null;
+  }
+
   return (
     <CustomCollapse
-      customHeaderClass={styles.dimensionCollapse}
-      showActiveBoxShadow
+      customHeaderClass={`${styles.dimensionCollapse} ${customClass}`}
+      showActiveBoxShadow={collapseStyles}
+      noBorder={!collapseStyles}
       defaultActiveKey={['1']}
       onChange={() => setActiveCollapse(!activeCollapse)}
       header={
         <div className="header">
           <RobotoBodyText level={6} customClass="label">
-            Dimension & Weight
+            {data.name}
           </RobotoBodyText>
-          {activeCollapse ? (
+          {editable && activeCollapse ? (
             <div className="slice">
               <RobotoBodyText level={6} fontFamily="Roboto" customClass="text">
                 Product with diameter
               </RobotoBodyText>
-              <Switch
-                size="small"
-                checkedChildren="On"
-                unCheckedChildren="Off"
-                defaultChecked
-                onClick={(_c, e) => {
+              <div
+                className={styles.switchBtn}
+                onClick={(e) => {
                   e.stopPropagation();
-                  setDiameterToogle(!diameterToogle);
-                }}
-              />
+                }}>
+                <Switch
+                  size="small"
+                  checkedChildren="ON"
+                  unCheckedChildren="OFF"
+                  defaultChecked={diameterToggle}
+                  disabled={!onChange || !editable}
+                  onClick={(toggle, e) => {
+                    e.stopPropagation();
+                    setDiameterToggle(toggle);
+                    setData?.({ ...data, with_diameter: toggle });
+                  }}
+                />
+              </div>
             </div>
           ) : null}
         </div>
       }>
-      {diameterToogle
-        ? productWithDiameterData.map((basis) => renderConversionIpout(basis))
-        : productWithNoneDiameterData.map((basis) => renderConversionIpout(basis))}
+      <table className={styles.tableContent}>
+        <tbody>
+          {data.attributes?.map((attribute, index) => {
+            if (attribute.with_diameter === diameterToggle || attribute.with_diameter === null) {
+              return renderAttributeConversion(attribute, index);
+            }
+          })}
+        </tbody>
+      </table>
     </CustomCollapse>
   );
 };

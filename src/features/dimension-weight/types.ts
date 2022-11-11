@@ -1,8 +1,21 @@
-export interface DimensionWeightConversion {
+import { ConversionSubValueProps } from '@/types';
+
+export interface DimensionWeightItem {
   id: string;
   name: string;
-  formula_1: number;
-  formula_2: number;
-  unit_1: string;
-  unit_2: string;
+  basis_id: string;
+  basis_value_id: string;
+  conversion_value_1: string;
+  conversion_value_2: string;
+  type: string;
+  text: string;
+  with_diameter: boolean | null;
+  conversion?: ConversionSubValueProps;
+}
+
+export interface ProductDimensionWeight {
+  id: string;
+  name: string;
+  with_diameter: boolean;
+  attributes: DimensionWeightItem[];
 }

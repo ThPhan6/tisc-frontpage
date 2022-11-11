@@ -4,8 +4,6 @@ import { Col, Row } from 'antd';
 
 import { CustomInputProps } from '../Form/types';
 import { MainContentProps } from './types';
-import { DimensionWeightConversion } from '@/pages/Designer/Products/CustomLibrary/types';
-import type { SubBasisConversion } from '@/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
@@ -20,9 +18,16 @@ const ConversionContent: FC<MainContentProps> = ({ children, noWrap }) => (
   </Row>
 );
 
-interface ConversionValue {
+export interface ConversionValue {
   firstValue: string;
   secondValue: string;
+}
+
+export interface ConversionValueItemProps {
+  formula_1: number;
+  formula_2: number;
+  unit_1: string;
+  unit_2: string;
 }
 
 interface ConversionInputProps extends CustomInputProps {
@@ -31,7 +36,7 @@ interface ConversionInputProps extends CustomInputProps {
   fontLevel?: 1 | 2 | 3 | 4 | 5;
   label?: string | ReactNode;
   noWrap?: boolean;
-  conversionData: SubBasisConversion | DimensionWeightConversion;
+  conversionData: ConversionValueItemProps;
   placeholder1?: string;
   placeholder2?: string;
   deleteIcon?: boolean;
@@ -42,7 +47,7 @@ interface ConversionInputProps extends CustomInputProps {
 }
 
 const ConversionInput: FC<ConversionInputProps> = ({
-  label,
+  label = '',
   horizontal,
   required,
   fontLevel,
@@ -86,7 +91,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
             placeholder={placeholder1}
             onChange={(e) => {
               const firstValue = e.target.value;
-              const secondValue = parseFloat(firstValue) * conversionData.formula_2;
+              const secondValue = parseFloat(firstValue) * Number(conversionData.formula_2);
 
               setConversionValue({
                 firstValue: firstValue,
@@ -108,7 +113,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
             placeholder={placeholder2}
             onChange={(e) => {
               const secondValue = e.target.value;
-              const firstValue = parseFloat(secondValue) * conversionData.formula_1;
+              const firstValue = parseFloat(secondValue) * Number(conversionData.formula_1);
               setConversionValue({
                 firstValue: isNaN(firstValue) ? '' : firstValue.toString(),
                 secondValue: secondValue,

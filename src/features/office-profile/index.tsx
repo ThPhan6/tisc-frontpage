@@ -194,7 +194,7 @@ const BrandProfilePage = () => {
         .catch(() => {
           message.error('Upload Failed');
         });
-      return false;
+      return true;
     },
   };
 

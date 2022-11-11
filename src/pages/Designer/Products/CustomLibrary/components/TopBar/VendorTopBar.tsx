@@ -2,19 +2,16 @@ import React, { useEffect } from 'react';
 
 import { PATH } from '@/constants/path';
 
-import { ReactComponent as SmallPlusIcon } from '@/assets/icons/small-plus-icon.svg';
-
 import { pushTo } from '@/helper/history';
 
 import { ProductGetListParameter } from '@/features/product/types';
 
-import { RobotoBodyText } from '@/components/Typography';
 import { TopBarContainer, TopBarItem } from '@/features/product/components';
 import { useProductListFilterAndSorter } from '@/features/product/components/FilterAndSorter';
 
-import styles from './TopBar.less';
+import styles from './index.less';
 
-export const TopBar: React.FC = () => {
+export const VendorTopBar: React.FC = () => {
   const { renderFilterDropdown, renderItemTopBar, productSummary, filter, productBrand } =
     useProductListFilterAndSorter({
       noFetchData: true,
@@ -87,34 +84,6 @@ export const TopBar: React.FC = () => {
               disabled={!productSummary}
               bottomValue="Products"
               cursor="default"
-            />
-          </>
-        }
-        RightSideContent={
-          <>
-            <TopBarItem
-              topValue={renderFilterDropdown('company_id')}
-              disabled
-              bottomEnable={productSummary ? true : false}
-              bottomValue={renderItemTopBar('Companies')}
-              customClass="left-divider"
-            />
-            <TopBarItem
-              topValue={renderFilterDropdown('collection_id')}
-              disabled
-              bottomEnable={productSummary ? true : false}
-              bottomValue={renderItemTopBar('Collections')}
-              customClass="left-divider"
-            />
-            <TopBarItem
-              bottomValue="New Card"
-              customClass="left-divider"
-              onClick={gotoProductForm}
-              icon={
-                <RobotoBodyText level={6} customClass={styles.newCardIcon}>
-                  <SmallPlusIcon />
-                </RobotoBodyText>
-              }
             />
           </>
         }

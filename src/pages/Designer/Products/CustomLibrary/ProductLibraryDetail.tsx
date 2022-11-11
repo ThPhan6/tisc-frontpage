@@ -4,7 +4,6 @@ import { Col, Row } from 'antd';
 import { useHistory, useParams } from 'umi';
 
 import { ProductInfoTab } from './types';
-import { useAppSelector } from '@/reducers';
 
 import { SpecificationTab } from './components/SpecificationTab';
 import { SummaryTab } from './components/SummaryTab';
@@ -28,13 +27,13 @@ const ProductLibraryDetail: React.FC = () => {
   const productId = params?.id || '';
   const brandId = params?.brandId || '';
 
-  const productData = useAppSelector((state) => state.officeProduct.product);
-  const summaryData = useAppSelector((state) => state.officeProduct.summary);
-  const specificationData = useAppSelector((state) => state.officeProduct.specification);
+  // const productData = useAppSelector((state) => state.officeProduct.product);
+  // const summaryData = useAppSelector((state) => state.officeProduct.summary);
+  // const specificationData = useAppSelector((state) => state.officeProduct.specification);
   // const vendorData = useAppSelector((state) => state.officeProduct.vendor);
 
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('summary');
-  const [title, setTitle] = useState<string>('');
+  // const [title, setTitle] = useState<string>('');
 
   useEffect(() => {
     if (brandId) {
@@ -51,40 +50,22 @@ const ProductLibraryDetail: React.FC = () => {
     }
   }, [productId]);
 
-  useEffect(
-    () => {
-      if (productData.id) {
-        // load brand information
-        // dispatch(setBrand(details.brand));
-        /// get product name
-        setTitle(productData.name);
-      }
-    },
-    [
-      /* details.brand */
-    ],
-  );
-
   const onSave = () => {
-    const data = {
-      company_id: summaryData.company.id || '',
-      collection_id: summaryData.collection.id || '',
-      product: summaryData.product.trim(),
-      description: summaryData.description.trim(),
-      attributes: summaryData.attributes,
-      specifications: specificationData.specifications,
-      images: productData.images?.map((image) => {
-        if (image.indexOf('data:image') > -1) {
-          return image.split(',')[1];
-        }
-        return image;
-      }),
-    };
-
-    console.log('data', data);
-
+    // const data = {
+    //   company_id: summaryData.company.id || '',
+    //   collection_id: summaryData.collection.id || '',
+    //   product: summaryData.product.trim(),
+    //   description: summaryData.description.trim(),
+    //   attributes: summaryData.attributes,
+    //   specifications: specificationData.specifications,
+    //   images: productData.images?.map((image) => {
+    //     if (image.indexOf('data:image') > -1) {
+    //       return image.split(',')[1];
+    //     }
+    //     return image;
+    //   }),
+    // };
     // update collection list
-
     // update company list
   };
 
@@ -92,7 +73,7 @@ const ProductLibraryDetail: React.FC = () => {
     <Row className={styles.container}>
       <Col span={24}>
         <ProductDetailHeader
-          title={title}
+          title={'title'}
           onSave={onSave}
           onCancel={history.goBack}
           hideSelect

@@ -675,7 +675,7 @@ export default [
       },
       {
         path: PATH.designerOfficeLibrary,
-        name: 'Office Library & Resources',
+        name: 'library.resources',
         icon: 'office-library-icon.svg',
         access: 'design_product_custom_library',
         routes: [

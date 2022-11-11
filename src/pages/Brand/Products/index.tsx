@@ -44,7 +44,7 @@ const BrandProductListPage: React.FC = () => {
             topValue={summary?.category_count ?? '0'}
             disabled={summary ? false : true}
             bottomValue="Categories"
-            customClass={`category ${summary?.category_count ? 'bold' : ''}`}
+            customClass={`${summary?.category_count ? 'bold' : ''}`}
           />
           <TopBarItem
             topValue={summary?.collection_count ?? '0'}
@@ -80,7 +80,7 @@ const BrandProductListPage: React.FC = () => {
             disabled
             bottomEnable={summary ? true : false}
             bottomValue={renderItemTopBar('Collections')}
-            customClass="left-divider collection"
+            customClass="left-divider mr-12"
           />
         </>
       }

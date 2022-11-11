@@ -183,17 +183,16 @@ export const TopBar: React.FC = () => {
               customClass="left-divider"
             />
             <TopBarItem
-              topValue={<span style={{ opacity: 0 }}>.</span>}
               disabled
               bottomEnable={productSummary ? true : false}
               bottomValue="New Card"
-              customClass="left-divider"
+              customClass="left-divider mr-12"
               onClick={productSummary ? gotoProductForm : undefined}
               icon={
                 <span
-                  className={`
-                ${styles.newCardIcon}
-                ${productSummary ? styles.activeNewCard : styles.disabledNewCard}`}>
+                  className={`${styles.newCardIcon} ${
+                    productSummary ? styles.activeNewCard : styles.disabledNewCard
+                  }`}>
                   <SmallPlusIcon />
                 </span>
               }

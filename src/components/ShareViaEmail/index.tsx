@@ -139,13 +139,14 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
       submitButtonStatus={submitButtonStatus.value}
       onFormSubmit={handleSubmit}>
       <BrandProductBasicHeader
-        image={product.images?.[0] || product.image}
-        logo={product.brand_logo || product.brand?.logo}
-        text_1={product.brand_name || product.brand?.name}
+        image={product.images?.[0]}
+        logo={product.brand?.logo}
+        text_1={product.brand?.name}
         text_2={product.name}
         text_3={product.description}
         customClass={styles.header}
       />
+
       {/* Sharing Group */}
       <CollapseRadioFormGroup
         label="Sharing Group"
