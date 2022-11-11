@@ -6,8 +6,9 @@ import { useProductAttributeForm } from './hooks';
 import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
 
 import { setPartialProductDetail } from '../../reducers';
-import { ProductAttributeProps } from '../../types';
+import { ProductAttributeProps, SpecificationAttributeBasisOptionProps } from '../../types';
 import { ProductInfoTab } from './types';
+import { DimensionWeightItem } from '@/features/dimension-weight/types';
 import store from '@/reducers';
 import { ProductAttributes } from '@/types';
 
@@ -15,7 +16,7 @@ import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { BodyText } from '@/components/Typography';
+import { BodyText, RobotoBodyText } from '@/components/Typography';
 
 import { AttributeOption, ConversionText, GeneralText } from './AttributeComponent';
 import { ProductAttributeSubItem } from './AttributeItem';
@@ -101,18 +102,19 @@ export const ProductAttributeContainer: FC<Props> = ({
   };
 
   const renderAttributeRowItem = (
-    attribute: ProductAttributeProps,
+    attribute: ProductAttributeProps | DimensionWeightItem,
     attrIndex: number,
-    groupIndex: number,
     groupName: string,
+    groupIndex?: number,
   ) => {
     if (isTiscAdmin) {
-      if (!attributes) {
+      if (!attributes || !groupIndex) {
         return null;
       }
+
       return (
         <ProductAttributeSubItem
-          item={attribute}
+          item={attribute as ProductAttributeProps}
           attributeItemIndex={attrIndex}
           attributeIndex={groupIndex}
           attributes={attributes}
@@ -127,8 +129,11 @@ export const ProductAttributeContainer: FC<Props> = ({
       );
     }
 
-    const curAttribute = attributeGroup[groupIndex]?.attributes?.[attrIndex];
-    const chosenOption = curAttribute.basis_options?.find((el) => el.isChecked === true);
+    let chosenOption: SpecificationAttributeBasisOptionProps | undefined;
+    if (groupIndex) {
+      const curAttribute = attributeGroup[groupIndex]?.attributes?.[attrIndex];
+      chosenOption = curAttribute.basis_options?.find((el) => el.isChecked === true);
+    }
 
     return (
       <tr className={styles.attributeSubItem} key={attribute.id}>
@@ -164,12 +169,14 @@ export const ProductAttributeContainer: FC<Props> = ({
                   : undefined
               }
               setChosenOptions={(option) => {
-                onSelectSpecificationOption(
-                  groupIndex,
-                  attribute.id,
-                  isTiscAdmin ? false : true,
-                  option?.value?.toString() || undefined,
-                );
+                if (groupIndex) {
+                  onSelectSpecificationOption(
+                    groupIndex,
+                    attribute.id,
+                    isTiscAdmin ? false : true,
+                    option?.value?.toString() || undefined,
+                  );
+                }
               }}
             />
           ) : (
@@ -180,13 +187,13 @@ export const ProductAttributeContainer: FC<Props> = ({
     );
   };
 
-  return (
-    <>
-      {activeKey === 'specification' ? (
+  const renderDimensionWeight = () => {
+    if (activeKey !== 'specification' || !dimensionWeightData.attributes.length) return null;
+
+    if (isTiscAdmin) {
+      return (
         <DimensionWeight
-          customClass={`${styles.marginTopSpace} ${
-            isSpecifiedModal ? styles.dimensionNoneEffect : ''
-          } `}
+          customClass={styles.marginTopSpace}
           collapseStyles={!isSpecifiedModal}
           data={dimensionWeightData}
           setData={(data) => {
@@ -198,7 +205,36 @@ export const ProductAttributeContainer: FC<Props> = ({
           }}
           onChange={onChangeDimensionWeight}
         />
-      ) : null}
+      );
+    }
+
+    return (
+      <CustomCollapse
+        defaultActiveKey={'1'}
+        showActiveBoxShadow={!specifying}
+        noBorder={noBorder}
+        customHeaderClass={`${styles.productAttributeItem} ${styles.marginTopSpace} ${
+          specifying ? styles.specifying : ''
+        }`}
+        header={
+          <div className={styles.attrGroupTitle}>
+            <RobotoBodyText level={6}>{dimensionWeightData.name}</RobotoBodyText>
+          </div>
+        }>
+        <table className={styles.table}>
+          <tbody>
+            {dimensionWeightData.attributes.map((attribute, attrIndex) =>
+              renderAttributeRowItem(attribute, attrIndex, dimensionWeightData.name),
+            )}
+          </tbody>
+        </table>
+      </CustomCollapse>
+    );
+  };
+
+  return (
+    <>
+      {renderDimensionWeight()}
 
       {isTiscAdmin ? (
         <CustomPlusButton
@@ -212,7 +248,11 @@ export const ProductAttributeContainer: FC<Props> = ({
       {attributeGroup.map((_group, groupIndex) => {
         const attrGroupItem = attributeGroup[groupIndex];
         return (
-          <div key={groupIndex} style={{ marginBottom: 8, marginTop: isTiscAdmin ? undefined : 8 }}>
+          <div
+            key={groupIndex}
+            className={styles.productAttributeItem}
+            /* style={{ marginBottom: 8, marginTop: isTiscAdmin ? undefined : 8 }} */
+          >
             <div className={styles.attributes}>
               <div className={styles.specification}>
                 <CustomCollapse
@@ -241,8 +281,8 @@ export const ProductAttributeContainer: FC<Props> = ({
                           renderAttributeRowItem(
                             attribute,
                             attrIndex,
-                            groupIndex,
                             attrGroupItem.name,
+                            groupIndex,
                           ),
                         )}
                       </tbody>

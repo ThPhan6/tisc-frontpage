@@ -87,10 +87,10 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
 
   const renderAttributeConversion = (conversionItem: DimensionWeightItem, index: number) => {
     const conversionValue: ConversionValueItemProps = {
-      formula_1: conversionItem.conversion.formula_1,
-      formula_2: conversionItem.conversion.formula_2,
-      unit_1: conversionItem.conversion.unit_1,
-      unit_2: conversionItem.conversion.unit_2,
+      formula_1: conversionItem.conversion?.formula_1 || 0,
+      formula_2: conversionItem.conversion?.formula_2 || 0,
+      unit_1: conversionItem.conversion?.unit_1 || '',
+      unit_2: conversionItem.conversion?.unit_2 || '',
     };
 
     return (
@@ -131,7 +131,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
           <RobotoBodyText level={6} customClass="label">
             {data.name}
           </RobotoBodyText>
-          {activeCollapse ? (
+          {editable && activeCollapse ? (
             <div className="slice">
               <RobotoBodyText level={6} fontFamily="Roboto" customClass="text">
                 Product with diameter

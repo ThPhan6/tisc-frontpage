@@ -10,7 +10,7 @@ export interface DimensionWeightItem {
   type: string;
   text: string;
   with_diameter: boolean | null;
-  conversion: ConversionSubValueProps;
+  conversion?: ConversionSubValueProps;
 }
 
 export interface ProductDimensionWeight {
