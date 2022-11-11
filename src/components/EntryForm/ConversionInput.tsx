@@ -1,8 +1,10 @@
-import type { FC, ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 
 import { Col, Row } from 'antd';
 
+import { CustomInputProps } from '../Form/types';
 import { MainContentProps } from './types';
+import { DimensionWeightConversion } from '@/pages/Designer/Products/CustomLibrary/types';
 import type { SubBasisConversion } from '@/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -23,13 +25,13 @@ interface ConversionValue {
   secondValue: string;
 }
 
-interface ConversionInputProps {
+interface ConversionInputProps extends CustomInputProps {
   horizontal?: boolean;
   required?: boolean;
   fontLevel?: 1 | 2 | 3 | 4 | 5;
   label?: string | ReactNode;
   noWrap?: boolean;
-  conversionData: SubBasisConversion;
+  conversionData: SubBasisConversion | DimensionWeightConversion;
   placeholder1?: string;
   placeholder2?: string;
   deleteIcon?: boolean;
@@ -53,6 +55,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
   conversionValue,
   setConversionValue,
   isTableFormat,
+  ...props
 }) => {
   const { labelSpan, inputSpan, fontSize, iconDelete } = useGeneralFeature(
     noWrap,
@@ -77,12 +80,14 @@ const ConversionInput: FC<ConversionInputProps> = ({
       <div className="double-input-group-wrapper">
         <div className="double-input-group">
           <CustomInput
+            {...props}
             autoFocus
             value={conversionValue.firstValue}
             placeholder={placeholder1}
             onChange={(e) => {
               const firstValue = e.target.value;
               const secondValue = parseFloat(firstValue) * conversionData.formula_2;
+
               setConversionValue({
                 firstValue: firstValue,
                 secondValue: isNaN(secondValue) ? '' : secondValue.toString(),
@@ -91,8 +96,6 @@ const ConversionInput: FC<ConversionInputProps> = ({
             fontLevel={fontSize}
             className="first-input-box"
             onClick={(e) => e.stopPropagation()}
-            autoWidth
-            defaultWidth={30}
           />
           <BodyText level={fontSize} fontFamily="Roboto" customClass="unit-input-label">
             {conversionData.unit_1}
@@ -100,6 +103,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
         </div>
         <div className="double-input-group">
           <CustomInput
+            {...props}
             value={conversionValue.secondValue}
             placeholder={placeholder2}
             onChange={(e) => {
@@ -113,8 +117,6 @@ const ConversionInput: FC<ConversionInputProps> = ({
             fontLevel={fontSize}
             className="first-input-box"
             onClick={(e) => e.stopPropagation()}
-            autoWidth
-            defaultWidth={30}
           />
           <BodyText level={fontSize} fontFamily="Roboto" customClass="unit-input-label">
             {conversionData.unit_2}

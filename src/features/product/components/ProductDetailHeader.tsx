@@ -17,6 +17,7 @@ interface ProductDetailHeaderProps {
   customClass?: string;
   onSave?: () => void;
   onCancel?: () => void;
+  hideSelect?: boolean;
 }
 
 const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
@@ -24,6 +25,7 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
   customClass,
   onSave,
   onCancel,
+  hideSelect,
 }) => {
   const product = useAppSelector((state) => state.product);
   const dispatch = useDispatch();
@@ -35,12 +37,14 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
       <div className={`${styles.productHeader} ${customClass}`}>
         <div className={styles.leftAction}>
           <Title level={7}>{title}</Title>
-          <CustomButton
-            variant="text"
-            buttonClass="select-category-btn"
-            onClick={() => setVisible(true)}>
-            select
-          </CustomButton>
+          {hideSelect ? null : (
+            <CustomButton
+              variant="text"
+              buttonClass="select-category-btn"
+              onClick={() => setVisible(true)}>
+              select
+            </CustomButton>
+          )}
         </div>
         <div className={styles.iconWrapper}>
           <CustomButton
@@ -61,30 +65,32 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
           </CustomButton>
         </div>
       </div>
-      <Popover
-        title="SELECT CATEGORY"
-        visible={visible}
-        setVisible={setVisible}
-        categoryDropdown
-        chosenValue={categories.map((category) => {
-          return {
-            label: category.name,
-            value: category.id,
-          };
-        })}
-        setChosenValue={(data: CheckboxValue[]) => {
-          dispatch(
-            setPartialProductDetail({
-              categories: data.map((item) => {
-                return {
-                  id: item.value,
-                  name: item.label as string,
-                };
+      {hideSelect ? null : (
+        <Popover
+          title="SELECT CATEGORY"
+          visible={visible}
+          setVisible={setVisible}
+          categoryDropdown
+          chosenValue={categories.map((category) => {
+            return {
+              label: category.name,
+              value: category.id,
+            };
+          })}
+          setChosenValue={(data: CheckboxValue[]) => {
+            dispatch(
+              setPartialProductDetail({
+                categories: data.map((item) => {
+                  return {
+                    id: String(item.value),
+                    name: String(item.label),
+                  };
+                }),
               }),
-            }),
-          );
-        }}
-      />
+            );
+          }}
+        />
+      )}
     </>
   );
 };

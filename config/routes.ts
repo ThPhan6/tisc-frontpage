@@ -663,7 +663,7 @@ export default [
         routes: [
           {
             path: PATH.designerBrandProduct,
-            component: './Designer/Products',
+            component: './Designer/Products/BrandProducts',
             hideInMenu: true,
           },
           {
@@ -674,11 +674,27 @@ export default [
         ],
       },
       {
-        path: PATH.designerCustomLibrary,
-        name: 'custom.library',
-        icon: 'design-firm-icon.svg',
-        component: './Admin',
+        path: PATH.designerOfficeLibrary,
+        name: 'Office Library & Resources',
+        icon: 'office-library-icon.svg',
         access: 'design_product_custom_library',
+        routes: [
+          {
+            path: PATH.designerOfficeLibrary,
+            component: './Designer/Products/CustomLibrary',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerOfficeLibraryCreate,
+            component: './Designer/Products/CustomLibrary/ProductLibraryDetail',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerOfficeLibraryUpdate,
+            component: './Designer/Products/CustomLibrary/ProductLibraryDetail',
+            hideInMenu: true,
+          },
+        ],
       },
     ],
   },
@@ -694,7 +710,7 @@ export default [
         hideInMenu: true,
       },
       {
-        path: PATH.designerCreateProject,
+        path: PATH.designerProjectCreate,
         hideInMenu: true,
         component: './Designer/Project/ProjectCreatePage',
       },
