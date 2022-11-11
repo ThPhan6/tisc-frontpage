@@ -33,6 +33,12 @@ const initialState: ProductState = {
     general_attribute_groups: [],
     feature_attribute_groups: [],
     specification_attribute_groups: [],
+    dimension_and_weight: {
+      id: '',
+      name: '',
+      with_diameter: false,
+      attributes: [],
+    },
     categories: [],
     referToDesignDocument: true,
     brand_location_id: '',
