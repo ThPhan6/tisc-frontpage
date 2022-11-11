@@ -1,118 +1,133 @@
 import { FC, useEffect, useState } from 'react';
 
+import { USER_ROLE } from '@/constants/userRoles';
 import { Switch } from 'antd';
 
 import { getDimensionWeightList } from './services';
+import { useGetUserRoleFromPathname } from '@/helper/hook';
 import { validateFloatNumber } from '@/helper/utils';
 
-// import { setPartialProductDetail } from '../product/reducers';
-import { ProductDimensionWeight } from './types';
+import { DimensionWeightItem, ProductDimensionWeight } from './types';
 
-// import store from '@/reducers';
 import CustomCollapse from '@/components/Collapse';
-import ConversionInput, { ConversionItemValue } from '@/components/EntryForm/ConversionInput';
+import ConversionInput, {
+  ConversionValue,
+  ConversionValueItemProps,
+} from '@/components/EntryForm/ConversionInput';
 import { RobotoBodyText } from '@/components/Typography';
 
 import styles from './index.less';
 
-const DEFAULT_STATE: ProductDimensionWeight = {
-  id: '',
-  name: '',
-  with_diameter: true,
-  attributes: [],
-};
-
 interface DimensionWeightProps {
-  value?: any;
-  onChange?: (data: ProductDimensionWeight) => void;
-  type?: string;
+  data: ProductDimensionWeight;
+  setData?: (data: ProductDimensionWeight) => void;
+  onChange?: (index: number, value: ConversionValue) => void;
+  collapseStyles?: boolean;
   customClass?: string;
 }
 
-const ConversionInputItem: FC<{
-  data: ProductDimensionWeight;
-  setData: (data: ProductDimensionWeight) => void;
-  index: number;
-}> = ({ data, setData, index }) => {
-  const conversionItem = data.attributes[index];
+export const DimensionWeight: FC<DimensionWeightProps> = ({
+  data,
+  setData,
+  onChange,
+  collapseStyles = true,
+  customClass,
+}) => {
+  const currentUser = useGetUserRoleFromPathname();
+  const editable = currentUser === USER_ROLE.tisc;
 
-  console.log(data.attributes[index]);
-
-  const conversionValueItem: ConversionItemValue = {
-    formula_1: Number(conversionItem.conversion?.formula_1),
-    formula_2: Number(conversionItem.conversion?.formula_2),
-    unit_1: conversionItem.conversion?.unit_1 || '',
-    unit_2: conversionItem.conversion?.unit_2 || '',
-  };
-
-  return (
-    <ConversionInput
-      key={index}
-      noWrap
-      horizontal
-      isTableFormat
-      fontLevel={4}
-      label={<RobotoBodyText level={6}>{conversionItem.name} :</RobotoBodyText>}
-      conversionData={conversionValueItem}
-      inputValidation={validateFloatNumber}
-      placeholder1="type number"
-      placeholder2="type number"
-      conversionValue={{
-        firstValue: conversionItem.conversion_value_1,
-        secondValue: conversionItem.conversion_value_2,
-      }}
-      setConversionValue={(conversionValue) => {
-        console.log('conversionValue', conversionValue);
-
-        const newAttributeData = [...data.attributes];
-        newAttributeData[index] = {
-          ...newAttributeData[index],
-          conversion_value_1: conversionValue.firstValue,
-          conversion_value_2: conversionValue.secondValue,
-        };
-
-        const newData: ProductDimensionWeight = {
-          ...data,
-          attributes: newAttributeData,
-        };
-
-        // store.dispatch(
-        //   setPartialProductDetail({
-        //     dimension_and_weight: newData,
-        //   }),
-        // );
-        setData(newData);
-      }}
-    />
-  );
-};
-
-export const DimensionWeight: FC<DimensionWeightProps> = ({ customClass = '' }) => {
-  const [diameterToogle, setDiameterToogle] = useState<boolean>();
+  const [diameterToggle, setDiameterToggle] = useState<boolean | undefined>(undefined);
   const [activeCollapse, setActiveCollapse] = useState<boolean>(true);
 
-  const [data, setData] = useState<ProductDimensionWeight>(DEFAULT_STATE);
-
-  // get list dimension weight data
   useEffect(() => {
+    if (!editable) {
+      setDiameterToggle(data?.with_diameter);
+      return;
+    }
+
     getDimensionWeightList().then((res) => {
       if (res) {
-        setData(res);
-        setDiameterToogle(res.with_diameter);
+        let newData: ProductDimensionWeight = {
+          id: res.id,
+          name: res.name,
+          with_diameter: res.with_diameter,
+          attributes: res.attributes,
+        };
+
+        /// mapping data of attributes selected
+        const newAttribute: DimensionWeightItem[] = res.attributes;
+        if (data?.attributes?.length) {
+          for (const elements of newAttribute) {
+            const selectedAttribute = data.attributes.find(
+              (item) =>
+                item.id === elements.id && item.conversion_value_1 && item.conversion_value_2,
+            );
+
+            if (selectedAttribute) {
+              elements.conversion_value_1 = selectedAttribute.conversion_value_1;
+              elements.conversion_value_2 = selectedAttribute.conversion_value_2;
+            }
+          }
+
+          newData = {
+            ...newData,
+            id: data.id,
+            with_diameter: data.with_diameter,
+            attributes: newAttribute,
+          };
+        }
+
+        // update data
+        setData?.(newData);
+        ///
+        setDiameterToggle(newData.with_diameter);
       }
     });
   }, []);
 
-  console.log('data', data);
+  const renderAttributeConversion = (conversionItem: DimensionWeightItem, index: number) => {
+    const conversionValue: ConversionValueItemProps = {
+      formula_1: conversionItem.conversion.formula_1,
+      formula_2: conversionItem.conversion.formula_2,
+      unit_1: conversionItem.conversion.unit_1,
+      unit_2: conversionItem.conversion.unit_2,
+    };
+
+    return (
+      <ConversionInput
+        key={conversionItem.id || index}
+        noWrap
+        horizontal
+        isTableFormat
+        fontLevel={4}
+        label={<RobotoBodyText level={6}>{conversionItem.name} :</RobotoBodyText>}
+        conversionData={conversionValue}
+        inputValidation={validateFloatNumber}
+        placeholder1="type number"
+        placeholder2="type number"
+        disabled={!onChange || !editable}
+        conversionValue={{
+          firstValue: String(conversionItem.conversion_value_1),
+          secondValue: String(conversionItem.conversion_value_2),
+        }}
+        setConversionValue={(value) => onChange?.(index, value)}
+      />
+    );
+  };
+
+  if (!data || diameterToggle === undefined) {
+    return null;
+  }
 
   return (
     <CustomCollapse
       customHeaderClass={`${styles.dimensionCollapse} ${customClass}`}
-      showActiveBoxShadow
+      showActiveBoxShadow={collapseStyles}
+      noBorder={!collapseStyles}
       defaultActiveKey={['1']}
       onChange={() => setActiveCollapse(!activeCollapse)}
       header={
-        <div className={styles.header}>
+        <div className="header">
           <RobotoBodyText level={6} customClass="label">
             {data.name}
           </RobotoBodyText>
@@ -130,18 +145,12 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({ customClass = '' }) 
                   size="small"
                   checkedChildren="ON"
                   unCheckedChildren="OFF"
-                  defaultChecked={diameterToogle}
-                  onClick={(_c, e) => {
+                  defaultChecked={diameterToggle}
+                  disabled={!onChange || !editable}
+                  onClick={(toggle, e) => {
                     e.stopPropagation();
-                    setDiameterToogle(!diameterToogle);
-                    // store.dispatch(
-                    //   setPartialProductDetail({
-                    //     dimension_and_weight: {
-                    //       ...data,
-                    //       with_diameter: diameterToogle ? true : false,
-                    //     },
-                    //   }),
-                    // );
+                    setDiameterToggle(toggle);
+                    setData?.({ ...data, with_diameter: toggle });
                   }}
                 />
               </div>
@@ -151,9 +160,9 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({ customClass = '' }) 
       }>
       <table className={styles.tableContent}>
         <tbody>
-          {data.attributes.map((attribute, index) => {
-            if (attribute.with_diameter === diameterToogle || attribute.with_diameter === null) {
-              return <ConversionInputItem data={data} setData={setData} index={index} />;
+          {data.attributes?.map((attribute, index) => {
+            if (attribute.with_diameter === diameterToggle || attribute.with_diameter === null) {
+              return renderAttributeConversion(attribute, index);
             }
           })}
         </tbody>

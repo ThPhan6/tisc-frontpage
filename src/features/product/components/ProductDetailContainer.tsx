@@ -48,6 +48,7 @@ const ProductDetailContainer: React.FC = () => {
   const signature = useQuery().get('signature') || '';
   // set signature  to cookies
   Cookies.set('signature', signature);
+  const isPublicPage = signature ? true : false;
 
   const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact'];
   const [openModal, setOpenModal] = useState<ModalOpen>('');
@@ -116,7 +117,7 @@ const ProductDetailContainer: React.FC = () => {
       description: details.description.trim(),
       general_attribute_groups: details.general_attribute_groups,
       feature_attribute_groups: details.feature_attribute_groups,
-      dimension_n_weight: details.dimension_n_weight,
+      dimension_and_weight: details.dimension_and_weight,
       specification_attribute_groups: details.specification_attribute_groups,
       keywords: details.keywords.map((keyword) => keyword.trim()) as ProductKeyword,
       images: details.images.map((image) => {
@@ -159,7 +160,7 @@ const ProductDetailContainer: React.FC = () => {
       );
     }
 
-    if (signature) {
+    if (isPublicPage) {
       return (
         <div className={styles.header}>
           <LogoBeta />
@@ -193,9 +194,9 @@ const ProductDetailContainer: React.FC = () => {
         <Col span={24}>{renderHeader()}</Col>
 
         <Col span={24}>
-          <Row className={signature ? styles.marginRounded : ''}>
+          <Row className={isPublicPage ? styles.marginRounded : ''}>
             <Col span={12}>
-              <ProductImagePreview isPublicPage={signature} />
+              <ProductImagePreview isPublicPage={isPublicPage} />
             </Col>
 
             <Col span={12} className={styles.productContent}>
@@ -217,7 +218,7 @@ const ProductDetailContainer: React.FC = () => {
         </Col>
       </div>
 
-      {signature ? (
+      {isPublicPage ? (
         <Col span={24} className={styles.footerContent}>
           <LandingPageFooter
             setOpenModal={setOpenModal}

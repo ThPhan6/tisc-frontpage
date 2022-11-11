@@ -8,9 +8,12 @@ import { cloneDeep } from 'lodash';
 import { setDefaultSelectionFromSpecifiedData, setPartialProductDetail } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
 import { AttributeGroupKey, ProductInfoTab } from './types';
+import { DimensionWeightConversion } from '@/features/dimension-weight/types';
 import { setReferToDesignDocument } from '@/features/product/reducers';
 import { SelectedSpecAttributte, SpecificationAttributeGroup } from '@/features/project/types';
 import { useAppSelector } from '@/reducers';
+
+import { ConversionValue } from '@/components/EntryForm/ConversionInput';
 
 const getSelectedAttributeAndOption = (attrs: ProductAttributeProps[]) => {
   const selectedAttributes: SelectedSpecAttributte[] = [];
@@ -71,13 +74,20 @@ export const useProductAttributeForm = (
   isSpecifiedModal?: boolean,
 ) => {
   const dispatch = useDispatch();
-  const { feature_attribute_groups, general_attribute_groups, specification_attribute_groups, id } =
-    useAppSelector((state) => state.product.details);
+  const {
+    feature_attribute_groups,
+    general_attribute_groups,
+    specification_attribute_groups,
+    dimension_and_weight,
+    id,
+  } = useAppSelector((state) => state.product.details);
   const referToDesignDocument = useAppSelector(
     (state) => state.product.details.specifiedDetail?.specification?.is_refer_document,
   );
   const loaded = useBoolean();
   const isTiscAdmin = useCheckPermission('TISC Admin');
+
+  const dimensionWeightData = dimension_and_weight;
 
   const attributeGroup =
     attributeType === 'general'
@@ -85,6 +95,8 @@ export const useProductAttributeForm = (
       : attributeType === 'feature'
       ? feature_attribute_groups
       : specification_attribute_groups;
+
+  // console.log('attributeGroup', attributeGroup);
 
   const attributeGroupKey: AttributeGroupKey =
     attributeType === 'general'
@@ -197,6 +209,26 @@ export const useProductAttributeForm = (
       );
     };
 
+  const onChangeDimensionWeight = (index: number, value: ConversionValue) => {
+    const newAttributes = [...dimensionWeightData.attributes];
+    newAttributes[index] = {
+      ...newAttributes[index],
+      conversion_value_1: value.firstValue,
+      conversion_value_2: value.secondValue,
+    };
+
+    const newData: DimensionWeightConversion = {
+      ...dimensionWeightData,
+      attributes: newAttributes,
+    };
+
+    dispatch(
+      setPartialProductDetail({
+        dimension_and_weight: newData,
+      }),
+    );
+  };
+
   const onSelectSpecificationOption = (
     groupIndex: number,
     attributeId: string,
@@ -301,5 +333,7 @@ export const useProductAttributeForm = (
     onCheckedSpecification,
     onSelectSpecificationOption,
     referToDesignDocument,
+    dimensionWeightData,
+    onChangeDimensionWeight,
   };
 };

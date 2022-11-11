@@ -2,7 +2,7 @@
   margin-bottom: 8px;
 
   :global(.ant-collapse-header) {
-    .header {
+    :global(.header) {
       display: flex;
       align-items: center;
       padding-left: 16px;
@@ -17,7 +17,7 @@
   &:global(.ant-collapse-item-active) {
     @fw: 500;
 
-    .header {
+    :global(.header) {
       height: 100%;
 
       :global(.label) {
@@ -64,6 +64,14 @@
         }
       }
     }
+  }
+
+  :global(.ant-input[disabled]) {
+    color: @mono-color;
+    background-color: transparent;
+    border-color: transparent;
+    border-bottom-color: transparent;
+    cursor: default;
   }
 
   .tableContent {

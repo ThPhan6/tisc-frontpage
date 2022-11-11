@@ -5,15 +5,17 @@ import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 import { useProductAttributeForm } from './hooks';
 import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
 
+import { setPartialProductDetail } from '../../reducers';
 import { ProductAttributeProps } from '../../types';
 import { ProductInfoTab } from './types';
+import store from '@/reducers';
 import { ProductAttributes } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { BodyText, MainTitle } from '@/components/Typography';
+import { BodyText } from '@/components/Typography';
 
 import { AttributeOption, ConversionText, GeneralText } from './AttributeComponent';
 import { ProductAttributeSubItem } from './AttributeItem';
@@ -54,6 +56,8 @@ export const ProductAttributeContainer: FC<Props> = ({
     attributeGroup,
     attributeGroupKey,
     onSelectSpecificationOption,
+    dimensionWeightData,
+    onChangeDimensionWeight,
   } = useProductAttributeForm(activeKey, curProductId, isSpecifiedModal);
 
   const renderCollapseHeader = (groupIndex: number) => {
@@ -178,16 +182,32 @@ export const ProductAttributeContainer: FC<Props> = ({
 
   return (
     <>
-      {isTiscAdmin ? (
-        <div className={styles.addAttributeBtn} onClick={addNewProductAttribute}>
-          <MainTitle level={4} customClass="add-attribute-text">
-            Add Attribute
-          </MainTitle>
-          <CustomPlusButton size={18} />
-        </div>
+      {activeKey === 'specification' ? (
+        <DimensionWeight
+          customClass={`${styles.marginTopSpace} ${
+            isSpecifiedModal ? styles.dimensionNoneEffect : ''
+          } `}
+          collapseStyles={!isSpecifiedModal}
+          data={dimensionWeightData}
+          setData={(data) => {
+            store.dispatch(
+              setPartialProductDetail({
+                dimension_and_weight: data,
+              }),
+            );
+          }}
+          onChange={onChangeDimensionWeight}
+        />
       ) : null}
 
-      {activeKey === 'specification' ? <DimensionWeight /> : null}
+      {isTiscAdmin ? (
+        <CustomPlusButton
+          size={18}
+          label="Add Attribute"
+          onClick={addNewProductAttribute}
+          customClass={styles.paddingSpace}
+        />
+      ) : null}
 
       {attributeGroup.map((_group, groupIndex) => {
         const attrGroupItem = attributeGroup[groupIndex];

@@ -13,8 +13,10 @@ import { ConversionSubValueProps, GeneralData } from '@/types';
 export interface ProductSummary {
   categories: GeneralData[];
   collections: GeneralData[];
+  company: GeneralData[];
   category_count: number;
   collection_count: number;
+  company_count: number;
   card_count: number;
   product_count: number;
   brandId: string;
@@ -146,7 +148,7 @@ export interface ProductFormData {
   general_attribute_groups: ProductAttributeFormInput[];
   feature_attribute_groups: ProductAttributeFormInput[];
   specification_attribute_groups: ProductAttributeFormInput[];
-  dimension_n_weight: ProductDimensionWeight;
+  dimension_and_weight: ProductDimensionWeight;
   images: string[];
   keywords: ProductKeyword;
   tips: ProductTipData[];
@@ -165,6 +167,7 @@ export interface ProductGetListParameter {
   brand_id: string;
   category_id?: string;
   collection_id?: string;
+  company_id?: string;
 }
 
 export interface GroupProductList {
@@ -183,7 +186,12 @@ export interface BrandSummary {
   brand_name: string;
 }
 
-export type ProductFilterType = 'category_id' | 'collection_id' | 'brand_id' | 'name';
+export type ProductFilterType =
+  | 'category_id'
+  | 'collection_id'
+  | 'company_id'
+  | 'brand_id'
+  | 'name';
 
 export interface ProductTopBarFilter {
   name: ProductFilterType;

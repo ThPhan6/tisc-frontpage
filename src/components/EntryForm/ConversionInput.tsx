@@ -18,12 +18,12 @@ const ConversionContent: FC<MainContentProps> = ({ children, noWrap }) => (
   </Row>
 );
 
-interface ConversionValue {
+export interface ConversionValue {
   firstValue: string;
   secondValue: string;
 }
 
-export interface ConversionItemValue {
+export interface ConversionValueItemProps {
   formula_1: number;
   formula_2: number;
   unit_1: string;
@@ -36,7 +36,7 @@ interface ConversionInputProps extends CustomInputProps {
   fontLevel?: 1 | 2 | 3 | 4 | 5;
   label?: string | ReactNode;
   noWrap?: boolean;
-  conversionData: ConversionItemValue;
+  conversionData: ConversionValueItemProps;
   placeholder1?: string;
   placeholder2?: string;
   deleteIcon?: boolean;
@@ -47,7 +47,7 @@ interface ConversionInputProps extends CustomInputProps {
 }
 
 const ConversionInput: FC<ConversionInputProps> = ({
-  label,
+  label = '',
   horizontal,
   required,
   fontLevel,

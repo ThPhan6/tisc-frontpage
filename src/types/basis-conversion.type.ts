@@ -22,8 +22,8 @@ export interface ConversionSubValueProps {
   id?: string;
   name_1: string;
   name_2: string;
-  formula_1: string;
-  formula_2: string;
+  formula_1: number;
+  formula_2: number;
   unit_1: string;
   unit_2: string;
 }
@@ -44,15 +44,6 @@ export type ConversionValueProp = {
   id?: string;
   name: string;
   subs: ConversionSubValueProps[];
-};
-
-export const conversionValueDefault: ConversionSubValueProps = {
-  name_1: '',
-  name_2: '',
-  formula_1: '',
-  formula_2: '',
-  unit_1: '',
-  unit_2: '',
 };
 
 export interface ConversionBodyProp extends ConversionValueProp {}
