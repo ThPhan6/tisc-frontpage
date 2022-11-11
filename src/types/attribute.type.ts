@@ -15,6 +15,7 @@ export interface AttributeListResponse {
   id: string;
   name: string;
   count: number;
+  master: boolean;
   subs: SubAttribute[];
   created_at: string;
 }

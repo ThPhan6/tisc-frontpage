@@ -88,6 +88,9 @@ export const MESSAGE_NOTIFICATION = {
   CREATE_PRODUCT_TIP_ERROR: 'Failed to create product tip',
   GET_PRODUCT_TIP_BY_PRODUCT_ID_ERROR: 'Failed to get product tips',
 
+  // product dimension weight
+  GET_LIST_DIMENSION_WEIGHT_ERROR: 'Get list dimension and weight error',
+
   // ATTRIBUTE
   GET_ATTRRIBUTE_DATA_FAILED: 'Failed to get attribute data',
   CREATE_ATTRIBUTE_SUCCESS: 'Create attribute successfully',

@@ -77,7 +77,8 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
       visible={visible}
       setVisible={setVisible}
       className={styles.modal}
-      noFooter>
+      // only for close modal
+      onFormSubmit={() => setVisible(false)}>
       <table className={styles.description}>
         <thead>
           <tr style={{ height: '24px', borderBottom: 'solid 0.7px #000' }}>
@@ -95,7 +96,7 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
         </thead>
         <tbody>
           <tr style={{ minHeight: '18px' }}>
-            <td style={{ whiteSpace: 'nowrap', width: 1 }}>
+            <td style={{ whiteSpace: 'nowrap', width: '60px' }}>
               <RobotoBodyText
                 level={7}
                 customClass={styles.textThick}
@@ -244,7 +245,9 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
                   </td>
                 </tr>
 
-                <tr style={{ height: '18px' }}></tr>
+                <tr className={styles.borderTop}>
+                  <td colSpan={9}></td>
+                </tr>
               </Fragment>
             );
           })}

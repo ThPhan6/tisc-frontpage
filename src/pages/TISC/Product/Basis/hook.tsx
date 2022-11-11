@@ -39,11 +39,12 @@ import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 const conversionValueDefault: ConversionSubValueProps = {
   name_1: '',
   name_2: '',
-  formula_1: '',
-  formula_2: '',
+  formula_1: 0,
+  formula_2: 0,
   unit_1: '',
   unit_2: '',
 };
+
 const presetsValueDefault: PresetItemValueProp = {
   name: '',
   is_collapse: '',

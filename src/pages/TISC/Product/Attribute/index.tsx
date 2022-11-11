@@ -73,6 +73,9 @@ const AttributeList: React.FC = () => {
       align: 'center',
       width: '5%',
       render: (_value, record) => {
+        if (record.master) {
+          return null;
+        }
         return (
           <ActionMenu
             actionItems={[
