@@ -1,0 +1,59 @@
+.information {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  svg {
+    margin-right: 16px;
+  }
+}
+.title {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  margin-bottom: 8px;
+  box-shadow: @border-bottom-light;
+}
+.calendar {
+  :global(.ant-modal-header) {
+    text-align: center;
+    border-bottom: none;
+    box-shadow: @border-bottom;
+  }
+  :global(.ant-picker-date-panel) {
+    height: calc(100vh - 470px);
+  }
+  :global(.ant-picker-calendar) {
+    border: 0.5px solid @mono-color-dark;
+  }
+  :global(.ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date) {
+    height: 48px;
+    text-align: center;
+    border-top: none;
+  }
+  :global(.ant-picker-calendar-full
+      .ant-picker-panel
+      .ant-picker-cell-selected
+      .ant-picker-calendar-date) {
+    width: 32px;
+    height: 32px;
+    background: @primary-color;
+    border-radius: 50%;
+    :global(.ant-picker-calendar-date-value) {
+      color: #fff;
+    }
+  }
+}
+.button {
+  padding: 0 20px;
+  border-radius: 16px;
+}
+.timeSelection {
+  height: calc(100vh - 470px);
+  border: 0.5px solid @mono-color-dark;
+  :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
+    align-items: center;
+    height: 48px;
+    padding: 0 16px;
+    // box-shadow: @border-bottom-light;
+  }
+}

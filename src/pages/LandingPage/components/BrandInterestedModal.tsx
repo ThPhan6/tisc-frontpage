@@ -14,12 +14,13 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomModal } from '@/components/Modal';
 import { MainTitle } from '@/components/Typography';
 
+import { CalendarModal } from './CalendarModal';
 import { PoliciesModal } from './PoliciesModal';
 import styles from './SignupModal.less';
 
 export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
-  const [openModalPolicies, setOpenModalPolicies] = useState('');
+  const [openModal, setOpenModal] = useState('');
 
   return (
     <CustomModal
@@ -50,6 +51,7 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
             name="user"
             type={'text'}
             required={true}
+            style={{ marginBottom: '8px' }}
           />
           <CustomInput
             fromLandingPage
@@ -62,6 +64,7 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
             name="user"
             type="text"
             required={true}
+            style={{ marginBottom: '8px' }}
           />
           <CustomInput
             fromLandingPage
@@ -74,6 +77,7 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
             name="user"
             type="text"
             required={true}
+            style={{ marginBottom: '8px' }}
           />
           <CustomInput
             fromLandingPage
@@ -86,21 +90,25 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
             borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
             name="email"
             required={true}
+            style={{ marginBottom: '8px' }}
           />
           <Checkbox>By clicking and continuing, we agree to TISC’s</Checkbox>
           <div className={styles.customLink}>
-            <span onClick={() => setOpenModalPolicies('Policies')}>
+            <span onClick={() => setOpenModal('Policies')}>
               Terms of Services, Privacy Policy and Cookie Policy
             </span>
           </div>
         </div>
-        <CustomButton buttonClass={styles.submitBtn}>Book a Demo</CustomButton>
+        <CustomButton buttonClass={styles.submitBtn} onClick={() => setOpenModal('BookDemo')}>
+          Book a Demo
+        </CustomButton>
       </div>
       <PoliciesModal
-        visible={openModalPolicies === 'Policies'}
-        onClose={() => setOpenModalPolicies('')}
+        visible={openModal === 'Policies'}
+        onClose={() => setOpenModal('')}
         theme="dark"
       />
+      <CalendarModal visible={openModal === 'BookDemo'} onClose={() => setOpenModal('')} />
     </CustomModal>
   );
 };
