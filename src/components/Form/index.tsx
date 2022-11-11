@@ -11,7 +11,7 @@ import style from './styles/Form.less';
 
 export const FormGroup: FC<FormGroupProps> = ({
   layout = 'horizontal',
-  formClass,
+  formClass = '',
   optional,
   required,
   tooltip,
