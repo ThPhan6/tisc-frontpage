@@ -1,10 +1,8 @@
 import { FC, useEffect, useState } from 'react';
 
-import { USER_ROLE } from '@/constants/userRoles';
 import { Switch } from 'antd';
 
 import { getDimensionWeightList } from './services';
-import { useGetUserRoleFromPathname } from '@/helper/hook';
 import { validateFloatNumber } from '@/helper/utils';
 
 import { DimensionWeightItem, ProductDimensionWeight } from './types';
@@ -21,6 +19,7 @@ import styles from './index.less';
 interface DimensionWeightProps {
   data: ProductDimensionWeight;
   setData?: (data: ProductDimensionWeight) => void;
+  editable: boolean;
   onChange?: (index: number, value: ConversionValue) => void;
   collapseStyles?: boolean;
   customClass?: string;
@@ -29,13 +28,11 @@ interface DimensionWeightProps {
 export const DimensionWeight: FC<DimensionWeightProps> = ({
   data,
   setData,
+  editable,
   onChange,
   collapseStyles = true,
   customClass,
 }) => {
-  const currentUser = useGetUserRoleFromPathname();
-  const editable = currentUser === USER_ROLE.tisc;
-
   const [diameterToggle, setDiameterToggle] = useState<boolean | undefined>(undefined);
   const [activeCollapse, setActiveCollapse] = useState<boolean>(true);
 
@@ -105,7 +102,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
         inputValidation={validateFloatNumber}
         placeholder1="type number"
         placeholder2="type number"
-        disabled={!onChange || !editable}
+        disabled={!editable}
         conversionValue={{
           firstValue: String(conversionItem.conversion_value_1),
           secondValue: String(conversionItem.conversion_value_2),
@@ -115,7 +112,36 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
     );
   };
 
-  if (!data || diameterToggle === undefined) {
+  const renderDiameterToggle = () => {
+    if (!activeCollapse) return null;
+
+    return (
+      <div className="slice">
+        <RobotoBodyText level={6} fontFamily="Roboto" customClass="text">
+          Product with diameter
+        </RobotoBodyText>
+        <div
+          className={styles.switchBtn}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}>
+          <Switch
+            size="small"
+            checkedChildren="ON"
+            unCheckedChildren="OFF"
+            checked={diameterToggle}
+            onClick={(toggle, e) => {
+              e.stopPropagation();
+              setDiameterToggle(toggle);
+              setData?.({ ...data, with_diameter: toggle });
+            }}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  if (!data && diameterToggle === undefined) {
     return null;
   }
 
@@ -131,31 +157,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
           <RobotoBodyText level={6} customClass="label">
             {data.name}
           </RobotoBodyText>
-          {editable && activeCollapse ? (
-            <div className="slice">
-              <RobotoBodyText level={6} fontFamily="Roboto" customClass="text">
-                Product with diameter
-              </RobotoBodyText>
-              <div
-                className={styles.switchBtn}
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}>
-                <Switch
-                  size="small"
-                  checkedChildren="ON"
-                  unCheckedChildren="OFF"
-                  defaultChecked={diameterToggle}
-                  disabled={!onChange || !editable}
-                  onClick={(toggle, e) => {
-                    e.stopPropagation();
-                    setDiameterToggle(toggle);
-                    setData?.({ ...data, with_diameter: toggle });
-                  }}
-                />
-              </div>
-            </div>
-          ) : null}
+          {editable ? renderDiameterToggle() : null}
         </div>
       }>
       <table className={styles.tableContent}>
