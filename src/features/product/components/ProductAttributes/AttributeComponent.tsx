@@ -115,11 +115,9 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
                 }) ?? [],
             },
           ]}
-          className={`${styles.specificationAttributeOption} ${
+          className={`attribute-group-option-popover ${styles.specificationAttributeOption} ${
             isOptionWithImage ? styles.specificationAttributeImageOption : ''
-          }
-        attribute-group-option-popover
-        `}
+          }`}
           chosenValue={chosenOption}
           setChosenValue={setChosenOptions}
           clearOnClose={clearOnClose}></Popover>

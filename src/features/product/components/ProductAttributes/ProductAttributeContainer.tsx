@@ -71,7 +71,7 @@ export const ProductAttributeContainer: FC<Props> = ({
           label={<ScrollIcon />}
           placeholder="type title"
           noWrap
-          defaultValue={group.name}
+          value={group.name}
           onChange={onChangeAttributeName(groupIndex)}
         />
       );

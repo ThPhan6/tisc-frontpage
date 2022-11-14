@@ -61,12 +61,12 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
 
       const newAttrGroup = cloneDeep(attributeGroup);
 
-      if (value.length < newAttrGroup[groupIndex].attributes.length) {
-        const selectedAttrIds = value.map((v) => v.value);
-        newAttrGroup[groupIndex].attributes = newAttrGroup[groupIndex].attributes.filter((attr) =>
-          selectedAttrIds.includes(attr.id),
-        );
-      } else {
+      const selectedAttrIds = value.map((v) => v.value);
+      newAttrGroup[groupIndex].attributes = newAttrGroup[groupIndex].attributes.filter((attr) =>
+        selectedAttrIds.includes(attr.id),
+      );
+
+      if (value.length > newAttrGroup[groupIndex].attributes.length) {
         newAttrGroup[groupIndex].attributes = value.map((item, key: number) => {
           /// radio value
           let selectedAttribute: ProductSubAttributes | undefined;
