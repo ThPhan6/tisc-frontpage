@@ -65,7 +65,7 @@ export const ProductAttributeContainer: FC<Props> = ({
           label={<ScrollIcon />}
           placeholder="type title"
           noWrap
-          defaultValue={group.name}
+          value={group.name}
           onChange={onChangeAttributeName(groupIndex)}
         />
       );
@@ -188,6 +188,9 @@ export const ProductAttributeContainer: FC<Props> = ({
 
       {attributeGroup.map((_group, groupIndex) => {
         const attrGroupItem = attributeGroup[groupIndex];
+        if (activeKey === 'specification') {
+          console.log(attrGroupItem);
+        }
         return (
           <div key={groupIndex} style={{ marginBottom: 8, marginTop: isTiscAdmin ? undefined : 8 }}>
             <div className={styles.attributes}>
