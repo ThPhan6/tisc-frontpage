@@ -108,7 +108,7 @@ export const ProductAttributeContainer: FC<Props> = ({
     groupIndex?: number,
   ) => {
     if (isTiscAdmin) {
-      if (!attributes || !groupIndex) {
+      if (!attributes) {
         return null;
       }
 
