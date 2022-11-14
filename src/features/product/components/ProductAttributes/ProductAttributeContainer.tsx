@@ -188,13 +188,15 @@ export const ProductAttributeContainer: FC<Props> = ({
   };
 
   const renderDimensionWeight = () => {
-    if (activeKey !== 'specification' || !dimensionWeightData.attributes.length) return null;
+    if (activeKey !== 'specification' || (!dimensionWeightData.attributes.length && !isTiscAdmin))
+      return null;
 
     if (isTiscAdmin) {
       return (
         <DimensionWeight
           customClass={styles.marginTopSpace}
           collapseStyles={!isSpecifiedModal}
+          editable={isTiscAdmin}
           data={dimensionWeightData}
           setData={(data) => {
             store.dispatch(
