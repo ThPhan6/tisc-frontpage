@@ -105,7 +105,7 @@ export const ProductAttributeContainer: FC<Props> = ({
     attribute: ProductAttributeProps | DimensionWeightItem,
     attrIndex: number,
     groupName: string,
-    groupIndex?: number,
+    groupIndex: number = -1,
   ) => {
     if (isTiscAdmin) {
       if (!attributes) {
@@ -130,7 +130,7 @@ export const ProductAttributeContainer: FC<Props> = ({
     }
 
     let chosenOption: SpecificationAttributeBasisOptionProps | undefined;
-    if (groupIndex) {
+    if (groupIndex !== -1) {
       const curAttribute = attributeGroup[groupIndex]?.attributes?.[attrIndex];
       chosenOption = curAttribute.basis_options?.find((el) => el.isChecked === true);
     }
@@ -169,7 +169,7 @@ export const ProductAttributeContainer: FC<Props> = ({
                   : undefined
               }
               setChosenOptions={(option) => {
-                if (groupIndex) {
+                if (groupIndex !== -1) {
                   onSelectSpecificationOption(
                     groupIndex,
                     attribute.id,
