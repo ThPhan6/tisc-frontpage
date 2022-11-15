@@ -1,0 +1,48 @@
+.customRadio {
+  :global(.ant-space-item) {
+    padding-right: 16px;
+  }
+  :global(.ant-space) {
+    gap: 0 !important;
+  }
+}
+
+.button {
+  margin-left: 24px;
+}
+
+.disabledRadio {
+  color: @mono-color;
+  pointer-events: none;
+
+  @mono-color: @mono-color-medium;
+
+  :global(.ant-radio-wrapper .ant-radio .ant-radio-inner::after) {
+    background-color: @mono-color;
+  }
+  :global(.ant-radio-wrapper .ant-radio .ant-radio-inner) {
+    color: @mono-color;
+    border-color: @mono-color;
+  }
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  padding: 12px 16px;
+  box-shadow: @border-top;
+  .btnCancel {
+    margin-right: 16px;
+  }
+}
+
+.label {
+  text-transform: capitalize;
+}
+
+.title {
+  p {
+    text-align: center;
+  }
+}

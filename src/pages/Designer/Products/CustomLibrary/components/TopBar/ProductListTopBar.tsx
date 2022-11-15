@@ -98,7 +98,7 @@ export const ProductListTopBar: React.FC = () => {
               customClass="left-divider mr-12"
               bottomValue="Vendor Management"
               cursor="pointer"
-              onClick={gotoProductForm}
+              onClick={() => pushTo(PATH.designerCustomResource)}
               icon={<VendorManagementIcon />}
             />
           </>

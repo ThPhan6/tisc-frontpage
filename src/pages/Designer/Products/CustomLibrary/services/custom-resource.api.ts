@@ -1,0 +1,89 @@
+import { MESSAGE_NOTIFICATION } from '@/constants/message';
+import { message } from 'antd';
+import { request } from 'umi';
+
+import { CustomResourceForm, CustomResources } from '../types';
+import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
+import {
+  DataTableResponse,
+  PaginationRequestParams,
+  PaginationResponse,
+} from '@/components/Table/types';
+
+interface ProjectPaginationResponse {
+  data: {
+    resources: CustomResources[];
+    pagination: PaginationResponse;
+  };
+}
+
+export async function getListVendorByBrandOrDistributor(
+  { type, ...params }: PaginationRequestParams,
+  callback: (data: DataTableResponse) => void,
+) {
+  request(`/api/custom-resource/get-list?type=${type}`, {
+    method: 'GET',
+    params,
+  })
+    .then((response: ProjectPaginationResponse) => {
+      const { resources, pagination } = response.data;
+      callback({
+        data: resources,
+        pagination: {
+          current: pagination.page,
+          pageSize: pagination.page_size,
+          total: pagination.total,
+        },
+      });
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_VENDOR);
+    });
+}
+
+export async function getCustomResourceSummary() {
+  return request<{ data: DataMenuSummaryProps[] }>(`/api/custom-resource/summary`, {
+    method: 'GET',
+  })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message);
+    });
+}
+
+export async function deleteCustomResource(id: string) {
+  return request<boolean>(`/api/custom-resource/delete/${id}`, { method: 'DELETE' })
+    .then(() => {
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message);
+      return false;
+    });
+}
+
+export async function getAllCustomResource(type: number) {
+  return request<{ data: { id: string; name: string }[] }>(
+    `/api/custom-resource/get-all?type=${type}`,
+    { method: 'GET' },
+  )
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      message.error(err?.data?.message);
+    });
+}
+
+export async function createCustomResource(data: CustomResourceForm) {
+  return request<boolean>(`/api/custom-resource/create`, { method: 'POST', data })
+    .then(() => {
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message);
+      return false;
+    });
+}

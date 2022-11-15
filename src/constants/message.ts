@@ -315,6 +315,7 @@ export const MESSAGE_NOTIFICATION = {
 
   // library and resources
   GET_LIST_CUSTOM_PRODUCT_LIST_ERROR: 'Failed to get custom product list',
+  GET_LIST_VENDOR: 'Failed to get list vendor by brand or distributor',
 };
 
 export const MESSAGE_TOOLTIP = {

@@ -685,6 +685,11 @@ export default [
             hideInMenu: true,
           },
           {
+            path: PATH.designerCustomResource,
+            component: './Designer/Products/CustomLibrary/CustomResource',
+            hideInMenu: true,
+          },
+          {
             path: PATH.designerOfficeLibraryCreate,
             component: './Designer/Products/CustomLibrary/ProductLibraryDetail',
             hideInMenu: true,
@@ -692,6 +697,11 @@ export default [
           {
             path: PATH.designerOfficeLibraryUpdate,
             component: './Designer/Products/CustomLibrary/ProductLibraryDetail',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerCustomResourceCreate,
+            component: './Designer/Products/CustomLibrary/CustomResourceCreatePage',
             hideInMenu: true,
           },
         ],
