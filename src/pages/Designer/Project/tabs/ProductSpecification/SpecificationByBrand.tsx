@@ -62,11 +62,11 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       noBoxShadow: true,
       dataIndex: 'brand',
       align: 'right',
-      render: (value) => {
-        if (value) {
+      render: (_value, record) => {
+        if (record.images.length) {
           return (
             <img
-              src={showImageUrl(value?.logo)}
+              src={showImageUrl(record.images[0])}
               style={{ width: 24, height: 24, objectFit: 'contain' }}
             />
           );
