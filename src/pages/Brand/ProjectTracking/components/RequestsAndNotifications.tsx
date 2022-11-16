@@ -235,7 +235,7 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
               variant="primary"
               properties="rounded"
               onClick={() => history.back()}>
-              Cancel
+              Done
             </CustomButton>
           </div>
         </>
