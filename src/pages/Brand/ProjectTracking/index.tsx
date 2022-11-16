@@ -254,7 +254,7 @@ const ProjectTracking = () => {
       dataIndex: 'notificationCount',
       render: (_value, record) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', width: 85 }}>
             {record.notificationCount}{' '}
             {record.newNotification ? <UnreadIcon style={{ marginLeft: '8px' }} /> : ''}
           </div>
@@ -315,7 +315,7 @@ const ProjectTracking = () => {
           rightAction={
             <InfoIcon className={styles.iconInfor} onClick={() => setOpenInformationModal(true)} />
           }
-          columns={setDefaultWidthForEachColumn(MainColumns, 8)}
+          columns={setDefaultWidthForEachColumn(MainColumns, 7)}
           fetchDataFunc={getProjectTrackingPagination}
           extraParams={
             (selectedFilter && selectedFilter.id !== Global['VIEW ALL']) ||
