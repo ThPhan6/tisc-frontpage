@@ -704,6 +704,16 @@ export default [
             component: './Designer/Products/CustomLibrary/CustomResourceCreatePage',
             hideInMenu: true,
           },
+          {
+            path: PATH.designerCustomResourceUpdate,
+            component: './Designer/Products/CustomLibrary/CustomResourceCreatePage',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerCustomResourceDetail,
+            component: './Designer/Products/CustomLibrary/CustomResourceViewPage',
+            hideInMenu: true,
+          },
         ],
       },
     ],

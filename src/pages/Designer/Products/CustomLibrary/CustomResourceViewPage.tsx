@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Col, Row } from 'antd';
 
-import { createCustomResource, getOneCustomResource, updateCustomResource } from './services';
-import { pushTo } from '@/helper/history';
-import { useBoolean, useGetParamId } from '@/helper/hook';
+import { getOneCustomResource } from './services';
+import { useGetParamId } from '@/helper/hook';
 
 import { CustomResourceForm } from './types';
 import { useAppSelector } from '@/reducers';
@@ -16,12 +14,8 @@ import { CustomResourceEntryForm } from './components/CustomResource/CustomResou
 import { CustomResourceHeader } from './components/CustomResource/CustomResourceHeader';
 import { CustomResourceTopBar } from './components/TopBar/CustomResourceTopBar';
 
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
-
-const CustomResourceCreatePage = () => {
+const CustomResourceViewPage = () => {
   const customResourceType = useAppSelector((state) => state.officeProduct.customResourceType);
-
-  const submitButtonStatus = useBoolean(false);
 
   const customResourceId = useGetParamId();
 
@@ -54,32 +48,6 @@ const CustomResourceCreatePage = () => {
     }
   }, []);
 
-  const handleCreate = () => {
-    showPageLoading();
-    if (customResourceId) {
-      updateCustomResource(customResourceId, data).then((isSuccess) => {
-        if (isSuccess) {
-          submitButtonStatus.setValue(true);
-          setTimeout(() => {
-            submitButtonStatus.setValue(false);
-          }, 1000);
-        }
-        hidePageLoading();
-      });
-    } else {
-      createCustomResource(data).then((isSuccess) => {
-        if (isSuccess) {
-          submitButtonStatus.setValue(true);
-          setTimeout(() => {
-            submitButtonStatus.setValue(false);
-            pushTo(PATH.designerCustomResource);
-          }, 1000);
-        }
-        hidePageLoading();
-      });
-    }
-  };
-
   if (customResourceId && !loadedData) {
     return null;
   }
@@ -89,20 +57,13 @@ const CustomResourceCreatePage = () => {
       <CustomResourceHeader />
       <Row style={{ marginTop: '8px' }}>
         <Col span={12} style={{ paddingRight: '8px' }}>
-          <CustomResourceEntryForm data={data} setData={setData} type="create" />
+          <CustomResourceEntryForm data={data} setData={setData} type="view" />
         </Col>
         <Col span={12} style={{ background: '#fff' }}>
-          <ContactInformation
-            data={data}
-            setData={setData}
-            submitButtonStatus={submitButtonStatus.value}
-            onSubmit={handleCreate}
-            type="create"
-          />
+          <ContactInformation data={data} setData={setData} type="view" />
         </Col>
       </Row>
     </PageContainer>
   );
 };
-
-export default CustomResourceCreatePage;
+export default CustomResourceViewPage;

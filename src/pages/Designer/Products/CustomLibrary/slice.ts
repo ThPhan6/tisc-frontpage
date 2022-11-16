@@ -1,16 +1,16 @@
-import { CustomProductList } from './types';
+import { CustomProductList, CustomResourceType } from './types';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface CustomProductState {
   list: CustomProductList[];
-  customResourceValue: number;
+  customResourceType: number;
 }
 
 const initialState: CustomProductState = {
   list: [],
-  customResourceValue: 0,
+  customResourceType: CustomResourceType.Brand,
 };
 
 const officeProductSlice = createSlice({
@@ -20,11 +20,11 @@ const officeProductSlice = createSlice({
     setProductList(state, action: PayloadAction<Partial<CustomProductList>>) {
       state.list = { ...state.list, ...action.payload };
     },
-    setCustomResourceValue(state, action: PayloadAction<Partial<number>>) {
-      state.customResourceValue = action.payload;
+    setCustomResourceType(state, action: PayloadAction<Partial<number>>) {
+      state.customResourceType = action.payload;
     },
   },
 });
 
-export const { setProductList, setCustomResourceValue } = officeProductSlice.actions;
+export const { setProductList, setCustomResourceType } = officeProductSlice.actions;
 export const officeProductReducer = officeProductSlice.reducer;

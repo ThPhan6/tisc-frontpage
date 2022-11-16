@@ -8,7 +8,7 @@ import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
-import { CustomResources } from './types';
+import { CustomResourceType, CustomResources } from './types';
 import { TableColumnItem } from '@/components/Table/types';
 import store, { useAppSelector } from '@/reducers';
 
@@ -17,22 +17,17 @@ import { CustomRadio } from '@/components/CustomRadio';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
-import { MainTitle } from '@/components/Typography';
+import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from './CustomResource.less';
-import { setCustomResourceValue } from './slice';
-
-export enum CustomResourceValue {
-  'Brand',
-  'Distributor',
-}
+import { setCustomResourceType } from './slice';
 
 export const optionValue = [
-  { label: 'Brand', value: CustomResourceValue.Brand },
-  { label: 'Distributor', value: CustomResourceValue.Distributor },
+  { label: 'Brands', value: CustomResourceType.Brand },
+  { label: 'Distributor', value: CustomResourceType.Distributor },
 ];
 const CustomResource = () => {
-  const viewBy = useAppSelector((state) => state.officeProduct.customResourceValue);
+  const customResourceType = useAppSelector((state) => state.officeProduct.customResourceType);
 
   const tableRef = useRef<any>();
 
@@ -52,7 +47,7 @@ const CustomResource = () => {
 
   const MainColumns: TableColumnItem<CustomResources>[] = [
     {
-      title: viewBy === CustomResourceValue.Brand ? 'Brand Name' : 'Distributor Name',
+      title: customResourceType === CustomResourceType.Brand ? 'Brand Name' : 'Distributor Name',
       sorter: true,
       dataIndex: 'business_name',
     },
@@ -64,6 +59,13 @@ const CustomResource = () => {
     {
       title: 'General Phone',
       dataIndex: 'general_phone',
+      render: (_value, record) => {
+        return (
+          <BodyText fontFamily="Roboto" level={5}>
+            +{record.phone_code} {record.general_phone}
+          </BodyText>
+        );
+      },
     },
     {
       title: 'General Email',
@@ -75,11 +77,11 @@ const CustomResource = () => {
       align: 'center',
     },
     {
-      title: viewBy === CustomResourceValue.Brand ? 'Distributors' : 'Brands',
-      dataIndex: viewBy === CustomResourceValue.Brand ? 'distributors' : 'brands',
+      title: customResourceType === CustomResourceType.Brand ? 'Distributors' : 'Brands',
+      dataIndex: customResourceType === CustomResourceType.Brand ? 'distributors' : 'brands',
       align: 'center',
     },
-    viewBy === CustomResourceValue.Brand
+    customResourceType === CustomResourceType.Brand
       ? {
           title: 'Cards',
           dataIndex: 'cards',
@@ -111,13 +113,12 @@ const CustomResource = () => {
 
   useEffect(() => {
     tableRef.current.reload();
-  }, [viewBy]);
+  }, [customResourceType]);
 
   return (
     <PageContainer pageHeaderRender={() => <CustomResourceTopBar />}>
       <CustomTable
         fetchDataFunc={getListVendorByBrandOrDistributor}
-        extraParams={{ type: viewBy }}
         title="VENDOR INFORMATION MANAGEMENT"
         columns={setDefaultWidthForEachColumn(MainColumns, 3)}
         ref={tableRef}
@@ -127,9 +128,9 @@ const CustomResource = () => {
             <CustomRadio
               options={optionValue}
               containerClass={styles.customRadio}
-              value={viewBy}
+              value={customResourceType}
               onChange={(radioValue) =>
-                store.dispatch(setCustomResourceValue(radioValue.value as number))
+                store.dispatch(setCustomResourceType(radioValue.value as number))
               }
             />
             <CustomPlusButton
@@ -138,6 +139,12 @@ const CustomResource = () => {
             />
           </div>
         }
+        extraParams={{ type: customResourceType }}
+        onRow={(rowRecord: CustomResources) => ({
+          onClick: () => {
+            pushTo(PATH.designerCustomResourceDetail.replace(':id', rowRecord.id));
+          },
+        })}
       />
     </PageContainer>
   );

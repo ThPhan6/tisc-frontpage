@@ -149,8 +149,9 @@ export const PATH = {
   designerOfficeLibraryCreate: '/design-firms/products/office-library/create/:brandId',
   designerOfficeLibraryUpdate: '/design-firms/products/office-library/:id',
   designerCustomResource: '/design-firms/products/office-library/custom-resources',
-  designerCustomResourceCreate: '/design-firms/products/custom-resources/create',
-  designerCustomResourceUpdate: '/design-firms/products/custom-resources/:id',
+  designerCustomResourceCreate: '/design-firms/products/office-library/custom-resources/create',
+  designerCustomResourceUpdate: '/design-firms/products/office-library/custom-resources/update/:id',
+  designerCustomResourceDetail: '/design-firms/products/office-library/custom-resources/:id',
   // Project
   designerProject: '/design-firms/projects',
   designerUpdateProject: '/design-firms/projects/:id',

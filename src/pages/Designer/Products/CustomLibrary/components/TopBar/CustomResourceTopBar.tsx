@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 
+import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-icon.svg';
 import { ReactComponent as VendorManagementIcon } from '@/assets/icons/vendor-management-icon.svg';
 
 import { getCustomResourceSummary } from '../../services';
@@ -9,7 +10,7 @@ import { pushTo } from '@/helper/history';
 
 import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 
-import { RobotoBodyText } from '@/components/Typography';
+import { RobotoBodyText, Title } from '@/components/Typography';
 import { TopBarContainer, TopBarItem } from '@/features/product/components';
 
 import styles from './index.less';
@@ -31,9 +32,12 @@ export const CustomResourceTopBar = () => {
         <>
           <TopBarItem
             topValue={
-              <RobotoBodyText level={5} customClass={styles.fontBold}>
-                Click to close
-              </RobotoBodyText>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Title level={8} style={{ marginRight: '8px' }}>
+                  CLOSE
+                </Title>
+                <CloseIcon />
+              </div>
             }
             customClass="left-divider mr-12"
             bottomValue="Vendor Management"

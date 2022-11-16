@@ -68,6 +68,8 @@ export interface PopoverProps {
 
   // clear select on close
   clearOnClose?: boolean;
+
+  hasOrtherInput?: boolean;
 }
 
 const Popover: FC<PopoverProps> = ({
@@ -93,6 +95,7 @@ const Popover: FC<PopoverProps> = ({
   submitButtonStatus,
   disabledSubmit,
   clearOnClose,
+  hasOrtherInput = true,
 }) => {
   const [currentValue, setCurrentValue] = useState<any>(chosenValue);
 
@@ -161,7 +164,7 @@ const Popover: FC<PopoverProps> = ({
         <CustomCheckbox
           options={groupCheckboxList}
           isCheckboxList
-          otherInput
+          otherInput={hasOrtherInput}
           selected={currentValue}
           onChange={setCurrentValue}
         />

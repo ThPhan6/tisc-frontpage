@@ -6,43 +6,41 @@ import { PATH } from '@/constants/path';
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 
 import { pushTo } from '@/helper/history';
-import { messageError, messageErrorType } from '@/helper/utils';
+import { isEmptySpace, messageError, messageErrorType, validatePostalCode } from '@/helper/utils';
 
-import { CustomResourceForm } from '../../types';
+import { CustomResourceForm, CustomResourceType } from '../../types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { useAppSelector } from '@/reducers';
 
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
-import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { PhoneInput } from '@/components/Form/PhoneInput';
-import { TableHeader } from '@/components/Table/TableHeader';
 import { MainTitle } from '@/components/Typography';
 import CityModal from '@/features/locations/components/CityModal';
 import CountryModal from '@/features/locations/components/CountryModal';
 import StateModal from '@/features/locations/components/StateModal';
 
-import { CustomResourceValue } from '../../CustomResource';
 import styles from '../../CustomResource.less';
 import { AssociateModal } from './AssociateModal';
 
 interface CustomResourceFormProps {
   data: CustomResourceForm;
   setData: (data: CustomResourceForm) => void;
+  type: 'view' | 'create';
 }
 
 type FieldName = keyof CustomResourceForm;
 
 type ModalType = '' | 'city' | 'state' | 'country' | 'associate';
 
-export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, setData }) => {
+export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, setData, type }) => {
   const [openModal, setOpenModal] = useState<ModalType>('');
 
   const [countryData, setCountryData] = useState({
     label: '',
     value: data.country_id,
-    phoneCode: '00',
+    phoneCode: data.phone_code ?? '00',
   });
 
   const [stateData, setStateData] = useState({ label: '', value: data.state_id });
@@ -58,17 +56,28 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
     }),
   );
 
-  const viewBy = useAppSelector((state) => state.officeProduct.customResourceValue);
+  const customResourceType = useAppSelector((state) => state.officeProduct.customResourceType);
 
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({ ...data, [fieldName]: fieldValue });
+  };
+
+  const onChangePostalCode = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // only 10 chars and cannot type space
+    if (!validatePostalCode(e.target.value) || !isEmptySpace(e.target.value)) {
+      return;
+    }
+    setData({
+      ...data,
+      postal_code: e.target.value,
+    });
   };
 
   const setModalVisible = (visible: boolean) => (visible ? undefined : setOpenModal(''));
 
   useEffect(() => {
     if (countryData.value !== '') {
-      onChangeData('country_id', countryData.value);
+      setData({ ...data, phone_code: countryData.phoneCode, country_id: countryData.value });
     }
   }, [countryData]);
 
@@ -86,21 +95,20 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
       associated.map((item) => item.value),
     );
   }, [associated]);
+
   return (
     <>
-      <TableHeader
-        title={
-          <MainTitle level={3} style={{ textAlign: 'center' }}>
-            Entry Form
-          </MainTitle>
-        }
-        rightAction={
+      <div className={styles.header}>
+        <MainTitle level={3} textAlign={'center'} customClass={styles.header__title}>
+          Entry Form
+        </MainTitle>
+        {type === 'create' && (
           <CloseIcon
-            onClick={() => pushTo(PATH.designerCustomResource)}
             style={{ cursor: 'pointer' }}
+            onClick={() => pushTo(PATH.designerCustomResource)}
           />
-        }
-      />
+        )}
+      </div>
       <div
         style={{
           height: 'calc(100vh - 256px)',
@@ -108,107 +116,131 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           padding: '16px',
           overflow: 'auto',
         }}>
-        <FormGroup
-          label={`${viewBy === CustomResourceValue.Brand ? 'Brand' : 'Distributor'} Company Name`}
+        <InputGroup
+          label={`${
+            customResourceType === CustomResourceType.Brand ? 'Brand' : 'Distributor'
+          } Company Name`}
           required
-          layout="vertical"
-          style={{ marginBottom: '16px' }}>
-          <CustomInput
-            placeholder="type company name"
-            borderBottomColor="mono-medium"
-            value={data.business_name}
-            onChange={(e) => {
-              onChangeData('business_name', e.target.value);
-            }}
-          />
-        </FormGroup>
-        <FormGroup label="Website" required layout="vertical" style={{ marginBottom: '16px' }}>
-          <CustomInput
-            placeholder="copy and paste the URL link"
-            borderBottomColor="mono-medium"
-            value={data.website_uri}
-            onChange={(e) => onChangeData('website_uri', e.target.value)}
-          />
-        </FormGroup>
+          fontLevel={3}
+          value={data.business_name}
+          hasPadding
+          colorPrimaryDark={type === 'create'}
+          hasBoxShadow
+          hasHeight
+          placeholder="type company name"
+          onChange={(e) => {
+            onChangeData('business_name', e.target.value);
+          }}
+          deleteIcon={type === 'create'}
+          onDelete={() => onChangeData('business_name', '')}
+          readOnly={type === 'view'}
+        />
+        <InputGroup
+          label="Website"
+          required
+          fontLevel={3}
+          value={data.website_uri}
+          hasPadding
+          colorPrimaryDark={type === 'create'}
+          hasBoxShadow
+          hasHeight
+          placeholder="copy and paste the URL link"
+          onChange={(e) => onChangeData('website_uri', e.target.value)}
+          deleteIcon={type === 'create'}
+          onDelete={() => onChangeData('website_uri', '')}
+          readOnly={type === 'view'}
+        />
         <InputGroup
           label={`Associated ${
-            viewBy === CustomResourceValue.Brand ? 'Brand(s)' : 'Distributor(s)'
-          }`}
+            customResourceType === CustomResourceType.Brand ? 'Distributor(s)' : 'Brand(s)'
+          } :`}
           fontLevel={3}
           value={associated.map((item) => item.label).join(', ')}
           hasPadding
-          colorPrimaryDark
+          colorPrimaryDark={type === 'create'}
           hasBoxShadow
           hasHeight
-          rightIcon
+          rightIcon={type === 'create'}
           onRightIconClick={() => setOpenModal('associate')}
-          placeholder="copy and paste the URL link"
+          placeholder="slect from the list"
+          readOnly={type === 'view'}
         />
         <InputGroup
           label="Country Location"
+          required
           fontLevel={3}
-          value={countryData.label?.toString()}
+          value={countryData.label}
           hasPadding
-          colorPrimaryDark
+          colorPrimaryDark={type === 'create'}
           hasBoxShadow
           hasHeight
-          rightIcon
+          rightIcon={type === 'create'}
           onRightIconClick={() => setOpenModal('country')}
           placeholder="country list"
+          readOnly={type === 'view'}
         />
         <InputGroup
           label="State / Province"
+          required
           fontLevel={3}
-          value={stateData.label?.toString()}
+          value={stateData.label}
           hasPadding
-          colorPrimaryDark
+          colorPrimaryDark={type === 'create'}
           hasBoxShadow
           hasHeight
-          rightIcon
+          rightIcon={type === 'create'}
           disabled={data.country_id === '-1' || data.country_id === ''}
           onRightIconClick={() => setOpenModal('state')}
-          placeholder="select from the list"
+          placeholder={type === 'create' ? 'select from the list' : ''}
+          readOnly={type === 'view'}
         />
         <InputGroup
           label="City / Town"
+          required
           fontLevel={3}
           value={cityData.label?.toString()}
           hasPadding
-          colorPrimaryDark
+          colorPrimaryDark={type === 'create'}
           hasBoxShadow
           hasHeight
-          rightIcon
+          rightIcon={type === 'create'}
           disabled={data.state_id === ''}
           onRightIconClick={() => setOpenModal('city')}
-          placeholder="select from the list"
+          placeholder={type === 'create' ? 'select from the list' : ''}
+          readOnly={type === 'view'}
         />
-        <FormGroup label="Address" layout="vertical">
-          <CustomTextArea
-            className={styles.address}
-            maxLength={100}
-            showCount
-            placeholder="type here"
-            borderBottomColor="mono-medium"
-            onChange={(e) => onChangeData('address', e.target.value)}
-            value={data.address}
-            boxShadow
-          />
-        </FormGroup>
+        <div className={styles.addressForm}>
+          <FormGroup label="Address" layout="vertical" required>
+            <CustomTextArea
+              className={`${styles.address} ${type === 'view' ? styles.customInput : ''}`}
+              maxLength={100}
+              showCount
+              placeholder="type here"
+              borderBottomColor="mono-medium"
+              onChange={(e) => onChangeData('address', e.target.value)}
+              value={data.address}
+              boxShadow
+              readOnly={type === 'view'}
+            />
+          </FormGroup>
+        </div>
+
         <InputGroup
           label="Postal / Zip Code"
           placeholder="postal / zip code"
           required
-          deleteIcon
+          deleteIcon={type === 'create'}
           fontLevel={3}
           value={data.postal_code}
           hasPadding
-          colorPrimaryDark
+          colorPrimaryDark={type === 'create'}
           hasBoxShadow
           hasHeight
-          onChange={(e) => onChangeData('postal_code', e.target.value)}
+          onChange={(e) => onChangePostalCode(e)}
           onDelete={() => onChangeData('postal_code', '')}
           message={messageError(data.postal_code, MESSAGE_ERROR.POSTAL_CODE, 10)}
           messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
+          readOnly={type === 'view'}
         />
         <FormGroup
           label="General Phone"
@@ -220,27 +252,29 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
             onChange={(value) => {
               onChangeData('general_phone', value.phoneNumber);
             }}
-            colorPlaceholder="mono"
             codeReadOnly
             value={{
               zoneCode: countryData.phoneCode,
               phoneNumber: data.general_phone,
             }}
-            deleteIcon
+            deleteIcon={type === 'create'}
+            containerClass={type === 'create' ? styles.phoneInput : ''}
+            phoneNumberReadOnly={type === 'view'}
           />
         </FormGroup>
         <InputGroup
           label="General Email"
           placeholder="type email address here"
           required
-          deleteIcon
+          deleteIcon={type === 'create'}
           fontLevel={3}
           value={data.general_email}
           hasPadding
-          colorPrimaryDark
+          colorPrimaryDark={type === 'create'}
           hasBoxShadow
           hasHeight
           onChange={(e) => onChangeData('general_email', e.target.value)}
+          readOnly={type === 'view'}
         />
       </div>
       <CountryModal

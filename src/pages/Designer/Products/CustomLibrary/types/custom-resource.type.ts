@@ -61,4 +61,10 @@ export interface CustomResourceForm {
   general_email: string;
   contacts: ContactDetail[];
   type: number;
+  phone_code?: string;
+}
+
+export enum CustomResourceType {
+  'Brand',
+  'Distributor',
 }

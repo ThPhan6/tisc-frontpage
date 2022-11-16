@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 
 import { PATH } from '@/constants/path';
 
+import { ReactComponent as OpenIcon } from '@/assets/icons/open-icon.svg';
 import { ReactComponent as PlusCircleIcon } from '@/assets/icons/plus-circle-icon.svg';
 import { ReactComponent as VendorManagementIcon } from '@/assets/icons/vendor-management-icon.svg';
 
@@ -9,7 +10,7 @@ import { pushTo } from '@/helper/history';
 
 import { ProductGetListParameter } from '@/features/product/types';
 
-import { RobotoBodyText } from '@/components/Typography';
+import { Title } from '@/components/Typography';
 import { TopBarContainer, TopBarItem } from '@/features/product/components';
 import { useProductListFilterAndSorter } from '@/features/product/components/FilterAndSorter';
 
@@ -91,9 +92,12 @@ export const ProductListTopBar: React.FC = () => {
             />
             <TopBarItem
               topValue={
-                <RobotoBodyText level={5} customClass={styles.fontBold}>
-                  Click to open
-                </RobotoBodyText>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Title level={8} style={{ marginRight: '8px' }}>
+                    OPEN
+                  </Title>
+                  <OpenIcon />
+                </div>
               }
               customClass="left-divider mr-12"
               bottomValue="Vendor Management"
