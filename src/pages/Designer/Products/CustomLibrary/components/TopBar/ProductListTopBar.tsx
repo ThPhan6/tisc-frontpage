@@ -5,6 +5,7 @@ import { QUERY_KEY } from '@/constants/util';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 
 import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
+import { ReactComponent as OpenIcon } from '@/assets/icons/open-icon.svg';
 import { ReactComponent as PlusCircleIcon } from '@/assets/icons/plus-circle-icon.svg';
 import { ReactComponent as VendorManagementIcon } from '@/assets/icons/vendor-management-icon.svg';
 
@@ -18,7 +19,7 @@ import { getCollections } from '@/services';
 import store from '@/reducers';
 import { CollectionRelationType } from '@/types';
 
-import { RobotoBodyText } from '@/components/Typography';
+import { RobotoBodyText, Title } from '@/components/Typography';
 import { FilterItem, TopBarContainer, TopBarItem } from '@/features/product/components';
 
 import { setCustomProductFilter } from '../../slice';
@@ -174,9 +175,12 @@ export const ProductListTopBar: React.FC = () => {
             />
             <TopBarItem
               topValue={
-                <RobotoBodyText level={5} customClass={styles.fontBold}>
-                  Click to open
-                </RobotoBodyText>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Title level={8} style={{ marginRight: '8px' }}>
+                    OPEN
+                  </Title>
+                  <OpenIcon />
+                </div>
               }
               customClass="left-divider mr-12"
               bottomValue="Vendor Management"
