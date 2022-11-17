@@ -19,6 +19,8 @@ export const MESSAGE_ERROR = {
   EMAIL_ALREADY_USED: 'Email already taken',
   NO_TEAMPROFILE: 'Add member to invite',
   DOCUMENT_TITLE: 'You are allowed to enter 50 characters only',
+  DISTRIBUTOR_UNAVAILABLE:
+    'The product seems not available for the project location, please verify with the Brand company for more information.',
 };
 
 export const MESSAGE_NOTIFICATION = {
