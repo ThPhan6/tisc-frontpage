@@ -106,27 +106,27 @@ const UpdatePage = () => {
         />
 
         {/* profile */}
-        <CustomTabPane active={selectedTab === BrandTabKeys.profile}>
+        <CustomTabPane active={selectedTab === BrandTabKeys.profile} lazyLoad>
           <ProfileDetail type="brand" data={data} />
         </CustomTabPane>
 
         {/* location */}
-        <CustomTabPane active={selectedTab === BrandTabKeys.locations}>
+        <CustomTabPane active={selectedTab === BrandTabKeys.locations} lazyLoad>
           <LocationDetail type="brand" id={brandId} />
         </CustomTabPane>
 
         {/* team */}
-        <CustomTabPane active={selectedTab === BrandTabKeys.teams}>
+        <CustomTabPane active={selectedTab === BrandTabKeys.teams} lazyLoad>
           <TeamDetail type="brand" id={brandId} />
         </CustomTabPane>
 
         {/* distributors */}
-        <CustomTabPane active={selectedTab === BrandTabKeys.distributors}>
+        <CustomTabPane active={selectedTab === BrandTabKeys.distributors} lazyLoad>
           <BrandDistributorDetail id={brandId} />
         </CustomTabPane>
 
         {/* availability */}
-        <CustomTabPane active={selectedTab === BrandTabKeys.availability}>
+        <CustomTabPane active={selectedTab === BrandTabKeys.availability} lazyLoad>
           <BrandAvailabilityDetail id={brandId} />
         </CustomTabPane>
       </PageContainer>

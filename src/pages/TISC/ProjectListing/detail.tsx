@@ -91,7 +91,6 @@ const ProjectDetail = () => {
       />
       <CustomTabs
         listTab={ListTab}
-        centered={true}
         widthItem="auto"
         customClass={styles.customTabs}
         onChange={(key) => setSelectedTab(key as ProjectListingTabKeys)}

@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { PATH } from '@/constants/path';
 
 import { pushTo } from '@/helper/history';
+import { formatNumber } from '@/helper/utils';
 
 import { ProjectListingResponse } from './type';
 import { TableColumnItem } from '@/components/Table/types';
@@ -68,10 +69,16 @@ const ProjectListing = () => {
     {
       title: 'Area (sq.m.)',
       dataIndex: 'metricArea',
+      render: (_value, record) => {
+        return <span>{formatNumber(record.metricArea)}</span>;
+      },
     },
     {
       title: 'Area (sq.ft.)',
       dataIndex: 'imperialArea',
+      render: (_value, record) => {
+        return <span>{formatNumber(record.imperialArea)}</span>;
+      },
     },
     {
       title: 'Products',
@@ -88,6 +95,11 @@ const ProjectListing = () => {
       dataIndex: 'unlisted',
     },
     {
+      title: 'Deleted',
+      lightHeading: true,
+      dataIndex: 'deleted',
+    },
+    {
       title: 'Specified',
       lightHeading: true,
       dataIndex: 'specified',
@@ -96,11 +108,6 @@ const ProjectListing = () => {
       title: 'Cancelled',
       lightHeading: true,
       dataIndex: 'cancelled',
-    },
-    {
-      title: 'Deleted',
-      lightHeading: true,
-      dataIndex: 'deleted',
     },
     {
       title: 'Action',
