@@ -17,7 +17,7 @@ import {
   validateEmail,
 } from '@/helper/utils';
 
-import { ContactDetail, CustomResourceForm } from '../../types';
+import { ContactDetail, CustomResourceForm } from '../type';
 import { CollapsingProps } from '@/features/how-to/types';
 
 import CustomButton from '@/components/Button';
@@ -29,7 +29,7 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
 
-import styles from '../../CustomResource.less';
+import styles from '../CustomResource.less';
 
 interface ContactInformationProps {
   data: CustomResourceForm;

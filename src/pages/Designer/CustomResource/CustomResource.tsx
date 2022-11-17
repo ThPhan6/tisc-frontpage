@@ -3,16 +3,16 @@ import { useEffect, useRef } from 'react';
 import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
 
-import { deleteCustomResource, getListVendorByBrandOrDistributor } from './services';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
-import { CustomResourceType, CustomResources } from './types';
+import { setCustomResourceType } from './reducer';
+import { CustomResourceType, CustomResources } from './type';
 import { TableColumnItem } from '@/components/Table/types';
 import store, { useAppSelector } from '@/reducers';
 
-import { CustomResourceTopBar } from './components/TopBar/CustomResourceTopBar';
+import { CustomResourceTopBar } from './component/CustomResourceTopBar';
 import { CustomRadio } from '@/components/CustomRadio';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
@@ -20,14 +20,14 @@ import { ActionMenu } from '@/components/TableAction';
 import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from './CustomResource.less';
-import { setCustomResourceType } from './slice';
+import { deleteCustomResource, getListVendorByBrandOrDistributor } from './api';
 
 export const optionValue = [
   { label: 'Brands', value: CustomResourceType.Brand },
   { label: 'Distributor', value: CustomResourceType.Distributor },
 ];
 const CustomResource = () => {
-  const customResourceType = useAppSelector((state) => state.officeProduct.customResourceType);
+  const customResourceType = useAppSelector((state) => state.customResource.customResourceType);
 
   const tableRef = useRef<any>();
 

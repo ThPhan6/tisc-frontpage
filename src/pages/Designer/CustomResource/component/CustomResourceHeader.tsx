@@ -5,11 +5,11 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { MainTitle } from '@/components/Typography';
 
-import { optionValue } from '../../CustomResource';
-import styles from '../../CustomResource.less';
+import { optionValue } from '../CustomResource';
+import styles from '../CustomResource.less';
 
 export const CustomResourceHeader = () => {
-  const customResourceType = useAppSelector((state) => state.officeProduct.customResourceType);
+  const customResourceType = useAppSelector((state) => state.customResource.customResourceType);
 
   return (
     <TableHeader

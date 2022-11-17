@@ -5,7 +5,6 @@ import { PATH } from '@/constants/path';
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-icon.svg';
 import { ReactComponent as VendorManagementIcon } from '@/assets/icons/vendor-management-icon.svg';
 
-import { getCustomResourceSummary } from '../../services';
 import { pushTo } from '@/helper/history';
 
 import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
@@ -13,7 +12,8 @@ import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import { RobotoBodyText, Title } from '@/components/Typography';
 import { TopBarContainer, TopBarItem } from '@/features/product/components';
 
-import styles from './index.less';
+import styles from '../CustomResource.less';
+import { getCustomResourceSummary } from '../api';
 
 export const CustomResourceTopBar = () => {
   const [summaryData, setSummaryData] = useState<DataMenuSummaryProps[]>([]);

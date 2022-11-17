@@ -3,19 +3,20 @@ import { useEffect, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Col, Row } from 'antd';
 
-import { getOneCustomResource } from './services';
 import { useGetParamId } from '@/helper/hook';
 
-import { CustomResourceForm } from './types';
+import { CustomResourceForm } from './type';
 import { useAppSelector } from '@/reducers';
 
-import { ContactInformation } from './components/CustomResource/ContactInfomation';
-import { CustomResourceEntryForm } from './components/CustomResource/CustomResourceForm';
-import { CustomResourceHeader } from './components/CustomResource/CustomResourceHeader';
-import { CustomResourceTopBar } from './components/TopBar/CustomResourceTopBar';
+import { ContactInformation } from './component/ContactInfomation';
+import { CustomResourceEntryForm } from './component/CustomResourceForm';
+import { CustomResourceHeader } from './component/CustomResourceHeader';
+import { CustomResourceTopBar } from './component/CustomResourceTopBar';
+
+import { getOneCustomResource } from './api';
 
 const CustomResourceViewPage = () => {
-  const customResourceType = useAppSelector((state) => state.officeProduct.customResourceType);
+  const customResourceType = useAppSelector((state) => state.customResource.customResourceType);
 
   const customResourceId = useGetParamId();
 

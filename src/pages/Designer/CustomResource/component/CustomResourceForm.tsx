@@ -15,7 +15,7 @@ import {
   validatePostalCode,
 } from '@/helper/utils';
 
-import { CustomResourceForm, CustomResourceType } from '../../types';
+import { CustomResourceForm, CustomResourceType } from '../type';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { useAppSelector } from '@/reducers';
 
@@ -28,7 +28,7 @@ import CityModal from '@/features/locations/components/CityModal';
 import CountryModal from '@/features/locations/components/CountryModal';
 import StateModal from '@/features/locations/components/StateModal';
 
-import styles from '../../CustomResource.less';
+import styles from '../CustomResource.less';
 import { AssociateModal } from './AssociateModal';
 
 interface CustomResourceFormProps {
@@ -63,7 +63,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
     }),
   );
 
-  const customResourceType = useAppSelector((state) => state.officeProduct.customResourceType);
+  const customResourceType = useAppSelector((state) => state.customResource.customResourceType);
 
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({ ...data, [fieldName]: fieldValue });

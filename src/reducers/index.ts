@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { categoryReducer } from '@/features/categories/reducers';
 import { productReducer } from '@/features/product/reducers';
 import { projectReducer } from '@/features/project/reducers';
+import { customResourceReducer } from '@/pages/Designer/CustomResource/reducer';
 
 import { loadingActionReducer } from '@/components/LoadingPage/slices';
 import { officeProductReducer } from '@/pages/Designer/Products/CustomLibrary/slice';
@@ -22,6 +23,7 @@ const reducers = combineReducers({
   project: projectReducer,
   loading: loadingActionReducer,
   summary: summaryReducer,
+  customResource: customResourceReducer,
 });
 
 const persistConfig = {

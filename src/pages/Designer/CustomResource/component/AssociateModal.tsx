@@ -1,14 +1,13 @@
 import { FC, useEffect, useState } from 'react';
 
-import { getAllCustomResource } from '../../services';
-
-import { CustomResourceType } from '../../types';
+import { CustomResourceType } from '../type';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { useAppSelector } from '@/reducers';
 
 import Popover from '@/components/Modal/Popover';
 
-import styles from '../../CustomResource.less';
+import styles from '../CustomResource.less';
+import { getAllCustomResource } from '../api';
 
 export const AssociateModal: FC<{
   visible: boolean;
@@ -18,7 +17,7 @@ export const AssociateModal: FC<{
 }> = ({ visible, setVisible, chosenValue, setChosenValue }) => {
   const [associates, setAssociates] = useState<{ id: string; name: string }[]>();
 
-  const customResourceType = useAppSelector((state) => state.officeProduct.customResourceType);
+  const customResourceType = useAppSelector((state) => state.customResource.customResourceType);
 
   useEffect(() => {
     getAllCustomResource(

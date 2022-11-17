@@ -4,22 +4,22 @@ import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Col, Row } from 'antd';
 
-import { createCustomResource, getOneCustomResource, updateCustomResource } from './services';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
 
-import { CustomResourceForm } from './types';
+import { CustomResourceForm } from './type';
 import { useAppSelector } from '@/reducers';
 
-import { ContactInformation } from './components/CustomResource/ContactInfomation';
-import { CustomResourceEntryForm } from './components/CustomResource/CustomResourceForm';
-import { CustomResourceHeader } from './components/CustomResource/CustomResourceHeader';
-import { CustomResourceTopBar } from './components/TopBar/CustomResourceTopBar';
+import { ContactInformation } from './component/ContactInfomation';
+import { CustomResourceEntryForm } from './component/CustomResourceForm';
+import { CustomResourceHeader } from './component/CustomResourceHeader';
+import { CustomResourceTopBar } from './component/CustomResourceTopBar';
 
+import { createCustomResource, getOneCustomResource, updateCustomResource } from './api';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const CustomResourceCreatePage = () => {
-  const customResourceType = useAppSelector((state) => state.officeProduct.customResourceType);
+  const customResourceType = useAppSelector((state) => state.customResource.customResourceType);
 
   const submitButtonStatus = useBoolean(false);
 
