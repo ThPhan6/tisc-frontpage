@@ -191,7 +191,10 @@ export const MESSAGE_NOTIFICATION = {
   // configuration
   GET_BRAND_DATA_ERROR: 'Failed to get Brand data',
   GET_BRAND_SUMMARY_DATA_ERROR: 'Failed to get Brand summary data',
+  CREATE_BRAND_COLLECTION_SUCCESS: 'Create new Brand collection successfully',
   CREATE_BRAND_COLLECTION_ERROR: 'Failed to create Brand collection',
+  UPDATE_BRAND_COLLECTION_SUCCESS: 'Update Brand collection successfully',
+  UPDATE_BRAND_COLLECTION_ERROR: 'Failed to update Brand collection',
   GET_BRAND_COLLECTION_ERROR: 'Failed to get Brand collection data',
   DELETE_BRAND_COLLECTION_SUCCESS: 'Delete collection successfully',
   DELETE_BRAND_COLLECTION_ERROR: 'Failed to delete collection',
@@ -313,8 +316,16 @@ export const MESSAGE_NOTIFICATION = {
   GET_PROJECT_LISTING_SUMMARY_ERROR: 'Get project listing summary error',
   GET_ONE_PROJECT_LISTING_ERROR: 'Get one project listing error',
 
-  // library and resources
+  // custom product
   GET_LIST_CUSTOM_PRODUCT_LIST_ERROR: 'Failed to get custom product list',
+  GET_ONE_CUSTOM_PRODUCT_LIST_ERROR: 'Failed to get custom product',
+  CREATE_CUSTOM_PRODUCT_SUCCESS: 'Create custom product successfully',
+  CREATE_CUSTOM_PRODUCT_ERROR: 'Failed to create custom product',
+  UPDATE_CUSTOM_PRODUCT_ERROR: 'Failed to update custom product',
+  DELETE_CUSTOM_PRODUCT_SUCCESS: 'Delete custom product successfully',
+  DELETE_CUSTOM_PRODUCT_ERROR: 'Failed to delete custom product',
+  DUPLICATE_CUSTOM_PRODUCT_SUCCESS: 'Duplicate custom product successfully',
+  DUPLICATE_CUSTOM_PRODUCT_ERROR: 'Failed to duplicate custom product',
   GET_LIST_VENDOR: 'Failed to get list vendor by brand or distributor',
   CREATE_CUSTOM_RESOURCE_SUCCESS: 'Create custom resource successfully',
   UPDATE_CUSTOM_RESOURCE_SUCCESS: 'Update custom resource successfully',

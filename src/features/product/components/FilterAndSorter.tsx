@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { USER_ROLE } from '@/constants/userRoles';
 import { QUERY_KEY } from '@/constants/util';
+import { DropDownProps } from 'antd/es/dropdown';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { useHistory } from 'umi';
 
 import { getProductCategoryPagination } from '@/features/categories/services';
 import { getBrandPagination } from '@/features/user-group/services';
-import { useGetUserRoleFromPathname, useQuery } from '@/helper/hook';
+import { useQuery } from '@/helper/hook';
 import {
   getValueByCondition,
   removeUrlParams,
@@ -16,13 +16,12 @@ import {
   showImageUrl,
   updateUrlParams,
 } from '@/helper/utils';
+import { onCompanyFilterClick } from '@/pages/Designer/Products/CustomLibrary/hook';
 
 import { setProductList, setProductListSorter } from '../reducers';
-import { ProductFilterType, SortOrder } from '../types';
+import { SortOrder } from '../types';
 import { CategoryNestedList } from '@/features/categories/types';
-import { BrandListItem } from '@/features/user-group/types';
 import store, { useAppSelector } from '@/reducers';
-import { GeneralData } from '@/types';
 
 import { CustomDropDown, FilterItem } from './ProductTopBarItem';
 
@@ -70,7 +69,7 @@ export const onCollectionFilterClick = (id: string, name: string = '') => {
       { key: QUERY_KEY.coll_id, value: id },
       { key: QUERY_KEY.coll_name, value: name },
     ],
-    remove: [QUERY_KEY.cate_id, QUERY_KEY.cate_name],
+    remove: [QUERY_KEY.cate_id, QUERY_KEY.cate_name, QUERY_KEY.company_id, QUERY_KEY.company_name],
   });
   store.dispatch(
     setProductList({
@@ -83,35 +82,40 @@ export const onCollectionFilterClick = (id: string, name: string = '') => {
   );
 };
 
-export const onCompanyFilterClick = (id: string, name: string = '') => {
-  updateUrlParams({
-    set: [
-      { key: QUERY_KEY.company_id, value: id },
-      { key: QUERY_KEY.company_name, value: name },
-    ],
-    remove: [QUERY_KEY.coll_id, QUERY_KEY.coll_name],
-  });
-  store.dispatch(
-    setProductList({
-      filter: {
-        name: 'company_id',
-        title: name,
-        value: id,
-      },
-    }),
-  );
-};
+export interface FormatFilterForDropDownProps {
+  id: string;
+  name: string;
+  logo?: string | React.ReactNode;
+}
 
-export const getFormatFilterForDropDown = (
-  items: GeneralData[],
-  onFilter: (id: string, name?: string) => void,
+export const setFormatFilterForDropDown = (
+  items: ItemType[],
+  onFilter?: (id: string, name?: string) => void,
+  haveViewAll?: boolean,
 ): ItemType[] => {
   if (!items || !items.length) return [];
 
-  return [{ id: 'all', name: 'VIEW ALL' }, ...items].map((el) => ({
-    key: el.id,
-    label: el.name || '',
-    onClick: () => onFilter(el.id, el.name),
+  let filterData: ItemType[] = items;
+
+  const renderLogo = (logo: string | React.ReactNode) => {
+    if (!logo) return undefined;
+
+    if (typeof logo === 'object') return logo;
+
+    if (typeof logo === 'string') {
+      return <img src={showImageUrl(logo)} style={{ width: 18, height: 18 }} />;
+    }
+  };
+
+  if (haveViewAll) {
+    filterData = [{ key: 'all', label: 'VIEW ALL' }, ...filterData];
+  }
+
+  return filterData.map((el) => ({
+    key: el?.id || el?.key,
+    label: el?.name || el?.label || '',
+    icon: renderLogo(el?.icon),
+    onClick: () => onFilter?.(el?.id || el?.key, el?.name || el?.label),
   }));
 };
 
@@ -125,15 +129,6 @@ export const formatCategoriesToDropDownData = (
     children: el.subs ? formatCategoriesToDropDownData(el.subs, level + 1) : undefined,
     disabled: (el.subs || []).length === 0 && level < 3,
     onClick: el.subs?.length ? undefined : () => onCategoryFilterClick(el.id, el.name || ''),
-  }));
-};
-
-export const formatBrandsToDropDownData = (items: BrandListItem[]): ItemType[] => {
-  return items.map((el) => ({
-    key: el.id,
-    label: el.name || '',
-    icon: <img src={showImageUrl(el.logo)} style={{ width: 18, height: 18 }} />,
-    onClick: () => onBrandFilterClick(el.id, el.name),
   }));
 };
 
@@ -172,15 +167,13 @@ export const SORTER_DROPDOWN_DATA: ItemType[] = [
   },
 ];
 
-const updateQueryToState = (query: {
+export const updateQueryToState = (query: {
   cate_id?: string | null;
   cate_name?: string | null;
   brand_id?: string | null;
   brand_name?: string | null;
   coll_id?: string | null;
   coll_name?: string | null;
-  company_id?: string | null;
-  company_name?: string | null;
   search?: string;
   sort_order?: string;
 }) => {
@@ -190,7 +183,6 @@ const updateQueryToState = (query: {
     [query.cate_id, 'category_id'],
     [query.coll_id, 'collection_id'],
     [query.brand_id, 'brand_id'],
-    [query.company_id, 'company_id'],
   ]);
 
   store.dispatch(
@@ -211,11 +203,6 @@ const updateQueryToState = (query: {
       search: query.search,
     }),
   );
-};
-
-export const resetProductFilter = () => {
-  removeUrlParams([QUERY_KEY.cate_id, QUERY_KEY.cate_name, QUERY_KEY.coll_id, QUERY_KEY.coll_name]);
-  store.dispatch(setProductList({ filter: undefined, data: [] }));
 };
 
 export const useSyncQueryToState = () => {
@@ -258,21 +245,36 @@ export const useSyncQueryToState = () => {
   }, []);
 };
 
-export const useProductListFilterAndSorter = (props?: { noFetchData?: boolean }) => {
+export type ProductFilterType =
+  | 'category_id'
+  | 'collection_id'
+  | 'company_id'
+  | 'brand_id'
+  | 'name';
+
+export interface ProductTopBarFilter {
+  name: ProductFilterType;
+  title: string;
+  value: string;
+}
+
+export const useProductListFilterAndSorter = (fetchs: {
+  noFetchData?: boolean;
+  brand?: boolean;
+  category?: boolean;
+}) => {
   useSyncQueryToState();
   const dispatch = useDispatch();
   const [categories, setCategories] = useState<ItemType[]>([]);
   const [brands, setBrands] = useState<ItemType[]>([]);
 
+  /// product
   const filter = useAppSelector((state) => state.product.list.filter);
   const sort = useAppSelector((state) => state.product.list.sort);
   const search = useAppSelector((state) => state.product.list.search);
   const brandSummary = useAppSelector((state) => state.product.list.brandSummary);
   const productBrand = useAppSelector((state) => state.product.brand);
   const productSummary = useAppSelector((state) => state.product.summary);
-
-  const currentUser = useGetUserRoleFromPathname();
-  const isTiscAdmin = currentUser === USER_ROLE.tisc;
 
   const resetAllProductList = () => {
     dispatch(
@@ -286,82 +288,113 @@ export const useProductListFilterAndSorter = (props?: { noFetchData?: boolean })
     );
   };
 
-  const resetProductListSorter = () => {
-    removeUrlParams([QUERY_KEY.sort_order, QUERY_KEY.sort_name]);
-    dispatch(setProductList({ sort: undefined }));
-  };
-
   useEffect(() => {
-    if (props?.noFetchData) return;
+    if (fetchs.noFetchData) return;
 
-    getProductCategoryPagination(
-      {
-        page: 1,
-        pageSize: 99999,
-        haveProduct: true,
-      },
-      (data) => {
-        setCategories(formatCategoriesToDropDownData(data.data, 1));
-      },
-    );
-    getBrandPagination(
-      {
-        page: 1,
-        pageSize: 99999,
-        haveProduct: true,
-      },
-      (data) => {
-        setBrands(formatBrandsToDropDownData(data.data));
-      },
-    );
+    if (fetchs.category) {
+      getProductCategoryPagination(
+        {
+          page: 1,
+          pageSize: 99999,
+          haveProduct: true,
+        },
+        (data) => {
+          setCategories(formatCategoriesToDropDownData(data.data, 1));
+        },
+      );
+    }
+
+    if (fetchs.brand) {
+      getBrandPagination(
+        {
+          page: 1,
+          pageSize: 99999,
+          haveProduct: true,
+        },
+        (data) => {
+          setBrands(
+            data.data.map((item) => ({
+              key: item.id,
+              label: item.name,
+              icon: item.logo,
+            })),
+          );
+
+          // setFormatFilterForDropDown(
+          //   data.data.map((item) => ({
+          //     key: item.id,
+          //     label: item.name,
+          //     icon: item.logo,
+          //   })),
+          // ),
+          // );
+        },
+      );
+    }
 
     // clear all filter and sorter on first loading
     return resetAllProductList;
   }, []);
 
-  const removeFilter = () => {
+  const resetProductListSorter = () => {
+    removeUrlParams([QUERY_KEY.sort_order, QUERY_KEY.sort_name]);
+    dispatch(setProductList({ sort: undefined }));
+  };
+
+  const resetFilter = () => {
     removeUrlParams([
       QUERY_KEY.cate_id,
       QUERY_KEY.cate_name,
       QUERY_KEY.brand_id,
       QUERY_KEY.brand_name,
+      QUERY_KEY.coll_id,
+      QUERY_KEY.coll_name,
+      QUERY_KEY.company_id,
+      QUERY_KEY.company_name,
     ]);
     dispatch(setProductList({ filter: undefined, brandSummary: undefined }));
   };
 
-  const renderFilterDropdown = (value: ProductFilterType) => {
-    if (filter?.name === value) {
-      return <FilterItem title={filter.title} onDelete={resetProductFilter} />;
+  const renderItemTopBar = (
+    filterType: ProductFilterType,
+    filterValue?: ProductTopBarFilter,
+    defaultLabel?: string,
+  ) => {
+    if (filter?.name && filter?.name === filterType && filterValue?.value) {
+      return <FilterItem title={filter?.title || ''} onDelete={resetFilter} />;
     }
-    return productBrand ? 'view' : <span style={{ opacity: 0 }}>.</span>;
+
+    if (defaultLabel) return defaultLabel;
+
+    return undefined;
   };
 
-  const renderItemTopBar = (type: 'Categories' | 'Collections' | 'Companies') => {
-    const filterValue: GeneralData[] = getValueByCondition([
-      [type === 'Categories', productSummary?.categories],
-      [type === 'Collections', productSummary?.collections],
-      [type === 'Companies', productSummary?.company],
-    ]);
-
-    if (isTiscAdmin && !filterValue) {
-      return `View by ${type}`;
+  const renderFilterDropdown = (
+    type: 'Categories' | 'Collections' | 'Companies' | 'Brands',
+    filterData: ItemType[],
+    haveViewAll?: boolean,
+    labelDefault?: string | ReactNode,
+    position?: DropDownProps['placement'],
+  ) => {
+    if (!filterData || !filterData?.length) {
+      return labelDefault || type;
     }
 
-    if (!filterValue) {
-      return type;
-    }
-
-    const dropDownItem = () => {
+    const renderDropDowmItem = () => {
       if (type === 'Categories') {
-        return getFormatFilterForDropDown(filterValue, onCategoryFilterClick);
+        return setFormatFilterForDropDown(filterData, onCategoryFilterClick, haveViewAll);
       }
 
       if (type === 'Collections') {
-        return getFormatFilterForDropDown(filterValue, onCollectionFilterClick);
+        return setFormatFilterForDropDown(filterData, onCollectionFilterClick, haveViewAll);
+      }
+
+      if (type === 'Brands') {
+        return setFormatFilterForDropDown(filterData, onBrandFilterClick, haveViewAll);
       }
 
       if (type === 'Companies') {
-        return getFormatFilterForDropDown(filterValue, onCompanyFilterClick);
+        return setFormatFilterForDropDown(filterData, onCompanyFilterClick, haveViewAll);
       }
 
       return undefined;
@@ -369,10 +402,10 @@ export const useProductListFilterAndSorter = (props?: { noFetchData?: boolean })
 
     return (
       <CustomDropDown
-        items={dropDownItem()}
-        viewAllTop
-        placement="bottomRight"
-        menuStyle={{ height: 'auto', width: 240 }}>
+        items={renderDropDowmItem()}
+        viewAllTop={haveViewAll}
+        placement={position ?? 'bottomLeft'}
+        menuStyle={{ height: 'max-content', width: 240 }}>
         {type}
       </CustomDropDown>
     );
@@ -391,7 +424,7 @@ export const useProductListFilterAndSorter = (props?: { noFetchData?: boolean })
     renderFilterDropdown,
     resetProductListSorter,
     resetAllProductList,
-    removeFilter,
+    resetFilter,
     dispatch,
   };
 };

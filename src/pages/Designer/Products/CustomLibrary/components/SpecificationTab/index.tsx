@@ -5,23 +5,25 @@ import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 
 import { uniqueId } from 'lodash';
 
-import { NameContentProps, ProductOptionProps, SpecificationRequestBody } from '../../types';
+import { NameContentProps, ProductOptionProps } from '../../types';
+import store, { useAppSelector } from '@/reducers';
 
 import CustomCollapse from '@/components/Collapse';
 import { DoubleInput } from '@/components/EntryForm/DoubleInput';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
+import { setCustomProductDetail } from '../../slice';
 import { ProductOptionModal } from '../Modal/ProductOptionModal';
 import '../index.less';
 import styles from './index.less';
-import { DimensionWeight, productWithDiameterData } from '@/features/dimension-weight';
+import { DimensionWeight } from '@/features/dimension-weight';
 
 const DEFAULT_OPTION: ProductOptionProps = {
   id: '',
   use_image: false,
   tag: '',
-  contents: [],
+  items: [],
 };
 
 const DEFAULT_CONTENT: NameContentProps = {
@@ -30,61 +32,66 @@ const DEFAULT_CONTENT: NameContentProps = {
   content: '',
 };
 
-const DEFAULT_STATE: SpecificationRequestBody = {
-  dimension_n_weight: productWithDiameterData,
-  specifications: [],
-  options: [],
-};
-
 export const SpecificationTab = () => {
   const [visible, setVisible] = useState<'' | 'option'>('');
 
-  const [data, setData] = useState<SpecificationRequestBody>(DEFAULT_STATE);
+  const { specification, options, dimension_and_weight } = useAppSelector(
+    (state) => state.customProduct.details,
+  );
 
   const handleDeleteSpecification = (id: string) => {
-    const newData = data.specifications?.filter((specification) => specification.id !== id);
-    setData((prevState) => ({
-      ...prevState,
-      specifications: newData,
-    }));
+    const newData = specification?.filter((filterItem) => filterItem.id !== id);
+    store.dispatch(
+      setCustomProductDetail({
+        specification: newData,
+      }),
+    );
   };
-
-  console.log(data);
 
   const handleAddSpecification = () => {
     const randomID = uniqueId();
-    setData((prevState) => ({
-      ...prevState,
-      specifications: [...prevState.specifications, { ...DEFAULT_CONTENT, id: randomID }],
-    }));
+    store.dispatch(
+      setCustomProductDetail({
+        specification: [...specification, { ...DEFAULT_CONTENT, id: randomID }],
+      }),
+    );
   };
 
   const onChangeSpecification =
-    (
-      fieldName: keyof Omit<NameContentProps, 'id'>,
-      specification: NameContentProps,
-      index: number,
-    ) =>
+    (fieldName: keyof Omit<NameContentProps, 'id'>, attributes: NameContentProps, index: number) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newSpecification = [...data.specifications];
-      newSpecification[index] = { ...specification, [fieldName]: e.target.value };
-      setData((prevState) => ({
-        ...prevState,
-        specifications: newSpecification,
-      }));
+      const newSpecification = [...specification];
+      newSpecification[index] = { ...attributes, [fieldName]: e.target.value };
+      store.dispatch(
+        setCustomProductDetail({
+          specification: newSpecification,
+        }),
+      );
     };
 
   const handleAddOption = () => {
     const randomID = uniqueId();
-    setData((prevState) => ({
-      ...prevState,
-      options: [...prevState.options, { ...DEFAULT_OPTION, id: randomID }],
-    }));
-  };
 
+    store.dispatch(
+      setCustomProductDetail({
+        options: [...options, { ...DEFAULT_OPTION, id: randomID }],
+      }),
+    );
+  };
   return (
     <>
-      <DimensionWeight />
+      <DimensionWeight
+        data={dimension_and_weight}
+        editable
+        setData={(data) => {
+          store.dispatch(
+            setCustomProductDetail({
+              dimension_and_weight: data,
+            }),
+          );
+        }}
+      />
+
       <div className="flex-end pr-16">
         <CustomPlusButton
           size={18}
@@ -96,30 +103,30 @@ export const SpecificationTab = () => {
       </div>
 
       <div>
-        {data.specifications?.map((specification, index) => {
+        {specification?.map((item, index) => {
           return (
             <DoubleInput
-              key={specification.id || index}
+              key={item.id || index}
               fontLevel={6}
               doubleInputClass="mb-8"
               leftIcon={<ScrollIcon />}
               rightIcon={
                 <DeleteIcon
                   className="cursor-pointer"
-                  onClick={() => handleDeleteSpecification(specification.id)}
+                  onClick={() => handleDeleteSpecification(item.id)}
                 />
               }
-              firstValue={specification.name}
+              firstValue={item.name}
               firstPlaceholder="type content"
-              firstOnChange={onChangeSpecification('name', specification, index)}
-              secondValue={specification.content}
+              firstOnChange={onChangeSpecification('name', item, index)}
+              secondValue={item.content}
               secondPlaceholder="type content"
-              secondOnChange={onChangeSpecification('content', specification, index)}
+              secondOnChange={onChangeSpecification('content', item, index)}
             />
           );
         })}
 
-        {data.options?.map((option) => {
+        {options?.map((option) => {
           return (
             <CustomCollapse
               defaultActiveKey={'1'}

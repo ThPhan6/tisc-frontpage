@@ -40,16 +40,11 @@ export async function getConsideredProducts(
     method: 'GET',
     params,
   })
-    .then(
-      (response: { data: GetDataListResponse & { considered_products: ConsideredProduct[] } }) => {
-        const { considered_products, summary } = response.data;
-        considered_products[0].id = 'entire_project';
-        callback({
-          data: considered_products,
-          summary,
-        });
-      },
-    )
+    .then((response: { data: GetDataListResponse & { data: ConsideredProduct[] } }) => {
+      const { data, summary } = response.data;
+      data[0].id = 'entire_project';
+      callback({ data, summary });
+    })
     .catch((error) => {
       console.log('error', error);
       message.error(error.message);

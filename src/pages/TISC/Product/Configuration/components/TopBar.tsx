@@ -50,7 +50,7 @@ export const TopBar: React.FC = () => {
 
   const { renderFilterDropdown, renderItemTopBar, productSummary, filter, productBrand } =
     useProductListFilterAndSorter({
-      noFetchData: true,
+      category: true,
     });
 
   /// load brand by alphabet from API
@@ -169,17 +169,45 @@ export const TopBar: React.FC = () => {
         RightSideContent={
           <>
             <TopBarItem
-              topValue={renderFilterDropdown('category_id')}
+              topValue={renderItemTopBar(
+                'category_id',
+                filter,
+                productBrand && filter?.name !== 'category_id' ? 'view' : '',
+              )}
               disabled
               bottomEnable={productSummary ? true : false}
-              bottomValue={renderItemTopBar('Categories')}
+              bottomValue={renderFilterDropdown(
+                'Categories',
+                productSummary?.categories.length
+                  ? productSummary?.categories.map((category) => ({
+                      key: category.id,
+                      label: category.name,
+                    }))
+                  : [],
+                true,
+                'View by categories',
+              )}
               customClass="left-divider"
             />
             <TopBarItem
-              topValue={renderFilterDropdown('collection_id')}
+              topValue={renderItemTopBar(
+                'collection_id',
+                filter,
+                productBrand && filter?.name !== 'collection_id' ? 'view' : '',
+              )}
               disabled
               bottomEnable={productSummary ? true : false}
-              bottomValue={renderItemTopBar('Collections')}
+              bottomValue={renderFilterDropdown(
+                'Collections',
+                productSummary?.collections
+                  ? productSummary?.collections.map((collection) => ({
+                      key: collection.id,
+                      label: collection.name,
+                    }))
+                  : [],
+                true,
+                'View by Collections',
+              )}
               customClass="left-divider"
             />
             <TopBarItem

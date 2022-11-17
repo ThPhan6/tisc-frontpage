@@ -20,7 +20,6 @@ import { BodyText, Title } from '@/components/Typography';
 import {
   CollapseProductList,
   CustomDropDown,
-  FilterItem,
   TopBarContainer,
   TopBarItem,
 } from '@/features/product/components';
@@ -38,8 +37,17 @@ const BrandProductListPage: React.FC = () => {
   const firstLoad = useBoolean(true);
   const [searchCount, setSearchCount] = useState(0);
 
-  const { filter, sort, brands, search, categories, brandSummary, dispatch, removeFilter } =
-    useProductListFilterAndSorter();
+  const {
+    filter,
+    sort,
+    brands,
+    search,
+    categories,
+    brandSummary,
+    dispatch,
+    renderFilterDropdown,
+    renderItemTopBar,
+  } = useProductListFilterAndSorter({ brand: true, category: true });
 
   const debouceSearch = useCallback(
     debounce((value: string) => {
@@ -106,36 +114,22 @@ const BrandProductListPage: React.FC = () => {
       LeftSideContent={
         <>
           <TopBarItem
-            topValue={
-              filter?.name === 'brand_id' ? (
-                <FilterItem title={filter.title} onDelete={removeFilter} />
-              ) : (
-                'select'
-              )
-            }
+            topValue={renderItemTopBar('brand_id', filter, 'select')}
             bottomEnable={brands.length ? true : false}
             disabled
-            bottomValue={
-              <CustomDropDown items={brands} menuStyle={{ width: 240 }}>
-                Brands
-              </CustomDropDown>
-            }
+            bottomValue={renderFilterDropdown('Brands', brands, false)}
             customClass="right-divider"
-            style={{ paddingLeft: 0 }}
           />
           <TopBarItem
-            topValue={
-              filter?.name === 'category_id' ? (
-                <FilterItem title={filter.title} onDelete={removeFilter} />
-              ) : (
-                'select'
-              )
-            }
+            topValue={renderItemTopBar('category_id', filter, 'select')}
             bottomEnable={categories.length ? true : false}
             disabled
-            bottomValue={<CustomDropDown items={categories}>Categories</CustomDropDown>}
-            customClass="right-divider"
-            style={{ paddingLeft: 0 }}
+            bottomValue={
+              <CustomDropDown items={categories} menuStyle={{ height: 'max-content' }}>
+                Categories
+              </CustomDropDown>
+            }
+            customClass="right-divider pl-0"
           />
 
           <SortOrderPanel order={sort?.order} sort={sort} style={{ paddingLeft: 0 }} />

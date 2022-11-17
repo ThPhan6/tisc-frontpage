@@ -2,6 +2,8 @@ import { FC, useEffect, useState } from 'react';
 
 import { PageContainer } from '@ant-design/pro-layout';
 
+import { formatNumber } from '@/helper/utils';
+
 import { ProjectListingSummary } from '../type';
 
 import { MenuSummary } from '@/components/MenuSummary';
@@ -33,7 +35,7 @@ export const ProjectListingHeader: FC = ({ children }) => {
             <div className={styles.rightMenu}>
               <div style={{ padding: '0 12px', marginRight: '12px' }}>
                 <BodyText fontFamily="Roboto" level={5}>
-                  {summaryData.area.metric}
+                  {formatNumber(summaryData.area.metric)}
                 </BodyText>
                 <BodyText fontFamily="Roboto" level={6}>
                   Total sq.m.
@@ -41,7 +43,7 @@ export const ProjectListingHeader: FC = ({ children }) => {
               </div>
               <div style={{ padding: '0 12px' }}>
                 <BodyText fontFamily="Roboto" level={5}>
-                  {summaryData.area.imperial}
+                  {formatNumber(summaryData.area.imperial)}
                 </BodyText>
                 <BodyText fontFamily="Roboto" level={6}>
                   Total sq.ft.

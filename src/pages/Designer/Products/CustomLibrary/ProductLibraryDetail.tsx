@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
-import { Col, Row } from 'antd';
+import { PATH } from '@/constants/path';
+import { Col, Row, message } from 'antd';
 import { useHistory, useParams } from 'umi';
 
-import { ProductInfoTab } from './types';
+import { createCustomProduct, getOneCustomProduct, updateCustomProduct } from './services';
+
+import { NameContentProps, ProductInfoTab, ProductOptionProps } from './types';
+import { ProductDimensionWeight } from '@/features/dimension-weight/types';
+import { useAppSelector } from '@/reducers';
 
 import { SpecificationTab } from './components/SpecificationTab';
 import { SummaryTab } from './components/SummaryTab';
-import { VendorTab } from './components/VendorTab';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 import ProductDetailHeader from '@/features/product/components/ProductDetailHeader';
 import ProductImagePreview from '@/features/product/components/ProductImagePreview';
@@ -17,63 +21,88 @@ import styles from './ProductLibraryDetail.less';
 const LIST_TAB = [
   { tab: 'SUMMARY', key: 'summary' },
   { tab: 'SPECIFICATION', key: 'specification' },
-  { tab: 'VENDOR', key: 'vendor' },
 ];
+
+export interface CustomProductRequestBody {
+  name: string;
+  description: string;
+  images: string[];
+  dimension_and_weight: ProductDimensionWeight;
+  attributes: NameContentProps[];
+  specification: NameContentProps[];
+  options: ProductOptionProps[];
+  collection_id: string;
+  company_id: string;
+}
 
 const ProductLibraryDetail: React.FC = () => {
   const history = useHistory();
-
-  const params = useParams<{ id: string; brandId: string }>();
+  const params = useParams<{ id: string }>();
   const productId = params?.id || '';
-  const brandId = params?.brandId || '';
-
-  // const productData = useAppSelector((state) => state.officeProduct.product);
-  // const summaryData = useAppSelector((state) => state.officeProduct.summary);
-  // const specificationData = useAppSelector((state) => state.officeProduct.specification);
-  // const vendorData = useAppSelector((state) => state.officeProduct.vendor);
 
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('summary');
-  // const [title, setTitle] = useState<string>('');
-
-  useEffect(() => {
-    if (brandId) {
-      // getBrandById(brandId).then((res) => dispatch(setBrand(res)));
-    }
-    return () => {
-      // dispatch(resetProductDetailState());
-    };
-  }, [brandId]);
+  const productData = useAppSelector((state) => state.customProduct.details);
 
   useEffect(() => {
     if (productId) {
-      // getProductById(productId);
+      getOneCustomProduct(productId);
     }
   }, [productId]);
 
   const onSave = () => {
-    // const data = {
-    //   company_id: summaryData.company.id || '',
-    //   collection_id: summaryData.collection.id || '',
-    //   product: summaryData.product.trim(),
-    //   description: summaryData.description.trim(),
-    //   attributes: summaryData.attributes,
-    //   specifications: specificationData.specifications,
-    //   images: productData.images?.map((image) => {
-    //     if (image.indexOf('data:image') > -1) {
-    //       return image.split(',')[1];
-    //     }
-    //     return image;
-    //   }),
-    // };
-    // update collection list
-    // update company list
+    if (!productData.company.name) {
+      message.error('Company is required');
+      return;
+    }
+
+    if (!productData.collection.name) {
+      message.error('Collection is required');
+      return;
+    }
+
+    if (!productData.name) {
+      message.error('Product name is required');
+      return;
+    }
+
+    if (!productData.images.length) {
+      message.error('At least one image');
+      return;
+    }
+
+    const data: CustomProductRequestBody = {
+      company_id: productData.company.id,
+      collection_id: productData.collection.id,
+      name: productData.name,
+      dimension_and_weight: productData.dimension_and_weight,
+      description: productData.description.trim(),
+      attributes: productData.attributes,
+      specification: productData.specification,
+      options: productData.options,
+      images: productData.images?.map((image) => {
+        if (image.indexOf('data:image') > -1) {
+          return image.split(',')[1];
+        }
+        return image;
+      }),
+    };
+
+    if (productId) {
+      updateCustomProduct(productId, data);
+    } else {
+      createCustomProduct(data).then((res) => {
+        if (res) {
+          history.replace(PATH.designerCustomProductDetail.replace(':id', res.id));
+        }
+      });
+    }
   };
 
   return (
     <Row className={styles.container}>
       <Col span={24}>
         <ProductDetailHeader
-          title={'title'}
+          title={productData.name || ''}
           onSave={onSave}
           onCancel={history.goBack}
           hideSelect
@@ -84,7 +113,12 @@ const ProductLibraryDetail: React.FC = () => {
       <Col span={24}>
         <Row className={styles.marginRounded}>
           <Col span={12}>
-            <ProductImagePreview hideInquiryRequest isOfficeLibrary />
+            <ProductImagePreview
+              hideInquiryRequest
+              isCustomProduct
+              disabledAssignProduct={!productId}
+              disabledShareViaEmail={!productId}
+            />
           </Col>
 
           <Col span={12} className={styles.productContent}>
@@ -106,10 +140,6 @@ const ProductLibraryDetail: React.FC = () => {
 
                 <CustomTabPane active={activeKey === 'specification'}>
                   <SpecificationTab />
-                </CustomTabPane>
-
-                <CustomTabPane active={activeKey === 'vendor'}>
-                  <VendorTab />
                 </CustomTabPane>
               </Col>
             </Row>

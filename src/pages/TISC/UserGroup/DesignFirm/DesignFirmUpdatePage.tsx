@@ -113,32 +113,32 @@ const DesignFirmUpdatePage = () => {
         />
 
         {/* profile */}
-        <CustomTabPane active={selectedTab === DesignTabKeys.profile}>
+        <CustomTabPane active={selectedTab === DesignTabKeys.profile} lazyLoad>
           <ProfileDetail type="design" data={data} />
         </CustomTabPane>
 
         {/* locations */}
-        <CustomTabPane active={selectedTab === DesignTabKeys.locations}>
+        <CustomTabPane active={selectedTab === DesignTabKeys.locations} lazyLoad>
           <LocationDetail type="design" id={designId} />
         </CustomTabPane>
 
         {/* teams */}
-        <CustomTabPane active={selectedTab === DesignTabKeys.teams}>
+        <CustomTabPane active={selectedTab === DesignTabKeys.teams} lazyLoad>
           <TeamDetail type="design" id={designId} />
         </CustomTabPane>
 
         {/* material code */}
-        <CustomTabPane active={selectedTab === DesignTabKeys.materialCode}>
+        <CustomTabPane active={selectedTab === DesignTabKeys.materialCode} lazyLoad>
           <MaterialCode id={designId} />
         </CustomTabPane>
 
         {/* project */}
-        <CustomTabPane active={selectedTab === DesignTabKeys.projects}>
+        <CustomTabPane active={selectedTab === DesignTabKeys.projects} lazyLoad>
           <ProjectDesign id={designId} />
         </CustomTabPane>
 
         {/* custom */}
-        <CustomTabPane active={selectedTab === DesignTabKeys.custom}>
+        <CustomTabPane active={selectedTab === DesignTabKeys.custom} lazyLoad>
           <CustomDesign />
         </CustomTabPane>
       </PageContainer>

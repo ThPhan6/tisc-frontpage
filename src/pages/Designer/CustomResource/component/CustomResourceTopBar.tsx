@@ -42,7 +42,7 @@ export const CustomResourceTopBar = () => {
             customClass="left-divider mr-12"
             bottomValue="Vendor Management"
             cursor="pointer"
-            onClick={() => pushTo(PATH.designerOfficeLibrary)}
+            onClick={() => pushTo(PATH.designerCustomProduct)}
             icon={<VendorManagementIcon />}
           />
           {summaryData.map((summary) => (

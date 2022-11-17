@@ -2,6 +2,8 @@ import { FC } from 'react';
 
 import { Col, Collapse, Row } from 'antd';
 
+import { formatNumber } from '@/helper/utils';
+
 import { SpaceDetail } from '../type';
 import { ProjectSpaceArea } from '@/features/project/types';
 
@@ -57,7 +59,7 @@ const ProjectSpaceAreas: FC<ListAreaProps> = ({ areas, index }) => {
               <tr>
                 <td className={styles.code}>
                   <BodyText level={5} fontFamily="Roboto">
-                    {room.room_size}
+                    {room.room_id}
                   </BodyText>
                 </td>
                 <td className={styles.room}>
@@ -105,9 +107,9 @@ export const SpaceTab: FC<SpaceTabProps> = ({ space }) => {
             Total Area:
           </BodyText>
           <Title level={9} style={{ marginRight: '12px' }}>
-            {space?.metricArea} sq.m.
+            {formatNumber(space?.metricArea ?? 0)} sq.m.
           </Title>
-          <Title level={9}>{space?.imperialArea} sq.ft.</Title>
+          <Title level={9}>{formatNumber(space?.imperialArea ?? 0)} sq.ft.</Title>
         </div>
       </Col>
     </Row>

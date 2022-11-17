@@ -2,3 +2,19 @@
   font-weight: 500;
   cursor: pointer;
 }
+
+.colorDark {
+  :global(.active) {
+    color: @mono-color-medium;
+  }
+
+  > span :first-child {
+    display: none;
+  }
+}
+
+.hideDeleteIcon {
+  > span :first-child {
+    display: none;
+  }
+}

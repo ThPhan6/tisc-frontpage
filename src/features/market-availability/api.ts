@@ -6,6 +6,7 @@ import {
   AvailabilityCollectionGroup,
   MarketAvailabilityDataList,
   MarketAvailabilityDetails,
+  PayloadUpdateAvailibity,
 } from './type';
 import type {
   DataTableResponse,
@@ -31,7 +32,7 @@ export async function getMarketAvailabilityList(
     params,
   })
     .then((response) => {
-      const { collections, pagination, summary } = response.data;
+      const { collections, pagination } = response.data;
       callback({
         data: collections,
         pagination: {
@@ -39,7 +40,6 @@ export async function getMarketAvailabilityList(
           pageSize: pagination.page_size,
           total: pagination.total,
         },
-        summary,
       });
     })
     .catch((error) => {
@@ -63,13 +63,11 @@ export async function getMarketAvailabilityByCollectionId(collectionId: string) 
 
 export async function updateMarketAvailabilityByCollectionId(
   collectionId: string,
-  countryIds: string[],
+  countries: PayloadUpdateAvailibity[],
 ) {
   return request(`/api/market-availability/update/${collectionId}`, {
     method: 'PUT',
-    data: {
-      country_ids: countryIds,
-    },
+    data: { countries },
   })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_MARKET_AVAILABILITY_SUCCESS);

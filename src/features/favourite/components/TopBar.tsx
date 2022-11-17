@@ -9,12 +9,7 @@ import type { FavouriteProductSummary } from '../types';
 import { ProductItemValue } from '@/features/product/types';
 
 import SortOrderPanel from '@/components/SortOrder';
-import {
-  CustomDropDown,
-  FilterItem,
-  TopBarContainer,
-  TopBarItem,
-} from '@/features/product/components';
+import { TopBarContainer, TopBarItem } from '@/features/product/components';
 import {
   onBrandFilterClick,
   onCategoryFilterClick,
@@ -50,8 +45,22 @@ export const formatBrandsFavouriteToDropDownData = (brands?: ProductItemValue[])
 
 const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavouriteRetrieved }) => {
   const [productSummary, setProductSummary] = useState<FavouriteProductSummary>();
+  const brandDropDownData: ItemType[] = !productSummary?.brands.length
+    ? ([] as ItemType[])
+    : productSummary?.brands.map((item) => ({
+        key: item.id,
+        label: item.name,
+        icon: item.logo,
+      }));
 
-  const { filter, sort, removeFilter } = useProductListFilterAndSorter({
+  const categoryDropDownData: ItemType[] = !productSummary?.categories.length
+    ? ([] as ItemType[])
+    : productSummary?.categories.map((item) => ({
+        key: item.id,
+        label: item.name,
+      }));
+
+  const { filter, sort, renderItemTopBar, renderFilterDropdown } = useProductListFilterAndSorter({
     noFetchData: true,
   });
 
@@ -100,46 +109,18 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
             <TopBarItem
               disabled
               customClass={`left-divider ${activeBrand ? 'cursor-pointer' : 'cursor-default'} `}
-              topValue={
-                filter?.name === 'brand_id' ? (
-                  <FilterItem title={filter.title} onDelete={removeFilter} />
-                ) : (
-                  'select'
-                )
-              }
+              topValue={renderItemTopBar('brand_id', filter, activeBrand ? 'select' : '')}
               bottomEnable={activeBrand}
-              bottomValue={
-                <CustomDropDown
-                  items={formatBrandsFavouriteToDropDownData(productSummary?.brands)}
-                  menuStyle={{ width: 240 }}
-                  disabled={!activeBrand}
-                  placement="bottomRight">
-                  Brands
-                </CustomDropDown>
-              }
+              bottomValue={renderFilterDropdown('Brands', brandDropDownData, false)}
             />
 
             {/* categories */}
             <TopBarItem
               disabled
               customClass={`left-divider ${activeCategory ? 'cursor-pointer' : 'cursor-default'} `}
-              topValue={
-                filter?.name === 'category_id' ? (
-                  <FilterItem title={filter.title} onDelete={removeFilter} />
-                ) : (
-                  'select'
-                )
-              }
+              topValue={renderItemTopBar('category_id', filter, activeCategory ? 'select' : '')}
               bottomEnable={activeCategory}
-              bottomValue={
-                <CustomDropDown
-                  placement="bottomRight"
-                  menuStyle={{ width: 240 }}
-                  items={formatCategoriesFavouriteToDropDownData(productSummary?.categories)}
-                  disabled={!activeCategory}>
-                  Categories
-                </CustomDropDown>
-              }
+              bottomValue={renderFilterDropdown('Categories', categoryDropDownData, false)}
             />
 
             {/* sort */}

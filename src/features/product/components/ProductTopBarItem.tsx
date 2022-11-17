@@ -40,7 +40,7 @@ export const TopBarItem: React.FC<ProductTopBarProps> = ({
   const renderTopValue = () => {
     if (typeof topValue === 'string' || typeof topValue === 'number') {
       return (
-        <BodyText level={5} fontFamily="Roboto" customClass={disabled ? 'disabled ' : ''}>
+        <BodyText level={5} fontFamily="Roboto" customClass={disabled ? 'disabled ' : 'active'}>
           {topValue}
         </BodyText>
       );

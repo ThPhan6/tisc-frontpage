@@ -124,7 +124,7 @@ const GeneralInquiryDetail = () => {
                 variant="primary"
                 properties="rounded"
                 onClick={goBackToTable}>
-                Cancel
+                Done
               </CustomButton>
             </div>
           )}
