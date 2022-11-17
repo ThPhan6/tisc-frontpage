@@ -9,9 +9,7 @@ import ProductCard from '@/features/product/components/ProductCard';
 import styles from '@/features/product/components/ProductCard.less';
 
 const CustomLibrary: React.FC = () => {
-  const customProductList = useAppSelector((state) => state.customProduct.list);
-
-  console.log('customProductList', customProductList);
+  const customProductList = useAppSelector((state) => state.customProduct.list || []);
 
   return (
     <PageContainer pageHeaderRender={() => <ProductListTopBar />}>

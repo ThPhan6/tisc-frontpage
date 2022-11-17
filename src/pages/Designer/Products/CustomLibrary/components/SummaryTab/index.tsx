@@ -5,7 +5,6 @@ import { useParams } from 'umi';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 
-import { getOneCustomProduct } from '../../services';
 import { trimStart, uniqueId } from 'lodash';
 
 import { CustomProductDetailProps, NameContentProps } from '../../types';
@@ -49,12 +48,6 @@ export const SummaryTab = () => {
       store.dispatch(resetCustomProductState());
     }
   }, []);
-
-  useEffect(() => {
-    if (productId) {
-      getOneCustomProduct(productId);
-    }
-  }, [productId]);
 
   const onChangeDataByInput =
     (fieldName: keyof CustomProductDetailProps) =>
@@ -220,33 +213,29 @@ export const SummaryTab = () => {
         );
       })}
 
-      {productId ? null : (
-        <>
-          <BrandCompanyModal
-            visible={visible === 'company'}
-            setVisible={handleCloseModal}
-            chosenValue={{
-              value: company.id,
-              label: company.name,
-            }}
-            setChosenValue={onChangeDataBySelected('company')}
-          />
+      <BrandCompanyModal
+        visible={visible === 'company'}
+        setVisible={handleCloseModal}
+        chosenValue={{
+          value: company.id,
+          label: company.name,
+        }}
+        setChosenValue={onChangeDataBySelected('company')}
+      />
 
-          {brandCompanyId ? (
-            <CollectionModal
-              brandId={brandCompanyId}
-              collectionType={CollectionRelationType.CustomLibrary}
-              visible={visible === 'collection'}
-              setVisible={handleCloseModal}
-              chosenValue={{
-                value: collection.id,
-                label: collection.name,
-              }}
-              setChosenValue={onChangeDataBySelected('collection')}
-            />
-          ) : null}
-        </>
-      )}
+      {brandCompanyId ? (
+        <CollectionModal
+          brandId={brandCompanyId}
+          collectionType={CollectionRelationType.CustomLibrary}
+          visible={visible === 'collection'}
+          setVisible={handleCloseModal}
+          chosenValue={{
+            value: collection.id,
+            label: collection.name,
+          }}
+          setChosenValue={onChangeDataBySelected('collection')}
+        />
+      ) : null}
     </>
   );
 };

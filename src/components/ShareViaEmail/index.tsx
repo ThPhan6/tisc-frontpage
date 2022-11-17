@@ -56,8 +56,6 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible })
     product_id: product.id,
   });
 
-  console.log('product', product);
-
   // for Sharing Group
   const [sharingGroup, setSharingGroup] = useState<ProductItemValue[]>([]);
   const [sharingPurpose, setSharingPurpose] = useState<ProductItemValue[]>([]);

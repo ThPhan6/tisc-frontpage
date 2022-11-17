@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { Col, Row, message } from 'antd';
 import { useHistory, useParams } from 'umi';
 
-import { createCustomProduct, updateCustomProduct } from './services';
+import { createCustomProduct, getOneCustomProduct, updateCustomProduct } from './services';
 
 import { NameContentProps, ProductInfoTab, ProductOptionProps } from './types';
 import { ProductDimensionWeight } from '@/features/dimension-weight/types';
@@ -43,7 +43,11 @@ const ProductLibraryDetail: React.FC = () => {
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('summary');
   const productData = useAppSelector((state) => state.customProduct.details);
 
-  console.log('productData', productData);
+  useEffect(() => {
+    if (productId) {
+      getOneCustomProduct(productId);
+    }
+  }, [productId]);
 
   const onSave = () => {
     if (!productData.company.name) {

@@ -53,3 +53,11 @@ export interface CustomProductDetailProps {
   collection: GeneralData;
   company: GeneralData;
 }
+
+export interface CustomProductDetailResponse
+  extends Omit<CustomProductDetailProps, 'collection' | 'company'> {
+  collection_id: string;
+  collection_name: string;
+  company_id: string;
+  company_name: string;
+}

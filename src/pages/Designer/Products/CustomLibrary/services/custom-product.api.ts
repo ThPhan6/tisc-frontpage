@@ -3,14 +3,14 @@ import { message } from 'antd';
 import { request } from 'umi';
 
 import {
-  CustomProductDetailProps,
+  CustomProductDetailResponse,
   CustomProductFilter,
   CustomProductList,
 } from '../types/custom-product.type';
 import store from '@/reducers';
 
 import { CustomProductRequestBody } from '../ProductLibraryDetail';
-import { setCustomProductList } from '../slice';
+import { setCustomProductDetail, setCustomProductList } from '../slice';
 
 export function getCustomProductList(params?: CustomProductFilter) {
   request<{ data: { products: CustomProductList[] } }>('/api/custom-product/get-list', {
@@ -28,19 +28,38 @@ export function getCustomProductList(params?: CustomProductFilter) {
 }
 
 export function getOneCustomProduct(id: string) {
-  request<{ data: { products: CustomProductList[] } }>(`/api/custom-product/get-one/${id}`, {
+  request<{ data: CustomProductDetailResponse }>(`/api/custom-product/get-one/${id}`, {
     method: 'GET',
   })
     .then((res) => {
-      store.dispatch(setCustomProductList(res.data.products));
+      store.dispatch(
+        setCustomProductDetail({
+          id: res.data.id,
+          name: res.data.name,
+          description: res.data.description,
+          images: res.data.images,
+          dimension_and_weight: res.data.dimension_and_weight,
+          attributes: res.data.attributes,
+          specification: res.data.specification,
+          options: res.data.options,
+          collection: {
+            id: res.data.collection_id,
+            name: res.data.collection_name,
+          },
+          company: {
+            id: res.data.company_id,
+            name: res.data.company_name,
+          },
+        }),
+      );
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_CUSTOM_PRODUCT_LIST_ERROR);
     });
 }
 
-export function createCustomProduct(data: CustomProductRequestBody) {
-  return request<{ data: CustomProductDetailProps }>(`/api/custom-product/create`, {
+export async function createCustomProduct(data: CustomProductRequestBody) {
+  return request<{ data: CustomProductDetailResponse }>(`/api/custom-product/create`, {
     method: 'POST',
     data,
   })
@@ -53,7 +72,7 @@ export function createCustomProduct(data: CustomProductRequestBody) {
     });
 }
 
-export function updateCustomProduct(id: string, data: CustomProductRequestBody) {
+export async function updateCustomProduct(id: string, data: CustomProductRequestBody) {
   return request<boolean>(`/api/custom-product/update/${id}`, {
     method: 'PUT',
     data,
@@ -67,9 +86,9 @@ export function updateCustomProduct(id: string, data: CustomProductRequestBody) 
     });
 }
 
-export function deleteCustomProduct(id: string) {
+export async function deleteCustomProduct(id: string) {
   return request<boolean>(`/api/custom-product/delete/${id}`, {
-    method: 'DELELTE',
+    method: 'DELETE',
   })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.DELETE_CUSTOM_PRODUCT_SUCCESS);
@@ -81,7 +100,7 @@ export function deleteCustomProduct(id: string) {
     });
 }
 
-export function duplicateCustomProduct(id: string) {
+export async function duplicateCustomProduct(id: string) {
   return request<boolean>(`/api/custom-product/duplicate/${id}`, {
     method: 'POST',
   })

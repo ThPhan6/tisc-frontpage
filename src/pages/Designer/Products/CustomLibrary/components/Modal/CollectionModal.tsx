@@ -149,8 +149,6 @@ export const CollectionModal: FC<CollectionModalProps> = ({
       });
     }
   };
-  console.log('selected', selected);
-
   const onChangeCollectionNameAssigned =
     (selectedValue: DynamicRadioValue, index: number) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {

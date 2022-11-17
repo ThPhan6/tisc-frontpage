@@ -29,7 +29,6 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
   data,
   setData,
   editable,
-  onChange,
   collapseStyles = true,
   customClass,
 }) => {
@@ -73,14 +72,17 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
             attributes: newAttribute,
           };
         }
-
         // update data
-        setData?.(newData);
+        if (setData) {
+          setData(newData);
+        }
         ///
         setDiameterToggle(newData.with_diameter);
       }
     });
   }, []);
+
+  console.log('data', data);
 
   const renderAttributeConversion = (conversionItem: DimensionWeightItem, index: number) => {
     const conversionValue: ConversionValueItemProps = {
@@ -103,11 +105,25 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
         placeholder1="type number"
         placeholder2="type number"
         disabled={!editable}
+        setConversionValue={(value) => {
+          if (setData) {
+            const newAttributes = [...data.attributes];
+            newAttributes[index] = {
+              ...newAttributes[index],
+              conversion_value_1: value.firstValue,
+              conversion_value_2: value.secondValue,
+            };
+
+            setData({
+              ...data,
+              attributes: newAttributes,
+            });
+          }
+        }}
         conversionValue={{
           firstValue: String(conversionItem.conversion_value_1),
           secondValue: String(conversionItem.conversion_value_2),
         }}
-        setConversionValue={(value) => onChange?.(index, value)}
       />
     );
   };
@@ -166,6 +182,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
             if (attribute.with_diameter === diameterToggle || attribute.with_diameter === null) {
               return renderAttributeConversion(attribute, index);
             }
+            return null;
           })}
         </tbody>
       </table>

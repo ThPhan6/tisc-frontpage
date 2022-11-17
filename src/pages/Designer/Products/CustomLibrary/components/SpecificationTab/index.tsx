@@ -78,7 +78,6 @@ export const SpecificationTab = () => {
       }),
     );
   };
-
   return (
     <>
       <DimensionWeight
