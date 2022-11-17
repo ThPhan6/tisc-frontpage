@@ -14,6 +14,19 @@ const BrandProductListPage: React.FC = () => {
   const summary = useAppSelector((state) => state.product.summary);
   const userBrand = useAppSelector((state) => state.user.user?.brand);
 
+  const categoryDropDownData = !summary?.categories.length
+    ? []
+    : summary?.categories.map((category) => ({
+        key: category.id,
+        label: category.name,
+      }));
+  const brandDropDownData = !summary?.collections
+    ? []
+    : summary?.collections.map((collections) => ({
+        key: collections.id,
+        label: collections.name,
+      }));
+
   const { renderFilterDropdown, renderItemTopBar } = useProductListFilterAndSorter({
     noFetchData: true,
   });
@@ -69,17 +82,28 @@ const BrandProductListPage: React.FC = () => {
       RightSideContent={
         <>
           <TopBarItem
-            topValue={renderFilterDropdown('category_id')}
+            topValue={renderItemTopBar('category_id', filter, 'select')}
             disabled
             bottomEnable={summary ? true : false}
-            bottomValue={renderItemTopBar('Categories')}
+            bottomValue={renderFilterDropdown(
+              'Categories',
+              categoryDropDownData,
+              true,
+              'Categories',
+              'bottomRight',
+            )}
             customClass="left-divider"
           />
           <TopBarItem
-            topValue={renderFilterDropdown('collection_id')}
+            topValue={renderItemTopBar('collection_id', filter, 'select')}
             disabled
             bottomEnable={summary ? true : false}
-            bottomValue={renderItemTopBar('Collections')}
+            bottomValue={renderFilterDropdown(
+              'Collections',
+              brandDropDownData,
+              true,
+              'Collections',
+            )}
             customClass="left-divider mr-12"
           />
         </>

@@ -12,7 +12,7 @@ import { createCollection, deleteCollection, getCollections } from '@/services';
 import { setPartialProductDetail } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
 import type { Collection } from '@/types';
-import { CollectionRelation } from '@/types';
+import { CollectionRelationType } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
 import InputGroup from '@/components/EntryForm/InputGroup';
@@ -36,7 +36,7 @@ export const ProductBasicInfo: React.FC = () => {
 
   const getCollectionList = () => {
     if (product.brand?.id) {
-      getCollections(product.brand.id, CollectionRelation.Brand).then(setCollections);
+      getCollections(product.brand.id, CollectionRelationType.Brand).then(setCollections);
     }
   };
 
@@ -49,7 +49,7 @@ export const ProductBasicInfo: React.FC = () => {
     createCollection({
       name: newCollection,
       relation_id: product.brand.id,
-      relation_type: CollectionRelation.Brand,
+      relation_type: CollectionRelationType.Brand,
     }).then((res) => {
       /// disable loading
       disabled.setValue(false);

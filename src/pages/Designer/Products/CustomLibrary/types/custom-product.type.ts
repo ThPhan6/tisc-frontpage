@@ -6,11 +6,18 @@ export interface CustomProductList {
   name: string;
   description: string;
   company_id: string;
+  company_name: string;
   collection_id: string;
+  collection_name: string;
   location: string;
   image: string;
-  company_name: string;
-  collection_name: string;
+}
+
+export type ProductFilterType = 'company_id' | 'collection_id';
+
+export interface CustomProductFilter {
+  company_id?: string;
+  collection_id?: string;
 }
 
 export type ProductInfoTab = 'summary' | 'specification' | 'vendor';
@@ -20,17 +27,6 @@ export interface NameContentProps {
   name: string;
   content: string;
 }
-
-/// Summary
-export interface SummaryRequestBody {
-  company: GeneralData;
-  collection: GeneralData;
-  product: string;
-  description: string;
-  attributes: NameContentProps[];
-}
-
-/// Specification
 
 export interface ProductOptionContentProps {
   id: string;
@@ -42,11 +38,18 @@ export interface ProductOptionProps {
   id: string;
   use_image: boolean;
   tag: string;
-  contents: ProductOptionContentProps[];
+  items: ProductOptionContentProps[];
 }
 
-export interface SpecificationRequestBody {
-  dimension_n_weight: ProductDimensionWeight[];
-  specifications: NameContentProps[];
+export interface CustomProductDetailProps {
+  id: string;
+  name: string;
+  description: string;
+  images: string[];
+  dimension_and_weight: ProductDimensionWeight;
+  attributes: NameContentProps[];
+  specification: NameContentProps[];
   options: ProductOptionProps[];
+  collection: GeneralData;
+  company: GeneralData;
 }

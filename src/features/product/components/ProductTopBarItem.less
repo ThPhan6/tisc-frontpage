@@ -44,9 +44,13 @@
   :global(.mr-0) {
     margin-right: 0 !important;
   }
+  :global(.pl-0) {
+    padding-left: 0 !important;
+  }
 
   :global(.item) {
     @space: 12px;
+
     margin-right: @space;
     padding-right: @space;
     padding-left: @space;
@@ -61,6 +65,15 @@
     }
     :global(.disabled) {
       color: @mono-color-medium;
+      svg {
+        rect {
+          fill: @mono-color-medium;
+          stroke: @mono-color-medium;
+        }
+        path {
+          fill: #fff;
+        }
+      }
     }
     &:global(.bold > p:first-child) {
       font-weight: 500;

@@ -16,7 +16,7 @@ import storage from 'redux-persist/lib/storage';
 
 const reducers = combineReducers({
   product: productReducer,
-  officeProduct: officeProductReducer, // using for office library
+  customProduct: officeProductReducer, // using for office library
   category: categoryReducer,
   user: userReducer,
   project: projectReducer,

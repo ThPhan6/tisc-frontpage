@@ -1,7 +1,8 @@
 import React, { FC, ReactNode } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { IMAGE_ACCEPT_TYPES } from '@/constants/util';
+import { MESSAGE_ERROR } from '@/constants/message';
+import { IMAGE_ACCEPT_TYPES, LOGO_SIZE_LIMIT } from '@/constants/util';
 import { Col, Row, Upload, message } from 'antd';
 import type { UploadProps } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
@@ -33,56 +34,92 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import InquiryRequest from '@/components/InquiryRequest';
 import ShareViaEmail from '@/components/ShareViaEmail/index';
 import { BodyText } from '@/components/Typography';
+import {
+  setCustomProductDetail,
+  setCustomProductDetailImage,
+} from '@/pages/Designer/Products/CustomLibrary/slice';
 
 import AssignProductModal from '../modals/AssignProductModal';
 import styles from './detail.less';
 
-const ActionItem: FC<{ onClick: () => void; label: string; icon: ReactNode }> = ({
-  icon,
-  onClick,
-  label,
-}) => {
+interface ActionItemProps {
+  onClick: () => void;
+  label: string;
+  icon: ReactNode;
+  disabled?: boolean;
+}
+
+const ActionItem: FC<ActionItemProps> = ({ icon, onClick, label, disabled }) => {
   return (
-    <div className={styles.actionItem} onClick={onClick}>
-      {icon}
-      <BodyText level={6} fontFamily="Roboto">
-        {label}
-      </BodyText>
+    <div
+      className={styles.actionItem}
+      onClick={onClick}
+      style={{
+        cursor: disabled ? 'default' : 'pointer',
+        pointerEvents: disabled ? 'none' : 'auto',
+      }}>
+      <div className={`flex-start ${disabled ? styles.disabled : ''}`}>
+        {icon}
+        <BodyText
+          level={6}
+          fontFamily="Roboto"
+          color={disabled ? 'mono-color-medium' : 'mono-color'}>
+          {label}
+        </BodyText>
+      </div>
     </div>
   );
 };
 
 interface ProductImagePreviewProps {
   hideInquiryRequest?: boolean;
-  isOfficeLibrary?: boolean;
+  isCustomProduct?: boolean;
   isPublicPage?: boolean;
+  disabledAssignProduct?: boolean;
+  disabledShareViaEmail?: boolean;
 }
 
 const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
   isPublicPage,
   hideInquiryRequest,
-  isOfficeLibrary,
+  isCustomProduct,
+  disabledAssignProduct,
+  disabledShareViaEmail,
 }) => {
   const dispatch = useDispatch();
-  const product = useAppSelector((state) => state.product.details);
+  const normalProduct = useAppSelector((state) => state.product.details);
   const showShareEmailModal = useBoolean();
   const showAssignProductModal = useBoolean();
   const showInquiryRequestModal = useBoolean();
   const isDesignerUser = useCheckPermission('Design Admin');
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
-  const isEditable = isTiscAdmin || isOfficeLibrary; // currently, uploading image
+  const isEditable = isTiscAdmin || isCustomProduct; // currently, uploading image
+
+  const customProduct = useAppSelector((state) => state.customProduct.details);
+
+  const product = isCustomProduct ? customProduct : normalProduct;
 
   const liked = product.is_liked;
   const likeCount = product.favorites ?? 0;
   const handleLoadPhoto = async (file: UploadFile<any>, type: 'first' | 'last' = 'first') => {
     const imageBase64 = await getBase64(file.originFileObj);
-    dispatch(
-      setProductDetailImage({
-        type,
-        image: imageBase64,
-      }),
-    );
+
+    if (isCustomProduct) {
+      dispatch(
+        setCustomProductDetailImage({
+          type,
+          image: imageBase64,
+        }),
+      );
+    } else {
+      dispatch(
+        setProductDetailImage({
+          type,
+          image: imageBase64,
+        }),
+      );
+    }
   };
 
   const primaryProps: UploadProps = {
@@ -95,16 +132,27 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
         handleLoadPhoto(file);
       }
     },
-    beforeUpload: (_file, fileList) => {
-      if (product.images.length + fileList.length > 9) {
+    beforeUpload: (file, fileList) => {
+      if (file.size > LOGO_SIZE_LIMIT) {
+        message.error(MESSAGE_ERROR.reachLogoSizeLimit);
+        return false;
+      }
+
+      if (isCustomProduct && customProduct.images.length + fileList.length > 4) {
+        message.error('Max photos is 4');
+        return false;
+      }
+
+      if (!isCustomProduct && product.images.length + fileList.length > 9) {
         message.error('Max photos is 9');
         return false;
       }
+
       return true;
     },
     showUploadList: false,
     disabled: isEditable === false,
-    className: `${styles.uploadZone} ${isEditable ? '' : styles.noBorder} `,
+    className: `${styles.uploadZone} ${isEditable ? '' : styles.noBorder}`,
   };
 
   const subProps: UploadProps = {
@@ -129,11 +177,18 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
     const newPhotos = product.images.filter((_photo, key) => {
       return index !== key;
     });
-    dispatch(
-      setPartialProductDetail({
+
+    if (isCustomProduct) {
+      setCustomProductDetail({
         images: newPhotos,
-      }),
-    );
+      });
+    } else {
+      dispatch(
+        setPartialProductDetail({
+          images: newPhotos,
+        }),
+      );
+    }
   };
 
   const likeProduct = () => {
@@ -179,7 +234,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
     }
 
     const renderActionLeft = () => {
-      if (isPublicPage || isOfficeLibrary) return null;
+      if (isPublicPage || isCustomProduct) return null;
 
       if (liked) {
         return <LikedIcon className={styles.actionIcon} onClick={likeProduct} />;
@@ -206,6 +261,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
               label="Assign Product"
               icon={<AssignIcon />}
               onClick={() => showAssignProductModal.setValue(true)}
+              disabled={disabledAssignProduct}
             />
           ) : null}
 
@@ -214,6 +270,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
               label="Share via Email"
               icon={<ShareViaEmailIcon />}
               onClick={() => showShareEmailModal.setValue(true)}
+              disabled={disabledShareViaEmail}
             />
           )}
         </div>
@@ -306,7 +363,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
                   </BodyText>
                   <AddMoreIcon />
                   <BodyText level={6} fontFamily="Roboto">
-                    {isOfficeLibrary ? '(min.4 and max.9)' : '(min.3 and max.9)'}
+                    {isCustomProduct ? '(max.4 more images)' : '(min.3 and max.9)'}
                   </BodyText>
                 </div>
               </Upload>

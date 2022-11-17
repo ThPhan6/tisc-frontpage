@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import { PATH } from '@/constants/path';
 import { Tooltip, TooltipProps } from 'antd';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
@@ -23,6 +24,11 @@ import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useCheckPermission, useGetUserRoleFromPathname } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
+import {
+  deleteCustomProduct,
+  duplicateCustomProduct,
+  getCustomProductList,
+} from '@/pages/Designer/Products/CustomLibrary/services';
 import { capitalize, truncate } from 'lodash';
 
 import { ProductGetListParameter, ProductItem } from '../types';
@@ -52,6 +58,7 @@ interface ProductCardProps extends Omit<CollapseProductListProps, 'showBrandLogo
   hideFavorite?: boolean;
   hideAssign?: boolean;
   showSpecify?: boolean;
+  isCustomProduct?: boolean;
   onSpecifyClick?: () => void;
 }
 
@@ -63,14 +70,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
   showInquiryRequest,
   showSpecify,
   showActionMenu,
+  isCustomProduct,
   onSpecifyClick,
 }) => {
-  const filter = useAppSelector((state) => state.product.list.filter);
+  const normalProductfilter = useAppSelector((state) => state.product.list.filter);
   const isDesignAdmin = useCheckPermission('Design Admin');
   const [liked, setLiked] = useState(product.is_liked);
   const showShareEmailModal = useBoolean();
   const showAssignProductModal = useBoolean();
   const showInquiryRequestModal = useBoolean();
+
+  // custom product
+  const customProductFilter = useAppSelector((state) => state.customProduct.filter);
+
+  const filter = isCustomProduct ? customProductFilter : normalProductfilter;
 
   const unlistedDisabled =
     product.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted;
@@ -78,7 +91,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   // check user role to redirect
   const userRole = useGetUserRoleFromPathname();
   const hanldeRedirectURL = () => {
-    const path = getProductDetailPathname(userRole, product.id);
+    const path = getProductDetailPathname(userRole, product.id, '', isCustomProduct);
     pushTo(path);
   };
 
@@ -99,6 +112,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const reloadProductInformation = () => {
+    if (isCustomProduct) {
+      getCustomProductList({
+        company_id: !filter || filter.name === 'company_id' ? filter?.value || 'all' : undefined,
+        collection_id: filter && filter.name === 'collection_id' ? filter.value : undefined,
+      });
+
+      return;
+    }
+
     if (filter && product.brand?.id) {
       getProductSummary(product.brand.id).then(() => {
         const params = {
@@ -128,6 +150,24 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const duplicateProduct = () => {
     duplicateProductById(product.id ?? '').then((isSuccess) => {
       if (isSuccess) {
+        reloadProductInformation();
+      }
+    });
+  };
+
+  const handleDeleteCustomProduct = () => {
+    confirmDelete(() => {
+      deleteCustomProduct(product.id ?? '').then((isSccess) => {
+        if (isSccess) {
+          reloadProductInformation();
+        }
+      });
+    });
+  };
+
+  const handleCopyCustomProduct = () => {
+    duplicateCustomProduct(product.id ?? '').then((isSccuess) => {
+      if (isSccuess) {
         reloadProductInformation();
       }
     });
@@ -174,111 +214,115 @@ const ProductCard: React.FC<ProductCardProps> = ({
   ];
 
   return (
-    <div
-      className={`${styles.productCardItem} ${hasBorder ? styles.border : ''} ${
-        unlistedDisabled ? styles.disabled : ''
-      }`}>
-      <div className={styles.imageWrapper} onClick={hanldeRedirectURL}>
-        <div
-          style={{
-            backgroundImage: `url(${
-              product.images?.[0] ? showImageUrl(product.images?.[0]) : SampleProductImage
-            }`,
-          }}
-          className={styles.imageWrapper_image}
-        />
-        <div className={styles.imagePlaceholder}>
-          <BodyText level={5} fontFamily="Roboto">
-            {product.description}
+    <div className={styles.productCardItemWrapper}>
+      <div
+        className={`${styles.productCardItem} ${hasBorder ? styles.border : ''} ${
+          unlistedDisabled ? styles.disabled : ''
+        }`}>
+        <div className={styles.imageWrapper} onClick={hanldeRedirectURL}>
+          <div
+            style={{
+              backgroundImage: `url(${
+                product.images[0] ? showImageUrl(product.images[0]) : SampleProductImage
+              }`,
+            }}
+            className={styles.imageWrapper_image}
+          />
+          <div className={styles.imagePlaceholder}>
+            <BodyText level={5} fontFamily="Roboto">
+              {product.description}
+            </BodyText>
+          </div>
+        </div>
+        <div className={styles.productInfo} onClick={hanldeRedirectURL}>
+          <BodyText level={6} fontFamily="Roboto" customClass="product-description">
+            {product.name || 'N/A'}
+          </BodyText>
+          <BodyText level={7} fontFamily="Roboto" customClass="text-uppercase">
+            {product.brand?.name ?? 'N/A'}
           </BodyText>
         </div>
-      </div>
-      <div className={styles.productInfo} onClick={hanldeRedirectURL}>
-        <BodyText level={6} fontFamily="Roboto" customClass="product-description">
-          {product.name}
-        </BodyText>
-        <BodyText level={7} fontFamily="Roboto" customClass="text-uppercase">
-          {product.brand?.name ?? 'N/A'}
-        </BodyText>
-      </div>
-      <div className={styles.productAction}>
-        <div className={`${styles.leftAction} flex-center`}>
-          {hideFavorite ? null : (
-            <Tooltip title="Favourite" {...tooltipProps}>
-              <BodyText level={6} fontFamily="Roboto" customClass="action-like">
-                {liked ? <LikedIcon onClick={likeProduct} /> : <LikeIcon onClick={likeProduct} />}
-                {!isDesignAdmin &&
-                  `${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
-              </BodyText>
-            </Tooltip>
-          )}
-          {showSpecify && isDesignerUser ? (
-            <Tooltip title={'Specify'} {...tooltipProps}>
-              <DispatchIcon
-                onClick={unlistedDisabled ? undefined : onSpecifyClick}
-                className={unlistedDisabled ? styles.unlistedDisabled : ''}
-              />
-            </Tooltip>
-          ) : null}
-          {showActionMenu && isDesignerUser ? (
-            <ActionMenu
-              placement="bottomLeft"
-              offsetAlign={[-12, -6]}
-              actionItems={[
-                {
-                  type: 'copy',
-                  label: 'Copy',
-                  onClick: () => {},
-                },
-                {
-                  type: 'updated',
-                  label: 'Edit',
-                  onClick: () => {},
-                },
-                {
-                  type: 'deleted',
-                  label: 'Delete',
-                  onClick: () => {},
-                },
-              ]}
-            />
-          ) : null}
-        </div>
 
-        <div className={`${styles.rightAction} flex-center`}>
-          {rightActions.map(({ Icon, onClick, show, tooltipText }, index) =>
-            show ? (
-              <Tooltip key={index} title={tooltipText} {...tooltipProps}>
-                <Icon onClick={onClick} />
+        <div className={styles.productAction}>
+          <div className={`${styles.leftAction} flex-center`}>
+            {hideFavorite ? null : (
+              <Tooltip title="Favourite" {...tooltipProps}>
+                <BodyText level={6} fontFamily="Roboto" customClass="action-like">
+                  {liked ? <LikedIcon onClick={likeProduct} /> : <LikeIcon onClick={likeProduct} />}
+                  {!isDesignAdmin &&
+                    `${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
+                </BodyText>
               </Tooltip>
-            ) : null,
-          )}
+            )}
+            {showSpecify && isDesignerUser ? (
+              <Tooltip title={'Specify'} {...tooltipProps}>
+                <DispatchIcon
+                  onClick={unlistedDisabled ? undefined : onSpecifyClick}
+                  className={unlistedDisabled ? styles.unlistedDisabled : ''}
+                />
+              </Tooltip>
+            ) : null}
+            {showActionMenu && isDesignerUser ? (
+              <ActionMenu
+                placement="bottomLeft"
+                offsetAlign={[-12, -6]}
+                actionItems={[
+                  {
+                    type: 'copy',
+                    label: 'Copy',
+                    onClick: () => handleCopyCustomProduct(),
+                  },
+                  {
+                    type: 'updated',
+                    label: 'Edit',
+                    onClick: () =>
+                      pushTo(PATH.designerCustomProductDetail.replace(':id', product.id)),
+                  },
+                  {
+                    type: 'deleted',
+                    label: 'Delete',
+                    onClick: () => handleDeleteCustomProduct(),
+                  },
+                ]}
+              />
+            ) : null}
+          </div>
+
+          <div className={`${styles.rightAction} flex-center`}>
+            {rightActions.map(({ Icon, onClick, show, tooltipText }, index) =>
+              show ? (
+                <Tooltip key={index} title={tooltipText} {...tooltipProps}>
+                  <Icon onClick={onClick} />
+                </Tooltip>
+              ) : null,
+            )}
+          </div>
         </div>
+
+        {showShareEmailModal.value ? (
+          <ShareViaEmail
+            visible={showShareEmailModal.value}
+            setVisible={showShareEmailModal.setValue}
+            product={product}
+          />
+        ) : null}
+
+        {showAssignProductModal.value && product.id ? (
+          <AssignProductModal
+            visible={showAssignProductModal.value}
+            setVisible={showAssignProductModal.setValue}
+            productId={product.id}
+          />
+        ) : null}
+
+        {showInquiryRequestModal.value ? (
+          <InquiryRequest
+            visible={showInquiryRequestModal.value}
+            setVisible={showInquiryRequestModal.setValue}
+            product={product}
+          />
+        ) : null}
       </div>
-
-      {showShareEmailModal.value ? (
-        <ShareViaEmail
-          visible={showShareEmailModal.value}
-          setVisible={showShareEmailModal.setValue}
-          product={product}
-        />
-      ) : null}
-
-      {showAssignProductModal.value && product.id ? (
-        <AssignProductModal
-          visible={showAssignProductModal.value}
-          setVisible={showAssignProductModal.setValue}
-          productId={product.id}
-        />
-      ) : null}
-
-      {showInquiryRequestModal.value ? (
-        <InquiryRequest
-          visible={showInquiryRequestModal.value}
-          setVisible={showInquiryRequestModal.setValue}
-          product={product}
-        />
-      ) : null}
     </div>
   );
 };
@@ -316,15 +360,14 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
             </div>
           }>
           <div className={styles.productCardContainer}>
-            {group.products.map((productItem, productKey) => (
-              <div className={styles.productCardItemWrapper} key={productKey}>
-                <ProductCard
-                  product={productItem}
-                  showInquiryRequest={showInquiryRequest}
-                  showActionMenu={showActionMenu}
-                  hideFavorite={hideFavorite}
-                />
-              </div>
+            {group.products.map((productItem, itemIndex) => (
+              <ProductCard
+                key={productItem.id || itemIndex}
+                product={productItem}
+                showInquiryRequest={showInquiryRequest}
+                showActionMenu={showActionMenu}
+                hideFavorite={hideFavorite}
+              />
             ))}
           </div>
         </CustomCollapse>

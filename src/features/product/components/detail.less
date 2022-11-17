@@ -530,7 +530,18 @@
   .actionLeft {
     display: flex;
     align-items: center;
-    cursor: pointer;
+    user-select: none;
+
+    .disabled {
+      display: flex;
+      align-items: center;
+      pointer-events: none;
+
+      svg path {
+        fill: @mono-color-medium;
+      }
+    }
+
     svg {
       margin-right: 8px;
     }

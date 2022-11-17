@@ -130,12 +130,7 @@ const Popover: FC<PopoverProps> = ({
         return renderEmptyData();
       }
       return (
-        <GroupRadioList
-          selected={currentValue}
-          chosenItem={chosenValue}
-          data={groupRadioList}
-          onChange={setCurrentValue}
-        />
+        <GroupRadioList selected={currentValue} data={groupRadioList} onChange={setCurrentValue} />
       );
     }
     /// drodown checkbox list

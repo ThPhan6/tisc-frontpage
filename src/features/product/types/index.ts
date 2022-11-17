@@ -10,6 +10,8 @@ import { BrandDetail } from '@/features/user-group/types';
 import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
 import { ConversionSubValueProps, GeneralData } from '@/types';
 
+import { ProductTopBarFilter } from '../components/FilterAndSorter';
+
 export interface ProductSummary {
   categories: GeneralData[];
   collections: GeneralData[];
@@ -184,19 +186,6 @@ export interface BrandSummary {
   product_count: number;
   brand_logo: string;
   brand_name: string;
-}
-
-export type ProductFilterType =
-  | 'category_id'
-  | 'collection_id'
-  | 'company_id'
-  | 'brand_id'
-  | 'name';
-
-export interface ProductTopBarFilter {
-  name: ProductFilterType;
-  title: string;
-  value: string;
 }
 
 export type SortOrder = 'ASC' | 'DESC';

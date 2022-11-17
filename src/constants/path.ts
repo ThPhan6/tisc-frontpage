@@ -144,10 +144,14 @@ export const PATH = {
   designerProduct: '/design-firms/products',
   designerBrandProduct: '/design-firms/products/brand-products',
   designerBrandProductDetail: '/design-firms/products/brand-products/:id',
-  // Office Library
-  designerOfficeLibrary: '/design-firms/products/office-library',
-  designerOfficeLibraryCreate: '/design-firms/products/office-library/create/:brandId',
-  designerOfficeLibraryUpdate: '/design-firms/products/office-library/:id',
+  // Library (Custom PRoduct)
+  designerCustomProduct: '/design-firms/products/custom-product',
+  designerCustomProductCreate: '/design-firms/products/custom-product/create',
+  designerCustomProductDetail: '/design-firms/products/custom-product/:id',
+  // Resources (Vendor Management)
+  designerCustomResource: '/design-firms/products/custom-resources',
+  designerCustomResourceCreate: '/design-firms/products/custom-resources/create',
+  designerCustomResourceUpdate: '/design-firms/products/custom-resources/:id',
   // Project
   designerProject: '/design-firms/projects',
   designerUpdateProject: '/design-firms/projects/:id',

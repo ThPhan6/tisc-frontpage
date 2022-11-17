@@ -29,10 +29,26 @@ export async function createCollection(data: CollectionAddPayload) {
     data,
   })
     .then(() => {
+      message.success(MESSAGE_NOTIFICATION.CREATE_BRAND_COLLECTION_SUCCESS);
+
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_BRAND_COLLECTION_ERROR);
+      return false;
+    });
+}
+export async function updateCollection(collectionId: string, name: string) {
+  return request(`/api/collection/update/${collectionId}`, {
+    method: 'PATCH',
+    data: { name },
+  })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.UPDATE_BRAND_COLLECTION_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_BRAND_COLLECTION_ERROR);
       return false;
     });
 }

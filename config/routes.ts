@@ -104,19 +104,8 @@ export default [
         path: PATH.tiscProjectListing,
         name: 'listing',
         icon: 'listing-icon.svg',
+        component: './Admin',
         access: 'tisc_project_list',
-        routes: [
-          {
-            path: PATH.tiscProjectListing,
-            component: './TISC/ProjectListing',
-            hideInMenu: true,
-          },
-          {
-            path: PATH.tiscProjectListingDetail,
-            component: './TISC/ProjectListing/detail.tsx',
-            hideInMenu: true,
-          },
-        ],
       },
     ],
   },
@@ -674,23 +663,23 @@ export default [
         ],
       },
       {
-        path: PATH.designerOfficeLibrary,
+        path: PATH.designerCustomProduct,
         name: 'library.resources',
         icon: 'office-library-icon.svg',
         access: 'design_product_custom_library',
         routes: [
           {
-            path: PATH.designerOfficeLibrary,
+            path: PATH.designerCustomProduct,
             component: './Designer/Products/CustomLibrary',
             hideInMenu: true,
           },
           {
-            path: PATH.designerOfficeLibraryCreate,
+            path: PATH.designerCustomProductCreate,
             component: './Designer/Products/CustomLibrary/ProductLibraryDetail',
             hideInMenu: true,
           },
           {
-            path: PATH.designerOfficeLibraryUpdate,
+            path: PATH.designerCustomProductDetail,
             component: './Designer/Products/CustomLibrary/ProductLibraryDetail',
             hideInMenu: true,
           },
