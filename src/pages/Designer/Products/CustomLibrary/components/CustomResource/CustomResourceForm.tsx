@@ -6,7 +6,14 @@ import { PATH } from '@/constants/path';
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 
 import { pushTo } from '@/helper/history';
-import { isEmptySpace, messageError, messageErrorType, validatePostalCode } from '@/helper/utils';
+import {
+  getEmailMessageError,
+  getEmailMessageErrorType,
+  isEmptySpace,
+  messageError,
+  messageErrorType,
+  validatePostalCode,
+} from '@/helper/utils';
 
 import { CustomResourceForm, CustomResourceType } from '../../types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -164,6 +171,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           onRightIconClick={() => setOpenModal('associate')}
           placeholder="slect from the list"
           readOnly={type === 'view'}
+          containerClass={styles.associate}
         />
         <InputGroup
           label="Country Location"
@@ -275,6 +283,9 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           hasHeight
           onChange={(e) => onChangeData('general_email', e.target.value)}
           readOnly={type === 'view'}
+          onDelete={() => onChangeData('general_email', '')}
+          message={getEmailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_INVALID)}
+          messageType={getEmailMessageErrorType(data.general_email, 'error', 'normal')}
         />
       </div>
       <CountryModal

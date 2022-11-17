@@ -33,8 +33,8 @@ export const AssociateModal: FC<{
         if (selectedAssociate) {
           setChosenValue(
             selectedAssociate.map((item: any) => ({
-              label: item.name,
-              value: item.id,
+              label: item?.name,
+              value: item?.id,
             })),
           );
         }

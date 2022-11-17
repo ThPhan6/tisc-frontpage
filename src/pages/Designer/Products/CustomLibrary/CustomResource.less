@@ -166,3 +166,14 @@
     padding: 16px 32px;
   }
 }
+
+.associate {
+  :global(.ant-input) {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+  }
+}
