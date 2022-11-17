@@ -39,6 +39,12 @@ const MarketAvailabilityList = () => {
       dataIndex: 'available_countries',
     },
     {
+      title: 'Africa',
+      dataIndex: 'africa',
+      lightHeading: true,
+      render: (value) => value.length || '0',
+    },
+    {
       title: 'Asia',
       dataIndex: 'asia',
       lightHeading: true,
@@ -51,26 +57,20 @@ const MarketAvailabilityList = () => {
       render: (value) => value.length || '0',
     },
     {
-      title: 'Africa',
-      dataIndex: 'africa',
-      lightHeading: true,
-      render: (value) => value.length || '0',
-    },
-    {
-      title: 'Polar',
-      dataIndex: 'polar',
-      lightHeading: true,
-      render: (value) => value.length || '0',
-    },
-    {
-      title: 'Americas',
-      dataIndex: 'americas',
+      title: 'N. Americas',
+      dataIndex: 'n_americas',
       lightHeading: true,
       render: (value) => value.length || '0',
     },
     {
       title: 'Oceania',
       dataIndex: 'oceania',
+      lightHeading: true,
+      render: (value) => value.length || '0',
+    },
+    {
+      title: 'S. Americas',
+      dataIndex: 's_americas',
       lightHeading: true,
       render: (value) => value.length || '0',
     },
