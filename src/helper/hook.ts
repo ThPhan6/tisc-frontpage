@@ -8,13 +8,13 @@ import { useAppSelector } from '@/reducers';
 import { redirectAfterLogin } from './utils';
 import access from '@/access';
 
-export function useDefault(defaultValue: any) {
-  const [value, setValue] = React.useState(defaultValue);
+export function useDefault<T>(defaultValue: T) {
+  const [value, setValue] = React.useState<T>(defaultValue);
   return { value, setValue };
 }
 
 export function useBoolean(defaultValue = false) {
-  return useDefault(defaultValue);
+  return useDefault<boolean>(defaultValue);
 }
 
 export function useNumber(defaultValue = 0) {

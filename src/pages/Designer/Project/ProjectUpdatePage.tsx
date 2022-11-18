@@ -65,21 +65,24 @@ const ProjectUpdatePage: React.FC = () => {
       <CustomTabPane
         active={selectedTab === ProjectTabKeys.zoneAreaRoom}
         disable={!zoneAreaRoomTab}
-        lazyLoad>
+        lazyLoad
+        forceReload>
         <SpaceManagement projectId={projectId} />
       </CustomTabPane>
 
       <CustomTabPane
         active={selectedTab === ProjectTabKeys.productConsidered}
         disable={!productConsideredTab}
-        lazyLoad>
+        lazyLoad
+        forceReload>
         <ProductConsidered />
       </CustomTabPane>
 
       <CustomTabPane
         active={selectedTab === ProjectTabKeys.productSpecified}
         disable={!productSpecifiedTab}
-        lazyLoad>
+        lazyLoad
+        forceReload>
         <ProductSpecification />
       </CustomTabPane>
     </div>
