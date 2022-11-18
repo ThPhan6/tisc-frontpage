@@ -221,7 +221,6 @@ export const CollectionModal: FC<CollectionModalProps> = ({
     };
 
   const handleDelete = (collectionId: string) => {
-    setDisabledSubmit(true);
     confirmDelete(() => {
       const newData = data.filter((item) => item.value !== collectionId);
 

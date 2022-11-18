@@ -11,13 +11,16 @@ import PlaceHolderImage from '@/assets/images/product-placeholder.png';
 
 import { useBoolean } from '@/helper/hook';
 import { getBase64, showImageUrl } from '@/helper/utils';
+import { uniqueId } from 'lodash';
 
 import { ProductOptionContentProps, ProductOptionProps } from '../../types';
+import store, { useAppSelector } from '@/reducers';
 
 import CustomButton from '@/components/Button';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { MainTitle, RobotoBodyText } from '@/components/Typography';
 
+import { setCustomProductDetail } from '../../slice';
 import styles from './ProductOptionModal.less';
 
 const DEFAULT_CONTENT: ProductOptionContentProps = {
@@ -27,93 +30,122 @@ const DEFAULT_CONTENT: ProductOptionContentProps = {
   image: '',
 };
 
-const DEFAULT_STATE: ProductOptionProps = {
-  id: '',
-  use_image: false,
-  tag: '',
-  contents: [],
-};
-
 type FieldName = keyof ProductOptionContentProps;
 
 interface ProductOptionModalProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
+  data: ProductOptionProps;
+  optionIndex: number;
 }
 
-export const ProductOptionModal: FC<ProductOptionModalProps> = ({ visible, setVisible }) => {
+export const ProductOptionModal: FC<ProductOptionModalProps> = ({
+  visible,
+  setVisible,
+  data,
+  optionIndex,
+}) => {
+  const options = useAppSelector((state) => state.customProduct.details.options);
   const submitButtonStatus = useBoolean(false);
-  const loadedData = useBoolean(false);
-
-  const [data, setData] = useState<ProductOptionProps>(DEFAULT_STATE);
-
-  const [showImage, setShowImage] = useState<boolean | undefined>(undefined);
 
   const [fileInput, setFileInput] = useState<any>();
   const [currentLogo, setCurrentLogo] = useState<string>(PlaceHolderImage);
 
-  useEffect(() => {
-    setData({
-      id: '1',
-      use_image: true,
-      tag: 'tag 1',
-      contents: [
-        {
-          id: '2',
-          description: 'd1',
-          product_id: 'p1',
-          image: '',
-        },
-        { id: '3', description: 'd3', product_id: 'p3', image: '' },
-      ],
-    });
-  }, []);
+  console.log('data', data);
 
-  useEffect(() => {
-    if (showImage !== data.use_image) {
-      setTimeout(() => {
-        setShowImage(data.use_image);
-        loadedData.setValue(true);
-      }, 500);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (showImage !== data.use_image) {
+  //     setTimeout(() => {
+  //       setShowImage(data.use_image);
+  //       loadedData.setValue(true);
+  //     }, 500);
+  //   }
+  // }, []);
 
-  const onChangeContentData = (filedName: FieldName, fieldValue: any) => {
-    setData((prevState) => ({
-      ...prevState,
-      [filedName]: fieldValue,
-    }));
+  const onChangeTagContent = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newOption = [...options];
+    newOption[optionIndex] = { ...newOption[optionIndex], tag: e.target.value };
+
+    store.dispatch(
+      setCustomProductDetail({
+        options: newOption,
+      }),
+    );
   };
+
+  const onChangeContentItem =
+    (filedName: FieldName, itemIndex: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newOption = [...options];
+      const newItems = [...newOption[optionIndex].items];
+
+      newItems[itemIndex] = {
+        ...newItems[itemIndex],
+        [filedName]: e.target.value,
+      };
+
+      newOption[optionIndex] = { ...newOption[optionIndex], items: [...newItems] };
+
+      store.dispatch(
+        setCustomProductDetail({
+          options: newOption,
+        }),
+      );
+    };
 
   const handleAddOption = () => {
-    setData((prevState) => ({
-      ...prevState,
-      content: [...data.contents, DEFAULT_CONTENT],
-    }));
+    const randomID = uniqueId();
+    const newOption = [...options];
+    const newItem = [...data.items, { ...DEFAULT_CONTENT, id: randomID }];
+    newOption[optionIndex] = { ...newOption[optionIndex], items: newItem };
+
+    store.dispatch(
+      setCustomProductDetail({
+        options: newOption,
+      }),
+    );
   };
 
-  const handleShowImage = () => {
-    setShowImage(!showImage);
-    setData((prevState) => ({
-      ...prevState,
-      use_image: showImage ?? false,
-    }));
+  const handleShowImage = (checked: boolean) => {
+    const newOption = [...options];
+    newOption[optionIndex] = { ...newOption[optionIndex], use_image: checked };
+
+    store.dispatch(
+      setCustomProductDetail({
+        options: newOption,
+      }),
+    );
   };
 
   const handleDelete = (id: number | string) => {
-    const newContent = data.contents.filter((content) => content.id !== id);
-    setData((prevState) => ({
-      ...prevState,
-      contents: newContent,
-    }));
+    const newOption = [...options];
+    const newContent = data.items.filter((item) => item.id !== id);
+    newOption[optionIndex] = { ...newOption[optionIndex], items: newContent };
+
+    store.dispatch(
+      setCustomProductDetail({
+        options: newOption,
+      }),
+    );
   };
 
   const handleCancel = () => {
-    setData(DEFAULT_STATE);
     setVisible(false);
   };
 
-  const handleSave = () => {};
+  const handleSave = () => {
+    const newOption = [...options];
+
+    console.log('newOption', newOption);
+
+    // const newContent = data.items.filter((item) => item.id !== id);
+    // newOption[optionIndex] = { ...newOption[optionIndex], items: newContent };
+
+    store.dispatch(
+      setCustomProductDetail({
+        options: newOption,
+      }),
+    );
+  };
 
   const handleUpdateLogo = () => {
     const formData: any = new FormData();
@@ -133,7 +165,7 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({ visible, setVi
         .catch(() => {
           message.error('Upload Failed');
         });
-      return true;
+      return false;
     },
   };
   useEffect(() => {
@@ -175,10 +207,6 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({ visible, setVi
     );
   };
 
-  if (!loadedData.value) {
-    return null;
-  }
-
   return (
     <Modal
       title="ENTRY FORM"
@@ -191,39 +219,33 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({ visible, setVi
       <div className="flex-between">
         <div className={`flex-start ${styles.optionHeader}`}>
           <MainTitle level={3}>Add Option</MainTitle>
-          <Checkbox className={styles.imageBtn} checked={showImage} onChange={handleShowImage}>
+          <Checkbox
+            className={styles.imageBtn}
+            checked={data.use_image}
+            onChange={(e) => handleShowImage(e.target.checked)}>
             <RobotoBodyText level={6}>Image</RobotoBodyText>
           </Checkbox>
           <RobotoBodyText level={6}>TAG</RobotoBodyText>
-          <CustomInput
-            placeholder="type tag"
-            value={data.tag}
-            onChange={(e) => {
-              setData((prevState) => ({ ...prevState, tag: e.target.value }));
-            }}
-          />
+          <CustomInput placeholder="type tag" value={data.tag} onChange={onChangeTagContent} />
         </div>
         <AddTagIcon className="cursor-pointer" onClick={handleAddOption} />
       </div>
 
-      {data.contents.map((content, index) => (
-        <div className={styles.optionContent} key={content.id || index}>
+      {data.items.map((item, itemIndex) => (
+        <div className={styles.optionContent} key={item.id || itemIndex}>
           <div className={`flex-start ${styles.flexSpace}`}>
-            {showImage ? (
+            {data.use_image ? (
               <div className={styles.image}>
                 <Upload maxCount={1} showUploadList={false} {...props} accept=".png">
-                  <img
-                    src={showImageUrl(content.image || currentLogo)}
-                    onClick={handleUpdateLogo}
-                  />
+                  <img src={showImageUrl(item.image || currentLogo)} onClick={handleUpdateLogo} />
                 </Upload>
               </div>
             ) : null}
             <CustomInput
               containerClass={styles.paddingLeftNone}
               placeholder="type option description"
-              value={content.description}
-              onChange={(e) => onChangeContentData('description', e.target.value)}
+              value={item.description}
+              onChange={onChangeContentItem('description', itemIndex)}
             />
           </div>
           <div className="flex-start">
@@ -231,10 +253,10 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({ visible, setVi
             <div className="flex-between">
               <CustomInput
                 placeholder="type here"
-                value={content.product_id}
-                onChange={(e) => onChangeContentData('product_id', e.target.value)}
+                value={item.product_id}
+                onChange={onChangeContentItem('product_id', itemIndex)}
               />
-              <DeleteIcon className={styles.deleteIcon} onClick={() => handleDelete(content.id)} />
+              <DeleteIcon className={styles.deleteIcon} onClick={() => handleDelete(item.id)} />
             </div>
           </div>
         </div>

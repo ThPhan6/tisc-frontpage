@@ -12,10 +12,10 @@ import store from '@/reducers';
 import { CustomProductRequestBody } from '../ProductLibraryDetail';
 import { setCustomProductDetail, setCustomProductList } from '../slice';
 
-export function getCustomProductList(params?: CustomProductFilter) {
+export function getCustomProductList(params: CustomProductFilter | undefined) {
   request<{ data: { products: CustomProductList[] } }>('/api/custom-product/get-list', {
     method: 'GET',
-    params: { company_id: params?.company_id, collection_id: params?.collection_id },
+    params: params,
   })
     .then((res) => {
       store.dispatch(setCustomProductList(res.data.products));
@@ -78,6 +78,7 @@ export async function updateCustomProduct(id: string, data: CustomProductRequest
     data,
   })
     .then(() => {
+      message.success(MESSAGE_NOTIFICATION.UPDATE_CUSTOM_PRODUCT_SUCCESS);
       return true;
     })
     .catch((error) => {

@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 
 import { PATH } from '@/constants/path';
-import { QUERY_KEY } from '@/constants/util';
-import { ItemType } from 'antd/lib/menu/hooks/useItems';
 
 import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as PlusCircleIcon } from '@/assets/icons/plus-circle-icon.svg';
@@ -12,7 +10,6 @@ import { useCustomProductFilter } from '../../hook';
 import { getCustomProductList } from '../../services';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { updateUrlParams } from '@/helper/utils';
 import { getCollections } from '@/services';
 
 import store from '@/reducers';
@@ -41,12 +38,12 @@ export const ProductListTopBar: React.FC = () => {
 
   useEffect(() => {
     if (!filter) {
-      updateUrlParams({
-        set: [
-          { key: QUERY_KEY.company_id, value: 'all' },
-          { key: QUERY_KEY.company_name, value: 'View All' },
-        ],
-      });
+      // updateUrlParams({
+      //   set: [
+      //     { key: QUERY_KEY.company_id, value: 'all' },
+      //     { key: QUERY_KEY.company_name, value: 'View All' },
+      //   ],
+      // });
       store.dispatch(
         setCustomProductFilter({
           name: 'company_id',
@@ -63,19 +60,26 @@ export const ProductListTopBar: React.FC = () => {
     loaded.setValue(true);
 
     if (loaded.value) {
-      getCustomProductList({
-        company_id: !filter || filter.name === 'company_id' ? filter?.value || 'all' : undefined,
-        collection_id: filter && filter.name === 'collection_id' ? filter.value : undefined,
-      });
+      const filterBy =
+        !filter || filter?.value === 'all'
+          ? undefined
+          : {
+              company_id: filter.name === 'company_id' ? filter?.value : undefined,
+              collection_id:
+                companies.length && filter.name === 'collection_id' ? filter.value : undefined,
+            };
+
+      getCustomProductList(filterBy);
 
       if (companies.length && filter?.value !== 'all' && filter?.name === 'company_id') {
         getCollections(filter.value, CollectionRelationType.CustomLibrary).then(
           (collectionData) => {
-            const collectionFilterData: ItemType[] = collectionData?.map((item) => ({
-              key: item.id,
-              label: item.name,
-              relation_id: item.relation_id,
-            }));
+            const collectionFilterData = collectionData?.map((item) => item);
+            // ({
+            //   key: item.id,
+            //   label: item.name,
+            //   relation_id: item.relation_id,
+            // }));
             setCollections(collectionFilterData);
           },
         );
@@ -146,7 +150,7 @@ export const ProductListTopBar: React.FC = () => {
               )}
             />
             <TopBarItem
-              customClass={styles.colorDark}
+              customClass={`pl-0 ${styles.colorDark}`}
               disabled={!companies.length || !filter || !collections.length}
               cursor={!companies.length || !filter || !collections.length ? 'default' : 'pointer'}
               topValue={renderItemTopBar('collection_id', filter, 'select')}

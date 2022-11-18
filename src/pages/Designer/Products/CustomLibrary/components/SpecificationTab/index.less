@@ -4,4 +4,31 @@
     height: 18px;
     padding: 0 12px 0 16px;
   }
+
+  :global(.ant-collapse-content > .ant-collapse-content-box) {
+    @space: 36px;
+
+    display: flex;
+    flex-direction: column;
+    min-height: @space;
+    padding: 0 16px;
+
+    :global(.flex-between) {
+      flex: 1;
+      min-height: @space;
+
+      .image {
+        display: flex;
+        align-items: center;
+        width: 70px;
+        padding: 0 8px 4px 0;
+        object-fit: contain;
+      }
+    }
+
+    .content {
+      margin-right: 12px;
+      user-select: none;
+    }
+  }
 }

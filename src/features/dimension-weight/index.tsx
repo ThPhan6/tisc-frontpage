@@ -8,32 +8,30 @@ import { validateFloatNumber } from '@/helper/utils';
 import { DimensionWeightItem, ProductDimensionWeight } from './types';
 
 import CustomCollapse from '@/components/Collapse';
-import ConversionInput, {
-  ConversionValue,
-  ConversionValueItemProps,
-} from '@/components/EntryForm/ConversionInput';
+import ConversionInput, { ConversionValueItemProps } from '@/components/EntryForm/ConversionInput';
 import { RobotoBodyText } from '@/components/Typography';
 
 import styles from './index.less';
 
 interface DimensionWeightProps {
   data: ProductDimensionWeight;
-  setData?: (data: ProductDimensionWeight) => void;
+  onChange?: (data: ProductDimensionWeight) => void;
   editable: boolean;
-  onChange?: (index: number, value: ConversionValue) => void;
   collapseStyles?: boolean;
   customClass?: string;
 }
 
 export const DimensionWeight: FC<DimensionWeightProps> = ({
   data,
-  setData,
+  onChange,
   editable,
   collapseStyles = true,
   customClass,
 }) => {
   const [diameterToggle, setDiameterToggle] = useState<boolean | undefined>(undefined);
   const [activeCollapse, setActiveCollapse] = useState<boolean>(true);
+
+  // console.log('data', data);
 
   useEffect(() => {
     if (!editable) {
@@ -73,16 +71,20 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
           };
         }
         // update data
-        if (setData) {
-          setData(newData);
-        }
+        onChange?.(newData);
         ///
         setDiameterToggle(newData.with_diameter);
       }
     });
-  }, []);
 
-  console.log('data', data);
+    // return () =>
+    //   onChange?.({
+    //     id: '',
+    //     name: data.name,
+    //     with_diameter: data.with_diameter,
+    //     attributes: [],
+    //   });
+  }, []);
 
   const renderAttributeConversion = (conversionItem: DimensionWeightItem, index: number) => {
     const conversionValue: ConversionValueItemProps = {
@@ -106,7 +108,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
         placeholder2="type number"
         disabled={!editable}
         setConversionValue={(value) => {
-          if (setData) {
+          if (onChange) {
             const newAttributes = [...data.attributes];
             newAttributes[index] = {
               ...newAttributes[index],
@@ -114,7 +116,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
               conversion_value_2: value.secondValue,
             };
 
-            setData({
+            onChange({
               ...data,
               attributes: newAttributes,
             });
@@ -149,7 +151,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
             onClick={(toggle, e) => {
               e.stopPropagation();
               setDiameterToggle(toggle);
-              setData?.({ ...data, with_diameter: toggle });
+              onChange?.({ ...data, with_diameter: toggle });
             }}
           />
         </div>

@@ -2,7 +2,10 @@ import { useState } from 'react';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
+import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
+import PlaceHolderImage from '@/assets/images/product-placeholder.png';
 
+import { showImageUrl } from '@/helper/utils';
 import { uniqueId } from 'lodash';
 
 import { NameContentProps, ProductOptionProps } from '../../types';
@@ -12,19 +15,13 @@ import CustomCollapse from '@/components/Collapse';
 import { DoubleInput } from '@/components/EntryForm/DoubleInput';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { MainTitle, RobotoBodyText } from '@/components/Typography';
 
 import { setCustomProductDetail } from '../../slice';
 import { ProductOptionModal } from '../Modal/ProductOptionModal';
 import '../index.less';
 import styles from './index.less';
 import { DimensionWeight } from '@/features/dimension-weight';
-
-const DEFAULT_OPTION: ProductOptionProps = {
-  id: '',
-  use_image: false,
-  tag: '',
-  items: [],
-};
 
 const DEFAULT_CONTENT: NameContentProps = {
   id: '',
@@ -33,11 +30,15 @@ const DEFAULT_CONTENT: NameContentProps = {
 };
 
 export const SpecificationTab = () => {
-  const [visible, setVisible] = useState<'' | 'option'>('');
+  const [visible, setVisible] = useState<boolean>(false);
 
   const { specification, options, dimension_and_weight } = useAppSelector(
     (state) => state.customProduct.details,
   );
+
+  const dimensionWeightData = dimension_and_weight;
+
+  // console.log('dimensionWeightData', dimensionWeightData);
 
   const handleDeleteSpecification = (id: string) => {
     const newData = specification?.filter((filterItem) => filterItem.id !== id);
@@ -69,21 +70,56 @@ export const SpecificationTab = () => {
       );
     };
 
-  const handleAddOption = () => {
-    const randomID = uniqueId();
+  const onChangeOptionTitle = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newOptionGroup = [...options];
+    newOptionGroup[index] = { ...newOptionGroup[index], title: e.target.value };
 
     store.dispatch(
       setCustomProductDetail({
-        options: [...options, { ...DEFAULT_OPTION, id: randomID }],
+        options: newOptionGroup,
       }),
     );
   };
+
+  const handleAddOptionGroup = () => {
+    const randomID = uniqueId();
+    const newOptionGroup: ProductOptionProps = {
+      id: randomID,
+      tag: '',
+      title: '',
+      use_image: false,
+      items: [],
+    };
+
+    store.dispatch(
+      setCustomProductDetail({
+        options: [...options, newOptionGroup],
+      }),
+    );
+  };
+
+  const handleDeleteOptionGroup = (index: number) => {
+    const newOptionContent = options.filter((_item, itemIndex) => itemIndex !== index);
+    store.dispatch(setCustomProductDetail({ options: newOptionContent }));
+  };
+
+  const handleDeleteOptionGroupItem = (optionIndex: number, itemIndex: number) => {
+    const newOption = [...options];
+    const newOptionItem = newOption[optionIndex].items.filter(
+      (_item, itemIdx) => itemIdx !== itemIndex,
+    );
+
+    newOption[optionIndex] = { ...newOption[optionIndex], items: newOptionItem };
+
+    store.dispatch(setCustomProductDetail({ options: newOption }));
+  };
+
   return (
     <>
       <DimensionWeight
-        data={dimension_and_weight}
         editable
-        setData={(data) => {
+        data={dimensionWeightData}
+        onChange={(data) => {
           store.dispatch(
             setCustomProductDetail({
               dimension_and_weight: data,
@@ -99,7 +135,7 @@ export const SpecificationTab = () => {
           customClass="mr-24"
           onClick={handleAddSpecification}
         />
-        <CustomPlusButton size={18} label="Add Option" onClick={handleAddOption} />
+        <CustomPlusButton size={18} label="Add Option" onClick={handleAddOptionGroup} />
       </div>
 
       <div>
@@ -117,7 +153,7 @@ export const SpecificationTab = () => {
                 />
               }
               firstValue={item.name}
-              firstPlaceholder="type content"
+              firstPlaceholder="type name"
               firstOnChange={onChangeSpecification('name', item, index)}
               secondValue={item.content}
               secondPlaceholder="type content"
@@ -126,34 +162,72 @@ export const SpecificationTab = () => {
           );
         })}
 
-        {options?.map((option) => {
-          return (
-            <CustomCollapse
-              defaultActiveKey={'1'}
-              showActiveBoxShadow
-              customHeaderClass={styles.optionCollapse}
-              header={
-                <InputGroup
-                  horizontal
-                  noWrap
-                  fontLevel={4}
-                  containerClass={styles.content}
-                  label={<ScrollIcon />}
-                  placeholder="type title eg Colour Rand or Material Options"
-                  defaultValue={option.tag}
-                  // onChange={onChangeAttributeName(groupIndex)}
-                />
-              }>
-              ddd
-            </CustomCollapse>
-          );
-        })}
+        {options.length
+          ? options.map((option, optionIndex) => (
+              <>
+                <CustomCollapse
+                  key={option.id || optionIndex}
+                  defaultActiveKey={'1'}
+                  showActiveBoxShadow
+                  customHeaderClass={styles.optionCollapse}
+                  header={
+                    <InputGroup
+                      horizontal
+                      noWrap
+                      fontLevel={4}
+                      containerClass={styles.content}
+                      label={<ScrollIcon />}
+                      placeholder="type title eg Colour Rand or Material Options"
+                      value={option.title}
+                      onChange={onChangeOptionTitle(optionIndex)}
+                    />
+                  }>
+                  <div className="flex-between">
+                    <div className="flex-start cursor-pointer" onClick={() => setVisible(true)}>
+                      <MainTitle level={4} customClass={styles.content}>
+                        Create Option
+                      </MainTitle>
+                      <SingleRightIcon />
+                    </div>
+                    <DeleteIcon
+                      className="cursor-pointer"
+                      onClick={() => handleDeleteOptionGroup(optionIndex)}
+                    />
+                  </div>
+                  {option.items.length
+                    ? option.items.map((item, itemIndex) => (
+                        <div className="flex-between">
+                          <div className="flex-start pr-16">
+                            <img
+                              src={showImageUrl(item.image || PlaceHolderImage)}
+                              className={styles.image}
+                            />
+                            <RobotoBodyText level={5}>{item.description}</RobotoBodyText>
+                          </div>
+                          <DeleteIcon
+                            className="cursor-pointer"
+                            onClick={() => handleDeleteOptionGroupItem(optionIndex, itemIndex)}
+                          />
+                        </div>
+                      ))
+                    : null}
+                </CustomCollapse>
+              </>
+            ))
+          : null}
       </div>
 
-      <ProductOptionModal
-        visible={visible === 'option'}
-        setVisible={(isClose) => (isClose ? undefined : setVisible(''))}
-      />
+      {options.length
+        ? options.map((option, optionIndex) => (
+            <ProductOptionModal
+              key={option.id || optionIndex}
+              visible={visible}
+              setVisible={(isClose) => (isClose ? undefined : setVisible(false))}
+              data={option}
+              optionIndex={optionIndex}
+            />
+          ))
+        : null}
     </>
   );
 };

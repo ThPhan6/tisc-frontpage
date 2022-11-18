@@ -38,6 +38,7 @@ export interface ProductOptionProps {
   id: string;
   use_image: boolean;
   tag: string;
+  title: string;
   items: ProductOptionContentProps[];
 }
 

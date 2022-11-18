@@ -113,10 +113,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   const reloadProductInformation = () => {
     if (isCustomProduct) {
-      getCustomProductList({
-        company_id: !filter || filter.name === 'company_id' ? filter?.value || 'all' : undefined,
-        collection_id: filter && filter.name === 'collection_id' ? filter.value : undefined,
-      });
+      const filterBy =
+        !filter || filter?.value === 'all'
+          ? undefined
+          : {
+              company_id: filter.name === 'company_id' ? filter?.value : undefined,
+              collection_id: filter.name === 'collection_id' ? filter.value : undefined,
+            };
+
+      getCustomProductList(filterBy);
 
       return;
     }
@@ -166,8 +171,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const handleCopyCustomProduct = () => {
-    duplicateCustomProduct(product.id ?? '').then((isSccuess) => {
-      if (isSccuess) {
+    duplicateCustomProduct(product.id ?? '').then((isSuccuess) => {
+      if (isSuccuess) {
         reloadProductInformation();
       }
     });

@@ -9,9 +9,9 @@ import { getAllCustomResource } from './services';
 import { useQuery } from '@/helper/hook';
 import { getValueByCondition, removeUrlParams, updateUrlParams } from '@/helper/utils';
 
-import { ProductFilterType } from './types';
+import { CustomResourceType, ProductFilterType } from './types';
 import store, { useAppSelector } from '@/reducers';
-import { CollectionRelationType, GeneralData } from '@/types';
+import { GeneralData } from '@/types';
 
 import {
   ProductTopBarFilter,
@@ -124,7 +124,7 @@ export const useCustomProductFilter = (fetchs: {
     if (fetchs.noFetchData) return;
 
     if (fetchs.company) {
-      getAllCustomResource(CollectionRelationType.Brand).then((res) =>
+      getAllCustomResource(CustomResourceType.Brand).then((res) =>
         setCompanies(res.map((item: GeneralData) => ({ key: item.id, label: item.name }))),
       );
     }

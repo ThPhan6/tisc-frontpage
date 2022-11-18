@@ -179,9 +179,11 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
     });
 
     if (isCustomProduct) {
-      setCustomProductDetail({
-        images: newPhotos,
-      });
+      dispatch(
+        setCustomProductDetail({
+          images: newPhotos,
+        }),
+      );
     } else {
       dispatch(
         setPartialProductDetail({

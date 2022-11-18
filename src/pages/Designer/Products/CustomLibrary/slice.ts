@@ -1,4 +1,9 @@
-import { CustomProductDetailProps, CustomProductList, CustomResourceForm } from './types';
+import {
+  CustomProductDetailProps,
+  CustomProductList,
+  CustomResourceForm,
+  ProductOptionProps,
+} from './types';
 
 import { ProductTopBarFilter } from '@/features/product/components/FilterAndSorter';
 
@@ -52,6 +57,14 @@ const libraryResources = createSlice({
     setCustomProductDetail(state, action: PayloadAction<Partial<CustomProductDetailProps>>) {
       state.details = { ...state.details, ...action.payload };
     },
+    setCustomProductOptionItem(state, action: PayloadAction<ProductOptionProps>) {
+      console.log('setCustomProductOptionItem');
+
+      state.details.options = {
+        ...state.details.options,
+        ...action.payload,
+      };
+    },
     setCustomProductDetailImage(
       state,
       action: PayloadAction<{ type: 'first' | 'last'; image: string }>,
@@ -82,6 +95,7 @@ export const {
   setBrandForCustomProduct,
   setCustomProductFilter,
   setCustomProductDetailImage,
+  setCustomProductOptionItem,
   resetCustomProductState,
 } = libraryResources.actions;
 export const officeProductReducer = libraryResources.reducer;

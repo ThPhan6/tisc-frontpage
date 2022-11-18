@@ -58,7 +58,6 @@ export const ProductAttributeContainer: FC<Props> = ({
     attributeGroupKey,
     onSelectSpecificationOption,
     dimensionWeightData,
-    onChangeDimensionWeight,
   } = useProductAttributeForm(activeKey, curProductId, isSpecifiedModal);
 
   const renderCollapseHeader = (groupIndex: number) => {
@@ -198,14 +197,13 @@ export const ProductAttributeContainer: FC<Props> = ({
           collapseStyles={!isSpecifiedModal}
           editable={isTiscAdmin}
           data={dimensionWeightData}
-          setData={(data) => {
+          onChange={(data) => {
             store.dispatch(
               setPartialProductDetail({
                 dimension_and_weight: data,
               }),
             );
           }}
-          onChange={onChangeDimensionWeight}
         />
       );
     }
