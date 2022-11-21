@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
 
-import { ReactComponent as CustomIcon } from '@/assets/icons/custom-icon.svg';
 import { ReactComponent as ProfileIcon } from '@/assets/icons/design-firm-icon.svg';
 import { ReactComponent as LocationIcon } from '@/assets/icons/location-icon.svg';
 import { ReactComponent as MaterialIcon } from '@/assets/icons/material-product-code-icon.svg';
+import { ReactComponent as LibraryIcon } from '@/assets/icons/office-library-icon.svg';
 import { ReactComponent as ProjectIcon } from '@/assets/icons/project-icon.svg';
 import { ReactComponent as TeamIcon } from '@/assets/icons/team-profile-icon.svg';
 
@@ -28,7 +28,7 @@ import {
 import { KeyValueData } from '@/types';
 
 import { CustomTabPane } from '@/components/Tabs';
-import CustomDesign from '@/features/user-group/components/CustomDesign';
+import LibraryDesign from '@/features/user-group/components/LibraryDesign';
 import { LocationDetail } from '@/features/user-group/components/LocationDetail';
 import MaterialCode from '@/features/user-group/components/MaterialCode';
 import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummary';
@@ -47,7 +47,7 @@ const DesignTabs: TabItem[] = [
   { tab: DesignTabKeys.teams, key: DesignTabKeys.teams, icon: <TeamIcon /> },
   { tab: DesignTabKeys.materialCode, key: DesignTabKeys.materialCode, icon: <MaterialIcon /> },
   { tab: DesignTabKeys.projects, key: DesignTabKeys.projects, icon: <ProjectIcon /> },
-  { tab: DesignTabKeys.custom, key: DesignTabKeys.custom, icon: <CustomIcon /> },
+  { tab: DesignTabKeys.library, key: DesignTabKeys.library, icon: <LibraryIcon /> },
 ];
 
 const DesignFirmUpdatePage = () => {
@@ -138,8 +138,8 @@ const DesignFirmUpdatePage = () => {
         </CustomTabPane>
 
         {/* custom */}
-        <CustomTabPane active={selectedTab === DesignTabKeys.custom} lazyLoad>
-          <CustomDesign />
+        <CustomTabPane active={selectedTab === DesignTabKeys.library} lazyLoad>
+          <LibraryDesign id={designId} />
         </CustomTabPane>
       </PageContainer>
     </div>
