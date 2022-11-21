@@ -149,9 +149,10 @@ export const PATH = {
   designerCustomProductCreate: '/design-firms/products/custom-product/create',
   designerCustomProductDetail: '/design-firms/products/custom-product/:id',
   // Resources (Vendor Management)
-  designerCustomResource: '/design-firms/products/custom-resources',
-  designerCustomResourceCreate: '/design-firms/products/custom-resources/create',
-  designerCustomResourceUpdate: '/design-firms/products/custom-resources/:id',
+  designerCustomResource: '/design-firms/products/custom-product/custom-resources',
+  designerCustomResourceCreate: '/design-firms/products/custom-product/custom-resources/create',
+  designerCustomResourceUpdate: '/design-firms/products/custom-product/custom-resources/update/:id',
+  designerCustomResourceDetail: '/design-firms/products/custom-product/custom-resources/:id',
   // Project
   designerProject: '/design-firms/projects',
   designerUpdateProject: '/design-firms/projects/:id',
