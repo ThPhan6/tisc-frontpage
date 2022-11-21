@@ -27,8 +27,34 @@
     background-color: #fff;
     // box-shadow: @border-bottom;
   }
+
+  .dropdown {
+    width: 160px;
+  }
 }
 
-.dropdown {
-  width: 160px;
+:global(.sider-menu) {
+  :global(.ant-drawer-content) {
+    height: auto !important;
+    background-color: #000 !important;
+
+    :global(.ant-drawer-body) {
+      overflow-x: hidden;
+    }
+    :global(.ant-menu-inline) {
+      border-right: none;
+    }
+    :global(.ant-menu) {
+      max-height: 100vh;
+      overflow: hidden auto;
+      background-color: #000 !important;
+      :global(span.ant-menu-title-content) {
+        color: #fff !important;
+      }
+    }
+
+    svg path {
+      fill: #fff;
+    }
+  }
 }

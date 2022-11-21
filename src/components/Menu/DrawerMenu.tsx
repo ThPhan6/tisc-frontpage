@@ -12,8 +12,9 @@ interface Props extends DrawerProps {
 export const DrawerMenu: FC<Props> = ({ items, labelStyle, ...props }) => {
   return (
     <Drawer placement="bottom" closable={false} height="auto" {...props} bodyStyle={{ padding: 0 }}>
-      {items.map((el) => (
+      {items.map((el, index) => (
         <Row
+          key={index}
           align="middle"
           onClick={el.onClick}
           style={{ padding: '14px 26px', boxShadow: 'inset 0 -.7px 0 rgba(0,0,0,0.3)' }}>

@@ -103,7 +103,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     title: 'TISC',
     logo: false,
     disableContentMargin: false,
-    headerRender: () => <Header />,
+    headerRender: (props) => <Header {...props} />,
     onPageChange: () => {
       const { location } = history;
       const token = localStorage.getItem('access_token') || '';

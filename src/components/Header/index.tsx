@@ -2,7 +2,8 @@ import React from 'react';
 
 import { PATH } from '@/constants/path';
 import { UserHomePagePaths } from '@/constants/user.constant';
-import { Row } from 'antd';
+import { HeaderViewProps } from '@ant-design/pro-layout/lib/Header';
+import { Drawer, Row } from 'antd';
 
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as LanguageIcon } from '@/assets/icons/language-icon.svg';
@@ -19,15 +20,17 @@ import { useBoolean } from '@/helper/hook';
 import { useAppSelector } from '@/reducers';
 
 import { HeaderDropdown, MenuHeaderDropdown } from '../HeaderDropdown';
+import { SiderMenu } from '../Menu/AsideMenu';
 import { DrawerMenu } from '../Menu/DrawerMenu';
 import { AvatarDropdown } from './AvatarDropdown';
 import styles from './styles/index.less';
 
-const Header = () => {
+const Header = (props: HeaderViewProps) => {
   const isMobile = useCheckMobile();
   const showQuestionDropdown = useBoolean();
   const showLanguageDropdown = useBoolean();
   const showFaqMenu = useBoolean();
+  const showSiderMenu = useBoolean();
 
   const user = useAppSelector((state) => state.user.user);
 
@@ -66,11 +69,25 @@ const Header = () => {
     />
   );
 
-  const handleRedirectHomePage = () => {
+  const onLeftIconClick = () => {
     if (!user) {
       return false;
     }
-    return pushTo(UserHomePagePaths[user.type]);
+    if (!isMobile) {
+      return pushTo(UserHomePagePaths[user.type]);
+    }
+    showSiderMenu.setValue(true);
+    setTimeout(() => {
+      const drawerMask = document.getElementsByClassName('ant-drawer-content-wrapper');
+      drawerMask[0]?.addEventListener('click', (event: any) => {
+        if (
+          typeof event.target?.className === 'string' &&
+          event.target.className.includes('ant-drawer-content-wrapper')
+        ) {
+          showSiderMenu.setValue(false);
+        }
+      });
+    }, 300);
   };
 
   const renderHeaderDropDown = (
@@ -99,7 +116,7 @@ const Header = () => {
     <Row
       className={`${styles.container} ${isMobile ? styles.mobile : ''}`}
       justify={'space-between'}>
-      <div className={styles['logo-icon']} onClick={handleRedirectHomePage}>
+      <div className={styles['logo-icon']} onClick={onLeftIconClick}>
         <img src={isMobile ? MenuIcon : LogoIcon} alt="logo" />
       </div>
 
@@ -147,6 +164,23 @@ const Header = () => {
           },
         ]}
       />
+
+      <Drawer
+        className="sider-menu"
+        visible={showSiderMenu.value}
+        onClose={() => showSiderMenu.setValue(false)}
+        placement="left"
+        closable={false}
+        height="auto"
+        width="100%"
+        maskClosable
+        bodyStyle={{ padding: 0, position: 'relative' }}>
+        <SiderMenu
+          appProps={props.children}
+          menu={props.menuData}
+          onClose={() => showSiderMenu.setValue(false)}
+        />
+      </Drawer>
     </Row>
   );
 };
