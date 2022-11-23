@@ -156,7 +156,7 @@ export const ProductAttributeContainer: FC<Props> = ({
               title={groupName}
               isPublicPage={isPublicPage}
               attributeName={attribute.name}
-              options={attribute.basis_options ?? []}
+              options={'basis_options' in attribute ? attribute.basis_options ?? [] : []}
               chosenOption={
                 chosenOption
                   ? {
@@ -208,6 +208,9 @@ export const ProductAttributeContainer: FC<Props> = ({
       );
     }
 
+    const dwAttributes = isPublicPage
+      ? dimensionWeightData.attributes.filter((el) => el.conversion_value_1 !== '')
+      : dimensionWeightData.attributes;
     return (
       <CustomCollapse
         defaultActiveKey={'1'}
@@ -223,7 +226,7 @@ export const ProductAttributeContainer: FC<Props> = ({
         }>
         <table className={styles.table}>
           <tbody>
-            {dimensionWeightData.attributes.map((attribute, attrIndex) =>
+            {dwAttributes.map((attribute, attrIndex) =>
               renderAttributeRowItem(attribute, attrIndex, dimensionWeightData.name),
             )}
           </tbody>

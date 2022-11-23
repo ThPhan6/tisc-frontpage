@@ -5,6 +5,7 @@ export const MESSAGE_ERROR = {
   PHONE_INPUT: 'Invalid phone number',
   POSTAL_CODE: 'You are allowed to enter 10 characters only',
   reachLogoSizeLimit: 'Logo size limit reached (240 KB)',
+  reachSizeLimit: 'Image size limit reached (240 KB)',
   WORK_EMAIL: 'Work email is required',
   GENERAL_EMAIL: 'General email is required',
   EMAIL_AUTO: 'Message is required',

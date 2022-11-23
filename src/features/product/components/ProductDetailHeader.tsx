@@ -18,6 +18,7 @@ interface ProductDetailHeaderProps {
   onSave?: () => void;
   onCancel?: () => void;
   hideSelect?: boolean;
+  disabled?: boolean;
 }
 
 const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
@@ -26,8 +27,10 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
   onSave,
   onCancel,
   hideSelect,
+  disabled,
 }) => {
   const product = useAppSelector((state) => state.product);
+
   const dispatch = useDispatch();
   const { categories } = product.details;
   const [visible, setVisible] = useState(false);
@@ -52,7 +55,8 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
             variant="primary"
             properties="rounded"
             buttonClass="save-btn"
-            onClick={onSave}>
+            onClick={onSave}
+            disabled={disabled}>
             Save
           </CustomButton>
           <CustomButton

@@ -1,8 +1,7 @@
 import React, { FC, ReactNode } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { MESSAGE_ERROR } from '@/constants/message';
-import { IMAGE_ACCEPT_TYPES, LOGO_SIZE_LIMIT } from '@/constants/util';
+import { IMAGE_ACCEPT_TYPES } from '@/constants/util';
 import { Col, Row, Upload, message } from 'antd';
 import type { UploadProps } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
@@ -22,11 +21,7 @@ import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { getBase64, showImageUrl } from '@/helper/utils';
 
 import { ProductKeyword } from '../types';
-import {
-  setPartialProductDetail,
-  setProductDetail,
-  setProductDetailImage,
-} from '@/features/product/reducers';
+import { setPartialProductDetail, setProductDetailImage } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
 
 import SmallIconButton from '@/components/Button/SmallIconButton';
@@ -100,8 +95,9 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
 
   const product = isCustomProduct ? customProduct : normalProduct;
 
-  const liked = product.is_liked;
-  const likeCount = product.favorites ?? 0;
+  const liked = 'keywords' in product ? product.is_liked : false;
+  const likeCount = 'favorites' in product ? product.favorites || 0 : 0;
+
   const handleLoadPhoto = async (file: UploadFile<any>, type: 'first' | 'last' = 'first') => {
     const imageBase64 = await getBase64(file.originFileObj);
 
@@ -132,19 +128,12 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
         handleLoadPhoto(file);
       }
     },
-    beforeUpload: (file, fileList) => {
-      if (file.size > LOGO_SIZE_LIMIT) {
-        message.error(MESSAGE_ERROR.reachLogoSizeLimit);
-        return false;
-      }
+    beforeUpload: (_file, fileList) => {
+      const totalImageCount = product.images.length + fileList.length;
+      const maxImageAllow = isCustomProduct ? 4 : 9;
 
-      if (isCustomProduct && customProduct.images.length + fileList.length > 4) {
-        message.error('Max photos is 4');
-        return false;
-      }
-
-      if (!isCustomProduct && product.images.length + fileList.length > 9) {
-        message.error('Max photos is 9');
+      if (totalImageCount > maxImageAllow) {
+        message.error(`Max photos is ${maxImageAllow}`);
         return false;
       }
 
@@ -198,7 +187,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
       if (isSuccess) {
         const newLiked = !liked;
         dispatch(
-          setProductDetail({
+          setPartialProductDetail({
             ...product,
             is_liked: newLiked,
             favorites: likeCount + (newLiked ? 1 : -1),
@@ -215,22 +204,24 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
           <BodyText level={4} customClass={styles.imageNaming}>
             Image naming:
           </BodyText>
-          {product.keywords.map((value, index) => (
-            <CustomInput
-              key={index}
-              placeholder={`keyword${index + 1}`}
-              value={value}
-              onChange={(e) => {
-                const newKeywords = [...product.keywords] as ProductKeyword;
-                newKeywords[index] = e.target.value;
-                dispatch(
-                  setPartialProductDetail({
-                    keywords: newKeywords,
-                  }),
-                );
-              }}
-            />
-          ))}
+          {'keywords' in product
+            ? product.keywords.map((value, index) => (
+                <CustomInput
+                  key={index}
+                  placeholder={`keyword${index + 1}`}
+                  value={value}
+                  onChange={(e) => {
+                    const newKeywords = [...product.keywords] as ProductKeyword;
+                    newKeywords[index] = e.target.value;
+                    dispatch(
+                      setPartialProductDetail({
+                        keywords: newKeywords,
+                      }),
+                    );
+                  }}
+                />
+              ))
+            : null}
         </div>
       );
     }
@@ -387,6 +378,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
             visible={showAssignProductModal.value}
             setVisible={showAssignProductModal.setValue}
             productId={product.id}
+            isCustomProduct={isCustomProduct || false}
           />
         ) : null}
         {product.id ? (

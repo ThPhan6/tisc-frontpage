@@ -40,7 +40,7 @@ export const USER_STATUS_TEXTS = {
 };
 
 export const IMAGE_ACCEPT_TYPES = {
-  image: '.png,.jpeg,.webp,.svg,.jpg',
+  image: '.png,.jpeg,.webp,.jpg',
 };
 
 export const AVATAR_ACCEPT_TYPES = ['png', 'jpeg', 'jpg', 'webp', 'svg'];

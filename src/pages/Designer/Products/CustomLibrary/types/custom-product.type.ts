@@ -29,13 +29,13 @@ export interface NameContentProps {
 }
 
 export interface ProductOptionContentProps {
-  id: string;
+  id?: string;
   description: string;
   product_id: string;
-  image: string;
+  image?: string;
 }
 export interface ProductOptionProps {
-  id: string;
+  id?: string;
   use_image: boolean;
   tag: string;
   title: string;

@@ -5,6 +5,7 @@ import { Col, Row, message } from 'antd';
 import { useHistory, useParams } from 'umi';
 
 import { createCustomProduct, getOneCustomProduct, updateCustomProduct } from './services';
+import { formatImageIfBase64 } from '@/helper/utils';
 
 import { NameContentProps, ProductInfoTab, ProductOptionProps } from './types';
 import { ProductDimensionWeight } from '@/features/dimension-weight/types';
@@ -17,6 +18,7 @@ import ProductDetailHeader from '@/features/product/components/ProductDetailHead
 import ProductImagePreview from '@/features/product/components/ProductImagePreview';
 
 import styles from './ProductLibraryDetail.less';
+import { invalidCustomProductSelector } from './slice';
 
 const LIST_TAB = [
   { tab: 'SUMMARY', key: 'summary' },
@@ -43,6 +45,10 @@ const ProductLibraryDetail: React.FC = () => {
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('summary');
   const productData = useAppSelector((state) => state.customProduct.details);
 
+  const { invalidAttributes, invalidSpecifications, invalidOptions } = useAppSelector(
+    invalidCustomProductSelector,
+  );
+
   useEffect(() => {
     if (productId) {
       getOneCustomProduct(productId);
@@ -50,25 +56,42 @@ const ProductLibraryDetail: React.FC = () => {
   }, [productId]);
 
   const onSave = () => {
-    if (!productData.company.name) {
-      message.error('Company is required');
-      return;
+    switch (true) {
+      case !productData.company.name:
+        message.error('Company is required');
+        return;
+      case !productData.collection.name:
+        message.error('Collection is required');
+        return;
+      case !productData.name:
+        message.error('Product name is required');
+        return;
+      case productData.images.length < 1:
+        message.error('Required at least one image');
+        return;
+      case productData.images.length > 4:
+        message.error('Maximum 4 images allowed');
+        return;
+      case invalidAttributes:
+        message.error('Invalid attributes');
+        return;
+      case invalidOptions:
+        message.error('Invalid options');
+        return;
+      case invalidSpecifications:
+        message.error('Invalid specifications');
+        return;
     }
 
-    if (!productData.collection.name) {
-      message.error('Collection is required');
-      return;
-    }
-
-    if (!productData.name) {
-      message.error('Product name is required');
-      return;
-    }
-
-    if (!productData.images.length) {
-      message.error('At least one image');
-      return;
-    }
+    const productOptions = productData.options.map((el) => ({
+      ...el,
+      id: el.id || undefined,
+      items: el.items.map((item) => ({
+        ...item,
+        id: item.id || undefined,
+        image: el.use_image && item.image ? formatImageIfBase64(item.image) : undefined,
+      })),
+    }));
 
     const data: CustomProductRequestBody = {
       company_id: productData.company.id,
@@ -78,13 +101,8 @@ const ProductLibraryDetail: React.FC = () => {
       description: productData.description.trim(),
       attributes: productData.attributes,
       specification: productData.specification,
-      options: productData.options,
-      images: productData.images?.map((image) => {
-        if (image.indexOf('data:image') > -1) {
-          return image.split(',')[1];
-        }
-        return image;
-      }),
+      options: productOptions,
+      images: productData.images?.map((image) => formatImageIfBase64(image)),
     };
 
     if (productId) {
@@ -139,7 +157,7 @@ const ProductLibraryDetail: React.FC = () => {
                 </CustomTabPane>
 
                 <CustomTabPane active={activeKey === 'specification'}>
-                  <SpecificationTab />
+                  <SpecificationTab isUpdate={productId ? true : false} />
                 </CustomTabPane>
               </Col>
             </Row>

@@ -4,10 +4,11 @@ import {
   CustomResourceForm,
   ProductOptionProps,
 } from './types';
+import { RootState } from '@/reducers';
 
 import { ProductTopBarFilter } from '@/features/product/components/FilterAndSorter';
 
-import type { PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createSelector } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface CustomProductState {
@@ -57,13 +58,16 @@ const libraryResources = createSlice({
     setCustomProductDetail(state, action: PayloadAction<Partial<CustomProductDetailProps>>) {
       state.details = { ...state.details, ...action.payload };
     },
-    setCustomProductOptionItem(state, action: PayloadAction<ProductOptionProps>) {
-      console.log('setCustomProductOptionItem');
+    updateCustomProductOption: (state, action: PayloadAction<ProductOptionProps>) => {
+      const curOption = action.payload.id
+        ? state.details.options.findIndex((el) => el.id === action.payload.id)
+        : -1;
 
-      state.details.options = {
-        ...state.details.options,
-        ...action.payload,
-      };
+      if (curOption === -1) {
+        state.details.options.push(action.payload);
+      } else {
+        state.details.options[curOption] = action.payload;
+      }
     },
     setCustomProductDetailImage(
       state,
@@ -95,7 +99,48 @@ export const {
   setBrandForCustomProduct,
   setCustomProductFilter,
   setCustomProductDetailImage,
-  setCustomProductOptionItem,
   resetCustomProductState,
+  updateCustomProductOption,
 } = libraryResources.actions;
 export const officeProductReducer = libraryResources.reducer;
+
+export const customProductSelector = (state: RootState) => state.customProduct.details;
+
+export const invalidCustomProductSelector = createSelector(
+  customProductSelector,
+  (customProduct) => {
+    // const invalidImages = customProduct.images.length < 1 || customProduct.images.length > 4;
+
+    // const invalidSummary =
+    //   !customProduct.company.id ||
+    //   !customProduct.collection.id ||
+    //   !customProduct.name ||
+    //   !customProduct.description;
+
+    const invalidAttributes =
+      customProduct.attributes.length > 0 &&
+      customProduct.attributes.some((el) => !el.content || !el.name);
+
+    const invalidSpecifications =
+      customProduct.specification.length > 0 &&
+      customProduct.specification.some((el) => !el.content || !el.name);
+
+    const invalidOptions =
+      customProduct.options.length > 0 &&
+      customProduct.options.some((el) => !el.title || el.items.length === 0);
+
+    // console.log('invalidImages', invalidImages);
+    // console.log('invalidSummary', invalidSummary);
+    // console.log('invalidAttributes', invalidAttributes);
+    // console.log('invalidSpecifications', invalidSpecifications);
+    // console.log('invalidOptions', invalidOptions);
+
+    return {
+      // invalidImages,
+      // invalidSummary,
+      invalidAttributes,
+      invalidSpecifications,
+      invalidOptions,
+    };
+  },
+);

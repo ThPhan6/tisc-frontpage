@@ -52,14 +52,6 @@
     white-space: nowrap;
     user-select: none;
 
-    :global(.ant-checkbox-checked::after) {
-      border: none;
-    }
-    :global(.ant-checkbox-inner) {
-      border-color: @mono-color;
-      border-radius: 0;
-    }
-
     .imageBtn {
       display: flex;
       flex-direction: row-reverse;
@@ -71,7 +63,7 @@
       }
 
       :global(.ant-checkbox + span) {
-        padding: 0 4px 0 0;
+        padding: 0 8px 0 0;
       }
     }
   }
@@ -80,31 +72,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 16px;
-    padding-bottom: 2px;
+    padding-top: 8px;
+    padding-bottom: 8px;
     white-space: nowrap;
     box-shadow: @border-bottom-light;
-
-    .flexSpace {
-      flex: 1;
-
-      .image {
-        display: flex;
-        align-items: center;
-        padding: 0 8px 4px 0;
-        img {
-          width: 70px;
-          object-fit: contain;
-          cursor: pointer;
-        }
-      }
-
-      .paddingLeftNone {
-        input {
-          padding-left: 0;
-        }
-      }
-    }
 
     .deleteIcon {
       cursor: pointer;

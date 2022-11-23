@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
+import { Col, Row } from 'antd';
+
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
-import PlaceHolderImage from '@/assets/images/product-placeholder.png';
 
 import { showImageUrl } from '@/helper/utils';
-import { uniqueId } from 'lodash';
 
 import { NameContentProps, ProductOptionProps } from '../../types';
 import store, { useAppSelector } from '@/reducers';
@@ -18,7 +18,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { MainTitle, RobotoBodyText } from '@/components/Typography';
 
 import { setCustomProductDetail } from '../../slice';
-import { ProductOptionModal } from '../Modal/ProductOptionModal';
+import { DEFAULT_PRODUCT_OPTION, ProductOptionModal } from '../Modal/ProductOptionModal';
 import '../index.less';
 import styles from './index.less';
 import { DimensionWeight } from '@/features/dimension-weight';
@@ -29,16 +29,16 @@ const DEFAULT_CONTENT: NameContentProps = {
   content: '',
 };
 
-export const SpecificationTab = () => {
-  const [visible, setVisible] = useState<boolean>(false);
+export const SpecificationTab = (props: { isUpdate?: boolean }) => {
+  const [optionModalVisible, setOptionModalVisible] = useState<boolean>(false);
 
   const { specification, options, dimension_and_weight } = useAppSelector(
     (state) => state.customProduct.details,
   );
 
-  const dimensionWeightData = dimension_and_weight;
+  const [curOption, setCurOption] = useState<ProductOptionProps>(DEFAULT_PRODUCT_OPTION);
 
-  // console.log('dimensionWeightData', dimensionWeightData);
+  const dimensionWeightData = dimension_and_weight;
 
   const handleDeleteSpecification = (id: string) => {
     const newData = specification?.filter((filterItem) => filterItem.id !== id);
@@ -50,10 +50,9 @@ export const SpecificationTab = () => {
   };
 
   const handleAddSpecification = () => {
-    const randomID = uniqueId();
     store.dispatch(
       setCustomProductDetail({
-        specification: [...specification, { ...DEFAULT_CONTENT, id: randomID }],
+        specification: [...specification, { ...DEFAULT_CONTENT }],
       }),
     );
   };
@@ -82,9 +81,7 @@ export const SpecificationTab = () => {
   };
 
   const handleAddOptionGroup = () => {
-    const randomID = uniqueId();
     const newOptionGroup: ProductOptionProps = {
-      id: randomID,
       tag: '',
       title: '',
       use_image: false,
@@ -112,6 +109,85 @@ export const SpecificationTab = () => {
     newOption[optionIndex] = { ...newOption[optionIndex], items: newOptionItem };
 
     store.dispatch(setCustomProductDetail({ options: newOption }));
+  };
+
+  const renderProductOptionGroup = () => {
+    if (options.length === 0) {
+      return null;
+    }
+    return options.map((option: ProductOptionProps, optionIndex: number) => (
+      <CustomCollapse
+        key={option.id || optionIndex}
+        defaultActiveKey={'1'}
+        showActiveBoxShadow
+        customHeaderClass={styles.optionCollapse}
+        header={
+          <InputGroup
+            horizontal
+            noWrap
+            fontLevel={4}
+            containerClass={styles.content}
+            label={<ScrollIcon />}
+            placeholder="type title eg Colour Rand or Material Options"
+            value={option.title}
+            onChange={onChangeOptionTitle(optionIndex)}
+          />
+        }>
+        <div className="flex-between" style={{ padding: '10px 16px' }}>
+          <div
+            className="flex-start cursor-pointer"
+            onClick={() => {
+              setOptionModalVisible(true);
+              setCurOption(option);
+            }}>
+            <MainTitle level={4} customClass={styles.content}>
+              {props.isUpdate ? 'Update' : 'Create'} Options
+            </MainTitle>
+            <SingleRightIcon />
+          </div>
+          <div className="flex-start">
+            {option.tag ? (
+              <RobotoBodyText level={6} style={{ fontWeight: '500', marginRight: 16 }}>
+                TAG: {option.tag}
+              </RobotoBodyText>
+            ) : null}
+            <DeleteIcon
+              className="cursor-pointer"
+              onClick={() => handleDeleteOptionGroup(optionIndex)}
+            />
+          </div>
+        </div>
+
+        {option.items.map((item, itemIndex) => (
+          <Row className={styles.optionItem} align="middle" justify="space-between">
+            {option.use_image && item.image ? (
+              <Col flex="48px">
+                <img
+                  src={showImageUrl(item.image)}
+                  style={{
+                    width: 48,
+                    height: 48,
+                    objectFit: 'contain',
+                    marginRight: 24,
+                  }}
+                />
+              </Col>
+            ) : null}
+            <Col flex="auto" style={{ maxWidth: 'calc(100% - 66px)' }}>
+              <RobotoBodyText level={5} customClass="text-overflow">
+                {item.description}
+              </RobotoBodyText>
+            </Col>
+            <Col flex="18px" style={{ height: 18 }}>
+              <DeleteIcon
+                className="cursor-pointer"
+                onClick={() => handleDeleteOptionGroupItem(optionIndex, itemIndex)}
+              />
+            </Col>
+          </Row>
+        ))}
+      </CustomCollapse>
+    ));
   };
 
   return (
@@ -162,72 +238,14 @@ export const SpecificationTab = () => {
           );
         })}
 
-        {options.length
-          ? options.map((option, optionIndex) => (
-              <>
-                <CustomCollapse
-                  key={option.id || optionIndex}
-                  defaultActiveKey={'1'}
-                  showActiveBoxShadow
-                  customHeaderClass={styles.optionCollapse}
-                  header={
-                    <InputGroup
-                      horizontal
-                      noWrap
-                      fontLevel={4}
-                      containerClass={styles.content}
-                      label={<ScrollIcon />}
-                      placeholder="type title eg Colour Rand or Material Options"
-                      value={option.title}
-                      onChange={onChangeOptionTitle(optionIndex)}
-                    />
-                  }>
-                  <div className="flex-between">
-                    <div className="flex-start cursor-pointer" onClick={() => setVisible(true)}>
-                      <MainTitle level={4} customClass={styles.content}>
-                        Create Option
-                      </MainTitle>
-                      <SingleRightIcon />
-                    </div>
-                    <DeleteIcon
-                      className="cursor-pointer"
-                      onClick={() => handleDeleteOptionGroup(optionIndex)}
-                    />
-                  </div>
-                  {option.items.length
-                    ? option.items.map((item, itemIndex) => (
-                        <div className="flex-between">
-                          <div className="flex-start pr-16">
-                            <img
-                              src={showImageUrl(item.image || PlaceHolderImage)}
-                              className={styles.image}
-                            />
-                            <RobotoBodyText level={5}>{item.description}</RobotoBodyText>
-                          </div>
-                          <DeleteIcon
-                            className="cursor-pointer"
-                            onClick={() => handleDeleteOptionGroupItem(optionIndex, itemIndex)}
-                          />
-                        </div>
-                      ))
-                    : null}
-                </CustomCollapse>
-              </>
-            ))
-          : null}
+        {renderProductOptionGroup()}
       </div>
 
-      {options.length
-        ? options.map((option, optionIndex) => (
-            <ProductOptionModal
-              key={option.id || optionIndex}
-              visible={visible}
-              setVisible={(isClose) => (isClose ? undefined : setVisible(false))}
-              data={option}
-              optionIndex={optionIndex}
-            />
-          ))
-        : null}
+      <ProductOptionModal
+        visible={optionModalVisible}
+        setVisible={(isClose) => (isClose ? undefined : setOptionModalVisible(false))}
+        option={curOption}
+      />
     </>
   );
 };

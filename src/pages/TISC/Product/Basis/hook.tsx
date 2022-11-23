@@ -165,7 +165,6 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
     return (
       <OptionItem
         key={index}
-        optionIndex={index}
         subOption={item}
         handleChangeSubItem={(changedSubs) => handleOnChangeValue(changedSubs, index)}
         handleDeleteSubOption={() => handleOnClickDelete(index)}
