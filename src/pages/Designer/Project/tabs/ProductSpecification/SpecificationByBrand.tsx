@@ -68,6 +68,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
           <InfoIcon style={{ cursor: 'pointer' }} onClick={() => setVisible(true)} />
         </div>
       ),
+      align: 'center',
       dataIndex: 'availability',
     },
     { title: 'Status', align: 'center', width: COLUMN_WIDTH.status },
@@ -125,6 +126,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     {
       title: 'Availability',
       dataIndex: 'availability',
+      align: 'center',
       render: (_value, record) => renderAvailability(record),
     },
     {
