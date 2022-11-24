@@ -55,6 +55,13 @@ export interface ProductAttributeFormInput {
   isChecked?: boolean;
 }
 
+export enum Availability {
+  Available,
+  Discontinued,
+  Discrepancy,
+  OutOfStock,
+}
+
 export type ProductKeyword = [string, string, string, string];
 
 export interface SpecifiedDetail {
@@ -103,6 +110,7 @@ export interface ProductItem {
   code?: string;
   is_liked?: boolean;
   description: string;
+  availability: Availability;
   general_attribute_groups: ProductAttributeFormInput[];
   feature_attribute_groups: ProductAttributeFormInput[];
   specification_attribute_groups: ProductAttributeFormInput[];
