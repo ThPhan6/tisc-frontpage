@@ -23,7 +23,7 @@ export const AvailabilityModal: FC<AvailabilityModalProps> = ({ visible, setVisi
       setVisible={setVisible}
       className={styles.modal}
       noFooter>
-      <div>
+      <div className={styles.topSpace}>
         <RobotoBodyText level={5} customClass={styles.fontBold}>
           AVAILABILITY
         </RobotoBodyText>
