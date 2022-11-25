@@ -32,7 +32,8 @@ type MenuHeaderDropdownProps = {
 export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParentClick }) => {
   const MenuItem = ({ label, icon, onClick, containerClass, disabled }: MenuIconProps) => (
     <div
-      onClick={() => {
+      onClick={(e) => {
+        e.stopPropagation();
         if (disabled) {
           return;
         }

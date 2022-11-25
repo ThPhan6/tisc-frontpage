@@ -1,10 +1,13 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 
 import { COLUMN_WIDTH } from '@/constants/util';
+
+import { ReactComponent as InfoIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import {
   onCellCancelled,
   renderActionCell,
+  renderAvailability,
   renderSpecifiedStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
@@ -15,7 +18,9 @@ import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 import { TableColumnItem } from '@/components/Table/types';
 import { SpecifiedProductBySpace } from '@/features/project/types';
 
+import { AvailabilityModal } from '../../components/AvailabilityModal';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
+import { RobotoBodyText } from '@/components/Typography';
 
 export interface SpaceListProps {
   projectId?: string;
@@ -26,7 +31,9 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     rightColumnExcluded: 3,
   });
   const tableRef = useRef<any>();
-  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef, true);
+  const [visible, setVisible] = useState<boolean>(false);
+
+  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
   const getSameColumns = (noBoxShadow: boolean, hideProductName?: boolean) => {
     const SameColummnsSpace: TableColumnItem<any>[] = [
@@ -98,6 +105,19 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     ...getSameColumns(false, true),
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
+      title: (
+        <div className="flex-start">
+          <RobotoBodyText level={5} style={{ fontWeight: 500 }}>
+            Availability
+          </RobotoBodyText>
+          <InfoIcon style={{ cursor: 'pointer' }} onClick={() => setVisible(true)} />
+        </div>
+      ),
+      dataIndex: 'availability',
+      align: 'center',
+      noBoxShadow: true,
+    },
+    {
       title: 'Status',
       width: COLUMN_WIDTH.status,
       align: 'center',
@@ -131,6 +151,13 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     ...getSameColumns(false),
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
+      title: 'Availability',
+      dataIndex: 'availability',
+      align: 'center',
+      width: '5%',
+      render: (_value, record) => renderAvailability(record),
+    },
+    {
       title: 'Status',
       width: COLUMN_WIDTH.status,
       dataIndex: 'status',
@@ -163,6 +190,12 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     ...getSameColumns(false),
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
+      title: 'Availability',
+      dataIndex: 'availability',
+      align: 'center',
+      width: '5%',
+    },
+    {
       title: 'Status',
       width: COLUMN_WIDTH.status,
       align: 'center',
@@ -189,6 +222,14 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     },
     ...getSameColumns(true),
     { title: 'Count', width: '5%', align: 'center', noBoxShadow: true },
+    {
+      title: 'Availability',
+      dataIndex: 'availability',
+      align: 'center',
+      width: '5%',
+
+      render: (_value, record) => renderAvailability(record),
+    },
     {
       title: 'Status',
       width: COLUMN_WIDTH.status,
@@ -246,6 +287,8 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
         }}
       />
       {renderSpecifyingModal()}
+
+      <AvailabilityModal visible={visible} setVisible={setVisible} />
     </>
   );
 };

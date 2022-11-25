@@ -58,7 +58,6 @@ export const ProductAttributeContainer: FC<Props> = ({
     attributeGroupKey,
     onSelectSpecificationOption,
     dimensionWeightData,
-    onChangeDimensionWeight,
   } = useProductAttributeForm(activeKey, curProductId, isSpecifiedModal);
 
   const renderCollapseHeader = (groupIndex: number) => {
@@ -157,7 +156,7 @@ export const ProductAttributeContainer: FC<Props> = ({
               title={groupName}
               isPublicPage={isPublicPage}
               attributeName={attribute.name}
-              options={attribute.basis_options ?? []}
+              options={'basis_options' in attribute ? attribute.basis_options ?? [] : []}
               chosenOption={
                 chosenOption
                   ? {
@@ -198,18 +197,20 @@ export const ProductAttributeContainer: FC<Props> = ({
           collapseStyles={!isSpecifiedModal}
           editable={isTiscAdmin}
           data={dimensionWeightData}
-          setData={(data) => {
+          onChange={(data) => {
             store.dispatch(
               setPartialProductDetail({
                 dimension_and_weight: data,
               }),
             );
           }}
-          onChange={onChangeDimensionWeight}
         />
       );
     }
 
+    const dwAttributes = isPublicPage
+      ? dimensionWeightData.attributes.filter((el) => el.conversion_value_1 !== '')
+      : dimensionWeightData.attributes;
     return (
       <CustomCollapse
         defaultActiveKey={'1'}
@@ -225,7 +226,7 @@ export const ProductAttributeContainer: FC<Props> = ({
         }>
         <table className={styles.table}>
           <tbody>
-            {dimensionWeightData.attributes.map((attribute, attrIndex) =>
+            {dwAttributes.map((attribute, attrIndex) =>
               renderAttributeRowItem(attribute, attrIndex, dimensionWeightData.name),
             )}
           </tbody>

@@ -1,6 +1,8 @@
-import React, { FC } from 'react';
+import React, { CSSProperties, FC } from 'react';
 
-import { Col, Collapse, Radio, Row } from 'antd';
+import { MESSAGE_ERROR } from '@/constants/message';
+import { IMAGE_ACCEPT_TYPES, LOGO_SIZE_LIMIT } from '@/constants/util';
+import { Col, Collapse, Radio, Row, Upload, message } from 'antd';
 
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
@@ -17,12 +19,47 @@ import { BodyText } from '@/components/Typography';
 
 import styles from './OptionItem.less';
 
+export const ImageUpload: FC<{
+  onFileChange: (base64: string) => void;
+  image?: string;
+  style?: CSSProperties;
+}> = ({ style, onFileChange, image }) => {
+  return (
+    <Upload
+      accept={IMAGE_ACCEPT_TYPES.image}
+      maxCount={1}
+      showUploadList={false}
+      beforeUpload={(file) => {
+        if (file.size > LOGO_SIZE_LIMIT) {
+          message.error(MESSAGE_ERROR.reachSizeLimit);
+          return false;
+        }
+        getBase64(file)
+          .then(onFileChange)
+          .catch(() => {
+            message.error('Upload Failed');
+          });
+        return true;
+      }}>
+      <img
+        style={{
+          width: 48,
+          height: 48,
+          objectFit: 'contain',
+          marginRight: 16,
+          cursor: 'pointer',
+          ...style,
+        }}
+        src={image || DefaultImage}
+      />
+    </Upload>
+  );
+};
+
 interface SubItemOptionProps {
   is_have_image?: boolean;
   subItemOption: SubBasisOption;
   onChange: (subItemOption: SubBasisOption) => void;
-  index: number;
-  optionIndex: number;
 }
 
 const DEFAULT_SUB_OPTION_ITEM: SubBasisOption = {
@@ -32,13 +69,7 @@ const DEFAULT_SUB_OPTION_ITEM: SubBasisOption = {
   unit_1: '',
 };
 
-const SubItemOption: FC<SubItemOptionProps> = ({
-  is_have_image,
-  subItemOption,
-  onChange,
-  index,
-  optionIndex,
-}) => {
+const SubItemOption: FC<SubItemOptionProps> = ({ is_have_image, subItemOption, onChange }) => {
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({
       ...subItemOption,
@@ -46,46 +77,21 @@ const SubItemOption: FC<SubItemOptionProps> = ({
     });
   };
 
-  const handleChangeFileImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files![0];
-    getBase64(file)
-      .then((base64Image) => {
-        onChange({
-          ...subItemOption,
-          image: base64Image,
-          isBase64: true,
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  const getURLImage = () => {
-    if (subItemOption.image) {
-      return subItemOption.isBase64 ? subItemOption.image : showImageUrl(subItemOption.image);
-    }
-    return DefaultImage;
+  const handleChangeFileImage = (base64Image: string) => {
+    onChange({
+      ...subItemOption,
+      image: base64Image,
+      isBase64: true,
+    });
   };
 
   return (
     <div className={styles.element}>
       {is_have_image && (
-        <div className={styles.image_upload}>
-          <label htmlFor={`input_${optionIndex}_${index}`}>
-            <img className={styles.image} src={getURLImage()} />
-          </label>
-
-          <div className={styles.image__file_input}>
-            <input
-              id={`input_${optionIndex}_${index}`}
-              type="file"
-              accept=".jpg, .jpeg, .png, .webp"
-              style={{ display: 'none' }}
-              onChange={handleChangeFileImage}
-            />
-          </div>
-        </div>
+        <ImageUpload
+          onFileChange={handleChangeFileImage}
+          image={subItemOption.isBase64 ? subItemOption.image : showImageUrl(subItemOption.image)}
+        />
       )}
 
       <Row className={styles.form_sub__input} gutter={16}>
@@ -123,11 +129,10 @@ interface OptionItemProps {
   subOption: BasisOptionSubForm;
   handleChangeSubItem: (changedSubs: BasisOptionSubForm) => void;
   handleDeleteSubOption: () => void;
-  optionIndex: number;
 }
 
 export const OptionItem: FC<OptionItemProps> = (props) => {
-  const { subOption, handleChangeSubItem, handleDeleteSubOption, optionIndex } = props;
+  const { subOption, handleChangeSubItem, handleDeleteSubOption } = props;
 
   const handleActiveKeyToCollapse = () => {
     handleChangeSubItem({
@@ -264,8 +269,6 @@ export const OptionItem: FC<OptionItemProps> = (props) => {
                 <div className={styles.optionItemGroup}>
                   <div className={styles.form}>
                     <SubItemOption
-                      index={index}
-                      optionIndex={optionIndex}
                       is_have_image={subOption.is_have_image}
                       subItemOption={subItemOption}
                       onChange={(changedOptionItem) =>
