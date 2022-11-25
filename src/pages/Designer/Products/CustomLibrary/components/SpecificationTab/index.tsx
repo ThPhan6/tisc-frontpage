@@ -1,0 +1,376 @@
+import { FC, useState } from 'react';
+
+import { Col, Row } from 'antd';
+
+import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
+import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
+import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
+
+import { useSelectProductSpecification } from '@/features/product/services';
+import { showImageUrl } from '@/helper/utils';
+import { cloneDeep } from 'lodash';
+
+import { NameContentProps, ProductOptionProps } from '../../types';
+import store, { useAppSelector } from '@/reducers';
+
+import CustomCollapse from '@/components/Collapse';
+import { CustomCheckbox } from '@/components/CustomCheckbox';
+import { CustomRadio } from '@/components/CustomRadio';
+import { DoubleInput } from '@/components/EntryForm/DoubleInput';
+import InputGroup from '@/components/EntryForm/InputGroup';
+import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { SimpleContentTable } from '@/components/Table/components/TableSummary';
+import { MainTitle, RobotoBodyText } from '@/components/Typography';
+
+import { setCustomProductDetail } from '../../slice';
+import { DEFAULT_PRODUCT_OPTION, ProductOptionModal } from '../Modal/ProductOptionModal';
+import '../index.less';
+import styles from './index.less';
+import { DimensionWeight } from '@/features/dimension-weight';
+
+const DEFAULT_CONTENT: NameContentProps = {
+  id: '',
+  name: '',
+  content: '',
+};
+
+export const SpecificationTab: FC<{ productId?: string; viewOnly?: boolean }> = ({
+  productId,
+  viewOnly,
+}) => {
+  const selectProductSpecification = useSelectProductSpecification();
+  const [optionModalVisible, setOptionModalVisible] = useState<boolean>(false);
+
+  const { specification, options, dimension_and_weight, optionSpecification } = useAppSelector(
+    (state) => state.customProduct.details,
+  );
+
+  const [curOption, setCurOption] = useState<ProductOptionProps>(DEFAULT_PRODUCT_OPTION);
+
+  const dimensionWeightData = dimension_and_weight;
+
+  const handleDeleteSpecification = (id: string) => {
+    const newData = specification?.filter((filterItem) => filterItem.id !== id);
+    store.dispatch(
+      setCustomProductDetail({
+        specification: newData,
+      }),
+    );
+  };
+
+  const handleAddSpecification = () => {
+    store.dispatch(
+      setCustomProductDetail({
+        specification: [...specification, { ...DEFAULT_CONTENT }],
+      }),
+    );
+  };
+
+  const onChangeSpecification =
+    (fieldName: keyof Omit<NameContentProps, 'id'>, attributes: NameContentProps, index: number) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newSpecification = [...specification];
+      newSpecification[index] = { ...attributes, [fieldName]: e.target.value };
+      store.dispatch(
+        setCustomProductDetail({
+          specification: newSpecification,
+        }),
+      );
+    };
+
+  const onChangeOptionTitle = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newOptionGroup = [...options];
+    newOptionGroup[index] = { ...newOptionGroup[index], title: e.target.value };
+
+    store.dispatch(
+      setCustomProductDetail({
+        options: newOptionGroup,
+      }),
+    );
+  };
+
+  const handleAddOptionGroup = () => {
+    const newOptionGroup: ProductOptionProps = {
+      tag: '',
+      title: '',
+      use_image: false,
+      items: [],
+    };
+
+    store.dispatch(
+      setCustomProductDetail({
+        options: [...options, newOptionGroup],
+      }),
+    );
+  };
+
+  const handleDeleteOptionGroup = (index: number) => {
+    const newOptionContent = options.filter((_item, itemIndex) => itemIndex !== index);
+    store.dispatch(setCustomProductDetail({ options: newOptionContent }));
+  };
+
+  const handleDeleteOptionGroupItem = (optionIndex: number, itemIndex: number) => {
+    const newOption = [...options];
+    const newOptionItem = newOption[optionIndex].items.filter(
+      (_item, itemIdx) => itemIdx !== itemIndex,
+    );
+
+    newOption[optionIndex] = { ...newOption[optionIndex], items: newOptionItem };
+
+    store.dispatch(setCustomProductDetail({ options: newOption }));
+  };
+
+  const renderOptionImage = (image: string) => (
+    <img src={showImageUrl(image)} style={{ width: 48, height: 48, objectFit: 'contain' }} />
+  );
+
+  const renderOptionItems = (option: ProductOptionProps, optionIndex: number) => {
+    if (viewOnly) {
+      const selectOption = optionSpecification.attribute_groups.find((el) => el.id === option.id);
+      return (
+        <CustomRadio
+          options={option.items.map((el, index) => ({
+            label: (
+              <div className="flex-center" style={{}}>
+                {option.use_image && el.image ? renderOptionImage(el.image) : null}
+                <RobotoBodyText level={5} customClass="text-overflow" style={{ paddingLeft: 24 }}>
+                  {el.description}
+                </RobotoBodyText>
+              </div>
+            ),
+            value: el.id || index,
+          }))}
+          direction="vertical"
+          isRadioList
+          containerStyle={{ padding: 0 }}
+          noPaddingLeft
+          value={selectOption?.attributes[0].basis_option_id}
+          onChange={(value) => {
+            if (productId && value.value) {
+              const optionId = option.id || '';
+              const itemId = value.value.toString();
+              const newOptionSpec = cloneDeep(optionSpecification);
+
+              newOptionSpec.is_refer_document = false;
+
+              const optIndex = optionSpecification.attribute_groups.findIndex(
+                (el) => el.id === optionId,
+              );
+              const newOption = {
+                id: optionId,
+                attributes: [
+                  {
+                    id: optionId,
+                    basis_option_id: itemId,
+                  },
+                ],
+                isChecked: true,
+              };
+              if (optIndex === -1) {
+                newOptionSpec.attribute_groups.push(newOption);
+              } else {
+                newOptionSpec.attribute_groups[optIndex] = newOption;
+              }
+
+              store.dispatch(
+                setCustomProductDetail({
+                  optionSpecification: newOptionSpec,
+                }),
+              );
+              selectProductSpecification(productId, {
+                custom_product: true,
+                specification: newOptionSpec,
+              });
+            }
+          }}
+          optionStyle={{
+            boxShadow: option.use_image ? 'inset 0 0.7px 0 rgb(0 0 0 / 30%)' : undefined,
+            padding: option.use_image ? 16 : '8px 16px 8px 20px',
+          }}
+        />
+      );
+    }
+    return option.items.map((item, itemIndex) => (
+      <Row className={styles.optionItem} align="middle" justify="space-between">
+        {option.use_image && item.image ? (
+          <Col flex="48px">{renderOptionImage(item.image)}</Col>
+        ) : null}
+        <Col flex="auto" style={{ maxWidth: 'calc(100% - 66px)', paddingLeft: 24 }}>
+          <RobotoBodyText level={5} customClass="text-overflow">
+            {item.description}
+          </RobotoBodyText>
+        </Col>
+        <Col flex="18px" style={{ height: 18 }}>
+          <DeleteIcon
+            className="cursor-pointer"
+            onClick={() => handleDeleteOptionGroupItem(optionIndex, itemIndex)}
+          />
+        </Col>
+      </Row>
+    ));
+  };
+
+  const renderProductOptionGroup = () => {
+    if (options.length === 0) {
+      return null;
+    }
+
+    return options.map((option: ProductOptionProps, optionIndex: number) => {
+      const selectOption = optionSpecification.attribute_groups.find((el) => el.id === option.id);
+      return (
+        <CustomCollapse
+          key={option.id || optionIndex}
+          defaultActiveKey={'1'}
+          showActiveBoxShadow
+          noBorder={viewOnly && option.use_image}
+          customHeaderClass={styles.optionCollapse}
+          header={
+            viewOnly ? (
+              <Row style={{ width: '100%' }} align="middle" justify="space-between">
+                <Col style={{ paddingLeft: 16 }}>
+                  <CustomCheckbox
+                    options={[{ label: option.title, value: optionIndex }]}
+                    selected={
+                      selectOption?.isChecked ? [{ label: option.title, value: optionIndex }] : []
+                    }
+                    onChange={() => {
+                      if (productId && selectOption?.isChecked) {
+                        const newOptionSpec = {
+                          is_refer_document: optionSpecification.attribute_groups.some(
+                            (el) => el.id !== selectOption.id && el.isChecked,
+                          ),
+                          attribute_groups: optionSpecification.attribute_groups.filter(
+                            (el) => el.id !== selectOption.id,
+                          ),
+                        };
+                        store.dispatch(
+                          setCustomProductDetail({
+                            optionSpecification: newOptionSpec,
+                          }),
+                        );
+                        selectProductSpecification(productId, {
+                          custom_product: true,
+                          specification: newOptionSpec,
+                        });
+                      }
+                    }}
+                  />
+                </Col>
+                <Col flex="1 1 100px">
+                  <div className="flex-end">TAG: {option.tag}</div>
+                </Col>
+              </Row>
+            ) : (
+              <InputGroup
+                horizontal
+                noWrap
+                fontLevel={4}
+                containerClass={styles.content}
+                label={<ScrollIcon />}
+                placeholder="type title eg Colour Rand or Material Options"
+                value={option.title}
+                onChange={onChangeOptionTitle(optionIndex)}
+              />
+            )
+          }>
+          {viewOnly ? null : (
+            <div className="flex-between" style={{ padding: '10px 16px' }}>
+              <div
+                className="flex-start cursor-pointer"
+                onClick={() => {
+                  setOptionModalVisible(true);
+                  setCurOption(option);
+                }}>
+                <MainTitle level={4} customClass={styles.content}>
+                  {productId ? 'Update' : 'Create'} Options
+                </MainTitle>
+                <SingleRightIcon />
+              </div>
+              <div className="flex-start">
+                {option.tag ? (
+                  <RobotoBodyText level={6} style={{ fontWeight: '500', marginRight: 16 }}>
+                    TAG: {option.tag}
+                  </RobotoBodyText>
+                ) : null}
+                <DeleteIcon
+                  className="cursor-pointer"
+                  onClick={() => handleDeleteOptionGroup(optionIndex)}
+                />
+              </div>
+            </div>
+          )}
+
+          {renderOptionItems(option, optionIndex)}
+        </CustomCollapse>
+      );
+    });
+  };
+
+  const renderSpecification = () => {
+    if (viewOnly) {
+      return <SimpleContentTable items={specification} />;
+    }
+    return specification?.map((item, index) => (
+      <DoubleInput
+        key={item.id || index}
+        fontLevel={6}
+        doubleInputClass="mb-8"
+        leftIcon={<ScrollIcon />}
+        rightIcon={
+          <DeleteIcon
+            className="cursor-pointer"
+            onClick={() => handleDeleteSpecification(item.id)}
+          />
+        }
+        firstValue={item.name}
+        firstPlaceholder="type name"
+        firstOnChange={onChangeSpecification('name', item, index)}
+        secondValue={item.content}
+        secondPlaceholder="type content"
+        secondOnChange={onChangeSpecification('content', item, index)}
+      />
+    ));
+  };
+
+  return (
+    <>
+      <DimensionWeight
+        editable={!viewOnly}
+        data={dimensionWeightData}
+        onChange={(data) => {
+          store.dispatch(
+            setCustomProductDetail({
+              dimension_and_weight: data,
+            }),
+          );
+        }}
+      />
+
+      {viewOnly ? null : (
+        <div className="flex-end pr-16">
+          <CustomPlusButton
+            size={18}
+            label="Add Specification"
+            customClass="mr-24"
+            onClick={handleAddSpecification}
+          />
+          <CustomPlusButton size={18} label="Add Option" onClick={handleAddOptionGroup} />
+        </div>
+      )}
+
+      <div>
+        {renderSpecification()}
+
+        {renderProductOptionGroup()}
+      </div>
+
+      {viewOnly ? null : (
+        <ProductOptionModal
+          visible={optionModalVisible}
+          setVisible={(isClose) => (isClose ? undefined : setOptionModalVisible(false))}
+          option={curOption}
+        />
+      )}
+    </>
+  );
+};

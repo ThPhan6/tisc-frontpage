@@ -1,11 +1,14 @@
-import { FC, useRef } from 'react';
+import { FC, useRef, useState } from 'react';
 
 import { COLUMN_WIDTH } from '@/constants/util';
 import { useParams } from 'umi';
 
+import { ReactComponent as InfoIcon } from '@/assets/icons/warning-circle-icon.svg';
+
 import {
   onCellCancelled,
   renderActionCell,
+  renderAvailability,
   renderSpecifiedStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
@@ -17,13 +20,17 @@ import { TableColumnItem } from '@/components/Table/types';
 import { ProjectProductItem } from '@/features/product/types';
 import { OrderMethod } from '@/features/project/types';
 
+import { AvailabilityModal } from '../../components/AvailabilityModal';
 import CustomTable from '@/components/Table';
+import { RobotoBodyText } from '@/components/Typography';
 
 export const SpecificationByMaterial: FC = () => {
   useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
   const tableRef = useRef<any>();
+  const [visible, setVisible] = useState<boolean>(false);
+
   const params = useParams<{ id: string }>();
-  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef, true);
+  const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
   const MaterialColumns: TableColumnItem<ProjectProductItem>[] = [
     {
@@ -94,6 +101,22 @@ export const SpecificationByMaterial: FC = () => {
       onCell: onCellCancelled,
     },
     {
+      title: (
+        <div className="flex-start">
+          <RobotoBodyText level={5} style={{ fontWeight: 500 }}>
+            Availability
+          </RobotoBodyText>
+          <InfoIcon
+            style={{ marginLeft: '8px', cursor: 'pointer' }}
+            onClick={() => setVisible(true)}
+          />
+        </div>
+      ),
+      dataIndex: 'availability',
+      align: 'center',
+      render: (_value, record) => renderAvailability(record),
+    },
+    {
       title: 'Status',
       dataIndex: 'status',
       align: 'center',
@@ -124,6 +147,8 @@ export const SpecificationByMaterial: FC = () => {
         fetchDataFunc={getSpecifiedProductByMaterial}
       />
       {renderSpecifyingModal()}
+
+      <AvailabilityModal visible={visible} setVisible={setVisible} />
     </>
   );
 };

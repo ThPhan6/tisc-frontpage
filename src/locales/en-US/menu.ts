@@ -40,7 +40,7 @@ export default {
 
   'menu.favourite': 'MY FAVOURITE',
   'menu.product.brand.product': 'Brand Products',
-  'menu.product.custom.library': 'Custom Library',
+  'menu.product.library.resources': 'Library & Resources',
   'menu.adminstration.office.profile': 'Office Profile',
   'menu.adminstration.material/product.code': 'Material/Product Code',
 };
