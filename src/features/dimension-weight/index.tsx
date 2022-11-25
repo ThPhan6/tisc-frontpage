@@ -40,7 +40,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
 
     const curItem: DimensionWeightItem =
       data.attributes.find((el) => el.id === conversionItem.id) || conversionItem;
-    if (!curItem || !curItem.conversion_value_1) {
+    if (!curItem) {
       return null;
     }
 

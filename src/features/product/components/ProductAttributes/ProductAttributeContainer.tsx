@@ -134,6 +134,8 @@ export const ProductAttributeContainer: FC<Props> = ({
       );
     }
 
+    console.log('attribute', attribute);
+
     let chosenOption: SpecificationAttributeBasisOptionProps | undefined;
     if (groupIndex !== -1) {
       const curAttribute = attributeGroup[groupIndex]?.attributes?.[attrIndex];
@@ -238,6 +240,7 @@ export const ProductAttributeContainer: FC<Props> = ({
     const dwAttributes = isPublicPage
       ? dimensionWeightData.attributes.filter((el) => el.conversion_value_1 !== '')
       : dimensionWeightData.attributes;
+
     return (
       <CustomCollapse
         defaultActiveKey={'1'}
@@ -254,9 +257,13 @@ export const ProductAttributeContainer: FC<Props> = ({
         <div className={isSpecifiedModal ? styles.paddingNone : styles.paddingRounded}>
           <table className={styles.table}>
             <tbody>
-              {dwAttributes.map((attribute, attrIndex) =>
-                renderAttributeRowItem(attribute, attrIndex, dimensionWeightData.name),
-              )}
+              {dwAttributes.map((attribute, attrIndex) => {
+                if (
+                  attribute.with_diameter === dimensionWeightData.with_diameter ||
+                  attribute.with_diameter === null
+                )
+                  return renderAttributeRowItem(attribute, attrIndex, dimensionWeightData.name);
+              })}
             </tbody>
           </table>
         </div>
