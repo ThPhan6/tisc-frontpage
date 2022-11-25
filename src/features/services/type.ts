@@ -61,3 +61,11 @@ export enum RoleIndex {
   DesignFirmRolesAdmin = 5,
   DesignFirmRolesMember = 6,
 }
+
+export interface SummaryService {
+  grandTotal: number;
+  offline_marketing_sale: number;
+  online_marketing_sale: number;
+  product_card_conversion: number;
+  others: number;
+}

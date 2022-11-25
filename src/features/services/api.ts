@@ -3,7 +3,7 @@ import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
-import { ServicesForm, ServicesResponse } from './type';
+import { ServicesForm, ServicesResponse, SummaryService } from './type';
 import {
   DataTableResponse,
   PaginationRequestParams,
@@ -19,13 +19,15 @@ interface RevenuePaginationResponse {
   };
 }
 export async function getServicesSummary() {
-  return request<{ data: { grandTotal: number } }>(`/api/invoice/summary`, { method: 'GET' })
+  return request<{
+    data: SummaryService;
+  }>(`/api/invoice/summary`, { method: 'GET' })
     .then((response) => {
       return response.data;
     })
     .catch((error) => {
       message.error(error?.data?.message);
-      return {} as { grandTotal: number };
+      return {} as SummaryService;
     });
 }
 

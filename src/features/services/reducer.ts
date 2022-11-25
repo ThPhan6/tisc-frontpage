@@ -26,8 +26,11 @@ const servicesReducer = createSlice({
     setServiceFormData(state, action: PayloadAction<ServicesForm>) {
       state.service = action.payload;
     },
+    resetServiceFormData() {
+      return initialState;
+    },
   },
 });
 
-export const { setServiceFormData } = servicesReducer.actions;
+export const { setServiceFormData, resetServiceFormData } = servicesReducer.actions;
 export default servicesReducer.reducer;

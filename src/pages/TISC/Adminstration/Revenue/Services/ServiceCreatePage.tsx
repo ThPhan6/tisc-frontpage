@@ -8,7 +8,7 @@ import { BrandCompanyModal } from '@/features/services/components/BrandCompanyMo
 import { ServiceEntryForm } from '@/features/services/components/ServiceEntryForm';
 import { ServiceHeader } from '@/features/services/components/ServiceHeader';
 import styles from '@/features/services/index.less';
-import { setServiceFormData } from '@/features/services/reducer';
+import { resetServiceFormData, setServiceFormData } from '@/features/services/reducer';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
 import { getFullName } from '@/helper/utils';
@@ -63,6 +63,7 @@ const ServiceCreatePage = () => {
         submitButtonStatus.setValue(true);
         setTimeout(() => {
           pushTo(PATH.tiscRevenueService);
+          store.dispatch(resetServiceFormData());
         }, 1000);
       }
       hidePageLoading();
@@ -88,18 +89,7 @@ const ServiceCreatePage = () => {
 
   const handleCancel = () => {
     pushTo(PATH.tiscRevenueService);
-    store.dispatch(
-      setServiceFormData({
-        service_type_id: '',
-        brand_id: '',
-        ordered_by: '',
-        unit_rate: 0,
-        quantity: 0,
-        tax: 0,
-        remark: '',
-        brand_name: '',
-      }),
-    );
+    store.dispatch(resetServiceFormData());
   };
 
   return (
