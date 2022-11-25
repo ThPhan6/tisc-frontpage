@@ -1,50 +1,77 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { PATH } from '@/constants/path';
 
+import { getServicesPagination } from '@/features/services/api';
+import styles from '@/features/services/index.less';
+import { InvoiceStatus, ServicesResponse } from '@/features/services/type';
 import { pushTo } from '@/helper/history';
+import { formatNumberDisplay, getFullName } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
-import { RevenueServiceResponse } from '@/pages/TISC/Adminstration/Revenue/Services/type';
 
 import CustomTable from '@/components/Table';
 import { ActionMenu } from '@/components/TableAction';
 
-const RevenueService = () => {
+import moment from 'moment';
+
+const BilledServices = () => {
   const tableRef = useRef<any>();
 
   const handleViewService = (id: string) => {
-    pushTo(PATH.tiscRevenueServiceDetail.replace(':id', id));
+    pushTo(PATH.brandBilledServicesView.replace(':id', id));
   };
 
-  //   useEffect(() => {
-  //     tableRef.current.reload();
-  //   }, []);
+  useEffect(() => {
+    tableRef.current.reload();
+  }, []);
 
-  const MainColumns: TableColumnItem<RevenueServiceResponse>[] = [
+  const MainColumns: TableColumnItem<ServicesResponse>[] = [
     {
       title: 'Billed Date',
       sorter: true,
+      dataIndex: 'created_at',
+      render: (_value, record) => {
+        return <span>{moment(record.created_at).format('YYYY-MM-DD')}</span>;
+      },
     },
     {
       title: 'Service Type',
       sorter: true,
+      dataIndex: 'service_type_name',
     },
     {
       title: 'Ordered By',
       sorter: true,
+      dataIndex: 'ordered_by',
+      render: (_value, record) => {
+        return <span>{getFullName(record)}</span>;
+      },
     },
     {
       title: 'Billing Number',
+      dataIndex: 'name',
     },
     {
       title: 'Billed Amount',
+      dataIndex: 'billing_amount',
+      render: (_value, record) => {
+        return <span>${formatNumberDisplay(record.billing_amount)}</span>;
+      },
     },
     {
       title: 'Due Date',
+      dataIndex: 'due_date',
     },
     {
       title: 'Status',
+      render: (_value, record) => {
+        return (
+          <span className={`${record.status === InvoiceStatus.Overdue ? styles.overdue : ''}`}>
+            {InvoiceStatus[record.status]}
+          </span>
+        );
+      },
     },
     {
       title: 'Action',
@@ -67,7 +94,7 @@ const RevenueService = () => {
   return (
     <CustomTable
       columns={MainColumns}
-      fetchDataFunc={() => {}}
+      fetchDataFunc={getServicesPagination}
       hasPagination
       autoLoad={false}
       title="BILLED SERVICES"
@@ -76,4 +103,4 @@ const RevenueService = () => {
   );
 };
 
-export default RevenueService;
+export default BilledServices;

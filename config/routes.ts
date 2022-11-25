@@ -469,6 +469,11 @@ export default [
                 component: './TISC/Adminstration/Revenue/Services/ServiceViewPage',
                 hideInMenu: true,
               },
+              {
+                path: PATH.tiscRevenueServiceUpdate,
+                component: './TISC/Adminstration/Revenue/Services/ServiceCreatePage',
+                hideInMenu: true,
+              },
             ],
           },
           {
@@ -638,6 +643,24 @@ export default [
           {
             path: PATH.updateMarketAvailability,
             component: './Brand/Adminstration/MarketAvailability/UpdateMarketAvailabilityPage',
+            hideInMenu: true,
+          },
+        ],
+      },
+      {
+        path: PATH.brandBilledServices,
+        name: 'brand.billed_services',
+        icon: 'billed-service-icon.svg',
+        access: 'brand_administration_billed_services',
+        routes: [
+          {
+            path: PATH.brandBilledServices,
+            component: './Brand/Adminstration/BilledServices',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.brandBilledServicesView,
+            component: './Brand/Adminstration/BilledServices/BilledServicesDetail',
             hideInMenu: true,
           },
         ],

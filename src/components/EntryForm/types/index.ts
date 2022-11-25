@@ -10,7 +10,6 @@ export interface EntryFormWrapperProps {
   headerContent?: any;
   footerContent?: any;
   submitButtonStatus?: boolean;
-  contentSubmitButton?: string;
 }
 
 export interface FormNameInputProps {

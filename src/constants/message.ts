@@ -309,6 +309,14 @@ export const MESSAGE_NOTIFICATION = {
   GET_PROJECT_LISTING_FAILED: 'Failed to get project listing data',
   GET_PROJECT_LISTING_SUMMARY_ERROR: 'Get project listing summary error',
   GET_ONE_PROJECT_LISTING_ERROR: 'Get one project listing error',
+
+  //service
+  CREATE_SERVICE_SUCCESS: 'Create service successfully',
+  UPDATE_SERVICE_SUCCESS: 'Update service successfully',
+  SENT_BILL_SUCCESS: 'Sent bill to brand successfully',
+  SENT_REMIND_SUCCESS: 'Sent remind to brand successfully',
+  MARK_AS_PAID_SUCCESS: 'Mark as paid successfully',
+  DELETE_SERVICE_SUCCESS: 'Delete service successfully',
 };
 
 export const MESSAGE_TOOLTIP = {

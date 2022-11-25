@@ -1,0 +1,148 @@
+.customFormGroup {
+  border-bottom: 0.5px solid @mono-color-medium;
+}
+
+.serviceForm {
+  .customForm {
+    height: calc(100vh - 304px);
+    padding: 16px;
+    overflow: auto;
+  }
+  .item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 0.5px solid @mono-color-medium;
+    svg {
+      width: 12px;
+      height: 12px;
+      cursor: pointer;
+    }
+  }
+  .borderBottom {
+    margin-bottom: 16px;
+    box-shadow: @border-bottom-light;
+    .bill {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 32px;
+    }
+  }
+  .activeText {
+    :global(.function-type-placeholder) {
+      overflow: hidden;
+      color: @primary-color-dark;
+      text-overflow: ellipsis;
+    }
+  }
+  .text {
+    :global(.function-type-placeholder) {
+      overflow: hidden;
+      color: @mono-color !important;
+      text-overflow: ellipsis;
+    }
+  }
+  .customInput {
+    :global(.ant-input) {
+      color: @primary-color-dark;
+    }
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 16px;
+    background: #fff;
+    border-bottom: 0.7px inset @mono-color;
+    &__title {
+      flex: 1;
+      margin-right: 8px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.detail {
+  margin-top: 8px;
+  background-color: #fff;
+  .customTable {
+    table {
+      width: 100%;
+      padding-left: 16px;
+    }
+    tr {
+      height: 36px;
+    }
+    .label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 36px;
+      padding-left: 16px;
+    }
+    .quantity {
+      width: 5%;
+      text-align: left;
+    }
+    .total {
+      border-top: 0.5px solid @mono-color;
+      border-bottom: 0.5px solid @mono-color;
+    }
+    .totalQuantity {
+      border-bottom: 0.5px solid @mono-color-medium;
+    }
+  }
+  .payButton {
+    margin-right: 16px;
+  }
+  .disableButton {
+    background-color: @mono-color-medium;
+    cursor: not-allowed;
+    &:hover {
+      font-weight: 300;
+      background-color: @mono-color-medium;
+    }
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding-right: 24px;
+  padding-left: 12px;
+  background-color: #fff;
+}
+
+.overdue {
+  color: @tertiary-color;
+}
+
+.fontWeight500 {
+  font-weight: 600;
+}
+
+.activeText {
+  :global(.function-type-placeholder) {
+    overflow: hidden;
+    color: @primary-color-dark !important;
+    text-overflow: ellipsis;
+  }
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  padding: 12px 16px 12px 0;
+  box-shadow: @border-top;
+  .cancel {
+    margin-right: 16px;
+  }
+  .rightButton {
+    margin-left: 16px;
+  }
+}

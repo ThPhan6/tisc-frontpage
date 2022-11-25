@@ -1,6 +1,8 @@
 import type { TypedUseSelectorHook } from 'react-redux';
 import { useSelector } from 'react-redux';
 
+import servicesReducer from '@/features/services/reducer';
+
 import { categoryReducer } from '@/features/categories/reducers';
 import { productReducer } from '@/features/product/reducers';
 import { projectReducer } from '@/features/project/reducers';
@@ -20,6 +22,7 @@ const reducers = combineReducers({
   project: projectReducer,
   loading: loadingActionReducer,
   summary: summaryReducer,
+  service: servicesReducer,
 });
 
 const persistConfig = {

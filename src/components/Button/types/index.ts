@@ -12,4 +12,5 @@ export interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButton
 export interface CustomSaveButtonProps {
   isSuccess?: boolean;
   onClick?: () => void;
+  contentButton?: string;
 }

@@ -99,6 +99,7 @@ export const PATH = {
   tiscRevenue: '/tisc/adminstration/revenues',
   tiscRevenueService: '/tisc/adminstration/revenues/service',
   tiscRevenueServiceCreate: '/tisc/adminstration/revenues/service/create',
+  tiscRevenueServiceUpdate: '/tisc/adminstration/revenues/service/update/:id',
   tiscRevenueServiceDetail: '/tisc/adminstration/revenues/service/:id',
   tiscRevenueSubscription: '/tisc/adminstration/revenues/subscription',
 
@@ -136,6 +137,11 @@ export const PATH = {
   brandTeamProfile: '/brand/adminstration/team-profiles',
   brandCreateTeamProfile: '/brand/adminstration/team-profiles/create',
   brandUpdateTeamProfile: '/brand/adminstration/team-profiles/update/:id',
+
+  //brand billed services
+  brandBilledServices: '/brand/adminstration/billed-services',
+  brandBilledServicesView: '/brand/adminstration/billed-services/:id',
+
   // brand subscription
   brandSubscription: '/brand/adminstration/subscription',
 

@@ -27,7 +27,6 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   headerContent,
   footerContent,
   submitButtonStatus = false,
-  contentSubmitButton,
 }) => {
   const history = useHistory();
   return (
@@ -79,7 +78,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
                     onClick={handleSubmit}
                     disabled={disableSubmitButton}>
                     <BodyText level={6} fontFamily="Roboto">
-                      {contentSubmitButton ? contentSubmitButton : 'Save'}
+                      Save
                     </BodyText>
                   </CustomButton>
                 )}
