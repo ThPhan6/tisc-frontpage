@@ -674,18 +674,23 @@ export default [
             hideInMenu: true,
           },
           {
-            path: PATH.designerCustomResource,
-            component: './Designer/CustomResource/CustomResource',
+            path: PATH.designerCustomProductCreate,
+            component: './Designer/Products/CustomLibrary/ProductLibraryUpdate',
             hideInMenu: true,
           },
           {
-            path: PATH.designerCustomProductCreate,
-            component: './Designer/Products/CustomLibrary/ProductLibraryDetail',
+            path: PATH.designerCustomProductUpdate,
+            component: './Designer/Products/CustomLibrary/ProductLibraryUpdate',
             hideInMenu: true,
           },
           {
             path: PATH.designerCustomProductDetail,
             component: './Designer/Products/CustomLibrary/ProductLibraryDetail',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerCustomResource,
+            component: './Designer/CustomResource/CustomResource',
             hideInMenu: true,
           },
           {

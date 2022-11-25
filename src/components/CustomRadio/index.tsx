@@ -24,6 +24,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
   noPaddingLeft,
   otherStickyBottom,
   stickyTopItem,
+  optionStyle,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -58,7 +59,8 @@ export const CustomRadio: FC<CustomRadioProps> = ({
         className={`${style.panel_radio} ${
           option.customClass ? option.customClass : ''
         } radio-label`}
-        htmlFor={`${randomID}_${option.value}_${index}`}>
+        htmlFor={`${randomID}_${option.value}_${index}`}
+        style={optionStyle}>
         <div style={{ width: '100%' }}>
           {isRadioList ? (
             <div className={style['item-wrapper']}>

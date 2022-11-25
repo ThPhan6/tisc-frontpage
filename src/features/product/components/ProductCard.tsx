@@ -281,7 +281,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     type: 'updated',
                     label: 'Edit',
                     onClick: () =>
-                      pushTo(PATH.designerCustomProductDetail.replace(':id', product.id)),
+                      pushTo(PATH.designerCustomProductUpdate.replace(':id', product.id)),
                   },
                   {
                     type: 'deleted',

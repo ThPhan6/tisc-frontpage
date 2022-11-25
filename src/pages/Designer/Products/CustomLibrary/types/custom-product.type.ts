@@ -1,4 +1,5 @@
 import { ProductDimensionWeight } from '@/features/dimension-weight/types';
+import { SpecificationBodyRequest } from '@/features/project/types';
 import { GeneralData } from '@/types';
 
 export interface CustomProductList {
@@ -53,6 +54,7 @@ export interface CustomProductDetailProps {
   options: ProductOptionProps[];
   collection: GeneralData;
   company: GeneralData;
+  optionSpecification: SpecificationBodyRequest;
 }
 
 export interface CustomProductDetailResponse

@@ -15,4 +15,5 @@ export interface SelectSpecificationBodyRequest {
   specification: SpecificationBodyRequest;
   brand_location_id: string;
   distributor_location_id: string;
+  custom_product?: boolean;
 }

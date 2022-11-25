@@ -8,8 +8,7 @@ import { RootState } from '@/reducers';
 
 import { ProductTopBarFilter } from '@/features/product/components/FilterAndSorter';
 
-import { PayloadAction, createSelector } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
 
 interface CustomProductState {
   list: CustomProductList[];
@@ -41,6 +40,10 @@ const initialState: CustomProductState = {
     company: {
       id: '',
       name: '',
+    },
+    optionSpecification: {
+      attribute_groups: [],
+      is_refer_document: true,
     },
   },
 };
@@ -87,6 +90,55 @@ const libraryResources = createSlice({
     setCustomProductFilter(state, action: PayloadAction<ProductTopBarFilter | undefined>) {
       state.filter = action.payload;
     },
+    onSelectCustomProductOption(
+      state,
+      action: PayloadAction<{
+        optionId: string;
+        itemId: string;
+      }>,
+    ) {
+      state.details.optionSpecification.is_refer_document = false;
+
+      const optionIndex = state.details.optionSpecification.attribute_groups.findIndex(
+        (el) => el.id === action.payload.optionId,
+      );
+      if (optionIndex === -1) {
+        state.details.optionSpecification.attribute_groups.push({
+          id: action.payload.optionId,
+          attributes: [
+            {
+              id: action.payload.optionId,
+              basis_option_id: action.payload.itemId,
+            },
+          ],
+          isChecked: true,
+        });
+      } else {
+        state.details.optionSpecification.attribute_groups[optionIndex] = {
+          id: action.payload.optionId,
+          attributes: [
+            {
+              id: action.payload.optionId,
+              basis_option_id: action.payload.itemId,
+            },
+          ],
+          isChecked: true,
+        };
+      }
+    },
+    onUncheckCustomProductOptionGroup: (state, action: PayloadAction<string>) => {
+      state.details.optionSpecification.is_refer_document =
+        state.details.optionSpecification.attribute_groups.some(
+          (el) => el.id !== action.payload && el.isChecked,
+        );
+
+      state.details.optionSpecification.attribute_groups =
+        state.details.optionSpecification.attribute_groups.filter((el) => el.id !== action.payload);
+    },
+    onCheckCustomProductReferToDocument: (state) => {
+      state.details.optionSpecification.is_refer_document = true;
+      state.details.optionSpecification.attribute_groups = [];
+    },
     resetCustomProductState() {
       return initialState;
     },
@@ -101,6 +153,9 @@ export const {
   setCustomProductDetailImage,
   resetCustomProductState,
   updateCustomProductOption,
+  onSelectCustomProductOption,
+  onUncheckCustomProductOptionGroup,
+  onCheckCustomProductReferToDocument,
 } = libraryResources.actions;
 export const officeProductReducer = libraryResources.reducer;
 

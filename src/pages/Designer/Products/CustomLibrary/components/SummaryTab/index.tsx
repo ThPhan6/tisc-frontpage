@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { useParams } from 'umi';
 
@@ -9,6 +9,7 @@ import { trimStart, uniqueId } from 'lodash';
 
 import { CustomProductDetailProps, NameContentProps } from '../../types';
 import { RadioValue } from '@/components/CustomRadio/types';
+import { TextFormProps } from '@/components/Form/types';
 import store, { useAppSelector } from '@/reducers';
 import { CollectionRelationType } from '@/types';
 
@@ -16,12 +17,13 @@ import { DoubleInput } from '@/components/EntryForm/DoubleInput';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import TextForm from '@/components/Form/TextForm';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
+import { SimpleContentTable } from '@/components/Table/components/TableSummary';
 
 import { resetCustomProductState, setCustomProductDetail } from '../../slice';
 import { BrandCompanyModal } from '../Modal/BrandCompanyModal';
 import { CollectionModal } from '../Modal/CollectionModal';
-import '../index.less';
 import styles from './index.less';
 
 const DEFAULT_CONTENT: NameContentProps = {
@@ -30,7 +32,7 @@ const DEFAULT_CONTENT: NameContentProps = {
   content: '',
 };
 
-export const SummaryTab = () => {
+export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
   const [visible, setVisible] = useState<'' | 'company' | 'collection'>('');
 
   const { collection, company, name, description, attributes } = useAppSelector(
@@ -120,110 +122,152 @@ export const SummaryTab = () => {
 
   const handleCloseModal = (isClose: boolean) => (isClose ? undefined : setVisible(''));
 
+  const textFormProps: Partial<TextFormProps> = {
+    boxShadow: true,
+    fontLevel: 6,
+    lableFontSize: 4,
+  };
+
+  const renderBasicInfo = () => {
+    if (viewOnly) {
+      return (
+        <div className="p-16">
+          <TextForm {...textFormProps} label="Brand Company">
+            {company.name || ''}
+          </TextForm>
+          <TextForm {...textFormProps} label="Collection">
+            {collection.name || ''}
+          </TextForm>
+          <TextForm {...textFormProps} label="Product">
+            {name || ''}
+          </TextForm>
+          <TextForm
+            {...textFormProps}
+            label="Description"
+            boxShadow={false}
+            style={{ marginBottom: 0 }}>
+            {description || ''}
+          </TextForm>
+        </div>
+      );
+    }
+
+    return (
+      <div className="p-16">
+        <InputGroup
+          label="Brand Company"
+          fontLevel={4}
+          required
+          rightIcon
+          hasPadding
+          colorPrimaryDark
+          hasBoxShadow
+          hasHeight
+          value={company.name || ''}
+          placeholder={brandCompanyId ? 'select from list' : 'company has not selected'}
+          onChange={onChangeDataByInput('company')}
+          onRightIconClick={() => setVisible('company')}
+        />
+        <InputGroup
+          label="Collection"
+          fontLevel={4}
+          required
+          rightIcon
+          hasPadding
+          colorPrimaryDark
+          hasBoxShadow
+          hasHeight
+          value={collection.name || ''}
+          placeholder={brandCompanyId ? 'select from list' : "dont's have company"}
+          onChange={onChangeDataByInput('collection')}
+          onRightIconClick={() => setVisible('collection')}
+        />
+        <InputGroup
+          label="Product"
+          fontLevel={4}
+          required
+          hasPadding
+          colorPrimaryDark
+          hasBoxShadow
+          hasHeight
+          value={name || ''}
+          placeholder={brandCompanyId ? 'type product name here' : 'product name is missing'}
+          onChange={onChangeDataByInput('name')}
+        />
+        <FormGroup
+          label="Description"
+          layout="vertical"
+          formClass="mb-16"
+          lableFontSize={4}
+          required>
+          <CustomTextArea
+            maxLength={100}
+            showCount
+            placeholder="type here"
+            borderBottomColor="mono-medium"
+            boxShadow
+            value={description || ''}
+            onChange={onChangeDataByInput('description')}
+          />
+        </FormGroup>
+      </div>
+    );
+  };
+
+  const renderAttributes = () => {
+    if (viewOnly) {
+      return <SimpleContentTable items={attributes} />;
+    }
+    return attributes?.map((attribute, index) => (
+      <DoubleInput
+        key={attribute.id || index}
+        fontLevel={6}
+        leftIcon={<ScrollIcon />}
+        rightIcon={
+          <DeleteIcon
+            className="cursor-pointer"
+            onClick={() => handleDeleteAttribute(attribute.id)}
+          />
+        }
+        firstValue={attribute.name}
+        firstPlaceholder="type content"
+        firstOnChange={onChangeAttribute('name', attribute, index)}
+        secondValue={attribute.content}
+        secondPlaceholder="type content"
+        secondOnChange={onChangeAttribute('content', attribute, index)}
+        doubleInputClass="mb-8"
+      />
+    ));
+  };
+
   return (
     <>
-      <div className={styles.formWrapper}>
-        <div className="p-16">
-          <InputGroup
-            label="Brand Company"
-            fontLevel={4}
-            required
-            rightIcon
-            hasPadding
-            colorPrimaryDark
-            hasBoxShadow
-            hasHeight
-            value={company.name || ''}
-            placeholder={brandCompanyId ? 'select from list' : 'company has not selected'}
-            onChange={onChangeDataByInput('company')}
-            onRightIconClick={() => setVisible('company')}
-          />
-          <InputGroup
-            label="Collection"
-            fontLevel={4}
-            required
-            rightIcon
-            hasPadding
-            colorPrimaryDark
-            hasBoxShadow
-            hasHeight
-            value={collection.name || ''}
-            placeholder={brandCompanyId ? 'select from list' : "dont's have company"}
-            onChange={onChangeDataByInput('collection')}
-            onRightIconClick={() => setVisible('collection')}
-          />
-          <InputGroup
-            label="Product"
-            fontLevel={4}
-            required
-            hasPadding
-            colorPrimaryDark
-            hasBoxShadow
-            hasHeight
-            value={name || ''}
-            placeholder={brandCompanyId ? 'type product name here' : 'product name is missing'}
-            onChange={onChangeDataByInput('name')}
-          />
-          <FormGroup
-            label="Description"
-            layout="vertical"
-            formClass="mb-16"
-            lableFontSize={4}
-            required>
-            <CustomTextArea
-              maxLength={100}
-              showCount
-              placeholder="type here"
-              borderBottomColor="mono-medium"
-              boxShadow
-              value={description || ''}
-              onChange={onChangeDataByInput('description')}
-            />
-          </FormGroup>
-        </div>
-      </div>
+      <div className={styles.formWrapper}>{renderBasicInfo()}</div>
 
-      <CustomPlusButton
-        size={18}
-        label="Add Attribute"
-        customClass={styles.plusBtn}
-        onClick={handleAddAttribute}
-      />
+      {viewOnly ? null : (
+        <CustomPlusButton
+          size={18}
+          label="Add Attribute"
+          customClass={styles.plusBtn}
+          onClick={handleAddAttribute}
+        />
+      )}
 
-      {attributes?.map((attribute, index) => {
-        return (
-          <DoubleInput
-            key={attribute.id || index}
-            fontLevel={6}
-            leftIcon={<ScrollIcon />}
-            rightIcon={
-              <DeleteIcon
-                className="cursor-pointer"
-                onClick={() => handleDeleteAttribute(attribute.id)}
-              />
-            }
-            firstValue={attribute.name}
-            firstPlaceholder="type content"
-            firstOnChange={onChangeAttribute('name', attribute, index)}
-            secondValue={attribute.content}
-            secondPlaceholder="type content"
-            secondOnChange={onChangeAttribute('content', attribute, index)}
-            doubleInputClass="mb-8"
-          />
-        );
-      })}
+      {renderAttributes()}
 
-      <BrandCompanyModal
-        visible={visible === 'company'}
-        setVisible={handleCloseModal}
-        chosenValue={{
-          value: company.id,
-          label: company.name,
-        }}
-        setChosenValue={onChangeDataBySelected('company')}
-      />
+      {viewOnly ? null : (
+        <BrandCompanyModal
+          visible={visible === 'company'}
+          setVisible={handleCloseModal}
+          chosenValue={{
+            value: company.id,
+            label: company.name,
+          }}
+          setChosenValue={onChangeDataBySelected('company')}
+        />
+      )}
 
-      {brandCompanyId ? (
+      {!viewOnly && brandCompanyId ? (
         <CollectionModal
           brandId={brandCompanyId}
           collectionType={CollectionRelationType.CustomLibrary}

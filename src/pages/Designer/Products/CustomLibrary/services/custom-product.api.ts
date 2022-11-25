@@ -50,6 +50,13 @@ export function getOneCustomProduct(id: string) {
             id: res.data.company_id,
             name: res.data.company_name,
           },
+          optionSpecification: {
+            is_refer_document: res.data.optionSpecification.is_refer_document,
+            attribute_groups: res.data.optionSpecification.attribute_groups.map((el) => ({
+              ...el,
+              isChecked: true,
+            })),
+          },
         }),
       );
     })

@@ -32,15 +32,17 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
   const withDiameter = data.with_diameter || undefined;
 
   const renderAttributeConversion = (conversionItem: DimensionWeightItem, index: number) => {
-    if (
-      conversionItem.with_diameter !== null &&
-      conversionItem.with_diameter !== data.with_diameter
-    ) {
+    const notIncluded =
+      conversionItem.with_diameter !== null && conversionItem.with_diameter !== data.with_diameter;
+    if (notIncluded) {
       return null;
     }
 
     const curItem: DimensionWeightItem =
       data.attributes.find((el) => el.id === conversionItem.id) || conversionItem;
+    if (!curItem || !curItem.conversion_value_1) {
+      return null;
+    }
 
     const conversionValue: ConversionValueItemProps = {
       formula_1: curItem.conversion?.formula_1 || 0,

@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 
-import { Checkbox, Col, Row } from 'antd';
+import { Checkbox, Col, Row, message } from 'antd';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove.svg';
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
@@ -53,13 +53,6 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({
   const submitButtonStatus = useBoolean(false);
 
   const [optionState, setOptionState] = useState<ProductOptionProps>(DEFAULT_PRODUCT_OPTION);
-
-  const disabled =
-    !optionState.tag ||
-    optionState.items.length === 0 ||
-    optionState.items.some(
-      (el) => !el.description || !el.product_id || (optionState.use_image && !el.image),
-    );
 
   useEffect(() => {
     if (option) {
@@ -131,6 +124,20 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({
   };
 
   const handleSave = () => {
+    switch (true) {
+      case !optionState.tag:
+        message.error('Option tag is required');
+        return;
+      case optionState.items.length === 0:
+        message.error('Required at least one item');
+        return;
+      case optionState.items.some(
+        (el) => !el.description || !el.product_id || (optionState.use_image && !el.image),
+      ):
+        message.error('Item info is required');
+        return;
+    }
+
     store.dispatch(updateCustomProductOption(optionState));
     setVisible(false);
   };
@@ -160,8 +167,7 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({
             variant="primary"
             properties="rounded"
             buttonClass="done-btn"
-            onClick={handleSave}
-            disabled={disabled}>
+            onClick={handleSave}>
             Save
           </CustomButton>
         )}

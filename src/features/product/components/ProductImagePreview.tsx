@@ -69,6 +69,7 @@ const ActionItem: FC<ActionItemProps> = ({ icon, onClick, label, disabled }) => 
 interface ProductImagePreviewProps {
   hideInquiryRequest?: boolean;
   isCustomProduct?: boolean;
+  viewOnly?: boolean;
   isPublicPage?: boolean;
   disabledAssignProduct?: boolean;
   disabledShareViaEmail?: boolean;
@@ -78,6 +79,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
   isPublicPage,
   hideInquiryRequest,
   isCustomProduct,
+  viewOnly,
   disabledAssignProduct,
   disabledShareViaEmail,
 }) => {
@@ -89,7 +91,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
   const isDesignerUser = useCheckPermission('Design Admin');
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
-  const isEditable = isTiscAdmin || isCustomProduct; // currently, uploading image
+  const isEditable = isTiscAdmin || (isCustomProduct && viewOnly !== true); // currently, uploading image
 
   const customProduct = useAppSelector((state) => state.customProduct.details);
 
@@ -141,7 +143,9 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
     },
     showUploadList: false,
     disabled: isEditable === false,
-    className: `${styles.uploadZone} ${isEditable ? '' : styles.noBorder}`,
+    className: `${styles.uploadZone} ${isEditable ? '' : styles.noBorder} ${
+      isEditable === false && product.images.length < 2 ? styles.noPadding : ''
+    }`,
   };
 
   const subProps: UploadProps = {
@@ -322,28 +326,24 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
         <Row className={styles.photoList} gutter={8}>
           <Col span={isEditable ? 18 : 24}>
             <Row gutter={8} className={styles.listWrapper}>
-              {product.images
-                .filter((_item, index) => index !== 0)
-                .map((image, key) => (
-                  <Col span={8} key={key}>
-                    <div className={styles.fileItem}>
-                      <div
-                        className={`${styles.filePreview}  ${
-                          !isEditable ? styles.lightBorder : ''
-                        }`}>
-                        <img src={showImageUrl(image) ?? ProductPlaceHolderImage} />
-                        {isEditable ? (
-                          <div className={styles.subPhotoAction}>
-                            <SmallIconButton
-                              icon={<DeleteIcon />}
-                              onClick={(e) => deletePhoto(e, key + 1)}
-                            />
-                          </div>
-                        ) : null}
-                      </div>
+              {product.images.slice(1).map((image, key) => (
+                <Col span={8} key={key}>
+                  <div className={styles.fileItem}>
+                    <div
+                      className={`${styles.filePreview}  ${!isEditable ? styles.lightBorder : ''}`}>
+                      <img src={showImageUrl(image) ?? ProductPlaceHolderImage} />
+                      {isEditable ? (
+                        <div className={styles.subPhotoAction}>
+                          <SmallIconButton
+                            icon={<DeleteIcon />}
+                            onClick={(e) => deletePhoto(e, key + 1)}
+                          />
+                        </div>
+                      ) : null}
                     </div>
-                  </Col>
-                ))}
+                  </div>
+                </Col>
+              ))}
             </Row>
           </Col>
 

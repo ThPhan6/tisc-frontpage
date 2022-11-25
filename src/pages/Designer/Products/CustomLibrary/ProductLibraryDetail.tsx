@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import { PATH } from '@/constants/path';
-import { Col, Row, message } from 'antd';
+import { Col, Row } from 'antd';
 import { useHistory, useParams } from 'umi';
 
-import { createCustomProduct, getOneCustomProduct, updateCustomProduct } from './services';
-import { formatImageIfBase64 } from '@/helper/utils';
+import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
+
+import { getOneCustomProduct } from './services';
 
 import { NameContentProps, ProductInfoTab, ProductOptionProps } from './types';
 import { ProductDimensionWeight } from '@/features/dimension-weight/types';
@@ -13,12 +13,11 @@ import { useAppSelector } from '@/reducers';
 
 import { SpecificationTab } from './components/SpecificationTab';
 import { SummaryTab } from './components/SummaryTab';
+import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
-import ProductDetailHeader from '@/features/product/components/ProductDetailHeader';
 import ProductImagePreview from '@/features/product/components/ProductImagePreview';
 
 import styles from './ProductLibraryDetail.less';
-import { invalidCustomProductSelector } from './slice';
 
 const LIST_TAB = [
   { tab: 'SUMMARY', key: 'summary' },
@@ -45,98 +44,25 @@ const ProductLibraryDetail: React.FC = () => {
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('summary');
   const productData = useAppSelector((state) => state.customProduct.details);
 
-  const { invalidAttributes, invalidSpecifications, invalidOptions } = useAppSelector(
-    invalidCustomProductSelector,
-  );
-
   useEffect(() => {
     if (productId) {
       getOneCustomProduct(productId);
     }
   }, [productId]);
 
-  const onSave = () => {
-    switch (true) {
-      case !productData.company.name:
-        message.error('Company is required');
-        return;
-      case !productData.collection.name:
-        message.error('Collection is required');
-        return;
-      case !productData.name:
-        message.error('Product name is required');
-        return;
-      case productData.images.length < 1:
-        message.error('Required at least one image');
-        return;
-      case productData.images.length > 4:
-        message.error('Maximum 4 images allowed');
-        return;
-      case invalidAttributes:
-        message.error('Invalid attributes');
-        return;
-      case invalidOptions:
-        message.error('Invalid options');
-        return;
-      case invalidSpecifications:
-        message.error('Invalid specifications');
-        return;
-    }
-
-    const productOptions = productData.options.map((el) => ({
-      ...el,
-      id: el.id || undefined,
-      items: el.items.map((item) => ({
-        ...item,
-        id: item.id || undefined,
-        image: el.use_image && item.image ? formatImageIfBase64(item.image) : undefined,
-      })),
-    }));
-
-    const data: CustomProductRequestBody = {
-      company_id: productData.company.id,
-      collection_id: productData.collection.id,
-      name: productData.name,
-      dimension_and_weight: productData.dimension_and_weight,
-      description: productData.description.trim(),
-      attributes: productData.attributes,
-      specification: productData.specification,
-      options: productOptions,
-      images: productData.images?.map((image) => formatImageIfBase64(image)),
-    };
-
-    if (productId) {
-      updateCustomProduct(productId, data);
-    } else {
-      createCustomProduct(data).then((res) => {
-        if (res) {
-          history.replace(PATH.designerCustomProductDetail.replace(':id', res.id));
-        }
-      });
-    }
-  };
-
   return (
-    <Row className={styles.container}>
+    <Row className={styles.container} gutter={[8, 8]}>
       <Col span={24}>
-        <ProductDetailHeader
-          title={productData.name || ''}
-          onSave={onSave}
-          onCancel={history.goBack}
-          hideSelect
-          customClass={styles.marginBottomSpace}
+        <TableHeader
+          title={productData.name}
+          rightAction={<CloseIcon className="closeIcon" onClick={history.goBack} />}
         />
       </Col>
 
       <Col span={24}>
         <Row className={styles.marginRounded}>
           <Col span={12}>
-            <ProductImagePreview
-              hideInquiryRequest
-              isCustomProduct
-              disabledAssignProduct={!productId}
-              disabledShareViaEmail={!productId}
-            />
+            <ProductImagePreview hideInquiryRequest isCustomProduct viewOnly />
           </Col>
 
           <Col span={12} className={styles.productContent}>
@@ -153,11 +79,11 @@ const ProductLibraryDetail: React.FC = () => {
                 />
 
                 <CustomTabPane active={activeKey === 'summary'}>
-                  <SummaryTab />
+                  <SummaryTab viewOnly />
                 </CustomTabPane>
 
                 <CustomTabPane active={activeKey === 'specification'}>
-                  <SpecificationTab isUpdate={productId ? true : false} />
+                  <SpecificationTab productId={productId} viewOnly />
                 </CustomTabPane>
               </Col>
             </Row>

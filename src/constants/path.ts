@@ -147,6 +147,7 @@ export const PATH = {
   // Library (Custom PRoduct)
   designerCustomProduct: '/design-firms/products/custom-product',
   designerCustomProductCreate: '/design-firms/products/custom-product/create',
+  designerCustomProductUpdate: '/design-firms/products/custom-product/update/:id',
   designerCustomProductDetail: '/design-firms/products/custom-product/:id',
   // Resources (Vendor Management)
   designerCustomResource: '/design-firms/products/custom-product/custom-resources',
