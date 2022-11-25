@@ -1,14 +1,12 @@
-export enum CollectionRelation {
+export enum CollectionRelationType {
   Brand,
   CustomLibrary,
 }
 
-export type CollectionRelationType = 0 | 1;
-
 export interface Collection {
   id: string;
   relation_id: string;
-  relation_type: CollectionRelationType;
+  relation_type: number;
   name: string;
   created_at: string;
   updated_at: string;

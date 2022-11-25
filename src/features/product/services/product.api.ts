@@ -1,7 +1,11 @@
+import { useCallback } from 'react';
+
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
+
+import { debounce } from 'lodash';
 
 import {
   setPartialProductDetail,
@@ -245,6 +249,18 @@ export async function selectProductSpecification(
       return false;
     });
 }
+
+export const useSelectProductSpecification = () => {
+  const debounceSelectProductSpecification = useCallback(
+    debounce(
+      (productId: string, data: Partial<SelectSpecificationBodyRequest>) =>
+        selectProductSpecification(productId, data),
+      1000,
+    ),
+    [],
+  );
+  return debounceSelectProductSpecification;
+};
 
 export async function getSelectedProductSpecification(productId: string) {
   return request<{ data: SelectSpecificationBodyRequest }>(

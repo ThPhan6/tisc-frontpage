@@ -20,9 +20,11 @@ import { getBrandById } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
 import { useCheckPermission, useQuery } from '@/helper/hook';
 import { isValidURL } from '@/helper/utils';
+import { pick } from 'lodash';
 
 import { ProductFormData, ProductKeyword } from '../types';
 import { ProductInfoTab } from './ProductAttributes/types';
+import { ProductDimensionWeight } from '@/features/dimension-weight/types';
 import { resetProductDetailState, setBrand } from '@/features/product/reducers';
 import { ModalOpen } from '@/pages/LandingPage/types';
 import { useAppSelector } from '@/reducers';
@@ -117,7 +119,12 @@ const ProductDetailContainer: React.FC = () => {
       description: details.description.trim(),
       general_attribute_groups: details.general_attribute_groups,
       feature_attribute_groups: details.feature_attribute_groups,
-      dimension_and_weight: details.dimension_and_weight,
+      dimension_and_weight: {
+        with_diameter: details.dimension_and_weight.with_diameter,
+        attributes: details.dimension_and_weight.attributes
+          .filter((el) => (el.conversion_value_1 ? true : false))
+          .map((el) => pick(el, 'id', 'conversion_value_1', 'conversion_value_2', 'with_diameter')),
+      } as ProductDimensionWeight,
       specification_attribute_groups: details.specification_attribute_groups,
       keywords: details.keywords.map((keyword) => keyword.trim()) as ProductKeyword,
       images: details.images.map((image) => {
