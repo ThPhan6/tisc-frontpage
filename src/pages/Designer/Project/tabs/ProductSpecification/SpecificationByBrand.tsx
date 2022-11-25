@@ -1,10 +1,13 @@
-import { FC, useRef } from 'react';
+import { FC, useRef, useState } from 'react';
 
 import { COLUMN_WIDTH } from '@/constants/util';
+
+import { ReactComponent as InfoIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import {
   onCellCancelled,
   renderActionCell,
+  renderAvailability,
   renderSpecifiedStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
@@ -15,7 +18,9 @@ import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 import { TableColumnItem } from '@/components/Table/types';
 import { ProjectProductItem } from '@/features/product/types';
 
+import { AvailabilityModal } from '../../components/AvailabilityModal';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
+import { RobotoBodyText } from '@/components/Typography';
 
 interface BrandListProps {
   projectId?: string;
@@ -25,6 +30,8 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
   useAutoExpandNestedTableColumn(1, {
     rightColumnExcluded: 3,
   });
+  const [visible, setVisible] = useState<boolean>(false);
+
   const tableRef = useRef<any>();
   const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
@@ -52,6 +59,18 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       width: '5%',
       align: 'center',
     },
+    {
+      title: (
+        <div className="flex-start">
+          <RobotoBodyText level={5} style={{ fontWeight: 500 }}>
+            Availability
+          </RobotoBodyText>
+          <InfoIcon style={{ cursor: 'pointer' }} onClick={() => setVisible(true)} />
+        </div>
+      ),
+      align: 'center',
+      dataIndex: 'availability',
+    },
     { title: 'Status', align: 'center', width: COLUMN_WIDTH.status },
     { title: 'Action', width: '5%', align: 'center' },
   ];
@@ -62,11 +81,11 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       noBoxShadow: true,
       dataIndex: 'brand',
       align: 'right',
-      render: (value) => {
-        if (value) {
+      render: (_value, record) => {
+        if (record.images.length) {
           return (
             <img
-              src={showImageUrl(value?.logo)}
+              src={showImageUrl(record.images[0])}
               style={{ width: 24, height: 24, objectFit: 'contain' }}
             />
           );
@@ -105,6 +124,12 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       width: '5%',
     },
     {
+      title: 'Availability',
+      dataIndex: 'availability',
+      align: 'center',
+      render: (_value, record) => renderAvailability(record),
+    },
+    {
       title: 'Status',
       noBoxShadow: true,
       dataIndex: 'specified_status',
@@ -125,7 +150,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
   return (
     <>
       <CustomTable
-        columns={setDefaultWidthForEachColumn(BrandColumns, 4)}
+        columns={setDefaultWidthForEachColumn(BrandColumns, 3)}
         extraParams={{ projectId }}
         ref={tableRef}
         hasPagination={false}
@@ -134,13 +159,15 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
         }}
         fetchDataFunc={getSpecifiedProductsByBrand}
         expandable={GetExpandableTableConfig({
-          columns: setDefaultWidthForEachColumn(CollectionColumns, 4),
+          columns: setDefaultWidthForEachColumn(CollectionColumns, 3),
           childrenColumnName: 'products',
           level: 2,
         })}
       />
 
       {renderSpecifyingModal()}
+
+      <AvailabilityModal visible={visible} setVisible={setVisible} />
     </>
   );
 };

@@ -31,7 +31,7 @@ const MarketAvailabilityList = () => {
   const mainColumns: TableColumnItem<MarketAvailabilityDataList>[] = [
     {
       title: 'Collections/Series',
-      dataIndex: 'collection_name',
+      dataIndex: 'name',
       sorter: true,
     },
     {
@@ -42,31 +42,37 @@ const MarketAvailabilityList = () => {
       title: 'Africa',
       dataIndex: 'africa',
       lightHeading: true,
+      render: (value) => value.length || '0',
     },
     {
       title: 'Asia',
       dataIndex: 'asia',
       lightHeading: true,
+      render: (value) => value.length || '0',
     },
     {
       title: 'Europe',
       dataIndex: 'europe',
       lightHeading: true,
+      render: (value) => value.length || '0',
     },
     {
-      title: 'N. America',
-      dataIndex: 'north_america',
+      title: 'N. Americas',
+      dataIndex: 'n_americas',
       lightHeading: true,
+      render: (value) => value.length || '0',
     },
     {
       title: 'Oceania',
       dataIndex: 'oceania',
       lightHeading: true,
+      render: (value) => value.length || '0',
     },
     {
-      title: 'S. America',
-      dataIndex: 'south_america',
+      title: 'S. Americas',
+      dataIndex: 's_americas',
       lightHeading: true,
+      render: (value) => value.length || '0',
     },
     {
       title: 'Action',
@@ -105,7 +111,7 @@ const MarketAvailabilityList = () => {
         }}
         hasPagination
         customClass={styles.customTitle}
-        rowKey="collection_name"
+        rowKey="id"
       />
       <InformationMarketAvailability
         visible={informationVisible}

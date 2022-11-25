@@ -5,6 +5,7 @@ export const getProductDetailPathname = (
   userRole: string,
   productId: string,
   signature?: string,
+  isCustomProduct?: boolean,
 ) => {
   if (!productId) {
     return '';
@@ -19,7 +20,11 @@ export const getProductDetailPathname = (
       path = PATH.updateProductBrand.replace(':id', productId);
       break;
     case USER_ROLE.design:
-      path = PATH.designerBrandProductDetail.replace(':id', productId);
+      if (isCustomProduct) {
+        path = PATH.designerCustomProductDetail.replace(':id', productId);
+      } else {
+        path = PATH.designerBrandProductDetail.replace(':id', productId);
+      }
       break;
     default:
       const publicPage = PATH.sharedProduct.replace(':id', productId);

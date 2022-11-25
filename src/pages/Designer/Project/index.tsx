@@ -109,7 +109,7 @@ const ProjectList: React.FC = () => {
     }
   };
   const goToCreatePage = () => {
-    pushTo(PATH.designerCreateProject);
+    pushTo(PATH.designerProjectCreate);
   };
 
   const goToUpdateProject = (id: string) => {

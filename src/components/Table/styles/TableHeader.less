@@ -15,27 +15,50 @@
     height: 100%;
   }
 }
-.customButton {
+
+.customContentDisable,
+.customContent {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  color: white;
-  background: @primary-color-dark;
-  border: 0.5px solid @primary-color-dark;
-  border-radius: 12px;
-  cursor: pointer;
+  height: 36px;
+  user-select: none;
+
+  .customButton,
+  .customButtonDisable {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+  }
+
+  :global(.label) {
+    padding-right: 12px;
+  }
 }
 
-.customButtonDisable {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  color: @mono-color-dark;
-  background: @mono-color-light;
-  border: 0.5px solid @mono-color-dark;
-  border-radius: 12px;
+.customContent {
+  cursor: pointer;
+  :global(.label) {
+    color: @mono-color;
+  }
+
+  .customButton {
+    color: white;
+    background: @primary-color-dark;
+    border: 0.5px solid @primary-color-dark;
+  }
+}
+
+.customContentDisable {
+  cursor: default;
+  :global(.label) {
+    color: @mono-color-dark;
+  }
+  .customButtonDisable {
+    color: @mono-color-dark;
+    background: @mono-color-light;
+    border: 0.5px solid @mono-color-dark;
+  }
 }

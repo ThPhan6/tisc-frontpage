@@ -71,13 +71,20 @@ export const useProductAttributeForm = (
   isSpecifiedModal?: boolean,
 ) => {
   const dispatch = useDispatch();
-  const { feature_attribute_groups, general_attribute_groups, specification_attribute_groups, id } =
-    useAppSelector((state) => state.product.details);
+  const {
+    feature_attribute_groups,
+    general_attribute_groups,
+    specification_attribute_groups,
+    dimension_and_weight,
+    id,
+  } = useAppSelector((state) => state.product.details);
   const referToDesignDocument = useAppSelector(
     (state) => state.product.details.specifiedDetail?.specification?.is_refer_document,
   );
   const loaded = useBoolean();
   const isTiscAdmin = useCheckPermission('TISC Admin');
+
+  const dimensionWeightData = dimension_and_weight;
 
   const attributeGroup =
     attributeType === 'general'
@@ -85,6 +92,8 @@ export const useProductAttributeForm = (
       : attributeType === 'feature'
       ? feature_attribute_groups
       : specification_attribute_groups;
+
+  // console.log('attributeGroup', attributeGroup);
 
   const attributeGroupKey: AttributeGroupKey =
     attributeType === 'general'
@@ -123,12 +132,6 @@ export const useProductAttributeForm = (
       }
     }
   }, [isSpecifiedModal, attributeType, specification_attribute_groups, loaded.value]);
-
-  // useEffect(() => {
-  //   return () => {
-  //     dispatch(resetProductState());
-  //   };
-  // }, []);
 
   const onDeleteProductAttribute = (index: number) => () => {
     const newProductAttribute = attributeGroup.filter((_item, key) => index !== key);
@@ -307,5 +310,6 @@ export const useProductAttributeForm = (
     onCheckedSpecification,
     onSelectSpecificationOption,
     referToDesignDocument,
+    dimensionWeightData,
   };
 };

@@ -1,0 +1,94 @@
+.modalContainer {
+  :global(.ant-modal-content) {
+    display: flex;
+    flex-direction: column;
+    height: 752px;
+
+    :global(.ant-input) {
+      color: @primary-color-dark;
+    }
+    :global(.ant-modal-close) {
+      display: none;
+    }
+
+    :global(.ant-modal-header),
+    :global(.ant-modal-footer) {
+      display: flex;
+      align-items: center;
+      height: 48px;
+      padding: 0;
+    }
+
+    :global(.ant-modal-header) {
+      justify-content: center;
+      border-bottom: 0;
+      box-shadow: @border-bottom;
+
+      :global(.ant-modal-title) {
+        text-align: center;
+      }
+    }
+
+    :global(.ant-modal-body) {
+      flex: 1;
+      padding: 16px;
+      overflow: hidden auto;
+    }
+
+    :global(.ant-modal-footer) {
+      justify-content: end;
+      padding-right: 16px;
+      border-top: 0;
+      box-shadow: @border-top;
+
+      button:not(:last-child) {
+        margin-right: 12px;
+      }
+    }
+  }
+
+  .optionHeader {
+    flex: 1;
+    white-space: nowrap;
+    user-select: none;
+
+    .imageBtn {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      margin: 0 24px;
+
+      :global(.ant-checkbox) {
+        top: 0;
+      }
+
+      :global(.ant-checkbox + span) {
+        padding: 0 8px 0 0;
+      }
+    }
+  }
+
+  .optionContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    white-space: nowrap;
+    box-shadow: @border-bottom-light;
+
+    .deleteIcon {
+      cursor: pointer;
+
+      path {
+        transition: fill 1s;
+        fill: @mono-color-medium;
+      }
+      &:hover {
+        path {
+          fill: @primary-color-dark;
+        }
+      }
+    }
+  }
+}

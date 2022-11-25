@@ -40,7 +40,7 @@ const InspirationalQuotationsList: React.FC = () => {
       sorter: true,
     },
     {
-      title: 'Indentity ',
+      title: 'Identity ',
       dataIndex: 'identity',
     },
     {

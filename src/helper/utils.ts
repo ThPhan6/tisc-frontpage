@@ -383,3 +383,12 @@ export const bufferToArrayBufferCycle = (buffer: Buffer) => {
   }
   return result;
 };
+
+export const formatNumber = (number: number) => {
+  return number.toLocaleString(undefined, {
+    maximumFractionDigits: 2,
+  });
+};
+
+export const formatImageIfBase64 = (img: string) =>
+  img.indexOf('data:image') > -1 ? img.split(',')[1] : img;

@@ -11,7 +11,7 @@ import style from './styles/Form.less';
 
 export const FormGroup: FC<FormGroupProps> = ({
   layout = 'horizontal',
-  formClass,
+  formClass = '',
   optional,
   required,
   tooltip,
@@ -22,6 +22,7 @@ export const FormGroup: FC<FormGroupProps> = ({
   placement = 'top',
   label,
   labelColor = 'mono-color',
+  lableFontSize = 3,
   onClick,
   messageType = 'normal',
   placementBottomWidth,
@@ -39,7 +40,7 @@ export const FormGroup: FC<FormGroupProps> = ({
           layout === 'horizontal' && style['label-margin']
         } ${labelColor}`}
         onClick={onClick}>
-        <BodyText fontFamily="Cormorant-Garamond" level={3} customClass={labelColor}>
+        <BodyText fontFamily="Cormorant-Garamond" level={lableFontSize} customClass={labelColor}>
           {label}
         </BodyText>
         {optional && (

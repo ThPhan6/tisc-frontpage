@@ -44,3 +44,8 @@ export interface AvailabilityCollectionGroup {
   count: number;
   regions: RegionAvailabilityCollection[];
 }
+
+export interface PayloadUpdateAvailibity {
+  id: number;
+  available: boolean;
+}

@@ -1,18 +1,49 @@
+.borderBottom {
+  box-shadow: @border-bottom-light;
+}
+.inputBorderBottom {
+  :global(.ant-input) {
+    box-shadow: none !important;
+  }
+}
+
 .inputColor {
   :global(.ant-input) {
+    .borderBottom();
+
     color: @primary-color-dark;
+    font-size: 12px;
+    border-bottom-color: transparent;
   }
   :global(.ant-input[disabled]) {
+    .borderBottom();
+
     overflow: hidden;
     color: @primary-color-dark;
     text-overflow: ellipsis;
     background: transparent;
-    border-bottom-color: rgba(0, 0, 0, 0.3);
+    border-bottom-color: transparent;
     cursor: pointer;
+  }
+  :global(.ant-input:hover) {
+    border-bottom-color: transparent;
+  }
+  :global(.ant-input:focus) {
+    .borderBottom();
   }
 }
 .schedule {
+  .borderBottom();
+
   height: 32px;
   padding-left: 16px;
-  box-shadow: @border-bottom-light;
+}
+
+.fontSizeSmall {
+  :global(.item-wrapper-custom),
+  :global(.ant-checkbox-wrapper),
+  :global(.ant-radio-wrapper),
+  :global(.radio-label) {
+    font-size: 12px;
+  }
 }

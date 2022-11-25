@@ -5,20 +5,24 @@ import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 import { useProductAttributeForm } from './hooks';
 import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
 
-import { ProductAttributeProps } from '../../types';
+import { setPartialProductDetail } from '../../reducers';
+import { ProductAttributeProps, SpecificationAttributeBasisOptionProps } from '../../types';
 import { ProductInfoTab } from './types';
+import { DimensionWeightItem } from '@/features/dimension-weight/types';
+import store from '@/reducers';
 import { ProductAttributes } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { BodyText, MainTitle } from '@/components/Typography';
+import { BodyText, RobotoBodyText } from '@/components/Typography';
 
 import { AttributeOption, ConversionText, GeneralText } from './AttributeComponent';
 import { ProductAttributeSubItem } from './AttributeItem';
 import { SelectAttributesToGroupRow } from './SelectAttributesToGroupRow';
 import styles from './index.less';
+import { DimensionWeight } from '@/features/dimension-weight';
 
 interface Props {
   attributes?: ProductAttributes[];
@@ -53,6 +57,7 @@ export const ProductAttributeContainer: FC<Props> = ({
     attributeGroup,
     attributeGroupKey,
     onSelectSpecificationOption,
+    dimensionWeightData,
   } = useProductAttributeForm(activeKey, curProductId, isSpecifiedModal);
 
   const renderCollapseHeader = (groupIndex: number) => {
@@ -65,7 +70,7 @@ export const ProductAttributeContainer: FC<Props> = ({
           label={<ScrollIcon />}
           placeholder="type title"
           noWrap
-          defaultValue={group.name}
+          value={group.name}
           onChange={onChangeAttributeName(groupIndex)}
         />
       );
@@ -96,18 +101,19 @@ export const ProductAttributeContainer: FC<Props> = ({
   };
 
   const renderAttributeRowItem = (
-    attribute: ProductAttributeProps,
+    attribute: ProductAttributeProps | DimensionWeightItem,
     attrIndex: number,
-    groupIndex: number,
     groupName: string,
+    groupIndex: number = -1,
   ) => {
     if (isTiscAdmin) {
       if (!attributes) {
         return null;
       }
+
       return (
         <ProductAttributeSubItem
-          item={attribute}
+          item={attribute as ProductAttributeProps}
           attributeItemIndex={attrIndex}
           attributeIndex={groupIndex}
           attributes={attributes}
@@ -122,8 +128,11 @@ export const ProductAttributeContainer: FC<Props> = ({
       );
     }
 
-    const curAttribute = attributeGroup[groupIndex]?.attributes?.[attrIndex];
-    const chosenOption = curAttribute.basis_options?.find((el) => el.isChecked === true);
+    let chosenOption: SpecificationAttributeBasisOptionProps | undefined;
+    if (groupIndex !== -1) {
+      const curAttribute = attributeGroup[groupIndex]?.attributes?.[attrIndex];
+      chosenOption = curAttribute.basis_options?.find((el) => el.isChecked === true);
+    }
 
     return (
       <tr className={styles.attributeSubItem} key={attribute.id}>
@@ -147,7 +156,7 @@ export const ProductAttributeContainer: FC<Props> = ({
               title={groupName}
               isPublicPage={isPublicPage}
               attributeName={attribute.name}
-              options={attribute.basis_options ?? []}
+              options={'basis_options' in attribute ? attribute.basis_options ?? [] : []}
               chosenOption={
                 chosenOption
                   ? {
@@ -159,12 +168,14 @@ export const ProductAttributeContainer: FC<Props> = ({
                   : undefined
               }
               setChosenOptions={(option) => {
-                onSelectSpecificationOption(
-                  groupIndex,
-                  attribute.id,
-                  isTiscAdmin ? false : true,
-                  option?.value?.toString() || undefined,
-                );
+                if (groupIndex !== -1) {
+                  onSelectSpecificationOption(
+                    groupIndex,
+                    attribute.id,
+                    isTiscAdmin ? false : true,
+                    option?.value?.toString() || undefined,
+                  );
+                }
               }}
             />
           ) : (
@@ -175,15 +186,66 @@ export const ProductAttributeContainer: FC<Props> = ({
     );
   };
 
+  const renderDimensionWeight = () => {
+    if (activeKey !== 'specification' || (!dimensionWeightData.attributes.length && !isTiscAdmin))
+      return null;
+
+    if (isTiscAdmin) {
+      return (
+        <DimensionWeight
+          customClass={styles.marginTopSpace}
+          collapseStyles={!isSpecifiedModal}
+          editable={isTiscAdmin}
+          data={dimensionWeightData}
+          onChange={(data) => {
+            store.dispatch(
+              setPartialProductDetail({
+                dimension_and_weight: data,
+              }),
+            );
+          }}
+        />
+      );
+    }
+
+    const dwAttributes = isPublicPage
+      ? dimensionWeightData.attributes.filter((el) => el.conversion_value_1 !== '')
+      : dimensionWeightData.attributes;
+    return (
+      <CustomCollapse
+        defaultActiveKey={'1'}
+        showActiveBoxShadow={!specifying}
+        noBorder={noBorder}
+        customHeaderClass={`${styles.productAttributeItem} ${styles.marginTopSpace} ${
+          specifying ? styles.specifying : ''
+        }`}
+        header={
+          <div className={styles.attrGroupTitle}>
+            <RobotoBodyText level={6}>{dimensionWeightData.name}</RobotoBodyText>
+          </div>
+        }>
+        <table className={styles.table}>
+          <tbody>
+            {dwAttributes.map((attribute, attrIndex) =>
+              renderAttributeRowItem(attribute, attrIndex, dimensionWeightData.name),
+            )}
+          </tbody>
+        </table>
+      </CustomCollapse>
+    );
+  };
+
   return (
     <>
+      {renderDimensionWeight()}
+
       {isTiscAdmin ? (
-        <div className={styles.addAttributeBtn} onClick={addNewProductAttribute}>
-          <MainTitle level={4} customClass="add-attribute-text">
-            Add Attribute
-          </MainTitle>
-          <CustomPlusButton size={18} />
-        </div>
+        <CustomPlusButton
+          size={18}
+          label="Add Attribute"
+          onClick={addNewProductAttribute}
+          customClass={styles.paddingSpace}
+        />
       ) : null}
 
       {attributeGroup.map((_group, groupIndex) => {
@@ -218,8 +280,8 @@ export const ProductAttributeContainer: FC<Props> = ({
                           renderAttributeRowItem(
                             attribute,
                             attrIndex,
-                            groupIndex,
                             attrGroupItem.name,
+                            groupIndex,
                           ),
                         )}
                       </tbody>

@@ -1,11 +1,16 @@
 import { FC, useEffect, useState } from 'react';
 
+import { MESSAGE_ERROR } from '@/constants/message';
+import { message } from 'antd';
+import { useParams } from 'umi';
+
 import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { selectProductSpecification } from '../product/services';
 import { useCheckPermission, useQuery } from '@/helper/hook';
 import { getBusinessAddress } from '@/helper/utils';
+import { isEmpty } from 'lodash';
 
 import { RadioValue } from '@/components/CustomRadio/types';
 import { DistributorProductMarket } from '@/features/distributors/type';
@@ -95,6 +100,9 @@ export const VendorLocation: FC<VendorTabProps> = ({
   borderBottomNone,
   isSpecifying,
 }) => {
+  ///
+  const params = useParams<{ id: string }>();
+  //
   // for brand
   const [brandActiveKey, setBrandActiveKey] = useState<string | string[]>();
   const [brandAddresses, setBrandAddresses] = useState<LocationGroupedByCountry[]>([]);
@@ -145,11 +153,13 @@ export const VendorLocation: FC<VendorTabProps> = ({
       }
 
       if (productId) {
-        getDistributorLocation(productId).then((data) => {
-          if (data) {
-            setDistributorAddresses(data);
-          }
-        });
+        getDistributorLocation(productId, isSpecifying && params.id ? params.id : undefined).then(
+          (data) => {
+            if (data) {
+              setDistributorAddresses(data);
+            }
+          },
+        );
       }
     }
   }, []);
@@ -313,8 +323,12 @@ export const VendorLocation: FC<VendorTabProps> = ({
                 chosenDistributorCountry,
                 distributorActiveKey === activeKey && chosenDistributor.value ? true : false,
                 () => {
+                  if (isEmpty(distributorAddresses) && isSpecifying) {
+                    return message.warn(MESSAGE_ERROR.DISTRIBUTOR_UNAVAILABLE);
+                  }
                   setLocationPopup('distributor');
                   handleCollapse('distributor', activeKey);
+                  return true;
                 },
               )}
               onChange={(key) => handleCollapse('distributor', key)}

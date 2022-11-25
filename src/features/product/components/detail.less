@@ -40,8 +40,8 @@
 }
 
 .productContent {
-  input {
-    color: @primary-color-dark !important;
+  :global(.ant-input) {
+    color: @primary-color-dark;
   }
 
   .productImageWrapper {
@@ -112,6 +112,11 @@
   }
   .noBorder {
     border: none !important;
+  }
+  .noPadding {
+    :global(.ant-upload.ant-upload-btn) {
+      padding: 0;
+    }
   }
   .photoList {
     margin-top: 8px;
@@ -530,7 +535,18 @@
   .actionLeft {
     display: flex;
     align-items: center;
-    cursor: pointer;
+    user-select: none;
+
+    .disabled {
+      display: flex;
+      align-items: center;
+      pointer-events: none;
+
+      svg path {
+        fill: @mono-color-medium;
+      }
+    }
+
     svg {
       margin-right: 8px;
     }

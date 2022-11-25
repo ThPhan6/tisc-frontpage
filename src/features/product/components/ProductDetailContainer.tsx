@@ -20,9 +20,11 @@ import { getBrandById } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
 import { useCheckPermission, useQuery } from '@/helper/hook';
 import { isValidURL } from '@/helper/utils';
+import { pick } from 'lodash';
 
 import { ProductFormData, ProductKeyword } from '../types';
 import { ProductInfoTab } from './ProductAttributes/types';
+import { ProductDimensionWeight } from '@/features/dimension-weight/types';
 import { resetProductDetailState, setBrand } from '@/features/product/reducers';
 import { ModalOpen } from '@/pages/LandingPage/types';
 import { useAppSelector } from '@/reducers';
@@ -48,6 +50,7 @@ const ProductDetailContainer: React.FC = () => {
   const signature = useQuery().get('signature') || '';
   // set signature  to cookies
   Cookies.set('signature', signature);
+  const isPublicPage = signature ? true : false;
 
   const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact'];
   const [openModal, setOpenModal] = useState<ModalOpen>('');
@@ -116,6 +119,12 @@ const ProductDetailContainer: React.FC = () => {
       description: details.description.trim(),
       general_attribute_groups: details.general_attribute_groups,
       feature_attribute_groups: details.feature_attribute_groups,
+      dimension_and_weight: {
+        with_diameter: details.dimension_and_weight.with_diameter,
+        attributes: details.dimension_and_weight.attributes
+          .filter((el) => (el.conversion_value_1 ? true : false))
+          .map((el) => pick(el, 'id', 'conversion_value_1', 'conversion_value_2', 'with_diameter')),
+      } as ProductDimensionWeight,
       specification_attribute_groups: details.specification_attribute_groups,
       keywords: details.keywords.map((keyword) => keyword.trim()) as ProductKeyword,
       images: details.images.map((image) => {
@@ -158,7 +167,7 @@ const ProductDetailContainer: React.FC = () => {
       );
     }
 
-    if (signature) {
+    if (isPublicPage) {
       return (
         <div className={styles.header}>
           <LogoBeta />
@@ -192,9 +201,9 @@ const ProductDetailContainer: React.FC = () => {
         <Col span={24}>{renderHeader()}</Col>
 
         <Col span={24}>
-          <Row className={signature ? styles.marginRounded : ''}>
+          <Row className={isPublicPage ? styles.marginRounded : ''}>
             <Col span={12}>
-              <ProductImagePreview isPublicPage={signature} />
+              <ProductImagePreview isPublicPage={isPublicPage} />
             </Col>
 
             <Col span={12} className={styles.productContent}>
@@ -216,7 +225,7 @@ const ProductDetailContainer: React.FC = () => {
         </Col>
       </div>
 
-      {signature ? (
+      {isPublicPage ? (
         <Col span={24} className={styles.footerContent}>
           <LandingPageFooter
             setOpenModal={setOpenModal}

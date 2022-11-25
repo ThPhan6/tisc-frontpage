@@ -6,19 +6,18 @@ import { CustomSaveButtonProps } from './types';
 
 import styles from '../Button/styles/index.less';
 import { BodyText } from '../Typography';
-import classNames from 'classnames';
 
 export const CustomSaveButton: FC<CustomSaveButtonProps> = ({
   isSuccess,
   onClick,
+  customClass = '',
   contentButton,
 }) => {
   return (
     <button
-      className={classNames(
-        styles.sizeButton,
-        isSuccess ? styles.customButtonSuccess : styles.customButton,
-      )}
+      className={`${styles.sizeButton} ${
+        isSuccess ? styles.customButtonSuccess : styles.customButton
+      } ${customClass}`}
       onClick={onClick}>
       {isSuccess ? (
         <CheckSuccessIcon />
