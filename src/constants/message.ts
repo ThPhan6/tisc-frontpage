@@ -5,6 +5,7 @@ export const MESSAGE_ERROR = {
   PHONE_INPUT: 'Invalid phone number',
   POSTAL_CODE: 'You are allowed to enter 10 characters only',
   reachLogoSizeLimit: 'Logo size limit reached (240 KB)',
+  reachSizeLimit: 'Image size limit reached (240 KB)',
   WORK_EMAIL: 'Work email is required',
   GENERAL_EMAIL: 'General email is required',
   EMAIL_AUTO: 'Message is required',
@@ -19,6 +20,8 @@ export const MESSAGE_ERROR = {
   EMAIL_ALREADY_USED: 'Email already taken',
   NO_TEAMPROFILE: 'Add member to invite',
   DOCUMENT_TITLE: 'You are allowed to enter 50 characters only',
+  DISTRIBUTOR_UNAVAILABLE:
+    'The product seems not available for the project location, please verify with the Brand company for more information.',
 };
 
 export const MESSAGE_NOTIFICATION = {
@@ -191,7 +194,10 @@ export const MESSAGE_NOTIFICATION = {
   // configuration
   GET_BRAND_DATA_ERROR: 'Failed to get Brand data',
   GET_BRAND_SUMMARY_DATA_ERROR: 'Failed to get Brand summary data',
+  CREATE_BRAND_COLLECTION_SUCCESS: 'Create new Brand collection successfully',
   CREATE_BRAND_COLLECTION_ERROR: 'Failed to create Brand collection',
+  UPDATE_BRAND_COLLECTION_SUCCESS: 'Update Brand collection successfully',
+  UPDATE_BRAND_COLLECTION_ERROR: 'Failed to update Brand collection',
   GET_BRAND_COLLECTION_ERROR: 'Failed to get Brand collection data',
   DELETE_BRAND_COLLECTION_SUCCESS: 'Delete collection successfully',
   DELETE_BRAND_COLLECTION_ERROR: 'Failed to delete collection',
@@ -312,6 +318,21 @@ export const MESSAGE_NOTIFICATION = {
   GET_PROJECT_LISTING_FAILED: 'Failed to get project listing data',
   GET_PROJECT_LISTING_SUMMARY_ERROR: 'Get project listing summary error',
   GET_ONE_PROJECT_LISTING_ERROR: 'Get one project listing error',
+
+  // custom product
+  GET_LIST_CUSTOM_PRODUCT_LIST_ERROR: 'Failed to get custom product list',
+  GET_ONE_CUSTOM_PRODUCT_LIST_ERROR: 'Failed to get custom product',
+  CREATE_CUSTOM_PRODUCT_SUCCESS: 'Create custom product successfully',
+  CREATE_CUSTOM_PRODUCT_ERROR: 'Failed to create custom product',
+  UPDATE_CUSTOM_PRODUCT_SUCCESS: 'Update custom product successfully',
+  UPDATE_CUSTOM_PRODUCT_ERROR: 'Failed to update custom product',
+  DELETE_CUSTOM_PRODUCT_SUCCESS: 'Delete custom product successfully',
+  DELETE_CUSTOM_PRODUCT_ERROR: 'Failed to delete custom product',
+  DUPLICATE_CUSTOM_PRODUCT_SUCCESS: 'Duplicate custom product successfully',
+  DUPLICATE_CUSTOM_PRODUCT_ERROR: 'Failed to duplicate custom product',
+  GET_LIST_VENDOR: 'Failed to get list vendor by brand or distributor',
+  CREATE_CUSTOM_RESOURCE_SUCCESS: 'Create custom resource successfully',
+  UPDATE_CUSTOM_RESOURCE_SUCCESS: 'Update custom resource successfully',
 };
 
 export const MESSAGE_TOOLTIP = {

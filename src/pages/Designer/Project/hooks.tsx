@@ -3,6 +3,10 @@ import { useState } from 'react';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
 import { useParams } from 'umi';
 
+import { ReactComponent as AvailableIcon } from '@/assets/icons/availability-available.svg';
+import { ReactComponent as DiscontinuedIcon } from '@/assets/icons/availability-discontinued.svg';
+import { ReactComponent as DiscrepancyIcon } from '@/assets/icons/availability-discrepancy.svg';
+import { ReactComponent as OutOfStockIcon } from '@/assets/icons/availability-out-of-stock.svg';
 import { ReactComponent as CancelIcon } from '@/assets/icons/ic-circle-cancel.svg';
 import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
 
@@ -16,7 +20,7 @@ import {
   setPartialProductSpecifiedData,
   setReferToDesignDocument,
 } from '@/features/product/reducers';
-import { ProductItem, ProjectProductItem } from '@/features/product/types';
+import { Availability, ProductItem, ProjectProductItem } from '@/features/product/types';
 import { ProductSpecifyStatus } from '@/features/project/types';
 import store from '@/reducers';
 
@@ -135,3 +139,19 @@ export const onCellCancelled = (data: any) => ({
       ? 'strike-through'
       : undefined,
 });
+
+export const renderAvailability = (record: any) => {
+  if (record.rooms) return null;
+
+  if (record.availability === Availability.Available) {
+    return <AvailableIcon />;
+  }
+  if (record.availability === Availability.Discontinued) {
+    return <DiscontinuedIcon />;
+  }
+  if (record.availability === Availability.Discrepancy) {
+    return <DiscrepancyIcon />;
+  }
+
+  return <OutOfStockIcon />;
+};

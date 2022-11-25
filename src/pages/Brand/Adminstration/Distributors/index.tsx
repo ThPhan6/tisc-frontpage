@@ -71,7 +71,7 @@ const Distributors = () => {
       title: 'Coverage Beyond',
       dataIndex: 'coverage_beyond',
       render: (value) => {
-        return <span>{value === true ? 'Not Allow' : 'Allow'}</span>;
+        return <span>{value === true ? 'Allow' : 'Not Allow'}</span>;
       },
     },
     {

@@ -17,9 +17,14 @@ import styles from './AssignProductModal.less';
 
 interface AssignProductModalProps extends Omit<PopoverProps, 'title'> {
   productId: string;
+  isCustomProduct: boolean;
 }
 
-const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }) => {
+const AssignProductModal: FC<AssignProductModalProps> = ({
+  productId,
+  isCustomProduct,
+  ...props
+}) => {
   const projects = useAppSelector((state) => state.project.list);
 
   const [selectedProject, setSelectedProject] = useState<RadioValue>();
@@ -73,6 +78,7 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
       product_id: productId,
       project_id: String(selectedProject?.value),
       allocation: selectedRoomIds,
+      custom_product: isCustomProduct,
     }).then((success) => {
       if (success) {
         props.setVisible(false);

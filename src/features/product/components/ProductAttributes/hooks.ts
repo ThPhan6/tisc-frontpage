@@ -8,12 +8,9 @@ import { cloneDeep } from 'lodash';
 import { setDefaultSelectionFromSpecifiedData, setPartialProductDetail } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
 import { AttributeGroupKey, ProductInfoTab } from './types';
-import { DimensionWeightConversion } from '@/features/dimension-weight/types';
 import { setReferToDesignDocument } from '@/features/product/reducers';
 import { SelectedSpecAttributte, SpecificationAttributeGroup } from '@/features/project/types';
 import { useAppSelector } from '@/reducers';
-
-import { ConversionValue } from '@/components/EntryForm/ConversionInput';
 
 const getSelectedAttributeAndOption = (attrs: ProductAttributeProps[]) => {
   const selectedAttributes: SelectedSpecAttributte[] = [];
@@ -209,26 +206,6 @@ export const useProductAttributeForm = (
       );
     };
 
-  const onChangeDimensionWeight = (index: number, value: ConversionValue) => {
-    const newAttributes = [...dimensionWeightData.attributes];
-    newAttributes[index] = {
-      ...newAttributes[index],
-      conversion_value_1: value.firstValue,
-      conversion_value_2: value.secondValue,
-    };
-
-    const newData: DimensionWeightConversion = {
-      ...dimensionWeightData,
-      attributes: newAttributes,
-    };
-
-    dispatch(
-      setPartialProductDetail({
-        dimension_and_weight: newData,
-      }),
-    );
-  };
-
   const onSelectSpecificationOption = (
     groupIndex: number,
     attributeId: string,
@@ -334,6 +311,5 @@ export const useProductAttributeForm = (
     onSelectSpecificationOption,
     referToDesignDocument,
     dimensionWeightData,
-    onChangeDimensionWeight,
   };
 };

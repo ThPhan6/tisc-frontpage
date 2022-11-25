@@ -56,6 +56,7 @@ export async function assignProductToProject(data: {
   project_id: string;
   entire_allocation: boolean;
   allocation: string[];
+  custom_product: boolean;
 }) {
   return request<ProjectSummaryData>(`/api/project/assign-product`, {
     method: 'POST',

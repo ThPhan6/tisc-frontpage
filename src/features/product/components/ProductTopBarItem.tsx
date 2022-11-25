@@ -26,28 +26,34 @@ interface ProductTopBarProps {
   cursor?: 'pointer' | 'default';
 }
 
-export const TopBarItem: React.FC<ProductTopBarProps> = (props) => {
-  const {
-    topValue,
-    bottomValue,
-    icon,
-    disabled,
-    bottomEnable,
-    customClass,
-    onClick,
-    style,
-    cursor,
-  } = props;
+export const TopBarItem: React.FC<ProductTopBarProps> = ({
+  topValue,
+  bottomValue,
+  icon,
+  disabled,
+  bottomEnable,
+  customClass,
+  onClick,
+  style,
+  cursor,
+}) => {
+  const renderTopValue = () => {
+    if (typeof topValue === 'string' || typeof topValue === 'number') {
+      return (
+        <BodyText level={5} fontFamily="Roboto" customClass={disabled ? 'disabled ' : 'active'}>
+          {topValue}
+        </BodyText>
+      );
+    }
+
+    if (topValue) return topValue;
+
+    return <span style={{ opacity: 0 }}>.</span>;
+  };
 
   return (
     <div className={`item ${customClass ?? ''}`} onClick={onClick} style={style}>
-      {typeof topValue === 'string' || typeof topValue === 'number' ? (
-        <BodyText level={5} fontFamily="Roboto" customClass={disabled ? 'disabled ' : ''}>
-          {topValue}
-        </BodyText>
-      ) : (
-        topValue
-      )}
+      {renderTopValue()}
       <BodyText
         level={6}
         fontFamily="Roboto"
@@ -90,7 +96,7 @@ export const TopBarContainer: React.FC<TopBarContainerProps> = ({
         <div className="left-side">{LeftSideContent}</div>
         <div className="right-side">{RightSideContent}</div>
       </div>
-      {BottomContent && <div className={styles.topbarBottomContainer}>{BottomContent}</div>}
+      {BottomContent ? <div className={styles.topbarBottomContainer}>{BottomContent}</div> : null}
     </>
   );
 };
