@@ -2,7 +2,7 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
-import { BrandDesignProfile, DesignFirm } from '../types';
+import { BrandDesignProfile, DesignFirm, LibraryDesignFirm } from '../types';
 import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import type {
   DataTableResponse,
@@ -144,5 +144,15 @@ export async function updateStatusDesignFirm(id: string, data: { status: number 
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_STATUS_DESIGN_FIRM_ERROR);
       return false;
+    });
+}
+
+export async function getLibraryByDesignFirm(id: string) {
+  return request<{ data: LibraryDesignFirm }>(`/api/design/${id}/library`, { method: 'GET' })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message);
     });
 }
