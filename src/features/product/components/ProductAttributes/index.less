@@ -45,11 +45,31 @@
     align-items: center;
     justify-content: space-between;
     height: 36px;
+    padding: 0 16px;
+    box-shadow: @border-bottom;
     :global(.attribute-select-group-left) {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       cursor: pointer;
+
+      :global(.text) {
+        padding: 0 8px 0 24px;
+        cursor: default;
+      }
+
+      :global(.switchBtn) {
+        :global(.ant-switch-inner) {
+          font-weight: 500;
+          font-size: 8px;
+        }
+        :global(.ant-switch) {
+          box-shadow: none;
+        }
+        :global(.ant-click-animating-node) {
+          animation: none;
+        }
+      }
+
       :global(.single-right-icon) {
         margin-right: auto;
         margin-left: 8px;
@@ -76,14 +96,46 @@
   }
 
   :global(.ant-collapse-content > .ant-collapse-content-box) {
-    padding: 0 16px;
+    padding: 0;
+
+    :global(.specification-choice) {
+      display: flex;
+      flex: 1;
+      align-items: center;
+
+      p:first-child {
+        width: 31%;
+      }
+    }
+
+    :global(.header-label) {
+      padding-left: 14px;
+    }
+    :global(.label-space) {
+      padding-left: 12px;
+    }
+    :global(.left-space) {
+      padding-left: 8px;
+    }
+    :global(.left-none) {
+      padding-left: 0;
+    }
+
+    :global(.attribute-label) {
+      display: flex;
+      align-items: center;
+      height: 36px;
+    }
+
+    :global(.ant-collapse-item-active) {
+      box-shadow: none;
+    }
   }
 }
 
 .table {
   width: 100%;
   height: auto;
-  min-height: 36px;
   white-space: nowrap;
   table-layout: fixed;
 
@@ -100,12 +152,21 @@
   }
 
   .attributeName {
-    width: 25%;
+    width: 34%;
     text-transform: capitalize;
   }
 
   .attributeDescription {
     width: 75%;
+
+    > p {
+      display: flex;
+      align-items: center;
+
+      > span:first-child {
+        width: 25%;
+      }
+    }
 
     :global(.product-attribute-option-wrapper) {
       display: flex;
@@ -122,6 +183,18 @@
 
 .marginTopSpace {
   margin-top: 8px;
+}
+
+.paddingRounded {
+  padding: 8px 16px;
+}
+
+.paddingWrapper {
+  padding: 0 16px 8px 16px;
+}
+
+.paddingNone {
+  padding: 0;
 }
 
 .paddingSpace {
@@ -173,6 +246,19 @@
 }
 
 .specification {
+  :global(.noBoxShadow) {
+    padding-top: 8px;
+
+    :global(.ant-collapse-item .ant-collapse-header) {
+      height: 36px;
+      box-shadow: none;
+    }
+
+    :global(.ant-collapse-content-box) {
+      padding: 0;
+    }
+  }
+
   .attribute {
     display: flex;
     align-items: center;

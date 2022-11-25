@@ -53,6 +53,7 @@ export interface ProductAttributeFormInput {
   name: string;
   attributes: ProductAttributeProps[];
   isChecked?: boolean;
+  selection: boolean;
 }
 
 export type ProductKeyword = [string, string, string, string];
