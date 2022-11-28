@@ -19,7 +19,7 @@ import { CustomRadio } from '@/components/CustomRadio';
 import { DoubleInput } from '@/components/EntryForm/DoubleInput';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { SimpleContentTable } from '@/components/Table/components/TableSummary';
+import { SimpleContentTable } from '@/components/Table/components/SimpleContentTable';
 import { MainTitle, RobotoBodyText } from '@/components/Typography';
 
 import { setCustomProductDetail } from '../../slice';
@@ -34,26 +34,32 @@ const DEFAULT_CONTENT: NameContentProps = {
   content: '',
 };
 
-export const SpecificationTab: FC<{ productId?: string; viewOnly?: boolean }> = ({
-  productId,
-  viewOnly,
-}) => {
+export const SpecificationTab: FC<{
+  productId?: string;
+  viewOnly?: boolean;
+  specifying?: boolean;
+}> = ({ productId, viewOnly, specifying }) => {
   const selectProductSpecification = useSelectProductSpecification();
   const [optionModalVisible, setOptionModalVisible] = useState<boolean>(false);
 
-  const { specification, options, dimension_and_weight, optionSpecification } = useAppSelector(
-    (state) => state.customProduct.details,
-  );
+  const {
+    specifications,
+    options,
+    dimension_and_weight,
+    specification: defaultSelection,
+    specifiedDetail,
+  } = useAppSelector((state) => state.customProduct.details);
+  const specification = specifiedDetail?.specification || defaultSelection;
 
   const [curOption, setCurOption] = useState<ProductOptionProps>(DEFAULT_PRODUCT_OPTION);
 
   const dimensionWeightData = dimension_and_weight;
 
   const handleDeleteSpecification = (id: string) => {
-    const newData = specification?.filter((filterItem) => filterItem.id !== id);
+    const newData = specifications?.filter((filterItem) => filterItem.id !== id);
     store.dispatch(
       setCustomProductDetail({
-        specification: newData,
+        specifications: newData,
       }),
     );
   };
@@ -61,7 +67,7 @@ export const SpecificationTab: FC<{ productId?: string; viewOnly?: boolean }> = 
   const handleAddSpecification = () => {
     store.dispatch(
       setCustomProductDetail({
-        specification: [...specification, { ...DEFAULT_CONTENT }],
+        specifications: [...specifications, { ...DEFAULT_CONTENT }],
       }),
     );
   };
@@ -69,11 +75,11 @@ export const SpecificationTab: FC<{ productId?: string; viewOnly?: boolean }> = 
   const onChangeSpecification =
     (fieldName: keyof Omit<NameContentProps, 'id'>, attributes: NameContentProps, index: number) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newSpecification = [...specification];
+      const newSpecification = [...specifications];
       newSpecification[index] = { ...attributes, [fieldName]: e.target.value };
       store.dispatch(
         setCustomProductDetail({
-          specification: newSpecification,
+          specifications: newSpecification,
         }),
       );
     };
@@ -126,14 +132,17 @@ export const SpecificationTab: FC<{ productId?: string; viewOnly?: boolean }> = 
 
   const renderOptionItems = (option: ProductOptionProps, optionIndex: number) => {
     if (viewOnly) {
-      const selectOption = optionSpecification.attribute_groups.find((el) => el.id === option.id);
+      const selectOption = specification.attribute_groups.find((el) => el.id === option.id);
       return (
         <CustomRadio
           options={option.items.map((el, index) => ({
             label: (
-              <div className="flex-center" style={{}}>
+              <div className="flex-start" style={{}}>
                 {option.use_image && el.image ? renderOptionImage(el.image) : null}
-                <RobotoBodyText level={5} customClass="text-overflow" style={{ paddingLeft: 24 }}>
+                <RobotoBodyText
+                  level={5}
+                  customClass="text-overflow"
+                  style={{ maxWidth: 'calc(100% - 52px)', paddingLeft: 24 }}>
                   {el.description}
                 </RobotoBodyText>
               </div>
@@ -149,13 +158,11 @@ export const SpecificationTab: FC<{ productId?: string; viewOnly?: boolean }> = 
             if (productId && value.value) {
               const optionId = option.id || '';
               const itemId = value.value.toString();
-              const newOptionSpec = cloneDeep(optionSpecification);
+              const newOptionSpec = cloneDeep(specification);
 
               newOptionSpec.is_refer_document = false;
 
-              const optIndex = optionSpecification.attribute_groups.findIndex(
-                (el) => el.id === optionId,
-              );
+              const optIndex = specification.attribute_groups.findIndex((el) => el.id === optionId);
               const newOption = {
                 id: optionId,
                 attributes: [
@@ -173,19 +180,27 @@ export const SpecificationTab: FC<{ productId?: string; viewOnly?: boolean }> = 
               }
 
               store.dispatch(
-                setCustomProductDetail({
-                  optionSpecification: newOptionSpec,
-                }),
+                setCustomProductDetail(
+                  specifying && specifiedDetail
+                    ? {
+                        specifiedDetail: { ...specifiedDetail, specification: newOptionSpec },
+                      }
+                    : {
+                        specification: newOptionSpec,
+                      },
+                ),
               );
-              selectProductSpecification(productId, {
-                custom_product: true,
-                specification: newOptionSpec,
-              });
+              if (!specifying) {
+                selectProductSpecification(productId, {
+                  custom_product: true,
+                  specification: newOptionSpec,
+                });
+              }
             }
           }}
           optionStyle={{
             boxShadow: option.use_image ? 'inset 0 0.7px 0 rgb(0 0 0 / 30%)' : undefined,
-            padding: option.use_image ? 16 : '8px 16px 8px 20px',
+            padding: specifying ? '8px 0' : option.use_image ? 16 : '8px 16px 8px 20px',
           }}
         />
       );
@@ -195,7 +210,7 @@ export const SpecificationTab: FC<{ productId?: string; viewOnly?: boolean }> = 
         {option.use_image && item.image ? (
           <Col flex="48px">{renderOptionImage(item.image)}</Col>
         ) : null}
-        <Col flex="auto" style={{ maxWidth: 'calc(100% - 66px)', paddingLeft: 24 }}>
+        <Col flex="auto" style={{ maxWidth: 'calc(100% - 52px)', paddingLeft: 24 }}>
           <RobotoBodyText level={5} customClass="text-overflow">
             {item.description}
           </RobotoBodyText>
@@ -216,48 +231,74 @@ export const SpecificationTab: FC<{ productId?: string; viewOnly?: boolean }> = 
     }
 
     return options.map((option: ProductOptionProps, optionIndex: number) => {
-      const selectOption = optionSpecification.attribute_groups.find((el) => el.id === option.id);
+      const selectOption = specification.attribute_groups.find((el) => el.id === option.id);
       return (
         <CustomCollapse
           key={option.id || optionIndex}
           defaultActiveKey={'1'}
-          showActiveBoxShadow
-          noBorder={viewOnly && option.use_image}
+          showActiveBoxShadow={!specifying}
+          noBorder={specifying || (viewOnly && option.use_image)}
           customHeaderClass={styles.optionCollapse}
           header={
             viewOnly ? (
               <Row style={{ width: '100%' }} align="middle" justify="space-between">
-                <Col style={{ paddingLeft: 16 }}>
+                <Col style={{ paddingLeft: specifying ? 0 : 16 }}>
                   <CustomCheckbox
-                    options={[{ label: option.title, value: optionIndex }]}
+                    options={[
+                      {
+                        label: <RobotoBodyText level={6}>{option.title}</RobotoBodyText>,
+                        value: optionIndex,
+                      },
+                    ]}
                     selected={
-                      selectOption?.isChecked ? [{ label: option.title, value: optionIndex }] : []
+                      selectOption?.isChecked
+                        ? [
+                            {
+                              label: <RobotoBodyText level={6}>{option.title}</RobotoBodyText>,
+                              value: optionIndex,
+                            },
+                          ]
+                        : []
                     }
                     onChange={() => {
                       if (productId && selectOption?.isChecked) {
                         const newOptionSpec = {
-                          is_refer_document: optionSpecification.attribute_groups.some(
+                          is_refer_document: specification.attribute_groups.some(
                             (el) => el.id !== selectOption.id && el.isChecked,
                           ),
-                          attribute_groups: optionSpecification.attribute_groups.filter(
+                          attribute_groups: specification.attribute_groups.filter(
                             (el) => el.id !== selectOption.id,
                           ),
                         };
+
                         store.dispatch(
-                          setCustomProductDetail({
-                            optionSpecification: newOptionSpec,
-                          }),
+                          setCustomProductDetail(
+                            specifying && specifiedDetail
+                              ? {
+                                  specifiedDetail: {
+                                    ...specifiedDetail,
+                                    specification: newOptionSpec,
+                                  },
+                                }
+                              : {
+                                  specification: newOptionSpec,
+                                },
+                          ),
                         );
-                        selectProductSpecification(productId, {
-                          custom_product: true,
-                          specification: newOptionSpec,
-                        });
+                        if (!specifying) {
+                          selectProductSpecification(productId, {
+                            custom_product: true,
+                            specification: newOptionSpec,
+                          });
+                        }
                       }
                     }}
                   />
                 </Col>
                 <Col flex="1 1 100px">
-                  <div className="flex-end">TAG: {option.tag}</div>
+                  <div className="flex-end">
+                    <RobotoBodyText level={6}>TAG: {option.tag}</RobotoBodyText>
+                  </div>
                 </Col>
               </Row>
             ) : (
@@ -308,9 +349,11 @@ export const SpecificationTab: FC<{ productId?: string; viewOnly?: boolean }> = 
 
   const renderSpecification = () => {
     if (viewOnly) {
-      return <SimpleContentTable items={specification} />;
+      return (
+        <SimpleContentTable items={specifications} tdStyle={specifying ? { paddingLeft: 0 } : {}} />
+      );
     }
-    return specification?.map((item, index) => (
+    return specifications?.map((item, index) => (
       <DoubleInput
         key={item.id || index}
         fontLevel={6}
@@ -336,6 +379,8 @@ export const SpecificationTab: FC<{ productId?: string; viewOnly?: boolean }> = 
     <>
       <DimensionWeight
         editable={!viewOnly}
+        viewOnly={specifying}
+        collapseStyles={!specifying}
         data={dimensionWeightData}
         onChange={(data) => {
           store.dispatch(

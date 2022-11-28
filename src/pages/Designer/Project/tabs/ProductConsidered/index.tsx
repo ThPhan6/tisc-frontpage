@@ -44,6 +44,7 @@ import { BodyText, RobotoBodyText } from '@/components/Typography';
 import { CustomDropDown } from '@/features/product/components';
 import ProductCard from '@/features/product/components/ProductCard';
 import cardStyles from '@/features/product/components/ProductCard.less';
+import { setCustomProductDetail } from '@/pages/Designer/Products/CustomLibrary/slice';
 
 const ProductConsidered: React.FC = () => {
   useAutoExpandNestedTableColumn(3, {
@@ -113,7 +114,27 @@ const ProductConsidered: React.FC = () => {
             disabled: record.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted,
             onClick: () => {
               setSpecifyingProduct(record);
-              if (record.specifiedDetail) {
+              if (!record.specifiedDetail) {
+                return;
+              }
+              if (record.specifiedDetail.custom_product) {
+                store.dispatch(
+                  setCustomProductDetail({
+                    specifiedDetail: {
+                      ...record.specifiedDetail,
+                      specification: {
+                        is_refer_document: record.specifiedDetail.specification.is_refer_document,
+                        attribute_groups: record.specifiedDetail.specification.attribute_groups.map(
+                          (el) => ({
+                            ...el,
+                            isChecked: true,
+                          }),
+                        ),
+                      },
+                    },
+                  }),
+                );
+              } else {
                 store.dispatch(setPartialProductSpecifiedData(record.specifiedDetail));
                 store.dispatch(
                   setPartialProductDetail({
@@ -121,14 +142,14 @@ const ProductConsidered: React.FC = () => {
                     brand_location_id: record.specifiedDetail.brand_location_id,
                   }),
                 );
+                store.dispatch(
+                  setReferToDesignDocument(
+                    typeof record.specifiedDetail?.specification?.is_refer_document === 'boolean'
+                      ? record.specifiedDetail?.specification?.is_refer_document
+                      : true,
+                  ),
+                );
               }
-              store.dispatch(
-                setReferToDesignDocument(
-                  typeof record.specifiedDetail?.specification?.is_refer_document === 'boolean'
-                    ? record.specifiedDetail?.specification?.is_refer_document
-                    : true,
-                ),
-              );
             },
           },
           {

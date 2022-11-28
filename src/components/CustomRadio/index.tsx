@@ -98,7 +98,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
           {options.map((option, index) => {
             if (stickyTopItem && index === 0) {
               return (
-                <div className={`${style.topItem} flex-center`}>{renderOption(option, index)}</div>
+                <div className={`${style.topItem} flex-start`}>{renderOption(option, index)}</div>
               );
             }
             return renderOption(option, index);

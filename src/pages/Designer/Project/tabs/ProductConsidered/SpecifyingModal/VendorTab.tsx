@@ -8,9 +8,10 @@ import { VendorLocation } from '@/features/vendor-location/VendorLocation';
 interface VendorTabProps {
   productId: string;
   brandId: string;
+  customProduct?: boolean;
 }
 
-const VendorTab: FC<VendorTabProps> = ({ productId, brandId }) => {
+const VendorTab: FC<VendorTabProps> = ({ productId, brandId, customProduct }) => {
   return (
     <div>
       <RenderEntireProjectLabel
@@ -23,7 +24,12 @@ const VendorTab: FC<VendorTabProps> = ({ productId, brandId }) => {
         }
       />
 
-      <VendorLocation brandId={brandId} productId={productId} isSpecifying />
+      <VendorLocation
+        brandId={brandId}
+        productId={productId}
+        isSpecifying
+        customProduct={customProduct}
+      />
     </div>
   );
 };
