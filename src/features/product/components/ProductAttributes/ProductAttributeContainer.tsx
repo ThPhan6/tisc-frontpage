@@ -134,8 +134,6 @@ export const ProductAttributeContainer: FC<Props> = ({
       );
     }
 
-    console.log('attribute', attribute);
-
     let chosenOption: SpecificationAttributeBasisOptionProps | undefined;
     if (groupIndex !== -1) {
       const curAttribute = attributeGroup[groupIndex]?.attributes?.[attrIndex];
@@ -216,61 +214,6 @@ export const ProductAttributeContainer: FC<Props> = ({
     }
   };
 
-  const renderDimensionWeight = () => {
-    if (activeKey !== 'specification' || (!dimensionWeightData.attributes.length && !isTiscAdmin))
-      return null;
-
-    if (isTiscAdmin) {
-      return (
-        <DimensionWeight
-          collapseStyles={!isSpecifiedModal}
-          editable={isTiscAdmin}
-          data={dimensionWeightData}
-          onChange={(data) => {
-            store.dispatch(
-              setPartialProductDetail({
-                dimension_and_weight: data,
-              }),
-            );
-          }}
-        />
-      );
-    }
-
-    const dwAttributes = isPublicPage
-      ? dimensionWeightData.attributes.filter((el) => el.conversion_value_1 !== '')
-      : dimensionWeightData.attributes;
-
-    return (
-      <CustomCollapse
-        defaultActiveKey={'1'}
-        showActiveBoxShadow={!specifying}
-        noBorder={noBorder}
-        customHeaderClass={`${styles.productAttributeItem} ${styles.marginTopSpace} ${
-          specifying ? styles.specifying : ''
-        }`}
-        header={
-          <div className={styles.attrGroupTitle}>
-            <RobotoBodyText level={6}>{dimensionWeightData.name}</RobotoBodyText>
-          </div>
-        }>
-        <div className={isSpecifiedModal ? styles.paddingNone : styles.paddingRounded}>
-          <table className={styles.table}>
-            <tbody>
-              {dwAttributes.map((attribute, attrIndex) => {
-                if (
-                  attribute.with_diameter === dimensionWeightData.with_diameter ||
-                  attribute.with_diameter === null
-                )
-                  return renderAttributeRowItem(attribute, attrIndex, dimensionWeightData.name);
-              })}
-            </tbody>
-          </table>
-        </div>
-      </CustomCollapse>
-    );
-  };
-
   return (
     <>
       {isTiscAdmin ? (
@@ -282,7 +225,21 @@ export const ProductAttributeContainer: FC<Props> = ({
         />
       ) : null}
 
-      {renderDimensionWeight()}
+      <DimensionWeight
+        collapseStyles={!isSpecifiedModal}
+        customClass={!isTiscAdmin ? styles.marginTopSpace : ''}
+        editable={isTiscAdmin}
+        isSpecifying={isSpecifiedModal}
+        isShow={activeKey === 'specification'}
+        data={dimensionWeightData}
+        onChange={(data) => {
+          store.dispatch(
+            setPartialProductDetail({
+              dimension_and_weight: data,
+            }),
+          );
+        }}
+      />
 
       {attributeGroup.map((_group, groupIndex) => {
         const attrGroupItem = attributeGroup[groupIndex];

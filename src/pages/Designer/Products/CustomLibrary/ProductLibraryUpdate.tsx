@@ -107,11 +107,11 @@ const ProductLibraryUpdate: React.FC = () => {
     <Row className={styles.container}>
       <Col span={24}>
         <ProductDetailHeader
-          title={productData.name || ''}
+          title={productData.name || 'Entry the product info below'}
           onSave={onSave}
           onCancel={history.goBack}
           hideSelect
-          customClass={styles.marginBottomSpace}
+          customClass={`${styles.marginBottomSpace} ${productData.name ? '' : styles.colorLight}`}
         />
       </Col>
 
@@ -144,7 +144,7 @@ const ProductLibraryUpdate: React.FC = () => {
                 </CustomTabPane>
 
                 <CustomTabPane active={activeKey === 'specification'}>
-                  <SpecificationTab productId={productId} />
+                  <SpecificationTab productId={productId} activeKey="specification" />
                 </CustomTabPane>
               </Col>
             </Row>

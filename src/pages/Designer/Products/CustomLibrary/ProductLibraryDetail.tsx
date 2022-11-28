@@ -70,7 +70,7 @@ const ProductLibraryDetail: React.FC = () => {
                 </CustomTabPane>
 
                 <CustomTabPane active={activeKey === 'specification'}>
-                  <SpecificationTab productId={productId} viewOnly />
+                  <SpecificationTab productId={productId} activeKey={'specification'} viewOnly />
                 </CustomTabPane>
               </Col>
             </Row>

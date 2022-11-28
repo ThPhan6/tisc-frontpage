@@ -271,6 +271,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
               <ActionMenu
                 placement="bottomLeft"
                 offsetAlign={[-12, -6]}
+                className={styles.actionMenu}
+                overlayClassName={styles.actionMenuOverLay}
                 actionItems={[
                   {
                     type: 'copy',

@@ -58,8 +58,8 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   const referToDesignDocument: boolean = customProduct
     ? specifiedDetail?.specification.is_refer_document
     : curProduct.referToDesignDocument;
-  console.log('specifiedDetail', specifiedDetail);
-  console.log('referToDesignDocument', referToDesignDocument);
+  // console.log('specifiedDetail', specifiedDetail);
+  // console.log('referToDesignDocument', referToDesignDocument);
 
   const specification_attribute_groups = useAppSelector(
     (state) => state.product.details.specification_attribute_groups,

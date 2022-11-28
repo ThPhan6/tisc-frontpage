@@ -32,7 +32,7 @@ export const CustomResourceTopBar = () => {
         <>
           <TopBarItem
             topValue={
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
                 <Title level={8} style={{ marginRight: '8px' }}>
                   CLOSE
                 </Title>

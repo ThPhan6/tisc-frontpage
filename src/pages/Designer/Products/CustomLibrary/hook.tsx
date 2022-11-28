@@ -188,7 +188,7 @@ export const useCustomProductFilter = (fetchs: {
         items={renderDropDowmItem()}
         viewAllTop={haveViewAll}
         placement={position ?? 'bottomLeft'}
-        menuStyle={{ height: 'max-content', width: 240 }}>
+        menuStyle={{ height: 'max-content', width: 160 }}>
         {type}
       </CustomDropDown>
     );

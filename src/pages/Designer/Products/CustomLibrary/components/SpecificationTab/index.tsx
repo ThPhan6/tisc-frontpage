@@ -10,7 +10,7 @@ import { useSelectProductSpecification } from '@/features/product/services';
 import { showImageUrl } from '@/helper/utils';
 import { cloneDeep } from 'lodash';
 
-import { NameContentProps, ProductOptionProps } from '../../types';
+import { NameContentProps, ProductInfoTab, ProductOptionProps } from '../../types';
 import store, { useAppSelector } from '@/reducers';
 
 import CustomCollapse from '@/components/Collapse';
@@ -38,7 +38,8 @@ export const SpecificationTab: FC<{
   productId?: string;
   viewOnly?: boolean;
   specifying?: boolean;
-}> = ({ productId, viewOnly, specifying }) => {
+  activeKey: ProductInfoTab;
+}> = ({ productId, viewOnly, specifying, activeKey }) => {
   const selectProductSpecification = useSelectProductSpecification();
   const [optionModalVisible, setOptionModalVisible] = useState<boolean>(false);
 
@@ -55,19 +56,19 @@ export const SpecificationTab: FC<{
 
   const dimensionWeightData = dimension_and_weight;
 
-  const handleDeleteSpecification = (id: string) => {
-    const newData = specifications?.filter((filterItem) => filterItem.id !== id);
-    store.dispatch(
-      setCustomProductDetail({
-        specifications: newData,
-      }),
-    );
-  };
-
   const handleAddSpecification = () => {
     store.dispatch(
       setCustomProductDetail({
         specifications: [...specifications, { ...DEFAULT_CONTENT }],
+      }),
+    );
+  };
+
+  const handleDeleteSpecification = (specIndex: number) => {
+    const newData = specifications?.filter((_item, itemIndex) => itemIndex !== specIndex);
+    store.dispatch(
+      setCustomProductDetail({
+        specifications: newData,
       }),
     );
   };
@@ -360,10 +361,7 @@ export const SpecificationTab: FC<{
         doubleInputClass="mb-8"
         leftIcon={<ScrollIcon />}
         rightIcon={
-          <DeleteIcon
-            className="cursor-pointer"
-            onClick={() => handleDeleteSpecification(item.id)}
-          />
+          <DeleteIcon className="cursor-pointer" onClick={() => handleDeleteSpecification(index)} />
         }
         firstValue={item.name}
         firstPlaceholder="type name"
@@ -378,8 +376,8 @@ export const SpecificationTab: FC<{
   return (
     <>
       <DimensionWeight
-        editable={!viewOnly}
-        viewOnly={specifying}
+        editable={!viewOnly || !specifying}
+        isShow={activeKey === 'specification'}
         collapseStyles={!specifying}
         data={dimensionWeightData}
         onChange={(data) => {
@@ -392,7 +390,7 @@ export const SpecificationTab: FC<{
       />
 
       {viewOnly ? null : (
-        <div className="flex-end pr-16">
+        <div className="flex-end pr-16 mb-8">
           <CustomPlusButton
             size={18}
             label="Add Specification"
