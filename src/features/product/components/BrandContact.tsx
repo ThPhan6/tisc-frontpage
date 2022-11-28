@@ -1,5 +1,7 @@
 import { FC } from 'react';
 
+import { ContactDetail } from '@/pages/Designer/CustomResource/type';
+
 import { RobotoBodyText } from '@/components/Typography';
 
 import styles from './BrandContact.less';
@@ -15,6 +17,7 @@ export interface BusinessDetailProps {
   first_name?: string;
   last_name?: string;
   customClass?: string;
+  contacts?: ContactDetail[];
 }
 export const BusinessDetail: FC<BusinessDetailProps> = ({
   business = '',
@@ -26,6 +29,7 @@ export const BusinessDetail: FC<BusinessDetailProps> = ({
   first_name = '',
   last_name = '',
   customClass = '',
+  contacts,
 }) => {
   return (
     <div className={`${styles.detail} ${customClass}`}>
@@ -40,25 +44,46 @@ export const BusinessDetail: FC<BusinessDetailProps> = ({
       <RobotoBodyText level={6} customClass={styles.detail_address}>
         {address}
       </RobotoBodyText>
-      <div className={styles.detail_phoneEmail}>
-        {general_phone ? (
-          <RobotoBodyText level={6} customClass={styles.phone}>
-            T: {`${phone_code} ${general_phone}`}
-          </RobotoBodyText>
-        ) : (
-          ''
-        )}
-        {genernal_email ? <RobotoBodyText level={6}>E: {genernal_email}</RobotoBodyText> : ''}
-      </div>
-      <span className={styles.detail_contact}>
-        {first_name ? (
-          <RobotoBodyText level={6}>
-            Contact: {first_name} {last_name}
-          </RobotoBodyText>
-        ) : (
-          ''
-        )}
-      </span>
+
+      {contacts?.length ? (
+        contacts.map((el) => (
+          <div style={{ paddingTop: 8, paddingLeft: 16 }}>
+            <div className={styles.detail_phoneEmail}>
+              <RobotoBodyText level={6} customClass={styles.phone}>
+                T: {`${phone_code} ${el.work_phone}`}
+              </RobotoBodyText>
+              <RobotoBodyText level={6}>E: {el.work_email}</RobotoBodyText>
+            </div>
+            <span className={styles.detail_contact}>
+              <RobotoBodyText level={6}>
+                Contact: {el.first_name} {el.last_name}
+              </RobotoBodyText>
+            </span>
+          </div>
+        ))
+      ) : (
+        <>
+          <div className={styles.detail_phoneEmail}>
+            {general_phone ? (
+              <RobotoBodyText level={6} customClass={styles.phone}>
+                T: {`${phone_code} ${general_phone}`}
+              </RobotoBodyText>
+            ) : (
+              ''
+            )}
+            {genernal_email ? <RobotoBodyText level={6}>E: {genernal_email}</RobotoBodyText> : ''}
+          </div>
+          <span className={styles.detail_contact}>
+            {first_name ? (
+              <RobotoBodyText level={6}>
+                Contact: {first_name} {last_name}
+              </RobotoBodyText>
+            ) : (
+              ''
+            )}
+          </span>
+        </>
+      )}
     </div>
   );
 };

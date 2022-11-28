@@ -2,7 +2,6 @@ import { FC, useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
-import { useParams } from 'umi';
 
 import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
@@ -10,6 +9,7 @@ import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-f
 import { selectProductSpecification } from '../product/services';
 import { useCheckPermission, useQuery } from '@/helper/hook';
 import { getBusinessAddress } from '@/helper/utils';
+import { getCustomDistributorByCompany } from '@/pages/Designer/Products/CustomLibrary/services';
 import { isEmpty } from 'lodash';
 
 import { RadioValue } from '@/components/CustomRadio/types';
@@ -91,6 +91,7 @@ interface VendorTabProps {
   userSelection?: boolean;
   borderBottomNone?: boolean;
   isSpecifying?: boolean;
+  customProduct?: boolean;
 }
 
 export const VendorLocation: FC<VendorTabProps> = ({
@@ -99,10 +100,8 @@ export const VendorLocation: FC<VendorTabProps> = ({
   userSelection,
   borderBottomNone,
   isSpecifying,
+  customProduct,
 }) => {
-  ///
-  const params = useParams<{ id: string }>();
-  //
   // for brand
   const [brandActiveKey, setBrandActiveKey] = useState<string | string[]>();
   const [brandAddresses, setBrandAddresses] = useState<LocationGroupedByCountry[]>([]);
@@ -151,18 +150,18 @@ export const VendorLocation: FC<VendorTabProps> = ({
           }
         });
       }
-
+      const fetchDistributorsFunc = customProduct
+        ? getCustomDistributorByCompany
+        : getDistributorLocation;
       if (productId) {
-        getDistributorLocation(productId, isSpecifying && params.id ? params.id : undefined).then(
-          (data) => {
-            if (data) {
-              setDistributorAddresses(data);
-            }
-          },
-        );
+        fetchDistributorsFunc(customProduct ? brandId : productId).then((data) => {
+          if (data) {
+            setDistributorAddresses(data);
+          }
+        });
       }
     }
-  }, []);
+  }, [customProduct]);
 
   const handleCollapse = (field: 'brand' | 'distributor', key: string | string[]) => {
     const collapseKey = typeof key === 'string' ? key : key[0];
@@ -393,7 +392,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
                     value: distributor.id,
                     label: (
                       <BusinessDetail
-                        business={distributor.name}
+                        business={distributor.business_name || distributor.name}
                         address={getBusinessAddress(distributor)}
                         country={distributor.country_name.toUpperCase()}
                         phone_code={distributor.phone_code}
@@ -401,6 +400,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
                         genernal_email={distributor.email}
                         first_name={distributor.first_name}
                         last_name={distributor.last_name}
+                        contacts={distributor.contacts}
                       />
                     ),
                   };

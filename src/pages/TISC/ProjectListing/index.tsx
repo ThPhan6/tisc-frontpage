@@ -136,6 +136,11 @@ const ProjectListing = () => {
         hasPagination
         autoLoad={false}
         ref={tableRef}
+        onRow={(rowRecord: ProjectListingResponse) => ({
+          onClick: () => {
+            pushTo(PATH.tiscProjectListingDetail.replace(':id', rowRecord.id));
+          },
+        })}
       />
     </ProjectListingHeader>
   );
