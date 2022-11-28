@@ -13,4 +13,5 @@ export interface CustomSaveButtonProps {
   isSuccess?: boolean;
   onClick?: () => void;
   customClass?: string;
+  contentButton?: string;
 }

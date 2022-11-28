@@ -52,7 +52,15 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId, height, cont
         <div style={{ background: '#fff', height: `${height}` }}>
           <TableHeader
             title={data.projects.name}
-            rightAction={<CloseIcon onClick={() => history.back()} style={{ cursor: 'pointer' }} />}
+            rightAction={
+              <CloseIcon
+                onClick={() => !data.isOpenDetailItem && history.back()}
+                style={{
+                  cursor: data.isOpenDetailItem ? 'not-allowed' : 'pointer',
+                  color: data.isOpenDetailItem ? '#bfbfbf' : '',
+                }}
+              />
+            }
           />
           <CustomTabs
             listTab={LIST_TAB}

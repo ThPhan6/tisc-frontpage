@@ -333,6 +333,14 @@ export const MESSAGE_NOTIFICATION = {
   GET_LIST_VENDOR: 'Failed to get list vendor by brand or distributor',
   CREATE_CUSTOM_RESOURCE_SUCCESS: 'Create custom resource successfully',
   UPDATE_CUSTOM_RESOURCE_SUCCESS: 'Update custom resource successfully',
+
+  //service
+  CREATE_SERVICE_SUCCESS: 'Create service successfully',
+  UPDATE_SERVICE_SUCCESS: 'Update service successfully',
+  SENT_BILL_SUCCESS: 'Sent bill to brand successfully',
+  SENT_REMIND_SUCCESS: 'Sent remind to brand successfully',
+  MARK_AS_PAID_SUCCESS: 'Mark as paid successfully',
+  DELETE_SERVICE_SUCCESS: 'Delete service successfully',
 };
 
 export const MESSAGE_TOOLTIP = {
