@@ -255,7 +255,7 @@ export const useSelectProductSpecification = () => {
     debounce(
       (productId: string, data: Partial<SelectSpecificationBodyRequest>) =>
         selectProductSpecification(productId, data),
-      1000,
+      500,
     ),
     [],
   );

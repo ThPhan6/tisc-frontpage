@@ -1,3 +1,5 @@
+import { ContactDetail } from '@/pages/Designer/CustomResource/type';
+
 export interface DistributorsProp {
   distributorName: string;
   country: string;
@@ -75,8 +77,8 @@ export interface DistributorProductMarket {
     authorized_country_ids: string[];
     authorized_country_name: string;
     coverage_beyond: boolean;
-    created_at: string;
-    is_deleted: string;
+    business_name?: string;
+    contacts?: ContactDetail[];
   }[];
 }
 

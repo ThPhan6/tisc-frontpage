@@ -7,8 +7,7 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-ico
 
 import { getOneCustomProduct } from './services';
 
-import { NameContentProps, ProductInfoTab, ProductOptionProps } from './types';
-import { ProductDimensionWeight } from '@/features/dimension-weight/types';
+import { ProductInfoTab } from './types';
 import { useAppSelector } from '@/reducers';
 
 import { SpecificationTab } from './components/SpecificationTab';
@@ -23,18 +22,6 @@ const LIST_TAB = [
   { tab: 'SUMMARY', key: 'summary' },
   { tab: 'SPECIFICATION', key: 'specification' },
 ];
-
-export interface CustomProductRequestBody {
-  name: string;
-  description: string;
-  images: string[];
-  dimension_and_weight: ProductDimensionWeight;
-  attributes: NameContentProps[];
-  specification: NameContentProps[];
-  options: ProductOptionProps[];
-  collection_id: string;
-  company_id: string;
-}
 
 const ProductLibraryDetail: React.FC = () => {
   const history = useHistory();
