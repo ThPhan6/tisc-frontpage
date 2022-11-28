@@ -1,4 +1,6 @@
 import { MemberAssignedForm } from '@/components/AssignTeam/type';
+import { LocationDetail } from '@/features/locations/type';
+import { ContactDetail } from '@/pages/Designer/CustomResource/type';
 
 export interface TISCUserGroupBrandForm {
   name: string;
@@ -49,9 +51,8 @@ export interface BrandDetail {
   slogan: string | null;
   status: number;
   team_profile_ids: any;
-  // image?: string;
-  // collection_name?: string;
-  // description?: string;
+  location?: LocationDetail;
+  contacts?: ContactDetail[];
 }
 
 export interface BrandAlphabet {

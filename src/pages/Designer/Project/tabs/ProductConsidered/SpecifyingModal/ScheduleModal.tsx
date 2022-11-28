@@ -11,6 +11,7 @@ import store, { useAppSelector } from '@/reducers';
 
 import Popover from '@/components/Modal/Popover';
 import { RobotoBodyText } from '@/components/Typography';
+import { updateCustomProductSpecifiedDetail } from '@/pages/Designer/Products/CustomLibrary/slice';
 
 import { CodeOrderTabProps } from './CodeOrderTab';
 import styles from './styles/schedule-modal.less';
@@ -43,31 +44,41 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
   roomIds,
   visible,
   setVisible,
+  customProduct,
 }) => {
   const selectedRoomIds = roomIds.length ? roomIds.map((roomId) => roomId).join(',') : undefined;
 
-  const finishSchedulesData = useAppSelector(
-    (state) => state.product.details.specifiedDetail?.finish_schedules,
+  const finishSchedulesData = useAppSelector((state) =>
+    customProduct
+      ? state.customProduct.details.specifiedDetail?.finish_schedules
+      : state.product.details.specifiedDetail?.finish_schedules,
   );
 
   useEffect(() => {
     if (projectProductId) {
-      getFinishScheduleList(projectProductId, selectedRoomIds ?? []);
+      getFinishScheduleList(projectProductId, selectedRoomIds ?? [], customProduct);
     }
-  }, [selectedRoomIds]);
+  }, [selectedRoomIds, customProduct]);
 
   const onChangeData =
     (index: number, type: string, field?: KeyField) => (e: CheckboxChangeEvent) => {
       if (finishSchedulesData) {
-        const dataClone = cloneDeep(finishSchedulesData);
-        const newData = dataClone[index];
+        const newScheduleData = cloneDeep(finishSchedulesData);
+        const newData = newScheduleData[index];
         if (field) {
           newData[type][field] = e.target.checked;
         } else {
           newData[type] = e.target.checked;
         }
-
-        store.dispatch(setFinishScheduleData(dataClone));
+        if (customProduct) {
+          store.dispatch(
+            updateCustomProductSpecifiedDetail({
+              finish_schedules: newScheduleData,
+            }),
+          );
+        } else {
+          store.dispatch(setFinishScheduleData(newScheduleData));
+        }
       }
     };
 

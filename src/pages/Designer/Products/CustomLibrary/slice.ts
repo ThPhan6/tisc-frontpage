@@ -61,6 +61,14 @@ const libraryResources = createSlice({
     setCustomProductDetail(state, action: PayloadAction<Partial<CustomProductDetailProps>>) {
       state.details = { ...state.details, ...action.payload };
     },
+    updateCustomProductSpecifiedDetail(
+      state,
+      action: PayloadAction<Partial<CustomProductDetailProps['specifiedDetail']>>,
+    ) {
+      if (state.details.specifiedDetail) {
+        state.details.specifiedDetail = { ...state.details.specifiedDetail, ...action.payload };
+      }
+    },
     updateCustomProductOption: (state, action: PayloadAction<ProductOptionProps>) => {
       const curOption = action.payload.id
         ? state.details.options.findIndex((el) => el.id === action.payload.id)
@@ -113,6 +121,7 @@ export const {
   resetCustomProductState,
   updateCustomProductOption,
   onCheckCustomProductReferToDocument,
+  updateCustomProductSpecifiedDetail,
 } = libraryResources.actions;
 export const officeProductReducer = libraryResources.reducer;
 

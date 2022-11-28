@@ -10,16 +10,18 @@ export const SimpleContentTable: FC<{ items: NameContentProps[]; tdStyle?: CSSPr
 }) => {
   return (
     <table style={{ width: '100%', tableLayout: 'fixed' }} className={styles.table}>
-      {items.map((item, index) => (
-        <tr key={item.id || index}>
-          <td className="text-overflow" title={item.name} style={tdStyle}>
-            {item.name}
-          </td>
-          <td className="text-overflow" title={item.content} style={tdStyle}>
-            {item.content}
-          </td>
-        </tr>
-      ))}
+      <tbody>
+        {items.map((item, index) => (
+          <tr key={item.id || index}>
+            <td className="text-overflow" title={item.name} style={tdStyle}>
+              {item.name}
+            </td>
+            <td className="text-overflow" title={item.content} style={tdStyle}>
+              {item.content}
+            </td>
+          </tr>
+        ))}
+      </tbody>
     </table>
   );
 };

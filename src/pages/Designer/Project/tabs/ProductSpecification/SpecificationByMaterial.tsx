@@ -25,7 +25,7 @@ import CustomTable from '@/components/Table';
 import { RobotoBodyText } from '@/components/Typography';
 
 export const SpecificationByMaterial: FC = () => {
-  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
+  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 3 });
   const tableRef = useRef<any>();
   const [visible, setVisible] = useState<boolean>(false);
 
@@ -36,7 +36,7 @@ export const SpecificationByMaterial: FC = () => {
     {
       title: 'Material Code',
       dataIndex: 'material_order',
-      sorter: true,
+      sorter: { multiple: 1 },
       render: (_value, record) => <span>{record.specifiedDetail?.material_code}</span>,
       onCell: onCellCancelled,
     },
@@ -66,7 +66,7 @@ export const SpecificationByMaterial: FC = () => {
     {
       title: 'Brand',
       dataIndex: 'brand_order',
-      sorter: true,
+      sorter: { multiple: 1 },
       render: (_value, record) => <span>{record.brand?.name}</span>,
       onCell: onCellCancelled,
     },

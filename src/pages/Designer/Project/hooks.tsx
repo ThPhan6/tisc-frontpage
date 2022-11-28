@@ -17,6 +17,7 @@ import {
 import { confirmDelete } from '@/helper/common';
 
 import {
+  setPartialProductDetail,
   setPartialProductSpecifiedData,
   setReferToDesignDocument,
 } from '@/features/product/reducers';
@@ -27,6 +28,7 @@ import store from '@/reducers';
 import { ActionMenu } from '@/components/TableAction';
 import { CustomDropDown } from '@/features/product/components';
 
+import { setCustomProductDetail } from '../Products/CustomLibrary/slice';
 import { SpecifyingModal } from './tabs/ProductConsidered/SpecifyingModal';
 
 export const useSpecifyingModal = (tableRef: any) => {
@@ -92,6 +94,43 @@ export const renderSpecifiedStatusDropdown =
     );
   };
 
+export const onOpenSpecifiyingProductModal = (record: ProjectProductItem) => {
+  if (!record.specifiedDetail) {
+    return;
+  }
+  if (record.specifiedDetail.custom_product) {
+    store.dispatch(
+      setCustomProductDetail({
+        specifiedDetail: {
+          ...record.specifiedDetail,
+          specification: {
+            is_refer_document: record.specifiedDetail.specification.is_refer_document,
+            attribute_groups: record.specifiedDetail.specification.attribute_groups.map((el) => ({
+              ...el,
+              isChecked: true,
+            })),
+          },
+        },
+      }),
+    );
+  } else {
+    store.dispatch(setPartialProductSpecifiedData(record.specifiedDetail));
+    store.dispatch(
+      setPartialProductDetail({
+        distributor_location_id: record.specifiedDetail.distributor_location_id,
+        brand_location_id: record.specifiedDetail.brand_location_id,
+      }),
+    );
+    store.dispatch(
+      setReferToDesignDocument(
+        typeof record.specifiedDetail?.specification?.is_refer_document === 'boolean'
+          ? record.specifiedDetail?.specification?.is_refer_document
+          : true,
+      ),
+    );
+  }
+};
+
 export const renderActionCell =
   (setSpecifyingProduct: (productItem: ProductItem) => void, tableRef: any, checkRoom?: boolean) =>
   (_value: any, record: any) => {
@@ -107,16 +146,7 @@ export const renderActionCell =
             disabled: record.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled,
             onClick: () => {
               setSpecifyingProduct(record);
-              if (record.specifiedDetail) {
-                store.dispatch(setPartialProductSpecifiedData(record.specifiedDetail));
-              }
-              store.dispatch(
-                setReferToDesignDocument(
-                  typeof record.specifiedDetail?.specification?.is_refer_document === 'boolean'
-                    ? record.specifiedDetail?.specification?.is_refer_document
-                    : true,
-                ),
-              );
+              onOpenSpecifiyingProductModal(record);
             },
           },
           {
