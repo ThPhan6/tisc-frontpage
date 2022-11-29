@@ -28,7 +28,7 @@ interface BrandListProps {
 
 const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
   useAutoExpandNestedTableColumn(1, {
-    rightColumnExcluded: 3,
+    rightColumnExcluded: 4,
   });
   const [visible, setVisible] = useState<boolean>(false);
 
@@ -39,9 +39,10 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     {
       title: 'Brand',
       dataIndex: 'brand_order',
-      sorter: true,
+      sorter: { multiple: 1 },
       isExpandable: true,
       render: (_value, record) => <span>{record.name}</span>,
+      defaultSortOrder: 'ascend',
     },
     {
       title: 'Collection',
@@ -150,7 +151,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
   return (
     <>
       <CustomTable
-        columns={setDefaultWidthForEachColumn(BrandColumns, 3)}
+        columns={setDefaultWidthForEachColumn(BrandColumns, 4)}
         extraParams={{ projectId }}
         ref={tableRef}
         hasPagination={false}
@@ -159,7 +160,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
         }}
         fetchDataFunc={getSpecifiedProductsByBrand}
         expandable={GetExpandableTableConfig({
-          columns: setDefaultWidthForEachColumn(CollectionColumns, 3),
+          columns: setDefaultWidthForEachColumn(CollectionColumns, 4),
           childrenColumnName: 'products',
           level: 2,
         })}

@@ -1,5 +1,7 @@
 import { FC } from 'react';
 
+import { BrandDetail } from '@/features/user-group/types';
+
 import { RenderEntireProjectLabel } from '@/components/RenderHeaderLabel';
 import { RobotoBodyText } from '@/components/Typography';
 
@@ -8,9 +10,11 @@ import { VendorLocation } from '@/features/vendor-location/VendorLocation';
 interface VendorTabProps {
   productId: string;
   brandId: string;
+  customProduct?: boolean;
+  brand?: BrandDetail;
 }
 
-const VendorTab: FC<VendorTabProps> = ({ productId, brandId }) => {
+const VendorTab: FC<VendorTabProps> = ({ productId, brandId, customProduct, brand }) => {
   return (
     <div>
       <RenderEntireProjectLabel
@@ -23,7 +27,13 @@ const VendorTab: FC<VendorTabProps> = ({ productId, brandId }) => {
         }
       />
 
-      <VendorLocation brandId={brandId} productId={productId} isSpecifying />
+      <VendorLocation
+        brandId={brandId}
+        productId={productId}
+        isSpecifying
+        customProduct={customProduct}
+        brand={brand}
+      />
     </div>
   );
 };

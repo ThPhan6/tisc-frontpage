@@ -1,4 +1,5 @@
 import { ProductDimensionWeight } from '@/features/dimension-weight/types';
+import { SpecifiedDetail } from '@/features/product/types';
 import { SpecificationBodyRequest } from '@/features/project/types';
 import { GeneralData } from '@/types';
 
@@ -50,11 +51,12 @@ export interface CustomProductDetailProps {
   images: string[];
   dimension_and_weight: ProductDimensionWeight;
   attributes: NameContentProps[];
-  specification: NameContentProps[];
+  specifications: NameContentProps[];
   options: ProductOptionProps[];
   collection: GeneralData;
   company: GeneralData;
-  optionSpecification: SpecificationBodyRequest;
+  specification: SpecificationBodyRequest;
+  specifiedDetail?: SpecifiedDetail;
 }
 
 export interface CustomProductDetailResponse
@@ -63,4 +65,16 @@ export interface CustomProductDetailResponse
   collection_name: string;
   company_id: string;
   company_name: string;
+}
+
+export interface CustomProductRequestBody {
+  name: string;
+  description: string;
+  images: string[];
+  dimension_and_weight: ProductDimensionWeight;
+  attributes: NameContentProps[];
+  specifications: NameContentProps[];
+  options: ProductOptionProps[];
+  collection_id: string;
+  company_id: string;
 }

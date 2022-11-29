@@ -2,7 +2,6 @@ import { FC, useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
-import { useParams } from 'umi';
 
 import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
@@ -10,8 +9,10 @@ import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-f
 import { selectProductSpecification } from '../product/services';
 import { useCheckPermission, useQuery } from '@/helper/hook';
 import { getBusinessAddress } from '@/helper/utils';
+import { getCustomDistributorByCompany } from '@/pages/Designer/Products/CustomLibrary/services';
 import { isEmpty } from 'lodash';
 
+import { BrandDetail } from '../user-group/types';
 import { RadioValue } from '@/components/CustomRadio/types';
 import { DistributorProductMarket } from '@/features/distributors/type';
 import { LocationDetail, LocationGroupedByCountry } from '@/features/locations/type';
@@ -22,6 +23,7 @@ import CustomCollapse from '@/components/Collapse';
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
 import { BusinessDetail } from '@/features/product/components/BrandContact';
+import { updateCustomProductSpecifiedDetail } from '@/pages/Designer/Products/CustomLibrary/slice';
 
 import styles from './VendorLocation.less';
 import { getBrandLocation, getDistributorLocation } from '@/features/locations/api';
@@ -37,7 +39,7 @@ const getSelectedLocation = (locationGroup: LocationGroupedByCountry[], selected
     label: selectedLocation ? (
       <BusinessDetail
         business={selectedLocation.business_name}
-        type={selectedLocation.functional_types[0]?.name}
+        type={selectedLocation.functional_types?.[0]?.name}
         address={getBusinessAddress(selectedLocation)}
         country={selectedLocation.country_name.toUpperCase()}
         phone_code={selectedLocation.phone_code}
@@ -91,6 +93,8 @@ interface VendorTabProps {
   userSelection?: boolean;
   borderBottomNone?: boolean;
   isSpecifying?: boolean;
+  customProduct?: boolean;
+  brand?: BrandDetail;
 }
 
 export const VendorLocation: FC<VendorTabProps> = ({
@@ -99,10 +103,9 @@ export const VendorLocation: FC<VendorTabProps> = ({
   userSelection,
   borderBottomNone,
   isSpecifying,
+  customProduct,
+  brand,
 }) => {
-  ///
-  const params = useParams<{ id: string }>();
-  //
   // for brand
   const [brandActiveKey, setBrandActiveKey] = useState<string | string[]>();
   const [brandAddresses, setBrandAddresses] = useState<LocationGroupedByCountry[]>([]);
@@ -111,10 +114,18 @@ export const VendorLocation: FC<VendorTabProps> = ({
   const [distributorActiveKey, setDistributorActiveKey] = useState<string | string[]>();
   const [distributorAddresses, setDistributorAddresses] = useState<DistributorProductMarket[]>([]);
 
-  const brandLocationId = useAppSelector((state) => state.product.details.brand_location_id);
-  const distributorLocationId = useAppSelector(
-    (state) => state.product.details.distributor_location_id,
-  );
+  const brandLocationId =
+    useAppSelector((state) =>
+      customProduct
+        ? state.customProduct.details.specifiedDetail?.brand_location_id
+        : state.product.details.brand_location_id,
+    ) || '';
+  const distributorLocationId =
+    useAppSelector((state) =>
+      customProduct
+        ? state.customProduct.details.specifiedDetail?.distributor_location_id
+        : state.product.details.distributor_location_id,
+    ) || '';
 
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
@@ -143,26 +154,35 @@ export const VendorLocation: FC<VendorTabProps> = ({
   };
 
   useEffect(() => {
-    if (!isTiscAdmin) {
-      if (brandId) {
-        getBrandLocation(brandId).then((data) => {
-          if (data) {
-            setBrandAddresses(data);
-          }
-        });
-      }
-
-      if (productId) {
-        getDistributorLocation(productId, isSpecifying && params.id ? params.id : undefined).then(
-          (data) => {
-            if (data) {
-              setDistributorAddresses(data);
-            }
-          },
-        );
-      }
+    if (isTiscAdmin || !brandId || !productId) {
+      return;
     }
-  }, []);
+
+    const fetchDistributorsFunc = customProduct
+      ? getCustomDistributorByCompany
+      : getDistributorLocation;
+    fetchDistributorsFunc(customProduct ? brandId : productId).then((data) => {
+      if (data) {
+        setDistributorAddresses(data);
+      }
+    });
+
+    if (customProduct) {
+      setBrandAddresses([
+        {
+          country_name: brand?.location?.country_name || '',
+          count: 1,
+          locations: brand?.location ? [brand.location] : [],
+        },
+      ]);
+    } else {
+      getBrandLocation(brandId).then((data) => {
+        if (data) {
+          setBrandAddresses(data);
+        }
+      });
+    }
+  }, [customProduct, brand]);
 
   const handleCollapse = (field: 'brand' | 'distributor', key: string | string[]) => {
     const collapseKey = typeof key === 'string' ? key : key[0];
@@ -178,17 +198,17 @@ export const VendorLocation: FC<VendorTabProps> = ({
 
   const handleOnChangeSpecifying = (checked: RadioValue) => {
     const newValue = checked?.value ? String(checked.value) : '';
-    if (locationPopup === 'brand') {
-      store.dispatch(setPartialProductDetail({ brand_location_id: newValue }));
-      if (userSelection) {
-        selectProductSpecification(productId, { brand_location_id: newValue });
-      }
-    }
-    if (locationPopup === 'distributor') {
-      store.dispatch(setPartialProductDetail({ distributor_location_id: newValue }));
-      if (userSelection) {
-        selectProductSpecification(productId, { distributor_location_id: newValue });
-      }
+    const updateProductDetailFunc = customProduct
+      ? updateCustomProductSpecifiedDetail
+      : setPartialProductDetail;
+    const newUpdate =
+      locationPopup === 'brand'
+        ? { brand_location_id: newValue }
+        : { distributor_location_id: newValue };
+
+    store.dispatch(updateProductDetailFunc(newUpdate));
+    if (userSelection) {
+      selectProductSpecification(productId, newUpdate);
     }
   };
 
@@ -202,22 +222,24 @@ export const VendorLocation: FC<VendorTabProps> = ({
         general_phone={location?.general_phone ?? ''}
         genernal_email={location?.general_email ?? ''}
         customClass={styles.businessDetail}
+        contacts={brand?.contacts}
       />
     ) : null;
 
   const renderDistributorBusinessAdressDetail = (
-    location?: DistributorProductMarket['distributors'][0],
+    distributor?: DistributorProductMarket['distributors'][0],
   ) =>
-    location ? (
+    distributor ? (
       <BusinessDetail
-        business={location?.name ?? ''}
-        address={getBusinessAddress(location)}
-        phone_code={location?.phone_code ?? ''}
-        general_phone={location?.phone ?? ''}
-        genernal_email={location?.email ?? ''}
+        business={distributor?.name || distributor?.business_name || ''}
+        address={getBusinessAddress(distributor)}
+        phone_code={distributor?.phone_code ?? ''}
+        general_phone={distributor?.phone ?? ''}
+        genernal_email={distributor?.email ?? ''}
         customClass={styles.businessDetail}
-        first_name={location.first_name}
-        last_name={location.last_name}
+        first_name={distributor.first_name}
+        last_name={distributor.last_name}
+        contacts={distributor.contacts}
       />
     ) : null;
 
@@ -361,12 +383,13 @@ export const VendorLocation: FC<VendorTabProps> = ({
                     label: (
                       <BusinessDetail
                         business={location.business_name}
-                        type={location.functional_types[0]?.name}
+                        type={location.functional_types?.[0]?.name}
                         address={getBusinessAddress(location)}
                         country={location.country_name.toUpperCase()}
                         phone_code={location.phone_code}
                         general_phone={location.general_phone}
                         genernal_email={location.general_email}
+                        contacts={brand?.contacts}
                       />
                     ),
                   };
@@ -393,7 +416,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
                     value: distributor.id,
                     label: (
                       <BusinessDetail
-                        business={distributor.name}
+                        business={distributor.business_name || distributor.name}
                         address={getBusinessAddress(distributor)}
                         country={distributor.country_name.toUpperCase()}
                         phone_code={distributor.phone_code}
@@ -401,6 +424,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
                         genernal_email={distributor.email}
                         first_name={distributor.first_name}
                         last_name={distributor.last_name}
+                        contacts={distributor.contacts}
                       />
                     ),
                   };

@@ -11,6 +11,7 @@ export const CustomSaveButton: FC<CustomSaveButtonProps> = ({
   isSuccess,
   onClick,
   customClass = '',
+  contentButton,
 }) => {
   return (
     <button
@@ -22,7 +23,7 @@ export const CustomSaveButton: FC<CustomSaveButtonProps> = ({
         <CheckSuccessIcon />
       ) : (
         <BodyText level={6} fontFamily="Roboto">
-          Save
+          {contentButton ? contentButton : 'Save'}
         </BodyText>
       )}
     </button>

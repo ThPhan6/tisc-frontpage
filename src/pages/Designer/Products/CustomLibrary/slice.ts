@@ -31,7 +31,7 @@ const initialState: CustomProductState = {
       attributes: [],
     },
     attributes: [],
-    specification: [],
+    specifications: [],
     options: [],
     collection: {
       id: '',
@@ -41,7 +41,7 @@ const initialState: CustomProductState = {
       id: '',
       name: '',
     },
-    optionSpecification: {
+    specification: {
       attribute_groups: [],
       is_refer_document: true,
     },
@@ -60,6 +60,14 @@ const libraryResources = createSlice({
     },
     setCustomProductDetail(state, action: PayloadAction<Partial<CustomProductDetailProps>>) {
       state.details = { ...state.details, ...action.payload };
+    },
+    updateCustomProductSpecifiedDetail(
+      state,
+      action: PayloadAction<Partial<CustomProductDetailProps['specifiedDetail']>>,
+    ) {
+      if (state.details.specifiedDetail) {
+        state.details.specifiedDetail = { ...state.details.specifiedDetail, ...action.payload };
+      }
     },
     updateCustomProductOption: (state, action: PayloadAction<ProductOptionProps>) => {
       const curOption = action.payload.id
@@ -90,54 +98,13 @@ const libraryResources = createSlice({
     setCustomProductFilter(state, action: PayloadAction<ProductTopBarFilter | undefined>) {
       state.filter = action.payload;
     },
-    onSelectCustomProductOption(
-      state,
-      action: PayloadAction<{
-        optionId: string;
-        itemId: string;
-      }>,
-    ) {
-      state.details.optionSpecification.is_refer_document = false;
-
-      const optionIndex = state.details.optionSpecification.attribute_groups.findIndex(
-        (el) => el.id === action.payload.optionId,
-      );
-      if (optionIndex === -1) {
-        state.details.optionSpecification.attribute_groups.push({
-          id: action.payload.optionId,
-          attributes: [
-            {
-              id: action.payload.optionId,
-              basis_option_id: action.payload.itemId,
-            },
-          ],
-          isChecked: true,
-        });
-      } else {
-        state.details.optionSpecification.attribute_groups[optionIndex] = {
-          id: action.payload.optionId,
-          attributes: [
-            {
-              id: action.payload.optionId,
-              basis_option_id: action.payload.itemId,
-            },
-          ],
-          isChecked: true,
+    onCheckCustomProductReferToDocument: (state) => {
+      if (state.details.specifiedDetail) {
+        state.details.specifiedDetail.specification = {
+          is_refer_document: true,
+          attribute_groups: [],
         };
       }
-    },
-    onUncheckCustomProductOptionGroup: (state, action: PayloadAction<string>) => {
-      state.details.optionSpecification.is_refer_document =
-        state.details.optionSpecification.attribute_groups.some(
-          (el) => el.id !== action.payload && el.isChecked,
-        );
-
-      state.details.optionSpecification.attribute_groups =
-        state.details.optionSpecification.attribute_groups.filter((el) => el.id !== action.payload);
-    },
-    onCheckCustomProductReferToDocument: (state) => {
-      state.details.optionSpecification.is_refer_document = true;
-      state.details.optionSpecification.attribute_groups = [];
     },
     resetCustomProductState() {
       return initialState;
@@ -153,9 +120,8 @@ export const {
   setCustomProductDetailImage,
   resetCustomProductState,
   updateCustomProductOption,
-  onSelectCustomProductOption,
-  onUncheckCustomProductOptionGroup,
   onCheckCustomProductReferToDocument,
+  updateCustomProductSpecifiedDetail,
 } = libraryResources.actions;
 export const officeProductReducer = libraryResources.reducer;
 
@@ -164,35 +130,19 @@ export const customProductSelector = (state: RootState) => state.customProduct.d
 export const invalidCustomProductSelector = createSelector(
   customProductSelector,
   (customProduct) => {
-    // const invalidImages = customProduct.images.length < 1 || customProduct.images.length > 4;
-
-    // const invalidSummary =
-    //   !customProduct.company.id ||
-    //   !customProduct.collection.id ||
-    //   !customProduct.name ||
-    //   !customProduct.description;
-
     const invalidAttributes =
       customProduct.attributes.length > 0 &&
       customProduct.attributes.some((el) => !el.content || !el.name);
 
     const invalidSpecifications =
-      customProduct.specification.length > 0 &&
-      customProduct.specification.some((el) => !el.content || !el.name);
+      customProduct.specifications.length > 0 &&
+      customProduct.specifications.some((el) => !el.content || !el.name);
 
     const invalidOptions =
       customProduct.options.length > 0 &&
       customProduct.options.some((el) => !el.title || el.items.length === 0);
 
-    // console.log('invalidImages', invalidImages);
-    // console.log('invalidSummary', invalidSummary);
-    // console.log('invalidAttributes', invalidAttributes);
-    // console.log('invalidSpecifications', invalidSpecifications);
-    // console.log('invalidOptions', invalidOptions);
-
     return {
-      // invalidImages,
-      // invalidSummary,
       invalidAttributes,
       invalidSpecifications,
       invalidOptions,

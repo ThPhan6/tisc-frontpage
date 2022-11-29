@@ -1,6 +1,7 @@
 import { ReactComponent as AdminstrationIcon } from '@/assets/icons/adminstration-icon.svg';
 import { ReactComponent as AttributeIcon } from '@/assets/icons/attributes-icon.svg';
 import { ReactComponent as BasisIcon } from '@/assets/icons/basis-icon.svg';
+import { ReactComponent as BilledServiceIcon } from '@/assets/icons/billed-service-icon.svg';
 import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
 import { ReactComponent as CategoryIcon } from '@/assets/icons/category-icon.svg';
 import { ReactComponent as GeneralInquiryIcon } from '@/assets/icons/chat-icon.svg';
@@ -54,6 +55,7 @@ const IconList = {
   'market-availability-icon.svg': <MatketAvailability className="anticon" />,
   'office-profile-icon.svg': <OfficeProfile className="anticon" />,
   'material-product-code.svg': <MaterialProductCode className="anticon" />,
+  'billed-service-icon.svg': <BilledServiceIcon className="anticon" />,
 };
 export const renderIconByName = (key: any, unaccessible: boolean): React.ReactNode => {
   if (key && IconList[key] && !unaccessible) {

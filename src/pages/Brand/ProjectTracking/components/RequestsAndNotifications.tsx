@@ -38,6 +38,7 @@ interface RequestAndNotificationListProps extends RequestsAndNotificationsProps 
 interface DetaiItemProps extends RequestAndNotificationListProps {
   detailItem: RequestAndNotificationDetail;
   indexItem: number;
+  handleCloseDetailItem: () => void;
 }
 
 const RequestAndNotificationList: FC<RequestAndNotificationListProps> = ({
@@ -59,6 +60,7 @@ const RequestAndNotificationList: FC<RequestAndNotificationListProps> = ({
                   setIndexItem(index);
                   setData((prevData) => {
                     const newData = cloneDeep(prevData);
+                    newData.isOpenDetailItem = true;
                     if (type === 'request') {
                       newData.projectRequests[index].newRequest = false;
                     } else {
@@ -96,10 +98,10 @@ const RequestAndNotificationList: FC<RequestAndNotificationListProps> = ({
 const DetaiItem: FC<DetaiItemProps> = ({
   detailItem,
   type,
-  setDetailItem,
   setData,
   contentHeight,
   indexItem,
+  handleCloseDetailItem,
 }) => {
   return (
     <div
@@ -121,14 +123,7 @@ const DetaiItem: FC<DetaiItemProps> = ({
             </span>
           </>
         }
-        rightAction={
-          <CloseIcon
-            style={{ cursor: 'pointer' }}
-            onClick={() => {
-              setDetailItem(undefined);
-            }}
-          />
-        }
+        rightAction={<CloseIcon style={{ cursor: 'pointer' }} onClick={handleCloseDetailItem} />}
         customClass={styles.customHeader}
       />
       <BrandProductBasicHeader
@@ -209,6 +204,15 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
   const [detailItem, setDetailItem] = useState<RequestAndNotificationDetail>();
   const [indexItem, setIndexItem] = useState<number>(0);
 
+  const handleCloseDetailItem = () => {
+    setDetailItem(undefined);
+    setData((prevData) => {
+      const newData = cloneDeep(prevData);
+      newData.isOpenDetailItem = false;
+      return newData;
+    });
+  };
+
   return (
     <>
       {detailItem === undefined ? (
@@ -225,16 +229,16 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
             detailItem={detailItem}
             indexItem={indexItem}
             type={type}
-            setDetailItem={setDetailItem}
             contentHeight={contentHeight}
             setData={setData}
+            handleCloseDetailItem={handleCloseDetailItem}
           />
           <div className={styles.cancelButton}>
             <CustomButton
               size="small"
               variant="primary"
               properties="rounded"
-              onClick={() => history.back()}>
+              onClick={handleCloseDetailItem}>
               Done
             </CustomButton>
           </div>

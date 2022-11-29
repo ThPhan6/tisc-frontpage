@@ -48,7 +48,7 @@ const MaterialProductCode = () => {
     const SameColumns: TableColumnItem<any>[] = [
       {
         title: 'Code',
-        sorter: true,
+        sorter: { multiple: 3 },
         dataIndex: 'code',
         defaultSortOrder: 'ascend',
         noBoxShadow: noBoxShadow,
@@ -69,7 +69,7 @@ const MaterialProductCode = () => {
     {
       title: 'Main List',
       dataIndex: 'name',
-      sorter: true,
+      sorter: { multiple: 1 },
       isExpandable: true,
       render: (value) => {
         return <span className="text-uppercase">{value}</span>;
@@ -78,7 +78,7 @@ const MaterialProductCode = () => {
     {
       title: 'Sub-List',
       dataIndex: 'sub_list',
-      sorter: true,
+      sorter: { multiple: 2 },
       defaultSortOrder: 'ascend',
     },
     ...getSameColumns(false),

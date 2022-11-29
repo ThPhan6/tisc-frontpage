@@ -285,8 +285,16 @@ const injectScriptToExpandableCellByLevel = (
 
       // Open full width for expandable cell
       setTimeout(() => {
+        console.log(
+          'level, curCellStyle, cell, parentElement',
+          level,
+          curCellStyle,
+          cell.clientWidth,
+          expandableCell.clientWidth,
+          { expandableCell },
+        );
         openFullWidthCellByLevel(level, curCellStyle, expandableCell.clientWidth);
-      }, EXPANDED_DELAY);
+      }, EXPANDED_DELAY * 2);
 
       // When re-open a col level, checking if its sub levels have closed status
       updateStyleStatus(level, cellStyles, curCellStyle.id);
@@ -372,12 +380,15 @@ export const useAutoExpandNestedTableColumn = (
       const allCells = firstRow?.querySelectorAll('td');
       allCells?.forEach((cell, index) => {
         const newWidth =
-          index === allCells.length - 1 - rightColumnExcluded ? 'auto' : cell.clientWidth + 'px';
+          options?.autoWidthColIndex === index ||
+          index === allCells.length - 1 - rightColumnExcluded
+            ? 'auto'
+            : cell.clientWidth + 'px';
         colStyles += `tr[data-row-key] td:nth-child(${
           index + 1
         }), tr.ant-table-row.ant-table-row-level-0 td:nth-child(${
           index + 1
-        }) { width: ${newWidth}; }
+        }) { width: ${newWidth}; min-width: ${newWidth}; }
         `;
       });
       defaultStyle.innerHTML = colStyles;

@@ -95,6 +95,8 @@ export interface SpecifiedDetail {
   /// allocation
   allocation: string[]; // room_id
   entire_allocation: boolean;
+
+  custom_product?: boolean;
 }
 
 export interface ProductItem {
