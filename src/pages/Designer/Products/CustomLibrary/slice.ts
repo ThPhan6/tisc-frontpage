@@ -69,16 +69,11 @@ const libraryResources = createSlice({
         state.details.specifiedDetail = { ...state.details.specifiedDetail, ...action.payload };
       }
     },
-    updateCustomProductOption: (state, action: PayloadAction<ProductOptionProps>) => {
-      const curOption = action.payload.id
-        ? state.details.options.findIndex((el) => el.id === action.payload.id)
-        : -1;
-
-      if (curOption === -1) {
-        state.details.options.push(action.payload);
-      } else {
-        state.details.options[curOption] = action.payload;
-      }
+    updateCustomProductOption: (
+      state,
+      action: PayloadAction<{ optionState: ProductOptionProps; optionIndex: number }>,
+    ) => {
+      state.details.options[action.payload.optionIndex] = action.payload.optionState;
     },
     setCustomProductDetailImage(
       state,

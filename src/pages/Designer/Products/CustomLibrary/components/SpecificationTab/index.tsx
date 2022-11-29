@@ -52,6 +52,7 @@ export const SpecificationTab: FC<{
   const specification = specifiedDetail?.specification || defaultSelection;
 
   const [curOption, setCurOption] = useState<ProductOptionProps>(DEFAULT_PRODUCT_OPTION);
+  const [curOptionIndex, setCurOptionIndex] = useState(-1);
 
   const dimensionWeightData = dimension_and_weight;
 
@@ -280,9 +281,7 @@ export const SpecificationTab: FC<{
                                     specification: newOptionSpec,
                                   },
                                 }
-                              : {
-                                  specification: newOptionSpec,
-                                },
+                              : { specification: newOptionSpec },
                           ),
                         );
                         if (!specifying) {
@@ -321,6 +320,7 @@ export const SpecificationTab: FC<{
                 onClick={() => {
                   setOptionModalVisible(true);
                   setCurOption(option);
+                  setCurOptionIndex(optionIndex);
                 }}>
                 <MainTitle level={4} customClass={styles.content}>
                   {productId ? 'Update' : 'Create'} Options
@@ -413,8 +413,16 @@ export const SpecificationTab: FC<{
       {viewOnly ? null : (
         <ProductOptionModal
           visible={optionModalVisible}
-          setVisible={(isClose) => (isClose ? undefined : setOptionModalVisible(false))}
+          setVisible={(isClose) => {
+            if (isClose) {
+              return;
+            }
+            setOptionModalVisible(false);
+            setCurOption(DEFAULT_PRODUCT_OPTION);
+            setCurOptionIndex(-1);
+          }}
           option={curOption}
+          optionIndex={curOptionIndex}
         />
       )}
     </>
