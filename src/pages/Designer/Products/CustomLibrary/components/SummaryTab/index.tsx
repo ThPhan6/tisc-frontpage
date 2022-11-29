@@ -19,7 +19,7 @@ import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import TextForm from '@/components/Form/TextForm';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { SimpleContentTable } from '@/components/Table/components/TableSummary';
+import { SimpleContentTable } from '@/components/Table/components/SimpleContentTable';
 
 import { resetCustomProductState, setCustomProductDetail } from '../../slice';
 import { BrandCompanyModal } from '../Modal/BrandCompanyModal';

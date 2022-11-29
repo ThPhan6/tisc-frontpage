@@ -135,7 +135,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
       const maxImageAllow = isCustomProduct ? 4 : 9;
 
       if (totalImageCount > maxImageAllow) {
-        message.error(`Max photos is ${maxImageAllow}`);
+        message.error(`Maximum ${maxImageAllow} images are allowed`);
         return false;
       }
 

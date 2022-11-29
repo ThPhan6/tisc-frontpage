@@ -6,10 +6,10 @@ import {
   CustomProductDetailResponse,
   CustomProductFilter,
   CustomProductList,
+  CustomProductRequestBody,
 } from '../types/custom-product.type';
 import store from '@/reducers';
 
-import { CustomProductRequestBody } from '../ProductLibraryDetail';
 import { setCustomProductDetail, setCustomProductList } from '../slice';
 
 export function getCustomProductList(params: CustomProductFilter | undefined) {
@@ -40,7 +40,7 @@ export function getOneCustomProduct(id: string) {
           images: res.data.images,
           dimension_and_weight: res.data.dimension_and_weight,
           attributes: res.data.attributes,
-          specification: res.data.specification,
+          specifications: res.data.specifications,
           options: res.data.options,
           collection: {
             id: res.data.collection_id,
@@ -50,9 +50,9 @@ export function getOneCustomProduct(id: string) {
             id: res.data.company_id,
             name: res.data.company_name,
           },
-          optionSpecification: {
-            is_refer_document: res.data.optionSpecification.is_refer_document,
-            attribute_groups: res.data.optionSpecification.attribute_groups.map((el) => ({
+          specification: {
+            is_refer_document: res.data.specification.is_refer_document,
+            attribute_groups: res.data.specification.attribute_groups?.map((el) => ({
               ...el,
               isChecked: true,
             })),

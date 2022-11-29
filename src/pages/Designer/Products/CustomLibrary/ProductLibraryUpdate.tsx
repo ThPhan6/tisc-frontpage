@@ -7,8 +7,7 @@ import { useHistory, useParams } from 'umi';
 import { createCustomProduct, getOneCustomProduct, updateCustomProduct } from './services';
 import { formatImageIfBase64 } from '@/helper/utils';
 
-import { NameContentProps, ProductInfoTab, ProductOptionProps } from './types';
-import { ProductDimensionWeight } from '@/features/dimension-weight/types';
+import { CustomProductRequestBody, ProductInfoTab } from './types';
 import { useAppSelector } from '@/reducers';
 
 import { SpecificationTab } from './components/SpecificationTab';
@@ -24,18 +23,6 @@ const LIST_TAB = [
   { tab: 'SUMMARY', key: 'summary' },
   { tab: 'SPECIFICATION', key: 'specification' },
 ];
-
-export interface CustomProductRequestBody {
-  name: string;
-  description: string;
-  images: string[];
-  dimension_and_weight: ProductDimensionWeight;
-  attributes: NameContentProps[];
-  specification: NameContentProps[];
-  options: ProductOptionProps[];
-  collection_id: string;
-  company_id: string;
-}
 
 const ProductLibraryUpdate: React.FC = () => {
   const history = useHistory();
@@ -100,7 +87,7 @@ const ProductLibraryUpdate: React.FC = () => {
       dimension_and_weight: productData.dimension_and_weight,
       description: productData.description.trim(),
       attributes: productData.attributes,
-      specification: productData.specification,
+      specifications: productData.specifications,
       options: productOptions,
       images: productData.images?.map((image) => formatImageIfBase64(image)),
     };

@@ -104,8 +104,19 @@ export default [
         path: PATH.tiscProjectListing,
         name: 'listing',
         icon: 'listing-icon.svg',
-        component: './Admin',
         access: 'tisc_project_list',
+        routes: [
+          {
+            path: PATH.tiscProjectListing,
+            component: './TISC/ProjectListing',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.tiscProjectListingDetail,
+            component: './TISC/ProjectListing/detail.tsx',
+            hideInMenu: true,
+          },
+        ],
       },
     ],
   },
@@ -442,7 +453,28 @@ export default [
           {
             path: PATH.tiscRevenueService,
             name: 'service',
-            component: './Admin',
+            routes: [
+              {
+                path: PATH.tiscRevenueService,
+                component: './TISC/Adminstration/Revenue/Services',
+                hideInMenu: true,
+              },
+              {
+                path: PATH.tiscRevenueServiceCreate,
+                component: './TISC/Adminstration/Revenue/Services/ServiceCreatePage',
+                hideInMenu: true,
+              },
+              {
+                path: PATH.tiscRevenueServiceDetail,
+                component: './TISC/Adminstration/Revenue/Services/ServiceViewPage',
+                hideInMenu: true,
+              },
+              {
+                path: PATH.tiscRevenueServiceUpdate,
+                component: './TISC/Adminstration/Revenue/Services/ServiceCreatePage',
+                hideInMenu: true,
+              },
+            ],
           },
           {
             path: PATH.tiscRevenueSubscription,
@@ -611,6 +643,24 @@ export default [
           {
             path: PATH.updateMarketAvailability,
             component: './Brand/Adminstration/MarketAvailability/UpdateMarketAvailabilityPage',
+            hideInMenu: true,
+          },
+        ],
+      },
+      {
+        path: PATH.brandBilledServices,
+        name: 'brand.billed_services',
+        icon: 'billed-service-icon.svg',
+        access: 'brand_administration_billed_services',
+        routes: [
+          {
+            path: PATH.brandBilledServices,
+            component: './Brand/Adminstration/BilledServices',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.brandBilledServicesView,
+            component: './Brand/Adminstration/BilledServices/BilledServicesDetail',
             hideInMenu: true,
           },
         ],

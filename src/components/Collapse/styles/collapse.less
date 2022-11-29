@@ -10,7 +10,13 @@
   }
 
   :global(.ant-collapse-item-active .ant-collapse-header-text) {
-    font-weight: 500;
+    p,
+    span {
+      font-weight: 500;
+      &[class*='Cormorant'] {
+        font-weight: 600;
+      }
+    }
   }
 
   :global(.ant-collapse-content) {

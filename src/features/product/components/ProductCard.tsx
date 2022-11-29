@@ -317,6 +317,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             visible={showAssignProductModal.value}
             setVisible={showAssignProductModal.setValue}
             productId={product.id}
+            isCustomProduct={isCustomProduct ? true : false}
           />
         ) : null}
 

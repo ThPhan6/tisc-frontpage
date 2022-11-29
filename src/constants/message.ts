@@ -334,6 +334,14 @@ export const MESSAGE_NOTIFICATION = {
   CREATE_CUSTOM_RESOURCE_SUCCESS: 'Create information successfully',
   UPDATE_CUSTOM_RESOURCE_SUCCESS: 'Update information successfully',
   DELETE_CUSTOM_RESOURCE_SUCCESS: 'Delete information successfully',
+
+  //service
+  CREATE_SERVICE_SUCCESS: 'Create service successfully',
+  UPDATE_SERVICE_SUCCESS: 'Update service successfully',
+  SENT_BILL_SUCCESS: 'Sent bill to brand successfully',
+  SENT_REMIND_SUCCESS: 'Sent remind to brand successfully',
+  MARK_AS_PAID_SUCCESS: 'Mark as paid successfully',
+  DELETE_SERVICE_SUCCESS: 'Delete service successfully',
 };
 
 export const MESSAGE_TOOLTIP = {

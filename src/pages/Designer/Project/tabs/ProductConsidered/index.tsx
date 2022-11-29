@@ -10,7 +10,7 @@ import { ReactComponent as CancelIcon } from '@/assets/icons/ic-square-cancel.sv
 import { ReactComponent as CheckIcon } from '@/assets/icons/ic-square-check.svg';
 import { ReactComponent as InfoIcon } from '@/assets/icons/warning-circle-icon.svg';
 
-import { renderAvailability, useSpecifyingModal } from '../../hooks';
+import { onOpenSpecifiyingProductModal, renderAvailability, useSpecifyingModal } from '../../hooks';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import {
   getConsideredProducts,
@@ -22,18 +22,12 @@ import { useBoolean } from '@/helper/hook';
 import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
-import {
-  setPartialProductDetail,
-  setPartialProductSpecifiedData,
-  setReferToDesignDocument,
-} from '@/features/product/reducers';
 import { ProductItem, ProjectProductItem } from '@/features/product/types';
 import {
   ConsideredProduct,
   ConsideredProjectRoom,
   ProductConsiderStatus,
 } from '@/features/project/types';
-import store from '@/reducers';
 
 import { AvailabilityModal } from '../../components/AvailabilityModal';
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
@@ -47,8 +41,8 @@ import cardStyles from '@/features/product/components/ProductCard.less';
 
 const ProductConsidered: React.FC = () => {
   useAutoExpandNestedTableColumn(3, {
-    autoWidthColIndex: 6, // Product column
-    rightColumnExcluded: 3,
+    autoWidthColIndex: 7, // Product column
+    rightColumnExcluded: 4,
   });
 
   const [visible, setVisible] = useState<boolean>(false);
@@ -113,22 +107,7 @@ const ProductConsidered: React.FC = () => {
             disabled: record.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted,
             onClick: () => {
               setSpecifyingProduct(record);
-              if (record.specifiedDetail) {
-                store.dispatch(setPartialProductSpecifiedData(record.specifiedDetail));
-                store.dispatch(
-                  setPartialProductDetail({
-                    distributor_location_id: record.specifiedDetail.distributor_location_id,
-                    brand_location_id: record.specifiedDetail.brand_location_id,
-                  }),
-                );
-              }
-              store.dispatch(
-                setReferToDesignDocument(
-                  typeof record.specifiedDetail?.specification?.is_refer_document === 'boolean'
-                    ? record.specifiedDetail?.specification?.is_refer_document
-                    : true,
-                ),
-              );
+              onOpenSpecifiyingProductModal(record);
             },
           },
           {
