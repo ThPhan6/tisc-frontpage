@@ -195,12 +195,7 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
           placeholder={'type product name here'}
           onChange={onChangeDataByInput('name')}
         />
-        <FormGroup
-          label="Description"
-          layout="vertical"
-          formClass="mb-16"
-          lableFontSize={4}
-          required>
+        <FormGroup label="Description" layout="vertical" formClass="mb-16" lableFontSize={4}>
           <CustomTextArea
             maxLength={100}
             showCount
@@ -209,6 +204,7 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
             boxShadow
             value={description || ''}
             onChange={onChangeDataByInput('description')}
+            customClass={styles.paddingLeftSpace}
           />
         </FormGroup>
       </div>
@@ -217,7 +213,7 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
 
   const renderAttributes = () => {
     if (viewOnly) {
-      return <SimpleContentTable items={attributes} tdStyle={{ fontSize: 12 }} />;
+      return <SimpleContentTable items={attributes} customClass="mt-8" />;
     }
     return attributes?.map((attribute, index) => (
       <DoubleInput

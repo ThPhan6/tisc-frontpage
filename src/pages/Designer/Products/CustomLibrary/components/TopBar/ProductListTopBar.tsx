@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 
 import { PATH } from '@/constants/path';
 
-import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as OpenIcon } from '@/assets/icons/open-icon.svg';
 import { ReactComponent as PlusCircleIcon } from '@/assets/icons/plus-circle-icon.svg';
 import { ReactComponent as VendorManagementIcon } from '@/assets/icons/vendor-management-icon.svg';
@@ -16,8 +15,8 @@ import { getCollections } from '@/services';
 import store from '@/reducers';
 import { CollectionRelationType } from '@/types';
 
-import { RobotoBodyText, Title } from '@/components/Typography';
-import { FilterItem, TopBarContainer, TopBarItem } from '@/features/product/components';
+import { Title } from '@/components/Typography';
+import { TopBarContainer, TopBarItem } from '@/features/product/components';
 
 import { setCustomProductFilter } from '../../slice';
 import styles from './index.less';
@@ -29,22 +28,17 @@ export const ProductListTopBar: React.FC = () => {
     companies,
     collections,
     setCollections,
-    resetFilter,
-    renderItemTopBar,
+    renderFilterCollectionName,
     renderFilterDropdown,
+    renderFilterCompanyName,
+    renderDefaultCompanyLabel,
+    rederDefaultCollectionLabel,
   } = useCustomProductFilter({
     company: true,
-    collection: true,
   });
 
   useEffect(() => {
-    if (!filter) {
-      // updateUrlParams({
-      //   set: [
-      //     { key: QUERY_KEY.company_id, value: 'all' },
-      //     { key: QUERY_KEY.company_name, value: 'View All' },
-      //   ],
-      // });
+    if (!filter && companies.length) {
       store.dispatch(
         setCustomProductFilter({
           name: 'company_id',
@@ -61,7 +55,7 @@ export const ProductListTopBar: React.FC = () => {
     loaded.setValue(true);
 
     if (loaded.value) {
-      const filterBy =
+      let filterBy =
         !filter || filter?.value === 'all'
           ? undefined
           : {
@@ -70,65 +64,40 @@ export const ProductListTopBar: React.FC = () => {
                 companies.length && filter.name === 'collection_id' ? filter.value : undefined,
             };
 
+      if (filter?.name === 'collection_id' && filter.value) {
+        const companyIds = companies.map((brand) => brand?.key);
+        const collectionIds = collections.map((collection) => collection?.relation_id);
+
+        const relationId = collectionIds.filter((collectionId) =>
+          companyIds?.includes(collectionId),
+        );
+
+        const relationItemFounded = companies.find((brand) => brand?.key === relationId[0]);
+
+        if (relationItemFounded && relationItemFounded?.key !== undefined) {
+          filterBy = {
+            company_id: String(relationItemFounded.key),
+            collection_id: filter.value,
+          };
+        }
+      }
+
       getCustomProductList(filterBy);
 
       if (companies.length && filter?.value !== 'all' && filter?.name === 'company_id') {
         getCollections(filter.value, CollectionRelationType.CustomLibrary).then(
           (collectionData) => {
-            const collectionFilterData = collectionData?.map((item) => item);
-            // ({
-            //   key: item.id,
-            //   label: item.name,
-            //   relation_id: item.relation_id,
-            // }));
+            const collectionFilterData = collectionData?.map((item) => ({
+              key: item.id,
+              label: item.name,
+              relation_id: item.relation_id,
+            }));
             setCollections(collectionFilterData);
           },
         );
       }
     }
   }, [filter?.value, companies]);
-
-  const renderFilterCompanyName = () => {
-    if (!filter) return 'select';
-
-    if (filter.name === 'company_id' && filter.value) {
-      return <FilterItem title={filter.title} onDelete={resetFilter} />;
-    }
-
-    const companyIds = companies.map((brand) => brand?.key);
-    const collectionIds = collections.map((collection) => collection?.relation_id);
-
-    const relationId = collectionIds.filter((collectionId) => companyIds?.includes(collectionId));
-
-    if (!relationId.length) return 'select';
-
-    const relationItemFounded = companies.find((brand) => brand?.key === relationId[0]);
-
-    return <FilterItem title={relationItemFounded?.label} onDelete={resetFilter} />;
-  };
-
-  const renderDefaultCompanyLabel = () => (
-    <div className="flex-start">
-      <RobotoBodyText level={6} color={companies.length ? 'mono-color' : 'mono-color-medium'}>
-        Companies
-      </RobotoBodyText>
-      <DropDownIcon className={companies.length ? 'mono-color' : 'mono-color-medium'} />
-    </div>
-  );
-
-  const rederDefaultCollectionLabel = () => {
-    const color =
-      !companies.length || !filter || !collections.length ? 'mono-color-medium' : 'mono-color';
-
-    return (
-      <div className="flex-start">
-        <RobotoBodyText level={6} color={color}>
-          Collections
-        </RobotoBodyText>
-        <DropDownIcon className={color} />
-      </div>
-    );
-  };
 
   if (!loaded.value) return null;
 
@@ -141,7 +110,9 @@ export const ProductListTopBar: React.FC = () => {
               disabled
               cursor={companies.length ? 'pointer' : 'default'}
               topValue={renderFilterCompanyName()}
-              customClass={`right-divider ${filter?.value === 'all' ? styles.hideDeleteIcon : ''}`}
+              customClass={`right-divider ${styles.colorDark} ${
+                filter?.value === 'all' ? styles.hideDeleteIcon : ''
+              }`}
               bottomEnable={companies.length ? true : false}
               bottomValue={renderFilterDropdown(
                 'Companies',
@@ -154,7 +125,7 @@ export const ProductListTopBar: React.FC = () => {
               customClass={`pl-0 ${styles.colorDark}`}
               disabled={!companies.length || !filter || !collections.length}
               cursor={!companies.length || !filter || !collections.length ? 'default' : 'pointer'}
-              topValue={renderItemTopBar('collection_id', filter, 'select')}
+              topValue={renderFilterCollectionName('collection_id', filter, 'select')}
               bottomEnable={companies.length ? true : false}
               bottomValue={renderFilterDropdown(
                 'Collections',

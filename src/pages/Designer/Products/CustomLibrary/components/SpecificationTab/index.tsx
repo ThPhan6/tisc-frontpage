@@ -221,7 +221,7 @@ export const SpecificationTab: FC<{
         </Col>
         <Col flex="18px" style={{ height: 18 }}>
           <DeleteIcon
-            className="cursor-pointer"
+            className={styles.deleteIcon}
             onClick={() => handleDeleteOptionGroupItem(optionIndex, itemIndex)}
           />
         </Col>
@@ -382,7 +382,7 @@ export const SpecificationTab: FC<{
   return (
     <>
       <DimensionWeight
-        editable={!viewOnly || !specifying}
+        editable={!viewOnly}
         isShow={activeKey === 'specification'}
         noPadding={specifying}
         collapseStyles={!specifying}

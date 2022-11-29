@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Col, Row } from 'antd';
 import { useHistory, useParams } from 'umi';
 
-import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
+import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 
 import { getOneCustomProduct } from './services';
 
