@@ -52,7 +52,7 @@ export function getOneCustomProduct(id: string) {
           },
           specification: {
             is_refer_document: res.data.specification.is_refer_document,
-            attribute_groups: res.data.specification.attribute_groups.map((el) => ({
+            attribute_groups: res.data.specification.attribute_groups?.map((el) => ({
               ...el,
               isChecked: true,
             })),
