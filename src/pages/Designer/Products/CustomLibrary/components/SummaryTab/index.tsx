@@ -125,7 +125,7 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
   const textFormProps: Partial<TextFormProps> = {
     boxShadow: true,
     fontLevel: 6,
-    lableFontSize: 4,
+    labelFontSize: 4,
   };
 
   const renderBasicInfo = () => {
@@ -198,7 +198,7 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
           label="Description"
           layout="vertical"
           formClass="mb-16"
-          lableFontSize={4}
+          labelFontSize={4}
           required>
           <CustomTextArea
             maxLength={100}

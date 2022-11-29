@@ -81,7 +81,7 @@ const DEFAULT_ACTION_INFO: {
 
 export const ActionMenu: FC<ActionFormProps> = ({
   actionItems,
-  offsetAlign = [14, -10],
+  offsetAlign = [6, -2],
   actionIcon,
   trigger = ['click'],
   arrow = true,
