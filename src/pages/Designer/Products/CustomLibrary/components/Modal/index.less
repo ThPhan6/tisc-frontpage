@@ -13,15 +13,6 @@
   :global(.ant-space-item) {
     padding-left: 0;
 
-    &:first-child {
-      :global(.item-option-uncheck),
-      :global(.item-option-checked) {
-        svg {
-          display: none;
-        }
-      }
-    }
-
     :global(.item-option-uncheck),
     :global(.item-option-checked) {
       flex: 1;
@@ -76,9 +67,6 @@
 }
 
 .actionMenu {
-  :global(.tisc-dropdown-item) {
-    div {
-      min-height: 36px;
-    }
-  }
+  margin: 8px 24px 0 24px;
+  color: @mono-color;
 }

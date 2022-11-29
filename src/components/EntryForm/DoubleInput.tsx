@@ -44,7 +44,6 @@ export const DoubleInput: FC<DoubleInputProps> = ({
       />
       <CustomInput
         {...props}
-        containerClass={styles.secondInput}
         placeholder={secondPlaceholder}
         value={secondValue}
         onChange={(e) => {

@@ -20,7 +20,11 @@ import { ActionMenu } from '@/components/TableAction';
 import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from './CustomResource.less';
-import { deleteCustomResource, getListVendorByBrandOrDistributor } from './api';
+import {
+  deleteCustomResource,
+  getCustomResourceSummary,
+  getListVendorByBrandOrDistributor,
+} from './api';
 
 export const optionValue = [
   { label: 'Brands', value: CustomResourceType.Brand },
@@ -36,6 +40,7 @@ const CustomResource = () => {
       deleteCustomResource(id).then((isSuccess) => {
         if (isSuccess) {
           tableRef.current.reload();
+          getCustomResourceSummary();
         }
       });
     });

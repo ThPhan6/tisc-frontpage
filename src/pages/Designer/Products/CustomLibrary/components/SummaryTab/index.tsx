@@ -125,7 +125,7 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
   const textFormProps: Partial<TextFormProps> = {
     boxShadow: true,
     fontLevel: 6,
-    lableFontSize: 4,
+    labelFontSize: 4,
   };
 
   const renderBasicInfo = () => {
@@ -164,7 +164,7 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
           hasBoxShadow
           hasHeight
           value={company.name || ''}
-          placeholder={brandCompanyId ? 'select from list' : 'company has not selected'}
+          placeholder={'select from list'}
           onChange={onChangeDataByInput('company')}
           onRightIconClick={() => setVisible('company')}
         />
@@ -177,8 +177,9 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
           colorPrimaryDark
           hasBoxShadow
           hasHeight
+          disabled={!company.id}
           value={collection.name || ''}
-          placeholder={brandCompanyId ? 'select from list' : "dont's have company"}
+          placeholder={'select from list'}
           onChange={onChangeDataByInput('collection')}
           onRightIconClick={() => setVisible('collection')}
         />
@@ -191,7 +192,7 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
           hasBoxShadow
           hasHeight
           value={name || ''}
-          placeholder={brandCompanyId ? 'type product name here' : 'product name is missing'}
+          placeholder={'type product name here'}
           onChange={onChangeDataByInput('name')}
         />
         <FormGroup
@@ -208,6 +209,7 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
             boxShadow
             value={description || ''}
             onChange={onChangeDataByInput('description')}
+            customClass={styles.paddingLeftSpace}
           />
         </FormGroup>
       </div>
@@ -216,7 +218,7 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
 
   const renderAttributes = () => {
     if (viewOnly) {
-      return <SimpleContentTable items={attributes} />;
+      return <SimpleContentTable items={attributes} customClass="mt-8" />;
     }
     return attributes?.map((attribute, index) => (
       <DoubleInput
@@ -225,12 +227,12 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
         leftIcon={<ScrollIcon />}
         rightIcon={
           <DeleteIcon
-            className="cursor-pointer"
+            className={styles.deleteIcon}
             onClick={() => handleDeleteAttribute(attribute.id)}
           />
         }
         firstValue={attribute.name}
-        firstPlaceholder="type content"
+        firstPlaceholder="type name"
         firstOnChange={onChangeAttribute('name', attribute, index)}
         secondValue={attribute.content}
         secondPlaceholder="type content"

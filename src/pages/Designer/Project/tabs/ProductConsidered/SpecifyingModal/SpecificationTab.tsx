@@ -78,7 +78,7 @@ const SpecifiedSpecificationTab: FC<{
       />
 
       {customProduct ? (
-        <SpecificationTab productId={productId} viewOnly specifying />
+        <SpecificationTab productId={productId} activeKey="specification" viewOnly specifying />
       ) : (
         <ProductAttributeContainer
           activeKey="specification"

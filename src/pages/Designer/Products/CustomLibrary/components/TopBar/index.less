@@ -8,8 +8,10 @@
     color: @mono-color-medium;
   }
 
-  > span :first-child {
-    display: none;
+  :global(.mono-color-medium) {
+    path {
+      fill: @mono-color-medium !important;
+    }
   }
 }
 

@@ -55,6 +55,7 @@ export interface ProductAttributeFormInput {
   name: string;
   attributes: ProductAttributeProps[];
   isChecked?: boolean;
+  selection: boolean;
 }
 
 export enum Availability {

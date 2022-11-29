@@ -43,12 +43,14 @@ interface ProductOptionModalProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
   option: ProductOptionProps;
+  optionIndex: number;
 }
 
 export const ProductOptionModal: FC<ProductOptionModalProps> = ({
   visible,
   setVisible,
   option,
+  optionIndex,
 }) => {
   const submitButtonStatus = useBoolean(false);
 
@@ -96,10 +98,10 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({
     });
   };
 
-  const onChangeImage = (optionIndex: number) => (image64: string) => {
+  const onChangeImage = (optIndex: number) => (image64: string) => {
     const newItems = cloneDeep(optionState.items);
-    newItems[optionIndex] = {
-      ...newItems[optionIndex],
+    newItems[optIndex] = {
+      ...newItems[optIndex],
       image: image64,
     };
 
@@ -138,7 +140,7 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({
         return;
     }
 
-    store.dispatch(updateCustomProductOption(optionState));
+    store.dispatch(updateCustomProductOption({ optionState, optionIndex }));
     setVisible(false);
   };
 

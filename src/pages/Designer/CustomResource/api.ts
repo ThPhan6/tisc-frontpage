@@ -2,13 +2,15 @@ import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
 
-import { CustomResourceForm, CustomResources } from '../types';
+import { setSummaryCustomResource } from './reducer';
+import { CustomResourceForm, CustomResources } from './type';
 import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
+import store from '@/reducers';
 
 interface ProjectPaginationResponse {
   data: {
@@ -46,7 +48,7 @@ export async function getCustomResourceSummary() {
     method: 'GET',
   })
     .then((res) => {
-      return res.data;
+      store.dispatch(setSummaryCustomResource(res.data));
     })
     .catch((error) => {
       message.error(error?.data?.message);
@@ -56,6 +58,7 @@ export async function getCustomResourceSummary() {
 export async function deleteCustomResource(id: string) {
   return request<boolean>(`/api/custom-resource/delete/${id}`, { method: 'DELETE' })
     .then(() => {
+      message.success(MESSAGE_NOTIFICATION.DELETE_CUSTOM_RESOURCE_SUCCESS);
       return true;
     })
     .catch((error) => {

@@ -8,8 +8,15 @@
       margin-left: 8px;
     }
   }
+  :global(.ant-collapse-content > .ant-collapse-content-box .ant-collapse-item-active) {
+    box-shadow: none !important;
+  }
   :global(.ant-collapse-content.ant-collapse-content-active) {
-    box-shadow: @border-bottom;
+    border-bottom: 0.7px solid @mono-color;
+
+    &:global(.ant-collapse-content .ant-collapse-content-active) {
+      border-bottom: none;
+    }
   }
 }
 .referTooltipText {

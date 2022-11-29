@@ -17,6 +17,7 @@ import Popover from '@/components/Modal/Popover';
 import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from './SelectAttributesToGroupRow.less';
+import { SpecificationChoice } from './SpecificationChoice';
 
 const POPOVER_TITLE = {
   general: 'Select General Attributes',
@@ -144,10 +145,28 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
     return (
       <>
         <div className="attribute-select-group">
-          <div className="attribute-select-group-left" onClick={() => setVisible(true)}>
-            <MainTitle level={4}>{POPOVER_TITLE[activeKey]}</MainTitle>
-            <SingleRightIcon className="single-right-icon" />
+          <div className="attribute-select-group-left">
+            <div className="flex-start" onClick={() => setVisible(true)}>
+              <MainTitle level={4}>{POPOVER_TITLE[activeKey]}</MainTitle>
+              <SingleRightIcon className="single-right-icon" />
+            </div>
+
+            <SpecificationChoice
+              data={groupItem.attributes}
+              switchChecked={groupItem.selection}
+              onClick={(toggle) => {
+                const newAttrGroup = [...attributeGroup];
+                newAttrGroup[groupIndex] = { ...newAttrGroup[groupIndex], selection: toggle };
+
+                store.dispatch(
+                  setPartialProductDetail({
+                    specification_attribute_groups: newAttrGroup,
+                  }),
+                );
+              }}
+            />
           </div>
+
           <DeleteIcon className="delete-icon" onClick={onDeleteProductAttribute(groupIndex)} />
         </div>
 
