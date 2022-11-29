@@ -148,6 +148,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           special_instructions: specifiedDetail.special_instructions,
           suffix_code: specifiedDetail.suffix_code,
           unit_type_id: specifiedDetail.unit_type_id,
+          custom_product: customProduct,
         },
         () => {
           reloadTable();
@@ -214,6 +215,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           productId={product.id}
           brandId={product.brand?.id ?? ''}
           customProduct={customProduct}
+          brand={product.brand}
         />
       </CustomTabPane>
 
@@ -227,6 +229,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         <CodeOrderTab
           projectProductId={product.specifiedDetail?.id ?? ''}
           roomIds={selectedRoomIds}
+          customProduct={customProduct}
         />
       </CustomTabPane>
     </CustomModal>

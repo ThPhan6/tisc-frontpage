@@ -48,19 +48,22 @@ interface TabPaneProps extends HTMLAttributes<HTMLDivElement> {
   active: boolean;
   lazyLoad?: boolean;
   disable?: boolean;
+  forceReload?: boolean;
 }
-export const CustomTabPane: FC<TabPaneProps> = memo(({ active, lazyLoad, disable, ...props }) => {
-  const [loaded, setLoaded] = useState(false);
+export const CustomTabPane: FC<TabPaneProps> = memo(
+  ({ active, lazyLoad, disable, forceReload, ...props }) => {
+    const [loaded, setLoaded] = useState(false);
 
-  useEffect(() => {
-    if (lazyLoad && active && loaded === false) {
-      setLoaded(true);
+    useEffect(() => {
+      if (lazyLoad && active && loaded === false) {
+        setLoaded(true);
+      }
+    }, [loaded, lazyLoad, active]);
+
+    if (disable || (lazyLoad && active === false && (forceReload || loaded === false))) {
+      return null;
     }
-  }, [loaded, lazyLoad, active]);
 
-  if ((lazyLoad && active === false && loaded === false) || disable) {
-    return null;
-  }
-
-  return <div {...props} style={{ display: !active ? 'none' : undefined }} />;
-});
+    return <div {...props} style={{ display: !active ? 'none' : undefined }} />;
+  },
+);

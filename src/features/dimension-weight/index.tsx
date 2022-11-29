@@ -45,7 +45,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
         <td style={{ height: 36, width: '25%', textTransform: 'capitalize', paddingBottom: 0 }}>
           <div className={`${styles.content} ${styles.attribute} attribute-type`}>
             <BodyText fontFamily="Cormorant-Garamond" level={4}>
-              {conversionItem.name}
+              {conversionItem.name} :
             </BodyText>
           </div>
         </td>

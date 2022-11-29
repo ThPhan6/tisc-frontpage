@@ -380,6 +380,7 @@ export const SpecificationTab: FC<{
       <DimensionWeight
         editable={!viewOnly}
         viewOnly={specifying}
+        noPadding={specifying}
         collapseStyles={!specifying}
         data={dimensionWeightData}
         onChange={(data) => {

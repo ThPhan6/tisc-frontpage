@@ -68,15 +68,15 @@ const ProductSpecification: FC = () => {
         </CustomButton>
       </ProjectTabContentHeader>
 
-      <CustomTabPane active={viewBy === 'brand'} lazyLoad>
+      <CustomTabPane active={viewBy === 'brand'} lazyLoad forceReload>
         <SpecificationByBrand projectId={params.id} />
       </CustomTabPane>
 
-      <CustomTabPane active={viewBy === 'material'} lazyLoad>
+      <CustomTabPane active={viewBy === 'material'} lazyLoad forceReload>
         <SpecificationByMaterial />
       </CustomTabPane>
 
-      <CustomTabPane active={viewBy === 'space'} lazyLoad>
+      <CustomTabPane active={viewBy === 'space'} lazyLoad forceReload>
         <SpecificationBySpace projectId={params.id} />
       </CustomTabPane>
 
