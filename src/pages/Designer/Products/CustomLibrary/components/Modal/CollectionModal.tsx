@@ -59,8 +59,6 @@ export const CollectionModal: FC<CollectionModalProps> = ({
   const getCollectionList = () => {
     getCollections(brandId, collectionType).then((res) => {
       if (res) {
-        const collectionData = [{ id: 'other', name: 'default design name' }, ...res];
-
         const chosenOption = res.find((item) => item.id && item.name === selected.label);
 
         if (chosenOption) {
@@ -71,7 +69,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
         }
 
         setData(
-          collectionData.map((item) => ({
+          res.map((item) => ({
             value: item.id,
             label: item.name,
             disabled: false,
@@ -202,7 +200,11 @@ export const CollectionModal: FC<CollectionModalProps> = ({
 
         // check if value is existed
         const isCollectionExisted = data
-          .map((item) => String(item.label).toLocaleLowerCase())
+          .map((item) => {
+            if (item.value !== selectedValue.value) {
+              return String(item.label).toLocaleLowerCase();
+            }
+          })
           .includes(newCollectionName.toLocaleLowerCase());
 
         if (isCollectionExisted) {
@@ -242,14 +244,12 @@ export const CollectionModal: FC<CollectionModalProps> = ({
   const handleEdit = (selectedValue: DynamicRadioValue, index: number) => {
     const foundedItem = data?.find((item) => item.value === selectedValue.value);
     if (foundedItem?.value) {
-      // disabled submit btn
-      setDisabledSubmit(true);
       // set input focus
       setEditable(true);
       /// disabled select another items
       data.forEach((collection) => {
         if (collection.value !== selectedValue.value) {
-          collection.disabled = true /*  (collection.editLabel = false) */;
+          collection.disabled = true;
         }
       });
 
@@ -364,7 +364,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
 
                   <ActionMenu
                     disabled={item.disabled || item.editLabel}
-                    containerClass={styles.actionMenu}
+                    className={styles.actionMenu}
                     actionItems={[
                       {
                         type: 'updated',

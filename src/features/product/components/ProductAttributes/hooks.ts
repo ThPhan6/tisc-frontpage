@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { getSelectedProductSpecification, selectProductSpecification } from '../../services';
+import { useGetDimensionWeight } from './../../../dimension-weight/hook';
 import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { cloneDeep } from 'lodash';
 
@@ -69,6 +70,7 @@ export const useProductAttributeForm = (
   attributeType: ProductInfoTab,
   productId: string,
   isSpecifiedModal?: boolean,
+  isGetDimensionWeight?: boolean,
 ) => {
   const dispatch = useDispatch();
   const {
@@ -84,7 +86,9 @@ export const useProductAttributeForm = (
   const loaded = useBoolean();
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
-  const dimensionWeightData = dimension_and_weight;
+  const { data: dwData } = useGetDimensionWeight(isGetDimensionWeight);
+
+  const dimensionWeightData = dimension_and_weight.id ? dimension_and_weight : dwData;
 
   const attributeGroup =
     attributeType === 'general'
@@ -92,8 +96,6 @@ export const useProductAttributeForm = (
       : attributeType === 'feature'
       ? feature_attribute_groups
       : specification_attribute_groups;
-
-  // console.log('attributeGroup', attributeGroup);
 
   const attributeGroupKey: AttributeGroupKey =
     attributeType === 'general'

@@ -22,7 +22,7 @@ export interface CustomProductFilter {
   collection_id?: string;
 }
 
-export type ProductInfoTab = 'summary' | 'specification' | 'vendor';
+export type ProductInfoTab = 'summary' | 'specification';
 
 export interface NameContentProps {
   id: string;

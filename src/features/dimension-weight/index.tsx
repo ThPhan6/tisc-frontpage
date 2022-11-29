@@ -18,7 +18,8 @@ interface DimensionWeightProps {
   data: ProductDimensionWeight;
   onChange?: (data: ProductDimensionWeight) => void;
   editable: boolean;
-  viewOnly?: boolean;
+  isShow: boolean;
+  isSpecifying?: boolean;
   noPadding?: boolean;
   collapseStyles?: boolean;
   customClass?: string;
@@ -28,28 +29,33 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
   data,
   onChange,
   editable,
-  viewOnly,
+  isShow,
+  isSpecifying,
   noPadding,
   collapseStyles = true,
-  customClass,
+  customClass = '',
 }) => {
   const [activeCollapse, setActiveCollapse] = useState<boolean>(true);
-  const withDiameter = data.with_diameter || undefined;
+
+  const [diameterToggle, setDiameterToggle] = useState<boolean>(data.with_diameter);
 
   const renderAttributeConversionText = (conversionItem: DimensionWeightItem) => {
     if (!conversionItem.conversion_value_1) {
       return null;
     }
+
     return (
       <tr>
-        <td style={{ height: 36, width: '25%', textTransform: 'capitalize', paddingBottom: 0 }}>
-          <div className={`${styles.content} ${styles.attribute} attribute-type`}>
-            <BodyText fontFamily="Cormorant-Garamond" level={4}>
-              {conversionItem.name} :
-            </BodyText>
-          </div>
+        <td
+          style={{
+            height: 36,
+            width: '30%',
+            textTransform: 'capitalize',
+            paddingBottom: 0,
+          }}>
+          <BodyText level={4}>{conversionItem.name}</BodyText>
         </td>
-        <td style={{ width: '75%', paddingBottom: 0 }}>
+        <td style={{ paddingBottom: 0 }}>
           <ConversionText
             conversion={conversionItem.conversion}
             firstValue={conversionItem.conversion_value_1}
@@ -69,7 +75,11 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
 
     const curItem: DimensionWeightItem =
       data.attributes.find((el) => el.id === conversionItem.id) || conversionItem;
-    if (!curItem || !curItem.conversion_value_1) {
+    if (!curItem) {
+      return null;
+    }
+
+    if (!editable && !conversionItem.conversion_value_1) {
       return null;
     }
 
@@ -123,7 +133,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
 
     return (
       <div className="slice">
-        <RobotoBodyText level={6} fontFamily="Roboto" customClass="text">
+        <RobotoBodyText level={6} customClass="text">
           Product with diameter
         </RobotoBodyText>
         <div
@@ -135,10 +145,11 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
             size="small"
             checkedChildren="ON"
             unCheckedChildren="OFF"
-            checked={withDiameter}
+            checked={diameterToggle}
             onClick={(toggle, e) => {
               e.stopPropagation();
               onChange?.({ ...data, with_diameter: toggle });
+              setDiameterToggle(toggle);
             }}
             style={{ paddingTop: 1 }}
           />
@@ -148,8 +159,9 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
   };
 
   if (
-    (!data && withDiameter === undefined) ||
-    (viewOnly && data.attributes.every((el) => !el.conversion_value_1))
+    !isShow ||
+    (!data && diameterToggle === undefined) ||
+    (!editable && data.attributes.every((el) => !el.conversion_value_1))
   ) {
     return null;
   }
@@ -158,7 +170,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
     <CustomCollapse
       customHeaderClass={`${styles.dimensionCollapse} ${customClass} ${
         noPadding ? styles.noPadding : ''
-      }`}
+      } ${isSpecifying ? styles.dimensionWeightSpec : ''}`}
       showActiveBoxShadow={collapseStyles}
       noBorder={!collapseStyles}
       defaultActiveKey={['1']}
@@ -174,7 +186,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
       <table className={styles.tableContent}>
         <tbody>
           {data.attributes.map(
-            viewOnly ? renderAttributeConversionText : renderAttributeConversion,
+            isSpecifying ? renderAttributeConversionText : renderAttributeConversion,
           )}
         </tbody>
       </table>

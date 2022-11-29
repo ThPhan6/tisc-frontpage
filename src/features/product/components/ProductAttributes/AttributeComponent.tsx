@@ -146,7 +146,7 @@ export const ConversionText: FC<ConversionTextProps> = ({
   secondValue,
 }) => {
   return (
-    <BodyText level={6} customClass={styles.content_text} fontFamily="Roboto">
+    <BodyText level={6} customClass={`${styles.content_text} flex-start`} fontFamily="Roboto">
       <span className={styles.converstionText}>
         {firstValue || ''} {conversion?.unit_1 || ''}
       </span>

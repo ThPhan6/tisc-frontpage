@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Col, Row } from 'antd';
 import { useHistory, useParams } from 'umi';
 
-import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
+import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 
 import { getOneCustomProduct } from './services';
 
@@ -70,7 +70,7 @@ const ProductLibraryDetail: React.FC = () => {
                 </CustomTabPane>
 
                 <CustomTabPane active={activeKey === 'specification'}>
-                  <SpecificationTab productId={productId} viewOnly />
+                  <SpecificationTab productId={productId} activeKey={'specification'} viewOnly />
                 </CustomTabPane>
               </Col>
             </Row>

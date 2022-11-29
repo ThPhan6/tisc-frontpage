@@ -4,12 +4,15 @@ import { NameContentProps } from '@/pages/Designer/Products/CustomLibrary/types'
 
 import styles from './SimpleContentTable.less';
 
-export const SimpleContentTable: FC<{ items: NameContentProps[]; tdStyle?: CSSProperties }> = ({
-  items,
-  tdStyle,
-}) => {
+export const SimpleContentTable: FC<{
+  items: NameContentProps[];
+  tdStyle?: CSSProperties;
+  customClass?: string;
+}> = ({ items, tdStyle, customClass = '' }) => {
   return (
-    <table style={{ width: '100%', tableLayout: 'fixed' }} className={styles.table}>
+    <table
+      style={{ width: '100%', tableLayout: 'fixed' }}
+      className={`${styles.table} ${customClass}`}>
       <tbody>
         {items.map((item, index) => (
           <tr key={item.id || index}>

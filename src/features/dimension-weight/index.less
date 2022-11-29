@@ -89,6 +89,28 @@
   }
 }
 
+.dimensionWeightSpec {
+  :global(.ant-collapse-header) {
+    :global(.header) {
+      padding-left: 0;
+    }
+  }
+
+  :global(.ant-collapse-content > .ant-collapse-content-box) {
+    padding: 0;
+  }
+}
+
+.marginTopSpace {
+  margin-top: 8px;
+}
+
+.noPadding {
+  :global(.ant-collapse-content-box) {
+    padding: 0;
+  }
+}
+
 @keyframes slideToRight {
   0% {
     transform: translateX(-5%);
@@ -97,11 +119,5 @@
   100% {
     transform: translateX(0);
     opacity: 1;
-  }
-}
-
-.noPadding {
-  :global(.ant-collapse-content-box) {
-    padding: 0;
   }
 }

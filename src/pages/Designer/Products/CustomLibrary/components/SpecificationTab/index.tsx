@@ -6,11 +6,12 @@ import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.
 import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
+import { useGetDimensionWeight } from '@/features/dimension-weight/hook';
 import { useSelectProductSpecification } from '@/features/product/services';
 import { showImageUrl } from '@/helper/utils';
 import { cloneDeep } from 'lodash';
 
-import { NameContentProps, ProductOptionProps } from '../../types';
+import { NameContentProps, ProductInfoTab, ProductOptionProps } from '../../types';
 import store, { useAppSelector } from '@/reducers';
 
 import CustomCollapse from '@/components/Collapse';
@@ -38,7 +39,8 @@ export const SpecificationTab: FC<{
   productId?: string;
   viewOnly?: boolean;
   specifying?: boolean;
-}> = ({ productId, viewOnly, specifying }) => {
+  activeKey: ProductInfoTab;
+}> = ({ productId, viewOnly, specifying, activeKey }) => {
   const selectProductSpecification = useSelectProductSpecification();
   const [optionModalVisible, setOptionModalVisible] = useState<boolean>(false);
 
@@ -54,21 +56,23 @@ export const SpecificationTab: FC<{
   const [curOption, setCurOption] = useState<ProductOptionProps>(DEFAULT_PRODUCT_OPTION);
   const [curOptionIndex, setCurOptionIndex] = useState(-1);
 
-  const dimensionWeightData = dimension_and_weight;
+  const { data: dwData } = useGetDimensionWeight(!productId);
 
-  const handleDeleteSpecification = (id: string) => {
-    const newData = specifications?.filter((filterItem) => filterItem.id !== id);
-    store.dispatch(
-      setCustomProductDetail({
-        specifications: newData,
-      }),
-    );
-  };
+  const dimensionWeightData = dimension_and_weight.id ? dimension_and_weight : dwData;
 
   const handleAddSpecification = () => {
     store.dispatch(
       setCustomProductDetail({
         specifications: [...specifications, { ...DEFAULT_CONTENT }],
+      }),
+    );
+  };
+
+  const handleDeleteSpecification = (specIndex: number) => {
+    const newData = specifications?.filter((_item, itemIndex) => itemIndex !== specIndex);
+    store.dispatch(
+      setCustomProductDetail({
+        specifications: newData,
       }),
     );
   };
@@ -218,7 +222,7 @@ export const SpecificationTab: FC<{
         </Col>
         <Col flex="18px" style={{ height: 18 }}>
           <DeleteIcon
-            className="cursor-pointer"
+            className={styles.deleteIcon}
             onClick={() => handleDeleteOptionGroupItem(optionIndex, itemIndex)}
           />
         </Col>
@@ -334,7 +338,7 @@ export const SpecificationTab: FC<{
                   </RobotoBodyText>
                 ) : null}
                 <DeleteIcon
-                  className="cursor-pointer"
+                  className={styles.deleteIcon}
                   onClick={() => handleDeleteOptionGroup(optionIndex)}
                 />
               </div>
@@ -361,8 +365,8 @@ export const SpecificationTab: FC<{
         leftIcon={<ScrollIcon />}
         rightIcon={
           <DeleteIcon
-            className="cursor-pointer"
-            onClick={() => handleDeleteSpecification(item.id)}
+            className={styles.deleteIcon}
+            onClick={() => handleDeleteSpecification(index)}
           />
         }
         firstValue={item.name}
@@ -379,7 +383,7 @@ export const SpecificationTab: FC<{
     <>
       <DimensionWeight
         editable={!viewOnly}
-        viewOnly={specifying}
+        isShow={activeKey === 'specification'}
         noPadding={specifying}
         collapseStyles={!specifying}
         data={dimensionWeightData}
@@ -393,7 +397,7 @@ export const SpecificationTab: FC<{
       />
 
       {viewOnly ? null : (
-        <div className="flex-end pr-16">
+        <div className="flex-end pr-16 mb-8">
           <CustomPlusButton
             size={18}
             label="Add Specification"
