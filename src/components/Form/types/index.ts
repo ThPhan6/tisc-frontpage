@@ -13,7 +13,7 @@ export interface FormGroupProps {
   tooltip?: string | JSX.Element;
   label: string | JSX.Element;
   labelColor?: CustomTypography['color'];
-  lableFontSize?: BodyTextProps['level'];
+  labelFontSize?: BodyTextProps['level'];
   message?: string;
   messageType?: 'normal' | 'error' | 'warning';
   iconTooltip?: ReactNode;

@@ -22,7 +22,7 @@ export const FormGroup: FC<FormGroupProps> = ({
   placement = 'top',
   label,
   labelColor = 'mono-color',
-  lableFontSize = 3,
+  labelFontSize = 3,
   onClick,
   messageType = 'normal',
   placementBottomWidth,
@@ -40,7 +40,7 @@ export const FormGroup: FC<FormGroupProps> = ({
           layout === 'horizontal' && style['label-margin']
         } ${labelColor}`}
         onClick={onClick}>
-        <BodyText fontFamily="Cormorant-Garamond" level={lableFontSize} customClass={labelColor}>
+        <BodyText fontFamily="Cormorant-Garamond" level={labelFontSize} customClass={labelColor}>
           {label}
         </BodyText>
         {optional && (
