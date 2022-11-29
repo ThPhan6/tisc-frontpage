@@ -195,7 +195,12 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
           placeholder={'type product name here'}
           onChange={onChangeDataByInput('name')}
         />
-        <FormGroup label="Description" layout="vertical" formClass="mb-16" lableFontSize={4}>
+        <FormGroup
+          label="Description"
+          layout="vertical"
+          formClass="mb-16"
+          lableFontSize={4}
+          required>
           <CustomTextArea
             maxLength={100}
             showCount
