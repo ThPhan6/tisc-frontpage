@@ -128,7 +128,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
             customResourceType === CustomResourceType.Brand ? 'Brand' : 'Distributor'
           } Company Name`}
           required
-          fontLevel={3}
+          fontLevel={4}
           value={data.business_name}
           hasPadding
           colorPrimaryDark={type === 'create'}
@@ -145,7 +145,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
         <InputGroup
           label="Website"
           required
-          fontLevel={3}
+          fontLevel={4}
           value={data.website_uri}
           hasPadding
           colorPrimaryDark={type === 'create'}
@@ -161,7 +161,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           label={`Associated ${
             customResourceType === CustomResourceType.Brand ? 'Distributor(s)' : 'Brand(s)'
           } :`}
-          fontLevel={3}
+          fontLevel={4}
           value={associated.map((item) => item.label).join(', ')}
           hasPadding
           colorPrimaryDark={type === 'create'}
@@ -176,7 +176,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
         <InputGroup
           label="Country Location"
           required
-          fontLevel={3}
+          fontLevel={4}
           value={countryData.label}
           hasPadding
           colorPrimaryDark={type === 'create'}
@@ -190,7 +190,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
         <InputGroup
           label="State / Province"
           required
-          fontLevel={3}
+          fontLevel={4}
           value={stateData.label}
           hasPadding
           colorPrimaryDark={type === 'create'}
@@ -205,7 +205,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
         <InputGroup
           label="City / Town"
           required
-          fontLevel={3}
+          fontLevel={4}
           value={cityData.label?.toString()}
           hasPadding
           colorPrimaryDark={type === 'create'}
@@ -218,7 +218,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           readOnly={type === 'view'}
         />
         <div className={styles.addressForm}>
-          <FormGroup label="Address" layout="vertical" required>
+          <FormGroup label="Address" layout="vertical" required labelFontSize={4}>
             <CustomTextArea
               className={`${styles.address} ${type === 'view' ? styles.customInput : ''}`}
               maxLength={100}
@@ -238,7 +238,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           placeholder="postal / zip code"
           required
           deleteIcon={type === 'create'}
-          fontLevel={3}
+          fontLevel={4}
           value={data.postal_code}
           hasPadding
           colorPrimaryDark={type === 'create'}
@@ -254,6 +254,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           label="General Phone"
           required
           layout="vertical"
+          labelFontSize={4}
           style={{ marginBottom: '16px' }}>
           <PhoneInput
             phonePlaceholder="area code / number"
@@ -275,7 +276,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           placeholder="type email address here"
           required
           deleteIcon={type === 'create'}
-          fontLevel={3}
+          fontLevel={4}
           value={data.general_email}
           hasPadding
           colorPrimaryDark={type === 'create'}

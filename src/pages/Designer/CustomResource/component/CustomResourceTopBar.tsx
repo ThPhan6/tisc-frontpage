@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { PATH } from '@/constants/path';
 
@@ -7,7 +7,7 @@ import { ReactComponent as VendorManagementIcon } from '@/assets/icons/vendor-ma
 
 import { pushTo } from '@/helper/history';
 
-import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
+import { useAppSelector } from '@/reducers';
 
 import { RobotoBodyText, Title } from '@/components/Typography';
 import { TopBarContainer, TopBarItem } from '@/features/product/components';
@@ -16,14 +16,10 @@ import styles from '../CustomResource.less';
 import { getCustomResourceSummary } from '../api';
 
 export const CustomResourceTopBar = () => {
-  const [summaryData, setSummaryData] = useState<DataMenuSummaryProps[]>([]);
+  const summaryData = useAppSelector((state) => state.customResource.summaryCustomResoure);
 
   useEffect(() => {
-    getCustomResourceSummary().then((res) => {
-      if (res) {
-        setSummaryData(res);
-      }
-    });
+    getCustomResourceSummary();
   }, []);
 
   return (
@@ -39,7 +35,7 @@ export const CustomResourceTopBar = () => {
                 <CloseIcon />
               </div>
             }
-            customClass="left-divider mr-12"
+            customClass={styles.topBar}
             bottomValue="Vendor Management"
             cursor="pointer"
             onClick={() => pushTo(PATH.designerCustomProduct)}
@@ -53,6 +49,7 @@ export const CustomResourceTopBar = () => {
                 </RobotoBodyText>
               }
               bottomValue={summary.label}
+              customClass={styles.summary}
             />
           ))}
         </>

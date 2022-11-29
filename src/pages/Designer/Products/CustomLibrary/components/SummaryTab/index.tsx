@@ -125,7 +125,7 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
   const textFormProps: Partial<TextFormProps> = {
     boxShadow: true,
     fontLevel: 6,
-    lableFontSize: 4,
+    labelFontSize: 4,
   };
 
   const renderBasicInfo = () => {
