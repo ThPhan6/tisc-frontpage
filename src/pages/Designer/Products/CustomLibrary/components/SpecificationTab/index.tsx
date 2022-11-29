@@ -55,7 +55,7 @@ export const SpecificationTab: FC<{
 
   const [curOption, setCurOption] = useState<ProductOptionProps>(DEFAULT_PRODUCT_OPTION);
 
-  const { data: dwData } = useGetDimensionWeight(!productId, specifying);
+  const { data: dwData } = useGetDimensionWeight(!productId);
 
   const dimensionWeightData = dimension_and_weight.id ? dimension_and_weight : dwData;
 
@@ -384,6 +384,7 @@ export const SpecificationTab: FC<{
       <DimensionWeight
         editable={!viewOnly || !specifying}
         isShow={activeKey === 'specification'}
+        noPadding={specifying}
         collapseStyles={!specifying}
         data={dimensionWeightData}
         onChange={(data) => {

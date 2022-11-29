@@ -50,15 +50,16 @@ export const BusinessDetail: FC<BusinessDetailProps> = ({
           <div style={{ paddingTop: 8, paddingLeft: 16 }}>
             <div className={styles.detail_phoneEmail}>
               <RobotoBodyText level={6} customClass={styles.phone}>
-                T: {`${phone_code} ${el.work_phone}`}
+                {el.first_name} {el.last_name}
               </RobotoBodyText>
-              <RobotoBodyText level={6}>E: {el.work_email}</RobotoBodyText>
+              <RobotoBodyText level={6}>{el.position}</RobotoBodyText>
             </div>
-            <span className={styles.detail_contact}>
-              <RobotoBodyText level={6}>
-                Contact: {el.first_name} {el.last_name}
+            <div className={styles.detail_phoneEmail}>
+              <RobotoBodyText level={6} customClass={styles.phone}>
+                +{phone_code} {el.work_phone}
               </RobotoBodyText>
-            </span>
+              <RobotoBodyText level={6}>{el.work_email}</RobotoBodyText>
+            </div>
           </div>
         ))
       ) : (
