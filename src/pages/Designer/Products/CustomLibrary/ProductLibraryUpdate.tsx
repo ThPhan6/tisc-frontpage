@@ -107,11 +107,13 @@ const ProductLibraryUpdate: React.FC = () => {
     <Row className={styles.container}>
       <Col span={24}>
         <ProductDetailHeader
-          title={productData.name || 'Entry the product info below'}
+          title={productId && productData ? productData.name : 'Entry the product info below'}
           onSave={onSave}
           onCancel={history.goBack}
           hideSelect
-          customClass={`${styles.marginBottomSpace} ${productData.name ? '' : styles.colorLight}`}
+          customClass={`${styles.marginBottomSpace} ${
+            productId && productData.name ? '' : styles.colorLight
+          }`}
         />
       </Col>
 
