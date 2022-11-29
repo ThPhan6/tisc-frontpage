@@ -35,7 +35,7 @@ export const CustomResourceTopBar = () => {
                 <CloseIcon />
               </div>
             }
-            customClass="left-divider mr-12"
+            customClass={styles.topBar}
             bottomValue="Vendor Management"
             cursor="pointer"
             onClick={() => pushTo(PATH.designerCustomProduct)}
@@ -49,7 +49,7 @@ export const CustomResourceTopBar = () => {
                 </RobotoBodyText>
               }
               bottomValue={summary.label}
-              customClass={styles.topBar}
+              customClass={styles.summary}
             />
           ))}
         </>
