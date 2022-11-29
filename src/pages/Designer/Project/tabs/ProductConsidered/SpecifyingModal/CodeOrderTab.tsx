@@ -166,7 +166,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
     <div style={{ paddingTop: '16px' }}>
       <Row gutter={[24, 8]} align="bottom">
         <Col span={12}>
-          <FormGroup label="Material/Product Code" lableFontSize={4} required {...formGroupProps}>
+          <FormGroup label="Material/Product Code" labelFontSize={4} required {...formGroupProps}>
             <DropdownSelectInput
               placeholder="select from the list"
               borderBottomColor="light"
@@ -200,7 +200,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         </Col>
 
         <Col span={24}>
-          <FormGroup label="Description" lableFontSize={4} required {...formGroupProps}>
+          <FormGroup label="Description" labelFontSize={4} required {...formGroupProps}>
             <CustomInput
               placeholder="e.g. Living room coffee table..."
               borderBottomColor="light"
@@ -214,7 +214,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         <Col span={24}>
           <FormGroup
             label="Define Finish Schedule (appliable for Room Schedule only)"
-            lableFontSize={4}
+            labelFontSize={4}
             {...formGroupProps}>
             <div
               className={`flex-between cursor-pointer ${styles.schedule}`}
@@ -230,7 +230,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         </Col>
 
         <Col span={12}>
-          <FormGroup label="Quantity/Unit Type" lableFontSize={4} {...formGroupProps}>
+          <FormGroup label="Quantity/Unit Type" labelFontSize={4} {...formGroupProps}>
             <CustomInput
               borderBottomColor="light"
               value={quantity}
@@ -276,7 +276,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         <Col span={24}>
           <FormGroup
             label="Order Method"
-            lableFontSize={4}
+            labelFontSize={4}
             formClass={styles.borderBottom}
             {...formGroupProps}>
             <CustomRadio
@@ -297,7 +297,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
           <FormGroup
             label="Approval requirements prior to fabrication"
             formClass={`${styles.fontSizeSmall} ${styles.borderBottom} ${styles.inputBorderBottom}`}
-            lableFontSize={4}
+            labelFontSize={4}
             {...formGroupProps}>
             <CustomCheckbox
               options={requirements}
@@ -323,7 +323,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
           <FormGroup
             label="General Instructions"
             formClass={`${styles.fontSizeSmall} ${styles.borderBottom}`}
-            lableFontSize={4}
+            labelFontSize={4}
             {...formGroupProps}>
             <CustomCheckbox
               isCheckboxList
@@ -343,7 +343,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         </Col>
 
         <Col span={24}>
-          <FormGroup label="Special Instructions" lableFontSize={4} {...formGroupProps}>
+          <FormGroup label="Special Instructions" labelFontSize={4} {...formGroupProps}>
             <CustomTextArea
               customClass={styles.inputColor}
               placeholder="type here..."

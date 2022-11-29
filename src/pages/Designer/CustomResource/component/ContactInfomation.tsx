@@ -72,15 +72,15 @@ const checkContactValue = (data: ContactDetail) => {
 const ContactHeader: FC<ContactHeaderProps> = (props) => {
   const { item, activeKey, handleActiveCollapse, index, handleClickDeleteItem, type } = props;
   return (
-    <div className={styles.panel_header}>
-      <div
-        className={`${styles.panel_header__field}`}
-        onClick={() => handleActiveCollapse(activeKey ? index : -1)}>
+    <div
+      className={styles.panel_header}
+      onClick={() => handleActiveCollapse(item.first_name ? index : -1)}>
+      <div className={`${styles.panel_header__field}`}>
         {String(index) === activeKey || checkContactValue(item) ? (
           <div className={styles.titleIcon}>
             <BodyText level={4}>CONTACT INFORMATION</BodyText>
             {type === 'create' && (
-              <DeleteIcon onClick={handleClickDeleteItem} style={{ marginRight: '24px' }} />
+              <DeleteIcon onClick={handleClickDeleteItem} className={styles.deleteIcon} />
             )}
           </div>
         ) : (
@@ -119,6 +119,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
     const newContact = [...data.contacts];
     newContact[index] = { ...newContact[index], [fieldName]: fieldValue };
     setData({ ...data, contacts: newContact });
+    setActiveKey(String(index));
   };
 
   const handleDisableButton = () => {
@@ -164,7 +165,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             label="First Name"
             required
             deleteIcon={type === 'create'}
-            fontLevel={3}
+            fontLevel={4}
             value={contact.first_name}
             hasPadding
             colorPrimaryDark={type === 'create'}
@@ -182,7 +183,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             label="Last Name"
             required
             deleteIcon={type === 'create'}
-            fontLevel={3}
+            fontLevel={4}
             value={contact.last_name}
             hasPadding
             colorPrimaryDark={type === 'create'}
@@ -200,7 +201,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             label="Position / Role"
             required
             deleteIcon={type === 'create'}
-            fontLevel={3}
+            fontLevel={4}
             value={contact.position}
             hasPadding
             colorPrimaryDark={type === 'create'}
@@ -219,7 +220,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             label="Work Email"
             required
             deleteIcon={type === 'create'}
-            fontLevel={3}
+            fontLevel={4}
             value={contact.work_email}
             hasPadding
             colorPrimaryDark={type === 'create'}
@@ -236,7 +237,12 @@ export const ContactInformation: FC<ContactInformationProps> = ({
           />
 
           {/* Work Phone */}
-          <FormGroup label="Work Phone" layout="vertical" required style={{ marginBottom: '16px' }}>
+          <FormGroup
+            label="Work Phone"
+            layout="vertical"
+            required
+            style={{ marginBottom: '16px' }}
+            labelFontSize={4}>
             <PhoneInput
               phonePlaceholder="area code / number"
               onChange={(value) => {
@@ -258,6 +264,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             label="Work Mobile"
             layout="vertical"
             required
+            labelFontSize={4}
             style={{ marginBottom: '16px' }}>
             <PhoneInput
               phonePlaceholder="mobile number"
