@@ -61,7 +61,12 @@ export const ProductAttributeContainer: FC<Props> = ({
     attributeGroupKey,
     onSelectSpecificationOption,
     dimensionWeightData,
-  } = useProductAttributeForm(activeKey, curProductId, isSpecifiedModal);
+  } = useProductAttributeForm(
+    activeKey,
+    curProductId,
+    isSpecifiedModal,
+    isTiscAdmin && activeKey === 'specification' && !curProductId, // get dimension weight list
+  );
 
   const [attributeSelected, setAttributeSelected] = useState<RadioValue>({ value: '', label: '' });
 

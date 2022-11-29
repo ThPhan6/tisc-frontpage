@@ -6,6 +6,7 @@ import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.
 import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
+import { useGetDimensionWeight } from '@/features/dimension-weight/hook';
 import { useSelectProductSpecification } from '@/features/product/services';
 import { showImageUrl } from '@/helper/utils';
 import { cloneDeep } from 'lodash';
@@ -54,7 +55,9 @@ export const SpecificationTab: FC<{
 
   const [curOption, setCurOption] = useState<ProductOptionProps>(DEFAULT_PRODUCT_OPTION);
 
-  const dimensionWeightData = dimension_and_weight;
+  const { data: dwData } = useGetDimensionWeight(!productId, specifying);
+
+  const dimensionWeightData = dimension_and_weight.id ? dimension_and_weight : dwData;
 
   const handleAddSpecification = () => {
     store.dispatch(
@@ -335,7 +338,7 @@ export const SpecificationTab: FC<{
                   </RobotoBodyText>
                 ) : null}
                 <DeleteIcon
-                  className="cursor-pointer"
+                  className={styles.deleteIcon}
                   onClick={() => handleDeleteOptionGroup(optionIndex)}
                 />
               </div>
@@ -361,7 +364,10 @@ export const SpecificationTab: FC<{
         doubleInputClass="mb-8"
         leftIcon={<ScrollIcon />}
         rightIcon={
-          <DeleteIcon className="cursor-pointer" onClick={() => handleDeleteSpecification(index)} />
+          <DeleteIcon
+            className={styles.deleteIcon}
+            onClick={() => handleDeleteSpecification(index)}
+          />
         }
         firstValue={item.name}
         firstPlaceholder="type name"

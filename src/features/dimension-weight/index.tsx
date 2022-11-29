@@ -1,8 +1,7 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 
 import { Switch } from 'antd';
 
-import { getDimensionWeightList } from './services';
 import { validateFloatNumber } from '@/helper/utils';
 import { cloneDeep } from 'lodash';
 
@@ -39,54 +38,6 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
   const [activeCollapse, setActiveCollapse] = useState<boolean>(true);
 
   const [diameterToggle, setDiameterToggle] = useState<boolean>(data.with_diameter);
-
-  /// dimension weight data
-  const [dwData, setDWData] = useState<ProductDimensionWeight>(data);
-
-  useEffect(() => {
-    if (!isShow) {
-      return undefined;
-    }
-
-    getDimensionWeightList().then((res) => {
-      if (res) {
-        let newData: ProductDimensionWeight = {
-          id: res.id,
-          name: res.name,
-          with_diameter: res.with_diameter,
-          attributes: res.attributes,
-        };
-
-        /// mapping data of attributes selected
-        const newAttribute: DimensionWeightItem[] = res.attributes;
-        if (data?.attributes?.length) {
-          for (const elements of newAttribute) {
-            const selectedAttribute = data.attributes.find(
-              (item) =>
-                item.id === elements.id && item.conversion_value_1 && item.conversion_value_2,
-            );
-
-            if (selectedAttribute) {
-              elements.conversion_value_1 = selectedAttribute.conversion_value_1;
-              elements.conversion_value_2 = selectedAttribute.conversion_value_2;
-            }
-          }
-
-          newData = {
-            ...newData,
-            id: data.id,
-            with_diameter: data.with_diameter,
-            attributes: newAttribute,
-          };
-        }
-
-        // update data
-        setDWData?.(newData);
-        ///
-        setDiameterToggle(newData.with_diameter);
-      }
-    });
-  }, [data]);
 
   const renderAttributeConversionText = (conversionItem: DimensionWeightItem) => {
     if (!conversionItem.conversion_value_1) {
@@ -182,7 +133,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
 
     return (
       <div className="slice">
-        <RobotoBodyText level={6} fontFamily="Roboto" customClass="text">
+        <RobotoBodyText level={6} customClass="text">
           Product with diameter
         </RobotoBodyText>
         <div
@@ -209,8 +160,8 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
 
   if (
     !isShow ||
-    (!dwData && diameterToggle === undefined) ||
-    (!editable && dwData.attributes.every((el) => !el.conversion_value_1))
+    (!data && diameterToggle === undefined) ||
+    (!editable && data.attributes.every((el) => !el.conversion_value_1))
   ) {
     return null;
   }
@@ -227,14 +178,14 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
       header={
         <div className="header" style={{ paddingLeft: noPadding ? 0 : undefined }}>
           <RobotoBodyText level={6} customClass="label">
-            {dwData.name}
+            {data.name}
           </RobotoBodyText>
           {editable ? renderDiameterToggle() : null}
         </div>
       }>
       <table className={styles.tableContent}>
         <tbody>
-          {dwData.attributes.map(
+          {data.attributes.map(
             isSpecifying ? renderAttributeConversionText : renderAttributeConversion,
           )}
         </tbody>

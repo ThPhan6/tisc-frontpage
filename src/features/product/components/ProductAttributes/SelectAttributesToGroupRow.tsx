@@ -1,7 +1,5 @@
 import { FC, memo, useEffect, useState } from 'react';
 
-import { Switch } from 'antd';
-
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
@@ -16,9 +14,10 @@ import store from '@/reducers';
 import { ProductAttributes, ProductSubAttributes } from '@/types';
 
 import Popover from '@/components/Modal/Popover';
-import { BodyText, MainTitle, RobotoBodyText } from '@/components/Typography';
+import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from './SelectAttributesToGroupRow.less';
+import { SpecificationChoice } from './SpecificationChoice';
 
 const POPOVER_TITLE = {
   general: 'Select General Attributes',
@@ -38,16 +37,6 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
   ({ activeKey, groupItem, attributes, groupIndex, productId }) => {
     const [visible, setVisible] = useState(false);
     const [selected, setSelected] = useState<CheckboxValue[]>([]);
-
-    const isOptionType =
-      groupItem.attributes.reduce((count, attribute) => {
-        let sum = count;
-        if (attribute.type === 'Options') {
-          sum++;
-        }
-
-        return sum;
-      }, 0) >= 2;
 
     useEffect(() => {
       setSelected(
@@ -162,32 +151,20 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
               <SingleRightIcon className="single-right-icon" />
             </div>
 
-            {isOptionType ? (
-              <div className="flex-start">
-                <RobotoBodyText level={6} customClass="text">
-                  Make the specification as a choice
-                </RobotoBodyText>
-                <Switch
-                  size="small"
-                  checkedChildren="ON"
-                  unCheckedChildren="OFF"
-                  className="switchBtn"
-                  checked={groupItem.selection}
-                  onClick={(toggle, e) => {
-                    e.stopPropagation();
+            <SpecificationChoice
+              data={groupItem.attributes}
+              switchChecked={groupItem.selection}
+              onClick={(toggle) => {
+                const newAttrGroup = [...attributeGroup];
+                newAttrGroup[groupIndex] = { ...newAttrGroup[groupIndex], selection: toggle };
 
-                    const newAttrGroup = [...attributeGroup];
-                    newAttrGroup[groupIndex] = { ...newAttrGroup[groupIndex], selection: toggle };
-
-                    store.dispatch(
-                      setPartialProductDetail({
-                        specification_attribute_groups: newAttrGroup,
-                      }),
-                    );
-                  }}
-                />
-              </div>
-            ) : null}
+                store.dispatch(
+                  setPartialProductDetail({
+                    specification_attribute_groups: newAttrGroup,
+                  }),
+                );
+              }}
+            />
           </div>
 
           <DeleteIcon className="delete-icon" onClick={onDeleteProductAttribute(groupIndex)} />
