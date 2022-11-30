@@ -1,3 +1,5 @@
+import { ContactDetail } from '../user-group/types';
+
 export interface Country {
   id: string;
   name: string;
@@ -36,6 +38,7 @@ export interface LocationDetail {
   phone_code: string;
   postal_code: string;
   address: string;
+  contacts?: ContactDetail[];
 }
 
 export interface LocationGroupedByCountry {

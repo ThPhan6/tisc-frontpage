@@ -18,6 +18,7 @@ export interface ContactDetail {
   work_email: string;
   work_phone: string;
   work_mobile: string;
+  phone_code?: string;
 }
 
 export interface CustomResourceForm {
