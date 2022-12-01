@@ -51,6 +51,25 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
     }
   }, []);
 
+  // update collection when reselect company
+  useEffect(() => {
+    store.dispatch(
+      setCustomProductDetail({
+        collection: { id: '', name: '' },
+      }),
+    );
+  }, [company.id]);
+
+  useEffect(() => {
+    if (company.id) {
+      store.dispatch(
+        setCustomProductDetail({
+          collection,
+        }),
+      );
+    }
+  }, [collection.id]);
+
   const onChangeDataByInput =
     (fieldName: keyof CustomProductDetailProps) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -199,7 +218,7 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
           label="Description"
           layout="vertical"
           formClass="mb-16"
-          lableFontSize={4}
+          labelFontSize={4}
           required>
           <CustomTextArea
             maxLength={100}

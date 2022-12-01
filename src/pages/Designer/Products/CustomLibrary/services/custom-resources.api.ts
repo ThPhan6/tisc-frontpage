@@ -1,8 +1,8 @@
 import { message } from 'antd';
 import { request } from 'umi';
 
-import { CustomResourceType } from '../types';
 import { DistributorProductMarket } from '@/features/distributors/type';
+import { CustomResourceType } from '@/pages/Designer/CustomResource/type';
 import { GeneralData } from '@/types';
 
 export async function getAllCustomResource(type: CustomResourceType) {
