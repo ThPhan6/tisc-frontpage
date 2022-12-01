@@ -8,12 +8,14 @@ import { useHistory } from 'umi';
 import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
 
 import { getAllCustomResource } from './services';
-import { useQuery } from '@/helper/hook';
+import { useBoolean, useQuery } from '@/helper/hook';
 import { getValueByCondition, removeUrlParams, updateUrlParams } from '@/helper/utils';
+import { getCollections } from '@/services';
 
-import { CustomResourceType, ProductFilterType } from './types';
+import { CustomResourceType } from '../../CustomResource/type';
+import { ProductFilterType } from './types';
 import store, { useAppSelector } from '@/reducers';
-import { GeneralData } from '@/types';
+import { CollectionRelationType, GeneralData } from '@/types';
 
 import { RobotoBodyText } from '@/components/Typography';
 import {
@@ -89,8 +91,8 @@ const updateQueryToState = (query: {
       name
         ? {
             name,
-            value: query.company_id || query.coll_id || '',
-            title: query.company_name || query.coll_name || '',
+            value: query.coll_id || query.company_id || '',
+            title: query.coll_name || query.company_name || '',
           }
         : undefined,
     ),
@@ -123,20 +125,45 @@ const useSyncQueryToState = () => {
   }, []);
 };
 
-export const useCustomProductFilter = (fetchs: { noFetchData?: boolean; company?: boolean }) => {
+export const useCustomProductFilter = (fetchs: {
+  noFetchData?: boolean;
+  company?: boolean;
+  collection?: boolean;
+}) => {
   useSyncQueryToState();
 
   const [companies, setCompanies] = useState<ItemType[]>([]);
   const [collections, setCollections] = useState<ItemType[]>([]);
 
-  const [companyFilterValue, setCompanyFilterValue] = useState<ProductTopBarFilter>();
-
   const customProductBrand = useAppSelector((state) => state.customProduct.brand);
   const filter = useAppSelector((state) => state.customProduct.filter);
 
+  const firstLoaded = useBoolean(true);
+
+  const query = useQuery();
+  const company_id = query.get(QUERY_KEY.company_id);
+  const company_name = query.get(QUERY_KEY.company_name);
+  const coll_id = query.get(QUERY_KEY.coll_id);
+  const coll_name = query.get(QUERY_KEY.coll_name);
+
+  const [curFilterValue, setCurFilterValue] = useState<{
+    company_id: string | null;
+    company_name: string | null;
+    coll_id?: string | null;
+    coll_name?: string | null;
+  }>({
+    company_id: company_id,
+    company_name: company_name,
+    coll_id: coll_id,
+    coll_name: coll_name,
+  });
+
   useEffect(() => {
     if (filter && filter.name === 'company_id' && filter.value !== 'all' && filter.value) {
-      setCompanyFilterValue(filter);
+      setCurFilterValue({
+        company_id: filter.value,
+        company_name: filter.title,
+      });
     }
   }, [filter && filter.name === 'company_id' && filter.value]);
 
@@ -149,6 +176,30 @@ export const useCustomProductFilter = (fetchs: { noFetchData?: boolean; company?
       );
     }
   }, []);
+
+  useEffect(() => {
+    if (
+      fetchs.collection &&
+      ((companies.length && company_id && filter?.name === 'collection_id' && firstLoaded.value) ||
+        (companies.length && filter?.name === 'company_id' && filter.value !== 'all'))
+    ) {
+      firstLoaded.setValue(false);
+
+      getCollections(
+        company_id && curFilterValue.company_id && filter.name !== 'company_id'
+          ? curFilterValue.company_id
+          : filter.value,
+        CollectionRelationType.CustomLibrary,
+      ).then((collectionData) => {
+        const collectionFilterData = collectionData?.map((item) => ({
+          key: item.id,
+          label: item.name,
+          relation_id: item.relation_id,
+        }));
+        setCollections(collectionFilterData);
+      });
+    }
+  }, [filter?.value, companies]);
 
   const resetFilter = () => {
     removeUrlParams([
@@ -163,12 +214,23 @@ export const useCustomProductFilter = (fetchs: { noFetchData?: boolean; company?
   const resetCollectionFilter = () => {
     removeUrlParams([QUERY_KEY.coll_id, QUERY_KEY.coll_name]);
 
-    if (companyFilterValue?.value) {
+    if (company_id && company_name && coll_id) {
       store.dispatch(
         setCustomProductFilter({
-          name: companyFilterValue.name || 'company_id',
-          value: companyFilterValue.value,
-          title: companyFilterValue.title,
+          name: 'company_id',
+          value: company_id,
+          title: company_name,
+        }),
+      );
+      return;
+    }
+
+    if (curFilterValue?.company_id && curFilterValue.company_name) {
+      store.dispatch(
+        setCustomProductFilter({
+          name: 'company_id',
+          value: curFilterValue.company_id,
+          title: curFilterValue.company_name,
         }),
       );
     }
@@ -212,12 +274,20 @@ export const useCustomProductFilter = (fetchs: { noFetchData?: boolean; company?
     );
   };
 
-  const renderFilterCompanyName = () => {
-    if (!filter) return 'select';
-
-    if (filter?.name === 'company_id' && filter.value) {
-      return <FilterItem title={filter.title} onDelete={resetFilter} />;
+  const renderFilterCompanyName = (
+    filterType: ProductFilterType,
+    filterValue?: ProductTopBarFilter,
+    defaultLabel?: string,
+  ) => {
+    if (
+      filterValue?.value &&
+      filterValue.name === 'company_id' &&
+      filterValue.name === filterType
+    ) {
+      return <FilterItem title={filterValue.title} onDelete={resetFilter} />;
     }
+
+    if (defaultLabel) return defaultLabel;
 
     /// find company filter value when select collection filter by relation_id
     const companyIds = companies.map((brand) => brand?.key);
@@ -246,8 +316,8 @@ export const useCustomProductFilter = (fetchs: { noFetchData?: boolean; company?
     filterValue?: ProductTopBarFilter,
     defaultLabel?: string,
   ) => {
-    if (filterValue?.name && filterValue?.name === filterType && filterValue?.value) {
-      return <FilterItem title={filter?.title || ''} onDelete={resetCollectionFilter} />;
+    if (filterValue?.value && filterValue.name && filterValue.name === filterType) {
+      return <FilterItem title={filterValue.title || ''} onDelete={resetCollectionFilter} />;
     }
 
     if (defaultLabel) return defaultLabel;
@@ -275,6 +345,11 @@ export const useCustomProductFilter = (fetchs: { noFetchData?: boolean; company?
     filter,
     collections,
     setCollections,
+    curFilterValue,
+    firstLoaded,
+    company_id,
+    coll_id,
+    setCurFilterValue,
     renderFilterCollectionName,
     renderFilterDropdown,
     renderFilterCompanyName,

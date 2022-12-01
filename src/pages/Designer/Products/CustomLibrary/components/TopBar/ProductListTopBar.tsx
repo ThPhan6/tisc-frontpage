@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
+import { ItemType } from 'antd/es/menu/hooks/useItems';
 
 import { ReactComponent as OpenIcon } from '@/assets/icons/open-icon.svg';
 import { ReactComponent as PlusCircleIcon } from '@/assets/icons/plus-circle-icon.svg';
@@ -10,24 +11,28 @@ import { useCustomProductFilter } from '../../hook';
 import { getCustomProductList } from '../../services';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { getCollections } from '@/services';
 
+import { CustomProductFilter } from '../../types';
 import store from '@/reducers';
-import { CollectionRelationType } from '@/types';
 
 import { Title } from '@/components/Typography';
 import { TopBarContainer, TopBarItem } from '@/features/product/components';
+import { ProductTopBarFilter } from '@/features/product/components/FilterAndSorter';
 
 import { setCustomProductFilter } from '../../slice';
 import styles from './index.less';
 
 export const ProductListTopBar: React.FC = () => {
-  const loaded = useBoolean(false);
   const {
     filter,
     companies,
     collections,
     setCollections,
+    curFilterValue,
+    setCurFilterValue,
+    firstLoaded,
+    company_id,
+    coll_id,
     renderFilterCollectionName,
     renderFilterDropdown,
     renderFilterCompanyName,
@@ -35,7 +40,21 @@ export const ProductListTopBar: React.FC = () => {
     rederDefaultCollectionLabel,
   } = useCustomProductFilter({
     company: true,
+    collection: true,
   });
+
+  /// using for first loading
+  /// in async case
+  const loaded = useBoolean(false);
+
+  /// get collection data if company_id or coll_id param has value from url
+  const [collectionData, setCollectionData] = useState<ItemType[]>(collections);
+
+  useEffect(() => {
+    if (company_id && coll_id) {
+      setCollectionData(collections);
+    }
+  }, [company_id && coll_id, filter?.name === 'collection_id' && filter.value, collections]);
 
   useEffect(() => {
     if (!filter && companies.length) {
@@ -48,58 +67,105 @@ export const ProductListTopBar: React.FC = () => {
       );
 
       setCollections([]);
-      return;
     }
+  }, [filter?.value, companies]);
 
+  useEffect(() => {
     // prevent call api twice at first loading
     loaded.setValue(true);
 
     if (loaded.value) {
-      let filterBy =
-        !filter || filter?.value === 'all'
-          ? undefined
-          : {
-              company_id: filter.name === 'company_id' ? filter?.value : undefined,
-              collection_id:
-                companies.length && filter.name === 'collection_id' ? filter.value : undefined,
-            };
+      if (filter?.value === 'all') {
+        getCustomProductList();
+        return;
+      }
 
-      if (filter?.name === 'collection_id' && filter.value) {
-        const companyIds = companies.map((brand) => brand?.key);
-        const collectionIds = collections.map((collection) => collection?.relation_id);
+      if (filter?.name === 'company_id' && filter.value) {
+        setCurFilterValue({
+          company_id: filter.value,
+          company_name: filter.title,
+        });
 
-        const relationId = collectionIds.filter((collectionId) =>
-          companyIds?.includes(collectionId),
-        );
+        getCustomProductList({ company_id: filter.value });
+      }
+    }
+  }, [filter?.value, company_id]);
 
-        const relationItemFounded = companies.find((brand) => brand?.key === relationId[0]);
+  useEffect(() => {
+    if (company_id && coll_id && !filter) {
+      return;
+    }
 
-        if (relationItemFounded && relationItemFounded?.key !== undefined) {
-          filterBy = {
-            company_id: String(relationItemFounded.key),
-            collection_id: filter.value,
-          };
-        }
+    if (filter?.name === 'collection_id' && filter.value) {
+      if (firstLoaded.value && company_id && coll_id) {
+        getCustomProductList({
+          company_id,
+          collection_id: coll_id,
+        });
+
+        return;
+      }
+
+      const companyIds = companies.map((brand) => brand?.key);
+
+      const newCollectionData = collectionData.length ? collectionData : collections;
+
+      const collectionIds = newCollectionData.map((collection) => collection?.relation_id);
+
+      const relationId = collectionIds.filter((collectionId) => companyIds?.includes(collectionId));
+
+      const relationItemFounded = companies.find((brand) => brand?.key === relationId[0]);
+
+      let filterBy: CustomProductFilter | undefined;
+
+      if (relationItemFounded && relationItemFounded.key) {
+        filterBy = {
+          company_id: String(relationItemFounded.key),
+          collection_id: filter.value,
+        };
+
+        setCurFilterValue({
+          company_id: filterBy.company_id || '',
+          company_name: relationItemFounded.label,
+          coll_id: filter.value,
+          coll_name: filter.title,
+        });
       }
 
       getCustomProductList(filterBy);
-
-      if (companies.length && filter?.value !== 'all' && filter?.name === 'company_id') {
-        getCollections(filter.value, CollectionRelationType.CustomLibrary).then(
-          (collectionData) => {
-            const collectionFilterData = collectionData?.map((item) => ({
-              key: item.id,
-              label: item.name,
-              relation_id: item.relation_id,
-            }));
-            setCollections(collectionFilterData);
-          },
-        );
-      }
     }
-  }, [filter?.value, companies]);
+  }, [company_id && coll_id, filter?.value]);
 
-  if (!loaded.value) return null;
+  const getCompanyFilterValue = () => {
+    if (curFilterValue.company_id && (!filter || filter.name !== 'company_id')) {
+      return {
+        name: 'company_id',
+        value: curFilterValue.company_id,
+        title: curFilterValue.company_name,
+      } as ProductTopBarFilter;
+    }
+
+    return filter;
+  };
+
+  const getCollectionFilterValue = () => {
+    if (
+      curFilterValue.coll_id &&
+      curFilterValue.company_id &&
+      filter?.name === 'collection_id' &&
+      filter.value
+    ) {
+      return {
+        name: 'collection_id',
+        value: curFilterValue.coll_id,
+        title: curFilterValue.coll_name,
+      } as ProductTopBarFilter;
+    }
+
+    if (filter && filter.value && filter.value !== 'all') return filter;
+
+    return undefined;
+  };
 
   return (
     <>
@@ -109,7 +175,7 @@ export const ProductListTopBar: React.FC = () => {
             <TopBarItem
               disabled
               cursor={companies.length ? 'pointer' : 'default'}
-              topValue={renderFilterCompanyName()}
+              topValue={renderFilterCompanyName('company_id', getCompanyFilterValue(), 'select')}
               customClass={`right-divider ${styles.colorDark} ${
                 filter?.value === 'all' ? styles.hideDeleteIcon : ''
               }`}
@@ -125,7 +191,11 @@ export const ProductListTopBar: React.FC = () => {
               customClass={`pl-0 ${styles.colorDark}`}
               disabled={!companies.length || !filter || !collections.length}
               cursor={!companies.length || !filter || !collections.length ? 'default' : 'pointer'}
-              topValue={renderFilterCollectionName('collection_id', filter, 'select')}
+              topValue={renderFilterCollectionName(
+                'collection_id',
+                getCollectionFilterValue(),
+                'select',
+              )}
               bottomEnable={companies.length ? true : false}
               bottomValue={renderFilterDropdown(
                 'Collections',

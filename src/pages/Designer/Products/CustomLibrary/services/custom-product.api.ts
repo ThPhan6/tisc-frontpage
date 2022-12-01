@@ -12,7 +12,7 @@ import store from '@/reducers';
 
 import { setCustomProductDetail, setCustomProductList } from '../slice';
 
-export function getCustomProductList(params: CustomProductFilter | undefined) {
+export function getCustomProductList(params?: CustomProductFilter) {
   request<{ data: { products: CustomProductList[] } }>('/api/custom-product/get-list', {
     method: 'GET',
     params: params,

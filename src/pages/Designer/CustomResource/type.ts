@@ -1,3 +1,7 @@
+export enum CustomResourceType {
+  Brand,
+  Distributor,
+}
 export interface CustomResources {
   id: string;
   business_name: string;
@@ -34,9 +38,4 @@ export interface CustomResourceForm {
   contacts: ContactDetail[];
   type: number;
   phone_code?: string;
-}
-
-export enum CustomResourceType {
-  'Brand',
-  'Distributor',
 }
