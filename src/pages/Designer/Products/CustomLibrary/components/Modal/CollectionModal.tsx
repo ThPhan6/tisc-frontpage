@@ -49,6 +49,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
   const [data, setData] = useState<DynamicRadioValue[]>([]);
   const [newOption, setNewOption] = useState<string>();
 
+  /// collection item
   const [selected, setSelected] = useState<DynamicRadioValue>({ value: '', label: '' });
 
   const [editable, setEditable] = useState<boolean>(false);
@@ -56,10 +57,18 @@ export const CollectionModal: FC<CollectionModalProps> = ({
   /// for handle edit
   const [disabledSubmit, setDisabledSubmit] = useState<boolean>(false);
 
-  const getCollectionList = () => {
+  const getCollectionList = (newData?: DynamicRadioValue) => {
     getCollections(brandId, collectionType).then((res) => {
       if (res) {
-        const chosenOption = res.find((item) => item.id && item.name === selected.label);
+        const curCollectionSelect = newData?.value
+          ? newData
+          : selected.value
+          ? selected
+          : chosenValue;
+        const chosenOption = res.find(
+          (item) =>
+            item.id === curCollectionSelect.value && item.name === curCollectionSelect.label,
+        );
 
         if (chosenOption) {
           setSelected({
@@ -84,7 +93,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
     getCollectionList();
   }, [brandId]);
 
-  /// set selected value
+  /// set current selected value
   useEffect(() => {
     if (data.length) {
       const chosenOption = data.find((item) => item.value === chosenValue.value);
@@ -137,12 +146,17 @@ export const CollectionModal: FC<CollectionModalProps> = ({
         relation_id: brandId,
         relation_type: collectionType,
         name: newOption,
-      }).then((isSuccess) => {
-        if (isSuccess) {
+      }).then((newData) => {
+        if (newData) {
           // set empty input
           setNewOption(undefined);
           // get list after created new collection
-          getCollectionList();
+          getCollectionList({
+            value: newData.id,
+            label: newData.name,
+            disabled: false,
+            editLabel: false,
+          });
         }
       });
     }
@@ -365,6 +379,8 @@ export const CollectionModal: FC<CollectionModalProps> = ({
                   <ActionMenu
                     disabled={item.disabled || item.editLabel}
                     className={styles.actionMenu}
+                    overlayClassName={styles.actionMenuOverLay}
+                    offsetAlign={[14, -14]}
                     actionItems={[
                       {
                         type: 'updated',
