@@ -169,9 +169,9 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
               className={`${alignRight ? styles.alignRight : ''} ${
                 textCapitalize ? styles.textCapitalize : ''
               } ${selectedItem === index ? styles.active : ''} ${hasChildren ? '' : styles.noSub}`}
-              disabled={item.disabled}
+              disabled={item?.disabled}
               icon={item?.icon || (hasChildren ? <DropdownIcon /> : undefined)}>
-              {item.label}
+              {item?.label}
             </Menu.Item>
           );
         })}
@@ -241,7 +241,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
       }>
       <span {...labelProps} onClick={(e) => e.stopPropagation()}>
         {children}
-        {hideDropdownIcon ? null : <DropdownIcon />}
+        {hideDropdownIcon ? null : <DropdownIcon style={{ marginLeft: 8 }} />}
       </span>
     </Dropdown>
   );

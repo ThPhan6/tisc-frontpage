@@ -26,10 +26,7 @@ export interface SpaceListProps {
   projectId?: string;
 }
 const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
-  useAutoExpandNestedTableColumn(3, {
-    autoWidthColIndex: 7,
-    rightColumnExcluded: 4,
-  });
+  useAutoExpandNestedTableColumn(3, [7]);
   const tableRef = useRef<any>();
   const [visible, setVisible] = useState<boolean>(false);
 

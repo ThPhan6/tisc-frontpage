@@ -36,7 +36,7 @@ import { BodyText } from '@/components/Typography';
 import styles from './styles/project-list.less';
 
 const ProjectList: React.FC = () => {
-  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
+  useAutoExpandNestedTableColumn(0, [6]);
   const tableRef = useRef<any>();
   const accessPermission = useAccess();
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
@@ -251,7 +251,7 @@ const ProjectList: React.FC = () => {
         <CustomTable
           rightAction={<CustomPlusButton onClick={goToCreatePage} />}
           title={'PROJECTS'}
-          columns={setDefaultWidthForEachColumn(MainColumns, 7)}
+          columns={setDefaultWidthForEachColumn(MainColumns, 6)}
           fetchDataFunc={getProjectPagination}
           extraParams={
             selectedFilter && selectedFilter.id !== FilterValues.global
