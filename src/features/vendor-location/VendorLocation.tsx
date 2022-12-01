@@ -45,6 +45,7 @@ const getSelectedLocation = (locationGroup: LocationGroupedByCountry[], selected
         phone_code={selectedLocation.phone_code}
         general_phone={selectedLocation.general_phone}
         genernal_email={selectedLocation.general_email}
+        contacts={selectedLocation.contacts}
       />
     ) : (
       ''
@@ -74,6 +75,7 @@ const getSelectedDistributors = (locationGroup: DistributorProductMarket[], sele
         genernal_email={selectedLocation.email}
         first_name={selectedLocation.first_name}
         last_name={selectedLocation.last_name}
+        contacts={selectedLocation.contacts}
       />
     ) : (
       ''
@@ -222,7 +224,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
         general_phone={location?.general_phone ?? ''}
         genernal_email={location?.general_email ?? ''}
         customClass={styles.businessDetail}
-        contacts={brand?.contacts}
+        contacts={brand?.contacts || location.contacts}
       />
     ) : null;
 
@@ -389,7 +391,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
                         phone_code={location.phone_code}
                         general_phone={location.general_phone}
                         genernal_email={location.general_email}
-                        contacts={brand?.contacts}
+                        hideContact
                       />
                     ),
                   };
@@ -424,7 +426,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
                         genernal_email={distributor.email}
                         first_name={distributor.first_name}
                         last_name={distributor.last_name}
-                        contacts={distributor.contacts}
+                        hideContact
                       />
                     ),
                   };

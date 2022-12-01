@@ -50,7 +50,7 @@ import { getListTeamProfileUserGroupByBrandId } from '@/features/team-profiles/a
 import moment from 'moment';
 
 const ProjectTracking = () => {
-  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
+  useAutoExpandNestedTableColumn(0, [7]);
   const tableRef = useRef<any>();
   const userInfo = useAppSelector((state) => state.user.user);
 

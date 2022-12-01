@@ -270,7 +270,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             {showActionMenu && isDesignerUser ? (
               <ActionMenu
                 placement="bottomLeft"
-                offsetAlign={[-12, -6]}
+                offsetAlign={[-12, 8]}
                 className={styles.actionMenu}
                 overlayClassName={styles.actionMenuOverLay}
                 actionItems={[

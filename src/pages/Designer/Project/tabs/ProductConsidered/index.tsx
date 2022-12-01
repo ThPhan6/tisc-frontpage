@@ -40,10 +40,7 @@ import ProductCard from '@/features/product/components/ProductCard';
 import cardStyles from '@/features/product/components/ProductCard.less';
 
 const ProductConsidered: React.FC = () => {
-  useAutoExpandNestedTableColumn(3, {
-    autoWidthColIndex: 7, // Product column
-    rightColumnExcluded: 4,
-  });
+  useAutoExpandNestedTableColumn(3, [7]);
 
   const [visible, setVisible] = useState<boolean>(false);
 
@@ -412,6 +409,10 @@ const ProductConsidered: React.FC = () => {
 
   const filteredColumns = (cols: TableColumnItem<any>[]) =>
     cols.filter((el) => Boolean(el.hidden) === false);
+  console.log(
+    'filteredColumns(setDefaultWidthForEachColumn(AreaColumns, 7))',
+    filteredColumns(setDefaultWidthForEachColumn(AreaColumns, 7)),
+  );
 
   return (
     <div>

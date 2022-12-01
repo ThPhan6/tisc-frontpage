@@ -18,6 +18,7 @@ export interface BusinessDetailProps {
   last_name?: string;
   customClass?: string;
   contacts?: ContactDetail[];
+  hideContact?: boolean;
 }
 export const BusinessDetail: FC<BusinessDetailProps> = ({
   business = '',
@@ -30,7 +31,45 @@ export const BusinessDetail: FC<BusinessDetailProps> = ({
   last_name = '',
   customClass = '',
   contacts,
+  hideContact,
 }) => {
+  const renderContact = (el: ContactDetail) => {
+    return (
+      <div style={{ paddingTop: 8, paddingLeft: 16 }}>
+        <div className={styles.detail_phoneEmail}>
+          <RobotoBodyText level={6} customClass={styles.phone}>
+            {el.first_name} {el.last_name}
+          </RobotoBodyText>
+          <RobotoBodyText level={6}>{el.position}</RobotoBodyText>
+        </div>
+        <div className={styles.detail_phoneEmail}>
+          <RobotoBodyText level={6} customClass={styles.phone}>
+            +{el.phone_code || phone_code} {el.work_phone}
+          </RobotoBodyText>
+          <RobotoBodyText level={6}>{el.work_email}</RobotoBodyText>
+        </div>
+      </div>
+    );
+  };
+
+  const renderContacts = () => {
+    if (hideContact) {
+      return null;
+    }
+    if (contacts?.length) {
+      return contacts.map(renderContact);
+    }
+    return renderContact({
+      first_name,
+      last_name,
+      position: '',
+      work_email: genernal_email,
+      work_mobile: '',
+      work_phone: general_phone,
+      phone_code: phone_code,
+    });
+  };
+
   return (
     <div className={`${styles.detail} ${customClass}`}>
       <div className={styles.detail_business}>
@@ -45,46 +84,7 @@ export const BusinessDetail: FC<BusinessDetailProps> = ({
         {address}
       </RobotoBodyText>
 
-      {contacts?.length ? (
-        contacts.map((el) => (
-          <div style={{ paddingTop: 8, paddingLeft: 16 }}>
-            <div className={styles.detail_phoneEmail}>
-              <RobotoBodyText level={6} customClass={styles.phone}>
-                {el.first_name} {el.last_name}
-              </RobotoBodyText>
-              <RobotoBodyText level={6}>{el.position}</RobotoBodyText>
-            </div>
-            <div className={styles.detail_phoneEmail}>
-              <RobotoBodyText level={6} customClass={styles.phone}>
-                +{phone_code} {el.work_phone}
-              </RobotoBodyText>
-              <RobotoBodyText level={6}>{el.work_email}</RobotoBodyText>
-            </div>
-          </div>
-        ))
-      ) : (
-        <>
-          <div className={styles.detail_phoneEmail}>
-            {general_phone ? (
-              <RobotoBodyText level={6} customClass={styles.phone}>
-                T: {`${phone_code} ${general_phone}`}
-              </RobotoBodyText>
-            ) : (
-              ''
-            )}
-            {genernal_email ? <RobotoBodyText level={6}>E: {genernal_email}</RobotoBodyText> : ''}
-          </div>
-          <span className={styles.detail_contact}>
-            {first_name ? (
-              <RobotoBodyText level={6}>
-                Contact: {first_name} {last_name}
-              </RobotoBodyText>
-            ) : (
-              ''
-            )}
-          </span>
-        </>
-      )}
+      {renderContacts()}
     </div>
   );
 };

@@ -25,7 +25,7 @@ import CustomTable from '@/components/Table';
 import { RobotoBodyText } from '@/components/Typography';
 
 export const SpecificationByMaterial: FC = () => {
-  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 3 });
+  useAutoExpandNestedTableColumn(0, [7]);
   const tableRef = useRef<any>();
   const [visible, setVisible] = useState<boolean>(false);
 

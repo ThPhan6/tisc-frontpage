@@ -49,6 +49,7 @@ const IssuingInformation: FC<IssuingInformationProps> = ({ data, onChangeData })
         general_phone={value.general_phone}
         genernal_email={value.general_email}
         customClass={styles.business}
+        hideContact
       />
     );
   };

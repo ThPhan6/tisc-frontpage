@@ -137,7 +137,7 @@ export const SpecificationTab: FC<{
 
   const renderOptionItems = (option: ProductOptionProps, optionIndex: number) => {
     if (viewOnly) {
-      const selectOption = specification.attribute_groups.find((el) => el.id === option.id);
+      const selectOption = specification.attribute_groups?.find((el) => el.id === option.id);
       return (
         <CustomRadio
           options={option.items.map((el, index) => ({
@@ -167,7 +167,9 @@ export const SpecificationTab: FC<{
 
               newOptionSpec.is_refer_document = false;
 
-              const optIndex = specification.attribute_groups.findIndex((el) => el.id === optionId);
+              const optIndex = specification.attribute_groups?.findIndex(
+                (el) => el.id === optionId,
+              );
               const newOption = {
                 id: optionId,
                 attributes: [
@@ -236,7 +238,7 @@ export const SpecificationTab: FC<{
     }
 
     return options.map((option: ProductOptionProps, optionIndex: number) => {
-      const selectOption = specification.attribute_groups.find((el) => el.id === option.id);
+      const selectOption = specification.attribute_groups?.find((el) => el.id === option.id);
       return (
         <CustomCollapse
           key={option.id || optionIndex}
@@ -268,12 +270,16 @@ export const SpecificationTab: FC<{
                     onChange={() => {
                       if (productId && selectOption?.isChecked) {
                         const newOptionSpec = {
-                          is_refer_document: specification.attribute_groups.some(
-                            (el) => el.id !== selectOption.id && el.isChecked,
-                          ),
-                          attribute_groups: specification.attribute_groups.filter(
-                            (el) => el.id !== selectOption.id,
-                          ),
+                          is_refer_document: specification?.attribute_groups?.length
+                            ? specification.attribute_groups.some(
+                                (el) => el.id !== selectOption.id && el.isChecked,
+                              )
+                            : true,
+                          attribute_groups: specification?.attribute_groups?.length
+                            ? specification.attribute_groups.filter(
+                                (el) => el.id !== selectOption.id,
+                              )
+                            : [],
                         };
 
                         store.dispatch(

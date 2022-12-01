@@ -17,7 +17,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 
 const AttributeList: React.FC = () => {
-  useAutoExpandNestedTableColumn(1);
+  useAutoExpandNestedTableColumn(1, [3]);
   const tableRef = useRef<any>();
   const { activePath, attributeLocation } = useAttributeLocation();
 

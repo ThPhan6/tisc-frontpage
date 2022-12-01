@@ -24,18 +24,18 @@ export async function getCollections(relationId: string, relationType: Collectio
 }
 
 export async function createCollection(data: CollectionAddPayload) {
-  return request(`/api/collection/create`, {
+  return request<{ data: Collection }>(`/api/collection/create`, {
     method: 'POST',
     data,
   })
-    .then(() => {
+    .then((res) => {
       message.success(MESSAGE_NOTIFICATION.CREATE_BRAND_COLLECTION_SUCCESS);
 
-      return true;
+      return res.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_BRAND_COLLECTION_ERROR);
-      return false;
+      return {} as Collection;
     });
 }
 export async function updateCollection(collectionId: string, name: string) {

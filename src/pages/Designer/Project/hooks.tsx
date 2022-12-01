@@ -104,11 +104,12 @@ export const onOpenSpecifiyingProductModal = (record: ProjectProductItem) => {
         specifiedDetail: {
           ...record.specifiedDetail,
           specification: {
-            is_refer_document: record.specifiedDetail.specification.is_refer_document,
-            attribute_groups: record.specifiedDetail.specification.attribute_groups.map((el) => ({
-              ...el,
-              isChecked: true,
-            })),
+            is_refer_document: record.specifiedDetail.specification?.is_refer_document || false,
+            attribute_groups:
+              record.specifiedDetail.specification?.attribute_groups?.map((el) => ({
+                ...el,
+                isChecked: true,
+              })) || [],
           },
         },
       }),

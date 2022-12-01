@@ -18,7 +18,7 @@ import { ActionMenu } from '@/components/TableAction';
 import { deleteDistributor, getDistributorPagination } from '@/features/distributors/api';
 
 const Distributors = () => {
-  useAutoExpandNestedTableColumn(0);
+  useAutoExpandNestedTableColumn(0, [5]);
   const tableRef = useRef<any>();
   const user = useAppSelector((state) => state.user.user);
 

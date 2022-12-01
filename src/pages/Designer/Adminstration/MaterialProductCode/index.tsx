@@ -25,7 +25,7 @@ import {
 } from '@/features/material-product-code/api';
 
 const MaterialProductCode = () => {
-  useAutoExpandNestedTableColumn(2);
+  useAutoExpandNestedTableColumn(2, [3]);
   const tableRef = useRef<any>();
 
   const user = useAppSelector((state) => state.user.user);
@@ -151,11 +151,11 @@ const MaterialProductCode = () => {
           code: 'material_code_order',
         }}
         expandable={GetExpandableTableConfig({
-          columns: setDefaultWidthForEachColumn(SubColumns, 2),
+          columns: setDefaultWidthForEachColumn(SubColumns, 3),
           childrenColumnName: 'subs',
           level: 2,
           expandable: GetExpandableTableConfig({
-            columns: setDefaultWidthForEachColumn(CodeColumns, 2),
+            columns: setDefaultWidthForEachColumn(CodeColumns, 3),
             childrenColumnName: 'codes',
             level: 3,
           }),

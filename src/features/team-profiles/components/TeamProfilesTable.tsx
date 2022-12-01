@@ -26,7 +26,7 @@ import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { deleteTeamProfile, getTeamProfileList } from '@/features/team-profiles/api';
 
 const TeamProfilesTable = () => {
-  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 3 });
+  useAutoExpandNestedTableColumn(0, [5]);
   const tableRef = useRef<any>();
   const userId = useAppSelector((state) => state.user.user?.id);
 
