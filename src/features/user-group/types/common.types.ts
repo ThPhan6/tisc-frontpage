@@ -13,7 +13,7 @@ export enum DesignTabKeys {
   teams = 'TEAMS',
   materialCode = 'Marterial Code',
   projects = 'PROJECTS',
-  custom = 'CUSTOM',
+  library = 'Library',
 }
 export type TabKeys = BrandTabKeys | DesignTabKeys;
 

@@ -3,6 +3,7 @@ import { message } from 'antd';
 import { request } from 'umi';
 
 import { getResponseMessage } from '@/helper/common';
+import { clone } from 'lodash';
 
 import { UnitType } from '../types/project-specifying.type';
 import { setFinishScheduleData } from '@/features/product/reducers';
@@ -13,12 +14,20 @@ import {
 import store from '@/reducers';
 import { GeneralData } from '@/types';
 
+import { updateCustomProductSpecifiedDetail } from '@/pages/Designer/Products/CustomLibrary/slice';
+
 export async function getUnitTypeList() {
   return request<{ data: UnitType[] }>(`/api/setting/common-type/${COMMON_TYPES.PROJECT_UNIT}`, {
     method: 'GET',
   })
     .then((response) => {
-      return response.data;
+      const units = clone(response.data);
+      const onTopUnitIndex = units.findIndex((el) => el.name.trim().includes('Not Applicable'));
+      if (onTopUnitIndex !== -1) {
+        const onTopUnit = units.splice(onTopUnitIndex, 1);
+        units.unshift(onTopUnit[0]);
+      }
+      return units;
     })
     .catch((error) => {
       console.log('getUnitTypeList error', error);
@@ -58,7 +67,11 @@ export async function getRequirementTypeList() {
     });
 }
 
-export async function getFinishScheduleList(projectProductId: string, roomIds: string[] | string) {
+export async function getFinishScheduleList(
+  projectProductId: string,
+  roomIds: string[] | string,
+  customProduct?: boolean,
+) {
   request<{ data: FinishScheduleResponse[] }>(
     `/api/project-product/${projectProductId}/finish-schedules`,
     {
@@ -67,7 +80,11 @@ export async function getFinishScheduleList(projectProductId: string, roomIds: s
     },
   )
     .then((response) => {
-      store.dispatch(setFinishScheduleData(response.data));
+      if (customProduct) {
+        store.dispatch(updateCustomProductSpecifiedDetail({ finish_schedules: response.data }));
+      } else {
+        store.dispatch(setFinishScheduleData(response.data));
+      }
     })
     .catch((error) => {
       console.log('getFinishScheduleList error', error);

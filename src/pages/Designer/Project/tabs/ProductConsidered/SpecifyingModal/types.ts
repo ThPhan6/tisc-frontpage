@@ -52,6 +52,7 @@ export type SpecifyingProductRequestBody = {
   distributor_location_id: string;
   entire_allocation: boolean;
   allocation: string[];
+  custom_product?: boolean;
 } & CodeOrderRequestParams;
 
 export type OnChangeSpecifyingProductFnc = (

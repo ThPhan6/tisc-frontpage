@@ -1,3 +1,5 @@
+export const LOGO_SIZE_LIMIT = 240 * 1024; // 240 KB
+
 export enum STATUS_RESPONSE {
   SUCCESS = 'SUCCESS',
   ERROR = 'ERROR',
@@ -38,7 +40,7 @@ export const USER_STATUS_TEXTS = {
 };
 
 export const IMAGE_ACCEPT_TYPES = {
-  image: '.png,.jpeg,.webp,.svg,.jpg',
+  image: '.png,.jpeg,.webp,.jpg',
 };
 
 export const AVATAR_ACCEPT_TYPES = ['png', 'jpeg', 'jpg', 'webp', 'svg'];
@@ -52,14 +54,16 @@ export const QUERY_KEY = {
   b_name: 'b_name',
   coll_id: 'coll_id',
   coll_name: 'coll_name',
+  company_id: 'company_id',
+  company_name: 'company_name',
   sort_order: 'sort_order',
   sort_name: 'sort_name',
   search: 'search',
 };
 
 export const COVERAGE_BEYOND = {
-  notAllow: true,
-  allow: false,
+  notAllow: false,
+  allow: true,
 };
 export const GENDER = {
   male: true,
@@ -92,6 +96,7 @@ export const COMMON_TYPES = {
   ACTION_TASK: 12,
   ISSUE_FOR: 13,
   CAPABILITIES: 14,
+  INVOICE: 15,
 };
 
 export const ACTION_TASK_MODEL = {

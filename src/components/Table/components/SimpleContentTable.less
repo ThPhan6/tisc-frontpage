@@ -1,0 +1,21 @@
+.table {
+  width: 100%;
+  table-layout: fixed;
+  td {
+    padding: 8px 12px 8px 16px;
+    color: @mono-color;
+    background-color: #fff;
+    border-bottom: 8px solid transparent;
+    box-shadow: @border-bottom-light;
+  }
+  td:first-child {
+    width: 25%;
+    font-size: 14px;
+    font-family: @font-secondary;
+  }
+  td:last-child {
+    width: 75%;
+    font-size: 12px;
+    font-family: @font-primary;
+  }
+}

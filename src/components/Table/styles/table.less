@@ -267,15 +267,21 @@ tr[class^='ant-table-expanded-row'] tbody > tr > td {
   white-space: nowrap;
 }
 
-.ant-table-tbody > tr > td {
-  transition: all 0.3s;
-}
-
 :global(.ant-table-cell.disabled) {
+  @color: @mono-color-light;
+
   cursor: not-allowed;
   pointer-events: none;
-  p,
+
+  p {
+    color: @color;
+  }
+
   svg {
-    color: @mono-color-light;
+    color: @color;
+
+    path {
+      fill: @color;
+    }
   }
 }

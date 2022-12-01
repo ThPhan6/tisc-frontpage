@@ -4,12 +4,17 @@
   &.noBorder {
     border: none;
 
-    :global(.ant-collapse-item-active) {
-      :global(.ant-collapse-header) {
-        box-shadow: none;
-      }
-      :global(.ant-collapse-header-text) {
-        font-weight: 500;
+    :global(.ant-collapse-item-active .ant-collapse-header) {
+      box-shadow: none;
+    }
+  }
+
+  :global(.ant-collapse-item-active .ant-collapse-header-text) {
+    p,
+    span {
+      font-weight: 500;
+      &[class*='Cormorant'] {
+        font-weight: 600;
       }
     }
   }

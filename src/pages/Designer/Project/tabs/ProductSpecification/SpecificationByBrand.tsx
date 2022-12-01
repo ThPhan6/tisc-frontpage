@@ -1,10 +1,13 @@
-import { FC, useRef } from 'react';
+import { FC, useRef, useState } from 'react';
 
 import { COLUMN_WIDTH } from '@/constants/util';
+
+import { ReactComponent as InfoIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import {
   onCellCancelled,
   renderActionCell,
+  renderAvailability,
   renderSpecifiedStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
@@ -15,16 +18,18 @@ import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 import { TableColumnItem } from '@/components/Table/types';
 import { ProjectProductItem } from '@/features/product/types';
 
+import { AvailabilityModal } from '../../components/AvailabilityModal';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
+import { RobotoBodyText } from '@/components/Typography';
 
 interface BrandListProps {
   projectId?: string;
 }
 
 const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
-  useAutoExpandNestedTableColumn(1, {
-    rightColumnExcluded: 3,
-  });
+  useAutoExpandNestedTableColumn(1, 4);
+  const [visible, setVisible] = useState<boolean>(false);
+
   const tableRef = useRef<any>();
   const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
@@ -32,9 +37,10 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
     {
       title: 'Brand',
       dataIndex: 'brand_order',
-      sorter: true,
+      sorter: { multiple: 1 },
       isExpandable: true,
       render: (_value, record) => <span>{record.name}</span>,
+      defaultSortOrder: 'ascend',
     },
     {
       title: 'Collection',
@@ -51,6 +57,18 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       dataIndex: 'count',
       width: '5%',
       align: 'center',
+    },
+    {
+      title: (
+        <div className="flex-start">
+          <RobotoBodyText level={5} style={{ fontWeight: 500 }}>
+            Availability
+          </RobotoBodyText>
+          <InfoIcon style={{ cursor: 'pointer' }} onClick={() => setVisible(true)} />
+        </div>
+      ),
+      align: 'center',
+      dataIndex: 'availability',
     },
     { title: 'Status', align: 'center', width: COLUMN_WIDTH.status },
     { title: 'Action', width: '5%', align: 'center' },
@@ -105,6 +123,12 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       width: '5%',
     },
     {
+      title: 'Availability',
+      dataIndex: 'availability',
+      align: 'center',
+      render: (_value, record) => renderAvailability(record),
+    },
+    {
       title: 'Status',
       noBoxShadow: true,
       dataIndex: 'specified_status',
@@ -141,6 +165,8 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       />
 
       {renderSpecifyingModal()}
+
+      <AvailabilityModal visible={visible} setVisible={setVisible} />
     </>
   );
 };

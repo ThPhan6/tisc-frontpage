@@ -39,7 +39,7 @@ import styles from '@/features/user-group/styles/brand.less';
 
 const BrandList: React.FC = () => {
   // set width for each cell
-  useAutoExpandNestedTableColumn(0);
+  useAutoExpandNestedTableColumn(0, [11]);
   const tableRef = useRef<any>();
 
   /// for assign team modal

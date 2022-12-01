@@ -20,7 +20,7 @@ import styles from './index.less';
 import { getMarketAvailabilityList } from '@/features/market-availability/api';
 
 const MarketAvailabilityList = () => {
-  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
+  useAutoExpandNestedTableColumn(0, [7]);
   const user = useAppSelector((state) => state.user.user);
 
   const handleUpdateMarketAvailability = (id: string) => {

@@ -1,5 +1,7 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 
+import { ReactComponent as ActionDownIcon } from '@/assets/icons/action-down-icon.svg';
+import { ReactComponent as ActionUpIcon } from '@/assets/icons/action-up-icon.svg';
 import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 
 import { useProductAttributeForm } from './hooks';
@@ -8,6 +10,7 @@ import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
 import { setPartialProductDetail } from '../../reducers';
 import { ProductAttributeProps, SpecificationAttributeBasisOptionProps } from '../../types';
 import { ProductInfoTab } from './types';
+import { RadioValue } from '@/components/CustomRadio/types';
 import { DimensionWeightItem } from '@/features/dimension-weight/types';
 import store from '@/reducers';
 import { ProductAttributes } from '@/types';
@@ -58,8 +61,14 @@ export const ProductAttributeContainer: FC<Props> = ({
     attributeGroupKey,
     onSelectSpecificationOption,
     dimensionWeightData,
-    onChangeDimensionWeight,
-  } = useProductAttributeForm(activeKey, curProductId, isSpecifiedModal);
+  } = useProductAttributeForm(
+    activeKey,
+    curProductId,
+    isSpecifiedModal,
+    isTiscAdmin && activeKey === 'specification' && !curProductId, // get dimension weight list
+  );
+
+  const [attributeSelected, setAttributeSelected] = useState<RadioValue>({ value: '', label: '' });
 
   const renderCollapseHeader = (groupIndex: number) => {
     const group = attributeGroup[groupIndex];
@@ -105,6 +114,7 @@ export const ProductAttributeContainer: FC<Props> = ({
     attribute: ProductAttributeProps | DimensionWeightItem,
     attrIndex: number,
     groupName: string,
+    isSpecificationOptionSelection?: boolean,
     groupIndex: number = -1,
   ) => {
     if (isTiscAdmin) {
@@ -135,7 +145,33 @@ export const ProductAttributeContainer: FC<Props> = ({
       chosenOption = curAttribute.basis_options?.find((el) => el.isChecked === true);
     }
 
-    return (
+    if (attribute.type !== 'Options') {
+      return (
+        <tr className={styles.attributeSubItem} key={attribute.id}>
+          <td className={styles.attributeName}>
+            <div className={`${styles.content} ${styles.attribute} attribute-type`}>
+              <BodyText level={4} customClass={styles.content_type}>
+                {attribute.name}
+              </BodyText>
+            </div>
+          </td>
+
+          <td className={styles.attributeDescription}>
+            {attribute.conversion ? (
+              <ConversionText
+                conversion={attribute.conversion}
+                firstValue={attribute.conversion_value_1}
+                secondValue={attribute.conversion_value_2}
+              />
+            ) : (
+              <GeneralText text={attribute.text} />
+            )}
+          </td>
+        </tr>
+      );
+    }
+
+    const renderAttributeOption = () => (
       <tr className={styles.attributeSubItem} key={attribute.id}>
         <td className={styles.attributeName}>
           <div className={`${styles.content} ${styles.attribute} attribute-type`}>
@@ -146,98 +182,45 @@ export const ProductAttributeContainer: FC<Props> = ({
         </td>
 
         <td className={styles.attributeDescription}>
-          {attribute.conversion ? (
-            <ConversionText
-              conversion={attribute.conversion}
-              firstValue={attribute.conversion_value_1}
-              secondValue={attribute.conversion_value_2}
-            />
-          ) : attribute.type === 'Options' ? (
-            <AttributeOption
-              title={groupName}
-              isPublicPage={isPublicPage}
-              attributeName={attribute.name}
-              options={attribute.basis_options ?? []}
-              chosenOption={
-                chosenOption
-                  ? {
-                      label: `${chosenOption.value_1 ?? ''} ${chosenOption.unit_1 ?? ''} - ${
-                        chosenOption.value_2 ?? ''
-                      } ${chosenOption.unit_2 ?? ''}`,
-                      value: chosenOption?.id,
-                    }
-                  : undefined
+          <AttributeOption
+            title={groupName}
+            isPublicPage={isPublicPage}
+            attributeName={attribute.name}
+            options={attribute.basis_options ?? []}
+            chosenOption={
+              chosenOption
+                ? {
+                    label: `${chosenOption.value_1 ?? ''} ${chosenOption.unit_1 ?? ''} - ${
+                      chosenOption.value_2 ?? ''
+                    } ${chosenOption.unit_2 ?? ''}`,
+                    value: chosenOption?.id,
+                  }
+                : undefined
+            }
+            setChosenOptions={(option) => {
+              if (groupIndex !== -1) {
+                onSelectSpecificationOption(
+                  groupIndex,
+                  attribute.id,
+                  isTiscAdmin ? false : true,
+                  option?.value?.toString() || undefined,
+                );
               }
-              setChosenOptions={(option) => {
-                if (groupIndex !== -1) {
-                  onSelectSpecificationOption(
-                    groupIndex,
-                    attribute.id,
-                    isTiscAdmin ? false : true,
-                    option?.value?.toString() || undefined,
-                  );
-                }
-              }}
-            />
-          ) : (
-            <GeneralText text={attribute.text} />
-          )}
+            }}
+          />
         </td>
       </tr>
     );
-  };
 
-  const renderDimensionWeight = () => {
-    if (activeKey !== 'specification' || (!dimensionWeightData.attributes.length && !isTiscAdmin))
-      return null;
-
-    if (isTiscAdmin) {
-      return (
-        <DimensionWeight
-          customClass={styles.marginTopSpace}
-          collapseStyles={!isSpecifiedModal}
-          editable={isTiscAdmin}
-          data={dimensionWeightData}
-          setData={(data) => {
-            store.dispatch(
-              setPartialProductDetail({
-                dimension_and_weight: data,
-              }),
-            );
-          }}
-          onChange={onChangeDimensionWeight}
-        />
-      );
+    if (!isSpecificationOptionSelection) {
+      return renderAttributeOption();
+    } else if (attribute.id === attributeSelected.value) {
+      return renderAttributeOption();
     }
-
-    return (
-      <CustomCollapse
-        defaultActiveKey={'1'}
-        showActiveBoxShadow={!specifying}
-        noBorder={noBorder}
-        customHeaderClass={`${styles.productAttributeItem} ${styles.marginTopSpace} ${
-          specifying ? styles.specifying : ''
-        }`}
-        header={
-          <div className={styles.attrGroupTitle}>
-            <RobotoBodyText level={6}>{dimensionWeightData.name}</RobotoBodyText>
-          </div>
-        }>
-        <table className={styles.table}>
-          <tbody>
-            {dimensionWeightData.attributes.map((attribute, attrIndex) =>
-              renderAttributeRowItem(attribute, attrIndex, dimensionWeightData.name),
-            )}
-          </tbody>
-        </table>
-      </CustomCollapse>
-    );
   };
 
   return (
     <>
-      {renderDimensionWeight()}
-
       {isTiscAdmin ? (
         <CustomPlusButton
           size={18}
@@ -247,8 +230,25 @@ export const ProductAttributeContainer: FC<Props> = ({
         />
       ) : null}
 
+      <DimensionWeight
+        collapseStyles={!isSpecifiedModal}
+        customClass={!isTiscAdmin ? styles.marginTopSpace : ''}
+        editable={isTiscAdmin}
+        isSpecifying={isSpecifiedModal}
+        isShow={activeKey === 'specification'}
+        data={dimensionWeightData}
+        onChange={(data) => {
+          store.dispatch(
+            setPartialProductDetail({
+              dimension_and_weight: data,
+            }),
+          );
+        }}
+      />
+
       {attributeGroup.map((_group, groupIndex) => {
         const attrGroupItem = attributeGroup[groupIndex];
+
         return (
           <div key={groupIndex} style={{ marginBottom: 8, marginTop: isTiscAdmin ? undefined : 8 }}>
             <div className={styles.attributes}>
@@ -272,19 +272,70 @@ export const ProductAttributeContainer: FC<Props> = ({
                     />
                   ) : null}
 
+                  {!isTiscAdmin && activeKey === 'specification' && attrGroupItem.selection ? (
+                    <CustomCollapse
+                      noBorder
+                      className="noBoxShadow"
+                      expandIcon={({ isActive }) =>
+                        isActive ? <ActionUpIcon /> : <ActionDownIcon />
+                      }
+                      header={
+                        <div className="specification-choice">
+                          <BodyText level={4}>Choose Specification</BodyText>
+                          <RobotoBodyText
+                            level={6}
+                            color={
+                              attributeSelected.value ? 'primary-color-dark' : 'mono-color-medium'
+                            }
+                            customClass={`${isSpecifiedModal ? 'header-label' : 'label-space'}`}>
+                            {attributeSelected.label || 'select'}
+                          </RobotoBodyText>
+                        </div>
+                      }>
+                      {attrGroupItem.attributes.map((attribute) => {
+                        if (attribute.type === 'Options') {
+                          return (
+                            <div className="specification-choice">
+                              <p></p>
+                              <RobotoBodyText
+                                level={6}
+                                customClass={`cursor-pointer attribute-label ${
+                                  isSpecifiedModal ? 'left-none' : 'left-space'
+                                }`}
+                                onClick={() =>
+                                  setAttributeSelected({
+                                    value: attribute.id,
+                                    label: attribute.name,
+                                  })
+                                }>
+                                {attribute.name}
+                              </RobotoBodyText>
+                            </div>
+                          );
+                        }
+                      })}
+                    </CustomCollapse>
+                  ) : null}
+
                   {attrGroupItem.attributes.length ? (
-                    <table className={styles.table}>
-                      <tbody>
-                        {attrGroupItem.attributes.map((attribute, attrIndex) =>
-                          renderAttributeRowItem(
-                            attribute,
-                            attrIndex,
-                            attrGroupItem.name,
-                            groupIndex,
-                          ),
-                        )}
-                      </tbody>
-                    </table>
+                    <div
+                      className={`${
+                        isSpecifiedModal ? styles.paddingNone : styles.paddingRounded
+                      } ${attrGroupItem.selection && !isTiscAdmin ? styles.paddingWrapper : ''}`}>
+                      <table className={styles.table}>
+                        <tbody>
+                          {attrGroupItem.attributes.map((attribute, attrIndex) =>
+                            renderAttributeRowItem(
+                              attribute,
+                              attrIndex,
+                              attrGroupItem.name,
+                              attrGroupItem.selection,
+                              groupIndex,
+                            ),
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
                   ) : null}
                 </CustomCollapse>
               </div>

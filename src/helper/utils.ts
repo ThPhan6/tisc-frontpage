@@ -394,3 +394,6 @@ export const formatNumber = (number: number) => {
     maximumFractionDigits: 2,
   });
 };
+
+export const formatImageIfBase64 = (img: string) =>
+  img.indexOf('data:image') > -1 ? img.split(',')[1] : img;

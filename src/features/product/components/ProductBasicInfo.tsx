@@ -9,10 +9,10 @@ import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
 import { createCollection, deleteCollection, getCollections } from '@/services';
 
-import { setPartialProductDetail } from '@/features/product/reducers';
+import { productVariantsSelector, setPartialProductDetail } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
 import type { Collection } from '@/types';
-import { CollectionRelation } from '@/types';
+import { CollectionRelationType } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
 import InputGroup from '@/components/EntryForm/InputGroup';
@@ -27,29 +27,30 @@ export const ProductBasicInfo: React.FC = () => {
   const dispatch = useDispatch();
   const editable = useCheckPermission('TISC Admin');
 
-  const product = useAppSelector((state) => state.product);
-  const { name, description, collection } = product.details;
+  const brand = useAppSelector((state) => state.product.brand);
+  const { name, description, collection } = useAppSelector((state) => state.product.details);
+  const productId = useAppSelector(productVariantsSelector);
   const [visible, setVisible] = useState(false);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [newCollection, setNewCollection] = useState('');
   const disabled = useBoolean();
 
   const getCollectionList = () => {
-    if (product.brand?.id) {
-      getCollections(product.brand.id, CollectionRelation.Brand).then(setCollections);
+    if (brand?.id) {
+      getCollections(brand.id, CollectionRelationType.Brand).then(setCollections);
     }
   };
 
   const handleCreateCollection = () => {
-    if (!product.brand) {
+    if (!brand) {
       /// do nothing
       return;
     }
     disabled.setValue(true);
     createCollection({
       name: newCollection,
-      relation_id: product.brand.id,
-      relation_type: CollectionRelation.Brand,
+      relation_id: brand.id,
+      relation_type: CollectionRelationType.Brand,
     }).then((res) => {
       /// disable loading
       disabled.setValue(false);
@@ -78,10 +79,10 @@ export const ProductBasicInfo: React.FC = () => {
 
   //
   useEffect(() => {
-    if (product.brand?.id) {
+    if (brand?.id) {
       getCollectionList();
     }
-  }, [product.brand]);
+  }, [brand]);
 
   return (
     <>
@@ -94,9 +95,9 @@ export const ProductBasicInfo: React.FC = () => {
               Brand
             </BodyText>
             <BodyText level={6} fontFamily="Roboto" customClass="brand-name">
-              {product.brand?.name ?? 'N/A'}
+              {brand?.name ?? 'N/A'}
             </BodyText>
-            {product.brand?.logo ? <img src={showImageUrl(product.brand.logo)} /> : null}
+            {brand?.logo ? <img src={showImageUrl(brand.logo)} /> : null}
           </div>
         }
         customHeaderClass={styles.productHeaderCollapse}>
@@ -133,7 +134,15 @@ export const ProductBasicInfo: React.FC = () => {
           }}
         />
         {/* Product ID */}
-        <InputGroup horizontal fontLevel={4} label="Product ID" readOnly={true} noWrap />
+        <InputGroup
+          horizontal
+          fontLevel={4}
+          containerClass={!editable ? styles.viewInfo : ''}
+          label="Product ID"
+          readOnly={true}
+          noWrap
+          value={productId}
+        />
         {/* Description */}
         <InputGroup
           horizontal

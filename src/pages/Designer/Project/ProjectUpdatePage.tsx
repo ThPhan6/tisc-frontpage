@@ -57,8 +57,7 @@ const ProjectUpdatePage: React.FC = () => {
 
       <CustomTabPane
         active={selectedTab === ProjectTabKeys.basicInformation}
-        disable={!basicInformationTab}
-        lazyLoad>
+        disable={!basicInformationTab}>
         <GeneralInformation project={project} setProject={setProject} />
       </CustomTabPane>
 

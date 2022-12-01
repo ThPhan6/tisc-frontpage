@@ -60,7 +60,7 @@ export const CustomTabPane: FC<TabPaneProps> = memo(
       }
     }, [loaded, lazyLoad, active]);
 
-    if ((lazyLoad && active === false && (forceReload || loaded === false)) || disable) {
+    if (disable || (lazyLoad && active === false && (forceReload || loaded === false))) {
       return null;
     }
 

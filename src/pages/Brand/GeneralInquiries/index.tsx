@@ -24,7 +24,7 @@ import styles from './index.less';
 import moment from 'moment';
 
 const GeneralInquiries = () => {
-  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
+  useAutoExpandNestedTableColumn(0, [5]);
   const tableRef = useRef<any>();
   const [legendModalVisible, setLegendModalVisible] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
