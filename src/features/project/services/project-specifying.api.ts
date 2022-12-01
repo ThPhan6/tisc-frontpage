@@ -3,6 +3,7 @@ import { message } from 'antd';
 import { request } from 'umi';
 
 import { getResponseMessage } from '@/helper/common';
+import { clone } from 'lodash';
 
 import { UnitType } from '../types/project-specifying.type';
 import { setFinishScheduleData } from '@/features/product/reducers';
@@ -20,7 +21,13 @@ export async function getUnitTypeList() {
     method: 'GET',
   })
     .then((response) => {
-      return response.data;
+      const units = clone(response.data);
+      const onTopUnitIndex = units.findIndex((el) => el.name.trim().includes('Not Applicable'));
+      if (onTopUnitIndex !== -1) {
+        const onTopUnit = units.splice(onTopUnitIndex, 1);
+        units.unshift(onTopUnit[0]);
+      }
+      return units;
     })
     .catch((error) => {
       console.log('getUnitTypeList error', error);
