@@ -30,6 +30,7 @@ import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 export type PersonalProfileState = {
   backupEmail: string;
   phoneNumber: string;
+  phoneCode: string;
   linkedin: string;
 };
 
@@ -53,6 +54,7 @@ export const PersonalProfile = () => {
   const [inputValue, setInputValue] = useState<PersonalProfileState>({
     backupEmail: '',
     phoneNumber: '',
+    phoneCode: '',
     linkedin: '',
   });
 
@@ -86,6 +88,7 @@ export const PersonalProfile = () => {
       setInputValue({
         backupEmail: currentUser.backup_email || '',
         phoneNumber: currentUser.personal_mobile,
+        phoneCode: currentUser.personal_phone_code || currentUser.phone_code,
         linkedin: currentUser?.linkedin || '',
       });
     }
@@ -125,6 +128,7 @@ export const PersonalProfile = () => {
       {
         backup_email: inputValue.backupEmail.trim(),
         personal_mobile: inputValue.phoneNumber.trim(),
+        personal_phone_code: inputValue.phoneCode.trim(),
         linkedin: inputValue.linkedin.trim(),
         interested: selectedInterested.map((interested) => {
           return interested.value as number;
@@ -157,6 +161,7 @@ export const PersonalProfile = () => {
     setInputValue({
       ...inputValue,
       phoneNumber: phoneValue.phoneNumber,
+      phoneCode: phoneValue.zoneCode,
     });
   };
 
@@ -168,6 +173,7 @@ export const PersonalProfile = () => {
       backupEmail: currentUser.backup_email,
       linkedin: currentUser.linkedin,
       phoneNumber: currentUser.personal_mobile,
+      phoneCode: currentUser.personal_phone_code || currentUser.phone_code,
     };
     if (
       (currentUser?.interested?.length ===
@@ -243,9 +249,9 @@ export const PersonalProfile = () => {
             <PhoneInput
               phonePlaceholder="personal mobile"
               onChange={handleOnChangePhoneInput}
-              codeReadOnly
+              codeReadOnly={false}
               value={{
-                zoneCode: currentUser?.phone_code || '',
+                zoneCode: inputValue.phoneCode,
                 phoneNumber: inputValue.phoneNumber,
               }}
             />
