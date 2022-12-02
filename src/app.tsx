@@ -131,7 +131,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     },
     menuHeaderRender: undefined,
     menuRender: (props) => <AsideMenu {...props} />,
-    /* eslint-disable @typescript-eslint/no-var-requires */
     childrenRender: (children) => {
       if (initialState?.loading) return <PageLoading />;
       return (

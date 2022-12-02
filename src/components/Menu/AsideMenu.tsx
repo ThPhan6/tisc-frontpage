@@ -36,10 +36,16 @@ export const getMenuItems = (
         icon: (
           <>
             {isWorkspaceItem && onClose ? (
-              <AlignLeftIcon
-                onClick={onClose}
-                style={{ position: 'absolute', right: 16, top: 12 }}
-              />
+              <span
+                className="flex-center"
+                style={{ position: 'absolute', right: 4, top: -4, padding: 12 }}>
+                <AlignLeftIcon
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                  }}
+                />
+              </span>
             ) : undefined}
             {renderIconByName(item.icon, item.unaccessible)}
           </>
@@ -54,6 +60,7 @@ export const getMenuItems = (
         title: '',
         style: {
           boxShadow: isWorkspaceItem ? 'inset 0px -0.7px 0px #FFFFFF' : undefined,
+          paddingRight: isWorkspaceItem ? 48 : undefined,
         },
       } as MenuItem;
     });
@@ -81,7 +88,6 @@ export const SiderMenu: FC<{ appProps: any; menu?: MenuDataItem[]; onClose?: () 
       item.name !== undefined
     );
   });
-  console.log('openKeys', openKeys);
   const menuItems = getMenuItems(menuData, onClose);
   // Open only one submenu at a time
   const onOpenChange = (items: any) => {
@@ -111,7 +117,7 @@ export const SiderMenu: FC<{ appProps: any; menu?: MenuDataItem[]; onClose?: () 
   return (
     <Menu
       defaultOpenKeys={openKeys}
-      defaultSelectedKeys={openKeys}
+      openKeys={openKeys}
       onOpenChange={onOpenChange}
       style={{ height: '100%' }}
       mode={'inline'}

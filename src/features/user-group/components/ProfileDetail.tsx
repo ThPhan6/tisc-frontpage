@@ -50,7 +50,7 @@ export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
 
   return (
     <Row className={indexStyles.container}>
-      <Col span={12}>
+      <Col span={12} xs={{ span: 24 }}>
         <div className={`${styles.profile} ${indexStyles.form}`}>
           <div className={styles.designName}>
             <TextForm

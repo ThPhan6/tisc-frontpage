@@ -36,7 +36,7 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
 
   return (
     <Row className={indexStyles.container}>
-      <Col span={12}>
+      <Col span={12} xs={{ span: 24 }}>
         <div className={indexStyles.form}>
           <GeneralData>
             {teamData.length > 0 && (
