@@ -295,11 +295,14 @@ const LandingPage = () => {
           theme="default"
         />
       ) : null}
-      <BrandInterestedModal
-        visible={openModal === 'Brand Interested'}
-        onClose={handleCloseModal}
-        theme="default"
-      />
+      {openModal === 'Brand Interested' ? (
+        <BrandInterestedModal
+          visible={openModal === 'Brand Interested'}
+          onClose={handleCloseModal}
+          theme="default"
+        />
+      ) : null}
+
       {userEmail ? (
         <PasswordModal
           visible={openResetPwd}

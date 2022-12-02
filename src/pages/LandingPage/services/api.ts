@@ -4,6 +4,8 @@ import { message } from 'antd';
 import { request } from 'umi';
 
 import type {
+  AvailableTime,
+  BookingPayloadRequest,
   ContactRequestBody,
   LoginInput,
   LoginResponseProps,
@@ -217,5 +219,30 @@ export async function getListQuotation(
     })
     .catch((error) => {
       message.error(error.message);
+    });
+}
+
+export async function getListAvailableTime(date: string) {
+  return request<{ data: AvailableTime[] }>(`/api/booking/available-schedule?date=${date}`, {
+    method: 'GET',
+  })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message);
+      return [] as AvailableTime[];
+    });
+}
+
+export async function createBooking(data: BookingPayloadRequest) {
+  return request<boolean>(`/api/booking/create`, { method: 'POST', data })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.CREATE_BOOKING_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message);
+      return false;
     });
 }

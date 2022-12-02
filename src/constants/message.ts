@@ -19,6 +19,9 @@ export const MESSAGE_ERROR = {
   EMAIL_ALREADY_USED: 'Email already taken',
   NO_TEAMPROFILE: 'Add member to invite',
   DOCUMENT_TITLE: 'You are allowed to enter 50 characters only',
+  WEBSITE: 'Company website is required',
+  BRAND_COMPANY_NAME: 'Brand / company name is required',
+  FIRST_LAST_NAME: 'First name / last name is required',
 };
 
 export const MESSAGE_NOTIFICATION = {
@@ -309,6 +312,9 @@ export const MESSAGE_NOTIFICATION = {
   GET_PROJECT_LISTING_FAILED: 'Failed to get project listing data',
   GET_PROJECT_LISTING_SUMMARY_ERROR: 'Get project listing summary error',
   GET_ONE_PROJECT_LISTING_ERROR: 'Get one project listing error',
+
+  //schedule booking
+  CREATE_BOOKING_SUCCESS: 'Book a demo successfully',
 };
 
 export const MESSAGE_TOOLTIP = {
