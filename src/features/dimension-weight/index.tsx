@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { Switch } from 'antd';
 
@@ -39,7 +39,17 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
 
   const [diameterToggle, setDiameterToggle] = useState<boolean>(data.with_diameter);
 
+  useEffect(() => {
+    setDiameterToggle(data.with_diameter);
+  }, [data.with_diameter]);
+
   const renderAttributeConversionText = (conversionItem: DimensionWeightItem) => {
+    const notIncluded =
+      conversionItem.with_diameter !== null && conversionItem.with_diameter !== data.with_diameter;
+    if (notIncluded) {
+      return null;
+    }
+
     if (!conversionItem.conversion_value_1) {
       return null;
     }

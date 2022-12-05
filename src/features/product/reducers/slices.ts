@@ -197,15 +197,12 @@ const productSpecificationSelector = (state: RootState) =>
   state.product.details.specification_attribute_groups;
 
 export const productVariantsSelector = createSelector(productSpecificationSelector, (specGroup) => {
-  // console.log('specGroup', specGroup);
   let variants = '';
   specGroup.forEach((el) => {
     if (!el.isChecked) {
       return;
     }
-    // if (el.selection) {
 
-    // }
     el.attributes.forEach((attr) => {
       attr.basis_options?.some((opt) => {
         if (opt.isChecked) {

@@ -27,7 +27,7 @@ interface BrandListProps {
 }
 
 const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
-  useAutoExpandNestedTableColumn(1, 4);
+  useAutoExpandNestedTableColumn(1, [4]);
   const [visible, setVisible] = useState<boolean>(false);
 
   const tableRef = useRef<any>();

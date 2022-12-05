@@ -157,12 +157,22 @@ const ProductDetailContainer: React.FC = () => {
 
   const renderHeader = () => {
     if (isTiscAdmin) {
+      let categorySelected: string = details.categories
+        .slice(0, 3)
+        .map((category) => category.name)
+        .join(', ');
+
+      if (details.categories.length > 3) {
+        categorySelected += ', ...';
+      }
+
       return (
         <ProductDetailHeader
           title={'CATEGORY'}
+          label={categorySelected || 'select'}
           onSave={onSave}
           onCancel={history.goBack}
-          customClass={styles.marginBottomSpace}
+          customClass={`${styles.marginBottomSpace} ${categorySelected ? styles.monoColor : ''}`}
         />
       );
     }

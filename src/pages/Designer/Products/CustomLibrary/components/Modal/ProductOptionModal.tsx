@@ -4,6 +4,7 @@ import { Checkbox, Col, Row, message } from 'antd';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove.svg';
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
+import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 import { ReactComponent as AddTagIcon } from '@/assets/icons/square-plus-icon.svg';
 
 import { useBoolean } from '@/helper/hook';
@@ -180,6 +181,7 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({
   return (
     <CustomModal
       title="ENTRY FORM"
+      closeIcon={<CloseIcon />}
       visible={visible}
       onCancel={() => setVisible(false)}
       className={styles.modalContainer}
@@ -193,7 +195,11 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({
             className={styles.imageBtn}
             checked={optionState.use_image}
             onChange={(e) => onChangeUseImage(e.target.checked)}>
-            <RobotoBodyText level={5}>Image</RobotoBodyText>
+            <RobotoBodyText
+              level={5}
+              color={optionState.use_image ? 'primary-color-dark' : 'mono-color'}>
+              Image
+            </RobotoBodyText>
           </Checkbox>
           <RobotoBodyText level={5}>TAG:</RobotoBodyText>
           <CustomInput
@@ -207,11 +213,14 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({
       </div>
 
       {optionState.items.map((item, itemIndex) => (
-        <Row className={styles.optionContent}>
+        <Row
+          className={styles.optionContent}
+          style={{ paddingBottom: optionState.use_image ? 8 : 1 }}>
           {optionState.use_image ? (
             <ImageUpload
               onFileChange={onChangeImage(itemIndex)}
               image={item.image ? showImageUrl(item.image) : undefined}
+              style={{ border: item.image ? undefined : '1px solid #bfbfbf' }}
             />
           ) : null}
 

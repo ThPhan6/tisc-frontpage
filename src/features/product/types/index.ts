@@ -50,12 +50,21 @@ export interface ProductAttributeProps {
   basis_options?: SpecificationAttributeBasisOptionProps[];
 }
 
+export interface AttributeSelectedProps {
+  groupId: string;
+  attribute: {
+    id: string;
+    name: string;
+  };
+}
+
 export interface ProductAttributeFormInput {
   id?: string;
   name: string;
   attributes: ProductAttributeProps[];
   isChecked?: boolean;
   selection: boolean;
+  attribute_selected_id?: string;
 }
 
 export enum Availability {
