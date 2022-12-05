@@ -150,6 +150,7 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
           height: 432,
           overflow: 'hidden auto',
           padding: 0,
+          bottom: -3,
           ...menuStyle,
         }}>
         {items.map((item, index) => {
