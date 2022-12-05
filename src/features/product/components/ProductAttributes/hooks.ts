@@ -32,24 +32,26 @@ export const getSpecificationRequest = (specGroup: ProductAttributeFormInput[]) 
   const specState: SpecificationAttributeGroup[] = [];
 
   specGroup.forEach((gr) => {
-    if (gr.isChecked) {
-      if (gr.selection) {
-        const haveAttributeSelected = gr.attributes.find(
-          (attr) => attr.id === gr.attribute_selected_id,
-        );
+    if (!gr.isChecked) {
+      return;
+    }
 
-        if (haveAttributeSelected) {
-          specState.push({
-            id: gr.id || '',
-            attributes: getSelectedAttributeAndOption([haveAttributeSelected]),
-          });
-        }
-      } else {
+    if (gr.selection && gr.attribute_selected_id) {
+      const haveAttributeSelected = gr.attributes.find(
+        (attr) => attr.id === gr.attribute_selected_id,
+      );
+
+      if (haveAttributeSelected) {
         specState.push({
           id: gr.id || '',
-          attributes: getSelectedAttributeAndOption(gr.attributes),
+          attributes: getSelectedAttributeAndOption([haveAttributeSelected]),
         });
       }
+    } else {
+      specState.push({
+        id: gr.id || '',
+        attributes: getSelectedAttributeAndOption(gr.attributes),
+      });
     }
   });
 
