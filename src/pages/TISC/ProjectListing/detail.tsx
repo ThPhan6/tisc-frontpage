@@ -4,6 +4,7 @@ import { PATH } from '@/constants/path';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 import { ReactComponent as InformationIcon } from '@/assets/icons/info.svg';
+import { ReactComponent as OfficeLibrary } from '@/assets/icons/office-library-icon.svg';
 import { ReactComponent as SpaceIcon } from '@/assets/icons/space-icon.svg';
 import { ReactComponent as SpecifiedIcon } from '@/assets/icons/tabs-add-icon.svg';
 import { ReactComponent as ConsideredIcon } from '@/assets/icons/tabs-icon.svg';
@@ -111,16 +112,30 @@ const ProjectDetail = () => {
       <CustomTabPane active={selectedTab === ProjectListingTabKeys.productConsidered}>
         <ProductAndProjectTab
           type="productConsider"
-          data={projectDetail?.considered.brands.map((el) => ({
-            ...el,
-            title: el.name,
-            image: el.logo,
-            content: el.products.map((product) => ({
-              name: product.name,
-              image: product.image,
-              productConsiderdStatus: product.status,
-            })),
-          }))}
+          data={[
+            ...(projectDetail?.considered.customProducts.length
+              ? [
+                  {
+                    title: 'Office Library & Resources',
+                    image: <OfficeLibrary style={{ width: '24px', height: '24px' }} />,
+                    content: projectDetail?.considered.customProducts.map((product) => ({
+                      name: product.name,
+                      image: product.image,
+                      productConsiderdStatus: product.status,
+                    })),
+                  },
+                ]
+              : []),
+            ...(projectDetail?.considered.brands.map((el) => ({
+              title: el.name,
+              image: el.logo,
+              content: el.products.map((product) => ({
+                name: product.name,
+                image: product.image,
+                productConsiderdStatus: product.status,
+              })),
+            })) ?? []),
+          ]}
           summary={{
             deleted: projectDetail?.considered.deleted,
             unlisted: projectDetail?.considered.unlisted,
@@ -133,16 +148,30 @@ const ProjectDetail = () => {
       <CustomTabPane active={selectedTab === ProjectListingTabKeys.productSpecified}>
         <ProductAndProjectTab
           type="productSpecified"
-          data={projectDetail?.specified.brands.map((el) => ({
-            ...el,
-            title: el.name,
-            image: el.logo,
-            content: el.products.map((product) => ({
-              name: product.name,
-              image: product.image,
-              productSpecifiedStatus: product.status,
-            })),
-          }))}
+          data={[
+            ...(projectDetail?.specified.customProducts.length
+              ? [
+                  {
+                    title: 'Office Library & Resources',
+                    image: <OfficeLibrary style={{ width: '24px', height: '24px' }} />,
+                    content: projectDetail?.specified.customProducts.map((product) => ({
+                      name: product.name,
+                      image: product.image,
+                      productSpecifiedStatus: product.status,
+                    })),
+                  },
+                ]
+              : []),
+            ...(projectDetail?.specified.brands.map((el) => ({
+              title: el.name,
+              image: el.logo,
+              content: el.products.map((product) => ({
+                name: product.name,
+                image: product.image,
+                productSpecifiedStatus: product.status,
+              })),
+            })) ?? []),
+          ]}
           summary={{
             deleted: projectDetail?.specified.deleted,
             specified: projectDetail?.specified.specified,
