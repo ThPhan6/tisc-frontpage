@@ -33,7 +33,7 @@ export const getSpecificationRequest = (specGroup: ProductAttributeFormInput[]) 
 
   specGroup.forEach((gr) => {
     if (gr.isChecked) {
-      if (gr.selection && gr.attribute_selected_id) {
+      if (gr.selection) {
         const haveAttributeSelected = gr.attributes.find(
           (attr) => attr.id === gr.attribute_selected_id,
         );
@@ -273,17 +273,14 @@ export const useProductAttributeForm = (
       }
 
       // if current attribute is not equal to attribute selected
-      let curAttributeSelected = true;
-      if (attr.id !== attributeId) {
-        curAttributeSelected = false;
-      }
+      const isAttributeSelected = attr.id === attributeId;
 
       return {
         ...attr,
         basis_options: attr.basis_options?.map((el) => {
           return {
             ...el,
-            isChecked: el.id === optionId && curAttributeSelected ? true : false,
+            isChecked: el.id === optionId && isAttributeSelected ? true : false,
           };
         }),
       };

@@ -43,12 +43,7 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
     isRunUseEffect: false,
   });
 
-  if (
-    isTiscAdmin ||
-    activeKey !== 'specification' ||
-    !attrGroupItem.selection ||
-    (attrGroupItem.selection && !attrGroupItem.attributes.length)
-  ) {
+  if (isTiscAdmin || activeKey !== 'specification' || !attrGroupItem.selection) {
     return null;
   }
 
