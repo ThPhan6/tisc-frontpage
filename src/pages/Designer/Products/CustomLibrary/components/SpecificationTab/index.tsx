@@ -388,11 +388,13 @@ export const SpecificationTab: FC<{
   return (
     <>
       <DimensionWeight
+        customClass={specifying ? 'mt-8' : ''}
         editable={!viewOnly}
         isShow={activeKey === 'specification'}
         noPadding={specifying}
         collapseStyles={!specifying}
         data={dimensionWeightData}
+        isSpecifying={specifying}
         onChange={(data) => {
           store.dispatch(
             setCustomProductDetail({
