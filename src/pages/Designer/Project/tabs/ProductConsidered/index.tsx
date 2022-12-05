@@ -391,17 +391,16 @@ const ProductConsidered: React.FC = () => {
         className={cardStyles.productCardContainer}
         style={{ padding: '16px 16px 8px', maxWidth: 'calc(83.33vw - 40px)' }}>
         {products.map((item, index: number) => (
-          <div className={cardStyles.productCardItemWrapper} key={index}>
-            <ProductCard
-              product={item}
-              hasBorder
-              hideFavorite
-              hideAssign
-              showInquiryRequest
-              showSpecify
-              onSpecifyClick={() => setSpecifyingProduct(item)}
-            />
-          </div>
+          <ProductCard
+            key={index}
+            product={item}
+            hasBorder
+            hideFavorite
+            hideAssign
+            showInquiryRequest
+            showSpecify
+            onSpecifyClick={() => setSpecifyingProduct(item)}
+          />
         ))}
       </div>
     );
