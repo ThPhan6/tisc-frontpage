@@ -380,7 +380,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
                     disabled={item.disabled || item.editLabel}
                     className={styles.actionMenu}
                     overlayClassName={styles.actionMenuOverLay}
-                    offsetAlign={[14, -14]}
+                    offsetAlign={[14, -2]}
                     actionItems={[
                       {
                         type: 'updated',
