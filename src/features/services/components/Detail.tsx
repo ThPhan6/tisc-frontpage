@@ -33,6 +33,8 @@ interface ServiceDetailProps {
 export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
   const [detailData, setDetailData] = useState<ServicesResponse>();
 
+  const dueDate = moment().add(7, 'days').format('YYYY-MM-DD');
+
   const submitButtonStatus = useBoolean();
 
   const getService = () => {
@@ -137,15 +139,20 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
       <Col span={12}>
         <div
           className={styles.detail}
-          style={{ height: type === 'tisc' ? 'calc(100vh - 208px)' : 'calc(100vh - 158px)' }}>
+          style={{ height: type === 'tisc' ? 'calc(100vh - 208px)' : 'calc(100vh - 152px)' }}>
           <TableHeader
             title={detailData?.name}
-            rightAction={<CloseIcon onClick={history.goBack} style={{ cursor: 'pointer' }} />}
+            rightAction={
+              <CloseIcon
+                onClick={history.goBack}
+                style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+              />
+            }
           />
           <div
             style={{
               padding: '16px',
-              height: type === 'tisc' ? 'calc(100vh - 304px)' : 'calc(100vh - 254px)',
+              height: type === 'tisc' ? 'calc(100vh - 304px)' : 'calc(100vh - 248px)',
               overflow: 'auto',
             }}>
             <TextForm boxShadow label="Billed Date">
@@ -176,6 +183,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     <BodyText level={5} fontFamily="Roboto">
                       Unit Rate
                     </BodyText>
+                    <CloseIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
                   </td>
                   <td className={styles.quantity}>
                     ${formatNumberDisplay(Number(detailData?.unit_rate))}
@@ -184,11 +192,13 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                 <tr className={styles.totalQuantity}>
                   <td className={styles.label}>
                     <BodyText level={5} fontFamily="Roboto">
-                      Total Quantity
+                      Quantity
                     </BodyText>
                     <CloseIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
                   </td>
-                  <td className={styles.quantity}>{detailData?.quantity}</td>
+                  <td className={styles.quantity}>
+                    {formatNumberDisplay(Number(detailData?.quantity))}
+                  </td>
                 </tr>
                 <tr>
                   <td className={styles.label}>
@@ -198,7 +208,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     <EqualIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
                   </td>
                   <td className={styles.quantity}>
-                    {formatNumberDisplay(Number(detailData?.total_gross))}
+                    ${formatNumberDisplay(Number(detailData?.total_gross))}
                   </td>
                 </tr>
                 <tr>
@@ -237,8 +247,11 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                   height: '32px',
                   alignItems: 'center',
                 }}>
-                <BodyText level={5} fontFamily="Roboto" style={{ paddingLeft: '16px' }}>
-                  {detailData?.due_date}
+                <BodyText
+                  level={5}
+                  fontFamily="Roboto"
+                  style={{ paddingLeft: '16px', color: detailData?.due_date ? '' : '#BFBFBF' }}>
+                  {detailData?.due_date ? detailData.due_date : dueDate}
                 </BodyText>
                 <BodyText level={5} fontFamily="Roboto">
                   (annual interest rate of 36.5% applies to late payment)
