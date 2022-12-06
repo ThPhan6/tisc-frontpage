@@ -34,7 +34,7 @@ interface ProductAndProjectTabProps {
   type: TabKey;
   data?: {
     title: string;
-    image: string;
+    image: string | JSX.Element;
     content:
       | TeamDetail
       | {
@@ -56,6 +56,17 @@ interface ProductAndProjectTabProps {
 
 const ProductAndProjectHeader: FC<ProductProps> = (props) => {
   const { item, activeKey, handleActiveCollapse, index, type } = props;
+
+  const showLogo = () => {
+    if (type === 'project') {
+      return <TeamIcon avatar={item.image} size={18} name={item.title} />;
+    }
+    if (typeof item.image === 'object' && item.image !== null) {
+      return item.image;
+    }
+    return <LogoIcon logo={item.image} className={styles.customLogo} />;
+  };
+
   return (
     <div className={styles.panel_header}>
       <div
@@ -65,12 +76,7 @@ const ProductAndProjectHeader: FC<ProductProps> = (props) => {
           className={`${styles.titleIcon} ${
             String(index) !== activeKey ? styles.font_weight_300 : styles.font_weight_500
           }`}>
-          {type === 'project' ? (
-            <TeamIcon avatar={item.image} size={18} name={item.title} />
-          ) : (
-            <LogoIcon logo={item.image} className={styles.customLogo} />
-          )}
-
+          {showLogo()}
           <BodyText level={5} fontFamily="Roboto" style={{ marginLeft: '12px' }}>
             {item.title}
           </BodyText>
