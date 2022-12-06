@@ -290,22 +290,26 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               />
             ) : null}
 
-            <SelectAttributeSpecificationChoice
-              activeKey={activeKey}
-              attributeGroup={attributeGroup}
-              groupIndex={groupIndex}
-              productId={curProductId}
-              isSpecifiedModal={!!isSpecifiedModal}
-              curAttributeSelect={curAttributeSelect}
-              setCurAttributeSelect={setCurAttributeSelect}
-              collapsible={collapsible}
-              setCollapsible={setCollapsible}
-            />
+            {isPublicPage ? null : (
+              <SelectAttributeSpecificationChoice
+                activeKey={activeKey}
+                attributeGroup={attributeGroup}
+                groupIndex={groupIndex}
+                productId={curProductId}
+                isSpecifiedModal={!!isSpecifiedModal}
+                curAttributeSelect={curAttributeSelect}
+                setCurAttributeSelect={setCurAttributeSelect}
+                collapsible={collapsible}
+                setCollapsible={setCollapsible}
+              />
+            )}
 
             {attrGroupItem.attributes.length ? (
               <div
                 className={`${isSpecifiedModal ? styles.paddingNone : styles.paddingRounded} ${
-                  attrGroupItem.selection && !isTiscAdmin ? styles.paddingWrapper : ''
+                  attrGroupItem.selection && !isTiscAdmin && !isPublicPage
+                    ? styles.paddingWrapper
+                    : ''
                 }`}>
                 <table className={styles.table}>
                   <tbody>
