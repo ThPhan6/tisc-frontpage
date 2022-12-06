@@ -95,7 +95,7 @@ const GeneralInquiries = () => {
         columns={setDefaultWidthForEachColumn(mainColumns, 5)}
         fetchDataFunc={getGeneralInquiryPagination}
         ref={tableRef}
-        customClass={styles.customHeader}
+        headerClass={styles.customHeader}
         rightAction={
           <InfoIcon className={styles.iconInfor} onClick={() => setLegendModalVisible(true)} />
         }

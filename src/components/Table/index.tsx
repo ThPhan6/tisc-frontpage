@@ -112,7 +112,9 @@ export interface CustomTableProps {
   extraParams?: {
     [key: string]: any;
   };
-  customClass?: string;
+  headerClass?: string;
+  tableClass?: string;
+  footerClass?: string;
   rowKey?: string;
   autoLoad?: boolean;
   onFilterLoad?: boolean;
@@ -131,7 +133,9 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     multiSort,
     hasPagination,
     extraParams,
-    customClass,
+    headerClass = '',
+    tableClass = '',
+    footerClass = '',
     onRow,
     rowKey = 'id',
     autoLoad = true,
@@ -257,10 +261,11 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   return (
     <div className={`${styles.customTable} ${customExpandable ? styles['sub-grid'] : ''}`}>
       {title ? (
-        <TableHeader title={title} rightAction={rightAction} customClass={customClass || ''} />
+        <TableHeader title={title} rightAction={rightAction} customClass={headerClass} />
       ) : null}
 
       <Table
+        className={tableClass}
         columns={columns}
         rowKey={rowKey}
         rowClassName={(record) => {
@@ -293,9 +298,10 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
           pagination={pagination}
           sorter={currentSorter}
           dataLength={data.length ?? 0}
+          customClass={footerClass}
         />
       ) : !isEmpty(summary) ? (
-        <TableSummary summary={summary} />
+        <TableSummary summary={summary} customClass={footerClass} />
       ) : null}
     </div>
   );
