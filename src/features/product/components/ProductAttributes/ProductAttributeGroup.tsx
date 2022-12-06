@@ -60,6 +60,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     ATTRIBUTE_SELECTED_DEFAULT_VALUE,
   );
 
+  /// for specification choice attribute
+  const [collapsible, setCollapsible] = useState<boolean>(false);
+
   const {
     onChangeAttributeItem,
     onChangeAttributeName,
@@ -241,6 +244,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                   attribute: attribute,
                 });
 
+                setCollapsible(false);
+
                 onSelectSpecificationOption(
                   grpIndex,
                   attribute.id,
@@ -285,20 +290,26 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               />
             ) : null}
 
-            <SelectAttributeSpecificationChoice
-              activeKey={activeKey}
-              attributeGroup={attributeGroup}
-              groupIndex={groupIndex}
-              productId={curProductId}
-              isSpecifiedModal={!!isSpecifiedModal}
-              curAttributeSelect={curAttributeSelect}
-              setCurAttributeSelect={setCurAttributeSelect}
-            />
+            {isPublicPage ? null : (
+              <SelectAttributeSpecificationChoice
+                activeKey={activeKey}
+                attributeGroup={attributeGroup}
+                groupIndex={groupIndex}
+                productId={curProductId}
+                isSpecifiedModal={!!isSpecifiedModal}
+                curAttributeSelect={curAttributeSelect}
+                setCurAttributeSelect={setCurAttributeSelect}
+                collapsible={collapsible}
+                setCollapsible={setCollapsible}
+              />
+            )}
 
             {attrGroupItem.attributes.length ? (
               <div
                 className={`${isSpecifiedModal ? styles.paddingNone : styles.paddingRounded} ${
-                  attrGroupItem.selection && !isTiscAdmin ? styles.paddingWrapper : ''
+                  attrGroupItem.selection && !isTiscAdmin && !isPublicPage
+                    ? styles.paddingWrapper
+                    : ''
                 }`}>
                 <table className={styles.table}>
                   <tbody>
