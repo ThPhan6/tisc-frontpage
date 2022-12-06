@@ -24,11 +24,10 @@ interface BrandCompanyProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
 }
-
 const LabelHeader = (item: UserDetail) => {
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <BodyText level={5} fontFamily="Roboto" style={{ marginRight: '16px' }}>
+    <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+      <BodyText level={5} fontFamily="Roboto" style={{ width: '20%', marginRight: '16px' }}>
         {getFullName(item)}
       </BodyText>
       <BodyText level={5} fontFamily="Roboto">
@@ -37,13 +36,13 @@ const LabelHeader = (item: UserDetail) => {
     </div>
   );
 };
-
 export const BrandCompanyModal: FC<BrandCompanyProps> = ({ visible, setVisible }) => {
   const serviceFormData = useAppSelector((state) => state.service.service);
   const [listBrand, setListBrand] = useState<BrandListItem[]>([]);
   const [orderBy, setOrderBy] = useState<UserDetail[]>([]);
   const [selectedBrand, setSelectedBrand] = useState<RadioValue>();
   const [selectedOrderBy, setSelectedOrderBy] = useState<RadioValue>();
+  const [activeKey, setActiveKey] = useState<string>('');
 
   useEffect(() => {
     getBrandPagination({ page: 1, pageSize: 99999 }, (res) => {
@@ -61,8 +60,8 @@ export const BrandCompanyModal: FC<BrandCompanyProps> = ({ visible, setVisible }
       });
     });
   }, [visible === true]);
-
   useEffect(() => {
+    setActiveKey('');
     getListOrderBy(selectedBrand?.value as string, UserType.Brand, RoleIndex.BrandRolesAdmin).then(
       (res) => {
         if (res) {
@@ -74,11 +73,16 @@ export const BrandCompanyModal: FC<BrandCompanyProps> = ({ visible, setVisible }
               value: checkedOrderBy.id,
             });
           }
+          if (selectedBrand?.value !== serviceFormData.brand_id) {
+            setSelectedOrderBy({
+              label: '',
+              value: '',
+            });
+          }
         }
       },
     );
   }, [selectedBrand]);
-
   const onFormSubmit = () => {
     store.dispatch(
       setServiceFormData({
@@ -113,6 +117,9 @@ export const BrandCompanyModal: FC<BrandCompanyProps> = ({ visible, setVisible }
           checked={String(selectedBrand?.value)}
           onChange={setSelectedBrand}
           placeholder={selectedBrand ? selectedBrand.label : 'select brand company'}
+          containerClass={styles.customCollapse}
+          key={activeKey}
+          onCollapseChange={() => setActiveKey('1')}
         />
       </FormGroup>
       <BodyText level={3} customClass={selectedBrand?.value ? styles.fontWeight500 : ''}>
@@ -136,6 +143,7 @@ export const BrandCompanyModal: FC<BrandCompanyProps> = ({ visible, setVisible }
             });
           }
         }}
+        containerClass={styles.customModal}
       />
     </Popover>
   );

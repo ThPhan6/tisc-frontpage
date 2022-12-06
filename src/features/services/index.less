@@ -7,6 +7,9 @@
     height: calc(100vh - 304px);
     padding: 16px;
     overflow: auto;
+    :global(.ant-collapse-item-active .ant-collapse-header-text p) {
+      font-weight: 300;
+    }
   }
   .item {
     display: flex;
@@ -93,6 +96,9 @@
     .totalQuantity {
       border-bottom: 0.5px solid @mono-color-medium;
     }
+    .rightText {
+      text-align: right;
+    }
   }
   .payButton {
     margin-right: 16px;
@@ -136,6 +142,11 @@
     text-overflow: ellipsis;
   }
 }
+.customCollapse {
+  :global(.ant-collapse-item-active .ant-collapse-header-text p) {
+    font-weight: 300 !important;
+  }
+}
 
 .bottom {
   display: flex;
@@ -148,5 +159,11 @@
   }
   .rightButton {
     margin-left: 16px;
+  }
+}
+
+.customModal {
+  span {
+    width: 100%;
   }
 }

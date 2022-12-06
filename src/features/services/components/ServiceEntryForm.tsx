@@ -6,7 +6,7 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
-import { formatNumberDisplay, validateNumber } from '@/helper/utils';
+import { formatCurrencyNumber, validateFloatNumber, validateNumber } from '@/helper/utils';
 
 import { setServiceFormData } from '../reducer';
 import store, { useAppSelector } from '@/reducers';
@@ -48,9 +48,9 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
   }, []);
 
   const summaryBillingAmount = () => {
-    const grossTotal = serviceFormData.unit_rate * serviceFormData.quantity;
-    const salesTax = (serviceFormData.tax / 100) * grossTotal;
-    return formatNumberDisplay(grossTotal + salesTax);
+    const grossTotal = Number(serviceFormData.unit_rate) * Number(serviceFormData.quantity);
+    const salesTax = (Number(serviceFormData.tax) / 100) * grossTotal;
+    return formatCurrencyNumber(grossTotal + salesTax);
   };
 
   return (
@@ -128,6 +128,7 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
         <FormGroup
           label="Chargeable Rate / Total Quantity / Sales Tax"
           layout="vertical"
+          required
           style={{ marginBottom: '16px' }}>
           <Row gutter={[24, 8]}>
             <Col span={8}>
@@ -137,13 +138,17 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
                 </MainTitle>
                 <CustomInput
                   placeholder="0.00"
-                  inputValidation={validateNumber}
-                  value={formatNumberDisplay(serviceFormData.unit_rate)}
+                  inputValidation={validateFloatNumber}
+                  value={
+                    type === 'view'
+                      ? formatCurrencyNumber(serviceFormData.unit_rate)
+                      : serviceFormData.unit_rate
+                  }
                   onChange={(e) => {
                     store.dispatch(
                       setServiceFormData({
                         ...serviceFormData,
-                        unit_rate: Number(e.target.value),
+                        unit_rate: e.target.value,
                       }),
                     );
                   }}
@@ -158,7 +163,11 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
                   Quantity
                 </MainTitle>
                 <CustomInput
-                  value={serviceFormData.quantity}
+                  value={
+                    type === 'view'
+                      ? formatCurrencyNumber(serviceFormData.quantity)
+                      : serviceFormData.quantity
+                  }
                   placeholder="0"
                   inputValidation={validateNumber}
                   onChange={(e) =>
@@ -175,7 +184,7 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
                       store.dispatch(
                         setServiceFormData({
                           ...serviceFormData,
-                          quantity: serviceFormData.quantity + 1,
+                          quantity: Number(serviceFormData.quantity) + 1,
                         }),
                       )
                     }
@@ -186,7 +195,7 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
                       store.dispatch(
                         setServiceFormData({
                           ...serviceFormData,
-                          quantity: serviceFormData.quantity - 1,
+                          quantity: Number(serviceFormData.quantity) - 1,
                         }),
                       );
                     }}
@@ -203,13 +212,11 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
                   placeholder="0"
                   value={serviceFormData.tax}
                   onChange={(e) =>
-                    store.dispatch(
-                      setServiceFormData({ ...serviceFormData, tax: Number(e.target.value) }),
-                    )
+                    store.dispatch(setServiceFormData({ ...serviceFormData, tax: e.target.value }))
                   }
                   containerClass={type !== 'view' ? styles.customInput : ''}
                   readOnly={type === 'view'}
-                  inputValidation={validateNumber}
+                  inputValidation={validateFloatNumber}
                 />
               </div>
             </Col>
@@ -221,7 +228,16 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
             <Col span={8}>
               <div className={styles.bill}>
                 <Title level={8}>US$</Title>
-                <Title level={8}>{summaryBillingAmount()}</Title>
+                <Title
+                  level={8}
+                  style={{
+                    marginLeft: '16px',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                  }}>
+                  {summaryBillingAmount()}
+                </Title>
               </div>
             </Col>
           </Row>

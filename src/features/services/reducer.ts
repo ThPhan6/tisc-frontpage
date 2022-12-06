@@ -12,9 +12,9 @@ const initialState: ServicesState = {
     brand_id: '',
     brand_name: '',
     ordered_by: '',
-    unit_rate: 0,
-    quantity: 0,
-    tax: 0,
+    unit_rate: '',
+    quantity: '',
+    tax: '',
     remark: '',
   },
 };
