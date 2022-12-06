@@ -24,6 +24,8 @@ import { AvailabilityModal } from '../../components/AvailabilityModal';
 import CustomTable from '@/components/Table';
 import { RobotoBodyText } from '@/components/Typography';
 
+import styles from './index.less';
+
 export const SpecificationByMaterial: FC = () => {
   useAutoExpandNestedTableColumn(0, [7]);
   const tableRef = useRef<any>();
@@ -135,6 +137,7 @@ export const SpecificationByMaterial: FC = () => {
   return (
     <>
       <CustomTable
+        footerClass={styles.summaryFooter}
         columns={setDefaultWidthForEachColumn(MaterialColumns, 7)}
         rowKey="specified_product_id"
         ref={tableRef}
