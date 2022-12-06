@@ -22,9 +22,9 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { SimpleContentTable } from '@/components/Table/components/SimpleContentTable';
 
 import { resetCustomProductState, setCustomProductDetail } from '../../slice';
-import { BrandCompanyModal } from '../Modal/BrandCompanyModal';
-import { CollectionModal } from '../Modal/CollectionModal';
 import styles from './index.less';
+import { BrandCompanyModal } from '@/features/product/modals/BrandCompanyModal';
+import { CollectionModal } from '@/features/product/modals/CollectionModal';
 
 const DEFAULT_CONTENT: NameContentProps = {
   id: '',

@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { request } from 'umi';
 
 import { setSummaryCustomResource } from './reducer';
-import { CustomResourceForm, CustomResources } from './type';
+import { CustomResourceForm, CustomResourceType, CustomResources } from './type';
 import { DataMenuSummaryProps } from '@/components/MenuSummary/types';
 import {
   DataTableResponse,
@@ -11,6 +11,7 @@ import {
   PaginationResponse,
 } from '@/components/Table/types';
 import store from '@/reducers';
+import { GeneralData } from '@/types';
 
 interface ProjectPaginationResponse {
   data: {
@@ -67,16 +68,17 @@ export async function deleteCustomResource(id: string) {
     });
 }
 
-export async function getAllCustomResource(type: number) {
-  return request<{ data: { id: string; name: string }[] }>(
-    `/api/custom-resource/get-all?type=${type}`,
-    { method: 'GET' },
-  )
+export async function getAllCustomResource(type: CustomResourceType) {
+  return request<{ data: GeneralData[] }>(`/api/custom-resource/get-all`, {
+    method: 'GET',
+    params: { type: type },
+  })
     .then((res) => {
       return res.data;
     })
     .catch((err) => {
-      message.error(err?.data?.message);
+      message.error(err?.data?.message ?? 'Failed to get list brand companies');
+      return [] as GeneralData[];
     });
 }
 
