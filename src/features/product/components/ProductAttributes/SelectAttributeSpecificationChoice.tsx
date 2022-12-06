@@ -22,6 +22,8 @@ interface SelectAttributeSpecificationChoiceProps {
   isSpecifiedModal: boolean;
   curAttributeSelect: AttributeSelectedProps;
   setCurAttributeSelect: (curAttributeSelect: AttributeSelectedProps) => void;
+  collapsible: boolean;
+  setCollapsible: (collapsible: boolean) => void;
 }
 
 export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecificationChoiceProps> = ({
@@ -32,6 +34,8 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
   isSpecifiedModal,
   curAttributeSelect,
   setCurAttributeSelect,
+  collapsible,
+  setCollapsible,
 }) => {
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
@@ -52,8 +56,9 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
       noBorder
       className={styles.noBoxShadow}
       expandIcon={({ isActive }) => (isActive ? <ActionUpIcon /> : <ActionDownIcon />)}
+      activeKey={collapsible ? ['1'] || '1' : undefined}
       header={
-        <div className="specification-choice">
+        <div className="specification-choice" onClick={() => setCollapsible(!collapsible)}>
           <BodyText level={4}>Choose Specification</BodyText>
           <RobotoBodyText
             level={6}

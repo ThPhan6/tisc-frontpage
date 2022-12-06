@@ -60,6 +60,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     ATTRIBUTE_SELECTED_DEFAULT_VALUE,
   );
 
+  /// for specification choice attribute
+  const [collapsible, setCollapsible] = useState<boolean>(false);
+
   const {
     onChangeAttributeItem,
     onChangeAttributeName,
@@ -241,6 +244,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                   attribute: attribute,
                 });
 
+                setCollapsible(false);
+
                 onSelectSpecificationOption(
                   grpIndex,
                   attribute.id,
@@ -293,6 +298,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               isSpecifiedModal={!!isSpecifiedModal}
               curAttributeSelect={curAttributeSelect}
               setCurAttributeSelect={setCurAttributeSelect}
+              collapsible={collapsible}
+              setCollapsible={setCollapsible}
             />
 
             {attrGroupItem.attributes.length ? (
