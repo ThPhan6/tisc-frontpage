@@ -156,6 +156,7 @@ const LandingPage = () => {
       if (isSuccess) {
         fetchUserInfo(true);
         hidePageLoading();
+        openVerificationModal.setValue(false);
       }
     });
   };
