@@ -80,13 +80,13 @@ const ProjectDetail = () => {
     }
   }, []);
 
-  const getListProduct = (brands?: BrandInfo[], customProducts?: CustomProduct[]) => {
-    const listCustomProduct = customProducts?.length
+  const getListProduct = (products?: { brands: BrandInfo[]; customProducts: CustomProduct[] }) => {
+    const customProductList = products?.customProducts.length
       ? [
           {
             title: 'Office Library & Resources',
             image: <OfficeLibrary style={{ width: '24px', height: '24px' }} />,
-            content: customProducts.map((product) => ({
+            content: products.customProducts.map((product) => ({
               name: product.name,
               image: product.image,
               productConsiderdStatus: product.status,
@@ -94,8 +94,8 @@ const ProjectDetail = () => {
           },
         ]
       : [];
-    const productsByBrand =
-      brands?.map((el) => ({
+    const brandProducts =
+      products?.brands.map((el) => ({
         title: el.name,
         image: el.logo,
         content: el.products.map((product) => ({
@@ -105,7 +105,7 @@ const ProjectDetail = () => {
         })),
       })) ?? [];
 
-    return [...listCustomProduct, ...productsByBrand];
+    return [...customProductList, ...brandProducts];
   };
 
   return (
@@ -141,10 +141,7 @@ const ProjectDetail = () => {
       <CustomTabPane active={selectedTab === ProjectListingTabKeys.productConsidered}>
         <ProductAndProjectTab
           type="productConsider"
-          data={getListProduct(
-            projectDetail?.considered.brands,
-            projectDetail?.considered.customProducts,
-          )}
+          data={getListProduct(projectDetail?.considered)}
           summary={{
             deleted: projectDetail?.considered.deleted,
             unlisted: projectDetail?.considered.unlisted,
@@ -157,10 +154,7 @@ const ProjectDetail = () => {
       <CustomTabPane active={selectedTab === ProjectListingTabKeys.productSpecified}>
         <ProductAndProjectTab
           type="productSpecified"
-          data={getListProduct(
-            projectDetail?.specified.brands,
-            projectDetail?.specified.customProducts,
-          )}
+          data={getListProduct(projectDetail?.specified)}
           summary={{
             deleted: projectDetail?.specified.deleted,
             specified: projectDetail?.specified.specified,
