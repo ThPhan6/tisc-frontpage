@@ -39,6 +39,8 @@ import { CustomDropDown } from '@/features/product/components';
 import ProductCard from '@/features/product/components/ProductCard';
 import cardStyles from '@/features/product/components/ProductCard.less';
 
+import styles from './index.less';
+
 const ProductConsidered: React.FC = () => {
   useAutoExpandNestedTableColumn(3, [7]);
 
@@ -391,17 +393,16 @@ const ProductConsidered: React.FC = () => {
         className={cardStyles.productCardContainer}
         style={{ padding: '16px 16px 8px', maxWidth: 'calc(83.33vw - 40px)' }}>
         {products.map((item, index: number) => (
-          <div className={cardStyles.productCardItemWrapper} key={index}>
-            <ProductCard
-              product={item}
-              hasBorder
-              hideFavorite
-              hideAssign
-              showInquiryRequest
-              showSpecify
-              onSpecifyClick={() => setSpecifyingProduct(item)}
-            />
-          </div>
+          <ProductCard
+            key={index}
+            product={item}
+            hasBorder
+            hideFavorite
+            hideAssign
+            showInquiryRequest
+            showSpecify
+            onSpecifyClick={() => setSpecifyingProduct(item)}
+          />
         ))}
       </div>
     );
@@ -409,10 +410,6 @@ const ProductConsidered: React.FC = () => {
 
   const filteredColumns = (cols: TableColumnItem<any>[]) =>
     cols.filter((el) => Boolean(el.hidden) === false);
-  console.log(
-    'filteredColumns(setDefaultWidthForEachColumn(AreaColumns, 7))',
-    filteredColumns(setDefaultWidthForEachColumn(AreaColumns, 7)),
-  );
 
   return (
     <div>
@@ -441,6 +438,7 @@ const ProductConsidered: React.FC = () => {
         </ProjectTabContentHeader>
 
         <CustomTable
+          footerClass={styles.summaryFooter}
           columns={filteredColumns(setDefaultWidthForEachColumn(ZoneColumns, 7))}
           ref={tableRef}
           fetchDataFunc={getConsideredProducts}

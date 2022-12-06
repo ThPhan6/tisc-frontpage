@@ -22,6 +22,8 @@ import { AvailabilityModal } from '../../components/AvailabilityModal';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import { RobotoBodyText } from '@/components/Typography';
 
+import styles from './index.less';
+
 interface BrandListProps {
   projectId?: string;
 }
@@ -149,6 +151,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
   return (
     <>
       <CustomTable
+        footerClass={styles.summaryFooter}
         columns={setDefaultWidthForEachColumn(BrandColumns, 4)}
         extraParams={{ projectId }}
         ref={tableRef}

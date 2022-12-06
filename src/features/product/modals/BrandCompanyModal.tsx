@@ -1,11 +1,10 @@
 import { FC, useEffect, useState } from 'react';
 
-import { getAllCustomResource } from '../../services';
-
 import { RadioValue } from '@/components/CustomRadio/types';
 import { CustomResourceType } from '@/pages/Designer/CustomResource/type';
 
 import Popover from '@/components/Modal/Popover';
+import { getAllCustomResource } from '@/pages/Designer/CustomResource/api';
 
 import styles from './index.less';
 
