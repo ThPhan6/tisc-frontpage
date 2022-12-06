@@ -217,7 +217,7 @@ export const getMaxLengthText = (text: string, maxLength: number) => {
   return text.slice(0, maxLength - 3) + '...';
 };
 
-export const formatNumberDisplay = (
+export const formatCurrencyNumber = (
   num: number | string,
   locale: Intl.LocalesArgument = 'en-us',
   options: Intl.NumberFormatOptions = {},

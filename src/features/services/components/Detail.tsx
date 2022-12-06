@@ -10,7 +10,7 @@ import { ReactComponent as EqualIcon } from '@/assets/icons/equal-icon.svg';
 
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { formatNumberDisplay, getFullName } from '@/helper/utils';
+import { formatCurrencyNumber, getFullName } from '@/helper/utils';
 
 import { InvoiceStatus, ServicesResponse } from '../type';
 
@@ -23,6 +23,7 @@ import { BodyText, Title } from '@/components/Typography';
 
 import { getOneService, getServicePDF, markAsPaid, sendBill, sendRemind } from '../api';
 import styles from '../index.less';
+import { checkShowBillingAmount } from '../util';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import moment from 'moment';
 
@@ -32,6 +33,8 @@ interface ServiceDetailProps {
 }
 export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
   const [detailData, setDetailData] = useState<ServicesResponse>();
+
+  const dueDate = moment().add(7, 'days').format('YYYY-MM-DD');
 
   const submitButtonStatus = useBoolean();
 
@@ -132,20 +135,27 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
     );
   };
 
+  const showBillingAmount = checkShowBillingAmount(detailData);
+
   return (
     <Row>
       <Col span={12}>
         <div
           className={styles.detail}
-          style={{ height: type === 'tisc' ? 'calc(100vh - 208px)' : 'calc(100vh - 158px)' }}>
+          style={{ height: type === 'tisc' ? 'calc(100vh - 208px)' : 'calc(100vh - 152px)' }}>
           <TableHeader
             title={detailData?.name}
-            rightAction={<CloseIcon onClick={history.goBack} style={{ cursor: 'pointer' }} />}
+            rightAction={
+              <CloseIcon
+                onClick={history.goBack}
+                style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+              />
+            }
           />
           <div
             style={{
               padding: '16px',
-              height: type === 'tisc' ? 'calc(100vh - 304px)' : 'calc(100vh - 254px)',
+              height: type === 'tisc' ? 'calc(100vh - 304px)' : 'calc(100vh - 248px)',
               overflow: 'auto',
             }}>
             <TextForm boxShadow label="Billed Date">
@@ -176,19 +186,22 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     <BodyText level={5} fontFamily="Roboto">
                       Unit Rate
                     </BodyText>
+                    <CloseIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
                   </td>
                   <td className={styles.quantity}>
-                    ${formatNumberDisplay(Number(detailData?.unit_rate))}
+                    ${formatCurrencyNumber(Number(detailData?.unit_rate))}
                   </td>
                 </tr>
                 <tr className={styles.totalQuantity}>
                   <td className={styles.label}>
                     <BodyText level={5} fontFamily="Roboto">
-                      Total Quantity
+                      Quantity
                     </BodyText>
                     <CloseIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
                   </td>
-                  <td className={styles.quantity}>{detailData?.quantity}</td>
+                  <td className={styles.quantity}>
+                    {formatCurrencyNumber(Number(detailData?.quantity))}
+                  </td>
                 </tr>
                 <tr>
                   <td className={styles.label}>
@@ -198,7 +211,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     <EqualIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
                   </td>
                   <td className={styles.quantity}>
-                    {formatNumberDisplay(Number(detailData?.total_gross))}
+                    ${formatCurrencyNumber(Number(detailData?.total_gross))}
                   </td>
                 </tr>
                 <tr>
@@ -209,7 +222,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     <PlusIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
                   </td>
                   <td className={styles.quantity}>
-                    ${formatNumberDisplay(Number(detailData?.sale_tax_amount))}
+                    ${formatCurrencyNumber(Number(detailData?.sale_tax_amount))}
                   </td>
                 </tr>
                 <tr className={styles.total}>
@@ -218,7 +231,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                   </td>
                   <td className={styles.quantity}>
                     <Title level={8}>
-                      ${formatNumberDisplay(Number(detailData?.billing_amount))}
+                      ${formatCurrencyNumber(Number(detailData?.billing_amount))}
                     </Title>
                   </td>
                 </tr>
@@ -237,8 +250,11 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                   height: '32px',
                   alignItems: 'center',
                 }}>
-                <BodyText level={5} fontFamily="Roboto" style={{ paddingLeft: '16px' }}>
-                  {detailData?.due_date}
+                <BodyText
+                  level={5}
+                  fontFamily="Roboto"
+                  style={{ paddingLeft: '16px', color: detailData?.due_date ? '' : '#BFBFBF' }}>
+                  {detailData?.due_date ? detailData.due_date : dueDate}
                 </BodyText>
                 <BodyText level={5} fontFamily="Roboto">
                   (annual interest rate of 36.5% applies to late payment)
@@ -248,23 +264,42 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
             <FormGroup
               label="Overdue Fines"
               layout="vertical"
-              formClass={styles.customFormGroup}
+              formClass={`${
+                detailData?.status !== InvoiceStatus.Overdue ? styles.customFormGroup : ''
+              }`}
               labelColor="mono-color-dark">
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  height: '32px',
-                  alignItems: 'center',
-                }}>
-                <BodyText level={5} fontFamily="Roboto" style={{ paddingLeft: '16px' }}>
-                  as {moment().format('YYYY-MM-DD')}
-                </BodyText>
-                <BodyText level={5} fontFamily="Roboto">
-                  ${formatNumberDisplay(Number(detailData?.overdue_amount))}
-                </BodyText>
-              </div>
+              <table className={styles.customTable} style={{ width: '100%' }}>
+                <tr>
+                  <td className={styles.label}>
+                    <BodyText level={5} fontFamily="Roboto">
+                      as {moment().format('YYYY-MM-DD')}
+                    </BodyText>
+                    {showBillingAmount && (
+                      <PlusIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
+                    )}
+                  </td>
+                  <td className={`${showBillingAmount ? styles.quantity : styles.rightText}`}>
+                    ${formatCurrencyNumber(Number(detailData?.overdue_amount))}
+                  </td>
+                </tr>
+                {showBillingAmount && (
+                  <tr className={styles.total}>
+                    <td className={styles.label}>
+                      <Title level={8}>BILLING AMOUNT</Title>
+                    </td>
+                    <td className={styles.quantity}>
+                      <Title level={8}>
+                        $
+                        {formatCurrencyNumber(
+                          Number(detailData?.billing_amount) + Number(detailData?.overdue_amount),
+                        )}
+                      </Title>
+                    </td>
+                  </tr>
+                )}
+              </table>
             </FormGroup>
+
             <TextForm
               boxShadow
               label="Status"
