@@ -6,7 +6,7 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
-import { formatNumberDisplay, validateFloatNumber, validateNumber } from '@/helper/utils';
+import { formatCurrencyNumber, validateFloatNumber, validateNumber } from '@/helper/utils';
 
 import { setServiceFormData } from '../reducer';
 import store, { useAppSelector } from '@/reducers';
@@ -50,7 +50,7 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
   const summaryBillingAmount = () => {
     const grossTotal = Number(serviceFormData.unit_rate) * Number(serviceFormData.quantity);
     const salesTax = (Number(serviceFormData.tax) / 100) * grossTotal;
-    return formatNumberDisplay(grossTotal + salesTax);
+    return formatCurrencyNumber(grossTotal + salesTax);
   };
 
   return (
@@ -141,7 +141,7 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
                   inputValidation={validateFloatNumber}
                   value={
                     type === 'view'
-                      ? formatNumberDisplay(serviceFormData.unit_rate)
+                      ? formatCurrencyNumber(serviceFormData.unit_rate)
                       : serviceFormData.unit_rate
                   }
                   onChange={(e) => {
@@ -165,14 +165,14 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
                 <CustomInput
                   value={
                     type === 'view'
-                      ? formatNumberDisplay(serviceFormData.quantity)
+                      ? formatCurrencyNumber(serviceFormData.quantity)
                       : serviceFormData.quantity
                   }
                   placeholder="0"
                   inputValidation={validateNumber}
                   onChange={(e) =>
                     store.dispatch(
-                      setServiceFormData({ ...serviceFormData, quantity: e.target.value }),
+                      setServiceFormData({ ...serviceFormData, quantity: Number(e.target.value) }),
                     )
                   }
                   containerClass={type !== 'view' ? styles.customInput : ''}

@@ -10,7 +10,7 @@ import { ReactComponent as EqualIcon } from '@/assets/icons/equal-icon.svg';
 
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
-import { formatNumberDisplay, getFullName } from '@/helper/utils';
+import { formatCurrencyNumber, getFullName } from '@/helper/utils';
 
 import { InvoiceStatus, ServicesResponse } from '../type';
 
@@ -135,6 +135,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
     );
   };
 
+  const showBillingAmount = checkShowBillingAmount(detailData);
+
   return (
     <Row>
       <Col span={12}>
@@ -187,7 +189,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     <CloseIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
                   </td>
                   <td className={styles.quantity}>
-                    ${formatNumberDisplay(Number(detailData?.unit_rate))}
+                    ${formatCurrencyNumber(Number(detailData?.unit_rate))}
                   </td>
                 </tr>
                 <tr className={styles.totalQuantity}>
@@ -198,7 +200,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     <CloseIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
                   </td>
                   <td className={styles.quantity}>
-                    {formatNumberDisplay(Number(detailData?.quantity))}
+                    {formatCurrencyNumber(Number(detailData?.quantity))}
                   </td>
                 </tr>
                 <tr>
@@ -209,7 +211,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     <EqualIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
                   </td>
                   <td className={styles.quantity}>
-                    ${formatNumberDisplay(Number(detailData?.total_gross))}
+                    ${formatCurrencyNumber(Number(detailData?.total_gross))}
                   </td>
                 </tr>
                 <tr>
@@ -220,7 +222,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     <PlusIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
                   </td>
                   <td className={styles.quantity}>
-                    ${formatNumberDisplay(Number(detailData?.sale_tax_amount))}
+                    ${formatCurrencyNumber(Number(detailData?.sale_tax_amount))}
                   </td>
                 </tr>
                 <tr className={styles.total}>
@@ -229,7 +231,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                   </td>
                   <td className={styles.quantity}>
                     <Title level={8}>
-                      ${formatNumberDisplay(Number(detailData?.billing_amount))}
+                      ${formatCurrencyNumber(Number(detailData?.billing_amount))}
                     </Title>
                   </td>
                 </tr>
@@ -272,18 +274,15 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     <BodyText level={5} fontFamily="Roboto">
                       as {moment().format('YYYY-MM-DD')}
                     </BodyText>
-                    {checkShowBillingAmount(detailData) && (
+                    {showBillingAmount && (
                       <PlusIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
                     )}
                   </td>
-                  <td
-                    className={`${
-                      checkShowBillingAmount(detailData) ? styles.quantity : styles.rightText
-                    }`}>
-                    ${formatNumberDisplay(Number(detailData?.overdue_amount))}
+                  <td className={`${showBillingAmount ? styles.quantity : styles.rightText}`}>
+                    ${formatCurrencyNumber(Number(detailData?.overdue_amount))}
                   </td>
                 </tr>
-                {checkShowBillingAmount(detailData) && (
+                {showBillingAmount && (
                   <tr className={styles.total}>
                     <td className={styles.label}>
                       <Title level={8}>BILLING AMOUNT</Title>
@@ -291,7 +290,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     <td className={styles.quantity}>
                       <Title level={8}>
                         $
-                        {formatNumberDisplay(
+                        {formatCurrencyNumber(
                           Number(detailData?.billing_amount) + Number(detailData?.overdue_amount),
                         )}
                       </Title>
