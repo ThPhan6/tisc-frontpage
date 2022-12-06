@@ -6,6 +6,7 @@ import { deleteService, getServicesPagination } from '@/features/services/api';
 import { ServiceHeader } from '@/features/services/components/ServiceHeader';
 import styles from '@/features/services/index.less';
 import { InvoiceStatus, ServicesResponse } from '@/features/services/type';
+import { checkShowBillingAmount } from '@/features/services/util';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { formatNumberDisplay, getFullName } from '@/helper/utils';
@@ -77,7 +78,16 @@ const RevenueService = () => {
       title: 'Billed Amount',
       dataIndex: 'billing_amount',
       render: (_value, record) => {
-        return <span>${formatNumberDisplay(record.billing_amount)}</span>;
+        return (
+          <span>
+            $
+            {formatNumberDisplay(
+              checkShowBillingAmount(record)
+                ? record.billing_amount + record.overdue_amount
+                : record.billing_amount,
+            )}
+          </span>
+        );
       },
     },
     {

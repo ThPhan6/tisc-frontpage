@@ -23,6 +23,7 @@ import { BodyText, Title } from '@/components/Typography';
 
 import { getOneService, getServicePDF, markAsPaid, sendBill, sendRemind } from '../api';
 import styles from '../index.less';
+import { checkShowBillingAmount } from '../util';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import moment from 'moment';
 
@@ -261,23 +262,45 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
             <FormGroup
               label="Overdue Fines"
               layout="vertical"
-              formClass={styles.customFormGroup}
+              formClass={`${
+                detailData?.status !== InvoiceStatus.Overdue ? styles.customFormGroup : ''
+              }`}
               labelColor="mono-color-dark">
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  height: '32px',
-                  alignItems: 'center',
-                }}>
-                <BodyText level={5} fontFamily="Roboto" style={{ paddingLeft: '16px' }}>
-                  as {moment().format('YYYY-MM-DD')}
-                </BodyText>
-                <BodyText level={5} fontFamily="Roboto">
-                  ${formatNumberDisplay(Number(detailData?.overdue_amount))}
-                </BodyText>
-              </div>
+              <table className={styles.customTable} style={{ width: '100%' }}>
+                <tr>
+                  <td className={styles.label}>
+                    <BodyText level={5} fontFamily="Roboto">
+                      as {moment().format('YYYY-MM-DD')}
+                    </BodyText>
+                    {checkShowBillingAmount(detailData) && (
+                      <PlusIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
+                    )}
+                  </td>
+                  <td
+                    className={`${
+                      checkShowBillingAmount(detailData) ? styles.quantity : styles.rightText
+                    }`}>
+                    ${formatNumberDisplay(Number(detailData?.overdue_amount))}
+                  </td>
+                </tr>
+                {checkShowBillingAmount(detailData) && (
+                  <tr className={styles.total}>
+                    <td className={styles.label}>
+                      <Title level={8}>BILLING AMOUNT</Title>
+                    </td>
+                    <td className={styles.quantity}>
+                      <Title level={8}>
+                        $
+                        {formatNumberDisplay(
+                          Number(detailData?.billing_amount) + Number(detailData?.overdue_amount),
+                        )}
+                      </Title>
+                    </td>
+                  </tr>
+                )}
+              </table>
             </FormGroup>
+
             <TextForm
               boxShadow
               label="Status"
