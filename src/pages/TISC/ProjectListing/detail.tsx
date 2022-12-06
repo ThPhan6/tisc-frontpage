@@ -14,7 +14,7 @@ import { pushTo } from '@/helper/history';
 import { useGetParamId } from '@/helper/hook';
 import { getFullName } from '@/helper/utils';
 
-import { ProjectListingDetail } from './type';
+import { BrandInfo, CustomProduct, ProjectListingDetail } from './type';
 import { TabItem } from '@/components/Tabs/types';
 
 import { BasicInformation } from './components/BasicInformation';
@@ -79,6 +79,35 @@ const ProjectDetail = () => {
       });
     }
   }, []);
+
+  const getListProduct = (brands?: BrandInfo[], customProducts?: CustomProduct[]) => {
+    const listCustomProduct = customProducts?.length
+      ? [
+          {
+            title: 'Office Library & Resources',
+            image: <OfficeLibrary style={{ width: '24px', height: '24px' }} />,
+            content: customProducts.map((product) => ({
+              name: product.name,
+              image: product.image,
+              productConsiderdStatus: product.status,
+            })),
+          },
+        ]
+      : [];
+    const productsByBrand =
+      brands?.map((el) => ({
+        title: el.name,
+        image: el.logo,
+        content: el.products.map((product) => ({
+          name: product.name,
+          image: product.image,
+          productConsiderdStatus: product.status,
+        })),
+      })) ?? [];
+
+    return [...listCustomProduct, ...productsByBrand];
+  };
+
   return (
     <ProjectListingHeader>
       <TableHeader
@@ -112,30 +141,10 @@ const ProjectDetail = () => {
       <CustomTabPane active={selectedTab === ProjectListingTabKeys.productConsidered}>
         <ProductAndProjectTab
           type="productConsider"
-          data={[
-            ...(projectDetail?.considered.customProducts.length
-              ? [
-                  {
-                    title: 'Office Library & Resources',
-                    image: <OfficeLibrary style={{ width: '24px', height: '24px' }} />,
-                    content: projectDetail?.considered.customProducts.map((product) => ({
-                      name: product.name,
-                      image: product.image,
-                      productConsiderdStatus: product.status,
-                    })),
-                  },
-                ]
-              : []),
-            ...(projectDetail?.considered.brands.map((el) => ({
-              title: el.name,
-              image: el.logo,
-              content: el.products.map((product) => ({
-                name: product.name,
-                image: product.image,
-                productConsiderdStatus: product.status,
-              })),
-            })) ?? []),
-          ]}
+          data={getListProduct(
+            projectDetail?.considered.brands,
+            projectDetail?.considered.customProducts,
+          )}
           summary={{
             deleted: projectDetail?.considered.deleted,
             unlisted: projectDetail?.considered.unlisted,
@@ -148,30 +157,10 @@ const ProjectDetail = () => {
       <CustomTabPane active={selectedTab === ProjectListingTabKeys.productSpecified}>
         <ProductAndProjectTab
           type="productSpecified"
-          data={[
-            ...(projectDetail?.specified.customProducts.length
-              ? [
-                  {
-                    title: 'Office Library & Resources',
-                    image: <OfficeLibrary style={{ width: '24px', height: '24px' }} />,
-                    content: projectDetail?.specified.customProducts.map((product) => ({
-                      name: product.name,
-                      image: product.image,
-                      productSpecifiedStatus: product.status,
-                    })),
-                  },
-                ]
-              : []),
-            ...(projectDetail?.specified.brands.map((el) => ({
-              title: el.name,
-              image: el.logo,
-              content: el.products.map((product) => ({
-                name: product.name,
-                image: product.image,
-                productSpecifiedStatus: product.status,
-              })),
-            })) ?? []),
-          ]}
+          data={getListProduct(
+            projectDetail?.specified.brands,
+            projectDetail?.specified.customProducts,
+          )}
           summary={{
             deleted: projectDetail?.specified.deleted,
             specified: projectDetail?.specified.specified,
