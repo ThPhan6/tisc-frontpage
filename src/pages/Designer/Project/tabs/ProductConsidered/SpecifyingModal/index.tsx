@@ -216,6 +216,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           brandId={product.brand?.id ?? ''}
           customProduct={customProduct}
           brand={product.brand}
+          projectId={projectId}
         />
       </CustomTabPane>
 
