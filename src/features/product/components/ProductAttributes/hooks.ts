@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { getSelectedProductSpecification, useSelectProductSpecification } from '../../services';
 import { useGetDimensionWeight } from './../../../dimension-weight/hook';
 import { useBoolean, useCheckPermission } from '@/helper/hook';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, countBy } from 'lodash';
 
 import { setDefaultSelectionFromSpecifiedData, setPartialProductDetail } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
@@ -219,9 +219,12 @@ export const useProductAttributeForm = (
         (_attr, idx) => idx !== attrIndex,
       );
 
+      const isOptionType = countBy(newItemAttributes, (attr) => attr.type === 'Options').true >= 2;
+
       newAttributes[groupIndex] = {
         ...newAttributes[groupIndex],
         attributes: newItemAttributes,
+        selection: isOptionType,
       };
 
       /// reset selected
