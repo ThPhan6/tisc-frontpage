@@ -220,6 +220,7 @@ const ProductConsidered: React.FC = () => {
       width: COLUMN_WIDTH.status,
       hidden: gridView.value,
       align: 'center',
+      className: disabledClassname,
     },
     {
       title: 'Action',
