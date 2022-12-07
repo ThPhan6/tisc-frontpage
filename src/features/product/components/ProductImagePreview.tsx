@@ -371,6 +371,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
             visible={showShareEmailModal.value}
             setVisible={showShareEmailModal.setValue}
             product={product}
+            isCustomProduct={isCustomProduct}
           />
         ) : null}
         {product.id ? (
