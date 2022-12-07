@@ -25,7 +25,6 @@ export const CustomRadio: FC<CustomRadioProps> = ({
   otherStickyBottom,
   stickyTopItem,
   optionStyle,
-  disabled,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -90,7 +89,6 @@ export const CustomRadio: FC<CustomRadioProps> = ({
         {...props}
         onChange={onChangeValue}
         value={value}
-        disabled={disabled}
         defaultValue={defaultValue?.value}>
         <Space
           direction={isRadioList ? 'vertical' : direction}
