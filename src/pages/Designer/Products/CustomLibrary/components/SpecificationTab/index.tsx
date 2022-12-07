@@ -17,6 +17,7 @@ import store, { useAppSelector } from '@/reducers';
 import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { CustomRadio } from '@/components/CustomRadio';
+import { EmptyOne } from '@/components/Empty';
 import { DoubleInput } from '@/components/EntryForm/DoubleInput';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
@@ -59,6 +60,12 @@ export const SpecificationTab: FC<{
   const { data: dwData } = useGetDimensionWeight(!productId);
 
   const dimensionWeightData = dimension_and_weight.id ? dimension_and_weight : dwData;
+
+  const noneData = viewOnly && !specifications.length && !options.length;
+
+  if (noneData) {
+    return <EmptyOne customClass="p-16" />;
+  }
 
   const handleAddSpecification = () => {
     store.dispatch(
@@ -237,6 +244,8 @@ export const SpecificationTab: FC<{
       return null;
     }
 
+    console.log('options', options);
+
     return options.map((option: ProductOptionProps, optionIndex: number) => {
       const selectOption = specification.attribute_groups?.find((el) => el.id === option.id);
       return (
@@ -304,6 +313,9 @@ export const SpecificationTab: FC<{
                     }}
                   />
                 </Col>
+                <Col>
+                  <RobotoBodyText level={6}>({option.items.length})</RobotoBodyText>
+                </Col>
                 <Col flex="1 1 100px">
                   <div className="flex-end">
                     <RobotoBodyText level={6}>TAG: {option.tag}</RobotoBodyText>
@@ -333,7 +345,7 @@ export const SpecificationTab: FC<{
                   setCurOptionIndex(optionIndex);
                 }}>
                 <MainTitle level={4} customClass={styles.content}>
-                  {productId ? 'Update' : 'Create'} Options
+                  Create Options
                 </MainTitle>
                 <SingleRightIcon />
               </div>
