@@ -46,7 +46,7 @@ export const BrandCompanyModal: FC<BrandCompanyProps> = ({ visible, setVisible }
   const [selectedOrderBy, setSelectedOrderBy] = useState<RadioValue>();
 
   useEffect(() => {
-    getBrandPagination({ page: 1, pageSize: 99999 }, (res) => {
+    getBrandPagination({ page: 1, pageSize: 99999, sort: 'name', order: 'ASC' }, (res) => {
       setListBrand(res.data);
       const checkedBrand = res.data.find((item) => item.id === serviceFormData.brand_id);
       if (checkedBrand) {
