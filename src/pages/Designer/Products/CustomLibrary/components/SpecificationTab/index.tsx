@@ -244,8 +244,6 @@ export const SpecificationTab: FC<{
       return null;
     }
 
-    console.log('options', options);
-
     return options.map((option: ProductOptionProps, optionIndex: number) => {
       const selectOption = specification.attribute_groups?.find((el) => el.id === option.id);
       return (
@@ -345,7 +343,7 @@ export const SpecificationTab: FC<{
                   setCurOptionIndex(optionIndex);
                 }}>
                 <MainTitle level={4} customClass={styles.content}>
-                  Create Options
+                  {option.items.length ? 'Update Options' : 'Create Options'}
                 </MainTitle>
                 <SingleRightIcon />
               </div>
