@@ -13,7 +13,7 @@ import { useAppSelector } from '@/reducers';
 
 import { SpecificationTab } from './components/SpecificationTab';
 import { SummaryTab } from './components/SummaryTab';
-import { PublicPage } from '@/components/PublicPage';
+import { PublicHeader } from '@/components/PublicHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 import ProductImagePreview from '@/features/product/components/ProductImagePreview';
@@ -50,7 +50,7 @@ const ProductLibraryDetail: React.FC = () => {
       <div className={styles.backgroundLight}>
         <Col span={24} className={isPublicPage ? '' : styles.marginBottomSpace}>
           {isPublicPage ? (
-            <PublicPage />
+            <PublicHeader />
           ) : (
             <TableHeader
               title={productData.name}

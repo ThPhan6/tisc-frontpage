@@ -9,7 +9,7 @@ import CustomButton from '../Button';
 import { RobotoBodyText } from '../Typography';
 import styles from './index.less';
 
-export const PublicPage = () => {
+export const PublicHeader = () => {
   return (
     <div className={styles.header}>
       <LogoBeta />

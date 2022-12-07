@@ -26,7 +26,7 @@ import { resetProductDetailState, setBrand } from '@/features/product/reducers';
 import { ModalOpen } from '@/pages/LandingPage/types';
 import { useAppSelector } from '@/reducers';
 
-import { PublicPage } from '@/components/PublicPage';
+import { PublicHeader } from '@/components/PublicHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { AboutPoliciesContactModal } from '@/pages/LandingPage/AboutPolicesContactModal';
 import { LandingPageFooter } from '@/pages/LandingPage/footer';
@@ -174,7 +174,7 @@ const ProductDetailContainer: React.FC = () => {
     }
 
     if (isPublicPage) {
-      return <PublicPage />;
+      return <PublicHeader />;
     }
 
     return (
