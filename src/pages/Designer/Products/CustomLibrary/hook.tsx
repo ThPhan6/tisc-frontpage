@@ -7,7 +7,6 @@ import { useHistory } from 'umi';
 
 import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
 
-import { getAllCustomResource } from './services';
 import { useBoolean, useQuery } from '@/helper/hook';
 import { getValueByCondition, removeUrlParams, updateUrlParams } from '@/helper/utils';
 import { getCollections } from '@/services';
@@ -24,6 +23,7 @@ import {
 } from '@/features/product/components/FilterAndSorter';
 import { CustomDropDown, FilterItem } from '@/features/product/components/ProductTopBarItem';
 
+import { getAllCustomResource } from '../../CustomResource/api';
 import { setCustomProductFilter } from './slice';
 
 export const onCollectionFilterClick = (

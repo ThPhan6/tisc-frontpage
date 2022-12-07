@@ -45,9 +45,9 @@ export interface ServicesForm {
   service_type_id: string;
   brand_id: string;
   ordered_by: string;
-  unit_rate: number;
-  quantity: number;
-  tax: number;
+  unit_rate: number | string;
+  quantity: number | string;
+  tax: number | string;
   remark: string;
   brand_name?: string;
   ordered_by_name?: string;

@@ -22,6 +22,8 @@ import { AvailabilityModal } from '../../components/AvailabilityModal';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import { RobotoBodyText } from '@/components/Typography';
 
+import styles from './index.less';
+
 export interface SpaceListProps {
   projectId?: string;
 }
@@ -252,6 +254,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
   return (
     <>
       <CustomTable
+        footerClass={styles.summaryFooter}
         columns={setDefaultWidthForEachColumn(ZoneColumns, 7)}
         extraParams={{ projectId }}
         ref={tableRef}

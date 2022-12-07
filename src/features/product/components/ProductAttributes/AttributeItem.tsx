@@ -131,7 +131,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
     const newItemAttributes = [...newAttributes[attributeIndex].attributes];
 
     const activeBasisOptions = selectedSpecified.map((itemSelected) => {
-      const changedBasisOption = basisOptions.find((option) => option.id === itemSelected.value);
+      const changedBasisOption = basisOptions.find((option) => option?.id === itemSelected.value);
       if (changedBasisOption) {
         return changedBasisOption;
       }
@@ -164,6 +164,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
         ...newGeneralAttributeItem[key],
         ...data,
       };
+
       onItemChange(newGeneralAttributeItem);
     }
   };
