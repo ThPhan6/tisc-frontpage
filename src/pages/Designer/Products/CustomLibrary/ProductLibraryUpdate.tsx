@@ -118,7 +118,7 @@ const ProductLibraryUpdate: React.FC = () => {
       </Col>
 
       <Col span={24}>
-        <Row className={styles.marginRounded}>
+        <Row>
           <Col span={12}>
             <ProductImagePreview
               hideInquiryRequest
