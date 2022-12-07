@@ -30,12 +30,14 @@ export interface ShareViaEmailForm {
   to_email: string;
   title: string;
   message: string;
+  custom_product?: boolean;
 }
 
 interface ShareViaEmailProps {
   product: ProductItem;
   visible: boolean;
   setVisible: (visible: boolean) => void;
+  isCustomProduct?: boolean;
 }
 
 type FieldName = keyof ShareViaEmailForm;
@@ -49,13 +51,18 @@ const DEFAULT_STATE = {
   message: '',
 };
 
-const ShareViaEmail: FC<ShareViaEmailProps> = ({ product, visible, setVisible }) => {
+const ShareViaEmail: FC<ShareViaEmailProps> = ({
+  product,
+  visible,
+  setVisible,
+  isCustomProduct,
+}) => {
   const submitButtonStatus = useBoolean();
   const [shareViaEmailData, setShareViaEmailData] = useState<ShareViaEmailForm>({
     ...DEFAULT_STATE,
     product_id: product.id,
+    custom_product: isCustomProduct,
   });
-
   // for Sharing Group
   const [sharingGroup, setSharingGroup] = useState<ProductItemValue[]>([]);
   const [sharingPurpose, setSharingPurpose] = useState<ProductItemValue[]>([]);
