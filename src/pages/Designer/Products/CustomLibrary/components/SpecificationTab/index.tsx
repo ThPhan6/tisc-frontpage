@@ -17,6 +17,7 @@ import store, { useAppSelector } from '@/reducers';
 import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { CustomRadio } from '@/components/CustomRadio';
+import { EmptyOne } from '@/components/Empty';
 import { DoubleInput } from '@/components/EntryForm/DoubleInput';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
@@ -60,6 +61,12 @@ export const SpecificationTab: FC<{
   const { data: dwData } = useGetDimensionWeight(!productId);
 
   const dimensionWeightData = dimension_and_weight.id ? dimension_and_weight : dwData;
+
+  const noneData = viewOnly && !specifications.length && !options.length;
+
+  if (noneData) {
+    return <EmptyOne customClass="p-16" />;
+  }
 
   const handleAddSpecification = () => {
     store.dispatch(
@@ -273,67 +280,64 @@ export const SpecificationTab: FC<{
           header={
             viewOnly ? (
               <Row style={{ width: '100%' }} align="middle" justify="space-between">
-                {isPublicPage ? (
-                  <RobotoBodyText level={6} customClass="optionLabel">
-                    {option.title}
-                  </RobotoBodyText>
-                ) : (
-                  <Col style={{ paddingLeft: specifying ? 0 : 16 }}>
-                    <CustomCheckbox
-                      options={[
-                        {
-                          label: <RobotoBodyText level={6}>{option.title}</RobotoBodyText>,
-                          value: optionIndex,
-                        },
-                      ]}
-                      selected={
-                        selectOption?.isChecked
-                          ? [
-                              {
-                                label: <RobotoBodyText level={6}>{option.title}</RobotoBodyText>,
-                                value: optionIndex,
-                              },
-                            ]
-                          : []
-                      }
-                      onChange={() => {
-                        if (productId && selectOption?.isChecked) {
-                          const newOptionSpec = {
-                            is_refer_document: specification?.attribute_groups?.length
-                              ? specification.attribute_groups.some(
-                                  (el) => el.id !== selectOption.id && el.isChecked,
-                                )
-                              : true,
-                            attribute_groups: specification?.attribute_groups?.length
-                              ? specification.attribute_groups.filter(
-                                  (el) => el.id !== selectOption.id,
-                                )
-                              : [],
-                          };
+                <Col style={{ paddingLeft: specifying ? 0 : 16 }}>
+                  <CustomCheckbox
+                    options={[
+                      {
+                        label: <RobotoBodyText level={6}>{option.title}</RobotoBodyText>,
+                        value: optionIndex,
+                      },
+                    ]}
+                    selected={
+                      selectOption?.isChecked
+                        ? [
+                            {
+                              label: <RobotoBodyText level={6}>{option.title}</RobotoBodyText>,
+                              value: optionIndex,
+                            },
+                          ]
+                        : []
+                    }
+                    onChange={() => {
+                      if (productId && selectOption?.isChecked) {
+                        const newOptionSpec = {
+                          is_refer_document: specification?.attribute_groups?.length
+                            ? specification.attribute_groups.some(
+                                (el) => el.id !== selectOption.id && el.isChecked,
+                              )
+                            : true,
+                          attribute_groups: specification?.attribute_groups?.length
+                            ? specification.attribute_groups.filter(
+                                (el) => el.id !== selectOption.id,
+                              )
+                            : [],
+                        };
 
-                          store.dispatch(
-                            setCustomProductDetail(
-                              specifying && specifiedDetail
-                                ? {
-                                    specifiedDetail: {
-                                      ...specifiedDetail,
-                                      specification: newOptionSpec,
-                                    },
-                                  }
-                                : { specification: newOptionSpec },
-                            ),
-                          );
-                          if (!specifying) {
-                            selectProductSpecification(productId, {
-                              custom_product: true,
-                              specification: newOptionSpec,
-                            });
-                          }
+                        store.dispatch(
+                          setCustomProductDetail(
+                            specifying && specifiedDetail
+                              ? {
+                                  specifiedDetail: {
+                                    ...specifiedDetail,
+                                    specification: newOptionSpec,
+                                  },
+                                }
+                              : { specification: newOptionSpec },
+                          ),
+                        );
+                        if (!specifying) {
+                          selectProductSpecification(productId, {
+                            custom_product: true,
+                            specification: newOptionSpec,
+                          });
                         }
-                      }}
-                    />
-                  </Col>
-                )}
+                      }
+                    }}
+                  />
+                </Col>
+                <Col>
+                  <RobotoBodyText level={6}>({option.items.length})</RobotoBodyText>
+                </Col>
                 <Col flex="1 1 100px">
                   <div className="flex-end">
                     <RobotoBodyText level={6}>TAG: {option.tag}</RobotoBodyText>
@@ -363,7 +367,7 @@ export const SpecificationTab: FC<{
                   setCurOptionIndex(optionIndex);
                 }}>
                 <MainTitle level={4} customClass={styles.content}>
-                  {productId ? 'Update' : 'Create'} Options
+                  {option.items.length ? 'Update Options' : 'Create Options'}
                 </MainTitle>
                 <SingleRightIcon />
               </div>
