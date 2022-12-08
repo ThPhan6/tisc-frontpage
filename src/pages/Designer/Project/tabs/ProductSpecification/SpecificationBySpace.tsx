@@ -5,7 +5,6 @@ import { COLUMN_WIDTH } from '@/constants/util';
 import { ReactComponent as InfoIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import {
-  noBoxShadowOnCell,
   onCellCancelled,
   onCellCancelledWithNoBoxShadow,
   renderActionCell,
@@ -134,18 +133,18 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     {
       title: 'Zones',
       noBoxShadow: true,
-      onCell: noBoxShadowOnCell,
+      onCell: onCellCancelledWithNoBoxShadow,
     },
     {
       title: 'Areas',
       noExpandIfEmptyData: 'rooms',
       isExpandable: true,
       render: (_value, record) => <span className="text-uppercase">{record.name}</span>,
-      onCell: noBoxShadowOnCell,
+      onCell: onCellCancelledWithNoBoxShadow,
     },
     {
       title: 'Rooms',
-      onCell: noBoxShadowOnCell,
+      onCell: onCellCancelledWithNoBoxShadow,
     },
     ...getSameColumns({ noBoxShadow: false, isAreaColumn: true }),
     {

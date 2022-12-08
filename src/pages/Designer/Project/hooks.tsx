@@ -165,8 +165,6 @@ export const renderActionCell =
     );
   };
 
-export const noBoxShadowOnCell = (data: any) => ({ className: data.rooms ? '' : 'no-box-shadow' });
-
 export const onCellUnlisted = (data: any) => ({
   className:
     data.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted
@@ -191,7 +189,7 @@ export const onCellCancelled = (data: any) => ({
 
 export const onCellCancelledWithNoBoxShadow = (data: any) => ({
   className: `${
-    data.specifiedDetail?.specified_status === ProductConsiderStatus.Unlisted
+    data.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled
       ? 'light-content'
       : undefined
   } ${data.rooms ? '' : 'no-box-shadow'}`,

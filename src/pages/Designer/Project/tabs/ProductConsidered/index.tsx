@@ -11,7 +11,6 @@ import { ReactComponent as CheckIcon } from '@/assets/icons/ic-square-check.svg'
 import { ReactComponent as InfoIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import {
-  noBoxShadowOnCell,
   onCellUnlisted,
   onCellUnlistedWithNoBoxShadow,
   onOpenSpecifiyingProductModal,
@@ -230,18 +229,18 @@ const ProductConsidered: React.FC = () => {
     {
       title: 'Zones',
       noBoxShadow: true,
-      onCell: noBoxShadowOnCell,
+      onCell: onCellUnlistedWithNoBoxShadow,
     },
     {
       title: 'Areas',
       noExpandIfEmptyData: 'rooms',
       isExpandable: true,
       render: (_value, record) => <span>{record.name}</span>,
-      onCell: noBoxShadowOnCell,
+      onCell: onCellUnlistedWithNoBoxShadow,
     },
     {
       title: 'Rooms',
-      onCell: noBoxShadowOnCell,
+      onCell: onCellUnlistedWithNoBoxShadow,
     },
     ...getSameColumns({
       noBoxShadow: false,
@@ -269,7 +268,7 @@ const ProductConsidered: React.FC = () => {
       dataIndex: 'count',
       width: '5%',
       align: 'center',
-      onCell: noBoxShadowOnCell,
+      onCell: onCellUnlistedWithNoBoxShadow,
     },
     {
       title: 'Availability',
@@ -277,7 +276,7 @@ const ProductConsidered: React.FC = () => {
       align: 'center',
       width: '5%',
       render: (_value, record) => renderAvailability(record),
-      onCell: noBoxShadowOnCell,
+      onCell: onCellUnlistedWithNoBoxShadow,
     },
     {
       title: 'Status',
@@ -285,14 +284,14 @@ const ProductConsidered: React.FC = () => {
       dataIndex: 'status_name',
       hidden: gridView.value,
       render: renderStatusDropdown, // For Entire project
-      onCell: noBoxShadowOnCell,
+      onCell: onCellUnlistedWithNoBoxShadow,
     },
     {
       title: 'Action',
       align: 'center',
       width: '5%',
       render: renderActionCell,
-      onCell: noBoxShadowOnCell,
+      onCell: onCellUnlistedWithNoBoxShadow,
     },
   ];
 
@@ -357,13 +356,13 @@ const ProductConsidered: React.FC = () => {
       title: 'Product',
       dataIndex: 'name',
       noBoxShadow: true,
-      onCell: onCellUnlisted,
+      onCell: (data) => onCellUnlisted(data),
     },
     {
       title: 'Assigned By',
       dataIndex: 'assigned_name',
       noBoxShadow: true,
-      onCell: onCellUnlisted,
+      onCell: (data) => onCellUnlisted(data),
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center', noBoxShadow: true },
     {
