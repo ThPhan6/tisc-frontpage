@@ -117,7 +117,7 @@ export async function getUserInfoMiddleware() {
 }
 
 export async function validateResetToken(token: string | null) {
-  return request<{ data: boolean }>(`/api/auth/is-valid-reset-password-token/${token ?? ''}`)
+  return request<{ data: boolean }>(`/api/auth/token/${token ?? ''}/validate`)
     .then((res) => {
       return res.data;
     })

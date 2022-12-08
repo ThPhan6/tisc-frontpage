@@ -8,6 +8,11 @@ export default [
     layout: false,
   },
   {
+    path: PATH.sharedCustomProduct,
+    component: './Designer/Products/CustomLibrary/ProductLibraryDetail',
+    layout: false,
+  },
+  {
     path: PATH.landingPage,
     component: './LandingPage',
     layout: false,
