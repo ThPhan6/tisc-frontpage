@@ -54,6 +54,7 @@
     "ckeditor4-react": "^3.1.0",
     "lodash": "^4.17.0",
     "moment": "^2.29.0",
+    "moment-timezone": "^0.5.39",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-horizontal-scrolling-menu": "^3.1.0",

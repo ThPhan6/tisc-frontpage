@@ -7,6 +7,7 @@ import type {
   AvailableTime,
   BookingPayloadRequest,
   ContactRequestBody,
+  InformationBooking,
   LoginInput,
   LoginResponseProps,
   PasswordRequestBody,
@@ -239,6 +240,47 @@ export async function createBooking(data: BookingPayloadRequest) {
   return request<boolean>(`/api/booking/create`, { method: 'POST', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CREATE_BOOKING_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message);
+      return false;
+    });
+}
+
+export async function getBooking(id: string) {
+  return request<{ data: InformationBooking }>(`/api/booking/${id}`, { method: 'GET' })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message);
+    });
+}
+
+export async function deleteBooking(id: string) {
+  return request<boolean>(`/api/booking/${id}/cancel`, { method: 'DELETE' })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.CANCEL_BOOKING_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message);
+      return false;
+    });
+}
+
+export async function updateBooking(
+  id: string,
+  data: {
+    date: string;
+    slot: number;
+    timezone: string;
+  },
+) {
+  return request<boolean>(`/api/booking/${id}/re-schedule`, { method: 'PATCH', data })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.UPDATE_BOOKING_SUCCESS);
       return true;
     })
     .catch((error) => {

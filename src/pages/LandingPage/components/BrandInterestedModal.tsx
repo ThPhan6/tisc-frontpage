@@ -10,7 +10,7 @@ import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 
 import { checkEmailAlreadyUsed } from '../services/api';
-import { validateEmail } from '@/helper/utils';
+import { isValidURL, validateEmail } from '@/helper/utils';
 import { debounce } from 'lodash';
 
 import { InformationBooking, ModalProps } from '../types';
@@ -20,25 +20,27 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
 
-import { CalendarModal } from './CalendarModal';
 import { PoliciesModal } from './PoliciesModal';
 import styles from './SignupModal.less';
 
-const DEFAULT_STATE: InformationBooking = {
-  brand_name: '',
-  website: '',
-  name: '',
-  email: '',
-  agree_tisc: false,
-};
+interface BrandInterestedProps extends ModalProps {
+  onChangeValue: (inputValue: InformationBooking) => void;
+  inputValue: InformationBooking;
+  onOpenCalendar: () => void;
+}
 
-export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
+export const BrandInterestedModal: FC<BrandInterestedProps> = ({
+  visible,
+  onClose,
+  theme = 'default',
+  inputValue,
+  onChangeValue,
+  onOpenCalendar,
+}) => {
   const themeStyle = () => (theme === 'default' ? '' : '-dark');
   const [openModal, setOpenModal] = useState('');
   const [emailExisted, setEmailExisted] = useState(false);
   const [agreeTisc, setAgreeTisc] = useState(false);
-
-  const [inputValue, setInputValue] = useState<InformationBooking>(DEFAULT_STATE);
 
   useEffect(() => {
     if (inputValue.email && validateEmail(inputValue.email)) {
@@ -62,7 +64,7 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
   };
 
   const onChangeInputValue = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue({ ...inputValue, [e.target.name]: e.target.value });
+    onChangeValue({ ...inputValue, [e.target.name]: e.target.value });
   }, 300);
 
   const handleOpenBookingModal = () => {
@@ -78,6 +80,9 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
     if (inputValue.email === '') {
       return message.error(MESSAGE_ERROR.EMAIL_REQUIRED);
     }
+    if (!isValidURL(inputValue.website)) {
+      return message.error(MESSAGE_ERROR.WEBSITE_INVALID);
+    }
     if (inputValue.agree_tisc === false) {
       return setAgreeTisc(true);
     }
@@ -87,7 +92,9 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
     if (emailExisted === false) {
       return message.error(MESSAGE_ERROR.EMAIL_ALREADY_USED);
     }
-    setOpenModal('BookDemo');
+    onOpenCalendar();
+    setAgreeTisc(false);
+    setEmailExisted(false);
   };
 
   return (
@@ -168,7 +175,7 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
               <Checkbox
                 onChange={() => {
                   setAgreeTisc(!agreeTisc);
-                  setInputValue({ ...inputValue, agree_tisc: !inputValue.agree_tisc });
+                  onChangeValue({ ...inputValue, agree_tisc: !inputValue.agree_tisc });
                 }}>
                 By clicking and continuing, we agree to TISC’s
               </Checkbox>
@@ -202,20 +209,6 @@ export const BrandInterestedModal: FC<ModalProps> = ({ visible, onClose, theme =
         visible={openModal === 'Policies'}
         onClose={() => setOpenModal('')}
         theme="dark"
-      />
-
-      <CalendarModal
-        visible={openModal === 'BookDemo'}
-        onClose={() => {
-          setOpenModal('');
-          setTimeout(() => {
-            onClose();
-            setInputValue(DEFAULT_STATE);
-            setAgreeTisc(false);
-            setEmailExisted(false);
-          }, 100);
-        }}
-        informationBooking={inputValue}
       />
     </CustomModal>
   );

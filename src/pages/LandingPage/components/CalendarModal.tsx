@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 
+import { PATH } from '@/constants/path';
 import { Calendar, Col, Collapse, Row } from 'antd';
 
 import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
@@ -12,9 +13,10 @@ import { ReactComponent as PaginationLeftIcon } from '@/assets/icons/pagination-
 import { ReactComponent as PaginationRightIcon } from '@/assets/icons/pagination-right.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 
-import { createBooking, getListAvailableTime } from '../services/api';
+import { createBooking, getListAvailableTime, updateBooking } from '../services/api';
+import { pushTo } from '@/helper/history';
 
-import { AvailableTime, InformationBooking, ModalProps, SlotTime, Timezones } from '../types';
+import { AvailableTime, InformationBooking, ModalProps, Timezones } from '../types';
 import { CollapsingProps } from '@/features/how-to/types';
 
 import CustomButton from '@/components/Button';
@@ -22,10 +24,14 @@ import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
 import styles from './CalendarModal.less';
-import moment, { Moment } from 'moment';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import { Moment } from 'moment';
+import moment from 'moment-timezone';
 
 interface CalendarModalProps extends ModalProps {
   informationBooking: InformationBooking;
+  isUpdateBooking: boolean;
+  onChangeValue: (informationBooking: InformationBooking) => void;
 }
 interface TimeZoneProps extends CollapsingProps {
   timeZone: string;
@@ -95,65 +101,93 @@ const CalendarHeader: FC<{ dateValue: Moment; onChange: (dateValue: Moment) => v
   );
 };
 
-export const CalendarModal: FC<CalendarModalProps> = ({ visible, onClose, informationBooking }) => {
-  const [dateChosen, setDateChosen] = useState<Moment>(moment());
+export const CalendarModal: FC<CalendarModalProps> = ({
+  visible,
+  onClose,
+  informationBooking,
+  isUpdateBooking,
+  onChangeValue,
+}) => {
+  // const [dateChosen, setDateChosen] = useState<Moment>(moment().add(24, 'hours'));
 
-  const [timeChosen, setTimeChosen] = useState<{ start: string; end: string; slot: string }>({
+  const [timeChosen, setTimeChosen] = useState<{ start: string; end: string; slot: number }>({
     start: '',
     end: '',
-    slot: '',
+    slot: informationBooking.slot,
   });
 
-  const [timeZoneChosen, setTimeZoneChosen] = useState<{ id: string; name: string }>({
-    id: Timezones['GMT +8:00 Singapore Standard Time'],
-    name: 'GMT +8:00 Singapore Standard Time',
-  });
+  // const [timeZoneChosen, setTimeZoneChosen] = useState<{ id: string; name: string }>({
+  //   id: 'Asia/Singapore',
+  //   name: Timezones['Asia/Singapore'],
+  // });
 
   const [availableTimes, setAvailableTimes] = useState<AvailableTime[]>([]);
 
   const [activeKey, setActiveKey] = useState<string>('');
 
   const handleChangeDate = (date: Moment) => {
-    setDateChosen(moment(date));
+    // setDateChosen(moment(date));
+    onChangeValue({ ...informationBooking, date: moment(date).format('YYYY-MM-DD') });
   };
 
   useEffect(() => {
-    getListAvailableTime(String(dateChosen?.format('YYYY-MM-DD'))).then((res) => {
+    getListAvailableTime(informationBooking.date).then((res) => {
       setAvailableTimes(res);
-      setTimeChosen({ start: '', end: '', slot: '' });
+      setTimeChosen({ start: '', end: '', slot: -1 });
     });
-  }, [dateChosen]);
+  }, [informationBooking.date]);
 
+  useEffect(() => {
+    if (timeChosen.slot === -1) {
+      setTimeChosen({ start: '', end: '', slot: informationBooking.slot });
+    }
+  }, [timeChosen]);
+
+  console.log(timeChosen);
   const renderAvailableTimes = (time: string) => {
-    const selectedDateTime = `${moment(dateChosen).format('YYYY-MM-DD')} ${time}`;
-    const dateTimeByTimeZone = new Date(
-      new Date(selectedDateTime).toLocaleString('en-US', { timeZone: timeZoneChosen.id }),
-    );
-    const startTime = moment(dateTimeByTimeZone).format('hh:mm:ss');
-    const endTime = moment(startTime, 'hh:mm:ss').add(60, 'minutes').format('h:mm a');
-    return `${moment(startTime, 'hh:mm:ss').format('h:mm a')} - ${endTime}`;
+    const selectedDateTime = `${informationBooking.date} ${time}`;
+    const defaultTime = moment.tz(selectedDateTime, 'Asia/Singapore');
+    const dateTimeByTimeZone = defaultTime.clone().tz(informationBooking.timezone);
+    const startTime = moment(dateTimeByTimeZone).format('HH:mm:ss');
+    const endTime = moment(startTime, 'HH:mm').add(60, 'minutes').format('hh:mm a');
+    return `${moment(startTime, 'HH:mm').format('hh:mm a')} - ${endTime}`;
   };
 
   const checkDisableButton = () => {
-    if (dateChosen === null || timeChosen.slot === '' || timeZoneChosen.id === '') {
+    if (
+      informationBooking.date === null ||
+      timeChosen.slot === -1 ||
+      informationBooking.timezone === ''
+    ) {
       return true;
     }
     return false;
   };
 
   const hanleAddAppointment = () => {
-    createBooking({
-      brand_name: informationBooking.brand_name,
-      website: informationBooking.website,
-      name: informationBooking.name,
-      email: informationBooking.email,
-      date: String(dateChosen?.format('YYYY-MM-DD')),
-      slot: timeChosen.slot,
-      timezone: timeZoneChosen.id,
-    }).then((isSuccess) => {
+    showPageLoading();
+    const handleSubmit = isUpdateBooking
+      ? updateBooking(informationBooking.id, {
+          date: informationBooking.date,
+          slot: timeChosen.slot,
+          timezone: informationBooking.timezone,
+        })
+      : createBooking({
+          brand_name: informationBooking.brand_name,
+          website: informationBooking.website,
+          name: informationBooking.name,
+          email: informationBooking.email,
+          date: informationBooking.date,
+          slot: timeChosen.slot,
+          timezone: informationBooking.timezone,
+        });
+
+    handleSubmit.then((isSuccess) => {
       if (isSuccess) {
         onClose();
+        pushTo(PATH.landingPage);
       }
+      hidePageLoading();
     });
   };
 
@@ -168,13 +202,17 @@ export const CalendarModal: FC<CalendarModalProps> = ({ visible, onClose, inform
           padding: '32px',
         }}
         className={styles.calendar}
-        title={<MainTitle level={2}>Select Available Date & Time</MainTitle>}
+        title={
+          <MainTitle level={2}>
+            {isUpdateBooking ? 'Re-select Date & Time' : 'Select Available Date & Time'}
+          </MainTitle>
+        }
         onCancel={onClose}>
         <Row gutter={[32, 0]}>
           <Col span={8}>
             <Calendar
               fullscreen={false}
-              value={moment(dateChosen)}
+              value={moment(informationBooking.date)}
               onChange={handleChangeDate}
               headerRender={({ value, onChange }) => (
                 <CalendarHeader dateValue={moment(value)} onChange={onChange} />
@@ -182,13 +220,25 @@ export const CalendarModal: FC<CalendarModalProps> = ({ visible, onClose, inform
               validRange={[currentDate, defaultDate]}
               onSelect={(date) => {
                 if (defaultDate.diff(date) < 0) {
-                  setDateChosen(defaultDate);
+                  // setDateChosen(defaultDate);
+                  onChangeValue({
+                    ...informationBooking,
+                    date: moment(defaultDate).format('YYYY-MM-DD'),
+                  });
                 }
                 if (currentDate.diff(date) > 0) {
-                  setDateChosen(currentDate);
+                  // setDateChosen(currentDate);
+                  onChangeValue({
+                    ...informationBooking,
+                    date: moment(currentDate).format('YYYY-MM-DD'),
+                  });
                 }
                 if (moment(date).day() % 6 == 0) {
-                  setDateChosen(moment(date).day('Friday'));
+                  // setDateChosen(moment(date).day('Friday'));
+                  onChangeValue({
+                    ...informationBooking,
+                    date: moment(date).day('Friday').format('YYYY-MM-DD'),
+                  });
                 }
               }}
               disabledDate={(date) => {
@@ -210,7 +260,7 @@ export const CalendarModal: FC<CalendarModalProps> = ({ visible, onClose, inform
                   }`}
                   header={
                     <TimeZoneHeader
-                      timeZone={timeZoneChosen.name}
+                      timeZone={Timezones[informationBooking.timezone]}
                       activeKey={activeKey}
                       handleActiveCollapse={() =>
                         setActiveKey(activeKey === String(1) ? '' : String(1))
@@ -227,8 +277,12 @@ export const CalendarModal: FC<CalendarModalProps> = ({ visible, onClose, inform
                         display: 'flex',
                         cursor: 'pointer',
                       }}
-                      onClick={() => setTimeZoneChosen({ id: Timezones[key], name: key })}>
-                      {key}
+                      onClick={() => {
+                        // setTimeZoneChosen({ id: key, name: Timezones[key] });
+                        onChangeValue({ ...informationBooking, timezone: key });
+                        setActiveKey('');
+                      }}>
+                      {Timezones[key]}
                     </BodyText>
                   ))}
                 </Collapse.Panel>
@@ -239,11 +293,11 @@ export const CalendarModal: FC<CalendarModalProps> = ({ visible, onClose, inform
                     level={5}
                     fontFamily="Roboto"
                     customClass={`${styles.text} ${time.available ? '' : styles.disableText} ${
-                      timeChosen.start === time.start && time.available ? styles.selectedText : ''
+                      timeChosen.slot === time.slot ? styles.selectedText : ''
                     }`}
                     onClick={() =>
                       time.available &&
-                      setTimeChosen({ start: time.start, end: time.end, slot: SlotTime[time.slot] })
+                      setTimeChosen({ start: time.start, end: time.end, slot: time.slot })
                     }>
                     {renderAvailableTimes(time.start)}
                   </BodyText>
@@ -265,7 +319,7 @@ export const CalendarModal: FC<CalendarModalProps> = ({ visible, onClose, inform
               <div className={styles.information}>
                 <InternetIcon />
                 <BodyText level={5} fontFamily="Roboto">
-                  {informationBooking.email}
+                  {informationBooking.website}
                 </BodyText>
               </div>
               <div className={styles.information}>
@@ -283,7 +337,7 @@ export const CalendarModal: FC<CalendarModalProps> = ({ visible, onClose, inform
               <div className={styles.information}>
                 <ClockIcon />
                 <BodyText level={5} fontFamily="Roboto">
-                  {timeZoneChosen.name}
+                  {Timezones[informationBooking.timezone]}
                 </BodyText>
               </div>
               <Title
@@ -294,7 +348,7 @@ export const CalendarModal: FC<CalendarModalProps> = ({ visible, onClose, inform
                   alignItems: 'center',
                   marginLeft: '32px',
                 }}>
-                {moment(dateChosen).format('ddd, MMM DD YYYY')}
+                {moment(informationBooking.date).format('ddd, MMM DD YYYY')}
                 {timeChosen.start && (
                   <span style={{ marginLeft: '16px' }}>
                     {renderAvailableTimes(timeChosen.start)}

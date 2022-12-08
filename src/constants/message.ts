@@ -22,6 +22,7 @@ export const MESSAGE_ERROR = {
   WEBSITE: 'Company website is required',
   BRAND_COMPANY_NAME: 'Brand / company name is required',
   FIRST_LAST_NAME: 'First name / last name is required',
+  WEBSITE_INVALID: 'Invalid Website',
 };
 
 export const MESSAGE_NOTIFICATION = {
@@ -315,6 +316,8 @@ export const MESSAGE_NOTIFICATION = {
 
   //schedule booking
   CREATE_BOOKING_SUCCESS: 'Book a demo successfully',
+  CANCEL_BOOKING_SUCCESS: 'Cancel booking successfully',
+  UPDATE_BOOKING_SUCCESS: 'Update booking successfully',
 };
 
 export const MESSAGE_TOOLTIP = {
