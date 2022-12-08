@@ -127,6 +127,7 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
 
         setTimeout(() => {
           setVisible(false);
+          submitButtonStatus.setValue(false);
 
           // clear data after submited
           setShareViaEmailData({
