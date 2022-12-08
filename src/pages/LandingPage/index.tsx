@@ -23,7 +23,7 @@ import {
   loginByBrandOrDesigner,
   loginMiddleware,
   resetPasswordMiddleware,
-  validateResetToken,
+  validateToken,
   verifyAccount,
 } from './services/api';
 import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
@@ -66,7 +66,7 @@ const LandingPage = () => {
       history.push(PATH.landingPage);
     } else {
       if (tokenResetPwd) {
-        validateResetToken(tokenResetPwd).then((res) => {
+        validateToken(tokenResetPwd).then((res) => {
           if (res) {
             return openResetPwd.setValue(res);
           }
@@ -89,7 +89,14 @@ const LandingPage = () => {
       });
       return;
     } else if (tokenVerification && history.location.pathname === PATH.createPassword) {
-      openVerificationModal.setValue(true);
+      validateToken(tokenVerification).then((success) => {
+        if (success) {
+          openVerificationModal.setValue(true);
+        } else {
+          history.replace(PATH.landingPage);
+          message.error(MESSAGE_ERROR.VERIFY_TOKEN_EXPIRED);
+        }
+      });
     }
     if (history.location.pathname === PATH.verifyAccount) {
       history.push(PATH.landingPage);
@@ -157,6 +164,7 @@ const LandingPage = () => {
         fetchUserInfo(true);
         hidePageLoading();
         openVerificationModal.setValue(false);
+        history.replace(PATH.landingPage);
       }
     });
   };
