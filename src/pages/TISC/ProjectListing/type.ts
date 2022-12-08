@@ -87,6 +87,7 @@ export interface CustomProduct {
   image: string;
   name: string;
   status: number;
+  isSpecified?: boolean;
 }
 export interface ProjectListingDetail {
   basic: ProjectInformation;
