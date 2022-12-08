@@ -17,6 +17,7 @@ import store, { useAppSelector } from '@/reducers';
 import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { CustomRadio } from '@/components/CustomRadio';
+import { EmptyOne } from '@/components/Empty';
 import { DoubleInput } from '@/components/EntryForm/DoubleInput';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
@@ -38,9 +39,10 @@ const DEFAULT_CONTENT: NameContentProps = {
 export const SpecificationTab: FC<{
   productId?: string;
   viewOnly?: boolean;
+  isPublicPage?: boolean;
   specifying?: boolean;
   activeKey: ProductInfoTab;
-}> = ({ productId, viewOnly, specifying, activeKey }) => {
+}> = ({ productId, viewOnly, isPublicPage, specifying, activeKey }) => {
   const selectProductSpecification = useSelectProductSpecification();
   const [optionModalVisible, setOptionModalVisible] = useState<boolean>(false);
 
@@ -59,6 +61,12 @@ export const SpecificationTab: FC<{
   const { data: dwData } = useGetDimensionWeight(!productId);
 
   const dimensionWeightData = dimension_and_weight.id ? dimension_and_weight : dwData;
+
+  const noneData = viewOnly && !specifications.length && !options.length;
+
+  if (noneData) {
+    return <EmptyOne customClass="p-16" />;
+  }
 
   const handleAddSpecification = () => {
     store.dispatch(
@@ -138,16 +146,41 @@ export const SpecificationTab: FC<{
   const renderOptionItems = (option: ProductOptionProps, optionIndex: number) => {
     if (viewOnly) {
       const selectOption = specification.attribute_groups?.find((el) => el.id === option.id);
+
+      const getOptionPaddingStyles = () => {
+        if (isPublicPage) {
+          return '8px 16px';
+        }
+
+        if (specifying) {
+          return '8px 0';
+        }
+
+        if (option.use_image) {
+          return 16;
+        }
+
+        return '8px 16px 8px 20px';
+      };
+
       return (
         <CustomRadio
+          optionStyle={{
+            cursor: isPublicPage ? 'default' : 'pointer',
+            boxShadow: option.use_image ? 'inset 0 0.7px 0 rgb(0 0 0 / 30%)' : undefined,
+            padding: getOptionPaddingStyles(),
+          }}
           options={option.items.map((el, index) => ({
             label: (
-              <div className="flex-start" style={{}}>
+              <div className="flex-start">
                 {option.use_image && el.image ? renderOptionImage(el.image) : null}
                 <RobotoBodyText
                   level={5}
                   customClass="text-overflow"
-                  style={{ maxWidth: 'calc(100% - 52px)', paddingLeft: 24 }}>
+                  style={{
+                    maxWidth: 'calc(100% - 52px)',
+                    paddingLeft: isPublicPage && !option.use_image ? 0 : 24,
+                  }}>
                   {el.description}
                 </RobotoBodyText>
               </div>
@@ -156,6 +189,7 @@ export const SpecificationTab: FC<{
           }))}
           direction="vertical"
           isRadioList
+          disabled={isPublicPage}
           containerStyle={{ padding: 0 }}
           noPaddingLeft
           value={selectOption?.attributes[0].basis_option_id}
@@ -205,13 +239,10 @@ export const SpecificationTab: FC<{
               }
             }
           }}
-          optionStyle={{
-            boxShadow: option.use_image ? 'inset 0 0.7px 0 rgb(0 0 0 / 30%)' : undefined,
-            padding: specifying ? '8px 0' : option.use_image ? 16 : '8px 16px 8px 20px',
-          }}
         />
       );
     }
+
     return option.items.map((item, itemIndex) => (
       <Row className={styles.optionItem} align="middle" justify="space-between">
         {option.use_image && item.image ? (
@@ -304,6 +335,9 @@ export const SpecificationTab: FC<{
                     }}
                   />
                 </Col>
+                <Col>
+                  <RobotoBodyText level={6}>({option.items.length})</RobotoBodyText>
+                </Col>
                 <Col flex="1 1 100px">
                   <div className="flex-end">
                     <RobotoBodyText level={6}>TAG: {option.tag}</RobotoBodyText>
@@ -333,7 +367,7 @@ export const SpecificationTab: FC<{
                   setCurOptionIndex(optionIndex);
                 }}>
                 <MainTitle level={4} customClass={styles.content}>
-                  {productId ? 'Update' : 'Create'} Options
+                  {option.items.length ? 'Update Options' : 'Create Options'}
                 </MainTitle>
                 <SingleRightIcon />
               </div>
@@ -416,7 +450,7 @@ export const SpecificationTab: FC<{
         </div>
       )}
 
-      <div>
+      <div className={styles.mainContent}>
         {renderSpecification()}
 
         {renderProductOptionGroup()}

@@ -1,19 +1,31 @@
-.optionCollapse {
-  margin-bottom: 8px;
-  :global(.input-label) {
-    height: 18px;
-    padding: 0 12px 0 16px;
-  }
-
-  :global(.ant-collapse-content > .ant-collapse-content-box) {
-    padding: 0;
-    > div {
-      padding: 16px;
+.mainContent {
+  :global(.ant-collapse-item-active) {
+    :global(.optionLabel) {
+      font-weight: 500;
     }
   }
 
-  .optionItem {
-    box-shadow: @border-top-light;
+  :global(.optionLabel) {
+    padding-left: 16px;
+  }
+
+  .optionCollapse {
+    margin-bottom: 8px;
+    :global(.input-label) {
+      height: 18px;
+      padding: 0 12px 0 16px;
+    }
+
+    :global(.ant-collapse-content > .ant-collapse-content-box) {
+      padding: 0;
+      > div {
+        padding: 16px;
+      }
+    }
+
+    .optionItem {
+      box-shadow: @border-top-light;
+    }
   }
 }
 

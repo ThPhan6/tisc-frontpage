@@ -53,6 +53,9 @@ const ProductLibraryUpdate: React.FC = () => {
       case !productData.name:
         message.error('Product name is required');
         return;
+      case !productData.description:
+        message.error('Description is required');
+        return;
       case productData.images.length < 1:
         message.error('Required at least one image');
         return;
@@ -60,13 +63,13 @@ const ProductLibraryUpdate: React.FC = () => {
         message.error('Maximum 4 images are allowed');
         return;
       case invalidAttributes:
-        message.error('Invalid attributes');
+        message.error('Product attribute is missing');
         return;
       case invalidOptions:
-        message.error('Invalid options');
+        message.error('Product option is missing');
         return;
       case invalidSpecifications:
-        message.error('Invalid specifications');
+        message.error('Product specification is missing');
         return;
     }
 
@@ -118,7 +121,7 @@ const ProductLibraryUpdate: React.FC = () => {
       </Col>
 
       <Col span={24}>
-        <Row className={styles.marginRounded}>
+        <Row>
           <Col span={12}>
             <ProductImagePreview
               hideInquiryRequest

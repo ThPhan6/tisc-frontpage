@@ -5,6 +5,7 @@ export const PATH = {
   createPassword: '/create-password',
   verifyAccount: '/verify',
   sharedProduct: '/shared-product/:id',
+  sharedCustomProduct: '/shared-custom-product/:id',
   // private path
   profiles: '/profile-settings',
   tiscHomePage: '/tisc/dashboard',

@@ -39,8 +39,6 @@ import { CustomDropDown } from '@/features/product/components';
 import ProductCard from '@/features/product/components/ProductCard';
 import cardStyles from '@/features/product/components/ProductCard.less';
 
-import styles from './index.less';
-
 const ProductConsidered: React.FC = () => {
   useAutoExpandNestedTableColumn(3, [7]);
 
@@ -222,6 +220,7 @@ const ProductConsidered: React.FC = () => {
       width: COLUMN_WIDTH.status,
       hidden: gridView.value,
       align: 'center',
+      className: disabledClassname,
     },
     {
       title: 'Action',
@@ -402,14 +401,12 @@ const ProductConsidered: React.FC = () => {
             showInquiryRequest
             showSpecify
             onSpecifyClick={() => setSpecifyingProduct(item)}
+            isCustomProduct={item.specifiedDetail?.custom_product}
           />
         ))}
       </div>
     );
   };
-
-  const filteredColumns = (cols: TableColumnItem<any>[]) =>
-    cols.filter((el) => Boolean(el.hidden) === false);
 
   return (
     <div>
@@ -438,8 +435,7 @@ const ProductConsidered: React.FC = () => {
         </ProjectTabContentHeader>
 
         <CustomTable
-          footerClass={styles.summaryFooter}
-          columns={filteredColumns(setDefaultWidthForEachColumn(ZoneColumns, 7))}
+          columns={setDefaultWidthForEachColumn(ZoneColumns, 7)}
           ref={tableRef}
           fetchDataFunc={getConsideredProducts}
           extraParams={{ projectId: params.id }}
@@ -451,7 +447,7 @@ const ProductConsidered: React.FC = () => {
             brand_order: 'brand_order',
           }}
           expandable={GetExpandableTableConfig({
-            columns: filteredColumns(setDefaultWidthForEachColumn(AreaColumns, 7)),
+            columns: setDefaultWidthForEachColumn(AreaColumns, 7),
             childrenColumnName: 'areas',
             subtituteChildrenColumnName: 'products',
             level: 2,
@@ -461,12 +457,12 @@ const ProductConsidered: React.FC = () => {
             renderGridContent,
 
             expandable: GetExpandableTableConfig({
-              columns: filteredColumns(setDefaultWidthForEachColumn(RoomColumns, 7)),
+              columns: setDefaultWidthForEachColumn(RoomColumns, 7),
               childrenColumnName: 'rooms',
               level: 3,
 
               expandable: GetExpandableTableConfig({
-                columns: filteredColumns(setDefaultWidthForEachColumn(ProductColumns, 7)),
+                columns: setDefaultWidthForEachColumn(ProductColumns, 7),
                 childrenColumnName: 'products',
                 level: 4,
 

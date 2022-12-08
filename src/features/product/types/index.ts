@@ -141,6 +141,7 @@ export interface ProductItem {
   tips: ProductTipData[];
   downloads: ProductDownloadData[];
   catelogue_downloads: ProductCatelogueData[];
+  custom_product?: boolean;
 }
 
 export interface RoomItem {

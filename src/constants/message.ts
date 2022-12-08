@@ -322,8 +322,8 @@ export const MESSAGE_NOTIFICATION = {
   // custom product
   GET_LIST_CUSTOM_PRODUCT_LIST_ERROR: 'Failed to get custom product list',
   GET_ONE_CUSTOM_PRODUCT_LIST_ERROR: 'Failed to get custom product',
-  CREATE_CUSTOM_PRODUCT_SUCCESS: 'Create custom product successfully',
-  CREATE_CUSTOM_PRODUCT_ERROR: 'Failed to create custom product',
+  CREATE_CUSTOM_PRODUCT_SUCCESS: 'Create product successfully',
+  CREATE_CUSTOM_PRODUCT_ERROR: 'Failed to create product',
   UPDATE_CUSTOM_PRODUCT_SUCCESS: 'Update custom product successfully',
   UPDATE_CUSTOM_PRODUCT_ERROR: 'Failed to update custom product',
   DELETE_CUSTOM_PRODUCT_SUCCESS: 'Delete custom product successfully',

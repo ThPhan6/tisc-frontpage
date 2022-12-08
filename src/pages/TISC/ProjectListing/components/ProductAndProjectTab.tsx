@@ -40,8 +40,8 @@ interface ProductAndProjectTabProps {
       | {
           name: string;
           image: string;
-          productConsiderdStatus?: number;
-          productSpecifiedStatus?: number;
+          status?: number;
+          isSpecified?: boolean;
         }[];
   }[];
   summary: {
@@ -133,11 +133,11 @@ const renderContent = (type: TabKey, item: any) => {
         item?.map((product: any, index: number) => (
           <div
             className={`${styles.contentItem} ${
-              product.productConsiderdStatus === ProductConsiderStatus['Unlisted']
+              !product.isSpecified && product.status === ProductConsiderStatus.Unlisted
                 ? styles.unlisted
                 : undefined
             } ${
-              product.productSpecifiedStatus === ProductSpecifyStatus['Cancelled']
+              product.isSpecified && product.status === ProductSpecifyStatus.Cancelled
                 ? styles.cancelled
                 : undefined
             }`}

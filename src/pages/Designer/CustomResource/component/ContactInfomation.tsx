@@ -9,6 +9,7 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
+import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import {
   getEmailMessageError,
@@ -80,7 +81,13 @@ const ContactHeader: FC<ContactHeaderProps> = (props) => {
           <div className={styles.titleIcon}>
             <BodyText level={4}>CONTACT INFORMATION</BodyText>
             {type === 'create' && (
-              <DeleteIcon onClick={handleClickDeleteItem} className={styles.deleteIcon} />
+              <DeleteIcon
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleClickDeleteItem();
+                }}
+                className={styles.deleteIcon}
+              />
             )}
           </div>
         ) : (
@@ -138,9 +145,11 @@ export const ContactInformation: FC<ContactInformationProps> = ({
   };
 
   const handleClickDelete = (index: number) => {
-    const newContact = [...data.contacts];
-    newContact.splice(index, 1);
-    setData({ ...data, contacts: newContact });
+    confirmDelete(() => {
+      const newContact = [...data.contacts];
+      newContact.splice(index, 1);
+      setData({ ...data, contacts: newContact });
+    });
   };
 
   const renderContacts = (contact: ContactDetail, index: number) => {

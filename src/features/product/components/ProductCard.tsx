@@ -311,6 +311,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             visible={showShareEmailModal.value}
             setVisible={showShareEmailModal.setValue}
             product={product}
+            isCustomProduct={isCustomProduct}
           />
         ) : null}
 
