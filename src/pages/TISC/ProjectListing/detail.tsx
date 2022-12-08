@@ -80,17 +80,16 @@ const ProjectDetail = () => {
     }
   }, []);
 
-  const getListProduct = (products?: { brands: BrandInfo[]; customProducts: CustomProduct[] }) => {
+  const getListProduct = (
+    products?: { brands: BrandInfo[]; customProducts: CustomProduct[] },
+    isSpecified?: boolean,
+  ) => {
     const customProductList = products?.customProducts.length
       ? [
           {
             title: 'Office Library & Resources',
             image: <OfficeLibrary style={{ width: '24px', height: '24px' }} />,
-            content: products.customProducts.map((product) => ({
-              name: product.name,
-              image: product.image,
-              productConsiderdStatus: product.status,
-            })),
+            content: products.customProducts.map((product) => ({ ...product, isSpecified })),
           },
         ]
       : [];
@@ -98,11 +97,7 @@ const ProjectDetail = () => {
       products?.brands.map((el) => ({
         title: el.name,
         image: el.logo,
-        content: el.products.map((product) => ({
-          name: product.name,
-          image: product.image,
-          productConsiderdStatus: product.status,
-        })),
+        content: el.products.map((product) => ({ ...product, isSpecified })),
       })) ?? [];
 
     return [...customProductList, ...brandProducts];
@@ -154,7 +149,7 @@ const ProjectDetail = () => {
       <CustomTabPane active={selectedTab === ProjectListingTabKeys.productSpecified}>
         <ProductAndProjectTab
           type="productSpecified"
-          data={getListProduct(projectDetail?.specified)}
+          data={getListProduct(projectDetail?.specified, true)}
           summary={{
             deleted: projectDetail?.specified.deleted,
             specified: projectDetail?.specified.specified,
