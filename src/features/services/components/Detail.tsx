@@ -23,7 +23,7 @@ import { BodyText, Title } from '@/components/Typography';
 
 import { getOneService, getServicePDF, markAsPaid, sendBill, sendRemind } from '../api';
 import styles from '../index.less';
-import { checkShowBillingAmount } from '../util';
+import { checkShowBillingAmount, formatToMoneyValue } from '../util';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import moment from 'moment';
 
@@ -196,7 +196,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     style={{
                       width: quantityWidth,
                     }}>
-                    ${formatCurrencyNumber(Number(detailData?.unit_rate))}
+                    ${formatToMoneyValue(Number(detailData?.unit_rate))}
                   </td>
                 </tr>
                 <tr className={styles.totalQuantity}>
@@ -224,7 +224,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     style={{
                       width: quantityWidth,
                     }}>
-                    ${formatCurrencyNumber(Number(detailData?.total_gross))}
+                    ${formatToMoneyValue(Number(detailData?.total_gross))}
                   </td>
                 </tr>
                 <tr>
@@ -238,7 +238,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     style={{
                       width: quantityWidth,
                     }}>
-                    ${formatCurrencyNumber(Number(detailData?.sale_tax_amount))}
+                    ${formatToMoneyValue(Number(detailData?.sale_tax_amount))}
                   </td>
                 </tr>
                 <tr className={styles.total}>
@@ -250,7 +250,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                       width: quantityWidth,
                     }}>
                     <Title level={8}>
-                      ${formatCurrencyNumber(Number(detailData?.billing_amount))}
+                      ${formatToMoneyValue(Number(detailData?.billing_amount))}
                     </Title>
                   </td>
                 </tr>
@@ -302,7 +302,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     style={{
                       width: quantityWidth,
                     }}>
-                    ${formatCurrencyNumber(Number(detailData?.overdue_amount))}
+                    ${formatToMoneyValue(Number(detailData?.overdue_amount))}
                   </td>
                 </tr>
                 {showBillingAmount && (
@@ -316,7 +316,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                       }}>
                       <Title level={8}>
                         $
-                        {formatCurrencyNumber(
+                        {formatToMoneyValue(
                           Number(detailData?.billing_amount) + Number(detailData?.overdue_amount),
                         )}
                       </Title>

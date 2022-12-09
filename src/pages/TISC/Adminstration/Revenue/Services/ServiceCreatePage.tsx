@@ -71,7 +71,7 @@ const ServiceCreatePage = () => {
         'Please enter unit rate / Please enter quantity /Please enter tax number',
       );
     }
-    return '';
+    return;
   };
 
   const handleCreateService = () => {
