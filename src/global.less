@@ -19,6 +19,15 @@ body,
   left: unset;
 }
 
+.ant-message-custom-content {
+  span:last-child {
+    display: inline-block;
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+}
+
 .ant-pro-global-header-layout-mix {
   background-color: @mono-color;
 }
