@@ -174,7 +174,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             label="First Name"
             required
             deleteIcon={type === 'create'}
-            fontLevel={4}
+            fontLevel={3}
             value={contact.first_name}
             hasPadding
             colorPrimaryDark={type === 'create'}
@@ -192,7 +192,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             label="Last Name"
             required
             deleteIcon={type === 'create'}
-            fontLevel={4}
+            fontLevel={3}
             value={contact.last_name}
             hasPadding
             colorPrimaryDark={type === 'create'}
@@ -210,7 +210,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             label="Position / Role"
             required
             deleteIcon={type === 'create'}
-            fontLevel={4}
+            fontLevel={3}
             value={contact.position}
             hasPadding
             colorPrimaryDark={type === 'create'}
@@ -229,7 +229,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             label="Work Email"
             required
             deleteIcon={type === 'create'}
-            fontLevel={4}
+            fontLevel={3}
             value={contact.work_email}
             hasPadding
             colorPrimaryDark={type === 'create'}
@@ -251,7 +251,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             layout="vertical"
             required
             style={{ marginBottom: '16px' }}
-            labelFontSize={4}>
+            labelFontSize={3}>
             <PhoneInput
               phonePlaceholder="area code / number"
               onChange={(value) => {
@@ -273,7 +273,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             label="Work Mobile"
             layout="vertical"
             required
-            labelFontSize={4}
+            labelFontSize={3}
             style={{ marginBottom: '16px' }}>
             <PhoneInput
               phonePlaceholder="mobile number"
