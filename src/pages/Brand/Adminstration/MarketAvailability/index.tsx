@@ -110,7 +110,7 @@ const MarketAvailabilityList = () => {
           brand_id: user.brand.id,
         }}
         hasPagination
-        customClass={styles.customTitle}
+        headerClass={styles.customTitle}
         rowKey="id"
       />
       <InformationMarketAvailability
