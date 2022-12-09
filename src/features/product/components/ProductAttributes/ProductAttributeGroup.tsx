@@ -71,9 +71,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     attributeGroupKey,
     onSelectSpecificationOption,
   } = useProductAttributeForm(activeKey, curProductId, {
-    isSpecifiedModal: false,
-    isGetDimensionWeight: false,
-    isRunUseEffect: false,
+    isSpecifiedModal: isSpecifiedModal,
   });
 
   useEffect(() => {
@@ -182,8 +180,12 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     let chosenOption: SpecificationAttributeBasisOptionProps | undefined;
     if (grpIndex !== -1) {
       const curAttribute = attributeGroup[grpIndex]?.attributes?.[attrIndex];
+      // console.log(curAttribute.basis_options);
+
       chosenOption = curAttribute.basis_options?.find((el) => el.isChecked === true);
     }
+
+    // console.log('chosenOption', chosenOption);
 
     if (attribute.type !== 'Options') {
       return (

@@ -109,7 +109,6 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
     return null;
   }
 
-  console.log('specifiedDetail', specifiedDetail);
   const {
     description,
     material_code_id,
