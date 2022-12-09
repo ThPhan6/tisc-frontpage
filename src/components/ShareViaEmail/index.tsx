@@ -133,6 +133,7 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
           setShareViaEmailData({
             ...DEFAULT_STATE,
             product_id: product.id,
+            custom_product: isCustomProduct,
           });
         }, 200);
       }
