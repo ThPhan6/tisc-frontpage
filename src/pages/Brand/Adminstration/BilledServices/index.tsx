@@ -64,6 +64,11 @@ const BilledServices = () => {
               checkShowBillingAmount(record)
                 ? record.billing_amount + record.overdue_amount
                 : record.billing_amount,
+              'en-us',
+              {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              },
             )}
           </span>
         );

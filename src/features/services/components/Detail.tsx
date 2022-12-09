@@ -137,6 +137,11 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
 
   const showBillingAmount = checkShowBillingAmount(detailData);
 
+  const quantityWidth =
+    String(Number(detailData?.billing_amount) + Number(detailData?.overdue_amount)).length < 5
+      ? '5%'
+      : String(Number(detailData?.billing_amount) + Number(detailData?.overdue_amount)).length * 10;
+
   return (
     <Row>
       <Col span={12}>
@@ -186,9 +191,11 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     <BodyText level={5} fontFamily="Roboto">
                       Unit Rate
                     </BodyText>
-                    <CloseIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
                   </td>
-                  <td className={styles.quantity}>
+                  <td
+                    style={{
+                      width: quantityWidth,
+                    }}>
                     ${formatCurrencyNumber(Number(detailData?.unit_rate))}
                   </td>
                 </tr>
@@ -199,7 +206,10 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     </BodyText>
                     <CloseIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
                   </td>
-                  <td className={styles.quantity}>
+                  <td
+                    style={{
+                      width: quantityWidth,
+                    }}>
                     {formatCurrencyNumber(Number(detailData?.quantity))}
                   </td>
                 </tr>
@@ -210,7 +220,10 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     </BodyText>
                     <EqualIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
                   </td>
-                  <td className={styles.quantity}>
+                  <td
+                    style={{
+                      width: quantityWidth,
+                    }}>
                     ${formatCurrencyNumber(Number(detailData?.total_gross))}
                   </td>
                 </tr>
@@ -221,7 +234,10 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     </BodyText>
                     <PlusIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
                   </td>
-                  <td className={styles.quantity}>
+                  <td
+                    style={{
+                      width: quantityWidth,
+                    }}>
                     ${formatCurrencyNumber(Number(detailData?.sale_tax_amount))}
                   </td>
                 </tr>
@@ -229,7 +245,10 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                   <td className={styles.label}>
                     <Title level={8}>TOTAL AMOUNT</Title>
                   </td>
-                  <td className={styles.quantity}>
+                  <td
+                    style={{
+                      width: quantityWidth,
+                    }}>
                     <Title level={8}>
                       ${formatCurrencyNumber(Number(detailData?.billing_amount))}
                     </Title>
@@ -278,7 +297,11 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                       <PlusIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
                     )}
                   </td>
-                  <td className={`${showBillingAmount ? styles.quantity : styles.rightText}`}>
+                  <td
+                    className={`${showBillingAmount ? '' : styles.rightText}`}
+                    style={{
+                      width: quantityWidth,
+                    }}>
                     ${formatCurrencyNumber(Number(detailData?.overdue_amount))}
                   </td>
                 </tr>
@@ -287,7 +310,10 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                     <td className={styles.label}>
                       <Title level={8}>BILLING AMOUNT</Title>
                     </td>
-                    <td className={styles.quantity}>
+                    <td
+                      style={{
+                        width: quantityWidth,
+                      }}>
                       <Title level={8}>
                         $
                         {formatCurrencyNumber(
@@ -299,7 +325,6 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                 )}
               </table>
             </FormGroup>
-
             <TextForm
               boxShadow
               label="Status"

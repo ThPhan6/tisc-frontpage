@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import { PATH } from '@/constants/path';
 
-import { deleteService, getServicesPagination } from '@/features/services/api';
+import { deleteService, getServicesPagination, getServicesSummary } from '@/features/services/api';
 import { ServiceHeader } from '@/features/services/components/ServiceHeader';
 import styles from '@/features/services/index.less';
 import { InvoiceStatus, ServicesResponse } from '@/features/services/type';
@@ -35,6 +35,7 @@ const RevenueService = () => {
       deleteService(id).then((isSuccess) => {
         if (isSuccess) {
           tableRef.current.reload();
+          getServicesSummary();
         }
       });
     });
@@ -85,6 +86,11 @@ const RevenueService = () => {
               checkShowBillingAmount(record)
                 ? record.billing_amount + record.overdue_amount
                 : record.billing_amount,
+              'en-us',
+              {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              },
             )}
           </span>
         );
