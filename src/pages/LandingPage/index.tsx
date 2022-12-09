@@ -93,7 +93,6 @@ const LandingPage = () => {
         if (success) {
           openVerificationModal.setValue(true);
         } else {
-          history.replace(PATH.landingPage);
           message.error(MESSAGE_ERROR.VERIFY_TOKEN_EXPIRED);
         }
       });
