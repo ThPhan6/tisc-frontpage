@@ -166,33 +166,19 @@ export const renderActionCell =
   };
 
 export const onCellUnlisted = (data: any) => ({
-  className:
-    data.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted
-      ? 'light-content'
-      : undefined,
-});
-
-export const onCellUnlistedWithNoBoxShadow = (data: any) => ({
   className: `${
     data.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted
       ? 'light-content'
       : undefined
-  } ${data.rooms ? '' : 'no-box-shadow'}`,
+  } ${data.rooms || data.room_id ? '' : 'no-box-shadow'}`,
 });
 
 export const onCellCancelled = (data: any) => ({
-  className:
-    data.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled
-      ? 'strike-through'
-      : undefined,
-});
-
-export const onCellCancelledWithNoBoxShadow = (data: any) => ({
   className: `${
     data.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled
       ? 'light-content'
       : undefined
-  } ${data.rooms ? '' : 'no-box-shadow'}`,
+  } ${data.rooms || data.room_id ? '' : 'no-box-shadow'}`,
 });
 
 export const renderImage = (image: string) =>

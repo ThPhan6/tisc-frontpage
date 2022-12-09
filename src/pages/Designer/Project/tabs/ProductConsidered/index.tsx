@@ -12,7 +12,6 @@ import { ReactComponent as InfoIcon } from '@/assets/icons/warning-circle-icon.s
 
 import {
   onCellUnlisted,
-  onCellUnlistedWithNoBoxShadow,
   onOpenSpecifiyingProductModal,
   renderAvailability,
   renderImage,
@@ -140,7 +139,7 @@ const ProductConsidered: React.FC = () => {
         noBoxShadow: props.noBoxShadow,
         className: disabledClassname,
         render: (value) => renderImage(value?.[0]),
-        onCell: props.isAreaColumn ? onCellUnlistedWithNoBoxShadow : undefined,
+        onCell: props.isAreaColumn ? onCellUnlisted : undefined,
       },
       {
         title: 'Brand',
@@ -151,14 +150,14 @@ const ProductConsidered: React.FC = () => {
           multiple: 4,
         },
         render: (_value, record) => record.brand?.name,
-        onCell: props.isAreaColumn ? onCellUnlistedWithNoBoxShadow : onCellUnlisted,
+        onCell: onCellUnlisted,
       },
       {
         title: 'Collection',
         className: disabledClassname,
         noBoxShadow: props.noBoxShadow,
         render: (_value, record) => record.collection?.name,
-        onCell: props.isAreaColumn ? onCellUnlistedWithNoBoxShadow : onCellUnlisted,
+        onCell: onCellUnlisted,
       },
     ];
     return SameColumn;
@@ -229,18 +228,18 @@ const ProductConsidered: React.FC = () => {
     {
       title: 'Zones',
       noBoxShadow: true,
-      onCell: onCellUnlistedWithNoBoxShadow,
+      onCell: onCellUnlisted,
     },
     {
       title: 'Areas',
       noExpandIfEmptyData: 'rooms',
       isExpandable: true,
       render: (_value, record) => <span>{record.name}</span>,
-      onCell: onCellUnlistedWithNoBoxShadow,
+      onCell: onCellUnlisted,
     },
     {
       title: 'Rooms',
-      onCell: onCellUnlistedWithNoBoxShadow,
+      onCell: onCellUnlisted,
     },
     ...getSameColumns({
       noBoxShadow: false,
@@ -250,25 +249,25 @@ const ProductConsidered: React.FC = () => {
       title: 'Collection',
       className: disabledClassname,
       render: (_value, record) => record.collection?.name,
-      onCell: onCellUnlistedWithNoBoxShadow,
+      onCell: onCellUnlisted,
     },
     {
       title: 'Product',
       render: (_value, record) => (record.rooms ? null : record.name), // For Entire project
-      onCell: onCellUnlistedWithNoBoxShadow,
+      onCell: onCellUnlisted,
     },
     {
       title: 'Assigned By',
       dataIndex: 'assigned_name',
       render: (value, record) => (record.rooms ? null : value), // For Entire project
-      onCell: onCellUnlistedWithNoBoxShadow,
+      onCell: onCellUnlisted,
     },
     {
       title: 'Count',
       dataIndex: 'count',
       width: '5%',
       align: 'center',
-      onCell: onCellUnlistedWithNoBoxShadow,
+      onCell: onCellUnlisted,
     },
     {
       title: 'Availability',
@@ -276,7 +275,7 @@ const ProductConsidered: React.FC = () => {
       align: 'center',
       width: '5%',
       render: (_value, record) => renderAvailability(record),
-      onCell: onCellUnlistedWithNoBoxShadow,
+      onCell: onCellUnlisted,
     },
     {
       title: 'Status',
@@ -284,14 +283,14 @@ const ProductConsidered: React.FC = () => {
       dataIndex: 'status_name',
       hidden: gridView.value,
       render: renderStatusDropdown, // For Entire project
-      onCell: onCellUnlistedWithNoBoxShadow,
+      onCell: onCellUnlisted,
     },
     {
       title: 'Action',
       align: 'center',
       width: '5%',
       render: renderActionCell,
-      onCell: onCellUnlistedWithNoBoxShadow,
+      onCell: onCellUnlisted,
     },
   ];
 

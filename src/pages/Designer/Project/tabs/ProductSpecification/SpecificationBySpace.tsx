@@ -6,7 +6,6 @@ import { ReactComponent as InfoIcon } from '@/assets/icons/warning-circle-icon.s
 
 import {
   onCellCancelled,
-  onCellCancelledWithNoBoxShadow,
   renderActionCell,
   renderAvailability,
   renderImage,
@@ -49,7 +48,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
         noBoxShadow: props.noBoxShadow,
         align: 'center',
         render: (value) => renderImage(value?.[0]),
-        onCell: props.isAreaColumn ? onCellCancelledWithNoBoxShadow : undefined,
+        onCell: props.isAreaColumn ? onCellCancelled : undefined,
       },
       {
         title: 'Brand',
@@ -57,12 +56,12 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
         noBoxShadow: props.noBoxShadow,
         sorter: { multiple: 4 },
         render: (_value, record) => record.brand?.name,
-        onCell: props.isAreaColumn ? onCellCancelledWithNoBoxShadow : onCellCancelled,
+        onCell: onCellCancelled,
       },
       {
         title: 'Product',
         dataIndex: 'product_name',
-        onCell: props.isAreaColumn ? onCellCancelledWithNoBoxShadow : onCellCancelled,
+        onCell: onCellCancelled,
         noBoxShadow: props.noBoxShadow,
         render: (_value, record) => (record.rooms || props.hideProductName ? null : record.name),
       },
@@ -70,14 +69,14 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
         title: 'Material Code',
         dataIndex: 'material_code',
         noBoxShadow: props.noBoxShadow,
-        onCell: props.isAreaColumn ? onCellCancelledWithNoBoxShadow : onCellCancelled,
+        onCell: onCellCancelled,
         render: (_value, record) => record.specifiedDetail?.material_code,
       },
       {
         title: 'Description',
         dataIndex: 'specified_description',
         noBoxShadow: props.noBoxShadow,
-        onCell: props.isAreaColumn ? onCellCancelledWithNoBoxShadow : onCellCancelled,
+        onCell: onCellCancelled,
         render: (_value, record) => record.specifiedDetail?.description,
       },
     ];
@@ -133,18 +132,18 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     {
       title: 'Zones',
       noBoxShadow: true,
-      onCell: onCellCancelledWithNoBoxShadow,
+      onCell: onCellCancelled,
     },
     {
       title: 'Areas',
       noExpandIfEmptyData: 'rooms',
       isExpandable: true,
       render: (_value, record) => <span className="text-uppercase">{record.name}</span>,
-      onCell: onCellCancelledWithNoBoxShadow,
+      onCell: onCellCancelled,
     },
     {
       title: 'Rooms',
-      onCell: onCellCancelledWithNoBoxShadow,
+      onCell: onCellCancelled,
     },
     ...getSameColumns({ noBoxShadow: false, isAreaColumn: true }),
     {
@@ -152,7 +151,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       dataIndex: 'count',
       width: '5%',
       align: 'center',
-      onCell: onCellCancelledWithNoBoxShadow,
+      onCell: onCellCancelled,
     },
     {
       title: 'Availability',
@@ -160,7 +159,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       align: 'center',
       width: '5%',
       render: (_value, record) => renderAvailability(record),
-      onCell: onCellCancelledWithNoBoxShadow,
+      onCell: onCellCancelled,
     },
     {
       title: 'Status',
@@ -168,14 +167,14 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       dataIndex: 'status',
       align: 'center',
       render: renderSpecifiedStatusDropdown(tableRef, true),
-      onCell: onCellCancelledWithNoBoxShadow,
+      onCell: onCellCancelled,
     },
     {
       title: 'Action',
       align: 'center',
       width: '5%',
       render: renderActionCell(setSpecifyingProduct, tableRef, true),
-      onCell: onCellCancelledWithNoBoxShadow,
+      onCell: onCellCancelled,
     },
   ];
 
