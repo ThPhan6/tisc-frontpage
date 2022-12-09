@@ -258,6 +258,12 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
             option_code: e.target.value,
           };
           setBasisOptions(newBasisOptions);
+          setSelectedSpecified(
+            newBasisOptions.map((opt) => ({
+              value: opt.id,
+              label: opt.option_code,
+            })),
+          );
         }}
         tabIndex={index}
       />
