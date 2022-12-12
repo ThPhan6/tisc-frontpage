@@ -91,6 +91,7 @@ export interface ProjectTrackingDetail {
     id: string;
   }[];
   designFirm: DesignFirmDetail;
+  isOpenDetailItem?: boolean;
 }
 
 export const DEFAULT_PROJECT_TRACKING_DETAIL: ProjectTrackingDetail = {

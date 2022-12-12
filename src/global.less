@@ -19,6 +19,15 @@ body,
   left: unset;
 }
 
+.ant-message-custom-content {
+  span:last-child {
+    display: inline-block;
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+}
+
 .ant-pro-global-header-layout-mix {
   background-color: @mono-color;
 }
@@ -239,10 +248,6 @@ li.ant-menu-submenu {
 
 .ant-dropdown-trigger {
   cursor: pointer;
-
-  svg {
-    margin-left: 8px;
-  }
 }
 
 .ant-table tr > td,
@@ -251,5 +256,14 @@ li.ant-menu-submenu {
 }
 
 .ant-table .ant-table-tbody > tr > td {
-  transition: width 0.3s;
+  transition: width 0.2s;
+}
+
+.ant-checkbox.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #2b39d4;
+  border-color: #2b39d4;
+}
+.ant-checkbox .ant-checkbox-inner {
+  border-color: #000;
+  border-radius: 0;
 }

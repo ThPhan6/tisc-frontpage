@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { deleteProjectSpace, getProjectSpaceListPagination } from '@/features/project/services';
 import { confirmDelete } from '@/helper/common';
-import { formatNumberDisplay, setDefaultWidthForEachColumn } from '@/helper/utils';
+import { formatCurrencyNumber, setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import type { TableColumnItem } from '@/components/Table/types';
 import type {
@@ -22,7 +22,7 @@ interface SpaceListProps {
 }
 
 const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) => {
-  useAutoExpandNestedTableColumn(2);
+  useAutoExpandNestedTableColumn(2, [7]);
   const tableRef = useRef<any>();
 
   const handleDeleteZone = (id: string) => {
@@ -42,7 +42,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
       noBoxShadow: true,
       render: (value, record) => {
         if (value) {
-          return `${formatNumberDisplay(value)} ${record.room_size_unit ?? ''}`;
+          return `${formatCurrencyNumber(value)} ${record.room_size_unit ?? ''}`;
         }
         return '';
       },
@@ -59,7 +59,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
       noBoxShadow: true,
       render: (value, record) => {
         if (value && record.quantity) {
-          return `${formatNumberDisplay(value * record.quantity)} ${record.room_size_unit ?? ''}`;
+          return `${formatCurrencyNumber(value * record.quantity)} ${record.room_size_unit ?? ''}`;
         }
         return '';
       },

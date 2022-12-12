@@ -10,6 +10,7 @@ export interface SubBasisOption {
 export interface BasisOptionListResponse {
   id: string;
   name: string;
+  master: boolean;
   count: number;
   subs: {
     id: string;

@@ -119,7 +119,7 @@ export const DualLabel: FC<DualLabelProps> = ({
   fontWeight = 500,
   customClass = '',
 }) => (
-  <span className={`flex-center ${customClass}`} style={{ paddingRight: '16px' }}>
+  <span className={`flex-start ${customClass}`} style={{ paddingRight: '16px' }}>
     <Title level={9} style={{ marginRight: 12, fontWeight: fontWeight, fontSize: fontSize }}>
       {firstTxt}
     </Title>

@@ -8,6 +8,7 @@ import { showImageUrl } from '@/helper/utils';
 
 import { ProjectInformation } from '../type';
 
+import { FormGroup } from '@/components/Form';
 import TextForm from '@/components/Form/TextForm';
 import { BodyText, Title } from '@/components/Typography';
 
@@ -38,9 +39,16 @@ export const BasicInformation: FC<BasicInformationProps> = ({ basicInformation }
               ''
             )}
           </div>
-          <TextForm label="Project Code/Name" boxShadow>
-            {basicInformation?.code} {basicInformation?.name}
-          </TextForm>
+          <FormGroup label="Project Code/Name" layout="vertical" labelColor="mono-color-dark">
+            <div className={styles.project}>
+              <BodyText level={5} fontFamily="Roboto" style={{ marginRight: '8px' }}>
+                {basicInformation?.code}
+              </BodyText>
+              <BodyText level={5} fontFamily="Roboto">
+                {basicInformation?.name}
+              </BodyText>
+            </div>
+          </FormGroup>
           <TextForm label="Project Status" boxShadow>
             {ProjectStatus[basicInformation?.status as number]}
           </TextForm>

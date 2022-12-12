@@ -11,8 +11,9 @@ import type {
 import { OrderMethod } from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
 import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
+import { RootState } from '@/reducers';
 
-import type { PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createSelector } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface ProductState {
@@ -33,6 +34,12 @@ const initialState: ProductState = {
     general_attribute_groups: [],
     feature_attribute_groups: [],
     specification_attribute_groups: [],
+    dimension_and_weight: {
+      id: '',
+      name: '',
+      with_diameter: false,
+      attributes: [],
+    },
     categories: [],
     referToDesignDocument: true,
     brand_location_id: '',
@@ -185,3 +192,26 @@ export const {
 } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;
+
+const productSpecificationSelector = (state: RootState) =>
+  state.product.details.specification_attribute_groups;
+
+export const productVariantsSelector = createSelector(productSpecificationSelector, (specGroup) => {
+  let variants = '';
+  specGroup.forEach((el) => {
+    if (!el.isChecked) {
+      return;
+    }
+
+    el.attributes.forEach((attr) => {
+      attr.basis_options?.some((opt) => {
+        if (opt.isChecked) {
+          variants += opt.option_code + ', ';
+          return true;
+        }
+        return false;
+      });
+    });
+  });
+  return variants.length > 2 ? variants.slice(0, -2) : variants;
+});

@@ -3,23 +3,32 @@ import { FC } from 'react';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
+import { ReactComponent as BillingIcon } from '@/assets/icons/billing-icon.svg';
 import { ReactComponent as EmailInviteIcon } from '@/assets/icons/email-invite-icon.svg';
 import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
 import { ReactComponent as DispatchIcon } from '@/assets/icons/ic-dispatch.svg';
 import { ReactComponent as LogOutIcon } from '@/assets/icons/outside-icon.svg';
+import { ReactComponent as CopyIcon } from '@/assets/icons/tabs-icon.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon.svg';
 
-import { HeaderDropdown, MenuIconProps } from '../HeaderDropdown';
+import { HeaderDropdown, HeaderDropdownProps, MenuIconProps } from '../HeaderDropdown';
 
-type ActionType = 'specify' | 'updated' | 'deleted' | 'view' | 'invite' | 'user' | 'logout';
+type ActionType =
+  | 'specify'
+  | 'updated'
+  | 'copy'
+  | 'deleted'
+  | 'view'
+  | 'invite'
+  | 'user'
+  | 'logout'
+  | 'billing'
+  | 'updateOrView';
 
-interface ActionFormProps {
+interface ActionFormProps extends HeaderDropdownProps {
   actionItems?: (MenuIconProps & { type: ActionType })[];
   actionIcon?: JSX.Element;
   offsetAlign?: [number, number];
-  trigger?: 'click' | 'hover' | 'contextMenu';
-  arrow?: boolean;
-  placement?: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topCenter' | 'topRight' | 'bottomCenter';
 }
 
 const DEFAULT_ACTION_INFO: {
@@ -40,6 +49,10 @@ const DEFAULT_ACTION_INFO: {
     icon: <EmailInviteIcon />,
     label: 'Email Invite',
   },
+  copy: {
+    icon: <CopyIcon />,
+    label: 'Copy',
+  },
   updated: {
     icon: <EditIcon />,
     label: 'Edit',
@@ -56,15 +69,24 @@ const DEFAULT_ACTION_INFO: {
     icon: <LogOutIcon />,
     label: 'Logout',
   },
+  billing: {
+    icon: <BillingIcon />,
+    label: 'Billing',
+  },
+  updateOrView: {
+    icon: <EditIcon />,
+    label: 'Edit/View',
+  },
 };
 
 export const ActionMenu: FC<ActionFormProps> = ({
   actionItems,
-  offsetAlign = [14, -10],
+  offsetAlign = [-2, -2],
   actionIcon,
-  trigger = 'click',
+  trigger = ['click'],
   arrow = true,
   placement = 'bottomRight',
+  ...props
 }) => {
   const filledActionItems = actionItems?.map((item) => ({
     ...item,
@@ -74,12 +96,13 @@ export const ActionMenu: FC<ActionFormProps> = ({
 
   return (
     <HeaderDropdown
+      {...props}
       arrow={arrow}
       align={{ offset: offsetAlign }}
-      trigger={[trigger]}
+      trigger={trigger}
       placement={placement}
       items={filledActionItems}>
-      {actionIcon || <ActionIcon />}
+      <div onClick={(e) => e.stopPropagation()}>{actionIcon || <ActionIcon />}</div>
     </HeaderDropdown>
   );
 };

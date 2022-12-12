@@ -5,7 +5,10 @@ import { PATH } from '@/constants/path';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
 
-import { MarketAvailabilityDetails } from '@/features/market-availability/type';
+import {
+  MarketAvailabilityDetails,
+  PayloadUpdateAvailibity,
+} from '@/features/market-availability/type';
 
 import { TableHeader } from '@/components/Table/TableHeader';
 import { MarketAvailabilityEntryForm } from '@/features/market-availability/components/MarketAvailabilityEntryForm';
@@ -32,7 +35,7 @@ const UpdateMarketAvailabilityPage = () => {
     pushTo(PATH.marketAvailability);
   };
 
-  const onSubmit = (submitData: string[]) => {
+  const onSubmit = (submitData: PayloadUpdateAvailibity[]) => {
     showPageLoading();
     updateMarketAvailabilityByCollectionId(collectionId, submitData).then((isSuccess) => {
       hidePageLoading();

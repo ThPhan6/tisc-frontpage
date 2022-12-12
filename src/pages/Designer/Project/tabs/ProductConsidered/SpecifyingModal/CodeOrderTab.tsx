@@ -29,6 +29,7 @@ import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { DropdownSelectInput } from '@/components/Form/DropdownSelectInput';
 import { DualLabel } from '@/components/RenderHeaderLabel';
 import { RobotoBodyText } from '@/components/Typography';
+import { updateCustomProductSpecifiedDetail } from '@/pages/Designer/Products/CustomLibrary/slice';
 
 import { ScheduleModal } from './ScheduleModal';
 import styles from './styles/code-order.less';
@@ -47,9 +48,10 @@ const ORDER_METHODS: RadioValue[] = [
 export interface CodeOrderTabProps {
   projectProductId: string;
   roomIds: string[];
+  customProduct?: boolean;
 }
 
-const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
+const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, customProduct }) => {
   const scheduleModal = useBoolean(false);
 
   const [materialCodeOpts, setMaterialCodeOtps] = useState<CustomRadioValue[]>([]);
@@ -59,8 +61,11 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
 
   const [selectedUnit, setSelectedUnit] = useState<RadioValue | null>(null);
 
-  const specifiedDetail = useAppSelector((state) => state.product.details.specifiedDetail);
-
+  const specifiedDetail = useAppSelector((state) =>
+    customProduct
+      ? state.customProduct.details.specifiedDetail
+      : state.product.details.specifiedDetail,
+  );
   useEffect(() => {
     getAllMaterialCode().then((res) => {
       setMaterialCodeOtps(
@@ -128,7 +133,11 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
     : undefined;
 
   const onChangeState = (newState: Partial<SpecifiedDetail>) => {
-    store.dispatch(setPartialProductSpecifiedData(newState));
+    if (customProduct) {
+      store.dispatch(updateCustomProductSpecifiedDetail(newState));
+    } else {
+      store.dispatch(setPartialProductSpecifiedData(newState));
+    }
   };
 
   const formGroupProps: Partial<FormGroupProps> = {
@@ -136,37 +145,11 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
     style: { marginBottom: 0 },
   };
 
-  const renderScheduleModal = () => {
-    if (scheduleModal.value) {
-      if (!materialCode) {
-        message.error('Material Code is required');
-        scheduleModal.setValue(false);
-        return null;
-      }
-      if (!description) {
-        scheduleModal.setValue(false);
-        message.error('Description is required');
-        return null;
-      }
-    }
-
-    return (
-      <ScheduleModal
-        visible={scheduleModal.value}
-        setVisible={(visible) => (visible ? undefined : scheduleModal.setValue(false))}
-        materialCode={materialCode?.labelText}
-        description={description}
-        projectProductId={projectProductId}
-        roomIds={roomIds}
-      />
-    );
-  };
-
   return (
     <div style={{ paddingTop: '16px' }}>
       <Row gutter={[24, 8]} align="bottom">
         <Col span={12}>
-          <FormGroup label="Material/Product Code" lableFontSize={4} required {...formGroupProps}>
+          <FormGroup label="Material/Product Code" labelFontSize={4} required {...formGroupProps}>
             <DropdownSelectInput
               placeholder="select from the list"
               borderBottomColor="light"
@@ -200,7 +183,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         </Col>
 
         <Col span={24}>
-          <FormGroup label="Description" lableFontSize={4} required {...formGroupProps}>
+          <FormGroup label="Description" labelFontSize={4} required {...formGroupProps}>
             <CustomInput
               placeholder="e.g. Living room coffee table..."
               borderBottomColor="light"
@@ -214,11 +197,20 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         <Col span={24}>
           <FormGroup
             label="Define Finish Schedule (appliable for Room Schedule only)"
-            lableFontSize={4}
+            labelFontSize={4}
             {...formGroupProps}>
             <div
               className={`flex-between cursor-pointer ${styles.schedule}`}
               onClick={() => {
+                if (!materialCode) {
+                  message.error('Material Code is required');
+                  return;
+                }
+                if (!description) {
+                  scheduleModal.setValue(false);
+                  message.error('Description is required');
+                  return;
+                }
                 scheduleModal.setValue(true);
               }}>
               <RobotoBodyText level={6} color="mono-color-medium">
@@ -230,7 +222,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         </Col>
 
         <Col span={12}>
-          <FormGroup label="Quantity/Unit Type" lableFontSize={4} {...formGroupProps}>
+          <FormGroup label="Quantity/Unit Type" labelFontSize={4} {...formGroupProps}>
             <CustomInput
               borderBottomColor="light"
               value={quantity}
@@ -276,7 +268,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         <Col span={24}>
           <FormGroup
             label="Order Method"
-            lableFontSize={4}
+            labelFontSize={4}
             formClass={styles.borderBottom}
             {...formGroupProps}>
             <CustomRadio
@@ -297,7 +289,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
           <FormGroup
             label="Approval requirements prior to fabrication"
             formClass={`${styles.fontSizeSmall} ${styles.borderBottom} ${styles.inputBorderBottom}`}
-            lableFontSize={4}
+            labelFontSize={4}
             {...formGroupProps}>
             <CustomCheckbox
               options={requirements}
@@ -323,7 +315,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
           <FormGroup
             label="General Instructions"
             formClass={`${styles.fontSizeSmall} ${styles.borderBottom}`}
-            lableFontSize={4}
+            labelFontSize={4}
             {...formGroupProps}>
             <CustomCheckbox
               isCheckboxList
@@ -343,7 +335,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
         </Col>
 
         <Col span={24}>
-          <FormGroup label="Special Instructions" lableFontSize={4} {...formGroupProps}>
+          <FormGroup label="Special Instructions" labelFontSize={4} {...formGroupProps}>
             <CustomTextArea
               customClass={styles.inputColor}
               placeholder="type here..."
@@ -356,7 +348,16 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds }) => {
           </FormGroup>
         </Col>
       </Row>
-      {renderScheduleModal()}
+
+      <ScheduleModal
+        visible={scheduleModal.value}
+        setVisible={(visible) => (visible ? undefined : scheduleModal.setValue(false))}
+        materialCode={materialCode?.labelText}
+        description={description}
+        projectProductId={projectProductId}
+        roomIds={roomIds}
+        customProduct={customProduct}
+      />
     </div>
   );
 };

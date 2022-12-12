@@ -47,21 +47,32 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     ProjectSpecifyTabKeys.specification,
   );
 
-  const specifiedDetail = useAppSelector((state) => state.product.details.specifiedDetail);
-  const referToDesignDocument = useAppSelector(
-    (state) => state.product.details.referToDesignDocument,
-  );
+  const customProduct = product.specifiedDetail?.custom_product ? true : false;
+
+  const productDetail = useAppSelector((state) => state.product.details);
+  const customProductDetail = useAppSelector((state) => state.customProduct.details);
+  const curProduct = customProduct ? customProductDetail : productDetail;
+
+  const specifiedDetail = curProduct.specifiedDetail;
+
+  const referToDesignDocument: boolean = customProduct
+    ? specifiedDetail?.specification.is_refer_document
+    : curProduct.referToDesignDocument;
+  // console.log('specifiedDetail', specifiedDetail);
+  // console.log('referToDesignDocument', referToDesignDocument);
+
   const specification_attribute_groups = useAppSelector(
     (state) => state.product.details.specification_attribute_groups,
   );
-  const brandLocationId = useAppSelector((state) => state.product.details.brand_location_id);
-  const distributorLocationId = useAppSelector(
-    (state) => state.product.details.distributor_location_id,
-  );
+  const brandLocationId: string = customProduct
+    ? specifiedDetail?.brand_location_id
+    : curProduct.brand_location_id;
+  const distributorLocationId: string = customProduct
+    ? specifiedDetail?.distributor_location_id
+    : curProduct.distributor_location_id;
 
-  const finishSchedulesData = useAppSelector(
-    (state) => state.product.details.specifiedDetail?.finish_schedules,
-  );
+  const finishSchedulesData = specifiedDetail?.finish_schedules;
+
   const finishSchedulesRequestData = finishSchedulesData?.map((el) => ({
     floor: el.floor,
     base: {
@@ -117,10 +128,12 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       updateProductSpecifying(
         {
           considered_product_id: product.specifiedDetail.id,
-          specification: {
-            is_refer_document: referToDesignDocument ?? false,
-            attribute_groups: getSpecificationRequest(specification_attribute_groups),
-          },
+          specification: customProduct
+            ? specifiedDetail.specification
+            : {
+                is_refer_document: referToDesignDocument ?? false,
+                attribute_groups: getSpecificationRequest(specification_attribute_groups),
+              },
           entire_allocation: isEntire,
           allocation: selectedRoomIds,
           brand_location_id: brandLocationId,
@@ -135,10 +148,12 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           special_instructions: specifiedDetail.special_instructions,
           suffix_code: specifiedDetail.suffix_code,
           unit_type_id: specifiedDetail.unit_type_id,
+          custom_product: customProduct,
         },
         () => {
           reloadTable();
           setVisible(false);
+          store.dispatch(resetProductDetailState());
         },
       );
     }
@@ -149,7 +164,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       className={`${popoverStyles.customPopover} ${styles.specifyingModal}`}
       visible={visible}
       onCancel={() => {
-        console.log('onCancel');
         setVisible(false);
         store.dispatch(resetProductDetailState());
       }}
@@ -189,11 +203,21 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       />
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.specification}>
-        <SpecificationTab productId={product.id} />
+        <SpecificationTab
+          productId={product.id}
+          customProduct={customProduct}
+          referToDesignDocument={referToDesignDocument}
+        />
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.vendor}>
-        <VendorTab productId={product.id} brandId={product.brand?.id ?? ''} />
+        <VendorTab
+          productId={product.id}
+          brandId={product.brand?.id ?? ''}
+          customProduct={customProduct}
+          brand={product.brand}
+          projectId={projectId}
+        />
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.allocation}>
@@ -206,6 +230,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         <CodeOrderTab
           projectProductId={product.specifiedDetail?.id ?? ''}
           roomIds={selectedRoomIds}
+          customProduct={customProduct}
         />
       </CustomTabPane>
     </CustomModal>

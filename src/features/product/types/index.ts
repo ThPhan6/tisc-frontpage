@@ -1,3 +1,4 @@
+import { ProductDimensionWeight } from '@/features/dimension-weight/types';
 import {
   OrderMethod,
   ProductConsiderStatus,
@@ -9,11 +10,15 @@ import { BrandDetail } from '@/features/user-group/types';
 import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
 import { ConversionSubValueProps, GeneralData } from '@/types';
 
+import { ProductTopBarFilter } from '../components/FilterAndSorter';
+
 export interface ProductSummary {
   categories: GeneralData[];
   collections: GeneralData[];
+  company: GeneralData[];
   category_count: number;
   collection_count: number;
+  company_count: number;
   card_count: number;
   product_count: number;
   brandId: string;
@@ -45,11 +50,28 @@ export interface ProductAttributeProps {
   basis_options?: SpecificationAttributeBasisOptionProps[];
 }
 
+export interface AttributeSelectedProps {
+  groupId: string;
+  attribute: {
+    id: string;
+    name: string;
+  };
+}
+
 export interface ProductAttributeFormInput {
   id?: string;
   name: string;
   attributes: ProductAttributeProps[];
   isChecked?: boolean;
+  selection: boolean;
+  attribute_selected_id?: string;
+}
+
+export enum Availability {
+  Available,
+  Discontinued,
+  Discrepancy,
+  OutOfStock,
 }
 
 export type ProductKeyword = [string, string, string, string];
@@ -83,6 +105,8 @@ export interface SpecifiedDetail {
   /// allocation
   allocation: string[]; // room_id
   entire_allocation: boolean;
+
+  custom_product?: boolean;
 }
 
 export interface ProductItem {
@@ -100,9 +124,11 @@ export interface ProductItem {
   code?: string;
   is_liked?: boolean;
   description: string;
+  availability: Availability;
   general_attribute_groups: ProductAttributeFormInput[];
   feature_attribute_groups: ProductAttributeFormInput[];
   specification_attribute_groups: ProductAttributeFormInput[];
+  dimension_and_weight: ProductDimensionWeight;
   favorites?: number;
   images: string[];
   keywords: ProductKeyword;
@@ -115,6 +141,7 @@ export interface ProductItem {
   tips: ProductTipData[];
   downloads: ProductDownloadData[];
   catelogue_downloads: ProductCatelogueData[];
+  custom_product?: boolean;
 }
 
 export interface RoomItem {
@@ -144,6 +171,7 @@ export interface ProductFormData {
   general_attribute_groups: ProductAttributeFormInput[];
   feature_attribute_groups: ProductAttributeFormInput[];
   specification_attribute_groups: ProductAttributeFormInput[];
+  dimension_and_weight: ProductDimensionWeight;
   images: string[];
   keywords: ProductKeyword;
   tips: ProductTipData[];
@@ -162,6 +190,7 @@ export interface ProductGetListParameter {
   brand_id: string;
   category_id?: string;
   collection_id?: string;
+  company_id?: string;
 }
 
 export interface GroupProductList {
@@ -178,14 +207,6 @@ export interface BrandSummary {
   product_count: number;
   brand_logo: string;
   brand_name: string;
-}
-
-export type ProductFilterType = 'category_id' | 'collection_id' | 'brand_id' | 'name';
-
-export interface ProductTopBarFilter {
-  name: ProductFilterType;
-  title: string;
-  value: string;
 }
 
 export type SortOrder = 'ASC' | 'DESC';

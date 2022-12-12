@@ -66,6 +66,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
       }
     });
   });
+
   /// basis of attribute
   const { basis } = currentAttribute;
   /// global state of current attribute
@@ -130,7 +131,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
     const newItemAttributes = [...newAttributes[attributeIndex].attributes];
 
     const activeBasisOptions = selectedSpecified.map((itemSelected) => {
-      const changedBasisOption = basisOptions.find((option) => option.id === itemSelected.value);
+      const changedBasisOption = basisOptions.find((option) => option?.id === itemSelected.value);
       if (changedBasisOption) {
         return changedBasisOption;
       }
@@ -163,6 +164,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
         ...newGeneralAttributeItem[key],
         ...data,
       };
+
       onItemChange(newGeneralAttributeItem);
     }
   };
@@ -181,6 +183,10 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
           horizontal
           isTableFormat
           noWrap
+          autoWidth
+          defaultWidth={
+            item.conversion_value_1.length * 10 || item.conversion_value_2.length * 10 || 30
+          }
           fontLevel={4}
           label={currentAttribute?.name ? truncate(currentAttribute.name, { length: 20 }) : 'N/A'}
           conversionData={basis}
@@ -252,6 +258,12 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
             option_code: e.target.value,
           };
           setBasisOptions(newBasisOptions);
+          setSelectedSpecified(
+            newBasisOptions.map((opt) => ({
+              value: opt.id,
+              label: opt.option_code,
+            })),
+          );
         }}
         tabIndex={index}
       />

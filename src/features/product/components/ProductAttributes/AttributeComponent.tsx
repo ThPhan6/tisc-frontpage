@@ -115,11 +115,9 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
                 }) ?? [],
             },
           ]}
-          className={`${styles.specificationAttributeOption} ${
+          className={`attribute-group-option-popover ${styles.specificationAttributeOption} ${
             isOptionWithImage ? styles.specificationAttributeImageOption : ''
-          }
-        attribute-group-option-popover
-        `}
+          }`}
           chosenValue={chosenOption}
           setChosenValue={setChosenOptions}
           clearOnClose={clearOnClose}></Popover>
@@ -148,7 +146,7 @@ export const ConversionText: FC<ConversionTextProps> = ({
   secondValue,
 }) => {
   return (
-    <BodyText level={6} customClass={styles.content_text} fontFamily="Roboto">
+    <BodyText level={6} customClass={`${styles.content_text} flex-start`} fontFamily="Roboto">
       <span className={styles.converstionText}>
         {firstValue || ''} {conversion?.unit_1 || ''}
       </span>

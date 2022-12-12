@@ -35,6 +35,7 @@ export type UserInfoDataProp = {
   avatar: string;
   backup_email: string;
   personal_mobile: string;
+  personal_phone_code: string;
   linkedin: string;
   type: number;
   interested: number[];

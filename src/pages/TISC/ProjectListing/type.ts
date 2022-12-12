@@ -82,17 +82,26 @@ export interface TeamDetail {
   avatar: string;
 }
 
+export interface CustomProduct {
+  company_id: string;
+  image: string;
+  name: string;
+  status: number;
+  isSpecified?: boolean;
+}
 export interface ProjectListingDetail {
   basic: ProjectInformation;
   spacing: SpaceDetail;
   considered: {
     brands: BrandInfo[];
+    customProducts: CustomProduct[];
     deleted: number;
     consider: number;
     unlisted: number;
   };
   specified: {
     brands: BrandInfo[];
+    customProducts: CustomProduct[];
     deleted: number;
     specified: number;
     cancelled: number;

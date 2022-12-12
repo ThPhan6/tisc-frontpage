@@ -217,7 +217,7 @@ export const getMaxLengthText = (text: string, maxLength: number) => {
   return text.slice(0, maxLength - 3) + '...';
 };
 
-export const formatNumberDisplay = (
+export const formatCurrencyNumber = (
   num: number | string,
   locale: Intl.LocalesArgument = 'en-us',
   options: Intl.NumberFormatOptions = {},
@@ -383,3 +383,12 @@ export const bufferToArrayBufferCycle = (buffer: Buffer) => {
   }
   return result;
 };
+
+export const formatNumber = (number: number) => {
+  return number.toLocaleString(undefined, {
+    maximumFractionDigits: 2,
+  });
+};
+
+export const formatImageIfBase64 = (img: string) =>
+  img.indexOf('data:image') > -1 ? img.split(',')[1] : img;

@@ -4,6 +4,7 @@ import { PATH } from '@/constants/path';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 import { ReactComponent as InformationIcon } from '@/assets/icons/info.svg';
+import { ReactComponent as OfficeLibrary } from '@/assets/icons/office-library-icon.svg';
 import { ReactComponent as SpaceIcon } from '@/assets/icons/space-icon.svg';
 import { ReactComponent as SpecifiedIcon } from '@/assets/icons/tabs-add-icon.svg';
 import { ReactComponent as ConsideredIcon } from '@/assets/icons/tabs-icon.svg';
@@ -13,7 +14,7 @@ import { pushTo } from '@/helper/history';
 import { useGetParamId } from '@/helper/hook';
 import { getFullName } from '@/helper/utils';
 
-import { ProjectListingDetail } from './type';
+import { BrandInfo, CustomProduct, ProjectListingDetail } from './type';
 import { TabItem } from '@/components/Tabs/types';
 
 import { BasicInformation } from './components/BasicInformation';
@@ -78,6 +79,30 @@ const ProjectDetail = () => {
       });
     }
   }, []);
+
+  const getListProduct = (
+    products?: { brands: BrandInfo[]; customProducts: CustomProduct[] },
+    isSpecified?: boolean,
+  ) => {
+    const customProductList = products?.customProducts.length
+      ? [
+          {
+            title: 'Office Library & Resources',
+            image: <OfficeLibrary style={{ width: '24px', height: '24px' }} />,
+            content: products.customProducts.map((product) => ({ ...product, isSpecified })),
+          },
+        ]
+      : [];
+    const brandProducts =
+      products?.brands.map((el) => ({
+        title: el.name,
+        image: el.logo,
+        content: el.products.map((product) => ({ ...product, isSpecified })),
+      })) ?? [];
+
+    return [...customProductList, ...brandProducts];
+  };
+
   return (
     <ProjectListingHeader>
       <TableHeader
@@ -91,7 +116,6 @@ const ProjectDetail = () => {
       />
       <CustomTabs
         listTab={ListTab}
-        centered={true}
         widthItem="auto"
         customClass={styles.customTabs}
         onChange={(key) => setSelectedTab(key as ProjectListingTabKeys)}
@@ -112,16 +136,7 @@ const ProjectDetail = () => {
       <CustomTabPane active={selectedTab === ProjectListingTabKeys.productConsidered}>
         <ProductAndProjectTab
           type="productConsider"
-          data={projectDetail?.considered.brands.map((el) => ({
-            ...el,
-            title: el.name,
-            image: el.logo,
-            content: el.products.map((product) => ({
-              name: product.name,
-              image: product.image,
-              productConsiderdStatus: product.status,
-            })),
-          }))}
+          data={getListProduct(projectDetail?.considered)}
           summary={{
             deleted: projectDetail?.considered.deleted,
             unlisted: projectDetail?.considered.unlisted,
@@ -134,16 +149,7 @@ const ProjectDetail = () => {
       <CustomTabPane active={selectedTab === ProjectListingTabKeys.productSpecified}>
         <ProductAndProjectTab
           type="productSpecified"
-          data={projectDetail?.specified.brands.map((el) => ({
-            ...el,
-            title: el.name,
-            image: el.logo,
-            content: el.products.map((product) => ({
-              name: product.name,
-              image: product.image,
-              productSpecifiedStatus: product.status,
-            })),
-          }))}
+          data={getListProduct(projectDetail?.specified, true)}
           summary={{
             deleted: projectDetail?.specified.deleted,
             specified: projectDetail?.specified.specified,

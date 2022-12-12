@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { COLUMN_WIDTH } from '@/constants/util';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
@@ -8,8 +8,9 @@ import { ReactComponent as GridIcon } from '@/assets/icons/ic-grid.svg';
 import { ReactComponent as MenuIcon } from '@/assets/icons/ic-menu.svg';
 import { ReactComponent as CancelIcon } from '@/assets/icons/ic-square-cancel.svg';
 import { ReactComponent as CheckIcon } from '@/assets/icons/ic-square-check.svg';
+import { ReactComponent as InfoIcon } from '@/assets/icons/warning-circle-icon.svg';
 
-import { useSpecifyingModal } from '../../hooks';
+import { onOpenSpecifiyingProductModal, renderAvailability, useSpecifyingModal } from '../../hooks';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import {
   getConsideredProducts,
@@ -21,33 +22,29 @@ import { useBoolean } from '@/helper/hook';
 import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
-import {
-  setPartialProductDetail,
-  setPartialProductSpecifiedData,
-  setReferToDesignDocument,
-} from '@/features/product/reducers';
 import { ProductItem, ProjectProductItem } from '@/features/product/types';
 import {
   ConsideredProduct,
   ConsideredProjectRoom,
   ProductConsiderStatus,
 } from '@/features/project/types';
-import store from '@/reducers';
 
+import { AvailabilityModal } from '../../components/AvailabilityModal';
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
 import ActionButton from '@/components/Button/ActionButton';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import { ActionMenu } from '@/components/TableAction';
-import { BodyText } from '@/components/Typography';
+import { BodyText, RobotoBodyText } from '@/components/Typography';
 import { CustomDropDown } from '@/features/product/components';
 import ProductCard from '@/features/product/components/ProductCard';
 import cardStyles from '@/features/product/components/ProductCard.less';
 
+import styles from './index.less';
+
 const ProductConsidered: React.FC = () => {
-  useAutoExpandNestedTableColumn(3, {
-    autoWidthColIndex: 6, // Product column
-    rightColumnExcluded: 3,
-  });
+  useAutoExpandNestedTableColumn(3, [7]);
+
+  const [visible, setVisible] = useState<boolean>(false);
 
   const params = useParams<{ id: string }>();
   const tableRef = useRef<any>();
@@ -109,22 +106,7 @@ const ProductConsidered: React.FC = () => {
             disabled: record.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted,
             onClick: () => {
               setSpecifyingProduct(record);
-              if (record.specifiedDetail) {
-                store.dispatch(setPartialProductSpecifiedData(record.specifiedDetail));
-                store.dispatch(
-                  setPartialProductDetail({
-                    distributor_location_id: record.specifiedDetail.distributor_location_id,
-                    brand_location_id: record.specifiedDetail.brand_location_id,
-                  }),
-                );
-              }
-              store.dispatch(
-                setReferToDesignDocument(
-                  typeof record.specifiedDetail?.specification?.is_refer_document === 'boolean'
-                    ? record.specifiedDetail?.specification?.is_refer_document
-                    : true,
-                ),
-              );
+              onOpenSpecifiyingProductModal(record);
             },
           },
           {
@@ -222,10 +204,25 @@ const ProductConsidered: React.FC = () => {
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
+      title: (
+        <div className="flex-start">
+          <RobotoBodyText level={5} style={{ fontWeight: 500 }}>
+            Availability
+          </RobotoBodyText>
+          <InfoIcon style={{ cursor: 'pointer' }} onClick={() => setVisible(true)} />
+        </div>
+      ),
+      dataIndex: 'availability',
+      align: 'center',
+      noBoxShadow: true,
+      className: disabledClassname,
+    },
+    {
       title: 'Status',
       width: COLUMN_WIDTH.status,
       hidden: gridView.value,
       align: 'center',
+      className: disabledClassname,
     },
     {
       title: 'Action',
@@ -272,6 +269,13 @@ const ProductConsidered: React.FC = () => {
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
+      title: 'Availability',
+      dataIndex: 'availability',
+      align: 'center',
+      width: '5%',
+      render: (_value, record) => renderAvailability(record),
+    },
+    {
       title: 'Status',
       width: COLUMN_WIDTH.status,
       dataIndex: 'status_name',
@@ -308,6 +312,12 @@ const ProductConsidered: React.FC = () => {
       title: 'Assigned By',
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
+    {
+      title: 'Availability',
+      dataIndex: 'availability',
+      align: 'center',
+      width: '5%',
+    },
     {
       title: 'Status',
       width: COLUMN_WIDTH.status,
@@ -351,6 +361,15 @@ const ProductConsidered: React.FC = () => {
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center', noBoxShadow: true },
     {
+      title: 'Availability',
+      dataIndex: 'availability',
+      noBoxShadow: true,
+      align: 'center',
+      width: '5%',
+      render: (_value, record) => renderAvailability(record),
+    },
+
+    {
       title: 'Status',
       width: COLUMN_WIDTH.status,
       hidden: gridView.value,
@@ -375,91 +394,93 @@ const ProductConsidered: React.FC = () => {
         className={cardStyles.productCardContainer}
         style={{ padding: '16px 16px 8px', maxWidth: 'calc(83.33vw - 40px)' }}>
         {products.map((item, index: number) => (
-          <div className={cardStyles.productCardItemWrapper} key={index}>
-            <ProductCard
-              product={item}
-              hasBorder
-              hideFavorite
-              hideAssign
-              showInquiryRequest
-              showSpecify
-              onSpecifyClick={() => setSpecifyingProduct(item)}
-            />
-          </div>
+          <ProductCard
+            key={index}
+            product={item}
+            hasBorder
+            hideFavorite
+            hideAssign
+            showInquiryRequest
+            showSpecify
+            onSpecifyClick={() => setSpecifyingProduct(item)}
+            isCustomProduct={item.specifiedDetail?.custom_product}
+          />
         ))}
       </div>
     );
   };
 
-  const filteredColumns = (cols: TableColumnItem<any>[]) =>
-    cols.filter((el) => Boolean(el.hidden) === false);
-
   return (
     <div>
-      <ProjectTabContentHeader>
-        <BodyText
-          level={4}
-          fontFamily="Cormorant-Garamond"
-          color="mono-color"
-          style={{ fontWeight: '600', marginRight: 4 }}>
-          View By:
-        </BodyText>
+      <div>
+        <ProjectTabContentHeader>
+          <BodyText
+            level={4}
+            fontFamily="Cormorant-Garamond"
+            color="mono-color"
+            style={{ fontWeight: '600', marginRight: 4 }}>
+            View By:
+          </BodyText>
 
-        <ActionButton
-          active={gridView.value === false}
-          icon={<MenuIcon style={{ width: 13.33, height: 10 }} />}
-          onClick={() => gridView.setValue(false)}
-          title="List"
-        />
-        <ActionButton
-          active={gridView.value}
-          icon={<GridIcon style={{ width: 13.33, height: 13.33 }} />}
-          onClick={() => gridView.setValue(true)}
-          title="Card"
-        />
-      </ProjectTabContentHeader>
+          <ActionButton
+            active={gridView.value === false}
+            icon={<MenuIcon style={{ width: 13.33, height: 10 }} />}
+            onClick={() => gridView.setValue(false)}
+            title="List"
+          />
+          <ActionButton
+            active={gridView.value}
+            icon={<GridIcon style={{ width: 13.33, height: 13.33 }} />}
+            onClick={() => gridView.setValue(true)}
+            title="Card"
+          />
+        </ProjectTabContentHeader>
 
-      <CustomTable
-        columns={filteredColumns(setDefaultWidthForEachColumn(ZoneColumns, 7))}
-        ref={tableRef}
-        fetchDataFunc={getConsideredProducts}
-        extraParams={{ projectId: params.id }}
-        hasPagination={false}
-        multiSort={{
-          zone_order: 'zone_order',
-          area_order: 'area_order',
-          room_order: 'room_order',
-          brand_order: 'brand_order',
-        }}
-        expandable={GetExpandableTableConfig({
-          columns: filteredColumns(setDefaultWidthForEachColumn(AreaColumns, 7)),
-          childrenColumnName: 'areas',
-          subtituteChildrenColumnName: 'products',
-          level: 2,
+        <CustomTable
+          footerClass={styles.summaryFooter}
+          columns={setDefaultWidthForEachColumn(ZoneColumns, 7)}
+          ref={tableRef}
+          fetchDataFunc={getConsideredProducts}
+          extraParams={{ projectId: params.id }}
+          hasPagination={false}
+          multiSort={{
+            zone_order: 'zone_order',
+            area_order: 'area_order',
+            room_order: 'room_order',
+            brand_order: 'brand_order',
+          }}
+          expandable={GetExpandableTableConfig({
+            columns: setDefaultWidthForEachColumn(AreaColumns, 7),
+            childrenColumnName: 'areas',
+            subtituteChildrenColumnName: 'products',
+            level: 2,
 
-          gridView: gridView.value,
-          gridViewContentIndex: 'products',
-          renderGridContent,
-
-          expandable: GetExpandableTableConfig({
-            columns: filteredColumns(setDefaultWidthForEachColumn(RoomColumns, 7)),
-            childrenColumnName: 'rooms',
-            level: 3,
+            gridView: gridView.value,
+            gridViewContentIndex: 'products',
+            renderGridContent,
 
             expandable: GetExpandableTableConfig({
-              columns: filteredColumns(setDefaultWidthForEachColumn(ProductColumns, 7)),
-              childrenColumnName: 'products',
-              level: 4,
+              columns: setDefaultWidthForEachColumn(RoomColumns, 7),
+              childrenColumnName: 'rooms',
+              level: 3,
 
-              gridView: gridView.value,
-              gridViewContentIndex: 'products',
-              renderGridContent,
+              expandable: GetExpandableTableConfig({
+                columns: setDefaultWidthForEachColumn(ProductColumns, 7),
+                childrenColumnName: 'products',
+                level: 4,
+
+                gridView: gridView.value,
+                gridViewContentIndex: 'products',
+                renderGridContent,
+              }),
             }),
-          }),
-        })}
-      />
+          })}
+        />
 
-      {renderSpecifyingModal()}
+        {renderSpecifyingModal()}
+      </div>
+
+      <AvailabilityModal visible={visible} setVisible={setVisible} />
     </div>
   );
 };

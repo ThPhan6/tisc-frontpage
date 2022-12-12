@@ -3,7 +3,11 @@ import type { FC } from 'react';
 import { formatPhoneCode } from '@/helper/utils';
 import { upperCase } from 'lodash';
 
-import { MarketAvailabilityDetailRegionCountry, MarketAvailabilityDetails } from '../type';
+import {
+  MarketAvailabilityDetailRegionCountry,
+  MarketAvailabilityDetails,
+  PayloadUpdateAvailibity,
+} from '../type';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
@@ -16,7 +20,7 @@ interface MarketAvailabilityEntryFormProps {
   data: MarketAvailabilityDetails;
   setData: (data: MarketAvailabilityDetails) => void;
   onCancel: () => void;
-  onSubmit: (data: string[]) => void;
+  onSubmit: (data: PayloadUpdateAvailibity[]) => void;
   submitButtonStatus: boolean;
 }
 
@@ -72,7 +76,16 @@ export const MarketAvailabilityEntryForm: FC<MarketAvailabilityEntryFormProps> =
   };
 
   const handleSubmitData = () => {
-    onSubmit(checked.map((item) => item.value as string));
+    const submitData: PayloadUpdateAvailibity[] = [];
+    data.regions.forEach((region) => {
+      region.countries.forEach((country) => {
+        submitData.push({
+          id: country.id,
+          available: country.available,
+        });
+      });
+    });
+    onSubmit(submitData);
   };
 
   return (

@@ -20,13 +20,12 @@ import { BodyText, Title } from '@/components/Typography';
 import {
   CollapseProductList,
   CustomDropDown,
-  FilterItem,
   TopBarContainer,
   TopBarItem,
 } from '@/features/product/components';
 import { useProductListFilterAndSorter } from '@/features/product/components/FilterAndSorter';
 
-import styles from './styles.less';
+import styles from './index.less';
 
 const BrandProductListPage: React.FC = () => {
   const searchInputRef = useRef<InputRef>(null);
@@ -38,8 +37,17 @@ const BrandProductListPage: React.FC = () => {
   const firstLoad = useBoolean(true);
   const [searchCount, setSearchCount] = useState(0);
 
-  const { filter, sort, brands, search, categories, brandSummary, dispatch, removeFilter } =
-    useProductListFilterAndSorter();
+  const {
+    filter,
+    sort,
+    brands,
+    search,
+    categories,
+    brandSummary,
+    dispatch,
+    renderFilterDropdown,
+    renderItemTopBar,
+  } = useProductListFilterAndSorter({ brand: true, category: true });
 
   const debouceSearch = useCallback(
     debounce((value: string) => {
@@ -95,7 +103,7 @@ const BrandProductListPage: React.FC = () => {
   const renderInfoItem = (info: string, count: number, lastOne?: boolean) => (
     <div className="flex-start" style={{ marginRight: lastOne ? undefined : 24 }}>
       <BodyText level={5} fontFamily="Roboto" style={{ marginRight: 8 }}>
-        {info}:{' '}
+        {info}:
       </BodyText>
       <Title level={8}>{count}</Title>
     </div>
@@ -106,36 +114,22 @@ const BrandProductListPage: React.FC = () => {
       LeftSideContent={
         <>
           <TopBarItem
-            topValue={
-              filter?.name === 'brand_id' ? (
-                <FilterItem title={filter.title} onDelete={removeFilter} />
-              ) : (
-                'select'
-              )
-            }
+            topValue={renderItemTopBar('brand_id', filter, 'select')}
             bottomEnable={brands.length ? true : false}
             disabled
-            bottomValue={
-              <CustomDropDown items={brands} menuStyle={{ width: 240 }}>
-                Brands
-              </CustomDropDown>
-            }
+            bottomValue={renderFilterDropdown('Brands', brands, false)}
             customClass="right-divider"
-            style={{ paddingLeft: 0 }}
           />
           <TopBarItem
-            topValue={
-              filter?.name === 'category_id' ? (
-                <FilterItem title={filter.title} onDelete={removeFilter} />
-              ) : (
-                'select'
-              )
-            }
+            topValue={renderItemTopBar('category_id', filter, 'select')}
             bottomEnable={categories.length ? true : false}
             disabled
-            bottomValue={<CustomDropDown items={categories}>Categories</CustomDropDown>}
-            customClass="right-divider"
-            style={{ paddingLeft: 0 }}
+            bottomValue={
+              <CustomDropDown items={categories} menuStyle={{ height: 'max-content' }}>
+                Categories
+              </CustomDropDown>
+            }
+            customClass="right-divider pl-0"
           />
 
           <SortOrderPanel order={sort?.order} sort={sort} style={{ paddingLeft: 0 }} />
@@ -205,7 +199,8 @@ const BrandProductListPage: React.FC = () => {
   return (
     <PageContainer pageHeaderRender={PageHeader}>
       <CollapseProductList
-      // showBrandLogo={filter?.name === 'category_id'}
+        // showBrandLogo={filter?.name === 'category_id'}
+        showInquiryRequest
       />
     </PageContainer>
   );

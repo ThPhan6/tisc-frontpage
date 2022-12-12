@@ -16,7 +16,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 
 const BasisOptionList: React.FC = () => {
-  useAutoExpandNestedTableColumn(2);
+  useAutoExpandNestedTableColumn(2, [6]);
   const tableRef = useRef<any>();
 
   const handleUpdateBasisOption = (id: string) => {
@@ -110,6 +110,9 @@ const BasisOptionList: React.FC = () => {
       align: 'center',
       width: '5%',
       render: (_value: any, record: any) => {
+        if (record.master) {
+          return null;
+        }
         return (
           <ActionMenu
             actionItems={[

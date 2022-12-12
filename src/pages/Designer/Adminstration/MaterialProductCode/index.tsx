@@ -25,7 +25,7 @@ import {
 } from '@/features/material-product-code/api';
 
 const MaterialProductCode = () => {
-  useAutoExpandNestedTableColumn(2);
+  useAutoExpandNestedTableColumn(2, [3]);
   const tableRef = useRef<any>();
 
   const user = useAppSelector((state) => state.user.user);
@@ -48,7 +48,7 @@ const MaterialProductCode = () => {
     const SameColumns: TableColumnItem<any>[] = [
       {
         title: 'Code',
-        sorter: true,
+        sorter: { multiple: 3 },
         dataIndex: 'code',
         defaultSortOrder: 'ascend',
         noBoxShadow: noBoxShadow,
@@ -69,7 +69,7 @@ const MaterialProductCode = () => {
     {
       title: 'Main List',
       dataIndex: 'name',
-      sorter: true,
+      sorter: { multiple: 1 },
       isExpandable: true,
       render: (value) => {
         return <span className="text-uppercase">{value}</span>;
@@ -78,7 +78,7 @@ const MaterialProductCode = () => {
     {
       title: 'Sub-List',
       dataIndex: 'sub_list',
-      sorter: true,
+      sorter: { multiple: 2 },
       defaultSortOrder: 'ascend',
     },
     ...getSameColumns(false),
@@ -151,11 +151,11 @@ const MaterialProductCode = () => {
           code: 'material_code_order',
         }}
         expandable={GetExpandableTableConfig({
-          columns: setDefaultWidthForEachColumn(SubColumns, 2),
+          columns: setDefaultWidthForEachColumn(SubColumns, 3),
           childrenColumnName: 'subs',
           level: 2,
           expandable: GetExpandableTableConfig({
-            columns: setDefaultWidthForEachColumn(CodeColumns, 2),
+            columns: setDefaultWidthForEachColumn(CodeColumns, 3),
             childrenColumnName: 'codes',
             level: 3,
           }),

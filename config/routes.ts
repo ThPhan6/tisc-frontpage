@@ -8,6 +8,11 @@ export default [
     layout: false,
   },
   {
+    path: PATH.sharedCustomProduct,
+    component: './Designer/Products/CustomLibrary/ProductLibraryDetail',
+    layout: false,
+  },
+  {
     path: PATH.landingPage,
     component: './LandingPage',
     layout: false,
@@ -463,7 +468,28 @@ export default [
           {
             path: PATH.tiscRevenueService,
             name: 'service',
-            component: './Admin',
+            routes: [
+              {
+                path: PATH.tiscRevenueService,
+                component: './TISC/Adminstration/Revenue/Services',
+                hideInMenu: true,
+              },
+              {
+                path: PATH.tiscRevenueServiceCreate,
+                component: './TISC/Adminstration/Revenue/Services/ServiceCreatePage',
+                hideInMenu: true,
+              },
+              {
+                path: PATH.tiscRevenueServiceDetail,
+                component: './TISC/Adminstration/Revenue/Services/ServiceViewPage',
+                hideInMenu: true,
+              },
+              {
+                path: PATH.tiscRevenueServiceUpdate,
+                component: './TISC/Adminstration/Revenue/Services/ServiceCreatePage',
+                hideInMenu: true,
+              },
+            ],
           },
           {
             path: PATH.tiscRevenueSubscription,
@@ -637,6 +663,24 @@ export default [
         ],
       },
       {
+        path: PATH.brandBilledServices,
+        name: 'brand.billed_services',
+        icon: 'billed-service-icon.svg',
+        access: 'brand_administration_billed_services',
+        routes: [
+          {
+            path: PATH.brandBilledServices,
+            component: './Brand/Adminstration/BilledServices',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.brandBilledServicesView,
+            component: './Brand/Adminstration/BilledServices/BilledServicesDetail',
+            hideInMenu: true,
+          },
+        ],
+      },
+      {
         path: PATH.brandSubscription,
         name: 'brand.subscription',
         icon: 'subscription-icon.svg',
@@ -673,7 +717,7 @@ export default [
         routes: [
           {
             path: PATH.designerBrandProduct,
-            component: './Designer/Products',
+            component: './Designer/Products/BrandProducts',
             hideInMenu: true,
           },
           {
@@ -684,11 +728,53 @@ export default [
         ],
       },
       {
-        path: PATH.designerCustomLibrary,
-        name: 'custom.library',
-        icon: 'design-firm-icon.svg',
-        component: './Admin',
+        path: PATH.designerCustomProduct,
+        name: 'library.resources',
+        icon: 'office-library-icon.svg',
         access: 'design_product_custom_library',
+        routes: [
+          {
+            path: PATH.designerCustomProduct,
+            component: './Designer/Products/CustomLibrary',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerCustomResource,
+            component: './Designer/CustomResource/CustomResource',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerCustomProductCreate,
+            component: './Designer/Products/CustomLibrary/ProductLibraryUpdate',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerCustomProductUpdate,
+            component: './Designer/Products/CustomLibrary/ProductLibraryUpdate',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerCustomProductDetail,
+            component: './Designer/Products/CustomLibrary/ProductLibraryDetail',
+            hideInMenu: true,
+          },
+
+          {
+            path: PATH.designerCustomResourceCreate,
+            component: './Designer/CustomResource/CustomResourceCreatePage',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerCustomResourceUpdate,
+            component: './Designer/CustomResource/CustomResourceCreatePage',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerCustomResourceDetail,
+            component: './Designer/CustomResource/CustomResourceViewPage',
+            hideInMenu: true,
+          },
+        ],
       },
     ],
   },
@@ -704,7 +790,7 @@ export default [
         hideInMenu: true,
       },
       {
-        path: PATH.designerCreateProject,
+        path: PATH.designerProjectCreate,
         hideInMenu: true,
         component: './Designer/Project/ProjectCreatePage',
       },

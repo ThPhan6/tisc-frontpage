@@ -24,4 +24,6 @@ export interface CustomRadioProps {
   noPaddingLeft?: boolean;
   otherStickyBottom?: boolean;
   stickyTopItem?: boolean;
+  optionStyle?: CSSProperties;
+  disabled?: boolean;
 }

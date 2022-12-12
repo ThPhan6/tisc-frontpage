@@ -6,11 +6,12 @@ import styles from '../styles/table.less';
 
 interface TableSummaryProps {
   summary: SummaryResponse[];
+  customClass?: string;
 }
 
-const TableSummary = ({ summary }: TableSummaryProps) => {
+const TableSummary = ({ summary, customClass = '' }: TableSummaryProps) => {
   return (
-    <div className={`${styles.customPaginator} ${styles.tableSummary}`}>
+    <div className={`${styles.customPaginator} ${styles.tableSummary} ${customClass}`}>
       {summary.map((item, index) => (
         <div className="item" key={index}>
           <BodyText level={6} customClass="name" fontFamily="Roboto">
