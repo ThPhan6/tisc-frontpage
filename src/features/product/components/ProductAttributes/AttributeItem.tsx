@@ -143,7 +143,10 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
     newItemAttributes[attributeItemIndex] = {
       ...newItemAttributes[attributeItemIndex],
       basis_options: activeBasisOptions,
-      text: getBasisOptionsText(activeBasisOptions),
+      text:
+        newItemAttributes[attributeItemIndex].type === 'Options'
+          ? getBasisOptionsText(activeBasisOptions)
+          : newItemAttributes[attributeItemIndex].text,
     };
     newAttributes[attributeIndex] = {
       ...newAttributes[attributeIndex],
