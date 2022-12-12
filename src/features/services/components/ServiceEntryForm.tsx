@@ -20,6 +20,7 @@ import { MainTitle, Title } from '@/components/Typography';
 
 import { getServiceType } from '../api';
 import styles from '../index.less';
+import { formatToMoneyValue } from '../util';
 
 interface ServicFormProps {
   handleCancel: () => void;
@@ -50,7 +51,7 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
   const summaryBillingAmount = () => {
     const grossTotal = Number(serviceFormData.unit_rate) * Number(serviceFormData.quantity);
     const salesTax = (Number(serviceFormData.tax) / 100) * grossTotal;
-    return formatCurrencyNumber(grossTotal + salesTax);
+    return formatToMoneyValue(grossTotal + salesTax);
   };
 
   return (
@@ -141,7 +142,7 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
                   inputValidation={validateFloatNumber}
                   value={
                     type === 'view'
-                      ? formatCurrencyNumber(serviceFormData.unit_rate)
+                      ? formatToMoneyValue(Number(serviceFormData.unit_rate))
                       : serviceFormData.unit_rate
                   }
                   onChange={(e) => {

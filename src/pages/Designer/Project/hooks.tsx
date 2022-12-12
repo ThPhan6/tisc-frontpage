@@ -15,6 +15,7 @@ import {
   updateProductSpecifiedStatus,
 } from '@/features/project/services';
 import { confirmDelete } from '@/helper/common';
+import { showImageUrl } from '@/helper/utils';
 
 import {
   setPartialProductDetail,
@@ -22,7 +23,7 @@ import {
   setReferToDesignDocument,
 } from '@/features/product/reducers';
 import { Availability, ProductItem, ProjectProductItem } from '@/features/product/types';
-import { ProductSpecifyStatus } from '@/features/project/types';
+import { ProductConsiderStatus, ProductSpecifyStatus } from '@/features/project/types';
 import store from '@/reducers';
 
 import { ActionMenu } from '@/components/TableAction';
@@ -164,12 +165,26 @@ export const renderActionCell =
     );
   };
 
-export const onCellCancelled = (data: any) => ({
-  className:
-    data.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled
-      ? 'strike-through'
-      : undefined,
+export const onCellUnlisted = (data: any) => ({
+  className: `${
+    data.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted
+      ? 'light-content'
+      : undefined
+  } ${data.rooms || data.room_id ? '' : 'no-box-shadow'}`,
 });
+
+export const onCellCancelled = (data: any) => ({
+  className: `${
+    data.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled
+      ? 'light-content'
+      : undefined
+  } ${data.rooms || data.room_id ? '' : 'no-box-shadow'}`,
+});
+
+export const renderImage = (image: string) =>
+  image ? (
+    <img src={showImageUrl(image)} style={{ width: 24, height: 24, objectFit: 'contain' }} />
+  ) : null;
 
 export const renderAvailability = (record: any) => {
   if (record.rooms) return null;
