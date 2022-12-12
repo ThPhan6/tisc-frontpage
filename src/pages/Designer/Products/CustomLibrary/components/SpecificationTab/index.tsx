@@ -258,7 +258,7 @@ export const SpecificationTab: FC<{
         noPadding={specifying}
         collapseStyles={!specifying}
         data={dimensionWeightData}
-        isSpecifying={specifying}
+        isConversionText={specifying}
         onChange={(data) => {
           store.dispatch(
             setCustomProductDetail({

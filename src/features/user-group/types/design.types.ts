@@ -120,7 +120,7 @@ export interface LibraryDesignFirm {
       name: string;
       content: string;
     }[];
-    specification: {
+    specifications: {
       name: string;
       content: string;
     }[];

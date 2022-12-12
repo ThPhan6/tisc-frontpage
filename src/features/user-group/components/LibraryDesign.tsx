@@ -23,6 +23,7 @@ import { BodyText } from '@/components/Typography';
 import indexStyles from '../styles/index.less';
 import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
 import styles from './LibraryDesign.less';
+import { DimensionWeight } from '@/features/dimension-weight';
 
 interface LabelHeaderProps {
   firstValue: string;
@@ -60,7 +61,7 @@ interface DetailItemValue {
     name: string;
     content: string;
   }[];
-  specification?: {
+  specifications?: {
     name: string;
     content: string;
   }[];
@@ -158,7 +159,7 @@ const DetailItem: FC<DetailItemProps> = ({ detailItems, type }) => {
           <TextForm label="Brand Company">{item.brand_company}</TextForm>
           <TextForm label="Collection">{item.collection}</TextForm>
           <TextForm label="Description">{item.description}</TextForm>
-          <FormGroup label="Attribute" layout="vertical">
+          <FormGroup label="Attribute" labelColor="mono-color-dark" layout="vertical">
             {item.attributes?.map((attribute, index) => (
               <LibraryText
                 name={attribute.name}
@@ -168,17 +169,19 @@ const DetailItem: FC<DetailItemProps> = ({ detailItems, type }) => {
               />
             ))}
           </FormGroup>
-          <FormGroup label="Dimension & Weight" layout="vertical">
-            {item.dimension_and_weight?.attributes?.map((attribute, index) => (
-              <LibraryText
-                name={attribute.name}
-                conversion={attribute.conversion}
-                key={index}
-                customClass={styles.libraryText}
+          <FormGroup label="Dimension & Weight" labelColor="mono-color-dark" layout="vertical">
+            {item.dimension_and_weight?.attributes.length ? (
+              <DimensionWeight
+                isShow
+                editable={false}
+                collapseStyles={false}
+                isConversionText
+                data={item.dimension_and_weight}
+                customClass={styles.headerCollapse}
               />
-            ))}
+            ) : null}
           </FormGroup>
-          <FormGroup label="Options / Tags" layout="vertical">
+          <FormGroup label="Options / Tags" labelColor="mono-color-dark" layout="vertical">
             {item.options?.map((option, index) => (
               <Collapse {...CollapseLevel1Props} style={{ paddingLeft: '16px' }}>
                 <Collapse.Panel
@@ -201,8 +204,8 @@ const DetailItem: FC<DetailItemProps> = ({ detailItems, type }) => {
               </Collapse>
             ))}
           </FormGroup>
-          <FormGroup label="Specification" layout="vertical">
-            {item.specification?.map((specification, index) => (
+          <FormGroup label="Specification" labelColor="mono-color-dark" layout="vertical">
+            {item.specifications?.map((specification, index) => (
               <LibraryText
                 name={specification.name}
                 content={specification.content}
@@ -375,7 +378,7 @@ const LibraryItem: FC<LibraryItemProps> = ({ data, type }) => {
                 description: el.description,
                 collection: el.collection_name,
                 attributes: el.attributes,
-                specification: el.specification,
+                specifications: el.specifications,
                 options: el.options,
                 dimension_and_weight: el.dimension_and_weight,
               })),
