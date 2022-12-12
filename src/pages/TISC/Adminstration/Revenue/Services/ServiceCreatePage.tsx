@@ -66,10 +66,14 @@ const ServiceCreatePage = () => {
     if (!serviceFormData.ordered_by) {
       return message.error('Ordered by is required');
     }
-    if (!serviceFormData.unit_rate || !serviceFormData.quantity || !serviceFormData.tax) {
-      return message.error(
-        'Please enter unit rate / Please enter quantity /Please enter tax number',
-      );
+    if (!serviceFormData.unit_rate) {
+      return message.error('Please enter unit rate');
+    }
+    if (!serviceFormData.quantity) {
+      return message.error('Please enter quantity');
+    }
+    if (!serviceFormData.tax) {
+      return message.error('Please enter tax number');
     }
     return;
   };
