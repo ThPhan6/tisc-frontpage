@@ -2,10 +2,12 @@
   :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
     padding: 12px 0;
   }
-  :global(.ant-collapse-icon-position-end
-      > .ant-collapse-item
-      > .ant-collapse-header
-      .ant-collapse-arrow) {
+  :global(
+      .ant-collapse-icon-position-end
+        > .ant-collapse-item
+        > .ant-collapse-header
+        .ant-collapse-arrow
+    ) {
     right: 0;
   }
   :global(.ant-collapse > .ant-collapse-item.ant-collapse-no-arrow > .ant-collapse-header) {
@@ -19,6 +21,15 @@
       font-size: 14px;
       font-family: @font-secondary;
       line-height: 22px;
+    }
+  }
+  .headerCollapse {
+    :global(.ant-collapse-header) {
+      display: none !important;
+    }
+
+    :global(.ant-collapse-content) {
+      padding-left: 16px;
     }
   }
 }

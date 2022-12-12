@@ -60,7 +60,7 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
         collapseStyles={!isSpecifiedModal}
         customClass={!isTiscAdmin ? styles.marginTopSpace : ''}
         editable={isTiscAdmin}
-        isSpecifying={isSpecifiedModal}
+        isConversionText={isSpecifiedModal}
         isShow={activeKey === 'specification'}
         data={dimensionWeightData}
         onChange={(data) => {
