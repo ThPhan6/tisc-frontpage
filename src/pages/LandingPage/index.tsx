@@ -45,6 +45,7 @@ import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { AboutPoliciesContactModal } from './AboutPolicesContactModal';
 import { LandingPageFooter } from './footer';
 import styles from './index.less';
+import { getFormatDate } from './util';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import moment from 'moment';
 
@@ -54,11 +55,13 @@ const DEFAULT_STATE: InformationBooking = {
   name: '',
   email: '',
   agree_tisc: false,
-  date: moment().add(24, 'hours').format('YYYY-MM-DD'),
+  date: getFormatDate(moment().add(24, 'hours')),
   slot: -1,
   timezone: 'Asia/Singapore',
   id: '',
   time_text: '',
+  start_time_text: '',
+  end_time_text: '',
 };
 
 const LandingPage = () => {
@@ -376,16 +379,19 @@ const LandingPage = () => {
           openLogin={() => setOpenModal('Login')}
         />
       ) : null}
-      <CalendarModal
-        visible={openCalendar.value}
-        onClose={() => {
-          openCalendar.setValue(false);
-          setInformationBooking(DEFAULT_STATE);
-        }}
-        informationBooking={informationBooking}
-        isUpdateBooking={isUpdateBooking}
-        onChangeValue={(value) => setInformationBooking(value)}
-      />
+      {openCalendar.value ? (
+        <CalendarModal
+          visible={openCalendar.value}
+          onClose={() => {
+            openCalendar.setValue(false);
+            setInformationBooking(DEFAULT_STATE);
+          }}
+          informationBooking={informationBooking}
+          isUpdateBooking={isUpdateBooking}
+          onChangeValue={(value) => setInformationBooking(value)}
+        />
+      ) : null}
+
       <CancelBookingModal
         visible={openCancelBooking.value}
         onClose={() => openCancelBooking.setValue(false)}

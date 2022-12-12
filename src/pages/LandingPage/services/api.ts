@@ -223,10 +223,13 @@ export async function getListQuotation(
     });
 }
 
-export async function getListAvailableTime(date: string) {
-  return request<{ data: AvailableTime[] }>(`/api/booking/available-schedule?date=${date}`, {
-    method: 'GET',
-  })
+export async function getListAvailableTime(date: string, timezone: string) {
+  return request<{ data: AvailableTime[] }>(
+    `/api/booking/available-schedule?date=${date}&timezone=${timezone}`,
+    {
+      method: 'GET',
+    },
+  )
     .then((res) => {
       return res.data;
     })

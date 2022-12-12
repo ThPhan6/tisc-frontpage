@@ -19,10 +19,6 @@ export const MESSAGE_ERROR = {
   EMAIL_ALREADY_USED: 'Email already taken',
   NO_TEAMPROFILE: 'Add member to invite',
   DOCUMENT_TITLE: 'You are allowed to enter 50 characters only',
-  WEBSITE: 'Company website is required',
-  BRAND_COMPANY_NAME: 'Brand / company name is required',
-  FIRST_LAST_NAME: 'First name / last name is required',
-  WEBSITE_INVALID: 'Invalid Website',
 };
 
 export const MESSAGE_NOTIFICATION = {

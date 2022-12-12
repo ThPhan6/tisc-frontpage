@@ -21,32 +21,12 @@ import moment from 'moment';
 interface CancelBookingProps extends ModalProps {
   informationBooking: InformationBooking;
 }
-export const CancelBookingModal: FC<CancelBookingProps> = ({
-  visible,
-  onClose,
+
+export const BrandInformation: FC<{ informationBooking: InformationBooking }> = ({
   informationBooking,
 }) => {
-  const onCancelBooking = () => {
-    showPageLoading();
-    deleteBooking(informationBooking.id).then((isSuccess) => {
-      if (isSuccess) {
-        onClose();
-      }
-      hidePageLoading();
-    });
-  };
-
   return (
-    <CustomModal
-      title={<MainTitle level={2}>Are you sure to cancel the booking?</MainTitle>}
-      bodyStyle={{
-        height: '576px',
-        padding: '32px',
-      }}
-      className={styles.calendar}
-      visible={visible}
-      onCancel={onClose}
-      footer={false}>
+    <>
       <div className={styles.title}>
         <Title level={8}>Your Information</Title>
       </div>
@@ -90,13 +70,49 @@ export const CancelBookingModal: FC<CancelBookingProps> = ({
             marginLeft: '32px',
           }}>
           {moment(informationBooking.date).format('ddd, MMM DD YYYY')}
-          <span style={{ marginLeft: '16px' }}>aaa</span>
+          {informationBooking.start_time_text && (
+            <span style={{ marginLeft: '16px' }}>
+              {moment(informationBooking.start_time_text, 'HH:mm').format('hh:mm a')} -{' '}
+              {moment(informationBooking.end_time_text, 'HH:mm').format('hh:mm a')}
+            </span>
+          )}
         </Title>
       </div>
+    </>
+  );
+};
+
+export const CancelBookingModal: FC<CancelBookingProps> = ({
+  visible,
+  onClose,
+  informationBooking,
+}) => {
+  const onCancelBooking = () => {
+    showPageLoading();
+    deleteBooking(informationBooking.id).then((isSuccess) => {
+      if (isSuccess) {
+        onClose();
+      }
+      hidePageLoading();
+    });
+  };
+
+  return (
+    <CustomModal
+      title={<MainTitle level={2}>Are you sure to cancel the booking?</MainTitle>}
+      bodyStyle={{
+        height: '576px',
+        padding: '32px',
+      }}
+      className={styles.calendar}
+      visible={visible}
+      onCancel={onClose}
+      footer={false}>
+      <BrandInformation informationBooking={informationBooking} />
       <div
         style={{
           display: 'flex',
-          justifyContent: 'right',
+          justifyContent: 'flex-end',
           alignItems: 'center',
         }}>
         <CustomButton properties="rounded" buttonClass={styles.button} onClick={onCancelBooking}>

@@ -69,19 +69,19 @@ export const BrandInterestedModal: FC<BrandInterestedProps> = ({
 
   const handleOpenBookingModal = () => {
     if (inputValue.brand_name === '') {
-      return message.error(MESSAGE_ERROR.BRAND_COMPANY_NAME);
+      return message.error('Brand / company name is required');
     }
     if (inputValue.website === '') {
-      return message.error(MESSAGE_ERROR.WEBSITE);
+      return message.error('Company website is required');
     }
     if (inputValue.name === '') {
-      return message.error(MESSAGE_ERROR.FIRST_LAST_NAME);
+      return message.error('First name / last name is required');
     }
     if (inputValue.email === '') {
       return message.error(MESSAGE_ERROR.EMAIL_REQUIRED);
     }
     if (!isValidURL(inputValue.website)) {
-      return message.error(MESSAGE_ERROR.WEBSITE_INVALID);
+      return message.error('Invalid Website');
     }
     if (inputValue.agree_tisc === false) {
       return setAgreeTisc(true);

@@ -107,6 +107,8 @@ export interface InformationBooking {
   timezone: string;
   id: string;
   time_text: string;
+  start_time_text: string;
+  end_time_text: string;
 }
 
 export interface AvailableTime {
