@@ -78,3 +78,14 @@ export interface CustomProductRequestBody {
   collection_id: string;
   company_id: string;
 }
+
+export interface OptionGroupProps {
+  data: ProductOptionProps[];
+  dataIndex: number;
+  specification: SpecificationBodyRequest;
+  specifiedDetail?: SpecifiedDetail;
+  productId?: string;
+  specifying?: boolean;
+  isPublicPage?: boolean;
+  viewOnly?: boolean;
+}
