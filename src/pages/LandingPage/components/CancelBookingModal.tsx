@@ -72,8 +72,7 @@ export const BrandInformation: FC<{ informationBooking: InformationBooking }> = 
           {moment(informationBooking.date).format('ddd, MMM DD YYYY')}
           {informationBooking.start_time_text && (
             <span style={{ marginLeft: '16px' }}>
-              {moment(informationBooking.start_time_text, 'HH:mm').format('hh:mm a')} -{' '}
-              {moment(informationBooking.end_time_text, 'HH:mm').format('hh:mm a')}
+              {informationBooking.start_time_text} - {informationBooking.end_time_text}
             </span>
           )}
         </Title>

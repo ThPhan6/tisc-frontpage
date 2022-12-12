@@ -160,8 +160,8 @@ export const CalendarModal: FC<CalendarModalProps> = ({
               time.available &&
               onChangeValue({
                 ...informationBooking,
-                start_time_text: time.start,
-                end_time_text: time.end,
+                start_time_text: moment(time.start, 'HH:mm').format('hh:mm a'),
+                end_time_text: moment(time.end, 'HH:mm').format('hh:mm a'),
                 slot: time.slot,
               })
             }>
