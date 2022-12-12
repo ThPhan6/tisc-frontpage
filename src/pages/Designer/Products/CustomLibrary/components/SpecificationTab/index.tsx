@@ -219,7 +219,12 @@ export const SpecificationTab: FC<{
   const renderSpecification = () => {
     if (viewOnly) {
       return (
-        <SimpleContentTable items={specifications} tdStyle={specifying ? { paddingLeft: 0 } : {}} />
+        <SimpleContentTable
+          items={specifications}
+          tdStyle={specifying ? { paddingLeft: 0 } : {}}
+          flex={specifying ? '30-70' : '25-75'}
+          noPadding={specifying}
+        />
       );
     }
     return specifications?.map((item, index) => (
