@@ -3,12 +3,14 @@ import { COMMON_TYPES } from '@/constants/util';
 import { message } from 'antd';
 import { request } from 'umi';
 
+import { setSummaryServices } from './reducer';
 import { ServicesForm, ServicesResponse, SummaryService } from './type';
 import {
   DataTableResponse,
   PaginationRequestParams,
   PaginationResponse,
 } from '@/components/Table/types';
+import store from '@/reducers';
 import { GeneralData } from '@/types';
 import { UserDetail } from '@/types/user.type';
 
@@ -23,7 +25,7 @@ export async function getServicesSummary() {
     data: SummaryService;
   }>(`/api/invoice/summary`, { method: 'GET' })
     .then((response) => {
-      return response.data;
+      store.dispatch(setSummaryServices(response.data));
     })
     .catch((error) => {
       message.error(error?.data?.message);
@@ -69,8 +71,7 @@ export async function createService(data: ServicesForm) {
       message.success(MESSAGE_NOTIFICATION.CREATE_SERVICE_SUCCESS);
       return true;
     })
-    .catch((error) => {
-      message.error(error?.data?.message);
+    .catch(() => {
       return false;
     });
 }
@@ -107,8 +108,7 @@ export async function updateService(id: string, data: ServicesForm) {
       message.success(MESSAGE_NOTIFICATION.UPDATE_SERVICE_SUCCESS);
       return true;
     })
-    .catch((error) => {
-      message.error(error?.data?.message);
+    .catch(() => {
       return false;
     });
 }
