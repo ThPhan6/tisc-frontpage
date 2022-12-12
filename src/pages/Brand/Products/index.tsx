@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 
+import { QUERY_KEY } from '@/constants/util';
 import { PageContainer } from '@ant-design/pro-layout';
 
 import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
+import { useBoolean, useQuery } from '@/helper/hook';
 
 import { useAppSelector } from '@/reducers';
 
@@ -10,7 +12,14 @@ import { CollapseProductList, TopBarContainer, TopBarItem } from '@/features/pro
 import { useProductListFilterAndSorter } from '@/features/product/components/FilterAndSorter';
 
 const BrandProductListPage: React.FC = () => {
+  const query = useQuery();
+  const cate_id = query.get(QUERY_KEY.cate_id);
+  const coll_id = query.get(QUERY_KEY.coll_id);
   const filter = useAppSelector((state) => state.product.list.filter);
+
+  /// using for get product list by filter
+  const firstLoad = useBoolean(true);
+
   const summary = useAppSelector((state) => state.product.summary);
   const userBrand = useAppSelector((state) => state.user.user?.brand);
 
@@ -40,14 +49,28 @@ const BrandProductListPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (userBrand?.id) {
+    if (!userBrand?.id || (!filter && firstLoad.value && (cate_id || coll_id))) {
+      return;
+    }
+
+    if (coll_id || cate_id) {
+      firstLoad.setValue(false);
+    }
+
+    if (!filter) {
       getProductListByBrandId({
         brand_id: userBrand.id,
-        category_id: !filter || filter?.name === 'category_id' ? filter?.value || 'all' : undefined,
-        collection_id: filter?.name === 'collection_id' ? filter?.value : undefined,
+        category_id: 'all',
       });
+      return;
     }
-  }, [filter]);
+
+    getProductListByBrandId({
+      brand_id: userBrand.id,
+      category_id: filter?.name === 'category_id' ? filter?.value : undefined,
+      collection_id: filter?.name === 'collection_id' ? filter?.value : undefined,
+    });
+  }, [filter?.value]);
 
   const renderPageHeader = () => (
     <TopBarContainer
