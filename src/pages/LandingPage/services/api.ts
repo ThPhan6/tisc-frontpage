@@ -116,7 +116,7 @@ export async function getUserInfoMiddleware() {
   return dataRes.data;
 }
 
-export async function validateResetToken(token: string | null) {
+export async function validateToken(token: string | null) {
   return request<{ data: boolean }>(`/api/auth/token/${token ?? ''}/validate`)
     .then((res) => {
       return res.data;

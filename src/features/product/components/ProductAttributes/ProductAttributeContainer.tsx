@@ -40,8 +40,8 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
     curProductId,
     {
       isSpecifiedModal,
-      isGetDimensionWeight: isTiscAdmin && activeKey === 'specification' && !curProductId, // get dimension weight list
-      isRunUseEffect: true,
+      isGetProductSpecification: true, // except specifying modal
+      isGetDimensionWeight: isTiscAdmin && activeKey === 'specification' && !curProductId, // get only dimension weight list when create new product
     },
   );
 

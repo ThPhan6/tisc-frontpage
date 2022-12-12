@@ -107,7 +107,7 @@ export const TopBar: React.FC = () => {
       }
       getProductListByBrandId(params);
     }
-  }, [filter, productBrand]);
+  }, [filter?.value, productBrand]);
 
   const gotoProductForm = () => {
     dispatch(resetProductState());

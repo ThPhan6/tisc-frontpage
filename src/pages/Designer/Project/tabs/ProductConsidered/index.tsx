@@ -39,6 +39,8 @@ import { CustomDropDown } from '@/features/product/components';
 import ProductCard from '@/features/product/components/ProductCard';
 import cardStyles from '@/features/product/components/ProductCard.less';
 
+import styles from './index.less';
+
 const ProductConsidered: React.FC = () => {
   useAutoExpandNestedTableColumn(3, [7]);
 
@@ -435,6 +437,7 @@ const ProductConsidered: React.FC = () => {
         </ProjectTabContentHeader>
 
         <CustomTable
+          footerClass={styles.summaryFooter}
           columns={setDefaultWidthForEachColumn(ZoneColumns, 7)}
           ref={tableRef}
           fetchDataFunc={getConsideredProducts}

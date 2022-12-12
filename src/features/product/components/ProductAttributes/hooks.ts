@@ -87,10 +87,10 @@ export const getSpecificationWithSelectedValue = (
 export const useProductAttributeForm = (
   attributeType: ProductInfoTab,
   productId: string,
-  active: {
+  props: {
     isSpecifiedModal?: boolean;
     isGetDimensionWeight?: boolean;
-    isRunUseEffect?: boolean;
+    isGetProductSpecification?: boolean;
   },
 ) => {
   const dispatch = useDispatch();
@@ -108,7 +108,7 @@ export const useProductAttributeForm = (
   const loaded = useBoolean();
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
-  const { data: dwData } = useGetDimensionWeight(active?.isGetDimensionWeight);
+  const { data: dwData } = useGetDimensionWeight(props.isGetDimensionWeight);
 
   const dimensionWeightData = dimension_and_weight.id ? dimension_and_weight : dwData;
 
@@ -127,10 +127,6 @@ export const useProductAttributeForm = (
       : 'specification_attribute_groups';
 
   useEffect(() => {
-    if (!active?.isRunUseEffect) {
-      return;
-    }
-
     if (
       attributeType === 'specification' &&
       specification_attribute_groups.length && // Wait for all specification attributes loaded
@@ -138,10 +134,10 @@ export const useProductAttributeForm = (
       productId &&
       isTiscAdmin === false
     ) {
-      if (active?.isSpecifiedModal) {
+      if (props.isSpecifiedModal) {
         dispatch(setDefaultSelectionFromSpecifiedData());
         loaded.setValue(true);
-      } else {
+      } else if (props.isGetProductSpecification) {
         getSelectedProductSpecification(productId).then((res) => {
           loaded.setValue(true);
           if (res) {
@@ -159,7 +155,7 @@ export const useProductAttributeForm = (
         });
       }
     }
-  }, [active?.isSpecifiedModal, attributeType, specification_attribute_groups, loaded.value]);
+  }, [props.isSpecifiedModal, attributeType, specification_attribute_groups, loaded.value]);
 
   const onDeleteProductAttribute = (index: number) => () => {
     const newProductAttribute = attributeGroup.filter((_item, key) => index !== key);
@@ -300,7 +296,7 @@ export const useProductAttributeForm = (
     const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
 
     if (updatedOnchange) {
-      if (!active?.isSpecifiedModal) {
+      if (!props.isSpecifiedModal) {
         selectProductSpecification(id, {
           specification: {
             is_refer_document: !haveCheckedAttributeGroup || false,
@@ -333,7 +329,7 @@ export const useProductAttributeForm = (
 
       const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
 
-      if (updatedOnchange && !active?.isSpecifiedModal) {
+      if (updatedOnchange && !props.isSpecifiedModal) {
         selectProductSpecification(id, {
           specification: {
             is_refer_document: !haveCheckedAttributeGroup || false,
