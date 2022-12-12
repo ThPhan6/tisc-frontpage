@@ -331,9 +331,9 @@ export const MESSAGE_NOTIFICATION = {
   DUPLICATE_CUSTOM_PRODUCT_SUCCESS: 'Duplicate custom product successfully',
   DUPLICATE_CUSTOM_PRODUCT_ERROR: 'Failed to duplicate custom product',
   GET_LIST_VENDOR: 'Failed to get list vendor by brand or distributor',
-  CREATE_CUSTOM_RESOURCE_SUCCESS: 'Create information successfully',
-  UPDATE_CUSTOM_RESOURCE_SUCCESS: 'Update information successfully',
-  DELETE_CUSTOM_RESOURCE_SUCCESS: 'Delete information successfully',
+  CREATE_CUSTOM_RESOURCE_SUCCESS: 'Create vendor information successfully',
+  UPDATE_CUSTOM_RESOURCE_SUCCESS: 'Update vendor information successfully',
+  DELETE_CUSTOM_RESOURCE_SUCCESS: 'Delete vendor information successfully',
 
   //service
   CREATE_SERVICE_SUCCESS: 'Create service successfully',
