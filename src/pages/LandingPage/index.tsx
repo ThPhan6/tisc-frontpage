@@ -137,6 +137,9 @@ const LandingPage = () => {
       getBooking(bookingId).then((res) => {
         if (res) {
           setInformationBooking(res);
+        } else {
+          openCancelBooking.setValue(false);
+          openCalendar.setValue(false);
         }
       });
     }
