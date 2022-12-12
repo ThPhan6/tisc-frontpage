@@ -54,16 +54,16 @@ export default defineConfig({
     'mono-color-light': '#E6E6E6',
 
     // box-shadow border
-    'border-top': 'inset 0 .7px 0 #000',
-    'border-bottom': 'inset 0 -.7px 0 #000',
-    'border-left': 'inset .7px 0 0 #000',
-    'border-right': 'inset -.7px 0 0 #000',
-    'border-all': 'inset 0 0 0 .7px #000',
-    'border-top-light': 'inset 0 .7px 0 rgba(0, 0, 0, 0.3)',
-    'border-bottom-light': 'inset 0 -.7px 0 rgba(0, 0, 0, 0.3)',
-    'border-left-light': 'inset .7px 0 0 rgba(0, 0, 0, 0.3)',
-    'border-right-light': 'inset -.7px 0 0 rgba(0, 0, 0, 0.3)',
-    'border-all-light': 'inset 0 0 0 .7px rgba(0, 0, 0, 0.3)',
+    'border-top': 'inset 0 1px 0 #000',
+    'border-bottom': 'inset 0 -1px 0 #000',
+    'border-left': 'inset 1px 0 0 #000',
+    'border-right': 'inset -1px 0 0 #000',
+    'border-all': 'inset 0 0 0 1px #000',
+    'border-top-light': 'inset 0 1px 0 rgba(0, 0, 0, 0.3)',
+    'border-bottom-light': 'inset 0 -1px 0 rgba(0, 0, 0, 0.3)',
+    'border-left-light': 'inset 1px 0 0 rgba(0, 0, 0, 0.3)',
+    'border-right-light': 'inset -1px 0 0 rgba(0, 0, 0, 0.3)',
+    'border-all-light': 'inset 0 0 0 1px rgba(0, 0, 0, 0.3)',
 
     //font fontFamily
     'font-primary': 'Roboto',
