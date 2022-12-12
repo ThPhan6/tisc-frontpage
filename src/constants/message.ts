@@ -342,6 +342,11 @@ export const MESSAGE_NOTIFICATION = {
   SENT_REMIND_SUCCESS: 'Sent reminder to brand successfully',
   MARK_AS_PAID_SUCCESS: 'Mark as paid successfully',
   DELETE_SERVICE_SUCCESS: 'Delete service successfully',
+
+  //schedule booking
+  CREATE_BOOKING_SUCCESS: 'Book a demo successfully',
+  CANCEL_BOOKING_SUCCESS: 'Cancel booking successfully',
+  UPDATE_BOOKING_SUCCESS: 'Update booking successfully',
 };
 
 export const MESSAGE_TOOLTIP = {

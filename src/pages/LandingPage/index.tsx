@@ -20,17 +20,21 @@ import {
   ForgotType,
   createPasswordVerify,
   forgotPasswordMiddleware,
+  getBooking,
   loginByBrandOrDesigner,
   loginMiddleware,
   resetPasswordMiddleware,
   validateToken,
   verifyAccount,
 } from './services/api';
-import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
+import { pushTo } from '@/helper/history';
+import { useBoolean, useCustomInitialState, useGetParamId, useQuery } from '@/helper/hook';
 
-import { LoginInput, ModalOpen, PasswordRequestBody } from './types';
+import { InformationBooking, LoginInput, ModalOpen, PasswordRequestBody } from './types';
 
 import { BrandInterestedModal } from './components/BrandInterestedModal';
+import { CalendarModal } from './components/CalendarModal';
+import { CancelBookingModal } from './components/CancelBookingModal';
 import { LoginModal } from './components/LoginModal';
 import { NoticeModal } from './components/NoticeModal';
 import { PasswordModal } from './components/PasswordModal';
@@ -42,7 +46,24 @@ import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { AboutPoliciesContactModal } from './AboutPolicesContactModal';
 import { LandingPageFooter } from './footer';
 import styles from './index.less';
+import { getAvailableDateInMonth } from './util';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import moment from 'moment';
+
+const DEFAULT_STATE: InformationBooking = {
+  brand_name: '',
+  website: '',
+  name: '',
+  email: '',
+  agree_tisc: false,
+  date: getAvailableDateInMonth(moment().add(24, 'hours')),
+  slot: -1,
+  timezone: 'Asia/Singapore',
+  id: '',
+  time_text: '',
+  start_time_text: '',
+  end_time_text: '',
+};
 
 const LandingPage = () => {
   const userEmail = useQuery().get('email');
@@ -56,9 +77,19 @@ const LandingPage = () => {
   const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
   const [openModal, setOpenModal] = useState<ModalOpen>('');
   const openVerifyAccountModal = useBoolean();
+  const [informationBooking, setInformationBooking] = useState<InformationBooking>(DEFAULT_STATE);
+  const openCalendar = useBoolean();
+  const bookingId = useGetParamId();
+  const isUpdateBooking = bookingId ? true : false;
+  const openCancelBooking = useBoolean();
 
   const handleCloseModal = () => {
     setOpenModal('');
+  };
+
+  const handleOpenCalendar = () => {
+    setOpenModal('');
+    openCalendar.setValue(true);
   };
 
   useEffect(() => {
@@ -101,6 +132,24 @@ const LandingPage = () => {
       history.push(PATH.landingPage);
     }
   }, [tokenVerification]);
+
+  useEffect(() => {
+    if (bookingId) {
+      getBooking(bookingId).then((res) => {
+        if (res) {
+          setInformationBooking(res);
+          if (history.location.pathname.indexOf('cancel') !== -1) {
+            openCancelBooking.setValue(true);
+          }
+          if (history.location.pathname.indexOf('re-schedule') !== -1) {
+            openCalendar.setValue(true);
+          }
+        } else {
+          pushTo(PATH.landingPage);
+        }
+      });
+    }
+  }, []);
 
   const handleSubmitLogin = (data: LoginInput) => {
     showPageLoading();
@@ -303,11 +352,17 @@ const LandingPage = () => {
           theme="default"
         />
       ) : null}
-      <BrandInterestedModal
-        visible={openModal === 'Brand Interested'}
-        onClose={handleCloseModal}
-        theme="default"
-      />
+      {openModal === 'Brand Interested' ? (
+        <BrandInterestedModal
+          visible={openModal === 'Brand Interested'}
+          onClose={handleCloseModal}
+          theme="default"
+          onChangeValue={(value) => setInformationBooking(value)}
+          inputValue={informationBooking}
+          onOpenCalendar={handleOpenCalendar}
+        />
+      ) : null}
+
       {userEmail ? (
         <PasswordModal
           visible={openResetPwd}
@@ -335,6 +390,24 @@ const LandingPage = () => {
           openLogin={() => setOpenModal('Login')}
         />
       ) : null}
+      {openCalendar.value ? (
+        <CalendarModal
+          visible={openCalendar.value}
+          onClose={() => {
+            openCalendar.setValue(false);
+            setInformationBooking(DEFAULT_STATE);
+          }}
+          informationBooking={informationBooking}
+          isUpdateBooking={isUpdateBooking}
+          onChangeValue={(value) => setInformationBooking(value)}
+        />
+      ) : null}
+
+      <CancelBookingModal
+        visible={openCancelBooking.value}
+        onClose={() => openCancelBooking.setValue(false)}
+        informationBooking={informationBooking}
+      />
     </div>
   );
 };
