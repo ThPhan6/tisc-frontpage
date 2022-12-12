@@ -12,3 +12,14 @@ export const checkShowBillingAmount = (data: any) => {
   }
   return false;
 };
+
+export const formatToMoneyValue = (
+  number: number,
+  locale: Intl.LocalesArgument = 'en-us',
+  options: Intl.NumberFormatOptions = {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  },
+) => {
+  return number.toLocaleString(locale, options);
+};

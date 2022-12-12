@@ -4,6 +4,7 @@ import { CustomResourceType } from '../type';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { useAppSelector } from '@/reducers';
 
+import { EmptyOne } from '@/components/Empty';
 import Popover from '@/components/Modal/Popover';
 
 import styles from '../CustomResource.less';
@@ -58,7 +59,8 @@ export const AssociateModal: FC<{
         };
       })}
       hasOrtherInput={false}
-      className={styles.customModal}
-    />
+      className={styles.customModal}>
+      {associates?.length === 0 && <EmptyOne customClass={styles.empty} />}
+    </Popover>
   );
 };

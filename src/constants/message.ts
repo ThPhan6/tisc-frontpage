@@ -331,17 +331,22 @@ export const MESSAGE_NOTIFICATION = {
   DUPLICATE_CUSTOM_PRODUCT_SUCCESS: 'Duplicate custom product successfully',
   DUPLICATE_CUSTOM_PRODUCT_ERROR: 'Failed to duplicate custom product',
   GET_LIST_VENDOR: 'Failed to get list vendor by brand or distributor',
-  CREATE_CUSTOM_RESOURCE_SUCCESS: 'Create information successfully',
-  UPDATE_CUSTOM_RESOURCE_SUCCESS: 'Update information successfully',
-  DELETE_CUSTOM_RESOURCE_SUCCESS: 'Delete information successfully',
+  CREATE_CUSTOM_RESOURCE_SUCCESS: 'Create vendor information successfully',
+  UPDATE_CUSTOM_RESOURCE_SUCCESS: 'Update vendor information successfully',
+  DELETE_CUSTOM_RESOURCE_SUCCESS: 'Delete vendor information successfully',
 
   //service
   CREATE_SERVICE_SUCCESS: 'Create service successfully',
   UPDATE_SERVICE_SUCCESS: 'Update service successfully',
   SENT_BILL_SUCCESS: 'Sent bill to brand successfully',
-  SENT_REMIND_SUCCESS: 'Sent remind to brand successfully',
+  SENT_REMIND_SUCCESS: 'Sent reminder to brand successfully',
   MARK_AS_PAID_SUCCESS: 'Mark as paid successfully',
   DELETE_SERVICE_SUCCESS: 'Delete service successfully',
+
+  //schedule booking
+  CREATE_BOOKING_SUCCESS: 'Book a demo successfully',
+  CANCEL_BOOKING_SUCCESS: 'Cancel booking successfully',
+  UPDATE_BOOKING_SUCCESS: 'Update booking successfully',
 };
 
 export const MESSAGE_TOOLTIP = {

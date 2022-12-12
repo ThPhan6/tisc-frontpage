@@ -1,31 +1,20 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 
 import { PageContainer } from '@ant-design/pro-layout';
 
-import { formatCurrencyNumber } from '@/helper/utils';
-
-import { SummaryService } from '../type';
+import { useAppSelector } from '@/reducers';
 
 import { Title } from '@/components/Typography';
 
 import { getServicesSummary } from '../api';
 import styles from '../index.less';
+import { formatToMoneyValue } from '../util';
 
 export const ServiceHeader: FC = ({ children }) => {
-  const [summaryData, setSummaryData] = useState<SummaryService>({
-    grandTotal: 0,
-    offline_marketing_sale: 0,
-    online_marketing_sale: 0,
-    product_card_conversion: 0,
-    others: 0,
-  });
+  const summaryData = useAppSelector((state) => state.service.summaryServices);
 
   useEffect(() => {
-    getServicesSummary().then((res) => {
-      if (res) {
-        setSummaryData(res);
-      }
-    });
+    getServicesSummary();
   }, []);
 
   return (
@@ -38,26 +27,24 @@ export const ServiceHeader: FC = ({ children }) => {
                 style={{
                   padding: '0 12px',
                 }}>
-                <Title level={8}>${formatCurrencyNumber(summaryData.offline_marketing_sale)}</Title>
+                <Title level={8}>${formatToMoneyValue(summaryData.offline_marketing_sale)}</Title>
                 <Title level={9}>Offline Marketing & Sales</Title>
               </div>
               <div className={styles.summary}>
-                <Title level={8}>${formatCurrencyNumber(summaryData.online_marketing_sale)}</Title>
+                <Title level={8}>${formatToMoneyValue(summaryData.online_marketing_sale)}</Title>
                 <Title level={9}>Online Marketing & Sales</Title>
               </div>
               <div className={styles.summary}>
-                <Title level={8}>
-                  ${formatCurrencyNumber(summaryData.product_card_conversion)}
-                </Title>
+                <Title level={8}>${formatToMoneyValue(summaryData.product_card_conversion)}</Title>
                 <Title level={9}>Product Card Conversion</Title>
               </div>
               <div className={styles.summary}>
-                <Title level={8}>${formatCurrencyNumber(summaryData.others)}</Title>
+                <Title level={8}>${formatToMoneyValue(summaryData.others)}</Title>
                 <Title level={9}>Others</Title>
               </div>
             </div>
             <div className={styles.summary}>
-              <Title level={8}>${formatCurrencyNumber(summaryData.grandTotal)}</Title>
+              <Title level={8}>${formatToMoneyValue(summaryData.grandTotal)}</Title>
               <Title level={9}>Grand Total</Title>
             </div>
           </div>

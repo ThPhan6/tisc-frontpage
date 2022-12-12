@@ -5,9 +5,9 @@ import { PATH } from '@/constants/path';
 import { getServicesPagination } from '@/features/services/api';
 import styles from '@/features/services/index.less';
 import { InvoiceStatus, ServicesResponse } from '@/features/services/type';
-import { checkShowBillingAmount } from '@/features/services/util';
+import { checkShowBillingAmount, formatToMoneyValue } from '@/features/services/util';
 import { pushTo } from '@/helper/history';
-import { formatCurrencyNumber, getFullName } from '@/helper/utils';
+import { getFullName } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 
@@ -60,7 +60,7 @@ const BilledServices = () => {
         return (
           <span>
             $
-            {formatCurrencyNumber(
+            {formatToMoneyValue(
               checkShowBillingAmount(record)
                 ? record.billing_amount + record.overdue_amount
                 : record.billing_amount,

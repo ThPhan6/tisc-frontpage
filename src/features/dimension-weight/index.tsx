@@ -19,7 +19,7 @@ interface DimensionWeightProps {
   onChange?: (data: ProductDimensionWeight) => void;
   editable: boolean;
   isShow: boolean;
-  isSpecifying?: boolean;
+  isConversionText?: boolean;
   noPadding?: boolean;
   collapseStyles?: boolean;
   customClass?: string;
@@ -30,7 +30,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
   onChange,
   editable,
   isShow,
-  isSpecifying,
+  isConversionText,
   noPadding,
   collapseStyles = true,
   customClass = '',
@@ -180,7 +180,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
     <CustomCollapse
       customHeaderClass={`${styles.dimensionCollapse} ${customClass} ${
         noPadding ? styles.noPadding : ''
-      } ${isSpecifying ? styles.dimensionWeightSpec : ''}`}
+      } ${isConversionText ? styles.dimensionWeightSpec : ''}`}
       showActiveBoxShadow={collapseStyles}
       noBorder={!collapseStyles}
       defaultActiveKey={['1']}
@@ -196,7 +196,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
       <table className={styles.tableContent}>
         <tbody>
           {data.attributes.map(
-            isSpecifying ? renderAttributeConversionText : renderAttributeConversion,
+            isConversionText ? renderAttributeConversionText : renderAttributeConversion,
           )}
         </tbody>
       </table>

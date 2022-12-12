@@ -200,7 +200,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     },
     {
       tooltipText: 'Inquiry/Request',
-      show: Boolean(showInquiryRequest && isDesignerUser),
+      show: Boolean(showInquiryRequest && isDesignerUser && !isCustomProduct),
       Icon: CommentIcon,
       onClick: () => showInquiryRequestModal.setValue(true),
     },

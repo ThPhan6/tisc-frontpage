@@ -32,6 +32,16 @@ export default [
     component: './LandingPage',
     layout: false,
   },
+  {
+    path: PATH.cancelBooking,
+    component: './LandingPage',
+    layout: false,
+  },
+  {
+    path: PATH.reScheduleBooking,
+    component: './LandingPage',
+    layout: false,
+  },
   // REQUIRED AUTHENTICATION
   {
     path: PATH.profiles,

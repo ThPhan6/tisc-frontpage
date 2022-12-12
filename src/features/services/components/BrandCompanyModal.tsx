@@ -118,8 +118,8 @@ export const BrandCompanyModal: FC<BrandCompanyProps> = ({ visible, setVisible }
           onChange={setSelectedBrand}
           placeholder={selectedBrand ? selectedBrand.label : 'select brand company'}
           containerClass={styles.customCollapse}
-          key={activeKey}
-          onCollapseChange={() => setActiveKey('1')}
+          activeKey={activeKey}
+          onCollapseChange={() => setActiveKey(activeKey === '1' ? '' : '1')}
         />
       </FormGroup>
       <BodyText level={3} customClass={selectedBrand?.value ? styles.fontWeight500 : ''}>

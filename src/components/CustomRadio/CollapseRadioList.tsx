@@ -21,6 +21,7 @@ interface CollapseRadioListProps {
   inputPlaceholder?: string;
   noDataMessage?: string;
   collapsible?: boolean;
+  activeKey?: string | number | (string | number)[];
 }
 
 const CollapseRadioList: FC<CollapseRadioListProps> = ({
@@ -35,9 +36,11 @@ const CollapseRadioList: FC<CollapseRadioListProps> = ({
   inputPlaceholder,
   noDataMessage = 'No options',
   collapsible = false,
+  ...props
 }) => {
   return (
     <CustomCollapse
+      {...props}
       collapsible={collapsible ? 'disabled' : undefined}
       onChange={onCollapseChange}
       header={
