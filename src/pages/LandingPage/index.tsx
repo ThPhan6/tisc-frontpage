@@ -27,6 +27,7 @@ import {
   validateToken,
   verifyAccount,
 } from './services/api';
+import { pushTo } from '@/helper/history';
 import { useBoolean, useCustomInitialState, useGetParamId, useQuery } from '@/helper/hook';
 
 import { InformationBooking, LoginInput, ModalOpen, PasswordRequestBody } from './types';
@@ -137,17 +138,16 @@ const LandingPage = () => {
       getBooking(bookingId).then((res) => {
         if (res) {
           setInformationBooking(res);
+          if (history.location.pathname.indexOf('cancel') !== -1) {
+            openCancelBooking.setValue(true);
+          }
+          if (history.location.pathname.indexOf('re-schedule') !== -1) {
+            openCalendar.setValue(true);
+          }
         } else {
-          openCancelBooking.setValue(false);
-          openCalendar.setValue(false);
+          pushTo(PATH.landingPage);
         }
       });
-    }
-    if (history.location.pathname.indexOf('cancel') !== -1) {
-      openCancelBooking.setValue(true);
-    }
-    if (history.location.pathname.indexOf('re-schedule') !== -1) {
-      openCalendar.setValue(true);
     }
   }, []);
 

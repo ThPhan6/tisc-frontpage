@@ -256,8 +256,8 @@ export async function getBooking(id: string) {
     .then((response) => {
       return response.data;
     })
-    .catch((error) => {
-      message.error(error?.data?.message);
+    .catch(() => {
+      return;
     });
 }
 
