@@ -8,7 +8,7 @@ type TypeDate = 'startDate' | 'endDate';
 
 let typeDate: TypeDate = 'startDate';
 
-export const getFormatDate = (date: Moment) => {
+export const getAvailableDateInMonth = (date: Moment) => {
   let selectedDate = date;
   if (endDate.diff(selectedDate) < 0) {
     selectedDate = endDate;

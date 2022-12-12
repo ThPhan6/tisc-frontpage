@@ -18,7 +18,7 @@ import CustomButton from '@/components/Button';
 import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
-import { endDate, getFormatDate, startDate } from '../util';
+import { endDate, getAvailableDateInMonth, startDate } from '../util';
 import styles from './CalendarModal.less';
 import { BrandInformation } from './CancelBookingModal';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
@@ -229,7 +229,7 @@ export const CalendarModal: FC<CalendarModalProps> = ({
               onSelect={(date) => {
                 onChangeValue({
                   ...informationBooking,
-                  date: getFormatDate(date),
+                  date: getAvailableDateInMonth(date),
                 });
               }}
               disabledDate={(date) => {

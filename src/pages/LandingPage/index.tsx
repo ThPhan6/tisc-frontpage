@@ -45,7 +45,7 @@ import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { AboutPoliciesContactModal } from './AboutPolicesContactModal';
 import { LandingPageFooter } from './footer';
 import styles from './index.less';
-import { getFormatDate } from './util';
+import { getAvailableDateInMonth } from './util';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import moment from 'moment';
 
@@ -55,7 +55,7 @@ const DEFAULT_STATE: InformationBooking = {
   name: '',
   email: '',
   agree_tisc: false,
-  date: getFormatDate(moment().add(24, 'hours')),
+  date: getAvailableDateInMonth(moment().add(24, 'hours')),
   slot: -1,
   timezone: 'Asia/Singapore',
   id: '',
