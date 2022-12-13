@@ -101,10 +101,10 @@ export const setFormatFilterForDropDown = (
   let filterData: ItemType[] = items;
 
   const renderLogo = (logo: string | React.ReactNode) => {
+    if (logo === null) {
+      return <LogoIcon logo={logo} className={styles.customLogo} />;
+    }
     if (typeof logo === 'object') {
-      if (logo === null) {
-        return <LogoIcon logo={logo} className={styles.customLogo} />;
-      }
       return logo;
     }
     if (typeof logo === 'string') {
