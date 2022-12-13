@@ -6,7 +6,7 @@ import { InputProps } from 'antd';
 import styles from './index.less';
 import { createNumberMask } from 'text-mask-addons';
 
-interface CustomNumberInputProps extends InputProps {
+interface MaskedInputProps extends InputProps {
   containerClass?: string;
   prefix?: string;
   suffix?: string;
@@ -20,7 +20,7 @@ interface CustomNumberInputProps extends InputProps {
   allowNegative?: boolean;
   allowLeadingZeroes?: boolean;
 }
-export const CustomNumberInput: FC<CustomNumberInputProps> = ({
+export const MaskedNumberInput: FC<MaskedInputProps> = ({
   containerClass,
   prefix = '',
   suffix = '',

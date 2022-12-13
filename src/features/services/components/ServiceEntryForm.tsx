@@ -10,7 +10,7 @@ import { setServiceFormData } from '../reducer';
 import store, { useAppSelector } from '@/reducers';
 import { GeneralData } from '@/types';
 
-import { CustomNumberInput } from '@/components/CustomNumberInput.tsx';
+import { MaskedNumberInput } from '@/components/CustomNumberInput.tsx';
 import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
@@ -135,7 +135,7 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
                 <MainTitle level={4} style={{ width: '80%' }}>
                   Unit Rate
                 </MainTitle>
-                <CustomNumberInput
+                <MaskedNumberInput
                   placeholder="0.00"
                   value={serviceFormData.unit_rate}
                   onChange={(e) => {
@@ -156,7 +156,7 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
                 <MainTitle level={4} style={{ width: '80%' }}>
                   Quantity
                 </MainTitle>
-                <CustomNumberInput
+                <MaskedNumberInput
                   placeholder="0"
                   integerLimit={6}
                   decimalLimit={0}
@@ -202,7 +202,7 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
                 <MainTitle level={4} style={{ width: '50%' }}>
                   Tax (%)
                 </MainTitle>
-                <CustomNumberInput
+                <MaskedNumberInput
                   placeholder="0"
                   value={serviceFormData.tax}
                   onChange={(e) => {
