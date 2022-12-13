@@ -184,6 +184,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
       showActiveBoxShadow={collapseStyles}
       noBorder={!collapseStyles}
       defaultActiveKey={['1']}
+      fontBold
       onChange={() => setActiveCollapse(!activeCollapse)}
       header={
         <div className="header" style={{ paddingLeft: noPadding ? 0 : undefined }}>

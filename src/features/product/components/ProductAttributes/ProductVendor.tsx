@@ -21,6 +21,7 @@ export const ProductVendor: FC = () => {
     <div className={styles.productVendorContainer}>
       <CustomCollapse
         showActiveBoxShadow
+        fontBold
         className={styles.vendorSection}
         customHeaderClass={styles.vendorCustomPanelBox}
         header={
@@ -97,6 +98,7 @@ export const ProductVendor: FC = () => {
 
       <CustomCollapse
         showActiveBoxShadow
+        fontBold
         className={`${styles.vendorSection} ${styles.catelogueSection}`}
         customHeaderClass={styles.vendorCustomPanelBox}
         header={

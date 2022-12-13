@@ -278,6 +278,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             defaultActiveKey={'1'}
             showActiveBoxShadow={!specifying}
             noBorder={noBorder}
+            fontBold
             className={isTiscAdmin ? undefined : styles.vendorSection}
             customHeaderClass={`${styles.productAttributeItem} ${
               specifying ? styles.specifying : ''
