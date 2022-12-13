@@ -58,7 +58,10 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
         <MainTitle level={3} textAlign={'center'} customClass={styles.header__title}>
           Entry Form
         </MainTitle>
-        <CloseIcon style={{ cursor: 'pointer' }} onClick={handleCancel} />
+        <CloseIcon
+          style={{ cursor: 'pointer', width: '18px', height: '18px' }}
+          onClick={handleCancel}
+        />
       </div>
       <div className={styles.customForm}>
         <FormGroup
