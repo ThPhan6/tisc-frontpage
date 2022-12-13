@@ -170,7 +170,7 @@ export const SpecificationTab: FC<{
         defaultActiveKey={'1'}
         showActiveBoxShadow={!specifying}
         noBorder={specifying || (viewOnly && option.use_image)}
-        titleCollapseFontStyle="bold"
+        expandingHeaderFontStyle="bold"
         customHeaderClass={styles.optionCollapse}
         header={
           <OptionCollapseHeader
