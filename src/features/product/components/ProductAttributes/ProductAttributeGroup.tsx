@@ -11,6 +11,7 @@ import {
   ProductAttributeProps,
   SpecificationAttributeBasisOptionProps,
 } from '../../types';
+import { ActiveKeyType } from './types';
 import { DimensionWeightItem } from '@/features/dimension-weight/types';
 
 import CustomCollapse from '@/components/Collapse';
@@ -61,7 +62,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   );
 
   /// for specification choice attribute
-  const [collapsible, setCollapsible] = useState<boolean>(false);
+  const [collapsible, setCollapsible] = useState<ActiveKeyType>([]);
 
   const {
     onChangeAttributeItem,
@@ -246,7 +247,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                   attribute: attribute,
                 });
 
-                setCollapsible(false);
+                setCollapsible([]);
 
                 onSelectSpecificationOption(
                   grpIndex,
