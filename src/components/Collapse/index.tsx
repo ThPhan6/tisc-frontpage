@@ -15,7 +15,7 @@ interface CustomCollapseProps extends CollapseProps {
   showActiveBoxShadow?: boolean;
   noBorder?: boolean;
   arrowAlignRight?: boolean;
-  fontBold?: boolean;
+  titleCollapseFontStyle?: 'bold' | 'normal';
 }
 
 const CustomCollapse: FC<CustomCollapseProps> = ({
@@ -26,7 +26,7 @@ const CustomCollapse: FC<CustomCollapseProps> = ({
   showActiveBoxShadow,
   noBorder,
   arrowAlignRight,
-  fontBold,
+  titleCollapseFontStyle = 'normal',
   ...props
 }) => {
   return (
@@ -36,7 +36,7 @@ const CustomCollapse: FC<CustomCollapseProps> = ({
       className={`${styles.customCollapse} ${className || ''} ${
         showActiveBoxShadow ? styles.activeBoxShadow : ''
       } ${noBorder ? styles.noBorder : ''} ${arrowAlignRight ? styles.arrowAlignRight : ''} ${
-        fontBold ? styles.fontBold : styles.fontNormal
+        titleCollapseFontStyle === 'bold' ? styles.fontBold : styles.fontNormal
       } `}
       {...props}>
       <Collapse.Panel
