@@ -117,7 +117,9 @@ export const OptionCollapseHeader: FC<OptionGroupProps> = ({
         </Col>
       )}
       <Col>
-        <RobotoBodyText level={6}>({option.items.length})</RobotoBodyText>
+        <RobotoBodyText level={6} style={{ fontWeight: 300 }}>
+          ({option.items.length})
+        </RobotoBodyText>
       </Col>
       <Col flex="1 1 100px">
         <div className="flex-end">
