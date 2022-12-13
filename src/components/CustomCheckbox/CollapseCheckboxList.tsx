@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { CheckboxValue, CustomCheckboxProps } from '@/components/CustomCheckbox/types';
 
@@ -13,6 +13,7 @@ interface CollapseCheckboxListProps extends CustomCheckboxProps {
   placeholder?: string;
   containerClass?: string;
   checkboxItemHeight?: string;
+  activeKey?: string | string[];
 }
 
 const CollapseCheckboxList: FC<CollapseCheckboxListProps> = ({
@@ -24,10 +25,19 @@ const CollapseCheckboxList: FC<CollapseCheckboxListProps> = ({
   inputPlaceholder,
   containerClass = '',
   checkboxItemHeight = '36px',
+  activeKey,
   ...props
 }) => {
+  const [collapse, setCollapse] = useState<string | string[]>();
+
+  useEffect(() => {
+    setCollapse(activeKey);
+  }, [activeKey]);
+
   return (
     <CustomCollapse
+      activeKey={collapse}
+      onChange={(key) => setCollapse(key)}
       header={
         <BodyText level={5} customClass="function-type-placeholder" fontFamily="Roboto">
           {placeholder}

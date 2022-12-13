@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { Radio, Space } from 'antd';
 
@@ -15,6 +15,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
   defaultValue,
   isRadioList,
   otherInput,
+  clearOtherInput,
   selected,
   onChange,
   inputPlaceholder = 'type here',
@@ -29,6 +30,13 @@ export const CustomRadio: FC<CustomRadioProps> = ({
 }) => {
   const [inputValue, setInputValue] = useState('');
   const [randomID] = useState(uniqueId('radio_'));
+
+  useEffect(() => {
+    if (otherInput && clearOtherInput) {
+      setInputValue('');
+    }
+  }, [otherInput && clearOtherInput]);
+
   const onChangeValue = (e: any) => {
     const newValue = {
       value: e.target.value,
