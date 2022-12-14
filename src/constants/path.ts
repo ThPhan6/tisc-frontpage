@@ -145,9 +145,6 @@ export const PATH = {
   brandBilledServices: '/brand/adminstration/billed-services',
   brandBilledServicesView: '/brand/adminstration/billed-services/:id',
 
-  // brand subscription
-  brandSubscription: '/brand/adminstration/subscription',
-
   /// design-firms
   // My Favourite
   designerFavourite: '/design-firms/my-favorites',

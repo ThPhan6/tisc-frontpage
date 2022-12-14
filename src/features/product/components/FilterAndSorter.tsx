@@ -23,7 +23,10 @@ import { SortOrder } from '../types';
 import { CategoryNestedList } from '@/features/categories/types';
 import store, { useAppSelector } from '@/reducers';
 
+import { LogoIcon } from '@/components/LogoIcon';
+
 import { CustomDropDown, FilterItem } from './ProductTopBarItem';
+import styles from './detail.less';
 
 export const onCategoryFilterClick = (id: string, name: string = '') => {
   updateUrlParams({
@@ -98,10 +101,12 @@ export const setFormatFilterForDropDown = (
   let filterData: ItemType[] = items;
 
   const renderLogo = (logo: string | React.ReactNode) => {
-    if (!logo) return undefined;
-
-    if (typeof logo === 'object') return logo;
-
+    if (logo === null) {
+      return <LogoIcon logo={logo} className={styles.customLogo} />;
+    }
+    if (typeof logo === 'object') {
+      return logo;
+    }
     if (typeof logo === 'string') {
       return <img src={showImageUrl(logo)} style={{ width: 18, height: 18 }} />;
     }

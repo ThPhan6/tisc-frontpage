@@ -9,12 +9,13 @@ import { ReactComponent as SearchIcon } from '@/assets/icons/ic-search.svg';
 
 import { getProductListForDesigner } from '@/features/product/services';
 import { useBoolean, useQuery } from '@/helper/hook';
-import { removeUrlParams, setUrlParams, showImageUrl } from '@/helper/utils';
+import { removeUrlParams, setUrlParams } from '@/helper/utils';
 import { debounce } from 'lodash';
 
 import { setProductList, setProductListSearchValue } from '@/features/product/reducers';
 
 import { CustomInput } from '@/components/Form/CustomInput';
+import { LogoIcon } from '@/components/LogoIcon';
 import SortOrderPanel from '@/components/SortOrder';
 import { BodyText, Title } from '@/components/Typography';
 import {
@@ -178,10 +179,7 @@ const BrandProductListPage: React.FC = () => {
         brandSummary ? (
           <>
             <div className="flex-center">
-              <img
-                src={showImageUrl(brandSummary.brand_logo)}
-                style={{ marginRight: 8, width: 20, height: 20 }}
-              />
+              <LogoIcon logo={brandSummary.brand_logo} className={styles.brandLogo} />
               <Title level={8}>{brandSummary.brand_name}</Title>
             </div>
 

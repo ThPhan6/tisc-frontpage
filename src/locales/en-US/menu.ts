@@ -35,7 +35,6 @@ export default {
   'menu.project_tracking': 'PROJECT TRACKING',
   'menu.adminstration.brand.distributor': 'Distributors',
   'menu.adminstration.brand.market_availability': 'Market Availability',
-  'menu.adminstration.brand.subscription': 'Subscription',
   'menu.adminstration.brand.profile': 'Brand Profile',
   'menu.adminstration.brand.billed_services': 'Billed Services',
 
