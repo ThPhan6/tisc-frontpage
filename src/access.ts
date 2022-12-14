@@ -63,7 +63,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       'administration',
       'market availability',
     ),
-    brand_administration_subscription: isAccessableForBrand('administration', 'subscription'),
+    // brand_administration_subscription: isAccessableForBrand('administration', 'subscription'),
     brand_administration_billed_services: isAccessableForBrand('administration', 'billed services'),
 
     design_workspace: isAccessableForDesigner('workspace'),

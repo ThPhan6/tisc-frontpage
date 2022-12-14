@@ -680,13 +680,13 @@ export default [
           },
         ],
       },
-      {
-        path: PATH.brandSubscription,
-        name: 'brand.subscription',
-        icon: 'subscription-icon.svg',
-        component: './Admin',
-        access: 'brand_administration_subscription',
-      },
+      // {
+      //   path: PATH.brandSubscription,
+      //   name: 'brand.subscription',
+      //   icon: 'subscription-icon.svg',
+      //   component: './Admin',
+      //   access: 'brand_administration_subscription',
+      // },
     ],
   },
   {
