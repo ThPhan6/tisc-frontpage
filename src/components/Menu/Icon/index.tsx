@@ -22,7 +22,6 @@ import { ReactComponent as ProductIcon } from '@/assets/icons/product-icon.svg';
 import { ReactComponent as ProjectIcon } from '@/assets/icons/project-icon.svg';
 import { ReactComponent as ProjectTrackingIcon } from '@/assets/icons/project-tracking.svg';
 import { ReactComponent as RevenueIcon } from '@/assets/icons/revenue-icon.svg';
-import { ReactComponent as SubscriptionIcon } from '@/assets/icons/subscription.svg';
 import { ReactComponent as TeamProfileIcon } from '@/assets/icons/team-profile-icon.svg';
 import { ReactComponent as UserGroupIcon } from '@/assets/icons/user-group-icon.svg';
 import { ReactComponent as WorkspaceIcon } from '@/assets/icons/workspace-icon.svg';
@@ -51,7 +50,6 @@ const IconList = {
   'general-inquire-icon.svg': <GeneralInquireIcon className="anticon" />,
   'general-inquiry-icon.svg': <GeneralInquiryIcon className="anticon" />,
   'distributor-icon.svg': <DistributorIcon className="anticon" />,
-  'subscription-icon.svg': <SubscriptionIcon className="anticon" />,
   'market-availability-icon.svg': <MatketAvailability className="anticon" />,
   'office-profile-icon.svg': <OfficeProfile className="anticon" />,
   'material-product-code.svg': <MaterialProductCode className="anticon" />,
