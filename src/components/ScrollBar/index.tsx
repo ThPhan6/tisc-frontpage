@@ -8,7 +8,7 @@ const ScrollBar: FC = ({ children }) => {
 
   if (children) {
     return (
-      <div onMouseLeave={() => dragStop}>
+      <div onMouseLeave={dragStop} style={{ cursor: 'pointer' }}>
         <ScrollMenu
           onWheel={onWheel}
           onMouseDown={() => dragStart}
