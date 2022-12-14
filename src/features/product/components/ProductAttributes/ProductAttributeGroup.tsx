@@ -154,7 +154,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     attrIndex: number,
     groupName: string,
     isSpecificationOptionSelection?: boolean,
-    grpIndex: number = -1,
   ) => {
     if (isTiscAdmin) {
       if (!attributes) {
@@ -163,24 +162,22 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
       return (
         <ProductAttributeSubItem
-          item={attribute as ProductAttributeProps}
-          attributeItemIndex={attrIndex}
-          attributeIndex={grpIndex}
-          attributes={attributes}
-          itemAttributes={attributeGroup[grpIndex].attributes}
-          onItemChange={onChangeAttributeItem(grpIndex)}
-          onDelete={deleteAttributeItem(grpIndex, attrIndex)}
-          activeKey={activeKey}
-          attributeGroup={attributeGroup}
-          attributeGroupKey={attributeGroupKey}
           key={attribute.id}
+          attributeGroup={attributeGroup}
+          attributeGroupIndex={groupIndex}
+          attributeItemIndex={attrIndex}
+          attributesData={attributes}
+          onItemChange={onChangeAttributeItem(groupIndex)}
+          onDelete={deleteAttributeItem(groupIndex, attrIndex)}
+          activeKey={activeKey}
+          attributeGroupKey={attributeGroupKey}
         />
       );
     }
 
     let chosenOption: SpecificationAttributeBasisOptionProps | undefined;
-    if (grpIndex !== -1) {
-      const curAttribute = attributeGroup[grpIndex]?.attributes?.[attrIndex];
+    if (groupIndex !== -1) {
+      const curAttribute = attributeGroup[groupIndex]?.attributes?.[attrIndex];
 
       chosenOption = curAttribute.basis_options?.find((el) => el.isChecked === true);
     }
@@ -247,7 +244,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                 setCollapsible([]);
 
                 onSelectSpecificationOption(
-                  grpIndex,
+                  groupIndex,
                   attribute.id,
                   isTiscAdmin ? false : true,
                   option.value.toString(),
@@ -319,7 +316,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                         attrIndex,
                         attrGroupItem.name,
                         attrGroupItem.selection,
-                        groupIndex,
                       ),
                     )}
                   </tbody>
