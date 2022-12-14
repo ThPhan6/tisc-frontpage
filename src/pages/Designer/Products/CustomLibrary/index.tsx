@@ -12,10 +12,6 @@ import styles from '@/features/product/components/ProductCard.less';
 
 const CustomLibrary: React.FC = () => {
   const customProductList = useAppSelector((state) => state.customProduct.list || []);
-  const companyFilterValue = useAppSelector((state) => state.customProduct.filter);
-  const emptyDataMessage = companyFilterValue?.value
-    ? EMPTY_DATA_MESSAGE.product
-    : 'No data product yet. Please first create a vendor and distributor profile.';
 
   return (
     <PageContainer pageHeaderRender={() => <ProductListTopBar />}>
@@ -37,7 +33,7 @@ const CustomLibrary: React.FC = () => {
             />
           ))
         ) : (
-          <EmptyDataMessage message={emptyDataMessage} />
+          <EmptyDataMessage message={EMPTY_DATA_MESSAGE.product} />
         )}
       </div>
     </PageContainer>
