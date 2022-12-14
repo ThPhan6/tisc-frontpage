@@ -1,3 +1,27 @@
+.fontBold {
+  :global(.ant-collapse-item-active .ant-collapse-header-text) {
+    p,
+    span {
+      font-weight: 500;
+      &[class*='Cormorant'] {
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+.fontNormal {
+  :global(.ant-collapse-item-active .ant-collapse-header-text) {
+    p,
+    span {
+      font-weight: 300;
+      &[class*='Cormorant'] {
+        font-weight: 600;
+      }
+    }
+  }
+}
+
 .customCollapse {
   background-color: #fff;
 
@@ -6,16 +30,6 @@
 
     :global(.ant-collapse-item-active .ant-collapse-header) {
       box-shadow: none;
-    }
-  }
-
-  :global(.ant-collapse-item-active .ant-collapse-header-text) {
-    p,
-    span {
-      font-weight: 500;
-      &[class*='Cormorant'] {
-        font-weight: 600;
-      }
     }
   }
 

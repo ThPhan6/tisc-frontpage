@@ -15,14 +15,9 @@
   }
 
   &:global(.ant-collapse-item-active) {
-    @fw: 500;
-
     :global(.header) {
       height: 100%;
 
-      :global(.label) {
-        font-weight: @fw;
-      }
       :global(.slice) {
         transition: all 0.3s;
         animation: slideToRight 0.4s ease-out forwards;
@@ -39,7 +34,7 @@
         cursor: default;
 
         :global(.ant-switch-small .ant-switch-inner) {
-          font-weight: @fw;
+          font-weight: 500;
           font-size: 8px;
         }
         :global(.ant-switch) {

@@ -7,7 +7,7 @@ import { useProductAttributeForm } from './hooks';
 import { useCheckPermission } from '@/helper/hook';
 
 import { AttributeSelectedProps, ProductAttributeFormInput } from '../../types';
-import { ProductInfoTab } from './types';
+import { ActiveKeyType, ProductInfoTab } from './types';
 
 import CustomCollapse from '@/components/Collapse';
 import { BodyText, RobotoBodyText } from '@/components/Typography';
@@ -22,8 +22,8 @@ interface SelectAttributeSpecificationChoiceProps {
   isSpecifiedModal: boolean;
   curAttributeSelect: AttributeSelectedProps;
   setCurAttributeSelect: (curAttributeSelect: AttributeSelectedProps) => void;
-  collapsible: boolean;
-  setCollapsible: (collapsible: boolean) => void;
+  collapsible: ActiveKeyType;
+  setCollapsible: (collapsible: ActiveKeyType) => void;
 }
 
 export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecificationChoiceProps> = ({
@@ -54,9 +54,10 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
       noBorder
       className={styles.noBoxShadow}
       expandIcon={({ isActive }) => (isActive ? <ActionUpIcon /> : <ActionDownIcon />)}
-      activeKey={collapsible ? ['1'] || '1' : undefined}
+      activeKey={collapsible}
+      onChange={setCollapsible}
       header={
-        <div className="specification-choice" onClick={() => setCollapsible(!collapsible)}>
+        <div className="specification-choice">
           <BodyText level={4}>Choose Specification</BodyText>
           <RobotoBodyText
             level={6}

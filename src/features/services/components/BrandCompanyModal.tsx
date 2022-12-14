@@ -42,7 +42,7 @@ export const BrandCompanyModal: FC<BrandCompanyProps> = ({ visible, setVisible }
   const [orderBy, setOrderBy] = useState<UserDetail[]>([]);
   const [selectedBrand, setSelectedBrand] = useState<RadioValue>();
   const [selectedOrderBy, setSelectedOrderBy] = useState<RadioValue>();
-  const [activeKey, setActiveKey] = useState<string>('');
+  const [activeKey, setActiveKey] = useState<string | string[]>([]);
 
   useEffect(() => {
     getBrandPagination({ page: 1, pageSize: 99999, sort: 'name', order: 'ASC' }, (res) => {
@@ -61,7 +61,7 @@ export const BrandCompanyModal: FC<BrandCompanyProps> = ({ visible, setVisible }
     });
   }, [visible === true]);
   useEffect(() => {
-    setActiveKey('');
+    setActiveKey([]);
     getListOrderBy(selectedBrand?.value as string, UserType.Brand, RoleIndex.BrandRolesAdmin).then(
       (res) => {
         if (res) {
@@ -119,7 +119,6 @@ export const BrandCompanyModal: FC<BrandCompanyProps> = ({ visible, setVisible }
           placeholder={selectedBrand ? selectedBrand.label : 'select brand company'}
           containerClass={styles.customCollapse}
           activeKey={activeKey}
-          onCollapseChange={() => setActiveKey(activeKey === '1' ? '' : '1')}
         />
       </FormGroup>
       <BodyText level={3} customClass={selectedBrand?.value ? styles.fontWeight500 : ''}>
