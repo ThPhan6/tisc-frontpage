@@ -70,6 +70,8 @@ export interface PopoverProps {
   clearOnClose?: boolean;
 
   hasOrtherInput?: boolean;
+
+  forceUpdateCurrentValue?: boolean;
 }
 
 const Popover: FC<PopoverProps> = ({
@@ -96,11 +98,14 @@ const Popover: FC<PopoverProps> = ({
   disabledSubmit,
   clearOnClose,
   hasOrtherInput = true,
+  forceUpdateCurrentValue = true,
 }) => {
   const [currentValue, setCurrentValue] = useState<any>(chosenValue);
 
   useEffect(() => {
-    setCurrentValue(chosenValue);
+    if (forceUpdateCurrentValue) {
+      setCurrentValue(chosenValue);
+    }
   }, [chosenValue]);
 
   const renderEmptyData = () => {

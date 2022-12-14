@@ -1,6 +1,7 @@
 export interface SubBasisOption {
   id?: string;
   image?: string;
+  option_code?: string;
   value_1: string;
   value_2: string;
   unit_1: string;
