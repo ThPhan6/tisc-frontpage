@@ -192,14 +192,32 @@ export const useCustomProductFilter = (fetchs?: { company?: boolean; collection?
           label: item.name,
           relation_id: item.relation_id,
         }));
+        const collectionId = collectionData.find((item) => item.id === curFilterValue.coll_id)?.id;
+        const collectionName = collectionData.find(
+          (item) => item.id === curFilterValue.coll_id,
+        )?.name;
+
         setCollections(collectionFilterData);
 
-        setCurFilterValue({
-          company_id: curFilterValue.company_id,
-          company_name: curFilterValue.company_name,
-          coll_id: collectionData.find((item) => item.id === curFilterValue.coll_id)?.id,
-          coll_name: collectionData.find((item) => item.id === curFilterValue.coll_id)?.name,
-        });
+        if (company_id && company_name && collectionId && collectionName) {
+          /// update filter value
+          setCurFilterValue({
+            company_id: curFilterValue.company_id,
+            company_name: curFilterValue.company_name,
+            coll_id: collectionId,
+            coll_name: collectionName,
+          });
+
+          /// update params
+          updateUrlParams({
+            set: [
+              { key: QUERY_KEY.company_id, value: company_id },
+              { key: QUERY_KEY.company_name, value: company_name },
+              { key: QUERY_KEY.coll_id, value: collectionId },
+              { key: QUERY_KEY.coll_name, value: collectionName },
+            ],
+          });
+        }
       });
     }
   }, [filter?.value, companies]);
