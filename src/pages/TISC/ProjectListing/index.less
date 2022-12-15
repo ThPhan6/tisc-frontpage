@@ -1,0 +1,22 @@
+.customHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  .rightMenu {
+    display: flex;
+    align-items: center;
+    padding-right: 24px;
+    box-shadow: @border-left-light;
+  }
+}
+.customTabs {
+  margin-bottom: 8px;
+  background-color: #fff;
+  :global(.ant-tabs-tab-btn) {
+    padding: 0 24px;
+  }
+  :global(.ant-tabs-top) {
+    height: 40px;
+  }
+}

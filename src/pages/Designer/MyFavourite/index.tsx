@@ -23,7 +23,7 @@ const MyFavourite = () => {
   const sort_order = query.get(QUERY_KEY.sort_order);
   const firstLoad = useBoolean(true);
 
-  const { filter, sort, dispatch } = useProductListFilterAndSorter();
+  const { filter, sort, dispatch } = useProductListFilterAndSorter({ category: true, brand: true });
 
   const retrievedFavourite = useAppSelector((state) => state.user.user?.retrieve_favourite);
 
@@ -38,6 +38,7 @@ const MyFavourite = () => {
       const noFiltering = !filter && !sort;
 
       if ((cate_id || brand_id || sort_order) && noFiltering && firstLoad.value) {
+        firstLoad.setValue(false);
         return;
       }
       getFavouriteProductList({
@@ -46,7 +47,7 @@ const MyFavourite = () => {
         order: sort?.order,
       });
     }
-  }, [filter, sort, retrievedFavourite]);
+  }, [filter?.value, sort?.order, retrievedFavourite]);
 
   return (
     <div>

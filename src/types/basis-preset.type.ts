@@ -9,6 +9,7 @@ export interface BasisPresetListResponse {
   id: string;
   name: string;
   count: number;
+  master: boolean;
   subs: {
     id: string;
     name: string;

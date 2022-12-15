@@ -17,6 +17,7 @@ export interface CustomRadioProps {
   selected?: RadioValue;
   isRadioList?: boolean;
   otherInput?: boolean;
+  clearOtherInput?: boolean;
   onChange?: (value: RadioValue) => void;
   inputPlaceholder?: string;
   containerClass?: string;
@@ -24,4 +25,6 @@ export interface CustomRadioProps {
   noPaddingLeft?: boolean;
   otherStickyBottom?: boolean;
   stickyTopItem?: boolean;
+  optionStyle?: CSSProperties;
+  disabled?: boolean;
 }

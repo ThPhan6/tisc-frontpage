@@ -13,11 +13,13 @@ interface CollapseRadioFormGroupProps extends FormGroupProps {
   checked?: string | number;
   placeholder?: string;
   otherInput?: boolean;
+  clearOtherInput?: boolean;
   onChange?: (checked: RadioValue) => void;
   radioListClass?: string;
   defaultPlaceHolder?: string | number;
   inputPlaceholder?: string;
   noDataMessage?: string;
+  activeKey?: string | string[];
 }
 
 const CollapseRadioFormGroup: FC<CollapseRadioFormGroupProps> = ({
@@ -26,12 +28,14 @@ const CollapseRadioFormGroup: FC<CollapseRadioFormGroupProps> = ({
   checked,
   optionData,
   otherInput,
+  clearOtherInput,
   onChange,
   radioListClass = '',
   formClass = '',
   defaultPlaceHolder = 'select from list',
   inputPlaceholder = 'please specify',
   noDataMessage,
+  activeKey,
   ...props
 }) => {
   return (
@@ -42,12 +46,14 @@ const CollapseRadioFormGroup: FC<CollapseRadioFormGroupProps> = ({
       formClass={`${styles.group} ${placeholder ? styles.activeLabel : ''} ${formClass}`}
       {...props}>
       <CollapseRadioList
+        activeKey={activeKey}
         containerClass={`${styles.radioGroup} ${radioListClass}`}
         options={optionData}
         checked={checked}
         onChange={onChange}
         placeholder={placeholder || defaultPlaceHolder}
         otherInput={otherInput}
+        clearOtherInput={clearOtherInput}
         inputPlaceholder={inputPlaceholder}
         noDataMessage={noDataMessage}
       />

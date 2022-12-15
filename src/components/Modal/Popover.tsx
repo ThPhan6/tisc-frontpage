@@ -64,9 +64,14 @@ export interface PopoverProps {
 
   onFormSubmit?: (v?: any) => void;
   submitButtonStatus?: boolean;
+  disabledSubmit?: boolean;
 
   // clear select on close
   clearOnClose?: boolean;
+
+  hasOrtherInput?: boolean;
+
+  forceUpdateCurrentValue?: boolean;
 }
 
 const Popover: FC<PopoverProps> = ({
@@ -90,12 +95,17 @@ const Popover: FC<PopoverProps> = ({
   children,
   onFormSubmit,
   submitButtonStatus,
+  disabledSubmit,
   clearOnClose,
+  hasOrtherInput = true,
+  forceUpdateCurrentValue = true,
 }) => {
   const [currentValue, setCurrentValue] = useState<any>(chosenValue);
 
   useEffect(() => {
-    setCurrentValue(chosenValue);
+    if (forceUpdateCurrentValue) {
+      setCurrentValue(chosenValue);
+    }
   }, [chosenValue]);
 
   const renderEmptyData = () => {
@@ -128,12 +138,7 @@ const Popover: FC<PopoverProps> = ({
         return renderEmptyData();
       }
       return (
-        <GroupRadioList
-          selected={currentValue}
-          chosenItem={chosenValue}
-          data={groupRadioList}
-          onChange={setCurrentValue}
-        />
+        <GroupRadioList selected={currentValue} data={groupRadioList} onChange={setCurrentValue} />
       );
     }
     /// drodown checkbox list
@@ -159,7 +164,7 @@ const Popover: FC<PopoverProps> = ({
         <CustomCheckbox
           options={groupCheckboxList}
           isCheckboxList
-          otherInput
+          otherInput={hasOrtherInput}
           selected={currentValue}
           onChange={setCurrentValue}
         />
@@ -238,6 +243,7 @@ const Popover: FC<PopoverProps> = ({
         variant="primary"
         properties="rounded"
         buttonClass="done-btn"
+        disabled={disabledSubmit}
         onClick={handleDone}>
         Done
       </CustomButton>

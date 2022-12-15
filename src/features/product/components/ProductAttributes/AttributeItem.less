@@ -1,10 +1,8 @@
 .defaultOptionList {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   height: 36px;
   :global(.product-id-label) {
-    margin-left: auto;
     font-weight: 300;
     font-size: 14px;
     font-family: @font-secondary;
@@ -24,7 +22,7 @@
   :global(.product-id-label) + div {
     width: auto !important;
     :global(.product-id-input) {
-      width: 100px;
+      width: 100%;
       padding: 0 24px 0 12px;
       color: @primary-color-dark;
     }
@@ -53,11 +51,10 @@
     }
     :global(.product-input-group) {
       display: flex;
-      justify-content: center;
       width: 100%;
       height: 24px;
       :global(.product-id-input) {
-        width: 100px;
+        width: 100%;
         padding: 0 0 0 12px;
         color: @primary-color-dark;
       }
@@ -104,6 +101,9 @@
 
 .converstionText {
   margin-right: 24px;
+  &:first-child {
+    min-width: 25%;
+  }
   &:last-child {
     margin-right: 0;
   }

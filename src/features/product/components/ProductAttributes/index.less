@@ -15,7 +15,7 @@
     .attrGroupTitle {
       span,
       p {
-        font-weight: 500;
+        // font-weight: 500;
       }
     }
   }
@@ -45,11 +45,13 @@
     align-items: center;
     justify-content: space-between;
     height: 36px;
+    padding: 0 16px;
+    box-shadow: @border-bottom;
     :global(.attribute-select-group-left) {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       cursor: pointer;
+
       :global(.single-right-icon) {
         margin-right: auto;
         margin-left: 8px;
@@ -76,14 +78,17 @@
   }
 
   :global(.ant-collapse-content > .ant-collapse-content-box) {
-    padding: 0 16px;
+    padding: 0;
+
+    :global(.ant-collapse-item-active) {
+      box-shadow: none;
+    }
   }
 }
 
 .table {
   width: 100%;
   height: auto;
-  min-height: 36px;
   white-space: nowrap;
   table-layout: fixed;
 
@@ -100,12 +105,15 @@
   }
 
   .attributeName {
-    width: 25%;
+    width: 30%;
     text-transform: capitalize;
   }
 
   .attributeDescription {
-    width: 75%;
+    > p {
+      display: flex;
+      align-items: center;
+    }
 
     :global(.product-attribute-option-wrapper) {
       display: flex;
@@ -120,16 +128,24 @@
   }
 }
 
-.addAttributeBtn {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  height: 36px;
+.marginTopSpace {
+  margin-top: 8px;
+}
+
+.paddingRounded {
+  padding: 8px 16px;
+}
+
+.paddingWrapper {
+  padding: 0 16px 8px 16px;
+}
+
+.paddingNone {
+  padding: 0;
+}
+
+.paddingSpace {
   padding: 0 16px;
-  cursor: pointer;
-  :global(.add-attribute-text) {
-    margin-right: 12px;
-  }
 }
 
 .textOverFlow {
@@ -250,7 +266,7 @@
     &:global(.ant-collapse-item-active) {
       .brandProfileHeader {
         p {
-          font-weight: 500;
+          // font-weight: 500;
           line-height: 20px;
         }
       }
@@ -402,7 +418,7 @@
   :global(.radio-list-heading) {
     margin-bottom: 16px;
     // padding-left: 16px;
-    font-weight: 500;
+    // font-weight: 500;
     font-size: 14px;
     font-family: @font-primary;
     line-height: 22px;

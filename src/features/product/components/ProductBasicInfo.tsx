@@ -1,85 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { ReactComponent as RemoveIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as RightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 
-import { confirmDelete } from '@/helper/common';
-import { useBoolean, useCheckPermission } from '@/helper/hook';
+import { useCheckPermission } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
-import { createCollection, deleteCollection, getCollectionByBrandId } from '@/services';
 
-import { setPartialProductDetail } from '@/features/product/reducers';
+import { productVariantsSelector, setPartialProductDetail } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
-import type { Collection } from '@/types';
+import { CollectionRelationType } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
 import InputGroup from '@/components/EntryForm/InputGroup';
-import { CustomInput } from '@/components/Form/CustomInput';
-import Popover from '@/components/Modal/Popover';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { BodyText, MainTitle } from '@/components/Typography';
+import { BodyText } from '@/components/Typography';
 
+import { CollectionModal } from '../modals/CollectionModal';
 import styles from './detail.less';
 
 export const ProductBasicInfo: React.FC = () => {
   const dispatch = useDispatch();
   const editable = useCheckPermission('TISC Admin');
 
-  const product = useAppSelector((state) => state.product);
-  const { name, description, collection } = product.details;
+  const brand = useAppSelector((state) => state.product.brand);
+  const { name, description, collection } = useAppSelector((state) => state.product.details);
+  const productId = useAppSelector(productVariantsSelector);
   const [visible, setVisible] = useState(false);
-  const [collections, setCollections] = useState<Collection[]>([]);
-  const [newCollection, setNewCollection] = useState('');
-  const disabled = useBoolean();
-
-  const getCollectionList = () => {
-    if (product.brand?.id) {
-      getCollectionByBrandId(product.brand.id).then(setCollections);
-    }
-  };
-
-  const handleCreateCollection = () => {
-    if (!product.brand) {
-      /// do nothing
-      return;
-    }
-    disabled.setValue(true);
-    createCollection({
-      name: newCollection,
-      brand_id: product.brand.id,
-    }).then((res) => {
-      /// disable loading
-      disabled.setValue(false);
-      if (res) {
-        // reset data collection
-        setNewCollection('');
-        /// reload collection list
-        getCollectionList();
-      }
-    });
-  };
-
-  const handleRemoveCollection = (e: React.ChangeEvent<any>, id: string) => {
-    /// prevent checked radio value
-    e.stopPropagation();
-    e.preventDefault();
-    // call API
-    confirmDelete(() => {
-      deleteCollection(id).then((isSuccess) => {
-        if (isSuccess) {
-          getCollectionList();
-        }
-      });
-    });
-  };
-
-  //
-  useEffect(() => {
-    if (product.brand?.id) {
-      getCollectionList();
-    }
-  }, [product.brand]);
 
   return (
     <>
@@ -92,9 +37,9 @@ export const ProductBasicInfo: React.FC = () => {
               Brand
             </BodyText>
             <BodyText level={6} fontFamily="Roboto" customClass="brand-name">
-              {product.brand?.name ?? 'N/A'}
+              {brand?.name ?? 'N/A'}
             </BodyText>
-            {product.brand?.logo ? <img src={showImageUrl(product.brand.logo)} /> : null}
+            {brand?.logo ? <img src={showImageUrl(brand.logo)} /> : null}
           </div>
         }
         customHeaderClass={styles.productHeaderCollapse}>
@@ -104,7 +49,14 @@ export const ProductBasicInfo: React.FC = () => {
           fontLevel={4}
           label="Collection"
           placeholder={editable ? 'create or assign from the list' : ''}
-          rightIcon={editable ? <RightLeftIcon onClick={() => setVisible(true)} /> : undefined}
+          rightIcon={
+            editable ? (
+              <RightLeftIcon
+                className={brand?.id ? 'mono-color' : 'mono-color-medium'}
+                onClick={() => setVisible(true)}
+              />
+            ) : undefined
+          }
           noWrap
           value={collection?.name ?? ''}
           readOnly={editable === false}
@@ -131,7 +83,15 @@ export const ProductBasicInfo: React.FC = () => {
           }}
         />
         {/* Product ID */}
-        <InputGroup horizontal fontLevel={4} label="Product ID" readOnly={true} noWrap />
+        <InputGroup
+          horizontal
+          fontLevel={4}
+          containerClass={!editable ? styles.viewInfo : ''}
+          label="Product ID"
+          readOnly={true}
+          noWrap
+          value={productId}
+        />
         {/* Description */}
         <InputGroup
           horizontal
@@ -152,75 +112,30 @@ export const ProductBasicInfo: React.FC = () => {
           }}
         />
       </CustomCollapse>
-      {editable && (
-        <Popover
-          title="SELECT COLLECTION"
+      {editable && brand?.id ? (
+        <CollectionModal
+          brandId={brand.id}
+          collectionType={CollectionRelationType.Brand}
           visible={visible}
           setVisible={setVisible}
-          chosenValue={
-            collection
-              ? {
-                  value: collection.id,
-                  label: collection.name,
-                }
-              : undefined
-          }
+          chosenValue={{
+            value: collection?.id || '',
+            label: collection?.name || '',
+          }}
           setChosenValue={(selected) => {
             if (selected) {
-              const selectedCollection = collections.find((col) => col.id === selected.value);
-              if (selectedCollection) {
-                dispatch(
-                  setPartialProductDetail({
-                    collection: {
-                      name: selectedCollection.name,
-                      id: selectedCollection.id,
-                    },
-                  }),
-                );
-              }
+              dispatch(
+                setPartialProductDetail({
+                  collection: {
+                    name: String(selected.label),
+                    id: String(selected.value),
+                  },
+                }),
+              );
             }
           }}
-          groupRadioList={[
-            {
-              heading: 'Assign bellow Collection',
-              options: collections.map((item) => {
-                return {
-                  label: (
-                    <span className={styles.collectionLabel}>
-                      {item.name}
-                      <RemoveIcon onClick={(e: any) => handleRemoveCollection(e, item.id)} />
-                    </span>
-                  ),
-                  value: item.id,
-                };
-              }),
-            },
-          ]}
-          extraTopAction={
-            <div className={styles.extraAction}>
-              <MainTitle level={3} customClass="extra-heading">
-                Create new collection
-              </MainTitle>
-              <div className="extra-input-group">
-                <CustomInput
-                  className="extra-input"
-                  placeholder="type new collection name"
-                  value={newCollection}
-                  onChange={(e) => setNewCollection(e.target.value)}
-                />
-                <div
-                  className="extra-custom-button"
-                  onClick={disabled.value ? undefined : handleCreateCollection}>
-                  <MainTitle level={4} customClass="extra-custom-button-label">
-                    Add
-                  </MainTitle>
-                  <CustomPlusButton size={18} />
-                </div>
-              </div>
-            </div>
-          }
         />
-      )}
+      ) : null}
     </>
   );
 };

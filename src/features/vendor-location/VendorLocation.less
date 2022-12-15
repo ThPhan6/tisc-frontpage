@@ -3,10 +3,10 @@
   margin-bottom: 8px;
 }
 .collapsed {
-  box-shadow: 0 0.7px @mono-color;
+  box-shadow: 0 1px @mono-color;
 }
 .notCollapsed {
-  box-shadow: 0 0.7px @mono-color-medium;
+  box-shadow: 0 1px @mono-color-medium;
 }
 .borderBottomNone > :last-child {
   box-shadow: none;
@@ -29,7 +29,7 @@
 
   :global(div > .ant-collapse-item > .ant-collapse-header) {
     display: block !important;
-    justify-content: start !important;
+    justify-content: flex-start !important;
     height: auto !important;
     padding: 0 !important;
     box-shadow: none;
@@ -94,7 +94,7 @@
 .customLocationModal {
   :global(.ant-collapse-item) {
     :global(.ant-collapse-content-box) {
-      padding: 16px 0 0 16px !important;
+      padding: 10px 0 0 16px !important;
     }
   }
   :global(.radio-label) {

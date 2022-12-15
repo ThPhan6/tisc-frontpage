@@ -17,6 +17,7 @@ import Popover from '@/components/Modal/Popover';
 import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from './SelectAttributesToGroupRow.less';
+import { SpecificationChoice } from './SpecificationChoice';
 
 const POPOVER_TITLE = {
   general: 'Select General Attributes',
@@ -51,6 +52,7 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
     const { onDeleteProductAttribute, attributeGroupKey, attributeGroup } = useProductAttributeForm(
       activeKey,
       productId,
+      { isRunUseEffect: true },
     );
 
     const onSelectValue = (value: CheckboxValue[]) => {
@@ -61,12 +63,12 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
 
       const newAttrGroup = cloneDeep(attributeGroup);
 
-      if (value.length < newAttrGroup[groupIndex].attributes.length) {
-        const selectedAttrIds = value.map((v) => v.value);
-        newAttrGroup[groupIndex].attributes = newAttrGroup[groupIndex].attributes.filter((attr) =>
-          selectedAttrIds.includes(attr.id),
-        );
-      } else {
+      const selectedAttrIds = value.map((v) => v.value);
+      newAttrGroup[groupIndex].attributes = newAttrGroup[groupIndex].attributes.filter((attr) =>
+        selectedAttrIds.includes(attr.id),
+      );
+
+      if (value.length > newAttrGroup[groupIndex].attributes.length) {
         newAttrGroup[groupIndex].attributes = value.map((item, key: number) => {
           /// radio value
           let selectedAttribute: ProductSubAttributes | undefined;
@@ -144,10 +146,28 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
     return (
       <>
         <div className="attribute-select-group">
-          <div className="attribute-select-group-left" onClick={() => setVisible(true)}>
-            <MainTitle level={4}>{POPOVER_TITLE[activeKey]}</MainTitle>
-            <SingleRightIcon className="single-right-icon" />
+          <div className="attribute-select-group-left">
+            <div className="flex-start" onClick={() => setVisible(true)}>
+              <MainTitle level={4}>{POPOVER_TITLE[activeKey]}</MainTitle>
+              <SingleRightIcon className="single-right-icon" />
+            </div>
+
+            <SpecificationChoice
+              data={groupItem.attributes}
+              switchChecked={groupItem.selection}
+              onClick={(toggle) => {
+                const newAttrGroup = [...attributeGroup];
+                newAttrGroup[groupIndex] = { ...newAttrGroup[groupIndex], selection: toggle };
+
+                store.dispatch(
+                  setPartialProductDetail({
+                    specification_attribute_groups: newAttrGroup,
+                  }),
+                );
+              }}
+            />
           </div>
+
           <DeleteIcon className="delete-icon" onClick={onDeleteProductAttribute(groupIndex)} />
         </div>
 

@@ -50,7 +50,7 @@ import { getListTeamProfileUserGroupByBrandId } from '@/features/team-profiles/a
 import moment from 'moment';
 
 const ProjectTracking = () => {
-  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
+  useAutoExpandNestedTableColumn(0, [7]);
   const tableRef = useRef<any>();
   const userInfo = useAppSelector((state) => state.user.user);
 
@@ -254,7 +254,7 @@ const ProjectTracking = () => {
       dataIndex: 'notificationCount',
       render: (_value, record) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', width: 85 }}>
             {record.notificationCount}{' '}
             {record.newNotification ? <UnreadIcon style={{ marginLeft: '8px' }} /> : ''}
           </div>
@@ -315,7 +315,7 @@ const ProjectTracking = () => {
           rightAction={
             <InfoIcon className={styles.iconInfor} onClick={() => setOpenInformationModal(true)} />
           }
-          columns={setDefaultWidthForEachColumn(MainColumns, 8)}
+          columns={setDefaultWidthForEachColumn(MainColumns, 7)}
           fetchDataFunc={getProjectTrackingPagination}
           extraParams={
             (selectedFilter && selectedFilter.id !== Global['VIEW ALL']) ||
@@ -335,7 +335,7 @@ const ProjectTracking = () => {
           ref={tableRef}
           hasPagination
           autoLoad={false}
-          customClass={styles.customTitle}
+          headerClass={styles.customTitle}
           onRow={(rowRecord: ProjecTrackingList) => ({
             onClick: () => {
               pushTo(PATH.brandProjectTrackingDetail.replace(':id', rowRecord.id));

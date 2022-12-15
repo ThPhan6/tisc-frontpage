@@ -18,7 +18,7 @@ import { ActionMenu } from '@/components/TableAction';
 import { deleteDistributor, getDistributorPagination } from '@/features/distributors/api';
 
 const Distributors = () => {
-  useAutoExpandNestedTableColumn(0);
+  useAutoExpandNestedTableColumn(0, [5]);
   const tableRef = useRef<any>();
   const user = useAppSelector((state) => state.user.user);
 
@@ -71,7 +71,7 @@ const Distributors = () => {
       title: 'Coverage Beyond',
       dataIndex: 'coverage_beyond',
       render: (value) => {
-        return <span>{value === true ? 'Not Allow' : 'Allow'}</span>;
+        return <span>{value === true ? 'Allow' : 'Not Allow'}</span>;
       },
     },
     {

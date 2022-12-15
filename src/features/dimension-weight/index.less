@@ -1,0 +1,119 @@
+.dimensionCollapse {
+  margin-bottom: 8px;
+
+  :global(.ant-collapse-header) {
+    :global(.header) {
+      display: flex;
+      align-items: center;
+      padding-left: 16px;
+    }
+    :global(.slice) {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+  }
+
+  &:global(.ant-collapse-item-active) {
+    :global(.header) {
+      height: 100%;
+
+      :global(.slice) {
+        transition: all 0.3s;
+        animation: slideToRight 0.4s ease-out forwards;
+      }
+      :global(.text) {
+        padding: 0 12px 0 24px;
+        font-weight: 300 !important;
+      }
+
+      .switchBtn {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        cursor: default;
+
+        :global(.ant-switch-small .ant-switch-inner) {
+          font-weight: 500;
+          font-size: 8px;
+        }
+        :global(.ant-switch) {
+          box-shadow: none;
+        }
+        :global(.ant-click-animating-node) {
+          animation: none;
+        }
+      }
+    }
+  }
+
+  :global(.ant-collapse-content) {
+    :global(.ant-collapse-content-box) {
+      :global(.ant-row):not(:last-child) {
+        margin-bottom: 16px;
+      }
+
+      :global(.double-input-group-wrapper) {
+        :global(.double-input-group) {
+          width: 50%;
+          border-bottom: 0.7px solid @mono-color-medium;
+        }
+      }
+    }
+  }
+
+  :global(.ant-input[disabled]) {
+    color: @mono-color;
+    background-color: transparent;
+    border-color: transparent;
+    border-bottom-color: transparent;
+    cursor: default;
+  }
+
+  .tableContent {
+    width: 100%;
+    table-layout: fixed;
+
+    tr:not(:last-child) > td {
+      padding-bottom: 16px;
+    }
+
+    :global(.input-label-container) {
+      width: max-content;
+      padding-right: 26px;
+    }
+  }
+}
+
+.dimensionWeightSpec {
+  :global(.ant-collapse-header) {
+    :global(.header) {
+      padding-left: 0;
+    }
+  }
+
+  :global(.ant-collapse-content > .ant-collapse-content-box) {
+    padding: 0;
+  }
+}
+
+.marginTopSpace {
+  margin-top: 8px;
+}
+
+.noPadding {
+  :global(.ant-collapse-content-box) {
+    padding: 0;
+  }
+}
+
+@keyframes slideToRight {
+  0% {
+    transform: translateX(-5%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

@@ -1,0 +1,39 @@
+.mainContent {
+  :global(.optionLabel) {
+    padding-right: 12px;
+    padding-left: 16px;
+  }
+
+  .optionCollapse {
+    margin-bottom: 8px;
+    :global(.input-label) {
+      height: 18px;
+      padding: 0 12px 0 16px;
+    }
+
+    :global(.ant-collapse-content > .ant-collapse-content-box) {
+      padding: 0;
+      > div {
+        padding: 16px;
+      }
+    }
+
+    :global(.ant-checkbox + span) {
+      padding: 0 12px;
+    }
+
+    .optionItem {
+      box-shadow: @border-top-light;
+    }
+  }
+}
+
+.deleteIcon {
+  color: @mono-color-medium;
+  cursor: pointer;
+
+  &:hover path {
+    transition: all 0.3s;
+    fill: @primary-color-dark;
+  }
+}

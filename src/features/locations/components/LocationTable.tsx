@@ -18,7 +18,7 @@ import { ActionMenu } from '@/components/TableAction';
 import { deleteLocationById, getLocationPagination } from '@/features/locations/api';
 
 const LocationTable: React.FC = () => {
-  useAutoExpandNestedTableColumn(0);
+  useAutoExpandNestedTableColumn(0, [5]);
   const tableRef = useRef<any>();
 
   const isTISCAdmin = useCheckPermission('TISC Admin');

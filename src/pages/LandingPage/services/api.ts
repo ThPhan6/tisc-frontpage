@@ -4,7 +4,10 @@ import { message } from 'antd';
 import { request } from 'umi';
 
 import type {
+  AvailableTime,
+  BookingPayloadRequest,
   ContactRequestBody,
+  InformationBooking,
   LoginInput,
   LoginResponseProps,
   PasswordRequestBody,
@@ -116,8 +119,8 @@ export async function getUserInfoMiddleware() {
   return dataRes.data;
 }
 
-export async function validateResetToken(token: string | null) {
-  return request<{ data: boolean }>(`/api/auth/is-valid-reset-password-token/${token ?? ''}`)
+export async function validateToken(token: string | null) {
+  return request<{ data: boolean }>(`/api/auth/token/${token ?? ''}/validate`)
     .then((res) => {
       return res.data;
     })
@@ -217,5 +220,74 @@ export async function getListQuotation(
     })
     .catch((error) => {
       message.error(error.message);
+    });
+}
+
+export async function getListAvailableTime(date: string, timezone: string) {
+  return request<{ data: AvailableTime[] }>(
+    `/api/booking/available-schedule?date=${date}&timezone=${timezone}`,
+    {
+      method: 'GET',
+    },
+  )
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message);
+      return [] as AvailableTime[];
+    });
+}
+
+export async function createBooking(data: BookingPayloadRequest) {
+  return request<boolean>(`/api/booking/create`, { method: 'POST', data })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.CREATE_BOOKING_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message);
+      return false;
+    });
+}
+
+export async function getBooking(id: string) {
+  return request<{ data: InformationBooking }>(`/api/booking/${id}`, { method: 'GET' })
+    .then((response) => {
+      return response.data;
+    })
+    .catch(() => {
+      return;
+    });
+}
+
+export async function deleteBooking(id: string) {
+  return request<boolean>(`/api/booking/${id}/cancel`, { method: 'DELETE' })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.CANCEL_BOOKING_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message);
+      return false;
+    });
+}
+
+export async function updateBooking(
+  id: string,
+  data: {
+    date: string;
+    slot: number;
+    timezone: string;
+  },
+) {
+  return request<boolean>(`/api/booking/${id}/re-schedule`, { method: 'PATCH', data })
+    .then(() => {
+      message.success(MESSAGE_NOTIFICATION.UPDATE_BOOKING_SUCCESS);
+      return true;
+    })
+    .catch((error) => {
+      message.error(error?.data?.message);
+      return false;
     });
 }

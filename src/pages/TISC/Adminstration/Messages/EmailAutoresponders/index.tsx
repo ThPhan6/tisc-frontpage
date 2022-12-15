@@ -14,7 +14,7 @@ import { ActionMenu } from '@/components/TableAction';
 import styles from './styles/index.less';
 
 const EmailAutoList = () => {
-  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
+  useAutoExpandNestedTableColumn(0, [2]);
   const handleUpdateEmailAuto = (id: string) => {
     pushTo(PATH.updateEmailAuto.replace(':id', id));
   };

@@ -20,7 +20,7 @@ import MenuHeaderSummary from '@/features/user-group/components/MenuHeaderSummar
 import styles from './index.less';
 
 const DesignFirmList: React.FC = () => {
-  useAutoExpandNestedTableColumn(0);
+  useAutoExpandNestedTableColumn(0, [10]);
   const tableRef = useRef<any>();
 
   const handleViewDesignFirm = (id: string) => {

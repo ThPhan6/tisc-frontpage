@@ -13,10 +13,11 @@ export interface CustomPaginatorProps {
   pagination: TablePaginationConfig;
   dataLength: number;
   sorter: SorterResult<any> | SorterResult<any>[];
+  customClass?: string;
 }
 
 const CustomPaginator = (props: CustomPaginatorProps) => {
-  const { fetchData, pagination, dataLength, sorter } = props;
+  const { fetchData, pagination, dataLength, sorter, customClass = '' } = props;
   const currentPage = pagination.current ?? 1;
   const currentPageSize = pagination.pageSize ?? 1;
   const currentTotal = pagination.total ?? 0;
@@ -67,7 +68,7 @@ const CustomPaginator = (props: CustomPaginatorProps) => {
   };
 
   return (
-    <div className={styles.customPaginator}>
+    <div className={`${styles.customPaginator} ${customClass}`}>
       {renderLeftPaginator()}
       <span>
         {firstRecord}-{lastRecord}

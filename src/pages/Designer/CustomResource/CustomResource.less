@@ -1,0 +1,209 @@
+.customRadio {
+  :global(.ant-space-item) {
+    padding-right: 16px;
+    label {
+      :global(.item-option-checked) {
+        font-weight: 500;
+      }
+    }
+  }
+  :global(.ant-space) {
+    gap: 0 !important;
+  }
+}
+
+.button {
+  margin-left: 24px;
+}
+
+.disabledRadio {
+  color: @mono-color;
+  pointer-events: none;
+
+  @mono-color: @mono-color-medium;
+
+  :global(.ant-radio-wrapper .ant-radio .ant-radio-inner::after) {
+    background-color: @mono-color;
+  }
+  :global(.ant-radio-wrapper .ant-radio .ant-radio-inner) {
+    color: @mono-color;
+    border-color: @mono-color;
+  }
+  :global(.ant-space-item) {
+    label {
+      color: @mono-color-medium;
+    }
+  }
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 12px 16px;
+  box-shadow: @border-top;
+  .btnCancel {
+    margin-right: 16px;
+  }
+  .disableButton {
+    color: @mono-color-dark;
+    background-color: @mono-color-light;
+    border: 0.5px solid @mono-color-dark;
+    cursor: default;
+    svg path {
+      fill: @mono-color-dark;
+    }
+    p {
+      color: @mono-color-dark;
+    }
+  }
+}
+
+.label {
+  text-transform: capitalize;
+}
+
+.title {
+  p {
+    text-align: center;
+  }
+}
+
+.information {
+  height: calc(100vh - 304px);
+  padding: 16px;
+  overflow: auto;
+  :global(.ant-collapse > .ant-collapse-item.ant-collapse-no-arrow > .ant-collapse-header) {
+    padding-left: 0;
+  }
+  :global(.ant-collapse-content > .ant-collapse-content-box) {
+    padding: 0;
+  }
+  :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
+    padding: 0;
+  }
+  :global(.ant-collapse-ghost
+      > .ant-collapse-item
+      > .ant-collapse-content
+      > .ant-collapse-content-box) {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .bottomMedium {
+    border-radius: 0 !important;
+    box-shadow: @border-bottom-light;
+  }
+  .panel_header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    &__field {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      height: 40px;
+      padding: 8px 0;
+    }
+    .titleIcon {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      .deleteIcon {
+        margin-right: 24px;
+        color: @mono-color-medium;
+        cursor: pointer;
+        &:hover {
+          color: @primary-color-dark;
+        }
+      }
+    }
+    .title {
+      display: flex;
+      align-items: center;
+    }
+    .icon {
+      margin-top: 4px;
+    }
+  }
+  .customPhoneInput {
+    :global(.ant-input) {
+      color: @primary-color-dark;
+    }
+  }
+}
+
+.addressForm {
+  margin-bottom: 40px;
+  .address {
+    :global(.ant-input) {
+      padding: 0 16px;
+    }
+  }
+  .customInput {
+    :global(.ant-input) {
+      color: @mono-color;
+    }
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 16px;
+  background: #fff;
+  border-bottom: 0.7px inset @mono-color;
+  &__title {
+    flex: 1;
+    margin-right: 8px;
+    text-align: center;
+    text-transform: uppercase;
+  }
+}
+
+.phoneInput {
+  :global(.ant-input) {
+    color: @primary-color-dark !important;
+  }
+}
+
+.customModal {
+  :global(.ant-modal-body) {
+    padding: 16px 19px 16px 32px !important;
+  }
+}
+
+.associate {
+  :global(.ant-input) {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+  }
+}
+
+.fontBold {
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.summary {
+  margin-right: 0 !important;
+  padding-right: 12px !important;
+}
+
+.topBar {
+  box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.3);
+}
+
+.empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: 0;
+  transform: translate(-50%, -50%);
+}

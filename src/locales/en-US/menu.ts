@@ -35,12 +35,12 @@ export default {
   'menu.project_tracking': 'PROJECT TRACKING',
   'menu.adminstration.brand.distributor': 'Distributors',
   'menu.adminstration.brand.market_availability': 'Market Availability',
-  'menu.adminstration.brand.subscription': 'Subscription',
   'menu.adminstration.brand.profile': 'Brand Profile',
+  'menu.adminstration.brand.billed_services': 'Billed Services',
 
   'menu.favourite': 'MY FAVOURITE',
   'menu.product.brand.product': 'Brand Products',
-  'menu.product.custom.library': 'Custom Library',
+  'menu.product.library.resources': 'Library & Resources',
   'menu.adminstration.office.profile': 'Office Profile',
   'menu.adminstration.material/product.code': 'Material/Product Code',
 };

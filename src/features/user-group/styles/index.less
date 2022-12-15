@@ -77,6 +77,27 @@
           padding: 8px 0 0 16px !important;
         }
       }
+      :global(.ant-collapse-item) {
+        box-shadow: @border-bottom-light !important;
+        span {
+          font-weight: 300 !important;
+        }
+        &:global(.ant-collapse-item-active) {
+          box-shadow: none !important;
+          :global(.ant-collapse-header) {
+            p,
+            span,
+            .customText .dropdownCount {
+              font-weight: 500 !important;
+            }
+          }
+          &:global(.ant-collapse-item:last-child > .ant-collapse-content) {
+            :global(.ant-collapse-content-box) {
+              padding: 0 !important;
+            }
+          }
+        }
+      }
     }
   }
 }

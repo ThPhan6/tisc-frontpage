@@ -1,26 +1,20 @@
 import { FC } from 'react';
 
-import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
-
 import { useProductAttributeForm } from './hooks';
-import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
+import { useCheckPermission, useGetParamId } from '@/helper/hook';
 
-import { ProductAttributeProps } from '../../types';
+import { setPartialProductDetail } from '../../reducers';
 import { ProductInfoTab } from './types';
+import store from '@/reducers';
 import { ProductAttributes } from '@/types';
 
-import CustomCollapse from '@/components/Collapse';
-import { CustomCheckbox } from '@/components/CustomCheckbox';
-import InputGroup from '@/components/EntryForm/InputGroup';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { BodyText, MainTitle } from '@/components/Typography';
 
-import { AttributeOption, ConversionText, GeneralText } from './AttributeComponent';
-import { ProductAttributeSubItem } from './AttributeItem';
-import { SelectAttributesToGroupRow } from './SelectAttributesToGroupRow';
+import { ProductAttributeGroup } from './ProductAttributeGroup';
 import styles from './index.less';
+import { DimensionWeight } from '@/features/dimension-weight';
 
-interface Props {
+export interface ProductAttributeContainerProps {
   attributes?: ProductAttributes[];
   activeKey: ProductInfoTab;
   specifying?: boolean;
@@ -29,7 +23,7 @@ interface Props {
   productId?: string;
 }
 
-export const ProductAttributeContainer: FC<Props> = ({
+export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
   activeKey,
   attributes,
   specifying,
@@ -39,196 +33,58 @@ export const ProductAttributeContainer: FC<Props> = ({
 }) => {
   const productIdParam = useGetParamId();
   const isTiscAdmin = useCheckPermission('TISC Admin');
-
-  const signature = useQuery().get('signature') ?? '';
-  const isPublicPage = signature ? true : false;
-
   const curProductId = productId ?? productIdParam;
-  const {
-    onChangeAttributeItem,
-    addNewProductAttribute,
-    onChangeAttributeName,
-    deleteAttributeItem,
-    onCheckedSpecification,
-    attributeGroup,
-    attributeGroupKey,
-    onSelectSpecificationOption,
-  } = useProductAttributeForm(activeKey, curProductId, isSpecifiedModal);
 
-  const renderCollapseHeader = (groupIndex: number) => {
-    const group = attributeGroup[groupIndex];
-    if (isTiscAdmin) {
-      return (
-        <InputGroup
-          horizontal
-          fontLevel={4}
-          label={<ScrollIcon />}
-          placeholder="type title"
-          noWrap
-          defaultValue={group.name}
-          onChange={onChangeAttributeName(groupIndex)}
-        />
-      );
-    }
-
-    const haveOptionAttr = group.attributes.some((el) => el.type === 'Options');
-
-    return (
-      <div className={styles.attrGroupTitle}>
-        {!isPublicPage && activeKey === 'specification' && haveOptionAttr ? (
-          <CustomCheckbox
-            options={[{ label: group.name, value: groupIndex }]}
-            selected={
-              attributeGroup.some((gr) => gr.isChecked && gr.id === group.id)
-                ? [{ label: group.name, value: groupIndex }]
-                : []
-            }
-            onChange={() => onCheckedSpecification(groupIndex, isTiscAdmin ? false : true)}
-            checkboxClass={styles.customLabel}
-          />
-        ) : (
-          <BodyText level={6} fontFamily="Roboto" customClass="text-overflow">
-            {group.name}
-          </BodyText>
-        )}
-      </div>
-    );
-  };
-
-  const renderAttributeRowItem = (
-    attribute: ProductAttributeProps,
-    attrIndex: number,
-    groupIndex: number,
-    groupName: string,
-  ) => {
-    if (isTiscAdmin) {
-      if (!attributes) {
-        return null;
-      }
-      return (
-        <ProductAttributeSubItem
-          item={attribute}
-          attributeItemIndex={attrIndex}
-          attributeIndex={groupIndex}
-          attributes={attributes}
-          itemAttributes={attributeGroup[groupIndex].attributes}
-          onItemChange={onChangeAttributeItem(groupIndex)}
-          onDelete={deleteAttributeItem(groupIndex, attrIndex)}
-          activeKey={activeKey}
-          attributeGroup={attributeGroup}
-          attributeGroupKey={attributeGroupKey}
-          key={attribute.id}
-        />
-      );
-    }
-
-    const curAttribute = attributeGroup[groupIndex]?.attributes?.[attrIndex];
-    const chosenOption = curAttribute.basis_options?.find((el) => el.isChecked === true);
-
-    return (
-      <tr className={styles.attributeSubItem} key={attribute.id}>
-        <td className={styles.attributeName}>
-          <div className={`${styles.content} ${styles.attribute} attribute-type`}>
-            <BodyText level={4} customClass={styles.content_type}>
-              {attribute.name}
-            </BodyText>
-          </div>
-        </td>
-
-        <td className={styles.attributeDescription}>
-          {attribute.conversion ? (
-            <ConversionText
-              conversion={attribute.conversion}
-              firstValue={attribute.conversion_value_1}
-              secondValue={attribute.conversion_value_2}
-            />
-          ) : attribute.type === 'Options' ? (
-            <AttributeOption
-              title={groupName}
-              isPublicPage={isPublicPage}
-              attributeName={attribute.name}
-              options={attribute.basis_options ?? []}
-              chosenOption={
-                chosenOption
-                  ? {
-                      label: `${chosenOption.value_1 ?? ''} ${chosenOption.unit_1 ?? ''} - ${
-                        chosenOption.value_2 ?? ''
-                      } ${chosenOption.unit_2 ?? ''}`,
-                      value: chosenOption?.id,
-                    }
-                  : undefined
-              }
-              setChosenOptions={(option) => {
-                onSelectSpecificationOption(
-                  groupIndex,
-                  attribute.id,
-                  isTiscAdmin ? false : true,
-                  option?.value?.toString() || undefined,
-                );
-              }}
-            />
-          ) : (
-            <GeneralText text={attribute.text} />
-          )}
-        </td>
-      </tr>
-    );
-  };
+  const { addNewProductAttribute, attributeGroup, dimensionWeightData } = useProductAttributeForm(
+    activeKey,
+    curProductId,
+    {
+      isSpecifiedModal,
+      isGetProductSpecification: true, // except specifying modal
+      isGetDimensionWeight: isTiscAdmin && activeKey === 'specification' && !curProductId, // get only dimension weight list when create new product
+    },
+  );
 
   return (
     <>
       {isTiscAdmin ? (
-        <div className={styles.addAttributeBtn} onClick={addNewProductAttribute}>
-          <MainTitle level={4} customClass="add-attribute-text">
-            Add Attribute
-          </MainTitle>
-          <CustomPlusButton size={18} />
-        </div>
+        <CustomPlusButton
+          size={18}
+          label="Add Attribute"
+          onClick={addNewProductAttribute}
+          customClass={styles.paddingSpace}
+        />
       ) : null}
 
-      {attributeGroup.map((_group, groupIndex) => {
-        const attrGroupItem = attributeGroup[groupIndex];
-        return (
-          <div key={groupIndex} style={{ marginBottom: 8, marginTop: isTiscAdmin ? undefined : 8 }}>
-            <div className={styles.attributes}>
-              <div className={styles.specification}>
-                <CustomCollapse
-                  defaultActiveKey={'1'}
-                  showActiveBoxShadow={!specifying}
-                  noBorder={noBorder}
-                  className={isTiscAdmin ? undefined : styles.vendorSection}
-                  customHeaderClass={`${styles.productAttributeItem} ${
-                    specifying ? styles.specifying : ''
-                  }`}
-                  header={renderCollapseHeader(groupIndex)}>
-                  {isTiscAdmin && attributes ? (
-                    <SelectAttributesToGroupRow
-                      activeKey={activeKey}
-                      attributes={attributes}
-                      groupItem={attrGroupItem}
-                      groupIndex={groupIndex}
-                      productId={curProductId}
-                    />
-                  ) : null}
+      <DimensionWeight
+        collapseStyles={!isSpecifiedModal}
+        customClass={!isTiscAdmin ? styles.marginTopSpace : ''}
+        editable={isTiscAdmin}
+        isConversionText={isSpecifiedModal}
+        isShow={activeKey === 'specification'}
+        data={dimensionWeightData}
+        onChange={(data) => {
+          store.dispatch(
+            setPartialProductDetail({
+              dimension_and_weight: data,
+            }),
+          );
+        }}
+      />
 
-                  {attrGroupItem.attributes.length ? (
-                    <table className={styles.table}>
-                      <tbody>
-                        {attrGroupItem.attributes.map((attribute, attrIndex) =>
-                          renderAttributeRowItem(
-                            attribute,
-                            attrIndex,
-                            groupIndex,
-                            attrGroupItem.name,
-                          ),
-                        )}
-                      </tbody>
-                    </table>
-                  ) : null}
-                </CustomCollapse>
-              </div>
-            </div>
-          </div>
+      {attributeGroup.map((attrGroupItem, groupIndex) => {
+        return (
+          <ProductAttributeGroup
+            activeKey={activeKey}
+            attributeGroup={attributeGroup}
+            attrGroupItem={attrGroupItem}
+            groupIndex={groupIndex}
+            attributes={attributes}
+            specifying={specifying}
+            noBorder={noBorder}
+            curProductId={curProductId}
+            isSpecifiedModal={isSpecifiedModal}
+          />
         );
       })}
     </>

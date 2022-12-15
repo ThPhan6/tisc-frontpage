@@ -122,7 +122,7 @@ export const useAssignProductToSpaceForm = (productId: string, projectId: string
 
   const renderEntireProjectLabel = (specifyingModal?: boolean) => {
     return (
-      <div className="flex-center" style={{ padding: specifyingModal ? '10px 0' : '9px 0' }}>
+      <div className="flex-start" style={{ padding: specifyingModal ? '10px 0' : '9px 0' }}>
         <BodyText
           fontFamily="Roboto"
           level={specifyingModal ? 6 : 5}

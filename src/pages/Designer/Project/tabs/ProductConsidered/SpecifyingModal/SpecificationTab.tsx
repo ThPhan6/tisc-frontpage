@@ -5,14 +5,17 @@ import { Tooltip } from 'antd';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { getProductById } from '@/features/product/services';
+import { getOneCustomProduct } from '@/pages/Designer/Products/CustomLibrary/services';
 
 import type { RadioValue } from '@/components/CustomRadio/types';
 import { onCheckReferToDesignDocument } from '@/features/product/reducers';
-import store, { useAppSelector } from '@/reducers';
+import store from '@/reducers';
 
 import { CustomRadio } from '@/components/CustomRadio';
 import { Title } from '@/components/Typography';
 import { ProductAttributeContainer } from '@/features/product/components/ProductAttributes/ProductAttributeContainer';
+import { SpecificationTab } from '@/pages/Designer/Products/CustomLibrary/components/SpecificationTab';
+import { onCheckCustomProductReferToDocument } from '@/pages/Designer/Products/CustomLibrary/slice';
 
 import styles from './styles/specification-tab.less';
 
@@ -34,13 +37,17 @@ const ReferToDesignLabel = () => {
   );
 };
 
-const SpecificationTab: FC<{ productId: string }> = ({ productId }) => {
-  const referToDesignDocument = useAppSelector(
-    (state) => state.product.details.referToDesignDocument,
-  );
-
+const SpecifiedSpecificationTab: FC<{
+  productId: string;
+  referToDesignDocument: boolean;
+  customProduct?: boolean;
+}> = ({ productId, customProduct, referToDesignDocument }) => {
   const checkReferToDesignDocument = () => {
-    store.dispatch(onCheckReferToDesignDocument());
+    if (customProduct) {
+      store.dispatch(onCheckCustomProductReferToDocument());
+    } else {
+      store.dispatch(onCheckReferToDesignDocument());
+    }
   };
 
   const ReferToDesignRadio: RadioValue = {
@@ -51,9 +58,13 @@ const SpecificationTab: FC<{ productId: string }> = ({ productId }) => {
   useEffect(() => {
     if (productId) {
       // This is where we set specification_attribute_groups data
-      getProductById(productId);
+      if (customProduct) {
+        getOneCustomProduct(productId);
+      } else {
+        getProductById(productId);
+      }
     }
-  }, [productId]);
+  }, [productId, customProduct]);
 
   return (
     <div className={styles.specificationTab}>
@@ -66,14 +77,18 @@ const SpecificationTab: FC<{ productId: string }> = ({ productId }) => {
         noPaddingLeft
       />
 
-      <ProductAttributeContainer
-        activeKey="specification"
-        specifying
-        noBorder
-        productId={productId}
-        isSpecifiedModal
-      />
+      {customProduct ? (
+        <SpecificationTab productId={productId} activeKey="specification" viewOnly specifying />
+      ) : (
+        <ProductAttributeContainer
+          activeKey="specification"
+          specifying
+          noBorder
+          productId={productId}
+          isSpecifiedModal
+        />
+      )}
     </div>
   );
 };
-export default SpecificationTab;
+export default SpecifiedSpecificationTab;

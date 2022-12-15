@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { Radio, Space } from 'antd';
 
@@ -15,6 +15,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
   defaultValue,
   isRadioList,
   otherInput,
+  clearOtherInput,
   selected,
   onChange,
   inputPlaceholder = 'type here',
@@ -24,10 +25,18 @@ export const CustomRadio: FC<CustomRadioProps> = ({
   noPaddingLeft,
   otherStickyBottom,
   stickyTopItem,
+  optionStyle,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
   const [randomID] = useState(uniqueId('radio_'));
+
+  useEffect(() => {
+    if (otherInput && clearOtherInput) {
+      setInputValue('');
+    }
+  }, [otherInput && clearOtherInput]);
+
   const onChangeValue = (e: any) => {
     const newValue = {
       value: e.target.value,
@@ -48,7 +57,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
     if (option.value == value) {
       return 'item-option-checked';
     }
-    return '';
+    return 'item-option-uncheck';
   };
 
   const renderOption = (option: RadioValue, index: number) => {
@@ -58,7 +67,8 @@ export const CustomRadio: FC<CustomRadioProps> = ({
         className={`${style.panel_radio} ${
           option.customClass ? option.customClass : ''
         } radio-label`}
-        htmlFor={`${randomID}_${option.value}_${index}`}>
+        htmlFor={`${randomID}_${option.value}_${index}`}
+        style={optionStyle}>
         <div style={{ width: '100%' }}>
           {isRadioList ? (
             <div className={style['item-wrapper']}>
@@ -96,7 +106,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
           {options.map((option, index) => {
             if (stickyTopItem && index === 0) {
               return (
-                <div className={`${style.topItem} flex-center`}>{renderOption(option, index)}</div>
+                <div className={`${style.topItem} flex-start`}>{renderOption(option, index)}</div>
               );
             }
             return renderOption(option, index);

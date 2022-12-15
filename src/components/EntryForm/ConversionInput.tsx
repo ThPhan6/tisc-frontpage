@@ -1,9 +1,9 @@
-import type { FC, ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 
 import { Col, Row } from 'antd';
 
+import { CustomInputProps } from '../Form/types';
 import { MainContentProps } from './types';
-import type { SubBasisConversion } from '@/types';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
@@ -18,18 +18,25 @@ const ConversionContent: FC<MainContentProps> = ({ children, noWrap }) => (
   </Row>
 );
 
-interface ConversionValue {
+export interface ConversionValue {
   firstValue: string;
   secondValue: string;
 }
 
-interface ConversionInputProps {
+export interface ConversionValueItemProps {
+  formula_1: number;
+  formula_2: number;
+  unit_1: string;
+  unit_2: string;
+}
+
+interface ConversionInputProps extends CustomInputProps {
   horizontal?: boolean;
   required?: boolean;
   fontLevel?: 1 | 2 | 3 | 4 | 5;
   label?: string | ReactNode;
   noWrap?: boolean;
-  conversionData: SubBasisConversion;
+  conversionData: ConversionValueItemProps;
   placeholder1?: string;
   placeholder2?: string;
   deleteIcon?: boolean;
@@ -40,7 +47,7 @@ interface ConversionInputProps {
 }
 
 const ConversionInput: FC<ConversionInputProps> = ({
-  label,
+  label = '',
   horizontal,
   required,
   fontLevel,
@@ -53,6 +60,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
   conversionValue,
   setConversionValue,
   isTableFormat,
+  ...props
 }) => {
   const { labelSpan, inputSpan, fontSize, iconDelete } = useGeneralFeature(
     noWrap,
@@ -77,12 +85,14 @@ const ConversionInput: FC<ConversionInputProps> = ({
       <div className="double-input-group-wrapper">
         <div className="double-input-group">
           <CustomInput
+            {...props}
             autoFocus
             value={conversionValue.firstValue}
             placeholder={placeholder1}
             onChange={(e) => {
               const firstValue = e.target.value;
-              const secondValue = parseFloat(firstValue) * conversionData.formula_2;
+              const secondValue = parseFloat(firstValue) * Number(conversionData.formula_2);
+
               setConversionValue({
                 firstValue: firstValue,
                 secondValue: isNaN(secondValue) ? '' : secondValue.toString(),
@@ -91,8 +101,6 @@ const ConversionInput: FC<ConversionInputProps> = ({
             fontLevel={fontSize}
             className="first-input-box"
             onClick={(e) => e.stopPropagation()}
-            autoWidth
-            defaultWidth={30}
           />
           <BodyText level={fontSize} fontFamily="Roboto" customClass="unit-input-label">
             {conversionData.unit_1}
@@ -100,11 +108,12 @@ const ConversionInput: FC<ConversionInputProps> = ({
         </div>
         <div className="double-input-group">
           <CustomInput
+            {...props}
             value={conversionValue.secondValue}
             placeholder={placeholder2}
             onChange={(e) => {
               const secondValue = e.target.value;
-              const firstValue = parseFloat(secondValue) * conversionData.formula_1;
+              const firstValue = parseFloat(secondValue) * Number(conversionData.formula_1);
               setConversionValue({
                 firstValue: isNaN(firstValue) ? '' : firstValue.toString(),
                 secondValue: secondValue,
@@ -113,8 +122,6 @@ const ConversionInput: FC<ConversionInputProps> = ({
             fontLevel={fontSize}
             className="first-input-box"
             onClick={(e) => e.stopPropagation()}
-            autoWidth
-            defaultWidth={30}
           />
           <BodyText level={fontSize} fontFamily="Roboto" customClass="unit-input-label">
             {conversionData.unit_2}

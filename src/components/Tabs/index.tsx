@@ -1,4 +1,4 @@
-import { FC, HTMLAttributes, memo } from 'react';
+import { FC, HTMLAttributes, memo, useEffect, useState } from 'react';
 
 import TabPane from '@ant-design/pro-card/lib/components/TabPane';
 import { Tabs } from 'antd';
@@ -48,10 +48,22 @@ interface TabPaneProps extends HTMLAttributes<HTMLDivElement> {
   active: boolean;
   lazyLoad?: boolean;
   disable?: boolean;
+  forceReload?: boolean;
 }
-export const CustomTabPane: FC<TabPaneProps> = memo(({ active, lazyLoad, disable, ...props }) => {
-  if ((lazyLoad && active === false) || disable) {
-    return null;
-  }
-  return <div {...props} style={{ display: !active ? 'none' : undefined }} />;
-});
+export const CustomTabPane: FC<TabPaneProps> = memo(
+  ({ active, lazyLoad, disable, forceReload, ...props }) => {
+    const [loaded, setLoaded] = useState(false);
+
+    useEffect(() => {
+      if (lazyLoad && active && loaded === false) {
+        setLoaded(true);
+      }
+    }, [loaded, lazyLoad, active]);
+
+    if (disable || (lazyLoad && active === false && (forceReload || loaded === false))) {
+      return null;
+    }
+
+    return <div {...props} style={{ display: !active ? 'none' : undefined }} />;
+  },
+);

@@ -40,8 +40,8 @@ const optionsGender = [
 ];
 
 const optionsCoverageBeyond = [
-  { label: 'Not Allow', value: true },
-  { label: 'Allow', value: false },
+  { label: 'Not Allow', value: false },
+  { label: 'Allow', value: true },
 ];
 
 type FieldName = keyof DistributorForm;

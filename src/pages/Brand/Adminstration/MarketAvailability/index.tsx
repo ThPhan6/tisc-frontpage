@@ -20,7 +20,7 @@ import styles from './index.less';
 import { getMarketAvailabilityList } from '@/features/market-availability/api';
 
 const MarketAvailabilityList = () => {
-  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
+  useAutoExpandNestedTableColumn(0, [7]);
   const user = useAppSelector((state) => state.user.user);
 
   const handleUpdateMarketAvailability = (id: string) => {
@@ -31,7 +31,7 @@ const MarketAvailabilityList = () => {
   const mainColumns: TableColumnItem<MarketAvailabilityDataList>[] = [
     {
       title: 'Collections/Series',
-      dataIndex: 'collection_name',
+      dataIndex: 'name',
       sorter: true,
     },
     {
@@ -42,31 +42,37 @@ const MarketAvailabilityList = () => {
       title: 'Africa',
       dataIndex: 'africa',
       lightHeading: true,
+      render: (value) => value.length || '0',
     },
     {
       title: 'Asia',
       dataIndex: 'asia',
       lightHeading: true,
+      render: (value) => value.length || '0',
     },
     {
       title: 'Europe',
       dataIndex: 'europe',
       lightHeading: true,
+      render: (value) => value.length || '0',
     },
     {
       title: 'N. America',
-      dataIndex: 'north_america',
+      dataIndex: 'n_americas',
       lightHeading: true,
+      render: (value) => value.length || '0',
     },
     {
       title: 'Oceania',
       dataIndex: 'oceania',
       lightHeading: true,
+      render: (value) => value.length || '0',
     },
     {
       title: 'S. America',
-      dataIndex: 'south_america',
+      dataIndex: 's_americas',
       lightHeading: true,
+      render: (value) => value.length || '0',
     },
     {
       title: 'Action',
@@ -104,8 +110,8 @@ const MarketAvailabilityList = () => {
           brand_id: user.brand.id,
         }}
         hasPagination
-        customClass={styles.customTitle}
-        rowKey="collection_name"
+        headerClass={styles.customTitle}
+        rowKey="id"
       />
       <InformationMarketAvailability
         visible={informationVisible}
