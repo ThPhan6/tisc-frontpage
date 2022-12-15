@@ -125,11 +125,7 @@ const useSyncQueryToState = () => {
   }, []);
 };
 
-export const useCustomProductFilter = (fetchs: {
-  noFetchData?: boolean;
-  company?: boolean;
-  collection?: boolean;
-}) => {
+export const useCustomProductFilter = (fetchs?: { company?: boolean; collection?: boolean }) => {
   useSyncQueryToState();
 
   const [companies, setCompanies] = useState<ItemType[]>([]);
@@ -168,7 +164,7 @@ export const useCustomProductFilter = (fetchs: {
   }, [filter && filter.name === 'company_id' && filter.value]);
 
   useEffect(() => {
-    if (fetchs.noFetchData) return;
+    if (!fetchs) return;
 
     if (fetchs.company) {
       getAllCustomResource(CustomResourceType.Brand).then((res) =>
@@ -179,7 +175,7 @@ export const useCustomProductFilter = (fetchs: {
 
   useEffect(() => {
     if (
-      fetchs.collection &&
+      fetchs?.collection &&
       ((companies.length && company_id && filter?.name === 'collection_id' && firstLoaded.value) ||
         (companies.length && filter?.name === 'company_id' && filter.value !== 'all'))
     ) {
@@ -197,6 +193,13 @@ export const useCustomProductFilter = (fetchs: {
           relation_id: item.relation_id,
         }));
         setCollections(collectionFilterData);
+
+        setCurFilterValue({
+          company_id: curFilterValue.company_id,
+          company_name: curFilterValue.company_name,
+          coll_id: collectionData.find((item) => item.id === curFilterValue.coll_id)?.id,
+          coll_name: collectionData.find((item) => item.id === curFilterValue.coll_id)?.name,
+        });
       });
     }
   }, [filter?.value, companies]);
@@ -348,7 +351,9 @@ export const useCustomProductFilter = (fetchs: {
     curFilterValue,
     firstLoaded,
     company_id,
+    company_name,
     coll_id,
+    coll_name,
     setCurFilterValue,
     renderFilterCollectionName,
     renderFilterDropdown,

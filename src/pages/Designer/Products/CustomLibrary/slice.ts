@@ -1,9 +1,5 @@
-import {
-  CustomProductDetailProps,
-  CustomProductList,
-  CustomResourceForm,
-  ProductOptionProps,
-} from './types';
+import { CustomResourceForm } from '../../CustomResource/type';
+import { CustomProductDetailProps, CustomProductList, ProductOptionProps } from './types';
 import { RootState } from '@/reducers';
 
 import { ProductTopBarFilter } from '@/features/product/components/FilterAndSorter';
