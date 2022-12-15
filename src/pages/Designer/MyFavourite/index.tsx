@@ -38,6 +38,7 @@ const MyFavourite = () => {
       const noFiltering = !filter && !sort;
 
       if ((cate_id || brand_id || sort_order) && noFiltering && firstLoad.value) {
+        firstLoad.setValue(false);
         return;
       }
       getFavouriteProductList({
@@ -46,7 +47,7 @@ const MyFavourite = () => {
         order: sort?.order,
       });
     }
-  }, [filter, sort, retrievedFavourite]);
+  }, [filter?.value, sort, retrievedFavourite]);
 
   return (
     <div>
