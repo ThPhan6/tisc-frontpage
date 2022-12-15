@@ -41,10 +41,13 @@ export async function getProductSummary(brandId: string) {
           brandId,
         }),
       );
+
+      return response.data;
     })
     .catch((error) => {
       store.dispatch(setProductSummary(undefined));
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_SUMMARY_DATA_ERROR);
+      return {} as ProductSummary;
     });
 }
 
