@@ -8,7 +8,7 @@ import { createCustomProduct, getOneCustomProduct, updateCustomProduct } from '.
 import { formatImageIfBase64 } from '@/helper/utils';
 
 import { CustomProductRequestBody, ProductInfoTab } from './types';
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
 
 import { SpecificationTab } from './components/SpecificationTab';
 import { SummaryTab } from './components/SummaryTab';
@@ -17,7 +17,7 @@ import ProductDetailHeader from '@/features/product/components/ProductDetailHead
 import ProductImagePreview from '@/features/product/components/ProductImagePreview';
 
 import styles from './ProductLibraryDetail.less';
-import { invalidCustomProductSelector } from './slice';
+import { invalidCustomProductSelector, resetCustomProductState } from './slice';
 
 const LIST_TAB = [
   { tab: 'SUMMARY', key: 'summary' },
@@ -40,6 +40,10 @@ const ProductLibraryUpdate: React.FC = () => {
     if (productId) {
       getOneCustomProduct(productId);
     }
+
+    return () => {
+      store.dispatch(resetCustomProductState());
+    };
   }, [productId]);
 
   const onSave = () => {
