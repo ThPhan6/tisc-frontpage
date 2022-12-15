@@ -22,12 +22,10 @@ import { AttributeOptionLabel } from './AttributeComponent';
 import styles from './AttributeItem.less';
 
 interface Props {
-  attributes: ProductAttributes[];
-  itemAttributes: ProductAttributeProps[];
-  item: ProductAttributeProps;
+  attributesData: ProductAttributes[];
   onDelete?: () => void;
   onItemChange?: (data: ProductAttributeProps[]) => void;
-  attributeIndex: number;
+  attributeGroupIndex: number;
   attributeItemIndex: number;
   activeKey: ProductInfoTab;
   attributeGroup: ProductAttributeFormInput[];
@@ -42,59 +40,101 @@ const getBasisOptionsText = (activeBasisOptions: { id: string; option_code: stri
 };
 
 export const ProductAttributeSubItem: React.FC<Props> = ({
-  itemAttributes,
-  attributes,
-  item,
   onDelete,
   onItemChange,
-  attributeItemIndex,
-  attributeIndex,
-  activeKey,
   attributeGroup,
+  attributeGroupIndex,
+  attributeItemIndex,
+  attributesData,
+  activeKey,
   attributeGroupKey,
 }) => {
   const dispatch = useDispatch();
 
   const isSpecification = activeKey === 'specification';
+  const attributeItems = attributeGroup[attributeGroupIndex].attributes;
+  const attributeItem = attributeGroup[attributeGroupIndex].attributes[attributeItemIndex];
 
-  // get current attribute
-  let currentAttribute = {} as any;
-  attributes.forEach((attribute) => {
-    attribute.subs?.map((sub) => {
-      if (sub.id === item.id) {
-        currentAttribute = sub;
-      }
-    });
-  });
+  const [visible, setVisible] = useState<boolean>(false);
+  const [firstLoad, setFirstLoad] = useState<boolean>(true);
 
-  /// basis of attribute
-  const { basis } = currentAttribute;
-  /// global state of current attribute
-  const localAttribute = itemAttributes.find((attr) => currentAttribute.id === attr.id);
+  const [curAttributeData, setCurAtttributeData] = useState<any>();
 
-  /// default state
-  const [visible, setVisible] = useState(false);
+  /// using for option have type Text and Conversion
   const [selected, setSelected] = useState<RadioValue>({
-    label: localAttribute?.text ?? '',
-    value: localAttribute?.basis_value_id ?? '',
+    label: attributeItem?.text ?? '',
+    value: attributeItem?.basis_value_id ?? '',
   });
-  const [selectedSpecified, setSelectedSpecified] = useState<CheckboxValue[]>(
-    localAttribute?.basis_options?.map((opt) => {
-      return {
-        label: '',
-        value: opt.id,
-      };
-    }) ?? [],
-  );
-  const [basisOptions, setBasisOptions] = useState<
-    {
-      id: string;
-      option_code: string;
-    }[]
-  >(localAttribute?.basis_options ?? []);
 
-  const selectedItem = isSpecification ? selectedSpecified : selected;
-  const setSelectedItem = isSpecification ? setSelectedSpecified : setSelected;
+  /// current basis option select
+  const [basisOptionSelected, setBasisOptionSelected] = useState<CheckboxValue[]>([]);
+
+  /// basis option selected
+  const [basisOptions, setBasisOptions] = useState<SubBasisOption[]>([]);
+
+  const chosenValue = isSpecification
+    ? /// using for basis option selected, type is Option
+      basisOptionSelected.map((opt) => ({
+        value: opt.value,
+        label: String(opt.label),
+      }))
+    : /// another sub selected, type are Text and Conversion
+      {
+        value: selected.value,
+        label: selected.label,
+      };
+
+  useEffect(() => {
+    setBasisOptionSelected(
+      attributeItem?.basis_options?.map((opt) => ({
+        label: opt.option_code,
+        value: opt.id,
+      })) ?? [],
+    );
+
+    let currentAttribute = {} as any;
+    // get current attribute
+    attributesData.forEach((attribute) => {
+      attribute.subs?.forEach((sub) => {
+        if (sub.id === attributeItem.id) {
+          /// add option_code field to currentAttribute has type Option,
+          const subBasisOption = sub.basis.subs?.map((subBasis) => {
+            if (sub.basis.type !== 'Options') {
+              return subBasis;
+            }
+
+            /// mapping data from attribute data selected to all attributes existed
+            if (attributeItem.basis_options?.some((opt) => opt.id === subBasis.id)) {
+              return {
+                ...subBasis,
+                option_code: attributeItem.basis_options.find((opt) => opt.id === subBasis.id)
+                  ?.option_code,
+              };
+            } else {
+              return {
+                ...subBasis,
+                option_code: '',
+              };
+            }
+          });
+
+          const newSub = {
+            ...sub,
+            basis: {
+              ...sub.basis,
+              subs: subBasisOption,
+            },
+          };
+
+          currentAttribute = newSub;
+        }
+      });
+    });
+
+    setCurAtttributeData(currentAttribute);
+
+    setBasisOptions(currentAttribute.basis.subs);
+  }, []);
 
   useEffect(() => {
     if (!selected || isSpecification) {
@@ -102,7 +142,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
     }
 
     const newAttributes = [...attributeGroup];
-    const newItemAttributes = [...newAttributes[attributeIndex].attributes];
+    const newItemAttributes = [...newAttributes[attributeGroupIndex].attributes];
 
     newItemAttributes[attributeItemIndex] = {
       ...newItemAttributes[attributeItemIndex],
@@ -110,8 +150,8 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
       text: selected.label as string,
     };
 
-    newAttributes[attributeIndex] = {
-      ...newAttributes[attributeIndex],
+    newAttributes[attributeGroupIndex] = {
+      ...newAttributes[attributeGroupIndex],
       attributes: newItemAttributes,
     };
 
@@ -123,23 +163,28 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
   }, [selected, isSpecification]);
 
   useEffect(() => {
-    if (!selectedSpecified || !isSpecification) {
+    if (!basisOptionSelected || !isSpecification) {
       return;
     }
 
     const newAttributes = [...attributeGroup];
-    const newItemAttributes = [...newAttributes[attributeIndex].attributes];
+    const newItemAttributes = [...newAttributes[attributeGroupIndex].attributes];
 
-    const activeBasisOptions = selectedSpecified.map((itemSelected) => {
+    const activeBasisOptions = basisOptionSelected.map((itemSelected) => {
       const changedBasisOption = basisOptions.find((option) => option?.id === itemSelected.value);
       if (changedBasisOption) {
-        return changedBasisOption;
+        return {
+          id: changedBasisOption.id || '',
+          option_code: changedBasisOption.option_code || '',
+        };
       }
+
       return {
-        id: String(itemSelected.value),
+        id: itemSelected.value as string,
         option_code: '',
       };
     });
+
     newItemAttributes[attributeItemIndex] = {
       ...newItemAttributes[attributeItemIndex],
       basis_options: activeBasisOptions,
@@ -148,21 +193,22 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
           ? getBasisOptionsText(activeBasisOptions)
           : newItemAttributes[attributeItemIndex].text,
     };
-    newAttributes[attributeIndex] = {
-      ...newAttributes[attributeIndex],
+    newAttributes[attributeGroupIndex] = {
+      ...newAttributes[attributeGroupIndex],
       attributes: newItemAttributes,
     };
 
+    /// update attribute basis option selected
     dispatch(
       setPartialProductDetail({
         [attributeGroupKey]: newAttributes,
       }),
     );
-  }, [selectedSpecified, isSpecification]);
+  }, [basisOptionSelected, isSpecification]);
 
   const onChangeAttributeItem = (key: number, data: Partial<ProductAttributeProps>) => {
     if (onItemChange) {
-      const newGeneralAttributeItem = [...itemAttributes];
+      const newGeneralAttributeItem = [...attributeItems];
       newGeneralAttributeItem[key] = {
         ...newGeneralAttributeItem[key],
         ...data,
@@ -173,14 +219,14 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
   };
 
   const renderProductAttributeItem = () => {
-    if (!basis) {
+    if (!curAttributeData?.basis) {
       return null;
     }
     let placeholder = 'type title';
-    if (basis.type !== 'Conversions' && basis.type !== 'Text') {
-      placeholder = basis.name;
+    if (curAttributeData.basis.type !== 'Conversions' && curAttributeData.basis.type !== 'Text') {
+      placeholder = curAttributeData.basis.name;
     }
-    if (basis?.type === 'Conversions') {
+    if (curAttributeData?.basis?.type === 'Conversions') {
       return (
         <ConversionInput
           horizontal
@@ -188,16 +234,18 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
           noWrap
           autoWidth
           defaultWidth={
-            item.conversion_value_1.length * 10 || item.conversion_value_2.length * 10 || 30
+            attributeItem.conversion_value_1.length * 10 ||
+            attributeItem.conversion_value_2.length * 10 ||
+            30
           }
           fontLevel={4}
-          label={currentAttribute?.name ? truncate(currentAttribute.name, { length: 20 }) : 'N/A'}
-          conversionData={basis}
+          label={curAttributeData?.name ? truncate(curAttributeData?.name, { length: 20 }) : 'N/A'}
+          conversionData={curAttributeData?.basis}
           deleteIcon
           onDelete={onDelete}
           conversionValue={{
-            firstValue: item.conversion_value_1,
-            secondValue: item.conversion_value_2,
+            firstValue: attributeItem.conversion_value_1,
+            secondValue: attributeItem.conversion_value_2,
           }}
           setConversionValue={(data) => {
             onChangeAttributeItem(attributeItemIndex, {
@@ -214,28 +262,29 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
         horizontal
         isTableFormat
         fontLevel={4}
-        label={currentAttribute?.name ? truncate(currentAttribute.name, { length: 20 }) : 'N/A'}
+        label={curAttributeData?.name ? truncate(curAttributeData?.name, { length: 20 }) : 'N/A'}
         placeholder={placeholder}
         rightIcon={
-          basis?.type === 'Presets' || basis?.type === 'Options' ? (
+          curAttributeData?.basis?.type === 'Presets' ||
+          curAttributeData?.basis?.type === 'Options' ? (
             <ActionRightLeftIcon onClick={() => setVisible(true)} />
           ) : null
         }
         onRightIconClick={
-          basis?.type === 'Presets' || basis?.type === 'Options'
+          curAttributeData?.basis?.type === 'Presets' || curAttributeData?.basis?.type === 'Options'
             ? () => setVisible(true)
             : undefined
         }
         deleteIcon
         onDelete={() => {
           if (isSpecification) {
-            setSelectedSpecified([]);
+            setBasisOptionSelected([]);
             setBasisOptions([]);
           }
           onDelete?.();
         }}
         noWrap
-        value={item.text}
+        value={attributeItem.text}
         onChange={(e) => {
           onChangeAttributeItem(attributeItemIndex, {
             text: e.target.value,
@@ -246,32 +295,34 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
     );
   };
 
-  const renderSubBasisOption = (index: number, option: SubBasisOption) => (
-    <>
-      <span className="product-id-label">Product ID:</span>
-      <CustomInput
-        placeholder="type here"
-        className="product-id-input"
-        fontLevel={6}
-        value={basisOptions[index]?.option_code ?? ''}
-        onChange={(e) => {
-          const newBasisOptions = [...basisOptions];
-          newBasisOptions[index] = {
-            id: option.id as string,
-            option_code: e.target.value,
-          };
-          setBasisOptions(newBasisOptions);
-          setSelectedSpecified(
-            newBasisOptions.map((opt) => ({
-              value: opt.id,
-              label: opt.option_code,
-            })),
-          );
-        }}
-        tabIndex={index}
-      />
-    </>
-  );
+  const renderSubBasisOption = (index: number, option: SubBasisOption) => {
+    return (
+      <>
+        <span className="product-id-label">Product ID:</span>
+        <CustomInput
+          placeholder="type here"
+          className="product-id-input"
+          fontLevel={6}
+          tabIndex={index}
+          value={option.option_code}
+          onChange={(e) => {
+            const newBasisOptions = [...basisOptions];
+            newBasisOptions[index] = {
+              ...newBasisOptions[index],
+              option_code: e.target.value,
+            };
+
+            // dont update current basis option select,
+            // disable check
+            setFirstLoad(false);
+
+            // update data
+            setBasisOptions(newBasisOptions);
+          }}
+        />
+      </>
+    );
+  };
 
   return (
     <>
@@ -281,20 +332,39 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
         title={isSpecification ? 'OPTION' : 'PRESET'}
         visible={visible}
         setVisible={setVisible}
+        className={styles.specificationOptionCheckbox}
+        chosenValue={chosenValue}
+        forceUpdateCurrentValue={firstLoad}
+        setChosenValue={(valueSelected) => {
+          if (!valueSelected || !String(valueSelected?.label)) {
+            return;
+          }
+
+          if (isSpecification) {
+            setBasisOptionSelected(
+              valueSelected?.map((opt: CheckboxValue) => ({
+                ...opt,
+                label: String(opt.label),
+              })),
+            );
+          } else {
+            setSelected(valueSelected);
+          }
+        }}
         checkboxList={
           isSpecification
             ? {
-                heading: basis?.name ?? 'N/A',
+                heading: curAttributeData?.basis?.name ?? 'N/A',
                 customItemClass: styles.customItemClass,
                 options:
-                  currentAttribute?.basis?.subs?.map((sub: any, index: number) => {
+                  basisOptions?.map((sub: any, index: number) => {
                     return {
+                      value: sub.id,
                       label: (
                         <AttributeOptionLabel option={sub} key={index}>
                           {renderSubBasisOption(index, sub)}
                         </AttributeOptionLabel>
                       ),
-                      value: sub.id,
                     };
                   }) ?? [],
               }
@@ -309,11 +379,11 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
                     <Title
                       level={8}
                       customClass={`preset-option-heading ${styles.presetOptionTitle}`}>
-                      {basis?.name ?? 'N/A'}
+                      {curAttributeData?.basis?.name ?? 'N/A'}
                     </Title>
                   ),
                   options:
-                    currentAttribute?.basis?.subs?.map((sub: any) => {
+                    curAttributeData?.basis?.subs?.map((sub: any) => {
                       return {
                         label: sub.value_1,
                         value: sub.id,
@@ -322,9 +392,6 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
                 },
               ]
         }
-        chosenValue={selectedItem}
-        setChosenValue={setSelectedItem}
-        className={styles.specificationOptionCheckbox}
       />
     </>
   );
