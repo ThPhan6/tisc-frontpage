@@ -191,7 +191,7 @@ export const CalendarModal: FC<CalendarModalProps> = ({
 
   const renderListAvailableTime = () => {
     return (
-      <div style={{ padding: '8px 16px' }}>
+      <div className={styles.customText}>
         {availableTimes.map((time) => (
           <BodyText
             level={5}
