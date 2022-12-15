@@ -47,7 +47,7 @@ const MyFavourite = () => {
         order: sort?.order,
       });
     }
-  }, [filter?.value, sort, retrievedFavourite]);
+  }, [filter?.value, sort?.order, retrievedFavourite]);
 
   return (
     <div>
