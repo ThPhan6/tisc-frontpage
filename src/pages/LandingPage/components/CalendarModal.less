@@ -100,10 +100,11 @@
   :global(.ant-collapse > .ant-collapse-item > .ant-collapse-item-active > .ant-collapse-header) {
     box-shadow: none;
   }
+  ::-webkit-scrollbar {
+    display: none;
+  }
 }
-::-webkit-scrollbar {
-  display: none;
-}
+
 .text {
   display: flex;
   align-items: center;
@@ -152,4 +153,13 @@
 
 .activeText {
   color: @primary-color-dark !important;
+}
+
+.customText {
+  height: calc(512px - 114px);
+  padding: 8px 16px;
+  overflow: auto;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 }
