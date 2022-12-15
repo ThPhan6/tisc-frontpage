@@ -35,7 +35,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
   collapseStyles = true,
   customClass = '',
 }) => {
-  const [activeCollapse, setActiveCollapse] = useState<boolean>(true);
+  const [activeCollapse, setActiveCollapse] = useState<string | string[]>([]);
 
   const [diameterToggle, setDiameterToggle] = useState<boolean>(data.with_diameter);
 
@@ -182,16 +182,16 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
         noPadding ? styles.noPadding : ''
       } ${isConversionText ? styles.dimensionWeightSpec : ''}`}
       showActiveBoxShadow={collapseStyles}
-      noBorder={!collapseStyles}
-      defaultActiveKey={['1']}
       expandingHeaderFontStyle="bold"
-      onChange={() => setActiveCollapse(!activeCollapse)}
+      noBorder={!collapseStyles}
+      activeKey={activeCollapse}
+      onChange={(key) => setActiveCollapse(key)}
       header={
         <div className="header" style={{ paddingLeft: noPadding ? 0 : undefined }}>
           <RobotoBodyText level={6} customClass="label">
             {data.name}
           </RobotoBodyText>
-          {editable ? renderDiameterToggle() : null}
+          {editable && activeCollapse.length ? renderDiameterToggle() : null}
         </div>
       }>
       <table className={styles.tableContent}>

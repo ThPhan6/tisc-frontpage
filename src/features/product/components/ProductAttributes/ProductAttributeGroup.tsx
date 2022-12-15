@@ -275,7 +275,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       <div className={styles.attributes}>
         <div className={styles.specification}>
           <CustomCollapse
-            defaultActiveKey={'1'}
             showActiveBoxShadow={!specifying}
             noBorder={noBorder}
             expandingHeaderFontStyle="bold"
