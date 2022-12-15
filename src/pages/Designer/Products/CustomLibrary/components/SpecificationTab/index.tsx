@@ -167,7 +167,6 @@ export const SpecificationTab: FC<{
     return options.map((option: ProductOptionProps, optionIndex: number) => (
       <CustomCollapse
         key={option.id || optionIndex}
-        defaultActiveKey={'1'}
         showActiveBoxShadow={!specifying}
         noBorder={specifying || (viewOnly && option.use_image)}
         expandingHeaderFontStyle="bold"
