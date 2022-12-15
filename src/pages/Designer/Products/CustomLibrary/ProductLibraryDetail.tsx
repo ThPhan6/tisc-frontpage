@@ -9,7 +9,7 @@ import { getOneCustomProduct } from './services';
 import { useGetParamId, useQuery } from '@/helper/hook';
 
 import { ProductInfoTab } from './types';
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
 
 import { SpecificationTab } from './components/SpecificationTab';
 import { SummaryTab } from './components/SummaryTab';
@@ -19,6 +19,7 @@ import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 import ProductImagePreview from '@/features/product/components/ProductImagePreview';
 
 import styles from './ProductLibraryDetail.less';
+import { resetCustomProductState } from './slice';
 import Cookies from 'js-cookie';
 
 const LIST_TAB = [
@@ -43,6 +44,10 @@ const ProductLibraryDetail: React.FC = () => {
     if (productId) {
       getOneCustomProduct(productId);
     }
+
+    return () => {
+      store.dispatch(resetCustomProductState());
+    };
   }, [productId]);
 
   return (

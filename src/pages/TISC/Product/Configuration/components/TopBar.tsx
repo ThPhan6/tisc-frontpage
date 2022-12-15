@@ -19,10 +19,12 @@ import {
   resetProductState,
   setBrand,
   setProductList,
+  setProductListFilter,
   setProductSummary,
 } from '@/features/product/reducers';
 import { ProductGetListParameter } from '@/features/product/types';
 import { BrandAlphabet, BrandDetail } from '@/features/user-group/types';
+import store from '@/reducers';
 
 import { LogoIcon } from '@/components/LogoIcon';
 import Popover from '@/components/Modal/Popover';
@@ -50,6 +52,7 @@ export const TopBar: React.FC = () => {
   const brandName = query.get(QUERY_KEY.b_name);
   const cate_id = query.get(QUERY_KEY.cate_id);
   const coll_id = query.get(QUERY_KEY.coll_id);
+  const coll_name = query.get(QUERY_KEY.coll_name);
   const firstLoad = useBoolean(true);
 
   const { renderFilterDropdown, renderItemTopBar, productSummary, filter, productBrand } =
@@ -90,13 +93,50 @@ export const TopBar: React.FC = () => {
   // brand product summary
   useEffect(() => {
     if (productBrand && productBrand.id && productSummary?.brandId !== productBrand.id) {
+      // prevent call api on first loading
+      if (coll_id && coll_name && firstLoad.value && !filter) {
+        return;
+      }
+
       // get product summary
-      getProductSummary(productBrand.id).then(() => {
-        // reset filter
-        // resetFilter();
+      getProductSummary(productBrand.id).then((res) => {
+        /// in case collection filter has chosen,
+        /// updated its filter name and param after reloading
+        if (
+          res.collections.length &&
+          brandId &&
+          brandName &&
+          coll_id &&
+          coll_name &&
+          filter &&
+          filter.name === 'collection_id' &&
+          filter.value !== 'all'
+        ) {
+          const collectionFilterName =
+            res.collections.find((collection) => collection.id === filter?.value)?.name || '';
+
+          /// update collection filter name
+          store.dispatch(
+            setProductListFilter({
+              name: 'collection_id',
+              value: filter.value,
+              title: collectionFilterName ?? '',
+            }),
+          );
+
+          /// update params
+          updateUrlParams({
+            set: [
+              { key: QUERY_KEY.b_id, value: brandId },
+              { key: QUERY_KEY.b_name, value: brandName },
+              { key: QUERY_KEY.coll_id, value: filter.value },
+              { key: QUERY_KEY.coll_name, value: collectionFilterName },
+            ],
+          });
+        }
       });
     }
-  }, [productBrand?.id, productSummary?.brandId]);
+  }, [productBrand?.id, productSummary?.brandId, filter && firstLoad.value === true]);
 
   useEffect(() => {
     if (productBrand?.id) {
@@ -119,7 +159,7 @@ export const TopBar: React.FC = () => {
 
       getProductListByBrandId(params);
     }
-  }, [filter?.value, filter?.name, productBrand?.id]);
+  }, [filter?.value, productBrand?.id, firstLoad.value]);
 
   const gotoProductForm = () => {
     dispatch(resetProductState());
