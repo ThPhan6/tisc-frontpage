@@ -10,7 +10,7 @@ import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 
 import { checkEmailAlreadyUsed } from '../services/api';
-import { isValidURL, validateEmail } from '@/helper/utils';
+import { checkValidURL, validateEmail } from '@/helper/utils';
 import { debounce } from 'lodash';
 
 import { InformationBooking, ModalProps } from '../types';
@@ -68,20 +68,20 @@ export const BrandInterestedModal: FC<BrandInterestedProps> = ({
   }, 300);
 
   const handleOpenBookingModal = () => {
-    if (inputValue.brand_name === '') {
+    if (inputValue.brand_name.trim() === '') {
       return message.error('Brand / company name is required');
     }
     if (inputValue.website === '') {
       return message.error('Company website is required');
     }
-    if (inputValue.name === '') {
+    if (!checkValidURL(inputValue.website)) {
+      return message.error('Invalid Website');
+    }
+    if (inputValue.name.trim() === '') {
       return message.error('First name / last name is required');
     }
     if (inputValue.email === '') {
       return message.error(MESSAGE_ERROR.EMAIL_REQUIRED);
-    }
-    if (!isValidURL(inputValue.website)) {
-      return message.error('Invalid Website');
     }
     if (inputValue.agree_tisc === false) {
       return setAgreeTisc(true);
@@ -154,6 +154,7 @@ export const BrandInterestedModal: FC<BrandInterestedProps> = ({
               type="text"
               required={true}
               onChange={onChangeInputValue}
+              autoComplete={'' + Math.random()}
             />
             <CustomInput
               fromLandingPage
@@ -167,6 +168,7 @@ export const BrandInterestedModal: FC<BrandInterestedProps> = ({
               name="email"
               required={true}
               onChange={onChangeInputValue}
+              autoComplete={'' + Math.random()}
             />
             <div
               className={

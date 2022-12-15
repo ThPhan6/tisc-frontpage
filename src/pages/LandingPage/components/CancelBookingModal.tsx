@@ -30,33 +30,43 @@ export const BrandInformation: FC<{ informationBooking: InformationBooking }> = 
       <div className={styles.title}>
         <Title level={8}>Your Information</Title>
       </div>
-      <div style={{ height: 'calc(100vh - 556px)' }}>
+      <div style={{ height: 'calc(512px - 152px)' }}>
         <div className={styles.information}>
-          <BrandIcon />
+          <span>
+            <BrandIcon />
+          </span>
           <BodyText level={5} fontFamily="Roboto">
             {informationBooking.brand_name}
           </BodyText>
         </div>
         <div className={styles.information}>
-          <InternetIcon />
+          <span>
+            <InternetIcon />
+          </span>
           <BodyText level={5} fontFamily="Roboto">
             {informationBooking.website}
           </BodyText>
         </div>
         <div className={styles.information}>
-          <UserIcon />
+          <span>
+            <UserIcon />
+          </span>
           <BodyText level={5} fontFamily="Roboto">
             {informationBooking.name}
           </BodyText>
         </div>
         <div className={styles.information}>
-          <EmailIcon />
+          <span>
+            <EmailIcon />
+          </span>
           <BodyText level={5} fontFamily="Roboto">
             {informationBooking.email}
           </BodyText>
         </div>
         <div className={styles.information}>
-          <ClockIcon />
+          <span>
+            <ClockIcon />
+          </span>
           <BodyText level={5} fontFamily="Roboto">
             {Timezones[informationBooking.timezone]}
           </BodyText>
@@ -100,9 +110,10 @@ export const CancelBookingModal: FC<CancelBookingProps> = ({
     <CustomModal
       title={<MainTitle level={2}>Are you sure to cancel the booking?</MainTitle>}
       bodyStyle={{
-        height: '576px',
+        height: '512px',
         padding: '32px',
       }}
+      closeIconClass={styles.closeIcon}
       className={styles.calendar}
       visible={visible}
       onCancel={onClose}

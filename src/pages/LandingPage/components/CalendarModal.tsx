@@ -10,6 +10,7 @@ import { ReactComponent as PaginationRightIcon } from '@/assets/icons/pagination
 
 import { createBooking, getListAvailableTime, updateBooking } from '../services/api';
 import { pushTo } from '@/helper/history';
+import { useBoolean } from '@/helper/hook';
 
 import { AvailableTime, InformationBooking, ModalProps, Timezones } from '../types';
 import { CollapsingProps } from '@/features/how-to/types';
@@ -105,6 +106,34 @@ export const CalendarModal: FC<CalendarModalProps> = ({
 
   const [activeKey, setActiveKey] = useState<string>('');
 
+  const [timeBooked, setTimeBooked] = useState<{
+    startTime: string;
+    endTime: string;
+    slot: number;
+    date: string;
+    timeZone: string;
+  }>({ startTime: '', endTime: '', slot: -1, date: '', timeZone: '' });
+
+  const haveAvailableTimeSlot = useBoolean();
+
+  useEffect(() => {
+    if (informationBooking.slot === -1 && isUpdateBooking) {
+      haveAvailableTimeSlot.setValue(false);
+    } else {
+      haveAvailableTimeSlot.setValue(true);
+    }
+  }, [informationBooking.slot]);
+
+  useEffect(() => {
+    setTimeBooked({
+      startTime: informationBooking.start_time_text,
+      endTime: informationBooking.end_time_text,
+      slot: informationBooking.slot,
+      date: informationBooking.date,
+      timeZone: informationBooking.timezone,
+    });
+  }, []);
+
   useEffect(() => {
     getListAvailableTime(informationBooking.date, informationBooking.timezone).then((res) => {
       setAvailableTimes(res);
@@ -129,20 +158,34 @@ export const CalendarModal: FC<CalendarModalProps> = ({
           <BodyText
             level={5}
             fontFamily="Roboto"
-            style={{
-              height: '36px',
-              alignItems: 'center',
-              display: 'flex',
-              cursor: 'pointer',
-            }}
+            customClass={`${styles.timeZoneText} ${
+              informationBooking.timezone === key ? styles.activeText : ''
+            }`}
             onClick={() => {
-              onChangeValue({ ...informationBooking, timezone: key });
+              onChangeValue({
+                ...informationBooking,
+                timezone: key,
+                slot: -1,
+                start_time_text: '',
+                end_time_text: '',
+              });
               setActiveKey('');
             }}>
             {Timezones[key]}
           </BodyText>
         ))}
       </>
+    );
+  };
+
+  const checkActiveAvailableTime = (time: AvailableTime) => {
+    if (haveAvailableTimeSlot.value) {
+      return informationBooking.slot === time.slot;
+    }
+    return (
+      timeBooked.slot === time.slot &&
+      timeBooked.date === informationBooking.date &&
+      timeBooked.timeZone === informationBooking.timezone
     );
   };
 
@@ -154,7 +197,7 @@ export const CalendarModal: FC<CalendarModalProps> = ({
             level={5}
             fontFamily="Roboto"
             customClass={`${styles.text} ${time.available ? '' : styles.disableText} ${
-              informationBooking.slot === time.slot ? styles.selectedText : ''
+              checkActiveAvailableTime(time) ? styles.selectedText : ''
             }`}
             onClick={() =>
               time.available &&
@@ -207,9 +250,10 @@ export const CalendarModal: FC<CalendarModalProps> = ({
         footer={false}
         width="1152px"
         bodyStyle={{
-          height: '576px',
+          height: '512px',
           padding: '32px',
         }}
+        closeIconClass={styles.closeIcon}
         className={styles.calendar}
         title={
           <MainTitle level={2}>
@@ -230,6 +274,9 @@ export const CalendarModal: FC<CalendarModalProps> = ({
                 onChangeValue({
                   ...informationBooking,
                   date: getAvailableDateInMonth(date),
+                  start_time_text: '',
+                  end_time_text: '',
+                  slot: -1,
                 });
               }}
               disabledDate={(date) => {
@@ -265,7 +312,20 @@ export const CalendarModal: FC<CalendarModalProps> = ({
             </div>
           </Col>
           <Col span={8}>
-            <BrandInformation informationBooking={informationBooking} />
+            <BrandInformation
+              informationBooking={
+                haveAvailableTimeSlot.value
+                  ? informationBooking
+                  : {
+                      ...informationBooking,
+                      date: timeBooked.date,
+                      start_time_text: timeBooked.startTime,
+                      end_time_text: timeBooked.endTime,
+                      timezone: timeBooked.timeZone,
+                      slot: timeBooked.slot,
+                    }
+              }
+            />
             <div
               style={{
                 display: 'flex',
