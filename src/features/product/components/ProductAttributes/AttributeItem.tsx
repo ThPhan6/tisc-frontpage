@@ -59,7 +59,6 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
   const [firstLoad, setFirstLoad] = useState<boolean>(true);
 
   const [curAttributeData, setCurAtttributeData] = useState<any>();
-  const [basisData, setBasisData] = useState<any>();
 
   /// using for option have type Text and Conversion
   const [selected, setSelected] = useState<RadioValue>({
@@ -104,7 +103,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
               return subBasis;
             }
 
-            /// mapping data from attribute data selected and all attributes existed
+            /// mapping data from attribute data selected to all attributes existed
             if (attributeItem.basis_options?.some((opt) => opt.id === subBasis.id)) {
               return {
                 ...subBasis,
@@ -131,8 +130,6 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
         }
       });
     });
-
-    setBasisData(currentAttribute.basis);
 
     setCurAtttributeData(currentAttribute);
 
@@ -222,14 +219,14 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
   };
 
   const renderProductAttributeItem = () => {
-    if (!basisData) {
+    if (!curAttributeData?.basis) {
       return null;
     }
     let placeholder = 'type title';
-    if (basisData.type !== 'Conversions' && basisData.type !== 'Text') {
-      placeholder = basisData.name;
+    if (curAttributeData.basis.type !== 'Conversions' && curAttributeData.basis.type !== 'Text') {
+      placeholder = curAttributeData.basis.name;
     }
-    if (basisData?.type === 'Conversions') {
+    if (curAttributeData?.basis?.type === 'Conversions') {
       return (
         <ConversionInput
           horizontal
@@ -242,8 +239,8 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
             30
           }
           fontLevel={4}
-          label={curAttributeData?.name ? truncate(curAttributeData.name, { length: 20 }) : 'N/A'}
-          conversionData={basisData}
+          label={curAttributeData?.name ? truncate(curAttributeData?.name, { length: 20 }) : 'N/A'}
+          conversionData={curAttributeData?.basis}
           deleteIcon
           onDelete={onDelete}
           conversionValue={{
@@ -265,15 +262,16 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
         horizontal
         isTableFormat
         fontLevel={4}
-        label={curAttributeData?.name ? truncate(curAttributeData.name, { length: 20 }) : 'N/A'}
+        label={curAttributeData?.name ? truncate(curAttributeData?.name, { length: 20 }) : 'N/A'}
         placeholder={placeholder}
         rightIcon={
-          basisData?.type === 'Presets' || basisData?.type === 'Options' ? (
+          curAttributeData?.basis?.type === 'Presets' ||
+          curAttributeData?.basis?.type === 'Options' ? (
             <ActionRightLeftIcon onClick={() => setVisible(true)} />
           ) : null
         }
         onRightIconClick={
-          basisData?.type === 'Presets' || basisData?.type === 'Options'
+          curAttributeData?.basis?.type === 'Presets' || curAttributeData?.basis?.type === 'Options'
             ? () => setVisible(true)
             : undefined
         }
@@ -356,7 +354,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
         checkboxList={
           isSpecification
             ? {
-                heading: basisData?.name ?? 'N/A',
+                heading: curAttributeData?.basis?.name ?? 'N/A',
                 customItemClass: styles.customItemClass,
                 options:
                   basisOptions?.map((sub: any, index: number) => {
@@ -381,11 +379,11 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
                     <Title
                       level={8}
                       customClass={`preset-option-heading ${styles.presetOptionTitle}`}>
-                      {basisData?.name ?? 'N/A'}
+                      {curAttributeData?.basis?.name ?? 'N/A'}
                     </Title>
                   ),
                   options:
-                    basisData?.subs?.map((sub: any) => {
+                    curAttributeData?.basis?.subs?.map((sub: any) => {
                       return {
                         label: sub.value_1,
                         value: sub.id,
