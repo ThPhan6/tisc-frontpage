@@ -5,6 +5,9 @@ export const PATH = {
   createPassword: '/create-password',
   verifyAccount: '/verify',
   sharedProduct: '/shared-product/:id',
+  sharedCustomProduct: '/shared-custom-product/:id',
+  reScheduleBooking: '/booking/:id/re-schedule',
+  cancelBooking: '/booking/:id/cancel',
   // private path
   profiles: '/profile-settings',
   tiscHomePage: '/tisc/dashboard',
@@ -142,9 +145,6 @@ export const PATH = {
   brandBilledServices: '/brand/adminstration/billed-services',
   brandBilledServicesView: '/brand/adminstration/billed-services/:id',
 
-  // brand subscription
-  brandSubscription: '/brand/adminstration/subscription',
-
   /// design-firms
   // My Favourite
   designerFavourite: '/design-firms/my-favorites',
@@ -153,15 +153,16 @@ export const PATH = {
   designerBrandProduct: '/design-firms/products/brand-products',
   designerBrandProductDetail: '/design-firms/products/brand-products/:id',
   // Library (Custom PRoduct)
-  designerCustomProduct: '/design-firms/products/custom-product',
-  designerCustomProductCreate: '/design-firms/products/custom-product/create',
-  designerCustomProductUpdate: '/design-firms/products/custom-product/update/:id',
-  designerCustomProductDetail: '/design-firms/products/custom-product/:id',
+  designerCustomProduct: '/design-firms/products/library-resources',
+  designerCustomProductCreate: '/design-firms/products/library-resources/create',
+  designerCustomProductUpdate: '/design-firms/products/library-resources/update/:id',
+  designerCustomProductDetail: '/design-firms/products/library-resources/:id',
   // Resources (Vendor Management)
-  designerCustomResource: '/design-firms/products/custom-product/custom-resources',
-  designerCustomResourceCreate: '/design-firms/products/custom-product/custom-resources/create',
-  designerCustomResourceUpdate: '/design-firms/products/custom-product/custom-resources/update/:id',
-  designerCustomResourceDetail: '/design-firms/products/custom-product/custom-resources/:id',
+  designerCustomResource: '/design-firms/products/library-resources/custom-resources',
+  designerCustomResourceCreate: '/design-firms/products/library-resources/custom-resources/create',
+  designerCustomResourceUpdate:
+    '/design-firms/products/library-resources/custom-resources/update/:id',
+  designerCustomResourceDetail: '/design-firms/products/library-resources/custom-resources/:id',
   // Project
   designerProject: '/design-firms/projects',
   designerUpdateProject: '/design-firms/projects/:id',
@@ -190,4 +191,6 @@ export const PUBLIC_PATH = [
   PATH.createPassword,
   PATH.verifyAccount,
   PATH.sharedProduct,
+  PATH.cancelBooking,
+  PATH.reScheduleBooking,
 ];

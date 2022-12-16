@@ -8,6 +8,11 @@ export default [
     layout: false,
   },
   {
+    path: PATH.sharedCustomProduct,
+    component: './Designer/Products/CustomLibrary/ProductLibraryDetail',
+    layout: false,
+  },
+  {
     path: PATH.landingPage,
     component: './LandingPage',
     layout: false,
@@ -24,6 +29,16 @@ export default [
   },
   {
     path: PATH.verifyAccount,
+    component: './LandingPage',
+    layout: false,
+  },
+  {
+    path: PATH.cancelBooking,
+    component: './LandingPage',
+    layout: false,
+  },
+  {
+    path: PATH.reScheduleBooking,
     component: './LandingPage',
     layout: false,
   },
@@ -664,13 +679,6 @@ export default [
             hideInMenu: true,
           },
         ],
-      },
-      {
-        path: PATH.brandSubscription,
-        name: 'brand.subscription',
-        icon: 'subscription-icon.svg',
-        component: './Admin',
-        access: 'brand_administration_subscription',
       },
     ],
   },

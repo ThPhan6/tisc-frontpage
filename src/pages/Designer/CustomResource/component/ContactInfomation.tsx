@@ -9,6 +9,7 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
+import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import {
   getEmailMessageError,
@@ -80,7 +81,13 @@ const ContactHeader: FC<ContactHeaderProps> = (props) => {
           <div className={styles.titleIcon}>
             <BodyText level={4}>CONTACT INFORMATION</BodyText>
             {type === 'create' && (
-              <DeleteIcon onClick={handleClickDeleteItem} className={styles.deleteIcon} />
+              <DeleteIcon
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleClickDeleteItem();
+                }}
+                className={styles.deleteIcon}
+              />
             )}
           </div>
         ) : (
@@ -138,9 +145,11 @@ export const ContactInformation: FC<ContactInformationProps> = ({
   };
 
   const handleClickDelete = (index: number) => {
-    const newContact = [...data.contacts];
-    newContact.splice(index, 1);
-    setData({ ...data, contacts: newContact });
+    confirmDelete(() => {
+      const newContact = [...data.contacts];
+      newContact.splice(index, 1);
+      setData({ ...data, contacts: newContact });
+    });
   };
 
   const renderContacts = (contact: ContactDetail, index: number) => {
@@ -165,7 +174,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             label="First Name"
             required
             deleteIcon={type === 'create'}
-            fontLevel={4}
+            fontLevel={3}
             value={contact.first_name}
             hasPadding
             colorPrimaryDark={type === 'create'}
@@ -183,7 +192,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             label="Last Name"
             required
             deleteIcon={type === 'create'}
-            fontLevel={4}
+            fontLevel={3}
             value={contact.last_name}
             hasPadding
             colorPrimaryDark={type === 'create'}
@@ -201,7 +210,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             label="Position / Role"
             required
             deleteIcon={type === 'create'}
-            fontLevel={4}
+            fontLevel={3}
             value={contact.position}
             hasPadding
             colorPrimaryDark={type === 'create'}
@@ -220,7 +229,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             label="Work Email"
             required
             deleteIcon={type === 'create'}
-            fontLevel={4}
+            fontLevel={3}
             value={contact.work_email}
             hasPadding
             colorPrimaryDark={type === 'create'}
@@ -242,7 +251,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             layout="vertical"
             required
             style={{ marginBottom: '16px' }}
-            labelFontSize={4}>
+            labelFontSize={3}>
             <PhoneInput
               phonePlaceholder="area code / number"
               onChange={(value) => {
@@ -264,7 +273,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             label="Work Mobile"
             layout="vertical"
             required
-            labelFontSize={4}
+            labelFontSize={3}
             style={{ marginBottom: '16px' }}>
             <PhoneInput
               phonePlaceholder="mobile number"

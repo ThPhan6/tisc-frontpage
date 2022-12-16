@@ -5,8 +5,9 @@ import { PATH } from '@/constants/path';
 import { getServicesPagination } from '@/features/services/api';
 import styles from '@/features/services/index.less';
 import { InvoiceStatus, ServicesResponse } from '@/features/services/type';
+import { checkShowBillingAmount, formatToMoneyValue } from '@/features/services/util';
 import { pushTo } from '@/helper/history';
-import { formatNumberDisplay, getFullName } from '@/helper/utils';
+import { getFullName } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 
@@ -56,7 +57,16 @@ const BilledServices = () => {
       title: 'Billed Amount',
       dataIndex: 'billing_amount',
       render: (_value, record) => {
-        return <span>${formatNumberDisplay(record.billing_amount)}</span>;
+        return (
+          <span>
+            $
+            {formatToMoneyValue(
+              checkShowBillingAmount(record)
+                ? record.billing_amount + record.overdue_amount
+                : record.billing_amount,
+            )}
+          </span>
+        );
       },
     },
     {

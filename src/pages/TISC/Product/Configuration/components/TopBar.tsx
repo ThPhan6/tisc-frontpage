@@ -10,18 +10,21 @@ import { ReactComponent as SmallPlusIcon } from '@/assets/icons/small-plus-icon.
 import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
 import { getBrandAlphabet } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
-import { useQuery } from '@/helper/hook';
+import { useBoolean, useQuery } from '@/helper/hook';
 import { updateUrlParams } from '@/helper/utils';
 import { flatMap, forEach, map } from 'lodash';
 
+import { RadioValue } from '@/components/CustomRadio/types';
 import {
   resetProductState,
   setBrand,
   setProductList,
+  setProductListFilter,
   setProductSummary,
 } from '@/features/product/reducers';
 import { ProductGetListParameter } from '@/features/product/types';
 import { BrandAlphabet, BrandDetail } from '@/features/user-group/types';
+import store from '@/reducers';
 
 import { LogoIcon } from '@/components/LogoIcon';
 import Popover from '@/components/Modal/Popover';
@@ -41,12 +44,16 @@ export const TopBar: React.FC = () => {
 
   const [visible, setVisible] = useState(false);
   const [brandAlphabet, setBrandAlphabet] = useState<BrandAlphabet>({});
-  const [brandData, setBrandData] = useState<any>();
+  const [brandData, setBrandData] = useState<RadioValue>();
   const brandFlatList = flatMap(brandAlphabet);
 
   const query = useQuery();
   const brandId = query.get(QUERY_KEY.b_id);
   const brandName = query.get(QUERY_KEY.b_name);
+  const cate_id = query.get(QUERY_KEY.cate_id);
+  const coll_id = query.get(QUERY_KEY.coll_id);
+  const coll_name = query.get(QUERY_KEY.coll_name);
+  const firstLoad = useBoolean(true);
 
   const { renderFilterDropdown, renderItemTopBar, productSummary, filter, productBrand } =
     useProductListFilterAndSorter({
@@ -58,7 +65,7 @@ export const TopBar: React.FC = () => {
     getBrandAlphabet().then((data) => {
       setBrandAlphabet(data);
       if (brandId && brandName) {
-        setBrandData({ value: brandId });
+        setBrandData({ value: brandId, label: brandName });
       }
     });
 
@@ -81,33 +88,78 @@ export const TopBar: React.FC = () => {
       });
       dispatch(setBrand(curBrand));
     }
-  }, [brandData]);
+  }, [brandData?.value]);
 
   // brand product summary
   useEffect(() => {
     if (productBrand && productBrand.id && productSummary?.brandId !== productBrand.id) {
+      // prevent call api on first loading
+      if (coll_id && coll_name && firstLoad.value && !filter) {
+        return;
+      }
+
       // get product summary
-      getProductSummary(productBrand.id).then(() => {
-        // reset filter
-        // resetFilter();
+      getProductSummary(productBrand.id).then((res) => {
+        /// in case collection filter has chosen,
+        /// updated its filter name and param after reloading
+        if (
+          res.collections.length &&
+          brandId &&
+          brandName &&
+          coll_id &&
+          coll_name &&
+          filter &&
+          filter.name === 'collection_id' &&
+          filter.value !== 'all'
+        ) {
+          const collectionFilterName =
+            res.collections.find((collection) => collection.id === filter?.value)?.name || '';
+
+          /// update collection filter name
+          store.dispatch(
+            setProductListFilter({
+              name: 'collection_id',
+              value: filter.value,
+              title: collectionFilterName ?? '',
+            }),
+          );
+
+          /// update params
+          updateUrlParams({
+            set: [
+              { key: QUERY_KEY.b_id, value: brandId },
+              { key: QUERY_KEY.b_name, value: brandName },
+              { key: QUERY_KEY.coll_id, value: filter.value },
+              { key: QUERY_KEY.coll_name, value: collectionFilterName },
+            ],
+          });
+        }
       });
     }
-  }, [productBrand, productSummary]);
+  }, [productBrand?.id, productSummary?.brandId, filter && firstLoad.value === true]);
 
   useEffect(() => {
-    if (productBrand && productBrand.id && filter) {
+    if (productBrand?.id) {
       const params: ProductGetListParameter = {
         brand_id: productBrand.id,
+        category_id: !filter ? 'all' : undefined,
       };
-      if (filter.name === 'category_id') {
+
+      if (filter?.name === 'category_id') {
         params.category_id = filter.value === 'all' ? 'all' : filter.value;
       }
-      if (filter.name === 'collection_id') {
+      if (filter?.name === 'collection_id') {
         params.collection_id = filter.value === 'all' ? 'all' : filter.value;
       }
+
+      if (!filter && firstLoad.value && (coll_id || cate_id)) {
+        firstLoad.setValue(false);
+        return;
+      }
+
       getProductListByBrandId(params);
     }
-  }, [filter, productBrand]);
+  }, [filter?.value, productBrand?.id, firstLoad.value]);
 
   const gotoProductForm = () => {
     dispatch(resetProductState());

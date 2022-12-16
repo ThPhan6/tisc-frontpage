@@ -3,7 +3,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 
 import { ReactComponent as PaginationLeftIcon } from '@/assets/icons/pagination-left.svg';
 import { ReactComponent as PaginationRightIcon } from '@/assets/icons/pagination-right.svg';
-import TemplatePDF from '@/assets/images/page.png';
+import TemplatePDF from '@/assets/images/template-pdf.png';
 
 import { createPDF } from '@/features/project/services';
 

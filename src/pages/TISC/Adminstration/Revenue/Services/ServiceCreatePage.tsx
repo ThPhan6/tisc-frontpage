@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
-import { Col, Row } from 'antd';
+import { Col, Row, message } from 'antd';
 
 import { createService, getOneService, updateService } from '@/features/services/api';
 import { BrandCompanyModal } from '@/features/services/components/BrandCompanyModal';
@@ -56,9 +56,38 @@ const ServiceCreatePage = () => {
     }
   }, []);
 
+  const validateValueServices = () => {
+    if (!serviceFormData.service_type_id) {
+      return message.error('Service type is required');
+    }
+    if (!serviceFormData.brand_id) {
+      return message.error('Brand is required');
+    }
+    if (!serviceFormData.ordered_by) {
+      return message.error('Ordered by is required');
+    }
+    if (serviceFormData.unit_rate === '') {
+      return message.error('Please enter unit rate');
+    }
+    if (Number(serviceFormData.unit_rate) === 0) {
+      return message.error('Unit rate must be greater than 0');
+    }
+    if (serviceFormData.quantity === '') {
+      return message.error('Please enter quantity');
+    }
+    if (Number(serviceFormData.quantity) === 0) {
+      return message.error('Quantity must be greater than 0');
+    }
+    if (serviceFormData.tax === '') {
+      return message.error('Please enter tax number');
+    }
+    return;
+  };
+
   const handleCreateService = () => {
     showPageLoading();
     createService(serviceFormData).then((isSuccess) => {
+      validateValueServices();
       if (isSuccess) {
         submitButtonStatus.setValue(true);
         setTimeout(() => {
@@ -73,18 +102,19 @@ const ServiceCreatePage = () => {
   const handleUpdateService = () => {
     if (typeHandleSubmit === 'view') {
       setTypeHandleSubmit('update');
-    } else {
-      showPageLoading();
-      updateService(idService, serviceFormData).then((isSuccess) => {
-        if (isSuccess) {
-          submitButtonStatus.setValue(true);
-          setTimeout(() => {
-            submitButtonStatus.setValue(false);
-          }, 1000);
-        }
-        hidePageLoading();
-      });
+      return;
     }
+    showPageLoading();
+    updateService(idService, serviceFormData).then((isSuccess) => {
+      validateValueServices();
+      if (isSuccess) {
+        submitButtonStatus.setValue(true);
+        setTimeout(() => {
+          submitButtonStatus.setValue(false);
+        }, 1000);
+      }
+      hidePageLoading();
+    });
   };
 
   const handleCancel = () => {

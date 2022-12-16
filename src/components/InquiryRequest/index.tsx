@@ -78,6 +78,8 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
   // to show on label
   const [projectChosen, setProjectChosen] = useState<ProjectItem>();
 
+  const [collapse, setCollapse] = useState<string | string[] | undefined>([]);
+
   //
   const [inquiryForData, setInquiryForData] = useState<CheckboxValue[]>([]);
   const [selectedInquiryFor, setSelectedInquiryFor] = useState<CheckboxValue[]>([]); // for show on placeholder
@@ -111,6 +113,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
   /// get inquiry/request data
   useEffect(() => {
     if (!visible) {
+      setCollapse([]);
       return;
     }
 
@@ -283,6 +286,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
       {selectedTab === TabKeys.request ? (
         <CollapseRadioFormGroup
           label="Project Name"
+          activeKey={collapse}
           checked={projectRequestData.project_id}
           defaultPlaceHolder="select from My Workspace"
           placeholder={projectChosen?.name}
@@ -307,6 +311,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
         layout="vertical"
         formClass={styles.formGroup}>
         <CollapseCheckboxList
+          activeKey={collapse}
           checked={inquiryTab ? selectedInquiryFor : selectedRequestFor}
           onChange={onChangeCheckboxListData}
           containerClass={setStyleOnContainerClass()}

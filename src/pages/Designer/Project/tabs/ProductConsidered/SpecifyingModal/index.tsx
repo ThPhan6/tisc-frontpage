@@ -153,6 +153,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         () => {
           reloadTable();
           setVisible(false);
+          store.dispatch(resetProductDetailState());
         },
       );
     }
@@ -163,7 +164,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       className={`${popoverStyles.customPopover} ${styles.specifyingModal}`}
       visible={visible}
       onCancel={() => {
-        console.log('onCancel');
         setVisible(false);
         store.dispatch(resetProductDetailState());
       }}
@@ -216,6 +216,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           brandId={product.brand?.id ?? ''}
           customProduct={customProduct}
           brand={product.brand}
+          projectId={projectId}
         />
       </CustomTabPane>
 

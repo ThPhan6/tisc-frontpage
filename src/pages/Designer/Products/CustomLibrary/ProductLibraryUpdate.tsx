@@ -8,7 +8,7 @@ import { createCustomProduct, getOneCustomProduct, updateCustomProduct } from '.
 import { formatImageIfBase64 } from '@/helper/utils';
 
 import { CustomProductRequestBody, ProductInfoTab } from './types';
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
 
 import { SpecificationTab } from './components/SpecificationTab';
 import { SummaryTab } from './components/SummaryTab';
@@ -17,7 +17,7 @@ import ProductDetailHeader from '@/features/product/components/ProductDetailHead
 import ProductImagePreview from '@/features/product/components/ProductImagePreview';
 
 import styles from './ProductLibraryDetail.less';
-import { invalidCustomProductSelector } from './slice';
+import { invalidCustomProductSelector, resetCustomProductState } from './slice';
 
 const LIST_TAB = [
   { tab: 'SUMMARY', key: 'summary' },
@@ -40,6 +40,10 @@ const ProductLibraryUpdate: React.FC = () => {
     if (productId) {
       getOneCustomProduct(productId);
     }
+
+    return () => {
+      store.dispatch(resetCustomProductState());
+    };
   }, [productId]);
 
   const onSave = () => {
@@ -53,6 +57,9 @@ const ProductLibraryUpdate: React.FC = () => {
       case !productData.name:
         message.error('Product name is required');
         return;
+      case !productData.description:
+        message.error('Description is required');
+        return;
       case productData.images.length < 1:
         message.error('Required at least one image');
         return;
@@ -60,13 +67,13 @@ const ProductLibraryUpdate: React.FC = () => {
         message.error('Maximum 4 images are allowed');
         return;
       case invalidAttributes:
-        message.error('Invalid attributes');
+        message.error('Product attribute is missing');
         return;
       case invalidOptions:
-        message.error('Invalid options');
+        message.error('Product option is missing');
         return;
       case invalidSpecifications:
-        message.error('Invalid specifications');
+        message.error('Product specification is missing');
         return;
     }
 
@@ -118,7 +125,7 @@ const ProductLibraryUpdate: React.FC = () => {
       </Col>
 
       <Col span={24}>
-        <Row className={styles.marginRounded}>
+        <Row>
           <Col span={12}>
             <ProductImagePreview
               hideInquiryRequest

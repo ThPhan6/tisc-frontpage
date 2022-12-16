@@ -217,7 +217,7 @@ export const getMaxLengthText = (text: string, maxLength: number) => {
   return text.slice(0, maxLength - 3) + '...';
 };
 
-export const formatNumberDisplay = (
+export const formatCurrencyNumber = (
   num: number | string,
   locale: Intl.LocalesArgument = 'en-us',
   options: Intl.NumberFormatOptions = {},
@@ -397,3 +397,10 @@ export const formatNumber = (number: number) => {
 
 export const formatImageIfBase64 = (img: string) =>
   img.indexOf('data:image') > -1 ? img.split(',')[1] : img;
+
+export const checkValidURL = (url: string) => {
+  const result = url.match(
+    /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g,
+  );
+  return result !== null;
+};

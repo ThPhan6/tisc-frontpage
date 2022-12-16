@@ -7,18 +7,13 @@ import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { useGetDimensionWeight } from '@/features/dimension-weight/hook';
-import { useSelectProductSpecification } from '@/features/product/services';
-import { showImageUrl } from '@/helper/utils';
-import { cloneDeep } from 'lodash';
 
 import { NameContentProps, ProductInfoTab, ProductOptionProps } from '../../types';
 import store, { useAppSelector } from '@/reducers';
 
 import CustomCollapse from '@/components/Collapse';
-import { CustomCheckbox } from '@/components/CustomCheckbox';
-import { CustomRadio } from '@/components/CustomRadio';
+import { EmptyOne } from '@/components/Empty';
 import { DoubleInput } from '@/components/EntryForm/DoubleInput';
-import InputGroup from '@/components/EntryForm/InputGroup';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { SimpleContentTable } from '@/components/Table/components/SimpleContentTable';
 import { MainTitle, RobotoBodyText } from '@/components/Typography';
@@ -26,6 +21,8 @@ import { MainTitle, RobotoBodyText } from '@/components/Typography';
 import { setCustomProductDetail } from '../../slice';
 import { DEFAULT_PRODUCT_OPTION, ProductOptionModal } from '../Modal/ProductOptionModal';
 import '../index.less';
+import { OptionCollapseHeader } from './OptionCollapseHeader';
+import { OptionItemView, renderOptionImage } from './OptionItemView';
 import styles from './index.less';
 import { DimensionWeight } from '@/features/dimension-weight';
 
@@ -38,10 +35,10 @@ const DEFAULT_CONTENT: NameContentProps = {
 export const SpecificationTab: FC<{
   productId?: string;
   viewOnly?: boolean;
+  isPublicPage?: boolean;
   specifying?: boolean;
   activeKey: ProductInfoTab;
-}> = ({ productId, viewOnly, specifying, activeKey }) => {
-  const selectProductSpecification = useSelectProductSpecification();
+}> = ({ productId, viewOnly, isPublicPage, specifying, activeKey }) => {
   const [optionModalVisible, setOptionModalVisible] = useState<boolean>(false);
 
   const {
@@ -59,6 +56,12 @@ export const SpecificationTab: FC<{
   const { data: dwData } = useGetDimensionWeight(!productId);
 
   const dimensionWeightData = dimension_and_weight.id ? dimension_and_weight : dwData;
+
+  const noneData = viewOnly && !specifications.length && !options.length;
+
+  if (noneData) {
+    return <EmptyOne customClass="p-16" />;
+  }
 
   const handleAddSpecification = () => {
     store.dispatch(
@@ -88,17 +91,6 @@ export const SpecificationTab: FC<{
         }),
       );
     };
-
-  const onChangeOptionTitle = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newOptionGroup = [...options];
-    newOptionGroup[index] = { ...newOptionGroup[index], title: e.target.value };
-
-    store.dispatch(
-      setCustomProductDetail({
-        options: newOptionGroup,
-      }),
-    );
-  };
 
   const handleAddOptionGroup = () => {
     const newOptionGroup: ProductOptionProps = {
@@ -131,87 +123,22 @@ export const SpecificationTab: FC<{
     store.dispatch(setCustomProductDetail({ options: newOption }));
   };
 
-  const renderOptionImage = (image: string) => (
-    <img src={showImageUrl(image)} style={{ width: 48, height: 48, objectFit: 'contain' }} />
-  );
-
   const renderOptionItems = (option: ProductOptionProps, optionIndex: number) => {
     if (viewOnly) {
-      const selectOption = specification.attribute_groups?.find((el) => el.id === option.id);
       return (
-        <CustomRadio
-          options={option.items.map((el, index) => ({
-            label: (
-              <div className="flex-start" style={{}}>
-                {option.use_image && el.image ? renderOptionImage(el.image) : null}
-                <RobotoBodyText
-                  level={5}
-                  customClass="text-overflow"
-                  style={{ maxWidth: 'calc(100% - 52px)', paddingLeft: 24 }}>
-                  {el.description}
-                </RobotoBodyText>
-              </div>
-            ),
-            value: el.id || index,
-          }))}
-          direction="vertical"
-          isRadioList
-          containerStyle={{ padding: 0 }}
-          noPaddingLeft
-          value={selectOption?.attributes[0].basis_option_id}
-          onChange={(value) => {
-            if (productId && value.value) {
-              const optionId = option.id || '';
-              const itemId = value.value.toString();
-              const newOptionSpec = cloneDeep(specification);
-
-              newOptionSpec.is_refer_document = false;
-
-              const optIndex = specification.attribute_groups?.findIndex(
-                (el) => el.id === optionId,
-              );
-              const newOption = {
-                id: optionId,
-                attributes: [
-                  {
-                    id: optionId,
-                    basis_option_id: itemId,
-                  },
-                ],
-                isChecked: true,
-              };
-              if (optIndex === -1) {
-                newOptionSpec.attribute_groups.push(newOption);
-              } else {
-                newOptionSpec.attribute_groups[optIndex] = newOption;
-              }
-
-              store.dispatch(
-                setCustomProductDetail(
-                  specifying && specifiedDetail
-                    ? {
-                        specifiedDetail: { ...specifiedDetail, specification: newOptionSpec },
-                      }
-                    : {
-                        specification: newOptionSpec,
-                      },
-                ),
-              );
-              if (!specifying) {
-                selectProductSpecification(productId, {
-                  custom_product: true,
-                  specification: newOptionSpec,
-                });
-              }
-            }
-          }}
-          optionStyle={{
-            boxShadow: option.use_image ? 'inset 0 0.7px 0 rgb(0 0 0 / 30%)' : undefined,
-            padding: specifying ? '8px 0' : option.use_image ? 16 : '8px 16px 8px 20px',
-          }}
+        <OptionItemView
+          data={options}
+          dataIndex={optionIndex}
+          productId={productId}
+          specification={specification}
+          specifying={specifying}
+          isPublicPage={isPublicPage}
+          specifiedDetail={specifiedDetail}
+          viewOnly={viewOnly}
         />
       );
     }
+
     return option.items.map((item, itemIndex) => (
       <Row className={styles.optionItem} align="middle" justify="space-between">
         {option.use_image && item.image ? (
@@ -237,130 +164,67 @@ export const SpecificationTab: FC<{
       return null;
     }
 
-    return options.map((option: ProductOptionProps, optionIndex: number) => {
-      const selectOption = specification.attribute_groups?.find((el) => el.id === option.id);
-      return (
-        <CustomCollapse
-          key={option.id || optionIndex}
-          defaultActiveKey={'1'}
-          showActiveBoxShadow={!specifying}
-          noBorder={specifying || (viewOnly && option.use_image)}
-          customHeaderClass={styles.optionCollapse}
-          header={
-            viewOnly ? (
-              <Row style={{ width: '100%' }} align="middle" justify="space-between">
-                <Col style={{ paddingLeft: specifying ? 0 : 16 }}>
-                  <CustomCheckbox
-                    options={[
-                      {
-                        label: <RobotoBodyText level={6}>{option.title}</RobotoBodyText>,
-                        value: optionIndex,
-                      },
-                    ]}
-                    selected={
-                      selectOption?.isChecked
-                        ? [
-                            {
-                              label: <RobotoBodyText level={6}>{option.title}</RobotoBodyText>,
-                              value: optionIndex,
-                            },
-                          ]
-                        : []
-                    }
-                    onChange={() => {
-                      if (productId && selectOption?.isChecked) {
-                        const newOptionSpec = {
-                          is_refer_document: specification?.attribute_groups?.length
-                            ? specification.attribute_groups.some(
-                                (el) => el.id !== selectOption.id && el.isChecked,
-                              )
-                            : true,
-                          attribute_groups: specification?.attribute_groups?.length
-                            ? specification.attribute_groups.filter(
-                                (el) => el.id !== selectOption.id,
-                              )
-                            : [],
-                        };
-
-                        store.dispatch(
-                          setCustomProductDetail(
-                            specifying && specifiedDetail
-                              ? {
-                                  specifiedDetail: {
-                                    ...specifiedDetail,
-                                    specification: newOptionSpec,
-                                  },
-                                }
-                              : { specification: newOptionSpec },
-                          ),
-                        );
-                        if (!specifying) {
-                          selectProductSpecification(productId, {
-                            custom_product: true,
-                            specification: newOptionSpec,
-                          });
-                        }
-                      }
-                    }}
-                  />
-                </Col>
-                <Col flex="1 1 100px">
-                  <div className="flex-end">
-                    <RobotoBodyText level={6}>TAG: {option.tag}</RobotoBodyText>
-                  </div>
-                </Col>
-              </Row>
-            ) : (
-              <InputGroup
-                horizontal
-                noWrap
-                fontLevel={4}
-                containerClass={styles.content}
-                label={<ScrollIcon />}
-                placeholder="type title eg Colour Rand or Material Options"
-                value={option.title}
-                onChange={onChangeOptionTitle(optionIndex)}
-              />
-            )
-          }>
-          {viewOnly ? null : (
-            <div className="flex-between" style={{ padding: '10px 16px' }}>
-              <div
-                className="flex-start cursor-pointer"
-                onClick={() => {
-                  setOptionModalVisible(true);
-                  setCurOption(option);
-                  setCurOptionIndex(optionIndex);
-                }}>
-                <MainTitle level={4} customClass={styles.content}>
-                  {productId ? 'Update' : 'Create'} Options
-                </MainTitle>
-                <SingleRightIcon />
-              </div>
-              <div className="flex-start">
-                {option.tag ? (
-                  <RobotoBodyText level={6} style={{ fontWeight: '500', marginRight: 16 }}>
-                    TAG: {option.tag}
-                  </RobotoBodyText>
-                ) : null}
-                <DeleteIcon
-                  className={styles.deleteIcon}
-                  onClick={() => handleDeleteOptionGroup(optionIndex)}
-                />
-              </div>
+    return options.map((option: ProductOptionProps, optionIndex: number) => (
+      <CustomCollapse
+        key={option.id || optionIndex}
+        showActiveBoxShadow={!specifying}
+        noBorder={specifying || (viewOnly && option.use_image)}
+        expandingHeaderFontStyle="bold"
+        customHeaderClass={styles.optionCollapse}
+        header={
+          <OptionCollapseHeader
+            data={options}
+            dataIndex={optionIndex}
+            productId={productId}
+            specification={specification}
+            specifying={specifying}
+            isPublicPage={isPublicPage}
+            specifiedDetail={specifiedDetail}
+            viewOnly={viewOnly}
+          />
+        }>
+        {viewOnly ? null : (
+          <div className="flex-between" style={{ padding: '10px 16px' }}>
+            <div
+              className="flex-start cursor-pointer"
+              onClick={() => {
+                setOptionModalVisible(true);
+                setCurOption(option);
+                setCurOptionIndex(optionIndex);
+              }}>
+              <MainTitle level={4} customClass={styles.content}>
+                {option.items.length ? 'Update Options' : 'Create Options'}
+              </MainTitle>
+              <SingleRightIcon />
             </div>
-          )}
+            <div className="flex-start">
+              {option.tag ? (
+                <RobotoBodyText level={6} style={{ fontWeight: '500', marginRight: 16 }}>
+                  TAG: {option.tag}
+                </RobotoBodyText>
+              ) : null}
+              <DeleteIcon
+                className={styles.deleteIcon}
+                onClick={() => handleDeleteOptionGroup(optionIndex)}
+              />
+            </div>
+          </div>
+        )}
 
-          {renderOptionItems(option, optionIndex)}
-        </CustomCollapse>
-      );
-    });
+        {renderOptionItems(option, optionIndex)}
+      </CustomCollapse>
+    ));
   };
 
   const renderSpecification = () => {
     if (viewOnly) {
       return (
-        <SimpleContentTable items={specifications} tdStyle={specifying ? { paddingLeft: 0 } : {}} />
+        <SimpleContentTable
+          items={specifications}
+          tdStyle={specifying ? { paddingLeft: 0 } : {}}
+          flex={specifying ? '30-70' : '25-75'}
+          noPadding={specifying}
+        />
       );
     }
     return specifications?.map((item, index) => (
@@ -388,11 +252,13 @@ export const SpecificationTab: FC<{
   return (
     <>
       <DimensionWeight
+        customClass={specifying ? 'mt-8' : ''}
         editable={!viewOnly}
         isShow={activeKey === 'specification'}
         noPadding={specifying}
         collapseStyles={!specifying}
         data={dimensionWeightData}
+        isConversionText={specifying}
         onChange={(data) => {
           store.dispatch(
             setCustomProductDetail({
@@ -414,7 +280,7 @@ export const SpecificationTab: FC<{
         </div>
       )}
 
-      <div>
+      <div className={styles.mainContent}>
         {renderSpecification()}
 
         {renderProductOptionGroup()}

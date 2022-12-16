@@ -10,7 +10,13 @@ import { ReactComponent as CancelIcon } from '@/assets/icons/ic-square-cancel.sv
 import { ReactComponent as CheckIcon } from '@/assets/icons/ic-square-check.svg';
 import { ReactComponent as InfoIcon } from '@/assets/icons/warning-circle-icon.svg';
 
-import { onOpenSpecifiyingProductModal, renderAvailability, useSpecifyingModal } from '../../hooks';
+import {
+  onCellUnlisted,
+  onOpenSpecifiyingProductModal,
+  renderAvailability,
+  renderImage,
+  useSpecifyingModal,
+} from '../../hooks';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import {
   getConsideredProducts,
@@ -19,7 +25,7 @@ import {
 } from '@/features/project/services';
 import { confirmDelete } from '@/helper/common';
 import { useBoolean } from '@/helper/hook';
-import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
+import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import { ProductItem, ProjectProductItem } from '@/features/product/types';
@@ -38,6 +44,8 @@ import { BodyText, RobotoBodyText } from '@/components/Typography';
 import { CustomDropDown } from '@/features/product/components';
 import ProductCard from '@/features/product/components/ProductCard';
 import cardStyles from '@/features/product/components/ProductCard.less';
+
+import styles from './index.less';
 
 const ProductConsidered: React.FC = () => {
   useAutoExpandNestedTableColumn(3, [7]);
@@ -123,34 +131,22 @@ const ProductConsidered: React.FC = () => {
 
   const disabledClassname = gridView.value ? 'disabled' : undefined;
 
-  const onCellUnlisted = (data: any) => ({
-    className:
-      data.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted
-        ? 'light-content'
-        : undefined,
-  });
-
-  const getSameColumns = (noBoxShadow?: boolean) => {
+  const getSameColumns = (props: { noBoxShadow?: boolean; isAreaColumn?: boolean }) => {
     const SameColumn: TableColumnItem<any>[] = [
       {
         title: 'Image',
         dataIndex: 'images',
         width: '5%',
         align: 'center',
-        noBoxShadow: noBoxShadow,
+        noBoxShadow: props.noBoxShadow,
         className: disabledClassname,
-        render: (value) =>
-          value?.[0] ? (
-            <img
-              src={showImageUrl(value[0])}
-              style={{ width: 24, height: 24, objectFit: 'contain' }}
-            />
-          ) : null,
+        render: (value) => renderImage(value?.[0]),
+        onCell: props.isAreaColumn ? onCellUnlisted : undefined,
       },
       {
         title: 'Brand',
         dataIndex: 'brand_order',
-        noBoxShadow: noBoxShadow,
+        noBoxShadow: props.noBoxShadow,
         className: disabledClassname,
         sorter: {
           multiple: 4,
@@ -161,7 +157,7 @@ const ProductConsidered: React.FC = () => {
       {
         title: 'Collection',
         className: disabledClassname,
-        noBoxShadow: noBoxShadow,
+        noBoxShadow: props.noBoxShadow,
         render: (_value, record) => record.collection?.name,
         onCell: onCellUnlisted,
       },
@@ -191,7 +187,7 @@ const ProductConsidered: React.FC = () => {
         multiple: 4,
       },
     },
-    ...getSameColumns(false),
+    ...getSameColumns({ noBoxShadow: false }),
     {
       title: 'Product',
       className: disabledClassname,
@@ -220,6 +216,7 @@ const ProductConsidered: React.FC = () => {
       width: COLUMN_WIDTH.status,
       hidden: gridView.value,
       align: 'center',
+      className: disabledClassname,
     },
     {
       title: 'Action',
@@ -233,26 +230,29 @@ const ProductConsidered: React.FC = () => {
     {
       title: 'Zones',
       noBoxShadow: true,
-      onCell: (data) => ({
-        className: data.rooms ? '' : 'no-box-shadow',
-      }),
+      onCell: onCellUnlisted,
     },
     {
       title: 'Areas',
       noExpandIfEmptyData: 'rooms',
       isExpandable: true,
       render: (_value, record) => <span>{record.name}</span>,
-      onCell: (data) => ({
-        className: data.rooms ? '' : 'no-box-shadow',
-      }),
+      onCell: onCellUnlisted,
     },
     {
       title: 'Rooms',
-      onCell: (data) => ({
-        className: data.rooms ? '' : 'no-box-shadow',
-      }),
+      onCell: onCellUnlisted,
     },
-    ...getSameColumns(false),
+    ...getSameColumns({
+      noBoxShadow: false,
+      isAreaColumn: true,
+    }),
+    {
+      title: 'Collection',
+      className: disabledClassname,
+      render: (_value, record) => record.collection?.name,
+      onCell: onCellUnlisted,
+    },
     {
       title: 'Product',
       render: (_value, record) => (record.rooms ? null : record.name), // For Entire project
@@ -264,13 +264,20 @@ const ProductConsidered: React.FC = () => {
       render: (value, record) => (record.rooms ? null : value), // For Entire project
       onCell: onCellUnlisted,
     },
-    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
+    {
+      title: 'Count',
+      dataIndex: 'count',
+      width: '5%',
+      align: 'center',
+      onCell: onCellUnlisted,
+    },
     {
       title: 'Availability',
       dataIndex: 'availability',
       align: 'center',
       width: '5%',
       render: (_value, record) => renderAvailability(record),
+      onCell: onCellUnlisted,
     },
     {
       title: 'Status',
@@ -278,12 +285,14 @@ const ProductConsidered: React.FC = () => {
       dataIndex: 'status_name',
       hidden: gridView.value,
       render: renderStatusDropdown, // For Entire project
+      onCell: onCellUnlisted,
     },
     {
       title: 'Action',
       align: 'center',
       width: '5%',
       render: renderActionCell,
+      onCell: onCellUnlisted,
     },
   ];
 
@@ -301,7 +310,7 @@ const ProductConsidered: React.FC = () => {
       isExpandable: true,
       render: (_value, record) => <span>{record.room_name}</span>,
     },
-    ...getSameColumns(false),
+    ...getSameColumns({ noBoxShadow: false }),
     {
       title: 'Product',
     },
@@ -343,18 +352,18 @@ const ProductConsidered: React.FC = () => {
       title: 'Rooms',
       noBoxShadow: true,
     },
-    ...getSameColumns(true),
+    ...getSameColumns({ noBoxShadow: true }),
     {
       title: 'Product',
       dataIndex: 'name',
       noBoxShadow: true,
-      onCell: onCellUnlisted,
+      onCell: (data) => onCellUnlisted(data),
     },
     {
       title: 'Assigned By',
       dataIndex: 'assigned_name',
       noBoxShadow: true,
-      onCell: onCellUnlisted,
+      onCell: (data) => onCellUnlisted(data),
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center', noBoxShadow: true },
     {
@@ -391,28 +400,21 @@ const ProductConsidered: React.FC = () => {
         className={cardStyles.productCardContainer}
         style={{ padding: '16px 16px 8px', maxWidth: 'calc(83.33vw - 40px)' }}>
         {products.map((item, index: number) => (
-          <div className={cardStyles.productCardItemWrapper} key={index}>
-            <ProductCard
-              product={item}
-              hasBorder
-              hideFavorite
-              hideAssign
-              showInquiryRequest
-              showSpecify
-              onSpecifyClick={() => setSpecifyingProduct(item)}
-            />
-          </div>
+          <ProductCard
+            key={index}
+            product={item}
+            hasBorder
+            hideFavorite
+            hideAssign
+            showInquiryRequest
+            showSpecify
+            onSpecifyClick={() => setSpecifyingProduct(item)}
+            isCustomProduct={item.specifiedDetail?.custom_product}
+          />
         ))}
       </div>
     );
   };
-
-  const filteredColumns = (cols: TableColumnItem<any>[]) =>
-    cols.filter((el) => Boolean(el.hidden) === false);
-  console.log(
-    'filteredColumns(setDefaultWidthForEachColumn(AreaColumns, 7))',
-    filteredColumns(setDefaultWidthForEachColumn(AreaColumns, 7)),
-  );
 
   return (
     <div>
@@ -441,7 +443,8 @@ const ProductConsidered: React.FC = () => {
         </ProjectTabContentHeader>
 
         <CustomTable
-          columns={filteredColumns(setDefaultWidthForEachColumn(ZoneColumns, 7))}
+          footerClass={styles.summaryFooter}
+          columns={setDefaultWidthForEachColumn(ZoneColumns, 7)}
           ref={tableRef}
           fetchDataFunc={getConsideredProducts}
           extraParams={{ projectId: params.id }}
@@ -453,7 +456,7 @@ const ProductConsidered: React.FC = () => {
             brand_order: 'brand_order',
           }}
           expandable={GetExpandableTableConfig({
-            columns: filteredColumns(setDefaultWidthForEachColumn(AreaColumns, 7)),
+            columns: setDefaultWidthForEachColumn(AreaColumns, 7),
             childrenColumnName: 'areas',
             subtituteChildrenColumnName: 'products',
             level: 2,
@@ -463,12 +466,12 @@ const ProductConsidered: React.FC = () => {
             renderGridContent,
 
             expandable: GetExpandableTableConfig({
-              columns: filteredColumns(setDefaultWidthForEachColumn(RoomColumns, 7)),
+              columns: setDefaultWidthForEachColumn(RoomColumns, 7),
               childrenColumnName: 'rooms',
               level: 3,
 
               expandable: GetExpandableTableConfig({
-                columns: filteredColumns(setDefaultWidthForEachColumn(ProductColumns, 7)),
+                columns: setDefaultWidthForEachColumn(ProductColumns, 7),
                 childrenColumnName: 'products',
                 level: 4,
 

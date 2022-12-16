@@ -1,9 +1,10 @@
-import { ServicesForm } from './type';
+import { ServicesForm, SummaryService } from './type';
 
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface ServicesState {
   service: ServicesForm;
+  summaryServices: SummaryService;
 }
 
 const initialState: ServicesState = {
@@ -12,10 +13,17 @@ const initialState: ServicesState = {
     brand_id: '',
     brand_name: '',
     ordered_by: '',
-    unit_rate: 0,
-    quantity: 0,
-    tax: 0,
+    unit_rate: '',
+    quantity: '',
+    tax: '',
     remark: '',
+  },
+  summaryServices: {
+    grandTotal: 0,
+    offline_marketing_sale: 0,
+    online_marketing_sale: 0,
+    product_card_conversion: 0,
+    others: 0,
   },
 };
 
@@ -29,8 +37,12 @@ const servicesReducer = createSlice({
     resetServiceFormData() {
       return initialState;
     },
+    setSummaryServices(state, action: PayloadAction<SummaryService>) {
+      state.summaryServices = action.payload;
+    },
   },
 });
 
-export const { setServiceFormData, resetServiceFormData } = servicesReducer.actions;
+export const { setServiceFormData, resetServiceFormData, setSummaryServices } =
+  servicesReducer.actions;
 export default servicesReducer.reducer;

@@ -7,8 +7,12 @@
     :global(.ant-input) {
       color: @primary-color-dark;
     }
-    :global(.ant-modal-close) {
-      display: none;
+    :global(.ant-modal-close > .ant-modal-close-x) {
+      display: block;
+      width: 18px;
+      height: 100%;
+      margin-right: 16px;
+      color: #000;
     }
 
     :global(.ant-modal-header),
@@ -36,7 +40,7 @@
     }
 
     :global(.ant-modal-footer) {
-      justify-content: end;
+      justify-content: flex-end;
       padding-right: 16px;
       border-top: 0;
       box-shadow: @border-top;

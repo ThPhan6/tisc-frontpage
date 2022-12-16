@@ -13,6 +13,8 @@ import { BrandDetail } from '@/features/user-group/types';
 import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
 import { RootState } from '@/reducers';
 
+import { ProductTopBarFilter } from '../components/FilterAndSorter';
+
 import { PayloadAction, createSelector } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
@@ -124,6 +126,9 @@ const productSlice = createSlice({
     setProductListSorter(state, action: PayloadAction<SortParams>) {
       state.list.sort = action.payload;
     },
+    setProductListFilter(state, action: PayloadAction<ProductTopBarFilter>) {
+      state.list.filter = action.payload;
+    },
     resetProductDetailState(state) {
       return { ...initialState, list: state.list, brand: state.brand };
     },
@@ -183,6 +188,7 @@ export const {
   setRelatedProduct,
   setProductListSearchValue,
   setProductListSorter,
+  setProductListFilter,
   resetProductDetailState,
   setReferToDesignDocument,
   onCheckReferToDesignDocument,
@@ -197,15 +203,12 @@ const productSpecificationSelector = (state: RootState) =>
   state.product.details.specification_attribute_groups;
 
 export const productVariantsSelector = createSelector(productSpecificationSelector, (specGroup) => {
-  // console.log('specGroup', specGroup);
   let variants = '';
   specGroup.forEach((el) => {
     if (!el.isChecked) {
       return;
     }
-    // if (el.selection) {
 
-    // }
     el.attributes.forEach((attr) => {
       attr.basis_options?.some((opt) => {
         if (opt.isChecked) {

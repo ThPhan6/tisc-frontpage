@@ -335,7 +335,7 @@ const ProjectTracking = () => {
           ref={tableRef}
           hasPagination
           autoLoad={false}
-          customClass={styles.customTitle}
+          headerClass={styles.customTitle}
           onRow={(rowRecord: ProjecTrackingList) => ({
             onClick: () => {
               pushTo(PATH.brandProjectTrackingDetail.replace(':id', rowRecord.id));

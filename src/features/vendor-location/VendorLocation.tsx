@@ -91,6 +91,7 @@ const getSelectedDistributors = (locationGroup: DistributorProductMarket[], sele
 
 interface VendorTabProps {
   productId: string;
+  projectId?: string;
   brandId: string;
   userSelection?: boolean;
   borderBottomNone?: boolean;
@@ -101,6 +102,7 @@ interface VendorTabProps {
 
 export const VendorLocation: FC<VendorTabProps> = ({
   productId,
+  projectId,
   brandId,
   userSelection,
   borderBottomNone,
@@ -163,7 +165,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
     const fetchDistributorsFunc = customProduct
       ? getCustomDistributorByCompany
       : getDistributorLocation;
-    fetchDistributorsFunc(customProduct ? brandId : productId).then((data) => {
+    fetchDistributorsFunc(customProduct ? brandId : productId, projectId).then((data) => {
       if (data) {
         setDistributorAddresses(data);
       }

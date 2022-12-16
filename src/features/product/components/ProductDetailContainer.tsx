@@ -7,8 +7,6 @@ import { Col, Row, message } from 'antd';
 import { useHistory, useParams } from 'umi';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
-import { ReactComponent as HomeButton } from '@/assets/icons/home-icon.svg';
-import { ReactComponent as LogoBeta } from '@/assets/icons/logo-beta.svg';
 
 import {
   createProductCard,
@@ -17,7 +15,6 @@ import {
   updateProductCard,
 } from '@/features/product/services';
 import { getBrandById } from '@/features/user-group/services';
-import { pushTo } from '@/helper/history';
 import { useCheckPermission, useQuery } from '@/helper/hook';
 import { isValidURL } from '@/helper/utils';
 import { pick } from 'lodash';
@@ -29,9 +26,8 @@ import { resetProductDetailState, setBrand } from '@/features/product/reducers';
 import { ModalOpen } from '@/pages/LandingPage/types';
 import { useAppSelector } from '@/reducers';
 
-import CustomButton from '@/components/Button';
+import { PublicHeader } from '@/components/PublicHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
-import { RobotoBodyText } from '@/components/Typography';
 import { AboutPoliciesContactModal } from '@/pages/LandingPage/AboutPolicesContactModal';
 import { LandingPageFooter } from '@/pages/LandingPage/footer';
 
@@ -157,33 +153,28 @@ const ProductDetailContainer: React.FC = () => {
 
   const renderHeader = () => {
     if (isTiscAdmin) {
+      let categorySelected: string = details.categories
+        .slice(0, 3)
+        .map((category) => category.name)
+        .join(', ');
+
+      if (details.categories.length > 3) {
+        categorySelected += ', ...';
+      }
+
       return (
         <ProductDetailHeader
           title={'CATEGORY'}
+          label={categorySelected || 'select'}
           onSave={onSave}
           onCancel={history.goBack}
-          customClass={styles.marginBottomSpace}
+          customClass={`${styles.marginBottomSpace} ${categorySelected ? styles.monoColor : ''}`}
         />
       );
     }
 
     if (isPublicPage) {
-      return (
-        <div className={styles.header}>
-          <LogoBeta />
-          <RobotoBodyText level={5} customClass={styles.text}>
-            You are viewing product page without account log in, please use Home button to direct
-            back to main page for sign up/log in.
-          </RobotoBodyText>
-          <CustomButton
-            icon={<HomeButton />}
-            width="104px"
-            buttonClass={styles.homeButton}
-            onClick={() => pushTo(PATH.landingPage)}>
-            Home
-          </CustomButton>
-        </div>
-      );
+      return <PublicHeader />;
     }
 
     return (
@@ -203,7 +194,7 @@ const ProductDetailContainer: React.FC = () => {
         <Col span={24}>
           <Row className={isPublicPage ? styles.marginRounded : ''}>
             <Col span={12}>
-              <ProductImagePreview isPublicPage={isPublicPage} />
+              <ProductImagePreview />
             </Col>
 
             <Col span={12} className={styles.productContent}>

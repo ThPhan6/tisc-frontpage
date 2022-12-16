@@ -7,7 +7,6 @@ import { useHistory } from 'umi';
 
 import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
 
-import { getAllCustomResource } from './services';
 import { useBoolean, useQuery } from '@/helper/hook';
 import { getValueByCondition, removeUrlParams, updateUrlParams } from '@/helper/utils';
 import { getCollections } from '@/services';
@@ -24,6 +23,7 @@ import {
 } from '@/features/product/components/FilterAndSorter';
 import { CustomDropDown, FilterItem } from '@/features/product/components/ProductTopBarItem';
 
+import { getAllCustomResource } from '../../CustomResource/api';
 import { setCustomProductFilter } from './slice';
 
 export const onCollectionFilterClick = (
@@ -125,11 +125,7 @@ const useSyncQueryToState = () => {
   }, []);
 };
 
-export const useCustomProductFilter = (fetchs: {
-  noFetchData?: boolean;
-  company?: boolean;
-  collection?: boolean;
-}) => {
+export const useCustomProductFilter = (fetchs?: { company?: boolean; collection?: boolean }) => {
   useSyncQueryToState();
 
   const [companies, setCompanies] = useState<ItemType[]>([]);
@@ -168,7 +164,7 @@ export const useCustomProductFilter = (fetchs: {
   }, [filter && filter.name === 'company_id' && filter.value]);
 
   useEffect(() => {
-    if (fetchs.noFetchData) return;
+    if (!fetchs) return;
 
     if (fetchs.company) {
       getAllCustomResource(CustomResourceType.Brand).then((res) =>
@@ -179,7 +175,7 @@ export const useCustomProductFilter = (fetchs: {
 
   useEffect(() => {
     if (
-      fetchs.collection &&
+      fetchs?.collection &&
       ((companies.length && company_id && filter?.name === 'collection_id' && firstLoaded.value) ||
         (companies.length && filter?.name === 'company_id' && filter.value !== 'all'))
     ) {
@@ -196,7 +192,32 @@ export const useCustomProductFilter = (fetchs: {
           label: item.name,
           relation_id: item.relation_id,
         }));
+        const collectionId = collectionData.find((item) => item.id === curFilterValue.coll_id)?.id;
+        const collectionName = collectionData.find(
+          (item) => item.id === curFilterValue.coll_id,
+        )?.name;
+
         setCollections(collectionFilterData);
+
+        if (company_id && company_name && collectionId && collectionName) {
+          /// update filter value
+          setCurFilterValue({
+            company_id: curFilterValue.company_id,
+            company_name: curFilterValue.company_name,
+            coll_id: collectionId,
+            coll_name: collectionName,
+          });
+
+          /// update params
+          updateUrlParams({
+            set: [
+              { key: QUERY_KEY.company_id, value: company_id },
+              { key: QUERY_KEY.company_name, value: company_name },
+              { key: QUERY_KEY.coll_id, value: collectionId },
+              { key: QUERY_KEY.coll_name, value: collectionName },
+            ],
+          });
+        }
       });
     }
   }, [filter?.value, companies]);
@@ -348,7 +369,9 @@ export const useCustomProductFilter = (fetchs: {
     curFilterValue,
     firstLoaded,
     company_id,
+    company_name,
     coll_id,
+    coll_name,
     setCurFilterValue,
     renderFilterCollectionName,
     renderFilterDropdown,

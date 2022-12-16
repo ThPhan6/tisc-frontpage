@@ -72,11 +72,15 @@ export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
             {getProfileData()}
           </TextForm>
 
-          {type !== 'brand' ? null : (
+          {type !== 'brand' ? (
+            <TextForm formClass={styles.profile_label} boxShadow label="Official Website">
+              {data.official_website ?? ''}
+            </TextForm>
+          ) : (
             <div className={styles.officalWebsite}>
               <div className={styles.label}>
                 <BodyText level={3} color="mono-color-dark">
-                  Offical Website
+                  Official Website
                 </BodyText>
                 <span className={styles.colon}>:</span>
               </div>

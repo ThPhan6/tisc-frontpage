@@ -1,33 +1,20 @@
-import { FC, useState } from 'react';
-
-import { ReactComponent as ActionDownIcon } from '@/assets/icons/action-down-icon.svg';
-import { ReactComponent as ActionUpIcon } from '@/assets/icons/action-up-icon.svg';
-import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
+import { FC } from 'react';
 
 import { useProductAttributeForm } from './hooks';
-import { useCheckPermission, useGetParamId, useQuery } from '@/helper/hook';
+import { useCheckPermission, useGetParamId } from '@/helper/hook';
 
 import { setPartialProductDetail } from '../../reducers';
-import { ProductAttributeProps, SpecificationAttributeBasisOptionProps } from '../../types';
 import { ProductInfoTab } from './types';
-import { RadioValue } from '@/components/CustomRadio/types';
-import { DimensionWeightItem } from '@/features/dimension-weight/types';
 import store from '@/reducers';
 import { ProductAttributes } from '@/types';
 
-import CustomCollapse from '@/components/Collapse';
-import { CustomCheckbox } from '@/components/CustomCheckbox';
-import InputGroup from '@/components/EntryForm/InputGroup';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-import { BodyText, RobotoBodyText } from '@/components/Typography';
 
-import { AttributeOption, ConversionText, GeneralText } from './AttributeComponent';
-import { ProductAttributeSubItem } from './AttributeItem';
-import { SelectAttributesToGroupRow } from './SelectAttributesToGroupRow';
+import { ProductAttributeGroup } from './ProductAttributeGroup';
 import styles from './index.less';
 import { DimensionWeight } from '@/features/dimension-weight';
 
-interface Props {
+export interface ProductAttributeContainerProps {
   attributes?: ProductAttributes[];
   activeKey: ProductInfoTab;
   specifying?: boolean;
@@ -36,7 +23,7 @@ interface Props {
   productId?: string;
 }
 
-export const ProductAttributeContainer: FC<Props> = ({
+export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
   activeKey,
   attributes,
   specifying,
@@ -46,178 +33,17 @@ export const ProductAttributeContainer: FC<Props> = ({
 }) => {
   const productIdParam = useGetParamId();
   const isTiscAdmin = useCheckPermission('TISC Admin');
-
-  const signature = useQuery().get('signature') ?? '';
-  const isPublicPage = signature ? true : false;
-
   const curProductId = productId ?? productIdParam;
-  const {
-    onChangeAttributeItem,
-    addNewProductAttribute,
-    onChangeAttributeName,
-    deleteAttributeItem,
-    onCheckedSpecification,
-    attributeGroup,
-    attributeGroupKey,
-    onSelectSpecificationOption,
-    dimensionWeightData,
-  } = useProductAttributeForm(
+
+  const { addNewProductAttribute, attributeGroup, dimensionWeightData } = useProductAttributeForm(
     activeKey,
     curProductId,
-    isSpecifiedModal,
-    isTiscAdmin && activeKey === 'specification' && !curProductId, // get dimension weight list
+    {
+      isSpecifiedModal,
+      isGetProductSpecification: true, // except specifying modal
+      isGetDimensionWeight: isTiscAdmin && activeKey === 'specification' && !curProductId, // get only dimension weight list when create new product
+    },
   );
-
-  const [attributeSelected, setAttributeSelected] = useState<RadioValue>({ value: '', label: '' });
-
-  const renderCollapseHeader = (groupIndex: number) => {
-    const group = attributeGroup[groupIndex];
-    if (isTiscAdmin) {
-      return (
-        <InputGroup
-          horizontal
-          fontLevel={4}
-          label={<ScrollIcon />}
-          placeholder="type title"
-          noWrap
-          value={group.name}
-          onChange={onChangeAttributeName(groupIndex)}
-        />
-      );
-    }
-
-    const haveOptionAttr = group.attributes.some((el) => el.type === 'Options');
-
-    return (
-      <div className={styles.attrGroupTitle}>
-        {!isPublicPage && activeKey === 'specification' && haveOptionAttr ? (
-          <CustomCheckbox
-            options={[{ label: group.name, value: groupIndex }]}
-            selected={
-              attributeGroup.some((gr) => gr.isChecked && gr.id === group.id)
-                ? [{ label: group.name, value: groupIndex }]
-                : []
-            }
-            onChange={() => onCheckedSpecification(groupIndex, isTiscAdmin ? false : true)}
-            checkboxClass={styles.customLabel}
-          />
-        ) : (
-          <BodyText level={6} fontFamily="Roboto" customClass="text-overflow">
-            {group.name}
-          </BodyText>
-        )}
-      </div>
-    );
-  };
-
-  const renderAttributeRowItem = (
-    attribute: ProductAttributeProps | DimensionWeightItem,
-    attrIndex: number,
-    groupName: string,
-    isSpecificationOptionSelection?: boolean,
-    groupIndex: number = -1,
-  ) => {
-    if (isTiscAdmin) {
-      if (!attributes) {
-        return null;
-      }
-
-      return (
-        <ProductAttributeSubItem
-          item={attribute as ProductAttributeProps}
-          attributeItemIndex={attrIndex}
-          attributeIndex={groupIndex}
-          attributes={attributes}
-          itemAttributes={attributeGroup[groupIndex].attributes}
-          onItemChange={onChangeAttributeItem(groupIndex)}
-          onDelete={deleteAttributeItem(groupIndex, attrIndex)}
-          activeKey={activeKey}
-          attributeGroup={attributeGroup}
-          attributeGroupKey={attributeGroupKey}
-          key={attribute.id}
-        />
-      );
-    }
-
-    let chosenOption: SpecificationAttributeBasisOptionProps | undefined;
-    if (groupIndex !== -1) {
-      const curAttribute = attributeGroup[groupIndex]?.attributes?.[attrIndex];
-      chosenOption = curAttribute.basis_options?.find((el) => el.isChecked === true);
-    }
-
-    if (attribute.type !== 'Options') {
-      return (
-        <tr className={styles.attributeSubItem} key={attribute.id}>
-          <td className={styles.attributeName}>
-            <div className={`${styles.content} ${styles.attribute} attribute-type`}>
-              <BodyText level={4} customClass={styles.content_type}>
-                {attribute.name}
-              </BodyText>
-            </div>
-          </td>
-
-          <td className={styles.attributeDescription}>
-            {attribute.conversion ? (
-              <ConversionText
-                conversion={attribute.conversion}
-                firstValue={attribute.conversion_value_1}
-                secondValue={attribute.conversion_value_2}
-              />
-            ) : (
-              <GeneralText text={attribute.text} />
-            )}
-          </td>
-        </tr>
-      );
-    }
-
-    const renderAttributeOption = () => (
-      <tr className={styles.attributeSubItem} key={attribute.id}>
-        <td className={styles.attributeName}>
-          <div className={`${styles.content} ${styles.attribute} attribute-type`}>
-            <BodyText level={4} customClass={styles.content_type}>
-              {attribute.name}
-            </BodyText>
-          </div>
-        </td>
-
-        <td className={styles.attributeDescription}>
-          <AttributeOption
-            title={groupName}
-            isPublicPage={isPublicPage}
-            attributeName={attribute.name}
-            options={attribute.basis_options ?? []}
-            chosenOption={
-              chosenOption
-                ? {
-                    label: `${chosenOption.value_1 ?? ''} ${chosenOption.unit_1 ?? ''} - ${
-                      chosenOption.value_2 ?? ''
-                    } ${chosenOption.unit_2 ?? ''}`,
-                    value: chosenOption?.id,
-                  }
-                : undefined
-            }
-            setChosenOptions={(option) => {
-              if (groupIndex !== -1) {
-                onSelectSpecificationOption(
-                  groupIndex,
-                  attribute.id,
-                  isTiscAdmin ? false : true,
-                  option?.value?.toString() || undefined,
-                );
-              }
-            }}
-          />
-        </td>
-      </tr>
-    );
-
-    if (!isSpecificationOptionSelection) {
-      return renderAttributeOption();
-    } else if (attribute.id === attributeSelected.value) {
-      return renderAttributeOption();
-    }
-  };
 
   return (
     <>
@@ -234,7 +60,7 @@ export const ProductAttributeContainer: FC<Props> = ({
         collapseStyles={!isSpecifiedModal}
         customClass={!isTiscAdmin ? styles.marginTopSpace : ''}
         editable={isTiscAdmin}
-        isSpecifying={isSpecifiedModal}
+        isConversionText={isSpecifiedModal}
         isShow={activeKey === 'specification'}
         data={dimensionWeightData}
         onChange={(data) => {
@@ -246,101 +72,19 @@ export const ProductAttributeContainer: FC<Props> = ({
         }}
       />
 
-      {attributeGroup.map((_group, groupIndex) => {
-        const attrGroupItem = attributeGroup[groupIndex];
-
+      {attributeGroup.map((attrGroupItem, groupIndex) => {
         return (
-          <div key={groupIndex} style={{ marginBottom: 8, marginTop: isTiscAdmin ? undefined : 8 }}>
-            <div className={styles.attributes}>
-              <div className={styles.specification}>
-                <CustomCollapse
-                  defaultActiveKey={'1'}
-                  showActiveBoxShadow={!specifying}
-                  noBorder={noBorder}
-                  className={isTiscAdmin ? undefined : styles.vendorSection}
-                  customHeaderClass={`${styles.productAttributeItem} ${
-                    specifying ? styles.specifying : ''
-                  }`}
-                  header={renderCollapseHeader(groupIndex)}>
-                  {isTiscAdmin && attributes ? (
-                    <SelectAttributesToGroupRow
-                      activeKey={activeKey}
-                      attributes={attributes}
-                      groupItem={attrGroupItem}
-                      groupIndex={groupIndex}
-                      productId={curProductId}
-                    />
-                  ) : null}
-
-                  {!isTiscAdmin && activeKey === 'specification' && attrGroupItem.selection ? (
-                    <CustomCollapse
-                      noBorder
-                      className="noBoxShadow"
-                      expandIcon={({ isActive }) =>
-                        isActive ? <ActionUpIcon /> : <ActionDownIcon />
-                      }
-                      header={
-                        <div className="specification-choice">
-                          <BodyText level={4}>Choose Specification</BodyText>
-                          <RobotoBodyText
-                            level={6}
-                            color={
-                              attributeSelected.value ? 'primary-color-dark' : 'mono-color-medium'
-                            }
-                            customClass={`${isSpecifiedModal ? 'header-label' : 'label-space'}`}>
-                            {attributeSelected.label || 'select'}
-                          </RobotoBodyText>
-                        </div>
-                      }>
-                      {attrGroupItem.attributes.map((attribute) => {
-                        if (attribute.type === 'Options') {
-                          return (
-                            <div className="specification-choice">
-                              <p></p>
-                              <RobotoBodyText
-                                level={6}
-                                customClass={`cursor-pointer attribute-label ${
-                                  isSpecifiedModal ? 'left-none' : 'left-space'
-                                }`}
-                                onClick={() =>
-                                  setAttributeSelected({
-                                    value: attribute.id,
-                                    label: attribute.name,
-                                  })
-                                }>
-                                {attribute.name}
-                              </RobotoBodyText>
-                            </div>
-                          );
-                        }
-                      })}
-                    </CustomCollapse>
-                  ) : null}
-
-                  {attrGroupItem.attributes.length ? (
-                    <div
-                      className={`${
-                        isSpecifiedModal ? styles.paddingNone : styles.paddingRounded
-                      } ${attrGroupItem.selection && !isTiscAdmin ? styles.paddingWrapper : ''}`}>
-                      <table className={styles.table}>
-                        <tbody>
-                          {attrGroupItem.attributes.map((attribute, attrIndex) =>
-                            renderAttributeRowItem(
-                              attribute,
-                              attrIndex,
-                              attrGroupItem.name,
-                              attrGroupItem.selection,
-                              groupIndex,
-                            ),
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
-                  ) : null}
-                </CustomCollapse>
-              </div>
-            </div>
-          </div>
+          <ProductAttributeGroup
+            activeKey={activeKey}
+            attributeGroup={attributeGroup}
+            attrGroupItem={attrGroupItem}
+            groupIndex={groupIndex}
+            attributes={attributes}
+            specifying={specifying}
+            noBorder={noBorder}
+            curProductId={curProductId}
+            isSpecifiedModal={isSpecifiedModal}
+          />
         );
       })}
     </>

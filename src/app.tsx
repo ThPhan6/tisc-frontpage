@@ -108,9 +108,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       const { location } = history;
       const token = localStorage.getItem('access_token') || '';
       const signature = Cookies.get('signature') || '';
-      const publicPage = location.pathname.indexOf('shared-product') !== -1;
+      const publicPage =
+        location.pathname.indexOf('shared-product' || 'shared-custom-product') !== -1;
+      const bookingPage = location.pathname.indexOf('booking') !== -1;
 
-      if (publicPage || PUBLIC_PATH.includes(location.pathname)) {
+      if (publicPage || bookingPage || PUBLIC_PATH.includes(location.pathname)) {
         if (signature) {
           history.push(`${location.pathname}${location.search}`);
           return;

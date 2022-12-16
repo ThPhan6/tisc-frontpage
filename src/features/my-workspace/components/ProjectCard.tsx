@@ -177,7 +177,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
             {renderMiddleInfo(item)}
 
             <div className={styles.profile_icon}>
-              <BodyText level={5} style={{ marginRight: '24px' }}>
+              <BodyText level={5} style={{ marginRight: '14px' }}>
                 Teams:
               </BodyText>
               <div className={styles.team}>{getAssignedTeamInfo(item)}</div>

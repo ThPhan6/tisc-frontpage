@@ -8,12 +8,13 @@ import {
   onCellCancelled,
   renderActionCell,
   renderAvailability,
+  renderImage,
   renderSpecifiedStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { getSpecifiedProductsByBrand } from '@/features/project/services';
-import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
+import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import { ProjectProductItem } from '@/features/product/types';
@@ -22,12 +23,14 @@ import { AvailabilityModal } from '../../components/AvailabilityModal';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import { RobotoBodyText } from '@/components/Typography';
 
+import styles from './index.less';
+
 interface BrandListProps {
   projectId?: string;
 }
 
 const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
-  useAutoExpandNestedTableColumn(1, 4);
+  useAutoExpandNestedTableColumn(1, [4]);
   const [visible, setVisible] = useState<boolean>(false);
 
   const tableRef = useRef<any>();
@@ -80,15 +83,11 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       noBoxShadow: true,
       dataIndex: 'brand',
       align: 'right',
-      render: (_value, record) => {
+      render: (_v, record) => {
         if (record.images.length) {
-          return (
-            <img
-              src={showImageUrl(record.images[0])}
-              style={{ width: 24, height: 24, objectFit: 'contain' }}
-            />
-          );
+          return renderImage(record.images[0]);
         }
+
         return null;
       },
     },
@@ -126,6 +125,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       title: 'Availability',
       dataIndex: 'availability',
       align: 'center',
+      noBoxShadow: true,
       render: (_value, record) => renderAvailability(record),
     },
     {
@@ -149,6 +149,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
   return (
     <>
       <CustomTable
+        footerClass={styles.summaryFooter}
         columns={setDefaultWidthForEachColumn(BrandColumns, 4)}
         extraParams={{ projectId }}
         ref={tableRef}

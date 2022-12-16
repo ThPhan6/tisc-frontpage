@@ -17,7 +17,7 @@ import { ReactComponent as DeleteIcon } from '@/assets/icons/trash-icon-12.svg';
 import ProductPlaceHolderImage from '@/assets/images/product-placeholder.png';
 
 import { likeProductById } from '@/features/product/services';
-import { useBoolean, useCheckPermission } from '@/helper/hook';
+import { useBoolean, useCheckPermission, useQuery } from '@/helper/hook';
 import { getBase64, showImageUrl } from '@/helper/utils';
 
 import { ProductKeyword } from '../types';
@@ -70,13 +70,11 @@ interface ProductImagePreviewProps {
   hideInquiryRequest?: boolean;
   isCustomProduct?: boolean;
   viewOnly?: boolean;
-  isPublicPage?: boolean;
   disabledAssignProduct?: boolean;
   disabledShareViaEmail?: boolean;
 }
 
 const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
-  isPublicPage,
   hideInquiryRequest,
   isCustomProduct,
   viewOnly,
@@ -99,6 +97,9 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
 
   const liked = 'keywords' in product ? product.is_liked : false;
   const likeCount = 'favorites' in product ? product.favorites || 0 : 0;
+
+  const signature = useQuery().get('signature');
+  const isPublicPage = !!signature;
 
   const handleLoadPhoto = async (file: UploadFile<any>, type: 'first' | 'last' = 'first') => {
     const imageBase64 = await getBase64(file.originFileObj);
@@ -371,6 +372,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
             visible={showShareEmailModal.value}
             setVisible={showShareEmailModal.setValue}
             product={product}
+            isCustomProduct={isCustomProduct}
           />
         ) : null}
         {product.id ? (

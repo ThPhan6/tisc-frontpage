@@ -1,21 +1,29 @@
 .table {
-  width: 100%;
-  table-layout: fixed;
-  td {
-    padding: 8px 12px 8px 16px;
-    color: @mono-color;
+  margin-bottom: 8px;
+
+  > div {
+    padding: 8.5px 16px;
     background-color: #fff;
-    border-bottom: 8px solid transparent;
     box-shadow: @border-bottom-light;
+
+    &:not(:last-child) {
+      margin-bottom: 8px;
+    }
+
+    div:first-child {
+      padding-right: 8px;
+      span {
+        font-size: 14px;
+        font-family: @font-secondary;
+      }
+    }
+    div:last-child span {
+      font-size: 12px;
+      font-family: @font-primary;
+    }
   }
-  td:first-child {
-    width: 25%;
-    font-size: 14px;
-    font-family: @font-secondary;
-  }
-  td:last-child {
-    width: 75%;
-    font-size: 12px;
-    font-family: @font-primary;
+  &.noPadding > div {
+    margin-bottom: 0;
+    padding: 8.5px 0;
   }
 }

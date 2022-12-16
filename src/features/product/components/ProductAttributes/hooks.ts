@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { getSelectedProductSpecification, useSelectProductSpecification } from '../../services';
 import { useGetDimensionWeight } from './../../../dimension-weight/hook';
 import { useBoolean, useCheckPermission } from '@/helper/hook';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, countBy } from 'lodash';
 
 import { setDefaultSelectionFromSpecifiedData, setPartialProductDetail } from '../../reducers';
 import { ProductAttributeFormInput, ProductAttributeProps } from '../../types';
@@ -30,14 +30,31 @@ const getSelectedAttributeAndOption = (attrs: ProductAttributeProps[]) => {
 
 export const getSpecificationRequest = (specGroup: ProductAttributeFormInput[]) => {
   const specState: SpecificationAttributeGroup[] = [];
+
   specGroup.forEach((gr) => {
-    if (gr.isChecked) {
+    if (!gr.isChecked) {
+      return;
+    }
+
+    if (gr.selection && gr.attribute_selected_id) {
+      const haveAttributeSelected = gr.attributes.find(
+        (attr) => attr.id === gr.attribute_selected_id,
+      );
+
+      if (haveAttributeSelected) {
+        specState.push({
+          id: gr.id || '',
+          attributes: getSelectedAttributeAndOption([haveAttributeSelected]),
+        });
+      }
+    } else {
       specState.push({
         id: gr.id || '',
         attributes: getSelectedAttributeAndOption(gr.attributes),
       });
     }
   });
+
   return specState;
 };
 
@@ -47,7 +64,7 @@ export const getSpecificationWithSelectedValue = (
 ) => {
   const checkedSpecGroup = cloneDeep(specState);
   specGroup.forEach((gr) => {
-    const selectedGroup = specState.findIndex((el) => el.id === gr.id);
+    const selectedGroup = checkedSpecGroup.findIndex((el) => el.id === gr.id);
     if (selectedGroup === -1) {
       return;
     }
@@ -63,14 +80,18 @@ export const getSpecificationWithSelectedValue = (
       }),
     );
   });
+
   return checkedSpecGroup;
 };
 
 export const useProductAttributeForm = (
   attributeType: ProductInfoTab,
   productId: string,
-  isSpecifiedModal?: boolean,
-  isGetDimensionWeight?: boolean,
+  props: {
+    isSpecifiedModal?: boolean;
+    isGetDimensionWeight?: boolean;
+    isGetProductSpecification?: boolean;
+  },
 ) => {
   const dispatch = useDispatch();
   const selectProductSpecification = useSelectProductSpecification();
@@ -87,7 +108,7 @@ export const useProductAttributeForm = (
   const loaded = useBoolean();
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
-  const { data: dwData } = useGetDimensionWeight(isGetDimensionWeight);
+  const { data: dwData } = useGetDimensionWeight(props.isGetDimensionWeight);
 
   const dimensionWeightData = dimension_and_weight.id ? dimension_and_weight : dwData;
 
@@ -113,10 +134,10 @@ export const useProductAttributeForm = (
       productId &&
       isTiscAdmin === false
     ) {
-      if (isSpecifiedModal) {
+      if (props.isSpecifiedModal) {
         dispatch(setDefaultSelectionFromSpecifiedData());
         loaded.setValue(true);
-      } else {
+      } else if (props.isGetProductSpecification) {
         getSelectedProductSpecification(productId).then((res) => {
           loaded.setValue(true);
           if (res) {
@@ -134,7 +155,7 @@ export const useProductAttributeForm = (
         });
       }
     }
-  }, [isSpecifiedModal, attributeType, specification_attribute_groups, loaded.value]);
+  }, [props.isSpecifiedModal, attributeType, specification_attribute_groups, loaded.value]);
 
   const onDeleteProductAttribute = (index: number) => () => {
     const newProductAttribute = attributeGroup.filter((_item, key) => index !== key);
@@ -194,9 +215,12 @@ export const useProductAttributeForm = (
         (_attr, idx) => idx !== attrIndex,
       );
 
+      const isOptionType = countBy(newItemAttributes, (attr) => attr.type === 'Options').true >= 2;
+
       newAttributes[groupIndex] = {
         ...newAttributes[groupIndex],
         attributes: newItemAttributes,
+        selection: isOptionType,
       };
 
       /// reset selected
@@ -214,6 +238,7 @@ export const useProductAttributeForm = (
     attributeId: string,
     updatedOnchange: boolean = true, // disabled TISC
     optionId?: string,
+    resetAttrbiteOptionIsChecked: boolean = true,
   ) => {
     const newState = cloneDeep(attributeGroup);
     const attributeIndex = newState[groupIndex].attributes.findIndex((el) => el.id === attributeId);
@@ -222,23 +247,56 @@ export const useProductAttributeForm = (
       return;
     }
 
-    newState[groupIndex].attributes[attributeIndex].basis_options = newState[groupIndex].attributes[
-      attributeIndex
-    ].basis_options?.map((el) => ({
-      ...el,
-      isChecked: el.id === optionId ? true : false,
-    }));
+    newState[groupIndex] = {
+      ...newState[groupIndex],
+      attribute_selected_id: attributeId,
+    };
+
+    newState[groupIndex].attributes = newState[groupIndex].attributes.map((attr) => {
+      if (!newState[groupIndex].selection) {
+        if (attr.id === attributeId) {
+          return {
+            ...attr,
+            basis_options: attr.basis_options?.map((el) => {
+              return {
+                ...el,
+                isChecked: el.id === optionId ? true : false,
+              };
+            }),
+          };
+        }
+        return attr;
+      }
+
+      // keep attribute selected
+      if (!resetAttrbiteOptionIsChecked) {
+        return attr;
+      }
+
+      // if current attribute is not equal to attribute selected
+      const isAttributeSelected = attr.id === attributeId;
+
+      return {
+        ...attr,
+        basis_options: attr.basis_options?.map((el) => {
+          return {
+            ...el,
+            isChecked: el.id === optionId && isAttributeSelected ? true : false,
+          };
+        }),
+      };
+    });
 
     const haveCheckedOptionAttribute = newState[groupIndex].attributes.some(
       (attr) => attr.type === 'Options' && attr.basis_options?.some((opt) => opt.isChecked),
     );
 
-    newState[groupIndex].isChecked = haveCheckedOptionAttribute;
+    newState[groupIndex].isChecked = haveCheckedOptionAttribute && !!optionId;
 
     const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
 
     if (updatedOnchange) {
-      if (!isSpecifiedModal) {
+      if (!props.isSpecifiedModal) {
         selectProductSpecification(id, {
           specification: {
             is_refer_document: !haveCheckedAttributeGroup || false,
@@ -271,7 +329,7 @@ export const useProductAttributeForm = (
 
       const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
 
-      if (updatedOnchange && !isSpecifiedModal) {
+      if (updatedOnchange && !props.isSpecifiedModal) {
         selectProductSpecification(id, {
           specification: {
             is_refer_document: !haveCheckedAttributeGroup || false,

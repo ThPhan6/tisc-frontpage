@@ -14,6 +14,7 @@ import styles from './ProductDetailHeader.less';
 
 interface ProductDetailHeaderProps {
   title: string;
+  label?: string;
   customClass?: string;
   onSave?: () => void;
   onCancel?: () => void;
@@ -28,6 +29,7 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
   onCancel,
   hideSelect,
   disabled,
+  label,
 }) => {
   const product = useAppSelector((state) => state.product);
 
@@ -45,7 +47,7 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
               variant="text"
               buttonClass="select-category-btn"
               onClick={() => setVisible(true)}>
-              select
+              {label}
             </CustomButton>
           )}
         </div>

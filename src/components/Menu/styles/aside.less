@@ -80,24 +80,23 @@
     position: relative;
     height: calc(100vh - 88px);
     padding-top: 8px;
+    padding-right: 1px;
     :global(.menu-sider-wrapper) {
       position: initial;
       height: 100%;
       overflow: hidden auto;
 
       &::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
+        width: 8px;
+        height: 8px;
+        background-color: white;
       }
-      &::-webkit-scrollbar-thumb {
-        background: rgba(0, 0, 0, 0.12);
-        border-radius: 3px;
-        box-shadow: inset 0 0 5px rgb(0 21 41 / 5%);
-      }
-      &::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 3px;
-        box-shadow: inset 0 0 5px rgb(37 37 37 / 5%);
+      &::-webkit-scrollbar-thumb:vertical {
+        background-color: rgba(0, 0, 0, 0.15);
+        border: none;
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.25);
+        }
       }
     }
   }

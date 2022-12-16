@@ -57,7 +57,7 @@ const MarketAvailabilityList = () => {
       render: (value) => value.length || '0',
     },
     {
-      title: 'N. Americas',
+      title: 'N. America',
       dataIndex: 'n_americas',
       lightHeading: true,
       render: (value) => value.length || '0',
@@ -69,7 +69,7 @@ const MarketAvailabilityList = () => {
       render: (value) => value.length || '0',
     },
     {
-      title: 'S. Americas',
+      title: 'S. America',
       dataIndex: 's_americas',
       lightHeading: true,
       render: (value) => value.length || '0',
@@ -110,7 +110,7 @@ const MarketAvailabilityList = () => {
           brand_id: user.brand.id,
         }}
         hasPagination
-        customClass={styles.customTitle}
+        headerClass={styles.customTitle}
         rowKey="id"
       />
       <InformationMarketAvailability
