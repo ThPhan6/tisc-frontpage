@@ -57,7 +57,15 @@ export const SpecificationTab: FC<{
 
   const dimensionWeightData = dimension_and_weight.id ? dimension_and_weight : dwData;
 
-  const noneData = viewOnly && !specifications.length && !options.length;
+  const noneData =
+    viewOnly &&
+    !specifications.length &&
+    !options.length &&
+    !dimensionWeightData.attributes.some((el) => {
+      if (el.with_diameter === dimensionWeightData.with_diameter || el.with_diameter === null) {
+        return el.conversion_value_1;
+      }
+    });
 
   if (noneData) {
     return <EmptyOne customClass="p-16" />;
