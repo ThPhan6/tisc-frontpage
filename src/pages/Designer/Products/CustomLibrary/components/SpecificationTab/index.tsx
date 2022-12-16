@@ -61,11 +61,11 @@ export const SpecificationTab: FC<{
     viewOnly &&
     !specifications.length &&
     !options.length &&
-    !dimensionWeightData.attributes.some((el) => {
-      if (el.with_diameter === dimensionWeightData.with_diameter || el.with_diameter === null) {
-        return el.conversion_value_1;
-      }
-    });
+    !dimensionWeightData.attributes.some(
+      (el) =>
+        (el.with_diameter === dimensionWeightData.with_diameter || el.with_diameter === null) &&
+        el.conversion_value_1,
+    );
 
   if (noneData) {
     return <EmptyOne customClass="p-16" />;

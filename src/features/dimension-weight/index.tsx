@@ -172,11 +172,11 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
     !isShow ||
     (!data && diameterToggle === undefined) ||
     (!editable &&
-      !data.attributes.some((el) => {
-        if (el.with_diameter === data.with_diameter || el.with_diameter === null) {
-          return el.conversion_value_1;
-        }
-      }))
+      !data.attributes.some(
+        (el) =>
+          (el.with_diameter === data.with_diameter || el.with_diameter === null) &&
+          el.conversion_value_1,
+      ))
   ) {
     return null;
   }
