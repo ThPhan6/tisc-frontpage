@@ -491,11 +491,6 @@ export default [
               },
             ],
           },
-          {
-            path: PATH.tiscRevenueSubscription,
-            name: 'subscription',
-            component: './Admin',
-          },
         ],
       },
     ],

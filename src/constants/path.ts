@@ -104,7 +104,6 @@ export const PATH = {
   tiscRevenueServiceCreate: '/tisc/adminstration/revenues/service/create',
   tiscRevenueServiceUpdate: '/tisc/adminstration/revenues/service/update/:id',
   tiscRevenueServiceDetail: '/tisc/adminstration/revenues/service/:id',
-  tiscRevenueSubscription: '/tisc/adminstration/revenues/subscription',
 
   // tisc - locations
   tiscLocation: '/tisc/adminstration/locations',
