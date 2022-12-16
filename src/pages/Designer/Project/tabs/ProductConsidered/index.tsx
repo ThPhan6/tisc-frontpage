@@ -248,12 +248,6 @@ const ProductConsidered: React.FC = () => {
       isAreaColumn: true,
     }),
     {
-      title: 'Collection',
-      className: disabledClassname,
-      render: (_value, record) => record.collection?.name,
-      onCell: onCellUnlisted,
-    },
-    {
       title: 'Product',
       render: (_value, record) => (record.rooms ? null : record.name), // For Entire project
       onCell: onCellUnlisted,
