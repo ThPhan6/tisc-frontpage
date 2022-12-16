@@ -11,6 +11,7 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 
 import { useCheckMobile } from '@/helper/common';
 import { pushTo } from '@/helper/history';
+import { uniq } from 'lodash';
 
 import { renderIconByName } from './Icon/index';
 import styles from './styles/aside.less';
@@ -26,46 +27,68 @@ export const getMenuItems = (
   }
   const showedMenuItems = menuItems.filter((el) => !el.unaccessible && !el.hideInMenu);
 
-  if (showedMenuItems.length) {
-    return showedMenuItems.map((item) => {
-      const children = getMenuItems(item.children);
-      const isWorkspaceItem = item.name && ['my workspace'].includes(item.name.toLowerCase());
-      return {
-        key: item.key,
-        children,
-        icon: (
-          <>
-            {isWorkspaceItem && onClose ? (
-              <span
-                className="flex-center"
-                style={{ position: 'absolute', right: 4, top: -4, padding: 12 }}>
-                <AlignLeftIcon
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onClose();
-                  }}
-                />
-              </span>
-            ) : undefined}
-            {renderIconByName(item.icon, item.unaccessible)}
-          </>
-        ),
-        label: item.name,
-        onClick: () => {
-          onClose?.();
-          if (!children) {
-            pushTo(item.path || '');
-          }
-        },
-        title: '',
-        style: {
-          boxShadow: isWorkspaceItem ? 'inset 0px -0.7px 0px #FFFFFF' : undefined,
-          paddingRight: isWorkspaceItem ? 48 : undefined,
-        },
-      } as MenuItem;
+  if (!showedMenuItems.length) {
+    return undefined;
+  }
+
+  return showedMenuItems.map((item) => {
+    const children = getMenuItems(item.children);
+    const isWorkspaceItem = item.name && ['my workspace'].includes(item.name.toLowerCase());
+    return {
+      key: item.key,
+      children,
+      icon: (
+        <>
+          {isWorkspaceItem && onClose ? (
+            <span
+              className="flex-center"
+              style={{ position: 'absolute', right: 4, top: -4, padding: 12 }}>
+              <AlignLeftIcon
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClose();
+                }}
+              />
+            </span>
+          ) : undefined}
+          {renderIconByName(item.icon, item.unaccessible)}
+        </>
+      ),
+      label: item.name,
+      onClick: () => {
+        onClose?.();
+        if (!children) {
+          pushTo(item.path || '');
+        }
+      },
+      title: '',
+      style: {
+        boxShadow: isWorkspaceItem ? 'inset 0px -0.7px 0px #FFFFFF' : undefined,
+        paddingRight: isWorkspaceItem ? 48 : undefined,
+      },
+    } as MenuItem;
+  });
+};
+
+const getNewMenuItems = (items: string[]) => {
+  let newItems = items;
+  const latestItemParts = items[items.length - 1].split('/');
+  if (items.length > 1) {
+    newItems = items.filter((item, index) => {
+      const itemParts = item.split('/');
+      if (
+        index !== items.length - 1 &&
+        itemParts.length === latestItemParts.length &&
+        itemParts[itemParts.length - 2] === latestItemParts[latestItemParts.length - 2] &&
+        itemParts.slice(0, itemParts.length).join('/') !==
+          latestItemParts.slice(0, latestItemParts.length).join('/')
+      ) {
+        return false;
+      }
+      return true;
     });
   }
-  return undefined;
+  return newItems;
 };
 
 export const SiderMenu: FC<{ appProps: any; menu?: MenuDataItem[]; onClose?: () => void }> = ({
@@ -73,31 +96,25 @@ export const SiderMenu: FC<{ appProps: any; menu?: MenuDataItem[]; onClose?: () 
   menu,
   onClose,
 }) => {
-  const rootKeys: string[] = [];
-  const defaultOpenKeys: string[] = [];
-  const [openKeys, setOpenKeys] = useState<string[]>([
-    appProps.props.currentPathConfig?.path ?? location.pathname,
-    ...(appProps.props.currentPathConfig?.pro_layout_parentKeys ?? []),
-  ]);
+  const [openKeys, setOpenKeys] = useState<string[]>(
+    uniq([
+      appProps.props.currentPathConfig?.path ?? location.pathname,
+      ...(appProps.props.currentPathConfig?.pro_layout_parentKeys ?? []),
+    ]),
+  );
   const menuData = menu?.filter((item) => {
-    if (item.children && item.key) {
-      rootKeys.push(item.key);
-    }
     return (
       item.unaccessible === false && // only accessible
       item.name !== undefined
     );
   });
   const menuItems = getMenuItems(menuData, onClose);
+
   // Open only one submenu at a time
-  const onOpenChange = (items: any) => {
-    const latestOpenKey = items.find((key: any) => openKeys.indexOf(key) === -1);
-    if (rootKeys.indexOf(latestOpenKey) === -1) {
-      setOpenKeys(items);
-    } else {
-      setOpenKeys(latestOpenKey ? [latestOpenKey] : defaultOpenKeys);
-    }
+  const onOpenChange = (items: string[]) => {
+    setOpenKeys(getNewMenuItems(items));
   };
+
   // called when a menu item is clicked
   const onClick = (item: any) => {
     setOpenKeys(item.keyPath);
@@ -117,6 +134,7 @@ export const SiderMenu: FC<{ appProps: any; menu?: MenuDataItem[]; onClose?: () 
   return (
     <Menu
       defaultOpenKeys={openKeys}
+      defaultSelectedKeys={openKeys}
       openKeys={openKeys}
       onOpenChange={onOpenChange}
       style={{ height: '100%' }}
@@ -132,8 +150,6 @@ export const SiderMenu: FC<{ appProps: any; menu?: MenuDataItem[]; onClose?: () 
 const AsideMenu: React.FC = (props: HeaderViewProps) => {
   const isMobile = useCheckMobile();
 
-  const rootKeys: string[] = [];
-  const defaultOpenKeys: string[] = [];
   const appProps: any = props.children;
   //
   const [openKeys, setOpenKeys] = useState<string[]>([
@@ -144,9 +160,6 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
   const [collapsed, setCollapsed] = useState(false);
   /// get menu data
   const menuData = props.menuData?.filter((menu) => {
-    if (menu.children && menu.key) {
-      rootKeys.push(menu.key);
-    }
     return (
       menu.unaccessible === false && // only accessible
       menu.name !== undefined
@@ -163,14 +176,10 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
   }, [appProps]);
 
   // Open only one submenu at a time
-  const onOpenChange = (items: any) => {
-    const latestOpenKey = items.find((key: any) => openKeys.indexOf(key) === -1);
-    if (rootKeys.indexOf(latestOpenKey) === -1) {
-      setOpenKeys(items);
-    } else {
-      setOpenKeys(latestOpenKey ? [latestOpenKey] : defaultOpenKeys);
-    }
+  const onOpenChange = (items: string[]) => {
+    setOpenKeys(getNewMenuItems(items));
   };
+
   // called when a menu item is clicked
   const onClick = (item: any) => {
     setOpenKeys(item.keyPath);
@@ -216,6 +225,7 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
             theme={props.headerTheme}
             defaultOpenKeys={openKeys}
             defaultSelectedKeys={openKeys}
+            openKeys={openKeys}
             onOpenChange={onOpenChange}
             style={{ height: '100%' }}
             mode={'inline'}

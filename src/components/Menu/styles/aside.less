@@ -140,13 +140,15 @@
   // transition: all 0.3s;
 }
 
-:global(.ant-menu-submenu-selected > .ant-menu-submenu-title > .ant-menu-title-content),
-:global(.ant-menu-submenu-active > .ant-menu-submenu-title > .ant-menu-title-content) {
-  color: @primary-color-dark;
-  font-weight: 500;
-  letter-spacing: 0;
-  path {
-    fill: @primary-color-dark;
+:global(.ant-menu-submenu-open),
+:global(.ant-menu-submenu-selected) {
+  > div {
+    color: @primary-color-dark;
+    font-weight: 500;
+    letter-spacing: 0;
+    path {
+      fill: @primary-color-dark;
+    }
   }
 }
 
