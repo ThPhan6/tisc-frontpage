@@ -71,6 +71,9 @@ export const getMenuItems = (
 };
 
 const getNewMenuItems = (items: string[]) => {
+  if (items.length < 2) {
+    return items;
+  }
   let newItems = items;
   const latestItemParts = items[items.length - 1].split('/');
   if (items.length > 1) {
