@@ -144,7 +144,10 @@ export const CalendarModal: FC<CalendarModalProps> = ({
     if (
       informationBooking.date === null ||
       informationBooking.slot === -1 ||
-      informationBooking.timezone === ''
+      informationBooking.timezone === '' ||
+      (timeBooked.slot === informationBooking.slot &&
+        timeBooked.date === informationBooking.date &&
+        timeBooked.timeZone === informationBooking.timezone)
     ) {
       return true;
     }
