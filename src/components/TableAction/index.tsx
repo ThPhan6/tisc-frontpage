@@ -102,7 +102,13 @@ export const ActionMenu: FC<ActionFormProps> = ({
       trigger={trigger}
       placement={placement}
       items={filledActionItems}>
-      <div onClick={(e) => e.stopPropagation()}>{actionIcon || <ActionIcon />}</div>
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}>
+        {actionIcon || <ActionIcon />}
+      </div>
     </HeaderDropdown>
   );
 };
