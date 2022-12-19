@@ -7,11 +7,11 @@ import { cloneDeep } from 'lodash';
 
 import { DimensionWeightItem, ProductDimensionWeight } from './types';
 
-import { ConversionText } from '../product/components/ProductAttributes/AttributeComponent';
 import CustomCollapse from '@/components/Collapse';
 import ConversionInput, { ConversionValueItemProps } from '@/components/EntryForm/ConversionInput';
 import { BodyText, RobotoBodyText } from '@/components/Typography';
 
+import { AttributeConversionText } from './AttributeConversionText';
 import styles from './index.less';
 
 interface DimensionWeightProps {
@@ -42,39 +42,6 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
   useEffect(() => {
     setDiameterToggle(data.with_diameter);
   }, [data.with_diameter]);
-
-  const renderAttributeConversionText = (conversionItem: DimensionWeightItem) => {
-    const notIncluded =
-      conversionItem.with_diameter !== null && conversionItem.with_diameter !== data.with_diameter;
-    if (notIncluded) {
-      return null;
-    }
-
-    if (!conversionItem.conversion_value_1) {
-      return null;
-    }
-
-    return (
-      <tr>
-        <td
-          style={{
-            height: 36,
-            width: '30%',
-            textTransform: 'capitalize',
-            paddingBottom: 0,
-          }}>
-          <BodyText level={4}>{conversionItem.name}</BodyText>
-        </td>
-        <td style={{ paddingBottom: 0 }}>
-          <ConversionText
-            conversion={conversionItem.conversion}
-            firstValue={conversionItem.conversion_value_1}
-            secondValue={conversionItem.conversion_value_2}
-          />
-        </td>
-      </tr>
-    );
-  };
 
   const renderAttributeConversion = (conversionItem: DimensionWeightItem, index: number) => {
     const notIncluded =
@@ -201,8 +168,16 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
       }>
       <table className={styles.tableContent}>
         <tbody>
-          {data.attributes.map(
-            isConversionText ? renderAttributeConversionText : renderAttributeConversion,
+          {data.attributes.map((conversionItem, index) =>
+            isConversionText ? (
+              <AttributeConversionText
+                key={conversionItem.id || index}
+                data={data}
+                conversionItem={conversionItem}
+              />
+            ) : (
+              renderAttributeConversion(conversionItem, index)
+            ),
           )}
         </tbody>
       </table>
