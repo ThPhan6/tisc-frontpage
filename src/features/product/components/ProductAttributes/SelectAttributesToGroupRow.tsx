@@ -106,6 +106,15 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
         });
       }
 
+      /// to rearrange attribute has type option to top
+      newAttrGroup.forEach((group) => {
+        group.attributes.forEach((attribute, index) => {
+          if (attribute.type === 'Options') {
+            group.attributes.unshift(group.attributes.splice(index, 1)[0]);
+          }
+        });
+      });
+
       store.dispatch(
         setPartialProductDetail({
           [attributeGroupKey]: newAttrGroup,
