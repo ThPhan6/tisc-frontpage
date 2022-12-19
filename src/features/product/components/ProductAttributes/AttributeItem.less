@@ -1,7 +1,6 @@
 .defaultOptionList {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   height: 36px;
   :global(.product-id-label) {
     font-weight: 300;
@@ -73,13 +72,17 @@
     }
   }
 }
+.borderBottomLight {
+  :global(.item-wrapper-custom) {
+    box-shadow: @border-bottom-light;
+  }
+}
 .customItemClass {
   :global(.item-wrapper-custom) {
     margin-bottom: 8px;
     :global(.product-id-label) {
       color: #000;
     }
-    // box-shadow: @border-bottom-light;
   }
 }
 .specificationOptionCheckbox {
