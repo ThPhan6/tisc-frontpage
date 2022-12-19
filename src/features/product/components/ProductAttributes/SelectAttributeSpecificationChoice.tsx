@@ -41,9 +41,7 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
 
   const attrGroupItem = attributeGroup[groupIndex];
 
-  const { onSelectSpecificationOption } = useProductAttributeForm(activeKey, productId, {
-    isSpecifiedModal: isSpecifiedModal,
-  });
+  const { onSelectSpecificationOption } = useProductAttributeForm(activeKey, productId);
 
   if (isTiscAdmin || activeKey !== 'specification' || !attrGroupItem.selection) {
     return null;

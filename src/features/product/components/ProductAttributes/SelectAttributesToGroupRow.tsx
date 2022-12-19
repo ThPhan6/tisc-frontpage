@@ -52,7 +52,6 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
     const { onDeleteProductAttribute, attributeGroupKey, attributeGroup } = useProductAttributeForm(
       activeKey,
       productId,
-      { isRunUseEffect: true },
     );
 
     const onSelectValue = (value: CheckboxValue[]) => {
