@@ -13,7 +13,7 @@ import moment from 'moment';
 
 export const REGEX_PASSWORD =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d][\w~@#$%^&*+=`|{}:;!.?\"()\[\]-]{7,}$/;
-export const REGEX_EMAIL = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+export const REGEX_EMAIL = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 export const REGEX_GET_CONTENT_ONLY = /[_.\n\s\r\t__]*/g;
 export const REGEX_PHONE_NUMBER_ONLY = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/;
 export const REGEX_EMPTY_SPACE = /^\S*$/;
