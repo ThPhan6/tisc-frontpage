@@ -11,18 +11,9 @@ export const AttributeConversionText: FC<{
 }> = ({ data, conversionItem }) => {
   const notIncluded =
     conversionItem.with_diameter !== null && conversionItem.with_diameter !== data.with_diameter;
-  if (notIncluded) {
-    console.log('1');
-
+  if (notIncluded || !conversionItem.conversion_value_1) {
     return null;
   }
-
-  if (!conversionItem.conversion_value_1) {
-    console.log('2');
-    return null;
-  }
-
-  console.log('conversionItem', conversionItem);
 
   return (
     <tr>
