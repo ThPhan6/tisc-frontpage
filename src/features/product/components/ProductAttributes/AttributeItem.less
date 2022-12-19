@@ -1,6 +1,7 @@
 .defaultOptionList {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   height: 36px;
   :global(.product-id-label) {
     font-weight: 300;
@@ -11,7 +12,6 @@
     letter-spacing: 0.02em;
   }
   :global(.group-option-name) {
-    min-width: 80px;
     margin-right: 24px;
     white-space: nowrap;
     text-align: right;
@@ -22,8 +22,8 @@
   :global(.product-id-label) + div {
     width: auto !important;
     :global(.product-id-input) {
-      width: 100%;
-      padding: 0 24px 0 12px;
+      width: 100px;
+      padding: 0 8px 0 12px;
       color: @primary-color-dark;
     }
   }
@@ -50,7 +50,7 @@
       height: 24px;
     }
     :global(.product-input-group) {
-      display: flex;
+      // display: flex;
       width: 100%;
       height: 24px;
       :global(.product-id-input) {

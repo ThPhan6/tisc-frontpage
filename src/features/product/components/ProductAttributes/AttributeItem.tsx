@@ -33,7 +33,7 @@ interface Props {
 }
 
 const getBasisOptionsText = (activeBasisOptions: { id: string; option_code: string }[]) => {
-  if (activeBasisOptions.length > 0) {
+  if (activeBasisOptions.length !== 0) {
     return `Selected ${activeBasisOptions.length} item${activeBasisOptions.length > 1 ? 's' : ''}`;
   }
   return '';
@@ -297,7 +297,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
 
   const renderSubBasisOption = (index: number, option: SubBasisOption) => {
     return (
-      <>
+      <div className="flex-start">
         <span className="product-id-label">Product ID:</span>
         <CustomInput
           placeholder="type here"
@@ -320,7 +320,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
             setBasisOptions(newBasisOptions);
           }}
         />
-      </>
+      </div>
     );
   };
 
