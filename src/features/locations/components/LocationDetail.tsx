@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
+import { USER_ROLE } from '@/constants/userRoles';
 
 import { pushTo } from '@/helper/history';
-import { useBoolean, useCheckPermission, useGetParamId } from '@/helper/hook';
+import { useBoolean, useGetParamId, useGetUserRoleFromPathname } from '@/helper/hook';
 import { getSelectedOptions, getValueByCondition } from '@/helper/utils';
 
 import { LocationForm } from '../type';
@@ -31,16 +32,17 @@ const LocationDetail = () => {
   // for checking updating action
   const isUpdate = locationId ? true : false;
 
-  const isTISCAdmin = useCheckPermission('TISC Admin');
-  const isBrandAdmin = useCheckPermission('Brand Admin');
-  const isDesignAdmin = useCheckPermission('Design Admin');
+  const currentUser = useGetUserRoleFromPathname();
+  const isTiscUser = currentUser === USER_ROLE.tisc;
+  const isBrandUser = currentUser === USER_ROLE.brand;
+  const isDesignerUser = currentUser === USER_ROLE.design;
 
   /// for user role path
   const userRolePath = getValueByCondition(
     [
-      [isTISCAdmin, PATH.tiscLocation],
-      [isBrandAdmin, PATH.brandLocation],
-      [isDesignAdmin, PATH.designFirmLocation],
+      [isTiscUser, PATH.tiscLocation],
+      [isBrandUser, PATH.brandLocation],
+      [isDesignerUser, PATH.designFirmLocation],
     ],
     '',
   );
@@ -61,7 +63,7 @@ const LocationDetail = () => {
   const [functionalTypes, setFunctionalTypes] = useState<CheckboxValue[] | RadioValue[]>([]);
   /// for show items have been already selected to show on first loading
   let selectedFunctionType: CheckboxValue[] = [];
-  if (!isDesignAdmin) {
+  if (!isDesignerUser) {
     selectedFunctionType = getSelectedOptions(
       functionalTypes as CheckboxValue[],
       data.functional_type_ids as string[],
@@ -77,7 +79,7 @@ const LocationDetail = () => {
       if (res) {
         setData({
           business_name: res.business_name,
-          business_number: isDesignAdmin ? '' : res.business_number,
+          business_number: isDesignerUser ? '' : res.business_number,
           country_id: res.country_id,
           state_id: res.state_id,
           city_id: res.city_id,
@@ -92,7 +94,7 @@ const LocationDetail = () => {
     });
 
   const getListFuncType = () => {
-    if (isDesignAdmin) {
+    if (isDesignerUser) {
       return getListFunctionalTypeForDesign().then((res) => {
         if (res) {
           setFunctionalTypes(
