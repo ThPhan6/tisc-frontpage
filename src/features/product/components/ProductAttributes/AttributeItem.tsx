@@ -219,7 +219,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
   };
 
   const renderProductAttributeItem = () => {
-    const attributeTextSelected = () => {
+    const getAttributeTextSelected = () => {
       if (
         attributeItem.type !== 'Options' ||
         (attributeItem.type === 'Options' &&
@@ -297,7 +297,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
           onDelete?.();
         }}
         noWrap
-        value={attributeTextSelected()}
+        value={getAttributeTextSelected()}
         onChange={(e) => {
           onChangeAttributeItem(attributeItemIndex, {
             text: e.target.value,
