@@ -111,7 +111,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
         </MainTitle>
         {type === 'create' && (
           <CloseIcon
-            style={{ cursor: 'pointer', width: '18px', height: '18px' }}
+            style={{ cursor: 'pointer', width: '24px', height: '24px' }}
             onClick={() => pushTo(PATH.designerCustomResource)}
           />
         )}
