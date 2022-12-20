@@ -11,6 +11,7 @@
     }
   }
   :global(.product-id-label) {
+    color: @mono-color-dark;
     font-weight: 300;
     font-size: 14px;
     font-family: @font-secondary;
@@ -36,15 +37,37 @@
   }
   :global(.product-id-value) {
     margin-left: 12px;
+    color: @mono-color-dark;
+    font-weight: 300;
+    font-size: 12px;
+    font-family: @font-primary;
+    font-style: normal;
+    line-height: 20px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
   }
 }
 .optionInfo {
   display: flex;
 }
 .defaultOptionImageList {
+  position: relative;
   display: flex;
   align-items: center;
   padding: 4px 0;
+  .boxShadowOptionImage {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    box-shadow: @border-bottom-light;
+  }
+  .widthCheckboxImage {
+    width: calc(100% + 32px);
+  }
+  .widthOptionImage {
+    width: calc(100% + 26px);
+  }
   img {
     width: 48px;
     height: 48px;
@@ -66,6 +89,7 @@
         color: @primary-color-dark;
       }
       :global(.product-id-label) {
+        color: @mono-color-dark;
         font-weight: 300;
         font-size: 14px;
         font-family: @font-secondary;
@@ -76,6 +100,14 @@
       }
       :global(.product-id-value) {
         margin-left: 12px;
+        color: @mono-color-dark;
+        font-weight: 300;
+        font-size: 12px;
+        font-family: @font-primary;
+        font-style: normal;
+        line-height: 20px;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
       }
     }
   }
@@ -88,6 +120,7 @@
     }
   }
 }
+
 .specificationOptionCheckbox {
   :global(.checkbox-list-heading) {
     padding-left: 16px;
@@ -121,5 +154,21 @@
 
   &_select {
     color: @mono-color !important;
+  }
+}
+
+.specificationAttributeOption {
+  :global(.ant-space-item) {
+    margin-bottom: 4px;
+    padding-left: 0;
+  }
+  :global(.radio-list-heading) {
+    margin-bottom: 16px;
+    padding-left: 16px;
+    font-weight: 500;
+    font-size: 14px;
+    font-family: @font-primary;
+    line-height: 22px;
+    box-shadow: @border-bottom-light;
   }
 }

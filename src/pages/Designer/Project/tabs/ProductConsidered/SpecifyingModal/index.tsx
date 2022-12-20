@@ -22,6 +22,7 @@ import { CustomModal } from '@/components/Modal';
 import popoverStyles from '@/components/Modal/styles/Popover.less';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 import { MainTitle } from '@/components/Typography';
+import { resetCustomProductDetail } from '@/pages/Designer/Products/CustomLibrary/slice';
 
 import CodeOrderTab from './CodeOrderTab';
 import SpecificationTab from './SpecificationTab';
@@ -100,6 +101,14 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   );
   const selectedRoomIds = getSelectedRoomIds(selectedRooms);
 
+  const resetProductData = () => {
+    if (customProduct) {
+      store.dispatch(resetCustomProductDetail());
+    } else {
+      store.dispatch(resetProductDetailState());
+    }
+  };
+
   const onSubmit = () => {
     if (!specifiedDetail) {
       return;
@@ -153,7 +162,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         () => {
           reloadTable();
           setVisible(false);
-          store.dispatch(resetProductDetailState());
+          resetProductData();
         },
       );
     }
@@ -165,7 +174,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       visible={visible}
       onCancel={() => {
         setVisible(false);
-        store.dispatch(resetProductDetailState());
+        resetProductData();
       }}
       title={
         <MainTitle level={3} customClass="text-uppercase">
