@@ -100,6 +100,9 @@ const libraryResources = createSlice({
     resetCustomProductState() {
       return initialState;
     },
+    resetCustomProductDetail: (state) => {
+      state.details = initialState.details;
+    },
   },
 });
 
@@ -113,6 +116,7 @@ export const {
   updateCustomProductOption,
   onCheckCustomProductReferToDocument,
   updateCustomProductSpecifiedDetail,
+  resetCustomProductDetail,
 } = libraryResources.actions;
 export const officeProductReducer = libraryResources.reducer;
 
