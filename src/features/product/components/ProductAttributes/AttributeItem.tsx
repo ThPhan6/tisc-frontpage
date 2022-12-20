@@ -33,7 +33,7 @@ interface Props {
 }
 
 const getBasisOptionsText = (activeBasisOptions: { id: string; option_code: string }[]) => {
-  if (activeBasisOptions.length !== 0) {
+  if (activeBasisOptions.length > 0) {
     return `Selected ${activeBasisOptions.length} item${activeBasisOptions.length > 1 ? 's' : ''}`;
   }
   return '';
@@ -219,6 +219,19 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
   };
 
   const renderProductAttributeItem = () => {
+    const getAttributeTextSelected = () => {
+      if (
+        attributeItem.type !== 'Options' ||
+        (attributeItem.type === 'Options' &&
+          attributeItem.basis_options?.length &&
+          attributeItem.text)
+      ) {
+        return attributeItem.text;
+      }
+
+      return '';
+    };
+
     if (!curAttributeData?.basis) {
       return null;
     }
@@ -284,7 +297,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
           onDelete?.();
         }}
         noWrap
-        value={attributeItem.text}
+        value={getAttributeTextSelected()}
         onChange={(e) => {
           onChangeAttributeItem(attributeItemIndex, {
             text: e.target.value,

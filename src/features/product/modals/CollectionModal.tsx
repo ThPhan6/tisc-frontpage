@@ -292,8 +292,6 @@ export const CollectionModal: FC<CollectionModalProps> = ({
 
   const handleCloseModal = (isClose: boolean) => (isClose ? undefined : setVisible(false));
 
-  console.log('selected', selected);
-
   return (
     <Popover
       title="SELECT COLLECTION"
