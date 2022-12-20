@@ -52,7 +52,6 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
     const { onDeleteProductAttribute, attributeGroupKey, attributeGroup } = useProductAttributeForm(
       activeKey,
       productId,
-      { isRunUseEffect: true },
     );
 
     const onSelectValue = (value: CheckboxValue[]) => {
@@ -106,6 +105,15 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
           return newAttribute;
         });
       }
+
+      /// to rearrange attribute has type option to top
+      newAttrGroup.forEach((group) => {
+        group.attributes.forEach((attribute, index) => {
+          if (attribute.type === 'Options') {
+            group.attributes.unshift(group.attributes.splice(index, 1)[0]);
+          }
+        });
+      });
 
       store.dispatch(
         setPartialProductDetail({

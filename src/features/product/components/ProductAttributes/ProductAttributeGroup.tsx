@@ -12,7 +12,6 @@ import {
   SpecificationAttributeBasisOptionProps,
 } from '../../types';
 import { ActiveKeyType } from './types';
-import { DimensionWeightItem } from '@/features/dimension-weight/types';
 
 import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
@@ -71,9 +70,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     onCheckedSpecification,
     attributeGroupKey,
     onSelectSpecificationOption,
-  } = useProductAttributeForm(activeKey, curProductId, {
-    isSpecifiedModal: isSpecifiedModal,
-  });
+  } = useProductAttributeForm(activeKey, curProductId);
 
   useEffect(() => {
     if (attrGroupItem.selection && attrGroupItem.id) {
@@ -150,7 +147,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   };
 
   const renderAttributeRowItem = (
-    attribute: ProductAttributeProps | DimensionWeightItem,
+    attribute: ProductAttributeProps,
     attrIndex: number,
     groupName: string,
     isSpecificationOptionSelection?: boolean,

@@ -153,6 +153,9 @@ const syncColWidthFollowingTheDeepestDataRow = (level: number, curCellStyle: Ele
 
       // Update style for each column from this data row to their relevant column of expandable column
       // Remember to add enter key
+      if (!newCellWidth) {
+        return;
+      }
       cellWidthStyles += `
       tr[data-row-key] td:nth-child(${
         index + 1
