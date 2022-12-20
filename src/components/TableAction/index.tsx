@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { CSSProperties, FC } from 'react';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
@@ -29,6 +29,7 @@ interface ActionFormProps extends HeaderDropdownProps {
   actionItems?: (MenuIconProps & { type: ActionType })[];
   actionIcon?: JSX.Element;
   offsetAlign?: [number, number];
+  containerStyle?: CSSProperties;
 }
 
 const DEFAULT_ACTION_INFO: {
@@ -86,6 +87,7 @@ export const ActionMenu: FC<ActionFormProps> = ({
   trigger = ['click'],
   arrow = true,
   placement = 'bottomRight',
+  containerStyle,
   ...props
 }) => {
   const filledActionItems = actionItems?.map((item) => ({
@@ -96,6 +98,7 @@ export const ActionMenu: FC<ActionFormProps> = ({
 
   return (
     <div
+      style={containerStyle}
       onClick={(e) => {
         e.stopPropagation();
         e.preventDefault();

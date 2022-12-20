@@ -268,32 +268,31 @@ const ProductCard: React.FC<ProductCardProps> = ({
               </Tooltip>
             ) : null}
             {showActionMenu && isDesignerUser ? (
-              <div style={{ height: 16 }}>
-                <ActionMenu
-                  placement="bottomLeft"
-                  offsetAlign={[-12, 8]}
-                  className={styles.actionMenu}
-                  overlayClassName={styles.actionMenuOverLay}
-                  actionItems={[
-                    {
-                      type: 'copy',
-                      label: 'Copy',
-                      onClick: () => handleCopyCustomProduct(),
-                    },
-                    {
-                      type: 'updated',
-                      label: 'Edit',
-                      onClick: () =>
-                        pushTo(PATH.designerCustomProductUpdate.replace(':id', product.id)),
-                    },
-                    {
-                      type: 'deleted',
-                      label: 'Delete',
-                      onClick: () => handleDeleteCustomProduct(),
-                    },
-                  ]}
-                />
-              </div>
+              <ActionMenu
+                style={{ height: 16 }}
+                placement="bottomLeft"
+                offsetAlign={[-12, 8]}
+                className={styles.actionMenu}
+                overlayClassName={styles.actionMenuOverLay}
+                actionItems={[
+                  {
+                    type: 'copy',
+                    label: 'Copy',
+                    onClick: () => handleCopyCustomProduct(),
+                  },
+                  {
+                    type: 'updated',
+                    label: 'Edit',
+                    onClick: () =>
+                      pushTo(PATH.designerCustomProductUpdate.replace(':id', product.id)),
+                  },
+                  {
+                    type: 'deleted',
+                    label: 'Delete',
+                    onClick: () => handleDeleteCustomProduct(),
+                  },
+                ]}
+              />
             ) : null}
           </div>
 
