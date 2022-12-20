@@ -34,9 +34,9 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
       <div className={`${styles.defaultOptionList} ${isTISC ? 'flex-between' : ''} `}>
         <table>
           <tr>
-            <td style={{ width: '20%' }}>{option.value_1}</td>
+            <td className="option-name">{option.value_1}</td>
             <td>{option.unit_1}</td>
-            <td style={{ width: '20%' }}>{option.value_2}</td>
+            <td className="option-name">{option.value_2}</td>
             <td>{option.unit_2}</td>
           </tr>
         </table>
