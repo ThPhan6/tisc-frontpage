@@ -59,9 +59,14 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    width: calc(100% + 26px);
     height: 1px;
     box-shadow: @border-bottom-light;
+  }
+  .widthCheckboxImage {
+    width: calc(100% + 32px);
+  }
+  .widthOptionImage {
+    width: calc(100% + 26px);
   }
   img {
     width: 48px;
@@ -164,6 +169,15 @@
     font-size: 14px;
     font-family: @font-primary;
     line-height: 22px;
+    box-shadow: @border-bottom-light;
+  }
+}
+.specificationAttributeImageOption {
+  :global(.ant-space-item) {
+    margin-bottom: 8px;
+    box-shadow: @border-bottom-light;
+  }
+  :global(.radio-list-heading) {
     box-shadow: @border-bottom-light;
   }
 }

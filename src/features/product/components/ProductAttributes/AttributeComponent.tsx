@@ -46,7 +46,10 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
   }
   return (
     <div className={styles.defaultOptionImageList}>
-      <div className={styles.boxShadowOptionImage}></div>
+      <div
+        className={`${styles.boxShadowOptionImage} ${
+          isTISC ? styles.widthCheckboxImage : styles.widthOptionImage
+        }`}></div>
       <img src={showImageUrl(option.image)} />
       <div className="option-image-list-wrapper">
         <BodyText level={6} fontFamily="Roboto" customClass="heading-option-group">
