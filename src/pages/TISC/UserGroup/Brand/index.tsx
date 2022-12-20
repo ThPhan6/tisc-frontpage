@@ -39,7 +39,7 @@ import styles from '@/features/user-group/styles/brand.less';
 
 const BrandList: React.FC = () => {
   // set width for each cell
-  useAutoExpandNestedTableColumn(0, [11]);
+  useAutoExpandNestedTableColumn(0, [10]);
   const tableRef = useRef<any>();
 
   /// for assign team modal
@@ -208,7 +208,7 @@ const BrandList: React.FC = () => {
           rightAction={
             <CustomPlusButton onClick={() => pushTo(PATH.tiscUserGroupBrandEntryFrom)} />
           }
-          columns={setDefaultWidthForEachColumn(TableColumns, 11)}
+          columns={setDefaultWidthForEachColumn(TableColumns, 10)}
           ref={tableRef}
           fetchDataFunc={getBrandPagination}
           hasPagination
