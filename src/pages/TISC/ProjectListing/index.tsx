@@ -115,19 +115,14 @@ const ProjectListing = () => {
       align: 'center',
       render: (_value, record) => {
         return (
-          <div
-            onClick={(e) => {
-              e.stopPropagation();
-            }}>
-            <ActionMenu
-              actionItems={[
-                {
-                  type: 'view',
-                  onClick: () => handleViewProjectListing(record.id),
-                },
-              ]}
-            />
-          </div>
+          <ActionMenu
+            actionItems={[
+              {
+                type: 'view',
+                onClick: () => handleViewProjectListing(record.id),
+              },
+            ]}
+          />
         );
       },
     },

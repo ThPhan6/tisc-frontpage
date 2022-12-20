@@ -95,14 +95,20 @@ export const ActionMenu: FC<ActionFormProps> = ({
   }));
 
   return (
-    <HeaderDropdown
-      {...props}
-      arrow={arrow}
-      align={{ offset: offsetAlign }}
-      trigger={trigger}
-      placement={placement}
-      items={filledActionItems}>
-      {actionIcon || <ActionIcon />}
-    </HeaderDropdown>
+    <div
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+      }}>
+      <HeaderDropdown
+        {...props}
+        arrow={arrow}
+        align={{ offset: offsetAlign }}
+        trigger={trigger}
+        placement={placement}
+        items={filledActionItems}>
+        {actionIcon || <ActionIcon />}
+      </HeaderDropdown>
+    </div>
   );
 };

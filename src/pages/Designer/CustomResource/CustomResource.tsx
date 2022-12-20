@@ -99,23 +99,18 @@ const CustomResource = () => {
       align: 'center',
       render: (_value, record) => {
         return (
-          <div
-            onClick={(e) => {
-              e.stopPropagation();
-            }}>
-            <ActionMenu
-              actionItems={[
-                {
-                  type: 'updated',
-                  onClick: () => goToUpdateCustomResource(record.id),
-                },
-                {
-                  type: 'deleted',
-                  onClick: () => handleDeleteCustomResource(record.id),
-                },
-              ]}
-            />
-          </div>
+          <ActionMenu
+            actionItems={[
+              {
+                type: 'updated',
+                onClick: () => goToUpdateCustomResource(record.id),
+              },
+              {
+                type: 'deleted',
+                onClick: () => handleDeleteCustomResource(record.id),
+              },
+            ]}
+          />
         );
       },
     },
