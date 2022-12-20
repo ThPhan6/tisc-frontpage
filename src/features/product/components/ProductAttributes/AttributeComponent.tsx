@@ -32,16 +32,14 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
   if (!option.image || option.image == '') {
     return (
       <div className={`${styles.defaultOptionList} ${isTISC ? 'flex-between' : ''} `}>
-        <div className="flex-start">
-          <div className="group-option-name">
-            <span className="value">{option.value_1}</span>
-            <span>{option.unit_1}</span>
-          </div>
-          <div className="group-option-name">
-            <span className="value">{option.value_2}</span>
-            <span>{option.unit_2}</span>
-          </div>
-        </div>
+        <table>
+          <tr>
+            <td style={{ width: '20%' }}>{option.value_1}</td>
+            <td>{option.unit_1}</td>
+            <td style={{ width: '20%' }}>{option.value_2}</td>
+            <td>{option.unit_2}</td>
+          </tr>
+        </table>
         {children}
       </div>
     );
