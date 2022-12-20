@@ -81,7 +81,7 @@ const DEFAULT_ACTION_INFO: {
 
 export const ActionMenu: FC<ActionFormProps> = ({
   actionItems,
-  offsetAlign = [-2, -2],
+  offsetAlign = [14, 4],
   actionIcon,
   trigger = ['click'],
   arrow = true,
@@ -102,13 +102,7 @@ export const ActionMenu: FC<ActionFormProps> = ({
       trigger={trigger}
       placement={placement}
       items={filledActionItems}>
-      <div
-        onClick={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-        }}>
-        {actionIcon || <ActionIcon />}
-      </div>
+      {actionIcon || <ActionIcon />}
     </HeaderDropdown>
   );
 };
