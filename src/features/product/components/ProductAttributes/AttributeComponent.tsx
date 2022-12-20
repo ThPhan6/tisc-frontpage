@@ -1,7 +1,10 @@
 import { FC, useState } from 'react';
 
+import { USER_ROLE } from '@/constants/userRoles';
+
 import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
 
+import { useGetUserRoleFromPathname } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
 
 import type { SpecificationAttributeBasisOptionProps } from '../../types';
@@ -23,9 +26,12 @@ interface AttributeOptionProps {
   isPublicPage: boolean;
 }
 export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) => {
+  const currentUser = useGetUserRoleFromPathname();
+  const isTISC = currentUser === USER_ROLE.tisc;
+
   if (!option.image || option.image == '') {
     return (
-      <div className={styles.defaultOptionList}>
+      <div className={`${styles.defaultOptionList} ${isTISC ? 'flex-between' : ''} `}>
         <div className="flex-start">
           <div className="group-option-name">
             <span className="value">{option.value_1}</span>

@@ -19,7 +19,7 @@ import { Title } from '@/components/Typography';
 import { TopBarContainer, TopBarItem } from '@/features/product/components';
 import { ProductTopBarFilter } from '@/features/product/components/FilterAndSorter';
 
-import { setCustomProductFilter, setCustomProductList } from '../../slice';
+import { setCustomProductFilter } from '../../slice';
 import styles from './index.less';
 
 export const ProductListTopBar: React.FC = () => {
@@ -71,7 +71,6 @@ export const ProductListTopBar: React.FC = () => {
   }, [filter?.value, companies]);
 
   useEffect(() => {
-    store.dispatch(setCustomProductList([]));
     // prevent call api twice at first loading
     loaded.setValue(true);
 

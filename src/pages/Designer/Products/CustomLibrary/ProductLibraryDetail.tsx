@@ -19,7 +19,7 @@ import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 import ProductImagePreview from '@/features/product/components/ProductImagePreview';
 
 import styles from './ProductLibraryDetail.less';
-import { resetCustomProductState } from './slice';
+import { resetCustomProductDetail } from './slice';
 import Cookies from 'js-cookie';
 
 const LIST_TAB = [
@@ -46,7 +46,7 @@ const ProductLibraryDetail: React.FC = () => {
     }
 
     return () => {
-      store.dispatch(resetCustomProductState());
+      store.dispatch(resetCustomProductDetail());
     };
   }, [productId]);
 
