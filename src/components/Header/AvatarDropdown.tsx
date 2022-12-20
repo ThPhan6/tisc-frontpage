@@ -10,7 +10,10 @@ import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
 import { getFullName, showImageUrl } from '@/helper/utils';
 
+import store from '@/reducers';
+
 import { MenuHeaderDropdown } from '@/components/HeaderDropdown';
+import { setCustomProductList } from '@/pages/Designer/Products/CustomLibrary/slice';
 
 import { HeaderDropdown } from '../HeaderDropdown';
 import { BodyText } from '../Typography';
@@ -22,6 +25,7 @@ export const AvatarDropdown = () => {
 
   const loginOut = async () => {
     setInitialState((s) => ({ ...s, currentUser: undefined }));
+    store.dispatch(setCustomProductList([]));
     localStorage.clear();
     pushTo(PATH.landingPage);
   };

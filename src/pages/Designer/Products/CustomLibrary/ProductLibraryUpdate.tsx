@@ -17,7 +17,7 @@ import ProductDetailHeader from '@/features/product/components/ProductDetailHead
 import ProductImagePreview from '@/features/product/components/ProductImagePreview';
 
 import styles from './ProductLibraryDetail.less';
-import { invalidCustomProductSelector, resetCustomProductState } from './slice';
+import { invalidCustomProductSelector, resetCustomProductDetail } from './slice';
 
 const LIST_TAB = [
   { tab: 'SUMMARY', key: 'summary' },
@@ -42,7 +42,7 @@ const ProductLibraryUpdate: React.FC = () => {
     }
 
     return () => {
-      store.dispatch(resetCustomProductState());
+      store.dispatch(resetCustomProductDetail());
     };
   }, [productId]);
 
