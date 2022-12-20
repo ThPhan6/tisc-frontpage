@@ -399,7 +399,6 @@ export const CollectionModal: FC<CollectionModalProps> = ({
                         item.disabled ? 'mono-color-medium' : 'mono-color'
                       } `}
                       overlayClassName={styles.actionMenuOverLay}
-                      offsetAlign={[14, -2]}
                       actionItems={[
                         {
                           type: 'updated',

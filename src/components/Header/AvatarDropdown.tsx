@@ -75,8 +75,8 @@ export const AvatarDropdown = () => {
       arrowPositionCenter
       visible={showHeaderDropdown.value}
       onVisibleChange={showHeaderDropdown.setValue}
-      align={{ offset: [0, -2] }}
-      placement="topLeft"
+      align={{ offset: [0, 2] }}
+      placement="bottom"
       trigger={['click']}
       getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}>
       <span className={`${styles.container}`}>
