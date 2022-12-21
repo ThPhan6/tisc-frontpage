@@ -1,7 +1,10 @@
 import { FC, useState } from 'react';
 
+import { USER_ROLE } from '@/constants/userRoles';
+
 import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
 
+import { useGetUserRoleFromPathname } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
 
 import type { SpecificationAttributeBasisOptionProps } from '../../types';
@@ -23,23 +26,30 @@ interface AttributeOptionProps {
   isPublicPage: boolean;
 }
 export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) => {
+  const currentUser = useGetUserRoleFromPathname();
+  const isTISC = currentUser === USER_ROLE.tisc;
+
   if (!option.image || option.image == '') {
     return (
-      <div className={styles.defaultOptionList}>
-        <div className="group-option-name">
-          <span className="value">{option.value_1}</span>
-          <span>{option.unit_1}</span>
-        </div>
-        <div className="group-option-name">
-          <span className="value">{option.value_2}</span>
-          <span>{option.unit_2}</span>
-        </div>
+      <div className={`${styles.defaultOptionList} ${isTISC ? 'flex-between' : ''} `}>
+        <table>
+          <tr>
+            <td className="option-name">{option.value_1}</td>
+            <td>{option.unit_1}</td>
+            <td className="option-name">{option.value_2}</td>
+            <td>{option.unit_2}</td>
+          </tr>
+        </table>
         {children}
       </div>
     );
   }
   return (
     <div className={styles.defaultOptionImageList}>
+      <div
+        className={`${styles.boxShadowOptionImage} ${
+          isTISC ? styles.widthCheckboxImage : styles.widthOptionImage
+        }`}></div>
       <img src={showImageUrl(option.image)} />
       <div className="option-image-list-wrapper">
         <BodyText level={6} fontFamily="Roboto" customClass="heading-option-group">

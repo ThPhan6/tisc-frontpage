@@ -219,6 +219,19 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
   };
 
   const renderProductAttributeItem = () => {
+    const getAttributeTextSelected = () => {
+      if (
+        attributeItem.type !== 'Options' ||
+        (attributeItem.type === 'Options' &&
+          attributeItem.basis_options?.length &&
+          attributeItem.text)
+      ) {
+        return attributeItem.text;
+      }
+
+      return '';
+    };
+
     if (!curAttributeData?.basis) {
       return null;
     }
@@ -284,7 +297,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
           onDelete?.();
         }}
         noWrap
-        value={attributeItem.text}
+        value={getAttributeTextSelected()}
         onChange={(e) => {
           onChangeAttributeItem(attributeItemIndex, {
             text: e.target.value,
@@ -297,7 +310,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
 
   const renderSubBasisOption = (index: number, option: SubBasisOption) => {
     return (
-      <>
+      <div className="flex-start">
         <span className="product-id-label">Product ID:</span>
         <CustomInput
           placeholder="type here"
@@ -320,7 +333,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
             setBasisOptions(newBasisOptions);
           }}
         />
-      </>
+      </div>
     );
   };
 

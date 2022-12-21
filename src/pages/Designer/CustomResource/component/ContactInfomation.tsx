@@ -312,7 +312,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
           ) : (
             <CloseIcon
               onClick={() => pushTo(PATH.designerCustomResource)}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: 'pointer', width: '24px', height: '24px' }}
             />
           )
         }

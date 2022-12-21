@@ -168,7 +168,7 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
                 }
               }}
               className={`${alignRight ? styles.alignRight : ''} ${
-                textCapitalize ? styles.textCapitalize : ''
+                textCapitalize ? styles.textCapitalize : styles.text
               } ${selectedItem === index ? styles.active : ''} ${hasChildren ? '' : styles.noSub}`}
               disabled={item?.disabled}
               icon={item?.icon || (hasChildren ? <DropdownIcon /> : undefined)}>

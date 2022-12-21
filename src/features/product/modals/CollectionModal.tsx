@@ -4,7 +4,7 @@ import { message } from 'antd';
 
 import { confirmDelete } from '@/helper/common';
 import { createCollection, deleteCollection, getCollections, updateCollection } from '@/services';
-import { trimEnd, trimStart, uniqueId } from 'lodash';
+import { trimEnd, trimStart } from 'lodash';
 
 import { RadioValue } from '@/components/CustomRadio/types';
 import { CollectionRelationType } from '@/types';
@@ -57,7 +57,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
   /// for handle edit
   const [disabledSubmit, setDisabledSubmit] = useState<boolean>(false);
 
-  const getCollectionList = (newData?: DynamicRadioValue) => {
+  const getCollectionList = (newData?: DynamicRadioValue, updateCurrentSelect: boolean = true) => {
     getCollections(brandId, collectionType).then((res) => {
       if (res) {
         const curCollectionSelect = newData?.value
@@ -65,16 +65,19 @@ export const CollectionModal: FC<CollectionModalProps> = ({
           : selected.value
           ? selected
           : chosenValue;
-        const chosenOption = res.find(
-          (item) =>
-            item.id === curCollectionSelect.value && item.name === curCollectionSelect.label,
-        );
 
-        if (chosenOption) {
-          setSelected({
-            value: chosenOption.id,
-            label: chosenOption.name,
-          });
+        if (updateCurrentSelect) {
+          const chosenOption = res.find(
+            (item) =>
+              item.id === curCollectionSelect.value && item.name === curCollectionSelect.label,
+          );
+
+          if (chosenOption) {
+            setSelected({
+              value: chosenOption.id,
+              label: chosenOption.name,
+            });
+          }
         }
 
         setData(
@@ -120,16 +123,9 @@ export const CollectionModal: FC<CollectionModalProps> = ({
   }, [visible === false]);
 
   const onChangeCreateNewCollection = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const randomId = uniqueId();
     const newValue = trimStart(e.target.value);
     setNewOption(newValue);
-
-    setSelected({
-      label: newValue,
-      value: randomId,
-    });
   };
-
   const handleCreateCollection = () => {
     if (newOption) {
       // check if value is existed
@@ -151,33 +147,43 @@ export const CollectionModal: FC<CollectionModalProps> = ({
           // set empty input
           setNewOption(undefined);
           // get list after created new collection
-          getCollectionList({
-            value: newData.id,
-            label: newData.name,
-            disabled: false,
-            editLabel: false,
-          });
+          getCollectionList(
+            {
+              value: newData.id,
+              label: newData.name,
+              disabled: false,
+              editLabel: false,
+            },
+            false,
+          );
         }
       });
     }
   };
+
   const onChangeCollectionNameAssigned =
     (selectedValue: DynamicRadioValue, index: number) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+
       const newData = [...data];
-      newData[index] = { ...selectedValue, editLabel: true, disabled: false };
-
-      setData(newData);
-
-      /// only update UI
-      setSelected({
+      newData[index] = {
         ...selectedValue,
         label: trimStart(e.target.value),
-      });
+        editLabel: true,
+        disabled: false,
+      };
+
+      setData(newData);
     };
 
   const handleEditNameAssigned =
-    (type: 'save' | 'cancel', index: number, selectedValue: DynamicRadioValue) => () => {
+    (type: 'save' | 'cancel', index: number, selectedValue: DynamicRadioValue) =>
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.preventDefault();
+      e.stopPropagation();
+
       if (!selectedValue) {
         message.error('Please select one collection');
         return;
@@ -186,33 +192,32 @@ export const CollectionModal: FC<CollectionModalProps> = ({
       // set active select
       setDefaultStatusForItem(data);
 
-      //  previous data
       const newData = [...data];
 
+      /// re-render data
       if (type === 'cancel') {
-        newData[index] = { ...selectedValue, editLabel: false, disabled: false };
-        // set chosen value
-        setChosenValue(newData[index]);
         setData(newData);
+        return;
       }
 
+      const newCollectionName = trimEnd(String(newData[index].label));
+
       if (type === 'save') {
-        if (!selected.label) {
+        if (!newCollectionName) {
           message.error('Please, enter collection name');
           // set input focus
           setEditable(true);
           return;
         }
-        const newCollectionName = trimEnd(String(selected.label));
 
         newData[index] = {
-          value: selected.value,
+          value: selectedValue.value,
           label: newCollectionName,
           editLabel: false,
           disabled: false,
         };
 
-        // check if value is existed
+        // check if collection is existed
         const isCollectionExisted = data
           .map((item) => {
             if (item.value !== selectedValue.value) {
@@ -228,8 +233,6 @@ export const CollectionModal: FC<CollectionModalProps> = ({
 
         updateCollection(String(selectedValue.value), newCollectionName).then((isSuccess) => {
           if (isSuccess) {
-            /// set chosen value
-            setChosenValue(newData[index]);
             setData(newData);
           }
         });
@@ -242,11 +245,13 @@ export const CollectionModal: FC<CollectionModalProps> = ({
 
       deleteCollection(collectionId).then((isSuccess) => {
         if (isSuccess) {
-          // update data selected
-          setChosenValue({
-            value: '',
-            label: '',
-          });
+          if (chosenValue.value === collectionId) {
+            // update data selected
+            setChosenValue({
+              value: '',
+              label: '',
+            });
+          }
 
           /// update data
           setData(newData);
@@ -256,13 +261,17 @@ export const CollectionModal: FC<CollectionModalProps> = ({
   };
 
   const handleEdit = (selectedValue: DynamicRadioValue, index: number) => {
+    // set default value for all items
+    setDefaultStatusForItem(data);
+
     const foundedItem = data?.find((item) => item.value === selectedValue.value);
+
     if (foundedItem?.value) {
       // set input focus
       setEditable(true);
       /// disabled select another items
       data.forEach((collection) => {
-        if (collection.value !== selectedValue.value) {
+        if (String(collection.value) !== String(selectedValue.value)) {
           collection.disabled = true;
         }
       });
@@ -274,10 +283,8 @@ export const CollectionModal: FC<CollectionModalProps> = ({
         disabled: false,
         editLabel: true,
       };
-      newData[index] = chosenCollection;
 
-      // set selected item
-      setSelected(chosenCollection);
+      newData[index] = chosenCollection;
 
       setData(newData);
     }
@@ -310,9 +317,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
           });
         }
 
-        setTimeout(() => {
-          handleCloseModal(!visible);
-        }, 100);
+        handleCloseModal(!visible);
       }}
       extraTopAction={
         <div className={styles.boxShadowBottom}>
@@ -337,25 +342,31 @@ export const CollectionModal: FC<CollectionModalProps> = ({
           heading: 'Assign bellow collection',
           options: data?.map((item, index) => {
             return {
-              disabled: item.disabled,
+              disabled: item.disabled || item.editLabel,
               value: item.value,
               label: (
                 <div
                   className={`${styles.labelContent} ${
                     item.disabled || item.editLabel ? styles.inactiveMenu : ''
-                  }`}>
+                  } ${item.disabled ? 'cursor-default' : ''} `}>
                   {!item.editLabel ? (
                     <RobotoBodyText level={6}>{item.label}</RobotoBodyText>
                   ) : (
-                    <div className={styles.actionBtn}>
+                    <div className={styles.actionBtn} key={String(item.value) || index}>
                       <CustomInput
                         autoFocus={editable}
                         placeholder="type here"
                         className={styles.paddingLeftNone}
-                        value={String(selected.label)}
+                        value={String(item.label)}
                         onChange={onChangeCollectionNameAssigned(item, index)}
                       />
-                      <div className="cursor-default flex-start">
+                      <div
+                        className="cursor-default flex-start"
+                        style={{ height: '100%' }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                        }}>
                         <CustomButton
                           size="small"
                           variant="primary"
@@ -376,23 +387,31 @@ export const CollectionModal: FC<CollectionModalProps> = ({
                     </div>
                   )}
 
-                  <ActionMenu
-                    disabled={item.disabled || item.editLabel}
-                    className={styles.actionMenu}
-                    overlayClassName={styles.actionMenuOverLay}
-                    offsetAlign={[14, -2]}
-                    actionItems={[
-                      {
-                        type: 'updated',
-                        label: 'Edit',
-                        onClick: () => handleEdit(item, index),
-                      },
-                      {
-                        type: 'deleted',
-                        onClick: () => handleDelete(String(item.value)),
-                      },
-                    ]}
-                  />
+                  <div
+                    style={{ cursor: item.disabled || item.editLabel ? 'default' : 'pointer' }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                    }}>
+                    <ActionMenu
+                      disabled={item.disabled || item.editLabel}
+                      className={`${styles.marginSpace} ${
+                        item.disabled ? 'mono-color-medium' : 'mono-color'
+                      } `}
+                      overlayClassName={styles.actionMenuOverLay}
+                      actionItems={[
+                        {
+                          type: 'updated',
+                          label: 'Edit',
+                          onClick: () => handleEdit(item, index),
+                        },
+                        {
+                          type: 'deleted',
+                          onClick: () => handleDelete(String(item.value)),
+                        },
+                      ]}
+                    />
+                  </div>
                 </div>
               ),
             };
