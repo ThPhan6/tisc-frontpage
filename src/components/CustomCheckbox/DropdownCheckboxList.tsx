@@ -18,9 +18,7 @@ export interface DropdownCheckboxItem {
   margin?: 8 | 12;
   options: CheckboxValue[];
 }
-
 type ActiveKeyType = string | number | (string | number)[];
-
 interface DropdownCheckboxListProps {
   selected?: CheckboxValue[];
   chosenItem?: CheckboxValue[];
@@ -29,11 +27,21 @@ interface DropdownCheckboxListProps {
   onChange?: (value: CheckboxValue[]) => void;
   noCollapse?: boolean;
   combinable?: boolean;
+  showCount?: boolean;
+  customClass?: string;
 }
-
 const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
-  const { data, selected, onChange, renderTitle, chosenItem, combinable } = props;
-
+  const {
+    data,
+    selected,
+    onChange,
+    renderTitle,
+    chosenItem,
+    combinable,
+    noCollapse,
+    showCount = true,
+    customClass,
+  } = props;
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
   useEffect(() => {
     let activeKeys: number[] = [];
@@ -51,38 +59,40 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
     });
     setActiveKey(activeKeys);
   }, [chosenItem]);
-
   const renderHeader = (item: DropdownCheckboxItem, index: number) => {
     if (renderTitle) {
       return (
         <span>
           {renderTitle(item)}
-          <span
-            className={styles.dropdownCount}
-            style={{
-              marginLeft: item.margin ? item.margin : 8,
-            }}>
-            ({item.options.length})
-          </span>
+          {showCount ? (
+            <span
+              className={styles.dropdownCount}
+              style={{
+                marginLeft: item.margin ? item.margin : 8,
+              }}>
+              ({item.options.length})
+            </span>
+          ) : (
+            ''
+          )}
         </span>
       );
     }
     return index;
   };
-
   return (
     <Collapse
       bordered={false}
       expandIconPosition="right"
       expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
-      className={styles.dropdownList}
+      className={`${styles.dropdownList} ${customClass}`}
       onChange={setActiveKey}
       activeKey={activeKey}>
       {data.map((item, index) => (
         <Collapse.Panel
           header={renderHeader(item, index)}
           key={index}
-          collapsible={isEmpty(item.options) ? 'disabled' : undefined}
+          collapsible={isEmpty(item.options) || noCollapse ? 'disabled' : undefined}
           className="site-collapse-custom-panel">
           <CustomCheckbox
             options={item.options}
@@ -114,5 +124,4 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
     </Collapse>
   );
 };
-
 export default DropdownCheckboxList;

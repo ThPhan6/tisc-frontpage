@@ -1,22 +1,34 @@
-export interface WebsiteUrlItem {
-  country_id: string;
-  url: string;
-}
+import { WebsiteUrlItem } from '@/features/office-profile/types';
 
 export interface BrandProfile {
   created_at: string;
   id: string;
   is_deleted: boolean;
-  location_ids: any;
+  location_ids: string;
   logo: string;
   mission_n_vision: string;
   name: string;
-  official_websites: WebsiteUrlItem[] | null;
-  parent_company: string | null;
-  slogan: string | null;
+  official_websites: WebsiteUrlItem[];
+  parent_company: string;
+  slogan: string;
   status: number;
-  team_profile_ids: any;
-  updated_at: string | null;
+  team_profile_ids: string[];
+  updated_at: string;
+}
+
+export interface DesignFirmProfile {
+  created_at: string;
+  id: string;
+  name: string;
+  parent_company: string;
+  logo: string;
+  slogan: string;
+  profile_n_philosophy: string;
+  official_website: string;
+  updated_at: string;
+  capabilities: string[];
+  team_profile_ids: [];
+  status: number;
 }
 
 export interface UserDetail {
@@ -24,7 +36,9 @@ export interface UserDetail {
   avatar: string;
   backup_email: string;
   brand?: BrandProfile;
+  design?: DesignFirmProfile;
   id: string;
+  relation_id: string;
   role_id: string;
   permissions: any;
   firstname: string;

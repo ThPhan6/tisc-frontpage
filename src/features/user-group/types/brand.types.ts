@@ -1,3 +1,7 @@
+import { MemberAssignedForm } from '@/components/AssignTeam/type';
+import { LocationDetail } from '@/features/locations/type';
+import { ContactDetail } from '@/pages/Designer/CustomResource/type';
+
 export interface TISCUserGroupBrandForm {
   name: string;
   first_name: string;
@@ -5,9 +9,18 @@ export interface TISCUserGroupBrandForm {
   email: string;
 }
 
+export interface BrandMemberAssigned extends MemberAssignedForm {
+  is_assigned: boolean;
+}
+
+export interface BrandAssignTeamForm {
+  name: string;
+  users: BrandMemberAssigned[];
+}
+
 export interface BrandListItem {
   id: string;
-  assign_team: any[];
+  assign_team: BrandMemberAssigned[];
   cards: number;
   categories: number;
   collections: number;
@@ -38,6 +51,8 @@ export interface BrandDetail {
   slogan: string | null;
   status: number;
   team_profile_ids: any;
+  location?: LocationDetail;
+  contacts?: ContactDetail[];
 }
 
 export interface BrandAlphabet {
@@ -58,17 +73,4 @@ export interface BrandCardTeam {
   firstname: string;
   lastname: string;
   avatar: any;
-}
-
-export interface MemberAssignTeam {
-  id: string;
-  avatar: string;
-  first_name: string;
-  last_name: string;
-  is_assigned: boolean;
-}
-
-export interface AssignTeamForm {
-  name: string;
-  users: MemberAssignTeam[];
 }

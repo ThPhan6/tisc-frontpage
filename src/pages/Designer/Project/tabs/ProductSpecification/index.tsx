@@ -1,6 +1,5 @@
 import { FC, useState } from 'react';
 
-import { message } from 'antd';
 import { useParams } from 'umi';
 
 import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
@@ -62,27 +61,27 @@ const ProductSpecification: FC = () => {
           size="small"
           variant="secondary"
           buttonClass={styles.button}
-          onClick={() => message.info('cooming soon!')}
+          onClick={() => setViewBy('pdf')}
           active={viewBy === 'pdf'}>
           <PrintIcon />
           PDF
         </CustomButton>
       </ProjectTabContentHeader>
 
-      <CustomTabPane active={viewBy === 'brand'} lazyLoad>
+      <CustomTabPane active={viewBy === 'brand'} lazyLoad forceReload>
         <SpecificationByBrand projectId={params.id} />
       </CustomTabPane>
 
-      <CustomTabPane active={viewBy === 'material'} lazyLoad>
+      <CustomTabPane active={viewBy === 'material'} lazyLoad forceReload>
         <SpecificationByMaterial />
       </CustomTabPane>
 
-      <CustomTabPane active={viewBy === 'space'} lazyLoad>
+      <CustomTabPane active={viewBy === 'space'} lazyLoad forceReload>
         <SpecificationBySpace projectId={params.id} />
       </CustomTabPane>
 
       <CustomTabPane active={viewBy === 'pdf'}>
-        <ProductSpecifyToPDF />
+        <ProductSpecifyToPDF projectId={params.id} />
       </CustomTabPane>
     </div>
   );

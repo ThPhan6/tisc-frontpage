@@ -1,0 +1,67 @@
+.fontBold {
+  :global(.ant-collapse-item-active .ant-collapse-header-text) {
+    p,
+    span {
+      font-weight: 500;
+      &[class*='Cormorant'] {
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+.fontNormal {
+  :global(.ant-collapse-item-active .ant-collapse-header-text) {
+    p,
+    span {
+      font-weight: 300;
+      &[class*='Cormorant'] {
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+.customCollapse {
+  background-color: #fff;
+
+  &.noBorder {
+    border: none;
+
+    :global(.ant-collapse-item-active .ant-collapse-header) {
+      box-shadow: none;
+    }
+  }
+
+  :global(.ant-collapse-content) {
+    border-top: 0 !important;
+    border-radius: 0 !important;
+  }
+  &.activeBoxShadow {
+    :global(.ant-collapse-item-active) {
+      box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  .customHeaderCollapse {
+    border-bottom: 0 !important;
+    border-radius: 0 !important;
+
+    :global(.ant-collapse-header) {
+      display: flex !important;
+      align-items: center !important;
+      // justify-content: center;
+      height: 40px;
+      padding: 0 48px 0 0 !important;
+      background: #fff;
+      border-radius: 0 !important;
+      box-shadow: @border-bottom-light;
+    }
+  }
+
+  &.arrowAlignRight {
+    :global(.ant-collapse-item > .ant-collapse-header .ant-collapse-arrow) {
+      right: 0;
+    }
+  }
+}

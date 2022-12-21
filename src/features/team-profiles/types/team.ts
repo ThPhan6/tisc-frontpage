@@ -63,7 +63,8 @@ export interface TeamProfileBrandAssignMember {
   role_id: string;
 }
 
-export interface BrandTeam {
+export interface TeamProfileMemberProps {
+  id: string;
   logo: string;
   firstname: string;
   lastname: string;
@@ -76,12 +77,13 @@ export interface BrandTeam {
   mobile: string | null;
   access_level: string;
   status: number;
+  phone_code: string;
 }
 
 export interface TeamProfileGroupCountry {
   country_name: string;
   count: number;
-  users: BrandTeam[];
+  users: TeamProfileMemberProps[];
 }
 
 export type typeInput = 'firstname' | 'lastname' | 'position' | 'email';
@@ -91,23 +93,3 @@ export type typePhoneInput = 'phone' | 'mobile';
 export type typeRadio = 'gender' | 'location' | 'department' | 'access_level';
 
 export type typeOpenModal = '' | 'location' | 'department' | 'access_level';
-
-export interface TeamsDesignFirm {
-  country_name: string;
-  count: 0;
-  users: {
-    logo: string;
-    firstname: string;
-    lastname: string;
-    gender: true;
-    work_location: string;
-    department: string;
-    position: string;
-    email: string;
-    phone: string;
-    mobile: string;
-    access_level: string;
-    status: number;
-    phone_code: string;
-  }[];
-}

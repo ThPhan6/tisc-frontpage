@@ -1,0 +1,82 @@
+.paddingLeftName {
+  :global(.ant-modal-body .ant-space-item) {
+    padding-left: 0;
+  }
+}
+
+.modal {
+  :global(.ant-input) {
+    color: @primary-color-dark;
+    font-size: 12px;
+  }
+
+  :global(.ant-space-item) {
+    padding-left: 0;
+
+    :global(.item-option-uncheck),
+    :global(.item-option-checked) {
+      flex: 1;
+    }
+  }
+
+  .paddingLeftNone {
+    padding-left: 0;
+  }
+
+  .boxShadowBottom {
+    box-shadow: @border-bottom-light;
+
+    :global(.ant-input) {
+      color: @primary-color-dark;
+    }
+  }
+
+  .inactiveMenu {
+    :global(.ant-dropdown-trigger) {
+      cursor: no-drop;
+      pointer-events: none;
+      > path {
+        fill: @mono-color-medium;
+      }
+    }
+  }
+
+  .labelContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+
+    > svg {
+      margin: 0 24px;
+
+      path {
+        fill: @mono-color;
+      }
+    }
+
+    .actionBtn {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      height: 100%;
+
+      .btnSize:not(:last-child) {
+        margin-right: 8px;
+      }
+    }
+  }
+}
+
+.marginSpace {
+  margin: 8px 24px 0 24px;
+}
+.actionMenuOverLay {
+  width: 160px;
+
+  :global(.tisc-dropdown-item) {
+    div {
+      min-height: 36px;
+    }
+  }
+}

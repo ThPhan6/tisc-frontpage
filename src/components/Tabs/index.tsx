@@ -1,4 +1,4 @@
-import { FC, HTMLAttributes, memo } from 'react';
+import { FC, HTMLAttributes, memo, useEffect, useState } from 'react';
 
 import TabPane from '@ant-design/pro-card/lib/components/TabPane';
 import { Tabs } from 'antd';
@@ -18,12 +18,9 @@ export const CustomTabs: FC<CustomTabsProps> = ({
 }) => {
   return (
     <div
-      className={`
-        ${style[`tabs-${tabPosition}`]}
-        ${style['tab-list']}
-        ${style[`tabs-${tabDisplay}`]}
-        ${customClass}
-      `}>
+      className={`${style[`tabs-${tabPosition}`]} ${style['tab-list']} ${
+        style[`tabs-${tabDisplay}`]
+      } ${customClass}`}>
       <Tabs {...props} tabPosition={tabPosition}>
         {listTab.map((tab) => (
           <TabPane
@@ -50,10 +47,23 @@ export const CustomTabs: FC<CustomTabsProps> = ({
 interface TabPaneProps extends HTMLAttributes<HTMLDivElement> {
   active: boolean;
   lazyLoad?: boolean;
+  disable?: boolean;
+  forceReload?: boolean;
 }
-export const CustomTabPane: FC<TabPaneProps> = memo(({ active, lazyLoad, ...props }) => {
-  if (lazyLoad && active === false) {
-    return null;
-  }
-  return <div {...props} style={{ display: !active ? 'none' : undefined }} />;
-});
+export const CustomTabPane: FC<TabPaneProps> = memo(
+  ({ active, lazyLoad, disable, forceReload, ...props }) => {
+    const [loaded, setLoaded] = useState(false);
+
+    useEffect(() => {
+      if (lazyLoad && active && loaded === false) {
+        setLoaded(true);
+      }
+    }, [loaded, lazyLoad, active]);
+
+    if (disable || (lazyLoad && active === false && (forceReload || loaded === false))) {
+      return null;
+    }
+
+    return <div {...props} style={{ display: !active ? 'none' : undefined }} />;
+  },
+);

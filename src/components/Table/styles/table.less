@@ -9,6 +9,9 @@
       box-shadow: none !important;
     }
   }
+  :global(.ant-table > table) {
+    width: 100% !important;
+  }
   :global(.ant-table-ping-right) {
     :global(.ant-table-container) {
       &::after {
@@ -196,6 +199,9 @@
   :global(.ant-empty-normal) {
     margin: 8px 0;
   }
+  :global(.ant-table-ping-left:not(.ant-table-has-fix-left) .ant-table-container::before) {
+    box-shadow: none;
+  }
 }
 
 .customPaginator {
@@ -261,15 +267,21 @@ tr[class^='ant-table-expanded-row'] tbody > tr > td {
   white-space: nowrap;
 }
 
-.ant-table-tbody > tr > td {
-  transition: all 0.3s;
-}
-
 :global(.ant-table-cell.disabled) {
+  @color: @mono-color-light;
+
   cursor: not-allowed;
   pointer-events: none;
-  p,
+
+  p {
+    color: @color;
+  }
+
   svg {
-    color: @mono-color-light;
+    color: @color;
+
+    path {
+      fill: @color;
+    }
   }
 }

@@ -1,3 +1,5 @@
+import { ContactDetail } from '../user-group/types';
+
 export interface Country {
   id: string;
   name: string;
@@ -23,6 +25,7 @@ export interface LocationDetail {
     name: string;
   }[];
   functional_type: string;
+  functional_type_ids: string[];
   country_id: string;
   state_id: string;
   city_id: string;
@@ -35,6 +38,7 @@ export interface LocationDetail {
   phone_code: string;
   postal_code: string;
   address: string;
+  contacts?: ContactDetail[];
 }
 
 export interface LocationGroupedByCountry {
@@ -46,7 +50,7 @@ export interface LocationGroupedByCountry {
 export interface LocationForm {
   business_name: string;
   business_number: string;
-  functional_type_ids: string[];
+  functional_type_ids: string[] | string;
   country_id: string;
   state_id: string;
   city_id: string;

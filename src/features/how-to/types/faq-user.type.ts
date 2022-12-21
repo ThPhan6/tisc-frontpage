@@ -1,5 +1,5 @@
 export interface CollapsingProps {
-  activeKey?: string;
+  activeKey?: string | number;
   handleActiveCollapse: (index: number) => void;
 }
 

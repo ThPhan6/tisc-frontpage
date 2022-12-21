@@ -17,7 +17,6 @@ export default {
   'menu.adminstration.messages.email': 'Email Autoresponders',
   'menu.adminstration.messages.quotation': 'Inspirational Quotes',
   'menu.adminstration.revenue.service': 'Services',
-  'menu.adminstration.revenue.subscription': 'Subscription',
 
   'menu.product': 'PRODUCTS',
   'menu.product.category': 'Categories',
@@ -35,12 +34,12 @@ export default {
   'menu.project_tracking': 'PROJECT TRACKING',
   'menu.adminstration.brand.distributor': 'Distributors',
   'menu.adminstration.brand.market_availability': 'Market Availability',
-  'menu.adminstration.brand.subscription': 'Subscription',
   'menu.adminstration.brand.profile': 'Brand Profile',
+  'menu.adminstration.brand.billed_services': 'Billed Services',
 
   'menu.favourite': 'MY FAVOURITE',
   'menu.product.brand.product': 'Brand Products',
-  'menu.product.custom.library': 'Custom Library',
+  'menu.product.library.resources': 'Library & Resources',
   'menu.adminstration.office.profile': 'Office Profile',
   'menu.adminstration.material/product.code': 'Material/Product Code',
 };

@@ -10,36 +10,47 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-ico
 
 import {
   createProductCard,
-  createProductCatelogue,
-  createProductDownload,
-  createProductTip,
   getProductById,
-  getProductDownloadByProductID,
-  getProductTipByProductID,
   getRelatedCollectionProducts,
   updateProductCard,
 } from '@/features/product/services';
 import { getBrandById } from '@/features/user-group/services';
-import { useCheckPermission } from '@/helper/hook';
+import { useCheckPermission, useQuery } from '@/helper/hook';
 import { isValidURL } from '@/helper/utils';
+import { pick } from 'lodash';
 
 import { ProductFormData, ProductKeyword } from '../types';
-import { ProductInfoTab } from './ProductAttributeComponent/types';
+import { ProductInfoTab } from './ProductAttributes/types';
+import { ProductDimensionWeight } from '@/features/dimension-weight/types';
 import { resetProductDetailState, setBrand } from '@/features/product/reducers';
+import { ModalOpen } from '@/pages/LandingPage/types';
 import { useAppSelector } from '@/reducers';
 
+import { PublicHeader } from '@/components/PublicHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
+import { AboutPoliciesContactModal } from '@/pages/LandingPage/AboutPolicesContactModal';
+import { LandingPageFooter } from '@/pages/LandingPage/footer';
 
-import { ProductAttributeComponent } from './ProductAttributeComponent';
+import { ProductAttributeComponent } from './ProductAttributes';
 import { ProductBasicInfo } from './ProductBasicInfo';
 import { ProductDetailFooter } from './ProductDetailFooter';
 import ProductDetailHeader from './ProductDetailHeader';
 import ProductImagePreview from './ProductImagePreview';
 import styles from './detail.less';
+import Cookies from 'js-cookie';
 
 const ProductDetailContainer: React.FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const signature = useQuery().get('signature') || '';
+  // set signature  to cookies
+  Cookies.set('signature', signature);
+  const isPublicPage = signature ? true : false;
+
+  const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact'];
+  const [openModal, setOpenModal] = useState<ModalOpen>('');
+
   const params = useParams<{ id: string; brandId: string }>();
   const productId = params?.id || '';
   const brandId = params?.brandId || '';
@@ -47,9 +58,6 @@ const ProductDetailContainer: React.FC = () => {
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
   const details = useAppSelector((state) => state.product.details);
-  const tip = useAppSelector((state) => state.product.tip);
-  const download = useAppSelector((state) => state.product.download);
-  const catelogue = useAppSelector((state) => state.product.catelogue);
 
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('general');
   const [title, setTitle] = useState<string>('');
@@ -77,38 +85,21 @@ const ProductDetailContainer: React.FC = () => {
       setTitle(details?.name);
     }
     if (details.id) {
-      /// load product detail downloads
-      getProductDownloadByProductID(details.id);
-      /// load product detail tips
-      getProductTipByProductID(details.id);
       /// load product related
       getRelatedCollectionProducts(details.id);
     }
   }, [details.id, details.brand]);
 
-  const updateBottomBasicInfo = (id?: string) => {
-    if (id) {
-      createProductTip({
-        product_id: id,
-        contents: tip.contents,
-      });
-      createProductDownload({
-        product_id: id,
-        contents: download.contents,
-      });
-      createProductCatelogue({
-        product_id: id,
-        contents: catelogue.contents,
-      });
-    }
+  const handleCloseModal = () => {
+    setOpenModal('');
   };
 
   const onSave = () => {
     // check urls is valid
-    const haveInvaliDownloadURL = download.contents.some(
+    const haveInvaliDownloadURL = details.downloads.some(
       (content) => isValidURL(content.url) === false,
     );
-    const haveInvaliCatelogueURL = catelogue.contents.some(
+    const haveInvaliCatelogueURL = details.catelogue_downloads.some(
       (content) => isValidURL(content.url) === false,
     );
     if (haveInvaliDownloadURL || haveInvaliCatelogueURL) {
@@ -124,6 +115,12 @@ const ProductDetailContainer: React.FC = () => {
       description: details.description.trim(),
       general_attribute_groups: details.general_attribute_groups,
       feature_attribute_groups: details.feature_attribute_groups,
+      dimension_and_weight: {
+        with_diameter: details.dimension_and_weight.with_diameter,
+        attributes: details.dimension_and_weight.attributes
+          .filter((el) => (el.conversion_value_1 ? true : false))
+          .map((el) => pick(el, 'id', 'conversion_value_1', 'conversion_value_2', 'with_diameter')),
+      } as ProductDimensionWeight,
       specification_attribute_groups: details.specification_attribute_groups,
       keywords: details.keywords.map((keyword) => keyword.trim()) as ProductKeyword,
       images: details.images.map((image) => {
@@ -132,19 +129,18 @@ const ProductDetailContainer: React.FC = () => {
         }
         return image;
       }),
+      tips: details.tips,
+      downloads: details.downloads,
+      catelogue_downloads: details.catelogue_downloads,
     };
 
     if (productId) {
-      updateProductCard(productId, data).then((productDetail) =>
-        updateBottomBasicInfo(productDetail?.id),
-      );
+      updateProductCard(productId, data);
       return;
     }
 
     createProductCard(data).then((productDetail) => {
       if (productDetail) {
-        updateBottomBasicInfo(productDetail.id);
-
         /// push to product update, 100% have product detail id
         history.replace(PATH.productConfigurationUpdate.replace(':id', productDetail.id ?? ''));
       }
@@ -155,36 +151,82 @@ const ProductDetailContainer: React.FC = () => {
   //   return null;
   // }
 
+  const renderHeader = () => {
+    if (isTiscAdmin) {
+      let categorySelected: string = details.categories
+        .slice(0, 3)
+        .map((category) => category.name)
+        .join(', ');
+
+      if (details.categories.length > 3) {
+        categorySelected += ', ...';
+      }
+
+      return (
+        <ProductDetailHeader
+          title={'CATEGORY'}
+          label={categorySelected || 'select'}
+          onSave={onSave}
+          onCancel={history.goBack}
+          customClass={`${styles.marginBottomSpace} ${categorySelected ? styles.monoColor : ''}`}
+        />
+      );
+    }
+
+    if (isPublicPage) {
+      return <PublicHeader />;
+    }
+
+    return (
+      <TableHeader
+        title={title}
+        customClass={styles.marginBottomSpace}
+        rightAction={<CloseIcon className="closeIcon" onClick={history.goBack} />}
+      />
+    );
+  };
+
   return (
-    <Row gutter={8}>
-      <Col span={24}>
-        {isTiscAdmin ? (
-          <ProductDetailHeader title={'CATEGORY'} onSave={onSave} onCancel={history.goBack} />
-        ) : (
-          <TableHeader
-            title={title}
-            rightAction={<CloseIcon className="closeIcon" onClick={history.goBack} />}
+    <Row className={styles.container}>
+      <div className={styles.backgroundLight}>
+        <Col span={24}>{renderHeader()}</Col>
+
+        <Col span={24}>
+          <Row className={isPublicPage ? styles.marginRounded : ''}>
+            <Col span={12}>
+              <ProductImagePreview />
+            </Col>
+
+            <Col span={12} className={styles.productContent}>
+              <Row style={{ flexDirection: 'column', height: '100%' }}>
+                <Col>
+                  <ProductBasicInfo />
+                </Col>
+
+                <Col style={{ marginBottom: activeKey !== 'vendor' ? 24 : 0 }}>
+                  <ProductAttributeComponent activeKey={activeKey} setActiveKey={setActiveKey} />
+                </Col>
+
+                <Col style={{ marginTop: 'auto' }}>
+                  <ProductDetailFooter visible={activeKey !== 'vendor'} />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </Col>
+      </div>
+
+      {isPublicPage ? (
+        <Col span={24} className={styles.footerContent}>
+          <LandingPageFooter
+            setOpenModal={setOpenModal}
+            listMenuFooter={listMenuFooter}
+            isPublicPage
           />
-        )}
-      </Col>
 
-      <ProductImagePreview />
-
-      <Col span={12} className={styles.productContent}>
-        <Row style={{ flexDirection: 'column', height: '100%' }}>
-          <Col>
-            <ProductBasicInfo />
-          </Col>
-
-          <Col style={{ marginBottom: activeKey !== 'vendor' ? 24 : 0 }}>
-            <ProductAttributeComponent activeKey={activeKey} setActiveKey={setActiveKey} />
-          </Col>
-
-          <Col style={{ marginTop: 'auto' }}>
-            <ProductDetailFooter visible={activeKey !== 'vendor'} />
-          </Col>
-        </Row>
-      </Col>
+          <AboutPoliciesContactModal visible={openModal} onClose={handleCloseModal} />
+        </Col>
+      ) : null}
     </Row>
   );
 };

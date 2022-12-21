@@ -17,9 +17,14 @@ import styles from './AssignProductModal.less';
 
 interface AssignProductModalProps extends Omit<PopoverProps, 'title'> {
   productId: string;
+  isCustomProduct: boolean;
 }
 
-const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }) => {
+const AssignProductModal: FC<AssignProductModalProps> = ({
+  productId,
+  isCustomProduct,
+  ...props
+}) => {
   const projects = useAppSelector((state) => state.project.list);
 
   const [selectedProject, setSelectedProject] = useState<RadioValue>();
@@ -35,11 +40,15 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
         <BodyText
           fontFamily="Roboto"
           level={5}
-          className="text-overflow"
+          customClass="text-overflow"
           style={{ marginRight: 16, width: 60 }}>
           {el.code}
         </BodyText>
-        <BodyText fontFamily="Roboto" level={5}>
+        <BodyText
+          fontFamily="Roboto"
+          level={5}
+          customClass="text-overflow"
+          style={{ maxWidth: 430 }}>
           {el.name}
         </BodyText>
       </span>
@@ -65,10 +74,11 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
     }
 
     assignProductToProject({
-      is_entire: isEntire,
+      entire_allocation: isEntire,
       product_id: productId,
       project_id: String(selectedProject?.value),
-      project_zone_ids: selectedRoomIds,
+      allocation: selectedRoomIds,
+      custom_product: isCustomProduct,
     }).then((success) => {
       if (success) {
         props.setVisible(false);
@@ -86,6 +96,7 @@ const AssignProductModal: FC<AssignProductModalProps> = ({ productId, ...props }
           placeholder={selectedProject ? selectedProject.label : 'select from My Workspace'}
           Header={selectedProject?.label}
           containerClass={styles.customRadioList}
+          noDataMessage={'No project yet'}
         />
       </FormGroup>
 

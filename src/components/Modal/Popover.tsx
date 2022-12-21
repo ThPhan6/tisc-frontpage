@@ -8,6 +8,8 @@ import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success
 
 import { isEmpty } from 'lodash';
 
+import { CheckboxValue } from '../CustomCheckbox/types';
+
 import CustomButton from '@/components/Button';
 import CheckboxList from '@/components/CustomCheckbox/CheckboxList';
 import type { CheckboxOption } from '@/components/CustomCheckbox/CheckboxList';
@@ -20,6 +22,7 @@ import type { RadioListOption } from '@/components/CustomRadio/RadioList';
 import { BodyText, MainTitle } from '@/components/Typography';
 import { DropdownCategoryList } from '@/features/categories/components/CategoryDropdown';
 
+import { CustomCheckbox } from '../CustomCheckbox';
 import styles from './styles/Popover.less';
 
 export interface PopoverProps {
@@ -32,6 +35,9 @@ export interface PopoverProps {
 
   /// group radio list
   groupRadioList?: RadioListOption[];
+
+  /// group checkbox list
+  groupCheckboxList?: CheckboxValue[];
 
   /// dropdown checkbox list
   dropdownCheckboxList?: DropdownCheckboxItem[];
@@ -56,11 +62,16 @@ export interface PopoverProps {
   // combinable checkbox value ?
   combinableCheckbox?: boolean;
 
-  onFormSubmit?: () => void;
+  onFormSubmit?: (v?: any) => void;
   submitButtonStatus?: boolean;
+  disabledSubmit?: boolean;
 
   // clear select on close
   clearOnClose?: boolean;
+
+  hasOrtherInput?: boolean;
+
+  forceUpdateCurrentValue?: boolean;
 }
 
 const Popover: FC<PopoverProps> = ({
@@ -72,6 +83,7 @@ const Popover: FC<PopoverProps> = ({
   dropdownCheckboxList,
   dropdownCheckboxTitle,
   groupRadioList,
+  groupCheckboxList,
   checkboxList,
   categoryDropdown,
   chosenValue,
@@ -83,12 +95,17 @@ const Popover: FC<PopoverProps> = ({
   children,
   onFormSubmit,
   submitButtonStatus,
+  disabledSubmit,
   clearOnClose,
+  hasOrtherInput = true,
+  forceUpdateCurrentValue = true,
 }) => {
   const [currentValue, setCurrentValue] = useState<any>(chosenValue);
 
   useEffect(() => {
-    setCurrentValue(chosenValue);
+    if (forceUpdateCurrentValue) {
+      setCurrentValue(chosenValue);
+    }
   }, [chosenValue]);
 
   const renderEmptyData = () => {
@@ -121,12 +138,7 @@ const Popover: FC<PopoverProps> = ({
         return renderEmptyData();
       }
       return (
-        <GroupRadioList
-          selected={currentValue}
-          chosenItem={chosenValue}
-          data={groupRadioList}
-          onChange={setCurrentValue}
-        />
+        <GroupRadioList selected={currentValue} data={groupRadioList} onChange={setCurrentValue} />
       );
     }
     /// drodown checkbox list
@@ -145,6 +157,20 @@ const Popover: FC<PopoverProps> = ({
         />
       );
     }
+
+    /// group checkbox list
+    if (groupCheckboxList) {
+      return (
+        <CustomCheckbox
+          options={groupCheckboxList}
+          isCheckboxList
+          otherInput={hasOrtherInput}
+          selected={currentValue}
+          onChange={setCurrentValue}
+        />
+      );
+    }
+
     if (checkboxList) {
       if (isEmpty(checkboxList)) {
         return renderEmptyData();
@@ -190,7 +216,8 @@ const Popover: FC<PopoverProps> = ({
 
   const handleDone = () => {
     if (onFormSubmit) {
-      return onFormSubmit();
+      onFormSubmit(currentValue);
+      return;
     }
 
     // onchange selected Value
@@ -216,6 +243,7 @@ const Popover: FC<PopoverProps> = ({
         variant="primary"
         properties="rounded"
         buttonClass="done-btn"
+        disabled={disabledSubmit}
         onClick={handleDone}>
         Done
       </CustomButton>

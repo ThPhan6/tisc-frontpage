@@ -7,6 +7,8 @@ export type RadioValue = {
   customClass?: string;
 };
 
+export type CustomRadioValue = RadioValue & { labelText: string };
+
 export interface CustomRadioProps {
   direction?: 'horizontal' | 'vertical';
   options: RadioValue[];
@@ -15,6 +17,7 @@ export interface CustomRadioProps {
   selected?: RadioValue;
   isRadioList?: boolean;
   otherInput?: boolean;
+  clearOtherInput?: boolean;
   onChange?: (value: RadioValue) => void;
   inputPlaceholder?: string;
   containerClass?: string;
@@ -22,4 +25,6 @@ export interface CustomRadioProps {
   noPaddingLeft?: boolean;
   otherStickyBottom?: boolean;
   stickyTopItem?: boolean;
+  optionStyle?: CSSProperties;
+  disabled?: boolean;
 }

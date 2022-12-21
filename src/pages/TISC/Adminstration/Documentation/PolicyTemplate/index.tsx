@@ -16,7 +16,7 @@ import { getPolicyTemplates } from './api';
 import moment from 'moment';
 
 const PolicyTemplatePage: React.FC = () => {
-  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
+  useAutoExpandNestedTableColumn(0, [2]);
   const tableRef = useRef<any>();
 
   const mainColumns: TableColumnItem<Documentation>[] = [

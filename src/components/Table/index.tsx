@@ -2,10 +2,15 @@ import { ReactNode, forwardRef, useEffect, useImperativeHandle, useState } from 
 
 import { Table } from 'antd';
 import type { TablePaginationConfig } from 'antd/lib/table';
-import type { ExpandableConfig, FilterValue, SorterResult } from 'antd/lib/table/interface';
+import type {
+  ExpandableConfig,
+  FilterValue,
+  SortOrder,
+  SorterResult,
+} from 'antd/lib/table/interface';
 
 import { useCustomTable } from './hooks';
-import { forEach, isArray, isEmpty } from 'lodash';
+import { isArray, isEmpty, isNumber, reverse, uniqBy } from 'lodash';
 
 import type {
   DataTableResponse,
@@ -85,6 +90,11 @@ export const GetExpandableTableConfig = (props: ExpandableTableConfig): Expandab
   };
 };
 
+type GetComponentProps<DataType> = (
+  data: DataType,
+  index?: number,
+) => React.HTMLAttributes<any> | React.TdHTMLAttributes<any>;
+
 export interface CustomTableProps {
   columns: TableColumnItem<any>[];
   expandable?: ExpandableConfig<any>;
@@ -102,11 +112,17 @@ export interface CustomTableProps {
   extraParams?: {
     [key: string]: any;
   };
-  customClass?: string;
+  headerClass?: string;
+  tableClass?: string;
+  footerClass?: string;
   rowKey?: string;
   autoLoad?: boolean;
   onFilterLoad?: boolean;
+  onRow?: GetComponentProps<any>;
 }
+
+const converseOrder = (order: SortOrder | undefined) =>
+  order ? (order === 'descend' ? 'DESC' : 'ASC') : undefined;
 
 const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
   const {
@@ -117,7 +133,10 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     multiSort,
     hasPagination,
     extraParams,
-    customClass,
+    headerClass = '',
+    tableClass = '',
+    footerClass = '',
+    onRow,
     rowKey = 'id',
     autoLoad = true,
     onFilterLoad = true,
@@ -157,35 +176,31 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     if (filter) {
       paginationParams.filter = filter;
     }
-    if (sorter && !isEmpty(sorter)) {
-      // if enable sorter
-      let sortName: any = '';
-      let sortOrder: any = '';
-      ///
-      if (!isArray(sorter)) {
-        sortName = sorter.field;
-        sortOrder = sorter.order === 'descend' ? 'DESC' : 'ASC';
-      }
-      ///
-      if (multiSort) {
-        // if enable multiple sorter
-        if (!isArray(sorter)) {
-          paginationParams[multiSort[sortName]] = sortOrder;
-        } else {
-          forEach(sorter, (item: any) => {
-            const multiSortName = multiSort[item['field']];
-            if (multiSortName) {
-              paginationParams[multiSortName] = item['order'] === 'descend' ? 'DESC' : 'ASC';
-            }
-          });
-        }
-        return paginationParams;
-      }
-      /// normal case
-      paginationParams.sort = sortName;
-      paginationParams.order = sortOrder;
+
+    if (isEmpty(sorter)) {
       return paginationParams;
     }
+
+    // Multiple sort
+    if (isArray(sorter)) {
+      const reverseSorter = uniqBy(reverse(sorter), 'column.sorter.multiple');
+
+      reverseSorter.forEach((sort) => {
+        if (sort?.field && multiSort) {
+          paginationParams[multiSort[sort.field.toString()]] = converseOrder(sort?.order);
+        }
+      });
+    } else {
+      // Multiple sort for the first one but it is an object, not array
+      if (isNumber(sorter?.column?.sorter?.multiple) && sorter?.field && multiSort) {
+        paginationParams[multiSort[sorter.field.toString()]] = converseOrder(sorter?.order);
+      } else {
+        // Normal sort
+        paginationParams.sort = sorter?.field?.toString();
+        paginationParams.order = converseOrder(sorter?.order);
+      }
+    }
+
     return paginationParams;
   };
 
@@ -231,22 +246,37 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
     reload() {
       fetchData({ pagination, sorter: currentSorter });
     },
+    reloadWithFilter() {
+      fetchData({
+        pagination: {
+          ...pagination,
+          current: DEFAULT_PAGE_NUMBER,
+          pageSize: DEFAULT_PAGESIZE,
+        },
+        sorter: currentSorter,
+      });
+    },
   }));
 
   return (
     <div className={`${styles.customTable} ${customExpandable ? styles['sub-grid'] : ''}`}>
       {title ? (
-        <TableHeader title={title} rightAction={rightAction} customClass={customClass || ''} />
+        <TableHeader title={title} rightAction={rightAction} customClass={headerClass} />
       ) : null}
 
       <Table
+        className={tableClass}
         columns={columns}
         rowKey={rowKey}
         rowClassName={(record) => {
           if (record[rowKey] === expanded) {
             return 'custom-expanded' as any;
           }
+          if (onRow) {
+            return 'cursor-pointer';
+          }
         }}
+        onRow={onRow}
         dataSource={data}
         pagination={pagination}
         onChange={handleTableChange}
@@ -268,9 +298,10 @@ const CustomTable = forwardRef((props: CustomTableProps, ref: any) => {
           pagination={pagination}
           sorter={currentSorter}
           dataLength={data.length ?? 0}
+          customClass={footerClass}
         />
       ) : !isEmpty(summary) ? (
-        <TableSummary summary={summary} />
+        <TableSummary summary={summary} customClass={footerClass} />
       ) : null}
     </div>
   );

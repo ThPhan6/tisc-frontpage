@@ -5,7 +5,6 @@ import { Tooltip } from 'antd';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 
 import { getProductAssignSpaceByProject } from '@/features/project/services';
-import { confirmDelete } from '@/helper/common';
 import { useBoolean, useNumber } from '@/helper/hook';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -26,18 +25,8 @@ export const getSelectedRoomIds = (selectedRooms: RoomsState) => {
   return selectedRoomIds;
 };
 
-export const useAssignProductToSpaceForm = (
-  productId: string,
-  projectId: string,
-  specifyOptions?: {
-    onChangeEntireProjectCallback: (isEntire: boolean) => void;
-    onChangeSelectedRoomsCallback: (selectedRooms: string[]) => void;
-    isEntire?: boolean;
-    roomId?: string;
-  },
-) => {
+export const useAssignProductToSpaceForm = (productId: string, projectId: string) => {
   const entireProject = useBoolean();
-  const haveConfirmed = useBoolean();
   const [selectedRooms, setSelectedRooms] = useState<RoomsState>({});
   const expandingZone = useNumber(-1);
   const [zones, setZones] = useState<ProjectSpaceListProps[]>([]);
@@ -46,19 +35,6 @@ export const useAssignProductToSpaceForm = (
     if (projectId) {
       getProductAssignSpaceByProject(projectId, productId, (isEntireProject, data) => {
         entireProject.setValue(isEntireProject);
-        specifyOptions?.onChangeEntireProjectCallback(isEntireProject);
-        if (isEntireProject === false && specifyOptions) {
-          const selectedRoomIds: string[] = [];
-          data.forEach((zone) =>
-            zone.areas.forEach((area) =>
-              area.rooms.forEach((room) =>
-                room.is_assigned ? selectedRoomIds.push(room.id || '') : {},
-              ),
-            ),
-          );
-          specifyOptions?.onChangeSelectedRoomsCallback(selectedRoomIds);
-        }
-
         setZones(data);
 
         const curSelectedRooms: { [areaId: string]: CheckboxValue[] } = {};
@@ -79,51 +55,19 @@ export const useAssignProductToSpaceForm = (
 
   const onChangeEntireProject = () => {
     const handleChooseEntireProject = () => {
-      specifyOptions?.onChangeEntireProjectCallback(true);
-      specifyOptions?.onChangeSelectedRoomsCallback([]);
       entireProject.setValue(true);
       setSelectedRooms({}); // clear rooms
-      haveConfirmed.setValue(true);
     };
-    if (specifyOptions?.roomId && haveConfirmed.value === false) {
-      return confirmDelete(handleChooseEntireProject, {
-        title: 'Are you sure to re-allocate?',
-        content:
-          'You are re-allocating product from current room to entire project along with all of your specifying data after submitting.',
-      });
-    }
-
     handleChooseEntireProject();
   };
 
   const onSelectRooms = (areaId: string) => (value: CheckboxValue[]) => {
-    const handleSelectRooms = () => {
-      setSelectedRooms((prevRooms) => {
-        const nextRoomState = { ...prevRooms, [areaId]: value };
-        specifyOptions?.onChangeSelectedRoomsCallback(getSelectedRoomIds(nextRoomState));
-        return nextRoomState;
-      });
-      entireProject.setValue(false); // not entire project anymore
-      specifyOptions?.onChangeEntireProjectCallback(false);
-      haveConfirmed.setValue(true);
-    };
-
-    const nextRooms = { ...selectedRooms, [areaId]: value };
-    const roomIds = getSelectedRoomIds(nextRooms);
-
-    const isSelectedRoomBeRemoved =
-      specifyOptions?.roomId && roomIds.length && roomIds.includes(specifyOptions.roomId) === false;
-
-    if (haveConfirmed.value === false && (specifyOptions?.isEntire || isSelectedRoomBeRemoved)) {
-      return confirmDelete(handleSelectRooms, {
-        title: 'Are you sure to re-allocate?',
-        content: isSelectedRoomBeRemoved
-          ? 'Your are removing this consider by uncheck its room. All of your specifying data will be remove along with this consider after submitting.'
-          : 'You are re-allocating product from entire project to some specific rooms. All of specifying data will be move to new assigned rooms - considers.',
-      });
-    }
-
-    handleSelectRooms();
+    setSelectedRooms((prevRooms) => {
+      const nextRoomState = { ...prevRooms, [areaId]: value };
+      const haveSelectedRoom = Object.values(nextRoomState).some((area) => area.length);
+      entireProject.setValue(haveSelectedRoom ? false : true);
+      return nextRoomState;
+    });
   };
 
   const renderRoomLabel = (key: string, roomId: string, roomName: string) => (
@@ -178,7 +122,7 @@ export const useAssignProductToSpaceForm = (
 
   const renderEntireProjectLabel = (specifyingModal?: boolean) => {
     return (
-      <div className="flex-center" style={{ padding: specifyingModal ? '10px 0' : '9px 0' }}>
+      <div className="flex-start" style={{ padding: specifyingModal ? '10px 0' : '9px 0' }}>
         <BodyText
           fontFamily="Roboto"
           level={specifyingModal ? 6 : 5}
@@ -203,7 +147,7 @@ export const useAssignProductToSpaceForm = (
     noPaddingLeft,
   }) => (
     <>
-      {projectId && (
+      {projectId ? (
         <CustomRadio
           options={[
             {
@@ -217,7 +161,7 @@ export const useAssignProductToSpaceForm = (
           containerStyle={{ boxShadow: 'inset 0 -.7px 0 #000' }}
           noPaddingLeft={noPaddingLeft}
         />
-      )}
+      ) : null}
 
       {projectId && zones.length ? zones.map((el, index) => renderCollapseZone(el, index)) : null}
     </>

@@ -1,12 +1,9 @@
 import { PATH } from '@/constants/path';
 
-export const UserType = {
-  tisc: 1,
-  brand: 2,
-  designer: 3,
-};
+import { UserType } from '@/pages/LandingPage/types';
+
 export const UserHomePagePaths = {
-  [UserType.tisc]: PATH.tiscHomePage,
-  [UserType.brand]: PATH.brandHomePage,
-  [UserType.designer]: PATH.designerHomePage,
+  [UserType.TISC]: PATH.tiscHomePage,
+  [UserType.Brand]: PATH.brandHomePage,
+  [UserType.Designer]: PATH.designerHomePage,
 };

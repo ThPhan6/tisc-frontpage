@@ -1,22 +1,20 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 
 import {
   ProjectSpecifyTabKeys,
   ProjectSpecifyTabValue,
   ProjectSpecifyTabs,
 } from '../../../constants/tab';
-import { ORDER_METHOD } from '@/constants/util';
 import { message } from 'antd';
 
-import { useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
-import { getProductByIdAndReturn } from '@/features/product/services';
-import { getProductSpecifying, updateProductSpecifying } from '@/features/project/services';
-import { useBoolean } from '@/helper/hook';
-import { pick } from 'lodash';
+import { getSpecificationRequest } from '@/features/product/components/ProductAttributes/hooks';
+import { getSelectedRoomIds, useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
+import { updateProductSpecifying } from '@/features/project/services';
 
-import { OnChangeSpecifyingProductFnc, SpecifyingProductRequestBody } from './types';
-import { ProductAttributeFormInput, ProductItem } from '@/features/product/types';
-import { SpecificationAttributeGroup } from '@/features/project/types';
+import { FinishScheduleRequestBody } from './types';
+import { resetProductDetailState } from '@/features/product/reducers';
+import { ProductItem } from '@/features/product/types';
+import store, { useAppSelector } from '@/reducers';
 
 import BrandProductBasicHeader from '@/components/BrandProductBasicHeader';
 import CustomButton from '@/components/Button';
@@ -24,33 +22,12 @@ import { CustomModal } from '@/components/Modal';
 import popoverStyles from '@/components/Modal/styles/Popover.less';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 import { MainTitle } from '@/components/Typography';
+import { resetCustomProductDetail } from '@/pages/Designer/Products/CustomLibrary/slice';
 
 import CodeOrderTab from './CodeOrderTab';
 import SpecificationTab from './SpecificationTab';
 import VendorTab from './VendorTab';
 import styles from './styles/specifying-modal.less';
-
-const DEFAULT_STATE: SpecifyingProductRequestBody = {
-  considered_product_id: '',
-  specification: {
-    is_refer_document: true,
-    specification_attribute_groups: [],
-  },
-  brand_location_id: '',
-  distributor_location_id: '',
-  is_entire: true,
-  project_zone_ids: [],
-  material_code_id: '',
-  suffix_code: '',
-  description: '',
-  quantity: 0,
-  unit_type_id: '',
-  order_method: ORDER_METHOD['directPurchase'],
-  requirement_type_ids: [],
-  instruction_type_ids: [],
-  finish_schedules: [],
-  special_instructions: '',
-};
 
 interface SpecifyingModalProps {
   visible: boolean;
@@ -70,199 +47,135 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
   const [selectedTab, setSelectedTab] = useState<ProjectSpecifyTabValue>(
     ProjectSpecifyTabKeys.specification,
   );
-  const [specifyingState, setSpecifyingState] =
-    useState<SpecifyingProductRequestBody>(DEFAULT_STATE);
-  const [specifyingGroups, setSpecifyingGroups] = useState<ProductAttributeFormInput[]>([]);
-  const dataLoaded = useBoolean();
 
-  const onChangeSpecifyingState: OnChangeSpecifyingProductFnc = (newStateParts) =>
-    setSpecifyingState(
-      (prevState) => ({ ...prevState, ...newStateParts } as SpecifyingProductRequestBody),
-    );
+  const customProduct = product.specifiedDetail?.custom_product ? true : false;
 
-  console.log('specifyingState', specifyingState);
+  const productDetail = useAppSelector((state) => state.product.details);
+  const customProductDetail = useAppSelector((state) => state.customProduct.details);
+  const curProduct = customProduct ? customProductDetail : productDetail;
 
-  const { AssignProductToSpaceForm } = useAssignProductToSpaceForm(product.id, projectId, {
-    onChangeEntireProjectCallback: (is_entire) => onChangeSpecifyingState({ is_entire }),
-    onChangeSelectedRoomsCallback: (selectedRooms) =>
-      onChangeSpecifyingState({ project_zone_ids: selectedRooms }),
-    roomId: product.project_zone_id,
-    isEntire: product.is_entire,
-  });
+  const specifiedDetail = curProduct.specifiedDetail;
 
-  useEffect(() => {
-    if (product.considered_id) {
-      onChangeSpecifyingState({ considered_product_id: product.considered_id });
-      getProductSpecifying(product.considered_id).then((res) => {
-        if (res) {
-          res.specification.specification_attribute_groups =
-            res.specification.specification_attribute_groups.map((el) => ({
-              ...el,
-              isChecked: el.attributes.length > 0,
-            }));
-          onChangeSpecifyingState(
-            pick(res, [
-              'brand_location_id',
-              'considered_product_id',
-              'description',
-              'distributor_location_id',
-              'instruction_type_ids',
-              'is_entire',
-              'material_code_id',
-              'order_method',
-              'quantity',
-              'requirement_type_ids',
-              'special_instructions',
-              'specification',
-              'suffix_code',
-              'unit_type_id',
-              'finish_schedules',
-            ]),
-          );
-        }
-      });
+  const referToDesignDocument: boolean = customProduct
+    ? specifiedDetail?.specification.is_refer_document
+    : curProduct.referToDesignDocument;
+  // console.log('specifiedDetail', specifiedDetail);
+  // console.log('referToDesignDocument', referToDesignDocument);
+
+  const specification_attribute_groups = useAppSelector(
+    (state) => state.product.details.specification_attribute_groups,
+  );
+  const brandLocationId: string = customProduct
+    ? specifiedDetail?.brand_location_id
+    : curProduct.brand_location_id;
+  const distributorLocationId: string = customProduct
+    ? specifiedDetail?.distributor_location_id
+    : curProduct.distributor_location_id;
+
+  const finishSchedulesData = specifiedDetail?.finish_schedules;
+
+  const finishSchedulesRequestData = finishSchedulesData?.map((el) => ({
+    floor: el.floor,
+    base: {
+      ceiling: el.base.ceiling,
+      floor: el.base.floor,
+    },
+    front_wall: el.front_wall,
+    left_wall: el.left_wall,
+    back_wall: el.back_wall,
+    right_wall: el.right_wall,
+    ceiling: el.ceiling,
+    door: {
+      frame: el.door.frame,
+      panel: el.door.panel,
+    },
+    cabinet: {
+      carcass: el.cabinet.carcass,
+      door: el.cabinet.door,
+    },
+  }));
+
+  const { AssignProductToSpaceForm, isEntire, selectedRooms } = useAssignProductToSpaceForm(
+    product.id,
+    projectId,
+  );
+  const selectedRoomIds = getSelectedRoomIds(selectedRooms);
+
+  const resetProductData = () => {
+    if (customProduct) {
+      store.dispatch(resetCustomProductDetail());
+    } else {
+      store.dispatch(resetProductDetailState());
     }
-  }, [product.considered_id]);
-
-  useEffect(() => {
-    getProductByIdAndReturn(product.id).then((res) => {
-      if (res) {
-        const specGroups = res.specification_attribute_groups;
-        setSpecifyingGroups(specGroups);
-        dataLoaded.setValue(true);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!dataLoaded.value) {
-      return;
-    }
-    // Update checked status
-    setSpecifyingGroups((prevState) => {
-      if (prevState.length === 0) {
-        return [];
-      }
-
-      const specGroups = specifyingState.specification.specification_attribute_groups;
-
-      // Initial
-      if (specGroups.length === 0) {
-        specifyingState.specification.specification_attribute_groups = prevState.map((el) => ({
-          id: el.id || '',
-          attributes: [],
-          isChecked: false,
-        }));
-      }
-
-      // Update checked status
-      return prevState.map((group, groupIndex) => ({
-        ...group,
-        isChecked: specGroups[groupIndex]?.attributes.length > 0,
-        attributes: group?.attributes.map((attr, attrIndex) => ({
-          ...attr,
-          basis_options:
-            attr.basis_options?.map((option) => ({
-              ...option,
-              isChecked:
-                option.id === specGroups[groupIndex]?.attributes[attrIndex]?.basis_option_id,
-            })) || [],
-        })),
-      }));
-    });
-  }, [specifyingState.specification.specification_attribute_groups, dataLoaded.value]);
-
-  const onChangeReferToDocument = (isRefer: boolean) =>
-    setSpecifyingState(
-      (prevState) =>
-        ({
-          ...prevState,
-          specification: {
-            ...prevState?.specification,
-            is_refer_document: isRefer,
-          },
-        } as SpecifyingProductRequestBody),
-    );
-
-  const onChangeSpecification = (specification_attribute_groups: SpecificationAttributeGroup[]) =>
-    setSpecifyingState(
-      (prevState) =>
-        ({
-          ...prevState,
-          specification: {
-            ...prevState?.specification,
-            specification_attribute_groups,
-          },
-        } as SpecifyingProductRequestBody),
-    );
+  };
 
   const onSubmit = () => {
-    if (!specifyingState.material_code_id) {
+    if (!specifiedDetail) {
+      return;
+    }
+    if (!specifiedDetail.material_code_id) {
       message.error('Material/Product Code is required');
       return;
     }
-    if (!specifyingState.suffix_code) {
+    if (!specifiedDetail.suffix_code) {
       message.error('Suffix Code is required');
       return;
     }
-    if (!specifyingState.description) {
+    if (!specifiedDetail.description) {
       message.error('Description is required');
       return;
     }
-    // if (!Number(specifyingState.quantity)) {
-    //   message.error('Quantity must be greater than 0');
-    //   return;
-    // }
-
-    let variant = '';
-    if (specifyingState.specification.is_refer_document) {
-      variant = 'Refer to Document';
-    } else {
-      specifyingState.specification.specification_attribute_groups.forEach((group, groupIndex) => {
-        if (!group.isChecked) {
-          return;
-        }
-        group.attributes.forEach((attr) => {
-          const attribute = specifyingGroups[groupIndex]?.attributes?.find(
-            (stateAttr) => stateAttr.id === attr.id,
-          );
-          const basisOption = attribute?.basis_options?.find(
-            (el) => el.id === attr.basis_option_id,
-          );
-          if (basisOption) {
-            variant += `${attribute?.name}: ${basisOption.value_1} ${basisOption.unit_1} - ${basisOption.value_2} ${basisOption.unit_2}; `;
-          }
-        });
-      });
-      variant = variant.slice(0, -2);
+    if (!brandLocationId) {
+      message.error('Brand location is required');
+      return;
     }
-
-    updateProductSpecifying(
-      {
-        ...specifyingState,
-        variant,
-        specification: {
-          ...specifyingState.specification,
-          specification_attribute_groups:
-            specifyingState.specification.specification_attribute_groups.map((el) => ({
-              ...el,
-              attributes: el.isChecked ? el.attributes : [],
-            })),
+    if (!distributorLocationId) {
+      message.error('Distributor location is required');
+      return;
+    }
+    if (product.specifiedDetail?.id) {
+      updateProductSpecifying(
+        {
+          considered_product_id: product.specifiedDetail.id,
+          specification: customProduct
+            ? specifiedDetail.specification
+            : {
+                is_refer_document: referToDesignDocument ?? false,
+                attribute_groups: getSpecificationRequest(specification_attribute_groups),
+              },
+          entire_allocation: isEntire,
+          allocation: selectedRoomIds,
+          brand_location_id: brandLocationId,
+          distributor_location_id: distributorLocationId,
+          description: specifiedDetail.description,
+          instruction_type_ids: specifiedDetail.instruction_type_ids,
+          finish_schedules: finishSchedulesRequestData as FinishScheduleRequestBody[],
+          material_code_id: specifiedDetail.material_code_id,
+          order_method: specifiedDetail.order_method,
+          quantity: specifiedDetail.quantity,
+          requirement_type_ids: specifiedDetail.requirement_type_ids,
+          special_instructions: specifiedDetail.special_instructions,
+          suffix_code: specifiedDetail.suffix_code,
+          unit_type_id: specifiedDetail.unit_type_id,
+          custom_product: customProduct,
         },
-      },
-      () => {
-        reloadTable();
-        setVisible(false);
-        setSpecifyingState(DEFAULT_STATE);
-      },
-    );
+        () => {
+          reloadTable();
+          setVisible(false);
+          resetProductData();
+        },
+      );
+    }
   };
 
   return (
     <CustomModal
       className={`${popoverStyles.customPopover} ${styles.specifyingModal}`}
       visible={visible}
-      onCancel={() => setVisible(false)}
+      onCancel={() => {
+        setVisible(false);
+        resetProductData();
+      }}
       title={
         <MainTitle level={3} customClass="text-uppercase">
           Specifying
@@ -281,10 +194,10 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         </CustomButton>
       }>
       <BrandProductBasicHeader
-        image={product.image}
-        logo={product.brand_logo}
-        text_1={product.brand_name}
-        text_2={product.collection_name}
+        image={product.images[0]}
+        logo={product.brand?.logo}
+        text_1={product.brand?.name}
+        text_2={product.collection?.name}
         text_3={product.description}
       />
 
@@ -300,23 +213,19 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.specification}>
         <SpecificationTab
-          onChangeReferToDocument={onChangeReferToDocument}
-          onChangeSpecification={onChangeSpecification}
-          specifyingGroups={specifyingGroups}
-          specification_attribute_groups={
-            specifyingState.specification?.specification_attribute_groups
-          }
-          is_refer_document={specifyingState?.specification?.is_refer_document || false}
+          productId={product.id}
+          customProduct={customProduct}
+          referToDesignDocument={referToDesignDocument}
         />
       </CustomTabPane>
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.vendor}>
         <VendorTab
           productId={product.id}
-          brandId={product.brand_id ?? ''}
-          onChangeSpecifyingState={onChangeSpecifyingState}
-          brandAddressId={specifyingState.brand_location_id}
-          distributorAddressId={specifyingState.distributor_location_id}
+          brandId={product.brand?.id ?? ''}
+          customProduct={customProduct}
+          brand={product.brand}
+          projectId={projectId}
         />
       </CustomTabPane>
 
@@ -328,19 +237,9 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
 
       <CustomTabPane active={selectedTab === ProjectSpecifyTabKeys.codeAndOrder}>
         <CodeOrderTab
-          codeOrderState={{
-            description: specifyingState.description,
-            instruction_type_ids: specifyingState.instruction_type_ids,
-            material_code_id: specifyingState.material_code_id,
-            order_method: specifyingState.order_method,
-            quantity: specifyingState.quantity,
-            requirement_type_ids: specifyingState.requirement_type_ids,
-            suffix_code: specifyingState.suffix_code,
-            unit_type_id: specifyingState.unit_type_id,
-            special_instructions: specifyingState.special_instructions,
-            finish_schedules: specifyingState.finish_schedules,
-          }}
-          onChangeSpecifyingState={onChangeSpecifyingState}
+          projectProductId={product.specifiedDetail?.id ?? ''}
+          roomIds={selectedRoomIds}
+          customProduct={customProduct}
         />
       </CustomTabPane>
     </CustomModal>

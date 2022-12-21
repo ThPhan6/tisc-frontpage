@@ -1,0 +1,143 @@
+.modal {
+  :global(.ant-modal-content) {
+    height: 752px;
+  }
+  :global(.ant-modal-body) {
+    padding: 16px;
+  }
+}
+
+.description,
+.mainInfo {
+  width: 100%;
+  height: auto;
+
+  td,
+  th,
+  tr {
+    min-height: 24px;
+    padding: 0;
+  }
+}
+
+.description {
+  @fs: 10px;
+
+  margin-bottom: 24px;
+  table-layout: auto;
+
+  .textBold {
+    font-weight: 500;
+    font-size: @fs;
+    text-transform: uppercase;
+  }
+
+  .textThick {
+    font-size: @fs;
+  }
+}
+
+.mainInfo {
+  @fs: 8px;
+
+  table-layout: fixed;
+  user-select: none;
+
+  th:nth-child(3),
+  th:nth-child(4),
+  th:nth-child(5),
+  th:nth-child(6) {
+    > .title {
+      padding-left: 20px;
+    }
+  }
+
+  .backgroundDark {
+    background: @mono-color;
+  }
+
+  .roomInfo,
+  .title {
+    font-weight: 500;
+    font-size: @fs;
+  }
+
+  .roomInfo {
+    white-space: nowrap;
+  }
+
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 28px;
+    color: #fff;
+    line-height: 10px;
+    text-transform: uppercase;
+  }
+
+  .groupRoomInfo {
+    border-bottom: 0.7px solid @mono-color;
+
+    td {
+      height: 24px;
+      margin-bottom: 0.5px;
+    }
+  }
+
+  .groupRoom {
+    td {
+      position: relative;
+      height: 48px;
+      &:nth-last-child(2) {
+        padding-right: 10px;
+      }
+
+      :global(.ant-checkbox-wrapper) {
+        height: 23px;
+      }
+    }
+
+    :global(.ant-checkbox-checked::after) {
+      border: none;
+    }
+
+    :global(.ant-checkbox-inner) {
+      border-color: @mono-color;
+      border-radius: 0;
+    }
+  }
+
+  .borderTop {
+    height: 18px;
+    border-top: 0.7px solid @mono-color-medium;
+  }
+
+  .checkBoxCenter {
+    position: absolute;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    transform: translateX(22px);
+    cursor: default;
+  }
+
+  .rowInfo {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: stretch;
+    justify-content: space-between;
+    margin: 0;
+
+    :global(.ant-checkbox + span) {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      padding: 0;
+    }
+
+    .text {
+      font-size: @fs;
+    }
+  }
+}

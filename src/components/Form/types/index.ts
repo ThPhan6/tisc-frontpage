@@ -13,6 +13,7 @@ export interface FormGroupProps {
   tooltip?: string | JSX.Element;
   label: string | JSX.Element;
   labelColor?: CustomTypography['color'];
+  labelFontSize?: BodyTextProps['level'];
   message?: string;
   messageType?: 'normal' | 'error' | 'warning';
   iconTooltip?: ReactNode;
@@ -64,6 +65,7 @@ export interface CustomTextAreaProps extends TextAreaProps {
   borderBottomColor?: 'mono' | 'mono-medium' | 'light';
   boxShadow?: boolean;
   autoResize?: boolean;
+  customClass?: string;
 }
 
 export interface PhoneInputProps {

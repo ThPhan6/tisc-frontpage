@@ -1,0 +1,55 @@
+.tableHeader {
+  margin-bottom: 8px;
+}
+
+.header {
+  > p {
+    font-weight: 600;
+    font-family: @font-secondary;
+  }
+}
+
+.container {
+  background: #fff;
+
+  .tabs {
+    :global(.ant-tabs-top > .ant-tabs-nav) {
+      margin: 0;
+    }
+  }
+
+  .mainContent {
+    width: 100%;
+    padding: 0 16px 16px 16px;
+    overflow: auto;
+
+    /// design-firm
+    .nameDesignFirm {
+      padding-top: 16px;
+    }
+
+    /// inquiry-message
+    .brandProduct {
+      margin: 8px 0;
+      padding: 0;
+    }
+
+    .messageForm {
+      margin-bottom: 0;
+      :global(.ant-input[disabled]) {
+        color: @mono-color;
+        background: transparent;
+        cursor: default;
+      }
+    }
+  }
+
+  .cancelButton {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 48px;
+    padding-right: 16px;
+    box-shadow: @border-top;
+  }
+}

@@ -4,10 +4,15 @@ export const PATH = {
   resetPassword: '/reset-password',
   createPassword: '/create-password',
   verifyAccount: '/verify',
+  sharedProduct: '/shared-product/:id',
+  sharedCustomProduct: '/shared-custom-product/:id',
+  reScheduleBooking: '/booking/:id/re-schedule',
+  cancelBooking: '/booking/:id/cancel',
   // private path
   profiles: '/profile-settings',
   tiscHomePage: '/tisc/dashboard',
   brandHomePage: '/brand/dashboard',
+  designerHomePage: '/design-firms/dashboard',
 
   //how-to
   howTo: '/howTo',
@@ -31,6 +36,7 @@ export const PATH = {
   // tisc project_tracking
   tiscProject: '/tisc/projects',
   tiscProjectListing: '/tisc/projects/listing',
+  tiscProjectListingDetail: '/tisc/projects/listing/:id',
   tiscProduct: '/tisc/products',
 
   // basic
@@ -95,7 +101,9 @@ export const PATH = {
   tiscDocumentationHowTo: '/tisc/adminstration/documentation/how-to',
   tiscRevenue: '/tisc/adminstration/revenues',
   tiscRevenueService: '/tisc/adminstration/revenues/service',
-  tiscRevenueSubscription: '/tisc/adminstration/revenues/subscription',
+  tiscRevenueServiceCreate: '/tisc/adminstration/revenues/service/create',
+  tiscRevenueServiceUpdate: '/tisc/adminstration/revenues/service/update/:id',
+  tiscRevenueServiceDetail: '/tisc/adminstration/revenues/service/:id',
 
   // tisc - locations
   tiscLocation: '/tisc/adminstration/locations',
@@ -105,8 +113,14 @@ export const PATH = {
   //brand
   brandProduct: '/brand/product',
   updateProductBrand: '/brand/product/:id',
+
+  /// general inquiries
   brandGeneralInquiry: '/brand/general-inquiry',
+  brandGeneralInquiryDetail: '/brand/general-inquiry/:id',
+
+  /// project tracking
   brandProjectTracking: '/brand/project-tracking',
+  brandProjectTrackingDetail: '/brand/project-tracking/:id',
   //adminstration
   brandAdministration: '/brand/adminstration',
   brandAdministrationProfile: '/brand/adminstration/brand-profile',
@@ -125,26 +139,49 @@ export const PATH = {
   brandTeamProfile: '/brand/adminstration/team-profiles',
   brandCreateTeamProfile: '/brand/adminstration/team-profiles/create',
   brandUpdateTeamProfile: '/brand/adminstration/team-profiles/update/:id',
-  // brand subscription
-  brandSubscription: '/brand/adminstration/subscription',
 
-  // design-firms
-  designerHomePage: '/design-firms/dashboard',
+  //brand billed services
+  brandBilledServices: '/brand/adminstration/billed-services',
+  brandBilledServicesView: '/brand/adminstration/billed-services/:id',
+
+  /// design-firms
+  // My Favourite
   designerFavourite: '/design-firms/my-favorites',
+  // Brand Product
   designerProduct: '/design-firms/products',
   designerBrandProduct: '/design-firms/products/brand-products',
   designerBrandProductDetail: '/design-firms/products/brand-products/:id',
-  designerCustomLibrary: '/design-firms/products/custom-library',
+  // Library (Custom PRoduct)
+  designerCustomProduct: '/design-firms/products/library-resources',
+  designerCustomProductCreate: '/design-firms/products/library-resources/create',
+  designerCustomProductUpdate: '/design-firms/products/library-resources/update/:id',
+  designerCustomProductDetail: '/design-firms/products/library-resources/:id',
+  // Resources (Vendor Management)
+  designerCustomResource: '/design-firms/products/library-resources/custom-resources',
+  designerCustomResourceCreate: '/design-firms/products/library-resources/custom-resources/create',
+  designerCustomResourceUpdate:
+    '/design-firms/products/library-resources/custom-resources/update/:id',
+  designerCustomResourceDetail: '/design-firms/products/library-resources/custom-resources/:id',
+  // Project
   designerProject: '/design-firms/projects',
-  designerCreateProject: '/design-firms/projects/create',
   designerUpdateProject: '/design-firms/projects/:id',
   designerProjectCreate: '/design-firms/projects/create',
-  designerProjectUpdate: '/design-firms/projects/update/:id',
+  // Adminstration
   designerAdminstration: '/design-firms/administration',
+  // Office Profile
   designerOfficeProfile: '/design-firms/administration/office-profile',
-  designerOfficeLocation: '/design-firms/administration/locations',
+  // Team Profile
   designerOfficeTeamProfile: '/design-firms/administration/team-profiles',
+  designerOfficeTeamProfileCreate: '/design-firms/administration/team-profiles/create',
+  designerOfficeTeamProfileUpdate: '/design-firms/administration/team-profiles/:id',
+  // Material Product Code
   designerMaterialProductCode: '/design-firms/administration/material-product-code',
+  designerMaterialProductCodeCreate: '/design-firms/administration/material-product-code/create',
+  designerMaterialProductCodeUpdate: '/design-firms/administration/material-product-code/:id',
+  // Location
+  designFirmLocation: '/design-firms/administration/locations',
+  designFirmLocationCreate: '/design-firms/administration/locations/create',
+  designFirmLocationUpdate: '/design-firms/administration/locations/:id',
 };
 
 export const PUBLIC_PATH = [
@@ -152,4 +189,7 @@ export const PUBLIC_PATH = [
   PATH.resetPassword,
   PATH.createPassword,
   PATH.verifyAccount,
+  PATH.sharedProduct,
+  PATH.cancelBooking,
+  PATH.reScheduleBooking,
 ];

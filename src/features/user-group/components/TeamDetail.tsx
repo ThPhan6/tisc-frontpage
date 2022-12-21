@@ -9,8 +9,10 @@ import { isEmpty } from 'lodash';
 import { UserGroupProps } from '../types/common.types';
 import { TeamProfileGroupCountry } from '@/features/team-profiles/types';
 
+import { FormGroup } from '@/components/Form';
+import { PhoneInput } from '@/components/Form/PhoneInput';
 import TextForm from '@/components/Form/TextForm';
-import { RenderLabelHeader, RenderMemberHeader } from '@/components/RenderHeaderLabel';
+import { MemberHeaderLabel, RenderLabelHeader } from '@/components/RenderHeaderLabel';
 
 import indexStyles from '../styles/index.less';
 import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
@@ -57,7 +59,7 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
                       {team.users?.map((user, userIndex) => (
                         <Collapse.Panel
                           header={
-                            <RenderMemberHeader
+                            <MemberHeaderLabel
                               firstName={user.firstname}
                               lastName={user.lastname}
                               avatar={user.logo}
@@ -73,8 +75,28 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
                             <TextForm label="Department">{user.department ?? ''}</TextForm>
                             <TextForm label="Position/Title">{user.position ?? ''}</TextForm>
                             <TextForm label="Work Email">{user.email ?? ''}</TextForm>
-                            <TextForm label="Work Phone">{user.phone ?? ''}</TextForm>
-                            <TextForm label="Work Mobile">{user.mobile ?? ''}</TextForm>
+                            <FormGroup label="Work Phone" layout="vertical">
+                              <PhoneInput
+                                codeReadOnly
+                                phoneNumberReadOnly
+                                value={{
+                                  zoneCode: user.phone_code,
+                                  phoneNumber: String(user.phone),
+                                }}
+                                containerClass={indexStyles.phoneInputCustom}
+                              />
+                            </FormGroup>
+                            <FormGroup label="Work Mobile" layout="vertical">
+                              <PhoneInput
+                                codeReadOnly
+                                phoneNumberReadOnly
+                                value={{
+                                  zoneCode: user.phone_code,
+                                  phoneNumber: String(user.mobile),
+                                }}
+                                containerClass={indexStyles.phoneInputCustom}
+                              />
+                            </FormGroup>
                             <TextForm label="Access Level">{user.access_level ?? ''}</TextForm>
                             <TextForm label="Status">
                               {USER_STATUS_TEXTS[user.status] ?? 'N/A'}

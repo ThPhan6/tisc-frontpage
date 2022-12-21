@@ -16,7 +16,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 
 const BasisPresetList: React.FC = () => {
-  useAutoExpandNestedTableColumn(2);
+  useAutoExpandNestedTableColumn(2, [5]);
   const tableRef = useRef<any>();
 
   const handleUpdatePreset = (id: string) => {
@@ -86,6 +86,7 @@ const BasisPresetList: React.FC = () => {
       sorter: {
         multiple: 2,
       },
+      defaultSortOrder: 'ascend',
     },
     ...getSameColumns(false),
     {
@@ -94,6 +95,9 @@ const BasisPresetList: React.FC = () => {
       align: 'center',
       width: '5%',
       render: (_value, record) => {
+        if (record.master) {
+          return null;
+        }
         return (
           <ActionMenu
             actionItems={[

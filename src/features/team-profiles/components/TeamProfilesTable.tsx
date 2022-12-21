@@ -1,12 +1,13 @@
 import { useRef } from 'react';
 
 import { PATH } from '@/constants/path';
+import { USER_ROLE } from '@/constants/userRoles';
 import { USER_STATUS_TEXTS } from '@/constants/util';
 
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { useCheckPermission } from '@/helper/hook';
+import { useGetUserRoleFromPathname } from '@/helper/hook';
 import {
   formatPhoneCode,
   getFullName,
@@ -26,28 +27,27 @@ import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { deleteTeamProfile, getTeamProfileList } from '@/features/team-profiles/api';
 
 const TeamProfilesTable = () => {
-  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 3 });
+  useAutoExpandNestedTableColumn(0, [5]);
   const tableRef = useRef<any>();
   const userId = useAppSelector((state) => state.user.user?.id);
 
-  const isTISCAdmin = useCheckPermission('TISC Admin');
-  const isBrandAdmin = useCheckPermission('Brand Admin');
-  /// for user role path
-  const userCreateRolePath = getValueByCondition(
-    [
-      [isTISCAdmin, PATH.tiscCreateTeamProfile],
-      [isBrandAdmin, PATH.brandCreateTeamProfile],
-    ],
-    '',
-  );
+  const currentUser = useGetUserRoleFromPathname();
+  const isTiscUser = currentUser === USER_ROLE.tisc;
+  const isBrandUser = currentUser === USER_ROLE.brand;
+  const isDesignerUser = currentUser === USER_ROLE.design;
 
-  const userUpdateRolePath = getValueByCondition(
-    [
-      [isTISCAdmin, PATH.tiscUpdateTeamProfile],
-      [isBrandAdmin, PATH.brandUpdateTeamProfile],
-    ],
-    '',
-  );
+  /// for user role path
+  const userCreateRolePath = getValueByCondition([
+    [isTiscUser, PATH.tiscCreateTeamProfile],
+    [isBrandUser, PATH.brandCreateTeamProfile],
+    [isDesignerUser, PATH.designerOfficeTeamProfileCreate],
+  ]);
+
+  const userUpdateRolePath = getValueByCondition([
+    [isTiscUser, PATH.tiscUpdateTeamProfile],
+    [isBrandUser, PATH.brandUpdateTeamProfile],
+    [isDesignerUser, PATH.designerOfficeTeamProfileUpdate],
+  ]);
 
   const handleUpdateTeamProfile = (id: string) => {
     pushTo(userUpdateRolePath.replace(':id', id));
@@ -90,13 +90,16 @@ const TeamProfilesTable = () => {
       title: 'Work Email',
       dataIndex: 'email',
     },
-    {
-      title: 'Work Phone',
-      dataIndex: 'phone',
-      render: (value, record) => {
-        return `${formatPhoneCode(record.phone_code)} ${value ?? ''}`;
-      },
-    },
+
+    !isDesignerUser
+      ? {
+          title: 'Work Phone',
+          dataIndex: 'phone',
+          render: (value, record) => {
+            return `${formatPhoneCode(record.phone_code)} ${value ?? ''}`;
+          },
+        }
+      : {},
     {
       title: 'Access Level',
       dataIndex: 'access_level',

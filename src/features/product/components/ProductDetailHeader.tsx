@@ -14,9 +14,12 @@ import styles from './ProductDetailHeader.less';
 
 interface ProductDetailHeaderProps {
   title: string;
+  label?: string;
   customClass?: string;
   onSave?: () => void;
   onCancel?: () => void;
+  hideSelect?: boolean;
+  disabled?: boolean;
 }
 
 const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
@@ -24,8 +27,12 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
   customClass,
   onSave,
   onCancel,
+  hideSelect,
+  disabled,
+  label,
 }) => {
   const product = useAppSelector((state) => state.product);
+
   const dispatch = useDispatch();
   const { categories } = product.details;
   const [visible, setVisible] = useState(false);
@@ -35,12 +42,14 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
       <div className={`${styles.productHeader} ${customClass}`}>
         <div className={styles.leftAction}>
           <Title level={7}>{title}</Title>
-          <CustomButton
-            variant="text"
-            buttonClass="select-category-btn"
-            onClick={() => setVisible(true)}>
-            select
-          </CustomButton>
+          {hideSelect ? null : (
+            <CustomButton
+              variant="text"
+              buttonClass="select-category-btn"
+              onClick={() => setVisible(true)}>
+              {label}
+            </CustomButton>
+          )}
         </div>
         <div className={styles.iconWrapper}>
           <CustomButton
@@ -48,7 +57,8 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
             variant="primary"
             properties="rounded"
             buttonClass="save-btn"
-            onClick={onSave}>
+            onClick={onSave}
+            disabled={disabled}>
             Save
           </CustomButton>
           <CustomButton
@@ -61,30 +71,32 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
           </CustomButton>
         </div>
       </div>
-      <Popover
-        title="SELECT CATEGORY"
-        visible={visible}
-        setVisible={setVisible}
-        categoryDropdown
-        chosenValue={categories.map((category) => {
-          return {
-            label: category.name,
-            value: category.id,
-          };
-        })}
-        setChosenValue={(data: CheckboxValue[]) => {
-          dispatch(
-            setPartialProductDetail({
-              categories: data.map((item) => {
-                return {
-                  id: item.value,
-                  name: item.label as string,
-                };
+      {hideSelect ? null : (
+        <Popover
+          title="SELECT CATEGORY"
+          visible={visible}
+          setVisible={setVisible}
+          categoryDropdown
+          chosenValue={categories.map((category) => {
+            return {
+              label: category.name,
+              value: category.id,
+            };
+          })}
+          setChosenValue={(data: CheckboxValue[]) => {
+            dispatch(
+              setPartialProductDetail({
+                categories: data.map((item) => {
+                  return {
+                    id: String(item.value),
+                    name: String(item.label),
+                  };
+                }),
               }),
-            }),
-          );
-        }}
-      />
+            );
+          }}
+        />
+      )}
     </>
   );
 };

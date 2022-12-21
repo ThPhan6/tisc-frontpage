@@ -26,12 +26,12 @@ import StateModal from '@/features/locations/components/StateModal';
 
 import styles from '../../styles/basic-information.less';
 
-interface LocationEntryFormProps {
+interface BasicInformationEntryFormProps {
   data: ProjectBodyRequest;
   onChangeData: (newDate: Partial<ProjectBodyRequest>) => void;
 }
 
-export const EntryForm: FC<LocationEntryFormProps> = ({ data, onChangeData }) => {
+export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeData }) => {
   // for content type modal
   const [visible, setVisible] = useState({
     country: false,
@@ -76,8 +76,8 @@ export const EntryForm: FC<LocationEntryFormProps> = ({ data, onChangeData }) =>
       setMeasurementUnits(
         res.map((item) => {
           return {
-            label: item.key,
-            value: item.value,
+            label: item.name,
+            value: item.id,
           };
         }),
       );

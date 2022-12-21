@@ -1,12 +1,14 @@
 import React from 'react';
 
-import { ProjectTabKeys, ProjectTabs } from '../../constants/tab';
+import { ProjectTabKeys } from '../../constants/tab';
 import { PATH } from '@/constants/path';
+import { useAccess } from 'umi';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 
 import { pushTo } from '@/helper/history';
 
+import { TabItem } from '@/components/Tabs/types';
 import { ProjectDetailProps } from '@/features/project/types';
 
 //
@@ -53,16 +55,37 @@ const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({
   project,
   activeOnlyGeneral,
 }) => {
+  const accessPermission = useAccess();
+
+  const ProjectTabs: TabItem[] = [
+    {
+      tab: 'basic information',
+      key: ProjectTabKeys.basicInformation,
+      disable: !accessPermission.design_project_basic_information,
+    },
+    {
+      tab: 'zones/areas/rooms',
+      key: ProjectTabKeys.zoneAreaRoom,
+      disable: !accessPermission.design_project_zone_area_zoom,
+    },
+    {
+      tab: 'product considered',
+      key: ProjectTabKeys.productConsidered,
+      disable: !accessPermission.design_project_product_considered,
+    },
+    {
+      tab: 'product specified',
+      key: ProjectTabKeys.productSpecified,
+      disable: !accessPermission.design_project_product_specified,
+    },
+  ];
+
   const listTab = activeOnlyGeneral
     ? ProjectTabs.map((el) => ({
         ...el,
         disable: el.key === ProjectTabKeys.basicInformation ? undefined : true,
       }))
     : ProjectTabs;
-
-  const goBackToProjectList = () => {
-    pushTo(PATH.designerProject);
-  };
 
   return (
     <div className={styles.projectDetaiHeaderWrapper}>
@@ -73,7 +96,7 @@ const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({
           <EmptyProductDataTitle />
         )}
 
-        <CloseIcon onClick={goBackToProjectList} />
+        <CloseIcon onClick={() => pushTo(PATH.designerProject)} />
       </div>
       <CustomTabs
         listTab={listTab}

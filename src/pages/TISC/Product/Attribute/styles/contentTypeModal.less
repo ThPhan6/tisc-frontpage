@@ -2,14 +2,19 @@
   @height: 48px;
   .contentTypeFooter {
     display: flex;
-    justify-content: right;
+    justify-content: flex-end;
     .contentTypeSubmitBtn {
       border-radius: 12px;
     }
   }
 
   :global(.ant-modal-close-x) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
     height: @height;
+    margin-right: 16px;
     svg {
       width: 24px;
       height: 24px;
@@ -44,11 +49,12 @@
   .contentTypeOption {
     height: 600px;
     max-height: calc(100vh - 200px);
-    padding: 16px;
+    padding: 16px 19px 16px 16px;
     overflow: hidden auto;
     :global(.ant-space-item) {
       min-height: 40px;
       margin-left: 0;
+      padding: 0;
       box-shadow: @border-bottom-light;
     }
   }
@@ -109,7 +115,7 @@
     :global(.basis-conversion-group) {
       display: flex;
       align-items: center;
-      justify-content: center;
+      // justify-content: center;
       svg {
         margin: 0 12px;
       }

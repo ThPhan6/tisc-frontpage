@@ -19,7 +19,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 
 const CategoryList: React.FC = () => {
-  useAutoExpandNestedTableColumn(2);
+  useAutoExpandNestedTableColumn(2, [2]);
   const tableRef = useRef<any>();
 
   const handleUpdateCategory = (id: string) => {
@@ -54,6 +54,7 @@ const CategoryList: React.FC = () => {
       sorter: {
         multiple: 2,
       },
+      defaultSortOrder: 'ascend',
     },
     {
       title: 'Category',
@@ -61,6 +62,7 @@ const CategoryList: React.FC = () => {
       sorter: {
         multiple: 3,
       },
+      defaultSortOrder: 'ascend',
     },
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {

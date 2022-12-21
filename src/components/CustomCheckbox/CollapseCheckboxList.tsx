@@ -1,6 +1,6 @@
-import type { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 
-import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { CheckboxValue, CustomCheckboxProps } from '@/components/CustomCheckbox/types';
 
 import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
@@ -8,14 +8,12 @@ import { BodyText } from '@/components/Typography';
 
 import styles from './styles/collapseCheckboxList.less';
 
-interface CollapseCheckboxListProps {
-  options: CheckboxValue[];
+interface CollapseCheckboxListProps extends CustomCheckboxProps {
   checked?: CheckboxValue[];
-  onChange?: (checked: CheckboxValue[]) => void;
-  otherInput?: boolean;
   placeholder?: string;
   containerClass?: string;
   checkboxItemHeight?: string;
+  activeKey?: string | string[];
 }
 
 const CollapseCheckboxList: FC<CollapseCheckboxListProps> = ({
@@ -24,11 +22,22 @@ const CollapseCheckboxList: FC<CollapseCheckboxListProps> = ({
   onChange,
   otherInput,
   placeholder = 'select all relevance',
+  inputPlaceholder,
   containerClass = '',
   checkboxItemHeight = '36px',
+  activeKey,
+  ...props
 }) => {
+  const [collapse, setCollapse] = useState<string | string[]>();
+
+  useEffect(() => {
+    setCollapse(activeKey);
+  }, [activeKey]);
+
   return (
     <CustomCollapse
+      activeKey={collapse}
+      onChange={(key) => setCollapse(key)}
       header={
         <BodyText level={5} customClass="function-type-placeholder" fontFamily="Roboto">
           {placeholder}
@@ -36,12 +45,14 @@ const CollapseCheckboxList: FC<CollapseCheckboxListProps> = ({
       }
       className={`${styles.functionTypeDropdown} ${containerClass}`}>
       <CustomCheckbox
+        {...props}
         options={options}
         isCheckboxList
         heightItem={checkboxItemHeight}
         otherInput={otherInput}
         selected={checked}
         onChange={onChange}
+        inputPlaceholder={inputPlaceholder}
       />
     </CustomCollapse>
   );

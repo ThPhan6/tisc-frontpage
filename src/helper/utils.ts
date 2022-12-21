@@ -1,18 +1,19 @@
-import { PATH } from '@/constants/path';
 import { SORT_ORDER } from '@/constants/util';
-import { history } from 'umi';
 
 import { isNaN, isNumber, isUndefined, lowerCase, toNumber } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { PhoneInputValueProp } from '@/components/Form/types';
 import { TableColumnItem } from '@/components/Table/types';
+import { UserType } from '@/pages/LandingPage/types';
 
+import routes from '../../config/routes';
 import { pushTo } from './history';
+import moment from 'moment';
 
 export const REGEX_PASSWORD =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d][\w~@#$%^&*+=`|{}:;!.?\"()\[\]-]{7,}$/;
-export const REGEX_EMAIL = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+export const REGEX_EMAIL = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,}$/;
 export const REGEX_GET_CONTENT_ONLY = /[_.\n\s\r\t__]*/g;
 export const REGEX_PHONE_NUMBER_ONLY = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/;
 export const REGEX_EMPTY_SPACE = /^\S*$/;
@@ -40,19 +41,40 @@ export const validatePassword = (password: string) => {
   return REGEX_PASSWORD.test(password);
 };
 
-export const redirectAfterLogin = () => {
-  if (!history) return;
-  const { query } = history.location;
-  const { redirect } = query as { redirect: string };
-  pushTo(redirect || PATH.tiscHomePage);
+const findFirstAccessibleMenu = (
+  index: number,
+  routeList: any[],
+  access: any,
+): undefined | string => {
+  const routeItem = routeList[index];
+  if (!routeItem) {
+    return;
+  }
+  if (!routeItem.access) {
+    return findFirstAccessibleMenu(index + 1, routeList, access);
+  }
+  const haveSubRoutes = routeItem.access && routeItem.routes?.some((route: any) => route.access);
+  if (haveSubRoutes) {
+    return findFirstAccessibleMenu(0, routeItem.routes, access);
+  }
+  if (access[routeItem.access] === true) {
+    return routeItem.path;
+  }
+  return findFirstAccessibleMenu(index + 1, routeList, access);
 };
 
-export const redirectAfterBrandLogin = () => {
-  pushTo(PATH.brandHomePage);
+const ACCESS_BY_TYPE: { [key in UserType]: string } = {
+  1: 'tisc',
+  2: 'brand',
+  3: 'design',
 };
 
-export const redirectAfterDesignerLogin = () => {
-  pushTo(PATH.designerHomePage);
+export const redirectAfterLogin = (access: any, userType: UserType) => {
+  const routesByUserType = routes.filter((el) => el.access?.includes(ACCESS_BY_TYPE[userType]));
+
+  const accessableMenu = findFirstAccessibleMenu(0, routesByUserType, access) || '/404';
+
+  pushTo(accessableMenu);
 };
 
 export const getLetterAvatarBackgroundColor = (name: string) => {
@@ -195,7 +217,7 @@ export const getMaxLengthText = (text: string, maxLength: number) => {
   return text.slice(0, maxLength - 3) + '...';
 };
 
-export const formatNumberDisplay = (
+export const formatCurrencyNumber = (
   num: number | string,
   locale: Intl.LocalesArgument = 'en-us',
   options: Intl.NumberFormatOptions = {},
@@ -333,3 +355,47 @@ export const setDefaultWidthForEachColumn = (
       [!defaultWidth, 10],
     ]),
   }));
+
+export const getDesignDueDay = (designDue: number) => {
+  const dueDay = moment(designDue).diff(moment(moment().format('YYYY-MM-DD')), 'days') ?? 0;
+  let suffix = 'day';
+  if (dueDay > 1 || dueDay < -1) {
+    suffix += 's';
+  }
+  return {
+    value: dueDay,
+    text: dueDay === 0 ? 'Today' : `${dueDay} ${suffix}`,
+  };
+};
+
+export const validateDocumentTitle = (title: string) => {
+  if (title.length <= 50) {
+    return true;
+  }
+  return false;
+};
+
+export const bufferToArrayBufferCycle = (buffer: Buffer) => {
+  const result = new ArrayBuffer(buffer.length);
+  const view = new Uint8Array(result);
+  for (let i = 0; i < buffer.length; ++i) {
+    view[i] = buffer[i];
+  }
+  return result;
+};
+
+export const formatNumber = (number: number) => {
+  return number.toLocaleString(undefined, {
+    maximumFractionDigits: 2,
+  });
+};
+
+export const formatImageIfBase64 = (img: string) =>
+  img.indexOf('data:image') > -1 ? img.split(',')[1] : img;
+
+export const checkValidURL = (url: string) => {
+  const result = url.match(
+    /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g,
+  );
+  return result !== null;
+};

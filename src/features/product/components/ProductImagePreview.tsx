@@ -17,58 +17,108 @@ import { ReactComponent as DeleteIcon } from '@/assets/icons/trash-icon-12.svg';
 import ProductPlaceHolderImage from '@/assets/images/product-placeholder.png';
 
 import { likeProductById } from '@/features/product/services';
-import { useBoolean, useCheckPermission } from '@/helper/hook';
+import { useBoolean, useCheckPermission, useQuery } from '@/helper/hook';
 import { getBase64, showImageUrl } from '@/helper/utils';
 
 import { ProductKeyword } from '../types';
-import {
-  setPartialProductDetail,
-  setProductDetail,
-  setProductDetailImage,
-} from '@/features/product/reducers';
+import { setPartialProductDetail, setProductDetailImage } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
 
 import SmallIconButton from '@/components/Button/SmallIconButton';
 import { CustomInput } from '@/components/Form/CustomInput';
+import InquiryRequest from '@/components/InquiryRequest';
 import ShareViaEmail from '@/components/ShareViaEmail/index';
 import { BodyText } from '@/components/Typography';
+import {
+  setCustomProductDetail,
+  setCustomProductDetailImage,
+} from '@/pages/Designer/Products/CustomLibrary/slice';
 
 import AssignProductModal from '../modals/AssignProductModal';
 import styles from './detail.less';
 
-const ActionItem: FC<{ onClick: () => void; label: string; icon: ReactNode }> = ({
-  icon,
-  onClick,
-  label,
-}) => {
+interface ActionItemProps {
+  onClick: () => void;
+  label: string;
+  icon: ReactNode;
+  disabled?: boolean;
+}
+
+const ActionItem: FC<ActionItemProps> = ({ icon, onClick, label, disabled }) => {
   return (
-    <div className={styles.actionItem} onClick={onClick}>
-      {icon}
-      <BodyText level={6} fontFamily="Roboto">
-        {label}
-      </BodyText>
+    <div
+      className={styles.actionItem}
+      onClick={onClick}
+      style={{
+        cursor: disabled ? 'default' : 'pointer',
+        pointerEvents: disabled ? 'none' : 'auto',
+      }}>
+      <div className={`flex-start ${disabled ? styles.disabled : ''}`}>
+        {icon}
+        <BodyText
+          level={6}
+          fontFamily="Roboto"
+          color={disabled ? 'mono-color-medium' : 'mono-color'}>
+          {label}
+        </BodyText>
+      </div>
     </div>
   );
 };
 
-const ProductImagePreview: React.FC = () => {
+interface ProductImagePreviewProps {
+  hideInquiryRequest?: boolean;
+  isCustomProduct?: boolean;
+  viewOnly?: boolean;
+  disabledAssignProduct?: boolean;
+  disabledShareViaEmail?: boolean;
+}
+
+const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
+  hideInquiryRequest,
+  isCustomProduct,
+  viewOnly,
+  disabledAssignProduct,
+  disabledShareViaEmail,
+}) => {
   const dispatch = useDispatch();
-  const product = useAppSelector((state) => state.product.details);
+  const normalProduct = useAppSelector((state) => state.product.details);
   const showShareEmailModal = useBoolean();
   const showAssignProductModal = useBoolean();
+  const showInquiryRequestModal = useBoolean();
   const isDesignerUser = useCheckPermission('Design Admin');
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
-  const liked = product.is_liked;
-  const likeCount = product.favorites ?? 0;
+  const isEditable = isTiscAdmin || (isCustomProduct && viewOnly !== true); // currently, uploading image
+
+  const customProduct = useAppSelector((state) => state.customProduct.details);
+
+  const product = isCustomProduct ? customProduct : normalProduct;
+
+  const liked = 'keywords' in product ? product.is_liked : false;
+  const likeCount = 'favorites' in product ? product.favorites || 0 : 0;
+
+  const signature = useQuery().get('signature');
+  const isPublicPage = !!signature;
+
   const handleLoadPhoto = async (file: UploadFile<any>, type: 'first' | 'last' = 'first') => {
     const imageBase64 = await getBase64(file.originFileObj);
-    dispatch(
-      setProductDetailImage({
-        type,
-        image: imageBase64,
-      }),
-    );
+
+    if (isCustomProduct) {
+      dispatch(
+        setCustomProductDetailImage({
+          type,
+          image: imageBase64,
+        }),
+      );
+    } else {
+      dispatch(
+        setProductDetailImage({
+          type,
+          image: imageBase64,
+        }),
+      );
+    }
   };
 
   const primaryProps: UploadProps = {
@@ -82,15 +132,21 @@ const ProductImagePreview: React.FC = () => {
       }
     },
     beforeUpload: (_file, fileList) => {
-      if (product.images.length + fileList.length > 9) {
-        message.error('Max photos is 9');
+      const totalImageCount = product.images.length + fileList.length;
+      const maxImageAllow = isCustomProduct ? 4 : 9;
+
+      if (totalImageCount > maxImageAllow) {
+        message.error(`Maximum ${maxImageAllow} images are allowed`);
         return false;
       }
+
       return true;
     },
     showUploadList: false,
-    disabled: isTiscAdmin === false,
-    className: `${styles.uploadZone} ${isTiscAdmin ? '' : styles.noBorder} `,
+    disabled: isEditable === false,
+    className: `${styles.uploadZone} ${isEditable ? '' : styles.noBorder} ${
+      isEditable === false && product.images.length < 2 ? styles.noPadding : ''
+    }`,
   };
 
   const subProps: UploadProps = {
@@ -115,11 +171,20 @@ const ProductImagePreview: React.FC = () => {
     const newPhotos = product.images.filter((_photo, key) => {
       return index !== key;
     });
-    dispatch(
-      setPartialProductDetail({
-        images: newPhotos,
-      }),
-    );
+
+    if (isCustomProduct) {
+      dispatch(
+        setCustomProductDetail({
+          images: newPhotos,
+        }),
+      );
+    } else {
+      dispatch(
+        setPartialProductDetail({
+          images: newPhotos,
+        }),
+      );
+    }
   };
 
   const likeProduct = () => {
@@ -127,7 +192,7 @@ const ProductImagePreview: React.FC = () => {
       if (isSuccess) {
         const newLiked = !liked;
         dispatch(
-          setProductDetail({
+          setPartialProductDetail({
             ...product,
             is_liked: newLiked,
             favorites: likeCount + (newLiked ? 1 : -1),
@@ -144,48 +209,49 @@ const ProductImagePreview: React.FC = () => {
           <BodyText level={4} customClass={styles.imageNaming}>
             Image naming:
           </BodyText>
-          {product.keywords.map((value, index) => (
-            <CustomInput
-              key={index}
-              placeholder={`keyword${index + 1}`}
-              value={value}
-              onChange={(e) => {
-                const newKeywords = [...product.keywords] as ProductKeyword;
-                newKeywords[index] = e.target.value;
-                dispatch(
-                  setPartialProductDetail({
-                    keywords: newKeywords,
-                  }),
-                );
-              }}
-            />
-          ))}
+          {'keywords' in product
+            ? product.keywords.map((value, index) => (
+                <CustomInput
+                  key={index}
+                  placeholder={`keyword${index + 1}`}
+                  value={value}
+                  onChange={(e) => {
+                    const newKeywords = [...product.keywords] as ProductKeyword;
+                    newKeywords[index] = e.target.value;
+                    dispatch(
+                      setPartialProductDetail({
+                        keywords: newKeywords,
+                      }),
+                    );
+                  }}
+                />
+              ))
+            : null}
         </div>
       );
     }
 
+    const renderActionLeft = () => {
+      if (isPublicPage || isCustomProduct) return null;
+
+      if (liked) {
+        return <LikedIcon className={styles.actionIcon} onClick={likeProduct} />;
+      }
+
+      return <LikeIcon className={styles.actionIcon} onClick={likeProduct} />;
+    };
+
     // For Brand & Designer role
     return (
       <div className={styles.productBrandAction}>
-        <div className={styles.actionLeft}>
-          {liked ? (
-            <LikedIcon className={styles.actionIcon} onClick={likeProduct} />
-          ) : (
-            <LikeIcon className={styles.actionIcon} onClick={likeProduct} />
-          )}
-          {isDesignerUser ? null : (
-            <BodyText level={6} fontFamily="Roboto" customClass="action-like">
-              {`${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
-            </BodyText>
-          )}
-        </div>
+        <div className={styles.actionLeft}>{renderActionLeft()}</div>
 
         <div className={styles.actionRight}>
-          {isDesignerUser ? (
+          {isDesignerUser && !hideInquiryRequest ? (
             <ActionItem
               label="Inquiry/Request"
               icon={<CommentIcon />}
-              onClick={() => message.info('Coming soon!')}
+              onClick={() => showInquiryRequestModal.setValue(true)}
             />
           ) : null}
           {isDesignerUser ? (
@@ -193,14 +259,18 @@ const ProductImagePreview: React.FC = () => {
               label="Assign Product"
               icon={<AssignIcon />}
               onClick={() => showAssignProductModal.setValue(true)}
+              disabled={disabledAssignProduct}
             />
           ) : null}
 
-          <ActionItem
-            label="Share via Email"
-            icon={<ShareViaEmailIcon />}
-            onClick={() => showShareEmailModal.setValue(true)}
-          />
+          {isPublicPage ? null : (
+            <ActionItem
+              label="Share via Email"
+              icon={<ShareViaEmailIcon />}
+              onClick={() => showShareEmailModal.setValue(true)}
+              disabled={disabledShareViaEmail}
+            />
+          )}
         </div>
       </div>
     );
@@ -210,7 +280,7 @@ const ProductImagePreview: React.FC = () => {
     if (product.images[0]) {
       return <img src={showImageUrl(product.images[0])} className={styles.primaryPhoto} />;
     }
-    if (isTiscAdmin) {
+    if (isEditable) {
       return (
         <div className={styles.dropzoneNote}>
           <BodyText level={3}>
@@ -231,13 +301,13 @@ const ProductImagePreview: React.FC = () => {
   };
 
   return (
-    <Col span={12} className={styles.productContent}>
+    <div className={styles.productContent}>
       <div className={styles.productImageWrapper}>
         <Upload.Dragger {...primaryProps}>
           <div className={styles.uploadZoneContent}>
             {renderMainImage()}
 
-            {isTiscAdmin ? (
+            {isEditable ? (
               <div className={styles.primaryAction}>
                 <SmallIconButton
                   icon={<UploadIcon />}
@@ -255,34 +325,30 @@ const ProductImagePreview: React.FC = () => {
         </Upload.Dragger>
 
         <Row className={styles.photoList} gutter={8}>
-          <Col span={isTiscAdmin ? 18 : 24}>
+          <Col span={isEditable ? 18 : 24}>
             <Row gutter={8} className={styles.listWrapper}>
-              {product.images
-                .filter((_item, index) => index !== 0)
-                .map((image, key) => (
-                  <Col span={8} key={key}>
-                    <div className={styles.fileItem}>
-                      <div
-                        className={`${styles.filePreview}  ${
-                          !isTiscAdmin ? styles.lightBorder : ''
-                        }`}>
-                        <img src={showImageUrl(image) ?? ProductPlaceHolderImage} />
-                        {isTiscAdmin ? (
-                          <div className={styles.subPhotoAction}>
-                            <SmallIconButton
-                              icon={<DeleteIcon />}
-                              onClick={(e) => deletePhoto(e, key + 1)}
-                            />
-                          </div>
-                        ) : null}
-                      </div>
+              {product.images.slice(1).map((image, key) => (
+                <Col span={8} key={key}>
+                  <div className={styles.fileItem}>
+                    <div
+                      className={`${styles.filePreview}  ${!isEditable ? styles.lightBorder : ''}`}>
+                      <img src={showImageUrl(image) ?? ProductPlaceHolderImage} />
+                      {isEditable ? (
+                        <div className={styles.subPhotoAction}>
+                          <SmallIconButton
+                            icon={<DeleteIcon />}
+                            onClick={(e) => deletePhoto(e, key + 1)}
+                          />
+                        </div>
+                      ) : null}
                     </div>
-                  </Col>
-                ))}
+                  </div>
+                </Col>
+              ))}
             </Row>
           </Col>
 
-          {isTiscAdmin ? (
+          {isEditable ? (
             <Col span={6}>
               <Upload {...subProps}>
                 <div className={styles.addMorePhotocontent}>
@@ -291,7 +357,7 @@ const ProductImagePreview: React.FC = () => {
                   </BodyText>
                   <AddMoreIcon />
                   <BodyText level={6} fontFamily="Roboto">
-                    (min.3 and max.9)
+                    {isCustomProduct ? '(max.4 more images)' : '(min.3 and max.9)'}
                   </BodyText>
                 </div>
               </Upload>
@@ -306,6 +372,7 @@ const ProductImagePreview: React.FC = () => {
             visible={showShareEmailModal.value}
             setVisible={showShareEmailModal.setValue}
             product={product}
+            isCustomProduct={isCustomProduct}
           />
         ) : null}
         {product.id ? (
@@ -313,10 +380,18 @@ const ProductImagePreview: React.FC = () => {
             visible={showAssignProductModal.value}
             setVisible={showAssignProductModal.setValue}
             productId={product.id}
+            isCustomProduct={isCustomProduct || false}
+          />
+        ) : null}
+        {product.id ? (
+          <InquiryRequest
+            visible={showInquiryRequestModal.value}
+            setVisible={showInquiryRequestModal.setValue}
+            product={product}
           />
         ) : null}
       </div>
-    </Col>
+    </div>
   );
 };
 

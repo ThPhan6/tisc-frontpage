@@ -1,77 +1,83 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
+
+import { COLUMN_WIDTH } from '@/constants/util';
+
+import { ReactComponent as InfoIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import {
   onCellCancelled,
   renderActionCell,
-  renderStatusDropdown,
+  renderAvailability,
+  renderImage,
+  renderSpecifiedStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { getSpecifiedProductBySpace } from '@/features/project/services';
-import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
+import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
-import {
-  ProductItemSpace,
-  SpecifiedProductArea,
-  SpecifiedProductBySpace,
-  SpecifiedProductRoom,
-} from '@/features/project/types';
+import { SpecifiedProductBySpace } from '@/features/project/types';
 
+import { AvailabilityModal } from '../../components/AvailabilityModal';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
+import { RobotoBodyText } from '@/components/Typography';
+
+import styles from './index.less';
 
 export interface SpaceListProps {
   projectId?: string;
 }
 const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
-  useAutoExpandNestedTableColumn(3, {
-    autoWidthColIndex: 5, // Product column
-    rightColumnExcluded: 3,
-  });
+  useAutoExpandNestedTableColumn(3, [7]);
   const tableRef = useRef<any>();
+  const [visible, setVisible] = useState<boolean>(false);
+
   const { setSpecifyingProduct, renderSpecifyingModal } = useSpecifyingModal(tableRef);
 
-  const getSameColumns = (noBoxShadow?: boolean) => {
+  const getSameColumns = (props: {
+    noBoxShadow: boolean;
+    isAreaColumn?: boolean;
+    hideProductName?: boolean;
+  }) => {
     const SameColummnsSpace: TableColumnItem<any>[] = [
       {
         title: 'Image',
-        dataIndex: 'image',
+        dataIndex: 'images',
         width: '5%',
-        noBoxShadow: noBoxShadow,
+        noBoxShadow: props.noBoxShadow,
         align: 'center',
-        render: (value) =>
-          value ? (
-            <img
-              src={showImageUrl(value)}
-              style={{ width: 24, height: 24, objectFit: 'contain' }}
-            />
-          ) : null,
+        render: (value) => renderImage(value?.[0]),
+        onCell: props.isAreaColumn ? onCellCancelled : undefined,
       },
       {
         title: 'Brand',
         dataIndex: 'brand_order',
-        noBoxShadow: noBoxShadow,
+        noBoxShadow: props.noBoxShadow,
         sorter: { multiple: 4 },
-        render: (_value, record) => record.brand_name,
+        render: (_value, record) => record.brand?.name,
         onCell: onCellCancelled,
       },
       {
         title: 'Product',
         dataIndex: 'product_name',
         onCell: onCellCancelled,
-        noBoxShadow: noBoxShadow,
+        noBoxShadow: props.noBoxShadow,
+        render: (_value, record) => (record.rooms || props.hideProductName ? null : record.name),
       },
       {
         title: 'Material Code',
         dataIndex: 'material_code',
-        noBoxShadow: noBoxShadow,
+        noBoxShadow: props.noBoxShadow,
         onCell: onCellCancelled,
+        render: (_value, record) => record.specifiedDetail?.material_code,
       },
       {
         title: 'Description',
         dataIndex: 'specified_description',
-        noBoxShadow: noBoxShadow,
+        noBoxShadow: props.noBoxShadow,
         onCell: onCellCancelled,
+        render: (_value, record) => record.specifiedDetail?.description,
       },
     ];
     return SameColummnsSpace;
@@ -95,47 +101,72 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       dataIndex: 'room_order',
       sorter: { multiple: 3 },
     },
-    ...getSameColumns(false),
+    ...getSameColumns({
+      noBoxShadow: false,
+      isAreaColumn: false,
+      hideProductName: true,
+    }),
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
+      title: (
+        <div className="flex-start">
+          <RobotoBodyText level={5} style={{ fontWeight: 500 }}>
+            Availability
+          </RobotoBodyText>
+          <InfoIcon style={{ cursor: 'pointer' }} onClick={() => setVisible(true)} />
+        </div>
+      ),
+      dataIndex: 'availability',
+      align: 'center',
+      noBoxShadow: true,
+    },
+    {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       align: 'center',
     },
     { title: 'Action', align: 'center', width: '5%' },
   ];
 
-  const AreaColumns: TableColumnItem<SpecifiedProductArea>[] = [
+  const AreaColumns: TableColumnItem<any>[] = [
     {
       title: 'Zones',
       noBoxShadow: true,
-      onCell: (data) => ({
-        className: data.rooms ? '' : 'no-box-shadow',
-      }),
+      onCell: onCellCancelled,
     },
     {
       title: 'Areas',
       noExpandIfEmptyData: 'rooms',
       isExpandable: true,
       render: (_value, record) => <span className="text-uppercase">{record.name}</span>,
-      onCell: (data) => ({
-        className: data.rooms ? '' : 'no-box-shadow',
-      }),
+      onCell: onCellCancelled,
     },
     {
       title: 'Rooms',
-      onCell: (data) => ({
-        className: data.rooms ? '' : 'no-box-shadow',
-      }),
+      onCell: onCellCancelled,
     },
-    ...getSameColumns(false),
-    { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
+    ...getSameColumns({ noBoxShadow: false, isAreaColumn: true }),
+    {
+      title: 'Count',
+      dataIndex: 'count',
+      width: '5%',
+      align: 'center',
+      onCell: onCellCancelled,
+    },
+    {
+      title: 'Availability',
+      dataIndex: 'availability',
+      align: 'center',
+      width: '5%',
+      render: (_value, record) => renderAvailability(record),
+      onCell: onCellCancelled,
+    },
     {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       dataIndex: 'status',
       align: 'center',
-      render: renderStatusDropdown(tableRef, true),
+      render: renderSpecifiedStatusDropdown(tableRef, true),
       onCell: onCellCancelled,
     },
     {
@@ -143,10 +174,11 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       align: 'center',
       width: '5%',
       render: renderActionCell(setSpecifyingProduct, tableRef, true),
+      onCell: onCellCancelled,
     },
   ];
 
-  const RoomColumns: TableColumnItem<SpecifiedProductRoom>[] = [
+  const RoomColumns: TableColumnItem<any>[] = [
     {
       title: 'Zones',
       noBoxShadow: true,
@@ -160,11 +192,17 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       isExpandable: true,
       render: (_value, record) => <span className="text-uppercase">{record.room_name}</span>,
     },
-    ...getSameColumns(false),
+    ...getSameColumns({ noBoxShadow: false }),
     { title: 'Count', dataIndex: 'count', width: '5%', align: 'center' },
     {
+      title: 'Availability',
+      dataIndex: 'availability',
+      align: 'center',
+      width: '5%',
+    },
+    {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       align: 'center',
     },
     {
@@ -174,7 +212,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
     },
   ];
 
-  const ProductColumns: TableColumnItem<ProductItemSpace>[] = [
+  const ProductColumns: TableColumnItem<any>[] = [
     {
       title: 'Zones',
       noBoxShadow: true,
@@ -187,15 +225,23 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
       title: 'Rooms',
       noBoxShadow: true,
     },
-    ...getSameColumns(true),
+    ...getSameColumns({ noBoxShadow: true }),
     { title: 'Count', width: '5%', align: 'center', noBoxShadow: true },
     {
+      title: 'Availability',
+      dataIndex: 'availability',
+      noBoxShadow: true,
+      align: 'center',
+      width: '5%',
+      render: (_value, record) => renderAvailability(record),
+    },
+    {
       title: 'Status',
-      width: '8%',
+      width: COLUMN_WIDTH.status,
       dataIndex: 'status',
       align: 'center',
       noBoxShadow: true,
-      render: renderStatusDropdown(tableRef, true),
+      render: renderSpecifiedStatusDropdown(tableRef, true),
       onCell: onCellCancelled,
     },
     {
@@ -214,6 +260,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
   return (
     <>
       <CustomTable
+        footerClass={styles.summaryFooter}
         columns={setDefaultWidthForEachColumn(ZoneColumns, 7)}
         extraParams={{ projectId }}
         ref={tableRef}
@@ -246,6 +293,8 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
         }}
       />
       {renderSpecifyingModal()}
+
+      <AvailabilityModal visible={visible} setVisible={setVisible} />
     </>
   );
 };

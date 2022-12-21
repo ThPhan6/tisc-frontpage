@@ -1,10 +1,11 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { map } from 'lodash';
 
-import { AssignTeamForm } from '@/features/user-group/types';
+import { CheckboxValue } from '../CustomCheckbox/types';
+import { MemberAssignedForm } from './type';
 
-import { RenderMemberHeader } from '@/components/RenderHeaderLabel';
+import { MemberHeaderLabel } from '@/components/RenderHeaderLabel';
 
 import Popover from '../Modal/Popover';
 import styles from './index.less';
@@ -12,40 +13,57 @@ import styles from './index.less';
 interface AssignTeamProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
-  selected: any;
-  setSelected: (selected: any) => void;
-  teams: AssignTeamForm[];
+  onChange: (selected: any) => void;
+  teams: any[];
+  memberAssigned?: any[];
 }
 
-const AssignTeam: FC<AssignTeamProps> = ({ visible, setVisible, selected, setSelected, teams }) => {
+const AssignTeam: FC<AssignTeamProps> = ({
+  visible,
+  setVisible,
+  onChange,
+  teams,
+  memberAssigned,
+}) => {
+  const [selected, setSelected] = useState<CheckboxValue[]>([]);
+
+  useEffect(() => {
+    setSelected(
+      memberAssigned?.map((member: MemberAssignedForm) => ({
+        label: '',
+        value: member.id,
+      })) as CheckboxValue[],
+    );
+  }, [memberAssigned]);
+
   return (
     <Popover
       title="ASSIGN TEAM"
       visible={visible}
       setVisible={setVisible}
       chosenValue={selected}
-      setChosenValue={setSelected}
+      setChosenValue={onChange}
       className={styles.teams}
+      combinableCheckbox
       dropdownCheckboxTitle={(data) => data.name}
       dropdownCheckboxList={map(teams, (team) => {
         return {
-          name: team.name,
-          options: team.users.map((member, index) => {
+          name: team.name || team.country_name || '',
+          options: team.users.map((member: MemberAssignedForm, index: number) => {
             return {
+              value: member.id,
               label: (
-                <RenderMemberHeader
-                  firstName={member.first_name}
-                  lastName={member.last_name}
+                <MemberHeaderLabel
+                  firstName={member.firstname || ''}
+                  lastName={member.lastname || ''}
                   avatar={member.avatar}
                   key={member.id ?? index}
                 />
               ),
-              value: member.id,
             };
           }),
         };
       })}
-      combinableCheckbox
     />
   );
 };

@@ -9,8 +9,8 @@ import type {
   PaginationRequestParams,
 } from '@/components/Table/types';
 import {
-  AssigningStatus,
   ConsideredProduct,
+  ProductConsiderStatus,
   ProjectSpaceListProps,
   ProjectSummaryData,
 } from '@/features/project/types';
@@ -20,7 +20,7 @@ export async function getProductAssignSpaceByProject(
   productId: string,
   callback: (isEntire: boolean, data: ProjectSpaceListProps[]) => void,
 ) {
-  request(`/api/considered-product/get-list-assigned/${projectId}/${productId}`, {
+  request(`/api/project/${projectId}/product/${productId}/assign-zones`, {
     method: 'GET',
   })
     .then((response: { data: ProjectSpaceListProps[] }) => {
@@ -36,20 +36,15 @@ export async function getConsideredProducts(
   { projectId, ...params }: PaginationRequestParams,
   callback: (data: DataTableResponse) => void,
 ) {
-  request(`/api/considered-product/get-list/${projectId}`, {
+  request(`/api/project/${projectId}/considered-product/get-list`, {
     method: 'GET',
     params,
   })
-    .then(
-      (response: { data: GetDataListResponse & { considered_products: ConsideredProduct[] } }) => {
-        const { considered_products, summary } = response.data;
-        considered_products[0].id = 'entire_project';
-        callback({
-          data: considered_products,
-          summary,
-        });
-      },
-    )
+    .then((response: { data: GetDataListResponse & { data: ConsideredProduct[] } }) => {
+      const { data, summary } = response.data;
+      data[0].id = 'entire_project';
+      callback({ data, summary });
+    })
     .catch((error) => {
       console.log('error', error);
       message.error(error.message);
@@ -57,13 +52,13 @@ export async function getConsideredProducts(
 }
 
 export async function assignProductToProject(data: {
-  is_entire: boolean;
   product_id: string;
   project_id: string;
-  project_zone_ids: string[];
-  considered_product_id?: string;
+  entire_allocation: boolean;
+  allocation: string[];
+  custom_product: boolean;
 }) {
-  return request<ProjectSummaryData>(`/api/product/assign`, {
+  return request<ProjectSummaryData>(`/api/project/assign-product`, {
     method: 'POST',
     data,
   })
@@ -81,10 +76,10 @@ export async function assignProductToProject(data: {
 export async function updateProductConsiderStatus(
   consider_id: string,
   data: {
-    status: AssigningStatus;
+    consider_status: ProductConsiderStatus;
   },
 ) {
-  return request(`/api/considered-product/update-status/${consider_id}`, {
+  return request(`/api/project-product/${consider_id}/update-consider-status`, {
     method: 'PATCH',
     data,
   })
@@ -100,7 +95,7 @@ export async function updateProductConsiderStatus(
 }
 
 export async function removeProductFromProject(consider_id: string) {
-  return request(`/api/considered-product/delete/${consider_id}`, {
+  return request(`/api/project-product/${consider_id}/delete`, {
     method: 'DELETE',
   })
     .then(() => {

@@ -3,6 +3,16 @@
 export default [
   // NO REQUIRE AUTHENTICATION
   {
+    path: PATH.sharedProduct,
+    component: '../features/product/components/ProductDetailContainer',
+    layout: false,
+  },
+  {
+    path: PATH.sharedCustomProduct,
+    component: './Designer/Products/CustomLibrary/ProductLibraryDetail',
+    layout: false,
+  },
+  {
     path: PATH.landingPage,
     component: './LandingPage',
     layout: false,
@@ -22,6 +32,16 @@ export default [
     component: './LandingPage',
     layout: false,
   },
+  {
+    path: PATH.cancelBooking,
+    component: './LandingPage',
+    layout: false,
+  },
+  {
+    path: PATH.reScheduleBooking,
+    component: './LandingPage',
+    layout: false,
+  },
   // REQUIRED AUTHENTICATION
   {
     path: PATH.profiles,
@@ -37,7 +57,7 @@ export default [
     path: PATH.tiscHomePage,
     name: 'workspace',
     icon: 'workspace-icon.svg',
-    component: './TISC/MyWorkspace',
+    component: '../features/my-workspace',
     access: 'tisc_workspace',
   },
   {
@@ -99,8 +119,19 @@ export default [
         path: PATH.tiscProjectListing,
         name: 'listing',
         icon: 'listing-icon.svg',
-        component: './Admin',
         access: 'tisc_project_list',
+        routes: [
+          {
+            path: PATH.tiscProjectListing,
+            component: './TISC/ProjectListing',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.tiscProjectListingDetail,
+            component: './TISC/ProjectListing/detail.tsx',
+            hideInMenu: true,
+          },
+        ],
       },
     ],
   },
@@ -437,12 +468,28 @@ export default [
           {
             path: PATH.tiscRevenueService,
             name: 'service',
-            component: './Admin',
-          },
-          {
-            path: PATH.tiscRevenueSubscription,
-            name: 'subscription',
-            component: './Admin',
+            routes: [
+              {
+                path: PATH.tiscRevenueService,
+                component: './TISC/Adminstration/Revenue/Services',
+                hideInMenu: true,
+              },
+              {
+                path: PATH.tiscRevenueServiceCreate,
+                component: './TISC/Adminstration/Revenue/Services/ServiceCreatePage',
+                hideInMenu: true,
+              },
+              {
+                path: PATH.tiscRevenueServiceDetail,
+                component: './TISC/Adminstration/Revenue/Services/ServiceViewPage',
+                hideInMenu: true,
+              },
+              {
+                path: PATH.tiscRevenueServiceUpdate,
+                component: './TISC/Adminstration/Revenue/Services/ServiceCreatePage',
+                hideInMenu: true,
+              },
+            ],
           },
         ],
       },
@@ -452,8 +499,8 @@ export default [
     path: PATH.brandHomePage,
     name: 'workspace',
     icon: 'workspace-icon.svg',
-    component: './Admin',
     access: 'brand_workspace',
+    component: '../features/my-workspace',
   },
   {
     path: PATH.brandProduct,
@@ -462,12 +509,12 @@ export default [
     access: 'brand_product',
     routes: [
       {
-        path: '/brand/product',
+        path: PATH.brandProduct,
         component: './Brand/Products',
         hideInMenu: true,
       },
       {
-        path: '/brand/product/:id',
+        path: PATH.updateProductBrand,
         component: './Brand/Products/ProductBrandViewPage',
         hideInMenu: true,
       },
@@ -477,15 +524,37 @@ export default [
     path: PATH.brandGeneralInquiry,
     name: 'general_inquiry',
     icon: 'general-inquiry-icon.svg',
-    component: './Admin',
     access: 'brand_genenral_inquiry',
+    routes: [
+      {
+        path: PATH.brandGeneralInquiry,
+        component: './Brand/GeneralInquiries',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.brandGeneralInquiryDetail,
+        component: './Brand/GeneralInquiries/detail.tsx',
+        hideInMenu: true,
+      },
+    ],
   },
   {
     path: PATH.brandProjectTracking,
     name: 'project_tracking',
     icon: 'project-tracking-icon.svg',
-    component: './Admin',
     access: 'brand_project_tracking',
+    routes: [
+      {
+        path: PATH.brandProjectTracking,
+        component: './Brand/ProjectTracking',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.brandProjectTrackingDetail,
+        component: './Brand/ProjectTracking/ProjectTrackingDetail',
+        hideInMenu: true,
+      },
+    ],
   },
   {
     path: PATH.brandAdministration,
@@ -498,7 +567,7 @@ export default [
         name: 'brand.profile',
         icon: 'brand-icon.svg',
         access: 'brand_administration_brand_profile',
-        component: './Brand/Adminstration/BrandProfile',
+        component: '../features/office-profile',
       },
       {
         path: PATH.brandLocation,
@@ -589,11 +658,22 @@ export default [
         ],
       },
       {
-        path: PATH.brandSubscription,
-        name: 'brand.subscription',
-        icon: 'subscription-icon.svg',
-        component: './Admin',
-        access: 'brand_administration_subscription',
+        path: PATH.brandBilledServices,
+        name: 'brand.billed_services',
+        icon: 'billed-service-icon.svg',
+        access: 'brand_administration_billed_services',
+        routes: [
+          {
+            path: PATH.brandBilledServices,
+            component: './Brand/Adminstration/BilledServices',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.brandBilledServicesView,
+            component: './Brand/Adminstration/BilledServices/BilledServicesDetail',
+            hideInMenu: true,
+          },
+        ],
       },
     ],
   },
@@ -601,7 +681,7 @@ export default [
     path: PATH.designerHomePage,
     name: 'workspace',
     icon: 'workspace-icon.svg',
-    component: './Admin',
+    component: '../features/my-workspace',
     access: 'design_workspace',
   },
   {
@@ -625,7 +705,7 @@ export default [
         routes: [
           {
             path: PATH.designerBrandProduct,
-            component: './Designer/Products',
+            component: './Designer/Products/BrandProducts',
             hideInMenu: true,
           },
           {
@@ -636,11 +716,53 @@ export default [
         ],
       },
       {
-        path: PATH.designerCustomLibrary,
-        name: 'custom.library',
-        icon: 'design-firm-icon.svg',
-        component: './Admin',
+        path: PATH.designerCustomProduct,
+        name: 'library.resources',
+        icon: 'office-library-icon.svg',
         access: 'design_product_custom_library',
+        routes: [
+          {
+            path: PATH.designerCustomProduct,
+            component: './Designer/Products/CustomLibrary',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerCustomResource,
+            component: './Designer/CustomResource/CustomResource',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerCustomProductCreate,
+            component: './Designer/Products/CustomLibrary/ProductLibraryUpdate',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerCustomProductUpdate,
+            component: './Designer/Products/CustomLibrary/ProductLibraryUpdate',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerCustomProductDetail,
+            component: './Designer/Products/CustomLibrary/ProductLibraryDetail',
+            hideInMenu: true,
+          },
+
+          {
+            path: PATH.designerCustomResourceCreate,
+            component: './Designer/CustomResource/CustomResourceCreatePage',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerCustomResourceUpdate,
+            component: './Designer/CustomResource/CustomResourceCreatePage',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerCustomResourceDetail,
+            component: './Designer/CustomResource/CustomResourceViewPage',
+            hideInMenu: true,
+          },
+        ],
       },
     ],
   },
@@ -648,7 +770,7 @@ export default [
     path: PATH.designerProject,
     name: 'project',
     icon: 'project-icon.svg',
-    access: 'design_project',
+    access: 'design_project_overal_listing',
     routes: [
       {
         path: PATH.designerProject,
@@ -656,7 +778,7 @@ export default [
         hideInMenu: true,
       },
       {
-        path: PATH.designerCreateProject,
+        path: PATH.designerProjectCreate,
         hideInMenu: true,
         component: './Designer/Project/ProjectCreatePage',
       },
@@ -671,36 +793,83 @@ export default [
     path: PATH.designerAdminstration,
     name: 'adminstration',
     icon: 'adminstration-icon.svg',
-    component: './Admin',
     access: 'design_administration',
     routes: [
       {
         path: PATH.designerOfficeProfile,
         name: 'office.profile',
         icon: 'office-profile-icon.svg',
-        component: './Admin',
+        component: '../features/office-profile',
         access: 'design_administration_office_profile',
       },
       {
-        path: PATH.designerOfficeLocation,
+        path: PATH.designFirmLocation,
         name: 'location',
         icon: 'location-icon.svg',
-        component: './Admin',
         access: 'design_administration_location',
+        routes: [
+          {
+            path: PATH.designFirmLocation,
+            component: '../features/locations/components/LocationTable',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designFirmLocationCreate,
+            component: '../features/locations/components/LocationDetail',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designFirmLocationUpdate,
+            component: '../features/locations/components/LocationDetail',
+            hideInMenu: true,
+          },
+        ],
       },
       {
         path: PATH.designerOfficeTeamProfile,
         name: 'team.profile',
         icon: 'team-profile-icon.svg',
-        component: './Admin',
         access: 'design_administration_team_profile',
+        routes: [
+          {
+            path: PATH.designerOfficeTeamProfile,
+            component: '../features/team-profiles/components/TeamProfilesTable',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerOfficeTeamProfileCreate,
+            component: '../features/team-profiles/components/TeamProfilesEntryForm',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerOfficeTeamProfileUpdate,
+            component: '../features/team-profiles/components/TeamProfilesEntryForm',
+            hideInMenu: true,
+          },
+        ],
       },
       {
         path: PATH.designerMaterialProductCode,
         name: 'material/product.code',
         icon: 'material-product-code.svg',
-        component: './Admin',
         access: 'design_administration_material_product_code',
+        routes: [
+          {
+            path: PATH.designerMaterialProductCode,
+            component: './Designer/Adminstration/MaterialProductCode',
+            hideInMenu: true,
+          },
+          {
+            path: PATH.designerMaterialProductCodeCreate,
+            hideInMenu: true,
+            component: '../features/material-product-code/components/MaterialProductEntryForm',
+          },
+          {
+            path: PATH.designerMaterialProductCodeUpdate,
+            hideInMenu: true,
+            component: '../features/material-product-code/components/MaterialProductEntryForm',
+          },
+        ],
       },
     ],
   },

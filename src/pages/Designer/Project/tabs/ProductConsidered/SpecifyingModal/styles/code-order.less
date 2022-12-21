@@ -1,37 +1,49 @@
+.borderBottom {
+  box-shadow: @border-bottom-light;
+}
+.inputBorderBottom {
+  :global(.ant-input) {
+    box-shadow: none !important;
+  }
+}
+
 .inputColor {
   :global(.ant-input) {
+    .borderBottom();
+
     color: @primary-color-dark;
+    font-size: 12px;
+    border-bottom-color: transparent;
   }
   :global(.ant-input[disabled]) {
+    .borderBottom();
+
     overflow: hidden;
     color: @primary-color-dark;
     text-overflow: ellipsis;
     background: transparent;
-    border-bottom-color: rgba(0, 0, 0, 0.3);
+    border-bottom-color: transparent;
     cursor: pointer;
   }
+  :global(.ant-input:hover) {
+    border-bottom-color: transparent;
+  }
+  :global(.ant-input:focus) {
+    .borderBottom();
+  }
 }
-.overlayForm {
-  .inputColor {
-    padding: 8px 16px 0;
+.schedule {
+  .borderBottom();
 
-    :global(.ant-checkbox-group) {
-      :global(.item-wrapper-custom) {
-        height: 36px;
-        min-height: 36px !important;
-      }
+  height: 32px;
+  padding-left: 16px;
+}
 
-      > div:last-child {
-        position: sticky;
-        bottom: 0;
-        padding-bottom: 8px;
-        background: #fff;
-        box-shadow: @border-top-light;
-
-        :global(.ant-checkbox-wrapper) {
-          height: 40px;
-        }
-      }
-    }
+.fontSizeSmall {
+  :global(.item-wrapper-custom),
+  :global(.ant-checkbox-wrapper),
+  :global(.ant-radio-wrapper),
+  :global(.radio-label) {
+    font-size: 12px;
   }
 }

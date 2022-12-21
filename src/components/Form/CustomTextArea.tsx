@@ -17,6 +17,7 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
   maxLength,
   boxShadow,
   autoResize,
+  customClass = '',
   ...props
 }) => {
   const textarea: any = useRef();
@@ -54,11 +55,9 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
 
   return (
     <div
-      className={`
-        ${style['textarea-container']}
-        ${style[`${borderBottomColor}-border-bottom-color`]}
-        ${boxShadow ? style.boxShadow : ''}
-      `}>
+      className={`${style['textarea-container']} ${
+        style[`${borderBottomColor}-border-bottom-color`]
+      } ${boxShadow ? style.boxShadow : ''} ${customClass}`}>
       <Input.TextArea
         {...props}
         ref={textarea}

@@ -1,12 +1,24 @@
-import { AssigningStatus, AssigningStatusName } from '@/features/project/types';
+import { ProductDimensionWeight } from '@/features/dimension-weight/types';
+import {
+  OrderMethod,
+  ProductConsiderStatus,
+  ProductSpecifyStatus,
+  ProjectProductStatus,
+  SpecificationBodyRequest,
+} from '@/features/project/types';
 import { BrandDetail } from '@/features/user-group/types';
+import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
 import { ConversionSubValueProps, GeneralData } from '@/types';
+
+import { ProductTopBarFilter } from '../components/FilterAndSorter';
 
 export interface ProductSummary {
   categories: GeneralData[];
   collections: GeneralData[];
+  company: GeneralData[];
   category_count: number;
   collection_count: number;
+  company_count: number;
   card_count: number;
   product_count: number;
   brandId: string;
@@ -38,14 +50,64 @@ export interface ProductAttributeProps {
   basis_options?: SpecificationAttributeBasisOptionProps[];
 }
 
+export interface AttributeSelectedProps {
+  groupId: string;
+  attribute: {
+    id: string;
+    name: string;
+  };
+}
+
 export interface ProductAttributeFormInput {
   id?: string;
   name: string;
   attributes: ProductAttributeProps[];
   isChecked?: boolean;
+  selection: boolean;
+  attribute_selected_id?: string;
+}
+
+export enum Availability {
+  Available,
+  Discontinued,
+  Discrepancy,
+  OutOfStock,
 }
 
 export type ProductKeyword = [string, string, string, string];
+
+export interface SpecifiedDetail {
+  // basic information
+  id: string;
+  project_id: string;
+  product_id: string;
+  status?: ProjectProductStatus; // consider || specified
+  consider_status?: ProductConsiderStatus; // considered - default || re-considered || unlist
+  specified_status?: ProductSpecifyStatus; // specified - default || re-specify || cancel
+  // vendor
+  brand_location_id: string;
+  distributor_location_id: string;
+  /// order
+  material_code_id: string;
+  material_code: string;
+  suffix_code: string;
+  description: string;
+  quantity: number;
+  order_method: OrderMethod;
+  requirement_type_ids: string[];
+  instruction_type_ids: string[];
+  finish_schedules: FinishScheduleResponse[];
+  unit_type_id: string;
+  unit_type?: string;
+  special_instructions: string;
+  /// specification
+  specification: SpecificationBodyRequest;
+  /// allocation
+  allocation: string[]; // room_id
+  entire_allocation: boolean;
+
+  custom_product?: boolean;
+}
 
 export interface ProductItem {
   id: string;
@@ -62,27 +124,37 @@ export interface ProductItem {
   code?: string;
   is_liked?: boolean;
   description: string;
+  availability: Availability;
   general_attribute_groups: ProductAttributeFormInput[];
   feature_attribute_groups: ProductAttributeFormInput[];
   specification_attribute_groups: ProductAttributeFormInput[];
+  dimension_and_weight: ProductDimensionWeight;
   favorites?: number;
   images: string[];
   keywords: ProductKeyword;
   created_at?: string;
   created_by?: string;
-
-  // consider data
-  image?: string;
-  brand_id?: string;
-  brand_name?: string;
-  brand_logo?: string;
-  collection_name?: string;
-  status?: AssigningStatus;
-  status_name?: AssigningStatusName;
-  is_entire?: boolean;
-  project_zone_id?: string;
-  considered_id?: string;
+  // specifying
+  specifiedDetail?: SpecifiedDetail;
+  brand_location_id: string;
+  distributor_location_id: string;
+  tips: ProductTipData[];
+  downloads: ProductDownloadData[];
+  catelogue_downloads: ProductCatelogueData[];
+  custom_product?: boolean;
 }
+
+export interface RoomItem {
+  id: string;
+  room_id: string;
+  room_name: string;
+  room_size: number;
+  quantity: number;
+  sub_total: number;
+  products: ProductItem[];
+}
+
+export type ProjectProductItem = ProductItem & { rooms?: RoomItem[] };
 
 export interface ProductItemValue {
   id: string;
@@ -99,8 +171,12 @@ export interface ProductFormData {
   general_attribute_groups: ProductAttributeFormInput[];
   feature_attribute_groups: ProductAttributeFormInput[];
   specification_attribute_groups: ProductAttributeFormInput[];
+  dimension_and_weight: ProductDimensionWeight;
   images: string[];
   keywords: ProductKeyword;
+  tips: ProductTipData[];
+  downloads: ProductDownloadData[];
+  catelogue_downloads: ProductCatelogueData[];
 }
 export interface RelatedCollection {
   id: string;
@@ -114,6 +190,7 @@ export interface ProductGetListParameter {
   brand_id: string;
   category_id?: string;
   collection_id?: string;
+  company_id?: string;
 }
 
 export interface GroupProductList {
@@ -130,14 +207,6 @@ export interface BrandSummary {
   product_count: number;
   brand_logo: string;
   brand_name: string;
-}
-
-export type ProductFilterType = 'category_id' | 'collection_id' | 'brand_id' | 'name';
-
-export interface ProductTopBarFilter {
-  name: ProductFilterType;
-  title: string;
-  value: string;
 }
 
 export type SortOrder = 'ASC' | 'DESC';
@@ -196,4 +265,19 @@ export interface ProductTip {
   product_id?: string;
   contents: ProductTipData[];
   created_at?: string;
+}
+
+/// inquiry-request
+export interface GeneralInquiryForm {
+  product_id: string;
+  title: string;
+  message: string;
+  inquiry_for_ids: string[];
+}
+export interface ProjectRequestForm {
+  project_id: string;
+  product_id: string;
+  title: string;
+  message: string;
+  request_for_ids: string[];
 }

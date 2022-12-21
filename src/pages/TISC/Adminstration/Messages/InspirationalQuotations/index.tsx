@@ -16,7 +16,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 
 const InspirationalQuotationsList: React.FC = () => {
-  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
+  useAutoExpandNestedTableColumn(0, [2]);
   const tableRef = useRef<any>();
 
   const handleUpdateQuotation = (id: string) => {
@@ -40,7 +40,7 @@ const InspirationalQuotationsList: React.FC = () => {
       sorter: true,
     },
     {
-      title: 'Indentity ',
+      title: 'Identity ',
       dataIndex: 'identity',
     },
     {

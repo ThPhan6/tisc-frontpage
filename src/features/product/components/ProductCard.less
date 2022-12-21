@@ -113,7 +113,7 @@
         .rightAction {
           cursor: pointer;
           :not(:last-child) {
-            margin-right: 8px;
+            margin-right: 10px;
           }
         }
         .leftAction {
@@ -121,10 +121,22 @@
           :not(:first-child) {
             margin-left: 8px;
           }
+
+          :global(.ant-dropdown-trigger) {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+          }
+
+          .actionMenu {
+            svg {
+              margin-left: 0;
+            }
+          }
         }
       }
       &.border {
-        box-shadow: @border-all-light;
+        border: 1px solid @mono-color-medium;
       }
 
       &.disabled {
@@ -191,5 +203,19 @@
 
   :global(.ant-collapse-content-box) {
     padding: 8px 0 0 !important;
+  }
+}
+
+.actionMenuOverLay {
+  width: 160px;
+  :global(.tisc-dropdown-item) {
+    div {
+      min-height: 36px;
+      box-shadow: none;
+    }
+
+    :global(.false) {
+      box-shadow: 0 -1px @mono-color-medium;
+    }
   }
 }

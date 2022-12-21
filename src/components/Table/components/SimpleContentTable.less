@@ -1,0 +1,29 @@
+.table {
+  margin-bottom: 8px;
+
+  > div {
+    padding: 8.5px 16px;
+    background-color: #fff;
+    box-shadow: @border-bottom-light;
+
+    &:not(:last-child) {
+      margin-bottom: 8px;
+    }
+
+    div:first-child {
+      padding-right: 8px;
+      span {
+        font-size: 14px;
+        font-family: @font-secondary;
+      }
+    }
+    div:last-child span {
+      font-size: 12px;
+      font-family: @font-primary;
+    }
+  }
+  &.noPadding > div {
+    margin-bottom: 0;
+    padding: 8.5px 0;
+  }
+}

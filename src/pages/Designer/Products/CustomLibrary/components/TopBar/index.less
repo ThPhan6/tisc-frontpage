@@ -1,0 +1,22 @@
+.fontBold {
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.colorDark {
+  :global(.active) {
+    color: @mono-color-medium;
+  }
+
+  :global(.mono-color-medium) {
+    path {
+      fill: @mono-color-medium !important;
+    }
+  }
+}
+
+.hideDeleteIcon {
+  > span :first-child {
+    display: none;
+  }
+}

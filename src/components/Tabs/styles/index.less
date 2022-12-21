@@ -8,6 +8,7 @@
     font-size: 12px;
     line-height: 22px;
     text-transform: uppercase;
+    user-select: none;
   }
   :global(.ant-tabs-nav-operations) {
     display: none !important;
@@ -46,7 +47,7 @@
   :global(.ant-tabs-tab-btn) {
     display: flex;
     align-items: center;
-    justify-content: right;
+    justify-content: flex-end;
   }
   :global(.ant-tabs-left > .ant-tabs-nav .ant-tabs-tab + .ant-tabs-tab, ) {
     margin: 0;
@@ -66,7 +67,7 @@
   .item-tab {
     display: inline-flex;
     align-items: center;
-    justify-content: right;
+    justify-content: flex-end;
     padding-right: 12px;
   }
 }

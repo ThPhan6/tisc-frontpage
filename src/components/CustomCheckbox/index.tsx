@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { Checkbox } from 'antd';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
@@ -11,17 +11,24 @@ import style from './styles/index.less';
 export const CustomCheckbox: FC<CustomCheckboxProps> = ({
   direction,
   otherInput,
+  clearOtherInput,
   inputPlaceholder = 'type here',
   options,
   onChange,
   isCheckboxList,
   selected,
-  checkboxClass,
+  checkboxClass = '',
   heightItem = '32px',
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
   const [randomId] = useState(Math.random().toString().replace(/[\D]+/g, ''));
+
+  useEffect(() => {
+    if (otherInput && clearOtherInput) {
+      setInputValue('');
+    }
+  }, [otherInput && clearOtherInput]);
 
   const onChangeValue = (checkedValues: CheckboxValueType[]) => {
     const haveOtherInput = checkedValues.some((checkbox) => checkbox === 'other');
@@ -59,7 +66,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
         }) || [];
     }
 
-    onChange?.(newData ?? []);
+    onChange?.(newData.filter((el) => el.label !== '') ?? []);
   };
 
   const getActiveClass = (option: CheckboxValue) => {
@@ -71,13 +78,10 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
 
   return (
     <div
-      className={`
-        ${style[`checkbox-${direction}`]}
-        ${style['checkbox-list']}
-        ${isCheckboxList && style['item-list-checkbox']}
-        ${style['color-checkbox-checked']}
-        ${checkboxClass}
-      `}>
+      className={`${style[`checkbox-${direction}`]} ${style['checkbox-list']} ${
+        isCheckboxList && style['item-list-checkbox']
+      } ${style['color-checkbox-checked']} ${checkboxClass}`}
+      onClick={(e) => e.stopPropagation()}>
       <Checkbox.Group
         {...props}
         value={selected?.map((item) => item.value) ?? []}
@@ -89,7 +93,9 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                 className={`${style['item-wrapper']} ${'item-wrapper-custom'}`}
                 style={{ minHeight: heightItem }}
                 htmlFor={`${option.value}_${index}_${randomId}`}>
-                <div style={{ width: '100%' }} className={getActiveClass(option)}>
+                <div
+                  style={{ width: '100%', paddingRight: '16px' }}
+                  className={getActiveClass(option)}>
                   {option.label}
                 </div>
                 <Checkbox id={`${option.value}_${index}_${randomId}`} {...option} />
@@ -105,7 +111,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
             )}
           </div>
         ))}
-        {otherInput && (
+        {otherInput ? (
           <div className={isCheckboxList && style['other-field-checkbox-list']}>
             <Checkbox value={'other'}>
               <div className={style['input-wrapper']} style={{ height: heightItem }}>
@@ -115,12 +121,11 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   placeholder={inputPlaceholder}
                   value={inputValue}
                   onChange={onChangeInputValue}
-                  // onClick={handleClickInput}
                 />
               </div>
             </Checkbox>
           </div>
-        )}
+        ) : null}
       </Checkbox.Group>
     </div>
   );

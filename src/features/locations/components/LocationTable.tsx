@@ -1,11 +1,12 @@
 import React, { useRef } from 'react';
 
 import { PATH } from '@/constants/path';
+import { USER_ROLE } from '@/constants/userRoles';
 
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { useCheckPermission } from '@/helper/hook';
+import { useGetUserRoleFromPathname } from '@/helper/hook';
 import { formatPhoneCode, getValueByCondition, setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
@@ -18,23 +19,27 @@ import { ActionMenu } from '@/components/TableAction';
 import { deleteLocationById, getLocationPagination } from '@/features/locations/api';
 
 const LocationTable: React.FC = () => {
-  useAutoExpandNestedTableColumn(0, { rightColumnExcluded: 1 });
+  useAutoExpandNestedTableColumn(0, [5]);
   const tableRef = useRef<any>();
 
-  const isTISCAdmin = useCheckPermission('TISC Admin');
-  const isBrandAdmin = useCheckPermission('Brand Admin');
+  const currentUser = useGetUserRoleFromPathname();
+  const isTiscUser = currentUser === USER_ROLE.tisc;
+  const isBrandUser = currentUser === USER_ROLE.brand;
+  const isDesignerUser = currentUser === USER_ROLE.design;
   /// for user role path
   const userCreateRolePath = getValueByCondition(
     [
-      [isTISCAdmin, PATH.tiscLocationCreate],
-      [isBrandAdmin, PATH.brandLocationCreate],
+      [isTiscUser, PATH.tiscLocationCreate],
+      [isBrandUser, PATH.brandLocationCreate],
+      [isDesignerUser, PATH.designFirmLocationCreate],
     ],
     '',
   );
   const userUpdateRolePath = getValueByCondition(
     [
-      [isTISCAdmin, PATH.tiscLocationUpdate],
-      [isBrandAdmin, PATH.brandLocationUpdate],
+      [isTiscUser, PATH.tiscLocationUpdate],
+      [isBrandUser, PATH.brandLocationUpdate],
+      [isDesignerUser, PATH.designFirmLocationUpdate],
     ],
     '',
   );
@@ -89,6 +94,7 @@ const LocationTable: React.FC = () => {
     {
       title: 'Teams',
       dataIndex: 'teams',
+      align: 'center',
       width: '5%',
     },
     {
@@ -121,7 +127,7 @@ const LocationTable: React.FC = () => {
         ref={tableRef}
         rightAction={<CustomPlusButton onClick={handleCreateLocation} />}
         title={'LOCATIONS'}
-        columns={setDefaultWidthForEachColumn(mainColumns, 6)}
+        columns={setDefaultWidthForEachColumn(mainColumns, 5)}
         fetchDataFunc={getLocationPagination}
         hasPagination
       />

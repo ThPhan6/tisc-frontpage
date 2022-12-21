@@ -5,6 +5,7 @@ export const MESSAGE_ERROR = {
   PHONE_INPUT: 'Invalid phone number',
   POSTAL_CODE: 'You are allowed to enter 10 characters only',
   reachLogoSizeLimit: 'Logo size limit reached (240 KB)',
+  reachSizeLimit: 'Image size limit reached (240 KB)',
   WORK_EMAIL: 'Work email is required',
   GENERAL_EMAIL: 'General email is required',
   EMAIL_AUTO: 'Message is required',
@@ -18,6 +19,9 @@ export const MESSAGE_ERROR = {
   EMAIL_REQUIRED: 'Email is required',
   EMAIL_ALREADY_USED: 'Email already taken',
   NO_TEAMPROFILE: 'Add member to invite',
+  DOCUMENT_TITLE: 'You are allowed to enter 50 characters only',
+  DISTRIBUTOR_UNAVAILABLE:
+    'The product seems not available for the project location, please verify with the Brand company for more information.',
 };
 
 export const MESSAGE_NOTIFICATION = {
@@ -59,10 +63,18 @@ export const MESSAGE_NOTIFICATION = {
   DUPLICATE_PRODUCT_SUCCESS: 'Duplicate product successfully',
   DUPLICATE_PRODUCT_ERROR: 'Failed to duplicate product',
   GET_ONE_PRODUCT_ERROR: 'Failed to get product information',
+  /// share via email
   GET_SHARING_GROUPS_ERROR: 'Failed to get sharing groups',
   GET_SHARING_PURPOSES_ERROR: 'Failed to get sharing purposes',
   CREATE_SHARE_VIA_EMAIL_SUCCESS: 'Shared via email successfully',
   CREATE_SHARE_VIA_EMAIL_ERROR: 'Failed to share via email',
+  /// inquiry/request
+  GET_INQUIRY_REQUEST_FOR_ERROR: 'Failed to get inquiry/request for list',
+  GET_PROJECT_NAME_ERROR: 'Failed to get project name',
+  CREATE_GENERAL_INQUIRY_SUCCESS: 'Create general inquiry successfully',
+  CREATE_GENERAL_INQUIRY_ERROR: 'Failed to create general inquiry',
+  CREATE_PROJECT_REQUEST_SUCCESS: 'Create project request successfully',
+  CREATE_PROJECT_REQUEST_ERROR: 'Failed to create project request',
 
   // product catelogue
   CREATE_PRODUCT_CATELOGUE_SUCCESS: 'Create product catelogue successfully',
@@ -78,6 +90,9 @@ export const MESSAGE_NOTIFICATION = {
   CREATE_PRODUCT_TIP_SUCCESS: 'Create product tip successfully',
   CREATE_PRODUCT_TIP_ERROR: 'Failed to create product tip',
   GET_PRODUCT_TIP_BY_PRODUCT_ID_ERROR: 'Failed to get product tips',
+
+  // product dimension weight
+  GET_LIST_DIMENSION_WEIGHT_ERROR: 'Get list dimension and weight error',
 
   // ATTRIBUTE
   GET_ATTRRIBUTE_DATA_FAILED: 'Failed to get attribute data',
@@ -117,6 +132,17 @@ export const MESSAGE_NOTIFICATION = {
   UPDATE_PRESET_ERROR: 'Update preset error',
   GET_ONE_PRESET_ERROR: 'Get one preset error',
 
+  /// general inquiry
+  GET_GENERAL_INQUIRY_SUMMARY_ERROR: 'Failed to get general inquiry summary',
+  GET_GENERAL_INQUIRY_LIST_FAILED: 'Failed to get general inquiry data',
+
+  // actions/tasks
+  GET_ACTION_TASK_DATA_ERROR: 'Failed to get action task data',
+  GET_ACTION_TASK_LIST_ERROR: 'Failed to get action task list',
+  CREATE_ACTION_TASK_SUCCESS: 'Create action task successfully',
+  CREATE_ACTION_TASK_ERROR: 'Failed to create action task',
+  UPDATE_ACTION_TASK_STATUS_ERROR: 'Failed to update action task status',
+
   // department
   GET_LIST_DEPARTMENT_ERROR: 'Get list department error',
 
@@ -138,8 +164,8 @@ export const MESSAGE_NOTIFICATION = {
   GET_PROJECTS_BY_DESIGN_FIRM: 'Failed to get projects by design firm',
   GET_MATERIAL_CODE_BY_DESIGN_FIRM: 'Failed to get material code by design firm',
   GET_DESIGN_STATUSES_ERROR: 'Failed to get statuses',
-  UPDATE_STATUS_DESIGN_FIRM_SUCCESS: 'Update status design firm successfully',
-  UPDATE_STATUS_DESIGN_FIRM_ERROR: 'Update status design firm error',
+  UPDATE_STATUS_DESIGN_FIRM_SUCCESS: 'Update design firm status successfully',
+  UPDATE_STATUS_DESIGN_FIRM_ERROR: 'Update design firm status error',
 
   // team profile
   GET_LIST_TEAM_PROFILE_ERROR: 'Get list team profile error',
@@ -168,7 +194,10 @@ export const MESSAGE_NOTIFICATION = {
   // configuration
   GET_BRAND_DATA_ERROR: 'Failed to get Brand data',
   GET_BRAND_SUMMARY_DATA_ERROR: 'Failed to get Brand summary data',
+  CREATE_BRAND_COLLECTION_SUCCESS: 'Create new Brand collection successfully',
   CREATE_BRAND_COLLECTION_ERROR: 'Failed to create Brand collection',
+  UPDATE_BRAND_COLLECTION_SUCCESS: 'Update Brand collection successfully',
+  UPDATE_BRAND_COLLECTION_ERROR: 'Failed to update Brand collection',
   GET_BRAND_COLLECTION_ERROR: 'Failed to get Brand collection data',
   DELETE_BRAND_COLLECTION_SUCCESS: 'Delete collection successfully',
   DELETE_BRAND_COLLECTION_ERROR: 'Failed to delete collection',
@@ -223,11 +252,12 @@ export const MESSAGE_NOTIFICATION = {
   GET_ONE_DISTRIBUTOR_ERROR: 'Get one distributor error',
   GET_LIST_DISTRIBUTOR_GROUP_COUNTRY_ERROR: 'Get list group distributor country error',
 
-  //brand-profile
-  UPDATE_BRAND_PROFILE_SUCCESS: 'Update profile successfully',
-  UPDATE_BRAND_PROFILE_ERROR: 'Update profile error',
-  UPDATE_LOGO_BRAND_PROFILE_SUCCESS: 'Update logo brand profile successfully',
-  UPDATE_LOGO_BRAND_PROFILE_ERROR: 'Update logo brand profile error',
+  //brand-profile // office profile
+  GET_PROFILE_ERROR: 'Get profile error',
+  UPDATE_PROFILE_SUCCESS: 'Update profile successfully',
+  UPDATE_PROFILE_ERROR: 'Update profile error',
+  UPDATE_LOGO_PROFILE_SUCCESS: 'Update logo profile successfully',
+  UPDATE_LOGO_PROFILE_ERROR: 'Update logo profile error',
 
   //FAQ
   GET_FAQ_ERROR: 'Failed to get FAQ data',
@@ -267,6 +297,56 @@ export const MESSAGE_NOTIFICATION = {
   RETRIEVE_FAVOURITE_PRODUCT_ERROR: 'Retrieve favourite product error',
   SKIP_FAVOURITE_SUCCESS: 'Skipped Successfully',
   SKIP_FAVOURITE_ERROR: 'Failed to skip',
+
+  //material/product code
+  CREATE_MATERIAL_PRODUCT_CODE_SUCCESS: 'Create material product code successfully',
+  CREATE_MATERIAL_PRODUCT_CODE_ERROR: 'Create material product code error',
+  GET_ONE_MATERIAL_PRODUCT_CODE_ERROR: 'Get one material product code error',
+  DELETE_MATERIAL_PRODUCT_CODE_SUCCESS: 'Delete material product code successfully',
+  DELETE_MATERIAL_PRODUCT_CODE_ERROR: 'Delete material product code error',
+  UPDATE_MATERIAL_PRODUCT_CODE_SUCCESS: 'Update material product code successfully',
+  UPDATE_MATERIAL_PRODUCT_CODE_ERROR: 'Update material product code error',
+
+  //project tracking
+  GET_PROJECT_TRACKING_LIST_FAILED: 'Failed to get project tracking data',
+  UPDATE_PROJECT_TRACKING_INFO_SUCCESS: 'Update project tracking information successfully',
+  UPDATE_PROJECT_TRACKING_INFO_ERROR: 'Update project tracking info error',
+  GET_PROJECT_TRACKING_SUMMARY_ERROR: 'Get project tracking summary error',
+  GET_ONE_PROJECT_TRACKING_ERROR: 'Get one project tracking error',
+
+  //project listing
+  GET_PROJECT_LISTING_FAILED: 'Failed to get project listing data',
+  GET_PROJECT_LISTING_SUMMARY_ERROR: 'Get project listing summary error',
+  GET_ONE_PROJECT_LISTING_ERROR: 'Get one project listing error',
+
+  // custom product
+  GET_LIST_CUSTOM_PRODUCT_LIST_ERROR: 'Failed to get product list',
+  GET_ONE_CUSTOM_PRODUCT_LIST_ERROR: 'Failed to get product',
+  CREATE_CUSTOM_PRODUCT_SUCCESS: 'Create product successfully',
+  CREATE_CUSTOM_PRODUCT_ERROR: 'Failed to create product',
+  UPDATE_CUSTOM_PRODUCT_SUCCESS: 'Update product successfully',
+  UPDATE_CUSTOM_PRODUCT_ERROR: 'Failed to update product',
+  DELETE_CUSTOM_PRODUCT_SUCCESS: 'Delete product successfully',
+  DELETE_CUSTOM_PRODUCT_ERROR: 'Failed to delete product',
+  DUPLICATE_CUSTOM_PRODUCT_SUCCESS: 'Duplicate product successfully',
+  DUPLICATE_CUSTOM_PRODUCT_ERROR: 'Failed to duplicate product',
+  GET_LIST_VENDOR: 'Failed to get list vendor by brand or distributor',
+  CREATE_CUSTOM_RESOURCE_SUCCESS: 'Create vendor information successfully',
+  UPDATE_CUSTOM_RESOURCE_SUCCESS: 'Update vendor information successfully',
+  DELETE_CUSTOM_RESOURCE_SUCCESS: 'Delete vendor information successfully',
+
+  //service
+  CREATE_SERVICE_SUCCESS: 'Create service successfully',
+  UPDATE_SERVICE_SUCCESS: 'Update service successfully',
+  SENT_BILL_SUCCESS: 'Sent bill to brand successfully',
+  SENT_REMIND_SUCCESS: 'Sent reminder to brand successfully',
+  MARK_AS_PAID_SUCCESS: 'Mark as paid successfully',
+  DELETE_SERVICE_SUCCESS: 'Delete service successfully',
+
+  //schedule booking
+  CREATE_BOOKING_SUCCESS: 'Book a demo successfully',
+  CANCEL_BOOKING_SUCCESS: 'Cancel booking successfully',
+  UPDATE_BOOKING_SUCCESS: 'Update booking successfully',
 };
 
 export const MESSAGE_TOOLTIP = {
