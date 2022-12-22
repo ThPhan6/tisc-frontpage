@@ -115,6 +115,7 @@ const RevenueService = () => {
       render: (_value, record) => {
         return (
           <ActionMenu
+            editActionOnMobile={false}
             actionItems={[
               {
                 type: 'billing',
