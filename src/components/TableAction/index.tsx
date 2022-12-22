@@ -32,7 +32,7 @@ interface ActionFormProps extends HeaderDropdownProps {
   actionIcon?: JSX.Element;
   offsetAlign?: [number, number];
   containerStyle?: CSSProperties;
-  isMobileScreen?: boolean;
+  editActionOnMobile?: boolean;
 }
 
 const DEFAULT_ACTION_INFO: {
@@ -91,7 +91,7 @@ export const ActionMenu: FC<ActionFormProps> = ({
   arrow = true,
   placement = 'bottomRight',
   containerStyle,
-  isMobileScreen = true,
+  editActionOnMobile = true,
   ...props
 }) => {
   const isMobile = useScreen().isMobile;
@@ -101,7 +101,7 @@ export const ActionMenu: FC<ActionFormProps> = ({
     label: item.label || DEFAULT_ACTION_INFO[item.type].label,
   }));
 
-  if (isMobile && isMobileScreen) {
+  if (isMobile && editActionOnMobile) {
     return (
       <EditIcon
         onClick={(e) => {
