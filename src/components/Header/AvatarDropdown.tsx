@@ -6,7 +6,7 @@ import DefaultAvatarIcon from '@/assets/icons/ic-user-white.svg';
 import { ReactComponent as LogOutIcon } from '@/assets/icons/outside-icon.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon.svg';
 
-import { useCheckMobile } from '@/helper/common';
+import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
 import { getFullName, showImageUrl } from '@/helper/utils';
@@ -25,7 +25,7 @@ export const AvatarDropdown = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
   const showHeaderDropdown = useBoolean();
 
-  const isMobile = useCheckMobile();
+  const { isMobile } = useScreen();
 
   const loginOut = async () => {
     setInitialState((s) => ({ ...s, currentUser: undefined }));

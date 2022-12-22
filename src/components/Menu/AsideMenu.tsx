@@ -9,7 +9,7 @@ import { ReactComponent as AlignLeftIcon } from '@/assets/icons/align-left-icon.
 import { ReactComponent as AlignRightIcon } from '@/assets/icons/align-right-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 
-import { useCheckMobile } from '@/helper/common';
+import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { uniq } from 'lodash';
 
@@ -151,7 +151,7 @@ export const SiderMenu: FC<{ appProps: any; menu?: MenuDataItem[]; onClose?: () 
 };
 
 const AsideMenu: React.FC = (props: HeaderViewProps) => {
-  const isMobile = useCheckMobile();
+  const { isMobile } = useScreen();
 
   const appProps: any = props.children;
   //
