@@ -42,8 +42,8 @@ import styles from './index.less';
 const BrandProfilePage = () => {
   const { fetchUserInfo } = useCustomInitialState();
 
-  const isBrandAdmin = useCheckPermission('Brand Admin');
-  const isDesignAdmin = useCheckPermission('Design Admin');
+  const isBrand = useCheckPermission(['Brand Admin', 'Brand Team']);
+  const isDesign = useCheckPermission(['Design Admin', 'Design Team']);
 
   const brandAppState = useAppSelector((state) => state.user.user?.brand);
   const designAppState = useAppSelector((state) => state.user.user?.design);
@@ -52,7 +52,7 @@ const BrandProfilePage = () => {
   const [loadedData, setLoadedData] = useState(false);
 
   const [fileInput, setFileInput] = useState<any>();
-  const userLogo = isBrandAdmin ? brandAppState?.logo : designAppState?.logo;
+  const userLogo = isBrand ? brandAppState?.logo : designAppState?.logo;
   const [currentLogo, setCurrentLogo] = useState<string>(userLogo ?? PlaceHolderImage);
 
   /// for brand office profile
@@ -77,7 +77,7 @@ const BrandProfilePage = () => {
   }, [isSubmitted.value === true]);
 
   useEffect(() => {
-    if (isDesignAdmin) {
+    if (isDesign) {
       if (designAppState) {
         setDesignFirmProfile({
           name: designAppState.name ?? '',
@@ -100,13 +100,12 @@ const BrandProfilePage = () => {
           );
         }
       });
-
       setLoadedData(true);
     }
   }, [designAppState]);
 
   useEffect(() => {
-    if (isBrandAdmin) {
+    if (isBrand) {
       if (brandAppState) {
         setBrandProfile({
           mission_n_vision: brandAppState.mission_n_vision,
@@ -121,7 +120,7 @@ const BrandProfilePage = () => {
   }, [brandAppState]);
 
   const onChangeValueForm = (e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) => {
-    if (isBrandAdmin) {
+    if (isBrand) {
       setBrandProfile({ ...brandProfile, [e.target.name]: e.target.value });
     }
 
@@ -158,14 +157,14 @@ const BrandProfilePage = () => {
   const handleUpdateLogo = () => {
     const formData: any = new FormData();
     formData.append('logo', fileInput);
-    if (isBrandAdmin) {
+    if (isBrand) {
       updateLogoBrandProfile(formData).then((res) => {
         if (res) {
           fetchUserInfo();
         }
       });
     }
-    if (isDesignAdmin) {
+    if (isDesign) {
       setDesignFirmProfile({ ...designFirmProfile, logo: formData });
     }
   };
@@ -187,7 +186,7 @@ const BrandProfilePage = () => {
         .then((base64Image) => {
           setCurrentLogo(base64Image); // only set to show, haven't added to data
 
-          if (isDesignAdmin) {
+          if (isDesign) {
             setDesignFirmProfile({ ...designFirmProfile, logo: base64Image.split(',')[1] });
           }
         })
@@ -199,7 +198,7 @@ const BrandProfilePage = () => {
   };
 
   const onSubmitForm = () => {
-    if (isBrandAdmin) {
+    if (isBrand) {
       switch (true) {
         case !brandProfile.name:
           message.error('Brand Name is required');
@@ -218,7 +217,7 @@ const BrandProfilePage = () => {
       }
     }
 
-    if (isDesignAdmin) {
+    if (isDesign) {
       switch (true) {
         case !designFirmProfile.name:
           message.error('Design Firm Name is required');
@@ -240,7 +239,7 @@ const BrandProfilePage = () => {
       }
     }
 
-    const updateData = isBrandAdmin
+    const updateData = isBrand
       ? updateBrandProfile({
           name: brandProfile.name?.trim() ?? '',
           parent_company: brandProfile.parent_company?.trim() ?? '',
@@ -282,23 +281,21 @@ const BrandProfilePage = () => {
         <Col span={12}>
           <div className={styles.container}>
             <div className={styles.formTitle}>
-              <Title level={8}>{isBrandAdmin ? 'BRAND PROFILE' : 'OFFICE PROFILE'}</Title>
+              <Title level={8}>{isBrand ? 'BRAND PROFILE' : 'OFFICE PROFILE'}</Title>
             </div>
 
             <div className={styles.form}>
               <FormGroup
-                label={isBrandAdmin ? 'Brand Name' : 'Design Firm Name'}
+                label={isBrand ? 'Brand Name' : 'Design Firm Name'}
                 layout="vertical"
                 required
                 formClass={styles.customFormGroup}>
                 <CustomInput
                   borderBottomColor="mono-medium"
-                  placeholder={
-                    isBrandAdmin ? 'registered name/trademark' : 'registered company name'
-                  }
+                  placeholder={isBrand ? 'registered name/trademark' : 'registered company name'}
                   name="name"
                   onChange={onChangeValueForm}
-                  value={isBrandAdmin ? brandProfile.name : designFirmProfile.name}
+                  value={isBrand ? brandProfile.name : designFirmProfile.name}
                 />
               </FormGroup>
 
@@ -311,9 +308,7 @@ const BrandProfilePage = () => {
                   placeholder="holding company name, if any"
                   name="parent_company"
                   onChange={onChangeValueForm}
-                  value={
-                    isBrandAdmin ? brandProfile.parent_company : designFirmProfile.parent_company
-                  }
+                  value={isBrand ? brandProfile.parent_company : designFirmProfile.parent_company}
                 />
               </FormGroup>
 
@@ -341,38 +336,36 @@ const BrandProfilePage = () => {
               <FormGroup label="Slogan" layout="vertical" formClass={styles.customFormGroup}>
                 <CustomInput
                   borderBottomColor="mono-medium"
-                  placeholder={isBrandAdmin ? 'brand slogan, if any' : 'design slogan, if any'}
+                  placeholder={isBrand ? 'brand slogan, if any' : 'design slogan, if any'}
                   name="slogan"
                   onChange={onChangeValueForm}
-                  value={isBrandAdmin ? brandProfile.slogan : designFirmProfile.slogan}
+                  value={isBrand ? brandProfile.slogan : designFirmProfile.slogan}
                 />
               </FormGroup>
 
               <FormGroup
-                label={isBrandAdmin ? 'Mission & Vision' : 'Profile & Philosophy'}
+                label={isBrand ? 'Mission & Vision' : 'Profile & Philosophy'}
                 layout="vertical"
                 required
                 formClass={styles.customFormArea}>
                 <CustomTextArea
                   placeholder={
-                    isBrandAdmin
+                    isBrand
                       ? 'maximum 250 words of brand history, story, and unique product/service offerings'
                       : 'maximum 250 words of firm design practice, philiosophy, service offerings, and unique capacity'
                   }
                   showCount
                   maxLength={250}
                   borderBottomColor="mono-medium"
-                  name={isBrandAdmin ? 'mission_n_vision' : 'profile_n_philosophy'}
+                  name={isBrand ? 'mission_n_vision' : 'profile_n_philosophy'}
                   onChange={onChangeValueForm}
                   value={
-                    isBrandAdmin
-                      ? brandProfile.mission_n_vision
-                      : designFirmProfile.profile_n_philosophy
+                    isBrand ? brandProfile.mission_n_vision : designFirmProfile.profile_n_philosophy
                   }
                 />
               </FormGroup>
 
-              {isBrandAdmin ? (
+              {isBrand ? (
                 <div className={styles.website}>
                   <FormGroup label="Offical Website" required formClass={styles.customText}>
                     <div className={styles.rightWebsite}>

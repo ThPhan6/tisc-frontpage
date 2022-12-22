@@ -1,12 +1,13 @@
 import { useRef } from 'react';
 
 import { PATH } from '@/constants/path';
+import { USER_ROLE } from '@/constants/userRoles';
 import { USER_STATUS_TEXTS } from '@/constants/util';
 
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { useCheckPermission } from '@/helper/hook';
+import { useGetUserRoleFromPathname } from '@/helper/hook';
 import {
   formatPhoneCode,
   getFullName,
@@ -30,21 +31,22 @@ const TeamProfilesTable = () => {
   const tableRef = useRef<any>();
   const userId = useAppSelector((state) => state.user.user?.id);
 
-  const isTISCAdmin = useCheckPermission('TISC Admin');
-  const isBrandAdmin = useCheckPermission('Brand Admin');
-  const isDesignAdmin = useCheckPermission('Design Admin');
+  const currentUser = useGetUserRoleFromPathname();
+  const isTiscUser = currentUser === USER_ROLE.tisc;
+  const isBrandUser = currentUser === USER_ROLE.brand;
+  const isDesignerUser = currentUser === USER_ROLE.design;
 
   /// for user role path
   const userCreateRolePath = getValueByCondition([
-    [isTISCAdmin, PATH.tiscCreateTeamProfile],
-    [isBrandAdmin, PATH.brandCreateTeamProfile],
-    [isDesignAdmin, PATH.designerOfficeTeamProfileCreate],
+    [isTiscUser, PATH.tiscCreateTeamProfile],
+    [isBrandUser, PATH.brandCreateTeamProfile],
+    [isDesignerUser, PATH.designerOfficeTeamProfileCreate],
   ]);
 
   const userUpdateRolePath = getValueByCondition([
-    [isTISCAdmin, PATH.tiscUpdateTeamProfile],
-    [isBrandAdmin, PATH.brandUpdateTeamProfile],
-    [isDesignAdmin, PATH.designerOfficeTeamProfileUpdate],
+    [isTiscUser, PATH.tiscUpdateTeamProfile],
+    [isBrandUser, PATH.brandUpdateTeamProfile],
+    [isDesignerUser, PATH.designerOfficeTeamProfileUpdate],
   ]);
 
   const handleUpdateTeamProfile = (id: string) => {
@@ -89,7 +91,7 @@ const TeamProfilesTable = () => {
       dataIndex: 'email',
     },
 
-    !isDesignAdmin
+    !isDesignerUser
       ? {
           title: 'Work Phone',
           dataIndex: 'phone',

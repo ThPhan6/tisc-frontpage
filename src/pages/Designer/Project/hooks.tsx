@@ -176,7 +176,7 @@ export const onCellUnlisted = (data: any) => ({
 export const onCellCancelled = (data: any) => ({
   className: `${
     data.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled
-      ? 'light-content'
+      ? 'strike-through'
       : undefined
   } ${data.rooms || data.room_id ? '' : 'no-box-shadow'}`,
 });

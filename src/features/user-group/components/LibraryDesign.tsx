@@ -23,7 +23,7 @@ import { BodyText } from '@/components/Typography';
 import indexStyles from '../styles/index.less';
 import { CollapseLevel1Props, CollapseLevel2Props } from './ExpandIcon';
 import styles from './LibraryDesign.less';
-import { DimensionWeight } from '@/features/dimension-weight';
+import { AttributeConversionText } from '@/features/dimension-weight/AttributeConversionText';
 
 interface LabelHeaderProps {
   firstValue: string;
@@ -170,16 +170,19 @@ const DetailItem: FC<DetailItemProps> = ({ detailItems, type }) => {
             ))}
           </FormGroup>
           <FormGroup label="Dimension & Weight" labelColor="mono-color-dark" layout="vertical">
-            {item.dimension_and_weight?.attributes.length ? (
-              <DimensionWeight
-                isShow
-                editable={false}
-                collapseStyles={false}
-                isConversionText
-                data={item.dimension_and_weight}
-                customClass={styles.headerCollapse}
-              />
-            ) : null}
+            <table className={styles.tableContent}>
+              <tbody>
+                {item.dimension_and_weight && item.dimension_and_weight?.attributes.length
+                  ? item.dimension_and_weight.attributes.map((conversionItem, index) => (
+                      <AttributeConversionText
+                        key={conversionItem.id || index}
+                        data={item.dimension_and_weight}
+                        conversionItem={conversionItem}
+                      />
+                    ))
+                  : null}
+              </tbody>
+            </table>
           </FormGroup>
           <FormGroup label="Options / Tags" labelColor="mono-color-dark" layout="vertical">
             {item.options?.map((option, index) => (

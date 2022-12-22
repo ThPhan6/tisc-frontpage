@@ -8,6 +8,7 @@ import {
 } from '../constants/role';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
+import { USER_ROLE } from '@/constants/userRoles';
 import { message } from 'antd';
 import { useHistory } from 'umi';
 
@@ -15,9 +16,9 @@ import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
 import {
   useBoolean,
-  useCheckPermission,
   useCustomInitialState,
   useGetParamId,
+  useGetUserRoleFromPathname,
 } from '@/helper/hook';
 import {
   getEmailMessageError,
@@ -62,24 +63,25 @@ const TeamProfilesEntryForm = () => {
   const userIdParam = useGetParamId();
   const isUpdate = userIdParam ? true : false;
 
-  const isTISCAdmin = useCheckPermission('TISC Admin');
-  const isBrandAdmin = useCheckPermission('Brand Admin');
-  const isDesignAdmin = useCheckPermission('Design Admin');
+  const currentUser = useGetUserRoleFromPathname();
+  const isTiscUser = currentUser === USER_ROLE.tisc;
+  const isBrandUser = currentUser === USER_ROLE.brand;
+  const isDesignerUser = currentUser === USER_ROLE.design;
   /// for access level
   const accessLevelDataRole = getValueByCondition(
     [
-      [isTISCAdmin, TISCAccessLevelDataRole],
-      [isBrandAdmin, BrandAccessLevelDataRole],
-      [isDesignAdmin, DesignAccessLevelDataRole],
+      [isTiscUser, TISCAccessLevelDataRole],
+      [isBrandUser, BrandAccessLevelDataRole],
+      [isDesignerUser, DesignAccessLevelDataRole],
     ],
     DesignAccessLevelDataRole,
   );
   /// for user role path
   const userRolePath = getValueByCondition(
     [
-      [isTISCAdmin, PATH.tiscTeamProfile],
-      [isBrandAdmin, PATH.brandTeamProfile],
-      [isDesignAdmin, PATH.designerOfficeTeamProfile],
+      [isTiscUser, PATH.tiscTeamProfile],
+      [isBrandUser, PATH.brandTeamProfile],
+      [isDesignerUser, PATH.designerOfficeTeamProfile],
     ],
     PATH.designerOfficeTeamProfile,
   );
@@ -412,15 +414,15 @@ const TeamProfilesEntryForm = () => {
         />
       </EntryFormWrapper>
 
-      {isTISCAdmin ? (
+      {isTiscUser ? (
         <TISCAccessLevelModal visible={openModal === 'accessModal'} setVisible={setVisibleModal} />
       ) : null}
 
-      {isBrandAdmin ? (
+      {isBrandUser ? (
         <BrandAccessLevelModal visible={openModal === 'accessModal'} setVisible={setVisibleModal} />
       ) : null}
 
-      {isDesignAdmin ? (
+      {isDesignerUser ? (
         <DesignAccessLevelModal
           visible={openModal === 'accessModal'}
           setVisible={setVisibleModal}

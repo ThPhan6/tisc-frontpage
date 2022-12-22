@@ -288,6 +288,7 @@ export const useCustomProductFilter = (fetchs?: { company?: boolean; collection?
       <CustomDropDown
         items={renderDropDowmItem()}
         viewAllTop={haveViewAll}
+        textCapitalize={false}
         placement={position ?? 'bottomLeft'}
         menuStyle={{ height: 'max-content', width: 160 }}>
         {type}

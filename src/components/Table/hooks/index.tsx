@@ -126,22 +126,14 @@ const removeAllCollGroup = () => {
 const syncColWidthFollowingTheDeepestDataRow = (level: number, curCellStyle: Element) => {
   const expandedColumns = document.querySelectorAll('tr[class$="custom-expanded"] td');
 
-  let nestedSubColumns = document.querySelectorAll(
-    `tr[class*="ant-table-expanded-row"]:not([style*="display: none;"]):first-child tbody tr[class$="custom-expanded-level-${
-      level + 1
-    }"]:first-child td`,
+  const nestedSubRows = document.querySelectorAll(
+    `tr[class*="ant-table-expanded-row"]:not([style*="display: none;"])`,
+  );
+  const nestedSubColumns = nestedSubRows[nestedSubRows?.length - 1].querySelectorAll(
+    `tbody tr[class$="custom-expanded-level-${level + 1}"]:first-child td`,
   );
 
-  // To fix some glitch that can't not get by :first-child selector
-  if (nestedSubColumns.length === 0) {
-    nestedSubColumns = document.querySelectorAll(
-      `tr[class*="ant-table-expanded-row"]:not([style*="display: none;"]) tbody tr[class$="custom-expanded-level-${
-        level + 1
-      }"]:first-child td`,
-    );
-  }
-
-  if (!expandedColumns || expandedColumns.length < 4) {
+  if (!nestedSubColumns || !expandedColumns || expandedColumns.length < 4) {
     return;
   }
 
@@ -153,6 +145,9 @@ const syncColWidthFollowingTheDeepestDataRow = (level: number, curCellStyle: Ele
 
       // Update style for each column from this data row to their relevant column of expandable column
       // Remember to add enter key
+      if (!newCellWidth) {
+        return;
+      }
       cellWidthStyles += `
       tr[data-row-key] td:nth-child(${
         index + 1

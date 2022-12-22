@@ -269,6 +269,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             ) : null}
             {showActionMenu && isDesignerUser ? (
               <ActionMenu
+                containerStyle={{ height: 16 }}
                 placement="bottomLeft"
                 offsetAlign={[-12, 8]}
                 className={styles.actionMenu}

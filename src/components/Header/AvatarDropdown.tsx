@@ -11,7 +11,10 @@ import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
 import { getFullName, showImageUrl } from '@/helper/utils';
 
+import store from '@/reducers';
+
 import { MenuHeaderDropdown } from '@/components/HeaderDropdown';
+import { setCustomProductList } from '@/pages/Designer/Products/CustomLibrary/slice';
 
 import { HeaderDropdown } from '../HeaderDropdown';
 import { DrawerMenu } from '../Menu/DrawerMenu';
@@ -26,6 +29,7 @@ export const AvatarDropdown = () => {
 
   const loginOut = async () => {
     setInitialState((s) => ({ ...s, currentUser: undefined }));
+    store.dispatch(setCustomProductList([]));
     localStorage.clear();
     pushTo(PATH.landingPage);
   };
@@ -111,8 +115,8 @@ export const AvatarDropdown = () => {
       arrowPositionCenter
       visible={showHeaderDropdown.value}
       onVisibleChange={showHeaderDropdown.setValue}
-      align={{ offset: [0, -2] }}
-      placement="topLeft"
+      align={{ offset: [0, 2] }}
+      placement="bottom"
       trigger={['click']}
       getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}>
       {renderAvatarTrigger()}
