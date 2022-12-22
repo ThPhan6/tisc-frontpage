@@ -1,8 +1,9 @@
 import { CSSProperties, FC } from 'react';
 
-import { Drawer, DrawerProps, Row } from 'antd';
+import { DrawerProps, Row } from 'antd';
 
 import { MenuIconProps } from '../HeaderDropdown';
+import { CustomDrawer } from '../Modal/Drawer';
 import { BodyText } from '../Typography';
 
 interface Props extends DrawerProps {
@@ -11,7 +12,12 @@ interface Props extends DrawerProps {
 }
 export const DrawerMenu: FC<Props> = ({ items, labelStyle, ...props }) => {
   return (
-    <Drawer placement="bottom" closable={false} height="auto" {...props} bodyStyle={{ padding: 0 }}>
+    <CustomDrawer
+      placement="bottom"
+      closable={false}
+      height="auto"
+      {...props}
+      bodyStyle={{ padding: 0 }}>
       {items.map((el, index) => (
         <Row
           key={index}
@@ -25,6 +31,6 @@ export const DrawerMenu: FC<Props> = ({ items, labelStyle, ...props }) => {
           </BodyText>
         </Row>
       ))}
-    </Drawer>
+    </CustomDrawer>
   );
 };

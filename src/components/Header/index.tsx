@@ -3,7 +3,7 @@ import React from 'react';
 import { PATH } from '@/constants/path';
 import { UserHomePagePaths } from '@/constants/user.constant';
 import { HeaderViewProps } from '@ant-design/pro-layout/lib/Header';
-import { Drawer, Row } from 'antd';
+import { Row } from 'antd';
 
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
 import { ReactComponent as LanguageIcon } from '@/assets/icons/language-icon.svg';
@@ -22,6 +22,7 @@ import { useAppSelector } from '@/reducers';
 import { HeaderDropdown, MenuHeaderDropdown } from '../HeaderDropdown';
 import { SiderMenu } from '../Menu/AsideMenu';
 import { DrawerMenu } from '../Menu/DrawerMenu';
+import { CustomDrawer } from '../Modal/Drawer';
 import { AvatarDropdown } from './AvatarDropdown';
 import styles from './styles/index.less';
 
@@ -77,17 +78,6 @@ const Header = (props: HeaderViewProps) => {
       return pushTo(UserHomePagePaths[user.type]);
     }
     showSiderMenu.setValue(true);
-    setTimeout(() => {
-      const drawerMask = document.getElementsByClassName('ant-drawer-content-wrapper');
-      drawerMask[0]?.addEventListener('click', (event: any) => {
-        if (
-          typeof event.target?.className === 'string' &&
-          event.target.className.includes('ant-drawer-content-wrapper')
-        ) {
-          showSiderMenu.setValue(false);
-        }
-      });
-    }, 300);
   };
 
   const renderHeaderDropDown = (
@@ -165,22 +155,22 @@ const Header = (props: HeaderViewProps) => {
         ]}
       />
 
-      <Drawer
+      <CustomDrawer
         className="sider-menu"
         visible={showSiderMenu.value}
         onClose={() => showSiderMenu.setValue(false)}
         placement="left"
         closable={false}
         height="auto"
+        closeOnMask
         width="100%"
-        maskClosable
         bodyStyle={{ padding: 0, position: 'relative' }}>
         <SiderMenu
           appProps={props.children}
           menu={props.menuData}
           onClose={() => showSiderMenu.setValue(false)}
         />
-      </Drawer>
+      </CustomDrawer>
     </Row>
   );
 };
