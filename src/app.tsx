@@ -131,7 +131,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
         history.push(PATH.landingPage);
       }
     },
-    menuHeaderRender: undefined,
     menuRender: (props) => <AsideMenu {...props} />,
     childrenRender: (children) => {
       if (initialState?.loading) return <PageLoading />;

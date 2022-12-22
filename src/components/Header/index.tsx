@@ -13,7 +13,7 @@ import { ReactComponent as QuestionIcon } from '@/assets/icons/question-icon.svg
 import { ReactComponent as QuestionWhiteIcon } from '@/assets/icons/question-white-icon.svg';
 import LogoIcon from '@/assets/tisc-logo-icon.svg';
 
-import { useCheckMobile } from '@/helper/common';
+import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
 
@@ -26,7 +26,7 @@ import { AvatarDropdown } from './AvatarDropdown';
 import styles from './styles/index.less';
 
 const Header = (props: HeaderViewProps) => {
-  const isMobile = useCheckMobile();
+  const { isMobile } = useScreen();
   const showQuestionDropdown = useBoolean();
   const showLanguageDropdown = useBoolean();
   const showFaqMenu = useBoolean();

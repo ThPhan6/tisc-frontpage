@@ -60,8 +60,11 @@ export const getResponseMessage = (
 
 export const useBreakpoint = Grid.useBreakpoint;
 
-export const useCheckMobile = () => {
+export const useScreen = () => {
   const screens = useBreakpoint();
-  const isMobile = screens.sm ? false : true;
-  return isMobile;
+
+  const isTablet = screens.lg && screens.xl === false;
+  const isMobile = screens.xs && isTablet === false;
+
+  return { isTablet, isMobile };
 };
