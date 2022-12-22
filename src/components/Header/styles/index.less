@@ -1,9 +1,5 @@
 .container {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
   height: 48px;
   padding-right: 9px;
   padding-left: 18px;
@@ -26,8 +22,38 @@
       }
     }
   }
+
+  &.mobile {
+    background-color: #fff;
+    // box-shadow: @border-bottom;
+  }
+
+  .dropdown {
+    width: 160px;
+  }
 }
 
-.dropdown {
-  width: 160px;
+:global(.sider-menu) {
+  :global(.ant-drawer-content) {
+    height: auto !important;
+    background-color: #000 !important;
+
+    :global(.ant-drawer-body) {
+      overflow-x: hidden;
+    }
+    :global(.ant-menu-inline) {
+      border-right: none;
+    }
+    :global(.ant-menu) {
+      max-height: 100vh;
+      background-color: #000 !important;
+      :global(span.ant-menu-title-content) {
+        color: #fff !important;
+      }
+    }
+
+    svg path {
+      fill: #fff;
+    }
+  }
 }

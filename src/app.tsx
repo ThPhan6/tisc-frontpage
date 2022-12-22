@@ -103,7 +103,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     title: 'TISC',
     logo: false,
     disableContentMargin: false,
-    headerRender: () => <Header />,
+    headerRender: (props) => <Header {...props} />,
     onPageChange: () => {
       const { location } = history;
       const token = localStorage.getItem('access_token') || '';
@@ -133,7 +133,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     },
     menuHeaderRender: undefined,
     menuRender: (props) => <AsideMenu {...props} />,
-    /* eslint-disable @typescript-eslint/no-var-requires */
     childrenRender: (children) => {
       if (initialState?.loading) return <PageLoading />;
       return (

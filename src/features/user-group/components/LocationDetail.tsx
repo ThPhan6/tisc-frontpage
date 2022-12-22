@@ -35,7 +35,7 @@ export const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
 
   return (
     <Row className={styles.container}>
-      <Col span={12}>
+      <Col span={12} xs={{ span: 24 }}>
         <div className={styles.form}>
           <GeneralData>
             {locations.length ? (
