@@ -4,6 +4,7 @@ export interface MenuSummaryProps {
   menuSummaryData: DataMenuSummaryProps[];
   height?: string;
   typeMenuData?: SummaryProps[];
+  contentFilter?: JSX.Element;
 }
 
 export interface ElementSummaryProps {

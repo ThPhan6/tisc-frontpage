@@ -239,7 +239,7 @@ export const TopBar: React.FC = () => {
                 true,
                 'View by categories',
               )}
-              customClass="left-divider"
+              customClass="left-divider white-space"
             />
             <TopBarItem
               topValue={renderItemTopBar(
@@ -260,13 +260,13 @@ export const TopBar: React.FC = () => {
                 true,
                 'View by Collections',
               )}
-              customClass="left-divider"
+              customClass="left-divider white-space"
             />
             <TopBarItem
               disabled
               bottomEnable={productSummary ? true : false}
               bottomValue="New Card"
-              customClass="left-divider mr-12"
+              customClass="left-divider mr-12 white-space"
               onClick={productSummary ? gotoProductForm : undefined}
               icon={
                 <span

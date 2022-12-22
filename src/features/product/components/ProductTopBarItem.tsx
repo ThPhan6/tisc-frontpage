@@ -7,6 +7,7 @@ import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { useBoolean } from '@/helper/hook';
 import { capitalize, truncate } from 'lodash';
 
@@ -90,9 +91,10 @@ export const TopBarContainer: React.FC<TopBarContainerProps> = ({
   RightSideContent,
   BottomContent,
 }) => {
+  const { isMobile } = useScreen();
   return (
     <>
-      <div className={styles.topbarContainer}>
+      <div className={`${styles.topbarContainer} ${isMobile ? 'border-top' : ''}`}>
         <div className="left-side">{LeftSideContent}</div>
         <div className="right-side">{RightSideContent}</div>
       </div>

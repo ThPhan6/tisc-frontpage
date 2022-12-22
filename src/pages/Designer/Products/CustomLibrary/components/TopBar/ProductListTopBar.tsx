@@ -212,7 +212,7 @@ export const ProductListTopBar: React.FC = () => {
               disabled={!companies.length}
               bottomValue="New Product"
               cursor={companies.length ? 'pointer' : 'default'}
-              customClass="left-divider mr-0"
+              customClass="left-divider mr-0 white-space"
               onClick={() =>
                 companies.length ? pushTo(PATH.designerCustomProductCreate) : undefined
               }
@@ -227,7 +227,7 @@ export const ProductListTopBar: React.FC = () => {
                   <OpenIcon />
                 </div>
               }
-              customClass="left-divider mr-12"
+              customClass="left-divider mr-12 white-space"
               bottomValue="Vendor Management"
               cursor="pointer"
               onClick={() => pushTo(PATH.designerCustomResource)}

@@ -35,9 +35,10 @@ export const CustomResourceTopBar = () => {
                 <CloseIcon />
               </div>
             }
-            customClass={styles.topBar}
+            customClass={`${styles.topBar}`}
             bottomValue="Vendor Management"
             cursor="pointer"
+            style={{ whiteSpace: 'nowrap' }}
             onClick={() => pushTo(PATH.designerCustomProduct)}
             icon={<VendorManagementIcon />}
           />

@@ -72,7 +72,7 @@ const TopBarDropDownFilter: React.FC<TopBarDropDownFilterProps> = ({
           };
         })}>
         <BodyText level={6} fontFamily="Roboto" customClass={styles.projectFilterLabel}>
-          <span style={{ userSelect: 'none' }}>{filterLabel ?? ''}</span>
+          <span style={{ userSelect: 'none', whiteSpace: 'nowrap' }}>{filterLabel ?? ''}</span>
           <DropdownIcon />
         </BodyText>
       </HeaderDropdown>
