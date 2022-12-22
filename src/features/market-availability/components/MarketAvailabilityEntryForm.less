@@ -1,6 +1,14 @@
 .entry_form {
   .mainContent {
     height: calc(100vh - 328px);
+
+    @media screen and (max-width: 576px) {
+      height: calc(100vh - 316px);
+
+      :global(.ant-pro-basicLayout-content) {
+        margin: 16px;
+      }
+    }
   }
   .header {
     display: flex;
@@ -32,14 +40,5 @@
     &_quantity {
       margin-left: 8px;
     }
-  }
-}
-
-@media screen and (max-width: 576px) {
-  :global(.ant-pro-basicLayout-content) {
-    margin: 16px;
-  }
-  .mainContent {
-    height: calc(100vh - 316px) !important;
   }
 }
