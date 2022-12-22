@@ -141,6 +141,7 @@ export const renderActionCell =
     }
     return (
       <ActionMenu
+        isMobileScreen={false}
         actionItems={[
           {
             type: 'updated',
