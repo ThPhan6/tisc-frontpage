@@ -3,6 +3,7 @@ import { FC, useState } from 'react';
 import { ReactComponent as ActionLeftIcon } from '@/assets/icons/action-left.svg';
 import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
 
+import { useScreen } from '@/helper/common';
 import { checkUndefined } from '@/helper/utils';
 
 import { ElementSummaryProps, MenuSummaryProps, SummaryProps } from './types';
@@ -67,8 +68,10 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
   height = '56px',
   typeMenu = 'brand',
   typeMenuData,
+  contentFilter,
 }) => {
   const [activeId, setActiveId] = useState<string>('');
+  const { isMobile } = useScreen();
 
   const handleActivetab = (id: string) => {
     if (id === activeId) {
@@ -103,7 +106,9 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
   };
 
   return (
-    <div className={`${style['header-summary']} ${containerClass}`} style={{ height: height }}>
+    <div
+      className={`${style['header-summary']} ${containerClass}`}
+      style={{ height: height, boxShadow: isMobile ? 'inset 0 1px 0 rgba(0, 0, 0, 0.3)' : 'none' }}>
       <div className={style['brand-container']}>
         {menuSummaryData.map((data, index) => {
           return (
@@ -118,6 +123,7 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
         })}
       </div>
       {typeCircumstance(typeMenu)}
+      {contentFilter ? contentFilter : null}
     </div>
   );
 };
