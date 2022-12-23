@@ -4,7 +4,7 @@ import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.
 
 import { useAttributeLocation } from './hooks/location';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
-import { confirmDelete } from '@/helper/common';
+import { confirmDelete, useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { deleteAttribute, getProductAttributePagination } from '@/services';
@@ -20,6 +20,7 @@ const AttributeList: React.FC = () => {
   useAutoExpandNestedTableColumn(1, [3]);
   const tableRef = useRef<any>();
   const { activePath, attributeLocation } = useAttributeLocation();
+  const { isMobile } = useScreen();
 
   const handleUpdateAttribute = (id: string) => {
     pushTo(`${activePath}/${id}`);
@@ -165,6 +166,7 @@ const AttributeList: React.FC = () => {
           childrenColumnName: 'subs',
           level: 2,
         })}
+        footerClass={isMobile ? 'flex-end' : ''}
       />
     </>
   );

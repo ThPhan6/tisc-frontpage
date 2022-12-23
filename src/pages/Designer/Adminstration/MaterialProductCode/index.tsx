@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { PATH } from '@/constants/path';
 
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
-import { confirmDelete } from '@/helper/common';
+import { confirmDelete, useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
@@ -27,6 +27,7 @@ import {
 const MaterialProductCode = () => {
   useAutoExpandNestedTableColumn(2, [3]);
   const tableRef = useRef<any>();
+  const { isMobile } = useScreen();
 
   const user = useAppSelector((state) => state.user.user);
 
@@ -160,6 +161,7 @@ const MaterialProductCode = () => {
             level: 3,
           }),
         })}
+        footerClass={isMobile ? 'flex-end' : ''}
       />
     </>
   );

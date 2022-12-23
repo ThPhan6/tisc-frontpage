@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import { PATH } from '@/constants/path';
 
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
-import { confirmDelete } from '@/helper/common';
+import { confirmDelete, useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { deleteConversionMiddleware, getProductBasisConversionPagination } from '@/services';
@@ -18,6 +18,7 @@ import { ActionMenu } from '@/components/TableAction';
 const BasisConversionList: React.FC = () => {
   useAutoExpandNestedTableColumn(1, [3]);
   const tableRef = useRef<any>();
+  const { isMobile } = useScreen();
 
   const handleUpdateConversion = (id: string) => {
     pushTo(PATH.updateConversions.replace(':id', id));
@@ -145,6 +146,7 @@ const BasisConversionList: React.FC = () => {
           childrenColumnName: 'subs',
           level: 2,
         })}
+        footerClass={isMobile ? 'flex-end' : ''}
       />
     </>
   );

@@ -7,7 +7,7 @@ import {
   deleteCategoryMiddleware,
   getProductCategoryPagination,
 } from '@/features/categories/services';
-import { confirmDelete } from '@/helper/common';
+import { confirmDelete, useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
@@ -21,6 +21,7 @@ import { ActionMenu } from '@/components/TableAction';
 const CategoryList: React.FC = () => {
   useAutoExpandNestedTableColumn(2, [2]);
   const tableRef = useRef<any>();
+  const { isMobile } = useScreen();
 
   const handleUpdateCategory = (id: string) => {
     pushTo(PATH.updateCategories.replace(':id', id));
@@ -167,6 +168,7 @@ const CategoryList: React.FC = () => {
             level: 3,
           }),
         })}
+        footerClass={isMobile ? 'flex-end' : ''}
       />
     </>
   );
