@@ -11,6 +11,8 @@ import { ReactComponent as LogOutIcon } from '@/assets/icons/outside-icon.svg';
 import { ReactComponent as CopyIcon } from '@/assets/icons/tabs-icon.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon.svg';
 
+import { useScreen } from '@/helper/common';
+
 import { HeaderDropdown, HeaderDropdownProps, MenuIconProps } from '../HeaderDropdown';
 
 type ActionType =
@@ -30,6 +32,7 @@ interface ActionFormProps extends HeaderDropdownProps {
   actionIcon?: JSX.Element;
   offsetAlign?: [number, number];
   containerStyle?: CSSProperties;
+  editActionOnMobile?: boolean;
 }
 
 const DEFAULT_ACTION_INFO: {
@@ -88,13 +91,34 @@ export const ActionMenu: FC<ActionFormProps> = ({
   arrow = true,
   placement = 'bottomRight',
   containerStyle,
+  editActionOnMobile = true,
   ...props
 }) => {
+  const isMobile = useScreen().isMobile;
   const filledActionItems = actionItems?.map((item) => ({
     ...item,
     icon: item.icon || DEFAULT_ACTION_INFO[item.type].icon,
     label: item.label || DEFAULT_ACTION_INFO[item.type].label,
   }));
+
+  if (isMobile && editActionOnMobile) {
+    return (
+      <EditIcon
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+
+          filledActionItems?.[0]?.onClick();
+        }}
+        style={{
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
+      />
+    );
+  }
 
   return (
     <div
