@@ -33,7 +33,8 @@ import { capitalize, truncate } from 'lodash';
 
 import { ProductGetListParameter, ProductItem } from '../types';
 import { ProductConsiderStatus } from '@/features/project/types';
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
+import { openModal } from '@/reducers/modal';
 
 import CustomCollapse from '@/components/Collapse';
 import InquiryRequest from '@/components/InquiryRequest';
@@ -41,7 +42,7 @@ import ShareViaEmail from '@/components/ShareViaEmail';
 import { ActionMenu } from '@/components/TableAction';
 import { BodyText } from '@/components/Typography';
 
-import AssignProductModal from '../modals/AssignProductModal';
+import { assignProductModalTitle } from '../modals/AssignProductModal';
 import { getProductDetailPathname } from '../utils';
 import styles from './ProductCard.less';
 
@@ -77,7 +78,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const isDesignAdmin = useCheckPermission('Design Admin');
   const [liked, setLiked] = useState(product.is_liked);
   const showShareEmailModal = useBoolean();
-  const showAssignProductModal = useBoolean();
   const showInquiryRequestModal = useBoolean();
 
   // custom product
@@ -208,7 +208,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
       tooltipText: 'Assign Product',
       show: isDesignerUser && !hideAssign,
       Icon: AssignIcon,
-      onClick: () => showAssignProductModal.setValue(true),
+      onClick: () =>
+        store.dispatch(
+          openModal({
+            type: 'Assign Product',
+            title: assignProductModalTitle,
+            props: {
+              isCustomProduct,
+              productId: product.id,
+            },
+          }),
+        ),
     },
     {
       tooltipText: 'Share via Email',
@@ -313,15 +323,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
             setVisible={showShareEmailModal.setValue}
             product={product}
             isCustomProduct={isCustomProduct}
-          />
-        ) : null}
-
-        {showAssignProductModal.value && product.id ? (
-          <AssignProductModal
-            visible={showAssignProductModal.value}
-            setVisible={showAssignProductModal.setValue}
-            productId={product.id}
-            isCustomProduct={isCustomProduct ? true : false}
           />
         ) : null}
 

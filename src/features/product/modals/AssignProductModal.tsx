@@ -7,24 +7,20 @@ import { assignProductToProject, getAllProjects } from '@/features/project/servi
 
 import { RadioValue } from '@/components/CustomRadio/types';
 import { useAppSelector } from '@/reducers';
+import { modalPropsSelector } from '@/reducers/modal';
 
 import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
 import { FormGroup } from '@/components/Form';
-import Popover, { PopoverProps } from '@/components/Modal/Popover';
+import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
 
 import styles from './AssignProductModal.less';
 
-interface AssignProductModalProps extends Omit<PopoverProps, 'title'> {
-  productId: string;
-  isCustomProduct: boolean;
-}
+export const assignProductModalTitle = 'Assign material/product';
 
-const AssignProductModal: FC<AssignProductModalProps> = ({
-  productId,
-  isCustomProduct,
-  ...props
-}) => {
+const AssignProductModal: FC = () => {
+  const { productId, isCustomProduct } = useAppSelector(modalPropsSelector);
+
   const projects = useAppSelector((state) => state.project.list);
 
   const [selectedProject, setSelectedProject] = useState<RadioValue>();
@@ -32,6 +28,30 @@ const AssignProductModal: FC<AssignProductModalProps> = ({
     productId,
     String(selectedProject?.value || ''),
   );
+
+  useEffect(() => {
+    getAllProjects();
+  }, []);
+
+  const onSubmitAssigning = () => {
+    if (!selectedProject) {
+      return message.error('Please select a project');
+    }
+
+    const selectedRoomIds = getSelectedRoomIds(selectedRooms);
+
+    if (isEntire === false && selectedRoomIds.length === 0) {
+      return message.error('Please assign to some rooms or entire project');
+    }
+
+    assignProductToProject({
+      entire_allocation: isEntire,
+      product_id: productId,
+      project_id: String(selectedProject?.value),
+      allocation: selectedRoomIds,
+      custom_product: isCustomProduct,
+    });
+  };
 
   const projectOptions: RadioValue[] = projects.map((el) => ({
     value: el.id,
@@ -55,39 +75,8 @@ const AssignProductModal: FC<AssignProductModalProps> = ({
     ),
   }));
 
-  useEffect(() => {
-    if (!props.visible) {
-      return;
-    }
-    getAllProjects();
-  }, [props.visible]);
-
-  const onSubmitAssigning = () => {
-    if (!selectedProject) {
-      return message.error('Please select a project');
-    }
-
-    const selectedRoomIds = getSelectedRoomIds(selectedRooms);
-
-    if (isEntire === false && selectedRoomIds.length === 0) {
-      return message.error('Please assign to some rooms or entire project');
-    }
-
-    assignProductToProject({
-      entire_allocation: isEntire,
-      product_id: productId,
-      project_id: String(selectedProject?.value),
-      allocation: selectedRoomIds,
-      custom_product: isCustomProduct,
-    }).then((success) => {
-      if (success) {
-        props.setVisible(false);
-      }
-    });
-  };
-
   return (
-    <Popover {...props} title="Assign material/product" onFormSubmit={onSubmitAssigning}>
+    <Popover visible title={assignProductModalTitle} onFormSubmit={onSubmitAssigning}>
       <FormGroup label="Project Name" layout="vertical">
         <CollapseRadioList
           options={projectOptions}

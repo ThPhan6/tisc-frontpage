@@ -6,9 +6,14 @@ import { closeModal } from '@/reducers/modal';
 import { LoginModal } from './components/modals/LoginModal';
 import { SignupModal } from './components/modals/SignupModal';
 import { CustomDrawer } from '@/components/Modal/Drawer';
+import InformationMarketAvailability from '@/features/market-availability/components/InformationMarketAvailability';
+
+import AssignProductModal from '@/features/product/modals/AssignProductModal';
 
 export const ModalController = () => {
   const modalType = useAppSelector((state) => state.modal.type);
+  const autoHeightDrawer = useAppSelector((state) => state.modal.autoHeightDrawer);
+  const noBorderDrawerHeader = useAppSelector((state) => state.modal.noBorderDrawerHeader);
 
   const { isMobile } = useScreen();
 
@@ -20,6 +25,10 @@ export const ModalController = () => {
         return <LoginModal tiscLogin />;
       case 'Designer Signup':
         return <SignupModal />;
+      case 'Assign Product':
+        return <AssignProductModal />;
+      case 'Market Availability':
+        return <InformationMarketAvailability />;
       case 'none':
       default:
         return null;
@@ -32,8 +41,8 @@ export const ModalController = () => {
         placement="bottom"
         onClose={closeModal}
         visible={!modalType || modalType !== 'none'}
-        headerStyle={{ position: 'relative' }}
-        height="auto">
+        headerStyle={{ position: 'relative', boxShadow: noBorderDrawerHeader ? 'none' : undefined }}
+        height={autoHeightDrawer ? 'auto' : window.innerHeight * 0.85}>
         {renderModalContent()}
       </CustomDrawer>
     );

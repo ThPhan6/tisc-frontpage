@@ -19,6 +19,7 @@ export const CustomDrawer: FC<CustomDrawerProps> = ({
   ...props
 }) => {
   const darkTheme = useAppSelector((state) => state.modal.theme === 'dark');
+  const title = useAppSelector((state) => state.modal.title);
 
   useEffect(() => {
     if (props.visible === false || !closeOnMask) {
@@ -46,10 +47,10 @@ export const CustomDrawer: FC<CustomDrawerProps> = ({
       bodyStyle={{ backgroundColor: darkTheme ? '#000' : undefined, ...bodyStyle }}
       headerStyle={{
         backgroundColor: darkTheme ? '#000' : undefined,
-        borderRadius: 0,
         ...headerStyle,
       }}
       className={styles.drawerContainer}
+      title={title}
       {...props}
     />
   );

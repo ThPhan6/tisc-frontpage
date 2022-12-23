@@ -11,12 +11,20 @@ export type ModalType =
   | 'Designer Signup'
   | 'Brand Interested'
   | 'Tisc Login'
-  | 'Login';
+  | 'Login'
+  | 'Assign Product'
+  | 'Market Availability';
 
 export interface ModalState {
   type: ModalType;
   theme?: 'default' | 'dark';
-  props?: {};
+  title?: string;
+  autoHeightDrawer?: boolean;
+  noBorderDrawerHeader?: boolean;
+  props: {
+    productId?: string; // assignProduct
+    isCustomProduct?: boolean; // assignProduct
+  };
 }
 
 const initialState: ModalState = {
@@ -29,8 +37,11 @@ const modalSlice = createSlice({
   name: 'modal',
   initialState,
   reducers: {
-    openModal: (state, action: PayloadAction<ModalState>) => {
-      return action.payload;
+    openModal: (
+      _state,
+      action: PayloadAction<Omit<ModalState, 'props'> & { props?: ModalState['props'] }>,
+    ) => {
+      return { ...action.payload, props: action.payload.props || {} };
     },
     closeModalAction: () => {
       return initialState;
@@ -54,4 +65,8 @@ export const modalThemeSelector = createSelector(modalSeletor, ({ theme }) => {
     darkTheme,
     themeStyle,
   };
+});
+
+export const modalPropsSelector = createSelector(modalSeletor, ({ props = {} }) => {
+  return props as Required<ModalState['props']>;
 });

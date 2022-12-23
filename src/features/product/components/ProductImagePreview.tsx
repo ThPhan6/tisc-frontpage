@@ -22,7 +22,8 @@ import { getBase64, showImageUrl } from '@/helper/utils';
 
 import { ProductKeyword } from '../types';
 import { setPartialProductDetail, setProductDetailImage } from '@/features/product/reducers';
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
+import { openModal } from '@/reducers/modal';
 
 import SmallIconButton from '@/components/Button/SmallIconButton';
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -34,7 +35,7 @@ import {
   setCustomProductDetailImage,
 } from '@/pages/Designer/Products/CustomLibrary/slice';
 
-import AssignProductModal from '../modals/AssignProductModal';
+import { assignProductModalTitle } from '../modals/AssignProductModal';
 import styles from './detail.less';
 
 interface ActionItemProps {
@@ -84,7 +85,6 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
   const dispatch = useDispatch();
   const normalProduct = useAppSelector((state) => state.product.details);
   const showShareEmailModal = useBoolean();
-  const showAssignProductModal = useBoolean();
   const showInquiryRequestModal = useBoolean();
   const isDesignerUser = useCheckPermission('Design Admin');
   const isTiscAdmin = useCheckPermission('TISC Admin');
@@ -258,7 +258,18 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
             <ActionItem
               label="Assign Product"
               icon={<AssignIcon />}
-              onClick={() => showAssignProductModal.setValue(true)}
+              onClick={() =>
+                store.dispatch(
+                  openModal({
+                    type: 'Assign Product',
+                    title: assignProductModalTitle,
+                    props: {
+                      isCustomProduct,
+                      productId: product.id,
+                    },
+                  }),
+                )
+              }
               disabled={disabledAssignProduct}
             />
           ) : null}
@@ -373,14 +384,6 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
             setVisible={showShareEmailModal.setValue}
             product={product}
             isCustomProduct={isCustomProduct}
-          />
-        ) : null}
-        {product.id ? (
-          <AssignProductModal
-            visible={showAssignProductModal.value}
-            setVisible={showAssignProductModal.setValue}
-            productId={product.id}
-            isCustomProduct={isCustomProduct || false}
           />
         ) : null}
         {product.id ? (

@@ -14,6 +14,7 @@ import {
   ProjectSpaceListProps,
   ProjectSummaryData,
 } from '@/features/project/types';
+import { closeModal } from '@/reducers/modal';
 
 export async function getProductAssignSpaceByProject(
   projectId: string,
@@ -64,6 +65,7 @@ export async function assignProductToProject(data: {
   })
     .then(() => {
       message.success(getResponseMessage('assign', 'product'));
+      closeModal();
       return true;
     })
     .catch((error) => {

@@ -172,7 +172,10 @@ const LandingPage = () => {
     });
   };
 
-  const openLoginModal = () => store.dispatch(openModalAction({ type: 'Login' }));
+  const openLoginModal = () =>
+    store.dispatch(
+      openModalAction({ type: 'Login', autoHeightDrawer: true, noBorderDrawerHeader: true }),
+    );
 
   const renderFeatures = (data: any[]) => {
     return (
@@ -269,7 +272,11 @@ const LandingPage = () => {
                       properties="warning"
                       size="large"
                       buttonClass={styles['action-button']}
-                      onClick={() => store.dispatch(openModalAction({ type: 'Designer Signup' }))}>
+                      onClick={() =>
+                        store.dispatch(
+                          openModalAction({ type: 'Designer Signup', autoHeightDrawer: true }),
+                        )
+                      }>
                       SIGN ME UP
                     </CustomButton>
                   </div>
