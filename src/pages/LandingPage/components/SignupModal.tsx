@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
-import { Checkbox, message } from 'antd';
+import { Checkbox, Tooltip, message } from 'antd';
 
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
 import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
@@ -10,7 +10,7 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-whi
 
 import { checkEmailAlreadyUsed, signUpDesigner } from '../services/api';
 import { useBoolean } from '@/helper/hook';
-import { isShowErrorMessage, validateEmail } from '@/helper/utils';
+import { isShowErrorMessage, validateEmail, validatePassword } from '@/helper/utils';
 import { debounce } from 'lodash';
 
 import { ModalProps } from '../types';
@@ -76,6 +76,9 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
     }
     if (agreeTisc === true && formInput.agree_tisc === false) {
       return MESSAGE_ERROR.AGREE_TISC;
+    }
+    if (formInput.password && !validatePassword(formInput.password)) {
+      return MESSAGE_ERROR.PASSWORD;
     }
     return '';
   };
@@ -160,20 +163,30 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
               onChange={handleOnChange}
               status={isShowErrorMessage('email', formInput.email) ? '' : 'error'}
             />
-            <CustomInput
-              autoComplete={'' + Math.random()}
-              fromLandingPage
-              theme={theme}
-              size="large"
-              placeholder="password"
-              prefix={<LockedIcon />}
-              borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-              containerClass={styles.user}
-              name="password"
-              type="password"
-              required={true}
-              onChange={handleOnChange}
-            />
+            <Tooltip
+              title={
+                'Password must contain at least 8 characters, including UPPERCASE, lowercase, symbols and numbers '
+              }
+              overlayInnerStyle={{
+                width: '205px',
+              }}
+              trigger="click">
+              <CustomInput
+                autoComplete={'' + Math.random()}
+                fromLandingPage
+                theme={theme}
+                size="large"
+                placeholder="password"
+                prefix={<LockedIcon />}
+                borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
+                containerClass={styles.user}
+                name="password"
+                type="password"
+                required={true}
+                onChange={handleOnChange}
+              />
+            </Tooltip>
+
             <CustomInput
               fromLandingPage
               theme={theme}
