@@ -101,8 +101,7 @@ export const PasswordModal: FC<PasswordModalProps> = ({ visible, data, handleSub
         visible.setValue(false);
         pushTo(PATH.landingPage);
       }}
-      bodyStyle={{ height: '576px' }}
-      footer={false}>
+      bodyStyle={{ height: '576px' }}>
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={2} customClass={styles.body}>

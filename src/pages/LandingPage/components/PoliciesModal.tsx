@@ -49,8 +49,6 @@ export const PoliciesModal: FC<ModalProps> = ({ visible, onClose, theme = 'defau
   return (
     <CustomModal
       visible={visible}
-      footer={false}
-      containerClass={theme === 'dark' && styles.modal}
       bodyStyle={{
         backgroundColor: theme === 'dark' ? '#000' : '',
         height: '576px',
@@ -89,4 +87,13 @@ export const PoliciesModal: FC<ModalProps> = ({ visible, onClose, theme = 'defau
       </div>
     </CustomModal>
   );
+};
+
+export const usePoliciesModal = () => {
+  const [open, setOpen] = useState(false);
+
+  const renderPoliciesModal = () =>
+    open ? <PoliciesModal visible onClose={() => setOpen(false)} theme="dark" /> : null;
+
+  return { renderPoliciesModal, openPoliciesModal: () => setOpen(true) };
 };

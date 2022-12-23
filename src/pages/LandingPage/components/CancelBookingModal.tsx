@@ -116,8 +116,7 @@ export const CancelBookingModal: FC<CancelBookingProps> = ({
       closeIconClass={styles.closeIcon}
       className={styles.calendar}
       visible={visible}
-      onCancel={onClose}
-      footer={false}>
+      onCancel={onClose}>
       <BrandInformation informationBooking={informationBooking} />
       <div
         style={{

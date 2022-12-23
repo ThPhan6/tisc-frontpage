@@ -8,19 +8,20 @@ import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.sv
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 
-import { checkEmailAlreadyUsed, signUpDesigner } from '../services/api';
 import { useBoolean } from '@/helper/hook';
 import { isShowErrorMessage, validateEmail } from '@/helper/utils';
+import { checkEmailAlreadyUsed, signUpDesigner } from '@/pages/LandingPage/services/api';
 import { debounce } from 'lodash';
 
-import { ModalProps } from '../types';
+import { useAppSelector } from '@/reducers';
+import { closeModal, modalThemeSelector } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
+import { usePoliciesModal } from '@/pages/LandingPage/components/PoliciesModal';
 
-import { PoliciesModal } from './PoliciesModal';
 import styles from './SignupModal.less';
 
 interface SignUpFormState {
@@ -39,9 +40,11 @@ const DEFAULT_STATE: SignUpFormState = {
   agree_tisc: false,
 };
 
-export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
-  const themeStyle = () => (theme === 'default' ? '' : '-dark');
-  const [openModalPolicies, setOpenModalPolicies] = useState('');
+export const SignupModal: FC = () => {
+  const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
+
+  const { openPoliciesModal, renderPoliciesModal } = usePoliciesModal();
+
   const [formInput, setFormInput] = useState<SignUpFormState>(DEFAULT_STATE);
   const [agreeTisc, setAgreeTisc] = useState(false);
   const isLoading = useBoolean();
@@ -104,7 +107,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
       confirmed_password: formInput.confirmed_password,
     }).then((res) => {
       if (res) {
-        onClose();
+        closeModal();
         setFormInput(DEFAULT_STATE);
         setAgreeTisc(false);
         setEmailExisted(false);
@@ -115,17 +118,15 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
 
   return (
     <CustomModal
-      visible={visible}
-      containerClass={theme === 'dark' && styles.modal}
+      visible
       bodyStyle={{
-        backgroundColor: theme === 'dark' ? '#000' : '',
+        backgroundColor: darkTheme ? '#000' : '',
         height: '576px',
       }}
-      closeIconClass={theme === 'dark' && styles.closeIcon}
-      onCancel={onClose}>
+      closeIconClass={darkTheme && styles.closeIcon}>
       <div className={styles.content}>
         <div className={styles.intro}>
-          <MainTitle level={2} customClass={styles[`body${themeStyle()}`]}>
+          <MainTitle level={2} customClass={styles[`body${themeStyle}`]}>
             Please fill out the below information, and check your email for verification.
           </MainTitle>
         </div>
@@ -137,7 +138,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
               size="large"
               placeholder="first name / last name"
               prefix={<UserIcon />}
-              borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
+              borderBottomColor={darkTheme ? 'white' : 'mono'}
               containerClass={styles.brand}
               name="firstname"
               type={'text'}
@@ -151,7 +152,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
               size="large"
               placeholder="work email"
               prefix={<EmailIcon />}
-              borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
+              borderBottomColor={darkTheme ? 'white' : 'mono'}
               containerClass={styles.website}
               name="email"
               type="email"
@@ -166,7 +167,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
               size="large"
               placeholder="password"
               prefix={<LockedIcon />}
-              borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
+              borderBottomColor={darkTheme ? 'white' : 'mono'}
               containerClass={styles.user}
               name="password"
               type="password"
@@ -182,7 +183,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
               size="large"
               placeholder="confirm password"
               prefix={<LockedIcon />}
-              borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
+              borderBottomColor={darkTheme ? 'white' : 'mono'}
               required={true}
               onChange={handleOnChange}
               status={
@@ -201,7 +202,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             </div>
 
             <div className={styles.customLink}>
-              <span onClick={() => setOpenModalPolicies('Policies')}>
+              <span onClick={openPoliciesModal}>
                 Terms of Services, Privacy Policy and Cookie Policy
               </span>
             </div>
@@ -225,11 +226,8 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
           </div>
         </div>
       </div>
-      <PoliciesModal
-        visible={openModalPolicies === 'Policies'}
-        onClose={() => setOpenModalPolicies('')}
-        theme="dark"
-      />
+
+      {renderPoliciesModal()}
     </CustomModal>
   );
 };

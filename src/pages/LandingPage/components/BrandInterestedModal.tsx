@@ -100,7 +100,6 @@ export const BrandInterestedModal: FC<BrandInterestedProps> = ({
   return (
     <CustomModal
       visible={visible}
-      footer={false}
       containerClass={theme === 'dark' && styles.modal}
       bodyStyle={{
         backgroundColor: theme === 'dark' ? '#000' : '',
