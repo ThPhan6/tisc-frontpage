@@ -19,6 +19,7 @@ import AsideMenu from './components/Menu/AsideMenu';
 import Header from '@/components/Header';
 
 import defaultSettings from '../config/defaultSettings';
+import { ModalController } from './controllers/ModalController';
 import Cookies from 'js-cookie';
 
 // config request umi
@@ -137,7 +138,10 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       return (
         <>
           {children}
+
           <LoadingPageCustomize />
+
+          <ModalController />
         </>
       );
     },

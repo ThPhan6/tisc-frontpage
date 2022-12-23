@@ -57,7 +57,6 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
   return (
     <CustomModal
       visible={visible}
-      footer={false}
       containerClass={theme === 'dark' && styles.modal}
       bodyStyle={{
         backgroundColor: theme === 'dark' ? '#000' : '',

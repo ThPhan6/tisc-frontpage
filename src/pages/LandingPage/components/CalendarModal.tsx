@@ -250,7 +250,6 @@ export const CalendarModal: FC<CalendarModalProps> = ({
     <div>
       <CustomModal
         visible={visible}
-        footer={false}
         width="1152px"
         bodyStyle={{
           height: '512px',
