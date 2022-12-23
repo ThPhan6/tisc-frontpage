@@ -265,7 +265,11 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               onDelete={() => onChangeData('last_name', '')}
               deleteIcon
             />
-            <FormGroup label="Gender" required layout="vertical" formClass={styles.formGroup}>
+            <FormGroup
+              label="Gender"
+              required
+              layout="vertical"
+              formClass={`${styles.formGroup} ${styles.borderBottom}`}>
               <CustomRadio
                 options={optionsGender}
                 value={data.gender}
@@ -336,7 +340,11 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               colorRequired="tertiary"
               onRightIconClick={() => setOpenModal('authorCountry')}
             />
-            <FormGroup label="Coverage Beyond" required layout="vertical">
+            <FormGroup
+              label="Coverage Beyond"
+              required
+              layout="vertical"
+              formClass={styles.borderBottom}>
               <CustomRadio
                 options={optionsCoverageBeyond}
                 value={data.coverage_beyond}

@@ -95,6 +95,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
       style={containerStyle}>
       <Radio.Group
         {...props}
+        style={{ width: '100%' }}
         onChange={onChangeValue}
         value={value}
         defaultValue={defaultValue?.value}>

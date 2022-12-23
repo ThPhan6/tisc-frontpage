@@ -16,7 +16,7 @@ export const contentId = `entry-form-wrapper--children-${Date.now()}`;
 
 export const FormContainer: FC = ({ children }) => (
   <Row>
-    <Col span={12} xs={{ span: 24 }}>
+    <Col span={24} lg={{ span: 12 }}>
       {children}
     </Col>
   </Row>

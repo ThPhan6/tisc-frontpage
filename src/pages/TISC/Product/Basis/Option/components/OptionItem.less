@@ -14,10 +14,10 @@
   :global(.ant-collapse-content > .ant-collapse-content-box) {
     padding: 0;
   }
-  :global(.ant-collapse-ghost
-      > .ant-collapse-item
-      > .ant-collapse-content
-      > .ant-collapse-content-box) {
+  /* stylelint-disable selector-pseudo-class-parentheses-space-inside */
+  :global(
+      .ant-collapse-ghost > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box
+    ) {
     padding: 0;
   }
   :global(.ant-collapse > .ant-collapse-item:last-child) {
@@ -126,6 +126,7 @@
         display: flex;
         align-items: center;
         width: 100%;
+        overflow: auto hidden;
         // margin-right: 8px;
         .form_sub__input {
           display: flex;
@@ -155,6 +156,7 @@
 
     .delete_icon {
       height: 18px;
+      margin-left: 16px;
     }
   }
 }
@@ -209,5 +211,18 @@
     transform: scale(0.5);
     opacity: 1;
     transition: none;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .sub_wrapper .element_input .form {
+    overflow: auto hidden;
+  }
+  .sub_wrapper .element_input .form .element .form_sub__input {
+    display: block;
+  }
+  .sub_wrapper .element_input .form .element .form_sub__input .form_input {
+    max-width: 100%;
+    height: 32px;
   }
 }
