@@ -185,8 +185,6 @@ export const LoginModal: FC<{ tiscLogin?: boolean }> = ({ tiscLogin }) => {
   return (
     <CustomModal
       visible
-      onOk={closeModal}
-      onCancel={closeModal}
       containerClass={darkTheme ? styles.modal : ''}
       bodyStyle={{
         backgroundColor: darkTheme ? '#000' : '',
