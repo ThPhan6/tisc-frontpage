@@ -25,8 +25,8 @@ export const CustomDrawer: FC<CustomDrawerProps> = ({
       return;
     }
     setTimeout(() => {
-      const drawerMask = document.getElementsByClassName('ant-drawer-content-wrapper');
-      drawerMask[0]?.addEventListener('click', (event: any) => {
+      const drawerMask = document.querySelectorAll('.ant-drawer-content-wrapper');
+      drawerMask[drawerMask.length - 1]?.addEventListener('click', (event: any) => {
         if (
           typeof event.target?.className === 'string' &&
           event.target.className.includes('ant-drawer-content-wrapper')
