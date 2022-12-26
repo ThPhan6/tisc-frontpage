@@ -3,13 +3,15 @@ import React, { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
+import { USER_ROLE } from '@/constants/userRoles';
 import { message } from 'antd';
 
 import { pushTo } from '@/helper/history';
-import { useCheckPermission, useGetParamId } from '@/helper/hook';
+import { useCheckPermission, useGetParamId, useGetUserRoleFromPathname } from '@/helper/hook';
 import {
   getEmailMessageError,
   getEmailMessageErrorType,
+  getValueByCondition,
   isEmptySpace,
   messageError,
   messageErrorType,
@@ -86,6 +88,21 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     /// has been selected
     selectedFunctionType.map((el) => el.label).join(', ') ||
     'select all relevance';
+
+  const currentUser = useGetUserRoleFromPathname();
+  const isTiscUser = currentUser === USER_ROLE.tisc;
+  const isBrandUser = currentUser === USER_ROLE.brand;
+  const isDesignerUser = currentUser === USER_ROLE.design;
+
+  /// for user role path
+  const userRolePath = getValueByCondition(
+    [
+      [isTiscUser, PATH.tiscTeamProfile],
+      [isBrandUser, PATH.brandTeamProfile],
+      [isDesignerUser, PATH.designerOfficeTeamProfile],
+    ],
+    PATH.designerOfficeTeamProfile,
+  );
 
   useEffect(() => {
     if (!isDesignAdmin) {
@@ -172,7 +189,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     if (locationId) {
       deleteLocationById(locationId).then((isSuccess) => {
         if (isSuccess) {
-          pushTo(PATH.tiscLocation);
+          pushTo(userRolePath);
         }
       });
     }

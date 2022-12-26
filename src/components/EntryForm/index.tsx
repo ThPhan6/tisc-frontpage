@@ -39,8 +39,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   headerContent,
   footerContent,
   submitButtonStatus = false,
-  isShowDeleteButton = true,
-  entryFormTypeOnMobile = 'create',
+  entryFormTypeOnMobile = '',
 }) => {
   const history = useHistory();
   const isMobile = useScreen().isMobile;
@@ -70,7 +69,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
           <div
             className={styles.footer}
             style={{ justifyContent: isMobile ? 'center' : undefined }}>
-            {isMobile && isShowDeleteButton && entryFormTypeOnMobile === 'edit' ? (
+            {isMobile && entryFormTypeOnMobile === 'edit' ? (
               <CustomButton
                 size="small"
                 variant="secondary"
