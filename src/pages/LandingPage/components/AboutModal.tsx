@@ -1,5 +1,7 @@
+import { useLandingPageStyles } from './hook';
+
 import { useAppSelector } from '@/reducers';
-import { closeModal, modalThemeSelector } from '@/reducers/modal';
+import { modalThemeSelector } from '@/reducers/modal';
 
 import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
@@ -7,17 +9,11 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import styles from './AboutModal.less';
 
 export const AboutModal = () => {
-  const { darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
+  const { themeStyle } = useAppSelector(modalThemeSelector);
+  const popupStylesProps = useLandingPageStyles();
 
   return (
-    <CustomModal
-      visible
-      bodyStyle={{
-        backgroundColor: darkTheme ? '#000' : '',
-        height: '576px',
-      }}
-      closeIconClass={darkTheme ? styles.closeIcon : ''}
-      onCancel={closeModal}>
+    <CustomModal {...popupStylesProps}>
       <div className={styles.content}>
         <div className={styles.intro}>
           <div className={styles.vision}>
