@@ -1,23 +1,25 @@
 import { FC, useEffect, useState } from 'react';
 
+import store from '@/reducers';
+import { openModal } from '@/reducers/modal';
+
 import CustomButton from '@/components/Button';
 import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from './VerifyAccount.less';
 
-interface VerifyAccountModal {
-  visible: { value: boolean; setValue: (value: boolean) => void };
-  handleSubmit: () => void;
-  openLogin: () => void;
-}
-export const VerifyAccount: FC<VerifyAccountModal> = ({ visible, handleSubmit, openLogin }) => {
+export const VerifyAccount: FC = () => {
   const [time, setTime] = useState(5);
+
+  const openLoginModal = () =>
+    store.dispatch(
+      openModal({ type: 'Login', autoHeightDrawer: true, noBorderDrawerHeader: true }),
+    );
 
   useEffect(() => {
     if (time === 0) {
-      openLogin();
-      visible.setValue(false);
+      openLoginModal();
     }
     if (!time) return;
     const intervalId = setInterval(() => {
@@ -27,7 +29,7 @@ export const VerifyAccount: FC<VerifyAccountModal> = ({ visible, handleSubmit, o
   }, [time]);
 
   return (
-    <CustomModal visible={visible.value} onCancel={() => visible.setValue(false)}>
+    <CustomModal visible>
       <div className={styles.content}>
         <MainTitle level={2} textAlign="center">
           Your account was verify successfully
@@ -36,7 +38,7 @@ export const VerifyAccount: FC<VerifyAccountModal> = ({ visible, handleSubmit, o
           It will be redirect to Login after {time}s
         </BodyText>
         <div className={styles.login}>
-          <CustomButton onClick={handleSubmit} buttonClass={styles.submit}>
+          <CustomButton onClick={openLoginModal} buttonClass={styles.submit}>
             Login Now
           </CustomButton>
         </div>

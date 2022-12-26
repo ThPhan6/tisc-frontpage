@@ -9,6 +9,7 @@ import { useScreen } from '@/helper/common';
 import type { CustomModalProps } from './types';
 import { closeModal } from '@/reducers/modal';
 
+import { MobileDrawer } from './Drawer';
 import styles from './styles/index.less';
 
 export const CustomModal: FC<CustomModalProps> = ({
@@ -20,16 +21,27 @@ export const CustomModal: FC<CustomModalProps> = ({
   closeIcon,
   onCancel,
   onOk,
+  secondaryModal,
+  darkTheme,
   ...props
 }) => {
   const { isMobile } = useScreen();
 
   if (isMobile) {
+    if (secondaryModal) {
+      return (
+        <MobileDrawer onClose={onCancel} visible={props.visible} darkTheme noHeaderBorder>
+          {children}
+        </MobileDrawer>
+      );
+    }
     return children as ReactElement;
   }
 
   const runWithCloseModal = (callback: any) => () => {
-    closeModal();
+    if (!secondaryModal) {
+      closeModal();
+    }
     callback?.();
   };
 
@@ -42,7 +54,8 @@ export const CustomModal: FC<CustomModalProps> = ({
         closeIcon={closeIcon ? closeIcon : <CloseIcon className={closeIconClass} />}
         onCancel={runWithCloseModal(onCancel)}
         onOk={runWithCloseModal(onOk)}
-        {...props}>
+        {...props}
+      >
         {children}
       </Modal>
     </div>

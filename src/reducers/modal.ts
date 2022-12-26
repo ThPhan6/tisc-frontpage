@@ -16,7 +16,8 @@ export type ModalType =
   | 'Market Availability'
   | 'Calendar'
   | 'Cancel Booking'
-  | 'Reset Password';
+  | 'Reset Password'
+  | 'Verify Account';
 
 export interface ModalState {
   type: ModalType;
@@ -25,8 +26,12 @@ export interface ModalState {
   autoHeightDrawer?: boolean;
   noBorderDrawerHeader?: boolean;
   props: {
-    productId?: string; // assignProduct
-    isCustomProduct?: boolean; // assignProduct
+    productId?: string; // Assign Product
+    isCustomProduct?: boolean; // Assign Product
+
+    email?: string; // Reset Password
+    token?: string; // Reset Password
+    passwordType?: 'reset' | 'create'; // Reset Password
   };
 }
 
@@ -46,9 +51,10 @@ const modalSlice = createSlice({
     ) => {
       return { ...action.payload, props: action.payload.props || {} };
     },
-    closeModalAction: () => {
-      return initialState;
+    closeModalAction: (state) => {
+      state.type = 'none';
     },
+    resetModalState: () => initialState,
   },
 });
 
@@ -56,7 +62,10 @@ export const { openModal, closeModalAction } = modalSlice.actions;
 
 export const modalReducer = modalSlice.reducer;
 
-export const closeModal = () => store.dispatch(closeModalAction());
+export const closeModal = () => {
+  store.dispatch(closeModalAction());
+  setTimeout(() => store.dispatch(modalSlice.actions.resetModalState()), 300);
+};
 
 const modalSeletor = (state: RootState) => state.modal;
 
