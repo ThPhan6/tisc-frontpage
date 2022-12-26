@@ -1,5 +1,11 @@
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { RadioValue } from '@/components/CustomRadio/types';
+import { BrandAlphabet } from '@/features/user-group/types';
 import store, { RootState } from '@/reducers';
+import { AttributeContentType, AttributeSubForm } from '@/types';
+
+import { WorkLocationData } from '@/features/team-profiles/components/LocationModal';
+import { SelectedItem } from '@/pages/TISC/Product/Attribute/components/AttributeEntryForm';
 
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
 
@@ -20,7 +26,12 @@ export type ModalType =
   | 'Reset Password'
   | 'Verify Account'
   | 'Assign Team'
-  | 'Project Tracking Legend';
+  | 'Project Tracking Legend'
+  | 'Product Attribute Type'
+  | 'Select Brand'
+  | 'Access Level'
+  | 'Work Location'
+  | 'Brand Company';
 
 export interface ModalState {
   type: ModalType;
@@ -37,9 +48,31 @@ export interface ModalState {
     passwordType?: 'reset' | 'create'; // Reset Password
 
     assignTeam: {
-      onChange?: (selected: CheckboxValue[]) => void;
-      teams?: any[];
-      memberAssigned?: any[];
+      onChange: (selected: CheckboxValue[]) => void;
+      teams: any[];
+      memberAssigned: any[];
+    };
+
+    productAttributeType: {
+      contentType: AttributeContentType;
+      selectedItem: SelectedItem;
+      onSubmit: (data: Omit<AttributeSubForm, 'id' | 'name'>) => void;
+      type: number;
+    };
+
+    selectBrand: {
+      brands: BrandAlphabet;
+      checkedBrand?: RadioValue;
+      onChecked: (checkedBrand: RadioValue) => void;
+    };
+
+    accessLevel: {
+      type: 'brand' | 'designer' | 'tisc';
+    };
+
+    workLocation: {
+      data: WorkLocationData;
+      onChange: (data: WorkLocationData) => void;
     };
   };
 }
@@ -47,9 +80,7 @@ export interface ModalState {
 const initialState: ModalState = {
   type: 'none',
   theme: 'default',
-  props: {
-    assignTeam: {},
-  },
+  props: {} as ModalState['props'],
 };
 
 const modalSlice = createSlice({
