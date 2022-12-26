@@ -9,8 +9,8 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import styles from './AboutModal.less';
 
 export const AboutModal = () => {
-  const { themeStyle } = useAppSelector(modalThemeSelector);
-  const popupStylesProps = useLandingPageStyles();
+  const { darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
+  const popupStylesProps = useLandingPageStyles(darkTheme);
 
   return (
     <CustomModal {...popupStylesProps}>

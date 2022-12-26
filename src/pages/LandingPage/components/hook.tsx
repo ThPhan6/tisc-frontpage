@@ -1,11 +1,8 @@
-import { useAppSelector } from '@/reducers';
-import { closeModal, modalThemeSelector } from '@/reducers/modal';
+import { closeModal } from '@/reducers/modal';
 
 import styles from './index.less';
 
-export const useLandingPageStyles = () => {
-  const { darkTheme } = useAppSelector(modalThemeSelector);
-
+export const useLandingPageStyles = (darkTheme?: boolean) => {
   const popupStylesProps = {
     visible: true,
     bodyStyle: {

@@ -8,6 +8,7 @@ import { ReactComponent as MessageIcon } from '@/assets/icons/message-icon-18px.
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 
 import { contact } from '../services/api';
+import { useLandingPageStyles } from './hook';
 import { getEmailMessageError } from '@/helper/utils';
 
 import { ContactRequestBody } from '../types';
@@ -24,6 +25,7 @@ import styles from './ContactModal.less';
 
 export const ContactModal = () => {
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
+  const popupStylesProps = useLandingPageStyles(darkTheme);
 
   const [valueForm, setValueForm] = useState<ContactRequestBody>({
     name: '',
@@ -57,14 +59,7 @@ export const ContactModal = () => {
     });
   };
   return (
-    <CustomModal
-      visible
-      onCancel={closeModal}
-      bodyStyle={{
-        backgroundColor: darkTheme ? '#000' : '',
-        height: '576px',
-      }}
-      closeIconClass={darkTheme && styles.closeIcon}>
+    <CustomModal {...popupStylesProps}>
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={1} customClass={styles[`body${themeStyle}`]}>
