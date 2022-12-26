@@ -19,6 +19,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import {
   createMaterialProductCode,
+  deleteMaterialProductCode,
   getOneMaterialProductCode,
   updateMaterialProductCode,
 } from '../api';
@@ -116,13 +117,25 @@ const MaterialProductEntryForm = () => {
     handleSubmit({ name: data.name.trim(), subs: newSubs });
   };
 
+  const handleDeleteMaterialProductCode = () => {
+    if (idMaterialProductCode) {
+      deleteMaterialProductCode(idMaterialProductCode).then((isSuccess) => {
+        if (isSuccess) {
+          pushTo(PATH.designerMaterialProductCode);
+        }
+      });
+    }
+  };
+
   return (
     <div>
       <TableHeader title="MATERIAL/PRODUCT CODE" rightAction={<CustomPlusButton disabled />} />
       <EntryFormWrapper
         handleCancel={() => pushTo(PATH.designerMaterialProductCode)}
         handleSubmit={onHandleSubmit}
-        submitButtonStatus={submitButtonStatus.value}>
+        handleDelete={handleDeleteMaterialProductCode}
+        submitButtonStatus={submitButtonStatus.value}
+        entryFormTypeOnMobile={idMaterialProductCode ? 'edit' : 'create'}>
         <FormNameInput
           placeholder="type main list name"
           title="Main List"
