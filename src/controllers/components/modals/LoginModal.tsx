@@ -20,6 +20,7 @@ import {
 import { useScreen } from '@/helper/common';
 import { useBoolean, useCustomInitialState, useString } from '@/helper/hook';
 import { isShowErrorMessage, validateEmail } from '@/helper/utils';
+import { useLandingPageStyles } from '@/pages/LandingPage/components/hook';
 import { sample } from 'lodash';
 
 import { DataTableResponse } from '@/components/Table/types';
@@ -38,6 +39,7 @@ import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 export const LoginModal: FC<{ tiscLogin?: boolean }> = ({ tiscLogin }) => {
   const { isMobile } = useScreen();
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
+  const popupStylesProps = useLandingPageStyles(darkTheme);
 
   const [inputValue, setInputValue] = useState<LoginInput>({
     email: '',
@@ -183,14 +185,7 @@ export const LoginModal: FC<{ tiscLogin?: boolean }> = ({ tiscLogin }) => {
   };
 
   return (
-    <CustomModal
-      visible
-      containerClass={darkTheme ? styles.modal : ''}
-      bodyStyle={{
-        backgroundColor: darkTheme ? '#000' : '',
-        height: '576px',
-      }}
-      closeIconClass={darkTheme ? styles.closeIcon : ''}>
+    <CustomModal {...popupStylesProps}>
       <div className={styles.content} style={{ paddingBottom: isMobile ? 64 : 32 }}>
         <div className={styles.intro}>
           <MainTitle level={2} customClass={styles[`body${themeStyle}`]}>
@@ -245,7 +240,8 @@ export const LoginModal: FC<{ tiscLogin?: boolean }> = ({ tiscLogin }) => {
                   showForgotPassword.value ? styles[`wrapper-active${themeStyle}`] : ''
                 }
               `}
-                onClick={() => showForgotPassword.setValue(!showForgotPassword.value)}>
+                onClick={() => showForgotPassword.setValue(!showForgotPassword.value)}
+              >
                 <LockedForgotIcon className={styles.icon} />
                 <BodyText fontFamily="Roboto" level={4} customClass={styles.text}>
                   Forgot password?
@@ -287,7 +283,8 @@ export const LoginModal: FC<{ tiscLogin?: boolean }> = ({ tiscLogin }) => {
                 disabled={handleDisableButton()}
                 buttonClass={styles.submit}
                 width={getSubmitButtonWidth()}
-                onClick={handleSubmit}>
+                onClick={handleSubmit}
+              >
                 {getSubmitButtonTitle()}
               </CustomButton>
             </div>
