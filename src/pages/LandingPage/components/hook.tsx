@@ -9,7 +9,7 @@ export const useLandingPageStyles = (darkTheme?: boolean) => {
       backgroundColor: darkTheme ? '#000' : '',
       height: '576px',
     },
-    closeIconClass: darkTheme ? styles.closeIcon : '',
+    closeIconClass: `${styles.closeIcon} ${darkTheme ? styles.whiteIcon : ''}`,
     onCancel: closeModal,
   };
 
