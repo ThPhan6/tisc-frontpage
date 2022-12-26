@@ -25,6 +25,7 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import { DropdownCategoryList } from '@/features/categories/components/CategoryDropdown';
 
 import { CustomCheckbox } from '../CustomCheckbox';
+import { MobileDrawer } from './Drawer';
 import styles from './styles/Popover.less';
 
 export interface PopoverProps {
@@ -74,6 +75,8 @@ export interface PopoverProps {
   hasOrtherInput?: boolean;
 
   forceUpdateCurrentValue?: boolean;
+
+  secondaryModal?: boolean;
 }
 
 const Popover: FC<PopoverProps> = ({
@@ -101,6 +104,7 @@ const Popover: FC<PopoverProps> = ({
   clearOnClose,
   hasOrtherInput = true,
   forceUpdateCurrentValue = true,
+  secondaryModal,
 }) => {
   const { isMobile } = useScreen();
 
@@ -253,23 +257,33 @@ const Popover: FC<PopoverProps> = ({
         properties="rounded"
         buttonClass="done-btn"
         disabled={disabledSubmit}
-        onClick={handleDone}>
+        onClick={handleDone}
+      >
         Done
       </CustomButton>
     );
   };
 
+  const renderMobileContent = () => (
+    <div className={styles.customPopoverMobile}>
+      {extraTopAction}
+      {renderChildren()}
+      {children}
+      {noFooter ? null : (
+        <div className={`flex-center ${styles.popoverFooterMobile}`}>{renderButtonFooter()}</div>
+      )}
+    </div>
+  );
+
   if (isMobile) {
-    return (
-      <div className={styles.customPopoverMobile}>
-        {extraTopAction}
-        {renderChildren()}
-        {children}
-        {noFooter ? null : (
-          <div className={`flex-center ${styles.popoverFooterMobile}`}>{renderButtonFooter()}</div>
-        )}
-      </div>
-    );
+    if (secondaryModal) {
+      return (
+        <MobileDrawer onClose={onCancel} visible={visible} title={title}>
+          {renderMobileContent()}
+        </MobileDrawer>
+      );
+    }
+    return renderMobileContent();
   }
 
   return (
@@ -279,7 +293,8 @@ const Popover: FC<PopoverProps> = ({
           <MainTitle
             level={3}
             customClass={`text-uppercase text-overflow ${styles.headingTitle}`}
-            style={{ maxWidth: '95%' }}>
+            style={{ maxWidth: '95%' }}
+          >
             {title}
           </MainTitle>
         }
@@ -289,7 +304,8 @@ const Popover: FC<PopoverProps> = ({
         width={576}
         closeIcon={<CloseIcon style={{ color: '#000' }} />}
         footer={noFooter ? null : renderButtonFooter()}
-        className={`${styles.customPopover} ${className ?? ''}`}>
+        className={`${styles.customPopover} ${className ?? ''}`}
+      >
         {extraTopAction}
         {renderChildren()}
         {children}

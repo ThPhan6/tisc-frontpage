@@ -11,6 +11,8 @@ import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
 
 export type ModalType =
   | 'none'
+
+  // Landing page
   | 'About'
   | 'Policies'
   | 'Contact'
@@ -19,19 +21,27 @@ export type ModalType =
   | 'Brand Interested'
   | 'Tisc Login'
   | 'Login'
-  | 'Assign Product'
-  | 'Market Availability'
   | 'Calendar'
   | 'Cancel Booking'
   | 'Reset Password'
   | 'Verify Account'
+
+  // General
   | 'Assign Team'
   | 'Project Tracking Legend'
-  | 'Product Attribute Type'
-  | 'Select Brand'
   | 'Access Level'
   | 'Work Location'
-  | 'Brand Company';
+
+  // TISC
+  | 'Product Attribute Type'
+  | 'Select Brand'
+  | 'Brand Company'
+
+  // Brand
+
+  // Design Firm
+  | 'Assign Product'
+  | 'Market Availability';
 
 export interface ModalState {
   type: ModalType;

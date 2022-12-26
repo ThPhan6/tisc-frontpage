@@ -30,7 +30,12 @@ export const CustomModal: FC<CustomModalProps> = ({
   if (isMobile) {
     if (secondaryModal) {
       return (
-        <MobileDrawer onClose={onCancel} visible={props.visible} darkTheme noHeaderBorder>
+        <MobileDrawer
+          onClose={onCancel}
+          visible={props.visible}
+          darkTheme={darkTheme}
+          noHeaderBorder
+        >
           {children}
         </MobileDrawer>
       );

@@ -43,6 +43,7 @@ const CityModal: FC<{
       title="SELECT CITY / TOWN"
       visible={visible}
       setVisible={setVisible}
+      secondaryModal
       chosenValue={chosenValue}
       setChosenValue={setChosenValue}
       groupRadioList={[

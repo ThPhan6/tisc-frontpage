@@ -46,6 +46,7 @@ const CountryModal: FC<{
       title="SELECT COUNTRY"
       visible={visible}
       setVisible={setVisible}
+      secondaryModal
       chosenValue={chosenValue}
       setChosenValue={(data) => {
         const selectedCountry = countries.find((country) => country.id === data.value);
