@@ -90,6 +90,7 @@ const UpdateAgreementPoliciesPage = () => {
         <EntryFormWrapper
           handleCancel={handleCancel}
           handleSubmit={handleSubmit}
+          isShowDeleteButton={false}
           submitButtonStatus={submitButtonStatus.value}>
           <FormGroup label="Title" required={true} layout="vertical" formClass={styles.title}>
             <div className={styles.title_field}>

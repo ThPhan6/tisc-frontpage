@@ -1,6 +1,7 @@
 export interface EntryFormWrapperProps {
   handleSubmit?: () => void;
   handleCancel?: () => void;
+  handleDelete?: () => void;
   customClass?: string;
   contentClass?: string;
   textAlignTitle?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify';
@@ -10,6 +11,7 @@ export interface EntryFormWrapperProps {
   headerContent?: any;
   footerContent?: any;
   submitButtonStatus?: boolean;
+  isShowDeleteButton?: boolean;
 }
 
 export interface FormNameInputProps {
