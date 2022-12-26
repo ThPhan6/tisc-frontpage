@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import { useHistory, useParams } from 'umi';
+import { useHistory } from 'umi';
 
 import { useAttributeLocation } from '../hooks/location';
 import { pushTo } from '@/helper/history';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 import {
   createAttribute,
+  deleteAttribute,
   getOneAttribute,
   getProductAttributeContentType,
   updateAttribute,
@@ -62,10 +63,8 @@ const AttributeEntryForm = () => {
   const [data, setData] = useState<AttributeForm>(DEFAULT_ATTRIBUTE);
   const { activePath, attributeLocation } = useAttributeLocation();
   const isLoading = useBoolean();
-  const params = useParams<{
-    id: string;
-  }>();
-  const idAttribute = params?.id || '';
+
+  const idAttribute = useGetParamId();
   const isUpdate = idAttribute ? true : false;
   const submitButtonStatus = useBoolean(false);
 
@@ -213,6 +212,14 @@ const AttributeEntryForm = () => {
     handleSubmit({ ...data, type: attributeLocation.TYPE, subs: newSubs });
   };
 
+  const handleDeleteAttribute = () => {
+    deleteAttribute(idAttribute).then((isSuccess) => {
+      if (isSuccess) {
+        pushTo(activePath);
+      }
+    });
+  };
+
   return (
     <div>
       <TableHeader title={attributeLocation.NAME} rightAction={<CustomPlusButton disabled />} />
@@ -220,6 +227,8 @@ const AttributeEntryForm = () => {
         handleSubmit={onHandleSubmit}
         handleCancel={history.goBack}
         submitButtonStatus={submitButtonStatus.value}
+        handleDelete={handleDeleteAttribute}
+        entryFormTypeOnMobile={isUpdate ? 'edit' : 'create'}
       >
         <FormNameInput
           placeholder="type group name"

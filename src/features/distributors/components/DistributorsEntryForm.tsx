@@ -1,10 +1,13 @@
 import { FC, useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
+import { PATH } from '@/constants/path';
 import { message } from 'antd';
 
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
+import { pushTo } from '@/helper/history';
+import { useGetParamId } from '@/helper/hook';
 import {
   getEmailMessageError,
   getEmailMessageErrorType,
@@ -30,6 +33,7 @@ import CityModal from '@/features/locations/components/CityModal';
 import CountryModal from '@/features/locations/components/CountryModal';
 import StateModal from '@/features/locations/components/StateModal';
 
+import { deleteDistributor } from '../api';
 import AuthorizedCountryModal from './AuthorizedCountryModal';
 import DistributionTerritoryModal from './DistributionTerritoryModal';
 import styles from './DistributorsEntryForm.less';
@@ -50,6 +54,8 @@ type ModalType = '' | 'city' | 'state' | 'country' | 'authorCountry' | 'territor
 
 export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
   const { submitButtonStatus, onSubmit, onCancel, data, setData } = props;
+
+  const distributorId = useGetParamId();
 
   const [openModal, setOpenModal] = useState<ModalType>('');
 
@@ -125,6 +131,16 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
     });
   };
 
+  const handleDeleteDistributor = () => {
+    if (distributorId) {
+      deleteDistributor(distributorId).then((isSuccess) => {
+        if (isSuccess) {
+          pushTo(PATH.distributors);
+        }
+      });
+    }
+  };
+
   const setModalVisible = (visible: boolean) => (visible ? undefined : setOpenModal(''));
 
   return (
@@ -132,7 +148,10 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
       <EntryFormWrapper
         handleSubmit={handleSubmit}
         handleCancel={onCancel}
-        submitButtonStatus={submitButtonStatus}>
+        handleDelete={handleDeleteDistributor}
+        submitButtonStatus={submitButtonStatus}
+        entryFormTypeOnMobile={distributorId ? 'edit' : 'create'}
+      >
         <div className="form">
           <div className="company information">
             <div className={styles.title}>
@@ -203,7 +222,8 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               label="Address"
               required
               layout="vertical"
-              formClass={styles.customShowCount}>
+              formClass={styles.customShowCount}
+            >
               <CustomTextArea
                 maxLength={120}
                 showCount
@@ -269,7 +289,8 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               label="Gender"
               required
               layout="vertical"
-              formClass={`${styles.formGroup} ${styles.borderBottom}`}>
+              formClass={`${styles.formGroup} ${styles.borderBottom}`}
+            >
               <CustomRadio
                 options={optionsGender}
                 value={data.gender}
@@ -344,7 +365,8 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               label="Coverage Beyond"
               required
               layout="vertical"
-              formClass={styles.borderBottom}>
+              formClass={styles.borderBottom}
+            >
               <CustomRadio
                 options={optionsCoverageBeyond}
                 value={data.coverage_beyond}
