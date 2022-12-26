@@ -3,6 +3,8 @@ import { FC, useEffect, useState } from 'react';
 import { getListPolicy } from '../services/api';
 
 import { ModalProps, Policy } from '../types';
+import { useAppSelector } from '@/reducers';
+import { closeModal, modalThemeSelector } from '@/reducers/modal';
 
 import { CustomModal } from '@/components/Modal';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
@@ -15,10 +17,20 @@ enum PolicyTabKeys {
   cookie_policy = 'cookie policy',
 }
 
-export const PoliciesModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
+export const PoliciesModal: FC<{ customTheme?: ModalProps['theme'] }> = ({ customTheme }) => {
   const [termsOfService, setTermOfService] = useState<Policy>();
   const [privacy, setPrivacy] = useState<Policy>();
   const [cookie, setCookie] = useState<Policy>();
+
+  const { darkTheme } = useAppSelector(modalThemeSelector);
+
+  const listTab = [
+    { tab: 'TERMS OF SERVICES', key: PolicyTabKeys.terms },
+    { tab: 'PRIVACY POLICY', key: PolicyTabKeys.privacy_policy },
+    { tab: 'COOKIE POLICY', key: PolicyTabKeys.cookie_policy },
+  ];
+
+  const [selectedTab, setSelectedTab] = useState<PolicyTabKeys>(PolicyTabKeys.terms);
 
   useEffect(() => {
     getListPolicy().then((res) => {
@@ -38,23 +50,31 @@ export const PoliciesModal: FC<ModalProps> = ({ visible, onClose, theme = 'defau
     });
   }, []);
 
-  const listTab = [
-    { tab: 'TERMS OF SERVICES', key: PolicyTabKeys.terms },
-    { tab: 'PRIVACY POLICY', key: PolicyTabKeys.privacy_policy },
-    { tab: 'COOKIE POLICY', key: PolicyTabKeys.cookie_policy },
-  ];
+  const getBackgroundColor = () => {
+    if (customTheme) {
+      return customTheme === 'dark' ? '#000' : '';
+    }
 
-  const [selectedTab, setSelectedTab] = useState<PolicyTabKeys>(PolicyTabKeys.terms);
+    return darkTheme ? '#000' : '';
+  };
+
+  const getIconColor = () => {
+    if (customTheme) {
+      return customTheme === 'dark' ? styles.closeIcon : '';
+    }
+
+    return darkTheme ? styles.closeIcon : '';
+  };
 
   return (
     <CustomModal
-      visible={visible}
+      visible
       bodyStyle={{
-        backgroundColor: theme === 'dark' ? '#000' : '',
+        backgroundColor: getBackgroundColor(),
         height: '576px',
       }}
-      closeIconClass={theme === 'dark' && styles.closeIcon}
-      onCancel={onClose}>
+      closeIconClass={getIconColor()}
+      onCancel={closeModal}>
       <div className={styles.content}>
         <div className={styles.header}>
           <div className={styles.customTab}>
@@ -89,11 +109,10 @@ export const PoliciesModal: FC<ModalProps> = ({ visible, onClose, theme = 'defau
   );
 };
 
-export const usePoliciesModal = () => {
+export const usePoliciesModal = (customTheme: ModalProps['theme'] = 'dark') => {
   const [open, setOpen] = useState(false);
 
-  const renderPoliciesModal = () =>
-    open ? <PoliciesModal visible onClose={() => setOpen(false)} theme="dark" /> : null;
+  const renderPoliciesModal = () => (open ? <PoliciesModal customTheme={customTheme} /> : null);
 
   return { renderPoliciesModal, openPoliciesModal: () => setOpen(true) };
 };

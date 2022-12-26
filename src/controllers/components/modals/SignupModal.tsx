@@ -123,7 +123,9 @@ export const SignupModal: FC = () => {
         backgroundColor: darkTheme ? '#000' : '',
         height: '576px',
       }}
-      closeIconClass={darkTheme && styles.closeIcon}>
+      onOk={closeModal}
+      onCancel={closeModal}
+      closeIconClass={darkTheme ? styles.closeIcon : ''}>
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={2} customClass={styles[`body${themeStyle}`]}>

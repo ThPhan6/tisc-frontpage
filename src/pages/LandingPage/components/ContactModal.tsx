@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
@@ -10,7 +10,9 @@ import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { contact } from '../services/api';
 import { getEmailMessageError } from '@/helper/utils';
 
-import { ContactRequestBody, ModalProps } from '../types';
+import { ContactRequestBody } from '../types';
+import { useAppSelector } from '@/reducers';
+import { closeModal, modalThemeSelector } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -20,8 +22,8 @@ import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from './ContactModal.less';
 
-export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
-  const themeStyle = () => (theme === 'default' ? '' : '-dark');
+export const ContactModal = () => {
+  const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
 
   const [valueForm, setValueForm] = useState<ContactRequestBody>({
     name: '',
@@ -45,7 +47,7 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
 
     contact(valueForm).then((res) => {
       if (res) {
-        onClose();
+        closeModal();
         setValueForm({
           name: '',
           email: '',
@@ -56,17 +58,16 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
   };
   return (
     <CustomModal
-      visible={visible}
-      containerClass={theme === 'dark' && styles.modal}
+      visible
+      onCancel={closeModal}
       bodyStyle={{
-        backgroundColor: theme === 'dark' ? '#000' : '',
+        backgroundColor: darkTheme ? '#000' : '',
         height: '576px',
       }}
-      closeIconClass={theme === 'dark' && styles.closeIcon}
-      onCancel={onClose}>
+      closeIconClass={darkTheme && styles.closeIcon}>
       <div className={styles.content}>
         <div className={styles.intro}>
-          <MainTitle level={1} customClass={styles[`body${themeStyle()}`]}>
+          <MainTitle level={1} customClass={styles[`body${themeStyle}`]}>
             We love to hear from you.
           </MainTitle>
         </div>
@@ -78,7 +79,7 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
             placeholder="first name / last name"
             prefix={<UserIcon />}
             focusColor="secondary"
-            borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
+            borderBottomColor={darkTheme ? 'white' : 'mono'}
             containerClass={styles.user}
             name="name"
             type={'text'}
@@ -103,7 +104,7 @@ export const ContactModal: FC<ModalProps> = ({ visible, onClose, theme = 'defaul
           />
           <div className={styles.wrapper}>
             <MessageIcon />
-            <BodyText level={4} fontFamily="Roboto" customClass={styles[`body${themeStyle()}`]}>
+            <BodyText level={4} fontFamily="Roboto" customClass={styles[`body${themeStyle}`]}>
               Message
             </BodyText>
           </div>

@@ -1,7 +1,9 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
+import { PATH } from '@/constants/path';
 import { Checkbox, message } from 'antd';
+import { history } from 'umi';
 
 import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
@@ -9,38 +11,59 @@ import { ReactComponent as InternetIcon } from '@/assets/icons/internet-icon.svg
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 
-import { checkEmailAlreadyUsed } from '../services/api';
+import { checkEmailAlreadyUsed, getBooking } from '../services/api';
+import { pushTo } from '@/helper/history';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 import { checkValidURL, validateEmail } from '@/helper/utils';
 import { debounce } from 'lodash';
 
-import { InformationBooking, ModalProps } from '../types';
+import { InformationBooking } from '../types';
+import { CustomInputProps } from '@/components/Form/types';
+import { useAppSelector } from '@/reducers';
+import { closeModal, modalThemeSelector } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
 
-import { PoliciesModal } from './PoliciesModal';
+import { getAvailableDateInMonth } from '../util';
+import { useCalendarModal } from './CalendarModal';
+import { usePoliciesModal } from './PoliciesModal';
 import styles from './SignupModal.less';
+import moment from 'moment';
 
-interface BrandInterestedProps extends ModalProps {
-  onChangeValue: (inputValue: InformationBooking) => void;
-  inputValue: InformationBooking;
-  onOpenCalendar: () => void;
-}
+export const DEFAULT_STATE: InformationBooking = {
+  brand_name: '',
+  website: '',
+  name: '',
+  email: '',
+  agree_tisc: false,
+  date: getAvailableDateInMonth(moment().add(24, 'hours')),
+  slot: -1,
+  timezone: 'Asia/Singapore',
+  id: '',
+  time_text: '',
+  start_time_text: '',
+  end_time_text: '',
+};
 
-export const BrandInterestedModal: FC<BrandInterestedProps> = ({
-  visible,
-  onClose,
-  theme = 'default',
-  inputValue,
-  onChangeValue,
-  onOpenCalendar,
-}) => {
-  const themeStyle = () => (theme === 'default' ? '' : '-dark');
-  const [openModal, setOpenModal] = useState('');
+export const BrandInterestedModal = () => {
+  const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
+
   const [emailExisted, setEmailExisted] = useState(false);
   const [agreeTisc, setAgreeTisc] = useState(false);
+
+  const bookingId = useGetParamId();
+
+  const openCancelBooking = useBoolean();
+  const openCalendar = useBoolean();
+
+  /// booking information
+  const [inputValue, setInputValue] = useState<InformationBooking>(DEFAULT_STATE);
+
+  const { openPoliciesModal, renderPoliciesModal } = usePoliciesModal();
+  const { openCalendarModal, renderCalendarModal } = useCalendarModal(inputValue, setInputValue);
 
   useEffect(() => {
     if (inputValue.email && validateEmail(inputValue.email)) {
@@ -49,6 +72,24 @@ export const BrandInterestedModal: FC<BrandInterestedProps> = ({
       });
     }
   }, [inputValue.email]);
+
+  useEffect(() => {
+    if (bookingId) {
+      getBooking(bookingId).then((res) => {
+        if (res) {
+          setInputValue(res);
+          if (history.location.pathname.indexOf('cancel') !== -1) {
+            openCancelBooking.setValue(true);
+          }
+          if (history.location.pathname.indexOf('re-schedule') !== -1) {
+            openCalendar.setValue(true);
+          }
+        } else {
+          pushTo(PATH.landingPage);
+        }
+      });
+    }
+  }, []);
 
   const getErrorMessage = () => {
     if (inputValue.email && !validateEmail(inputValue.email)) {
@@ -62,6 +103,8 @@ export const BrandInterestedModal: FC<BrandInterestedProps> = ({
     }
     return '';
   };
+
+  const onChangeValue = (value: InformationBooking) => setInputValue(value);
 
   const onChangeInputValue = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     onChangeValue({ ...inputValue, [e.target.name]: e.target.value });
@@ -92,125 +135,123 @@ export const BrandInterestedModal: FC<BrandInterestedProps> = ({
     if (emailExisted === false) {
       return message.error(MESSAGE_ERROR.EMAIL_ALREADY_USED);
     }
-    onOpenCalendar();
+    /// closing another modal
+    // closeModal();
+
+    openCalendarModal();
     setAgreeTisc(false);
     setEmailExisted(false);
   };
 
+  const contentProps: CustomInputProps = {
+    fromLandingPage: true,
+    theme: theme,
+    borderBottomColor: darkTheme ? 'white' : 'mono',
+    onChange: onChangeInputValue,
+    required: true,
+    size: 'large',
+  };
+
+  const onCloseModal = () => {
+    setInputValue(DEFAULT_STATE);
+    closeModal();
+  };
+
   return (
-    <CustomModal
-      visible={visible}
-      containerClass={theme === 'dark' && styles.modal}
-      bodyStyle={{
-        backgroundColor: theme === 'dark' ? '#000' : '',
-        height: '576px',
-      }}
-      closeIconClass={theme === 'dark' && styles.closeIcon}
-      onCancel={onClose}>
-      <div className={styles.content}>
-        <div className={styles.intro}>
-          <MainTitle level={2} customClass={styles[`body${themeStyle()}`]}>
-            Please fill out the below information, and arrange a product DEMO and Q&A session.
-          </MainTitle>
-        </div>
-        <div className={styles.main}>
-          <div className={styles.form}>
-            <CustomInput
-              fromLandingPage
-              theme={theme}
-              size="large"
-              placeholder="brand / company name"
-              prefix={<BrandIcon />}
-              borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-              containerClass={styles.brand}
-              name="brand_name"
-              type={'text'}
-              required={true}
-              onChange={onChangeInputValue}
-            />
-            <CustomInput
-              fromLandingPage
-              theme={theme}
-              size="large"
-              placeholder="company website"
-              prefix={<InternetIcon />}
-              borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-              containerClass={styles.website}
-              name="website"
-              type="text"
-              required={true}
-              onChange={onChangeInputValue}
-            />
-            <CustomInput
-              fromLandingPage
-              theme={theme}
-              size="large"
-              placeholder="first name / last name"
-              prefix={<UserIcon />}
-              borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-              containerClass={styles.user}
-              name="name"
-              type="text"
-              required={true}
-              onChange={onChangeInputValue}
-              autoComplete={'' + Math.random()}
-            />
-            <CustomInput
-              fromLandingPage
-              theme={theme}
-              type="email"
-              containerClass={styles.email}
-              size="large"
-              placeholder="work email"
-              prefix={<EmailIcon />}
-              borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-              name="email"
-              required={true}
-              onChange={onChangeInputValue}
-              autoComplete={'' + Math.random()}
-            />
-            <div
-              className={
-                agreeTisc === true && inputValue.agree_tisc === false ? styles.errorStatus : ''
-              }>
-              <Checkbox
-                onChange={() => {
-                  setAgreeTisc(!agreeTisc);
-                  onChangeValue({ ...inputValue, agree_tisc: !inputValue.agree_tisc });
-                }}>
-                By clicking and continuing, we agree to TISC’s
-              </Checkbox>
-            </div>
-            <div className={styles.customLink}>
-              <span onClick={() => setOpenModal('Policies')}>
-                Terms of Services, Privacy Policy and Cookie Policy
-              </span>
-            </div>
+    <>
+      <CustomModal
+        visible
+        bodyStyle={{
+          backgroundColor: darkTheme ? '#000' : '',
+          height: '576px',
+        }}
+        closeIconClass={darkTheme ? styles.closeIcon : ''}
+        onOk={onCloseModal}
+        onCancel={onCloseModal}>
+        <div className={styles.content}>
+          <div className={styles.intro}>
+            <MainTitle level={2} customClass={styles[`body${themeStyle}`]}>
+              Please fill out the below information, and arrange a product DEMO and Q&A session.
+            </MainTitle>
           </div>
-          <div className={styles.action}>
-            <div className={getErrorMessage() ? styles.action_between : styles.action_right}>
-              {getErrorMessage() ? (
-                <div className={styles.warning}>
-                  <WarningIcon />
-                  <BodyText level={4} fontFamily="Roboto">
-                    {getErrorMessage()}
-                  </BodyText>
-                </div>
-              ) : (
-                ''
-              )}
-              <CustomButton buttonClass={styles.submit} onClick={handleOpenBookingModal}>
-                Book a Demo
-              </CustomButton>
+          <div className={styles.main}>
+            <div className={styles.form}>
+              <CustomInput
+                {...contentProps}
+                placeholder="brand / company name"
+                prefix={<BrandIcon />}
+                containerClass={styles.brand}
+                name="brand_name"
+                type="text"
+              />
+              <CustomInput
+                {...contentProps}
+                placeholder="company website"
+                prefix={<InternetIcon />}
+                containerClass={styles.website}
+                name="website"
+                type="text"
+              />
+              <CustomInput
+                {...contentProps}
+                placeholder="first name / last name"
+                prefix={<UserIcon />}
+                containerClass={styles.user}
+                name="name"
+                autoComplete={'' + Math.random()}
+                type="text"
+              />
+              <CustomInput
+                {...contentProps}
+                containerClass={styles.email}
+                placeholder="work email"
+                prefix={<EmailIcon />}
+                name="email"
+                autoComplete={'' + Math.random()}
+                type="email"
+              />
+              <div
+                className={
+                  agreeTisc === true && inputValue.agree_tisc === false ? styles.errorStatus : ''
+                }>
+                <Checkbox
+                  onChange={() => {
+                    setAgreeTisc(!agreeTisc);
+                    onChangeValue({ ...inputValue, agree_tisc: !inputValue.agree_tisc });
+                  }}>
+                  By clicking and continuing, we agree to TISC’s
+                </Checkbox>
+              </div>
+              <div className={styles.customLink}>
+                <span onClick={openPoliciesModal}>
+                  Terms of Services, Privacy Policy and Cookie Policy
+                </span>
+              </div>
+            </div>
+            <div className={styles.action}>
+              <div className={getErrorMessage() ? styles.action_between : styles.action_right}>
+                {getErrorMessage() ? (
+                  <div className={styles.warning}>
+                    <WarningIcon />
+                    <BodyText level={4} fontFamily="Roboto">
+                      {getErrorMessage()}
+                    </BodyText>
+                  </div>
+                ) : (
+                  ''
+                )}
+                <CustomButton buttonClass={styles.submit} onClick={handleOpenBookingModal}>
+                  Book a Demo
+                </CustomButton>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <PoliciesModal
-        visible={openModal === 'Policies'}
-        onClose={() => setOpenModal('')}
-        theme="dark"
-      />
-    </CustomModal>
+      </CustomModal>
+
+      {renderPoliciesModal()}
+
+      {renderCalendarModal()}
+    </>
   );
 };

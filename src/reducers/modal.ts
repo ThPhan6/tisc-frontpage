@@ -13,7 +13,10 @@ export type ModalType =
   | 'Tisc Login'
   | 'Login'
   | 'Assign Product'
-  | 'Market Availability';
+  | 'Market Availability'
+  | 'Calendar'
+  | 'Cancel Booking'
+  | 'Reset Password';
 
 export interface ModalState {
   type: ModalType;

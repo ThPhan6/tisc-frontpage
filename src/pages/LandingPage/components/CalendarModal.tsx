@@ -10,26 +10,23 @@ import { ReactComponent as PaginationRightIcon } from '@/assets/icons/pagination
 
 import { createBooking, getListAvailableTime, updateBooking } from '../services/api';
 import { pushTo } from '@/helper/history';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 
-import { AvailableTime, InformationBooking, ModalProps, Timezones } from '../types';
+import { AvailableTime, InformationBooking, Timezones } from '../types';
 import { CollapsingProps } from '@/features/how-to/types';
+import { closeModal } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
 import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
 import { endDate, getAvailableDateInMonth, startDate } from '../util';
+import { DEFAULT_STATE } from './BrandInterestedModal';
 import styles from './CalendarModal.less';
 import { BrandInformation } from './CancelBookingModal';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import moment, { Moment } from 'moment';
 
-interface CalendarModalProps extends ModalProps {
-  informationBooking: InformationBooking;
-  isUpdateBooking: boolean;
-  onChangeValue: (informationBooking: InformationBooking) => void;
-}
 interface TimeZoneProps extends CollapsingProps {
   timeZone: string;
 }
@@ -95,13 +92,16 @@ const CalendarHeader: FC<{ dateValue: Moment; onChange: (dateValue: Moment) => v
   );
 };
 
-export const CalendarModal: FC<CalendarModalProps> = ({
-  visible,
-  onClose,
-  informationBooking,
-  isUpdateBooking,
-  onChangeValue,
-}) => {
+export const useCalendarModal = (
+  informationBooking: InformationBooking,
+  setInformationBooking: (informationBooking: InformationBooking) => void,
+) => {
+  const bookingId = useGetParamId();
+  const isUpdateBooking = bookingId ? true : false;
+
+  /// open modal
+  const [open, setOpen] = useState(false);
+
   const [availableTimes, setAvailableTimes] = useState<AvailableTime[]>([]);
 
   const [activeKey, setActiveKey] = useState<string>('');
@@ -165,7 +165,7 @@ export const CalendarModal: FC<CalendarModalProps> = ({
               informationBooking.timezone === key ? styles.activeText : ''
             }`}
             onClick={() => {
-              onChangeValue({
+              setInformationBooking({
                 ...informationBooking,
                 timezone: key,
                 slot: -1,
@@ -204,7 +204,7 @@ export const CalendarModal: FC<CalendarModalProps> = ({
             }`}
             onClick={() =>
               time.available &&
-              onChangeValue({
+              setInformationBooking({
                 ...informationBooking,
                 start_time_text: moment(time.start, 'HH:mm').format('hh:mm a'),
                 end_time_text: moment(time.end, 'HH:mm').format('hh:mm a'),
@@ -239,17 +239,21 @@ export const CalendarModal: FC<CalendarModalProps> = ({
 
     handleSubmit.then((isSuccess) => {
       if (isSuccess) {
-        onClose();
+        setInformationBooking(DEFAULT_STATE);
+        closeModal();
+
         pushTo(PATH.landingPage);
       }
       hidePageLoading();
     });
   };
 
-  return (
-    <div>
+  const renderCalendarModal = () =>
+    !open ? null : (
       <CustomModal
-        visible={visible}
+        visible
+        onOk={closeModal}
+        onCancel={closeModal}
         width="1152px"
         bodyStyle={{
           height: '512px',
@@ -261,8 +265,7 @@ export const CalendarModal: FC<CalendarModalProps> = ({
           <MainTitle level={2}>
             {isUpdateBooking ? 'Re-select Date & Time' : 'Select Available Date & Time'}
           </MainTitle>
-        }
-        onCancel={onClose}>
+        }>
         <Row gutter={[32, 0]}>
           <Col span={8}>
             <Calendar
@@ -273,7 +276,7 @@ export const CalendarModal: FC<CalendarModalProps> = ({
               )}
               validRange={[moment(), endDate]}
               onSelect={(date) => {
-                onChangeValue({
+                setInformationBooking({
                   ...informationBooking,
                   date: getAvailableDateInMonth(date),
                   start_time_text: '',
@@ -344,6 +347,10 @@ export const CalendarModal: FC<CalendarModalProps> = ({
           </Col>
         </Row>
       </CustomModal>
-    </div>
-  );
+    );
+
+  return {
+    renderCalendarModal,
+    openCalendarModal: () => setOpen(true),
+  };
 };

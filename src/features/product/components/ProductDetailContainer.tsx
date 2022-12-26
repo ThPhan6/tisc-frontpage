@@ -218,11 +218,7 @@ const ProductDetailContainer: React.FC = () => {
 
       {isPublicPage ? (
         <Col span={24} className={styles.footerContent}>
-          <LandingPageFooter
-            setOpenModal={setOpenModal}
-            listMenuFooter={listMenuFooter}
-            isPublicPage
-          />
+          <LandingPageFooter listMenuFooter={listMenuFooter} />
 
           <AboutPoliciesContactModal visible={openModal} onClose={handleCloseModal} />
         </Col>

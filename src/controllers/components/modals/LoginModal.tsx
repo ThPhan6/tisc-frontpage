@@ -208,9 +208,9 @@ export const LoginModal: FC<{ tiscLogin?: boolean }> = ({ tiscLogin }) => {
                 status={isShowErrorMessage('email', inputValue.email) ? '' : 'error'}
                 theme={theme}
                 size="large"
-                containerClass={`
-                ${styles.email}
-                ${showForgotPassword.value ? styles.disabled : ''}`}
+                containerClass={`${styles.email} ${
+                  showForgotPassword.value ? styles.disabled : ''
+                }`}
                 placeholder="work email"
                 prefix={<EmailIcon />}
                 focusColor="secondary"
@@ -225,9 +225,9 @@ export const LoginModal: FC<{ tiscLogin?: boolean }> = ({ tiscLogin }) => {
                 status={inputValue.password && inputValue.password.length < 8 ? 'error' : ''}
                 theme={theme}
                 type={'password'}
-                containerClass={`
-                ${styles.password}
-                ${showForgotPassword.value ? styles.disabled : ''}`}
+                containerClass={`${styles.password} ${
+                  showForgotPassword.value ? styles.disabled : ''
+                }`}
                 size="large"
                 placeholder="password"
                 prefix={<LockedIcon />}
@@ -251,7 +251,7 @@ export const LoginModal: FC<{ tiscLogin?: boolean }> = ({ tiscLogin }) => {
                   Forgot password?
                 </BodyText>
               </div>
-              {showForgotPassword.value && (
+              {showForgotPassword.value ? (
                 <CustomInput
                   required
                   fromLandingPage
@@ -266,6 +266,8 @@ export const LoginModal: FC<{ tiscLogin?: boolean }> = ({ tiscLogin }) => {
                   onChange={(e) => verifyEmail.setValue(e.target.value)}
                   onPressEnter={onKeyPress}
                 />
+              ) : (
+                ''
               )}
             </div>
           </div>

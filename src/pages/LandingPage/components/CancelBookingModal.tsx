@@ -8,7 +8,8 @@ import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 
 import { deleteBooking } from '../services/api';
 
-import { InformationBooking, ModalProps, Timezones } from '../types';
+import { InformationBooking, Timezones } from '../types';
+import { closeModal } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
 import { CustomModal } from '@/components/Modal';
@@ -18,13 +19,15 @@ import styles from './CalendarModal.less';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import moment from 'moment';
 
-interface CancelBookingProps extends ModalProps {
-  informationBooking: InformationBooking;
+interface CancelBookingProps {
+  informationBooking?: InformationBooking;
 }
 
-export const BrandInformation: FC<{ informationBooking: InformationBooking }> = ({
-  informationBooking,
-}) => {
+export const BrandInformation: FC<CancelBookingProps> = ({ informationBooking }) => {
+  if (!informationBooking) {
+    return null;
+  }
+
   return (
     <>
       <div className={styles.title}>
@@ -91,19 +94,17 @@ export const BrandInformation: FC<{ informationBooking: InformationBooking }> = 
   );
 };
 
-export const CancelBookingModal: FC<CancelBookingProps> = ({
-  visible,
-  onClose,
-  informationBooking,
-}) => {
+export const CancelBookingModal: FC<CancelBookingProps> = ({ informationBooking }) => {
   const onCancelBooking = () => {
     showPageLoading();
-    deleteBooking(informationBooking.id).then((isSuccess) => {
-      if (isSuccess) {
-        onClose();
-      }
-      hidePageLoading();
-    });
+    if (informationBooking) {
+      deleteBooking(informationBooking?.id).then((isSuccess) => {
+        if (isSuccess) {
+          closeModal();
+        }
+        hidePageLoading();
+      });
+    }
   };
 
   return (
@@ -115,8 +116,8 @@ export const CancelBookingModal: FC<CancelBookingProps> = ({
       }}
       closeIconClass={styles.closeIcon}
       className={styles.calendar}
-      visible={visible}
-      onCancel={onClose}>
+      visible
+      onCancel={closeModal}>
       <BrandInformation informationBooking={informationBooking} />
       <div
         style={{
