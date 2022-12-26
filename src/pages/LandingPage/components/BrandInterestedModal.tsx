@@ -12,6 +12,7 @@ import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 
 import { checkEmailAlreadyUsed, getBooking } from '../services/api';
+import { useLandingPageStyles } from './hook';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
 import { checkValidURL, validateEmail } from '@/helper/utils';
@@ -20,7 +21,7 @@ import { debounce } from 'lodash';
 import { InformationBooking } from '../types';
 import { CustomInputProps } from '@/components/Form/types';
 import { useAppSelector } from '@/reducers';
-import { closeModal, modalThemeSelector } from '@/reducers/modal';
+import { modalThemeSelector } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -64,6 +65,12 @@ export const BrandInterestedModal = () => {
 
   const { openPoliciesModal, renderPoliciesModal } = usePoliciesModal();
   const { openCalendarModal, renderCalendarModal } = useCalendarModal(inputValue, setInputValue);
+
+  const onCloseModal = () => {
+    setInputValue(DEFAULT_STATE);
+  };
+
+  const popupStylesProps = useLandingPageStyles(darkTheme, onCloseModal);
 
   useEffect(() => {
     if (inputValue.email && validateEmail(inputValue.email)) {
@@ -152,22 +159,9 @@ export const BrandInterestedModal = () => {
     size: 'large',
   };
 
-  const onCloseModal = () => {
-    setInputValue(DEFAULT_STATE);
-    closeModal();
-  };
-
   return (
     <>
-      <CustomModal
-        visible
-        bodyStyle={{
-          backgroundColor: darkTheme ? '#000' : '',
-          height: '576px',
-        }}
-        closeIconClass={darkTheme ? styles.closeIcon : ''}
-        onOk={onCloseModal}
-        onCancel={onCloseModal}>
+      <CustomModal {...popupStylesProps}>
         <div className={styles.content}>
           <div className={styles.intro}>
             <MainTitle level={2} customClass={styles[`body${themeStyle}`]}>
@@ -213,12 +207,14 @@ export const BrandInterestedModal = () => {
               <div
                 className={
                   agreeTisc === true && inputValue.agree_tisc === false ? styles.errorStatus : ''
-                }>
+                }
+              >
                 <Checkbox
                   onChange={() => {
                     setAgreeTisc(!agreeTisc);
                     onChangeValue({ ...inputValue, agree_tisc: !inputValue.agree_tisc });
-                  }}>
+                  }}
+                >
                   By clicking and continuing, we agree to TISC’s
                 </Checkbox>
               </div>
