@@ -11,7 +11,6 @@ import { CustomModal } from '@/components/Modal';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
 import styles from './PoliciesModal.less';
-import iconStyles from './index.less';
 
 enum PolicyTabKeys {
   terms = 'terms of services',
@@ -65,10 +64,10 @@ export const PoliciesModal: FC<CustomModalProps & { customTheme?: ModalProps['th
 
   const getIconColor = () => {
     if (customTheme) {
-      return customTheme === 'dark' ? iconStyles.closeIcon : '';
+      return customTheme === 'dark' ? styles.closeIcon : '';
     }
 
-    return darkTheme ? iconStyles.closeIcon : '';
+    return darkTheme ? styles.closeIcon : '';
   };
 
   return (
