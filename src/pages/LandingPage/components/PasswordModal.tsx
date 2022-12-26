@@ -11,6 +11,7 @@ import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 
 import { createPasswordVerify, resetPasswordMiddleware } from '../services/api';
+import { useLandingPageStyles } from './hook';
 import { pushTo } from '@/helper/history';
 import { useCustomInitialState } from '@/helper/hook';
 import { isShowErrorMessage, validatePassword } from '@/helper/utils';
@@ -31,6 +32,9 @@ export const PasswordModal: FC = () => {
   const { fetchUserInfo } = useCustomInitialState();
 
   const { email, token, passwordType } = useAppSelector(modalPropsSelector);
+  const popupStylesProps = useLandingPageStyles(false, () => {
+    pushTo(PATH.landingPage);
+  });
 
   const [resetInputValue, setResetInputValue] = useState<PasswordInput>({
     password: '',
@@ -113,12 +117,7 @@ export const PasswordModal: FC = () => {
   };
 
   return (
-    <CustomModal
-      onCancel={() => {
-        pushTo(PATH.landingPage);
-      }}
-      bodyStyle={{ height: '576px' }}
-    >
+    <CustomModal {...popupStylesProps}>
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={2} customClass={styles.body}>

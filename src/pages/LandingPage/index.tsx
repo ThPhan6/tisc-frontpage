@@ -80,6 +80,7 @@ const LandingPage = () => {
             props: isCreatePassword
               ? {
                   email: userEmail || '',
+                  token: tokenVerification,
                   passwordType: 'create',
                 }
               : undefined,
