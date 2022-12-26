@@ -12,6 +12,7 @@ export interface EntryFormWrapperProps {
   footerContent?: any;
   submitButtonStatus?: boolean;
   isShowDeleteButton?: boolean;
+  entryFormTypeOnMobile?: 'create' | 'edit';
 }
 
 export interface FormNameInputProps {

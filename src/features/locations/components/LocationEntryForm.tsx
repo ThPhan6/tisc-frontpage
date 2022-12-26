@@ -2,9 +2,11 @@ import type { FC } from 'react';
 import React, { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
+import { PATH } from '@/constants/path';
 import { message } from 'antd';
 
-import { useCheckPermission } from '@/helper/hook';
+import { pushTo } from '@/helper/history';
+import { useCheckPermission, useGetParamId } from '@/helper/hook';
 import {
   getEmailMessageError,
   getEmailMessageErrorType,
@@ -30,6 +32,7 @@ import CityModal from '@/features/locations/components/CityModal';
 import CountryModal from '@/features/locations/components/CountryModal';
 import StateModal from '@/features/locations/components/StateModal';
 
+import { deleteLocationById } from '../api';
 import styles from './LocationEntryForm.less';
 
 interface LocationEntryFormProps {
@@ -57,6 +60,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
   const [visible, setVisible] = useState<'' | 'country' | 'state' | 'city'>('');
 
   const isDesignAdmin = useCheckPermission('Design Admin');
+
+  const locationId = useGetParamId();
 
   const [countryData, setCountryData] = useState({
     label: '',
@@ -163,10 +168,22 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     });
   };
 
+  const handleDeleteLocation = () => {
+    if (locationId) {
+      deleteLocationById(locationId).then((isSuccess) => {
+        if (isSuccess) {
+          pushTo(PATH.tiscLocation);
+        }
+      });
+    }
+  };
+
   return (
     <EntryFormWrapper
       handleSubmit={handleSubmit}
       handleCancel={onCancel}
+      handleDelete={handleDeleteLocation}
+      entryFormTypeOnMobile={locationId ? 'edit' : 'create'}
       submitButtonStatus={isSubmitted}>
       <InputGroup
         label="Business Name"
