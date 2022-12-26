@@ -61,67 +61,68 @@ export const ContactModal = () => {
   };
   return (
     <CustomModal {...popupStylesProps}>
-      <ModalContainer
-        customClass={styles.content}
-        buttonContent={
+      <ModalContainer>
+        <div className={styles.content}>
+          <div className={styles.intro}>
+            <MainTitle level={1} customClass={styles[`body${themeStyle}`]}>
+              We love to hear from you.
+            </MainTitle>
+          </div>
+          <div className={styles.form}>
+            <CustomInput
+              fromLandingPage
+              theme={theme}
+              size="large"
+              placeholder="first name / last name"
+              prefix={<UserIcon />}
+              focusColor="secondary"
+              borderBottomColor={darkTheme ? 'white' : 'mono'}
+              containerClass={styles.user}
+              name="name"
+              type={'text'}
+              required={true}
+              onChange={handleOnChangeValueForm}
+              value={valueForm.name}
+            />
+            <CustomInput
+              fromLandingPage
+              theme={theme}
+              type={'email'}
+              containerClass={styles.email}
+              size="large"
+              placeholder="contact email"
+              prefix={<EmailIcon />}
+              focusColor="secondary"
+              borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
+              name="email"
+              required={true}
+              onChange={handleOnChangeValueForm}
+              value={valueForm.email}
+            />
+            <div className={styles.wrapper}>
+              <MessageIcon />
+              <BodyText level={4} fontFamily="Roboto" customClass={styles[`body${themeStyle}`]}>
+                Message
+              </BodyText>
+            </div>
+            <div>
+              <CustomTextArea
+                showCount
+                placeholder="type here..."
+                maxLength={250}
+                borderBottomColor="mono-medium"
+                name="inquiry"
+                onChange={handleOnChangeValueForm}
+                value={valueForm.inquiry}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className={buttonStyles.button}>
           <CustomButton buttonClass={buttonStyles.submit} onClick={handleSubmitContact}>
             Thank you
           </CustomButton>
-        }
-      >
-        <div className={styles.intro}>
-          <MainTitle level={1} customClass={styles[`body${themeStyle}`]}>
-            We love to hear from you.
-          </MainTitle>
-        </div>
-        <div className={styles.form}>
-          <CustomInput
-            fromLandingPage
-            theme={theme}
-            size="large"
-            placeholder="first name / last name"
-            prefix={<UserIcon />}
-            focusColor="secondary"
-            borderBottomColor={darkTheme ? 'white' : 'mono'}
-            containerClass={styles.user}
-            name="name"
-            type={'text'}
-            required={true}
-            onChange={handleOnChangeValueForm}
-            value={valueForm.name}
-          />
-          <CustomInput
-            fromLandingPage
-            theme={theme}
-            type={'email'}
-            containerClass={styles.email}
-            size="large"
-            placeholder="contact email"
-            prefix={<EmailIcon />}
-            focusColor="secondary"
-            borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-            name="email"
-            required={true}
-            onChange={handleOnChangeValueForm}
-            value={valueForm.email}
-          />
-          <div className={styles.wrapper}>
-            <MessageIcon />
-            <BodyText level={4} fontFamily="Roboto" customClass={styles[`body${themeStyle}`]}>
-              Message
-            </BodyText>
-          </div>
-          <div>
-            <CustomTextArea
-              showCount
-              placeholder="type here..."
-              maxLength={250}
-              borderBottomColor="mono-medium"
-              name="inquiry"
-              onChange={handleOnChangeValueForm}
-              value={valueForm.inquiry}
-            />
-          </div>
         </div>
       </ModalContainer>
     </CustomModal>

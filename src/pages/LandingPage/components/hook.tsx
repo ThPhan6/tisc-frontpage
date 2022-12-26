@@ -4,15 +4,15 @@ import { closeModal } from '@/reducers/modal';
 
 import styles from './index.less';
 
-export const ModalContainer: FC<{ buttonContent: ReactNode; customClass?: string }> = ({
+export const ModalContainer: FC<{ footerContent?: ReactNode; customClass?: string }> = ({
   children,
-  buttonContent,
+  // footerContent,
   customClass = '',
 }) => {
   return (
     <div className={`${styles.container} ${customClass}`}>
-      <div className={styles.content}>{children}</div>
-      <div className={styles.button}>{buttonContent}</div>
+      {children}
+      {/* <div className={styles.button}>{footerContent}</div> */}
     </div>
   );
 };
