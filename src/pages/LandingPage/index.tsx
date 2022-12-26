@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 
-import { MESSAGE_ERROR, MESSAGE_NOTIFICATION } from '@/constants/message';
+import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
-import { STATUS_RESPONSE } from '@/constants/util';
 import { Col, Row, message } from 'antd';
 import { history } from 'umi';
 
@@ -16,38 +15,24 @@ import { ReactComponent as SingleRight } from '@/assets/icons/single-right.svg';
 import { ReactComponent as TargetMoneyIcon } from '@/assets/icons/target-money-icon.svg';
 import { ReactComponent as TimeMoney } from '@/assets/icons/time-money-icon.svg';
 
-import {
-  createPasswordVerify,
-  resetPasswordMiddleware,
-  validateToken,
-  verifyAccount,
-} from './services/api';
-import { useBoolean, useCustomInitialState, useQuery } from '@/helper/hook';
+import { validateToken, verifyAccount } from './services/api';
+import { useQuery } from '@/helper/hook';
 
-import { ModalOpen, PasswordRequestBody } from './types';
 import store from '@/reducers';
-import { openModal as openModalAction } from '@/reducers/modal';
+import { ModalType, openModal } from '@/reducers/modal';
 
-import { PasswordModal } from './components/PasswordModal';
-import { VerifyAccount } from './components/VerifyAccount';
 import CustomButton from '@/components/Button';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
 import { LandingPageFooter } from './footer';
 import styles from './index.less';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const LandingPage = () => {
   const userEmail = useQuery().get('email');
   const tokenResetPwd = useQuery().get('token');
   const tokenVerification = useQuery().get('verification_token');
 
-  const { fetchUserInfo } = useCustomInitialState();
-  const openResetPwd = useBoolean();
-  const openVerificationModal = useBoolean();
-
-  const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
-  const openVerifyAccountModal = useBoolean();
+  const listMenuFooter: ModalType[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
 
   useEffect(() => {
     if ((!userEmail || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
@@ -56,9 +41,21 @@ const LandingPage = () => {
       if (tokenResetPwd) {
         validateToken(tokenResetPwd).then((res) => {
           if (res) {
-            return openResetPwd.setValue(res);
+            store.dispatch(
+              openModal({
+                type: 'Reset Password',
+                props: {
+                  email: userEmail || '',
+                  token: tokenResetPwd || '',
+                  passwordType: 'reset',
+                },
+                autoHeightDrawer: true,
+                noBorderDrawerHeader: true,
+              }),
+            );
+          } else {
+            history.push(PATH.landingPage);
           }
-          history.push(PATH.landingPage);
         });
       }
     }
@@ -66,57 +63,53 @@ const LandingPage = () => {
   }, [userEmail]);
 
   useEffect(() => {
-    if (tokenVerification && history.location.pathname !== PATH.createPassword) {
-      verifyAccount(tokenVerification).then((success) => {
-        if (success) {
-          openVerifyAccountModal.setValue(success);
-        } else {
-          history.replace(PATH.landingPage);
-          message.error(MESSAGE_ERROR.VERIFY_TOKEN_EXPIRED);
-        }
-      });
+    if (!tokenVerification) {
+      if (history.location.pathname === PATH.verifyAccount) {
+        history.push(PATH.landingPage);
+      }
       return;
-    } else if (tokenVerification && history.location.pathname === PATH.createPassword) {
-      validateToken(tokenVerification).then((success) => {
-        if (success) {
-          openVerificationModal.setValue(true);
-        } else {
-          message.error(MESSAGE_ERROR.VERIFY_TOKEN_EXPIRED);
+    }
+
+    const isCreatePassword = history.location.pathname === PATH.createPassword;
+    const handleVerifyToken = isCreatePassword ? validateToken : verifyAccount;
+    const verifyTokenCallback = (success: boolean) => {
+      if (success) {
+        store.dispatch(
+          openModal({
+            type: isCreatePassword ? 'Reset Password' : 'Verify Account',
+            props: isCreatePassword
+              ? {
+                  email: userEmail || '',
+                  passwordType: 'create',
+                }
+              : undefined,
+            autoHeightDrawer: true,
+            noBorderDrawerHeader: true,
+          }),
+        );
+      } else {
+        message.error(MESSAGE_ERROR.VERIFY_TOKEN_EXPIRED);
+        if (isCreatePassword === false) {
+          history.replace(PATH.landingPage);
         }
-      });
-    }
-    if (history.location.pathname === PATH.verifyAccount) {
-      history.push(PATH.landingPage);
-    }
+      }
+    };
+
+    handleVerifyToken(tokenVerification).then(verifyTokenCallback);
   }, [tokenVerification]);
 
-  const handleResetPassword = (data: PasswordRequestBody) => {
-    showPageLoading();
-    resetPasswordMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
-      if (type === STATUS_RESPONSE.SUCCESS) {
-        message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD_SUCCESS);
-        await fetchUserInfo(true);
-      } else {
-        message.error(msg);
-      }
-      hidePageLoading();
-    });
-  };
-
-  const handleVerifyAccount = (data: PasswordRequestBody) => {
-    showPageLoading();
-    createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
-      if (isSuccess) {
-        fetchUserInfo(true);
-        hidePageLoading();
-        openVerificationModal.setValue(false);
-        history.replace(PATH.landingPage);
-      }
-    });
-  };
-
-  const openLoginModal = () => store.dispatch(openModalAction({ type: 'Login' }));
-  const openBrandInterested = () => store.dispatch(openModalAction({ type: 'Brand Interested' }));
+  const openLoginModal = () =>
+    store.dispatch(
+      openModal({ type: 'Login', autoHeightDrawer: true, noBorderDrawerHeader: true }),
+    );
+  const openBrandInterested = () =>
+    store.dispatch(
+      openModal({
+        type: 'Brand Interested',
+        autoHeightDrawer: true,
+        noBorderDrawerHeader: true,
+      }),
+    );
 
   const renderFeatures = (data: any[]) => {
     return (
@@ -144,7 +137,8 @@ const LandingPage = () => {
                 icon={<SingleRight />}
                 width="104px"
                 buttonClass={styles['login-button']}
-                onClick={openLoginModal}>
+                onClick={openLoginModal}
+              >
                 Log in
               </CustomButton>
             </div>
@@ -183,7 +177,8 @@ const LandingPage = () => {
                       properties="warning"
                       size="large"
                       buttonClass={styles['action-button']}
-                      onClick={openBrandInterested}>
+                      onClick={openBrandInterested}
+                    >
                       INTERESTED
                     </CustomButton>
                   </div>
@@ -215,9 +210,14 @@ const LandingPage = () => {
                       buttonClass={styles['action-button']}
                       onClick={() =>
                         store.dispatch(
-                          openModalAction({ type: 'Designer Signup', autoHeightDrawer: true }),
+                          openModal({
+                            type: 'Designer Signup',
+                            autoHeightDrawer: true,
+                            noBorderDrawerHeader: true,
+                          }),
                         )
-                      }>
+                      }
+                    >
                       SIGN ME UP
                     </CustomButton>
                   </div>
@@ -229,34 +229,6 @@ const LandingPage = () => {
       </div>
 
       <LandingPageFooter listMenuFooter={listMenuFooter} />
-
-      {userEmail ? (
-        <PasswordModal
-          visible={openResetPwd}
-          handleSubmit={handleResetPassword}
-          data={{
-            email: userEmail,
-            token: tokenResetPwd || '',
-          }}
-          type="reset"
-        />
-      ) : null}
-      <PasswordModal
-        visible={openVerificationModal}
-        handleSubmit={handleVerifyAccount}
-        data={{
-          email: userEmail ?? '',
-          token: tokenVerification || '',
-        }}
-        type="create"
-      />
-      {openVerifyAccountModal.value === true ? (
-        <VerifyAccount
-          visible={openVerifyAccountModal}
-          handleSubmit={openLoginModal}
-          openLogin={openLoginModal}
-        />
-      ) : null}
     </div>
   );
 };

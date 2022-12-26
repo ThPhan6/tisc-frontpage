@@ -23,12 +23,11 @@ import { ProductFormData, ProductKeyword } from '../types';
 import { ProductInfoTab } from './ProductAttributes/types';
 import { ProductDimensionWeight } from '@/features/dimension-weight/types';
 import { resetProductDetailState, setBrand } from '@/features/product/reducers';
-import { ModalOpen } from '@/pages/LandingPage/types';
 import { useAppSelector } from '@/reducers';
+import { ModalType } from '@/reducers/modal';
 
 import { PublicHeader } from '@/components/PublicHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
-import { AboutPoliciesContactModal } from '@/pages/LandingPage/AboutPolicesContactModal';
 import { LandingPageFooter } from '@/pages/LandingPage/footer';
 
 import { ProductAttributeComponent } from './ProductAttributes';
@@ -48,8 +47,7 @@ const ProductDetailContainer: React.FC = () => {
   Cookies.set('signature', signature);
   const isPublicPage = signature ? true : false;
 
-  const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact'];
-  const [openModal, setOpenModal] = useState<ModalOpen>('');
+  const listMenuFooter: ModalType[] = ['About', 'Policies', 'Contact'];
 
   const params = useParams<{ id: string; brandId: string }>();
   const productId = params?.id || '';
@@ -89,10 +87,6 @@ const ProductDetailContainer: React.FC = () => {
       getRelatedCollectionProducts(details.id);
     }
   }, [details.id, details.brand]);
-
-  const handleCloseModal = () => {
-    setOpenModal('');
-  };
 
   const onSave = () => {
     // check urls is valid
@@ -146,10 +140,6 @@ const ProductDetailContainer: React.FC = () => {
       }
     });
   };
-
-  // if (!details.id) {
-  //   return null;
-  // }
 
   const renderHeader = () => {
     if (isTiscAdmin) {
@@ -219,8 +209,6 @@ const ProductDetailContainer: React.FC = () => {
       {isPublicPage ? (
         <Col span={24} className={styles.footerContent}>
           <LandingPageFooter listMenuFooter={listMenuFooter} />
-
-          <AboutPoliciesContactModal visible={openModal} onClose={handleCloseModal} />
         </Col>
       ) : null}
     </Row>
