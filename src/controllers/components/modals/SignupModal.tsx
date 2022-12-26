@@ -10,6 +10,7 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-whi
 
 import { useBoolean } from '@/helper/hook';
 import { isShowErrorMessage, validateEmail } from '@/helper/utils';
+import { useLandingPageStyles } from '@/pages/LandingPage/components/hook';
 import { checkEmailAlreadyUsed, signUpDesigner } from '@/pages/LandingPage/services/api';
 import { debounce } from 'lodash';
 
@@ -44,6 +45,7 @@ export const SignupModal: FC = () => {
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
 
   const { openPoliciesModal, renderPoliciesModal } = usePoliciesModal();
+  const popupStylesProps = useLandingPageStyles(darkTheme);
 
   const [formInput, setFormInput] = useState<SignUpFormState>(DEFAULT_STATE);
   const [agreeTisc, setAgreeTisc] = useState(false);
@@ -118,16 +120,7 @@ export const SignupModal: FC = () => {
 
   return (
     <>
-      <CustomModal
-        visible
-        bodyStyle={{
-          backgroundColor: darkTheme ? '#000' : '',
-          height: '576px',
-        }}
-        onOk={closeModal}
-        onCancel={closeModal}
-        closeIconClass={darkTheme ? styles.closeIcon : ''}
-      >
+      <CustomModal {...popupStylesProps}>
         <div className={styles.content}>
           <div className={styles.intro}>
             <MainTitle level={2} customClass={styles[`body${themeStyle}`]}>
