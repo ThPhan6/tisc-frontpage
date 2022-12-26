@@ -1,3 +1,4 @@
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import store, { RootState } from '@/reducers';
 
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
@@ -17,7 +18,9 @@ export type ModalType =
   | 'Calendar'
   | 'Cancel Booking'
   | 'Reset Password'
-  | 'Verify Account';
+  | 'Verify Account'
+  | 'Assign Team'
+  | 'Project Tracking Legend';
 
 export interface ModalState {
   type: ModalType;
@@ -32,13 +35,21 @@ export interface ModalState {
     email?: string; // Reset Password
     token?: string; // Reset Password
     passwordType?: 'reset' | 'create'; // Reset Password
+
+    assignTeam: {
+      onChange?: (selected: CheckboxValue[]) => void;
+      teams?: any[];
+      memberAssigned?: any[];
+    };
   };
 }
 
 const initialState: ModalState = {
   type: 'none',
   theme: 'default',
-  props: {},
+  props: {
+    assignTeam: {},
+  },
 };
 
 const modalSlice = createSlice({
@@ -47,9 +58,9 @@ const modalSlice = createSlice({
   reducers: {
     openModal: (
       _state,
-      action: PayloadAction<Omit<ModalState, 'props'> & { props?: ModalState['props'] }>,
+      action: PayloadAction<Omit<ModalState, 'props'> & { props?: Partial<ModalState['props']> }>,
     ) => {
-      return { ...action.payload, props: action.payload.props || {} };
+      return { ...action.payload, props: { ...initialState.props, ...action.payload.props } };
     },
     closeModalAction: (state) => {
       state.type = 'none';

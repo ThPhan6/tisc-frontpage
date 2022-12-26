@@ -5,6 +5,8 @@ import { closeModal } from '@/reducers/modal';
 
 import { LoginModal } from './components/modals/LoginModal';
 import { SignupModal } from './components/modals/SignupModal';
+import AssignTeamModal from '@/components/AssignTeam';
+import { ProjectTrackingLegendModal } from '@/components/LegendModal/LegendModal';
 import { MobileDrawer } from '@/components/Modal/Drawer';
 import InformationMarketAvailability from '@/features/market-availability/components/InformationMarketAvailability';
 import { AboutModal } from '@/pages/LandingPage/components/AboutModal';
@@ -52,6 +54,12 @@ export const ModalController = () => {
         return <PasswordModal />;
       case 'Verify Account':
         return <VerifyAccount />;
+
+      // General
+      case 'Assign Team':
+        return <AssignTeamModal />;
+      case 'Project Tracking Legend':
+        return <ProjectTrackingLegendModal />;
 
       // design firms
       case 'Assign Product':
