@@ -8,7 +8,7 @@ import { ReactComponent as MessageIcon } from '@/assets/icons/message-icon-18px.
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 
 import { contact } from '../services/api';
-import { useLandingPageStyles } from './hook';
+import { ModalContainer, useLandingPageStyles } from './hook';
 import { getEmailMessageError } from '@/helper/utils';
 
 import { ContactRequestBody } from '../types';
@@ -22,6 +22,7 @@ import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from './ContactModal.less';
+import buttonStyles from './index.less';
 
 export const ContactModal = () => {
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
@@ -60,7 +61,14 @@ export const ContactModal = () => {
   };
   return (
     <CustomModal {...popupStylesProps}>
-      <div className={styles.content}>
+      <ModalContainer
+        customClass={styles.content}
+        buttonContent={
+          <CustomButton buttonClass={buttonStyles.submit} onClick={handleSubmitContact}>
+            Thank you
+          </CustomButton>
+        }
+      >
         <div className={styles.intro}>
           <MainTitle level={1} customClass={styles[`body${themeStyle}`]}>
             We love to hear from you.
@@ -115,12 +123,7 @@ export const ContactModal = () => {
             />
           </div>
         </div>
-        <div className={styles.button}>
-          <CustomButton buttonClass={styles.submit} onClick={handleSubmitContact}>
-            Thank you
-          </CustomButton>
-        </div>
-      </div>
+      </ModalContainer>
     </CustomModal>
   );
 };

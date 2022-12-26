@@ -7,3 +7,37 @@
     fill: #fff;
   }
 }
+
+.modalContainer {
+  :global(.ant-modal-body) {
+    padding: 48px 48px 32px 48px;
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 32px;
+}
+
+.submit {
+  padding: 0 20px;
+  font-weight: 500;
+  font-size: 14px;
+  font-family: @font-primary;
+  font-style: normal;
+  line-height: 22px;
+  text-align: right;
+  background: @primary-color-dark;
+  border: 1px solid @primary-color-dark;
+  border-radius: 16px;
+}
