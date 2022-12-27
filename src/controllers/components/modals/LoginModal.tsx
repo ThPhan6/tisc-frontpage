@@ -8,7 +8,6 @@ import { message } from 'antd';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';
 import { ReactComponent as LockedForgotIcon } from '@/assets/icons/lock-forgot-icon.svg';
 import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
-import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 
 import {
   ForgotType,
@@ -20,7 +19,11 @@ import {
 import { useScreen } from '@/helper/common';
 import { useBoolean, useCustomInitialState, useString } from '@/helper/hook';
 import { isShowErrorMessage, validateEmail } from '@/helper/utils';
-import { ModalContainer, useLandingPageStyles } from '@/pages/LandingPage/components/hook';
+import {
+  FooterContent,
+  ModalContainer,
+  useLandingPageStyles,
+} from '@/pages/LandingPage/components/hook';
 import { sample } from 'lodash';
 
 import { DataTableResponse } from '@/components/Table/types';
@@ -28,7 +31,6 @@ import type { LoginInput, Quotation } from '@/pages/LandingPage/types';
 import { useAppSelector } from '@/reducers';
 import { closeModal, modalThemeSelector } from '@/reducers/modal';
 
-import CustomButton from '@/components/Button';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
@@ -272,28 +274,14 @@ export const LoginModal: FC<{ tiscLogin?: boolean }> = ({ tiscLogin }) => {
             </div>
           </div>
         </div>
-        <div className={styles.action}>
-          <div className={setErrorMessage() ? styles.action_between : styles.action_right}>
-            {setErrorMessage() ? (
-              <div className={styles.warning}>
-                <WarningIcon />
-                <BodyText level={4} fontFamily="Roboto">
-                  {setErrorMessage()}
-                </BodyText>
-              </div>
-            ) : (
-              ''
-            )}
-            <CustomButton
-              disabled={handleDisableButton()}
-              buttonClass={styles.submit}
-              width={getSubmitButtonWidth()}
-              onClick={handleSubmit}
-            >
-              {getSubmitButtonTitle()}
-            </CustomButton>
-          </div>
-        </div>
+
+        <FooterContent
+          errorMessage={setErrorMessage()}
+          buttonDisabled={handleDisableButton()}
+          buttonWidth={getSubmitButtonWidth()}
+          submitButtonLabel={getSubmitButtonTitle()}
+          onSubmit={handleSubmit}
+        />
       </ModalContainer>
     </CustomModal>
   );
