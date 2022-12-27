@@ -17,12 +17,8 @@ import { ReactComponent as TargetMoneyIcon } from '@/assets/icons/target-money-i
 import { ReactComponent as TimeMoney } from '@/assets/icons/time-money-icon.svg';
 
 import {
-  ForgotType,
   createPasswordVerify,
-  forgotPasswordMiddleware,
   getBooking,
-  loginByBrandOrDesigner,
-  loginMiddleware,
   resetPasswordMiddleware,
   validateToken,
   verifyAccount,
@@ -30,15 +26,15 @@ import {
 import { pushTo } from '@/helper/history';
 import { useBoolean, useCustomInitialState, useGetParamId, useQuery } from '@/helper/hook';
 
-import { InformationBooking, LoginInput, ModalOpen, PasswordRequestBody } from './types';
+import { InformationBooking, ModalOpen, PasswordRequestBody } from './types';
+import store from '@/reducers';
+import { openModal as openModalAction } from '@/reducers/modal';
 
 import { BrandInterestedModal } from './components/BrandInterestedModal';
 import { CalendarModal } from './components/CalendarModal';
 import { CancelBookingModal } from './components/CancelBookingModal';
-import { LoginModal } from './components/LoginModal';
 import { NoticeModal } from './components/NoticeModal';
 import { PasswordModal } from './components/PasswordModal';
-import { SignupModal } from './components/SignupModal';
 import { VerifyAccount } from './components/VerifyAccount';
 import CustomButton from '@/components/Button';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
@@ -151,47 +147,6 @@ const LandingPage = () => {
     }
   }, []);
 
-  const handleSubmitLogin = (data: LoginInput) => {
-    showPageLoading();
-    if (openModal === 'Tisc Login') {
-      loginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
-        if (type === STATUS_RESPONSE.SUCCESS) {
-          message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
-          await fetchUserInfo(true);
-        } else {
-          message.error(msg);
-        }
-        hidePageLoading();
-      });
-    } else {
-      loginByBrandOrDesigner(data, async (type: STATUS_RESPONSE, msg?: string) => {
-        if (type === STATUS_RESPONSE.SUCCESS) {
-          message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
-          await fetchUserInfo(true);
-        } else {
-          message.error(msg);
-        }
-        hidePageLoading();
-      });
-    }
-  };
-
-  const handleForgotPassword = (email: string) => {
-    showPageLoading();
-    forgotPasswordMiddleware(
-      { email: email, type: openModal === 'Tisc Login' ? ForgotType.TISC : ForgotType.OTHER },
-      async (type: STATUS_RESPONSE, msg?: string) => {
-        if (type === STATUS_RESPONSE.SUCCESS) {
-          setOpenModal('');
-          message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD);
-        } else {
-          message.error(msg);
-        }
-        hidePageLoading();
-      },
-    );
-  };
-
   const handleResetPassword = (data: PasswordRequestBody) => {
     showPageLoading();
     resetPasswordMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
@@ -217,9 +172,7 @@ const LandingPage = () => {
     });
   };
 
-  const handleActiveAccount = () => {
-    setOpenModal('Login');
-  };
+  const openLoginModal = () => store.dispatch(openModalAction({ type: 'Login' }));
 
   const renderFeatures = (data: any[]) => {
     return (
@@ -247,7 +200,7 @@ const LandingPage = () => {
                 icon={<SingleRight />}
                 width="104px"
                 buttonClass={styles['login-button']}
-                onClick={() => setOpenModal('Login')}>
+                onClick={openLoginModal}>
                 Log in
               </CustomButton>
             </div>
@@ -316,7 +269,7 @@ const LandingPage = () => {
                       properties="warning"
                       size="large"
                       buttonClass={styles['action-button']}
-                      onClick={() => setOpenModal('Designer Signup')}>
+                      onClick={() => store.dispatch(openModalAction({ type: 'Designer Signup' }))}>
                       SIGN ME UP
                     </CustomButton>
                   </div>
@@ -329,15 +282,6 @@ const LandingPage = () => {
 
       <LandingPageFooter setOpenModal={setOpenModal} listMenuFooter={listMenuFooter} />
 
-      <LoginModal
-        visible={openModal === 'Login' || openModal === 'Tisc Login'}
-        onClose={handleCloseModal}
-        theme={openModal === 'Tisc Login' ? 'dark' : 'default'}
-        handleSubmitLogin={handleSubmitLogin}
-        handleForgotPassword={handleForgotPassword}
-        type={openModal}
-      />
-
       <AboutPoliciesContactModal visible={openModal} onClose={handleCloseModal} />
 
       <NoticeModal
@@ -345,23 +289,6 @@ const LandingPage = () => {
         onClose={handleCloseModal}
         theme="dark"
       />
-      {openModal === 'Designer Signup' ? (
-        <SignupModal
-          visible={openModal === 'Designer Signup'}
-          onClose={handleCloseModal}
-          theme="default"
-        />
-      ) : null}
-      {openModal === 'Brand Interested' ? (
-        <BrandInterestedModal
-          visible={openModal === 'Brand Interested'}
-          onClose={handleCloseModal}
-          theme="default"
-          onChangeValue={(value) => setInformationBooking(value)}
-          inputValue={informationBooking}
-          onOpenCalendar={handleOpenCalendar}
-        />
-      ) : null}
 
       {userEmail ? (
         <PasswordModal
@@ -386,8 +313,8 @@ const LandingPage = () => {
       {openVerifyAccountModal.value === true ? (
         <VerifyAccount
           visible={openVerifyAccountModal}
-          handleSubmit={handleActiveAccount}
-          openLogin={() => setOpenModal('Login')}
+          handleSubmit={openLoginModal}
+          openLogin={openLoginModal}
         />
       ) : null}
       {openCalendar.value ? (
@@ -408,6 +335,16 @@ const LandingPage = () => {
         onClose={() => openCancelBooking.setValue(false)}
         informationBooking={informationBooking}
       />
+      {openModal === 'Brand Interested' ? (
+        <BrandInterestedModal
+          visible={openModal === 'Brand Interested'}
+          onClose={handleCloseModal}
+          theme="default"
+          onChangeValue={(value) => setInformationBooking(value)}
+          inputValue={informationBooking}
+          onOpenCalendar={handleOpenCalendar}
+        />
+      ) : null}
     </div>
   );
 };

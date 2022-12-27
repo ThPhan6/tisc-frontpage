@@ -1,3 +1,5 @@
+@import '~antd/es/style/variable.less';
+
 .customTable {
   padding-bottom: 40px;
   :global(.ant-table) {
@@ -106,6 +108,7 @@
         }
       }
       :global(.ant-table-cell) {
+        position: relative;
         height: 44px;
         padding: 0 12px;
         color: black;
@@ -216,6 +219,11 @@
   color: black;
   background-color: #e6e6e6;
   box-shadow: @border-top-light;
+
+  @media (max-width: @screen-xs) {
+    left: -16px;
+    width: calc(100% + 32px);
+  }
   svg {
     margin: 0 8px;
     cursor: pointer;

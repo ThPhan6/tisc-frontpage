@@ -7,6 +7,7 @@ import { message } from 'antd';
 
 import {
   createCategoryMiddleware,
+  deleteCategoryMiddleware,
   getOneCategoryMiddleware,
   updateCategoryMiddleware,
 } from '../services';
@@ -109,13 +110,23 @@ const CategoryEntryForm = () => {
     setCategoryValue({ ...categoryValue, subs: newSubcategory });
   };
 
+  const handleDeleteCategory = () => {
+    deleteCategoryMiddleware(idCategory).then((isSuccess) => {
+      if (isSuccess) {
+        pushTo(PATH.categories);
+      }
+    });
+  };
+
   return (
     <div>
       <TableHeader title={'CATEGORIES'} rightAction={<CustomPlusButton disabled />} />
       <EntryFormWrapper
         handleSubmit={onHandleSubmit}
         handleCancel={handleCancel}
-        submitButtonStatus={submitButtonStatus.value}>
+        handleDelete={handleDeleteCategory}
+        submitButtonStatus={submitButtonStatus.value}
+        entryFormTypeOnMobile={isUpdate ? 'edit' : 'create'}>
         <FormNameInput
           HandleOnClickAddIcon={() => {
             setCategoryValue({

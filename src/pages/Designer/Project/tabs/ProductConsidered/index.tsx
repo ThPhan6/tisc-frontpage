@@ -106,6 +106,7 @@ const ProductConsidered: React.FC = () => {
     }
     return (
       <ActionMenu
+        editActionOnMobile={false}
         actionItems={[
           {
             type: 'specify',

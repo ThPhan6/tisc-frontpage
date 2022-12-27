@@ -178,9 +178,11 @@ const BrandProductListPage: React.FC = () => {
       BottomContent={
         brandSummary ? (
           <>
-            <div className="flex-center">
+            <div className="flex-center" style={{ marginRight: '24px' }}>
               <LogoIcon logo={brandSummary.brand_logo} className={styles.brandLogo} />
-              <Title level={8}>{brandSummary.brand_name}</Title>
+              <Title level={8} style={{ whiteSpace: 'nowrap' }}>
+                {brandSummary.brand_name}
+              </Title>
             </div>
 
             <div className="flex-end">

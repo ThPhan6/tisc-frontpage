@@ -52,10 +52,12 @@
     padding: 0 16px;
     box-shadow: @border-top;
     &__cancel_bt,
+    &__delete_bt,
     &__submit_bt {
       min-width: 64px;
       border-radius: 12px;
     }
+    &__delete_bt,
     &__cancel_bt {
       margin-right: 16px;
     }
@@ -84,6 +86,17 @@
           margin-right: 0;
         }
       }
+    }
+  }
+}
+
+@media screen and (max-width: 576px) {
+  :global(.ant-pro-basicLayout-content) {
+    margin: 16px;
+  }
+  .entry_form_container {
+    .content {
+      height: calc(100vh - 232px);
     }
   }
 }

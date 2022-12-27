@@ -40,7 +40,6 @@ export const NoticeModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
   return (
     <CustomModal
       visible={visible}
-      footer={false}
       containerClass={theme === 'dark' && styles.modal}
       bodyStyle={{
         backgroundColor: theme === 'dark' ? '#000' : '',

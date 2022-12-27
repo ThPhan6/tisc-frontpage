@@ -8,3 +8,20 @@
 :global(.ant-modal-body) {
   padding: 48px 48px 0 48px;
 }
+
+.drawerContainer {
+  :global(.ant-drawer-content) {
+    max-height: 90vh;
+  }
+  :global(.ant-drawer-header) {
+    padding: 16px 16px 0;
+    :global(.ant-drawer-header-title) {
+      height: 32px;
+      button {
+        position: absolute;
+        right: 0;
+        padding: 0;
+      }
+    }
+  }
+}

@@ -14,6 +14,7 @@ import { useHistory } from 'umi';
 
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
+import { pushTo } from '@/helper/history';
 import {
   useBoolean,
   useCustomInitialState,
@@ -41,7 +42,13 @@ import { Status } from '@/components/Form/Status';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
-import { createTeamProfile, getOneTeamProfile, inviteUser, updateTeamProfile } from '../api';
+import {
+  createTeamProfile,
+  deleteTeamProfile,
+  getOneTeamProfile,
+  inviteUser,
+  updateTeamProfile,
+} from '../api';
 import LocationModal from './LocationModal';
 import styles from './TeamProfilesEntryForm.less';
 import BrandAccessLevelModal from './access-level-modal/BrandAccessLevelModal';
@@ -210,6 +217,14 @@ const TeamProfilesEntryForm = () => {
     }
   };
 
+  const handleDeleteTeamProfile = () => {
+    deleteTeamProfile(userIdParam).then((isSuccess) => {
+      if (isSuccess) {
+        pushTo(userRolePath);
+      }
+    });
+  };
+
   // format data
   const departmentData = departments.find((department) => department.id === data.department_id) ?? {
     name: data.department_id,
@@ -227,6 +242,8 @@ const TeamProfilesEntryForm = () => {
       <EntryFormWrapper
         handleCancel={history.goBack}
         handleSubmit={() => handleSubmit()}
+        handleDelete={handleDeleteTeamProfile}
+        entryFormTypeOnMobile={isUpdate ? 'edit' : 'create'}
         submitButtonStatus={submitButtonStatus.value}
         customClass={styles.entry_form}>
         {/* First Name */}

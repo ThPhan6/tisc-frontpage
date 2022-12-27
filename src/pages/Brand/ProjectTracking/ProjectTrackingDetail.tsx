@@ -30,9 +30,11 @@ const ProjectTrackingDetail = () => {
       <PageContainer
         pageHeaderRender={() => {
           return (
-            <div className={styles.customHeader}>
-              <MenuSummary typeMenu={'brand'} menuSummaryData={summary} />
-            </div>
+            <MenuSummary
+              typeMenu={'brand'}
+              menuSummaryData={summary}
+              containerClass={styles.customHeader}
+            />
           );
         }}>
         <TableHeader

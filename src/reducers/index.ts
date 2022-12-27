@@ -11,6 +11,7 @@ import { customResourceReducer } from '@/pages/Designer/CustomResource/reducer';
 import { loadingActionReducer } from '@/components/LoadingPage/slices';
 import { officeProductReducer } from '@/pages/Designer/Products/CustomLibrary/slice';
 
+import { modalReducer } from './modal';
 import summaryReducer from './summary';
 import userReducer from './user';
 import { combineReducers, configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
@@ -27,6 +28,7 @@ const reducers = combineReducers({
   summary: summaryReducer,
   customResource: customResourceReducer,
   service: servicesReducer,
+  modal: modalReducer,
 });
 
 const persistConfig = {

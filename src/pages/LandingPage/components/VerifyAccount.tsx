@@ -27,7 +27,7 @@ export const VerifyAccount: FC<VerifyAccountModal> = ({ visible, handleSubmit, o
   }, [time]);
 
   return (
-    <CustomModal visible={visible.value} footer={false} onCancel={() => visible.setValue(false)}>
+    <CustomModal visible={visible.value} onCancel={() => visible.setValue(false)}>
       <div className={styles.content}>
         <MainTitle level={2} textAlign="center">
           Your account was verify successfully

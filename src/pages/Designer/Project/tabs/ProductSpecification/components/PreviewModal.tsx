@@ -14,7 +14,6 @@ export const PreviewModal: FC<ModalProps> = ({ visible, previewURL }) => {
   return (
     <CustomModal
       visible={visible.value}
-      footer={false}
       onCancel={() => visible.setValue(false)}
       className={styles.modal}
       closable={false}>
