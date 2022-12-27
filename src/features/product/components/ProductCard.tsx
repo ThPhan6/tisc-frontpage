@@ -36,6 +36,7 @@ import { ProductConsiderStatus } from '@/features/project/types';
 import { useAppSelector } from '@/reducers';
 
 import CustomCollapse from '@/components/Collapse';
+import { EmptyOne } from '@/components/Empty';
 import InquiryRequest from '@/components/InquiryRequest';
 import ShareViaEmail from '@/components/ShareViaEmail';
 import { ActionMenu } from '@/components/TableAction';
@@ -345,15 +346,16 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   showInquiryRequest = false,
   hideFavorite = false,
 }) => {
-  const list = useAppSelector((state) => state.product.list);
+  const data = useAppSelector((state) => state.product.list.data);
+  const allProducts = useAppSelector((state) => state.product.list.allProducts);
 
-  // if (!product.list.data.length) {
-  //   return <EmptyDataMessage message={EMPTY_DATA_MESSAGE.product} />;
-  // }
+  if (!allProducts?.length && !data?.length) {
+    return <EmptyOne />;
+  }
 
   return (
     <>
-      {list.data.map((group, index) => (
+      {data?.map((group, index) => (
         <CustomCollapse
           className={styles.productCardCollapse}
           customHeaderClass={styles.productCardHeaderCollapse}
@@ -382,6 +384,18 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
           </div>
         </CustomCollapse>
       ))}
+
+      <div className={styles.productCardContainer}>
+        {allProducts?.map((productItem, itemIndex) => (
+          <ProductCard
+            key={productItem.id || itemIndex}
+            product={productItem}
+            showInquiryRequest={showInquiryRequest}
+            showActionMenu={showActionMenu}
+            hideFavorite={hideFavorite}
+          />
+        ))}
+      </div>
     </>
   );
 };

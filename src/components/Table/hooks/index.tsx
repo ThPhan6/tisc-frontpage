@@ -129,7 +129,7 @@ const syncColWidthFollowingTheDeepestDataRow = (level: number, curCellStyle: Ele
   const nestedSubRows = document.querySelectorAll(
     `tr[class*="ant-table-expanded-row"]:not([style*="display: none;"])`,
   );
-  const nestedSubColumns = nestedSubRows[nestedSubRows?.length - 1].querySelectorAll(
+  const nestedSubColumns = nestedSubRows[nestedSubRows?.length - 1]?.querySelectorAll(
     `tbody tr[class$="custom-expanded-level-${level + 1}"]:first-child td`,
   );
 
