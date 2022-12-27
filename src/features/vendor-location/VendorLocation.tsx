@@ -210,7 +210,6 @@ export const VendorLocation: FC<VendorTabProps> = ({
       locationPopup === 'brand' || isBrand
         ? { brand_location_id: newValue }
         : { distributor_location_id: newValue };
-    console.log('newUpdate', newUpdate);
     store.dispatch(updateProductDetailFunc(newUpdate));
     if (userSelection) {
       selectProductSpecification(productId, newUpdate);
@@ -259,7 +258,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
       onSelect?.();
     };
 
-    const handleDeleteAddress = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    const handleUncheckAddress = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
       e.stopPropagation();
       handleOnChangeSpecifying(undefined, title === 'Brand Address');
     };
@@ -273,7 +272,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
       )
         return null;
 
-      return <DeleteIcon className={styles.deleteIcon} onClick={handleDeleteAddress} />;
+      return <DeleteIcon className={styles.deleteIcon} onClick={handleUncheckAddress} />;
     };
 
     const getCountryName = () => {
