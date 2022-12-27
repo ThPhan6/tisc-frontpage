@@ -1,5 +1,5 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { ProjectTrackingPriority } from '@/pages/Brand/ProjectTracking/constant';
+import { ProjectStatus, ProjectTrackingPriority } from '@/pages/Brand/ProjectTracking/constant';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -34,6 +34,19 @@ export async function getProjectTrackingPagination(
           total: pagination.total,
         },
       });
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_TRACKING_LIST_FAILED);
+    });
+}
+
+export async function getBrandWorkspace(
+  params: { project_status?: ProjectStatus },
+  callback: (data: ProjecTrackingList[]) => void,
+) {
+  request(`/api/brand/workspace`, { method: 'GET', params })
+    .then((response: { data: { projectTrackings: ProjecTrackingList[] } }) => {
+      callback(response.data.projectTrackings);
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_TRACKING_LIST_FAILED);
