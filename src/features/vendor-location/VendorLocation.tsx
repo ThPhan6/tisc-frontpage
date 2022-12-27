@@ -255,13 +255,8 @@ export const VendorLocation: FC<VendorTabProps> = ({
     onSelect: () => void,
   ) => {
     const handleShowAddress = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      if (brandActiveKey === activeKey || distributorActiveKey === activeKey) {
-        e.stopPropagation();
-      }
-
-      if (onSelect) {
-        onSelect();
-      }
+      e.stopPropagation();
+      onSelect?.();
     };
 
     const handleDeleteAddress = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
@@ -308,19 +303,26 @@ export const VendorLocation: FC<VendorTabProps> = ({
             {title}
           </BodyText>
 
-          <div className="flex-start">
+          <div
+            className="flex-start"
+            style={{ height: '100%', cursor: 'default' }}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}>
             {renderDeleteIcon()}
 
             <div
-              className={`contact-select-box ${isTiscAdmin ? 'cursor-disabled' : 'cursor-pointer'}`}
+              className={` ${isTiscAdmin ? 'cursor-disabled' : 'cursor-default'}`}
               onClick={isTiscAdmin || isPublicPage ? undefined : (e) => handleShowAddress(e)}>
-              <BodyText
-                level={6}
-                fontFamily="Roboto"
-                color={country ? 'mono-color' : 'mono-color-medium'}>
-                {getCountryName()}
-              </BodyText>
-              {renderRightIcon()}
+              <div className="contact-select-box cursor-pointer">
+                <BodyText
+                  level={6}
+                  fontFamily="Roboto"
+                  color={country ? 'mono-color' : 'mono-color-medium'}>
+                  {getCountryName()}
+                </BodyText>
+                {renderRightIcon()}
+              </div>
             </div>
           </div>
         </div>
