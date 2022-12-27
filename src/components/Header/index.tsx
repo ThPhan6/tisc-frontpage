@@ -31,7 +31,7 @@ const Header = () => {
   const isBrandUser = currentUser === USER_ROLE.brand;
   const isDesignerUser = currentUser === USER_ROLE.design;
 
-  const logoUser = getValueByCondition(
+  const logoImage = getValueByCondition(
     [
       [isTiscUser, <img src={logoIcon} alt="logo" />],
       [isBrandUser, <LogoIcon logo={String(user?.brand?.logo)} />],
@@ -107,7 +107,7 @@ const Header = () => {
   return (
     <div className={styles.container}>
       <div className={styles['logo-icon']} onClick={handleRedirectHomePage}>
-        {logoUser}
+        {logoImage}
       </div>
       <div className={styles['wrapper-right-content']}>
         <AvatarDropdown />
