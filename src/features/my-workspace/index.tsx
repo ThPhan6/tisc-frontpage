@@ -4,10 +4,10 @@ import { USER_ROLE } from '@/constants/userRoles';
 import { GlobalFilter } from '@/pages/Designer/Project/constants/filter';
 import { PageContainer } from '@ant-design/pro-layout';
 
-import { getProjectPagination, getProjectSummary } from '../project/services';
-import { getBrandCards } from '../user-group/services';
+import { getDesignerWorkspace, getProjectSummary } from '../project/services';
+import { getTiscWorkspace } from '../user-group/services';
 import { useGetUserRoleFromPathname } from '@/helper/hook';
-import { getProjectTrackingPagination } from '@/services/project-tracking.api';
+import { getBrandWorkspace } from '@/services/project-tracking.api';
 
 import { ProjectListProps, ProjectSummaryData } from '../project/types';
 import { BrandCard } from '../user-group/types';
@@ -36,7 +36,7 @@ const MyWorkspace = () => {
   useEffect(() => {
     if (isTiscUser) {
       setLoadingAction(true);
-      getBrandCards().then((res) => {
+      getTiscWorkspace().then((res) => {
         setLoadingAction(false);
         if (res) {
           setListCard(res);
@@ -49,15 +49,13 @@ const MyWorkspace = () => {
   useEffect(() => {
     if (isBrandUser) {
       setLoadingAction(true);
-      getProjectTrackingPagination(
+      getBrandWorkspace(
         {
-          page: 1,
-          pageSize: 99999,
           project_status: selectedFilter.id === GlobalFilter.id ? undefined : selectedFilter.id,
         },
-        (response) => {
+        (data) => {
           setLoadingAction(false);
-          setListCard(response.data);
+          setListCard(data);
         },
       );
     }
@@ -75,16 +73,17 @@ const MyWorkspace = () => {
   }, []);
   useEffect(() => {
     if (isDesignerUser) {
-      getProjectPagination(
+      setLoadingAction(true);
+      getDesignerWorkspace(
         {
-          page: 1,
-          pageSize: 99999,
-          filter: {
-            status: selectedFilter.id === GlobalFilter.id ? undefined : selectedFilter.id,
-          },
+          filter:
+            selectedFilter.id === GlobalFilter.id
+              ? undefined
+              : { project_status: selectedFilter.id },
         },
-        (response) => {
-          setListCard(response.data);
+        (data) => {
+          setLoadingAction(false);
+          setListCard(data);
         },
       );
     }
