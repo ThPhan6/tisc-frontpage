@@ -124,7 +124,7 @@ export interface ProductItem {
   code?: string;
   is_liked?: boolean;
   description: string;
-  availability: Availability;
+  availability?: Availability;
   general_attribute_groups: ProductAttributeFormInput[];
   feature_attribute_groups: ProductAttributeFormInput[];
   specification_attribute_groups: ProductAttributeFormInput[];
@@ -217,10 +217,11 @@ export type SortParams = {
 
 export interface ProductList {
   filter?: ProductTopBarFilter;
-  data: GroupProductList[];
+  data?: GroupProductList[];
   search?: string;
   sort?: SortParams;
   brandSummary?: BrandSummary;
+  allProducts?: ProductItem[];
 }
 
 export interface GetListProductForDesignerRequestParams {
