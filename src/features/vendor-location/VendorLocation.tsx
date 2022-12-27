@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
 
+import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
@@ -30,7 +31,7 @@ import { getBrandLocation, getDistributorLocation } from '@/features/locations/a
 
 const activeKey = '1';
 
-const getSelectedLocation = (locationGroup: LocationGroupedByCountry[], selectedId: string) => {
+const getSelectedLocation = (locationGroup: LocationGroupedByCountry[], selectedId?: string) => {
   const allLocations = locationGroup.flatMap((el) => el.locations);
 
   const selectedLocation = allLocations.find((el) => el.id === selectedId);
@@ -200,16 +201,16 @@ export const VendorLocation: FC<VendorTabProps> = ({
     }
   };
 
-  const handleOnChangeSpecifying = (checked: RadioValue) => {
+  const handleOnChangeSpecifying = (checked?: RadioValue, isBrand?: boolean) => {
     const newValue = checked?.value ? String(checked.value) : '';
     const updateProductDetailFunc = customProduct
       ? updateCustomProductSpecifiedDetail
       : setPartialProductDetail;
     const newUpdate =
-      locationPopup === 'brand'
+      locationPopup === 'brand' || isBrand
         ? { brand_location_id: newValue }
         : { distributor_location_id: newValue };
-
+    console.log('newUpdate', newUpdate);
     store.dispatch(updateProductDetailFunc(newUpdate));
     if (userSelection) {
       selectProductSpecification(productId, newUpdate);
@@ -248,7 +249,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
     ) : null;
 
   const renderCollapseHeader = (
-    title: string,
+    title: 'Brand Address' | 'Distributor Address',
     country: string,
     activeCollapse: boolean,
     onSelect: () => void,
@@ -261,6 +262,23 @@ export const VendorLocation: FC<VendorTabProps> = ({
       if (onSelect) {
         onSelect();
       }
+    };
+
+    const handleDeleteAddress = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+      e.stopPropagation();
+      handleOnChangeSpecifying(undefined, title === 'Brand Address');
+    };
+
+    const renderDeleteIcon = () => {
+      if (
+        isTiscAdmin ||
+        isPublicPage ||
+        (title == 'Brand Address' && !chosenBrandCountry) ||
+        (title == 'Distributor Address' && !chosenDistributorCountry)
+      )
+        return null;
+
+      return <DeleteIcon className={styles.deleteIcon} onClick={handleDeleteAddress} />;
     };
 
     const getCountryName = () => {
@@ -290,16 +308,20 @@ export const VendorLocation: FC<VendorTabProps> = ({
             {title}
           </BodyText>
 
-          <div
-            className={`contact-select-box ${isTiscAdmin ? 'cursor-disabled' : 'cursor-pointer'}`}
-            onClick={isTiscAdmin || isPublicPage ? undefined : (e) => handleShowAddress(e)}>
-            <BodyText
-              level={6}
-              fontFamily="Roboto"
-              color={country ? 'mono-color' : 'mono-color-medium'}>
-              {getCountryName()}
-            </BodyText>
-            {renderRightIcon()}
+          <div className="flex-start">
+            {renderDeleteIcon()}
+
+            <div
+              className={`contact-select-box ${isTiscAdmin ? 'cursor-disabled' : 'cursor-pointer'}`}
+              onClick={isTiscAdmin || isPublicPage ? undefined : (e) => handleShowAddress(e)}>
+              <BodyText
+                level={6}
+                fontFamily="Roboto"
+                color={country ? 'mono-color' : 'mono-color-medium'}>
+                {getCountryName()}
+              </BodyText>
+              {renderRightIcon()}
+            </div>
           </div>
         </div>
       </div>
