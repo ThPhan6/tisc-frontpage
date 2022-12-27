@@ -89,7 +89,11 @@ const CustomResourceCreatePage = () => {
       <CustomResourceHeader />
       <Row style={{ marginTop: '8px' }}>
         <Col span={12} style={{ paddingRight: '8px' }}>
-          <CustomResourceEntryForm data={data} setData={setData} type="create" />
+          <CustomResourceEntryForm
+            data={data}
+            setData={setData}
+            type={customResourceId ? 'update' : 'create'}
+          />
         </Col>
         <Col span={12} style={{ background: '#fff' }}>
           <ContactInformation
@@ -97,7 +101,7 @@ const CustomResourceCreatePage = () => {
             setData={setData}
             submitButtonStatus={submitButtonStatus.value}
             onSubmit={handleCreate}
-            type="create"
+            type={customResourceId ? 'update' : 'create'}
           />
         </Col>
       </Row>
