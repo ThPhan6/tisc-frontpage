@@ -5,9 +5,9 @@ import { Col, Row } from 'antd';
 import { CustomInputProps } from '../Form/types';
 import { MainContentProps } from './types';
 
-import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
+import { MaskedNumberInput } from '../CustomNumberInput.tsx';
 import TableContent from '../Table/TableContent';
 import styles from './styles/InputGroup.less';
 import { useGeneralFeature } from './utils';
@@ -84,8 +84,9 @@ const ConversionInput: FC<ConversionInputProps> = ({
     <Col className={styles.doubleinputGroupContent} span={inputSpan}>
       <div className="double-input-group-wrapper">
         <div className="double-input-group">
-          <CustomInput
+          <MaskedNumberInput
             {...props}
+            decimalLimit={6}
             autoFocus
             value={conversionValue.firstValue}
             placeholder={placeholder1}
@@ -99,16 +100,17 @@ const ConversionInput: FC<ConversionInputProps> = ({
               });
             }}
             fontLevel={fontSize}
-            className="first-input-box"
             onClick={(e) => e.stopPropagation()}
+            style={{ height: '22px', background: '#fff', marginTop: '2px' }}
           />
           <BodyText level={fontSize} fontFamily="Roboto" customClass="unit-input-label">
             {conversionData.unit_1}
           </BodyText>
         </div>
         <div className="double-input-group">
-          <CustomInput
+          <MaskedNumberInput
             {...props}
+            decimalLimit={6}
             value={conversionValue.secondValue}
             placeholder={placeholder2}
             onChange={(e) => {
@@ -120,8 +122,8 @@ const ConversionInput: FC<ConversionInputProps> = ({
               });
             }}
             fontLevel={fontSize}
-            className="first-input-box"
             onClick={(e) => e.stopPropagation()}
+            style={{ height: '22px', background: '#fff', marginTop: '2px' }}
           />
           <BodyText level={fontSize} fontFamily="Roboto" customClass="unit-input-label">
             {conversionData.unit_2}

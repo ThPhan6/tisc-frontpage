@@ -10,3 +10,35 @@
     color: @mono-color-medium;
   }
 }
+
+.customText(@font-size,@line-height ,@font-weight, @font-family: 'Roboto') {
+  margin-bottom: 0;
+  color: @mono-color;
+  font-weight: @font-weight;
+  font-size: @font-size;
+  font-family: @font-family;
+  line-height: @line-height;
+  letter-spacing: 0.02em;
+}
+
+.bodyText1 {
+  .customText(28px, 36px, 300);
+}
+.bodyText2 {
+  .customText(24px, 32px, 300);
+}
+.bodyText3 {
+  .customText(20px, 28px, 300);
+}
+.bodyText4 {
+  .customText(16px, 24px, 300);
+}
+.bodyText5 {
+  .customText(14px, 22px, 300);
+}
+.bodyText6 {
+  .customText(12px, 20px, 300);
+}
+.bodyText7 {
+  .customText(10px, 18px, 300);
+}
