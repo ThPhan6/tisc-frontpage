@@ -96,15 +96,16 @@ export const getProductListByBrandId = async (params: ProductGetListParameter) =
 };
 
 export const getProductListForDesigner = async (params: GetListProductForDesignerRequestParams) => {
-  return request<{ data: GroupProductList[]; brand_summary?: BrandSummary }>(
-    `/api/product/design/get-list`,
-    {
-      method: 'GET',
-      params,
-    },
-  )
-    .then(({ data, brand_summary }) => {
-      store.dispatch(setProductList({ data, brandSummary: brand_summary }));
+  return request<{
+    data?: GroupProductList[];
+    brand_summary?: BrandSummary;
+    allProducts?: ProductItem[];
+  }>(`/api/product/design/get-list`, {
+    method: 'GET',
+    params,
+  })
+    .then(({ data, brand_summary, allProducts }) => {
+      store.dispatch(setProductList({ data, brandSummary: brand_summary, allProducts }));
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_PRODUCT_BY_BRAND_ERROR);
