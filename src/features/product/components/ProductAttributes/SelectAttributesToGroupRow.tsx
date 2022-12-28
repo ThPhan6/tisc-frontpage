@@ -41,9 +41,9 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
     // attributes
     const [selected, setSelected] = useState<CheckboxValue[]>([]);
 
+    /// specification as a choice
     const isOptionType = checkedOptionType(groupItem.attributes);
     const checked = useBoolean(false);
-    const attributeOptionSelect = useBoolean(false);
 
     /// get checked from current option select
     useEffect(() => {
@@ -127,7 +127,6 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
       /// set selection for each group attribute has attribute option type
       const isNewAttributeHasOptionType = checkedOptionType(newAttrGroup[groupIndex].attributes);
       if (isNewAttributeHasOptionType) {
-        attributeOptionSelect.setValue(true);
         checked.setValue(true);
 
         newAttrGroup[groupIndex] = {
@@ -198,7 +197,7 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
                 const newAttrGroup = [...attributeGroup];
                 newAttrGroup[groupIndex] = {
                   ...newAttrGroup[groupIndex],
-                  selection: attributeOptionSelect.value && toggle ? checked.value : toggle,
+                  selection: toggle,
                 };
 
                 store.dispatch(
