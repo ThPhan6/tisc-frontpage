@@ -150,6 +150,9 @@ export const ContactInformation: FC<ContactInformationProps> = ({
       setData({ ...data, contacts: newContact });
     });
   };
+  const isEdit = type !== 'view';
+
+  const labelColor = type !== 'create' ? 'mono-color-dark' : 'mono-color';
 
   const renderContacts = (contact: ContactDetail, index: number) => {
     return (
@@ -172,11 +175,11 @@ export const ContactInformation: FC<ContactInformationProps> = ({
           <InputGroup
             label="First Name"
             required
-            deleteIcon={type !== 'view'}
+            deleteIcon={isEdit}
             fontLevel={3}
             value={contact.first_name}
             hasPadding
-            colorPrimaryDark={type !== 'view'}
+            colorPrimaryDark={isEdit}
             hasBoxShadow
             hasHeight
             onChange={(e) => {
@@ -185,17 +188,17 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             onDelete={() => onChangeData('first_name', '', index)}
             placeholder="contact first name"
             readOnly={type === 'view'}
-            labelColor={type !== 'create' ? 'mono-color-dark' : 'mono-color'}
+            labelColor={labelColor}
           />
           {/* Last name */}
           <InputGroup
             label="Last Name"
             required
-            deleteIcon={type !== 'view'}
+            deleteIcon={isEdit}
             fontLevel={3}
             value={contact.last_name}
             hasPadding
-            colorPrimaryDark={type !== 'view'}
+            colorPrimaryDark={isEdit}
             hasBoxShadow
             hasHeight
             onChange={(e) => {
@@ -204,17 +207,17 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             onDelete={() => onChangeData('last_name', '', index)}
             placeholder="contact last name"
             readOnly={type === 'view'}
-            labelColor={type !== 'create' ? 'mono-color-dark' : 'mono-color'}
+            labelColor={labelColor}
           />
           {/* Position / Role */}
           <InputGroup
             label="Position / Role"
             required
-            deleteIcon={type !== 'view'}
+            deleteIcon={isEdit}
             fontLevel={3}
             value={contact.position}
             hasPadding
-            colorPrimaryDark={type !== 'view'}
+            colorPrimaryDark={isEdit}
             hasBoxShadow
             hasHeight
             onChange={(e) => {
@@ -223,18 +226,18 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             onDelete={() => onChangeData('position', '', index)}
             placeholder="contact position/role "
             readOnly={type === 'view'}
-            labelColor={type !== 'create' ? 'mono-color-dark' : 'mono-color'}
+            labelColor={labelColor}
           />
 
           {/* Work Email */}
           <InputGroup
             label="Work Email"
             required
-            deleteIcon={type !== 'view'}
+            deleteIcon={isEdit}
             fontLevel={3}
             value={contact.work_email}
             hasPadding
-            colorPrimaryDark={type !== 'view'}
+            colorPrimaryDark={isEdit}
             hasBoxShadow
             hasHeight
             onChange={(e) => {
@@ -245,7 +248,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             message={getEmailMessageError(contact.work_email, MESSAGE_ERROR.EMAIL_INVALID)}
             messageType={getEmailMessageErrorType(contact.work_email, 'error', 'normal')}
             readOnly={type === 'view'}
-            labelColor={type !== 'create' ? 'mono-color-dark' : 'mono-color'}
+            labelColor={labelColor}
           />
 
           {/* Work Phone */}
@@ -255,20 +258,20 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             required
             style={{ marginBottom: '16px' }}
             labelFontSize={3}
-            labelColor={type !== 'create' ? 'mono-color-dark' : 'mono-color'}>
+            labelColor={labelColor}>
             <PhoneInput
               phonePlaceholder="area code / number"
               onChange={(value) => {
                 onChangeData('work_phone', value.phoneNumber, index);
               }}
               colorPlaceholder="mono"
-              containerClass={type !== 'view' ? styles.customPhoneInput : ''}
+              containerClass={isEdit ? styles.customPhoneInput : ''}
               codeReadOnly
               value={{
                 zoneCode: data.phone_code ?? '00',
                 phoneNumber: contact.work_phone,
               }}
-              deleteIcon={type !== 'view'}
+              deleteIcon={isEdit}
               phoneNumberReadOnly={type === 'view'}
             />
           </FormGroup>
@@ -279,20 +282,20 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             required
             labelFontSize={3}
             style={{ marginBottom: '16px' }}
-            labelColor={type !== 'create' ? 'mono-color-dark' : 'mono-color'}>
+            labelColor={labelColor}>
             <PhoneInput
               phonePlaceholder="mobile number"
               onChange={(value) => {
                 onChangeData('work_mobile', value.phoneNumber, index);
               }}
               colorPlaceholder="mono"
-              containerClass={type !== 'view' ? styles.customPhoneInput : ''}
+              containerClass={isEdit ? styles.customPhoneInput : ''}
               codeReadOnly
               value={{
                 zoneCode: data.phone_code ?? '00',
                 phoneNumber: contact.work_mobile,
               }}
-              deleteIcon={type !== 'view'}
+              deleteIcon={isEdit}
               phoneNumberReadOnly={type === 'view'}
             />
           </FormGroup>
@@ -301,19 +304,12 @@ export const ContactInformation: FC<ContactInformationProps> = ({
     );
   };
 
-  const showButton = () => {
-    if (type !== 'view') {
-      return true;
-    }
-    return false;
-  };
-
   return (
     <>
       <TableHeader
         title=""
         rightAction={
-          showButton() && (
+          isEdit && (
             <CustomPlusButton
               size={18}
               label="Add Contact"
@@ -327,7 +323,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
       <div className={styles.information}>
         {data.contacts.map((contact, index) => renderContacts(contact, index))}
       </div>
-      {showButton() && (
+      {isEdit && (
         <div className={styles.bottom}>
           <CustomButton
             properties="rounded"

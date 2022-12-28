@@ -103,6 +103,10 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
     );
   }, [associated]);
 
+  const isEdit = type !== 'view';
+
+  const labelColor = type !== 'create' ? 'mono-color-dark' : 'mono-color';
+
   return (
     <>
       <div className={styles.header}>
@@ -129,17 +133,17 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           fontLevel={3}
           value={data.business_name}
           hasPadding
-          colorPrimaryDark={type !== 'view'}
+          colorPrimaryDark={isEdit}
           hasBoxShadow
           hasHeight
           placeholder="type company name"
           onChange={(e) => {
             onChangeData('business_name', e.target.value);
           }}
-          deleteIcon={type !== 'view'}
+          deleteIcon={isEdit}
           onDelete={() => onChangeData('business_name', '')}
           readOnly={type === 'view'}
-          labelColor={type !== 'create' ? 'mono-color-dark' : 'mono-color'}
+          labelColor={labelColor}
         />
         <InputGroup
           label="Website"
@@ -147,15 +151,15 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           fontLevel={3}
           value={data.website_uri}
           hasPadding
-          colorPrimaryDark={type !== 'view'}
+          colorPrimaryDark={isEdit}
           hasBoxShadow
           hasHeight
           placeholder="copy and paste the URL link"
           onChange={(e) => onChangeData('website_uri', e.target.value)}
-          deleteIcon={type !== 'view'}
+          deleteIcon={isEdit}
           onDelete={() => onChangeData('website_uri', '')}
           readOnly={type === 'view'}
-          labelColor={type !== 'create' ? 'mono-color-dark' : 'mono-color'}
+          labelColor={labelColor}
         />
         <InputGroup
           label={`Associated ${
@@ -164,15 +168,15 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           fontLevel={3}
           value={associated.map((item) => item.label).join(', ')}
           hasPadding
-          colorPrimaryDark={type !== 'view'}
+          colorPrimaryDark={isEdit}
           hasBoxShadow
           hasHeight
-          rightIcon={type !== 'view'}
+          rightIcon={isEdit}
           onRightIconClick={() => setOpenModal('associate')}
-          placeholder={type !== 'view' ? 'select from the list' : ''}
+          placeholder={isEdit ? 'select from the list' : ''}
           readOnly={type === 'view'}
           containerClass={styles.associate}
-          labelColor={type !== 'create' ? 'mono-color-dark' : 'mono-color'}
+          labelColor={labelColor}
         />
         <InputGroup
           label="Country Location"
@@ -180,14 +184,14 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           fontLevel={3}
           value={countryData.label}
           hasPadding
-          colorPrimaryDark={type !== 'view'}
+          colorPrimaryDark={isEdit}
           hasBoxShadow
           hasHeight
-          rightIcon={type !== 'view'}
+          rightIcon={isEdit}
           onRightIconClick={() => setOpenModal('country')}
           placeholder="country list"
           readOnly={type === 'view'}
-          labelColor={type !== 'create' ? 'mono-color-dark' : 'mono-color'}
+          labelColor={labelColor}
         />
         <InputGroup
           label="State / Province"
@@ -195,15 +199,15 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           fontLevel={3}
           value={stateData.label}
           hasPadding
-          colorPrimaryDark={type !== 'view'}
+          colorPrimaryDark={isEdit}
           hasBoxShadow
           hasHeight
-          rightIcon={type !== 'view'}
+          rightIcon={isEdit}
           disabled={data.country_id === '-1' || data.country_id === ''}
           onRightIconClick={() => setOpenModal('state')}
-          placeholder={type !== 'view' ? 'select from the list' : ''}
+          placeholder={isEdit ? 'select from the list' : ''}
           readOnly={type === 'view'}
-          labelColor={type !== 'create' ? 'mono-color-dark' : 'mono-color'}
+          labelColor={labelColor}
         />
         <InputGroup
           label="City / Town"
@@ -211,15 +215,15 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           fontLevel={3}
           value={cityData.label?.toString()}
           hasPadding
-          colorPrimaryDark={type !== 'view'}
+          colorPrimaryDark={isEdit}
           hasBoxShadow
           hasHeight
-          rightIcon={type !== 'view'}
+          rightIcon={isEdit}
           disabled={data.state_id === ''}
           onRightIconClick={() => setOpenModal('city')}
-          placeholder={type !== 'view' ? 'select from the list' : ''}
+          placeholder={isEdit ? 'select from the list' : ''}
           readOnly={type === 'view'}
-          labelColor={type !== 'create' ? 'mono-color-dark' : 'mono-color'}
+          labelColor={labelColor}
         />
         <div className={styles.addressForm}>
           <FormGroup
@@ -227,7 +231,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
             layout="vertical"
             required
             labelFontSize={3}
-            labelColor={type !== 'create' ? 'mono-color-dark' : 'mono-color'}>
+            labelColor={labelColor}>
             <CustomTextArea
               className={`${styles.address} ${type === 'view' ? styles.customInput : ''}`}
               maxLength={100}
@@ -246,11 +250,11 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           label="Postal / Zip Code"
           placeholder="postal / zip code"
           required
-          deleteIcon={type !== 'view'}
+          deleteIcon={isEdit}
           fontLevel={3}
           value={data.postal_code}
           hasPadding
-          colorPrimaryDark={type !== 'view'}
+          colorPrimaryDark={isEdit}
           hasBoxShadow
           hasHeight
           onChange={(e) => onChangePostalCode(e)}
@@ -258,14 +262,14 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           message={messageError(data.postal_code, MESSAGE_ERROR.POSTAL_CODE, 10)}
           messageType={messageErrorType(data.postal_code, 10, 'error', 'normal')}
           readOnly={type === 'view'}
-          labelColor={type !== 'create' ? 'mono-color-dark' : 'mono-color'}
+          labelColor={labelColor}
         />
         <FormGroup
           label="General Phone"
           required
           layout="vertical"
           labelFontSize={3}
-          labelColor={type !== 'create' ? 'mono-color-dark' : 'mono-color'}
+          labelColor={labelColor}
           style={{ marginBottom: '16px' }}>
           <PhoneInput
             phonePlaceholder="area code / number"
@@ -277,8 +281,8 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
               zoneCode: countryData.phoneCode,
               phoneNumber: data.general_phone,
             }}
-            deleteIcon={type !== 'view'}
-            containerClass={type !== 'view' ? styles.phoneInput : ''}
+            deleteIcon={isEdit}
+            containerClass={isEdit ? styles.phoneInput : ''}
             phoneNumberReadOnly={type === 'view'}
           />
         </FormGroup>
@@ -286,11 +290,11 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           label="General Email"
           placeholder="type email address here"
           required
-          deleteIcon={type !== 'view'}
+          deleteIcon={isEdit}
           fontLevel={3}
           value={data.general_email}
           hasPadding
-          colorPrimaryDark={type !== 'view'}
+          colorPrimaryDark={isEdit}
           hasBoxShadow
           hasHeight
           onChange={(e) => onChangeData('general_email', e.target.value)}
@@ -298,7 +302,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           onDelete={() => onChangeData('general_email', '')}
           message={getEmailMessageError(data.general_email, MESSAGE_ERROR.EMAIL_INVALID)}
           messageType={getEmailMessageErrorType(data.general_email, 'error', 'normal')}
-          labelColor={type !== 'create' ? 'mono-color-dark' : 'mono-color'}
+          labelColor={labelColor}
         />
       </div>
       <CountryModal
