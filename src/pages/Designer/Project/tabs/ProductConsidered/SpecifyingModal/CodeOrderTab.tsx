@@ -148,7 +148,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
     style: { marginBottom: 0 },
   };
 
-  if (!specifiedDetail) {
+  if (!specifiedDetail.id) {
     return null;
   }
 
