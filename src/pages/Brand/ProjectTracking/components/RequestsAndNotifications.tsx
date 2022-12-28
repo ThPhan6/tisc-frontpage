@@ -19,7 +19,6 @@ import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import TextForm from '@/components/Form/TextForm';
 import { TableHeader } from '@/components/Table/TableHeader';
-import { BodyText } from '@/components/Typography';
 
 import styles from './DesignFirm.less';
 import moment from 'moment';
@@ -87,7 +86,7 @@ const RequestAndNotificationList: FC<RequestAndNotificationListProps> = ({
               </tr>
             ))
           ) : (
-            <Empty description={<BodyText level={3}>No Data</BodyText>} className={styles.empty} />
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} className={styles.empty} />
           )}
         </tbody>
       </table>

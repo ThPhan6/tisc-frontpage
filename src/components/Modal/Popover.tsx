@@ -19,7 +19,7 @@ import DropdownRadioList from '@/components/CustomRadio/DropdownRadioList';
 import type { DropdownRadioItem } from '@/components/CustomRadio/DropdownRadioList';
 import GroupRadioList from '@/components/CustomRadio/RadioList';
 import type { RadioListOption } from '@/components/CustomRadio/RadioList';
-import { BodyText, MainTitle } from '@/components/Typography';
+import { MainTitle } from '@/components/Typography';
 import { DropdownCategoryList } from '@/features/categories/components/CategoryDropdown';
 
 import { CustomCheckbox } from '../CustomCheckbox';
@@ -111,7 +111,7 @@ const Popover: FC<PopoverProps> = ({
   const renderEmptyData = () => {
     return (
       <div className={styles.popoverEmptyData}>
-        <Empty description={<BodyText level={3}>No Data</BodyText>} />
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       </div>
     );
   };
