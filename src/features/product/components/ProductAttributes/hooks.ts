@@ -129,7 +129,7 @@ export const useProductAttributeForm = (
   useEffect(() => {
     if (
       attributeType === 'specification' &&
-      specification_attribute_groups.length && // Wait for all specification attributes loaded
+      // specification_attribute_groups.length && // Wait for all specification attributes loaded
       loaded.value === false &&
       productId &&
       isTiscAdmin === false
@@ -147,6 +147,7 @@ export const useProductAttributeForm = (
                   res.specification?.attribute_groups || [],
                   attributeGroup,
                 ),
+                // set vendor locations have selected from user selection
                 brand_location_id: res.brand_location_id,
                 distributor_location_id: res.distributor_location_id,
               }),
