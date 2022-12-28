@@ -24,9 +24,12 @@ const IssuingInformation: FC<IssuingInformationProps> = ({ data, onChangeData })
   const [issuingFor, setIssuingFor] = useState<{ id: string; name: string }[]>([]);
 
   useEffect(() => {
-    getLocationPagination({ page: 1, pageSize: 99999 }, (response) => {
-      setLocation(response.data);
-    });
+    getLocationPagination(
+      { page: 1, pageSize: 99999, is_sort_main_office_first: true },
+      (response) => {
+        setLocation(response.data);
+      },
+    );
     getIssuingFor().then((res) => {
       setIssuingFor(res);
     });
