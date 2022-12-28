@@ -11,9 +11,11 @@ import { getDesignDueDay, getFullName, getValueByCondition } from '@/helper/util
 
 import { ProjectListProps } from '@/features/project/types';
 import { BrandCard, BrandCardTeam } from '@/features/user-group/types';
+import { useAppSelector } from '@/reducers';
 import { ProjecTrackingList } from '@/types/project-tracking.type';
 
 import { EmptyOne } from '@/components/Empty';
+import { loadingSelector } from '@/components/LoadingPage/slices';
 import { LogoIcon } from '@/components/LogoIcon';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
@@ -32,6 +34,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
   isBrandUser,
   isDesignerUser,
 }) => {
+  const loading = useAppSelector(loadingSelector);
   const detailPath = getValueByCondition([
     [isTiscUser, PATH.tiscUserGroupBrandViewDetail],
     [isBrandUser, PATH.brandProjectTrackingDetail],
@@ -165,6 +168,10 @@ export const ProjectCard: FC<ProjectCardProps> = ({
       />
     ));
   };
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <div className={styles.cardContainer}>
