@@ -2,6 +2,7 @@ import { FC } from 'react';
 
 import { PATH } from '@/constants/path';
 import { FilterNames } from '@/pages/Designer/Project/constants/filter';
+import { Row } from 'antd';
 
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
 
@@ -12,6 +13,7 @@ import { ProjectListProps } from '@/features/project/types';
 import { BrandCard, BrandCardTeam } from '@/features/user-group/types';
 import { ProjecTrackingList } from '@/types/project-tracking.type';
 
+import { EmptyOne } from '@/components/Empty';
 import { LogoIcon } from '@/components/LogoIcon';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
@@ -166,25 +168,31 @@ export const ProjectCard: FC<ProjectCardProps> = ({
 
   return (
     <div className={styles.cardContainer}>
-      {data?.map((item: any, index) => (
-        <div
-          key={item.id ?? index}
-          className={styles.cardItemWrapper}
-          onClick={() => handleClickItem(item.id)}>
-          <div className={styles.cardItem}>
-            <div className={styles.top}>{renderTopInfo(item)}</div>
+      {data.length ? (
+        data.map((item: any, index) => (
+          <div
+            key={item.id ?? index}
+            className={styles.cardItemWrapper}
+            onClick={() => handleClickItem(item.id)}>
+            <div className={styles.cardItem}>
+              <div className={styles.top}>{renderTopInfo(item)}</div>
 
-            {renderMiddleInfo(item)}
+              {renderMiddleInfo(item)}
 
-            <div className={styles.profile_icon}>
-              <BodyText level={5} style={{ marginRight: '14px' }}>
-                Teams:
-              </BodyText>
-              <div className={styles.team}>{getAssignedTeamInfo(item)}</div>
+              <div className={styles.profile_icon}>
+                <BodyText level={5} style={{ marginRight: '14px' }}>
+                  Teams:
+                </BodyText>
+                <div className={styles.team}>{getAssignedTeamInfo(item)}</div>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))
+      ) : (
+        <Row justify="center" style={{ width: '100%' }}>
+          <EmptyOne />
+        </Row>
+      )}
     </div>
   );
 };
