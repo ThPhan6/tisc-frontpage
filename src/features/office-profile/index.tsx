@@ -170,7 +170,7 @@ const BrandProfilePage = () => {
     }
   };
 
-  const setPreviewAvatar = () => {
+  const getPreviewAvatar = () => {
     if (fileInput) {
       return URL.createObjectURL(fileInput);
     }
@@ -325,7 +325,7 @@ const BrandProfilePage = () => {
 
               <div className={styles.logo}>
                 <Upload maxCount={1} showUploadList={false} {...props} accept=".png">
-                  <img src={setPreviewAvatar()} className="cursor-pointer" />
+                  <img src={getPreviewAvatar()} className="cursor-pointer" />
                 </Upload>
               </div>
 
