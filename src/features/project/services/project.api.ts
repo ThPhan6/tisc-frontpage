@@ -161,8 +161,11 @@ export async function deleteProject(id: string) {
       return false;
     });
 }
-export async function getProjectSummary() {
-  return request<ProjectSummaryData>(`/api/project/get-summary`)
+
+export async function getProjectSummary(workspace?: boolean) {
+  return request<ProjectSummaryData>(
+    workspace ? `/api/designer/workspace/summary` : `/api/project/get-summary`,
+  )
     .then((res) => {
       return res;
     })
