@@ -333,8 +333,6 @@ export const VendorLocation: FC<VendorTabProps> = ({
     );
   };
 
-  console.log('chosenBrand', chosenBrand);
-
   return (
     <>
       <div className={borderBottomNone ? styles.borderBottomNone : ''}>
