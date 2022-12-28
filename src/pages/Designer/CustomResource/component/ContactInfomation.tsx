@@ -301,12 +301,19 @@ export const ContactInformation: FC<ContactInformationProps> = ({
     );
   };
 
+  const showButton = () => {
+    if (type !== 'view') {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <>
       <TableHeader
         title=""
         rightAction={
-          type !== 'view' ? (
+          showButton() && (
             <CustomPlusButton
               size={18}
               label="Add Contact"
@@ -314,13 +321,13 @@ export const ContactInformation: FC<ContactInformationProps> = ({
               customClass={styles.label}
               disabled={handleDisableButton()}
             />
-          ) : null
+          )
         }
       />
       <div className={styles.information}>
         {data.contacts.map((contact, index) => renderContacts(contact, index))}
       </div>
-      {type !== 'view' && (
+      {showButton() && (
         <div className={styles.bottom}>
           <CustomButton
             properties="rounded"
