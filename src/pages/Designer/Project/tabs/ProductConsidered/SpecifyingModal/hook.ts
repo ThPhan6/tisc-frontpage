@@ -17,22 +17,22 @@ export const useGetFinishScheduleSelected = (finish_schedules: FinishScheduleRes
   }));
 
   /// get room's info chosen
-  let finishSchedulesChosen = '';
   let finishScheduleTexts: string[] = [];
   const finishScheduleLabel: string[] = [];
 
   finishSchedulesData.forEach((el) => {
     finishScheduleTexts = [];
+    let finishSchedulesChosen = '';
     forEach(el, (value, key) => {
       if (value === true) {
         finishScheduleTexts.push(startCase(key));
-
-        if (!isEmpty(finishScheduleTexts)) {
-          finishSchedulesChosen = `${el.roomId}: ${finishScheduleTexts.join(', ')};`;
-          finishScheduleLabel.push(finishSchedulesChosen);
-        }
       }
     });
+
+    if (!isEmpty(finishScheduleTexts)) {
+      finishSchedulesChosen += `${el.roomId}: ${finishScheduleTexts.join(', ')};`;
+      finishScheduleLabel.push(finishSchedulesChosen);
+    }
   });
 
   return finishScheduleLabel;
