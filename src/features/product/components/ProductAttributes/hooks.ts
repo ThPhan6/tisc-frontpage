@@ -84,6 +84,9 @@ export const getSpecificationWithSelectedValue = (
   return checkedSpecGroup;
 };
 
+export const checkedOptionType = (data: ProductAttributeProps[]) =>
+  countBy(data, (attr) => attr.type === 'Options').true >= 2;
+
 export const useProductAttributeForm = (
   attributeType: ProductInfoTab,
   productId: string,
@@ -215,7 +218,7 @@ export const useProductAttributeForm = (
         (_attr, idx) => idx !== attrIndex,
       );
 
-      const isOptionType = countBy(newItemAttributes, (attr) => attr.type === 'Options').true >= 2;
+      const isOptionType = checkedOptionType(newItemAttributes);
 
       newAttributes[groupIndex] = {
         ...newAttributes[groupIndex],

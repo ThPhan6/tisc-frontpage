@@ -3,7 +3,8 @@ import { FC, memo, useEffect, useState } from 'react';
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
-import { useProductAttributeForm } from './hooks';
+import { checkedOptionType, useProductAttributeForm } from './hooks';
+import { useBoolean } from '@/helper/hook';
 import { cloneDeep, upperCase } from 'lodash';
 
 import { setPartialProductDetail } from '../../reducers';
@@ -36,9 +37,26 @@ interface Props {
 export const SelectAttributesToGroupRow: FC<Props> = memo(
   ({ activeKey, groupItem, attributes, groupIndex, productId }) => {
     const [visible, setVisible] = useState(false);
+
+    // attributes
     const [selected, setSelected] = useState<CheckboxValue[]>([]);
 
+    /// specification as a choice
+    const isOptionType = checkedOptionType(groupItem.attributes);
+    const checked = useBoolean(false);
+
+    /// get checked from current option select
     useEffect(() => {
+      checked.setValue(isOptionType);
+    }, [isOptionType]);
+
+    /// get checked from data on first loading
+    useEffect(() => {
+      checked.setValue(groupItem.selection);
+    }, []);
+
+    useEffect(() => {
+      /// set attribute selected
       setSelected(
         groupItem.attributes.map((attr) => {
           return {
@@ -106,6 +124,17 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
         });
       }
 
+      /// set selection for each group attribute has attribute option type
+      const isNewAttributeHasOptionType = checkedOptionType(newAttrGroup[groupIndex].attributes);
+      if (isNewAttributeHasOptionType) {
+        checked.setValue(true);
+
+        newAttrGroup[groupIndex] = {
+          ...newAttrGroup[groupIndex],
+          selection: true,
+        };
+      }
+
       /// to rearrange attribute has type option to top
       newAttrGroup.forEach((group) => {
         group.attributes.forEach((attribute, index) => {
@@ -162,10 +191,14 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
 
             <SpecificationChoice
               data={groupItem.attributes}
-              switchChecked={groupItem.selection}
+              switchChecked={checked.value}
               onClick={(toggle) => {
+                checked.setValue(toggle);
                 const newAttrGroup = [...attributeGroup];
-                newAttrGroup[groupIndex] = { ...newAttrGroup[groupIndex], selection: toggle };
+                newAttrGroup[groupIndex] = {
+                  ...newAttrGroup[groupIndex],
+                  selection: toggle,
+                };
 
                 store.dispatch(
                   setPartialProductDetail({
