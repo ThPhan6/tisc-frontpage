@@ -2,6 +2,7 @@ import React from 'react';
 
 import { PATH } from '@/constants/path';
 import { UserHomePagePaths } from '@/constants/user.constant';
+import { USER_ROLE } from '@/constants/userRoles';
 
 import { ReactComponent as LanguageIcon } from '@/assets/icons/language-icon.svg';
 import { ReactComponent as LanguageWhiteIcon } from '@/assets/icons/language-white-icon.svg';
@@ -10,11 +11,13 @@ import { ReactComponent as QuestionWhiteIcon } from '@/assets/icons/question-whi
 import logoIcon from '@/assets/tisc-logo-icon.svg';
 
 import { pushTo } from '@/helper/history';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useGetUserRoleFromPathname } from '@/helper/hook';
+import { getValueByCondition } from '@/helper/utils';
 
 import { useAppSelector } from '@/reducers';
 
 import { HeaderDropdown, MenuHeaderDropdown } from '../HeaderDropdown';
+import { LogoIcon } from '../LogoIcon';
 import { AvatarDropdown } from './AvatarDropdown';
 import styles from './styles/index.less';
 
@@ -22,6 +25,20 @@ const Header = () => {
   const showQuestionDropdown = useBoolean();
   const showLanguageDropdown = useBoolean();
   const user = useAppSelector((state) => state.user.user);
+
+  const currentUser = useGetUserRoleFromPathname();
+  const isTiscUser = currentUser === USER_ROLE.tisc;
+  const isBrandUser = currentUser === USER_ROLE.brand;
+  const isDesignerUser = currentUser === USER_ROLE.design;
+
+  const logoImage = getValueByCondition(
+    [
+      [isTiscUser, <img src={logoIcon} alt="logo" />],
+      [isBrandUser, <LogoIcon logo={String(user?.brand?.logo)} />],
+      [isDesignerUser, <LogoIcon logo={String(user?.design?.logo)} />],
+    ],
+    '',
+  );
 
   const menuQuestionDropdown = (
     <MenuHeaderDropdown
@@ -90,7 +107,7 @@ const Header = () => {
   return (
     <div className={styles.container}>
       <div className={styles['logo-icon']} onClick={handleRedirectHomePage}>
-        <img src={logoIcon} alt="logo" />
+        {logoImage}
       </div>
       <div className={styles['wrapper-right-content']}>
         <AvatarDropdown />

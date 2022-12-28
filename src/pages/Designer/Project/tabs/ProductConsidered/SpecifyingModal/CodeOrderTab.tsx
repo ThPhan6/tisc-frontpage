@@ -12,7 +12,9 @@ import {
 import { getAllMaterialCode } from '@/features/user-group/services';
 import { useBoolean } from '@/helper/hook';
 import { getSelectedOptions, validateFloatNumber } from '@/helper/utils';
+import { forEach, isEmpty, startCase } from 'lodash';
 
+import { FinishScheduleResponse } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { CustomRadioValue, RadioValue } from '@/components/CustomRadio/types';
 import { FormGroupProps } from '@/components/Form/types';
@@ -51,6 +53,42 @@ export interface CodeOrderTabProps {
   customProduct?: boolean;
 }
 
+export const getSelectedFinishSchedule = (finish_schedules: FinishScheduleResponse[]) => {
+  const finishSchedulesData = finish_schedules?.map((el) => ({
+    roomId: el.room_id_text,
+    floor: el.floor,
+    base: el.base.ceiling || el.base.floor,
+    front_wall: el.front_wall,
+    left_wall: el.left_wall,
+    back_wall: el.back_wall,
+    right_wall: el.right_wall,
+    ceiling: el.ceiling,
+    door: el.door.frame || el.door.panel,
+    cabinet: el.cabinet.carcass || el.cabinet.door,
+  }));
+
+  /// get room's info chosen
+  let finishScheduleTexts: string[] = [];
+  const finishScheduleLabel: string[] = [];
+
+  finishSchedulesData.forEach((el) => {
+    finishScheduleTexts = [];
+    let finishSchedulesChosen = '';
+    forEach(el, (value, key) => {
+      if (value === true) {
+        finishScheduleTexts.push(startCase(key));
+      }
+    });
+
+    if (!isEmpty(finishScheduleTexts)) {
+      finishSchedulesChosen += `${el.roomId}: ${finishScheduleTexts.join(', ')};`;
+      finishScheduleLabel.push(finishSchedulesChosen);
+    }
+  });
+
+  return finishScheduleLabel;
+};
+
 const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, customProduct }) => {
   const scheduleModal = useBoolean(false);
 
@@ -63,14 +101,31 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
 
   const specifiedDetail = useAppSelector((state) =>
     customProduct
-      ? state.customProduct.details.specifiedDetail
-      : state.product.details.specifiedDetail,
+      ? state.customProduct.details.specifiedDetail || ({} as SpecifiedDetail)
+      : state.product.details.specifiedDetail || ({} as SpecifiedDetail),
   );
+
+  const {
+    description,
+    material_code_id,
+    order_method,
+    quantity,
+    suffix_code,
+    unit_type_id,
+    special_instructions = [],
+    instruction_type_ids = [],
+    requirement_type_ids = [],
+    finish_schedules = [],
+  } = specifiedDetail;
+
+  const finishScheduleLabel = getSelectedFinishSchedule(finish_schedules);
+
   useEffect(() => {
     getAllMaterialCode().then((res) => {
       setMaterialCodeOtps(
         res.map((el) => ({
           label: <DualLabel firstTxt={el.code} secTxt={el.description} />,
+
           value: el.id,
           labelText: `${el.code}`,
         })),
@@ -105,22 +160,6 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
     });
   }, []);
 
-  if (!specifiedDetail) {
-    return null;
-  }
-
-  const {
-    description,
-    material_code_id,
-    order_method,
-    quantity,
-    suffix_code,
-    unit_type_id,
-    special_instructions = [],
-    instruction_type_ids = [],
-    requirement_type_ids = [],
-  } = specifiedDetail;
-
   const selectedInstructions = getSelectedOptions(instructions, instruction_type_ids);
   const selectedRequirements = getSelectedOptions(requirements, requirement_type_ids);
 
@@ -144,6 +183,10 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
     layout: 'vertical',
     style: { marginBottom: 0 },
   };
+
+  if (!specifiedDetail.id) {
+    return null;
+  }
 
   return (
     <div style={{ paddingTop: '16px' }}>
@@ -213,10 +256,25 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
                 }
                 scheduleModal.setValue(true);
               }}>
-              <RobotoBodyText level={6} color="mono-color-medium">
-                e.g. Floor, base, wall, ceiling, door, cabinet...
-              </RobotoBodyText>
-              <SingleRightFormIcon />
+              <div className={styles.label}>
+                {!isEmpty(finishScheduleLabel) ? (
+                  finishScheduleLabel.map((item) => (
+                    <RobotoBodyText
+                      level={6}
+                      color="primary-color-dark"
+                      style={{ paddingRight: 8 }}>
+                      {item}
+                    </RobotoBodyText>
+                  ))
+                ) : (
+                  <RobotoBodyText level={6} color="mono-color-medium">
+                    {'e.g. Floor, base, wall, ceiling, door, cabinet...'}
+                  </RobotoBodyText>
+                )}
+              </div>
+              <div className="flex-start">
+                <SingleRightFormIcon />
+              </div>
             </div>
           </FormGroup>
         </Col>
@@ -352,7 +410,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
       <ScheduleModal
         visible={scheduleModal.value}
         setVisible={(visible) => (visible ? undefined : scheduleModal.setValue(false))}
-        materialCode={materialCode?.labelText}
+        materialCode={`${materialCode?.labelText} ${suffix_code}`}
         description={description}
         projectProductId={projectProductId}
         roomIds={roomIds}
