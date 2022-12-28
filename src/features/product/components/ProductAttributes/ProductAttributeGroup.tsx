@@ -303,7 +303,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                 className={`${isSpecifiedModal ? styles.paddingNone : styles.paddingRounded} ${
                   attrGroupItem.selection && !isTiscAdmin && !isPublicPage
                     ? styles.paddingWrapper
-                    : ''
+                    : styles.colorInput
                 }`}>
                 <table className={styles.table}>
                   <tbody>
