@@ -4,6 +4,7 @@ import { MESSAGE_ERROR } from '@/constants/message';
 import { LOGO_SIZE_LIMIT } from '@/constants/util';
 import { Col, Row, Upload, UploadProps, message } from 'antd';
 
+import DefaultLogo from '@/assets/icons/avatar-default.svg';
 import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-icon.svg';
 import PlaceHolderImage from '@/assets/images/product-placeholder.png';
@@ -169,6 +170,16 @@ const BrandProfilePage = () => {
     }
   };
 
+  const setPreviewAvatar = () => {
+    if (fileInput) {
+      return URL.createObjectURL(fileInput);
+    }
+    if (userLogo) {
+      return showImageUrl(userLogo);
+    }
+    return DefaultLogo;
+  };
+
   useEffect(() => {
     if (fileInput) {
       handleUpdateLogo();
@@ -313,7 +324,9 @@ const BrandProfilePage = () => {
               </FormGroup>
 
               <div className={styles.logo}>
-                <img src={showImageUrl(currentLogo)} />
+                <Upload maxCount={1} showUploadList={false} {...props} accept=".png">
+                  <img src={setPreviewAvatar()} className="cursor-pointer" />
+                </Upload>
               </div>
 
               <div className={styles.customFormLogo}>
