@@ -1,7 +1,6 @@
 import { FC, useState } from 'react';
 
 import { NotificationsIcons, ProjectTrackingNotificationType, RequestsIcons } from '../constant';
-import { Empty } from 'antd';
 
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
@@ -14,6 +13,7 @@ import { ProjectTrackingDetail, RequestAndNotificationDetail } from '@/types/pro
 import { ActionTaskTable } from '@/components/ActionTask/table';
 import BrandProductBasicHeader from '@/components/BrandProductBasicHeader';
 import CustomButton from '@/components/Button';
+import { EmptyOne } from '@/components/Empty';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { PhoneInput } from '@/components/Form/PhoneInput';
@@ -86,7 +86,7 @@ const RequestAndNotificationList: FC<RequestAndNotificationListProps> = ({
               </tr>
             ))
           ) : (
-            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} className={styles.empty} />
+            <EmptyOne customClass={styles.empty} />
           )}
         </tbody>
       </table>

@@ -1,7 +1,7 @@
 import type { FC, ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 
-import { Empty, Modal } from 'antd';
+import { Modal } from 'antd';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
@@ -23,6 +23,7 @@ import { MainTitle } from '@/components/Typography';
 import { DropdownCategoryList } from '@/features/categories/components/CategoryDropdown';
 
 import { CustomCheckbox } from '../CustomCheckbox';
+import { EmptyOne } from '../Empty';
 import styles from './styles/Popover.less';
 
 export interface PopoverProps {
@@ -111,7 +112,7 @@ const Popover: FC<PopoverProps> = ({
   const renderEmptyData = () => {
     return (
       <div className={styles.popoverEmptyData}>
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <EmptyOne />
       </div>
     );
   };
