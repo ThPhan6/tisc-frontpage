@@ -126,14 +126,13 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
 
       /// set selection for each group attribute has attribute option type
       const isNewAttributeHasOptionType = checkedOptionType(newAttrGroup[groupIndex].attributes);
-      if (isNewAttributeHasOptionType) {
-        checked.setValue(true);
 
-        newAttrGroup[groupIndex] = {
-          ...newAttrGroup[groupIndex],
-          selection: true,
-        };
-      }
+      checked.setValue(isNewAttributeHasOptionType);
+
+      newAttrGroup[groupIndex] = {
+        ...newAttrGroup[groupIndex],
+        selection: isNewAttributeHasOptionType,
+      };
 
       /// to rearrange attribute has type option to top
       newAttrGroup.forEach((group) => {
