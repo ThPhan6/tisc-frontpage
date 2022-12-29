@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
-import { LOGO_SIZE_LIMIT } from '@/constants/util';
+import { IMAGE_ACCEPT_TYPES, LOGO_SIZE_LIMIT } from '@/constants/util';
 import { Col, Row, Upload, UploadProps, message } from 'antd';
 
 // import DefaultLogo from '@/assets/icons/avatar-default.svg';
@@ -326,7 +326,7 @@ const BrandProfilePage = () => {
                   maxCount={1}
                   showUploadList={false}
                   {...props}
-                  accept=".png">
+                  accept={IMAGE_ACCEPT_TYPES.image}>
                   {getPreviewAvatar()}
                 </Upload>
               </div>
@@ -341,7 +341,11 @@ const BrandProfilePage = () => {
                   formClass={styles.customLabel}
                   iconTooltip={<WarningIcon className={styles.customWarningIcon} />}>
                   <div className={styles['wrapper-upload']}>
-                    <Upload maxCount={1} showUploadList={false} {...props} accept=".png">
+                    <Upload
+                      maxCount={1}
+                      showUploadList={false}
+                      {...props}
+                      accept={IMAGE_ACCEPT_TYPES.image}>
                       <UploadIcon className={styles.icon} />
                     </Upload>
                   </div>
