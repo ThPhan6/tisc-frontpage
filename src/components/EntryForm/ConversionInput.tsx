@@ -93,7 +93,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
             onChange={(e) => {
               const firstValue = e.target.value;
               const secondValue =
-                Number(firstValue.replaceAll(/,/g, '')) * Number(conversionData.formula_2);
+                Number(firstValue.replaceAll(',', '')) * Number(conversionData.formula_2);
               setConversionValue({
                 firstValue: firstValue,
                 secondValue: isNaN(secondValue) ? '' : secondValue.toString(),
@@ -116,7 +116,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
             onChange={(e) => {
               const secondValue = e.target.value;
               const firstValue =
-                Number(secondValue.replaceAll(/,/g, '')) * Number(conversionData.formula_1);
+                Number(secondValue.replaceAll(',', '')) * Number(conversionData.formula_1);
               setConversionValue({
                 firstValue: isNaN(firstValue) ? '' : firstValue.toString(),
                 secondValue: secondValue,
