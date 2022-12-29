@@ -88,13 +88,8 @@ export const getSelectedFinishSchedule = (finish_schedules: FinishScheduleRespon
     const finishScheduleTexts: any[] = [];
     const finishSchedulesChosen: string[] = [];
 
-    /// Eg: floor, ceiling
     const mainRoomInfo: string[] = [];
     let mainRoomInfoLabel: string = '';
-
-    /// Eg: { base: [ceiling, floor] }
-    const dynamicRoomInfo: string[] = [];
-    let dynamicRoomInfoLabel: string = '';
 
     forEach(el, (roomInfo, key) => {
       if (typeof roomInfo === 'boolean' && roomInfo === true) {
@@ -124,7 +119,7 @@ export const getSelectedFinishSchedule = (finish_schedules: FinishScheduleRespon
         /// Eg: Base ceiling + floor
         if (typeof item === 'object') {
           forEach(item, (itemValues: string[], itemKey) => {
-            dynamicRoomInfo.push(`${itemKey} ${itemValues.join(' + ')}`);
+            mainRoomInfo.push(`${itemKey} ${itemValues.join(' + ')}`);
           });
         }
       });
@@ -133,12 +128,8 @@ export const getSelectedFinishSchedule = (finish_schedules: FinishScheduleRespon
         mainRoomInfoLabel = mainRoomInfo.join(', ');
         finishSchedulesChosen.push(mainRoomInfoLabel);
       }
-      if (!isEmpty(dynamicRoomInfo)) {
-        dynamicRoomInfoLabel = dynamicRoomInfo.join(', ');
-        finishSchedulesChosen.push(dynamicRoomInfoLabel);
-      }
 
-      const finishSchedulesLabel = `${el.roomId}: ${finishSchedulesChosen.join(', ')};`;
+      const finishSchedulesLabel = `${el.roomId}: ${finishSchedulesChosen.join(', ')}.`;
 
       finishScheduleLabels.push(finishSchedulesLabel);
     }
