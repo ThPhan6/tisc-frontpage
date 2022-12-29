@@ -1,13 +1,11 @@
 import { FC } from 'react';
 
-import { Empty } from 'antd';
+import { EmptyOne } from '@/components/Empty';
 
 import styles from './GeneralData.less';
 
 const GeneralData: FC = ({ children }) => {
-  return (
-    <div>{children || <Empty className={styles.empty} image={Empty.PRESENTED_IMAGE_SIMPLE} />}</div>
-  );
+  return <div>{children || <EmptyOne customClass={styles.empty} />}</div>;
 };
 
 export default GeneralData;
