@@ -71,12 +71,12 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
       setShareViaEmailData(DEFAULT_STATE);
       return;
     }
+
     getSharingGroups().then((data) => {
       if (data) {
         setSharingGroup(data);
       }
     });
-
     getSharingPurposes().then((data) => {
       if (data) {
         setSharingPurpose(data);

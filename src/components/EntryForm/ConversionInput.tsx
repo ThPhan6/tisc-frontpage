@@ -92,8 +92,8 @@ const ConversionInput: FC<ConversionInputProps> = ({
             placeholder={placeholder1}
             onChange={(e) => {
               const firstValue = e.target.value;
-              const secondValue = parseFloat(firstValue) * Number(conversionData.formula_2);
-
+              const secondValue =
+                Number(firstValue.replaceAll(',', '')) * Number(conversionData.formula_2);
               setConversionValue({
                 firstValue: firstValue,
                 secondValue: isNaN(secondValue) ? '' : secondValue.toString(),
@@ -115,7 +115,8 @@ const ConversionInput: FC<ConversionInputProps> = ({
             placeholder={placeholder2}
             onChange={(e) => {
               const secondValue = e.target.value;
-              const firstValue = parseFloat(secondValue) * Number(conversionData.formula_1);
+              const firstValue =
+                Number(secondValue.replaceAll(',', '')) * Number(conversionData.formula_1);
               setConversionValue({
                 firstValue: isNaN(firstValue) ? '' : firstValue.toString(),
                 secondValue: secondValue,
