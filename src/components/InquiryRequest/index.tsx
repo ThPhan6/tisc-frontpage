@@ -110,6 +110,11 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
 
   /// get inquiry/request data
   useEffect(() => {
+    if (!visible) {
+      setGeneralInquiryData(GENERAL_INQUIRY_DEFAULT_STATE);
+      setProjectRequestData(PROJECT_REQUEST_DEFAULT_STATE);
+      return;
+    }
     getInquiryRequestFor().then((res) => {
       setInquiryForData(
         res.map((el) => ({
