@@ -10,7 +10,7 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import styles from './VerifyAccount.less';
 
 export const VerifyAccount: FC = () => {
-  const [time, setTime] = useState(5);
+  const [time, setTime] = useState(1000000);
 
   const openLoginModal = () =>
     store.dispatch(
@@ -29,7 +29,7 @@ export const VerifyAccount: FC = () => {
   }, [time]);
 
   return (
-    <CustomModal visible>
+    <CustomModal visible centered className={styles.modal}>
       <div className={styles.content}>
         <MainTitle level={2} textAlign="center">
           Your account was verify successfully

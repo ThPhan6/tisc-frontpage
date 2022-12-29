@@ -1,15 +1,26 @@
-.content {
-  padding-bottom: 32px;
-  .text {
-    margin-top: 8px;
-    text-align: center;
+.modal {
+  :global(.ant-modal-close-x) {
+    svg {
+      margin-top: 16px;
+      margin-right: 9px;
+    }
   }
-  .login {
-    display: flex;
-    justify-content: flex-end;
-    padding-top: 16px;
-    .submit {
-      border-radius: 16px;
+
+  .content {
+    padding-top: 32px;
+
+    .text {
+      margin-top: 8px;
+      text-align: center;
+    }
+    .login {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 32px;
+      .submit {
+        padding: 0 20px;
+        border-radius: 16px;
+      }
     }
   }
 }
