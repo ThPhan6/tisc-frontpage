@@ -119,6 +119,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
   const [distributorActiveKey, setDistributorActiveKey] = useState<string | string[]>();
   const [distributorAddresses, setDistributorAddresses] = useState<DistributorProductMarket[]>([]);
 
+  /// brand and distributor selected have been setted from useProductAttributeForm
   const brandLocationId =
     useAppSelector((state) =>
       customProduct
@@ -313,7 +314,10 @@ export const VendorLocation: FC<VendorTabProps> = ({
             <div
               className={` ${isTiscAdmin ? 'cursor-disabled' : 'cursor-default'}`}
               onClick={isTiscAdmin || isPublicPage ? undefined : (e) => handleShowAddress(e)}>
-              <div className="contact-select-box cursor-pointer">
+              <div
+                className={`contact-select-box ${
+                  isTiscAdmin ? 'cursor-default' : 'cursor-pointer'
+                }`}>
                 <BodyText
                   level={6}
                   fontFamily="Roboto"
@@ -352,6 +356,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
               )}
               onChange={(key) => handleCollapse('brand', key)}
               activeKey={brandActiveKey}
+              collapsible={isTiscAdmin || !chosenBrand.value ? 'disabled' : undefined}
               customHeaderClass={styles.collapseHeader}>
               {renderBusinessAdressDetail(selectedLocationBrand)}
             </CustomCollapse>
@@ -382,6 +387,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
               )}
               onChange={(key) => handleCollapse('distributor', key)}
               activeKey={distributorActiveKey}
+              collapsible={isTiscAdmin || !chosenDistributor.value ? 'disabled' : undefined}
               customHeaderClass={styles.collapseHeader}>
               {renderDistributorBusinessAdressDetail(selectedLocationDistributor)}
             </CustomCollapse>
