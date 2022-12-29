@@ -12,7 +12,7 @@ import {
 import { getAllMaterialCode } from '@/features/user-group/services';
 import { useBoolean } from '@/helper/hook';
 import { getSelectedOptions, validateFloatNumber } from '@/helper/utils';
-import { forEach, isEmpty, startCase } from 'lodash';
+import { forEach, isEmpty, lowerCase, startCase } from 'lodash';
 
 import { FinishScheduleResponse } from './types';
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -57,36 +57,94 @@ export const getSelectedFinishSchedule = (finish_schedules: FinishScheduleRespon
   const finishSchedulesData = finish_schedules?.map((el) => ({
     roomId: el.room_id_text,
     floor: el.floor,
-    base: el.base.ceiling || el.base.floor,
+    base: {
+      ceiling: el.base.ceiling,
+      floor: el.base.floor,
+    },
     front_wall: el.front_wall,
     left_wall: el.left_wall,
     back_wall: el.back_wall,
     right_wall: el.right_wall,
     ceiling: el.ceiling,
-    door: el.door.frame || el.door.panel,
-    cabinet: el.cabinet.carcass || el.cabinet.door,
+    door: {
+      frame: el.door.frame,
+      panel: el.door.panel,
+    },
+    cabinet: {
+      carcass: el.cabinet.carcass,
+      door: el.cabinet.door,
+    },
   }));
 
   /// get room's info chosen
-  let finishScheduleTexts: string[] = [];
-  const finishScheduleLabel: string[] = [];
+  /* expected result(string): 
+
+  roomId-1: Floor; roomId-2: Base ceiling + floor; roomId-3: Front Wall, Door frame + panel;
+
+  */
+  const finishScheduleLabels: string[] = [];
 
   finishSchedulesData.forEach((el) => {
-    finishScheduleTexts = [];
-    let finishSchedulesChosen = '';
-    forEach(el, (value, key) => {
-      if (value === true) {
+    const finishScheduleTexts: any[] = [];
+    const finishSchedulesChosen: string[] = [];
+
+    /// Eg: floor, ceiling
+    const mainRoomInfo: string[] = [];
+    let mainRoomInfoLabel: string = '';
+
+    /// Eg: { base: [ceiling, floor] }
+    const dynamicRoomInfo: string[] = [];
+    let dynamicRoomInfoLabel: string = '';
+
+    forEach(el, (roomInfo, key) => {
+      if (typeof roomInfo === 'boolean' && roomInfo === true) {
         finishScheduleTexts.push(startCase(key));
+      }
+
+      if (typeof roomInfo === 'object') {
+        const roomItemInfo: string[] = [];
+        forEach(roomInfo, (infoValue, infoKey) => {
+          if (infoValue === true) {
+            roomItemInfo.push(lowerCase(infoKey));
+          }
+        });
+
+        if (!isEmpty(roomItemInfo)) {
+          finishScheduleTexts.push({ [startCase(key)]: roomItemInfo });
+        }
       }
     });
 
     if (!isEmpty(finishScheduleTexts)) {
-      finishSchedulesChosen += `${el.roomId}: ${finishScheduleTexts.join(', ')};`;
-      finishScheduleLabel.push(finishSchedulesChosen);
+      finishScheduleTexts.forEach((item) => {
+        if (typeof item === 'string') {
+          mainRoomInfo.push(item);
+        }
+
+        /// Eg: Base ceiling + floor
+        if (typeof item === 'object') {
+          forEach(item, (itemValues: string[], itemKey) => {
+            dynamicRoomInfo.push(`${itemKey} ${itemValues.join(' + ')}`);
+          });
+        }
+      });
+
+      if (!isEmpty(mainRoomInfo)) {
+        mainRoomInfoLabel = mainRoomInfo.join(', ');
+        finishSchedulesChosen.push(mainRoomInfoLabel);
+      }
+      if (!isEmpty(dynamicRoomInfo)) {
+        dynamicRoomInfoLabel = dynamicRoomInfo.join(', ');
+        finishSchedulesChosen.push(dynamicRoomInfoLabel);
+      }
+
+      const finishSchedulesLabel = `${el.roomId}: ${finishSchedulesChosen.join(', ')};`;
+
+      finishScheduleLabels.push(finishSchedulesLabel);
     }
   });
 
-  return finishScheduleLabel;
+  return finishScheduleLabels;
 };
 
 const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, customProduct }) => {
@@ -256,7 +314,9 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
                 }
                 scheduleModal.setValue(true);
               }}>
-              <div className={styles.label}>
+              <div
+                className={styles.label}
+                title={finishScheduleLabel?.map((item) => item).join(' ')}>
                 {!isEmpty(finishScheduleLabel) ? (
                   finishScheduleLabel.map((item) => (
                     <RobotoBodyText

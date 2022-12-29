@@ -26,11 +26,12 @@ interface DropdownRadioListProps {
   renderTitle?: (data: DropdownRadioItem) => string | number | React.ReactNode;
   onChange?: (value: RadioValue) => void;
   noCollapse?: boolean;
+  canActiveMultiKey?: boolean;
 }
 type ActiveKeyType = string | number | (string | number)[];
 
 const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
-  const { data, selected, onChange, renderTitle, chosenItem } = props;
+  const { data, selected, onChange, renderTitle, chosenItem, canActiveMultiKey } = props;
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
 
   useEffect(() => {
@@ -68,7 +69,13 @@ const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
       expandIconPosition="right"
       expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
       className={styles.dropdownList}
-      onChange={setActiveKey}
+      onChange={(keys) => {
+        let newKeys = keys;
+        if (!canActiveMultiKey) {
+          newKeys = typeof keys === 'string' ? keys : [keys[keys.length - 1]];
+        }
+        setActiveKey(newKeys);
+      }}
       activeKey={activeKey}>
       {data.map((item, index) => (
         <Collapse.Panel
