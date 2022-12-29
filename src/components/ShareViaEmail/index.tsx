@@ -67,6 +67,10 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
   const [sharingPurpose, setSharingPurpose] = useState<ProductItemValue[]>([]);
 
   useEffect(() => {
+    if (!visible) {
+      return;
+    }
+
     getSharingGroups().then((data) => {
       if (data) {
         setSharingGroup(data);
