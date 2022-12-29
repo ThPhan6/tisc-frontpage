@@ -29,6 +29,7 @@ interface DropdownCheckboxListProps {
   combinable?: boolean;
   showCount?: boolean;
   customClass?: string;
+  canActiveMultiKey?: boolean;
 }
 const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
   const {
@@ -41,8 +42,10 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
     noCollapse,
     showCount = true,
     customClass,
+    canActiveMultiKey,
   } = props;
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
+
   useEffect(() => {
     let activeKeys: number[] = [];
     data.forEach((item, index) => {
@@ -59,6 +62,7 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
     });
     setActiveKey(activeKeys);
   }, [chosenItem]);
+
   const renderHeader = (item: DropdownCheckboxItem, index: number) => {
     if (renderTitle) {
       return (
@@ -80,13 +84,20 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
     }
     return index;
   };
+
   return (
     <Collapse
       bordered={false}
       expandIconPosition="right"
       expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
       className={`${styles.dropdownList} ${customClass}`}
-      onChange={setActiveKey}
+      onChange={(keys) => {
+        let newKeys = keys;
+        if (!canActiveMultiKey) {
+          newKeys = typeof keys === 'string' ? keys : [keys[keys.length - 1]];
+        }
+        setActiveKey(newKeys);
+      }}
       activeKey={activeKey}>
       {data.map((item, index) => (
         <Collapse.Panel

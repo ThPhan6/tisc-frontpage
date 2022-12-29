@@ -224,6 +224,8 @@ export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeDa
         layout="vertical"
         formClass={`${styles.formGroup} ${projectTypeData.name !== '' ? styles.activeText : ''}`}>
         <CollapseRadioList
+          groupType="project-basic-info"
+          groupIndex={1}
           options={projectTypes.map((projectType) => {
             return {
               label: projectType.name,
@@ -248,6 +250,8 @@ export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeDa
         layout="vertical"
         formClass={`${styles.formGroup} ${buildingTypeData.name !== '' ? styles.activeText : ''}`}>
         <CollapseRadioList
+          groupType="project-basic-info"
+          groupIndex={2}
           options={buildingTypes.map((buildingType) => {
             return {
               label: buildingType.name,

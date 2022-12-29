@@ -1,6 +1,7 @@
-import { FC, ReactNode, useEffect, useState } from 'react';
+import { FC, ReactNode } from 'react';
 
 import { RadioValue } from '@/components/CustomRadio/types';
+import { CollapseGroup, useCollapseGroupActiveCheck } from '@/reducers/active';
 
 import CustomCollapse from '@/components/Collapse';
 import { CustomRadio } from '@/components/CustomRadio';
@@ -8,7 +9,7 @@ import { BodyText } from '@/components/Typography';
 
 import styles from './styles/collapseRadioList.less';
 
-interface CollapseRadioListProps {
+export interface CollapseRadioListProps {
   options: RadioValue[];
   checked?: string | number;
   onChange?: (checked: RadioValue) => void;
@@ -22,6 +23,8 @@ interface CollapseRadioListProps {
   noDataMessage?: string;
   collapsible?: boolean;
   activeKey?: string | string[];
+  groupType?: CollapseGroup;
+  groupIndex?: number; // distinct index for handling active collapse item
 }
 
 const CollapseRadioList: FC<CollapseRadioListProps> = ({
@@ -31,6 +34,8 @@ const CollapseRadioList: FC<CollapseRadioListProps> = ({
   otherInput,
   clearOtherInput,
   activeKey,
+  groupType,
+  groupIndex,
   placeholder = 'select from the list',
   containerClass = '',
   Header,
@@ -39,17 +44,16 @@ const CollapseRadioList: FC<CollapseRadioListProps> = ({
   collapsible = false,
   ...props
 }) => {
-  const [collapse, setCollapse] = useState<string | string[]>();
-
-  useEffect(() => {
-    setCollapse(activeKey);
-  }, [activeKey]);
+  const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(
+    groupType,
+    groupIndex,
+    activeKey,
+  );
 
   return (
     <CustomCollapse
-      {...props}
-      activeKey={collapse}
-      onChange={setCollapse}
+      activeKey={curActiveKey}
+      onChange={onKeyChange}
       collapsible={collapsible ? 'disabled' : undefined}
       header={
         Header || (
@@ -58,7 +62,8 @@ const CollapseRadioList: FC<CollapseRadioListProps> = ({
           </BodyText>
         )
       }
-      className={`${styles.functionTypeDropdown} ${containerClass}`}>
+      className={`${styles.functionTypeDropdown} ${containerClass}`}
+      {...props}>
       {options.length ? (
         <CustomRadio
           options={options}
