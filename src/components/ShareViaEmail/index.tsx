@@ -68,6 +68,7 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
 
   useEffect(() => {
     if (!visible) {
+      setShareViaEmailData(DEFAULT_STATE);
       return;
     }
 
@@ -76,7 +77,6 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
         setSharingGroup(data);
       }
     });
-
     getSharingPurposes().then((data) => {
       if (data) {
         setSharingPurpose(data);
@@ -151,7 +151,8 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
       visible={visible}
       setVisible={setVisible}
       submitButtonStatus={submitButtonStatus.value}
-      onFormSubmit={handleSubmit}>
+      onFormSubmit={handleSubmit}
+      clearOnClose>
       <BrandProductBasicHeader
         image={product.images?.[0]}
         logo={product.brand?.logo}
