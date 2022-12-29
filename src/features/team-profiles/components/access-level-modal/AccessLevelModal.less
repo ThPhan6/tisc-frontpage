@@ -5,12 +5,8 @@
     padding: 16px;
   }
   .table {
-    @logo-space: 8px;
     @logo-size: 18px;
     @item-space: 16px;
-
-    border-collapse: separate;
-    border-spacing: 0 4px;
 
     th {
       height: 36px;
@@ -20,8 +16,7 @@
 
     td {
       position: relative;
-      height: 24px;
-      padding: 0;
+      height: 32px;
       > .menu_accessable_true,
       .menu_accessable_null,
       .menu_accessable_false {
@@ -30,6 +25,10 @@
         left: 50%;
         transform: translate(-50%, -50%);
       }
+    }
+
+    &.tisc td {
+      height: 28px;
     }
 
     // delete these if already have real data
@@ -87,7 +86,6 @@
         &__logo {
           width: @logo-size;
           height: @logo-size;
-          margin-right: @logo-space;
 
           path {
             fill: @mono-color-medium;
