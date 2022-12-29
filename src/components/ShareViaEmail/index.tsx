@@ -66,14 +66,7 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
   const [sharingGroup, setSharingGroup] = useState<ProductItemValue[]>([]);
   const [sharingPurpose, setSharingPurpose] = useState<ProductItemValue[]>([]);
 
-  const [collapseKey, setCollapseKey] = useState<string | string[] | undefined>([]);
-
   useEffect(() => {
-    if (!visible) {
-      setCollapseKey([]);
-      return;
-    }
-
     getSharingGroups().then((data) => {
       if (data) {
         setSharingGroup(data);
@@ -167,23 +160,25 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
       {/* Sharing Group */}
       <CollapseRadioFormGroup
         label="Sharing Group"
-        activeKey={collapseKey}
+        groupType="share-via-email"
+        groupIndex={1}
         checked={shareViaEmailData.sharing_group}
         placeholder={sharingGroupLabel.name}
         otherInput
         clearOtherInput={submitButtonStatus.value}
-        optionData={getOptionData(sharingGroup)}
+        options={getOptionData(sharingGroup)}
         onChange={(radioValue) => handleOnChangeRadioForm('sharing_group', radioValue)}
       />
       {/* Sharing Purpose */}
       <CollapseRadioFormGroup
         label="Sharing Purpose"
-        activeKey={collapseKey}
+        groupType="share-via-email"
+        groupIndex={2}
         checked={shareViaEmailData.sharing_purpose}
         placeholder={sharingPurposeLabel.name}
         otherInput
         clearOtherInput={submitButtonStatus.value}
-        optionData={getOptionData(sharingPurpose)}
+        options={getOptionData(sharingPurpose)}
         onChange={(radioValue) => handleOnChangeRadioForm('sharing_purpose', radioValue)}
       />
       {/* Email To */}
