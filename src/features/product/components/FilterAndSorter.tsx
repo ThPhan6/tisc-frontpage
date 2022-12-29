@@ -18,7 +18,7 @@ import {
 } from '@/helper/utils';
 import { onCompanyFilterClick } from '@/pages/Designer/Products/CustomLibrary/hook';
 
-import { setProductList, setProductListSorter } from '../reducers';
+import { resetProductState, setProductList, setProductListSorter } from '../reducers';
 import { SortOrder } from '../types';
 import { CategoryNestedList } from '@/features/categories/types';
 import store, { useAppSelector } from '@/reducers';
@@ -337,8 +337,8 @@ export const useProductListFilterAndSorter = (fetchs: {
       );
     }
 
-    // clear all filter and sorter on first loading
-    return resetAllProductList;
+    /// cleat all product
+    return dispatch(resetProductState());
   }, []);
 
   const resetProductListSorter = () => {
