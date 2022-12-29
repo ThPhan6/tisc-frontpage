@@ -82,27 +82,28 @@ export const getSelectedFinishSchedule = (finish_schedules: FinishScheduleRespon
   roomId-1: Floor; roomId-2: Base ceiling + floor; roomId-3: Front Wall, Door frame + panel;
 
   */
-  const finishScheduleLabel: string[] = [];
+  const finishScheduleLabels: string[] = [];
 
   finishSchedulesData.forEach((el) => {
     const finishScheduleTexts: any[] = [];
     const finishSchedulesChosen: string[] = [];
 
-    const mainRoomInfo: any[] = [];
+    /// Eg: floor, ceiling
+    const mainRoomInfo: string[] = [];
     let mainRoomInfoLabel: string = '';
 
-    const dynamicRoomInfo: any[] = [];
+    /// Eg: { base: [ceiling, floor] }
+    const dynamicRoomInfo: string[] = [];
     let dynamicRoomInfoLabel: string = '';
 
-    forEach(el, (roomItem, key) => {
-      if (typeof roomItem === 'boolean' && roomItem === true) {
+    forEach(el, (roomInfo, key) => {
+      if (typeof roomInfo === 'boolean' && roomInfo === true) {
         finishScheduleTexts.push(startCase(key));
-        return;
       }
 
-      if (typeof roomItem === 'object') {
+      if (typeof roomInfo === 'object') {
         const roomItemInfo: string[] = [];
-        forEach(roomItem, (infoValue, infoKey) => {
+        forEach(roomInfo, (infoValue, infoKey) => {
           if (infoValue === true) {
             roomItemInfo.push(lowerCase(infoKey));
           }
@@ -118,32 +119,32 @@ export const getSelectedFinishSchedule = (finish_schedules: FinishScheduleRespon
       finishScheduleTexts.forEach((item) => {
         if (typeof item === 'string') {
           mainRoomInfo.push(item);
-          mainRoomInfoLabel = mainRoomInfo.join(', ');
-          return;
         }
 
+        /// Eg: Base ceiling + floor
         if (typeof item === 'object') {
-          forEach(item, (itemValue: string[], itemKey) => {
-            dynamicRoomInfo.push(`${itemKey} ${itemValue.join(' + ')}`);
-            dynamicRoomInfoLabel = dynamicRoomInfo.join(', ');
+          forEach(item, (itemValues: string[], itemKey) => {
+            dynamicRoomInfo.push(`${itemKey} ${itemValues.join(' + ')}`);
           });
         }
       });
 
-      if (mainRoomInfoLabel) {
+      if (!isEmpty(mainRoomInfo)) {
+        mainRoomInfoLabel = mainRoomInfo.join(', ');
         finishSchedulesChosen.push(mainRoomInfoLabel);
       }
-      if (dynamicRoomInfoLabel) {
+      if (!isEmpty(dynamicRoomInfo)) {
+        dynamicRoomInfoLabel = dynamicRoomInfo.join(', ');
         finishSchedulesChosen.push(dynamicRoomInfoLabel);
       }
 
       const finishSchedulesLabel = `${el.roomId}: ${finishSchedulesChosen.join(', ')};`;
 
-      finishScheduleLabel.push(finishSchedulesLabel);
+      finishScheduleLabels.push(finishSchedulesLabel);
     }
   });
 
-  return finishScheduleLabel;
+  return finishScheduleLabels;
 };
 
 const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, customProduct }) => {
