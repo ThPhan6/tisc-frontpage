@@ -62,11 +62,11 @@ export const FooterContent: FC<FooterContentProps> = ({
 export const useLandingPageStyles = (darkTheme?: boolean, onCancel?: () => void) => {
   const popupStylesProps = {
     visible: true,
-    className: styles.modalContainer,
     closeIconClass: `${styles.closeIcon} ${darkTheme ? styles.whiteIcon : ''}`,
     bodyStyle: {
       backgroundColor: darkTheme ? '#000' : '',
       height: '576px',
+      padding: '48px 48px 32px 48px',
     },
     onCancel: () => {
       onCancel?.();

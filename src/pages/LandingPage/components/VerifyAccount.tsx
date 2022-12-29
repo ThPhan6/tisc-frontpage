@@ -10,7 +10,7 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import styles from './VerifyAccount.less';
 
 export const VerifyAccount: FC = () => {
-  const [time, setTime] = useState(1000000);
+  const [time, setTime] = useState(5);
 
   const openLoginModal = () =>
     store.dispatch(
