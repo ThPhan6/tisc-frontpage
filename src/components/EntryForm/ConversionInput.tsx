@@ -10,7 +10,7 @@ import { BodyText } from '@/components/Typography';
 import { MaskedNumberInput } from '../CustomNumberInput.tsx';
 import TableContent from '../Table/TableContent';
 import styles from './styles/InputGroup.less';
-import { useGeneralFeature } from './utils';
+import { formatToConversionInputValue, useGeneralFeature } from './utils';
 
 const ConversionContent: FC<MainContentProps> = ({ children, noWrap }) => (
   <Row className={styles.inputGroupContainer} gutter={0} align="middle" wrap={!noWrap}>
@@ -92,11 +92,12 @@ const ConversionInput: FC<ConversionInputProps> = ({
             placeholder={placeholder1}
             onChange={(e) => {
               const firstValue = e.target.value;
-              const secondValue =
-                Number(firstValue.replaceAll(',', '')) * Number(conversionData.formula_2);
+              const secondValue = formatToConversionInputValue(
+                Number(firstValue.replaceAll(',', '')) * Number(conversionData.formula_2),
+              );
               setConversionValue({
                 firstValue: firstValue,
-                secondValue: isNaN(secondValue) ? '' : secondValue.toString(),
+                secondValue: secondValue,
               });
             }}
             fontLevel={fontSize}
@@ -115,10 +116,11 @@ const ConversionInput: FC<ConversionInputProps> = ({
             placeholder={placeholder2}
             onChange={(e) => {
               const secondValue = e.target.value;
-              const firstValue =
-                Number(secondValue.replaceAll(',', '')) * Number(conversionData.formula_1);
+              const firstValue = formatToConversionInputValue(
+                Number(secondValue.replaceAll(',', '')) * Number(conversionData.formula_1),
+              );
               setConversionValue({
-                firstValue: isNaN(firstValue) ? '' : firstValue.toString(),
+                firstValue: firstValue,
                 secondValue: secondValue,
               });
             }}
