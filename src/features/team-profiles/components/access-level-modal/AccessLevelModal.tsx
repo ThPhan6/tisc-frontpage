@@ -51,45 +51,17 @@ const AccessLevelModal: FC = () => {
   const { type } = useAppSelector(modalPropsSelector).accessLevel;
 
   const [data, setData] = useState<PermissionData[]>([]);
-  const [unclickableData, setUnclickableData] = useState<string[]>([]);
 
   // load permission data
   useEffect(() => {
-    getPermission()
-      .then((res) => {
-        if (res) {
-          setData(res);
-          return res;
-        }
+    getPermission().then((res) => {
+      if (res) {
+        setData(res);
+        return res;
+      }
 
-        return [] as PermissionData[];
-      })
-      .then((res) => {
-        // set unlickable if Overal Listing of Project has accessable false
-        const projectFound = res?.find(
-          (projectPermission) =>
-            projectPermission.id === 'permission_13' && projectPermission.subs?.length,
-        );
-
-        if (projectFound && projectFound.subs?.[0]) {
-          projectFound.subs[0].items.forEach((item) => {
-            if (item.accessable === false) {
-              const newSubs = projectFound.subs?.slice(1);
-              const subItemId: string[] = [];
-
-              newSubs?.forEach((sub) => {
-                sub.items.forEach((el) => {
-                  if (el.accessable === false) {
-                    subItemId.push(el.id);
-                  }
-                });
-              });
-
-              setUnclickableData(subItemId);
-            }
-          });
-        }
-      });
+      return [] as PermissionData[];
+    });
   }, []);
 
   const handleClickAccessable = (accessItem: PermissionItem, unClickable: boolean) => () => {
@@ -98,45 +70,6 @@ const AccessLevelModal: FC = () => {
     }
 
     accessItem.accessable = !accessItem.accessable;
-
-    // set unlickable if Overal Listing of Project has accessable false
-    const projectFound = data.find(
-      (projectPermission) =>
-        projectPermission.id === 'permission_13' && projectPermission.subs?.length,
-    );
-
-    if (projectFound && projectFound.subs?.[0]) {
-      const overalListingPermission = projectFound.subs[0].items;
-
-      // check click to Overal Listing
-      const isClickToOveralListing = overalListingPermission.some(
-        (item) => item.id === accessItem.id,
-      );
-
-      if (isClickToOveralListing) {
-        // check Overal Listing is false
-        const isOveralListingFalse = overalListingPermission.some(
-          (item) => item.id === accessItem.id && item.accessable === false,
-        );
-
-        const subItemId: string[] = [];
-        if (isOveralListingFalse) {
-          // get the rest of project permission to set its accessable false
-          const newSubs = projectFound.subs.slice(1);
-
-          newSubs?.forEach((sub) => {
-            const projectSubPermission = sub.items.find((el) => el.name === accessItem.name);
-
-            if (projectSubPermission) {
-              projectSubPermission.accessable = false;
-              // for update UI
-              subItemId.push(projectSubPermission.id);
-            }
-          });
-        }
-        setUnclickableData(subItemId);
-      }
-    }
 
     /// overwrite data
     setData([...data]);
@@ -151,15 +84,17 @@ const AccessLevelModal: FC = () => {
     });
   };
 
-  console.log('unClickableData', unclickableData);
-
   const renderPermission: any = (menu: PermissionData, subType: string) => {
     return (
       <Fragment key={menu.name}>
         <tr className={styles.menu}>
           <td className={`${styles.menu_item} ${subType === 'sub-item' ? styles.sub_menu : ''}`}>
             {menu.logo ? (
-              <img src={showImageUrl(menu.logo)} className={styles.menu_item__logo} />
+              <img
+                src={showImageUrl(menu.logo)}
+                className={styles.menu_item__logo}
+                style={{ marginRight: type === 'tisc' ? 8 : 12 }}
+              />
             ) : (
               <span></span>
             )}
@@ -172,7 +107,6 @@ const AccessLevelModal: FC = () => {
           {!menu.subs?.length
             ? menu.items.map((item, key) => {
                 // check for update UI
-                const unClickable = unclickableData?.includes(item.id);
                 const adminPermission = item.name.toLocaleLowerCase().indexOf('admin') !== -1;
 
                 return (
@@ -185,9 +119,7 @@ const AccessLevelModal: FC = () => {
                         />
                       ) : (
                         <AccessableMinusIcon
-                          className={`cursor-pointer ${
-                            unClickable ? styles.menu_accessable_null : styles.menu_accessable_true
-                          }`}
+                          className={`cursor-pointer`}
                           onClick={handleClickAccessable(item, adminPermission)}
                         />
                       )}

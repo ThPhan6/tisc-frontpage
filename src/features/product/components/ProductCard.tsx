@@ -39,6 +39,7 @@ import { openModal } from '@/reducers/modal';
 import CustomCollapse from '@/components/Collapse';
 import { EmptyOne } from '@/components/Empty';
 import InquiryRequest from '@/components/InquiryRequest';
+import { loadingSelector } from '@/components/LoadingPage/slices';
 import ShareViaEmail from '@/components/ShareViaEmail';
 import { ActionMenu } from '@/components/TableAction';
 import { BodyText } from '@/components/Typography';
@@ -234,7 +235,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div
         className={`${styles.productCardItem} ${hasBorder ? styles.border : ''} ${
           unlistedDisabled ? styles.disabled : ''
-        }`}>
+        }`}
+      >
         <div className={styles.imageWrapper} onClick={hanldeRedirectURL}>
           <div
             style={{
@@ -347,8 +349,13 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   showInquiryRequest = false,
   hideFavorite = false,
 }) => {
+  const loading = useAppSelector(loadingSelector);
   const data = useAppSelector((state) => state.product.list.data);
   const allProducts = useAppSelector((state) => state.product.list.allProducts);
+
+  if (loading) {
+    return null;
+  }
 
   if (!allProducts?.length && !data?.length) {
     return <EmptyOne />;
@@ -360,7 +367,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
         <CustomCollapse
           className={styles.productCardCollapse}
           customHeaderClass={styles.productCardHeaderCollapse}
-          key={index}
+          key={group.id || index}
           collapsible={group.count === 0 ? 'disabled' : undefined}
           header={
             <div className="header-text">
@@ -371,7 +378,8 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                 <span className="product-count">({group.count})</span>
               </BodyText>
             </div>
-          }>
+          }
+        >
           <div className={styles.productCardContainer}>
             {group.products.map((productItem, itemIndex) => (
               <ProductCard

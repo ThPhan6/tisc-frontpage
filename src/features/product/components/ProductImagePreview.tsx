@@ -27,8 +27,6 @@ import { openModal } from '@/reducers/modal';
 
 import SmallIconButton from '@/components/Button/SmallIconButton';
 import { CustomInput } from '@/components/Form/CustomInput';
-import InquiryRequest from '@/components/InquiryRequest';
-import ShareViaEmail from '@/components/ShareViaEmail/index';
 import { BodyText } from '@/components/Typography';
 import {
   setCustomProductDetail,
@@ -53,13 +51,15 @@ const ActionItem: FC<ActionItemProps> = ({ icon, onClick, label, disabled }) => 
       style={{
         cursor: disabled ? 'default' : 'pointer',
         pointerEvents: disabled ? 'none' : 'auto',
-      }}>
+      }}
+    >
       <div className={`flex-start ${disabled ? styles.disabled : ''}`}>
         {icon}
         <BodyText
           level={6}
           fontFamily="Roboto"
-          color={disabled ? 'mono-color-medium' : 'mono-color'}>
+          color={disabled ? 'mono-color-medium' : 'mono-color'}
+        >
           {label}
         </BodyText>
       </div>
@@ -342,7 +342,8 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
                 <Col span={8} key={key}>
                   <div className={styles.fileItem}>
                     <div
-                      className={`${styles.filePreview}  ${!isEditable ? styles.lightBorder : ''}`}>
+                      className={`${styles.filePreview}  ${!isEditable ? styles.lightBorder : ''}`}
+                    >
                       <img src={showImageUrl(image) ?? ProductPlaceHolderImage} />
                       {isEditable ? (
                         <div className={styles.subPhotoAction}>
@@ -377,22 +378,6 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
         </Row>
 
         {renderBottomPreview()}
-
-        {product.id ? (
-          <ShareViaEmail
-            visible={showShareEmailModal.value}
-            setVisible={showShareEmailModal.setValue}
-            product={product}
-            isCustomProduct={isCustomProduct}
-          />
-        ) : null}
-        {product.id ? (
-          <InquiryRequest
-            visible={showInquiryRequestModal.value}
-            setVisible={showInquiryRequestModal.setValue}
-            product={product}
-          />
-        ) : null}
       </div>
     </div>
   );

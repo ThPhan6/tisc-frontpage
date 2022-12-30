@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { Switch } from 'antd';
 
-import { countBy } from 'lodash';
+import { checkedOptionType } from './hooks';
 
 import { ProductAttributeProps } from '../../types';
 
@@ -13,7 +13,7 @@ import styles from './SpecificationChoice.less';
 interface SpecificationChoiceProps {
   data: ProductAttributeProps[];
   switchChecked: boolean;
-  onClick?: (toggle: boolean, event: MouseEvent) => void;
+  onClick?: (toggle: boolean, event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 export const SpecificationChoice: FC<SpecificationChoiceProps> = ({
@@ -21,7 +21,7 @@ export const SpecificationChoice: FC<SpecificationChoiceProps> = ({
   switchChecked,
   onClick,
 }) => {
-  const isOptionType = countBy(data, (attr) => attr.type === 'Options').true >= 2;
+  const isOptionType = checkedOptionType(data);
 
   if (!isOptionType) return null;
 

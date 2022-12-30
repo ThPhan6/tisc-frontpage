@@ -1,7 +1,7 @@
 import type { FC, ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 
-import { Empty, Modal } from 'antd';
+import { Modal } from 'antd';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
@@ -21,10 +21,11 @@ import DropdownRadioList from '@/components/CustomRadio/DropdownRadioList';
 import type { DropdownRadioItem } from '@/components/CustomRadio/DropdownRadioList';
 import GroupRadioList from '@/components/CustomRadio/RadioList';
 import type { RadioListOption } from '@/components/CustomRadio/RadioList';
-import { BodyText, MainTitle } from '@/components/Typography';
+import { MainTitle } from '@/components/Typography';
 import { DropdownCategoryList } from '@/features/categories/components/CategoryDropdown';
 
 import { CustomCheckbox } from '../CustomCheckbox';
+import { EmptyOne } from '../Empty';
 import { MobileDrawer } from './Drawer';
 import styles from './styles/Popover.less';
 
@@ -119,7 +120,7 @@ const Popover: FC<PopoverProps> = ({
   const renderEmptyData = () => {
     return (
       <div className={styles.popoverEmptyData}>
-        <Empty description={<BodyText level={3}>No Data</BodyText>} />
+        <EmptyOne />
       </div>
     );
   };

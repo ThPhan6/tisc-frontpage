@@ -15,15 +15,3 @@ export async function updateBrandProfile(data: Partial<BrandProfile>) {
       return false;
     });
 }
-
-export async function updateLogoBrandProfile(data: { logo: string }) {
-  return request<boolean>(`/api/brand/update-logo`, { method: 'PUT', data })
-    .then(() => {
-      message.success(MESSAGE_NOTIFICATION.UPDATE_LOGO_PROFILE_SUCCESS);
-      return true;
-    })
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_LOGO_PROFILE_ERROR);
-      return false;
-    });
-}
