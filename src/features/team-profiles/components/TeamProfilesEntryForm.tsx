@@ -301,6 +301,7 @@ const TeamProfilesEntryForm = () => {
             store.dispatch(
               openModal({
                 type: 'Work Location',
+                title: 'Work Location',
                 props: { workLocation: { data: workLocation, onChange: setWorkLocation } },
               }),
             )

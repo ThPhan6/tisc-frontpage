@@ -62,7 +62,6 @@ export const CustomDrawer: FC<CustomDrawerProps> = ({
 export const MobileDrawer: FC<
   CustomDrawerProps & { autoHeight?: boolean; noHeaderBorder?: boolean }
 > = ({ noHeaderBorder, autoHeight, headerStyle, title, ...props }) => {
-  console.log('title', title);
   return (
     <CustomDrawer
       placement="bottom"
