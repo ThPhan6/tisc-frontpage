@@ -42,7 +42,7 @@ const ProjectUpdatePage: React.FC = () => {
   const [project, setProject] = useState<ProjectDetailProps>();
 
   useEffect(() => {
-    if (projectId) {
+    if (projectId && basicInformationTab) {
       getProjectById(projectId).then((projectDetail) => {
         if (projectDetail) {
           setProject(projectDetail);
