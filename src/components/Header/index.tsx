@@ -30,7 +30,6 @@ import { AvatarDropdown } from './AvatarDropdown';
 import styles from './styles/index.less';
 
 const PageHeader = (props: HeaderViewProps) => {
-  console.log(props);
   const { isMobile } = useScreen();
   const showQuestionDropdown = useBoolean();
   const showLanguageDropdown = useBoolean();
@@ -46,7 +45,7 @@ const PageHeader = (props: HeaderViewProps) => {
 
   const logoImage = getValueByCondition(
     [
-      [isMobile, <AlignRightIcon style={{ color: '#fff' }} />],
+      [isMobile, <AlignRightIcon style={{ color: '#fff' }} width={24} height={24} />],
       [isTiscUser, <img src={TISCLogoIcon} alt="logo" />],
       [isBrandUser, <LogoIcon logo={String(user?.brand?.logo)} />],
       [isDesignerUser, <LogoIcon logo={String(user?.design?.logo)} />],

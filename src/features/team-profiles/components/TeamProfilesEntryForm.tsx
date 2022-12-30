@@ -229,6 +229,8 @@ const TeamProfilesEntryForm = () => {
     return null;
   }
 
+  const userType = isTiscUser ? 'tisc' : isBrandUser ? 'brand' : 'designer';
+
   return (
     <div>
       <TableHeader title="TEAM PROFILES" rightAction={<CustomPlusButton disabled />} />
@@ -418,8 +420,9 @@ const TeamProfilesEntryForm = () => {
             store.dispatch(
               openModal({
                 type: 'Access Level',
+                title: `${userType} Access level`,
                 props: {
-                  accessLevel: { type: isTiscUser ? 'tisc' : isBrandUser ? 'brand' : 'designer' },
+                  accessLevel: { type: userType },
                 },
               }),
             )

@@ -17,6 +17,7 @@ export const PreviewModal: FC<ModalProps> = ({ visible, previewURL }) => {
       onCancel={() => visible.setValue(false)}
       className={styles.modal}
       closable={false}
+      secondaryModal
     >
       <img
         src={showImageUrl(previewURL)}

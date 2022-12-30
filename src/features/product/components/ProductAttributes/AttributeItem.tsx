@@ -343,6 +343,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
 
       <Popover
         title={isSpecification ? 'OPTION' : 'PRESET'}
+        secondaryModal
         visible={visible}
         setVisible={setVisible}
         className={styles.specificationOptionCheckbox}
@@ -391,7 +392,8 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
                   heading: (
                     <Title
                       level={8}
-                      customClass={`preset-option-heading ${styles.presetOptionTitle}`}>
+                      customClass={`preset-option-heading ${styles.presetOptionTitle}`}
+                    >
                       {curAttributeData?.basis?.name ?? 'N/A'}
                     </Title>
                   ),

@@ -7,8 +7,10 @@ import { closeModal } from '@/reducers/modal';
 import { LoginModal } from './components/modals/LoginModal';
 import { SignupModal } from './components/modals/SignupModal';
 import AssignTeamModal from '@/components/AssignTeam';
+import InquiryRequestModal from '@/components/InquiryRequest';
 import { ProjectTrackingLegendModal } from '@/components/LegendModal/LegendModal';
 import { MobileDrawer } from '@/components/Modal/Drawer';
+import ShareViaEmail from '@/components/ShareViaEmail';
 import InformationMarketAvailability from '@/features/market-availability/components/InformationMarketAvailability';
 import LocationModal from '@/features/team-profiles/components/LocationModal';
 import AccessLevelModal from '@/features/team-profiles/components/access-level-modal/AccessLevelModal';
@@ -69,6 +71,8 @@ export const ModalController = () => {
         return <AccessLevelModal />;
       case 'Work Location':
         return <LocationModal />;
+      case 'Share via email':
+        return <ShareViaEmail />;
 
       // TISC
       case 'Product Attribute Type':
@@ -83,6 +87,8 @@ export const ModalController = () => {
         return <AssignProductModal />;
       case 'Market Availability':
         return <InformationMarketAvailability />;
+      case 'Inquiry Request':
+        return <InquiryRequestModal />;
 
       //
       case 'none':

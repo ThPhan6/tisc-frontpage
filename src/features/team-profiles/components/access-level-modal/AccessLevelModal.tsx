@@ -34,15 +34,15 @@ const TABLE_COL = {
 
 const furturePermissionData = [
   {
-    logo: <FeebBackIcon className={styles.menu_item__logo} />,
+    logo: <FeebBackIcon className={styles.menu_item__logo} style={{ marginRight: 8 }} />,
     name: 'Feedback(future)',
   },
   {
-    logo: <RecommendationIcon className={styles.menu_item__logo} />,
+    logo: <RecommendationIcon className={styles.menu_item__logo} style={{ marginRight: 8 }} />,
     name: 'Recommendation(future)',
   },
   {
-    logo: <ShareViaEmailIcon className={styles.menu_item__logo} />,
+    logo: <ShareViaEmailIcon className={styles.menu_item__logo} style={{ marginRight: 8 }} />,
     name: 'Share via Email(future)',
   },
 ];

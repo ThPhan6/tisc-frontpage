@@ -84,7 +84,13 @@ export const AvatarDropdown = () => {
         avatar={currentUser?.avatar ? showImageUrl(currentUser.avatar) : DefaultAvatarIcon}
       />
       {
-        <BodyText fontFamily="Roboto" level={4} customClass={styles['user-name']} color="white">
+        <BodyText
+          fontFamily="Roboto"
+          level={4}
+          customClass={`text-overflow ${styles['user-name']}`}
+          color="white"
+          style={{ maxWidth: '50vw' }}
+        >
           {getFullName(currentUser)}
         </BodyText>
       }

@@ -4,6 +4,7 @@ import { message } from 'antd';
 
 import { getSelectedRoomIds, useAssignProductToSpaceForm } from './hooks';
 import { assignProductToProject, getAllProjects } from '@/features/project/services';
+import { useScreen } from '@/helper/common';
 
 import { RadioValue } from '@/components/CustomRadio/types';
 import { useAppSelector } from '@/reducers';
@@ -19,6 +20,7 @@ import styles from './AssignProductModal.less';
 export const assignProductModalTitle = 'Assign material/product';
 
 const AssignProductModal: FC = () => {
+  const { isMobile } = useScreen();
   const { productId, isCustomProduct } = useAppSelector(modalPropsSelector);
 
   const projects = useAppSelector((state) => state.project.list);
@@ -61,14 +63,16 @@ const AssignProductModal: FC = () => {
           fontFamily="Roboto"
           level={5}
           customClass="text-overflow"
-          style={{ marginRight: 16, width: 60 }}>
+          style={{ marginRight: 16, width: 60 }}
+        >
           {el.code}
         </BodyText>
         <BodyText
           fontFamily="Roboto"
           level={5}
           customClass="text-overflow"
-          style={{ maxWidth: 430 }}>
+          style={{ maxWidth: 430 }}
+        >
           {el.name}
         </BodyText>
       </span>
@@ -92,8 +96,9 @@ const AssignProductModal: FC = () => {
       <FormGroup
         label="Assigning To"
         layout="vertical"
-        style={{ marginTop: 24 }}
-        formClass={`${styles.zonesContainer} ${selectedProject ? '' : styles.disabled}`}>
+        style={{ marginTop: isMobile ? 16 : 24 }}
+        formClass={`${styles.zonesContainer} ${selectedProject ? '' : styles.disabled}`}
+      >
         <AssignProductToSpaceForm />
       </FormGroup>
     </Popover>

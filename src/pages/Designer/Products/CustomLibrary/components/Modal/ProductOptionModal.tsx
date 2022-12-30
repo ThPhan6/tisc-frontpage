@@ -190,6 +190,7 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({
       centered
       width={576}
       footer={renderFooterButton()}
+      secondaryModal
     >
       <div className="flex-between" style={{ paddingBottom: 16 }}>
         <div className={`flex-start ${styles.optionHeader}`}>

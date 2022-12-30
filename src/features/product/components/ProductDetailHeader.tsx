@@ -46,7 +46,8 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
             <CustomButton
               variant="text"
               buttonClass="select-category-btn"
-              onClick={() => setVisible(true)}>
+              onClick={() => setVisible(true)}
+            >
               {label}
             </CustomButton>
           )}
@@ -58,7 +59,8 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
             properties="rounded"
             buttonClass="save-btn"
             onClick={onSave}
-            disabled={disabled}>
+            disabled={disabled}
+          >
             Save
           </CustomButton>
           <CustomButton
@@ -66,7 +68,8 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
             variant="primary"
             properties="rounded"
             buttonClass="cancel-btn"
-            onClick={onCancel}>
+            onClick={onCancel}
+          >
             Close
           </CustomButton>
         </div>
@@ -74,6 +77,7 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
       {hideSelect ? null : (
         <Popover
           title="SELECT CATEGORY"
+          secondaryModal
           visible={visible}
           setVisible={setVisible}
           categoryDropdown
