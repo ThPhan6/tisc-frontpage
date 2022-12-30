@@ -25,7 +25,13 @@ const IssuingInformation: FC<IssuingInformationProps> = ({ data, onChangeData })
 
   useEffect(() => {
     getLocationPagination(
-      { page: 1, pageSize: 99999, is_sort_main_office_first: true, order: 'ASC' },
+      {
+        page: 1,
+        pageSize: 99999,
+        is_sort_main_office_first: true,
+        order: 'ASC',
+        sort: 'business_name',
+      },
       (response) => {
         setLocation(response.data);
       },
