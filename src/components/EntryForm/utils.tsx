@@ -25,5 +25,5 @@ export const formatToConversionInputValue = (
     maximumFractionDigits: 6,
   },
 ) => {
-  return number.toLocaleString(locale, options);
+  return number.toLocaleString(locale, options).replace(/,/g, '');
 };
