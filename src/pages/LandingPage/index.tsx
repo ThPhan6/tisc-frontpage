@@ -16,6 +16,7 @@ import { ReactComponent as TargetMoneyIcon } from '@/assets/icons/target-money-i
 import { ReactComponent as TimeMoney } from '@/assets/icons/time-money-icon.svg';
 
 import { validateToken, verifyAccount } from './services/api';
+import { useScreen } from '@/helper/common';
 import { useQuery } from '@/helper/hook';
 
 import store from '@/reducers';
@@ -33,6 +34,8 @@ const LandingPage = () => {
   const tokenVerification = useQuery().get('verification_token');
 
   const listMenuFooter: ModalType[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
+
+  const isMobile = useScreen().isMobile;
 
   useEffect(() => {
     if ((!userEmail || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
@@ -144,8 +147,14 @@ const LandingPage = () => {
               </CustomButton>
             </div>
             <div className={styles.content}>
-              <div className={styles.summary}>
-                <div className={styles.message}>
+              <div
+                className={styles.summary}
+                style={{ flexDirection: isMobile ? 'column-reverse' : undefined }}
+              >
+                <div
+                  className={styles.message}
+                  style={{ textAlign: isMobile ? 'center' : undefined }}
+                >
                   <MainTitle customClass={styles.title}>SEARCH, SELECT & SPECIFY</MainTitle>
                   <BodyText customClass={styles.description}>
                     TISC is a free product information and specification platform for the design and
@@ -153,7 +162,7 @@ const LandingPage = () => {
                     DESIGNERS.
                   </BodyText>
                 </div>
-                <img src={graphic} />
+                <img src={graphic} className={styles.noneImage} />
               </div>
               <div className={styles['user-group']}>
                 <div className={styles.brands}>
