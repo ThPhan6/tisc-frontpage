@@ -19,6 +19,7 @@ interface MaskedInputProps extends InputProps {
   requireDecimal?: boolean;
   allowNegative?: boolean;
   allowLeadingZeroes?: boolean;
+  fontLevel?: 1 | 2 | 3 | 4 | 5 | 6 | 7;
 }
 export const MaskedNumberInput: FC<MaskedInputProps> = ({
   containerClass,
@@ -33,8 +34,15 @@ export const MaskedNumberInput: FC<MaskedInputProps> = ({
   requireDecimal = false,
   allowNegative = false,
   allowLeadingZeroes = false,
+  fontLevel,
   ...props
 }) => {
+  const setFontLevel = () => {
+    if (fontLevel) {
+      return styles[`bodyText${fontLevel}`];
+    }
+    return '';
+  };
   return (
     <MaskedInput
       {...props}
@@ -51,7 +59,7 @@ export const MaskedNumberInput: FC<MaskedInputProps> = ({
         allowNegative: allowNegative,
         allowLeadingZeroes: allowLeadingZeroes,
       })}
-      className={`${styles.numberInput} ${containerClass}`}
+      className={`${styles.numberInput} ${containerClass} ${setFontLevel()}`}
     />
   );
 };

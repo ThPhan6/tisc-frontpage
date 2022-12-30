@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
-import { Checkbox, Tooltip, message } from 'antd';
+import { Checkbox, message } from 'antd';
 
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
 import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
@@ -46,6 +46,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
   const [agreeTisc, setAgreeTisc] = useState(false);
   const isLoading = useBoolean();
   const [emailExisted, setEmailExisted] = useState(false);
+  const passwordError = formInput.password && !validatePassword(formInput.password);
 
   useEffect(() => {
     if (formInput.email && validateEmail(formInput.email)) {
@@ -65,20 +66,20 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
   };
 
   const getErrorMessage = () => {
-    if (formInput.confirmed_password && formInput.password !== formInput.confirmed_password) {
-      return MESSAGE_ERROR.CONFIRM_PASSWORD;
-    }
     if (formInput.email && !validateEmail(formInput.email)) {
       return MESSAGE_ERROR.EMAIL;
     }
     if (formInput.email && !emailExisted) {
       return MESSAGE_ERROR.EMAIL_ALREADY_USED;
     }
+    if (passwordError) {
+      return MESSAGE_ERROR.PASSWORD;
+    }
+    if (formInput.confirmed_password && formInput.password !== formInput.confirmed_password) {
+      return MESSAGE_ERROR.CONFIRM_PASSWORD;
+    }
     if (agreeTisc === true && formInput.agree_tisc === false) {
       return MESSAGE_ERROR.AGREE_TISC;
-    }
-    if (formInput.password && !validatePassword(formInput.password)) {
-      return MESSAGE_ERROR.PASSWORD;
     }
     return '';
   };
@@ -90,8 +91,10 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
     if (formInput.email === '') {
       return message.error(MESSAGE_ERROR.EMAIL_REQUIRED);
     }
-    if (formInput.password.length < 8) {
-      return message.error(MESSAGE_ERROR.PASSWORD_CHARACTER);
+    if (passwordError) {
+      return message.error(
+        'Password must contain at least 8 characters, including uppercase, lowercase, symbols and numbers.',
+      );
     }
     if (formInput.password !== formInput.confirmed_password) {
       return message.error(MESSAGE_ERROR.CONFIRM_PASSWORD);
@@ -162,30 +165,20 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
               onChange={handleOnChange}
               status={isShowErrorMessage('email', formInput.email) ? '' : 'error'}
             />
-            <Tooltip
-              title={
-                'Password must contain at least 8 characters, including UPPERCASE, lowercase, symbols and numbers '
-              }
-              overlayInnerStyle={{
-                width: '205px',
-              }}
-              trigger="click">
-              <CustomInput
-                autoComplete={'' + Math.random()}
-                fromLandingPage
-                theme={theme}
-                size="large"
-                placeholder="password"
-                prefix={<LockedIcon />}
-                borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
-                containerClass={styles.user}
-                name="password"
-                type="password"
-                required={true}
-                onChange={handleOnChange}
-              />
-            </Tooltip>
-
+            <CustomInput
+              autoComplete={'' + Math.random()}
+              fromLandingPage
+              theme={theme}
+              size="large"
+              placeholder="password"
+              prefix={<LockedIcon />}
+              borderBottomColor={theme === 'dark' ? 'white' : 'mono'}
+              containerClass={styles.user}
+              name="password"
+              type="password"
+              required={true}
+              onChange={handleOnChange}
+            />
             <CustomInput
               fromLandingPage
               theme={theme}
@@ -218,6 +211,11 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
                 Terms of Services, Privacy Policy and Cookie Policy
               </span>
             </div>
+            <BodyText level={6} fontFamily="Roboto" style={{ color: 'red', marginTop: '8px' }}>
+              {passwordError && getErrorMessage() === MESSAGE_ERROR.PASSWORD
+                ? '*Password must contain at least 8 characters, including uppercase, lowercase, symbols and numbers.'
+                : ''}
+            </BodyText>
           </div>
           <div className={styles.action}>
             <div className={getErrorMessage() ? styles.action_between : styles.action_right}>

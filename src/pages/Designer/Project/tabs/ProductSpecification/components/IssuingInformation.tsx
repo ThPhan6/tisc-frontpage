@@ -24,9 +24,12 @@ const IssuingInformation: FC<IssuingInformationProps> = ({ data, onChangeData })
   const [issuingFor, setIssuingFor] = useState<{ id: string; name: string }[]>([]);
 
   useEffect(() => {
-    getLocationPagination({ page: 1, pageSize: 99999 }, (response) => {
-      setLocation(response.data);
-    });
+    getLocationPagination(
+      { page: 1, pageSize: 99999, is_sort_main_office_first: true, order: 'ASC' },
+      (response) => {
+        setLocation(response.data);
+      },
+    );
     getIssuingFor().then((res) => {
       setIssuingFor(res);
     });
@@ -64,6 +67,8 @@ const IssuingInformation: FC<IssuingInformationProps> = ({ data, onChangeData })
           data.config.location_id !== '' ? styles.activeText : ''
         }`}>
         <CollapseRadioList
+          groupType="issuing-info"
+          groupIndex={1}
           options={location?.map((office) => {
             return {
               label: renderLabelHeader(office),
@@ -91,6 +96,8 @@ const IssuingInformation: FC<IssuingInformationProps> = ({ data, onChangeData })
         layout="vertical"
         formClass={data.config.issuing_for_id !== '' ? styles.activeText : ''}>
         <CollapseRadioList
+          groupType="issuing-info"
+          groupIndex={2}
           options={issuingFor.map((item) => {
             return {
               label: item.name,

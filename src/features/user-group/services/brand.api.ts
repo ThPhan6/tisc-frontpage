@@ -63,8 +63,8 @@ export async function getBrandAlphabet() {
       return {} as BrandAlphabet;
     });
 }
-export async function getBrandCards() {
-  return request<{ data: BrandCard[] }>(`/api/brand/get-list-card`, {
+export async function getTiscWorkspace() {
+  return request<{ data: BrandCard[] }>(`/api/workspace`, {
     method: 'GET',
   })
     .then((response) => {

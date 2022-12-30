@@ -78,8 +78,6 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
   // to show on label
   const [projectChosen, setProjectChosen] = useState<ProjectItem>();
 
-  const [collapse, setCollapse] = useState<string | string[] | undefined>([]);
-
   //
   const [inquiryForData, setInquiryForData] = useState<CheckboxValue[]>([]);
   const [selectedInquiryFor, setSelectedInquiryFor] = useState<CheckboxValue[]>([]); // for show on placeholder
@@ -113,10 +111,10 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
   /// get inquiry/request data
   useEffect(() => {
     if (!visible) {
-      setCollapse([]);
+      setGeneralInquiryData(GENERAL_INQUIRY_DEFAULT_STATE);
+      setProjectRequestData(PROJECT_REQUEST_DEFAULT_STATE);
       return;
     }
-
     getInquiryRequestFor().then((res) => {
       setInquiryForData(
         res.map((el) => ({
@@ -286,12 +284,13 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
       {selectedTab === TabKeys.request ? (
         <CollapseRadioFormGroup
           label="Project Name"
-          activeKey={collapse}
+          groupType="inquiry-request"
+          groupIndex={1}
           checked={projectRequestData.project_id}
           defaultPlaceHolder="select from My Workspace"
           placeholder={projectChosen?.name}
           radioListClass={styles.projectNameInfo}
-          optionData={projectData.map((el) => ({
+          options={projectData.map((el) => ({
             value: el.id,
             label: <DualLabel firstTxt={el.code} secTxt={el.name} fontSize={14} fontWeight={300} />,
           }))}
@@ -311,7 +310,8 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
         layout="vertical"
         formClass={styles.formGroup}>
         <CollapseCheckboxList
-          activeKey={collapse}
+          groupType="inquiry-request"
+          groupIndex={2}
           checked={inquiryTab ? selectedInquiryFor : selectedRequestFor}
           onChange={onChangeCheckboxListData}
           containerClass={setStyleOnContainerClass()}
