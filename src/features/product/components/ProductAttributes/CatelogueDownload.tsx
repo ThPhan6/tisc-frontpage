@@ -7,6 +7,7 @@ import { useCheckPermission } from '@/helper/hook';
 import { setPartialProductDetail } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
 
+import { EmptyOne } from '@/components/Empty';
 import DynamicFormInput from '@/components/EntryForm/DynamicFormInput';
 import { BodyText } from '@/components/Typography';
 
@@ -43,6 +44,10 @@ export const CatelogueDownload = () => {
         valuePlaceholder="paste file URL link here"
       />
     );
+  }
+
+  if (!catelogue_downloads || catelogue_downloads.length === 0) {
+    return <EmptyOne customClass={styles.paddingRounded} />;
   }
 
   return (

@@ -85,7 +85,7 @@ export const OptionCollapseHeader: FC<OptionGroupProps> = ({
                 const newOptionSpec = {
                   is_refer_document: specification?.attribute_groups?.length
                     ? specification.attribute_groups.some(
-                        (el) => el.id !== selectOption.id && el.isChecked,
+                        (el) => el.id === selectOption.id && el.isChecked,
                       )
                     : true,
                   attribute_groups: specification?.attribute_groups?.length

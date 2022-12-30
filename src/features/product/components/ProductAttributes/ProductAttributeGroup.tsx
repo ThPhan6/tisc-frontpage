@@ -273,7 +273,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             customHeaderClass={`${styles.productAttributeItem} ${
               specifying ? styles.specifying : ''
             }`}
-            header={renderCollapseHeader(groupIndex)}>
+            header={renderCollapseHeader(groupIndex)}
+          >
             {isTiscAdmin && attributes ? (
               <SelectAttributesToGroupRow
                 activeKey={activeKey}
@@ -303,8 +304,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                 className={`${isSpecifiedModal ? styles.paddingNone : styles.paddingRounded} ${
                   attrGroupItem.selection && !isTiscAdmin && !isPublicPage
                     ? styles.paddingWrapper
-                    : ''
-                }`}>
+                    : styles.colorInput
+                }`}
+              >
                 <table className={styles.table}>
                   <tbody>
                     {attrGroupItem.attributes.map((attribute, attrIndex) =>

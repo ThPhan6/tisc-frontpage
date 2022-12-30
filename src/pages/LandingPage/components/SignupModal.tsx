@@ -10,7 +10,7 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-whi
 
 import { checkEmailAlreadyUsed, signUpDesigner } from '../services/api';
 import { useBoolean } from '@/helper/hook';
-import { isShowErrorMessage, validateEmail } from '@/helper/utils';
+import { isShowErrorMessage, validateEmail, validatePassword } from '@/helper/utils';
 import { debounce } from 'lodash';
 
 import { ModalProps } from '../types';
@@ -46,6 +46,7 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
   const [agreeTisc, setAgreeTisc] = useState(false);
   const isLoading = useBoolean();
   const [emailExisted, setEmailExisted] = useState(false);
+  const passwordError = formInput.password && !validatePassword(formInput.password);
 
   useEffect(() => {
     if (formInput.email && validateEmail(formInput.email)) {
@@ -65,14 +66,17 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
   };
 
   const getErrorMessage = () => {
-    if (formInput.confirmed_password && formInput.password !== formInput.confirmed_password) {
-      return MESSAGE_ERROR.CONFIRM_PASSWORD;
-    }
     if (formInput.email && !validateEmail(formInput.email)) {
       return MESSAGE_ERROR.EMAIL;
     }
     if (formInput.email && !emailExisted) {
       return MESSAGE_ERROR.EMAIL_ALREADY_USED;
+    }
+    if (passwordError) {
+      return MESSAGE_ERROR.PASSWORD;
+    }
+    if (formInput.confirmed_password && formInput.password !== formInput.confirmed_password) {
+      return MESSAGE_ERROR.CONFIRM_PASSWORD;
     }
     if (agreeTisc === true && formInput.agree_tisc === false) {
       return MESSAGE_ERROR.AGREE_TISC;
@@ -87,8 +91,10 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
     if (formInput.email === '') {
       return message.error(MESSAGE_ERROR.EMAIL_REQUIRED);
     }
-    if (formInput.password.length < 8) {
-      return message.error(MESSAGE_ERROR.PASSWORD_CHARACTER);
+    if (passwordError) {
+      return message.error(
+        'Password must contain at least 8 characters, including uppercase, lowercase, symbols and numbers.',
+      );
     }
     if (formInput.password !== formInput.confirmed_password) {
       return message.error(MESSAGE_ERROR.CONFIRM_PASSWORD);
@@ -122,7 +128,8 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
         height: '576px',
       }}
       closeIconClass={theme === 'dark' && styles.closeIcon}
-      onCancel={onClose}>
+      onCancel={onClose}
+    >
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={2} customClass={styles[`body${themeStyle()}`]}>
@@ -194,7 +201,8 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
             <div
               className={
                 agreeTisc === true && formInput.agree_tisc === false ? styles.errorStatus : ''
-              }>
+              }
+            >
               <Checkbox onChange={handleAgreeTisc}>
                 By clicking and continuing, we agree TISC’s
               </Checkbox>
@@ -205,6 +213,11 @@ export const SignupModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
                 Terms of Services, Privacy Policy and Cookie Policy
               </span>
             </div>
+            <BodyText level={6} fontFamily="Roboto" style={{ color: 'red', marginTop: '8px' }}>
+              {passwordError && getErrorMessage() === MESSAGE_ERROR.PASSWORD
+                ? '*Password must contain at least 8 characters, including uppercase, lowercase, symbols and numbers.'
+                : ''}
+            </BodyText>
           </div>
           <div className={styles.action}>
             <div className={getErrorMessage() ? styles.action_between : styles.action_right}>

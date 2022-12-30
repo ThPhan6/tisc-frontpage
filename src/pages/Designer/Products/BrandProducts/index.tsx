@@ -12,7 +12,11 @@ import { useBoolean, useQuery } from '@/helper/hook';
 import { removeUrlParams, setUrlParams } from '@/helper/utils';
 import { debounce } from 'lodash';
 
-import { setProductList, setProductListSearchValue } from '@/features/product/reducers';
+import {
+  resetProductState,
+  setProductList,
+  setProductListSearchValue,
+} from '@/features/product/reducers';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 import { LogoIcon } from '@/components/LogoIcon';
@@ -78,6 +82,13 @@ const BrandProductListPage: React.FC = () => {
     removeUrlParams('search');
     setSearchCount((prev) => prev + 1);
   };
+
+  useEffect(() => {
+    /// clear all product
+    return () => {
+      dispatch(resetProductState());
+    };
+  }, []);
 
   useEffect(() => {
     firstLoad.setValue(false);
@@ -167,7 +178,8 @@ const BrandProductListPage: React.FC = () => {
             bottomValue={
               <span
                 style={{ display: 'flex', alignItems: 'center' }}
-                onClick={() => searchInputRef.current?.focus()}>
+                onClick={() => searchInputRef.current?.focus()}
+              >
                 Keywords <SearchIcon />
               </span>
             }

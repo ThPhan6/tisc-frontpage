@@ -37,6 +37,7 @@ import {
 } from '@/features/product/components/FilterAndSorter';
 
 import styles from './TopBar.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 export const TopBar: React.FC = () => {
   useSyncQueryToState();
@@ -61,10 +62,14 @@ export const TopBar: React.FC = () => {
 
   /// load brand by alphabet from API
   useEffect(() => {
+    showPageLoading();
     getBrandAlphabet().then((data) => {
       setBrandAlphabet(data);
       if (brandId && brandName) {
         setBrandData({ value: brandId, label: brandName });
+      }
+      if (!brandId) {
+        hidePageLoading();
       }
     });
 
@@ -73,7 +78,7 @@ export const TopBar: React.FC = () => {
       dispatch(setProductList({ data: [] }));
       dispatch(setProductSummary(undefined));
     };
-  }, []);
+  }, [brandId]);
 
   /// set brand to product reducer
   useEffect(() => {

@@ -1,5 +1,6 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { COMMON_TYPES } from '@/constants/util';
+import { ProjectStatus } from '@/pages/Brand/ProjectTracking/constant';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -44,6 +45,19 @@ export async function getProjectPagination(
           total: pagination.total,
         },
       });
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_LIST_FAILED);
+    });
+}
+
+export async function getDesignerWorkspace(
+  params: { filter?: { project_status?: ProjectStatus } },
+  callback: (data: ProjectListProps[]) => void,
+) {
+  request(`/api/designer/workspace`, { method: 'GET', params })
+    .then((response: { data: { projects: ProjectListProps[] } }) => {
+      callback(response.data.projects);
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_LIST_FAILED);
@@ -147,8 +161,11 @@ export async function deleteProject(id: string) {
       return false;
     });
 }
-export async function getProjectSummary() {
-  return request<ProjectSummaryData>(`/api/project/get-summary`)
+
+export async function getProjectSummary(workspace?: boolean) {
+  return request<ProjectSummaryData>(
+    workspace ? `/api/designer/workspace/summary` : `/api/project/get-summary`,
+  )
     .then((res) => {
       return res;
     })

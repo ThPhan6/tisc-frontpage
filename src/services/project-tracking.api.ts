@@ -1,5 +1,5 @@
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
-import { ProjectTrackingPriority } from '@/pages/Brand/ProjectTracking/constant';
+import { ProjectStatus, ProjectTrackingPriority } from '@/pages/Brand/ProjectTracking/constant';
 import { message } from 'antd';
 import { request } from 'umi';
 
@@ -40,6 +40,19 @@ export async function getProjectTrackingPagination(
     });
 }
 
+export async function getBrandWorkspace(
+  params: { project_status?: ProjectStatus },
+  callback: (data: ProjecTrackingList[]) => void,
+) {
+  request(`/api/brand/workspace`, { method: 'GET', params })
+    .then((response: { data: { projectTrackings: ProjecTrackingList[] } }) => {
+      callback(response.data.projectTrackings);
+    })
+    .catch((error) => {
+      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_TRACKING_LIST_FAILED);
+    });
+}
+
 export async function updateProjectTrackingPriority(
   id: string,
   data: { priority?: ProjectTrackingPriority; assigned_teams?: string[]; read_by?: string[] },
@@ -57,10 +70,11 @@ export async function updateProjectTrackingPriority(
     });
 }
 
-export async function getProjectTrackingSummary() {
-  return request<{ data: DataMenuSummaryProps[] }>(`/api/project-tracking/summary`, {
-    method: 'GET',
-  })
+export async function getProjectTrackingSummary(workspace?: boolean) {
+  return request<{ data: DataMenuSummaryProps[] }>(
+    workspace ? `/api/brand/workspace/summary` : `/api/project-tracking/summary`,
+    { method: 'GET' },
+  )
     .then((response) => {
       store.dispatch(setSummaryProjectTracking(response.data));
     })
