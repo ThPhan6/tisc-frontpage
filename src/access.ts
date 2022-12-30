@@ -72,7 +72,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     design_product_brand_product: isAccessableForDesigner('product', 'brand product'),
     design_product_custom_library: isAccessableForDesigner('product', 'custom library'),
     // for access to project
-    design_project_overal_listing: isAccessableForDesigner('project', 'overal listing'),
+    design_project_overal_listing: isAccessableForDesigner('project', 'overall listing'),
 
     design_project_updating:
       isAccessableForDesigner('project', 'basic information') ||
