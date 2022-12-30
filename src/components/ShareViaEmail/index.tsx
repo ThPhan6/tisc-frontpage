@@ -66,11 +66,9 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
   const [sharingGroup, setSharingGroup] = useState<ProductItemValue[]>([]);
   const [sharingPurpose, setSharingPurpose] = useState<ProductItemValue[]>([]);
 
-  const [collapseKey, setCollapseKey] = useState<string | string[] | undefined>([]);
-
   useEffect(() => {
     if (!visible) {
-      setCollapseKey([]);
+      setShareViaEmailData(DEFAULT_STATE);
       return;
     }
 
@@ -79,7 +77,6 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
         setSharingGroup(data);
       }
     });
-
     getSharingPurposes().then((data) => {
       if (data) {
         setSharingPurpose(data);
@@ -154,7 +151,8 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
       visible={visible}
       setVisible={setVisible}
       submitButtonStatus={submitButtonStatus.value}
-      onFormSubmit={handleSubmit}>
+      onFormSubmit={handleSubmit}
+      clearOnClose>
       <BrandProductBasicHeader
         image={product.images?.[0]}
         logo={product.brand?.logo}
@@ -167,23 +165,25 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
       {/* Sharing Group */}
       <CollapseRadioFormGroup
         label="Sharing Group"
-        activeKey={collapseKey}
+        groupType="share-via-email"
+        groupIndex={1}
         checked={shareViaEmailData.sharing_group}
         placeholder={sharingGroupLabel.name}
         otherInput
         clearOtherInput={submitButtonStatus.value}
-        optionData={getOptionData(sharingGroup)}
+        options={getOptionData(sharingGroup)}
         onChange={(radioValue) => handleOnChangeRadioForm('sharing_group', radioValue)}
       />
       {/* Sharing Purpose */}
       <CollapseRadioFormGroup
         label="Sharing Purpose"
-        activeKey={collapseKey}
+        groupType="share-via-email"
+        groupIndex={2}
         checked={shareViaEmailData.sharing_purpose}
         placeholder={sharingPurposeLabel.name}
         otherInput
         clearOtherInput={submitButtonStatus.value}
-        optionData={getOptionData(sharingPurpose)}
+        options={getOptionData(sharingPurpose)}
         onChange={(radioValue) => handleOnChangeRadioForm('sharing_purpose', radioValue)}
       />
       {/* Email To */}

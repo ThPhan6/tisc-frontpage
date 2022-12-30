@@ -336,9 +336,6 @@ export const useProductListFilterAndSorter = (fetchs: {
         },
       );
     }
-
-    // clear all filter and sorter on first loading
-    return resetAllProductList;
   }, []);
 
   const resetProductListSorter = () => {

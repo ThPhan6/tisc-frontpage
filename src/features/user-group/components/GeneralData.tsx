@@ -1,19 +1,11 @@
 import { FC } from 'react';
 
-import { Empty } from 'antd';
-
-import { BodyText } from '@/components/Typography';
+import { EmptyOne } from '@/components/Empty';
 
 import styles from './GeneralData.less';
 
 const GeneralData: FC = ({ children }) => {
-  return (
-    <div>
-      {children || (
-        <Empty description={<BodyText level={3}>No Data</BodyText>} className={styles.empty} />
-      )}
-    </div>
-  );
+  return <div>{children || <EmptyOne customClass={styles.empty} />}</div>;
 };
 
 export default GeneralData;

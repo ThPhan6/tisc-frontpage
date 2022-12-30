@@ -790,6 +790,12 @@ export default [
     ],
   },
   {
+    path: PATH.designerUpdateProject,
+    hideInMenu: true,
+    component: './Designer/Project/ProjectUpdatePage',
+    access: 'design_project_updating',
+  },
+  {
     path: PATH.designerAdminstration,
     name: 'adminstration',
     icon: 'adminstration-icon.svg',

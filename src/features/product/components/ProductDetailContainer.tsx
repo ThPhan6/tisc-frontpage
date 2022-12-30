@@ -17,7 +17,7 @@ import {
 import { getBrandById } from '@/features/user-group/services';
 import { useCheckPermission, useQuery } from '@/helper/hook';
 import { isValidURL } from '@/helper/utils';
-import { pick } from 'lodash';
+import { pick, sortBy } from 'lodash';
 
 import { ProductFormData, ProductKeyword } from '../types';
 import { ProductInfoTab } from './ProductAttributes/types';
@@ -153,7 +153,7 @@ const ProductDetailContainer: React.FC = () => {
 
   const renderHeader = () => {
     if (isTiscAdmin) {
-      let categorySelected: string = details.categories
+      let categorySelected: string = sortBy(details.categories, 'name')
         .slice(0, 3)
         .map((category) => category.name)
         .join(', ');

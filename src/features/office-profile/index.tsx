@@ -1,19 +1,16 @@
 import { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
-import { LOGO_SIZE_LIMIT } from '@/constants/util';
+import { IMAGE_ACCEPT_TYPES, LOGO_SIZE_LIMIT } from '@/constants/util';
 import { Col, Row, Upload, UploadProps, message } from 'antd';
 
+// import DefaultLogo from '@/assets/icons/avatar-default.svg';
+import { ReactComponent as DefaultLogo } from '@/assets/icons/avatar-default.svg';
 import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-icon.svg';
 import PlaceHolderImage from '@/assets/images/product-placeholder.png';
 
-import {
-  getListCapabilities,
-  updateBrandProfile,
-  updateDesignFirmOfficeProfile,
-  updateLogoBrandProfile,
-} from './services';
+import { getListCapabilities, updateBrandProfile, updateDesignFirmOfficeProfile } from './services';
 import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
 import { getBase64, getSelectedOptions, showImageUrl } from '@/helper/utils';
 import { isEqual } from 'lodash';
@@ -113,6 +110,7 @@ const BrandProfilePage = () => {
           parent_company: brandAppState.parent_company || '',
           slogan: brandAppState.slogan || '',
           official_websites: brandAppState.official_websites || [],
+          logo: brandAppState.logo ?? '',
         });
       }
       setLoadedData(true);
@@ -158,15 +156,21 @@ const BrandProfilePage = () => {
     const formData: any = new FormData();
     formData.append('logo', fileInput);
     if (isBrand) {
-      updateLogoBrandProfile(formData).then((res) => {
-        if (res) {
-          fetchUserInfo();
-        }
-      });
+      setBrandProfile({ ...brandProfile, logo: formData });
     }
     if (isDesign) {
       setDesignFirmProfile({ ...designFirmProfile, logo: formData });
     }
+  };
+
+  const getPreviewAvatar = () => {
+    if (fileInput) {
+      return <img src={URL.createObjectURL(fileInput)} />;
+    }
+    if (userLogo) {
+      return <img src={showImageUrl(userLogo)} />;
+    }
+    return <DefaultLogo className={styles.defaultLogo} />;
   };
 
   useEffect(() => {
@@ -188,6 +192,9 @@ const BrandProfilePage = () => {
 
           if (isDesign) {
             setDesignFirmProfile({ ...designFirmProfile, logo: base64Image.split(',')[1] });
+          }
+          if (isBrand) {
+            setBrandProfile({ ...brandProfile, logo: base64Image.split(',')[1] });
           }
         })
         .catch(() => {
@@ -249,6 +256,7 @@ const BrandProfilePage = () => {
             ...website,
             url: website.url?.trim() ?? '',
           })),
+          logo: brandProfile.logo ?? brandAppState?.logo,
         })
       : updateDesignFirmOfficeProfile(designAppState?.id ?? '', {
           name: designFirmProfile.name?.trim() ?? '',
@@ -313,7 +321,14 @@ const BrandProfilePage = () => {
               </FormGroup>
 
               <div className={styles.logo}>
-                <img src={showImageUrl(currentLogo)} />
+                <Upload
+                  className="cursor-pointer"
+                  maxCount={1}
+                  showUploadList={false}
+                  {...props}
+                  accept={IMAGE_ACCEPT_TYPES.image}>
+                  {getPreviewAvatar()}
+                </Upload>
               </div>
 
               <div className={styles.customFormLogo}>
@@ -326,7 +341,11 @@ const BrandProfilePage = () => {
                   formClass={styles.customLabel}
                   iconTooltip={<WarningIcon className={styles.customWarningIcon} />}>
                   <div className={styles['wrapper-upload']}>
-                    <Upload maxCount={1} showUploadList={false} {...props} accept=".png">
+                    <Upload
+                      maxCount={1}
+                      showUploadList={false}
+                      {...props}
+                      accept={IMAGE_ACCEPT_TYPES.image}>
                       <UploadIcon className={styles.icon} />
                     </Upload>
                   </div>
