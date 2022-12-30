@@ -121,7 +121,8 @@ const Header = (props: HeaderViewProps) => {
   return (
     <Row
       className={`${styles.container} ${isMobile ? styles.mobile : ''}`}
-      justify={'space-between'}>
+      justify={'space-between'}
+      align="middle">
       <div className={styles['logo-icon']} onClick={onLeftIconClick}>
         {logoImage}
       </div>
