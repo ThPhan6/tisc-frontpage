@@ -1,7 +1,6 @@
 import { FC, useState } from 'react';
 
 import { NotificationsIcons, ProjectTrackingNotificationType, RequestsIcons } from '../constant';
-import { Empty } from 'antd';
 
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
@@ -14,12 +13,12 @@ import { ProjectTrackingDetail, RequestAndNotificationDetail } from '@/types/pro
 import { ActionTaskTable } from '@/components/ActionTask/table';
 import BrandProductBasicHeader from '@/components/BrandProductBasicHeader';
 import CustomButton from '@/components/Button';
+import { EmptyOne } from '@/components/Empty';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import TextForm from '@/components/Form/TextForm';
 import { TableHeader } from '@/components/Table/TableHeader';
-import { BodyText } from '@/components/Typography';
 
 import styles from './DesignFirm.less';
 import moment from 'moment';
@@ -69,7 +68,8 @@ const RequestAndNotificationList: FC<RequestAndNotificationListProps> = ({
                     return newData;
                   });
                 }}
-                key={index}>
+                key={index}
+              >
                 <td className={styles.date}>
                   {moment(item.title.created_at).format('YYYY-MM-DD')}
                 </td>
@@ -87,7 +87,7 @@ const RequestAndNotificationList: FC<RequestAndNotificationListProps> = ({
               </tr>
             ))
           ) : (
-            <Empty description={<BodyText level={3}>No Data</BodyText>} className={styles.empty} />
+            <EmptyOne customClass={styles.empty} />
           )}
         </tbody>
       </table>
@@ -109,7 +109,8 @@ const DetaiItem: FC<DetaiItemProps> = ({
         height: `${contentHeight}`,
         overflow: 'auto',
         padding: '0 16px 16px 16px',
-      }}>
+      }}
+    >
       <TableHeader
         title={
           <>
@@ -135,7 +136,8 @@ const DetaiItem: FC<DetaiItemProps> = ({
             href={`${window.location.origin}/brand/product/${detailItem.product.id}`}
             target="_blank"
             rel="noreferrer"
-            style={{ color: '#000' }}>
+            style={{ color: '#000' }}
+          >
             {window.location.origin}/brand/product/{detailItem.product.id}
           </a>
         }
@@ -155,7 +157,8 @@ const DetaiItem: FC<DetaiItemProps> = ({
         label="Work Phone"
         layout="vertical"
         labelColor="mono-color-dark"
-        formClass={type === 'request' ? '' : styles.marginBottomNone}>
+        formClass={type === 'request' ? '' : styles.marginBottomNone}
+      >
         <PhoneInput
           codeReadOnly
           phoneNumberReadOnly
@@ -175,7 +178,8 @@ const DetaiItem: FC<DetaiItemProps> = ({
             label="Message"
             layout="vertical"
             labelColor="mono-color-dark"
-            formClass={styles.marginBottomNone}>
+            formClass={styles.marginBottomNone}
+          >
             <CustomTextArea
               value={detailItem.request?.message}
               className={styles.customTextArea}
@@ -238,7 +242,8 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
               size="small"
               variant="primary"
               properties="rounded"
-              onClick={handleCloseDetailItem}>
+              onClick={handleCloseDetailItem}
+            >
               Done
             </CustomButton>
           </div>

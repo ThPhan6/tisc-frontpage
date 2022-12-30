@@ -6,6 +6,9 @@ import { useHistory } from 'umi';
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 
+import { confirmDelete } from '@/helper/common';
+import { useScreen } from '@/helper/common';
+
 import { EntryFormWrapperProps } from './types';
 
 import CustomButton from '../Button';
@@ -25,6 +28,7 @@ export const FormContainer: FC = ({ children }) => (
 export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   handleSubmit,
   handleCancel,
+  handleDelete,
   customClass = '',
   contentClass = '',
   textAlignTitle = 'center',
@@ -35,8 +39,10 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   headerContent,
   footerContent,
   submitButtonStatus = false,
+  entryFormTypeOnMobile = '',
 }) => {
   const history = useHistory();
+  const isMobile = useScreen().isMobile;
   return (
     <FormContainer>
       <div className={`${styles.entry_form_container} ${customClass}`}>
@@ -60,14 +66,35 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
         <div className={styles.footer_main}>
           {footerContent ? <div className={styles.footer_content}>{footerContent}</div> : null}
 
-          <div className={styles.footer}>
-            <CustomButton
-              size="small"
-              buttonClass={styles.footer__cancel_bt}
-              onClick={handleCancel || history.goBack}
-              disabled={disableCancelButton}>
-              Cancel
-            </CustomButton>
+          <div
+            className={styles.footer}
+            style={{ justifyContent: isMobile ? 'center' : undefined }}
+          >
+            {isMobile && entryFormTypeOnMobile === 'edit' ? (
+              <CustomButton
+                size="small"
+                variant="secondary"
+                buttonClass={styles.footer__delete_bt}
+                onClick={() => {
+                  if (handleDelete) {
+                    confirmDelete(() => {
+                      handleDelete();
+                    });
+                  }
+                }}
+              >
+                Delete
+              </CustomButton>
+            ) : (
+              <CustomButton
+                size="small"
+                buttonClass={styles.footer__cancel_bt}
+                onClick={handleCancel || history.goBack}
+                disabled={disableCancelButton}
+              >
+                Cancel
+              </CustomButton>
+            )}
 
             <div className={styles.footer__wrapper_submit}>
               {submitButtonStatus ? (
@@ -83,7 +110,8 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
                   size="small"
                   width="64px"
                   onClick={handleSubmit}
-                  disabled={disableSubmitButton}>
+                  disabled={disableSubmitButton}
+                >
                   <BodyText level={6} fontFamily="Roboto">
                     Save
                   </BodyText>

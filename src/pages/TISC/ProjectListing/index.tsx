@@ -95,11 +95,6 @@ const ProjectListing = () => {
       dataIndex: 'unlisted',
     },
     {
-      title: 'Deleted',
-      lightHeading: true,
-      dataIndex: 'deleted',
-    },
-    {
       title: 'Specified',
       lightHeading: true,
       dataIndex: 'specified',
@@ -108,6 +103,11 @@ const ProjectListing = () => {
       title: 'Cancelled',
       lightHeading: true,
       dataIndex: 'cancelled',
+    },
+    {
+      title: 'Deleted',
+      lightHeading: true,
+      dataIndex: 'deleted',
     },
     {
       title: 'Action',

@@ -84,6 +84,9 @@ export const getSpecificationWithSelectedValue = (
   return checkedSpecGroup;
 };
 
+export const checkedOptionType = (data: ProductAttributeProps[]) =>
+  countBy(data, (attr) => attr.type === 'Options').true >= 2;
+
 export const useProductAttributeForm = (
   attributeType: ProductInfoTab,
   productId: string,
@@ -129,7 +132,7 @@ export const useProductAttributeForm = (
   useEffect(() => {
     if (
       attributeType === 'specification' &&
-      specification_attribute_groups.length && // Wait for all specification attributes loaded
+      // specification_attribute_groups.length && // Wait for all specification attributes loaded
       loaded.value === false &&
       productId &&
       isTiscAdmin === false
@@ -147,6 +150,7 @@ export const useProductAttributeForm = (
                   res.specification?.attribute_groups || [],
                   attributeGroup,
                 ),
+                // set vendor locations have selected from user selection
                 brand_location_id: res.brand_location_id,
                 distributor_location_id: res.distributor_location_id,
               }),
@@ -215,7 +219,7 @@ export const useProductAttributeForm = (
         (_attr, idx) => idx !== attrIndex,
       );
 
-      const isOptionType = countBy(newItemAttributes, (attr) => attr.type === 'Options').true >= 2;
+      const isOptionType = checkedOptionType(newItemAttributes);
 
       newAttributes[groupIndex] = {
         ...newAttributes[groupIndex],

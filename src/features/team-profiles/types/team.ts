@@ -80,6 +80,14 @@ export interface TeamProfileMemberProps {
   phone_code: string;
 }
 
+export interface AssignedTeamMember {
+  id: string;
+  firstname: string;
+  lastname: string;
+  avatar: any;
+  is_assigned?: boolean;
+}
+
 export interface TeamProfileGroupCountry {
   country_name: string;
   count: number;

@@ -39,7 +39,11 @@ export const SpecificationByMaterial: FC = () => {
       title: 'Material Code',
       dataIndex: 'material_order',
       sorter: { multiple: 1 },
-      render: (_value, record) => <span>{record.specifiedDetail?.material_code}</span>,
+      render: (_value, record) => (
+        <span>
+          {record.specifiedDetail?.material_code} {record.specifiedDetail?.suffix_code}
+        </span>
+      ),
       onCell: onCellCancelled,
     },
     {

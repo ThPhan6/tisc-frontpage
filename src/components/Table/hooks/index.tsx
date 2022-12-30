@@ -37,7 +37,8 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
         onClick={() =>
           setExpanded((prevState) => (expandedKey === prevState ? undefined : expandedKey))
         }
-        className={styles.expandedCell}>
+        className={styles.expandedCell}
+      >
         <span className={isExpanding ? styles.expandedColumn : ''}>{value}</span>
         <DropDownIcon width="18" height="18" />
       </div>
@@ -57,7 +58,8 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
           className={styles.titleTable}
           style={{
             justifyContent: getColumnJustifyContent(column.align),
-          }}>
+          }}
+        >
           {column.lightHeading ? (
             <BodyText fontFamily="Roboto" level={5}>
               {column.title}
@@ -129,7 +131,7 @@ const syncColWidthFollowingTheDeepestDataRow = (level: number, curCellStyle: Ele
   const nestedSubRows = document.querySelectorAll(
     `tr[class*="ant-table-expanded-row"]:not([style*="display: none;"])`,
   );
-  const nestedSubColumns = nestedSubRows[nestedSubRows?.length - 1].querySelectorAll(
+  const nestedSubColumns = nestedSubRows[nestedSubRows?.length - 1]?.querySelectorAll(
     `tbody tr[class$="custom-expanded-level-${level + 1}"]:first-child td`,
   );
 

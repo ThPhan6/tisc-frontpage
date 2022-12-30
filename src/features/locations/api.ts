@@ -121,7 +121,7 @@ export async function getCountryById(id: string) {
 }
 
 export async function getLocationPagination(
-  params: PaginationRequestParams,
+  { is_sort_main_office_first = false, ...params }: PaginationRequestParams,
   callback: (data: DataTableResponse) => void,
 ) {
   return request<{
@@ -129,7 +129,7 @@ export async function getLocationPagination(
       locations: LocationDetail[];
       pagination: PaginationResponse;
     };
-  }>(`/api/location/get-list`, {
+  }>(`/api/location/get-list?is_sort_main_office_first=${is_sort_main_office_first}`, {
     method: 'GET',
     params,
   })

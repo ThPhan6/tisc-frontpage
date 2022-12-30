@@ -139,15 +139,11 @@ const dataLegend = [
   },
 ];
 
-export const LegendModal: FC<{
-  visible: boolean;
-  setVisible: (visible: boolean) => void;
-}> = ({ visible, setVisible }) => {
+export const ProjectTrackingLegendModal: FC = () => {
   return (
     <Popover
       title="LEGEND"
-      visible={visible}
-      setVisible={setVisible}
+      visible
       noFooter
       className={styles.legend}
       extraTopAction={

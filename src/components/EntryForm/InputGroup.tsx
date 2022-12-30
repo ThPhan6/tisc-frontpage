@@ -4,6 +4,7 @@ import { Col, Row } from 'antd';
 
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 
+import { CustomTypography } from '../Typography/types';
 import { MainContentProps } from './types';
 import type { CustomInputProps } from '@/components/Form/types';
 
@@ -19,7 +20,8 @@ const InputGroupContent: FC<MainContentProps> = ({ children, hasHeight, noWrap }
     className={`${styles.inputGroupContainer} ${hasHeight ? styles.heightInputGroup : ''}`}
     gutter={0}
     align="middle"
-    wrap={!noWrap}>
+    wrap={!noWrap}
+  >
     {children}
   </Row>
 );
@@ -43,6 +45,7 @@ interface InputGroupProps extends CustomInputProps {
   messageType?: 'normal' | 'warning' | 'error';
   forceDisplayDeleteIcon?: boolean;
   isTableFormat?: boolean;
+  labelColor?: CustomTypography['color'];
 }
 
 const InputGroup: FC<InputGroupProps> = ({
@@ -67,6 +70,7 @@ const InputGroup: FC<InputGroupProps> = ({
   disabled,
   forceDisplayDeleteIcon,
   isTableFormat,
+  labelColor = 'mono-color',
   ...props
 }) => {
   const { labelSpan, inputSpan, fontSize, iconDelete } = useGeneralFeature(
@@ -80,7 +84,7 @@ const InputGroup: FC<InputGroupProps> = ({
   const renderLabel = () => {
     return (
       <Col span={labelSpan} className="input-label-container">
-        <BodyText level={fontLevel ?? 5} customClass="input-label">
+        <BodyText level={fontLevel ?? 5} customClass={`${'input-label'} ${labelColor}`}>
           {label}
           {required ? (
             <span
@@ -89,7 +93,8 @@ const InputGroup: FC<InputGroupProps> = ({
                   ? styles.requiredColorTertiary
                   : styles.requiredColorPrimaryDark
               }
-          ${styles.required}`}>
+          ${styles.required}`}
+            >
               *
             </span>
           ) : (
@@ -108,7 +113,8 @@ const InputGroup: FC<InputGroupProps> = ({
           ${styles.inputGroupContent}
           ${hasBoxShadow ? styles.boxShadow : ''}
         `}
-        span={inputSpan}>
+        span={inputSpan}
+      >
         <CustomInput
           {...props}
           value={value}

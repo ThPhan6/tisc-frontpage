@@ -24,7 +24,8 @@ import {
 } from '@/features/product/reducers';
 import { ProductGetListParameter } from '@/features/product/types';
 import { BrandAlphabet, BrandDetail } from '@/features/user-group/types';
-import store from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
+import { modalPropsSelector, openModal } from '@/reducers/modal';
 
 import { LogoIcon } from '@/components/LogoIcon';
 import Popover from '@/components/Modal/Popover';
@@ -36,16 +37,15 @@ import {
 } from '@/features/product/components/FilterAndSorter';
 
 import styles from './TopBar.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 export const TopBar: React.FC = () => {
   useSyncQueryToState();
 
   const dispatch = useDispatch();
 
-  const [visible, setVisible] = useState(false);
   const [brandAlphabet, setBrandAlphabet] = useState<BrandAlphabet>({});
   const [brandData, setBrandData] = useState<RadioValue>();
-  const brandFlatList = flatMap(brandAlphabet);
 
   const query = useQuery();
   const brandId = query.get(QUERY_KEY.b_id);
@@ -62,10 +62,14 @@ export const TopBar: React.FC = () => {
 
   /// load brand by alphabet from API
   useEffect(() => {
+    showPageLoading();
     getBrandAlphabet().then((data) => {
       setBrandAlphabet(data);
       if (brandId && brandName) {
         setBrandData({ value: brandId, label: brandName });
+      }
+      if (!brandId) {
+        hidePageLoading();
       }
     });
 
@@ -74,7 +78,7 @@ export const TopBar: React.FC = () => {
       dispatch(setProductList({ data: [] }));
       dispatch(setProductSummary(undefined));
     };
-  }, []);
+  }, [brandId]);
 
   /// set brand to product reducer
   useEffect(() => {
@@ -168,16 +172,6 @@ export const TopBar: React.FC = () => {
     }
   };
 
-  /// render custom radio brand list label
-  const renderLabel = (item: BrandDetail) => {
-    return (
-      <BodyText level={5} fontFamily="Roboto">
-        <LogoIcon logo={item.logo} className={styles.brandLogo} />
-        <span className="brand-name">{item.name}</span>
-      </BodyText>
-    );
-  };
-
   return (
     <>
       <TopBarContainer
@@ -190,7 +184,21 @@ export const TopBar: React.FC = () => {
               bottomValue="Brands"
               customClass="brand-dropdown right-divider"
               icon={<DropdownIcon />}
-              onClick={() => setVisible(true)}
+              onClick={() =>
+                dispatch(
+                  openModal({
+                    type: 'Select Brand',
+                    title: 'Select Brand',
+                    props: {
+                      selectBrand: {
+                        brands: brandAlphabet,
+                        checkedBrand: brandData,
+                        onChecked: setBrandData,
+                      },
+                    },
+                  }),
+                )
+              }
             />
             <TopBarItem
               topValue={productSummary?.category_count ?? ''}
@@ -272,7 +280,8 @@ export const TopBar: React.FC = () => {
                 <span
                   className={`${styles.newCardIcon} ${
                     productSummary ? styles.activeNewCard : styles.disabledNewCard
-                  }`}>
+                  }`}
+                >
                   <SmallPlusIcon />
                 </span>
               }
@@ -280,50 +289,61 @@ export const TopBar: React.FC = () => {
           </>
         }
       />
-
-      <Popover
-        visible={visible}
-        setVisible={setVisible}
-        title="select brand"
-        dropdownRadioList={map(brandAlphabet, (items, key) => {
-          return {
-            key,
-            margin: 12,
-            options: items.map((item) => {
-              return {
-                label: renderLabel(item),
-                value: item.id,
-              };
-            }),
-          };
-        })}
-        dropDownRadioTitle={(data) => data.key.split('').join(' / ')}
-        chosenValue={brandData}
-        setChosenValue={(v) => {
-          const chosenBrand = brandFlatList.find((el) => v?.value && el.id === v.value);
-          if (chosenBrand) {
-            updateUrlParams({
-              set: [
-                { key: QUERY_KEY.b_id, value: chosenBrand.id },
-                { key: QUERY_KEY.b_name, value: chosenBrand.name },
-                { key: QUERY_KEY.cate_id, value: 'all' },
-                { key: QUERY_KEY.cate_name, value: 'VIEW ALL' },
-              ],
-              removeAll: true,
-            });
-            dispatch(
-              setProductList({
-                filter: {
-                  name: 'category_id',
-                  title: 'VIEW ALL',
-                  value: 'all',
-                },
-              }),
-            );
-          }
-          setBrandData(v);
-        }}
-      />
     </>
+  );
+};
+
+export const SelectBrandModal = () => {
+  const { brands, checkedBrand, onChecked } = useAppSelector(modalPropsSelector).selectBrand;
+  const brandFlatList = flatMap(brands);
+  /// render custom radio brand list label
+  const renderLabel = (item: BrandDetail) => {
+    return (
+      <BodyText level={5} fontFamily="Roboto">
+        <LogoIcon logo={item.logo} className={styles.brandLogo} />
+        <span className="brand-name">{item.name}</span>
+      </BodyText>
+    );
+  };
+
+  return (
+    <Popover
+      visible
+      title="select brand"
+      dropdownRadioList={map(brands, (items, key) => ({
+        key,
+        margin: 12,
+        options: items.map((item) => ({
+          label: renderLabel(item),
+          value: item.id,
+        })),
+      }))}
+      dropDownRadioTitle={(data) => data.key.split('').join(' / ')}
+      chosenValue={checkedBrand}
+      setChosenValue={(v) => {
+        const chosenBrand = brandFlatList.find((el) => v?.value && el.id === v.value);
+        if (chosenBrand) {
+          updateUrlParams({
+            set: [
+              { key: QUERY_KEY.b_id, value: chosenBrand.id },
+              { key: QUERY_KEY.b_name, value: chosenBrand.name },
+              { key: QUERY_KEY.cate_id, value: 'all' },
+              { key: QUERY_KEY.cate_name, value: 'VIEW ALL' },
+            ],
+            removeAll: true,
+          });
+          store.dispatch(
+            setProductList({
+              filter: {
+                name: 'category_id',
+                title: 'VIEW ALL',
+                value: 'all',
+              },
+            }),
+          );
+        }
+        onChecked(v);
+      }}
+    />
   );
 };

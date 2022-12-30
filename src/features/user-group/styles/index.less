@@ -1,11 +1,32 @@
-.userGroup {
-  :global(.ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header) {
+.container {
+  margin-top: 8px;
+
+  :global(.ant-input) {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  :global(.ant-collapse-borderless) {
+    background: #fff !important;
+  }
+  :global(.ant-collapse-item > .ant-collapse-header) {
     padding: 7px 24px 7px 0 !important;
+  }
+
+  :global(.ant-collapse-item-disabled > .ant-collapse-header) {
+    cursor: default !important;
+    :global(.ant-collapse-header-text) {
+      color: @mono-color !important;
+    }
   }
   :global(.ant-collapse-borderless > .ant-collapse-item) {
     margin-bottom: 16px;
     border-bottom: 0 !important;
   }
+  :global(.ant-collapse-icon-position-end
+      > .ant-collapse-item
+      > .ant-collapse-header
+      .ant-collapse-arrow),
   :global(.ant-collapse-icon-position-right
       > .ant-collapse-item
       > .ant-collapse-header
@@ -18,33 +39,13 @@
       > .ant-collapse-content-box) {
     padding: 8px 0 8px 16px !important;
   }
-}
 
-.container {
-  margin-top: 8px;
-
-  :global(.ant-input) {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-  :global(.ant-collapse-borderless) {
-    background: #fff !important;
-  }
-  :global(.ant-collapse-item-disabled > .ant-collapse-header) {
-    cursor: default !important;
-    :global(.ant-collapse-header-text) {
-      color: @mono-color !important;
-    }
-  }
-  :global(.ant-collapse-borderless > .ant-collapse-item) {
-    border-bottom: none;
-  }
   .form {
     height: calc(100vh - 248px);
     padding: 16px;
     overflow: hidden auto;
     background: #fff;
+
     .info {
       :last-child {
         margin-bottom: 0;

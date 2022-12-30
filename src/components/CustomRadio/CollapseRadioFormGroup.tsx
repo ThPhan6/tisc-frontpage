@@ -1,41 +1,23 @@
 import { FC } from 'react';
 
-import { RadioValue } from './types';
-import { FormGroupProps } from '@/components/Form/types/index';
-
 import { FormGroup } from '../Form';
-import CollapseRadioList from './CollapseRadioList';
+import CollapseRadioList, { CollapseRadioListProps } from './CollapseRadioList';
 import styles from './styles/collapseRadioFormGroup.less';
 
-interface CollapseRadioFormGroupProps extends FormGroupProps {
+interface CollapseRadioFormGroupProps extends CollapseRadioListProps {
   label: string;
-  optionData: RadioValue[];
-  checked?: string | number;
-  placeholder?: string;
-  otherInput?: boolean;
-  clearOtherInput?: boolean;
-  onChange?: (checked: RadioValue) => void;
+  formClass?: string;
   radioListClass?: string;
   defaultPlaceHolder?: string | number;
-  inputPlaceholder?: string;
-  noDataMessage?: string;
-  activeKey?: string | string[];
 }
 
 const CollapseRadioFormGroup: FC<CollapseRadioFormGroupProps> = ({
   label,
+  formClass,
   placeholder,
-  checked,
-  optionData,
-  otherInput,
-  clearOtherInput,
-  onChange,
   radioListClass = '',
-  formClass = '',
   defaultPlaceHolder = 'select from list',
   inputPlaceholder = 'please specify',
-  noDataMessage,
-  activeKey,
   ...props
 }) => {
   return (
@@ -44,18 +26,12 @@ const CollapseRadioFormGroup: FC<CollapseRadioFormGroupProps> = ({
       required={true}
       layout="vertical"
       formClass={`${styles.group} ${placeholder ? styles.activeLabel : ''} ${formClass}`}
-      {...props}>
+    >
       <CollapseRadioList
-        activeKey={activeKey}
         containerClass={`${styles.radioGroup} ${radioListClass}`}
-        options={optionData}
-        checked={checked}
-        onChange={onChange}
         placeholder={placeholder || defaultPlaceHolder}
-        otherInput={otherInput}
-        clearOtherInput={clearOtherInput}
         inputPlaceholder={inputPlaceholder}
-        noDataMessage={noDataMessage}
+        {...props}
       />
     </FormGroup>
   );

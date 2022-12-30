@@ -14,6 +14,7 @@ import { useHistory } from 'umi';
 
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
+import { pushTo } from '@/helper/history';
 import {
   useBoolean,
   useCustomInitialState,
@@ -28,7 +29,8 @@ import {
 import { getDepartmentList } from '@/services';
 
 import { TeamProfileDetailProps, TeamProfileRequestBody } from '../types';
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
+import { openModal } from '@/reducers/modal';
 import { GeneralData } from '@/types';
 
 import { CustomRadio } from '@/components/CustomRadio';
@@ -41,12 +43,14 @@ import { Status } from '@/components/Form/Status';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
-import { createTeamProfile, getOneTeamProfile, inviteUser, updateTeamProfile } from '../api';
-import LocationModal from './LocationModal';
+import {
+  createTeamProfile,
+  deleteTeamProfile,
+  getOneTeamProfile,
+  inviteUser,
+  updateTeamProfile,
+} from '../api';
 import styles from './TeamProfilesEntryForm.less';
-import BrandAccessLevelModal from './access-level-modal/BrandAccessLevelModal';
-import DesignAccessLevelModal from './access-level-modal/DesignAccessLevelModal';
-import TISCAccessLevelModal from './access-level-modal/TISCAccessLevelModal';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const GenderRadio = [
@@ -94,15 +98,12 @@ const TeamProfilesEntryForm = () => {
 
   /// for department
   const [departments, setDepartments] = useState<GeneralData[]>([]);
-  const [openModal, setOpenModal] = useState<'' | 'workLocationModal' | 'accessModal'>('');
 
   const [workLocation, setWorkLocation] = useState({
     label: '',
     value: data.location_id,
     phoneCode: '00',
   });
-
-  const setVisibleModal = (visible: boolean) => (visible ? undefined : setOpenModal(''));
 
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({
@@ -210,6 +211,14 @@ const TeamProfilesEntryForm = () => {
     }
   };
 
+  const handleDeleteTeamProfile = () => {
+    deleteTeamProfile(userIdParam).then((isSuccess) => {
+      if (isSuccess) {
+        pushTo(userRolePath);
+      }
+    });
+  };
+
   // format data
   const departmentData = departments.find((department) => department.id === data.department_id) ?? {
     name: data.department_id,
@@ -227,8 +236,11 @@ const TeamProfilesEntryForm = () => {
       <EntryFormWrapper
         handleCancel={history.goBack}
         handleSubmit={() => handleSubmit()}
+        handleDelete={handleDeleteTeamProfile}
+        entryFormTypeOnMobile={isUpdate ? 'edit' : 'create'}
         submitButtonStatus={submitButtonStatus.value}
-        customClass={styles.entry_form}>
+        customClass={styles.entry_form}
+      >
         {/* First Name */}
         <InputGroup
           label="First Name"
@@ -283,7 +295,14 @@ const TeamProfilesEntryForm = () => {
           hasBoxShadow
           hasHeight
           rightIcon
-          onRightIconClick={() => setOpenModal('workLocationModal')}
+          onRightIconClick={() =>
+            store.dispatch(
+              openModal({
+                type: 'Work Location',
+                props: { workLocation: { data: workLocation, onChange: setWorkLocation } },
+              }),
+            )
+          }
           placeholder="select from list"
         />
         {/* Department */}
@@ -293,7 +312,8 @@ const TeamProfilesEntryForm = () => {
           layout="vertical"
           formClass={`${styles.department} ${
             departmentData.name !== '' ? styles.activeDepartment : ''
-          }`}>
+          }`}
+        >
           <CollapseRadioList
             options={departments.map((department) => {
               return {
@@ -394,7 +414,17 @@ const TeamProfilesEntryForm = () => {
           customIcon={<InfoIcon className={styles.warning_icon} />}
           layout="vertical"
           formClass={`${styles.form_group} ${styles.access_label}`}
-          onClick={() => setOpenModal('accessModal')}>
+          onClick={() =>
+            store.dispatch(
+              openModal({
+                type: 'Access Level',
+                props: {
+                  accessLevel: { type: isTiscUser ? 'tisc' : isBrandUser ? 'brand' : 'designer' },
+                },
+              }),
+            )
+          }
+        >
           <CustomRadio
             options={accessLevelDataRole}
             value={data.role_id}
@@ -413,29 +443,6 @@ const TeamProfilesEntryForm = () => {
           formClass={styles.status}
         />
       </EntryFormWrapper>
-
-      {isTiscUser ? (
-        <TISCAccessLevelModal visible={openModal === 'accessModal'} setVisible={setVisibleModal} />
-      ) : null}
-
-      {isBrandUser ? (
-        <BrandAccessLevelModal visible={openModal === 'accessModal'} setVisible={setVisibleModal} />
-      ) : null}
-
-      {isDesignerUser ? (
-        <DesignAccessLevelModal
-          visible={openModal === 'accessModal'}
-          setVisible={setVisibleModal}
-        />
-      ) : null}
-
-      {/* Location Modal */}
-      <LocationModal
-        visible={openModal === 'workLocationModal'}
-        setVisible={setVisibleModal}
-        workLocation={workLocation}
-        setWorkLocation={setWorkLocation}
-      />
     </div>
   );
 };

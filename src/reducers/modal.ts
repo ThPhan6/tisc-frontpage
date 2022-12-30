@@ -1,9 +1,18 @@
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { RadioValue } from '@/components/CustomRadio/types';
+import { BrandAlphabet } from '@/features/user-group/types';
 import store, { RootState } from '@/reducers';
+import { AttributeContentType, AttributeSubForm } from '@/types';
+
+import { WorkLocationData } from '@/features/team-profiles/components/LocationModal';
+import { SelectedItem } from '@/pages/TISC/Product/Attribute/components/AttributeEntryForm';
 
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
 
 export type ModalType =
   | 'none'
+
+  // Landing page
   | 'About'
   | 'Policies'
   | 'Contact'
@@ -12,12 +21,27 @@ export type ModalType =
   | 'Brand Interested'
   | 'Tisc Login'
   | 'Login'
-  | 'Assign Product'
-  | 'Market Availability'
   | 'Calendar'
   | 'Cancel Booking'
   | 'Reset Password'
-  | 'Verify Account';
+  | 'Verify Account'
+
+  // General
+  | 'Assign Team'
+  | 'Project Tracking Legend'
+  | 'Access Level'
+  | 'Work Location'
+
+  // TISC
+  | 'Product Attribute Type'
+  | 'Select Brand'
+  | 'Brand Company'
+
+  // Brand
+
+  // Design Firm
+  | 'Assign Product'
+  | 'Market Availability';
 
 export interface ModalState {
   type: ModalType;
@@ -32,13 +56,41 @@ export interface ModalState {
     email?: string; // Reset Password
     token?: string; // Reset Password
     passwordType?: 'reset' | 'create'; // Reset Password
+
+    assignTeam: {
+      onChange: (selected: CheckboxValue[]) => void;
+      teams: any[];
+      memberAssigned: any[];
+    };
+
+    productAttributeType: {
+      contentType: AttributeContentType;
+      selectedItem: SelectedItem;
+      onSubmit: (data: Omit<AttributeSubForm, 'id' | 'name'>) => void;
+      type: number;
+    };
+
+    selectBrand: {
+      brands: BrandAlphabet;
+      checkedBrand?: RadioValue;
+      onChecked: (checkedBrand: RadioValue) => void;
+    };
+
+    accessLevel: {
+      type: 'brand' | 'designer' | 'tisc';
+    };
+
+    workLocation: {
+      data: WorkLocationData;
+      onChange: (data: WorkLocationData) => void;
+    };
   };
 }
 
 const initialState: ModalState = {
   type: 'none',
   theme: 'default',
-  props: {},
+  props: {} as ModalState['props'],
 };
 
 const modalSlice = createSlice({
@@ -47,9 +99,9 @@ const modalSlice = createSlice({
   reducers: {
     openModal: (
       _state,
-      action: PayloadAction<Omit<ModalState, 'props'> & { props?: ModalState['props'] }>,
+      action: PayloadAction<Omit<ModalState, 'props'> & { props?: Partial<ModalState['props']> }>,
     ) => {
-      return { ...action.payload, props: action.payload.props || {} };
+      return { ...action.payload, props: { ...initialState.props, ...action.payload.props } };
     },
     closeModalAction: (state) => {
       state.type = 'none';

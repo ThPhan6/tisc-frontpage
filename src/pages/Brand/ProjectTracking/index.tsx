@@ -29,17 +29,17 @@ import {
   getProjectTrackingPagination,
   updateProjectTrackingPriority,
 } from '@/services/project-tracking.api';
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { TableColumnItem } from '@/components/Table/types';
-import { TeamProfileGroupCountry, TeamProfileMemberProps } from '@/features/team-profiles/types';
-import { useAppSelector } from '@/reducers';
+import { TeamProfileGroupCountry } from '@/features/team-profiles/types';
+import store, { useAppSelector } from '@/reducers';
+import { closeModal, openModal } from '@/reducers/modal';
 import { ProjecTrackingList } from '@/types/project-tracking.type';
 
-import { LegendModal } from '../../../components/LegendModal/LegendModal';
 import { ProjectTrackingHeader } from './components/ProjectTrackingHeader';
-import AssignTeam from '@/components/AssignTeam';
+import { getAssignTeamCheck } from '@/components/AssignTeam';
 import CustomTable from '@/components/Table';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import TopBarDropDownFilter from '@/components/TopBar/TopBarDropDownFilter';
@@ -54,70 +54,76 @@ const ProjectTracking = () => {
   const tableRef = useRef<any>();
   const userInfo = useAppSelector((state) => state.user.user);
 
-  // assign team modal
-  const [visible, setVisible] = useState<boolean>(false);
-  // for each member assigned
-  const [recordAssignTeam, setRecordAssignTeam] = useState<ProjecTrackingList>();
-  // get list assign team to display inside popup
   const [assignTeam, setAssignTeam] = useState<TeamProfileGroupCountry[]>([]);
 
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
   const [selectedPriority, setSelectedPriority] = useState(GlobalFilter);
-  const [openInformationModal, setOpenInformationModal] = useState(false);
-
-  const showAssignTeams = (projectInfo: ProjecTrackingList) => (event: any) => {
-    event?.stopPropagation();
-    /// get brand info
-    setRecordAssignTeam(projectInfo);
-
-    getListTeamProfileUserGroupByBrandId(userInfo?.brand?.id as string).then((res) => {
-      if (res) {
-        /// set assignTeam state to display
-        setAssignTeam(res);
-        // open popup
-        setVisible(true);
-      }
-    });
-  };
 
   const reloadWithFilter = () => {
     tableRef.current?.reload();
   };
 
   // update assign team
-  const handleSubmitAssignTeam = (checkedData: CheckboxValue[]) => {
-    // new assign team
-    const memberAssignTeam: TeamProfileMemberProps[] = [];
+  const handleSubmitAssignTeam =
+    (projectInfo: ProjecTrackingList, teamProfile: TeamProfileGroupCountry[]) =>
+    (checkedData: CheckboxValue[]) => {
+      if (!projectInfo?.id) {
+        return;
+      }
 
-    checkedData?.forEach((checked) => {
-      assignTeam.forEach((team) => {
-        const member = team.users.find((user) => user.id === checked.value);
+      const { memberAssignTeamIds, noSelectionChange } = getAssignTeamCheck(
+        projectInfo.assignedTeams,
+        teamProfile,
+        checkedData,
+      );
 
-        if (member) {
-          memberAssignTeam.push(member);
-        }
-      });
-    });
-
-    if (recordAssignTeam?.id) {
       // dont call api if havent changed
-      const checkedIds = checkedData?.map((check) => check.value);
-      const assignedTeamIds = recordAssignTeam.assignedTeams?.map((team) => team.id);
-      const noSelectionChange = isEqual(checkedIds, assignedTeamIds);
       if (noSelectionChange) return;
 
       // add member selected to data
-      updateProjectTrackingPriority(recordAssignTeam.id, {
-        assigned_teams: memberAssignTeam.map((member) => member.id),
+      updateProjectTrackingPriority(projectInfo.id, {
+        assigned_teams: memberAssignTeamIds,
       }).then((isSuccess) => {
         if (isSuccess) {
           // reload table after updating
           reloadWithFilter();
           // close popup
-          setVisible(false);
+          closeModal();
         }
       });
+    };
+
+  const showAssignTeams = (projectInfo: ProjecTrackingList) => (event: any) => {
+    event?.stopPropagation();
+
+    const openAssignTeamModal = (teams: TeamProfileGroupCountry[]) =>
+      store.dispatch(
+        openModal({
+          type: 'Assign Team',
+          title: 'Assign Team',
+          props: {
+            assignTeam: {
+              memberAssigned: projectInfo.assignedTeams,
+              teams,
+              onChange: handleSubmitAssignTeam(projectInfo, teams),
+            },
+          },
+        }),
+      );
+
+    if (assignTeam.length) {
+      openAssignTeamModal(assignTeam);
+      return;
     }
+
+    getListTeamProfileUserGroupByBrandId(userInfo?.brand?.id as string).then((res) => {
+      if (res) {
+        /// set assignTeam state to display
+        setAssignTeam(res);
+        // open popup
+        openAssignTeamModal(res);
+      }
+    });
   };
 
   useEffect(() => {
@@ -187,7 +193,8 @@ const ProjectTracking = () => {
         hideDropdownIcon
         alignRight={false}
         textCapitalize={false}
-        placement="bottomRight">
+        placement="bottomRight"
+      >
         {PriorityIcons[record.priority] ?? 'n.a'}
       </CustomDropDown>
     );
@@ -298,7 +305,8 @@ const ProjectTracking = () => {
           return (
             <ProjectTrackingHeader
               selectedFilter={selectedFilter}
-              setSelectedFilter={setSelectedFilter}>
+              setSelectedFilter={setSelectedFilter}
+            >
               <TopBarDropDownFilter
                 selectedFilter={selectedPriority}
                 setSelectedFilter={setSelectedPriority}
@@ -309,11 +317,17 @@ const ProjectTracking = () => {
               />
             </ProjectTrackingHeader>
           );
-        }}>
+        }}
+      >
         <CustomTable
           title={'PROJECT TRACKING'}
           rightAction={
-            <InfoIcon className={styles.iconInfor} onClick={() => setOpenInformationModal(true)} />
+            <InfoIcon
+              className={styles.iconInfor}
+              onClick={() =>
+                store.dispatch(openModal({ type: 'Project Tracking Legend', title: 'legend' }))
+              }
+            />
           }
           columns={setDefaultWidthForEachColumn(MainColumns, 7)}
           fetchDataFunc={getProjectTrackingPagination}
@@ -343,14 +357,6 @@ const ProjectTracking = () => {
           })}
         />
       </PageContainer>
-      <LegendModal visible={openInformationModal} setVisible={setOpenInformationModal} />
-      <AssignTeam
-        visible={visible}
-        setVisible={setVisible}
-        onChange={handleSubmitAssignTeam}
-        memberAssigned={recordAssignTeam?.assignedTeams}
-        teams={assignTeam}
-      />
     </div>
   );
 };

@@ -4,10 +4,10 @@ import { USER_ROLE } from '@/constants/userRoles';
 import { GlobalFilter } from '@/pages/Designer/Project/constants/filter';
 import { PageContainer } from '@ant-design/pro-layout';
 
-import { getProjectPagination, getProjectSummary } from '../project/services';
-import { getBrandCards } from '../user-group/services';
+import { getDesignerWorkspace, getProjectSummary } from '../project/services';
+import { getTiscWorkspace } from '../user-group/services';
 import { useGetUserRoleFromPathname } from '@/helper/hook';
-import { getProjectTrackingPagination } from '@/services/project-tracking.api';
+import { getBrandWorkspace } from '@/services/project-tracking.api';
 
 import { ProjectListProps, ProjectSummaryData } from '../project/types';
 import { BrandCard } from '../user-group/types';
@@ -15,8 +15,9 @@ import { ProjecTrackingList } from '@/types/project-tracking.type';
 
 import { ProjectTrackingHeader } from '../../pages/Brand/ProjectTracking/components/ProjectTrackingHeader';
 import { ProjectCard } from './components/ProjectCard';
-import { setLoadingAction } from '@/components/LoadingPage/slices';
 import ProjectListHeader from '@/pages/Designer/Project/components/ProjectListHeader';
+
+import { hidePageLoading, showPageLoading } from '../loading/loading';
 
 const MyWorkspace = () => {
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
@@ -35,9 +36,9 @@ const MyWorkspace = () => {
   /// for tisc
   useEffect(() => {
     if (isTiscUser) {
-      setLoadingAction(true);
-      getBrandCards().then((res) => {
-        setLoadingAction(false);
+      showPageLoading();
+      getTiscWorkspace().then((res) => {
+        hidePageLoading();
         if (res) {
           setListCard(res);
         }
@@ -48,16 +49,14 @@ const MyWorkspace = () => {
   /// for brand
   useEffect(() => {
     if (isBrandUser) {
-      setLoadingAction(true);
-      getProjectTrackingPagination(
+      showPageLoading();
+      getBrandWorkspace(
         {
-          page: 1,
-          pageSize: 99999,
           project_status: selectedFilter.id === GlobalFilter.id ? undefined : selectedFilter.id,
         },
-        (response) => {
-          setLoadingAction(false);
-          setListCard(response.data);
+        (data) => {
+          hidePageLoading();
+          setListCard(data);
         },
       );
     }
@@ -66,7 +65,7 @@ const MyWorkspace = () => {
   /// for designer
   useEffect(() => {
     if (isDesignerUser) {
-      getProjectSummary().then((res) => {
+      getProjectSummary(true).then((res) => {
         if (res) {
           setSummaryData(res);
         }
@@ -75,16 +74,17 @@ const MyWorkspace = () => {
   }, []);
   useEffect(() => {
     if (isDesignerUser) {
-      getProjectPagination(
+      showPageLoading();
+      getDesignerWorkspace(
         {
-          page: 1,
-          pageSize: 99999,
-          filter: {
-            status: selectedFilter.id === GlobalFilter.id ? undefined : selectedFilter.id,
-          },
+          filter:
+            selectedFilter.id === GlobalFilter.id
+              ? undefined
+              : { project_status: selectedFilter.id },
         },
-        (response) => {
-          setListCard(response.data);
+        (data) => {
+          hidePageLoading();
+          setListCard(data);
         },
       );
     }
@@ -100,6 +100,7 @@ const MyWorkspace = () => {
         <ProjectTrackingHeader
           selectedFilter={selectedFilter}
           setSelectedFilter={setSelectedFilter}
+          workspace
         />
       );
     }

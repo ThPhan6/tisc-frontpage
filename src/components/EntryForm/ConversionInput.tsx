@@ -5,12 +5,12 @@ import { Col, Row } from 'antd';
 import { CustomInputProps } from '../Form/types';
 import { MainContentProps } from './types';
 
-import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
+import { MaskedNumberInput } from '../CustomNumberInput.tsx';
 import TableContent from '../Table/TableContent';
 import styles from './styles/InputGroup.less';
-import { useGeneralFeature } from './utils';
+import { formatToConversionInputValue, useGeneralFeature } from './utils';
 
 const ConversionContent: FC<MainContentProps> = ({ children, noWrap }) => (
   <Row className={styles.inputGroupContainer} gutter={0} align="middle" wrap={!noWrap}>
@@ -84,44 +84,49 @@ const ConversionInput: FC<ConversionInputProps> = ({
     <Col className={styles.doubleinputGroupContent} span={inputSpan}>
       <div className="double-input-group-wrapper">
         <div className="double-input-group">
-          <CustomInput
+          <MaskedNumberInput
             {...props}
+            decimalLimit={6}
             autoFocus
             value={conversionValue.firstValue}
             placeholder={placeholder1}
             onChange={(e) => {
               const firstValue = e.target.value;
-              const secondValue = parseFloat(firstValue) * Number(conversionData.formula_2);
-
+              const secondValue = formatToConversionInputValue(
+                Number(firstValue.replaceAll(',', '')) * Number(conversionData.formula_2),
+              );
               setConversionValue({
                 firstValue: firstValue,
-                secondValue: isNaN(secondValue) ? '' : secondValue.toString(),
+                secondValue: secondValue,
               });
             }}
             fontLevel={fontSize}
-            className="first-input-box"
             onClick={(e) => e.stopPropagation()}
+            style={{ height: '22px', background: '#fff', marginTop: '2px' }}
           />
           <BodyText level={fontSize} fontFamily="Roboto" customClass="unit-input-label">
             {conversionData.unit_1}
           </BodyText>
         </div>
         <div className="double-input-group">
-          <CustomInput
+          <MaskedNumberInput
             {...props}
+            decimalLimit={6}
             value={conversionValue.secondValue}
             placeholder={placeholder2}
             onChange={(e) => {
               const secondValue = e.target.value;
-              const firstValue = parseFloat(secondValue) * Number(conversionData.formula_1);
+              const firstValue = formatToConversionInputValue(
+                Number(secondValue.replaceAll(',', '')) * Number(conversionData.formula_1),
+              );
               setConversionValue({
-                firstValue: isNaN(firstValue) ? '' : firstValue.toString(),
+                firstValue: firstValue,
                 secondValue: secondValue,
               });
             }}
             fontLevel={fontSize}
-            className="first-input-box"
             onClick={(e) => e.stopPropagation()}
+            style={{ height: '22px', background: '#fff', marginTop: '2px' }}
           />
           <BodyText level={fontSize} fontFamily="Roboto" customClass="unit-input-label">
             {conversionData.unit_2}

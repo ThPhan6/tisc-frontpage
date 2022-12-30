@@ -1,3 +1,4 @@
+import { BrandCompanyModal } from '@/features/services/components/BrandCompanyModal';
 import { useScreen } from '@/helper/common';
 
 import { useAppSelector } from '@/reducers';
@@ -5,8 +6,12 @@ import { closeModal } from '@/reducers/modal';
 
 import { LoginModal } from './components/modals/LoginModal';
 import { SignupModal } from './components/modals/SignupModal';
+import AssignTeamModal from '@/components/AssignTeam';
+import { ProjectTrackingLegendModal } from '@/components/LegendModal/LegendModal';
 import { MobileDrawer } from '@/components/Modal/Drawer';
 import InformationMarketAvailability from '@/features/market-availability/components/InformationMarketAvailability';
+import LocationModal from '@/features/team-profiles/components/LocationModal';
+import AccessLevelModal from '@/features/team-profiles/components/access-level-modal/AccessLevelModal';
 import { AboutModal } from '@/pages/LandingPage/components/AboutModal';
 import { BrandInterestedModal } from '@/pages/LandingPage/components/BrandInterestedModal';
 import { CancelBookingModal } from '@/pages/LandingPage/components/CancelBookingModal';
@@ -15,6 +20,8 @@ import { NoticeModal } from '@/pages/LandingPage/components/NoticeModal';
 import { PasswordModal } from '@/pages/LandingPage/components/PasswordModal';
 import { PoliciesModal } from '@/pages/LandingPage/components/PoliciesModal';
 import { VerifyAccount } from '@/pages/LandingPage/components/VerifyAccount';
+import ContentTypeModal from '@/pages/TISC/Product/Attribute/components/ContentTypeModal';
+import { SelectBrandModal } from '@/pages/TISC/Product/Configuration/components/TopBar';
 
 import AssignProductModal from '@/features/product/modals/AssignProductModal';
 
@@ -52,6 +59,24 @@ export const ModalController = () => {
         return <PasswordModal />;
       case 'Verify Account':
         return <VerifyAccount />;
+
+      // General
+      case 'Assign Team':
+        return <AssignTeamModal />;
+      case 'Project Tracking Legend':
+        return <ProjectTrackingLegendModal />;
+      case 'Access Level':
+        return <AccessLevelModal />;
+      case 'Work Location':
+        return <LocationModal />;
+
+      // TISC
+      case 'Product Attribute Type':
+        return <ContentTypeModal />;
+      case 'Select Brand':
+        return <SelectBrandModal />;
+      case 'Brand Company':
+        return <BrandCompanyModal />;
 
       // design firms
       case 'Assign Product':

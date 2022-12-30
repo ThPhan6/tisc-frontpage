@@ -8,7 +8,7 @@ import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.sv
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import { getAllProductCategory } from '@/features/categories/services';
-import { capitalize, isEmpty, upperCase } from 'lodash';
+import { capitalize, flatMap, isEmpty, upperCase } from 'lodash';
 
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { CategoryNestedList } from '@/features/categories/types';
@@ -21,29 +21,55 @@ import styles from './CategoryDropdown.less';
 interface DropdownCategoryListProps {
   selected?: CheckboxValue[];
   chosenItem?: CheckboxValue[];
-  onChange?: (value: CheckboxValue[]) => void;
+  onChange: (value: CheckboxValue[]) => void;
 }
 type ActiveKeyType = string | number | (string | number)[];
+type CheckedCategories = { [key: string]: CheckboxValue[] };
 
 export const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props) => {
   const { selected, onChange, chosenItem } = props;
-  const category = useAppSelector((state) => state.category);
+  const categories = useAppSelector((state) => state.category.list);
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
   const [secondActiveKey, setSecondActiveKey] = useState<ActiveKeyType>([]);
+  const [checkedCategories, setCheckedCategories] = useState<CheckedCategories>({});
 
   useEffect(() => {
-    category.list.forEach((item, index) => {
-      item.subs.forEach((sub, subIndex) => {
-        const selectedOption = sub.subs.find((categoryItem) => {
-          return chosenItem && chosenItem.find((checked) => categoryItem.id === checked.value);
+    onChange(flatMap(Object.values(checkedCategories)));
+  }, [checkedCategories]);
+
+  useEffect(() => {
+    if (categories.length && chosenItem?.length) {
+      const curCheckedCategories: CheckedCategories = {};
+      categories.forEach((item) => {
+        item.subs.forEach((sub) => {
+          curCheckedCategories[sub.id] = sub.subs
+            .filter((cate) => chosenItem.some((checked) => cate.id === checked.value))
+            .map((checkedItem) => ({
+              label: checkedItem.name,
+              value: checkedItem.id,
+            }));
         });
-        if (selectedOption) {
+      });
+      setCheckedCategories(curCheckedCategories);
+    }
+  }, [categories, chosenItem]);
+
+  useEffect(() => {
+    if (!chosenItem || chosenItem.length) {
+      return;
+    }
+    categories.forEach((item, index) => {
+      item.subs.forEach((sub, subIndex) => {
+        const haveSelectedOption = sub.subs.some((categoryItem) =>
+          chosenItem?.some((checked) => categoryItem.id === checked.value),
+        );
+        if (haveSelectedOption) {
           setActiveKey([index]);
           setSecondActiveKey([`${index}-${subIndex}`]);
         }
       });
     });
-  }, [category, chosenItem]);
+  }, [categories, chosenItem]);
 
   useEffect(() => {
     getAllProductCategory();
@@ -57,7 +83,8 @@ export const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props)
           className={styles.dropdownCount}
           style={{
             marginLeft: 8,
-          }}>
+          }}
+        >
           ({item.subs.length})
         </span>
       </span>
@@ -71,7 +98,8 @@ export const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props)
           className={styles.dropdownCount}
           style={{
             marginLeft: 8,
-          }}>
+          }}
+        >
           ({item.subs.length})
         </span>
       </span>
@@ -88,26 +116,30 @@ export const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props)
         setSecondActiveKey([]);
         setActiveKey(key);
       }}
-      activeKey={activeKey}>
-      {category.list.map((item, index) => (
+      activeKey={activeKey}
+    >
+      {categories.map((item, index) => (
         <Collapse.Panel
           header={renderHeader(item)}
           key={index}
           collapsible={isEmpty(item.subs) ? 'disabled' : undefined}
-          className="site-collapse-custom-panel">
+          className="site-collapse-custom-panel"
+        >
           <Collapse
             bordered={false}
             expandIconPosition="right"
             expandIcon={({ isActive }) => (isActive ? <DropupV2Icon /> : <DropdownV2Icon />)}
             className={styles.secondDropdownList}
             onChange={setSecondActiveKey}
-            activeKey={secondActiveKey}>
+            activeKey={secondActiveKey}
+          >
             {item.subs.map((sub, subIndex) => (
               <Collapse.Panel
                 header={renderSubHeader(sub)}
                 key={`${index}-${subIndex}`}
                 collapsible={isEmpty(sub.subs) ? 'disabled' : undefined}
-                className="site-collapse-custom-panel">
+                className="site-collapse-custom-panel"
+              >
                 <CustomCheckbox
                   options={sub.subs.map((categoryItem) => {
                     return {
@@ -116,7 +148,9 @@ export const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props)
                     };
                   })}
                   selected={selected}
-                  onChange={onChange}
+                  onChange={(value) =>
+                    setCheckedCategories((prev) => ({ ...prev, [sub.id]: value }))
+                  }
                   isCheckboxList
                   heightItem="36px"
                 />
