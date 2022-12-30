@@ -214,8 +214,12 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({
 
       {optionState.items.map((item, itemIndex) => (
         <Row
+          key={item.id || itemIndex}
           className={styles.optionContent}
-          style={{ paddingBottom: optionState.use_image ? 8 : 1 }}>
+          style={{
+            paddingBottom: optionState.use_image ? 8 : 1,
+            marginBottom: optionState.use_image ? 0 : 8,
+          }}>
           {optionState.use_image ? (
             <ImageUpload
               onFileChange={onChangeImage(itemIndex)}

@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
 
+import { ReactComponent as DeleteIcon } from '@/assets/icons/action-remove-icon.svg';
 import { ReactComponent as DropDownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
@@ -30,7 +31,7 @@ import { getBrandLocation, getDistributorLocation } from '@/features/locations/a
 
 const activeKey = '1';
 
-const getSelectedLocation = (locationGroup: LocationGroupedByCountry[], selectedId: string) => {
+const getSelectedLocation = (locationGroup: LocationGroupedByCountry[], selectedId?: string) => {
   const allLocations = locationGroup.flatMap((el) => el.locations);
 
   const selectedLocation = allLocations.find((el) => el.id === selectedId);
@@ -118,6 +119,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
   const [distributorActiveKey, setDistributorActiveKey] = useState<string | string[]>();
   const [distributorAddresses, setDistributorAddresses] = useState<DistributorProductMarket[]>([]);
 
+  /// brand and distributor selected have been setted from useProductAttributeForm
   const brandLocationId =
     useAppSelector((state) =>
       customProduct
@@ -200,16 +202,15 @@ export const VendorLocation: FC<VendorTabProps> = ({
     }
   };
 
-  const handleOnChangeSpecifying = (checked: RadioValue) => {
+  const handleOnChangeSpecifying = (checked?: RadioValue, isBrand?: boolean) => {
     const newValue = checked?.value ? String(checked.value) : '';
     const updateProductDetailFunc = customProduct
       ? updateCustomProductSpecifiedDetail
       : setPartialProductDetail;
     const newUpdate =
-      locationPopup === 'brand'
+      locationPopup === 'brand' || isBrand
         ? { brand_location_id: newValue }
         : { distributor_location_id: newValue };
-
     store.dispatch(updateProductDetailFunc(newUpdate));
     if (userSelection) {
       selectProductSpecification(productId, newUpdate);
@@ -248,19 +249,31 @@ export const VendorLocation: FC<VendorTabProps> = ({
     ) : null;
 
   const renderCollapseHeader = (
-    title: string,
+    title: 'Brand Address' | 'Distributor Address',
     country: string,
     activeCollapse: boolean,
     onSelect: () => void,
   ) => {
     const handleShowAddress = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      if (brandActiveKey === activeKey || distributorActiveKey === activeKey) {
-        e.stopPropagation();
-      }
+      e.stopPropagation();
+      onSelect?.();
+    };
 
-      if (onSelect) {
-        onSelect();
-      }
+    const handleUncheckAddress = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+      e.stopPropagation();
+      handleOnChangeSpecifying(undefined, title === 'Brand Address');
+    };
+
+    const renderDeleteIcon = () => {
+      if (
+        isTiscAdmin ||
+        isPublicPage ||
+        (title == 'Brand Address' && !chosenBrandCountry) ||
+        (title == 'Distributor Address' && !chosenDistributorCountry)
+      )
+        return null;
+
+      return <DeleteIcon className={styles.deleteIcon} onClick={handleUncheckAddress} />;
     };
 
     const getCountryName = () => {
@@ -291,15 +304,29 @@ export const VendorLocation: FC<VendorTabProps> = ({
           </BodyText>
 
           <div
-            className={`contact-select-box ${isTiscAdmin ? 'cursor-disabled' : 'cursor-pointer'}`}
-            onClick={isTiscAdmin || isPublicPage ? undefined : (e) => handleShowAddress(e)}>
-            <BodyText
-              level={6}
-              fontFamily="Roboto"
-              color={country ? 'mono-color' : 'mono-color-medium'}>
-              {getCountryName()}
-            </BodyText>
-            {renderRightIcon()}
+            className="flex-start"
+            style={{ height: '100%', cursor: 'default' }}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}>
+            {renderDeleteIcon()}
+
+            <div
+              className={` ${isTiscAdmin ? 'cursor-disabled' : 'cursor-default'}`}
+              onClick={isTiscAdmin || isPublicPage ? undefined : (e) => handleShowAddress(e)}>
+              <div
+                className={`contact-select-box ${
+                  isTiscAdmin ? 'cursor-default' : 'cursor-pointer'
+                }`}>
+                <BodyText
+                  level={6}
+                  fontFamily="Roboto"
+                  color={country ? 'mono-color' : 'mono-color-medium'}>
+                  {getCountryName()}
+                </BodyText>
+                {renderRightIcon()}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -329,6 +356,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
               )}
               onChange={(key) => handleCollapse('brand', key)}
               activeKey={brandActiveKey}
+              collapsible={isTiscAdmin || !chosenBrand.value ? 'disabled' : undefined}
               customHeaderClass={styles.collapseHeader}>
               {renderBusinessAdressDetail(selectedLocationBrand)}
             </CustomCollapse>
@@ -359,6 +387,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
               )}
               onChange={(key) => handleCollapse('distributor', key)}
               activeKey={distributorActiveKey}
+              collapsible={isTiscAdmin || !chosenDistributor.value ? 'disabled' : undefined}
               customHeaderClass={styles.collapseHeader}>
               {renderDistributorBusinessAdressDetail(selectedLocationDistributor)}
             </CustomCollapse>

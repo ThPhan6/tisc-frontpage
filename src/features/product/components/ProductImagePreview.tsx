@@ -300,6 +300,34 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
     );
   };
 
+  const renderActionRight = () => {
+    if (isTiscAdmin || isPublicPage || !product) {
+      return null;
+    }
+
+    return (
+      <>
+        <ShareViaEmail
+          visible={showShareEmailModal.value}
+          setVisible={showShareEmailModal.setValue}
+          product={product}
+          isCustomProduct={isCustomProduct}
+        />
+        <AssignProductModal
+          visible={showAssignProductModal.value}
+          setVisible={showAssignProductModal.setValue}
+          productId={product.id}
+          isCustomProduct={isCustomProduct || false}
+        />
+        <InquiryRequest
+          visible={showInquiryRequestModal.value}
+          setVisible={showInquiryRequestModal.setValue}
+          product={product}
+        />
+      </>
+    );
+  };
+
   return (
     <div className={styles.productContent}>
       <div className={styles.productImageWrapper}>
@@ -367,29 +395,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
 
         {renderBottomPreview()}
 
-        {product.id ? (
-          <ShareViaEmail
-            visible={showShareEmailModal.value}
-            setVisible={showShareEmailModal.setValue}
-            product={product}
-            isCustomProduct={isCustomProduct}
-          />
-        ) : null}
-        {product.id ? (
-          <AssignProductModal
-            visible={showAssignProductModal.value}
-            setVisible={showAssignProductModal.setValue}
-            productId={product.id}
-            isCustomProduct={isCustomProduct || false}
-          />
-        ) : null}
-        {product.id ? (
-          <InquiryRequest
-            visible={showInquiryRequestModal.value}
-            setVisible={showInquiryRequestModal.setValue}
-            product={product}
-          />
-        ) : null}
+        {renderActionRight()}
       </div>
     </div>
   );

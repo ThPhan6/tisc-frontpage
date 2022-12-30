@@ -70,10 +70,11 @@ export async function updateProjectTrackingPriority(
     });
 }
 
-export async function getProjectTrackingSummary() {
-  return request<{ data: DataMenuSummaryProps[] }>(`/api/project-tracking/summary`, {
-    method: 'GET',
-  })
+export async function getProjectTrackingSummary(workspace?: boolean) {
+  return request<{ data: DataMenuSummaryProps[] }>(
+    workspace ? `/api/brand/workspace/summary` : `/api/project-tracking/summary`,
+    { method: 'GET' },
+  )
     .then((response) => {
       store.dispatch(setSummaryProjectTracking(response.data));
     })

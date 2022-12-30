@@ -4,6 +4,7 @@ import { Col, Row } from 'antd';
 
 import { ReactComponent as SingleRightFormIcon } from '@/assets/icons/single-right-form-icon.svg';
 
+import { CustomTypography } from '../Typography/types';
 import { MainContentProps } from './types';
 import type { CustomInputProps } from '@/components/Form/types';
 
@@ -43,6 +44,7 @@ interface InputGroupProps extends CustomInputProps {
   messageType?: 'normal' | 'warning' | 'error';
   forceDisplayDeleteIcon?: boolean;
   isTableFormat?: boolean;
+  labelColor?: CustomTypography['color'];
 }
 
 const InputGroup: FC<InputGroupProps> = ({
@@ -67,6 +69,7 @@ const InputGroup: FC<InputGroupProps> = ({
   disabled,
   forceDisplayDeleteIcon,
   isTableFormat,
+  labelColor = 'mono-color',
   ...props
 }) => {
   const { labelSpan, inputSpan, fontSize, iconDelete } = useGeneralFeature(
@@ -80,7 +83,7 @@ const InputGroup: FC<InputGroupProps> = ({
   const renderLabel = () => {
     return (
       <Col span={labelSpan} className="input-label-container">
-        <BodyText level={fontLevel ?? 5} customClass="input-label">
+        <BodyText level={fontLevel ?? 5} customClass={`${'input-label'} ${labelColor}`}>
           {label}
           {required ? (
             <span

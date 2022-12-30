@@ -15,8 +15,9 @@ import { ProjecTrackingList } from '@/types/project-tracking.type';
 
 import { ProjectTrackingHeader } from '../../pages/Brand/ProjectTracking/components/ProjectTrackingHeader';
 import { ProjectCard } from './components/ProjectCard';
-import { setLoadingAction } from '@/components/LoadingPage/slices';
 import ProjectListHeader from '@/pages/Designer/Project/components/ProjectListHeader';
+
+import { hidePageLoading, showPageLoading } from '../loading/loading';
 
 const MyWorkspace = () => {
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
@@ -35,9 +36,9 @@ const MyWorkspace = () => {
   /// for tisc
   useEffect(() => {
     if (isTiscUser) {
-      setLoadingAction(true);
+      showPageLoading();
       getTiscWorkspace().then((res) => {
-        setLoadingAction(false);
+        hidePageLoading();
         if (res) {
           setListCard(res);
         }
@@ -48,13 +49,13 @@ const MyWorkspace = () => {
   /// for brand
   useEffect(() => {
     if (isBrandUser) {
-      setLoadingAction(true);
+      showPageLoading();
       getBrandWorkspace(
         {
           project_status: selectedFilter.id === GlobalFilter.id ? undefined : selectedFilter.id,
         },
         (data) => {
-          setLoadingAction(false);
+          hidePageLoading();
           setListCard(data);
         },
       );
@@ -64,7 +65,7 @@ const MyWorkspace = () => {
   /// for designer
   useEffect(() => {
     if (isDesignerUser) {
-      getProjectSummary().then((res) => {
+      getProjectSummary(true).then((res) => {
         if (res) {
           setSummaryData(res);
         }
@@ -73,7 +74,7 @@ const MyWorkspace = () => {
   }, []);
   useEffect(() => {
     if (isDesignerUser) {
-      setLoadingAction(true);
+      showPageLoading();
       getDesignerWorkspace(
         {
           filter:
@@ -82,7 +83,7 @@ const MyWorkspace = () => {
               : { project_status: selectedFilter.id },
         },
         (data) => {
-          setLoadingAction(false);
+          hidePageLoading();
           setListCard(data);
         },
       );
@@ -99,6 +100,7 @@ const MyWorkspace = () => {
         <ProjectTrackingHeader
           selectedFilter={selectedFilter}
           setSelectedFilter={setSelectedFilter}
+          workspace
         />
       );
     }
