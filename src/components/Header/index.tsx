@@ -4,10 +4,10 @@ import { PATH } from '@/constants/path';
 import { UserHomePagePaths } from '@/constants/user.constant';
 import { USER_ROLE } from '@/constants/userRoles';
 import { HeaderViewProps } from '@ant-design/pro-layout/lib/Header';
-import SiderMenu from '@ant-design/pro-layout/lib/components/SiderMenu/SiderMenu';
 import { Row } from 'antd';
 
 import { ReactComponent as ActionIcon } from '@/assets/icons/action-icon.svg';
+import { ReactComponent as AlignRightIcon } from '@/assets/icons/align-right-icon.svg';
 import { ReactComponent as LanguageIcon } from '@/assets/icons/language-icon.svg';
 import { ReactComponent as LanguageWhiteIcon } from '@/assets/icons/language-white-icon.svg';
 import { ReactComponent as QuestionIcon } from '@/assets/icons/question-icon.svg';
@@ -23,12 +23,14 @@ import { useAppSelector } from '@/reducers';
 
 import { HeaderDropdown, MenuHeaderDropdown } from '../HeaderDropdown';
 import { LogoIcon } from '../LogoIcon';
+import { SiderMenu } from '../Menu/AsideMenu';
 import { DrawerMenu } from '../Menu/DrawerMenu';
 import { CustomDrawer } from '../Modal/Drawer';
 import { AvatarDropdown } from './AvatarDropdown';
 import styles from './styles/index.less';
 
-const Header = (props: HeaderViewProps) => {
+const PageHeader = (props: HeaderViewProps) => {
+  console.log(props);
   const { isMobile } = useScreen();
   const showQuestionDropdown = useBoolean();
   const showLanguageDropdown = useBoolean();
@@ -44,6 +46,7 @@ const Header = (props: HeaderViewProps) => {
 
   const logoImage = getValueByCondition(
     [
+      [isMobile, <AlignRightIcon style={{ color: '#fff' }} />],
       [isTiscUser, <img src={TISCLogoIcon} alt="logo" />],
       [isBrandUser, <LogoIcon logo={String(user?.brand?.logo)} />],
       [isDesignerUser, <LogoIcon logo={String(user?.design?.logo)} />],
@@ -132,7 +135,11 @@ const Header = (props: HeaderViewProps) => {
 
         {isMobile ? (
           <div className="flex-center cursor-pointer" onClick={() => showFaqMenu.setValue(true)}>
-            <ActionIcon width={24} height={24} style={{ marginTop: 0, marginLeft: 12 }} />
+            <ActionIcon
+              width={24}
+              height={24}
+              style={{ marginTop: 0, marginLeft: 16, color: '#fff' }}
+            />
           </div>
         ) : (
           <span className={styles.action}>
@@ -159,14 +166,14 @@ const Header = (props: HeaderViewProps) => {
               showFaqMenu.setValue(false);
               pushTo(PATH.howTo);
             },
-            icon: <QuestionIcon width={20} height={20} />,
+            icon: <QuestionIcon width={24} height={24} />,
             label: 'How-To',
           },
           {
             onClick: () => {
               showFaqMenu.setValue(false);
             },
-            icon: <LanguageIcon width={20} height={20} />,
+            icon: <LanguageIcon width={24} height={24} />,
             label: 'English',
           },
         ]}
@@ -192,4 +199,4 @@ const Header = (props: HeaderViewProps) => {
   );
 };
 
-export default Header;
+export default PageHeader;
