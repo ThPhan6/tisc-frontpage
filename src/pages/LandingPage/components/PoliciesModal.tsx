@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 
 import { getListPolicy } from '../services/api';
+import { useLandingPageStyles } from './hook';
 
 import { ModalProps, Policy } from '../types';
 import { CustomModalProps } from '@/components/Modal/types';
@@ -27,6 +28,7 @@ export const PoliciesModal: FC<CustomModalProps & { customTheme?: ModalProps['th
   const [cookie, setCookie] = useState<Policy>();
 
   const { darkTheme } = useAppSelector(modalThemeSelector);
+  const popupStylesProps = useLandingPageStyles(darkTheme);
 
   const tabs = [
     { tab: 'TERMS OF SERVICES', key: PolicyTabKeys.terms },
@@ -54,31 +56,8 @@ export const PoliciesModal: FC<CustomModalProps & { customTheme?: ModalProps['th
     });
   }, []);
 
-  const getBackgroundColor = () => {
-    if (customTheme) {
-      return customTheme === 'dark' ? '#000' : '';
-    }
-
-    return darkTheme ? '#000' : '';
-  };
-
-  const getIconColor = () => {
-    if (customTheme) {
-      return customTheme === 'dark' ? styles.closeIcon : '';
-    }
-
-    return darkTheme ? styles.closeIcon : '';
-  };
-
   return (
-    <CustomModal
-      bodyStyle={{
-        backgroundColor: getBackgroundColor(),
-        height: '576px',
-      }}
-      closeIconClass={getIconColor()}
-      {...props}
-    >
+    <CustomModal {...popupStylesProps} {...props}>
       <div className={styles.content}>
         <div className={styles.header}>
           <div className={styles.customTab}>

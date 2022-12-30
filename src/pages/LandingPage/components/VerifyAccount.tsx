@@ -29,7 +29,7 @@ export const VerifyAccount: FC = () => {
   }, [time]);
 
   return (
-    <CustomModal visible>
+    <CustomModal visible centered className={styles.modal}>
       <div className={styles.content}>
         <MainTitle level={2} textAlign="center">
           Your account was verify successfully

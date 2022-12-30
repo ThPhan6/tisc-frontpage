@@ -1,5 +1,7 @@
+import { useLandingPageStyles } from './hook';
+
 import { useAppSelector } from '@/reducers';
-import { closeModal, modalThemeSelector } from '@/reducers/modal';
+import { modalThemeSelector } from '@/reducers/modal';
 
 import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
@@ -34,17 +36,11 @@ const browserRecommendVersion = [
 ];
 
 export const NoticeModal = () => {
-  const { themeStyle } = useAppSelector(modalThemeSelector);
+  const { darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
+  const popupStylesProps = useLandingPageStyles(darkTheme);
 
   return (
-    <CustomModal
-      visible
-      bodyStyle={{
-        backgroundColor: themeStyle ? '#000' : '',
-        height: '576px',
-      }}
-      closeIconClass={themeStyle ? styles.closeIcon : ''}
-      onCancel={closeModal}>
+    <CustomModal {...popupStylesProps}>
       <div className={styles.content}>
         <div className={styles.intro}>
           <MainTitle level={1} customClass={styles[`body${themeStyle}`]}>
@@ -65,7 +61,8 @@ export const NoticeModal = () => {
                   level={5}
                   fontFamily="Roboto"
                   customClass={styles[`body${themeStyle}`]}
-                  key={index}>
+                  key={index}
+                >
                   {item.name}
                 </BodyText>
               ))}
@@ -76,7 +73,8 @@ export const NoticeModal = () => {
                   level={5}
                   fontFamily="Roboto"
                   customClass={styles[`body${themeStyle}`]}
-                  key={index}>
+                  key={index}
+                >
                   {`version ${item.version} or later`}
                 </BodyText>
               ))}
