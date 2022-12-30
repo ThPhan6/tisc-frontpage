@@ -301,12 +301,14 @@ tr[class^='ant-table-expanded-row'] tbody > tr > td {
 }
 
 .mobileSummary {
-  left: -16px;
-  justify-content: space-between;
-  width: calc(100% + 32px);
-  padding-left: 24px;
   overflow: auto;
   &::-webkit-scrollbar {
     display: none;
+  }
+  :global(.item) {
+    margin-right: 12px;
+  }
+  :global(.item:last-child) {
+    left: 12px !important;
   }
 }

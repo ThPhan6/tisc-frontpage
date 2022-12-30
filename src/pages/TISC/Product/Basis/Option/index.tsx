@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import { PATH } from '@/constants/path';
 
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
-import { confirmDelete, useScreen } from '@/helper/common';
+import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
 import { deleteBasisOption, getProductBasisOptionPagination } from '@/services';
@@ -18,7 +18,6 @@ import { ActionMenu } from '@/components/TableAction';
 const BasisOptionList: React.FC = () => {
   useAutoExpandNestedTableColumn(2, [6]);
   const tableRef = useRef<any>();
-  const { isMobile } = useScreen();
 
   const handleUpdateBasisOption = (id: string) => {
     pushTo(PATH.updateOptions.replace(':id', id));
@@ -198,7 +197,6 @@ const BasisOptionList: React.FC = () => {
             level: 3,
           }),
         })}
-        footerClass={isMobile ? 'flex-end' : ''}
       />
     </>
   );
