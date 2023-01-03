@@ -2,12 +2,15 @@ import { useEffect, useRef } from 'react';
 
 import { PATH } from '@/constants/path';
 
+import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
+import { ReactComponent as BillingIcon } from '@/assets/icons/billing-icon.svg';
+
 import { deleteService, getServicesPagination, getServicesSummary } from '@/features/services/api';
 import { ServiceHeader } from '@/features/services/components/ServiceHeader';
 import styles from '@/features/services/index.less';
 import { InvoiceStatus, ServicesResponse } from '@/features/services/type';
 import { checkShowBillingAmount, formatToMoneyValue } from '@/features/services/util';
-import { confirmDelete } from '@/helper/common';
+import { confirmDelete, useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { getFullName } from '@/helper/utils';
 
@@ -21,6 +24,7 @@ import moment from 'moment';
 
 const RevenueService = () => {
   const tableRef = useRef<any>();
+  const isMobile = useScreen().isMobile;
 
   const handleViewService = (id: string) => {
     pushTo(PATH.tiscRevenueServiceDetail.replace(':id', id));
@@ -113,9 +117,25 @@ const RevenueService = () => {
       width: '5%',
       align: 'center',
       render: (_value, record) => {
+        const isPendingStatus = record.status !== InvoiceStatus.Pending;
+
+        if (isMobile) {
+          return (
+            <div className="flex-start">
+              <BillingIcon
+                style={{ marginRight: 24 }}
+                onClick={() => handleViewService(record.id)}
+              />
+              <EditIcon
+                onClick={() => (isPendingStatus ? undefined : handleUpdateService(record.id))}
+                className={`${isPendingStatus ? styles.disabledIcon : ''}`}
+              />
+            </div>
+          );
+        }
+
         return (
           <ActionMenu
-            editActionOnMobile={false}
             actionItems={[
               {
                 type: 'billing',
@@ -124,12 +144,12 @@ const RevenueService = () => {
               {
                 type: 'deleted',
                 onClick: () => handleDeleteService(record.id),
-                disabled: record.status !== InvoiceStatus.Pending ? true : false,
+                disabled: isPendingStatus ? true : false,
               },
               {
                 type: 'updateOrView',
                 onClick: () => handleUpdateService(record.id),
-                disabled: record.status !== InvoiceStatus.Pending ? true : false,
+                disabled: isPendingStatus ? true : false,
               },
             ]}
           />
