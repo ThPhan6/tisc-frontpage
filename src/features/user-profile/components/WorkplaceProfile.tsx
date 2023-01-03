@@ -1,3 +1,5 @@
+import { FC } from 'react';
+
 import { getFullName } from '@/helper/utils';
 
 import { useAppSelector } from '@/reducers';
@@ -9,14 +11,14 @@ import { Title } from '@/components/Typography';
 
 import styles from './WorkplaceProfile.less';
 
-export const WorkplaceProfile = () => {
+export const WorkplaceProfile: FC<{ contentHeight?: number }> = ({ contentHeight }) => {
   const user = useAppSelector((state) => state.user.user);
   return (
     <div className={styles['workplace-container']}>
       <div className={styles.header}>
         <Title level={7}>WORKPLACE PROFILE</Title>
       </div>
-      <div className={styles.content}>
+      <div className={styles.content} style={{ height: contentHeight }}>
         <FormGroup label="Full Name" layout="vertical" formClass={styles.form}>
           <CustomInput readOnly borderBottomColor="mono-medium" value={getFullName(user)} />
         </FormGroup>
