@@ -6,6 +6,7 @@ import { ReactComponent as FeebBackIcon } from '@/assets/icons/feedback.svg';
 import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/ic-share.svg';
 import { ReactComponent as RecommendationIcon } from '@/assets/icons/recommendation.svg';
 
+import { useScreen } from '@/helper/common';
 import { showImageUrl } from '@/helper/utils';
 import { getPermission, updatePermission } from '@/services/permission.api';
 
@@ -49,6 +50,7 @@ const furturePermissionData = [
 
 const AccessLevelModal: FC = () => {
   const { type } = useAppSelector(modalPropsSelector).accessLevel;
+  const isMobile = useScreen().isMobile;
 
   const [data, setData] = useState<PermissionData[]>([]);
 
@@ -89,7 +91,7 @@ const AccessLevelModal: FC = () => {
       <Fragment key={menu.name}>
         <tr className={styles.menu}>
           <td className={`${styles.menu_item} ${subType === 'sub-item' ? styles.sub_menu : ''}`}>
-            {menu.logo ? (
+            {menu.logo && !isMobile ? (
               <img
                 src={showImageUrl(menu.logo)}
                 className={styles.menu_item__logo}
@@ -217,6 +219,19 @@ const AccessLevelModal: FC = () => {
           </>
         </tbody>
       </table>
+      {isMobile && type == 'designer' ? (
+        <div className={styles.designerInfo}>
+          <MainTitle level={4} style={{ paddingBottom: 4 }}>
+            Note
+          </MainTitle>
+          <BodyText level={6} fontFamily="Roboto">
+            Only <span className={styles.customText}>Design Admin</span> user could assign the{' '}
+            <span className={styles.customText}>projects</span> to the{' '}
+            <span className={styles.customText}>Design Lead/Design Team</span> member, tracking
+            their tasks and monitoring actions.
+          </BodyText>
+        </div>
+      ) : null}
     </Popover>
   );
 };
