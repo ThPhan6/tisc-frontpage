@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constants/message';
 import { AVATAR_ACCEPT_TYPES, STATUS_RESPONSE } from '@/constants/util';
@@ -45,7 +45,7 @@ const interestedData = [
   { label: 'Product Recommendations/Updates', value: 4 },
 ];
 
-export const PersonalProfile = () => {
+export const PersonalProfile: FC<{ contentHeight?: number }> = ({ contentHeight }) => {
   const [fileInput, setFileInput] = useState<any>();
   const { fetchUserInfo, currentUser } = useCustomInitialState();
   const submitButtonStatus = useBoolean();
@@ -209,7 +209,7 @@ export const PersonalProfile = () => {
         </Tooltip>
       </div>
       <div className={styles.wrapper}>
-        <div className={styles.content}>
+        <div className={styles.content} style={{ height: contentHeight }}>
           <Upload name="avatar-drag-drop" {...uploadProps}>
             <div className={`${styles.avatarContainer}`}>
               <div>

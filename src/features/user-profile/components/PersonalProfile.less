@@ -23,6 +23,10 @@
     justify-content: space-between;
     .content {
       padding: 16px;
+      overflow: auto;
+      &::-webkit-scrollbar {
+        display: none;
+      }
       .form-upload {
         box-shadow: inset 0 -0.7px 0 @mono-color-dark;
         .wrapper-upload {
