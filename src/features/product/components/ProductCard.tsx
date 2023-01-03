@@ -99,9 +99,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   // check user permission to action
-  const showShareEmail = useCheckPermission(['Brand Admin', 'Design Admin']);
+  const showShareEmail = useCheckPermission([
+    'Brand Admin',
+    'Design Admin',
+    'Brand Team',
+    'Design Team',
+  ]);
   const isTiscAdmin = useCheckPermission('TISC Admin');
-  const isDesignerUser = useCheckPermission('Design Admin');
 
   const [likeCount, setLikeCount] = useState(product.favorites ?? 0);
   const likeProduct = () => {
@@ -203,13 +207,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
     },
     {
       tooltipText: 'Inquiry/Request',
-      show: Boolean(showInquiryRequest && isDesignerUser && !isCustomProduct),
+      show: Boolean(showInquiryRequest && isDesignFirmUser && !isCustomProduct),
       Icon: CommentIcon,
       onClick: () => showInquiryRequestModal.setValue(true),
     },
     {
       tooltipText: 'Assign Product',
-      show: isDesignerUser && !hideAssign,
+      show: isDesignFirmUser && !hideAssign,
       Icon: AssignIcon,
       onClick: () => showAssignProductModal.setValue(true),
     },
@@ -262,7 +266,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 </BodyText>
               </Tooltip>
             )}
-            {showSpecify && isDesignerUser ? (
+            {showSpecify && isDesignFirmUser ? (
               <Tooltip title={'Specify'} {...tooltipProps}>
                 <DispatchIcon
                   onClick={unlistedDisabled ? undefined : onSpecifyClick}
@@ -270,7 +274,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 />
               </Tooltip>
             ) : null}
-            {showActionMenu && isDesignerUser ? (
+            {showActionMenu && isDesignFirmUser ? (
               <ActionMenu
                 containerStyle={{ height: 16 }}
                 placement="bottomLeft"
