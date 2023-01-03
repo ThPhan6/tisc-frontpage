@@ -2,7 +2,6 @@ import React from 'react';
 
 import { PATH } from '@/constants/path';
 import { UserHomePagePaths } from '@/constants/user.constant';
-import { USER_ROLE } from '@/constants/userRoles';
 
 import { ReactComponent as LanguageIcon } from '@/assets/icons/language-icon.svg';
 import { ReactComponent as LanguageWhiteIcon } from '@/assets/icons/language-white-icon.svg';
@@ -11,7 +10,7 @@ import { ReactComponent as QuestionWhiteIcon } from '@/assets/icons/question-whi
 import logoIcon from '@/assets/tisc-logo-icon.svg';
 
 import { pushTo } from '@/helper/history';
-import { useBoolean, useGetUserRoleFromPathname } from '@/helper/hook';
+import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { getValueByCondition } from '@/helper/utils';
 
 import { useAppSelector } from '@/reducers';
@@ -26,10 +25,9 @@ const Header = () => {
   const showLanguageDropdown = useBoolean();
   const user = useAppSelector((state) => state.user.user);
 
-  const currentUser = useGetUserRoleFromPathname();
-  const isTiscUser = currentUser === USER_ROLE.tisc;
-  const isBrandUser = currentUser === USER_ROLE.brand;
-  const isDesignerUser = currentUser === USER_ROLE.design;
+  const isTiscUser = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  const isBrandUser = useCheckPermission(['Brand Admin', 'Brand Team']);
+  const isDesignerUser = useCheckPermission(['Design Admin', 'Design Team']);
 
   const logoImage = getValueByCondition(
     [
