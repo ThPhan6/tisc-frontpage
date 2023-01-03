@@ -39,7 +39,7 @@ const HowTo = () => {
     <div className={styles.content}>
       <Row>
         <Col span={isMobile ? 24 : 12}>
-          <div className={styles.form} style={{ height: isMobile ? screen.height - 72 : '' }}>
+          <div className={styles.form} style={{ height: isMobile ? 'calc(100vh - 72px)' : '' }}>
             <div className={styles.title}>
               <Title level={8}>HOW-TO</Title>
             </div>
