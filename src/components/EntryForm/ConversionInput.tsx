@@ -91,7 +91,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
             value={conversionValue.firstValue}
             placeholder={placeholder1}
             onChange={(e) => {
-              const firstValue = e.target.value;
+              const firstValue = e.target.value.replace(/,/g, '');
               const secondValue = formatToConversionInputValue(
                 Number(firstValue.replaceAll(',', '')) * Number(conversionData.formula_2),
               );
@@ -115,7 +115,7 @@ const ConversionInput: FC<ConversionInputProps> = ({
             value={conversionValue.secondValue}
             placeholder={placeholder2}
             onChange={(e) => {
-              const secondValue = e.target.value;
+              const secondValue = e.target.value.replace(/,/g, '');
               const firstValue = formatToConversionInputValue(
                 Number(secondValue.replaceAll(',', '')) * Number(conversionData.formula_1),
               );
