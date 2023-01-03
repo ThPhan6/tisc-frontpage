@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 
 import store from '@/reducers';
-import { openModal } from '@/reducers/modal';
+import { closeModal, openModal } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
 import { CustomModal } from '@/components/Modal';
@@ -29,7 +29,7 @@ export const VerifyAccount: FC = () => {
   }, [time]);
 
   return (
-    <CustomModal visible centered className={styles.modal}>
+    <CustomModal visible centered onCancel={closeModal} className={styles.modal}>
       <div className={styles.content}>
         <MainTitle level={2} textAlign="center">
           Your account was verify successfully
