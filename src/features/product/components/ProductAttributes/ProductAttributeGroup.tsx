@@ -269,6 +269,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             showActiveBoxShadow={!specifying}
             noBorder={noBorder}
             expandingHeaderFontStyle="bold"
+            arrowAlignRight={specifying}
             className={isTiscAdmin ? undefined : styles.vendorSection}
             customHeaderClass={`${styles.productAttributeItem} ${
               specifying ? styles.specifying : ''
