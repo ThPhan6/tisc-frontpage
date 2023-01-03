@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { PATH } from '@/constants/path';
+import { USER_ROLE } from '@/constants/userRoles';
 import { Tooltip, TooltipProps } from 'antd';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
@@ -76,7 +77,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onSpecifyClick,
 }) => {
   const normalProductfilter = useAppSelector((state) => state.product.list.filter);
-  const isDesignAdmin = useCheckPermission('Design Admin');
   const [liked, setLiked] = useState(product.is_liked);
   const showShareEmailModal = useBoolean();
   const showAssignProductModal = useBoolean();
@@ -92,6 +92,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   // check user role to redirect
   const userRole = useGetUserRoleFromPathname();
+  const isDesignFirmUser = userRole === USER_ROLE.design;
   const hanldeRedirectURL = () => {
     const path = getProductDetailPathname(userRole, product.id, '', isCustomProduct);
     pushTo(path);
@@ -256,7 +257,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               <Tooltip title="Favourite" {...tooltipProps}>
                 <BodyText level={6} fontFamily="Roboto" customClass="action-like">
                   {liked ? <LikedIcon onClick={likeProduct} /> : <LikeIcon onClick={likeProduct} />}
-                  {!isDesignAdmin &&
+                  {!isDesignFirmUser &&
                     `${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
                 </BodyText>
               </Tooltip>
