@@ -13,9 +13,10 @@ import { getValueByCondition } from '@/helper/utils';
 
 import { CheckboxValue } from '../CustomCheckbox/types';
 import { TabItem } from '../Tabs/types';
-import { GeneralInquiryForm, ProductItem, ProjectRequestForm } from '@/features/product/types';
+import { GeneralInquiryForm, ProjectRequestForm } from '@/features/product/types';
 import { ProjectItem } from '@/features/project/types';
 import { useAppSelector } from '@/reducers';
+import { closeModal, modalPropsSelector } from '@/reducers/modal';
 
 import BrandProductBasicHeader from '../BrandProductBasicHeader';
 import CollapseCheckboxList from '../CustomCheckbox/CollapseCheckboxList';
@@ -53,13 +54,9 @@ const PROJECT_REQUEST_DEFAULT_STATE = {
   request_for_ids: [],
 };
 
-interface InquiryRequestProps {
-  product: ProductItem;
-  visible: boolean;
-  setVisible: (visible: boolean) => void;
-}
+const InquiryRequestModal: FC = () => {
+  const { product } = useAppSelector(modalPropsSelector).shareViaEmail;
 
-const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible }) => {
   const isSubmitted = useBoolean(false);
   const [selectedTab, setSelectedTab] = useState<TabKeys>(TabKeys.inquiry);
   const inquiryTab = selectedTab === TabKeys.inquiry;
@@ -110,11 +107,6 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
 
   /// get inquiry/request data
   useEffect(() => {
-    if (!visible) {
-      setGeneralInquiryData(GENERAL_INQUIRY_DEFAULT_STATE);
-      setProjectRequestData(PROJECT_REQUEST_DEFAULT_STATE);
-      return;
-    }
     getInquiryRequestFor().then((res) => {
       setInquiryForData(
         res.map((el) => ({
@@ -132,7 +124,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
 
     // get Project Name data
     getAllProjects();
-  }, [visible]);
+  }, []);
 
   // handle onChange title and message
   const onChangeValueInput = (newData: 'title' | 'message', fieldValue: any) => {
@@ -248,7 +240,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
           }
 
           // close popup
-          setVisible(false);
+          closeModal();
         }, 300);
       }
     });
@@ -257,8 +249,7 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
   return (
     <Popover
       title="INQUIRY/REQUEST"
-      visible={visible}
-      setVisible={setVisible}
+      visible
       submitButtonStatus={isSubmitted.value}
       onFormSubmit={handleSubmit}
     >
@@ -355,4 +346,4 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
   );
 };
 
-export default InquiryRequest;
+export default InquiryRequestModal;

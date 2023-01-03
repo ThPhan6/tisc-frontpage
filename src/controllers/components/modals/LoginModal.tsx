@@ -8,7 +8,6 @@ import { message } from 'antd';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';
 import { ReactComponent as LockedForgotIcon } from '@/assets/icons/lock-forgot-icon.svg';
 import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
-import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-white-icon.svg';
 
 import {
   ForgotType,
@@ -20,6 +19,11 @@ import {
 import { useScreen } from '@/helper/common';
 import { useBoolean, useCustomInitialState, useString } from '@/helper/hook';
 import { isShowErrorMessage, validateEmail } from '@/helper/utils';
+import {
+  FooterContent,
+  ModalContainer,
+  useLandingPageStyles,
+} from '@/pages/LandingPage/components/hook';
 import { sample } from 'lodash';
 
 import { DataTableResponse } from '@/components/Table/types';
@@ -27,7 +31,6 @@ import type { LoginInput, Quotation } from '@/pages/LandingPage/types';
 import { useAppSelector } from '@/reducers';
 import { closeModal, modalThemeSelector } from '@/reducers/modal';
 
-import CustomButton from '@/components/Button';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
@@ -38,6 +41,7 @@ import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 export const LoginModal: FC<{ tiscLogin?: boolean }> = ({ tiscLogin }) => {
   const { isMobile } = useScreen();
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
+  const popupStylesProps = useLandingPageStyles(darkTheme);
 
   const [inputValue, setInputValue] = useState<LoginInput>({
     email: '',
@@ -183,117 +187,102 @@ export const LoginModal: FC<{ tiscLogin?: boolean }> = ({ tiscLogin }) => {
   };
 
   return (
-    <CustomModal
-      visible
-      containerClass={darkTheme ? styles.modal : ''}
-      bodyStyle={{
-        backgroundColor: darkTheme ? '#000' : '',
-        height: '576px',
-      }}
-      closeIconClass={darkTheme ? styles.closeIcon : ''}>
-      <div className={styles.content} style={{ paddingBottom: isMobile ? 64 : 32 }}>
-        <div className={styles.intro}>
-          <MainTitle level={2} customClass={styles[`body${themeStyle}`]}>
-            {randomQuotation ? `"${randomQuotation.quotation}"` : ''}
-          </MainTitle>
-          <BodyText level={2} customClass={styles[`title${themeStyle}`]}>
-            {randomQuotation ? `${randomQuotation.author}, ${randomQuotation.identity}` : ''}
-          </BodyText>
-        </div>
-        <div className={styles.main}>
-          <div className={styles.form}>
-            <div onClick={() => showForgotPassword.setValue(false)}>
-              <CustomInput
-                fromLandingPage
-                status={isShowErrorMessage('email', inputValue.email) ? '' : 'error'}
-                theme={theme}
-                size="large"
-                containerClass={`${styles.email} ${
-                  showForgotPassword.value ? styles.disabled : ''
-                }`}
-                placeholder="work email"
-                prefix={<EmailIcon />}
-                focusColor="secondary"
-                borderBottomColor={darkTheme ? 'white' : 'mono'}
-                disabled={showForgotPassword.value}
-                onChange={handleOnChange}
-                onPressEnter={onKeyPress}
-                name="email"
-              />
-              <CustomInput
-                fromLandingPage
-                status={inputValue.password && inputValue.password.length < 8 ? 'error' : ''}
-                theme={theme}
-                type={'password'}
-                containerClass={`${styles.password} ${
-                  showForgotPassword.value ? styles.disabled : ''
-                }`}
-                size="large"
-                placeholder="password"
-                prefix={<LockedIcon />}
-                focusColor="secondary"
-                borderBottomColor={darkTheme ? 'white' : 'mono'}
-                disabled={showForgotPassword.value}
-                onChange={handleOnChange}
-                onPressEnter={onKeyPress}
-                name="password"
-              />
-            </div>
-            <div className={styles['forgot-password']}>
-              <div
-                className={`${styles.wrapper} ${styles[`wrapper${themeStyle}`]} ${
-                  showForgotPassword.value ? styles[`wrapper-active${themeStyle}`] : ''
-                }
-              `}
-                onClick={() => showForgotPassword.setValue(!showForgotPassword.value)}>
-                <LockedForgotIcon className={styles.icon} />
-                <BodyText fontFamily="Roboto" level={4} customClass={styles.text}>
-                  Forgot password?
-                </BodyText>
-              </div>
-              {showForgotPassword.value ? (
+    <CustomModal {...popupStylesProps}>
+      <ModalContainer>
+        <div className={styles.content} style={{ paddingBottom: isMobile ? 64 : 32 }}>
+          <div className={styles.intro}>
+            <MainTitle level={2} customClass={styles[`body${themeStyle}`]}>
+              {randomQuotation ? `"${randomQuotation.quotation}"` : ''}
+            </MainTitle>
+            <BodyText level={2} customClass={styles[`title${themeStyle}`]}>
+              {randomQuotation ? `${randomQuotation.author}, ${randomQuotation.identity}` : ''}
+            </BodyText>
+          </div>
+          <div className={styles.main}>
+            <div className={styles.form}>
+              <div onClick={() => showForgotPassword.setValue(false)}>
                 <CustomInput
-                  required
                   fromLandingPage
-                  status={isShowErrorMessage('email', verifyEmail.value) ? '' : 'error'}
+                  status={isShowErrorMessage('email', inputValue.email) ? '' : 'error'}
                   theme={theme}
                   size="large"
-                  containerClass={tiscLogin ? styles['forgot-input-dark'] : styles['forgot-input']}
-                  placeholder="type your work email to verify"
+                  containerClass={`${styles.email} ${
+                    showForgotPassword.value ? styles.disabled : ''
+                  }`}
+                  placeholder="work email"
+                  prefix={<EmailIcon />}
                   focusColor="secondary"
                   borderBottomColor={darkTheme ? 'white' : 'mono'}
-                  value={verifyEmail.value}
-                  onChange={(e) => verifyEmail.setValue(e.target.value)}
+                  disabled={showForgotPassword.value}
+                  onChange={handleOnChange}
                   onPressEnter={onKeyPress}
+                  name="email"
                 />
-              ) : (
-                ''
-              )}
-            </div>
-          </div>
-          <div className={styles.action}>
-            <div className={setErrorMessage() ? styles.action_between : styles.action_right}>
-              {setErrorMessage() ? (
-                <div className={styles.warning}>
-                  <WarningIcon />
-                  <BodyText level={4} fontFamily="Roboto">
-                    {setErrorMessage()}
+                <CustomInput
+                  fromLandingPage
+                  status={inputValue.password && inputValue.password.length < 8 ? 'error' : ''}
+                  theme={theme}
+                  type={'password'}
+                  containerClass={`${styles.password} ${
+                    showForgotPassword.value ? styles.disabled : ''
+                  }`}
+                  size="large"
+                  placeholder="password"
+                  prefix={<LockedIcon />}
+                  focusColor="secondary"
+                  borderBottomColor={darkTheme ? 'white' : 'mono'}
+                  disabled={showForgotPassword.value}
+                  onChange={handleOnChange}
+                  onPressEnter={onKeyPress}
+                  name="password"
+                />
+              </div>
+              <div className={styles['forgot-password']}>
+                <div
+                  className={`${styles.wrapper} ${styles[`wrapper${themeStyle}`]} ${
+                    showForgotPassword.value ? styles[`wrapper-active${themeStyle}`] : ''
+                  }
+              `}
+                  onClick={() => showForgotPassword.setValue(!showForgotPassword.value)}
+                >
+                  <LockedForgotIcon className={styles.icon} />
+                  <BodyText fontFamily="Roboto" level={4} customClass={styles.text}>
+                    Forgot password?
                   </BodyText>
                 </div>
-              ) : (
-                ''
-              )}
-              <CustomButton
-                disabled={handleDisableButton()}
-                buttonClass={styles.submit}
-                width={getSubmitButtonWidth()}
-                onClick={handleSubmit}>
-                {getSubmitButtonTitle()}
-              </CustomButton>
+                {showForgotPassword.value ? (
+                  <CustomInput
+                    required
+                    fromLandingPage
+                    status={isShowErrorMessage('email', verifyEmail.value) ? '' : 'error'}
+                    theme={theme}
+                    size="large"
+                    containerClass={
+                      tiscLogin ? styles['forgot-input-dark'] : styles['forgot-input']
+                    }
+                    placeholder="type your work email to verify"
+                    focusColor="secondary"
+                    borderBottomColor={darkTheme ? 'white' : 'mono'}
+                    value={verifyEmail.value}
+                    onChange={(e) => verifyEmail.setValue(e.target.value)}
+                    onPressEnter={onKeyPress}
+                  />
+                ) : (
+                  ''
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+
+        <FooterContent
+          errorMessage={setErrorMessage()}
+          buttonDisabled={handleDisableButton()}
+          buttonWidth={getSubmitButtonWidth()}
+          submitButtonLabel={getSubmitButtonTitle()}
+          onSubmit={handleSubmit}
+        />
+      </ModalContainer>
     </CustomModal>
   );
 };

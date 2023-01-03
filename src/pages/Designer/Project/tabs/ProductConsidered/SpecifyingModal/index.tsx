@@ -172,6 +172,7 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     <CustomModal
       className={`${popoverStyles.customPopover} ${styles.specifyingModal}`}
       visible={visible}
+      secondaryModal
       onCancel={() => {
         setVisible(false);
         resetProductData();
@@ -189,10 +190,12 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           variant="primary"
           properties="rounded"
           buttonClass="done-btn"
-          onClick={onSubmit}>
+          onClick={onSubmit}
+        >
           Done
         </CustomButton>
-      }>
+      }
+    >
       <BrandProductBasicHeader
         image={product.images[0]}
         logo={product.brand?.logo}

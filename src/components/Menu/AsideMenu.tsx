@@ -33,27 +33,10 @@ export const getMenuItems = (
 
   return showedMenuItems.map((item) => {
     const children = getMenuItems(item.children);
-    const isWorkspaceItem = item.name && ['my workspace'].includes(item.name.toLowerCase());
     return {
       key: item.key,
       children,
-      icon: (
-        <>
-          {isWorkspaceItem && onClose ? (
-            <span
-              className="flex-center"
-              style={{ position: 'absolute', right: 4, top: -4, padding: 12 }}>
-              <AlignLeftIcon
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClose();
-                }}
-              />
-            </span>
-          ) : undefined}
-          {renderIconByName(item.icon, item.unaccessible)}
-        </>
-      ),
+      icon: renderIconByName(item.icon, item.unaccessible),
       label: item.name,
       onClick: () => {
         onClose?.();
@@ -62,10 +45,6 @@ export const getMenuItems = (
         }
       },
       title: '',
-      style: {
-        boxShadow: isWorkspaceItem ? 'inset 0px -0.7px 0px #FFFFFF' : undefined,
-        paddingRight: isWorkspaceItem ? 48 : undefined,
-      },
     } as MenuItem;
   });
 };
@@ -208,9 +187,9 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
       <div
         style={{
           overflow: 'hidden',
-          width: collapsed ? 60 : '16.66666667%',
-          flex: `0 0 ${collapsed ? '60px' : '16.66666667%'}`,
-          maxWidth: collapsed ? 60 : '16.66666667%',
+          width: collapsed ? 60 : '240px',
+          flex: `0 0 ${collapsed ? '60px' : '240px'}`,
+          maxWidth: collapsed ? 60 : '240px',
           transition:
             'background-color 0.3s ease 0s, min-width 0.3s ease 0s, max-width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) 0s',
         }}
@@ -220,9 +199,10 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
         collapsible
         collapsedWidth={60}
         collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
+        onCollapse={setCollapsed}
         className={styles.customAsideSider}
-        trigger={collapsed ? <AlignRightIcon /> : <AlignLeftIcon />}>
+        trigger={collapsed ? <AlignRightIcon /> : <AlignLeftIcon />}
+      >
         <div className="menu-sider-wrapper">
           <Menu
             theme={props.headerTheme}

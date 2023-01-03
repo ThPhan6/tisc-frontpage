@@ -61,15 +61,18 @@ export const CustomDrawer: FC<CustomDrawerProps> = ({
 
 export const MobileDrawer: FC<
   CustomDrawerProps & { autoHeight?: boolean; noHeaderBorder?: boolean }
-> = ({ noHeaderBorder, autoHeight, headerStyle, ...props }) => (
-  <CustomDrawer
-    placement="bottom"
-    headerStyle={{
-      position: 'relative',
-      boxShadow: noHeaderBorder ? 'none' : undefined,
-      ...headerStyle,
-    }}
-    height={autoHeight ? 'auto' : window.innerHeight * 0.85}
-    {...props}
-  />
-);
+> = ({ noHeaderBorder, autoHeight, headerStyle, title, ...props }) => {
+  return (
+    <CustomDrawer
+      placement="bottom"
+      headerStyle={{
+        position: 'relative',
+        boxShadow: noHeaderBorder ? 'none' : undefined,
+        ...headerStyle,
+      }}
+      title={title}
+      height={autoHeight ? 'auto' : window.innerHeight * 0.85}
+      {...props}
+    />
+  );
+};

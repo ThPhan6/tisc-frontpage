@@ -1,5 +1,5 @@
 import { PATH } from '@/constants/path';
-import { Avatar, Spin } from 'antd';
+import { Spin } from 'antd';
 import { useModel } from 'umi';
 
 import DefaultAvatarIcon from '@/assets/icons/ic-user-white.svg';
@@ -18,6 +18,7 @@ import { setCustomProductList } from '@/pages/Designer/Products/CustomLibrary/sl
 
 import { HeaderDropdown } from '../HeaderDropdown';
 import { DrawerMenu } from '../Menu/DrawerMenu';
+import TeamIcon from '../TeamIcon/TeamIcon';
 import { BodyText } from '../Typography';
 import styles from './styles/AvatarDropdown.less';
 
@@ -52,7 +53,7 @@ export const AvatarDropdown = () => {
 
   const { currentUser } = initialState;
 
-  const iconWidth = isMobile ? 20 : 16;
+  const iconWidth = isMobile ? 24 : 16;
 
   const menuItems = [
     {
@@ -76,20 +77,23 @@ export const AvatarDropdown = () => {
   const renderAvatarTrigger = (trigger?: boolean) => (
     <span
       className={`${styles.container}`}
-      onClick={trigger ? () => showHeaderDropdown.setValue(true) : undefined}>
-      <Avatar
-        size="small"
-        className={`${styles.avatar} ${currentUser?.avatar ? '' : 'default'}`}
-        src={currentUser?.avatar ? showImageUrl(currentUser.avatar) : DefaultAvatarIcon}
-        alt="avatar"
+      onClick={trigger ? () => showHeaderDropdown.setValue(true) : undefined}
+    >
+      <TeamIcon
+        customClass={`${styles.avatar} ${currentUser?.avatar ? '' : 'default'}`}
+        avatar={currentUser?.avatar ? showImageUrl(currentUser.avatar) : DefaultAvatarIcon}
       />
-      <BodyText
-        fontFamily="Roboto"
-        level={4}
-        customClass={styles['user-name']}
-        color={isMobile ? 'mono-color' : 'white'}>
-        {getFullName(currentUser)}
-      </BodyText>
+      {
+        <BodyText
+          fontFamily="Roboto"
+          level={4}
+          customClass={`text-overflow ${styles['user-name']}`}
+          color="white"
+          style={{ maxWidth: '50vw' }}
+        >
+          {getFullName(currentUser)}
+        </BodyText>
+      }
     </span>
   );
 
@@ -118,7 +122,8 @@ export const AvatarDropdown = () => {
       align={{ offset: [0, 2] }}
       placement="bottom"
       trigger={['click']}
-      getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}>
+      getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}
+    >
       {renderAvatarTrigger()}
     </HeaderDropdown>
   );

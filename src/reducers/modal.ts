@@ -1,5 +1,6 @@
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { RadioValue } from '@/components/CustomRadio/types';
+import { ProductItem } from '@/features/product/types';
 import { BrandAlphabet } from '@/features/user-group/types';
 import store, { RootState } from '@/reducers';
 import { AttributeContentType, AttributeSubForm } from '@/types';
@@ -31,6 +32,7 @@ export type ModalType =
   | 'Project Tracking Legend'
   | 'Access Level'
   | 'Work Location'
+  | 'Share via email'
 
   // TISC
   | 'Product Attribute Type'
@@ -41,7 +43,8 @@ export type ModalType =
 
   // Design Firm
   | 'Assign Product'
-  | 'Market Availability';
+  | 'Market Availability'
+  | 'Inquiry Request';
 
 export interface ModalState {
   type: ModalType;
@@ -83,6 +86,11 @@ export interface ModalState {
     workLocation: {
       data: WorkLocationData;
       onChange: (data: WorkLocationData) => void;
+    };
+
+    shareViaEmail: {
+      product: ProductItem;
+      isCustomProduct?: boolean;
     };
   };
 }

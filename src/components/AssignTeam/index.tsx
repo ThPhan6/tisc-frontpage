@@ -55,6 +55,7 @@ const AssignTeamModal: FC = () => {
   return (
     <Popover
       title="ASSIGN TEAM"
+      secondaryModal
       visible
       chosenValue={selected}
       setChosenValue={onChange}

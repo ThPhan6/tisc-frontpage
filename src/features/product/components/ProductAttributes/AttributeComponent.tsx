@@ -49,7 +49,8 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
       <div
         className={`${styles.boxShadowOptionImage} ${
           isTISC ? styles.widthCheckboxImage : styles.widthOptionImage
-        }`}></div>
+        }`}
+      />
       <img src={showImageUrl(option.image)} />
       <div className="option-image-list-wrapper">
         <BodyText level={6} fontFamily="Roboto" customClass="heading-option-group">
@@ -93,12 +94,14 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
       <div
         className={`${styles.content}  product-attribute-option-wrapper`}
         style={{ cursor: isPublicPage ? 'text' : undefined }}
-        onClick={() => setVisible(true)}>
+        onClick={() => setVisible(true)}
+      >
         <BodyText
           level={6}
           fontFamily="Roboto"
           customClass={isPublicPage ? styles.content_select : ''}
-          color={chosenOption?.label ? 'primary-color-dark' : 'mono-color'}>
+          color={chosenOption?.label ? 'primary-color-dark' : 'mono-color'}
+        >
           {showChosenOption()}
         </BodyText>
         {isPublicPage ? null : <ActionRightIcon className={styles.singlerRighIcon} />}
@@ -130,7 +133,9 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
           }`}
           chosenValue={chosenOption}
           setChosenValue={setChosenOptions}
-          clearOnClose={clearOnClose}></Popover>
+          clearOnClose={clearOnClose}
+          secondaryModal
+        />
       )}
     </>
   );

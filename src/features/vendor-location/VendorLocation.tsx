@@ -407,6 +407,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
         <>
           <Popover
             title="SELECT LOCATION"
+            secondaryModal
             className={styles.customLocationModal}
             visible={locationPopup === 'brand'}
             setVisible={(visible) => (visible ? undefined : setLocationPopup(''))}
@@ -441,6 +442,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
 
           <Popover
             title="SELECT LOCATION"
+            secondaryModal
             className={styles.customLocationModal}
             visible={locationPopup === 'distributor'}
             setVisible={(visible) => (visible ? undefined : setLocationPopup(''))}

@@ -99,8 +99,9 @@
 // disabled
 .disabled {
   color: @mono-color-dark;
-  background-color: @mono-color-light;
-  border: 0.5px solid @mono-color-dark;
+  font-weight: 300 !important;
+  background-color: @mono-color-light !important;
+  border: 0.5px solid @mono-color-dark !important;
   cursor: default;
   svg path {
     fill: @mono-color-dark;
@@ -111,7 +112,7 @@
   &:hover {
     color: @mono-color-dark;
     font-weight: 300;
-    background-color: @mono-color-light;
+    background-color: @mono-color-light !important;
     border: 0.5px solid @mono-color-dark;
     svg path {
       fill: @mono-color-dark;

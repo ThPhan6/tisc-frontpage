@@ -12,7 +12,9 @@ import { useBoolean } from '@/helper/hook';
 import { getEmailMessageError, getEmailMessageErrorType } from '@/helper/utils';
 
 import { RadioValue } from '../CustomRadio/types';
-import { ProductItem, ProductItemValue } from '@/features/product/types';
+import { ProductItemValue } from '@/features/product/types';
+import { useAppSelector } from '@/reducers';
+import { closeModal, modalPropsSelector } from '@/reducers/modal';
 
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
@@ -33,13 +35,6 @@ export interface ShareViaEmailForm {
   custom_product?: boolean;
 }
 
-interface ShareViaEmailProps {
-  product: ProductItem;
-  visible: boolean;
-  setVisible: (visible: boolean) => void;
-  isCustomProduct?: boolean;
-}
-
 type FieldName = keyof ShareViaEmailForm;
 
 const DEFAULT_STATE = {
@@ -51,12 +46,8 @@ const DEFAULT_STATE = {
   message: '',
 };
 
-const ShareViaEmail: FC<ShareViaEmailProps> = ({
-  product,
-  visible,
-  setVisible,
-  isCustomProduct,
-}) => {
+const ShareViaEmail: FC = () => {
+  const { product, isCustomProduct } = useAppSelector(modalPropsSelector).shareViaEmail;
   const submitButtonStatus = useBoolean();
   const [shareViaEmailData, setShareViaEmailData] = useState<ShareViaEmailForm>({
     ...DEFAULT_STATE,
@@ -67,11 +58,6 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
   const [sharingPurpose, setSharingPurpose] = useState<ProductItemValue[]>([]);
 
   useEffect(() => {
-    if (!visible) {
-      setShareViaEmailData(DEFAULT_STATE);
-      return;
-    }
-
     getSharingGroups().then((data) => {
       if (data) {
         setSharingGroup(data);
@@ -82,7 +68,7 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
         setSharingPurpose(data);
       }
     });
-  }, [visible]);
+  }, []);
 
   // format data
   const sharingGroupLabel = sharingGroup.find(
@@ -139,7 +125,7 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
           });
 
           // close popup
-          setVisible(false);
+          closeModal();
         }, 200);
       }
     });
@@ -148,8 +134,7 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
   return (
     <Popover
       title="Share Via Email"
-      visible={visible}
-      setVisible={setVisible}
+      visible
       submitButtonStatus={submitButtonStatus.value}
       onFormSubmit={handleSubmit}
       clearOnClose
