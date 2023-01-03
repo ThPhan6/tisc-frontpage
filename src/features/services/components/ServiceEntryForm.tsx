@@ -6,6 +6,8 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
+import { useScreen } from '@/helper/common';
+
 import { setServiceFormData } from '../reducer';
 import store, { useAppSelector } from '@/reducers';
 import { GeneralData } from '@/types';
@@ -31,6 +33,8 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
 
   const [serviceType, setServiceType] = useState<GeneralData[]>([]);
 
+  const isMobile = useScreen().isMobile;
+
   const serviceTypeValue = serviceType.find(
     (item) => item.id === serviceFormData.service_type_id,
   ) ?? {
@@ -52,6 +56,14 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
     return formatToMoneyValue(grossTotal + salesTax);
   };
 
+  const getContentHeight = () => {
+    if (isMobile) {
+      return 'calc(100vh - 288px)';
+    }
+
+    return 'calc(100vh - 304px)';
+  };
+
   return (
     <>
       <div className={styles.header}>
@@ -63,7 +75,7 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
           onClick={handleCancel}
         />
       </div>
-      <div className={styles.customForm}>
+      <div className={styles.customForm} style={{ height: getContentHeight() }}>
         <FormGroup
           label="Service type"
           required
@@ -110,11 +122,11 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
           hasBoxShadow
           hasHeight
           rightIcon
+          disabled={type === 'view'}
           onRightIconClick={type !== 'view' ? setVisible : undefined}
           placeholder={
             serviceFormData.brand_id === '' ? 'select from the list' : serviceFormData.brand_name
           }
-          readOnly={type === 'view'}
         />
         <InputGroup
           label="Ordered By"

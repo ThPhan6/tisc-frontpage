@@ -4,7 +4,6 @@
 
 .serviceForm {
   .customForm {
-    height: calc(100vh - 304px);
     padding: 16px;
     overflow: auto;
     :global(.ant-collapse-item-active .ant-collapse-header-text p) {
@@ -140,6 +139,15 @@
   :global(.ant-collapse-item-active .ant-collapse-header-text p) {
     font-weight: 300 !important;
   }
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 48px;
+  padding-right: 16px;
+  box-shadow: @border-top;
 }
 
 .customModal {

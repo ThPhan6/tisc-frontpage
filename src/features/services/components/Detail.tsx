@@ -88,6 +88,18 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
 
   const renderBottom = () => {
     if (type === 'tisc') {
+      if (detailData?.status == 2) {
+        return (
+          <CustomButton
+            size="small"
+            variant="primary"
+            properties="rounded"
+            onClick={history.goBack}>
+            Cancel
+          </CustomButton>
+        );
+      }
+
       return (
         <>
           {detailData?.status !== InvoiceStatus.Paid ? (

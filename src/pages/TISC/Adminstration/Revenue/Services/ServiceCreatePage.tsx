@@ -127,7 +127,7 @@ const ServiceCreatePage = () => {
       <div className={styles.serviceForm}>
         <TableHeader title="SERVICES" rightAction={<CustomPlusButton disabled />} />
         <Row style={{ marginTop: '8px' }}>
-          <Col span={12} style={{ background: '#fff' }}>
+          <Col span={24} lg={{ span: 12 }} style={{ background: '#fff' }}>
             <ServiceEntryForm
               handleCancel={handleCancel}
               setVisible={() => setVisible(true)}
