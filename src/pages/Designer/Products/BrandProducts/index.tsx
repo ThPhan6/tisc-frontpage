@@ -129,7 +129,9 @@ const BrandProductListPage: React.FC = () => {
             topValue={renderItemTopBar('brand_id', filter, 'select')}
             bottomEnable={brands.length ? true : false}
             disabled
-            bottomValue={renderFilterDropdown('Brands', brands, false)}
+            bottomValue={renderFilterDropdown('Brands', brands, false, undefined, undefined, {
+              autoHeight: false,
+            })}
             customClass="right-divider"
           />
           <TopBarItem
@@ -137,7 +139,11 @@ const BrandProductListPage: React.FC = () => {
             bottomEnable={categories.length ? true : false}
             disabled
             bottomValue={
-              <CustomDropDown items={categories} menuStyle={{ height: 'max-content' }}>
+              <CustomDropDown
+                items={categories}
+                menuStyle={{ height: 'max-content' }}
+                nestedMenu
+                autoHeight={false}>
                 Categories
               </CustomDropDown>
             }
@@ -151,16 +157,6 @@ const BrandProductListPage: React.FC = () => {
         <>
           <TopBarItem
             topValue={
-              // <CustomInput
-              //
-              //   fontLevel={3}
-              //   deleteIcon
-              //   onDelete={() => {
-              //     // searchInputRef.current?.input?.set = '';
-              //     searchProductByKeyword({target:{value: ''}});
-              //   }}
-              //   forceDisplayDeleteIcon
-              // />
               <div className={styles.searchInputWrapper}>
                 <CustomInput
                   ref={searchInputRef}

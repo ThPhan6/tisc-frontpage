@@ -114,6 +114,7 @@ const BrandProductListPage: React.FC = () => {
               true,
               'Categories',
               'bottomRight',
+              { autoHeight: false, borderFirstItem: true },
             )}
             customClass="left-divider"
           />
@@ -126,6 +127,8 @@ const BrandProductListPage: React.FC = () => {
               brandDropDownData,
               true,
               'Collections',
+              undefined,
+              { autoHeight: false, borderFirstItem: true },
             )}
             customClass="left-divider mr-12"
           />

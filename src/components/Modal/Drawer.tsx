@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { CSSProperties, FC, useEffect } from 'react';
 
 import { Drawer, DrawerProps } from 'antd';
 
@@ -51,6 +51,21 @@ export const CustomDrawer: FC<CustomDrawerProps> = ({
       }}
       className={styles.drawerContainer}
       {...props}
+    />
+  );
+};
+
+interface FilterDrawerProps extends DrawerProps {
+  labelStyle?: CSSProperties;
+}
+export const FilterDrawer: FC<FilterDrawerProps> = ({ labelStyle, ...props }) => {
+  return (
+    <CustomDrawer
+      placement="bottom"
+      closable={false}
+      height="auto"
+      {...props}
+      bodyStyle={{ padding: 0, paddingBottom: 24 }}
     />
   );
 };

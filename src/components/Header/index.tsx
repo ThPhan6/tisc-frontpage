@@ -30,7 +30,6 @@ import { AvatarDropdown } from './AvatarDropdown';
 import styles from './styles/index.less';
 
 const PageHeader = (props: HeaderViewProps) => {
-  console.log(props);
   const { isMobile } = useScreen();
   const showQuestionDropdown = useBoolean();
   const showLanguageDropdown = useBoolean();
