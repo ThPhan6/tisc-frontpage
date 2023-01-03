@@ -28,7 +28,7 @@ export const PoliciesModal: FC<CustomModalProps & { customTheme?: ModalProps['th
   const [cookie, setCookie] = useState<Policy>();
 
   const { darkTheme } = useAppSelector(modalThemeSelector);
-  const popupStylesProps = useLandingPageStyles(darkTheme);
+  const popupStylesProps = useLandingPageStyles(!!customTheme || darkTheme);
 
   const tabs = [
     { tab: 'TERMS OF SERVICES', key: PolicyTabKeys.terms },
