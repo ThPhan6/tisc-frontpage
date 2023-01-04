@@ -86,10 +86,11 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
   const showShareEmailModal = useBoolean();
   const showAssignProductModal = useBoolean();
   const showInquiryRequestModal = useBoolean();
-  const isDesignerUser = useCheckPermission('Design Admin');
-  const isTiscAdmin = useCheckPermission('TISC Admin');
 
-  const isEditable = isTiscAdmin || (isCustomProduct && viewOnly !== true); // currently, uploading image
+  const isDesignerUser = useCheckPermission(['Design Admin', 'Design Team']);
+  const isTiscUser = useCheckPermission(['TISC Admin', 'Consultant Team']);
+
+  const isEditable = isTiscUser || (isCustomProduct && viewOnly !== true); // currently, uploading image
 
   const customProduct = useAppSelector((state) => state.customProduct.details);
 
@@ -203,7 +204,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
   };
 
   const renderBottomPreview = () => {
-    if (isTiscAdmin) {
+    if (isTiscUser) {
       return (
         <div className={styles.photoKeyword}>
           <BodyText level={4} customClass={styles.imageNaming}>
@@ -301,7 +302,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
   };
 
   const renderActionRight = () => {
-    if (isTiscAdmin || isPublicPage || !product) {
+    if (isTiscUser || isPublicPage || !product) {
       return null;
     }
 
@@ -310,7 +311,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
         <ShareViaEmail
           visible={showShareEmailModal.value}
           setVisible={showShareEmailModal.setValue}
-          product={product}
+          product={product as any}
           isCustomProduct={isCustomProduct}
         />
         <AssignProductModal
@@ -322,7 +323,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
         <InquiryRequest
           visible={showInquiryRequestModal.value}
           setVisible={showInquiryRequestModal.setValue}
-          product={product}
+          product={product as any}
         />
       </>
     );
@@ -352,7 +353,10 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
           </div>
         </Upload.Dragger>
 
-        <Row className={styles.photoList} gutter={8}>
+        <Row
+          className={styles.photoList}
+          gutter={8}
+          style={{ minHeight: viewOnly ? 162.75 : undefined }}>
           <Col span={isEditable ? 18 : 24}>
             <Row gutter={8} className={styles.listWrapper}>
               {product.images.slice(1).map((image, key) => (
