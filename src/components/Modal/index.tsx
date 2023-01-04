@@ -22,6 +22,7 @@ export const CustomModal: FC<CustomModalProps> = ({
   onCancel,
   onOk,
   secondaryModal,
+  noHeaderBorder = true,
   darkTheme,
   ...props
 }) => {
@@ -34,7 +35,7 @@ export const CustomModal: FC<CustomModalProps> = ({
           onClose={onCancel}
           visible={props.visible}
           darkTheme={darkTheme}
-          noHeaderBorder
+          noHeaderBorder={noHeaderBorder}
           title={props.title}
         >
           {children}

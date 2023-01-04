@@ -9,6 +9,7 @@ import { ReactComponent as PaginationLeftIcon } from '@/assets/icons/pagination-
 import { ReactComponent as PaginationRightIcon } from '@/assets/icons/pagination-right.svg';
 
 import { createBooking, getListAvailableTime, updateBooking } from '../services/api';
+import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
 
@@ -41,14 +42,16 @@ const TimeZoneHeader: FC<TimeZoneProps> = (props) => {
         justifyContent: 'space-between',
         width: '100%',
       }}
-      onClick={() => handleActiveCollapse(timeZone ? 1 : -1)}>
+      onClick={() => handleActiveCollapse(timeZone ? 1 : -1)}
+    >
       <Title
         level={8}
         style={{
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
-        }}>
+        }}
+      >
         {timeZone}
       </Title>
       {String(1) !== activeKey ? <DropdownIcon /> : <DropupIcon />}
@@ -68,7 +71,8 @@ const CalendarHeader: FC<{ dateValue: Moment; onChange: (dateValue: Moment) => v
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0 8px',
-      }}>
+      }}
+    >
       <PaginationLeftIcon
         className={dateValue.month() === startDate.month() ? styles.disableIcon : styles.icon}
         onClick={() => {
@@ -105,6 +109,8 @@ export const useCalendarModal = (
   const [availableTimes, setAvailableTimes] = useState<AvailableTime[]>([]);
 
   const [activeKey, setActiveKey] = useState<string>('');
+
+  const isMobile = useScreen().isMobile;
 
   const [timeBooked, setTimeBooked] = useState<{
     startTime: string;
@@ -173,7 +179,8 @@ export const useCalendarModal = (
                 end_time_text: '',
               });
               setActiveKey('');
-            }}>
+            }}
+          >
             {Timezones[key]}
           </BodyText>
         ))}
@@ -210,7 +217,8 @@ export const useCalendarModal = (
                 end_time_text: moment(time.end, 'HH:mm').format('hh:mm a'),
                 slot: time.slot,
               })
-            }>
+            }
+          >
             {moment(time.start, 'HH:mm').format('hh:mm a')} -{' '}
             {moment(time.end, 'HH:mm').format('hh:mm a')}
           </BodyText>
@@ -248,26 +256,41 @@ export const useCalendarModal = (
     });
   };
 
+  const contentStylesProps = isMobile
+    ? {
+        marginBottom: 32,
+      }
+    : undefined;
+
   const renderCalendarModal = () =>
     !open ? null : (
       <CustomModal
         visible
         onOk={closeModal}
         onCancel={closeModal}
+        secondaryModal
+        noHeaderBorder={false}
         width="1152px"
         bodyStyle={{
           height: '512px',
           padding: '32px',
         }}
         closeIconClass={styles.closeIcon}
-        className={styles.calendar}
         title={
           <MainTitle level={2}>
             {isUpdateBooking ? 'Re-select Date & Time' : 'Select Available Date & Time'}
           </MainTitle>
-        }>
-        <Row gutter={[32, 0]}>
-          <Col span={8}>
+        }
+      >
+        <Row
+          gutter={[32, 0]}
+          style={{
+            flexDirection: isMobile ? 'column' : undefined,
+            padding: isMobile ? 16 : undefined,
+          }}
+          className={styles.calendar}
+        >
+          <Col span={24} lg={8} style={contentStylesProps}>
             <Calendar
               fullscreen={false}
               value={moment(informationBooking.date)}
@@ -292,7 +315,7 @@ export const useCalendarModal = (
               }}
             />
           </Col>
-          <Col span={8}>
+          <Col span={24} lg={8} style={contentStylesProps}>
             <div className={styles.timeSelection}>
               <Collapse ghost activeKey={activeKey}>
                 <Collapse.Panel
@@ -309,14 +332,15 @@ export const useCalendarModal = (
                         setActiveKey(activeKey === String(1) ? '' : String(1))
                       }
                     />
-                  }>
+                  }
+                >
                   {renderListTimeZone()}
                 </Collapse.Panel>
               </Collapse>
               {renderListAvailableTime()}
             </div>
           </Col>
-          <Col span={8}>
+          <Col span={24} lg={8}>
             <BrandInformation
               informationBooking={
                 haveAvailableTimeSlot.value
@@ -336,11 +360,13 @@ export const useCalendarModal = (
                 display: 'flex',
                 justifyContent: 'flex-end',
                 alignItems: 'center',
-              }}>
+              }}
+            >
               <CustomButton
                 properties="rounded"
                 buttonClass={`${styles.button} ${checkDisableButton() ? styles.disableButton : ''}`}
-                onClick={checkDisableButton() ? undefined : handleAddAppointment}>
+                onClick={checkDisableButton() ? undefined : handleAddAppointment}
+              >
                 Book Now
               </CustomButton>
             </div>

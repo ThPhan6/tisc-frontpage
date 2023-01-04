@@ -5,4 +5,5 @@ export interface CustomModalProps extends ModalProps {
   closeIconClass?: string;
   secondaryModal?: boolean;
   darkTheme?: boolean;
+  noHeaderBorder?: boolean;
 }

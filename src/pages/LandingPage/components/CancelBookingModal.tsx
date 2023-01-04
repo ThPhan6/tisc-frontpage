@@ -81,7 +81,8 @@ export const BrandInformation: FC<CancelBookingProps> = ({ informationBooking })
             display: 'flex',
             alignItems: 'center',
             marginLeft: '32px',
-          }}>
+          }}
+        >
           {moment(informationBooking.date).format('ddd, MMM DD YYYY')}
           {informationBooking.start_time_text && (
             <span style={{ marginLeft: '16px' }}>
@@ -117,18 +118,32 @@ export const CancelBookingModal: FC<CancelBookingProps> = ({ informationBooking 
       closeIconClass={styles.closeIcon}
       className={styles.calendar}
       visible
-      onCancel={closeModal}>
-      <BrandInformation informationBooking={informationBooking} />
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          alignItems: 'center',
-        }}>
-        <CustomButton properties="rounded" buttonClass={styles.button} onClick={onCancelBooking}>
-          Cancel Booking
-        </CustomButton>
-      </div>
+      onCancel={closeModal}
+    >
+      {!informationBooking ? (
+        <BodyText fontFamily="Roboto" level={5}>
+          Something wrong!
+        </BodyText>
+      ) : (
+        <>
+          <BrandInformation informationBooking={informationBooking} />
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+            }}
+          >
+            <CustomButton
+              properties="rounded"
+              buttonClass={styles.button}
+              onClick={onCancelBooking}
+            >
+              Cancel Booking
+            </CustomButton>
+          </div>
+        </>
+      )}
     </CustomModal>
   );
 };
