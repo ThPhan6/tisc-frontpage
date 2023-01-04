@@ -37,6 +37,12 @@
   :global(.ant-tabs-top > .ant-tabs-nav::before) {
     border-bottom: 1px solid @mono-color;
   }
+  :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap) {
+    &::before,
+    &::after {
+      box-shadow: none;
+    }
+  }
 }
 
 .tabs-top {

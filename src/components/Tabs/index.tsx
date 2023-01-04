@@ -27,7 +27,8 @@ export const CustomTabs: FC<CustomTabsProps> = ({
     <div
       className={`${style[`tabs-${tabPosition}`]} ${style['tab-list']} ${
         style[`tabs-${tabDisplay}`]
-      } ${customClass}`}>
+      } ${customClass}`}
+    >
       <Tabs {...props} tabPosition={tabPosition}>
         {tabs.map((item) => (
           <TabPane
@@ -38,9 +39,10 @@ export const CustomTabs: FC<CustomTabsProps> = ({
                   width: tabDisplay !== 'space' ? widthItem : '',
                   padding: '0 8px',
                 }}
-                className={`${style['item-tab']} ${item?.disable && style['custom-color']}`}>
+                className={`${style['item-tab']} ${item?.disable && style['custom-color']}`}
+              >
                 {item?.icon && <span className={style['custom-icon']}>{item.icon}</span>}
-                {isMobile ? item.mobileTabTitle : item.tab}
+                {(isMobile && item.mobileTabTitle) || item.tab}
               </div>
             }
             key={item.key}

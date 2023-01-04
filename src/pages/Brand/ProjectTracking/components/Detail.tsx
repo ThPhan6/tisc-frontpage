@@ -19,8 +19,8 @@ import { DesignFirm } from './DesignFirm';
 import { RequestsAndNotifications } from './RequestsAndNotifications';
 
 const LIST_TAB = [
-  { tab: 'DESIGN FIRM', key: 'design_firm' },
-  { tab: 'PROJECT', key: 'project' },
+  { tab: 'DESIGN FIRM', key: 'design_firm', collapseOnMobile: true },
+  { tab: 'PROJECT', key: 'project', collapseOnMobile: true },
   { tab: 'REQUESTS', key: 'request' },
   { tab: 'NOTIFICATIONS', key: 'notification' },
 ];
@@ -62,6 +62,19 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId, height, cont
               />
             }
           />
+
+          <CustomTabPane
+            active={activeKey === 'design_firm'}
+            title={LIST_TAB[0].tab}
+            collapseOnMobile
+          >
+            <DesignFirm designFirm={data.designFirm} />
+          </CustomTabPane>
+
+          <CustomTabPane active={activeKey === 'project'} title={LIST_TAB[1].tab} collapseOnMobile>
+            <BrandProject project={data.projects} />
+          </CustomTabPane>
+
           <CustomTabs
             listTab={LIST_TAB}
             centered={true}
