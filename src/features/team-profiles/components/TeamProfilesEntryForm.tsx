@@ -100,7 +100,7 @@ const TeamProfilesEntryForm = () => {
   const [departments, setDepartments] = useState<GeneralData[]>([]);
 
   const [workLocation, setWorkLocation] = useState({
-    label: '',
+    label: data.work_location,
     value: data.location_id,
     phoneCode: '00',
   });
@@ -125,7 +125,11 @@ const TeamProfilesEntryForm = () => {
   }, []);
 
   useEffect(() => {
-    setWorkLocation((prevState) => ({ ...prevState, value: data.location_id }));
+    setWorkLocation({
+      value: data.location_id,
+      label: data.work_location,
+      phoneCode: data.phone_code,
+    });
   }, [data.location_id]);
 
   useEffect(() => {
