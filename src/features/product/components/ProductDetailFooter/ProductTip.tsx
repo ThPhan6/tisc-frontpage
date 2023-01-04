@@ -17,7 +17,7 @@ const ProductTip: FC = () => {
   const dispatch = useDispatch();
 
   const tips = useAppSelector((state) => state.product.details.tips);
-  const isTiscAdmin = useCheckPermission('TISC Admin');
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
   if (isTiscAdmin) {
     return (
