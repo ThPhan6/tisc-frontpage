@@ -1,4 +1,17 @@
+@import '~antd/es/style/variable.less';
+
 .tab-list {
+  :global(.ant-tabs-nav-list) {
+    @media screen and (max-width: @screen-xs) {
+      min-width: calc(100vw - 32px);
+      overflow: auto;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  }
+
   :global(.ant-tabs-tab) {
     display: block;
     width: 100%;

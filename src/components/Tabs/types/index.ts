@@ -5,6 +5,8 @@ export interface TabItem {
   key: string;
   icon?: JSX.Element;
   disable?: boolean;
+  collapseOnMobile?: boolean;
+  mobileTabTitle?: string;
 }
 
 export interface CustomTabsProps extends TabsProps {

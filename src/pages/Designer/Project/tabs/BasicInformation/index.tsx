@@ -7,6 +7,7 @@ import { Col, Row } from 'antd';
 import { useHistory } from 'umi';
 
 import { createProject, updateProject } from '@/features/project/services';
+import { useScreen } from '@/helper/common';
 import { useBoolean } from '@/helper/hook';
 
 import type { ProjectBodyRequest, ProjectDetailProps } from '@/features/project/types';
@@ -26,6 +27,8 @@ interface GeneralInformationProps {
 }
 
 const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setProject }) => {
+  const isMobile = useScreen().isMobile;
+
   const [data, setData] = useState<ProjectBodyRequest>(DefaultProjectRequest);
   const buttonStatus = useBoolean();
   const [projectId, setProjectId] = useState<string>();
@@ -82,13 +85,13 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
     <>
       <ProjectTabContentHeader>
         <div className={styles.basicToolbarForm}>
-          <MainTitle level={3}>Project Status:</MainTitle>
+          {isMobile ? null : <MainTitle level={3}>Project Status:</MainTitle>}
           <CustomRadio
             options={ProjectStatuses.map((projectStatus) => {
               return {
                 label: (
                   <BodyText level={6} fontFamily="Roboto" customClass={styles.projectStatusLabel}>
-                    {projectStatus.name} {projectStatus.icon}
+                    {isMobile ? '' : projectStatus.name} {projectStatus.icon}
                   </BodyText>
                 ),
                 value: projectStatus.id,
