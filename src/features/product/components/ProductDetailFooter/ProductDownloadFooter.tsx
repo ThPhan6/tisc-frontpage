@@ -19,7 +19,7 @@ const ProductDownloadFooter: FC = () => {
   const dispatch = useDispatch();
 
   const downloads = useAppSelector((state) => state.product.details.downloads);
-  const isTiscAdmin = useCheckPermission('TISC Admin');
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
   if (isTiscAdmin) {
     return (

@@ -19,7 +19,7 @@ import styles from './detail.less';
 
 export const ProductBasicInfo: React.FC = () => {
   const dispatch = useDispatch();
-  const editable = useCheckPermission('TISC Admin');
+  const editable = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
   const brand = useAppSelector((state) => state.product.brand);
   const { name, description, collection } = useAppSelector((state) => state.product.details);
