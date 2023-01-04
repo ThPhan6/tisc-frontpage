@@ -309,8 +309,6 @@ export const VendorLocation: FC<VendorTabProps> = ({
             onClick={(e) => {
               e.stopPropagation();
             }}>
-            {renderDeleteIcon()}
-
             <div
               className={` ${isTiscAdmin ? 'cursor-disabled' : 'cursor-default'}`}
               onClick={isTiscAdmin || isPublicPage ? undefined : (e) => handleShowAddress(e)}>
@@ -324,6 +322,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
                   color={country ? 'mono-color' : 'mono-color-medium'}>
                   {getCountryName()}
                 </BodyText>
+                {renderDeleteIcon()}
                 {renderRightIcon()}
               </div>
             </div>
