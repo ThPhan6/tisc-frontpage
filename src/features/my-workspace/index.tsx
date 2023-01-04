@@ -78,10 +78,7 @@ const MyWorkspace = () => {
       showPageLoading();
       getDesignerWorkspace(
         {
-          filter:
-            selectedFilter.id === GlobalFilter.id
-              ? undefined
-              : { project_status: selectedFilter.id },
+          filter: selectedFilter.id === GlobalFilter.id ? undefined : { status: selectedFilter.id },
         },
         (data) => {
           hidePageLoading();

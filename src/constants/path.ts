@@ -13,6 +13,7 @@ export const PATH = {
   tiscHomePage: '/tisc/dashboard',
   tiscDashboardBrandDetail: '/tisc/dashboard/:id',
   brandHomePage: '/brand/dashboard',
+  brandDashboardProjectDetail: '/brand/dashboard/:id',
   designerHomePage: '/design-firms/dashboard',
 
   //how-to

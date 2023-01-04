@@ -72,6 +72,12 @@ const ShareViaEmail: FC<ShareViaEmailProps> = ({
       return;
     }
 
+    setShareViaEmailData({
+      ...DEFAULT_STATE,
+      product_id: product.id,
+      custom_product: isCustomProduct,
+    });
+
     getSharingGroups().then((data) => {
       if (data) {
         setSharingGroup(data);

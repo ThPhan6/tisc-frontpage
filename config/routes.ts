@@ -511,7 +511,19 @@ export default [
     name: 'workspace',
     icon: 'workspace-icon.svg',
     access: 'brand_workspace',
-    component: '../features/my-workspace',
+
+    routes: [
+      {
+        path: PATH.brandHomePage,
+        component: '../features/my-workspace',
+        hideInMenu: true,
+      },
+      {
+        path: PATH.brandDashboardProjectDetail,
+        component: './Brand/ProjectTracking/ProjectTrackingDetail',
+        hideInMenu: true,
+      },
+    ],
   },
   {
     path: PATH.brandProduct,
