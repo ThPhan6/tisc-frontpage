@@ -29,7 +29,8 @@ import {
 import { getDepartmentList } from '@/services';
 
 import { TeamProfileDetailProps, TeamProfileRequestBody } from '../types';
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
+import { openModal } from '@/reducers/modal';
 import { GeneralData } from '@/types';
 
 import { CustomRadio } from '@/components/CustomRadio';
@@ -49,11 +50,7 @@ import {
   inviteUser,
   updateTeamProfile,
 } from '../api';
-import LocationModal from './LocationModal';
 import styles from './TeamProfilesEntryForm.less';
-import BrandAccessLevelModal from './access-level-modal/BrandAccessLevelModal';
-import DesignAccessLevelModal from './access-level-modal/DesignAccessLevelModal';
-import TISCAccessLevelModal from './access-level-modal/TISCAccessLevelModal';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const GenderRadio = [
@@ -101,15 +98,12 @@ const TeamProfilesEntryForm = () => {
 
   /// for department
   const [departments, setDepartments] = useState<GeneralData[]>([]);
-  const [openModal, setOpenModal] = useState<'' | 'workLocationModal' | 'accessModal'>('');
 
   const [workLocation, setWorkLocation] = useState({
     label: '',
     value: data.location_id,
     phoneCode: '00',
   });
-
-  const setVisibleModal = (visible: boolean) => (visible ? undefined : setOpenModal(''));
 
   const onChangeData = (fieldName: FieldName, fieldValue: any) => {
     setData({
@@ -235,6 +229,8 @@ const TeamProfilesEntryForm = () => {
     return null;
   }
 
+  const userType = isTiscUser ? 'tisc' : isBrandUser ? 'brand' : 'designer';
+
   return (
     <div>
       <TableHeader title="TEAM PROFILES" rightAction={<CustomPlusButton disabled />} />
@@ -245,7 +241,8 @@ const TeamProfilesEntryForm = () => {
         handleDelete={handleDeleteTeamProfile}
         entryFormTypeOnMobile={isUpdate ? 'edit' : 'create'}
         submitButtonStatus={submitButtonStatus.value}
-        customClass={styles.entry_form}>
+        customClass={styles.entry_form}
+      >
         {/* First Name */}
         <InputGroup
           label="First Name"
@@ -300,7 +297,15 @@ const TeamProfilesEntryForm = () => {
           hasBoxShadow
           hasHeight
           rightIcon
-          onRightIconClick={() => setOpenModal('workLocationModal')}
+          onRightIconClick={() =>
+            store.dispatch(
+              openModal({
+                type: 'Work Location',
+                title: 'Work Location',
+                props: { workLocation: { data: workLocation, onChange: setWorkLocation } },
+              }),
+            )
+          }
           placeholder="select from list"
         />
         {/* Department */}
@@ -310,7 +315,8 @@ const TeamProfilesEntryForm = () => {
           layout="vertical"
           formClass={`${styles.department} ${
             departmentData.name !== '' ? styles.activeDepartment : ''
-          }`}>
+          }`}
+        >
           <CollapseRadioList
             options={departments.map((department) => {
               return {
@@ -411,7 +417,18 @@ const TeamProfilesEntryForm = () => {
           customIcon={<InfoIcon className={styles.warning_icon} />}
           layout="vertical"
           formClass={`${styles.form_group} ${styles.access_label}`}
-          onClick={() => setOpenModal('accessModal')}>
+          onClick={() =>
+            store.dispatch(
+              openModal({
+                type: 'Access Level',
+                title: `${userType} Access level`,
+                props: {
+                  accessLevel: { type: userType },
+                },
+              }),
+            )
+          }
+        >
           <CustomRadio
             options={accessLevelDataRole}
             value={data.role_id}
@@ -430,29 +447,6 @@ const TeamProfilesEntryForm = () => {
           formClass={styles.status}
         />
       </EntryFormWrapper>
-
-      {isTiscUser ? (
-        <TISCAccessLevelModal visible={openModal === 'accessModal'} setVisible={setVisibleModal} />
-      ) : null}
-
-      {isBrandUser ? (
-        <BrandAccessLevelModal visible={openModal === 'accessModal'} setVisible={setVisibleModal} />
-      ) : null}
-
-      {isDesignerUser ? (
-        <DesignAccessLevelModal
-          visible={openModal === 'accessModal'}
-          setVisible={setVisibleModal}
-        />
-      ) : null}
-
-      {/* Location Modal */}
-      <LocationModal
-        visible={openModal === 'workLocationModal'}
-        setVisible={setVisibleModal}
-        workLocation={workLocation}
-        setWorkLocation={setWorkLocation}
-      />
     </div>
   );
 };

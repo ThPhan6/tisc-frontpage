@@ -20,6 +20,7 @@ interface DimensionWeightProps {
   editable: boolean;
   isShow: boolean;
   isConversionText?: boolean;
+  arrowAlignRight?: boolean;
   noPadding?: boolean;
   collapseStyles?: boolean;
   customClass?: string;
@@ -31,6 +32,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
   editable,
   isShow,
   isConversionText,
+  arrowAlignRight,
   noPadding,
   collapseStyles = true,
   customClass = '',
@@ -117,7 +119,8 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
           className={styles.switchBtn}
           onClick={(e) => {
             e.stopPropagation();
-          }}>
+          }}
+        >
           <Switch
             size="small"
             checkedChildren="ON"
@@ -155,6 +158,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
       } ${isConversionText ? styles.dimensionWeightSpec : ''}`}
       showActiveBoxShadow={collapseStyles}
       expandingHeaderFontStyle="bold"
+      arrowAlignRight={arrowAlignRight}
       noBorder={!collapseStyles}
       activeKey={activeCollapse}
       onChange={(key) => setActiveCollapse(key)}
@@ -165,7 +169,8 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
           </RobotoBodyText>
           {editable && activeCollapse.length ? renderDiameterToggle() : null}
         </div>
-      }>
+      }
+    >
       <table className={styles.tableContent}>
         <tbody>
           {data.attributes.map((conversionItem, index) =>

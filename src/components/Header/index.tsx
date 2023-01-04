@@ -2,7 +2,6 @@ import React from 'react';
 
 import { PATH } from '@/constants/path';
 import { UserHomePagePaths } from '@/constants/user.constant';
-import { USER_ROLE } from '@/constants/userRoles';
 import { HeaderViewProps } from '@ant-design/pro-layout/lib/Header';
 import { Row } from 'antd';
 
@@ -16,7 +15,7 @@ import TISCLogoIcon from '@/assets/tisc-logo-icon.svg';
 
 import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { useBoolean, useGetUserRoleFromPathname } from '@/helper/hook';
+import { useBoolean, useCheckPermission } from '@/helper/hook';
 import { getValueByCondition } from '@/helper/utils';
 
 import { useAppSelector } from '@/reducers';
@@ -30,7 +29,6 @@ import { AvatarDropdown } from './AvatarDropdown';
 import styles from './styles/index.less';
 
 const PageHeader = (props: HeaderViewProps) => {
-  console.log(props);
   const { isMobile } = useScreen();
   const showQuestionDropdown = useBoolean();
   const showLanguageDropdown = useBoolean();
@@ -39,14 +37,13 @@ const PageHeader = (props: HeaderViewProps) => {
 
   const user = useAppSelector((state) => state.user.user);
 
-  const currentUser = useGetUserRoleFromPathname();
-  const isTiscUser = currentUser === USER_ROLE.tisc;
-  const isBrandUser = currentUser === USER_ROLE.brand;
-  const isDesignerUser = currentUser === USER_ROLE.design;
+  const isTiscUser = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  const isBrandUser = useCheckPermission(['Brand Admin', 'Brand Team']);
+  const isDesignerUser = useCheckPermission(['Design Admin', 'Design Team']);
 
   const logoImage = getValueByCondition(
     [
-      [isMobile, <AlignRightIcon style={{ color: '#fff' }} />],
+      [isMobile, <AlignRightIcon style={{ color: '#fff' }} width={24} height={24} />],
       [isTiscUser, <img src={TISCLogoIcon} alt="logo" />],
       [isBrandUser, <LogoIcon logo={String(user?.brand?.logo)} />],
       [isDesignerUser, <LogoIcon logo={String(user?.design?.logo)} />],
@@ -116,7 +113,8 @@ const PageHeader = (props: HeaderViewProps) => {
       align={{ offset: [0, -4] }}
       placement="topRight"
       trigger={['click']}
-      getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}>
+      getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}
+    >
       {icon}
     </HeaderDropdown>
   );
@@ -125,7 +123,8 @@ const PageHeader = (props: HeaderViewProps) => {
     <Row
       className={`${styles.container} ${isMobile ? styles.mobile : ''}`}
       justify={'space-between'}
-      align="middle">
+      align="middle"
+    >
       <div className={styles['logo-icon']} onClick={onLeftIconClick}>
         {logoImage}
       </div>
@@ -188,7 +187,8 @@ const PageHeader = (props: HeaderViewProps) => {
         height="auto"
         closeOnMask
         width="100%"
-        bodyStyle={{ padding: 0, position: 'relative' }}>
+        bodyStyle={{ padding: 0, position: 'relative' }}
+      >
         <SiderMenu
           appProps={props.children}
           menu={props.menuData}

@@ -178,7 +178,8 @@ const BrandProductListPage: React.FC = () => {
             bottomValue={
               <span
                 style={{ display: 'flex', alignItems: 'center' }}
-                onClick={() => searchInputRef.current?.focus()}>
+                onClick={() => searchInputRef.current?.focus()}
+              >
                 Keywords <SearchIcon />
               </span>
             }

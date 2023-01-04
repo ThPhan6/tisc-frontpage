@@ -18,15 +18,17 @@ import { getTeamsByDesignFirm } from '@/features/user-group/services';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { getDesignDueDay, getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import type { TableColumnItem } from '@/components/Table/types';
 import type { ProjectListProps, ProjectSummaryData } from '@/features/project/types';
-import { TeamProfileGroupCountry, TeamProfileMemberProps } from '@/features/team-profiles/types';
+import { TeamProfileGroupCountry } from '@/features/team-profiles/types';
+import store from '@/reducers';
+import { closeModal, openModal } from '@/reducers/modal';
 
 import ProjectListHeader from './components/ProjectListHeader';
-import AssignTeam from '@/components/AssignTeam';
+import { getAssignTeamCheck } from '@/components/AssignTeam';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
@@ -50,16 +52,57 @@ const ProjectList: React.FC = () => {
       ? true
       : false;
 
-  // assign team modal
-  const [visible, setVisible] = useState<boolean>(false);
-  // for each member assigned
-  const [recordAssignTeam, setRecordAssignTeam] = useState<ProjectListProps>();
   // get list assign team to display inside popup
   const [assignTeam, setAssignTeam] = useState<TeamProfileGroupCountry[]>([]);
 
+  // update assign team
+  const handleSubmitAssignTeam =
+    (projectInfo: ProjectListProps, teamProfile: TeamProfileGroupCountry[]) =>
+    (checkedData: CheckboxValue[]) => {
+      if (!projectInfo?.id) {
+        return;
+      }
+
+      const { memberAssignTeamIds, noSelectionChange } = getAssignTeamCheck(
+        projectInfo.assign_teams,
+        teamProfile,
+        checkedData,
+      );
+
+      // dont call api if havent changed
+      if (noSelectionChange) return;
+
+      // add member selected to data
+      createAssignTeamByProjectId(projectInfo.id, memberAssignTeamIds).then((isSuccess) => {
+        if (isSuccess) {
+          // reload table after updating
+          tableRef.current.reload();
+          // close popup
+          closeModal();
+        }
+      });
+    };
+
   const showAssignTeams = (projectInfo: ProjectListProps) => () => {
-    /// get brand info
-    setRecordAssignTeam(projectInfo);
+    const openAssignTeamModal = (teams: TeamProfileGroupCountry[]) =>
+      store.dispatch(
+        openModal({
+          type: 'Assign Team',
+          title: 'Assign Team',
+          props: {
+            assignTeam: {
+              memberAssigned: projectInfo.assign_teams,
+              teams,
+              onChange: handleSubmitAssignTeam(projectInfo, teams),
+            },
+          },
+        }),
+      );
+
+    if (assignTeam.length) {
+      openAssignTeamModal(assignTeam);
+      return;
+    }
 
     // get list team by design id(user's relation_id)
     getTeamsByDesignFirm(projectInfo.design_id).then((res) => {
@@ -67,47 +110,11 @@ const ProjectList: React.FC = () => {
         /// set assignTeam state to display
         setAssignTeam(res);
         // open popup
-        setVisible(true);
+        openAssignTeamModal(res);
       }
     });
   };
 
-  // update assign team
-  const handleSubmitAssignTeam = (checkedData: CheckboxValue[]) => {
-    // new assign team
-    const memberAssignTeam: TeamProfileMemberProps[] = [];
-
-    checkedData?.forEach((checked) => {
-      assignTeam.forEach((team) => {
-        const member = team.users.find((user) => user.id === checked.value);
-
-        if (member) {
-          memberAssignTeam.push(member);
-        }
-      });
-    });
-
-    if (recordAssignTeam?.id) {
-      // dont call api if havent changed
-      const checkedIds = checkedData?.map((check) => check.value);
-      const assignedTeamIds = recordAssignTeam.assign_teams?.map((team) => team.id);
-      const noSelectionChange = isEqual(checkedIds, assignedTeamIds);
-      if (noSelectionChange) return;
-
-      // add member selected to data
-      createAssignTeamByProjectId(
-        recordAssignTeam.id,
-        memberAssignTeam.map((member) => member.id),
-      ).then((isSuccess) => {
-        if (isSuccess) {
-          // reload table after updating
-          tableRef.current.reload();
-          // close popup
-          setVisible(false);
-        }
-      });
-    }
-  };
   const goToCreatePage = () => {
     pushTo(PATH.designerProjectCreate);
   };
@@ -186,7 +193,8 @@ const ProjectList: React.FC = () => {
           <BodyText
             level={5}
             fontFamily="Roboto"
-            customClass={`${styles.dueDayText} ${dueDay.value < 0 ? 'late' : ''}`}>
+            customClass={`${styles.dueDayText} ${dueDay.value < 0 ? 'late' : ''}`}
+          >
             {dueDay.text}
           </BodyText>
         );
@@ -247,7 +255,8 @@ const ProjectList: React.FC = () => {
               summaryData={summaryData}
             />
           );
-        }}>
+        }}
+      >
         <CustomTable
           rightAction={<CustomPlusButton onClick={goToCreatePage} />}
           title={'PROJECTS'}
@@ -267,13 +276,6 @@ const ProjectList: React.FC = () => {
           autoLoad={false}
         />
       </PageContainer>
-      <AssignTeam
-        visible={visible}
-        setVisible={setVisible}
-        onChange={handleSubmitAssignTeam}
-        memberAssigned={recordAssignTeam?.assign_teams}
-        teams={assignTeam}
-      />
     </div>
   );
 };

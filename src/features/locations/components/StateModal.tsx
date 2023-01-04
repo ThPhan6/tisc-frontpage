@@ -41,6 +41,7 @@ const StateModal: FC<{
     <Popover
       title="SELECT STATE / PROVINCE"
       visible={visible}
+      secondaryModal
       setVisible={setVisible}
       chosenValue={chosenValue}
       setChosenValue={setChosenValue}

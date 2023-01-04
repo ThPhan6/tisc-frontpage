@@ -153,7 +153,8 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({
           variant="primary"
           properties="rounded"
           buttonClass="done-btn"
-          onClick={handleCancel}>
+          onClick={handleCancel}
+        >
           Cancel
         </CustomButton>
         {submitButtonStatus.value ? (
@@ -170,7 +171,8 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({
             variant="primary"
             properties="rounded"
             buttonClass="done-btn"
-            onClick={handleSave}>
+            onClick={handleSave}
+          >
             Save
           </CustomButton>
         )}
@@ -187,17 +189,21 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({
       className={styles.modalContainer}
       centered
       width={576}
-      footer={renderFooterButton()}>
+      footer={renderFooterButton()}
+      secondaryModal
+    >
       <div className="flex-between" style={{ paddingBottom: 16 }}>
         <div className={`flex-start ${styles.optionHeader}`}>
           <MainTitle level={3}>Add Option</MainTitle>
           <Checkbox
             className={styles.imageBtn}
             checked={optionState.use_image}
-            onChange={(e) => onChangeUseImage(e.target.checked)}>
+            onChange={(e) => onChangeUseImage(e.target.checked)}
+          >
             <RobotoBodyText
               level={5}
-              color={optionState.use_image ? 'primary-color-dark' : 'mono-color'}>
+              color={optionState.use_image ? 'primary-color-dark' : 'mono-color'}
+            >
               Image
             </RobotoBodyText>
           </Checkbox>
@@ -219,7 +225,8 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({
           style={{
             paddingBottom: optionState.use_image ? 8 : 1,
             marginBottom: optionState.use_image ? 0 : 8,
-          }}>
+          }}
+        >
           {optionState.use_image ? (
             <ImageUpload
               onFileChange={onChangeImage(itemIndex)}

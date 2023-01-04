@@ -4,31 +4,23 @@ import { upperCase } from 'lodash';
 
 import { RadioValue } from '@/components/CustomRadio/types';
 import { LocationDetail, LocationGroupedByCountry } from '@/features/locations/type';
+import { useAppSelector } from '@/reducers';
+import { modalPropsSelector } from '@/reducers/modal';
 
 import Popover from '@/components/Modal/Popover';
 
 import styles from './LocationModal.less';
 import { getWorkLocations } from '@/features/locations/api';
 
-interface WorkLocationData {
+export interface WorkLocationData {
   label: string;
   value: string;
   phoneCode: string;
 }
 
-interface LocationModalProps {
-  workLocation: WorkLocationData;
-  setWorkLocation: (data: WorkLocationData) => void;
-  visible: boolean;
-  setVisible: (value: boolean) => void;
-}
+const LocationModal: FC = () => {
+  const { data, onChange } = useAppSelector(modalPropsSelector).workLocation;
 
-const LocationModal: FC<LocationModalProps> = ({
-  visible,
-  setVisible,
-  workLocation,
-  setWorkLocation,
-}) => {
   const [workLocations, setWorkLocations] = useState<LocationGroupedByCountry[]>([]);
 
   const setSelectedWorkLocation = (location: LocationDetail) => {
@@ -39,7 +31,7 @@ const LocationModal: FC<LocationModalProps> = ({
     if (location.country_name) {
       workLocationText += upperCase(location.country_name);
     }
-    setWorkLocation({
+    onChange({
       label: workLocationText,
       value: location.id,
       phoneCode: location.phone_code ?? '',
@@ -52,7 +44,7 @@ const LocationModal: FC<LocationModalProps> = ({
       setWorkLocations(res);
       res.forEach((country) => {
         const selectedLocation = country.locations.find((location) => {
-          return location.id === workLocation.value;
+          return location.id === data.value;
         });
         if (selectedLocation) {
           setSelectedWorkLocation(selectedLocation);
@@ -94,8 +86,7 @@ const LocationModal: FC<LocationModalProps> = ({
   return (
     <Popover
       title="SELECT LOCATION"
-      visible={visible}
-      setVisible={(isVisible) => setVisible(isVisible)}
+      visible
       dropdownRadioList={workLocations.map((country) => {
         return {
           country_name: country.country_name,
@@ -116,8 +107,8 @@ const LocationModal: FC<LocationModalProps> = ({
       })}
       dropDownRadioTitle={(dropdownData) => dropdownData.country_name}
       chosenValue={{
-        label: workLocation.label,
-        value: workLocation.value,
+        label: data.label,
+        value: data.value,
       }}
       setChosenValue={setLocationValue}
       className={styles.customLocationModal}

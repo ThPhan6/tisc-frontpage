@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-import { MESSAGE_ERROR, MESSAGE_NOTIFICATION } from '@/constants/message';
+import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
-import { STATUS_RESPONSE } from '@/constants/util';
 import { Col, Row, message } from 'antd';
 import { history } from 'umi';
 
@@ -16,77 +15,27 @@ import { ReactComponent as SingleRight } from '@/assets/icons/single-right.svg';
 import { ReactComponent as TargetMoneyIcon } from '@/assets/icons/target-money-icon.svg';
 import { ReactComponent as TimeMoney } from '@/assets/icons/time-money-icon.svg';
 
-import {
-  createPasswordVerify,
-  getBooking,
-  resetPasswordMiddleware,
-  validateToken,
-  verifyAccount,
-} from './services/api';
-import { pushTo } from '@/helper/history';
-import { useBoolean, useCustomInitialState, useGetParamId, useQuery } from '@/helper/hook';
+import { validateToken, verifyAccount } from './services/api';
+import { useScreen } from '@/helper/common';
+import { useQuery } from '@/helper/hook';
 
-import { InformationBooking, ModalOpen, PasswordRequestBody } from './types';
 import store from '@/reducers';
-import { openModal as openModalAction } from '@/reducers/modal';
+import { ModalType, openModal } from '@/reducers/modal';
 
-import { BrandInterestedModal } from './components/BrandInterestedModal';
-import { CalendarModal } from './components/CalendarModal';
-import { CancelBookingModal } from './components/CancelBookingModal';
-import { NoticeModal } from './components/NoticeModal';
-import { PasswordModal } from './components/PasswordModal';
-import { VerifyAccount } from './components/VerifyAccount';
 import CustomButton from '@/components/Button';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
-import { AboutPoliciesContactModal } from './AboutPolicesContactModal';
 import { LandingPageFooter } from './footer';
 import styles from './index.less';
-import { getAvailableDateInMonth } from './util';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
-import moment from 'moment';
-
-const DEFAULT_STATE: InformationBooking = {
-  brand_name: '',
-  website: '',
-  name: '',
-  email: '',
-  agree_tisc: false,
-  date: getAvailableDateInMonth(moment().add(24, 'hours')),
-  slot: -1,
-  timezone: 'Asia/Singapore',
-  id: '',
-  time_text: '',
-  start_time_text: '',
-  end_time_text: '',
-};
 
 const LandingPage = () => {
   const userEmail = useQuery().get('email');
   const tokenResetPwd = useQuery().get('token');
   const tokenVerification = useQuery().get('verification_token');
 
-  const { fetchUserInfo } = useCustomInitialState();
-  const openResetPwd = useBoolean();
-  const openVerificationModal = useBoolean();
+  const listMenuFooter: ModalType[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
 
-  const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
-  const [openModal, setOpenModal] = useState<ModalOpen>('');
-  const openVerifyAccountModal = useBoolean();
-  const [informationBooking, setInformationBooking] = useState<InformationBooking>(DEFAULT_STATE);
-  const openCalendar = useBoolean();
-  const bookingId = useGetParamId();
-  const isUpdateBooking = bookingId ? true : false;
-  const openCancelBooking = useBoolean();
-
-  const handleCloseModal = () => {
-    setOpenModal('');
-  };
-
-  const handleOpenCalendar = () => {
-    setOpenModal('');
-    openCalendar.setValue(true);
-  };
+  const isMobile = useScreen().isMobile;
 
   useEffect(() => {
     if ((!userEmail || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
@@ -95,9 +44,21 @@ const LandingPage = () => {
       if (tokenResetPwd) {
         validateToken(tokenResetPwd).then((res) => {
           if (res) {
-            return openResetPwd.setValue(res);
+            store.dispatch(
+              openModal({
+                type: 'Reset Password',
+                props: {
+                  email: userEmail || '',
+                  token: tokenResetPwd || '',
+                  passwordType: 'reset',
+                },
+                autoHeightDrawer: true,
+                noBorderDrawerHeader: true,
+              }),
+            );
+          } else {
+            history.push(PATH.landingPage);
           }
-          history.push(PATH.landingPage);
         });
       }
     }
@@ -105,74 +66,54 @@ const LandingPage = () => {
   }, [userEmail]);
 
   useEffect(() => {
-    if (tokenVerification && history.location.pathname !== PATH.createPassword) {
-      verifyAccount(tokenVerification).then((success) => {
-        if (success) {
-          openVerifyAccountModal.setValue(success);
-        } else {
-          history.replace(PATH.landingPage);
-          message.error(MESSAGE_ERROR.VERIFY_TOKEN_EXPIRED);
-        }
-      });
+    if (!tokenVerification) {
+      if (history.location.pathname === PATH.verifyAccount) {
+        history.push(PATH.landingPage);
+      }
       return;
-    } else if (tokenVerification && history.location.pathname === PATH.createPassword) {
-      validateToken(tokenVerification).then((success) => {
-        if (success) {
-          openVerificationModal.setValue(true);
-        } else {
-          message.error(MESSAGE_ERROR.VERIFY_TOKEN_EXPIRED);
+    }
+
+    const isCreatePassword = history.location.pathname === PATH.createPassword;
+    const handleVerifyToken = isCreatePassword ? validateToken : verifyAccount;
+    const verifyTokenCallback = (success: boolean) => {
+      if (success) {
+        store.dispatch(
+          openModal({
+            type: isCreatePassword ? 'Reset Password' : 'Verify Account',
+            props: isCreatePassword
+              ? {
+                  email: userEmail || '',
+                  token: tokenVerification,
+                  passwordType: 'create',
+                }
+              : undefined,
+            autoHeightDrawer: true,
+            noBorderDrawerHeader: true,
+          }),
+        );
+      } else {
+        message.error(MESSAGE_ERROR.VERIFY_TOKEN_EXPIRED);
+        if (isCreatePassword === false) {
+          history.replace(PATH.landingPage);
         }
-      });
-    }
-    if (history.location.pathname === PATH.verifyAccount) {
-      history.push(PATH.landingPage);
-    }
+      }
+    };
+
+    handleVerifyToken(tokenVerification).then(verifyTokenCallback);
   }, [tokenVerification]);
 
-  useEffect(() => {
-    if (bookingId) {
-      getBooking(bookingId).then((res) => {
-        if (res) {
-          setInformationBooking(res);
-          if (history.location.pathname.indexOf('cancel') !== -1) {
-            openCancelBooking.setValue(true);
-          }
-          if (history.location.pathname.indexOf('re-schedule') !== -1) {
-            openCalendar.setValue(true);
-          }
-        } else {
-          pushTo(PATH.landingPage);
-        }
-      });
-    }
-  }, []);
-
-  const handleResetPassword = (data: PasswordRequestBody) => {
-    showPageLoading();
-    resetPasswordMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
-      if (type === STATUS_RESPONSE.SUCCESS) {
-        message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD_SUCCESS);
-        await fetchUserInfo(true);
-      } else {
-        message.error(msg);
-      }
-      hidePageLoading();
-    });
-  };
-
-  const handleVerifyAccount = (data: PasswordRequestBody) => {
-    showPageLoading();
-    createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
-      if (isSuccess) {
-        fetchUserInfo(true);
-        hidePageLoading();
-        openVerificationModal.setValue(false);
-        history.replace(PATH.landingPage);
-      }
-    });
-  };
-
-  const openLoginModal = () => store.dispatch(openModalAction({ type: 'Login' }));
+  const openLoginModal = () =>
+    store.dispatch(
+      openModal({ type: 'Login', autoHeightDrawer: true, noBorderDrawerHeader: true }),
+    );
+  const openBrandInterested = () =>
+    store.dispatch(
+      openModal({
+        type: 'Brand Interested',
+        autoHeightDrawer: true,
+        noBorderDrawerHeader: true,
+      }),
+    );
 
   const renderFeatures = (data: any[]) => {
     return (
@@ -200,13 +141,20 @@ const LandingPage = () => {
                 icon={<SingleRight />}
                 width="104px"
                 buttonClass={styles['login-button']}
-                onClick={openLoginModal}>
+                onClick={openLoginModal}
+              >
                 Log in
               </CustomButton>
             </div>
             <div className={styles.content}>
-              <div className={styles.summary}>
-                <div className={styles.message}>
+              <div
+                className={styles.summary}
+                style={{ flexDirection: isMobile ? 'column-reverse' : undefined }}
+              >
+                <div
+                  className={styles.message}
+                  style={{ textAlign: isMobile ? 'center' : undefined }}
+                >
                   <MainTitle customClass={styles.title}>SEARCH, SELECT & SPECIFY</MainTitle>
                   <BodyText customClass={styles.description}>
                     TISC is a free product information and specification platform for the design and
@@ -214,7 +162,7 @@ const LandingPage = () => {
                     DESIGNERS.
                   </BodyText>
                 </div>
-                <img src={graphic} />
+                <img src={graphic} className={styles.noneImage} />
               </div>
               <div className={styles['user-group']}>
                 <div className={styles.brands}>
@@ -239,7 +187,8 @@ const LandingPage = () => {
                       properties="warning"
                       size="large"
                       buttonClass={styles['action-button']}
-                      onClick={() => setOpenModal('Brand Interested')}>
+                      onClick={openBrandInterested}
+                    >
                       INTERESTED
                     </CustomButton>
                   </div>
@@ -269,7 +218,16 @@ const LandingPage = () => {
                       properties="warning"
                       size="large"
                       buttonClass={styles['action-button']}
-                      onClick={() => store.dispatch(openModalAction({ type: 'Designer Signup' }))}>
+                      onClick={() =>
+                        store.dispatch(
+                          openModal({
+                            type: 'Designer Signup',
+                            autoHeightDrawer: true,
+                            noBorderDrawerHeader: true,
+                          }),
+                        )
+                      }
+                    >
                       SIGN ME UP
                     </CustomButton>
                   </div>
@@ -280,71 +238,7 @@ const LandingPage = () => {
         </Row>
       </div>
 
-      <LandingPageFooter setOpenModal={setOpenModal} listMenuFooter={listMenuFooter} />
-
-      <AboutPoliciesContactModal visible={openModal} onClose={handleCloseModal} />
-
-      <NoticeModal
-        visible={openModal === 'Browser Compatibility'}
-        onClose={handleCloseModal}
-        theme="dark"
-      />
-
-      {userEmail ? (
-        <PasswordModal
-          visible={openResetPwd}
-          handleSubmit={handleResetPassword}
-          data={{
-            email: userEmail,
-            token: tokenResetPwd || '',
-          }}
-          type="reset"
-        />
-      ) : null}
-      <PasswordModal
-        visible={openVerificationModal}
-        handleSubmit={handleVerifyAccount}
-        data={{
-          email: userEmail ?? '',
-          token: tokenVerification || '',
-        }}
-        type="create"
-      />
-      {openVerifyAccountModal.value === true ? (
-        <VerifyAccount
-          visible={openVerifyAccountModal}
-          handleSubmit={openLoginModal}
-          openLogin={openLoginModal}
-        />
-      ) : null}
-      {openCalendar.value ? (
-        <CalendarModal
-          visible={openCalendar.value}
-          onClose={() => {
-            openCalendar.setValue(false);
-            setInformationBooking(DEFAULT_STATE);
-          }}
-          informationBooking={informationBooking}
-          isUpdateBooking={isUpdateBooking}
-          onChangeValue={(value) => setInformationBooking(value)}
-        />
-      ) : null}
-
-      <CancelBookingModal
-        visible={openCancelBooking.value}
-        onClose={() => openCancelBooking.setValue(false)}
-        informationBooking={informationBooking}
-      />
-      {openModal === 'Brand Interested' ? (
-        <BrandInterestedModal
-          visible={openModal === 'Brand Interested'}
-          onClose={handleCloseModal}
-          theme="default"
-          onChangeValue={(value) => setInformationBooking(value)}
-          inputValue={informationBooking}
-          onOpenCalendar={handleOpenCalendar}
-        />
-      ) : null}
+      <LandingPageFooter listMenuFooter={listMenuFooter} />
     </div>
   );
 };

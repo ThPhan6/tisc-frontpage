@@ -22,19 +22,18 @@ import { getBase64, showImageUrl } from '@/helper/utils';
 
 import { ProductKeyword } from '../types';
 import { setPartialProductDetail, setProductDetailImage } from '@/features/product/reducers';
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
+import { openModal } from '@/reducers/modal';
 
 import SmallIconButton from '@/components/Button/SmallIconButton';
 import { CustomInput } from '@/components/Form/CustomInput';
-import InquiryRequest from '@/components/InquiryRequest';
-import ShareViaEmail from '@/components/ShareViaEmail/index';
 import { BodyText } from '@/components/Typography';
 import {
   setCustomProductDetail,
   setCustomProductDetailImage,
 } from '@/pages/Designer/Products/CustomLibrary/slice';
 
-import AssignProductModal from '../modals/AssignProductModal';
+import { assignProductModalTitle } from '../modals/AssignProductModal';
 import styles from './detail.less';
 
 interface ActionItemProps {
@@ -52,13 +51,15 @@ const ActionItem: FC<ActionItemProps> = ({ icon, onClick, label, disabled }) => 
       style={{
         cursor: disabled ? 'default' : 'pointer',
         pointerEvents: disabled ? 'none' : 'auto',
-      }}>
+      }}
+    >
       <div className={`flex-start ${disabled ? styles.disabled : ''}`}>
         {icon}
         <BodyText
           level={6}
           fontFamily="Roboto"
-          color={disabled ? 'mono-color-medium' : 'mono-color'}>
+          color={disabled ? 'mono-color-medium' : 'mono-color'}
+        >
           {label}
         </BodyText>
       </div>
@@ -84,7 +85,6 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
   const dispatch = useDispatch();
   const normalProduct = useAppSelector((state) => state.product.details);
   const showShareEmailModal = useBoolean();
-  const showAssignProductModal = useBoolean();
   const showInquiryRequestModal = useBoolean();
   const isDesignerUser = useCheckPermission('Design Admin');
   const isTiscAdmin = useCheckPermission('TISC Admin');
@@ -258,7 +258,18 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
             <ActionItem
               label="Assign Product"
               icon={<AssignIcon />}
-              onClick={() => showAssignProductModal.setValue(true)}
+              onClick={() =>
+                store.dispatch(
+                  openModal({
+                    type: 'Assign Product',
+                    title: assignProductModalTitle,
+                    props: {
+                      isCustomProduct,
+                      productId: product.id,
+                    },
+                  }),
+                )
+              }
               disabled={disabledAssignProduct}
             />
           ) : null}
@@ -300,34 +311,6 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
     );
   };
 
-  const renderActionRight = () => {
-    if (isTiscAdmin || isPublicPage || !product) {
-      return null;
-    }
-
-    return (
-      <>
-        <ShareViaEmail
-          visible={showShareEmailModal.value}
-          setVisible={showShareEmailModal.setValue}
-          product={product}
-          isCustomProduct={isCustomProduct}
-        />
-        <AssignProductModal
-          visible={showAssignProductModal.value}
-          setVisible={showAssignProductModal.setValue}
-          productId={product.id}
-          isCustomProduct={isCustomProduct || false}
-        />
-        <InquiryRequest
-          visible={showInquiryRequestModal.value}
-          setVisible={showInquiryRequestModal.setValue}
-          product={product}
-        />
-      </>
-    );
-  };
-
   return (
     <div className={styles.productContent}>
       <div className={styles.productImageWrapper}>
@@ -359,7 +342,8 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
                 <Col span={8} key={key}>
                   <div className={styles.fileItem}>
                     <div
-                      className={`${styles.filePreview}  ${!isEditable ? styles.lightBorder : ''}`}>
+                      className={`${styles.filePreview}  ${!isEditable ? styles.lightBorder : ''}`}
+                    >
                       <img src={showImageUrl(image) ?? ProductPlaceHolderImage} />
                       {isEditable ? (
                         <div className={styles.subPhotoAction}>
@@ -394,8 +378,6 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
         </Row>
 
         {renderBottomPreview()}
-
-        {renderActionRight()}
       </div>
     </div>
   );

@@ -137,7 +137,8 @@ export const ProjectCard: FC<ProjectCardProps> = ({
             <BodyText level={5}>{isBrandUser ? 'Notifications' : 'Design due'}:</BodyText>
           </div>
           <div
-            className={`${styles.middleValue} ${!isBrandUser && dueDay.value < 0 ? 'late' : ''}`}>
+            className={`${styles.middleValue} ${!isBrandUser && dueDay.value < 0 ? 'late' : ''}`}
+          >
             <BodyText level={6} fontFamily="Roboto">
               {isBrandUser ? info.notificationCount : dueDay.text}
             </BodyText>
@@ -180,7 +181,8 @@ export const ProjectCard: FC<ProjectCardProps> = ({
           <div
             key={item.id ?? index}
             className={styles.cardItemWrapper}
-            onClick={() => handleClickItem(item.id)}>
+            onClick={() => handleClickItem(item.id)}
+          >
             <div className={styles.cardItem}>
               <div className={styles.top}>{renderTopInfo(item)}</div>
 

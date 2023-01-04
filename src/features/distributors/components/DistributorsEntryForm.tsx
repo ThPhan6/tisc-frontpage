@@ -150,7 +150,8 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
         handleCancel={onCancel}
         handleDelete={handleDeleteDistributor}
         submitButtonStatus={submitButtonStatus}
-        entryFormTypeOnMobile={distributorId ? 'edit' : 'create'}>
+        entryFormTypeOnMobile={distributorId ? 'edit' : 'create'}
+      >
         <div className="form">
           <div className="company information">
             <div className={styles.title}>
@@ -221,7 +222,8 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               label="Address"
               required
               layout="vertical"
-              formClass={styles.customShowCount}>
+              formClass={styles.customShowCount}
+            >
               <CustomTextArea
                 maxLength={120}
                 showCount
@@ -287,7 +289,8 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               label="Gender"
               required
               layout="vertical"
-              formClass={`${styles.formGroup} ${styles.borderBottom}`}>
+              formClass={`${styles.formGroup} ${styles.borderBottom}`}
+            >
               <CustomRadio
                 options={optionsGender}
                 value={data.gender}
@@ -362,7 +365,8 @@ export const DistributorsEntryForm: FC<DistributorEntryForm> = (props) => {
               label="Coverage Beyond"
               required
               layout="vertical"
-              formClass={styles.borderBottom}>
+              formClass={styles.borderBottom}
+            >
               <CustomRadio
                 options={optionsCoverageBeyond}
                 value={data.coverage_beyond}

@@ -69,7 +69,8 @@ export const InspirationalQuotationEntryForm: FC<QuotationEntryFormProps> = ({
         handleSubmit={handleSubmitData}
         handleDelete={handleDeleteQuotation}
         submitButtonStatus={submitButtonStatus}
-        entryFormTypeOnMobile={id ? 'edit' : 'create'}>
+        entryFormTypeOnMobile={id ? 'edit' : 'create'}
+      >
         {/* author */}
         <InputGroup
           label="Author"
