@@ -144,9 +144,9 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
       return true;
     },
     showUploadList: false,
-    disabled: isEditable === false,
+    disabled: !isEditable,
     className: `${styles.uploadZone} ${isEditable ? '' : styles.noBorder} ${
-      isEditable === false && product.images.length < 2 ? styles.noPadding : ''
+      !isEditable && product.images.length < 2 ? styles.noPadding : ''
     }`,
   };
 
@@ -318,7 +318,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
         <ShareViaEmail
           visible={showShareEmailModal.value}
           setVisible={showShareEmailModal.setValue}
-          product={product}
+          product={product as any}
           isCustomProduct={isCustomProduct}
         />
         <AssignProductModal
@@ -330,7 +330,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
         <InquiryRequest
           visible={showInquiryRequestModal.value}
           setVisible={showInquiryRequestModal.setValue}
-          product={product}
+          product={product as any}
         />
       </>
     );
@@ -360,7 +360,13 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
           </div>
         </Upload.Dragger>
 
-        <Row className={styles.photoList} gutter={8}>
+        <Row
+          className={styles.photoList}
+          gutter={8}
+          style={{
+            height: viewOnly && product.images.length < 2 ? 0 : undefined,
+            paddingTop: viewOnly && product.images.length < 2 ? '33.33333333%' : undefined,
+          }}>
           <Col span={isEditable ? 18 : 24}>
             <Row gutter={8} className={styles.listWrapper}>
               {product.images.slice(1).map((image, key) => (
