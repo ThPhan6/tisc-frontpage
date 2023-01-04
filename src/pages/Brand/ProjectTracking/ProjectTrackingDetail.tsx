@@ -20,9 +20,10 @@ const ProjectTrackingDetail = () => {
   const [openInformationModal, setOpenInformationModal] = useState(false);
   const idProject = useGetParamId();
   const summary = useAppSelector((state) => state.summary.summaryProjectTracking);
+  const workspace = location.pathname.indexOf('dashboard') !== -1;
 
   useEffect(() => {
-    getProjectTrackingSummary();
+    getProjectTrackingSummary(workspace);
   }, []);
 
   return (
