@@ -92,7 +92,7 @@ export async function getBrandById(brandId: string) {
 export async function getBrandSummary(workspace?: boolean) {
   return request<{
     data: DataMenuSummaryProps[];
-  }>(workspace ? `/api/brand/workspace/summary` : `/api/brand/summary`, {
+  }>(workspace ? `/api/workspace/summary` : `/api/brand/summary`, {
     method: 'GET',
   })
     .then((response) => {

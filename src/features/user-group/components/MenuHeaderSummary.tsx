@@ -14,11 +14,9 @@ const MenuHeaderSummary: FC<UserGroupProps> = ({ type }) => {
 
   const workspace = location.pathname.indexOf('dashboard') !== -1;
 
-  const fetchBrandSummary = workspace ? getBrandSummary(true) : getBrandSummary(false);
-
   useEffect(() => {
     if (type === 'brand') {
-      fetchBrandSummary.then((data) => {
+      getBrandSummary(workspace).then((data) => {
         if (data) {
           setSummaryData(data);
         }
