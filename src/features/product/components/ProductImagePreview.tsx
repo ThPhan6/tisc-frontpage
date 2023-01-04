@@ -356,7 +356,10 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
         <Row
           className={styles.photoList}
           gutter={8}
-          style={{ minHeight: viewOnly ? 162.75 : undefined }}>
+          style={{
+            height: viewOnly && product.images.length < 2 ? 0 : undefined,
+            paddingTop: viewOnly && product.images.length < 2 ? '33.33333333%' : undefined,
+          }}>
           <Col span={isEditable ? 18 : 24}>
             <Row gutter={8} className={styles.listWrapper}>
               {product.images.slice(1).map((image, key) => (
