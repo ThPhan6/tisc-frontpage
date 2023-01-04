@@ -57,8 +57,19 @@ export default [
     path: PATH.tiscHomePage,
     name: 'workspace',
     icon: 'workspace-icon.svg',
-    component: '../features/my-workspace',
     access: 'tisc_workspace',
+    routes: [
+      {
+        hideInMenu: true,
+        path: PATH.tiscHomePage,
+        component: '../features/my-workspace',
+      },
+      {
+        hideInMenu: true,
+        path: PATH.tiscDashboardBrandDetail,
+        component: './TISC/UserGroup/Brand/UpdatePage',
+      },
+    ],
   },
   {
     path: PATH.tiscUserGroupList,
