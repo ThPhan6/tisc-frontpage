@@ -1,3 +1,5 @@
+import { useScreen } from '@/helper/common';
+
 import type { SummaryResponse } from '../types';
 
 import { BodyText, Title } from '@/components/Typography';
@@ -10,8 +12,13 @@ interface TableSummaryProps {
 }
 
 const TableSummary = ({ summary, customClass = '' }: TableSummaryProps) => {
+  const { isMobile } = useScreen();
+
   return (
-    <div className={`${styles.customPaginator} ${styles.tableSummary} ${customClass}`}>
+    <div
+      className={`${styles.customPaginator} ${styles.tableSummary} ${customClass} ${
+        isMobile ? styles.mobileSummary : ''
+      }`}>
       {summary.map((item, index) => (
         <div className="item" key={index}>
           <BodyText level={6} customClass="name" fontFamily="Roboto">
