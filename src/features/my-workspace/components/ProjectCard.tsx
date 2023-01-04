@@ -72,7 +72,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
           </BodyText>
         </div>
         <BodyText level={6} fontFamily="Roboto" customClass={styles.location}>
-          {isBrandUser ? info.projectLocation : `Code ${info.code}`}
+          {isBrandUser ? info.projectLocation : info.code}
         </BodyText>
       </>
     );
