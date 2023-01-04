@@ -37,7 +37,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
   const loading = useAppSelector(loadingSelector);
   const detailPath = getValueByCondition([
     [isTiscUser, PATH.tiscUserGroupBrandViewDetail],
-    [isBrandUser, PATH.brandProjectTrackingDetail],
+    [isBrandUser, PATH.brandDashboardProjectDetail],
     [isDesignerUser, PATH.designerUpdateProject],
   ]);
 

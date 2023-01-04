@@ -12,6 +12,7 @@ export const PATH = {
   profiles: '/profile-settings',
   tiscHomePage: '/tisc/dashboard',
   brandHomePage: '/brand/dashboard',
+  brandDashboardProjectDetail: '/brand/dashboard/:id',
   designerHomePage: '/design-firms/dashboard',
 
   //how-to
