@@ -52,7 +52,7 @@ export async function getProjectPagination(
 }
 
 export async function getDesignerWorkspace(
-  params: { filter?: { project_status?: ProjectStatus } },
+  params: { filter?: { status?: ProjectStatus } },
   callback: (data: ProjectListProps[]) => void,
 ) {
   request(`/api/designer/workspace`, { method: 'GET', params })
