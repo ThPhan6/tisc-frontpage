@@ -408,7 +408,8 @@ export const useProductListFilterAndSorter = (fetchs: {
         viewAllTop={haveViewAll}
         textCapitalize={false}
         placement={position ?? 'bottomLeft'}
-        menuStyle={{ height: 'max-content', width: 240 }}>
+        menuStyle={{ height: 'max-content', width: 240 }}
+      >
         {type}
       </CustomDropDown>
     );

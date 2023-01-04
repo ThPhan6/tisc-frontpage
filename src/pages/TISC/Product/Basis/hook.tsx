@@ -306,7 +306,8 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           handleCancel={history.goBack}
           handleDelete={getDeleteFuntional}
           submitButtonStatus={submitButtonStatus.value}
-          entryFormTypeOnMobile={idBasis ? 'edit' : 'create'}>
+          entryFormTypeOnMobile={idBasis ? 'edit' : 'create'}
+        >
           <FormNameInput
             placeholder="type group name"
             title={getEntryFormTitle(type)}

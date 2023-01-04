@@ -83,7 +83,8 @@ export const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props)
           className={styles.dropdownCount}
           style={{
             marginLeft: 8,
-          }}>
+          }}
+        >
           ({item.subs.length})
         </span>
       </span>
@@ -97,7 +98,8 @@ export const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props)
           className={styles.dropdownCount}
           style={{
             marginLeft: 8,
-          }}>
+          }}
+        >
           ({item.subs.length})
         </span>
       </span>
@@ -114,26 +116,30 @@ export const DropdownCategoryList: React.FC<DropdownCategoryListProps> = (props)
         setSecondActiveKey([]);
         setActiveKey(key);
       }}
-      activeKey={activeKey}>
+      activeKey={activeKey}
+    >
       {categories.map((item, index) => (
         <Collapse.Panel
           header={renderHeader(item)}
           key={index}
           collapsible={isEmpty(item.subs) ? 'disabled' : undefined}
-          className="site-collapse-custom-panel">
+          className="site-collapse-custom-panel"
+        >
           <Collapse
             bordered={false}
             expandIconPosition="right"
             expandIcon={({ isActive }) => (isActive ? <DropupV2Icon /> : <DropdownV2Icon />)}
             className={styles.secondDropdownList}
             onChange={setSecondActiveKey}
-            activeKey={secondActiveKey}>
+            activeKey={secondActiveKey}
+          >
             {item.subs.map((sub, subIndex) => (
               <Collapse.Panel
                 header={renderSubHeader(sub)}
                 key={`${index}-${subIndex}`}
                 collapsible={isEmpty(sub.subs) ? 'disabled' : undefined}
-                className="site-collapse-custom-panel">
+                className="site-collapse-custom-panel"
+              >
                 <CustomCheckbox
                   options={sub.subs.map((categoryItem) => {
                     return {

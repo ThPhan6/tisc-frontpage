@@ -61,6 +61,7 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
         customClass={!isTiscAdmin ? styles.marginTopSpace : styles.colorInput}
         editable={isTiscAdmin}
         isConversionText={isSpecifiedModal}
+        arrowAlignRight={isSpecifiedModal}
         isShow={activeKey === 'specification'}
         data={dimensionWeightData}
         onChange={(data) => {

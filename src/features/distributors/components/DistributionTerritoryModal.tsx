@@ -12,6 +12,7 @@ const DistributionTerritoryModal: FC<{
   return (
     <Popover
       title="DISTRIBUTION TERRITORY"
+      secondaryModal
       visible={visible}
       setVisible={setVisible}
       noFooter

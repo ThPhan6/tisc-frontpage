@@ -297,7 +297,8 @@ const BrandProfilePage = () => {
                 label={isBrand ? 'Brand Name' : 'Design Firm Name'}
                 layout="vertical"
                 required
-                formClass={styles.customFormGroup}>
+                formClass={styles.customFormGroup}
+              >
                 <CustomInput
                   borderBottomColor="mono-medium"
                   placeholder={isBrand ? 'registered name/trademark' : 'registered company name'}
@@ -310,7 +311,8 @@ const BrandProfilePage = () => {
               <FormGroup
                 label="Parent Company"
                 layout="vertical"
-                formClass={styles.customFormGroup}>
+                formClass={styles.customFormGroup}
+              >
                 <CustomInput
                   borderBottomColor="mono-medium"
                   placeholder="holding company name, if any"
@@ -326,7 +328,8 @@ const BrandProfilePage = () => {
                   maxCount={1}
                   showUploadList={false}
                   {...props}
-                  accept={IMAGE_ACCEPT_TYPES.image}>
+                  accept={IMAGE_ACCEPT_TYPES.image}
+                >
                   {getPreviewAvatar()}
                 </Upload>
               </div>
@@ -339,13 +342,15 @@ const BrandProfilePage = () => {
                   placement="bottom"
                   required
                   formClass={styles.customLabel}
-                  iconTooltip={<WarningIcon className={styles.customWarningIcon} />}>
+                  iconTooltip={<WarningIcon className={styles.customWarningIcon} />}
+                >
                   <div className={styles['wrapper-upload']}>
                     <Upload
                       maxCount={1}
                       showUploadList={false}
                       {...props}
-                      accept={IMAGE_ACCEPT_TYPES.image}>
+                      accept={IMAGE_ACCEPT_TYPES.image}
+                    >
                       <UploadIcon className={styles.icon} />
                     </Upload>
                   </div>
@@ -366,7 +371,8 @@ const BrandProfilePage = () => {
                 label={isBrand ? 'Mission & Vision' : 'Profile & Philosophy'}
                 layout="vertical"
                 required
-                formClass={styles.customFormArea}>
+                formClass={styles.customFormArea}
+              >
                 <CustomTextArea
                   placeholder={
                     isBrand
@@ -410,7 +416,8 @@ const BrandProfilePage = () => {
                     label="Offical Website"
                     required
                     layout="vertical"
-                    formClass={styles.customFormGroup}>
+                    formClass={styles.customFormGroup}
+                  >
                     <CustomInput
                       borderBottomColor="mono-medium"
                       placeholder="paste URL link here"
@@ -424,7 +431,8 @@ const BrandProfilePage = () => {
                     label="Design Capabilities"
                     required
                     layout="vertical"
-                    formClass={styles.customFormGroup}>
+                    formClass={styles.customFormGroup}
+                  >
                     <CustomCheckbox
                       checkboxClass={styles.capability}
                       options={designCapability}

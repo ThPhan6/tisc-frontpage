@@ -124,7 +124,8 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           background: '#fff',
           padding: '16px',
           overflow: 'auto',
-        }}>
+        }}
+      >
         <InputGroup
           label={`${
             customResourceType === CustomResourceType.Brand ? 'Brand' : 'Distributor'
@@ -231,7 +232,8 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
             layout="vertical"
             required
             labelFontSize={3}
-            labelColor={labelColor}>
+            labelColor={labelColor}
+          >
             <CustomTextArea
               className={`${styles.address} ${type === 'view' ? styles.customInput : ''}`}
               maxLength={100}
@@ -270,7 +272,8 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           layout="vertical"
           labelFontSize={3}
           labelColor={labelColor}
-          style={{ marginBottom: '16px' }}>
+          style={{ marginBottom: '16px' }}
+        >
           <PhoneInput
             phonePlaceholder="area code / number"
             onChange={(value) => {

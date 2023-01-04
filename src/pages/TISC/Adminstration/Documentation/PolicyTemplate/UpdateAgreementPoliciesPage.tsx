@@ -91,7 +91,8 @@ const UpdateAgreementPoliciesPage = () => {
           handleCancel={handleCancel}
           handleSubmit={handleSubmit}
           submitButtonStatus={submitButtonStatus.value}
-          entryFormTypeOnMobile="">
+          entryFormTypeOnMobile=""
+        >
           <FormGroup label="Title" required={true} layout="vertical" formClass={styles.title}>
             <div className={styles.title_field}>
               <CustomInput

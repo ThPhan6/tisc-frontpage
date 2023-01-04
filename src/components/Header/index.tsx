@@ -29,7 +29,6 @@ import { AvatarDropdown } from './AvatarDropdown';
 import styles from './styles/index.less';
 
 const PageHeader = (props: HeaderViewProps) => {
-  console.log(props);
   const { isMobile } = useScreen();
   const showQuestionDropdown = useBoolean();
   const showLanguageDropdown = useBoolean();
@@ -44,7 +43,7 @@ const PageHeader = (props: HeaderViewProps) => {
 
   const logoImage = getValueByCondition(
     [
-      [isMobile, <AlignRightIcon style={{ color: '#fff' }} />],
+      [isMobile, <AlignRightIcon style={{ color: '#fff' }} width={24} height={24} />],
       [isTiscUser, <img src={TISCLogoIcon} alt="logo" />],
       [isBrandUser, <LogoIcon logo={String(user?.brand?.logo)} />],
       [isDesignerUser, <LogoIcon logo={String(user?.design?.logo)} />],
@@ -114,7 +113,8 @@ const PageHeader = (props: HeaderViewProps) => {
       align={{ offset: [0, -4] }}
       placement="topRight"
       trigger={['click']}
-      getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}>
+      getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}
+    >
       {icon}
     </HeaderDropdown>
   );
@@ -123,7 +123,8 @@ const PageHeader = (props: HeaderViewProps) => {
     <Row
       className={`${styles.container} ${isMobile ? styles.mobile : ''}`}
       justify={'space-between'}
-      align="middle">
+      align="middle"
+    >
       <div className={styles['logo-icon']} onClick={onLeftIconClick}>
         {logoImage}
       </div>
@@ -186,7 +187,8 @@ const PageHeader = (props: HeaderViewProps) => {
         height="auto"
         closeOnMask
         width="100%"
-        bodyStyle={{ padding: 0, position: 'relative' }}>
+        bodyStyle={{ padding: 0, position: 'relative' }}
+      >
         <SiderMenu
           appProps={props.children}
           menu={props.menuData}

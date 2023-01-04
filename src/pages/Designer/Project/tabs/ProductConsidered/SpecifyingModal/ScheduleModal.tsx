@@ -87,9 +87,11 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
       title="FINISH ROOM SCHEDULE"
       visible={visible}
       setVisible={setVisible}
+      secondaryModal
       className={styles.modal}
       // only for close modal
-      onFormSubmit={() => setVisible(false)}>
+      onFormSubmit={() => setVisible(false)}
+    >
       <table className={styles.description}>
         <thead>
           <tr style={{ height: '24px', borderBottom: 'solid 0.7px #000' }}>
@@ -111,7 +113,8 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
               <RobotoBodyText
                 level={7}
                 customClass={styles.textThick}
-                style={{ paddingRight: '16px' }}>
+                style={{ paddingRight: '16px' }}
+              >
                 {materialCode ?? ''}
               </RobotoBodyText>
             </td>
@@ -166,7 +169,8 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
                     <Checkbox
                       className={styles.rowInfo}
                       checked={el.base.ceiling}
-                      onChange={onChangeData(index, 'base', 'ceiling')}>
+                      onChange={onChangeData(index, 'base', 'ceiling')}
+                    >
                       <RobotoBodyText level={7} customClass={styles.text}>
                         Ceiling
                       </RobotoBodyText>
@@ -175,7 +179,8 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
                     <Checkbox
                       className={styles.rowInfo}
                       checked={el.base.floor}
-                      onChange={onChangeData(index, 'base', 'floor')}>
+                      onChange={onChangeData(index, 'base', 'floor')}
+                    >
                       <RobotoBodyText level={7} customClass={styles.text}>
                         Floor
                       </RobotoBodyText>
@@ -220,7 +225,8 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
                     <Checkbox
                       className={styles.rowInfo}
                       checked={el.door.frame}
-                      onChange={onChangeData(index, 'door', 'frame')}>
+                      onChange={onChangeData(index, 'door', 'frame')}
+                    >
                       <RobotoBodyText level={7} customClass={styles.text}>
                         Frame
                       </RobotoBodyText>
@@ -229,7 +235,8 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
                     <Checkbox
                       className={styles.rowInfo}
                       checked={el.door.panel}
-                      onChange={onChangeData(index, 'door', 'panel')}>
+                      onChange={onChangeData(index, 'door', 'panel')}
+                    >
                       <RobotoBodyText level={7} customClass={styles.text}>
                         Panel
                       </RobotoBodyText>
@@ -239,7 +246,8 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
                     <Checkbox
                       className={styles.rowInfo}
                       checked={el.cabinet.carcass}
-                      onChange={onChangeData(index, 'cabinet', 'carcass')}>
+                      onChange={onChangeData(index, 'cabinet', 'carcass')}
+                    >
                       <RobotoBodyText level={7} customClass={styles.text}>
                         Carcass
                       </RobotoBodyText>
@@ -248,7 +256,8 @@ export const ScheduleModal: FC<ScheduleModalProps> = ({
                     <Checkbox
                       className={styles.rowInfo}
                       checked={el.cabinet.door}
-                      onChange={onChangeData(index, 'cabinet', 'door')}>
+                      onChange={onChangeData(index, 'cabinet', 'door')}
+                    >
                       <RobotoBodyText level={7} customClass={styles.text}>
                         Door
                       </RobotoBodyText>
