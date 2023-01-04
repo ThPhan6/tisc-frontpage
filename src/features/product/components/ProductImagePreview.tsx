@@ -144,9 +144,9 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
       return true;
     },
     showUploadList: false,
-    disabled: isEditable === false,
+    disabled: !isEditable,
     className: `${styles.uploadZone} ${isEditable ? '' : styles.noBorder} ${
-      isEditable === false && product.images.length < 2 ? styles.noPadding : ''
+      !isEditable && product.images.length < 2 ? styles.noPadding : ''
     }`,
   };
 
