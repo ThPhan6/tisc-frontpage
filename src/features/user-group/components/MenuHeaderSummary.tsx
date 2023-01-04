@@ -12,14 +12,24 @@ import styles from '../styles/index.less';
 const MenuHeaderSummary: FC<UserGroupProps> = ({ type }) => {
   const [summaryData, setSummaryData] = useState<DataMenuSummaryProps[]>([]);
 
-  const fetchSummary = type === 'brand' ? getBrandSummary : getDesignFirmSummary;
+  const workspace = location.pathname.indexOf('dashboard') !== -1;
+
+  const fetchBrandSummary = workspace ? getBrandSummary(true) : getBrandSummary(false);
 
   useEffect(() => {
-    fetchSummary().then((data) => {
-      if (data) {
-        setSummaryData(data);
-      }
-    });
+    if (type === 'brand') {
+      fetchBrandSummary.then((data) => {
+        if (data) {
+          setSummaryData(data);
+        }
+      });
+    } else {
+      getDesignFirmSummary().then((data) => {
+        if (data) {
+          setSummaryData(data);
+        }
+      });
+    }
   }, []);
 
   return (

@@ -11,6 +11,7 @@ export const PATH = {
   // private path
   profiles: '/profile-settings',
   tiscHomePage: '/tisc/dashboard',
+  tiscDashboardBrandDetail: '/tisc/dashboard/:id',
   brandHomePage: '/brand/dashboard',
   designerHomePage: '/design-firms/dashboard',
 

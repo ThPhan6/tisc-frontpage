@@ -14,6 +14,7 @@ import { BrandCard } from '../user-group/types';
 import { ProjecTrackingList } from '@/types/project-tracking.type';
 
 import { ProjectTrackingHeader } from '../../pages/Brand/ProjectTracking/components/ProjectTrackingHeader';
+import MenuHeaderSummary from '../user-group/components/MenuHeaderSummary';
 import { ProjectCard } from './components/ProjectCard';
 import ProjectListHeader from '@/pages/Designer/Project/components/ProjectListHeader';
 
@@ -92,7 +93,7 @@ const MyWorkspace = () => {
 
   const renderHeader = () => {
     if (isTiscUser) {
-      return undefined;
+      return <MenuHeaderSummary type="brand" />;
     }
 
     if (isBrandUser) {
