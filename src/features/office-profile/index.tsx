@@ -152,15 +152,21 @@ const BrandProfilePage = () => {
     setBrandProfile({ ...brandProfile, official_websites: websiteItem });
   };
 
-  const handleUpdateLogo = () => {
-    const formData: any = new FormData();
-    formData.append('logo', fileInput);
-    if (isBrand) {
-      setBrandProfile({ ...brandProfile, logo: formData });
-    }
-    if (isDesign) {
-      setDesignFirmProfile({ ...designFirmProfile, logo: formData });
-    }
+  const handleUpdateLogo = (logo: File) => {
+    getBase64(logo)
+      .then((base64Image) => {
+        setCurrentLogo(base64Image); // only set to show, haven't added to data
+
+        if (isDesign) {
+          setDesignFirmProfile({ ...designFirmProfile, logo: base64Image.split(',')[1] });
+        }
+        if (isBrand) {
+          setBrandProfile({ ...brandProfile, logo: base64Image.split(',')[1] });
+        }
+      })
+      .catch(() => {
+        message.error('Upload Failed');
+      });
   };
 
   const getPreviewAvatar = () => {
@@ -175,7 +181,7 @@ const BrandProfilePage = () => {
 
   useEffect(() => {
     if (fileInput) {
-      handleUpdateLogo();
+      handleUpdateLogo(fileInput);
     }
   }, [fileInput]);
 
@@ -186,20 +192,7 @@ const BrandProfilePage = () => {
         return false;
       }
       setFileInput(file);
-      getBase64(file)
-        .then((base64Image) => {
-          setCurrentLogo(base64Image); // only set to show, haven't added to data
-
-          if (isDesign) {
-            setDesignFirmProfile({ ...designFirmProfile, logo: base64Image.split(',')[1] });
-          }
-          if (isBrand) {
-            setBrandProfile({ ...brandProfile, logo: base64Image.split(',')[1] });
-          }
-        })
-        .catch(() => {
-          message.error('Upload Failed');
-        });
+      handleUpdateLogo(file);
       return true;
     },
   };
