@@ -59,7 +59,8 @@ export const TopBarItem: React.FC<ProductTopBarProps> = ({
         level={6}
         fontFamily="Roboto"
         customClass={`topbar-group-btn ${disabled && !bottomEnable ? 'disabled' : ''}`}
-        style={{ cursor: cursor }}>
+        style={{ cursor: cursor }}
+      >
         <span>{bottomValue}</span>
         {icon ? icon : null}
       </BodyText>
@@ -84,17 +85,19 @@ interface TopBarContainerProps {
   LeftSideContent?: JSX.Element;
   RightSideContent?: JSX.Element;
   BottomContent?: JSX.Element;
+  customClass?: string;
 }
 
 export const TopBarContainer: React.FC<TopBarContainerProps> = ({
   LeftSideContent,
   RightSideContent,
   BottomContent,
+  customClass,
 }) => {
   const { isMobile } = useScreen();
   return (
     <>
-      <div className={`${styles.topbarContainer} ${isMobile ? 'border-top' : ''}`}>
+      <div className={`${styles.topbarContainer} ${isMobile ? 'border-top' : ''} ${customClass}`}>
         <div className="left-side">{LeftSideContent}</div>
         <div className="right-side">{RightSideContent}</div>
       </div>
@@ -154,7 +157,8 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
           padding: 0,
           bottom: -3,
           ...menuStyle,
-        }}>
+        }}
+      >
         {items.map((item, index) => {
           const hasChildren = item?.children?.length > 0;
 
@@ -173,7 +177,8 @@ const CascadingMenu: FC<CascadingMenuProps> = ({
                 textCapitalize ? styles.textCapitalize : styles.text
               } ${selectedItem === index ? styles.active : ''} ${hasChildren ? '' : styles.noSub}`}
               disabled={item?.disabled}
-              icon={item?.icon || (hasChildren ? <DropdownIcon /> : undefined)}>
+              icon={item?.icon || (hasChildren ? <DropdownIcon /> : undefined)}
+            >
               {item?.label}
             </Menu.Item>
           );
@@ -241,7 +246,8 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
             position={position}
           />
         )
-      }>
+      }
+    >
       <span {...labelProps} onClick={(e) => e.stopPropagation()}>
         {children}
         {hideDropdownIcon ? null : <DropdownIcon style={{ marginLeft: 8 }} />}

@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
 
-import { confirmDelete } from '@/helper/common';
+import { confirmDelete, useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
@@ -12,12 +12,11 @@ import { CustomResourceType, CustomResources } from './type';
 import { TableColumnItem } from '@/components/Table/types';
 import store, { useAppSelector } from '@/reducers';
 
+import { CustomResourceTableHeader } from './component/CustomResourceHeader';
 import { CustomResourceTopBar } from './component/CustomResourceTopBar';
-import { CustomRadio } from '@/components/CustomRadio';
 import CustomTable from '@/components/Table';
-import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
-import { BodyText, MainTitle } from '@/components/Typography';
+import { BodyText } from '@/components/Typography';
 
 import styles from './CustomResource.less';
 import {
@@ -120,29 +119,22 @@ const CustomResource = () => {
     tableRef.current.reload();
   }, [customResourceType]);
 
+  const { isMobile } = useScreen();
   return (
     <PageContainer pageHeaderRender={() => <CustomResourceTopBar />}>
       <CustomTable
         fetchDataFunc={getListVendorByBrandOrDistributor}
-        title="VENDOR INFORMATION MANAGEMENT"
+        title={isMobile ? ' ' : 'VENDOR INFORMATION MANAGEMENT'}
         columns={setDefaultWidthForEachColumn(MainColumns, 3)}
         ref={tableRef}
         rightAction={
-          <div style={{ display: 'flex', alignItems: 'center', textTransform: 'capitalize' }}>
-            <MainTitle level={4}>View By:</MainTitle>
-            <CustomRadio
-              options={optionValue}
-              containerClass={styles.customRadio}
-              value={customResourceType}
-              onChange={(radioValue) =>
-                store.dispatch(setCustomResourceType(radioValue.value as number))
-              }
-            />
-            <CustomPlusButton
-              customClass={styles.button}
-              onClick={() => pushTo(PATH.designerCustomResourceCreate)}
-            />
-          </div>
+          <CustomResourceTableHeader
+            onChange={(radioValue) =>
+              store.dispatch(setCustomResourceType(radioValue.value as number))
+            }
+            onClick={() => pushTo(PATH.designerCustomResourceCreate)}
+            isMobile={isMobile}
+          />
         }
         extraParams={{ type: customResourceType }}
         onRow={(rowRecord: CustomResources) => ({
@@ -150,6 +142,8 @@ const CustomResource = () => {
             pushTo(PATH.designerCustomResourceDetail.replace(':id', rowRecord.id));
           },
         })}
+        hasPagination
+        headerClass={isMobile ? styles.customHeader : ''}
       />
     </PageContainer>
   );

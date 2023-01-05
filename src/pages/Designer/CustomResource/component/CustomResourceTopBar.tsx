@@ -5,6 +5,7 @@ import { PATH } from '@/constants/path';
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-icon.svg';
 import { ReactComponent as VendorManagementIcon } from '@/assets/icons/vendor-management-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 
 import { useAppSelector } from '@/reducers';
@@ -17,7 +18,7 @@ import { getCustomResourceSummary } from '../api';
 
 export const CustomResourceTopBar = () => {
   const summaryData = useAppSelector((state) => state.customResource.summaryCustomResoure);
-
+  const { isMobile } = useScreen();
   useEffect(() => {
     getCustomResourceSummary();
   }, []);
@@ -42,19 +43,21 @@ export const CustomResourceTopBar = () => {
             onClick={() => pushTo(PATH.designerCustomProduct)}
             icon={<VendorManagementIcon />}
           />
-          {summaryData.map((summary) => (
-            <TopBarItem
-              topValue={
-                <RobotoBodyText level={5} customClass={styles.fontBold}>
-                  {summary.quantity}
-                </RobotoBodyText>
-              }
-              bottomValue={summary.label}
-              customClass={styles.summary}
-            />
-          ))}
+          {!isMobile &&
+            summaryData.map((summary) => (
+              <TopBarItem
+                topValue={
+                  <RobotoBodyText level={5} customClass={styles.fontBold}>
+                    {summary.quantity}
+                  </RobotoBodyText>
+                }
+                bottomValue={summary.label}
+                customClass={styles.summary}
+              />
+            ))}
         </>
       }
+      customClass={isMobile ? styles.customTopBar : ''}
     />
   );
 };

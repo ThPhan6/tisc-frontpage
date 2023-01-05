@@ -30,6 +30,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
 
 import styles from '../CustomResource.less';
+import { deleteCustomResource } from '../api';
 
 interface ContactInformationProps {
   data: CustomResourceForm;
@@ -37,6 +38,8 @@ interface ContactInformationProps {
   onSubmit?: () => void;
   submitButtonStatus?: boolean;
   type: 'view' | 'create' | 'update';
+  customResourceId?: string;
+  isMobile?: boolean;
 }
 
 interface ContactHeaderProps extends CollapsingProps {
@@ -115,6 +118,8 @@ export const ContactInformation: FC<ContactInformationProps> = ({
   onSubmit,
   submitButtonStatus,
   type,
+  customResourceId,
+  isMobile,
 }) => {
   const [activeKey, setActiveKey] = useState<string>('');
 
@@ -308,6 +313,16 @@ export const ContactInformation: FC<ContactInformationProps> = ({
     );
   };
 
+  const handleDelete = () => {
+    confirmDelete(() => {
+      deleteCustomResource(customResourceId as string).then((isSuccess) => {
+        if (isSuccess) {
+          pushTo(PATH.designerCustomResource);
+        }
+      });
+    });
+  };
+
   return (
     <>
       <TableHeader
@@ -324,19 +339,31 @@ export const ContactInformation: FC<ContactInformationProps> = ({
           )
         }
       />
-      <div className={styles.information}>
+      <div className={styles.information} style={{ height: isMobile ? '' : 'calc(100vh - 304px)' }}>
         {data.contacts.map((contact, index) => renderContacts(contact, index))}
       </div>
       {isEdit && (
-        <div className={styles.bottom}>
-          <CustomButton
-            properties="rounded"
-            size="small"
-            buttonClass={styles.btnCancel}
-            onClick={() => pushTo(PATH.designerCustomResource)}
-          >
-            Cancel
-          </CustomButton>
+        <div className={styles.bottom} style={{ justifyContent: isMobile ? 'center' : undefined }}>
+          {isMobile && type === 'update' ? (
+            <CustomButton
+              size="small"
+              variant="secondary"
+              properties="rounded"
+              buttonClass={styles.btnCancel}
+              onClick={handleDelete}
+            >
+              Delete
+            </CustomButton>
+          ) : (
+            <CustomButton
+              properties="rounded"
+              size="small"
+              buttonClass={styles.btnCancel}
+              onClick={() => pushTo(PATH.designerCustomResource)}
+            >
+              Cancel
+            </CustomButton>
+          )}
           <CustomSaveButton
             onClick={!handleDisableButton() ? onSubmit : undefined}
             isSuccess={submitButtonStatus}

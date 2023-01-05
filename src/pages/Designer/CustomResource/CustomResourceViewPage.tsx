@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Col, Row } from 'antd';
 
+import { useScreen } from '@/helper/common';
 import { useGetParamId } from '@/helper/hook';
 
 import { CustomResourceForm } from './type';
@@ -18,6 +19,7 @@ import { getOneCustomResource } from './api';
 const CustomResourceViewPage = () => {
   const customResourceType = useAppSelector((state) => state.customResource.customResourceType);
 
+  const { isMobile } = useScreen();
   const customResourceId = useGetParamId();
 
   const [data, setData] = useState<CustomResourceForm>({
@@ -55,13 +57,13 @@ const CustomResourceViewPage = () => {
 
   return (
     <PageContainer pageHeaderRender={() => <CustomResourceTopBar />}>
-      <CustomResourceHeader />
-      <Row style={{ marginTop: '8px' }}>
-        <Col span={12} style={{ paddingRight: '8px' }}>
+      <CustomResourceHeader isMobile={isMobile} />
+      <Row style={{ marginTop: '8px' }} gutter={[0, 8]}>
+        <Col span={isMobile ? 24 : 12} style={{ paddingRight: isMobile ? '' : '8px' }}>
           <CustomResourceEntryForm data={data} setData={setData} type="view" />
         </Col>
-        <Col span={12} style={{ background: '#fff' }}>
-          <ContactInformation data={data} setData={setData} type="view" />
+        <Col span={isMobile ? 24 : 12} style={{ background: '#fff' }}>
+          <ContactInformation data={data} setData={setData} type="view" isMobile={isMobile} />
         </Col>
       </Row>
     </PageContainer>
