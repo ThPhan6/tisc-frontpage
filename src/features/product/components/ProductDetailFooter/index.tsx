@@ -33,6 +33,8 @@ export const ProductDetailFooter: React.FC<{ visible: boolean }> = memo(({ visib
         tabDisplay="space"
         onChange={(tab) => setActiveKey(tab as ProductFooterTabs)}
         activeKey={activeKey}
+        hideTitleOnMobile
+        outlineOnMobile
         onTabClick={(currentKey) => {
           if (currentKey == activeKey) {
             setActiveKey('');

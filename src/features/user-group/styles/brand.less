@@ -1,3 +1,5 @@
+@import '~antd/es/style/variable.less';
+
 .customBrandName {
   display: flex;
   align-items: center;
@@ -27,15 +29,6 @@
   }
 }
 
-.avatar {
-  // display: inline-flex;
-
-  // > img,
-  // div {
-  //   cursor: pointer !important;
-  // }
-}
-
 .menuTab {
   background: #fff;
   box-shadow: inset 0 -0.7px 0 #000;
@@ -59,7 +52,27 @@
     }
 
     :global(.ant-tabs-tab-btn) {
-      padding: 0 24px;
+      padding: 0 0.8vw;
+    }
+
+    @media screen and (max-width: @screen-lg) {
+      flex-direction: column;
+      > div {
+        width: 100%;
+        max-width: calc(100vw - 24px);
+        min-height: 40px;
+        margin: 0;
+        overflow: auto hidden;
+        &:first-child {
+          min-height: 39px;
+          border-bottom: 0.7px solid #000;
+        }
+      }
+    }
+    @media screen and (max-width: 372px) {
+      > div {
+        justify-content: space-between;
+      }
     }
   }
 }
@@ -74,7 +87,7 @@
   align-items: center;
   justify-content: flex-end;
   height: 40px;
-  margin-left: 60px;
+  margin-left: 3vw;
   padding-bottom: 2px;
   .projectStatusLabel {
     display: flex;

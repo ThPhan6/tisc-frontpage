@@ -8,13 +8,14 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
 import styles from './index.less';
 
-interface CustomCollapseProps extends CollapseProps {
+export interface CustomCollapseProps extends CollapseProps {
   header: string | ReactNode;
   children: ReactNode;
   customHeaderClass?: string;
   showActiveBoxShadow?: boolean;
   noBorder?: boolean;
   arrowAlignRight?: boolean;
+  noPadding?: boolean;
   expandingHeaderFontStyle?: 'bold' | 'normal';
 }
 
@@ -25,6 +26,7 @@ const CustomCollapse: FC<CustomCollapseProps> = ({
   className,
   showActiveBoxShadow,
   noBorder,
+  noPadding,
   arrowAlignRight,
   expandingHeaderFontStyle = 'normal',
   ...props
@@ -35,14 +37,16 @@ const CustomCollapse: FC<CustomCollapseProps> = ({
       expandIconPosition="right"
       className={`${styles.customCollapse} ${className || ''} ${
         showActiveBoxShadow ? styles.activeBoxShadow : ''
-      } ${noBorder ? styles.noBorder : ''} ${arrowAlignRight ? styles.arrowAlignRight : ''} ${
-        expandingHeaderFontStyle === 'bold' ? styles.fontBold : styles.fontNormal
-      } `}
-      {...props}>
+      } ${noBorder ? styles.noBorder : ''} ${noPadding ? styles.noPadding : ''} ${
+        arrowAlignRight ? styles.arrowAlignRight : ''
+      } ${expandingHeaderFontStyle === 'bold' ? styles.fontBold : styles.fontNormal} `}
+      {...props}
+    >
       <Collapse.Panel
         key="1"
         className={`${styles.customHeaderCollapse} ${customHeaderClass || ''}`}
-        header={header}>
+        header={header}
+      >
         {children}
       </Collapse.Panel>
     </Collapse>

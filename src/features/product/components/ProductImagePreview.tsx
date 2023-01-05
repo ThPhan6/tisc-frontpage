@@ -17,7 +17,8 @@ import { ReactComponent as DeleteIcon } from '@/assets/icons/trash-icon-12.svg';
 import ProductPlaceHolderImage from '@/assets/images/product-placeholder.png';
 
 import { likeProductById } from '@/features/product/services';
-import { useBoolean, useCheckPermission, useQuery } from '@/helper/hook';
+import { useScreen } from '@/helper/common';
+import { useCheckPermission, useQuery } from '@/helper/hook';
 import { getBase64, showImageUrl } from '@/helper/utils';
 
 import { ProductKeyword } from '../types';
@@ -44,6 +45,7 @@ interface ActionItemProps {
 }
 
 const ActionItem: FC<ActionItemProps> = ({ icon, onClick, label, disabled }) => {
+  const isMobile = useScreen().isMobile;
   return (
     <div
       className={styles.actionItem}
@@ -55,13 +57,15 @@ const ActionItem: FC<ActionItemProps> = ({ icon, onClick, label, disabled }) => 
     >
       <div className={`flex-start ${disabled ? styles.disabled : ''}`}>
         {icon}
-        <BodyText
-          level={6}
-          fontFamily="Roboto"
-          color={disabled ? 'mono-color-medium' : 'mono-color'}
-        >
-          {label}
-        </BodyText>
+        {isMobile ? null : (
+          <BodyText
+            level={6}
+            fontFamily="Roboto"
+            color={disabled ? 'mono-color-medium' : 'mono-color'}
+          >
+            {label}
+          </BodyText>
+        )}
       </div>
     </div>
   );
@@ -84,8 +88,6 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
 }) => {
   const dispatch = useDispatch();
   const normalProduct = useAppSelector((state) => state.product.details);
-  const showShareEmailModal = useBoolean();
-  const showInquiryRequestModal = useBoolean();
   const isDesignerUser = useCheckPermission('Design Admin');
   const isTiscAdmin = useCheckPermission('TISC Admin');
 
@@ -251,7 +253,17 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
             <ActionItem
               label="Inquiry/Request"
               icon={<CommentIcon />}
-              onClick={() => showInquiryRequestModal.setValue(true)}
+              onClick={() =>
+                store.dispatch(
+                  openModal({
+                    type: 'Inquiry Request',
+                    title: 'Inquiry/Request',
+                    props: {
+                      shareViaEmail: { isCustomProduct, product },
+                    },
+                  }),
+                )
+              }
             />
           ) : null}
           {isDesignerUser ? (
@@ -278,7 +290,17 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
             <ActionItem
               label="Share via Email"
               icon={<ShareViaEmailIcon />}
-              onClick={() => showShareEmailModal.setValue(true)}
+              onClick={() =>
+                store.dispatch(
+                  openModal({
+                    type: 'Share via email',
+                    title: 'Share via email',
+                    props: {
+                      shareViaEmail: { isCustomProduct, product },
+                    },
+                  }),
+                )
+              }
               disabled={disabledShareViaEmail}
             />
           )}
