@@ -16,4 +16,7 @@ export interface CustomTabsProps extends TabsProps {
   heightItem?: string;
   widthItem?: string;
   customClass?: string;
+  hideTitleOnMobile?: boolean;
+  hideTitleOnTablet?: boolean;
+  outlineOnMobile?: boolean;
 }

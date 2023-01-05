@@ -58,13 +58,13 @@ export const getResponseMessage = (
   return `${startWith} ${action} ${status === 'success' ? 'successfully' : 'failed'}`;
 };
 
-export const useBreakpoint = Grid.useBreakpoint;
+export const { useBreakpoint } = Grid;
 
 export const useScreen = () => {
   const screens = useBreakpoint();
 
-  const isTablet = screens.lg && screens.xl === false;
-  const isMobile = screens.xs && isTablet === false;
+  const isTablet = (screens.sm || screens.md) && screens.lg === false;
+  const isMobile = screens.xs && !isTablet;
 
   return { isTablet, isMobile };
 };

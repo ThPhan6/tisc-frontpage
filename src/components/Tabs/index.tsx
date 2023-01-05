@@ -6,8 +6,10 @@ import { Tabs } from 'antd';
 import { useScreen } from '@/helper/common';
 
 import { CustomTabsProps } from './types';
+import { CollapseGroup, useCollapseGroupActiveCheck } from '@/reducers/active';
 
 import CustomCollapse from '../Collapse';
+import { BodyText } from '../Typography';
 import style from './styles/index.less';
 
 export const CustomTabs: FC<CustomTabsProps> = ({
@@ -17,17 +19,25 @@ export const CustomTabs: FC<CustomTabsProps> = ({
   heightItem = '40px',
   widthItem = '128px',
   customClass = '',
+  hideTitleOnMobile,
+  outlineOnMobile,
+  hideTitleOnTablet,
   ...props
 }) => {
-  const isMobile = useScreen().isMobile;
+  const { isMobile, isTablet } = useScreen();
 
   const tabs = isMobile ? listTab.filter((el) => !el.collapseOnMobile) : listTab;
+
+  const hideTitle =
+    (isMobile && hideTitleOnMobile) || (hideTitleOnTablet && (isTablet || isMobile));
+
+  const outline = isMobile && outlineOnMobile;
 
   return (
     <div
       className={`${style[`tabs-${tabPosition}`]} ${style['tab-list']} ${
         style[`tabs-${tabDisplay}`]
-      } ${customClass}`}
+      } ${customClass} ${hideTitle ? style.lightTheme : ''} ${outline ? style.outline : ''}`}
     >
       <Tabs {...props} tabPosition={tabPosition}>
         {tabs.map((item) => (
@@ -41,8 +51,12 @@ export const CustomTabs: FC<CustomTabsProps> = ({
                 }}
                 className={`${style['item-tab']} ${item?.disable && style['custom-color']}`}
               >
-                {item?.icon && <span className={style['custom-icon']}>{item.icon}</span>}
-                {(isMobile && item.mobileTabTitle) || item.tab}
+                {item?.icon && (
+                  <span style={{ paddingTop: 5, paddingRight: hideTitle ? 0 : 10 }}>
+                    {item.icon}
+                  </span>
+                )}
+                {hideTitle ? null : (isMobile && item.mobileTabTitle) || item.tab}
               </div>
             }
             key={item.key}
@@ -60,12 +74,26 @@ interface TabPaneProps extends HTMLAttributes<HTMLDivElement> {
   disable?: boolean;
   forceReload?: boolean;
   collapseOnMobile?: boolean;
+  groupType?: CollapseGroup;
+  groupIndex?: number; // distinct index for handling active collapse item
 }
 export const CustomTabPane: FC<TabPaneProps> = memo(
-  ({ active, lazyLoad, disable, forceReload, collapseOnMobile, title, ...props }) => {
+  ({
+    active,
+    lazyLoad,
+    disable,
+    forceReload,
+    collapseOnMobile,
+    title,
+    groupType,
+    groupIndex,
+    ...props
+  }) => {
     const isMobile = useScreen().isMobile;
 
     const [loaded, setLoaded] = useState(false);
+
+    const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(groupType, groupIndex);
 
     useEffect(() => {
       if (lazyLoad && active && loaded === false) {
@@ -82,7 +110,19 @@ export const CustomTabPane: FC<TabPaneProps> = memo(
     }
 
     if (collapseOnMobile) {
-      return <CustomCollapse header={title}>{props.children}</CustomCollapse>;
+      return (
+        <CustomCollapse
+          activeKey={curActiveKey}
+          onChange={onKeyChange}
+          header={<BodyText level={3}>{title}</BodyText>}
+          noPadding
+          noBorder
+          arrowAlignRight
+          style={{ marginBottom: 8 }}
+        >
+          {props.children}
+        </CustomCollapse>
+      );
     }
     return <div {...props} style={{ display: !active ? 'none' : undefined }} />;
   },

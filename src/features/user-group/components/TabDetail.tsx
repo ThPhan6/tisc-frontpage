@@ -5,6 +5,8 @@ import { Tooltip } from 'antd';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
+import { useScreen } from '@/helper/common';
+
 import { BrandDesignProfile, TabKeys } from '../types';
 import { TabItem } from '@/components/Tabs/types';
 import { KeyValueData } from '@/types';
@@ -42,6 +44,7 @@ const TabDetail: FC<TabDetailProps> = ({
   toolTipTitle,
   listTab,
 }) => {
+  const isTablet = useScreen().isTablet;
   return (
     <div>
       <TableHeader
@@ -55,17 +58,22 @@ const TabDetail: FC<TabDetailProps> = ({
             widthItem="auto"
             onChange={(changedKey) => setSelectedTab(changedKey as TabKeys)}
             activeKey={String(selectedTab)}
+            hideTitleOnTablet
           />
           <div className={styles.basicToolbarForm}>
-            <MainTitle level={3}>Status:</MainTitle>
-            <Tooltip
-              placement="bottom"
-              align={{
-                offset: [0, -2],
-              }}
-              title={toolTipTitle}>
-              <InfoIcon className={styles.info_icon} />
-            </Tooltip>
+            {isTablet ? null : <MainTitle level={3}>Status:</MainTitle>}
+            {isTablet ? null : (
+              <Tooltip
+                placement="bottom"
+                align={{
+                  offset: [0, -2],
+                }}
+                title={toolTipTitle}
+              >
+                <InfoIcon className={styles.info_icon} />
+              </Tooltip>
+            )}
+
             <CustomRadio
               options={statuses.map((status) => {
                 return {
@@ -84,6 +92,7 @@ const TabDetail: FC<TabDetailProps> = ({
                   status: selectedValue.value as number,
                 })
               }
+              containerStyle={{ marginLeft: 8 }}
             />
             <CustomSaveButton onClick={handleSaveButton} isSuccess={buttonStatus} />
           </div>

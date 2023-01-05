@@ -1,3 +1,5 @@
+@import '~antd/es/style/variable.less';
+
 .tableHeader {
   display: flex;
   gap: 24px;
@@ -13,6 +15,13 @@
     align-items: center;
     justify-content: center;
     height: 100%;
+  }
+
+  @media screen and (max-width: @screen-sm) {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #fff;
   }
 }
 
