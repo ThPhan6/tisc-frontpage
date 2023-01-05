@@ -3,6 +3,9 @@ import React, { FC, useState } from 'react';
 import { Dropdown } from 'antd';
 import type { DropDownProps, DropdownProps } from 'antd/es/dropdown';
 
+import { useScreen } from '@/helper/common';
+
+import { FilterDrawer } from '../Modal/Drawer';
 import { BodyText } from '../Typography';
 import styles from './index.less';
 
@@ -14,12 +17,13 @@ export type HeaderDropdownProps = {
   overlay?: React.ReactNode | (() => React.ReactNode) | any;
   items?: MenuIconProps[];
   placement?: DropdownProps['placement'];
+  filterDropdown?: boolean;
 } & Omit<DropDownProps, 'overlay'>;
 
 export type MenuIconProps = {
   containerClass?: string;
   label?: string | React.ReactNode;
-  icon?: JSX.Element;
+  icon?: JSX.Element | React.ReactNode;
   onClick: () => void;
   disabled?: boolean;
 };
@@ -71,26 +75,38 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   arrow,
   items,
   overlay,
+  filterDropdown,
   ...restProps
 }) => {
+  const isMobile = useScreen().isMobile;
+
   const [visible, setVisible] = useState(false);
 
+  const content =
+    overlay ||
+    (items ? <MenuHeaderDropdown items={items} onParentClick={() => setVisible(false)} /> : null);
+
   return (
-    <Dropdown
-      className={styles.dropdownWrapper}
-      overlayClassName={`${styles.container} ${
-        arrowPositionCenter && styles[`arrow-center`]
-      } ${cls} ${containerClass}`}
-      arrow={arrow}
-      visible={visible}
-      onVisibleChange={(value) => setVisible(value)}
-      overlay={
-        overlay ||
-        (items ? (
-          <MenuHeaderDropdown items={items} onParentClick={() => setVisible(false)} />
-        ) : null)
-      }
-      {...restProps}
-    />
+    <>
+      <Dropdown
+        className={styles.dropdownWrapper}
+        overlayClassName={`${styles.container} ${
+          arrowPositionCenter && styles[`arrow-center`]
+        } ${cls} ${filterDropdown ? styles.filterDropdown : ''} ${containerClass}`}
+        arrow={arrow}
+        visible={visible && isMobile === false}
+        onVisibleChange={(value) => setVisible(value)}
+        overlay={content}
+        {...restProps}
+      />
+      {isMobile && (
+        <FilterDrawer
+          visible={visible}
+          onClose={() => setVisible(false)}
+          className={styles.filterDropdown}>
+          {content}
+        </FilterDrawer>
+      )}
+    </>
   );
 };

@@ -17,6 +17,7 @@ export interface CustomCollapseProps extends CollapseProps {
   arrowAlignRight?: boolean;
   noPadding?: boolean;
   expandingHeaderFontStyle?: 'bold' | 'normal';
+  nestedCollapse?: boolean;
 }
 
 const CustomCollapse: FC<CustomCollapseProps> = ({
@@ -29,6 +30,7 @@ const CustomCollapse: FC<CustomCollapseProps> = ({
   noPadding,
   arrowAlignRight,
   expandingHeaderFontStyle = 'normal',
+  nestedCollapse,
   ...props
 }) => {
   return (
@@ -39,7 +41,9 @@ const CustomCollapse: FC<CustomCollapseProps> = ({
         showActiveBoxShadow ? styles.activeBoxShadow : ''
       } ${noBorder ? styles.noBorder : ''} ${noPadding ? styles.noPadding : ''} ${
         arrowAlignRight ? styles.arrowAlignRight : ''
-      } ${expandingHeaderFontStyle === 'bold' ? styles.fontBold : styles.fontNormal} `}
+      } ${expandingHeaderFontStyle === 'bold' ? styles.fontBold : styles.fontNormal} ${
+        nestedCollapse ? styles.nestedCollapse : ''
+      }`}
       {...props}
     >
       <Collapse.Panel
