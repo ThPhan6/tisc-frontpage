@@ -18,13 +18,13 @@ import { RadioValue } from '@/components/CustomRadio/types';
 import {
   resetProductState,
   setBrand,
+  setFromMyWorkspace,
   setProductList,
-  setProductListFilter,
   setProductSummary,
 } from '@/features/product/reducers';
 import { ProductGetListParameter } from '@/features/product/types';
 import { BrandAlphabet, BrandDetail } from '@/features/user-group/types';
-import store from '@/reducers';
+import { useAppSelector } from '@/reducers';
 
 import { LogoIcon } from '@/components/LogoIcon';
 import Popover from '@/components/Modal/Popover';
@@ -42,10 +42,15 @@ export const TopBar: React.FC = () => {
   useSyncQueryToState();
 
   const dispatch = useDispatch();
+  const { renderFilterDropdown, renderItemTopBar, productSummary, filter, productBrand } =
+    useProductListFilterAndSorter({
+      category: true,
+    });
+
+  const isFromMyWorkspace = useAppSelector((state) => state.product.myWorkSpace);
 
   const [visible, setVisible] = useState(false);
   const [brandAlphabet, setBrandAlphabet] = useState<BrandAlphabet>({});
-  const [brandData, setBrandData] = useState<RadioValue>();
   const brandFlatList = flatMap(brandAlphabet);
 
   const query = useQuery();
@@ -56,10 +61,25 @@ export const TopBar: React.FC = () => {
   const coll_name = query.get(QUERY_KEY.coll_name);
   const firstLoad = useBoolean(true);
 
-  const { renderFilterDropdown, renderItemTopBar, productSummary, filter, productBrand } =
-    useProductListFilterAndSorter({
-      category: true,
-    });
+  const [brandSelected, setBrandSelected] = useState<RadioValue>({
+    label: productBrand?.name || '',
+    value: productBrand?.id || '',
+  });
+
+  useEffect(() => {
+    if (isFromMyWorkspace) {
+      /// set default filter value
+      dispatch(
+        setProductList({
+          filter: {
+            name: 'category_id',
+            title: 'VIEW ALL',
+            value: 'all',
+          },
+        }),
+      );
+    }
+  }, []);
 
   /// load brand by alphabet from API
   useEffect(() => {
@@ -67,7 +87,7 @@ export const TopBar: React.FC = () => {
     getBrandAlphabet().then((data) => {
       setBrandAlphabet(data);
       if (brandId && brandName) {
-        setBrandData({ value: brandId, label: brandName });
+        setBrandSelected({ value: brandId, label: brandName });
       }
       if (!brandId) {
         hidePageLoading();
@@ -78,33 +98,39 @@ export const TopBar: React.FC = () => {
       dispatch(setBrand());
       dispatch(setProductList({ data: [] }));
       dispatch(setProductSummary(undefined));
+      dispatch(setFromMyWorkspace(false));
     };
   }, [brandId]);
 
   /// set brand to product reducer
   useEffect(() => {
-    if (brandData) {
+    if (brandSelected) {
       let curBrand: BrandDetail | undefined;
       forEach(brandAlphabet, (brands) => {
-        const foundedBrand = brands.find((item) => item.id === brandData.value);
+        const foundedBrand = brands.find((item) => item.id === brandSelected.value);
+
         if (foundedBrand) {
           curBrand = foundedBrand;
         }
       });
       dispatch(setBrand(curBrand));
     }
-  }, [brandData?.value]);
+  }, [brandSelected?.value]);
 
   // brand product summary
   useEffect(() => {
-    if (productBrand && productBrand.id && productSummary?.brandId !== productBrand.id) {
+    if (
+      brandSelected &&
+      (brandSelected.value as string) &&
+      productSummary?.brandId !== (brandSelected.value as string)
+    ) {
       // prevent call api on first loading
       if (coll_id && coll_name && firstLoad.value && !filter) {
         return;
       }
 
       // get product summary
-      getProductSummary(productBrand.id).then((res) => {
+      getProductSummary(brandSelected.value as string).then((res) => {
         /// in case collection filter has chosen,
         /// updated its filter name and param after reloading
         if (
@@ -121,14 +147,15 @@ export const TopBar: React.FC = () => {
             res.collections.find((collection) => collection.id === filter?.value)?.name || '';
 
           /// update collection filter name
-          store.dispatch(
-            setProductListFilter({
-              name: 'collection_id',
-              value: filter.value,
-              title: collectionFilterName ?? '',
+          dispatch(
+            setProductList({
+              filter: {
+                name: 'collection_id',
+                value: filter.value,
+                title: collectionFilterName ?? '',
+              },
             }),
           );
-
           /// update params
           updateUrlParams({
             set: [
@@ -141,12 +168,12 @@ export const TopBar: React.FC = () => {
         }
       });
     }
-  }, [productBrand?.id, productSummary?.brandId, filter && firstLoad.value === true]);
+  }, [brandSelected?.value, productSummary?.brandId, filter && firstLoad.value === true]);
 
   useEffect(() => {
-    if (productBrand?.id) {
+    if (brandSelected?.value) {
       const params: ProductGetListParameter = {
-        brand_id: productBrand.id,
+        brand_id: brandSelected.value as string,
         category_id: !filter ? 'all' : undefined,
       };
 
@@ -164,12 +191,12 @@ export const TopBar: React.FC = () => {
 
       getProductListByBrandId(params);
     }
-  }, [filter?.value, filter?.name, productBrand?.id, firstLoad.value]);
+  }, [filter?.value, filter?.name, brandSelected?.value, firstLoad.value]);
 
   const gotoProductForm = () => {
     dispatch(resetProductState());
-    if (productBrand && productBrand.id) {
-      pushTo(PATH.productConfigurationCreate.replace(':brandId', productBrand.id));
+    if (brandSelected && brandSelected.value) {
+      pushTo(PATH.productConfigurationCreate.replace(':brandId', brandSelected.value as string));
     }
   };
 
@@ -189,8 +216,12 @@ export const TopBar: React.FC = () => {
         LeftSideContent={
           <>
             <TopBarItem
-              topValue={productBrand?.name ? productBrand.name : 'select'}
-              disabled={productBrand?.name ? false : true}
+              topValue={
+                brandSelected && brandSelected.value && brandSelected.label
+                  ? productBrand?.name || brandSelected.label
+                  : 'select'
+              }
+              disabled={!brandSelected.label}
               bottomEnable
               bottomValue="Brands"
               customClass="brand-dropdown right-divider"
@@ -199,25 +230,25 @@ export const TopBar: React.FC = () => {
             />
             <TopBarItem
               topValue={productSummary?.category_count ?? ''}
-              disabled={productSummary ? false : true}
+              disabled={!productSummary}
               bottomValue="Categories"
               cursor="default"
             />
             <TopBarItem
               topValue={productSummary?.collection_count ?? ''}
-              disabled={productSummary ? false : true}
+              disabled={!productSummary}
               bottomValue="Collections"
               cursor="default"
             />
             <TopBarItem
               topValue={productSummary?.card_count ?? ''}
-              disabled={productSummary ? false : true}
+              disabled={!productSummary}
               bottomValue="Cards"
               cursor="default"
             />
             <TopBarItem
               topValue={productSummary?.product_count ?? ''}
-              disabled={productSummary ? false : true}
+              disabled={!productSummary}
               bottomValue="Products"
               cursor="default"
             />
@@ -229,7 +260,7 @@ export const TopBar: React.FC = () => {
               topValue={renderItemTopBar(
                 'category_id',
                 filter,
-                productBrand && filter?.name !== 'category_id' ? 'view' : '',
+                brandSelected && filter?.name !== 'category_id' ? 'view' : '',
               )}
               disabled
               bottomEnable={productSummary ? true : false}
@@ -250,7 +281,7 @@ export const TopBar: React.FC = () => {
               topValue={renderItemTopBar(
                 'collection_id',
                 filter,
-                productBrand && filter?.name !== 'collection_id' ? 'view' : '',
+                brandSelected && filter?.name !== 'collection_id' ? 'view' : '',
               )}
               disabled
               bottomEnable={productSummary ? true : false}
@@ -303,7 +334,7 @@ export const TopBar: React.FC = () => {
           };
         })}
         dropDownRadioTitle={(data) => data.key.split('').join(' / ')}
-        chosenValue={brandData}
+        chosenValue={brandSelected}
         setChosenValue={(v) => {
           const chosenBrand = brandFlatList.find((el) => v?.value && el.id === v.value);
           if (chosenBrand) {
@@ -326,7 +357,7 @@ export const TopBar: React.FC = () => {
               }),
             );
           }
-          setBrandData(v);
+          setBrandSelected(v);
         }}
       />
     </>

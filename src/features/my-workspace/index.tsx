@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import { USER_ROLE } from '@/constants/userRoles';
 import { GlobalFilter } from '@/pages/Designer/Project/constants/filter';
 import { PageContainer } from '@ant-design/pro-layout';
 
 import { getDesignerWorkspace, getProjectSummary } from '../project/services';
 import { getTiscWorkspace } from '../user-group/services';
-import { useGetUserRoleFromPathname } from '@/helper/hook';
+import { useCheckPermission } from '@/helper/hook';
 import { getBrandWorkspace } from '@/services/project-tracking.api';
 
 import { ProjectListProps, ProjectSummaryData } from '../project/types';
@@ -29,10 +28,9 @@ const MyWorkspace = () => {
     [],
   );
 
-  const currentUser = useGetUserRoleFromPathname();
-  const isTiscUser = currentUser === USER_ROLE.tisc;
-  const isBrandUser = currentUser === USER_ROLE.brand;
-  const isDesignerUser = currentUser === USER_ROLE.design;
+  const isTiscUser = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  const isBrandUser = useCheckPermission(['Brand Admin', 'Brand Team']);
+  const isDesignerUser = useCheckPermission(['Design Admin', 'Design Team']);
 
   /// for tisc
   useEffect(() => {
