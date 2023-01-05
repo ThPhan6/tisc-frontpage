@@ -105,7 +105,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     'Brand Team',
     'Design Team',
   ]);
-  const isTiscAdmin = useCheckPermission('TISC Admin');
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
   const [likeCount, setLikeCount] = useState(product.favorites ?? 0);
   const likeProduct = () => {
@@ -259,10 +259,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <div className={`${styles.leftAction} flex-center`}>
             {hideFavorite ? null : (
               <Tooltip title="Favourite" {...tooltipProps}>
-                <BodyText level={6} fontFamily="Roboto" customClass="action-like">
-                  {liked ? <LikedIcon onClick={likeProduct} /> : <LikeIcon onClick={likeProduct} />}
-                  {!isDesignFirmUser &&
-                    `${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
+                <BodyText
+                  level={6}
+                  fontFamily="Roboto"
+                  customClass="action-like"
+                  onClick={likeProduct}>
+                  {liked ? <LikedIcon /> : <LikeIcon />}
+                  {isDesignFirmUser
+                    ? null
+                    : `${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
                 </BodyText>
               </Tooltip>
             )}

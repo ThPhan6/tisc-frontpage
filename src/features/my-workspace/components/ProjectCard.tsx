@@ -36,8 +36,8 @@ export const ProjectCard: FC<ProjectCardProps> = ({
 }) => {
   const loading = useAppSelector(loadingSelector);
   const detailPath = getValueByCondition([
-    [isTiscUser, PATH.tiscUserGroupBrandViewDetail],
-    [isBrandUser, PATH.brandProjectTrackingDetail],
+    [isTiscUser, PATH.tiscDashboardBrandDetail],
+    [isBrandUser, PATH.brandDashboardProjectDetail],
     [isDesignerUser, PATH.designerUpdateProject],
   ]);
 
@@ -72,7 +72,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
           </BodyText>
         </div>
         <BodyText level={6} fontFamily="Roboto" customClass={styles.location}>
-          {isBrandUser ? info.projectLocation : `Code ${info.code}`}
+          {isBrandUser ? info.projectLocation : info.code}
         </BodyText>
       </>
     );
