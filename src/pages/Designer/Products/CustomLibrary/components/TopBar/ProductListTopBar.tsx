@@ -185,6 +185,8 @@ export const ProductListTopBar: React.FC = () => {
                 companies,
                 true,
                 renderDefaultCompanyLabel(),
+                undefined,
+                { borderFirstItem: true },
               )}
             />
             <TopBarItem

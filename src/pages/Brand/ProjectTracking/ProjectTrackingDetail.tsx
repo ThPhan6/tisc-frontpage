@@ -47,11 +47,7 @@ const ProjectTrackingDetail = () => {
           }
           customClass={styles.customTitle}
         />
-        <Detail
-          projectId={idProject}
-          height="calc(100vh - 208px)"
-          contentHeight="calc(100vh - 360px)"
-        />
+        <Detail projectId={idProject} />
       </PageContainer>
     </div>
   );

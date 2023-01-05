@@ -32,6 +32,9 @@
       box-shadow: none;
     }
   }
+  &.noPadding :global(.ant-collapse-content-box) {
+    padding: 0;
+  }
 
   :global(.ant-collapse-content) {
     border-top: 0 !important;
@@ -63,5 +66,14 @@
     :global(.ant-collapse-item > .ant-collapse-header .ant-collapse-arrow) {
       right: 0;
     }
+  }
+}
+
+.nestedCollapse {
+  :global(.ant-collapse-content > .ant-collapse-content-box) {
+    padding: 0;
+  }
+  :global(.ant-collapse-header) {
+    box-shadow: none !important;
   }
 }

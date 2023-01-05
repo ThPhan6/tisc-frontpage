@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { CSSProperties, FC, useEffect } from 'react';
 
 import { Drawer, DrawerProps } from 'antd';
 
@@ -73,6 +73,21 @@ export const MobileDrawer: FC<
       title={title}
       height={autoHeight ? 'auto' : window.innerHeight * 0.85}
       {...props}
+    />
+  );
+};
+
+interface FilterDrawerProps extends DrawerProps {
+  labelStyle?: CSSProperties;
+}
+export const FilterDrawer: FC<FilterDrawerProps> = ({ labelStyle, ...props }) => {
+  return (
+    <CustomDrawer
+      placement="bottom"
+      closable={false}
+      height="auto"
+      {...props}
+      bodyStyle={{ padding: 0, paddingBottom: 24 }}
     />
   );
 };

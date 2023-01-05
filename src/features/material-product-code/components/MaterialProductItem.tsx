@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { CSSProperties, FC, useEffect, useState } from 'react';
 
 import { Collapse } from 'antd';
 
@@ -6,6 +6,7 @@ import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete
 import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
 import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { isEmpty, isEqual } from 'lodash';
 
 import {
@@ -25,6 +26,7 @@ export const MaterialProductItem: FC<MaterialProductItemProps> = ({
   onChangeValue,
   handleClickDelete,
 }) => {
+  const { isMobile } = useScreen();
   const [materialItem, setMaterialItem] = useState<MaterialProductSubForm>(
     DEFAULT_SUB_MATERIAL_PRODUCT,
   );
@@ -75,7 +77,8 @@ export const MaterialProductItem: FC<MaterialProductItemProps> = ({
               level={3}
               customClass={
                 isEmpty(materialItem.is_collapse) ? styles.font_weight_300 : styles.font_weight_600
-              }>
+              }
+            >
               Sub-List
             </BodyText>
             <ArrowIcon
@@ -103,6 +106,14 @@ export const MaterialProductItem: FC<MaterialProductItemProps> = ({
       </div>
     );
   };
+
+  const mobileStylesProps: CSSProperties | undefined = !isMobile
+    ? undefined
+    : {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+      };
   return (
     <div className={styles.material}>
       <Collapse ghost activeKey={materialItem.is_collapse}>
@@ -114,11 +125,12 @@ export const MaterialProductItem: FC<MaterialProductItemProps> = ({
               }`}
           header={PanelHeader()}
           key={materialItem.is_collapse!}
-          showArrow={false}>
+          showArrow={false}
+        >
           <div>
             {materialItem.codes.map((item, index) => (
               <div className={styles.form} key={index}>
-                <div className={styles.form__element}>
+                <div className={styles.form__element} style={mobileStylesProps}>
                   <div className={styles.form__element_item}>
                     <BodyText level={4}>Code:</BodyText>
                     <CustomInput

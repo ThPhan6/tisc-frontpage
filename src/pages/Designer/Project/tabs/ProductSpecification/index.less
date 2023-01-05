@@ -1,5 +1,11 @@
+@import '~antd/es/style/variable.less';
+
 .button {
   margin-left: 48px;
+
+  @media screen and (max-width: @screen-md) {
+    margin-left: 24px;
+  }
 }
 .content {
   &_left {

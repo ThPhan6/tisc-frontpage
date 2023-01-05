@@ -246,6 +246,8 @@ export const TopBar: React.FC = () => {
                   : [],
                 true,
                 'View by categories',
+                undefined,
+                { autoHeight: false, borderFirstItem: true },
               )}
               customClass="left-divider white-space"
             />
@@ -267,6 +269,8 @@ export const TopBar: React.FC = () => {
                   : [],
                 true,
                 'View by Collections',
+                undefined,
+                { autoHeight: false, borderFirstItem: true },
               )}
               customClass="left-divider white-space"
             />

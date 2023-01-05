@@ -6,6 +6,7 @@ import { useHistory } from 'umi';
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 
 import { getOneCustomProduct } from './services';
+import { useScreen } from '@/helper/common';
 import { useGetParamId, useQuery } from '@/helper/hook';
 
 import { ProductInfoTab } from './types';
@@ -28,6 +29,7 @@ const LIST_TAB = [
 ];
 
 const ProductLibraryDetail: React.FC = () => {
+  const isMobile = useScreen().isMobile;
   const history = useHistory();
   const productId = useGetParamId();
 
@@ -65,12 +67,12 @@ const ProductLibraryDetail: React.FC = () => {
         </Col>
 
         <Col span={24}>
-          <Row className={isPublicPage ? styles.marginRounded : ''}>
-            <Col span={12}>
+          <Row className={isPublicPage ? styles.marginRounded : ''} gutter={[8, 8]}>
+            <Col span={isMobile ? 24 : 12}>
               <ProductImagePreview hideInquiryRequest isCustomProduct viewOnly />
             </Col>
 
-            <Col span={12} className={styles.productContent}>
+            <Col span={isMobile ? 24 : 12} className={styles.productContent}>
               <Row style={{ flexDirection: 'column', height: '100%' }}>
                 <Col>
                   <CustomTabs

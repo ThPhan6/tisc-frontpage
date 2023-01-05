@@ -235,3 +235,23 @@
     display: none;
   }
 }
+
+.filterDropdown {
+  :global(.ant-menu-vertical > .ant-menu-item) {
+    display: flex;
+    align-items: center;
+    height: 36px;
+    margin: 0;
+    padding: 0 12px;
+  }
+  :global(img + .ant-menu-title-content) {
+    margin-left: 12px !important;
+  }
+  :global(.ant-menu-title-content) {
+    color: #000 !important;
+    font-weight: 300;
+  }
+  &.borderFirstItem :global(.ant-drawer-body > ul li:first-child) {
+    box-shadow: @border-bottom-light;
+  }
+}

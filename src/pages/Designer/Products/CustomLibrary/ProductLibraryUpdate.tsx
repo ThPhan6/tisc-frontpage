@@ -5,6 +5,7 @@ import { Col, Row, message } from 'antd';
 import { useHistory, useParams } from 'umi';
 
 import { createCustomProduct, getOneCustomProduct, updateCustomProduct } from './services';
+import { useScreen } from '@/helper/common';
 import { formatImageIfBase64 } from '@/helper/utils';
 
 import { CustomProductRequestBody, ProductInfoTab } from './types';
@@ -25,6 +26,7 @@ const LIST_TAB = [
 ];
 
 const ProductLibraryUpdate: React.FC = () => {
+  const isMobile = useScreen().isMobile;
   const history = useHistory();
   const params = useParams<{ id: string }>();
   const productId = params?.id || '';
@@ -125,8 +127,8 @@ const ProductLibraryUpdate: React.FC = () => {
       </Col>
 
       <Col span={24}>
-        <Row>
-          <Col span={12}>
+        <Row gutter={[8, 8]}>
+          <Col span={isMobile ? 24 : 12}>
             <ProductImagePreview
               hideInquiryRequest
               isCustomProduct
@@ -135,7 +137,7 @@ const ProductLibraryUpdate: React.FC = () => {
             />
           </Col>
 
-          <Col span={12} className={styles.productContent}>
+          <Col span={isMobile ? 24 : 12} className={styles.productContent}>
             <Row style={{ flexDirection: 'column', height: '100%' }}>
               <Col>
                 <CustomTabs

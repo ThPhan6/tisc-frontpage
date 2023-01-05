@@ -15,6 +15,7 @@ import {
   updateProductCard,
 } from '@/features/product/services';
 import { getBrandById } from '@/features/user-group/services';
+import { useScreen } from '@/helper/common';
 import { useCheckPermission, useQuery } from '@/helper/hook';
 import { isValidURL } from '@/helper/utils';
 import { pick, sortBy } from 'lodash';
@@ -39,6 +40,7 @@ import styles from './detail.less';
 import Cookies from 'js-cookie';
 
 const ProductDetailContainer: React.FC = () => {
+  const isMobile = useScreen().isMobile;
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -182,12 +184,12 @@ const ProductDetailContainer: React.FC = () => {
         <Col span={24}>{renderHeader()}</Col>
 
         <Col span={24}>
-          <Row className={isPublicPage ? styles.marginRounded : ''}>
-            <Col span={12}>
+          <Row className={isPublicPage ? styles.marginRounded : ''} gutter={[8, 8]}>
+            <Col span={isMobile ? 24 : 12}>
               <ProductImagePreview />
             </Col>
 
-            <Col span={12} className={styles.productContent}>
+            <Col span={isMobile ? 24 : 12} className={styles.productContent}>
               <Row style={{ flexDirection: 'column', height: '100%' }}>
                 <Col>
                   <ProductBasicInfo />

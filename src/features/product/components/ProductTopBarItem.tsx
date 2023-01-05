@@ -1,6 +1,6 @@
 import { CSSProperties, FC, useEffect, useState } from 'react';
 
-import { DropDownProps, Menu } from 'antd';
+import { DropDownProps, Menu, Row } from 'antd';
 import Dropdown from 'antd/es/dropdown';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 
@@ -11,6 +11,8 @@ import { useScreen } from '@/helper/common';
 import { useBoolean } from '@/helper/hook';
 import { capitalize, truncate } from 'lodash';
 
+import CustomCollapse from '@/components/Collapse';
+import { FilterDrawer } from '@/components/Modal/Drawer';
 import { BodyText } from '@/components/Typography';
 
 import styles from './ProductTopBarItem.less';
@@ -208,7 +210,10 @@ export interface CustomDropDownProps extends Omit<DropDownProps, 'overlay'> {
   alignRight?: boolean;
   textCapitalize?: boolean;
   viewAllTop?: boolean;
+  autoHeight?: boolean;
   position?: 'left' | 'right';
+  nestedMenu?: boolean;
+  borderFirstItem?: boolean;
 }
 export const CustomDropDown: FC<CustomDropDownProps> = ({
   children,
@@ -221,37 +226,94 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
   alignRight = true,
   textCapitalize = true,
   position = 'right',
+  autoHeight = true,
+  nestedMenu,
+  borderFirstItem,
   ...props
 }) => {
+  const isMobile = useScreen().isMobile;
   const dropdownVisible = useBoolean(false);
-  return (
-    <Dropdown
-      placement="bottomLeft"
-      trigger={['click']}
-      {...props}
-      visible={dropdownVisible.value}
-      onVisibleChange={(visible) => {
-        dropdownVisible.setValue(visible);
-      }}
-      overlayClassName={viewAllTop ? styles.viewAllTop : undefined}
-      overlay={
-        overlay ?? (
-          <CascadingMenu
-            items={items}
-            visible={dropdownVisible.value}
-            onCloseMenu={() => dropdownVisible.setValue(false)}
-            menuStyle={menuStyle}
-            alignRight={alignRight}
-            textCapitalize={textCapitalize}
-            position={position}
-          />
-        )
+
+  const renderNestedMenu = (menuItems: ItemType[]) => {
+    return menuItems.map((item) =>
+      item?.children ? (
+        <CustomCollapse header={item?.label} noBorder style={{ paddingLeft: 12 }} nestedCollapse>
+          {renderNestedMenu(item.children)}
+        </CustomCollapse>
+      ) : (
+        <Row
+          onClick={() => {
+            item?.onClick?.();
+            dropdownVisible.setValue(false);
+          }}
+          style={{ paddingLeft: 12, height: 40 }}
+          className="flex-start"
+        >
+          {item?.label}
+        </Row>
+      ),
+    );
+  };
+
+  const height = autoHeight ? 'auto' : window.innerHeight * 0.85;
+
+  const mobileMenuStyle: CSSProperties = isMobile
+    ? {
+        width: '100%',
+        boxShadow: 'none',
+        bottom: 0,
+        height,
       }
-    >
-      <span {...labelProps} onClick={(e) => e.stopPropagation()}>
-        {children}
-        {hideDropdownIcon ? null : <DropdownIcon style={{ marginLeft: 8 }} />}
-      </span>
-    </Dropdown>
+    : {};
+
+  const content =
+    overlay ??
+    (nestedMenu && isMobile ? (
+      renderNestedMenu(items)
+    ) : (
+      <CascadingMenu
+        items={items}
+        visible={dropdownVisible.value}
+        onCloseMenu={() => dropdownVisible.setValue(false)}
+        menuStyle={{
+          ...menuStyle,
+          ...mobileMenuStyle,
+        }}
+        alignRight={alignRight}
+        textCapitalize={textCapitalize}
+        position={position}
+      />
+    ));
+
+  return (
+    <>
+      <Dropdown
+        placement="bottomLeft"
+        trigger={['click']}
+        {...props}
+        visible={dropdownVisible.value && isMobile === false}
+        onVisibleChange={(visible) => {
+          dropdownVisible.setValue(visible);
+        }}
+        overlayClassName={viewAllTop ? styles.viewAllTop : undefined}
+        overlay={content}
+      >
+        <span {...labelProps} onClick={(e) => e.stopPropagation()}>
+          {children}
+          {hideDropdownIcon ? null : <DropdownIcon style={{ marginLeft: 8 }} />}
+        </span>
+      </Dropdown>
+
+      {isMobile && (
+        <FilterDrawer
+          visible={dropdownVisible.value}
+          onClose={() => dropdownVisible.setValue(false)}
+          className={`${styles.filterDropdown} ${borderFirstItem ? styles.borderFirstItem : ''}`}
+          height={height}
+        >
+          {content}
+        </FilterDrawer>
+      )}
+    </>
   );
 };

@@ -27,6 +27,7 @@ import {
   getValueByCondition,
 } from '@/helper/utils';
 import { getDepartmentList } from '@/services';
+import { upperCase } from 'lodash';
 
 import { TeamProfileDetailProps, TeamProfileRequestBody } from '../types';
 import store, { useAppSelector } from '@/reducers';
@@ -125,7 +126,11 @@ const TeamProfilesEntryForm = () => {
   }, []);
 
   useEffect(() => {
-    setWorkLocation((prevState) => ({ ...prevState, value: data.location_id }));
+    setWorkLocation((prevState) => ({
+      value: data.location_id || prevState.value,
+      label: data.work_location || prevState.label,
+      phoneCode: data.phone_code || prevState.phoneCode,
+    }));
   }, [data.location_id]);
 
   useEffect(() => {
@@ -421,7 +426,7 @@ const TeamProfilesEntryForm = () => {
             store.dispatch(
               openModal({
                 type: 'Access Level',
-                title: `${userType} Access level`,
+                title: `${upperCase(userType)} ACCESS LEVEL`,
                 props: {
                   accessLevel: { type: userType },
                 },
