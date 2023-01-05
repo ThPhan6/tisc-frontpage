@@ -11,7 +11,8 @@ const UserProfile = () => {
   return (
     <div
       className={styles['profile-container']}
-      style={{ height: isMobile ? screenHeight - 72 : '' }}>
+      style={{ height: isMobile ? screenHeight - 72 : '' }}
+    >
       <WorkplaceProfile contentHeight={isMobile ? screenHeight / 2 - 104 : undefined} />
       <PersonalProfile contentHeight={isMobile ? screenHeight / 2 - 152 : undefined} />
     </div>
