@@ -13,10 +13,7 @@ import { BrandDetail } from '@/features/user-group/types';
 import { FinishScheduleResponse } from '@/pages/Designer/Project/tabs/ProductConsidered/SpecifyingModal/types';
 import { RootState } from '@/reducers';
 
-import { ProductTopBarFilter } from '../components/FilterAndSorter';
-
-import { PayloadAction, createSelector } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
 
 interface ProductState {
   brand?: BrandDetail;
@@ -24,6 +21,7 @@ interface ProductState {
   details: ProductItem & { referToDesignDocument?: boolean };
   relatedProduct: RelatedCollection[];
   list: ProductList;
+  myWorkSpace?: boolean;
 }
 
 const initialState: ProductState = {
@@ -126,9 +124,6 @@ const productSlice = createSlice({
     setProductListSorter(state, action: PayloadAction<SortParams>) {
       state.list.sort = action.payload;
     },
-    setProductListFilter(state, action: PayloadAction<ProductTopBarFilter>) {
-      state.list.filter = action.payload;
-    },
     resetProductDetailState(state) {
       return { ...initialState, list: state.list, brand: state.brand };
     },
@@ -174,6 +169,9 @@ const productSlice = createSlice({
         state.details.specifiedDetail.finish_schedules = [...action.payload];
       }
     },
+    setFromMyWorkspace: (state, action: PayloadAction<boolean>) => {
+      state.myWorkSpace = action.payload;
+    },
   },
 });
 
@@ -188,13 +186,13 @@ export const {
   setRelatedProduct,
   setProductListSearchValue,
   setProductListSorter,
-  setProductListFilter,
   resetProductDetailState,
   setReferToDesignDocument,
   onCheckReferToDesignDocument,
   setDefaultSelectionFromSpecifiedData,
   setPartialProductSpecifiedData,
   setFinishScheduleData,
+  setFromMyWorkspace,
 } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;
