@@ -290,7 +290,8 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
           <FormGroup
             label="Define Finish Schedule (appliable for Room Schedule only)"
             labelFontSize={4}
-            {...formGroupProps}>
+            {...formGroupProps}
+          >
             <div
               className={`flex-between cursor-pointer ${styles.schedule}`}
               onClick={() => {
@@ -304,16 +305,19 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
                   return;
                 }
                 scheduleModal.setValue(true);
-              }}>
+              }}
+            >
               <div
                 className={styles.label}
-                title={finishScheduleLabel?.map((item) => item).join(' ')}>
+                title={finishScheduleLabel?.map((item) => item).join(' ')}
+              >
                 {!isEmpty(finishScheduleLabel) ? (
                   finishScheduleLabel.map((item) => (
                     <RobotoBodyText
                       level={6}
                       color="primary-color-dark"
-                      style={{ paddingRight: 8 }}>
+                      style={{ paddingRight: 8 }}
+                    >
                       {item}
                     </RobotoBodyText>
                   ))
@@ -379,7 +383,8 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
             label="Order Method"
             labelFontSize={4}
             formClass={styles.borderBottom}
-            {...formGroupProps}>
+            {...formGroupProps}
+          >
             <CustomRadio
               direction="horizontal"
               containerClass={styles.fontSizeSmall}
@@ -399,7 +404,8 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
             label="Approval requirements prior to fabrication"
             formClass={`${styles.fontSizeSmall} ${styles.borderBottom} ${styles.inputBorderBottom}`}
             labelFontSize={4}
-            {...formGroupProps}>
+            {...formGroupProps}
+          >
             <CustomCheckbox
               options={requirements}
               selected={selectedRequirements}
@@ -425,7 +431,8 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
             label="General Instructions"
             formClass={`${styles.fontSizeSmall} ${styles.borderBottom}`}
             labelFontSize={4}
-            {...formGroupProps}>
+            {...formGroupProps}
+          >
             <CustomCheckbox
               isCheckboxList
               options={instructions}

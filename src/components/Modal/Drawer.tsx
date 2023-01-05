@@ -4,22 +4,22 @@ import { Drawer, DrawerProps } from 'antd';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 
-import { useAppSelector } from '@/reducers';
-
 import styles from './styles/index.less';
 
-interface CustomDrawerProps extends DrawerProps {
+export interface CustomDrawerProps extends DrawerProps {
   closeOnMask?: boolean; // Use when children content overlap drawer mask, click outside could not close drawer
+  darkTheme?: boolean;
 }
 export const CustomDrawer: FC<CustomDrawerProps> = ({
   closeOnMask,
   bodyStyle,
   headerStyle,
   onClose,
+  darkTheme,
+  style,
+  title,
   ...props
 }) => {
-  const darkTheme = useAppSelector((state) => state.modal.theme === 'dark');
-
   useEffect(() => {
     if (props.visible === false || !closeOnMask) {
       return;
@@ -46,10 +46,32 @@ export const CustomDrawer: FC<CustomDrawerProps> = ({
       bodyStyle={{ backgroundColor: darkTheme ? '#000' : undefined, ...bodyStyle }}
       headerStyle={{
         backgroundColor: darkTheme ? '#000' : undefined,
-        borderRadius: 0,
         ...headerStyle,
       }}
       className={styles.drawerContainer}
+      title={title}
+      style={{
+        transform: props.visible ? 'none' : undefined,
+        ...style,
+      }}
+      {...props}
+    />
+  );
+};
+
+export const MobileDrawer: FC<
+  CustomDrawerProps & { autoHeight?: boolean; noHeaderBorder?: boolean }
+> = ({ noHeaderBorder, autoHeight, headerStyle, title, ...props }) => {
+  return (
+    <CustomDrawer
+      placement="bottom"
+      headerStyle={{
+        position: 'relative',
+        boxShadow: noHeaderBorder ? 'none' : undefined,
+        ...headerStyle,
+      }}
+      title={title}
+      height={autoHeight ? 'auto' : window.innerHeight * 0.85}
       {...props}
     />
   );

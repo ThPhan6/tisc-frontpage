@@ -1,9 +1,19 @@
+import { CheckboxValue } from '@/components/CustomCheckbox/types';
+import { RadioValue } from '@/components/CustomRadio/types';
+import { ProductItem } from '@/features/product/types';
+import { BrandAlphabet } from '@/features/user-group/types';
 import store, { RootState } from '@/reducers';
+import { AttributeContentType, AttributeSubForm } from '@/types';
+
+import { WorkLocationData } from '@/features/team-profiles/components/LocationModal';
+import { SelectedItem } from '@/pages/TISC/Product/Attribute/components/AttributeEntryForm';
 
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
 
 export type ModalType =
   | 'none'
+
+  // Landing page
   | 'About'
   | 'Policies'
   | 'Contact'
@@ -11,30 +21,100 @@ export type ModalType =
   | 'Designer Signup'
   | 'Brand Interested'
   | 'Tisc Login'
-  | 'Login';
+  | 'Login'
+  | 'Calendar'
+  | 'Cancel Booking'
+  | 'Reset Password'
+  | 'Verify Account'
+
+  // General
+  | 'Assign Team'
+  | 'Project Tracking Legend'
+  | 'Access Level'
+  | 'Work Location'
+  | 'Share via email'
+
+  // TISC
+  | 'Product Attribute Type'
+  | 'Select Brand'
+  | 'Brand Company'
+
+  // Brand
+
+  // Design Firm
+  | 'Assign Product'
+  | 'Market Availability'
+  | 'Inquiry Request';
 
 export interface ModalState {
   type: ModalType;
   theme?: 'default' | 'dark';
-  props?: {};
+  title?: string;
+  autoHeightDrawer?: boolean;
+  noBorderDrawerHeader?: boolean;
+  props: {
+    productId?: string; // Assign Product
+    isCustomProduct?: boolean; // Assign Product
+
+    email?: string; // Reset Password
+    token?: string; // Reset Password
+    passwordType?: 'reset' | 'create'; // Reset Password
+
+    assignTeam: {
+      onChange: (selected: CheckboxValue[]) => void;
+      teams: any[];
+      memberAssigned: any[];
+    };
+
+    productAttributeType: {
+      contentType: AttributeContentType;
+      selectedItem: SelectedItem;
+      onSubmit: (data: Omit<AttributeSubForm, 'id' | 'name'>) => void;
+      type: number;
+    };
+
+    selectBrand: {
+      brands: BrandAlphabet;
+      checkedBrand?: RadioValue;
+      onChecked: (checkedBrand: RadioValue) => void;
+    };
+
+    accessLevel: {
+      type: 'brand' | 'designer' | 'tisc';
+    };
+
+    workLocation: {
+      data: WorkLocationData;
+      onChange: (data: WorkLocationData) => void;
+    };
+
+    shareViaEmail: {
+      product: ProductItem;
+      isCustomProduct?: boolean;
+    };
+  };
 }
 
 const initialState: ModalState = {
   type: 'none',
   theme: 'default',
-  props: {},
+  props: {} as ModalState['props'],
 };
 
 const modalSlice = createSlice({
   name: 'modal',
   initialState,
   reducers: {
-    openModal: (state, action: PayloadAction<ModalState>) => {
-      return action.payload;
+    openModal: (
+      _state,
+      action: PayloadAction<Omit<ModalState, 'props'> & { props?: Partial<ModalState['props']> }>,
+    ) => {
+      return { ...action.payload, props: { ...initialState.props, ...action.payload.props } };
     },
-    closeModalAction: () => {
-      return initialState;
+    closeModalAction: (state) => {
+      state.type = 'none';
     },
+    resetModalState: () => initialState,
   },
 });
 
@@ -42,7 +122,10 @@ export const { openModal, closeModalAction } = modalSlice.actions;
 
 export const modalReducer = modalSlice.reducer;
 
-export const closeModal = () => store.dispatch(closeModalAction());
+export const closeModal = () => {
+  store.dispatch(closeModalAction());
+  setTimeout(() => store.dispatch(modalSlice.actions.resetModalState()), 300);
+};
 
 const modalSeletor = (state: RootState) => state.modal;
 
@@ -54,4 +137,8 @@ export const modalThemeSelector = createSelector(modalSeletor, ({ theme }) => {
     darkTheme,
     themeStyle,
   };
+});
+
+export const modalPropsSelector = createSelector(modalSeletor, ({ props = {} }) => {
+  return props as Required<ModalState['props']>;
 });

@@ -1,4 +1,9 @@
+@import '~antd/es/style/variable.less';
+
 .content {
+  @media (max-width: @screen-xs) {
+    margin: -4px;
+  }
   :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
     padding: 0;
   }

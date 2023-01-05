@@ -68,7 +68,8 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
 
           <div
             className={styles.footer}
-            style={{ justifyContent: isMobile ? 'center' : undefined }}>
+            style={{ justifyContent: isMobile ? 'center' : undefined }}
+          >
             {isMobile && entryFormTypeOnMobile === 'edit' ? (
               <CustomButton
                 size="small"
@@ -80,7 +81,8 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
                       handleDelete();
                     });
                   }
-                }}>
+                }}
+              >
                 Delete
               </CustomButton>
             ) : (
@@ -88,7 +90,8 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
                 size="small"
                 buttonClass={styles.footer__cancel_bt}
                 onClick={handleCancel || history.goBack}
-                disabled={disableCancelButton}>
+                disabled={disableCancelButton}
+              >
                 Cancel
               </CustomButton>
             )}
@@ -107,7 +110,8 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
                   size="small"
                   width="64px"
                   onClick={handleSubmit}
-                  disabled={disableSubmitButton}>
+                  disabled={disableSubmitButton}
+                >
                   <BodyText level={6} fontFamily="Roboto">
                     Save
                   </BodyText>

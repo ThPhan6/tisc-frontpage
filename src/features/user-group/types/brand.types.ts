@@ -1,5 +1,5 @@
-import { MemberAssignedForm } from '@/components/AssignTeam/type';
 import { LocationDetail } from '@/features/locations/type';
+import { AssignedTeamMember } from '@/features/team-profiles/types';
 import { ContactDetail } from '@/pages/Designer/CustomResource/type';
 
 export interface TISCUserGroupBrandForm {
@@ -9,18 +9,14 @@ export interface TISCUserGroupBrandForm {
   email: string;
 }
 
-export interface BrandMemberAssigned extends MemberAssignedForm {
-  is_assigned: boolean;
-}
-
 export interface BrandAssignTeamForm {
   name: string;
-  users: BrandMemberAssigned[];
+  users: AssignedTeamMember[];
 }
 
 export interface BrandListItem {
   id: string;
-  assign_team: BrandMemberAssigned[];
+  assign_team: AssignedTeamMember[];
   cards: number;
   categories: number;
   collections: number;

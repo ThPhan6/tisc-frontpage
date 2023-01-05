@@ -20,7 +20,8 @@ const InputGroupContent: FC<MainContentProps> = ({ children, hasHeight, noWrap }
     className={`${styles.inputGroupContainer} ${hasHeight ? styles.heightInputGroup : ''}`}
     gutter={0}
     align="middle"
-    wrap={!noWrap}>
+    wrap={!noWrap}
+  >
     {children}
   </Row>
 );
@@ -92,7 +93,8 @@ const InputGroup: FC<InputGroupProps> = ({
                   ? styles.requiredColorTertiary
                   : styles.requiredColorPrimaryDark
               }
-          ${styles.required}`}>
+          ${styles.required}`}
+            >
               *
             </span>
           ) : (
@@ -111,7 +113,8 @@ const InputGroup: FC<InputGroupProps> = ({
           ${styles.inputGroupContent}
           ${hasBoxShadow ? styles.boxShadow : ''}
         `}
-        span={inputSpan}>
+        span={inputSpan}
+      >
         <CustomInput
           {...props}
           value={value}

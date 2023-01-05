@@ -396,17 +396,16 @@ export const useProductListFilterAndSorter = (fetchs: {
     const items = setFormatFilterForDropDown(filterData, onItemClick, haveViewAll);
 
     return (
-      <>
-        <CustomDropDown
-          items={items}
-          viewAllTop={haveViewAll}
-          textCapitalize={false}
-          placement={position ?? 'bottomLeft'}
-          menuStyle={{ height: 'max-content', width: 240 }}
-          {...customDropDownProps}>
-          {type}
-        </CustomDropDown>
-      </>
+      <CustomDropDown
+        items={items}
+        viewAllTop={haveViewAll}
+        textCapitalize={false}
+        placement={position ?? 'bottomLeft'}
+        menuStyle={{ height: 'max-content', width: 240 }}
+        {...customDropDownProps}
+      >
+        {type}
+      </CustomDropDown>
     );
   };
 

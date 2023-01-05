@@ -58,17 +58,6 @@ export interface ModalProps {
   onClose: () => void;
 }
 
-export type ModalOpen =
-  | 'About'
-  | 'Policies'
-  | 'Contact'
-  | 'Browser Compatibility'
-  | 'Designer Signup'
-  | 'Brand Interested'
-  | 'Tisc Login'
-  | 'Login'
-  | '';
-
 export type SignUpDesignerRequestBody = {
   firstname: string;
   email: string;

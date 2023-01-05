@@ -35,6 +35,7 @@ export const BrandCompanyModal: FC<BrandCompanyModalProps> = ({
     <Popover
       title="SELECT BRAND"
       className={styles.paddingLeftName}
+      secondaryModal
       visible={visible}
       setVisible={setVisible}
       chosenValue={

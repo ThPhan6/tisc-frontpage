@@ -3,29 +3,29 @@ import { FC } from 'react';
 import { Col, Row } from 'antd';
 
 import { useScreen } from '@/helper/common';
+import { useQuery } from '@/helper/hook';
 
-import { ModalOpen } from './types';
 import store from '@/reducers';
-import { openModal } from '@/reducers/modal';
+import { ModalType, openModal } from '@/reducers/modal';
 
 import { BodyText } from '@/components/Typography';
 
 import styles from './index.less';
 
 interface LandingPageFooteProps {
-  listMenuFooter: ModalOpen[];
-  setOpenModal: (value: ModalOpen) => void;
-  isPublicPage?: boolean;
+  listMenuFooter: ModalType[];
   customClass?: string;
 }
 
 export const LandingPageFooter: FC<LandingPageFooteProps> = ({
-  setOpenModal,
-  isPublicPage,
   listMenuFooter,
   customClass = '',
 }) => {
   const { isMobile } = useScreen();
+
+  const signature = useQuery().get('signature') || '';
+  const isPublicPage = signature ? true : false;
+
   const footerItems = isMobile ? listMenuFooter.slice(0, -1) : listMenuFooter;
 
   return (
@@ -43,7 +43,8 @@ export const LandingPageFooter: FC<LandingPageFooteProps> = ({
               style={{
                 marginLeft: isMobile ? 0 : undefined,
                 marginRight: isMobile ? 16 : undefined,
-              }}>
+              }}
+            >
               <div className={styles.menu}>
                 {footerItems.map((item, index) => (
                   <BodyText
@@ -51,7 +52,17 @@ export const LandingPageFooter: FC<LandingPageFooteProps> = ({
                     level={5}
                     fontFamily="Roboto"
                     customClass={styles.item}
-                    onClick={() => setOpenModal(item)}>
+                    onClick={() =>
+                      store.dispatch(
+                        openModal({
+                          type: item,
+                          theme: 'dark',
+                          autoHeightDrawer: true,
+                          noBorderDrawerHeader: true,
+                        }),
+                      )
+                    }
+                  >
                     {item}
                   </BodyText>
                 ))}
@@ -62,7 +73,12 @@ export const LandingPageFooter: FC<LandingPageFooteProps> = ({
                   level={5}
                   fontFamily="Roboto"
                   customClass={styles['tisc-login']}
-                  onClick={() => store.dispatch(openModal({ type: 'Tisc Login', theme: 'dark' }))}>
+                  onClick={() =>
+                    store.dispatch(
+                      openModal({ type: 'Tisc Login', theme: 'dark', autoHeightDrawer: true }),
+                    )
+                  }
+                >
                   TISC Log in
                 </BodyText>
               )}

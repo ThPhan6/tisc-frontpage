@@ -6,9 +6,11 @@ import { Modal } from 'antd';
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { isEmpty } from 'lodash';
 
 import { CheckboxValue } from '../CustomCheckbox/types';
+import { closeModal } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
 import CheckboxList from '@/components/CustomCheckbox/CheckboxList';
@@ -24,12 +26,13 @@ import { DropdownCategoryList } from '@/features/categories/components/CategoryD
 
 import { CustomCheckbox } from '../CustomCheckbox';
 import { EmptyOne } from '../Empty';
+import { MobileDrawer } from './Drawer';
 import styles from './styles/Popover.less';
 
 export interface PopoverProps {
   title: string;
   visible: boolean;
-  setVisible: (visible: boolean) => void;
+  setVisible?: (visible: boolean) => void;
   /// dropdown radio list
   dropdownRadioList?: DropdownRadioItem[];
   dropDownRadioTitle?: (data: DropdownRadioItem) => string | number | ReactNode;
@@ -73,6 +76,8 @@ export interface PopoverProps {
   hasOrtherInput?: boolean;
 
   forceUpdateCurrentValue?: boolean;
+
+  secondaryModal?: boolean;
 }
 
 const Popover: FC<PopoverProps> = ({
@@ -100,7 +105,10 @@ const Popover: FC<PopoverProps> = ({
   clearOnClose,
   hasOrtherInput = true,
   forceUpdateCurrentValue = true,
+  secondaryModal,
 }) => {
+  const { isMobile } = useScreen();
+
   const [currentValue, setCurrentValue] = useState<any>(chosenValue);
 
   useEffect(() => {
@@ -200,6 +208,11 @@ const Popover: FC<PopoverProps> = ({
     return null;
   };
 
+  const onClose = () => {
+    setVisible?.(false);
+    closeModal();
+  };
+
   const onCancel = () => {
     if (clearOnClose) {
       setChosenValue?.(undefined);
@@ -212,7 +225,7 @@ const Popover: FC<PopoverProps> = ({
       }
     }
     // hide popup
-    setVisible(false);
+    onClose();
   };
 
   const handleDone = () => {
@@ -226,7 +239,7 @@ const Popover: FC<PopoverProps> = ({
       setChosenValue(currentValue);
     }
     // hide popup
-    setVisible(false);
+    onClose();
   };
 
   const renderButtonFooter = () => {
@@ -245,11 +258,34 @@ const Popover: FC<PopoverProps> = ({
         properties="rounded"
         buttonClass="done-btn"
         disabled={disabledSubmit}
-        onClick={handleDone}>
+        onClick={handleDone}
+      >
         Done
       </CustomButton>
     );
   };
+
+  const renderMobileContent = () => (
+    <div className={styles.customPopoverMobile}>
+      {extraTopAction}
+      {renderChildren()}
+      {children}
+      {noFooter ? null : (
+        <div className={`flex-center ${styles.popoverFooterMobile}`}>{renderButtonFooter()}</div>
+      )}
+    </div>
+  );
+
+  if (isMobile) {
+    if (secondaryModal) {
+      return (
+        <MobileDrawer onClose={onCancel} visible={visible} title={title}>
+          {renderMobileContent()}
+        </MobileDrawer>
+      );
+    }
+    return renderMobileContent();
+  }
 
   return (
     <div>
@@ -258,7 +294,8 @@ const Popover: FC<PopoverProps> = ({
           <MainTitle
             level={3}
             customClass={`text-uppercase text-overflow ${styles.headingTitle}`}
-            style={{ maxWidth: '95%' }}>
+            style={{ maxWidth: '95%' }}
+          >
             {title}
           </MainTitle>
         }
@@ -268,7 +305,8 @@ const Popover: FC<PopoverProps> = ({
         width={576}
         closeIcon={<CloseIcon style={{ color: '#000' }} />}
         footer={noFooter ? null : renderButtonFooter()}
-        className={`${styles.customPopover} ${className ?? ''}`}>
+        className={`${styles.customPopover} ${className ?? ''}`}
+      >
         {extraTopAction}
         {renderChildren()}
         {children}

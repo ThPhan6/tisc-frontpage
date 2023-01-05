@@ -225,6 +225,7 @@ export const SelectAttributesToGroupRow: FC<Props> = memo(
           dropdownCheckboxTitle={(data) => data.name}
           chosenValue={selected}
           setChosenValue={onSelectValue}
+          secondaryModal
         />
       </>
     );

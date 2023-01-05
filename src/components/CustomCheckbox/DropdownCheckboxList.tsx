@@ -73,7 +73,8 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
               className={styles.dropdownCount}
               style={{
                 marginLeft: item.margin ? item.margin : 8,
-              }}>
+              }}
+            >
               ({item.options.length})
             </span>
           ) : (
@@ -98,13 +99,15 @@ const DropdownCheckboxList: React.FC<DropdownCheckboxListProps> = (props) => {
         }
         setActiveKey(newKeys);
       }}
-      activeKey={activeKey}>
+      activeKey={activeKey}
+    >
       {data.map((item, index) => (
         <Collapse.Panel
           header={renderHeader(item, index)}
           key={index}
           collapsible={isEmpty(item.options) || noCollapse ? 'disabled' : undefined}
-          className="site-collapse-custom-panel">
+          className="site-collapse-custom-panel"
+        >
           <CustomCheckbox
             options={item.options}
             selected={

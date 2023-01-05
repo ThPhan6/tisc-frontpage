@@ -77,13 +77,20 @@ export const AvatarDropdown = () => {
   const renderAvatarTrigger = (trigger?: boolean) => (
     <span
       className={`${styles.container}`}
-      onClick={trigger ? () => showHeaderDropdown.setValue(true) : undefined}>
+      onClick={trigger ? () => showHeaderDropdown.setValue(true) : undefined}
+    >
       <TeamIcon
         customClass={`${styles.avatar} ${currentUser?.avatar ? '' : 'default'}`}
         avatar={currentUser?.avatar ? showImageUrl(currentUser.avatar) : DefaultAvatarIcon}
       />
       {
-        <BodyText fontFamily="Roboto" level={4} customClass={styles['user-name']} color="white">
+        <BodyText
+          fontFamily="Roboto"
+          level={4}
+          customClass={`text-overflow ${styles['user-name']}`}
+          color="white"
+          style={{ maxWidth: '50vw' }}
+        >
           {getFullName(currentUser)}
         </BodyText>
       }
@@ -115,7 +122,8 @@ export const AvatarDropdown = () => {
       align={{ offset: [0, 2] }}
       placement="bottom"
       trigger={['click']}
-      getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}>
+      getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}
+    >
       {renderAvatarTrigger()}
     </HeaderDropdown>
   );

@@ -1,4 +1,4 @@
-import { BrandCardTeam } from '@/features/user-group/types';
+import { AssignMember } from '@/components/AssignTeam';
 
 export interface ProjecTrackingList {
   id: string;
@@ -10,7 +10,7 @@ export interface ProjecTrackingList {
   projectStatus: string;
   priority: number;
   priorityName: string;
-  assignedTeams: BrandCardTeam[];
+  assignedTeams: AssignMember[];
   requestCount: number;
   newRequest: boolean;
   notificationCount: number;

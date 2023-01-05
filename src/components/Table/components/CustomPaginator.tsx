@@ -4,6 +4,8 @@ import { SorterResult } from 'antd/lib/table/interface';
 import { ReactComponent as PaginationLeftIcon } from '@/assets/icons/pagination-left.svg';
 import { ReactComponent as PaginationRightIcon } from '@/assets/icons/pagination-right.svg';
 
+import { useScreen } from '@/helper/common';
+
 import { PaginationParams } from '../types';
 
 import styles from '../styles/table.less';
@@ -26,6 +28,8 @@ const CustomPaginator = (props: CustomPaginatorProps) => {
     firstRecord = 0;
   }
   const lastRecord = (currentPage - 1) * currentPageSize + dataLength;
+
+  const { isMobile } = useScreen();
 
   const renderLeftPaginator = () => {
     return (
@@ -68,13 +72,19 @@ const CustomPaginator = (props: CustomPaginatorProps) => {
   };
 
   return (
-    <div className={`${styles.customPaginator} ${customClass}`}>
+    <div
+      className={`${styles.customPaginator} ${customClass} ${
+        isMobile ? styles.mobilePagination : ''
+      }`}
+    >
       {renderLeftPaginator()}
-      <span>
-        {firstRecord}-{lastRecord}
-      </span>
-      <span className="divider">/</span>
-      <span>{pagination.total}</span>
+      <div>
+        <span>
+          {firstRecord}-{lastRecord}
+        </span>
+        <span className="divider">/</span>
+        <span>{pagination.total}</span>
+      </div>
       {renderRightPaginator()}
     </div>
   );

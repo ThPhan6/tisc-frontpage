@@ -25,7 +25,8 @@ const CollapseRadioFormGroup: FC<CollapseRadioFormGroupProps> = ({
       label={label}
       required={true}
       layout="vertical"
-      formClass={`${styles.group} ${placeholder ? styles.activeLabel : ''} ${formClass}`}>
+      formClass={`${styles.group} ${placeholder ? styles.activeLabel : ''} ${formClass}`}
+    >
       <CollapseRadioList
         containerClass={`${styles.radioGroup} ${radioListClass}`}
         placeholder={placeholder || defaultPlaceHolder}

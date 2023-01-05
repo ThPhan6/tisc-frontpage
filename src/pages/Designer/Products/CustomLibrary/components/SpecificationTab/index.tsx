@@ -179,6 +179,7 @@ export const SpecificationTab: FC<{
         noBorder={specifying || (viewOnly && option.use_image)}
         expandingHeaderFontStyle="bold"
         customHeaderClass={styles.optionCollapse}
+        arrowAlignRight={specifying}
         header={
           <OptionCollapseHeader
             data={options}
@@ -190,7 +191,8 @@ export const SpecificationTab: FC<{
             specifiedDetail={specifiedDetail}
             viewOnly={viewOnly}
           />
-        }>
+        }
+      >
         {viewOnly ? null : (
           <div className="flex-between" style={{ padding: '10px 16px' }}>
             <div
@@ -199,7 +201,8 @@ export const SpecificationTab: FC<{
                 setOptionModalVisible(true);
                 setCurOption(option);
                 setCurOptionIndex(optionIndex);
-              }}>
+              }}
+            >
               <MainTitle level={4} customClass={styles.content}>
                 {option.items.length ? 'Update Options' : 'Create Options'}
               </MainTitle>
@@ -265,6 +268,7 @@ export const SpecificationTab: FC<{
         isShow={activeKey === 'specification'}
         noPadding={specifying}
         collapseStyles={!specifying}
+        arrowAlignRight={specifying}
         data={dimensionWeightData}
         isConversionText={specifying}
         onChange={(data) => {

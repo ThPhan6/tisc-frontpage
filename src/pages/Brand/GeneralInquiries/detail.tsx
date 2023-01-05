@@ -7,6 +7,7 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-ic
 import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 
 import { getOneGeneralInquiry } from './services';
+import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useGetParamId } from '@/helper/hook';
 
@@ -23,8 +24,8 @@ import styles from './detail.less';
 import indexStyles from './index.less';
 
 const LIST_TAB = [
-  { tab: 'DESIGN FIRM', key: 'design-firm' },
-  { tab: 'INQUIRY MESSAGE', key: 'inquiry-message' },
+  { tab: 'Design Firm', key: 'design-firm' },
+  { tab: 'Inquiry Message', key: 'inquiry-message' },
 ];
 
 type GeneralInquiriesTab = 'design-firm' | 'inquiry-message';
@@ -64,6 +65,7 @@ const DEFAULT_STATE: GeneralInquiryResponse = {
 };
 
 const GeneralInquiryDetail = () => {
+  const isMobile = useScreen().isMobile;
   const inquiryId = useGetParamId();
   const [legendModalVisible, setLegendModalVisible] = useState(false);
   const [activeTab, setActiveTab] = useState<GeneralInquiriesTab>('design-firm');
@@ -92,7 +94,7 @@ const GeneralInquiryDetail = () => {
         }
       />
       <Row>
-        <Col span={12} className={styles.container}>
+        <Col span={isMobile ? 24 : 12} className={styles.container}>
           <TableHeader
             title={data.inquiry_message.inquiry_for}
             customClass={styles.header}
@@ -123,7 +125,8 @@ const GeneralInquiryDetail = () => {
                 size="small"
                 variant="primary"
                 properties="rounded"
-                onClick={goBackToTable}>
+                onClick={goBackToTable}
+              >
                 Done
               </CustomButton>
             </div>
