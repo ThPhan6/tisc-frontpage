@@ -11,6 +11,7 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-icon.svg';
 import PlaceHolderImage from '@/assets/images/product-placeholder.png';
 
 import { getListCapabilities, updateBrandProfile, updateDesignFirmOfficeProfile } from './services';
+import { useScreen } from '@/helper/common';
 import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
 import { getBase64, getSelectedOptions, showImageUrl } from '@/helper/utils';
 import { isEqual } from 'lodash';
@@ -38,6 +39,8 @@ import styles from './index.less';
 
 const BrandProfilePage = () => {
   const { fetchUserInfo } = useCustomInitialState();
+
+  const { isMobile } = useScreen();
 
   const isBrand = useCheckPermission(['Brand Admin', 'Brand Team']);
   const isDesign = useCheckPermission(['Design Admin', 'Design Team']);
@@ -286,13 +289,16 @@ const BrandProfilePage = () => {
   return (
     <div className={styles.content}>
       <Row>
-        <Col span={12}>
+        <Col span={24} lg={12}>
           <div className={styles.container}>
             <div className={styles.formTitle}>
               <Title level={8}>{isBrand ? 'BRAND PROFILE' : 'OFFICE PROFILE'}</Title>
             </div>
 
-            <div className={styles.form}>
+            <div
+              className={styles.form}
+              style={{ height: isMobile ? 'calc(100vh - 176px)' : 'calc(100vh - 192px)' }}
+            >
               <FormGroup
                 label={isBrand ? 'Brand Name' : 'Design Firm Name'}
                 layout="vertical"
@@ -462,7 +468,10 @@ const BrandProfilePage = () => {
               )}
             </div>
 
-            <div className={styles.actionButton}>
+            <div
+              className={styles.actionButton}
+              style={{ display: 'flex', justifyContent: isMobile ? 'center' : undefined }}
+            >
               <CustomSaveButton isSuccess={isSubmitted.value} onClick={onSubmitForm} />
             </div>
           </div>
