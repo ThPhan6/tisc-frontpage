@@ -89,7 +89,7 @@ const CustomResourceCreatePage = () => {
 
   return (
     <PageContainer pageHeaderRender={() => <CustomResourceTopBar />}>
-      <CustomResourceHeader isMobile={isMobile} />
+      <CustomResourceHeader />
       <Row style={{ marginTop: '8px' }} gutter={[0, 8]}>
         <Col span={isMobile ? 24 : 12} style={{ paddingRight: isMobile ? '' : '8px' }}>
           <CustomResourceEntryForm
@@ -106,7 +106,6 @@ const CustomResourceCreatePage = () => {
             onSubmit={handleCreate}
             type={customResourceId ? 'update' : 'create'}
             customResourceId={customResourceId}
-            isMobile={isMobile}
           />
         </Col>
       </Row>

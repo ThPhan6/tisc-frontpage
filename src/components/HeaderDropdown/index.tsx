@@ -5,6 +5,7 @@ import type { DropDownProps, DropdownProps } from 'antd/es/dropdown';
 
 import { useScreen } from '@/helper/common';
 
+import { DrawerMenu } from '../Menu/DrawerMenu';
 import { FilterDrawer } from '../Modal/Drawer';
 import { BodyText } from '../Typography';
 import styles from './index.less';
@@ -14,10 +15,10 @@ export type HeaderDropdownProps = {
   arrowPositionCenter?: boolean;
   containerClass?: string;
   overlayClassName?: string;
-  overlay?: React.ReactNode | (() => React.ReactNode) | any;
   items?: MenuIconProps[];
   placement?: DropdownProps['placement'];
   filterDropdown?: boolean;
+  menuDropdown?: boolean;
 } & Omit<DropDownProps, 'overlay'>;
 
 export type MenuIconProps = {
@@ -74,18 +75,20 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   containerClass,
   arrowPositionCenter,
   arrow,
-  items,
-  overlay,
+  items = [],
   filterDropdown,
+  menuDropdown,
   ...restProps
 }) => {
-  const isMobile = useScreen().isMobile;
+  const { isMobile } = useScreen();
 
   const [visible, setVisible] = useState(false);
 
-  const content =
-    overlay ||
-    (items ? <MenuHeaderDropdown items={items} onParentClick={() => setVisible(false)} /> : null);
+  const content = items ? (
+    <MenuHeaderDropdown items={items} onParentClick={() => setVisible(false)} />
+  ) : (
+    <div />
+  );
 
   return (
     <>
@@ -100,12 +103,10 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
         overlay={content}
         {...restProps}
       />
-      {isMobile && (
-        <FilterDrawer
-          visible={visible}
-          onClose={() => setVisible(false)}
-          className={styles.filterDropdown}
-        >
+      {!isMobile ? null : menuDropdown ? (
+        <DrawerMenu visible={visible} onClose={() => setVisible(false)} items={items} />
+      ) : (
+        <FilterDrawer visible={visible} onClose={() => setVisible(false)}>
           {content}
         </FilterDrawer>
       )}

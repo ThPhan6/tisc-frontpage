@@ -133,7 +133,6 @@ const CustomResource = () => {
               store.dispatch(setCustomResourceType(radioValue.value as number))
             }
             onClick={() => pushTo(PATH.designerCustomResourceCreate)}
-            isMobile={isMobile}
           />
         }
         extraParams={{ type: customResourceType }}

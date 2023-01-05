@@ -8,7 +8,7 @@ import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
-import { confirmDelete } from '@/helper/common';
+import { confirmDelete, useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import {
   getEmailMessageError,
@@ -39,7 +39,6 @@ interface ContactInformationProps {
   submitButtonStatus?: boolean;
   type: 'view' | 'create' | 'update';
   customResourceId?: string;
-  isMobile?: boolean;
 }
 
 interface ContactHeaderProps extends CollapsingProps {
@@ -119,9 +118,9 @@ export const ContactInformation: FC<ContactInformationProps> = ({
   submitButtonStatus,
   type,
   customResourceId,
-  isMobile,
 }) => {
   const [activeKey, setActiveKey] = useState<string>('');
+  const { isMobile } = useScreen();
 
   const handleActiveCollapse = (index: number) => {
     setActiveKey(activeKey === String(index) ? '' : String(index));

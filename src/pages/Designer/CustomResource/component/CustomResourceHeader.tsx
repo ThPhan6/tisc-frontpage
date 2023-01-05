@@ -1,5 +1,7 @@
 import { FC } from 'react';
 
+import { useScreen } from '@/helper/common';
+
 import { RadioValue } from '@/components/CustomRadio/types';
 import { useAppSelector } from '@/reducers';
 
@@ -15,8 +17,8 @@ export const CustomResourceTableHeader: FC<{
   onChange?: (value: RadioValue) => void;
   onClick?: () => void;
   disable?: boolean;
-  isMobile?: boolean;
-}> = ({ onChange, onClick, disable, isMobile }) => {
+}> = ({ onChange, onClick, disable }) => {
+  const { isMobile } = useScreen();
   const customResourceType = useAppSelector((state) => state.customResource.customResourceType);
 
   return (
@@ -41,11 +43,12 @@ export const CustomResourceTableHeader: FC<{
   );
 };
 
-export const CustomResourceHeader: FC<{ isMobile?: boolean }> = ({ isMobile }) => {
+export const CustomResourceHeader = () => {
+  const { isMobile } = useScreen();
   return (
     <TableHeader
       title={isMobile ? ' ' : 'VENDOR INFORMATION MANAGEMENT'}
-      rightAction={<CustomResourceTableHeader disable isMobile={isMobile} />}
+      rightAction={<CustomResourceTableHeader disable />}
       customClass={isMobile ? styles.customHeader : ''}
     />
   );

@@ -57,13 +57,13 @@ const CustomResourceViewPage = () => {
 
   return (
     <PageContainer pageHeaderRender={() => <CustomResourceTopBar />}>
-      <CustomResourceHeader isMobile={isMobile} />
+      <CustomResourceHeader />
       <Row style={{ marginTop: '8px' }} gutter={[0, 8]}>
         <Col span={isMobile ? 24 : 12} style={{ paddingRight: isMobile ? '' : '8px' }}>
           <CustomResourceEntryForm data={data} setData={setData} type="view" />
         </Col>
         <Col span={isMobile ? 24 : 12} style={{ background: '#fff' }}>
-          <ContactInformation data={data} setData={setData} type="view" isMobile={isMobile} />
+          <ContactInformation data={data} setData={setData} type="view" />
         </Col>
       </Row>
     </PageContainer>

@@ -87,7 +87,7 @@ export const FilterDrawer: FC<FilterDrawerProps> = ({ labelStyle, ...props }) =>
       closable={false}
       height="auto"
       {...props}
-      bodyStyle={{ padding: 0, paddingBottom: 24 }}
+      bodyStyle={{ padding: 0 }}
     />
   );
 };
