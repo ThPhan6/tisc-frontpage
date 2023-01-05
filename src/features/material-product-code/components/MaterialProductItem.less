@@ -10,10 +10,10 @@
   :global(.ant-collapse-content > .ant-collapse-content-box) {
     padding: 0;
   }
-  :global(.ant-collapse-ghost
-      > .ant-collapse-item
-      > .ant-collapse-content
-      > .ant-collapse-content-box) {
+  /* stylelint-disable selector-pseudo-class-parentheses-space-inside */
+  :global(
+      .ant-collapse-ghost > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box
+    ) {
     padding: 0;
   }
   :global(.ant-collapse > .ant-collapse-item:last-child) {
@@ -27,10 +27,12 @@
     box-shadow: @border-bottom;
   }
   .form {
+    @height: 36px;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 36px;
+    min-height: @height;
     margin-left: 16px;
     &__element {
       display: flex;
@@ -39,6 +41,7 @@
       &_item {
         display: flex;
         align-items: center;
+        min-height: @height;
         :global(.ant-input) {
           color: @primary-color-dark;
         }

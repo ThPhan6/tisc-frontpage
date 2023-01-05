@@ -219,10 +219,11 @@
   color: black;
   background-color: #e6e6e6;
   box-shadow: @border-top-light;
-  @media (max-width: @screen-xs) {
-    left: -16px;
-    width: calc(100% + 32px) !important;
-  }
+  // @media (max-width: @screen-xs) {
+  //   bottom: -16px;
+  //   left: -16px;
+  //   width: calc(100% + 32px) !important;
+  // }
   svg {
     margin: 0 8px;
     cursor: pointer;
@@ -296,10 +297,11 @@ tr[class^='ant-table-expanded-row'] tbody > tr > td {
 
 .mobilePagination {
   bottom: -16px;
+  left: -16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: calc(100% + 40px);
+  width: calc(100% + 32px);
   padding: 0 24px;
 }
 
