@@ -142,6 +142,12 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
       ? '5%'
       : String(Number(detailData?.billing_amount) + Number(detailData?.overdue_amount)).length * 10;
 
+  const hideOverdueFines =
+    (detailData?.status === InvoiceStatus.Paid &&
+      moment(detailData.due_date).diff(moment(detailData.payment_date)) > 0) ||
+    detailData?.status === InvoiceStatus.Pending ||
+    detailData?.status === InvoiceStatus.Outstanding;
+
   return (
     <Row>
       <Col span={12}>
@@ -280,8 +286,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                 </BodyText>
               </div>
             </FormGroup>
-            {detailData?.status === InvoiceStatus.Paid &&
-            moment(detailData.due_date).diff(moment(detailData.payment_date)) > 0 ? null : (
+            {hideOverdueFines ? null : (
               <FormGroup
                 label="Overdue Fines"
                 layout="vertical"
