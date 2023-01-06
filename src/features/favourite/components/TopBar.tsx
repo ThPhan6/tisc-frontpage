@@ -98,7 +98,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
             <TopBarItem
               topValue={productSummary?.card_count ?? '0'}
               bottomValue="Cards"
-              customClass="left-divider"
+              customClass="left-divider mr-12"
               cursor="default"
             />
           </>
