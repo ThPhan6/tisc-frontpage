@@ -8,11 +8,18 @@
     justify-content: space-between;
     padding: 12px 16px;
     box-shadow: @border-bottom;
+    @media screen and (max-width: @screen-sm) {
+      padding: 12px;
+    }
     .productInfoTitle {
       display: flex;
       align-items: center;
+      max-width: calc(100% - 32px);
       :global(.code-name) {
         margin-right: 12px;
+      }
+      @media screen and (max-width: @screen-sm) {
+        margin-right: 8px;
       }
     }
     .emptyTitle {
