@@ -125,11 +125,11 @@ export const ProjectCard: FC<ProjectCardProps> = ({
             <BodyText level={5}>{isBrandUser ? 'Requests' : 'Project Status'}:</BodyText>
           </div>
           <div className={styles.middleValue}>
-            <BodyText level={6} fontFamily="Roboto">
+            <BodyText level={6} fontFamily="Roboto" customClass="text-overflow">
               {isBrandUser ? info.requestCount : FilterNames[Number(info.status)]}
             </BodyText>
           </div>
-          {info.newRequest ? <UnreadIcon /> : <span style={{ width: '18px', height: '18px' }} />}
+          {info.newRequest ? <UnreadIcon /> : <span />}
         </div>
 
         <div className={styles.middle}>
@@ -139,15 +139,11 @@ export const ProjectCard: FC<ProjectCardProps> = ({
           <div
             className={`${styles.middleValue} ${!isBrandUser && dueDay.value < 0 ? 'late' : ''}`}
           >
-            <BodyText level={6} fontFamily="Roboto">
+            <BodyText level={6} fontFamily="Roboto" customClass="text-overflow">
               {isBrandUser ? info.notificationCount : dueDay.text}
             </BodyText>
           </div>
-          {info.newNotification ? (
-            <UnreadIcon />
-          ) : (
-            <span style={{ width: '18px', height: '18px' }} />
-          )}
+          {info.newNotification ? <UnreadIcon /> : <span />}
         </div>
       </>
     );

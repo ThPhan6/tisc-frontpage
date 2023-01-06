@@ -1,9 +1,4 @@
-@import '~antd/es/style/variable.less';
-
 .content {
-  @media (max-width: @screen-xs) {
-    margin: -4px;
-  }
   :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
     padding: 0;
   }
@@ -30,7 +25,7 @@
     display: none;
   }
   .form {
-    height: calc(100vh - 96px);
+    height: calc(var(--vh) * 100 - 96px);
     padding: 0 16px;
     overflow: auto;
     background-color: #fff;
