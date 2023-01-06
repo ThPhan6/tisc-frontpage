@@ -1,4 +1,9 @@
 @import '~antd/es/style/variable.less';
+
+:root {
+  --vh: calc(var(--vhi, 1vh));
+}
+
 html,
 body,
 #root {
@@ -13,7 +18,7 @@ body,
 }
 
 .ant-layout {
-  // min-height: 100vh;
+  // min-height: calc(var(--vh) * 100);
   background: @mono-color-light;
 }
 .ant-pro-sider.ant-layout-sider.ant-pro-sider-fixed {
@@ -133,7 +138,7 @@ input:-webkit-autofill:active {
 // Compatible with IE11
 @media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
   body .ant-design-pro > .ant-layout {
-    min-height: 100vh;
+    min-height: calc(var(--vh) * 100);
   }
 }
 

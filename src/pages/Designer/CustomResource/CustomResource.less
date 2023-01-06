@@ -70,7 +70,7 @@
 }
 
 .information {
-  height: calc(100vh - 304px);
+  height: calc(var(--vh) * 100 - 304px);
   padding: 16px;
   overflow: auto;
   :global(.ant-collapse > .ant-collapse-item.ant-collapse-no-arrow > .ant-collapse-header) {
@@ -82,10 +82,9 @@
   :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
     padding: 0;
   }
-  :global(.ant-collapse-ghost
-      > .ant-collapse-item
-      > .ant-collapse-content
-      > .ant-collapse-content-box) {
+  :global(
+      .ant-collapse-ghost > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box
+    ) {
     padding-top: 0;
     padding-bottom: 0;
   }

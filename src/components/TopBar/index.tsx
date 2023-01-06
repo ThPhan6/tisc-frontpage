@@ -8,7 +8,13 @@ const TopBarSummaryHasFilter: React.FC = ({ children }) => {
   const { isMobile } = useScreen();
 
   return (
-    <div className={`${styles.projectHeader} ${isMobile ? 'border-top' : ''}`}>{children}</div>
+    <div
+      className={`${styles.projectHeader} ${isMobile ? 'border-top' : ''} ${
+        isMobile ? styles.mobileProjectHeader : ''
+      }`}
+    >
+      {children}
+    </div>
   );
 };
 
