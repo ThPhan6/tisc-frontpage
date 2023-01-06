@@ -130,6 +130,16 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
       );
     });
 
+    setGeneralInquiryData({
+      ...GENERAL_INQUIRY_DEFAULT_STATE,
+      product_id: product.id,
+    });
+
+    setProjectRequestData({
+      ...PROJECT_REQUEST_DEFAULT_STATE,
+      product_id: product.id,
+    });
+
     // get Project Name data
     getAllProjects();
   }, [visible]);
@@ -253,7 +263,6 @@ const InquiryRequest: FC<InquiryRequestProps> = ({ product, visible, setVisible 
       }
     });
   };
-
   return (
     <Popover
       title="INQUIRY/REQUEST"
