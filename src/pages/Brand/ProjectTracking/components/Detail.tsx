@@ -39,8 +39,8 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId }) => {
   const [activeKey, setActiveKey] = useState<Tab>('design_firm');
   const [data, setData] = useState<ProjectTrackingDetail>(DEFAULT_PROJECT_TRACKING_DETAIL);
 
-  const height = `calc(100vh - ${isMobile ? 196 : 208}px)`;
-  const contentHeight = `calc(100vh - 360px)`;
+  const height = `calc(var(--vh) * 100 - ${isMobile ? 196 : 208}px)`;
+  const contentHeight = `calc(var(--vh) * 100 - 360px)`;
 
   useEffect(() => {
     if (projectId) {
@@ -75,7 +75,9 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId }) => {
             }
           />
 
-          <div style={{ padding: isMobile ? 12 : undefined, height: 'calc(100vh - 256px)' }}>
+          <div
+            style={{ padding: isMobile ? 12 : undefined, height: 'calc(var(--vh) * 100 - 256px)' }}
+          >
             <CustomTabPane
               active={activeKey === 'project'}
               title={LIST_TAB[1].mobileTabTitle}

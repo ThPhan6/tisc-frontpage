@@ -120,7 +120,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
       </div>
       <div
         style={{
-          height: 'calc(100vh - 256px)',
+          height: 'calc(var(--vh) * 100 - 256px)',
           background: '#fff',
           padding: '16px',
           overflow: 'auto',
