@@ -9,7 +9,6 @@ import { history } from 'umi';
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
 
 import { pushTo } from '@/helper/history';
-import { useCheckPermission } from '@/helper/hook';
 import { getDesignDueDay, getFullName, getValueByCondition, updateUrlParams } from '@/helper/utils';
 
 import { setBrand, setFromMyWorkspace } from '@/features/product/reducers';
@@ -40,17 +39,14 @@ export const ProjectCard: FC<ProjectCardProps> = ({
 }) => {
   const loading = useAppSelector(loadingSelector);
 
-  const isTiscAdmin = useCheckPermission(['TISC Admin']);
-
   const detailPath = getValueByCondition([
-    [isTiscUser, PATH.tiscDashboardBrandDetail],
     [isBrandUser, PATH.brandDashboardProjectDetail],
     [isDesignerUser, PATH.designerUpdateProject],
   ]);
 
   const handleClickItem = (cardInfo: ProjecTrackingList & BrandCard & ProjectListProps) => {
     if (cardInfo.id) {
-      if (isTiscUser && !isTiscAdmin) {
+      if (isTiscUser) {
         const { location } = history;
         const myWorkSpace = location.pathname.indexOf('dashboard') !== -1;
         store.dispatch(setFromMyWorkspace(myWorkSpace));
