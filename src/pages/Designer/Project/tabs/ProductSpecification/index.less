@@ -9,14 +9,14 @@
 }
 .content {
   &_left {
-    height: calc(100vh - 232px);
+    height: calc(var(--vh) * 100 - 232px);
     margin-right: 8px;
     overflow: auto;
     background-color: #fff;
   }
   &_right {
     justify-content: space-between;
-    height: calc(100vh - 232px);
+    height: calc(var(--vh) * 100 - 232px);
     padding-top: 16px;
     background-color: #fff;
     -webkit-user-select: none;
@@ -42,7 +42,7 @@
     .pdf {
       :global(.react-pdf__Page__canvas) {
         width: auto !important;
-        height: calc(100vh - 312px) !important;
+        height: calc(var(--vh) * 100 - 312px) !important;
         margin: auto;
         box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
       }
@@ -121,7 +121,7 @@
   padding: 8px 16px;
 }
 .specification {
-  height: calc(100vh - 352px);
+  height: calc(var(--vh) * 100 - 352px);
   padding: 0 16px;
   overflow: auto;
   :global(.ant-collapse-item .ant-collapse-header) {
