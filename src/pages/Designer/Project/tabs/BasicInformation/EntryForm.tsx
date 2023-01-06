@@ -8,6 +8,7 @@ import {
   getProjectMeasurementUnits,
   getProjectTypes,
 } from '@/features/project/services';
+import { useScreen } from '@/helper/common';
 import { isEmptySpace, messageError, messageErrorType, validatePostalCode } from '@/helper/utils';
 
 import type { RadioValue } from '@/components/CustomRadio/types';
@@ -38,6 +39,8 @@ export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeDa
     state: false,
     city: false,
   });
+
+  const { isMobile } = useScreen();
 
   const [buildingTypes, setBuildingTypes] = useState<GeneralData[]>([]);
   const [projectTypes, setProjectTypes] = useState<GeneralData[]>([]);
@@ -99,7 +102,10 @@ export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeDa
   };
 
   return (
-    <div className={styles.entryFormWrapper}>
+    <div
+      className={styles.entryFormWrapper}
+      style={{ height: isMobile ? 'calc(100vh - 208px)' : 'calc(100vh - 232px)' }}
+    >
       <InputGroup
         label="Project Code"
         required
