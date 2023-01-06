@@ -82,7 +82,8 @@ const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
       <ProjectTabContentHeader>
         <div
           className={`${styles.createSpaceButton} ${space ? 'disabled' : ''}`}
-          onClick={() => displaySpaceForm()}>
+          onClick={() => displaySpaceForm()}
+        >
           <MainTitle level={3} customClass="button-name">
             {' '}
             Create Space{' '}
