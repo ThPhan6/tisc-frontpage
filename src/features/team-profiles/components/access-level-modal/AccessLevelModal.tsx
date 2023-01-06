@@ -1,5 +1,7 @@
 import { FC, Fragment, useEffect, useState } from 'react';
 
+import { USER_ROLE } from '@/constants/userRoles';
+
 import { ReactComponent as AccessableMinusIcon } from '@/assets/icons/accessable-minus-icon.svg';
 import { ReactComponent as AccessableTickIcon } from '@/assets/icons/accessable-tick-icon.svg';
 
@@ -19,6 +21,7 @@ interface AccessLevelModalForm {
   titleColumnData?: { title: string; unuse?: boolean }[];
   headerTitle: string;
   showMyDashboard?: boolean;
+  userRole: USER_ROLE;
 }
 
 const AccessLevelModal: FC<AccessLevelModalForm> = ({
@@ -27,6 +30,7 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
   titleColumnData,
   headerTitle,
   showMyDashboard,
+  userRole,
   children,
 }) => {
   const [data, setData] = useState<PermissionData[]>([]);
@@ -105,11 +109,13 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
                     </td>
 
                     {/* for future data */}
-                    <td
-                      key={`fData_${item.id}`}
-                      style={{ textAlign: 'center', display: !menu.subs ? 'none' : '' }}>
-                      <AccessableTickIcon className={styles.menu_accessable_null} />
-                    </td>
+                    {userRole === USER_ROLE.tisc && (
+                      <td
+                        key={`fData_${item.id}`}
+                        style={{ textAlign: 'center', display: !menu.subs ? 'none' : '' }}>
+                        <AccessableTickIcon className={styles.menu_accessable_null} />
+                      </td>
+                    )}
                     {/* --------- */}
                   </Fragment>
                 );
@@ -181,7 +187,9 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
             <tr>
               <td></td>
               <td></td>
-              <td style={{ color: '#bfbfbf', textAlign: 'center', fontSize: 12 }}>(future)</td>
+              {userRole === USER_ROLE.tisc && (
+                <td style={{ color: '#bfbfbf', textAlign: 'center', fontSize: 12 }}>(future)</td>
+              )}
               <td></td>
             </tr>
             {/* ------- */}
