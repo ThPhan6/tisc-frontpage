@@ -21,7 +21,7 @@ import {
   getProductSummary,
   likeProductById,
 } from '@/features/product/services';
-import { confirmDelete } from '@/helper/common';
+import { confirmDelete, useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useCheckPermission, useGetUserRoleFromPathname } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
@@ -75,6 +75,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   isCustomProduct,
   onSpecifyClick,
 }) => {
+  const { isMobile } = useScreen();
   const normalProductfilter = useAppSelector((state) => state.product.list.filter);
   const [liked, setLiked] = useState(product.is_liked);
 
@@ -291,7 +292,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 />
               </Tooltip>
             ) : null}
-            {showActionMenu && isDesignerAdmin ? (
+            {showActionMenu && isDesignerAdmin && !isMobile ? (
               <ActionMenu
                 containerStyle={{ height: 16 }}
                 placement="bottomLeft"
