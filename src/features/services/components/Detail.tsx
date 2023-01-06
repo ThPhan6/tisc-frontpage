@@ -280,51 +280,58 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                 </BodyText>
               </div>
             </FormGroup>
-            <FormGroup
-              label="Overdue Fines"
-              layout="vertical"
-              formClass={`${
-                detailData?.status !== InvoiceStatus.Overdue ? styles.customFormGroup : ''
-              }`}
-              labelColor="mono-color-dark">
-              <table className={styles.customTable} style={{ width: '100%' }}>
-                <tr>
-                  <td className={styles.label}>
-                    <BodyText level={5} fontFamily="Roboto">
-                      as {moment().format('YYYY-MM-DD')}
-                    </BodyText>
-                    {showBillingAmount && (
-                      <PlusIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
-                    )}
-                  </td>
-                  <td
-                    className={`${showBillingAmount ? '' : styles.rightText}`}
-                    style={{
-                      width: quantityWidth,
-                    }}>
-                    ${formatToMoneyValue(Number(detailData?.overdue_amount))}
-                  </td>
-                </tr>
-                {showBillingAmount && (
-                  <tr className={styles.total}>
+            {detailData?.status === InvoiceStatus.Paid &&
+            moment(detailData.due_date).diff(moment(detailData.payment_date)) > 0 ? null : (
+              <FormGroup
+                label="Overdue Fines"
+                layout="vertical"
+                formClass={`${
+                  detailData?.status !== InvoiceStatus.Overdue ? styles.customFormGroup : ''
+                }`}
+                labelColor="mono-color-dark">
+                <table className={styles.customTable} style={{ width: '100%' }}>
+                  <tr>
                     <td className={styles.label}>
-                      <Title level={8}>BILLING AMOUNT</Title>
+                      <BodyText level={5} fontFamily="Roboto">
+                        {detailData?.status !== InvoiceStatus.Paid
+                          ? `as ${moment().format('YYYY-MM-DD')} `
+                          : ''}
+                      </BodyText>
+
+                      {showBillingAmount && (
+                        <PlusIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
+                      )}
                     </td>
                     <td
+                      className={`${showBillingAmount ? '' : styles.rightText}`}
                       style={{
                         width: quantityWidth,
                       }}>
-                      <Title level={8}>
-                        $
-                        {formatToMoneyValue(
-                          Number(detailData?.billing_amount) + Number(detailData?.overdue_amount),
-                        )}
-                      </Title>
+                      ${formatToMoneyValue(Number(detailData?.overdue_amount))}
                     </td>
                   </tr>
-                )}
-              </table>
-            </FormGroup>
+                  {showBillingAmount && (
+                    <tr className={styles.total}>
+                      <td className={styles.label}>
+                        <Title level={8}>BILLING AMOUNT</Title>
+                      </td>
+                      <td
+                        style={{
+                          width: quantityWidth,
+                        }}>
+                        <Title level={8}>
+                          $
+                          {formatToMoneyValue(
+                            Number(detailData?.billing_amount) + Number(detailData?.overdue_amount),
+                          )}
+                        </Title>
+                      </td>
+                    </tr>
+                  )}
+                </table>
+              </FormGroup>
+            )}
+
             <TextForm
               boxShadow
               label="Status"
