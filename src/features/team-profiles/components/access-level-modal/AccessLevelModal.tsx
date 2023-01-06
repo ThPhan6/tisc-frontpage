@@ -143,7 +143,7 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
         <thead className={styles.header}>
           <tr className={styles.header_content}>
             {/* 1st column */}
-            <th></th>
+            <th style={{ width: userRole === USER_ROLE.tisc ? '' : '60%' }}></th>
 
             {/* another */}
             {titleColumnData
