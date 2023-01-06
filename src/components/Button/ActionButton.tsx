@@ -32,7 +32,8 @@ const ActionButton: React.FC<ActionButtonProps> = ({
         ...style,
         padding: short ? '0 24px 0 0' : undefined,
       }}
-      {...props}>
+      {...props}
+    >
       {icon}
 
       {short ? null : (

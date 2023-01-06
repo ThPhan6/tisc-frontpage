@@ -23,12 +23,19 @@ export const DrawerMenu: FC<Props> = ({ items, labelStyle, ...props }) => {
         <Row
           key={index}
           align="middle"
-          onClick={el.onClick}
+          onClick={(e) => {
+            props.onClose?.(e);
+            el.onClick();
+          }}
           style={{ padding: '12px 24px', boxShadow: 'inset 0 -.7px 0 rgba(0,0,0,0.3)' }}
         >
           {el.icon}
 
-          <BodyText fontFamily="Roboto" level={4} style={{ marginLeft: 24, ...labelStyle }}>
+          <BodyText
+            fontFamily="Roboto"
+            level={4}
+            style={{ marginLeft: el.icon ? 24 : undefined, ...labelStyle }}
+          >
             {el.label}
           </BodyText>
         </Row>

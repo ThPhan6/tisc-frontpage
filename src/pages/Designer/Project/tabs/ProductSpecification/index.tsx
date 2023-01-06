@@ -32,14 +32,16 @@ const ProductSpecification: FC = () => {
   return (
     <div>
       <ProjectTabContentHeader
-        style={isMobile ? { justifyContent: 'space-between', width: '100%' } : undefined}>
+        style={isMobile ? { justifyContent: 'space-between', width: '100%' } : undefined}
+      >
         <div className="flex-start">
           {isMobile ? null : (
             <BodyText
               level={4}
               fontFamily="Cormorant-Garamond"
               color="mono-color"
-              style={{ fontWeight: '600' }}>
+              style={{ fontWeight: '600' }}
+            >
               View By:
             </BodyText>
           )}
@@ -74,7 +76,8 @@ const ProductSpecification: FC = () => {
           variant="secondary"
           buttonClass={styles.button}
           onClick={() => setViewBy('pdf')}
-          active={viewBy === 'pdf'}>
+          active={viewBy === 'pdf'}
+        >
           <PrintIcon />
           PDF
         </CustomButton>
