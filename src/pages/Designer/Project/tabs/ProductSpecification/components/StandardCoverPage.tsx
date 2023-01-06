@@ -14,7 +14,7 @@ import CustomButton from '@/components/Button';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
-import { MainTitle } from '@/components/Typography';
+import { MainTitle, RobotoBodyText } from '@/components/Typography';
 
 import styles from '../index.less';
 import { PreviewModal } from './PreviewModal';
@@ -59,15 +59,26 @@ const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, o
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginRight: '24px',
-        }}>
-        {label}
+          marginRight: '12px',
+          maxWidth: 'calc(100% - 46px)',
+        }}
+      >
+        <RobotoBodyText
+          level={5}
+          customClass="text-overflow"
+          style={{
+            maxWidth: 'calc(100% - 46px)',
+          }}
+        >
+          {label}
+        </RobotoBodyText>
         <FileSearchIcon
           onClick={(e) => {
             e.preventDefault();
             setPreviewURL(url);
             openModal.setValue(true);
           }}
+          style={{ width: 18, height: 18 }}
         />
       </div>
     );
