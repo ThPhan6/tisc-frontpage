@@ -7,6 +7,7 @@ import { ReactComponent as ActionUpDown } from '@/assets/icons/action-up-icon.sv
 import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
 import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { validateFloatNumber, validateNumber } from '@/helper/utils';
 
 import { ProjectSpaceRoom, ProjectSpaceZone } from '@/features/project/types';
@@ -68,7 +69,8 @@ const AreaRoomCollapse: React.FC<AreaRoomCollapseProps> = ({
             }}
           />
         </>
-      }>
+      }
+    >
       <table>
         <tbody>
           <tr>
@@ -123,6 +125,7 @@ const AreaRoomCollapse: React.FC<AreaRoomCollapseProps> = ({
 
 const SpaceEntryForm: React.FC<SpaceEntryFormProps> = (props) => {
   const { data, setData, handleSubmit, handleCancel, submitButtonStatus = false } = props;
+  const { isMobile } = useScreen();
 
   const addMoreArea = () => {
     const newAreas = [...data.areas, { ...DefaultProjectArea }];
@@ -203,7 +206,8 @@ const SpaceEntryForm: React.FC<SpaceEntryFormProps> = (props) => {
       handleCancel={handleCancel}
       submitButtonStatus={submitButtonStatus}
       customClass={styles.spaceEntryForm}
-      contentClass="space-form-content-wrapper">
+      contentClass={isMobile ? 'height-on-mobile' : 'height-on-desktop'}
+    >
       <FormNameInput
         placeholder="type zone name"
         title="Zone"
@@ -229,7 +233,8 @@ const SpaceEntryForm: React.FC<SpaceEntryFormProps> = (props) => {
                 onClick={(e: any) => addMoreRoom(e, areaIndex)}
               />
             </>
-          }>
+          }
+        >
           <div className={styles.areaInputGroup}>
             <CustomInput
               value={area.name}
