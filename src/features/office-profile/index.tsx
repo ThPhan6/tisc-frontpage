@@ -297,7 +297,11 @@ const BrandProfilePage = () => {
 
             <div
               className={styles.form}
-              style={{ height: isMobile ? 'calc(100vh - 176px)' : 'calc(100vh - 192px)' }}
+              style={{
+                height: isMobile
+                  ? 'calc(var(--vh) * 100 - 176px)'
+                  : 'calc(var(--vh) * 100 - 192px)',
+              }}
             >
               <FormGroup
                 label={isBrand ? 'Brand Name' : 'Design Firm Name'}
