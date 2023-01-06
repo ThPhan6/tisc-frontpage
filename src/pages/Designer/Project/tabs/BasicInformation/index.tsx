@@ -112,7 +112,7 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
       </ProjectTabContentHeader>
 
       <Row className={styles.basicInformationWrapper}>
-        <Col span={12}>
+        <Col span={isMobile ? 24 : 12}>
           <EntryForm data={data} onChangeData={onChangeData} />
         </Col>
       </Row>
