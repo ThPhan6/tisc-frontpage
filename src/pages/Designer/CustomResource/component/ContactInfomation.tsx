@@ -8,7 +8,7 @@ import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
-import { confirmDelete } from '@/helper/common';
+import { confirmDelete, useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import {
   getEmailMessageError,
@@ -30,6 +30,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
 
 import styles from '../CustomResource.less';
+import { deleteCustomResource } from '../api';
 
 interface ContactInformationProps {
   data: CustomResourceForm;
@@ -37,6 +38,7 @@ interface ContactInformationProps {
   onSubmit?: () => void;
   submitButtonStatus?: boolean;
   type: 'view' | 'create' | 'update';
+  customResourceId?: string;
 }
 
 interface ContactHeaderProps extends CollapsingProps {
@@ -115,8 +117,10 @@ export const ContactInformation: FC<ContactInformationProps> = ({
   onSubmit,
   submitButtonStatus,
   type,
+  customResourceId,
 }) => {
   const [activeKey, setActiveKey] = useState<string>('');
+  const { isMobile } = useScreen();
 
   const handleActiveCollapse = (index: number) => {
     setActiveKey(activeKey === String(index) ? '' : String(index));
@@ -308,6 +312,16 @@ export const ContactInformation: FC<ContactInformationProps> = ({
     );
   };
 
+  const handleDelete = () => {
+    confirmDelete(() => {
+      deleteCustomResource(customResourceId as string).then((isSuccess) => {
+        if (isSuccess) {
+          pushTo(PATH.designerCustomResource);
+        }
+      });
+    });
+  };
+
   return (
     <>
       <TableHeader
@@ -324,19 +338,34 @@ export const ContactInformation: FC<ContactInformationProps> = ({
           )
         }
       />
-      <div className={styles.information}>
+      <div
+        className={styles.information}
+        style={{ height: isMobile ? '' : 'calc(var(--vh) * 100 - 304px)' }}
+      >
         {data.contacts.map((contact, index) => renderContacts(contact, index))}
       </div>
       {isEdit && (
-        <div className={styles.bottom}>
-          <CustomButton
-            properties="rounded"
-            size="small"
-            buttonClass={styles.btnCancel}
-            onClick={() => pushTo(PATH.designerCustomResource)}
-          >
-            Cancel
-          </CustomButton>
+        <div className={styles.bottom} style={{ justifyContent: isMobile ? 'center' : undefined }}>
+          {isMobile && type === 'update' ? (
+            <CustomButton
+              size="small"
+              variant="secondary"
+              properties="rounded"
+              buttonClass={styles.btnCancel}
+              onClick={handleDelete}
+            >
+              Delete
+            </CustomButton>
+          ) : (
+            <CustomButton
+              properties="rounded"
+              size="small"
+              buttonClass={styles.btnCancel}
+              onClick={() => pushTo(PATH.designerCustomResource)}
+            >
+              Cancel
+            </CustomButton>
+          )}
           <CustomSaveButton
             onClick={!handleDisableButton() ? onSubmit : undefined}
             isSuccess={submitButtonStatus}
