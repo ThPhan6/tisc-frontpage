@@ -32,7 +32,7 @@ const ProductDataTitle: React.FC<ProductDataTitleProps> = (props) => {
   return (
     <div className={styles.productInfoTitle}>
       <BodyText level={4} fontFamily="Roboto" customClass="code-name">
-        Code {code}
+        {code}
       </BodyText>
       <Title level={7}>{name}</Title>
     </div>
