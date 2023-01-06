@@ -51,7 +51,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   curProductId,
   isSpecifiedModal,
 }) => {
-  const isTiscAdmin = useCheckPermission('TISC Admin');
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
   const signature = useQuery().get('signature') ?? '';
   const isPublicPage = signature ? true : false;

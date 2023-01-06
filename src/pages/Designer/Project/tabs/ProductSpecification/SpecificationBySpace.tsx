@@ -70,7 +70,11 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
         dataIndex: 'material_code',
         noBoxShadow: props.noBoxShadow,
         onCell: onCellCancelled,
-        render: (_value, record) => record.specifiedDetail?.material_code,
+        render: (_value, record) => (
+          <span>
+            {record.specifiedDetail?.material_code} {record.specifiedDetail?.suffix_code}
+          </span>
+        ),
       },
       {
         title: 'Description',

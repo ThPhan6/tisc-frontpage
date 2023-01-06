@@ -37,7 +37,7 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
   collapsible,
   setCollapsible,
 }) => {
-  const isTiscAdmin = useCheckPermission('TISC Admin');
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
   const attrGroupItem = attributeGroup[groupIndex];
 

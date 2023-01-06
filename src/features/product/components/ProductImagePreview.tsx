@@ -86,10 +86,11 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
   const showShareEmailModal = useBoolean();
   const showAssignProductModal = useBoolean();
   const showInquiryRequestModal = useBoolean();
-  const isDesignerUser = useCheckPermission('Design Admin');
-  const isTiscAdmin = useCheckPermission('TISC Admin');
 
-  const isEditable = isTiscAdmin || (isCustomProduct && viewOnly !== true); // currently, uploading image
+  const isDesignerUser = useCheckPermission(['Design Admin', 'Design Team']);
+  const isTiscUser = useCheckPermission(['TISC Admin', 'Consultant Team']);
+
+  const isEditable = isTiscUser || (isCustomProduct && viewOnly !== true); // currently, uploading image
 
   const customProduct = useAppSelector((state) => state.customProduct.details);
 
@@ -143,9 +144,9 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
       return true;
     },
     showUploadList: false,
-    disabled: isEditable === false,
+    disabled: !isEditable,
     className: `${styles.uploadZone} ${isEditable ? '' : styles.noBorder} ${
-      isEditable === false && product.images.length < 2 ? styles.noPadding : ''
+      !isEditable && product.images.length < 2 ? styles.noPadding : ''
     }`,
   };
 
@@ -203,7 +204,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
   };
 
   const renderBottomPreview = () => {
-    if (isTiscAdmin) {
+    if (isTiscUser) {
       return (
         <div className={styles.photoKeyword}>
           <BodyText level={4} customClass={styles.imageNaming}>
@@ -234,11 +235,18 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
     const renderActionLeft = () => {
       if (isPublicPage || isCustomProduct) return null;
 
-      if (liked) {
-        return <LikedIcon className={styles.actionIcon} onClick={likeProduct} />;
+      if (isDesignerUser) {
+        return liked ? <LikedIcon onClick={likeProduct} /> : <LikeIcon onClick={likeProduct} />;
       }
 
-      return <LikeIcon className={styles.actionIcon} onClick={likeProduct} />;
+      return (
+        <div className="flex-start" onClick={likeProduct}>
+          {liked ? <LikedIcon /> : <LikeIcon />}
+          <BodyText level={6} fontFamily="Roboto" customClass="action-like">
+            {likeCount.toLocaleString('en-us')} {likeCount <= 1 ? 'like' : 'likes'}
+          </BodyText>
+        </div>
+      );
     };
 
     // For Brand & Designer role
@@ -301,7 +309,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
   };
 
   const renderActionRight = () => {
-    if (isTiscAdmin || isPublicPage || !product) {
+    if (isTiscUser || isPublicPage || !product) {
       return null;
     }
 
@@ -310,7 +318,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
         <ShareViaEmail
           visible={showShareEmailModal.value}
           setVisible={showShareEmailModal.setValue}
-          product={product}
+          product={product as any}
           isCustomProduct={isCustomProduct}
         />
         <AssignProductModal
@@ -322,7 +330,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
         <InquiryRequest
           visible={showInquiryRequestModal.value}
           setVisible={showInquiryRequestModal.setValue}
-          product={product}
+          product={product as any}
         />
       </>
     );
@@ -352,7 +360,13 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
           </div>
         </Upload.Dragger>
 
-        <Row className={styles.photoList} gutter={8}>
+        <Row
+          className={styles.photoList}
+          gutter={8}
+          style={{
+            height: viewOnly && product.images.length < 2 ? 0 : undefined,
+            paddingTop: viewOnly && product.images.length < 2 ? '33.33333333%' : undefined,
+          }}>
           <Col span={isEditable ? 18 : 24}>
             <Row gutter={8} className={styles.listWrapper}>
               {product.images.slice(1).map((image, key) => (

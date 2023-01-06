@@ -150,6 +150,7 @@ const CustomResource = () => {
             pushTo(PATH.designerCustomResourceDetail.replace(':id', rowRecord.id));
           },
         })}
+        hasPagination
       />
     </PageContainer>
   );
