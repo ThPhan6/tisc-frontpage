@@ -1,5 +1,7 @@
 import { FC } from 'react';
 
+import { USER_ROLE } from '@/constants/userRoles';
+
 import { ReactComponent as AccessableTickIcon } from '@/assets/icons/accessable-tick-icon.svg';
 // for future data
 import { ReactComponent as FeebBackIcon } from '@/assets/icons/feedback.svg';
@@ -39,7 +41,8 @@ const TISCAccessLevelModal: FC<ModalVisible> = ({ visible, setVisible }) => {
         { title: 'TISC Admin' },
         { title: ' TISC Team', unuse: true },
         { title: 'Consultant Team' },
-      ]}>
+      ]}
+      userRole={USER_ROLE.tisc}>
       {/* future data, can delete */}
       {furturePermissionData.map((fData, index) => (
         <tr key={`futureData_${index}`}>
