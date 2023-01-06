@@ -49,7 +49,7 @@ export const PersonalProfile = () => {
   const [fileInput, setFileInput] = useState<any>();
   const { fetchUserInfo, currentUser } = useCustomInitialState();
   const submitButtonStatus = useBoolean();
-  const showIntersted = useCheckPermission('Design Admin');
+  const showInterested = useCheckPermission(['Design Admin', 'Design Team']);
 
   const [inputValue, setInputValue] = useState<PersonalProfileState>({
     backupEmail: '',
@@ -266,7 +266,7 @@ export const PersonalProfile = () => {
               onChange={handleOnChange}
             />
           </FormGroup>
-          {showIntersted && (
+          {showInterested && (
             <div>
               <FormGroup label="I am interested in" layout="vertical" formClass={styles.interested}>
                 <CustomCheckbox
