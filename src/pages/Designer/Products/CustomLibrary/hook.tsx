@@ -296,7 +296,8 @@ export const useCustomProductFilter = (fetchs?: { company?: boolean; collection?
         textCapitalize={false}
         placement={position ?? 'bottomLeft'}
         menuStyle={{ height: 'max-content', width: 160 }}
-        {...customDropDownProps}>
+        {...customDropDownProps}
+      >
         {type}
       </CustomDropDown>
     );

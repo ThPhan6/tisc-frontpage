@@ -118,14 +118,7 @@ export const CustomResourceEntryForm: FC<CustomResourceFormProps> = ({ data, set
           onClick={() => pushTo(PATH.designerCustomResource)}
         />
       </div>
-      <div
-        style={{
-          height: 'calc(var(--vh) * 100 - 256px)',
-          background: '#fff',
-          padding: '16px',
-          overflow: 'auto',
-        }}
-      >
+      <div className={styles.form}>
         <InputGroup
           label={`${
             customResourceType === CustomResourceType.Brand ? 'Brand' : 'Distributor'

@@ -46,7 +46,8 @@ const TopBarDropDownFilter: React.FC<TopBarDropDownFilterProps> = ({
       <BodyText
         level={5}
         fontFamily="Roboto"
-        customClass={`${styles.topFilter} ${isGlobalFilter ? '' : 'active-filter'}`}>
+        customClass={`${styles.topFilter} ${isGlobalFilter ? '' : 'active-filter'}`}
+      >
         {isGlobalFilter ? (
           'view'
         ) : (
@@ -65,7 +66,8 @@ const TopBarDropDownFilter: React.FC<TopBarDropDownFilterProps> = ({
           onClick: () => handleOnChangeFilter(item),
           icon: item.icon,
           label: item.name,
-        }))}>
+        }))}
+      >
         <BodyText level={6} fontFamily="Roboto" customClass={styles.projectFilterLabel}>
           <span style={{ userSelect: 'none', whiteSpace: 'nowrap' }}>{filterLabel ?? ''}</span>
           <DropdownIcon />
