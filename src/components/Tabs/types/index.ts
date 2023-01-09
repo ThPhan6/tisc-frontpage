@@ -7,6 +7,7 @@ export interface TabItem {
   disable?: boolean;
   collapseOnMobile?: boolean;
   mobileTabTitle?: string;
+  tabletTabTitle?: string;
 }
 
 export interface CustomTabsProps extends TabsProps {

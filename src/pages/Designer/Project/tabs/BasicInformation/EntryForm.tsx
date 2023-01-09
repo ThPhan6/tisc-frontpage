@@ -104,7 +104,9 @@ export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeDa
   return (
     <div
       className={styles.entryFormWrapper}
-      style={{ height: isMobile ? 'calc(100vh - 208px)' : 'calc(100vh - 232px)' }}
+      style={{
+        height: isMobile ? 'calc(var(--vh) * 100 - 208px)' : 'calc(var(--vh) * 100 - 232px)',
+      }}
     >
       <InputGroup
         label="Project Code"

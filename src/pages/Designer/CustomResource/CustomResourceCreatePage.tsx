@@ -22,7 +22,7 @@ import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 const CustomResourceCreatePage = () => {
   const customResourceType = useAppSelector((state) => state.customResource.customResourceType);
 
-  const { isMobile } = useScreen();
+  const { isTablet } = useScreen();
 
   const submitButtonStatus = useBoolean(false);
 
@@ -91,14 +91,14 @@ const CustomResourceCreatePage = () => {
     <PageContainer pageHeaderRender={() => <CustomResourceTopBar />}>
       <CustomResourceHeader />
       <Row style={{ marginTop: '8px' }} gutter={[0, 8]}>
-        <Col span={isMobile ? 24 : 12} style={{ paddingRight: isMobile ? '' : '8px' }}>
+        <Col span={isTablet ? 24 : 12} style={{ paddingRight: isTablet ? '' : '8px' }}>
           <CustomResourceEntryForm
             data={data}
             setData={setData}
             type={customResourceId ? 'update' : 'create'}
           />
         </Col>
-        <Col span={isMobile ? 24 : 12} style={{ background: '#fff' }}>
+        <Col span={isTablet ? 24 : 12} style={{ background: '#fff' }}>
           <ContactInformation
             data={data}
             setData={setData}

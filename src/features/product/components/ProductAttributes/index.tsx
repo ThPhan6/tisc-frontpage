@@ -15,7 +15,7 @@ import styles from './index.less';
 const LIST_TAB: TabItem[] = [
   { tab: 'GENERAL', key: 'general' },
   { tab: 'FEATURE', key: 'feature' },
-  { tab: 'SPECIFICATION', mobileTabTitle: 'SPECS', key: 'specification' },
+  { tab: 'SPECIFICATION', tabletTabTitle: 'SPECS', key: 'specification' },
   { tab: 'VENDOR', key: 'vendor' },
 ];
 
