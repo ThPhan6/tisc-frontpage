@@ -1,8 +1,8 @@
 .container {
-  height: calc(100vh - 248px);
+  height: calc(var(--vh) * 100 - 248px);
   background: #fff;
   .content {
-    height: calc(100vh - 288px);
+    height: calc(var(--vh) * 100 - 288px);
     padding: 16px;
     overflow: auto;
     .designInfo {
@@ -76,10 +76,9 @@
     :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
       padding: 0;
     }
-    :global(.ant-collapse-ghost
-        > .ant-collapse-item
-        > .ant-collapse-content
-        > .ant-collapse-content-box) {
+    :global(
+        .ant-collapse-ghost > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box
+      ) {
       padding-top: 0;
       padding-bottom: 0;
     }
@@ -126,10 +125,12 @@
       height: 36px;
       text-transform: capitalize;
     }
-    :global(.ant-collapse-icon-position-end
-        > .ant-collapse-item
-        > .ant-collapse-header
-        .ant-collapse-arrow) {
+    :global(
+        .ant-collapse-icon-position-end
+          > .ant-collapse-item
+          > .ant-collapse-header
+          .ant-collapse-arrow
+      ) {
       right: 0;
     }
     .roomCode {

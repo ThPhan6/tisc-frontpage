@@ -13,11 +13,9 @@ import { getFullName, showImageUrl } from '@/helper/utils';
 
 import store from '@/reducers';
 
-import { MenuHeaderDropdown } from '@/components/HeaderDropdown';
 import { setCustomProductList } from '@/pages/Designer/Products/CustomLibrary/slice';
 
 import { HeaderDropdown } from '../HeaderDropdown';
-import { DrawerMenu } from '../Menu/DrawerMenu';
 import TeamIcon from '../TeamIcon/TeamIcon';
 import { BodyText } from '../Typography';
 import styles from './styles/AvatarDropdown.less';
@@ -77,45 +75,37 @@ export const AvatarDropdown = () => {
   const renderAvatarTrigger = (trigger?: boolean) => (
     <span
       className={`${styles.container}`}
-      onClick={trigger ? () => showHeaderDropdown.setValue(true) : undefined}>
+      onClick={trigger ? () => showHeaderDropdown.setValue(true) : undefined}
+    >
       <TeamIcon
         customClass={`${styles.avatar} ${currentUser?.avatar ? '' : 'default'}`}
         avatar={currentUser?.avatar ? showImageUrl(currentUser.avatar) : DefaultAvatarIcon}
       />
-      {
-        <BodyText fontFamily="Roboto" level={4} customClass={styles['user-name']} color="white">
+      {isMobile ? null : (
+        <BodyText
+          fontFamily="Roboto"
+          level={4}
+          customClass={`text-overflow ${styles['user-name']}`}
+          color="white"
+          style={{ maxWidth: '50vw', marginRight: 40 }}
+        >
           {getFullName(currentUser)}
         </BodyText>
-      }
+      )}
     </span>
   );
 
-  if (isMobile) {
-    return (
-      <>
-        {renderAvatarTrigger(true)}
-
-        <DrawerMenu
-          visible={showHeaderDropdown.value}
-          onClose={() => showHeaderDropdown.setValue(false)}
-          items={menuItems}
-        />
-      </>
-    );
-  }
-
   return (
     <HeaderDropdown
+      menuDropdown
       containerClass={styles.dropdown}
-      overlay={<MenuHeaderDropdown items={menuItems} />}
+      items={menuItems}
       arrow
       arrowPositionCenter
-      visible={showHeaderDropdown.value}
-      onVisibleChange={showHeaderDropdown.setValue}
       align={{ offset: [0, 2] }}
       placement="bottom"
       trigger={['click']}
-      getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentNode as HTMLElement}>
+    >
       {renderAvatarTrigger()}
     </HeaderDropdown>
   );

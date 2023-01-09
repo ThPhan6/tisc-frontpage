@@ -31,28 +31,6 @@
     cursor: pointer;
   }
 }
-.filterDropdown {
-  width: 160px;
-  :global(.tisc-dropdown-item) {
-    & > div {
-      min-height: 36px;
-      &:not(:first-child) {
-        box-shadow: none;
-      }
-      &:hover {
-        background-color: @primary-color-light;
-      }
-    }
-  }
-  .filterItemLabel {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    svg {
-      margin-right: 12px;
-    }
-  }
-}
 
 .projectSummaryWrapper {
   display: flex;
@@ -63,4 +41,8 @@
       white-space: nowrap;
     }
   }
+}
+
+.mobileProjectHeader {
+  padding: 7px 0;
 }

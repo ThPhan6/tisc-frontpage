@@ -1,7 +1,16 @@
+@import '~antd/es/style/variable.less';
+
 .content {
-  height: calc(100vh - 360px);
+  position: relative;
+  height: calc(var(--vh) * 100 - 360px);
   padding: 0 16px 16px 16px;
   overflow: auto;
+  @media screen and (max-width: @screen-sm) {
+    height: auto;
+    min-height: 150px;
+    padding: 0 0 8px 0;
+  }
+
   .customLabel {
     p {
       color: @mono-color-dark;
@@ -128,10 +137,9 @@
   :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
     padding: 0;
   }
-  :global(.ant-collapse-ghost
-      > .ant-collapse-item
-      > .ant-collapse-content
-      > .ant-collapse-content-box) {
+  :global(
+      .ant-collapse-ghost > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box
+    ) {
     padding-top: 0;
     padding-bottom: 0;
   }
@@ -184,4 +192,14 @@
 }
 .marginBottomNone {
   margin-bottom: 0;
+}
+
+.detailContainer {
+  overflow: auto;
+  background: #fff;
+  @media screen and (max-width: @screen-sm) {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 }

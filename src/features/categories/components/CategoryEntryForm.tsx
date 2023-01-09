@@ -126,7 +126,8 @@ const CategoryEntryForm = () => {
         handleCancel={handleCancel}
         handleDelete={handleDeleteCategory}
         submitButtonStatus={submitButtonStatus.value}
-        entryFormTypeOnMobile={isUpdate ? 'edit' : 'create'}>
+        entryFormTypeOnMobile={isUpdate ? 'edit' : 'create'}
+      >
         <FormNameInput
           HandleOnClickAddIcon={() => {
             setCategoryValue({

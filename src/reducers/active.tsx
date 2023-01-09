@@ -8,7 +8,8 @@ export type CollapseGroup =
   | 'project-basic-info'
   | 'share-via-email'
   | 'inquiry-request'
-  | 'issuing-info';
+  | 'issuing-info'
+  | 'project-tracking-detail';
 
 interface ActiveState {
   collapse: {

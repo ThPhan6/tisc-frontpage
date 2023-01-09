@@ -9,6 +9,7 @@ import { RadioValue } from '@/components/CustomRadio/types';
 import { BrandListItem } from '@/features/user-group/types';
 import { UserType } from '@/pages/LandingPage/types';
 import store, { useAppSelector } from '@/reducers';
+import { closeModal } from '@/reducers/modal';
 import { UserDetail } from '@/types/user.type';
 
 import { CustomRadio } from '@/components/CustomRadio';
@@ -20,10 +21,6 @@ import { BodyText } from '@/components/Typography';
 import { getListOrderBy } from '../api';
 import styles from '../index.less';
 
-interface BrandCompanyProps {
-  visible: boolean;
-  setVisible: (visible: boolean) => void;
-}
 const LabelHeader = (item: UserDetail) => {
   return (
     <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
@@ -36,7 +33,7 @@ const LabelHeader = (item: UserDetail) => {
     </div>
   );
 };
-export const BrandCompanyModal: FC<BrandCompanyProps> = ({ visible, setVisible }) => {
+export const BrandCompanyModal: FC = () => {
   const serviceFormData = useAppSelector((state) => state.service.service);
   const [listBrand, setListBrand] = useState<BrandListItem[]>([]);
   const [orderBy, setOrderBy] = useState<UserDetail[]>([]);
@@ -59,7 +56,8 @@ export const BrandCompanyModal: FC<BrandCompanyProps> = ({ visible, setVisible }
         value: '',
       });
     });
-  }, [visible === true]);
+  }, []);
+
   useEffect(() => {
     setActiveKey([]);
     getListOrderBy(selectedBrand?.value as string, UserType.Brand, RoleIndex.BrandRolesAdmin).then(
@@ -93,20 +91,17 @@ export const BrandCompanyModal: FC<BrandCompanyProps> = ({ visible, setVisible }
         ordered_by_name: String(selectedOrderBy?.label),
       }),
     );
-    setVisible(false);
+    closeModal();
   };
 
   return (
-    <Popover
-      title="SELECT COMPANY"
-      visible={visible}
-      setVisible={setVisible}
-      onFormSubmit={onFormSubmit}>
+    <Popover title="SELECT COMPANY" visible onFormSubmit={onFormSubmit}>
       <FormGroup
         label={'Brand Company'}
         layout="vertical"
         style={{ marginBottom: '16px' }}
-        formClass={selectedBrand?.value ? styles.activeText : ''}>
+        formClass={selectedBrand?.value ? styles.activeText : ''}
+      >
         <CollapseRadioList
           options={listBrand.map((brand) => {
             return {

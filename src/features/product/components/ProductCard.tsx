@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { PATH } from '@/constants/path';
+import { USER_ROLE } from '@/constants/userRoles';
 import { Tooltip, TooltipProps } from 'antd';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete.svg';
@@ -20,9 +21,9 @@ import {
   getProductSummary,
   likeProductById,
 } from '@/features/product/services';
-import { confirmDelete } from '@/helper/common';
+import { confirmDelete, useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { useBoolean, useCheckPermission, useGetUserRoleFromPathname } from '@/helper/hook';
+import { useCheckPermission, useGetUserRoleFromPathname } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
 import {
   deleteCustomProduct,
@@ -33,17 +34,16 @@ import { capitalize, truncate } from 'lodash';
 
 import { ProductGetListParameter, ProductItem } from '../types';
 import { ProductConsiderStatus } from '@/features/project/types';
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
+import { openModal } from '@/reducers/modal';
 
 import CustomCollapse from '@/components/Collapse';
 import { EmptyOne } from '@/components/Empty';
-import InquiryRequest from '@/components/InquiryRequest';
 import { loadingSelector } from '@/components/LoadingPage/slices';
-import ShareViaEmail from '@/components/ShareViaEmail';
 import { ActionMenu } from '@/components/TableAction';
 import { BodyText } from '@/components/Typography';
 
-import AssignProductModal from '../modals/AssignProductModal';
+import { assignProductModalTitle } from '../modals/AssignProductModal';
 import { getProductDetailPathname } from '../utils';
 import styles from './ProductCard.less';
 
@@ -75,12 +75,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
   isCustomProduct,
   onSpecifyClick,
 }) => {
+  const { isMobile } = useScreen();
   const normalProductfilter = useAppSelector((state) => state.product.list.filter);
-  const isDesignAdmin = useCheckPermission('Design Admin');
   const [liked, setLiked] = useState(product.is_liked);
-  const showShareEmailModal = useBoolean();
-  const showAssignProductModal = useBoolean();
-  const showInquiryRequestModal = useBoolean();
 
   // custom product
   const customProductFilter = useAppSelector((state) => state.customProduct.filter);
@@ -92,15 +89,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   // check user role to redirect
   const userRole = useGetUserRoleFromPathname();
+  const isDesignFirmUser = userRole === USER_ROLE.design;
   const hanldeRedirectURL = () => {
     const path = getProductDetailPathname(userRole, product.id, '', isCustomProduct);
     pushTo(path);
   };
 
   // check user permission to action
-  const showShareEmail = useCheckPermission(['Brand Admin', 'Design Admin']);
-  const isTiscAdmin = useCheckPermission('TISC Admin');
-  const isDesignerUser = useCheckPermission('Design Admin');
+  const showShareEmail = useCheckPermission([
+    'Brand Admin',
+    'Design Admin',
+    'Brand Team',
+    'Design Team',
+  ]);
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
   const [likeCount, setLikeCount] = useState(product.favorites ?? 0);
   const likeProduct = () => {
@@ -202,21 +204,45 @@ const ProductCard: React.FC<ProductCardProps> = ({
     },
     {
       tooltipText: 'Inquiry/Request',
-      show: Boolean(showInquiryRequest && isDesignerUser && !isCustomProduct),
+      show: Boolean(showInquiryRequest && isDesignFirmUser && !isCustomProduct),
       Icon: CommentIcon,
-      onClick: () => showInquiryRequestModal.setValue(true),
+      onClick: () =>
+        store.dispatch(
+          openModal({
+            type: 'Inquiry Request',
+            title: 'INQUIRY/REQUEST',
+            props: { shareViaEmail: { product } },
+          }),
+        ),
     },
     {
       tooltipText: 'Assign Product',
-      show: isDesignerUser && !hideAssign,
+      show: isDesignFirmUser && !hideAssign,
       Icon: AssignIcon,
-      onClick: () => showAssignProductModal.setValue(true),
+      onClick: () =>
+        store.dispatch(
+          openModal({
+            type: 'Assign Product',
+            title: assignProductModalTitle,
+            props: {
+              isCustomProduct,
+              productId: product.id,
+            },
+          }),
+        ),
     },
     {
       tooltipText: 'Share via Email',
       show: showShareEmail,
       Icon: ShareIcon,
-      onClick: () => showShareEmailModal.setValue(true),
+      onClick: () =>
+        store.dispatch(
+          openModal({
+            type: 'Share via email',
+            title: 'Share Via Email',
+            props: { shareViaEmail: { isCustomProduct, product } },
+          }),
+        ),
     },
   ];
 
@@ -225,7 +251,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div
         className={`${styles.productCardItem} ${hasBorder ? styles.border : ''} ${
           unlistedDisabled ? styles.disabled : ''
-        }`}>
+        }`}
+      >
         <div className={styles.imageWrapper} onClick={hanldeRedirectURL}>
           <div
             style={{
@@ -254,14 +281,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <div className={`${styles.leftAction} flex-center`}>
             {hideFavorite ? null : (
               <Tooltip title="Favourite" {...tooltipProps}>
-                <BodyText level={6} fontFamily="Roboto" customClass="action-like">
-                  {liked ? <LikedIcon onClick={likeProduct} /> : <LikeIcon onClick={likeProduct} />}
-                  {!isDesignAdmin &&
-                    `${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
+                <BodyText
+                  level={6}
+                  fontFamily="Roboto"
+                  customClass="action-like"
+                  onClick={likeProduct}
+                >
+                  {liked ? <LikedIcon /> : <LikeIcon />}
+                  {isDesignFirmUser
+                    ? null
+                    : `${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
                 </BodyText>
               </Tooltip>
             )}
-            {showSpecify && isDesignerUser ? (
+            {showSpecify && isDesignFirmUser ? (
               <Tooltip title={'Specify'} {...tooltipProps}>
                 <DispatchIcon
                   onClick={unlistedDisabled ? undefined : onSpecifyClick}
@@ -269,13 +302,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 />
               </Tooltip>
             ) : null}
-            {showActionMenu && isDesignerUser ? (
+            {showActionMenu && isDesignFirmUser && !isMobile ? (
               <ActionMenu
                 containerStyle={{ height: 16 }}
                 placement="bottomLeft"
                 offsetAlign={[-12, 8]}
                 className={styles.actionMenu}
                 overlayClassName={styles.actionMenuOverLay}
+                editActionOnMobile={false}
                 actionItems={[
                   {
                     type: 'copy',
@@ -308,32 +342,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </div>
         </div>
-
-        {showShareEmailModal.value ? (
-          <ShareViaEmail
-            visible={showShareEmailModal.value}
-            setVisible={showShareEmailModal.setValue}
-            product={product}
-            isCustomProduct={isCustomProduct}
-          />
-        ) : null}
-
-        {showAssignProductModal.value && product.id ? (
-          <AssignProductModal
-            visible={showAssignProductModal.value}
-            setVisible={showAssignProductModal.setValue}
-            productId={product.id}
-            isCustomProduct={isCustomProduct ? true : false}
-          />
-        ) : null}
-
-        {showInquiryRequestModal.value ? (
-          <InquiryRequest
-            visible={showInquiryRequestModal.value}
-            setVisible={showInquiryRequestModal.setValue}
-            product={product}
-          />
-        ) : null}
       </div>
     </div>
   );
@@ -376,7 +384,8 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
                 <span className="product-count">({group.count})</span>
               </BodyText>
             </div>
-          }>
+          }
+        >
           <div className={styles.productCardContainer}>
             {group.products.map((productItem, itemIndex) => (
               <ProductCard

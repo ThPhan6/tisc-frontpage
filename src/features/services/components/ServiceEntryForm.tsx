@@ -58,7 +58,7 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
 
   const getContentHeight = () => {
     if (isMobile) {
-      return 'calc(100vh - 288px)';
+      return 'calc(100vh - 280px)';
     }
 
     return 'calc(100vh - 304px)';
@@ -83,7 +83,8 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
           formClass={`${serviceFormData.service_type_id !== '' ? styles.activeText : ''} ${
             type === 'view' ? styles.text : ''
           }  `}
-          style={{ marginBottom: '16px' }}>
+          style={{ marginBottom: '16px' }}
+        >
           <CollapseRadioList
             options={serviceType.map((item) => {
               return {
@@ -143,7 +144,8 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
           label="Chargeable Rate / Total Quantity / Sales Tax"
           layout="vertical"
           required
-          style={{ marginBottom: '16px' }}>
+          style={{ marginBottom: '16px' }}
+        >
           <Row gutter={[24, 8]}>
             <Col span={8}>
               <div className={styles.item}>
@@ -248,7 +250,8 @@ export const ServiceEntryForm: FC<ServicFormProps> = ({ handleCancel, setVisible
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
-                  }}>
+                  }}
+                >
                   {summaryBillingAmount()}
                 </Title>
               </div>

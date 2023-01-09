@@ -98,7 +98,7 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
             <TopBarItem
               topValue={productSummary?.card_count ?? '0'}
               bottomValue="Cards"
-              customClass="left-divider"
+              customClass="left-divider mr-12"
               cursor="default"
             />
           </>
@@ -111,7 +111,14 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
               customClass={`left-divider ${activeBrand ? 'cursor-pointer' : 'cursor-default'} `}
               topValue={renderItemTopBar('brand_id', filter, activeBrand ? 'select' : '')}
               bottomEnable={activeBrand}
-              bottomValue={renderFilterDropdown('Brands', brandDropDownData, false)}
+              bottomValue={renderFilterDropdown(
+                'Brands',
+                brandDropDownData,
+                false,
+                undefined,
+                undefined,
+                { autoHeight: false },
+              )}
             />
 
             {/* categories */}
@@ -120,7 +127,14 @@ const ProductSummaryTopBar: React.FC<ProductSummaryTopBarProps> = ({ isFavourite
               customClass={`left-divider ${activeCategory ? 'cursor-pointer' : 'cursor-default'} `}
               topValue={renderItemTopBar('category_id', filter, activeCategory ? 'select' : '')}
               bottomEnable={activeCategory}
-              bottomValue={renderFilterDropdown('Categories', categoryDropDownData, false)}
+              bottomValue={renderFilterDropdown(
+                'Categories',
+                categoryDropDownData,
+                false,
+                undefined,
+                undefined,
+                { autoHeight: false },
+              )}
             />
 
             {/* sort */}

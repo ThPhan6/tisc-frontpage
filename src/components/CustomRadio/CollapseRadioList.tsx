@@ -63,7 +63,8 @@ const CollapseRadioList: FC<CollapseRadioListProps> = ({
         )
       }
       className={`${styles.functionTypeDropdown} ${containerClass}`}
-      {...props}>
+      {...props}
+    >
       {options.length ? (
         <CustomRadio
           options={options}

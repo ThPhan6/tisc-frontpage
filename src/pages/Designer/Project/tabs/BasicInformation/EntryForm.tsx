@@ -8,6 +8,7 @@ import {
   getProjectMeasurementUnits,
   getProjectTypes,
 } from '@/features/project/services';
+import { useScreen } from '@/helper/common';
 import { isEmptySpace, messageError, messageErrorType, validatePostalCode } from '@/helper/utils';
 
 import type { RadioValue } from '@/components/CustomRadio/types';
@@ -38,6 +39,8 @@ export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeDa
     state: false,
     city: false,
   });
+
+  const { isMobile } = useScreen();
 
   const [buildingTypes, setBuildingTypes] = useState<GeneralData[]>([]);
   const [projectTypes, setProjectTypes] = useState<GeneralData[]>([]);
@@ -99,7 +102,10 @@ export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeDa
   };
 
   return (
-    <div className={styles.entryFormWrapper}>
+    <div
+      className={styles.entryFormWrapper}
+      style={{ height: isMobile ? 'calc(100vh - 208px)' : 'calc(100vh - 232px)' }}
+    >
       <InputGroup
         label="Project Code"
         required
@@ -222,7 +228,8 @@ export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeDa
         label="Project Type"
         required
         layout="vertical"
-        formClass={`${styles.formGroup} ${projectTypeData.name !== '' ? styles.activeText : ''}`}>
+        formClass={`${styles.formGroup} ${projectTypeData.name !== '' ? styles.activeText : ''}`}
+      >
         <CollapseRadioList
           groupType="project-basic-info"
           groupIndex={1}
@@ -248,7 +255,8 @@ export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeDa
         label="Building Type"
         required
         layout="vertical"
-        formClass={`${styles.formGroup} ${buildingTypeData.name !== '' ? styles.activeText : ''}`}>
+        formClass={`${styles.formGroup} ${buildingTypeData.name !== '' ? styles.activeText : ''}`}
+      >
         <CollapseRadioList
           groupType="project-basic-info"
           groupIndex={2}
@@ -275,7 +283,8 @@ export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeDa
         label="Measurement Unit"
         required={true}
         layout="vertical"
-        formClass={`${styles.form_group} ${styles.border_bottom}`}>
+        formClass={`${styles.form_group} ${styles.border_bottom}`}
+      >
         <CustomRadio
           options={measurementUnits}
           value={data.measurement_unit}

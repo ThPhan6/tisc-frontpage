@@ -133,7 +133,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
         : state.product.details.distributor_location_id,
     ) || '';
 
-  const isTiscAdmin = useCheckPermission('TISC Admin');
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
   const signature = useQuery().get('signature');
   const isPublicPage = signature ? true : false;
@@ -308,22 +308,25 @@ export const VendorLocation: FC<VendorTabProps> = ({
             style={{ height: '100%', cursor: 'default' }}
             onClick={(e) => {
               e.stopPropagation();
-            }}>
-            {renderDeleteIcon()}
-
+            }}
+          >
             <div
               className={` ${isTiscAdmin ? 'cursor-disabled' : 'cursor-default'}`}
-              onClick={isTiscAdmin || isPublicPage ? undefined : (e) => handleShowAddress(e)}>
+              onClick={isTiscAdmin || isPublicPage ? undefined : (e) => handleShowAddress(e)}
+            >
               <div
                 className={`contact-select-box ${
                   isTiscAdmin ? 'cursor-default' : 'cursor-pointer'
-                }`}>
+                }`}
+              >
                 <BodyText
                   level={6}
                   fontFamily="Roboto"
-                  color={country ? 'mono-color' : 'mono-color-medium'}>
+                  color={country ? 'mono-color' : 'mono-color-medium'}
+                >
                   {getCountryName()}
                 </BodyText>
+                {renderDeleteIcon()}
                 {renderRightIcon()}
               </div>
             </div>
@@ -342,7 +345,8 @@ export const VendorLocation: FC<VendorTabProps> = ({
             brandActiveKey === activeKey && chosenBrand.value
               ? styles.collapsed
               : styles.notCollapsed
-          } ${isSpecifying ? '' : styles.marginBottomNone}`}>
+          } ${isSpecifying ? '' : styles.marginBottomNone}`}
+        >
           <div className={styles.address}>
             <CustomCollapse
               header={renderCollapseHeader(
@@ -357,7 +361,8 @@ export const VendorLocation: FC<VendorTabProps> = ({
               onChange={(key) => handleCollapse('brand', key)}
               activeKey={brandActiveKey}
               collapsible={isTiscAdmin || !chosenBrand.value ? 'disabled' : undefined}
-              customHeaderClass={styles.collapseHeader}>
+              customHeaderClass={styles.collapseHeader}
+            >
               {renderBusinessAdressDetail(selectedLocationBrand)}
             </CustomCollapse>
           </div>
@@ -369,7 +374,8 @@ export const VendorLocation: FC<VendorTabProps> = ({
             distributorActiveKey === activeKey && chosenDistributor.value
               ? styles.collapsed
               : styles.notCollapsed
-          } ${isSpecifying ? '' : styles.marginBottomNone}`}>
+          } ${isSpecifying ? '' : styles.marginBottomNone}`}
+        >
           <div className={styles.address}>
             <CustomCollapse
               header={renderCollapseHeader(
@@ -388,7 +394,8 @@ export const VendorLocation: FC<VendorTabProps> = ({
               onChange={(key) => handleCollapse('distributor', key)}
               activeKey={distributorActiveKey}
               collapsible={isTiscAdmin || !chosenDistributor.value ? 'disabled' : undefined}
-              customHeaderClass={styles.collapseHeader}>
+              customHeaderClass={styles.collapseHeader}
+            >
               {renderDistributorBusinessAdressDetail(selectedLocationDistributor)}
             </CustomCollapse>
           </div>
@@ -399,6 +406,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
         <>
           <Popover
             title="SELECT LOCATION"
+            secondaryModal
             className={styles.customLocationModal}
             visible={locationPopup === 'brand'}
             setVisible={(visible) => (visible ? undefined : setLocationPopup(''))}
@@ -433,6 +441,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
 
           <Popover
             title="SELECT LOCATION"
+            secondaryModal
             className={styles.customLocationModal}
             visible={locationPopup === 'distributor'}
             setVisible={(visible) => (visible ? undefined : setLocationPopup(''))}

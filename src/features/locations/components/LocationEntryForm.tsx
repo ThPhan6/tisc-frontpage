@@ -201,7 +201,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       handleCancel={onCancel}
       handleDelete={handleDeleteLocation}
       entryFormTypeOnMobile={locationId ? 'edit' : 'create'}
-      submitButtonStatus={isSubmitted}>
+      submitButtonStatus={isSubmitted}
+    >
       <InputGroup
         label="Business Name"
         required
@@ -246,7 +247,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         label="Functional Type"
         required
         layout="vertical"
-        formClass={`${styles.formGroup} ${setStylesForFunctionType()}`}>
+        formClass={`${styles.formGroup} ${setStylesForFunctionType()}`}
+      >
         {isDesignAdmin ? (
           <CustomRadio
             options={functionalTypeData as RadioValue[]}

@@ -4,7 +4,6 @@ import { PATH } from '@/constants/path';
 import { Col, Row, message } from 'antd';
 
 import { createService, getOneService, updateService } from '@/features/services/api';
-import { BrandCompanyModal } from '@/features/services/components/BrandCompanyModal';
 import { ServiceEntryForm } from '@/features/services/components/ServiceEntryForm';
 import { ServiceHeader } from '@/features/services/components/ServiceHeader';
 import styles from '@/features/services/index.less';
@@ -14,6 +13,7 @@ import { useBoolean, useGetParamId } from '@/helper/hook';
 import { getFullName } from '@/helper/utils';
 
 import store, { useAppSelector } from '@/reducers';
+import { openModal } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
@@ -23,8 +23,6 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const ServiceCreatePage = () => {
-  const [visible, setVisible] = useState<boolean>(false);
-
   const submitButtonStatus = useBoolean();
 
   const serviceFormData = useAppSelector((state) => state.service.service);
@@ -130,7 +128,14 @@ const ServiceCreatePage = () => {
           <Col span={24} lg={{ span: 12 }} style={{ background: '#fff' }}>
             <ServiceEntryForm
               handleCancel={handleCancel}
-              setVisible={() => setVisible(true)}
+              setVisible={() =>
+                store.dispatch(
+                  openModal({
+                    type: 'Brand Company',
+                    title: 'SELECT COMPANY',
+                  }),
+                )
+              }
               type={typeHandleSubmit}
             />
             <div className={styles.bottom}>
@@ -141,7 +146,8 @@ const ServiceCreatePage = () => {
                     variant="primary"
                     properties="rounded"
                     buttonClass={styles.cancel}
-                    onClick={handleCancel}>
+                    onClick={handleCancel}
+                  >
                     Cancel
                   </CustomButton>
                   <CustomSaveButton
@@ -160,8 +166,6 @@ const ServiceCreatePage = () => {
             </div>
           </Col>
         </Row>
-
-        <BrandCompanyModal visible={visible} setVisible={setVisible} />
       </div>
     </ServiceHeader>
   );

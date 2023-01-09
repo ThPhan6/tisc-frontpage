@@ -1,3 +1,5 @@
+@import '~antd/es/style/variable.less';
+
 .cardContainer {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 224px));
@@ -12,6 +14,9 @@
     height: 224px;
     padding-right: 4px;
     padding-left: 4px;
+    @media screen and(max-width: @screen-sm) {
+      height: 171.5px;
+    }
     .cardItem {
       position: absolute;
       top: 0;
@@ -34,6 +39,9 @@
         height: 60%;
         padding: 16px;
         box-shadow: @border-bottom-light;
+        @media screen and(max-width: @screen-sm) {
+          padding: 12px;
+        }
         .bold {
           overflow: hidden;
           font-weight: 500;
@@ -70,6 +78,9 @@
         justify-content: space-between;
         height: 32px;
         padding: 0 16px;
+        @media screen and(max-width: @screen-sm) {
+          padding: 0 12px;
+        }
 
         .middleKey {
           width: 100px;
@@ -83,6 +94,9 @@
           width: 64px;
           margin-left: 24px;
           text-align: left;
+          @media screen and(max-width: @screen-sm) {
+            margin-left: 8px;
+          }
           &:global(.late) {
             p {
               color: @tertiary-color;
@@ -99,6 +113,9 @@
         height: 40px;
         padding: 0 16px;
         box-shadow: @border-top-light;
+        @media screen and(max-width: @screen-sm) {
+          padding: 0 12px;
+        }
         .team {
           display: -webkit-inline-box;
           padding: 2px;

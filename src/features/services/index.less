@@ -3,6 +3,9 @@
 }
 
 .serviceForm {
+  ::-webkit-scrollbar {
+    display: none;
+  }
   .customForm {
     padding: 16px;
     overflow: auto;
@@ -64,45 +67,41 @@
   }
 }
 
-.detail {
-  margin-top: 8px;
-  background-color: #fff;
-  .customTable {
-    table {
-      width: 100%;
-      padding-left: 16px;
-    }
-    tr {
-      height: 36px;
-    }
-    .label {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 36px;
-      padding-left: 16px;
-    }
-    .total {
-      border-top: 0.5px solid @mono-color;
-      border-bottom: 0.5px solid @mono-color;
-    }
-    .totalQuantity {
-      border-bottom: 0.5px solid @mono-color-medium;
-    }
-    .rightText {
-      text-align: right;
-    }
+.customTable {
+  table {
+    width: 100%;
+    padding-left: 16px;
   }
-  .payButton {
-    margin-right: 16px;
+  tr {
+    height: 36px;
   }
-  .disableButton {
+  .label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 36px;
+    padding-left: 16px;
+  }
+  .total {
+    border-top: 0.5px solid @mono-color;
+    border-bottom: 0.5px solid @mono-color;
+  }
+  .totalQuantity {
+    border-bottom: 0.5px solid @mono-color-medium;
+  }
+  .rightText {
+    text-align: right;
+  }
+}
+.payButton {
+  margin-right: 16px;
+}
+.disableButton {
+  background-color: @mono-color-medium;
+  cursor: not-allowed;
+  &:hover {
+    font-weight: 300;
     background-color: @mono-color-medium;
-    cursor: not-allowed;
-    &:hover {
-      font-weight: 300;
-      background-color: @mono-color-medium;
-    }
   }
 }
 
@@ -146,8 +145,12 @@
   align-items: center;
   justify-content: flex-end;
   height: 48px;
-  padding-right: 16px;
+  // padding-right: 16px;
   box-shadow: @border-top;
+
+  button {
+    padding: 0 14px;
+  }
 }
 
 .customModal {

@@ -48,7 +48,8 @@ const CollapseCheckboxList: FC<CollapseCheckboxListProps> = ({
           {placeholder}
         </BodyText>
       }
-      className={`${styles.functionTypeDropdown} ${containerClass}`}>
+      className={`${styles.functionTypeDropdown} ${containerClass}`}
+    >
       <CustomCheckbox
         {...props}
         options={options}
