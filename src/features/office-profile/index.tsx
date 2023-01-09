@@ -299,7 +299,7 @@ const BrandProfilePage = () => {
               className={styles.form}
               style={{
                 height: isMobile
-                  ? 'calc(var(--vh) * 100 - 176px)'
+                  ? 'calc(var(--vh) * 100 - 168px)'
                   : 'calc(var(--vh) * 100 - 192px)',
               }}
             >
