@@ -96,9 +96,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   // check user permission to action
-  const showShareEmail = useCheckPermission(['Brand Admin', 'Design Admin']);
-  const isTiscAdmin = useCheckPermission('TISC Admin');
-  const isDesignerAdmin = useCheckPermission('Design Admin');
+  const showShareEmail = useCheckPermission([
+    'Brand Admin',
+    'Design Admin',
+    'Brand Team',
+    'Design Team',
+  ]);
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
   const [likeCount, setLikeCount] = useState(product.favorites ?? 0);
   const likeProduct = () => {
@@ -200,7 +204,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     },
     {
       tooltipText: 'Inquiry/Request',
-      show: Boolean(showInquiryRequest && isDesignerAdmin && !isCustomProduct),
+      show: Boolean(showInquiryRequest && isDesignFirmUser && !isCustomProduct),
       Icon: CommentIcon,
       onClick: () =>
         store.dispatch(
@@ -213,7 +217,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     },
     {
       tooltipText: 'Assign Product',
-      show: isDesignerAdmin && !hideAssign,
+      show: isDesignFirmUser && !hideAssign,
       Icon: AssignIcon,
       onClick: () =>
         store.dispatch(
@@ -277,14 +281,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <div className={`${styles.leftAction} flex-center`}>
             {hideFavorite ? null : (
               <Tooltip title="Favourite" {...tooltipProps}>
-                <BodyText level={6} fontFamily="Roboto" customClass="action-like">
-                  {liked ? <LikedIcon onClick={likeProduct} /> : <LikeIcon onClick={likeProduct} />}
-                  {!isDesignFirmUser &&
-                    `${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
+                <BodyText
+                  level={6}
+                  fontFamily="Roboto"
+                  customClass="action-like"
+                  onClick={likeProduct}
+                >
+                  {liked ? <LikedIcon /> : <LikeIcon />}
+                  {isDesignFirmUser
+                    ? null
+                    : `${likeCount.toLocaleString('en-us')} ${likeCount <= 1 ? 'like' : 'likes'}`}
                 </BodyText>
               </Tooltip>
             )}
-            {showSpecify && isDesignerAdmin ? (
+            {showSpecify && isDesignFirmUser ? (
               <Tooltip title={'Specify'} {...tooltipProps}>
                 <DispatchIcon
                   onClick={unlistedDisabled ? undefined : onSpecifyClick}
@@ -292,7 +302,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 />
               </Tooltip>
             ) : null}
-            {showActionMenu && isDesignerAdmin && !isMobile ? (
+            {showActionMenu && isDesignFirmUser && !isMobile ? (
               <ActionMenu
                 containerStyle={{ height: 16 }}
                 placement="bottomLeft"

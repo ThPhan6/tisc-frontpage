@@ -55,7 +55,7 @@ const ProductDetailContainer: React.FC = () => {
   const productId = params?.id || '';
   const brandId = params?.brandId || '';
 
-  const isTiscAdmin = useCheckPermission('TISC Admin');
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
   const details = useAppSelector((state) => state.product.details);
 

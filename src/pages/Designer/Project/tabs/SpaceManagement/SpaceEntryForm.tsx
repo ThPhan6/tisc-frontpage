@@ -7,6 +7,8 @@ import { ReactComponent as ActionUpDown } from '@/assets/icons/action-up-icon.sv
 import { ReactComponent as CirclePlusIcon } from '@/assets/icons/circle-plus.svg';
 import { ReactComponent as ArrowIcon } from '@/assets/icons/drop-down-icon.svg';
 
+import { deleteProjectSpace } from '@/features/project/services';
+import { useScreen } from '@/helper/common';
 import { validateFloatNumber, validateNumber } from '@/helper/utils';
 
 import { ProjectSpaceRoom, ProjectSpaceZone } from '@/features/project/types';
@@ -21,7 +23,7 @@ import styles from '../../styles/space-management.less';
 
 interface SpaceEntryFormProps {
   data: ProjectSpaceZone;
-  setData: (data: ProjectSpaceZone) => void;
+  setData: (data: ProjectSpaceZone | undefined) => void;
   handleSubmit?: () => void;
   handleCancel?: () => void;
   submitButtonStatus?: boolean;
@@ -68,7 +70,8 @@ const AreaRoomCollapse: React.FC<AreaRoomCollapseProps> = ({
             }}
           />
         </>
-      }>
+      }
+    >
       <table>
         <tbody>
           <tr>
@@ -123,7 +126,7 @@ const AreaRoomCollapse: React.FC<AreaRoomCollapseProps> = ({
 
 const SpaceEntryForm: React.FC<SpaceEntryFormProps> = (props) => {
   const { data, setData, handleSubmit, handleCancel, submitButtonStatus = false } = props;
-
+  const { isMobile } = useScreen();
   const addMoreArea = () => {
     const newAreas = [...data.areas, { ...DefaultProjectArea }];
     setData({
@@ -186,8 +189,8 @@ const SpaceEntryForm: React.FC<SpaceEntryFormProps> = (props) => {
   };
   const onDeleteRoom = (areaIndex: number, roomIndex: number) => {
     const newAreas = [...data.areas];
-    console.log('areaIndex', areaIndex);
-    console.log('roomIndex', roomIndex);
+    // console.log('areaIndex', areaIndex);
+    // console.log('roomIndex', roomIndex);
     newAreas[areaIndex].rooms = newAreas[areaIndex].rooms.filter(
       (_a, index) => index !== roomIndex,
     );
@@ -197,22 +200,35 @@ const SpaceEntryForm: React.FC<SpaceEntryFormProps> = (props) => {
     });
   };
 
+  const handleDeleteZone = () => {
+    if (data?.id) {
+      deleteProjectSpace(data.id).then((isSuccess) => {
+        if (isSuccess) {
+          setData(undefined);
+        }
+      });
+    }
+  };
+
   return (
     <EntryFormWrapper
       handleSubmit={handleSubmit}
       handleCancel={handleCancel}
+      handleDelete={handleDeleteZone}
+      entryFormTypeOnMobile="edit"
       submitButtonStatus={submitButtonStatus}
       customClass={styles.spaceEntryForm}
-      contentClass="space-form-content-wrapper">
+      contentClass={isMobile ? 'height-on-mobile' : 'height-on-desktop'}
+    >
       <FormNameInput
         placeholder="type zone name"
         title="Zone"
         onChangeInput={onChangeZoneName}
         HandleOnClickAddIcon={addMoreArea}
-        inputValue={data.name}
+        inputValue={data.name || ''}
         customClass={styles.zoneNameInput}
       />
-      {data.areas.map((area, areaIndex) => (
+      {data?.areas.map((area, areaIndex) => (
         <CustomCollapse
           key={areaIndex}
           className={styles.spaceEntryFormAreaWrapper}
@@ -229,7 +245,8 @@ const SpaceEntryForm: React.FC<SpaceEntryFormProps> = (props) => {
                 onClick={(e: any) => addMoreRoom(e, areaIndex)}
               />
             </>
-          }>
+          }
+        >
           <div className={styles.areaInputGroup}>
             <CustomInput
               value={area.name}

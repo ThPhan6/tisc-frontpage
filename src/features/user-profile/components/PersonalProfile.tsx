@@ -11,7 +11,7 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-ico
 
 import { updateAvatarTeamProfile, updateTeamProfile } from '../services';
 import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
-import { isShowErrorMessage, showImageUrl, validateEmail } from '@/helper/utils';
+import { getBase64, isShowErrorMessage, showImageUrl, validateEmail } from '@/helper/utils';
 import { isEqual } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
@@ -49,7 +49,7 @@ export const PersonalProfile: FC<{ contentHeight?: number }> = ({ contentHeight 
   const [fileInput, setFileInput] = useState<any>();
   const { fetchUserInfo, currentUser } = useCustomInitialState();
   const submitButtonStatus = useBoolean();
-  const showIntersted = useCheckPermission('Design Admin');
+  const showInterested = useCheckPermission(['Design Admin', 'Design Team']);
 
   const [inputValue, setInputValue] = useState<PersonalProfileState>({
     backupEmail: '',
@@ -68,18 +68,19 @@ export const PersonalProfile: FC<{ contentHeight?: number }> = ({ contentHeight 
   );
 
   const handleUpdateAvatar = (avtFile: File) => {
-    const formData = new FormData();
-    formData.append('avatar', avtFile);
     showPageLoading();
-    updateAvatarTeamProfile(formData, (type: STATUS_RESPONSE, msg?: string) => {
-      if (type === STATUS_RESPONSE.SUCCESS) {
-        message.success(MESSAGE_NOTIFICATION.UPDATE_AVATAR_SUCCESS);
-        fetchUserInfo();
-      } else {
-        message.error(msg || MESSAGE_NOTIFICATION.UPDATE_AVATAR_ERROR);
-        setFileInput(undefined);
-      }
-      hidePageLoading();
+    getBase64(avtFile).then((base64Image) => {
+      const base64 = base64Image.split(',')[1];
+      updateAvatarTeamProfile({ avatar: base64 }, (type: STATUS_RESPONSE, msg?: string) => {
+        if (type === STATUS_RESPONSE.SUCCESS) {
+          message.success(MESSAGE_NOTIFICATION.UPDATE_AVATAR_SUCCESS);
+          fetchUserInfo();
+        } else {
+          message.error(msg || MESSAGE_NOTIFICATION.UPDATE_AVATAR_ERROR);
+          setFileInput(undefined);
+        }
+        hidePageLoading();
+      });
     });
   };
 
@@ -267,7 +268,7 @@ export const PersonalProfile: FC<{ contentHeight?: number }> = ({ contentHeight 
               onChange={handleOnChange}
             />
           </FormGroup>
-          {showIntersted && (
+          {showInterested && (
             <div>
               <FormGroup label="I am interested in" layout="vertical" formClass={styles.interested}>
                 <CustomCheckbox

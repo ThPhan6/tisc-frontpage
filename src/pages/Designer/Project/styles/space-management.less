@@ -3,6 +3,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  user-select: none;
   :global(.button-name) {
     margin-right: 12px;
   }
@@ -15,8 +16,11 @@
 }
 .spaceEntryForm {
   margin-top: 0;
-  :global(.space-form-content-wrapper) {
-    height: calc(var(--vh) * 100 - 328px);
+  :global(.height-on-desktop) {
+    height: calc(100vh - 328px);
+  }
+  :global(.height-on-mobile) {
+    height: calc(var(--vh) * 100 - 304px);
   }
   .zoneNameInput {
     :global(.ant-input) {
@@ -142,4 +146,11 @@
       }
     }
   }
+}
+
+.spacePaginationFooter {
+  bottom: -12px;
+  left: -20px;
+  width: calc(100% + 32px);
+  padding: 0 12px 0 24px;
 }

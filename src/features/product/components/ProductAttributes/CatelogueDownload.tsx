@@ -16,7 +16,7 @@ import styles from './CatelogueDownload.less';
 export const CatelogueDownload = () => {
   const catelogue_downloads = useAppSelector((state) => state.product.details.catelogue_downloads);
   const dispatch = useDispatch();
-  const isTiscAdmin = useCheckPermission('TISC Admin');
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
   if (isTiscAdmin) {
     return (

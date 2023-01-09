@@ -227,6 +227,7 @@ const ProjectList: React.FC = () => {
       render: (projectId) => {
         return (
           <ActionMenu
+            editActionOnMobile={false}
             actionItems={[
               {
                 type: 'updated',

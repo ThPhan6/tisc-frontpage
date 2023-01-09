@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import { USER_ROLE } from '@/constants/userRoles';
 import { GlobalFilter } from '@/pages/Designer/Project/constants/filter';
 import { PageContainer } from '@ant-design/pro-layout';
 
 import { getDesignerWorkspace, getProjectSummary } from '../project/services';
 import { getTiscWorkspace } from '../user-group/services';
-import { useGetUserRoleFromPathname } from '@/helper/hook';
+import { useCheckPermission } from '@/helper/hook';
 import { getBrandWorkspace } from '@/services/project-tracking.api';
 
 import { ProjectListProps, ProjectSummaryData } from '../project/types';
@@ -14,6 +13,7 @@ import { BrandCard } from '../user-group/types';
 import { ProjecTrackingList } from '@/types/project-tracking.type';
 
 import { ProjectTrackingHeader } from '../../pages/Brand/ProjectTracking/components/ProjectTrackingHeader';
+import MenuHeaderSummary from '../user-group/components/MenuHeaderSummary';
 import { ProjectCard } from './components/ProjectCard';
 import ProjectListHeader from '@/pages/Designer/Project/components/ProjectListHeader';
 
@@ -28,10 +28,9 @@ const MyWorkspace = () => {
     [],
   );
 
-  const currentUser = useGetUserRoleFromPathname();
-  const isTiscUser = currentUser === USER_ROLE.tisc;
-  const isBrandUser = currentUser === USER_ROLE.brand;
-  const isDesignerUser = currentUser === USER_ROLE.design;
+  const isTiscUser = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  const isBrandUser = useCheckPermission(['Brand Admin', 'Brand Team']);
+  const isDesignerUser = useCheckPermission(['Design Admin', 'Design Team']);
 
   /// for tisc
   useEffect(() => {
@@ -77,10 +76,7 @@ const MyWorkspace = () => {
       showPageLoading();
       getDesignerWorkspace(
         {
-          filter:
-            selectedFilter.id === GlobalFilter.id
-              ? undefined
-              : { project_status: selectedFilter.id },
+          filter: selectedFilter.id === GlobalFilter.id ? undefined : { status: selectedFilter.id },
         },
         (data) => {
           hidePageLoading();
@@ -92,7 +88,7 @@ const MyWorkspace = () => {
 
   const renderHeader = () => {
     if (isTiscUser) {
-      return undefined;
+      return <MenuHeaderSummary type="brand" />;
     }
 
     if (isBrandUser) {
