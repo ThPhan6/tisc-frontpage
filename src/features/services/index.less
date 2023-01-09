@@ -3,8 +3,10 @@
 }
 
 .serviceForm {
+  ::-webkit-scrollbar {
+    display: none;
+  }
   .customForm {
-    height: calc(var(--vh) * 100 - 304px);
     padding: 16px;
     overflow: auto;
     :global(.ant-collapse-item-active .ant-collapse-header-text p) {
@@ -16,6 +18,11 @@
     align-items: center;
     justify-content: space-between;
     border-bottom: 0.5px solid @mono-color-medium;
+
+    .labelConsistent {
+      padding-right: 8px;
+      white-space: nowrap;
+    }
     svg {
       width: 12px;
       height: 12px;
@@ -65,45 +72,47 @@
   }
 }
 
-.detail {
-  margin-top: 8px;
-  background-color: #fff;
-  .customTable {
-    table {
-      width: 100%;
-      padding-left: 16px;
-    }
-    tr {
-      height: 36px;
-    }
-    .label {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 36px;
-      padding-left: 16px;
-    }
-    .total {
-      border-top: 0.5px solid @mono-color;
-      border-bottom: 0.5px solid @mono-color;
-    }
-    .totalQuantity {
-      border-bottom: 0.5px solid @mono-color-medium;
-    }
-    .rightText {
-      text-align: right;
+.customTable {
+  table {
+    width: 100%;
+    padding-left: 16px;
+  }
+  tr {
+    height: 36px;
+  }
+  .label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 36px;
+    padding-left: 16px;
+
+    .iconStyles {
+      width: 18px;
+      height: 18px;
+      margin-right: 12px;
     }
   }
-  .payButton {
-    margin-right: 16px;
+  .total {
+    border-top: 0.5px solid @mono-color;
+    border-bottom: 0.5px solid @mono-color;
   }
-  .disableButton {
+  .totalQuantity {
+    border-bottom: 0.5px solid @mono-color-medium;
+  }
+  .rightText {
+    text-align: right;
+  }
+}
+.payButton {
+  margin-right: 16px;
+}
+.disableButton {
+  background-color: @mono-color-medium;
+  cursor: not-allowed;
+  &:hover {
+    font-weight: 300;
     background-color: @mono-color-medium;
-    cursor: not-allowed;
-    &:hover {
-      font-weight: 300;
-      background-color: @mono-color-medium;
-    }
   }
 }
 
@@ -129,10 +138,6 @@
   color: @tertiary-color !important;
 }
 
-.fontWeight500 {
-  font-weight: 600;
-}
-
 .activeText {
   :global(.function-type-placeholder) {
     overflow: hidden;
@@ -150,14 +155,12 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 12px 16px 12px 0;
+  height: 48px;
+  // padding-right: 16px;
   box-shadow: @border-top;
-  .cancel {
-    margin-right: 16px;
-  }
-  .rightButton {
-    margin-left: 16px;
-    padding: 0 12px;
+
+  button {
+    padding: 0 14px;
   }
 }
 
@@ -165,4 +168,22 @@
   span {
     width: 100%;
   }
+}
+
+.disabledIcon {
+  color: @mono-color-medium;
+}
+
+.detailLabel {
+  font-weight: 500;
+  font-family: @font-primary;
+  text-transform: uppercase;
+}
+
+.leftSpace {
+  margin-left: 16px;
+}
+
+.rightSpace {
+  margin-right: 16px;
 }

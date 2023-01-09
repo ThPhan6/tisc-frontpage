@@ -75,8 +75,7 @@ const CustomPaginator = (props: CustomPaginatorProps) => {
     <div
       className={`${styles.customPaginator} ${customClass} ${
         isMobile ? styles.mobilePagination : ''
-      }`}
-    >
+      } ${pagination ? styles.paginationFixed : ''}`}>
       {renderLeftPaginator()}
       <div>
         <span>

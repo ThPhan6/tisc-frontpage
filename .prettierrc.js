@@ -4,6 +4,7 @@ module.exports = {
   ...fabric.prettier,
   semi: true,
   bracketSpacing: true,
+  bracketSameLine: true,
   tabWidth: 2,
   importOrder: [
     'react',

@@ -97,11 +97,11 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
   /// for user role path
   const userRolePath = getValueByCondition(
     [
-      [isTiscUser, PATH.tiscTeamProfile],
-      [isBrandUser, PATH.brandTeamProfile],
-      [isDesignerUser, PATH.designerOfficeTeamProfile],
+      [isTiscUser, PATH.tiscLocation],
+      [isBrandUser, PATH.brandLocation],
+      [isDesignerUser, PATH.designFirmLocation],
     ],
-    PATH.designerOfficeTeamProfile,
+    PATH.designFirmLocation,
   );
 
   useEffect(() => {
@@ -201,8 +201,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
       handleCancel={onCancel}
       handleDelete={handleDeleteLocation}
       entryFormTypeOnMobile={locationId ? 'edit' : 'create'}
-      submitButtonStatus={isSubmitted}
-    >
+      submitButtonStatus={isSubmitted}>
       <InputGroup
         label="Business Name"
         required
@@ -247,8 +246,7 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
         label="Functional Type"
         required
         layout="vertical"
-        formClass={`${styles.formGroup} ${setStylesForFunctionType()}`}
-      >
+        formClass={`${styles.formGroup} ${setStylesForFunctionType()}`}>
         {isDesignAdmin ? (
           <CustomRadio
             options={functionalTypeData as RadioValue[]}
