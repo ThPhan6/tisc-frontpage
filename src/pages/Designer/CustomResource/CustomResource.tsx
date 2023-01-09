@@ -18,7 +18,6 @@ import CustomTable from '@/components/Table';
 import { ActionMenu } from '@/components/TableAction';
 import { BodyText } from '@/components/Typography';
 
-import styles from './CustomResource.less';
 import {
   deleteCustomResource,
   getCustomResourceSummary,
@@ -142,7 +141,6 @@ const CustomResource = () => {
           },
         })}
         hasPagination
-        headerClass={isMobile ? styles.customHeader : ''}
       />
     </PageContainer>
   );

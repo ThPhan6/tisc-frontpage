@@ -32,7 +32,7 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
   isSpecifiedModal,
 }) => {
   const productIdParam = useGetParamId();
-  const isTiscAdmin = useCheckPermission('TISC Admin');
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
   const curProductId = productId ?? productIdParam;
 
   const { addNewProductAttribute, attributeGroup, dimensionWeightData } = useProductAttributeForm(

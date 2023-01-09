@@ -133,7 +133,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
         : state.product.details.distributor_location_id,
     ) || '';
 
-  const isTiscAdmin = useCheckPermission('TISC Admin');
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
   const signature = useQuery().get('signature');
   const isPublicPage = signature ? true : false;
@@ -310,8 +310,6 @@ export const VendorLocation: FC<VendorTabProps> = ({
               e.stopPropagation();
             }}
           >
-            {renderDeleteIcon()}
-
             <div
               className={` ${isTiscAdmin ? 'cursor-disabled' : 'cursor-default'}`}
               onClick={isTiscAdmin || isPublicPage ? undefined : (e) => handleShowAddress(e)}
@@ -328,6 +326,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
                 >
                   {getCountryName()}
                 </BodyText>
+                {renderDeleteIcon()}
                 {renderRightIcon()}
               </div>
             </div>

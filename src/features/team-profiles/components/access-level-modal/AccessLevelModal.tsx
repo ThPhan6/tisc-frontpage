@@ -20,12 +20,8 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import styles from './AccessLevelModal.less';
 
 const TABLE_COL = {
-  brand: [{ title: 'Brand Admin' }, { title: ' Brand Lead', unuse: true }, { title: 'Brand Team' }],
-  designer: [
-    { title: 'Design Admin' },
-    { title: ' Design Lead', unuse: true },
-    { title: 'Design Team' },
-  ],
+  brand: [{ title: 'Brand Admin' }, { title: 'Brand Team' }],
+  designer: [{ title: 'Design Admin' }, { title: 'Design Team' }],
   tisc: [
     { title: 'TISC Admin' },
     { title: ' TISC Team', unuse: true },
@@ -128,12 +124,14 @@ const AccessLevelModal: FC = () => {
                     </td>
 
                     {/* for future data */}
-                    <td
-                      key={`fData_${item.id}`}
-                      style={{ textAlign: 'center', display: !menu.subs ? 'none' : '' }}
-                    >
-                      <AccessableTickIcon className={styles.menu_accessable_null} />
-                    </td>
+                    {type === 'tisc' && (
+                      <td
+                        key={`fData_${item.id}`}
+                        style={{ textAlign: 'center', display: !menu.subs ? 'none' : '' }}
+                      >
+                        <AccessableTickIcon className={styles.menu_accessable_null} />
+                      </td>
+                    )}
                     {/* --------- */}
                   </Fragment>
                 );
@@ -154,11 +152,11 @@ const AccessLevelModal: FC = () => {
         <thead className={styles.header}>
           <tr className={styles.header_content}>
             {/* 1st column */}
-            <th></th>
+            <th style={{ width: type === 'tisc' ? '' : '60%' }}></th>
 
             {/* another */}
             {TABLE_COL[type]?.map((title) => (
-              <th className={title.unuse ? styles.furture_data_header : ''}>
+              <th className={'unuse' in title && title.unuse ? styles.furture_data_header : ''}>
                 <MainTitle textAlign="center" level={4}>
                   {title.title}
                 </MainTitle>
@@ -212,7 +210,9 @@ const AccessLevelModal: FC = () => {
             <tr>
               <td></td>
               <td></td>
-              <td style={{ color: '#bfbfbf', textAlign: 'center', fontSize: 12 }}>(future)</td>
+              {type === 'tisc' && (
+                <td style={{ color: '#bfbfbf', textAlign: 'center', fontSize: 12 }}>(future)</td>
+              )}
               <td></td>
             </tr>
             {/* ------- */}

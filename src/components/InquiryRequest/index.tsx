@@ -122,6 +122,16 @@ const InquiryRequestModal: FC = () => {
       );
     });
 
+    setGeneralInquiryData({
+      ...GENERAL_INQUIRY_DEFAULT_STATE,
+      product_id: product.id,
+    });
+
+    setProjectRequestData({
+      ...PROJECT_REQUEST_DEFAULT_STATE,
+      product_id: product.id,
+    });
+
     // get Project Name data
     getAllProjects();
   }, []);
@@ -245,7 +255,6 @@ const InquiryRequestModal: FC = () => {
       }
     });
   };
-
   return (
     <Popover
       title="INQUIRY/REQUEST"
