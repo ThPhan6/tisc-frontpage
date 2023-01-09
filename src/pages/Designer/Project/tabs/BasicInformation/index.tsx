@@ -27,7 +27,7 @@ interface GeneralInformationProps {
 }
 
 const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setProject }) => {
-  const isMobile = useScreen().isMobile;
+  const isTablet = useScreen().isTablet;
 
   const [data, setData] = useState<ProjectBodyRequest>(DefaultProjectRequest);
   const buttonStatus = useBoolean();
@@ -85,13 +85,13 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
     <>
       <ProjectTabContentHeader>
         <div className={styles.basicToolbarForm}>
-          {isMobile ? null : <MainTitle level={3}>Project Status:</MainTitle>}
+          {isTablet ? null : <MainTitle level={3}>Project Status:</MainTitle>}
           <CustomRadio
             options={ProjectStatuses.map((projectStatus) => {
               return {
                 label: (
                   <BodyText level={6} fontFamily="Roboto" customClass={styles.projectStatusLabel}>
-                    {isMobile ? '' : projectStatus.name} {projectStatus.icon}
+                    {isTablet ? '' : projectStatus.name} {projectStatus.icon}
                   </BodyText>
                 ),
                 value: projectStatus.id,
@@ -112,7 +112,7 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
       </ProjectTabContentHeader>
 
       <Row className={styles.basicInformationWrapper}>
-        <Col span={isMobile ? 24 : 12}>
+        <Col span={isTablet ? 24 : 12}>
           <EntryForm data={data} onChangeData={onChangeData} />
         </Col>
       </Row>

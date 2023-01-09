@@ -40,7 +40,7 @@ import styles from './detail.less';
 import Cookies from 'js-cookie';
 
 const ProductDetailContainer: React.FC = () => {
-  const isMobile = useScreen().isMobile;
+  const isTablet = useScreen().isTablet;
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -185,11 +185,11 @@ const ProductDetailContainer: React.FC = () => {
 
         <Col span={24}>
           <Row className={isPublicPage ? styles.marginRounded : ''} gutter={[8, 8]}>
-            <Col span={isMobile ? 24 : 12}>
+            <Col span={isTablet ? 24 : 12}>
               <ProductImagePreview />
             </Col>
 
-            <Col span={isMobile ? 24 : 12} className={styles.productContent}>
+            <Col span={isTablet ? 24 : 12} className={styles.productContent}>
               <Row style={{ flexDirection: 'column', height: '100%' }}>
                 <Col>
                   <ProductBasicInfo />

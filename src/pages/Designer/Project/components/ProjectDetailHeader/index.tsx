@@ -60,25 +60,25 @@ const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({
   const ProjectTabs: TabItem[] = [
     {
       tab: 'basic information',
-      mobileTabTitle: 'Basic',
+      tabletTabTitle: 'Basic',
       key: ProjectTabKeys.basicInformation,
       disable: !accessPermission.design_project_basic_information,
     },
     {
       tab: 'zones/areas/rooms',
-      mobileTabTitle: 'Rooms',
+      tabletTabTitle: 'Rooms',
       key: ProjectTabKeys.zoneAreaRoom,
       disable: !accessPermission.design_project_zone_area_zoom,
     },
     {
       tab: 'product considered',
-      mobileTabTitle: 'Considered',
+      tabletTabTitle: 'Considered',
       key: ProjectTabKeys.productConsidered,
       disable: !accessPermission.design_project_product_considered,
     },
     {
       tab: 'product specified',
-      mobileTabTitle: 'Specified',
+      tabletTabTitle: 'Specified',
       key: ProjectTabKeys.productSpecified,
       disable: !accessPermission.design_project_product_specified,
     },

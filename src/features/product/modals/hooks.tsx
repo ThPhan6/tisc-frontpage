@@ -48,6 +48,7 @@ export const useAssignProductToSpaceForm = (productId: string, projectId: string
             curSelectedRooms[area.id] = roomCheckboxs;
           });
         });
+        expandingZone.setValue(-1);
         setSelectedRooms(curSelectedRooms);
       });
     }
@@ -76,7 +77,8 @@ export const useAssignProductToSpaceForm = (productId: string, projectId: string
         fontFamily="Roboto"
         level={5}
         className="text-overflow"
-        style={{ marginRight: 12, width: 60 }}>
+        style={{ marginRight: 12, width: 60 }}
+      >
         {roomId}
       </BodyText>
       <BodyText fontFamily="Roboto" level={5}>
@@ -96,7 +98,8 @@ export const useAssignProductToSpaceForm = (productId: string, projectId: string
         onChange={() =>
           expandingZone.setValue((prevIndex: number) => (prevIndex === index ? -1 : index))
         }
-        customHeaderClass="collapse-header">
+        customHeaderClass="collapse-header"
+      >
         {zone.areas.map((area) => {
           return (
             <div key={area.id} style={{ paddingBottom: 8, paddingLeft: 16 }}>
@@ -126,7 +129,8 @@ export const useAssignProductToSpaceForm = (productId: string, projectId: string
         <BodyText
           fontFamily="Roboto"
           level={specifyingModal ? 6 : 5}
-          style={{ fontWeight: specifyingModal ? '500' : undefined }}>
+          style={{ fontWeight: specifyingModal ? '500' : undefined }}
+        >
           {specifyingModal ? 'Entire Project' : 'ENTIRE PROJECT'}
         </BodyText>
         <Tooltip
@@ -135,7 +139,8 @@ export const useAssignProductToSpaceForm = (productId: string, projectId: string
             (E.g. paint/surface coating, etc)`}
           overlayInnerStyle={{
             width: 199,
-          }}>
+          }}
+        >
           <InfoIcon style={{ width: 18, height: 18, marginLeft: 8 }} />
         </Tooltip>
       </div>

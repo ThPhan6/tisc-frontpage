@@ -16,17 +16,17 @@ export enum ProductSpecifiedTabKeys {
 export const ProductSpecifiedTabs: TabItem[] = [
   {
     tab: 'issuing information',
-    mobileTabTitle: 'ISSUING',
+    tabletTabTitle: 'ISSUING',
     key: ProductSpecifiedTabKeys.issuingInformation,
   },
   {
     tab: 'cover & preamble',
-    mobileTabTitle: 'COVER',
+    tabletTabTitle: 'COVER',
     key: ProductSpecifiedTabKeys.coverAndPreamble,
   },
   {
     tab: 'standard specification',
-    mobileTabTitle: 'SPECIFICATION',
+    tabletTabTitle: 'SPECIFICATION',
     key: ProductSpecifiedTabKeys.standardSpecification,
   },
 ];

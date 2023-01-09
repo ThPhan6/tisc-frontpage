@@ -70,6 +70,9 @@
   :global(.ant-collapse-item .ant-collapse-header) {
     text-transform: capitalize !important;
   }
+  @media screen and (max-width: @screen-md) {
+    padding: 0 12px;
+  }
   .customHeader {
     margin-top: 16px;
     :global(.function-type-placeholder) {
@@ -81,9 +84,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 40px;
+    height: 36px;
     margin-bottom: 8px;
-    box-shadow: @border-bottom;
+    // box-shadow: @border-bottom;
     :global(.ant-switch-checked) {
       background: @primary-color-dark !important;
     }
@@ -111,6 +114,9 @@
     :global(.ant-collapse-item.ant-collapse-item-disabled .ant-collapse-header) {
       color: @mono-color-medium;
     }
+  }
+  :global(.ant-collapse-item) {
+    margin-bottom: 12px;
   }
 }
 .customActionButton {

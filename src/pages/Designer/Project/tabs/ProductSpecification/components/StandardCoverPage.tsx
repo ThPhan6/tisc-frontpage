@@ -5,6 +5,7 @@ import { Switch } from 'antd';
 
 import { ReactComponent as FileSearchIcon } from '@/assets/icons/file-search-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { useBoolean } from '@/helper/hook';
 import { messageError, messageErrorType, validateDocumentTitle } from '@/helper/utils';
 
@@ -26,6 +27,7 @@ interface CoverStandardProps {
   onPreview?: () => void;
 }
 const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, onPreview }) => {
+  const isMobile = useScreen().isMobile;
   const openModal = useBoolean();
   const [previewURL, setPreviewURL] = useState<string>('');
 
@@ -56,18 +58,15 @@ const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, o
     return (
       <div
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginRight: '12px',
-          maxWidth: 'calc(100% - 46px)',
+          marginRight: isMobile ? undefined : 12,
         }}
+        className="flex-between"
       >
         <RobotoBodyText
           level={5}
           customClass="text-overflow"
           style={{
-            maxWidth: 'calc(100% - 46px)',
+            maxWidth: 'calc(100% - 26px)',
           }}
         >
           {label}
@@ -147,7 +146,10 @@ const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, o
         </div>
       ) : (
         <div>
-          <div className={styles.specification}>
+          <div
+            className={styles.cover}
+            style={{ paddingBottom: 16, height: 'calc(var(--vh) * 100 - 352px)' }}
+          >
             <DropdownCheckboxList
               data={data.templates.specification.map((specification) => {
                 return {
