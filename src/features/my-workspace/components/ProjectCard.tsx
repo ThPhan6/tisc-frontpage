@@ -155,7 +155,11 @@ export const ProjectCard: FC<ProjectCardProps> = ({
               {isBrandUser ? info.requestCount : FilterNames[Number(info.status)]}
             </BodyText>
           </div>
-          {info.newRequest ? <UnreadIcon /> : <span />}
+          {info.newRequest ? (
+            <UnreadIcon />
+          ) : (
+            <span style={isBrandUser ? { width: '18px', height: '18px' } : {}} />
+          )}
         </div>
 
         <div className={styles.middle}>
@@ -169,7 +173,11 @@ export const ProjectCard: FC<ProjectCardProps> = ({
               {isBrandUser ? info.notificationCount : dueDay.text}
             </BodyText>
           </div>
-          {info.newNotification ? <UnreadIcon /> : <span />}
+          {info.newNotification ? (
+            <UnreadIcon />
+          ) : (
+            <span style={isBrandUser ? { width: '18px', height: '18px' } : {}} />
+          )}
         </div>
       </>
     );
