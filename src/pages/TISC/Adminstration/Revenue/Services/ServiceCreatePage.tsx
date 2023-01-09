@@ -322,7 +322,7 @@ const ServiceCreatePage = () => {
             <Row gutter={[24, 8]}>
               <Col span={8}>
                 <div className={styles.item}>
-                  <MainTitle level={4} style={{ width: '80%' }}>
+                  <MainTitle level={4} customClass={styles.labelConsistent}>
                     Unit Rate
                   </MainTitle>
                   <MaskedNumberInput
@@ -343,7 +343,7 @@ const ServiceCreatePage = () => {
               </Col>
               <Col span={8}>
                 <div className={styles.item}>
-                  <MainTitle level={4} style={{ width: '80%' }}>
+                  <MainTitle level={4} customClass={styles.labelConsistent}>
                     Quantity
                   </MainTitle>
                   <MaskedNumberInput
@@ -389,7 +389,7 @@ const ServiceCreatePage = () => {
               </Col>
               <Col span={8}>
                 <div className={styles.item}>
-                  <MainTitle level={4} style={{ width: '50%' }}>
+                  <MainTitle level={4} customClass={styles.labelConsistent}>
                     Tax (%)
                   </MainTitle>
                   <MaskedNumberInput
