@@ -402,7 +402,10 @@ const ProductConsidered: React.FC = () => {
             hideAssign
             showInquiryRequest
             showSpecify
-            onSpecifyClick={() => setSpecifyingProduct(item)}
+            onSpecifyClick={() => {
+              setSpecifyingProduct(item);
+              onOpenSpecifiyingProductModal(item);
+            }}
             isCustomProduct={item.specifiedDetail?.custom_product}
           />
         ))}
