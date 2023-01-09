@@ -56,7 +56,11 @@ export const CustomTabs: FC<CustomTabsProps> = ({
                     {item.icon}
                   </span>
                 )}
-                {hideTitle ? null : (isMobile && item.mobileTabTitle) || item.tab}
+                {hideTitle
+                  ? null
+                  : (isTablet && item.tabletTabTitle) ||
+                    (isMobile && item.mobileTabTitle) ||
+                    item.tab}
               </div>
             }
             key={item.key}

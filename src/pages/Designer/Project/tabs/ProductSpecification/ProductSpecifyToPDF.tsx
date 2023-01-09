@@ -4,6 +4,7 @@ import { ProductSpecifiedTabKeys, ProductSpecifiedTabs } from '../../constants/t
 import { Col, Row } from 'antd';
 
 import { createPDF, getSpecifiedProductByPDF } from '@/features/project/services';
+import { useScreen } from '@/helper/common';
 
 import { PdfDetail, TemplatesItem } from './type';
 
@@ -20,6 +21,7 @@ interface ProductSpecififyPDF {
 }
 
 const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
+  const isMobile = useScreen().isMobile;
   const [selectedTab, setSelectedTab] = useState<ProductSpecifiedTabKeys>(
     ProductSpecifiedTabKeys.issuingInformation,
   );
@@ -121,8 +123,8 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
   };
 
   return (
-    <Row className={styles.content}>
-      <Col span={12}>
+    <Row className={styles.content} gutter={[8, 8]}>
+      <Col lg={12} span={24}>
         <div className={styles.content_left}>
           <CustomTabs
             listTab={ProductSpecifiedTabs}
@@ -132,7 +134,7 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
             className={styles.projectTabInfo}
             onChange={(changedKey) => setSelectedTab(changedKey as ProductSpecifiedTabKeys)}
             activeKey={selectedTab}
-            style={{ padding: '16px 16px 0 16px' }}
+            style={{ padding: isMobile ? '12px 12px 0 12px' : '16px 16px 0 16px' }}
           />
           <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.issuingInformation}>
             <IssuingInformation data={data} onChangeData={onChangeData} />
@@ -150,7 +152,7 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
           </CustomTabPane>
         </div>
       </Col>
-      <Col span={12} className={styles.content_right}>
+      <Col lg={12} span={24} className={styles.content_right}>
         <PdfPreview generatePDF={generatepdf} data={data} />
       </Col>
     </Row>

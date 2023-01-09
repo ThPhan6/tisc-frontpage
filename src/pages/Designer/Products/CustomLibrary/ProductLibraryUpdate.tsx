@@ -26,7 +26,7 @@ const LIST_TAB = [
 ];
 
 const ProductLibraryUpdate: React.FC = () => {
-  const isMobile = useScreen().isMobile;
+  const isTablet = useScreen().isTablet;
   const history = useHistory();
   const params = useParams<{ id: string }>();
   const productId = params?.id || '';
@@ -128,7 +128,7 @@ const ProductLibraryUpdate: React.FC = () => {
 
       <Col span={24}>
         <Row gutter={[8, 8]}>
-          <Col span={isMobile ? 24 : 12}>
+          <Col span={isTablet ? 24 : 12}>
             <ProductImagePreview
               hideInquiryRequest
               isCustomProduct
@@ -137,7 +137,7 @@ const ProductLibraryUpdate: React.FC = () => {
             />
           </Col>
 
-          <Col span={isMobile ? 24 : 12} className={styles.productContent}>
+          <Col span={isTablet ? 24 : 12} className={styles.productContent}>
             <Row style={{ flexDirection: 'column', height: '100%' }}>
               <Col>
                 <CustomTabs

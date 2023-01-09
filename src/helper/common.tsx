@@ -63,8 +63,8 @@ export const { useBreakpoint } = Grid;
 export const useScreen = () => {
   const screens = useBreakpoint();
 
-  const isTablet = (screens.sm || screens.md) && screens.lg === false;
-  const isMobile = screens.xs && !isTablet;
+  const isTablet = (screens.xs || screens.sm || screens.md) && screens.lg === false;
+  const isMobile = screens.xs;
 
   return { isTablet, isMobile };
 };
