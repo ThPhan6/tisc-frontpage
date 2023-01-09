@@ -3,6 +3,10 @@ import React, { FC, useState } from 'react';
 import { Dropdown } from 'antd';
 import type { DropDownProps, DropdownProps } from 'antd/es/dropdown';
 
+import { useScreen } from '@/helper/common';
+
+import { DrawerMenu } from '../Menu/DrawerMenu';
+import { FilterDrawer } from '../Modal/Drawer';
 import { BodyText } from '../Typography';
 import styles from './index.less';
 
@@ -11,15 +15,16 @@ export type HeaderDropdownProps = {
   arrowPositionCenter?: boolean;
   containerClass?: string;
   overlayClassName?: string;
-  overlay?: React.ReactNode | (() => React.ReactNode) | any;
   items?: MenuIconProps[];
   placement?: DropdownProps['placement'];
+  filterDropdown?: boolean;
+  menuDropdown?: boolean;
 } & Omit<DropDownProps, 'overlay'>;
 
 export type MenuIconProps = {
   containerClass?: string;
   label?: string | React.ReactNode;
-  icon?: JSX.Element;
+  icon?: JSX.Element | React.ReactNode;
   onClick: () => void;
   disabled?: boolean;
 };
@@ -40,7 +45,8 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParen
         onParentClick?.();
         onClick();
       }}
-      className={`${styles.item} ${containerClass} ${disabled ? styles.disabled : ''}`}>
+      className={`${styles.item} ${containerClass} ${disabled ? styles.disabled : ''}`}
+    >
       {icon ? <div className={styles.icon}>{icon}</div> : null}
       <BodyText fontFamily="Roboto" level={6}>
         {label}
@@ -69,28 +75,41 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
   containerClass,
   arrowPositionCenter,
   arrow,
-  items,
-  overlay,
+  items = [],
+  filterDropdown,
+  menuDropdown,
   ...restProps
 }) => {
+  const { isMobile } = useScreen();
+
   const [visible, setVisible] = useState(false);
 
+  const content = items ? (
+    <MenuHeaderDropdown items={items} onParentClick={() => setVisible(false)} />
+  ) : (
+    <div />
+  );
+
   return (
-    <Dropdown
-      className={styles.dropdownWrapper}
-      overlayClassName={`${styles.container} ${
-        arrowPositionCenter && styles[`arrow-center`]
-      } ${cls} ${containerClass}`}
-      arrow={arrow}
-      visible={visible}
-      onVisibleChange={(value) => setVisible(value)}
-      overlay={
-        overlay ||
-        (items ? (
-          <MenuHeaderDropdown items={items} onParentClick={() => setVisible(false)} />
-        ) : null)
-      }
-      {...restProps}
-    />
+    <>
+      <Dropdown
+        className={styles.dropdownWrapper}
+        overlayClassName={`${styles.container} ${
+          arrowPositionCenter && styles[`arrow-center`]
+        } ${cls} ${filterDropdown ? styles.filterDropdown : ''} ${containerClass}`}
+        arrow={arrow}
+        visible={visible && isMobile === false}
+        onVisibleChange={(value) => setVisible(value)}
+        overlay={content}
+        {...restProps}
+      />
+      {!isMobile ? null : menuDropdown ? (
+        <DrawerMenu visible={visible} onClose={() => setVisible(false)} items={items} />
+      ) : (
+        <FilterDrawer visible={visible} onClose={() => setVisible(false)}>
+          {content}
+        </FilterDrawer>
+      )}
+    </>
   );
 };

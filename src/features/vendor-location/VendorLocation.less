@@ -3,10 +3,10 @@
   margin-bottom: 8px;
 }
 .collapsed {
-  box-shadow: 0 1px @mono-color;
+  box-shadow: 0 0.7px @mono-color;
 }
 .notCollapsed {
-  box-shadow: 0 1px @mono-color-medium;
+  box-shadow: 0 0.7px @mono-color-medium;
 }
 .borderBottomNone > :last-child {
   box-shadow: none;
@@ -65,6 +65,16 @@
     :global(.inActive-title) {
       flex: 1;
       font-weight: 300;
+    }
+  }
+
+  .deleteIcon {
+    margin-left: 12px;
+    color: @mono-color-medium;
+    cursor: pointer;
+
+    &:hover {
+      color: @primary-color-dark;
     }
   }
 }

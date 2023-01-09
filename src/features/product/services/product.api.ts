@@ -30,6 +30,8 @@ import store from '@/reducers';
 
 import { ShareViaEmailForm } from '@/components/ShareViaEmail';
 
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+
 export async function getProductSummary(brandId: string) {
   return request<{ data: ProductSummary }>(`/api/product/brand-product-summary/${brandId}`, {
     method: 'GET',
@@ -66,6 +68,7 @@ export const createProductCard = async (data: ProductFormData) => {
 };
 
 export const getProductListByBrandId = async (params: ProductGetListParameter) => {
+  showPageLoading();
   return request<{ data: { data: GroupProductList[]; brand: BrandDetail } }>(
     `/api/product/get-list`,
     {
@@ -89,22 +92,25 @@ export const getProductListByBrandId = async (params: ProductGetListParameter) =
           }),
         }),
       );
+      hidePageLoading();
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_PRODUCT_BY_BRAND_ERROR);
     });
 };
 
 export const getProductListForDesigner = async (params: GetListProductForDesignerRequestParams) => {
-  return request<{ data: GroupProductList[]; brand_summary?: BrandSummary }>(
-    `/api/product/design/get-list`,
-    {
-      method: 'GET',
-      params,
-    },
-  )
-    .then(({ data, brand_summary }) => {
-      store.dispatch(setProductList({ data, brandSummary: brand_summary }));
+  return request<{
+    data?: GroupProductList[];
+    brand_summary?: BrandSummary;
+    allProducts?: ProductItem[];
+  }>(`/api/product/design/get-list`, {
+    method: 'GET',
+    params,
+  })
+    .then(({ data, brand_summary, allProducts }) => {
+      store.dispatch(setProductList({ data, brandSummary: brand_summary, allProducts }));
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_PRODUCT_BY_BRAND_ERROR);

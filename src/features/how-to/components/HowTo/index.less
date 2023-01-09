@@ -5,17 +5,16 @@
   :global(.ant-collapse-content > .ant-collapse-content-box) {
     padding: 0;
   }
-  :global(.ant-collapse-ghost
-      > .ant-collapse-item
-      > .ant-collapse-content
-      > .ant-collapse-content-box) {
+  :global(
+      .ant-collapse-ghost > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box
+    ) {
     padding: 0;
   }
   :global(.ant-collapse-header-text) {
     width: 100%;
   }
   .bottomMedium {
-    box-shadow: inset 0 -1px 0 @mono-color-medium;
+    box-shadow: inset 0 -0.7px 0 @mono-color-medium;
   }
   .bottomBlack {
     border-radius: 0;
@@ -25,7 +24,7 @@
     display: none;
   }
   .form {
-    height: calc(100vh - 96px);
+    height: calc(var(--vh) * 100 - 96px);
     padding: 0 16px;
     overflow: auto;
     background-color: #fff;

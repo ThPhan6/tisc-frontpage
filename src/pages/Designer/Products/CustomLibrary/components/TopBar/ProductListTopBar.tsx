@@ -9,6 +9,7 @@ import { ReactComponent as VendorManagementIcon } from '@/assets/icons/vendor-ma
 
 import { useCustomProductFilter } from '../../hook';
 import { getCustomProductList } from '../../services';
+import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
 
@@ -23,6 +24,7 @@ import { setCustomProductFilter } from '../../slice';
 import styles from './index.less';
 
 export const ProductListTopBar: React.FC = () => {
+  const { isMobile } = useScreen();
   const {
     filter,
     companies,
@@ -185,6 +187,8 @@ export const ProductListTopBar: React.FC = () => {
                 companies,
                 true,
                 renderDefaultCompanyLabel(),
+                undefined,
+                { borderFirstItem: true },
               )}
             />
             <TopBarItem
@@ -208,27 +212,35 @@ export const ProductListTopBar: React.FC = () => {
         }
         RightSideContent={
           <>
-            <TopBarItem
-              disabled={!companies.length}
-              bottomValue="New Product"
-              cursor={companies.length ? 'pointer' : 'default'}
-              customClass="left-divider mr-0 white-space"
-              onClick={() =>
-                companies.length ? pushTo(PATH.designerCustomProductCreate) : undefined
-              }
-              icon={<PlusCircleIcon />}
-            />
+            {isMobile ? null : (
+              <TopBarItem
+                disabled={!companies.length}
+                bottomValue="New Product"
+                cursor={companies.length ? 'pointer' : 'default'}
+                customClass="left-divider mr-0 white-space"
+                onClick={() =>
+                  companies.length ? pushTo(PATH.designerCustomProductCreate) : undefined
+                }
+                icon={<PlusCircleIcon />}
+              />
+            )}
             <TopBarItem
               topValue={
-                <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                  }}
+                >
                   <Title level={8} style={{ marginRight: '8px' }}>
                     OPEN
                   </Title>
                   <OpenIcon />
                 </div>
               }
-              customClass="left-divider mr-12 white-space"
-              bottomValue="Vendor Management"
+              customClass={`left-divider mr-12 white-space ${styles.flexEnd}`}
+              bottomValue={isMobile ? undefined : 'Vendor Management'}
               cursor="pointer"
               onClick={() => pushTo(PATH.designerCustomResource)}
               icon={<VendorManagementIcon />}

@@ -21,7 +21,11 @@ import {
   ProductTopBarFilter,
   setFormatFilterForDropDown,
 } from '@/features/product/components/FilterAndSorter';
-import { CustomDropDown, FilterItem } from '@/features/product/components/ProductTopBarItem';
+import {
+  CustomDropDown,
+  CustomDropDownProps,
+  FilterItem,
+} from '@/features/product/components/ProductTopBarItem';
 
 import { getAllCustomResource } from '../../CustomResource/api';
 import { setCustomProductFilter } from './slice';
@@ -263,6 +267,7 @@ export const useCustomProductFilter = (fetchs?: { company?: boolean; collection?
     haveViewAll?: boolean,
     labelDefault?: string | ReactNode,
     position?: DropDownProps['placement'],
+    customDropDownProps?: Partial<CustomDropDownProps>,
   ) => {
     if (!filterData || !filterData?.length) {
       return labelDefault || type;
@@ -290,7 +295,9 @@ export const useCustomProductFilter = (fetchs?: { company?: boolean; collection?
         viewAllTop={haveViewAll}
         textCapitalize={false}
         placement={position ?? 'bottomLeft'}
-        menuStyle={{ height: 'max-content', width: 160 }}>
+        menuStyle={{ height: 'max-content', width: 160 }}
+        {...customDropDownProps}
+      >
         {type}
       </CustomDropDown>
     );

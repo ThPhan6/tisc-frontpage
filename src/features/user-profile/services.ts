@@ -20,12 +20,12 @@ export async function updateTeamProfile(
 }
 
 export async function updateAvatarTeamProfile(
-  body: any,
+  data: { avatar: string },
   callback: (type: STATUS_RESPONSE, message?: string) => void,
 ) {
   request(`/api/team-profile/update-avatar`, {
     method: 'POST',
-    body,
+    data,
   })
     .then(() => {
       callback(STATUS_RESPONSE.SUCCESS);

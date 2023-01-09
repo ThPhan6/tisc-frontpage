@@ -4,6 +4,7 @@ import { PATH } from '@/constants/path';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Col, Row } from 'antd';
 
+import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useGetParamId } from '@/helper/hook';
 
@@ -20,6 +21,8 @@ import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const CustomResourceCreatePage = () => {
   const customResourceType = useAppSelector((state) => state.customResource.customResourceType);
+
+  const { isMobile } = useScreen();
 
   const submitButtonStatus = useBoolean(false);
 
@@ -87,17 +90,22 @@ const CustomResourceCreatePage = () => {
   return (
     <PageContainer pageHeaderRender={() => <CustomResourceTopBar />}>
       <CustomResourceHeader />
-      <Row style={{ marginTop: '8px' }}>
-        <Col span={12} style={{ paddingRight: '8px' }}>
-          <CustomResourceEntryForm data={data} setData={setData} type="create" />
+      <Row style={{ marginTop: '8px' }} gutter={[0, 8]}>
+        <Col span={isMobile ? 24 : 12} style={{ paddingRight: isMobile ? '' : '8px' }}>
+          <CustomResourceEntryForm
+            data={data}
+            setData={setData}
+            type={customResourceId ? 'update' : 'create'}
+          />
         </Col>
-        <Col span={12} style={{ background: '#fff' }}>
+        <Col span={isMobile ? 24 : 12} style={{ background: '#fff' }}>
           <ContactInformation
             data={data}
             setData={setData}
             submitButtonStatus={submitButtonStatus.value}
             onSubmit={handleCreate}
-            type="create"
+            type={customResourceId ? 'update' : 'create'}
+            customResourceId={customResourceId}
           />
         </Col>
       </Row>

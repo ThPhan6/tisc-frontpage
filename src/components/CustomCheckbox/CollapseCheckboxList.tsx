@@ -1,6 +1,7 @@
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 
 import { CheckboxValue, CustomCheckboxProps } from '@/components/CustomCheckbox/types';
+import { CollapseGroup, useCollapseGroupActiveCheck } from '@/reducers/active';
 
 import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
@@ -14,6 +15,8 @@ interface CollapseCheckboxListProps extends CustomCheckboxProps {
   containerClass?: string;
   checkboxItemHeight?: string;
   activeKey?: string | string[];
+  groupType?: CollapseGroup;
+  groupIndex?: number; // distinct index for handling active collapse item
 }
 
 const CollapseCheckboxList: FC<CollapseCheckboxListProps> = ({
@@ -26,24 +29,27 @@ const CollapseCheckboxList: FC<CollapseCheckboxListProps> = ({
   containerClass = '',
   checkboxItemHeight = '36px',
   activeKey,
+  groupType,
+  groupIndex,
   ...props
 }) => {
-  const [collapse, setCollapse] = useState<string | string[]>();
-
-  useEffect(() => {
-    setCollapse(activeKey);
-  }, [activeKey]);
+  const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(
+    groupType,
+    groupIndex,
+    activeKey,
+  );
 
   return (
     <CustomCollapse
-      activeKey={collapse}
-      onChange={(key) => setCollapse(key)}
+      activeKey={curActiveKey}
+      onChange={onKeyChange}
       header={
         <BodyText level={5} customClass="function-type-placeholder" fontFamily="Roboto">
           {placeholder}
         </BodyText>
       }
-      className={`${styles.functionTypeDropdown} ${containerClass}`}>
+      className={`${styles.functionTypeDropdown} ${containerClass}`}
+    >
       <CustomCheckbox
         {...props}
         options={options}

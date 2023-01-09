@@ -30,6 +30,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
 
   const isAccessableForBrand = (name: string, subname?: string) =>
     isBrand && getAccessable(name, subname);
+
   return {
     canAdmin: currentUser && currentUser.access === 'admin',
     tisc_workspace: isAccessableForTisc('workspace'),
@@ -71,7 +72,13 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     design_product_brand_product: isAccessableForDesigner('product', 'brand product'),
     design_product_custom_library: isAccessableForDesigner('product', 'custom library'),
     // for access to project
-    design_project_overal_listing: isAccessableForDesigner('project', 'overal listing'),
+    design_project_overal_listing: isAccessableForDesigner('project', 'overall listing'),
+
+    design_project_updating:
+      isAccessableForDesigner('project', 'basic information') ||
+      isAccessableForDesigner('project', 'zone/area/room') ||
+      isAccessableForDesigner('project', 'product considered') ||
+      isAccessableForDesigner('project', 'product specified'),
     // project tabs
     design_project_basic_information: isAccessableForDesigner('project', 'basic information'),
     design_project_zone_area_zoom: isAccessableForDesigner('project', 'zone/area/room'),

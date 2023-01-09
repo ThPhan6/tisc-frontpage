@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { deleteProjectSpace, getProjectSpaceListPagination } from '@/features/project/services';
-import { confirmDelete } from '@/helper/common';
+import { confirmDelete, useScreen } from '@/helper/common';
 import { formatCurrencyNumber, setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import type { TableColumnItem } from '@/components/Table/types';
@@ -16,6 +16,8 @@ import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
 
+import styles from '../../styles/space-management.less';
+
 interface SpaceListProps {
   handleUpdateSpace: (record: ProjectSpaceZone) => void;
   projectId?: string;
@@ -24,6 +26,7 @@ interface SpaceListProps {
 const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) => {
   useAutoExpandNestedTableColumn(2, [7]);
   const tableRef = useRef<any>();
+  const { isMobile } = useScreen();
 
   const handleDeleteZone = (id: string) => {
     confirmDelete(() => {
@@ -209,6 +212,7 @@ const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) =
         columns={setDefaultWidthForEachColumn(ZoneColumns, 6)}
         ref={tableRef}
         fetchDataFunc={getProjectSpaceListPagination}
+        footerClass={isMobile ? styles.spacePaginationFooter : ''}
         multiSort={{
           name: 'zone_order',
           area_column: 'area_order',

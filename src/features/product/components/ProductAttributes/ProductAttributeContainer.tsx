@@ -32,7 +32,7 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
   isSpecifiedModal,
 }) => {
   const productIdParam = useGetParamId();
-  const isTiscAdmin = useCheckPermission('TISC Admin');
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
   const curProductId = productId ?? productIdParam;
 
   const { addNewProductAttribute, attributeGroup, dimensionWeightData } = useProductAttributeForm(
@@ -58,9 +58,10 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
 
       <DimensionWeight
         collapseStyles={!isSpecifiedModal}
-        customClass={!isTiscAdmin ? styles.marginTopSpace : ''}
+        customClass={!isTiscAdmin ? styles.marginTopSpace : styles.colorInput}
         editable={isTiscAdmin}
         isConversionText={isSpecifiedModal}
+        arrowAlignRight={isSpecifiedModal}
         isShow={activeKey === 'specification'}
         data={dimensionWeightData}
         onChange={(data) => {

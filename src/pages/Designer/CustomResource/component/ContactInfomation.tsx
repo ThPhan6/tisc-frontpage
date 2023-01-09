@@ -5,11 +5,10 @@ import { PATH } from '@/constants/path';
 import { Collapse } from 'antd';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
-import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
-import { confirmDelete } from '@/helper/common';
+import { confirmDelete, useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import {
   getEmailMessageError,
@@ -31,20 +30,22 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
 
 import styles from '../CustomResource.less';
+import { deleteCustomResource } from '../api';
 
 interface ContactInformationProps {
   data: CustomResourceForm;
   setData: (data: CustomResourceForm) => void;
   onSubmit?: () => void;
   submitButtonStatus?: boolean;
-  type: 'view' | 'create';
+  type: 'view' | 'create' | 'update';
+  customResourceId?: string;
 }
 
 interface ContactHeaderProps extends CollapsingProps {
   index: number;
   item: ContactDetail;
   handleClickDeleteItem: () => void;
-  type: 'view' | 'create';
+  type: 'view' | 'create' | 'update';
 }
 
 const DEFAULT_CONTACT: ContactDetail = {
@@ -75,12 +76,13 @@ const ContactHeader: FC<ContactHeaderProps> = (props) => {
   return (
     <div
       className={styles.panel_header}
-      onClick={() => handleActiveCollapse(item.first_name ? index : -1)}>
+      onClick={() => handleActiveCollapse(item.first_name ? index : -1)}
+    >
       <div className={`${styles.panel_header__field}`}>
         {String(index) === activeKey || checkContactValue(item) ? (
           <div className={styles.titleIcon}>
             <BodyText level={4}>CONTACT INFORMATION</BodyText>
-            {type === 'create' && (
+            {type !== 'view' && (
               <DeleteIcon
                 onClick={(e) => {
                   e.stopPropagation();
@@ -115,8 +117,10 @@ export const ContactInformation: FC<ContactInformationProps> = ({
   onSubmit,
   submitButtonStatus,
   type,
+  customResourceId,
 }) => {
   const [activeKey, setActiveKey] = useState<string>('');
+  const { isMobile } = useScreen();
 
   const handleActiveCollapse = (index: number) => {
     setActiveKey(activeKey === String(index) ? '' : String(index));
@@ -151,6 +155,9 @@ export const ContactInformation: FC<ContactInformationProps> = ({
       setData({ ...data, contacts: newContact });
     });
   };
+  const isEdit = type !== 'view';
+
+  const labelColor = type !== 'create' ? 'mono-color-dark' : 'mono-color';
 
   const renderContacts = (contact: ContactDetail, index: number) => {
     return (
@@ -169,15 +176,16 @@ export const ContactInformation: FC<ContactInformationProps> = ({
           key={index}
           collapsible={checkContactValue(contact) ? 'disabled' : undefined}
           showArrow={false}
-          className={String(index) !== activeKey ? styles['bottomMedium'] : ''}>
+          className={String(index) !== activeKey ? styles['bottomMedium'] : ''}
+        >
           <InputGroup
             label="First Name"
             required
-            deleteIcon={type === 'create'}
+            deleteIcon={isEdit}
             fontLevel={3}
             value={contact.first_name}
             hasPadding
-            colorPrimaryDark={type === 'create'}
+            colorPrimaryDark={isEdit}
             hasBoxShadow
             hasHeight
             onChange={(e) => {
@@ -186,16 +194,17 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             onDelete={() => onChangeData('first_name', '', index)}
             placeholder="contact first name"
             readOnly={type === 'view'}
+            labelColor={labelColor}
           />
           {/* Last name */}
           <InputGroup
             label="Last Name"
             required
-            deleteIcon={type === 'create'}
+            deleteIcon={isEdit}
             fontLevel={3}
             value={contact.last_name}
             hasPadding
-            colorPrimaryDark={type === 'create'}
+            colorPrimaryDark={isEdit}
             hasBoxShadow
             hasHeight
             onChange={(e) => {
@@ -204,16 +213,17 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             onDelete={() => onChangeData('last_name', '', index)}
             placeholder="contact last name"
             readOnly={type === 'view'}
+            labelColor={labelColor}
           />
           {/* Position / Role */}
           <InputGroup
             label="Position / Role"
             required
-            deleteIcon={type === 'create'}
+            deleteIcon={isEdit}
             fontLevel={3}
             value={contact.position}
             hasPadding
-            colorPrimaryDark={type === 'create'}
+            colorPrimaryDark={isEdit}
             hasBoxShadow
             hasHeight
             onChange={(e) => {
@@ -222,17 +232,18 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             onDelete={() => onChangeData('position', '', index)}
             placeholder="contact position/role "
             readOnly={type === 'view'}
+            labelColor={labelColor}
           />
 
           {/* Work Email */}
           <InputGroup
             label="Work Email"
             required
-            deleteIcon={type === 'create'}
+            deleteIcon={isEdit}
             fontLevel={3}
             value={contact.work_email}
             hasPadding
-            colorPrimaryDark={type === 'create'}
+            colorPrimaryDark={isEdit}
             hasBoxShadow
             hasHeight
             onChange={(e) => {
@@ -243,6 +254,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             message={getEmailMessageError(contact.work_email, MESSAGE_ERROR.EMAIL_INVALID)}
             messageType={getEmailMessageErrorType(contact.work_email, 'error', 'normal')}
             readOnly={type === 'view'}
+            labelColor={labelColor}
           />
 
           {/* Work Phone */}
@@ -251,20 +263,22 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             layout="vertical"
             required
             style={{ marginBottom: '16px' }}
-            labelFontSize={3}>
+            labelFontSize={3}
+            labelColor={labelColor}
+          >
             <PhoneInput
               phonePlaceholder="area code / number"
               onChange={(value) => {
                 onChangeData('work_phone', value.phoneNumber, index);
               }}
               colorPlaceholder="mono"
-              containerClass={type === 'create' ? styles.customPhoneInput : ''}
+              containerClass={isEdit ? styles.customPhoneInput : ''}
               codeReadOnly
               value={{
                 zoneCode: data.phone_code ?? '00',
                 phoneNumber: contact.work_phone,
               }}
-              deleteIcon={type === 'create'}
+              deleteIcon={isEdit}
               phoneNumberReadOnly={type === 'view'}
             />
           </FormGroup>
@@ -274,20 +288,22 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             layout="vertical"
             required
             labelFontSize={3}
-            style={{ marginBottom: '16px' }}>
+            style={{ marginBottom: '16px' }}
+            labelColor={labelColor}
+          >
             <PhoneInput
               phonePlaceholder="mobile number"
               onChange={(value) => {
                 onChangeData('work_mobile', value.phoneNumber, index);
               }}
               colorPlaceholder="mono"
-              containerClass={type === 'create' ? styles.customPhoneInput : ''}
+              containerClass={isEdit ? styles.customPhoneInput : ''}
               codeReadOnly
               value={{
                 zoneCode: data.phone_code ?? '00',
                 phoneNumber: contact.work_mobile,
               }}
-              deleteIcon={type === 'create'}
+              deleteIcon={isEdit}
               phoneNumberReadOnly={type === 'view'}
             />
           </FormGroup>
@@ -296,12 +312,22 @@ export const ContactInformation: FC<ContactInformationProps> = ({
     );
   };
 
+  const handleDelete = () => {
+    confirmDelete(() => {
+      deleteCustomResource(customResourceId as string).then((isSuccess) => {
+        if (isSuccess) {
+          pushTo(PATH.designerCustomResource);
+        }
+      });
+    });
+  };
+
   return (
     <>
       <TableHeader
         title=""
         rightAction={
-          type === 'create' ? (
+          isEdit && (
             <CustomPlusButton
               size={18}
               label="Add Contact"
@@ -309,30 +335,42 @@ export const ContactInformation: FC<ContactInformationProps> = ({
               customClass={styles.label}
               disabled={handleDisableButton()}
             />
-          ) : (
-            <CloseIcon
-              onClick={() => pushTo(PATH.designerCustomResource)}
-              style={{ cursor: 'pointer', width: '24px', height: '24px' }}
-            />
           )
         }
       />
-      <div className={styles.information}>
+      <div
+        className={styles.information}
+        style={{ height: isMobile ? '' : 'calc(var(--vh) * 100 - 304px)' }}
+      >
         {data.contacts.map((contact, index) => renderContacts(contact, index))}
       </div>
-      {type === 'create' && (
-        <div className={styles.bottom}>
-          <CustomButton
-            properties="rounded"
-            size="small"
-            buttonClass={styles.btnCancel}
-            onClick={() => pushTo(PATH.designerCustomResource)}>
-            Cancel
-          </CustomButton>
+      {isEdit && (
+        <div className={styles.bottom} style={{ justifyContent: isMobile ? 'center' : undefined }}>
+          {isMobile && type === 'update' ? (
+            <CustomButton
+              size="small"
+              variant="secondary"
+              properties="rounded"
+              buttonClass={styles.btnCancel}
+              onClick={handleDelete}
+            >
+              Delete
+            </CustomButton>
+          ) : (
+            <CustomButton
+              properties="rounded"
+              size="small"
+              buttonClass={styles.btnCancel}
+              onClick={() => pushTo(PATH.designerCustomResource)}
+            >
+              Cancel
+            </CustomButton>
+          )}
           <CustomSaveButton
             onClick={!handleDisableButton() ? onSubmit : undefined}
             isSuccess={submitButtonStatus}
-            customClass={handleDisableButton() ? styles.disableButton : ''}>
+            customClass={handleDisableButton() ? styles.disableButton : ''}
+          >
             Save
           </CustomSaveButton>
         </div>

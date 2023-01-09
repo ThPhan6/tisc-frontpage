@@ -57,71 +57,73 @@ export const OptionCollapseHeader: FC<OptionGroupProps> = ({
 
   return (
     <Row style={{ width: '100%' }} align="middle" justify="space-between">
-      {isPublicPage ? (
-        <RobotoBodyText level={6} customClass="optionLabel">
-          {option.title}
-        </RobotoBodyText>
-      ) : (
-        <Col style={{ paddingLeft: specifying ? 0 : 16 }}>
-          <CustomCheckbox
-            options={[
-              {
-                label: <RobotoBodyText level={6}>{option.title}</RobotoBodyText>,
-                value: dataIndex,
-              },
-            ]}
-            selected={
-              selectOption?.isChecked
-                ? [
-                    {
-                      label: <RobotoBodyText level={6}>{option.title}</RobotoBodyText>,
-                      value: dataIndex,
-                    },
-                  ]
-                : []
-            }
-            onChange={() => {
-              if (productId && selectOption?.isChecked) {
-                const newOptionSpec = {
-                  is_refer_document: specification?.attribute_groups?.length
-                    ? specification.attribute_groups.some(
-                        (el) => el.id !== selectOption.id && el.isChecked,
-                      )
-                    : true,
-                  attribute_groups: specification?.attribute_groups?.length
-                    ? specification.attribute_groups.filter((el) => el.id !== selectOption.id)
-                    : [],
-                };
-
-                store.dispatch(
-                  setCustomProductDetail(
-                    specifying && specifiedDetail
-                      ? {
-                          specifiedDetail: {
-                            ...specifiedDetail,
-                            specification: newOptionSpec,
-                          },
-                        }
-                      : { specification: newOptionSpec },
-                  ),
-                );
-                if (!specifying) {
-                  selectProductSpecification(productId, {
-                    custom_product: true,
-                    specification: newOptionSpec,
-                  });
-                }
+      <div className="flex-start">
+        {isPublicPage ? (
+          <RobotoBodyText level={6} customClass="optionLabel">
+            {option.title}
+          </RobotoBodyText>
+        ) : (
+          <Col style={{ paddingLeft: specifying ? 0 : 16 }}>
+            <CustomCheckbox
+              options={[
+                {
+                  label: <RobotoBodyText level={6}>{option.title}</RobotoBodyText>,
+                  value: dataIndex,
+                },
+              ]}
+              selected={
+                selectOption?.isChecked
+                  ? [
+                      {
+                        label: <RobotoBodyText level={6}>{option.title}</RobotoBodyText>,
+                        value: dataIndex,
+                      },
+                    ]
+                  : []
               }
-            }}
-          />
+              onChange={() => {
+                if (productId && selectOption?.isChecked) {
+                  const newOptionSpec = {
+                    is_refer_document: specification?.attribute_groups?.length
+                      ? specification.attribute_groups.some(
+                          (el) => el.id === selectOption.id && el.isChecked,
+                        )
+                      : true,
+                    attribute_groups: specification?.attribute_groups?.length
+                      ? specification.attribute_groups.filter((el) => el.id !== selectOption.id)
+                      : [],
+                  };
+
+                  store.dispatch(
+                    setCustomProductDetail(
+                      specifying && specifiedDetail
+                        ? {
+                            specifiedDetail: {
+                              ...specifiedDetail,
+                              specification: newOptionSpec,
+                            },
+                          }
+                        : { specification: newOptionSpec },
+                    ),
+                  );
+                  if (!specifying) {
+                    selectProductSpecification(productId, {
+                      custom_product: true,
+                      specification: newOptionSpec,
+                    });
+                  }
+                }
+              }}
+            />
+          </Col>
+        )}
+        <Col>
+          <RobotoBodyText level={6} style={{ fontWeight: 300 }}>
+            ({option.items.length})
+          </RobotoBodyText>
         </Col>
-      )}
-      <Col>
-        <RobotoBodyText level={6} style={{ fontWeight: 300 }}>
-          ({option.items.length})
-        </RobotoBodyText>
-      </Col>
-      <Col flex="1 1 100px">
+      </div>
+      <Col style={{ paddingLeft: 16 }}>
         <div className="flex-end">
           <RobotoBodyText level={6}>TAG: {option.tag}</RobotoBodyText>
         </div>

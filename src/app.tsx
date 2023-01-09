@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
@@ -10,6 +10,7 @@ import { ConfigProvider } from 'antd';
 import { RequestConfig, RunTimeLayoutConfig, history } from 'umi';
 
 import { getUserInfoMiddleware } from './pages/LandingPage/services/api';
+import { debounce } from 'lodash';
 
 import type { UserInfoDataProp } from './pages/LandingPage/types';
 import store, { persistor } from './reducers';
@@ -154,6 +155,18 @@ const ProviderContainer = ({ children, routes }: any) => {
     ...children.props,
     routes,
   });
+
+  useEffect(() => {
+    const resize = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vhi', `${vh}px`);
+    };
+
+    resize();
+    const debounceResize = debounce(resize, 50);
+    window.addEventListener('resize', debounceResize);
+    return () => window.removeEventListener('resize', debounceResize);
+  }, []);
 
   return (
     <Provider store={store}>

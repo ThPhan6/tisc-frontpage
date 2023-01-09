@@ -14,8 +14,6 @@ import ProductSummaryTopBar from '@/features/favourite/components/TopBar';
 import { CollapseProductList } from '@/features/product/components';
 import { useProductListFilterAndSorter } from '@/features/product/components/FilterAndSorter';
 
-import './index.less';
-
 const MyFavourite = () => {
   const query = useQuery();
   const cate_id = query.get(QUERY_KEY.cate_id);
@@ -54,7 +52,8 @@ const MyFavourite = () => {
       <PageContainer
         pageHeaderRender={() => (
           <ProductSummaryTopBar isFavouriteRetrieved={retrievedFavourite as boolean} />
-        )}>
+        )}
+      >
         {retrievedFavourite ? <CollapseProductList /> : <FavouriteForm />}
       </PageContainer>
     </div>

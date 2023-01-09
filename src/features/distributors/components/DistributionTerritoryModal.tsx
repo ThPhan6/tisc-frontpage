@@ -12,16 +12,18 @@ const DistributionTerritoryModal: FC<{
   return (
     <Popover
       title="DISTRIBUTION TERRITORY"
+      secondaryModal
       visible={visible}
       setVisible={setVisible}
       noFooter
+      className={styles.modal}
       extraTopAction={
         <div className={styles.content}>
           <div className={styles.text}>
             <MainTitle level={4} customClass={styles.customTitle}>
               Authorized Country
             </MainTitle>
-            <BodyText level={6}>
+            <BodyText level={6} fontFamily="Roboto">
               The <span className={styles.customText}>Authorized Country</span> highlights the
               distribution rights under the contract between the brand company and its distributors.
             </BodyText>
@@ -30,7 +32,7 @@ const DistributionTerritoryModal: FC<{
             <MainTitle level={4} customClass={styles.customTitle}>
               Coverage Beyond
             </MainTitle>
-            <BodyText level={6}>
+            <BodyText level={6} fontFamily="Roboto">
               The brand company could extend the unauthorised country territory rights by selecting
               the <span className={styles.customText}>Allow</span> or{' '}
               <span className={styles.customText}>Not Allow</span> button. This change might impact

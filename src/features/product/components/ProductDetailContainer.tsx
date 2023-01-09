@@ -15,20 +15,20 @@ import {
   updateProductCard,
 } from '@/features/product/services';
 import { getBrandById } from '@/features/user-group/services';
+import { useScreen } from '@/helper/common';
 import { useCheckPermission, useQuery } from '@/helper/hook';
 import { isValidURL } from '@/helper/utils';
-import { pick } from 'lodash';
+import { pick, sortBy } from 'lodash';
 
 import { ProductFormData, ProductKeyword } from '../types';
 import { ProductInfoTab } from './ProductAttributes/types';
 import { ProductDimensionWeight } from '@/features/dimension-weight/types';
 import { resetProductDetailState, setBrand } from '@/features/product/reducers';
-import { ModalOpen } from '@/pages/LandingPage/types';
 import { useAppSelector } from '@/reducers';
+import { ModalType } from '@/reducers/modal';
 
 import { PublicHeader } from '@/components/PublicHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
-import { AboutPoliciesContactModal } from '@/pages/LandingPage/AboutPolicesContactModal';
 import { LandingPageFooter } from '@/pages/LandingPage/footer';
 
 import { ProductAttributeComponent } from './ProductAttributes';
@@ -40,6 +40,7 @@ import styles from './detail.less';
 import Cookies from 'js-cookie';
 
 const ProductDetailContainer: React.FC = () => {
+  const isMobile = useScreen().isMobile;
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -48,14 +49,13 @@ const ProductDetailContainer: React.FC = () => {
   Cookies.set('signature', signature);
   const isPublicPage = signature ? true : false;
 
-  const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact'];
-  const [openModal, setOpenModal] = useState<ModalOpen>('');
+  const listMenuFooter: ModalType[] = ['About', 'Policies', 'Contact'];
 
   const params = useParams<{ id: string; brandId: string }>();
   const productId = params?.id || '';
   const brandId = params?.brandId || '';
 
-  const isTiscAdmin = useCheckPermission('TISC Admin');
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
   const details = useAppSelector((state) => state.product.details);
 
@@ -89,10 +89,6 @@ const ProductDetailContainer: React.FC = () => {
       getRelatedCollectionProducts(details.id);
     }
   }, [details.id, details.brand]);
-
-  const handleCloseModal = () => {
-    setOpenModal('');
-  };
 
   const onSave = () => {
     // check urls is valid
@@ -147,13 +143,9 @@ const ProductDetailContainer: React.FC = () => {
     });
   };
 
-  // if (!details.id) {
-  //   return null;
-  // }
-
   const renderHeader = () => {
     if (isTiscAdmin) {
-      let categorySelected: string = details.categories
+      let categorySelected: string = sortBy(details.categories, 'name')
         .slice(0, 3)
         .map((category) => category.name)
         .join(', ');
@@ -192,12 +184,12 @@ const ProductDetailContainer: React.FC = () => {
         <Col span={24}>{renderHeader()}</Col>
 
         <Col span={24}>
-          <Row className={isPublicPage ? styles.marginRounded : ''}>
-            <Col span={12}>
+          <Row className={isPublicPage ? styles.marginRounded : ''} gutter={[8, 8]}>
+            <Col span={isMobile ? 24 : 12}>
               <ProductImagePreview />
             </Col>
 
-            <Col span={12} className={styles.productContent}>
+            <Col span={isMobile ? 24 : 12} className={styles.productContent}>
               <Row style={{ flexDirection: 'column', height: '100%' }}>
                 <Col>
                   <ProductBasicInfo />
@@ -218,13 +210,7 @@ const ProductDetailContainer: React.FC = () => {
 
       {isPublicPage ? (
         <Col span={24} className={styles.footerContent}>
-          <LandingPageFooter
-            setOpenModal={setOpenModal}
-            listMenuFooter={listMenuFooter}
-            isPublicPage
-          />
-
-          <AboutPoliciesContactModal visible={openModal} onClose={handleCloseModal} />
+          <LandingPageFooter listMenuFooter={listMenuFooter} />
         </Col>
       ) : null}
     </Row>

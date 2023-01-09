@@ -135,7 +135,8 @@ const MaterialProductEntryForm = () => {
         handleSubmit={onHandleSubmit}
         handleDelete={handleDeleteMaterialProductCode}
         submitButtonStatus={submitButtonStatus.value}
-        entryFormTypeOnMobile={idMaterialProductCode ? 'edit' : 'create'}>
+        entryFormTypeOnMobile={idMaterialProductCode ? 'edit' : 'create'}
+      >
         <FormNameInput
           placeholder="type main list name"
           title="Main List"

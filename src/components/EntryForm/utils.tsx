@@ -16,3 +16,14 @@ export const useGeneralFeature = (
 
   return { labelSpan, inputSpan, fontSize, iconDelete };
 };
+
+export const formatToConversionInputValue = (
+  number: number,
+  locale: Intl.LocalesArgument = 'en-us',
+  options: Intl.NumberFormatOptions = {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 6,
+  },
+) => {
+  return number.toLocaleString(locale, options).replace(/,/g, '');
+};

@@ -15,17 +15,19 @@ import styles from '../index.less';
 interface ProjectTrackingHeaderProps {
   selectedFilter: DropDownFilterValueProps;
   setSelectedFilter: (selectedFilter: DropDownFilterValueProps) => void;
+  workspace?: boolean;
 }
 export const ProjectTrackingHeader: FC<ProjectTrackingHeaderProps> = ({
   selectedFilter,
   setSelectedFilter,
+  workspace,
   children,
 }) => {
   const summary = useAppSelector((state) => state.summary.summaryProjectTracking);
 
   useEffect(() => {
-    getProjectTrackingSummary();
-  }, []);
+    getProjectTrackingSummary(workspace);
+  }, [workspace]);
 
   return (
     <MenuSummary

@@ -36,13 +36,19 @@
     display: none;
   }
   .content {
-    height: calc(100vh - 250px);
+    height: calc(var(--vh) * 100 - 250px);
     padding: 16px;
     overflow: hidden auto;
+
+    :global(.ant-radio-group > .ant-space) {
+      width: 100%;
+      overflow: auto hidden;
+      white-space: nowrap;
+    }
   }
   .footer_content {
     padding: 0 16px;
-    box-shadow: 0 -1px 0 @mono-color;
+    box-shadow: 0 -0.7px 0 @mono-color;
   }
   .footer {
     display: flex;
@@ -96,7 +102,7 @@
   }
   .entry_form_container {
     .content {
-      height: calc(100vh - 232px);
+      height: calc(var(--vh) * 100 - 224px);
     }
   }
 }

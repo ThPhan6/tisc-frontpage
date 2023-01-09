@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getAllAttribute } from '@/services';
 
 import { ProductInfoTab } from './types';
+import { TabItem } from '@/components/Tabs/types';
 import { ProductAttributeByType } from '@/types';
 
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
@@ -11,10 +12,10 @@ import { ProductAttributeContainer } from './ProductAttributeContainer';
 import { ProductVendor } from './ProductVendor';
 import styles from './index.less';
 
-const LIST_TAB = [
+const LIST_TAB: TabItem[] = [
   { tab: 'GENERAL', key: 'general' },
   { tab: 'FEATURE', key: 'feature' },
-  { tab: 'SPECIFICATION', key: 'specification' },
+  { tab: 'SPECIFICATION', mobileTabTitle: 'SPECS', key: 'specification' },
   { tab: 'VENDOR', key: 'vendor' },
 ];
 

@@ -63,8 +63,8 @@ export async function getBrandAlphabet() {
       return {} as BrandAlphabet;
     });
 }
-export async function getBrandCards() {
-  return request<{ data: BrandCard[] }>(`/api/brand/get-list-card`, {
+export async function getTiscWorkspace() {
+  return request<{ data: BrandCard[] }>(`/api/workspace`, {
     method: 'GET',
   })
     .then((response) => {
@@ -89,10 +89,10 @@ export async function getBrandById(brandId: string) {
     });
 }
 
-export async function getBrandSummary() {
+export async function getBrandSummary(workspace?: boolean) {
   return request<{
     data: DataMenuSummaryProps[];
-  }>(`/api/brand/summary`, {
+  }>(workspace ? `/api/workspace/summary` : `/api/brand/summary`, {
     method: 'GET',
   })
     .then((response) => {

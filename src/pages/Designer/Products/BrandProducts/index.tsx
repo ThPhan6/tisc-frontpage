@@ -12,7 +12,11 @@ import { useBoolean, useQuery } from '@/helper/hook';
 import { removeUrlParams, setUrlParams } from '@/helper/utils';
 import { debounce } from 'lodash';
 
-import { setProductList, setProductListSearchValue } from '@/features/product/reducers';
+import {
+  resetProductState,
+  setProductList,
+  setProductListSearchValue,
+} from '@/features/product/reducers';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 import { LogoIcon } from '@/components/LogoIcon';
@@ -80,6 +84,13 @@ const BrandProductListPage: React.FC = () => {
   };
 
   useEffect(() => {
+    /// clear all product
+    return () => {
+      dispatch(resetProductState());
+    };
+  }, []);
+
+  useEffect(() => {
     firstLoad.setValue(false);
 
     dispatch(setProductList({ data: [] }));
@@ -118,7 +129,9 @@ const BrandProductListPage: React.FC = () => {
             topValue={renderItemTopBar('brand_id', filter, 'select')}
             bottomEnable={brands.length ? true : false}
             disabled
-            bottomValue={renderFilterDropdown('Brands', brands, false)}
+            bottomValue={renderFilterDropdown('Brands', brands, false, undefined, undefined, {
+              autoHeight: false,
+            })}
             customClass="right-divider"
           />
           <TopBarItem
@@ -126,7 +139,12 @@ const BrandProductListPage: React.FC = () => {
             bottomEnable={categories.length ? true : false}
             disabled
             bottomValue={
-              <CustomDropDown items={categories} menuStyle={{ height: 'max-content' }}>
+              <CustomDropDown
+                items={categories}
+                menuStyle={{ height: 'max-content' }}
+                nestedMenu
+                autoHeight={false}
+              >
                 Categories
               </CustomDropDown>
             }
@@ -140,16 +158,6 @@ const BrandProductListPage: React.FC = () => {
         <>
           <TopBarItem
             topValue={
-              // <CustomInput
-              //
-              //   fontLevel={3}
-              //   deleteIcon
-              //   onDelete={() => {
-              //     // searchInputRef.current?.input?.set = '';
-              //     searchProductByKeyword({target:{value: ''}});
-              //   }}
-              //   forceDisplayDeleteIcon
-              // />
               <div className={styles.searchInputWrapper}>
                 <CustomInput
                   ref={searchInputRef}
@@ -167,7 +175,8 @@ const BrandProductListPage: React.FC = () => {
             bottomValue={
               <span
                 style={{ display: 'flex', alignItems: 'center' }}
-                onClick={() => searchInputRef.current?.focus()}>
+                onClick={() => searchInputRef.current?.focus()}
+              >
                 Keywords <SearchIcon />
               </span>
             }

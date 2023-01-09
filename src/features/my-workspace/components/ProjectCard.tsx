@@ -1,17 +1,24 @@
 import { FC } from 'react';
 
 import { PATH } from '@/constants/path';
+import { QUERY_KEY } from '@/constants/util';
 import { FilterNames } from '@/pages/Designer/Project/constants/filter';
+import { Row } from 'antd';
+import { history } from 'umi';
 
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
 
 import { pushTo } from '@/helper/history';
-import { getDesignDueDay, getFullName, getValueByCondition } from '@/helper/utils';
+import { getDesignDueDay, getFullName, getValueByCondition, updateUrlParams } from '@/helper/utils';
 
+import { setBrand, setFromMyWorkspace } from '@/features/product/reducers';
 import { ProjectListProps } from '@/features/project/types';
-import { BrandCard, BrandCardTeam } from '@/features/user-group/types';
+import { BrandCard, BrandCardTeam, BrandDetail } from '@/features/user-group/types';
+import store, { useAppSelector } from '@/reducers';
 import { ProjecTrackingList } from '@/types/project-tracking.type';
 
+import { EmptyOne } from '@/components/Empty';
+import { loadingSelector } from '@/components/LoadingPage/slices';
 import { LogoIcon } from '@/components/LogoIcon';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
@@ -30,15 +37,39 @@ export const ProjectCard: FC<ProjectCardProps> = ({
   isBrandUser,
   isDesignerUser,
 }) => {
+  const loading = useAppSelector(loadingSelector);
+
   const detailPath = getValueByCondition([
-    [isTiscUser, PATH.tiscUserGroupBrandViewDetail],
-    [isBrandUser, PATH.brandProjectTrackingDetail],
+    [isBrandUser, PATH.brandDashboardProjectDetail],
     [isDesignerUser, PATH.designerUpdateProject],
   ]);
 
-  const handleClickItem = (id: string) => {
-    if (id) {
-      pushTo(detailPath.replace(':id', id));
+  const handleClickItem = (cardInfo: ProjecTrackingList & BrandCard & ProjectListProps) => {
+    if (cardInfo.id) {
+      if (isTiscUser) {
+        const { location } = history;
+        const myWorkSpace = location.pathname.indexOf('dashboard') !== -1;
+        store.dispatch(setFromMyWorkspace(myWorkSpace));
+
+        pushTo(PATH.productConfiguration);
+
+        /// set brand info
+        store.dispatch(setBrand({ id: cardInfo.id, name: cardInfo.name } as BrandDetail));
+
+        /// update params
+        updateUrlParams({
+          set: [
+            { key: QUERY_KEY.b_id, value: cardInfo.id },
+            { key: QUERY_KEY.b_name, value: cardInfo.name },
+            { key: QUERY_KEY.cate_id, value: 'all' },
+            { key: QUERY_KEY.cate_name, value: 'VIEW ALL' },
+          ],
+        });
+
+        return;
+      }
+
+      pushTo(detailPath.replace(':id', cardInfo.id));
     }
   };
 
@@ -67,7 +98,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
           </BodyText>
         </div>
         <BodyText level={6} fontFamily="Roboto" customClass={styles.location}>
-          {isBrandUser ? info.projectLocation : `Code ${info.code}`}
+          {isBrandUser ? info.projectLocation : info.code}
         </BodyText>
       </>
     );
@@ -120,11 +151,11 @@ export const ProjectCard: FC<ProjectCardProps> = ({
             <BodyText level={5}>{isBrandUser ? 'Requests' : 'Project Status'}:</BodyText>
           </div>
           <div className={styles.middleValue}>
-            <BodyText level={6} fontFamily="Roboto">
+            <BodyText level={6} fontFamily="Roboto" customClass="text-overflow">
               {isBrandUser ? info.requestCount : FilterNames[Number(info.status)]}
             </BodyText>
           </div>
-          {info.newRequest ? <UnreadIcon /> : <span style={{ width: '18px', height: '18px' }} />}
+          {info.newRequest ? <UnreadIcon /> : <span />}
         </div>
 
         <div className={styles.middle}>
@@ -132,16 +163,13 @@ export const ProjectCard: FC<ProjectCardProps> = ({
             <BodyText level={5}>{isBrandUser ? 'Notifications' : 'Design due'}:</BodyText>
           </div>
           <div
-            className={`${styles.middleValue} ${!isBrandUser && dueDay.value < 0 ? 'late' : ''}`}>
-            <BodyText level={6} fontFamily="Roboto">
+            className={`${styles.middleValue} ${!isBrandUser && dueDay.value < 0 ? 'late' : ''}`}
+          >
+            <BodyText level={6} fontFamily="Roboto" customClass="text-overflow">
               {isBrandUser ? info.notificationCount : dueDay.text}
             </BodyText>
           </div>
-          {info.newNotification ? (
-            <UnreadIcon />
-          ) : (
-            <span style={{ width: '18px', height: '18px' }} />
-          )}
+          {info.newNotification ? <UnreadIcon /> : <span />}
         </div>
       </>
     );
@@ -164,27 +192,38 @@ export const ProjectCard: FC<ProjectCardProps> = ({
     ));
   };
 
+  if (loading) {
+    return null;
+  }
+
   return (
     <div className={styles.cardContainer}>
-      {data?.map((item: any, index) => (
-        <div
-          key={item.id ?? index}
-          className={styles.cardItemWrapper}
-          onClick={() => handleClickItem(item.id)}>
-          <div className={styles.cardItem}>
-            <div className={styles.top}>{renderTopInfo(item)}</div>
+      {data.length ? (
+        data.map((item: any, index) => (
+          <div
+            key={item.id ?? index}
+            className={styles.cardItemWrapper}
+            onClick={() => handleClickItem(item)}
+          >
+            <div className={styles.cardItem}>
+              <div className={styles.top}>{renderTopInfo(item)}</div>
 
-            {renderMiddleInfo(item)}
+              {renderMiddleInfo(item)}
 
-            <div className={styles.profile_icon}>
-              <BodyText level={5} style={{ marginRight: '14px' }}>
-                Teams:
-              </BodyText>
-              <div className={styles.team}>{getAssignedTeamInfo(item)}</div>
+              <div className={styles.profile_icon}>
+                <BodyText level={5} style={{ marginRight: '14px' }}>
+                  Teams:
+                </BodyText>
+                <div className={styles.team}>{getAssignedTeamInfo(item)}</div>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))
+      ) : (
+        <Row justify="center" style={{ width: '100%' }}>
+          <EmptyOne />
+        </Row>
+      )}
     </div>
   );
 };

@@ -9,7 +9,6 @@ import { GeneralInquirySummaryData } from '../types';
 import { DropDownFilterProps, DropDownFilterValueProps } from '@/components/TopBar/types';
 import { useAppSelector } from '@/reducers';
 
-import { LegendModal } from '@/components/LegendModal/LegendModal';
 import TopBarSummaryHasFilter from '@/components/TopBar';
 import TopBarDropDownFilter from '@/components/TopBar/TopBarDropDownFilter';
 import { TopBarMenuSummary } from '@/components/TopBar/TopBarMenuSummary';
@@ -45,8 +44,6 @@ export const GeneralInquiryContainer: FC<GeneralInquiryContainerProps> = ({
   selectedFilter,
   setSelectedFilter,
   isShowFilter,
-  visible,
-  setVisible,
   children,
 }) => {
   const summaryData = useAppSelector((state) => state.summary.summaryGeneralInquiry);
@@ -70,10 +67,10 @@ export const GeneralInquiryContainer: FC<GeneralInquiryContainerProps> = ({
               isShowFilter={isShowFilter}
             />
           </TopBarSummaryHasFilter>
-        )}>
+        )}
+      >
         {children}
       </PageContainer>
-      <LegendModal visible={visible} setVisible={setVisible} />
     </>
   );
 };

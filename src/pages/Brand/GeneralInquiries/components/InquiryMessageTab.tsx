@@ -17,7 +17,7 @@ export const InquiryMessageTab: FC<{
   const { title, inquiry_for, message, designer, product } = data;
 
   return (
-    <div style={{ height: 'calc(100vh - 368px)' }}>
+    <div style={{ height: 'calc(var(--vh) * 100 - 368px)' }}>
       <BrandProductBasicHeader
         image={product.image}
         text_1={product.collection}
@@ -27,7 +27,8 @@ export const InquiryMessageTab: FC<{
             href={`${window.location.origin}/brand/product/${product.id}`}
             target="_blank"
             rel="noreferrer"
-            style={{ color: '#000' }}>
+            style={{ color: '#000' }}
+          >
             {window.location.origin}/brand/product/{product.id}
           </a>
         }
@@ -62,7 +63,8 @@ export const InquiryMessageTab: FC<{
         label="Message"
         layout="vertical"
         labelColor="mono-color-dark"
-        formClass={styles.messageForm}>
+        formClass={styles.messageForm}
+      >
         <CustomTextArea value={message || ''} borderBottomColor="mono-medium" disabled />
       </FormGroup>
 

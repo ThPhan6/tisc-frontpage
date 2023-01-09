@@ -1,12 +1,9 @@
 import React from 'react';
 
 import { ProjectTabKeys } from '../../constants/tab';
-import { PATH } from '@/constants/path';
-import { useAccess } from 'umi';
+import { useAccess, useHistory } from 'umi';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
-
-import { pushTo } from '@/helper/history';
 
 import { TabItem } from '@/components/Tabs/types';
 import { ProjectDetailProps } from '@/features/project/types';
@@ -35,7 +32,7 @@ const ProductDataTitle: React.FC<ProductDataTitleProps> = (props) => {
   return (
     <div className={styles.productInfoTitle}>
       <BodyText level={4} fontFamily="Roboto" customClass="code-name">
-        Code {code}
+        {code}
       </BodyText>
       <Title level={7}>{name}</Title>
     </div>
@@ -56,25 +53,30 @@ const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({
   activeOnlyGeneral,
 }) => {
   const accessPermission = useAccess();
+  const history = useHistory();
 
   const ProjectTabs: TabItem[] = [
     {
       tab: 'basic information',
+      mobileTabTitle: 'Basic',
       key: ProjectTabKeys.basicInformation,
       disable: !accessPermission.design_project_basic_information,
     },
     {
       tab: 'zones/areas/rooms',
+      mobileTabTitle: 'Rooms',
       key: ProjectTabKeys.zoneAreaRoom,
       disable: !accessPermission.design_project_zone_area_zoom,
     },
     {
       tab: 'product considered',
+      mobileTabTitle: 'Considered',
       key: ProjectTabKeys.productConsidered,
       disable: !accessPermission.design_project_product_considered,
     },
     {
       tab: 'product specified',
+      mobileTabTitle: 'Specified',
       key: ProjectTabKeys.productSpecified,
       disable: !accessPermission.design_project_product_specified,
     },
@@ -96,7 +98,7 @@ const ProjectDetailHeader: React.FC<ProjectDetailHeaderProps> = ({
           <EmptyProductDataTitle />
         )}
 
-        <CloseIcon onClick={() => pushTo(PATH.designerProject)} />
+        <CloseIcon onClick={history.goBack} />
       </div>
       <CustomTabs
         listTab={listTab}
