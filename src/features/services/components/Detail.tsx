@@ -9,7 +9,7 @@ import { ReactComponent as EqualIcon } from '@/assets/icons/equal-icon.svg';
 
 import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 import { formatCurrencyNumber, getFullName } from '@/helper/utils';
 
 import { InvoiceStatus, ServicesResponse } from '../type';
@@ -29,11 +29,12 @@ import moment from 'moment';
 
 interface ServiceDetailProps {
   type: 'tisc' | 'brand';
-  id: string;
 }
-export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
+export const Detail: FC<ServiceDetailProps> = ({ type }) => {
   const [detailData, setDetailData] = useState<ServicesResponse>();
   const isMobile = useScreen().isMobile;
+
+  const id = useGetParamId();
 
   const dueDate = moment().add(7, 'days').format('YYYY-MM-DD');
 
@@ -62,6 +63,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
 
   useEffect(() => {
     getService();
+
+    return () => setDetailData(undefined);
   }, []);
 
   const handleSubmit = () => {
@@ -100,16 +103,19 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
   };
 
   const renderBottom = () => {
+    if (!detailData) {
+      return undefined;
+    }
+
     if (type === 'tisc') {
       /// paid
-      if (detailData?.status == 2) {
+      if (detailData.status == 2) {
         return (
           <CustomButton
             size="small"
             variant="primary"
             properties="rounded"
-            onClick={history.goBack}
-          >
+            onClick={history.goBack}>
             Cancel
           </CustomButton>
         );
@@ -117,21 +123,20 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
 
       return (
         <>
-          {detailData?.status !== InvoiceStatus.Paid ? (
+          {detailData.status !== InvoiceStatus.Paid ? (
             <div className={styles.bottom}>
               <CustomSaveButton
-                contentButton={detailData?.status === InvoiceStatus.Pending ? 'Bill' : 'Remind'}
+                contentButton={detailData.status === InvoiceStatus.Pending ? 'Bill' : 'Remind'}
                 isSuccess={submitButtonStatus.value}
                 onClick={handleSubmit}
               />
-              {detailData?.status !== InvoiceStatus.Pending ? (
+              {detailData.status !== InvoiceStatus.Pending ? (
                 <CustomButton
                   size="small"
                   variant="primary"
                   properties="rounded"
                   buttonClass={styles.leftSpace}
-                  onClick={handleMarkAsPaid}
-                >
+                  onClick={handleMarkAsPaid}>
                   Mark as Paid
                 </CustomButton>
               ) : null}
@@ -143,14 +148,13 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
 
     return (
       <div className="flex-start">
-        {detailData?.status !== InvoiceStatus.Paid ? (
+        {detailData.status !== InvoiceStatus.Paid ? (
           <CustomButton
             size="small"
             variant="primary"
             properties="rounded"
             buttonClass={styles.rightSpace}
-            onClick={() => alert('Coming soon!')}
-          >
+            onClick={() => alert('Coming soon!')}>
             Pay
           </CustomButton>
         ) : null}
@@ -158,8 +162,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
           size="small"
           variant="primary"
           properties="rounded"
-          onClick={handleDownloadPDF}
-        >
+          onClick={handleDownloadPDF}>
           PDF
         </CustomButton>
       </div>
@@ -192,19 +195,18 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
         overflow: 'auto',
       }}
       handleCancel={history.goBack}
-      extraFooterButton={renderBottom()}
-    >
+      extraFooterButton={renderBottom()}>
       <TextForm boxShadow label="Billed Date">
         {moment(detailData?.created_at).format('YYYY-MM-DD')}
       </TextForm>
       <TextForm boxShadow label="Service Type">
         {detailData?.service_type_name}
       </TextForm>
-      {type === 'tisc' && (
+      {type === 'tisc' ? (
         <TextForm boxShadow label="Brand Company">
           {detailData?.brand_name}
         </TextForm>
-      )}
+      ) : null}
       <TextForm boxShadow label="Ordered By">
         {getFullName(detailData?.ordered_user)}
       </TextForm>
@@ -216,8 +218,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
         label="Billed Amount"
         layout="vertical"
         formClass={styles.customTable}
-        labelColor="mono-color-dark"
-      >
+        labelColor="mono-color-dark">
         <table style={{ width: '100%' }}>
           <tr>
             <td className={styles.label}>
@@ -228,8 +229,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
             <td
               style={{
                 width: quantityWidth,
-              }}
-            >
+              }}>
               ${formatToMoneyValue(Number(detailData?.unit_rate))}
             </td>
           </tr>
@@ -238,13 +238,12 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
               <BodyText level={5} fontFamily="Roboto">
                 Quantity
               </BodyText>
-              <CloseIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
+              <CloseIcon className={styles.iconStyles} />
             </td>
             <td
               style={{
                 width: quantityWidth,
-              }}
-            >
+              }}>
               {formatCurrencyNumber(Number(detailData?.quantity))}
             </td>
           </tr>
@@ -253,13 +252,12 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
               <BodyText level={5} fontFamily="Roboto">
                 Gross Total
               </BodyText>
-              <EqualIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
+              <EqualIcon className={styles.iconStyles} />
             </td>
             <td
               style={{
                 width: quantityWidth,
-              }}
-            >
+              }}>
               ${formatToMoneyValue(Number(detailData?.total_gross))}
             </td>
           </tr>
@@ -268,13 +266,12 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
               <BodyText level={5} fontFamily="Roboto">
                 Sales Tax (GST) - {detailData?.tax}%
               </BodyText>
-              <PlusIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
+              <PlusIcon className={styles.iconStyles} />
             </td>
             <td
               style={{
                 width: quantityWidth,
-              }}
-            >
+              }}>
               ${formatToMoneyValue(Number(detailData?.sale_tax_amount))}
             </td>
           </tr>
@@ -285,8 +282,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
             <td
               style={{
                 width: quantityWidth,
-              }}
-            >
+              }}>
               <Title level={8}>${formatToMoneyValue(Number(detailData?.billing_amount))}</Title>
             </td>
           </tr>
@@ -297,21 +293,16 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
         label="Due Date"
         layout="vertical"
         formClass={styles.customFormGroup}
-        labelColor="mono-color-dark"
-      >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            height: '32px',
-            alignItems: 'center',
-          }}
-        >
+        labelColor="mono-color-dark">
+        <div className="flex-between" style={{ minHeight: 32 }}>
           <BodyText
             level={5}
             fontFamily="Roboto"
-            style={{ paddingLeft: '16px', color: detailData?.due_date ? '' : '#BFBFBF' }}
-          >
+            style={{
+              paddingLeft: 16,
+              paddingRight: 16,
+              color: detailData?.due_date ? '' : '#BFBFBF',
+            }}>
             {detailData?.due_date ? detailData.due_date : dueDate}
           </BodyText>
           <BodyText level={5} fontFamily="Roboto">
@@ -327,8 +318,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
           formClass={`${
             detailData?.status !== InvoiceStatus.Overdue ? styles.customFormGroup : ''
           }`}
-          labelColor="mono-color-dark"
-        >
+          labelColor="mono-color-dark">
           <table className={styles.customTable} style={{ width: '100%' }}>
             <tr>
               <td className={styles.label}>
@@ -343,8 +333,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                 className={`${showBillingAmount ? '' : styles.rightText}`}
                 style={{
                   width: quantityWidth,
-                }}
-              >
+                }}>
                 ${formatToMoneyValue(Number(detailData?.overdue_amount))}
               </td>
             </tr>
@@ -356,8 +345,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
                 <td
                   style={{
                     width: quantityWidth,
-                  }}
-                >
+                  }}>
                   <Title level={8}>
                     $
                     {formatToMoneyValue(
@@ -374,8 +362,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type, id }) => {
       <TextForm
         boxShadow
         label="Status"
-        bodyTextClass={detailData?.status === InvoiceStatus.Overdue ? styles.overdue : ''}
-      >
+        bodyTextClass={detailData?.status === InvoiceStatus.Overdue ? styles.overdue : ''}>
         {InvoiceStatus[detailData?.status as number]}
       </TextForm>
     </EntryFormWrapper>
