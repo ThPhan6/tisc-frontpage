@@ -82,11 +82,10 @@ const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
       <ProjectTabContentHeader>
         <div
           className={`${styles.createSpaceButton} ${space ? 'disabled' : ''}`}
-          onClick={() => displaySpaceForm()}
+          onClick={() => (space ? undefined : displaySpaceForm())}
         >
           <MainTitle level={3} customClass="button-name">
-            {' '}
-            Create Space{' '}
+            Create Space
           </MainTitle>
           <CustomPlusButton size={18} disabled={space !== undefined} />
         </div>
