@@ -130,8 +130,8 @@ const ProductLibraryUpdate: React.FC = () => {
             <ProductImagePreview
               hideInquiryRequest
               isCustomProduct
-              disabledAssignProduct={!productId}
-              disabledShareViaEmail={!productId}
+              disabledAssignProduct
+              disabledShareViaEmail
             />
           </Col>
 
