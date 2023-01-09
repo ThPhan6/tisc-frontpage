@@ -125,6 +125,7 @@ export const SiderMenu: FC<{ appProps: any; menu?: MenuDataItem[]; onClose?: () 
       inlineIndent={16}
       expandIcon={customExpandIcon}
       items={menuItems}
+      className={styles.mobileAsideSider}
     />
   );
 };

@@ -69,6 +69,9 @@ const ProductConsidered: React.FC = () => {
         icon: <CheckIcon style={{ width: 16, height: 16 }} />,
         disabled: record.specifiedDetail?.consider_status !== ProductConsiderStatus.Unlisted,
         onClick: () => {
+          if (record.specifiedDetail?.consider_status !== ProductConsiderStatus.Unlisted) {
+            return;
+          }
           updateProductConsiderStatus(record.specifiedDetail?.id, {
             consider_status: ProductConsiderStatus['Re-considered'],
           }).then((success) => (success ? tableRef.current?.reload() : undefined));
@@ -80,6 +83,9 @@ const ProductConsidered: React.FC = () => {
         icon: <CancelIcon style={{ width: 16, height: 16 }} />,
         disabled: record.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted,
         onClick: () => {
+          if (record.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted) {
+            return;
+          }
           updateProductConsiderStatus(record.specifiedDetail?.id, {
             consider_status: ProductConsiderStatus.Unlisted,
           }).then((success) => (success ? tableRef.current?.reload() : undefined));
