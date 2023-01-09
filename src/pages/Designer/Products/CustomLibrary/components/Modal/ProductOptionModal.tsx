@@ -128,15 +128,10 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({
 
   const handleSave = () => {
     switch (true) {
-      case !optionState.tag:
-        message.error('Option tag is required');
-        return;
       case optionState.items.length === 0:
         message.error('Required at least one item');
         return;
-      case optionState.items.some(
-        (el) => !el.description || !el.product_id || (optionState.use_image && !el.image),
-      ):
+      case optionState.items.some((el) => !el.description || (optionState.use_image && !el.image)):
         message.error('Item info is required');
         return;
     }

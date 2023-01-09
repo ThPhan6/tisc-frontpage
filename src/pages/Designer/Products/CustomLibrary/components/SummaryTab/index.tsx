@@ -221,7 +221,7 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
           labelFontSize={4}
           required>
           <CustomTextArea
-            maxLength={100}
+            maxLength={50}
             showCount
             placeholder="type here"
             borderBottomColor="mono-medium"
