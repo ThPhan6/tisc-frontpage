@@ -48,66 +48,60 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   const history = useHistory();
   const isMobile = useScreen().isMobile;
 
-  const renderButtonFooter = () => {
-    if (submitButtonStatus) {
-      return (
-        <CustomButton
-          buttonClass={styles.footer__wrapper_submit_success}
-          size="small"
-          width="64px"
-          icon={<CheckSuccessIcon />}
-        />
-      );
-    }
-
+  const renderFooterButton = () => {
     if (extraFooterButton) {
       return extraFooterButton;
     }
 
-    if (isMobile) {
-      if (entryFormTypeOnMobile === 'edit') {
-        return (
+    return (
+      <div className={styles.footer} style={{ justifyContent: isMobile ? 'center' : undefined }}>
+        {isMobile && entryFormTypeOnMobile === 'edit' ? (
           <CustomButton
             size="small"
             variant="secondary"
             buttonClass={styles.footer__delete_bt}
+            disabled={!handleDelete}
             onClick={() => {
               if (handleDelete) {
                 confirmDelete(() => {
                   handleDelete();
                 });
               }
-            }}
-          >
+            }}>
             Delete
           </CustomButton>
-        );
-      }
+        ) : (
+          <CustomButton
+            size="small"
+            buttonClass={styles.footer__cancel_bt}
+            onClick={handleCancel || history.goBack}
+            disabled={disableCancelButton}>
+            Cancel
+          </CustomButton>
+        )}
 
-      return (
-        <CustomButton
-          size="small"
-          buttonClass={styles.footer__cancel_bt}
-          onClick={handleCancel || history.goBack}
-          disabled={disableCancelButton}
-        >
-          Cancel
-        </CustomButton>
-      );
-    }
-
-    return (
-      <CustomButton
-        buttonClass={styles.footer__wrapper_submit_normal}
-        size="small"
-        width="64px"
-        onClick={handleSubmit}
-        disabled={disableSubmitButton}
-      >
-        <BodyText level={6} fontFamily="Roboto">
-          Save
-        </BodyText>
-      </CustomButton>
+        <div className={styles.footer__wrapper_submit}>
+          {submitButtonStatus ? (
+            <CustomButton
+              buttonClass={styles.footer__wrapper_submit_success}
+              size="small"
+              width="64px"
+              icon={<CheckSuccessIcon />}
+            />
+          ) : (
+            <CustomButton
+              buttonClass={styles.footer__wrapper_submit_normal}
+              size="small"
+              width="64px"
+              onClick={handleSubmit}
+              disabled={disableSubmitButton}>
+              <BodyText level={6} fontFamily="Roboto">
+                Save
+              </BodyText>
+            </CustomButton>
+          )}
+        </div>
+      </div>
     );
   };
 
@@ -121,8 +115,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
               level={3}
               textAlign={textAlignTitle}
               customClass={`${styles.header__title} ${titleClassName}`}
-              style={{ ...titleStyles }}
-            >
+              style={{ ...titleStyles }}>
               {title}
             </MainTitle>
             <CloseIcon className={styles.header__icon} onClick={handleCancel} />
@@ -134,8 +127,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
         <div
           id={contentId}
           className={`${styles.content} ${contentClass}`}
-          style={{ ...contentStyles }}
-        >
+          style={{ ...contentStyles }}>
           {children}
         </div>
 
@@ -145,9 +137,8 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
 
           <div
             className={styles.footer}
-            style={{ justifyContent: isMobile ? 'center' : undefined }}
-          >
-            <div className={styles.footer__wrapper_submit}>{renderButtonFooter()}</div>
+            style={{ justifyContent: isMobile ? 'center' : undefined }}>
+            <div className={styles.footer__wrapper_submit}>{renderFooterButton()}</div>
           </div>
         </div>
       </div>
