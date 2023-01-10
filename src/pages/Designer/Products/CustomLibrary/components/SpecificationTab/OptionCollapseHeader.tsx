@@ -123,7 +123,7 @@ export const OptionCollapseHeader: FC<OptionGroupProps> = ({
       </Col>
       <Col flex="1 1 100px">
         <div className="flex-end">
-          <RobotoBodyText level={6}>TAG: {option.tag}</RobotoBodyText>
+          <RobotoBodyText level={6}>TAG: {option.tag ? option.tag : 'N/A'}</RobotoBodyText>
         </div>
       </Col>
     </Row>
