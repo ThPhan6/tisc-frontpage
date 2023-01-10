@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 
 import { MEASUREMENT_UNIT } from '@/constants/util';
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
 import { getProjectsByDesignFirm } from '../services';
 import { isEmpty } from 'lodash';
@@ -10,6 +10,7 @@ import { RequiredValueProps } from '../types';
 import { ProjectDetail, ProjectsDesignFirm } from '@/features/project/types';
 
 import TextForm from '@/components/Form/TextForm';
+import { ResponsiveCol } from '@/components/Layout';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 
 import styles from '../styles/design.less';
@@ -54,7 +55,7 @@ const ProjectDesign: FC<RequiredValueProps> = ({ id }) => {
 
   return (
     <Row className={indexStyles.container}>
-      <Col span={12}>
+      <ResponsiveCol>
         <div className={`${indexStyles.form} ${styles.team_form}`}>
           <GeneralData>
             {projectData.length ? (
@@ -98,7 +99,7 @@ const ProjectDesign: FC<RequiredValueProps> = ({ id }) => {
             ) : null}
           </GeneralData>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

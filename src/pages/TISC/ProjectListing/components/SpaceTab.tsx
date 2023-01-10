@@ -1,12 +1,13 @@
 import { FC } from 'react';
 
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
 import { formatNumber } from '@/helper/utils';
 
 import { SpaceDetail } from '../type';
 import { ProjectSpaceArea } from '@/features/project/types';
 
+import { ResponsiveCol } from '@/components/Layout';
 import { BodyText, Title } from '@/components/Typography';
 import {
   CollapseLevel1Props,
@@ -79,7 +80,7 @@ const ProjectSpaceAreas: FC<ListAreaProps> = ({ areas, index }) => {
 export const SpaceTab: FC<SpaceTabProps> = ({ space }) => {
   return (
     <Row>
-      <Col span={12} className={styles.container}>
+      <ResponsiveCol className={styles.container}>
         <div className={styles.content}>
           <GeneralData>
             {space?.zones.length
@@ -111,7 +112,7 @@ export const SpaceTab: FC<SpaceTabProps> = ({ space }) => {
           </Title>
           <Title level={9}>{formatNumber(space?.imperialArea ?? 0)} sq.ft.</Title>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

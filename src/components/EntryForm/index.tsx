@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import { Col, Row } from 'antd';
+import { Row } from 'antd';
 import { useHistory } from 'umi';
 
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
@@ -12,6 +12,7 @@ import { useScreen } from '@/helper/common';
 import { EntryFormWrapperProps } from './types';
 
 import CustomButton from '../Button';
+import { ResponsiveCol } from '../Layout';
 import { BodyText, MainTitle } from '../Typography';
 import styles from './styles/index.less';
 
@@ -19,9 +20,7 @@ export const contentId = `entry-form-wrapper--children-${Date.now()}`;
 
 export const FormContainer: FC = ({ children }) => (
   <Row>
-    <Col span={24} lg={{ span: 12 }}>
-      {children}
-    </Col>
+    <ResponsiveCol>{children}</ResponsiveCol>
   </Row>
 );
 

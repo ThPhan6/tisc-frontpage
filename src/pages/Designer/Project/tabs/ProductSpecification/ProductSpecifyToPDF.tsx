@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 
 import { ProductSpecifiedTabKeys, ProductSpecifiedTabs } from '../../constants/tab';
-import { Col, Row } from 'antd';
+import { Row } from 'antd';
 
 import { createPDF, getSpecifiedProductByPDF } from '@/features/project/services';
 import { useScreen } from '@/helper/common';
@@ -11,6 +11,7 @@ import { PdfDetail, TemplatesItem } from './type';
 import IssuingInformation from './components/IssuingInformation';
 import { PdfPreview } from './components/PdfPreview';
 import StandardCoverPage from './components/StandardCoverPage';
+import { ResponsiveCol } from '@/components/Layout';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
 import styles from './index.less';
@@ -124,7 +125,7 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
 
   return (
     <Row className={styles.content} gutter={[8, 8]}>
-      <Col lg={12} span={24}>
+      <ResponsiveCol>
         <div className={styles.content_left}>
           <CustomTabs
             listTab={ProductSpecifiedTabs}
@@ -151,10 +152,10 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
             />
           </CustomTabPane>
         </div>
-      </Col>
-      <Col lg={12} span={24} className={styles.content_right}>
+      </ResponsiveCol>
+      <ResponsiveCol className={styles.content_right}>
         <PdfPreview generatePDF={generatepdf} data={data} />
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

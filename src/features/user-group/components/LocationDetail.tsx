@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
 import { getLocationsByDesignFirm } from '../services';
 import { isEmpty } from 'lodash';
@@ -11,6 +11,7 @@ import { LocationGroupedByCountry } from '@/features/locations/type';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import TextForm from '@/components/Form/TextForm';
+import { ResponsiveCol } from '@/components/Layout';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 
 import styles from '../styles/index.less';
@@ -35,7 +36,7 @@ export const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
 
   return (
     <Row className={styles.container}>
-      <Col span={12} xs={{ span: 24 }}>
+      <ResponsiveCol>
         <div className={styles.form}>
           <GeneralData>
             {locations.length ? (
@@ -100,7 +101,7 @@ export const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
             ) : null}
           </GeneralData>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };
