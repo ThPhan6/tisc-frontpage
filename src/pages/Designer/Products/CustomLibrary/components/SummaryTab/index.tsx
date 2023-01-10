@@ -15,8 +15,6 @@ import { CollectionRelationType } from '@/types';
 
 import { DoubleInput } from '@/components/EntryForm/DoubleInput';
 import InputGroup from '@/components/EntryForm/InputGroup';
-import { FormGroup } from '@/components/Form';
-import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import TextForm from '@/components/Form/TextForm';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { SimpleContentTable } from '@/components/Table/components/SimpleContentTable';
@@ -214,23 +212,19 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
           placeholder={'type product name here'}
           onChange={onChangeDataByInput('name')}
         />
-        <FormGroup
+        <InputGroup
           label="Description"
-          layout="vertical"
-          formClass="mb-16"
-          labelFontSize={4}
-          required>
-          <CustomTextArea
-            maxLength={50}
-            showCount
-            placeholder="type here"
-            borderBottomColor="mono-medium"
-            boxShadow
-            value={description || ''}
-            onChange={onChangeDataByInput('description')}
-            customClass={styles.paddingLeftSpace}
-          />
-        </FormGroup>
+          fontLevel={4}
+          required
+          hasPadding
+          colorPrimaryDark
+          hasBoxShadow
+          hasHeight
+          placeholder="max.50 words of product summary"
+          maxWords={50}
+          value={description || ''}
+          onChange={onChangeDataByInput('description')}
+        />
       </div>
     );
   };
