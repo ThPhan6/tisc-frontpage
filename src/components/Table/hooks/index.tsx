@@ -129,30 +129,19 @@ const syncColWidthFollowingTheDeepestDataRow = (level: number, curCellStyle: Ele
   const nestedSubRows = document.querySelectorAll(
     `tr[class*="ant-table-expanded-row"]:not([style*="display: none;"])`,
   );
-
-  // First row will work for case with Entire Project row (table with multiple level of nesting)
-  const firstRowSubColumns = nestedSubRows[0]?.querySelectorAll(
+  const nestedSubColumns = nestedSubRows[nestedSubRows?.length - 1]?.querySelectorAll(
     `tbody tr[class$="custom-expanded-level-${level + 1}"]:first-child td`,
   );
 
-  // Last row will work most time
-  const lastRowSubColumns = nestedSubRows[nestedSubRows?.length - 1]?.querySelectorAll(
-    `tbody tr[class$="custom-expanded-level-${level + 1}"]:first-child td`,
-  );
-
-  if (!firstRowSubColumns || !lastRowSubColumns || !expandedColumns || expandedColumns.length < 4) {
+  if (!nestedSubColumns || !expandedColumns || expandedColumns.length < 4) {
     return;
   }
 
   setTimeout(() => {
     let cellWidthStyles = '';
     curCellStyle.innerHTML = '';
-
     expandedColumns.forEach((_dataCell, index) => {
-      const newCellWidth =
-        typeof lastRowSubColumns?.[index]?.clientWidth === 'number'
-          ? lastRowSubColumns?.[index]?.clientWidth
-          : firstRowSubColumns?.[index]?.clientWidth;
+      const newCellWidth = nestedSubColumns?.[index]?.clientWidth;
 
       // Update style for each column from this data row to their relevant column of expandable column
       // Remember to add enter key
