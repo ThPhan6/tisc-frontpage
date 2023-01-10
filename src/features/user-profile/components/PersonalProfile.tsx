@@ -205,8 +205,7 @@ export const PersonalProfile: FC<{ contentHeight?: number }> = ({ contentHeight 
           overlayInnerStyle={{
             width: '240px',
             padding: '8px 19.5px',
-          }}
-        >
+          }}>
           <WarningIcon className={styles['warning-icon']} />
         </Tooltip>
       </div>
@@ -237,8 +236,7 @@ export const PersonalProfile: FC<{ contentHeight?: number }> = ({ contentHeight 
             messageType="error"
             label="Backup email"
             layout="vertical"
-            formClass={styles.form}
-          >
+            formClass={styles.form}>
             <CustomInput
               name="backupEmail"
               status={isShowErrorMessage('email', inputValue.backupEmail) ? '' : 'error'}
@@ -301,8 +299,7 @@ export const PersonalProfile: FC<{ contentHeight?: number }> = ({ contentHeight 
               size="small"
               width="64px"
               onClick={handleSubmit}
-              disabled={checkSaveDisabled()}
-            >
+              disabled={checkSaveDisabled()}>
               <BodyText level={6} fontFamily="Roboto">
                 Save
               </BodyText>

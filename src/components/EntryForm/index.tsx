@@ -54,7 +54,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
     }
 
     return (
-      <div className={styles.footer} style={{ justifyContent: isMobile ? 'center' : undefined }}>
+      <div className={styles.footer} style={{ padding: isMobile ? '0 12px' : '' }}>
         {isMobile && entryFormTypeOnMobile === 'edit' ? (
           <CustomButton
             size="small"
@@ -134,12 +134,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
         {/* footer */}
         <div className={styles.footer_main}>
           {footerContent ? <div className={styles.footer_content}>{footerContent}</div> : null}
-
-          <div
-            className={styles.footer}
-            style={{ justifyContent: isMobile ? 'center' : undefined }}>
-            <div className={styles.footer__wrapper_submit}>{renderFooterButton()}</div>
-          </div>
+          {renderFooterButton()}
         </div>
       </div>
     </FormContainer>
