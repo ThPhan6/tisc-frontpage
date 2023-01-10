@@ -25,7 +25,10 @@
       &__title {
         flex: 1;
         margin-right: 8px;
+        overflow: hidden;
+        white-space: nowrap;
         text-align: center;
+        text-overflow: ellipsis;
       }
       &__icon {
         cursor: pointer;
@@ -57,6 +60,11 @@
     height: 48px;
     padding: 0 16px;
     box-shadow: @border-top;
+
+    button {
+      transition: none;
+    }
+
     &__cancel_bt,
     &__delete_bt,
     &__submit_bt {
