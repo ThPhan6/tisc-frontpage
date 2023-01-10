@@ -12,6 +12,8 @@ import { pushTo } from '@/helper/history';
 import { useGetParamId } from '@/helper/hook';
 
 import { GeneralInquiryResponse } from './types';
+import store from '@/reducers';
+import { openModal } from '@/reducers/modal';
 
 import { DesignFirmTab } from './components/DesignFirmTab';
 import { GeneralInquiryContainer } from './components/GeneralInquiryContainer';
@@ -67,7 +69,6 @@ const DEFAULT_STATE: GeneralInquiryResponse = {
 const GeneralInquiryDetail = () => {
   const isMobile = useScreen().isMobile;
   const inquiryId = useGetParamId();
-  const [legendModalVisible, setLegendModalVisible] = useState(false);
   const [activeTab, setActiveTab] = useState<GeneralInquiriesTab>('design-firm');
 
   const [data, setData] = useState<GeneralInquiryResponse>(DEFAULT_STATE);
@@ -85,12 +86,17 @@ const GeneralInquiryDetail = () => {
   const goBackToTable = () => pushTo(PATH.brandGeneralInquiry);
 
   return (
-    <GeneralInquiryContainer visible={legendModalVisible} setVisible={setLegendModalVisible}>
+    <GeneralInquiryContainer>
       <TableHeader
         title="GENERAL INQUIRES"
         customClass={`${styles.tableHeader} ${indexStyles.customHeader}`}
         rightAction={
-          <InfoIcon className={indexStyles.iconInfor} onClick={() => setLegendModalVisible(true)} />
+          <InfoIcon
+            className={indexStyles.iconInfor}
+            onClick={() =>
+              store.dispatch(openModal({ type: 'Project Tracking Legend', title: 'Legend' }))
+            }
+          />
         }
       />
       <Row>
@@ -125,8 +131,7 @@ const GeneralInquiryDetail = () => {
                 size="small"
                 variant="primary"
                 properties="rounded"
-                onClick={goBackToTable}
-              >
+                onClick={goBackToTable}>
                 Done
               </CustomButton>
             </div>

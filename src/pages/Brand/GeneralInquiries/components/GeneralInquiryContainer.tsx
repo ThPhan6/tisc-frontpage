@@ -36,8 +36,6 @@ const GeneralInquirySummary: React.FC<GeneralInquirySummaryProps> = ({ summaryDa
 
 interface GeneralInquiryContainerProps extends Partial<DropDownFilterProps> {
   isShowFilter?: boolean;
-  visible: boolean;
-  setVisible: (visible: boolean) => void;
 }
 
 export const GeneralInquiryContainer: FC<GeneralInquiryContainerProps> = ({
@@ -67,8 +65,7 @@ export const GeneralInquiryContainer: FC<GeneralInquiryContainerProps> = ({
               isShowFilter={isShowFilter}
             />
           </TopBarSummaryHasFilter>
-        )}
-      >
+        )}>
         {children}
       </PageContainer>
     </>
