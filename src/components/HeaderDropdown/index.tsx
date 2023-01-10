@@ -106,7 +106,11 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
       {!isMobile ? null : menuDropdown ? (
         <DrawerMenu visible={visible} onClose={() => setVisible(false)} items={items} />
       ) : (
-        <FilterDrawer visible={visible} onClose={() => setVisible(false)}>
+        <FilterDrawer
+          visible={visible}
+          onClose={() => setVisible(false)}
+          className={styles.filterDropdown}
+        >
           {content}
         </FilterDrawer>
       )}
