@@ -67,7 +67,7 @@ const DEFAULT_STATE: GeneralInquiryResponse = {
 };
 
 const GeneralInquiryDetail = () => {
-  const isMobile = useScreen().isMobile;
+  const { isMobile, isTablet } = useScreen();
   const inquiryId = useGetParamId();
   const [activeTab, setActiveTab] = useState<GeneralInquiriesTab>('design-firm');
 
@@ -85,6 +85,18 @@ const GeneralInquiryDetail = () => {
 
   const goBackToTable = () => pushTo(PATH.brandGeneralInquiry);
 
+  const getMainContentHeight = () => {
+    if (!isMobile) {
+      return undefined;
+    }
+
+    if (activeTab === 'design-firm') {
+      return 'calc(var(--vh) * 100 - 272px)';
+    }
+
+    return 'calc(var(--vh) * 100 - 320px)';
+  };
+
   return (
     <GeneralInquiryContainer>
       <TableHeader
@@ -100,7 +112,7 @@ const GeneralInquiryDetail = () => {
         }
       />
       <Row>
-        <Col span={isMobile ? 24 : 12} className={styles.container}>
+        <Col span={isTablet ? 24 : 12} className={styles.container}>
           <TableHeader
             title={data.inquiry_message.inquiry_for}
             customClass={styles.header}
@@ -116,7 +128,7 @@ const GeneralInquiryDetail = () => {
             customClass={styles.tabs}
           />
 
-          <div className={styles.mainContent}>
+          <div className={styles.mainContent} style={{ height: getMainContentHeight() }}>
             <CustomTabPane active={activeTab === 'design-firm'}>
               <DesignFirmTab data={data.design_firm} />
             </CustomTabPane>
@@ -125,7 +137,7 @@ const GeneralInquiryDetail = () => {
               <InquiryMessageTab data={data.inquiry_message} modelId={inquiryId} />
             </CustomTabPane>
           </div>
-          {activeTab === 'inquiry-message' && (
+          {activeTab === 'inquiry-message' ? (
             <div className={styles.cancelButton}>
               <CustomButton
                 size="small"
@@ -135,7 +147,7 @@ const GeneralInquiryDetail = () => {
                 Done
               </CustomButton>
             </div>
-          )}
+          ) : null}
         </Col>
       </Row>
     </GeneralInquiryContainer>
