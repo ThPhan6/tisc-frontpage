@@ -221,14 +221,14 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
           labelFontSize={4}
           required>
           <CustomTextArea
-            maxLength={100}
-            showCount
-            placeholder="type here"
-            borderBottomColor="mono-medium"
-            boxShadow
+            maxWords={50}
+            placeholder="max.50 words of product summary"
             value={description || ''}
             onChange={onChangeDataByInput('description')}
-            customClass={styles.paddingLeftSpace}
+            customClass={styles.customTextArea}
+            borderBottomColor="mono-medium"
+            boxShadow
+            autoResize
           />
         </FormGroup>
       </div>

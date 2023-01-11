@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { ReactComponent as DownloadIconV2 } from '@/assets/icons/download-2-icon.svg';
+import { ReactComponent as DownloadIconV2 } from '@/assets/icons/download-icon.svg';
 
 import { useCheckPermission } from '@/helper/hook';
 import { isEmpty } from 'lodash';
@@ -70,7 +70,7 @@ const ProductDownloadFooter: FC = () => {
                 </a>
               </td>
               <td className={styles.icon}>
-                <a href={content.url} download>
+                <a href={content.url} target="_blank" download rel="noopener noreferrer">
                   <DownloadIconV2 className={styles.downloadIcon} />
                 </a>
               </td>

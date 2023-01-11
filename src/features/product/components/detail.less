@@ -580,3 +580,20 @@
   width: 18px;
   height: 18px;
 }
+
+.customTextArea {
+  :global(.ant-input) {
+    margin-top: 2px;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 20px;
+    border-bottom-color: #fff;
+    resize: none;
+    &:hover {
+      border-bottom-color: #fff;
+    }
+  }
+  textarea {
+    padding: 4px 0;
+  }
+}
