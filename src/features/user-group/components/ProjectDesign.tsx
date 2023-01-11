@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 
 import { MEASUREMENT_UNIT } from '@/constants/util';
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
 import { getProjectsByDesignFirm } from '../services';
 import { isEmpty } from 'lodash';
@@ -10,6 +10,7 @@ import { RequiredValueProps } from '../types';
 import { ProjectDetail, ProjectsDesignFirm } from '@/features/project/types';
 
 import TextForm from '@/components/Form/TextForm';
+import { ResponsiveCol } from '@/components/Layout';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 
 import styles from '../styles/design.less';
@@ -44,7 +45,8 @@ const ProjectDesign: FC<RequiredValueProps> = ({ id }) => {
           <span
             style={{
               marginLeft: 8,
-            }}>
+            }}
+          >
             {project.name}
           </span>
         </span>
@@ -54,7 +56,7 @@ const ProjectDesign: FC<RequiredValueProps> = ({ id }) => {
 
   return (
     <Row className={indexStyles.container}>
-      <Col span={12}>
+      <ResponsiveCol>
         <div className={`${indexStyles.form} ${styles.team_form}`}>
           <GeneralData>
             {projectData.length ? (
@@ -70,13 +72,15 @@ const ProjectDesign: FC<RequiredValueProps> = ({ id }) => {
                       />
                     }
                     key={index}
-                    collapsible={listProject.count === 0 ? 'disabled' : undefined}>
+                    collapsible={listProject.count === 0 ? 'disabled' : undefined}
+                  >
                     <Collapse {...CollapseLevel2Props}>
                       {listProject.projects.map((project, projectIndex) => (
                         <Collapse.Panel
                           header={renderProjectHeader(project)}
                           key={`${index}-${projectIndex}`}
-                          collapsible={isEmpty(project.code) ? 'disabled' : undefined}>
+                          collapsible={isEmpty(project.code) ? 'disabled' : undefined}
+                        >
                           <div className={`${indexStyles.info} ${styles.teamInfo}`}>
                             <TextForm label="Project Location">{project.location}</TextForm>
                             <TextForm label="Building Type">{project.building_type}</TextForm>
@@ -98,7 +102,7 @@ const ProjectDesign: FC<RequiredValueProps> = ({ id }) => {
             ) : null}
           </GeneralData>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

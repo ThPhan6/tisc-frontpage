@@ -1,12 +1,13 @@
 import { FC, useEffect, useState } from 'react';
 
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
 import { isEmpty } from 'lodash';
 
 import { RequiredValueProps } from '../types';
 import { AvailabilityCollectionGroup } from '@/features/market-availability/type';
 
+import { ResponsiveCol } from '@/components/Layout';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { BodyText } from '@/components/Typography';
 
@@ -26,7 +27,7 @@ const AvailabilityDetail: FC<RequiredValueProps> = ({ id }) => {
 
   return (
     <Row className={styles.container}>
-      <Col span={12}>
+      <ResponsiveCol>
         <div className={styles.form}>
           <GeneralData>
             {availability.length ? (
@@ -45,7 +46,8 @@ const AvailabilityDetail: FC<RequiredValueProps> = ({ id }) => {
                       collections.count == 0 || isEmpty(collections.collection_name)
                         ? 'disabled'
                         : undefined
-                    }>
+                    }
+                  >
                     <Collapse {...CollapseLevel2Props}>
                       {collections.regions?.map((region, regionIdx) => (
                         <Collapse.Panel
@@ -57,7 +59,8 @@ const AvailabilityDetail: FC<RequiredValueProps> = ({ id }) => {
                             />
                           }
                           key={`${index}-${regionIdx}`}
-                          collapsible={region.count == 0 ? 'disabled' : undefined}>
+                          collapsible={region.count == 0 ? 'disabled' : undefined}
+                        >
                           <BodyText level={5} fontFamily="Roboto" color="mono-color">
                             {region.region_country}
                           </BodyText>
@@ -70,7 +73,7 @@ const AvailabilityDetail: FC<RequiredValueProps> = ({ id }) => {
             ) : null}
           </GeneralData>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

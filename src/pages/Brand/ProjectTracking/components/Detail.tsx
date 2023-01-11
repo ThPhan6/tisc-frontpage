@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 
-import { Col, Row } from 'antd';
+import { Row } from 'antd';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 
@@ -13,6 +13,7 @@ import {
   ProjectTrackingDetail,
 } from '@/types/project-tracking.type';
 
+import { ResponsiveCol } from '@/components/Layout';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
@@ -60,7 +61,7 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId }) => {
 
   return (
     <Row style={{ marginTop: '8px' }}>
-      <Col span={isMobile ? 24 : 12}>
+      <ResponsiveCol>
         <div className={styles.detailContainer} style={{ height }}>
           <TableHeader
             title={data.projects.name}
@@ -155,7 +156,7 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId }) => {
             </CustomTabPane>
           </div>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

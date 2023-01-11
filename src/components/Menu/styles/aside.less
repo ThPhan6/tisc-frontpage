@@ -120,9 +120,12 @@
   }
 }
 
-:global(.ant-menu-item .ant-menu-item-icon + span, .ant-menu-submenu-title
-    .ant-menu-item-icon
-    + span, .ant-menu-item .anticon + span, .ant-menu-submenu-title .anticon + span) {
+:global(
+    .ant-menu-item .ant-menu-item-icon + span,
+    .ant-menu-submenu-title .ant-menu-item-icon + span,
+    .ant-menu-item .anticon + span,
+    .ant-menu-submenu-title .anticon + span
+  ) {
   margin-left: 12px;
 }
 
@@ -141,14 +144,16 @@
   // transition: all 0.3s;
 }
 
-:global(.ant-menu-submenu-open),
-:global(.ant-menu-submenu-selected) {
-  > div {
-    color: @primary-color-dark !important;
-    font-weight: 500;
-    letter-spacing: 0;
-    path {
-      fill: @primary-color-dark !important;
+.mobileAsideSider {
+  :global(.ant-menu-submenu-open),
+  :global(.ant-menu-submenu-selected) {
+    > div {
+      color: @primary-color-dark !important;
+      font-weight: 500;
+      letter-spacing: 0;
+      path {
+        fill: @primary-color-dark !important;
+      }
     }
   }
 }

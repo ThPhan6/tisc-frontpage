@@ -40,7 +40,7 @@ export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeDa
     city: false,
   });
 
-  const { isMobile } = useScreen();
+  const { isTablet } = useScreen();
 
   const [buildingTypes, setBuildingTypes] = useState<GeneralData[]>([]);
   const [projectTypes, setProjectTypes] = useState<GeneralData[]>([]);
@@ -105,7 +105,7 @@ export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeDa
     <div
       className={styles.entryFormWrapper}
       style={{
-        height: isMobile ? 'calc(var(--vh) * 100 - 208px)' : 'calc(var(--vh) * 100 - 232px)',
+        height: isTablet ? 'calc(var(--vh) * 100 - 208px)' : 'calc(var(--vh) * 100 - 232px)',
       }}
     >
       <InputGroup
