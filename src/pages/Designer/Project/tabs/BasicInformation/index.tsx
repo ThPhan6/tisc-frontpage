@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ProjectStatuses } from '../../constants/filter';
 import { DefaultProjectRequest } from '../../constants/form';
 import { PATH } from '@/constants/path';
-import { Col, Row } from 'antd';
+import { Row } from 'antd';
 import { useHistory } from 'umi';
 
 import { createProject, updateProject } from '@/features/project/services';
@@ -15,6 +15,7 @@ import type { ProjectBodyRequest, ProjectDetailProps } from '@/features/project/
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { CustomRadio } from '@/components/CustomRadio';
+import { ResponsiveCol } from '@/components/Layout';
 import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from '../../styles/basic-information.less';
@@ -112,9 +113,9 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
       </ProjectTabContentHeader>
 
       <Row className={styles.basicInformationWrapper}>
-        <Col span={isTablet ? 24 : 12}>
+        <ResponsiveCol>
           <EntryForm data={data} onChangeData={onChangeData} />
-        </Col>
+        </ResponsiveCol>
       </Row>
     </>
   );

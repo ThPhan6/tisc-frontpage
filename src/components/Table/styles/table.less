@@ -219,7 +219,7 @@
   color: black;
   background-color: #e6e6e6;
   box-shadow: @border-top-light;
-  @media (max-width: @screen-sm) {
+  @media (max-width: @screen-md) {
     bottom: -12px;
     left: -12px;
     width: calc(100% + 24px);
@@ -295,11 +295,6 @@ tr[class^='ant-table-expanded-row'] tbody > tr > td {
   }
 }
 
-.paginationFixed {
-  position: fixed;
-  bottom: 0 !important;
-}
-
 .mobilePagination {
   bottom: -12px;
   left: -12px;
@@ -307,6 +302,10 @@ tr[class^='ant-table-expanded-row'] tbody > tr > td {
   align-items: center;
   width: calc(100% + 24px);
   padding: 0 16px;
+  &.paginationFixed {
+    position: fixed;
+    bottom: 0 !important;
+  }
 }
 
 .mobileSummary {

@@ -15,7 +15,6 @@ import {
   updateProductCard,
 } from '@/features/product/services';
 import { getBrandById } from '@/features/user-group/services';
-import { useScreen } from '@/helper/common';
 import { useCheckPermission, useQuery } from '@/helper/hook';
 import { isValidURL } from '@/helper/utils';
 import { pick, sortBy } from 'lodash';
@@ -27,6 +26,7 @@ import { resetProductDetailState, setBrand } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
 import { ModalType } from '@/reducers/modal';
 
+import { ResponsiveCol } from '@/components/Layout';
 import { PublicHeader } from '@/components/PublicHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { LandingPageFooter } from '@/pages/LandingPage/footer';
@@ -40,7 +40,6 @@ import styles from './detail.less';
 import Cookies from 'js-cookie';
 
 const ProductDetailContainer: React.FC = () => {
-  const isTablet = useScreen().isTablet;
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -185,11 +184,11 @@ const ProductDetailContainer: React.FC = () => {
 
         <Col span={24}>
           <Row className={isPublicPage ? styles.marginRounded : ''} gutter={[8, 8]}>
-            <Col span={isTablet ? 24 : 12}>
+            <ResponsiveCol>
               <ProductImagePreview />
-            </Col>
+            </ResponsiveCol>
 
-            <Col span={isTablet ? 24 : 12} className={styles.productContent}>
+            <ResponsiveCol className={styles.productContent}>
               <Row style={{ flexDirection: 'column', height: '100%' }}>
                 <Col>
                   <ProductBasicInfo />
@@ -203,7 +202,7 @@ const ProductDetailContainer: React.FC = () => {
                   <ProductDetailFooter visible={activeKey !== 'vendor'} />
                 </Col>
               </Row>
-            </Col>
+            </ResponsiveCol>
           </Row>
         </Col>
       </div>

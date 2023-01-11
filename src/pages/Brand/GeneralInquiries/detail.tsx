@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
-import { Col, Row } from 'antd';
+import { Row } from 'antd';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 
 import { getOneGeneralInquiry } from './services';
-import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useGetParamId } from '@/helper/hook';
 
@@ -17,6 +16,7 @@ import { DesignFirmTab } from './components/DesignFirmTab';
 import { GeneralInquiryContainer } from './components/GeneralInquiryContainer';
 import { InquiryMessageTab } from './components/InquiryMessageTab';
 import CustomButton from '@/components/Button';
+import { ResponsiveCol } from '@/components/Layout';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
@@ -65,7 +65,6 @@ const DEFAULT_STATE: GeneralInquiryResponse = {
 };
 
 const GeneralInquiryDetail = () => {
-  const isMobile = useScreen().isMobile;
   const inquiryId = useGetParamId();
   const [legendModalVisible, setLegendModalVisible] = useState(false);
   const [activeTab, setActiveTab] = useState<GeneralInquiriesTab>('design-firm');
@@ -94,7 +93,7 @@ const GeneralInquiryDetail = () => {
         }
       />
       <Row>
-        <Col span={isMobile ? 24 : 12} className={styles.container}>
+        <ResponsiveCol className={styles.container}>
           <TableHeader
             title={data.inquiry_message.inquiry_for}
             customClass={styles.header}
@@ -131,7 +130,7 @@ const GeneralInquiryDetail = () => {
               </CustomButton>
             </div>
           )}
-        </Col>
+        </ResponsiveCol>
       </Row>
     </GeneralInquiryContainer>
   );

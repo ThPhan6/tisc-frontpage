@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import { Col, Row } from 'antd';
+import { Row } from 'antd';
 import { useHistory } from 'umi';
 
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
@@ -12,6 +12,7 @@ import { useScreen } from '@/helper/common';
 import { EntryFormWrapperProps } from './types';
 
 import CustomButton from '../Button';
+import { ResponsiveCol } from '../Layout';
 import { BodyText, MainTitle } from '../Typography';
 import styles from './styles/index.less';
 
@@ -19,9 +20,7 @@ export const contentId = `entry-form-wrapper--children-${Date.now()}`;
 
 export const FormContainer: FC = ({ children }) => (
   <Row>
-    <Col span={24} lg={{ span: 12 }}>
-      {children}
-    </Col>
+    <ResponsiveCol>{children}</ResponsiveCol>
   </Row>
 );
 
@@ -44,6 +43,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   submitButtonStatus = false,
   extraFooterButton,
   entryFormTypeOnMobile = '',
+  hideAction,
 }) => {
   const history = useHistory();
   const isMobile = useScreen().isMobile;
@@ -112,20 +112,22 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
     <FormContainer>
       <div className={`${styles.entry_form_container} ${customClass}`}>
         {/* header */}
-        <div className={styles.header_main}>
-          <div className={styles.header}>
-            <MainTitle
-              level={3}
-              textAlign={textAlignTitle}
-              customClass={`${styles.header__title} ${titleClassName}`}
-              style={{ ...titleStyles }}
-            >
-              {title}
-            </MainTitle>
-            <CloseIcon className={styles.header__icon} onClick={handleCancel} />
+        {hideAction ? null : (
+          <div className={styles.header_main}>
+            <div className={styles.header}>
+              <MainTitle
+                level={3}
+                textAlign={textAlignTitle}
+                customClass={`${styles.header__title} ${titleClassName}`}
+                style={{ ...titleStyles }}
+              >
+                {title}
+              </MainTitle>
+              <CloseIcon className={styles.header__icon} onClick={handleCancel} />
+            </div>
+            {headerContent ? <div className={styles.header_content}>{headerContent}</div> : null}
           </div>
-          {headerContent ? <div className={styles.header_content}>{headerContent}</div> : null}
-        </div>
+        )}
 
         {/* main content */}
         <div
@@ -137,22 +139,14 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
         </div>
 
         {/* footer */}
-        <div className={styles.footer_main}>
-          {footerContent ? <div className={styles.footer_content}>{footerContent}</div> : null}
-          {renderFooterButton()}
-        </div>
+        {hideAction ? null : (
+          <div className={styles.footer_main}>
+            {footerContent ? <div className={styles.footer_content}>{footerContent}</div> : null}
+
+            {renderFooterButton()}
+          </div>
+        )}
       </div>
     </FormContainer>
   );
 };
-
-{
-  /* <CustomButton
-size="small"
-buttonClass={styles.footer__submit_bt}
-onClick={handleSubmit}
-disabled={disableCancelButton}
->
-Save
-</CustomButton> */
-}

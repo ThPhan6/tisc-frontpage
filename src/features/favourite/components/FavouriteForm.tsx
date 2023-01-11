@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
-import { Col, Row, message } from 'antd';
+import { Row, message } from 'antd';
 
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 
@@ -14,6 +14,7 @@ import { FavouriteRetrieve } from '../types';
 import CustomButton from '@/components/Button';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { PhoneInput } from '@/components/Form/PhoneInput';
+import { ResponsiveCol } from '@/components/Layout';
 import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from './FavouriteForm.less';
@@ -62,7 +63,7 @@ const FavouriteForm = () => {
 
   return (
     <Row>
-      <Col span={12}>
+      <ResponsiveCol>
         <div className={styles.content}>
           <div className={styles.title}>
             <MainTitle level={3} textAlign="center">
@@ -121,13 +122,14 @@ const FavouriteForm = () => {
                 size="small"
                 properties="rounded"
                 buttonClass={styles.skipButton}
-                onClick={onSkipForm}>
+                onClick={onSkipForm}
+              >
                 Skip
               </CustomButton>
             </div>
           </div>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

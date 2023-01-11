@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { PageContainer } from '@ant-design/pro-layout';
-import { Col, Row } from 'antd';
+import { Row } from 'antd';
 
 import { useScreen } from '@/helper/common';
 import { useGetParamId } from '@/helper/hook';
@@ -13,6 +13,7 @@ import { ContactInformation } from './component/ContactInfomation';
 import { CustomResourceEntryForm } from './component/CustomResourceForm';
 import { CustomResourceHeader } from './component/CustomResourceHeader';
 import { CustomResourceTopBar } from './component/CustomResourceTopBar';
+import { ResponsiveCol } from '@/components/Layout';
 
 import { getOneCustomResource } from './api';
 
@@ -59,12 +60,12 @@ const CustomResourceViewPage = () => {
     <PageContainer pageHeaderRender={() => <CustomResourceTopBar />}>
       <CustomResourceHeader />
       <Row style={{ marginTop: '8px' }} gutter={[0, 8]}>
-        <Col span={isMobile ? 24 : 12} style={{ paddingRight: isMobile ? '' : '8px' }}>
+        <ResponsiveCol style={{ paddingRight: isMobile ? '' : '8px' }}>
           <CustomResourceEntryForm data={data} setData={setData} type="view" />
-        </Col>
-        <Col span={isMobile ? 24 : 12} style={{ background: '#fff' }}>
+        </ResponsiveCol>
+        <ResponsiveCol style={{ background: '#fff' }}>
           <ContactInformation data={data} setData={setData} type="view" />
-        </Col>
+        </ResponsiveCol>
       </Row>
     </PageContainer>
   );

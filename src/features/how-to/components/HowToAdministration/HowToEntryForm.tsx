@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove-icon.svg';
@@ -14,6 +14,7 @@ import { FaqInput, FaqItem, FaqPanel, FaqState } from '../../types';
 import CustomButton from '@/components/Button';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import { ResponsiveCol } from '@/components/Layout';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
 
@@ -188,7 +189,7 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
   };
   return (
     <Row>
-      <Col span={24} lg={12}>
+      <ResponsiveCol>
         <div className={styles.main_container}>
           <div className={styles.collapse_container}>
             {value.value?.map((panel, panelIndex) => {
@@ -257,7 +258,7 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
             </CustomButton>
           </div>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

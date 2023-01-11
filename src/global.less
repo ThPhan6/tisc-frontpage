@@ -2,6 +2,11 @@
 
 :root {
   --vh: calc(var(--vhi, 1vh));
+  --spacing: 16px;
+
+  @media (max-width: @screen-md) {
+    --spacing: 12px;
+  }
 }
 
 html,
@@ -18,7 +23,6 @@ body,
 }
 
 .ant-layout {
-  // min-height: calc(var(--vh) * 100);
   background: @mono-color-light;
 }
 .ant-pro-sider.ant-layout-sider.ant-pro-sider-fixed {
@@ -95,7 +99,7 @@ ol {
   }
 }
 
-@media (max-width: @screen-sm) {
+@media (max-width: @screen-md) {
   .ant-table {
     width: 100%;
     overflow-x: auto;

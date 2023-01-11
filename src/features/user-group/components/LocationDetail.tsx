@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
 import { getLocationsByDesignFirm } from '../services';
 import { isEmpty } from 'lodash';
@@ -11,6 +11,7 @@ import { LocationGroupedByCountry } from '@/features/locations/type';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import TextForm from '@/components/Form/TextForm';
+import { ResponsiveCol } from '@/components/Layout';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 
 import styles from '../styles/index.less';
@@ -35,7 +36,7 @@ export const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
 
   return (
     <Row className={styles.container}>
-      <Col span={12} xs={{ span: 24 }}>
+      <ResponsiveCol>
         <div className={styles.form}>
           <GeneralData>
             {locations.length ? (
@@ -53,7 +54,8 @@ export const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
                     key={index}
                     collapsible={
                       isEmpty(country.country_name) || country.count == 0 ? 'disabled' : undefined
-                    }>
+                    }
+                  >
                     <Collapse {...CollapseLevel2Props}>
                       {country.locations?.map((location, locationIndex) => (
                         <Collapse.Panel
@@ -61,7 +63,8 @@ export const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
                             <RenderLabelHeader header={location.business_name} isSubHeader={true} />
                           }
                           key={`${index}-${locationIndex}`}
-                          collapsible={isEmpty(location.business_name) ? 'disabled' : undefined}>
+                          collapsible={isEmpty(location.business_name) ? 'disabled' : undefined}
+                        >
                           <div className={styles.info}>
                             {type === 'brand' ? (
                               <TextForm label="Registered Number">
@@ -77,7 +80,8 @@ export const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
                             <FormGroup
                               label="General Phone"
                               layout="vertical"
-                              formClass={styles.formGroup}>
+                              formClass={styles.formGroup}
+                            >
                               <PhoneInput
                                 codeReadOnly
                                 containerClass={styles.phoneInputCustom}
@@ -100,7 +104,7 @@ export const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
             ) : null}
           </GeneralData>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };
