@@ -7,6 +7,8 @@ import {
 } from '../../../constants/tab';
 import { message } from 'antd';
 
+import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
+
 import { getSpecificationRequest } from '@/features/product/components/ProductAttributes/hooks';
 import { getSelectedRoomIds, useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
 import { updateProductSpecifying } from '@/features/project/services';
@@ -173,6 +175,8 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       className={`${popoverStyles.customPopover} ${styles.specifyingModal}`}
       visible={visible}
       secondaryModal
+      noHeaderBorder={false}
+      closeIcon={<CloseIcon style={{ width: 24, height: 24 }} />}
       onCancel={() => {
         setVisible(false);
         resetProductData();
@@ -190,12 +194,10 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           variant="primary"
           properties="rounded"
           buttonClass="done-btn"
-          onClick={onSubmit}
-        >
+          onClick={onSubmit}>
           Done
         </CustomButton>
-      }
-    >
+      }>
       <BrandProductBasicHeader
         image={product.images[0]}
         logo={product.brand?.logo}
