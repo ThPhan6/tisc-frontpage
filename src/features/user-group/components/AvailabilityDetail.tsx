@@ -46,7 +46,8 @@ const AvailabilityDetail: FC<RequiredValueProps> = ({ id }) => {
                       collections.count == 0 || isEmpty(collections.collection_name)
                         ? 'disabled'
                         : undefined
-                    }>
+                    }
+                  >
                     <Collapse {...CollapseLevel2Props}>
                       {collections.regions?.map((region, regionIdx) => (
                         <Collapse.Panel
@@ -58,7 +59,8 @@ const AvailabilityDetail: FC<RequiredValueProps> = ({ id }) => {
                             />
                           }
                           key={`${index}-${regionIdx}`}
-                          collapsible={region.count == 0 ? 'disabled' : undefined}>
+                          collapsible={region.count == 0 ? 'disabled' : undefined}
+                        >
                           <BodyText level={5} fontFamily="Roboto" color="mono-color">
                             {region.region_country}
                           </BodyText>

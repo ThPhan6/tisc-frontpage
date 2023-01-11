@@ -315,7 +315,8 @@ export const TopBar: React.FC = () => {
                 <span
                   className={`${styles.newCardIcon} ${
                     productSummary ? styles.activeNewCard : styles.disabledNewCard
-                  }`}>
+                  }`}
+                >
                   <SmallPlusIcon />
                 </span>
               }

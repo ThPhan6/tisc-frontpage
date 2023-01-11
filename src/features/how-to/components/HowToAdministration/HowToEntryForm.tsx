@@ -101,13 +101,15 @@ const PanelHeader: FC<PanelHeaderProps> = ({
     <div className={styles.panel}>
       <div
         className={styles.panel_header}
-        onClick={() => handleActiveKeyToCollapse(isExpanded ? 0 : index + 1)}>
+        onClick={() => handleActiveKeyToCollapse(isExpanded ? 0 : index + 1)}
+      >
         <div className={styles.panel_header__info}>
           {panel?.logo && <img src={showImageUrl(String(panel.logo))} className={styles.icon} />}
           <BodyText
             level={4}
             fontFamily="Roboto"
-            customClass={isExpanded ? styles.font_weight_500 : styles.font_weight_300}>
+            customClass={isExpanded ? styles.font_weight_500 : styles.font_weight_300}
+          >
             {panel.title}
           </BodyText>
         </div>
@@ -210,7 +212,8 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
                       />
                     }
                     key={panelIdx}
-                    showArrow={false}>
+                    showArrow={false}
+                  >
                     <FormGroup label="Description" layout="vertical">
                       <CustomTextArea
                         placeholder="type text here"
@@ -223,7 +226,8 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
                     </FormGroup>
                     <div
                       className={styles.add_content}
-                      onClick={() => handleAddFAQContent(panelIndex)}>
+                      onClick={() => handleAddFAQContent(panelIndex)}
+                    >
                       <BodyText level={3} customClass={styles.text}>
                         Add Content
                       </BodyText>

@@ -42,7 +42,8 @@ const HowTo = () => {
         <ResponsiveCol>
           <div
             className={styles.form}
-            style={{ height: isMobile ? 'calc(var(--vh) * 100 - 72px)' : '' }}>
+            style={{ height: isMobile ? 'calc(var(--vh) * 100 - 72px)' : '' }}
+          >
             <div className={styles.title}>
               <Title level={8}>HOW-TO</Title>
             </div>

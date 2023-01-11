@@ -100,7 +100,8 @@ const ProductConsidered: React.FC = () => {
         textCapitalize={false}
         items={menuItems}
         menuStyle={{ width: 160, height: 'auto' }}
-        labelProps={{ className: 'flex-between' }}>
+        labelProps={{ className: 'flex-between' }}
+      >
         {ProductConsiderStatus[record.specifiedDetail.consider_status]}
       </CustomDropDown>
     );
@@ -402,7 +403,8 @@ const ProductConsidered: React.FC = () => {
         style={{
           padding: '16px 16px 8px',
           gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 224px))',
-        }}>
+        }}
+      >
         {products.map((item, index: number) => (
           <ProductCard
             key={index}
@@ -428,7 +430,8 @@ const ProductConsidered: React.FC = () => {
             level={4}
             fontFamily="Cormorant-Garamond"
             color="mono-color"
-            style={{ fontWeight: '600', marginRight: 4 }}>
+            style={{ fontWeight: '600', marginRight: 4 }}
+          >
             View By:
           </BodyText>
 

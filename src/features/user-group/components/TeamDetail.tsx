@@ -55,7 +55,8 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
                     key={index}
                     collapsible={
                       isEmpty(team.country_name) || team.count == 0 ? 'disabled' : undefined
-                    }>
+                    }
+                  >
                     <Collapse {...CollapseLevel2Props}>
                       {team.users?.map((user, userIndex) => (
                         <Collapse.Panel
@@ -67,7 +68,8 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
                             />
                           }
                           key={`${index}-${userIndex}`}
-                          collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}>
+                          collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}
+                        >
                           <div className={indexStyles.info}>
                             <TextForm label="Gender">
                               {user.gender === true ? 'Male' : 'Female'}

@@ -67,7 +67,8 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
                   handleDelete();
                 });
               }
-            }}>
+            }}
+          >
             Delete
           </CustomButton>
         ) : (
@@ -75,7 +76,8 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
             size="small"
             buttonClass={styles.footer__cancel_bt}
             onClick={handleCancel || history.goBack}
-            disabled={disableCancelButton}>
+            disabled={disableCancelButton}
+          >
             Cancel
           </CustomButton>
         )}
@@ -94,7 +96,8 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
               size="small"
               width="64px"
               onClick={handleSubmit}
-              disabled={disableSubmitButton}>
+              disabled={disableSubmitButton}
+            >
               <BodyText level={6} fontFamily="Roboto">
                 Save
               </BodyText>
@@ -116,7 +119,8 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
                 level={3}
                 textAlign={textAlignTitle}
                 customClass={`${styles.header__title} ${titleClassName}`}
-                style={{ ...titleStyles }}>
+                style={{ ...titleStyles }}
+              >
                 {title}
               </MainTitle>
               <CloseIcon className={styles.header__icon} onClick={handleCancel} />
@@ -129,7 +133,8 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
         <div
           id={contentId}
           className={`${styles.content} ${contentClass}`}
-          style={{ ...contentStyles }}>
+          style={{ ...contentStyles }}
+        >
           {children}
         </div>
 

@@ -54,7 +54,8 @@ export const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
                     key={index}
                     collapsible={
                       isEmpty(country.country_name) || country.count == 0 ? 'disabled' : undefined
-                    }>
+                    }
+                  >
                     <Collapse {...CollapseLevel2Props}>
                       {country.locations?.map((location, locationIndex) => (
                         <Collapse.Panel
@@ -62,7 +63,8 @@ export const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
                             <RenderLabelHeader header={location.business_name} isSubHeader={true} />
                           }
                           key={`${index}-${locationIndex}`}
-                          collapsible={isEmpty(location.business_name) ? 'disabled' : undefined}>
+                          collapsible={isEmpty(location.business_name) ? 'disabled' : undefined}
+                        >
                           <div className={styles.info}>
                             {type === 'brand' ? (
                               <TextForm label="Registered Number">
@@ -78,7 +80,8 @@ export const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
                             <FormGroup
                               label="General Phone"
                               layout="vertical"
-                              formClass={styles.formGroup}>
+                              formClass={styles.formGroup}
+                            >
                               <PhoneInput
                                 codeReadOnly
                                 containerClass={styles.phoneInputCustom}

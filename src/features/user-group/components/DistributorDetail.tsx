@@ -56,7 +56,8 @@ const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
                     key={index}
                     collapsible={
                       isEmpty(location.country_name) || location.count == 0 ? 'disabled' : undefined
-                    }>
+                    }
+                  >
                     <Collapse {...CollapseLevel2Props}>
                       {location.distributors?.map((distributor, idx) => (
                         <Collapse.Panel
@@ -64,7 +65,8 @@ const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
                             <RenderLabelHeader header={distributor.name} isSubHeader={true} />
                           }
                           key={`${index}-${idx}`}
-                          collapsible={isEmpty(distributor.name) ? 'disabled' : undefined}>
+                          collapsible={isEmpty(distributor.name) ? 'disabled' : undefined}
+                        >
                           <div className={styles.info}>
                             <TextForm label="Address">{distributor.address ?? ''}</TextForm>
                             <TextForm label="Person in charge">{distributor.person ?? ''}</TextForm>
