@@ -40,7 +40,7 @@ import styles from './index.less';
 const BrandProfilePage = () => {
   const { fetchUserInfo } = useCustomInitialState();
 
-  const { isMobile } = useScreen();
+  const { isMobile, isTablet } = useScreen();
 
   const isBrand = useCheckPermission(['Brand Admin', 'Brand Team']);
   const isDesign = useCheckPermission(['Design Admin', 'Design Team']);
@@ -291,7 +291,7 @@ const BrandProfilePage = () => {
             <div
               className={styles.form}
               style={{
-                height: isMobile
+                height: isTablet
                   ? 'calc(var(--vh) * 100 - 168px)'
                   : 'calc(var(--vh) * 100 - 192px)',
               }}>

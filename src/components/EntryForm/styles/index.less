@@ -1,3 +1,5 @@
+@import '~antd/es/style/variable.less';
+
 .entry_form_container {
   display: flex;
   flex-direction: column;
@@ -6,7 +8,7 @@
   .header_main {
     position: relative;
     .header_content {
-      padding: 0 16px;
+      padding: 0 var(--spacing);
     }
     .header_content::after {
       position: absolute;
@@ -20,7 +22,7 @@
       display: flex;
       align-items: center;
       height: 48px;
-      padding: 0 16px;
+      padding: 0 var(--spacing);
       border-bottom: 0.7px inset @mono-color;
       &__title {
         flex: 1;
@@ -35,13 +37,14 @@
       }
     }
   }
-  ::-webkit-scrollbar {
-    display: none;
-  }
   .content {
     height: calc(var(--vh) * 100 - 250px);
-    padding: 16px;
+    padding: var(--spacing);
     overflow: hidden auto;
+
+    @media (max-width: @screen-md) {
+      height: calc(var(--vh) * 100 - 224px);
+    }
 
     :global(.ant-radio-group > .ant-space) {
       width: 100%;
@@ -50,67 +53,68 @@
     }
   }
   .footer_content {
-    padding: 0 16px;
+    padding: 0 var(--spacing);
     box-shadow: 0 -0.7px 0 @mono-color;
   }
-  .footer {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    height: 48px;
-    padding: 0 16px;
-    box-shadow: @border-top;
+}
 
-    button {
-      transition: none;
-    }
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 48px;
+  padding: 0 var(--spacing);
+  box-shadow: @border-top;
 
-    &__cancel_bt,
-    &__delete_bt,
-    &__submit_bt {
+  button {
+    transition: none;
+  }
+
+  &__cancel_bt,
+  &__delete_bt,
+  &__submit_bt {
+    min-width: 64px;
+    border-radius: 12px;
+  }
+  &__delete_bt,
+  &__cancel_bt {
+    margin-right: 16px;
+  }
+  &__wrapper_submit {
+    &_normal {
       min-width: 64px;
       border-radius: 12px;
-    }
-    &__delete_bt,
-    &__cancel_bt {
-      margin-right: 16px;
-    }
-    &__wrapper_submit {
-      &_normal {
-        min-width: 64px;
-        border-radius: 12px;
+      p {
+        color: #fff;
+      }
+      &:hover {
         p {
-          color: #fff;
-        }
-        &:hover {
-          p {
-            font-weight: 500;
-          }
+          font-weight: 500;
         }
       }
-      &_success {
-        min-width: 64px;
-        background-color: @primary-color-dark;
-        border-radius: 12px;
-        cursor: default;
-        animation: fadeIn 2s;
-        svg {
-          width: 16px;
-          height: 16px;
-          margin-right: 0;
-        }
+    }
+    &_success {
+      min-width: 64px;
+      background-color: @primary-color-dark;
+      border-radius: 12px;
+      cursor: default;
+      animation: fadeIn 2s;
+      svg {
+        width: 16px;
+        height: 16px;
+        margin-right: 0;
       }
     }
   }
 }
 
-@media screen and (max-width: 576px) {
-  :global(.ant-pro-basicLayout-content) {
-    margin: 16px;
-  }
-  .entry_form_container {
-    .content {
-      height: calc(var(--vh) * 100 - 224px);
-    }
-  }
-}
+// @media screen and (max-width: 576px) {
+//   :global(.ant-pro-basicLayout-content) {
+//     margin: 16px;
+//   }
+//   .entry_form_container {
+//     .content {
+//       height: calc(var(--vh) * 100 - 224px);
+//     }
+//   }
+// }

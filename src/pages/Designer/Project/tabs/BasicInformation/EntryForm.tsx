@@ -40,7 +40,7 @@ export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeDa
     city: false,
   });
 
-  const { isMobile } = useScreen();
+  const { isTablet } = useScreen();
 
   const [buildingTypes, setBuildingTypes] = useState<GeneralData[]>([]);
   const [projectTypes, setProjectTypes] = useState<GeneralData[]>([]);
@@ -105,9 +105,8 @@ export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeDa
     <div
       className={styles.entryFormWrapper}
       style={{
-        height: isMobile ? 'calc(var(--vh) * 100 - 208px)' : 'calc(var(--vh) * 100 - 232px)',
-      }}
-    >
+        height: isTablet ? 'calc(var(--vh) * 100 - 208px)' : 'calc(var(--vh) * 100 - 232px)',
+      }}>
       <InputGroup
         label="Project Code"
         required
@@ -230,8 +229,7 @@ export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeDa
         label="Project Type"
         required
         layout="vertical"
-        formClass={`${styles.formGroup} ${projectTypeData.name !== '' ? styles.activeText : ''}`}
-      >
+        formClass={`${styles.formGroup} ${projectTypeData.name !== '' ? styles.activeText : ''}`}>
         <CollapseRadioList
           groupType="project-basic-info"
           groupIndex={1}
@@ -257,8 +255,7 @@ export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeDa
         label="Building Type"
         required
         layout="vertical"
-        formClass={`${styles.formGroup} ${buildingTypeData.name !== '' ? styles.activeText : ''}`}
-      >
+        formClass={`${styles.formGroup} ${buildingTypeData.name !== '' ? styles.activeText : ''}`}>
         <CollapseRadioList
           groupType="project-basic-info"
           groupIndex={2}
@@ -285,8 +282,7 @@ export const EntryForm: FC<BasicInformationEntryFormProps> = ({ data, onChangeDa
         label="Measurement Unit"
         required={true}
         layout="vertical"
-        formClass={`${styles.form_group} ${styles.border_bottom}`}
-      >
+        formClass={`${styles.form_group} ${styles.border_bottom}`}>
         <CustomRadio
           options={measurementUnits}
           value={data.measurement_unit}
