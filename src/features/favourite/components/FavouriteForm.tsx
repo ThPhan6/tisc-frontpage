@@ -122,7 +122,8 @@ const FavouriteForm = () => {
                 size="small"
                 properties="rounded"
                 buttonClass={styles.skipButton}
-                onClick={onSkipForm}>
+                onClick={onSkipForm}
+              >
                 Skip
               </CustomButton>
             </div>

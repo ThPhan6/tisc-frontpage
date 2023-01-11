@@ -45,7 +45,8 @@ export const MenuHeaderDropdown: FC<MenuHeaderDropdownProps> = ({ items, onParen
         onParentClick?.();
         onClick();
       }}
-      className={`${styles.item} ${containerClass} ${disabled ? styles.disabled : ''}`}>
+      className={`${styles.item} ${containerClass} ${disabled ? styles.disabled : ''}`}
+    >
       {icon ? <div className={styles.icon}>{icon}</div> : null}
       <BodyText fontFamily="Roboto" level={6}>
         {label}
@@ -108,7 +109,8 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
         <FilterDrawer
           visible={visible}
           onClose={() => setVisible(false)}
-          className={styles.filterDropdown}>
+          className={styles.filterDropdown}
+        >
           {content}
         </FilterDrawer>
       )}

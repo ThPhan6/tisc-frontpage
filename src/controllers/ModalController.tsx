@@ -4,6 +4,7 @@ import { useScreen } from '@/helper/common';
 import { useAppSelector } from '@/reducers';
 import { closeModal } from '@/reducers/modal';
 
+import { ActionTaskModal } from '@/components/ActionTask/modal';
 import AssignTeamModal from '@/components/AssignTeam';
 import InquiryRequestModal from '@/components/InquiryRequest';
 import { ProjectTrackingLegendModal } from '@/components/LegendModal/LegendModal';
@@ -81,6 +82,10 @@ export const ModalController = () => {
         return <SelectBrandModal />;
       case 'Brand Company':
         return <BrandCompanyModal />;
+
+      // Brand
+      case 'Actions Tasks':
+        return <ActionTaskModal />;
 
       // design firms
       case 'Assign Product':

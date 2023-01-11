@@ -44,7 +44,8 @@ const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
                       />
                     }
                     key={index}
-                    collapsible={item.count === 0 ? 'disabled' : undefined}>
+                    collapsible={item.count === 0 ? 'disabled' : undefined}
+                  >
                     <Collapse {...CollapseLevel2Props}>
                       {item.subs.map((listMaterial, materialIndex) => (
                         <Collapse.Panel
@@ -57,7 +58,8 @@ const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
                             />
                           }
                           key={`${index}-${materialIndex}`}
-                          collapsible={listMaterial.count === 0 ? 'disabled' : undefined}>
+                          collapsible={listMaterial.count === 0 ? 'disabled' : undefined}
+                        >
                           <div className={`${indexStyles.info} ${styles.teamInfo}`}>
                             {listMaterial.codes.map((materialCode, idx) => (
                               <table className={styles.list_material_table} key={idx}>
@@ -71,7 +73,8 @@ const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
                                     <BodyText
                                       level={5}
                                       fontFamily="Roboto"
-                                      customClass={styles.colorMaterial}>
+                                      customClass={styles.colorMaterial}
+                                    >
                                       {materialCode.description}
                                     </BodyText>
                                   </td>

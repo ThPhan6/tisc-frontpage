@@ -40,6 +40,7 @@ export type ModalType =
   | 'Brand Company'
 
   // Brand
+  | 'Actions Tasks'
 
   // Design Firm
   | 'Assign Product'

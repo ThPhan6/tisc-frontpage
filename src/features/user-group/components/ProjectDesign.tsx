@@ -45,7 +45,8 @@ const ProjectDesign: FC<RequiredValueProps> = ({ id }) => {
           <span
             style={{
               marginLeft: 8,
-            }}>
+            }}
+          >
             {project.name}
           </span>
         </span>
@@ -71,13 +72,15 @@ const ProjectDesign: FC<RequiredValueProps> = ({ id }) => {
                       />
                     }
                     key={index}
-                    collapsible={listProject.count === 0 ? 'disabled' : undefined}>
+                    collapsible={listProject.count === 0 ? 'disabled' : undefined}
+                  >
                     <Collapse {...CollapseLevel2Props}>
                       {listProject.projects.map((project, projectIndex) => (
                         <Collapse.Panel
                           header={renderProjectHeader(project)}
                           key={`${index}-${projectIndex}`}
-                          collapsible={isEmpty(project.code) ? 'disabled' : undefined}>
+                          collapsible={isEmpty(project.code) ? 'disabled' : undefined}
+                        >
                           <div className={`${indexStyles.info} ${styles.teamInfo}`}>
                             <TextForm label="Project Location">{project.location}</TextForm>
                             <TextForm label="Building Type">{project.building_type}</TextForm>

@@ -72,11 +72,13 @@ const ProductAndProjectHeader: FC<ProductProps> = (props) => {
     <div className={styles.panel_header}>
       <div
         className={`${styles.panel_header__field}`}
-        onClick={() => handleActiveCollapse(item.title ? index : -1)}>
+        onClick={() => handleActiveCollapse(item.title ? index : -1)}
+      >
         <div
           className={`${styles.titleIcon} ${
             String(index) !== activeKey ? styles.font_weight_300 : styles.font_weight_500
-          }`}>
+          }`}
+        >
           {showLogo()}
           <BodyText level={5} fontFamily="Roboto" style={{ marginLeft: '12px' }}>
             {item.title}
@@ -142,7 +144,8 @@ const renderContent = (type: TabKey, item: any) => {
                 ? styles.cancelled
                 : undefined
             }`}
-            key={index}>
+            key={index}
+          >
             <img
               src={showImageUrl(product.image)}
               style={{ width: '24px', height: '24px', marginRight: '12px' }}
@@ -185,7 +188,8 @@ export const ProductAndProjectTab: FC<ProductAndProjectTabProps> = ({ type, data
                       showArrow={false}
                       className={
                         String(index) !== activeKey ? styles['bottomMedium'] : styles['bottomBlack']
-                      }>
+                      }
+                    >
                       {renderContent(type, item.content)}
                     </Collapse.Panel>
                   </Collapse>

@@ -77,13 +77,15 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId }) => {
           />
 
           <div
-            style={{ padding: isMobile ? 12 : undefined, height: 'calc(var(--vh) * 100 - 256px)' }}>
+            style={{ padding: isMobile ? 12 : undefined, height: 'calc(var(--vh) * 100 - 256px)' }}
+          >
             <CustomTabPane
               active={activeKey === 'project'}
               title={LIST_TAB[1].mobileTabTitle}
               collapseOnMobile
               groupType="project-tracking-detail"
-              groupIndex={1}>
+              groupIndex={1}
+            >
               <BrandProject project={data.projects} />
             </CustomTabPane>
 
@@ -92,7 +94,8 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId }) => {
               title={LIST_TAB[0].mobileTabTitle}
               collapseOnMobile
               groupType="project-tracking-detail"
-              groupIndex={2}>
+              groupIndex={2}
+            >
               <DesignFirm designFirm={data.designFirm} />
             </CustomTabPane>
 

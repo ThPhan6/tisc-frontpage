@@ -31,7 +31,8 @@ export const BasicInformation: FC<BasicInformationProps> = ({ basicInformation }
               boxShadow
               formClass={
                 basicInformation?.designFirm.logo ? styles.designName : styles.designNameInfo
-              }>
+              }
+            >
               {basicInformation?.designFirm.name}
             </TextForm>
             {basicInformation?.designFirm.logo ? (

@@ -57,7 +57,8 @@ export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
             <TextForm
               label={type === 'brand' ? 'Brand Name' : 'Design Firm Name'}
               boxShadow
-              formClass={data.logo ? styles.brandName : styles.brandNameInfo}>
+              formClass={data.logo ? styles.brandName : styles.brandNameInfo}
+            >
               {data.name ?? ''}
             </TextForm>
             {data.logo ? <img src={showImageUrl(data.logo)} className={styles.logo} /> : ''}

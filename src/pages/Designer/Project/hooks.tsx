@@ -93,7 +93,8 @@ export const renderSpecifiedStatusDropdown =
         textCapitalize={false}
         items={menuItems}
         menuStyle={{ width: 160, height: 'auto' }}
-        labelProps={{ className: 'flex-between' }}>
+        labelProps={{ className: 'flex-between' }}
+      >
         {typeof record.specifiedDetail?.specified_status === 'number'
           ? ProductSpecifyStatus[record.specifiedDetail.specified_status]
           : ''}

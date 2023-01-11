@@ -38,7 +38,8 @@ const LabelHeader: FC<LabelHeaderProps> = ({ header, quantity, isSubHeader }) =>
         className={styles.quantity}
         style={{
           marginLeft: 8,
-        }}>
+        }}
+      >
         ({quantity ?? '0'})
       </span>
     </span>
@@ -54,7 +55,8 @@ const ProjectSpaceAreas: FC<ListAreaProps> = ({ areas, index }) => {
             <LabelHeader header={area.name} quantity={area.rooms.length} isSubHeader={true} />
           }
           key={`${index}-${areaIndex}`}
-          collapsible={area.rooms.length === 0 ? 'disabled' : undefined}>
+          collapsible={area.rooms.length === 0 ? 'disabled' : undefined}
+        >
           {area.rooms.map((room, idx) => (
             <table className={styles.roomCode} key={idx}>
               <tr>
@@ -95,7 +97,8 @@ export const SpaceTab: FC<SpaceTabProps> = ({ space }) => {
                         />
                       }
                       key={index}
-                      collapsible={zone.areas.length === 0 ? 'disabled' : undefined}>
+                      collapsible={zone.areas.length === 0 ? 'disabled' : undefined}
+                    >
                       <ProjectSpaceAreas areas={zone.areas} index={index} />
                     </Collapse.Panel>
                   </Collapse>
