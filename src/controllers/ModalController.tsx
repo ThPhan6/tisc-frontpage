@@ -110,7 +110,8 @@ export const ModalController = () => {
         noHeaderBorder={noBorderDrawerHeader}
         autoHeight={autoHeightDrawer}
         darkTheme={darkTheme}
-        title={title}>
+        title={title}
+      >
         {renderModalContent()}
       </MobileDrawer>
     );

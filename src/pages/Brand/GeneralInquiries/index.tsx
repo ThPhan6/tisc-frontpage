@@ -88,7 +88,8 @@ const GeneralInquiries = () => {
     <GeneralInquiryContainer
       selectedFilter={selectedFilter}
       setSelectedFilter={setSelectedFilter}
-      isShowFilter>
+      isShowFilter
+    >
       <CustomTable
         title="GENERAL INQUIRIES"
         columns={setDefaultWidthForEachColumn(mainColumns, 5)}

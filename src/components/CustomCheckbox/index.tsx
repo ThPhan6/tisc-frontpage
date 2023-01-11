@@ -81,18 +81,21 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
       className={`${style[`checkbox-${direction}`]} ${style['checkbox-list']} ${
         isCheckboxList && style['item-list-checkbox']
       } ${style['color-checkbox-checked']} ${checkboxClass}`}
-      onClick={(e) => e.stopPropagation()}>
+      onClick={(e) => e.stopPropagation()}
+    >
       <Checkbox.Group
         {...props}
         value={selected?.map((item) => item.value) ?? []}
-        onChange={onChangeValue}>
+        onChange={onChangeValue}
+      >
         {options.map((option, index) =>
           isCheckboxList ? (
             <label
               key={option.value}
               className={`${style['item-wrapper']} ${'item-wrapper-custom'}`}
               style={{ minHeight: heightItem }}
-              htmlFor={`${option.value}_${index}_${randomId}`}>
+              htmlFor={`${option.value}_${index}_${randomId}`}
+            >
               <div
                 style={{
                   width: 'calc(100% - 16px)',
@@ -100,7 +103,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                 }}
-                className={getActiveClass(option)}>
+                className={getActiveClass(option)}
+              >
                 {option.label}
               </div>
               <Checkbox id={`${option.value}_${index}_${randomId}`} {...option} />
@@ -109,7 +113,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
             <div
               key={option.value}
               className={`${style['item-checkbox']} ${'item-wrapper-checkbox'}`}
-              style={{ minHeight: heightItem }}>
+              style={{ minHeight: heightItem }}
+            >
               <Checkbox {...option} style={{ maxWidth: '100%' }}>
                 <span className={getActiveClass(option)}>{option.label}</span>
               </Checkbox>
@@ -121,7 +126,8 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
         <div
           className={`other-field-checkbox ${
             isCheckboxList ? style['other-field-checkbox-list'] : ''
-          }`}>
+          }`}
+        >
           <Checkbox value={'other'}>
             <div className={style['input-wrapper']} style={{ height: heightItem }}>
               Other

@@ -258,7 +258,8 @@ const Popover: FC<PopoverProps> = ({
         properties="rounded"
         buttonClass="done-btn"
         disabled={disabledSubmit}
-        onClick={handleDone}>
+        onClick={handleDone}
+      >
         Done
       </CustomButton>
     );
@@ -293,7 +294,8 @@ const Popover: FC<PopoverProps> = ({
           <MainTitle
             level={3}
             customClass={`text-uppercase text-overflow ${styles.headingTitle}`}
-            style={{ maxWidth: '95%' }}>
+            style={{ maxWidth: '95%' }}
+          >
             {title}
           </MainTitle>
         }
@@ -303,7 +305,8 @@ const Popover: FC<PopoverProps> = ({
         width={576}
         closeIcon={<CloseIcon style={{ color: '#000' }} />}
         footer={noFooter ? null : renderButtonFooter()}
-        className={`${styles.customPopover} ${className ?? ''}`}>
+        className={`${styles.customPopover} ${className ?? ''}`}
+      >
         {extraTopAction}
         {renderChildren()}
         {children}

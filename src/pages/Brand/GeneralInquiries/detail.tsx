@@ -147,7 +147,8 @@ const GeneralInquiryDetail = () => {
                 size="small"
                 variant="primary"
                 properties="rounded"
-                onClick={goBackToTable}>
+                onClick={goBackToTable}
+              >
                 Done
               </CustomButton>
             </div>
