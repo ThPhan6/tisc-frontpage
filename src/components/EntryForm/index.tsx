@@ -54,7 +54,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
     }
 
     return (
-      <div className={styles.footer} style={{ justifyContent: isMobile ? 'center' : undefined }}>
+      <div className={styles.footer}>
         {isMobile && entryFormTypeOnMobile === 'edit' ? (
           <CustomButton
             size="small"
