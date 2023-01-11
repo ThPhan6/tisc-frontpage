@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
 import { ReactComponent as ActionDeleteIcon } from '@/assets/icons/action-delete-icon.svg';
 import { ReactComponent as ActionRemoveIcon } from '@/assets/icons/action-remove-icon.svg';
@@ -14,6 +14,7 @@ import { FaqInput, FaqItem, FaqPanel, FaqState } from '../../types';
 import CustomButton from '@/components/Button';
 import { FormGroup } from '@/components/Form';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import { ResponsiveCol } from '@/components/Layout';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText } from '@/components/Typography';
 
@@ -100,15 +101,13 @@ const PanelHeader: FC<PanelHeaderProps> = ({
     <div className={styles.panel}>
       <div
         className={styles.panel_header}
-        onClick={() => handleActiveKeyToCollapse(isExpanded ? 0 : index + 1)}
-      >
+        onClick={() => handleActiveKeyToCollapse(isExpanded ? 0 : index + 1)}>
         <div className={styles.panel_header__info}>
           {panel?.logo && <img src={showImageUrl(String(panel.logo))} className={styles.icon} />}
           <BodyText
             level={4}
             fontFamily="Roboto"
-            customClass={isExpanded ? styles.font_weight_500 : styles.font_weight_300}
-          >
+            customClass={isExpanded ? styles.font_weight_500 : styles.font_weight_300}>
             {panel.title}
           </BodyText>
         </div>
@@ -188,7 +187,7 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
   };
   return (
     <Row>
-      <Col span={24} lg={12}>
+      <ResponsiveCol>
         <div className={styles.main_container}>
           <div className={styles.collapse_container}>
             {value.value?.map((panel, panelIndex) => {
@@ -211,8 +210,7 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
                       />
                     }
                     key={panelIdx}
-                    showArrow={false}
-                  >
+                    showArrow={false}>
                     <FormGroup label="Description" layout="vertical">
                       <CustomTextArea
                         placeholder="type text here"
@@ -225,8 +223,7 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
                     </FormGroup>
                     <div
                       className={styles.add_content}
-                      onClick={() => handleAddFAQContent(panelIndex)}
-                    >
+                      onClick={() => handleAddFAQContent(panelIndex)}>
                       <BodyText level={3} customClass={styles.text}>
                         Add Content
                       </BodyText>
@@ -257,7 +254,7 @@ export const HowToEntryForm: FC<HowToEntryFormProps> = ({ value, onChange, onSub
             </CustomButton>
           </div>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

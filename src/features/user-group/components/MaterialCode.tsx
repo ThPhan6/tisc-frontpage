@@ -1,10 +1,11 @@
 import { FC, useEffect, useState } from 'react';
 
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
 import { RequiredValueProps } from '../types';
 import { MaterialCodeDesignFirm } from '@/types';
 
+import { ResponsiveCol } from '@/components/Layout';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { BodyText, Title } from '@/components/Typography';
 
@@ -27,7 +28,7 @@ const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
 
   return (
     <Row className={indexStyles.container}>
-      <Col span={12}>
+      <ResponsiveCol>
         <div className={`${indexStyles.form} ${styles.team_form}`}>
           <GeneralData>
             {materialCodeData.length && (
@@ -87,7 +88,7 @@ const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
             )}
           </GeneralData>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

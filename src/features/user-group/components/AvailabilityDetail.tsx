@@ -1,12 +1,13 @@
 import { FC, useEffect, useState } from 'react';
 
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
 import { isEmpty } from 'lodash';
 
 import { RequiredValueProps } from '../types';
 import { AvailabilityCollectionGroup } from '@/features/market-availability/type';
 
+import { ResponsiveCol } from '@/components/Layout';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { BodyText } from '@/components/Typography';
 
@@ -26,7 +27,7 @@ const AvailabilityDetail: FC<RequiredValueProps> = ({ id }) => {
 
   return (
     <Row className={styles.container}>
-      <Col span={12}>
+      <ResponsiveCol>
         <div className={styles.form}>
           <GeneralData>
             {availability.length ? (
@@ -70,7 +71,7 @@ const AvailabilityDetail: FC<RequiredValueProps> = ({ id }) => {
             ) : null}
           </GeneralData>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

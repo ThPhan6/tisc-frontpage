@@ -1,12 +1,13 @@
 import { FC } from 'react';
 
-import { Col, Row } from 'antd';
+import { Row } from 'antd';
 
 import { getValueByCondition, showImageUrl } from '@/helper/utils';
 
 import { UserGroupProps } from '../types/common.types';
 
 import TextForm from '@/components/Form/TextForm';
+import { ResponsiveCol } from '@/components/Layout';
 import { BodyText } from '@/components/Typography';
 
 import indexStyles from '../styles/index.less';
@@ -50,7 +51,7 @@ export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
 
   return (
     <Row className={indexStyles.container}>
-      <Col span={12} xs={{ span: 24 }}>
+      <ResponsiveCol>
         <div className={`${styles.profile} ${indexStyles.form}`}>
           <div className={styles.designName}>
             <TextForm
@@ -96,7 +97,7 @@ export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
             </TextForm>
           ) : null}
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };
