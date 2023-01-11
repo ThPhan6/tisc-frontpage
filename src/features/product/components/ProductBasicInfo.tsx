@@ -12,6 +12,8 @@ import { CollectionRelationType } from '@/types';
 
 import CustomCollapse from '@/components/Collapse';
 import InputGroup from '@/components/EntryForm/InputGroup';
+import { FormGroup } from '@/components/Form';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { BodyText } from '@/components/Typography';
 
 import { CollectionModal } from '../modals/CollectionModal';
@@ -93,24 +95,28 @@ export const ProductBasicInfo: React.FC = () => {
           value={productId}
         />
         {/* Description */}
-        <InputGroup
-          horizontal
-          containerClass={!editable ? styles.viewInfo : ''}
-          fontLevel={4}
+        <FormGroup
           label="Description"
-          placeholder={editable ? 'max.50 words of product summary' : ''}
-          readOnly={editable === false}
-          maxWords={50}
-          noWrap
-          value={description}
-          onChange={(e) => {
-            dispatch(
-              setPartialProductDetail({
-                description: e.target.value,
-              }),
-            );
-          }}
-        />
+          layout="horizontal"
+          formClass="mb-16"
+          labelFontSize={4}
+          noColon>
+          <CustomTextArea
+            maxWords={50}
+            placeholder={editable ? 'max.50 words of product summary' : ''}
+            value={description}
+            onChange={(e) => {
+              dispatch(
+                setPartialProductDetail({
+                  description: e.target.value,
+                }),
+              );
+            }}
+            customClass={`${styles.customTextArea} ${editable ? '' : styles.viewInfo}`}
+            readOnly={editable === false}
+            autoResize
+          />
+        </FormGroup>
       </CustomCollapse>
       {editable && brand?.id ? (
         <CollectionModal

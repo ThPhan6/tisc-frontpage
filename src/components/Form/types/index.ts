@@ -34,6 +34,7 @@ export interface FormGroupProps {
     | 'rightTop'
     | 'rightBottom';
   style?: CSSProperties;
+  noColon?: boolean;
 }
 
 export interface TextFormProps extends FormGroupProps {
@@ -66,6 +67,7 @@ export interface CustomTextAreaProps extends TextAreaProps {
   boxShadow?: boolean;
   autoResize?: boolean;
   customClass?: string;
+  maxWords?: number;
 }
 
 export interface PhoneInputProps {
