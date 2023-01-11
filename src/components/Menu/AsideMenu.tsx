@@ -202,8 +202,7 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
         collapsed={collapsed}
         onCollapse={setCollapsed}
         className={styles.customAsideSider}
-        trigger={collapsed ? <AlignRightIcon /> : <AlignLeftIcon />}
-      >
+        trigger={collapsed ? <AlignRightIcon /> : <AlignLeftIcon />}>
         <div className="menu-sider-wrapper">
           <Menu
             theme={props.headerTheme}

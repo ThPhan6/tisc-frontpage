@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
 import { getLibraryByDesignFirm } from '../services';
 import { getFullName, getValueByCondition, showImageUrl } from '@/helper/utils';
@@ -18,6 +18,7 @@ import { ConversionSubValueProps } from '@/types';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import TextForm from '@/components/Form/TextForm';
+import { ResponsiveCol } from '@/components/Layout';
 import { BodyText } from '@/components/Typography';
 
 import indexStyles from '../styles/index.less';
@@ -408,14 +409,14 @@ const LibraryDesign: FC<RequiredValueProps> = ({ id }) => {
 
   return (
     <Row className={indexStyles.container}>
-      <Col span={12}>
+      <ResponsiveCol>
         <div className={`${indexStyles.form} ${styles.content}`}>
           <LibraryItem data={libraryData} type="brand" />
           <LibraryItem data={libraryData} type="distributor" />
           <LibraryItem data={libraryData} type="collection" />
           <LibraryItem data={libraryData} type="product" />
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

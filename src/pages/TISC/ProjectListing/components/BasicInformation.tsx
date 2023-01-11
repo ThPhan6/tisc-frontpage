@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { MEASUREMENT_UNIT } from '@/constants/util';
 import { ProjectStatus } from '@/pages/Brand/ProjectTracking/constant';
-import { Col, Row } from 'antd';
+import { Row } from 'antd';
 
 import { showImageUrl } from '@/helper/utils';
 
@@ -10,6 +10,7 @@ import { ProjectInformation } from '../type';
 
 import { FormGroup } from '@/components/Form';
 import TextForm from '@/components/Form/TextForm';
+import { ResponsiveCol } from '@/components/Layout';
 import { BodyText, Title } from '@/components/Typography';
 
 import styles from './Component.less';
@@ -22,7 +23,7 @@ interface BasicInformationProps {
 export const BasicInformation: FC<BasicInformationProps> = ({ basicInformation }) => {
   return (
     <Row>
-      <Col span={12} className={styles.container}>
+      <ResponsiveCol className={styles.container}>
         <div className={styles.content}>
           <div className={styles.designInfo}>
             <TextForm
@@ -79,7 +80,7 @@ export const BasicInformation: FC<BasicInformationProps> = ({ basicInformation }
           </BodyText>
           <Title level={9}>{moment(basicInformation?.updated_at).format('YYYY-MM-DD')}</Title>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

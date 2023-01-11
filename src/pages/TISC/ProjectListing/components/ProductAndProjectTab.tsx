@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 
 import { USER_STATUS_TEXTS } from '@/constants/util';
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
@@ -15,6 +15,7 @@ import { ProductConsiderStatus, ProductSpecifyStatus } from '@/features/project/
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import TextForm from '@/components/Form/TextForm';
+import { ResponsiveCol } from '@/components/Layout';
 import { LogoIcon } from '@/components/LogoIcon';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText, Title } from '@/components/Typography';
@@ -164,7 +165,7 @@ export const ProductAndProjectTab: FC<ProductAndProjectTabProps> = ({ type, data
 
   return (
     <Row>
-      <Col span={12} className={styles.container}>
+      <ResponsiveCol className={styles.container}>
         <div className={styles.content}>
           <GeneralData>
             {data?.length
@@ -227,7 +228,7 @@ export const ProductAndProjectTab: FC<ProductAndProjectTabProps> = ({ type, data
             </>
           )}
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

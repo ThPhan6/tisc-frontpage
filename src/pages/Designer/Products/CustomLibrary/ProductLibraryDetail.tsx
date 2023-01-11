@@ -6,7 +6,6 @@ import { useHistory } from 'umi';
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 
 import { getOneCustomProduct } from './services';
-import { useScreen } from '@/helper/common';
 import { useGetParamId, useQuery } from '@/helper/hook';
 
 import { ProductInfoTab } from './types';
@@ -14,6 +13,7 @@ import store, { useAppSelector } from '@/reducers';
 
 import { SpecificationTab } from './components/SpecificationTab';
 import { SummaryTab } from './components/SummaryTab';
+import { ResponsiveCol } from '@/components/Layout';
 import { PublicHeader } from '@/components/PublicHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
@@ -29,7 +29,6 @@ const LIST_TAB = [
 ];
 
 const ProductLibraryDetail: React.FC = () => {
-  const isTablet = useScreen().isTablet;
   const history = useHistory();
   const productId = useGetParamId();
 
@@ -68,11 +67,11 @@ const ProductLibraryDetail: React.FC = () => {
 
         <Col span={24}>
           <Row className={isPublicPage ? styles.marginRounded : ''} gutter={[8, 8]}>
-            <Col span={isTablet ? 24 : 12}>
+            <ResponsiveCol>
               <ProductImagePreview hideInquiryRequest isCustomProduct viewOnly />
-            </Col>
+            </ResponsiveCol>
 
-            <Col span={isTablet ? 24 : 12} className={styles.productContent}>
+            <ResponsiveCol className={styles.productContent}>
               <Row style={{ flexDirection: 'column', height: '100%' }}>
                 <Col>
                   <CustomTabs
@@ -99,7 +98,7 @@ const ProductLibraryDetail: React.FC = () => {
                   </CustomTabPane>
                 </Col>
               </Row>
-            </Col>
+            </ResponsiveCol>
           </Row>
         </Col>
       </div>

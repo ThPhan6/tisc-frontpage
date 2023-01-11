@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { IMAGE_ACCEPT_TYPES, LOGO_SIZE_LIMIT } from '@/constants/util';
-import { Col, Row, Upload, UploadProps, message } from 'antd';
+import { Row, Upload, UploadProps, message } from 'antd';
 
-// import DefaultLogo from '@/assets/icons/avatar-default.svg';
 import { ReactComponent as DefaultLogo } from '@/assets/icons/avatar-default.svg';
 import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-icon.svg';
@@ -32,6 +31,7 @@ import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import { ResponsiveCol } from '@/components/Layout';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText, Title } from '@/components/Typography';
 
@@ -40,7 +40,7 @@ import styles from './index.less';
 const BrandProfilePage = () => {
   const { fetchUserInfo } = useCustomInitialState();
 
-  const { isMobile } = useScreen();
+  const { isMobile, isTablet } = useScreen();
 
   const isBrand = useCheckPermission(['Brand Admin', 'Brand Team']);
   const isDesign = useCheckPermission(['Design Admin', 'Design Team']);
@@ -282,7 +282,7 @@ const BrandProfilePage = () => {
   return (
     <div className={styles.content}>
       <Row>
-        <Col span={24} lg={12}>
+        <ResponsiveCol>
           <div className={styles.container}>
             <div className={styles.formTitle}>
               <Title level={8}>{isBrand ? 'BRAND PROFILE' : 'OFFICE PROFILE'}</Title>
@@ -291,17 +291,15 @@ const BrandProfilePage = () => {
             <div
               className={styles.form}
               style={{
-                height: isMobile
+                height: isTablet
                   ? 'calc(var(--vh) * 100 - 168px)'
                   : 'calc(var(--vh) * 100 - 192px)',
-              }}
-            >
+              }}>
               <FormGroup
                 label={isBrand ? 'Brand Name' : 'Design Firm Name'}
                 layout="vertical"
                 required
-                formClass={styles.customFormGroup}
-              >
+                formClass={styles.customFormGroup}>
                 <CustomInput
                   borderBottomColor="mono-medium"
                   placeholder={isBrand ? 'registered name/trademark' : 'registered company name'}
@@ -314,8 +312,7 @@ const BrandProfilePage = () => {
               <FormGroup
                 label="Parent Company"
                 layout="vertical"
-                formClass={styles.customFormGroup}
-              >
+                formClass={styles.customFormGroup}>
                 <CustomInput
                   borderBottomColor="mono-medium"
                   placeholder="holding company name, if any"
@@ -331,8 +328,7 @@ const BrandProfilePage = () => {
                   maxCount={1}
                   showUploadList={false}
                   {...props}
-                  accept={IMAGE_ACCEPT_TYPES.image}
-                >
+                  accept={IMAGE_ACCEPT_TYPES.image}>
                   {getPreviewAvatar()}
                 </Upload>
               </div>
@@ -345,15 +341,13 @@ const BrandProfilePage = () => {
                   placement="bottom"
                   required
                   formClass={styles.customLabel}
-                  iconTooltip={<WarningIcon className={styles.customWarningIcon} />}
-                >
+                  iconTooltip={<WarningIcon className={styles.customWarningIcon} />}>
                   <div className={styles['wrapper-upload']}>
                     <Upload
                       maxCount={1}
                       showUploadList={false}
                       {...props}
-                      accept={IMAGE_ACCEPT_TYPES.image}
-                    >
+                      accept={IMAGE_ACCEPT_TYPES.image}>
                       <UploadIcon className={styles.icon} />
                     </Upload>
                   </div>
@@ -374,8 +368,7 @@ const BrandProfilePage = () => {
                 label={isBrand ? 'Mission & Vision' : 'Profile & Philosophy'}
                 layout="vertical"
                 required
-                formClass={styles.customFormArea}
-              >
+                formClass={styles.customFormArea}>
                 <CustomTextArea
                   placeholder={
                     isBrand
@@ -419,8 +412,7 @@ const BrandProfilePage = () => {
                     label="Offical Website"
                     required
                     layout="vertical"
-                    formClass={styles.customFormGroup}
-                  >
+                    formClass={styles.customFormGroup}>
                     <CustomInput
                       borderBottomColor="mono-medium"
                       placeholder="paste URL link here"
@@ -434,8 +426,7 @@ const BrandProfilePage = () => {
                     label="Design Capabilities"
                     required
                     layout="vertical"
-                    formClass={styles.customFormGroup}
-                  >
+                    formClass={styles.customFormGroup}>
                     <CustomCheckbox
                       checkboxClass={styles.capability}
                       options={designCapability}
@@ -467,12 +458,11 @@ const BrandProfilePage = () => {
 
             <div
               className={styles.actionButton}
-              style={{ display: 'flex', justifyContent: isMobile ? 'center' : undefined }}
-            >
+              style={{ display: 'flex', justifyContent: isMobile ? 'center' : undefined }}>
               <CustomSaveButton isSuccess={isSubmitted.value} onClick={onSubmitForm} />
             </div>
           </div>
-        </Col>
+        </ResponsiveCol>
       </Row>
     </div>
   );

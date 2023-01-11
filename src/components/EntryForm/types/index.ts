@@ -18,6 +18,7 @@ export interface EntryFormWrapperProps {
   submitButtonStatus?: boolean;
   extraFooterButton?: ReactNode;
   entryFormTypeOnMobile?: 'create' | 'edit' | '';
+  hideAction?: boolean;
 }
 
 export interface FormNameInputProps {
