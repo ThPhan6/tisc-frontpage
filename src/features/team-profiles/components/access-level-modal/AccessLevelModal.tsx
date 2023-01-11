@@ -109,7 +109,8 @@ const AccessLevelModal: FC = () => {
               level={6}
               customClass={`${styles.menu_item__name} ${
                 isMobile && subType === '' ? styles.boldName : ''
-              }`}>
+              }`}
+            >
               {menu.name}
             </BodyText>
           </td>
@@ -139,7 +140,8 @@ const AccessLevelModal: FC = () => {
                     {type === 'tisc' && (
                       <td
                         key={`fData_${item.id}`}
-                        style={{ textAlign: 'center', display: !menu.subs ? 'none' : '' }}>
+                        style={{ textAlign: 'center', display: !menu.subs ? 'none' : '' }}
+                      >
                         <AccessableTickIcon className={styles.menu_accessable_null} />
                       </td>
                     )}

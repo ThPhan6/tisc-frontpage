@@ -76,7 +76,8 @@ const ContactHeader: FC<ContactHeaderProps> = (props) => {
   return (
     <div
       className={styles.panel_header}
-      onClick={() => handleActiveCollapse(item.first_name ? index : -1)}>
+      onClick={() => handleActiveCollapse(item.first_name ? index : -1)}
+    >
       <div className={`${styles.panel_header__field}`}>
         {String(index) === activeKey || checkContactValue(item) ? (
           <div className={styles.titleIcon}>
@@ -175,7 +176,8 @@ export const ContactInformation: FC<ContactInformationProps> = ({
           key={index}
           collapsible={checkContactValue(contact) ? 'disabled' : undefined}
           showArrow={false}
-          className={String(index) !== activeKey ? styles['bottomMedium'] : ''}>
+          className={String(index) !== activeKey ? styles['bottomMedium'] : ''}
+        >
           <InputGroup
             label="First Name"
             required
@@ -262,7 +264,8 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             required
             style={{ marginBottom: '16px' }}
             labelFontSize={3}
-            labelColor={labelColor}>
+            labelColor={labelColor}
+          >
             <PhoneInput
               phonePlaceholder="area code / number"
               onChange={(value) => {
@@ -286,7 +289,8 @@ export const ContactInformation: FC<ContactInformationProps> = ({
             required
             labelFontSize={3}
             style={{ marginBottom: '16px' }}
-            labelColor={labelColor}>
+            labelColor={labelColor}
+          >
             <PhoneInput
               phonePlaceholder="mobile number"
               onChange={(value) => {
@@ -336,7 +340,8 @@ export const ContactInformation: FC<ContactInformationProps> = ({
       />
       <div
         className={styles.information}
-        style={{ height: isMobile ? '' : 'calc(var(--vh) * 100 - 304px)' }}>
+        style={{ height: isMobile ? '' : 'calc(var(--vh) * 100 - 304px)' }}
+      >
         {data.contacts.map((contact, index) => renderContacts(contact, index))}
       </div>
       {isEdit && (
@@ -347,7 +352,8 @@ export const ContactInformation: FC<ContactInformationProps> = ({
               variant="secondary"
               properties="rounded"
               buttonClass={styles.btnCancel}
-              onClick={handleDelete}>
+              onClick={handleDelete}
+            >
               Delete
             </CustomButton>
           ) : (
@@ -355,14 +361,16 @@ export const ContactInformation: FC<ContactInformationProps> = ({
               properties="rounded"
               size="small"
               buttonClass={styles.btnCancel}
-              onClick={() => pushTo(PATH.designerCustomResource)}>
+              onClick={() => pushTo(PATH.designerCustomResource)}
+            >
               Cancel
             </CustomButton>
           )}
           <CustomSaveButton
             onClick={!handleDisableButton() ? onSubmit : undefined}
             isSuccess={submitButtonStatus}
-            customClass={handleDisableButton() ? styles.disableButton : ''}>
+            customClass={handleDisableButton() ? styles.disableButton : ''}
+          >
             Save
           </CustomSaveButton>
         </div>
