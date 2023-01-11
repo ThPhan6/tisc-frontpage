@@ -62,6 +62,7 @@ const AuthorizedCountryModal: FC<{
   return (
     <Popover
       title="SELECT COUNTRY"
+      secondaryModal
       visible={visible}
       setVisible={setVisible}
       chosenValue={chosenValue}

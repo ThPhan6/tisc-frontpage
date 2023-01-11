@@ -54,7 +54,8 @@ const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
             className={styles.dropdownCount}
             style={{
               marginLeft: item.margin ? item.margin : 8,
-            }}>
+            }}
+          >
             ({item.options.length})
           </span>
         </span>
@@ -76,13 +77,15 @@ const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
         }
         setActiveKey(newKeys);
       }}
-      activeKey={activeKey}>
+      activeKey={activeKey}
+    >
       {data.map((item, index) => (
         <Collapse.Panel
           header={renderHeader(item, index)}
           key={index}
           collapsible={isEmpty(item.options) ? 'disabled' : undefined}
-          className="site-collapse-custom-panel">
+          className="site-collapse-custom-panel"
+        >
           <CustomRadio
             options={item.options}
             value={selected?.value}

@@ -70,7 +70,6 @@
 }
 
 .information {
-  height: calc(100vh - 304px);
   padding: 16px;
   overflow: auto;
   :global(.ant-collapse > .ant-collapse-item.ant-collapse-no-arrow > .ant-collapse-header) {
@@ -206,4 +205,34 @@
   left: 50%;
   margin: 0;
   transform: translate(-50%, -50%);
+}
+
+.form {
+  height: calc(var(--vh) * 100 - 256px);
+  padding: 16px;
+  overflow: auto;
+  background: #fff;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+.customTopBar {
+  justify-content: flex-start;
+  padding: 0 12px;
+}
+.customHeader {
+  gap: 0;
+  justify-content: flex-start;
+  padding: 0 12px;
+  :global(.ant-space-item) {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+  :global(span.ant-radio + *) {
+    padding-right: 0;
+    padding-left: 0;
+  }
+  :global(.ant-radio-wrapper) {
+    margin-right: 0;
+  }
 }

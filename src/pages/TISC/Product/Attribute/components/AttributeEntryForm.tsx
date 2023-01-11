@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react';
 
-import { useHistory, useParams } from 'umi';
+import { useHistory } from 'umi';
 
 import { useAttributeLocation } from '../hooks/location';
 import { pushTo } from '@/helper/history';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 import {
   createAttribute,
+  deleteAttribute,
   getOneAttribute,
   getProductAttributeContentType,
   updateAttribute,
 } from '@/services';
 
+import store from '@/reducers';
+import { closeModal, openModal } from '@/reducers/modal';
 import type { AttributeContentType, AttributeForm, AttributeSubForm } from '@/types';
 
 import { EntryFormWrapper } from '@/components/EntryForm';
@@ -20,7 +23,6 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { AttributeItem } from './AttributeItem';
-import ContentTypeModal from './ContentTypeModal';
 
 export interface SelectedItem {
   subAttribute: AttributeSubForm;
@@ -47,10 +49,13 @@ const DEFAULT_ATTRIBUTE: AttributeForm = {
 };
 
 const AttributeEntryForm = () => {
-  // for content type modal
-  const [visible, setVisible] = useState(false);
   // for content type data
-  const [contentType, setContentType] = useState<AttributeContentType>();
+  const [contentType, setContentType] = useState<AttributeContentType>({
+    conversions: [],
+    options: [],
+    presets: [],
+    texts: [],
+  });
   // selected content types
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(DEFAULT_SELECTED_ATTRIBUTE);
 
@@ -58,10 +63,8 @@ const AttributeEntryForm = () => {
   const [data, setData] = useState<AttributeForm>(DEFAULT_ATTRIBUTE);
   const { activePath, attributeLocation } = useAttributeLocation();
   const isLoading = useBoolean();
-  const params = useParams<{
-    id: string;
-  }>();
-  const idAttribute = params?.id || '';
+
+  const idAttribute = useGetParamId();
   const isUpdate = idAttribute ? true : false;
   const submitButtonStatus = useBoolean(false);
 
@@ -122,14 +125,6 @@ const AttributeEntryForm = () => {
     });
   };
 
-  const handleSelectContentType = (subAttribute: AttributeSubForm, index: number) => {
-    setSelectedItem({
-      subAttribute,
-      index,
-    });
-    setVisible(true);
-  };
-
   const onContentTypeSubmit = (changedSub: Omit<AttributeSubForm, 'id' | 'name'>) => {
     if (selectedItem) {
       const newSubs = [...data.subs];
@@ -147,7 +142,28 @@ const AttributeEntryForm = () => {
     // reset selected item
     setSelectedItem(DEFAULT_SELECTED_ATTRIBUTE);
     // close modal
-    setVisible(false);
+    closeModal();
+  };
+
+  const handleSelectContentType = (subAttribute: AttributeSubForm, index: number) => {
+    setSelectedItem({
+      subAttribute,
+      index,
+    });
+    store.dispatch(
+      openModal({
+        type: 'Product Attribute Type',
+        title: 'Select content type',
+        props: {
+          productAttributeType: {
+            selectedItem,
+            contentType,
+            onSubmit: onContentTypeSubmit,
+            type: attributeLocation.TYPE,
+          },
+        },
+      }),
+    );
   };
 
   const handleCreateData = (submitData: AttributeForm) => {
@@ -196,13 +212,24 @@ const AttributeEntryForm = () => {
     handleSubmit({ ...data, type: attributeLocation.TYPE, subs: newSubs });
   };
 
+  const handleDeleteAttribute = () => {
+    deleteAttribute(idAttribute).then((isSuccess) => {
+      if (isSuccess) {
+        pushTo(activePath);
+      }
+    });
+  };
+
   return (
     <div>
       <TableHeader title={attributeLocation.NAME} rightAction={<CustomPlusButton disabled />} />
       <EntryFormWrapper
         handleSubmit={onHandleSubmit}
         handleCancel={history.goBack}
-        submitButtonStatus={submitButtonStatus.value}>
+        submitButtonStatus={submitButtonStatus.value}
+        handleDelete={handleDeleteAttribute}
+        entryFormTypeOnMobile={isUpdate ? 'edit' : 'create'}
+      >
         <FormNameInput
           placeholder="type group name"
           title="Attribute Group"
@@ -221,15 +248,6 @@ const AttributeEntryForm = () => {
             />
           ))}
         </div>
-        {visible ? (
-          <ContentTypeModal
-            setVisible={setVisible}
-            selectedItem={selectedItem}
-            contentType={contentType}
-            onSubmit={onContentTypeSubmit}
-            type={attributeLocation.TYPE}
-          />
-        ) : null}
       </EntryFormWrapper>
     </div>
   );

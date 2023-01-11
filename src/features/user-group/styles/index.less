@@ -23,31 +23,25 @@
     margin-bottom: 16px;
     border-bottom: 0 !important;
   }
-  :global(
-      .ant-collapse-icon-position-end
-        > .ant-collapse-item
-        > .ant-collapse-header
-        .ant-collapse-arrow
-    ),
-  :global(
-      .ant-collapse-icon-position-right
-        > .ant-collapse-item
-        > .ant-collapse-header
-        .ant-collapse-arrow
-    ) {
+  :global(.ant-collapse-icon-position-end
+      > .ant-collapse-item
+      > .ant-collapse-header
+      .ant-collapse-arrow),
+  :global(.ant-collapse-icon-position-right
+      > .ant-collapse-item
+      > .ant-collapse-header
+      .ant-collapse-arrow) {
     right: 0 !important;
   }
-  :global(
-      .ant-collapse-borderless
-        > .ant-collapse-item
-        > .ant-collapse-content
-        > .ant-collapse-content-box
-    ) {
+  :global(.ant-collapse-borderless
+      > .ant-collapse-item
+      > .ant-collapse-content
+      > .ant-collapse-content-box) {
     padding: 8px 0 8px 16px !important;
   }
 
   .form {
-    height: calc(100vh - 248px);
+    height: calc(var(--vh) * 100 - 248px);
     padding: 16px;
     overflow: hidden auto;
     background: #fff;

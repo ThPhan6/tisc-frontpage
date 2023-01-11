@@ -56,11 +56,38 @@
   }
 }
 
-@media screen and (max-width: @screen-xs) {
+@media screen and (max-width: @screen-sm) {
   .container {
     width: 100% !important;
   }
   .container > * {
     border-radius: 0 !important;
+  }
+}
+
+.filterDropdown {
+  width: 160px;
+  :global(.tisc-dropdown-item) {
+    @media screen and (max-width: @screen-sm) {
+      box-shadow: none;
+    }
+
+    & > div {
+      min-height: 36px;
+      &:not(:first-child) {
+        box-shadow: none;
+      }
+      &:hover {
+        background-color: @primary-color-light;
+      }
+    }
+  }
+  .filterItemLabel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    svg {
+      margin-right: 12px;
+    }
   }
 }

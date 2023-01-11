@@ -1,20 +1,21 @@
+@import '~antd/es/style/variable.less';
+
 .button {
   margin-left: 48px;
+
+  @media screen and (max-width: @screen-md) {
+    margin-left: 24px;
+  }
 }
 .content {
   &_left {
-    height: calc(100vh - 232px);
-    margin-right: 8px;
+    height: calc(var(--vh) * 100 - 232px);
     overflow: auto;
     background-color: #fff;
   }
   &_right {
     justify-content: space-between;
-    height: calc(100vh - 232px);
-    padding-top: 16px;
-    background-color: #fff;
-    -webkit-user-select: none;
-    -ms-user-select: none;
+    height: calc(var(--vh) * 100 - 232px);
     user-select: none;
     .action {
       position: relative;
@@ -34,9 +35,11 @@
       }
     }
     .pdf {
+      padding-top: 16px;
+      background-color: #fff;
       :global(.react-pdf__Page__canvas) {
         width: auto !important;
-        height: calc(100vh - 312px) !important;
+        height: calc(var(--vh) * 100 - 312px) !important;
         margin: auto;
         box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
       }
@@ -67,6 +70,9 @@
   :global(.ant-collapse-item .ant-collapse-header) {
     text-transform: capitalize !important;
   }
+  @media screen and (max-width: @screen-md) {
+    padding: 0 12px;
+  }
   .customHeader {
     margin-top: 16px;
     :global(.function-type-placeholder) {
@@ -78,9 +84,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 40px;
+    height: 36px;
     margin-bottom: 8px;
-    box-shadow: @border-bottom;
+    // box-shadow: @border-bottom;
     :global(.ant-switch-checked) {
       background: @primary-color-dark !important;
     }
@@ -109,15 +115,21 @@
       color: @mono-color-medium;
     }
   }
+  :global(.ant-collapse-item) {
+    margin-bottom: 12px;
+  }
 }
 .customActionButton {
   width: auto;
   padding: 8px 16px;
 }
 .specification {
-  height: calc(100vh - 352px);
+  height: calc(var(--vh) * 100 - 352px);
   padding: 0 16px;
   overflow: auto;
+  @media screen and (max-width: @screen-md) {
+    padding: 0 8px;
+  }
   :global(.ant-collapse-item .ant-collapse-header) {
     text-transform: capitalize !important;
   }

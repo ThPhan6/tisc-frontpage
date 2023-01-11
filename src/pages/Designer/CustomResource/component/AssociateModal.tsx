@@ -48,6 +48,7 @@ export const AssociateModal: FC<{
       title={`select ${
         customResourceType === CustomResourceType.Brand ? 'distributor(s)' : 'brand(s)'
       }`}
+      secondaryModal
       visible={visible}
       setVisible={setVisible}
       chosenValue={chosenValue}
@@ -59,7 +60,8 @@ export const AssociateModal: FC<{
         };
       })}
       hasOrtherInput={false}
-      className={styles.customModal}>
+      className={styles.customModal}
+    >
       {associates?.length === 0 && <EmptyOne customClass={styles.empty} />}
     </Popover>
   );

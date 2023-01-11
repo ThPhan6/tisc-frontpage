@@ -5,6 +5,7 @@ import { Switch } from 'antd';
 
 import { ReactComponent as FileSearchIcon } from '@/assets/icons/file-search-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { useBoolean } from '@/helper/hook';
 import { messageError, messageErrorType, validateDocumentTitle } from '@/helper/utils';
 
@@ -14,7 +15,7 @@ import CustomButton from '@/components/Button';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
-import { MainTitle } from '@/components/Typography';
+import { MainTitle, RobotoBodyText } from '@/components/Typography';
 
 import styles from '../index.less';
 import { PreviewModal } from './PreviewModal';
@@ -26,6 +27,7 @@ interface CoverStandardProps {
   onPreview?: () => void;
 }
 const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, onPreview }) => {
+  const isMobile = useScreen().isMobile;
   const openModal = useBoolean();
   const [previewURL, setPreviewURL] = useState<string>('');
 
@@ -56,18 +58,26 @@ const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, o
     return (
       <div
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginRight: '24px',
-        }}>
-        {label}
+          marginRight: isMobile ? undefined : 12,
+        }}
+        className="flex-between"
+      >
+        <RobotoBodyText
+          level={5}
+          customClass="text-overflow"
+          style={{
+            maxWidth: 'calc(100% - 26px)',
+          }}
+        >
+          {label}
+        </RobotoBodyText>
         <FileSearchIcon
           onClick={(e) => {
             e.preventDefault();
             setPreviewURL(url);
             openModal.setValue(true);
           }}
+          style={{ width: 18, height: 18 }}
         />
       </div>
     );
@@ -136,7 +146,10 @@ const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, o
         </div>
       ) : (
         <div>
-          <div className={styles.specification}>
+          <div
+            className={styles.cover}
+            style={{ paddingBottom: 16, height: 'calc(var(--vh) * 100 - 352px)' }}
+          >
             <DropdownCheckboxList
               data={data.templates.specification.map((specification) => {
                 return {

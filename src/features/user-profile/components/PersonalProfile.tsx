@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constants/message';
 import { AVATAR_ACCEPT_TYPES, STATUS_RESPONSE } from '@/constants/util';
@@ -45,7 +45,7 @@ const interestedData = [
   { label: 'Product Recommendations/Updates', value: 4 },
 ];
 
-export const PersonalProfile = () => {
+export const PersonalProfile: FC<{ contentHeight?: number }> = ({ contentHeight }) => {
   const [fileInput, setFileInput] = useState<any>();
   const { fetchUserInfo, currentUser } = useCustomInitialState();
   const submitButtonStatus = useBoolean();
@@ -204,12 +204,13 @@ export const PersonalProfile = () => {
           overlayInnerStyle={{
             width: '240px',
             padding: '8px 19.5px',
-          }}>
+          }}
+        >
           <WarningIcon className={styles['warning-icon']} />
         </Tooltip>
       </div>
       <div className={styles.wrapper}>
-        <div className={styles.content}>
+        <div className={styles.content} style={{ height: contentHeight }}>
           <Upload name="avatar-drag-drop" {...uploadProps}>
             <div className={`${styles.avatarContainer}`}>
               <div>
@@ -235,7 +236,8 @@ export const PersonalProfile = () => {
             messageType="error"
             label="Backup email"
             layout="vertical"
-            formClass={styles.form}>
+            formClass={styles.form}
+          >
             <CustomInput
               name="backupEmail"
               status={isShowErrorMessage('email', inputValue.backupEmail) ? '' : 'error'}
@@ -298,7 +300,8 @@ export const PersonalProfile = () => {
               size="small"
               width="64px"
               onClick={handleSubmit}
-              disabled={checkSaveDisabled()}>
+              disabled={checkSaveDisabled()}
+            >
               <BodyText level={6} fontFamily="Roboto">
                 Save
               </BodyText>

@@ -30,19 +30,23 @@ export const ProjectTrackingHeader: FC<ProjectTrackingHeaderProps> = ({
   }, [workspace]);
 
   return (
-    <div className={styles.customHeader}>
-      <MenuSummary typeMenu={'brand'} menuSummaryData={summary} />
-      <div style={{ display: 'flex' }}>
-        <TopBarDropDownFilter
-          selectedFilter={selectedFilter}
-          setSelectedFilter={setSelectedFilter}
-          filterLabel="Project Status"
-          globalFilter={GlobalFilter}
-          dynamicFilter={ProjectStatusFilters}
-          isShowFilter
-        />
-        {children}
-      </div>
-    </div>
+    <MenuSummary
+      typeMenu={'brand'}
+      menuSummaryData={summary}
+      contentFilter={
+        <div style={{ display: 'flex' }}>
+          <TopBarDropDownFilter
+            selectedFilter={selectedFilter}
+            setSelectedFilter={setSelectedFilter}
+            filterLabel="Project Status"
+            globalFilter={GlobalFilter}
+            dynamicFilter={ProjectStatusFilters}
+            isShowFilter
+          />
+          {children}
+        </div>
+      }
+      containerClass={styles.customHeader}
+    />
   );
 };

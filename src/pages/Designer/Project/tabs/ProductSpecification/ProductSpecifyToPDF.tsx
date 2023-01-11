@@ -1,15 +1,17 @@
 import { FC, useEffect, useState } from 'react';
 
 import { ProductSpecifiedTabKeys, ProductSpecifiedTabs } from '../../constants/tab';
-import { Col, Row } from 'antd';
+import { Row } from 'antd';
 
 import { createPDF, getSpecifiedProductByPDF } from '@/features/project/services';
+import { useScreen } from '@/helper/common';
 
 import { PdfDetail, TemplatesItem } from './type';
 
 import IssuingInformation from './components/IssuingInformation';
 import { PdfPreview } from './components/PdfPreview';
 import StandardCoverPage from './components/StandardCoverPage';
+import { ResponsiveCol } from '@/components/Layout';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
 import styles from './index.less';
@@ -20,6 +22,7 @@ interface ProductSpecififyPDF {
 }
 
 const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
+  const isMobile = useScreen().isMobile;
   const [selectedTab, setSelectedTab] = useState<ProductSpecifiedTabKeys>(
     ProductSpecifiedTabKeys.issuingInformation,
   );
@@ -121,8 +124,8 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
   };
 
   return (
-    <Row className={styles.content}>
-      <Col span={12}>
+    <Row className={styles.content} gutter={[8, 8]}>
+      <ResponsiveCol>
         <div className={styles.content_left}>
           <CustomTabs
             listTab={ProductSpecifiedTabs}
@@ -132,7 +135,7 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
             className={styles.projectTabInfo}
             onChange={(changedKey) => setSelectedTab(changedKey as ProductSpecifiedTabKeys)}
             activeKey={selectedTab}
-            style={{ padding: '16px 16px 0 16px' }}
+            style={{ padding: isMobile ? '12px 12px 0 12px' : '16px 16px 0 16px' }}
           />
           <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.issuingInformation}>
             <IssuingInformation data={data} onChangeData={onChangeData} />
@@ -149,10 +152,10 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
             />
           </CustomTabPane>
         </div>
-      </Col>
-      <Col span={12} className={styles.content_right}>
+      </ResponsiveCol>
+      <ResponsiveCol className={styles.content_right}>
         <PdfPreview generatePDF={generatepdf} data={data} />
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

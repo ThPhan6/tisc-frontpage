@@ -37,12 +37,15 @@ export const DropdownSelectInput: FC<DropdownSelectInputProps> = ({
         <div
           className={`${styles.overlayContainer} ${
             noPadding ? styles.noPadding : ''
-          } ${overlayClass} `}>
+          } ${overlayClass} `}
+        >
           {overlay}
         </div>
       }
       overlayStyle={overlayStyle}
-      className={styles.selectDropdown}>
+      className={styles.selectDropdown}
+      autoHeight={false}
+    >
       <CustomInput borderBottomColor="light" {...props} value={value || ''} />
       <DropdownIcon className="ic-select" />
     </CustomDropDown>

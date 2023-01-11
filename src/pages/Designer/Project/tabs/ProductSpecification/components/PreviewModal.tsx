@@ -14,10 +14,11 @@ export const PreviewModal: FC<ModalProps> = ({ visible, previewURL }) => {
   return (
     <CustomModal
       visible={visible.value}
-      footer={false}
       onCancel={() => visible.setValue(false)}
       className={styles.modal}
-      closable={false}>
+      closable={false}
+      secondaryModal
+    >
       <img
         src={showImageUrl(previewURL)}
         style={{ width: '100%', height: '100%', boxShadow: ' 1px 1px 3px rgba(0, 0, 0, 0.5)' }}

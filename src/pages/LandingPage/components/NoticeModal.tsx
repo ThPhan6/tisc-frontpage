@@ -1,6 +1,7 @@
-import { FC } from 'react';
+import { useLandingPageStyles } from './hook';
 
-import { ModalProps } from '../types';
+import { useAppSelector } from '@/reducers';
+import { modalThemeSelector } from '@/reducers/modal';
 
 import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle } from '@/components/Typography';
@@ -34,28 +35,20 @@ const browserRecommendVersion = [
   },
 ];
 
-export const NoticeModal: FC<ModalProps> = ({ visible, onClose, theme = 'default' }) => {
-  const themeStyle = () => (theme === 'default' ? '' : '-dark');
+export const NoticeModal = () => {
+  const { darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
+  const popupStylesProps = useLandingPageStyles(darkTheme);
 
   return (
-    <CustomModal
-      visible={visible}
-      footer={false}
-      containerClass={theme === 'dark' && styles.modal}
-      bodyStyle={{
-        backgroundColor: theme === 'dark' ? '#000' : '',
-        height: '576px',
-      }}
-      closeIconClass={theme === 'dark' && styles.closeIcon}
-      onCancel={onClose}>
+    <CustomModal {...popupStylesProps}>
       <div className={styles.content}>
         <div className={styles.intro}>
-          <MainTitle level={1} customClass={styles[`body${themeStyle()}`]}>
+          <MainTitle level={1} customClass={styles[`body${themeStyle}`]}>
             Browser Compatibility Notice
           </MainTitle>
         </div>
         <div className={styles.text}>
-          <BodyText level={5} fontFamily="Roboto" customClass={styles[`body${themeStyle()}`]}>
+          <BodyText level={5} fontFamily="Roboto" customClass={styles[`body${themeStyle}`]}>
             Our application platform uses the latest web format and standards.
             <br />
             For a better browsing experience and security, please update the current browser or
@@ -67,8 +60,9 @@ export const NoticeModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
                 <BodyText
                   level={5}
                   fontFamily="Roboto"
-                  customClass={styles[`body${themeStyle()}`]}
-                  key={index}>
+                  customClass={styles[`body${themeStyle}`]}
+                  key={index}
+                >
                   {item.name}
                 </BodyText>
               ))}
@@ -78,14 +72,15 @@ export const NoticeModal: FC<ModalProps> = ({ visible, onClose, theme = 'default
                 <BodyText
                   level={5}
                   fontFamily="Roboto"
-                  customClass={styles[`body${themeStyle()}`]}
-                  key={index}>
+                  customClass={styles[`body${themeStyle}`]}
+                  key={index}
+                >
                   {`version ${item.version} or later`}
                 </BodyText>
               ))}
             </div>
           </div>
-          <BodyText level={5} fontFamily="Roboto" customClass={styles[`body${themeStyle()}`]}>
+          <BodyText level={5} fontFamily="Roboto" customClass={styles[`body${themeStyle}`]}>
             TISC Team
           </BodyText>
         </div>

@@ -1,3 +1,5 @@
+@import '~antd/es/style/variable.less';
+
 .marginBottomSpace {
   margin-bottom: 8px;
 }
@@ -36,9 +38,9 @@
   }
 
   .productImageWrapper {
-    margin-right: 8px;
     padding: 16px 16px 0;
     background-color: #fff;
+    box-shadow: @border-bottom-light;
   }
   .uploadZone {
     position: relative;
@@ -517,7 +519,9 @@
     }
 
     svg {
-      margin-right: 8px;
+      @media (min-width: @screen-sm) {
+        margin-right: 8px;
+      }
     }
     svg path {
       fill: @mono-color;

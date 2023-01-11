@@ -68,7 +68,8 @@ const RequestAndNotificationList: FC<RequestAndNotificationListProps> = ({
                     return newData;
                   });
                 }}
-                key={index}>
+                key={index}
+              >
                 <td className={styles.date}>
                   {moment(item.title.created_at).format('YYYY-MM-DD')}
                 </td>
@@ -108,7 +109,8 @@ const DetaiItem: FC<DetaiItemProps> = ({
         height: `${contentHeight}`,
         overflow: 'auto',
         padding: '0 16px 16px 16px',
-      }}>
+      }}
+    >
       <TableHeader
         title={
           <>
@@ -134,7 +136,8 @@ const DetaiItem: FC<DetaiItemProps> = ({
             href={`${window.location.origin}/brand/product/${detailItem.product.id}`}
             target="_blank"
             rel="noreferrer"
-            style={{ color: '#000' }}>
+            style={{ color: '#000' }}
+          >
             {window.location.origin}/brand/product/{detailItem.product.id}
           </a>
         }
@@ -154,7 +157,8 @@ const DetaiItem: FC<DetaiItemProps> = ({
         label="Work Phone"
         layout="vertical"
         labelColor="mono-color-dark"
-        formClass={type === 'request' ? '' : styles.marginBottomNone}>
+        formClass={type === 'request' ? '' : styles.marginBottomNone}
+      >
         <PhoneInput
           codeReadOnly
           phoneNumberReadOnly
@@ -174,7 +178,8 @@ const DetaiItem: FC<DetaiItemProps> = ({
             label="Message"
             layout="vertical"
             labelColor="mono-color-dark"
-            formClass={styles.marginBottomNone}>
+            formClass={styles.marginBottomNone}
+          >
             <CustomTextArea
               value={detailItem.request?.message}
               className={styles.customTextArea}
@@ -237,7 +242,8 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
               size="small"
               variant="primary"
               properties="rounded"
-              onClick={handleCloseDetailItem}>
+              onClick={handleCloseDetailItem}
+            >
               Done
             </CustomButton>
           </div>

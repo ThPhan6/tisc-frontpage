@@ -1,13 +1,17 @@
 import { FC, Fragment, useEffect, useState } from 'react';
 
-import { USER_ROLE } from '@/constants/userRoles';
-
 import { ReactComponent as AccessableMinusIcon } from '@/assets/icons/accessable-minus-icon.svg';
 import { ReactComponent as AccessableTickIcon } from '@/assets/icons/accessable-tick-icon.svg';
+import { ReactComponent as FeebBackIcon } from '@/assets/icons/feedback.svg';
+import { ReactComponent as ShareViaEmailIcon } from '@/assets/icons/ic-share.svg';
+import { ReactComponent as RecommendationIcon } from '@/assets/icons/recommendation.svg';
 
+import { useScreen } from '@/helper/common';
 import { showImageUrl } from '@/helper/utils';
 import { getPermission, updatePermission } from '@/services/permission.api';
 
+import { useAppSelector } from '@/reducers';
+import { modalPropsSelector } from '@/reducers/modal';
 import { PermissionData, PermissionItem } from '@/types';
 
 import Popover from '@/components/Modal/Popover';
@@ -15,24 +19,35 @@ import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from './AccessLevelModal.less';
 
-interface AccessLevelModalForm {
-  visible: boolean;
-  setVisible: (visible: boolean) => void;
-  titleColumnData?: { title: string; unuse?: boolean }[];
-  headerTitle: string;
-  showMyDashboard?: boolean;
-  userRole: USER_ROLE;
-}
+const TABLE_COL = {
+  brand: [{ title: 'Brand Admin' }, { title: 'Brand Team' }],
+  designer: [{ title: 'Design Admin' }, { title: 'Design Team' }],
+  tisc: [
+    { title: 'TISC Admin' },
+    { title: ' TISC Team', unuse: true },
+    { title: 'Consultant Team' },
+  ],
+};
 
-const AccessLevelModal: FC<AccessLevelModalForm> = ({
-  visible,
-  setVisible,
-  titleColumnData,
-  headerTitle,
-  showMyDashboard,
-  userRole,
-  children,
-}) => {
+const furturePermissionData = [
+  {
+    logo: <FeebBackIcon className={styles.menu_item__logo} style={{ marginRight: 8 }} />,
+    name: 'Feedback(future)',
+  },
+  {
+    logo: <RecommendationIcon className={styles.menu_item__logo} style={{ marginRight: 8 }} />,
+    name: 'Recommendation(future)',
+  },
+  {
+    logo: <ShareViaEmailIcon className={styles.menu_item__logo} style={{ marginRight: 8 }} />,
+    name: 'Share via Email(future)',
+  },
+];
+
+const AccessLevelModal: FC = () => {
+  const { type } = useAppSelector(modalPropsSelector).accessLevel;
+  const isMobile = useScreen().isMobile;
+
   const [data, setData] = useState<PermissionData[]>([]);
 
   // load permission data
@@ -67,22 +82,35 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
     });
   };
 
-  const renderPermission: any = (menu: PermissionData, type: string) => {
+  const renderLogo = (logo: string) => {
+    if (isMobile) {
+      return logo ? '' : <span></span>;
+    }
+    if (logo) {
+      return (
+        <img
+          src={showImageUrl(logo)}
+          className={styles.menu_item__logo}
+          style={{ marginRight: type === 'tisc' ? 8 : 12 }}
+        />
+      );
+    }
+    return <span></span>;
+  };
+
+  const renderPermission: any = (menu: PermissionData, subType: string) => {
     return (
       <Fragment key={menu.name}>
         <tr className={styles.menu}>
-          <td className={`${styles.menu_item} ${type === 'sub-item' ? styles.sub_menu : ''}`}>
-            {menu.logo ? (
-              <img
-                src={showImageUrl(menu.logo)}
-                className={styles.menu_item__logo}
-                style={{ marginRight: showMyDashboard ? 8 : 12 }}
-              />
-            ) : (
-              <span></span>
-            )}
-
-            <BodyText fontFamily="Roboto" level={6} customClass={styles.menu_item__name}>
+          <td className={`${styles.menu_item} ${subType === 'sub-item' ? styles.sub_menu : ''}`}>
+            {renderLogo(menu.logo)}
+            <BodyText
+              fontFamily="Roboto"
+              level={6}
+              customClass={`${styles.menu_item__name} ${
+                isMobile && subType === '' ? styles.boldName : ''
+              }`}
+            >
               {menu.name}
             </BodyText>
           </td>
@@ -109,10 +137,11 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
                     </td>
 
                     {/* for future data */}
-                    {userRole === USER_ROLE.tisc && (
+                    {type === 'tisc' && (
                       <td
                         key={`fData_${item.id}`}
-                        style={{ textAlign: 'center', display: !menu.subs ? 'none' : '' }}>
+                        style={{ textAlign: 'center', display: !menu.subs ? 'none' : '' }}
+                      >
                         <AccessableTickIcon className={styles.menu_accessable_null} />
                       </td>
                     )}
@@ -130,38 +159,29 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
   };
 
   return (
-    <Popover
-      title={headerTitle}
-      visible={visible}
-      setVisible={(open) => (open ? undefined : setVisible(false))}
-      className={styles.accessModal}
-      noFooter>
-      <table
-        className={`${styles.table} ${showMyDashboard ? styles.tisc : ''}`}
-        style={{ width: '100%' }}>
+    <Popover title={`${type} Access level`} visible className={styles.accessModal} noFooter>
+      <table className={styles.table} style={{ width: '100%' }}>
         {/* header */}
         <thead className={styles.header}>
           <tr className={styles.header_content}>
             {/* 1st column */}
-            <th style={{ width: userRole === USER_ROLE.tisc ? '' : '60%' }}></th>
+            <th style={{ width: type === 'tisc' ? '' : '60%' }}></th>
 
             {/* another */}
-            {titleColumnData
-              ? titleColumnData.map((title) => (
-                  <th className={title.unuse ? styles.furture_data_header : ''}>
-                    <MainTitle textAlign="center" level={4}>
-                      {title.title}
-                    </MainTitle>
-                  </th>
-                ))
-              : null}
+            {TABLE_COL[type]?.map((title) => (
+              <th className={'unuse' in title && title.unuse ? styles.furture_data_header : ''}>
+                <MainTitle textAlign="center" level={4}>
+                  {title.title}
+                </MainTitle>
+              </th>
+            ))}
           </tr>
         </thead>
 
         {/* body */}
         <tbody className={styles.body}>
           <>
-            {showMyDashboard ? (
+            {type === 'tisc' ? (
               <tr>
                 <td>
                   <BodyText fontFamily="Roboto" level={6} customClass={styles.my_dashboard}>
@@ -182,12 +202,28 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
             {/* main content */}
             {data.map((menu) => renderPermission(menu, ''))}
 
-            {children}
+            {type === 'tisc'
+              ? furturePermissionData.map((fData, index) => (
+                  <tr key={`futureData_${index}`}>
+                    <td className={`${styles.furture_data_name} ${styles.menu_item}`}>
+                      {fData.logo}
+                      <BodyText fontFamily="Roboto" level={6}>
+                        {fData.name}
+                      </BodyText>
+                    </td>
+                    {[1, 2, 3].map((_, i) => (
+                      <td key={`${index}_${i}`} style={{ textAlign: 'center' }}>
+                        <AccessableTickIcon className={styles.menu_accessable_null} />
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              : null}
 
             <tr>
               <td></td>
               <td></td>
-              {userRole === USER_ROLE.tisc && (
+              {type === 'tisc' && (
                 <td style={{ color: '#bfbfbf', textAlign: 'center', fontSize: 12 }}>(future)</td>
               )}
               <td></td>
@@ -196,6 +232,19 @@ const AccessLevelModal: FC<AccessLevelModalForm> = ({
           </>
         </tbody>
       </table>
+      {isMobile && type == 'designer' ? (
+        <div className={styles.designerInfo}>
+          <MainTitle level={4} style={{ paddingBottom: 4 }}>
+            Note
+          </MainTitle>
+          <BodyText level={6} fontFamily="Roboto">
+            Only <span className={styles.customText}>Design Admin</span> user could assign the{' '}
+            <span className={styles.customText}>projects</span> to the{' '}
+            <span className={styles.customText}>Design Lead/Design Team</span> member, tracking
+            their tasks and monitoring actions.
+          </BodyText>
+        </div>
+      ) : null}
     </Popover>
   );
 };

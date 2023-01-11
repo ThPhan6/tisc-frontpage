@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 
 import { USER_STATUS_TEXTS } from '@/constants/util';
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
 import { getTeamsByDesignFirm } from '../services';
 import { isEmpty } from 'lodash';
@@ -12,6 +12,7 @@ import { TeamProfileGroupCountry } from '@/features/team-profiles/types';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import TextForm from '@/components/Form/TextForm';
+import { ResponsiveCol } from '@/components/Layout';
 import { MemberHeaderLabel, RenderLabelHeader } from '@/components/RenderHeaderLabel';
 
 import indexStyles from '../styles/index.less';
@@ -36,7 +37,7 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
 
   return (
     <Row className={indexStyles.container}>
-      <Col span={12}>
+      <ResponsiveCol>
         <div className={indexStyles.form}>
           <GeneralData>
             {teamData.length > 0 && (
@@ -54,7 +55,8 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
                     key={index}
                     collapsible={
                       isEmpty(team.country_name) || team.count == 0 ? 'disabled' : undefined
-                    }>
+                    }
+                  >
                     <Collapse {...CollapseLevel2Props}>
                       {team.users?.map((user, userIndex) => (
                         <Collapse.Panel
@@ -66,7 +68,8 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
                             />
                           }
                           key={`${index}-${userIndex}`}
-                          collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}>
+                          collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}
+                        >
                           <div className={indexStyles.info}>
                             <TextForm label="Gender">
                               {user.gender === true ? 'Male' : 'Female'}
@@ -111,7 +114,7 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
             )}
           </GeneralData>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

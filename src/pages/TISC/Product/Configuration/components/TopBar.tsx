@@ -24,7 +24,8 @@ import {
 } from '@/features/product/reducers';
 import { ProductGetListParameter } from '@/features/product/types';
 import { BrandAlphabet, BrandDetail } from '@/features/user-group/types';
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
+import { modalPropsSelector, openModal } from '@/reducers/modal';
 
 import { LogoIcon } from '@/components/LogoIcon';
 import Popover from '@/components/Modal/Popover';
@@ -49,9 +50,7 @@ export const TopBar: React.FC = () => {
 
   const isFromMyWorkspace = useAppSelector((state) => state.product.myWorkSpace);
 
-  const [visible, setVisible] = useState(false);
   const [brandAlphabet, setBrandAlphabet] = useState<BrandAlphabet>({});
-  const brandFlatList = flatMap(brandAlphabet);
 
   const query = useQuery();
   const brandId = query.get(QUERY_KEY.b_id);
@@ -61,7 +60,7 @@ export const TopBar: React.FC = () => {
   const coll_name = query.get(QUERY_KEY.coll_name);
   const firstLoad = useBoolean(true);
 
-  const [brandSelected, setBrandSelected] = useState<RadioValue>({
+  const [checkedBrand, setCheckedBrand] = useState<RadioValue>({
     label: productBrand?.name || '',
     value: productBrand?.id || '',
   });
@@ -87,7 +86,7 @@ export const TopBar: React.FC = () => {
     getBrandAlphabet().then((data) => {
       setBrandAlphabet(data);
       if (brandId && brandName) {
-        setBrandSelected({ value: brandId, label: brandName });
+        setCheckedBrand({ value: brandId, label: brandName });
       }
       if (!brandId) {
         hidePageLoading();
@@ -104,10 +103,10 @@ export const TopBar: React.FC = () => {
 
   /// set brand to product reducer
   useEffect(() => {
-    if (brandSelected) {
+    if (checkedBrand) {
       let curBrand: BrandDetail | undefined;
       forEach(brandAlphabet, (brands) => {
-        const foundedBrand = brands.find((item) => item.id === brandSelected.value);
+        const foundedBrand = brands.find((item) => item.id === checkedBrand.value);
 
         if (foundedBrand) {
           curBrand = foundedBrand;
@@ -115,14 +114,14 @@ export const TopBar: React.FC = () => {
       });
       dispatch(setBrand(curBrand));
     }
-  }, [brandSelected?.value]);
+  }, [checkedBrand?.value]);
 
   // brand product summary
   useEffect(() => {
     if (
-      brandSelected &&
-      (brandSelected.value as string) &&
-      productSummary?.brandId !== (brandSelected.value as string)
+      checkedBrand &&
+      (checkedBrand.value as string) &&
+      productSummary?.brandId !== (checkedBrand.value as string)
     ) {
       // prevent call api on first loading
       if (coll_id && coll_name && firstLoad.value && !filter) {
@@ -130,7 +129,7 @@ export const TopBar: React.FC = () => {
       }
 
       // get product summary
-      getProductSummary(brandSelected.value as string).then((res) => {
+      getProductSummary(checkedBrand.value as string).then((res) => {
         /// in case collection filter has chosen,
         /// updated its filter name and param after reloading
         if (
@@ -168,12 +167,12 @@ export const TopBar: React.FC = () => {
         }
       });
     }
-  }, [brandSelected?.value, productSummary?.brandId, filter && firstLoad.value === true]);
+  }, [checkedBrand?.value, productSummary?.brandId, filter && firstLoad.value === true]);
 
   useEffect(() => {
-    if (brandSelected?.value) {
+    if (checkedBrand?.value) {
       const params: ProductGetListParameter = {
-        brand_id: brandSelected.value as string,
+        brand_id: checkedBrand.value as string,
         category_id: !filter ? 'all' : undefined,
       };
 
@@ -191,23 +190,13 @@ export const TopBar: React.FC = () => {
 
       getProductListByBrandId(params);
     }
-  }, [filter?.value, filter?.name, brandSelected?.value, firstLoad.value]);
+  }, [filter?.value, filter?.name, checkedBrand?.value, firstLoad.value]);
 
   const gotoProductForm = () => {
     dispatch(resetProductState());
-    if (brandSelected && brandSelected.value) {
-      pushTo(PATH.productConfigurationCreate.replace(':brandId', brandSelected.value as string));
+    if (checkedBrand && checkedBrand.value) {
+      pushTo(PATH.productConfigurationCreate.replace(':brandId', checkedBrand.value as string));
     }
-  };
-
-  /// render custom radio brand list label
-  const renderLabel = (item: BrandDetail) => {
-    return (
-      <BodyText level={5} fontFamily="Roboto">
-        <LogoIcon logo={item.logo} className={styles.brandLogo} />
-        <span className="brand-name">{item.name}</span>
-      </BodyText>
-    );
   };
 
   return (
@@ -217,16 +206,30 @@ export const TopBar: React.FC = () => {
           <>
             <TopBarItem
               topValue={
-                brandSelected && brandSelected.value && brandSelected.label
-                  ? productBrand?.name || brandSelected.label
+                checkedBrand && checkedBrand.value && checkedBrand.label
+                  ? productBrand?.name || checkedBrand.label
                   : 'select'
               }
-              disabled={!brandSelected.label}
+              disabled={!checkedBrand.label}
               bottomEnable
               bottomValue="Brands"
               customClass="brand-dropdown right-divider"
               icon={<DropdownIcon />}
-              onClick={() => setVisible(true)}
+              onClick={() =>
+                dispatch(
+                  openModal({
+                    type: 'Select Brand',
+                    title: 'Select Brand',
+                    props: {
+                      selectBrand: {
+                        brands: brandAlphabet,
+                        checkedBrand,
+                        onChecked: setCheckedBrand,
+                      },
+                    },
+                  }),
+                )
+              }
             />
             <TopBarItem
               topValue={productSummary?.category_count ?? ''}
@@ -260,7 +263,7 @@ export const TopBar: React.FC = () => {
               topValue={renderItemTopBar(
                 'category_id',
                 filter,
-                brandSelected && filter?.name !== 'category_id' ? 'view' : '',
+                checkedBrand && filter?.name !== 'category_id' ? 'view' : '',
               )}
               disabled
               bottomEnable={productSummary ? true : false}
@@ -274,14 +277,16 @@ export const TopBar: React.FC = () => {
                   : [],
                 true,
                 'View by categories',
+                undefined,
+                { autoHeight: false, borderFirstItem: true },
               )}
-              customClass="left-divider"
+              customClass="left-divider white-space"
             />
             <TopBarItem
               topValue={renderItemTopBar(
                 'collection_id',
                 filter,
-                brandSelected && filter?.name !== 'collection_id' ? 'view' : '',
+                checkedBrand && filter?.name !== 'collection_id' ? 'view' : '',
               )}
               disabled
               bottomEnable={productSummary ? true : false}
@@ -295,20 +300,23 @@ export const TopBar: React.FC = () => {
                   : [],
                 true,
                 'View by Collections',
+                undefined,
+                { autoHeight: false, borderFirstItem: true },
               )}
-              customClass="left-divider"
+              customClass="left-divider white-space"
             />
             <TopBarItem
               disabled
               bottomEnable={productSummary ? true : false}
               bottomValue="New Card"
-              customClass="left-divider mr-12"
+              customClass="left-divider mr-12 white-space"
               onClick={productSummary ? gotoProductForm : undefined}
               icon={
                 <span
                   className={`${styles.newCardIcon} ${
                     productSummary ? styles.activeNewCard : styles.disabledNewCard
-                  }`}>
+                  }`}
+                >
                   <SmallPlusIcon />
                 </span>
               }
@@ -316,50 +324,63 @@ export const TopBar: React.FC = () => {
           </>
         }
       />
-
-      <Popover
-        visible={visible}
-        setVisible={setVisible}
-        title="select brand"
-        dropdownRadioList={map(brandAlphabet, (items, key) => {
-          return {
-            key,
-            margin: 12,
-            options: items.map((item) => {
-              return {
-                label: renderLabel(item),
-                value: item.id,
-              };
-            }),
-          };
-        })}
-        dropDownRadioTitle={(data) => data.key.split('').join(' / ')}
-        chosenValue={brandSelected}
-        setChosenValue={(v) => {
-          const chosenBrand = brandFlatList.find((el) => v?.value && el.id === v.value);
-          if (chosenBrand) {
-            updateUrlParams({
-              set: [
-                { key: QUERY_KEY.b_id, value: chosenBrand.id },
-                { key: QUERY_KEY.b_name, value: chosenBrand.name },
-                { key: QUERY_KEY.cate_id, value: 'all' },
-                { key: QUERY_KEY.cate_name, value: 'VIEW ALL' },
-              ],
-              removeAll: true,
-            });
-            dispatch(
-              setProductList({
-                filter: {
-                  name: 'category_id',
-                  title: 'VIEW ALL',
-                  value: 'all',
-                },
-              }),
-            );
-          }
-          setBrandSelected(v);
-        }}
-      />
     </>
+  );
+};
+
+export const SelectBrandModal = () => {
+  const { brands, checkedBrand, onChecked } = useAppSelector(modalPropsSelector).selectBrand;
+  const brandFlatList = flatMap(brands);
+  /// render custom radio brand list label
+  const renderLabel = (item: BrandDetail) => {
+    return (
+      <BodyText level={5} fontFamily="Roboto">
+        <LogoIcon logo={item.logo} className={styles.brandLogo} />
+        <span className="brand-name">{item.name}</span>
+      </BodyText>
+    );
+  };
+
+  return (
+    <Popover
+      visible
+      title="select brand"
+      dropdownRadioList={map(brands, (items, key) => ({
+        key,
+        margin: 12,
+        options: items.map((item) => ({
+          label: renderLabel(item),
+          value: item.id,
+        })),
+      }))}
+      dropDownRadioTitle={(data) => data.key.split('').join(' / ')}
+      chosenValue={checkedBrand}
+      setChosenValue={(v) => {
+        const chosenBrand = brandFlatList.find((el) => v?.value && el.id === v.value);
+        if (chosenBrand) {
+          updateUrlParams({
+            set: [
+              { key: QUERY_KEY.b_id, value: chosenBrand.id },
+              { key: QUERY_KEY.b_name, value: chosenBrand.name },
+              { key: QUERY_KEY.cate_id, value: 'all' },
+              { key: QUERY_KEY.cate_name, value: 'VIEW ALL' },
+            ],
+            removeAll: true,
+          });
+          store.dispatch(
+            setProductList({
+              filter: {
+                name: 'category_id',
+                title: 'VIEW ALL',
+                value: 'all',
+              },
+            }),
+          );
+        }
+        console.log('chosenBrand', chosenBrand);
+        console.log('v', v);
+        onChecked(v);
+      }}
+    />
   );
 };

@@ -1,7 +1,9 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 import { InquiryMessageOfGeneralInquiry } from '../types';
+import store from '@/reducers';
 
+import { setActionTaskModalId, setActionTaskModalName } from '@/components/ActionTask/slice';
 import { ActionTaskTable } from '@/components/ActionTask/table';
 import BrandProductBasicHeader from '@/components/BrandProductBasicHeader';
 import { FormGroup } from '@/components/Form';
@@ -16,8 +18,18 @@ export const InquiryMessageTab: FC<{
 }> = ({ data, modelId }) => {
   const { title, inquiry_for, message, designer, product } = data;
 
+  useEffect(() => {
+    store.dispatch(setActionTaskModalId(modelId));
+    store.dispatch(setActionTaskModalName('inquiry'));
+
+    return () => {
+      store.dispatch(setActionTaskModalId(''));
+      store.dispatch(setActionTaskModalName('none'));
+    };
+  }, []);
+
   return (
-    <div style={{ height: 'calc(100vh - 368px)' }}>
+    <div>
       <BrandProductBasicHeader
         image={product.image}
         text_1={product.collection}
@@ -27,7 +39,8 @@ export const InquiryMessageTab: FC<{
             href={`${window.location.origin}/brand/product/${product.id}`}
             target="_blank"
             rel="noreferrer"
-            style={{ color: '#000' }}>
+            style={{ color: '#000' }}
+          >
             {window.location.origin}/brand/product/{product.id}
           </a>
         }
@@ -62,11 +75,12 @@ export const InquiryMessageTab: FC<{
         label="Message"
         layout="vertical"
         labelColor="mono-color-dark"
-        formClass={styles.messageForm}>
+        formClass={styles.messageForm}
+      >
         <CustomTextArea value={message || ''} borderBottomColor="mono-medium" disabled />
       </FormGroup>
 
-      <ActionTaskTable model_id={modelId} model_name="inquiry" />
+      <ActionTaskTable />
     </div>
   );
 };

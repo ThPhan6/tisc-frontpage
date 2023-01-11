@@ -1,10 +1,17 @@
 .main_container {
   margin-top: 8px;
+  ::-webkit-scrollbar {
+    display: none;
+  }
   .collapse_container {
-    height: calc(100vh - 240px);
+    height: calc(var(--vh) * 100 - 240px);
     padding: 16px;
     overflow: hidden auto;
     background: #fff;
+
+    @media screen and (max-width: 576px) {
+      height: calc(var(--vh) * 100 - 216px);
+    }
 
     .active_collapse_panel {
       box-shadow: @border-bottom;
@@ -30,17 +37,15 @@
     }
 
     :global(.ant-collapse > .ant-collapse-item.ant-collapse-no-arrow > .ant-collapse-header),
-    :global(.ant-collapse-ghost
-        > .ant-collapse-item
-        > .ant-collapse-content
-        > .ant-collapse-content-box) {
+    :global(
+        .ant-collapse-ghost > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box
+      ) {
       padding: 0;
     }
 
-    :global(.ant-collapse-ghost
-        > .ant-collapse-item
-        > .ant-collapse-content
-        > .ant-collapse-content-box) {
+    :global(
+        .ant-collapse-ghost > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box
+      ) {
       margin-top: 8px;
       padding-bottom: 8px;
     }
@@ -160,6 +165,12 @@
     padding: 0 16px;
     background: #fff;
     border-top: 0.7px solid @mono-color;
+
+    @media screen and (max-width: 576px) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
     .submitBtn {
       border-radius: 12px;
     }

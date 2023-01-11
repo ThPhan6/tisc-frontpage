@@ -1,15 +1,24 @@
+import { CSSProperties, ReactNode } from 'react';
+
 export interface EntryFormWrapperProps {
   handleSubmit?: () => void;
   handleCancel?: () => void;
+  handleDelete?: () => void;
   customClass?: string;
   contentClass?: string;
+  contentStyles?: CSSProperties;
   textAlignTitle?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify';
   title?: string;
+  titleStyles?: CSSProperties;
+  titleClassName?: string;
   disableCancelButton?: boolean;
   disableSubmitButton?: boolean;
   headerContent?: any;
   footerContent?: any;
   submitButtonStatus?: boolean;
+  extraFooterButton?: ReactNode;
+  entryFormTypeOnMobile?: 'create' | 'edit' | '';
+  hideAction?: boolean;
 }
 
 export interface FormNameInputProps {

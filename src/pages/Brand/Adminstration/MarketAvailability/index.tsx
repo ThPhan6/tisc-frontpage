@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { PATH } from '@/constants/path';
 
 import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
@@ -10,11 +8,11 @@ import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import { MarketAvailabilityDataList } from '@/features/market-availability/type';
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
+import { openModal } from '@/reducers/modal';
 
 import CustomTable from '@/components/Table';
 import { ActionMenu } from '@/components/TableAction';
-import InformationMarketAvailability from '@/features/market-availability/components/InformationMarketAvailability';
 
 import styles from './index.less';
 import { getMarketAvailabilityList } from '@/features/market-availability/api';
@@ -27,7 +25,6 @@ const MarketAvailabilityList = () => {
     pushTo(PATH.updateMarketAvailability.replace(':id', id));
   };
 
-  const [informationVisible, setInformationVisible] = useState(false);
   const mainColumns: TableColumnItem<MarketAvailabilityDataList>[] = [
     {
       title: 'Collections/Series',
@@ -102,7 +99,14 @@ const MarketAvailabilityList = () => {
       <CustomTable
         title={'MARKET AVAILABILITY'}
         rightAction={
-          <InfoIcon className={styles.iconInfor} onClick={() => setInformationVisible(true)} />
+          <InfoIcon
+            className={styles.iconInfor}
+            onClick={() =>
+              store.dispatch(
+                openModal({ type: 'Market Availability', title: 'MARKET AVAILABILITY' }),
+              )
+            }
+          />
         }
         fetchDataFunc={getMarketAvailabilityList}
         columns={setDefaultWidthForEachColumn(mainColumns, 7)}
@@ -112,10 +116,6 @@ const MarketAvailabilityList = () => {
         hasPagination
         headerClass={styles.customTitle}
         rowKey="id"
-      />
-      <InformationMarketAvailability
-        visible={informationVisible}
-        setVisible={setInformationVisible}
       />
     </>
   );

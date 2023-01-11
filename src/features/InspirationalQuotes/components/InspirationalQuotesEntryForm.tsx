@@ -1,5 +1,11 @@
 import { FC } from 'react';
 
+import { PATH } from '@/constants/path';
+
+import { pushTo } from '@/helper/history';
+import { useGetParamId } from '@/helper/hook';
+import { deleteQuotation } from '@/services';
+
 import { Quotation } from '@/types';
 
 import { EntryFormWrapper } from '@/components/EntryForm';
@@ -24,6 +30,8 @@ export const InspirationalQuotationEntryForm: FC<QuotationEntryFormProps> = ({
   onSubmit,
   submitButtonStatus,
 }) => {
+  const id = useGetParamId();
+
   const handleOnChangeInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     onChange({
       ...value,
@@ -46,12 +54,23 @@ export const InspirationalQuotationEntryForm: FC<QuotationEntryFormProps> = ({
     });
   };
 
+  const handleDeleteQuotation = () => {
+    deleteQuotation(id).then((isSuccess) => {
+      if (isSuccess) {
+        pushTo(PATH.quotation);
+      }
+    });
+  };
+
   return (
     <div className={styles.IQ_container}>
       <EntryFormWrapper
         handleCancel={onCancel}
         handleSubmit={handleSubmitData}
-        submitButtonStatus={submitButtonStatus}>
+        handleDelete={handleDeleteQuotation}
+        submitButtonStatus={submitButtonStatus}
+        entryFormTypeOnMobile={id ? 'edit' : 'create'}
+      >
         {/* author */}
         <InputGroup
           label="Author"

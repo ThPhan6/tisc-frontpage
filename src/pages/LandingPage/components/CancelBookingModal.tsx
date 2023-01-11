@@ -8,7 +8,8 @@ import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 
 import { deleteBooking } from '../services/api';
 
-import { InformationBooking, ModalProps, Timezones } from '../types';
+import { InformationBooking, Timezones } from '../types';
+import { closeModal } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
 import { CustomModal } from '@/components/Modal';
@@ -18,13 +19,15 @@ import styles from './CalendarModal.less';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import moment from 'moment';
 
-interface CancelBookingProps extends ModalProps {
-  informationBooking: InformationBooking;
+interface CancelBookingProps {
+  informationBooking?: InformationBooking;
 }
 
-export const BrandInformation: FC<{ informationBooking: InformationBooking }> = ({
-  informationBooking,
-}) => {
+export const BrandInformation: FC<CancelBookingProps> = ({ informationBooking }) => {
+  if (!informationBooking) {
+    return null;
+  }
+
   return (
     <>
       <div className={styles.title}>
@@ -78,7 +81,8 @@ export const BrandInformation: FC<{ informationBooking: InformationBooking }> = 
             display: 'flex',
             alignItems: 'center',
             marginLeft: '32px',
-          }}>
+          }}
+        >
           {moment(informationBooking.date).format('ddd, MMM DD YYYY')}
           {informationBooking.start_time_text && (
             <span style={{ marginLeft: '16px' }}>
@@ -91,19 +95,17 @@ export const BrandInformation: FC<{ informationBooking: InformationBooking }> = 
   );
 };
 
-export const CancelBookingModal: FC<CancelBookingProps> = ({
-  visible,
-  onClose,
-  informationBooking,
-}) => {
+export const CancelBookingModal: FC<CancelBookingProps> = ({ informationBooking }) => {
   const onCancelBooking = () => {
     showPageLoading();
-    deleteBooking(informationBooking.id).then((isSuccess) => {
-      if (isSuccess) {
-        onClose();
-      }
-      hidePageLoading();
-    });
+    if (informationBooking) {
+      deleteBooking(informationBooking?.id).then((isSuccess) => {
+        if (isSuccess) {
+          closeModal();
+        }
+        hidePageLoading();
+      });
+    }
   };
 
   return (
@@ -115,20 +117,33 @@ export const CancelBookingModal: FC<CancelBookingProps> = ({
       }}
       closeIconClass={styles.closeIcon}
       className={styles.calendar}
-      visible={visible}
-      onCancel={onClose}
-      footer={false}>
-      <BrandInformation informationBooking={informationBooking} />
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          alignItems: 'center',
-        }}>
-        <CustomButton properties="rounded" buttonClass={styles.button} onClick={onCancelBooking}>
-          Cancel Booking
-        </CustomButton>
-      </div>
+      visible
+      onCancel={closeModal}
+    >
+      {!informationBooking ? (
+        <BodyText fontFamily="Roboto" level={5}>
+          Something wrong!
+        </BodyText>
+      ) : (
+        <>
+          <BrandInformation informationBooking={informationBooking} />
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+            }}
+          >
+            <CustomButton
+              properties="rounded"
+              buttonClass={styles.button}
+              onClick={onCancelBooking}
+            >
+              Cancel Booking
+            </CustomButton>
+          </div>
+        </>
+      )}
     </CustomModal>
   );
 };

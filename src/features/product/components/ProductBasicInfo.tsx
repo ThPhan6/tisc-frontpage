@@ -44,7 +44,8 @@ export const ProductBasicInfo: React.FC = () => {
             {brand?.logo ? <img src={showImageUrl(brand.logo)} /> : null}
           </div>
         }
-        customHeaderClass={styles.productHeaderCollapse}>
+        customHeaderClass={styles.productHeaderCollapse}
+      >
         {/* Collection */}
         <InputGroup
           horizontal
