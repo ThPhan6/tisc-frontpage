@@ -33,6 +33,7 @@ interface ActionFormProps extends HeaderDropdownProps {
   offsetAlign?: [number, number];
   containerStyle?: CSSProperties;
   editActionOnMobile?: boolean;
+  disabledOnMobile?: boolean;
 }
 
 const DEFAULT_ACTION_INFO: {
@@ -92,19 +93,22 @@ export const ActionMenu: FC<ActionFormProps> = ({
   placement = 'bottomRight',
   containerStyle,
   editActionOnMobile = true,
+  disabledOnMobile,
   ...props
 }) => {
-  const isMobile = useScreen().isMobile;
+  const isTablet = useScreen().isTablet;
   const filledActionItems = actionItems?.map((item) => ({
     ...item,
     icon: item.icon || DEFAULT_ACTION_INFO[item.type].icon,
     label: item.label || DEFAULT_ACTION_INFO[item.type].label,
   }));
 
-  if (isMobile && editActionOnMobile) {
+  if (isTablet && editActionOnMobile) {
     return (
       <EditIcon
         onClick={(e) => {
+          if (disabledOnMobile) return;
+
           e.stopPropagation();
           e.preventDefault();
 
@@ -115,6 +119,7 @@ export const ActionMenu: FC<ActionFormProps> = ({
           left: '50%',
           top: '50%',
           transform: 'translate(-50%, -50%)',
+          color: disabledOnMobile ? '#BFBFBF' : undefined,
         }}
       />
     );
@@ -126,14 +131,16 @@ export const ActionMenu: FC<ActionFormProps> = ({
       onClick={(e) => {
         e.stopPropagation();
         e.preventDefault();
-      }}>
+      }}
+    >
       <HeaderDropdown
         {...props}
         arrow={arrow}
         align={{ offset: offsetAlign }}
         trigger={trigger}
         placement={placement}
-        items={filledActionItems}>
+        items={filledActionItems}
+      >
         {actionIcon || <ActionIcon />}
       </HeaderDropdown>
     </div>
