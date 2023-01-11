@@ -160,7 +160,11 @@ const syncColWidthFollowingTheDeepestDataRow = (level: number, curCellStyle: Ele
         return;
       }
       cellWidthStyles += `
-        tr[data-row-key] td:nth-child(${index + 1}) { width: ${newCellWidth}px }`;
+      tr[data-row-key] td:nth-child(${
+        index + 1
+      }), tr.ant-table-row.ant-table-row-level-0 td:nth-child(${
+        index + 1
+      }) { width: ${newCellWidth}px }`;
     });
     curCellStyle.innerHTML += cellWidthStyles;
   }, 100);
@@ -172,7 +176,7 @@ const openFullWidthCellByLevel = (
   width: number,
   stack?: boolean,
 ) => {
-  const newStyle = `tr[data-row-key] td:nth-child(${level}) { width: ${width}px; }`;
+  const newStyle = `tr[data-row-key] td:nth-child(${level}), tr.ant-table-row.ant-table-row-level-0 td:nth-child(${level}) { width: ${width}px; }`;
   if (stack) {
     style.innerHTML += newStyle;
   } else {
@@ -213,6 +217,19 @@ const getSubExpandableCell = (level: number) => {
   return document.querySelector(subCellSelector);
 };
 
+const getExpandableCell = (level: number) => {
+  if (level === 1) {
+    return document.querySelectorAll(
+      `tr[data-row-key] td:nth-child(${level}) div[class^="expandedCell"]`,
+    );
+  }
+
+  return document.querySelectorAll(
+    repeat('tr[class*="ant-table-expanded-row"]:not([style*="display: none;"]) ', level - 1) +
+      `tr[data-row-key] td:nth-child(${level}) div[class^='expandedCell']`,
+  );
+};
+
 const injectScriptToExpandableCellByLevel = (
   level: number,
   totalNestedLevel: number,
@@ -220,9 +237,7 @@ const injectScriptToExpandableCellByLevel = (
   styleId: string,
 ) => {
   // Get expandable column cells by level
-  const expandableCells = document.querySelectorAll(
-    `tr[data-row-key] td:nth-child(${level}) div[class^="expandedCell"]`,
-  );
+  const expandableCells = getExpandableCell(level);
 
   if (expandableCells.length === 0) {
     return;
@@ -348,6 +363,8 @@ export const useAutoExpandNestedTableColumn = (
       allCells?.forEach((cell, index) => {
         const newWidth = excludedColumns.includes(index) ? 'auto' : cell.clientWidth + 'px';
         colStyles += `tr[data-row-key] td:nth-child(${
+          index + 1
+        }), tr.ant-table-row.ant-table-row-level-0 td:nth-child(${
           index + 1
         }) { width: ${newWidth}; min-width: ${newWidth}; }
         `;
