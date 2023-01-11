@@ -55,6 +55,7 @@ const InspirationalQuotationsList: React.FC = () => {
       render: (_value: any, record: any) => {
         return (
           <ActionMenu
+            disabledOnMobile
             actionItems={[
               {
                 type: 'updated',

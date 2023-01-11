@@ -87,7 +87,8 @@ export const ActionTaskModal = () => {
       className={`${isMobile ? styles.modalOnMobile : styles.modal}`}
       title="SELECT ACTIONS/TASKS"
       visible
-      onFormSubmit={handleSubmitActionTask}>
+      onFormSubmit={handleSubmitActionTask}
+    >
       <CustomCheckbox
         options={actionTaskData}
         selected={selectedActionTask}
