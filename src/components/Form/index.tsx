@@ -26,6 +26,7 @@ export const FormGroup: FC<FormGroupProps> = ({
   onClick,
   messageType = 'normal',
   placementBottomWidth,
+  noColon,
   ...props
 }) => {
   const setFormLayout = () => {
@@ -71,7 +72,7 @@ export const FormGroup: FC<FormGroupProps> = ({
           </Tooltip>
         )}
         {customIcon ? customIcon : null}
-        <span className={`${style.colon} ${labelColor}`}>:</span>
+        <span className={`${style.colon} ${labelColor}`}>{noColon ? '' : ':'}</span>
       </label>
       <div className={style['children-wrapper']}>
         {children}
