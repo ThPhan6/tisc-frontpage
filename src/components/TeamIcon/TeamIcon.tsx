@@ -14,19 +14,27 @@ interface TeamIconProps {
 const TeamIcon: React.FC<TeamIconProps> = ({ avatar, name, customClass = '', size = 20 }) => {
   if (avatar) {
     return (
-      <img
-        src={showImageUrl(avatar)}
-        alt="avatar"
+      <div
         style={{
-          height: `${size}px`,
-          width: `${size}px`,
+          border: '1px solid #fff',
           borderRadius: '50%',
           boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
-          border: '1px solid #fff',
-          objectFit: 'cover',
+          height: `${size}px`,
+          width: `${size}px`,
         }}
-        className={customClass}
-      />
+        className={customClass}>
+        <img
+          src={showImageUrl(avatar)}
+          alt="avatar"
+          style={{
+            height: `${size - 2}px`,
+            width: `${size - 2}px`,
+            borderRadius: '50%',
+            objectFit: 'cover',
+            position: 'absolute',
+          }}
+        />
+      </div>
     );
   }
   if (name) {
