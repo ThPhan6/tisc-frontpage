@@ -1,33 +1,48 @@
-.actionTask {
+.modal {
   :global(.ant-modal-body) {
     position: relative;
     padding: 16px 19px 0 16px;
   }
-  :global(.ant-checkbox-group) {
-    @modalWidth: 576px;
-    @paddingSpace: 36px;
+}
 
-    > div:last-child {
-      position: absolute;
-      bottom: 0;
-      width: calc(@modalWidth - @paddingSpace);
-      background: #fff;
-      box-shadow: @border-top-light;
-    }
+.modalOnMobile {
+  height: calc(var(--vh) * 80) !important;
+  padding: 0 !important;
+}
+
+.checkBoxList {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+
+  :global(.ant-checkbox-group) {
+    flex: 1;
+
     label {
-      height: 40px;
+      min-height: 40px;
     }
+  }
+
+  :global(.other-field-checkbox) {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    background: #fff;
+    box-shadow: @border-top-light;
+
     :global(.ant-input) {
       color: @primary-color-dark;
     }
-  }
-}
 
-.stickyPosition {
-  :global(.ant-checkbox-group) {
-    position: relative;
-    > div:last-child {
-      position: sticky !important;
+    @media screen and (max-width: 576px) {
+      position: sticky;
+      bottom: 35px;
+      display: flex;
+      align-items: center;
+      background: #fff;
     }
   }
 }

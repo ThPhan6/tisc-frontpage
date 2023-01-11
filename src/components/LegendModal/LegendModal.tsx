@@ -11,6 +11,8 @@ import { ReactComponent as ProjectLiveIcon } from '@/assets/icons/project-live-i
 import { ReactComponent as ProjectOnHoldIcon } from '@/assets/icons/project-on-hold-icon.svg';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 
+import { useScreen } from '@/helper/common';
+
 import Popover from '@/components/Modal/Popover';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
@@ -140,12 +142,14 @@ const dataLegend = [
 ];
 
 export const ProjectTrackingLegendModal: FC = () => {
+  const { isMobile } = useScreen();
+
   return (
     <Popover
       title="LEGEND"
       visible
       noFooter
-      className={styles.legend}
+      className={`${isMobile ? styles.modalOnMobile : styles.legend}`}
       extraTopAction={
         <div>
           {dataLegend.map((item, index) => (
@@ -158,7 +162,7 @@ export const ProjectTrackingLegendModal: FC = () => {
                 {item.subs.map((sub, subIndex) => (
                   <div key={subIndex} className={styles.listItem}>
                     <span className={styles.icon}>
-                      {/* using random icon as default icon to fix responsive on mobile */}
+                      {/* using KeepInViewIcon icon as default icon to fix responsive on mobile */}
                       {sub.icon ?? <KeepInViewIcon style={{ opacity: 0, width: 18, height: 18 }} />}
                     </span>
                     <div>

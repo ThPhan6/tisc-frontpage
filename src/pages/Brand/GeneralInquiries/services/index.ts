@@ -4,13 +4,13 @@ import { message } from 'antd';
 import { request } from 'umi';
 
 import {
-  ActionTaskModelParams,
   ActionTaskProps,
   ActionTaskRequestBody,
   GeneralInquiryListProps,
   GeneralInquiryResponse,
   GeneralInquirySummaryData,
 } from '../types';
+import { ActionTaskModalParams } from '@/components/ActionTask/types';
 import {
   DataTableResponse,
   PaginationRequestParams,
@@ -37,7 +37,6 @@ export async function getGeneralInquiryPagination(
   })
     .then((response: GeneralInquiryPaginationResponse) => {
       const { general_inquiries, pagination } = response.data;
-      console.log(general_inquiries);
 
       callback({
         data: general_inquiries,
@@ -75,7 +74,7 @@ export async function getOneGeneralInquiry(designFirmId: string) {
     });
 }
 
-export async function getActionTaskList(params: ActionTaskModelParams) {
+export async function getActionTaskList(params: ActionTaskModalParams) {
   return request<{ data: ActionTaskProps[] }>(`/api/action-task`, {
     method: 'GET',
     params,

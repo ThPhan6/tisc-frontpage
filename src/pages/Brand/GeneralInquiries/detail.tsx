@@ -86,15 +86,19 @@ const GeneralInquiryDetail = () => {
   const goBackToTable = () => pushTo(PATH.brandGeneralInquiry);
 
   const getMainContentHeight = () => {
-    if (!isMobile) {
-      return undefined;
-    }
-
-    if (activeTab === 'design-firm') {
+    if (isMobile && activeTab === 'design-firm') {
       return 'calc(var(--vh) * 100 - 272px)';
     }
 
-    return 'calc(var(--vh) * 100 - 320px)';
+    if (isMobile && activeTab === 'inquiry-message') {
+      return 'calc(var(--vh) * 100 - 320px)';
+    }
+
+    if (activeTab === 'design-firm') {
+      return 'calc(var(--vh) * 100 - 296px)';
+    }
+
+    return 'calc(var(--vh) * 100 - 344px)';
   };
 
   return (
