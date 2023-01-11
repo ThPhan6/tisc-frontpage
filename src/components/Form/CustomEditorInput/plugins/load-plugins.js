@@ -8,6 +8,8 @@ let loaded = false;
 export const loadPlugins = (CKEDITOR) => {
   if (loaded) return;
 
+  CKEDITOR.config.fullPage = true;
+
   loadSimpleButtonScript(CKEDITOR);
 
   loadPlaceholderPlugin(CKEDITOR);

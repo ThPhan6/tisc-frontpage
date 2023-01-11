@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 
-import { ReactComponent as DownloadIconV2 } from '@/assets/icons/download-2-icon.svg';
+import { ReactComponent as DownloadIconV2 } from '@/assets/icons/download-icon.svg';
 
 import { useCheckPermission } from '@/helper/hook';
 
@@ -58,7 +58,7 @@ export const CatelogueDownload = () => {
             <BodyText level={6} fontFamily="Roboto">
               {content.title}
             </BodyText>
-            <a href={content.url} download>
+            <a href={content.url} download target="_blank" rel="noopener noreferrer">
               <DownloadIconV2 className={styles.download_icon} />
             </a>
           </div>
