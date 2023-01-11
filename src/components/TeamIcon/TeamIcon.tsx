@@ -21,8 +21,10 @@ const TeamIcon: React.FC<TeamIconProps> = ({ avatar, name, customClass = '', siz
           boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
           height: `${size}px`,
           width: `${size}px`,
+          position: 'relative',
         }}
-        className={customClass}>
+        className={customClass}
+      >
         <img
           src={showImageUrl(avatar)}
           alt="avatar"
@@ -32,6 +34,8 @@ const TeamIcon: React.FC<TeamIconProps> = ({ avatar, name, customClass = '', siz
             borderRadius: '50%',
             objectFit: 'cover',
             position: 'absolute',
+            top: 0,
+            left: 0,
           }}
         />
       </div>
