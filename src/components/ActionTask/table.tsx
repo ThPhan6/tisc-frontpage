@@ -125,7 +125,8 @@ export const ActionTaskTable: FC<ActionTaskModalProps> = ({ setData, indexItem }
         viewAllTop
         placement="bottomRight"
         menuStyle={{ width: 160, height: 'auto' }}
-        labelProps={{ className: 'flex-between' }}>
+        labelProps={{ className: 'flex-between' }}
+      >
         <RobotoBodyText level={6}>{ActionTaskStatus[record.status]}</RobotoBodyText>
       </CustomDropDown>
     );
@@ -155,7 +156,8 @@ export const ActionTaskTable: FC<ActionTaskModalProps> = ({ setData, indexItem }
                 title: 'SELECT ACTIONS/TASKS',
               }),
             );
-          }}>
+          }}
+        >
           <MainTitle level={4} customClass={styles.actionTask_text}>
             Actions/Tasks
           </MainTitle>
