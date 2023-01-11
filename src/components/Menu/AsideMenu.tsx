@@ -125,6 +125,7 @@ export const SiderMenu: FC<{ appProps: any; menu?: MenuDataItem[]; onClose?: () 
       inlineIndent={16}
       expandIcon={customExpandIcon}
       items={menuItems}
+      className={styles.mobileAsideSider}
     />
   );
 };
@@ -201,8 +202,7 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
         collapsed={collapsed}
         onCollapse={setCollapsed}
         className={styles.customAsideSider}
-        trigger={collapsed ? <AlignRightIcon /> : <AlignLeftIcon />}
-      >
+        trigger={collapsed ? <AlignRightIcon /> : <AlignLeftIcon />}>
         <div className="menu-sider-wrapper">
           <Menu
             theme={props.headerTheme}

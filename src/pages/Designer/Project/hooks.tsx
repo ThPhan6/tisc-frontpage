@@ -62,6 +62,9 @@ export const renderSpecifiedStatusDropdown =
         icon: <DispatchIcon style={{ width: 16, height: 16 }} />,
         disabled: record.specifiedDetail?.specified_status !== ProductSpecifyStatus.Cancelled,
         onClick: () => {
+          if (record.specifiedDetail?.specified_status !== ProductSpecifyStatus.Cancelled) {
+            return;
+          }
           updateProductSpecifiedStatus(record.specifiedDetail?.id ?? '', {
             specified_status: ProductSpecifyStatus['Re-specified'],
           }).then((success) => (success ? tableRef.current.reload() : undefined));
@@ -73,6 +76,9 @@ export const renderSpecifiedStatusDropdown =
         icon: <CancelIcon style={{ width: 16, height: 16 }} />,
         disabled: record.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled,
         onClick: () => {
+          if (record.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled) {
+            return;
+          }
           updateProductSpecifiedStatus(record.specifiedDetail?.id ?? '', {
             specified_status: ProductSpecifyStatus.Cancelled,
           }).then((success) => (success ? tableRef.current.reload() : undefined));
