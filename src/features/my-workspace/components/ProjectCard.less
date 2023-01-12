@@ -2,10 +2,10 @@
 
 .cardContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 224px));
+  grid-template-columns: repeat(auto-fill, minmax(224px, 1fr));
   gap: 8px;
-  @media screen and(max-width: 504px) {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  @media screen and(max-width: @screen-sm) {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   }
 
   .cardItemWrapper {
