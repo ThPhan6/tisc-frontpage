@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { ReactComponent as RightLeftIcon } from '@/assets/icons/action-right-left-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { useCheckPermission } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
 
@@ -20,8 +21,9 @@ import { CollectionModal } from '../modals/CollectionModal';
 import styles from './detail.less';
 
 export const ProductBasicInfo: React.FC = () => {
+  const isTablet = useScreen().isTablet;
   const dispatch = useDispatch();
-  const editable = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  const editable = useCheckPermission(['TISC Admin', 'Consultant Team']) && !isTablet;
 
   const brand = useAppSelector((state) => state.product.brand);
   const { name, description, collection } = useAppSelector((state) => state.product.details);
@@ -101,7 +103,8 @@ export const ProductBasicInfo: React.FC = () => {
           layout="horizontal"
           formClass="mb-16"
           labelFontSize={4}
-          noColon>
+          noColon
+        >
           <CustomTextArea
             maxWords={50}
             placeholder={editable ? 'max.50 words of product summary' : ''}
