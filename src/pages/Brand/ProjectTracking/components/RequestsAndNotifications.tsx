@@ -104,13 +104,7 @@ const DetaiItem: FC<DetaiItemProps> = ({
   handleCloseDetailItem,
 }) => {
   return (
-    <div
-      style={{
-        height: `${contentHeight}`,
-        overflow: 'auto',
-        padding: '0 16px 16px 16px',
-      }}
-    >
+    <div style={{ height: `${contentHeight}`, overflow: 'auto' }} className={styles.detailContent}>
       <TableHeader
         title={
           <>

@@ -8,7 +8,6 @@ import { productReducer } from '@/features/product/reducers';
 import { projectReducer } from '@/features/project/reducers';
 import { customResourceReducer } from '@/pages/Designer/CustomResource/reducer';
 
-import { actionTaskReducer } from '@/components/ActionTask/slice';
 import { loadingActionReducer } from '@/components/LoadingPage/slices';
 import { officeProductReducer } from '@/pages/Designer/Products/CustomLibrary/slice';
 
@@ -32,7 +31,6 @@ const reducers = combineReducers({
   service: servicesReducer,
   modal: modalReducer,
   active: activeReducer,
-  actionTasks: actionTaskReducer,
 });
 
 const persistConfig = {

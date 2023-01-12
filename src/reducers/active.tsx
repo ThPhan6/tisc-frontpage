@@ -13,7 +13,7 @@ export type CollapseGroup =
 
 interface ActiveState {
   collapse: {
-    [key in CollapseGroup]?: number;
+    [key in string]?: number;
   };
 }
 
@@ -25,10 +25,7 @@ const activeSlice = createSlice({
   name: 'active',
   initialState,
   reducers: {
-    setActiveCollapseItem(
-      state,
-      action: PayloadAction<{ type: CollapseGroup; activeKey?: number }>,
-    ) {
+    setActiveCollapseItem(state, action: PayloadAction<{ type: string; activeKey?: number }>) {
       state.collapse[action.payload.type] =
         state.collapse[action.payload.type] === action.payload.activeKey
           ? undefined
@@ -43,19 +40,19 @@ export const activeReducer = activeSlice.reducer;
 
 export const activeSelector = (state: RootState) => state.active;
 
-export const collapseSelector = (type?: CollapseGroup, index?: number) =>
+export const collapseSelector = (type?: string, index?: number) =>
   createSelector(activeSelector, ({ collapse }) =>
     type && typeof index === 'number' ? (collapse[type] === index ? ['1'] : []) : undefined,
   );
 
-export const setActiveCollapse = (type: CollapseGroup, activeKey: number) => () =>
+export const setActiveCollapse = (type: string, activeKey: number) => () =>
   store.dispatch(setActiveCollapseItem({ type, activeKey }));
 
-export const clearActiveCollapse = (type: CollapseGroup) =>
+export const clearActiveCollapse = (type: string) =>
   store.dispatch(setActiveCollapseItem({ type, activeKey: undefined }));
 
 export const useCollapseGroupActiveCheck = (
-  groupType?: CollapseGroup,
+  groupType?: string,
   groupIndex?: number,
   activeKey?: string | string[],
 ) => {
