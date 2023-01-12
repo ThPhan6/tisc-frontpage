@@ -75,7 +75,7 @@ export const BrandInterestedModal: FC<BrandInterestedProps> = ({
       return message.error('Company website is required');
     }
     if (!checkValidURL(inputValue.website)) {
-      return message.error('Company website must start with "http://" or "https://"');
+      return message.error('Company website must be a URL');
     }
     if (inputValue.name.trim() === '') {
       return message.error('First name / last name is required');
