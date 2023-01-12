@@ -4,6 +4,7 @@ import { USER_STATUS_TEXTS } from '@/constants/util';
 import { Collapse, Row } from 'antd';
 
 import { getTeamsByDesignFirm } from '../services';
+import { useScreen } from '@/helper/common';
 import { isEmpty } from 'lodash';
 
 import { UserGroupProps } from '../types/common.types';
@@ -22,6 +23,7 @@ import { getListTeamProfileUserGroupByBrandId } from '@/features/team-profiles/a
 
 const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
   const [teamData, setTeamData] = useState<TeamProfileGroupCountry[]>([]);
+  const { isTablet } = useScreen();
 
   useEffect(() => {
     if (!id) return;
@@ -38,7 +40,12 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
   return (
     <Row className={indexStyles.container}>
       <ResponsiveCol>
-        <div className={indexStyles.form}>
+        <div
+          className={indexStyles.form}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 266px)' : 'calc(var(--vh) * 100 - 248px)',
+          }}
+        >
           <GeneralData>
             {teamData.length > 0 && (
               <Collapse {...CollapseLevel1Props}>

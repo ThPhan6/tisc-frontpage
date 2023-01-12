@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { COVERAGE_BEYOND } from '@/constants/util';
 import { Collapse, Row } from 'antd';
 
+import { useScreen } from '@/helper/common';
 import { getValueByCondition } from '@/helper/utils';
 import { isEmpty } from 'lodash';
 
@@ -20,6 +21,7 @@ import { getListDistributorGroupCountryByBrandId } from '@/features/distributors
 
 const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
   const [distributors, setDistributors] = useState<DistributorResponseForm[]>([]);
+  const { isTablet } = useScreen();
 
   useEffect(() => {
     if (!id) return;
@@ -39,7 +41,12 @@ const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
   return (
     <Row className={styles.container}>
       <ResponsiveCol>
-        <div className={styles.form}>
+        <div
+          className={styles.form}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 266px)' : 'calc(var(--vh) * 100 - 248px)',
+          }}
+        >
           <GeneralData>
             {distributors.length ? (
               <Collapse {...CollapseLevel1Props}>

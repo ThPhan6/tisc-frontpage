@@ -2,6 +2,8 @@ import { FC, useEffect, useState } from 'react';
 
 import { Collapse, Row } from 'antd';
 
+import { useScreen } from '@/helper/common';
+
 import { RequiredValueProps } from '../types';
 import { MaterialCodeDesignFirm } from '@/types';
 
@@ -17,6 +19,7 @@ import { getMaterialProductCodeList } from '@/features/material-product-code/api
 
 const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
   const [materialCodeData, setMaterialCodeData] = useState<MaterialCodeDesignFirm[]>([]);
+  const { isTablet } = useScreen();
 
   useEffect(() => {
     if (!id) return;
@@ -29,7 +32,12 @@ const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
   return (
     <Row className={indexStyles.container}>
       <ResponsiveCol>
-        <div className={`${indexStyles.form} ${styles.team_form}`}>
+        <div
+          className={`${indexStyles.form} ${styles.team_form}`}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 266px)' : 'calc(var(--vh) * 100 - 248px)',
+          }}
+        >
           <GeneralData>
             {materialCodeData.length && (
               <Collapse {...CollapseLevel1Props}>
@@ -64,7 +72,10 @@ const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
                             {listMaterial.codes.map((materialCode, idx) => (
                               <table className={styles.list_material_table} key={idx}>
                                 <tr>
-                                  <td className={styles.code}>
+                                  <td
+                                    className={styles.code}
+                                    style={{ width: isTablet ? '25%' : '15%' }}
+                                  >
                                     <Title level={8} customClass={styles.colorMaterial}>
                                       {materialCode.code}
                                     </Title>
