@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from 'react';
 
 import { Collapse, Row } from 'antd';
 
+import { useScreen } from '@/helper/common';
 import { isEmpty } from 'lodash';
 
 import { RequiredValueProps } from '../types';
@@ -18,6 +19,7 @@ import { getAvailabilityListCountryGroupByBrandId } from '@/features/market-avai
 
 const AvailabilityDetail: FC<RequiredValueProps> = ({ id }) => {
   const [availability, setAvailability] = useState<AvailabilityCollectionGroup[]>([]);
+  const { isTablet } = useScreen();
 
   useEffect(() => {
     if (!id) return;
@@ -28,7 +30,12 @@ const AvailabilityDetail: FC<RequiredValueProps> = ({ id }) => {
   return (
     <Row className={styles.container}>
       <ResponsiveCol>
-        <div className={styles.form}>
+        <div
+          className={styles.form}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 266px)' : 'calc(var(--vh) * 100 - 248px)',
+          }}
+        >
           <GeneralData>
             {availability.length ? (
               <Collapse {...CollapseLevel1Props}>

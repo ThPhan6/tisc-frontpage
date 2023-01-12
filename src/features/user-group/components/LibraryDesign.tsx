@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { Collapse, Row } from 'antd';
 
 import { getLibraryByDesignFirm } from '../services';
+import { useScreen } from '@/helper/common';
 import { getFullName, getValueByCondition, showImageUrl } from '@/helper/utils';
 import { isNumber } from 'lodash';
 
@@ -404,6 +405,7 @@ const LibraryItem: FC<LibraryItemProps> = ({ data, type }) => {
 
 const LibraryDesign: FC<RequiredValueProps> = ({ id }) => {
   const [libraryData, setLibraryData] = useState<LibraryDesignFirm>();
+  const { isTablet } = useScreen();
 
   useEffect(() => {
     if (!id) return;
@@ -417,7 +419,12 @@ const LibraryDesign: FC<RequiredValueProps> = ({ id }) => {
   return (
     <Row className={indexStyles.container}>
       <ResponsiveCol>
-        <div className={`${indexStyles.form} ${styles.content}`}>
+        <div
+          className={`${indexStyles.form} ${styles.content}`}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 266px)' : 'calc(var(--vh) * 100 - 248px)',
+          }}
+        >
           <LibraryItem data={libraryData} type="brand" />
           <LibraryItem data={libraryData} type="distributor" />
           <LibraryItem data={libraryData} type="collection" />

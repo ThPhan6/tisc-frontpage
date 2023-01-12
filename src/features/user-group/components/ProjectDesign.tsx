@@ -4,6 +4,7 @@ import { MEASUREMENT_UNIT } from '@/constants/util';
 import { Collapse, Row } from 'antd';
 
 import { getProjectsByDesignFirm } from '../services';
+import { useScreen } from '@/helper/common';
 import { isEmpty } from 'lodash';
 
 import { RequiredValueProps } from '../types';
@@ -20,6 +21,7 @@ import GeneralData from './GeneralData';
 
 const ProjectDesign: FC<RequiredValueProps> = ({ id }) => {
   const [projectData, setProjectData] = useState<ProjectsDesignFirm[]>([]);
+  const { isTablet } = useScreen();
 
   useEffect(() => {
     if (!id) return;
@@ -57,7 +59,12 @@ const ProjectDesign: FC<RequiredValueProps> = ({ id }) => {
   return (
     <Row className={indexStyles.container}>
       <ResponsiveCol>
-        <div className={`${indexStyles.form} ${styles.team_form}`}>
+        <div
+          className={`${indexStyles.form} ${styles.team_form}`}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 266px)' : 'calc(var(--vh) * 100 - 248px)',
+          }}
+        >
           <GeneralData>
             {projectData.length ? (
               <Collapse {...CollapseLevel1Props}>

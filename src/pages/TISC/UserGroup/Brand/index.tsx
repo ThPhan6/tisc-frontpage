@@ -193,6 +193,7 @@ const BrandList: React.FC = () => {
               onClick: () => handleEmailInvite(record.id),
             },
           ]}
+          editActionOnMobile={false}
         />
       ),
     },
