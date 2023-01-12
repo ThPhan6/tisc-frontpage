@@ -129,10 +129,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       message.error('Brand location is required');
       return;
     }
-    if (!distributorLocationId) {
-      message.error('Distributor location is required');
-      return;
-    }
     if (product.specifiedDetail?.id) {
       updateProductSpecifying(
         {
