@@ -1,9 +1,7 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 
 import { InquiryMessageOfGeneralInquiry } from '../types';
-import store from '@/reducers';
 
-import { setActionTaskModalId, setActionTaskModalName } from '@/components/ActionTask/slice';
 import { ActionTaskTable } from '@/components/ActionTask/table';
 import BrandProductBasicHeader from '@/components/BrandProductBasicHeader';
 import { FormGroup } from '@/components/Form';
@@ -17,16 +15,6 @@ export const InquiryMessageTab: FC<{
   modelId: string;
 }> = ({ data, modelId }) => {
   const { title, inquiry_for, message, designer, product } = data;
-
-  useEffect(() => {
-    store.dispatch(setActionTaskModalId(modelId));
-    store.dispatch(setActionTaskModalName('inquiry'));
-
-    return () => {
-      store.dispatch(setActionTaskModalId(''));
-      store.dispatch(setActionTaskModalName('none'));
-    };
-  }, []);
 
   return (
     <div>
@@ -80,7 +68,7 @@ export const InquiryMessageTab: FC<{
         <CustomTextArea value={message || ''} borderBottomColor="mono-medium" disabled />
       </FormGroup>
 
-      <ActionTaskTable />
+      <ActionTaskTable model_id={modelId} model_name="inquiry" />
     </div>
   );
 };

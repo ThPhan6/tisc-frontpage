@@ -149,35 +149,35 @@ export const ProjectTrackingLegendModal: FC = () => {
       title="LEGEND"
       visible
       noFooter
+      secondaryModal
       className={`${isMobile ? styles.modalOnMobile : styles.legend}`}
-      extraTopAction={
-        <div>
-          {dataLegend.map((item, index) => (
-            <div key={index} className={styles.modal}>
-              <Title level={8}>{item.tille}</Title>
-              <div className={styles.content}>
-                <BodyText level={6} fontFamily="Roboto" style={{ marginBottom: '8px' }}>
-                  {item.content}
-                </BodyText>
-                {item.subs.map((sub, subIndex) => (
-                  <div key={subIndex} className={styles.listItem}>
-                    <span className={styles.icon}>
-                      {/* using KeepInViewIcon icon as default icon to fix responsive on mobile */}
-                      {sub.icon ?? <KeepInViewIcon style={{ opacity: 0, width: 18, height: 18 }} />}
-                    </span>
-                    <div>
-                      <MainTitle level={4}>{sub.title}</MainTitle>
-                      <BodyText level={6} fontFamily="Roboto">
-                        {sub.content}
-                      </BodyText>
-                    </div>
+    >
+      <div>
+        {dataLegend.map((item, index) => (
+          <div key={index} className={styles.modal}>
+            <Title level={8}>{item.tille}</Title>
+            <div className={styles.content}>
+              <BodyText level={6} fontFamily="Roboto" style={{ marginBottom: '8px' }}>
+                {item.content}
+              </BodyText>
+              {item.subs.map((sub, subIndex) => (
+                <div key={subIndex} className={styles.listItem}>
+                  <span className={styles.icon}>
+                    {/* using KeepInViewIcon icon as default icon to fix responsive on mobile */}
+                    {sub.icon ?? <KeepInViewIcon style={{ opacity: 0, width: 18, height: 18 }} />}
+                  </span>
+                  <div>
+                    <MainTitle level={4}>{sub.title}</MainTitle>
+                    <BodyText level={6} fontFamily="Roboto">
+                      {sub.content}
+                    </BodyText>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      }
-    />
+          </div>
+        ))}
+      </div>
+    </Popover>
   );
 };

@@ -1,4 +1,3 @@
-import { ActionTaskModalParams } from '@/components/ActionTask/types';
 import { RespondedOrPendingStatus } from '@/types';
 import { ProjectTrackingDetail } from '@/types/project-tracking.type';
 
@@ -78,11 +77,16 @@ export interface ActionTaskProps {
   status: number;
 }
 
+export interface ActionTaskModalParams {
+  model_id: string;
+  model_name: 'notification' | 'request' | 'inquiry';
+}
+
 export interface ActionTaskRequestBody extends ActionTaskModalParams {
   common_type_ids: string[];
 }
 
-export interface ActionTaskModalProps {
+export interface ActionTaskModalProps extends ActionTaskModalParams {
   setData?: (setState: (prevState: ProjectTrackingDetail) => ProjectTrackingDetail) => void;
   indexItem?: number;
 }
