@@ -182,7 +182,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
     });
   };
 
-  const tooltipProps: Partial<TooltipProps> = { align: { offset: [0, 0] }, placement: 'bottom' };
+  const tooltipProps: Partial<TooltipProps> = {
+    align: { offset: [0, 0] },
+    placement: 'bottom',
+    zIndex: 1,
+  };
 
   const rightActions: {
     tooltipText: string;
