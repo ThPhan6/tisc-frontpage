@@ -106,7 +106,9 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
     if (!detailData) {
       return undefined;
     }
-
+    if (type === 'tisc' && isTablet) {
+      return <></>;
+    }
     if (type === 'tisc') {
       /// paid
       if (detailData.status == 2) {
