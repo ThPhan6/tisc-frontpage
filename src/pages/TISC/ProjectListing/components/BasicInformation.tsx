@@ -4,6 +4,7 @@ import { MEASUREMENT_UNIT } from '@/constants/util';
 import { ProjectStatus } from '@/pages/Brand/ProjectTracking/constant';
 import { Row } from 'antd';
 
+import { useScreen } from '@/helper/common';
 import { showImageUrl } from '@/helper/utils';
 
 import { ProjectInformation } from '../type';
@@ -21,10 +22,16 @@ interface BasicInformationProps {
 }
 
 export const BasicInformation: FC<BasicInformationProps> = ({ basicInformation }) => {
+  const { isTablet } = useScreen();
   return (
     <Row>
       <ResponsiveCol className={styles.container}>
-        <div className={styles.content}>
+        <div
+          className={styles.content}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 264px)' : 'calc(var(--vh) * 100 - 288px)',
+          }}
+        >
           <div className={styles.designInfo}>
             <TextForm
               label={'Designed By'}
