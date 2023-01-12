@@ -337,7 +337,9 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
             <tr>
               <td className={styles.label}>
                 <BodyText level={5} fontFamily="Roboto">
-                  as {moment().format('YYYY-MM-DD')}
+                  {detailData?.status !== InvoiceStatus.Paid
+                    ? `as ${moment().format('YYYY-MM-DD')} `
+                    : ''}
                 </BodyText>
                 {showBillingAmount && (
                   <PlusIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
