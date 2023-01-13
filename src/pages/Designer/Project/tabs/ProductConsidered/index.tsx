@@ -11,6 +11,7 @@ import { ReactComponent as CheckIcon } from '@/assets/icons/ic-square-check.svg'
 import { ReactComponent as InfoIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import {
+  onCellNoBorder,
   onCellUnlisted,
   onOpenSpecifiyingProductModal,
   renderAvailability,
@@ -287,14 +288,14 @@ const ProductConsidered: React.FC = () => {
       dataIndex: 'status_name',
       hidden: gridView.value,
       render: renderStatusDropdown, // For Entire project
-      onCell: onCellUnlisted,
+      onCell: onCellNoBorder,
     },
     {
       title: 'Action',
       align: 'center',
       width: '5%',
       render: renderActionCell,
-      onCell: onCellUnlisted,
+      onCell: onCellNoBorder,
     },
   ];
 
@@ -414,7 +415,10 @@ const ProductConsidered: React.FC = () => {
             hideAssign
             showInquiryRequest
             showSpecify
-            onSpecifyClick={() => setSpecifyingProduct(item)}
+            onSpecifyClick={() => {
+              setSpecifyingProduct(item);
+              onOpenSpecifiyingProductModal(item);
+            }}
             isCustomProduct={item.specifiedDetail?.custom_product}
           />
         ))}

@@ -1,10 +1,13 @@
 import { FC, useEffect, useState } from 'react';
 
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
+
+import { useScreen } from '@/helper/common';
 
 import { RequiredValueProps } from '../types';
 import { MaterialCodeDesignFirm } from '@/types';
 
+import { ResponsiveCol } from '@/components/Layout';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 import { BodyText, Title } from '@/components/Typography';
 
@@ -16,6 +19,7 @@ import { getMaterialProductCodeList } from '@/features/material-product-code/api
 
 const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
   const [materialCodeData, setMaterialCodeData] = useState<MaterialCodeDesignFirm[]>([]);
+  const { isTablet } = useScreen();
 
   useEffect(() => {
     if (!id) return;
@@ -27,8 +31,13 @@ const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
 
   return (
     <Row className={indexStyles.container}>
-      <Col span={12}>
-        <div className={`${indexStyles.form} ${styles.team_form}`}>
+      <ResponsiveCol>
+        <div
+          className={`${indexStyles.form} ${styles.team_form}`}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 266px)' : 'calc(var(--vh) * 100 - 248px)',
+          }}
+        >
           <GeneralData>
             {materialCodeData.length && (
               <Collapse {...CollapseLevel1Props}>
@@ -43,7 +52,8 @@ const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
                       />
                     }
                     key={index}
-                    collapsible={item.count === 0 ? 'disabled' : undefined}>
+                    collapsible={item.count === 0 ? 'disabled' : undefined}
+                  >
                     <Collapse {...CollapseLevel2Props}>
                       {item.subs.map((listMaterial, materialIndex) => (
                         <Collapse.Panel
@@ -56,12 +66,16 @@ const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
                             />
                           }
                           key={`${index}-${materialIndex}`}
-                          collapsible={listMaterial.count === 0 ? 'disabled' : undefined}>
+                          collapsible={listMaterial.count === 0 ? 'disabled' : undefined}
+                        >
                           <div className={`${indexStyles.info} ${styles.teamInfo}`}>
                             {listMaterial.codes.map((materialCode, idx) => (
                               <table className={styles.list_material_table} key={idx}>
                                 <tr>
-                                  <td className={styles.code}>
+                                  <td
+                                    className={styles.code}
+                                    style={{ width: isTablet ? '25%' : '15%' }}
+                                  >
                                     <Title level={8} customClass={styles.colorMaterial}>
                                       {materialCode.code}
                                     </Title>
@@ -70,7 +84,8 @@ const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
                                     <BodyText
                                       level={5}
                                       fontFamily="Roboto"
-                                      customClass={styles.colorMaterial}>
+                                      customClass={styles.colorMaterial}
+                                    >
                                       {materialCode.description}
                                     </BodyText>
                                   </td>
@@ -87,7 +102,7 @@ const MaterialCode: FC<RequiredValueProps> = ({ id }) => {
             )}
           </GeneralData>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

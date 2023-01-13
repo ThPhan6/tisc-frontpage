@@ -15,7 +15,7 @@ import {
 import { getProjectTrackingSummary } from '@/services/project-tracking.api';
 import { cloneDeep } from 'lodash';
 
-import { ActionTaskModelProps, ActionTaskProps } from '@/pages/Brand/GeneralInquiries/types';
+import { ActionTaskModalProps, ActionTaskProps } from '@/pages/Brand/GeneralInquiries/types';
 
 import CustomPlusButton from '../Table/components/CustomPlusButton';
 import { CustomDropDown } from '@/features/product/components';
@@ -32,7 +32,7 @@ enum ActionTaskStatus {
   'Completed',
 }
 
-export const ActionTaskTable: FC<ActionTaskModelProps> = ({
+export const ActionTaskTable: FC<ActionTaskModalProps> = ({
   model_id,
   model_name,
   setData,
@@ -118,7 +118,8 @@ export const ActionTaskTable: FC<ActionTaskModelProps> = ({
         viewAllTop
         placement="bottomRight"
         menuStyle={{ width: 160, height: 'auto' }}
-        labelProps={{ className: 'flex-between' }}>
+        labelProps={{ className: 'flex-between' }}
+      >
         <RobotoBodyText level={6}>{ActionTaskStatus[record.status]}</RobotoBodyText>
       </CustomDropDown>
     );
@@ -135,52 +136,52 @@ export const ActionTaskTable: FC<ActionTaskModelProps> = ({
         </div>
       </div>
 
-      <table className={styles.tableActionTask}>
-        <thead>
-          <tr className={styles.title}>
-            <th style={{ minWidth: '75px' }}>
-              <RobotoBodyText level={6}>Date</RobotoBodyText>
-            </th>
-            <th style={{ minWidth: '110px' }}>
-              <RobotoBodyText level={6}>Actions</RobotoBodyText>
-            </th>
-            <th>
-              <RobotoBodyText level={6}>Teams</RobotoBodyText>
-            </th>
-            <th>
-              <RobotoBodyText level={6}>Status</RobotoBodyText>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {actionTaskList.map((el: ActionTaskProps, index) => {
-            return (
-              <tr key={el.id ?? index}>
-                <td>
-                  <RobotoBodyText level={6}>
-                    {moment(el.created_at).format('YYYY-MM-DD')}
-                  </RobotoBodyText>
-                </td>
-                <td>
-                  <RobotoBodyText level={6}>{el.action_name}</RobotoBodyText>
-                </td>
-                <td>
-                  <RobotoBodyText level={6}>{getFullName(el)}</RobotoBodyText>
-                </td>
-                <td>{renderStatusDropdown(el)}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <div style={{ overflow: 'auto' }}>
+        <table className={styles.tableActionTask}>
+          <thead>
+            <tr className={styles.title}>
+              <th style={{ minWidth: 75 }}>
+                <RobotoBodyText level={6}>Date</RobotoBodyText>
+              </th>
+              <th style={{ width: '89%', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <RobotoBodyText level={6}>Actions</RobotoBodyText>
+              </th>
+              <th>
+                <RobotoBodyText level={6}>Teams</RobotoBodyText>
+              </th>
+              <th>
+                <RobotoBodyText level={6}>Status</RobotoBodyText>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {actionTaskList.map((el: ActionTaskProps, index) => {
+              return (
+                <tr key={el.id ?? index}>
+                  <td>
+                    <RobotoBodyText level={6}>
+                      {moment(el.created_at).format('YYYY-MM-DD')}
+                    </RobotoBodyText>
+                  </td>
+                  <td>
+                    <RobotoBodyText level={6}>{el.action_name}</RobotoBodyText>
+                  </td>
+                  <td>
+                    <RobotoBodyText level={6}>{getFullName(el)}</RobotoBodyText>
+                  </td>
+                  <td style={{ whiteSpace: 'nowrap' }}>{renderStatusDropdown(el)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
 
-      {!actionTaskList.length ? (
-        <div className={styles.noContent}>
-          <RobotoBodyText level={6}>no actions/tasks yet</RobotoBodyText>
-        </div>
-      ) : null}
+        {!actionTaskList.length ? (
+          <div className={styles.noContent}>
+            <RobotoBodyText level={6}>no actions/tasks yet</RobotoBodyText>
+          </div>
+        ) : null}
 
-      {modalVisible ? (
         <ActionTaskModal
           visible={modalVisible}
           setVisible={setModalVisible}
@@ -188,7 +189,7 @@ export const ActionTaskTable: FC<ActionTaskModelProps> = ({
           model_id={model_id}
           model_name={model_name}
         />
-      ) : null}
+      </div>
     </div>
   );
 };

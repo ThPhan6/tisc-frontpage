@@ -1,12 +1,14 @@
 import { FC } from 'react';
 
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
+import { useScreen } from '@/helper/common';
 import { formatNumber } from '@/helper/utils';
 
 import { SpaceDetail } from '../type';
 import { ProjectSpaceArea } from '@/features/project/types';
 
+import { ResponsiveCol } from '@/components/Layout';
 import { BodyText, Title } from '@/components/Typography';
 import {
   CollapseLevel1Props,
@@ -37,7 +39,8 @@ const LabelHeader: FC<LabelHeaderProps> = ({ header, quantity, isSubHeader }) =>
         className={styles.quantity}
         style={{
           marginLeft: 8,
-        }}>
+        }}
+      >
         ({quantity ?? '0'})
       </span>
     </span>
@@ -45,6 +48,7 @@ const LabelHeader: FC<LabelHeaderProps> = ({ header, quantity, isSubHeader }) =>
 };
 
 const ProjectSpaceAreas: FC<ListAreaProps> = ({ areas, index }) => {
+  const { isTablet } = useScreen();
   return (
     <Collapse {...CollapseLevel2Props}>
       {areas.map((area, areaIndex) => (
@@ -53,11 +57,12 @@ const ProjectSpaceAreas: FC<ListAreaProps> = ({ areas, index }) => {
             <LabelHeader header={area.name} quantity={area.rooms.length} isSubHeader={true} />
           }
           key={`${index}-${areaIndex}`}
-          collapsible={area.rooms.length === 0 ? 'disabled' : undefined}>
+          collapsible={area.rooms.length === 0 ? 'disabled' : undefined}
+        >
           {area.rooms.map((room, idx) => (
             <table className={styles.roomCode} key={idx}>
               <tr>
-                <td className={styles.code}>
+                <td className={styles.code} style={{ width: isTablet ? '20%' : '10%' }}>
                   <BodyText level={5} fontFamily="Roboto">
                     {room.room_id}
                   </BodyText>
@@ -77,10 +82,16 @@ const ProjectSpaceAreas: FC<ListAreaProps> = ({ areas, index }) => {
 };
 
 export const SpaceTab: FC<SpaceTabProps> = ({ space }) => {
+  const { isTablet } = useScreen();
   return (
     <Row>
-      <Col span={12} className={styles.container}>
-        <div className={styles.content}>
+      <ResponsiveCol className={styles.container}>
+        <div
+          className={styles.content}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 264px)' : 'calc(var(--vh) * 100 - 288px)',
+          }}
+        >
           <GeneralData>
             {space?.zones.length
               ? space?.zones.map((zone, index) => (
@@ -94,7 +105,8 @@ export const SpaceTab: FC<SpaceTabProps> = ({ space }) => {
                         />
                       }
                       key={index}
-                      collapsible={zone.areas.length === 0 ? 'disabled' : undefined}>
+                      collapsible={zone.areas.length === 0 ? 'disabled' : undefined}
+                    >
                       <ProjectSpaceAreas areas={zone.areas} index={index} />
                     </Collapse.Panel>
                   </Collapse>
@@ -111,7 +123,7 @@ export const SpaceTab: FC<SpaceTabProps> = ({ space }) => {
           </Title>
           <Title level={9}>{formatNumber(space?.imperialArea ?? 0)} sq.ft.</Title>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

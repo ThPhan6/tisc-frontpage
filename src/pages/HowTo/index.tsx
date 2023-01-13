@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import { Col, Row } from 'antd';
+import { Row } from 'antd';
 
 import { getCurrentFAQ } from '@/features/how-to/services';
 import { useScreen } from '@/helper/common';
 
 import { Faq } from '@/features/how-to/types';
 
+import { ResponsiveCol } from '@/components/Layout';
 import { Title } from '@/components/Typography';
 import { FaqComponent } from '@/features/how-to/components/HowTo/FaqComponent';
 import styles from '@/features/how-to/components/HowTo/index.less';
@@ -38,7 +39,7 @@ const HowTo = () => {
   return (
     <div className={styles.content}>
       <Row>
-        <Col span={isMobile ? 24 : 12}>
+        <ResponsiveCol>
           <div
             className={styles.form}
             style={{ height: isMobile ? 'calc(var(--vh) * 100 - 72px)' : '' }}
@@ -63,7 +64,7 @@ const HowTo = () => {
               ))}
             </div>
           </div>
-        </Col>
+        </ResponsiveCol>
       </Row>
     </div>
   );

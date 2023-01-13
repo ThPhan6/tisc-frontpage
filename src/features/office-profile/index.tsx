@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { IMAGE_ACCEPT_TYPES, LOGO_SIZE_LIMIT } from '@/constants/util';
-import { Col, Row, Upload, UploadProps, message } from 'antd';
+import { Row, Upload, UploadProps, message } from 'antd';
 
-// import DefaultLogo from '@/assets/icons/avatar-default.svg';
 import { ReactComponent as DefaultLogo } from '@/assets/icons/avatar-default.svg';
 import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-icon.svg';
@@ -32,6 +31,7 @@ import { CustomCheckbox } from '@/components/CustomCheckbox';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomTextArea } from '@/components/Form/CustomTextArea';
+import { ResponsiveCol } from '@/components/Layout';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { BodyText, Title } from '@/components/Typography';
 
@@ -40,7 +40,7 @@ import styles from './index.less';
 const BrandProfilePage = () => {
   const { fetchUserInfo } = useCustomInitialState();
 
-  const { isMobile } = useScreen();
+  const { isMobile, isTablet } = useScreen();
 
   const isBrand = useCheckPermission(['Brand Admin', 'Brand Team']);
   const isDesign = useCheckPermission(['Design Admin', 'Design Team']);
@@ -282,7 +282,7 @@ const BrandProfilePage = () => {
   return (
     <div className={styles.content}>
       <Row>
-        <Col span={24} lg={12}>
+        <ResponsiveCol>
           <div className={styles.container}>
             <div className={styles.formTitle}>
               <Title level={8}>{isBrand ? 'BRAND PROFILE' : 'OFFICE PROFILE'}</Title>
@@ -291,7 +291,7 @@ const BrandProfilePage = () => {
             <div
               className={styles.form}
               style={{
-                height: isMobile
+                height: isTablet
                   ? 'calc(var(--vh) * 100 - 168px)'
                   : 'calc(var(--vh) * 100 - 192px)',
               }}
@@ -472,7 +472,7 @@ const BrandProfilePage = () => {
               <CustomSaveButton isSuccess={isSubmitted.value} onClick={onSubmitForm} />
             </div>
           </div>
-        </Col>
+        </ResponsiveCol>
       </Row>
     </div>
   );

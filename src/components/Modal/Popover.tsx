@@ -266,12 +266,12 @@ const Popover: FC<PopoverProps> = ({
   };
 
   const renderMobileContent = () => (
-    <div className={styles.customPopoverMobile}>
+    <div className={`${styles.customPopoverMobile} ${className}`}>
       {extraTopAction}
       {renderChildren()}
       {children}
       {noFooter ? null : (
-        <div className={`flex-center ${styles.popoverFooterMobile}`}>{renderButtonFooter()}</div>
+        <div className={`flex-end ${styles.popoverFooterMobile}`}>{renderButtonFooter()}</div>
       )}
     </div>
   );

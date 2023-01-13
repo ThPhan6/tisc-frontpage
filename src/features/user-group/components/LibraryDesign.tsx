@@ -1,8 +1,9 @@
 import { FC, useEffect, useState } from 'react';
 
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
 import { getLibraryByDesignFirm } from '../services';
+import { useScreen } from '@/helper/common';
 import { getFullName, getValueByCondition, showImageUrl } from '@/helper/utils';
 import { isNumber } from 'lodash';
 
@@ -18,6 +19,7 @@ import { ConversionSubValueProps } from '@/types';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import TextForm from '@/components/Form/TextForm';
+import { ResponsiveCol } from '@/components/Layout';
 import { BodyText } from '@/components/Typography';
 
 import indexStyles from '../styles/index.less';
@@ -84,7 +86,8 @@ const LabelHeader: FC<LabelHeaderProps> = ({ firstValue, quantity, isSubHeader, 
         textTransform: 'capitalize',
         display: 'flex',
         alignItems: 'center',
-      }}>
+      }}
+    >
       {firstValue}
       {secondValue && <span className={styles.customText}>{secondValue}</span>}
       {isNumber(quantity) && !isNaN(quantity) ? (
@@ -92,7 +95,8 @@ const LabelHeader: FC<LabelHeaderProps> = ({ firstValue, quantity, isSubHeader, 
           className={styles.quantity}
           style={{
             marginLeft: 8,
-          }}>
+          }}
+        >
           ({quantity ?? '0'})
         </span>
       ) : null}
@@ -112,7 +116,8 @@ const LibraryText: FC<LibraryTextProps> = ({ name, content, conversion, image, c
   return (
     <div
       style={{ display: 'flex', alignItems: 'center', height: '36px' }}
-      className={customClass ? customClass : ''}>
+      className={customClass ? customClass : ''}
+    >
       {image ? (
         <img
           src={showImageUrl(image)}
@@ -195,7 +200,8 @@ const DetailItem: FC<DetailItemProps> = ({ detailItems, type }) => {
                       secondValue={option.tag}
                     />
                   }
-                  key={index}>
+                  key={index}
+                >
                   {option.items.map((optionItem, optionIndex) => (
                     <LibraryText
                       image={optionItem.image}
@@ -253,7 +259,8 @@ const DetailItem: FC<DetailItemProps> = ({ detailItems, type }) => {
                   secondValue={contact.position}
                 />
               }
-              key={index}>
+              key={index}
+            >
               <TextForm boxShadow label="Work email">
                 {contact.work_email}
               </TextForm>
@@ -293,7 +300,8 @@ const DetailItem: FC<DetailItemProps> = ({ detailItems, type }) => {
               <LabelHeader firstValue={item.title} quantity={item?.quantity} isSubHeader={true} />
             }
             key={index}
-            collapsible={item.quantity === 0 ? 'disabled' : undefined}>
+            collapsible={item.quantity === 0 ? 'disabled' : undefined}
+          >
             {renderContentItem(item)}
           </Collapse.Panel>
         </Collapse>
@@ -333,7 +341,8 @@ const LibraryItem: FC<LibraryItemProps> = ({ data, type }) => {
       <Collapse.Panel
         header={<LabelHeader firstValue={title} quantity={quantity} isSubHeader={false} />}
         key={title}
-        collapsible={quantity === 0 ? 'disabled' : undefined}>
+        collapsible={quantity === 0 ? 'disabled' : undefined}
+      >
         <DetailItem
           detailItems={getValueByCondition([
             [
@@ -396,6 +405,7 @@ const LibraryItem: FC<LibraryItemProps> = ({ data, type }) => {
 
 const LibraryDesign: FC<RequiredValueProps> = ({ id }) => {
   const [libraryData, setLibraryData] = useState<LibraryDesignFirm>();
+  const { isTablet } = useScreen();
 
   useEffect(() => {
     if (!id) return;
@@ -408,14 +418,19 @@ const LibraryDesign: FC<RequiredValueProps> = ({ id }) => {
 
   return (
     <Row className={indexStyles.container}>
-      <Col span={12}>
-        <div className={`${indexStyles.form} ${styles.content}`}>
+      <ResponsiveCol>
+        <div
+          className={`${indexStyles.form} ${styles.content}`}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 266px)' : 'calc(var(--vh) * 100 - 248px)',
+          }}
+        >
           <LibraryItem data={libraryData} type="brand" />
           <LibraryItem data={libraryData} type="distributor" />
           <LibraryItem data={libraryData} type="collection" />
           <LibraryItem data={libraryData} type="product" />
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

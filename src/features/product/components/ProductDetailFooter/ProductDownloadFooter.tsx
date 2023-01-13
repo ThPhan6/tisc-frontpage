@@ -1,8 +1,9 @@
 import { FC } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { ReactComponent as DownloadIconV2 } from '@/assets/icons/download-2-icon.svg';
+import { ReactComponent as DownloadIconV2 } from '@/assets/icons/download-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { useCheckPermission } from '@/helper/hook';
 import { isEmpty } from 'lodash';
 
@@ -18,10 +19,13 @@ import styles from './ProductDownloadFooter.less';
 const ProductDownloadFooter: FC = () => {
   const dispatch = useDispatch();
 
-  const downloads = useAppSelector((state) => state.product.details.downloads);
+  const isTablet = useScreen().isTablet;
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  const isEditable = isTiscAdmin && !isTablet;
 
-  if (isTiscAdmin) {
+  const downloads = useAppSelector((state) => state.product.details.downloads);
+
+  if (isEditable) {
     return (
       <DynamicFormInput
         data={downloads.map((item) => {
@@ -70,7 +74,7 @@ const ProductDownloadFooter: FC = () => {
                 </a>
               </td>
               <td className={styles.icon}>
-                <a href={content.url} download>
+                <a href={content.url} target="_blank" download rel="noopener noreferrer">
                   <DownloadIconV2 className={styles.downloadIcon} />
                 </a>
               </td>

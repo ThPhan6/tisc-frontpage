@@ -82,6 +82,8 @@ export const ModalController = () => {
       case 'Brand Company':
         return <BrandCompanyModal />;
 
+      // Brand
+
       // design firms
       case 'Assign Product':
         return <AssignProductModal />;

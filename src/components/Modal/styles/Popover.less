@@ -1,4 +1,7 @@
 .customPopover {
+  ::-webkit-scrollbar {
+    display: none;
+  }
   :global(.ant-modal-header),
   :global(.ant-modal-footer) {
     height: 48px;
@@ -59,12 +62,7 @@
 }
 
 .customPopoverMobile {
-  height: calc(var(--vh) * 60);
-  padding-bottom: 48px;
-
-  > div:first-child {
-    padding-bottom: 60px;
-  }
+  padding-bottom: 64px;
 
   .popoverFooterMobile {
     position: fixed;
@@ -72,6 +70,7 @@
     bottom: 0;
     left: 0;
     height: 48px;
+    padding: 0 12px;
     background-color: #fff;
     box-shadow: @border-top;
   }

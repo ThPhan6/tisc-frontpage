@@ -2,6 +2,8 @@ import { useState } from 'react';
 import type { FC } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { useScreen } from '@/helper/common';
+
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { setPartialProductDetail } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
@@ -31,6 +33,7 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
   disabled,
   label,
 }) => {
+  const isTablet = useScreen().isTablet;
   const product = useAppSelector((state) => state.product);
 
   const dispatch = useDispatch();
@@ -53,16 +56,18 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
           )}
         </div>
         <div className={styles.iconWrapper}>
-          <CustomButton
-            size="small"
-            variant="primary"
-            properties="rounded"
-            buttonClass="save-btn"
-            onClick={onSave}
-            disabled={disabled}
-          >
-            Save
-          </CustomButton>
+          {isTablet ? null : (
+            <CustomButton
+              size="small"
+              variant="primary"
+              properties="rounded"
+              buttonClass="save-btn"
+              onClick={onSave}
+              disabled={disabled}
+            >
+              Save
+            </CustomButton>
+          )}
           <CustomButton
             size="small"
             variant="primary"

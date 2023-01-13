@@ -17,7 +17,7 @@ export const InquiryMessageTab: FC<{
   const { title, inquiry_for, message, designer, product } = data;
 
   return (
-    <div style={{ height: 'calc(var(--vh) * 100 - 368px)' }}>
+    <div>
       <BrandProductBasicHeader
         image={product.image}
         text_1={product.collection}

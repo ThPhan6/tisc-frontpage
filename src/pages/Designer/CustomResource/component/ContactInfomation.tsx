@@ -345,7 +345,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
         {data.contacts.map((contact, index) => renderContacts(contact, index))}
       </div>
       {isEdit && (
-        <div className={styles.bottom} style={{ justifyContent: isMobile ? 'center' : undefined }}>
+        <div className={styles.bottom}>
           {isMobile && type === 'update' ? (
             <CustomButton
               size="small"
