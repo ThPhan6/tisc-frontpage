@@ -11,6 +11,7 @@ import { useScreen } from '@/helper/common';
 import { useBoolean } from '@/helper/hook';
 import { capitalize, truncate } from 'lodash';
 
+import CustomButton from '@/components/Button';
 import CustomCollapse from '@/components/Collapse';
 import { FilterDrawer } from '@/components/Modal/Drawer';
 import { BodyText } from '@/components/Typography';
@@ -214,6 +215,7 @@ export interface CustomDropDownProps extends Omit<DropDownProps, 'overlay'> {
   position?: 'left' | 'right';
   nestedMenu?: boolean;
   borderFirstItem?: boolean;
+  showCloseFooter?: boolean;
 }
 export const CustomDropDown: FC<CustomDropDownProps> = ({
   children,
@@ -229,6 +231,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
   autoHeight = true,
   nestedMenu,
   borderFirstItem,
+  showCloseFooter,
   ...props
 }) => {
   const isMobile = useScreen().isMobile;
@@ -285,6 +288,26 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
       />
     ));
 
+  const renderContent = () => {
+    return (
+      <>
+        {content}
+        {showCloseFooter ? (
+          <div className={`flex-end ${styles.footer}`}>
+            <CustomButton
+              size="small"
+              variant="primary"
+              properties="rounded"
+              onClick={() => dropdownVisible.setValue(false)}
+            >
+              Close
+            </CustomButton>
+          </div>
+        ) : null}
+      </>
+    );
+  };
+
   return (
     <>
       <Dropdown
@@ -295,8 +318,8 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
         onVisibleChange={(visible) => {
           dropdownVisible.setValue(visible);
         }}
-        overlayClassName={viewAllTop ? styles.viewAllTop : undefined}
-        overlay={content}
+        overlayClassName={`${viewAllTop ? styles.viewAllTop : ''}`}
+        overlay={renderContent()}
       >
         <span {...labelProps} onClick={(e) => e.stopPropagation()}>
           {children}
@@ -310,10 +333,12 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
             e.stopPropagation();
             dropdownVisible.setValue(false);
           }}
-          className={`${styles.filterDropdown} ${borderFirstItem ? styles.borderFirstItem : ''}`}
+          className={`${styles.filterDropdown} ${borderFirstItem ? styles.borderFirstItem : ''} ${
+            showCloseFooter ? styles.showCloseFooter : ''
+          }`}
           height={height}
         >
-          {content}
+          {renderContent()}
         </FilterDrawer>
       )}
     </>

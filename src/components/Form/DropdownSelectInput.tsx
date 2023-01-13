@@ -17,6 +17,7 @@ interface DropdownSelectInputProps extends CustomInputProps {
   overlayClass?: CSSProperties;
   noPadding?: boolean;
   placement?: DropdownProps['placement'];
+  showCloseFooter?: boolean;
 }
 
 export const DropdownSelectInput: FC<DropdownSelectInputProps> = ({
@@ -26,6 +27,7 @@ export const DropdownSelectInput: FC<DropdownSelectInputProps> = ({
   overlayClass = '',
   noPadding,
   placement = 'bottom',
+  showCloseFooter,
   ...props
 }) => {
   return (
@@ -45,6 +47,7 @@ export const DropdownSelectInput: FC<DropdownSelectInputProps> = ({
       overlayStyle={overlayStyle}
       className={styles.selectDropdown}
       autoHeight={false}
+      showCloseFooter={showCloseFooter}
     >
       <CustomInput borderBottomColor="light" {...props} value={value || ''} />
       <DropdownIcon className="ic-select" />
