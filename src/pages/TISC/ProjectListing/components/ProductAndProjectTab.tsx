@@ -6,6 +6,7 @@ import { Collapse, Row } from 'antd';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { showImageUrl } from '@/helper/utils';
 
 import { TeamDetail } from '../type';
@@ -165,11 +166,16 @@ export const ProductAndProjectTab: FC<ProductAndProjectTabProps> = ({ type, data
   const handleActiveCollapse = (index: number) => {
     setActiveKey(activeKey === String(index) ? '' : String(index));
   };
-
+  const { isTablet } = useScreen();
   return (
     <Row>
       <ResponsiveCol className={styles.container}>
-        <div className={styles.content}>
+        <div
+          className={styles.content}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 264px)' : 'calc(var(--vh) * 100 - 288px)',
+          }}
+        >
           <GeneralData>
             {data?.length
               ? data?.map((item, index) => (

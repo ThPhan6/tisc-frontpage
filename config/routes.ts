@@ -1,6 +1,6 @@
 ﻿import { PATH } from '../src/constants/path';
 
-export default [
+const routes = [
   // NO REQUIRE AUTHENTICATION
   {
     path: PATH.sharedProduct,
@@ -891,14 +891,26 @@ export default [
       },
     ],
   },
-  // {
-  //   name: 'list.table-list',
-  //   icon: 'table',
-  //   path: '/welcome',
-  //   component: './Welcome',
-  // },
-  // GENERAL PAGE
   {
     component: './404',
   },
 ];
+
+const inject404Routes = (curRoutes) => {
+  return curRoutes.map((route) => {
+    if (route.routes) {
+      route.routes.push({
+        component: './404',
+      });
+      return {
+        ...route,
+        routes: inject404Routes(route.routes),
+      };
+    }
+    return route;
+  });
+};
+
+const injectedRoutes = inject404Routes(routes);
+
+export default injectedRoutes;
