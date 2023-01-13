@@ -120,7 +120,7 @@ export const ContactInformation: FC<ContactInformationProps> = ({
   customResourceId,
 }) => {
   const [activeKey, setActiveKey] = useState<string>('');
-  const { isMobile } = useScreen();
+  const { isTablet } = useScreen();
 
   const handleActiveCollapse = (index: number) => {
     setActiveKey(activeKey === String(index) ? '' : String(index));
@@ -340,13 +340,13 @@ export const ContactInformation: FC<ContactInformationProps> = ({
       />
       <div
         className={styles.information}
-        style={{ height: isMobile ? '' : 'calc(var(--vh) * 100 - 304px)' }}
+        style={{ height: isTablet ? '' : 'calc(var(--vh) * 100 - 304px)' }}
       >
         {data.contacts.map((contact, index) => renderContacts(contact, index))}
       </div>
       {isEdit && (
         <div className={styles.bottom}>
-          {isMobile && type === 'update' ? (
+          {isTablet && type === 'update' ? (
             <CustomButton
               size="small"
               variant="secondary"

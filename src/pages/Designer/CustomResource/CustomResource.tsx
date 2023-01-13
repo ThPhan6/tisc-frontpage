@@ -18,6 +18,7 @@ import CustomTable from '@/components/Table';
 import { ActionMenu } from '@/components/TableAction';
 import { BodyText } from '@/components/Typography';
 
+import styles from './CustomResource.less';
 import {
   deleteCustomResource,
   getCustomResourceSummary,
@@ -118,12 +119,12 @@ const CustomResource = () => {
     tableRef.current.reload();
   }, [customResourceType]);
 
-  const { isMobile } = useScreen();
+  const { isMobile, isTablet } = useScreen();
   return (
     <PageContainer pageHeaderRender={() => <CustomResourceTopBar />}>
       <CustomTable
         fetchDataFunc={getListVendorByBrandOrDistributor}
-        title={isMobile ? ' ' : 'VENDOR INFORMATION MANAGEMENT'}
+        title={isTablet ? ' ' : 'VENDOR INFORMATION MANAGEMENT'}
         columns={setDefaultWidthForEachColumn(MainColumns, 3)}
         ref={tableRef}
         rightAction={
@@ -141,6 +142,7 @@ const CustomResource = () => {
           },
         })}
         hasPagination
+        headerClass={isMobile ? styles.customHeader : ''}
       />
     </PageContainer>
   );
