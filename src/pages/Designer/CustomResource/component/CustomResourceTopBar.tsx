@@ -18,7 +18,7 @@ import { getCustomResourceSummary } from '../api';
 
 export const CustomResourceTopBar = () => {
   const summaryData = useAppSelector((state) => state.customResource.summaryCustomResoure);
-  const { isMobile } = useScreen();
+  const { isTablet } = useScreen();
   useEffect(() => {
     getCustomResourceSummary();
   }, []);
@@ -43,7 +43,7 @@ export const CustomResourceTopBar = () => {
             onClick={() => pushTo(PATH.designerCustomProduct)}
             icon={<VendorManagementIcon />}
           />
-          {!isMobile &&
+          {!isTablet &&
             summaryData.map((summary) => (
               <TopBarItem
                 topValue={
@@ -57,7 +57,7 @@ export const CustomResourceTopBar = () => {
             ))}
         </>
       }
-      customClass={isMobile ? styles.customTopBar : ''}
+      customClass={isTablet ? styles.customTopBar : ''}
     />
   );
 };
