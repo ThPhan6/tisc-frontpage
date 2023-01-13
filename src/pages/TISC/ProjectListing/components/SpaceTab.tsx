@@ -2,6 +2,7 @@ import { FC } from 'react';
 
 import { Collapse, Row } from 'antd';
 
+import { useScreen } from '@/helper/common';
 import { formatNumber } from '@/helper/utils';
 
 import { SpaceDetail } from '../type';
@@ -47,6 +48,7 @@ const LabelHeader: FC<LabelHeaderProps> = ({ header, quantity, isSubHeader }) =>
 };
 
 const ProjectSpaceAreas: FC<ListAreaProps> = ({ areas, index }) => {
+  const { isTablet } = useScreen();
   return (
     <Collapse {...CollapseLevel2Props}>
       {areas.map((area, areaIndex) => (
@@ -60,7 +62,7 @@ const ProjectSpaceAreas: FC<ListAreaProps> = ({ areas, index }) => {
           {area.rooms.map((room, idx) => (
             <table className={styles.roomCode} key={idx}>
               <tr>
-                <td className={styles.code}>
+                <td className={styles.code} style={{ width: isTablet ? '20%' : '10%' }}>
                   <BodyText level={5} fontFamily="Roboto">
                     {room.room_id}
                   </BodyText>
@@ -80,10 +82,16 @@ const ProjectSpaceAreas: FC<ListAreaProps> = ({ areas, index }) => {
 };
 
 export const SpaceTab: FC<SpaceTabProps> = ({ space }) => {
+  const { isTablet } = useScreen();
   return (
     <Row>
       <ResponsiveCol className={styles.container}>
-        <div className={styles.content}>
+        <div
+          className={styles.content}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 264px)' : 'calc(var(--vh) * 100 - 288px)',
+          }}
+        >
           <GeneralData>
             {space?.zones.length
               ? space?.zones.map((zone, index) => (

@@ -2,6 +2,9 @@ import { useEffect, useRef } from 'react';
 
 import { PATH } from '@/constants/path';
 
+import { ReactComponent as ViewIcon } from '@/assets/icons/eye-icon.svg';
+
+import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { formatNumber } from '@/helper/utils';
 
@@ -17,6 +20,7 @@ import moment from 'moment';
 
 const ProjectListing = () => {
   const tableRef = useRef<any>();
+  const { isTablet } = useScreen();
 
   const handleViewProjectListing = (id: string) => {
     pushTo(PATH.tiscProjectListingDetail.replace(':id', id));
@@ -114,6 +118,13 @@ const ProjectListing = () => {
       width: '5%',
       align: 'center',
       render: (_value, record) => {
+        if (isTablet) {
+          return (
+            <div className="flex-center">
+              <ViewIcon onClick={() => handleViewProjectListing(record.id)} />
+            </div>
+          );
+        }
         return (
           <ActionMenu
             actionItems={[
