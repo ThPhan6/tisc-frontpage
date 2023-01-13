@@ -2,12 +2,13 @@ import { useEffect, useRef } from 'react';
 
 import { PATH } from '@/constants/path';
 
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { getServicesPagination } from '@/features/services/api';
 import styles from '@/features/services/index.less';
 import { InvoiceStatus, ServicesResponse } from '@/features/services/type';
 import { checkShowBillingAmount, formatToMoneyValue } from '@/features/services/util';
 import { pushTo } from '@/helper/history';
-import { getFullName } from '@/helper/utils';
+import { getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 
@@ -17,6 +18,7 @@ import { ActionMenu } from '@/components/TableAction';
 import moment from 'moment';
 
 const BilledServices = () => {
+  useAutoExpandNestedTableColumn(0, [6]);
   const tableRef = useRef<any>();
 
   const handleViewService = (id: string) => {
@@ -27,7 +29,7 @@ const BilledServices = () => {
     tableRef.current.reload();
   }, []);
 
-  const MainColumns: TableColumnItem<ServicesResponse>[] = [
+  const mainColumns: TableColumnItem<ServicesResponse>[] = [
     {
       title: 'Billed Date',
       sorter: true,
@@ -103,7 +105,7 @@ const BilledServices = () => {
   ];
   return (
     <CustomTable
-      columns={MainColumns}
+      columns={setDefaultWidthForEachColumn(mainColumns, 6)}
       fetchDataFunc={getServicesPagination}
       hasPagination
       autoLoad={false}

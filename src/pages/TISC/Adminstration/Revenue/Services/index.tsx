@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import { PATH } from '@/constants/path';
 
+import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { deleteService, getServicesPagination, getServicesSummary } from '@/features/services/api';
 import { ServiceHeader } from '@/features/services/components/ServiceHeader';
 import styles from '@/features/services/index.less';
@@ -9,7 +10,7 @@ import { InvoiceStatus, ServicesResponse } from '@/features/services/type';
 import { checkShowBillingAmount, formatToMoneyValue } from '@/features/services/util';
 import { confirmDelete, useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { getFullName } from '@/helper/utils';
+import { getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 
@@ -20,6 +21,8 @@ import { ActionMenu } from '@/components/TableAction';
 import moment from 'moment';
 
 const RevenueService = () => {
+  useAutoExpandNestedTableColumn(0, [7]);
+
   const tableRef = useRef<any>();
   const { isTablet } = useScreen();
 
@@ -46,7 +49,7 @@ const RevenueService = () => {
     tableRef.current.reload();
   }, []);
 
-  const MainColumns: TableColumnItem<ServicesResponse>[] = [
+  const mainColumns: TableColumnItem<ServicesResponse>[] = [
     {
       title: 'Date',
       sorter: true,
@@ -143,7 +146,7 @@ const RevenueService = () => {
   return (
     <ServiceHeader>
       <CustomTable
-        columns={MainColumns}
+        columns={setDefaultWidthForEachColumn(mainColumns, 7)}
         fetchDataFunc={getServicesPagination}
         hasPagination
         autoLoad={false}
