@@ -149,7 +149,6 @@ export const ProjectTrackingLegendModal: FC = () => {
       title="LEGEND"
       visible
       noFooter
-      secondaryModal
       className={`${isMobile ? styles.modalOnMobile : styles.legend}`}
     >
       <div>

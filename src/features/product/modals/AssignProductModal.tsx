@@ -63,7 +63,8 @@ const AssignProductModal: FC = () => {
           fontFamily="Roboto"
           level={5}
           customClass="text-overflow"
-          style={{ marginRight: 16, width: 60 }}
+          style={{ marginRight: 12, width: 60 }}
+          title={el.code}
         >
           {el.code}
         </BodyText>
@@ -71,7 +72,8 @@ const AssignProductModal: FC = () => {
           fontFamily="Roboto"
           level={5}
           customClass="text-overflow"
-          style={{ maxWidth: 430 }}
+          style={{ maxWidth: isMobile ? 'calc(100vw - 150px)' : 430 }}
+          title={el.name}
         >
           {el.name}
         </BodyText>

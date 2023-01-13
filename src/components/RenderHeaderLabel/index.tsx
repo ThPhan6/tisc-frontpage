@@ -5,6 +5,7 @@ import { TooltipPlacement } from 'antd/lib/tooltip';
 
 import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 
+import { useScreen } from '@/helper/common';
 import { isNaN, isNumber } from 'lodash';
 
 import TeamIcon from '../TeamIcon/TeamIcon';
@@ -30,14 +31,16 @@ export const RenderLabelHeader: FC<RenderLabelHeaderProps> = ({
       style={{
         textTransform: isUpperCase ? 'uppercase' : 'capitalize',
         color: '@mono-color',
-      }}>
+      }}
+    >
       {header}
       {isNumber(quantity) && !isNaN(quantity) ? (
         <span
           className={styles.quantity}
           style={{
             marginLeft: 8,
-          }}>
+          }}
+        >
           ({quantity ?? '0'})
         </span>
       ) : null}
@@ -97,7 +100,8 @@ export const RenderEntireProjectLabel: FC<RenderEntireProjectLabelProps> = ({
         overlayClassName={`${styles.overlay} ${overlayClassName}`}
         overlayInnerStyle={{
           width: overLayWidth ? overLayWidth : 'auto',
-        }}>
+        }}
+      >
         {icon ? icon : <InfoIcon style={{ width: 18, height: 18, marginLeft: 8 }} />}
       </Tooltip>
     </div>
@@ -118,13 +122,28 @@ export const DualLabel: FC<DualLabelProps> = ({
   fontSize = 12,
   fontWeight = 500,
   customClass = '',
-}) => (
-  <span className={`flex-start ${customClass}`} style={{ paddingRight: '16px' }}>
-    <Title level={9} style={{ marginRight: 12, fontWeight: fontWeight, fontSize: fontSize }}>
-      {firstTxt}
-    </Title>
-    <BodyText fontFamily="Roboto" level={6} style={{ fontSize: fontSize }}>
-      {secTxt}
-    </BodyText>
-  </span>
-);
+}) => {
+  const { isMobile } = useScreen();
+
+  return (
+    <span className={`flex-start ${customClass}`} style={{ paddingRight: '16px' }}>
+      <Title
+        level={9}
+        style={{ marginRight: 12, fontWeight, fontSize, width: 60 }}
+        customClass="text-overflow"
+        title={firstTxt}
+      >
+        {firstTxt}
+      </Title>
+      <BodyText
+        fontFamily="Roboto"
+        level={6}
+        style={{ fontSize, maxWidth: isMobile ? 'calc(100vw - 150px)' : 430 }}
+        customClass="text-overflow"
+        title={secTxt}
+      >
+        {secTxt}
+      </BodyText>
+    </span>
+  );
+};

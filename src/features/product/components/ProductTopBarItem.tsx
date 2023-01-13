@@ -255,7 +255,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
     );
   };
 
-  const height = autoHeight ? 'auto' : window.innerHeight * 0.85;
+  const height = autoHeight ? 'auto' : window.innerHeight - 48;
 
   const mobileMenuStyle: CSSProperties = isMobile
     ? {
@@ -303,11 +303,13 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
           {hideDropdownIcon ? null : <DropdownIcon style={{ marginLeft: 8 }} />}
         </span>
       </Dropdown>
-
       {isMobile && (
         <FilterDrawer
           visible={dropdownVisible.value}
-          onClose={() => dropdownVisible.setValue(false)}
+          onClose={(e) => {
+            e.stopPropagation();
+            dropdownVisible.setValue(false);
+          }}
           className={`${styles.filterDropdown} ${borderFirstItem ? styles.borderFirstItem : ''}`}
           height={height}
         >

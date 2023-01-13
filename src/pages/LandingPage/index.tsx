@@ -52,7 +52,6 @@ const LandingPage = () => {
                   token: tokenResetPwd || '',
                   passwordType: 'reset',
                 },
-                autoHeightDrawer: true,
                 noBorderDrawerHeader: true,
               }),
             );
@@ -87,7 +86,6 @@ const LandingPage = () => {
                   passwordType: 'create',
                 }
               : undefined,
-            autoHeightDrawer: true,
             noBorderDrawerHeader: true,
           }),
         );
@@ -103,14 +101,11 @@ const LandingPage = () => {
   }, [tokenVerification]);
 
   const openLoginModal = () =>
-    store.dispatch(
-      openModal({ type: 'Login', autoHeightDrawer: true, noBorderDrawerHeader: true }),
-    );
+    store.dispatch(openModal({ type: 'Login', noBorderDrawerHeader: true }));
   const openBrandInterested = () =>
     store.dispatch(
       openModal({
         type: 'Brand Interested',
-        autoHeightDrawer: true,
         noBorderDrawerHeader: true,
       }),
     );
@@ -222,7 +217,6 @@ const LandingPage = () => {
                         store.dispatch(
                           openModal({
                             type: 'Designer Signup',
-                            autoHeightDrawer: true,
                             noBorderDrawerHeader: true,
                           }),
                         )
