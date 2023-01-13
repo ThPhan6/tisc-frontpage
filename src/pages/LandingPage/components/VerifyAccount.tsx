@@ -13,9 +13,7 @@ export const VerifyAccount: FC = () => {
   const [time, setTime] = useState(5);
 
   const openLoginModal = () =>
-    store.dispatch(
-      openModal({ type: 'Login', autoHeightDrawer: true, noBorderDrawerHeader: true }),
-    );
+    store.dispatch(openModal({ type: 'Login', noBorderDrawerHeader: true }));
 
   useEffect(() => {
     if (time === 0) {

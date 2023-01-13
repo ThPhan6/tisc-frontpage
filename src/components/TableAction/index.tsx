@@ -14,6 +14,7 @@ import { ReactComponent as UserIcon } from '@/assets/icons/user-icon.svg';
 import { useScreen } from '@/helper/common';
 
 import { HeaderDropdown, HeaderDropdownProps, MenuIconProps } from '../HeaderDropdown';
+import styles from './index.less';
 
 type ActionType =
   | 'specify'
@@ -24,8 +25,7 @@ type ActionType =
   | 'invite'
   | 'user'
   | 'logout'
-  | 'billing'
-  | 'updateOrView';
+  | 'billing';
 
 interface ActionFormProps extends HeaderDropdownProps {
   actionItems?: (MenuIconProps & { type: ActionType })[];
@@ -78,10 +78,6 @@ const DEFAULT_ACTION_INFO: {
     icon: <BillingIcon />,
     label: 'Billing',
   },
-  updateOrView: {
-    icon: <EditIcon />,
-    label: 'Edit/View',
-  },
 };
 
 export const ActionMenu: FC<ActionFormProps> = ({
@@ -105,7 +101,8 @@ export const ActionMenu: FC<ActionFormProps> = ({
 
   if (isTablet && editActionOnMobile) {
     return (
-      <EditIcon
+      <div
+        className={styles.iconShowed}
         onClick={(e) => {
           if (disabledOnMobile) return;
 
@@ -121,7 +118,9 @@ export const ActionMenu: FC<ActionFormProps> = ({
           transform: 'translate(-50%, -50%)',
           color: disabledOnMobile ? '#BFBFBF' : undefined,
         }}
-      />
+      >
+        {filledActionItems?.[0].icon ?? <EditIcon />}
+      </div>
     );
   }
 

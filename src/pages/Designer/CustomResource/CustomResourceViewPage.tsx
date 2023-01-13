@@ -20,7 +20,7 @@ import { getOneCustomResource } from './api';
 const CustomResourceViewPage = () => {
   const customResourceType = useAppSelector((state) => state.customResource.customResourceType);
 
-  const { isMobile } = useScreen();
+  const { isTablet } = useScreen();
   const customResourceId = useGetParamId();
 
   const [data, setData] = useState<CustomResourceForm>({
@@ -60,7 +60,7 @@ const CustomResourceViewPage = () => {
     <PageContainer pageHeaderRender={() => <CustomResourceTopBar />}>
       <CustomResourceHeader />
       <Row style={{ marginTop: '8px' }} gutter={[0, 8]}>
-        <ResponsiveCol style={{ paddingRight: isMobile ? '' : '8px' }}>
+        <ResponsiveCol style={{ paddingRight: isTablet ? '' : '8px' }}>
           <CustomResourceEntryForm data={data} setData={setData} type="view" />
         </ResponsiveCol>
         <ResponsiveCol style={{ background: '#fff' }}>

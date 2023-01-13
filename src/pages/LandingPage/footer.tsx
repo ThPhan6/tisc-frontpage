@@ -57,7 +57,6 @@ export const LandingPageFooter: FC<LandingPageFooteProps> = ({
                         openModal({
                           type: item,
                           theme: 'dark',
-                          autoHeightDrawer: true,
                           noBorderDrawerHeader: true,
                         }),
                       )
@@ -73,11 +72,7 @@ export const LandingPageFooter: FC<LandingPageFooteProps> = ({
                   level={5}
                   fontFamily="Roboto"
                   customClass={styles['tisc-login']}
-                  onClick={() =>
-                    store.dispatch(
-                      openModal({ type: 'Tisc Login', theme: 'dark', autoHeightDrawer: true }),
-                    )
-                  }
+                  onClick={() => store.dispatch(openModal({ type: 'Tisc Login', theme: 'dark' }))}
                 >
                   TISC Log in
                 </BodyText>

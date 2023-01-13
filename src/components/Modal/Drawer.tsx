@@ -71,7 +71,7 @@ export const MobileDrawer: FC<
         ...headerStyle,
       }}
       title={title}
-      height={autoHeight ? 'auto' : window.innerHeight * 0.85}
+      height={autoHeight ? 'auto' : window.innerHeight - 48}
       {...props}
     />
   );

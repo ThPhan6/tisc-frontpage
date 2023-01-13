@@ -58,12 +58,24 @@
     padding: 12px;
   }
 
-  @media (max-width: @screen-xs) {
-    :global(.ant-drawer-footer) {
-      box-shadow: @border-top;
-      > * {
-        margin: auto;
-      }
-    }
+  :global(.ant-drawer-footer) {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 48px;
+    box-shadow: @border-top;
   }
+
+  // @media (max-width: @screen-xs) {
+  //   :global(.ant-drawer-footer) {
+  //     box-shadow: @border-top;
+  //     > * {
+  //       margin: auto;
+  //     }
+  //   }
+  // }
+}
+
+:global(.ant-drawer.ant-drawer-open .ant-drawer-mask) {
+  animation: none;
 }
