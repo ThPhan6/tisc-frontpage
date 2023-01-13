@@ -7,6 +7,8 @@ import {
 } from '../../../constants/tab';
 import { message } from 'antd';
 
+import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
+
 import { getSpecificationRequest } from '@/features/product/components/ProductAttributes/hooks';
 import { getSelectedRoomIds, useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
 import { updateProductSpecifying } from '@/features/project/services';
@@ -129,10 +131,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       message.error('Brand location is required');
       return;
     }
-    if (!distributorLocationId) {
-      message.error('Distributor location is required');
-      return;
-    }
     if (product.specifiedDetail?.id) {
       updateProductSpecifying(
         {
@@ -173,6 +171,8 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       className={`${popoverStyles.customPopover} ${styles.specifyingModal}`}
       visible={visible}
       secondaryModal
+      noHeaderBorder={false}
+      closeIcon={<CloseIcon style={{ width: 24, height: 24 }} />}
       onCancel={() => {
         setVisible(false);
         resetProductData();

@@ -378,7 +378,7 @@
     padding: 16px 0;
   }
   :global(.ant-tabs-nav) {
-    margin: 0;
+    margin: 0 !important;
     box-shadow: @border-bottom-light;
     &::before {
       border-bottom: 0 !important;
@@ -577,4 +577,21 @@
 .customLogo {
   width: 18px;
   height: 18px;
+}
+
+.customTextArea {
+  :global(.ant-input) {
+    margin-top: 2px;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 20px;
+    border-bottom-color: #fff;
+    resize: none;
+    &:hover {
+      border-bottom-color: #fff;
+    }
+  }
+  textarea {
+    padding: 4px 0;
+  }
 }

@@ -67,6 +67,11 @@
 
 .filterDropdown {
   width: 160px;
+
+  @media screen and (max-width: @screen-sm) {
+    width: 100%;
+  }
+
   :global(.tisc-dropdown-item) {
     @media screen and (max-width: @screen-sm) {
       box-shadow: none;

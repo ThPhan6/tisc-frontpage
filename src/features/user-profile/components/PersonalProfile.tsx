@@ -182,8 +182,7 @@ export const PersonalProfile: FC<{ contentHeight?: number }> = ({ contentHeight 
           return item.value;
         }).length &&
         isEqual(currentUserData, inputValue)) ||
-      (inputValue.backupEmail && !validateEmail(inputValue.backupEmail)) ||
-      !inputValue.phoneNumber
+      (inputValue.backupEmail && !validateEmail(inputValue.backupEmail))
     ) {
       return true;
     }

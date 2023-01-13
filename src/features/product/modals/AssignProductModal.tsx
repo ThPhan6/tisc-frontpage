@@ -81,7 +81,7 @@ const AssignProductModal: FC = () => {
 
   return (
     <Popover visible title={assignProductModalTitle} onFormSubmit={onSubmitAssigning}>
-      <FormGroup label="Project Name" layout="vertical">
+      <FormGroup label="Live Project Name" layout="vertical">
         <CollapseRadioList
           options={projectOptions}
           checked={String(selectedProject?.value)}

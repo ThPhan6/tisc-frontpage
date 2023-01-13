@@ -86,13 +86,14 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
   disabledAssignProduct,
   disabledShareViaEmail,
 }) => {
+  const isTablet = useScreen().isTablet;
   const dispatch = useDispatch();
   const normalProduct = useAppSelector((state) => state.product.details);
 
   const isDesignerUser = useCheckPermission(['Design Admin', 'Design Team']);
   const isTiscUser = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
-  const isEditable = isTiscUser || (isCustomProduct && viewOnly !== true); // currently, uploading image
+  const isEditable = (!isTablet && isTiscUser) || (isCustomProduct && viewOnly !== true); // currently, uploading image
 
   const customProduct = useAppSelector((state) => state.customProduct.details);
 
@@ -218,6 +219,7 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
                   key={index}
                   placeholder={`keyword${index + 1}`}
                   value={value}
+                  disabled={!isEditable}
                   onChange={(e) => {
                     const newKeywords = [...product.keywords] as ProductKeyword;
                     newKeywords[index] = e.target.value;

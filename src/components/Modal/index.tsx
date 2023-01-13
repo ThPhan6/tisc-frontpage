@@ -37,9 +37,34 @@ export const CustomModal: FC<CustomModalProps> = ({
           darkTheme={darkTheme}
           noHeaderBorder={noHeaderBorder}
           title={props.title}
+          footer={props.footer}
         >
           {children}
         </MobileDrawer>
+      );
+    }
+    if (props.footer) {
+      return (
+        <>
+          <div style={{ paddingBottom: 48 }}>
+            {children}
+
+            <div
+              style={{
+                position: 'fixed',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: 48,
+                boxShadow: 'inset 0px 0.7px 0px #000000',
+                background: '#fff',
+              }}
+              className="flex-center"
+            >
+              {props.footer}
+            </div>
+          </div>
+        </>
       );
     }
     return children as ReactElement;

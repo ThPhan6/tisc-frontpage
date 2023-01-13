@@ -37,11 +37,6 @@ const DEFAULT_SELECTED_ATTRIBUTE: SelectedItem = {
   index: 0,
   subAttribute: DEFAULT_SUB_ATTRIBUTE,
 };
-// conversionValue,
-// setConversionValue,
-// onCancel,
-// onSubmit,
-// submitButtonStatus,
 
 const DEFAULT_ATTRIBUTE: AttributeForm = {
   name: '',
@@ -146,17 +141,19 @@ const AttributeEntryForm = () => {
   };
 
   const handleSelectContentType = (subAttribute: AttributeSubForm, index: number) => {
-    setSelectedItem({
+    const curSelectedItem = {
       subAttribute,
       index,
-    });
+    };
+    setSelectedItem(curSelectedItem);
+
     store.dispatch(
       openModal({
         type: 'Product Attribute Type',
         title: 'Select content type',
         props: {
           productAttributeType: {
-            selectedItem,
+            selectedItem: curSelectedItem,
             contentType,
             onSubmit: onContentTypeSubmit,
             type: attributeLocation.TYPE,

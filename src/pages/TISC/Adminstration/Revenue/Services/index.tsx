@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 
 import { PATH } from '@/constants/path';
 
-import { ReactComponent as EditIcon } from '@/assets/icons/action-edit-icon.svg';
 import { ReactComponent as BillingIcon } from '@/assets/icons/billing-icon.svg';
 
 import { deleteService, getServicesPagination, getServicesSummary } from '@/features/services/api';
@@ -24,7 +23,7 @@ import moment from 'moment';
 
 const RevenueService = () => {
   const tableRef = useRef<any>();
-  const isMobile = useScreen().isMobile;
+  const { isTablet } = useScreen();
 
   const handleViewService = (id: string) => {
     pushTo(PATH.tiscRevenueServiceDetail.replace(':id', id));
@@ -119,19 +118,8 @@ const RevenueService = () => {
       render: (_value, record) => {
         const isPendingStatus = record.status !== InvoiceStatus.Pending;
 
-        if (isMobile) {
-          return (
-            <div className="flex-start">
-              <BillingIcon
-                style={{ marginRight: 24 }}
-                onClick={() => handleViewService(record.id)}
-              />
-              <EditIcon
-                onClick={() => (isPendingStatus ? undefined : handleUpdateService(record.id))}
-                className={`${isPendingStatus ? styles.disabledIcon : ''}`}
-              />
-            </div>
-          );
+        if (isTablet) {
+          return <BillingIcon onClick={() => handleViewService(record.id)} />;
         }
 
         return (
@@ -166,7 +154,11 @@ const RevenueService = () => {
         autoLoad={false}
         title="SERVICES"
         ref={tableRef}
-        rightAction={<CustomPlusButton onClick={() => pushTo(PATH.tiscRevenueServiceCreate)} />}
+        rightAction={
+          isTablet ? null : (
+            <CustomPlusButton onClick={() => pushTo(PATH.tiscRevenueServiceCreate)} />
+          )
+        }
       />
     </ServiceHeader>
   );

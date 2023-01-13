@@ -9,6 +9,7 @@ import { ReactComponent as SmallPlusIcon } from '@/assets/icons/small-plus-icon.
 
 import { getProductListByBrandId, getProductSummary } from '@/features/product/services';
 import { getBrandAlphabet } from '@/features/user-group/services';
+import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useBoolean, useQuery } from '@/helper/hook';
 import { updateUrlParams } from '@/helper/utils';
@@ -41,6 +42,8 @@ import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 export const TopBar: React.FC = () => {
   useSyncQueryToState();
+
+  const isTablet = useScreen().isTablet;
 
   const dispatch = useDispatch();
   const { renderFilterDropdown, renderItemTopBar, productSummary, filter, productBrand } =
@@ -305,22 +308,24 @@ export const TopBar: React.FC = () => {
               )}
               customClass="left-divider white-space"
             />
-            <TopBarItem
-              disabled
-              bottomEnable={productSummary ? true : false}
-              bottomValue="New Card"
-              customClass="left-divider mr-12 white-space"
-              onClick={productSummary ? gotoProductForm : undefined}
-              icon={
-                <span
-                  className={`${styles.newCardIcon} ${
-                    productSummary ? styles.activeNewCard : styles.disabledNewCard
-                  }`}
-                >
-                  <SmallPlusIcon />
-                </span>
-              }
-            />
+            {isTablet ? null : (
+              <TopBarItem
+                disabled
+                bottomEnable={productSummary ? true : false}
+                bottomValue="New Card"
+                customClass="left-divider mr-12 white-space"
+                onClick={productSummary ? gotoProductForm : undefined}
+                icon={
+                  <span
+                    className={`${styles.newCardIcon} ${
+                      productSummary ? styles.activeNewCard : styles.disabledNewCard
+                    }`}
+                  >
+                    <SmallPlusIcon />
+                  </span>
+                }
+              />
+            )}
           </>
         }
       />

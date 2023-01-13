@@ -26,6 +26,7 @@ export const FormGroup: FC<FormGroupProps> = ({
   onClick,
   messageType = 'normal',
   placementBottomWidth,
+  noColon,
   ...props
 }) => {
   const setFormLayout = () => {
@@ -39,7 +40,8 @@ export const FormGroup: FC<FormGroupProps> = ({
         className={`${style.label} ${
           layout === 'horizontal' && style['label-margin']
         } ${labelColor}`}
-        onClick={onClick}>
+        onClick={onClick}
+      >
         <BodyText fontFamily="Cormorant-Garamond" level={labelFontSize} customClass={labelColor}>
           {label}
         </BodyText>
@@ -47,7 +49,8 @@ export const FormGroup: FC<FormGroupProps> = ({
           <BodyText
             customClass={`${style.optional} ${labelColor}`}
             fontFamily="Cormorant-Garamond"
-            level={3}>
+            level={3}
+          >
             (optional)
           </BodyText>
         )}
@@ -62,7 +65,8 @@ export const FormGroup: FC<FormGroupProps> = ({
                     width: placementBottomWidth ? placementBottomWidth : '160px',
                   }
                 : {}
-            }>
+            }
+          >
             {iconTooltip ? (
               iconTooltip
             ) : (
@@ -71,7 +75,7 @@ export const FormGroup: FC<FormGroupProps> = ({
           </Tooltip>
         )}
         {customIcon ? customIcon : null}
-        <span className={`${style.colon} ${labelColor}`}>:</span>
+        <span className={`${style.colon} ${labelColor}`}>{noColon ? '' : ':'}</span>
       </label>
       <div className={style['children-wrapper']}>
         {children}

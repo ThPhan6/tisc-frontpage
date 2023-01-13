@@ -18,6 +18,7 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
   boxShadow,
   autoResize,
   customClass = '',
+  maxWords,
   ...props
 }) => {
   const textarea: any = useRef();
@@ -57,18 +58,27 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
     <div
       className={`${style['textarea-container']} ${
         style[`${borderBottomColor}-border-bottom-color`]
-      } ${boxShadow ? style.boxShadow : ''} ${customClass}`}>
+      } ${boxShadow ? style.boxShadow : ''} ${customClass}`}
+    >
       <Input.TextArea
         {...props}
         ref={textarea}
         maxLength={maxLength}
         style={{ height: autoResize ? height : undefined }}
         onChange={(e) => {
+          if (maxWords) {
+            const text = e.target.value;
+            const textLength = text.split(' ').length;
+            if (textLength > maxWords) {
+              return false;
+            }
+          }
           e.target.value = trimStart(e.target.value);
           handleResize(e);
           if (props.onChange) {
             props.onChange(e);
           }
+          return true;
         }}
       />
     </div>

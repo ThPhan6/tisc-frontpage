@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { useScreen } from '@/helper/common';
 import { useCheckPermission } from '@/helper/hook';
 import { isEmpty } from 'lodash';
 
@@ -14,12 +15,15 @@ import { BodyText } from '@/components/Typography';
 import styles from './ProductTip.less';
 
 const ProductTip: FC = () => {
+  const isTablet = useScreen().isTablet;
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  const isEditable = isTiscAdmin && !isTablet;
+
   const dispatch = useDispatch();
 
   const tips = useAppSelector((state) => state.product.details.tips);
-  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
-  if (isTiscAdmin) {
+  if (isEditable) {
     return (
       <DynamicFormInput
         data={tips.map((value) => {

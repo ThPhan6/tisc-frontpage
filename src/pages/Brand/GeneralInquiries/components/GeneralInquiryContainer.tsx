@@ -65,7 +65,8 @@ export const GeneralInquiryContainer: FC<GeneralInquiryContainerProps> = ({
               isShowFilter={isShowFilter}
             />
           </TopBarSummaryHasFilter>
-        )}>
+        )}
+      >
         {children}
       </PageContainer>
     </>

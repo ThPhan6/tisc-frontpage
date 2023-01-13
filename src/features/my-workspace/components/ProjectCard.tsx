@@ -205,7 +205,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
   }
 
   return (
-    <div className={styles.cardContainer}>
+    <div className={data.length ? styles.cardContainer : ''}>
       {data.length ? (
         data.map((item: any, index) => (
           <div

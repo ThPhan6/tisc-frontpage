@@ -82,22 +82,35 @@ const AccessLevelModal: FC = () => {
     });
   };
 
+  const renderLogo = (logo: string) => {
+    if (isMobile) {
+      return logo ? '' : <span></span>;
+    }
+    if (logo) {
+      return (
+        <img
+          src={showImageUrl(logo)}
+          className={styles.menu_item__logo}
+          style={{ marginRight: type === 'tisc' ? 8 : 12 }}
+        />
+      );
+    }
+    return <span></span>;
+  };
+
   const renderPermission: any = (menu: PermissionData, subType: string) => {
     return (
       <Fragment key={menu.name}>
         <tr className={styles.menu}>
           <td className={`${styles.menu_item} ${subType === 'sub-item' ? styles.sub_menu : ''}`}>
-            {menu.logo && !isMobile ? (
-              <img
-                src={showImageUrl(menu.logo)}
-                className={styles.menu_item__logo}
-                style={{ marginRight: type === 'tisc' ? 8 : 12 }}
-              />
-            ) : (
-              <span></span>
-            )}
-
-            <BodyText fontFamily="Roboto" level={6} customClass={styles.menu_item__name}>
+            {renderLogo(menu.logo)}
+            <BodyText
+              fontFamily="Roboto"
+              level={6}
+              customClass={`${styles.menu_item__name} ${
+                isMobile && subType === '' ? styles.boldName : ''
+              }`}
+            >
               {menu.name}
             </BodyText>
           </td>

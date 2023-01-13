@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { Collapse, Row } from 'antd';
 
 import { getLocationsByDesignFirm } from '../services';
+import { useScreen } from '@/helper/common';
 import { isEmpty } from 'lodash';
 
 import { UserGroupProps } from '../types/common.types';
@@ -21,6 +22,7 @@ import { getLocationByBrandId } from '@/features/locations/api';
 
 export const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
   const [locations, setLocations] = useState<LocationGroupedByCountry[]>([]);
+  const { isTablet } = useScreen();
 
   useEffect(() => {
     if (!id) return;
@@ -37,7 +39,12 @@ export const LocationDetail: FC<UserGroupProps> = ({ type, id }) => {
   return (
     <Row className={styles.container}>
       <ResponsiveCol>
-        <div className={styles.form}>
+        <div
+          className={styles.form}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 266px)' : 'calc(var(--vh) * 100 - 248px)',
+          }}
+        >
           <GeneralData>
             {locations.length ? (
               <Collapse {...CollapseLevel1Props}>

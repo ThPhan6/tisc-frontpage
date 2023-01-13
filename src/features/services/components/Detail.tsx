@@ -32,7 +32,7 @@ interface ServiceDetailProps {
 }
 export const Detail: FC<ServiceDetailProps> = ({ type }) => {
   const [detailData, setDetailData] = useState<ServicesResponse>();
-  const isMobile = useScreen().isMobile;
+  const isTablet = useScreen().isTablet;
 
   const id = useGetParamId();
 
@@ -106,7 +106,9 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
     if (!detailData) {
       return undefined;
     }
-
+    if (type === 'tisc' && isTablet) {
+      return <></>;
+    }
     if (type === 'tisc') {
       /// paid
       if (detailData.status == 2) {
@@ -115,7 +117,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
             size="small"
             variant="primary"
             properties="rounded"
-            onClick={history.goBack}>
+            onClick={history.goBack}
+          >
             Cancel
           </CustomButton>
         );
@@ -136,7 +139,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                   variant="primary"
                   properties="rounded"
                   buttonClass={styles.leftSpace}
-                  onClick={handleMarkAsPaid}>
+                  onClick={handleMarkAsPaid}
+                >
                   Mark as Paid
                 </CustomButton>
               ) : null}
@@ -154,7 +158,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
             variant="primary"
             properties="rounded"
             buttonClass={styles.rightSpace}
-            onClick={() => alert('Coming soon!')}>
+            onClick={() => alert('Coming soon!')}
+          >
             Pay
           </CustomButton>
         ) : null}
@@ -162,7 +167,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
           size="small"
           variant="primary"
           properties="rounded"
-          onClick={handleDownloadPDF}>
+          onClick={handleDownloadPDF}
+        >
           PDF
         </CustomButton>
       </div>
@@ -170,11 +176,11 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
   };
 
   const getContentHeight = () => {
-    if (isMobile && type == 'tisc') {
+    if (isTablet && type == 'tisc') {
       return 'calc(var(--vh) * 100 - 280px)';
     }
 
-    if (isMobile && type == 'brand') {
+    if (isTablet && type == 'brand') {
       return 'calc(var(--vh) * 100 - 224px)';
     }
 
@@ -195,7 +201,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
         overflow: 'auto',
       }}
       handleCancel={history.goBack}
-      extraFooterButton={renderBottom()}>
+      extraFooterButton={renderBottom()}
+    >
       <TextForm boxShadow label="Billed Date">
         {moment(detailData?.created_at).format('YYYY-MM-DD')}
       </TextForm>
@@ -218,7 +225,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
         label="Billed Amount"
         layout="vertical"
         formClass={styles.customTable}
-        labelColor="mono-color-dark">
+        labelColor="mono-color-dark"
+      >
         <table style={{ width: '100%' }}>
           <tr>
             <td className={styles.label}>
@@ -229,7 +237,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
             <td
               style={{
                 width: quantityWidth,
-              }}>
+              }}
+            >
               ${formatToMoneyValue(Number(detailData?.unit_rate))}
             </td>
           </tr>
@@ -243,7 +252,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
             <td
               style={{
                 width: quantityWidth,
-              }}>
+              }}
+            >
               {formatCurrencyNumber(Number(detailData?.quantity))}
             </td>
           </tr>
@@ -257,7 +267,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
             <td
               style={{
                 width: quantityWidth,
-              }}>
+              }}
+            >
               ${formatToMoneyValue(Number(detailData?.total_gross))}
             </td>
           </tr>
@@ -271,7 +282,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
             <td
               style={{
                 width: quantityWidth,
-              }}>
+              }}
+            >
               ${formatToMoneyValue(Number(detailData?.sale_tax_amount))}
             </td>
           </tr>
@@ -282,7 +294,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
             <td
               style={{
                 width: quantityWidth,
-              }}>
+              }}
+            >
               <Title level={8}>${formatToMoneyValue(Number(detailData?.billing_amount))}</Title>
             </td>
           </tr>
@@ -293,7 +306,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
         label="Due Date"
         layout="vertical"
         formClass={styles.customFormGroup}
-        labelColor="mono-color-dark">
+        labelColor="mono-color-dark"
+      >
         <div className="flex-between" style={{ minHeight: 32 }}>
           <BodyText
             level={5}
@@ -302,7 +316,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
               paddingLeft: 16,
               paddingRight: 16,
               color: detailData?.due_date ? '' : '#BFBFBF',
-            }}>
+            }}
+          >
             {detailData?.due_date ? detailData.due_date : dueDate}
           </BodyText>
           <BodyText level={5} fontFamily="Roboto">
@@ -318,12 +333,15 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
           formClass={`${
             detailData?.status !== InvoiceStatus.Overdue ? styles.customFormGroup : ''
           }`}
-          labelColor="mono-color-dark">
+          labelColor="mono-color-dark"
+        >
           <table className={styles.customTable} style={{ width: '100%' }}>
             <tr>
               <td className={styles.label}>
                 <BodyText level={5} fontFamily="Roboto">
-                  as {moment().format('YYYY-MM-DD')}
+                  {detailData?.status !== InvoiceStatus.Paid
+                    ? `as ${moment().format('YYYY-MM-DD')} `
+                    : ''}
                 </BodyText>
                 {showBillingAmount && (
                   <PlusIcon style={{ width: '18px', height: '18px', marginRight: '12px' }} />
@@ -333,7 +351,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                 className={`${showBillingAmount ? '' : styles.rightText}`}
                 style={{
                   width: quantityWidth,
-                }}>
+                }}
+              >
                 ${formatToMoneyValue(Number(detailData?.overdue_amount))}
               </td>
             </tr>
@@ -345,7 +364,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
                 <td
                   style={{
                     width: quantityWidth,
-                  }}>
+                  }}
+                >
                   <Title level={8}>
                     $
                     {formatToMoneyValue(
@@ -362,7 +382,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
       <TextForm
         boxShadow
         label="Status"
-        bodyTextClass={detailData?.status === InvoiceStatus.Overdue ? styles.overdue : ''}>
+        bodyTextClass={detailData?.status === InvoiceStatus.Overdue ? styles.overdue : ''}
+      >
         {InvoiceStatus[detailData?.status as number]}
       </TextForm>
     </EntryFormWrapper>

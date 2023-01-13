@@ -147,7 +147,7 @@ const BrandList: React.FC = () => {
           return <UserAddIcon onClick={showAssignTeams(record)} style={{ cursor: 'pointer' }} />;
         }
         return (
-          <div onClick={showAssignTeams(record)} className={styles.avatar}>
+          <div onClick={showAssignTeams(record)} className="flex-center">
             {record.assign_team.map((user, key) => {
               return (
                 <TeamIcon
@@ -193,6 +193,7 @@ const BrandList: React.FC = () => {
               onClick: () => handleEmailInvite(record.id),
             },
           ]}
+          editActionOnMobile={false}
         />
       ),
     },

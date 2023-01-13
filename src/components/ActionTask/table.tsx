@@ -16,14 +16,12 @@ import { getProjectTrackingSummary } from '@/services/project-tracking.api';
 import { cloneDeep } from 'lodash';
 
 import { ActionTaskModalProps, ActionTaskProps } from '@/pages/Brand/GeneralInquiries/types';
-import store, { useAppSelector } from '@/reducers';
-import { ModalType, openModal } from '@/reducers/modal';
 
 import CustomPlusButton from '../Table/components/CustomPlusButton';
 import { CustomDropDown } from '@/features/product/components';
 
 import { MainTitle, RobotoBodyText } from '../Typography';
-import { setActionTaskModalVisible, setReloadActionTaskTable } from './slice';
+import { ActionTaskModal } from './modal';
 import styles from './table.less';
 import moment from 'moment';
 
@@ -34,13 +32,14 @@ enum ActionTaskStatus {
   'Completed',
 }
 
-export const ActionTaskTable: FC<ActionTaskModalProps> = ({ setData, indexItem }) => {
-  const {
-    reloadActionTaskTable: reloadTable,
-    modalVisible,
-    model_id,
-    model_name,
-  } = useAppSelector((state) => state.actionTasks);
+export const ActionTaskTable: FC<ActionTaskModalProps> = ({
+  model_id,
+  model_name,
+  setData,
+  indexItem,
+}) => {
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [reloadTable, setReloadTable] = useState<boolean>(false);
 
   const [actionTaskList, setActionTaskList] = useState<ActionTaskProps[]>([]);
 
@@ -57,23 +56,17 @@ export const ActionTaskTable: FC<ActionTaskModalProps> = ({ setData, indexItem }
     });
   };
 
-  // console.log('model_id && model_name', model_id, model_name);
-
   useEffect(() => {
-    if (model_id && model_name !== 'none') {
-      getActionTaskList({ model_id, model_name }).then(setActionTaskList);
-      if (reloadTable) {
-        if (model_name === 'inquiry') {
-          getGeneralInquirySummary();
-        } else {
-          getProjectTrackingSummary();
-          updateData();
-        }
+    getActionTaskList({ model_id: model_id, model_name: model_name }).then(setActionTaskList);
+    if (reloadTable) {
+      if (model_name === 'inquiry') {
+        getGeneralInquirySummary();
+      } else {
+        getProjectTrackingSummary();
+        updateData();
       }
     }
-
-    return () => setActionTaskList([]);
-  }, [reloadTable === true && modalVisible === false, model_id && model_name !== 'none']);
+  }, [reloadTable === true && modalVisible === false]);
 
   const renderStatusDropdown = (record: ActionTaskProps) => {
     const handleClickStatus = (curStatus: number, newStatus: number) => {
@@ -132,32 +125,10 @@ export const ActionTaskTable: FC<ActionTaskModalProps> = ({ setData, indexItem }
     );
   };
 
-  const getModalType = () => {
-    let modalType: ModalType = 'none';
-
-    if (model_name === 'notification' || model_name === 'inquiry' || model_name === 'request') {
-      modalType = 'Actions Tasks';
-    }
-
-    return modalType;
-  };
-
   return (
     <div>
       <div className={styles.actionTask}>
-        <div
-          className={styles.actionTask_content}
-          onClick={() => {
-            store.dispatch(setActionTaskModalVisible(true));
-            store.dispatch(setReloadActionTaskTable(false));
-            store.dispatch(
-              openModal({
-                type: getModalType(),
-                title: 'SELECT ACTIONS/TASKS',
-              }),
-            );
-          }}
-        >
+        <div className={styles.actionTask_content} onClick={() => setModalVisible(true)}>
           <MainTitle level={4} customClass={styles.actionTask_text}>
             Actions/Tasks
           </MainTitle>
@@ -210,6 +181,14 @@ export const ActionTaskTable: FC<ActionTaskModalProps> = ({ setData, indexItem }
             <RobotoBodyText level={6}>no actions/tasks yet</RobotoBodyText>
           </div>
         ) : null}
+
+        <ActionTaskModal
+          visible={modalVisible}
+          setVisible={setModalVisible}
+          setReloadTable={setReloadTable}
+          model_id={model_id}
+          model_name={model_name}
+        />
       </div>
     </div>
   );

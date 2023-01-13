@@ -54,7 +54,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
     }
 
     return (
-      <div className={styles.footer}>
+      <>
         {isMobile && entryFormTypeOnMobile === 'edit' ? (
           <CustomButton
             size="small"
@@ -104,7 +104,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
             </CustomButton>
           )}
         </div>
-      </div>
+      </>
     );
   };
 
@@ -142,8 +142,9 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
         {hideAction ? null : (
           <div className={styles.footer_main}>
             {footerContent ? <div className={styles.footer_content}>{footerContent}</div> : null}
-
-            <div className={styles.footer__wrapper_submit}>{renderFooterButton()}</div>
+            <div className={styles.footer} style={{ padding: isMobile ? '0 12px' : '' }}>
+              {renderFooterButton()}
+            </div>
           </div>
         )}
       </div>

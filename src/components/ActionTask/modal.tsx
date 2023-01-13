@@ -1,25 +1,32 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { useScreen } from '@/helper/common';
 import { getSelectedOptions } from '@/helper/utils';
 import { createActionTask, getActionTask } from '@/pages/Brand/GeneralInquiries/services';
 
 import { CheckboxValue } from '../CustomCheckbox/types';
-import { ActionTaskRequestBody } from '@/pages/Brand/GeneralInquiries/types';
-import store, { useAppSelector } from '@/reducers';
-import { closeModal } from '@/reducers/modal';
+import { ActionTaskModalParams, ActionTaskRequestBody } from '@/pages/Brand/GeneralInquiries/types';
 
 import { CustomCheckbox } from '../CustomCheckbox';
 import Popover from '../Modal/Popover';
 import styles from './modal.less';
-import { setActionTaskModalVisible, setReloadActionTaskTable } from './slice';
 
-export const ActionTaskModal = () => {
+interface ActionTaskModalProps extends ActionTaskModalParams {
+  visible: boolean;
+  setVisible: (visible: boolean) => void;
+  setReloadTable?: (reload: boolean) => void;
+}
+
+export const ActionTaskModal: FC<ActionTaskModalProps> = ({
+  visible,
+  setVisible,
+  setReloadTable,
+  model_id,
+  model_name,
+}) => {
   const { isMobile } = useScreen();
   /// for show data
   const [actionTaskData, setActionTaskData] = useState<CheckboxValue[]>([]);
-
-  const { model_id, model_name } = useAppSelector((state) => state.actionTasks);
 
   /// for update data
   const [actionTaskModal, setActionTaskModal] = useState<ActionTaskRequestBody>({
@@ -57,7 +64,7 @@ export const ActionTaskModal = () => {
   const handleSubmitActionTask = () => {
     if (actionTaskModal.common_type_ids.length === 0) {
       // close popup
-      closeModal();
+      setVisible(false);
     } else {
       createActionTask(actionTaskModal).then((isSuccess) => {
         if (isSuccess) {
@@ -70,12 +77,11 @@ export const ActionTaskModal = () => {
           });
 
           // close popup
-          closeModal();
+          setVisible(false);
 
           // reload table to get/update actions-tasks list
-          if (model_name !== 'none') {
-            store.dispatch(setReloadActionTaskTable(true));
-            store.dispatch(setActionTaskModalVisible(false));
+          if (setReloadTable) {
+            setReloadTable(true);
           }
         }
       });
@@ -86,8 +92,11 @@ export const ActionTaskModal = () => {
     <Popover
       className={`${isMobile ? styles.modalOnMobile : styles.modal}`}
       title="SELECT ACTIONS/TASKS"
-      visible
-      onFormSubmit={handleSubmitActionTask}>
+      visible={visible}
+      setVisible={(isClose) => (isClose ? undefined : setVisible(false))}
+      secondaryModal
+      onFormSubmit={handleSubmitActionTask}
+    >
       <CustomCheckbox
         options={actionTaskData}
         selected={selectedActionTask}
