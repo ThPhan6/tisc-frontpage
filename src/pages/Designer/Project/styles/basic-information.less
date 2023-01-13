@@ -9,7 +9,7 @@
 
   .entryFormWrapper {
     height: calc(var(--vh) * 100 - 232px);
-    padding: 16px;
+    padding: var(--spacing);
     overflow: hidden auto;
     background-color: #fff;
 
@@ -68,6 +68,7 @@
     margin: 0 16px;
     @media screen and (max-width: @screen-md) {
       margin: 0;
+      padding-left: 24px;
       &:first-child {
         padding-left: 0;
       }

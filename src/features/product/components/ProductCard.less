@@ -106,6 +106,9 @@
           user-select: none;
           :not(:last-child) {
             margin-right: 10px;
+            @media screen and (max-width: @screen-lg) {
+              margin-right: 16px;
+            }
           }
         }
         .leftAction {
