@@ -40,7 +40,7 @@ import styles from './index.less';
 const BrandProfilePage = () => {
   const { fetchUserInfo } = useCustomInitialState();
 
-  const { isMobile, isTablet } = useScreen();
+  const { isTablet } = useScreen();
 
   const isBrand = useCheckPermission(['Brand Admin', 'Brand Team']);
   const isDesign = useCheckPermission(['Design Admin', 'Design Team']);
@@ -465,10 +465,7 @@ const BrandProfilePage = () => {
               )}
             </div>
 
-            <div
-              className={styles.actionButton}
-              style={{ display: 'flex', justifyContent: isMobile ? 'center' : undefined }}
-            >
+            <div className={styles.actionButton}>
               <CustomSaveButton isSuccess={isSubmitted.value} onClick={onSubmitForm} />
             </div>
           </div>
