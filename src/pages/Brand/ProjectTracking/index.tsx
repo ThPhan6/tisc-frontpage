@@ -189,7 +189,7 @@ const ProjectTracking = () => {
       <CustomDropDown
         items={menuItems}
         menuStyle={{ width: 160, height: 'auto' }}
-        labelProps={{ className: 'flex-between' }}
+        labelProps={{ className: 'flex-center' }}
         hideDropdownIcon
         alignRight={false}
         textCapitalize={false}

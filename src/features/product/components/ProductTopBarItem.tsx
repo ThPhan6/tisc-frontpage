@@ -303,11 +303,13 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
           {hideDropdownIcon ? null : <DropdownIcon style={{ marginLeft: 8 }} />}
         </span>
       </Dropdown>
-
       {isMobile && (
         <FilterDrawer
           visible={dropdownVisible.value}
-          onClose={() => dropdownVisible.setValue(false)}
+          onClose={(e) => {
+            e.stopPropagation();
+            dropdownVisible.setValue(false);
+          }}
           className={`${styles.filterDropdown} ${borderFirstItem ? styles.borderFirstItem : ''}`}
           height={height}
         >
