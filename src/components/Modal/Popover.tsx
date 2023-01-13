@@ -271,7 +271,7 @@ const Popover: FC<PopoverProps> = ({
       {renderChildren()}
       {children}
       {noFooter ? null : (
-        <div className={`flex-end ${styles.popoverFooterMobile}`}>{renderButtonFooter()}</div>
+        <div className={`flex-center ${styles.popoverFooterMobile}`}>{renderButtonFooter()}</div>
       )}
     </div>
   );
