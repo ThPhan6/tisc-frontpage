@@ -59,7 +59,7 @@ export const CustomModal: FC<CustomModalProps> = ({
                 boxShadow: 'inset 0px 0.7px 0px #000000',
                 background: '#fff',
               }}
-              className="flex-center"
+              className="flex-end"
             >
               {props.footer}
             </div>

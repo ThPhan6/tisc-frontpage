@@ -255,7 +255,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
     );
   };
 
-  const height = autoHeight ? 'auto' : window.innerHeight * 0.85;
+  const height = autoHeight ? 'auto' : window.innerHeight - 48;
 
   const mobileMenuStyle: CSSProperties = isMobile
     ? {
