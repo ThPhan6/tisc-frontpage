@@ -209,7 +209,7 @@ const ShareViaEmail: FC = () => {
         onDelete={() => onChangeData('title', '')}
       />
       {/* Message */}
-      <FormGroup label="Message" required layout="vertical">
+      <FormGroup label="Message" required layout="vertical" style={{ marginBottom: 16 }}>
         <CustomTextArea
           className={styles.message}
           maxLength={250}
