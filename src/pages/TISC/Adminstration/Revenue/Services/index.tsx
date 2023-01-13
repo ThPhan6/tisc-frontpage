@@ -21,7 +21,7 @@ import { ActionMenu } from '@/components/TableAction';
 import moment from 'moment';
 
 const RevenueService = () => {
-  useAutoExpandNestedTableColumn(0, [7]);
+  useAutoExpandNestedTableColumn(0, [5]);
 
   const tableRef = useRef<any>();
   const { isTablet } = useScreen();
@@ -104,6 +104,7 @@ const RevenueService = () => {
     },
     {
       title: 'Status',
+      width: '5%',
       render: (_value, record) => {
         return (
           <span className={`${record.status === InvoiceStatus.Overdue ? styles.overdue : ''}`}>
@@ -146,7 +147,7 @@ const RevenueService = () => {
   return (
     <ServiceHeader>
       <CustomTable
-        columns={setDefaultWidthForEachColumn(mainColumns, 7)}
+        columns={setDefaultWidthForEachColumn(mainColumns, 5)}
         fetchDataFunc={getServicesPagination}
         hasPagination
         autoLoad={false}

@@ -18,7 +18,7 @@ import { ActionMenu } from '@/components/TableAction';
 import moment from 'moment';
 
 const BilledServices = () => {
-  useAutoExpandNestedTableColumn(0, [6]);
+  useAutoExpandNestedTableColumn(0, [4]);
   const tableRef = useRef<any>();
 
   const handleViewService = (id: string) => {
@@ -77,6 +77,7 @@ const BilledServices = () => {
     },
     {
       title: 'Status',
+      width: '5%',
       render: (_value, record) => {
         return (
           <span className={`${record.status === InvoiceStatus.Overdue ? styles.overdue : ''}`}>
@@ -105,7 +106,7 @@ const BilledServices = () => {
   ];
   return (
     <CustomTable
-      columns={setDefaultWidthForEachColumn(mainColumns, 6)}
+      columns={setDefaultWidthForEachColumn(mainColumns, 4)}
       fetchDataFunc={getServicesPagination}
       hasPagination
       autoLoad={false}
