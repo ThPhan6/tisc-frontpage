@@ -17,6 +17,7 @@ import store, { persistor } from './reducers';
 
 import LoadingPageCustomize from './components/LoadingPage';
 import AsideMenu from './components/Menu/AsideMenu';
+import NoAccessPage from './pages/403';
 import Header from '@/components/Header';
 
 import defaultSettings from '../config/defaultSettings';
@@ -146,6 +147,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
         </>
       );
     },
+    unAccessible: <NoAccessPage />,
     ...initialState?.settings,
   };
 };
