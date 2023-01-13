@@ -244,6 +244,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
           <FormGroup label="Material/Product Code" labelFontSize={4} required {...formGroupProps}>
             <DropdownSelectInput
               placeholder="select from the list"
+              showCloseFooter
               borderBottomColor="light"
               value={materialCode?.labelText}
               disabled
@@ -354,6 +355,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
               noPadding
               disabled
               containerClass={styles.inputColor}
+              showCloseFooter
               overlay={
                 <CustomRadio
                   options={unitTypeOtps}
