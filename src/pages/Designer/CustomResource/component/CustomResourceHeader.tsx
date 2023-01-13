@@ -18,7 +18,7 @@ export const CustomResourceTableHeader: FC<{
   onClick?: () => void;
   disable?: boolean;
 }> = ({ onChange, onClick, disable }) => {
-  const { isTablet, isMobile } = useScreen();
+  const { isTablet } = useScreen();
   const customResourceType = useAppSelector((state) => state.customResource.customResourceType);
 
   return (
@@ -34,9 +34,7 @@ export const CustomResourceTableHeader: FC<{
       {!isTablet && <MainTitle level={4}>View By:</MainTitle>}
       <CustomRadio
         options={optionValue}
-        containerClass={`${styles.customRadio} ${disable ? styles.disabledRadio : ''} ${
-          isTablet && !isMobile ? styles.customRadioTablet : ''
-        }`}
+        containerClass={`${styles.customRadio} ${disable ? styles.disabledRadio : ''} `}
         value={customResourceType}
         onChange={onChange}
       />
