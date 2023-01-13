@@ -2,8 +2,6 @@ import { useEffect, useRef } from 'react';
 
 import { PATH } from '@/constants/path';
 
-import { ReactComponent as BillingIcon } from '@/assets/icons/billing-icon.svg';
-
 import { deleteService, getServicesPagination, getServicesSummary } from '@/features/services/api';
 import { ServiceHeader } from '@/features/services/components/ServiceHeader';
 import styles from '@/features/services/index.less';
@@ -118,10 +116,6 @@ const RevenueService = () => {
       render: (_value, record) => {
         const isPendingStatus = record.status !== InvoiceStatus.Pending;
 
-        if (isTablet) {
-          return <BillingIcon onClick={() => handleViewService(record.id)} />;
-        }
-
         return (
           <ActionMenu
             actionItems={[
@@ -132,12 +126,13 @@ const RevenueService = () => {
               {
                 type: 'deleted',
                 onClick: () => handleDeleteService(record.id),
-                disabled: isPendingStatus ? true : false,
+                disabled: isPendingStatus,
               },
               {
-                type: 'updateOrView',
+                type: 'updated',
+                label: 'Edit/View',
                 onClick: () => handleUpdateService(record.id),
-                disabled: isPendingStatus ? true : false,
+                disabled: isPendingStatus,
               },
             ]}
           />

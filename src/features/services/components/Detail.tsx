@@ -316,6 +316,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
               paddingLeft: 16,
               paddingRight: 16,
               color: detailData?.due_date ? '' : '#BFBFBF',
+              whiteSpace: 'nowrap',
             }}
           >
             {detailData?.due_date ? detailData.due_date : dueDate}
