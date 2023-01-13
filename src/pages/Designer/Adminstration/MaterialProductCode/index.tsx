@@ -145,7 +145,6 @@ const MaterialProductCode = () => {
         ref={tableRef}
         fetchDataFunc={getMaterialProductCodeList}
         extraParams={{ designId: user?.relation_id }}
-        hasPagination
         multiSort={{
           name: 'main_material_code_order',
           sub_list: 'sub_material_code_order',

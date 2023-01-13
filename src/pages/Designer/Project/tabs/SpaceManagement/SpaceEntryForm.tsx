@@ -126,7 +126,7 @@ const AreaRoomCollapse: React.FC<AreaRoomCollapseProps> = ({
 
 const SpaceEntryForm: React.FC<SpaceEntryFormProps> = (props) => {
   const { data, setData, handleSubmit, handleCancel, submitButtonStatus = false } = props;
-  const { isMobile } = useScreen();
+  const { isTablet } = useScreen();
   const addMoreArea = () => {
     const newAreas = [...data.areas, { ...DefaultProjectArea }];
     setData({
@@ -218,7 +218,7 @@ const SpaceEntryForm: React.FC<SpaceEntryFormProps> = (props) => {
       entryFormTypeOnMobile="edit"
       submitButtonStatus={submitButtonStatus}
       customClass={styles.spaceEntryForm}
-      contentClass={isMobile ? 'height-on-mobile' : 'height-on-desktop'}
+      contentClass={isTablet ? 'height-on-tablet' : 'height-on-desktop'}
     >
       <FormNameInput
         placeholder="type zone name"
