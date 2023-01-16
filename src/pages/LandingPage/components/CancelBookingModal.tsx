@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 
 import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
 import { ReactComponent as ClockIcon } from '@/assets/icons/clock-icon.svg';
@@ -7,8 +7,10 @@ import { ReactComponent as InternetIcon } from '@/assets/icons/internet-icon.svg
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 
 import { deleteBooking } from '../services/api';
+import { useLandingPageStyles } from './hook';
 
 import { InformationBooking, Timezones } from '../types';
+import { CustomModalProps } from '@/components/Modal/types';
 import { closeModal } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
@@ -95,7 +97,11 @@ export const BrandInformation: FC<CancelBookingProps> = ({ informationBooking })
   );
 };
 
-export const CancelBookingModal: FC<CancelBookingProps> = ({ informationBooking }) => {
+export const CancelBookingModal: FC<CancelBookingProps & CustomModalProps> = ({
+  informationBooking,
+  ...props
+}) => {
+  const popupStylesProps = useLandingPageStyles();
   const onCancelBooking = () => {
     showPageLoading();
     if (informationBooking) {
@@ -110,15 +116,18 @@ export const CancelBookingModal: FC<CancelBookingProps> = ({ informationBooking 
 
   return (
     <CustomModal
-      title={<MainTitle level={2}>Are you sure to cancel the booking?</MainTitle>}
+      {...popupStylesProps}
+      {...props}
+      title={
+        <MainTitle level={2} textAlign="center">
+          Are you sure to cancel the booking?
+        </MainTitle>
+      }
       bodyStyle={{
         height: '512px',
         padding: '32px',
       }}
-      closeIconClass={styles.closeIcon}
       className={styles.calendar}
-      visible
-      onCancel={closeModal}
     >
       {!informationBooking ? (
         <BodyText fontFamily="Roboto" level={5}>
@@ -146,4 +155,18 @@ export const CancelBookingModal: FC<CancelBookingProps> = ({ informationBooking 
       )}
     </CustomModal>
   );
+};
+
+export const useCancelBookingModal = (informationBooking: InformationBooking) => {
+  const [openModal, setOpenModal] = useState<boolean>(false);
+
+  console.log('useCancelBookingModal', openModal);
+
+  const renderCancelBookingModal = () =>
+    openModal ? <CancelBookingModal informationBooking={informationBooking} /> : null;
+
+  return {
+    renderCancelBookingModal,
+    openCancelBookingModal: () => setOpenModal(true),
+  };
 };

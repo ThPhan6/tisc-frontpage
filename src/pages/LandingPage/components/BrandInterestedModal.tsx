@@ -13,14 +13,14 @@ import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { checkEmailAlreadyUsed, getBooking } from '../services/api';
 import { FooterContent, ModalContainer, useLandingPageStyles } from './hook';
 import { pushTo } from '@/helper/history';
-import { useBoolean, useGetParamId } from '@/helper/hook';
+import { useGetParamId } from '@/helper/hook';
 import { checkValidURL, validateEmail } from '@/helper/utils';
 import { debounce } from 'lodash';
 
 import { InformationBooking } from '../types';
 import { CustomInputProps } from '@/components/Form/types';
-import { useAppSelector } from '@/reducers';
-import { modalThemeSelector } from '@/reducers/modal';
+import store, { useAppSelector } from '@/reducers';
+import { modalThemeSelector, openModal } from '@/reducers/modal';
 
 import { CustomInput } from '@/components/Form/CustomInput';
 import { CustomModal } from '@/components/Modal';
@@ -32,7 +32,7 @@ import { usePoliciesModal } from './PoliciesModal';
 import styles from './SignupModal.less';
 import moment from 'moment';
 
-export const DEFAULT_STATE: InformationBooking = {
+export const DEFAULT_STATE_BOOKING: InformationBooking = {
   brand_name: '',
   website: '',
   name: '',
@@ -55,17 +55,14 @@ export const BrandInterestedModal = () => {
 
   const bookingId = useGetParamId();
 
-  const openCancelBooking = useBoolean();
-  const openCalendar = useBoolean();
-
   /// booking information
-  const [inputValue, setInputValue] = useState<InformationBooking>(DEFAULT_STATE);
+  const [inputValue, setInputValue] = useState<InformationBooking>(DEFAULT_STATE_BOOKING);
 
   const { openPoliciesModal, renderPoliciesModal } = usePoliciesModal();
   const { openCalendarModal, renderCalendarModal } = useCalendarModal(inputValue, setInputValue);
 
   const onCloseModal = () => {
-    setInputValue(DEFAULT_STATE);
+    setInputValue(DEFAULT_STATE_BOOKING);
   };
 
   const popupStylesProps = useLandingPageStyles(darkTheme, onCloseModal);
@@ -84,10 +81,10 @@ export const BrandInterestedModal = () => {
         if (res) {
           setInputValue(res);
           if (history.location.pathname.indexOf('cancel') !== -1) {
-            openCancelBooking.setValue(true);
+            store.dispatch(openModal({ type: 'Cancel Booking', title: 'Cancel Booking' }));
           }
           if (history.location.pathname.indexOf('re-schedule') !== -1) {
-            openCalendar.setValue(true);
+            openCalendarModal();
           }
         } else {
           pushTo(PATH.landingPage);
