@@ -18,6 +18,10 @@ const browserRecommendVersion = [
     version: 14,
   },
   {
+    name: '',
+    version: 'macOS Big Sur or later',
+  },
+  {
     name: 'Edge',
     version: 18,
   },
@@ -62,6 +66,7 @@ export const NoticeModal = () => {
                   fontFamily="Roboto"
                   customClass={styles[`body${themeStyle}`]}
                   key={index}
+                  style={{ height: 22 }}
                 >
                   {item.name}
                 </BodyText>
@@ -74,8 +79,11 @@ export const NoticeModal = () => {
                   fontFamily="Roboto"
                   customClass={styles[`body${themeStyle}`]}
                   key={index}
+                  style={{ height: 22 }}
                 >
-                  {`version ${item.version} or later`}
+                  {typeof item.version === 'string'
+                    ? item.version
+                    : `version ${item.version} or later`}
                 </BodyText>
               ))}
             </div>
