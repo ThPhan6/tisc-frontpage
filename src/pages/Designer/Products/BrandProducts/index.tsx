@@ -110,7 +110,7 @@ const BrandProductListPage: React.FC = () => {
       sort: sort?.sort,
       order: sort?.order,
     });
-  }, [filter, searchCount, sort]);
+  }, [filter?.value, searchCount, sort?.order, sort?.sort]);
 
   const renderInfoItem = (info: string, count: number, lastOne?: boolean) => (
     <div className="flex-start" style={{ marginRight: lastOne ? undefined : 24 }}>
