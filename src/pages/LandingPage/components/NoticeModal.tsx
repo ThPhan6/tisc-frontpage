@@ -15,7 +15,7 @@ const browserRecommendVersion = [
   },
   {
     name: 'Safari',
-    version: 14,
+    version: 'Mac OS Big Sur or later',
   },
   {
     name: 'Edge',
@@ -75,7 +75,9 @@ export const NoticeModal = () => {
                   customClass={styles[`body${themeStyle}`]}
                   key={index}
                 >
-                  {`version ${item.version} or later`}
+                  {typeof item.version === 'string'
+                    ? item.version
+                    : `version ${item.version} or later`}
                 </BodyText>
               ))}
             </div>
