@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
@@ -15,13 +15,18 @@ import { ReactComponent as SingleRight } from '@/assets/icons/single-right.svg';
 import { ReactComponent as TargetMoneyIcon } from '@/assets/icons/target-money-icon.svg';
 import { ReactComponent as TimeMoney } from '@/assets/icons/time-money-icon.svg';
 
-import { validateToken, verifyAccount } from './services/api';
+import { getBooking, validateToken, verifyAccount } from './services/api';
 import { useScreen } from '@/helper/common';
-import { useQuery } from '@/helper/hook';
+import { pushTo } from '@/helper/history';
+import { useGetParamId, useQuery } from '@/helper/hook';
 
+import { InformationBooking } from './types';
 import store from '@/reducers';
 import { ModalType, openModal } from '@/reducers/modal';
 
+import { DEFAULT_STATE_BOOKING } from './components/BrandInterestedModal';
+import { useCalendarModal } from './components/CalendarModal';
+import { useCancelBookingModal } from './components/CancelBookingModal';
 import CustomButton from '@/components/Button';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
@@ -36,6 +41,13 @@ const LandingPage = () => {
   const listMenuFooter: ModalType[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
 
   const isMobile = useScreen().isMobile;
+
+  const bookingId = useGetParamId();
+  const [bookingInfo, setBookingInfo] = useState<InformationBooking>(DEFAULT_STATE_BOOKING);
+
+  const { openCancelBookingModal, renderCancelBookingModal } = useCancelBookingModal(bookingInfo);
+
+  const { openCalendarModal, renderCalendarModal } = useCalendarModal(bookingInfo, setBookingInfo);
 
   useEffect(() => {
     if ((!userEmail || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
@@ -99,6 +111,26 @@ const LandingPage = () => {
 
     handleVerifyToken(tokenVerification).then(verifyTokenCallback);
   }, [tokenVerification]);
+
+  /// handle booking
+  useEffect(() => {
+    if (bookingId) {
+      getBooking(bookingId).then((res) => {
+        if (res) {
+          setBookingInfo(res);
+
+          if (history.location.pathname.indexOf('cancel') !== -1) {
+            openCancelBookingModal();
+          }
+          if (history.location.pathname.indexOf('re-schedule') !== -1) {
+            openCalendarModal();
+          }
+        } else {
+          pushTo(PATH.landingPage);
+        }
+      });
+    }
+  }, []);
 
   const openLoginModal = () =>
     store.dispatch(openModal({ type: 'Login', noBorderDrawerHeader: true }));
@@ -233,6 +265,10 @@ const LandingPage = () => {
       </div>
 
       <LandingPageFooter listMenuFooter={listMenuFooter} />
+
+      {renderCancelBookingModal()}
+
+      {renderCalendarModal()}
     </div>
   );
 };

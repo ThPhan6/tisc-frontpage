@@ -22,7 +22,7 @@ import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
 import { endDate, getAvailableDateInMonth, startDate } from '../util';
-import { DEFAULT_STATE } from './BrandInterestedModal';
+import { DEFAULT_STATE_BOOKING } from './BrandInterestedModal';
 import styles from './CalendarModal.less';
 import { BrandInformation } from './CancelBookingModal';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
@@ -247,7 +247,7 @@ export const useCalendarModal = (
 
     handleSubmit.then((isSuccess) => {
       if (isSuccess) {
-        setInformationBooking(DEFAULT_STATE);
+        setInformationBooking(DEFAULT_STATE_BOOKING);
         closeModal();
 
         pushTo(PATH.landingPage);
@@ -277,7 +277,7 @@ export const useCalendarModal = (
         }}
         closeIconClass={styles.closeIcon}
         title={
-          <MainTitle level={2}>
+          <MainTitle level={2} textAlign="center">
             {isUpdateBooking ? 'Re-select Date & Time' : 'Select Available Date & Time'}
           </MainTitle>
         }

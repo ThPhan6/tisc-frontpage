@@ -10,6 +10,7 @@ import {
   getUnitTypeList,
 } from '@/features/project/services';
 import { getAllMaterialCode } from '@/features/user-group/services';
+import { useScreen } from '@/helper/common';
 import { useBoolean } from '@/helper/hook';
 import { getSelectedOptions, validateFloatNumber } from '@/helper/utils';
 import { forEach, isEmpty, lowerCase, startCase } from 'lodash';
@@ -139,6 +140,7 @@ export const getSelectedFinishSchedule = (finish_schedules: FinishScheduleRespon
 };
 
 const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, customProduct }) => {
+  const isMobile = useScreen().isMobile;
   const scheduleModal = useBoolean(false);
 
   const [materialCodeOpts, setMaterialCodeOtps] = useState<CustomRadioValue[]>([]);
@@ -244,7 +246,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
           <FormGroup label="Material/Product Code" labelFontSize={4} required {...formGroupProps}>
             <DropdownSelectInput
               placeholder="select from the list"
-              showCloseFooter
+              showCloseFooter={isMobile}
               borderBottomColor="light"
               value={materialCode?.labelText}
               disabled
@@ -355,7 +357,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
               noPadding
               disabled
               containerClass={styles.inputColor}
-              showCloseFooter
+              showCloseFooter={isMobile}
               overlay={
                 <CustomRadio
                   options={unitTypeOtps}

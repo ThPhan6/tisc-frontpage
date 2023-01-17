@@ -215,7 +215,7 @@ const SpaceEntryForm: React.FC<SpaceEntryFormProps> = (props) => {
       handleSubmit={handleSubmit}
       handleCancel={handleCancel}
       handleDelete={handleDeleteZone}
-      entryFormTypeOnMobile="edit"
+      entryFormTypeOnMobile={data?.id ? 'edit' : 'create'}
       submitButtonStatus={submitButtonStatus}
       customClass={styles.spaceEntryForm}
       contentClass={isTablet ? 'height-on-tablet' : 'height-on-desktop'}
