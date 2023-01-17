@@ -1,20 +1,32 @@
 .defaultOptionList {
-  display: flex;
+  display: grid;
+  grid-gap: 5%;
+  grid-template-columns: 60% 35%;
   align-items: center;
-  height: 36px;
+  min-height: 36px;
   table {
-    width: 50%;
-    margin-right: 24px;
+    width: 100%;
+    text-align: right;
+    table-layout: fixed;
+
+    :global(.option-none) {
+      display: none;
+    }
+
+    td {
+      padding-right: 8px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      &:nth-child(2n) {
+        text-align: left;
+      }
+    }
 
     tr {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-    }
-    :global(.option-name) {
-      width: 30%;
-      padding-right: 8px;
-      text-align: right;
     }
   }
   :global(.product-id-label) {
@@ -140,6 +152,9 @@
       }
     }
   }
+  :global(.item-option-uncheck) {
+    padding: 0 !important;
+  }
 }
 .presetOptionTitle {
   padding-left: 16px;
@@ -157,6 +172,10 @@
 .content {
   :global(.ant-modal-header) {
     box-shadow: none;
+  }
+
+  :global(.item-option-uncheck) {
+    padding: 0 !important;
   }
 
   &_select {
