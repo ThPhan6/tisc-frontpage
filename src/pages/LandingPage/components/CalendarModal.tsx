@@ -11,11 +11,12 @@ import { ReactComponent as PaginationRightIcon } from '@/assets/icons/pagination
 import { createBooking, getListAvailableTime, updateBooking } from '../services/api';
 import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { useBoolean, useGetParamId } from '@/helper/hook';
+import { useBoolean } from '@/helper/hook';
 
 import { AvailableTime, InformationBooking, Timezones } from '../types';
 import { CollapsingProps } from '@/features/how-to/types';
-import { closeModal } from '@/reducers/modal';
+import { useAppSelector } from '@/reducers';
+import { closeModal, modalPropsSelector } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
 import { CustomModal } from '@/components/Modal';
@@ -96,15 +97,13 @@ const CalendarHeader: FC<{ dateValue: Moment; onChange: (dateValue: Moment) => v
   );
 };
 
-export const useCalendarModal = (
-  informationBooking: InformationBooking,
-  setInformationBooking: (informationBooking: InformationBooking) => void,
-) => {
-  const bookingId = useGetParamId();
-  const isUpdateBooking = bookingId ? true : false;
+export const CalendarModal: FC<{
+  captcha: string;
+}> = ({ captcha }) => {
+  const { informationBooking, reScheduleBooking } = useAppSelector(modalPropsSelector);
+  const [bookingInfo, setBookingInfo] = useState<InformationBooking>(informationBooking);
 
   /// open modal
-  const [open, setOpen] = useState(false);
 
   const [availableTimes, setAvailableTimes] = useState<AvailableTime[]>([]);
 
@@ -123,37 +122,37 @@ export const useCalendarModal = (
   const haveAvailableTimeSlot = useBoolean();
 
   useEffect(() => {
-    if (informationBooking.slot === -1 && isUpdateBooking) {
+    if (bookingInfo.slot === -1 && reScheduleBooking) {
       haveAvailableTimeSlot.setValue(false);
     } else {
       haveAvailableTimeSlot.setValue(true);
     }
-  }, [informationBooking.slot]);
+  }, [bookingInfo.slot]);
 
   useEffect(() => {
     setTimeBooked({
-      startTime: informationBooking.start_time_text,
-      endTime: informationBooking.end_time_text,
-      slot: informationBooking.slot,
-      date: informationBooking.date,
-      timeZone: informationBooking.timezone,
+      startTime: bookingInfo.start_time_text,
+      endTime: bookingInfo.end_time_text,
+      slot: bookingInfo.slot,
+      date: bookingInfo.date,
+      timeZone: bookingInfo.timezone,
     });
   }, []);
 
   useEffect(() => {
-    getListAvailableTime(informationBooking.date, informationBooking.timezone).then((res) => {
+    getListAvailableTime(bookingInfo.date, bookingInfo.timezone).then((res) => {
       setAvailableTimes(res);
     });
-  }, [informationBooking.date, informationBooking.timezone]);
+  }, [bookingInfo.date, bookingInfo.timezone]);
 
   const checkDisableButton = () => {
     if (
-      informationBooking.date === null ||
-      informationBooking.slot === -1 ||
-      informationBooking.timezone === '' ||
-      (timeBooked.slot === informationBooking.slot &&
-        timeBooked.date === informationBooking.date &&
-        timeBooked.timeZone === informationBooking.timezone)
+      bookingInfo.date === null ||
+      bookingInfo.slot === -1 ||
+      bookingInfo.timezone === '' ||
+      (timeBooked.slot === bookingInfo.slot &&
+        timeBooked.date === bookingInfo.date &&
+        timeBooked.timeZone === bookingInfo.timezone)
     ) {
       return true;
     }
@@ -168,11 +167,11 @@ export const useCalendarModal = (
             level={5}
             fontFamily="Roboto"
             customClass={`${styles.timeZoneText} ${
-              informationBooking.timezone === key ? styles.activeText : ''
+              bookingInfo.timezone === key ? styles.activeText : ''
             }`}
             onClick={() => {
-              setInformationBooking({
-                ...informationBooking,
+              setBookingInfo({
+                ...bookingInfo,
                 timezone: key,
                 slot: -1,
                 start_time_text: '',
@@ -190,12 +189,12 @@ export const useCalendarModal = (
 
   const checkActiveAvailableTime = (time: AvailableTime) => {
     if (haveAvailableTimeSlot.value) {
-      return informationBooking.slot === time.slot;
+      return bookingInfo.slot === time.slot;
     }
     return (
       timeBooked.slot === time.slot &&
-      timeBooked.date === informationBooking.date &&
-      timeBooked.timeZone === informationBooking.timezone
+      timeBooked.date === bookingInfo.date &&
+      timeBooked.timeZone === bookingInfo.timezone
     );
   };
 
@@ -209,15 +208,17 @@ export const useCalendarModal = (
             customClass={`${styles.text} ${time.available ? '' : styles.disableText} ${
               checkActiveAvailableTime(time) ? styles.selectedText : ''
             }`}
-            onClick={() =>
-              time.available &&
-              setInformationBooking({
-                ...informationBooking,
-                start_time_text: moment(time.start, 'HH:mm').format('hh:mm a'),
-                end_time_text: moment(time.end, 'HH:mm').format('hh:mm a'),
-                slot: time.slot,
-              })
-            }
+            onClick={() => {
+              console.log(time.available, setBookingInfo);
+              if (time.available) {
+                setBookingInfo({
+                  ...bookingInfo,
+                  start_time_text: moment(time.start, 'HH:mm').format('hh:mm a'),
+                  end_time_text: moment(time.end, 'HH:mm').format('hh:mm a'),
+                  slot: time.slot,
+                });
+              }
+            }}
           >
             {moment(time.start, 'HH:mm').format('hh:mm a')} -{' '}
             {moment(time.end, 'HH:mm').format('hh:mm a')}
@@ -229,25 +230,27 @@ export const useCalendarModal = (
 
   const handleAddAppointment = () => {
     showPageLoading();
-    const handleSubmit = isUpdateBooking
-      ? updateBooking(informationBooking.id, {
-          date: informationBooking.date,
-          slot: informationBooking.slot,
-          timezone: informationBooking.timezone,
+    const handleSubmit = reScheduleBooking
+      ? updateBooking(bookingInfo.id, {
+          date: bookingInfo.date,
+          slot: bookingInfo.slot,
+          timezone: bookingInfo.timezone,
+          captcha: captcha,
         })
       : createBooking({
-          brand_name: informationBooking.brand_name,
-          website: informationBooking.website,
-          name: informationBooking.name,
-          email: informationBooking.email,
-          date: informationBooking.date,
-          slot: informationBooking.slot,
-          timezone: informationBooking.timezone,
+          brand_name: bookingInfo.brand_name,
+          website: bookingInfo.website,
+          name: bookingInfo.name,
+          email: bookingInfo.email,
+          date: bookingInfo.date,
+          slot: bookingInfo.slot,
+          timezone: bookingInfo.timezone,
+          captcha: captcha,
         });
 
     handleSubmit.then((isSuccess) => {
       if (isSuccess) {
-        setInformationBooking(DEFAULT_STATE_BOOKING);
+        setBookingInfo(DEFAULT_STATE_BOOKING);
         closeModal();
 
         pushTo(PATH.landingPage);
@@ -262,121 +265,115 @@ export const useCalendarModal = (
       }
     : undefined;
 
-  const renderCalendarModal = () =>
-    !open ? null : (
-      <CustomModal
-        visible
-        onOk={closeModal}
-        onCancel={closeModal}
-        secondaryModal
-        noHeaderBorder={false}
-        width="1152px"
-        bodyStyle={{
-          height: '512px',
-          padding: '32px',
+  return (
+    <CustomModal
+      visible
+      onOk={closeModal}
+      onCancel={closeModal}
+      secondaryModal
+      noHeaderBorder={false}
+      width="1152px"
+      bodyStyle={{
+        height: '512px',
+        padding: '32px',
+      }}
+      closeIconClass={styles.closeIcon}
+      title={
+        <MainTitle level={2} textAlign="center">
+          {reScheduleBooking ? 'Re-select Date & Time' : 'Select Available Date & Time'}
+        </MainTitle>
+      }
+    >
+      <Row
+        gutter={[32, 0]}
+        style={{
+          flexDirection: isMobile ? 'column' : undefined,
+          padding: isMobile ? 16 : undefined,
         }}
-        closeIconClass={styles.closeIcon}
-        title={
-          <MainTitle level={2} textAlign="center">
-            {isUpdateBooking ? 'Re-select Date & Time' : 'Select Available Date & Time'}
-          </MainTitle>
-        }
+        className={styles.calendar}
       >
-        <Row
-          gutter={[32, 0]}
-          style={{
-            flexDirection: isMobile ? 'column' : undefined,
-            padding: isMobile ? 16 : undefined,
-          }}
-          className={styles.calendar}
-        >
-          <Col span={24} lg={8} style={contentStylesProps}>
-            <Calendar
-              fullscreen={false}
-              value={moment(informationBooking.date)}
-              headerRender={({ value, onChange }) => (
-                <CalendarHeader dateValue={moment(value)} onChange={onChange} />
-              )}
-              validRange={[moment(), endDate]}
-              onSelect={(date) => {
-                setInformationBooking({
-                  ...informationBooking,
-                  date: getAvailableDateInMonth(date),
-                  start_time_text: '',
-                  end_time_text: '',
-                  slot: -1,
-                });
-              }}
-              disabledDate={(date) => {
-                if (moment(date).day() % 6 == 0) {
-                  return true;
-                }
-                return false;
-              }}
-            />
-          </Col>
-          <Col span={24} lg={8} style={contentStylesProps}>
-            <div className={styles.timeSelection}>
-              <Collapse ghost activeKey={activeKey}>
-                <Collapse.Panel
-                  showArrow={false}
-                  key={1}
-                  className={`${styles.timeZone} ${
-                    String(1) !== activeKey ? styles['bottomMedium'] : ''
-                  }`}
-                  header={
-                    <TimeZoneHeader
-                      timeZone={Timezones[informationBooking.timezone]}
-                      activeKey={activeKey}
-                      handleActiveCollapse={() =>
-                        setActiveKey(activeKey === String(1) ? '' : String(1))
-                      }
-                    />
-                  }
-                >
-                  {renderListTimeZone()}
-                </Collapse.Panel>
-              </Collapse>
-              {renderListAvailableTime()}
-            </div>
-          </Col>
-          <Col span={24} lg={8}>
-            <BrandInformation
-              informationBooking={
-                haveAvailableTimeSlot.value
-                  ? informationBooking
-                  : {
-                      ...informationBooking,
-                      date: timeBooked.date,
-                      start_time_text: timeBooked.startTime,
-                      end_time_text: timeBooked.endTime,
-                      timezone: timeBooked.timeZone,
-                      slot: timeBooked.slot,
-                    }
+        <Col span={24} lg={8} style={contentStylesProps}>
+          <Calendar
+            fullscreen={false}
+            value={moment(bookingInfo.date)}
+            headerRender={({ value, onChange }) => (
+              <CalendarHeader dateValue={moment(value)} onChange={onChange} />
+            )}
+            validRange={[moment(), endDate]}
+            onSelect={(date) => {
+              setBookingInfo({
+                ...bookingInfo,
+                date: getAvailableDateInMonth(date),
+                start_time_text: '',
+                end_time_text: '',
+                slot: -1,
+              });
+            }}
+            disabledDate={(date) => {
+              if (moment(date).day() % 6 == 0) {
+                return true;
               }
-            />
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-              }}
-            >
-              <CustomButton
-                properties="rounded"
-                buttonClass={`${styles.button} ${checkDisableButton() ? styles.disableButton : ''}`}
-                onClick={checkDisableButton() ? undefined : handleAddAppointment}
+              return false;
+            }}
+          />
+        </Col>
+        <Col span={24} lg={8} style={contentStylesProps}>
+          <div className={styles.timeSelection}>
+            <Collapse ghost activeKey={activeKey}>
+              <Collapse.Panel
+                showArrow={false}
+                key={1}
+                className={`${styles.timeZone} ${
+                  String(1) !== activeKey ? styles['bottomMedium'] : ''
+                }`}
+                header={
+                  <TimeZoneHeader
+                    timeZone={Timezones[bookingInfo.timezone]}
+                    activeKey={activeKey}
+                    handleActiveCollapse={() =>
+                      setActiveKey(activeKey === String(1) ? '' : String(1))
+                    }
+                  />
+                }
               >
-                Book Now
-              </CustomButton>
-            </div>
-          </Col>
-        </Row>
-      </CustomModal>
-    );
-
-  return {
-    renderCalendarModal,
-    openCalendarModal: () => setOpen(true),
-  };
+                {renderListTimeZone()}
+              </Collapse.Panel>
+            </Collapse>
+            {renderListAvailableTime()}
+          </div>
+        </Col>
+        <Col span={24} lg={8}>
+          <BrandInformation
+            informationBooking={
+              haveAvailableTimeSlot.value
+                ? bookingInfo
+                : {
+                    ...bookingInfo,
+                    date: timeBooked.date,
+                    start_time_text: timeBooked.startTime,
+                    end_time_text: timeBooked.endTime,
+                    timezone: timeBooked.timeZone,
+                    slot: timeBooked.slot,
+                  }
+            }
+          />
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+            }}
+          >
+            <CustomButton
+              properties="rounded"
+              buttonClass={`${styles.button} ${checkDisableButton() ? styles.disableButton : ''}`}
+              onClick={checkDisableButton() ? undefined : handleAddAppointment}
+            >
+              Book Now
+            </CustomButton>
+          </div>
+        </Col>
+      </Row>
+    </CustomModal>
+  );
 };

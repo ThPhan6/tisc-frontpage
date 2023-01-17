@@ -26,7 +26,10 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import styles from './PasswordModal.less';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
-export const PasswordModal: FC = () => {
+export const PasswordModal: FC<{ captcha: string; setRefreshReCaptcha: () => void }> = ({
+  captcha,
+  setRefreshReCaptcha,
+}) => {
   const { fetchUserInfo } = useCustomInitialState();
 
   const { email, token, passwordType } = useAppSelector(modalPropsSelector);
@@ -101,7 +104,10 @@ export const PasswordModal: FC = () => {
       password: resetInputValue.password,
       confirmed_password: resetInputValue.confirmPassword,
       reset_password_token: token,
+      captcha: captcha,
     });
+    setRefreshReCaptcha();
+    closeModal();
   };
 
   const onKeyPress = (event: React.KeyboardEvent<HTMLDivElement>): void => {

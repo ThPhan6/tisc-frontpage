@@ -43,7 +43,10 @@ const DEFAULT_STATE: SignUpFormState = {
   agree_tisc: false,
 };
 
-export const SignupModal: FC = () => {
+export const SignupModal: FC<{ captcha: string; setRefreshReCaptcha: () => void }> = ({
+  captcha,
+  setRefreshReCaptcha,
+}) => {
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
 
   const { openPoliciesModal, renderPoliciesModal } = usePoliciesModal();
@@ -109,6 +112,7 @@ export const SignupModal: FC = () => {
       email: formInput.email,
       password: formInput.password,
       confirmed_password: formInput.confirmed_password,
+      captcha: captcha,
     }).then((res) => {
       if (res) {
         closeModal();
@@ -118,6 +122,7 @@ export const SignupModal: FC = () => {
       }
       isLoading.setValue(false);
     });
+    setRefreshReCaptcha();
   };
 
   return (

@@ -1,3 +1,8 @@
+import { useCallback, useState } from 'react';
+import { GoogleReCaptcha, GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+
+import { RECAPTCHA_SITE_KEY } from '@/constants/util';
+
 import { BrandCompanyModal } from '@/features/services/components/BrandCompanyModal';
 import { useScreen } from '@/helper/common';
 
@@ -14,6 +19,7 @@ import LocationModal from '@/features/team-profiles/components/LocationModal';
 import AccessLevelModal from '@/features/team-profiles/components/access-level-modal/AccessLevelModal';
 import { AboutModal } from '@/pages/LandingPage/components/AboutModal';
 import { BrandInterestedModal } from '@/pages/LandingPage/components/BrandInterestedModal';
+import { CalendarModal } from '@/pages/LandingPage/components/CalendarModal';
 import { CancelBookingModal } from '@/pages/LandingPage/components/CancelBookingModal';
 import { ContactModal } from '@/pages/LandingPage/components/ContactModal';
 import { LoginModal } from '@/pages/LandingPage/components/LoginModal';
@@ -33,6 +39,15 @@ export const ModalController = () => {
   const noBorderDrawerHeader = useAppSelector((state) => state.modal.noBorderDrawerHeader);
   const darkTheme = useAppSelector((state) => state.modal.theme === 'dark');
   const title = useAppSelector((state) => state.modal.title);
+  const [token, setToken] = useState<string>('');
+  const [refreshReCaptcha, setRefreshReCaptcha] = useState<boolean>(false);
+
+  const onVerify = useCallback(
+    (value: string) => {
+      setToken(value);
+    },
+    [modalType],
+  );
 
   const { isMobile } = useScreen();
 
@@ -40,25 +55,49 @@ export const ModalController = () => {
     switch (modalType) {
       // landing page
       case 'Login':
-        return <LoginModal />;
+        return (
+          <LoginModal captcha={token} setRefreshReCaptcha={() => setRefreshReCaptcha((r) => !r)} />
+        );
       case 'Tisc Login':
-        return <LoginModal tiscLogin />;
+        return (
+          <LoginModal
+            tiscLogin
+            captcha={token}
+            setRefreshReCaptcha={() => setRefreshReCaptcha((r) => !r)}
+          />
+        );
       case 'Designer Signup':
-        return <SignupModal />;
+        return (
+          <SignupModal captcha={token} setRefreshReCaptcha={() => setRefreshReCaptcha((r) => !r)} />
+        );
       case 'About':
         return <AboutModal />;
       case 'Contact':
-        return <ContactModal />;
+        return (
+          <ContactModal
+            captcha={token}
+            setRefreshReCaptcha={() => setRefreshReCaptcha((r) => !r)}
+          />
+        );
       case 'Policies':
         return <PoliciesModal />;
       case 'Browser Compatibility':
         return <NoticeModal />;
       case 'Brand Interested':
         return <BrandInterestedModal />;
+      case 'Calendar':
+        return <CalendarModal captcha={token} />;
       case 'Cancel Booking':
-        return <CancelBookingModal />;
+        return <CancelBookingModal captcha={token} />;
+      case 'ReSchedule Booking':
+        return <CalendarModal captcha={token} />;
       case 'Reset Password':
-        return <PasswordModal />;
+        return (
+          <PasswordModal
+            captcha={token}
+            setRefreshReCaptcha={() => setRefreshReCaptcha((r) => !r)}
+          />
+        );
       case 'Verify Account':
         return <VerifyAccount />;
 
@@ -113,6 +152,10 @@ export const ModalController = () => {
       </MobileDrawer>
     );
   }
-
-  return renderModalContent();
+  return (
+    <GoogleReCaptchaProvider reCaptchaKey={RECAPTCHA_SITE_KEY}>
+      <GoogleReCaptcha onVerify={onVerify} refreshReCaptcha={refreshReCaptcha} />
+      {renderModalContent()}
+    </GoogleReCaptchaProvider>
+  );
 };

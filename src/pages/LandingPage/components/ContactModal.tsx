@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { FC, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
@@ -24,7 +24,10 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import styles from './ContactModal.less';
 import buttonStyles from './index.less';
 
-export const ContactModal = () => {
+export const ContactModal: FC<{ captcha: string; setRefreshReCaptcha: () => void }> = ({
+  captcha,
+  setRefreshReCaptcha,
+}) => {
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
   const popupStylesProps = useLandingPageStyles(darkTheme);
 
@@ -48,7 +51,12 @@ export const ContactModal = () => {
       return;
     }
 
-    contact(valueForm).then((res) => {
+    contact({
+      email: valueForm.email,
+      name: valueForm.name,
+      inquiry: valueForm.inquiry,
+      captcha: captcha,
+    }).then((res) => {
       if (res) {
         closeModal();
         setValueForm({
@@ -58,6 +66,7 @@ export const ContactModal = () => {
         });
       }
     });
+    setRefreshReCaptcha();
   };
   return (
     <CustomModal {...popupStylesProps}>

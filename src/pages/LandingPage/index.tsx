@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
@@ -20,13 +20,9 @@ import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useGetParamId, useQuery } from '@/helper/hook';
 
-import { InformationBooking } from './types';
 import store from '@/reducers';
 import { ModalType, openModal } from '@/reducers/modal';
 
-import { DEFAULT_STATE_BOOKING } from './components/BrandInterestedModal';
-import { useCalendarModal } from './components/CalendarModal';
-import { useCancelBookingModal } from './components/CancelBookingModal';
 import CustomButton from '@/components/Button';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
@@ -43,11 +39,6 @@ const LandingPage = () => {
   const isMobile = useScreen().isMobile;
 
   const bookingId = useGetParamId();
-  const [bookingInfo, setBookingInfo] = useState<InformationBooking>(DEFAULT_STATE_BOOKING);
-
-  const { openCancelBookingModal, renderCancelBookingModal } = useCancelBookingModal(bookingInfo);
-
-  const { openCalendarModal, renderCalendarModal } = useCalendarModal(bookingInfo, setBookingInfo);
 
   useEffect(() => {
     if ((!userEmail || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
@@ -117,13 +108,25 @@ const LandingPage = () => {
     if (bookingId) {
       getBooking(bookingId).then((res) => {
         if (res) {
-          setBookingInfo(res);
-
           if (history.location.pathname.indexOf('cancel') !== -1) {
-            openCancelBookingModal();
+            store.dispatch(
+              openModal({
+                type: 'Cancel Booking',
+                title: 'Cancel Booking',
+                props: { informationBooking: res },
+              }),
+            );
           }
           if (history.location.pathname.indexOf('re-schedule') !== -1) {
-            openCalendarModal();
+            store.dispatch(
+              openModal({
+                type: 'ReSchedule Booking',
+                props: {
+                  informationBooking: res,
+                  reScheduleBooking: true,
+                },
+              }),
+            );
           }
         } else {
           pushTo(PATH.landingPage);
@@ -263,12 +266,8 @@ const LandingPage = () => {
           </Col>
         </Row>
       </div>
-
       <LandingPageFooter listMenuFooter={listMenuFooter} />
-
-      {renderCancelBookingModal()}
-
-      {renderCalendarModal()}
+      {/* {renderCalendarModal()} */}
     </div>
   );
 };
