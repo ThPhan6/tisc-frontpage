@@ -209,7 +209,6 @@ export const CalendarModal: FC<{
               checkActiveAvailableTime(time) ? styles.selectedText : ''
             }`}
             onClick={() => {
-              console.log(time.available, setBookingInfo);
               if (time.available) {
                 setBookingInfo({
                   ...bookingInfo,
