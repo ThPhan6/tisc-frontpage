@@ -267,7 +267,6 @@ const LandingPage = () => {
         </Row>
       </div>
       <LandingPageFooter listMenuFooter={listMenuFooter} />
-      {/* {renderCalendarModal()} */}
     </div>
   );
 };
