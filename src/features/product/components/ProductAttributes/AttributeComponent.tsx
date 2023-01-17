@@ -37,8 +37,16 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
   const hasOneOptionLabel =
     countBy(
       [colspanUnit_1, colspanUnit_2, colspanValue_1, colspanValue_2],
-      (el) => typeof el === 'number',
-    ).true > 1;
+      (el) => typeof el === 'undefined',
+    ).true <= 1;
+
+  const textAlignLeft =
+    countBy(
+      [colspanUnit_1, colspanUnit_2, colspanValue_1, colspanValue_2],
+      (el) => typeof el === 'undefined',
+    ).true <= 2
+      ? 'align-left'
+      : '';
 
   if (!option.image || option.image == '') {
     return (
@@ -47,22 +55,22 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
           <tr>
             <td
               colSpan={hasOneOptionLabel ? 4 : colspanValue_1}
-              className={`${option.value_1 ? '' : 'option-none'}`}>
+              className={`${option.value_1 ? '' : 'option-none'} ${textAlignLeft}`}>
               {option.value_1}
             </td>
             <td
               colSpan={hasOneOptionLabel ? 4 : colspanUnit_1}
-              className={option.unit_1 ? '' : 'option-none'}>
+              className={`${option.unit_1 ? '' : 'option-none'} ${textAlignLeft}`}>
               {option.unit_1}
             </td>
             <td
               colSpan={hasOneOptionLabel ? 4 : colspanValue_2}
-              className={`${option.value_2 ? '' : 'option-none'}`}>
+              className={`${option.value_2 ? '' : 'option-none'} ${textAlignLeft}`}>
               {option.value_2}
             </td>
             <td
               colSpan={hasOneOptionLabel ? 4 : colspanUnit_2}
-              className={option.unit_2 ? '' : 'option-none'}>
+              className={`${option.unit_2 ? '' : 'option-none'} ${textAlignLeft}`}>
               {option.unit_2}
             </td>
           </tr>
