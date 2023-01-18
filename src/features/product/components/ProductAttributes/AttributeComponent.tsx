@@ -31,8 +31,8 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
   const isTISC = currentUser === USER_ROLE.tisc;
 
   const colspanValue_1 = option.unit_1 ? undefined : 2;
-  const colspanUnit_1 = option.value_1 ? undefined : 2;
-  const colspanValue_2 = option.unit_2 ? undefined : 2;
+  let colspanUnit_1 = option.value_1 ? undefined : 2;
+  let colspanValue_2 = option.unit_2 ? undefined : 2;
   const colspanUnit_2 = option.value_2 ? undefined : 2;
   const hasOneOptionLabel =
     countBy(
@@ -48,6 +48,13 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
       ? 'align-left'
       : '';
 
+  if (option.value_1 && option.unit_1 && !option.value_2 && !option.unit_2) {
+    colspanUnit_1 = 3;
+  }
+  if (!option.value_1 && !option.unit_1 && option.value_2 && option.unit_2) {
+    colspanValue_2 = 3;
+  }
+
   if (!option.image || option.image == '') {
     return (
       <div className={styles.defaultOptionList}>
@@ -55,7 +62,9 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
           <tr>
             <td
               colSpan={hasOneOptionLabel ? 4 : colspanValue_1}
-              className={`${option.value_1 ? '' : 'option-none'} ${textAlignLeft}`}>
+              className={`${option.value_1 ? '' : 'option-none'} ${textAlignLeft} ${
+                colspanUnit_1 === 3 ? 'align-right' : ''
+              }`}>
               {option.value_1}
             </td>
             <td
@@ -65,7 +74,9 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
             </td>
             <td
               colSpan={hasOneOptionLabel ? 4 : colspanValue_2}
-              className={`${option.value_2 ? '' : 'option-none'} ${textAlignLeft}`}>
+              className={`${option.value_2 ? '' : 'option-none'} ${textAlignLeft} ${
+                colspanValue_2 === 3 ? 'align-right' : ''
+              }`}>
               {option.value_2}
             </td>
             <td
