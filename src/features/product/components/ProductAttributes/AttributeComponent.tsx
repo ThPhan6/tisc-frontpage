@@ -6,6 +6,7 @@ import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.s
 
 import { useGetUserRoleFromPathname } from '@/helper/hook';
 import { showImageUrl } from '@/helper/utils';
+import { countBy } from 'lodash';
 
 import type { SpecificationAttributeBasisOptionProps } from '../../types';
 import type { RadioValue } from '@/components/CustomRadio/types';
@@ -29,15 +30,60 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
   const currentUser = useGetUserRoleFromPathname();
   const isTISC = currentUser === USER_ROLE.tisc;
 
+  const colspanValue_1 = option.unit_1 ? undefined : 2;
+  let colspanUnit_1 = option.value_1 ? undefined : 2;
+  let colspanValue_2 = option.unit_2 ? undefined : 2;
+  const colspanUnit_2 = option.value_2 ? undefined : 2;
+  const hasOneOptionLabel =
+    countBy(
+      [colspanUnit_1, colspanUnit_2, colspanValue_1, colspanValue_2],
+      (el) => typeof el === 'undefined',
+    ).true <= 1;
+
+  const textAlignLeft =
+    countBy(
+      [colspanUnit_1, colspanUnit_2, colspanValue_1, colspanValue_2],
+      (el) => typeof el === 'undefined',
+    ).true <= 2
+      ? 'align-left'
+      : '';
+
+  if (option.value_1 && option.unit_1 && !option.value_2 && !option.unit_2) {
+    colspanUnit_1 = 3;
+  }
+  if (!option.value_1 && !option.unit_1 && option.value_2 && option.unit_2) {
+    colspanValue_2 = 3;
+  }
+
   if (!option.image || option.image == '') {
     return (
-      <div className={`${styles.defaultOptionList} ${isTISC ? 'flex-between' : ''} `}>
-        <table>
+      <div className={styles.defaultOptionList}>
+        <table className="text-overflow">
           <tr>
-            <td className="option-name">{option.value_1}</td>
-            <td>{option.unit_1}</td>
-            <td className="option-name">{option.value_2}</td>
-            <td>{option.unit_2}</td>
+            <td
+              colSpan={hasOneOptionLabel ? 4 : colspanValue_1}
+              className={`${option.value_1 ? '' : 'option-none'} ${textAlignLeft} ${
+                colspanUnit_1 === 3 ? 'align-right' : ''
+              }`}>
+              {option.value_1}
+            </td>
+            <td
+              colSpan={hasOneOptionLabel ? 4 : colspanUnit_1}
+              className={`${option.unit_1 ? '' : 'option-none'} ${textAlignLeft}`}>
+              {option.unit_1}
+            </td>
+            <td
+              colSpan={hasOneOptionLabel ? 4 : colspanValue_2}
+              className={`${option.value_2 ? '' : 'option-none'} ${textAlignLeft} ${
+                colspanValue_2 === 3 ? 'align-right' : ''
+              }`}>
+              {option.value_2}
+            </td>
+            <td
+              colSpan={hasOneOptionLabel ? 4 : colspanUnit_2}
+              className={`${option.unit_2 ? '' : 'option-none'} ${textAlignLeft}`}>
+              {option.unit_2}
+            </td>
           </tr>
         </table>
         {children}
@@ -116,8 +162,10 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
                   return {
                     label: (
                       <AttributeOptionLabel option={option} key={index}>
-                        <span className="product-id-label">Product ID:</span>
-                        <span className="product-id-value">{option.option_code}</span>
+                        <div>
+                          <span className="product-id-label">Product ID:</span>
+                          <span className="product-id-value">{option.option_code}</span>
+                        </div>
                       </AttributeOptionLabel>
                     ),
                     value: option.id,
