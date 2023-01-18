@@ -36,8 +36,7 @@ export const CustomModal: FC<CustomModalProps> = ({
           visible={props.visible}
           darkTheme={darkTheme}
           noHeaderBorder={noHeaderBorder}
-          title={props.title}
-          footer={props.footer}
+          {...props}
         >
           {children}
         </MobileDrawer>
