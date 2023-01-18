@@ -61,6 +61,7 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
         <table className="text-overflow">
           <tr>
             <td
+              title={option.value_1}
               colSpan={hasOneOptionLabel ? 4 : colspanValue_1}
               className={`${option.value_1 ? '' : 'option-none'} ${textAlignLeft} ${
                 colspanUnit_1 === 3 ? 'align-right' : ''
@@ -68,11 +69,13 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
               {option.value_1}
             </td>
             <td
+              title={option.unit_1}
               colSpan={hasOneOptionLabel ? 4 : colspanUnit_1}
               className={`${option.unit_1 ? '' : 'option-none'} ${textAlignLeft}`}>
               {option.unit_1}
             </td>
             <td
+              title={option.value_2}
               colSpan={hasOneOptionLabel ? 4 : colspanValue_2}
               className={`${option.value_2 ? '' : 'option-none'} ${textAlignLeft} ${
                 colspanValue_2 === 3 ? 'align-right' : ''
@@ -80,6 +83,7 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
               {option.value_2}
             </td>
             <td
+              title={option.unit_2}
               colSpan={hasOneOptionLabel ? 4 : colspanUnit_2}
               className={`${option.unit_2 ? '' : 'option-none'} ${textAlignLeft}`}>
               {option.unit_2}
