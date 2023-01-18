@@ -18,6 +18,7 @@ export const CustomDrawer: FC<CustomDrawerProps> = ({
   darkTheme,
   style,
   title,
+  className,
   ...props
 }) => {
   useEffect(() => {
@@ -48,7 +49,7 @@ export const CustomDrawer: FC<CustomDrawerProps> = ({
         backgroundColor: darkTheme ? '#000' : undefined,
         ...headerStyle,
       }}
-      className={styles.drawerContainer}
+      className={`${styles.drawerContainer} ${className || ''}`}
       title={title}
       style={{
         transform: props.visible ? 'none' : undefined,
@@ -61,7 +62,7 @@ export const CustomDrawer: FC<CustomDrawerProps> = ({
 
 export const MobileDrawer: FC<
   CustomDrawerProps & { autoHeight?: boolean; noHeaderBorder?: boolean }
-> = ({ noHeaderBorder, autoHeight, headerStyle, title, ...props }) => {
+> = ({ noHeaderBorder, autoHeight, headerStyle, ...props }) => {
   return (
     <CustomDrawer
       placement="bottom"
@@ -70,7 +71,6 @@ export const MobileDrawer: FC<
         boxShadow: noHeaderBorder ? 'none' : undefined,
         ...headerStyle,
       }}
-      title={title}
       height={autoHeight ? 'auto' : window.innerHeight - 48}
       {...props}
     />

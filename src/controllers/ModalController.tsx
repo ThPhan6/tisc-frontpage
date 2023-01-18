@@ -22,7 +22,6 @@ import { PasswordModal } from '@/pages/LandingPage/components/PasswordModal';
 import { PoliciesModal } from '@/pages/LandingPage/components/PoliciesModal';
 import { SignupModal } from '@/pages/LandingPage/components/SignupModal';
 import { VerifyAccount } from '@/pages/LandingPage/components/VerifyAccount';
-import ContentTypeModal from '@/pages/TISC/Product/Attribute/components/ContentTypeModal';
 import { SelectBrandModal } from '@/pages/TISC/Product/Configuration/components/TopBar';
 
 import AssignProductModal from '@/features/product/modals/AssignProductModal';
@@ -75,8 +74,6 @@ export const ModalController = () => {
         return <ShareViaEmail />;
 
       // TISC
-      case 'Product Attribute Type':
-        return <ContentTypeModal />;
       case 'Select Brand':
         return <SelectBrandModal />;
       case 'Brand Company':
