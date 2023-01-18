@@ -123,7 +123,11 @@ const removeAllCollGroup = () => {
   allCollGroup.forEach((el) => el.remove());
 };
 
-const syncColWidthFollowingTheDeepestDataRow = (level: number, curCellStyle: Element) => {
+const syncColWidthFollowingTheDeepestDataRow = (
+  level: number,
+  curCellStyle: Element,
+  excludedColumns: number[],
+) => {
   const expandedColumns = document.querySelectorAll('tr[class$="custom-expanded"] td');
 
   const nestedSubRows = document.querySelectorAll(
@@ -149,10 +153,11 @@ const syncColWidthFollowingTheDeepestDataRow = (level: number, curCellStyle: Ele
     curCellStyle.innerHTML = '';
 
     expandedColumns.forEach((_dataCell, index) => {
-      const newCellWidth =
-        typeof lastRowSubColumns?.[index]?.clientWidth === 'number'
-          ? lastRowSubColumns?.[index]?.clientWidth
-          : firstRowSubColumns?.[index]?.clientWidth;
+      const newCellWidth = excludedColumns.includes(index)
+        ? 'auto'
+        : (typeof lastRowSubColumns?.[index]?.clientWidth === 'number'
+            ? lastRowSubColumns?.[index]?.clientWidth
+            : firstRowSubColumns?.[index]?.clientWidth) + 'px';
 
       // Update style for each column from this data row to their relevant column of expandable column
       // Remember to add enter key
@@ -164,7 +169,7 @@ const syncColWidthFollowingTheDeepestDataRow = (level: number, curCellStyle: Ele
         index + 1
       }), tr.ant-table-row.ant-table-row-level-0 td:nth-child(${
         index + 1
-      }) { width: ${newCellWidth}px }`;
+      }) { width: ${newCellWidth} }`;
     });
     curCellStyle.innerHTML += cellWidthStyles;
   }, 100);
@@ -235,6 +240,7 @@ const injectScriptToExpandableCellByLevel = (
   totalNestedLevel: number,
   cellStyles: HTMLStyleElement[],
   styleId: string,
+  excludedColumns: number[],
 ) => {
   // Get expandable column cells by level
   const expandableCells = getExpandableCell(level);
@@ -296,6 +302,7 @@ const injectScriptToExpandableCellByLevel = (
           totalNestedLevel,
           cellStyles,
           curCellStyle.id,
+          excludedColumns,
         );
       }
     }
@@ -304,7 +311,7 @@ const injectScriptToExpandableCellByLevel = (
       // This is the data row, don't have sub level anymore
       // Update style for each column from this data row to their relevant column of expandable column
 
-      return syncColWidthFollowingTheDeepestDataRow(level, curCellStyle);
+      return syncColWidthFollowingTheDeepestDataRow(level, curCellStyle, excludedColumns);
     }
 
     // Open full width for sub-level expandable cell
@@ -371,7 +378,13 @@ export const useAutoExpandNestedTableColumn = (
       });
       defaultStyle.innerHTML = colStyles;
 
-      injectScriptToExpandableCellByLevel(1, totalNestedLevel, cellStyles, 'style');
+      injectScriptToExpandableCellByLevel(
+        1,
+        totalNestedLevel,
+        cellStyles,
+        'style',
+        excludedColumns,
+      );
     };
 
     setTimeout(injectClickToAdjustTableCellWidth, RETRY_INTERVAL);
