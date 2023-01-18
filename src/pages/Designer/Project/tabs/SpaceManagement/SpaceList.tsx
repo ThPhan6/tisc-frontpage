@@ -22,7 +22,7 @@ interface SpaceListProps {
 }
 
 const SpaceList: React.FC<SpaceListProps> = ({ handleUpdateSpace, projectId }) => {
-  useAutoExpandNestedTableColumn(2, [7]);
+  useAutoExpandNestedTableColumn(2, [6]);
   const tableRef = useRef<any>();
 
   const handleDeleteZone = (id: string) => {
