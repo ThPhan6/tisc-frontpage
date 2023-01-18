@@ -95,7 +95,7 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                 htmlFor={`${option.value}_${index}_${randomId}`}>
                 <div
                   style={{ width: '100%', paddingRight: '16px' }}
-                  className={getActiveClass(option)}>
+                  className={`item-option-uncheck ${getActiveClass(option)}`}>
                   {option.label}
                 </div>
                 <Checkbox id={`${option.value}_${index}_${randomId}`} {...option} />
@@ -105,7 +105,9 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
                 className={`${style['item-checkbox']} ${'item-wrapper-checkbox'}`}
                 style={{ minHeight: heightItem }}>
                 <Checkbox {...option} style={{ maxWidth: '100%' }}>
-                  <span className={getActiveClass(option)}>{option.label}</span>
+                  <span className={`item-option-uncheck ${getActiveClass(option)}`}>
+                    {option.label}
+                  </span>
                 </Checkbox>
               </div>
             )}

@@ -4,7 +4,6 @@ import { MESSAGE_ERROR } from '@/constants/message';
 import { IMAGE_ACCEPT_TYPES, LOGO_SIZE_LIMIT } from '@/constants/util';
 import { Col, Row, Upload, UploadProps, message } from 'antd';
 
-// import DefaultLogo from '@/assets/icons/avatar-default.svg';
 import { ReactComponent as DefaultLogo } from '@/assets/icons/avatar-default.svg';
 import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-icon.svg';
@@ -53,7 +52,6 @@ const BrandProfilePage = () => {
   const [currentLogo, setCurrentLogo] = useState<string>(userLogo ?? PlaceHolderImage);
 
   /// for brand office profile
-  //! update logo for brand was using seperate api
   const [brandProfile, setBrandProfile] = useState<Partial<BrandProfile>>(initialBrandProfileState);
 
   /// for design-firm office profile
