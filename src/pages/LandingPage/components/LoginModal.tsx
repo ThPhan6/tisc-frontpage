@@ -29,6 +29,7 @@ import { sample } from 'lodash';
 import { DataTableResponse } from '@/components/Table/types';
 import type { LoginInput, Quotation } from '@/pages/LandingPage/types';
 import { useAppSelector } from '@/reducers';
+import { landingPagePropsSelector } from '@/reducers/landingpage';
 import { closeModal, modalThemeSelector } from '@/reducers/modal';
 
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -40,13 +41,11 @@ import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 export const LoginModal: FC<{
   tiscLogin?: boolean;
-  captcha: string;
-  setRefreshReCaptcha: () => void;
-}> = ({ tiscLogin, captcha, setRefreshReCaptcha }) => {
+}> = ({ tiscLogin }) => {
   const { isMobile } = useScreen();
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
+  const { captcha, setRefreshReCaptcha } = useAppSelector(landingPagePropsSelector);
   const popupStylesProps = useLandingPageStyles(darkTheme);
-
   const [inputValue, setInputValue] = useState<LoginInput>({
     email: '',
     password: '',

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { Checkbox, message } from 'antd';
@@ -18,6 +18,7 @@ import { checkEmailAlreadyUsed, signUpDesigner } from '@/pages/LandingPage/servi
 import { debounce } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
+import { landingPagePropsSelector } from '@/reducers/landingpage';
 import { closeModal, modalThemeSelector } from '@/reducers/modal';
 
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -43,10 +44,7 @@ const DEFAULT_STATE: SignUpFormState = {
   agree_tisc: false,
 };
 
-export const SignupModal: FC<{ captcha: string; setRefreshReCaptcha: () => void }> = ({
-  captcha,
-  setRefreshReCaptcha,
-}) => {
+export const SignupModal = () => {
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
 
   const { openPoliciesModal, renderPoliciesModal } = usePoliciesModal();
@@ -56,6 +54,7 @@ export const SignupModal: FC<{ captcha: string; setRefreshReCaptcha: () => void 
   const [agreeTisc, setAgreeTisc] = useState(false);
   const isLoading = useBoolean();
   const [emailExisted, setEmailExisted] = useState(false);
+  const { captcha, setRefreshReCaptcha } = useAppSelector(landingPagePropsSelector);
 
   useEffect(() => {
     if (formInput.email && validateEmail(formInput.email)) {
@@ -224,8 +223,7 @@ export const SignupModal: FC<{ captcha: string; setRefreshReCaptcha: () => void 
           />
         </ModalContainer>
       </CustomModal>
-
-      {renderPoliciesModal()}
+      ,{renderPoliciesModal()}
     </>
   );
 };

@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { useState } from 'react';
 
 import { MESSAGE_ERROR, MESSAGE_NOTIFICATION } from '@/constants/message';
 import { PATH } from '@/constants/path';
@@ -17,6 +17,7 @@ import { isShowErrorMessage, validatePassword } from '@/helper/utils';
 
 import { PasswordInput, PasswordRequestBody } from '../types';
 import { useAppSelector } from '@/reducers';
+import { landingPagePropsSelector } from '@/reducers/landingpage';
 import { closeModal, modalPropsSelector } from '@/reducers/modal';
 
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -26,13 +27,11 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import styles from './PasswordModal.less';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
-export const PasswordModal: FC<{ captcha: string; setRefreshReCaptcha: () => void }> = ({
-  captcha,
-  setRefreshReCaptcha,
-}) => {
+export const PasswordModal = () => {
   const { fetchUserInfo } = useCustomInitialState();
 
   const { email, token, passwordType } = useAppSelector(modalPropsSelector);
+  const { captcha, setRefreshReCaptcha } = useAppSelector(landingPagePropsSelector);
   const popupStylesProps = useLandingPageStyles(false, () => {
     pushTo(PATH.landingPage);
   });

@@ -24,6 +24,7 @@ declare const REACT_APP_ENV: 'test' | 'dev' | 'pre' | false;
 
 declare const API_URL: string;
 declare const STORE_URL: string;
+declare const RECAPTCHA_SITE_KEY: string;
 
 declare module '*.svg' {
   export const ReactComponent: React.FC<React.SVGProps<SVGSVGElement>>;

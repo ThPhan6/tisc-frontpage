@@ -15,6 +15,7 @@ import { ReactComponent as SingleRight } from '@/assets/icons/single-right.svg';
 import { ReactComponent as TargetMoneyIcon } from '@/assets/icons/target-money-icon.svg';
 import { ReactComponent as TimeMoney } from '@/assets/icons/time-money-icon.svg';
 
+import { useReCaptcha } from './hook';
 import { getBooking, validateToken, verifyAccount } from './services/api';
 import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
@@ -33,6 +34,7 @@ const LandingPage = () => {
   const userEmail = useQuery().get('email');
   const tokenResetPwd = useQuery().get('token');
   const tokenVerification = useQuery().get('verification_token');
+  const { renderReCaptcha } = useReCaptcha();
 
   const listMenuFooter: ModalType[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
 
@@ -135,8 +137,10 @@ const LandingPage = () => {
     }
   }, []);
 
-  const openLoginModal = () =>
+  const openLoginModal = () => {
     store.dispatch(openModal({ type: 'Login', noBorderDrawerHeader: true }));
+  };
+
   const openBrandInterested = () =>
     store.dispatch(
       openModal({
@@ -160,7 +164,7 @@ const LandingPage = () => {
     );
   };
 
-  return (
+  return renderReCaptcha(
     <div className={styles.login}>
       <div className={styles.container}>
         <Row justify="center">
@@ -267,7 +271,7 @@ const LandingPage = () => {
         </Row>
       </div>
       <LandingPageFooter listMenuFooter={listMenuFooter} />
-    </div>
+    </div>,
   );
 };
 

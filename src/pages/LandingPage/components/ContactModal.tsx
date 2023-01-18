@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { message } from 'antd';
@@ -13,6 +13,7 @@ import { getEmailMessageError } from '@/helper/utils';
 
 import { ContactRequestBody } from '../types';
 import { useAppSelector } from '@/reducers';
+import { landingPagePropsSelector } from '@/reducers/landingpage';
 import { closeModal, modalThemeSelector } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
@@ -24,12 +25,10 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import styles from './ContactModal.less';
 import buttonStyles from './index.less';
 
-export const ContactModal: FC<{ captcha: string; setRefreshReCaptcha: () => void }> = ({
-  captcha,
-  setRefreshReCaptcha,
-}) => {
+export const ContactModal = () => {
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
   const popupStylesProps = useLandingPageStyles(darkTheme);
+  const { captcha, setRefreshReCaptcha } = useAppSelector(landingPagePropsSelector);
 
   const [valueForm, setValueForm] = useState<ContactRequestBody>({
     name: '',

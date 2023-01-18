@@ -104,5 +104,3 @@ export const ACTION_TASK_MODEL = {
   request: 'request',
   inquiry: 'inquiry',
 };
-
-export const RECAPTCHA_SITE_KEY = '6Ldkh9UiAAAAAKc1mFtUnjTGE3Q-T7Zzy9t5yLaq';

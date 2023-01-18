@@ -12,6 +12,7 @@ import { useLandingPageStyles } from './hook';
 import { InformationBooking, Timezones } from '../types';
 import { CustomModalProps } from '@/components/Modal/types';
 import { useAppSelector } from '@/reducers';
+import { landingPagePropsSelector } from '@/reducers/landingpage';
 import { closeModal, modalPropsSelector } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
@@ -23,12 +24,10 @@ import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import moment from 'moment';
 
 interface CancelBookingProps {
-  captcha: string;
+  informationBooking?: InformationBooking;
 }
 
-export const BrandInformation: FC<{ informationBooking: InformationBooking }> = ({
-  informationBooking,
-}) => {
+export const BrandInformation: FC<CancelBookingProps> = ({ informationBooking }) => {
   if (!informationBooking) {
     return null;
   }
@@ -100,12 +99,10 @@ export const BrandInformation: FC<{ informationBooking: InformationBooking }> = 
   );
 };
 
-export const CancelBookingModal: FC<CancelBookingProps & CustomModalProps> = ({
-  captcha,
-  ...props
-}) => {
+export const CancelBookingModal: FC<CancelBookingProps & CustomModalProps> = ({ ...props }) => {
   const popupStylesProps = useLandingPageStyles();
   const { informationBooking } = useAppSelector(modalPropsSelector);
+  const { captcha } = useAppSelector(landingPagePropsSelector);
   const onCancelBooking = () => {
     showPageLoading();
     if (informationBooking) {
