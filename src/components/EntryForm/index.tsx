@@ -46,7 +46,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   hideAction,
 }) => {
   const history = useHistory();
-  const isMobile = useScreen().isMobile;
+  const isTablet = useScreen().isTablet;
 
   const renderFooterButton = () => {
     if (extraFooterButton) {
@@ -55,7 +55,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
 
     return (
       <>
-        {isMobile && entryFormTypeOnMobile === 'edit' ? (
+        {isTablet && entryFormTypeOnMobile === 'edit' ? (
           <CustomButton
             size="small"
             variant="secondary"
@@ -142,7 +142,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
         {hideAction ? null : (
           <div className={styles.footer_main}>
             {footerContent ? <div className={styles.footer_content}>{footerContent}</div> : null}
-            <div className={styles.footer} style={{ padding: isMobile ? '0 12px' : '' }}>
+            <div className={styles.footer} style={{ padding: isTablet ? '0 12px' : '' }}>
               {renderFooterButton()}
             </div>
           </div>
