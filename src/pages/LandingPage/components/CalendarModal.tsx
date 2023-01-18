@@ -109,7 +109,7 @@ export const CalendarModal = () => {
 
   const [activeKey, setActiveKey] = useState<string>('');
 
-  const isMobile = useScreen().isMobile;
+  const { isTablet, isMobile } = useScreen();
 
   const [timeBooked, setTimeBooked] = useState<{
     startTime: string;
@@ -259,7 +259,7 @@ export const CalendarModal = () => {
     setRefreshReCaptcha();
   };
 
-  const contentStylesProps = isMobile
+  const contentStylesProps = isTablet
     ? {
         marginBottom: 32,
       }
@@ -272,11 +272,8 @@ export const CalendarModal = () => {
       onCancel={closeModal}
       secondaryModal
       noHeaderBorder={false}
-      width="1152px"
-      bodyStyle={{
-        height: '512px',
-        padding: '32px',
-      }}
+      className={styles.modalContainer}
+      width={isTablet ? 576 : 1152}
       closeIconClass={styles.closeIcon}
       title={
         <MainTitle level={2} textAlign="center">
@@ -287,8 +284,8 @@ export const CalendarModal = () => {
       <Row
         gutter={[32, 0]}
         style={{
-          flexDirection: isMobile ? 'column' : undefined,
-          padding: isMobile ? 16 : undefined,
+          flexDirection: isTablet ? 'column' : undefined,
+          padding: isMobile ? 20 : 32,
         }}
         className={styles.calendar}
       >
