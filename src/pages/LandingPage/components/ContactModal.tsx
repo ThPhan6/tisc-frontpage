@@ -13,6 +13,7 @@ import { getEmailMessageError } from '@/helper/utils';
 
 import { ContactRequestBody } from '../types';
 import { useAppSelector } from '@/reducers';
+import { landingPagePropsSelector } from '@/reducers/landingpage';
 import { closeModal, modalThemeSelector } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
@@ -27,6 +28,7 @@ import buttonStyles from './index.less';
 export const ContactModal = () => {
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
   const popupStylesProps = useLandingPageStyles(darkTheme);
+  const { captcha, setRefreshReCaptcha } = useAppSelector(landingPagePropsSelector);
 
   const [valueForm, setValueForm] = useState<ContactRequestBody>({
     name: '',
@@ -48,7 +50,12 @@ export const ContactModal = () => {
       return;
     }
 
-    contact(valueForm).then((res) => {
+    contact({
+      email: valueForm.email,
+      name: valueForm.name,
+      inquiry: valueForm.inquiry,
+      captcha: captcha,
+    }).then((res) => {
       if (res) {
         closeModal();
         setValueForm({
@@ -58,6 +65,7 @@ export const ContactModal = () => {
         });
       }
     });
+    setRefreshReCaptcha();
   };
   return (
     <CustomModal {...popupStylesProps}>
