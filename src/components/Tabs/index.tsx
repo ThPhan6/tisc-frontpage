@@ -46,10 +46,12 @@ export const CustomTabs: FC<CustomTabsProps> = ({
               <div
                 style={{
                   height: heightItem,
-                  width: tabDisplay !== 'space' ? widthItem : '',
+                  minWidth: tabDisplay !== 'space' ? widthItem : '',
                   padding: '0 8px',
                 }}
-                className={`${style['item-tab']} ${item?.disable && style['custom-color']}`}
+                className={`${style['item-tab']} ${
+                  item?.disable ? style['custom-color'] : ''
+                } tab-items`}
               >
                 {item?.icon && (
                   <span style={{ paddingTop: 5, paddingRight: hideTitle ? 0 : 10 }}>

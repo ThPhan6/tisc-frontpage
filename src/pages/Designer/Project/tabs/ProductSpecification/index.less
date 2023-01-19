@@ -12,6 +12,13 @@
     height: calc(var(--vh) * 100 - 232px);
     overflow: auto;
     background-color: #fff;
+
+    :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
+      @media screen and (min-width: 992px) and (max-width: 1355px), (max-width: 280px) {
+        width: max-content;
+        overflow: auto hidden;
+      }
+    }
   }
   &_right {
     justify-content: space-between;
