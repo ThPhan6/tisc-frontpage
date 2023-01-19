@@ -253,6 +253,7 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
         secondaryModal
         noHeaderBorder={false}
         width={576}
+        className={styles.contentTypeModalWrapper}
         closeIcon={<CloseIcon />}
         footer={
           <div className={styles.contentTypeFooter}>
@@ -266,7 +267,6 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
             </CustomButton>
           </div>
         }
-        className={styles.contentTypeModalWrapper}
       >
         <div>
           <CustomTabs

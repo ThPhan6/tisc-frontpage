@@ -6,13 +6,13 @@ import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg'
 import { ReactComponent as InternetIcon } from '@/assets/icons/internet-icon.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 
+import { useReCaptcha } from '../hook';
 import { deleteBooking } from '../services/api';
 import { useLandingPageStyles } from './hook';
 
 import { InformationBooking, Timezones } from '../types';
 import { CustomModalProps } from '@/components/Modal/types';
 import { useAppSelector } from '@/reducers';
-import { landingPagePropsSelector } from '@/reducers/landingpage';
 import { closeModal, modalPropsSelector } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
@@ -102,9 +102,10 @@ export const BrandInformation: FC<CancelBookingProps> = ({ informationBooking })
 export const CancelBookingModal: FC<CancelBookingProps & CustomModalProps> = ({ ...props }) => {
   const popupStylesProps = useLandingPageStyles();
   const { informationBooking } = useAppSelector(modalPropsSelector);
-  const { captcha } = useAppSelector(landingPagePropsSelector);
-  const onCancelBooking = () => {
+  const { handleReCaptchaVerify } = useReCaptcha();
+  const onCancelBooking = async () => {
     showPageLoading();
+    const captcha = (await handleReCaptchaVerify()) || '';
     if (informationBooking) {
       deleteBooking(informationBooking.id, { captcha: captcha }).then((isSuccess) => {
         if (isSuccess) {

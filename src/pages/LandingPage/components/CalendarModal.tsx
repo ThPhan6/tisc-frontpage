@@ -8,6 +8,7 @@ import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as PaginationLeftIcon } from '@/assets/icons/pagination-left.svg';
 import { ReactComponent as PaginationRightIcon } from '@/assets/icons/pagination-right.svg';
 
+import { useReCaptcha } from '../hook';
 import { createBooking, getListAvailableTime, updateBooking } from '../services/api';
 import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
@@ -16,7 +17,6 @@ import { useBoolean } from '@/helper/hook';
 import { AvailableTime, InformationBooking, Timezones } from '../types';
 import { CollapsingProps } from '@/features/how-to/types';
 import { useAppSelector } from '@/reducers';
-import { landingPagePropsSelector } from '@/reducers/landingpage';
 import { closeModal, modalPropsSelector } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
@@ -100,7 +100,7 @@ const CalendarHeader: FC<{ dateValue: Moment; onChange: (dateValue: Moment) => v
 
 export const CalendarModal = () => {
   const { informationBooking, reScheduleBooking } = useAppSelector(modalPropsSelector);
-  const { captcha, setRefreshReCaptcha } = useAppSelector(landingPagePropsSelector);
+  const { handleReCaptchaVerify } = useReCaptcha();
   const [bookingInfo, setBookingInfo] = useState<InformationBooking>(informationBooking);
 
   /// open modal
@@ -227,8 +227,9 @@ export const CalendarModal = () => {
     );
   };
 
-  const handleAddAppointment = () => {
+  const handleAddAppointment = async () => {
     showPageLoading();
+    const captcha = (await handleReCaptchaVerify()) || '';
     const handleSubmit = reScheduleBooking
       ? updateBooking(bookingInfo.id, {
           date: bookingInfo.date,
@@ -256,7 +257,6 @@ export const CalendarModal = () => {
       }
       hidePageLoading();
     });
-    setRefreshReCaptcha();
   };
 
   const contentStylesProps = isTablet

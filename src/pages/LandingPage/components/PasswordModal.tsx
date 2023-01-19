@@ -9,6 +9,7 @@ import { history } from 'umi';
 import { ReactComponent as LockedIcon } from '@/assets/icons/circle-pass-icon.svg';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon.svg';
 
+import { useReCaptcha } from '../hook';
 import { createPasswordVerify, resetPasswordMiddleware } from '../services/api';
 import { FooterContent, ModalContainer, useLandingPageStyles } from './hook';
 import { pushTo } from '@/helper/history';
@@ -17,7 +18,6 @@ import { isShowErrorMessage, validatePassword } from '@/helper/utils';
 
 import { PasswordInput, PasswordRequestBody } from '../types';
 import { useAppSelector } from '@/reducers';
-import { landingPagePropsSelector } from '@/reducers/landingpage';
 import { closeModal, modalPropsSelector } from '@/reducers/modal';
 
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -31,7 +31,7 @@ export const PasswordModal = () => {
   const { fetchUserInfo } = useCustomInitialState();
 
   const { email, token, passwordType } = useAppSelector(modalPropsSelector);
-  const { captcha, setRefreshReCaptcha } = useAppSelector(landingPagePropsSelector);
+  const { handleReCaptchaVerify } = useReCaptcha();
   const popupStylesProps = useLandingPageStyles(false, () => {
     pushTo(PATH.landingPage);
   });
@@ -96,16 +96,15 @@ export const PasswordModal = () => {
     });
   };
 
-  const handleOnSubmit = () => {
+  const handleOnSubmit = async () => {
     const handleSubmit = passwordType === 'create' ? handleVerifyAccount : handleResetPassword;
-
+    const captcha = (await handleReCaptchaVerify()) || '';
     handleSubmit({
       password: resetInputValue.password,
       confirmed_password: resetInputValue.confirmPassword,
       reset_password_token: token,
       captcha: captcha,
     });
-    setRefreshReCaptcha();
     closeModal();
   };
 

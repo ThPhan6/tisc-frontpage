@@ -15,6 +15,12 @@
   @media screen and (max-width: @screen-lg) {
     height: calc(var(--vh) * 100 - 184px);
   }
+
+  :global(.ant-tabs-nav-list) {
+    @media screen and (min-width: 992px) and (max-width: 1024px) {
+      width: max-content !important;
+    }
+  }
 }
 
 .detailWrap {
