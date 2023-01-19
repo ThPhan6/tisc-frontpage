@@ -404,3 +404,14 @@ export const checkValidURL = (url: string) => {
   );
   return result !== null;
 };
+
+export const checkBrowser = () => {
+  const chromeAgent = navigator.userAgent.indexOf('Chrome') > -1;
+  let safariAgent = navigator.userAgent.indexOf('Safari') > -1;
+
+  if (chromeAgent && safariAgent) {
+    safariAgent = false;
+  }
+
+  return { isSafari: safariAgent, isChrome: chromeAgent };
+};
