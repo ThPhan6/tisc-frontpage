@@ -1,4 +1,4 @@
-import { CSSProperties, FC, useEffect } from 'react';
+import { CSSProperties, FC, useEffect, useState } from 'react';
 
 import { Drawer, DrawerProps } from 'antd';
 
@@ -63,6 +63,10 @@ export const CustomDrawer: FC<CustomDrawerProps> = ({
 export const MobileDrawer: FC<
   CustomDrawerProps & { autoHeight?: boolean; noHeaderBorder?: boolean }
 > = ({ noHeaderBorder, autoHeight, headerStyle, ...props }) => {
+  const [height] = useState(autoHeight ? 'auto' : window.innerHeight - 48); // Prevent window.innerHeight changes
+
+  console.log('height', height);
+
   return (
     <CustomDrawer
       placement="bottom"
@@ -71,7 +75,7 @@ export const MobileDrawer: FC<
         boxShadow: noHeaderBorder ? 'none' : undefined,
         ...headerStyle,
       }}
-      height={autoHeight ? 'auto' : window.innerHeight - 48}
+      height={height}
       {...props}
     />
   );
