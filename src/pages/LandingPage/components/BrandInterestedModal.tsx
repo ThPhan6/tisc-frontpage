@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
-import { PATH } from '@/constants/path';
 import { Checkbox, message } from 'antd';
-import { history } from 'umi';
 
 import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
 import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg';
 import { ReactComponent as InternetIcon } from '@/assets/icons/internet-icon.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 
-import { checkEmailAlreadyUsed, getBooking } from '../services/api';
+import { checkEmailAlreadyUsed } from '../services/api';
 import { FooterContent, ModalContainer, useLandingPageStyles } from './hook';
-import { pushTo } from '@/helper/history';
-import { useGetParamId } from '@/helper/hook';
 import { checkValidURL, validateEmail } from '@/helper/utils';
 import { debounce } from 'lodash';
 
@@ -27,7 +23,6 @@ import { CustomModal } from '@/components/Modal';
 import { MainTitle } from '@/components/Typography';
 
 import { getAvailableDateInMonth } from '../util';
-import { useCalendarModal } from './CalendarModal';
 import { usePoliciesModal } from './PoliciesModal';
 import styles from './SignupModal.less';
 import moment from 'moment';
@@ -53,13 +48,10 @@ export const BrandInterestedModal = () => {
   const [emailExisted, setEmailExisted] = useState(false);
   const [agreeTisc, setAgreeTisc] = useState(false);
 
-  const bookingId = useGetParamId();
-
   /// booking information
   const [inputValue, setInputValue] = useState<InformationBooking>(DEFAULT_STATE_BOOKING);
 
   const { openPoliciesModal, renderPoliciesModal } = usePoliciesModal();
-  const { openCalendarModal, renderCalendarModal } = useCalendarModal(inputValue, setInputValue);
 
   const onCloseModal = () => {
     setInputValue(DEFAULT_STATE_BOOKING);
@@ -74,24 +66,6 @@ export const BrandInterestedModal = () => {
       });
     }
   }, [inputValue.email]);
-
-  useEffect(() => {
-    if (bookingId) {
-      getBooking(bookingId).then((res) => {
-        if (res) {
-          setInputValue(res);
-          if (history.location.pathname.indexOf('cancel') !== -1) {
-            store.dispatch(openModal({ type: 'Cancel Booking', title: 'Cancel Booking' }));
-          }
-          if (history.location.pathname.indexOf('re-schedule') !== -1) {
-            openCalendarModal();
-          }
-        } else {
-          pushTo(PATH.landingPage);
-        }
-      });
-    }
-  }, []);
 
   const getErrorMessage = () => {
     if (inputValue.email && !validateEmail(inputValue.email)) {
@@ -140,7 +114,12 @@ export const BrandInterestedModal = () => {
     /// closing another modal
     // closeModal();
 
-    openCalendarModal();
+    store.dispatch(
+      openModal({
+        type: 'Calendar',
+        props: { informationBooking: inputValue },
+      }),
+    );
     setAgreeTisc(false);
     setEmailExisted(false);
   };
@@ -231,8 +210,6 @@ export const BrandInterestedModal = () => {
       </CustomModal>
 
       {renderPoliciesModal()}
-
-      {renderCalendarModal()}
     </>
   );
 };

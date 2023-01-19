@@ -2,6 +2,7 @@ import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { RadioValue } from '@/components/CustomRadio/types';
 import { ProductItem } from '@/features/product/types';
 import { BrandAlphabet } from '@/features/user-group/types';
+import { InformationBooking } from '@/pages/LandingPage/types';
 import store, { RootState } from '@/reducers';
 import { AttributeContentType, AttributeSubForm } from '@/types';
 
@@ -26,6 +27,7 @@ export type ModalType =
   | 'Cancel Booking'
   | 'Reset Password'
   | 'Verify Account'
+  | 'ReSchedule Booking'
 
   // General
   | 'Assign Team'
@@ -93,6 +95,8 @@ export interface ModalState {
       product: ProductItem;
       isCustomProduct?: boolean;
     };
+    informationBooking: InformationBooking;
+    reScheduleBooking: boolean;
   };
 }
 

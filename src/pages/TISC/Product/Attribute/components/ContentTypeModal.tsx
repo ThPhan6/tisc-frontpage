@@ -7,10 +7,9 @@ import { isEmpty, isUndefined, lowerCase } from 'lodash';
 
 import type { RadioValue } from '@/components/CustomRadio/types';
 import type { TabItem } from '@/components/Tabs/types';
-import { useAppSelector } from '@/reducers';
 import { useCollapseGroupActiveCheck } from '@/reducers/active';
-import { modalPropsSelector } from '@/reducers/modal';
 import type {
+  AttributeContentType,
   AttributeSubForm,
   BasisConvention,
   BasisConventionOption,
@@ -26,6 +25,7 @@ import { CustomTabs } from '@/components/Tabs';
 
 import styles from '../styles/contentTypeModal.less';
 import { SPECIFICATION_TYPE } from '../utils';
+import { SelectedItem } from './AttributeEntryForm';
 
 type ACTIVE_TAB = 'conversions' | 'presets' | 'options' | 'text';
 
@@ -194,9 +194,17 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
   );
 };
 
-const ContentTypeModal: React.FC = () => {
-  const { contentType, selectedItem, onSubmit, type } =
-    useAppSelector(modalPropsSelector).productAttributeType;
+interface ContentTypeModalProps {
+  visible: boolean;
+  setVisible: (value: boolean) => void;
+  contentType: AttributeContentType | undefined;
+  selectedItem: SelectedItem;
+  onSubmit: (data: Omit<AttributeSubForm, 'id' | 'name'>) => void;
+  type: number;
+}
+const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
+  const { visible, setVisible, contentType, selectedItem, onSubmit, type } = props;
+
   const { subAttribute } = selectedItem;
   let listTab: TabItem[] = [
     { tab: 'TEXT', key: 'text' },
@@ -240,7 +248,10 @@ const ContentTypeModal: React.FC = () => {
       <CustomModal
         title="SELECT CONTENT TYPE"
         centered
-        visible
+        visible={visible}
+        onCancel={() => setVisible(false)}
+        secondaryModal
+        noHeaderBorder={false}
         width={576}
         closeIcon={<CloseIcon />}
         footer={

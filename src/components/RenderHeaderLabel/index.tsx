@@ -138,7 +138,7 @@ export const DualLabel: FC<DualLabelProps> = ({
       <BodyText
         fontFamily="Roboto"
         level={6}
-        style={{ fontSize, maxWidth: isMobile ? 'calc(100vw - 150px)' : 430 }}
+        style={{ fontSize, maxWidth: isMobile ? 'calc(100vw - 150px)' : 121 }}
         customClass="text-overflow"
         title={secTxt}
       >

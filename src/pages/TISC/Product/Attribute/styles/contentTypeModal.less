@@ -23,18 +23,21 @@
     }
   }
 
-  :global(.ant-modal-body) {
+  :global(.ant-modal-body),
+  :global(.ant-drawer-body) {
     padding: 0;
   }
 
   :global(.ant-modal-header),
-  :global(.ant-modal-footer) {
+  :global(.ant-modal-footer),
+  :global(.ant-drawer-header),
+  :global(.ant-drawer-footer) {
     height: @height;
-    padding: 12px 16px;
-    box-shadow: @border-top;
+    padding: 12px var(--spacing);
   }
   :global(.ant-modal-footer) {
     border: 0;
+    box-shadow: @border-top;
   }
   :global(.ant-modal-header) {
     border-bottom: 0;
@@ -52,7 +55,7 @@
 
 .contentTypeOption {
   height: 600px;
-  max-height: calc(var(--vh) * 100 - 200px);
+  max-height: calc(var(--vh) * 100 - 184px);
   padding: 16px 19px 16px 16px;
   overflow: hidden auto;
   :global(.ant-space-item) {
@@ -63,7 +66,7 @@
   }
 
   @media screen and (max-width: @screen-sm) {
-    padding: 0;
+    padding: 12px;
   }
 }
 

@@ -214,23 +214,29 @@ const ProductImagePreview: React.FC<ProductImagePreviewProps> = ({
             Image naming:
           </BodyText>
           {'keywords' in product
-            ? product.keywords.map((value, index) => (
-                <CustomInput
-                  key={index}
-                  placeholder={`keyword${index + 1}`}
-                  value={value}
-                  disabled={!isEditable}
-                  onChange={(e) => {
-                    const newKeywords = [...product.keywords] as ProductKeyword;
-                    newKeywords[index] = e.target.value;
-                    dispatch(
-                      setPartialProductDetail({
-                        keywords: newKeywords,
-                      }),
-                    );
-                  }}
-                />
-              ))
+            ? product.keywords.map((value, index) =>
+                isTablet ? (
+                  <span className="text-overflow" key={index}>
+                    {value}
+                  </span>
+                ) : (
+                  <CustomInput
+                    key={index}
+                    placeholder={`keyword${index + 1}`}
+                    value={value}
+                    disabled={!isEditable}
+                    onChange={(e) => {
+                      const newKeywords = [...product.keywords] as ProductKeyword;
+                      newKeywords[index] = e.target.value;
+                      dispatch(
+                        setPartialProductDetail({
+                          keywords: newKeywords,
+                        }),
+                      );
+                    }}
+                  />
+                ),
+              )
             : null}
         </div>
       );
