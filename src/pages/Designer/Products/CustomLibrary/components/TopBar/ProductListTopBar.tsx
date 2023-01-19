@@ -24,7 +24,7 @@ import { setCustomProductFilter } from '../../slice';
 import styles from './index.less';
 
 export const ProductListTopBar: React.FC = () => {
-  const { isMobile } = useScreen();
+  const { isTablet } = useScreen();
   const {
     filter,
     companies,
@@ -212,7 +212,7 @@ export const ProductListTopBar: React.FC = () => {
         }
         RightSideContent={
           <>
-            {isMobile ? null : (
+            {isTablet ? null : (
               <TopBarItem
                 disabled={!companies.length}
                 bottomValue="New Product"
@@ -240,7 +240,7 @@ export const ProductListTopBar: React.FC = () => {
                 </div>
               }
               customClass={`left-divider mr-12 white-space ${styles.flexEnd}`}
-              bottomValue={isMobile ? undefined : 'Vendor Management'}
+              bottomValue={isTablet ? undefined : 'Vendor Management'}
               cursor="pointer"
               onClick={() => pushTo(PATH.designerCustomResource)}
               icon={<VendorManagementIcon />}
