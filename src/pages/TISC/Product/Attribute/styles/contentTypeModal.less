@@ -50,6 +50,12 @@
       border-bottom: 0 !important;
       box-shadow: @border-bottom;
     }
+
+    :global(.ant-tabs-nav-list) {
+      @media screen and (max-width: 310px) {
+        width: max-content !important;
+      }
+    }
   }
 }
 

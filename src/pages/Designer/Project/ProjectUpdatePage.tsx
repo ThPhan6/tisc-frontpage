@@ -11,6 +11,7 @@ import type { ProjectDetailProps } from '@/features/project/types';
 import ProjectDetailHeader from './components/ProjectDetailHeader';
 import { CustomTabPane } from '@/components/Tabs';
 
+import styles from './styles/index.less';
 import GeneralInformation from './tabs/BasicInformation';
 import ProductConsidered from './tabs/ProductConsidered';
 import ProductSpecification from './tabs/ProductSpecification';
@@ -52,12 +53,13 @@ const ProjectUpdatePage: React.FC = () => {
   }, [projectId]);
 
   return (
-    <div>
+    <div className={styles.mainContainer}>
       <ProjectDetailHeader activeKey={selectedTab} onChangeTab={setSelectedTab} project={project} />
 
       <CustomTabPane
         active={selectedTab === ProjectTabKeys.basicInformation}
-        disable={!basicInformationTab}>
+        disable={!basicInformationTab}
+      >
         <GeneralInformation project={project} setProject={setProject} />
       </CustomTabPane>
 
@@ -65,7 +67,8 @@ const ProjectUpdatePage: React.FC = () => {
         active={selectedTab === ProjectTabKeys.zoneAreaRoom}
         disable={!zoneAreaRoomTab}
         lazyLoad
-        forceReload>
+        forceReload
+      >
         <SpaceManagement projectId={projectId} />
       </CustomTabPane>
 
@@ -73,7 +76,8 @@ const ProjectUpdatePage: React.FC = () => {
         active={selectedTab === ProjectTabKeys.productConsidered}
         disable={!productConsideredTab}
         lazyLoad
-        forceReload>
+        forceReload
+      >
         <ProductConsidered />
       </CustomTabPane>
 
@@ -81,7 +85,8 @@ const ProjectUpdatePage: React.FC = () => {
         active={selectedTab === ProjectTabKeys.productSpecified}
         disable={!productSpecifiedTab}
         lazyLoad
-        forceReload>
+        forceReload
+      >
         <ProductSpecification />
       </CustomTabPane>
     </div>

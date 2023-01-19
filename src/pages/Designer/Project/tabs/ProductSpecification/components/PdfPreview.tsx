@@ -68,7 +68,13 @@ export const PdfPreview: React.FC<PdfPreviewProps> = ({ generatePDF, data }) => 
         ) : (
           <img
             src={TemplatePDF}
-            style={{ display: 'flex', margin: 'auto', height: 'calc(var(--vh) * 100 - 312px)' }}
+            style={{
+              display: 'flex',
+              margin: 'auto',
+              height: 'calc(var(--vh) * 100 - 312px)',
+              width: 'auto',
+              maxWidth: '100%',
+            }}
           />
         )}
       </div>
