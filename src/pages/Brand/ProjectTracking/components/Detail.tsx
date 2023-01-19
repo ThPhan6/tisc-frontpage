@@ -29,19 +29,16 @@ const LIST_TAB: TabItem[] = [
   { tab: 'Notifications', key: 'notification' },
 ];
 
-type Tab = 'design_firm' | 'project' | 'request' | 'notification';
+export type ProjectTrackingTabs = 'design_firm' | 'project' | 'request' | 'notification';
 
 interface ProjectTrackingDetailProps {
   projectId: string;
 }
 
 export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId }) => {
-  const isMobile = useScreen().isMobile;
-  const [activeKey, setActiveKey] = useState<Tab>('design_firm');
+  const { isMobile } = useScreen();
+  const [activeKey, setActiveKey] = useState<ProjectTrackingTabs>('design_firm');
   const [data, setData] = useState<ProjectTrackingDetail>(DEFAULT_PROJECT_TRACKING_DETAIL);
-
-  const height = `calc(var(--vh) * 100 - ${isMobile ? 196 : 208}px)`;
-  const contentHeight = `calc(var(--vh) * 100 - 360px)`;
 
   useEffect(() => {
     if (projectId) {
@@ -59,26 +56,28 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId }) => {
     }
   }, [isMobile]);
 
+  const isDetailItemOpen =
+    (data.isNotificationsDetailItemOpen && activeKey === 'notification') ||
+    (data.isRequestsDetailItemOpen && activeKey === 'request');
+
   return (
-    <Row style={{ marginTop: '8px' }}>
+    <Row className={styles.mainContainer}>
       <ResponsiveCol>
-        <div className={styles.detailContainer} style={{ height }}>
+        <div className={styles.detailContainer}>
           <TableHeader
             title={data.projects.name}
             rightAction={
               <CloseIcon
-                onClick={() => !data.isOpenDetailItem && history.back()}
+                onClick={() => !isDetailItemOpen && history.back()}
                 style={{
-                  cursor: data.isOpenDetailItem ? 'not-allowed' : 'pointer',
-                  color: data.isOpenDetailItem ? '#bfbfbf' : '',
+                  cursor: isDetailItemOpen ? 'not-allowed' : 'pointer',
+                  color: isDetailItemOpen ? '#bfbfbf' : '',
                 }}
               />
             }
           />
 
-          <div
-            style={{ padding: isMobile ? 12 : undefined, height: 'calc(var(--vh) * 100 - 256px)' }}
-          >
+          <div className={isMobile ? styles.detailWrap : ''}>
             <CustomTabPane
               active={activeKey === 'project'}
               title={LIST_TAB[1].mobileTabTitle}
@@ -104,7 +103,7 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId }) => {
               centered={true}
               tabPosition="top"
               tabDisplay="space"
-              onChange={(key) => setActiveKey(key as Tab)}
+              onChange={(key) => setActiveKey(key as ProjectTrackingTabs)}
               activeKey={activeKey}
             />
 
@@ -122,6 +121,8 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId }) => {
 
             <CustomTabPane active={activeKey === 'request'}>
               <RequestsAndNotifications
+                activeKey={activeKey}
+                setData={setData}
                 requestAndNotification={data.projectRequests.map((el) => ({
                   ...el,
                   read: el.newRequest,
@@ -132,14 +133,13 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId }) => {
                   id: el.id,
                   status: el.status,
                 }))}
-                type="request"
-                setData={setData}
-                contentHeight={contentHeight}
               />
             </CustomTabPane>
 
             <CustomTabPane active={activeKey === 'notification'}>
               <RequestsAndNotifications
+                activeKey={activeKey}
+                setData={setData}
                 requestAndNotification={data.notifications.map((el) => ({
                   ...el,
                   read: el.newNotification,
@@ -149,9 +149,6 @@ export const Detail: FC<ProjectTrackingDetailProps> = ({ projectId }) => {
                   status: el.status,
                   id: el.id,
                 }))}
-                type="notification"
-                setData={setData}
-                contentHeight={contentHeight}
               />
             </CustomTabPane>
           </div>

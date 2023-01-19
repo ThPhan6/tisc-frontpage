@@ -8,6 +8,7 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-ico
 import { getFullName } from '@/helper/utils';
 import { cloneDeep } from 'lodash';
 
+import { ActionTaskModalParams } from '../../GeneralInquiries/types';
 import { ProjectTrackingDetail, RequestAndNotificationDetail } from '@/types/project-tracking.type';
 
 import { ActionTaskTable } from '@/components/ActionTask/table';
@@ -21,20 +22,20 @@ import TextForm from '@/components/Form/TextForm';
 import { TableHeader } from '@/components/Table/TableHeader';
 
 import styles from './DesignFirm.less';
+import { ProjectTrackingTabs } from './Detail';
 import moment from 'moment';
 
 interface RequestsAndNotificationsProps {
   requestAndNotification: RequestAndNotificationDetail[];
-  type: 'request' | 'notification';
+  activeKey: ProjectTrackingTabs;
   setData: (setState: (prevState: ProjectTrackingDetail) => ProjectTrackingDetail) => void;
-  contentHeight?: string;
 }
 interface RequestAndNotificationListProps extends RequestsAndNotificationsProps {
   setDetailItem: (item: RequestAndNotificationDetail | undefined) => void;
   setIndexItem: (index: number) => void;
 }
 
-interface DetaiItemProps extends RequestAndNotificationListProps {
+interface DetaiItemProps extends Partial<RequestAndNotificationListProps> {
   detailItem: RequestAndNotificationDetail;
   indexItem: number;
   handleCloseDetailItem: () => void;
@@ -42,7 +43,7 @@ interface DetaiItemProps extends RequestAndNotificationListProps {
 
 const RequestAndNotificationList: FC<RequestAndNotificationListProps> = ({
   requestAndNotification,
-  type,
+  activeKey,
   setData,
   setDetailItem,
   setIndexItem,
@@ -59,10 +60,14 @@ const RequestAndNotificationList: FC<RequestAndNotificationListProps> = ({
                   setIndexItem(index);
                   setData((prevData) => {
                     const newData = cloneDeep(prevData);
-                    newData.isOpenDetailItem = true;
-                    if (type === 'request') {
+
+                    if (activeKey === 'request') {
+                      newData.isRequestsDetailItemOpen = true;
                       newData.projectRequests[index].newRequest = false;
-                    } else {
+                    }
+
+                    if (activeKey === 'notification') {
+                      newData.isNotificationsDetailItemOpen = true;
                       newData.notifications[index].newNotification = false;
                     }
                     return newData;
@@ -74,13 +79,13 @@ const RequestAndNotificationList: FC<RequestAndNotificationListProps> = ({
                   {moment(item.title.created_at).format('YYYY-MM-DD')}
                 </td>
                 <td className={styles.projectName}>
-                  {type === 'request'
+                  {activeKey === 'request'
                     ? item.title.name
                     : ProjectTrackingNotificationType[item.title.name]}
                   {item.read ? <UnreadIcon /> : ''}
                 </td>
                 <td className={styles.action}>
-                  {type === 'request'
+                  {activeKey === 'request'
                     ? RequestsIcons[item.status]
                     : NotificationsIcons[item.status]}
                 </td>
@@ -97,14 +102,13 @@ const RequestAndNotificationList: FC<RequestAndNotificationListProps> = ({
 
 const DetaiItem: FC<DetaiItemProps> = ({
   detailItem,
-  type,
+  activeKey,
   setData,
-  contentHeight,
   indexItem,
   handleCloseDetailItem,
 }) => {
   return (
-    <div style={{ height: `${contentHeight}`, overflow: 'auto' }} className={styles.detailContent}>
+    <div style={{ overflow: 'auto' }} className={`mainContent ${styles.detailContent}`}>
       <TableHeader
         title={
           <>
@@ -112,7 +116,7 @@ const DetaiItem: FC<DetaiItemProps> = ({
               {moment(detailItem.title.created_at).format('YYYY-MM-DD')}{' '}
             </span>
             <span>
-              {type === 'request'
+              {activeKey === 'request'
                 ? detailItem.title.name
                 : ProjectTrackingNotificationType[detailItem.title.name]}
             </span>
@@ -137,7 +141,7 @@ const DetaiItem: FC<DetaiItemProps> = ({
         }
         customClass={styles.brandProduct}
       />
-      <TextForm boxShadow label={type === 'request' ? 'Requester' : 'Modifier'}>
+      <TextForm boxShadow label={activeKey === 'request' ? 'Requester' : 'Modifier'}>
         {getFullName(detailItem.designer)}
       </TextForm>
 
@@ -151,7 +155,7 @@ const DetaiItem: FC<DetaiItemProps> = ({
         label="Work Phone"
         layout="vertical"
         labelColor="mono-color-dark"
-        formClass={type === 'request' ? '' : styles.marginBottomNone}
+        formClass={activeKey === 'request' ? '' : styles.marginBottomNone}
       >
         <PhoneInput
           codeReadOnly
@@ -163,7 +167,7 @@ const DetaiItem: FC<DetaiItemProps> = ({
           containerClass={styles.customPhoneCode}
         />
       </FormGroup>
-      {type === 'request' ? (
+      {activeKey === 'request' ? (
         <>
           <TextForm boxShadow label="Title">
             {detailItem.request?.title}
@@ -185,7 +189,7 @@ const DetaiItem: FC<DetaiItemProps> = ({
 
       <ActionTaskTable
         model_id={detailItem.id}
-        model_name={type}
+        model_name={activeKey as ActionTaskModalParams['model_name']}
         setData={setData}
         indexItem={indexItem}
       />
@@ -195,9 +199,8 @@ const DetaiItem: FC<DetaiItemProps> = ({
 
 export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
   requestAndNotification,
-  type,
+  activeKey,
   setData,
-  contentHeight,
 }) => {
   const [detailItem, setDetailItem] = useState<RequestAndNotificationDetail>();
   const [indexItem, setIndexItem] = useState<number>(0);
@@ -206,7 +209,15 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
     setDetailItem(undefined);
     setData((prevData) => {
       const newData = cloneDeep(prevData);
-      newData.isOpenDetailItem = false;
+
+      if (activeKey === 'request') {
+        newData.isRequestsDetailItemOpen = false;
+      }
+
+      if (activeKey === 'notification') {
+        newData.isNotificationsDetailItemOpen = false;
+      }
+
       return newData;
     });
   };
@@ -216,7 +227,7 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
       {detailItem === undefined ? (
         <RequestAndNotificationList
           requestAndNotification={requestAndNotification}
-          type={type}
+          activeKey={activeKey}
           setData={setData}
           setDetailItem={setDetailItem}
           setIndexItem={setIndexItem}
@@ -226,12 +237,11 @@ export const RequestsAndNotifications: FC<RequestsAndNotificationsProps> = ({
           <DetaiItem
             detailItem={detailItem}
             indexItem={indexItem}
-            type={type}
-            contentHeight={contentHeight}
+            activeKey={activeKey}
             setData={setData}
             handleCloseDetailItem={handleCloseDetailItem}
           />
-          <div className={styles.cancelButton}>
+          <div className={`footer-button ${styles.cancelButton}`}>
             <CustomButton
               size="small"
               variant="primary"
