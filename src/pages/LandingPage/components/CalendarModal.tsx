@@ -100,7 +100,7 @@ const CalendarHeader: FC<{ dateValue: Moment; onChange: (dateValue: Moment) => v
 
 export const CalendarModal = () => {
   const { informationBooking, reScheduleBooking } = useAppSelector(modalPropsSelector);
-  const { captcha, setRefreshReCaptcha } = useAppSelector(landingPagePropsSelector);
+  const { captcha } = useAppSelector(landingPagePropsSelector);
   const [bookingInfo, setBookingInfo] = useState<InformationBooking>(informationBooking);
 
   /// open modal
@@ -256,7 +256,6 @@ export const CalendarModal = () => {
       }
       hidePageLoading();
     });
-    setRefreshReCaptcha();
   };
 
   const contentStylesProps = isTablet

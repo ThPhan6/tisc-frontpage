@@ -31,7 +31,7 @@ export const PasswordModal = () => {
   const { fetchUserInfo } = useCustomInitialState();
 
   const { email, token, passwordType } = useAppSelector(modalPropsSelector);
-  const { captcha, setRefreshReCaptcha } = useAppSelector(landingPagePropsSelector);
+  const { captcha } = useAppSelector(landingPagePropsSelector);
   const popupStylesProps = useLandingPageStyles(false, () => {
     pushTo(PATH.landingPage);
   });
@@ -105,7 +105,6 @@ export const PasswordModal = () => {
       reset_password_token: token,
       captcha: captcha,
     });
-    setRefreshReCaptcha();
     closeModal();
   };
 

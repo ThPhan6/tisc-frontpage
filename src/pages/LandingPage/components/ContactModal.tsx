@@ -28,7 +28,7 @@ import buttonStyles from './index.less';
 export const ContactModal = () => {
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
   const popupStylesProps = useLandingPageStyles(darkTheme);
-  const { captcha, setRefreshReCaptcha } = useAppSelector(landingPagePropsSelector);
+  const { captcha } = useAppSelector(landingPagePropsSelector);
 
   const [valueForm, setValueForm] = useState<ContactRequestBody>({
     name: '',
@@ -65,7 +65,6 @@ export const ContactModal = () => {
         });
       }
     });
-    setRefreshReCaptcha();
   };
   return (
     <CustomModal {...popupStylesProps}>

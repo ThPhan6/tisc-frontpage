@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
@@ -102,6 +103,7 @@ ConfigProvider.config({
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   console.log('initialState', initialState);
+
   return {
     title: 'TISC',
     logo: false,
@@ -139,11 +141,19 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       if (initialState?.loading) return <PageLoading />;
       return (
         <>
-          {children}
+          <GoogleReCaptchaProvider
+            reCaptchaKey={RECAPTCHA_SITE_KEY}
+            container={{
+              element: initialState?.currentUser ? 'landing-page-only' : undefined,
+              parameters: {},
+            }}
+          >
+            {children}
 
-          <LoadingPageCustomize />
+            <LoadingPageCustomize />
 
-          <ModalController />
+            <ModalController />
+          </GoogleReCaptchaProvider>
         </>
       );
     },

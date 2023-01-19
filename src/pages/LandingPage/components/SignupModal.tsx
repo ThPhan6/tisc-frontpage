@@ -54,7 +54,7 @@ export const SignupModal = () => {
   const [agreeTisc, setAgreeTisc] = useState(false);
   const isLoading = useBoolean();
   const [emailExisted, setEmailExisted] = useState(false);
-  const { captcha, setRefreshReCaptcha } = useAppSelector(landingPagePropsSelector);
+  const { captcha } = useAppSelector(landingPagePropsSelector);
 
   useEffect(() => {
     if (formInput.email && validateEmail(formInput.email)) {
@@ -121,7 +121,6 @@ export const SignupModal = () => {
       }
       isLoading.setValue(false);
     });
-    setRefreshReCaptcha();
   };
 
   return (
