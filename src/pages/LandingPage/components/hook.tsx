@@ -66,6 +66,7 @@ export const useLandingPageStyles = (darkTheme?: boolean, onCancel?: () => void)
     bodyStyle: {
       backgroundColor: darkTheme ? '#000' : '',
       padding: '48px 48px 32px 48px',
+      height: 576,
     },
     onCancel: () => {
       onCancel?.();

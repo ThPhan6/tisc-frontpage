@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
 import { ReactComponent as BrandIcon } from '@/assets/icons/brand-icon.svg';
 import { ReactComponent as ClockIcon } from '@/assets/icons/clock-icon.svg';
@@ -11,7 +11,9 @@ import { useLandingPageStyles } from './hook';
 
 import { InformationBooking, Timezones } from '../types';
 import { CustomModalProps } from '@/components/Modal/types';
-import { closeModal } from '@/reducers/modal';
+import { useAppSelector } from '@/reducers';
+import { landingPagePropsSelector } from '@/reducers/landingpage';
+import { closeModal, modalPropsSelector } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
 import { CustomModal } from '@/components/Modal';
@@ -97,15 +99,14 @@ export const BrandInformation: FC<CancelBookingProps> = ({ informationBooking })
   );
 };
 
-export const CancelBookingModal: FC<CancelBookingProps & CustomModalProps> = ({
-  informationBooking,
-  ...props
-}) => {
+export const CancelBookingModal: FC<CancelBookingProps & CustomModalProps> = ({ ...props }) => {
   const popupStylesProps = useLandingPageStyles();
+  const { informationBooking } = useAppSelector(modalPropsSelector);
+  const { captcha } = useAppSelector(landingPagePropsSelector);
   const onCancelBooking = () => {
     showPageLoading();
     if (informationBooking) {
-      deleteBooking(informationBooking?.id).then((isSuccess) => {
+      deleteBooking(informationBooking.id, { captcha: captcha }).then((isSuccess) => {
         if (isSuccess) {
           closeModal();
         }
@@ -155,18 +156,4 @@ export const CancelBookingModal: FC<CancelBookingProps & CustomModalProps> = ({
       )}
     </CustomModal>
   );
-};
-
-export const useCancelBookingModal = (informationBooking: InformationBooking) => {
-  const [openModal, setOpenModal] = useState<boolean>(false);
-
-  console.log('useCancelBookingModal', openModal);
-
-  const renderCancelBookingModal = () =>
-    openModal ? <CancelBookingModal informationBooking={informationBooking} /> : null;
-
-  return {
-    renderCancelBookingModal,
-    openCancelBookingModal: () => setOpenModal(true),
-  };
 };

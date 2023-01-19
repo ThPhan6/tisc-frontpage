@@ -124,7 +124,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     }
 
     const haveOptionAttr = group.attributes.some((el) => el.type === 'Options');
-
     return (
       <div className={styles.attrGroupTitle}>
         {!isPublicPage && activeKey === 'specification' && haveOptionAttr ? (
@@ -231,9 +230,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             chosenOption={
               chosenOption
                 ? {
-                    label: `${chosenOption.value_1 ?? ''} ${chosenOption.unit_1 ?? ''} - ${
-                      chosenOption.value_2 ?? ''
-                    } ${chosenOption.unit_2 ?? ''}`,
+                    label: `${chosenOption.value_1 ?? ''} ${chosenOption.unit_1 ?? ''} ${
+                      chosenOption.value_2 ? '-' : ''
+                    } ${chosenOption.value_2 ?? ''} ${chosenOption.unit_2 ?? ''}`,
                     value: chosenOption?.id,
                   }
                 : undefined

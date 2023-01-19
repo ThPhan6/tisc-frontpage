@@ -13,8 +13,6 @@ import {
   updateAttribute,
 } from '@/services';
 
-import store from '@/reducers';
-import { closeModal, openModal } from '@/reducers/modal';
 import type { AttributeContentType, AttributeForm, AttributeSubForm } from '@/types';
 
 import { EntryFormWrapper } from '@/components/EntryForm';
@@ -23,6 +21,7 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { AttributeItem } from './AttributeItem';
+import ContentTypeModal from './ContentTypeModal';
 
 export interface SelectedItem {
   subAttribute: AttributeSubForm;
@@ -44,6 +43,8 @@ const DEFAULT_ATTRIBUTE: AttributeForm = {
 };
 
 const AttributeEntryForm = () => {
+  // for content type modal
+  const [visible, setVisible] = useState(false);
   // for content type data
   const [contentType, setContentType] = useState<AttributeContentType>({
     conversions: [],
@@ -137,30 +138,15 @@ const AttributeEntryForm = () => {
     // reset selected item
     setSelectedItem(DEFAULT_SELECTED_ATTRIBUTE);
     // close modal
-    closeModal();
+    setVisible(false);
   };
 
   const handleSelectContentType = (subAttribute: AttributeSubForm, index: number) => {
-    const curSelectedItem = {
+    setSelectedItem({
       subAttribute,
       index,
-    };
-    setSelectedItem(curSelectedItem);
-
-    store.dispatch(
-      openModal({
-        type: 'Product Attribute Type',
-        title: 'Select content type',
-        props: {
-          productAttributeType: {
-            selectedItem: curSelectedItem,
-            contentType,
-            onSubmit: onContentTypeSubmit,
-            type: attributeLocation.TYPE,
-          },
-        },
-      }),
-    );
+    });
+    setVisible(true);
   };
 
   const handleCreateData = (submitData: AttributeForm) => {
@@ -246,6 +232,15 @@ const AttributeEntryForm = () => {
           ))}
         </div>
       </EntryFormWrapper>
+
+      <ContentTypeModal
+        visible={visible}
+        setVisible={setVisible}
+        selectedItem={selectedItem}
+        contentType={contentType}
+        onSubmit={onContentTypeSubmit}
+        type={attributeLocation.TYPE}
+      />
     </div>
   );
 };

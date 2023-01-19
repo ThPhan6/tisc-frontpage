@@ -14,6 +14,7 @@ import LocationModal from '@/features/team-profiles/components/LocationModal';
 import AccessLevelModal from '@/features/team-profiles/components/access-level-modal/AccessLevelModal';
 import { AboutModal } from '@/pages/LandingPage/components/AboutModal';
 import { BrandInterestedModal } from '@/pages/LandingPage/components/BrandInterestedModal';
+import { CalendarModal } from '@/pages/LandingPage/components/CalendarModal';
 import { CancelBookingModal } from '@/pages/LandingPage/components/CancelBookingModal';
 import { ContactModal } from '@/pages/LandingPage/components/ContactModal';
 import { LoginModal } from '@/pages/LandingPage/components/LoginModal';
@@ -22,7 +23,6 @@ import { PasswordModal } from '@/pages/LandingPage/components/PasswordModal';
 import { PoliciesModal } from '@/pages/LandingPage/components/PoliciesModal';
 import { SignupModal } from '@/pages/LandingPage/components/SignupModal';
 import { VerifyAccount } from '@/pages/LandingPage/components/VerifyAccount';
-import ContentTypeModal from '@/pages/TISC/Product/Attribute/components/ContentTypeModal';
 import { SelectBrandModal } from '@/pages/TISC/Product/Configuration/components/TopBar';
 
 import AssignProductModal from '@/features/product/modals/AssignProductModal';
@@ -33,7 +33,6 @@ export const ModalController = () => {
   const noBorderDrawerHeader = useAppSelector((state) => state.modal.noBorderDrawerHeader);
   const darkTheme = useAppSelector((state) => state.modal.theme === 'dark');
   const title = useAppSelector((state) => state.modal.title);
-
   const { isMobile } = useScreen();
 
   const renderModalContent = () => {
@@ -55,8 +54,12 @@ export const ModalController = () => {
         return <NoticeModal />;
       case 'Brand Interested':
         return <BrandInterestedModal />;
+      case 'Calendar':
+        return <CalendarModal />;
       case 'Cancel Booking':
         return <CancelBookingModal />;
+      case 'ReSchedule Booking':
+        return <CalendarModal />;
       case 'Reset Password':
         return <PasswordModal />;
       case 'Verify Account':
@@ -75,8 +78,6 @@ export const ModalController = () => {
         return <ShareViaEmail />;
 
       // TISC
-      case 'Product Attribute Type':
-        return <ContentTypeModal />;
       case 'Select Brand':
         return <SelectBrandModal />;
       case 'Brand Company':
@@ -113,6 +114,5 @@ export const ModalController = () => {
       </MobileDrawer>
     );
   }
-
   return renderModalContent();
 };
