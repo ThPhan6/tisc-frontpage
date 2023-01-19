@@ -124,8 +124,9 @@ export const LoginModal: FC<{
     });
   };
 
-  const handleForgotPassword = (email: string) => {
+  const handleForgotPassword = async (email: string) => {
     showPageLoading();
+    const captcha = (await handleReCaptchaVerify()) || '';
     forgotPasswordMiddleware(
       { email: email, type: tiscLogin ? ForgotType.TISC : ForgotType.OTHER, captcha: captcha },
       async (type: STATUS_RESPONSE, msg?: string) => {

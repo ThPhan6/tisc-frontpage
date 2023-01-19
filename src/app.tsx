@@ -140,7 +140,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     childrenRender: (children) => {
       const { location } = history;
       const publicPage =
-        location.pathname.indexOf('shared-product' || 'shared-custom-product') !== -1;
+        location.pathname.indexOf('shared-product' || 'shared-custom-product') > -1;
       if (initialState?.loading) return <PageLoading />;
 
       const renderChildren = () => {

@@ -7,13 +7,13 @@ import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg'
 import { ReactComponent as MessageIcon } from '@/assets/icons/message-icon-18px.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 
+import { useReCaptcha } from '../hook';
 import { contact } from '../services/api';
 import { ModalContainer, useLandingPageStyles } from './hook';
 import { getEmailMessageError } from '@/helper/utils';
 
 import { ContactRequestBody } from '../types';
 import { useAppSelector } from '@/reducers';
-import { landingPagePropsSelector } from '@/reducers/landingpage';
 import { closeModal, modalThemeSelector } from '@/reducers/modal';
 
 import CustomButton from '@/components/Button';
@@ -28,7 +28,7 @@ import buttonStyles from './index.less';
 export const ContactModal = () => {
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
   const popupStylesProps = useLandingPageStyles(darkTheme);
-  const { captcha } = useAppSelector(landingPagePropsSelector);
+  const { handleReCaptchaVerify } = useReCaptcha();
 
   const [valueForm, setValueForm] = useState<ContactRequestBody>({
     name: '',
@@ -42,14 +42,14 @@ export const ContactModal = () => {
     setValueForm({ ...valueForm, [e.target.name]: e.target.value });
   };
 
-  const handleSubmitContact = () => {
+  const handleSubmitContact = async () => {
     /// check email
     const invalidEmail = getEmailMessageError(valueForm.email, MESSAGE_ERROR.EMAIL_INVALID);
     if (invalidEmail) {
       message.error(invalidEmail);
       return;
     }
-
+    const captcha = (await handleReCaptchaVerify()) || '';
     contact({
       email: valueForm.email,
       name: valueForm.name,
