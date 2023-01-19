@@ -5,13 +5,15 @@ export const useReCaptcha = () => {
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleReCaptchaVerify = useCallback(async () => {
+    if (!ENABLE_RECAPTCHA) {
+      return '';
+    }
     if (!executeRecaptcha) {
       console.log('Execute recaptcha not yet available');
       return;
     }
 
     const token = await executeRecaptcha('login');
-    console.log('token');
     return token;
   }, [executeRecaptcha]);
 

@@ -138,24 +138,37 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     },
     menuRender: (props) => <AsideMenu {...props} />,
     childrenRender: (children) => {
+      const { location } = history;
+      const publicPage =
+        location.pathname.indexOf('shared-product' || 'shared-custom-product') !== -1;
       if (initialState?.loading) return <PageLoading />;
-      return (
-        <>
-          <GoogleReCaptchaProvider
-            reCaptchaKey={RECAPTCHA_SITE_KEY}
-            container={{
-              element: initialState?.currentUser ? 'landing-page-only' : undefined,
-              parameters: {},
-            }}
-          >
+
+      const renderChildren = () => {
+        return (
+          <>
             {children}
 
             <LoadingPageCustomize />
 
             <ModalController />
+          </>
+        );
+      };
+      if (ENABLE_RECAPTCHA) {
+        return (
+          <GoogleReCaptchaProvider
+            reCaptchaKey={RECAPTCHA_SITE_KEY}
+            container={{
+              element: initialState?.currentUser || publicPage ? 'landing-page-only' : undefined,
+              parameters: {},
+            }}
+          >
+            {renderChildren()}
           </GoogleReCaptchaProvider>
-        </>
-      );
+        );
+      }
+
+      return renderChildren();
     },
     unAccessible: <NoAccessPage />,
     ...initialState?.settings,
