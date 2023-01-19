@@ -234,6 +234,7 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
   showCloseFooter,
   ...props
 }) => {
+  const [height] = useState(autoHeight ? 'auto' : window.innerHeight - 48); // Prevent window.innerHeight changes
   const isMobile = useScreen().isMobile;
   const dropdownVisible = useBoolean(false);
 
@@ -257,8 +258,6 @@ export const CustomDropDown: FC<CustomDropDownProps> = ({
       ),
     );
   };
-
-  const height = autoHeight ? 'auto' : window.innerHeight - 48;
 
   const mobileMenuStyle: CSSProperties = isMobile
     ? {
