@@ -210,7 +210,8 @@ export const productVariantsSelector = createSelector(productSpecificationSelect
     el.attributes.forEach((attr) => {
       attr.basis_options?.some((opt) => {
         if (opt.isChecked) {
-          variants += opt.option_code + ', ';
+          const dash = opt.option_code === '' ? '' : ' - ';
+          variants += opt.option_code + dash;
           return true;
         }
         return false;
