@@ -45,7 +45,7 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
       <div className={`${styles.productHeader} ${customClass}`}>
         <div className={styles.leftAction}>
           <Title level={7}>{title}</Title>
-          {hideSelect ? null : (
+          {hideSelect || isTablet ? null : (
             <CustomButton
               variant="text"
               buttonClass="select-category-btn"

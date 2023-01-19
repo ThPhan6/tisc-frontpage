@@ -10,6 +10,7 @@ import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { updateAvatarTeamProfile, updateTeamProfile } from '../services';
+import { useScreen } from '@/helper/common';
 import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
 import { getBase64, isShowErrorMessage, showImageUrl, validateEmail } from '@/helper/utils';
 import { isEqual } from 'lodash';
@@ -50,6 +51,8 @@ export const PersonalProfile: FC<{ contentHeight?: number }> = ({ contentHeight 
   const { fetchUserInfo, currentUser } = useCustomInitialState();
   const submitButtonStatus = useBoolean();
   const showInterested = useCheckPermission(['Design Admin', 'Design Team']);
+
+  const { isMobile } = useScreen();
 
   const [inputValue, setInputValue] = useState<PersonalProfileState>({
     backupEmail: '',
@@ -202,7 +205,7 @@ export const PersonalProfile: FC<{ contentHeight?: number }> = ({ contentHeight 
             offset: [-14, -9],
           }}
           overlayInnerStyle={{
-            width: '240px',
+            width: isMobile ? '194px' : '240px',
             padding: '8px 19.5px',
           }}
         >

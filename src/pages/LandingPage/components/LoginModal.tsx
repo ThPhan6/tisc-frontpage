@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import { FC } from 'react';
 import { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR, MESSAGE_NOTIFICATION } from '@/constants/message';
@@ -29,6 +29,7 @@ import { sample } from 'lodash';
 import { DataTableResponse } from '@/components/Table/types';
 import type { LoginInput, Quotation } from '@/pages/LandingPage/types';
 import { useAppSelector } from '@/reducers';
+import { landingPagePropsSelector } from '@/reducers/landingpage';
 import { closeModal, modalThemeSelector } from '@/reducers/modal';
 
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -38,11 +39,13 @@ import { BodyText, MainTitle } from '@/components/Typography';
 import styles from './LoginModal.less';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
-export const LoginModal: FC<{ tiscLogin?: boolean }> = ({ tiscLogin }) => {
+export const LoginModal: FC<{
+  tiscLogin?: boolean;
+}> = ({ tiscLogin }) => {
   const { isMobile } = useScreen();
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
+  const { captcha, setRefreshReCaptcha } = useAppSelector(landingPagePropsSelector);
   const popupStylesProps = useLandingPageStyles(darkTheme);
-
   const [inputValue, setInputValue] = useState<LoginInput>({
     email: '',
     password: '',
@@ -124,7 +127,7 @@ export const LoginModal: FC<{ tiscLogin?: boolean }> = ({ tiscLogin }) => {
   const handleForgotPassword = (email: string) => {
     showPageLoading();
     forgotPasswordMiddleware(
-      { email: email, type: tiscLogin ? ForgotType.TISC : ForgotType.OTHER },
+      { email: email, type: tiscLogin ? ForgotType.TISC : ForgotType.OTHER, captcha: captcha },
       async (type: STATUS_RESPONSE, msg?: string) => {
         if (type === STATUS_RESPONSE.SUCCESS) {
           message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD);
@@ -137,7 +140,7 @@ export const LoginModal: FC<{ tiscLogin?: boolean }> = ({ tiscLogin }) => {
     );
   };
 
-  const handleSubmitLogin = (data: LoginInput) => {
+  const handleSubmitLogin = (data: { captcha: string; email: string; password: string }) => {
     showPageLoading();
 
     const successCallback = async (type: STATUS_RESPONSE, msg?: string) => {
@@ -163,7 +166,9 @@ export const LoginModal: FC<{ tiscLogin?: boolean }> = ({ tiscLogin }) => {
     handleSubmitLogin({
       email: inputValue.email,
       password: inputValue.password,
+      captcha: captcha,
     });
+    setRefreshReCaptcha();
   };
 
   const onKeyPress = (event: React.KeyboardEvent<HTMLDivElement>): void => {
@@ -274,7 +279,6 @@ export const LoginModal: FC<{ tiscLogin?: boolean }> = ({ tiscLogin }) => {
             </div>
           </div>
         </div>
-
         <FooterContent
           errorMessage={setErrorMessage()}
           buttonDisabled={handleDisableButton()}

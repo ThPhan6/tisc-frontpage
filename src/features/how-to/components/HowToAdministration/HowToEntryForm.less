@@ -1,3 +1,5 @@
+@import '~antd/es/style/variable.less';
+
 .main_container {
   margin-top: 8px;
   ::-webkit-scrollbar {
@@ -9,7 +11,7 @@
     overflow: hidden auto;
     background: #fff;
 
-    @media screen and (max-width: 576px) {
+    @media screen and (max-width: @screen-lg) {
       height: calc(var(--vh) * 100 - 216px);
     }
 
@@ -37,15 +39,17 @@
     }
 
     :global(.ant-collapse > .ant-collapse-item.ant-collapse-no-arrow > .ant-collapse-header),
-    :global(
-        .ant-collapse-ghost > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box
-      ) {
+    :global(.ant-collapse-ghost
+        > .ant-collapse-item
+        > .ant-collapse-content
+        > .ant-collapse-content-box) {
       padding: 0;
     }
 
-    :global(
-        .ant-collapse-ghost > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box
-      ) {
+    :global(.ant-collapse-ghost
+        > .ant-collapse-item
+        > .ant-collapse-content
+        > .ant-collapse-content-box) {
       margin-top: 8px;
       padding-bottom: 8px;
     }
@@ -166,11 +170,6 @@
     background: #fff;
     border-top: 0.7px solid @mono-color;
 
-    @media screen and (max-width: 576px) {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
     .submitBtn {
       border-radius: 12px;
     }

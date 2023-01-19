@@ -50,6 +50,7 @@ export type PasswordRequestBody = {
   password: string;
   confirmed_password: string;
   reset_password_token?: string;
+  captcha: string;
 };
 
 export interface ModalProps {
@@ -63,6 +64,7 @@ export type SignUpDesignerRequestBody = {
   email: string;
   password: string;
   confirmed_password: string;
+  captcha: string;
 };
 
 export type ContactRequestBody = {
@@ -152,4 +154,5 @@ export interface BookingPayloadRequest {
   date: string;
   slot: number;
   timezone: string;
+  captcha: string;
 }

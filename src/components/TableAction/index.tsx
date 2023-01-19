@@ -117,6 +117,8 @@ export const ActionMenu: FC<ActionFormProps> = ({
           top: '50%',
           transform: 'translate(-50%, -50%)',
           color: disabledOnMobile ? '#BFBFBF' : undefined,
+          height: 16,
+          width: 16,
         }}
       >
         {filledActionItems?.[0].icon ?? <EditIcon />}

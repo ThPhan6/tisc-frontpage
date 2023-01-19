@@ -56,7 +56,6 @@ const BrandProfilePage = () => {
   const [currentLogo, setCurrentLogo] = useState<string>(userLogo ?? PlaceHolderImage);
 
   /// for brand office profile
-  //! update logo for brand was using seperate api
   const [brandProfile, setBrandProfile] = useState<Partial<BrandProfile>>(initialBrandProfileState);
 
   /// for design-firm office profile
