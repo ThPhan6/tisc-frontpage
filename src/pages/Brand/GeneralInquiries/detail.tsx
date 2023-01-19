@@ -68,7 +68,7 @@ const DEFAULT_STATE: GeneralInquiryResponse = {
 };
 
 const GeneralInquiryDetail = () => {
-  const { isMobile } = useScreen();
+  const { isTablet } = useScreen();
   const inquiryId = useGetParamId();
   const [activeTab, setActiveTab] = useState<GeneralInquiriesTab>('design-firm');
 
@@ -87,11 +87,11 @@ const GeneralInquiryDetail = () => {
   const goBackToTable = () => pushTo(PATH.brandGeneralInquiry);
 
   const getMainContentHeight = () => {
-    if (isMobile && activeTab === 'design-firm') {
+    if (isTablet && activeTab === 'design-firm') {
       return 'calc(var(--vh) * 100 - 272px)';
     }
 
-    if (isMobile && activeTab === 'inquiry-message') {
+    if (isTablet && activeTab === 'inquiry-message') {
       return 'calc(var(--vh) * 100 - 320px)';
     }
 
