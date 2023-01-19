@@ -25,7 +25,7 @@ import store, { useAppSelector } from '@/reducers';
 
 import { LogoIcon } from '@/components/LogoIcon';
 
-import { CustomDropDown, FilterItem } from './ProductTopBarItem';
+import { CustomDropDown, CustomDropDownProps, FilterItem } from './ProductTopBarItem';
 import styles from './detail.less';
 
 export const onCategoryFilterClick = (id: string, name: string = '') => {
@@ -269,6 +269,7 @@ export const useProductListFilterAndSorter = (fetchs: {
   category?: boolean;
 }) => {
   useSyncQueryToState();
+
   const dispatch = useDispatch();
   const [categories, setCategories] = useState<ItemType[]>([]);
   const [brands, setBrands] = useState<ItemType[]>([]);
@@ -377,38 +378,32 @@ export const useProductListFilterAndSorter = (fetchs: {
     haveViewAll?: boolean,
     labelDefault?: string | ReactNode,
     position?: DropDownProps['placement'],
+    customDropDownProps?: Partial<CustomDropDownProps>,
   ) => {
     if (!filterData || !filterData?.length) {
       return labelDefault || type;
     }
 
-    const renderDropDowmItem = () => {
-      if (type === 'Categories') {
-        return setFormatFilterForDropDown(filterData, onCategoryFilterClick, haveViewAll);
-      }
+    const onItemClick =
+      type === 'Categories'
+        ? onCategoryFilterClick
+        : type === 'Collections'
+        ? onCollectionFilterClick
+        : type === 'Brands'
+        ? onBrandFilterClick
+        : onCompanyFilterClick;
 
-      if (type === 'Collections') {
-        return setFormatFilterForDropDown(filterData, onCollectionFilterClick, haveViewAll);
-      }
-
-      if (type === 'Brands') {
-        return setFormatFilterForDropDown(filterData, onBrandFilterClick, haveViewAll);
-      }
-
-      if (type === 'Companies') {
-        return setFormatFilterForDropDown(filterData, onCompanyFilterClick, haveViewAll);
-      }
-
-      return undefined;
-    };
+    const items = setFormatFilterForDropDown(filterData, onItemClick, haveViewAll);
 
     return (
       <CustomDropDown
-        items={renderDropDowmItem()}
+        items={items}
         viewAllTop={haveViewAll}
         textCapitalize={false}
         placement={position ?? 'bottomLeft'}
-        menuStyle={{ height: 'max-content', width: 240 }}>
+        menuStyle={{ height: 'max-content', width: 240 }}
+        {...customDropDownProps}
+      >
         {type}
       </CustomDropDown>
     );

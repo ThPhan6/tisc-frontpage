@@ -31,8 +31,8 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
   const isTISC = currentUser === USER_ROLE.tisc;
 
   const colspanValue_1 = option.unit_1 ? undefined : 2;
-  const colspanUnit_1 = option.value_1 ? undefined : 2;
-  const colspanValue_2 = option.unit_2 ? undefined : 2;
+  let colspanUnit_1 = option.value_1 ? undefined : 2;
+  let colspanValue_2 = option.unit_2 ? undefined : 2;
   const colspanUnit_2 = option.value_2 ? undefined : 2;
   const hasOneOptionLabel =
     countBy(
@@ -48,29 +48,48 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
       ? 'align-left'
       : '';
 
+  if (option.value_1 && option.unit_1 && !option.value_2 && !option.unit_2) {
+    colspanUnit_1 = 3;
+  }
+  if (!option.value_1 && !option.unit_1 && option.value_2 && option.unit_2) {
+    colspanValue_2 = 3;
+  }
+
   if (!option.image || option.image == '') {
     return (
       <div className={styles.defaultOptionList}>
         <table className="text-overflow">
           <tr>
             <td
+              title={option.value_1}
               colSpan={hasOneOptionLabel ? 4 : colspanValue_1}
-              className={`${option.value_1 ? '' : 'option-none'} ${textAlignLeft}`}>
+              className={`${option.value_1 ? '' : 'option-none'} ${textAlignLeft} ${
+                colspanUnit_1 === 3 ? 'align-right' : ''
+              }`}
+            >
               {option.value_1}
             </td>
             <td
+              title={option.unit_1}
               colSpan={hasOneOptionLabel ? 4 : colspanUnit_1}
-              className={`${option.unit_1 ? '' : 'option-none'} ${textAlignLeft}`}>
+              className={`${option.unit_1 ? '' : 'option-none'} ${textAlignLeft}`}
+            >
               {option.unit_1}
             </td>
             <td
+              title={option.value_2}
               colSpan={hasOneOptionLabel ? 4 : colspanValue_2}
-              className={`${option.value_2 ? '' : 'option-none'} ${textAlignLeft}`}>
+              className={`${option.value_2 ? '' : 'option-none'} ${textAlignLeft} ${
+                colspanValue_2 === 3 ? 'align-right' : ''
+              }`}
+            >
               {option.value_2}
             </td>
             <td
+              title={option.unit_2}
               colSpan={hasOneOptionLabel ? 4 : colspanUnit_2}
-              className={`${option.unit_2 ? '' : 'option-none'} ${textAlignLeft}`}>
+              className={`${option.unit_2 ? '' : 'option-none'} ${textAlignLeft}`}
+            >
               {option.unit_2}
             </td>
           </tr>
@@ -84,7 +103,8 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
       <div
         className={`${styles.boxShadowOptionImage} ${
           isTISC ? styles.widthCheckboxImage : styles.widthOptionImage
-        }`}></div>
+        }`}
+      />
       <img src={showImageUrl(option.image)} />
       <div className="option-image-list-wrapper">
         <BodyText level={6} fontFamily="Roboto" customClass="heading-option-group">
@@ -128,12 +148,14 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
       <div
         className={`${styles.content}  product-attribute-option-wrapper`}
         style={{ cursor: isPublicPage ? 'text' : undefined }}
-        onClick={() => setVisible(true)}>
+        onClick={() => setVisible(true)}
+      >
         <BodyText
           level={6}
           fontFamily="Roboto"
           customClass={isPublicPage ? styles.content_select : ''}
-          color={chosenOption?.label ? 'primary-color-dark' : 'mono-color'}>
+          color={chosenOption?.label ? 'primary-color-dark' : 'mono-color'}
+        >
           {showChosenOption()}
         </BodyText>
         {isPublicPage ? null : <ActionRightIcon className={styles.singlerRighIcon} />}
@@ -167,7 +189,9 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
           }`}
           chosenValue={chosenOption}
           setChosenValue={setChosenOptions}
-          clearOnClose={clearOnClose}></Popover>
+          clearOnClose={clearOnClose}
+          secondaryModal
+        />
       )}
     </>
   );

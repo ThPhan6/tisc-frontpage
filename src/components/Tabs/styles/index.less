@@ -1,15 +1,47 @@
+@import '~antd/es/style/variable.less';
+
 .tab-list {
+  @media screen and (max-width: @screen-lg) {
+    :global(.ant-tabs-nav-list) {
+      width: 100%;
+    }
+  }
+  &.lightTheme {
+    :global(.ant-tabs-tab-btn) {
+      padding: 0 !important;
+      background-color: #fff !important;
+    }
+    .item-tab svg {
+      color: #000;
+    }
+    :global(.ant-tabs-tab-active) {
+      .item-tab svg {
+        color: @primary-color-dark;
+      }
+    }
+  }
+  &.outline {
+    :global(.ant-tabs-tab-btn) {
+      background-color: transparent !important;
+    }
+  }
+
   :global(.ant-tabs-tab) {
     display: block;
     width: 100%;
     padding: 0;
     color: @mono-color;
     font-weight: 300;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 22px;
     text-transform: uppercase;
     user-select: none;
+
+    @media screen and (max-width: @screen-sm) {
+      text-transform: capitalize;
+    }
   }
+
   :global(.ant-tabs-nav-operations) {
     display: none !important;
   }
@@ -22,7 +54,14 @@
     background: none;
   }
   :global(.ant-tabs-top > .ant-tabs-nav::before) {
+    z-index: 1;
     border-bottom: 1px solid @mono-color;
+  }
+  :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap) {
+    &::before,
+    &::after {
+      box-shadow: none;
+    }
   }
 }
 
@@ -105,11 +144,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-}
-
-.custom-icon {
-  padding-top: 5px;
-  padding-right: 10px;
 }
 
 .custom-color {

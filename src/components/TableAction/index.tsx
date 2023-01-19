@@ -11,7 +11,10 @@ import { ReactComponent as LogOutIcon } from '@/assets/icons/outside-icon.svg';
 import { ReactComponent as CopyIcon } from '@/assets/icons/tabs-icon.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon.svg';
 
+import { useScreen } from '@/helper/common';
+
 import { HeaderDropdown, HeaderDropdownProps, MenuIconProps } from '../HeaderDropdown';
+import styles from './index.less';
 
 type ActionType =
   | 'specify'
@@ -22,14 +25,15 @@ type ActionType =
   | 'invite'
   | 'user'
   | 'logout'
-  | 'billing'
-  | 'updateOrView';
+  | 'billing';
 
 interface ActionFormProps extends HeaderDropdownProps {
   actionItems?: (MenuIconProps & { type: ActionType })[];
   actionIcon?: JSX.Element;
   offsetAlign?: [number, number];
   containerStyle?: CSSProperties;
+  editActionOnMobile?: boolean;
+  disabledOnMobile?: boolean;
 }
 
 const DEFAULT_ACTION_INFO: {
@@ -74,10 +78,6 @@ const DEFAULT_ACTION_INFO: {
     icon: <BillingIcon />,
     label: 'Billing',
   },
-  updateOrView: {
-    icon: <EditIcon />,
-    label: 'Edit/View',
-  },
 };
 
 export const ActionMenu: FC<ActionFormProps> = ({
@@ -88,13 +88,43 @@ export const ActionMenu: FC<ActionFormProps> = ({
   arrow = true,
   placement = 'bottomRight',
   containerStyle,
+  editActionOnMobile = true,
+  disabledOnMobile,
   ...props
 }) => {
+  const isTablet = useScreen().isTablet;
   const filledActionItems = actionItems?.map((item) => ({
     ...item,
     icon: item.icon || DEFAULT_ACTION_INFO[item.type].icon,
     label: item.label || DEFAULT_ACTION_INFO[item.type].label,
   }));
+
+  if (isTablet && editActionOnMobile) {
+    return (
+      <div
+        className={styles.iconShowed}
+        onClick={(e) => {
+          if (disabledOnMobile) return;
+
+          e.stopPropagation();
+          e.preventDefault();
+
+          filledActionItems?.[0]?.onClick();
+        }}
+        style={{
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          color: disabledOnMobile ? '#BFBFBF' : undefined,
+          height: 16,
+          width: 16,
+        }}
+      >
+        {filledActionItems?.[0].icon ?? <EditIcon />}
+      </div>
+    );
+  }
 
   return (
     <div
@@ -102,14 +132,16 @@ export const ActionMenu: FC<ActionFormProps> = ({
       onClick={(e) => {
         e.stopPropagation();
         e.preventDefault();
-      }}>
+      }}
+    >
       <HeaderDropdown
         {...props}
         arrow={arrow}
         align={{ offset: offsetAlign }}
         trigger={trigger}
         placement={placement}
-        items={filledActionItems}>
+        items={filledActionItems}
+      >
         {actionIcon || <ActionIcon />}
       </HeaderDropdown>
     </div>

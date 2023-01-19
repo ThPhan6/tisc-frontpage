@@ -1,11 +1,12 @@
 import { FC, useState } from 'react';
 
 import { USER_STATUS_TEXTS } from '@/constants/util';
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { showImageUrl } from '@/helper/utils';
 
 import { TeamDetail } from '../type';
@@ -15,6 +16,7 @@ import { ProductConsiderStatus, ProductSpecifyStatus } from '@/features/project/
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import TextForm from '@/components/Form/TextForm';
+import { ResponsiveCol } from '@/components/Layout';
 import { LogoIcon } from '@/components/LogoIcon';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText, Title } from '@/components/Typography';
@@ -71,11 +73,13 @@ const ProductAndProjectHeader: FC<ProductProps> = (props) => {
     <div className={styles.panel_header}>
       <div
         className={`${styles.panel_header__field}`}
-        onClick={() => handleActiveCollapse(item.title ? index : -1)}>
+        onClick={() => handleActiveCollapse(item.title ? index : -1)}
+      >
         <div
           className={`${styles.titleIcon} ${
             String(index) !== activeKey ? styles.font_weight_300 : styles.font_weight_500
-          }`}>
+          }`}
+        >
           {showLogo()}
           <BodyText level={5} fontFamily="Roboto" style={{ marginLeft: '12px' }}>
             {item.title}
@@ -141,7 +145,8 @@ const renderContent = (type: TabKey, item: any) => {
                 ? styles.cancelled
                 : undefined
             }`}
-            key={index}>
+            key={index}
+          >
             <img
               src={showImageUrl(product.image)}
               style={{ width: '24px', height: '24px', marginRight: '12px' }}
@@ -161,11 +166,16 @@ export const ProductAndProjectTab: FC<ProductAndProjectTabProps> = ({ type, data
   const handleActiveCollapse = (index: number) => {
     setActiveKey(activeKey === String(index) ? '' : String(index));
   };
-
+  const { isTablet } = useScreen();
   return (
     <Row>
-      <Col span={12} className={styles.container}>
-        <div className={styles.content}>
+      <ResponsiveCol className={styles.container}>
+        <div
+          className={styles.content}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 264px)' : 'calc(var(--vh) * 100 - 288px)',
+          }}
+        >
           <GeneralData>
             {data?.length
               ? data?.map((item, index) => (
@@ -184,7 +194,8 @@ export const ProductAndProjectTab: FC<ProductAndProjectTabProps> = ({ type, data
                       showArrow={false}
                       className={
                         String(index) !== activeKey ? styles['bottomMedium'] : styles['bottomBlack']
-                      }>
+                      }
+                    >
                       {renderContent(type, item.content)}
                     </Collapse.Panel>
                   </Collapse>
@@ -227,7 +238,7 @@ export const ProductAndProjectTab: FC<ProductAndProjectTabProps> = ({ type, data
             </>
           )}
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

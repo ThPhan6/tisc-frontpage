@@ -4,27 +4,25 @@ import { message } from 'antd';
 
 import { getSelectedRoomIds, useAssignProductToSpaceForm } from './hooks';
 import { assignProductToProject, getAllProjects } from '@/features/project/services';
+import { useScreen } from '@/helper/common';
 
 import { RadioValue } from '@/components/CustomRadio/types';
 import { useAppSelector } from '@/reducers';
+import { modalPropsSelector } from '@/reducers/modal';
 
 import CollapseRadioList from '@/components/CustomRadio/CollapseRadioList';
 import { FormGroup } from '@/components/Form';
-import Popover, { PopoverProps } from '@/components/Modal/Popover';
+import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
 
 import styles from './AssignProductModal.less';
 
-interface AssignProductModalProps extends Omit<PopoverProps, 'title'> {
-  productId: string;
-  isCustomProduct: boolean;
-}
+export const assignProductModalTitle = 'Assign material/product';
 
-const AssignProductModal: FC<AssignProductModalProps> = ({
-  productId,
-  isCustomProduct,
-  ...props
-}) => {
+const AssignProductModal: FC = () => {
+  const { isMobile } = useScreen();
+  const { productId, isCustomProduct } = useAppSelector(modalPropsSelector);
+
   const projects = useAppSelector((state) => state.project.list);
 
   const [selectedProject, setSelectedProject] = useState<RadioValue>();
@@ -33,34 +31,9 @@ const AssignProductModal: FC<AssignProductModalProps> = ({
     String(selectedProject?.value || ''),
   );
 
-  const projectOptions: RadioValue[] = projects.map((el) => ({
-    value: el.id,
-    label: (
-      <span className="selected-item flex-start">
-        <BodyText
-          fontFamily="Roboto"
-          level={5}
-          customClass="text-overflow"
-          style={{ marginRight: 16, width: 60 }}>
-          {el.code}
-        </BodyText>
-        <BodyText
-          fontFamily="Roboto"
-          level={5}
-          customClass="text-overflow"
-          style={{ maxWidth: 430 }}>
-          {el.name}
-        </BodyText>
-      </span>
-    ),
-  }));
-
   useEffect(() => {
-    if (!props.visible) {
-      return;
-    }
     getAllProjects();
-  }, [props.visible]);
+  }, []);
 
   const onSubmitAssigning = () => {
     if (!selectedProject) {
@@ -79,15 +52,37 @@ const AssignProductModal: FC<AssignProductModalProps> = ({
       project_id: String(selectedProject?.value),
       allocation: selectedRoomIds,
       custom_product: isCustomProduct,
-    }).then((success) => {
-      if (success) {
-        props.setVisible(false);
-      }
     });
   };
 
+  const projectOptions: RadioValue[] = projects.map((el) => ({
+    value: el.id,
+    label: (
+      <span className="selected-item flex-start">
+        <BodyText
+          fontFamily="Roboto"
+          level={5}
+          customClass="text-overflow"
+          style={{ marginRight: 12, width: 60 }}
+          title={el.code}
+        >
+          {el.code}
+        </BodyText>
+        <BodyText
+          fontFamily="Roboto"
+          level={5}
+          customClass="text-overflow"
+          style={{ maxWidth: isMobile ? 'calc(100vw - 150px)' : 430 }}
+          title={el.name}
+        >
+          {el.name}
+        </BodyText>
+      </span>
+    ),
+  }));
+
   return (
-    <Popover {...props} title="Assign material/product" onFormSubmit={onSubmitAssigning}>
+    <Popover visible title={assignProductModalTitle} onFormSubmit={onSubmitAssigning}>
       <FormGroup label="Live Project Name" layout="vertical">
         <CollapseRadioList
           options={projectOptions}
@@ -103,8 +98,9 @@ const AssignProductModal: FC<AssignProductModalProps> = ({
       <FormGroup
         label="Assigning To"
         layout="vertical"
-        style={{ marginTop: 24 }}
-        formClass={`${styles.zonesContainer} ${selectedProject ? '' : styles.disabled}`}>
+        style={{ marginTop: isMobile ? 16 : 24 }}
+        formClass={`${styles.zonesContainer} ${selectedProject ? '' : styles.disabled}`}
+      >
         <AssignProductToSpaceForm />
       </FormGroup>
     </Popover>

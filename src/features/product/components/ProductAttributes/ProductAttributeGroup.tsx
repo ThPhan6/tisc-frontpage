@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 
 import { useProductAttributeForm } from './hooks';
+import { useScreen } from '@/helper/common';
 import { useCheckPermission, useQuery } from '@/helper/hook';
 
 import {
@@ -51,7 +52,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   curProductId,
   isSpecifiedModal,
 }) => {
+  const isTablet = useScreen().isTablet;
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  const isEditable = isTiscAdmin && !isTablet;
 
   const signature = useQuery().get('signature') ?? '';
   const isPublicPage = signature ? true : false;
@@ -103,7 +106,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   const renderCollapseHeader = (grIndex: number) => {
     const group = attributeGroup[grIndex];
     if (isTiscAdmin) {
-      return (
+      return isEditable ? (
         <InputGroup
           horizontal
           fontLevel={4}
@@ -113,6 +116,10 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
           value={group.name}
           onChange={onChangeAttributeName(grIndex)}
         />
+      ) : (
+        <BodyText level={6} fontFamily="Roboto" customClass="text-overflow">
+          {group.name}
+        </BodyText>
       );
     }
 
@@ -151,7 +158,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     groupName: string,
     isSpecificationOptionSelection?: boolean,
   ) => {
-    if (isTiscAdmin) {
+    if (isTiscAdmin && isEditable) {
       if (!attributes) {
         return null;
       }
@@ -231,6 +238,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                 : undefined
             }
             setChosenOptions={(option) => {
+              if (isTiscAdmin && isEditable) {
+                return;
+              }
               if (option?.value) {
                 setCurAttributeSelect({
                   groupId: attrGroupItem.id || '',
@@ -261,19 +271,21 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   };
 
   return (
-    <div key={groupIndex} style={{ marginBottom: 8, marginTop: isTiscAdmin ? undefined : 8 }}>
+    <div key={groupIndex} style={{ marginBottom: 8, marginTop: isEditable ? undefined : 8 }}>
       <div className={styles.attributes}>
         <div className={styles.specification}>
           <CustomCollapse
             showActiveBoxShadow={!specifying}
             noBorder={noBorder}
             expandingHeaderFontStyle="bold"
+            arrowAlignRight={specifying}
             className={isTiscAdmin ? undefined : styles.vendorSection}
             customHeaderClass={`${styles.productAttributeItem} ${
               specifying ? styles.specifying : ''
             }`}
-            header={renderCollapseHeader(groupIndex)}>
-            {isTiscAdmin && attributes ? (
+            header={renderCollapseHeader(groupIndex)}
+          >
+            {isEditable && attributes ? (
               <SelectAttributesToGroupRow
                 activeKey={activeKey}
                 attributes={attributes}
@@ -303,7 +315,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                   attrGroupItem.selection && !isTiscAdmin && !isPublicPage
                     ? styles.paddingWrapper
                     : styles.colorInput
-                }`}>
+                }`}
+              >
                 <table className={styles.table}>
                   <tbody>
                     {attrGroupItem.attributes.map((attribute, attrIndex) =>

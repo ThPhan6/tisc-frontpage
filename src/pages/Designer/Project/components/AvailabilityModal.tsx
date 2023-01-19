@@ -19,10 +19,12 @@ export const AvailabilityModal: FC<AvailabilityModalProps> = ({ visible, setVisi
   return (
     <Popover
       title="LEGEND"
+      secondaryModal
       visible={visible}
       setVisible={setVisible}
       className={styles.modal}
-      noFooter>
+      noFooter
+    >
       <div className={styles.topSpace}>
         <RobotoBodyText level={5} customClass={styles.fontBold}>
           AVAILABILITY

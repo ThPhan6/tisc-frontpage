@@ -9,6 +9,7 @@ interface ActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement
   className?: string;
   title: string;
   active?: boolean;
+  short?: boolean;
 }
 
 const ActionButton: React.FC<ActionButtonProps> = ({
@@ -17,6 +18,8 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   className,
   title,
   active,
+  short,
+  style,
   ...props
 }) => {
   return (
@@ -25,12 +28,19 @@ const ActionButton: React.FC<ActionButtonProps> = ({
       className={`${styles.container} ${styles.actionButton} ${className ?? ''} ${
         active ? styles.active : ''
       }`}
-      {...props}>
+      style={{
+        ...style,
+        padding: short ? '0 24px 0 0' : undefined,
+      }}
+      {...props}
+    >
       {icon}
 
-      <BodyText level={6} fontFamily="Roboto">
-        {title}
-      </BodyText>
+      {short ? null : (
+        <BodyText level={6} fontFamily="Roboto">
+          {title}
+        </BodyText>
+      )}
     </button>
   );
 };

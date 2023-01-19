@@ -58,7 +58,8 @@ export const CustomTextArea: FC<CustomTextAreaProps> = ({
     <div
       className={`${style['textarea-container']} ${
         style[`${borderBottomColor}-border-bottom-color`]
-      } ${boxShadow ? style.boxShadow : ''} ${customClass}`}>
+      } ${boxShadow ? style.boxShadow : ''} ${customClass}`}
+    >
       <Input.TextArea
         {...props}
         ref={textarea}

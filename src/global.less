@@ -1,7 +1,18 @@
 @import '~antd/es/style/variable.less';
+
+:root {
+  --vh: calc(var(--vhi, 1vh));
+  --spacing: 16px;
+
+  @media (max-width: @screen-lg) {
+    --spacing: 12px;
+  }
+}
+
 html,
 body,
 #root {
+  width: 100% !important;
   height: 100%;
   font-weight: 300;
   font-family: Roboto, Cormorant-Garamond, sans-serif;
@@ -12,7 +23,6 @@ body,
 }
 
 .ant-layout {
-  min-height: 100vh;
   background: @mono-color-light;
 }
 .ant-pro-sider.ant-layout-sider.ant-pro-sider-fixed {
@@ -89,7 +99,7 @@ ol {
   }
 }
 
-@media (max-width: @screen-xs) {
+@media (max-width: @screen-lg) {
   .ant-table {
     width: 100%;
     overflow-x: auto;
@@ -102,6 +112,15 @@ ol {
           display: block;
         }
       }
+    }
+  }
+  main.ant-pro-basicLayout-content {
+    margin: 12px;
+    .ant-pro-page-container-children-content {
+      margin: 12px 12px 0;
+    }
+    .ant-pro-page-container {
+      margin: -12px -12px 0;
     }
   }
 }
@@ -123,7 +142,7 @@ input:-webkit-autofill:active {
 // Compatible with IE11
 @media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
   body .ant-design-pro > .ant-layout {
-    min-height: 100vh;
+    min-height: calc(var(--vh) * 100);
   }
 }
 
@@ -161,6 +180,9 @@ button {
   color: @primary-color-light;
 }
 
+.white {
+  color: #fff;
+}
 .mono-color {
   color: @mono-color;
 }
@@ -195,24 +217,24 @@ button {
 }
 
 .flex-center {
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
 }
 
 .flex-end {
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: flex-end;
 }
 
 .flex-start {
-  display: flex;
+  display: flex !important;
   align-items: center;
 }
 
 .flex-between {
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: space-between;
 }
@@ -262,4 +284,12 @@ li.ant-menu-submenu {
 .ant-checkbox .ant-checkbox-inner {
   border-color: #000;
   border-radius: 0;
+}
+
+.border-top {
+  box-shadow: @border-top-light;
+}
+
+.white-space {
+  white-space: nowrap;
 }

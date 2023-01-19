@@ -60,11 +60,13 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
           <RobotoBodyText
             level={6}
             color={curAttributeSelect.attribute?.id ? 'primary-color-dark' : 'mono-color-medium'}
-            customClass={`${isSpecifiedModal ? 'header-label' : 'label-space'}`}>
+            customClass={`${isSpecifiedModal ? 'header-label' : 'label-space'}`}
+          >
             {curAttributeSelect.attribute?.name || 'select'}
           </RobotoBodyText>
         </div>
-      }>
+      }
+    >
       {attrGroupItem.attributes.map((attribute) => {
         if (attribute.type === 'Options') {
           return (
@@ -98,7 +100,8 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
                       false, // dont reset attribute selected
                     );
                   }
-                }}>
+                }}
+              >
                 {attribute.name}
               </RobotoBodyText>
             </div>

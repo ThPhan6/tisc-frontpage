@@ -11,6 +11,7 @@ import { ReactComponent as CheckIcon } from '@/assets/icons/ic-square-check.svg'
 import { ReactComponent as InfoIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import {
+  onCellNoBorder,
   onCellUnlisted,
   onOpenSpecifiyingProductModal,
   renderAvailability,
@@ -69,6 +70,9 @@ const ProductConsidered: React.FC = () => {
         icon: <CheckIcon style={{ width: 16, height: 16 }} />,
         disabled: record.specifiedDetail?.consider_status !== ProductConsiderStatus.Unlisted,
         onClick: () => {
+          if (record.specifiedDetail?.consider_status !== ProductConsiderStatus.Unlisted) {
+            return;
+          }
           updateProductConsiderStatus(record.specifiedDetail?.id, {
             consider_status: ProductConsiderStatus['Re-considered'],
           }).then((success) => (success ? tableRef.current?.reload() : undefined));
@@ -80,6 +84,9 @@ const ProductConsidered: React.FC = () => {
         icon: <CancelIcon style={{ width: 16, height: 16 }} />,
         disabled: record.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted,
         onClick: () => {
+          if (record.specifiedDetail?.consider_status === ProductConsiderStatus.Unlisted) {
+            return;
+          }
           updateProductConsiderStatus(record.specifiedDetail?.id, {
             consider_status: ProductConsiderStatus.Unlisted,
           }).then((success) => (success ? tableRef.current?.reload() : undefined));
@@ -94,7 +101,8 @@ const ProductConsidered: React.FC = () => {
         textCapitalize={false}
         items={menuItems}
         menuStyle={{ width: 160, height: 'auto' }}
-        labelProps={{ className: 'flex-between' }}>
+        labelProps={{ className: 'flex-between' }}
+      >
         {ProductConsiderStatus[record.specifiedDetail.consider_status]}
       </CustomDropDown>
     );
@@ -106,6 +114,7 @@ const ProductConsidered: React.FC = () => {
     }
     return (
       <ActionMenu
+        editActionOnMobile={false}
         actionItems={[
           {
             type: 'specify',
@@ -279,14 +288,14 @@ const ProductConsidered: React.FC = () => {
       dataIndex: 'status_name',
       hidden: gridView.value,
       render: renderStatusDropdown, // For Entire project
-      onCell: onCellUnlisted,
+      onCell: onCellNoBorder,
     },
     {
       title: 'Action',
       align: 'center',
       width: '5%',
       render: renderActionCell,
-      onCell: onCellUnlisted,
+      onCell: onCellNoBorder,
     },
   ];
 
@@ -392,7 +401,11 @@ const ProductConsidered: React.FC = () => {
     return (
       <div
         className={cardStyles.productCardContainer}
-        style={{ padding: '16px 16px 8px', maxWidth: 'calc(83.33vw - 40px)' }}>
+        style={{
+          padding: '16px 16px 8px',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 224px))',
+        }}
+      >
         {products.map((item, index: number) => (
           <ProductCard
             key={index}
@@ -421,7 +434,8 @@ const ProductConsidered: React.FC = () => {
             level={4}
             fontFamily="Cormorant-Garamond"
             color="mono-color"
-            style={{ fontWeight: '600', marginRight: 4 }}>
+            style={{ fontWeight: '600', marginRight: 4 }}
+          >
             View By:
           </BodyText>
 

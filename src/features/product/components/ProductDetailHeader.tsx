@@ -2,6 +2,8 @@ import { useState } from 'react';
 import type { FC } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { useScreen } from '@/helper/common';
+
 import type { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { setPartialProductDetail } from '@/features/product/reducers';
 import { useAppSelector } from '@/reducers';
@@ -31,6 +33,7 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
   disabled,
   label,
 }) => {
+  const isTablet = useScreen().isTablet;
   const product = useAppSelector((state) => state.product);
 
   const dispatch = useDispatch();
@@ -42,31 +45,36 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
       <div className={`${styles.productHeader} ${customClass}`}>
         <div className={styles.leftAction}>
           <Title level={7}>{title}</Title>
-          {hideSelect ? null : (
+          {hideSelect || isTablet ? null : (
             <CustomButton
               variant="text"
               buttonClass="select-category-btn"
-              onClick={() => setVisible(true)}>
+              onClick={() => setVisible(true)}
+            >
               {label}
             </CustomButton>
           )}
         </div>
         <div className={styles.iconWrapper}>
-          <CustomButton
-            size="small"
-            variant="primary"
-            properties="rounded"
-            buttonClass="save-btn"
-            onClick={onSave}
-            disabled={disabled}>
-            Save
-          </CustomButton>
+          {isTablet ? null : (
+            <CustomButton
+              size="small"
+              variant="primary"
+              properties="rounded"
+              buttonClass="save-btn"
+              onClick={onSave}
+              disabled={disabled}
+            >
+              Save
+            </CustomButton>
+          )}
           <CustomButton
             size="small"
             variant="primary"
             properties="rounded"
             buttonClass="cancel-btn"
-            onClick={onCancel}>
+            onClick={onCancel}
+          >
             Close
           </CustomButton>
         </div>
@@ -74,6 +82,7 @@ const ProductDetailHeader: FC<ProductDetailHeaderProps> = ({
       {hideSelect ? null : (
         <Popover
           title="SELECT CATEGORY"
+          secondaryModal
           visible={visible}
           setVisible={setVisible}
           categoryDropdown

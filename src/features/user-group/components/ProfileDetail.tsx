@@ -1,18 +1,21 @@
 import { FC } from 'react';
 
-import { Col, Row } from 'antd';
+import { Row } from 'antd';
 
+import { useScreen } from '@/helper/common';
 import { getValueByCondition, showImageUrl } from '@/helper/utils';
 
 import { UserGroupProps } from '../types/common.types';
 
 import TextForm from '@/components/Form/TextForm';
+import { ResponsiveCol } from '@/components/Layout';
 import { BodyText } from '@/components/Typography';
 
 import indexStyles from '../styles/index.less';
 import styles from './Profile.less';
 
 export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
+  const { isTablet } = useScreen();
   if (!data) return null;
 
   const getProfileLabel = () =>
@@ -50,13 +53,19 @@ export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
 
   return (
     <Row className={indexStyles.container}>
-      <Col span={12}>
-        <div className={`${styles.profile} ${indexStyles.form}`}>
+      <ResponsiveCol>
+        <div
+          className={`${styles.profile} ${indexStyles.form}`}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 266px)' : 'calc(var(--vh) * 100 - 248px)',
+          }}
+        >
           <div className={styles.designName}>
             <TextForm
               label={type === 'brand' ? 'Brand Name' : 'Design Firm Name'}
               boxShadow
-              formClass={data.logo ? styles.brandName : styles.brandNameInfo}>
+              formClass={data.logo ? styles.brandName : styles.brandNameInfo}
+            >
               {data.name ?? ''}
             </TextForm>
             {data.logo ? <img src={showImageUrl(data.logo)} className={styles.logo} /> : ''}
@@ -96,7 +105,7 @@ export const ProfileDetail: FC<UserGroupProps> = ({ type, data }) => {
             </TextForm>
           ) : null}
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

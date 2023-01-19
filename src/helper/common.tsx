@@ -1,4 +1,4 @@
-import { Modal, ModalFuncProps } from 'antd';
+import { Grid, Modal, ModalFuncProps } from 'antd';
 
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-triangle.svg';
 
@@ -56,4 +56,15 @@ export const getResponseMessage = (
   }
 
   return `${startWith} ${action} ${status === 'success' ? 'successfully' : 'failed'}`;
+};
+
+export const { useBreakpoint } = Grid;
+
+export const useScreen = () => {
+  const screens = useBreakpoint();
+
+  const isTablet = (screens.xs || screens.sm || screens.md) && screens.lg === false;
+  const isMobile = screens.xs;
+
+  return { isTablet, isMobile };
 };

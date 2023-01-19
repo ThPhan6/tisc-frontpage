@@ -27,14 +27,16 @@ export const ItemWebsite: FC<WebsiteUrl> = ({ websiteValue, onChange, onDeleteWe
   return (
     <>
       <div className={styles.bottomWebsite}>
-        <CustomInput
-          placeholder="target country"
-          containerClass={styles.customInput}
-          disabled
-          value={countryValue.label}
-        />
-        <div className={styles.icon}>
-          <LeftIcon onClick={() => setCountryVisible(true)} />
+        <div className="flex-start" onClick={() => setCountryVisible(true)}>
+          <CustomInput
+            placeholder="target country"
+            containerClass={styles.customInput}
+            disabled
+            value={countryValue.label}
+          />
+          <div className={styles.icon}>
+            <LeftIcon />
+          </div>
         </div>
         <CustomInput
           placeholder="paste site URL link here"

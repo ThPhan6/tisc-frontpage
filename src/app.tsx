@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
@@ -10,15 +10,18 @@ import { ConfigProvider } from 'antd';
 import { RequestConfig, RunTimeLayoutConfig, history } from 'umi';
 
 import { getUserInfoMiddleware } from './pages/LandingPage/services/api';
+import { debounce } from 'lodash';
 
 import type { UserInfoDataProp } from './pages/LandingPage/types';
 import store, { persistor } from './reducers';
 
 import LoadingPageCustomize from './components/LoadingPage';
 import AsideMenu from './components/Menu/AsideMenu';
+import NoAccessPage from './pages/403';
 import Header from '@/components/Header';
 
 import defaultSettings from '../config/defaultSettings';
+import { ModalController } from './controllers/ModalController';
 import Cookies from 'js-cookie';
 
 // config request umi
@@ -103,7 +106,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     title: 'TISC',
     logo: false,
     disableContentMargin: false,
-    headerRender: () => <Header />,
+    headerRender: (props) => <Header {...props} />,
     onPageChange: () => {
       const { location } = history;
       const token = localStorage.getItem('access_token') || '';
@@ -131,18 +134,20 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
         history.push(PATH.landingPage);
       }
     },
-    menuHeaderRender: undefined,
     menuRender: (props) => <AsideMenu {...props} />,
-    /* eslint-disable @typescript-eslint/no-var-requires */
     childrenRender: (children) => {
       if (initialState?.loading) return <PageLoading />;
       return (
         <>
           {children}
+
           <LoadingPageCustomize />
+
+          <ModalController />
         </>
       );
     },
+    unAccessible: <NoAccessPage />,
     ...initialState?.settings,
   };
 };
@@ -152,6 +157,18 @@ const ProviderContainer = ({ children, routes }: any) => {
     ...children.props,
     routes,
   });
+
+  useEffect(() => {
+    const resize = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vhi', `${vh}px`);
+    };
+
+    resize();
+    const debounceResize = debounce(resize, 50);
+    window.addEventListener('resize', debounceResize);
+    return () => window.removeEventListener('resize', debounceResize);
+  }, []);
 
   return (
     <Provider store={store}>

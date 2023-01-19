@@ -2,6 +2,7 @@ import { useDispatch } from 'react-redux';
 
 import { ReactComponent as DownloadIconV2 } from '@/assets/icons/download-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { useCheckPermission } from '@/helper/hook';
 
 import { setPartialProductDetail } from '@/features/product/reducers';
@@ -14,11 +15,14 @@ import { BodyText } from '@/components/Typography';
 import styles from './CatelogueDownload.less';
 
 export const CatelogueDownload = () => {
+  const isTablet = useScreen().isTablet;
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  const isEditable = isTiscAdmin && !isTablet;
+
   const catelogue_downloads = useAppSelector((state) => state.product.details.catelogue_downloads);
   const dispatch = useDispatch();
-  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
-  if (isTiscAdmin) {
+  if (isEditable) {
     return (
       <DynamicFormInput
         data={catelogue_downloads.map((item) => {

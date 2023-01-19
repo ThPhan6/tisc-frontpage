@@ -6,7 +6,6 @@ import { request } from 'umi';
 import type {
   AvailableTime,
   BookingPayloadRequest,
-  ContactRequestBody,
   InformationBooking,
   LoginInput,
   LoginResponseProps,
@@ -94,6 +93,7 @@ export async function forgotPasswordMiddleware(
   data: {
     email: string;
     type: ForgotType;
+    captcha: string;
   },
   callback: (type: STATUS_RESPONSE, message?: string) => void,
 ) {
@@ -179,7 +179,12 @@ export async function checkEmailAlreadyUsed(email: string) {
     });
 }
 
-export async function contact(data: ContactRequestBody) {
+export async function contact(data: {
+  name: string;
+  email: string;
+  inquiry: string;
+  captcha: string;
+}) {
   return request<boolean>(`/api/contact/create`, { method: 'POST', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CONTACT_SUCCESS);
@@ -261,8 +266,8 @@ export async function getBooking(id: string) {
     });
 }
 
-export async function deleteBooking(id: string) {
-  return request<boolean>(`/api/booking/${id}/cancel`, { method: 'DELETE' })
+export async function deleteBooking(id: string, data: { captcha: string }) {
+  return request<boolean>(`/api/booking/${id}/cancel`, { method: 'DELETE', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CANCEL_BOOKING_SUCCESS);
       return true;
@@ -279,6 +284,7 @@ export async function updateBooking(
     date: string;
     slot: number;
     timezone: string;
+    captcha: string;
   },
 ) {
   return request<boolean>(`/api/booking/${id}/re-schedule`, { method: 'PATCH', data })

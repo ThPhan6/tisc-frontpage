@@ -52,6 +52,7 @@ const EmailAutoList = () => {
                 onClick: () => handleUpdateEmailAuto(record.id),
               },
             ]}
+            disabledOnMobile
           />
         );
       },

@@ -11,6 +11,8 @@ import { ReactComponent as ProjectLiveIcon } from '@/assets/icons/project-live-i
 import { ReactComponent as ProjectOnHoldIcon } from '@/assets/icons/project-on-hold-icon.svg';
 import { ReactComponent as UserAddIcon } from '@/assets/icons/user-add-icon.svg';
 
+import { useScreen } from '@/helper/common';
+
 import Popover from '@/components/Modal/Popover';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
@@ -139,44 +141,42 @@ const dataLegend = [
   },
 ];
 
-export const LegendModal: FC<{
-  visible: boolean;
-  setVisible: (visible: boolean) => void;
-}> = ({ visible, setVisible }) => {
+export const ProjectTrackingLegendModal: FC = () => {
+  const { isMobile } = useScreen();
+
   return (
     <Popover
       title="LEGEND"
-      visible={visible}
-      setVisible={setVisible}
+      visible
       noFooter
-      className={styles.legend}
-      extraTopAction={
-        <div>
-          {dataLegend.map((item) => (
-            <div className={styles.modal}>
-              <Title level={8}>{item.tille}</Title>
-              <div className={styles.content}>
-                <BodyText level={6} fontFamily="Roboto" style={{ marginBottom: '8px' }}>
-                  {item.content}
-                </BodyText>
-                {item.subs.map((sub) => (
-                  <div className={styles.listItem}>
-                    <span style={{ marginRight: '12px', width: '18px', height: '18px' }}>
-                      {sub.icon}
-                    </span>
-                    <div>
-                      <MainTitle level={4}>{sub.title}</MainTitle>
-                      <BodyText level={6} fontFamily="Roboto">
-                        {sub.content}
-                      </BodyText>
-                    </div>
+      className={`${isMobile ? styles.modalOnMobile : styles.legend}`}
+    >
+      <div>
+        {dataLegend.map((item, index) => (
+          <div key={index} className={styles.modal}>
+            <Title level={8}>{item.tille}</Title>
+            <div className={styles.content}>
+              <BodyText level={6} fontFamily="Roboto" style={{ marginBottom: '8px' }}>
+                {item.content}
+              </BodyText>
+              {item.subs.map((sub, subIndex) => (
+                <div key={subIndex} className={styles.listItem}>
+                  <span className={styles.icon}>
+                    {/* using KeepInViewIcon icon as default icon to fix responsive on mobile */}
+                    {sub.icon ?? <KeepInViewIcon style={{ opacity: 0, width: 18, height: 18 }} />}
+                  </span>
+                  <div>
+                    <MainTitle level={4}>{sub.title}</MainTitle>
+                    <BodyText level={6} fontFamily="Roboto">
+                      {sub.content}
+                    </BodyText>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      }
-    />
+          </div>
+        ))}
+      </div>
+    </Popover>
   );
 };

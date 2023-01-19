@@ -1,7 +1,7 @@
 .actionTask {
   display: flex;
   justify-content: flex-end;
-  padding: 8px 16px 8px 0;
+  padding: 8px var(--spacing) 8px 0;
   box-shadow: @border-bottom-light;
 
   &_content {
@@ -9,6 +9,7 @@
     align-items: center;
     height: 40px;
     cursor: pointer;
+    user-select: none;
   }
 
   &_text {
@@ -22,7 +23,7 @@
   th,
   tr,
   td {
-    white-space: nowrap;
+    // white-space: nowrap;
     :not(:last-child) {
       padding: 0 8px 0 0;
     }
@@ -39,6 +40,10 @@
   tbody {
     > tr {
       height: 32px;
+
+      svg {
+        margin: 0 !important;
+      }
     }
   }
 

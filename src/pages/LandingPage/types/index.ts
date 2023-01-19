@@ -50,6 +50,7 @@ export type PasswordRequestBody = {
   password: string;
   confirmed_password: string;
   reset_password_token?: string;
+  captcha: string;
 };
 
 export interface ModalProps {
@@ -58,22 +59,12 @@ export interface ModalProps {
   onClose: () => void;
 }
 
-export type ModalOpen =
-  | 'About'
-  | 'Policies'
-  | 'Contact'
-  | 'Browser Compatibility'
-  | 'Designer Signup'
-  | 'Brand Interested'
-  | 'Tisc Login'
-  | 'Login'
-  | '';
-
 export type SignUpDesignerRequestBody = {
   firstname: string;
   email: string;
   password: string;
   confirmed_password: string;
+  captcha: string;
 };
 
 export type ContactRequestBody = {
@@ -163,4 +154,5 @@ export interface BookingPayloadRequest {
   date: string;
   slot: number;
   timezone: string;
+  captcha: string;
 }

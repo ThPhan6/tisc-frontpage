@@ -15,6 +15,8 @@ import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import { GeneralInquiryListProps } from './types';
 import { TableColumnItem } from '@/components/Table/types';
+import store from '@/reducers';
+import { openModal } from '@/reducers/modal';
 
 import { GeneralInquiryContainer } from './components/GeneralInquiryContainer';
 import CustomTable from '@/components/Table';
@@ -26,7 +28,6 @@ import moment from 'moment';
 const GeneralInquiries = () => {
   useAutoExpandNestedTableColumn(0, [5]);
   const tableRef = useRef<any>();
-  const [legendModalVisible, setLegendModalVisible] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
 
   /// reload table depends on filter
@@ -85,11 +86,10 @@ const GeneralInquiries = () => {
   ];
   return (
     <GeneralInquiryContainer
-      visible={legendModalVisible}
-      setVisible={setLegendModalVisible}
       selectedFilter={selectedFilter}
       setSelectedFilter={setSelectedFilter}
-      isShowFilter>
+      isShowFilter
+    >
       <CustomTable
         title="GENERAL INQUIRIES"
         columns={setDefaultWidthForEachColumn(mainColumns, 5)}
@@ -97,7 +97,12 @@ const GeneralInquiries = () => {
         ref={tableRef}
         headerClass={styles.customHeader}
         rightAction={
-          <InfoIcon className={styles.iconInfor} onClick={() => setLegendModalVisible(true)} />
+          <InfoIcon
+            className={styles.iconInfor}
+            onClick={() =>
+              store.dispatch(openModal({ type: 'Project Tracking Legend', title: 'Legend' }))
+            }
+          />
         }
         onRow={(rowRecord: GeneralInquiryListProps) => ({
           onClick: () => {

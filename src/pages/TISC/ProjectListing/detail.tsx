@@ -120,6 +120,7 @@ const ProjectDetail = () => {
         customClass={styles.customTabs}
         onChange={(key) => setSelectedTab(key as ProjectListingTabKeys)}
         activeKey={selectedTab}
+        hideTitleOnTablet
       />
 
       {/* Basic Information */}

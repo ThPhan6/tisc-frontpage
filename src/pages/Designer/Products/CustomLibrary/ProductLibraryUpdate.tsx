@@ -12,6 +12,7 @@ import store, { useAppSelector } from '@/reducers';
 
 import { SpecificationTab } from './components/SpecificationTab';
 import { SummaryTab } from './components/SummaryTab';
+import { ResponsiveCol } from '@/components/Layout';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 import ProductDetailHeader from '@/features/product/components/ProductDetailHeader';
 import ProductImagePreview from '@/features/product/components/ProductImagePreview';
@@ -125,17 +126,17 @@ const ProductLibraryUpdate: React.FC = () => {
       </Col>
 
       <Col span={24}>
-        <Row>
-          <Col span={12}>
+        <Row gutter={[8, 8]}>
+          <ResponsiveCol>
             <ProductImagePreview
               hideInquiryRequest
               isCustomProduct
               disabledAssignProduct
               disabledShareViaEmail
             />
-          </Col>
+          </ResponsiveCol>
 
-          <Col span={12} className={styles.productContent}>
+          <ResponsiveCol className={styles.productContent}>
             <Row style={{ flexDirection: 'column', height: '100%' }}>
               <Col>
                 <CustomTabs
@@ -157,7 +158,7 @@ const ProductLibraryUpdate: React.FC = () => {
                 </CustomTabPane>
               </Col>
             </Row>
-          </Col>
+          </ResponsiveCol>
         </Row>
       </Col>
     </Row>

@@ -1,3 +1,26 @@
+@import '~antd/es/style/variable.less';
+
+.modalContainer {
+  :global(.ant-modal-header) {
+    height: 64px;
+  }
+  :global(.ant-modal-content) {
+    @media screen and (min-width: @screen-xs) and (max-width: @screen-lg) {
+      width: 576px;
+      height: 576px;
+    }
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  :global(.ant-modal-body) {
+    height: 512px;
+    padding: 0;
+    overflow: hidden auto;
+  }
+}
+
 .information {
   display: flex;
   align-items: center;
@@ -141,6 +164,7 @@
 }
 
 .closeIcon {
+  margin: 16px 9px 0 0;
   color: @mono-color;
 }
 

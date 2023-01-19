@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import { useHistory, useParams } from 'umi';
+import { useHistory } from 'umi';
 
 import { useAttributeLocation } from '../hooks/location';
 import { pushTo } from '@/helper/history';
-import { useBoolean } from '@/helper/hook';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 import {
   createAttribute,
+  deleteAttribute,
   getOneAttribute,
   getProductAttributeContentType,
   updateAttribute,
@@ -35,11 +36,6 @@ const DEFAULT_SELECTED_ATTRIBUTE: SelectedItem = {
   index: 0,
   subAttribute: DEFAULT_SUB_ATTRIBUTE,
 };
-// conversionValue,
-// setConversionValue,
-// onCancel,
-// onSubmit,
-// submitButtonStatus,
 
 const DEFAULT_ATTRIBUTE: AttributeForm = {
   name: '',
@@ -50,7 +46,12 @@ const AttributeEntryForm = () => {
   // for content type modal
   const [visible, setVisible] = useState(false);
   // for content type data
-  const [contentType, setContentType] = useState<AttributeContentType>();
+  const [contentType, setContentType] = useState<AttributeContentType>({
+    conversions: [],
+    options: [],
+    presets: [],
+    texts: [],
+  });
   // selected content types
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(DEFAULT_SELECTED_ATTRIBUTE);
 
@@ -58,10 +59,8 @@ const AttributeEntryForm = () => {
   const [data, setData] = useState<AttributeForm>(DEFAULT_ATTRIBUTE);
   const { activePath, attributeLocation } = useAttributeLocation();
   const isLoading = useBoolean();
-  const params = useParams<{
-    id: string;
-  }>();
-  const idAttribute = params?.id || '';
+
+  const idAttribute = useGetParamId();
   const isUpdate = idAttribute ? true : false;
   const submitButtonStatus = useBoolean(false);
 
@@ -122,14 +121,6 @@ const AttributeEntryForm = () => {
     });
   };
 
-  const handleSelectContentType = (subAttribute: AttributeSubForm, index: number) => {
-    setSelectedItem({
-      subAttribute,
-      index,
-    });
-    setVisible(true);
-  };
-
   const onContentTypeSubmit = (changedSub: Omit<AttributeSubForm, 'id' | 'name'>) => {
     if (selectedItem) {
       const newSubs = [...data.subs];
@@ -148,6 +139,14 @@ const AttributeEntryForm = () => {
     setSelectedItem(DEFAULT_SELECTED_ATTRIBUTE);
     // close modal
     setVisible(false);
+  };
+
+  const handleSelectContentType = (subAttribute: AttributeSubForm, index: number) => {
+    setSelectedItem({
+      subAttribute,
+      index,
+    });
+    setVisible(true);
   };
 
   const handleCreateData = (submitData: AttributeForm) => {
@@ -196,13 +195,24 @@ const AttributeEntryForm = () => {
     handleSubmit({ ...data, type: attributeLocation.TYPE, subs: newSubs });
   };
 
+  const handleDeleteAttribute = () => {
+    deleteAttribute(idAttribute).then((isSuccess) => {
+      if (isSuccess) {
+        pushTo(activePath);
+      }
+    });
+  };
+
   return (
     <div>
       <TableHeader title={attributeLocation.NAME} rightAction={<CustomPlusButton disabled />} />
       <EntryFormWrapper
         handleSubmit={onHandleSubmit}
         handleCancel={history.goBack}
-        submitButtonStatus={submitButtonStatus.value}>
+        submitButtonStatus={submitButtonStatus.value}
+        handleDelete={handleDeleteAttribute}
+        entryFormTypeOnMobile={isUpdate ? 'edit' : 'create'}
+      >
         <FormNameInput
           placeholder="type group name"
           title="Attribute Group"
@@ -221,16 +231,16 @@ const AttributeEntryForm = () => {
             />
           ))}
         </div>
-        {visible ? (
-          <ContentTypeModal
-            setVisible={setVisible}
-            selectedItem={selectedItem}
-            contentType={contentType}
-            onSubmit={onContentTypeSubmit}
-            type={attributeLocation.TYPE}
-          />
-        ) : null}
       </EntryFormWrapper>
+
+      <ContentTypeModal
+        visible={visible}
+        setVisible={setVisible}
+        selectedItem={selectedItem}
+        contentType={contentType}
+        onSubmit={onContentTypeSubmit}
+        type={attributeLocation.TYPE}
+      />
     </div>
   );
 };

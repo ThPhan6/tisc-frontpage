@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR, MESSAGE_NOTIFICATION, MESSAGE_TOOLTIP } from '@/constants/message';
 import { AVATAR_ACCEPT_TYPES, STATUS_RESPONSE } from '@/constants/util';
@@ -10,6 +10,7 @@ import { ReactComponent as UploadIcon } from '@/assets/icons/upload-icon.svg';
 import { ReactComponent as WarningIcon } from '@/assets/icons/warning-circle-icon.svg';
 
 import { updateAvatarTeamProfile, updateTeamProfile } from '../services';
+import { useScreen } from '@/helper/common';
 import { useBoolean, useCheckPermission, useCustomInitialState } from '@/helper/hook';
 import { getBase64, isShowErrorMessage, showImageUrl, validateEmail } from '@/helper/utils';
 import { isEqual } from 'lodash';
@@ -45,11 +46,13 @@ const interestedData = [
   { label: 'Product Recommendations/Updates', value: 4 },
 ];
 
-export const PersonalProfile = () => {
+export const PersonalProfile: FC<{ contentHeight?: number }> = ({ contentHeight }) => {
   const [fileInput, setFileInput] = useState<any>();
   const { fetchUserInfo, currentUser } = useCustomInitialState();
   const submitButtonStatus = useBoolean();
   const showInterested = useCheckPermission(['Design Admin', 'Design Team']);
+
+  const { isMobile } = useScreen();
 
   const [inputValue, setInputValue] = useState<PersonalProfileState>({
     backupEmail: '',
@@ -202,14 +205,15 @@ export const PersonalProfile = () => {
             offset: [-14, -9],
           }}
           overlayInnerStyle={{
-            width: '240px',
+            width: isMobile ? '194px' : '240px',
             padding: '8px 19.5px',
-          }}>
+          }}
+        >
           <WarningIcon className={styles['warning-icon']} />
         </Tooltip>
       </div>
       <div className={styles.wrapper}>
-        <div className={styles.content}>
+        <div className={styles.content} style={{ height: contentHeight }}>
           <Upload name="avatar-drag-drop" {...uploadProps}>
             <div className={`${styles.avatarContainer}`}>
               <div>
@@ -235,7 +239,8 @@ export const PersonalProfile = () => {
             messageType="error"
             label="Backup email"
             layout="vertical"
-            formClass={styles.form}>
+            formClass={styles.form}
+          >
             <CustomInput
               name="backupEmail"
               status={isShowErrorMessage('email', inputValue.backupEmail) ? '' : 'error'}
@@ -298,7 +303,8 @@ export const PersonalProfile = () => {
               size="small"
               width="64px"
               onClick={handleSubmit}
-              disabled={checkSaveDisabled()}>
+              disabled={checkSaveDisabled()}
+            >
               <BodyText level={6} fontFamily="Roboto">
                 Save
               </BodyText>

@@ -151,11 +151,15 @@ export const ProjectCard: FC<ProjectCardProps> = ({
             <BodyText level={5}>{isBrandUser ? 'Requests' : 'Project Status'}:</BodyText>
           </div>
           <div className={styles.middleValue}>
-            <BodyText level={6} fontFamily="Roboto">
+            <BodyText level={6} fontFamily="Roboto" customClass="text-overflow">
               {isBrandUser ? info.requestCount : FilterNames[Number(info.status)]}
             </BodyText>
           </div>
-          {info.newRequest ? <UnreadIcon /> : <span style={{ width: '18px', height: '18px' }} />}
+          {info.newRequest ? (
+            <UnreadIcon />
+          ) : (
+            <span style={isBrandUser ? { width: '18px', height: '18px' } : {}} />
+          )}
         </div>
 
         <div className={styles.middle}>
@@ -163,15 +167,16 @@ export const ProjectCard: FC<ProjectCardProps> = ({
             <BodyText level={5}>{isBrandUser ? 'Notifications' : 'Design due'}:</BodyText>
           </div>
           <div
-            className={`${styles.middleValue} ${!isBrandUser && dueDay.value < 0 ? 'late' : ''}`}>
-            <BodyText level={6} fontFamily="Roboto">
+            className={`${styles.middleValue} ${!isBrandUser && dueDay.value < 0 ? 'late' : ''}`}
+          >
+            <BodyText level={6} fontFamily="Roboto" customClass="text-overflow">
               {isBrandUser ? info.notificationCount : dueDay.text}
             </BodyText>
           </div>
           {info.newNotification ? (
             <UnreadIcon />
           ) : (
-            <span style={{ width: '18px', height: '18px' }} />
+            <span style={isBrandUser ? { width: '18px', height: '18px' } : {}} />
           )}
         </div>
       </>
@@ -200,13 +205,14 @@ export const ProjectCard: FC<ProjectCardProps> = ({
   }
 
   return (
-    <div className={styles.cardContainer}>
+    <div className={data.length ? styles.cardContainer : ''}>
       {data.length ? (
         data.map((item: any, index) => (
           <div
             key={item.id ?? index}
             className={styles.cardItemWrapper}
-            onClick={() => handleClickItem(item)}>
+            onClick={() => handleClickItem(item)}
+          >
             <div className={styles.cardItem}>
               <div className={styles.top}>{renderTopInfo(item)}</div>
 

@@ -14,9 +14,21 @@ export enum ProductSpecifiedTabKeys {
 }
 
 export const ProductSpecifiedTabs: TabItem[] = [
-  { tab: 'issuing information', key: ProductSpecifiedTabKeys.issuingInformation },
-  { tab: 'cover & preamble', key: ProductSpecifiedTabKeys.coverAndPreamble },
-  { tab: 'standard specification', key: ProductSpecifiedTabKeys.standardSpecification },
+  {
+    tab: 'issuing information',
+    tabletTabTitle: 'ISSUING',
+    key: ProductSpecifiedTabKeys.issuingInformation,
+  },
+  {
+    tab: 'cover & preamble',
+    tabletTabTitle: 'COVER',
+    key: ProductSpecifiedTabKeys.coverAndPreamble,
+  },
+  {
+    tab: 'standard specification',
+    tabletTabTitle: 'SPECIFICATION',
+    key: ProductSpecifiedTabKeys.standardSpecification,
+  },
 ];
 
 // specifiy tab
@@ -30,8 +42,12 @@ export enum ProjectSpecifyTabKeys {
 }
 
 export const ProjectSpecifyTabs: TabItem[] = [
-  { tab: 'specification', key: ProjectSpecifyTabKeys.specification },
+  {
+    tab: 'specification',
+    mobileTabTitle: 'Spec',
+    key: ProjectSpecifyTabKeys.specification,
+  },
   { tab: 'vendor', key: ProjectSpecifyTabKeys.vendor },
   { tab: 'allocation', key: ProjectSpecifyTabKeys.allocation },
-  { tab: 'code & order', key: ProjectSpecifyTabKeys.codeAndOrder },
+  { tab: 'code & order', mobileTabTitle: 'Code', key: ProjectSpecifyTabKeys.codeAndOrder },
 ];
