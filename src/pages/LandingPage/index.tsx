@@ -15,7 +15,6 @@ import { ReactComponent as SingleRight } from '@/assets/icons/single-right.svg';
 import { ReactComponent as TargetMoneyIcon } from '@/assets/icons/target-money-icon.svg';
 import { ReactComponent as TimeMoney } from '@/assets/icons/time-money-icon.svg';
 
-import { useReCaptcha } from './hook';
 import { getBooking, validateToken, verifyAccount } from './services/api';
 import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
@@ -34,13 +33,14 @@ const LandingPage = () => {
   const userEmail = useQuery().get('email');
   const tokenResetPwd = useQuery().get('token');
   const tokenVerification = useQuery().get('verification_token');
-  const { renderReCaptcha } = useReCaptcha();
 
   const listMenuFooter: ModalType[] = ['About', 'Policies', 'Contact', 'Browser Compatibility'];
 
   const isMobile = useScreen().isMobile;
 
   const bookingId = useGetParamId();
+
+  // You can use useEffect to trigger the verification as soon as the component being loaded
 
   useEffect(() => {
     if ((!userEmail || !tokenResetPwd) && history.location.pathname === PATH.resetPassword) {
@@ -164,7 +164,7 @@ const LandingPage = () => {
     );
   };
 
-  return renderReCaptcha(
+  return (
     <div className={styles.login}>
       <div className={styles.container}>
         <Row justify="center">
@@ -270,8 +270,9 @@ const LandingPage = () => {
           </Col>
         </Row>
       </div>
+
       <LandingPageFooter listMenuFooter={listMenuFooter} />
-    </div>,
+    </div>
   );
 };
 

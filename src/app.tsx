@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
@@ -102,6 +103,7 @@ ConfigProvider.config({
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   console.log('initialState', initialState);
+
   return {
     title: 'TISC',
     logo: false,
@@ -136,16 +138,37 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     },
     menuRender: (props) => <AsideMenu {...props} />,
     childrenRender: (children) => {
+      const { location } = history;
+      const publicPage =
+        location.pathname.indexOf('shared-product' || 'shared-custom-product') > -1;
       if (initialState?.loading) return <PageLoading />;
-      return (
-        <>
-          {children}
 
-          <LoadingPageCustomize />
+      const renderChildren = () => {
+        return (
+          <>
+            {children}
 
-          <ModalController />
-        </>
-      );
+            <LoadingPageCustomize />
+
+            <ModalController />
+          </>
+        );
+      };
+      if (ENABLE_RECAPTCHA) {
+        return (
+          <GoogleReCaptchaProvider
+            reCaptchaKey={RECAPTCHA_SITE_KEY}
+            container={{
+              element: initialState?.currentUser || publicPage ? 'landing-page-only' : undefined,
+              parameters: {},
+            }}
+          >
+            {renderChildren()}
+          </GoogleReCaptchaProvider>
+        );
+      }
+
+      return renderChildren();
     },
     unAccessible: <NoAccessPage />,
     ...initialState?.settings,

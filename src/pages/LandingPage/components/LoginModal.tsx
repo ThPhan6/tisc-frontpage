@@ -16,6 +16,7 @@ import {
   loginByBrandOrDesigner,
   loginMiddleware,
 } from '../../../pages/LandingPage/services/api';
+import { useReCaptcha } from '../hook';
 import { useScreen } from '@/helper/common';
 import { useBoolean, useCustomInitialState, useString } from '@/helper/hook';
 import { isShowErrorMessage, validateEmail } from '@/helper/utils';
@@ -29,7 +30,6 @@ import { sample } from 'lodash';
 import { DataTableResponse } from '@/components/Table/types';
 import type { LoginInput, Quotation } from '@/pages/LandingPage/types';
 import { useAppSelector } from '@/reducers';
-import { landingPagePropsSelector } from '@/reducers/landingpage';
 import { closeModal, modalThemeSelector } from '@/reducers/modal';
 
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -44,7 +44,7 @@ export const LoginModal: FC<{
 }> = ({ tiscLogin }) => {
   const { isMobile } = useScreen();
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
-  const { captcha, setRefreshReCaptcha } = useAppSelector(landingPagePropsSelector);
+  const { handleReCaptchaVerify } = useReCaptcha();
   const popupStylesProps = useLandingPageStyles(darkTheme);
   const [inputValue, setInputValue] = useState<LoginInput>({
     email: '',
@@ -124,8 +124,9 @@ export const LoginModal: FC<{
     });
   };
 
-  const handleForgotPassword = (email: string) => {
+  const handleForgotPassword = async (email: string) => {
     showPageLoading();
+    const captcha = (await handleReCaptchaVerify()) || '';
     forgotPasswordMiddleware(
       { email: email, type: tiscLogin ? ForgotType.TISC : ForgotType.OTHER, captcha: captcha },
       async (type: STATUS_RESPONSE, msg?: string) => {
@@ -158,17 +159,18 @@ export const LoginModal: FC<{
     handleLogin(data, successCallback);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (showForgotPassword.value) {
       handleForgotPassword(verifyEmail.value);
       return;
     }
+
+    const captcha = (await handleReCaptchaVerify()) || '';
     handleSubmitLogin({
       email: inputValue.email,
       password: inputValue.password,
-      captcha: captcha,
+      captcha,
     });
-    setRefreshReCaptcha();
   };
 
   const onKeyPress = (event: React.KeyboardEvent<HTMLDivElement>): void => {
