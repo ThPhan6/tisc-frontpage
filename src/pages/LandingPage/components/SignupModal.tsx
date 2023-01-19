@@ -7,6 +7,7 @@ import { ReactComponent as EmailIcon } from '@/assets/icons/email-icon-18px.svg'
 import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.svg';
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 
+import { useReCaptcha } from '../hook';
 import { useBoolean } from '@/helper/hook';
 import { isShowErrorMessage, validateEmail } from '@/helper/utils';
 import {
@@ -18,7 +19,6 @@ import { checkEmailAlreadyUsed, signUpDesigner } from '@/pages/LandingPage/servi
 import { debounce } from 'lodash';
 
 import { useAppSelector } from '@/reducers';
-import { landingPagePropsSelector } from '@/reducers/landingpage';
 import { closeModal, modalThemeSelector } from '@/reducers/modal';
 
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -54,7 +54,7 @@ export const SignupModal = () => {
   const [agreeTisc, setAgreeTisc] = useState(false);
   const isLoading = useBoolean();
   const [emailExisted, setEmailExisted] = useState(false);
-  const { captcha, setRefreshReCaptcha } = useAppSelector(landingPagePropsSelector);
+  const { handleReCaptchaVerify } = useReCaptcha();
 
   useEffect(() => {
     if (formInput.email && validateEmail(formInput.email)) {
@@ -89,7 +89,7 @@ export const SignupModal = () => {
     return '';
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (formInput.firstname === '') {
       return message.error(MESSAGE_ERROR.FIRST_NAME);
     }
@@ -106,6 +106,7 @@ export const SignupModal = () => {
       return setAgreeTisc(true);
     }
     isLoading.setValue(true);
+    const captcha = (await handleReCaptchaVerify()) || '';
     signUpDesigner({
       firstname: formInput.firstname,
       email: formInput.email,
@@ -121,7 +122,6 @@ export const SignupModal = () => {
       }
       isLoading.setValue(false);
     });
-    setRefreshReCaptcha();
   };
 
   return (

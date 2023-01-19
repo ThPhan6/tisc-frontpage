@@ -4,6 +4,8 @@ import { DropdownProps } from 'antd/es/dropdown';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 
+import { checkBrowser } from '@/helper/utils';
+
 import { CustomInputProps } from './types';
 
 import { CustomDropDown } from '@/features/product/components';
@@ -33,7 +35,7 @@ export const DropdownSelectInput: FC<DropdownSelectInputProps> = ({
   return (
     <CustomDropDown
       placement={placement}
-      align={window.safari ? { offset: [24, 0] } : {}}
+      align={checkBrowser().isSafari ? { offset: [36, 0] } : {}}
       hideDropdownIcon
       overlay={
         <div

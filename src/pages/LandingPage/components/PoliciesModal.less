@@ -15,11 +15,22 @@
     margin-bottom: 8px;
     padding-top: 32px;
     .customTab {
+      :global(.tab-items) {
+        max-width: fit-content;
+      }
       :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
-        display: grid;
-        grid-template-columns: repeat(3, 100%/3);
+        // display: grid;
+        // grid-template-columns: repeat(3, 100%/3);
         width: 100%;
-        border-bottom: 1px solid @mono-color-medium;
+        // border-bottom: 1px solid @mono-color-medium;
+        overflow: auto hidden;
+
+        @media screen and (max-width: 432px) {
+          width: max-content;
+        }
+      }
+      :global(.ant-tabs-tab-active) {
+        border-bottom: 1px solid #fff;
       }
       :global(.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn) {
         color: #fff;

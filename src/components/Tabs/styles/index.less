@@ -4,6 +4,10 @@
   @media screen and (max-width: @screen-lg) {
     :global(.ant-tabs-nav-list) {
       width: 100%;
+      overflow: auto hidden;
+      ::-webkit-scrollbar {
+        display: none;
+      }
     }
   }
   &.lightTheme {
@@ -58,10 +62,15 @@
     border-bottom: 1px solid @mono-color;
   }
   :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap) {
+    display: inline-block;
     &::before,
     &::after {
       box-shadow: none;
     }
+  }
+  :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
+    width: 100%;
+    overflow: auto hidden;
   }
 }
 
