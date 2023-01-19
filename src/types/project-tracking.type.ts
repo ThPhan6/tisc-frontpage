@@ -1,4 +1,4 @@
-import { AssignMember } from '@/components/AssignTeam';
+import { AssignedTeamMember } from '@/features/team-profiles/types';
 
 export interface ProjecTrackingList {
   id: string;
@@ -10,7 +10,7 @@ export interface ProjecTrackingList {
   projectStatus: string;
   priority: number;
   priorityName: string;
-  assignedTeams: AssignMember[];
+  assignedTeams: AssignedTeamMember[];
   requestCount: number;
   newRequest: boolean;
   notificationCount: number;
@@ -91,7 +91,8 @@ export interface ProjectTrackingDetail {
     id: string;
   }[];
   designFirm: DesignFirmDetail;
-  isOpenDetailItem?: boolean;
+  isRequestsDetailItemOpen?: boolean;
+  isNotificationsDetailItemOpen?: boolean;
 }
 
 export const DEFAULT_PROJECT_TRACKING_DETAIL: ProjectTrackingDetail = {
