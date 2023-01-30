@@ -353,15 +353,50 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
             return;
           }
 
+          const currentAttributeItemSelect = curAttributeData?.basis?.subs?.find(
+            (sub: any) => sub.id === valueSelected.value,
+          );
+
+          const attributeContentValueUnit_1: string[] = [];
+          const attributeContentValueUnit_2: string[] = [];
+          let attributeContent = valueSelected.label;
+          if (currentAttributeItemSelect?.value_1 || currentAttributeItemSelect?.unit_1) {
+            attributeContentValueUnit_1.push(
+              currentAttributeItemSelect.value_1 || '',
+              currentAttributeItemSelect.unit_1 || '',
+            );
+          }
+
+          if (currentAttributeItemSelect?.value_2 || currentAttributeItemSelect?.unit_2) {
+            attributeContentValueUnit_2.push(
+              currentAttributeItemSelect.value_2 || '',
+              currentAttributeItemSelect.unit_2 || '',
+            );
+          }
+
+          if (currentAttributeItemSelect) {
+            attributeContent =
+              attributeContentValueUnit_1.join(' ') +
+              `${
+                attributeContentValueUnit_1.length && attributeContentValueUnit_2.length
+                  ? ' - '
+                  : ''
+              }` +
+              attributeContentValueUnit_2.join(' ');
+          }
+
           if (isSpecification) {
             setBasisOptionSelected(
               valueSelected?.map((opt: CheckboxValue) => ({
                 ...opt,
-                label: String(opt.label),
+                label: attributeContent,
               })),
             );
           } else {
-            setSelected(valueSelected);
+            setSelected({
+              value: valueSelected.value,
+              label: attributeContent,
+            });
           }
         }}
         checkboxList={
