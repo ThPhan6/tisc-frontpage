@@ -396,10 +396,10 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
                     </Title>
                   ),
                   options:
-                    curAttributeData?.basis?.subs?.map((sub: any) => {
+                    curAttributeData?.basis?.subs?.map((sub: any, index: number) => {
                       return {
-                        label: sub.value_1,
                         value: sub.id,
+                        label: <AttributeOptionLabel option={sub} key={index} />,
                       };
                     }) ?? [],
                 },
