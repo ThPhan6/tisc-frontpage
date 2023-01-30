@@ -365,7 +365,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
                 },
               )}
               onChange={(key) => handleCollapse('brand', key)}
-              activeKey={isTiscAdmin ? undefined : brandActiveKey}
+              activeKey={isTiscAdmin || !chosenBrand.value ? undefined : brandActiveKey}
               collapsible={!chosenBrand.value ? 'disabled' : undefined}
               customHeaderClass={styles.collapseHeader}>
               {renderBusinessAdressDetail(selectedLocationBrand)}
@@ -396,7 +396,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
                 },
               )}
               onChange={(key) => handleCollapse('distributor', key)}
-              activeKey={isTiscAdmin ? undefined : distributorActiveKey}
+              activeKey={isTiscAdmin || !chosenDistributor.value ? undefined : distributorActiveKey}
               collapsible={!chosenDistributor.value ? 'disabled' : undefined}
               customHeaderClass={styles.collapseHeader}>
               {renderDistributorBusinessAdressDetail(selectedLocationDistributor)}
