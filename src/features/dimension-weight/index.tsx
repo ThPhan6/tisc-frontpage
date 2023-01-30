@@ -5,7 +5,10 @@ import { Switch } from 'antd';
 import { validateFloatNumber } from '@/helper/utils';
 import { cloneDeep } from 'lodash';
 
+import { ProductInfoTab } from '../product/components/ProductAttributes/types';
 import { DimensionWeightItem, ProductDimensionWeight } from './types';
+import store from '@/reducers';
+import { closeProductFooterTab, useCollapseGroupActiveCheck } from '@/reducers/active';
 
 import CustomCollapse from '@/components/Collapse';
 import ConversionInput, { ConversionValueItemProps } from '@/components/EntryForm/ConversionInput';
@@ -35,7 +38,10 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
   collapseStyles = true,
   customClass = '',
 }) => {
-  const [activeCollapse, setActiveCollapse] = useState<string | string[]>([]);
+  const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(
+    'specification' as ProductInfoTab,
+    0, // index 0 for Dimension & Weight group
+  );
 
   const [diameterToggle, setDiameterToggle] = useState<boolean>(data.with_diameter);
 
@@ -106,7 +112,7 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
   };
 
   const renderDiameterToggle = () => {
-    if (!activeCollapse) return null;
+    if (!curActiveKey && curActiveKey?.length === 0) return null;
 
     return (
       <div className="slice">
@@ -150,20 +156,23 @@ export const DimensionWeight: FC<DimensionWeightProps> = ({
 
   return (
     <CustomCollapse
+      activeKey={curActiveKey}
+      onChange={(key) => {
+        onKeyChange(key);
+        store.dispatch(closeProductFooterTab());
+      }}
       customHeaderClass={`${styles.dimensionCollapse} ${customClass} ${
         noPadding ? styles.noPadding : ''
       } ${isConversionText ? styles.dimensionWeightSpec : ''}`}
       showActiveBoxShadow={collapseStyles}
       expandingHeaderFontStyle="bold"
       noBorder={!collapseStyles}
-      activeKey={activeCollapse}
-      onChange={(key) => setActiveCollapse(key)}
       header={
         <div className="header" style={{ paddingLeft: noPadding ? 0 : undefined }}>
           <RobotoBodyText level={6} customClass="label">
             {data.name}
           </RobotoBodyText>
-          {editable && activeCollapse.length ? renderDiameterToggle() : null}
+          {editable && curActiveKey?.length ? renderDiameterToggle() : null}
         </div>
       }>
       <table className={styles.tableContent}>

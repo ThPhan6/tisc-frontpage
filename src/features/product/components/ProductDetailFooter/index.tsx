@@ -1,10 +1,13 @@
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 
 import { ReactComponent as TipsIcon } from '@/assets/icons/bookmark-icon.svg';
 import { ReactComponent as CollectionIcon } from '@/assets/icons/collection-icon.svg';
 import { ReactComponent as DownloadIcon } from '@/assets/icons/download-1-icon.svg';
 
+import { ProductInfoTab } from '../ProductAttributes/types';
 import { TabItem } from '@/components/Tabs/types';
+import store, { useAppSelector } from '@/reducers';
+import { ProductFooterTabs, onChangeProductFooterTab } from '@/reducers/active';
 
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
@@ -19,10 +22,9 @@ const LIST_TAB: TabItem[] = [
   { tab: 'Downloads', key: 'download', icon: <DownloadIcon /> },
 ];
 
-type ProductFooterTabs = 'collection' | 'tip' | 'download' | '';
-
-export const ProductDetailFooter: React.FC<{ visible: boolean }> = memo(({ visible }) => {
-  const [activeKey, setActiveKey] = useState<ProductFooterTabs>('');
+export const ProductDetailFooter: React.FC<{ infoTab: ProductInfoTab }> = memo(({ infoTab }) => {
+  const activeKey = useAppSelector((s) => s.active.productFooter);
+  const visible = infoTab !== 'vendor';
 
   return (
     <div className={`${styles.productFooter} ${visible ? '' : styles.hidden}`}>
@@ -31,11 +33,18 @@ export const ProductDetailFooter: React.FC<{ visible: boolean }> = memo(({ visib
         centered={true}
         tabPosition="top"
         tabDisplay="space"
-        onChange={(tab) => setActiveKey(tab as ProductFooterTabs)}
+        onChange={(tab) =>
+          store.dispatch(onChangeProductFooterTab({ tab: tab as ProductFooterTabs, infoTab }))
+        }
         activeKey={activeKey}
         onTabClick={(currentKey) => {
           if (currentKey == activeKey) {
-            setActiveKey('');
+            store.dispatch(
+              onChangeProductFooterTab({
+                tab: '',
+                infoTab,
+              }),
+            );
           }
         }}
       />
