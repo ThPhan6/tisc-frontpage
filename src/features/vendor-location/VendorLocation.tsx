@@ -251,7 +251,6 @@ export const VendorLocation: FC<VendorTabProps> = ({
   const renderCollapseHeader = (
     title: 'Brand Address' | 'Distributor Address',
     country: string,
-    activeCollapse: boolean,
     onSelect: () => void,
   ) => {
     const handleShowAddress = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -301,11 +300,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
     return (
       <div className={`${styles.addressPanel} ${isSpecifying ? styles.customHeight : ''}`}>
         <div className={`contact-item-none ${country ? 'contact-item-selected' : ''}`}>
-          <BodyText
-            level={4}
-            customClass={`${activeCollapse && !isTiscAdmin ? 'active-title' : 'inActive-title'}`}>
-            {title}
-          </BodyText>
+          <BodyText level={4}>{title}</BodyText>
 
           <div
             className="flex-start"
@@ -355,15 +350,10 @@ export const VendorLocation: FC<VendorTabProps> = ({
           } ${isSpecifying ? '' : styles.marginBottomNone}`}>
           <div className={styles.address}>
             <CustomCollapse
-              header={renderCollapseHeader(
-                'Brand Address',
-                chosenBrandCountry,
-                brandActiveKey === activeKey && chosenBrand.value ? true : false,
-                () => {
-                  setLocationPopup('brand');
-                  handleCollapse('brand', activeKey);
-                },
-              )}
+              header={renderCollapseHeader('Brand Address', chosenBrandCountry, () => {
+                setLocationPopup('brand');
+                handleCollapse('brand', activeKey);
+              })}
               onChange={(key) => handleCollapse('brand', key)}
               activeKey={isTiscAdmin || !chosenBrand.value ? undefined : brandActiveKey}
               collapsible={!chosenBrand.value ? 'disabled' : undefined}
@@ -382,19 +372,14 @@ export const VendorLocation: FC<VendorTabProps> = ({
           } ${isSpecifying ? '' : styles.marginBottomNone}`}>
           <div className={styles.address}>
             <CustomCollapse
-              header={renderCollapseHeader(
-                'Distributor Address',
-                chosenDistributorCountry,
-                distributorActiveKey === activeKey && chosenDistributor.value ? true : false,
-                () => {
-                  if (isEmpty(distributorAddresses) && isSpecifying) {
-                    return message.warn(MESSAGE_ERROR.DISTRIBUTOR_UNAVAILABLE);
-                  }
-                  setLocationPopup('distributor');
-                  handleCollapse('distributor', activeKey);
-                  return true;
-                },
-              )}
+              header={renderCollapseHeader('Distributor Address', chosenDistributorCountry, () => {
+                if (isEmpty(distributorAddresses) && isSpecifying) {
+                  return message.warn(MESSAGE_ERROR.DISTRIBUTOR_UNAVAILABLE);
+                }
+                setLocationPopup('distributor');
+                handleCollapse('distributor', activeKey);
+                return true;
+              })}
               onChange={(key) => handleCollapse('distributor', key)}
               activeKey={isTiscAdmin || !chosenDistributor.value ? undefined : distributorActiveKey}
               collapsible={!chosenDistributor.value ? 'disabled' : undefined}
