@@ -160,7 +160,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
   };
 
   useEffect(() => {
-    if (isTiscAdmin || !brandId || !productId) {
+    if (!brandId || !productId) {
       return;
     }
 
@@ -283,6 +283,8 @@ export const VendorLocation: FC<VendorTabProps> = ({
 
       if (isSpecifying) return 'select location';
 
+      if (isTiscAdmin) return 'view';
+
       return 'select';
     };
 
@@ -290,7 +292,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
       if (isPublicPage) return null;
 
       if (isTiscAdmin) {
-        return <DropDownIcon className="mono-color-medium" style={{ marginLeft: '12px' }} />;
+        return <DropDownIcon className="mono-color" style={{ marginLeft: '12px' }} />;
       }
 
       return <SingleRightIcon className="mono-color" style={{ marginLeft: '12px' }} />;
@@ -299,7 +301,9 @@ export const VendorLocation: FC<VendorTabProps> = ({
     return (
       <div className={`${styles.addressPanel} ${isSpecifying ? styles.customHeight : ''}`}>
         <div className={`contact-item-none ${country ? 'contact-item-selected' : ''}`}>
-          <BodyText level={4} customClass={`${activeCollapse ? 'active-title' : 'inActive-title'}`}>
+          <BodyText
+            level={4}
+            customClass={`${activeCollapse && !isTiscAdmin ? 'active-title' : 'inActive-title'}`}>
             {title}
           </BodyText>
 
@@ -310,12 +314,9 @@ export const VendorLocation: FC<VendorTabProps> = ({
               e.stopPropagation();
             }}>
             <div
-              className={` ${isTiscAdmin ? 'cursor-disabled' : 'cursor-default'}`}
-              onClick={isTiscAdmin || isPublicPage ? undefined : (e) => handleShowAddress(e)}>
-              <div
-                className={`contact-select-box ${
-                  isTiscAdmin ? 'cursor-default' : 'cursor-pointer'
-                }`}>
+              className="cursor-default"
+              onClick={isPublicPage ? undefined : (e) => handleShowAddress(e)}>
+              <div className={'contact-select-box cursor-pointer'}>
                 <BodyText
                   level={6}
                   fontFamily="Roboto"
@@ -330,6 +331,16 @@ export const VendorLocation: FC<VendorTabProps> = ({
         </div>
       </div>
     );
+  };
+
+  const popoverProps = {
+    title: 'SELECT LOCATION',
+    className: styles.customLocationModal,
+    noFooter: isTiscAdmin,
+    disabledDropDownRadio: isTiscAdmin,
+    chosenValue: getChosenValue(),
+    setChosenValue: (checked: any) =>
+      locationPopup ? handleOnChangeSpecifying(checked) : undefined,
   };
 
   return (
@@ -354,8 +365,8 @@ export const VendorLocation: FC<VendorTabProps> = ({
                 },
               )}
               onChange={(key) => handleCollapse('brand', key)}
-              activeKey={brandActiveKey}
-              collapsible={isTiscAdmin || !chosenBrand.value ? 'disabled' : undefined}
+              activeKey={isTiscAdmin ? undefined : brandActiveKey}
+              collapsible={!chosenBrand.value ? 'disabled' : undefined}
               customHeaderClass={styles.collapseHeader}>
               {renderBusinessAdressDetail(selectedLocationBrand)}
             </CustomCollapse>
@@ -385,8 +396,8 @@ export const VendorLocation: FC<VendorTabProps> = ({
                 },
               )}
               onChange={(key) => handleCollapse('distributor', key)}
-              activeKey={distributorActiveKey}
-              collapsible={isTiscAdmin || !chosenDistributor.value ? 'disabled' : undefined}
+              activeKey={isTiscAdmin ? undefined : distributorActiveKey}
+              collapsible={!chosenDistributor.value ? 'disabled' : undefined}
               customHeaderClass={styles.collapseHeader}>
               {renderDistributorBusinessAdressDetail(selectedLocationDistributor)}
             </CustomCollapse>
@@ -394,17 +405,12 @@ export const VendorLocation: FC<VendorTabProps> = ({
         </div>
       </div>
 
-      {isPublicPage || isTiscAdmin ? null : (
+      {isPublicPage ? null : (
         <>
           <Popover
-            title="SELECT LOCATION"
-            className={styles.customLocationModal}
+            {...popoverProps}
             visible={locationPopup === 'brand'}
             setVisible={(visible) => (visible ? undefined : setLocationPopup(''))}
-            chosenValue={getChosenValue()}
-            setChosenValue={(checked) =>
-              locationPopup ? handleOnChangeSpecifying(checked) : undefined
-            }
             dropDownRadioTitle={(dropdownData) => dropdownData.country_name}
             dropdownRadioList={brandAddresses.map((country) => {
               return {
@@ -431,14 +437,9 @@ export const VendorLocation: FC<VendorTabProps> = ({
           />
 
           <Popover
-            title="SELECT LOCATION"
-            className={styles.customLocationModal}
+            {...popoverProps}
             visible={locationPopup === 'distributor'}
             setVisible={(visible) => (visible ? undefined : setLocationPopup(''))}
-            chosenValue={getChosenValue()}
-            setChosenValue={(checked) =>
-              locationPopup ? handleOnChangeSpecifying(checked) : undefined
-            }
             dropDownRadioTitle={(dropdownData) => dropdownData.country_name}
             dropdownRadioList={distributorAddresses.map((country) => {
               return {

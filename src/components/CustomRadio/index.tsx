@@ -26,6 +26,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
   otherStickyBottom,
   stickyTopItem,
   optionStyle,
+  disabled,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -64,7 +65,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
     return (
       <label
         key={index}
-        className={`${style.panel_radio} ${
+        className={`${style.panel_radio} ${disabled ? 'cursor-default' : 'cursor-pointer'} ${
           option.customClass ? option.customClass : ''
         } radio-label`}
         htmlFor={`${randomID}_${option.value}_${index}`}
@@ -97,6 +98,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
         {...props}
         onChange={onChangeValue}
         value={value}
+        disabled={disabled}
         defaultValue={defaultValue?.value}>
         <Space
           direction={isRadioList ? 'vertical' : direction}
