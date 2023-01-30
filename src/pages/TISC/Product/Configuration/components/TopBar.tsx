@@ -66,18 +66,21 @@ export const TopBar: React.FC = () => {
     value: productBrand?.id || '',
   });
 
+  const setViewProductLitsByCollection = () =>
+    dispatch(
+      setProductList({
+        filter: {
+          name: 'collection_id',
+          title: 'VIEW ALL',
+          value: 'all',
+        },
+      }),
+    );
+
   useEffect(() => {
     if (isFromMyWorkspace) {
       /// set default filter value
-      dispatch(
-        setProductList({
-          filter: {
-            name: 'category_id',
-            title: 'VIEW ALL',
-            value: 'all',
-          },
-        }),
-      );
+      setViewProductLitsByCollection();
     }
   }, []);
 
@@ -172,9 +175,10 @@ export const TopBar: React.FC = () => {
 
   useEffect(() => {
     if (brandSelected?.value) {
+      /// set get default product list by collection
       const params: ProductGetListParameter = {
         brand_id: brandSelected.value as string,
-        category_id: !filter ? 'all' : undefined,
+        collection_id: !filter ? 'all' : undefined,
       };
 
       if (filter?.name === 'category_id') {
@@ -347,15 +351,8 @@ export const TopBar: React.FC = () => {
               ],
               removeAll: true,
             });
-            dispatch(
-              setProductList({
-                filter: {
-                  name: 'category_id',
-                  title: 'VIEW ALL',
-                  value: 'all',
-                },
-              }),
-            );
+            // set view default product list by collection
+            setViewProductLitsByCollection();
           }
           setBrandSelected(v);
         }}
