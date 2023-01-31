@@ -12,6 +12,7 @@ import type { SpecificationAttributeBasisOptionProps } from '../../types';
 import type { RadioValue } from '@/components/CustomRadio/types';
 import { ConversionSubValueProps } from '@/types';
 
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import Popover from '@/components/Modal/Popover';
 import { BodyText } from '@/components/Typography';
 
@@ -190,9 +191,12 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
 
 export const GeneralText: FC<{ text?: string }> = ({ text = '' }) => {
   return (
-    <BodyText level={6} customClass={styles.content_text} fontFamily="Roboto">
-      {text}
-    </BodyText>
+    <CustomTextArea
+      value={text}
+      customClass={`${styles.customTextArea} ${styles.generalText}`}
+      readOnly
+      autoResize
+    />
   );
 };
 

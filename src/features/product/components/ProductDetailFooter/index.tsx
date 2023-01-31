@@ -53,11 +53,11 @@ export const ProductDetailFooter: React.FC<{ infoTab: ProductInfoTab }> = memo((
           <ProductCollection />
         </CustomTabPane>
 
-        <CustomTabPane active={activeKey === 'tip'}>
+        <CustomTabPane active={activeKey === 'tip'} lazyLoad>
           <ProductTip />
         </CustomTabPane>
 
-        <CustomTabPane active={activeKey === 'download'}>
+        <CustomTabPane active={activeKey === 'download'} lazyLoad>
           <ProductDownloadFooter />
         </CustomTabPane>
       </div>
