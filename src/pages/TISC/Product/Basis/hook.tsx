@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
+import { message } from 'antd';
 import { history } from 'umi';
 
 import { pushTo } from '@/helper/history';
@@ -203,6 +204,14 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   const onHandleSubmit = () => {
     const newSubs = data.subs.map((sub) => {
       if (type === 'conversions') {
+        const isSubConversionValueMissing =
+          (sub.formula_1 === '' && sub.unit_1 !== '') ||
+          (sub.formula_2 === '' && sub.unit_2 !== '');
+
+        if (isSubConversionValueMissing) {
+          return;
+        }
+
         return {
           ...sub,
           name_1: sub.name_1.trim(),
@@ -214,17 +223,17 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
         };
       }
 
+      const isSubValueMissing = sub.subs?.some(
+        (subItem: SubPresetValueProp | SubBasisOption) =>
+          (subItem.value_1 === '' && subItem.unit_1 !== '') ||
+          (subItem.value_2 === '' && subItem.unit_2 !== ''),
+      );
+
+      if (isSubValueMissing) {
+        return;
+      }
+
       if (type === 'presets') {
-        const isSubValueMissing = sub.subs.some(
-          (subItem: SubPresetValueProp) =>
-            (subItem.value_1 === '' && subItem.unit_1 !== '') ||
-            (subItem.value_2 === '' && subItem.unit_2 !== ''),
-        );
-
-        if (isSubValueMissing) {
-          return;
-        }
-
         return {
           ...sub,
           name: sub.name.trim(),
@@ -262,6 +271,18 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
       }
       return newSubOption;
     });
+
+    if (!newSubs[0]) {
+      if (type === 'conversions') {
+        message.error('Formula is required');
+        return;
+      }
+
+      if (type === 'options' || type === 'presets') {
+        message.error('Value is required');
+        return;
+      }
+    }
 
     const handleSubmit = idItem ? handleUpdate : handleCreate;
 
