@@ -8,6 +8,7 @@ import { history } from 'umi';
 
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { getDesignDueDay, getFullName, getValueByCondition, updateUrlParams } from '@/helper/utils';
 
@@ -20,6 +21,7 @@ import { ProjecTrackingList } from '@/types/project-tracking.type';
 import { EmptyOne } from '@/components/Empty';
 import { loadingSelector } from '@/components/LoadingPage/slices';
 import { LogoIcon } from '@/components/LogoIcon';
+import { ProfileIcon } from '@/components/ProfileIcon';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
 
@@ -44,6 +46,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
     [isDesignerUser, PATH.designerUpdateProject],
   ]);
 
+  const { isMobile } = useScreen();
   const handleClickItem = (cardInfo: ProjecTrackingList & BrandCard & ProjectListProps) => {
     if (cardInfo.id) {
       if (isTiscUser) {
@@ -183,14 +186,8 @@ export const ProjectCard: FC<ProjectCardProps> = ({
     );
   };
 
-  const getAssignedTeamInfo = (info: any) => {
-    const assignedTeam = getValueByCondition([
-      [isTiscUser, info.teams],
-      [isBrandUser, info.assignedTeams],
-      [isDesignerUser, info.assign_teams],
-    ]);
-
-    return assignedTeam?.map((user: BrandCardTeam) => (
+  const renderTeamNumber = (teams: BrandCardTeam[]) => {
+    return teams.map((user: BrandCardTeam) => (
       <TeamIcon
         key={user.id}
         avatar={user.avatar}
@@ -198,6 +195,31 @@ export const ProjectCard: FC<ProjectCardProps> = ({
         customClass={styles.avatar}
       />
     ));
+  };
+
+  const getAssignedTeamInfo = (info: any) => {
+    const assignedTeam = getValueByCondition([
+      [isTiscUser, info.teams],
+      [isBrandUser, info.assignedTeams],
+      [isDesignerUser, info.assign_teams],
+    ]);
+
+    const maxTeamNumber = isMobile ? 3 : 5;
+    if (assignedTeam.length > maxTeamNumber) {
+      return (
+        <>
+          {renderTeamNumber(assignedTeam.slice(0, maxTeamNumber))}
+
+          <ProfileIcon
+            name={`+${assignedTeam.slice(maxTeamNumber, assignedTeam.length).length}`}
+            customClass={styles.backgroundIcon}
+            isFullName
+          />
+        </>
+      );
+    }
+
+    return renderTeamNumber(assignedTeam);
   };
 
   if (loading) {
