@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 
+import { getBusinessAddress } from '@/helper/utils';
 import { upperCase } from 'lodash';
 
 import { RadioValue } from '@/components/CustomRadio/types';
@@ -105,7 +106,7 @@ const LocationModal: FC<LocationModalProps> = ({
                 <BusinessDetail
                   business={location.business_name}
                   type={location.functional_types[0]?.name}
-                  address={location.address}
+                  address={getBusinessAddress(location)}
                   country={location.country_name.toUpperCase()}
                 />
               ),
