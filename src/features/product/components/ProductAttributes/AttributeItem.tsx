@@ -39,6 +39,23 @@ const getBasisOptionsText = (activeBasisOptions: { id: string; option_code: stri
   return '';
 };
 
+export const getConversionText = (content: any) => {
+  let result: string = '';
+  let hyphen: string = '';
+
+  if (content?.value_1 || content?.unit_1) {
+    hyphen = ' - ';
+
+    result = `${content.value_1 || ''} ${content.unit_1 || ''}`;
+  }
+
+  if (content?.value_2 || content?.unit_2) {
+    result += ` ${hyphen} ${content.value_2 || ''} ${content.unit_2 || ''}`;
+  }
+
+  return result;
+};
+
 export const ProductAttributeSubItem: React.FC<Props> = ({
   onDelete,
   onItemChange,
@@ -357,22 +374,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
             (sub: any) => sub.id === valueSelected.value,
           );
 
-          let attributeContent = '';
-          let hyphen = '';
-
-          if (currentAttributeItemSelect?.value_1 || currentAttributeItemSelect?.unit_1) {
-            hyphen = ' - ';
-
-            attributeContent = `${currentAttributeItemSelect.value_1 || ''} ${
-              currentAttributeItemSelect.unit_1 || ''
-            }`;
-          }
-
-          if (currentAttributeItemSelect?.value_2 || currentAttributeItemSelect?.unit_2) {
-            attributeContent += ` ${hyphen} ${currentAttributeItemSelect.value_2 || ''} ${
-              currentAttributeItemSelect.unit_2 || ''
-            }`;
-          }
+          const attributeContent: string = getConversionText(currentAttributeItemSelect) || '';
 
           if (isSpecification) {
             setBasisOptionSelected(

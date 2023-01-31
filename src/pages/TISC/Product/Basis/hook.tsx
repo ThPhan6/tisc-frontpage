@@ -213,7 +213,18 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           formula_2: sub.formula_2,
         };
       }
+
       if (type === 'presets') {
+        const isSubValueMissing = sub.subs.some(
+          (subItem: SubPresetValueProp) =>
+            (subItem.value_1 === '' && subItem.unit_1 !== '') ||
+            (subItem.value_2 === '' && subItem.unit_2 !== ''),
+        );
+
+        if (isSubValueMissing) {
+          return;
+        }
+
         return {
           ...sub,
           name: sub.name.trim(),
