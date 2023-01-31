@@ -172,3 +172,26 @@
     box-shadow: @border-bottom-light;
   }
 }
+
+.customTextArea {
+  :global(.ant-input) {
+    margin-top: 2px;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 20px;
+    background-color: transparent;
+    border-bottom-color: #fff;
+    resize: none;
+    &:hover {
+      border-bottom-color: #fff;
+    }
+  }
+}
+
+.generalText {
+  :global(.ant-input) {
+    margin-top: 0;
+    padding: 4px 0;
+    color: @mono-color;
+  }
+}
