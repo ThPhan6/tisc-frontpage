@@ -362,10 +362,10 @@ const BrandProfilePage = () => {
                   placeholder={
                     isBrand
                       ? 'maximum 250 words of brand history, story, and unique product/service offerings'
-                      : 'maximum 250 words of firm design practice, philiosophy, service offerings, and unique capacity'
+                      : 'maximum 600 words of firm design practice, philiosophy, service offerings, and unique capacity'
                   }
                   showCount
-                  maxLength={250}
+                  maxLength={isBrand ? 250 : 600}
                   borderBottomColor="mono-medium"
                   name={isBrand ? 'mission_n_vision' : 'profile_n_philosophy'}
                   onChange={onChangeValueForm}
