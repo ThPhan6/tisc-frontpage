@@ -186,35 +186,8 @@ export const ProjectCard: FC<ProjectCardProps> = ({
     );
   };
 
-  const getAssignedTeamInfo = (info: any) => {
-    const assignedTeam = getValueByCondition([
-      [isTiscUser, info.teams],
-      [isBrandUser, info.assignedTeams],
-      [isDesignerUser, info.assign_teams],
-    ]);
-
-    const assignedTeamLengthDefault = isMobile ? 3 : 5;
-    if (assignedTeam.length > assignedTeamLengthDefault) {
-      return (
-        <>
-          {assignedTeam.slice(0, assignedTeamLengthDefault).map((user: BrandCardTeam) => (
-            <TeamIcon
-              key={user.id}
-              avatar={user.avatar}
-              name={getFullName(user)}
-              customClass={styles.avatar}
-            />
-          ))}
-          <ProfileIcon
-            name={`+${assignedTeam.slice(assignedTeamLengthDefault, assignedTeam.length).length}`}
-            customClass={styles.backgroundIcon}
-            isFullName
-          />
-        </>
-      );
-    }
-
-    return assignedTeam?.map((user: BrandCardTeam) => (
+  const renderTeamNumber = (teams: BrandCardTeam[]) => {
+    return teams.map((user: BrandCardTeam) => (
       <TeamIcon
         key={user.id}
         avatar={user.avatar}
@@ -222,6 +195,31 @@ export const ProjectCard: FC<ProjectCardProps> = ({
         customClass={styles.avatar}
       />
     ));
+  };
+
+  const getAssignedTeamInfo = (info: any) => {
+    const assignedTeam = getValueByCondition([
+      [isTiscUser, info.teams],
+      [isBrandUser, info.assignedTeams],
+      [isDesignerUser, info.assign_teams],
+    ]);
+
+    const maxTeamNumber = isMobile ? 3 : 5;
+    if (assignedTeam.length > maxTeamNumber) {
+      return (
+        <>
+          {renderTeamNumber(assignedTeam.slice(0, maxTeamNumber))}
+
+          <ProfileIcon
+            name={`+${assignedTeam.slice(maxTeamNumber, assignedTeam.length).length}`}
+            customClass={styles.backgroundIcon}
+            isFullName
+          />
+        </>
+      );
+    }
+
+    return renderTeamNumber(assignedTeam);
   };
 
   if (loading) {
