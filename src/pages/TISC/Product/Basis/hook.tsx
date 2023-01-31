@@ -272,16 +272,16 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
       return newSubOption;
     });
 
-    if (!newSubs[0]) {
+    const newSubInvalidData = newSubs.some((newSub) => !newSub);
+
+    if (newSubInvalidData) {
       if (type === 'conversions') {
         message.error('Formula is required');
         return;
       }
 
-      if (type === 'options' || type === 'presets') {
-        message.error('Value is required');
-        return;
-      }
+      message.error('Value is required');
+      return;
     }
 
     const handleSubmit = idItem ? handleUpdate : handleCreate;
