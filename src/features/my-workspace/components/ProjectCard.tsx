@@ -8,6 +8,7 @@ import { history } from 'umi';
 
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { getDesignDueDay, getFullName, getValueByCondition, updateUrlParams } from '@/helper/utils';
 
@@ -20,6 +21,7 @@ import { ProjecTrackingList } from '@/types/project-tracking.type';
 import { EmptyOne } from '@/components/Empty';
 import { loadingSelector } from '@/components/LoadingPage/slices';
 import { LogoIcon } from '@/components/LogoIcon';
+import { ProfileIcon } from '@/components/ProfileIcon';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
 
@@ -44,6 +46,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
     [isDesignerUser, PATH.designerUpdateProject],
   ]);
 
+  const { isMobile } = useScreen();
   const handleClickItem = (cardInfo: ProjecTrackingList & BrandCard & ProjectListProps) => {
     if (cardInfo.id) {
       if (isTiscUser) {
@@ -189,6 +192,27 @@ export const ProjectCard: FC<ProjectCardProps> = ({
       [isBrandUser, info.assignedTeams],
       [isDesignerUser, info.assign_teams],
     ]);
+
+    const assignedTeamLengthDefault = isMobile ? 3 : 5;
+    if (assignedTeam.length > assignedTeamLengthDefault) {
+      return (
+        <>
+          {assignedTeam.slice(0, assignedTeamLengthDefault).map((user: BrandCardTeam) => (
+            <TeamIcon
+              key={user.id}
+              avatar={user.avatar}
+              name={getFullName(user)}
+              customClass={styles.avatar}
+            />
+          ))}
+          <ProfileIcon
+            name={`+${assignedTeam.slice(assignedTeamLengthDefault, assignedTeam.length).length}`}
+            customClass={styles.backgroundIcon}
+            isFullName
+          />
+        </>
+      );
+    }
 
     return assignedTeam?.map((user: BrandCardTeam) => (
       <TeamIcon
