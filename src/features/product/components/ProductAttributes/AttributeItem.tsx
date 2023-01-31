@@ -357,32 +357,21 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
             (sub: any) => sub.id === valueSelected.value,
           );
 
-          const attributeContentValueUnit_1: string[] = [];
-          const attributeContentValueUnit_2: string[] = [];
-          let attributeContent = valueSelected.label;
+          let attributeContent = '';
+          let hyphen = '';
+
           if (currentAttributeItemSelect?.value_1 || currentAttributeItemSelect?.unit_1) {
-            attributeContentValueUnit_1.push(
-              currentAttributeItemSelect.value_1 || '',
-              currentAttributeItemSelect.unit_1 || '',
-            );
+            hyphen = ' - ';
+
+            attributeContent = `${currentAttributeItemSelect.value_1 || ''} ${
+              currentAttributeItemSelect.unit_1 || ''
+            }`;
           }
 
           if (currentAttributeItemSelect?.value_2 || currentAttributeItemSelect?.unit_2) {
-            attributeContentValueUnit_2.push(
-              currentAttributeItemSelect.value_2 || '',
-              currentAttributeItemSelect.unit_2 || '',
-            );
-          }
-
-          if (currentAttributeItemSelect) {
-            attributeContent =
-              attributeContentValueUnit_1.join(' ') +
-              `${
-                attributeContentValueUnit_1.length && attributeContentValueUnit_2.length
-                  ? ' - '
-                  : ''
-              }` +
-              attributeContentValueUnit_2.join(' ');
+            attributeContent += ` ${hyphen} ${currentAttributeItemSelect.value_2 || ''} ${
+              currentAttributeItemSelect.unit_2 || ''
+            }`;
           }
 
           if (isSpecification) {
