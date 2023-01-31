@@ -36,6 +36,7 @@ export interface PopoverProps {
 
   /// group radio list
   groupRadioList?: RadioListOption[];
+  disabledDropDownRadio?: boolean;
 
   /// group checkbox list
   groupCheckboxList?: CheckboxValue[];
@@ -80,6 +81,7 @@ const Popover: FC<PopoverProps> = ({
   visible,
   setVisible,
   dropdownRadioList,
+  disabledDropDownRadio,
   dropDownRadioTitle,
   dropdownCheckboxList,
   dropdownCheckboxTitle,
@@ -130,6 +132,7 @@ const Popover: FC<PopoverProps> = ({
           data={dropdownRadioList}
           renderTitle={dropDownRadioTitle}
           onChange={setCurrentValue}
+          radioDisabled={disabledDropDownRadio}
         />
       );
     }

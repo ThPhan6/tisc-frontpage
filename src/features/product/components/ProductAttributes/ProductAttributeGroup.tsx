@@ -12,6 +12,8 @@ import {
   SpecificationAttributeBasisOptionProps,
 } from '../../types';
 import { ActiveKeyType } from './types';
+import store from '@/reducers';
+import { closeProductFooterTab, useCollapseGroupActiveCheck } from '@/reducers/active';
 
 import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
@@ -51,6 +53,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   curProductId,
   isSpecifiedModal,
 }) => {
+  const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(
+    activeKey,
+    groupIndex + 1, // Spare index 0 for Dimension & Weight group
+  );
+
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
   const signature = useQuery().get('signature') ?? '';
@@ -265,6 +272,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       <div className={styles.attributes}>
         <div className={styles.specification}>
           <CustomCollapse
+            activeKey={curActiveKey}
+            onChange={(key) => {
+              onKeyChange(key);
+              store.dispatch(closeProductFooterTab());
+            }}
             showActiveBoxShadow={!specifying}
             noBorder={noBorder}
             expandingHeaderFontStyle="bold"

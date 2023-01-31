@@ -46,11 +46,6 @@ export async function getProductCategoryPagination(
 }
 
 export async function getAllProductCategory() {
-  // Don't call again
-  if (store.getState().category.list.length) {
-    return;
-  }
-
   request(`/api/category/get-list`, {
     method: 'GET',
     params: {
