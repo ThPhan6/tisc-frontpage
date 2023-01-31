@@ -208,7 +208,7 @@ const ProductDetailContainer: React.FC = () => {
                 </Col>
 
                 <Col style={{ marginTop: 'auto' }}>
-                  <ProductDetailFooter visible={activeKey !== 'vendor'} />
+                  <ProductDetailFooter infoTab={activeKey} />
                 </Col>
               </Row>
             </Col>
