@@ -120,10 +120,13 @@ export const DualLabel: FC<DualLabelProps> = ({
   customClass = '',
 }) => (
   <span className={`flex-start ${customClass}`} style={{ paddingRight: '16px' }}>
-    <Title level={9} style={{ marginRight: 12, fontWeight: fontWeight, fontSize: fontSize }}>
+    <Title
+      level={9}
+      style={{ marginRight: 12, fontWeight: fontWeight, fontSize: fontSize }}
+      customClass="firstText">
       {firstTxt}
     </Title>
-    <BodyText fontFamily="Roboto" level={6} style={{ fontSize: fontSize }}>
+    <BodyText fontFamily="Roboto" level={6} style={{ fontSize: fontSize }} customClass="secondText">
       {secTxt}
     </BodyText>
   </span>
