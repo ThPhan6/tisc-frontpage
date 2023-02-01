@@ -21,7 +21,7 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { BodyText } from '@/components/Typography';
 
 import { AttributeOption, ConversionText, GeneralText } from './AttributeComponent';
-import { ProductAttributeSubItem } from './AttributeItem';
+import { ProductAttributeSubItem, getConversionText } from './AttributeItem';
 import { ProductAttributeContainerProps } from './ProductAttributeContainer';
 import { SelectAttributeSpecificationChoice } from './SelectAttributeSpecificationChoice';
 import { SelectAttributesToGroupRow } from './SelectAttributesToGroupRow';
@@ -230,9 +230,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             chosenOption={
               chosenOption
                 ? {
-                    label: `${chosenOption.value_1 ?? ''} ${chosenOption.unit_1 ?? ''} ${
-                      chosenOption.value_2 ? '-' : ''
-                    } ${chosenOption.value_2 ?? ''} ${chosenOption.unit_2 ?? ''}`,
+                    label: getConversionText(chosenOption),
                     value: chosenOption?.id,
                   }
                 : undefined
