@@ -1,20 +1,16 @@
 import { FC } from 'react';
 
 import { useSelectProductSpecification } from '@/features/product/services';
-import { showImageUrl } from '@/helper/utils';
 import { cloneDeep } from 'lodash';
 
 import { OptionGroupProps } from '../../types';
 import store from '@/reducers';
 
 import { CustomRadio } from '@/components/CustomRadio';
+import { LogoIcon } from '@/components/LogoIcon';
 import { RobotoBodyText } from '@/components/Typography';
 
 import { setCustomProductDetail } from '../../slice';
-
-export const renderOptionImage = (image: string) => (
-  <img src={showImageUrl(image)} style={{ width: 48, height: 48, objectFit: 'contain' }} />
-);
 
 export const OptionItemView: FC<OptionGroupProps> = ({
   data,
@@ -55,7 +51,7 @@ export const OptionItemView: FC<OptionGroupProps> = ({
       options={option.items.map((el, index) => ({
         label: (
           <div className="flex-start">
-            {option.use_image && el.image ? renderOptionImage(el.image) : null}
+            {option.use_image && el.image ? <LogoIcon logo={el.image} /> : null}
             <RobotoBodyText
               level={5}
               customClass="text-overflow"

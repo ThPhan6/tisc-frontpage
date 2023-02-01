@@ -208,7 +208,7 @@ export const TopBar: React.FC = () => {
   const renderLabel = (item: BrandDetail) => {
     return (
       <BodyText level={5} fontFamily="Roboto">
-        <LogoIcon logo={item.logo} className={styles.brandLogo} />
+        <LogoIcon logo={item.logo} size={18} style={{ marginRight: 16 }} />
         <span className="brand-name">{item.name}</span>
       </BodyText>
     );
