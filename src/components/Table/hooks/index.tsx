@@ -161,7 +161,7 @@ const syncColWidthFollowingTheDeepestDataRow = (
 
       // Update style for each column from this data row to their relevant column of expandable column
       // Remember to add enter key
-      if (!newCellWidth) {
+      if (!newCellWidth || newCellWidth === '0px') {
         return;
       }
       cellWidthStyles += `
