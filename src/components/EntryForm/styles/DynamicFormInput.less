@@ -13,10 +13,6 @@
       height: 24px;
       font-family: @font-secondary;
     }
-    :global(.dynamic-value-box) {
-      height: 32px;
-      padding-left: 32px;
-    }
   }
   :global(.flex-input-with-icon) {
     display: flex;
@@ -34,5 +30,22 @@
   cursor: pointer;
   :global(.add-attribute-text) {
     margin-right: 12px;
+  }
+}
+
+.customTextArea {
+  :global(.ant-input) {
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 20px;
+    background-color: transparent;
+    border-bottom-color: transparent;
+    resize: none;
+    &:hover {
+      border-bottom-color: transparent;
+    }
+  }
+  textarea {
+    padding-left: 32px;
   }
 }

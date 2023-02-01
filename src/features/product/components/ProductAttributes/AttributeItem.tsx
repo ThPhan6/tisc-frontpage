@@ -286,6 +286,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
       <InputGroup
         horizontal
         isTableFormat
+        autoResize={curAttributeData.basis.type === 'Text'}
         fontLevel={4}
         label={curAttributeData?.name ? truncate(curAttributeData?.name, { length: 20 }) : 'N/A'}
         placeholder={placeholder}
