@@ -45,7 +45,7 @@ export const ImageUpload: FC<{
         style={{
           width: 48,
           height: 48,
-          objectFit: 'contain',
+          objectFit: 'cover',
           marginRight: 16,
           cursor: 'pointer',
           ...style,

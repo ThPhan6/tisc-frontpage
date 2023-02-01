@@ -5,12 +5,13 @@ import { PATH } from '@/constants/path';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { confirmDelete } from '@/helper/common';
 import { pushTo } from '@/helper/history';
-import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
+import { setDefaultWidthForEachColumn } from '@/helper/utils';
 import { deleteBasisOption, getProductBasisOptionPagination } from '@/services';
 
 import type { TableColumnItem } from '@/components/Table/types';
 import type { BasisOptionListResponse, SubBasisOption } from '@/types';
 
+import { LogoIcon } from '@/components/LogoIcon';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { ActionMenu } from '@/components/TableAction';
@@ -38,17 +39,7 @@ const BasisOptionList: React.FC = () => {
         dataIndex: 'image',
         width: '5%',
         noBoxShadow: noBoxShadow,
-        render: (value) => {
-          if (value) {
-            return (
-              <img
-                src={showImageUrl(value)}
-                style={{ width: 18, height: 18, objectFit: 'contain' }}
-              />
-            );
-          }
-          return null;
-        },
+        render: (value) => (value ? <LogoIcon logo={value[0]} size={18} /> : null),
       },
       {
         title: '1st Value',

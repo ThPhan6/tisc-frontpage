@@ -31,9 +31,9 @@ const Header = () => {
 
   const logoImage = getValueByCondition(
     [
-      [isTiscUser, <img src={logoIcon} alt="logo" />],
-      [isBrandUser, <LogoIcon logo={String(user?.brand?.logo)} />],
-      [isDesignerUser, <LogoIcon logo={String(user?.design?.logo)} />],
+      [isTiscUser, <LogoIcon logo={logoIcon} size={24} />],
+      [isBrandUser, <LogoIcon logo={String(user?.brand?.logo)} size={24} />],
+      [isDesignerUser, <LogoIcon logo={String(user?.design?.logo)} size={24} />],
     ],
     '',
   );
