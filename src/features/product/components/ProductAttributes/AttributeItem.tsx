@@ -40,20 +40,15 @@ const getBasisOptionsText = (activeBasisOptions: { id: string; option_code: stri
 };
 
 export const getConversionText = (content: any) => {
-  let result: string = '';
-  let hyphen: string = '';
-
-  if (content?.value_1 || content?.unit_1) {
-    hyphen = ' - ';
-
-    result = `${content.value_1 || ''} ${content.unit_1 || ''}`;
+  if (!content) {
+    return '';
   }
 
-  if (content?.value_2 || content?.unit_2) {
-    result += ` ${hyphen} ${content.value_2 || ''} ${content.unit_2 || ''}`;
-  }
+  const valueUnit_1 = `${content.value_1}${content.unit_1 ? ' ' + content.unit_1 : ''}`;
+  const valueUnit_2 = `${content.value_2}${content.unit_2 ? ' ' + content.unit_2 : ''}`;
+  const hyphen = content.value_1 && content.value_2 ? ' - ' : '';
 
-  return result;
+  return `${valueUnit_1}${hyphen}${valueUnit_2}`;
 };
 
 export const ProductAttributeSubItem: React.FC<Props> = ({
@@ -374,7 +369,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
             (sub: any) => sub.id === valueSelected.value,
           );
 
-          const attributeContent: string = getConversionText(currentAttributeItemSelect) || '';
+          const attributeContent: string = getConversionText(currentAttributeItemSelect);
 
           if (isSpecification) {
             setBasisOptionSelected(

@@ -230,7 +230,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             chosenOption={
               chosenOption
                 ? {
-                    label: getConversionText(chosenOption) || '',
+                    label: getConversionText(chosenOption),
                     value: chosenOption?.id,
                   }
                 : undefined
