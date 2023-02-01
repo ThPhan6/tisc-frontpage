@@ -204,9 +204,9 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   const onHandleSubmit = () => {
     const newSubs = data.subs.map((sub) => {
       if (type === 'conversions') {
+        /// all values are required
         const isSubConversionValueMissing =
-          (sub.formula_1 === '' && sub.unit_1 !== '') ||
-          (sub.formula_2 === '' && sub.unit_2 !== '');
+          sub.formula_1 === '' || sub.unit_1 === '' || sub.formula_2 === '' || sub.unit_2 === '';
 
         if (isSubConversionValueMissing) {
           return;
@@ -223,6 +223,7 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
         };
       }
 
+      /// unit must go with its value
       const isSubValueMissing = sub.subs?.some(
         (subItem: SubPresetValueProp | SubBasisOption) =>
           (subItem.value_1 === '' && subItem.unit_1 !== '') ||
@@ -272,15 +273,10 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
       return newSubOption;
     });
 
-    const newSubInvalidData = newSubs.some((newSub) => !newSub);
+    const newSubDataInvalid = newSubs.some((newSub) => !newSub);
 
-    if (newSubInvalidData) {
-      if (type === 'conversions') {
-        message.error('Formula is required');
-        return;
-      }
-
-      message.error('Value is required');
+    if (newSubDataInvalid) {
+      message.error(type === 'conversions' ? 'All values are required' : 'Value is required');
       return;
     }
 
