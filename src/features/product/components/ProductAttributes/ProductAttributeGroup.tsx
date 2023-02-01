@@ -77,7 +77,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     onCheckedSpecification,
     attributeGroupKey,
     onSelectSpecificationOption,
-  } = useProductAttributeForm(activeKey, curProductId, { isSpecifiedModal: isSpecifiedModal });
+  } = useProductAttributeForm(activeKey, curProductId, { isSpecifiedModal });
 
   useEffect(() => {
     if (attrGroupItem.selection && attrGroupItem.id) {
