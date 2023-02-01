@@ -25,6 +25,7 @@ import { SignupModal } from '@/pages/LandingPage/components/SignupModal';
 import { VerifyAccount } from '@/pages/LandingPage/components/VerifyAccount';
 import { SelectBrandModal } from '@/pages/TISC/Product/Configuration/components/TopBar';
 
+import styles from './index.less';
 import AssignProductModal from '@/features/product/modals/AssignProductModal';
 
 export const ModalController = () => {
@@ -109,6 +110,7 @@ export const ModalController = () => {
         autoHeight={autoHeightDrawer}
         darkTheme={darkTheme}
         title={title}
+        className={modalType === 'Policies' ? styles.policesModal : ''}
       >
         {renderModalContent()}
       </MobileDrawer>
