@@ -24,8 +24,15 @@ interface CoverStandardProps {
   onChangeData: (newData: PdfDetail) => void;
   type: 'cover' | 'standard';
   onPreview?: () => void;
+  onReset?: () => void;
 }
-const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, onPreview }) => {
+const StandardCoverPage: FC<CoverStandardProps> = ({
+  data,
+  onChangeData,
+  type,
+  onPreview,
+  onReset,
+}) => {
   const openModal = useBoolean();
   const [previewURL, setPreviewURL] = useState<string>('');
 
@@ -166,6 +173,13 @@ const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, o
             />
           </div>
           <div className={styles.actionButton}>
+            <CustomButton
+              size="small"
+              properties="rounded"
+              onClick={onReset}
+              buttonClass={styles.resetButton}>
+              Reset
+            </CustomButton>
             <CustomButton size="small" properties="rounded" onClick={onPreview}>
               Preview
             </CustomButton>

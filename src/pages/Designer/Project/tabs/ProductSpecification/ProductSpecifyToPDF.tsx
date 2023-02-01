@@ -120,6 +120,17 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
     });
   };
 
+  const onReset = () => {
+    setData({
+      ...data,
+      config: {
+        ...data.config,
+        template_cover_ids: [],
+        template_standard_ids: [],
+      },
+    });
+  };
+
   return (
     <Row className={styles.content}>
       <Col span={12}>
@@ -146,6 +157,7 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
               onChangeData={onChangeData}
               type="standard"
               onPreview={onPreview}
+              onReset={onReset}
             />
           </CustomTabPane>
         </div>
