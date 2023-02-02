@@ -48,8 +48,6 @@ export const ModalController = () => {
     'Verify Account',
   ].includes(modalType);
 
-  console.log('modalOnLandingpage', modalOnLandingpage);
-
   const renderModalContent = () => {
     switch (modalType) {
       // landing page
