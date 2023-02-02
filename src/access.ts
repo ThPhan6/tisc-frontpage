@@ -34,17 +34,26 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
   return {
     canAdmin: currentUser && currentUser.access === 'admin',
     tisc_workspace: isAccessableForTisc('workspace'),
-    tisc_user_group: isAccessableForTisc('user'),
+    tisc_user_group: isAccessableForTisc('user', 'brand') || isAccessableForTisc('user', 'design'),
     tisc_user_group_brand: isAccessableForTisc('user', 'brand'),
     tisc_user_group_design: isAccessableForTisc('user', 'design'),
-    tisc_project: isAccessableForTisc('project'),
+    tisc_project: isAccessableForTisc('project', 'list'),
     tisc_project_list: isAccessableForTisc('project', 'list'),
-    tisc_product: isAccessableForTisc('product'),
+    tisc_product:
+      isAccessableForTisc('product', 'categories') ||
+      isAccessableForTisc('product', 'basis') ||
+      isAccessableForTisc('product', 'attribute') ||
+      isAccessableForTisc('product', 'configuration'),
     tisc_product_category: isAccessableForTisc('product', 'categories'),
     tisc_product_basis: isAccessableForTisc('product', 'basis'),
     tisc_product_attribute: isAccessableForTisc('product', 'attribute'),
     tisc_product_configuration: isAccessableForTisc('product', 'configuration'),
-    tisc_administration: isAccessableForTisc('administration'),
+    tisc_administration:
+      isAccessableForTisc('administration', 'documentation') ||
+      isAccessableForTisc('administration', 'location') ||
+      isAccessableForTisc('administration', 'team profile') ||
+      isAccessableForTisc('administration', 'message') ||
+      isAccessableForTisc('administration', 'revenue'),
     tisc_administration_documentation: isAccessableForTisc('administration', 'documentation'),
     tisc_administration_location: isAccessableForTisc('administration', 'location'),
     tisc_administration_team_profile: isAccessableForTisc('administration', 'team profile'),
@@ -55,7 +64,13 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     brand_product: isAccessableForBrand('product'),
     brand_genenral_inquiry: isAccessableForBrand('general'),
     brand_project_tracking: isAccessableForBrand('project tracking'),
-    brand_administration: isAccessableForBrand('administration'),
+    brand_administration:
+      isAccessableForBrand('administration', 'brand profile') ||
+      isAccessableForBrand('administration', 'location') ||
+      isAccessableForBrand('administration', 'team profile') ||
+      isAccessableForBrand('administration', 'distributor') ||
+      isAccessableForBrand('administration', 'market availability') ||
+      isAccessableForBrand('administration', 'billed services'),
     brand_administration_brand_profile: isAccessableForBrand('administration', 'brand profile'),
     brand_administration_location: isAccessableForBrand('administration', 'location'),
     brand_administration_team_profile: isAccessableForBrand('administration', 'team profile'),
@@ -85,7 +100,11 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     design_project_product_considered: isAccessableForDesigner('project', 'product considered'),
     design_project_product_specified: isAccessableForDesigner('project', 'product specified'),
     ///
-    design_administration: isAccessableForDesigner('administration'),
+    design_administration:
+      isAccessableForDesigner('administration', 'office profile') ||
+      isAccessableForDesigner('administration', 'location') ||
+      isAccessableForDesigner('administration', 'team profile') ||
+      isAccessableForDesigner('administration', 'material/product code'),
     design_administration_office_profile: isAccessableForDesigner(
       'administration',
       'office profile',
