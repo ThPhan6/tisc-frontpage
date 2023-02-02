@@ -2,7 +2,7 @@ import { BrandCompanyModal } from '@/features/services/components/BrandCompanyMo
 import { useScreen } from '@/helper/common';
 
 import { useAppSelector } from '@/reducers';
-import { closeModal } from '@/reducers/modal';
+import { ModalType, closeModal } from '@/reducers/modal';
 
 import AssignTeamModal from '@/components/AssignTeam';
 import InquiryRequestModal from '@/components/InquiryRequest';
@@ -28,6 +28,19 @@ import { SelectBrandModal } from '@/pages/TISC/Product/Configuration/components/
 import styles from './index.less';
 import AssignProductModal from '@/features/product/modals/AssignProductModal';
 
+const landingpageModals: ModalType[] = [
+  'Login',
+  'Tisc Login',
+  'Designer Signup',
+  'About',
+  'Contact',
+  'Policies',
+  'Browser Compatibility',
+  'Brand Interested',
+  'Reset Password',
+  'Verify Account',
+];
+
 export const ModalController = () => {
   const modalType = useAppSelector((state) => state.modal.type);
   const autoHeightDrawer = useAppSelector((state) => state.modal.autoHeightDrawer);
@@ -35,18 +48,8 @@ export const ModalController = () => {
   const darkTheme = useAppSelector((state) => state.modal.theme === 'dark');
   const title = useAppSelector((state) => state.modal.title);
   const { isMobile } = useScreen();
-  const modalOnLandingpage = [
-    'Login',
-    'Tisc Login',
-    'Designer Signup',
-    'About',
-    'Contact',
-    'Policies',
-    'Browser Compatibility',
-    'Brand Interested',
-    'Reset Password',
-    'Verify Account',
-  ].includes(modalType);
+
+  const isModalOnLandingpage = landingpageModals.includes(modalType);
 
   const renderModalContent = () => {
     switch (modalType) {
@@ -120,7 +123,7 @@ export const ModalController = () => {
         autoHeight={autoHeightDrawer}
         darkTheme={darkTheme}
         title={title}
-        className={modalOnLandingpage && isMobile ? styles.bodySpacing : ''}
+        className={isModalOnLandingpage && isMobile ? styles.bodySpacing : ''}
       >
         {renderModalContent()}
       </MobileDrawer>
