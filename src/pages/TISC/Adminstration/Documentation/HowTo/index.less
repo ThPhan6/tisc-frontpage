@@ -1,5 +1,5 @@
 .howto_container {
-  :global(.ant-tabs-nav-list) {
+  :global(.ant-tabs-nav-wrap) {
     background: #fff;
   }
 
@@ -12,10 +12,14 @@
   }
 
   :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
-    width: 100%;
+    overflow: hidden !important;
   }
 
   :global(.ant-tabs-tab) {
     width: 125px;
+    @media screen and (max-width: 400px) {
+      flex: 1;
+      width: auto;
+    }
   }
 }
