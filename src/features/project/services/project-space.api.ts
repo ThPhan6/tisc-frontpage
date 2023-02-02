@@ -42,6 +42,7 @@ export async function getProjectSpaceListPagination(
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_SPACE_DATA_FAILED);
+      hidePageLoading();
     });
 }
 

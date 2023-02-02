@@ -34,6 +34,7 @@ export async function getMaterialProductCodeList(
     })
     .catch((error) => {
       message.error(error.message);
+      hidePageLoading();
     });
 }
 

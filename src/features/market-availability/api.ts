@@ -48,6 +48,7 @@ export async function getMarketAvailabilityList(
       message.error(
         error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_MARKET_AVAILABILITY_ERROR,
       );
+      hidePageLoading();
     });
 }
 

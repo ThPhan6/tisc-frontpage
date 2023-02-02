@@ -20,6 +20,8 @@ import store from '@/reducers';
 import { setSummaryGeneralInquiry } from '@/reducers/summary';
 import { GeneralData } from '@/types';
 
+import { hidePageLoading } from '@/features/loading/loading';
+
 interface GeneralInquiryPaginationResponse {
   data: {
     general_inquiries: GeneralInquiryListProps[];
@@ -37,8 +39,6 @@ export async function getGeneralInquiryPagination(
   })
     .then((response: GeneralInquiryPaginationResponse) => {
       const { general_inquiries, pagination } = response.data;
-      console.log(general_inquiries);
-
       callback({
         data: general_inquiries,
         pagination: {
@@ -50,6 +50,7 @@ export async function getGeneralInquiryPagination(
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_GENERAL_INQUIRY_LIST_FAILED);
+      hidePageLoading();
     });
 }
 

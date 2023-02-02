@@ -53,6 +53,7 @@ export async function getServicesPagination(
     })
     .catch((error) => {
       message.error(error?.data?.message);
+      hidePageLoading();
     });
 }
 

@@ -39,6 +39,7 @@ export async function getProjectTrackingPagination(
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_TRACKING_LIST_FAILED);
+      hidePageLoading();
     });
 }
 

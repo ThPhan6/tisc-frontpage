@@ -15,6 +15,8 @@ import {
   ProjectSummaryData,
 } from '@/features/project/types';
 
+import { hidePageLoading } from '@/features/loading/loading';
+
 export async function getProductAssignSpaceByProject(
   projectId: string,
   productId: string,
@@ -47,6 +49,7 @@ export async function getConsideredProducts(
     })
     .catch((error) => {
       console.log('error', error);
+      hidePageLoading();
       message.error(error.message);
     });
 }

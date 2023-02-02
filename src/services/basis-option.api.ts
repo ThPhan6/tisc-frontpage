@@ -41,6 +41,7 @@ export async function getProductBasisOptionPagination(
     })
     .catch((error) => {
       message.error(error.data?.message ?? MESSAGE_NOTIFICATION.GETLIST_OPTION_ERROR);
+      hidePageLoading();
     });
 }
 

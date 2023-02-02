@@ -41,6 +41,7 @@ export async function getQuotationPagination(
       });
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(
         error.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_INSPIRATIONAL_QUOTES_ERROR,
       );

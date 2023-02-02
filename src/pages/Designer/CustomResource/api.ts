@@ -43,6 +43,7 @@ export async function getListVendorByBrandOrDistributor(
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_VENDOR);
+      hidePageLoading();
     });
 }
 

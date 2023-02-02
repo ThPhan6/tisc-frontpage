@@ -49,6 +49,7 @@ export async function getBrandPagination(
     })
     .catch((error) => {
       console.log('error', error);
+      hidePageLoading();
       message.error(error.message);
     });
 }

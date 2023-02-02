@@ -35,6 +35,7 @@ export async function getSpecifiedProductsByBrand(
     })
     .catch((error) => {
       console.log('error', error);
+      hidePageLoading();
       message.error(error.message);
     });
 }
@@ -53,6 +54,7 @@ export async function getSpecifiedProductByMaterial(
     })
     .catch((error) => {
       console.log('error', error);
+      hidePageLoading();
       message.error(error.message);
     });
 }
@@ -72,6 +74,7 @@ export async function getSpecifiedProductBySpace(
     })
     .catch((error) => {
       console.log('error', error);
+      hidePageLoading();
       message.error(error.message);
     });
 }

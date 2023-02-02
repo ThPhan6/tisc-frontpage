@@ -41,6 +41,7 @@ export async function getProductBasisPresetPagination(
     })
     .catch((error) => {
       console.log('error', error);
+      hidePageLoading();
       message.error(error.message);
     });
 }

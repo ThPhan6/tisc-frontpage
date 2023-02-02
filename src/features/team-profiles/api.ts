@@ -47,6 +47,7 @@ export async function getTeamProfileList(
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_TEAM_PROFILE_ERROR);
+      hidePageLoading();
       return false;
     });
 }

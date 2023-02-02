@@ -49,6 +49,7 @@ export async function getProjectPagination(
       });
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_LIST_FAILED);
     });
 }

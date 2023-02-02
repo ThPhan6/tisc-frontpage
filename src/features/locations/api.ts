@@ -147,6 +147,7 @@ export async function getLocationPagination(
       });
     })
     .catch((error) => {
+      hidePageLoading();
       console.log(error);
     });
 }

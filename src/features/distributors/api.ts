@@ -56,6 +56,7 @@ export async function getDistributorPagination(
     })
     .catch((error) => {
       message.error(error.message);
+      hidePageLoading();
     });
 }
 

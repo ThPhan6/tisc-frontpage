@@ -43,6 +43,7 @@ export async function getProductCategoryPagination(
       });
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error?.data?.message || MESSAGE_NOTIFICATION.GET_LIST_CATEGORY_ERROR);
     });
 }
