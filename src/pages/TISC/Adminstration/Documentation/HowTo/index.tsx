@@ -86,7 +86,7 @@ const HowToPage: FC<HowToPageProps> = ({ containerClass }) => {
           tabDisplay="start"
           onChange={setActiveTab}
           activeKey={activeTab}
-          widthItem={'auto'}
+          widthItem={'125px'}
         />
       </div>
 
