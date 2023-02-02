@@ -36,10 +36,10 @@ const BrandProductBasicHeader: FC<BrandProductBasicHeaderProps> = ({
       <div className={styles.productInformationContainer}>
         <img src={showImageUrl(image) || ProductPlaceHolderImage} className={styles.productImage} />
         <div className={styles.productInformation}>
-          <RobotoBodyText level={6}> {text_1} </RobotoBodyText>
-          <RobotoBodyText level={6}> {text_2} </RobotoBodyText>
-          <RobotoBodyText level={6}> {text_3} </RobotoBodyText>
-          {text_4 && <RobotoBodyText level={6}>{text_4}</RobotoBodyText>}
+          {text_1 ? <RobotoBodyText level={6}>{text_1}</RobotoBodyText> : null}
+          {text_2 ? <RobotoBodyText level={6}>{text_2}</RobotoBodyText> : null}
+          {text_3 ? <RobotoBodyText level={6}>{text_3}</RobotoBodyText> : null}
+          {text_4 ? <RobotoBodyText level={6}>{text_4}</RobotoBodyText> : null}
         </div>
       </div>
       {logo ? (
