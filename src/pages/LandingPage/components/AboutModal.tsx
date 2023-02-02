@@ -13,7 +13,7 @@ export const AboutModal = () => {
   const popupStylesProps = useLandingPageStyles(darkTheme);
 
   return (
-    <CustomModal {...popupStylesProps}>
+    <CustomModal {...popupStylesProps} className={styles.modalContainer}>
       <div className={styles.content}>
         <div className={styles.intro}>
           <div className={styles.vision}>

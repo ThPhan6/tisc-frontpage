@@ -68,7 +68,7 @@ export const ContactModal = () => {
   };
   return (
     <CustomModal {...popupStylesProps}>
-      <ModalContainer>
+      <ModalContainer customClass={styles.modal}>
         <div className={styles.content}>
           <div className={styles.intro}>
             <MainTitle level={1} customClass={styles[`body${themeStyle}`]}>

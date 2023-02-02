@@ -1,5 +1,21 @@
+@import '~antd/es/style/variable.less';
+
+.modalContainer {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .content {
+  height: auto;
+  max-height: 100%;
   padding: 48px 0;
+  overflow-y: auto;
+
+  @media (max-width: @screen-sm) {
+    padding: 20px 36px;
+  }
+
   .intro {
     .body-dark {
       color: #fff;

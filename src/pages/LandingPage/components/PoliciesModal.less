@@ -1,3 +1,5 @@
+@import '~antd/es/style/variable.less';
+
 .closeIcon {
   margin: 16px 9px 0 0;
   path {
@@ -10,10 +12,40 @@
   line-height: 22px;
   letter-spacing: 0.02em;
 }
+
+.tabContent {
+  :global(.ant-tabs-nav-list) {
+    width: 100% !important;
+  }
+}
+
+.modal {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
 .content {
+  @media screen and (min-width: @screen-lg) {
+    height: auto;
+    max-height: 100%;
+    overflow-y: auto;
+  }
+
+  @media (max-width: @screen-sm) {
+    padding: 0 24px;
+  }
+
   .header {
+    position: sticky;
+    top: 0;
     margin-bottom: 8px;
     padding-top: 32px;
+    background-color: #000;
+
+    @media (max-width: @screen-sm) {
+      padding-top: 0;
+    }
+
     .customTab {
       :global(.tab-items) {
         max-width: fit-content;
@@ -51,7 +83,7 @@
   .body {
     color: #fff !important;
     div {
-      height: 400px;
+      // height: 400px;
       overflow: auto;
       ::-webkit-scrollbar {
         display: none;
