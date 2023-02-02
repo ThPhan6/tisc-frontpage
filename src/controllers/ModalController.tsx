@@ -35,17 +35,20 @@ export const ModalController = () => {
   const darkTheme = useAppSelector((state) => state.modal.theme === 'dark');
   const title = useAppSelector((state) => state.modal.title);
   const { isMobile } = useScreen();
-  const modalOnLandingpage =
-    modalType === 'Login' ||
-    modalType === 'Tisc Login' ||
-    modalType === 'Designer Signup' ||
-    modalType === 'About' ||
-    modalType === 'Contact' ||
-    modalType === 'Policies' ||
-    modalType === 'Browser Compatibility' ||
-    modalType === 'Brand Interested' ||
-    modalType === 'Reset Password' ||
-    modalType === 'Verify Account';
+  const modalOnLandingpage = [
+    'Login',
+    'Tisc Login',
+    'Designer Signup',
+    'About',
+    'Contact',
+    'Policies',
+    'Browser Compatibility',
+    'Brand Interested',
+    'Reset Password',
+    'Verify Account',
+  ].includes(modalType);
+
+  console.log('modalOnLandingpage', modalOnLandingpage);
 
   const renderModalContent = () => {
     switch (modalType) {
