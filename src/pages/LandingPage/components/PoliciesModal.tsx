@@ -5,6 +5,7 @@ import { useLandingPageStyles } from './hook';
 
 import { ModalProps, Policy } from '../types';
 import { CustomModalProps } from '@/components/Modal/types';
+import { TabItem } from '@/components/Tabs/types';
 import { useAppSelector } from '@/reducers';
 import { modalThemeSelector } from '@/reducers/modal';
 
@@ -30,10 +31,10 @@ export const PoliciesModal: FC<CustomModalProps & { customTheme?: ModalProps['th
   const { darkTheme } = useAppSelector(modalThemeSelector);
   const popupStylesProps = useLandingPageStyles(!!customTheme || darkTheme);
 
-  const tabs = [
-    { tab: 'TERMS OF SERVICES', key: PolicyTabKeys.terms },
-    { tab: 'PRIVACY POLICY', key: PolicyTabKeys.privacy_policy },
-    { tab: 'COOKIE POLICY', key: PolicyTabKeys.cookie_policy },
+  const tabs: TabItem[] = [
+    { tab: 'TERMS OF SERVICES', mobileTabTitle: 'TERMS', key: PolicyTabKeys.terms },
+    { tab: 'PRIVACY POLICY', mobileTabTitle: 'PRIVACY', key: PolicyTabKeys.privacy_policy },
+    { tab: 'COOKIE POLICY', mobileTabTitle: 'COOKIE', key: PolicyTabKeys.cookie_policy },
   ];
 
   const [selectedTab, setSelectedTab] = useState<PolicyTabKeys>(PolicyTabKeys.terms);
@@ -57,7 +58,7 @@ export const PoliciesModal: FC<CustomModalProps & { customTheme?: ModalProps['th
   }, []);
 
   return (
-    <CustomModal {...popupStylesProps} {...props}>
+    <CustomModal {...popupStylesProps} {...props} className={styles.modal}>
       <div className={styles.content}>
         <div className={styles.header}>
           <div className={styles.customTab}>
@@ -65,6 +66,8 @@ export const PoliciesModal: FC<CustomModalProps & { customTheme?: ModalProps['th
               listTab={tabs}
               onChange={(changedKey) => setSelectedTab(changedKey as PolicyTabKeys)}
               activeKey={selectedTab}
+              customClass={styles.tabContent}
+              widthItem="auto"
             />
           </div>
         </div>

@@ -182,7 +182,7 @@ const ProductDetailContainer: React.FC = () => {
       <div className={styles.backgroundLight}>
         <Col span={24}>{renderHeader()}</Col>
 
-        <Col span={24} style={{ margin: '0 24px' }}>
+        <Col span={24} style={{ margin: isPublicPage ? '0 24px' : '' }}>
           <Row className={isPublicPage ? styles.marginRounded : ''} gutter={[8, 8]}>
             <ResponsiveCol>
               <ProductImagePreview />

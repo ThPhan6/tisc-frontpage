@@ -122,7 +122,7 @@ const LandingPage = () => {
           if (history.location.pathname.indexOf('re-schedule') !== -1) {
             store.dispatch(
               openModal({
-                type: 'ReSchedule Booking',
+                type: 'Calendar',
                 props: {
                   informationBooking: res,
                   reScheduleBooking: true,

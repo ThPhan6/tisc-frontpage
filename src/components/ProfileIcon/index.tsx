@@ -8,9 +8,10 @@ interface ProfileUserProps {
   name: string;
   customClass?: string;
   size?: number;
+  isFullName?: boolean;
 }
 
-export const ProfileIcon: FC<ProfileUserProps> = ({ name, customClass, size = 20 }) => {
+export const ProfileIcon: FC<ProfileUserProps> = ({ name, customClass, size = 20, isFullName }) => {
   const firstUserCharacter = name.charAt(0);
   const backgroundColor = getLetterAvatarBackgroundColor(name);
 
@@ -21,8 +22,9 @@ export const ProfileIcon: FC<ProfileUserProps> = ({ name, customClass, size = 20
         width: `${size}px`,
         height: `${size}px`,
       }}
-      className={`${style.nameIcon} ${customClass}`}>
-      {firstUserCharacter}
+      className={`${style.nameIcon} ${customClass}`}
+    >
+      {isFullName ? name : firstUserCharacter}
     </div>
   );
 };

@@ -223,7 +223,7 @@ export const SignupModal = () => {
           />
         </ModalContainer>
       </CustomModal>
-      ,{renderPoliciesModal()}
+      {renderPoliciesModal()}
     </>
   );
 };
