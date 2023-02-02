@@ -21,6 +21,8 @@ import type {
 } from '@/components/Table/types';
 import { GeneralData } from '@/types';
 
+import { hidePageLoading, showPageLoading } from '../loading/loading';
+
 interface LocationPaginationResponse {
   data: {
     locations: LocationDetail[];
@@ -172,16 +174,19 @@ export async function getListFunctionalTypeForDesign() {
 }
 
 export async function createLocation(data: LocationForm) {
+  showPageLoading();
   return request(`/api/location/create`, {
     method: 'POST',
     data,
   })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CREATE_LOCATION_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_LOCATION_FAILED);
+      hidePageLoading();
       return false;
     });
 }
@@ -195,16 +200,19 @@ export async function getLocationById(id: string) {
     });
 }
 export async function updateLocation(id: string, data: LocationForm) {
+  showPageLoading();
   return request(`/api/location/update/${id}`, {
     method: 'PUT',
     data,
   })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_LOCATION_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_LOCATION_FAILED);
+      hidePageLoading();
       return false;
     });
 }
@@ -213,10 +221,12 @@ export async function deleteLocationById(id: string) {
   return request(`/api/location/delete/${id}`, { method: 'DELETE' })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.DELETE_LOCATION_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_LOCATION_FAILED);
+      hidePageLoading();
       return false;
     });
 }

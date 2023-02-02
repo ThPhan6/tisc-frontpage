@@ -38,17 +38,7 @@ const CategoryEntryForm = () => {
 
   useEffect(() => {
     if (idCategory) {
-      showPageLoading();
-      getOneCategoryMiddleware(
-        idCategory,
-        (dataRes: CategoryBodyProps) => {
-          setCategoryValue(dataRes);
-          hidePageLoading();
-        },
-        () => {
-          hidePageLoading();
-        },
-      );
+      getOneCategoryMiddleware(idCategory, setCategoryValue);
     }
   }, []);
 

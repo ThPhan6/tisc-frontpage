@@ -32,7 +32,6 @@ import TabDetail from '@/features/user-group/components/TabDetail';
 import TeamDetail from '@/features/user-group/components/TeamDetail';
 import TooltipLabel from '@/features/user-group/components/TooltipLabel';
 
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import styles from '@/features/user-group/styles/index.less';
 
 const BrandTabs: TabItem[] = [
@@ -71,9 +70,7 @@ const UpdatePage = () => {
   }, []);
 
   const handleSaveButton = () => {
-    showPageLoading();
     updateBrandStatus(brandId, { status: data.status }).then((isSuccess) => {
-      hidePageLoading();
       if (isSuccess) {
         buttonStatus.setValue(true);
         setTimeout(() => {

@@ -13,7 +13,7 @@ import {
 import { TableHeader } from '@/components/Table/TableHeader';
 import { MarketAvailabilityEntryForm } from '@/features/market-availability/components/MarketAvailabilityEntryForm';
 
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import { showPageLoading } from '@/features/loading/loading';
 import {
   getMarketAvailabilityByCollectionId,
   updateMarketAvailabilityByCollectionId,
@@ -38,7 +38,6 @@ const UpdateMarketAvailabilityPage = () => {
   const onSubmit = (submitData: PayloadUpdateAvailibity[]) => {
     showPageLoading();
     updateMarketAvailabilityByCollectionId(collectionId, submitData).then((isSuccess) => {
-      hidePageLoading();
       if (isSuccess) {
         submitButtonStatus.setValue(true);
         setTimeout(() => {
@@ -53,7 +52,6 @@ const UpdateMarketAvailabilityPage = () => {
     getMarketAvailabilityByCollectionId(collectionId).then((res) => {
       if (res) {
         setData(res);
-        hidePageLoading();
       }
     });
   }, []);

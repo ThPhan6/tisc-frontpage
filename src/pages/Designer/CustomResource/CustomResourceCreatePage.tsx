@@ -16,7 +16,7 @@ import { CustomResourceHeader } from './component/CustomResourceHeader';
 import { CustomResourceTopBar } from './component/CustomResourceTopBar';
 
 import { createCustomResource, getOneCustomResource, updateCustomResource } from './api';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import { showPageLoading } from '@/features/loading/loading';
 
 const CustomResourceCreatePage = () => {
   const customResourceType = useAppSelector((state) => state.customResource.customResourceType);
@@ -64,7 +64,6 @@ const CustomResourceCreatePage = () => {
             submitButtonStatus.setValue(false);
           }, 1000);
         }
-        hidePageLoading();
       });
     } else {
       createCustomResource(data).then((isSuccess) => {
@@ -75,7 +74,6 @@ const CustomResourceCreatePage = () => {
             pushTo(PATH.designerCustomResource);
           }, 1000);
         }
-        hidePageLoading();
       });
     }
   };

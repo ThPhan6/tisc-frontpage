@@ -14,6 +14,8 @@ import store from '@/reducers';
 import { GeneralData } from '@/types';
 import { UserDetail } from '@/types/user.type';
 
+import { hidePageLoading, showPageLoading } from '../loading/loading';
+
 interface RevenuePaginationResponse {
   data: {
     data: ServicesResponse[];
@@ -66,12 +68,15 @@ export async function getOneService(id: string) {
 }
 
 export async function createService(data: ServicesForm) {
+  showPageLoading();
   return request<boolean>(`/api/invoice`, { method: 'POST', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CREATE_SERVICE_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch(() => {
+      hidePageLoading();
       return false;
     });
 }
@@ -103,36 +108,45 @@ export async function getListOrderBy(id: string, type: number, role: number) {
 }
 
 export async function updateService(id: string, data: ServicesForm) {
+  showPageLoading();
   return request<boolean>(`/api/invoice/${id}`, { method: 'PATCH', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_SERVICE_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch(() => {
+      hidePageLoading();
       return false;
     });
 }
 
 export async function sendBill(id: string) {
+  showPageLoading();
   return request<boolean>(`/api/invoice/${id}/bill`, { method: 'POST' })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.SENT_BILL_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message);
+      hidePageLoading();
       return false;
     });
 }
 
 export async function sendRemind(id: string) {
+  showPageLoading();
   return request<boolean>(`/api/invoice/${id}/send-reminder`, { method: 'POST' })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.SENT_REMIND_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message);
+      hidePageLoading();
       return false;
     });
 }

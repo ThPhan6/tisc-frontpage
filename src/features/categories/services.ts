@@ -13,6 +13,8 @@ import type {
 import { setCategoryList } from '@/features/categories/reducers';
 import store from '@/reducers';
 
+import { hidePageLoading, showPageLoading } from '../loading/loading';
+
 interface CategoryPaginationResponse {
   data: {
     categories: CategoryNestedList[];
@@ -116,16 +118,18 @@ export async function deleteCategoryMiddleware(id: string) {
 
 export async function getOneCategoryMiddleware(
   id: string,
-  callbackSuccess: (dataRes: CategoryBodyProps) => void,
-  callbackError: (message?: string) => void,
+  callback: (dataRes: CategoryBodyProps) => void,
 ) {
+  showPageLoading();
   request(`/api/category/get-one/${id}`, {
     method: 'get',
   })
     .then((response: { data: CategoryBodyProps }) => {
-      callbackSuccess(response?.data);
+      hidePageLoading();
+      callback(response?.data);
     })
     .catch((error) => {
-      callbackError(error?.data?.message || MESSAGE_NOTIFICATION.DELETE_CATEGORY_ERROR);
+      hidePageLoading();
+      message.error(error?.data?.message || MESSAGE_NOTIFICATION.DELETE_CATEGORY_ERROR);
     });
 }

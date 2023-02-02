@@ -35,8 +35,6 @@ import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
-
 const conversionValueDefault: ConversionSubValueProps = {
   name_1: '',
   name_2: '',
@@ -106,14 +104,12 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
 
   useEffect(() => {
     if (idItem) {
-      showPageLoading();
       const getOneFunction = FORM_CONFIG[type].getOneFunction;
       getOneFunction(idItem).then((res) => {
         if (res) {
           setData(res);
         }
       });
-      hidePageLoading();
     }
   }, []);
 
@@ -174,7 +170,6 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   };
 
   const handleCreate = (dataSubmit: any) => {
-    showPageLoading();
     const createFunction = FORM_CONFIG[type].createFunction;
     createFunction(dataSubmit).then((isSuccess) => {
       if (isSuccess) {
@@ -183,12 +178,10 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           pushTo(FORM_CONFIG[type].path);
         }, 1000);
       }
-      hidePageLoading();
     });
   };
 
   const handleUpdate = (dataSubmit: any) => {
-    showPageLoading();
     const updateFunction = FORM_CONFIG[type].updateFunction;
     updateFunction(idItem, dataSubmit).then((isSuccess) => {
       if (isSuccess) {
@@ -197,7 +190,6 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           submitButtonStatus.setValue(false);
         }, 2000);
       }
-      hidePageLoading();
     });
   };
 

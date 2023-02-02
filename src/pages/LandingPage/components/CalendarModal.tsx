@@ -22,7 +22,7 @@ import { BodyText, MainTitle, Title } from '@/components/Typography';
 import { endDate, getAvailableDateInMonth, startDate } from '../util';
 import styles from './CalendarModal.less';
 import { BrandInformation } from './CancelBookingModal';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import { showPageLoading } from '@/features/loading/loading';
 import moment, { Moment } from 'moment';
 
 interface CalendarModalProps extends ModalProps {
@@ -242,7 +242,6 @@ export const CalendarModal: FC<CalendarModalProps> = ({
         onClose();
         pushTo(PATH.landingPage);
       }
-      hidePageLoading();
     });
   };
 

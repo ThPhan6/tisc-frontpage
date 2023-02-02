@@ -18,6 +18,8 @@ import type {
 } from '@/components/Table/types';
 import store from '@/reducers';
 
+import { hidePageLoading } from '../loading/loading';
+
 interface TeamProfilePaginationResponse {
   data: {
     users: TeamProfileTableProps[];
@@ -81,10 +83,12 @@ export async function createTeamProfile(data: TeamProfileRequestBody) {
   })
     .then((res) => {
       message.success(MESSAGE_NOTIFICATION.CREATE_TEAM_PROFILE_SUCCESS);
+      hidePageLoading();
       return res.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_TEAM_PROFILE_ERROR);
+      hidePageLoading();
       return undefined;
     });
 }
@@ -100,10 +104,12 @@ export async function updateTeamProfile(id: string, data: TeamProfileRequestBody
         getUserInfoMiddleware();
       }
       message.success(MESSAGE_NOTIFICATION.UPDATE_TEAM_PROFILE_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_TEAM_PROFILE_ERROR);
+      hidePageLoading();
       return false;
     });
 }
@@ -142,10 +148,12 @@ export async function inviteBrand(brandId: string) {
   })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.SEND_INVITE_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.SEND_INVITE_ERROR);
+      hidePageLoading();
       return false;
     });
 }

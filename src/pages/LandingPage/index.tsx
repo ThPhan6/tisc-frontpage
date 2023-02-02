@@ -155,23 +155,23 @@ const LandingPage = () => {
     showPageLoading();
     if (openModal === 'Tisc Login') {
       loginMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
+        hidePageLoading();
         if (type === STATUS_RESPONSE.SUCCESS) {
           message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
           await fetchUserInfo(true);
         } else {
           message.error(msg);
         }
-        hidePageLoading();
       });
     } else {
       loginByBrandOrDesigner(data, async (type: STATUS_RESPONSE, msg?: string) => {
+        hidePageLoading();
         if (type === STATUS_RESPONSE.SUCCESS) {
           message.success(MESSAGE_NOTIFICATION.LOGIN_SUCCESS);
           await fetchUserInfo(true);
         } else {
           message.error(msg);
         }
-        hidePageLoading();
       });
     }
   };
@@ -181,13 +181,13 @@ const LandingPage = () => {
     forgotPasswordMiddleware(
       { email: email, type: openModal === 'Tisc Login' ? ForgotType.TISC : ForgotType.OTHER },
       async (type: STATUS_RESPONSE, msg?: string) => {
+        hidePageLoading();
         if (type === STATUS_RESPONSE.SUCCESS) {
           setOpenModal('');
           message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD);
         } else {
           message.error(msg);
         }
-        hidePageLoading();
       },
     );
   };
@@ -195,22 +195,22 @@ const LandingPage = () => {
   const handleResetPassword = (data: PasswordRequestBody) => {
     showPageLoading();
     resetPasswordMiddleware(data, async (type: STATUS_RESPONSE, msg?: string) => {
+      hidePageLoading();
       if (type === STATUS_RESPONSE.SUCCESS) {
         message.success(MESSAGE_NOTIFICATION.RESET_PASSWORD_SUCCESS);
         await fetchUserInfo(true);
       } else {
         message.error(msg);
       }
-      hidePageLoading();
     });
   };
 
   const handleVerifyAccount = (data: PasswordRequestBody) => {
     showPageLoading();
     createPasswordVerify(tokenVerification ?? '', data).then((isSuccess) => {
+      hidePageLoading();
       if (isSuccess) {
         fetchUserInfo(true);
-        hidePageLoading();
         openVerificationModal.setValue(false);
         history.replace(PATH.landingPage);
       }
