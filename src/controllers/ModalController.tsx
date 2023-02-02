@@ -35,6 +35,17 @@ export const ModalController = () => {
   const darkTheme = useAppSelector((state) => state.modal.theme === 'dark');
   const title = useAppSelector((state) => state.modal.title);
   const { isMobile } = useScreen();
+  const modalOnLandingpage =
+    modalType === 'Login' ||
+    modalType === 'Tisc Login' ||
+    modalType === 'Designer Signup' ||
+    modalType === 'About' ||
+    modalType === 'Contact' ||
+    modalType === 'Policies' ||
+    modalType === 'Browser Compatibility' ||
+    modalType === 'Brand Interested' ||
+    modalType === 'Reset Password' ||
+    modalType === 'Verify Account';
 
   const renderModalContent = () => {
     switch (modalType) {
@@ -59,8 +70,6 @@ export const ModalController = () => {
         return <CalendarModal />;
       case 'Cancel Booking':
         return <CancelBookingModal />;
-      case 'ReSchedule Booking':
-        return <CalendarModal />;
       case 'Reset Password':
         return <PasswordModal />;
       case 'Verify Account':
@@ -110,7 +119,7 @@ export const ModalController = () => {
         autoHeight={autoHeightDrawer}
         darkTheme={darkTheme}
         title={title}
-        className={modalType === 'Policies' ? styles.policesModal : ''}
+        className={modalOnLandingpage && isMobile ? styles.bodySpacing : ''}
       >
         {renderModalContent()}
       </MobileDrawer>

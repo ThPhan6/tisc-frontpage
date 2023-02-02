@@ -17,7 +17,6 @@ import {
   loginMiddleware,
 } from '../../../pages/LandingPage/services/api';
 import { useReCaptcha } from '../hook';
-import { useScreen } from '@/helper/common';
 import { useBoolean, useCustomInitialState, useString } from '@/helper/hook';
 import { isShowErrorMessage, validateEmail } from '@/helper/utils';
 import {
@@ -42,7 +41,6 @@ import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 export const LoginModal: FC<{
   tiscLogin?: boolean;
 }> = ({ tiscLogin }) => {
-  const { isMobile } = useScreen();
   const { theme, darkTheme, themeStyle } = useAppSelector(modalThemeSelector);
   const { handleReCaptchaVerify } = useReCaptcha();
   const popupStylesProps = useLandingPageStyles(darkTheme);
@@ -196,7 +194,7 @@ export const LoginModal: FC<{
   return (
     <CustomModal {...popupStylesProps}>
       <ModalContainer>
-        <div className={styles.content} style={{ paddingBottom: isMobile ? 64 : 32 }}>
+        <div className={styles.content}>
           <div className={styles.intro}>
             <MainTitle level={2} customClass={styles[`body${themeStyle}`]}>
               {randomQuotation ? `"${randomQuotation.quotation}"` : ''}
