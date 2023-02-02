@@ -27,7 +27,6 @@ export type ModalType =
   | 'Cancel Booking'
   | 'Reset Password'
   | 'Verify Account'
-  | 'ReSchedule Booking'
 
   // General
   | 'Assign Team'
