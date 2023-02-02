@@ -1,15 +1,8 @@
 @import '~antd/es/style/variable.less';
 
 .tab-list {
-  @media screen and (max-width: @screen-lg) {
-    :global(.ant-tabs-nav-list) {
-      width: 100%;
-      overflow: auto hidden;
-      ::-webkit-scrollbar {
-        display: none;
-      }
-    }
-  }
+  width: 100%;
+
   &.lightTheme {
     :global(.ant-tabs-tab-btn) {
       padding: 0 !important;
@@ -69,7 +62,8 @@
     }
   }
   :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
-    width: 100%;
+    flex: 1;
+    width: max-content;
     overflow: auto hidden;
   }
 }
@@ -87,6 +81,7 @@
     padding: 0;
   }
   :global(.ant-tabs-top > .ant-tabs-nav .ant-tabs-ink-bar-animated) {
+    width: 0 !important;
     transition: none;
   }
 }

@@ -239,7 +239,7 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
 
   const renderAttributes = () => {
     if (viewOnly) {
-      return <SimpleContentTable items={attributes} customClass="mt-8" />;
+      return <SimpleContentTable flexOnMobile items={attributes} customClass="mt-8" />;
     }
     return attributes?.map((attribute, index) => (
       <DoubleInput
