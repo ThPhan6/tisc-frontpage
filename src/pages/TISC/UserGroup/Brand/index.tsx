@@ -109,7 +109,7 @@ const BrandList: React.FC = () => {
       dataIndex: 'logo',
       width: '5%',
       render: (value) => {
-        return <LogoIcon logo={value} className={styles.img} />;
+        return <LogoIcon logo={value} className={styles.img} size={18} />;
       },
     },
     {

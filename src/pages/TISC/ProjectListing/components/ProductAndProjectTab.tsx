@@ -66,7 +66,7 @@ const ProductAndProjectHeader: FC<ProductProps> = (props) => {
     if (typeof item.image === 'object' && item.image !== null) {
       return item.image;
     }
-    return <LogoIcon logo={item.image} className={styles.customLogo} />;
+    return <LogoIcon logo={item.image} className={styles.customLogo} size={24} />;
   };
 
   return (
