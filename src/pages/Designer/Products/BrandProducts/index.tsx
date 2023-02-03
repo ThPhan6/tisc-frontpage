@@ -188,7 +188,7 @@ const BrandProductListPage: React.FC = () => {
         brandSummary ? (
           <>
             <div className="flex-center" style={{ marginRight: '24px' }}>
-              <LogoIcon logo={brandSummary.brand_logo} className={styles.brandLogo} />
+              <LogoIcon logo={brandSummary.brand_logo} className={styles.brandLogo} size={20} />
               <Title level={8} style={{ whiteSpace: 'nowrap' }}>
                 {brandSummary.brand_name}
               </Title>

@@ -102,7 +102,7 @@ export const setFormatFilterForDropDown = (
 
   const renderLogo = (logo: string | React.ReactNode) => {
     if (logo === null) {
-      return <LogoIcon logo={logo} className={styles.customLogo} />;
+      return <LogoIcon logo={logo} className={styles.customLogo} size={18} />;
     }
     if (typeof logo === 'object') {
       return logo;

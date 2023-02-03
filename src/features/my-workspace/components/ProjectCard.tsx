@@ -85,7 +85,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
               {info.name}
             </BodyText>
           </div>
-          <LogoIcon logo={info.logo} className={styles.img} />
+          <LogoIcon logo={info.logo} className={styles.img} size={24} />
           <BodyText level={6} fontFamily="Roboto">
             {info.country}
           </BodyText>

@@ -149,7 +149,7 @@ const ProductConsidered: React.FC = () => {
         align: 'center',
         noBoxShadow: props.noBoxShadow,
         className: disabledClassname,
-        render: (value) => <LogoIcon logo={value?.[0]} size={24} />,
+        render: (value) => (value?.[0] ? <LogoIcon logo={value?.[0]} size={24} /> : null),
         onCell: props.isAreaColumn ? onCellUnlisted : undefined,
       },
       {
