@@ -367,7 +367,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
                       />
                       <div
                         className="cursor-default flex-start"
-                        style={{ height: '100%' }}
+                        style={{ height: '100%', marginLeft: 8 }}
                         onClick={(e) => {
                           e.stopPropagation();
                           e.preventDefault();
