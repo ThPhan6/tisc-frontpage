@@ -190,7 +190,7 @@ const BrandProductListPage: React.FC = () => {
         brandSummary ? (
           <>
             <div className="flex-center">
-              <LogoIcon logo={brandSummary.brand_logo} className={styles.brandLogo} />
+              <LogoIcon logo={brandSummary.brand_logo} className={styles.brandLogo} size={20} />
               <Title level={8}>{brandSummary.brand_name}</Title>
             </div>
 
