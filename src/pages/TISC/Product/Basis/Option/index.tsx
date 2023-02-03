@@ -39,7 +39,7 @@ const BasisOptionList: React.FC = () => {
         dataIndex: 'image',
         width: '5%',
         noBoxShadow: noBoxShadow,
-        render: (value) => (value ? <LogoIcon logo={value[0]} size={18} /> : null),
+        render: (value) => (value ? <LogoIcon logo={value} size={18} /> : null),
       },
       {
         title: '1st Value',
