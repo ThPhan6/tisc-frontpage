@@ -77,7 +77,7 @@ export const TopBar: React.FC = () => {
     );
 
   useEffect(() => {
-    if (!brandSelected.value) {
+    if (!brandSelected.value || (!filter && firstLoad.value && (coll_id || cate_id))) {
       return;
     }
 
@@ -188,6 +188,8 @@ export const TopBar: React.FC = () => {
         params.collection_id = filter.value === 'all' ? 'all' : filter.value;
       }
 
+      console.log('filter', filter);
+
       if (!filter && firstLoad.value && (coll_id || cate_id || location.state?.fromMyWorkspace)) {
         firstLoad.setValue(false);
         return;
@@ -195,7 +197,7 @@ export const TopBar: React.FC = () => {
 
       getProductListByBrandId(params);
     }
-  }, [filter?.value, brandSelected?.value, firstLoad.value]);
+  }, [filter?.value, filter?.name, brandSelected?.value, firstLoad.value]);
 
   const gotoProductForm = () => {
     dispatch(resetProductState());
