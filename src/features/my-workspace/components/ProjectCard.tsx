@@ -4,6 +4,7 @@ import { PATH } from '@/constants/path';
 import { QUERY_KEY } from '@/constants/util';
 import { FilterNames } from '@/pages/Designer/Project/constants/filter';
 import { Row } from 'antd';
+import { history } from 'umi';
 
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
 
@@ -46,7 +47,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
   const handleClickItem = (cardInfo: ProjecTrackingList & BrandCard & ProjectListProps) => {
     if (cardInfo.id) {
       if (isTiscUser) {
-        pushTo(PATH.productConfiguration);
+        history.push(PATH.productConfiguration, { fromMyWorkspace: true });
 
         /// set brand info
         store.dispatch(setBrand({ id: cardInfo.id, name: cardInfo.name } as BrandDetail));
