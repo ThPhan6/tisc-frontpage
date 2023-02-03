@@ -11,7 +11,6 @@ import type { ProjectDetailProps } from '@/features/project/types';
 import ProjectDetailHeader from './components/ProjectDetailHeader';
 import { CustomTabPane } from '@/components/Tabs';
 
-import styles from './styles/index.less';
 import GeneralInformation from './tabs/BasicInformation';
 import ProductConsidered from './tabs/ProductConsidered';
 import ProductSpecification from './tabs/ProductSpecification';
@@ -53,7 +52,7 @@ const ProjectUpdatePage: React.FC = () => {
   }, [projectId]);
 
   return (
-    <div className={styles.mainContainer}>
+    <div>
       <ProjectDetailHeader activeKey={selectedTab} onChangeTab={setSelectedTab} project={project} />
 
       <CustomTabPane

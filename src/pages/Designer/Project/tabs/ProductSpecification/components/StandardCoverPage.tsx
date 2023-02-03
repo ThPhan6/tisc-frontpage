@@ -11,7 +11,6 @@ import { messageError, messageErrorType, validateDocumentTitle } from '@/helper/
 
 import { PdfDetail } from '../type';
 
-import CustomButton from '@/components/Button';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -24,9 +23,8 @@ interface CoverStandardProps {
   data: PdfDetail;
   onChangeData: (newData: PdfDetail) => void;
   type: 'cover' | 'standard';
-  onPreview?: () => void;
 }
-const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, onPreview }) => {
+const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type }) => {
   const isMobile = useScreen().isMobile;
   const openModal = useBoolean();
   const [previewURL, setPreviewURL] = useState<string>('');
@@ -84,7 +82,7 @@ const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, o
   };
 
   return (
-    <>
+    <div className="mainContent">
       {type === 'cover' ? (
         <div className={styles.cover}>
           <div className={styles.customTitle}>
@@ -146,10 +144,7 @@ const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, o
         </div>
       ) : (
         <div>
-          <div
-            className={styles.cover}
-            style={{ paddingBottom: 16, height: 'calc(var(--vh) * 100 - 352px)' }}
-          >
+          <div className={styles.specification}>
             <DropdownCheckboxList
               data={data.templates.specification.map((specification) => {
                 return {
@@ -178,15 +173,10 @@ const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, o
               combinable
             />
           </div>
-          <div className={styles.actionButton}>
-            <CustomButton size="small" properties="rounded" onClick={onPreview}>
-              Preview
-            </CustomButton>
-          </div>
         </div>
       )}
       <PreviewModal visible={openModal} previewURL={previewURL} />
-    </>
+    </div>
   );
 };
 export default StandardCoverPage;
