@@ -257,7 +257,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                 onSelectSpecificationOption(
                   groupIndex,
                   attribute.id,
-                  specifying ? false : isTiscAdmin ? false : true,
+                  isTiscAdmin ? false : true,
                   option.value.toString(),
                 );
               }
