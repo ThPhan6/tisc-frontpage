@@ -95,7 +95,7 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
                   onSelectSpecificationOption(
                     groupIndex,
                     attribute.id,
-                    isTiscAdmin ? false : true,
+                    isSpecifiedModal ? false : isTiscAdmin ? false : true,
                     haveBasisOption?.id,
                     false, // dont reset attribute selected
                   );
