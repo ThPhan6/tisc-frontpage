@@ -344,7 +344,7 @@ export const SelectBrandModal = () => {
   const renderLabel = (item: BrandDetail) => {
     return (
       <BodyText level={5} fontFamily="Roboto">
-        <LogoIcon logo={item.logo} className={styles.brandLogo} />
+        <LogoIcon logo={item.logo} className={styles.brandLogo} size={18} />
         <span className="brand-name">{item.name}</span>
       </BodyText>
     );
