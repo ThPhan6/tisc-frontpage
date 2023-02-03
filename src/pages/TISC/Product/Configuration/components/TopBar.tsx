@@ -18,13 +18,11 @@ import { RadioValue } from '@/components/CustomRadio/types';
 import {
   resetProductState,
   setBrand,
-  setFromMyWorkspace,
   setProductList,
   setProductSummary,
 } from '@/features/product/reducers';
 import { ProductGetListParameter } from '@/features/product/types';
 import { BrandAlphabet, BrandDetail } from '@/features/user-group/types';
-import { useAppSelector } from '@/reducers';
 
 import { LogoIcon } from '@/components/LogoIcon';
 import Popover from '@/components/Modal/Popover';
@@ -46,8 +44,6 @@ export const TopBar: React.FC = () => {
     useProductListFilterAndSorter({
       category: true,
     });
-
-  const isFromMyWorkspace = useAppSelector((state) => state.product.myWorkSpace);
 
   const [visible, setVisible] = useState(false);
   const [brandAlphabet, setBrandAlphabet] = useState<BrandAlphabet>({});
@@ -78,10 +74,8 @@ export const TopBar: React.FC = () => {
     );
 
   useEffect(() => {
-    if (isFromMyWorkspace) {
-      /// set default filter value
-      setViewProductLitsByCollection();
-    }
+    /// set default filter value
+    setViewProductLitsByCollection();
   }, []);
 
   /// load brand by alphabet from API
@@ -101,7 +95,6 @@ export const TopBar: React.FC = () => {
       dispatch(setBrand());
       dispatch(setProductList({ data: [] }));
       dispatch(setProductSummary(undefined));
-      dispatch(setFromMyWorkspace(false));
     };
   }, [brandId]);
 
@@ -346,8 +339,8 @@ export const TopBar: React.FC = () => {
               set: [
                 { key: QUERY_KEY.b_id, value: chosenBrand.id },
                 { key: QUERY_KEY.b_name, value: chosenBrand.name },
-                { key: QUERY_KEY.cate_id, value: 'all' },
-                { key: QUERY_KEY.cate_name, value: 'VIEW ALL' },
+                { key: QUERY_KEY.coll_id, value: 'all' },
+                { key: QUERY_KEY.coll_name, value: 'VIEW ALL' },
               ],
               removeAll: true,
             });
