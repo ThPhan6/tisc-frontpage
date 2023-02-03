@@ -6,14 +6,22 @@
   &.lightTheme {
     :global(.ant-tabs-tab-btn) {
       padding: 0 !important;
-      background-color: #fff !important;
+      // background-color: #fff !important;
     }
     .item-tab svg {
       color: #000;
     }
     :global(.ant-tabs-tab-active) {
+      :global(.ant-tabs-tab-btn) {
+        background: @primary-color !important;
+      }
+
       .item-tab svg {
         color: @primary-color-dark;
+
+        @media screen and (max-width: @screen-lg) {
+          color: #fff;
+        }
       }
     }
   }
@@ -59,6 +67,10 @@
     &::before,
     &::after {
       box-shadow: none;
+    }
+
+    @media screen and (max-width: @screen-lg) {
+      display: flex;
     }
   }
   :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
