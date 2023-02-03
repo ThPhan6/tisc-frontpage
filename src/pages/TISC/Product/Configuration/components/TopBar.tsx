@@ -80,7 +80,7 @@ export const TopBar: React.FC = () => {
     );
 
   useEffect(() => {
-    if (!checkedBrand.value) {
+    if (!checkedBrand.value || (!filter && firstLoad.value && (coll_id || cate_id))) {
       return;
     }
 
@@ -190,6 +190,8 @@ export const TopBar: React.FC = () => {
       if (filter?.name === 'collection_id') {
         params.collection_id = filter.value === 'all' ? 'all' : filter.value;
       }
+
+      console.log('filter', filter);
 
       if (!filter && firstLoad.value && (coll_id || cate_id || location.state?.fromMyWorkspace)) {
         firstLoad.setValue(false);
@@ -345,7 +347,7 @@ export const SelectBrandModal = () => {
   const renderLabel = (item: BrandDetail) => {
     return (
       <BodyText level={5} fontFamily="Roboto">
-        <LogoIcon logo={item.logo} className={styles.brandLogo} />
+        <LogoIcon logo={item.logo} className={styles.brandLogo} size={18} />
         <span className="brand-name">{item.name}</span>
       </BodyText>
     );
