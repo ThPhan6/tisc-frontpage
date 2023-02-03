@@ -11,24 +11,27 @@ export const SimpleContentTable: FC<{
   tdStyle?: CSSProperties;
   customClass?: string;
   flex?: '25-75' | '30-70';
+  flexOnMobile?: boolean;
   noPadding?: boolean;
-}> = ({ items, tdStyle, customClass = '', flex = '25-75', noPadding }) => {
+}> = ({ items, tdStyle, customClass = '', flex = '25-75', flexOnMobile, noPadding }) => {
   return (
     <div className={`${styles.table} ${customClass} ${noPadding ? styles.noPadding : ''}`}>
       {items.map((item, index) => (
         <Row key={item.id || index}>
           <Col
             style={tdStyle}
-            flex={flex == '25-75' ? '25%' : '30%'}
+            flex={flexOnMobile ? '40%' : flex == '25-75' ? '25%' : '30%'}
             className="text-overflow"
-            title={item.name}>
+            title={item.name}
+          >
             <span className="text-overflow">{item.name}</span>
           </Col>
           <Col
             style={tdStyle}
-            flex={flex == '25-75' ? '75%' : '70%'}
+            flex={flexOnMobile ? '60%' : flex == '25-75' ? '75%' : '70%'}
             className="text-overflow"
-            title={item.content}>
+            title={item.content}
+          >
             <span className="text-overflow">{item.content}</span>
           </Col>
         </Row>

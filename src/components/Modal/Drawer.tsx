@@ -65,8 +65,6 @@ export const MobileDrawer: FC<
 > = ({ noHeaderBorder, autoHeight, headerStyle, ...props }) => {
   const [height] = useState(autoHeight ? 'auto' : window.innerHeight - 48); // Prevent window.innerHeight changes
 
-  console.log('height', height);
-
   return (
     <CustomDrawer
       placement="bottom"
