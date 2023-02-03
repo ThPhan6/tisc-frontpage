@@ -97,6 +97,10 @@ export const CollectionModal: FC<CollectionModalProps> = ({
 
   useEffect(() => {
     getCollectionList();
+
+    return () => {
+      curData.current = [];
+    };
   }, [brandId]);
 
   /// set current selected value
