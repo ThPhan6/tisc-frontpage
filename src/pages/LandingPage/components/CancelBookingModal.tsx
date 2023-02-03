@@ -20,7 +20,6 @@ import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
 import styles from './CalendarModal.less';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import moment from 'moment';
 
 interface CancelBookingProps {
@@ -103,15 +102,14 @@ export const CancelBookingModal: FC<CancelBookingProps & CustomModalProps> = ({ 
   const popupStylesProps = useLandingPageStyles();
   const { informationBooking } = useAppSelector(modalPropsSelector);
   const { handleReCaptchaVerify } = useReCaptcha();
+
   const onCancelBooking = async () => {
-    showPageLoading();
     const captcha = (await handleReCaptchaVerify()) || '';
     if (informationBooking) {
       deleteBooking(informationBooking.id, { captcha: captcha }).then((isSuccess) => {
         if (isSuccess) {
           closeModal();
         }
-        hidePageLoading();
       });
     }
   };

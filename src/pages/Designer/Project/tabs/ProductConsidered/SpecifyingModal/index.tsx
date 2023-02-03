@@ -14,7 +14,7 @@ import { getSelectedRoomIds, useAssignProductToSpaceForm } from '@/features/prod
 import { updateProductSpecifying } from '@/features/project/services';
 
 import { FinishScheduleRequestBody } from './types';
-import { resetProductDetailState } from '@/features/product/reducers';
+import { productVariantsSelector, resetProductDetailState } from '@/features/product/reducers';
 import { ProductItem } from '@/features/product/types';
 import store, { useAppSelector } from '@/reducers';
 
@@ -166,6 +166,8 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     }
   };
 
+  const productId = useAppSelector(productVariantsSelector);
+
   return (
     <CustomModal
       className={`${popoverStyles.customPopover} ${styles.specifyingModal}`}
@@ -201,7 +203,9 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
         logo={product.brand?.logo}
         text_1={product.brand?.name}
         text_2={product.collection?.name}
-        text_3={product.description}
+        text_3={product.name}
+        text_4={productId === '' ? 'N/A' : productId}
+        customClass={styles.customHeader}
       />
 
       <CustomTabs

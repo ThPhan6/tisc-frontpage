@@ -15,7 +15,7 @@ import { ResponsiveCol } from '@/components/Layout';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
 import styles from './index.less';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import { showPageLoading } from '@/features/loading/loading';
 
 interface ProductSpecififyPDF {
   projectId: string;
@@ -119,9 +119,20 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
       if (res) {
         setGeneratePDF(res.fileBuffer);
       }
-      hidePageLoading();
     });
   };
+
+  // Fix here
+  // const onReset = () => {
+  //   setData({
+  //     ...data,
+  //     config: {
+  //       ...data.config,
+  //       template_cover_ids: [],
+  //       template_standard_ids: [],
+  //     },
+  //   });
+  // };
 
   const contentHeight = standardSpecificationTab
     ? 'calc(var(--vh) * 100 - 280px)'

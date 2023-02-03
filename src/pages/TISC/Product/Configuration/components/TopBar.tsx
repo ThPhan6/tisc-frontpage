@@ -25,7 +25,7 @@ import {
 } from '@/features/product/reducers';
 import { ProductGetListParameter } from '@/features/product/types';
 import { BrandAlphabet, BrandDetail } from '@/features/user-group/types';
-import store, { useAppSelector } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 import { modalPropsSelector, openModal } from '@/reducers/modal';
 
 import { LogoIcon } from '@/components/LogoIcon';
@@ -68,18 +68,21 @@ export const TopBar: React.FC = () => {
     value: productBrand?.id || '',
   });
 
+  const setViewProductLitsByCollection = () =>
+    dispatch(
+      setProductList({
+        filter: {
+          name: 'collection_id',
+          title: 'VIEW ALL',
+          value: 'all',
+        },
+      }),
+    );
+
   useEffect(() => {
     if (isFromMyWorkspace) {
       /// set default filter value
-      dispatch(
-        setProductList({
-          filter: {
-            name: 'category_id',
-            title: 'VIEW ALL',
-            value: 'all',
-          },
-        }),
-      );
+      setViewProductLitsByCollection();
     }
   }, []);
 
@@ -174,9 +177,10 @@ export const TopBar: React.FC = () => {
 
   useEffect(() => {
     if (checkedBrand?.value) {
+      /// set get default product list by collection
       const params: ProductGetListParameter = {
         brand_id: checkedBrand.value as string,
-        category_id: !filter ? 'all' : undefined,
+        collection_id: !filter ? 'all' : undefined,
       };
 
       if (filter?.name === 'category_id') {
@@ -372,18 +376,10 @@ export const SelectBrandModal = () => {
             ],
             removeAll: true,
           });
-          store.dispatch(
-            setProductList({
-              filter: {
-                name: 'category_id',
-                title: 'VIEW ALL',
-                value: 'all',
-              },
-            }),
-          );
+          // set view default product list by collection
+
+          // setViewProductLitsByCollection(); // Fix here
         }
-        console.log('chosenBrand', chosenBrand);
-        console.log('v', v);
         onChecked(v);
       }}
     />

@@ -11,6 +11,7 @@ import { messageError, messageErrorType, validateDocumentTitle } from '@/helper/
 
 import { PdfDetail } from '../type';
 
+import CustomButton from '@/components/Button';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -23,8 +24,10 @@ interface CoverStandardProps {
   data: PdfDetail;
   onChangeData: (newData: PdfDetail) => void;
   type: 'cover' | 'standard';
+  onReset?: () => void;
 }
-const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type }) => {
+
+const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, onReset }) => {
   const isMobile = useScreen().isMobile;
   const openModal = useBoolean();
   const [previewURL, setPreviewURL] = useState<string>('');
@@ -172,6 +175,23 @@ const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type })
               showCount={false}
               combinable
             />
+          </div>
+          <div className={styles.actionButton}>
+            <CustomButton
+              size="small"
+              properties="rounded"
+              onClick={onReset}
+              buttonClass={styles.resetButton}
+            >
+              Reset
+            </CustomButton>
+            <CustomButton
+              size="small"
+              properties="rounded"
+              // onClick={onPreview} Fix here
+            >
+              Preview
+            </CustomButton>
           </div>
         </div>
       )}

@@ -11,6 +11,8 @@ import type {
 } from '@/components/Table/types';
 import { EmailTemplate, RadioItem } from '@/types';
 
+import { hidePageLoading } from '@/features/loading/loading';
+
 interface EmailTemplatePaginationResponse {
   data: {
     auto_emails: EmailTemplate[];
@@ -80,11 +82,12 @@ export async function updateEmailAuto(id: string, data: EmailTemplate) {
   return request<boolean>(`/api/email-auto/update/${id}`, { method: 'PUT', data })
     .then(() => {
       message.success(getResponseMessage('update', 'email autoresponder'));
-
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(getResponseMessage('update', 'email autoresponder', 'failed', error));
+      hidePageLoading();
       return false;
     });
 }

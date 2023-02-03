@@ -40,12 +40,13 @@ export const ImageUpload: FC<{
             message.error('Upload Failed');
           });
         return true;
-      }}>
+      }}
+    >
       <img
         style={{
           width: 48,
           height: 48,
-          objectFit: 'contain',
+          objectFit: 'cover',
           marginRight: 16,
           cursor: 'pointer',
           ...style,
@@ -204,7 +205,8 @@ export const OptionItem: FC<OptionItemProps> = (props) => {
                 level={3}
                 customClass={
                   isEmpty(subOption.is_collapse) ? styles.font_weight_300 : styles.font_weight_600
-                }>
+                }
+              >
                 Option Name
               </BodyText>
               <ArrowIcon
@@ -222,7 +224,8 @@ export const OptionItem: FC<OptionItemProps> = (props) => {
                     ? styles['set-checked-color']
                     : styles['set-unchecked-color']
                 }`}
-              onClick={handleOnClickUsingImage}>
+              onClick={handleOnClickUsingImage}
+            >
               <BodyText fontFamily="Roboto" level={5}>
                 Image
               </BodyText>
@@ -262,7 +265,8 @@ export const OptionItem: FC<OptionItemProps> = (props) => {
           }
           header={PanelHeader()}
           key={subOption.is_collapse!}
-          showArrow={false}>
+          showArrow={false}
+        >
           <div className={styles.sub_wrapper}>
             {subOption.subs.map((subItemOption, index) => (
               <div key={index} className={styles.element_input}>

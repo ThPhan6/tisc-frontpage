@@ -26,7 +26,6 @@ import { PhoneInput } from '@/components/Form/PhoneInput';
 import { BodyText, Title } from '@/components/Typography';
 
 import styles from './PersonalProfile.less';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 export type PersonalProfileState = {
   backupEmail: string;
@@ -71,7 +70,6 @@ export const PersonalProfile: FC<{ contentHeight?: number }> = ({ contentHeight 
   );
 
   const handleUpdateAvatar = (avtFile: File) => {
-    showPageLoading();
     getBase64(avtFile).then((base64Image) => {
       const base64 = base64Image.split(',')[1];
       updateAvatarTeamProfile({ avatar: base64 }, (type: STATUS_RESPONSE, msg?: string) => {
@@ -82,7 +80,6 @@ export const PersonalProfile: FC<{ contentHeight?: number }> = ({ contentHeight 
           message.error(msg || MESSAGE_NOTIFICATION.UPDATE_AVATAR_ERROR);
           setFileInput(undefined);
         }
-        hidePageLoading();
       });
     });
   };
@@ -127,7 +124,6 @@ export const PersonalProfile: FC<{ contentHeight?: number }> = ({ contentHeight 
   };
 
   const handleSubmit = () => {
-    showPageLoading();
     updateTeamProfile(
       {
         backup_email: inputValue.backupEmail.trim(),
@@ -149,7 +145,6 @@ export const PersonalProfile: FC<{ contentHeight?: number }> = ({ contentHeight 
         } else {
           message.error(msg || MESSAGE_NOTIFICATION.UPDATE_PERSONAL_PROFILE_ERROR);
         }
-        hidePageLoading();
       },
     );
   };

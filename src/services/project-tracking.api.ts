@@ -13,6 +13,8 @@ import store from '@/reducers';
 import { setSummaryProjectTracking } from '@/reducers/summary';
 import { ProjecTrackingList, ProjectTrackingDetail } from '@/types/project-tracking.type';
 
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+
 interface ProjectTrackingPaginationRespone {
   data: {
     projectTrackings: ProjecTrackingList[];
@@ -37,6 +39,7 @@ export async function getProjectTrackingPagination(
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_TRACKING_LIST_FAILED);
+      hidePageLoading();
     });
 }
 
@@ -44,11 +47,14 @@ export async function getBrandWorkspace(
   params: { project_status?: ProjectStatus },
   callback: (data: ProjecTrackingList[]) => void,
 ) {
+  showPageLoading();
   request(`/api/brand/workspace`, { method: 'GET', params })
     .then((response: { data: { projectTrackings: ProjecTrackingList[] } }) => {
       callback(response.data.projectTrackings);
+      hidePageLoading();
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_TRACKING_LIST_FAILED);
     });
 }

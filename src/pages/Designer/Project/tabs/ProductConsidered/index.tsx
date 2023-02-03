@@ -15,7 +15,6 @@ import {
   onCellUnlisted,
   onOpenSpecifiyingProductModal,
   renderAvailability,
-  renderImage,
   useSpecifyingModal,
 } from '../../hooks';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
@@ -39,6 +38,7 @@ import {
 import { AvailabilityModal } from '../../components/AvailabilityModal';
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
 import ActionButton from '@/components/Button/ActionButton';
+import { LogoIcon } from '@/components/LogoIcon';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import { ActionMenu } from '@/components/TableAction';
 import { BodyText, RobotoBodyText } from '@/components/Typography';
@@ -149,7 +149,7 @@ const ProductConsidered: React.FC = () => {
         align: 'center',
         noBoxShadow: props.noBoxShadow,
         className: disabledClassname,
-        render: (value) => renderImage(value?.[0]),
+        render: (value) => <LogoIcon logo={value?.[0]} size={24} />,
         onCell: props.isAreaColumn ? onCellUnlisted : undefined,
       },
       {

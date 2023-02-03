@@ -15,6 +15,8 @@ import type {
   ProductAttributeByType,
 } from '@/types';
 
+import { hidePageLoading } from '@/features/loading/loading';
+
 interface CategoryPaginationResponse {
   data: {
     attributes: AttributeListResponse[];
@@ -44,6 +46,7 @@ export async function getProductAttributePagination(
     })
     .catch((error) => {
       console.log('error', error);
+      hidePageLoading();
       message.error(error.message);
     });
 }

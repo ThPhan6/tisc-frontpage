@@ -1,81 +1,3 @@
-.defaultOptionList {
-  display: grid;
-  grid-gap: 5%;
-  grid-template-columns: 60% 35%;
-  align-items: center;
-  min-height: 36px;
-  table {
-    width: 100%;
-    text-align: right;
-    table-layout: fixed;
-
-    :global(.option-none) {
-      display: none;
-    }
-
-    :global(.align-left) {
-      text-align: left;
-    }
-    :global(.align-right) {
-      text-align: right;
-    }
-
-    td {
-      padding-right: 8px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-
-      &:nth-child(2n) {
-        text-align: left;
-      }
-    }
-
-    tr {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-  }
-  :global(.product-id-label) {
-    color: @mono-color-dark;
-    font-weight: 300;
-    font-size: 14px;
-    font-family: @font-secondary;
-    font-style: normal;
-    line-height: 21px;
-    letter-spacing: 0.02em;
-  }
-  :global(.group-option-name) {
-    margin-right: 24px;
-    white-space: nowrap;
-    text-align: right;
-    :global(.value) {
-      margin-right: 8px;
-    }
-  }
-  :global(.product-id-label) + div {
-    width: auto !important;
-    :global(.product-id-input) {
-      width: 100px;
-      padding: 0 8px 0 12px;
-      color: @primary-color-dark;
-    }
-  }
-  :global(.product-id-value) {
-    margin-left: 12px;
-    color: @mono-color-dark;
-    font-weight: 300;
-    font-size: 12px;
-    font-family: @font-primary;
-    font-style: normal;
-    line-height: 20px;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-  }
-}
-.optionInfo {
-  display: flex;
-}
 .defaultOptionImageList {
   position: relative;
   display: flex;
@@ -104,6 +26,9 @@
     width: 100%;
     :global(.heading-option-group) {
       height: 24px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
     :global(.product-input-group) {
       // display: flex;
@@ -149,10 +74,10 @@
 
 .specificationOptionCheckbox {
   :global(.checkbox-list-heading) {
-    padding-left: 16px;
+    padding-left: 0;
   }
   :global(.selected-all-option-radio) {
-    padding-left: 16px;
+    padding-left: 0;
     :global(.item-option-checked) {
       p {
         color: #000;
@@ -160,6 +85,10 @@
     }
   }
   :global(.item-option-uncheck) {
+    width: calc(100% - 24px) !important;
+    padding: 0 !important;
+  }
+  :global(.checkbox-list-options) {
     padding: 0 !important;
   }
 }
@@ -197,11 +126,37 @@
   }
   :global(.radio-list-heading) {
     margin-bottom: 16px;
-    padding-left: 16px;
+    padding-left: 0 !important;
     font-weight: 500;
     font-size: 14px;
     font-family: @font-primary;
     line-height: 22px;
     box-shadow: @border-bottom-light;
+  }
+  :global(.radio-list-options) {
+    padding: 0 !important;
+  }
+}
+
+.customTextArea {
+  :global(.ant-input) {
+    margin-top: 2px;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 20px;
+    background-color: transparent;
+    border-bottom-color: #fff;
+    resize: none;
+    &:hover {
+      border-bottom-color: #fff;
+    }
+  }
+}
+
+.generalText {
+  :global(.ant-input) {
+    margin-top: 0;
+    padding: 4px 0;
+    color: @mono-color !important;
   }
 }

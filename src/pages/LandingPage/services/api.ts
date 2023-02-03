@@ -23,6 +23,8 @@ import store from '@/reducers';
 import { setUserProfile } from '@/reducers/user';
 import { UserDetail } from '@/types/user.type';
 
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+
 interface QuotationPaginationResponse {
   data: {
     pagination: PaginationResponse;
@@ -248,10 +250,12 @@ export async function createBooking(data: BookingPayloadRequest) {
   return request<boolean>(`/api/booking/create`, { method: 'POST', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CREATE_BOOKING_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message);
+      hidePageLoading();
       return false;
     });
 }
@@ -267,13 +271,16 @@ export async function getBooking(id: string) {
 }
 
 export async function deleteBooking(id: string, data: { captcha: string }) {
+  showPageLoading();
   return request<boolean>(`/api/booking/${id}/cancel`, { method: 'DELETE', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CANCEL_BOOKING_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message);
+      hidePageLoading();
       return false;
     });
 }
@@ -290,10 +297,12 @@ export async function updateBooking(
   return request<boolean>(`/api/booking/${id}/re-schedule`, { method: 'PATCH', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_BOOKING_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message);
+      hidePageLoading();
       return false;
     });
 }

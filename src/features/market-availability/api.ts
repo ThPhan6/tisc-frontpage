@@ -15,6 +15,8 @@ import type {
   SummaryResponse,
 } from '@/components/Table/types';
 
+import { hidePageLoading } from '../loading/loading';
+
 interface CategoryPaginationResponse {
   data: {
     collections: MarketAvailabilityDataList[];
@@ -46,6 +48,7 @@ export async function getMarketAvailabilityList(
       message.error(
         error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_MARKET_AVAILABILITY_ERROR,
       );
+      hidePageLoading();
     });
 }
 
@@ -54,10 +57,12 @@ export async function getMarketAvailabilityByCollectionId(collectionId: string) 
     `/api/market-availability/get-one/${collectionId}`,
   )
     .then((res) => {
+      hidePageLoading();
       return res.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_MARKET_AVAILABILITY_ERROR);
+      hidePageLoading();
     });
 }
 
@@ -71,10 +76,12 @@ export async function updateMarketAvailabilityByCollectionId(
   })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_MARKET_AVAILABILITY_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_MARKET_AVAILABILITY_ERROR);
+      hidePageLoading();
       return false;
     });
 }
