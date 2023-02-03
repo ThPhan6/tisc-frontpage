@@ -21,7 +21,6 @@ interface ProductState {
   details: ProductItem & { referToDesignDocument?: boolean };
   relatedProduct: RelatedCollection[];
   list: ProductList;
-  myWorkSpace?: boolean;
 }
 
 const initialState: ProductState = {
@@ -169,9 +168,6 @@ const productSlice = createSlice({
         state.details.specifiedDetail.finish_schedules = [...action.payload];
       }
     },
-    setFromMyWorkspace: (state, action: PayloadAction<boolean>) => {
-      state.myWorkSpace = action.payload;
-    },
   },
 });
 
@@ -192,7 +188,6 @@ export const {
   setDefaultSelectionFromSpecifiedData,
   setPartialProductSpecifiedData,
   setFinishScheduleData,
-  setFromMyWorkspace,
 } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;
