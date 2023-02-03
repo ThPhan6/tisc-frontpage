@@ -10,6 +10,8 @@ import type {
   SummaryResponse,
 } from '@/components/Table/types';
 
+import { hidePageLoading } from '@/features/loading/loading';
+
 interface ProjectSpacePaginationResponse {
   data: {
     project_zones: ProjectSpaceListProps[];
@@ -40,6 +42,7 @@ export async function getProjectSpaceListPagination(
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_SPACE_DATA_FAILED);
+      hidePageLoading();
     });
 }
 
@@ -50,10 +53,12 @@ export async function createProjectSpace(data: ProjectSpaceZone) {
   })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CREATE_PROJECT_SPACE_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_PROJECT_SPACE_FAILED);
+      hidePageLoading();
       return false;
     });
 }
@@ -64,10 +69,12 @@ export async function updateProjectSpace(id: string, data: ProjectSpaceZone) {
   })
     .then((res) => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_PROJECT_SPACE_SUCCESS);
+      hidePageLoading();
       return res.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_PROJECT_SPACE_FAILED);
+      hidePageLoading();
     });
 }
 

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
+import { message } from 'antd';
 import { history } from 'umi';
 
 import { pushTo } from '@/helper/history';
@@ -36,8 +37,6 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const conversionValueDefault: ConversionSubValueProps = {
   name_1: '',
@@ -108,14 +107,12 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
 
   useEffect(() => {
     if (idBasis) {
-      showPageLoading();
       const getOneFunction = FORM_CONFIG[type].getOneFunction;
       getOneFunction(idBasis).then((res) => {
         if (res) {
           setData(res);
         }
       });
-      hidePageLoading();
     }
   }, []);
 
@@ -176,7 +173,6 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   };
 
   const handleCreate = (dataSubmit: any) => {
-    showPageLoading();
     const createFunction = FORM_CONFIG[type].createFunction;
     createFunction(dataSubmit).then((isSuccess) => {
       if (isSuccess) {
@@ -185,12 +181,10 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           pushTo(FORM_CONFIG[type].path);
         }, 1000);
       }
-      hidePageLoading();
     });
   };
 
   const handleUpdate = (dataSubmit: any) => {
-    showPageLoading();
     const updateFunction = FORM_CONFIG[type].updateFunction;
     updateFunction(idBasis, dataSubmit).then((isSuccess) => {
       if (isSuccess) {
@@ -199,13 +193,20 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           submitButtonStatus.setValue(false);
         }, 2000);
       }
-      hidePageLoading();
     });
   };
 
   const onHandleSubmit = () => {
     const newSubs = data.subs.map((sub) => {
       if (type === 'conversions') {
+        /// all values are required
+        const isSubConversionValueMissing =
+          sub.formula_1 === '' || sub.unit_1 === '' || sub.formula_2 === '' || sub.unit_2 === '';
+
+        if (isSubConversionValueMissing) {
+          return;
+        }
+
         return {
           ...sub,
           name_1: sub.name_1.trim(),
@@ -216,6 +217,18 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           formula_2: sub.formula_2,
         };
       }
+
+      /// unit must go with its value
+      const isSubValueMissing = sub.subs?.some(
+        (subItem: SubPresetValueProp | SubBasisOption) =>
+          (subItem.value_1 === '' && subItem.unit_1 !== '') ||
+          (subItem.value_2 === '' && subItem.unit_2 !== ''),
+      );
+
+      if (isSubValueMissing) {
+        return;
+      }
+
       if (type === 'presets') {
         return {
           ...sub,
@@ -254,6 +267,13 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
       }
       return newSubOption;
     });
+
+    const newSubDataInvalid = newSubs.some((newSub) => !newSub);
+
+    if (newSubDataInvalid) {
+      message.error(type === 'conversions' ? 'All values are required' : 'Value is required');
+      return;
+    }
 
     const handleSubmit = idBasis ? handleUpdate : handleCreate;
 

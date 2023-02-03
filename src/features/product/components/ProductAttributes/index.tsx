@@ -4,6 +4,8 @@ import { getAllAttribute } from '@/services';
 
 import { ProductInfoTab } from './types';
 import { TabItem } from '@/components/Tabs/types';
+import store from '@/reducers';
+import { closeProductFooterTab } from '@/reducers/active';
 import { ProductAttributeByType } from '@/types';
 
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
@@ -55,7 +57,10 @@ export const ProductAttributeComponent: React.FC<ProductAttributeComponentProps>
         centered={true}
         tabPosition="top"
         tabDisplay="space"
-        onChange={(key) => setActiveKey(key as ProductInfoTab)}
+        onChange={(key) => {
+          setActiveKey(key as ProductInfoTab);
+          store.dispatch(closeProductFooterTab());
+        }}
         activeKey={activeKey}
       />
 

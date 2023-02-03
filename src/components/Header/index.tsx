@@ -42,8 +42,8 @@ const PageHeader = (props: HeaderViewProps) => {
     [
       [isMobile, <AlignRightIcon style={{ color: '#fff' }} width={24} height={24} />],
       [isTiscUser, <img src={TISCLogoIcon} alt="logo" />],
-      [isBrandUser, <LogoIcon logo={String(user?.brand?.logo)} />],
-      [isDesignerUser, <LogoIcon logo={String(user?.design?.logo)} />],
+      [isBrandUser, <LogoIcon logo={String(user?.brand?.logo)} size={24} />],
+      [isDesignerUser, <LogoIcon logo={String(user?.design?.logo)} size={24} />],
     ],
     '',
   );

@@ -20,6 +20,8 @@ import {
 import store from '@/reducers';
 import { GeneralData } from '@/types';
 
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+
 interface ProjectPaginationResponse {
   data: {
     projects: ProjectListProps[];
@@ -47,6 +49,7 @@ export async function getProjectPagination(
       });
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_LIST_FAILED);
     });
 }
@@ -55,12 +58,15 @@ export async function getDesignerWorkspace(
   params: { filter?: { status?: ProjectStatus } },
   callback: (data: ProjectListProps[]) => void,
 ) {
+  showPageLoading();
   request(`/api/designer/workspace`, { method: 'GET', params })
     .then((response: { data: { projects: ProjectListProps[] } }) => {
       callback(response.data.projects);
+      hidePageLoading();
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_LIST_FAILED);
+      hidePageLoading();
     });
 }
 
@@ -118,10 +124,12 @@ export async function createProject(data: ProjectBodyRequest) {
   })
     .then((res: { data: { id: string } }) => {
       message.success(MESSAGE_NOTIFICATION.CREATE_PROJECT_SUCCESS);
+      hidePageLoading();
       return res.data.id;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_PROJECT_FAILED);
+      hidePageLoading();
       return '';
     });
 }
@@ -132,10 +140,12 @@ export async function updateProject(id: string, data: ProjectBodyRequest) {
   })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_PROJECT_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_PROJECT_FAILED);
+      hidePageLoading();
       return false;
     });
 }

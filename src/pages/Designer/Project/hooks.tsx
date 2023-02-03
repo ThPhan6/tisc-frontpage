@@ -15,7 +15,6 @@ import {
   updateProductSpecifiedStatus,
 } from '@/features/project/services';
 import { confirmDelete } from '@/helper/common';
-import { showImageUrl } from '@/helper/utils';
 
 import {
   setPartialProductDetail,
@@ -192,11 +191,6 @@ export const onCellCancelled = (data: any) => ({
       : undefined
   } ${data.rooms || data.room_id ? '' : 'no-box-shadow'}`,
 });
-
-export const renderImage = (image: string) =>
-  image ? (
-    <img src={showImageUrl(image)} style={{ width: 24, height: 24, objectFit: 'contain' }} />
-  ) : null;
 
 export const renderAvailability = (record: any) => {
   if (record.rooms) return null;

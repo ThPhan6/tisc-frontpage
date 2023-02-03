@@ -13,6 +13,7 @@ interface BrandProductBasicHeaderProps {
   text_1?: string;
   text_2?: string;
   text_3?: string | React.ReactNode;
+  text_4?: string;
   hasBoxShadow?: boolean;
   customClass?: string;
 }
@@ -23,6 +24,7 @@ const BrandProductBasicHeader: FC<BrandProductBasicHeaderProps> = ({
   text_1 = '',
   text_2 = '',
   text_3 = '',
+  text_4,
   hasBoxShadow = false,
   customClass = '',
 }) => {
@@ -30,13 +32,15 @@ const BrandProductBasicHeader: FC<BrandProductBasicHeaderProps> = ({
     <div
       className={`${styles.productInformationWrapper} ${
         hasBoxShadow ? styles.boxShadow : ''
-      } ${customClass}`}>
+      } ${customClass}`}
+    >
       <div className={styles.productInformationContainer}>
         <img src={showImageUrl(image) || ProductPlaceHolderImage} className={styles.productImage} />
         <div className={styles.productInformation}>
-          <RobotoBodyText level={6}> {text_1} </RobotoBodyText>
-          <RobotoBodyText level={6}> {text_2} </RobotoBodyText>
-          <RobotoBodyText level={6}> {text_3} </RobotoBodyText>
+          {text_1 ? <RobotoBodyText level={6}>{text_1}</RobotoBodyText> : null}
+          {text_2 ? <RobotoBodyText level={6}>{text_2}</RobotoBodyText> : null}
+          {text_3 ? <RobotoBodyText level={6}>{text_3}</RobotoBodyText> : null}
+          {text_4 ? <RobotoBodyText level={6}>{text_4}</RobotoBodyText> : null}
         </div>
       </div>
       {logo ? (

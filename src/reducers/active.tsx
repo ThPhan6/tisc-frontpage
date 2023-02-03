@@ -2,23 +2,21 @@ import store, { RootState, useAppSelector } from '.';
 
 import { useEffect, useState } from 'react';
 
+import { ProductInfoTab } from '@/features/product/components/ProductAttributes/types';
+
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
 
-export type CollapseGroup =
-  | 'project-basic-info'
-  | 'share-via-email'
-  | 'inquiry-request'
-  | 'issuing-info'
-  | 'project-tracking-detail';
-
+export type ProductFooterTabs = 'collection' | 'tip' | 'download' | '';
 interface ActiveState {
   collapse: {
     [key in string]?: number;
   };
+  productFooter: ProductFooterTabs;
 }
 
 const initialState: ActiveState = {
   collapse: {},
+  productFooter: '',
 };
 
 const activeSlice = createSlice({
@@ -31,10 +29,21 @@ const activeSlice = createSlice({
           ? undefined
           : action.payload.activeKey;
     },
+    onChangeProductFooterTab: (
+      state,
+      action: PayloadAction<{ tab: ProductFooterTabs; infoTab: ProductInfoTab }>,
+    ) => {
+      state.productFooter = action.payload.tab;
+      delete state.collapse[action.payload.infoTab];
+    },
+    closeProductFooterTab: (state) => {
+      state.productFooter = '';
+    },
   },
 });
 
-export const { setActiveCollapseItem } = activeSlice.actions;
+export const { setActiveCollapseItem, onChangeProductFooterTab, closeProductFooterTab } =
+  activeSlice.actions;
 
 export const activeReducer = activeSlice.reducer;
 
@@ -56,7 +65,7 @@ export const useCollapseGroupActiveCheck = (
   groupIndex?: number,
   activeKey?: string | string[],
 ) => {
-  const [collapse, setCollapse] = useState<string | string[]>();
+  const [collapse, setCollapse] = useState<string | string[]>(); // Use for have activeKey case
 
   const activeKeyInState = useAppSelector(collapseSelector(groupType, groupIndex));
 

@@ -13,6 +13,8 @@ import {
   SpecificationAttributeBasisOptionProps,
 } from '../../types';
 import { ActiveKeyType } from './types';
+import store from '@/reducers';
+import { closeProductFooterTab, useCollapseGroupActiveCheck } from '@/reducers/active';
 
 import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
@@ -20,7 +22,7 @@ import InputGroup from '@/components/EntryForm/InputGroup';
 import { BodyText } from '@/components/Typography';
 
 import { AttributeOption, ConversionText, GeneralText } from './AttributeComponent';
-import { ProductAttributeSubItem } from './AttributeItem';
+import { ProductAttributeSubItem, getConversionText } from './AttributeItem';
 import { ProductAttributeContainerProps } from './ProductAttributeContainer';
 import { SelectAttributeSpecificationChoice } from './SelectAttributeSpecificationChoice';
 import { SelectAttributesToGroupRow } from './SelectAttributesToGroupRow';
@@ -53,6 +55,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   isSpecifiedModal,
 }) => {
   const isTablet = useScreen().isTablet;
+  const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(
+    activeKey,
+    groupIndex + 1, // Spare index 0 for Dimension & Weight group
+  );
+
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
   const isEditable = isTiscAdmin && !isTablet;
 
@@ -73,7 +80,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     onCheckedSpecification,
     attributeGroupKey,
     onSelectSpecificationOption,
-  } = useProductAttributeForm(activeKey, curProductId);
+  } = useProductAttributeForm(activeKey, curProductId, { isSpecifiedModal });
 
   useEffect(() => {
     if (attrGroupItem.selection && attrGroupItem.id) {
@@ -230,9 +237,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             chosenOption={
               chosenOption
                 ? {
-                    label: `${chosenOption.value_1 ?? ''} ${chosenOption.unit_1 ?? ''} ${
-                      chosenOption.value_2 ? '-' : ''
-                    } ${chosenOption.value_2 ?? ''} ${chosenOption.unit_2 ?? ''}`,
+                    label: getConversionText(chosenOption),
                     value: chosenOption?.id,
                   }
                 : undefined
@@ -275,6 +280,11 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       <div className={styles.attributes}>
         <div className={styles.specification}>
           <CustomCollapse
+            activeKey={curActiveKey}
+            onChange={(key) => {
+              onKeyChange(key);
+              store.dispatch(closeProductFooterTab());
+            }}
             showActiveBoxShadow={!specifying}
             noBorder={noBorder}
             expandingHeaderFontStyle="bold"

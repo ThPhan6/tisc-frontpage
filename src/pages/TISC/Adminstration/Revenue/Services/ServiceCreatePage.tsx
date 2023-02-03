@@ -38,8 +38,6 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { MainTitle, Title } from '@/components/Typography';
 
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
-
 const ServiceCreatePage = () => {
   const { isMobile } = useScreen();
 
@@ -147,7 +145,6 @@ const ServiceCreatePage = () => {
   };
 
   const handleCreateService = () => {
-    showPageLoading();
     createService(serviceFormData).then((isSuccess) => {
       validateValueServices();
       if (isSuccess) {
@@ -157,7 +154,6 @@ const ServiceCreatePage = () => {
           store.dispatch(resetServiceFormData());
         }, 1000);
       }
-      hidePageLoading();
     });
   };
 
@@ -166,7 +162,6 @@ const ServiceCreatePage = () => {
       setTypeHandleSubmit('update');
       return;
     }
-    showPageLoading();
     updateService(idService, serviceFormData).then((isSuccess) => {
       validateValueServices();
       if (isSuccess) {
@@ -175,7 +170,6 @@ const ServiceCreatePage = () => {
           submitButtonStatus.setValue(false);
         }, 1000);
       }
-      hidePageLoading();
     });
   };
 
@@ -196,7 +190,8 @@ const ServiceCreatePage = () => {
             variant="primary"
             properties="rounded"
             onClick={handleCancel}
-            style={{ marginRight: 16 }}>
+            style={{ marginRight: 16 }}
+          >
             Cancel
           </CustomButton>
           <CustomSaveButton
@@ -216,7 +211,8 @@ const ServiceCreatePage = () => {
             variant="secondary"
             properties="rounded"
             onClick={handleDeleteService}
-            style={{ marginRight: 16 }}>
+            style={{ marginRight: 16 }}
+          >
             Delete
           </CustomButton>
         ) : null}
@@ -240,7 +236,8 @@ const ServiceCreatePage = () => {
             height: getContentHeight(),
             overflow: 'auto',
           }}
-          extraFooterButton={renderFooterButton()}>
+          extraFooterButton={renderFooterButton()}
+        >
           <FormGroup
             label="Service type"
             required
@@ -248,7 +245,8 @@ const ServiceCreatePage = () => {
             formClass={`${serviceFormData.service_type_id !== '' ? styles.activeText : ''} ${
               typeHandleSubmit === 'view' ? styles.text : ''
             }  `}
-            style={{ marginBottom: '16px' }}>
+            style={{ marginBottom: '16px' }}
+          >
             <CollapseRadioList
               options={serviceType.map((item) => {
                 return {
@@ -318,7 +316,8 @@ const ServiceCreatePage = () => {
             label="Chargeable Rate / Total Quantity / Sales Tax"
             layout="vertical"
             required
-            style={{ marginBottom: '16px' }}>
+            style={{ marginBottom: '16px' }}
+          >
             <Row gutter={[24, 8]}>
               <Col span={8}>
                 <div className={styles.item}>
@@ -423,7 +422,8 @@ const ServiceCreatePage = () => {
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
-                    }}>
+                    }}
+                  >
                     {summaryBillingAmount()}
                   </Title>
                 </div>

@@ -20,6 +20,8 @@ import store from '@/reducers';
 import { setSummaryGeneralInquiry } from '@/reducers/summary';
 import { GeneralData } from '@/types';
 
+import { hidePageLoading } from '@/features/loading/loading';
+
 interface GeneralInquiryPaginationResponse {
   data: {
     general_inquiries: GeneralInquiryListProps[];
@@ -49,6 +51,7 @@ export async function getGeneralInquiryPagination(
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_GENERAL_INQUIRY_LIST_FAILED);
+      hidePageLoading();
     });
 }
 

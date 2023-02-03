@@ -21,7 +21,7 @@ import { FormGroup } from '@/components/Form';
 import { Status } from '@/components/Form/Status';
 
 import styles from './BrandEntryForm.less';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import { showPageLoading } from '@/features/loading/loading';
 import { inviteBrand } from '@/features/team-profiles/api';
 
 interface BrandEntryFormValue {}
@@ -69,7 +69,6 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
       last_name: data.last_name?.trim() ?? '',
       email: data.email?.trim() ?? '',
     }).then((newBrand) => {
-      hidePageLoading();
       if (!newBrand) {
         return;
       }
@@ -84,7 +83,6 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
   const handleSendInvite = () => {
     handleSubmit((brandId) => {
       inviteBrand(brandId).then(() => {
-        hidePageLoading();
         history.replace(PATH.tiscUserGroupBrandList);
       });
     });
