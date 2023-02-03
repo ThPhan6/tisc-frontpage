@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { PATH } from '@/constants/path';
 import { QUERY_KEY } from '@/constants/util';
+import { useLocation } from 'umi';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SmallPlusIcon } from '@/assets/icons/small-plus-icon.svg';
@@ -19,7 +20,6 @@ import { RadioValue } from '@/components/CustomRadio/types';
 import {
   resetProductState,
   setBrand,
-  setFromMyWorkspace,
   setProductList,
   setProductSummary,
 } from '@/features/product/reducers';
@@ -51,11 +51,11 @@ export const TopBar: React.FC = () => {
       category: true,
     });
 
-  const isFromMyWorkspace = useAppSelector((state) => state.product.myWorkSpace);
-
   const [brandAlphabet, setBrandAlphabet] = useState<BrandAlphabet>({});
 
   const query = useQuery();
+
+  const location = useLocation<{ fromMyWorkspace?: boolean }>();
   const brandId = query.get(QUERY_KEY.b_id);
   const brandName = query.get(QUERY_KEY.b_name);
   const cate_id = query.get(QUERY_KEY.cate_id);
@@ -80,10 +80,12 @@ export const TopBar: React.FC = () => {
     );
 
   useEffect(() => {
-    if (isFromMyWorkspace) {
-      /// set default filter value
-      setViewProductLitsByCollection();
+    if (!checkedBrand.value) {
+      return;
     }
+
+    /// set default filter value
+    setViewProductLitsByCollection();
   }, []);
 
   /// load brand by alphabet from API
@@ -103,7 +105,6 @@ export const TopBar: React.FC = () => {
       dispatch(setBrand());
       dispatch(setProductList({ data: [] }));
       dispatch(setProductSummary(undefined));
-      dispatch(setFromMyWorkspace(false));
     };
   }, [brandId]);
 
@@ -130,7 +131,7 @@ export const TopBar: React.FC = () => {
       productSummary?.brandId !== (checkedBrand.value as string)
     ) {
       // prevent call api on first loading
-      if (coll_id && coll_name && firstLoad.value && !filter) {
+      if (coll_id && coll_name && firstLoad.value && !filter && location.state?.fromMyWorkspace) {
         return;
       }
 
@@ -190,7 +191,7 @@ export const TopBar: React.FC = () => {
         params.collection_id = filter.value === 'all' ? 'all' : filter.value;
       }
 
-      if (!filter && firstLoad.value && (coll_id || cate_id)) {
+      if (!filter && firstLoad.value && (coll_id || cate_id || location.state?.fromMyWorkspace)) {
         firstLoad.setValue(false);
         return;
       }
