@@ -1,3 +1,5 @@
+@import '~antd/es/style/variable.less';
+
 .productAttributeItem {
   border-bottom: 0 !important;
   :global(.ant-checkbox + span) {
@@ -107,6 +109,10 @@
   .attributeName {
     width: 30%;
     text-transform: capitalize;
+
+    @media screen and (max-width: @screen-sm) {
+      width: 40%;
+    }
   }
 
   .attributeDescription {

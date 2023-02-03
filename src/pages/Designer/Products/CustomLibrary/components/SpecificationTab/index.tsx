@@ -234,6 +234,7 @@ export const SpecificationTab: FC<{
           items={specifications}
           tdStyle={specifying ? { paddingLeft: 0 } : {}}
           flex={specifying ? '30-70' : '25-75'}
+          flexOnMobile
           noPadding={specifying}
         />
       );

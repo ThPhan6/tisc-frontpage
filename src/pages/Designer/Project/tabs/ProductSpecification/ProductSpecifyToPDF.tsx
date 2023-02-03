@@ -4,13 +4,13 @@ import { ProductSpecifiedTabKeys, ProductSpecifiedTabs } from '../../constants/t
 import { Row } from 'antd';
 
 import { createPDF, getSpecifiedProductByPDF } from '@/features/project/services';
-import { useScreen } from '@/helper/common';
 
 import { PdfDetail, TemplatesItem } from './type';
 
 import IssuingInformation from './components/IssuingInformation';
 import { PdfPreview } from './components/PdfPreview';
 import StandardCoverPage from './components/StandardCoverPage';
+import CustomButton from '@/components/Button';
 import { ResponsiveCol } from '@/components/Layout';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
@@ -22,10 +22,10 @@ interface ProductSpecififyPDF {
 }
 
 const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
-  const isMobile = useScreen().isMobile;
   const [selectedTab, setSelectedTab] = useState<ProductSpecifiedTabKeys>(
     ProductSpecifiedTabKeys.issuingInformation,
   );
+  const standardSpecificationTab = selectedTab === ProductSpecifiedTabKeys.standardSpecification;
   const [data, setData] = useState<PdfDetail>({
     config: {
       created_at: '',
@@ -123,19 +123,23 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
     });
   };
 
+  const contentHeight = standardSpecificationTab
+    ? 'calc(var(--vh) * 100 - 280px)'
+    : 'calc(var(--vh) * 100 - 232px)';
+
   return (
-    <Row className={styles.content} gutter={[8, 8]}>
+    <Row className={styles.content} gutter={[8, 8]} style={{ overflow: 'hidden' }}>
       <ResponsiveCol>
-        <div className={styles.content_left}>
+        <div className={styles.content_left} style={{ height: contentHeight }}>
           <CustomTabs
             listTab={ProductSpecifiedTabs}
             centered={true}
             tabPosition="top"
             tabDisplay="space"
-            className={styles.projectTabInfo}
+            className={styles.specifyTabs}
+            customClass={styles.topSticky}
             onChange={(changedKey) => setSelectedTab(changedKey as ProductSpecifiedTabKeys)}
             activeKey={selectedTab}
-            style={{ padding: isMobile ? '12px 12px 0 12px' : '16px 16px 0 16px' }}
           />
           <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.issuingInformation}>
             <IssuingInformation data={data} onChangeData={onChangeData} />
@@ -143,15 +147,17 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
           <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.coverAndPreamble}>
             <StandardCoverPage data={data} onChangeData={onChangeData} type="cover" />
           </CustomTabPane>
-          <CustomTabPane active={selectedTab === ProductSpecifiedTabKeys.standardSpecification}>
-            <StandardCoverPage
-              data={data}
-              onChangeData={onChangeData}
-              type="standard"
-              onPreview={onPreview}
-            />
+          <CustomTabPane active={standardSpecificationTab}>
+            <StandardCoverPage data={data} onChangeData={onChangeData} type="standard" />
           </CustomTabPane>
         </div>
+        {standardSpecificationTab ? (
+          <div className={styles.actionButton}>
+            <CustomButton size="small" properties="rounded" onClick={onPreview}>
+              Preview
+            </CustomButton>
+          </div>
+        ) : null}
       </ResponsiveCol>
       <ResponsiveCol className={styles.content_right}>
         <PdfPreview generatePDF={generatepdf} data={data} />
