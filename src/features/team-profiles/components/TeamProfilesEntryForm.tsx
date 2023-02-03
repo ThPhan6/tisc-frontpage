@@ -47,7 +47,7 @@ import styles from './TeamProfilesEntryForm.less';
 import BrandAccessLevelModal from './access-level-modal/BrandAccessLevelModal';
 import DesignAccessLevelModal from './access-level-modal/DesignAccessLevelModal';
 import TISCAccessLevelModal from './access-level-modal/TISCAccessLevelModal';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import { showPageLoading } from '@/features/loading/loading';
 
 const GenderRadio = [
   { label: 'Male', value: '1' },
@@ -136,7 +136,6 @@ const TeamProfilesEntryForm = () => {
     callBack?: (userIdParam: string) => void,
   ) => {
     createTeamProfile(submitData).then((teamProfile) => {
-      hidePageLoading();
       if (teamProfile) {
         submitButtonStatus.setValue(true);
         if (callBack) {
@@ -150,7 +149,6 @@ const TeamProfilesEntryForm = () => {
 
   const handleUpdateData = (submitData: TeamProfileRequestBody) => {
     updateTeamProfile(userIdParam, submitData).then((isSuccess) => {
-      hidePageLoading();
       if (isSuccess) {
         submitButtonStatus.setValue(true);
         const isUpdateCurrentUser = userIdParam === userProfileId;

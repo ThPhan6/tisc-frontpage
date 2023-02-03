@@ -23,7 +23,6 @@ import {
   updateMaterialProductCode,
 } from '../api';
 import { MaterialProductItem } from './MaterialProductItem';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const MaterialProductEntryForm = () => {
   const [data, setData] = useState<MaterialProductForm>(DEFAULT_MATERIAL_PRODUCT);
@@ -34,12 +33,10 @@ const MaterialProductEntryForm = () => {
 
   useEffect(() => {
     if (idMaterialProductCode) {
-      showPageLoading();
       getOneMaterialProductCode(idMaterialProductCode).then((res) => {
         if (res) {
           setData(res);
         }
-        hidePageLoading();
       });
     }
   }, []);
@@ -71,7 +68,6 @@ const MaterialProductEntryForm = () => {
   };
 
   const handleCreate = (dataSubmit: MaterialProductForm) => {
-    showPageLoading();
     createMaterialProductCode(dataSubmit).then((isSuccess) => {
       if (isSuccess) {
         submitButtonStatus.setValue(true);
@@ -79,12 +75,10 @@ const MaterialProductEntryForm = () => {
           pushTo(PATH.designerMaterialProductCode);
         }, 1000);
       }
-      hidePageLoading();
     });
   };
 
   const handleUpdate = (dataSubmit: MaterialProductForm) => {
-    showPageLoading();
     updateMaterialProductCode(idMaterialProductCode, dataSubmit).then((isSuccess) => {
       if (isSuccess) {
         submitButtonStatus.setValue(true);
@@ -92,7 +86,6 @@ const MaterialProductEntryForm = () => {
           submitButtonStatus.setValue(false);
         }, 2000);
       }
-      hidePageLoading();
     });
   };
 

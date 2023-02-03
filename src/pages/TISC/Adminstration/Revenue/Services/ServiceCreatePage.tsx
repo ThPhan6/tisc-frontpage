@@ -20,8 +20,6 @@ import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
-
 const ServiceCreatePage = () => {
   const [visible, setVisible] = useState<boolean>(false);
 
@@ -85,7 +83,6 @@ const ServiceCreatePage = () => {
   };
 
   const handleCreateService = () => {
-    showPageLoading();
     createService(serviceFormData).then((isSuccess) => {
       validateValueServices();
       if (isSuccess) {
@@ -95,7 +92,6 @@ const ServiceCreatePage = () => {
           store.dispatch(resetServiceFormData());
         }, 1000);
       }
-      hidePageLoading();
     });
   };
 
@@ -104,7 +100,6 @@ const ServiceCreatePage = () => {
       setTypeHandleSubmit('update');
       return;
     }
-    showPageLoading();
     updateService(idService, serviceFormData).then((isSuccess) => {
       validateValueServices();
       if (isSuccess) {
@@ -113,7 +108,6 @@ const ServiceCreatePage = () => {
           submitButtonStatus.setValue(false);
         }, 1000);
       }
-      hidePageLoading();
     });
   };
 

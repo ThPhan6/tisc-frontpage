@@ -13,6 +13,8 @@ import {
 import store from '@/reducers';
 import { GeneralData } from '@/types';
 
+import { hidePageLoading } from '@/features/loading/loading';
+
 interface ProjectPaginationResponse {
   data: {
     resources: CustomResources[];
@@ -41,6 +43,7 @@ export async function getListVendorByBrandOrDistributor(
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_VENDOR);
+      hidePageLoading();
     });
 }
 
@@ -86,10 +89,12 @@ export async function createCustomResource(data: CustomResourceForm) {
   return request<boolean>(`/api/custom-resource/create`, { method: 'POST', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CREATE_CUSTOM_RESOURCE_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message);
+      hidePageLoading();
       return false;
     });
 }
@@ -111,10 +116,12 @@ export async function updateCustomResource(id: string, data: CustomResourceForm)
   return request<boolean>(`/api/custom-resource/update/${id}`, { method: 'PUT', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_CUSTOM_RESOURCE_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message);
+      hidePageLoading();
       return false;
     });
 }

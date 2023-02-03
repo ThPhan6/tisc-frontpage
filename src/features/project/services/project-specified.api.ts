@@ -18,6 +18,8 @@ import {
 } from '@/features/project/types';
 import { PdfDetail } from '@/pages/Designer/Project/tabs/ProductSpecification/type';
 
+import { hidePageLoading } from '@/features/loading/loading';
+
 export async function getSpecifiedProductsByBrand(
   { projectId, ...params }: PaginationRequestParams,
   callback: (data: DataTableResponse) => void,
@@ -33,6 +35,7 @@ export async function getSpecifiedProductsByBrand(
     })
     .catch((error) => {
       console.log('error', error);
+      hidePageLoading();
       message.error(error.message);
     });
 }
@@ -51,6 +54,7 @@ export async function getSpecifiedProductByMaterial(
     })
     .catch((error) => {
       console.log('error', error);
+      hidePageLoading();
       message.error(error.message);
     });
 }
@@ -70,6 +74,7 @@ export async function getSpecifiedProductBySpace(
     })
     .catch((error) => {
       console.log('error', error);
+      hidePageLoading();
       message.error(error.message);
     });
 }
@@ -137,12 +142,14 @@ export async function createPDF(
     data,
   })
     .then((response) => {
+      hidePageLoading();
       return {
         filename: response.filename,
         fileBuffer: bufferToArrayBufferCycle(Buffer.from(response.data, 'base64')),
       };
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error.data.message);
     });
 }

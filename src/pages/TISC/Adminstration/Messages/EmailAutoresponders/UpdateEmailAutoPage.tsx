@@ -23,7 +23,7 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import styles from './styles/EmailAutorespondersEntryForm.less';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import { showPageLoading } from '@/features/loading/loading';
 
 const DEFAULT_EMAILAUTORESPONDERS_VALUE: EmailTemplate = {
   topic: '',
@@ -109,8 +109,6 @@ const UpdateEmailAutoPage = () => {
         ...formState,
         title: formState.title.trim(),
       }).then((isSuccess) => {
-        hidePageLoading();
-
         if (isSuccess) {
           submitButtonStatus.setValue(true);
           setTimeout(() => {

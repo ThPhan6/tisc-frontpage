@@ -21,6 +21,8 @@ import type {
 } from '@/components/Table/types';
 import { KeyValueData } from '@/types';
 
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+
 interface BrandListResponse {
   brands: BrandListItem[];
   pagination: PaginationResponse;
@@ -47,6 +49,7 @@ export async function getBrandPagination(
     })
     .catch((error) => {
       console.log('error', error);
+      hidePageLoading();
       message.error(error.message);
     });
 }
@@ -60,18 +63,22 @@ export async function getBrandAlphabet() {
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
+      hidePageLoading();
       return {} as BrandAlphabet;
     });
 }
 export async function getTiscWorkspace() {
+  showPageLoading();
   return request<{ data: BrandCard[] }>(`/api/workspace`, {
     method: 'GET',
   })
     .then((response) => {
+      hidePageLoading();
       return response.data;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_DATA_ERROR);
+      hidePageLoading();
       return [] as BrandCard[];
     });
 }
@@ -155,10 +162,12 @@ export async function createBrand(data: TISCUserGroupBrandForm) {
   })
     .then((res) => {
       message.success(getResponseMessage('create', 'brand', 'success'));
+      hidePageLoading();
       return res.data;
     })
     .catch((error) => {
       message.error(getResponseMessage('create', 'brand', 'failed', error));
+      hidePageLoading();
       return undefined;
     });
 }

@@ -39,7 +39,6 @@ import TeamDetail from '@/features/user-group/components/TeamDetail';
 import LabelToolTip from '@/features/user-group/components/TooltipLabel';
 
 import styles from './index.less';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const DesignTabs: TabItem[] = [
   { tab: DesignTabKeys.profile, key: DesignTabKeys.profile, icon: <ProfileIcon /> },
@@ -79,9 +78,7 @@ const DesignFirmUpdatePage = () => {
   };
 
   const handleSaveButton = () => {
-    showPageLoading();
     updateStatusDesignFirm(designId, { status: data.status }).then((isSuccess) => {
-      hidePageLoading();
       if (isSuccess) {
         buttonStatus.setValue(true);
         setTimeout(() => {

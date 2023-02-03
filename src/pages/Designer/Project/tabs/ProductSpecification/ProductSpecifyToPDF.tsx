@@ -13,7 +13,7 @@ import StandardCoverPage from './components/StandardCoverPage';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
 import styles from './index.less';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import { showPageLoading } from '@/features/loading/loading';
 
 interface ProductSpecififyPDF {
   projectId: string;
@@ -116,7 +116,6 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
       if (res) {
         setGeneratePDF(res.fileBuffer);
       }
-      hidePageLoading();
     });
   };
 

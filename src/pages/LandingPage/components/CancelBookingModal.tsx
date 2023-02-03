@@ -15,7 +15,7 @@ import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle, Title } from '@/components/Typography';
 
 import styles from './CalendarModal.less';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import { showPageLoading } from '@/features/loading/loading';
 import moment from 'moment';
 
 interface CancelBookingProps extends ModalProps {
@@ -102,7 +102,6 @@ export const CancelBookingModal: FC<CancelBookingProps> = ({
       if (isSuccess) {
         onClose();
       }
-      hidePageLoading();
     });
   };
 

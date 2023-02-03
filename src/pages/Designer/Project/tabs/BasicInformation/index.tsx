@@ -18,7 +18,7 @@ import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from '../../styles/basic-information.less';
 import { EntryForm } from './EntryForm';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import { showPageLoading } from '@/features/loading/loading';
 
 interface GeneralInformationProps {
   project?: ProjectDetailProps;
@@ -36,7 +36,6 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
     if (projectId) {
       /// update project
       updateProject(projectId, data).then((isSuccess) => {
-        hidePageLoading();
         if (isSuccess) {
           buttonStatus.setValue(true);
           setTimeout(() => {
@@ -53,7 +52,6 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
     } else {
       /// create
       createProject(data).then((newProjectId) => {
-        hidePageLoading();
         if (newProjectId) {
           buttonStatus.setValue(true);
           setTimeout(() => {

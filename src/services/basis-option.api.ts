@@ -10,6 +10,8 @@ import type {
 } from '@/components/Table/types';
 import type { BasisOptionForm, BasisOptionListResponse } from '@/types';
 
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+
 interface CategoryPaginationResponse {
   data: {
     basis_options: BasisOptionListResponse[];
@@ -39,28 +41,34 @@ export async function getProductBasisOptionPagination(
     })
     .catch((error) => {
       message.error(error.data?.message ?? MESSAGE_NOTIFICATION.GETLIST_OPTION_ERROR);
+      hidePageLoading();
     });
 }
 
 export async function createOptionMiddleWare(data: BasisOptionForm) {
+  showPageLoading();
   return request<boolean>(`/api/basis-option/create`, {
     method: 'POST',
     data,
   })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CREATE_OPTION_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message || MESSAGE_NOTIFICATION.CREATE_OPTION_ERROR);
+      hidePageLoading();
       return false;
     });
 }
 export async function getOneBasisOption(id: string) {
+  showPageLoading();
   return request<{ data: BasisOptionForm }>(`/api/basis-option/get-one/${id}`, {
     method: 'GET',
   })
     .then((response) => {
+      hidePageLoading();
       const newSubs = response.data.subs.map((subOption) => {
         const isUsingImage = subOption.subs.find((optionItem) => {
           return optionItem.image !== null;
@@ -76,36 +84,43 @@ export async function getOneBasisOption(id: string) {
       };
     })
     .catch((error) => {
+      hidePageLoading();
       console.log(error);
       message.error(error?.data?.message || MESSAGE_NOTIFICATION.GET_ONE_OPTION_ERROR);
     });
 }
 
 export async function updateBasisOption(id: string, data: BasisOptionForm) {
+  showPageLoading();
   return request<boolean>(`/api/basis-option/update/${id}`, {
     method: 'PUT',
     data,
   })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_OPTION_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message || MESSAGE_NOTIFICATION.UPDATE_OPTION_SUCCESS);
+      hidePageLoading();
       return false;
     });
 }
 
 export async function deleteBasisOption(id: string) {
+  showPageLoading();
   return request<boolean>(`/api/basis-option/delete/${id}`, {
     method: 'DELETE',
   })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.DELETE_OPTION_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message || MESSAGE_NOTIFICATION.DELETE_OPTION_ERROR);
+      hidePageLoading();
       return false;
     });
 }
