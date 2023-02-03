@@ -122,17 +122,16 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
     });
   };
 
-  // Fix here
-  // const onReset = () => {
-  //   setData({
-  //     ...data,
-  //     config: {
-  //       ...data.config,
-  //       template_cover_ids: [],
-  //       template_standard_ids: [],
-  //     },
-  //   });
-  // };
+  const onReset = () => {
+    setData({
+      ...data,
+      config: {
+        ...data.config,
+        template_cover_ids: [],
+        template_standard_ids: [],
+      },
+    });
+  };
 
   const contentHeight = standardSpecificationTab
     ? 'calc(var(--vh) * 100 - 280px)'
@@ -164,6 +163,14 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
         </div>
         {standardSpecificationTab ? (
           <div className={styles.actionButton}>
+            <CustomButton
+              size="small"
+              properties="rounded"
+              onClick={onReset}
+              buttonClass={styles.resetButton}
+            >
+              Reset
+            </CustomButton>
             <CustomButton size="small" properties="rounded" onClick={onPreview}>
               Preview
             </CustomButton>
