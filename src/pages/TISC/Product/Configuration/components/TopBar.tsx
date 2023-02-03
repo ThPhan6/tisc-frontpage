@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { PATH } from '@/constants/path';
 import { QUERY_KEY } from '@/constants/util';
+import { useLocation } from 'umi';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SmallPlusIcon } from '@/assets/icons/small-plus-icon.svg';
@@ -18,13 +19,11 @@ import { RadioValue } from '@/components/CustomRadio/types';
 import {
   resetProductState,
   setBrand,
-  setFromMyWorkspace,
   setProductList,
   setProductSummary,
 } from '@/features/product/reducers';
 import { ProductGetListParameter } from '@/features/product/types';
 import { BrandAlphabet, BrandDetail } from '@/features/user-group/types';
-import { useAppSelector } from '@/reducers';
 
 import { LogoIcon } from '@/components/LogoIcon';
 import Popover from '@/components/Modal/Popover';
@@ -47,13 +46,13 @@ export const TopBar: React.FC = () => {
       category: true,
     });
 
-  const isFromMyWorkspace = useAppSelector((state) => state.product.myWorkSpace);
-
   const [visible, setVisible] = useState(false);
   const [brandAlphabet, setBrandAlphabet] = useState<BrandAlphabet>({});
   const brandFlatList = flatMap(brandAlphabet);
 
   const query = useQuery();
+
+  const location = useLocation<{ fromMyWorkspace?: boolean }>();
   const brandId = query.get(QUERY_KEY.b_id);
   const brandName = query.get(QUERY_KEY.b_name);
   const cate_id = query.get(QUERY_KEY.cate_id);
@@ -78,10 +77,12 @@ export const TopBar: React.FC = () => {
     );
 
   useEffect(() => {
-    if (isFromMyWorkspace) {
-      /// set default filter value
-      setViewProductLitsByCollection();
+    if (!brandSelected.value) {
+      return;
     }
+
+    /// set default filter value
+    setViewProductLitsByCollection();
   }, []);
 
   /// load brand by alphabet from API
@@ -101,7 +102,6 @@ export const TopBar: React.FC = () => {
       dispatch(setBrand());
       dispatch(setProductList({ data: [] }));
       dispatch(setProductSummary(undefined));
-      dispatch(setFromMyWorkspace(false));
     };
   }, [brandId]);
 
@@ -128,7 +128,7 @@ export const TopBar: React.FC = () => {
       productSummary?.brandId !== (brandSelected.value as string)
     ) {
       // prevent call api on first loading
-      if (coll_id && coll_name && firstLoad.value && !filter) {
+      if (coll_id && coll_name && firstLoad.value && !filter && location.state?.fromMyWorkspace) {
         return;
       }
 
@@ -171,7 +171,7 @@ export const TopBar: React.FC = () => {
         }
       });
     }
-  }, [brandSelected?.value, productSummary?.brandId, filter && firstLoad.value === true]);
+  }, [brandSelected?.value]);
 
   useEffect(() => {
     if (brandSelected?.value) {
@@ -188,14 +188,14 @@ export const TopBar: React.FC = () => {
         params.collection_id = filter.value === 'all' ? 'all' : filter.value;
       }
 
-      if (!filter && firstLoad.value && (coll_id || cate_id)) {
+      if (!filter && firstLoad.value && (coll_id || cate_id || location.state?.fromMyWorkspace)) {
         firstLoad.setValue(false);
         return;
       }
 
       getProductListByBrandId(params);
     }
-  }, [filter?.value, filter?.name, brandSelected?.value, firstLoad.value]);
+  }, [filter?.value, brandSelected?.value, firstLoad.value]);
 
   const gotoProductForm = () => {
     dispatch(resetProductState());
@@ -346,8 +346,8 @@ export const TopBar: React.FC = () => {
               set: [
                 { key: QUERY_KEY.b_id, value: chosenBrand.id },
                 { key: QUERY_KEY.b_name, value: chosenBrand.name },
-                { key: QUERY_KEY.cate_id, value: 'all' },
-                { key: QUERY_KEY.cate_name, value: 'VIEW ALL' },
+                { key: QUERY_KEY.coll_id, value: 'all' },
+                { key: QUERY_KEY.coll_name, value: 'VIEW ALL' },
               ],
               removeAll: true,
             });

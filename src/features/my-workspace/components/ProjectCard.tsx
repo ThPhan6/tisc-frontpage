@@ -11,7 +11,7 @@ import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-ico
 import { pushTo } from '@/helper/history';
 import { getDesignDueDay, getFullName, getValueByCondition, updateUrlParams } from '@/helper/utils';
 
-import { setBrand, setFromMyWorkspace } from '@/features/product/reducers';
+import { setBrand } from '@/features/product/reducers';
 import { ProjectListProps } from '@/features/project/types';
 import { BrandCard, BrandCardTeam, BrandDetail } from '@/features/user-group/types';
 import store, { useAppSelector } from '@/reducers';
@@ -47,11 +47,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
   const handleClickItem = (cardInfo: ProjecTrackingList & BrandCard & ProjectListProps) => {
     if (cardInfo.id) {
       if (isTiscUser) {
-        const { location } = history;
-        const myWorkSpace = location.pathname.indexOf('dashboard') !== -1;
-        store.dispatch(setFromMyWorkspace(myWorkSpace));
-
-        pushTo(PATH.productConfiguration);
+        history.push(PATH.productConfiguration, { fromMyWorkspace: true });
 
         /// set brand info
         store.dispatch(setBrand({ id: cardInfo.id, name: cardInfo.name } as BrandDetail));
@@ -61,8 +57,8 @@ export const ProjectCard: FC<ProjectCardProps> = ({
           set: [
             { key: QUERY_KEY.b_id, value: cardInfo.id },
             { key: QUERY_KEY.b_name, value: cardInfo.name },
-            { key: QUERY_KEY.cate_id, value: 'all' },
-            { key: QUERY_KEY.cate_name, value: 'VIEW ALL' },
+            { key: QUERY_KEY.coll_id, value: 'all' },
+            { key: QUERY_KEY.coll_name, value: 'VIEW ALL' },
           ],
         });
 
