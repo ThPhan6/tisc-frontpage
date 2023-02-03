@@ -1,3 +1,5 @@
+@import '~antd/es/style/variable.less';
+
 .customHeader {
   display: flex;
   align-items: center;
@@ -7,11 +9,27 @@
 .customTabs {
   margin-bottom: 8px;
   background-color: #fff;
+
+  @media screen and (max-width: @screen-lg) {
+    margin-bottom: 8px;
+  }
   :global(.ant-tabs-tab-btn) {
     padding: 0 0.8vw;
   }
   :global(.ant-tabs-top) {
     height: 40px;
+  }
+
+  :global(.ant-tabs > .ant-tabs-nav) {
+    margin: 0;
+
+    @media screen and (max-width: 1261px) {
+      height: calc(100% + 6px); // only on desktop
+    }
+  }
+
+  :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap) {
+    overflow: auto hidden;
   }
 
   :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
