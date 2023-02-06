@@ -15,7 +15,7 @@ import {
   updateProductCard,
 } from '@/features/product/services';
 import { getBrandById } from '@/features/user-group/services';
-import { useCheckPermission, useQuery } from '@/helper/hook';
+import { useBoolean, useCheckPermission, useQuery } from '@/helper/hook';
 import { isValidURL } from '@/helper/utils';
 import { pick, sortBy } from 'lodash';
 
@@ -37,6 +37,7 @@ import { ProductDetailFooter } from './ProductDetailFooter';
 import ProductDetailHeader from './ProductDetailHeader';
 import ProductImagePreview from './ProductImagePreview';
 import styles from './detail.less';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import Cookies from 'js-cookie';
 
 const ProductDetailContainer: React.FC = () => {
@@ -60,6 +61,8 @@ const ProductDetailContainer: React.FC = () => {
 
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('general');
   const [title, setTitle] = useState<string>('');
+
+  const submitButtonStatus = useBoolean(false);
 
   useEffect(() => {
     if (brandId) {
@@ -88,6 +91,18 @@ const ProductDetailContainer: React.FC = () => {
       getRelatedCollectionProducts(details.id);
     }
   }, [details.id, details.brand]);
+
+  /// handle on save
+  useEffect(() => {
+    if (submitButtonStatus.value) {
+      showPageLoading();
+
+      setTimeout(() => {
+        hidePageLoading();
+        submitButtonStatus.setValue(false);
+      }, 1000);
+    }
+  }, [submitButtonStatus.value]);
 
   const onSave = () => {
     // check urls is valid

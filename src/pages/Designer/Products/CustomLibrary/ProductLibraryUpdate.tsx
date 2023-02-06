@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { Col, Row, message } from 'antd';
-import { useHistory, useParams } from 'umi';
+import { useHistory } from 'umi';
 
 import { createCustomProduct, getOneCustomProduct, updateCustomProduct } from './services';
+import { useBoolean, useGetParamId } from '@/helper/hook';
 import { formatImageIfBase64 } from '@/helper/utils';
 
 import { CustomProductRequestBody, ProductInfoTab } from './types';
@@ -19,6 +20,7 @@ import ProductImagePreview from '@/features/product/components/ProductImagePrevi
 
 import styles from './ProductLibraryDetail.less';
 import { invalidCustomProductSelector, resetCustomProductDetail } from './slice';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const LIST_TAB = [
   { tab: 'SUMMARY', key: 'summary' },
@@ -27,8 +29,8 @@ const LIST_TAB = [
 
 const ProductLibraryUpdate: React.FC = () => {
   const history = useHistory();
-  const params = useParams<{ id: string }>();
-  const productId = params?.id || '';
+  const productId = useGetParamId();
+  const submitButtonStatus = useBoolean(false);
 
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('summary');
   const productData = useAppSelector((state) => state.customProduct.details);
@@ -47,7 +49,21 @@ const ProductLibraryUpdate: React.FC = () => {
     };
   }, [productId]);
 
+  /// handle on save
+  useEffect(() => {
+    if (submitButtonStatus.value) {
+      showPageLoading();
+
+      setTimeout(() => {
+        hidePageLoading();
+        submitButtonStatus.setValue(false);
+      }, 1000);
+    }
+  }, [submitButtonStatus.value]);
+
   const onSave = () => {
+    submitButtonStatus.setValue(true);
+
     switch (true) {
       case !productData.company.name:
         message.error('Company is required');
