@@ -75,7 +75,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   isCustomProduct,
   onSpecifyClick,
 }) => {
-  const { isMobile } = useScreen();
+  const { isMobile, isTablet } = useScreen();
   const normalProductfilter = useAppSelector((state) => state.product.list.filter);
   const [liked, setLiked] = useState(product.is_liked);
 
@@ -196,7 +196,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   }[] = [
     {
       tooltipText: 'Duplicate',
-      show: isTiscAdmin,
+      show: isTiscAdmin && !isTablet,
       Icon: TabIcon,
       onClick: duplicateProduct,
     },

@@ -334,6 +334,7 @@ export const VendorLocation: FC<VendorTabProps> = ({
   const popoverProps = {
     title: 'SELECT LOCATION',
     className: styles.customLocationModal,
+    secondaryModal: true,
     noFooter: isTiscAdmin,
     disabledDropDownRadio: isTiscAdmin,
     chosenValue: getChosenValue(),
