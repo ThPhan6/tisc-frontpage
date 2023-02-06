@@ -14,6 +14,7 @@ import store, { useAppSelector } from '@/reducers';
 import CustomCollapse from '@/components/Collapse';
 import { EmptyOne } from '@/components/Empty';
 import { DoubleInput } from '@/components/EntryForm/DoubleInput';
+import { LogoIcon } from '@/components/LogoIcon';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { SimpleContentTable } from '@/components/Table/components/SimpleContentTable';
 import { MainTitle, RobotoBodyText } from '@/components/Typography';
@@ -22,7 +23,7 @@ import { setCustomProductDetail } from '../../slice';
 import { DEFAULT_PRODUCT_OPTION, ProductOptionModal } from '../Modal/ProductOptionModal';
 import '../index.less';
 import { OptionCollapseHeader } from './OptionCollapseHeader';
-import { OptionItemView, renderOptionImage } from './OptionItemView';
+import { OptionItemView } from './OptionItemView';
 import styles from './index.less';
 import { DimensionWeight } from '@/features/dimension-weight';
 
@@ -150,7 +151,9 @@ export const SpecificationTab: FC<{
     return option.items.map((item, itemIndex) => (
       <Row className={styles.optionItem} align="middle" justify="space-between">
         {option.use_image && item.image ? (
-          <Col flex="48px">{renderOptionImage(item.image)}</Col>
+          <Col flex="48px">
+            <LogoIcon logo={item.image} />
+          </Col>
         ) : null}
         <Col flex="auto" style={{ maxWidth: 'calc(100% - 52px)', paddingLeft: 24 }}>
           <RobotoBodyText level={5} customClass="text-overflow">
