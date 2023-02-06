@@ -26,6 +26,7 @@ export const CustomRadio: FC<CustomRadioProps> = ({
   otherStickyBottom,
   stickyTopItem,
   optionStyle,
+  disabled,
   ...props
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -64,11 +65,12 @@ export const CustomRadio: FC<CustomRadioProps> = ({
     return (
       <label
         key={index}
-        className={`${style.panel_radio} ${
+        className={`${style.panel_radio} ${disabled ? 'cursor-default' : 'cursor-pointer'} ${
           option.customClass ? option.customClass : ''
         } radio-label`}
         htmlFor={`${randomID}_${option.value}_${index}`}
-        style={optionStyle}>
+        style={optionStyle}
+      >
         <div style={{ width: '100%' }}>
           {isRadioList ? (
             <div className={style['item-wrapper']}>
@@ -92,18 +94,22 @@ export const CustomRadio: FC<CustomRadioProps> = ({
       } ${isRadioList ? style['radio-list'] : ''} ${noPaddingLeft ? style.noPaddingLeft : ''} ${
         containerClass || ''
       }`}
-      style={containerStyle}>
+      style={containerStyle}
+    >
       <Radio.Group
         {...props}
         style={{ width: '100%' }}
         onChange={onChangeValue}
         value={value}
-        defaultValue={defaultValue?.value}>
+        disabled={disabled}
+        defaultValue={defaultValue?.value}
+      >
         <Space
           direction={isRadioList ? 'vertical' : direction}
           className={`${otherStickyBottom ? style.stickyBottom : ''} ${
             stickyTopItem ? style.stickyTopItem : ''
-          }`}>
+          }`}
+        >
           {options.map((option, index) => {
             if (stickyTopItem && index === 0) {
               return (

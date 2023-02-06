@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { PATH } from '@/constants/path';
 import { QUERY_KEY } from '@/constants/util';
+import { useLocation } from 'umi';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as SmallPlusIcon } from '@/assets/icons/small-plus-icon.svg';
@@ -19,13 +20,12 @@ import { RadioValue } from '@/components/CustomRadio/types';
 import {
   resetProductState,
   setBrand,
-  setFromMyWorkspace,
   setProductList,
   setProductSummary,
 } from '@/features/product/reducers';
 import { ProductGetListParameter } from '@/features/product/types';
 import { BrandAlphabet, BrandDetail } from '@/features/user-group/types';
-import store, { useAppSelector } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 import { modalPropsSelector, openModal } from '@/reducers/modal';
 
 import { LogoIcon } from '@/components/LogoIcon';
@@ -51,11 +51,11 @@ export const TopBar: React.FC = () => {
       category: true,
     });
 
-  const isFromMyWorkspace = useAppSelector((state) => state.product.myWorkSpace);
-
   const [brandAlphabet, setBrandAlphabet] = useState<BrandAlphabet>({});
 
   const query = useQuery();
+
+  const location = useLocation<{ fromMyWorkspace?: boolean }>();
   const brandId = query.get(QUERY_KEY.b_id);
   const brandName = query.get(QUERY_KEY.b_name);
   const cate_id = query.get(QUERY_KEY.cate_id);
@@ -68,19 +68,24 @@ export const TopBar: React.FC = () => {
     value: productBrand?.id || '',
   });
 
+  const setViewProductLitsByCollection = () =>
+    dispatch(
+      setProductList({
+        filter: {
+          name: 'collection_id',
+          title: 'VIEW ALL',
+          value: 'all',
+        },
+      }),
+    );
+
   useEffect(() => {
-    if (isFromMyWorkspace) {
-      /// set default filter value
-      dispatch(
-        setProductList({
-          filter: {
-            name: 'category_id',
-            title: 'VIEW ALL',
-            value: 'all',
-          },
-        }),
-      );
+    if (!checkedBrand.value || (!filter && firstLoad.value && (coll_id || cate_id))) {
+      return;
     }
+
+    /// set default filter value
+    setViewProductLitsByCollection();
   }, []);
 
   /// load brand by alphabet from API
@@ -100,7 +105,6 @@ export const TopBar: React.FC = () => {
       dispatch(setBrand());
       dispatch(setProductList({ data: [] }));
       dispatch(setProductSummary(undefined));
-      dispatch(setFromMyWorkspace(false));
     };
   }, [brandId]);
 
@@ -127,7 +131,7 @@ export const TopBar: React.FC = () => {
       productSummary?.brandId !== (checkedBrand.value as string)
     ) {
       // prevent call api on first loading
-      if (coll_id && coll_name && firstLoad.value && !filter) {
+      if (coll_id && coll_name && firstLoad.value && !filter && location.state?.fromMyWorkspace) {
         return;
       }
 
@@ -174,9 +178,10 @@ export const TopBar: React.FC = () => {
 
   useEffect(() => {
     if (checkedBrand?.value) {
+      /// set get default product list by collection
       const params: ProductGetListParameter = {
         brand_id: checkedBrand.value as string,
-        category_id: !filter ? 'all' : undefined,
+        collection_id: !filter ? 'all' : undefined,
       };
 
       if (filter?.name === 'category_id') {
@@ -186,7 +191,9 @@ export const TopBar: React.FC = () => {
         params.collection_id = filter.value === 'all' ? 'all' : filter.value;
       }
 
-      if (!filter && firstLoad.value && (coll_id || cate_id)) {
+      console.log('filter', filter);
+
+      if (!filter && firstLoad.value && (coll_id || cate_id || location.state?.fromMyWorkspace)) {
         firstLoad.setValue(false);
         return;
       }
@@ -340,7 +347,7 @@ export const SelectBrandModal = () => {
   const renderLabel = (item: BrandDetail) => {
     return (
       <BodyText level={5} fontFamily="Roboto">
-        <LogoIcon logo={item.logo} className={styles.brandLogo} />
+        <LogoIcon logo={item.logo} className={styles.brandLogo} size={18} />
         <span className="brand-name">{item.name}</span>
       </BodyText>
     );
@@ -372,18 +379,10 @@ export const SelectBrandModal = () => {
             ],
             removeAll: true,
           });
-          store.dispatch(
-            setProductList({
-              filter: {
-                name: 'category_id',
-                title: 'VIEW ALL',
-                value: 'all',
-              },
-            }),
-          );
+          // set view default product list by collection
+
+          // setViewProductLitsByCollection(); // Fix here
         }
-        console.log('chosenBrand', chosenBrand);
-        console.log('v', v);
         onChecked(v);
       }}
     />

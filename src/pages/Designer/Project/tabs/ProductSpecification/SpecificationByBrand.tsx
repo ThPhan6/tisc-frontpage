@@ -8,7 +8,6 @@ import {
   onCellCancelled,
   renderActionCell,
   renderAvailability,
-  renderImage,
   renderSpecifiedStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
@@ -20,6 +19,7 @@ import { TableColumnItem } from '@/components/Table/types';
 import { ProjectProductItem } from '@/features/product/types';
 
 import { AvailabilityModal } from '../../components/AvailabilityModal';
+import { LogoIcon } from '@/components/LogoIcon';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import { RobotoBodyText } from '@/components/Typography';
 
@@ -85,7 +85,7 @@ const SpecificationByBrand: FC<BrandListProps> = ({ projectId }) => {
       align: 'right',
       render: (_v, record) => {
         if (record.images.length) {
-          return renderImage(record.images[0]);
+          return <LogoIcon logo={record.images[0]} size={24} />;
         }
 
         return null;

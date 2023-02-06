@@ -22,7 +22,6 @@ import {
   updateLocation,
 } from '../api';
 import LocationEntryForm from './LocationEntryForm';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const LocationDetail = () => {
   const isSubmitted = useBoolean(false);
@@ -124,11 +123,8 @@ const LocationDetail = () => {
   };
 
   const onSubmit = (submitData: LocationForm) => {
-    showPageLoading();
-
     if (isUpdate) {
       updateLocation(locationId, submitData).then((isSuccess) => {
-        hidePageLoading();
         if (isSuccess) {
           isSubmitted.setValue(true);
 
@@ -142,7 +138,6 @@ const LocationDetail = () => {
       });
     } else {
       createLocation(submitData).then((isSuccess) => {
-        hidePageLoading();
         if (isSuccess) {
           isSubmitted.setValue(true);
           setTimeout(() => {

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 
 import { message } from 'antd';
 
@@ -47,6 +47,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
   collectionType,
 }) => {
   const [data, setData] = useState<DynamicRadioValue[]>([]);
+  const curData = useRef<DynamicRadioValue[]>([]);
   const [newOption, setNewOption] = useState<string>();
 
   /// collection item
@@ -80,20 +81,26 @@ export const CollectionModal: FC<CollectionModalProps> = ({
           }
         }
 
-        setData(
-          res.map((item) => ({
-            value: item.id,
-            label: item.name,
-            disabled: false,
-            editLabel: false,
-          })),
-        );
+        const currentData = res.map((item) => ({
+          value: item.id,
+          label: item.name,
+          disabled: false,
+          editLabel: false,
+        }));
+
+        curData.current = currentData;
+
+        setData(currentData);
       }
     });
   };
 
   useEffect(() => {
     getCollectionList();
+
+    return () => {
+      curData.current = [];
+    };
   }, [brandId]);
 
   /// set current selected value
@@ -196,7 +203,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
 
       /// re-render data
       if (type === 'cancel') {
-        setData(newData);
+        setData(curData.current);
         return;
       }
 
@@ -364,7 +371,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
                       />
                       <div
                         className="cursor-default flex-start"
-                        style={{ height: '100%' }}
+                        style={{ height: '100%', marginLeft: 8 }}
                         onClick={(e) => {
                           e.stopPropagation();
                           e.preventDefault();

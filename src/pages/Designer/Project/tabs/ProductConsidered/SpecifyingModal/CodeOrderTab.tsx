@@ -78,7 +78,7 @@ export const getSelectedFinishSchedule = (finish_schedules: FinishScheduleRespon
   }));
 
   /// get room's info chosen
-  /* expected result(string): 
+  /* expected result(string):
 
   roomId-1: Floor; roomId-2: Base ceiling + floor; roomId-3: Front Wall, Door frame + panel;
 
@@ -245,11 +245,14 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
         <Col span={12}>
           <FormGroup label="Material/Product Code" labelFontSize={4} required {...formGroupProps}>
             <DropdownSelectInput
+              disabled
               placeholder="select from the list"
               showCloseFooter={isMobile}
               borderBottomColor="light"
               value={materialCode?.labelText}
-              disabled
+              placement="bottomLeft"
+              overlayStyle={{ minWidth: 530 }}
+              overlayClass={styles.overlayContent}
               containerClass={styles.inputColor}
               overlay={
                 <CustomRadio

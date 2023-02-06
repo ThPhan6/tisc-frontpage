@@ -14,7 +14,7 @@ import { MainTitle } from '@/components/Typography';
 import styles from '../../styles/space-management.less';
 import SpaceEntryForm from './SpaceEntryForm';
 import SpaceList from './SpaceList';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import { showPageLoading } from '@/features/loading/loading';
 
 interface SpaceManagementProps {
   projectId?: string;
@@ -39,7 +39,6 @@ const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
     space.project_id = projectId;
     if (space.id) {
       return updateProjectSpace(space.id, space).then((data) => {
-        hidePageLoading();
         if (data) {
           submitButtonStatus.setValue(true);
           setTimeout(() => {
@@ -49,7 +48,6 @@ const SpaceManagement: React.FC<SpaceManagementProps> = ({ projectId }) => {
       });
     }
     return createProjectSpace(space).then((isSuccess) => {
-      hidePageLoading();
       if (isSuccess) {
         submitButtonStatus.setValue(true);
         setTimeout(() => {

@@ -11,6 +11,7 @@ import type { CustomInputProps } from '@/components/Form/types';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
+import { CustomTextArea } from '../Form/CustomTextArea';
 import TableContent from '../Table/TableContent';
 import styles from './styles/InputGroup.less';
 import { useGeneralFeature } from './utils';
@@ -46,6 +47,7 @@ interface InputGroupProps extends CustomInputProps {
   forceDisplayDeleteIcon?: boolean;
   isTableFormat?: boolean;
   labelColor?: CustomTypography['color'];
+  autoResize?: boolean;
 }
 
 const InputGroup: FC<InputGroupProps> = ({
@@ -71,6 +73,7 @@ const InputGroup: FC<InputGroupProps> = ({
   forceDisplayDeleteIcon,
   isTableFormat,
   labelColor = 'mono-color',
+  autoResize,
   ...props
 }) => {
   const { labelSpan, inputSpan, fontSize, iconDelete } = useGeneralFeature(
@@ -115,24 +118,34 @@ const InputGroup: FC<InputGroupProps> = ({
         `}
         span={inputSpan}
       >
-        <CustomInput
-          {...props}
-          value={value}
-          fontLevel={fontSize}
-          readOnly={rightIcon || readOnly ? true : false}
-          className={`input-box ${hasPadding ? 'has-padding' : ''} ${
-            colorPrimaryDark ? 'color-primary-dark' : ''
-          }`}
-          style={{
-            cursor: onRightIconClick && !disabled ? 'pointer' : 'auto',
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (onRightIconClick && !disabled && !readOnly) {
-              onRightIconClick();
-            }
-          }}
-        />
+        {autoResize ? (
+          <CustomTextArea
+            value={value}
+            customClass={`${styles.customTextArea} `}
+            autoResize
+            {...props}
+          />
+        ) : (
+          <CustomInput
+            {...props}
+            value={value}
+            fontLevel={fontSize}
+            readOnly={rightIcon || readOnly ? true : false}
+            className={`input-box ${hasPadding ? 'has-padding' : ''} ${
+              colorPrimaryDark ? 'color-primary-dark' : ''
+            }`}
+            style={{
+              cursor: onRightIconClick && !disabled ? 'pointer' : 'auto',
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onRightIconClick && !disabled && !readOnly) {
+                onRightIconClick();
+              }
+            }}
+          />
+        )}
+
         {rightIcon ? (
           rightIcon === true ? (
             <SingleRightFormIcon

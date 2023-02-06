@@ -15,7 +15,7 @@ import { ResponsiveCol } from '@/components/Layout';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 
 import styles from './index.less';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import { showPageLoading } from '@/features/loading/loading';
 
 interface ProductSpecififyPDF {
   projectId: string;
@@ -119,7 +119,17 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
       if (res) {
         setGeneratePDF(res.fileBuffer);
       }
-      hidePageLoading();
+    });
+  };
+
+  const onReset = () => {
+    setData({
+      ...data,
+      config: {
+        ...data.config,
+        template_cover_ids: [],
+        template_standard_ids: [],
+      },
     });
   };
 
@@ -153,6 +163,14 @@ const ProductSpecifyToPDF: FC<ProductSpecififyPDF> = ({ projectId }) => {
         </div>
         {standardSpecificationTab ? (
           <div className={styles.actionButton}>
+            <CustomButton
+              size="small"
+              properties="rounded"
+              onClick={onReset}
+              buttonClass={styles.resetButton}
+            >
+              Reset
+            </CustomButton>
             <CustomButton size="small" properties="rounded" onClick={onPreview}>
               Preview
             </CustomButton>

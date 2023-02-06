@@ -24,7 +24,6 @@ import { BodyText, Title } from '@/components/Typography';
 import { getOneService, getServicePDF, markAsPaid, sendBill, sendRemind } from '../api';
 import styles from '../index.less';
 import { checkShowBillingAmount, formatToMoneyValue } from '../util';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import moment from 'moment';
 
 interface ServiceDetailProps {
@@ -68,7 +67,6 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
   }, []);
 
   const handleSubmit = () => {
-    showPageLoading();
     const onSubmit = detailData?.status === InvoiceStatus.Pending ? sendBill : sendRemind;
     onSubmit(id).then((isSuccess) => {
       if (isSuccess) {
@@ -78,7 +76,6 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
           getService();
         }, 1000);
       }
-      hidePageLoading();
     });
   };
 

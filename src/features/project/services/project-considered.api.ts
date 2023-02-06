@@ -16,6 +16,8 @@ import {
 } from '@/features/project/types';
 import { closeModal } from '@/reducers/modal';
 
+import { hidePageLoading } from '@/features/loading/loading';
+
 export async function getProductAssignSpaceByProject(
   projectId: string,
   productId: string,
@@ -48,6 +50,7 @@ export async function getConsideredProducts(
     })
     .catch((error) => {
       console.log('error', error);
+      hidePageLoading();
       message.error(error.message);
     });
 }

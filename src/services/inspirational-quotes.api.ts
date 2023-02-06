@@ -10,6 +10,8 @@ import {
 } from '@/components/Table/types';
 import { Quotation } from '@/types';
 
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+
 interface QuotationPaginationResponse {
   data: {
     quotations: Quotation[];
@@ -39,6 +41,7 @@ export async function getQuotationPagination(
       });
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(
         error.data?.message ?? MESSAGE_NOTIFICATION.GET_LIST_INSPIRATIONAL_QUOTES_ERROR,
       );
@@ -59,25 +62,31 @@ export async function getOneQuotation(id: string) {
 }
 
 export async function createQuotation(data: Quotation) {
+  showPageLoading();
   return request<boolean>(`/api/quotation/create`, { method: 'POST', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CREATE_INSPIRATIONAL_QUOTES_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error.data?.message ?? MESSAGE_NOTIFICATION.CREATE_INSPIRATIONAL_QUOTES_ERROR);
+      hidePageLoading();
       return false;
     });
 }
 
 export async function updateQuotation(id: string, data: Quotation) {
+  showPageLoading();
   return request<boolean>(`/api/quotation/update/${id}`, { method: 'PUT', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_INSPIRATIONAL_QUOTES_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_INSPIRATIONAL_QUOTES_ERROR);
+      hidePageLoading();
       return false;
     });
 }

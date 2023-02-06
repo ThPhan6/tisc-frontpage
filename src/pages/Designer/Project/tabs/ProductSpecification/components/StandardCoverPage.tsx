@@ -24,6 +24,7 @@ interface CoverStandardProps {
   onChangeData: (newData: PdfDetail) => void;
   type: 'cover' | 'standard';
 }
+
 const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type }) => {
   const isMobile = useScreen().isMobile;
   const openModal = useBoolean();

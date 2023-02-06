@@ -10,6 +10,8 @@ import {
   PaginationRequestParams,
 } from '@/components/Table/types';
 
+import { hidePageLoading } from '@/features/loading/loading';
+
 export enum DocumentType {
   policy = 1,
   // howTo = 2, 3, 4
@@ -40,6 +42,7 @@ export async function getPolicyTemplates(
     })
     .catch((error) => {
       message.error(getResponseMessage('get-list', 'documentation', 'failed', error));
+      hidePageLoading();
     });
 }
 

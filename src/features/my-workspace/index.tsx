@@ -17,8 +17,6 @@ import MenuHeaderSummary from '../user-group/components/MenuHeaderSummary';
 import { ProjectCard } from './components/ProjectCard';
 import ProjectListHeader from '@/pages/Designer/Project/components/ProjectListHeader';
 
-import { hidePageLoading, showPageLoading } from '../loading/loading';
-
 const MyWorkspace = () => {
   const [selectedFilter, setSelectedFilter] = useState(GlobalFilter);
 
@@ -35,9 +33,7 @@ const MyWorkspace = () => {
   /// for tisc
   useEffect(() => {
     if (isTiscUser) {
-      showPageLoading();
       getTiscWorkspace().then((res) => {
-        hidePageLoading();
         if (res) {
           setListCard(res);
         }
@@ -48,13 +44,11 @@ const MyWorkspace = () => {
   /// for brand
   useEffect(() => {
     if (isBrandUser) {
-      showPageLoading();
       getBrandWorkspace(
         {
           project_status: selectedFilter.id === GlobalFilter.id ? undefined : selectedFilter.id,
         },
         (data) => {
-          hidePageLoading();
           setListCard(data);
         },
       );
@@ -73,13 +67,11 @@ const MyWorkspace = () => {
   }, []);
   useEffect(() => {
     if (isDesignerUser) {
-      showPageLoading();
       getDesignerWorkspace(
         {
           filter: selectedFilter.id === GlobalFilter.id ? undefined : { status: selectedFilter.id },
         },
         (data) => {
-          hidePageLoading();
           setListCard(data);
         },
       );

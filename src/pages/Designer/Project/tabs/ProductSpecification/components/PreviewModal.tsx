@@ -1,7 +1,9 @@
 import { FC } from 'react';
 
+import { useScreen } from '@/helper/common';
 import { showImageUrl } from '@/helper/utils';
 
+import CustomButton from '@/components/Button';
 import { CustomModal } from '@/components/Modal';
 
 import styles from '../index.less';
@@ -11,6 +13,7 @@ interface ModalProps {
   previewURL: string;
 }
 export const PreviewModal: FC<ModalProps> = ({ visible, previewURL }) => {
+  const { isMobile } = useScreen();
   return (
     <CustomModal
       visible={visible.value}
@@ -18,6 +21,14 @@ export const PreviewModal: FC<ModalProps> = ({ visible, previewURL }) => {
       className={styles.modal}
       closable={false}
       secondaryModal
+      footer={
+        // only display footer for mobile
+        isMobile ? (
+          <CustomButton size="small" properties="rounded" onClick={() => visible.setValue(false)}>
+            Close
+          </CustomButton>
+        ) : null
+      }
     >
       <img
         src={showImageUrl(previewURL)}

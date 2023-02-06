@@ -68,45 +68,46 @@ export const SelectAttributeSpecificationChoice: FC<SelectAttributeSpecification
       }
     >
       {attrGroupItem.attributes.map((attribute) => {
-        if (attribute.type === 'Options') {
-          return (
-            <div className="specification-choice">
-              <p></p>
-              <RobotoBodyText
-                level={6}
-                customClass={`cursor-pointer attribute-label ${
-                  isSpecifiedModal ? 'left-none' : 'left-space'
-                }`}
-                onClick={() => {
-                  if (attrGroupItem.id && attrGroupItem.attributes.length) {
-                    const newSelectAttribute: AttributeSelectedProps = {
-                      groupId: attrGroupItem.id,
-                      attribute: {
-                        id: attribute.id,
-                        name: attribute.name,
-                      },
-                    };
-                    setCurAttributeSelect(newSelectAttribute);
-
-                    const haveBasisOption = attribute.basis_options?.length
-                      ? attribute.basis_options.find((option) => option.isChecked)
-                      : undefined;
-
-                    onSelectSpecificationOption(
-                      groupIndex,
-                      attribute.id,
-                      isTiscAdmin ? false : true,
-                      haveBasisOption?.id,
-                      false, // dont reset attribute selected
-                    );
-                  }
-                }}
-              >
-                {attribute.name}
-              </RobotoBodyText>
-            </div>
-          );
+        if (attribute.type !== 'Options') {
+          return null;
         }
+        return (
+          <div className="specification-choice" key={attribute.id}>
+            <p></p>
+            <RobotoBodyText
+              level={6}
+              customClass={`cursor-pointer attribute-label ${
+                isSpecifiedModal ? 'left-none' : 'left-space'
+              }`}
+              onClick={() => {
+                if (attrGroupItem.id && attrGroupItem.attributes.length) {
+                  const newSelectAttribute: AttributeSelectedProps = {
+                    groupId: attrGroupItem.id,
+                    attribute: {
+                      id: attribute.id,
+                      name: attribute.name,
+                    },
+                  };
+                  setCurAttributeSelect(newSelectAttribute);
+
+                  const haveBasisOption = attribute.basis_options?.length
+                    ? attribute.basis_options.find((option) => option.isChecked)
+                    : undefined;
+
+                  onSelectSpecificationOption(
+                    groupIndex,
+                    attribute.id,
+                    isSpecifiedModal ? false : isTiscAdmin ? false : true,
+                    haveBasisOption?.id,
+                    false, // dont reset attribute selected
+                  );
+                }
+              }}
+            >
+              {attribute.name}
+            </RobotoBodyText>
+          </div>
+        );
       })}
     </CustomCollapse>
   );

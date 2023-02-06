@@ -27,7 +27,7 @@ import { endDate, getAvailableDateInMonth, startDate } from '../util';
 import { DEFAULT_STATE_BOOKING } from './BrandInterestedModal';
 import styles from './CalendarModal.less';
 import { BrandInformation } from './CancelBookingModal';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import { showPageLoading } from '@/features/loading/loading';
 import moment, { Moment } from 'moment';
 
 interface TimeZoneProps extends CollapsingProps {
@@ -255,7 +255,6 @@ export const CalendarModal = () => {
 
         pushTo(PATH.landingPage);
       }
-      hidePageLoading();
     });
   };
 

@@ -16,7 +16,7 @@ import styles from './DropdownSelectInput.less';
 interface DropdownSelectInputProps extends CustomInputProps {
   overlay: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
   overlayStyle?: CSSProperties;
-  overlayClass?: CSSProperties;
+  overlayClass?: string;
   noPadding?: boolean;
   placement?: DropdownProps['placement'];
   showCloseFooter?: boolean;
@@ -41,7 +41,7 @@ export const DropdownSelectInput: FC<DropdownSelectInputProps> = ({
         <div
           className={`${styles.overlayContainer} ${
             noPadding ? styles.noPadding : ''
-          } ${overlayClass} `}
+          } ${overlayClass}`}
         >
           {overlay}
         </div>
