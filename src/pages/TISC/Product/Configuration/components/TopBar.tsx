@@ -25,7 +25,7 @@ import {
 } from '@/features/product/reducers';
 import { ProductGetListParameter } from '@/features/product/types';
 import { BrandAlphabet, BrandDetail } from '@/features/user-group/types';
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
 import { modalPropsSelector, openModal } from '@/reducers/modal';
 
 import { LogoIcon } from '@/components/LogoIcon';
@@ -39,6 +39,17 @@ import {
 
 import styles from './TopBar.less';
 import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+
+const setViewProductLitsByCollection = () =>
+  store.dispatch(
+    setProductList({
+      filter: {
+        name: 'collection_id',
+        title: 'VIEW ALL',
+        value: 'all',
+      },
+    }),
+  );
 
 export const TopBar: React.FC = () => {
   useSyncQueryToState();
@@ -67,17 +78,6 @@ export const TopBar: React.FC = () => {
     label: productBrand?.name || '',
     value: productBrand?.id || '',
   });
-
-  const setViewProductLitsByCollection = () =>
-    dispatch(
-      setProductList({
-        filter: {
-          name: 'collection_id',
-          title: 'VIEW ALL',
-          value: 'all',
-        },
-      }),
-    );
 
   useEffect(() => {
     if (!checkedBrand.value || (!filter && firstLoad.value && (coll_id || cate_id))) {
@@ -108,8 +108,9 @@ export const TopBar: React.FC = () => {
     };
   }, [brandId]);
 
-  /// set brand to product reducer
+  // brand product summary
   useEffect(() => {
+    /// set brand to product reducer
     if (checkedBrand) {
       let curBrand: BrandDetail | undefined;
       forEach(brandAlphabet, (brands) => {
@@ -121,10 +122,7 @@ export const TopBar: React.FC = () => {
       });
       dispatch(setBrand(curBrand));
     }
-  }, [checkedBrand?.value]);
 
-  // brand product summary
-  useEffect(() => {
     if (
       checkedBrand &&
       (checkedBrand.value as string) &&
@@ -174,7 +172,7 @@ export const TopBar: React.FC = () => {
         }
       });
     }
-  }, [checkedBrand?.value, productSummary?.brandId, filter && firstLoad.value === true]);
+  }, [checkedBrand?.value]);
 
   useEffect(() => {
     if (checkedBrand?.value) {
@@ -190,8 +188,6 @@ export const TopBar: React.FC = () => {
       if (filter?.name === 'collection_id') {
         params.collection_id = filter.value === 'all' ? 'all' : filter.value;
       }
-
-      console.log('filter', filter);
 
       if (!filter && firstLoad.value && (coll_id || cate_id || location.state?.fromMyWorkspace)) {
         firstLoad.setValue(false);
@@ -374,14 +370,13 @@ export const SelectBrandModal = () => {
             set: [
               { key: QUERY_KEY.b_id, value: chosenBrand.id },
               { key: QUERY_KEY.b_name, value: chosenBrand.name },
-              { key: QUERY_KEY.cate_id, value: 'all' },
-              { key: QUERY_KEY.cate_name, value: 'VIEW ALL' },
+              { key: QUERY_KEY.coll_id, value: 'all' },
+              { key: QUERY_KEY.coll_name, value: 'VIEW ALL' },
             ],
             removeAll: true,
           });
           // set view default product list by collection
-
-          // setViewProductLitsByCollection(); // Fix here
+          setViewProductLitsByCollection();
         }
         onChecked(v);
       }}
