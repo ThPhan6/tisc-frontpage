@@ -75,7 +75,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   isCustomProduct,
   onSpecifyClick,
 }) => {
-  const { isMobile, isTablet } = useScreen();
+  const { isTablet } = useScreen();
   const normalProductfilter = useAppSelector((state) => state.product.list.filter);
   const [liked, setLiked] = useState(product.is_liked);
 
@@ -306,7 +306,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 />
               </Tooltip>
             ) : null}
-            {showActionMenu && isDesignFirmUser && !isMobile ? (
+            {showActionMenu && isDesignFirmUser && !isTablet ? (
               <ActionMenu
                 containerStyle={{ height: 16 }}
                 placement="bottomLeft"

@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
+import { USER_ROLE } from '@/constants/userRoles';
 import { Col, Row, message } from 'antd';
 import { useHistory, useParams } from 'umi';
 
@@ -15,8 +16,9 @@ import {
   updateProductCard,
 } from '@/features/product/services';
 import { getBrandById } from '@/features/user-group/services';
-import { useBoolean, useCheckPermission, useQuery } from '@/helper/hook';
-import { isValidURL } from '@/helper/utils';
+import { pushTo } from '@/helper/history';
+import { useBoolean, useGetUserRoleFromPathname, useQuery } from '@/helper/hook';
+import { getValueByCondition, isValidURL } from '@/helper/utils';
 import { pick, sortBy } from 'lodash';
 
 import { ProductFormData, ProductKeyword } from '../types';
@@ -55,7 +57,10 @@ const ProductDetailContainer: React.FC = () => {
   const productId = params?.id || '';
   const brandId = params?.brandId || '';
 
-  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  const currentUser = useGetUserRoleFromPathname();
+  const isTiscUser = currentUser === USER_ROLE.tisc;
+  const isBrandUser = currentUser === USER_ROLE.brand;
+  const isDesignerUser = currentUser === USER_ROLE.design;
 
   const details = useAppSelector((state) => state.product.details);
 
@@ -158,9 +163,24 @@ const ProductDetailContainer: React.FC = () => {
       }
     });
   };
+  const handleCloseProductDetail = () => {
+    if (history.length > 1) {
+      history.goBack();
+    }
+    pushTo(
+      getValueByCondition(
+        [
+          [isTiscUser, PATH.tiscHomePage],
+          [isBrandUser, PATH.brandProduct],
+          [isDesignerUser, PATH.designerBrandProduct],
+        ],
+        '',
+      ),
+    );
+  };
 
   const renderHeader = () => {
-    if (isTiscAdmin) {
+    if (isTiscUser) {
       let categorySelected: string = sortBy(details.categories, 'name')
         .slice(0, 3)
         .map((category) => category.name)
@@ -175,12 +195,11 @@ const ProductDetailContainer: React.FC = () => {
           title={'CATEGORY'}
           label={categorySelected || 'select'}
           onSave={onSave}
-          onCancel={history.goBack}
+          onCancel={handleCloseProductDetail}
           customClass={`${styles.marginBottomSpace} ${categorySelected ? styles.monoColor : ''}`}
         />
       );
     }
-
     if (isPublicPage) {
       return <PublicHeader />;
     }
@@ -189,7 +208,7 @@ const ProductDetailContainer: React.FC = () => {
       <TableHeader
         title={title}
         customClass={styles.marginBottomSpace}
-        rightAction={<CloseIcon className="closeIcon" onClick={history.goBack} />}
+        rightAction={<CloseIcon className="closeIcon" onClick={handleCloseProductDetail} />}
       />
     );
   };
