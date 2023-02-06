@@ -105,6 +105,8 @@ const ProductDetailContainer: React.FC = () => {
   }, [submitButtonStatus.value]);
 
   const onSave = () => {
+    submitButtonStatus.setValue(true);
+
     // check urls is valid
     const haveInvaliDownloadURL = details.downloads.some(
       (content) => isValidURL(content.url) === false,
