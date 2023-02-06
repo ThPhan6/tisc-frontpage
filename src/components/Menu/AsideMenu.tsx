@@ -207,8 +207,9 @@ const AsideMenu: React.FC = (props: HeaderViewProps) => {
         <div className="menu-sider-wrapper">
           <Menu
             theme={props.headerTheme}
-            defaultOpenKeys={openKeys}
+            // defaultOpenKeys={openKeys}
             defaultSelectedKeys={openKeys}
+            selectedKeys={openKeys}
             openKeys={openKeys}
             onOpenChange={onOpenChange}
             style={{ height: '100%' }}
