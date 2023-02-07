@@ -10,7 +10,7 @@ import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 import { useReCaptcha } from '../hook';
 import { contact } from '../services/api';
 import { ModalContainer, useLandingPageStyles } from './hook';
-import { getEmailMessageError } from '@/helper/utils';
+import { getEmailMessageError, throttleAction } from '@/helper/utils';
 
 import { ContactRequestBody } from '../types';
 import { useAppSelector } from '@/reducers';
@@ -43,12 +43,23 @@ export const ContactModal = () => {
   };
 
   const handleSubmitContact = async () => {
-    /// check email
-    const invalidEmail = getEmailMessageError(valueForm.email, MESSAGE_ERROR.EMAIL_INVALID);
-    if (invalidEmail) {
-      message.error(invalidEmail);
+    if (valueForm.name === '') {
+      message.error('Name is required');
       return;
     }
+
+    /// check email
+    const invalidEmail = getEmailMessageError(valueForm.email, MESSAGE_ERROR.EMAIL_INVALID);
+    if (valueForm.email === '' || invalidEmail) {
+      message.error(valueForm.email === '' ? MESSAGE_ERROR.EMAIL_REQUIRED : invalidEmail);
+      return;
+    }
+
+    if (valueForm.inquiry === '') {
+      message.error(MESSAGE_ERROR.MESSAGE);
+      return;
+    }
+
     const captcha = (await handleReCaptchaVerify()) || '';
     contact({
       email: valueForm.email,
@@ -127,7 +138,10 @@ export const ContactModal = () => {
         </div>
 
         <div className={buttonStyles.button}>
-          <CustomButton buttonClass={buttonStyles.submit} onClick={handleSubmitContact}>
+          <CustomButton
+            buttonClass={buttonStyles.submit}
+            onClick={throttleAction(handleSubmitContact)}
+          >
             Thank you
           </CustomButton>
         </div>

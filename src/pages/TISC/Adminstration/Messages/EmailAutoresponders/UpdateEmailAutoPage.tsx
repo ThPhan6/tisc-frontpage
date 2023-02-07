@@ -101,7 +101,7 @@ const UpdateEmailAutoPage = () => {
 
   const handleUpdateEmailAuto = () => {
     if (isEmpty(formState.message)) {
-      message.error(MESSAGE_ERROR.EMAIL_AUTO);
+      message.error(MESSAGE_ERROR.MESSAGE);
     } else {
       showPageLoading();
 

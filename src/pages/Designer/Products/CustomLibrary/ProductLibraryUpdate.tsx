@@ -6,8 +6,7 @@ import { useHistory } from 'umi';
 
 import { createCustomProduct, getOneCustomProduct, updateCustomProduct } from './services';
 import { useGetParamId } from '@/helper/hook';
-import { formatImageIfBase64 } from '@/helper/utils';
-import { throttle } from 'lodash';
+import { formatImageIfBase64, throttleAction } from '@/helper/utils';
 
 import { CustomProductRequestBody, ProductInfoTab } from './types';
 import store, { useAppSelector } from '@/reducers';
@@ -112,14 +111,12 @@ const ProductLibraryUpdate: React.FC = () => {
     }
   };
 
-  const throttleSubmit = throttle(onSave, 2000, { leading: true, trailing: false });
-
   return (
     <Row className={styles.container}>
       <Col span={24}>
         <ProductDetailHeader
           title={productId && productData ? productData.name : 'Entry the product info below'}
-          onSave={throttleSubmit}
+          onSave={throttleAction(onSave)}
           onCancel={history.goBack}
           hideSelect
           customClass={`${styles.marginBottomSpace} ${

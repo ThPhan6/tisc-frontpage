@@ -13,6 +13,7 @@ import { createBooking, getListAvailableTime, updateBooking } from '../services/
 import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { useBoolean } from '@/helper/hook';
+import { throttleAction } from '@/helper/utils';
 
 import { AvailableTime, InformationBooking, Timezones } from '../types';
 import { CollapsingProps } from '@/features/how-to/types';
@@ -363,7 +364,7 @@ export const CalendarModal = () => {
             <CustomButton
               properties="rounded"
               buttonClass={`${styles.button} ${checkDisableButton() ? styles.disableButton : ''}`}
-              onClick={checkDisableButton() ? undefined : handleAddAppointment}
+              onClick={checkDisableButton() ? undefined : throttleAction(handleAddAppointment)}
             >
               Book Now
             </CustomButton>
