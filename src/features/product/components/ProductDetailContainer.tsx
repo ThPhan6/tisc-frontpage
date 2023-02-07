@@ -95,8 +95,6 @@ const ProductDetailContainer: React.FC = () => {
   }, [details.id, details.brand]);
 
   const onSave = () => {
-    console.log('onSave');
-
     // check urls is valid
     const haveInvaliDownloadURL = details.downloads.some(
       (content) => isValidURL(content.url) === false,
