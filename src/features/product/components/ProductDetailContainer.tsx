@@ -156,6 +156,7 @@ const ProductDetailContainer: React.FC = () => {
   const handleCloseProductDetail = () => {
     if (!noPreviousPage) {
       history.goBack();
+      return;
     }
     pushTo(
       getValueByCondition(
