@@ -15,12 +15,7 @@ import { useHistory } from 'umi';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
 import { pushTo } from '@/helper/history';
-import {
-  useBoolean,
-  useCustomInitialState,
-  useGetParamId,
-  useGetUserRoleFromPathname,
-} from '@/helper/hook';
+import { useBoolean, useGetParamId, useGetUserRoleFromPathname } from '@/helper/hook';
 import {
   getEmailMessageError,
   getEmailMessageErrorType,
@@ -30,7 +25,7 @@ import { getDepartmentList } from '@/services';
 import { upperCase } from 'lodash';
 
 import { TeamProfileDetailProps, TeamProfileRequestBody } from '../types';
-import store, { useAppSelector } from '@/reducers';
+import store from '@/reducers';
 import { openModal } from '@/reducers/modal';
 import { GeneralData } from '@/types';
 
@@ -62,8 +57,6 @@ const GenderRadio = [
 type FieldName = keyof TeamProfileDetailProps;
 
 const TeamProfilesEntryForm = () => {
-  const userProfileId = useAppSelector((state) => state.user.user?.id);
-  const { fetchUserInfo } = useCustomInitialState();
   const history = useHistory();
   const userIdParam = useGetParamId();
   const isUpdate = userIdParam ? true : false;
@@ -154,18 +147,7 @@ const TeamProfilesEntryForm = () => {
   };
 
   const handleUpdateData = (submitData: TeamProfileRequestBody) => {
-    updateTeamProfile(userIdParam, submitData).then((isSuccess) => {
-      if (isSuccess) {
-        submitButtonStatus.setValue(true);
-        const isUpdateCurrentUser = userIdParam === userProfileId;
-        if (isUpdateCurrentUser) {
-          fetchUserInfo();
-        }
-        setTimeout(() => {
-          submitButtonStatus.setValue(false);
-        }, 1000);
-      }
-    });
+    updateTeamProfile(userIdParam, submitData);
   };
 
   const handleSubmit = (callBack?: (id: string) => void) => {
@@ -240,7 +222,7 @@ const TeamProfilesEntryForm = () => {
 
       <EntryFormWrapper
         handleCancel={history.goBack}
-        handleSubmit={() => handleSubmit()}
+        handleSubmit={handleSubmit}
         handleDelete={handleDeleteTeamProfile}
         entryFormTypeOnMobile={isUpdate ? 'edit' : 'create'}
         submitButtonStatus={submitButtonStatus.value}

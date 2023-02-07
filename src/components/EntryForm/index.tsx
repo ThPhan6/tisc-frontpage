@@ -8,6 +8,7 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-ico
 
 import { confirmDelete } from '@/helper/common';
 import { useScreen } from '@/helper/common';
+import { throttleAction } from '@/helper/utils';
 
 import { EntryFormWrapperProps } from './types';
 
@@ -40,22 +41,34 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   disableSubmitButton = false,
   headerContent,
   footerContent,
+  footerClass = '',
+  footerStyles,
   submitButtonStatus = false,
   extraFooterButton,
   entryFormTypeOnMobile = '',
-  hideAction,
+  hideHeader,
+  hideFooter,
+  isRender = true,
 }) => {
   const history = useHistory();
   const isTablet = useScreen().isTablet;
 
   const renderFooterButton = () => {
+    if (!isRender) {
+      return null;
+    }
+
     if (extraFooterButton) {
       return extraFooterButton;
     }
 
-    return (
-      <>
-        {isTablet && entryFormTypeOnMobile === 'edit' ? (
+    const showButtonLeft = () => {
+      if (!isTablet || !entryFormTypeOnMobile) {
+        return null;
+      }
+
+      if (isTablet && entryFormTypeOnMobile === 'edit') {
+        return (
           <CustomButton
             size="small"
             variant="secondary"
@@ -71,16 +84,24 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
           >
             Delete
           </CustomButton>
-        ) : (
-          <CustomButton
-            size="small"
-            buttonClass={styles.footer__cancel_bt}
-            onClick={handleCancel || history.goBack}
-            disabled={disableCancelButton}
-          >
-            Cancel
-          </CustomButton>
-        )}
+        );
+      }
+
+      return (
+        <CustomButton
+          size="small"
+          buttonClass={styles.footer__cancel_bt}
+          onClick={handleCancel || history.goBack}
+          disabled={disableCancelButton}
+        >
+          Cancel
+        </CustomButton>
+      );
+    };
+
+    return (
+      <>
+        {showButtonLeft()}
 
         <div className={styles.footer__wrapper_submit}>
           {submitButtonStatus ? (
@@ -95,7 +116,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
               buttonClass={styles.footer__wrapper_submit_normal}
               size="small"
               width="64px"
-              onClick={handleSubmit}
+              onClick={throttleAction(handleSubmit)}
               disabled={disableSubmitButton}
             >
               <BodyText level={6} fontFamily="Roboto">
@@ -112,7 +133,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
     <FormContainer>
       <div className={`${styles.entry_form_container} ${customClass}`}>
         {/* header */}
-        {hideAction ? null : (
+        {hideHeader ? null : (
           <div className={styles.header_main}>
             <div className={styles.header}>
               <MainTitle
@@ -139,12 +160,10 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
         </div>
 
         {/* footer */}
-        {hideAction ? null : (
-          <div className={styles.footer_main}>
+        {hideFooter ? null : (
+          <div className={`${styles.footer_main} ${footerClass}`} style={{ ...footerStyles }}>
             {footerContent ? <div className={styles.footer_content}>{footerContent}</div> : null}
-            <div className={styles.footer} style={{ padding: isTablet ? '0 12px' : '' }}>
-              {renderFooterButton()}
-            </div>
+            <div className={styles.footer}>{renderFooterButton()}</div>
           </div>
         )}
       </div>
