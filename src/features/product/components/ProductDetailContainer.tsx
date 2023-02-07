@@ -141,7 +141,7 @@ const ProductDetailContainer: React.FC = () => {
       return;
     }
 
-    createProductCard(data)?.then((productDetail) => {
+    createProductCard(data).then((productDetail) => {
       if (productDetail) {
         /// push to product update, 100% have product detail id
         history.replace(PATH.productConfigurationUpdate.replace(':id', productDetail.id ?? ''));

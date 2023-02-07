@@ -104,7 +104,7 @@ const ProductLibraryUpdate: React.FC = () => {
     if (productId) {
       updateCustomProduct(productId, data);
     } else {
-      createCustomProduct(data)?.then((res) => {
+      createCustomProduct(data).then((res) => {
         if (res) {
           history.replace(PATH.designerCustomProductUpdate.replace(':id', res.id));
         }
