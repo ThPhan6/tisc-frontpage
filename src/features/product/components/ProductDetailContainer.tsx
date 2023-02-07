@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
+import { QUERY_KEY } from '@/constants/util';
 import { Col, Row, message } from 'antd';
 import { useHistory, useParams } from 'umi';
 
@@ -146,8 +147,13 @@ const ProductDetailContainer: React.FC = () => {
       }
     });
   };
+
+  const query = useQuery();
+
+  const noPreviewPage = query.get(QUERY_KEY.no_preview_page);
+
   const handleCloseProductDetail = () => {
-    if (history.length > 1) {
+    if (!noPreviewPage) {
       history.goBack();
     }
     pushTo(
