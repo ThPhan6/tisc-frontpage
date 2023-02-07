@@ -4,7 +4,7 @@ import { PATH } from '@/constants/path';
 import { Col, Row, message } from 'antd';
 import { useHistory } from 'umi';
 
-import { createCustomProduct, getOneCustomProduct, updateCustomProduct } from './services';
+import { getOneCustomProduct, useCreateLibraryProduct, useUpdateLibraryProduct } from './services';
 import { useBoolean, useGetParamId } from '@/helper/hook';
 import { formatImageIfBase64 } from '@/helper/utils';
 
@@ -38,6 +38,9 @@ const ProductLibraryUpdate: React.FC = () => {
   const { invalidAttributes, invalidSpecifications, invalidOptions } = useAppSelector(
     invalidCustomProductSelector,
   );
+
+  const debounceCreateCustomProduct = useCreateLibraryProduct();
+  const debounceUpdateCustomProduct = useUpdateLibraryProduct();
 
   useEffect(() => {
     if (productId) {
@@ -117,9 +120,9 @@ const ProductLibraryUpdate: React.FC = () => {
     };
 
     if (productId) {
-      updateCustomProduct(productId, data);
+      debounceUpdateCustomProduct(productId, data);
     } else {
-      createCustomProduct(data).then((res) => {
+      debounceCreateCustomProduct(data)?.then((res) => {
         if (res) {
           history.replace(PATH.designerCustomProductUpdate.replace(':id', res.id));
         }

@@ -53,18 +53,54 @@ export async function getProductSummary(brandId: string) {
     });
 }
 
-export const createProductCard = async (data: ProductFormData) => {
-  return request<{ data: ProductItem }>(`/api/product/create`, {
-    method: 'POST',
-    data,
-  })
-    .then((res) => {
-      message.success(MESSAGE_NOTIFICATION.CREATE_PRODUCT_SUCCESS);
-      return res.data;
-    })
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_SUMMARY_DATA_ERROR);
-    });
+export const useCreateProductCard = () => {
+  const debnouceCreateProductCard = useCallback(
+    debounce((data: ProductFormData) => {
+      showPageLoading();
+      return request<{ data: ProductItem }>(`/api/product/create`, {
+        method: 'POST',
+        data,
+      })
+        .then((res) => {
+          hidePageLoading();
+          message.success(MESSAGE_NOTIFICATION.CREATE_PRODUCT_SUCCESS);
+          return res.data;
+        })
+        .catch((error) => {
+          hidePageLoading();
+          message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_SUMMARY_DATA_ERROR);
+          return {} as ProductItem;
+        });
+    }, 500),
+    [],
+  );
+
+  return debnouceCreateProductCard;
+};
+
+export const useUpdateProductCard = () => {
+  const debounceUpdateProductCard = useCallback(
+    debounce((productId: string, data: ProductFormData) => {
+      showPageLoading();
+      return request<{ data: ProductItem }>(`/api/product/update/${productId}`, {
+        method: 'PUT',
+        data,
+      })
+        .then((res) => {
+          hidePageLoading();
+          message.success(MESSAGE_NOTIFICATION.UPDATE_PRODUCT_SUCCESS);
+          return res.data;
+        })
+        .catch((error) => {
+          hidePageLoading();
+          message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_PRODUCT_ERROR);
+          return undefined;
+        });
+    }, 500),
+    [],
+  );
+
+  return debounceUpdateProductCard;
 };
 
 export const getProductListByBrandId = async (params: ProductGetListParameter) => {
@@ -172,21 +208,6 @@ export const getProductById = async (productId: string) => {
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_ONE_PRODUCT_ERROR);
       return {} as ProductItem;
-    });
-};
-
-export const updateProductCard = async (productId: string, data: ProductFormData) => {
-  return request<{ data: ProductItem }>(`/api/product/update/${productId}`, {
-    method: 'PUT',
-    data,
-  })
-    .then((res) => {
-      message.success(MESSAGE_NOTIFICATION.UPDATE_PRODUCT_SUCCESS);
-      return res.data;
-    })
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_PRODUCT_ERROR);
-      return undefined;
     });
 };
 

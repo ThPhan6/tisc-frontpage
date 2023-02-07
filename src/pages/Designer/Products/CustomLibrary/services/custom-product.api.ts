@@ -1,6 +1,10 @@
+import { useCallback } from 'react';
+
 import { MESSAGE_NOTIFICATION } from '@/constants/message';
 import { message } from 'antd';
 import { request } from 'umi';
+
+import { debounce } from 'lodash';
 
 import {
   CustomProductDetailResponse,
@@ -11,6 +15,7 @@ import {
 import store from '@/reducers';
 
 import { setCustomProductDetail, setCustomProductList } from '../slice';
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 export function getCustomProductList(params?: CustomProductFilter) {
   request<{ data: { products: CustomProductList[] } }>('/api/custom-product/get-list', {
@@ -65,34 +70,55 @@ export function getOneCustomProduct(id: string) {
     });
 }
 
-export async function createCustomProduct(data: CustomProductRequestBody) {
-  return request<{ data: CustomProductDetailResponse }>(`/api/custom-product/create`, {
-    method: 'POST',
-    data,
-  })
-    .then((res) => {
-      message.success(MESSAGE_NOTIFICATION.CREATE_CUSTOM_PRODUCT_SUCCESS);
-      return res.data;
-    })
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_CUSTOM_PRODUCT_ERROR);
-    });
-}
+export const useCreateLibraryProduct = () => {
+  const debounceCreateLibraryProduct = useCallback(
+    debounce((data: CustomProductRequestBody) => {
+      showPageLoading();
+      return request<{ data: CustomProductDetailResponse }>(`/api/custom-product/create`, {
+        method: 'POST',
+        data,
+      })
+        .then((res) => {
+          hidePageLoading();
+          message.success(MESSAGE_NOTIFICATION.CREATE_CUSTOM_PRODUCT_SUCCESS);
+          return res.data;
+        })
+        .catch((error) => {
+          hidePageLoading();
+          message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_CUSTOM_PRODUCT_ERROR);
+          return {} as CustomProductDetailResponse;
+        });
+    }, 1000),
+    [],
+  );
 
-export async function updateCustomProduct(id: string, data: CustomProductRequestBody) {
-  return request<boolean>(`/api/custom-product/update/${id}`, {
-    method: 'PUT',
-    data,
-  })
-    .then(() => {
-      message.success(MESSAGE_NOTIFICATION.UPDATE_CUSTOM_PRODUCT_SUCCESS);
-      return true;
-    })
-    .catch((error) => {
-      message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_CUSTOM_PRODUCT_ERROR);
-      return false;
-    });
-}
+  return debounceCreateLibraryProduct;
+};
+
+export const useUpdateLibraryProduct = () => {
+  const debounceUpdateLibraryProduct = useCallback(
+    debounce((id: string, data: CustomProductRequestBody) => {
+      showPageLoading();
+      return request<boolean>(`/api/custom-product/update/${id}`, {
+        method: 'PUT',
+        data,
+      })
+        .then(() => {
+          hidePageLoading();
+          message.success(MESSAGE_NOTIFICATION.UPDATE_CUSTOM_PRODUCT_SUCCESS);
+          return true;
+        })
+        .catch((error) => {
+          hidePageLoading();
+          message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_CUSTOM_PRODUCT_ERROR);
+          return false;
+        });
+    }, 500),
+    [],
+  );
+
+  return debounceUpdateLibraryProduct;
+};
 
 export async function deleteCustomProduct(id: string) {
   return request<boolean>(`/api/custom-product/delete/${id}`, {

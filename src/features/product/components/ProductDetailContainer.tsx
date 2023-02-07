@@ -10,14 +10,14 @@ import { useHistory, useParams } from 'umi';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 
 import {
-  createProductCard,
   getProductById,
   getRelatedCollectionProducts,
-  updateProductCard,
+  useCreateProductCard,
+  useUpdateProductCard,
 } from '@/features/product/services';
 import { getBrandById } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
-import { useBoolean, useGetUserRoleFromPathname, useQuery } from '@/helper/hook';
+import { useGetUserRoleFromPathname, useQuery } from '@/helper/hook';
 import { getValueByCondition, isValidURL } from '@/helper/utils';
 import { pick, sortBy } from 'lodash';
 
@@ -39,7 +39,6 @@ import { ProductDetailFooter } from './ProductDetailFooter';
 import ProductDetailHeader from './ProductDetailHeader';
 import ProductImagePreview from './ProductImagePreview';
 import styles from './detail.less';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 import Cookies from 'js-cookie';
 
 const ProductDetailContainer: React.FC = () => {
@@ -67,7 +66,8 @@ const ProductDetailContainer: React.FC = () => {
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('general');
   const [title, setTitle] = useState<string>('');
 
-  const submitButtonStatus = useBoolean(false);
+  const debounceCreateLibraryProduct = useCreateProductCard();
+  const debounceUpdateLibraryProduct = useUpdateProductCard();
 
   useEffect(() => {
     if (brandId) {
@@ -97,21 +97,7 @@ const ProductDetailContainer: React.FC = () => {
     }
   }, [details.id, details.brand]);
 
-  /// handle on save
-  useEffect(() => {
-    if (submitButtonStatus.value) {
-      showPageLoading();
-
-      setTimeout(() => {
-        hidePageLoading();
-        submitButtonStatus.setValue(false);
-      }, 1000);
-    }
-  }, [submitButtonStatus.value]);
-
   const onSave = () => {
-    submitButtonStatus.setValue(true);
-
     // check urls is valid
     const haveInvaliDownloadURL = details.downloads.some(
       (content) => isValidURL(content.url) === false,
@@ -152,11 +138,11 @@ const ProductDetailContainer: React.FC = () => {
     };
 
     if (productId) {
-      updateProductCard(productId, data);
+      debounceUpdateLibraryProduct(productId, data);
       return;
     }
 
-    createProductCard(data).then((productDetail) => {
+    debounceCreateLibraryProduct(data)?.then((productDetail) => {
       if (productDetail) {
         /// push to product update, 100% have product detail id
         history.replace(PATH.productConfigurationUpdate.replace(':id', productDetail.id ?? ''));
