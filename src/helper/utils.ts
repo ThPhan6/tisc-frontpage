@@ -72,7 +72,7 @@ const ACCESS_BY_TYPE: { [key in UserType]: string } = {
 /// default throttle action has only called first time when function excuted
 export const throttleAction = (
   fnc: any,
-  time: number = 2000,
+  time: number = 1000,
   action?: { leading?: boolean; trailing?: boolean },
 ) =>
   throttle(fnc, time, {
