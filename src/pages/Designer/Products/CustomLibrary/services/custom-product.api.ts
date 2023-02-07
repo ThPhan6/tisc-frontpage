@@ -11,6 +11,7 @@ import {
 import store from '@/reducers';
 
 import { setCustomProductDetail, setCustomProductList } from '../slice';
+import { hidePageLoading, showPageLoading } from './../../../../../features/loading/loading';
 
 export function getCustomProductList(params?: CustomProductFilter) {
   request<{ data: { products: CustomProductList[] } }>('/api/custom-product/get-list', {
@@ -66,29 +67,35 @@ export function getOneCustomProduct(id: string) {
 }
 
 export async function createCustomProduct(data: CustomProductRequestBody) {
+  showPageLoading();
   return request<{ data: CustomProductDetailResponse }>(`/api/custom-product/create`, {
     method: 'POST',
     data,
   })
     .then((res) => {
+      hidePageLoading();
       message.success(MESSAGE_NOTIFICATION.CREATE_CUSTOM_PRODUCT_SUCCESS);
       return res.data;
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_CUSTOM_PRODUCT_ERROR);
     });
 }
 
 export async function updateCustomProduct(id: string, data: CustomProductRequestBody) {
+  showPageLoading();
   return request<boolean>(`/api/custom-product/update/${id}`, {
     method: 'PUT',
     data,
   })
     .then(() => {
+      hidePageLoading();
       message.success(MESSAGE_NOTIFICATION.UPDATE_CUSTOM_PRODUCT_SUCCESS);
       return true;
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_CUSTOM_PRODUCT_ERROR);
       return false;
     });
