@@ -59,6 +59,7 @@ export const QUERY_KEY = {
   sort_order: 'sort_order',
   sort_name: 'sort_name',
   search: 'search',
+  no_previous_page: 'new_tab',
 };
 
 export const COVERAGE_BEYOND = {

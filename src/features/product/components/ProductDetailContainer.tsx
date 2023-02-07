@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
+import { QUERY_KEY } from '@/constants/util';
 import { Col, Row, message } from 'antd';
 import { useHistory, useParams } from 'umi';
 
@@ -148,9 +149,12 @@ const ProductDetailContainer: React.FC = () => {
   };
 
   const throttleSubmit = throttle(onSave, 2000, { leading: true, trailing: false });
+  const query = useQuery();
+
+  const noPreviousPage = query.get(QUERY_KEY.no_previous_page);
 
   const handleCloseProductDetail = () => {
-    if (history.length > 1) {
+    if (!noPreviousPage) {
       history.goBack();
     }
     pushTo(
