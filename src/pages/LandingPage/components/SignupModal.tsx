@@ -8,8 +8,7 @@ import { ReactComponent as LockedIcon } from '@/assets/icons/lock-locked-icon.sv
 import { ReactComponent as UserIcon } from '@/assets/icons/user-icon-18px.svg';
 
 import { useReCaptcha } from '../hook';
-import { useBoolean } from '@/helper/hook';
-import { isShowErrorMessage, validateEmail } from '@/helper/utils';
+import { isShowErrorMessage, throttleAction, validateEmail } from '@/helper/utils';
 import {
   FooterContent,
   ModalContainer,
@@ -52,7 +51,6 @@ export const SignupModal = () => {
 
   const [formInput, setFormInput] = useState<SignUpFormState>(DEFAULT_STATE);
   const [agreeTisc, setAgreeTisc] = useState(false);
-  const isLoading = useBoolean();
   const [emailExisted, setEmailExisted] = useState(false);
   const { handleReCaptchaVerify } = useReCaptcha();
 
@@ -105,7 +103,6 @@ export const SignupModal = () => {
     if (formInput.agree_tisc === false) {
       return setAgreeTisc(true);
     }
-    isLoading.setValue(true);
     const captcha = (await handleReCaptchaVerify()) || '';
     signUpDesigner({
       firstname: formInput.firstname,
@@ -120,7 +117,6 @@ export const SignupModal = () => {
         setAgreeTisc(false);
         setEmailExisted(false);
       }
-      isLoading.setValue(false);
     });
   };
 
@@ -219,7 +215,7 @@ export const SignupModal = () => {
           <FooterContent
             errorMessage={getErrorMessage()}
             submitButtonLabel="Let’s be productive"
-            onSubmit={handleSubmit}
+            onSubmit={throttleAction(handleSubmit)}
           />
         </ModalContainer>
       </CustomModal>
