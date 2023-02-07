@@ -22,7 +22,7 @@ export interface EntryFormWrapperProps {
   entryFormTypeOnMobile?: 'create' | 'edit' | '';
   hideHeader?: boolean;
   hideFooter?: boolean;
-  isRender?: boolean;
+  isRenderFooterContent?: boolean;
 }
 
 export interface FormNameInputProps {

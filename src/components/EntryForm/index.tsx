@@ -46,13 +46,13 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
   entryFormTypeOnMobile = '',
   hideHeader,
   hideFooter,
-  isRender = true,
+  isRenderFooterContent = true,
 }) => {
   const history = useHistory();
   const isTablet = useScreen().isTablet;
 
   const renderFooterButton = () => {
-    if (!isRender) {
+    if (!isRenderFooterContent) {
       return null;
     }
 
