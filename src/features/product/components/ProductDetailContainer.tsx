@@ -20,7 +20,7 @@ import { getBrandById } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
 import { useGetUserRoleFromPathname, useQuery } from '@/helper/hook';
 import { getValueByCondition, isValidURL } from '@/helper/utils';
-import { pick, sortBy } from 'lodash';
+import { pick, sortBy, throttle } from 'lodash';
 
 import { ProductFormData, ProductKeyword } from '../types';
 import { ProductInfoTab } from './ProductAttributes/types';
@@ -148,6 +148,7 @@ const ProductDetailContainer: React.FC = () => {
     });
   };
 
+  const throttleSubmit = throttle(onSave, 2000, { leading: true, trailing: false });
   const query = useQuery();
 
   const noPreviousPage = query.get(QUERY_KEY.no_previous_page);
@@ -183,7 +184,7 @@ const ProductDetailContainer: React.FC = () => {
         <ProductDetailHeader
           title={'CATEGORY'}
           label={categorySelected || 'select'}
-          onSave={onSave}
+          onSave={throttleSubmit}
           onCancel={handleCloseProductDetail}
           customClass={`${styles.marginBottomSpace} ${categorySelected ? styles.monoColor : ''}`}
         />

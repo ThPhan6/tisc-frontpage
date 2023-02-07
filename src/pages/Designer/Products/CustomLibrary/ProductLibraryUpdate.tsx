@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { Col, Row, message } from 'antd';
-import { useHistory, useParams } from 'umi';
+import { useHistory } from 'umi';
 
 import { createCustomProduct, getOneCustomProduct, updateCustomProduct } from './services';
+import { useGetParamId } from '@/helper/hook';
 import { formatImageIfBase64 } from '@/helper/utils';
+import { throttle } from 'lodash';
 
 import { CustomProductRequestBody, ProductInfoTab } from './types';
 import store, { useAppSelector } from '@/reducers';
@@ -27,8 +29,7 @@ const LIST_TAB = [
 
 const ProductLibraryUpdate: React.FC = () => {
   const history = useHistory();
-  const params = useParams<{ id: string }>();
-  const productId = params?.id || '';
+  const productId = useGetParamId();
 
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('summary');
   const productData = useAppSelector((state) => state.customProduct.details);
@@ -111,12 +112,14 @@ const ProductLibraryUpdate: React.FC = () => {
     }
   };
 
+  const throttleSubmit = throttle(onSave, 2000, { leading: true, trailing: false });
+
   return (
     <Row className={styles.container}>
       <Col span={24}>
         <ProductDetailHeader
           title={productId && productData ? productData.name : 'Entry the product info below'}
-          onSave={onSave}
+          onSave={throttleSubmit}
           onCancel={history.goBack}
           hideSelect
           customClass={`${styles.marginBottomSpace} ${
