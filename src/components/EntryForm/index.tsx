@@ -6,9 +6,7 @@ import { useHistory } from 'umi';
 import { ReactComponent as CheckSuccessIcon } from '@/assets/icons/check-success-icon.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 
-import { confirmDelete } from '@/helper/common';
-import { useScreen } from '@/helper/common';
-import { throttleAction } from '@/helper/utils';
+import { confirmDelete, useScreen } from '@/helper/common';
 
 import { EntryFormWrapperProps } from './types';
 
@@ -116,7 +114,7 @@ export const EntryFormWrapper: FC<EntryFormWrapperProps> = ({
               buttonClass={styles.footer__wrapper_submit_normal}
               size="small"
               width="64px"
-              onClick={throttleAction(handleSubmit)}
+              onClick={handleSubmit}
               disabled={disableSubmitButton}
             >
               <BodyText level={6} fontFamily="Roboto">
