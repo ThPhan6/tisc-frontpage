@@ -14,17 +14,21 @@ export const getProductDetailPathname = (
   let path = '';
   switch (userRole) {
     case USER_ROLE.tisc:
-      path = PATH.productConfigurationUpdate.replace(':id', productId);
+      const productConfigurationPage = PATH.productConfigurationUpdate.replace(':id', productId);
+      path = `${productConfigurationPage}${signature}`;
       break;
     case USER_ROLE.brand:
-      path = PATH.updateProductBrand.replace(':id', productId);
+      const productPage = PATH.updateProductBrand.replace(':id', productId);
+      path = `${productPage}${signature}`;
       break;
     case USER_ROLE.design:
+      let productDetail = '';
       if (isCustomProduct) {
-        path = PATH.designerCustomProductDetail.replace(':id', productId);
+        productDetail = PATH.designerCustomProductDetail.replace(':id', productId);
       } else {
-        path = PATH.designerBrandProductDetail.replace(':id', productId);
+        productDetail = PATH.designerBrandProductDetail.replace(':id', productId);
       }
+      path = `${productDetail}${signature}`;
       break;
     default:
       const publicPage = PATH.sharedProduct.replace(':id', productId);
