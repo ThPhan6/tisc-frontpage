@@ -4,9 +4,10 @@ import { PATH } from '@/constants/path';
 import { Col, Row, message } from 'antd';
 import { useHistory } from 'umi';
 
-import { getOneCustomProduct, useCreateLibraryProduct, useUpdateLibraryProduct } from './services';
-import { useBoolean, useGetParamId } from '@/helper/hook';
+import { createCustomProduct, getOneCustomProduct, updateCustomProduct } from './services';
+import { useGetParamId } from '@/helper/hook';
 import { formatImageIfBase64 } from '@/helper/utils';
+import { throttle } from 'lodash';
 
 import { CustomProductRequestBody, ProductInfoTab } from './types';
 import store, { useAppSelector } from '@/reducers';
@@ -20,7 +21,6 @@ import ProductImagePreview from '@/features/product/components/ProductImagePrevi
 
 import styles from './ProductLibraryDetail.less';
 import { invalidCustomProductSelector, resetCustomProductDetail } from './slice';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const LIST_TAB = [
   { tab: 'SUMMARY', key: 'summary' },
@@ -30,7 +30,6 @@ const LIST_TAB = [
 const ProductLibraryUpdate: React.FC = () => {
   const history = useHistory();
   const productId = useGetParamId();
-  const submitButtonStatus = useBoolean(false);
 
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('summary');
   const productData = useAppSelector((state) => state.customProduct.details);
@@ -38,9 +37,6 @@ const ProductLibraryUpdate: React.FC = () => {
   const { invalidAttributes, invalidSpecifications, invalidOptions } = useAppSelector(
     invalidCustomProductSelector,
   );
-
-  const debounceCreateCustomProduct = useCreateLibraryProduct();
-  const debounceUpdateCustomProduct = useUpdateLibraryProduct();
 
   useEffect(() => {
     if (productId) {
@@ -52,21 +48,7 @@ const ProductLibraryUpdate: React.FC = () => {
     };
   }, [productId]);
 
-  /// handle on save
-  useEffect(() => {
-    if (submitButtonStatus.value) {
-      showPageLoading();
-
-      setTimeout(() => {
-        hidePageLoading();
-        submitButtonStatus.setValue(false);
-      }, 1000);
-    }
-  }, [submitButtonStatus.value]);
-
   const onSave = () => {
-    submitButtonStatus.setValue(true);
-
     switch (true) {
       case !productData.company.name:
         message.error('Company is required');
@@ -120,9 +102,9 @@ const ProductLibraryUpdate: React.FC = () => {
     };
 
     if (productId) {
-      debounceUpdateCustomProduct(productId, data);
+      updateCustomProduct(productId, data);
     } else {
-      debounceCreateCustomProduct(data)?.then((res) => {
+      createCustomProduct(data)?.then((res) => {
         if (res) {
           history.replace(PATH.designerCustomProductUpdate.replace(':id', res.id));
         }
@@ -130,12 +112,14 @@ const ProductLibraryUpdate: React.FC = () => {
     }
   };
 
+  const throttleSubmit = throttle(onSave, 2000, { leading: true, trailing: false });
+
   return (
     <Row className={styles.container}>
       <Col span={24}>
         <ProductDetailHeader
           title={productId && productData ? productData.name : 'Entry the product info below'}
-          onSave={onSave}
+          onSave={throttleSubmit}
           onCancel={history.goBack}
           hideSelect
           customClass={`${styles.marginBottomSpace} ${

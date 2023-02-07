@@ -10,16 +10,16 @@ import { useHistory, useParams } from 'umi';
 import { ReactComponent as CloseIcon } from '@/assets/icons/entry-form-close-icon.svg';
 
 import {
+  createProductCard,
   getProductById,
   getRelatedCollectionProducts,
-  useCreateProductCard,
-  useUpdateProductCard,
+  updateProductCard,
 } from '@/features/product/services';
 import { getBrandById } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
 import { useGetUserRoleFromPathname, useQuery } from '@/helper/hook';
 import { getValueByCondition, isValidURL } from '@/helper/utils';
-import { pick, sortBy } from 'lodash';
+import { pick, sortBy, throttle } from 'lodash';
 
 import { ProductFormData, ProductKeyword } from '../types';
 import { ProductInfoTab } from './ProductAttributes/types';
@@ -66,9 +66,6 @@ const ProductDetailContainer: React.FC = () => {
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('general');
   const [title, setTitle] = useState<string>('');
 
-  const debounceCreateLibraryProduct = useCreateProductCard();
-  const debounceUpdateLibraryProduct = useUpdateProductCard();
-
   useEffect(() => {
     if (brandId) {
       getBrandById(brandId).then((res) => dispatch(setBrand(res)));
@@ -98,6 +95,8 @@ const ProductDetailContainer: React.FC = () => {
   }, [details.id, details.brand]);
 
   const onSave = () => {
+    console.log('onSave');
+
     // check urls is valid
     const haveInvaliDownloadURL = details.downloads.some(
       (content) => isValidURL(content.url) === false,
@@ -138,17 +137,20 @@ const ProductDetailContainer: React.FC = () => {
     };
 
     if (productId) {
-      debounceUpdateLibraryProduct(productId, data);
+      updateProductCard(productId, data);
       return;
     }
 
-    debounceCreateLibraryProduct(data)?.then((productDetail) => {
+    createProductCard(data)?.then((productDetail) => {
       if (productDetail) {
         /// push to product update, 100% have product detail id
         history.replace(PATH.productConfigurationUpdate.replace(':id', productDetail.id ?? ''));
       }
     });
   };
+
+  const throttleSubmit = throttle(onSave, 2000, { leading: true, trailing: false });
+
   const handleCloseProductDetail = () => {
     if (history.length > 1) {
       history.goBack();
@@ -180,7 +182,7 @@ const ProductDetailContainer: React.FC = () => {
         <ProductDetailHeader
           title={'CATEGORY'}
           label={categorySelected || 'select'}
-          onSave={onSave}
+          onSave={throttleSubmit}
           onCancel={handleCloseProductDetail}
           customClass={`${styles.marginBottomSpace} ${categorySelected ? styles.monoColor : ''}`}
         />
