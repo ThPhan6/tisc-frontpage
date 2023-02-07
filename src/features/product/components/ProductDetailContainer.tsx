@@ -150,7 +150,7 @@ const ProductDetailContainer: React.FC = () => {
 
   const query = useQuery();
 
-  const noPreviousPage = query.get(QUERY_KEY.no_preview_page);
+  const noPreviousPage = query.get(QUERY_KEY.no_previous_page);
 
   const handleCloseProductDetail = () => {
     if (!noPreviousPage) {
