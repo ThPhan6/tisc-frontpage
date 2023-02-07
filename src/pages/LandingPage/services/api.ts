@@ -148,12 +148,15 @@ export async function createPasswordVerify(token: string, data: PasswordRequestB
 }
 
 export async function signUpDesigner(data: SignUpDesignerRequestBody) {
+  showPageLoading();
   return request(`/api/auth/register`, { method: 'POST', data })
     .then(() => {
+      hidePageLoading();
       message.success(MESSAGE_NOTIFICATION.SIGN_UP_DESIGNER_SUCCESS);
       return true;
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.SIGN_UP_DESIGNER_ERROR);
       return false;
     });

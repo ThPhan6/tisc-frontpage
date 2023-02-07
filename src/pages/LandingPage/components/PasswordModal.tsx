@@ -14,7 +14,7 @@ import { createPasswordVerify, resetPasswordMiddleware } from '../services/api';
 import { FooterContent, ModalContainer, useLandingPageStyles } from './hook';
 import { pushTo } from '@/helper/history';
 import { useCustomInitialState } from '@/helper/hook';
-import { isShowErrorMessage, validatePassword } from '@/helper/utils';
+import { isShowErrorMessage, throttleAction, validatePassword } from '@/helper/utils';
 
 import { PasswordInput, PasswordRequestBody } from '../types';
 import { useAppSelector } from '@/reducers';
@@ -182,7 +182,7 @@ export const PasswordModal = () => {
 
         <FooterContent
           errorMessage={setErrorMessage()}
-          onSubmit={handleOnSubmit}
+          onSubmit={throttleAction(handleOnSubmit)}
           buttonDisabled={handleDisableButton()}
           buttonWidth={'128px'}
           submitButtonLabel={passwordType === 'create' ? 'Save' : 'Save / Log in'}

@@ -1,5 +1,4 @@
-import { FC } from 'react';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR, MESSAGE_NOTIFICATION } from '@/constants/message';
 import { STATUS_RESPONSE } from '@/constants/util';
@@ -18,7 +17,7 @@ import {
 } from '../../../pages/LandingPage/services/api';
 import { useReCaptcha } from '../hook';
 import { useBoolean, useCustomInitialState, useString } from '@/helper/hook';
-import { isShowErrorMessage, validateEmail } from '@/helper/utils';
+import { isShowErrorMessage, throttleAction, validateEmail } from '@/helper/utils';
 import {
   FooterContent,
   ModalContainer,
@@ -139,7 +138,7 @@ export const LoginModal: FC<{
     );
   };
 
-  const handleSubmitLogin = (data: { captcha: string; email: string; password: string }) => {
+  const handleLogin = (data: { captcha: string; email: string; password: string }) => {
     showPageLoading();
 
     const successCallback = async (type: STATUS_RESPONSE, msg?: string) => {
@@ -153,8 +152,8 @@ export const LoginModal: FC<{
       hidePageLoading();
     };
 
-    const handleLogin = tiscLogin ? loginMiddleware : loginByBrandOrDesigner;
-    handleLogin(data, successCallback);
+    const onLogin = tiscLogin ? loginMiddleware : loginByBrandOrDesigner;
+    onLogin(data, successCallback);
   };
 
   const handleSubmit = async () => {
@@ -164,7 +163,8 @@ export const LoginModal: FC<{
     }
 
     const captcha = (await handleReCaptchaVerify()) || '';
-    handleSubmitLogin({
+
+    handleLogin({
       email: inputValue.email,
       password: inputValue.password,
       captcha,
@@ -284,7 +284,7 @@ export const LoginModal: FC<{
           buttonDisabled={handleDisableButton()}
           buttonWidth={getSubmitButtonWidth()}
           submitButtonLabel={getSubmitButtonTitle()}
-          onSubmit={handleSubmit}
+          onSubmit={throttleAction(handleSubmit)}
         />
       </ModalContainer>
     </CustomModal>
