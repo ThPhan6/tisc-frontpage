@@ -236,7 +236,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
       handleCancel={history.goBack}
       extraFooterButton={renderBottom()}
       isRenderFooterContent={!!detailData}
-      footerStyles={{ display: isTablet ? 'none' : '' }}
+      footerStyles={{ display: isTablet && type == 'tisc' ? 'none' : '' }}
     >
       <TextForm boxShadow label="Billed Date">
         {moment(detailData?.created_at).format('YYYY-MM-DD')}
