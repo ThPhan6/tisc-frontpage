@@ -39,7 +39,7 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { MainTitle, Title } from '@/components/Typography';
 
 const ServiceCreatePage = () => {
-  const { isMobile } = useScreen();
+  const { isTablet } = useScreen();
 
   const submitButtonStatus = useBoolean();
 
@@ -174,7 +174,7 @@ const ServiceCreatePage = () => {
   };
 
   const getContentHeight = () => {
-    if (isMobile) {
+    if (isTablet) {
       return 'calc(100vh - 280px)';
     }
 
@@ -205,7 +205,7 @@ const ServiceCreatePage = () => {
 
     return (
       <div className="flex-start">
-        {isMobile ? (
+        {isTablet ? (
           <CustomButton
             size="small"
             variant="secondary"
