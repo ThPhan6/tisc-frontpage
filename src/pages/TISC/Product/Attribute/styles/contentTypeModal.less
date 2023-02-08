@@ -59,17 +59,25 @@
   }
 }
 
+.contentTypeText {
+  :global(.ant-space) {
+    box-shadow: none !important;
+  }
+}
+
 .contentTypeOption {
   height: 600px;
   max-height: calc(var(--vh) * 100 - 184px);
   padding: 16px 19px 16px 16px;
   overflow: hidden auto;
-  :global(.ant-space-item) {
-    min-height: 40px;
-    margin-left: 0;
-    padding: 0;
-    box-shadow: @border-bottom-light;
+
+  :global(.ant-space) {
+    padding-bottom: 8px;
+    box-shadow: @border-bottom;
   }
+  // :global(.ant-space-item) {
+  //   min-height: 40px;
+  // }
 
   @media screen and (max-width: @screen-sm) {
     padding: 12px;
