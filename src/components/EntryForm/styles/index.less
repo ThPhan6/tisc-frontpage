@@ -47,7 +47,7 @@
     padding: var(--spacing);
     overflow: hidden auto;
 
-    @media (max-width: @screen-lg) {
+    @media screen and (max-width: @screen-lg) {
       height: calc(var(--vh) * 100 - 224px);
     }
 
@@ -83,7 +83,9 @@
   }
   &__delete_bt,
   &__cancel_bt {
-    margin-right: 16px;
+    + * {
+      margin-left: 16px;
+    }
   }
   &__wrapper_submit {
     &_normal {
