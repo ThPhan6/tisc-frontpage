@@ -50,7 +50,7 @@ export const AttributeOptionLabel: FC<{ option: any }> = ({ option, children }) 
         >
           {optionValue}
         </BodyText>
-        <div className="product-input-group">{children}</div>
+        {children ? <div className="product-input-group">{children}</div> : null}
       </div>
     </div>
   );
