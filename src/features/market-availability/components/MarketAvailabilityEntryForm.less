@@ -1,6 +1,11 @@
+@import '~antd/es/style/variable.less';
 .entry_form {
   .mainContent {
     height: calc(var(--vh) * 100 - 328px);
+
+    @media screen and (max-width: @screen-lg) {
+      height: calc(var(--vh) * 100 - 304px);
+    }
 
     @media screen and (max-width: 576px) {
       height: calc(var(--vh) * 100 - 308px);
