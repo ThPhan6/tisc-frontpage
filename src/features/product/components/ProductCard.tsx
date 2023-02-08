@@ -37,7 +37,7 @@ import { ProductConsiderStatus } from '@/features/project/types';
 import store, { useAppSelector } from '@/reducers';
 import { openModal } from '@/reducers/modal';
 
-import CustomCollapse from '@/components/Collapse';
+import { ActiveOneCustomCollapse } from '@/components/Collapse';
 import { EmptyOne } from '@/components/Empty';
 import { loadingSelector } from '@/components/LoadingPage/slices';
 import { ActionMenu } from '@/components/TableAction';
@@ -374,7 +374,9 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
   return (
     <>
       {data?.map((group, index) => (
-        <CustomCollapse
+        <ActiveOneCustomCollapse
+          groupIndex={index}
+          groupName="product-group"
           className={styles.productCardCollapse}
           customHeaderClass={styles.productCardHeaderCollapse}
           key={group.id || index}
@@ -401,7 +403,7 @@ export const CollapseProductList: React.FC<CollapseProductListProps> = ({
               />
             ))}
           </div>
-        </CustomCollapse>
+        </ActiveOneCustomCollapse>
       ))}
 
       <div className={styles.productCardContainer}>

@@ -6,6 +6,8 @@ import type { CollapseProps } from 'antd';
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 
+import { useCollapseGroupActiveCheck } from '@/reducers/active';
+
 import styles from './index.less';
 
 export interface CustomCollapseProps extends CollapseProps {
@@ -57,3 +59,11 @@ const CustomCollapse: FC<CustomCollapseProps> = ({
   );
 };
 export default CustomCollapse;
+
+export const ActiveOneCustomCollapse: FC<
+  CustomCollapseProps & { groupIndex: number; groupName: string }
+> = ({ groupIndex, groupName, ...props }) => {
+  const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(groupName, groupIndex);
+
+  return <CustomCollapse activeKey={curActiveKey} onChange={onKeyChange} {...props} />;
+};
