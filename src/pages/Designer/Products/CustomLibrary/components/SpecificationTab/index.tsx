@@ -11,7 +11,7 @@ import { useGetDimensionWeight } from '@/features/dimension-weight/hook';
 import { NameContentProps, ProductInfoTab, ProductOptionProps } from '../../types';
 import store, { useAppSelector } from '@/reducers';
 
-import CustomCollapse from '@/components/Collapse';
+import { ActiveOneCustomCollapse } from '@/components/Collapse';
 import { EmptyOne } from '@/components/Empty';
 import { DoubleInput } from '@/components/EntryForm/DoubleInput';
 import { LogoIcon } from '@/components/LogoIcon';
@@ -176,7 +176,9 @@ export const SpecificationTab: FC<{
     }
 
     return options.map((option: ProductOptionProps, optionIndex: number) => (
-      <CustomCollapse
+      <ActiveOneCustomCollapse
+        groupIndex={optionIndex + 1} // Spare index 0 for Dimension & Weight group
+        groupName={'specification' as ProductInfoTab}
         key={option.id || optionIndex}
         showActiveBoxShadow={!specifying}
         noBorder={specifying || (viewOnly && option.use_image)}
@@ -226,7 +228,7 @@ export const SpecificationTab: FC<{
         )}
 
         {renderOptionItems(option, optionIndex)}
-      </CustomCollapse>
+      </ActiveOneCustomCollapse>
     ));
   };
 
