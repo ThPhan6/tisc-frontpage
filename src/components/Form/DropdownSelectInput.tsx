@@ -11,7 +11,7 @@ import { CustomInputProps } from './types';
 import { CustomDropDown } from '@/features/product/components';
 
 import { CustomInput } from './CustomInput';
-import styles from './DropdownSelectInput.less';
+import styles from './styles/DropdownSelectInput.less';
 
 interface DropdownSelectInputProps extends CustomInputProps {
   overlay: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
