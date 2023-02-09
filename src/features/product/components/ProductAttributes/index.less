@@ -4,6 +4,7 @@
   border-bottom: 0 !important;
   :global(.ant-checkbox + span) {
     display: -webkit-box;
+    width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     word-break: break-all;
@@ -11,8 +12,26 @@
     -webkit-box-orient: vertical;
   }
   .attrGroupTitle {
+    width: 100%;
     max-width: 100%;
+
+    :global(.attributeSelected) {
+      width: 50%;
+      margin: 0 8px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-align: right;
+      text-overflow: ellipsis;
+    }
+
+    :global(.ant-checkbox-wrapper-checked) {
+      width: 100%;
+    }
+    :global(.item-wrapper-checkbox) {
+      width: 28px;
+    }
   }
+
   &:global(.ant-collapse-item-active) {
     .attrGroupTitle {
       span,
@@ -32,7 +51,8 @@
   &:global(.ant-collapse-item) :global(.ant-collapse-header) {
     display: flex !important;
     align-items: center !important;
-    height: 40px;
+    min-height: 40px;
+    padding-right: 40px !important;
     padding-left: 16px !important;
     background: #fff;
     border-radius: 0;
@@ -68,6 +88,7 @@
   }
   &.specifying {
     :global(.ant-collapse-header) {
+      padding-right: 22px !important;
       padding-left: 0 !important;
     }
     :global(.ant-collapse-content > .ant-collapse-content-box) {
