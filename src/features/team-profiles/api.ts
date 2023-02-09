@@ -19,6 +19,7 @@ import type {
 import store from '@/reducers';
 
 import { hidePageLoading } from '../loading/loading';
+import { showPageLoading } from '@/features/loading/loading';
 
 interface TeamProfilePaginationResponse {
   data: {
@@ -95,20 +96,23 @@ export async function createTeamProfile(data: TeamProfileRequestBody) {
 }
 
 export async function updateTeamProfile(id: string, data: TeamProfileRequestBody) {
+  showPageLoading();
   return request(`/api/team-profile/update/${id}`, {
     method: 'POST',
     data,
   })
-    .then(() => {
+    .then(async () => {
       const globalState = store.getState();
       if (globalState.user.user?.id === id) {
-        getUserInfoMiddleware();
+        await getUserInfoMiddleware();
+        hidePageLoading();
       }
       message.success(MESSAGE_NOTIFICATION.UPDATE_TEAM_PROFILE_SUCCESS);
       hidePageLoading();
       return true;
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_TEAM_PROFILE_ERROR);
       hidePageLoading();
       return false;

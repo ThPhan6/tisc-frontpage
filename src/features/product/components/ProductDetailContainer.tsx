@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
 import { USER_ROLE } from '@/constants/userRoles';
+import { QUERY_KEY } from '@/constants/util';
 import { Col, Row, message } from 'antd';
 import { useHistory, useParams } from 'umi';
 
@@ -18,7 +19,7 @@ import {
 import { getBrandById } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
 import { useGetUserRoleFromPathname, useQuery } from '@/helper/hook';
-import { getValueByCondition, isValidURL } from '@/helper/utils';
+import { getValueByCondition, isValidURL, throttleAction } from '@/helper/utils';
 import { pick, sortBy } from 'lodash';
 
 import { ProductFormData, ProductKeyword } from '../types';
@@ -146,9 +147,15 @@ const ProductDetailContainer: React.FC = () => {
       }
     });
   };
+
+  const query = useQuery();
+
+  const noPreviousPage = query.get(QUERY_KEY.no_previous_page);
+
   const handleCloseProductDetail = () => {
-    if (history.length > 1) {
+    if (!noPreviousPage) {
       history.goBack();
+      return;
     }
     pushTo(
       getValueByCondition(
@@ -177,7 +184,7 @@ const ProductDetailContainer: React.FC = () => {
         <ProductDetailHeader
           title={'CATEGORY'}
           label={categorySelected || 'select'}
-          onSave={onSave}
+          onSave={throttleAction(onSave)}
           onCancel={handleCloseProductDetail}
           customClass={`${styles.marginBottomSpace} ${categorySelected ? styles.monoColor : ''}`}
         />

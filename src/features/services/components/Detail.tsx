@@ -26,11 +26,47 @@ import styles from '../index.less';
 import { checkShowBillingAmount, formatToMoneyValue } from '../util';
 import moment from 'moment';
 
+const DEFAULT_VALUE: ServicesResponse = {
+  billed_date: '',
+  created_at: '',
+  created_by: '',
+  due_date: '',
+  id: '',
+  name: '',
+  ordered_by: '',
+  payment_date: '',
+  quantity: 0,
+  relation_id: '',
+  relation_type: 0,
+  remark: '',
+  service_type_id: '',
+  status: 0,
+  tax: 0,
+  unit_rate: 0,
+  updated_at: '',
+  service_type_name: '',
+  ordered_user: {
+    id: '',
+    location_id: '',
+    firstname: '',
+    lastname: '',
+    email: '',
+  },
+  brand_name: '',
+  billing_amount: 0,
+  overdue_days: 0,
+  overdue_amount: 0,
+  total_gross: 0,
+  sale_tax_amount: 0,
+  firstname: '',
+  lastname: '',
+};
+
 interface ServiceDetailProps {
   type: 'tisc' | 'brand';
 }
 export const Detail: FC<ServiceDetailProps> = ({ type }) => {
-  const [detailData, setDetailData] = useState<ServicesResponse>();
+  const [detailData, setDetailData] = useState<ServicesResponse>(DEFAULT_VALUE);
   const isTablet = useScreen().isTablet;
 
   const id = useGetParamId();
@@ -63,7 +99,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
   useEffect(() => {
     getService();
 
-    return () => setDetailData(undefined);
+    return () => setDetailData(DEFAULT_VALUE);
   }, []);
 
   const handleSubmit = () => {
@@ -174,7 +210,7 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
 
   const getContentHeight = () => {
     if (isTablet && type == 'tisc') {
-      return 'calc(var(--vh) * 100 - 280px)';
+      return 'calc(var(--vh) * 100 - 232px)';
     }
 
     if (isTablet && type == 'brand') {
@@ -199,6 +235,8 @@ export const Detail: FC<ServiceDetailProps> = ({ type }) => {
       }}
       handleCancel={history.goBack}
       extraFooterButton={renderBottom()}
+      isRenderFooterContent={!!detailData}
+      footerStyles={{ display: isTablet && type == 'tisc' ? 'none' : '' }}
     >
       <TextForm boxShadow label="Billed Date">
         {moment(detailData?.created_at).format('YYYY-MM-DD')}

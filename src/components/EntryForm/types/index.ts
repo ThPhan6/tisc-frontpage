@@ -16,9 +16,13 @@ export interface EntryFormWrapperProps {
   headerContent?: any;
   footerContent?: any;
   submitButtonStatus?: boolean;
+  footerClass?: string;
+  footerStyles?: CSSProperties;
   extraFooterButton?: ReactNode;
   entryFormTypeOnMobile?: 'create' | 'edit' | '';
-  hideAction?: boolean;
+  hideHeader?: boolean;
+  hideFooter?: boolean;
+  isRenderFooterContent?: boolean;
 }
 
 export interface FormNameInputProps {

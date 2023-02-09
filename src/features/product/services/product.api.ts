@@ -54,15 +54,18 @@ export async function getProductSummary(brandId: string) {
 }
 
 export const createProductCard = async (data: ProductFormData) => {
+  showPageLoading();
   return request<{ data: ProductItem }>(`/api/product/create`, {
     method: 'POST',
     data,
   })
     .then((res) => {
+      hidePageLoading();
       message.success(MESSAGE_NOTIFICATION.CREATE_PRODUCT_SUCCESS);
       return res.data;
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_BRAND_SUMMARY_DATA_ERROR);
     });
 };
@@ -176,15 +179,18 @@ export const getProductById = async (productId: string) => {
 };
 
 export const updateProductCard = async (productId: string, data: ProductFormData) => {
+  showPageLoading();
   return request<{ data: ProductItem }>(`/api/product/update/${productId}`, {
     method: 'PUT',
     data,
   })
     .then((res) => {
+      hidePageLoading();
       message.success(MESSAGE_NOTIFICATION.UPDATE_PRODUCT_SUCCESS);
       return res.data;
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_PRODUCT_ERROR);
       return undefined;
     });

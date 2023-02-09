@@ -1,10 +1,11 @@
-import type { FC, ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 
 import { Modal } from 'antd';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
 
 import { useScreen } from '@/helper/common';
+import { isUndefined } from 'lodash';
 
 import type { CustomModalProps } from './types';
 import { closeModal } from '@/reducers/modal';
@@ -27,6 +28,10 @@ export const CustomModal: FC<CustomModalProps> = ({
   ...props
 }) => {
   const { isMobile } = useScreen();
+
+  if (isUndefined(isMobile)) {
+    return null;
+  }
 
   if (isMobile) {
     if (secondaryModal) {

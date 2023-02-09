@@ -130,7 +130,7 @@ export const DualLabel: FC<DualLabelProps> = ({
       <Title
         level={9}
         style={{ marginRight: 12, fontWeight, fontSize, width: 60 }}
-        customClass="text-overflow"
+        customClass="text-overflow firstText"
         title={firstTxt}
       >
         {firstTxt}
@@ -138,8 +138,8 @@ export const DualLabel: FC<DualLabelProps> = ({
       <BodyText
         fontFamily="Roboto"
         level={6}
-        style={{ fontSize, maxWidth: isMobile ? 'calc(100vw - 150px)' : 121 }}
-        customClass="text-overflow"
+        style={{ fontSize, width: isMobile ? 'calc(100vw - 150px)' : 121 }}
+        customClass="text-overflow secondText"
         title={secTxt}
       >
         {secTxt}

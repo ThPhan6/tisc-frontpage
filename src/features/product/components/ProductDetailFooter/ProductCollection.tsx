@@ -29,7 +29,7 @@ export const ProductCollection: FC = memo(() => {
   const relatedProduct = useAppSelector((state) => state.product.relatedProduct);
   const userRole = useGetUserRoleFromPathname();
 
-  const signature = useHistory().location.search || '';
+  const signature = `${useHistory().location.search || ''}${'?new_tab=true'}`;
 
   if (relatedProduct.length === 0) {
     return <EmptyOne customClass="product-collection" />;
@@ -43,7 +43,8 @@ export const ProductCollection: FC = memo(() => {
           key={key}
           target="_blank"
           rel="noreferrer"
-          href={getProductDetailPathname(userRole, item.id, signature)}>
+          href={getProductDetailPathname(userRole, item.id, signature)}
+        >
           <div className="relative-product">
             <img src={item.images?.[0] ? showImageUrl(item.images[0]) : SampleProductImage} />
             <div className="placeholder-text">
