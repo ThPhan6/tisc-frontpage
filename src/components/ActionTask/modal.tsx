@@ -1,16 +1,17 @@
 import { FC, useEffect, useState } from 'react';
 
+import { useScreen } from '@/helper/common';
 import { getSelectedOptions } from '@/helper/utils';
 import { createActionTask, getActionTask } from '@/pages/Brand/GeneralInquiries/services';
 
 import { CheckboxValue } from '../CustomCheckbox/types';
-import { ActionTaskModelParams, ActionTaskRequestBody } from '@/pages/Brand/GeneralInquiries/types';
+import { ActionTaskModalParams, ActionTaskRequestBody } from '@/pages/Brand/GeneralInquiries/types';
 
 import { CustomCheckbox } from '../CustomCheckbox';
 import Popover from '../Modal/Popover';
 import styles from './modal.less';
 
-interface ActionTaskModalProps extends ActionTaskModelParams {
+interface ActionTaskModalProps extends ActionTaskModalParams {
   visible: boolean;
   setVisible: (visible: boolean) => void;
   setReloadTable?: (reload: boolean) => void;
@@ -23,10 +24,9 @@ export const ActionTaskModal: FC<ActionTaskModalProps> = ({
   model_id,
   model_name,
 }) => {
+  const { isMobile } = useScreen();
   /// for show data
   const [actionTaskData, setActionTaskData] = useState<CheckboxValue[]>([]);
-  /// for set styles
-  const lengthOfItem = actionTaskData?.length >= 16;
 
   /// for update data
   const [actionTaskModal, setActionTaskModal] = useState<ActionTaskRequestBody>({
@@ -79,7 +79,7 @@ export const ActionTaskModal: FC<ActionTaskModalProps> = ({
           // close popup
           setVisible(false);
 
-          // reload table to get list actions-tasks
+          // reload table to get/update actions-tasks list
           if (setReloadTable) {
             setReloadTable(true);
           }
@@ -90,11 +90,13 @@ export const ActionTaskModal: FC<ActionTaskModalProps> = ({
 
   return (
     <Popover
+      className={`${isMobile ? styles.modalOnMobile : styles.modal}`}
       title="SELECT ACTIONS/TASKS"
       visible={visible}
       setVisible={(isClose) => (isClose ? undefined : setVisible(false))}
-      className={`${styles.actionTask} ${lengthOfItem ? styles.stickyPosition : ''}`}
-      onFormSubmit={handleSubmitActionTask}>
+      secondaryModal
+      onFormSubmit={handleSubmitActionTask}
+    >
       <CustomCheckbox
         options={actionTaskData}
         selected={selectedActionTask}
@@ -102,6 +104,7 @@ export const ActionTaskModal: FC<ActionTaskModalProps> = ({
         otherInput
         clearOtherInput={clearOtherInput}
         onChange={onChangeActionTask}
+        checkboxClass={styles.checkBoxList}
       />
     </Popover>
   );

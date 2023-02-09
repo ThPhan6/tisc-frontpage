@@ -9,6 +9,8 @@ import {
   PaginationResponse,
 } from '@/components/Table/types';
 
+import { hidePageLoading } from '@/features/loading/loading';
+
 interface ProjectListingPaginationRespone {
   data: {
     projects: ProjectListingResponse[];
@@ -33,6 +35,7 @@ export async function getProjectListingPagination(
       });
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.GET_PROJECT_LISTING_FAILED);
     });
 }

@@ -1,4 +1,7 @@
 .customPopover {
+  ::-webkit-scrollbar {
+    display: none;
+  }
   :global(.ant-modal-header),
   :global(.ant-modal-footer) {
     height: 48px;
@@ -30,7 +33,7 @@
   }
   :global(.ant-modal-body) {
     height: 656px;
-    max-height: calc(100vh - 160px);
+    max-height: calc(var(--vh) * 100 - 160px);
     padding: 16px 19px 16px 16px;
     overflow: auto;
     :global(.ant-space-item) {
@@ -56,4 +59,19 @@
 
 .headingTitle {
   margin-right: 24px;
+}
+
+.customPopoverMobile {
+  padding-bottom: 48px;
+
+  .popoverFooterMobile {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 48px;
+    padding: 0 12px;
+    background-color: #fff;
+    box-shadow: @border-top;
+  }
 }

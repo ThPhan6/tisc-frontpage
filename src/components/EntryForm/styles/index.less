@@ -1,12 +1,19 @@
+@import '~antd/es/style/variable.less';
+
 .entry_form_container {
   display: flex;
   flex-direction: column;
   margin-top: 8px;
   background-color: #fff;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
   .header_main {
     position: relative;
     .header_content {
-      padding: 0 16px;
+      padding: 0 var(--spacing);
     }
     .header_content::after {
       position: absolute;
@@ -20,70 +27,101 @@
       display: flex;
       align-items: center;
       height: 48px;
-      padding: 0 16px;
+      padding: 0 var(--spacing);
       border-bottom: 0.7px inset @mono-color;
       &__title {
         flex: 1;
         margin-right: 8px;
+        overflow: hidden;
+        white-space: nowrap;
         text-align: center;
+        text-overflow: ellipsis;
       }
       &__icon {
         cursor: pointer;
       }
     }
   }
-  ::-webkit-scrollbar {
-    display: none;
-  }
   .content {
-    height: calc(100vh - 250px);
-    padding: 16px;
+    height: calc(var(--vh) * 100 - 250px);
+    padding: var(--spacing);
     overflow: hidden auto;
+
+    @media screen and (max-width: @screen-lg) {
+      height: calc(var(--vh) * 100 - 224px);
+    }
+
+    :global(.ant-radio-group > .ant-space) {
+      width: 100%;
+      overflow: auto hidden;
+      white-space: nowrap;
+    }
   }
   .footer_content {
-    padding: 0 16px;
+    padding: 0 var(--spacing);
     box-shadow: 0 -0.7px 0 @mono-color;
   }
-  .footer {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    height: 48px;
-    padding: 0 16px;
-    box-shadow: @border-top;
-    &__cancel_bt,
-    &__submit_bt {
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 48px;
+  padding: 0 var(--spacing);
+  box-shadow: @border-top;
+
+  button {
+    transition: none;
+  }
+
+  &__cancel_bt,
+  &__delete_bt,
+  &__submit_bt {
+    min-width: 64px;
+    border-radius: 12px;
+  }
+  &__delete_bt,
+  &__cancel_bt {
+    + * {
+      margin-left: 16px;
+    }
+  }
+  &__wrapper_submit {
+    &_normal {
       min-width: 64px;
       border-radius: 12px;
-    }
-    &__cancel_bt {
-      margin-right: 16px;
-    }
-    &__wrapper_submit {
-      &_normal {
-        min-width: 64px;
-        border-radius: 12px;
+      p {
+        color: #fff;
+      }
+      &:hover {
         p {
-          color: #fff;
-        }
-        &:hover {
-          p {
-            font-weight: 500;
-          }
+          font-weight: 500;
         }
       }
-      &_success {
-        min-width: 64px;
-        background-color: @primary-color-dark;
-        border-radius: 12px;
-        cursor: default;
-        animation: fadeIn 2s;
-        svg {
-          width: 16px;
-          height: 16px;
-          margin-right: 0;
-        }
+    }
+    &_success {
+      min-width: 64px;
+      background-color: @primary-color-dark;
+      border-radius: 12px;
+      cursor: default;
+      animation: fadeIn 2s;
+      svg {
+        width: 16px;
+        height: 16px;
+        margin-right: 0;
       }
     }
   }
 }
+
+// @media screen and (max-width: 576px) {
+//   :global(.ant-pro-basicLayout-content) {
+//     margin: 16px;
+//   }
+//   .entry_form_container {
+//     .content {
+//       height: calc(var(--vh) * 100 - 224px);
+//     }
+//   }
+// }

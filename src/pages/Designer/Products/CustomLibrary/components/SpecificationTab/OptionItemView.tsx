@@ -1,20 +1,17 @@
 import { FC } from 'react';
 
 import { useSelectProductSpecification } from '@/features/product/services';
-import { showImageUrl } from '@/helper/utils';
+import { useScreen } from '@/helper/common';
 import { cloneDeep } from 'lodash';
 
 import { OptionGroupProps } from '../../types';
 import store from '@/reducers';
 
 import { CustomRadio } from '@/components/CustomRadio';
+import { LogoIcon } from '@/components/LogoIcon';
 import { RobotoBodyText } from '@/components/Typography';
 
 import { setCustomProductDetail } from '../../slice';
-
-export const renderOptionImage = (image: string) => (
-  <img src={showImageUrl(image)} style={{ width: 48, height: 48, objectFit: 'contain' }} />
-);
 
 export const OptionItemView: FC<OptionGroupProps> = ({
   data,
@@ -25,6 +22,7 @@ export const OptionItemView: FC<OptionGroupProps> = ({
   specifying,
   isPublicPage,
 }) => {
+  const { isMobile } = useScreen();
   const option = data[dataIndex];
   const selectOption = specification.attribute_groups?.find((el) => el.id === option.id);
   const selectProductSpecification = useSelectProductSpecification();
@@ -45,6 +43,18 @@ export const OptionItemView: FC<OptionGroupProps> = ({
     return '8px 16px 8px 20px';
   };
 
+  const getContentLabelMaxWidth = () => {
+    if (!isMobile) {
+      return '50vw';
+    }
+
+    if (option.use_image) {
+      return 'calc(100vw - 128px)';
+    }
+
+    return 'calc(100vw - 80px)';
+  };
+
   return (
     <CustomRadio
       optionStyle={{
@@ -55,14 +65,16 @@ export const OptionItemView: FC<OptionGroupProps> = ({
       options={option.items.map((el, index) => ({
         label: (
           <div className="flex-start">
-            {option.use_image && el.image ? renderOptionImage(el.image) : null}
+            {option.use_image && el.image ? <LogoIcon logo={el.image} /> : null}
             <RobotoBodyText
               level={5}
               customClass="text-overflow"
               style={{
-                maxWidth: 'calc(100% - 52px)',
+                maxWidth: getContentLabelMaxWidth(),
                 paddingLeft: isPublicPage && !option.use_image ? 0 : 24,
-              }}>
+                paddingRight: 8,
+              }}
+            >
               {el.description}
             </RobotoBodyText>
           </div>

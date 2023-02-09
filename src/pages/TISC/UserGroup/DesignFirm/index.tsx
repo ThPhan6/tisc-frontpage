@@ -32,7 +32,7 @@ const DesignFirmList: React.FC = () => {
       title: '',
       dataIndex: 'logo',
       render: (value) => {
-        return <LogoIcon logo={value} className={styles.img} />;
+        return <LogoIcon logo={value} className={styles.img} size={18} />;
       },
     },
     {

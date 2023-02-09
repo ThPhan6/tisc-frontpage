@@ -39,6 +39,18 @@ const getBasisOptionsText = (activeBasisOptions: { id: string; option_code: stri
   return '';
 };
 
+export const getConversionText = (content: any) => {
+  if (!content) {
+    return '';
+  }
+
+  const valueUnit_1 = `${content.value_1}${content.unit_1 ? ' ' + content.unit_1 : ''}`;
+  const valueUnit_2 = `${content.value_2}${content.unit_2 ? ' ' + content.unit_2 : ''}`;
+  const hyphen = content.value_1 && content.value_2 ? ' - ' : '';
+
+  return `${valueUnit_1}${hyphen}${valueUnit_2}`;
+};
+
 export const ProductAttributeSubItem: React.FC<Props> = ({
   onDelete,
   onItemChange,
@@ -274,6 +286,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
       <InputGroup
         horizontal
         isTableFormat
+        autoResize={curAttributeData.basis.type === 'Text'}
         fontLevel={4}
         label={curAttributeData?.name ? truncate(curAttributeData?.name, { length: 20 }) : 'N/A'}
         placeholder={placeholder}
@@ -343,6 +356,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
 
       <Popover
         title={isSpecification ? 'OPTION' : 'PRESET'}
+        secondaryModal
         visible={visible}
         setVisible={setVisible}
         className={styles.specificationOptionCheckbox}
@@ -353,15 +367,24 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
             return;
           }
 
+          const currentAttributeItemSelect = curAttributeData?.basis?.subs?.find(
+            (sub: any) => sub.id === valueSelected.value,
+          );
+
+          const attributeContent: string = getConversionText(currentAttributeItemSelect);
+
           if (isSpecification) {
             setBasisOptionSelected(
               valueSelected?.map((opt: CheckboxValue) => ({
                 ...opt,
-                label: String(opt.label),
+                label: attributeContent,
               })),
             );
           } else {
-            setSelected(valueSelected);
+            setSelected({
+              value: valueSelected.value,
+              label: attributeContent,
+            });
           }
         }}
         checkboxList={
@@ -391,15 +414,16 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
                   heading: (
                     <Title
                       level={8}
-                      customClass={`preset-option-heading ${styles.presetOptionTitle}`}>
+                      customClass={`preset-option-heading ${styles.presetOptionTitle}`}
+                    >
                       {curAttributeData?.basis?.name ?? 'N/A'}
                     </Title>
                   ),
                   options:
-                    curAttributeData?.basis?.subs?.map((sub: any) => {
+                    curAttributeData?.basis?.subs?.map((sub: any, index: number) => {
                       return {
-                        label: sub.value_1,
                         value: sub.id,
+                        label: <AttributeOptionLabel option={sub} key={index} />,
                       };
                     }) ?? [],
                 },

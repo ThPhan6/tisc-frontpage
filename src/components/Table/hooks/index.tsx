@@ -37,7 +37,8 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
         onClick={() =>
           setExpanded((prevState) => (expandedKey === prevState ? undefined : expandedKey))
         }
-        className={styles.expandedCell}>
+        className={styles.expandedCell}
+      >
         <span className={isExpanding ? styles.expandedColumn : ''}>{value}</span>
         <DropDownIcon width="18" height="18" />
       </div>
@@ -57,7 +58,8 @@ export const useCustomTable = (columns: TableColumnItem<any>[]) => {
           className={styles.titleTable}
           style={{
             justifyContent: getColumnJustifyContent(column.align),
-          }}>
+          }}
+        >
           {column.lightHeading ? (
             <BodyText fontFamily="Roboto" level={5}>
               {column.title}
@@ -161,7 +163,7 @@ const syncColWidthFollowingTheDeepestDataRow = (
 
       // Update style for each column from this data row to their relevant column of expandable column
       // Remember to add enter key
-      if (!newCellWidth) {
+      if (!newCellWidth || newCellWidth === '0px') {
         return;
       }
       cellWidthStyles += `

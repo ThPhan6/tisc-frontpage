@@ -27,8 +27,13 @@
 
 .header-summary {
   justify-content: space-between;
+  max-width: 100vw;
   padding: 0 24px;
+  overflow: auto hidden;
   white-space: nowrap;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   .d-flex;
 
   .element-container {
@@ -164,7 +169,7 @@
 
     span,
     label {
-      .form(@fw, @txttran);
+      .form(@fw, none);
     }
 
     span {

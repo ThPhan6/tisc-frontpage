@@ -1,20 +1,46 @@
+@import '~antd/es/style/variable.less';
+
 .button {
   margin-left: 48px;
+
+  @media screen and (max-width: @screen-md) {
+    margin-left: 24px;
+  }
 }
 .content {
   &_left {
-    height: calc(100vh - 232px);
-    margin-right: 8px;
-    overflow: auto;
     background-color: #fff;
+
+    .topSticky {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #fff;
+    }
+
+    .specifyTabs {
+      padding: var(--spacing) var(--spacing) 0 var(--spacing);
+    }
+
+    :global(.mainContent) {
+      ::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    @media screen and (min-width: @screen-lg) {
+      :global(.ant-tabs-nav-wrap) {
+        overflow: auto hidden !important;
+
+        ::-webkit-scrollbar {
+          display: block;
+        }
+      }
+    }
   }
   &_right {
     justify-content: space-between;
-    height: calc(100vh - 232px);
-    padding-top: 16px;
-    background-color: #fff;
-    -webkit-user-select: none;
-    -ms-user-select: none;
+    height: calc(var(--vh) * 100 - 232px);
     user-select: none;
     .action {
       position: relative;
@@ -34,18 +60,27 @@
       }
     }
     .pdf {
+      padding-top: 16px;
+      background-color: #fff;
       :global(.react-pdf__Page__canvas) {
         width: auto !important;
-        height: calc(100vh - 312px) !important;
+        height: calc(var(--vh) * 100 - 312px) !important;
         margin: auto;
         box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
       }
     }
   }
 }
+
+.contentHeight {
+  height: calc(var(--vh) * 100 - 232px - 72px);
+  padding: 0 var(--spacing);
+  overflow: hidden auto;
+}
+
 .formInformation {
-  padding: 0 16px;
-  overflow: auto;
+  .contentHeight();
+
   .business {
     margin-bottom: 8px;
   }
@@ -63,9 +98,13 @@
   }
 }
 .cover {
-  padding: 0 16px;
+  .contentHeight();
+
   :global(.ant-collapse-item .ant-collapse-header) {
     text-transform: capitalize !important;
+  }
+  @media screen and (max-width: @screen-md) {
+    padding: 0 12px;
   }
   .customHeader {
     margin-top: 16px;
@@ -78,9 +117,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 40px;
+    height: 36px;
     margin-bottom: 8px;
-    box-shadow: @border-bottom;
+    // box-shadow: @border-bottom;
     :global(.ant-switch-checked) {
       background: @primary-color-dark !important;
     }
@@ -109,15 +148,18 @@
       color: @mono-color-medium;
     }
   }
+  :global(.ant-collapse-item) {
+    margin-bottom: 12px;
+  }
 }
-.customActionButton {
-  width: auto;
-  padding: 8px 16px;
-}
+
 .specification {
-  height: calc(100vh - 352px);
-  padding: 0 16px;
+  height: calc(var(--vh) * 100 - 352px);
+  padding: 0 var(--spacing);
   overflow: auto;
+  @media screen and (max-width: @screen-md) {
+    padding: 0 8px;
+  }
   :global(.ant-collapse-item .ant-collapse-header) {
     text-transform: capitalize !important;
   }
@@ -132,12 +174,24 @@
     }
   }
 }
+// preview
 .actionButton {
+  position: relative;
+  z-index: 1;
   display: flex;
   justify-content: flex-end;
   height: 48px;
   padding: 12px 16px;
+  background: #fff;
   box-shadow: @border-top;
+  .resetButton {
+    margin-right: 16px;
+  }
+}
+// brand - material - space
+.customActionButton {
+  width: auto;
+  padding: 8px 16px;
 }
 
 .modal {

@@ -8,6 +8,7 @@ import { CustomInput } from '@/components/Form/CustomInput';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { MainTitle } from '@/components/Typography';
 
+import { CustomTextArea } from '../Form/CustomTextArea';
 import styles from './styles/DynamicFormInput.less';
 
 interface DynamicFormInputData {
@@ -50,7 +51,7 @@ const DynamicFormInput: FC<DynamicFormInputProps> = ({
     }
   };
   const onChangeText = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     index: number,
     type: 'title' | 'value',
   ) => {
@@ -99,13 +100,14 @@ const DynamicFormInput: FC<DynamicFormInputProps> = ({
             />
             <DeleteIcon onClick={() => onDelete(index)} className="delete-action-input-group" />
           </div>
-          <CustomInput
-            fontLevel={fontLevel ? ((fontLevel + 1) as 6) : 6}
-            className="dynamic-value-box"
+          <CustomTextArea
+            maxWords={maxValueWords}
+            placeholder={valuePlaceholder}
             value={item.value}
             onChange={(e) => onChangeText(e, index, 'value')}
+            customClass={styles.customTextArea}
             onClick={(e) => e.stopPropagation()}
-            placeholder={valuePlaceholder}
+            autoResize
           />
         </div>
       ))}

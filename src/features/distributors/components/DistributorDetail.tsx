@@ -17,7 +17,6 @@ import {
   getOneDistributor,
   updateDistributor,
 } from '@/features/distributors/api';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const DEFAULT_DISTRIBUTOR: DistributorForm = {
   brand_id: '',
@@ -64,11 +63,8 @@ const UpdatePage = () => {
   };
 
   const onSubmit = (submitData: DistributorForm) => {
-    showPageLoading();
-
     if (isUpdate) {
       updateDistributor(idDistributor, submitData).then((isSuccess) => {
-        hidePageLoading();
         if (isSuccess) {
           submitButtonStatus.setValue(true);
           setTimeout(() => {
@@ -78,7 +74,6 @@ const UpdatePage = () => {
       });
     } else {
       createDistributor(submitData).then((isSuccess) => {
-        hidePageLoading();
         if (isSuccess) {
           submitButtonStatus.setValue(true);
           setTimeout(goBackToDistributorList, 1000);

@@ -12,7 +12,6 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { InspirationalQuotationEntryForm } from './InspirationalQuotesEntryForm';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const DEFAULT_INPUT: Quotation = {
   author: '',
@@ -52,11 +51,8 @@ const UpdateQuotationPage = () => {
   };
 
   const onSubmit = (data: Quotation) => {
-    showPageLoading();
-
     if (isUpdate) {
       updateQuotation(idQuotation, data).then((isSuccess) => {
-        hidePageLoading();
         if (isSuccess) {
           submitButtonStatus.setValue(true);
           setTimeout(() => {
@@ -66,7 +62,6 @@ const UpdateQuotationPage = () => {
       });
     } else {
       createQuotation(data).then((isSuccess) => {
-        hidePageLoading();
         if (isSuccess) {
           submitButtonStatus.setValue(true);
           setTimeout(() => {

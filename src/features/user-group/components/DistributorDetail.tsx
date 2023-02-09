@@ -1,8 +1,9 @@
 import { FC, useEffect, useState } from 'react';
 
 import { COVERAGE_BEYOND } from '@/constants/util';
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
+import { useScreen } from '@/helper/common';
 import { getValueByCondition } from '@/helper/utils';
 import { isEmpty } from 'lodash';
 
@@ -10,6 +11,7 @@ import { RequiredValueProps } from '../types';
 import { DistributorResponseForm } from '@/features/distributors/type';
 
 import TextForm from '@/components/Form/TextForm';
+import { ResponsiveCol } from '@/components/Layout';
 import { RenderLabelHeader } from '@/components/RenderHeaderLabel';
 
 import styles from '../styles/index.less';
@@ -19,6 +21,7 @@ import { getListDistributorGroupCountryByBrandId } from '@/features/distributors
 
 const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
   const [distributors, setDistributors] = useState<DistributorResponseForm[]>([]);
+  const { isTablet } = useScreen();
 
   useEffect(() => {
     if (!id) return;
@@ -37,8 +40,13 @@ const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
 
   return (
     <Row className={styles.container}>
-      <Col span={12}>
-        <div className={styles.form}>
+      <ResponsiveCol>
+        <div
+          className={styles.form}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 266px)' : 'calc(var(--vh) * 100 - 248px)',
+          }}
+        >
           <GeneralData>
             {distributors.length ? (
               <Collapse {...CollapseLevel1Props}>
@@ -55,7 +63,8 @@ const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
                     key={index}
                     collapsible={
                       isEmpty(location.country_name) || location.count == 0 ? 'disabled' : undefined
-                    }>
+                    }
+                  >
                     <Collapse {...CollapseLevel2Props}>
                       {location.distributors?.map((distributor, idx) => (
                         <Collapse.Panel
@@ -63,7 +72,8 @@ const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
                             <RenderLabelHeader header={distributor.name} isSubHeader={true} />
                           }
                           key={`${index}-${idx}`}
-                          collapsible={isEmpty(distributor.name) ? 'disabled' : undefined}>
+                          collapsible={isEmpty(distributor.name) ? 'disabled' : undefined}
+                        >
                           <div className={styles.info}>
                             <TextForm label="Address">{distributor.address ?? ''}</TextForm>
                             <TextForm label="Person in charge">{distributor.person ?? ''}</TextForm>
@@ -89,7 +99,7 @@ const DistributorDetail: FC<RequiredValueProps> = ({ id }) => {
             ) : null}
           </GeneralData>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

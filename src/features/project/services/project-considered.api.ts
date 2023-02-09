@@ -14,6 +14,9 @@ import {
   ProjectSpaceListProps,
   ProjectSummaryData,
 } from '@/features/project/types';
+import { closeModal } from '@/reducers/modal';
+
+import { hidePageLoading } from '@/features/loading/loading';
 
 export async function getProductAssignSpaceByProject(
   projectId: string,
@@ -47,6 +50,7 @@ export async function getConsideredProducts(
     })
     .catch((error) => {
       console.log('error', error);
+      hidePageLoading();
       message.error(error.message);
     });
 }
@@ -64,6 +68,7 @@ export async function assignProductToProject(data: {
   })
     .then(() => {
       message.success(getResponseMessage('assign', 'product'));
+      closeModal();
       return true;
     })
     .catch((error) => {

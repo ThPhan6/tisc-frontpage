@@ -16,9 +16,10 @@
 }
 
 .content {
-  padding-bottom: 32px;
   .intro {
-    padding: 32px 0 48px 0;
+    max-height: 200px;
+    margin: 32px 0 48px 0;
+    overflow-y: auto;
     p {
       text-align: center;
     }
@@ -63,7 +64,7 @@
           display: flex;
           align-items: center;
           height: 40px;
-          padding-left: 16px;
+          padding-left: var(--spacing);
           .setForgotWrapper(@primary-color-dark);
         }
         .wrapper-dark {
@@ -98,37 +99,6 @@
             }
           }
         }
-      }
-    }
-    .action {
-      position: absolute;
-      right: 48px;
-      bottom: 32px;
-      width: calc(576px - 96px);
-      &_between {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      &_right {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-      }
-      .warning {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 32px;
-        padding: 0 16px;
-        background-color: @secondary-color;
-        p {
-          margin-left: 12px;
-          color: #fff;
-        }
-      }
-      .submit {
-        border-radius: 16px;
       }
     }
   }

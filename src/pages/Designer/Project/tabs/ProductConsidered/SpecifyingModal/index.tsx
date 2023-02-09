@@ -7,12 +7,14 @@ import {
 } from '../../../constants/tab';
 import { message } from 'antd';
 
+import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
+
 import { getSpecificationRequest } from '@/features/product/components/ProductAttributes/hooks';
 import { getSelectedRoomIds, useAssignProductToSpaceForm } from '@/features/product/modals/hooks';
 import { updateProductSpecifying } from '@/features/project/services';
 
 import { FinishScheduleRequestBody } from './types';
-import { resetProductDetailState } from '@/features/product/reducers';
+import { productVariantsSelector, resetProductDetailState } from '@/features/product/reducers';
 import { ProductItem } from '@/features/product/types';
 import store, { useAppSelector } from '@/reducers';
 
@@ -129,10 +131,6 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
       message.error('Brand location is required');
       return;
     }
-    if (!distributorLocationId) {
-      message.error('Distributor location is required');
-      return;
-    }
     if (product.specifiedDetail?.id) {
       updateProductSpecifying(
         {
@@ -168,10 +166,15 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
     }
   };
 
+  const productId = useAppSelector(productVariantsSelector);
+
   return (
     <CustomModal
       className={`${popoverStyles.customPopover} ${styles.specifyingModal}`}
       visible={visible}
+      secondaryModal
+      noHeaderBorder={false}
+      closeIcon={<CloseIcon style={{ width: 24, height: 24 }} />}
       onCancel={() => {
         setVisible(false);
         resetProductData();
@@ -189,16 +192,20 @@ export const SpecifyingModal: FC<SpecifyingModalProps> = ({
           variant="primary"
           properties="rounded"
           buttonClass="done-btn"
-          onClick={onSubmit}>
+          onClick={onSubmit}
+        >
           Done
         </CustomButton>
-      }>
+      }
+    >
       <BrandProductBasicHeader
         image={product.images[0]}
         logo={product.brand?.logo}
         text_1={product.brand?.name}
         text_2={product.collection?.name}
-        text_3={product.description}
+        text_3={product.name}
+        text_4={productId === '' ? 'N/A' : productId}
+        customClass={styles.customHeader}
       />
 
       <CustomTabs

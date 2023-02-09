@@ -23,7 +23,7 @@ import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import styles from './styles/EmailAutorespondersEntryForm.less';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import { showPageLoading } from '@/features/loading/loading';
 
 const DEFAULT_EMAILAUTORESPONDERS_VALUE: EmailTemplate = {
   topic: '',
@@ -101,7 +101,7 @@ const UpdateEmailAutoPage = () => {
 
   const handleUpdateEmailAuto = () => {
     if (isEmpty(formState.message)) {
-      message.error(MESSAGE_ERROR.EMAIL_AUTO);
+      message.error(MESSAGE_ERROR.MESSAGE);
     } else {
       showPageLoading();
 
@@ -109,8 +109,6 @@ const UpdateEmailAutoPage = () => {
         ...formState,
         title: formState.title.trim(),
       }).then((isSuccess) => {
-        hidePageLoading();
-
         if (isSuccess) {
           submitButtonStatus.setValue(true);
           setTimeout(() => {
@@ -140,7 +138,8 @@ const UpdateEmailAutoPage = () => {
         <EntryFormWrapper
           handleCancel={handleCancel}
           handleSubmit={handleUpdateEmailAuto}
-          submitButtonStatus={submitButtonStatus.value}>
+          submitButtonStatus={submitButtonStatus.value}
+        >
           {/* Topic */}
           <FormGroup label="Topic" required={true} layout="vertical" formClass={styles.radio_form}>
             <ScrollBar>
@@ -161,7 +160,8 @@ const UpdateEmailAutoPage = () => {
             label="Targeted For"
             required={true}
             layout="vertical"
-            formClass={styles.radio_form}>
+            formClass={styles.radio_form}
+          >
             <ScrollBar>
               {targetedForList.map((item) => (
                 <CustomRadio

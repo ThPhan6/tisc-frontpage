@@ -1,3 +1,5 @@
+@import '~antd/es/style/variable.less';
+
 .contentTypeModalWrapper {
   @height: 48px;
   .contentTypeFooter {
@@ -21,18 +23,21 @@
     }
   }
 
-  :global(.ant-modal-body) {
+  :global(.ant-modal-body),
+  :global(.ant-drawer-body) {
     padding: 0;
   }
 
   :global(.ant-modal-header),
-  :global(.ant-modal-footer) {
+  :global(.ant-modal-footer),
+  :global(.ant-drawer-header),
+  :global(.ant-drawer-footer) {
     height: @height;
-    padding: 12px 16px;
-    box-shadow: @border-top;
+    padding: 12px var(--spacing);
   }
   :global(.ant-modal-footer) {
     border: 0;
+    box-shadow: @border-top;
   }
   :global(.ant-modal-header) {
     border-bottom: 0;
@@ -45,80 +50,105 @@
       border-bottom: 0 !important;
       box-shadow: @border-bottom;
     }
-  }
-  .contentTypeOption {
-    height: 600px;
-    max-height: calc(100vh - 200px);
-    padding: 16px 19px 16px 16px;
-    overflow: hidden auto;
-    :global(.ant-space-item) {
-      min-height: 40px;
-      margin-left: 0;
-      padding: 0;
-      box-shadow: @border-bottom-light;
-    }
-  }
-  .contentTypeCollapse {
-    background-color: #fff;
-    :global(.ant-collapse-item) {
-      border-bottom: 0;
-      box-shadow: @border-bottom-light;
-      &:global(.ant-collapse-item-active) {
-        box-shadow: @border-bottom;
-        :global(.ant-collapse-content-box) {
-          padding: 0 0 8px 16px;
-        }
-      }
-      :global(.ant-collapse-content-box) {
-        padding-right: 0;
-        padding-left: 16px;
-      }
-      :global(.ant-collapse-arrow) {
-        right: 0;
-      }
-    }
 
-    :global(.ant-collapse-header) {
-      display: flex;
-      align-items: center;
-      padding: 9px 0 !important;
-      font-weight: 300;
-      font-size: 14px;
-      font-family: @font-primary;
-      font-style: normal;
-      line-height: 22px;
-      letter-spacing: 0.02em;
-    }
-    :global(.ant-space-item) {
-      box-shadow: none;
-    }
-    :global(.basis-preset-option-group) {
-      display: flex;
-      align-items: center;
-      font-weight: 300;
-      font-size: 14px;
-      font-family: @font-primary;
-      font-style: normal;
-      line-height: 22px;
-      letter-spacing: 0.02em;
-      :global(.count-number) {
-        margin-left: 12px;
+    :global(.ant-tabs-nav-list) {
+      @media screen and (max-width: 310px) {
+        width: max-content !important;
       }
     }
+  }
+}
+
+.contentTypeText {
+  :global(.ant-space) {
+    box-shadow: none !important;
+  }
+}
+
+.contentTypeOption {
+  height: 600px;
+  max-height: calc(var(--vh) * 100 - 184px);
+  padding: 16px 19px 16px 16px;
+  overflow: hidden auto;
+
+  :global(.ant-space) {
+    padding-bottom: 8px;
+    box-shadow: @border-bottom;
+  }
+  // :global(.ant-space-item) {
+  //   min-height: 40px;
+  // }
+
+  @media screen and (max-width: @screen-sm) {
+    padding: 12px;
+  }
+}
+
+.contentTypeCollapse {
+  background-color: #fff;
+
+  :global(.ant-collapse-expand-icon svg) {
+    right: 0 !important;
+  }
+
+  :global(.ant-collapse-item) {
+    border-bottom: 0;
+    box-shadow: @border-bottom-light;
+    &:global(.ant-collapse-item-active) {
+      box-shadow: @border-bottom;
+      :global(.ant-collapse-content-box) {
+        padding: 0 0 8px 16px;
+      }
+    }
+    :global(.ant-collapse-content-box) {
+      padding-right: 0;
+      padding-left: 16px;
+    }
+    :global(.ant-collapse-arrow) {
+      right: 0;
+    }
+  }
+
+  :global(.ant-collapse-header) {
+    display: flex;
+    align-items: center;
+    padding: 9px 0 !important;
+    font-weight: 300;
+    font-size: 14px;
+    font-family: @font-primary;
+    font-style: normal;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+  }
+  :global(.ant-space-item) {
+    box-shadow: none;
+  }
+  :global(.basis-preset-option-group) {
+    display: flex;
+    align-items: center;
+    font-weight: 300;
+    font-size: 14px;
+    font-family: @font-primary;
+    font-style: normal;
+    line-height: 22px;
+    letter-spacing: 0.02em;
     :global(.count-number) {
-      margin-left: 8px;
-      font-weight: 300;
+      margin-left: 12px;
     }
-    :global(.activated) {
-      font-weight: 500;
-    }
-    :global(.basis-conversion-group) {
-      display: flex;
-      align-items: center;
-      // justify-content: center;
-      svg {
-        margin: 0 12px;
-      }
+  }
+  :global(.count-number) {
+    margin-left: 8px;
+    font-weight: 300;
+  }
+  :global(.activated) {
+    font-weight: 500;
+  }
+  :global(.basis-conversion-group) {
+    display: flex;
+    align-items: center;
+    // justify-content: center;
+    svg {
+      margin: 0 12px;
     }
   }
 }

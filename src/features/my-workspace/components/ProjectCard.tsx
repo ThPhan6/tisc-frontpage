@@ -8,10 +8,11 @@ import { history } from 'umi';
 
 import { ReactComponent as UnreadIcon } from '@/assets/icons/action-unreaded-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { pushTo } from '@/helper/history';
 import { getDesignDueDay, getFullName, getValueByCondition, updateUrlParams } from '@/helper/utils';
 
-import { setBrand, setFromMyWorkspace } from '@/features/product/reducers';
+import { setBrand } from '@/features/product/reducers';
 import { ProjectListProps } from '@/features/project/types';
 import { BrandCard, BrandCardTeam, BrandDetail } from '@/features/user-group/types';
 import store, { useAppSelector } from '@/reducers';
@@ -20,6 +21,7 @@ import { ProjecTrackingList } from '@/types/project-tracking.type';
 import { EmptyOne } from '@/components/Empty';
 import { loadingSelector } from '@/components/LoadingPage/slices';
 import { LogoIcon } from '@/components/LogoIcon';
+import { ProfileIcon } from '@/components/ProfileIcon';
 import TeamIcon from '@/components/TeamIcon/TeamIcon';
 import { BodyText } from '@/components/Typography';
 
@@ -44,14 +46,11 @@ export const ProjectCard: FC<ProjectCardProps> = ({
     [isDesignerUser, PATH.designerUpdateProject],
   ]);
 
+  const { isMobile } = useScreen();
   const handleClickItem = (cardInfo: ProjecTrackingList & BrandCard & ProjectListProps) => {
     if (cardInfo.id) {
       if (isTiscUser) {
-        const { location } = history;
-        const myWorkSpace = location.pathname.indexOf('dashboard') !== -1;
-        store.dispatch(setFromMyWorkspace(myWorkSpace));
-
-        pushTo(PATH.productConfiguration);
+        history.push(PATH.productConfiguration, { fromMyWorkspace: true });
 
         /// set brand info
         store.dispatch(setBrand({ id: cardInfo.id, name: cardInfo.name } as BrandDetail));
@@ -61,8 +60,8 @@ export const ProjectCard: FC<ProjectCardProps> = ({
           set: [
             { key: QUERY_KEY.b_id, value: cardInfo.id },
             { key: QUERY_KEY.b_name, value: cardInfo.name },
-            { key: QUERY_KEY.cate_id, value: 'all' },
-            { key: QUERY_KEY.cate_name, value: 'VIEW ALL' },
+            { key: QUERY_KEY.coll_id, value: 'all' },
+            { key: QUERY_KEY.coll_name, value: 'VIEW ALL' },
           ],
         });
 
@@ -82,7 +81,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
               {info.name}
             </BodyText>
           </div>
-          <LogoIcon logo={info.logo} className={styles.img} />
+          <LogoIcon logo={info.logo} className={styles.img} size={24} />
           <BodyText level={6} fontFamily="Roboto">
             {info.country}
           </BodyText>
@@ -151,11 +150,15 @@ export const ProjectCard: FC<ProjectCardProps> = ({
             <BodyText level={5}>{isBrandUser ? 'Requests' : 'Project Status'}:</BodyText>
           </div>
           <div className={styles.middleValue}>
-            <BodyText level={6} fontFamily="Roboto">
+            <BodyText level={6} fontFamily="Roboto" customClass="text-overflow">
               {isBrandUser ? info.requestCount : FilterNames[Number(info.status)]}
             </BodyText>
           </div>
-          {info.newRequest ? <UnreadIcon /> : <span style={{ width: '18px', height: '18px' }} />}
+          {info.newRequest ? (
+            <UnreadIcon />
+          ) : (
+            <span style={isBrandUser ? { width: '18px', height: '18px' } : {}} />
+          )}
         </div>
 
         <div className={styles.middle}>
@@ -163,29 +166,24 @@ export const ProjectCard: FC<ProjectCardProps> = ({
             <BodyText level={5}>{isBrandUser ? 'Notifications' : 'Design due'}:</BodyText>
           </div>
           <div
-            className={`${styles.middleValue} ${!isBrandUser && dueDay.value < 0 ? 'late' : ''}`}>
-            <BodyText level={6} fontFamily="Roboto">
+            className={`${styles.middleValue} ${!isBrandUser && dueDay.value < 0 ? 'late' : ''}`}
+          >
+            <BodyText level={6} fontFamily="Roboto" customClass="text-overflow">
               {isBrandUser ? info.notificationCount : dueDay.text}
             </BodyText>
           </div>
           {info.newNotification ? (
             <UnreadIcon />
           ) : (
-            <span style={{ width: '18px', height: '18px' }} />
+            <span style={isBrandUser ? { width: '18px', height: '18px' } : {}} />
           )}
         </div>
       </>
     );
   };
 
-  const getAssignedTeamInfo = (info: any) => {
-    const assignedTeam = getValueByCondition([
-      [isTiscUser, info.teams],
-      [isBrandUser, info.assignedTeams],
-      [isDesignerUser, info.assign_teams],
-    ]);
-
-    return assignedTeam?.map((user: BrandCardTeam) => (
+  const renderTeamNumber = (teams: BrandCardTeam[]) => {
+    return teams.map((user: BrandCardTeam) => (
       <TeamIcon
         key={user.id}
         avatar={user.avatar}
@@ -195,18 +193,44 @@ export const ProjectCard: FC<ProjectCardProps> = ({
     ));
   };
 
+  const getAssignedTeamInfo = (info: any) => {
+    const assignedTeam = getValueByCondition([
+      [isTiscUser, info.teams],
+      [isBrandUser, info.assignedTeams],
+      [isDesignerUser, info.assign_teams],
+    ]);
+
+    const maxTeamNumber = isMobile ? 3 : 5;
+    if (assignedTeam.length > maxTeamNumber) {
+      return (
+        <>
+          {renderTeamNumber(assignedTeam.slice(0, maxTeamNumber))}
+
+          <ProfileIcon
+            name={`+${assignedTeam.slice(maxTeamNumber, assignedTeam.length).length}`}
+            customClass={styles.backgroundIcon}
+            isFullName
+          />
+        </>
+      );
+    }
+
+    return renderTeamNumber(assignedTeam);
+  };
+
   if (loading) {
     return null;
   }
 
   return (
-    <div className={styles.cardContainer}>
+    <div className={data.length ? styles.cardContainer : ''}>
       {data.length ? (
         data.map((item: any, index) => (
           <div
             key={item.id ?? index}
             className={styles.cardItemWrapper}
-            onClick={() => handleClickItem(item)}>
+            onClick={() => handleClickItem(item)}
+          >
             <div className={styles.cardItem}>
               <div className={styles.top}>{renderTopInfo(item)}</div>
 

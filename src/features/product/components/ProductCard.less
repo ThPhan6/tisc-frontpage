@@ -1,27 +1,16 @@
+@import '~antd/es/style/variable.less';
+
 .productCardContainer {
-  display: flex;
-  flex-flow: row wrap;
-  margin-right: -4px;
-  margin-left: -4px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(224px, 1fr));
+  gap: 8px;
+  @media screen and(max-width: @screen-sm) {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+
   .productCardItemWrapper {
+    position: relative;
     display: block;
-    flex: 0 0 100%;
-    max-width: 100%;
-    margin-bottom: 8px;
-    padding-right: 4px;
-    padding-left: 4px;
-    @media (min-width: 576px) {
-      flex: 0 0 33.33333333%;
-      max-width: 33.33333333%;
-    }
-    @media (min-width: 768px) {
-      flex: 0 0 25%;
-      max-width: 25%;
-    }
-    @media (min-width: 992px) {
-      flex: 0 0 20%;
-      max-width: 20%;
-    }
     .productCardItem {
       height: 100%;
       background-color: #fff;
@@ -117,6 +106,9 @@
           user-select: none;
           :not(:last-child) {
             margin-right: 10px;
+            @media screen and (max-width: @screen-lg) {
+              margin-right: 16px;
+            }
           }
         }
         .leftAction {

@@ -15,7 +15,6 @@ import {
   updateProductSpecifiedStatus,
 } from '@/features/project/services';
 import { confirmDelete } from '@/helper/common';
-import { showImageUrl } from '@/helper/utils';
 
 import {
   setPartialProductDetail,
@@ -62,6 +61,9 @@ export const renderSpecifiedStatusDropdown =
         icon: <DispatchIcon style={{ width: 16, height: 16 }} />,
         disabled: record.specifiedDetail?.specified_status !== ProductSpecifyStatus.Cancelled,
         onClick: () => {
+          if (record.specifiedDetail?.specified_status !== ProductSpecifyStatus.Cancelled) {
+            return;
+          }
           updateProductSpecifiedStatus(record.specifiedDetail?.id ?? '', {
             specified_status: ProductSpecifyStatus['Re-specified'],
           }).then((success) => (success ? tableRef.current.reload() : undefined));
@@ -73,6 +75,9 @@ export const renderSpecifiedStatusDropdown =
         icon: <CancelIcon style={{ width: 16, height: 16 }} />,
         disabled: record.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled,
         onClick: () => {
+          if (record.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled) {
+            return;
+          }
           updateProductSpecifiedStatus(record.specifiedDetail?.id ?? '', {
             specified_status: ProductSpecifyStatus.Cancelled,
           }).then((success) => (success ? tableRef.current.reload() : undefined));
@@ -87,7 +92,8 @@ export const renderSpecifiedStatusDropdown =
         textCapitalize={false}
         items={menuItems}
         menuStyle={{ width: 160, height: 'auto' }}
-        labelProps={{ className: 'flex-between' }}>
+        labelProps={{ className: 'flex-between' }}
+      >
         {typeof record.specifiedDetail?.specified_status === 'number'
           ? ProductSpecifyStatus[record.specifiedDetail.specified_status]
           : ''}
@@ -141,6 +147,7 @@ export const renderActionCell =
     }
     return (
       <ActionMenu
+        editActionOnMobile={false}
         actionItems={[
           {
             type: 'updated',
@@ -173,6 +180,10 @@ export const onCellUnlisted = (data: any) => ({
   } ${data.rooms || data.room_id ? '' : 'no-box-shadow'}`,
 });
 
+export const onCellNoBorder = (data: any) => ({
+  className: `${data.rooms || data.room_id ? '' : 'no-box-shadow'}`,
+});
+
 export const onCellCancelled = (data: any) => ({
   className: `${
     data.specifiedDetail?.specified_status === ProductSpecifyStatus.Cancelled
@@ -180,11 +191,6 @@ export const onCellCancelled = (data: any) => ({
       : undefined
   } ${data.rooms || data.room_id ? '' : 'no-box-shadow'}`,
 });
-
-export const renderImage = (image: string) =>
-  image ? (
-    <img src={showImageUrl(image)} style={{ width: 24, height: 24, objectFit: 'contain' }} />
-  ) : null;
 
 export const renderAvailability = (record: any) => {
   if (record.rooms) return null;

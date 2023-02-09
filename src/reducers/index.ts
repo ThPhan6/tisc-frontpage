@@ -12,6 +12,7 @@ import { loadingActionReducer } from '@/components/LoadingPage/slices';
 import { officeProductReducer } from '@/pages/Designer/Products/CustomLibrary/slice';
 
 import { activeReducer } from './active';
+import { modalReducer } from './modal';
 import summaryReducer from './summary';
 import userReducer from './user';
 import { combineReducers, configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
@@ -28,6 +29,7 @@ const reducers = combineReducers({
   summary: summaryReducer,
   customResource: customResourceReducer,
   service: servicesReducer,
+  modal: modalReducer,
   active: activeReducer,
 });
 
@@ -43,9 +45,7 @@ const store = configureStore({
   reducer: persistedReducers,
   devTools: process.env.NODE_ENV !== 'production',
   middleware: getDefaultMiddleware({
-    serializableCheck: {
-      ignoredActions: ['persist/PERSIST'],
-    },
+    serializableCheck: false,
   }),
 });
 

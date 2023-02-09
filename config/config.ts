@@ -87,5 +87,7 @@ export default defineConfig({
   define: {
     API_URL: process.env.REACT_APP_API_URL || '',
     STORE_URL: process.env.TISC_FILE_STORE_URL || '',
+    RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY || '',
+    ENABLE_RECAPTCHA: process.env.ENABLE_RECAPTCHA === 'true',
   },
 });

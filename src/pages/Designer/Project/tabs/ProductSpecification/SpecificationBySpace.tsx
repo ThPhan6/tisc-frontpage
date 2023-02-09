@@ -8,7 +8,6 @@ import {
   onCellCancelled,
   renderActionCell,
   renderAvailability,
-  renderImage,
   renderSpecifiedStatusDropdown,
   useSpecifyingModal,
 } from '../../hooks';
@@ -20,6 +19,7 @@ import { TableColumnItem } from '@/components/Table/types';
 import { SpecifiedProductBySpace } from '@/features/project/types';
 
 import { AvailabilityModal } from '../../components/AvailabilityModal';
+import { LogoIcon } from '@/components/LogoIcon';
 import CustomTable, { GetExpandableTableConfig } from '@/components/Table';
 import { RobotoBodyText } from '@/components/Typography';
 
@@ -47,7 +47,7 @@ const SpecificationBySpace: FC<SpaceListProps> = ({ projectId }) => {
         width: '5%',
         noBoxShadow: props.noBoxShadow,
         align: 'center',
-        render: (value) => renderImage(value?.[0]),
+        render: (value) => (value ? <LogoIcon logo={value[0]} size={24} /> : null),
         onCell: props.isAreaColumn ? onCellCancelled : undefined,
       },
       {

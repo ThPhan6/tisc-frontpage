@@ -11,6 +11,9 @@
 
 .container {
   background: #fff;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 
   .tabs {
     :global(.ant-tabs-top > .ant-tabs-nav) {
@@ -20,7 +23,7 @@
 
   .mainContent {
     width: 100%;
-    padding: 0 16px 16px 16px;
+    padding: 0 var(--spacing) var(--spacing);
     overflow: auto;
 
     /// design-firm

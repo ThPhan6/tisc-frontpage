@@ -4,19 +4,22 @@ import { DropdownProps } from 'antd/es/dropdown';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 
+import { checkBrowser } from '@/helper/utils';
+
 import { CustomInputProps } from './types';
 
 import { CustomDropDown } from '@/features/product/components';
 
 import { CustomInput } from './CustomInput';
-import styles from './DropdownSelectInput.less';
+import styles from './styles/DropdownSelectInput.less';
 
 interface DropdownSelectInputProps extends CustomInputProps {
   overlay: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
   overlayStyle?: CSSProperties;
-  overlayClass?: CSSProperties;
+  overlayClass?: string;
   noPadding?: boolean;
   placement?: DropdownProps['placement'];
+  showCloseFooter?: boolean;
 }
 
 export const DropdownSelectInput: FC<DropdownSelectInputProps> = ({
@@ -26,23 +29,28 @@ export const DropdownSelectInput: FC<DropdownSelectInputProps> = ({
   overlayClass = '',
   noPadding,
   placement = 'bottom',
+  showCloseFooter,
   ...props
 }) => {
   return (
     <CustomDropDown
       placement={placement}
-      align={window.safari ? { offset: [24, 0] } : {}}
+      align={checkBrowser().isSafari ? { offset: [36, 0] } : {}}
       hideDropdownIcon
       overlay={
         <div
           className={`${styles.overlayContainer} ${
             noPadding ? styles.noPadding : ''
-          } ${overlayClass} `}>
+          } ${overlayClass}`}
+        >
           {overlay}
         </div>
       }
       overlayStyle={overlayStyle}
-      className={styles.selectDropdown}>
+      className={styles.selectDropdown}
+      autoHeight={false}
+      showCloseFooter={showCloseFooter}
+    >
       <CustomInput borderBottomColor="light" {...props} value={value || ''} />
       <DropdownIcon className="ic-select" />
     </CustomDropDown>

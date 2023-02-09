@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { ReactComponent as DownloadIconV2 } from '@/assets/icons/download-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { useCheckPermission } from '@/helper/hook';
 import { isEmpty } from 'lodash';
 
@@ -18,10 +19,13 @@ import styles from './ProductDownloadFooter.less';
 const ProductDownloadFooter: FC = () => {
   const dispatch = useDispatch();
 
-  const downloads = useAppSelector((state) => state.product.details.downloads);
+  const isTablet = useScreen().isTablet;
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  const isEditable = isTiscAdmin && !isTablet;
 
-  if (isTiscAdmin) {
+  const downloads = useAppSelector((state) => state.product.details.downloads);
+
+  if (isEditable) {
     return (
       <DynamicFormInput
         data={downloads.map((item) => {

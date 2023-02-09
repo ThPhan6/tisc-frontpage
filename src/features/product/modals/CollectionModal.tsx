@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 
 import { message } from 'antd';
 
@@ -47,6 +47,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
   collectionType,
 }) => {
   const [data, setData] = useState<DynamicRadioValue[]>([]);
+  const curData = useRef<DynamicRadioValue[]>([]);
   const [newOption, setNewOption] = useState<string>();
 
   /// collection item
@@ -80,20 +81,26 @@ export const CollectionModal: FC<CollectionModalProps> = ({
           }
         }
 
-        setData(
-          res.map((item) => ({
-            value: item.id,
-            label: item.name,
-            disabled: false,
-            editLabel: false,
-          })),
-        );
+        const currentData = res.map((item) => ({
+          value: item.id,
+          label: item.name,
+          disabled: false,
+          editLabel: false,
+        }));
+
+        curData.current = currentData;
+
+        setData(currentData);
       }
     });
   };
 
   useEffect(() => {
     getCollectionList();
+
+    return () => {
+      curData.current = [];
+    };
   }, [brandId]);
 
   /// set current selected value
@@ -196,7 +203,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
 
       /// re-render data
       if (type === 'cancel') {
-        setData(newData);
+        setData(curData.current);
         return;
       }
 
@@ -298,6 +305,7 @@ export const CollectionModal: FC<CollectionModalProps> = ({
       className={styles.modal}
       visible={visible}
       setVisible={handleCloseModal}
+      secondaryModal
       disabledSubmit={!data.length || disabledSubmit}
       chosenValue={selected}
       setChosenValue={(selectedItem: RadioValue) => {
@@ -348,7 +356,8 @@ export const CollectionModal: FC<CollectionModalProps> = ({
                 <div
                   className={`${styles.labelContent} ${
                     item.disabled || item.editLabel ? styles.inactiveMenu : ''
-                  } ${item.disabled ? 'cursor-default' : ''} `}>
+                  } ${item.disabled ? 'cursor-default' : ''} `}
+                >
                   {!item.editLabel ? (
                     <RobotoBodyText level={6}>{item.label}</RobotoBodyText>
                   ) : (
@@ -362,17 +371,19 @@ export const CollectionModal: FC<CollectionModalProps> = ({
                       />
                       <div
                         className="cursor-default flex-start"
-                        style={{ height: '100%' }}
+                        style={{ height: '100%', marginLeft: 8 }}
                         onClick={(e) => {
                           e.stopPropagation();
                           e.preventDefault();
-                        }}>
+                        }}
+                      >
                         <CustomButton
                           size="small"
                           variant="primary"
                           properties="rounded"
                           buttonClass={styles.btnSize}
-                          onClick={handleEditNameAssigned('save', index, item)}>
+                          onClick={handleEditNameAssigned('save', index, item)}
+                        >
                           Save
                         </CustomButton>
                         <CustomButton
@@ -380,7 +391,8 @@ export const CollectionModal: FC<CollectionModalProps> = ({
                           variant="primary"
                           properties="rounded"
                           buttonClass={styles.btnSize}
-                          onClick={handleEditNameAssigned('cancel', index, item)}>
+                          onClick={handleEditNameAssigned('cancel', index, item)}
+                        >
                           Cancel
                         </CustomButton>
                       </div>
@@ -392,13 +404,15 @@ export const CollectionModal: FC<CollectionModalProps> = ({
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                    }}>
+                    }}
+                  >
                     <ActionMenu
                       disabled={item.disabled || item.editLabel}
                       className={`${styles.marginSpace} ${
                         item.disabled ? 'mono-color-medium' : 'mono-color'
                       } `}
                       overlayClassName={styles.actionMenuOverLay}
+                      editActionOnMobile={false}
                       actionItems={[
                         {
                           type: 'updated',

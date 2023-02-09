@@ -57,7 +57,8 @@ const ProjectUpdatePage: React.FC = () => {
 
       <CustomTabPane
         active={selectedTab === ProjectTabKeys.basicInformation}
-        disable={!basicInformationTab}>
+        disable={!basicInformationTab}
+      >
         <GeneralInformation project={project} setProject={setProject} />
       </CustomTabPane>
 
@@ -65,7 +66,8 @@ const ProjectUpdatePage: React.FC = () => {
         active={selectedTab === ProjectTabKeys.zoneAreaRoom}
         disable={!zoneAreaRoomTab}
         lazyLoad
-        forceReload>
+        forceReload
+      >
         <SpaceManagement projectId={projectId} />
       </CustomTabPane>
 
@@ -73,7 +75,8 @@ const ProjectUpdatePage: React.FC = () => {
         active={selectedTab === ProjectTabKeys.productConsidered}
         disable={!productConsideredTab}
         lazyLoad
-        forceReload>
+        forceReload
+      >
         <ProductConsidered />
       </CustomTabPane>
 
@@ -81,7 +84,8 @@ const ProjectUpdatePage: React.FC = () => {
         active={selectedTab === ProjectTabKeys.productSpecified}
         disable={!productSpecifiedTab}
         lazyLoad
-        forceReload>
+        forceReload
+      >
         <ProductSpecification />
       </CustomTabPane>
     </div>

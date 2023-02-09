@@ -1,8 +1,8 @@
 .container {
-  height: calc(100vh - 248px);
+  display: flex;
+  flex-direction: column;
   background: #fff;
   .content {
-    height: calc(100vh - 288px);
     padding: 16px;
     overflow: auto;
     .designInfo {
@@ -151,12 +151,8 @@
         }
       }
       .code {
-        width: 10%;
         padding-right: 12px;
         text-transform: capitalize;
-      }
-      .room {
-        width: 90%;
       }
     }
 

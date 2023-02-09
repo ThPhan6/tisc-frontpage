@@ -9,6 +9,7 @@ import { useHistory } from 'umi';
 import { ReactComponent as InfoIcon } from '@/assets/icons/info-icon.svg';
 
 import { createBrand } from '../services';
+import { useScreen } from '@/helper/common';
 import { getEmailMessageError, getEmailMessageErrorType } from '@/helper/utils';
 
 import { TISCUserGroupBrandForm } from '../types/brand.types';
@@ -20,7 +21,7 @@ import { FormGroup } from '@/components/Form';
 import { Status } from '@/components/Form/Status';
 
 import styles from './BrandEntryForm.less';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import { showPageLoading } from '@/features/loading/loading';
 import { inviteBrand } from '@/features/team-profiles/api';
 
 interface BrandEntryFormValue {}
@@ -36,6 +37,7 @@ type EntryFormInput = keyof typeof DEFAULT_BRAND;
 const BrandEntryForm: FC<BrandEntryFormValue> = () => {
   const [data, setData] = useState<TISCUserGroupBrandForm>(DEFAULT_BRAND);
   const history = useHistory();
+  const { isTablet } = useScreen();
 
   const onChangeData = (fieldName: EntryFormInput) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setData((prevState) => ({
@@ -67,7 +69,6 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
       last_name: data.last_name?.trim() ?? '',
       email: data.email?.trim() ?? '',
     }).then((newBrand) => {
-      hidePageLoading();
       if (!newBrand) {
         return;
       }
@@ -82,7 +83,6 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
   const handleSendInvite = () => {
     handleSubmit((brandId) => {
       inviteBrand(brandId).then(() => {
-        hidePageLoading();
         history.replace(PATH.tiscUserGroupBrandList);
       });
     });
@@ -93,7 +93,12 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
       handleCancel={history.goBack}
       handleSubmit={() => handleSubmit()}
       submitButtonStatus={false}
-      contentClass={styles.contentEntryForm}>
+      contentClass={styles.contentEntryForm}
+      contentStyles={{
+        height: isTablet ? 'calc(var(--vh) * 100 - 280px)' : 'calc(var(--vh) * 100 - 304px)',
+        overflow: 'auto',
+      }}
+    >
       {/* brand - company name */}
       <InputGroup
         label="Brand / Company Name"
@@ -166,7 +171,8 @@ const BrandEntryForm: FC<BrandEntryFormValue> = () => {
         required={true}
         iconTooltip={<InfoIcon />}
         layout="vertical"
-        formClass={styles.access_label}>
+        formClass={styles.access_label}
+      >
         <CustomRadio
           options={BrandAccessLevelDataRole.map((el) => ({ ...el, disabled: true }))}
           value={BrandAccessLevelDataRole[0].value}

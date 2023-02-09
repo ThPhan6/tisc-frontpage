@@ -1,9 +1,10 @@
 import { FC, useEffect, useState } from 'react';
 
 import { USER_STATUS_TEXTS } from '@/constants/util';
-import { Col, Collapse, Row } from 'antd';
+import { Collapse, Row } from 'antd';
 
 import { getTeamsByDesignFirm } from '../services';
+import { useScreen } from '@/helper/common';
 import { isEmpty } from 'lodash';
 
 import { UserGroupProps } from '../types/common.types';
@@ -12,6 +13,7 @@ import { TeamProfileGroupCountry } from '@/features/team-profiles/types';
 import { FormGroup } from '@/components/Form';
 import { PhoneInput } from '@/components/Form/PhoneInput';
 import TextForm from '@/components/Form/TextForm';
+import { ResponsiveCol } from '@/components/Layout';
 import { MemberHeaderLabel, RenderLabelHeader } from '@/components/RenderHeaderLabel';
 
 import indexStyles from '../styles/index.less';
@@ -21,6 +23,7 @@ import { getListTeamProfileUserGroupByBrandId } from '@/features/team-profiles/a
 
 const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
   const [teamData, setTeamData] = useState<TeamProfileGroupCountry[]>([]);
+  const { isTablet } = useScreen();
 
   useEffect(() => {
     if (!id) return;
@@ -36,8 +39,13 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
 
   return (
     <Row className={indexStyles.container}>
-      <Col span={12}>
-        <div className={indexStyles.form}>
+      <ResponsiveCol>
+        <div
+          className={indexStyles.form}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 266px)' : 'calc(var(--vh) * 100 - 248px)',
+          }}
+        >
           <GeneralData>
             {teamData.length > 0 && (
               <Collapse {...CollapseLevel1Props}>
@@ -54,7 +62,8 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
                     key={index}
                     collapsible={
                       isEmpty(team.country_name) || team.count == 0 ? 'disabled' : undefined
-                    }>
+                    }
+                  >
                     <Collapse {...CollapseLevel2Props}>
                       {team.users?.map((user, userIndex) => (
                         <Collapse.Panel
@@ -66,7 +75,8 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
                             />
                           }
                           key={`${index}-${userIndex}`}
-                          collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}>
+                          collapsible={isEmpty(user.firstname) ? 'disabled' : undefined}
+                        >
                           <div className={indexStyles.info}>
                             <TextForm label="Gender">
                               {user.gender === true ? 'Male' : 'Female'}
@@ -111,7 +121,7 @@ const TeamDetail: FC<UserGroupProps> = ({ type, id }) => {
             )}
           </GeneralData>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

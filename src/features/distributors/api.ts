@@ -10,6 +10,8 @@ import {
   SummaryResponse,
 } from '@/components/Table/types';
 
+import { hidePageLoading, showPageLoading } from '../loading/loading';
+
 interface DistributorPaginationResponse {
   data: {
     pagination: PaginationResponse;
@@ -18,13 +20,16 @@ interface DistributorPaginationResponse {
   };
 }
 export async function createDistributor(data: DistributorForm) {
+  showPageLoading();
   return request<boolean>('/api/distributor/create', { method: 'POST', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CREATE_DISTRIBUTOR_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.CREATE_DISTRIBUTOR_ERROR);
+      hidePageLoading();
       return false;
     });
 }
@@ -51,6 +56,7 @@ export async function getDistributorPagination(
     })
     .catch((error) => {
       message.error(error.message);
+      hidePageLoading();
     });
 }
 
@@ -67,13 +73,16 @@ export async function deleteDistributor(id: string) {
 }
 
 export async function updateDistributor(id: string, data: DistributorForm) {
+  showPageLoading();
   return request<boolean>(`/api/distributor/update/${id}`, { method: 'PUT', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_DISTRIBUTOR_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_ATTRIBUTE_ERROR);
+      hidePageLoading();
       return false;
     });
 }

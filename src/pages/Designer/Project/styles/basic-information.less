@@ -1,10 +1,18 @@
+@import '~antd/es/style/variable.less';
+
 .basicInformationWrapper {
   margin-top: 8px;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
   .entryFormWrapper {
-    height: calc(100vh - 232px);
-    padding: 16px;
+    height: calc(var(--vh) * 100 - 232px);
+    padding: var(--spacing);
     overflow: hidden auto;
     background-color: #fff;
+
     .formGroup {
       margin-bottom: 16px;
       &.activeText {
@@ -24,6 +32,12 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+
+  @media screen and (max-width: @screen-md) {
+    justify-content: space-between;
+    width: 100%;
+  }
+
   .projectStatusLabel {
     display: flex;
     align-items: cener;
@@ -36,6 +50,9 @@
     :global(.ant-radio) {
       + * {
         padding-right: 0;
+        @media screen and (max-width: @screen-md) {
+          padding-left: 0;
+        }
       }
     }
   }
@@ -49,5 +66,12 @@
 .projectStatusRadio {
   :global(.ant-space-item) {
     margin: 0 16px;
+    @media screen and (max-width: @screen-md) {
+      margin: 0;
+      padding-left: 24px;
+      &:first-child {
+        padding-left: 0;
+      }
+    }
   }
 }

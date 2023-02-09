@@ -1,6 +1,7 @@
 import { FC } from 'react';
 
 import { useProductAttributeForm } from './hooks';
+import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId } from '@/helper/hook';
 
 import { setPartialProductDetail } from '../../reducers';
@@ -32,7 +33,9 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
   isSpecifiedModal,
 }) => {
   const productIdParam = useGetParamId();
+  const isTablet = useScreen().isTablet;
   const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  const isEditable = isTiscAdmin && !isTablet;
   const curProductId = productId ?? productIdParam;
 
   const { addNewProductAttribute, attributeGroup, dimensionWeightData } = useProductAttributeForm(
@@ -47,7 +50,7 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
 
   return (
     <>
-      {isTiscAdmin ? (
+      {isEditable ? (
         <CustomPlusButton
           size={18}
           label="Add Attribute"
@@ -58,9 +61,10 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
 
       <DimensionWeight
         collapseStyles={!isSpecifiedModal}
-        customClass={!isTiscAdmin ? styles.marginTopSpace : styles.colorInput}
-        editable={isTiscAdmin}
+        customClass={!isEditable ? styles.marginTopSpace : styles.colorInput}
+        editable={isEditable}
         isConversionText={isSpecifiedModal}
+        arrowAlignRight={isSpecifiedModal}
         isShow={activeKey === 'specification'}
         data={dimensionWeightData}
         onChange={(data) => {

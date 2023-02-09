@@ -98,7 +98,7 @@ const BrandProductListPage: React.FC = () => {
             topValue={summary?.product_count ?? '0'}
             disabled={summary ? false : true}
             bottomValue="Products"
-            customClass={`left-divider ${summary?.product_count ? 'bold' : ''}`}
+            customClass={`left-divider mr-12 ${summary?.product_count ? 'bold' : ''}`}
           />
         </>
       }
@@ -114,6 +114,7 @@ const BrandProductListPage: React.FC = () => {
               true,
               'Categories',
               'bottomRight',
+              { autoHeight: false, borderFirstItem: true },
             )}
             customClass="left-divider"
           />
@@ -126,6 +127,8 @@ const BrandProductListPage: React.FC = () => {
               brandDropDownData,
               true,
               'Collections',
+              undefined,
+              { autoHeight: false, borderFirstItem: true },
             )}
             customClass="left-divider mr-12"
           />

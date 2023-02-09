@@ -1,4 +1,5 @@
 .closeIcon {
+  margin: 16px 9px 0 0;
   path {
     fill: #fff;
   }
@@ -9,17 +10,47 @@
   line-height: 22px;
   letter-spacing: 0.02em;
 }
+
+.tabContent {
+  :global(.ant-tabs-nav-list) {
+    width: 100% !important;
+  }
+}
+
+.modal {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
 .content {
-  height: 568px;
+  height: auto;
+  max-height: 100%;
+  overflow-y: auto;
+
   .header {
+    position: sticky;
+    top: 0;
     margin-bottom: 8px;
-    padding-top: 16px;
+    padding-top: 32px;
+    background-color: #000;
+
     .customTab {
+      :global(.tab-items) {
+        max-width: fit-content;
+      }
       :global(.ant-tabs > .ant-tabs-nav .ant-tabs-nav-list) {
-        display: grid;
-        grid-template-columns: repeat(3, 100%/3);
+        // display: grid;
+        // grid-template-columns: repeat(3, 100%/3);
         width: 100%;
-        border-bottom: 1px solid @mono-color-medium;
+        // border-bottom: 1px solid @mono-color-medium;
+        overflow: auto hidden;
+
+        @media screen and (max-width: 432px) {
+          width: max-content;
+        }
+      }
+      :global(.ant-tabs-tab-active) {
+        border-bottom: 1px solid #fff;
       }
       :global(.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn) {
         color: #fff;
@@ -40,7 +71,7 @@
   .body {
     color: #fff !important;
     div {
-      height: 400px;
+      // height: 400px;
       overflow: auto;
       ::-webkit-scrollbar {
         display: none;

@@ -3,6 +3,8 @@ import { useDispatch } from 'react-redux';
 
 import { MESSAGE_ERROR } from '@/constants/message';
 import { PATH } from '@/constants/path';
+import { USER_ROLE } from '@/constants/userRoles';
+import { QUERY_KEY } from '@/constants/util';
 import { Col, Row, message } from 'antd';
 import { useHistory, useParams } from 'umi';
 
@@ -15,20 +17,21 @@ import {
   updateProductCard,
 } from '@/features/product/services';
 import { getBrandById } from '@/features/user-group/services';
-import { useCheckPermission, useQuery } from '@/helper/hook';
-import { isValidURL } from '@/helper/utils';
+import { pushTo } from '@/helper/history';
+import { useGetUserRoleFromPathname, useQuery } from '@/helper/hook';
+import { getValueByCondition, isValidURL, throttleAction } from '@/helper/utils';
 import { pick, sortBy } from 'lodash';
 
 import { ProductFormData, ProductKeyword } from '../types';
 import { ProductInfoTab } from './ProductAttributes/types';
 import { ProductDimensionWeight } from '@/features/dimension-weight/types';
 import { resetProductDetailState, setBrand } from '@/features/product/reducers';
-import { ModalOpen } from '@/pages/LandingPage/types';
 import { useAppSelector } from '@/reducers';
+import { ModalType } from '@/reducers/modal';
 
+import { ResponsiveCol } from '@/components/Layout';
 import { PublicHeader } from '@/components/PublicHeader';
 import { TableHeader } from '@/components/Table/TableHeader';
-import { AboutPoliciesContactModal } from '@/pages/LandingPage/AboutPolicesContactModal';
 import { LandingPageFooter } from '@/pages/LandingPage/footer';
 
 import { ProductAttributeComponent } from './ProductAttributes';
@@ -48,14 +51,16 @@ const ProductDetailContainer: React.FC = () => {
   Cookies.set('signature', signature);
   const isPublicPage = signature ? true : false;
 
-  const listMenuFooter: ModalOpen[] = ['About', 'Policies', 'Contact'];
-  const [openModal, setOpenModal] = useState<ModalOpen>('');
+  const listMenuFooter: ModalType[] = ['About', 'Policies', 'Contact'];
 
   const params = useParams<{ id: string; brandId: string }>();
   const productId = params?.id || '';
   const brandId = params?.brandId || '';
 
-  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  const currentUser = useGetUserRoleFromPathname();
+  const isTiscUser = currentUser === USER_ROLE.tisc;
+  const isBrandUser = currentUser === USER_ROLE.brand;
+  const isDesignerUser = currentUser === USER_ROLE.design;
 
   const details = useAppSelector((state) => state.product.details);
 
@@ -89,10 +94,6 @@ const ProductDetailContainer: React.FC = () => {
       getRelatedCollectionProducts(details.id);
     }
   }, [details.id, details.brand]);
-
-  const handleCloseModal = () => {
-    setOpenModal('');
-  };
 
   const onSave = () => {
     // check urls is valid
@@ -147,12 +148,29 @@ const ProductDetailContainer: React.FC = () => {
     });
   };
 
-  // if (!details.id) {
-  //   return null;
-  // }
+  const query = useQuery();
+
+  const noPreviousPage = query.get(QUERY_KEY.no_previous_page);
+
+  const handleCloseProductDetail = () => {
+    if (!noPreviousPage) {
+      history.goBack();
+      return;
+    }
+    pushTo(
+      getValueByCondition(
+        [
+          [isTiscUser, PATH.tiscHomePage],
+          [isBrandUser, PATH.brandProduct],
+          [isDesignerUser, PATH.designerBrandProduct],
+        ],
+        '',
+      ),
+    );
+  };
 
   const renderHeader = () => {
-    if (isTiscAdmin) {
+    if (isTiscUser) {
       let categorySelected: string = sortBy(details.categories, 'name')
         .slice(0, 3)
         .map((category) => category.name)
@@ -166,13 +184,12 @@ const ProductDetailContainer: React.FC = () => {
         <ProductDetailHeader
           title={'CATEGORY'}
           label={categorySelected || 'select'}
-          onSave={onSave}
-          onCancel={history.goBack}
+          onSave={throttleAction(onSave)}
+          onCancel={handleCloseProductDetail}
           customClass={`${styles.marginBottomSpace} ${categorySelected ? styles.monoColor : ''}`}
         />
       );
     }
-
     if (isPublicPage) {
       return <PublicHeader />;
     }
@@ -181,7 +198,7 @@ const ProductDetailContainer: React.FC = () => {
       <TableHeader
         title={title}
         customClass={styles.marginBottomSpace}
-        rightAction={<CloseIcon className="closeIcon" onClick={history.goBack} />}
+        rightAction={<CloseIcon className="closeIcon" onClick={handleCloseProductDetail} />}
       />
     );
   };
@@ -191,13 +208,13 @@ const ProductDetailContainer: React.FC = () => {
       <div className={styles.backgroundLight}>
         <Col span={24}>{renderHeader()}</Col>
 
-        <Col span={24}>
-          <Row className={isPublicPage ? styles.marginRounded : ''}>
-            <Col span={12}>
+        <Col span={24} style={{ margin: isPublicPage ? '0 24px' : '' }}>
+          <Row className={isPublicPage ? styles.marginRounded : ''} gutter={[8, 8]}>
+            <ResponsiveCol>
               <ProductImagePreview />
-            </Col>
+            </ResponsiveCol>
 
-            <Col span={12} className={styles.productContent}>
+            <ResponsiveCol className={styles.productContent}>
               <Row style={{ flexDirection: 'column', height: '100%' }}>
                 <Col>
                   <ProductBasicInfo />
@@ -208,23 +225,17 @@ const ProductDetailContainer: React.FC = () => {
                 </Col>
 
                 <Col style={{ marginTop: 'auto' }}>
-                  <ProductDetailFooter visible={activeKey !== 'vendor'} />
+                  <ProductDetailFooter infoTab={activeKey} />
                 </Col>
               </Row>
-            </Col>
+            </ResponsiveCol>
           </Row>
         </Col>
       </div>
 
       {isPublicPage ? (
         <Col span={24} className={styles.footerContent}>
-          <LandingPageFooter
-            setOpenModal={setOpenModal}
-            listMenuFooter={listMenuFooter}
-            isPublicPage
-          />
-
-          <AboutPoliciesContactModal visible={openModal} onClose={handleCloseModal} />
+          <LandingPageFooter listMenuFooter={listMenuFooter} />
         </Col>
       ) : null}
     </Row>

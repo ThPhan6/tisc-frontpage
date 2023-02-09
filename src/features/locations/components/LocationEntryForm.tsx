@@ -2,12 +2,16 @@ import type { FC } from 'react';
 import React, { useEffect, useState } from 'react';
 
 import { MESSAGE_ERROR } from '@/constants/message';
+import { PATH } from '@/constants/path';
+import { USER_ROLE } from '@/constants/userRoles';
 import { message } from 'antd';
 
-import { useCheckPermission } from '@/helper/hook';
+import { pushTo } from '@/helper/history';
+import { useCheckPermission, useGetParamId, useGetUserRoleFromPathname } from '@/helper/hook';
 import {
   getEmailMessageError,
   getEmailMessageErrorType,
+  getValueByCondition,
   isEmptySpace,
   messageError,
   messageErrorType,
@@ -30,6 +34,7 @@ import CityModal from '@/features/locations/components/CityModal';
 import CountryModal from '@/features/locations/components/CountryModal';
 import StateModal from '@/features/locations/components/StateModal';
 
+import { deleteLocationById } from '../api';
 import styles from './LocationEntryForm.less';
 
 interface LocationEntryFormProps {
@@ -58,6 +63,8 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
 
   const isDesignAdmin = useCheckPermission('Design Admin');
 
+  const locationId = useGetParamId();
+
   const [countryData, setCountryData] = useState({
     label: '',
     value: data.country_id,
@@ -81,6 +88,21 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     /// has been selected
     selectedFunctionType.map((el) => el.label).join(', ') ||
     'select all relevance';
+
+  const currentUser = useGetUserRoleFromPathname();
+  const isTiscUser = currentUser === USER_ROLE.tisc;
+  const isBrandUser = currentUser === USER_ROLE.brand;
+  const isDesignerUser = currentUser === USER_ROLE.design;
+
+  /// for user role path
+  const userRolePath = getValueByCondition(
+    [
+      [isTiscUser, PATH.tiscLocation],
+      [isBrandUser, PATH.brandLocation],
+      [isDesignerUser, PATH.designFirmLocation],
+    ],
+    PATH.designFirmLocation,
+  );
 
   useEffect(() => {
     if (!isDesignAdmin) {
@@ -163,10 +185,22 @@ const LocationEntryForm: FC<LocationEntryFormProps> = (props) => {
     });
   };
 
+  const handleDeleteLocation = () => {
+    if (locationId) {
+      deleteLocationById(locationId).then((isSuccess) => {
+        if (isSuccess) {
+          pushTo(userRolePath);
+        }
+      });
+    }
+  };
+
   return (
     <EntryFormWrapper
       handleSubmit={handleSubmit}
       handleCancel={onCancel}
+      handleDelete={handleDeleteLocation}
+      entryFormTypeOnMobile={locationId ? 'edit' : 'create'}
       submitButtonStatus={isSubmitted}>
       <InputGroup
         label="Business Name"

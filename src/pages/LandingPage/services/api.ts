@@ -6,7 +6,6 @@ import { request } from 'umi';
 import type {
   AvailableTime,
   BookingPayloadRequest,
-  ContactRequestBody,
   InformationBooking,
   LoginInput,
   LoginResponseProps,
@@ -23,6 +22,8 @@ import {
 import store from '@/reducers';
 import { setUserProfile } from '@/reducers/user';
 import { UserDetail } from '@/types/user.type';
+
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 interface QuotationPaginationResponse {
   data: {
@@ -94,6 +95,7 @@ export async function forgotPasswordMiddleware(
   data: {
     email: string;
     type: ForgotType;
+    captcha: string;
   },
   callback: (type: STATUS_RESPONSE, message?: string) => void,
 ) {
@@ -146,12 +148,15 @@ export async function createPasswordVerify(token: string, data: PasswordRequestB
 }
 
 export async function signUpDesigner(data: SignUpDesignerRequestBody) {
+  showPageLoading();
   return request(`/api/auth/register`, { method: 'POST', data })
     .then(() => {
+      hidePageLoading();
       message.success(MESSAGE_NOTIFICATION.SIGN_UP_DESIGNER_SUCCESS);
       return true;
     })
     .catch((error) => {
+      hidePageLoading();
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.SIGN_UP_DESIGNER_ERROR);
       return false;
     });
@@ -179,7 +184,12 @@ export async function checkEmailAlreadyUsed(email: string) {
     });
 }
 
-export async function contact(data: ContactRequestBody) {
+export async function contact(data: {
+  name: string;
+  email: string;
+  inquiry: string;
+  captcha: string;
+}) {
   return request<boolean>(`/api/contact/create`, { method: 'POST', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CONTACT_SUCCESS);
@@ -243,10 +253,12 @@ export async function createBooking(data: BookingPayloadRequest) {
   return request<boolean>(`/api/booking/create`, { method: 'POST', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CREATE_BOOKING_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message);
+      hidePageLoading();
       return false;
     });
 }
@@ -261,14 +273,17 @@ export async function getBooking(id: string) {
     });
 }
 
-export async function deleteBooking(id: string) {
-  return request<boolean>(`/api/booking/${id}/cancel`, { method: 'DELETE' })
+export async function deleteBooking(id: string, data: { captcha: string }) {
+  showPageLoading();
+  return request<boolean>(`/api/booking/${id}/cancel`, { method: 'DELETE', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.CANCEL_BOOKING_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message);
+      hidePageLoading();
       return false;
     });
 }
@@ -279,15 +294,18 @@ export async function updateBooking(
     date: string;
     slot: number;
     timezone: string;
+    captcha: string;
   },
 ) {
   return request<boolean>(`/api/booking/${id}/re-schedule`, { method: 'PATCH', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_BOOKING_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message);
+      hidePageLoading();
       return false;
     });
 }

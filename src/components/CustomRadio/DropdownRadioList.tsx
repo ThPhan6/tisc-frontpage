@@ -27,11 +27,13 @@ interface DropdownRadioListProps {
   onChange?: (value: RadioValue) => void;
   noCollapse?: boolean;
   canActiveMultiKey?: boolean;
+  radioDisabled?: boolean;
 }
 type ActiveKeyType = string | number | (string | number)[];
 
 const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
-  const { data, selected, onChange, renderTitle, chosenItem, canActiveMultiKey } = props;
+  const { data, selected, onChange, renderTitle, chosenItem, canActiveMultiKey, radioDisabled } =
+    props;
   const [activeKey, setActiveKey] = useState<ActiveKeyType>([]);
 
   useEffect(() => {
@@ -54,7 +56,8 @@ const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
             className={styles.dropdownCount}
             style={{
               marginLeft: item.margin ? item.margin : 8,
-            }}>
+            }}
+          >
             ({item.options.length})
           </span>
         </span>
@@ -76,18 +79,21 @@ const DropdownRadioList: React.FC<DropdownRadioListProps> = (props) => {
         }
         setActiveKey(newKeys);
       }}
-      activeKey={activeKey}>
+      activeKey={activeKey}
+    >
       {data.map((item, index) => (
         <Collapse.Panel
           header={renderHeader(item, index)}
           key={index}
           collapsible={isEmpty(item.options) ? 'disabled' : undefined}
-          className="site-collapse-custom-panel">
+          className="site-collapse-custom-panel"
+        >
           <CustomRadio
             options={item.options}
             value={selected?.value}
             onChange={onChange}
             isRadioList
+            disabled={radioDisabled}
           />
         </Collapse.Panel>
       ))}

@@ -1,3 +1,5 @@
+@import '~antd/es/style/variable.less';
+
 .noBoxShadow {
   padding-top: 8px;
 
@@ -23,18 +25,34 @@
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+
+        @media screen and (max-width: @screen-sm) {
+          width: 40%;
+        }
       }
     }
   }
 
   :global(.header-label) {
     padding-left: 14px;
+
+    @media screen and (max-width: @screen-sm) {
+      padding-left: 18px;
+    }
   }
   :global(.label-space) {
     padding-left: 10px;
+
+    @media screen and (max-width: @screen-sm) {
+      padding-left: 14px;
+    }
   }
   :global(.left-space) {
     padding-left: 8px;
+
+    @media screen and (max-width: @screen-sm) {
+      padding-left: 4px;
+    }
   }
   :global(.left-none) {
     padding-left: 0;

@@ -1,6 +1,6 @@
 import { SORT_ORDER } from '@/constants/util';
 
-import { isNaN, isNumber, isUndefined, lowerCase, toNumber } from 'lodash';
+import { isNaN, isNumber, isUndefined, lowerCase, throttle, toNumber } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import { PhoneInputValueProp } from '@/components/Form/types';
@@ -68,6 +68,17 @@ const ACCESS_BY_TYPE: { [key in UserType]: string } = {
   2: 'brand',
   3: 'design',
 };
+
+/// default throttle action has only called first time when function excuted
+export const throttleAction = (
+  fnc: any,
+  time: number = 1000,
+  action?: { leading?: boolean; trailing?: boolean },
+) =>
+  throttle(fnc, time, {
+    leading: action?.leading ?? true,
+    trailing: action?.trailing ?? false,
+  });
 
 export const redirectAfterLogin = (access: any, userType: UserType) => {
   const routesByUserType = routes.filter((el) => el.access?.includes(ACCESS_BY_TYPE[userType]));
@@ -328,7 +339,7 @@ export const getSelectedOptions = (options: CheckboxValue[], selectedIds: string
 export const setDefaultWidthForEachColumn = (
   table: TableColumnItem<any>[],
   // excluding column setted width
-  excludedColIndex?: number,
+  excludedColIndex?: number | number[],
   // set same width for each column
   // default columns are action/status/count
   // default witdh for these columns are its width have been setted(e.width)
@@ -340,7 +351,12 @@ export const setDefaultWidthForEachColumn = (
     ...e,
     width: getValueByCondition([
       // set column width auto by index
-      [excludedColIndex === index, 'auto'],
+      [
+        typeof excludedColIndex === 'number'
+          ? excludedColIndex === index
+          : excludedColIndex?.includes(index),
+        'auto',
+      ],
       // set custom column with its width
       [setWidthFor?.columns?.includes(String(e.dataIndex)), setWidthFor?.colWidth || e.width],
       // default columns with its width have been setted
@@ -398,4 +414,15 @@ export const checkValidURL = (url: string) => {
     /^(http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/,
   );
   return result !== null;
+};
+
+export const checkBrowser = () => {
+  const chromeAgent = navigator.userAgent.indexOf('Chrome') > -1;
+  let safariAgent = navigator.userAgent.indexOf('Safari') > -1;
+
+  if (chromeAgent && safariAgent) {
+    safariAgent = false;
+  }
+
+  return { isSafari: safariAgent, isChrome: chromeAgent };
 };

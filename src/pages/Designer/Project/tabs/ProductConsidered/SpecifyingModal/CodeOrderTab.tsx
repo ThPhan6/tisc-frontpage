@@ -10,6 +10,7 @@ import {
   getUnitTypeList,
 } from '@/features/project/services';
 import { getAllMaterialCode } from '@/features/user-group/services';
+import { useScreen } from '@/helper/common';
 import { useBoolean } from '@/helper/hook';
 import { getSelectedOptions, validateFloatNumber } from '@/helper/utils';
 import { forEach, isEmpty, lowerCase, startCase } from 'lodash';
@@ -77,7 +78,7 @@ export const getSelectedFinishSchedule = (finish_schedules: FinishScheduleRespon
   }));
 
   /// get room's info chosen
-  /* expected result(string): 
+  /* expected result(string):
 
   roomId-1: Floor; roomId-2: Base ceiling + floor; roomId-3: Front Wall, Door frame + panel;
 
@@ -139,6 +140,7 @@ export const getSelectedFinishSchedule = (finish_schedules: FinishScheduleRespon
 };
 
 const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, customProduct }) => {
+  const isMobile = useScreen().isMobile;
   const scheduleModal = useBoolean(false);
 
   const [materialCodeOpts, setMaterialCodeOtps] = useState<CustomRadioValue[]>([]);
@@ -243,10 +245,14 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
         <Col span={12}>
           <FormGroup label="Material/Product Code" labelFontSize={4} required {...formGroupProps}>
             <DropdownSelectInput
+              disabled
               placeholder="select from the list"
+              showCloseFooter={isMobile}
               borderBottomColor="light"
               value={materialCode?.labelText}
-              disabled
+              placement="bottomLeft"
+              overlayStyle={{ minWidth: 542 }}
+              overlayClass={styles.overlayContent}
               containerClass={styles.inputColor}
               overlay={
                 <CustomRadio
@@ -290,7 +296,8 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
           <FormGroup
             label="Define Finish Schedule (appliable for Room Schedule only)"
             labelFontSize={4}
-            {...formGroupProps}>
+            {...formGroupProps}
+          >
             <div
               className={`flex-between cursor-pointer ${styles.schedule}`}
               onClick={() => {
@@ -304,16 +311,19 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
                   return;
                 }
                 scheduleModal.setValue(true);
-              }}>
+              }}
+            >
               <div
                 className={styles.label}
-                title={finishScheduleLabel?.map((item) => item).join(' ')}>
+                title={finishScheduleLabel?.map((item) => item).join(' ')}
+              >
                 {!isEmpty(finishScheduleLabel) ? (
                   finishScheduleLabel.map((item) => (
                     <RobotoBodyText
                       level={6}
                       color="primary-color-dark"
-                      style={{ paddingRight: 8 }}>
+                      style={{ paddingRight: 8 }}
+                    >
                       {item}
                     </RobotoBodyText>
                   ))
@@ -350,6 +360,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
               noPadding
               disabled
               containerClass={styles.inputColor}
+              showCloseFooter={isMobile}
               overlay={
                 <CustomRadio
                   options={unitTypeOtps}
@@ -379,7 +390,8 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
             label="Order Method"
             labelFontSize={4}
             formClass={styles.borderBottom}
-            {...formGroupProps}>
+            {...formGroupProps}
+          >
             <CustomRadio
               direction="horizontal"
               containerClass={styles.fontSizeSmall}
@@ -399,7 +411,8 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
             label="Approval requirements prior to fabrication"
             formClass={`${styles.fontSizeSmall} ${styles.borderBottom} ${styles.inputBorderBottom}`}
             labelFontSize={4}
-            {...formGroupProps}>
+            {...formGroupProps}
+          >
             <CustomCheckbox
               options={requirements}
               selected={selectedRequirements}
@@ -425,7 +438,8 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
             label="General Instructions"
             formClass={`${styles.fontSizeSmall} ${styles.borderBottom}`}
             labelFontSize={4}
-            {...formGroupProps}>
+            {...formGroupProps}
+          >
             <CustomCheckbox
               isCheckboxList
               options={instructions}

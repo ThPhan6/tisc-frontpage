@@ -3,7 +3,7 @@
     height: 752px;
   }
   :global(.ant-modal-body) {
-    padding: 16px;
+    padding: var(--spacing);
   }
 }
 
@@ -29,6 +29,7 @@
   .textBold {
     font-weight: 500;
     font-size: @fs;
+    text-align: left;
     text-transform: uppercase;
   }
 
@@ -48,7 +49,7 @@
   th:nth-child(5),
   th:nth-child(6) {
     > .title {
-      padding-left: 20px;
+      word-spacing: 100vw;
     }
   }
 
@@ -73,6 +74,7 @@
     height: 28px;
     color: #fff;
     line-height: 10px;
+    text-align: center;
     text-transform: uppercase;
   }
 
@@ -91,6 +93,10 @@
       height: 48px;
       &:nth-last-child(2) {
         padding-right: 10px;
+
+        @media screen and (max-width: 576px) {
+          padding: 0;
+        }
       }
 
       :global(.ant-checkbox-wrapper) {
@@ -118,7 +124,7 @@
     top: 0;
     display: flex;
     justify-content: center;
-    transform: translateX(22px);
+    width: 100%;
     cursor: default;
   }
 
@@ -127,13 +133,22 @@
     flex-direction: row-reverse;
     align-items: stretch;
     justify-content: space-between;
-    margin: 0;
+    margin: 0 !important;
+
+    @media screen and (max-width: 576px) {
+      display: flex;
+      justify-content: center;
+    }
 
     :global(.ant-checkbox + span) {
       display: flex;
       flex: 1;
       align-items: center;
       padding: 0;
+
+      @media screen and (max-width: 576px) {
+        display: none;
+      }
     }
 
     .text {

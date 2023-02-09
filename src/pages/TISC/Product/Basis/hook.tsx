@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
+import { message } from 'antd';
 import { history } from 'umi';
 
 import { pushTo } from '@/helper/history';
@@ -9,6 +10,9 @@ import {
   createConversionMiddleware,
   createOptionMiddleWare,
   createPresetMiddleware,
+  deleteBasisOption,
+  deleteConversionMiddleware,
+  deletePresetMiddleware,
   getOneBasisOption,
   getOneConversionMiddleware,
   getOnePresetMiddleware,
@@ -33,8 +37,6 @@ import { EntryFormWrapper } from '@/components/EntryForm';
 import { FormNameInput } from '@/components/EntryForm/FormNameInput';
 import { TableHeader } from '@/components/Table/TableHeader';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
-
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const conversionValueDefault: ConversionSubValueProps = {
   name_1: '',
@@ -97,22 +99,20 @@ const getSubItemValue = (valueItem: SubPresetValueProp | SubBasisOption) => ({
 });
 
 export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
-  const idItem = useGetParamId();
+  const idBasis = useGetParamId();
 
   const submitButtonStatus = useBoolean(false);
 
   const [data, setData] = useState<{ name: string; subs: any[] }>({ name: '', subs: [] });
 
   useEffect(() => {
-    if (idItem) {
-      showPageLoading();
+    if (idBasis) {
       const getOneFunction = FORM_CONFIG[type].getOneFunction;
-      getOneFunction(idItem).then((res) => {
+      getOneFunction(idBasis).then((res) => {
         if (res) {
           setData(res);
         }
       });
-      hidePageLoading();
     }
   }, []);
 
@@ -173,7 +173,6 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
   };
 
   const handleCreate = (dataSubmit: any) => {
-    showPageLoading();
     const createFunction = FORM_CONFIG[type].createFunction;
     createFunction(dataSubmit).then((isSuccess) => {
       if (isSuccess) {
@@ -182,27 +181,32 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           pushTo(FORM_CONFIG[type].path);
         }, 1000);
       }
-      hidePageLoading();
     });
   };
 
   const handleUpdate = (dataSubmit: any) => {
-    showPageLoading();
     const updateFunction = FORM_CONFIG[type].updateFunction;
-    updateFunction(idItem, dataSubmit).then((isSuccess) => {
+    updateFunction(idBasis, dataSubmit).then((isSuccess) => {
       if (isSuccess) {
         submitButtonStatus.setValue(true);
         setTimeout(() => {
           submitButtonStatus.setValue(false);
         }, 2000);
       }
-      hidePageLoading();
     });
   };
 
   const onHandleSubmit = () => {
     const newSubs = data.subs.map((sub) => {
       if (type === 'conversions') {
+        /// all values are required
+        const isSubConversionValueMissing =
+          sub.formula_1 === '' || sub.unit_1 === '' || sub.formula_2 === '' || sub.unit_2 === '';
+
+        if (isSubConversionValueMissing) {
+          return;
+        }
+
         return {
           ...sub,
           name_1: sub.name_1.trim(),
@@ -213,6 +217,18 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
           formula_2: sub.formula_2,
         };
       }
+
+      /// unit must go with its value
+      const isSubValueMissing = sub.subs?.some(
+        (subItem: SubPresetValueProp | SubBasisOption) =>
+          (subItem.value_1 === '' && subItem.unit_1 !== '') ||
+          (subItem.value_2 === '' && subItem.unit_2 !== ''),
+      );
+
+      if (isSubValueMissing) {
+        return;
+      }
+
       if (type === 'presets') {
         return {
           ...sub,
@@ -252,12 +268,53 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
       return newSubOption;
     });
 
-    const handleSubmit = idItem ? handleUpdate : handleCreate;
+    const newSubDataInvalid = newSubs.some((newSub) => !newSub);
+
+    if (newSubDataInvalid) {
+      message.error(type === 'conversions' ? 'All values are required' : 'Value is required');
+      return;
+    }
+
+    const handleSubmit = idBasis ? handleUpdate : handleCreate;
 
     handleSubmit({
       name: data.name.trim(),
       subs: newSubs,
     });
+  };
+
+  const handleDeleteConversion = () => {
+    deleteConversionMiddleware(idBasis).then((isSuccess) => {
+      if (isSuccess) {
+        pushTo(PATH.conversions);
+      }
+    });
+  };
+
+  const handleDeleteBasisOption = () => {
+    deleteBasisOption(idBasis).then((isSuccess) => {
+      if (isSuccess) {
+        pushTo(PATH.options);
+      }
+    });
+  };
+
+  const handleDeletePreset = () => {
+    deletePresetMiddleware(idBasis).then((isSuccess) => {
+      if (isSuccess) {
+        pushTo(PATH.presets);
+      }
+    });
+  };
+
+  const getDeleteFuntional = () => {
+    if (!idBasis) return undefined;
+
+    if (type === 'conversions') {
+      return handleDeleteConversion();
+    }
+
+    return type === 'presets' ? handleDeletePreset() : handleDeleteBasisOption();
   };
 
   const renderProductBasicEntryForm = useCallback(() => {
@@ -267,7 +324,10 @@ export const useProductBasicEntryForm = (type: ProductBasisFormType) => {
         <EntryFormWrapper
           handleSubmit={onHandleSubmit}
           handleCancel={history.goBack}
-          submitButtonStatus={submitButtonStatus.value}>
+          handleDelete={getDeleteFuntional}
+          submitButtonStatus={submitButtonStatus.value}
+          entryFormTypeOnMobile={idBasis ? 'edit' : 'create'}
+        >
           <FormNameInput
             placeholder="type group name"
             title={getEntryFormTitle(type)}

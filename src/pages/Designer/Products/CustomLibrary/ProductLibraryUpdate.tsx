@@ -2,16 +2,18 @@ import React, { useEffect, useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { Col, Row, message } from 'antd';
-import { useHistory, useParams } from 'umi';
+import { useHistory } from 'umi';
 
 import { createCustomProduct, getOneCustomProduct, updateCustomProduct } from './services';
-import { formatImageIfBase64 } from '@/helper/utils';
+import { useGetParamId } from '@/helper/hook';
+import { formatImageIfBase64, throttleAction } from '@/helper/utils';
 
 import { CustomProductRequestBody, ProductInfoTab } from './types';
 import store, { useAppSelector } from '@/reducers';
 
 import { SpecificationTab } from './components/SpecificationTab';
 import { SummaryTab } from './components/SummaryTab';
+import { ResponsiveCol } from '@/components/Layout';
 import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 import ProductDetailHeader from '@/features/product/components/ProductDetailHeader';
 import ProductImagePreview from '@/features/product/components/ProductImagePreview';
@@ -26,8 +28,7 @@ const LIST_TAB = [
 
 const ProductLibraryUpdate: React.FC = () => {
   const history = useHistory();
-  const params = useParams<{ id: string }>();
-  const productId = params?.id || '';
+  const productId = useGetParamId();
 
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('summary');
   const productData = useAppSelector((state) => state.customProduct.details);
@@ -115,7 +116,7 @@ const ProductLibraryUpdate: React.FC = () => {
       <Col span={24}>
         <ProductDetailHeader
           title={productId && productData ? productData.name : 'Entry the product info below'}
-          onSave={onSave}
+          onSave={throttleAction(onSave)}
           onCancel={history.goBack}
           hideSelect
           customClass={`${styles.marginBottomSpace} ${
@@ -125,17 +126,17 @@ const ProductLibraryUpdate: React.FC = () => {
       </Col>
 
       <Col span={24}>
-        <Row>
-          <Col span={12}>
+        <Row gutter={[8, 8]}>
+          <ResponsiveCol>
             <ProductImagePreview
               hideInquiryRequest
               isCustomProduct
               disabledAssignProduct
               disabledShareViaEmail
             />
-          </Col>
+          </ResponsiveCol>
 
-          <Col span={12} className={styles.productContent}>
+          <ResponsiveCol className={styles.productContent}>
             <Row style={{ flexDirection: 'column', height: '100%' }}>
               <Col>
                 <CustomTabs
@@ -157,7 +158,7 @@ const ProductLibraryUpdate: React.FC = () => {
                 </CustomTabPane>
               </Col>
             </Row>
-          </Col>
+          </ResponsiveCol>
         </Row>
       </Col>
     </Row>

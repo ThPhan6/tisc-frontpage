@@ -11,6 +11,7 @@ import type { CustomInputProps } from '@/components/Form/types';
 import { CustomInput } from '@/components/Form/CustomInput';
 import { BodyText } from '@/components/Typography';
 
+import { CustomTextArea } from '../Form/CustomTextArea';
 import TableContent from '../Table/TableContent';
 import styles from './styles/InputGroup.less';
 import { useGeneralFeature } from './utils';
@@ -20,7 +21,8 @@ const InputGroupContent: FC<MainContentProps> = ({ children, hasHeight, noWrap }
     className={`${styles.inputGroupContainer} ${hasHeight ? styles.heightInputGroup : ''}`}
     gutter={0}
     align="middle"
-    wrap={!noWrap}>
+    wrap={!noWrap}
+  >
     {children}
   </Row>
 );
@@ -45,6 +47,7 @@ interface InputGroupProps extends CustomInputProps {
   forceDisplayDeleteIcon?: boolean;
   isTableFormat?: boolean;
   labelColor?: CustomTypography['color'];
+  autoResize?: boolean;
 }
 
 const InputGroup: FC<InputGroupProps> = ({
@@ -70,6 +73,7 @@ const InputGroup: FC<InputGroupProps> = ({
   forceDisplayDeleteIcon,
   isTableFormat,
   labelColor = 'mono-color',
+  autoResize,
   ...props
 }) => {
   const { labelSpan, inputSpan, fontSize, iconDelete } = useGeneralFeature(
@@ -92,7 +96,8 @@ const InputGroup: FC<InputGroupProps> = ({
                   ? styles.requiredColorTertiary
                   : styles.requiredColorPrimaryDark
               }
-          ${styles.required}`}>
+          ${styles.required}`}
+            >
               *
             </span>
           ) : (
@@ -111,25 +116,36 @@ const InputGroup: FC<InputGroupProps> = ({
           ${styles.inputGroupContent}
           ${hasBoxShadow ? styles.boxShadow : ''}
         `}
-        span={inputSpan}>
-        <CustomInput
-          {...props}
-          value={value}
-          fontLevel={fontSize}
-          readOnly={rightIcon || readOnly ? true : false}
-          className={`input-box ${hasPadding ? 'has-padding' : ''} ${
-            colorPrimaryDark ? 'color-primary-dark' : ''
-          }`}
-          style={{
-            cursor: onRightIconClick && !disabled ? 'pointer' : 'auto',
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (onRightIconClick && !disabled && !readOnly) {
-              onRightIconClick();
-            }
-          }}
-        />
+        span={inputSpan}
+      >
+        {autoResize ? (
+          <CustomTextArea
+            value={value}
+            customClass={`${styles.customTextArea} `}
+            autoResize
+            {...props}
+          />
+        ) : (
+          <CustomInput
+            {...props}
+            value={value}
+            fontLevel={fontSize}
+            readOnly={rightIcon || readOnly ? true : false}
+            className={`input-box ${hasPadding ? 'has-padding' : ''} ${
+              colorPrimaryDark ? 'color-primary-dark' : ''
+            }`}
+            style={{
+              cursor: onRightIconClick && !disabled ? 'pointer' : 'auto',
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onRightIconClick && !disabled && !readOnly) {
+                onRightIconClick();
+              }
+            }}
+          />
+        )}
+
         {rightIcon ? (
           rightIcon === true ? (
             <SingleRightFormIcon

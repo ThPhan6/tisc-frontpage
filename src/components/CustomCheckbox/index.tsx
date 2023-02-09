@@ -81,54 +81,66 @@ export const CustomCheckbox: FC<CustomCheckboxProps> = ({
       className={`${style[`checkbox-${direction}`]} ${style['checkbox-list']} ${
         isCheckboxList && style['item-list-checkbox']
       } ${style['color-checkbox-checked']} ${checkboxClass}`}
-      onClick={(e) => e.stopPropagation()}>
+      onClick={(e) => e.stopPropagation()}
+    >
       <Checkbox.Group
         {...props}
         value={selected?.map((item) => item.value) ?? []}
-        onChange={onChangeValue}>
-        {options.map((option, index) => (
-          <div key={index}>
-            {isCheckboxList ? (
-              <label
-                className={`${style['item-wrapper']} ${'item-wrapper-custom'}`}
-                style={{ minHeight: heightItem }}
-                htmlFor={`${option.value}_${index}_${randomId}`}>
-                <div
-                  style={{ width: '100%', paddingRight: '16px' }}
-                  className={`item-option-uncheck ${getActiveClass(option)}`}>
-                  {option.label}
-                </div>
-                <Checkbox id={`${option.value}_${index}_${randomId}`} {...option} />
-              </label>
-            ) : (
+        onChange={onChangeValue}
+      >
+        {options.map((option, index) =>
+          isCheckboxList ? (
+            <label
+              key={option.value}
+              className={`${style['item-wrapper']} ${'item-wrapper-custom'}`}
+              style={{ minHeight: heightItem }}
+              htmlFor={`${option.value}_${index}_${randomId}`}
+            >
               <div
-                className={`${style['item-checkbox']} ${'item-wrapper-checkbox'}`}
-                style={{ minHeight: heightItem }}>
-                <Checkbox {...option} style={{ maxWidth: '100%' }}>
-                  <span className={`item-option-uncheck ${getActiveClass(option)}`}>
-                    {option.label}
-                  </span>
-                </Checkbox>
+                style={{
+                  width: 'calc(100% - 16px)',
+                  marginRight: '16px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+                className={getActiveClass(option)}
+              >
+                {option.label}
               </div>
-            )}
-          </div>
-        ))}
-        {otherInput ? (
-          <div className={isCheckboxList && style['other-field-checkbox-list']}>
-            <Checkbox value={'other'}>
-              <div className={style['input-wrapper']} style={{ height: heightItem }}>
-                Other
-                <CustomInput
-                  containerClass={style['other-input']}
-                  placeholder={inputPlaceholder}
-                  value={inputValue}
-                  onChange={onChangeInputValue}
-                />
-              </div>
-            </Checkbox>
-          </div>
-        ) : null}
+              <Checkbox id={`${option.value}_${index}_${randomId}`} {...option} />
+            </label>
+          ) : (
+            <div
+              key={option.value}
+              className={`${style['item-checkbox']} ${'item-wrapper-checkbox'}`}
+              style={{ minHeight: heightItem }}
+            >
+              <Checkbox {...option} style={{ maxWidth: '100%' }}>
+                <span className={getActiveClass(option)}>{option.label}</span>
+              </Checkbox>
+            </div>
+          ),
+        )}
       </Checkbox.Group>
+      {otherInput ? (
+        <div
+          className={`other-field-checkbox ${
+            isCheckboxList ? style['other-field-checkbox-list'] : ''
+          }`}
+        >
+          <Checkbox value={'other'}>
+            <div className={style['input-wrapper']} style={{ height: heightItem }}>
+              Other
+              <CustomInput
+                containerClass={style['other-input']}
+                placeholder={inputPlaceholder}
+                value={inputValue}
+                onChange={onChangeInputValue}
+              />
+            </div>
+          </Checkbox>
+        </div>
+      ) : null}
     </div>
   );
 };

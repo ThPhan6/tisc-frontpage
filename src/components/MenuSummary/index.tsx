@@ -3,6 +3,7 @@ import { FC, useState } from 'react';
 import { ReactComponent as ActionLeftIcon } from '@/assets/icons/action-left.svg';
 import { ReactComponent as ActionRightIcon } from '@/assets/icons/action-right.svg';
 
+import { useScreen } from '@/helper/common';
 import { checkUndefined } from '@/helper/utils';
 
 import { ElementSummaryProps, MenuSummaryProps, SummaryProps } from './types';
@@ -34,12 +35,14 @@ const ElementSummary: FC<ElementSummaryProps> = ({
       className={`
         ${style['element-container']}
         ${toggle ? style['menuActive'] : style['menuUnactive']}`}
-      key={dataElementSummary.id}>
+      key={dataElementSummary.id}
+    >
       <div
         className={style['element']}
         onClick={() => {
           handleActiveTab(dataElementSummary.id);
-        }}>
+        }}
+      >
         <span>{checkUndefined(dataElementSummary?.quantity)}</span>
         <div className={style['button-wrapper']}>
           <label> {checkUndefined(dataElementSummary?.label)}</label>
@@ -67,8 +70,10 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
   height = '56px',
   typeMenu = 'brand',
   typeMenuData,
+  contentFilter,
 }) => {
   const [activeId, setActiveId] = useState<string>('');
+  const { isTablet } = useScreen();
 
   const handleActivetab = (id: string) => {
     if (id === activeId) {
@@ -103,7 +108,14 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
   };
 
   return (
-    <div className={`${style['header-summary']} ${containerClass}`} style={{ height: height }}>
+    <div
+      className={`${style['header-summary']} ${containerClass}`}
+      style={{
+        height: height,
+        boxShadow: isTablet ? 'inset 0 1px 0 rgba(0, 0, 0, 0.3)' : 'none',
+        padding: isTablet ? '0 0 0 12px' : '',
+      }}
+    >
       <div className={style['brand-container']}>
         {menuSummaryData.map((data, index) => {
           return (
@@ -118,6 +130,7 @@ export const MenuSummary: FC<MenuSummaryProps> = ({
         })}
       </div>
       {typeCircumstance(typeMenu)}
+      {contentFilter ? contentFilter : null}
     </div>
   );
 };

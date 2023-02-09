@@ -11,9 +11,10 @@ import { useGetDimensionWeight } from '@/features/dimension-weight/hook';
 import { NameContentProps, ProductInfoTab, ProductOptionProps } from '../../types';
 import store, { useAppSelector } from '@/reducers';
 
-import CustomCollapse from '@/components/Collapse';
+import { ActiveOneCustomCollapse } from '@/components/Collapse';
 import { EmptyOne } from '@/components/Empty';
 import { DoubleInput } from '@/components/EntryForm/DoubleInput';
+import { LogoIcon } from '@/components/LogoIcon';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 import { SimpleContentTable } from '@/components/Table/components/SimpleContentTable';
 import { MainTitle, RobotoBodyText } from '@/components/Typography';
@@ -22,7 +23,7 @@ import { setCustomProductDetail } from '../../slice';
 import { DEFAULT_PRODUCT_OPTION, ProductOptionModal } from '../Modal/ProductOptionModal';
 import '../index.less';
 import { OptionCollapseHeader } from './OptionCollapseHeader';
-import { OptionItemView, renderOptionImage } from './OptionItemView';
+import { OptionItemView } from './OptionItemView';
 import styles from './index.less';
 import { DimensionWeight } from '@/features/dimension-weight';
 
@@ -150,7 +151,9 @@ export const SpecificationTab: FC<{
     return option.items.map((item, itemIndex) => (
       <Row className={styles.optionItem} align="middle" justify="space-between">
         {option.use_image && item.image ? (
-          <Col flex="48px">{renderOptionImage(item.image)}</Col>
+          <Col flex="48px">
+            <LogoIcon logo={item.image} />
+          </Col>
         ) : null}
         <Col flex="auto" style={{ maxWidth: 'calc(100% - 52px)', paddingLeft: 24 }}>
           <RobotoBodyText level={5} customClass="text-overflow">
@@ -173,12 +176,15 @@ export const SpecificationTab: FC<{
     }
 
     return options.map((option: ProductOptionProps, optionIndex: number) => (
-      <CustomCollapse
+      <ActiveOneCustomCollapse
+        groupIndex={optionIndex + 1} // Spare index 0 for Dimension & Weight group
+        groupName={'specification' as ProductInfoTab}
         key={option.id || optionIndex}
         showActiveBoxShadow={!specifying}
         noBorder={specifying || (viewOnly && option.use_image)}
         expandingHeaderFontStyle="bold"
         customHeaderClass={styles.optionCollapse}
+        arrowAlignRight={specifying}
         header={
           <OptionCollapseHeader
             data={options}
@@ -190,7 +196,8 @@ export const SpecificationTab: FC<{
             specifiedDetail={specifiedDetail}
             viewOnly={viewOnly}
           />
-        }>
+        }
+      >
         {viewOnly ? null : (
           <div className="flex-between" style={{ padding: '10px 16px' }}>
             <div
@@ -199,7 +206,8 @@ export const SpecificationTab: FC<{
                 setOptionModalVisible(true);
                 setCurOption(option);
                 setCurOptionIndex(optionIndex);
-              }}>
+              }}
+            >
               <MainTitle level={4} customClass={styles.content}>
                 {option.items.length ? 'Update Options' : 'Create Options'}
               </MainTitle>
@@ -220,7 +228,7 @@ export const SpecificationTab: FC<{
         )}
 
         {renderOptionItems(option, optionIndex)}
-      </CustomCollapse>
+      </ActiveOneCustomCollapse>
     ));
   };
 
@@ -231,6 +239,7 @@ export const SpecificationTab: FC<{
           items={specifications}
           tdStyle={specifying ? { paddingLeft: 0 } : {}}
           flex={specifying ? '30-70' : '25-75'}
+          flexOnMobile
           noPadding={specifying}
         />
       );
@@ -265,6 +274,7 @@ export const SpecificationTab: FC<{
         isShow={activeKey === 'specification'}
         noPadding={specifying}
         collapseStyles={!specifying}
+        arrowAlignRight={specifying}
         data={dimensionWeightData}
         isConversionText={specifying}
         onChange={(data) => {

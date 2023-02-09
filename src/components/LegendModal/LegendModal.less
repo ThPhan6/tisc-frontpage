@@ -3,19 +3,34 @@
   ::-webkit-scrollbar {
     display: none;
   }
+}
 
-  .modal {
-    padding: 8px 0;
-    .content {
-      padding-left: 16px;
-      box-shadow: @border-bottom-light;
-      .listItem {
-        display: flex;
-        padding-bottom: 8px;
-        svg {
-          width: 18px;
-          height: 18px;
-        }
+.modalOnMobile {
+  padding-bottom: 24px !important;
+}
+
+.modal {
+  padding: 8px 0;
+  .content {
+    padding-left: 16px;
+    box-shadow: @border-bottom-light;
+
+    .listItem {
+      @width: 18px;
+      @height: 18px;
+
+      display: flex;
+      padding-bottom: 8px;
+
+      .icon {
+        width: @width;
+        height: @height;
+        margin-right: 12px;
+      }
+
+      svg {
+        width: @width;
+        height: @height;
       }
     }
   }

@@ -56,18 +56,25 @@ export const PdfPreview: React.FC<PdfPreviewProps> = ({ generatePDF, data }) => 
 
   return (
     <div className={styles.pdf}>
-      <div style={{ height: 'calc(100vh - 296px)' }}>
+      <div style={{ height: 'calc(var(--vh) * 100 - 296px)' }}>
         {generatePDF ? (
           <Document
             file={generatePDF}
             onLoadSuccess={onDocumentLoadSuccess}
-            onLoadError={(error) => alert('Error while retrieving the outline! ' + error.message)}>
+            onLoadError={(error) => alert('Error while retrieving the outline! ' + error.message)}
+          >
             <Page key={`page_${pageNumber + 1}`} pageNumber={pageNumber} />
           </Document>
         ) : (
           <img
             src={TemplatePDF}
-            style={{ display: 'flex', margin: 'auto', height: 'calc(100vh - 312px)' }}
+            style={{
+              display: 'flex',
+              margin: 'auto',
+              height: 'calc(var(--vh) * 100 - 312px)',
+              width: 'auto',
+              maxWidth: '100%',
+            }}
           />
         )}
       </div>

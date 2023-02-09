@@ -1,6 +1,19 @@
+@import '~antd/es/style/variable.less';
 .entry_form {
   .mainContent {
-    height: calc(100vh - 328px);
+    height: calc(var(--vh) * 100 - 328px);
+
+    @media screen and (max-width: @screen-lg) {
+      height: calc(var(--vh) * 100 - 304px);
+    }
+
+    @media screen and (max-width: 576px) {
+      height: calc(var(--vh) * 100 - 308px);
+
+      :global(.ant-pro-basicLayout-content) {
+        margin: 16px;
+      }
+    }
   }
   .header {
     display: flex;

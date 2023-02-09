@@ -5,6 +5,9 @@ export interface TabItem {
   key: string;
   icon?: JSX.Element;
   disable?: boolean;
+  collapseOnMobile?: boolean;
+  mobileTabTitle?: string;
+  tabletTabTitle?: string;
 }
 
 export interface CustomTabsProps extends TabsProps {
@@ -14,4 +17,7 @@ export interface CustomTabsProps extends TabsProps {
   heightItem?: string;
   widthItem?: string;
   customClass?: string;
+  hideTitleOnMobile?: boolean;
+  hideTitleOnTablet?: boolean;
+  outlineOnMobile?: boolean;
 }

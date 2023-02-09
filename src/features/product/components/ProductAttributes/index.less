@@ -1,3 +1,5 @@
+@import '~antd/es/style/variable.less';
+
 .productAttributeItem {
   border-bottom: 0 !important;
   :global(.ant-checkbox + span) {
@@ -44,7 +46,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 36px;
+    min-height: 36px;
     padding: 0 16px;
     box-shadow: @border-bottom;
     :global(.attribute-select-group-left) {
@@ -107,6 +109,10 @@
   .attributeName {
     width: 30%;
     text-transform: capitalize;
+
+    @media screen and (max-width: @screen-sm) {
+      width: 40%;
+    }
   }
 
   .attributeDescription {
@@ -456,6 +462,12 @@
         letter-spacing: 0.02em;
         text-align: center;
         text-transform: uppercase;
+      }
+
+      :global(.ant-tabs-nav-list) {
+        @media screen and (max-width: 310px) {
+          width: max-content;
+        }
       }
     }
   }

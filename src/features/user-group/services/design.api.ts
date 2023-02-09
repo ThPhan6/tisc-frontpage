@@ -15,6 +15,8 @@ import { MaterialCode } from '@/features/project/types/project-specifying.type';
 import { TeamProfileGroupCountry } from '@/features/team-profiles/types';
 import { KeyValueData } from '@/types';
 
+import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+
 interface DesignFirmListResponse {
   designers: DesignFirm;
   pagination: PaginationResponse;
@@ -41,6 +43,7 @@ export async function getDesignFirmPagination(
     })
     .catch((error) => {
       console.log('error', error);
+      hidePageLoading();
       message.error(error.message);
     });
 }
@@ -136,13 +139,16 @@ export async function getAllMaterialCode() {
 }
 
 export async function updateStatusDesignFirm(id: string, data: { status: number }) {
+  showPageLoading();
   return request<boolean>(`/api/design/update-status/${id}`, { method: 'PATCH', data })
     .then(() => {
       message.success(MESSAGE_NOTIFICATION.UPDATE_STATUS_DESIGN_FIRM_SUCCESS);
+      hidePageLoading();
       return true;
     })
     .catch((error) => {
       message.error(error?.data?.message ?? MESSAGE_NOTIFICATION.UPDATE_STATUS_DESIGN_FIRM_ERROR);
+      hidePageLoading();
       return false;
     });
 }

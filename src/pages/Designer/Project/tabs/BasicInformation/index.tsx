@@ -3,10 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { ProjectStatuses } from '../../constants/filter';
 import { DefaultProjectRequest } from '../../constants/form';
 import { PATH } from '@/constants/path';
-import { Col, Row } from 'antd';
+import { Row } from 'antd';
 import { useHistory } from 'umi';
 
 import { createProject, updateProject } from '@/features/project/services';
+import { useScreen } from '@/helper/common';
 import { useBoolean } from '@/helper/hook';
 
 import type { ProjectBodyRequest, ProjectDetailProps } from '@/features/project/types';
@@ -14,11 +15,12 @@ import type { ProjectBodyRequest, ProjectDetailProps } from '@/features/project/
 import ProjectTabContentHeader from '../../components/ProjectTabContentHeader';
 import { CustomSaveButton } from '@/components/Button/CustomSaveButton';
 import { CustomRadio } from '@/components/CustomRadio';
+import { ResponsiveCol } from '@/components/Layout';
 import { BodyText, MainTitle } from '@/components/Typography';
 
 import styles from '../../styles/basic-information.less';
 import { EntryForm } from './EntryForm';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
+import { showPageLoading } from '@/features/loading/loading';
 
 interface GeneralInformationProps {
   project?: ProjectDetailProps;
@@ -26,6 +28,8 @@ interface GeneralInformationProps {
 }
 
 const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setProject }) => {
+  const isTablet = useScreen().isTablet;
+
   const [data, setData] = useState<ProjectBodyRequest>(DefaultProjectRequest);
   const buttonStatus = useBoolean();
   const [projectId, setProjectId] = useState<string>();
@@ -36,7 +40,6 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
     if (projectId) {
       /// update project
       updateProject(projectId, data).then((isSuccess) => {
-        hidePageLoading();
         if (isSuccess) {
           buttonStatus.setValue(true);
           setTimeout(() => {
@@ -53,7 +56,6 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
     } else {
       /// create
       createProject(data).then((newProjectId) => {
-        hidePageLoading();
         if (newProjectId) {
           buttonStatus.setValue(true);
           setTimeout(() => {
@@ -82,13 +84,13 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
     <>
       <ProjectTabContentHeader>
         <div className={styles.basicToolbarForm}>
-          <MainTitle level={3}>Project Status:</MainTitle>
+          {isTablet ? null : <MainTitle level={3}>Project Status:</MainTitle>}
           <CustomRadio
             options={ProjectStatuses.map((projectStatus) => {
               return {
                 label: (
                   <BodyText level={6} fontFamily="Roboto" customClass={styles.projectStatusLabel}>
-                    {projectStatus.name} {projectStatus.icon}
+                    {isTablet ? '' : projectStatus.name} {projectStatus.icon}
                   </BodyText>
                 ),
                 value: projectStatus.id,
@@ -109,9 +111,9 @@ const GeneralInformation: React.FC<GeneralInformationProps> = ({ project, setPro
       </ProjectTabContentHeader>
 
       <Row className={styles.basicInformationWrapper}>
-        <Col span={12}>
+        <ResponsiveCol>
           <EntryForm data={data} onChangeData={onChangeData} />
-        </Col>
+        </ResponsiveCol>
       </Row>
     </>
   );

@@ -15,7 +15,8 @@ export interface CustomTypography extends React.HTMLAttributes<HTMLParagraphElem
     | 'mono-color'
     | 'mono-color-dark'
     | 'mono-color-medium'
-    | 'mono-color-light';
+    | 'mono-color-light'
+    | 'white';
 }
 
 export interface BodyTextProps extends CustomTypography {

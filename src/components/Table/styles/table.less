@@ -1,3 +1,5 @@
+@import '~antd/es/style/variable.less';
+
 .customTable {
   padding-bottom: 40px;
   :global(.ant-table) {
@@ -106,6 +108,7 @@
         }
       }
       :global(.ant-table-cell) {
+        position: relative;
         height: 44px;
         padding: 0 12px;
         color: black;
@@ -216,6 +219,11 @@
   color: black;
   background-color: #e6e6e6;
   box-shadow: @border-top-light;
+  @media (max-width: @screen-lg) {
+    bottom: -12px;
+    left: -12px;
+    width: calc(100% + 24px);
+  }
   svg {
     margin: 0 8px;
     cursor: pointer;
@@ -235,6 +243,7 @@
     align-items: center;
     justify-content: center;
     margin-right: 24px;
+    white-space: nowrap;
     :global(.value) {
       margin-left: 8px;
     }
@@ -283,5 +292,31 @@ tr[class^='ant-table-expanded-row'] tbody > tr > td {
     path {
       fill: @color;
     }
+  }
+}
+
+.mobilePagination {
+  bottom: -12px;
+  left: -12px;
+  display: flex;
+  align-items: center;
+  width: calc(100% + 24px);
+  padding: 0 16px;
+  &.paginationFixed {
+    position: fixed;
+    bottom: 0 !important;
+  }
+}
+
+.mobileSummary {
+  overflow: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  :global(.item) {
+    margin-right: 12px;
+  }
+  :global(.item:last-child) {
+    left: 12px !important;
   }
 }

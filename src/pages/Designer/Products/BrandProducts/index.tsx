@@ -110,7 +110,7 @@ const BrandProductListPage: React.FC = () => {
       sort: sort?.sort,
       order: sort?.order,
     });
-  }, [filter, searchCount, sort]);
+  }, [filter?.value, searchCount, sort?.order, sort?.sort]);
 
   const renderInfoItem = (info: string, count: number, lastOne?: boolean) => (
     <div className="flex-start" style={{ marginRight: lastOne ? undefined : 24 }}>
@@ -129,7 +129,9 @@ const BrandProductListPage: React.FC = () => {
             topValue={renderItemTopBar('brand_id', filter, 'select')}
             bottomEnable={brands.length ? true : false}
             disabled
-            bottomValue={renderFilterDropdown('Brands', brands, false)}
+            bottomValue={renderFilterDropdown('Brands', brands, false, undefined, undefined, {
+              autoHeight: false,
+            })}
             customClass="right-divider"
           />
           <TopBarItem
@@ -137,7 +139,12 @@ const BrandProductListPage: React.FC = () => {
             bottomEnable={categories.length ? true : false}
             disabled
             bottomValue={
-              <CustomDropDown items={categories} menuStyle={{ height: 'max-content' }}>
+              <CustomDropDown
+                items={categories}
+                menuStyle={{ height: 'max-content' }}
+                nestedMenu
+                autoHeight={false}
+              >
                 Categories
               </CustomDropDown>
             }
@@ -151,16 +158,6 @@ const BrandProductListPage: React.FC = () => {
         <>
           <TopBarItem
             topValue={
-              // <CustomInput
-              //
-              //   fontLevel={3}
-              //   deleteIcon
-              //   onDelete={() => {
-              //     // searchInputRef.current?.input?.set = '';
-              //     searchProductByKeyword({target:{value: ''}});
-              //   }}
-              //   forceDisplayDeleteIcon
-              // />
               <div className={styles.searchInputWrapper}>
                 <CustomInput
                   ref={searchInputRef}
@@ -178,7 +175,8 @@ const BrandProductListPage: React.FC = () => {
             bottomValue={
               <span
                 style={{ display: 'flex', alignItems: 'center' }}
-                onClick={() => searchInputRef.current?.focus()}>
+                onClick={() => searchInputRef.current?.focus()}
+              >
                 Keywords <SearchIcon />
               </span>
             }
@@ -189,9 +187,11 @@ const BrandProductListPage: React.FC = () => {
       BottomContent={
         brandSummary ? (
           <>
-            <div className="flex-center">
-              <LogoIcon logo={brandSummary.brand_logo} className={styles.brandLogo} />
-              <Title level={8}>{brandSummary.brand_name}</Title>
+            <div className="flex-center" style={{ marginRight: '24px' }}>
+              <LogoIcon logo={brandSummary.brand_logo} className={styles.brandLogo} size={20} />
+              <Title level={8} style={{ whiteSpace: 'nowrap' }}>
+                {brandSummary.brand_name}
+              </Title>
             </div>
 
             <div className="flex-end">

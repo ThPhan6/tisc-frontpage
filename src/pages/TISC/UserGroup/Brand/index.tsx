@@ -14,18 +14,16 @@ import {
 } from '@/features/user-group/services';
 import { pushTo } from '@/helper/history';
 import { getFullName, setDefaultWidthForEachColumn } from '@/helper/utils';
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import { CheckboxValue } from '@/components/CustomCheckbox/types';
 import type { TableColumnItem } from '@/components/Table/types';
-import {
-  BrandAssignTeamForm,
-  BrandListItem,
-  BrandMemberAssigned,
-} from '@/features/user-group/types/brand.types';
+import { BrandAssignTeamForm, BrandListItem } from '@/features/user-group/types/brand.types';
+import store from '@/reducers';
+import { closeModal, openModal } from '@/reducers/modal';
 import { ActiveStatus } from '@/types';
 
-import AssignTeam from '@/components/AssignTeam';
+import { getAssignTeamCheck } from '@/components/AssignTeam';
 import { LogoIcon } from '@/components/LogoIcon';
 import CustomTable from '@/components/Table';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
@@ -42,63 +40,63 @@ const BrandList: React.FC = () => {
   useAutoExpandNestedTableColumn(0, [10]);
   const tableRef = useRef<any>();
 
-  /// for assign team modal
-  const [visible, setVisible] = useState<boolean>(false);
-  // get each member assigned
-  const [recordAssignTeam, setRecordAssignTeam] = useState<BrandListItem>();
   // get list assign team to display inside popup
   const [assignTeam, setAssignTeam] = useState<BrandAssignTeamForm[]>([]);
 
-  const showAssignTeams = (brandInfo: BrandListItem) => () => {
-    /// get each brand member has already assgined
-    setRecordAssignTeam(brandInfo);
-
-    // get list team
-    getListAssignTeamByBrandId(brandInfo.id).then((res) => {
-      if (res) {
-        /// set assignTeam state to display
-        setAssignTeam(res);
-        // open popup
-        setVisible(true);
+  const handleSubmitAssignTeam =
+    (brandInfo: BrandListItem, teamProfile: BrandAssignTeamForm[]) =>
+    (checkedData: CheckboxValue[]) => {
+      if (!brandInfo?.id) {
+        return;
       }
-    });
-  };
 
-  // update assign team
-  const handleSubmitAssignTeam = (checkedData: CheckboxValue[]) => {
-    // new assign team
-    const memberAssignTeam: BrandMemberAssigned[] = [];
+      const { memberAssignTeamIds, noSelectionChange } = getAssignTeamCheck(
+        brandInfo.assign_team,
+        teamProfile,
+        checkedData,
+      );
 
-    checkedData.forEach((checked) => {
-      assignTeam.forEach((team) => {
-        const member = team.users.find((user) => user.id === checked.value);
-
-        if (member) {
-          memberAssignTeam.push(member);
-        }
-      });
-    });
-
-    if (recordAssignTeam?.id) {
       // dont call api if havent changed
-      const checkedIds = checkedData.map((check) => check.value);
-      const assignedTeamIds = recordAssignTeam.assign_team.map((team) => team.id);
-      const noSelectionChange = isEqual(checkedIds, assignedTeamIds);
       if (noSelectionChange) return;
 
       // add member selected to data
-      createAssignTeamByBrandId(
-        recordAssignTeam.id,
-        memberAssignTeam.map((member) => member.id),
-      ).then((isSuccess) => {
+      createAssignTeamByBrandId(brandInfo.id, memberAssignTeamIds).then((isSuccess) => {
         if (isSuccess) {
           // reload table after updating
           tableRef.current.reload();
           // close popup
-          setVisible(false);
+          closeModal();
         }
       });
+    };
+
+  const showAssignTeams = (brandInfo: BrandListItem) => () => {
+    const openAssignTeamModal = (teams: BrandAssignTeamForm[]) =>
+      store.dispatch(
+        openModal({
+          type: 'Assign Team',
+          title: 'Assign Team',
+          props: {
+            assignTeam: {
+              memberAssigned: brandInfo?.assign_team,
+              teams,
+              onChange: handleSubmitAssignTeam(brandInfo, teams),
+            },
+          },
+        }),
+      );
+
+    if (assignTeam.length) {
+      openAssignTeamModal(assignTeam);
+      return;
     }
+
+    getListAssignTeamByBrandId(brandInfo.id).then((res) => {
+      if (res) {
+        setAssignTeam(res);
+        openAssignTeamModal(res);
+      }
+    });
   };
 
   const handleEmailInvite = (brandId: string) => {
@@ -111,7 +109,7 @@ const BrandList: React.FC = () => {
       dataIndex: 'logo',
       width: '5%',
       render: (value) => {
-        return <LogoIcon logo={value} className={styles.img} />;
+        return <LogoIcon logo={value} className={styles.img} size={18} />;
       },
     },
     {
@@ -149,7 +147,7 @@ const BrandList: React.FC = () => {
           return <UserAddIcon onClick={showAssignTeams(record)} style={{ cursor: 'pointer' }} />;
         }
         return (
-          <div onClick={showAssignTeams(record)} className={styles.avatar}>
+          <div onClick={showAssignTeams(record)} className="flex-center">
             {record.assign_team.map((user, key) => {
               return (
                 <TeamIcon
@@ -195,6 +193,7 @@ const BrandList: React.FC = () => {
               onClick: () => handleEmailInvite(record.id),
             },
           ]}
+          editActionOnMobile={false}
         />
       ),
     },
@@ -214,13 +213,6 @@ const BrandList: React.FC = () => {
           hasPagination
         />
       </PageContainer>
-      <AssignTeam
-        visible={visible}
-        setVisible={setVisible}
-        onChange={handleSubmitAssignTeam}
-        memberAssigned={recordAssignTeam?.assign_team}
-        teams={assignTeam}
-      />
     </div>
   );
 };

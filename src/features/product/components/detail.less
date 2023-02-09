@@ -1,3 +1,5 @@
+@import '~antd/es/style/variable.less';
+
 .marginBottomSpace {
   margin-bottom: 8px;
 }
@@ -11,7 +13,7 @@
 }
 
 .container {
-  flex-flow: column;
+  flex-flow: column !important;
   justify-content: space-between;
   height: 100%;
   background: @mono-color-light;
@@ -36,9 +38,9 @@
   }
 
   .productImageWrapper {
-    margin-right: 8px;
     padding: 16px 16px 0;
     background-color: #fff;
+    box-shadow: @border-bottom-light;
   }
   .uploadZone {
     position: relative;
@@ -187,6 +189,12 @@
     width: 100%;
     height: 40px;
     overflow: auto hidden;
+    > span {
+      flex: 1;
+      padding-top: 2px;
+      padding-left: 8px;
+      font-size: 12px;
+    }
     div {
       span {
         font-size: 12px;
@@ -376,7 +384,7 @@
     padding: 16px 0;
   }
   :global(.ant-tabs-nav) {
-    margin: 0;
+    margin: 0 !important;
     box-shadow: @border-bottom-light;
     &::before {
       border-bottom: 0 !important;
@@ -586,7 +594,7 @@
     border-bottom-color: #fff;
     resize: none;
     &:hover {
-      border-bottom-color: #fff;
+      border-bottom-color: #fff !important;
     }
   }
   textarea {

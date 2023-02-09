@@ -1,7 +1,82 @@
+@import '~antd/es/style/variable.less';
+
+.mainContainer {
+  margin-top: 8px;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.detailContainer {
+  height: calc(var(--vh) * 100 - 208px);
+  overflow: auto;
+  background: #fff;
+
+  @media screen and (max-width: @screen-lg) {
+    height: calc(var(--vh) * 100 - 184px);
+  }
+
+  :global(.ant-tabs-nav-list) {
+    @media screen and (min-width: 992px) and (max-width: 1024px) {
+      width: max-content !important;
+    }
+  }
+}
+
+.detailWrap {
+  @space: 12px;
+
+  padding-top: @space;
+
+  :global(.mainContent),
+  :global(.ant-tabs),
+  :global(.ant-collapse) {
+    margin: 0 @space;
+  }
+
+  :global(.ant-collapse-content-inactive),
+  :global(.ant-collapse-item-active) {
+    :global(.ant-collapse-content-box) {
+      > div {
+        height: auto;
+        padding: 0;
+      }
+    }
+  }
+}
+
+.detailContent {
+  height: calc(var(--vh) * 100 - 360px);
+  padding: 0 16px 16px 16px;
+
+  @media screen and (max-width: @screen-lg) {
+    height: calc(var(--vh) * 100 - 336px);
+  }
+  @media screen and (max-width: @screen-sm) {
+    height: calc(var(--vh) * 100 - 444px);
+    padding: 0 0 8px 0;
+  }
+}
+
 .content {
-  height: calc(100vh - 360px);
+  position: relative;
+  height: calc(var(--vh) * 100 - 312px);
   padding: 0 16px 16px 16px;
   overflow: auto;
+
+  @media screen and (max-width: @screen-lg) {
+    height: calc(var(--vh) * 100 - 288px);
+  }
+  @media screen and (max-width: @screen-sm) {
+    // height: calc(var(--vh) * 100 - 396px);
+    height: auto;
+    padding: 0 12px;
+
+    :global(.ant-collapse) {
+      margin: 0;
+    }
+  }
+
   .customLabel {
     p {
       color: @mono-color-dark;
@@ -18,8 +93,7 @@
       height: 40px;
     }
     .date {
-      width: 15%;
-      text-overflow: ellipsis;
+      width: 90px;
     }
     .projectName {
       display: flex;
@@ -92,10 +166,18 @@
         width: 40%;
         padding: 0 24px 0 16px;
         text-transform: capitalize;
+
+        @media screen and (max-width: @screen-md) {
+          width: 60%;
+          padding: 0 16px 0 12px;
+        }
       }
 
       .position {
         width: 60%;
+        @media screen and (max-width: @screen-md) {
+          width: 40%;
+        }
       }
     }
   }
@@ -126,12 +208,11 @@
     padding: 0;
   }
   :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
-    padding: 0;
+    padding: 0 !important;
   }
-  :global(.ant-collapse-ghost
-      > .ant-collapse-item
-      > .ant-collapse-content
-      > .ant-collapse-content-box) {
+  :global(
+      .ant-collapse-ghost > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box
+    ) {
     padding-top: 0;
     padding-bottom: 0;
   }
@@ -158,6 +239,10 @@
   height: 48px;
   padding-right: 16px;
   box-shadow: @border-top;
+
+  @media screen and (max-width: @screen-sm) {
+    padding-right: 12px;
+  }
 }
 
 .customHeader {

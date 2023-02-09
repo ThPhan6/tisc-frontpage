@@ -69,9 +69,8 @@ const IssuingInformation: FC<IssuingInformationProps> = ({ data, onChangeData })
         label="Issuing Office"
         required
         layout="vertical"
-        formClass={`${styles.formGroup} ${
-          data.config.location_id !== '' ? styles.activeText : ''
-        }`}>
+        formClass={`${styles.formGroup} ${data.config.location_id !== '' ? styles.activeText : ''}`}
+      >
         <CollapseRadioList
           groupType="issuing-info"
           groupIndex={1}
@@ -100,7 +99,8 @@ const IssuingInformation: FC<IssuingInformationProps> = ({ data, onChangeData })
         label="Issuing For"
         required
         layout="vertical"
-        formClass={data.config.issuing_for_id !== '' ? styles.activeText : ''}>
+        formClass={data.config.issuing_for_id !== '' ? styles.activeText : ''}
+      >
         <CollapseRadioList
           groupType="issuing-info"
           groupIndex={2}

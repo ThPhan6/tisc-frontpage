@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { PageContainer } from '@ant-design/pro-layout';
 
@@ -7,17 +7,16 @@ import { ReactComponent as InfoIcon } from '@/assets/icons/info.svg';
 import { useGetParamId } from '@/helper/hook';
 import { getProjectTrackingSummary } from '@/services/project-tracking.api';
 
-import { useAppSelector } from '@/reducers';
+import store, { useAppSelector } from '@/reducers';
+import { openModal } from '@/reducers/modal';
 
 import { Detail } from './components/Detail';
-import { LegendModal } from '@/components/LegendModal/LegendModal';
 import { MenuSummary } from '@/components/MenuSummary';
 import { TableHeader } from '@/components/Table/TableHeader';
 
 import styles from './index.less';
 
 const ProjectTrackingDetail = () => {
-  const [openInformationModal, setOpenInformationModal] = useState(false);
   const idProject = useGetParamId();
   const summary = useAppSelector((state) => state.summary.summaryProjectTracking);
   const workspace = location.pathname.indexOf('dashboard') !== -1;
@@ -31,25 +30,26 @@ const ProjectTrackingDetail = () => {
       <PageContainer
         pageHeaderRender={() => {
           return (
-            <div className={styles.customHeader}>
-              <MenuSummary typeMenu={'brand'} menuSummaryData={summary} />
-            </div>
+            <MenuSummary
+              typeMenu={'brand'}
+              menuSummaryData={summary}
+              containerClass={styles.customHeader}
+            />
           );
-        }}>
+        }}
+      >
         <TableHeader
           title={'PROJECT TRACKING'}
           rightAction={
-            <InfoIcon className={styles.iconInfor} onClick={() => setOpenInformationModal(true)} />
+            <InfoIcon
+              className={styles.iconInfor}
+              onClick={() => store.dispatch(openModal({ type: 'Project Tracking Legend' }))}
+            />
           }
           customClass={styles.customTitle}
         />
-        <Detail
-          projectId={idProject}
-          height="calc(100vh - 208px)"
-          contentHeight="calc(100vh - 360px)"
-        />
+        <Detail projectId={idProject} />
       </PageContainer>
-      <LegendModal visible={openInformationModal} setVisible={setOpenInformationModal} />
     </div>
   );
 };

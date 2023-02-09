@@ -5,15 +5,11 @@ import { BodyText, Title } from '@/components/Typography';
 
 import styles from './InformationMarketAvailability.less';
 
-const InformationMarketAvailability: FC<{
-  visible: boolean;
-  setVisible: (visible: boolean) => void;
-}> = ({ visible, setVisible }) => {
+const InformationMarketAvailability: FC<{}> = () => {
   return (
     <Popover
       title="MARKET AVAILABILITY"
-      visible={visible}
-      setVisible={setVisible}
+      visible
       noFooter
       extraTopAction={
         <div className={styles.content}>

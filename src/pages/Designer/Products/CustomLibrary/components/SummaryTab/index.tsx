@@ -164,7 +164,8 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
             {...textFormProps}
             label="Description"
             boxShadow={false}
-            style={{ marginBottom: 0 }}>
+            style={{ marginBottom: 0 }}
+          >
             {description || ''}
           </TextForm>
         </div>
@@ -219,7 +220,8 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
           layout="vertical"
           formClass="mb-16"
           labelFontSize={4}
-          required>
+          required
+        >
           <CustomTextArea
             maxWords={50}
             placeholder="max.50 words of product summary"
@@ -237,7 +239,7 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
 
   const renderAttributes = () => {
     if (viewOnly) {
-      return <SimpleContentTable items={attributes} customClass="mt-8" />;
+      return <SimpleContentTable flexOnMobile items={attributes} customClass="mt-8" />;
     }
     return attributes?.map((attribute, index) => (
       <DoubleInput

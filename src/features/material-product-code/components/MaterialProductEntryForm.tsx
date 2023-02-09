@@ -19,11 +19,11 @@ import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import {
   createMaterialProductCode,
+  deleteMaterialProductCode,
   getOneMaterialProductCode,
   updateMaterialProductCode,
 } from '../api';
 import { MaterialProductItem } from './MaterialProductItem';
-import { hidePageLoading, showPageLoading } from '@/features/loading/loading';
 
 const MaterialProductEntryForm = () => {
   const [data, setData] = useState<MaterialProductForm>(DEFAULT_MATERIAL_PRODUCT);
@@ -34,12 +34,10 @@ const MaterialProductEntryForm = () => {
 
   useEffect(() => {
     if (idMaterialProductCode) {
-      showPageLoading();
       getOneMaterialProductCode(idMaterialProductCode).then((res) => {
         if (res) {
           setData(res);
         }
-        hidePageLoading();
       });
     }
   }, []);
@@ -71,7 +69,6 @@ const MaterialProductEntryForm = () => {
   };
 
   const handleCreate = (dataSubmit: MaterialProductForm) => {
-    showPageLoading();
     createMaterialProductCode(dataSubmit).then((isSuccess) => {
       if (isSuccess) {
         submitButtonStatus.setValue(true);
@@ -79,12 +76,10 @@ const MaterialProductEntryForm = () => {
           pushTo(PATH.designerMaterialProductCode);
         }, 1000);
       }
-      hidePageLoading();
     });
   };
 
   const handleUpdate = (dataSubmit: MaterialProductForm) => {
-    showPageLoading();
     updateMaterialProductCode(idMaterialProductCode, dataSubmit).then((isSuccess) => {
       if (isSuccess) {
         submitButtonStatus.setValue(true);
@@ -92,7 +87,6 @@ const MaterialProductEntryForm = () => {
           submitButtonStatus.setValue(false);
         }, 2000);
       }
-      hidePageLoading();
     });
   };
 
@@ -116,13 +110,26 @@ const MaterialProductEntryForm = () => {
     handleSubmit({ name: data.name.trim(), subs: newSubs });
   };
 
+  const handleDeleteMaterialProductCode = () => {
+    if (idMaterialProductCode) {
+      deleteMaterialProductCode(idMaterialProductCode).then((isSuccess) => {
+        if (isSuccess) {
+          pushTo(PATH.designerMaterialProductCode);
+        }
+      });
+    }
+  };
+
   return (
     <div>
       <TableHeader title="MATERIAL/PRODUCT CODE" rightAction={<CustomPlusButton disabled />} />
       <EntryFormWrapper
         handleCancel={() => pushTo(PATH.designerMaterialProductCode)}
         handleSubmit={onHandleSubmit}
-        submitButtonStatus={submitButtonStatus.value}>
+        handleDelete={handleDeleteMaterialProductCode}
+        submitButtonStatus={submitButtonStatus.value}
+        entryFormTypeOnMobile={idMaterialProductCode ? 'edit' : 'create'}
+      >
         <FormNameInput
           placeholder="type main list name"
           title="Main List"

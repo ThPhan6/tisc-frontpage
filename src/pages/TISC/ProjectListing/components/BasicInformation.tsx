@@ -2,14 +2,16 @@ import { FC } from 'react';
 
 import { MEASUREMENT_UNIT } from '@/constants/util';
 import { ProjectStatus } from '@/pages/Brand/ProjectTracking/constant';
-import { Col, Row } from 'antd';
+import { Row } from 'antd';
 
+import { useScreen } from '@/helper/common';
 import { showImageUrl } from '@/helper/utils';
 
 import { ProjectInformation } from '../type';
 
 import { FormGroup } from '@/components/Form';
 import TextForm from '@/components/Form/TextForm';
+import { ResponsiveCol } from '@/components/Layout';
 import { BodyText, Title } from '@/components/Typography';
 
 import styles from './Component.less';
@@ -20,17 +22,24 @@ interface BasicInformationProps {
 }
 
 export const BasicInformation: FC<BasicInformationProps> = ({ basicInformation }) => {
+  const { isTablet } = useScreen();
   return (
     <Row>
-      <Col span={12} className={styles.container}>
-        <div className={styles.content}>
+      <ResponsiveCol className={styles.container}>
+        <div
+          className={styles.content}
+          style={{
+            height: isTablet ? 'calc(var(--vh) * 100 - 264px)' : 'calc(var(--vh) * 100 - 288px)',
+          }}
+        >
           <div className={styles.designInfo}>
             <TextForm
               label={'Designed By'}
               boxShadow
               formClass={
                 basicInformation?.designFirm.logo ? styles.designName : styles.designNameInfo
-              }>
+              }
+            >
               {basicInformation?.designFirm.name}
             </TextForm>
             {basicInformation?.designFirm.logo ? (
@@ -79,7 +88,7 @@ export const BasicInformation: FC<BasicInformationProps> = ({ basicInformation }
           </BodyText>
           <Title level={9}>{moment(basicInformation?.updated_at).format('YYYY-MM-DD')}</Title>
         </div>
-      </Col>
+      </ResponsiveCol>
     </Row>
   );
 };

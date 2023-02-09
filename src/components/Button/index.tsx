@@ -63,7 +63,10 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   } ${setSize()} ${setProperties()} ${setDisabled()} ${buttonClass} ${active ? styles.active : ''}`;
 
   return (
-    <button {...props} className={classNameButton} style={{ width: width, height: height }}>
+    <button
+      {...props}
+      className={classNameButton}
+      style={{ ...props.style, width: width, height: height }}>
       {icon}
       {children}
     </button>

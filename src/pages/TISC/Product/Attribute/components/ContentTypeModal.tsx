@@ -1,16 +1,13 @@
-import React, { useState } from 'react';
-
-import { Collapse, Modal } from 'antd';
+import React, { FC, useState } from 'react';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/close-icon.svg';
-import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
-import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
 import { ReactComponent as SwapIcon } from '@/assets/icons/swap-horizontal-icon.svg';
 
-import { isEmpty, isUndefined, lowerCase, snakeCase } from 'lodash';
+import { isEmpty, isUndefined, lowerCase } from 'lodash';
 
 import type { RadioValue } from '@/components/CustomRadio/types';
 import type { TabItem } from '@/components/Tabs/types';
+import { useCollapseGroupActiveCheck } from '@/reducers/active';
 import type {
   AttributeContentType,
   AttributeSubForm,
@@ -21,12 +18,14 @@ import type {
 } from '@/types';
 
 import CustomButton from '@/components/Button';
+import CustomCollapse from '@/components/Collapse';
 import { CustomRadio } from '@/components/CustomRadio';
+import { CustomModal } from '@/components/Modal';
 import { CustomTabs } from '@/components/Tabs';
 
 import styles from '../styles/contentTypeModal.less';
 import { SPECIFICATION_TYPE } from '../utils';
-import type { SelectedItem } from './AttributeEntryForm';
+import { SelectedItem } from './AttributeEntryForm';
 
 type ACTIVE_TAB = 'conversions' | 'presets' | 'options' | 'text';
 
@@ -35,39 +34,43 @@ interface ContentTypeOptionProps {
   type: ACTIVE_TAB;
   selectedOption: Omit<AttributeSubForm, 'id' | 'name'>;
   setSelectedOption: (selected: Omit<AttributeSubForm, 'id' | 'name'>) => void;
+  index: number;
 }
 
-const ContentTypeOption: React.FC<ContentTypeOptionProps> = (props) => {
-  const { data, type, selectedOption, setSelectedOption } = props;
-  /// default open content type dropdown
-  let selectedKeys: string | string[] = [];
-  /// active key for conversions
-  if (type == 'conversions') {
-    const conversions = [...data] as BasisConvention[];
-    conversions.forEach((conversion) => {
-      const selected = conversion.subs.find((sub) => {
-        return sub.id === selectedOption.basis_id;
-      });
-      if (selected) {
-        selectedKeys = [snakeCase(conversion.name)];
-      }
-    });
-  }
-  /// active key for presets and options
-  if (type === 'presets' || type === 'options') {
-    const presetOptions = [...data] as BasisConvention[];
-    presetOptions.forEach((presetOption) => {
-      const selected = presetOption.subs.find((sub) => {
-        return sub.id === selectedOption.basis_id;
-      });
-      if (selected) {
-        selectedKeys = [snakeCase(presetOption.name)];
-      }
-    });
-  }
+const ContentTypeDetail: FC<{
+  index: number;
+  option: any;
+  options: any[];
+  onChange: (radioValue: RadioValue) => void;
+  value: any;
+}> = ({ option, options, index, onChange, value }) => {
+  const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck('content-type', index);
 
-  const [activeKey, setActiveKey] = useState<string | string[]>(selectedKeys);
+  return (
+    <CustomCollapse
+      header={
+        <span className="text-uppercase">
+          {option.name} ({option.count})
+        </span>
+      }
+      className="site-collapse-custom-panel"
+      arrowAlignRight
+      noBorder
+      noPadding
+      activeKey={curActiveKey}
+      onChange={onKeyChange}
+    >
+      <CustomRadio options={options} value={value} onChange={onChange} isRadioList />
+    </CustomCollapse>
+  );
+};
 
+const ContentTypeOption: React.FC<ContentTypeOptionProps> = ({
+  data,
+  type,
+  selectedOption,
+  setSelectedOption,
+}) => {
   const formatConventionGroup = (items: BasisConventionOption[]): RadioValue[] => {
     return items.map((item) => {
       return {
@@ -167,47 +170,32 @@ const ContentTypeOption: React.FC<ContentTypeOptionProps> = (props) => {
   }
   /// the others
   return (
-    <Collapse
-      bordered={false}
-      expandIconPosition="right"
-      expandIcon={({ isActive }) => (isActive ? <DropupIcon /> : <DropdownIcon />)}
-      className={styles.contentTypeCollapse}
-      onChange={setActiveKey}
-      activeKey={activeKey}>
-      {[...data]
-        .filter((item: any) => !isEmpty(item.subs))
-        .map((option: any) => (
-          <Collapse.Panel
-            header={
-              <span className={activeKey.includes(snakeCase(option.name)) ? 'activated' : ''}>
-                <span className="text-uppercase">{option.name}</span>
-                <span className="count-number">({option.count})</span>
-              </span>
+    [...data]
+      .filter((item: any) => !isEmpty(item.subs))
+      .map((option: any, idx) => (
+        <ContentTypeDetail
+          key={idx}
+          index={idx}
+          onChange={(radioValue) => {
+            if (type === 'conversions') {
+              return onChangeConversion(String(radioValue.value));
             }
-            key={snakeCase(option.name)}
-            className="site-collapse-custom-panel">
-            <CustomRadio
-              options={
-                type === 'conversions'
-                  ? formatConventionGroup(option.subs)
-                  : formatPresetOptionGroup(option.subs)
-              }
-              value={selectedOption.basis_id}
-              onChange={(radioValue) => {
-                if (type === 'conversions') {
-                  return onChangeConversion(String(radioValue.value));
-                }
-                return onChangePresetOption(String(radioValue.value));
-              }}
-              isRadioList
-            />
-          </Collapse.Panel>
-        ))}
-    </Collapse>
+            return onChangePresetOption(String(radioValue.value));
+          }}
+          options={
+            type === 'conversions'
+              ? formatConventionGroup(option.subs)
+              : formatPresetOptionGroup(option.subs)
+          }
+          value={selectedOption.basis_id}
+          option={option}
+        />
+      )) || null
   );
 };
 
 interface ContentTypeModalProps {
+  visible: boolean;
   setVisible: (value: boolean) => void;
   contentType: AttributeContentType | undefined;
   selectedItem: SelectedItem;
@@ -215,7 +203,8 @@ interface ContentTypeModalProps {
   type: number;
 }
 const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
-  const { setVisible, contentType, selectedItem, onSubmit, type } = props;
+  const { visible, setVisible, contentType, selectedItem, onSubmit, type } = props;
+
   const { subAttribute } = selectedItem;
   let listTab: TabItem[] = [
     { tab: 'TEXT', key: 'text' },
@@ -244,7 +233,7 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
   let selectedTab = listTab[0];
   if (!isUndefined(subAttribute.content_type)) {
     const selected = listTab.find((item) => {
-      return item.key.indexOf(lowerCase(subAttribute.content_type!)) >= 0;
+      return item.key.indexOf(lowerCase(subAttribute.content_type)) >= 0;
     });
     if (selected) {
       selectedTab = selected;
@@ -256,24 +245,29 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
 
   return (
     <>
-      <Modal
+      <CustomModal
         title="SELECT CONTENT TYPE"
         centered
-        visible={true}
+        visible={visible}
         onCancel={() => setVisible(false)}
+        secondaryModal
+        noHeaderBorder={false}
         width={576}
+        className={styles.contentTypeModalWrapper}
         closeIcon={<CloseIcon />}
         footer={
           <div className={styles.contentTypeFooter}>
             <CustomButton
               size="small"
               buttonClass={styles.contentTypeSubmitBtn}
-              onClick={() => onSubmit(selectedOption)}>
+              onClick={() => onSubmit(selectedOption)}
+              properties="rounded"
+            >
               Done
             </CustomButton>
           </div>
         }
-        className={styles.contentTypeModalWrapper}>
+      >
         <div>
           <CustomTabs
             listTab={listTab}
@@ -282,7 +276,11 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
             onChange={setActiveTab}
             activeKey={activeTab}
           />
-          <div className={styles.contentTypeOption}>
+          <div
+            className={`${styles.contentTypeOption} ${
+              activeTab === 'text' ? styles.contentTypeText : ''
+            } `}
+          >
             <ContentTypeOption
               type={activeTab as ACTIVE_TAB}
               data={contentType ? contentType[tab] : []}
@@ -291,7 +289,7 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = (props) => {
             />
           </div>
         </div>
-      </Modal>
+      </CustomModal>
     </>
   );
 };

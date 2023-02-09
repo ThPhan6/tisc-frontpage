@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { useScreen } from '@/helper/common';
 import { useCheckPermission } from '@/helper/hook';
 import { isEmpty } from 'lodash';
 
@@ -9,17 +10,21 @@ import { useAppSelector } from '@/reducers';
 
 import { EmptyOne } from '@/components/Empty';
 import DynamicFormInput from '@/components/EntryForm/DynamicFormInput';
+import { CustomTextArea } from '@/components/Form/CustomTextArea';
 import { BodyText } from '@/components/Typography';
 
 import styles from './ProductTip.less';
 
 const ProductTip: FC = () => {
+  const isTablet = useScreen().isTablet;
+  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
+  const isEditable = isTiscAdmin && !isTablet;
+
   const dispatch = useDispatch();
 
   const tips = useAppSelector((state) => state.product.details.tips);
-  const isTiscAdmin = useCheckPermission(['TISC Admin', 'Consultant Team']);
 
-  if (isTiscAdmin) {
+  if (isEditable) {
     return (
       <DynamicFormInput
         data={tips.map((value) => {
@@ -64,9 +69,12 @@ const ProductTip: FC = () => {
                 </BodyText>
               </td>
               <td className={styles.url}>
-                <BodyText level={6} customClass={styles.content_text} fontFamily="Roboto">
-                  {content.content}
-                </BodyText>
+                <CustomTextArea
+                  value={content.content}
+                  customClass={`${styles.customTextArea} ${styles.content_text}`}
+                  readOnly
+                  autoResize
+                />
               </td>
             </tr>
           );

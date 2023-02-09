@@ -2,63 +2,70 @@ import store, { RootState, useAppSelector } from '.';
 
 import { useEffect, useState } from 'react';
 
+import { ProductInfoTab } from '@/features/product/components/ProductAttributes/types';
+
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
 
-export type CollapseGroup =
-  | 'project-basic-info'
-  | 'share-via-email'
-  | 'inquiry-request'
-  | 'issuing-info';
-
+export type ProductFooterTabs = 'collection' | 'tip' | 'download' | '';
 interface ActiveState {
   collapse: {
-    [key in CollapseGroup]?: number;
+    [key in string]?: number;
   };
+  productFooter: ProductFooterTabs;
 }
 
 const initialState: ActiveState = {
   collapse: {},
+  productFooter: '',
 };
 
 const activeSlice = createSlice({
   name: 'active',
   initialState,
   reducers: {
-    setActiveCollapseItem(
-      state,
-      action: PayloadAction<{ type: CollapseGroup; activeKey?: number }>,
-    ) {
+    setActiveCollapseItem(state, action: PayloadAction<{ type: string; activeKey?: number }>) {
       state.collapse[action.payload.type] =
         state.collapse[action.payload.type] === action.payload.activeKey
           ? undefined
           : action.payload.activeKey;
     },
+    onChangeProductFooterTab: (
+      state,
+      action: PayloadAction<{ tab: ProductFooterTabs; infoTab: ProductInfoTab }>,
+    ) => {
+      state.productFooter = action.payload.tab;
+      delete state.collapse[action.payload.infoTab];
+    },
+    closeProductFooterTab: (state) => {
+      state.productFooter = '';
+    },
   },
 });
 
-export const { setActiveCollapseItem } = activeSlice.actions;
+export const { setActiveCollapseItem, onChangeProductFooterTab, closeProductFooterTab } =
+  activeSlice.actions;
 
 export const activeReducer = activeSlice.reducer;
 
 export const activeSelector = (state: RootState) => state.active;
 
-export const collapseSelector = (type?: CollapseGroup, index?: number) =>
+export const collapseSelector = (type?: string, index?: number) =>
   createSelector(activeSelector, ({ collapse }) =>
     type && typeof index === 'number' ? (collapse[type] === index ? ['1'] : []) : undefined,
   );
 
-export const setActiveCollapse = (type: CollapseGroup, activeKey: number) => () =>
+export const setActiveCollapse = (type: string, activeKey: number) => () =>
   store.dispatch(setActiveCollapseItem({ type, activeKey }));
 
-export const clearActiveCollapse = (type: CollapseGroup) =>
+export const clearActiveCollapse = (type: string) =>
   store.dispatch(setActiveCollapseItem({ type, activeKey: undefined }));
 
 export const useCollapseGroupActiveCheck = (
-  groupType?: CollapseGroup,
+  groupType?: string,
   groupIndex?: number,
   activeKey?: string | string[],
 ) => {
-  const [collapse, setCollapse] = useState<string | string[]>();
+  const [collapse, setCollapse] = useState<string | string[]>(); // Use for have activeKey case
 
   const activeKeyInState = useAppSelector(collapseSelector(groupType, groupIndex));
 

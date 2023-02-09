@@ -5,16 +5,16 @@ import { Switch } from 'antd';
 
 import { ReactComponent as FileSearchIcon } from '@/assets/icons/file-search-icon.svg';
 
+import { useScreen } from '@/helper/common';
 import { useBoolean } from '@/helper/hook';
 import { messageError, messageErrorType, validateDocumentTitle } from '@/helper/utils';
 
 import { PdfDetail } from '../type';
 
-import CustomButton from '@/components/Button';
 import DropdownCheckboxList from '@/components/CustomCheckbox/DropdownCheckboxList';
 import { FormGroup } from '@/components/Form';
 import { CustomInput } from '@/components/Form/CustomInput';
-import { MainTitle } from '@/components/Typography';
+import { MainTitle, RobotoBodyText } from '@/components/Typography';
 
 import styles from '../index.less';
 import { PreviewModal } from './PreviewModal';
@@ -23,9 +23,10 @@ interface CoverStandardProps {
   data: PdfDetail;
   onChangeData: (newData: PdfDetail) => void;
   type: 'cover' | 'standard';
-  onPreview?: () => void;
 }
-const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, onPreview }) => {
+
+const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type }) => {
+  const isMobile = useScreen().isMobile;
   const openModal = useBoolean();
   const [previewURL, setPreviewURL] = useState<string>('');
 
@@ -56,25 +57,33 @@ const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, o
     return (
       <div
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginRight: '24px',
-        }}>
-        {label}
+          marginRight: isMobile ? undefined : 12,
+        }}
+        className="flex-between"
+      >
+        <RobotoBodyText
+          level={5}
+          customClass="text-overflow"
+          style={{
+            maxWidth: 'calc(100% - 26px)',
+          }}
+        >
+          {label}
+        </RobotoBodyText>
         <FileSearchIcon
           onClick={(e) => {
             e.preventDefault();
             setPreviewURL(url);
             openModal.setValue(true);
           }}
+          style={{ width: 18, height: 18 }}
         />
       </div>
     );
   };
 
   return (
-    <>
+    <div className="mainContent">
       {type === 'cover' ? (
         <div className={styles.cover}>
           <div className={styles.customTitle}>
@@ -165,15 +174,10 @@ const StandardCoverPage: FC<CoverStandardProps> = ({ data, onChangeData, type, o
               combinable
             />
           </div>
-          <div className={styles.actionButton}>
-            <CustomButton size="small" properties="rounded" onClick={onPreview}>
-              Preview
-            </CustomButton>
-          </div>
         </div>
       )}
       <PreviewModal visible={openModal} previewURL={previewURL} />
-    </>
+    </div>
   );
 };
 export default StandardCoverPage;

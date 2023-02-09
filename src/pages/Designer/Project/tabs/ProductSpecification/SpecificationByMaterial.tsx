@@ -14,13 +14,14 @@ import {
 } from '../../hooks';
 import { useAutoExpandNestedTableColumn } from '@/components/Table/hooks';
 import { getSpecifiedProductByMaterial } from '@/features/project/services';
-import { setDefaultWidthForEachColumn, showImageUrl } from '@/helper/utils';
+import { setDefaultWidthForEachColumn } from '@/helper/utils';
 
 import { TableColumnItem } from '@/components/Table/types';
 import { ProjectProductItem } from '@/features/product/types';
 import { OrderMethod } from '@/features/project/types';
 
 import { AvailabilityModal } from '../../components/AvailabilityModal';
+import { LogoIcon } from '@/components/LogoIcon';
 import CustomTable from '@/components/Table';
 import { RobotoBodyText } from '@/components/Typography';
 
@@ -57,17 +58,7 @@ export const SpecificationByMaterial: FC = () => {
       dataIndex: 'images',
       width: '5%',
       align: 'center',
-      render: (value) => {
-        if (value) {
-          return (
-            <img
-              src={showImageUrl(value[0])}
-              style={{ width: 24, height: 24, objectFit: 'contain' }}
-            />
-          );
-        }
-        return null;
-      },
+      render: (value) => (value ? <LogoIcon logo={value[0]} size={24} /> : null),
     },
     {
       title: 'Brand',
