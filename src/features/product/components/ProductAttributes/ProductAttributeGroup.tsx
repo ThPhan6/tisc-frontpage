@@ -73,6 +73,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   /// for specification choice attribute
   const [collapsible, setCollapsible] = useState<ActiveKeyType>([]);
 
+  const [showAttributeOptionSelected, setShowAttributeOptionSelected] = useState<boolean>(true);
+  const [isAttributeGroupSelected, setIsAttributeGroupSelected] = useState<boolean>(true);
+
   const {
     onChangeAttributeItem,
     onChangeAttributeName,
@@ -130,14 +133,14 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
       );
     }
 
-    const haveOptionAttr = group.attributes.find((el) => el.type === 'Options');
+    const haveOptionAttr = group.attributes.some((el) => el.type === 'Options');
 
+    /// highlighted specification attribute option type is selected
     const attributeSelected: string[] = [];
-
     group.attributes.forEach((grpAttr) => {
       if (grpAttr.type === 'Options') {
         grpAttr.basis_options?.forEach((optAttr) => {
-          if (optAttr.isChecked) {
+          if (optAttr.isChecked && optAttr.value_1) {
             const conversionText = getConversionText({
               value_1: optAttr.value_1,
               unit_1: optAttr.unit_1,
@@ -149,7 +152,6 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         });
       }
     });
-
     const attributeSelectedContent = attributeSelected.join('; ');
 
     return (
@@ -160,7 +162,8 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               <CustomCheckbox
                 options={[{ label: '', value: grIndex }]}
                 selected={
-                  attributeGroup.some((gr) => gr.isChecked && gr.id === group.id)
+                  attributeGroup.some((gr) => gr.isChecked && gr.id === group.id) &&
+                  isAttributeGroupSelected
                     ? [{ label: group.name, value: grIndex }]
                     : []
                 }
@@ -175,13 +178,15 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
               />
               <RobotoBodyText level={6}>{group.name}</RobotoBodyText>
             </div>
-            <RobotoBodyText
-              title={attributeSelectedContent}
-              level={6}
-              customClass={'attributeSelected'}
-            >
-              {attributeSelectedContent}
-            </RobotoBodyText>
+            {showAttributeOptionSelected && attributeSelected.length ? (
+              <RobotoBodyText
+                title={attributeSelectedContent}
+                level={6}
+                customClass="attributeSelected"
+              >
+                {attributeSelectedContent}
+              </RobotoBodyText>
+            ) : null}
           </div>
         ) : (
           <BodyText level={6} fontFamily="Roboto" customClass="text-overflow">
@@ -270,30 +275,31 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             chosenOption={
               chosenOption
                 ? {
-                    label: getConversionText(chosenOption),
+                    label: getConversionText(chosenOption as any),
                     value: chosenOption?.id,
                   }
                 : undefined
             }
-            setChosenOptions={(option) => {
-              if (isTiscAdmin && isEditable) {
+            setChosenOptions={async (option) => {
+              if ((isTiscAdmin && isEditable) || !option) {
                 return;
               }
-              if (option?.value) {
-                setCurAttributeSelect({
-                  groupId: attrGroupItem.id || '',
-                  attribute: attribute,
-                });
 
-                setCollapsible([]);
+              setCurAttributeSelect({
+                groupId: attrGroupItem.id || '',
+                attribute: attribute,
+              });
 
-                onSelectSpecificationOption(
-                  groupIndex,
-                  attribute.id,
-                  isTiscAdmin ? false : true,
-                  option.value.toString(),
-                );
-              }
+              setCollapsible([]);
+
+              const specificationGrp = await onSelectSpecificationOption(
+                groupIndex,
+                attribute.id,
+                option.value.toString(),
+              );
+
+              setShowAttributeOptionSelected(!!specificationGrp?.haveCheckedOptionAttribute);
+              setIsAttributeGroupSelected(!!specificationGrp?.haveCheckedAttributeGroup);
             }}
           />
         </td>
@@ -349,6 +355,12 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                 setCurAttributeSelect={setCurAttributeSelect}
                 collapsible={collapsible}
                 setCollapsible={setCollapsible}
+                onCheckedAttributeOption={(isAttrOptChecked) => {
+                  setShowAttributeOptionSelected(isAttrOptChecked);
+                }}
+                onCheckedAttributeGroup={(isAttrGrpChecked) => {
+                  setIsAttributeGroupSelected(isAttrGrpChecked);
+                }}
               />
             )}
 
