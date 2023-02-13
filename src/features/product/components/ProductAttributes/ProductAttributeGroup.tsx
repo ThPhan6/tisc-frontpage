@@ -41,6 +41,7 @@ interface ProductAttributeGroupProps extends ProductAttributeContainerProps {
   attrGroupItem: ProductAttributeFormInput;
   groupIndex: number;
   curProductId: string;
+  onDrag?: (isDrag: boolean) => void;
 }
 
 export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
@@ -53,6 +54,7 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
   noBorder,
   curProductId,
   isSpecifiedModal,
+  onDrag,
 }) => {
   const isTablet = useScreen().isTablet;
   const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(
@@ -117,7 +119,21 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
         <InputGroup
           horizontal
           fontLevel={4}
-          label={<ScrollIcon />}
+          label={
+            <ScrollIcon
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              onMouseMove={(e) => {
+                e.stopPropagation();
+                onDrag?.(false);
+              }}
+              onMouseLeave={(e) => {
+                e.stopPropagation();
+                onDrag?.(true);
+              }}
+            />
+          }
           placeholder="type title"
           noWrap
           value={group.name}
