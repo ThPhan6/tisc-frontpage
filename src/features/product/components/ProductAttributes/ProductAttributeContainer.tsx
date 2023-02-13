@@ -49,15 +49,12 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
   const curProductId = productId ?? productIdParam;
   const isDragDisabled = useBoolean(true);
 
-  const { addNewProductAttribute, attributeGroup, dimensionWeightData } = useProductAttributeForm(
-    activeKey,
-    curProductId,
-    {
+  const { addNewProductAttribute, attributeGroup, attributeGroupKey, dimensionWeightData } =
+    useProductAttributeForm(activeKey, curProductId, {
       isSpecifiedModal,
       isGetProductSpecification: true, // except specifying modal
       isGetDimensionWeight: isTiscAdmin && activeKey === 'specification' && !curProductId, // get only dimension weight list when create new product
-    },
-  );
+    });
 
   const onDragEnd = (result: any) => {
     if (!result.destination) {
@@ -74,31 +71,11 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
       result.destination.index,
     ) as ProductAttributeFormInput[];
 
-    if (activeKey === 'general') {
-      store.dispatch(
-        setPartialProductDetail({
-          general_attribute_groups: newAttributesGroups,
-        }),
-      );
-      return;
-    }
-
-    if (activeKey === 'feature') {
-      store.dispatch(
-        setPartialProductDetail({
-          feature_attribute_groups: newAttributesGroups,
-        }),
-      );
-      return;
-    }
-
-    if (activeKey === 'specification') {
-      store.dispatch(
-        setPartialProductDetail({
-          specification_attribute_groups: newAttributesGroups,
-        }),
-      );
-    }
+    store.dispatch(
+      setPartialProductDetail({
+        [attributeGroupKey]: newAttributesGroups,
+      }),
+    );
   };
 
   return (
