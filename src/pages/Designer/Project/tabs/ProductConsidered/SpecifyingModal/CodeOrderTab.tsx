@@ -251,6 +251,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
               borderBottomColor="light"
               value={materialCode?.labelText}
               placement="bottomLeft"
+              offsetAlign={[0, 0]}
               overlayStyle={{ minWidth: 542 }}
               overlayClass={styles.overlayContent}
               containerClass={styles.inputColor}
@@ -356,6 +357,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
             <DropdownSelectInput
               placeholder="unit type"
               borderBottomColor="light"
+              offsetAlign={[0, 0]}
               value={unitType?.label ? String(unitType?.label) : ''}
               noPadding
               disabled
