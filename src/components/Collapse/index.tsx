@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, useState } from 'react';
 
 import { Collapse } from 'antd';
 import type { CollapseProps } from 'antd';
@@ -61,9 +61,13 @@ const CustomCollapse: FC<CustomCollapseProps> = ({
 export default CustomCollapse;
 
 export const ActiveOneCustomCollapse: FC<
-  CustomCollapseProps & { groupIndex: number; groupName: string }
+  CustomCollapseProps & { groupIndex?: number; groupName: string }
 > = ({ groupIndex, groupName, ...props }) => {
-  const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(groupName, groupIndex);
+  const [ramdomId] = useState<number>(Math.random());
+  const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(
+    groupName,
+    groupIndex ?? ramdomId,
+  );
 
   return <CustomCollapse activeKey={curActiveKey} onChange={onKeyChange} {...props} />;
 };

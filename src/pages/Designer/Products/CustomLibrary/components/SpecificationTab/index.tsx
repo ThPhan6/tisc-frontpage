@@ -1,9 +1,9 @@
 import { FC, useState } from 'react';
+import { Draggable } from 'react-beautiful-dnd';
 
 import { Col, Row } from 'antd';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
-import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { useGetDimensionWeight } from '@/features/dimension-weight/hook';
@@ -12,6 +12,7 @@ import { NameContentProps, ProductInfoTab, ProductOptionProps } from '../../type
 import store, { useAppSelector } from '@/reducers';
 
 import { ActiveOneCustomCollapse } from '@/components/Collapse';
+import { useDragging } from '@/components/DragIcon';
 import { EmptyOne } from '@/components/Empty';
 import { DoubleInput } from '@/components/EntryForm/DoubleInput';
 import { LogoIcon } from '@/components/LogoIcon';
@@ -42,6 +43,9 @@ export const SpecificationTab: FC<{
 }> = ({ productId, viewOnly, isPublicPage, specifying, activeKey }) => {
   const [optionModalVisible, setOptionModalVisible] = useState<boolean>(false);
 
+  const { DragDropContainer, getNewDataAfterReordering, isDragDisabled, DragDropIcon } =
+    useDragging();
+
   const {
     specifications,
     options,
@@ -50,7 +54,6 @@ export const SpecificationTab: FC<{
     specifiedDetail,
   } = useAppSelector((state) => state.customProduct.details);
   const specification = specifiedDetail?.specification || defaultSelection;
-
   const [curOption, setCurOption] = useState<ProductOptionProps>(DEFAULT_PRODUCT_OPTION);
   const [curOptionIndex, setCurOptionIndex] = useState(-1);
 
@@ -175,61 +178,93 @@ export const SpecificationTab: FC<{
       return null;
     }
 
-    return options.map((option: ProductOptionProps, optionIndex: number) => (
-      <ActiveOneCustomCollapse
-        groupIndex={optionIndex + 1} // Spare index 0 for Dimension & Weight group
-        groupName={'specification' as ProductInfoTab}
-        key={option.id || optionIndex}
-        showActiveBoxShadow={!specifying}
-        noBorder={specifying || (viewOnly && option.use_image)}
-        expandingHeaderFontStyle="bold"
-        customHeaderClass={styles.optionCollapse}
-        arrowAlignRight={specifying}
-        header={
-          <OptionCollapseHeader
-            data={options}
-            dataIndex={optionIndex}
-            productId={productId}
-            specification={specification}
-            specifying={specifying}
-            isPublicPage={isPublicPage}
-            specifiedDetail={specifiedDetail}
-            viewOnly={viewOnly}
-          />
-        }
-      >
-        {viewOnly ? null : (
-          <div className="flex-between" style={{ padding: '10px 16px' }}>
-            <div
-              className="flex-start cursor-pointer"
-              onClick={() => {
-                setOptionModalVisible(true);
-                setCurOption(option);
-                setCurOptionIndex(optionIndex);
-              }}
-            >
-              <MainTitle level={4} customClass={styles.content}>
-                {option.items.length ? 'Update Options' : 'Create Options'}
-              </MainTitle>
-              <SingleRightIcon />
-            </div>
-            <div className="flex-start">
-              {option.tag ? (
-                <RobotoBodyText level={6} style={{ fontWeight: '500', marginRight: 16 }}>
-                  TAG: {option.tag}
-                </RobotoBodyText>
-              ) : null}
-              <DeleteIcon
-                className={styles.deleteIcon}
-                onClick={() => handleDeleteOptionGroup(optionIndex)}
-              />
-            </div>
-          </div>
-        )}
+    const onDragEnd = (result: any) => {
+      const newOptionData = getNewDataAfterReordering(result, options);
 
-        {renderOptionItems(option, optionIndex)}
-      </ActiveOneCustomCollapse>
-    ));
+      store.dispatch(setCustomProductDetail({ options: newOptionData }));
+    };
+
+    return (
+      <>
+        {!options?.length ? null : (
+          <DragDropContainer onDragEnd={onDragEnd}>
+            {options.map((option: ProductOptionProps, optionIndex: number) => (
+              <Draggable
+                key={option.id || optionIndex}
+                draggableId={`${option?.id || optionIndex}-${option.title}-${option.tag}`}
+                index={optionIndex}
+                isDragDisabled={isDragDisabled}
+              >
+                {(dragProvided: any) => (
+                  <div
+                    ref={dragProvided.innerRef}
+                    {...dragProvided.draggableProps}
+                    {...dragProvided.dragHandleProps}
+                  >
+                    <ActiveOneCustomCollapse
+                      groupName={'specification' as ProductInfoTab}
+                      key={option.id || optionIndex}
+                      showActiveBoxShadow={!specifying}
+                      noBorder={specifying || (viewOnly && option.use_image)}
+                      expandingHeaderFontStyle="bold"
+                      customHeaderClass={styles.optionCollapse}
+                      arrowAlignRight={specifying}
+                      header={
+                        <OptionCollapseHeader
+                          data={options}
+                          dataIndex={optionIndex}
+                          productId={productId}
+                          specification={specification}
+                          specifying={specifying}
+                          isPublicPage={isPublicPage}
+                          specifiedDetail={specifiedDetail}
+                          viewOnly={viewOnly}
+                          icon={<DragDropIcon />}
+                        />
+                      }
+                    >
+                      {viewOnly ? null : (
+                        <div className="flex-between" style={{ padding: '10px 16px' }}>
+                          <div
+                            className="flex-start cursor-pointer"
+                            onClick={() => {
+                              setOptionModalVisible(true);
+                              setCurOption(option);
+                              setCurOptionIndex(optionIndex);
+                            }}
+                          >
+                            <MainTitle level={4} customClass={styles.content}>
+                              {option.items.length ? 'Update Options' : 'Create Options'}
+                            </MainTitle>
+                            <SingleRightIcon />
+                          </div>
+                          <div className="flex-start">
+                            {option.tag ? (
+                              <RobotoBodyText
+                                level={6}
+                                style={{ fontWeight: '500', marginRight: 16 }}
+                              >
+                                TAG: {option.tag}
+                              </RobotoBodyText>
+                            ) : null}
+                            <DeleteIcon
+                              className={styles.deleteIcon}
+                              onClick={() => handleDeleteOptionGroup(optionIndex)}
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {renderOptionItems(option, optionIndex)}
+                    </ActiveOneCustomCollapse>
+                  </div>
+                )}
+              </Draggable>
+            ))}
+          </DragDropContainer>
+        )}
+      </>
+    );
   };
 
   const renderSpecification = () => {
@@ -244,26 +279,56 @@ export const SpecificationTab: FC<{
         />
       );
     }
-    return specifications?.map((item, index) => (
-      <DoubleInput
-        key={item.id || index}
-        fontLevel={6}
-        doubleInputClass="mb-8"
-        leftIcon={<ScrollIcon />}
-        rightIcon={
-          <DeleteIcon
-            className={styles.deleteIcon}
-            onClick={() => handleDeleteSpecification(index)}
-          />
-        }
-        firstValue={item.name}
-        firstPlaceholder="type name"
-        firstOnChange={onChangeSpecification('name', item, index)}
-        secondValue={item.content}
-        secondPlaceholder="type content"
-        secondOnChange={onChangeSpecification('content', item, index)}
-      />
-    ));
+
+    const onDragEnd = (result: any) => {
+      const newSpecification = getNewDataAfterReordering(result, specifications);
+
+      store.dispatch(setCustomProductDetail({ specifications: newSpecification }));
+    };
+
+    return (
+      <>
+        {!specifications?.length ? null : (
+          <DragDropContainer onDragEnd={onDragEnd}>
+            {specifications.map((item, index) => (
+              <Draggable
+                key={item.id}
+                draggableId={`${item?.id || index}-${item.name}-${item.content}`}
+                index={index}
+                isDragDisabled={isDragDisabled}
+              >
+                {(dragProvided: any) => (
+                  <div
+                    ref={dragProvided.innerRef}
+                    {...dragProvided.draggableProps}
+                    {...dragProvided.dragHandleProps}
+                  >
+                    <DoubleInput
+                      key={item.id || index}
+                      fontLevel={6}
+                      doubleInputClass="mb-8"
+                      leftIcon={<DragDropIcon />}
+                      rightIcon={
+                        <DeleteIcon
+                          className={styles.deleteIcon}
+                          onClick={() => handleDeleteSpecification(index)}
+                        />
+                      }
+                      firstValue={item.name}
+                      firstPlaceholder="type name"
+                      firstOnChange={onChangeSpecification('name', item, index)}
+                      secondValue={item.content}
+                      secondPlaceholder="type content"
+                      secondOnChange={onChangeSpecification('content', item, index)}
+                    />
+                  </div>
+                )}
+              </Draggable>
+            ))}
+          </DragDropContainer>
+        )}
+      </>
+    );
   };
 
   return (

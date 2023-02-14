@@ -2,8 +2,6 @@ import { FC } from 'react';
 
 import { Col, Row } from 'antd';
 
-import { ReactComponent as ScrollIcon } from '@/assets/icons/scroll-icon.svg';
-
 import { selectProductSpecification } from '@/features/product/services';
 
 import { OptionGroupProps } from '../../types';
@@ -25,6 +23,7 @@ export const OptionCollapseHeader: FC<OptionGroupProps> = ({
   specifying,
   isPublicPage,
   viewOnly,
+  icon,
 }) => {
   const option = data[dataIndex];
   const selectOption = specification.attribute_groups?.find((el) => el.id === option.id);
@@ -47,7 +46,7 @@ export const OptionCollapseHeader: FC<OptionGroupProps> = ({
         noWrap
         fontLevel={4}
         containerClass={styles.content}
-        label={<ScrollIcon />}
+        label={icon}
         placeholder="type title eg Colour Rand or Material Options"
         value={option.title}
         onChange={onChangeOptionTitle(dataIndex)}

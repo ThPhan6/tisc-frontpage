@@ -88,4 +88,5 @@ export interface OptionGroupProps {
   specifying?: boolean;
   isPublicPage?: boolean;
   viewOnly?: boolean;
+  icon?: JSX.Element;
 }
