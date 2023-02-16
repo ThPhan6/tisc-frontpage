@@ -6,6 +6,7 @@ import { Row, message } from 'antd';
 import { ReactComponent as LikeIcon } from '@/assets/icons/action-like-icon.svg';
 
 import { retrieveFavouriteProduct, skipFavouriteProduct } from '../services';
+import { useScreen } from '@/helper/common';
 import { getEmailMessageError, getEmailMessageErrorType } from '@/helper/utils';
 import { getUserInfoMiddleware } from '@/pages/LandingPage/services/api';
 
@@ -25,6 +26,7 @@ const FavouriteForm = () => {
     phone_code: '',
     mobile: '',
   });
+  const { isMobile } = useScreen();
 
   const handleOnChangeValueForm = (
     fieldName1: string,
@@ -65,28 +67,26 @@ const FavouriteForm = () => {
     <Row>
       <ResponsiveCol>
         <div className={styles.content}>
-          <div className={styles.title}>
+          <div className={styles.title} style={{ padding: isMobile ? 8 : '' }}>
             <MainTitle level={3} textAlign="center">
               FOR NEW USER
             </MainTitle>
-            <div className={styles.text}>
-              <BodyText level={5} fontFamily="Roboto">
-                Click{' '}
-              </BodyText>
-              <LikeIcon className={styles.icon} />
-              <BodyText level={5} fontFamily="Roboto">
-                icon to add the product to
-              </BodyText>
-              <MainTitle level={3} customClass={styles.textItem}>
+            <BodyText level={isMobile ? 6 : 5} fontFamily="Roboto" customClass={styles.text}>
+              Click
+              <span style={{ marginTop: 6 }}>
+                <LikeIcon className={styles.icon} />
+              </span>
+              <span>icon to add the product to</span>
+              <span className={styles.textItem} style={{ fontSize: isMobile ? '12px' : '' }}>
                 My Favourites
-              </MainTitle>
-            </div>
+              </span>
+            </BodyText>
           </div>
           <div className={styles.form}>
-            <MainTitle level={3} textAlign="center">
+            <MainTitle level={isMobile ? 4 : 3} textAlign="center">
               FOR EXISTING USER WHO JOINED A NEW OFFICE
             </MainTitle>
-            <BodyText level={5} fontFamily="Roboto" customClass={styles.formText}>
+            <BodyText level={isMobile ? 6 : 5} fontFamily="Roboto" customClass={styles.formText}>
               Submit your personal email & mobile to reload the <span>My Favourites </span>
               preference
             </BodyText>

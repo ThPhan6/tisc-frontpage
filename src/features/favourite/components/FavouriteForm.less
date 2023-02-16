@@ -1,7 +1,13 @@
+@import '~antd/es/style/variable.less';
+
 .content {
   height: calc(var(--vh) * 100 - 152px);
   padding: 16px;
   background-color: #fff;
+
+  @media screen and (max-width: @screen-lg) {
+    height: calc(var(--vh) * 100 - 128px);
+  }
   .title {
     padding: 16px;
     box-shadow: @border-bottom;
@@ -10,11 +16,17 @@
       align-items: center;
       justify-content: center;
       margin-top: 4px;
+      white-space: nowrap;
       .icon {
         margin: 0 4px;
       }
       .textItem {
         margin-left: 4px;
+        font-weight: 600;
+        font-size: 16px;
+        font-family: @font-secondary;
+        line-height: 24px;
+        letter-spacing: 0.02em;
         text-transform: uppercase;
       }
     }
