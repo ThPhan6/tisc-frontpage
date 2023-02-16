@@ -41,8 +41,8 @@ export function getOneCustomProduct(id: string) {
           images: res.data.images,
           dimension_and_weight: res.data.dimension_and_weight,
           attributes: res.data.attributes,
-          specifications: res.data.specifications,
-          options: res.data.options,
+          specifications: res.data.specifications.map((el) => ({ ...el, type: 'specification' })),
+          options: res.data.options.map((el) => ({ ...el, type: 'option' })),
           collection: {
             id: res.data.collection_id,
             name: res.data.collection_name,

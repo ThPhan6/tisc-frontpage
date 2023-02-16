@@ -15,7 +15,7 @@ import { setCustomProductDetail } from '../../slice';
 
 export const OptionItemView: FC<OptionGroupProps> = ({
   data,
-  dataIndex,
+  // dataIndex,
   productId,
   specifiedDetail,
   specification,
@@ -23,7 +23,8 @@ export const OptionItemView: FC<OptionGroupProps> = ({
   isPublicPage,
 }) => {
   const { isMobile } = useScreen();
-  const option = data[dataIndex];
+  const option = data[0];
+  // data[dataIndex]
   const selectOption = specification.attribute_groups?.find((el) => el.id === option.id);
   const selectProductSpecification = useSelectProductSpecification();
 

@@ -32,6 +32,8 @@ const DEFAULT_CONTENT: NameContentProps = {
   id: '',
   name: '',
   content: '',
+  type: 'specification',
+  sequence: -1,
 };
 
 export const SpecificationTab: FC<{
@@ -40,20 +42,34 @@ export const SpecificationTab: FC<{
   isPublicPage?: boolean;
   specifying?: boolean;
   activeKey: ProductInfoTab;
-}> = ({ productId, viewOnly, isPublicPage, specifying, activeKey }) => {
+  specOptionData: any[];
+  setSpecOptionData?: (data: any) => void;
+}> = ({
+  productId,
+  viewOnly,
+  isPublicPage,
+  specifying,
+  activeKey,
+  specOptionData,
+  setSpecOptionData,
+}) => {
   const [optionModalVisible, setOptionModalVisible] = useState<boolean>(false);
 
-  const { DragDropContainer, getNewDataAfterReordering, isDragDisabled, DragDropIcon } =
+  const { DragDropContainer, isDragDisabled, DragDropIcon, getNewDataAfterReordering } =
     useDragging();
 
   const {
-    specifications,
-    options,
+    // specifications, // specification data(edit mode)
+    // options,
     dimension_and_weight,
     specification: defaultSelection,
     specifiedDetail,
   } = useAppSelector((state) => state.customProduct.details);
+
+  /// using for user selection(view mode)
   const specification = specifiedDetail?.specification || defaultSelection;
+
+  /// using for option data
   const [curOption, setCurOption] = useState<ProductOptionProps>(DEFAULT_PRODUCT_OPTION);
   const [curOptionIndex, setCurOptionIndex] = useState(-1);
 
@@ -63,8 +79,8 @@ export const SpecificationTab: FC<{
 
   const noneData =
     viewOnly &&
-    !specifications.length &&
-    !options.length &&
+    !specOptionData?.length &&
+    // !options.length &&
     !dimensionWeightData.attributes.some(
       (el) =>
         (el.with_diameter === dimensionWeightData.with_diameter || el.with_diameter === null) &&
@@ -76,73 +92,125 @@ export const SpecificationTab: FC<{
   }
 
   const handleAddSpecification = () => {
-    store.dispatch(
-      setCustomProductDetail({
-        specifications: [...specifications, { ...DEFAULT_CONTENT }],
-      }),
-    );
+    setSpecOptionData?.((prevState: any) => [
+      ...prevState,
+      { ...DEFAULT_CONTENT, sequence: specOptionData.length },
+    ]);
+
+    // const newSpecOptionData = [...specOptionData];
+
+    // store.dispatch(
+    //   setCustomProductDetail({
+    //     specifications: [
+    //       ...newSpecification,
+    //       { ...DEFAULT_CONTENT, sequence: specOptionData.length },
+    //     ],
+    //   }),
+    // );
   };
 
   const handleDeleteSpecification = (specIndex: number) => {
-    const newData = specifications?.filter((_item, itemIndex) => itemIndex !== specIndex);
-    store.dispatch(
-      setCustomProductDetail({
-        specifications: newData,
-      }),
-    );
+    setSpecOptionData?.((prevState: any) => {
+      const newData = [...prevState];
+      newData?.filter((_item: any, itemIndex: number) => itemIndex !== specIndex);
+
+      return newData;
+    });
+
+    // const newData = specOptionData?.filter((_item, itemIndex) => itemIndex !== specIndex);
+
+    // store.dispatch(
+    //   setCustomProductDetail({
+    //     specifications: newSpecification,
+    //   }),
+    // );
   };
 
   const onChangeSpecification =
     (fieldName: keyof Omit<NameContentProps, 'id'>, attributes: NameContentProps, index: number) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newSpecification = [...specifications];
-      newSpecification[index] = { ...attributes, [fieldName]: e.target.value };
-      store.dispatch(
-        setCustomProductDetail({
-          specifications: newSpecification,
-        }),
-      );
+      setSpecOptionData?.((prevState: any) => {
+        const newData = [...prevState];
+        newData[index] = { ...attributes, [fieldName]: e.target.value };
+
+        return newData;
+      });
+
+      // const newSpecificationData = [...specOptionData];
+      // newSpecificationData[index] = { ...attributes, [fieldName]: e.target.value };
+
+      // store.dispatch(
+      //   setCustomProductDetail({
+      //     specifications: newSpecification,
+      //   }),
+      // );
     };
 
   const handleAddOptionGroup = () => {
-    const newOptionGroup: ProductOptionProps = {
-      tag: '',
-      title: '',
-      use_image: false,
-      items: [],
-    };
+    setSpecOptionData?.((prevState: any) => [
+      ...prevState,
+      { ...DEFAULT_PRODUCT_OPTION, sequence: specOptionData.length },
+    ]);
 
-    store.dispatch(
-      setCustomProductDetail({
-        options: [...options, newOptionGroup],
-      }),
-    );
+    // store.dispatch(
+    //   setSpecificationAndOptionData({
+    //     specifications: newSpecification,
+    //     options: [...newOptionData, { ...DEFAULT_PRODUCT_OPTION, sequence: specOptionData.length }],
+    //   }),
+    // );
   };
 
   const handleDeleteOptionGroup = (index: number) => {
-    const newOptionContent = options.filter((_item, itemIndex) => itemIndex !== index);
-    store.dispatch(setCustomProductDetail({ options: newOptionContent }));
+    // const newOptionContent = specOptionData.filter((_item, itemIndex) => itemIndex !== index);
+    // store.dispatch(setCustomProductDetail({ options: newOptionData }));
+
+    setSpecOptionData?.((prevState: any) => {
+      const newData = [...prevState];
+      newData.filter((_item: any, itemIndex: number) => itemIndex !== index);
+
+      return newData;
+    });
   };
 
   const handleDeleteOptionGroupItem = (optionIndex: number, itemIndex: number) => {
-    const newOption = [...options];
-    const newOptionItem = newOption[optionIndex].items.filter(
-      (_item, itemIdx) => itemIdx !== itemIndex,
-    );
+    // const newOptionItem = newOption[optionIndex].items.filter(
+    //   (_item, itemIdx) => itemIdx !== itemIndex,
+    // );
 
-    newOption[optionIndex] = { ...newOption[optionIndex], items: newOptionItem };
+    // newOption[optionIndex] = { ...newOption[optionIndex], items: newOptionItem };
 
-    store.dispatch(setCustomProductDetail({ options: newOption }));
+    // store.dispatch(setCustomProductDetail({ options: newOption }));
+
+    setSpecOptionData?.((prevState: any) => {
+      const newData = [...prevState];
+      const newOptionItem = newData[optionIndex].items.filter(
+        (_item: any, itemIdx: number) => itemIdx !== itemIndex,
+      );
+
+      newData[optionIndex] = { ...newData[optionIndex], items: newOptionItem };
+
+      return newData;
+    });
+  };
+
+  const onDragEnd = async (result: any) => {
+    const newData = (await getNewDataAfterReordering(result, specOptionData)) as any[];
+
+    /// update sequence field for the data as same as its index after dragging
+    const newSpecOptionData = newData.map((el, index) => ({ ...el, sequence: index }));
+
+    /// update data to state
+    setSpecOptionData?.(newSpecOptionData);
   };
 
   const renderOptionItems = (option: ProductOptionProps, optionIndex: number) => {
     if (viewOnly) {
       return (
         <OptionItemView
-          data={options}
-          dataIndex={optionIndex}
+          data={[option]}
+          // dataIndex={optionIndex}
           productId={productId}
-          specification={specification}
+          specification={specification} /// data of user selected on view mode
           specifying={specifying}
           isPublicPage={isPublicPage}
           specifiedDetail={specifiedDetail}
@@ -171,164 +239,6 @@ export const SpecificationTab: FC<{
         </Col>
       </Row>
     ));
-  };
-
-  const renderProductOptionGroup = () => {
-    if (options.length === 0) {
-      return null;
-    }
-
-    const onDragEnd = (result: any) => {
-      const newOptionData = getNewDataAfterReordering(result, options);
-
-      store.dispatch(setCustomProductDetail({ options: newOptionData }));
-    };
-
-    return (
-      <>
-        {!options?.length ? null : (
-          <DragDropContainer onDragEnd={onDragEnd}>
-            {options.map((option: ProductOptionProps, optionIndex: number) => (
-              <Draggable
-                key={option.id || optionIndex}
-                draggableId={`${option?.id || optionIndex}-${option.title}-${option.tag}`}
-                index={optionIndex}
-                isDragDisabled={isDragDisabled}
-              >
-                {(dragProvided: any) => (
-                  <div
-                    ref={dragProvided.innerRef}
-                    {...dragProvided.draggableProps}
-                    {...dragProvided.dragHandleProps}
-                  >
-                    <ActiveOneCustomCollapse
-                      groupName={'specification' as ProductInfoTab}
-                      key={option.id || optionIndex}
-                      showActiveBoxShadow={!specifying}
-                      noBorder={specifying || (viewOnly && option.use_image)}
-                      expandingHeaderFontStyle="bold"
-                      customHeaderClass={styles.optionCollapse}
-                      arrowAlignRight={specifying}
-                      header={
-                        <OptionCollapseHeader
-                          data={options}
-                          dataIndex={optionIndex}
-                          productId={productId}
-                          specification={specification}
-                          specifying={specifying}
-                          isPublicPage={isPublicPage}
-                          specifiedDetail={specifiedDetail}
-                          viewOnly={viewOnly}
-                          icon={<DragDropIcon />}
-                        />
-                      }
-                    >
-                      {viewOnly ? null : (
-                        <div className="flex-between" style={{ padding: '10px 16px' }}>
-                          <div
-                            className="flex-start cursor-pointer"
-                            onClick={() => {
-                              setOptionModalVisible(true);
-                              setCurOption(option);
-                              setCurOptionIndex(optionIndex);
-                            }}
-                          >
-                            <MainTitle level={4} customClass={styles.content}>
-                              {option.items.length ? 'Update Options' : 'Create Options'}
-                            </MainTitle>
-                            <SingleRightIcon />
-                          </div>
-                          <div className="flex-start">
-                            {option.tag ? (
-                              <RobotoBodyText
-                                level={6}
-                                style={{ fontWeight: '500', marginRight: 16 }}
-                              >
-                                TAG: {option.tag}
-                              </RobotoBodyText>
-                            ) : null}
-                            <DeleteIcon
-                              className={styles.deleteIcon}
-                              onClick={() => handleDeleteOptionGroup(optionIndex)}
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                      {renderOptionItems(option, optionIndex)}
-                    </ActiveOneCustomCollapse>
-                  </div>
-                )}
-              </Draggable>
-            ))}
-          </DragDropContainer>
-        )}
-      </>
-    );
-  };
-
-  const renderSpecification = () => {
-    if (viewOnly) {
-      return (
-        <SimpleContentTable
-          items={specifications}
-          tdStyle={specifying ? { paddingLeft: 0 } : {}}
-          flex={specifying ? '30-70' : '25-75'}
-          flexOnMobile
-          noPadding={specifying}
-        />
-      );
-    }
-
-    const onDragEnd = (result: any) => {
-      const newSpecification = getNewDataAfterReordering(result, specifications);
-
-      store.dispatch(setCustomProductDetail({ specifications: newSpecification }));
-    };
-
-    return (
-      <>
-        {!specifications?.length ? null : (
-          <DragDropContainer onDragEnd={onDragEnd}>
-            {specifications.map((item, index) => (
-              <Draggable
-                key={item.id}
-                draggableId={`${item?.id || index}-${item.name}-${item.content}`}
-                index={index}
-                isDragDisabled={isDragDisabled}
-              >
-                {(dragProvided: any) => (
-                  <div
-                    ref={dragProvided.innerRef}
-                    {...dragProvided.draggableProps}
-                    {...dragProvided.dragHandleProps}
-                  >
-                    <DoubleInput
-                      key={item.id || index}
-                      fontLevel={6}
-                      doubleInputClass="mb-8"
-                      leftIcon={<DragDropIcon />}
-                      rightIcon={
-                        <DeleteIcon
-                          className={styles.deleteIcon}
-                          onClick={() => handleDeleteSpecification(index)}
-                        />
-                      }
-                      firstValue={item.name}
-                      firstPlaceholder="type name"
-                      firstOnChange={onChangeSpecification('name', item, index)}
-                      secondValue={item.content}
-                      secondPlaceholder="type content"
-                      secondOnChange={onChangeSpecification('content', item, index)}
-                    />
-                  </div>
-                )}
-              </Draggable>
-            ))}
-          </DragDropContainer>
-        )}
-      </>
-    );
   };
 
   return (
@@ -363,11 +273,124 @@ export const SpecificationTab: FC<{
         </div>
       )}
 
-      <div className={styles.mainContent}>
-        {renderSpecification()}
+      {!specOptionData?.length ? null : (
+        <div className={styles.mainContent}>
+          <DragDropContainer onDragEnd={onDragEnd}>
+            {specOptionData.map((el: NameContentProps & ProductOptionProps, index: number) => {
+              const specType = el.type === 'specification';
+              const draggableId = specType
+                ? `${el.name}-${el.content}-${el.sequence}-${index}`
+                : `${el.title}-${el.tag}-${el.sequence}-${index}`;
 
-        {renderProductOptionGroup()}
-      </div>
+              return (
+                <Draggable
+                  key={el.sequence}
+                  draggableId={draggableId}
+                  index={index}
+                  isDragDisabled={isDragDisabled}
+                >
+                  {(dragProvided: any) => (
+                    <div
+                      ref={dragProvided.innerRef}
+                      {...dragProvided.draggableProps}
+                      {...dragProvided.dragHandleProps}
+                    >
+                      {specType ? (
+                        viewOnly ? (
+                          <SimpleContentTable
+                            items={[el]}
+                            tdStyle={specifying ? { paddingLeft: 0 } : {}}
+                            flex={specifying ? '30-70' : '25-75'}
+                            flexOnMobile
+                            noPadding={specifying}
+                          />
+                        ) : (
+                          <DoubleInput
+                            key={el.sequence}
+                            fontLevel={6}
+                            doubleInputClass="mb-8"
+                            leftIcon={<DragDropIcon />}
+                            rightIcon={
+                              <DeleteIcon
+                                className={styles.deleteIcon}
+                                onClick={() => handleDeleteSpecification(index)}
+                              />
+                            }
+                            firstValue={el.name}
+                            firstPlaceholder="type name"
+                            firstOnChange={onChangeSpecification('name', el, index)}
+                            secondValue={el.content}
+                            secondPlaceholder="type content"
+                            secondOnChange={onChangeSpecification('content', el, index)}
+                          />
+                        )
+                      ) : (
+                        <ActiveOneCustomCollapse
+                          key={el.sequence}
+                          groupName={'specification' as ProductInfoTab}
+                          groupIndex={Number(el.sequence)}
+                          noBorder={specifying || (viewOnly && el.use_image)}
+                          expandingHeaderFontStyle="bold"
+                          customHeaderClass={styles.optionCollapse}
+                          arrowAlignRight={specifying}
+                          header={
+                            <OptionCollapseHeader
+                              data={specOptionData}
+                              setSpecOptionData={setSpecOptionData}
+                              dataIndex={index}
+                              productId={productId}
+                              specification={specification}
+                              specifying={specifying}
+                              isPublicPage={isPublicPage}
+                              specifiedDetail={specifiedDetail}
+                              viewOnly={viewOnly}
+                              icon={<DragDropIcon />}
+                            />
+                          }
+                        >
+                          {viewOnly ? null : (
+                            <div className="flex-between" style={{ padding: '10px 16px' }}>
+                              <div
+                                className="flex-start cursor-pointer"
+                                onClick={() => {
+                                  setOptionModalVisible(true);
+                                  setCurOption(el);
+                                  setCurOptionIndex(index);
+                                }}
+                              >
+                                <MainTitle level={4} customClass={styles.content}>
+                                  {el.items.length ? 'Update Options' : 'Create Options'}
+                                </MainTitle>
+                                <SingleRightIcon />
+                              </div>
+                              <div className="flex-start">
+                                {el.tag ? (
+                                  <RobotoBodyText
+                                    level={6}
+                                    style={{ fontWeight: '500', marginRight: 16 }}
+                                  >
+                                    TAG: {el.tag}
+                                  </RobotoBodyText>
+                                ) : null}
+                                <DeleteIcon
+                                  className={styles.deleteIcon}
+                                  onClick={() => handleDeleteOptionGroup(index)}
+                                />
+                              </div>
+                            </div>
+                          )}
+
+                          {renderOptionItems(el, index)}
+                        </ActiveOneCustomCollapse>
+                      )}
+                    </div>
+                  )}
+                </Draggable>
+              );
+            })}
+          </DragDropContainer>
+        </div>
+      )}
 
       {viewOnly ? null : (
         <ProductOptionModal
@@ -381,7 +404,15 @@ export const SpecificationTab: FC<{
             setCurOptionIndex(-1);
           }}
           option={curOption}
-          optionIndex={curOptionIndex}
+          // optionIndex={curOptionIndex}
+          onChange={(data: ProductOptionProps) => {
+            setSpecOptionData?.((prevState: any) => {
+              const newData = [...prevState];
+              newData[curOptionIndex] = data;
+
+              return newData;
+            });
+          }}
         />
       )}
     </>

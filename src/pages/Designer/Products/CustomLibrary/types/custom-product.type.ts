@@ -28,6 +28,8 @@ export interface NameContentProps {
   id: string;
   name: string;
   content: string;
+  sequence: number;
+  type?: 'attribute' | 'specification';
 }
 
 export interface ProductOptionContentProps {
@@ -42,6 +44,8 @@ export interface ProductOptionProps {
   tag: string;
   title: string;
   items: ProductOptionContentProps[];
+  sequence: number;
+  type?: 'option';
 }
 
 export interface CustomProductDetailProps {
@@ -81,7 +85,8 @@ export interface CustomProductRequestBody {
 
 export interface OptionGroupProps {
   data: ProductOptionProps[];
-  dataIndex: number;
+  setSpecOptionData?: (data: any) => void;
+  dataIndex?: number;
   specification: SpecificationBodyRequest;
   specifiedDetail?: SpecifiedDetail;
   productId?: string;

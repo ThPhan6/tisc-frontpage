@@ -22,11 +22,7 @@ export const useDragging = () => {
   }, []);
 
   const getNewDataAfterReordering = (result: any, data: any) => {
-    if (!result?.destination) {
-      return data;
-    }
-
-    if (result?.destination?.index === result?.source?.index) {
+    if (!result?.destination || result?.destination?.index === result?.source?.index) {
       return data;
     }
 

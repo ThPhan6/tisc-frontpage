@@ -1,15 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { PATH } from '@/constants/path';
 import { Col, Row, message } from 'antd';
 import { useHistory } from 'umi';
 
-import { createCustomProduct, getOneCustomProduct, updateCustomProduct } from './services';
-import { useGetParamId } from '@/helper/hook';
+import { useGetOneCustomProduct } from './hook';
+import { createCustomProduct, updateCustomProduct } from './services';
 import { formatImageIfBase64, throttleAction } from '@/helper/utils';
 
-import { CustomProductRequestBody, ProductInfoTab } from './types';
-import store, { useAppSelector } from '@/reducers';
+import {
+  CustomProductRequestBody,
+  NameContentProps,
+  ProductInfoTab,
+  ProductOptionProps,
+} from './types';
+import { useAppSelector } from '@/reducers';
 
 import { SpecificationTab } from './components/SpecificationTab';
 import { SummaryTab } from './components/SummaryTab';
@@ -19,7 +24,7 @@ import ProductDetailHeader from '@/features/product/components/ProductDetailHead
 import ProductImagePreview from '@/features/product/components/ProductImagePreview';
 
 import styles from './ProductLibraryDetail.less';
-import { invalidCustomProductSelector, resetCustomProductDetail } from './slice';
+import { invalidCustomProductSelector } from './slice';
 
 const LIST_TAB = [
   { tab: 'SUMMARY', key: 'summary' },
@@ -28,24 +33,15 @@ const LIST_TAB = [
 
 const ProductLibraryUpdate: React.FC = () => {
   const history = useHistory();
-  const productId = useGetParamId();
 
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('summary');
   const productData = useAppSelector((state) => state.customProduct.details);
 
+  const { productId, specOptionData, setSpecOptionData } = useGetOneCustomProduct();
+
   const { invalidAttributes, invalidSpecifications, invalidOptions } = useAppSelector(
     invalidCustomProductSelector,
   );
-
-  useEffect(() => {
-    if (productId) {
-      getOneCustomProduct(productId);
-    }
-
-    return () => {
-      store.dispatch(resetCustomProductDetail());
-    };
-  }, [productId]);
 
   const onSave = () => {
     switch (true) {
@@ -78,7 +74,10 @@ const ProductLibraryUpdate: React.FC = () => {
         return;
     }
 
-    const productOptions = productData.options.map((el) => ({
+    /// filter option data and delete its field type
+    const productOptions: ProductOptionProps[] =
+      specOptionData?.filter((el) => el.type === 'option').map(({ type, ...el }) => el) || [];
+    const productOptionData: ProductOptionProps[] = productOptions.map((el) => ({
       ...el,
       id: el.id || undefined,
       items: el.items.map((item) => ({
@@ -88,6 +87,11 @@ const ProductLibraryUpdate: React.FC = () => {
       })),
     }));
 
+    /// filter specification data and delete its field type
+    const productSpecificationData: NameContentProps[] =
+      specOptionData?.filter((el) => el.type === 'specification').map(({ type, ...el }) => el) ||
+      [];
+
     const data: CustomProductRequestBody = {
       company_id: productData.company.id,
       collection_id: productData.collection.id,
@@ -95,8 +99,8 @@ const ProductLibraryUpdate: React.FC = () => {
       dimension_and_weight: productData.dimension_and_weight,
       description: productData.description.trim(),
       attributes: productData.attributes,
-      specifications: productData.specifications,
-      options: productOptions,
+      specifications: productSpecificationData,
+      options: productOptionData,
       images: productData.images?.map((image) => formatImageIfBase64(image)),
     };
 
@@ -154,7 +158,12 @@ const ProductLibraryUpdate: React.FC = () => {
                 </CustomTabPane>
 
                 <CustomTabPane active={activeKey === 'specification'}>
-                  <SpecificationTab productId={productId} activeKey="specification" />
+                  <SpecificationTab
+                    productId={productId}
+                    activeKey="specification"
+                    specOptionData={specOptionData}
+                    setSpecOptionData={setSpecOptionData}
+                  />
                 </CustomTabPane>
               </Col>
             </Row>

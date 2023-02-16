@@ -1,7 +1,7 @@
 import { FC, ReactNode, useState } from 'react';
 
-import { Collapse } from 'antd';
 import type { CollapseProps } from 'antd';
+import { Collapse } from 'antd';
 
 import { ReactComponent as DropdownIcon } from '@/assets/icons/drop-down-icon.svg';
 import { ReactComponent as DropupIcon } from '@/assets/icons/drop-up-icon.svg';
@@ -61,7 +61,7 @@ const CustomCollapse: FC<CustomCollapseProps> = ({
 export default CustomCollapse;
 
 export const ActiveOneCustomCollapse: FC<
-  CustomCollapseProps & { groupIndex?: number; groupName: string }
+  Omit<CustomCollapseProps, 'activeKey' | 'onChange'> & { groupIndex?: number; groupName: string }
 > = ({ groupIndex, groupName, ...props }) => {
   const [ramdomId] = useState<number>(Math.random());
   const { curActiveKey, onKeyChange } = useCollapseGroupActiveCheck(
@@ -69,5 +69,7 @@ export const ActiveOneCustomCollapse: FC<
     groupIndex ?? ramdomId,
   );
 
-  return <CustomCollapse activeKey={curActiveKey} onChange={onKeyChange} {...props} />;
+  console.log('groupIndex', groupIndex);
+
+  return <CustomCollapse {...props} activeKey={curActiveKey} onChange={onKeyChange} />;
 };

@@ -12,7 +12,6 @@ import { showImageUrl } from '@/helper/utils';
 import { cloneDeep } from 'lodash';
 
 import { ProductOptionContentProps, ProductOptionProps } from '../../types';
-import store from '@/reducers';
 
 import CustomButton from '@/components/Button';
 import { CustomInput } from '@/components/Form/CustomInput';
@@ -20,7 +19,6 @@ import { CustomModal } from '@/components/Modal';
 import { BodyText, MainTitle, RobotoBodyText } from '@/components/Typography';
 import { ImageUpload } from '@/pages/TISC/Product/Basis/Option/components/OptionItem';
 
-import { updateCustomProductOption } from '../../slice';
 import styles from './ProductOptionModal.less';
 
 const DEFAULT_CONTENT: ProductOptionContentProps = {
@@ -36,6 +34,8 @@ export const DEFAULT_PRODUCT_OPTION: ProductOptionProps = {
   tag: '',
   title: '',
   use_image: false,
+  type: 'option',
+  sequence: -1,
 };
 
 type FieldName = keyof ProductOptionContentProps;
@@ -44,14 +44,16 @@ interface ProductOptionModalProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
   option: ProductOptionProps;
-  optionIndex: number;
+  optionIndex?: number;
+  onChange: (data: ProductOptionProps) => void;
 }
 
 export const ProductOptionModal: FC<ProductOptionModalProps> = ({
   visible,
   setVisible,
   option,
-  optionIndex,
+  // optionIndex,
+  onChange,
 }) => {
   const submitButtonStatus = useBoolean(false);
 
@@ -131,12 +133,16 @@ export const ProductOptionModal: FC<ProductOptionModalProps> = ({
       case optionState.items.length === 0:
         message.error('Required at least one item');
         return;
-      case optionState.items.some((el) => !el.description || (optionState.use_image && !el.image)):
+      case optionState.items.some(
+        (el) => !el.description || !el.product_id || (optionState.use_image && !el.image),
+      ):
         message.error('Item info is required');
         return;
     }
 
-    store.dispatch(updateCustomProductOption({ optionState, optionIndex }));
+    // store.dispatch(updateCustomProductOption({ optionState, optionIndex }));
+    onChange(optionState);
+
     setVisible(false);
   };
 

@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { Col, Row } from 'antd';
 import { useHistory } from 'umi';
 
 import { ReactComponent as CloseIcon } from '@/assets/icons/action-close-open-icon.svg';
 
-import { getOneCustomProduct } from './services';
-import { useGetParamId, useQuery } from '@/helper/hook';
+import { useGetOneCustomProduct } from './hook';
+import { useQuery } from '@/helper/hook';
 
 import { ProductInfoTab } from './types';
-import store, { useAppSelector } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 
 import { SpecificationTab } from './components/SpecificationTab';
 import { SummaryTab } from './components/SummaryTab';
@@ -20,7 +20,6 @@ import { CustomTabPane, CustomTabs } from '@/components/Tabs';
 import ProductImagePreview from '@/features/product/components/ProductImagePreview';
 
 import styles from './ProductLibraryDetail.less';
-import { resetCustomProductDetail } from './slice';
 import Cookies from 'js-cookie';
 
 const LIST_TAB = [
@@ -30,7 +29,7 @@ const LIST_TAB = [
 
 const ProductLibraryDetail: React.FC = () => {
   const history = useHistory();
-  const productId = useGetParamId();
+  const { productId, specOptionData } = useGetOneCustomProduct();
 
   const signature = useQuery().get('signature') || '';
   /// set signature to Cookies
@@ -40,16 +39,6 @@ const ProductLibraryDetail: React.FC = () => {
 
   const [activeKey, setActiveKey] = useState<ProductInfoTab>('summary');
   const productData = useAppSelector((state) => state.customProduct.details);
-
-  useEffect(() => {
-    if (productId) {
-      getOneCustomProduct(productId);
-    }
-
-    return () => {
-      store.dispatch(resetCustomProductDetail());
-    };
-  }, [productId]);
 
   return (
     <Row className={`${styles.container} ${isPublicPage ? styles.bgContainer : ''}`}>
@@ -94,6 +83,7 @@ const ProductLibraryDetail: React.FC = () => {
                       activeKey={'specification'}
                       viewOnly
                       isPublicPage={isPublicPage}
+                      specOptionData={specOptionData}
                     />
                   </CustomTabPane>
                 </Col>

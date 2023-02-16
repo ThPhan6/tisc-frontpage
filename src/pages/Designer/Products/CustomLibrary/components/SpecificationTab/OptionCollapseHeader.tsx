@@ -15,7 +15,8 @@ import { setCustomProductDetail } from '../../slice';
 import styles from './index.less';
 
 export const OptionCollapseHeader: FC<OptionGroupProps> = ({
-  data,
+  data, // data combined between specification and option
+  setSpecOptionData,
   dataIndex,
   productId,
   specifiedDetail,
@@ -25,18 +26,23 @@ export const OptionCollapseHeader: FC<OptionGroupProps> = ({
   viewOnly,
   icon,
 }) => {
+  if (!dataIndex) {
+    return null;
+  }
+
   const option = data[dataIndex];
   const selectOption = specification.attribute_groups?.find((el) => el.id === option.id);
 
   const onChangeOptionTitle = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newOptionGroup = [...data];
-    newOptionGroup[index] = { ...newOptionGroup[index], title: e.target.value };
+    // const newOptionGroup = [...data];
+    // newOptionGroup[index] = { ...newOptionGroup[index], title: e.target.value };
 
-    store.dispatch(
-      setCustomProductDetail({
-        options: newOptionGroup,
-      }),
-    );
+    setSpecOptionData?.((prevState: any) => {
+      const newOptionGroup = [...prevState];
+      newOptionGroup[index] = { ...newOptionGroup[index], title: e.target.value };
+
+      return newOptionGroup;
+    });
   };
 
   if (!viewOnly) {
