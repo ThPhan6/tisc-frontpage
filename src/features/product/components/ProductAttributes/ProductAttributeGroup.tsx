@@ -19,7 +19,7 @@ import { closeProductFooterTab, useCollapseGroupActiveCheck } from '@/reducers/a
 import CustomCollapse from '@/components/Collapse';
 import { CustomCheckbox } from '@/components/CustomCheckbox';
 import InputGroup from '@/components/EntryForm/InputGroup';
-import { BodyText } from '@/components/Typography';
+import { BodyText, RobotoBodyText } from '@/components/Typography';
 
 import { AttributeOption, ConversionText, GeneralText } from './AttributeComponent';
 import { ProductAttributeSubItem, getConversionText } from './AttributeItem';
@@ -72,6 +72,9 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
 
   /// for specification choice attribute
   const [collapsible, setCollapsible] = useState<ActiveKeyType>([]);
+
+  const [showAttributeOptionSelected, setShowAttributeOptionSelected] = useState<boolean>(true);
+  const [isAttributeGroupSelected, setIsAttributeGroupSelected] = useState<boolean>(true);
 
   const {
     onChangeAttributeItem,
@@ -131,25 +134,60 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
     }
 
     const haveOptionAttr = group.attributes.some((el) => el.type === 'Options');
+
+    /// highlighted specification attribute option type is selected
+    const attributeSelected: string[] = [];
+    group.attributes.forEach((grpAttr) => {
+      if (grpAttr.type === 'Options') {
+        grpAttr.basis_options?.forEach((optAttr) => {
+          if (optAttr.isChecked && optAttr.value_1) {
+            const conversionText = getConversionText({
+              value_1: optAttr.value_1,
+              unit_1: optAttr.unit_1,
+              value_2: optAttr.value_2,
+              unit_2: optAttr.unit_2,
+            });
+            attributeSelected.push(conversionText);
+          }
+        });
+      }
+    });
+    const attributeSelectedContent = attributeSelected.join('; ');
+
     return (
       <div className={styles.attrGroupTitle}>
         {!isPublicPage && activeKey === 'specification' && haveOptionAttr ? (
-          <CustomCheckbox
-            options={[{ label: group.name, value: grIndex }]}
-            selected={
-              attributeGroup.some((gr) => gr.isChecked && gr.id === group.id)
-                ? [{ label: group.name, value: grIndex }]
-                : []
-            }
-            onChange={() => {
-              onCheckedSpecification(grIndex, isTiscAdmin ? false : true);
+          <div className="flex-between">
+            <div className="flex-start">
+              <CustomCheckbox
+                options={[{ label: '', value: grIndex }]}
+                selected={
+                  attributeGroup.some((gr) => gr.isChecked && gr.id === group.id) &&
+                  isAttributeGroupSelected
+                    ? [{ label: group.name, value: grIndex }]
+                    : []
+                }
+                onChange={() => {
+                  onCheckedSpecification(grIndex, isTiscAdmin ? false : true);
 
-              if (curAttributeSelect.groupId && curAttributeSelect.attribute?.id) {
-                setCurAttributeSelect(ATTRIBUTE_SELECTED_DEFAULT_VALUE);
-              }
-            }}
-            checkboxClass={styles.customLabel}
-          />
+                  if (curAttributeSelect.groupId && curAttributeSelect.attribute?.id) {
+                    setCurAttributeSelect(ATTRIBUTE_SELECTED_DEFAULT_VALUE);
+                  }
+                }}
+                checkboxClass={styles.customLabel}
+              />
+              <RobotoBodyText level={6}>{group.name}</RobotoBodyText>
+            </div>
+            {showAttributeOptionSelected && attributeSelected.length ? (
+              <RobotoBodyText
+                title={attributeSelectedContent}
+                level={6}
+                customClass="attributeSelected"
+              >
+                {attributeSelectedContent}
+              </RobotoBodyText>
+            ) : null}
+          </div>
         ) : (
           <BodyText level={6} fontFamily="Roboto" customClass="text-overflow">
             {group.name}
@@ -237,30 +275,31 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
             chosenOption={
               chosenOption
                 ? {
-                    label: getConversionText(chosenOption),
+                    label: getConversionText(chosenOption as any),
                     value: chosenOption?.id,
                   }
                 : undefined
             }
-            setChosenOptions={(option) => {
-              if (isTiscAdmin && isEditable) {
+            setChosenOptions={async (option) => {
+              if ((isTiscAdmin && isEditable) || !option) {
                 return;
               }
-              if (option?.value) {
-                setCurAttributeSelect({
-                  groupId: attrGroupItem.id || '',
-                  attribute: attribute,
-                });
 
-                setCollapsible([]);
+              setCurAttributeSelect({
+                groupId: attrGroupItem.id || '',
+                attribute: attribute,
+              });
 
-                onSelectSpecificationOption(
-                  groupIndex,
-                  attribute.id,
-                  isTiscAdmin ? false : true,
-                  option.value.toString(),
-                );
-              }
+              setCollapsible([]);
+
+              const specificationGrp = await onSelectSpecificationOption(
+                groupIndex,
+                attribute.id,
+                option.value.toString(),
+              );
+
+              setShowAttributeOptionSelected(!!specificationGrp?.haveCheckedOptionAttribute);
+              setIsAttributeGroupSelected(!!specificationGrp?.haveCheckedAttributeGroup);
             }}
           />
         </td>
@@ -316,6 +355,12 @@ export const ProductAttributeGroup: FC<ProductAttributeGroupProps> = ({
                 setCurAttributeSelect={setCurAttributeSelect}
                 collapsible={collapsible}
                 setCollapsible={setCollapsible}
+                onCheckedAttributeOption={(isAttrOptChecked) => {
+                  setShowAttributeOptionSelected(isAttrOptChecked);
+                }}
+                onCheckedAttributeGroup={(isAttrGrpChecked) => {
+                  setIsAttributeGroupSelected(isAttrGrpChecked);
+                }}
               />
             )}
 

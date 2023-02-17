@@ -39,7 +39,12 @@ const getBasisOptionsText = (activeBasisOptions: { id: string; option_code: stri
   return '';
 };
 
-export const getConversionText = (content: any) => {
+export const getConversionText = (content: {
+  value_1: string;
+  unit_1?: string;
+  value_2?: string;
+  unit_2?: string;
+}) => {
   if (!content) {
     return '';
   }

@@ -240,7 +240,6 @@ export const useProductAttributeForm = (
   const onSelectSpecificationOption = (
     groupIndex: number,
     attributeId: string,
-    updatedOnchange: boolean = true, // disabled TISC
     optionId?: string,
     resetAttrbiteOptionIsChecked: boolean = true,
   ) => {
@@ -291,32 +290,40 @@ export const useProductAttributeForm = (
       };
     });
 
-    const haveCheckedOptionAttribute = newState[groupIndex].attributes.some(
+    let haveCheckedOptionAttribute = newState[groupIndex].attributes.some(
       (attr) => attr.type === 'Options' && attr.basis_options?.some((opt) => opt.isChecked),
     );
 
-    newState[groupIndex].isChecked = haveCheckedOptionAttribute && !!optionId;
+    if (!optionId) {
+      haveCheckedOptionAttribute = false;
+    }
+
+    newState[groupIndex].isChecked = haveCheckedOptionAttribute;
 
     const haveCheckedAttributeGroup = newState.some((group) => group.isChecked);
 
-    if (updatedOnchange) {
-      if (!props?.isSpecifiedModal) {
-        selectProductSpecification(id, {
-          specification: {
-            is_refer_document: !haveCheckedAttributeGroup || false,
-            attribute_groups: getSpecificationRequest(newState),
-          },
-        });
-      }
-
-      dispatch(
-        setPartialProductDetail({
-          specification_attribute_groups: newState,
-        }),
-      );
-
-      dispatch(setReferToDesignDocument(!haveCheckedAttributeGroup));
+    if (isTiscAdmin) {
+      return;
     }
+
+    if (!props?.isSpecifiedModal) {
+      selectProductSpecification(id, {
+        specification: {
+          is_refer_document: !haveCheckedAttributeGroup || false,
+          attribute_groups: getSpecificationRequest(newState),
+        },
+      });
+    }
+
+    dispatch(
+      setPartialProductDetail({
+        specification_attribute_groups: newState,
+      }),
+    );
+
+    dispatch(setReferToDesignDocument(!haveCheckedAttributeGroup));
+
+    return { haveCheckedOptionAttribute, haveCheckedAttributeGroup };
   };
 
   const onCheckedSpecification = (groupIndex: number, updatedOnchange: boolean = true) => {
