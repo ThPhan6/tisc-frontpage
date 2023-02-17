@@ -119,7 +119,11 @@ export const AttributeOption: FC<AttributeOptionProps> = ({
                       <AttributeOptionLabel option={option} key={index}>
                         <div>
                           <span className="product-id-label">Product ID:</span>
-                          <span className="product-id-value">{option.option_code}</span>
+                          <span className="product-id-value">
+                            {option.option_code !== ''
+                              ? option.option_code
+                              : option.product_id || ''}
+                          </span>
                         </div>
                       </AttributeOptionLabel>
                     ),

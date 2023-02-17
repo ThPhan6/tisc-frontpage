@@ -335,11 +335,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
           className="product-id-input"
           fontLevel={6}
           tabIndex={index}
-          value={
-            option.option_code !== '' || !option.option_code
-              ? option.option_code
-              : option.product_id || ''
-          }
+          value={option.option_code !== '' ? option.option_code : option.product_id || ''}
           onChange={(e) => {
             const newBasisOptions = [...basisOptions];
             newBasisOptions[index] = {
