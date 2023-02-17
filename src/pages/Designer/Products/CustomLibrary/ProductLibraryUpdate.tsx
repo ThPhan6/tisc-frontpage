@@ -91,8 +91,9 @@ const ProductLibraryUpdate: React.FC = () => {
 
     /// filter specification data and delete its field type
     const productSpecificationData: NameContentProps[] =
-      specOptionData?.filter((el) => el.type === 'specification').map(({ type, ...el }) => el) ||
-      [];
+      specOptionData
+        ?.filter((el) => el.type === 'specification')
+        .map(({ type, isCollapse, ...el }) => el) || [];
 
     const data: CustomProductRequestBody = {
       company_id: productData.company.id,

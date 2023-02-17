@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 
 import { Col, Row } from 'antd';
@@ -8,10 +8,11 @@ import { ReactComponent as DragIcon } from '@/assets/icons/scroll-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { useGetDimensionWeight } from '@/features/dimension-weight/hook';
-import { cloneDeep, sortBy } from 'lodash';
+import { sortBy, uniqueId } from 'lodash';
 
 import { NameContentProps, ProductInfoTab, ProductOptionProps } from '../../types';
 import store, { useAppSelector } from '@/reducers';
+import { useCollapseGroupActiveCheck } from '@/reducers/active';
 
 import CustomCollapse from '@/components/Collapse';
 import { DragDropContainer, getNewDataAfterReordering } from '@/components/Drag';
@@ -76,9 +77,13 @@ export const SpecificationTab: FC<{
 
   const dimensionWeightData = dimension_and_weight.id ? dimension_and_weight : dwData;
 
+  /// using for dimension weight
+  const [activeCollapse, setActiveCollapse] = useState<string | string[]>([]);
+
   const noneData =
     viewOnly &&
     !specOptionData?.length &&
+    // !specifications?.length &&
     // !options.length &&
     !dimensionWeightData.attributes.some(
       (el) =>
@@ -91,9 +96,10 @@ export const SpecificationTab: FC<{
   }
 
   const handleAddSpecification = () => {
+    const randomId = uniqueId();
     setSpecOptionData?.((prevState: any) => [
       ...prevState,
-      { ...DEFAULT_CONTENT, sequence: specOptionData.length },
+      { ...DEFAULT_CONTENT, sequence: specOptionData.length, id: `spec-${randomId}` },
     ]);
 
     // const newSpecOptionData = [...specOptionData];
@@ -145,9 +151,10 @@ export const SpecificationTab: FC<{
     };
 
   const handleAddOptionGroup = () => {
+    const randomId = uniqueId();
     setSpecOptionData?.((prevState: any) => [
       ...prevState,
-      { ...DEFAULT_PRODUCT_OPTION, sequence: specOptionData.length },
+      { ...DEFAULT_PRODUCT_OPTION, sequence: specOptionData.length, id: `option-${randomId}` },
     ]);
 
     // store.dispatch(
@@ -246,6 +253,16 @@ export const SpecificationTab: FC<{
   return (
     <>
       <DimensionWeight
+        activeCollapse={activeCollapse}
+        onChangeCollapse={(key) => {
+          setActiveCollapse(key);
+
+          setSpecOptionData?.((prevState: any) => {
+            const cloneData = [...prevState];
+            const newData = cloneData.map((d) => ({ ...d, isCollapse: [] }));
+            return newData;
+          });
+        }}
         customClass={specifying ? 'mt-8' : ''}
         editable={!viewOnly}
         isShow={activeKey === 'specification'}
@@ -291,6 +308,7 @@ export const SpecificationTab: FC<{
                       {specType ? (
                         viewOnly ? (
                           <SimpleContentTable
+                            key={el.sequence}
                             items={[el]}
                             tdStyle={specifying ? { paddingLeft: 0 } : {}}
                             flex={specifying ? '30-70' : '25-75'}
@@ -299,7 +317,7 @@ export const SpecificationTab: FC<{
                           />
                         ) : (
                           <DoubleInput
-                            key={el.sequence}
+                            key={el.id || index}
                             fontLevel={6}
                             doubleInputClass="mb-8"
                             leftIcon={
@@ -329,8 +347,13 @@ export const SpecificationTab: FC<{
                       ) : (
                         <CustomCollapse
                           key={`collapse-${el.id}`}
+                          // groupName="specification" // as same as dimension weight
+                          // groupIndex={el.id}
                           activeKey={el.isCollapse}
                           onChange={(key) => {
+                            /// close dimension weight
+                            setActiveCollapse([]);
+
                             const cloneData = [...specOptionData];
                             const newData = cloneData.map((d) => ({ ...d, isCollapse: [] }));
                             newData[index] = {
