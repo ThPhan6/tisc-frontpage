@@ -192,7 +192,7 @@ export const ProductAttributeSubItem: React.FC<Props> = ({
       if (changedBasisOption) {
         return {
           id: changedBasisOption.id || '',
-          option_code: changedBasisOption.option_code || changedBasisOption.product_id,
+          option_code: changedBasisOption.option_code || '',
         };
       }
 
