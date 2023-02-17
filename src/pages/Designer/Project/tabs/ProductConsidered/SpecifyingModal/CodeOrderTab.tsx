@@ -357,6 +357,7 @@ const CodeOrderTab: FC<CodeOrderTabProps> = ({ projectProductId, roomIds, custom
             <DropdownSelectInput
               placeholder="unit type"
               borderBottomColor="light"
+              placement="bottomLeft"
               offsetAlign={[0, 0]}
               value={unitType?.label ? String(unitType?.label) : ''}
               noPadding
