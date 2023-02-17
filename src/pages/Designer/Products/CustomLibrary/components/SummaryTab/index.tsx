@@ -262,11 +262,7 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
                 index={index}
               >
                 {(dragProvided: any) => (
-                  <div
-                    ref={dragProvided.innerRef}
-                    {...dragProvided.draggableProps}
-                    {...dragProvided.dragHandleProps}
-                  >
+                  <div ref={dragProvided.innerRef} {...dragProvided.draggableProps}>
                     <DoubleInput
                       key={attribute.id || index}
                       fontLevel={6}
