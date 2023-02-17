@@ -29,7 +29,7 @@ const LIST_TAB = [
 
 const ProductLibraryDetail: React.FC = () => {
   const history = useHistory();
-  const { productId, specOptionData } = useGetOneCustomProduct();
+  const { productId, specOptionData, setSpecOptionData } = useGetOneCustomProduct();
 
   const signature = useQuery().get('signature') || '';
   /// set signature to Cookies
@@ -84,6 +84,7 @@ const ProductLibraryDetail: React.FC = () => {
                       viewOnly
                       isPublicPage={isPublicPage}
                       specOptionData={specOptionData}
+                      setSpecOptionData={setSpecOptionData}
                     />
                   </CustomTabPane>
                 </Col>

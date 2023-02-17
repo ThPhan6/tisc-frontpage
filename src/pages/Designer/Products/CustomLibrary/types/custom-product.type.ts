@@ -46,6 +46,7 @@ export interface ProductOptionProps {
   items: ProductOptionContentProps[];
   sequence: number;
   type?: 'option';
+  isCollapse?: string | string[];
 }
 
 export interface CustomProductDetailProps {
@@ -86,7 +87,7 @@ export interface CustomProductRequestBody {
 export interface OptionGroupProps {
   data: ProductOptionProps[];
   setSpecOptionData?: (data: any) => void;
-  dataIndex?: number;
+  dataIndex: number;
   specification: SpecificationBodyRequest;
   specifiedDetail?: SpecifiedDetail;
   productId?: string;

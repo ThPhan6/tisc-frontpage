@@ -1,6 +1,8 @@
 import { FC } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 
+import { ReactComponent as DragIcon } from '@/assets/icons/scroll-icon.svg';
+
 import { useProductAttributeForm } from './hooks';
 import { useScreen } from '@/helper/common';
 import { useCheckPermission, useGetParamId } from '@/helper/hook';
@@ -11,7 +13,7 @@ import { ProductInfoTab } from './types';
 import store from '@/reducers';
 import { ProductAttributes } from '@/types';
 
-import { useDragging } from '@/components/DragIcon';
+import { DragDropContainer, getNewDataAfterReordering } from '@/components/Drag';
 import CustomPlusButton from '@/components/Table/components/CustomPlusButton';
 
 import { ProductAttributeGroup } from './ProductAttributeGroup';
@@ -47,9 +49,6 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
       isGetProductSpecification: true, // except specifying modal
       isGetDimensionWeight: isTiscAdmin && activeKey === 'specification' && !curProductId, // get only dimension weight list when create new product
     });
-
-  const { DragDropContainer, getNewDataAfterReordering, isDragDisabled, DragDropIcon } =
-    useDragging();
 
   const onDragEnd = (result: any) => {
     const newAttributesGroups = getNewDataAfterReordering(
@@ -99,14 +98,9 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
               key={attrGroupItem.id}
               draggableId={attrGroupItem.id || String(groupIndex)}
               index={groupIndex}
-              isDragDisabled={isDragDisabled}
             >
               {(dragProvided: any) => (
-                <div
-                  ref={dragProvided.innerRef}
-                  {...dragProvided.draggableProps}
-                  {...dragProvided.dragHandleProps}
-                >
+                <div ref={dragProvided.innerRef} {...dragProvided.draggableProps}>
                   <ProductAttributeGroup
                     activeKey={activeKey}
                     attributeGroup={attributeGroup}
@@ -117,7 +111,16 @@ export const ProductAttributeContainer: FC<ProductAttributeContainerProps> = ({
                     noBorder={noBorder}
                     curProductId={curProductId}
                     isSpecifiedModal={isSpecifiedModal}
-                    icon={<DragDropIcon />}
+                    icon={
+                      <div
+                        {...dragProvided.dragHandleProps}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        <DragIcon />
+                      </div>
+                    }
                   />
                 </div>
               )}

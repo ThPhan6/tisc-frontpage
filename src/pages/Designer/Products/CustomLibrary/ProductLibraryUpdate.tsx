@@ -76,7 +76,9 @@ const ProductLibraryUpdate: React.FC = () => {
 
     /// filter option data and delete its field type
     const productOptions: ProductOptionProps[] =
-      specOptionData?.filter((el) => el.type === 'option').map(({ type, ...el }) => el) || [];
+      specOptionData
+        ?.filter((el) => el.type === 'option')
+        .map(({ type, isCollapse, ...el }) => el) || [];
     const productOptionData: ProductOptionProps[] = productOptions.map((el) => ({
       ...el,
       id: el.id || undefined,

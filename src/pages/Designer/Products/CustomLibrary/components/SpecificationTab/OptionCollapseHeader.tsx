@@ -26,22 +26,17 @@ export const OptionCollapseHeader: FC<OptionGroupProps> = ({
   viewOnly,
   icon,
 }) => {
-  if (!dataIndex) {
-    return null;
-  }
-
-  const option = data[dataIndex];
+  const option = data[0];
+  // [dataIndex];
   const selectOption = specification.attribute_groups?.find((el) => el.id === option.id);
+  // using for onchange
 
-  const onChangeOptionTitle = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    // const newOptionGroup = [...data];
-    // newOptionGroup[index] = { ...newOptionGroup[index], title: e.target.value };
-
+  const onChangeOptionTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSpecOptionData?.((prevState: any) => {
-      const newOptionGroup = [...prevState];
-      newOptionGroup[index] = { ...newOptionGroup[index], title: e.target.value };
+      const newData = [...prevState];
+      newData[dataIndex] = { ...newData[dataIndex], title: e.target.value };
 
-      return newOptionGroup;
+      return newData;
     });
   };
 
@@ -55,7 +50,7 @@ export const OptionCollapseHeader: FC<OptionGroupProps> = ({
         label={icon}
         placeholder="type title eg Colour Rand or Material Options"
         value={option.title}
-        onChange={onChangeOptionTitle(dataIndex)}
+        onChange={onChangeOptionTitle}
       />
     );
   }

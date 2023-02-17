@@ -4,15 +4,17 @@ import { Draggable } from 'react-beautiful-dnd';
 import { Col, Row } from 'antd';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
+import { ReactComponent as DragIcon } from '@/assets/icons/scroll-icon.svg';
 import { ReactComponent as SingleRightIcon } from '@/assets/icons/single-right-form-icon.svg';
 
 import { useGetDimensionWeight } from '@/features/dimension-weight/hook';
+import { cloneDeep, sortBy } from 'lodash';
 
 import { NameContentProps, ProductInfoTab, ProductOptionProps } from '../../types';
 import store, { useAppSelector } from '@/reducers';
 
-import { ActiveOneCustomCollapse } from '@/components/Collapse';
-import { useDragging } from '@/components/DragIcon';
+import CustomCollapse from '@/components/Collapse';
+import { DragDropContainer, getNewDataAfterReordering } from '@/components/Drag';
 import { EmptyOne } from '@/components/Empty';
 import { DoubleInput } from '@/components/EntryForm/DoubleInput';
 import { LogoIcon } from '@/components/LogoIcon';
@@ -54,9 +56,6 @@ export const SpecificationTab: FC<{
   setSpecOptionData,
 }) => {
   const [optionModalVisible, setOptionModalVisible] = useState<boolean>(false);
-
-  const { DragDropContainer, isDragDisabled, DragDropIcon, getNewDataAfterReordering } =
-    useDragging();
 
   const {
     // specifications, // specification data(edit mode)
@@ -111,8 +110,7 @@ export const SpecificationTab: FC<{
 
   const handleDeleteSpecification = (specIndex: number) => {
     setSpecOptionData?.((prevState: any) => {
-      const newData = [...prevState];
-      newData?.filter((_item: any, itemIndex: number) => itemIndex !== specIndex);
+      const newData = prevState.filter((_item: any, itemIndex: number) => itemIndex !== specIndex);
 
       return newData;
     });
@@ -165,8 +163,7 @@ export const SpecificationTab: FC<{
     // store.dispatch(setCustomProductDetail({ options: newOptionData }));
 
     setSpecOptionData?.((prevState: any) => {
-      const newData = [...prevState];
-      newData.filter((_item: any, itemIndex: number) => itemIndex !== index);
+      const newData = prevState.filter((_item: any, itemIndex: number) => itemIndex !== index);
 
       return newData;
     });
@@ -220,7 +217,12 @@ export const SpecificationTab: FC<{
     }
 
     return option.items.map((item, itemIndex) => (
-      <Row className={styles.optionItem} align="middle" justify="space-between">
+      <Row
+        key={item.id || itemIndex}
+        className={styles.optionItem}
+        align="middle"
+        justify="space-between"
+      >
         {option.use_image && item.image ? (
           <Col flex="48px">
             <LogoIcon logo={item.image} />
@@ -283,18 +285,9 @@ export const SpecificationTab: FC<{
                 : `${el.title}-${el.tag}-${el.sequence}-${index}`;
 
               return (
-                <Draggable
-                  key={el.sequence}
-                  draggableId={draggableId}
-                  index={index}
-                  isDragDisabled={isDragDisabled}
-                >
+                <Draggable key={el.sequence} draggableId={draggableId} index={index}>
                   {(dragProvided: any) => (
-                    <div
-                      ref={dragProvided.innerRef}
-                      {...dragProvided.draggableProps}
-                      {...dragProvided.dragHandleProps}
-                    >
+                    <div ref={dragProvided.innerRef} {...dragProvided.draggableProps}>
                       {specType ? (
                         viewOnly ? (
                           <SimpleContentTable
@@ -309,7 +302,16 @@ export const SpecificationTab: FC<{
                             key={el.sequence}
                             fontLevel={6}
                             doubleInputClass="mb-8"
-                            leftIcon={<DragDropIcon />}
+                            leftIcon={
+                              <div
+                                {...dragProvided.dragHandleProps}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                }}
+                              >
+                                <DragIcon />
+                              </div>
+                            }
                             rightIcon={
                               <DeleteIcon
                                 className={styles.deleteIcon}
@@ -325,17 +327,27 @@ export const SpecificationTab: FC<{
                           />
                         )
                       ) : (
-                        <ActiveOneCustomCollapse
-                          key={el.sequence}
-                          groupName={'specification' as ProductInfoTab}
-                          groupIndex={Number(el.sequence)}
+                        <CustomCollapse
+                          key={`collapse-${el.id}`}
+                          activeKey={el.isCollapse}
+                          onChange={(key) => {
+                            const cloneData = [...specOptionData];
+                            const newData = cloneData.map((d) => ({ ...d, isCollapse: [] }));
+                            newData[index] = {
+                              ...newData[index],
+                              isCollapse: key,
+                            };
+
+                            setSpecOptionData?.(newData);
+                          }}
                           noBorder={specifying || (viewOnly && el.use_image)}
                           expandingHeaderFontStyle="bold"
                           customHeaderClass={styles.optionCollapse}
                           arrowAlignRight={specifying}
                           header={
                             <OptionCollapseHeader
-                              data={specOptionData}
+                              key={el.id}
+                              data={[el]}
                               setSpecOptionData={setSpecOptionData}
                               dataIndex={index}
                               productId={productId}
@@ -344,7 +356,16 @@ export const SpecificationTab: FC<{
                               isPublicPage={isPublicPage}
                               specifiedDetail={specifiedDetail}
                               viewOnly={viewOnly}
-                              icon={<DragDropIcon />}
+                              icon={
+                                <div
+                                  {...dragProvided.dragHandleProps}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                  }}
+                                >
+                                  <DragIcon />
+                                </div>
+                              }
                             />
                           }
                         >
@@ -381,7 +402,7 @@ export const SpecificationTab: FC<{
                           )}
 
                           {renderOptionItems(el, index)}
-                        </ActiveOneCustomCollapse>
+                        </CustomCollapse>
                       )}
                     </div>
                   )}

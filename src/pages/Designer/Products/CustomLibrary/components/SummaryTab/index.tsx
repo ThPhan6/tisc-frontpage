@@ -4,6 +4,7 @@ import { Draggable } from 'react-beautiful-dnd';
 import { useParams } from 'umi';
 
 import { ReactComponent as DeleteIcon } from '@/assets/icons/action-delete-icon.svg';
+import { ReactComponent as DragIcon } from '@/assets/icons/scroll-icon.svg';
 
 import { trimStart, uniqueId } from 'lodash';
 
@@ -13,7 +14,7 @@ import { TextFormProps } from '@/components/Form/types';
 import store, { useAppSelector } from '@/reducers';
 import { CollectionRelationType } from '@/types';
 
-import { useDragging } from '@/components/DragIcon';
+import { DragDropContainer, getNewDataAfterReordering } from '@/components/Drag';
 import { DoubleInput } from '@/components/EntryForm/DoubleInput';
 import InputGroup from '@/components/EntryForm/InputGroup';
 import { FormGroup } from '@/components/Form';
@@ -31,13 +32,11 @@ const DEFAULT_CONTENT: NameContentProps = {
   id: '',
   name: '',
   content: '',
+  sequence: -1,
 };
 
 export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
   const [visible, setVisible] = useState<'' | 'company' | 'collection'>('');
-
-  const { DragDropContainer, getNewDataAfterReordering, isDragDisabled, DragDropIcon } =
-    useDragging();
 
   const { collection, company, name, description, attributes } = useAppSelector(
     (state) => state.customProduct.details,
@@ -261,7 +260,6 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
                 key={attribute.id}
                 draggableId={`${attribute?.id || index}-${attribute.name}-${attribute.content}`}
                 index={index}
-                isDragDisabled={isDragDisabled}
               >
                 {(dragProvided: any) => (
                   <div
@@ -272,7 +270,11 @@ export const SummaryTab: FC<{ viewOnly?: boolean }> = ({ viewOnly }) => {
                     <DoubleInput
                       key={attribute.id || index}
                       fontLevel={6}
-                      leftIcon={<DragDropIcon />}
+                      leftIcon={
+                        <div {...dragProvided.dragHandleProps}>
+                          <DragIcon />
+                        </div>
+                      }
                       rightIcon={
                         <DeleteIcon
                           className={styles.deleteIcon}
